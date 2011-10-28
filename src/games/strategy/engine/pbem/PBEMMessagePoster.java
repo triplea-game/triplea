@@ -112,7 +112,7 @@ public class PBEMMessagePoster implements Serializable
 				throws FileNotFoundException
 	{
 		if (screenshotFile != null)
-			setScreenshot(screenshotFile.getName(), ((InputStream) (new FileInputStream(screenshotFile))));
+			setScreenshot(screenshotFile.getName(), ((new FileInputStream(screenshotFile))));
 		else
 			setScreenshot(null, null);
 	}
@@ -127,7 +127,7 @@ public class PBEMMessagePoster implements Serializable
 				throws FileNotFoundException
 	{
 		if (saveGameFile != null)
-			setSaveGame(saveGameFile.getName(), ((InputStream) (new FileInputStream(saveGameFile))));
+			setSaveGame(saveGameFile.getName(), ((new FileInputStream(saveGameFile))));
 		else
 			setSaveGame(null, null);
 	}

@@ -1667,6 +1667,7 @@ public class MoveValidator
 		friendlyGround.add(Matches.isTerritoryAllied(player, data));
 		friendlyGround.add(new Match<Territory>()
 				{
+					
 					@Override
 					public boolean match(Territory o)
 					{
@@ -1676,6 +1677,7 @@ public class MoveValidator
 					);
 		friendlyGround.add(new Match<Territory>()
 				{
+					
 					@Override
 					public boolean match(Territory o)
 					{

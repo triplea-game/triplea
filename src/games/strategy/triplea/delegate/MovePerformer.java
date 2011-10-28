@@ -118,7 +118,6 @@ public class MovePerformer implements Serializable
 		IExecutable preAAFire = new IExecutable()
 		{
 			
-			@Override
 			public void execute(ExecutionStack stack, IDelegateBridge bridge)
 			{
 				// if we are moving out of a battle zone, mark it
@@ -154,7 +153,6 @@ public class MovePerformer implements Serializable
 		IExecutable fireAA = new IExecutable()
 		{
 			
-			@Override
 			public void execute(ExecutionStack stack, IDelegateBridge bridge)
 			{
 				Collection<Unit> aaCasualties = fireAA(route, units);
@@ -165,7 +163,7 @@ public class MovePerformer implements Serializable
 		
 		IExecutable postAAFire = new IExecutable()
 		{
-			@Override
+			
 			public void execute(ExecutionStack stack, IDelegateBridge bridge)
 			{
 				// if any non enemy territories on route

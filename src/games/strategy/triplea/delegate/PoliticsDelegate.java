@@ -53,12 +53,13 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
 		super.start(aBridge);
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -69,47 +70,58 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			TriggerAttachment.triggerRelationshipChange(m_player, m_bridge, null, null);
 		}
 	}
-
+	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<IPoliticsDelegate> getRemoteType()
 	{
 		return IPoliticsDelegate.class;
 	}
-
-	@Override
-	public void attemptAction(PoliticalActionAttachment paa) {
+	
+	public void attemptAction(PoliticalActionAttachment paa)
+	{
 		if (!games.strategy.triplea.Properties.getUsePolitics(getData()))
 		{
 			notifyPoliticsTurnedOff();
 			return;
 		}
-		if(paa.canPerform()) {
-			if(checkEnoughMoney(paa)) { // See if the player has got enough money to pay for the action
-				chargeForAction(paa);  // Charge for attempting the action
+		if (paa.canPerform())
+		{
+			if (checkEnoughMoney(paa))
+			{ // See if the player has got enough money to pay for the action
+				chargeForAction(paa); // Charge for attempting the action
 				paa.useAttempt(getBridge()); // take one of the uses this round
-				if(actionSucceeds(paa)) { // See if the action is successful
-					if(actionIsAccepted(paa)) {
+				if (actionSucceeds(paa))
+				{ // See if the action is successful
+					if (actionIsAccepted(paa))
+					{
 						changeRelationships(paa); // change the relationships
-						notifySuccess(paa);  // notify the players
-					} else {
+						notifySuccess(paa); // notify the players
+					}
+					else
+					{
 						notifyFailure(paa); // notify the players of the failed attempt
 					}
-				} else {
+				}
+				else
+				{
 					notifyFailure(paa); // notify the players of the failed attempt
 				}
-			} else {
-				notifyMoney(paa,false); // notify the player he hasn't got enough money;
 			}
-		} else {
+			else
+			{
+				notifyMoney(paa, false); // notify the player he hasn't got enough money;
+			}
+		}
+		else
+		{
 			notifyNoValidAction(paa); // notify the player the action isn't valid anymore (shouldn't happen)
 		}
 	}
-
 	
-
 	/**
 	 * Get a list of players that should accept this action and then ask each
 	 * player if it accepts this action.
@@ -118,14 +130,16 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 *            the politicalActionAttachment that should be accepted
 	 * @return
 	 */
-	private boolean actionIsAccepted(PoliticalActionAttachment paa) {
-		for(PlayerID player:paa.getActionAccept()) {
-			if(!((ITripleaPlayer)m_bridge.getRemote(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
+	private boolean actionIsAccepted(PoliticalActionAttachment paa)
+	{
+		for (PlayerID player : paa.getActionAccept())
+		{
+			if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
 				return false;
 		}
 		return true;
 	}
-
+	
 	/**
 	 * Let the player know this action isn't valid anymore, this shouldn't
 	 * happen as the player shouldn't get an option to push the button on
@@ -133,14 +147,16 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * 
 	 * @param paa
 	 */
-	private void notifyNoValidAction(PoliticalActionAttachment paa) {
-		sendNotification(m_player,"This action isn't available anymore (this shouldn't happen!?!)");
+	private void notifyNoValidAction(PoliticalActionAttachment paa)
+	{
+		sendNotification(m_player, "This action isn't available anymore (this shouldn't happen!?!)");
 	}
 	
-	private void notifyPoliticsTurnedOff() {
-		sendNotification(m_player,"Politics is turned off in the game options");
+	private void notifyPoliticsTurnedOff()
+	{
+		sendNotification(m_player, "Politics is turned off in the game options");
 	}
-
+	
 	/**
 	 * Let the player know he is being charged for money or that he hasn't got
 	 * ennough money
@@ -150,66 +166,76 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param ennough
 	 *            is this a notificaiton about ennough or not ennough money.
 	 */
-	private void notifyMoney(PoliticalActionAttachment paa, boolean ennough) {
-		if(ennough) {
-			sendNotification(m_player,"Charging "+paa.getCostPU()+" PU's to perform this action");
-		} else {
-			sendNotification(m_player,"You don't have ennough money, you need "+paa.getCostPU()+" PU's to perform this action");
+	private void notifyMoney(PoliticalActionAttachment paa, boolean ennough)
+	{
+		if (ennough)
+		{
+			sendNotification(m_player, "Charging " + paa.getCostPU() + " PU's to perform this action");
+		}
+		else
+		{
+			sendNotification(m_player, "You don't have ennough money, you need " + paa.getCostPU() + " PU's to perform this action");
 		}
 		
 	}
-
+	
 	/**
 	 * Subtract money from the players wallet
 	 * 
 	 * @param paa
 	 *            the politicalactionattachment this the money is charged for.
 	 */
-	private void chargeForAction(PoliticalActionAttachment paa) {
+	private void chargeForAction(PoliticalActionAttachment paa)
+	{
 		Resource PUs = getData().getResourceList().getResource(Constants.PUS);
 		int cost = paa.getCostPU();
-		if(cost>0) {
-			notifyMoney(paa,true);
-			String transcriptText = m_bridge.getPlayerID().getName() + " spend "+ cost + " PU on Political Action: " + paa.getName();
+		if (cost > 0)
+		{
+			notifyMoney(paa, true);
+			String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " PU on Political Action: " + paa.getName();
 			m_bridge.getHistoryWriter().startEvent(transcriptText);
-		
+			
 			Change charge = ChangeFactory.changeResourcesChange(m_bridge
 						.getPlayerID(), PUs, -cost);
 			m_bridge.addChange(charge);
 		}
 	}
-
+	
 	/**
-	 * @param paa The Political Action the player should be charged for
+	 * @param paa
+	 *            The Political Action the player should be charged for
 	 * @return false if the player can't afford the action
 	 */
-	private boolean checkEnoughMoney(PoliticalActionAttachment paa) {
+	private boolean checkEnoughMoney(PoliticalActionAttachment paa)
+	{
 		Resource PUs = getData().getResourceList().getResource(Constants.PUS);
 		int cost = paa.getCostPU();
 		int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
 		return has >= cost;
 	}
-
+	
 	/**
 	 * Let all players involved in this action know the action has failed.
 	 * 
 	 * @param paa
 	 *            the political action attachment that just failed.
 	 */
-	private void notifyFailure(PoliticalActionAttachment paa) {
-		sendNotification(m_player,PoliticsText.getInstance().getNotificationFailure(paa.getText()));
-		notifyOtherPlayers(paa,PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
+	private void notifyFailure(PoliticalActionAttachment paa)
+	{
+		sendNotification(m_player, PoliticsText.getInstance().getNotificationFailure(paa.getText()));
+		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
 	}
-
+	
 	/**
 	 * Let all players involved in this action know the action was successful
 	 * 
 	 * @param paa
 	 *            the political action attachment that just failed.
 	 */
-	private void notifySuccess(PoliticalActionAttachment paa) {
-		sendNotification(m_player,PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
-		notifyOtherPlayers(paa,PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
+	private void notifySuccess(PoliticalActionAttachment paa)
+	{
+		sendNotification(m_player, PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
+		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
 	}
 	
 	/**
@@ -219,12 +245,14 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param paa
 	 * @param notification
 	 */
-	private void notifyOtherPlayers(PoliticalActionAttachment paa, String notification) {
-		for(PlayerID otherPlayer:paa.getOtherPlayers()) {
-			sendNotification(otherPlayer,notification);
+	private void notifyOtherPlayers(PoliticalActionAttachment paa, String notification)
+	{
+		for (PlayerID otherPlayer : paa.getOtherPlayers())
+		{
+			sendNotification(otherPlayer, notification);
 		}
 	}
-
+	
 	/**
 	 * Send a notification to the players
 	 * 
@@ -232,18 +260,23 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param text
 	 *            if NONE don't send a notification
 	 */
-	private void sendNotification(PlayerID player,String text) {
-		if(!"NONE".equals(text))
-			((ITripleaPlayer)m_bridge.getRemote(player)).reportMessage("To "+player.getName()+": "+text);
+	private void sendNotification(PlayerID player, String text)
+	{
+		if (!"NONE".equals(text))
+			((ITripleaPlayer) m_bridge.getRemote(player)).reportMessage("To " + player.getName() + ": " + text);
 	}
-
+	
 	/**
 	 * Changes all relationships
-	 * @param paa the political action to change the relationships for
+	 * 
+	 * @param paa
+	 *            the political action to change the relationships for
 	 */
-	private void changeRelationships(PoliticalActionAttachment paa) {
+	private void changeRelationships(PoliticalActionAttachment paa)
+	{
 		CompositeChange change = new CompositeChange();
-		for(String relationshipChange:paa.getRelationshipChange()) {
+		for (String relationshipChange : paa.getRelationshipChange())
+		{
 			String[] s = relationshipChange.split(":");
 			PlayerID player1 = getData().getPlayerList().getPlayerID(s[0]);
 			PlayerID player2 = getData().getPlayerList().getPlayerID(s[1]);
@@ -255,38 +288,43 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			change.add(ChangeFactory.relationshipChange(player1, player2, oldRelation, newRelation));
 			
 			m_bridge.getHistoryWriter().startEvent(
-					MyFormatter.attachmentNameToText(paa.getName()) + ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from "+ oldRelation.getName() + " to " + newRelation.getName());
+						MyFormatter.attachmentNameToText(paa.getName()) + ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from " + oldRelation.getName() + " to "
+									+ newRelation.getName());
 			
 			if (Matches.RelationshipIsAtWar.match(newRelation))
-				TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge); // TODO: see if this causes problems to do with savestate, or relations that don't cause battles.  better to leave this in the battle delegate i think.
+				TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge); // TODO: see if this causes problems to do with savestate, or relations that don't cause battles. better to leave this in the battle delegate i think.
 		}
 		if (!change.isEmpty())
 			m_bridge.addChange(change);
 	}
-
+	
 	/**
-	 * @param paa the action to check if it succeeds
+	 * @param paa
+	 *            the action to check if it succeeds
 	 * @return true if the action succeeds, usually because the die-roll succeeded.
 	 */
-	private boolean actionSucceeds(PoliticalActionAttachment paa) {
-		if(paa.diceSides() == paa.toHit())
+	private boolean actionSucceeds(PoliticalActionAttachment paa)
+	{
+		if (paa.diceSides() == paa.toHit())
 			return true;
 		
-		int rollResult = m_bridge.getRandom(paa.diceSides()-1, "Attempting the PoliticalAction: "+paa.getName())+1;
+		int rollResult = m_bridge.getRandom(paa.diceSides() - 1, "Attempting the PoliticalAction: " + paa.getName()) + 1;
 		boolean success = rollResult <= paa.toHit();
-		String notificationMessage = "rolling (" + paa.toHit() + " out of " + paa.diceSides() + ") result: "+ rollResult + " "+ (success?"Success!":"Failure!");
-		sendNotification(m_player,notificationMessage);
-		m_bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(paa.getName()) + " : "+ notificationMessage);
+		String notificationMessage = "rolling (" + paa.toHit() + " out of " + paa.diceSides() + ") result: " + rollResult + " " + (success ? "Success!" : "Failure!");
+		sendNotification(m_player, notificationMessage);
+		m_bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(paa.getName()) + " : " + notificationMessage);
 		return success;
 	}
-
+	
 	/**
 	 * Reset the attemptscounter for this action, so next round the player can
 	 * try again for a number of attempts.
 	 * 
 	 */
-	private void resetAttempts() {
-		for (PoliticalActionAttachment paa : PoliticalActionAttachment.getPoliticalActionAttachments(m_player)) {
+	private void resetAttempts()
+	{
+		for (PoliticalActionAttachment paa : PoliticalActionAttachment.getPoliticalActionAttachments(m_player))
+		{
 			paa.resetAttempts(getBridge());
 		}
 	}

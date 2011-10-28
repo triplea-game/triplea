@@ -75,7 +75,7 @@ public class DicePanel extends JPanel
 			SwingUtilities.invokeLater(
 						new Runnable()
 			{
-				@Override
+				
 				public void run()
 			{
 				setDiceRoll(diceRoll);

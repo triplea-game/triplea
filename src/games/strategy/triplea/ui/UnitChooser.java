@@ -324,7 +324,7 @@ public class UnitChooser extends JPanel
 					(
 					new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				selectNone();
@@ -336,7 +336,7 @@ public class UnitChooser extends JPanel
 					(
 					new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 		{
 			autoSelect();
@@ -473,7 +473,7 @@ public class UnitChooser extends JPanel
 	
 	private ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener()
 	{
-		@Override
+		
 		public void changedValue(ScrollableTextField field)
 	{
 		if (m_match != null)
@@ -560,7 +560,7 @@ class ChooserEntry
 			m_hitText.addChangeListener(
 						new ScrollableTextFieldListener()
 			{
-				@Override
+				
 				public void changedValue(ScrollableTextField field)
 				{
 					m_secondHitLabel.setText("x" + field.getValue());

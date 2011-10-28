@@ -352,7 +352,7 @@ public class AirThatCantLandUtilTest extends TestCase
 	{
 		InvocationHandler handler = new InvocationHandler()
 		{
-			@Override
+			
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 			{
 				return null;

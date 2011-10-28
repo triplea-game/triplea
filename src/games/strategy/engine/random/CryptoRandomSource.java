@@ -102,7 +102,7 @@ public class CryptoRandomSource implements IRandomSource
 	 * All delegates should use random data that comes from both players so that
 	 * neither player cheats.
 	 */
-	@Override
+	
 	public int getRandom(int max, String annotation)
 	{
 		return getRandom(max, 1, annotation)[0];
@@ -111,7 +111,7 @@ public class CryptoRandomSource implements IRandomSource
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
-	@Override
+	
 	public int[] getRandom(int max, int count, String annotation)
 	{
 		if (count <= 0)

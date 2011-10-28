@@ -53,7 +53,6 @@ public class LocalLauncher implements ILauncher
 		m_playerTypes = playerTypes;
 	}
 	
-	@Override
 	public void launch(final Component parent)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -62,7 +61,6 @@ public class LocalLauncher implements ILauncher
 		Runnable r = new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				launchInNewThread(parent);
@@ -84,7 +82,7 @@ public class LocalLauncher implements ILauncher
 	{
 		Runnable runner = new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				
@@ -137,7 +135,6 @@ public class LocalLauncher implements ILauncher
 						SwingUtilities.invokeLater(new Runnable()
 						{
 							
-							@Override
 							public void run()
 						{
 							JOptionPane.getFrameForComponent(parent).setVisible(true);

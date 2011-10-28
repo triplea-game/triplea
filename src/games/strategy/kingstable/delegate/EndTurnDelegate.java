@@ -38,6 +38,7 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge bridge)
 	{
@@ -61,7 +62,7 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 			// while(true){}
 		}
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -156,6 +157,7 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
+	
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

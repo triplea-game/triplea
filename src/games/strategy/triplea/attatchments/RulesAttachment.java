@@ -24,12 +24,12 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Rule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
@@ -280,7 +280,7 @@ public class RulesAttachment extends DefaultAttachment
 			throw new GameParseException("Rules & Conditions: numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be default value if you don't know what to put");
 		m_relationship.add((s.length == 3) ? (value + ":-1") : value);
 	}
-
+	
 	public List<String> getRelationship()
 	{
 		return m_relationship;
@@ -1342,25 +1342,27 @@ public class RulesAttachment extends DefaultAttachment
 			int relationshipsExistance = Integer.parseInt(relationCheck[3]);
 			Relationship currentRelationship = getData().getRelationshipTracker().getRelationship(p1, p2);
 			RelationshipType currentRelationshipType = currentRelationship.getRelationshipType();
-			if (!relationShipExistsLongEnnough(currentRelationship, relationshipsExistance)) {
+			if (!relationShipExistsLongEnnough(currentRelationship, relationshipsExistance))
+			{
 				return false;
 			}
 			if (!(relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) && Matches.RelationshipIsAllied.match(currentRelationshipType)
-					|| relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelationshipType)
-					|| relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) && Matches.RelationshipIsAtWar.match(currentRelationshipType) || currentRelationshipType
-					.equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2]))))
+						|| relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelationshipType)
+						|| relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) && Matches.RelationshipIsAtWar.match(currentRelationshipType) || currentRelationshipType
+						.equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2]))))
 				return false;
 		}
 		return true;
 	}
 	
-	private boolean relationShipExistsLongEnnough(Relationship r, int relationshipsExistance) {
+	private boolean relationShipExistsLongEnnough(Relationship r, int relationshipsExistance)
+	{
 		int roundCurrentRelationshipWasCreated = r.getRoundCreated();
 		if (getData().getSequence().getRound() - roundCurrentRelationshipWasCreated < relationshipsExistance)
 			return false;
 		return true;
 	}
-
+	
 	/**
 	 * Checks for the collection of territories to see if they have units owned by the exclType alliance.
 	 */

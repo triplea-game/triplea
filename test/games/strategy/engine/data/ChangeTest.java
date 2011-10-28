@@ -299,8 +299,8 @@ public class ChangeTest extends TestCase
 		PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
 		PlayerID us = m_data.getPlayerList().getPlayerID("bush");
 		UnitType infantry = m_data.getUnitTypeList().getUnitType("inf");
-		Unit inf1 = (Unit) infantry.create(1, can).iterator().next();
-		Unit inf2 = (Unit) infantry.create(1, us).iterator().next();
+		Unit inf1 = infantry.create(1, can).iterator().next();
+		Unit inf2 = infantry.create(1, us).iterator().next();
 		
 		Collection<Unit> units = new ArrayList<Unit>();
 		units.add(inf1);
@@ -328,8 +328,8 @@ public class ChangeTest extends TestCase
 		PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
 		PlayerID us = m_data.getPlayerList().getPlayerID("bush");
 		UnitType infantry = m_data.getUnitTypeList().getUnitType("inf");
-		Unit inf1 = (Unit) infantry.create(1, can).iterator().next();
-		Unit inf2 = (Unit) infantry.create(1, us).iterator().next();
+		Unit inf1 = infantry.create(1, can).iterator().next();
+		Unit inf2 = infantry.create(1, us).iterator().next();
 		
 		Collection<Unit> units = new ArrayList<Unit>();
 		units.add(inf1);

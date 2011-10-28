@@ -74,7 +74,6 @@ public class EndTurnPanel extends ActionPanel
 		m_viewAction = new AbstractAction("View Turn Summary")
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent event)
 			{
 				m_historyLog.setVisible(true);
@@ -83,7 +82,6 @@ public class EndTurnPanel extends ActionPanel
 		m_postAction = new AbstractAction("Post Turn Summary")
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent event)
 			{
 				
@@ -108,7 +106,6 @@ public class EndTurnPanel extends ActionPanel
 					Runnable t = new Runnable()
 					{
 						
-						@Override
 						public void run()
 						{
 							boolean postOk = true;
@@ -229,7 +226,6 @@ public class EndTurnPanel extends ActionPanel
 		m_includeTerritoryAction = new AbstractAction("Include territory summary")
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent event)
 			{
 				updateHistoryLog();
@@ -238,7 +234,6 @@ public class EndTurnPanel extends ActionPanel
 		m_includeProductionAction = new AbstractAction("Include production summary")
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent event)
 			{
 				updateHistoryLog();
@@ -247,7 +242,6 @@ public class EndTurnPanel extends ActionPanel
 		m_showDetailsAction = new AbstractAction("Show dice/battle details")
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent event)
 			{
 				updateHistoryLog();
@@ -256,7 +250,6 @@ public class EndTurnPanel extends ActionPanel
 		m_doneAction = new AbstractAction("Done")
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent event)
 			{
 				release();
@@ -274,7 +267,6 @@ public class EndTurnPanel extends ActionPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				m_actionLabel.setText(id.getName() + " Turn Summary");
@@ -319,7 +311,6 @@ public class EndTurnPanel extends ActionPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				// only show widgets if there are PBEM messengers

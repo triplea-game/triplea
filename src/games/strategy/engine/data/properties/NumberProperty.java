@@ -41,20 +41,18 @@ public class NumberProperty extends AEditableProperty
 		m_value = def;
 	}
 	
-	@Override
 	public Object getValue()
 	{
 		return Integer.toString(m_value);
 	}
 	
-	@Override
 	public JComponent getEditorComponent()
 	{
 		IntTextField field = new IntTextField(m_min, m_max);
 		field.setValue(m_value);
 		field.addChangeListener(new IntTextFieldChangeListener()
 		{
-			@Override
+			
 			public void changedValue(IntTextField aField)
 		{
 			m_value = aField.getValue();

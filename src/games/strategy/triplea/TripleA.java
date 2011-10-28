@@ -75,7 +75,7 @@ public class TripleA implements IGameLoader
 	/**
 	 * @see IGameLoader.createPlayers(playerNames)
 	 */
-	@Override
+	
 	public Set<IGamePlayer> createPlayers(Map<String, String> playerNames)
 	{
 		Set<IGamePlayer> players = new HashSet<IGamePlayer>();
@@ -109,7 +109,6 @@ public class TripleA implements IGameLoader
 		return players;
 	}
 	
-	@Override
 	public void shutDown()
 	{
 		if (m_display != null)
@@ -120,7 +119,6 @@ public class TripleA implements IGameLoader
 		
 	}
 	
-	@Override
 	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
 	{
 		try
@@ -151,7 +149,6 @@ public class TripleA implements IGameLoader
 			SwingUtilities.invokeAndWait(new Runnable()
 				{
 					
-					@Override
 					public void run()
 					{
 						final TripleAFrame frame;
@@ -174,7 +171,7 @@ public class TripleA implements IGameLoader
 						SwingUtilities.invokeLater(
 									new Runnable()
 							{
-								@Override
+								
 								public void run()
 								{
 									frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -205,7 +202,7 @@ public class TripleA implements IGameLoader
 		// avoids the pause where sounds dont load right away
 		Runnable loadSounds = new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					SoundPath.preLoadSounds();
@@ -229,7 +226,7 @@ public class TripleA implements IGameLoader
 	/**
 	 * Return an array of player types that can play on the server.
 	 */
-	@Override
+	
 	public String[] getServerPlayerTypes()
 	{
 		
@@ -237,7 +234,6 @@ public class TripleA implements IGameLoader
 					HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE };
 	}
 	
-	@Override
 	public IPBEMMessenger[] getPBEMMessengers()
 	{
 		return new IPBEMMessenger[] {
@@ -248,25 +244,22 @@ public class TripleA implements IGameLoader
 	/*
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
-	@Override
+
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return ITripleaDisplay.class;
 	}
 	
-	@Override
 	public Class<? extends IRemote> getRemotePlayerType()
 	{
 		return ITripleaPlayer.class;
 	}
 	
-	@Override
 	public IUnitFactory getUnitFactory()
 	{
 		return new IUnitFactory()
 		{
 			
-			@Override
 			public Unit createUnit(UnitType type, PlayerID owner, GameData data)
 			{
 				return new TripleAUnit(type, owner, data);

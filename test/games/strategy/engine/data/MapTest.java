@@ -183,6 +183,7 @@ public class MapTest extends TestCase
 	{
 		Match<Territory> test = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{

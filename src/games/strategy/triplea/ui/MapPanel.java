@@ -150,13 +150,11 @@ public class MapPanel extends ImageScrollerLargeView
 		this.addScrollListener(new ScrollListener()
 		{
 			
-			@Override
 			public void scrolled(int x, int y)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					
-					@Override
 					public void run()
 					{
 						repaint();
@@ -172,7 +170,6 @@ public class MapPanel extends ImageScrollerLargeView
 		m_uiContext.addActive(new Active()
 		{
 			
-			@Override
 			public void deactivate()
 			{
 				// super.deactivate
@@ -241,7 +238,6 @@ public class MapPanel extends ImageScrollerLargeView
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				repaint();
@@ -279,7 +275,6 @@ public class MapPanel extends ImageScrollerLargeView
 			SwingUtilities.invokeLater(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					repaint();
@@ -299,7 +294,6 @@ public class MapPanel extends ImageScrollerLargeView
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				repaint();
@@ -419,7 +413,7 @@ public class MapPanel extends ImageScrollerLargeView
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				repaint();
@@ -436,6 +430,7 @@ public class MapPanel extends ImageScrollerLargeView
 		/**
 		 * Invoked when the mouse exits a component.
 		 */
+		
 		@Override
 		public void mouseExited(MouseEvent e)
 		{
@@ -447,10 +442,10 @@ public class MapPanel extends ImageScrollerLargeView
 			}
 		}
 		
-		@Override
 		// this can't be mouseClicked, since
 		// a lot of people complain that clicking doesn't work
 		// well
+		@Override
 		public void mouseReleased(MouseEvent e)
 		{
 			
@@ -552,7 +547,6 @@ public class MapPanel extends ImageScrollerLargeView
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				m_smallView.repaint();
@@ -585,14 +579,12 @@ public class MapPanel extends ImageScrollerLargeView
 	private final TerritoryListener TERRITORY_LISTENER = new TerritoryListener()
 	{
 		
-		@Override
 		public void unitsChanged(Territory territory)
 		{
 			updateCountries(Collections.singleton(territory));
 			SwingUtilities.invokeLater(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					repaint();
@@ -602,7 +594,6 @@ public class MapPanel extends ImageScrollerLargeView
 			
 		}
 		
-		@Override
 		public void ownerChanged(Territory territory)
 		{
 			m_smallMapImageManager.updateTerritoryOwner(territory, m_data, m_uiContext.getMapData());
@@ -610,7 +601,6 @@ public class MapPanel extends ImageScrollerLargeView
 			SwingUtilities.invokeLater(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					repaint();
@@ -619,13 +609,12 @@ public class MapPanel extends ImageScrollerLargeView
 			});
 		}
 		
-		@Override
 		public void attachmentChanged(Territory territory)
 		{
 			updateCountries(Collections.singleton(territory));
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					repaint();
@@ -637,7 +626,6 @@ public class MapPanel extends ImageScrollerLargeView
 	private final GameDataChangeListener TECH_UPDATE_LISTENER = new GameDataChangeListener()
 	{
 		
-		@Override
 		public void gameDataChanged(Change aChange)
 		{
 			
@@ -652,7 +640,6 @@ public class MapPanel extends ImageScrollerLargeView
 			SwingUtilities.invokeLater(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					repaint();
@@ -692,13 +679,14 @@ public class MapPanel extends ImageScrollerLargeView
 		
 	};
 	
-    @Override
+	@Override
 	public void setTopLeft(int x, int y)
-    {
-        super.setTopLeft(x, y);
-    }
-
+	{
+		super.setTopLeft(x, y);
+	}
+	
 	// this one is useful for screenshots
+	
 	@Override
 	public void print(Graphics g)
 	{
@@ -982,7 +970,7 @@ public class MapPanel extends ImageScrollerLargeView
 			m_mouseShadowImage = null;
 			SwingUtilities.invokeLater(new Runnable()
 					{
-						@Override
+						
 						public void run()
 						{
 							repaint();
@@ -1025,7 +1013,7 @@ public class MapPanel extends ImageScrollerLargeView
 		m_mouseShadowImage = img;
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				repaint();
@@ -1197,7 +1185,6 @@ class BackgroundDrawer implements Runnable
 		m_mapPanelRef.clear();
 	}
 	
-	@Override
 	public void run()
 	{
 		
@@ -1240,7 +1227,7 @@ class BackgroundDrawer implements Runnable
 			
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					mapPanel.repaint();

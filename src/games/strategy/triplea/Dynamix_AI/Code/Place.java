@@ -63,7 +63,7 @@ public class Place
 			DUtils.Log(Level.FINE, message);
 			Runnable runner = new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);
@@ -125,7 +125,7 @@ public class Place
 				DUtils.Log(Level.FINE, message);
 				Runnable runner = new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);
@@ -224,7 +224,7 @@ public class Place
 					final Dynamix_AI fAI = ai;
 					Runnable runner = new Runnable()
 					{
-						@Override
+						
 						public void run()
 						{
 							CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(
@@ -263,7 +263,7 @@ public class Place
 				DUtils.Log(Level.FINE, message);
 				Runnable runner = new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);

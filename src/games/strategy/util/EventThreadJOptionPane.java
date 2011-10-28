@@ -57,7 +57,6 @@ public class EventThreadJOptionPane
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				rVal.set(
@@ -111,7 +110,7 @@ public class EventThreadJOptionPane
 		final CountDownLatch latch = new CountDownLatch(1);
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				JOptionPane.showMessageDialog(parentComponent, useJLabel ? new JLabel((String) message) : message, title, messageType);
@@ -152,7 +151,6 @@ public class EventThreadJOptionPane
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				rVal.set(
@@ -189,7 +187,7 @@ public class EventThreadJOptionPane
 		final CountDownLatch latch = new CountDownLatch(1);
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				JOptionPane.showMessageDialog(parentComponent, message);
@@ -232,7 +230,7 @@ public class EventThreadJOptionPane
 		final CountDownLatch latch = new CountDownLatch(1);
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				JOptionPane.showMessageDialog(parentComponent, message);

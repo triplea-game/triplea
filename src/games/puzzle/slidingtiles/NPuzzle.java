@@ -60,7 +60,7 @@ public class NPuzzle implements IGameLoader
 	/**
 	 * @see IGameLoader.createPlayers(playerNames)
 	 */
-	@Override
+	
 	public Set<IGamePlayer> createPlayers(Map<String, String> playerNames)
 	{
 		Set<IGamePlayer> players = new HashSet<IGamePlayer>();
@@ -95,14 +95,13 @@ public class NPuzzle implements IGameLoader
 	/**
 	 * Return an array of player types that can play on the server.
 	 */
-	@Override
+	
 	public String[] getServerPlayerTypes()
 	{
 		return new String[] { HUMAN_PLAYER_TYPE, DFS_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
 		
 	}
 	
-	@Override
 	public void shutDown()
 	{
 		if (m_display != null)
@@ -112,7 +111,6 @@ public class NPuzzle implements IGameLoader
 		}
 	}
 	
-	@Override
 	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
 	{
 		try
@@ -121,7 +119,7 @@ public class NPuzzle implements IGameLoader
 			
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					final NPuzzleFrame frame = new NPuzzleFrame(game, players);
@@ -134,7 +132,7 @@ public class NPuzzle implements IGameLoader
 					SwingUtilities.invokeLater(
 								new Runnable()
 							{
-								@Override
+								
 								public void run()
 								{
 									// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -174,7 +172,6 @@ public class NPuzzle implements IGameLoader
 		}
 	}
 	
-	@Override
 	public IPBEMMessenger[] getPBEMMessengers()
 	{
 		return new IPBEMMessenger[] { new AllYouCanUploadDotComPBEMMessenger() };
@@ -183,19 +180,17 @@ public class NPuzzle implements IGameLoader
 	/**
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
-	@Override
+	
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return INPuzzleDisplay.class;
 	}
 	
-	@Override
 	public Class<? extends IRemote> getRemotePlayerType()
 	{
 		return INPuzzlePlayer.class;
 	}
 	
-	@Override
 	public IUnitFactory getUnitFactory()
 	{
 		return new DefaultUnitFactory();

@@ -72,7 +72,7 @@ public class Purchase
 			DUtils.Log(Level.FINE, message);
 			Runnable runner = new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);
@@ -96,7 +96,7 @@ public class Purchase
 				GlobalCenter.PUsAtEndOfLastTurn = DUtils.GetTotalProductionOfTerritoriesInList(DUtils.ToList(data.getMap().getTerritoriesOwnedBy(player))); // This is a temp hack, should definately be changed
 			int PUsCollectedLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource()) - GlobalCenter.PUsAtEndOfLastTurn;
 			// Since we already have the pu's we collected last turn, only add the extra
-			int PUChange = (int) ((float) PUsCollectedLastTurn * DUtils.ToFloat(DSettings.LoadSettings().ResourceCollectionMultiplyPercent)) - PUsCollectedLastTurn;
+			int PUChange = (int) (PUsCollectedLastTurn * DUtils.ToFloat(DSettings.LoadSettings().ResourceCollectionMultiplyPercent)) - PUsCollectedLastTurn;
 			if (PUChange > 0)
 			{
 				final int newPUs = player.getResources().getQuantity(GlobalCenter.GetPUResource()) + PUChange;
@@ -105,7 +105,7 @@ public class Purchase
 				DUtils.Log(Level.FINE, message);
 				Runnable runner = new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);
@@ -281,7 +281,7 @@ public class Purchase
 					{
 						for (Unit unitToFix : Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged))
 						{
-							if (unitToFix == null || !unitToFix.getType().equals((UnitType) rrule.getResults().keySet().iterator().next()))
+							if (unitToFix == null || !unitToFix.getType().equals(rrule.getResults().keySet().iterator().next()))
 								continue;
 							int repairAmount = TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, false, false)
 										- TripleAUnit.getHowMuchCanUnitProduce(unitToFix, fixTerr, player, data, true, false);

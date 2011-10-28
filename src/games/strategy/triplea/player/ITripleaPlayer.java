@@ -258,7 +258,7 @@ public interface ITripleaPlayer extends IRemote
 	public void confirmOwnCasualties(GUID battleId, String message);
 	
 	public PlayerID getID();
-
+	
 	/**
 	 * Does the player accept the proposed political action?
 	 * 
@@ -267,7 +267,7 @@ public interface ITripleaPlayer extends IRemote
 	 * @return wether the player accepts the actionproposal
 	 */
 	public boolean acceptPoliticalAction(String acceptanceQuestion);
-
+	
 	/**
 	 * send a political notification to this player
 	 * 

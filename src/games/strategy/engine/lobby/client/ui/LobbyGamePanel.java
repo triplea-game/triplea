@@ -136,7 +136,7 @@ public class LobbyGamePanel extends JPanel
 	{
 		m_hostGame.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				hostGame();
@@ -146,7 +146,7 @@ public class LobbyGamePanel extends JPanel
 		
 		m_joinGame.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				joinGame();
@@ -156,7 +156,7 @@ public class LobbyGamePanel extends JPanel
 		
 		m_bootGame.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				bootGame();
@@ -166,7 +166,6 @@ public class LobbyGamePanel extends JPanel
 		m_gameTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
 		{
 			
-			@Override
 			public void valueChanged(ListSelectionEvent e)
 			{
 				setWidgetActivation();
@@ -269,7 +268,6 @@ public class LobbyGamePanel extends JPanel
 			Thread t = new Thread(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					try
@@ -305,7 +303,7 @@ public class LobbyGamePanel extends JPanel
 		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to add 64m to that to compensate
 		long maxMemory = (Runtime.getRuntime().maxMemory() + 67108864);
 		commands.add("-Xmx" + maxMemory);
-		//commands.add("-Xmx512m"); //TODO: this may need updating
+		// commands.add("-Xmx512m"); //TODO: this may need updating
 		
 		// preserve noddraw to fix 1742775
 		String[] preservedSystemProperties = { "sun.java2d.noddraw" };

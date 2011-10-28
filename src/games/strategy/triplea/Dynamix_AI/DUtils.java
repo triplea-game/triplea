@@ -78,7 +78,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Stephen
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DUtils
 {
 	public static float GetAttackScoreOfUnits(Collection<Unit> units)
@@ -94,7 +94,7 @@ public class DUtils
 			if (ua.isTwoHit())
 				unitAttack = unitAttack * 2.0F;
 			if (ua.getAttackRolls(owner) > 1)
-				unitAttack = unitAttack * (float) ua.getAttackRolls(owner);
+				unitAttack = unitAttack * ua.getAttackRolls(owner);
 			
 			result += unitAttack;
 		}
@@ -146,13 +146,13 @@ public class DUtils
 		return CachedCalculationCenter.GetMapTersFromPoint(target);
 	}
 	
-	//@SuppressWarnings("unchecked")
+	// @SuppressWarnings("unchecked")
 	public static List<Unit> GetUnitsOnMap(GameData data)
 	{
 		return GetUnitsMatchingXInTerritoriesMatchingY(data, Match.ALWAYS_MATCH, Match.ALWAYS_MATCH);
 	}
 	
-	//@SuppressWarnings("unchecked")
+	// @SuppressWarnings("unchecked")
 	public static List<Unit> GetUnitsMatchingXOnMap(GameData data, Match<Unit> unitMatch)
 	{
 		return GetUnitsMatchingXInTerritoriesMatchingY(data, unitMatch, Match.ALWAYS_MATCH);
@@ -163,7 +163,7 @@ public class DUtils
 		return GetUnitsMatchingXInTerritories(GetTerritoriesMatching(data, terMatch), unitMatch);
 	}
 	
-	//@SuppressWarnings("unchecked")
+	// @SuppressWarnings("unchecked")
 	public static List<Unit> GetUnitsInTerritories(List<Territory> territories)
 	{
 		return GetUnitsMatchingXInTerritories(territories, Match.ALWAYS_MATCH);
@@ -784,7 +784,7 @@ public class DUtils
 	{
 		return DSorting.SortListByX(list, new Comparator<Territory>()
 		{
-			@Override
+			
 			public int compare(Territory ter1, Territory ter2)
 			{
 				int val1 = DUtils.GetTersThatMatchXThatUnitsOnTerCanAttack(data, ter1, DMatches.territoryIsOwnedByNNEnemy(data, player), player).size();
@@ -1541,7 +1541,7 @@ public class DUtils
 		
 		while (result.size() < units.size())
 		{
-			//@SuppressWarnings("unchecked")
+			// @SuppressWarnings("unchecked")
 			Unit nextToAdd = CalculateUnitThatWillHelpWinAttackOnArmyTheMostPerPU(battleTer, data, player, result, leftToAdd, defendStack, Match.ALWAYS_MATCH,
 						DSettings.LoadSettings().CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense);
 			
@@ -1574,12 +1574,12 @@ public class DUtils
 			if (match.match(nextToAdd))
 			{
 				double dif = 1.0F - xToOthersRatio;
-				xToOthersRatio += (dif / (double) result.size());
+				xToOthersRatio += (dif / result.size());
 			}
 			else
 			{
 				double dif = 0.0F - xToOthersRatio; // Yes, I know this is the same as -airToLandRatio...
-				xToOthersRatio += (dif / (double) result.size());
+				xToOthersRatio += (dif / result.size());
 			}
 		}
 		return result;
@@ -1911,7 +1911,7 @@ public class DUtils
 		{
 			if (ua.isAir())
 				return Integer.MIN_VALUE;
-                if (movementLeft == 0 && !ter.equals(task.GetTarget()))
+			if (movementLeft == 0 && !ter.equals(task.GetTarget()))
 				return Integer.MIN_VALUE;
 			
 			int turnsToGetThere = (int) Math.ceil((double) dist / (double) movementSpeed);
@@ -1926,7 +1926,7 @@ public class DUtils
 		{
 			if (ua.isAir())
 				return Integer.MIN_VALUE;
-                    if (movementLeft == 0 && !ter.equals(task.GetTarget()))
+			if (movementLeft == 0 && !ter.equals(task.GetTarget()))
 				return Integer.MIN_VALUE;
 			
 			int turnsToGetThere = (int) Math.ceil((double) dist / (double) movementSpeed);
@@ -2041,7 +2041,6 @@ public class DUtils
 			this.base = base;
 		}
 		
-		@Override
 		public int compare(Object a, Object b)
 		{
 			if ((Double) base.get(a) < (Double) base.get(b))
@@ -2063,7 +2062,6 @@ public class DUtils
 			this.base = base;
 		}
 		
-		@Override
 		public int compare(Object a, Object b)
 		{
 			if ((Double) base.get(a) > (Double) base.get(b))

@@ -20,7 +20,7 @@ public class UserManager implements IUserManager
 	/**
 	 * Update hte user info, returning an error string if an error occurs
 	 */
-	@Override
+	
 	public String updateUser(String userName, String emailAddress, String hashedPassword)
 	{
 		INode remote = MessageContext.getSender();
@@ -44,7 +44,7 @@ public class UserManager implements IUserManager
 	/**
 	 * Update hte user info, returning an error string if an error occurs
 	 */
-	@Override
+	
 	public DBUser getUserInfo(String userName)
 	{
 		INode remote = MessageContext.getSender();

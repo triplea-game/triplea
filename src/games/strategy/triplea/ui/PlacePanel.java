@@ -38,7 +38,6 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -76,7 +75,6 @@ public class PlacePanel extends AbstractMovePanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : ""));
@@ -115,6 +113,7 @@ public class PlacePanel extends AbstractMovePanel
 	
 	private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
 	{
+		
 		@Override
 		public void territorySelected(Territory territory, MouseDetails e)
 		{
@@ -236,7 +235,7 @@ public class PlacePanel extends AbstractMovePanel
 		// TODO Auto-generated method stub
 		if (getCurrentPlayer().getUnits().size() > 0)
 		{
-			int option = JOptionPane.showConfirmDialog((JFrame) getTopLevelAncestor(), "You have not placed all your units yet.  Are you sure you want to end your turn?", "TripleA",
+			int option = JOptionPane.showConfirmDialog(getTopLevelAncestor(), "You have not placed all your units yet.  Are you sure you want to end your turn?", "TripleA",
 						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 			// TODO COMCO add code here to store the units until next time
 			if (option != JOptionPane.YES_OPTION)

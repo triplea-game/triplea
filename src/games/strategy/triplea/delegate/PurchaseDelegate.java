@@ -73,6 +73,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
@@ -85,7 +86,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			TriggerAttachment.triggerPurchase(m_player, m_bridge, null, null);
 		}
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -103,7 +104,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	/**
 	 * Returns an error code, or null if all is good.
 	 */
-	@Override
+	
 	public String purchase(IntegerMap<ProductionRule> productionRules)
 	{
 		IntegerMap<Resource> costs = getCosts(productionRules, m_player);
@@ -190,7 +191,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	/**
 	 * Returns an error code, or null if all is good.
 	 */
-	@Override
+	
 	public String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> repairRules)
 	{
 		IntegerMap<Resource> costs = getRepairCosts(repairRules, m_player);
@@ -327,7 +328,6 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	{
 		UnitTypeComparator utc = new UnitTypeComparator();
 		
-		@Override
 		public int compare(RepairRule o1, RepairRule o2)
 		{
 			UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
@@ -389,14 +389,14 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 				costs.addMultiple(rule.getCosts(), repairRules.get(u).getInt(rule));
 			}
 		}
-
-        if(isIncreasedFactoryProduction(player))
-        {
-        	//UnitCategory unitCategory =  categorized.iterator().next();
-            //if(unitCategory.getType().getName().endsWith("_hit"))
-        	//cost = (int) (Math.round(quantity/2));
-        	costs.multiplyAllValuesBy((float) 0.5, 3);
-        }
+		
+		if (isIncreasedFactoryProduction(player))
+		{
+			// UnitCategory unitCategory = categorized.iterator().next();
+			// if(unitCategory.getType().getName().endsWith("_hit"))
+			// cost = (int) (Math.round(quantity/2));
+			costs.multiplyAllValuesBy((float) 0.5, 3);
+		}
 		
 		return costs;
 	}
@@ -446,6 +446,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

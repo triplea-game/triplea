@@ -91,7 +91,7 @@ public class DoNonCombatMove
 			DUtils.Log(Level.FINE, message);
 			Runnable runner = new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);
@@ -290,6 +290,7 @@ public class DoNonCombatMove
 		final List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, data);
 		Match<Territory> isLand_Reinforce_Block = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -320,6 +321,7 @@ public class DoNonCombatMove
 			capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(data, cap, 1));
 		Match<Territory> isLand_Reinforce_Stabilize = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -348,6 +350,7 @@ public class DoNonCombatMove
 		};
 		Match<Territory> isLand_Reinforce_FrontLine = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -488,6 +491,7 @@ public class DoNonCombatMove
 		final List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, data);
 		Match<Territory> isLandGrabCall = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -513,6 +517,7 @@ public class DoNonCombatMove
 		};
 		Match<Territory> isDefensiveFrontCall = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -551,6 +556,7 @@ public class DoNonCombatMove
 		};
 		Match<Territory> isCapitalDefenseCall = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{

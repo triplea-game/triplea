@@ -50,7 +50,6 @@ public class MemoryLabel extends JLabel
 		menu.add(new AbstractAction("Garbage Collect")
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				System.gc();
@@ -103,7 +102,6 @@ class Updater implements Runnable
 		m_label = new WeakReference<MemoryLabel>(label);
 	}
 	
-	@Override
 	public void run()
 	{
 		while (m_label.get() != null)
@@ -119,7 +117,6 @@ class Updater implements Runnable
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				MemoryLabel label = m_label.get();

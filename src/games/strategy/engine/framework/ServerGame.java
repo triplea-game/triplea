@@ -122,7 +122,6 @@ public class ServerGame implements IGame
 	private IServerRemote m_serverRemote = new IServerRemote()
 	{
 		
-		@Override
 		public byte[] getSavedGame()
 		{
 			ByteArrayOutputStream sink = new ByteArrayOutputStream(5000);
@@ -273,7 +272,6 @@ public class ServerGame implements IGame
 		return new RemoteName("games.strategy.engine.framework.ServerGame.PLAYER_RANDOM_REMOTE" + id.getName(), IRemoteRandom.class);
 	}
 	
-	@Override
 	public GameData getData()
 	{
 		return m_data;
@@ -467,7 +465,6 @@ public class ServerGame implements IGame
 		}
 	}
 	
-	@Override
 	public void saveGame(File f)
 	{
 		FileOutputStream fout = null;
@@ -684,13 +681,11 @@ public class ServerGame implements IGame
 		}
 	}
 	
-	@Override
 	public void addGameStepListener(GameStepListener listener)
 	{
 		m_gameStepListeners.add(listener);
 	}
 	
-	@Override
 	public void removeGameStepListener(GameStepListener listener)
 	{
 		m_gameStepListeners.remove(listener);
@@ -713,19 +708,16 @@ public class ServerGame implements IGame
 		}
 	}
 	
-	@Override
 	public IMessenger getMessenger()
 	{
 		return m_messenger;
 	}
 	
-	@Override
 	public IChannelMessenger getChannelMessenger()
 	{
 		return m_channelMessenger;
 	}
 	
-	@Override
 	public IRemoteMessenger getRemoteMessenger()
 	{
 		return m_remoteMessenger;
@@ -736,7 +728,6 @@ public class ServerGame implements IGame
 		return (IGameModifiedChannel) m_channelMessenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
 	}
 	
-	@Override
 	public void addChange(Change aChange)
 	{
 		getGameModifiedBroadcaster().gameDataChanged(aChange);
@@ -744,13 +735,11 @@ public class ServerGame implements IGame
 		// that way all changes will happen in the same thread
 	}
 	
-	@Override
 	public boolean canSave()
 	{
 		return true;
 	}
 	
-	@Override
 	public IRandomSource getRandomSource()
 	{
 		return m_randomSource;
@@ -765,7 +754,7 @@ public class ServerGame implements IGame
 	/*
 	 * @see games.strategy.engine.framework.IGame#getVault()
 	 */
-	@Override
+
 	public Vault getVault()
 	{
 		return m_vault;
@@ -774,7 +763,6 @@ public class ServerGame implements IGame
 	private IGameModifiedChannel m_gameModifiedChannel = new IGameModifiedChannel()
 	{
 		
-		@Override
 		public void gameDataChanged(Change aChange)
 		{
 			assertCorrectCaller();
@@ -790,7 +778,6 @@ public class ServerGame implements IGame
 			}
 		}
 		
-		@Override
 		public void startHistoryEvent(String event)
 		{
 			assertCorrectCaller();
@@ -798,7 +785,6 @@ public class ServerGame implements IGame
 			
 		}
 		
-		@Override
 		public void addChildToEvent(String text, Object renderingData)
 		{
 			assertCorrectCaller();
@@ -806,7 +792,6 @@ public class ServerGame implements IGame
 			
 		}
 		
-		@Override
 		public void setRenderingData(Object renderingData)
 		{
 			assertCorrectCaller();
@@ -814,7 +799,6 @@ public class ServerGame implements IGame
 			
 		}
 		
-		@Override
 		public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
 		{
 			assertCorrectCaller();
@@ -826,7 +810,7 @@ public class ServerGame implements IGame
 		}
 		
 		// nothing to do, we call this
-		@Override
+		
 		public void shutDown()
 		{
 		}
@@ -836,7 +820,7 @@ public class ServerGame implements IGame
 	/*
 	 * @see games.strategy.engine.framework.IGame#addDisplay(games.strategy.engine.display.IDisplay)
 	 */
-	@Override
+
 	public void addDisplay(IDisplay display)
 	{
 		display.initialize(new DefaultDisplayBridge(m_data));
@@ -847,19 +831,17 @@ public class ServerGame implements IGame
 	/*
 	 * @see games.strategy.engine.framework.IGame#removeDisplay(games.strategy.engine.display.IDisplay)
 	 */
-	@Override
+
 	public void removeDisplay(IDisplay display)
 	{
 		m_channelMessenger.unregisterChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
 	}
 	
-	@Override
 	public boolean isGameOver()
 	{
 		return m_isGameOver;
 	}
 	
-	@Override
 	public PlayerManager getPlayerManager()
 	{
 		return m_players;

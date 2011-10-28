@@ -35,6 +35,7 @@ import java.util.Collection;
 @AutoSave(afterStepEnd = true)
 public class NoPUEndTurnDelegate extends EndTurnDelegate
 {
+	
 	@Override
 	protected int getProduction(Collection<Territory> territories)
 	{

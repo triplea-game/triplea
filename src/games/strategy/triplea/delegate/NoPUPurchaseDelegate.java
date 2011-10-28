@@ -91,7 +91,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 		Iterator<UnitType> unitIter = unitTypes.iterator();
 		while (unitIter.hasNext())
 		{
-			UnitType ut = (UnitType) unitIter.next();
+			UnitType ut = unitIter.next();
 			int unitCount = 0;
 			int terrCount = 0;
 			int prodPerXTerrs = productionPerXTerritories.getInt(ut);
@@ -102,7 +102,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 			Iterator<Territory> territoryIter = territories.iterator();
 			while (territoryIter.hasNext())
 			{
-				Territory current = (Territory) territoryIter.next();
+				Territory current = territoryIter.next();
 				if (!isProductionPerValuedTerritoryRestricted())
 					terrCount++;
 				else

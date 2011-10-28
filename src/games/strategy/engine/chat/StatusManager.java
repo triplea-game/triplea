@@ -38,7 +38,7 @@ public class StatusManager
 		
 		m_statusChannelSubscribor = new IStatusChannel()
 		{
-			@Override
+			
 			public void statusChanged(INode node, String status)
 			{
 				synchronized (m_mutex)

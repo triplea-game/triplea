@@ -34,7 +34,6 @@ public class UnitComparator
 		return new Comparator<Unit>()
 		{
 			
-			@Override
 			public int compare(Unit u1, Unit u2)
 			{
 				int left1 = TripleAUnit.get(u1).getMovementLeft();
@@ -54,7 +53,6 @@ public class UnitComparator
 		return new Comparator<Unit>()
 		{
 			
-			@Override
 			public int compare(Unit u1, Unit u2)
 			{
 				int left1 = TripleAUnit.get(u1).getMovementLeft();
@@ -91,7 +89,7 @@ public class UnitComparator
 		
 		return new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit t1, Unit t2)
 			{
 				int cost1 = capacityMap.getInt(t1);
@@ -117,7 +115,7 @@ public class UnitComparator
 		
 		return new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit u1, Unit u2)
 			{
 				TripleAUnit t1 = TripleAUnit.get(u1);
@@ -172,7 +170,7 @@ public class UnitComparator
 		
 		return new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit t1, Unit t2)
 			{
 				// check if transport is incapable due to game state
@@ -223,7 +221,7 @@ public class UnitComparator
 		
 		return new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit u1, Unit u2)
 			{
 				// ensure units have enough movement
@@ -293,7 +291,7 @@ public class UnitComparator
 		
 		return new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit u1, Unit u2)
 			{
 				Unit t1 = TripleAUnit.get(u1).getTransportedBy();
@@ -323,7 +321,6 @@ public class UnitComparator
 		return new Comparator<Unit>()
 		{
 			
-			@Override
 			public int compare(Unit u1, Unit u2)
 			{
 				UnitAttachment ua1 = UnitAttachment.get(u1.getType());

@@ -150,7 +150,7 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#send(Serializable, INode)
 	 */
-	@Override
+
 	public synchronized void send(Serializable msg, INode to)
 	{
 		// use our nodes address, this is our network visible address
@@ -161,7 +161,7 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#broadcast(Serializable)
 	 */
-	@Override
+
 	public synchronized void broadcast(Serializable msg)
 	{
 		MessageHeader header = new MessageHeader(m_node, msg);
@@ -171,7 +171,7 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#addMessageListener(Class, IMessageListener)
 	 */
-	@Override
+
 	public void addMessageListener(IMessageListener listener)
 	{
 		m_listeners.add(listener);
@@ -180,19 +180,17 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#removeMessageListener(Class, IMessageListener)
 	 */
-	@Override
+
 	public void removeMessageListener(IMessageListener listener)
 	{
 		m_listeners.remove(listener);
 	}
 	
-	@Override
 	public void addErrorListener(IMessengerErrorListener listener)
 	{
 		m_errorListeners.add(listener);
 	}
 	
-	@Override
 	public void removeErrorListener(IMessengerErrorListener listener)
 	{
 		m_errorListeners.remove(listener);
@@ -201,13 +199,12 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#isConnected()
 	 */
-	@Override
+
 	public boolean isConnected()
 	{
 		return m_socketChannel.isConnected();
 	}
 	
-	@Override
 	public void shutDown()
 	{
 		m_shutDown = true;
@@ -221,7 +218,6 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 		}
 	}
 	
-	@Override
 	public void messageReceived(MessageHeader msg, SocketChannel channel)
 	{
 		if (msg.getFor() != null && !msg.getFor().equals(m_node))
@@ -240,25 +236,22 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	/**
 	 * Get the local node
 	 */
-	@Override
+	
 	public INode getLocalNode()
 	{
 		return m_node;
 	}
 	
-	@Override
 	public INode getServerNode()
 	{
 		return m_serverNode;
 	}
 	
-	@Override
 	public boolean isServer()
 	{
 		return false;
 	}
 	
-	@Override
 	public void socketUnqaurantined(SocketChannel channel, QuarantineConversation converstaion2)
 	{
 		ClientQuarantineConversation conversation = (ClientQuarantineConversation) converstaion2;
@@ -278,7 +271,6 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 		
 	}
 	
-	@Override
 	public void socketError(SocketChannel channel, Exception error)
 	{
 		if (m_shutDown)
@@ -301,14 +293,12 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 		
 	}
 	
-	@Override
 	public INode getRemoteNode(SocketChannel channel)
 	{
 		// we only have one channel
 		return m_serverNode;
 	}
 	
-	@Override
 	public InetSocketAddress getRemoteServerSocketAddress()
 	{
 		return (InetSocketAddress) m_socketChannel.socket().getRemoteSocketAddress();

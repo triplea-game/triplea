@@ -49,6 +49,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge bridge)
 	{
@@ -60,7 +61,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		IKingsTableDisplay display = (IKingsTableDisplay) bridge.getDisplayChannelBroadcaster();
 		display.setStatus(m_player.getName() + "'s turn");
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -75,7 +76,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * @param end
 	 *            <code>Territory</code> where the move should end
 	 */
-	@Override
+	
 	public String play(Territory start, Territory end)
 	{
 		String error = isValidPlay(start, end);
@@ -365,6 +366,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
+	
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

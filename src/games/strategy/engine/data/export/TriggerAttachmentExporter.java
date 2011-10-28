@@ -177,7 +177,7 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			while (unitSupportAttachments.hasNext())
 			{
 				UnitSupportAttachment supportAttachment = unitSupportAttachments.next();
-				String add = ((Boolean) unitSupportAttachmentMap.get(supportAttachment)).booleanValue() ? "" : "-";
+				String add = (unitSupportAttachmentMap.get(supportAttachment)).booleanValue() ? "" : "-";
 				if (returnValue.length() > 0)
 					returnValue += ":";
 				returnValue = returnValue + add + supportAttachment.getName();

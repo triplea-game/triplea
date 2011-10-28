@@ -218,7 +218,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		Collections.sort(propFiles, new Comparator<Properties>()
 		{
 			
-			@Override
 			public int compare(Properties o1, Properties o2)
 			{
 				int n1 = Integer.parseInt(o1.getProperty("order"));
@@ -405,7 +404,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				progressWindow.setVisible(false);
@@ -426,7 +424,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		m_testDiceyButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				testEmail();
@@ -437,13 +434,11 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		m_testPostButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Runnable t = new Runnable()
 				{
 					
-					@Override
 					public void run()
 					{
 						testPost();
@@ -457,13 +452,11 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		m_viewPostButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Runnable t = new Runnable()
 				{
 					
-					@Override
 					public void run()
 					{
 						viewPostedItems();
@@ -476,19 +469,16 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		final DocumentListener docListener = new DocumentListener()
 		{
 			
-			@Override
 			public void changedUpdate(DocumentEvent e)
 			{
 				notifyObservers();
 			}
 			
-			@Override
 			public void insertUpdate(DocumentEvent e)
 			{
 				notifyObservers();
 			}
 			
-			@Override
 			public void removeUpdate(DocumentEvent e)
 			{
 				notifyObservers();
@@ -497,7 +487,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		
 		m_turnSummaryMsgrs.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				IPBEMMessenger msgr = (IPBEMMessenger) ((JComboBox) e.getSource()).getSelectedItem();
@@ -530,7 +520,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		
 		m_screenshotMsgrs.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				IPBEMMessenger msgr = (IPBEMMessenger) ((JComboBox) e.getSource()).getSelectedItem();
@@ -556,7 +546,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		
 		m_saveGameMsgrs.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				IPBEMMessenger msgr = (IPBEMMessenger) ((JComboBox) e.getSource()).getSelectedItem();
@@ -595,7 +585,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		m_diceServers.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				setWidgetActivation();
@@ -903,7 +892,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		storePBEMMessengers(m_gameSelectorModel.getGameData());
 	}
 	
-	@Override
 	public void update(Observable o, Object arg)
 	{
 		loadEmails(m_gameSelectorModel.getGameData());

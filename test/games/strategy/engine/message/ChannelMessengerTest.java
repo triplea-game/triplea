@@ -90,7 +90,7 @@ public class ChannelMessengerTest extends TestCase
 		m_serverMessenger.registerChannelSubscriber(new ChannelSubscribor(), descriptor);
 		IChannelTest subscribor = (IChannelTest) m_serverMessenger.getChannelBroadcastor(descriptor);
 		subscribor.testNoParams();
-		subscribor.testPrimitives(1, (short) 0, (long) 1, (byte) 1, true, (float) 1.0);
+		subscribor.testPrimitives(1, (short) 0, 1, (byte) 1, true, (float) 1.0);
 		subscribor.testString("a");
 	}
 	
@@ -110,7 +110,7 @@ public class ChannelMessengerTest extends TestCase
 		channelTest.testString("a");
 		assertCallCountIs(subscribor1, 2);
 		
-		channelTest.testPrimitives(1, (short) 0, (long) 1, (byte) 1, true, (float) 1.0);
+		channelTest.testPrimitives(1, (short) 0, 1, (byte) 1, true, (float) 1.0);
 		assertCallCountIs(subscribor1, 3);
 		
 		channelTest.testArray(null, null, null, null, null, null);
@@ -238,25 +238,21 @@ class ChannelSubscribor implements IChannelTest
 		return m_callCount;
 	}
 	
-	@Override
 	public void testNoParams()
 	{
 		incrementCount();
 	}
 	
-	@Override
 	public void testPrimitives(int a, short b, long c, byte d, boolean e, float f)
 	{
 		incrementCount();
 	}
 	
-	@Override
 	public void testString(String a)
 	{
 		incrementCount();
 	}
 	
-	@Override
 	public void testArray(int[] ints, short[] shorts, byte[] bytes, boolean[] bools, float[] floats, Object[] objects)
 	{
 		incrementCount();

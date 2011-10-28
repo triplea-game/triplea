@@ -39,30 +39,30 @@ public class PacificTest extends DelegateTest
 		super(name);
 	}
 	
-	//GameData m_data;
+	// GameData m_data;
 	
 	// Define units
-	//UnitType infantry;
+	// UnitType infantry;
 	UnitType armor;
 	UnitType artillery;
 	UnitType marine;
-	//UnitType fighter;
-	//UnitType bomber;
+	// UnitType fighter;
+	// UnitType bomber;
 	UnitType sub;
 	UnitType destroyer;
-	//UnitType carrier;
+	// UnitType carrier;
 	UnitType battleship;
-	//UnitType transport;
+	// UnitType transport;
 	
 	// Define players
 	PlayerID americans;
 	PlayerID chinese;
-	//PlayerID british;
-	//PlayerID japanese;
+	// PlayerID british;
+	// PlayerID japanese;
 	
 	// Define territories
 	Territory queensland;
-	//Territory japan;
+	// Territory japan;
 	Territory US;
 	Territory NewBrit;
 	Territory Midway;

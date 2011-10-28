@@ -66,13 +66,14 @@ public class InitializationDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
 		super.start(aBridge);
 		init(aBridge);
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -289,6 +290,7 @@ public class InitializationDelegate extends BaseDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

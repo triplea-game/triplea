@@ -50,7 +50,7 @@ public class TicTacToeMenu extends BasicGameMenuBar<TicTacToeFrame>
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				// html formatted string

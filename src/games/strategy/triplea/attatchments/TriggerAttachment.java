@@ -1810,25 +1810,25 @@ public class TriggerAttachment extends DefaultAttachment
 	public static Set<String> triggerNotifications(PlayerID player, IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		GameData data = aBridge.getData();
-		//try
-		//{
-			//data.acquireReadLock();
-			Set<TriggerAttachment> trigs = getTriggers(player, data, notificationMatch(beforeOrAfter, stepName));
-			Set<String> notifications = new HashSet<String>();
-			for (TriggerAttachment t : trigs)
+		// try
+		// {
+		// data.acquireReadLock();
+		Set<TriggerAttachment> trigs = getTriggers(player, data, notificationMatch(beforeOrAfter, stepName));
+		Set<String> notifications = new HashSet<String>();
+		for (TriggerAttachment t : trigs)
+		{
+			if (isMet(t, data))
 			{
-				if (isMet(t, data))
-				{
-					t.use(aBridge);
-					notifications.add(t.getNotification());
-				}
+				t.use(aBridge);
+				notifications.add(t.getNotification());
 			}
-			return notifications;
-			
-		//} finally
-		//{
-			//data.releaseReadLock();
-		//}
+		}
+		return notifications;
+		
+		// } finally
+		// {
+		// data.releaseReadLock();
+		// }
 	}
 	
 	/**
@@ -1845,6 +1845,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1873,6 +1874,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1885,6 +1887,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1897,6 +1900,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1909,6 +1913,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1921,6 +1926,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1933,6 +1939,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1945,6 +1952,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1957,6 +1965,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1969,6 +1978,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1981,6 +1991,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -1993,6 +2004,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -2005,6 +2017,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -2017,6 +2030,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -2029,6 +2043,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -2041,6 +2056,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{
@@ -2053,6 +2069,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return new Match<TriggerAttachment>()
 		{
+			
 			@Override
 			public boolean match(TriggerAttachment t)
 			{

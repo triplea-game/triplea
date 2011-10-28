@@ -63,7 +63,7 @@ public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
 			
 			AbstractAction optionsAction = new AbstractAction("View Game Options...")
 			{
-				@Override
+				
 				public void actionPerformed(ActionEvent e)
 				{
 					PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), false);
@@ -83,7 +83,7 @@ public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				// html formatted string

@@ -20,7 +20,6 @@ public class BackgroundTaskRunner
 		Thread t = new Thread(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				try
@@ -32,7 +31,6 @@ public class BackgroundTaskRunner
 						SwingUtilities.invokeLater(new Runnable()
 						{
 							
-							@Override
 							public void run()
 						{
 							doneWait.set(true);

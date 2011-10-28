@@ -103,7 +103,6 @@ public class ServerLauncher implements ILauncher
 		m_inGameLobbyWatcher = watcher;
 	}
 	
-	@Override
 	public void launch(final Component parent)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -112,7 +111,6 @@ public class ServerLauncher implements ILauncher
 		Runnable r = new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				try
@@ -207,6 +205,7 @@ public class ServerLauncher implements ILauncher
 		
 		Thread t = new Thread("Triplea, start server game")
 		{
+			
 			@Override
 			public void run()
 			{
@@ -228,7 +227,7 @@ public class ServerLauncher implements ILauncher
 						m_serverGame.stopGame();
 						SwingUtilities.invokeLater(new Runnable()
 						{
-							@Override
+							
 							public void run()
 							{
 								JOptionPane.showMessageDialog(m_ui, "Error during startup, game aborted.");
@@ -258,7 +257,6 @@ public class ServerLauncher implements ILauncher
 				SwingUtilities.invokeLater(new Runnable()
 						{
 							
-							@Override
 							public void run()
 							{
 								JOptionPane.getFrameForComponent(parent).setVisible(true);
@@ -283,6 +281,7 @@ public class ServerLauncher implements ILauncher
 		// here in the background so that the user doesnt notice
 		Thread t = new Thread("Warming up crypto random source")
 		{
+			
 			@Override
 			public void run()
 			{
@@ -371,7 +370,6 @@ public class ServerLauncher implements ILauncher
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
@@ -394,7 +392,6 @@ class ServerReady implements IServerReady
 		m_latch = new CountDownLatch(waitCount);
 	}
 	
-	@Override
 	public void clientReady()
 	{
 		m_latch.countDown();

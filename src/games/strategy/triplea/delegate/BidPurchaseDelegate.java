@@ -54,6 +54,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	/**
 	 * subclasses can over ride this method to use different restrictions as to what a player can buy
 	 */
+	
 	@Override
 	protected boolean canAfford(IntegerMap<Resource> costs, PlayerID player)
 	{
@@ -83,6 +84,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	/**
 	 * Called before the delegate will stop running.
 	 */
+	
 	@Override
 	public void end()
 	{
@@ -101,6 +103,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	/**
 	 * Returns the state of the Delegate.
 	 */
+	
 	@Override
 	public Serializable saveState()
 	{
@@ -115,6 +118,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	/**
 	 * Loads the delegates state
 	 */
+	
 	@Override
 	public void loadState(Serializable state)
 	{

@@ -118,7 +118,7 @@ public class TransportTracker
 			
 			Collection<Unit> transporting = null;
 			if (transport != null)
-				transporting = transporting((TripleAUnit) transport);
+				transporting = transporting(transport);
 			if (transporting != null)
 			{
 				returnVal.put(transport, transporting);

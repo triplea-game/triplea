@@ -99,7 +99,6 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 		
 	}
 	
-	@Override
 	public void update(Observable o, Object arg)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -107,7 +106,6 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 			SwingUtilities.invokeLater(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					layoutComponents();

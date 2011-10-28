@@ -69,7 +69,6 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 		return m_cachedTechs;
 	}
 	
-	@Override
 	public Iterator<TechAdvance> iterator()
 	{
 		return getTechs().iterator();

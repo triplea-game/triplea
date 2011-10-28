@@ -93,7 +93,6 @@ public class ServerOptions extends JDialog
 		m_requirePasswordCheckBox.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				setWidgetActivation();
@@ -227,7 +226,7 @@ public class ServerOptions extends JDialog
 	
 	private Action m_okAction = new AbstractAction("OK")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 		{
 			setVisible(false);
@@ -237,7 +236,7 @@ public class ServerOptions extends JDialog
 	
 	private Action m_cancelAction = new AbstractAction("Cancel")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 		{
 			setVisible(false);

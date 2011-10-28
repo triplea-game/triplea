@@ -72,13 +72,11 @@ public class AllUsersPanel extends JPanel
 		((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener()
 		{
 			
-			@Override
 			public void connectionRemoved(final INode to)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					
-					@Override
 					public void run()
 					{
 						m_orderedNodes.remove(to);
@@ -90,13 +88,11 @@ public class AllUsersPanel extends JPanel
 				
 			}
 			
-			@Override
 			public void connectionAdded(final INode to)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					
-					@Override
 					public void run()
 					{
 						m_orderedNodes.add(to);

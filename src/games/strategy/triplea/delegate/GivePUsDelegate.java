@@ -50,6 +50,7 @@ public class GivePUsDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
@@ -61,7 +62,7 @@ public class GivePUsDelegate extends BaseDelegate
 		if (isWW2V2())
 			return;
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -93,6 +94,7 @@ public class GivePUsDelegate extends BaseDelegate
 	/**
 	 * Returns the state of the Delegate.
 	 */
+	
 	@Override
 	public Serializable saveState()
 	{
@@ -102,6 +104,7 @@ public class GivePUsDelegate extends BaseDelegate
 	/**
 	 * Loads the delegates state
 	 */
+	
 	@Override
 	public void loadState(Serializable state)
 	{
@@ -111,6 +114,7 @@ public class GivePUsDelegate extends BaseDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

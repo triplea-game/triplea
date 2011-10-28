@@ -49,6 +49,7 @@ public class TechActivationDelegate extends BaseDelegate
 	 * Called before the delegate will run. In this class, this does all the
 	 * work.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
@@ -79,7 +80,7 @@ public class TechActivationDelegate extends BaseDelegate
 			TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, null, null);
 		}
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -109,6 +110,7 @@ public class TechActivationDelegate extends BaseDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

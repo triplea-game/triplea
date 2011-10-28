@@ -35,6 +35,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements IKingsTablePl
 	/**
 	 * The given phase has started. Parse the phase name and call the appropiate method.
 	 */
+	
 	@Override
 	public void start(String stepName)
 	{

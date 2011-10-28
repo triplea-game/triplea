@@ -71,6 +71,7 @@ public class SaveGameFileChooser extends JFileChooser
 	
 	FileFilter m_gameDataFileFilter = new FileFilter()
 	{
+		
 		@Override
 		public boolean accept(File f)
 		{

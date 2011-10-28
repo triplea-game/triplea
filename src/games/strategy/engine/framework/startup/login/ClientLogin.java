@@ -25,7 +25,6 @@ public class ClientLogin implements IConnectionLogin
 		m_parent = parent;
 	}
 	
-	@Override
 	public Map<String, String> getProperties(Map<String, String> challengProperties)
 	{
 		Map<String, String> rVal = new HashMap<String, String>();
@@ -47,7 +46,6 @@ public class ClientLogin implements IConnectionLogin
 		return rVal;
 	}
 	
-	@Override
 	public void notifyFailedLogin(final String message)
 	{
 		EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_parent), message);

@@ -183,7 +183,6 @@ public class MainPanel extends JPanel implements Observer
 		button.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				JPopupMenu menu = new JPopupMenu();
@@ -211,7 +210,6 @@ public class MainPanel extends JPanel implements Observer
 		m_gameTypePanelModel.addObserver(new Observer()
 		{
 			
-			@Override
 			public void update(Observable o, Object arg)
 			{
 				setGameSetupPanel(m_gameTypePanelModel.getPanel());
@@ -222,7 +220,6 @@ public class MainPanel extends JPanel implements Observer
 		m_playButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				play();
@@ -234,7 +231,6 @@ public class MainPanel extends JPanel implements Observer
 		m_quitButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -250,7 +246,7 @@ public class MainPanel extends JPanel implements Observer
 		
 		m_cancelButton.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				m_gameTypePanelModel.showSelectType();
@@ -278,7 +274,6 @@ public class MainPanel extends JPanel implements Observer
 			SwingUtilities.invokeLater(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					setWidgetActivation();
@@ -313,7 +308,6 @@ public class MainPanel extends JPanel implements Observer
 		f.setVisible(true);
 	}
 	
-	@Override
 	public void update(Observable o, Object arg)
 	{
 		setWidgetActivation();

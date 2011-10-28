@@ -34,6 +34,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 	}
 	
 	// Allow production of any number of units
+	
 	@Override
 	protected String checkProduction(Territory to, Collection<Unit> units,
 				PlayerID player)
@@ -42,6 +43,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 	}
 	
 	// Return whether we can place bid in a certain territory
+	
 	@Override
 	protected String canProduce(Territory to, Collection<Unit> units, PlayerID player)
 	{
@@ -82,6 +84,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 	}
 	
 	// Return collection of bid units which can placed in a land territory
+	
 	@Override
 	protected Collection<Unit> getUnitsToBePlacedLand(Territory to, Collection<Unit> units,
 				PlayerID player)

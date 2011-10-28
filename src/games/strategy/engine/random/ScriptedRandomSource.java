@@ -102,13 +102,11 @@ public class ScriptedRandomSource implements IRandomSource
 		}
 	}
 	
-	@Override
 	public int getRandom(int max, String annotation)
 	{
 		return getRandom(max, 1, null)[0];
 	}
 	
-	@Override
 	public int[] getRandom(int max, int count, String annotation)
 	{
 		if (count <= 0)

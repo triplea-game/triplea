@@ -72,7 +72,7 @@ public class TableSorter extends AbstractTableModel
 	
 	public static final Comparator<Object> COMPARABLE_COMAPRATOR = new Comparator()
 	{
-		@Override
+		
 		public int compare(Object o1, Object o2)
 		{
 			return ((Comparable<Object>) o1).compareTo(o2);
@@ -80,7 +80,7 @@ public class TableSorter extends AbstractTableModel
 	};
 	public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator()
 	{
-		@Override
+		
 		public int compare(Object o1, Object o2)
 		{
 			return o1.toString().compareTo(o2.toString());
@@ -298,13 +298,11 @@ public class TableSorter extends AbstractTableModel
 	
 	// TableModel interface methods
 	
-	@Override
 	public int getRowCount()
 	{
 		return (tableModel == null) ? 0 : tableModel.getRowCount();
 	}
 	
-	@Override
 	public int getColumnCount()
 	{
 		return (tableModel == null) ? 0 : tableModel.getColumnCount();
@@ -328,7 +326,6 @@ public class TableSorter extends AbstractTableModel
 		return tableModel.isCellEditable(modelIndex(row), column);
 	}
 	
-	@Override
 	public Object getValueAt(int row, int column)
 	{
 		return tableModel.getValueAt(modelIndex(row), column);
@@ -352,7 +349,6 @@ public class TableSorter extends AbstractTableModel
 			this.modelIndex = index;
 		}
 		
-		@Override
 		public int compareTo(Object o)
 		{
 			int row1 = modelIndex;
@@ -395,7 +391,7 @@ public class TableSorter extends AbstractTableModel
 
 	private class TableModelHandler implements TableModelListener
 	{
-		@Override
+		
 		public void tableChanged(TableModelEvent e)
 		{
 			// If we're not sorting by anything, just pass the event along.
@@ -457,6 +453,7 @@ public class TableSorter extends AbstractTableModel
 
 	private class MouseHandler extends MouseAdapter
 	{
+		
 		@Override
 		public void mouseClicked(MouseEvent e)
 		{
@@ -494,7 +491,6 @@ public class TableSorter extends AbstractTableModel
 			this.priority = priority;
 		}
 		
-		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y)
 		{
 			Color color = c == null ? Color.GRAY : c.getBackground();
@@ -532,13 +528,11 @@ public class TableSorter extends AbstractTableModel
 			g.translate(-x, -y);
 		}
 		
-		@Override
 		public int getIconWidth()
 		{
 			return size;
 		}
 		
-		@Override
 		public int getIconHeight()
 		{
 			return size;
@@ -555,7 +549,6 @@ public class TableSorter extends AbstractTableModel
 			this.tableCellRenderer = tableCellRenderer;
 		}
 		
-		@Override
 		public Component getTableCellRendererComponent(JTable table,
 														Object value,
 														boolean isSelected,

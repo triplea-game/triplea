@@ -75,7 +75,6 @@ public class TechPanel extends ActionPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				removeAll();
@@ -161,7 +160,7 @@ public class TechPanel extends ActionPanel
 	
 	private Action GetTechRollsAction = new AbstractAction("Roll Tech...")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent event)
 		{
 			TechAdvance advance = null;
@@ -210,7 +209,7 @@ public class TechPanel extends ActionPanel
 	
 	private Action DontBother = new AbstractAction("Done")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent event)
 		{
 			m_techRoll = null;
@@ -221,7 +220,7 @@ public class TechPanel extends ActionPanel
 	
 	private Action GetTechTokenAction = new AbstractAction("Buy Tech Tokens...")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent event)
 		{
 			m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
@@ -268,7 +267,7 @@ public class TechPanel extends ActionPanel
 	
 	private Action JustRollTech = new AbstractAction("Done/Roll Current Tokens")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent event)
 		{
 			m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
@@ -335,7 +334,7 @@ class TechRollPanel extends JPanel
 	
 	private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
 	{
-		@Override
+		
 		public void changedValue(ScrollableTextField stf)
 		{
 			setLabel(m_PUs - (TechTracker.getTechCost(m_player) * m_textField.getValue()));
@@ -390,7 +389,7 @@ class TechTokenPanel extends JPanel
 	
 	private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
 	{
-		@Override
+		
 		public void changedValue(ScrollableTextField stf)
 		{
 			setLabel(m_PUs - (TechTracker.getTechCost(m_player) * m_textField.getValue()));

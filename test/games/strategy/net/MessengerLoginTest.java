@@ -26,13 +26,12 @@ public class MessengerLoginTest extends TestCase
 	{
 		ILoginValidator validator = new ILoginValidator()
 		{
-			@Override
+			
 			public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String mac, SocketAddress remoteAddress)
 			{
 				return null;
 			}
 			
-			@Override
 			public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress)
 			{
 				return new HashMap<String, String>();
@@ -42,13 +41,11 @@ public class MessengerLoginTest extends TestCase
 		IConnectionLogin login = new IConnectionLogin()
 		{
 			
-			@Override
 			public void notifyFailedLogin(String message)
 			{
 				fail();
 			}
 			
-			@Override
 			public Map<String, String> getProperties(Map<String, String> challengProperties)
 			{
 				return new HashMap<String, String>();
@@ -78,13 +75,12 @@ public class MessengerLoginTest extends TestCase
 	{
 		ILoginValidator validator = new ILoginValidator()
 		{
-			@Override
+			
 			public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String mac, SocketAddress remoteAddress)
 			{
 				return "error";
 			}
 			
-			@Override
 			public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress)
 			{
 				return new HashMap<String, String>();
@@ -94,13 +90,11 @@ public class MessengerLoginTest extends TestCase
 		IConnectionLogin login = new IConnectionLogin()
 		{
 			
-			@Override
 			public void notifyFailedLogin(String message)
 			{
 				
 			}
 			
-			@Override
 			public Map<String, String> getProperties(Map<String, String> challengProperties)
 			{
 				return new HashMap<String, String>();
@@ -150,13 +144,11 @@ public class MessengerLoginTest extends TestCase
 		IConnectionLogin login = new IConnectionLogin()
 		{
 			
-			@Override
 			public void notifyFailedLogin(String message)
 			{
 				fail();
 			}
 			
-			@Override
 			public Map<String, String> getProperties(Map<String, String> challengProperties)
 			{
 				String salt = challengProperties.get(ClientLoginValidator.SALT_PROPERTY);

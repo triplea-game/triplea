@@ -41,7 +41,6 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 		m_name = name;
 	}
 	
-	@Override
 	public void initialize(IPlayerBridge bridge, PlayerID id)
 	{
 		m_bridge = bridge;
@@ -64,13 +63,11 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 		return m_bridge;
 	}
 	
-	@Override
 	public final String getName()
 	{
 		return m_name;
 	}
 	
-	@Override
 	public final PlayerID getID()
 	{
 		return m_id;
@@ -79,7 +76,7 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 	/**
 	 * The given phase has started. We parse the phase name and call the apropiate method.
 	 */
-	@Override
+	
 	public abstract void start(String stepName);
 	
 	// public abstract Class<?> getRemotePlayerType();

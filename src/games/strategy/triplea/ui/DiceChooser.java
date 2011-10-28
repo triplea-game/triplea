@@ -134,7 +134,7 @@ public class DiceChooser extends JPanel
 			DieType dieType = hit ? DieType.HIT : DieType.MISS;
 			JButton button = new JButton(new AbstractAction(null, m_uiContext.getDiceImageFactory().getDieIcon(roll, dieType))
 			{
-				@Override
+				
 				public void actionPerformed(ActionEvent event)
 				{
 					addDie(dieNum);
@@ -148,7 +148,7 @@ public class DiceChooser extends JPanel
 		diceButtonPanel.add(Box.createHorizontalStrut(4));
 		m_undoButton = new JButton(new AbstractAction("Undo")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				removeLastDie();

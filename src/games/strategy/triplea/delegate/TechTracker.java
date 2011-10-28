@@ -186,7 +186,7 @@ public class TechTracker implements java.io.Serializable
 		return first + aString.substring(1);
 	}
 	*/
-	
+
 	public static boolean hasLongRangeAir(PlayerID player)
 	{
 		return TechAttachment.get(player).hasLongRangeAir();

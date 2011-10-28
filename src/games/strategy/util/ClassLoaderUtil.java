@@ -65,7 +65,7 @@ public class ClassLoaderUtil
 {
 	
 	/** records whether initialization has been completed */
-	//private static boolean isInitialized = false;
+	// private static boolean isInitialized = false;
 	
 	/** names of classes and fields of interest for closing the loader's jar files */
 	private static final String URLCLASSLOADER_UCP_FIELD_NAME = "ucp";

@@ -80,7 +80,6 @@ public class LobbyFrame extends JFrame
 		chatPlayers.addActionFactory(new IPlayerActionFactory()
 		{
 			
-			@Override
 			public List<Action> mouseOnPlayer(INode clickedOn)
 			{
 				return createAdminActions(clickedOn);
@@ -112,7 +111,6 @@ public class LobbyFrame extends JFrame
 		m_client.getMessenger().addErrorListener(new IMessengerErrorListener()
 		{
 			
-			@Override
 			public void messengerInvalid(IMessenger messenger, Exception reason)
 			{
 				connectionToServerLost();
@@ -123,6 +121,7 @@ public class LobbyFrame extends JFrame
 		
 		addWindowListener(new WindowAdapter()
 		{
+			
 			@Override
 			public void windowClosing(WindowEvent e)
 			{
@@ -157,7 +156,7 @@ public class LobbyFrame extends JFrame
 		List<Action> rVal = new ArrayList<Action>();
 		rVal.add(new AbstractAction("Boot " + clickedOn.getName())
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				if (!confirm("Boot " + clickedOn.getName()))
@@ -171,7 +170,7 @@ public class LobbyFrame extends JFrame
 		
 		rVal.add(new AbstractAction("Ban Player")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				List<String> banTypes = new ArrayList<String>();
@@ -266,7 +265,7 @@ public class LobbyFrame extends JFrame
 		
 		rVal.add(new AbstractAction("Mute Player")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				List<String> muteTypes = new ArrayList<String>();
@@ -359,7 +358,7 @@ public class LobbyFrame extends JFrame
 		
 		rVal.add(new AbstractAction("Quick Mute")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				JLabel label = new JLabel("How many minutes should this player be muted?");
@@ -392,7 +391,7 @@ public class LobbyFrame extends JFrame
 		
 		rVal.add(new AbstractAction("Show player information")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				String text = controller.getInformationOn(clickedOn);
@@ -405,7 +404,7 @@ public class LobbyFrame extends JFrame
 		
 		rVal.add(new AbstractAction("Reset password")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				String newPassword = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), "Enter new password");

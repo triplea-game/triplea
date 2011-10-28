@@ -32,30 +32,31 @@ import java.util.Map;
  */
 public interface ITripleaDisplay extends IDisplay
 {
-    /**
-     * Display info about the battle.
-     * This is the first message to be displayed in a battle
-     * 
-     * @param battleID
-     *            - a unique id for the battle
-     * @param location
-     *            - where the battle occurs
-     * @param battleTitle
-     *            - the title of the battle
-     * @param attackingUnits
-     *            - attacking units
-     * @param defendingUnits
-     *            - defending units
-     * @param killedUnits
-     *            - killed units
-     * @param dependentUnits
-     *            - unit dependencies, maps Unit->Collection of units
-     * @param attacker
-     *            - PlayerID of attacker
-     * @param defender
-     *            - PlayerID of defender
-     */
-    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Collection<Unit> killedUnits, Collection<Unit> attackingWaitingToDie, Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker, final PlayerID defender);
+	/**
+	 * Display info about the battle.
+	 * This is the first message to be displayed in a battle
+	 * 
+	 * @param battleID
+	 *            - a unique id for the battle
+	 * @param location
+	 *            - where the battle occurs
+	 * @param battleTitle
+	 *            - the title of the battle
+	 * @param attackingUnits
+	 *            - attacking units
+	 * @param defendingUnits
+	 *            - defending units
+	 * @param killedUnits
+	 *            - killed units
+	 * @param dependentUnits
+	 *            - unit dependencies, maps Unit->Collection of units
+	 * @param attacker
+	 *            - PlayerID of attacker
+	 * @param defender
+	 *            - PlayerID of defender
+	 */
+	public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Collection<Unit> killedUnits,
+				Collection<Unit> attackingWaitingToDie, Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker, final PlayerID defender);
 	
 	/**
 	 * 

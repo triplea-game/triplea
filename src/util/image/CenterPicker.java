@@ -161,6 +161,7 @@ public class CenterPicker extends JFrame
 		imagePanel.addMouseMotionListener(
 					new MouseMotionAdapter()
 			{
+				
 				@Override
 				public void mouseMoved(MouseEvent e)
 					{
@@ -177,6 +178,7 @@ public class CenterPicker extends JFrame
 		imagePanel.addMouseListener(
 					new MouseAdapter()
 			{
+				
 				@Override
 				public void mouseClicked(MouseEvent e)
 				{
@@ -201,7 +203,7 @@ public class CenterPicker extends JFrame
 		
 		Action openAction = new AbstractAction("Load Centers")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				loadCenters();
@@ -211,7 +213,7 @@ public class CenterPicker extends JFrame
 		
 		Action saveAction = new AbstractAction("Save Centers")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				saveCenters();
@@ -221,7 +223,7 @@ public class CenterPicker extends JFrame
 		
 		Action exitAction = new AbstractAction("Exit")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				System.exit(0);
@@ -289,6 +291,7 @@ public class CenterPicker extends JFrame
 	{
 		JPanel imagePanel = new JPanel()
 		{
+			
 			@Override
 			public void paint(Graphics g)
 			{

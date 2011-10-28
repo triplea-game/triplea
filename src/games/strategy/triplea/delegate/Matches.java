@@ -96,6 +96,7 @@ public class Matches
 	
 	public static final Match<Object> IsTerritory = new Match<Object>()
 	{
+		
 		@Override
 		public boolean match(Object o)
 		{
@@ -105,6 +106,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsTwoHit = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -115,6 +117,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsDamaged = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -126,6 +129,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsSea = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -136,6 +140,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsSub = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -148,6 +153,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsCombatTransport = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -160,6 +166,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsTransportButNotCombatTransport = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -170,6 +177,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsNotTransportButCouldBeCombatTransport = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -185,6 +193,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanMove = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit u)
 		{
@@ -195,6 +204,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsDestroyer = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -205,6 +215,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsDestroyer = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType type)
 		{
@@ -215,6 +226,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsBB = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -246,6 +258,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsTransport = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -258,6 +271,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsTransportAndNotDestroyer = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -268,6 +282,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -283,6 +298,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeCanLandOnCarrier = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -297,6 +313,7 @@ public class Matches
 	
 	public static final Match<Unit> unitHasMoved = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -311,6 +328,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -326,6 +344,7 @@ public class Matches
 	{
 		return new Match<UnitType>()
 		{
+			
 			@Override
 			public boolean match(UnitType uT)
 			{
@@ -339,6 +358,7 @@ public class Matches
 	{
 		return new Match<UnitType>()
 		{
+			
 			@Override
 			public boolean match(UnitType uT)
 			{
@@ -354,6 +374,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -367,6 +388,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -380,6 +402,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -390,6 +413,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsNotSea = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -401,6 +425,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsSea = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -412,6 +437,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsNotSea = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType type)
 		{
@@ -422,6 +448,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsSeaOrAir = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType type)
 		{
@@ -432,6 +459,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsCarrier = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType type)
 		{
@@ -442,6 +470,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAir = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -452,6 +481,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsNotAir = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -478,6 +508,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit o)
 			{
@@ -492,6 +523,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit o)
 			{
@@ -522,6 +554,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit o)
 			{
@@ -535,6 +568,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -555,6 +589,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -573,6 +608,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAirBase = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -587,6 +623,7 @@ public class Matches
 	 */
 	public static final Match<Unit> UnitCanBeDamagedButIsNotFactory = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -599,6 +636,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -627,6 +665,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -640,6 +679,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -668,6 +708,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanDieFromReachingMaxDamage = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -680,6 +721,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsInfrastructure = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -692,6 +734,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -717,6 +760,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanScramble = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -727,6 +771,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitWasScrambled = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -751,6 +796,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanBlitz = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -762,6 +808,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsLandTransport = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -775,6 +822,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit obj)
 			{
@@ -787,6 +835,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsDestructibleInCombatShort = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -798,6 +847,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsSuicide = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -809,6 +859,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsKamikaze = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -820,6 +871,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsAir = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -831,6 +883,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsNotAir = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -842,6 +895,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanLandOnCarrier = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -853,6 +907,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsCarrier = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -866,6 +921,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit obj)
 			{
@@ -878,6 +934,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanBeTransported = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -891,6 +948,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitWasAmphibious = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -903,6 +961,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitWasInCombat = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -913,6 +972,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitWasUnloadedThisTurn = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -923,6 +983,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitWasLoadedThisTurn = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -935,6 +996,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanTransport = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -946,6 +1008,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeCanTransport = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -957,6 +1020,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeCanBeTransported = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -968,6 +1032,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsFactory = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -979,6 +1044,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeCanProduceUnits = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -990,6 +1056,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsFactoryOrIsInfrastructure = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -1001,6 +1068,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsFactoryOrIsInfrastructureButNotAAofAnyKind = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -1012,6 +1080,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsInfantry = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -1023,6 +1092,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsArtillery = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -1034,6 +1104,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeHasMaxBuildRestrictions = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -1045,6 +1116,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsFactory = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1058,6 +1130,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanProduceUnits = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1069,6 +1142,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsAA = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -1078,6 +1152,7 @@ public class Matches
 	};
 	public static final Match<UnitType> UnitTypeIsAAofAnyKind = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -1088,6 +1163,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsAAOrFactory = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -1100,6 +1176,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsAAOrIsFactoryOrIsInfrastructure = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -1112,6 +1189,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAAorIsRocket = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1123,6 +1201,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAAorIsAAmovement = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1134,6 +1213,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAA = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1145,6 +1225,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAAforCombatOnly = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1156,6 +1237,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAAforCombat = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1167,6 +1249,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAAforBombingThisUnitOnly = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1178,6 +1261,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAAforBombing = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1189,6 +1273,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAAforAnything = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1202,6 +1287,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsInfantry = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1215,6 +1301,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsMarine = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1228,6 +1315,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAirTransportable = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1246,6 +1334,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAirTransport = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1264,6 +1353,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsArtillery = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1275,6 +1365,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsArtillerySupportable = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -1287,6 +1378,7 @@ public class Matches
 	// TODO: CHECK whether this makes any sense
 	public static final Match<Territory> TerritoryIsLandOrWater = new Match<Territory>()
 	{
+		
 		@Override
 		public boolean match(Territory t)
 		{
@@ -1296,6 +1388,7 @@ public class Matches
 	
 	public static final Match<Territory> TerritoryIsWater = new Match<Territory>()
 	{
+		
 		@Override
 		public boolean match(Territory t)
 		{
@@ -1305,6 +1398,7 @@ public class Matches
 	
 	public static final Match<Territory> TerritoryIsVictoryCity = new Match<Territory>()
 	{
+		
 		@Override
 		public boolean match(Territory t)
 		{
@@ -1318,6 +1412,7 @@ public class Matches
 	
 	public static final Match<Territory> TerritoryHasSomeDamage = new Match<Territory>()
 	{
+		
 		@Override
 		public boolean match(Territory t)
 		{
@@ -1332,6 +1427,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -1344,6 +1440,7 @@ public class Matches
 	
 	public static final Match<Territory> TerritoryIsEmpty = new Match<Territory>()
 	{
+		
 		@Override
 		public boolean match(Territory t)
 		{
@@ -1355,6 +1452,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory terr)
 			{
@@ -1367,6 +1465,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1388,6 +1487,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1405,6 +1505,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1420,6 +1521,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1434,6 +1536,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1449,6 +1552,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -1461,6 +1565,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -1479,6 +1584,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1510,6 +1616,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1535,6 +1642,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1549,6 +1657,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1563,6 +1672,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1577,6 +1687,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1591,6 +1702,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1607,6 +1719,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1623,6 +1736,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1639,6 +1753,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1655,6 +1770,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1673,6 +1789,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1690,6 +1807,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1706,6 +1824,7 @@ public class Matches
 	
 	public static final Match<Territory> TerritoryIsNeutral = new Match<Territory>()
 	{
+		
 		@Override
 		public boolean match(Territory t)
 		{
@@ -1719,6 +1838,7 @@ public class Matches
 	
 	public static final Match<Territory> TerritoryIsImpassable = new Match<Territory>()
 	{
+		
 		@Override
 		public boolean match(Territory t)
 		{
@@ -1736,6 +1856,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1760,6 +1881,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1776,6 +1898,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1786,6 +1909,7 @@ public class Matches
 	
 	public static final Match<Battle> BattleIsEmpty = new Match<Battle>()
 	{
+		
 		@Override
 		public boolean match(Battle battle)
 		{
@@ -1795,6 +1919,7 @@ public class Matches
 	
 	public static final Match<Battle> BattleIsAmphibious = new Match<Battle>()
 	{
+		
 		@Override
 		public boolean match(Battle battle)
 		{
@@ -1813,6 +1938,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit o)
 			{
@@ -1825,6 +1951,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -1836,8 +1963,9 @@ public class Matches
 	/**
 	 * Match units that have at least 1 movement left
 	 */
-    public final static Match<Unit> unitHasMovementLeft = new Match<Unit>()
+	public final static Match<Unit> unitHasMovementLeft = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit o)
 		{
@@ -1855,6 +1983,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit obj)
 			{
@@ -1869,6 +1998,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -1882,6 +2012,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -1894,6 +2025,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -1909,6 +2041,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -1924,6 +2057,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -1945,6 +2079,7 @@ public class Matches
 		
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -1960,6 +2095,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1972,6 +2108,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -1984,6 +2121,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit t)
 			{
@@ -1996,6 +2134,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2036,6 +2175,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit o)
 			{
@@ -2048,6 +2188,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2062,6 +2203,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2082,6 +2224,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2098,6 +2241,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2127,6 +2271,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -2139,6 +2284,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit o)
 			{
@@ -2152,6 +2298,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit o)
 			{
@@ -2168,6 +2315,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -2258,6 +2406,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2270,6 +2419,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2282,6 +2432,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2294,6 +2445,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2306,6 +2458,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2337,6 +2490,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2350,6 +2504,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2363,6 +2518,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2376,6 +2532,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2394,6 +2551,7 @@ public class Matches
 		
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit transport)
 			{
@@ -2414,6 +2572,7 @@ public class Matches
 		
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit transport)
 			{
@@ -2430,6 +2589,7 @@ public class Matches
 		
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit transport)
 			{
@@ -2449,6 +2609,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit dependent)
 			{
@@ -2473,6 +2634,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit dependent)
 			{
@@ -2513,6 +2675,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unit)
 			{
@@ -2525,6 +2688,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2537,6 +2701,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -2550,6 +2715,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -2561,6 +2727,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsSub = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -2575,6 +2742,7 @@ public class Matches
 	 */
 	public static final Match<UnitType> UnitTypeIsBB = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -2588,6 +2756,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -2600,6 +2769,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -2623,6 +2793,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2672,6 +2843,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanRepairOthers = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -2689,6 +2861,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unitCanRepair)
 			{
@@ -2717,6 +2890,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit damagedUnit)
 			{
@@ -2748,6 +2922,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanGiveBonusMovement = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -2763,6 +2938,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unitCanGiveBonusMovement)
 			{
@@ -2794,6 +2970,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unitWhichWillGetBonus)
 			{
@@ -2821,6 +2998,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCreatesUnits = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -2834,6 +3012,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitCreatesResources = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -2847,6 +3026,7 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeConsumesUnitsOnCreation = new Match<UnitType>()
 	{
+		
 		@Override
 		public boolean match(UnitType obj)
 		{
@@ -2860,6 +3040,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitConsumesUnitsOnCreation = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -2875,6 +3056,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unitWhichRequiresUnits)
 			{
@@ -2904,6 +3086,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitRequiresUnitsOnCreation = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -2919,6 +3102,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unitWhichRequiresUnits)
 			{
@@ -2961,8 +3145,9 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAAOrIsFactoryOrIsInfrastructure = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory, UnitIsInfrastructure);
 	
-    public static final Match<Territory> territoryIsBlockadeZone = new Match<Territory>()
+	public static final Match<Territory> territoryIsBlockadeZone = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2977,6 +3162,7 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsConstruction = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit obj)
 		{
@@ -3003,6 +3189,7 @@ public class Matches
 	 */
 	public static final Match<Unit> UnitCanInvade = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -3018,6 +3205,7 @@ public class Matches
 	
 	public static final Match<RelationshipType> RelationshipIsAllied = new Match<RelationshipType>()
 	{
+		
 		@Override
 		public boolean match(RelationshipType relationship)
 		{
@@ -3027,6 +3215,7 @@ public class Matches
 	
 	public static final Match<RelationshipType> RelationshipIsNeutral = new Match<RelationshipType>()
 	{
+		
 		@Override
 		public boolean match(RelationshipType relationship)
 		{
@@ -3036,6 +3225,7 @@ public class Matches
 	
 	public static final Match<RelationshipType> RelationshipIsAtWar = new Match<RelationshipType>()
 	{
+		
 		@Override
 		public boolean match(RelationshipType relationship)
 		{
@@ -3045,6 +3235,7 @@ public class Matches
 	
 	public static final Match<RelationshipType> RelationshipHelpsDefendAtSea = new Match<RelationshipType>()
 	{
+		
 		@Override
 		public boolean match(RelationshipType relationship)
 		{
@@ -3054,6 +3245,7 @@ public class Matches
 	
 	public static final Match<RelationshipType> RelationshipCanMoveLandUnitsOverOwnedLand = new Match<RelationshipType>()
 	{
+		
 		@Override
 		public boolean match(RelationshipType relationship)
 		{
@@ -3063,6 +3255,7 @@ public class Matches
 	
 	public static final Match<RelationshipType> RelationshipCanMoveAirUnitsOverOwnedLand = new Match<RelationshipType>()
 	{
+		
 		@Override
 		public boolean match(RelationshipType relationship)
 		{
@@ -3074,6 +3267,7 @@ public class Matches
 	{
 		return new Match<String>()
 		{
+			
 			@Override
 			public boolean match(String relationshipName)
 			{
@@ -3086,6 +3280,7 @@ public class Matches
 	{
 		return new Match<PlayerID>()
 		{
+			
 			@Override
 			public boolean match(PlayerID player2)
 			{
@@ -3098,6 +3293,7 @@ public class Matches
 	{
 		return new Match<PlayerID>()
 		{
+			
 			@Override
 			public boolean match(PlayerID player2)
 			{
@@ -3110,6 +3306,7 @@ public class Matches
 	{
 		return new Match<PlayerID>()
 		{
+			
 			@Override
 			public boolean match(PlayerID player2)
 			{
@@ -3122,6 +3319,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -3134,6 +3332,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -3146,6 +3345,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -3164,6 +3364,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -3176,6 +3377,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -3205,6 +3407,7 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -3222,6 +3425,7 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -3232,7 +3436,8 @@ public class Matches
 		};
 	}
 	
-	public static final Match<PoliticalActionAttachment> PoliticalActionCanBeAttempted = new Match<PoliticalActionAttachment>() {
+	public static final Match<PoliticalActionAttachment> PoliticalActionCanBeAttempted = new Match<PoliticalActionAttachment>()
+	{
 		
 		@Override
 		public boolean match(PoliticalActionAttachment paa)
@@ -3240,7 +3445,6 @@ public class Matches
 			return paa.hasAttemptsLeft() && paa.canPerform();
 		}
 	};
-	
 	
 	/** Creates new Matches */
 	private Matches()

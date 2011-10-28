@@ -179,7 +179,6 @@ public class OddsCalculatorPanel extends JPanel
 		m_defenderCombo.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				if (m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker()))
@@ -195,7 +194,6 @@ public class OddsCalculatorPanel extends JPanel
 		m_attackerCombo.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				m_data.acquireReadLock();
@@ -219,7 +217,6 @@ public class OddsCalculatorPanel extends JPanel
 		m_landBattle.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				updateDefender(null);
@@ -233,7 +230,6 @@ public class OddsCalculatorPanel extends JPanel
 		m_calculateButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				updateStats();
@@ -245,7 +241,6 @@ public class OddsCalculatorPanel extends JPanel
 		m_closeButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				m_parent.setVisible(false);
@@ -257,7 +252,6 @@ public class OddsCalculatorPanel extends JPanel
 		m_clearButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				m_defendingUnitsPanel.clear();
@@ -270,7 +264,6 @@ public class OddsCalculatorPanel extends JPanel
 		m_SwapSidesButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				List<Unit> getdefenders = new ArrayList<Unit>();
@@ -300,7 +293,7 @@ public class OddsCalculatorPanel extends JPanel
 		final WaitDialog dialog = new WaitDialog(this, "Calculating Odds",
 					new AbstractAction()
 					{
-						@Override
+						
 						public void actionPerformed(ActionEvent e)
 						{
 							calculator.cancel();
@@ -312,7 +305,7 @@ public class OddsCalculatorPanel extends JPanel
 		
 		Thread calcThread = new Thread(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				try
@@ -351,7 +344,7 @@ public class OddsCalculatorPanel extends JPanel
 					{
 						SwingUtilities.invokeLater(new Runnable()
 						{
-							@Override
+							
 							public void run()
 						{
 							dialog.setVisible(false);
@@ -638,7 +631,6 @@ class PlayerUnitsPanel extends JPanel
 		Collections.sort(categories, new Comparator<UnitCategory>()
 		{
 			
-			@Override
 			public int compare(UnitCategory o1, UnitCategory o2)
 			{
 				UnitAttachment u1 = UnitAttachment.get(o1.getType());

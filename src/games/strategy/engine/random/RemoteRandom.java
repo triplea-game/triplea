@@ -61,7 +61,7 @@ public class RemoteRandom implements IRemoteRandom
 	/* 
 	 * @see games.strategy.engine.random.IRemoteRandom#generate(int, int, java.lang.String)
 	 */
-	@Override
+
 	public int[] generate(int max, int count, String annotation, VaultID remoteVaultID)
 	{
 		if (m_waitingForUnlock)
@@ -92,7 +92,7 @@ public class RemoteRandom implements IRemoteRandom
 	/* 
 	 * @see games.strategy.engine.random.IRemoteRandom#unlock()
 	 */
-	@Override
+
 	public void verifyNumbers()
 	{
 		Vault vault = m_game.getVault();

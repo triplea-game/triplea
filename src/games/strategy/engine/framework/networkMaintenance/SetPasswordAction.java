@@ -25,7 +25,6 @@ public class SetPasswordAction extends AbstractAction
 		m_parent = parent;
 	}
 	
-	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		

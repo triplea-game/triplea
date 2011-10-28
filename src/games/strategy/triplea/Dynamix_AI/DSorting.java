@@ -52,7 +52,7 @@ public class DSorting
 		final List result = new ArrayList(list);
 		Collections.sort(result, new Comparator()
 		{
-			@Override
+			
 			public int compare(Object o1, Object o2)
 			{
 				double v1 = safeGet(scores, o1);
@@ -99,7 +99,7 @@ public class DSorting
 	{
 		return SortListByX(ters, new Comparator<Territory>()
 		{
-			@Override
+			
 			public int compare(Territory t1, Territory t2)
 			{
 				Route route1 = data.getMap().getRoute(t1, target, routeMatch);
@@ -130,7 +130,7 @@ public class DSorting
 	{
 		return SortListByX(ters, new Comparator<Territory>()
 		{
-			@Override
+			
 			public int compare(Territory t1, Territory t2)
 			{
 				Route route1 = CachedCalculationCenter.GetLandRoute(data, t1, target);
@@ -161,7 +161,7 @@ public class DSorting
 	{
 		return SortListByX(ters, new Comparator<Territory>()
 		{
-			@Override
+			
 			public int compare(Territory t1, Territory t2)
 			{
 				Route route1 = CachedCalculationCenter.GetSeaRoute(data, t1, target);
@@ -192,7 +192,7 @@ public class DSorting
 	{
 		return SortListByX(ters, new Comparator<Territory>()
 		{
-			@Override
+			
 			public int compare(Territory t1, Territory t2)
 			{
 				Route route1 = CachedCalculationCenter.GetRoute(data, t1, target);
@@ -223,7 +223,7 @@ public class DSorting
 	{
 		return SortListByX(ters, new Comparator<Territory>()
 		{
-			@Override
+			
 			public int compare(Territory t1, Territory t2)
 			{
 				Route route1 = CachedCalculationCenter.GetLandRoute(data, t1, target);
@@ -262,7 +262,7 @@ public class DSorting
 	{
 		return SortListByX(units, new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit o1, Unit o2)
 			{
 				int cost1 = DUtils.GetTUVOfUnits(Collections.singletonList(o1), resource);

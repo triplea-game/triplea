@@ -24,64 +24,53 @@ public class NullPBEMMessenger implements IPBEMMessenger
 	{
 	}
 	
-	@Override
 	public String getName()
 	{
 		return "disabled";
 	}
 	
-	@Override
 	public boolean getNeedsUsername()
 	{
 		return false;
 	}
 	
-	@Override
 	public boolean getNeedsPassword()
 	{
 		return false;
 	}
 	
-	@Override
 	public boolean getCanViewPosted()
 	{
 		return false;
 	}
 	
-	@Override
 	public void setGameId(String s)
 	{
 	}
 	
-	@Override
 	public void setUsername(String s)
 	{
 	}
 	
-	@Override
 	public void setPassword(String s)
 	{
 	}
 	
-	@Override
 	public String getGameId()
 	{
 		return null;
 	}
 	
-	@Override
 	public String getUsername()
 	{
 		return null;
 	}
 	
-	@Override
 	public String getPassword()
 	{
 		return null;
 	}
 	
-	@Override
 	public void viewPosted()
 	{
 	}

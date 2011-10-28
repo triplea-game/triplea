@@ -50,7 +50,6 @@ public class TripleADelegateBridge implements IDelegateBridge
 		m_historyWriter = new TripleADelegateHistoryWriter(m_bridge.getHistoryWriter(), getData());
 	}
 	
-	@Override
 	public GameData getData()
 	{
 		return m_bridge.getData();
@@ -60,13 +59,12 @@ public class TripleADelegateBridge implements IDelegateBridge
 	 * Return our custom historyWriter instead of the default one
 	 * 
 	 */
-	@Override
+	
 	public IDelegateHistoryWriter getHistoryWriter()
 	{
 		return m_historyWriter;
 	}
 	
-	@Override
 	public PlayerID getPlayerID()
 	{
 		return m_bridge.getPlayerID();
@@ -76,7 +74,7 @@ public class TripleADelegateBridge implements IDelegateBridge
 	 * All delegates should use random data that comes from both players so that
 	 * neither player cheats.
 	 */
-	@Override
+	
 	public int getRandom(int max, String annotation)
 	{
 		return m_bridge.getRandom(max, annotation);
@@ -85,13 +83,12 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
-	@Override
+	
 	public int[] getRandom(int max, int count, String annotation)
 	{
 		return m_bridge.getRandom(max, count, annotation);
 	}
 	
-	@Override
 	public void addChange(Change aChange)
 	{
 		m_bridge.addChange(aChange);
@@ -100,7 +97,7 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/**
 	 * Returns the current step name
 	 */
-	@Override
+	
 	public String getStepName()
 	{
 		return m_bridge.getStepName();
@@ -109,7 +106,7 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
 	 */
-	@Override
+
 	public IRemote getRemote()
 	{
 		return m_bridge.getRemote();
@@ -118,7 +115,7 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
 	 */
-	@Override
+
 	public IRemote getRemote(PlayerID id)
 	{
 		return m_bridge.getRemote(id);
@@ -127,31 +124,27 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
 	 */
-	@Override
+
 	public IChannelSubscribor getDisplayChannelBroadcaster()
 	{
 		return m_bridge.getDisplayChannelBroadcaster();
 	}
 	
-	@Override
 	public Properties getStepProperties()
 	{
 		return m_bridge.getStepProperties();
 	}
 	
-	@Override
 	public void leaveDelegateExecution()
 	{
 		m_bridge.leaveDelegateExecution();
 	}
 	
-	@Override
 	public void enterDelegateExecution()
 	{
 		m_bridge.enterDelegateExecution();
 	}
 	
-	@Override
 	public void stopGameSequence()
 	{
 		m_bridge.stopGameSequence();

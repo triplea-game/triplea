@@ -35,7 +35,7 @@ public class LobbyGameTable extends JTable
 		{
 			
 			// track the currently selected row
-			@Override
+			
 			public void valueChanged(ListSelectionEvent e)
 			{
 				if (!inTableChange)
@@ -49,6 +49,7 @@ public class LobbyGameTable extends JTable
 	 * The sorting model will loose the currently selected row.
 	 * So we need to resotre the selection after it has updated
 	 */
+	
 	@Override
 	public void tableChanged(TableModelEvent e)
 	{

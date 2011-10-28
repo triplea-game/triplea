@@ -129,6 +129,7 @@ public class TripleAUnit extends Unit
 			{
 				return t.getUnits().getMatches(new Match<Unit>()
 				{
+					
 					@Override
 					public boolean match(Unit o)
 					{
@@ -436,7 +437,8 @@ public class TripleAUnit extends Unit
 		return Math.max(0, currentDamage - maxOperationalDamage);
 	}
 	
-	public static int getProductionPotentialOfTerritory(Collection<Unit> unitsAtStartOfStepInTerritory, Territory producer, PlayerID player, GameData data, boolean accountForDamage, boolean mathMaxZero)
+	public static int getProductionPotentialOfTerritory(Collection<Unit> unitsAtStartOfStepInTerritory, Territory producer, PlayerID player, GameData data, boolean accountForDamage,
+				boolean mathMaxZero)
 	{
 		return getHowMuchCanUnitProduce(getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage), producer, player, data, accountForDamage, mathMaxZero);
 	}
@@ -536,7 +538,7 @@ public class TripleAUnit extends Unit
 	}
 	
 	/**
-	 * Currently made for translating unit damage from one unit to another unit.  Will adjust damage to be within max damage for the new units.
+	 * Currently made for translating unit damage from one unit to another unit. Will adjust damage to be within max damage for the new units.
 	 * 
 	 * @param unitGivingAttributes
 	 * @param unitsThatWillGetAttributes

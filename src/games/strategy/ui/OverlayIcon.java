@@ -33,21 +33,18 @@ public class OverlayIcon implements Icon
 		m_y_offset = y;
 	}
 	
-	@Override
 	public int getIconHeight()
 	{
 		return m_back.getIconHeight() > (m_front.getIconHeight() + m_y_offset) ?
 					m_back.getIconHeight() : (m_front.getIconHeight() + m_y_offset);
 	}
 	
-	@Override
 	public int getIconWidth()
 	{
 		return m_back.getIconWidth() > (m_front.getIconWidth() + m_x_offset) ?
 					m_back.getIconWidth() : (m_front.getIconWidth() + m_x_offset);
 	}
 	
-	@Override
 	public void paintIcon(Component c, Graphics g, int x, int y)
 	{
 		m_back.paintIcon(c, g, x, y);

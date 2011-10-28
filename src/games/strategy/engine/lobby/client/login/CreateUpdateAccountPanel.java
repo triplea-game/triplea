@@ -123,7 +123,6 @@ public class CreateUpdateAccountPanel extends JPanel
 		m_cancelButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				m_dialog.setVisible(false);
@@ -134,7 +133,6 @@ public class CreateUpdateAccountPanel extends JPanel
 		m_okButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				okPressed();

@@ -74,7 +74,7 @@ public class GlobalCenter
 		PUResource = data.getResourceList().getResource(Constants.PUS);
 		MapTerCount = data.getMap().getTerritories().size();
 		// 75 is considered the 'base' map ter count (For comparison, Great Lakes War has 90)
-		MapTerCountScale = ((float) data.getMap().getTerritories().size() / 75.0F);
+		MapTerCountScale = (data.getMap().getTerritories().size() / 75.0F);
 		
 		IsFFAGame = true;
 		for (String alliance : data.getAllianceTracker().getAlliances()) // TODO: update this for looking into relationships instead of alliances.

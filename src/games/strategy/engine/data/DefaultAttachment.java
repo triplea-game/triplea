@@ -78,7 +78,6 @@ public class DefaultAttachment implements IAttachment
 		return s;
 	}
 	
-	@Override
 	public void setData(GameData data)
 	{
 		m_data = data;
@@ -92,18 +91,16 @@ public class DefaultAttachment implements IAttachment
 	/**
 	 * Called after the attatchment is created.
 	 */
-	@Override
+	
 	public void validate(GameData data) throws GameParseException
 	{
 	}
 	
-	@Override
 	public Attachable getAttatchedTo()
 	{
 		return m_attatchedTo;
 	}
 	
-	@Override
 	public void setAttatchedTo(Attachable attatchable)
 	{
 		m_attatchedTo = attatchable;
@@ -115,13 +112,11 @@ public class DefaultAttachment implements IAttachment
 		
 	}
 	
-	@Override
 	public String getName()
 	{
 		return m_name;
 	}
 	
-	@Override
 	public void setName(String aString)
 	{
 		m_name = aString;

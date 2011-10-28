@@ -82,7 +82,7 @@ public class MapRouteDrawer
 			// find all the points for this route
 			for (int i = 0; i < numTerritories; i++)
 			{
-				points[i] = (Point) mapData.getCenter(territories.get(i));
+				points[i] = mapData.getCenter(territories.get(i));
 			}
 			
 			if (routeDescription.getStart() != null)
@@ -287,17 +287,17 @@ public class MapRouteDrawer
 		yPoints[0] = yy;
 		
 		// build the line vector
-		vecLine[0] = (int) xPoints[0] - x;
-		vecLine[1] = (int) yPoints[0] - y;
+		vecLine[0] = xPoints[0] - x;
+		vecLine[1] = yPoints[0] - y;
 		
 		// build the arrow base vector - normal to the line
 		vecLeft[0] = -vecLine[1];
 		vecLeft[1] = vecLine[0];
 		
 		// setup length parameters
-		fLength = (double) Math.sqrt(vecLine[0] * vecLine[0] + vecLine[1] * vecLine[1]);
+		fLength = Math.sqrt(vecLine[0] * vecLine[0] + vecLine[1] * vecLine[1]);
 		th = arrowWidth / (2.0f * fLength);
-		ta = arrowWidth / (2.0f * ((double) Math.tan(theta) / 2.0f) * fLength);
+		ta = arrowWidth / (2.0f * (Math.tan(theta) / 2.0f) * fLength);
 		
 		// find the base of the arrow
 		baseX = (xPoints[0] - ta * vecLine[0]);

@@ -51,20 +51,18 @@ public class ListProperty extends AEditableProperty
 		m_value = defaultValue;
 	}
 	
-	@Override
 	public Object getValue()
 	{
 		return m_value;
 	}
 	
-	@Override
 	public JComponent getEditorComponent()
 	{
 		final JComboBox box = new JComboBox(new Vector<String>(m_possibleValues));
 		box.setSelectedItem(m_value);
 		box.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 		{
 			m_value = (String) box.getSelectedItem();

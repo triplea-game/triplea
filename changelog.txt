@@ -1,4 +1,6 @@
 Changes for 1.4
+* Removing @Overrides for implemented methods, in order to maintain Java 1.5 compatibility. Also removing unnecessary casting. (veqryn)
+
 * Adding web links to normal game menu bar, and also adding link for guides page on triplea homepage. (veqryn)
 
 * Created two new game options, "Use Politics" and "Units Can Be Changed On Capture". (veqryn)

@@ -135,7 +135,7 @@ public class ProductionRepairPanel extends JPanel
 		
 		Action closeAction = new AbstractAction("")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				m_dialog.setVisible(false);
@@ -257,7 +257,7 @@ public class ProductionRepairPanel extends JPanel
 	protected void setLeft(int left)
 	{
 		int total = getPUs();
-		//int spent = total - left;
+		// int spent = total - left;
 		
 		m_left.setText("You have " + left + " " + StringUtil.plural("PU", left) + " left out of " + total + " " + StringUtil.plural("PU", total));
 	}
@@ -272,7 +272,7 @@ public class ProductionRepairPanel extends JPanel
 	
 	Action m_done_action = new AbstractAction("Done")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 		{
 			m_dialog.setVisible(false);
@@ -364,7 +364,7 @@ public class ProductionRepairPanel extends JPanel
 			if (!type.equals(repairUnit.getType()))
 				throw new IllegalStateException("Rule unit type " + type.getName() + " does not match " + repairUnit.toString() + ".  Please make sure your maps are up to date!");
 			
-			//UnitAttachment attach = UnitAttachment.get(type);
+			// UnitAttachment attach = UnitAttachment.get(type);
 			TripleAUnit taUnit = (TripleAUnit) repairUnit;
 			
 			Icon icon;
@@ -437,7 +437,7 @@ public class ProductionRepairPanel extends JPanel
 	
 	private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
 	{
-		@Override
+		
 		public void changedValue(ScrollableTextField stf)
 		{
 			calculateLimits();

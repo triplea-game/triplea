@@ -60,7 +60,6 @@ public class ScrollableTextField extends JPanel
 		field.addChangeListener(new ScrollableTextFieldListener()
 		{
 			
-			@Override
 			public void changedValue(ScrollableTextField aField)
 		{
 			System.out.println(aField.getValue());
@@ -202,7 +201,7 @@ public class ScrollableTextField extends JPanel
 	
 	private Action m_incrementAction = new AbstractAction("inc")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 	{
 		m_text.setValue(m_text.getValue() + 1);
@@ -212,7 +211,7 @@ public class ScrollableTextField extends JPanel
 	
 	private Action m_decrementAction = new AbstractAction("dec")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 	{
 		m_text.setValue(m_text.getValue() - 1);
@@ -222,7 +221,7 @@ public class ScrollableTextField extends JPanel
 	
 	private Action m_maxAction = new AbstractAction("max")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 	{
 		m_text.setValue(m_text.getMax());
@@ -232,7 +231,7 @@ public class ScrollableTextField extends JPanel
 	
 	private Action m_minAction = new AbstractAction("min")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 	{
 		m_text.setValue(m_text.getMin());
@@ -273,7 +272,7 @@ public class ScrollableTextField extends JPanel
 	
 	private IntTextFieldChangeListener m_textListener = new IntTextFieldChangeListener()
 	{
-		@Override
+		
 		public void changedValue(IntTextField field)
 	{
 		notifyListeners();

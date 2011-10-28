@@ -145,39 +145,41 @@ public class IntegerMap<T> implements Cloneable, Serializable
 			put(key, newVal);
 		}
 	}
-    
-    /**
-     * Will multiply all values by a given float.
-     * Can be used to divide all numbers, if given a fractional float
-     * (ie: to divide by 2, use 0.5 as the float)
-     * @param i
-     * @param RoundType (1 = floor, 2 = round, 3 = ceil)
-     */
-    public void multiplyAllValuesBy(float i, int RoundType)
-    {
-    	Iterator<T> iter = keySet().iterator();
-    	while (iter.hasNext())
-    	{
-    		T t = iter.next();
-    		float val = m_values.get(t);
-    		switch (RoundType)
-    		{
-    			case 1:
-    				val = (float) Math.floor(val * i);
-    				break;
-    			case 2:
-    				val = Math.round(val * i);
-    				break;
-    			case 3:
-    				val = (float) Math.ceil(val * i);
-    				break;
-    			default:
-    				val = val * i;
-    				break;
-    		}
-    		put(t, (int) val);
-    	}
-    }
+	
+	/**
+	 * Will multiply all values by a given float.
+	 * Can be used to divide all numbers, if given a fractional float
+	 * (ie: to divide by 2, use 0.5 as the float)
+	 * 
+	 * @param i
+	 * @param RoundType
+	 *            (1 = floor, 2 = round, 3 = ceil)
+	 */
+	public void multiplyAllValuesBy(float i, int RoundType)
+	{
+		Iterator<T> iter = keySet().iterator();
+		while (iter.hasNext())
+		{
+			T t = iter.next();
+			float val = m_values.get(t);
+			switch (RoundType)
+			{
+				case 1:
+					val = (float) Math.floor(val * i);
+					break;
+				case 2:
+					val = Math.round(val * i);
+					break;
+				case 3:
+					val = (float) Math.ceil(val * i);
+					break;
+				default:
+					val = val * i;
+					break;
+			}
+			put(t, (int) val);
+		}
+	}
 	
 	public void clear()
 	{
@@ -250,6 +252,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 * match exactly. If a has entries that b doesn't have or vice versa,
 	 * then a and b are not equal.
 	 */
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean equals(Object o)

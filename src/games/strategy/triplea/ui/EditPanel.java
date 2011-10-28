@@ -85,7 +85,7 @@ public class EditPanel extends ActionPanel
 		
 		m_addUnitsAction = new AbstractAction("Add Units")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				m_currentAction = this;
@@ -100,7 +100,7 @@ public class EditPanel extends ActionPanel
 		
 		m_delUnitsAction = new AbstractAction("Remove Selected Units")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				m_currentAction = this;
@@ -189,7 +189,7 @@ public class EditPanel extends ActionPanel
 		
 		m_changeTerritoryOwnerAction = new AbstractAction("Change Territory Owner")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				m_currentAction = this;
@@ -203,7 +203,7 @@ public class EditPanel extends ActionPanel
 		
 		m_changePUsAction = new AbstractAction("Change PUs")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				m_currentAction = this;
@@ -283,7 +283,7 @@ public class EditPanel extends ActionPanel
 	{
 		Comparator<Unit> removableUnitsOrder = new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit unit1, Unit unit2)
 			{
 				TripleAUnit u1 = TripleAUnit.get(unit1);
@@ -385,7 +385,6 @@ public class EditPanel extends ActionPanel
 	private final UnitSelectionListener UNIT_SELECTION_LISTENER = new UnitSelectionListener()
 	{
 		
-		@Override
 		public void unitsSelected(List<Unit> units, Territory t, MouseDetails md)
 		{
 			// check if we can handle this event, are we active?
@@ -541,7 +540,6 @@ public class EditPanel extends ActionPanel
 	private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener()
 	{
 		
-		@Override
 		public void mouseEnter(List<Unit> units, Territory territory, MouseDetails md)
 		{
 			if (!getActive())
@@ -561,6 +559,7 @@ public class EditPanel extends ActionPanel
 	private final MapSelectionListener MAP_SELECTION_LISTENER = new
 				DefaultMapSelectionListener()
 	{
+		
 		@Override
 		public void territorySelected(Territory territory, MouseDetails md)
 		{
@@ -601,7 +600,7 @@ public class EditPanel extends ActionPanel
 				
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -643,7 +642,7 @@ public class EditPanel extends ActionPanel
 				
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -687,7 +686,7 @@ public class EditPanel extends ActionPanel
 	private final AbstractAction CANCEL_EDIT_ACTION = new AbstractAction(
 				"Cancel")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 		{
 			m_selectedTerritory = null;

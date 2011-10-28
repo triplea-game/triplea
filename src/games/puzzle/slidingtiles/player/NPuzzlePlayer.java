@@ -54,7 +54,7 @@ public class NPuzzlePlayer extends AbstractHumanPlayer<NPuzzleFrame> implements 
 		
 		while (play == null)
 		{
-			play = (PlayData) m_ui.waitForPlay(m_id, m_bridge);
+			play = m_ui.waitForPlay(m_id, m_bridge);
 			
 			if (play == null)
 			{

@@ -340,7 +340,6 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		
 	}
 	
-	@Override
 	public Iterator<Territory> iterator()
 	{
 		return Collections.unmodifiableList(getTerritories()).iterator();

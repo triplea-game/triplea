@@ -31,7 +31,7 @@ public class DummyDisplay implements IKingsTableDisplay
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#performPlay(Territory,Territory,Collection<Territory>)
 	 */
-	@Override
+	
 	public void performPlay(Territory start, Territory end, Collection<Territory> captured)
 	{
 		
@@ -40,7 +40,7 @@ public class DummyDisplay implements IKingsTableDisplay
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#setGameOver()
 	 */
-	@Override
+	
 	public void setGameOver()// CountDownLatch waiting) {
 	{
 		
@@ -49,7 +49,7 @@ public class DummyDisplay implements IKingsTableDisplay
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#setStatus(String)
 	 */
-	@Override
+	
 	public void setStatus(String status)
 	{
 		
@@ -58,7 +58,7 @@ public class DummyDisplay implements IKingsTableDisplay
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#initialize(IDisplayBridge)
 	 */
-	@Override
+	
 	public void initialize(IDisplayBridge bridge)
 	{
 		
@@ -67,7 +67,7 @@ public class DummyDisplay implements IKingsTableDisplay
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#shutDown()
 	 */
-	@Override
+	
 	public void shutDown()
 	{
 		

@@ -153,7 +153,6 @@ public class ChatTest extends TestCase
 		Runnable client2Send = new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				for (int i = 0; i < messageCount; i++)
@@ -169,7 +168,6 @@ public class ChatTest extends TestCase
 		Runnable serverSend = new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				for (int i = 0; i < messageCount; i++)
@@ -273,7 +271,6 @@ class TestChatListener implements IChatListener
 	public List<Boolean> m_thirdPerson = new ArrayList<Boolean>();
 	public List<String> m_from = new ArrayList<String>();
 	
-	@Override
 	public void updatePlayerList(Collection<INode> players)
 	{
 		synchronized (this)
@@ -283,7 +280,6 @@ class TestChatListener implements IChatListener
 		
 	}
 	
-	@Override
 	public void addMessage(String message, String from, boolean thirdperson)
 	{
 		synchronized (this)
@@ -294,7 +290,6 @@ class TestChatListener implements IChatListener
 		}
 	}
 	
-	@Override
 	public void addStatusMessage(String message)
 	{
 	}

@@ -79,7 +79,6 @@ public class RepairPanel extends ActionPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 		{
 			removeAll();
@@ -109,7 +108,6 @@ public class RepairPanel extends ActionPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 		{
 			actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
@@ -128,7 +126,7 @@ public class RepairPanel extends ActionPanel
 		SwingUtilities.invokeLater(
 					new Runnable()
 				{
-					@Override
+					
 					public void run()
 				{
 					PURCHASE_ACTION.actionPerformed(null);
@@ -142,7 +140,7 @@ public class RepairPanel extends ActionPanel
 	
 	private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 	{
 		PlayerID player = getCurrentPlayer();
@@ -183,7 +181,6 @@ public class RepairPanel extends ActionPanel
 	private Action DoneAction = new AbstractAction("Done")
 	{
 		
-		@Override
 		public void actionPerformed(ActionEvent event)
 	{
 		boolean hasPurchased = getTotalValues(m_repair) != 0;
@@ -252,7 +249,7 @@ public class RepairPanel extends ActionPanel
 		return ta.hasIncreasedFactoryProduction();
 	}
 	*/
-	
+
 	@Override
 	public String toString()
 	{

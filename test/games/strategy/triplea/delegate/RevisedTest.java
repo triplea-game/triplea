@@ -396,6 +396,7 @@ public class RevisedTest extends TestCase
 		
 		bridge.setRemote(new DummyTripleAPlayer()
 		{
+			
 			@Override
 			public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
 			{
@@ -430,6 +431,7 @@ public class RevisedTest extends TestCase
 		
 		bridge.setRemote(new DummyTripleAPlayer()
 		{
+			
 			@Override
 			public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
 			{
@@ -470,6 +472,7 @@ public class RevisedTest extends TestCase
 		
 		bridge.setRemote(new DummyTripleAPlayer()
 		{
+			
 			@Override
 			public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
 			{
@@ -620,7 +623,7 @@ public class RevisedTest extends TestCase
 		UndoableMove move1 = moveDelegate.getMovesMade().get(0);
 		
 		// the first unload
-		//AbstractUndoableMove move2 = moveDelegate.getMovesMade().get(0);
+		// AbstractUndoableMove move2 = moveDelegate.getMovesMade().get(0);
 		
 		// the second unload must be done first
 		assertFalse(move1.getcanUndo());
@@ -950,9 +953,9 @@ public class RevisedTest extends TestCase
 	public void testAAOwnership()
 	{
 		// Set up players
-		//PlayerID british = m_data.getPlayerList().getPlayerID("British");
+		// PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		PlayerID japanese = m_data.getPlayerList().getPlayerID("Japanese");
-		//PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
+		// PlayerID americans = m_data.getPlayerList().getPlayerID("Americans");
 		
 		// Set up the territories
 		Territory india = territory("India", m_data);
@@ -962,7 +965,7 @@ public class RevisedTest extends TestCase
 		
 		// Preset units in FIC
 		UnitType infType = m_data.getUnitTypeList().getUnitType("infantry");
-		//UnitType aaType = m_data.getUnitTypeList().getUnitType("aaGun");
+		// UnitType aaType = m_data.getUnitTypeList().getUnitType("aaGun");
 		removeFrom(fic, fic.getUnits().getUnits());
 		addTo(fic, aaGun(m_data).create(1, japanese));
 		addTo(fic, infantry(m_data).create(1, japanese));
@@ -1181,7 +1184,7 @@ public class RevisedTest extends TestCase
 		// fail if we are called
 		InvocationHandler handler = new InvocationHandler()
 		{
-			@Override
+			
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 			{
 				return null;
@@ -1760,7 +1763,7 @@ public class RevisedTest extends TestCase
 		TechnologyDelegate techDelegate = techDelegate(m_data);
 		techDelegate.start(delegateBridge);
 		TechAttachment ta = TechAttachment.get(germans);
-		//PlayerAttachment pa = PlayerAttachment.get(germans);
+		// PlayerAttachment pa = PlayerAttachment.get(germans);
 		TechnologyFrontier rockets = new TechnologyFrontier("", m_data);
 		rockets.addAdvance(TechAdvance.ROCKETS);
 		TechnologyFrontier jet = new TechnologyFrontier("", m_data);

@@ -230,6 +230,7 @@ public class MovePanel extends AbstractMovePanel
 		// match criteria to ensure that chosen transports will match selected units
 		Match<Collection<Unit>> transportsToUnloadMatch = new Match<Collection<Unit>>()
 		{
+			
 			@Override
 			public boolean match(Collection<Unit> units)
 			{
@@ -396,6 +397,7 @@ public class MovePanel extends AbstractMovePanel
 		{
 			Match<Unit> enoughMovement = new Match<Unit>()
 			{
+				
 				@Override
 				public boolean match(Unit u)
 				{
@@ -733,6 +735,7 @@ public class MovePanel extends AbstractMovePanel
 		
 		Match<Unit> alliedMatch = new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit transport)
 			{
@@ -823,6 +826,7 @@ public class MovePanel extends AbstractMovePanel
 		// the match criteria to ensure that chosen transports will match selected units
 		Match<Collection<Unit>> transportsToLoadMatch = new Match<Collection<Unit>>()
 		{
+			
 			@Override
 			public boolean match(Collection<Unit> units)
 			{
@@ -853,7 +857,6 @@ public class MovePanel extends AbstractMovePanel
 	private final UnitSelectionListener m_UNIT_SELECTION_LISTENER = new UnitSelectionListener()
 	{
 		
-		@Override
 		public void unitsSelected(List<Unit> units, Territory t, MouseDetails me)
 		{
 			if (!getListening())
@@ -910,6 +913,7 @@ public class MovePanel extends AbstractMovePanel
 			
 			Match<Collection<Unit>> ownerMatch = new Match<Collection<Unit>>()
 			{
+				
 				@Override
 				public boolean match(Collection<Unit> unitsToCheck)
 				{
@@ -1089,6 +1093,7 @@ public class MovePanel extends AbstractMovePanel
 			// prevent too many bombers from being selected
 			Match<Collection<Unit>> transportsToLoadMatch = new Match<Collection<Unit>>()
 			{
+				
 				@Override
 				public boolean match(Collection<Unit> units)
 				{
@@ -1146,6 +1151,7 @@ public class MovePanel extends AbstractMovePanel
 			// Check to see if there's room for the selected units
 			Match<Collection<Unit>> unitsToLoadMatch = new Match<Collection<Unit>>()
 			{
+				
 				@Override
 				public boolean match(Collection<Unit> units)
 				{
@@ -1408,6 +1414,7 @@ public class MovePanel extends AbstractMovePanel
 				
 				Match<Collection<Unit>> unitTypeCountMatch = new Match<Collection<Unit>>()
 				{
+					
 					@Override
 					public boolean match(Collection<Unit> units)
 					{
@@ -1537,7 +1544,6 @@ public class MovePanel extends AbstractMovePanel
 	private final MouseOverUnitListener m_MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener()
 	{
 		
-		@Override
 		public void mouseEnter(List<Unit> units, Territory territory, MouseDetails me)
 		{
 			if (!getListening())
@@ -1555,6 +1561,7 @@ public class MovePanel extends AbstractMovePanel
 	
 	private final MapSelectionListener m_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
 	{
+		
 		@Override
 		public void territorySelected(Territory territory, MouseDetails me)
 		{
@@ -1660,6 +1667,7 @@ public class MovePanel extends AbstractMovePanel
 	/**
 	 * @see AbstraceMovePanel#cleanUpSpecific()
 	 */
+	
 	@Override
 	protected final void cleanUpSpecific()
 	{
@@ -1675,6 +1683,7 @@ public class MovePanel extends AbstractMovePanel
 	/**
 	 * @see AbstraceMovePanel#cancelMoveSpecific()
 	 */
+	
 	@Override
 	protected final void cancelMoveAction()
 	{
@@ -1692,6 +1701,7 @@ public class MovePanel extends AbstractMovePanel
 	/**
 	 * @see AbstraceMovePanel#undoMoveSpecific()
 	 */
+	
 	@Override
 	protected final void undoMoveSpecific()
 	{
@@ -1708,6 +1718,7 @@ public class MovePanel extends AbstractMovePanel
 	/**
 	 * @see AbstraceMovePanel#setUpSpecific()
 	 */
+	
 	@Override
 	protected final void setUpSpecific()
 	{
@@ -1761,7 +1772,6 @@ class WeakAction extends AbstractAction
 		m_delegate = new WeakReference<Action>(delegate);
 	}
 	
-	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		Action a = m_delegate.get();

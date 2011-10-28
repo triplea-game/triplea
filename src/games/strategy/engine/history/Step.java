@@ -72,7 +72,6 @@ class StepHistorySerializer implements SerializationWriter
 		m_displayName = displayName;
 	}
 	
-	@Override
 	public void write(HistoryWriter writer)
 	{
 		writer.startNextStep(m_stepName, m_delegateName, m_playerID, m_displayName);

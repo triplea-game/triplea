@@ -87,7 +87,6 @@ public class LobbyLogin
 				
 				private final AtomicReference<String> m_internalError = new AtomicReference<String>();
 				
-				@Override
 				public void notifyFailedLogin(String message)
 				{
 					if (m_internalError.get() != null)
@@ -96,7 +95,6 @@ public class LobbyLogin
 					
 				}
 				
-				@Override
 				public Map<String, String> getProperties(Map<String, String> challengProperties)
 				{
 					Map<String, String> props = new HashMap<String, String>();
@@ -165,14 +163,12 @@ public class LobbyLogin
 			ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), createAccount.getUserName(), mac, new IConnectionLogin()
 			{
 				
-				@Override
 				public void notifyFailedLogin(String message)
 				{
 					JOptionPane.showMessageDialog(m_parent, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
 					
 				}
 				
-				@Override
 				public Map<String, String> getProperties(Map<String, String> challengProperties)
 				{
 					Map<String, String> props = new HashMap<String, String>();

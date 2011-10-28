@@ -51,6 +51,7 @@ public class VerifiedRandomNumbersDialog extends JDialog
 		
 		DefaultTableModel model = new DefaultTableModel(tableValues, new String[] { "Reason", "Dice Rolls" })
 		{
+			
 			@Override
 			public boolean isCellEditable(int row, int column)
 			{
@@ -71,7 +72,7 @@ public class VerifiedRandomNumbersDialog extends JDialog
 		close.addActionListener(
 					new ActionListener()
 				{
-					@Override
+					
 					public void actionPerformed(ActionEvent e)
 					{
 						setVisible(false);

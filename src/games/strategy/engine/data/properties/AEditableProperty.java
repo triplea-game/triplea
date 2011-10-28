@@ -26,13 +26,11 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
 		m_name = name;
 	}
 	
-	@Override
 	public String getName()
 	{
 		return m_name;
 	}
 	
-	@Override
 	public JComponent getViewComponent()
 	{
 		JComponent rVal = getEditorComponent();
@@ -56,7 +54,6 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
 		return false;
 	}
 	
-	@Override
 	public int compareTo(Object other)
 	{
 		if (other instanceof AEditableProperty)

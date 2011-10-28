@@ -40,13 +40,14 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge bridge)
 	{
 		super.start(bridge);
 		map = getData().getMap();
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -59,7 +60,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * @param play
 	 *            <code>Territory</code> where the play should occur
 	 */
-	@Override
+	
 	public String play(Territory from, Territory to)
 	{
 		if (from.equals(to))
@@ -87,7 +88,6 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		return null;
 	}
 	
-	@Override
 	public void signalStatus(String status)
 	{
 		INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
@@ -176,6 +176,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
+	
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

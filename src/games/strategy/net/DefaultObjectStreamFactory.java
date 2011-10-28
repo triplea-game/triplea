@@ -18,13 +18,12 @@ import java.io.OutputStream;
  */
 public class DefaultObjectStreamFactory implements IObjectStreamFactory
 {
-	@Override
+	
 	public ObjectInputStream create(InputStream stream) throws IOException
 	{
 		return new ObjectInputStream(stream);
 	}
 	
-	@Override
 	public ObjectOutputStream create(OutputStream stream) throws IOException
 	{
 		return new ObjectOutputStream(stream);

@@ -1040,6 +1040,7 @@ public class WW2V3_41_Test extends TestCase
 		ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
 		bridge.setRemote(new DummyTripleAPlayer()
 			{
+				
 				@Override
 				public boolean selectShoreBombard(Territory unitTerritory)
 				{
@@ -1102,6 +1103,7 @@ public class WW2V3_41_Test extends TestCase
 		ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
 		bridge.setRemote(new DummyTripleAPlayer()
 			{
+				
 				@Override
 				public boolean selectShoreBombard(Territory unitTerritory)
 				{
@@ -1174,6 +1176,7 @@ public class WW2V3_41_Test extends TestCase
 		ITestDelegateBridge bridge = getDelegateBridge(italians(m_data));
 		bridge.setRemote(new DummyTripleAPlayer()
 			{
+				
 				@Override
 				public boolean selectShoreBombard(Territory unitTerritory)
 				{
@@ -1238,7 +1241,7 @@ public class WW2V3_41_Test extends TestCase
 		// The game will ask us if we want to move bomb, say yes.
 		InvocationHandler handler = new InvocationHandler()
 			{
-				@Override
+				
 				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 				{
 					return true;
@@ -1318,6 +1321,7 @@ public class WW2V3_41_Test extends TestCase
 		// don't allow kamikaze
 		bridge.setRemote(new DummyTripleAPlayer()
 		{
+			
 			@Override
 			public boolean confirmMoveKamikaze()
 			{
@@ -1528,7 +1532,7 @@ public class WW2V3_41_Test extends TestCase
 		
 		PlayerID germans = germans(m_data);
 		Territory germany = territory("Germany", m_data);
-		//Territory nwe = territory("Northwestern Europe", m_data);
+		// Territory nwe = territory("Northwestern Europe", m_data);
 		Territory poland = territory("Poland", m_data);
 		Territory eastPoland = territory("East Poland", m_data);
 		
@@ -1652,6 +1656,7 @@ public class WW2V3_41_Test extends TestCase
 		
 		bridge.setRemote(new DummyTripleAPlayer()
 		{
+			
 			@Override
 			public Territory retreatQuery(GUID battleID, boolean submerge,
 						Collection<Territory> possibleTerritories,
@@ -1716,6 +1721,7 @@ public class WW2V3_41_Test extends TestCase
 		
 		bridge.setRemote(new DummyTripleAPlayer()
 		{
+			
 			@Override
 			public Territory retreatQuery(GUID battleID, boolean submerge,
 						Collection<Territory> possibleTerritories,

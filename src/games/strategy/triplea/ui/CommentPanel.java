@@ -145,29 +145,26 @@ public class CommentPanel extends JPanel
 	{
 		m_data.getHistory().addTreeModelListener(new TreeModelListener()
 		{
-			@Override
+			
 			public void treeNodesChanged(TreeModelEvent e)
 			{
 			}
 			
-			@Override
 			public void treeNodesInserted(TreeModelEvent e)
 			{
 			}
 			
-			@Override
 			public void treeNodesRemoved(TreeModelEvent e)
 			{
 			}
 			
-			@Override
 			public void treeStructureChanged(TreeModelEvent e)
 			{
 				
 				final TreeModelEvent tme = e;
 				Runnable runner = new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						m_data.acquireReadLock();
@@ -286,7 +283,7 @@ public class CommentPanel extends JPanel
 	{
 		Runnable runner = new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				
@@ -361,7 +358,6 @@ public class CommentPanel extends JPanel
 	private Action m_saveAction = new AbstractAction("Add Comment")
 	{
 		
-		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 			if (m_nextMessage.getText().trim().length() == 0)

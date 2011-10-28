@@ -35,6 +35,7 @@ public abstract class AbstractAI extends AbstractBaseAI implements INPuzzlePlaye
 	/**
 	 * The given phase has started. Parse the phase name and call the appropriate method.
 	 */
+	
 	@Override
 	public void start(String stepName)
 	{

@@ -194,6 +194,7 @@ public abstract class Match<T>
 @SuppressWarnings("rawtypes")
 class NeverMatch extends Match
 {
+	
 	@Override
 	public boolean match(Object o)
 	{
@@ -205,6 +206,7 @@ class NeverMatch extends Match
 @SuppressWarnings("rawtypes")
 class AlwaysMatch extends Match
 {
+	
 	@Override
 	public boolean match(Object o)
 	{

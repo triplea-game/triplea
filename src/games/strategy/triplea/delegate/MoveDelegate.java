@@ -158,6 +158,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
@@ -206,6 +207,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	/**
 	 * Called before the delegate will stop running.
 	 */
+	
 	@Override
 	public void end()
 	{
@@ -272,7 +274,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			String notificationMessageKey = notificationMessages.next();
 			String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
 			message = "<html>" + message + "</html>";
-			((ITripleaPlayer)aBridge.getRemote(player)).reportMessage(message);
+			((ITripleaPlayer) aBridge.getRemote(player)).reportMessage(message);
 		}
 	}
 	
@@ -418,13 +420,11 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			aBridge.addChange(clearAlliedAir);
 	}
 	
-	@Override
 	public List<UndoableMove> getMovesMade()
 	{
 		return new ArrayList<UndoableMove>(m_movesToUndo);
 	}
 	
-	@Override
 	public String undoMove(final int moveIndex)
 	{
 		
@@ -454,13 +454,11 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		}
 	}
 	
-	@Override
 	public String move(Collection<Unit> units, Route route)
 	{
 		return move(units, route, Collections.<Unit> emptyList());
 	}
 	
-	@Override
 	public String move(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
 	{
 		GameData data = getData();
@@ -793,7 +791,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		
 		Comparator<Unit> c = new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit o1, Unit o2)
 			{
 				int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
@@ -851,7 +849,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	{
 		Comparator<Unit> c = new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit o1, Unit o2)
 			{
 				int cost1 = UnitAttachment.get((o1).getUnitType()).getTransportCost();
@@ -887,19 +885,16 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		return totalLoad;
 	}
 	
-	@Override
 	public Collection<Territory> getTerritoriesWhereAirCantLand(PlayerID player)
 	{
 		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(player);
 	}
 	
-	@Override
 	public Collection<Territory> getTerritoriesWhereAirCantLand()
 	{
 		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);
 	}
 	
-	@Override
 	public Collection<Territory> getTerritoriesWhereUnitsCantFight()
 	{
 		return new UnitsThatCantFightUtil(getData()).getTerritoriesWhereUnitsCantFight(m_player);
@@ -980,6 +975,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<IMoveDelegate> getRemoteType()
 	{
@@ -1008,6 +1004,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	 * Loads the delegates state
 	 * 
 	 */
+	
 	@Override
 	public void loadState(Serializable aState)
 	{

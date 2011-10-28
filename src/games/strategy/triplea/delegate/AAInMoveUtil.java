@@ -116,7 +116,7 @@ class AAInMoveUtil implements Serializable
 			
 			executables.add(new IExecutable()
 			{
-				@Override
+				
 				public void execute(ExecutionStack stack, IDelegateBridge bridge)
 				{
 					fireAA(location, targets, currentMove);
@@ -209,7 +209,6 @@ class AAInMoveUtil implements Serializable
 		IExecutable rollDice = new IExecutable()
 		{
 			
-			@Override
 			public void execute(ExecutionStack stack, IDelegateBridge bridge)
 			{
 				dice[0] = DiceRoll.rollAA(units, m_bridge, territory, Matches.UnitIsAAforCombat);
@@ -219,7 +218,6 @@ class AAInMoveUtil implements Serializable
 		IExecutable selectCasualties = new IExecutable()
 		{
 			
-			@Override
 			public void execute(ExecutionStack stack, IDelegateBridge bridge)
 			{
 				int hitCount = dice[0].getHits();

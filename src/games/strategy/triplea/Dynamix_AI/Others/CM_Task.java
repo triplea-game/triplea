@@ -101,6 +101,7 @@ public class CM_Task
 			final HashSet<Unit> recruitsAsHashSet = DUtils.ToHashSet(GetRecruitedUnitsAsUnitList());
 			Match<Unit> unitMatch = new Match<Unit>()
 			{
+				
 				@Override
 				public boolean match(Unit unit)
 				{
@@ -841,7 +842,7 @@ public class CM_Task
 			int cheapestLAttacker = 0;
 			if (landAttackers.size() > 0)
 				cheapestLAttacker = DUtils.GetTUVOfUnit(DUtils.GetCheapestUnitInList(landAttackers), GlobalCenter.GetPUResource());
-			float chanceOfHittingCheapestLAttacker = (float) UnitAttachment.get(GetRecruitedUnitsAsUnitList().get(0).getUnitType()).getDefense(player) / 6.0F;
+			float chanceOfHittingCheapestLAttacker = UnitAttachment.get(GetRecruitedUnitsAsUnitList().get(0).getUnitType()).getDefense(player) / 6.0F;
 			
 			float averageTuvLossOfAttackerIfAttacked = chanceOfHittingCheapestLAttacker * cheapestLAttacker;
 			float tuvSwing = averageTuvLossOfAttackerIfAttacked - unitCost;
@@ -849,7 +850,7 @@ public class CM_Task
 				tuvSwing = 0; // If no one's going to attack, there is no TUV swing
 				
 			// If the tuv swing + ter production is in our favor, or there are no land attackers
-			if (tuvSwing + (float) ta.getProduction() > 0.0F)
+			if (tuvSwing + ta.getProduction() > 0.0F)
 				return true;
 			
 			return false;

@@ -76,6 +76,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
@@ -86,7 +87,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 			TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, null, null);
 		}
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -118,7 +119,6 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		return games.strategy.triplea.Properties.getLL_TECH_ONLY(getData());
 	}
 	
-	@Override
 	public TechResults rollTech(int techRolls, TechnologyFrontier techToRollFor, int newTokens)
 	{
 		int rollCount = techRolls;
@@ -410,6 +410,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	/**
 	 * Returns the state of the Delegate.
 	 */
+	
 	@Override
 	public Serializable saveState()
 	{
@@ -419,6 +420,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	/**
 	 * Loads the delegates state
 	 */
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public void loadState(Serializable state)
@@ -429,6 +431,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<ITechDelegate> getRemoteType()
 	{

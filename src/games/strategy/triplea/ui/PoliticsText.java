@@ -12,7 +12,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-
 package games.strategy.triplea.ui;
 
 import games.strategy.triplea.ResourceLoader;
@@ -44,9 +43,6 @@ public class PoliticsText
 	private final static String NOTIFICATION_FAILURE = "NOTIFICATION_FAILURE";
 	private final static String OTHER_NOTIFICATION_FAILURE = "OTHER_NOTIFICATION_FAILURE";
 	private static final String ACCEPT_QUESTION = "ACCEPT_QUESTION";
-
-	
-	
 	
 	protected PoliticsText()
 	{
@@ -80,39 +76,46 @@ public class PoliticsText
 	
 	private String getString(String value)
 	{
-		return m_properties.getProperty(value, "NO: "+value+" set.");
+		return m_properties.getProperty(value, "NO: " + value + " set.");
 	}
 	
-	private String getMessage(String politicsKey, String messageKey) {
-		return getString(politicsKey+"."+messageKey);
+	private String getMessage(String politicsKey, String messageKey)
+	{
+		return getString(politicsKey + "." + messageKey);
 	}
 	
-	public String getButtonText(String politicsKey) {
-		return getMessage(politicsKey,BUTTON);
+	public String getButtonText(String politicsKey)
+	{
+		return getMessage(politicsKey, BUTTON);
 	}
 	
-	public String getDescription(String politicsKey) {
-		return getMessage(politicsKey,PoliticsText.DESCRIPTION);
+	public String getDescription(String politicsKey)
+	{
+		return getMessage(politicsKey, PoliticsText.DESCRIPTION);
 	}
 	
-	public String getNotificationSucccess(String politicsKey) {
-		return getMessage(politicsKey,PoliticsText.NOTIFICATION_SUCCESS);
+	public String getNotificationSucccess(String politicsKey)
+	{
+		return getMessage(politicsKey, PoliticsText.NOTIFICATION_SUCCESS);
 	}
 	
-	public String getNotificationSuccessOthers(String politicsKey) {
-		return getMessage(politicsKey,PoliticsText.OTHER_NOTIFICATION_SUCCESS);
+	public String getNotificationSuccessOthers(String politicsKey)
+	{
+		return getMessage(politicsKey, PoliticsText.OTHER_NOTIFICATION_SUCCESS);
 	}
 	
-	public String getNotificationFailure(String politicsKey) {
-		return getMessage(politicsKey,PoliticsText.NOTIFICATION_FAILURE);
+	public String getNotificationFailure(String politicsKey)
+	{
+		return getMessage(politicsKey, PoliticsText.NOTIFICATION_FAILURE);
 	}
 	
-	public String getNotificationFailureOthers(String politicsKey) {
-		return getMessage(politicsKey,PoliticsText.OTHER_NOTIFICATION_FAILURE);
+	public String getNotificationFailureOthers(String politicsKey)
+	{
+		return getMessage(politicsKey, PoliticsText.OTHER_NOTIFICATION_FAILURE);
 	}
-
-	public String getAcceptanceQuestion(String politicsKey) {
-		return getMessage(politicsKey,PoliticsText.ACCEPT_QUESTION);
+	
+	public String getAcceptanceQuestion(String politicsKey)
+	{
+		return getMessage(politicsKey, PoliticsText.ACCEPT_QUESTION);
 	}
 }
-

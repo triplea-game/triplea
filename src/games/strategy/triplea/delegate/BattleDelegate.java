@@ -63,6 +63,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
@@ -80,6 +81,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	/**
 	 * Called before the delegate will stop running.
 	 */
+	
 	@Override
 	public void end()
 	{
@@ -87,7 +89,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		m_needToInitialize = true;
 	}
 	
-	@Override
 	public String fightBattle(Territory territory, boolean bombing)
 	{
 		
@@ -126,7 +127,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		return battle.isBombingRun() ? "Bombing Run" : "Battle";
 	}
 	
-	@Override
 	public BattleListing getBattles()
 	{
 		Collection<Territory> battles = m_battleTracker.getPendingBattleSites(false);
@@ -475,6 +475,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	/**
 	 * Returns the state of the Delegate.
 	 */
+	
 	@Override
 	public Serializable saveState()
 	{
@@ -489,6 +490,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	/**
 	 * Loads the delegates state
 	 */
+	
 	@Override
 	public void loadState(Serializable aState)
 	{
@@ -520,13 +522,13 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	 * 
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
 		return IBattleDelegate.class;
 	}
 	
-	@Override
 	public Territory getCurentBattle()
 	{
 		Battle b = m_currentBattle;

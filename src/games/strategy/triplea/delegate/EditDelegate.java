@@ -48,13 +48,14 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge bridge)
 	{
 		m_bridge = new TripleADelegateBridge(bridge);
 		super.start(m_bridge);
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -94,7 +95,6 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		initialize(name, name);
 	}
 	
-	@Override
 	public String setEditMode(boolean editMode)
 	{
 		ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
@@ -106,13 +106,11 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		return null;
 	}
 	
-	@Override
 	public boolean getEditMode()
 	{
 		return EditDelegate.getEditMode(getData());
 	}
 	
-	@Override
 	public String removeUnits(Territory territory, Collection<Unit> units)
 	{
 		String result = null;
@@ -127,7 +125,6 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		return null;
 	}
 	
-	@Override
 	public String addUnits(Territory territory, Collection<Unit> units)
 	{
 		String result = null;
@@ -165,7 +162,6 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		// throw new UnsupportedOperationException("Not implemented");
 	}
 	
-	@Override
 	public String changeTerritoryOwner(Territory territory, PlayerID player)
 	{
 		String result = null;
@@ -206,7 +202,6 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		return null;
 	}
 	
-	@Override
 	public String changePUs(PlayerID player, int newTotal)
 	{
 		String result = null;
@@ -227,7 +222,6 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		return null;
 	}
 	
-	@Override
 	public String changeTechTokens(PlayerID player, int newTotal)
 	{
 		String result = null;
@@ -248,7 +242,6 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		return null;
 	}
 	
-	@Override
 	public String addComment(String message)
 	{
 		
@@ -301,6 +294,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

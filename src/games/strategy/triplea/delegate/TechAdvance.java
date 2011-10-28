@@ -280,6 +280,7 @@ public abstract class TechAdvance implements java.io.Serializable
 
 class SuperSubsAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -307,6 +308,7 @@ class SuperSubsAdvance extends TechAdvance
 
 class HeavyBomberAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -334,6 +336,7 @@ class HeavyBomberAdvance extends TechAdvance
 
 class IndustrialTechnologyAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -379,6 +382,7 @@ class IndustrialTechnologyAdvance extends TechAdvance
 
 class JetPowerAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -406,6 +410,7 @@ class JetPowerAdvance extends TechAdvance
 
 class RocketsAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -433,6 +438,7 @@ class RocketsAdvance extends TechAdvance
 
 class DestroyerBombardTechAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -460,6 +466,7 @@ class DestroyerBombardTechAdvance extends TechAdvance
 
 class LongRangeAircraftAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -493,6 +500,7 @@ class LongRangeAircraftAdvance extends TechAdvance
  */
 class ImprovedArtillerySupportAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -523,6 +531,7 @@ class ImprovedArtillerySupportAdvance extends TechAdvance
  */
 class ParatroopersAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -553,6 +562,7 @@ class ParatroopersAdvance extends TechAdvance
  */
 class IncreasedFactoryProductionAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -583,6 +593,7 @@ class IncreasedFactoryProductionAdvance extends TechAdvance
  */
 class WarBondsAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -613,6 +624,7 @@ class WarBondsAdvance extends TechAdvance
  */
 class MechanizedInfantryAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -643,6 +655,7 @@ class MechanizedInfantryAdvance extends TechAdvance
  */
 class AARadarAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{
@@ -670,6 +683,7 @@ class AARadarAdvance extends TechAdvance
 
 class ImprovedShipyardsAdvance extends TechAdvance
 {
+	
 	@Override
 	public String getName()
 	{

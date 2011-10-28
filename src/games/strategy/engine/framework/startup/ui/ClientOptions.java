@@ -159,7 +159,6 @@ public class ClientOptions extends JDialog
 	private Action m_okAction = new AbstractAction("Connect")
 	{
 		
-		@Override
 		public void actionPerformed(ActionEvent e)
 	{
 		setVisible(false);
@@ -169,7 +168,7 @@ public class ClientOptions extends JDialog
 	
 	private Action m_cancelAction = new AbstractAction("Cancel")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 	{
 		setVisible(false);

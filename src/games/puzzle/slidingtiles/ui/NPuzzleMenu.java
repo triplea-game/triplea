@@ -52,7 +52,7 @@ public class NPuzzleMenu extends BasicGameMenuBar<NPuzzleFrame>
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				// html formatted string

@@ -43,6 +43,7 @@ public class SwingEventThreadGoon
 			/**
 			 * We are updating a portion of the screen, check to see if we are in the right thread.
 			 */
+			
 			@Override
 			public void addDirtyRegion(JComponent c, int x, int y, int w, int h)
 			{
@@ -94,7 +95,7 @@ public class SwingEventThreadGoon
 		}
 		
 		// recursivly check our parent
-		return isComponentDisplayable((Component) parent);
+		return isComponentDisplayable(parent);
 	}
 	
 }

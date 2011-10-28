@@ -41,7 +41,6 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		m_props = props;
 	}
 	
-	@Override
 	public String getName()
 	{
 		return m_props.getProperty("name");
@@ -63,7 +62,6 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		return Boolean.valueOf(property);
 	}
 	
-	@Override
 	public String postRequest(String player1, String player2, int max, int numDice, String text, String gameID, String gameUUID) throws IOException
 	{
 		if (gameID.trim().length() == 0)
@@ -126,7 +124,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 	 * @throws IOException
 	 *             if there was an error parsing the string
 	 */
-	@Override
+	
 	public int[] getDice(String string, int count) throws IOException, InvocationTargetException
 	{
 		String errorStartString = m_props.getProperty("error.start");

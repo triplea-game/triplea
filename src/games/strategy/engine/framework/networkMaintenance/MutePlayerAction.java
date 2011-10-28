@@ -26,7 +26,6 @@ public class MutePlayerAction extends AbstractAction
 		m_messenger = messenger;
 	}
 	
-	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		DefaultComboBoxModel model = new DefaultComboBoxModel();

@@ -40,6 +40,7 @@ public class MacWrapper
 		application.addApplicationListener(
 					new ApplicationAdapter()
 					{
+						
 						@Override
 						public void handleQuit(ApplicationEvent event)
 					{

@@ -65,6 +65,7 @@ public class EndRoundDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
@@ -203,7 +204,7 @@ public class EndRoundDelegate extends BaseDelegate
 			signalGameOver(victoryMessage, winners, aBridge);
 		}
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -366,6 +367,7 @@ public class EndRoundDelegate extends BaseDelegate
 	/**
 	 * Returns the state of the Delegate.
 	 */
+	
 	@Override
 	public Serializable saveState()
 	{
@@ -375,6 +377,7 @@ public class EndRoundDelegate extends BaseDelegate
 	/**
 	 * Loads the delegates state
 	 */
+	
 	@Override
 	public void loadState(Serializable state)
 	{
@@ -384,6 +387,7 @@ public class EndRoundDelegate extends BaseDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

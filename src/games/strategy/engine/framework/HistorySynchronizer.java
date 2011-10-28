@@ -65,12 +65,11 @@ public class HistorySynchronizer
 	private IGameModifiedChannel m_gameModifiedChannelListener = new IGameModifiedChannel()
 	{
 		
-		@Override
 		public void gameDataChanged(final Change aChange)
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					
@@ -80,12 +79,11 @@ public class HistorySynchronizer
 			});
 		}
 		
-		@Override
 		public void startHistoryEvent(final String event)
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					
@@ -95,12 +93,11 @@ public class HistorySynchronizer
 			
 		}
 		
-		@Override
 		public void addChildToEvent(final String text, final Object renderingData)
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					
@@ -110,12 +107,11 @@ public class HistorySynchronizer
 			});
 		}
 		
-		@Override
 		public void setRenderingData(final Object renderingData)
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					
@@ -126,7 +122,6 @@ public class HistorySynchronizer
 			
 		}
 		
-		@Override
 		public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, boolean loadedFromSavedGame)
 		{
 			
@@ -136,7 +131,7 @@ public class HistorySynchronizer
 			
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					if (m_currentRound != round)
@@ -150,7 +145,6 @@ public class HistorySynchronizer
 			
 		}
 		
-		@Override
 		public void shutDown()
 		{
 		}

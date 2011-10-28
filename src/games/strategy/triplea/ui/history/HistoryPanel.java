@@ -83,18 +83,15 @@ public class HistoryPanel extends JPanel
 		m_popup.addPopupMenuListener(new PopupMenuListener()
 		{
 			
-			@Override
 			public void popupMenuCanceled(PopupMenuEvent pme)
 			{
 				m_currentPopupNode = null;
 			}
 			
-			@Override
 			public void popupMenuWillBecomeInvisible(PopupMenuEvent pme)
 			{
 			}
 			
-			@Override
 			public void popupMenuWillBecomeVisible(PopupMenuEvent pme)
 			{
 			}
@@ -123,7 +120,6 @@ public class HistoryPanel extends JPanel
 		previousButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				previous();
@@ -135,7 +131,6 @@ public class HistoryPanel extends JPanel
 		nextButton.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				next();
@@ -153,24 +148,21 @@ public class HistoryPanel extends JPanel
 		
 		m_tree.getModel().addTreeModelListener(new TreeModelListener()
 		{
-			@Override
+			
 			public void treeNodesChanged(TreeModelEvent e)
 			{
 				goToEnd();
 			}
 			
-			@Override
 			public void treeNodesInserted(TreeModelEvent e)
 			{
 				goToEnd();
 			}
 			
-			@Override
 			public void treeNodesRemoved(TreeModelEvent e)
 			{
 			}
 			
-			@Override
 			public void treeStructureChanged(TreeModelEvent e)
 			{
 				goToEnd();
@@ -180,7 +172,6 @@ public class HistoryPanel extends JPanel
 		m_tree.addMouseListener(new MouseListener()
 		{
 			
-			@Override
 			public void mouseClicked(MouseEvent me)
 			{
 				if (SwingUtilities.isRightMouseButton(me))
@@ -190,22 +181,18 @@ public class HistoryPanel extends JPanel
 				}
 			}
 			
-			@Override
 			public void mouseEntered(MouseEvent me)
 			{
 			}
 			
-			@Override
 			public void mouseExited(MouseEvent me)
 			{
 			}
 			
-			@Override
 			public void mousePressed(MouseEvent me)
 			{
 			}
 			
-			@Override
 			public void mouseReleased(MouseEvent me)
 			{
 			}
@@ -214,7 +201,6 @@ public class HistoryPanel extends JPanel
 		m_tree.addTreeSelectionListener(new TreeSelectionListener()
 		{
 			
-			@Override
 			public void valueChanged(TreeSelectionEvent e)
 			{
 				treeSelectionChanged(e);
@@ -361,7 +347,7 @@ public class HistoryPanel extends JPanel
 	{
 		Runnable r = new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				HistoryNode last = m_data.getHistory().getLastNode();

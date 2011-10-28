@@ -75,7 +75,6 @@ public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
 		return m_cachedRules;
 	}
 	
-	@Override
 	public Iterator<RepairRule> iterator()
 	{
 		return getRules().iterator();

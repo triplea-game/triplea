@@ -23,7 +23,6 @@ public class NullImageObserver implements ImageObserver
 	{
 	}
 	
-	@Override
 	public boolean imageUpdate(Image image, int flags, int int2, int int3,
 								int int4, int int5)
 	{

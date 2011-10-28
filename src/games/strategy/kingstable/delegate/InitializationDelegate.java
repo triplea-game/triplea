@@ -33,6 +33,7 @@ public class InitializationDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge bridge)
 	{
@@ -80,7 +81,7 @@ public class InitializationDelegate extends BaseDelegate
 			}
 		}
 	}
-
+	
 	@Override
 	public void end()
 	{
@@ -91,6 +92,7 @@ public class InitializationDelegate extends BaseDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
+	
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

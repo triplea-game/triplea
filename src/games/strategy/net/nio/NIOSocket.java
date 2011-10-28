@@ -114,7 +114,6 @@ public class NIOSocket implements IErrorReporter
 		m_listener.socketUnqaurantined(channel, conversation);
 	}
 	
-	@Override
 	public void error(SocketChannel channel, Exception e)
 	{
 		close(channel);

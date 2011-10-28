@@ -112,7 +112,6 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		
 	}
 	
-	@Override
 	public void run()
 	{
 		Thread myThread = Thread.currentThread();
@@ -576,7 +575,6 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		return optionsPanel;
 	}
 	
-	@Override
 	public void itemStateChanged(ItemEvent e)
 	{
 		ItemSelectable item = e.getItemSelectable();
@@ -803,28 +801,24 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		return res;
 	}
 	
-	@Override
 	public void keyPressed(KeyEvent e)
 	{
 		// TODO Auto-generated method stub
 		
 	}
 	
-	@Override
 	public void keyReleased(KeyEvent e)
 	{
 		// TODO Auto-generated method stub
 		
 	}
 	
-	@Override
 	public void keyTyped(KeyEvent e)
 	{
 		// TODO Auto-generated method stub
 		
 	}
 	
-	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		Object o = e.getSource();

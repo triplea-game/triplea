@@ -226,6 +226,7 @@ public class MersenneTwister extends java.util.Random implements Serializable
 	/**
 	 * Returns an integer with <i>bits</i> bits filled with a random number.
 	 */
+	
 	@Override
 	synchronized protected int next(final int bits)
 	{
@@ -283,6 +284,7 @@ public class MersenneTwister extends java.util.Random implements Serializable
 	 * This method is missing from jdk 1.0.x and below. JDK 1.1
 	 * includes this for us, but what the heck.
 	 */
+	
 	@Override
 	public boolean nextBoolean()
 	{
@@ -370,6 +372,7 @@ public class MersenneTwister extends java.util.Random implements Serializable
 	 * A bug fix for versions of JDK 1.1 and below. JDK 1.2 fixes
 	 * this for us, but what the heck.
 	 */
+	
 	@Override
 	public double nextDouble()
 	{
@@ -471,7 +474,7 @@ public class MersenneTwister extends java.util.Random implements Serializable
 		for (j = 0; j < 1000; j++)
 		{
 			// first, convert the int from signed to "unsigned"
-			long l = (long) r.nextInt();
+			long l = r.nextInt();
 			if (l < 0)
 				l += 4294967296L; // max int value
 			String s = String.valueOf(l);
@@ -520,7 +523,7 @@ public class MersenneTwister extends java.util.Random implements Serializable
 		r = new MersenneTwister(SEED);
 		for (j = 0; j < 1000; j++)
 		{
-			System.out.print(r.nextBoolean((double) (j / 999.0)) + " ");
+			System.out.print(r.nextBoolean((j / 999.0)) + " ");
 			if (j % 8 == 7)
 				System.out.println();
 		}
@@ -531,7 +534,7 @@ public class MersenneTwister extends java.util.Random implements Serializable
 		r = new MersenneTwister(SEED);
 		for (j = 0; j < 1000; j++)
 		{
-			System.out.print(r.nextBoolean((float) (j / 999.0f)) + " ");
+			System.out.print(r.nextBoolean((j / 999.0f)) + " ");
 			if (j % 8 == 7)
 				System.out.println();
 		}

@@ -78,7 +78,6 @@ public class Node implements INode, Externalizable
 		m_port = port;
 	}
 	
-	@Override
 	public String getName()
 	{
 		return m_name;
@@ -88,6 +87,7 @@ public class Node implements INode, Externalizable
 	 * Node equality is done based on network adress/port.
 	 * The name is not part of the node identity.
 	 */
+	
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -117,23 +117,20 @@ public class Node implements INode, Externalizable
 		return m_name + " port:" + m_port + " ip:" + m_address.getHostAddress();
 	}
 	
-	@Override
 	public int getPort()
 	{
 		return m_port;
 	}
 	
-	@Override
 	public InetAddress getAddress()
 	{
 		return m_address;
 	}
 	
-	@Override
 	public void readExternal(ObjectInput in) throws IOException,
 				ClassNotFoundException
 	{
-		m_name = (String) in.readUTF();
+		m_name = in.readUTF();
 		m_port = in.readInt();
 		
 		int length = in.read();
@@ -146,7 +143,6 @@ public class Node implements INode, Externalizable
 		m_address = InetAddress.getByAddress(bytes);
 	}
 	
-	@Override
 	public void writeExternal(ObjectOutput out) throws IOException
 	{
 		out.writeUTF(m_name);
@@ -155,7 +151,6 @@ public class Node implements INode, Externalizable
 		out.write(m_address.getAddress());
 	}
 	
-	@Override
 	public int compareTo(INode o)
 	{
 		if (o == null)
@@ -178,7 +173,6 @@ public class Node implements INode, Externalizable
 		
 	}
 	
-	@Override
 	public InetSocketAddress getSocketAddress()
 	{
 		return new InetSocketAddress(m_address, m_port);

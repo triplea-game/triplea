@@ -28,12 +28,11 @@ public interface IRemoteModelListener
 	
 	public static IRemoteModelListener NULL_LISTENER = new IRemoteModelListener()
 	{
-		@Override
+		
 		public void playerListChanged()
 		{
 		}
 		
-		@Override
 		public void playersTakenChanged()
 		{
 		}

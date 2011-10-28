@@ -35,13 +35,11 @@ public class StatusController implements IStatusController
 		((IServerMessenger) m_messengers.getMessenger()).addConnectionChangeListener(new IConnectionChangeListener()
 		{
 			
-			@Override
 			public void connectionRemoved(INode to)
 			{
 				StatusController.this.connectionRemoved(to);
 			}
 			
-			@Override
 			public void connectionAdded(INode to)
 			{
 			}
@@ -60,7 +58,6 @@ public class StatusController implements IStatusController
 		
 	}
 	
-	@Override
 	public Map<INode, String> getAllStatus()
 	{
 		synchronized (m_mutex)
@@ -69,7 +66,6 @@ public class StatusController implements IStatusController
 		}
 	}
 	
-	@Override
 	public void setStatus(String newStatus)
 	{
 		INode node = MessageContext.getSender();

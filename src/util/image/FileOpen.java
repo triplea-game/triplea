@@ -60,6 +60,7 @@ public class FileOpen
 		 */
 		chooser.setFileFilter(new javax.swing.filechooser.FileFilter()
 		{
+			
 			@Override
 			public boolean accept(File f)
 			{

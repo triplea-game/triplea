@@ -95,14 +95,12 @@ public class GUID implements Externalizable
 		return "GUID:" + m_prefix + ":" + m_id;
 	}
 	
-	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		m_id = in.readInt();
 		m_prefix = (VMID) in.readObject();
 	}
 	
-	@Override
 	public void writeExternal(ObjectOutput out) throws IOException
 	{
 		out.writeInt(m_id);

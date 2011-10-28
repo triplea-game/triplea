@@ -179,6 +179,7 @@ public class SUtils
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2163,6 +2164,7 @@ public class SUtils
 	{
 		Match<Territory> condition = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2272,6 +2274,7 @@ public class SUtils
 		final Match<Unit> ownedCarrier = new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.unitIsOwnedBy(player));
 		Match<Territory> condition = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2299,6 +2302,7 @@ public class SUtils
 	{
 		Match<Territory> condition = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -2812,7 +2816,7 @@ public class SUtils
 		if (landTerr == null)
 			return seaPlaceAt;
 		Set<Territory> seaNeighbors = data.getMap().getNeighbors(landTerr, ourSeaTerr);
-		//float eStrength = 0.0F;
+		// float eStrength = 0.0F;
 		float minStrength = 1000.0F, maxStrength = -1000.0F;
 		for (Territory t : seaNeighbors) // give preference to territory with units
 		{
@@ -3107,8 +3111,8 @@ public class SUtils
 				}
 			}
 		}
-		//boolean transportsForAttack = false;
-		//Territory firstLocation = null;
+		// boolean transportsForAttack = false;
+		// Territory firstLocation = null;
 		float unitStrength = 0.0F;
 		for (Territory waterCheck : waterNeighbors)
 		{
@@ -3116,7 +3120,7 @@ public class SUtils
 			float shipStrength = 0.0F;
 			if (Matches.territoryHasOwnedTransportingUnits(player).match(waterCheck))
 			{
-				//int xminDist = 0;
+				// int xminDist = 0;
 				List<Unit> tUnits = new ArrayList<Unit>();
 				List<Unit> tranUnits = waterCheck.getUnits().getMatches(transportingUnitWithLoad);
 				tranUnits.removeAll(unitsAlreadyMoved);
@@ -3149,7 +3153,7 @@ public class SUtils
 				if (tUnits.size() > 0)
 				{
 					unitsAlreadyMoved.addAll(tUnits); // no actual move needed...just stay here
-					//transportsForAttack = true;
+					// transportsForAttack = true;
 				}
 			}
 			for (Territory otherSource : testCapNeighbors)
@@ -3212,7 +3216,7 @@ public class SUtils
 				}
 				if (allUnits.size() > 0)
 				{
-					//transportsForAttack = true;
+					// transportsForAttack = true;
 					moveUnits.add(allUnits);
 					moveRoutes.add(sRoute);
 					unitsAlreadyMoved.addAll(allUnits);
@@ -4019,7 +4023,7 @@ public class SUtils
 	{
 		Iterator<Collection<Unit>> xMoveIter = xMoveUnits.iterator();
 		int routeNo = 0;
-		//float removeStrength = 0.0F;
+		// float removeStrength = 0.0F;
 		HashMap<Territory, List<Integer>> badRouteMap = new HashMap<Territory, List<Integer>>();
 		HashMap<Territory, Float> strengthDiffMap = new HashMap<Territory, Float>();
 		List<Integer> emptyList = new ArrayList<Integer>();
@@ -4309,7 +4313,6 @@ public class SUtils
 		Collections.sort(reorder, new Comparator<Object>()
 		{
 			
-			@Override
 			public int compare(Object o1, Object o2)
 			{
 				// get int returns 0 if no value
@@ -4345,7 +4348,6 @@ public class SUtils
 		Collections.sort(reorder, new Comparator<Object>()
 		{
 			
-			@Override
 			public int compare(Object o1, Object o2)
 			{
 				double v1 = safeGet(map, o1);
@@ -4393,7 +4395,7 @@ public class SUtils
 				IntegerMap<ProductionRule> bestMaxUnits, IntegerMap<ProductionRule> bestMobileAttack,
 				List<ProductionRule> rules, int totPU, int maxUnits, GameData data, PlayerID player, int fighters)
 	{
-		//Resource key = data.getResourceList().getResource(Constants.PUS);
+		// Resource key = data.getResourceList().getResource(Constants.PUS);
 		IntegerMap<String> parameters = new IntegerMap<String>();
 		parameters.put("attack", 0);
 		parameters.put("defense", 0);
@@ -4420,8 +4422,8 @@ public class SUtils
 		HashMap<ProductionRule, Boolean> supportableInfMap = new HashMap<ProductionRule, Boolean>();
 		Iterator<ProductionRule> prodIter = rules.iterator();
 		HashMap<ProductionRule, Boolean> transportMap = new HashMap<ProductionRule, Boolean>();
-		//int minCost = 10000;
-		//ProductionRule minCostRule = null;
+		// int minCost = 10000;
+		// ProductionRule minCostRule = null;
 		while (prodIter.hasNext())
 		{
 			ProductionRule rule = prodIter.next();
@@ -5047,7 +5049,7 @@ public class SUtils
 		CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
 		CompositeMatch<Territory> enemyAndNoWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player),
 					Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
-		//TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
+		// TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		List<PlayerID> ePlayers = getEnemyPlayers(data, player);
 		PlayerID ePlayer = ePlayers.get(0);
 		List<Territory> enemyCapitals = SUtils.getEnemyCapitals(data, player);
@@ -5098,7 +5100,7 @@ public class SUtils
 				continue;
 			float alliedPotential = getStrengthOfPotentialAttackers(eTerr, data, ePlayer, tFirst, true, null);
 			float rankStrength = getStrengthOfPotentialAttackers(eTerr, data, player, tFirst, true, ignoreTerr);
-			float productionValue = (float) TerritoryAttachment.get(eTerr).getProduction();
+			float productionValue = TerritoryAttachment.get(eTerr).getProduction();
 			float eTerrValue = 0.0F;
 			boolean island = !SUtils.doesLandExistAt(eTerr, data, false);
 			eTerrValue += Matches.TerritoryIsVictoryCity.match(eTerr) ? 2.0F : 0.0F;
@@ -5184,7 +5186,7 @@ public class SUtils
 		if (nonCombat)
 		{
 			CompositeMatch<Territory> alliedLandTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
-			//Set<Territory> terrList = landRankMap.keySet();
+			// Set<Territory> terrList = landRankMap.keySet();
 			for (Territory terr1 : alliedFactories)
 			{
 				float landRank = landRankMap.get(terr1);
@@ -5298,7 +5300,7 @@ public class SUtils
 			float alliedPotential = getStrengthOfPotentialAttackers(aTerr, data, ePlayer, tFirst, true, null);
 			float localStrength = SUtils.strength(aTerr.getUnits().getUnits(), false, false, tFirst);
 			float rankStrength = getStrengthOfPotentialAttackers(aTerr, data, player, tFirst, true, ignoreTerr);
-			float productionValue = (float) TerritoryAttachment.get(aTerr).getProduction();
+			float productionValue = TerritoryAttachment.get(aTerr).getProduction();
 			float aTerrValue = 0.0F;
 			aTerrValue += Matches.TerritoryIsVictoryCity.match(aTerr) ? 2.0F : 0.0F;
 			aTerrValue += Matches.territoryHasEnemyFactoryNeighbor(data, player).match(aTerr) ? 2.0F : 0.0F;

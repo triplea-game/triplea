@@ -137,14 +137,14 @@ public class BattleDisplay extends JPanel
 	private Action m_nullAction = new AbstractAction(" ")
 	{
 		
-		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 		}
 		
 	};
 	
-    public BattleDisplay(GameData data, Territory territory, final PlayerID attacker, final PlayerID defender, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, GUID battleID, MapPanel mapPanel)
+	public BattleDisplay(GameData data, Territory territory, final PlayerID attacker, final PlayerID defender, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits,
+				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, GUID battleID, MapPanel mapPanel)
 	{
 		m_battleID = battleID;
 		m_defender = defender;
@@ -153,24 +153,25 @@ public class BattleDisplay extends JPanel
 		m_mapPanel = mapPanel;
 		
 		m_data = data;
-        
-        m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext());
-        m_defenderModel.refresh();
-        m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext());
-        m_attackerModel.refresh();
-        m_uiContext = mapPanel.getUIContext();
-
+		
+		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext());
+		m_defenderModel.refresh();
+		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext());
+		m_attackerModel.refresh();
+		m_uiContext = mapPanel.getUIContext();
+		
 		m_casualties = new CasualtyNotificationPanel(data, m_mapPanel.getUIContext());
-        if (killedUnits != null && attackingWaitingToDie != null && defendingWaitingToDie != null) {
-            Collection<Unit> attackerUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
-            attackerUnitsKilled.addAll(attackingWaitingToDie);
-            if (!attackerUnitsKilled.isEmpty())
-                updateKilledUnits(attackerUnitsKilled, attacker);
-            Collection<Unit> defenderUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(defender));
-            defenderUnitsKilled.addAll(defendingWaitingToDie);
-            if (!defenderUnitsKilled.isEmpty())
-                updateKilledUnits(defenderUnitsKilled, defender);
-        }
+		if (killedUnits != null && attackingWaitingToDie != null && defendingWaitingToDie != null)
+		{
+			Collection<Unit> attackerUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(attacker));
+			attackerUnitsKilled.addAll(attackingWaitingToDie);
+			if (!attackerUnitsKilled.isEmpty())
+				updateKilledUnits(attackerUnitsKilled, attacker);
+			Collection<Unit> defenderUnitsKilled = Match.getMatches(killedUnits, Matches.unitIsOwnedBy(defender));
+			defenderUnitsKilled.addAll(defendingWaitingToDie);
+			if (!defenderUnitsKilled.isEmpty())
+				updateKilledUnits(defenderUnitsKilled, defender);
+		}
 		
 		initLayout();
 	}
@@ -352,12 +353,12 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				m_actionButton.setAction(new AbstractAction(message)
 				{
-					@Override
+					
 					public void actionPerformed(ActionEvent e)
 					{
 						continueLatch.countDown();
@@ -383,7 +384,7 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				m_actionButton.setAction(m_nullAction);
@@ -397,7 +398,7 @@ public class BattleDisplay extends JPanel
 		m_steps.walkToLastStep();
 		final Action close = new AbstractAction(message + " : (Press Space to close)")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				enclosingFrame.setVisible(false);
@@ -406,7 +407,7 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				m_actionButton.setAction(close);
@@ -450,7 +451,7 @@ public class BattleDisplay extends JPanel
 		
 		final Action action = new AbstractAction("Submerge Subs?")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				String ok = "Submerge";
@@ -488,7 +489,7 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				m_actionButton.setAction(action);
@@ -497,7 +498,7 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				action.actionPerformed(null);
@@ -518,7 +519,7 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				m_actionButton.setAction(m_nullAction);
@@ -542,27 +543,27 @@ public class BattleDisplay extends JPanel
 		
 		final Action action = new AbstractAction("Retreat?")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
-                String yes = "Retreat";
-                String no = "Remain";
-                String cancel = "Ask Me Later";
+				String yes = "Retreat";
+				String no = "Remain";
+				String cancel = "Ask Me Later";
 				
-                String[] options = { yes, no, cancel };
-
-                int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Retreat?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
- no);
+				String[] options = { yes, no, cancel };
+				
+				int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Retreat?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
+							no);
 				
 				// dialog dismissed
 				if (choice == -1)
 					return;
 				// wait
-                if (choice == JOptionPane.CANCEL_OPTION)
+				if (choice == JOptionPane.CANCEL_OPTION)
 					return;
 				
 				// remain
-                if (choice == JOptionPane.NO_OPTION)
+				if (choice == JOptionPane.NO_OPTION)
 				{
 					latch.countDown();
 					return;
@@ -587,7 +588,7 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				m_actionButton.setAction(action);
@@ -596,7 +597,7 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				action.actionPerformed(null);
@@ -613,7 +614,7 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				m_actionButton.setAction(m_nullAction);
@@ -636,7 +637,7 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				String ok = "Scramble";
@@ -785,7 +786,7 @@ public class BattleDisplay extends JPanel
 			
 			m_list.addListSelectionListener(new ListSelectionListener()
 			{
-				@Override
+				
 				public void valueChanged(ListSelectionEvent e)
 				{
 					updateImage();
@@ -852,7 +853,7 @@ public class BattleDisplay extends JPanel
 			
 			m_list.addListSelectionListener(new ListSelectionListener()
 			{
-				@Override
+				
 				public void valueChanged(ListSelectionEvent e)
 				{
 					updateImage();
@@ -901,7 +902,7 @@ public class BattleDisplay extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				final boolean isEditMode = (dice == null);
@@ -917,7 +918,7 @@ public class BattleDisplay extends JPanel
 				final String btnText = hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
 				m_actionButton.setAction(new AbstractAction(btnText)
 				{
-					@Override
+					
 					public void actionPerformed(ActionEvent e)
 					{
 						
@@ -1070,7 +1071,6 @@ public class BattleDisplay extends JPanel
 		Action continueAction = new AbstractAction()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				Action a = m_actionButton.getAction();
@@ -1397,7 +1397,6 @@ class Renderer implements TableCellRenderer
 	
 	JLabel m_stamp = new JLabel();
 	
-	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
 	{
 		

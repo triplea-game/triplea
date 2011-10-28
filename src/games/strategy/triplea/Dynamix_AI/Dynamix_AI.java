@@ -138,6 +138,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	/**
 	 * Please call this right before an action is displayed to the user.
 	 */
+	
 	@Override
 	public void pause()
 	{
@@ -377,13 +378,11 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	
 	Territory m_battleTer = null;
 	
-	@Override
 	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
 	{
 		return null;
 	}
 	
-	@Override
 	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
 	{
 		DUtils.Log(Level.FINE, "Retreat query starting. Battle Ter: {0} Possible retreat locations: {1}", getBattleTerritory(), possibleTerritories);
@@ -445,20 +444,17 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return null;
 	}
 	
-	@Override
 	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
 	{
 		// Hmmm... Atm, true and false are both bad. With true, the AI may destroy aircraft unnecesarily, with false, the AI may attack a ter thinking it has air support, which never comes.
 		return true;
 	}
 	
-	@Override
 	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
 	{
 		return candidates.iterator().next();
 	}
 	
-	@Override
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
 	{
 		List<Unit> result = new ArrayList<Unit>();
@@ -469,7 +465,6 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return result;
 	}
 	
-	@Override
 	public boolean shouldBomberBomb(Territory territory)
 	{
 		List<Unit> nonBomberAttackingUnits = Match.getMatches(territory.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getWhoAmI()), Matches.UnitIsNotStrategicBomber));
@@ -479,7 +474,6 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			return false;
 	}
 	
-	@Override
 	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
 	{
 		// wisc, the ai is only asked this question after it is asked if it should bomb at all or not. so this only is asked if the ai says yes to bombing. therefore, we should never return null, as there is a chance we are both attacking and bombing.
@@ -493,7 +487,6 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			return Match.getMatches(units, Matches.UnitCanProduceUnits).iterator().next();
 	}
 	
-	@Override
 	public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
 	{
 		int[] dice = new int[numRolls];
@@ -504,7 +497,6 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return dice;
 	}
 	
-	@Override
 	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit,
 				CasualtyList defaultCasualties, GUID battleID)
 	{

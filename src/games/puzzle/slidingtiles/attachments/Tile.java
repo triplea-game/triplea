@@ -74,6 +74,7 @@ public class Tile extends DefaultAttachment
 	    return m_location;
 	}
 	*/
+
 	@Override
 	public int hashCode()
 	{

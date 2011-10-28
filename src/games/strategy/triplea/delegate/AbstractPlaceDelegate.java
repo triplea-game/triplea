@@ -102,6 +102,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	/**
 	 * Called before the delegate will stop running.
 	 */
+	
 	@Override
 	public void end()
 	{
@@ -134,7 +135,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		return new ArrayList<Unit>();
 	}
 	
-	@Override
 	public int getPlacementsMade()
 	{
 		return m_placements.size();
@@ -151,13 +151,12 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	}
 	
 	// returns List<AbstractUndoableMove>
-	@Override
+	
 	public List<UndoablePlacement> getMovesMade()
 	{
 		return m_placements;
 	}
 	
-	@Override
 	public String undoMove(int moveIndex)
 	{
 		if (moveIndex < m_placements.size() && moveIndex >= 0)
@@ -178,7 +177,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		}
 	}
 	
-	@Override
 	public String placeUnits(Collection<Unit> units, Territory at)
 	{
 		if (units == null || units.isEmpty())
@@ -194,7 +192,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		return null;
 	}
 	
-	@Override
 	public PlaceableUnits getPlaceableUnits(Collection<Unit> units, Territory to)
 	{
 		String error = canProduce(to, units, m_player);
@@ -466,6 +463,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit unitWhichRequiresUnits)
 			{
@@ -1237,7 +1235,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	 * 
 	 * @return a list of Territories with air units that must move
 	 */
-	@Override
+	
 	public Collection<Territory> getTerritoriesWhereAirCantLand()
 	{
 		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);
@@ -1296,6 +1294,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
@@ -1305,6 +1304,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	/**
 	 * Returns the state of the Delegate.
 	 */
+	
 	@Override
 	public Serializable saveState()
 	{
@@ -1318,6 +1318,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	/**
 	 * Loads the delegates state
 	 */
+	
 	@Override
 	public void loadState(Serializable aState)
 	{

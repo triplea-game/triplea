@@ -101,6 +101,7 @@ public class NCM_Task
 			final HashSet<Unit> recruitsAsHashSet = DUtils.ToHashSet(GetRecruitedUnitsAsUnitList());
 			Match<Unit> unitMatch = new Match<Unit>()
 			{
+				
 				@Override
 				public boolean match(Unit unit)
 				{

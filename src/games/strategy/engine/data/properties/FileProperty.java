@@ -68,7 +68,7 @@ public class FileProperty extends AEditableProperty
 	 * 
 	 * @return The file associated with this property
 	 */
-	@Override
+	
 	public Object getValue()
 	{
 		return m_file;
@@ -79,7 +79,7 @@ public class FileProperty extends AEditableProperty
 	 * 
 	 * @return a non-editable JTextField
 	 */
-	@Override
+	
 	public JComponent getEditorComponent()
 	{
 		final JTextField label;
@@ -92,7 +92,7 @@ public class FileProperty extends AEditableProperty
 		
 		label.addMouseListener(new MouseListener()
 		{
-			@Override
+			
 			public void mouseClicked(MouseEvent e)
 			{
 				File selection = getFileUsingDialog("png", "jpg", "jpeg", "gif");
@@ -105,7 +105,7 @@ public class FileProperty extends AEditableProperty
 					// Ask Swing to repaint this label when it's convenient
 					SwingUtilities.invokeLater(new Runnable()
 					{
-						@Override
+						
 						public void run()
 						{
 							label.repaint();
@@ -114,22 +114,18 @@ public class FileProperty extends AEditableProperty
 				}
 			}
 			
-			@Override
 			public void mouseEntered(MouseEvent e)
 			{
 			}
 			
-			@Override
 			public void mouseExited(MouseEvent e)
 			{
 			}
 			
-			@Override
 			public void mousePressed(MouseEvent e)
 			{
 			}
 			
-			@Override
 			public void mouseReleased(MouseEvent e)
 			{
 			}
@@ -156,7 +152,7 @@ public class FileProperty extends AEditableProperty
 			fileDialog.setMode(FileDialog.LOAD);
 			fileDialog.setFilenameFilter(new FilenameFilter()
 			{
-				@Override
+				
 				public boolean accept(File dir, String name)
 				{
 					if (acceptableSuffixes == null || acceptableSuffixes.length == 0)
@@ -185,6 +181,7 @@ public class FileProperty extends AEditableProperty
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new FileFilter()
 		{
+			
 			@Override
 			public boolean accept(File file)
 			{

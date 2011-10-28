@@ -346,7 +346,6 @@ public class StatPanel extends JPanel
 			
 		}
 		
-		@Override
 		public void gameDataChanged(Change aChange)
 		{
 			synchronized (this)
@@ -356,7 +355,7 @@ public class StatPanel extends JPanel
 			
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					repaint();
@@ -370,7 +369,7 @@ public class StatPanel extends JPanel
 		 * Recalcs the underlying data in a lazy manner Limitation: This is not
 		 * a threadsafe implementation
 		 */
-		@Override
+
 		public synchronized Object getValueAt(int row, int col)
 		{
 			if (m_isDirty)
@@ -383,6 +382,7 @@ public class StatPanel extends JPanel
 		}
 		
 		// Trivial implementations of required methods
+		
 		@Override
 		public String getColumnName(int col)
 		{
@@ -391,13 +391,11 @@ public class StatPanel extends JPanel
 			return m_stats[col - 1].getName();
 		}
 		
-		@Override
 		public int getColumnCount()
 		{
 			return m_stats.length + 1;
 		}
 		
-		@Override
 		public synchronized int getRowCount()
 		{
 			if (!m_isDirty)
@@ -597,7 +595,7 @@ public class StatPanel extends JPanel
 		 * Recalcs the underlying data in a lazy manner Limitation: This is not
 		 * a threadsafe implementation
 		 */
-		@Override
+
 		public Object getValueAt(int row, int col)
 		{
 			if (isDirty)
@@ -610,19 +608,17 @@ public class StatPanel extends JPanel
 		}
 		
 		// Trivial implementations of required methods
-		@Override
+		
 		public int getColumnCount()
 		{
 			return colList.length + 1;
 		}
 		
-		@Override
 		public int getRowCount()
 		{
 			return data.length;
 		}
 		
-		@Override
 		public void gameDataChanged(Change aChange)
 		{
 			isDirty = true;
@@ -630,7 +626,6 @@ public class StatPanel extends JPanel
 			SwingUtilities.invokeLater(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					repaint();
@@ -653,13 +648,11 @@ public class StatPanel extends JPanel
 class ProductionStat extends AbstractStat
 {
 	
-	@Override
 	public String getName()
 	{
 		return "Production";
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		int rVal = 0;
@@ -723,13 +716,11 @@ class ProductionStat extends AbstractStat
 class PUStat extends AbstractStat
 {
 	
-	@Override
 	public String getName()
 	{
 		return "PUs";
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		return player.getResources().getQuantity(Constants.PUS);
@@ -740,13 +731,11 @@ class PUStat extends AbstractStat
 class UnitsStat extends AbstractStat
 {
 	
-	@Override
 	public String getName()
 	{
 		return "Units";
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		int rVal = 0;
@@ -766,13 +755,11 @@ class UnitsStat extends AbstractStat
 class TUVStat extends AbstractStat
 {
 	
-	@Override
 	public String getName()
 	{
 		return "TUV";
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
@@ -794,13 +781,12 @@ class TUVStat extends AbstractStat
 
 class VictoryCityStat extends AbstractStat
 {
-	@Override
+	
 	public String getName()
 	{
 		return "VC";
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		int rVal = 0;
@@ -825,13 +811,12 @@ class VictoryCityStat extends AbstractStat
 
 class VPStat extends AbstractStat
 {
-	@Override
+	
 	public String getName()
 	{
 		return "VPs";
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		PlayerAttachment pa = PlayerAttachment.get(player);
@@ -844,13 +829,12 @@ class VPStat extends AbstractStat
 
 class TechCountStat extends AbstractStat
 {
-	@Override
+	
 	public String getName()
 	{
 		return "Techs";
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		int count = 0;
@@ -905,13 +889,12 @@ class TechCountStat extends AbstractStat
 
 class TechTokenStat extends AbstractStat
 {
-	@Override
+	
 	public String getName()
 	{
 		return "Resource: " + "Tech Tokens";
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		return player.getResources().getQuantity(Constants.TECH_TOKENS);
@@ -928,13 +911,11 @@ class GenericResourceStat extends AbstractStat
 		m_name = name;
 	}
 	
-	@Override
 	public String getName()
 	{
 		return "Resource: " + m_name;
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		return player.getResources().getQuantity(m_name);
@@ -951,13 +932,11 @@ class GenericTechNameStat extends AbstractStat
 		m_ta = ta;
 	}
 	
-	@Override
 	public String getName()
 	{
 		return "TechAdvance: " + m_ta.getName();
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		if (m_ta.hasTech(TechAttachment.get(player)))
@@ -976,13 +955,11 @@ class GenericUnitNameStat extends AbstractStat
 		m_ut = ut;
 	}
 	
-	@Override
 	public String getName()
 	{
 		return "UnitType: " + m_ut.getName();
 	}
 	
-	@Override
 	public double getValue(PlayerID player, GameData data)
 	{
 		int rVal = 0;
@@ -1010,7 +987,7 @@ class PlayerOrderComparator implements Comparator<PlayerID>
 	/**
 	 * sort based on first step that isn't a bid related step.
 	 */
-	@Override
+	
 	public int compare(PlayerID p1, PlayerID p2)
 	{
 		Iterator<GameStep> iter = m_data.getSequence().iterator();

@@ -42,15 +42,16 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractAI implements ITripleaPlayer
 {
-	@Override
-	public void reportPoliticalMessage(String message) {
+	
+	public void reportPoliticalMessage(String message)
+	{
 	}
-
-	@Override
-	public boolean acceptPoliticalAction(String acceptanceQuestion) {
+	
+	public boolean acceptPoliticalAction(String acceptanceQuestion)
+	{
 		return true;
 	}
-
+	
 	private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 	
 	/**
@@ -237,51 +238,43 @@ public abstract class AbstractAI implements ITripleaPlayer
 	 * 
 	 *******************************************/
 	
-	@Override
 	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
 	{
 		// return the first one
 		return territories.iterator().next();
 	}
 	
-	@Override
 	public boolean selectAttackSubs(Territory unitTerritory)
 	{
 		return true;
 	}
 	
-	@Override
 	public boolean selectAttackTransports(Territory unitTerritory)
 	{
 		return true;
 	}
 	
-	@Override
 	public boolean selectAttackUnits(Territory unitTerritory)
 	{
 		return true;
 	}
 	
-	@Override
 	public boolean selectShoreBombard(Territory unitTerritory)
 	{
 		return true;
 	}
 	
-	@Override
 	public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
 	{
 		// just use the first one
 		return candidates.iterator().next();
 	}
 	
-	@Override
 	public boolean confirmMoveKamikaze()
 	{
 		return false;
 	}
 	
-	@Override
 	public boolean confirmMoveHariKari()
 	{
 		return false;
@@ -297,7 +290,6 @@ public abstract class AbstractAI implements ITripleaPlayer
 	{
 	}
 	
-	@Override
 	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
 	{
 	}
@@ -306,17 +298,14 @@ public abstract class AbstractAI implements ITripleaPlayer
 	{
 	}
 	
-	@Override
 	public void reportError(String error)
 	{
 	}
 	
-	@Override
 	public void reportMessage(String message)
 	{
 	}
 	
-	@Override
 	public void confirmOwnCasualties(GUID battleId, String message)
 	{
 		pause();
@@ -376,7 +365,6 @@ public abstract class AbstractAI implements ITripleaPlayer
 		return m_name;
 	}
 	
-	@Override
 	public final PlayerID getID()
 	{
 		return m_id;

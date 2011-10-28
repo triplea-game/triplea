@@ -72,13 +72,11 @@ public class LobbyAdminStatPanel extends JPanel
 		((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener()
 		{
 			
-			@Override
 			public void connectionRemoved(INode to)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					
-					@Override
 					public void run()
 					{
 						m_currentLogins--;
@@ -89,13 +87,11 @@ public class LobbyAdminStatPanel extends JPanel
 				
 			}
 			
-			@Override
 			public void connectionAdded(INode to)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					
-					@Override
 					public void run()
 					{
 						m_currentLogins++;

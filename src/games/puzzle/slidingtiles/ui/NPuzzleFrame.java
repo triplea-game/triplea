@@ -110,6 +110,7 @@ public class NPuzzleFrame extends MainGameFrame
 		// If a user tries to close this frame, treat it as if they have asked to leave the game
 		this.addWindowListener(new WindowAdapter()
 		{
+			
 			@Override
 			public void windowClosing(WindowEvent e)
 			{
@@ -173,6 +174,7 @@ public class NPuzzleFrame extends MainGameFrame
 	 * 
 	 * @return the <code>IGame</code> for the current game
 	 */
+	
 	@Override
 	public IGame getGame()
 	{
@@ -182,6 +184,7 @@ public class NPuzzleFrame extends MainGameFrame
 	/**
 	 * Process a user request to leave the game.
 	 */
+	
 	@Override
 	public void leaveGame()
 	{
@@ -255,6 +258,7 @@ public class NPuzzleFrame extends MainGameFrame
 	/**
 	 * Process a user request to exit the program.
 	 */
+	
 	@Override
 	public void shutdown()
 	{
@@ -291,6 +295,7 @@ public class NPuzzleFrame extends MainGameFrame
 	 * @param error
 	 *            the error message to display
 	 */
+	
 	@Override
 	public void notifyError(String error)
 	{

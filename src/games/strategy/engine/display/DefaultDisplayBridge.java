@@ -35,7 +35,6 @@ public class DefaultDisplayBridge implements IDisplayBridge
 		m_gameData = gameData;
 	}
 	
-	@Override
 	public GameData getGameData()
 	{
 		return m_gameData;

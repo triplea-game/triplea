@@ -76,7 +76,7 @@ public class BattleCalculator
 	{
 		Comparator<Unit> comparator = new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit u1, Unit u2)
 			{
 				if (u1.getUnitType().equals(u2.getUnitType()))
@@ -1159,7 +1159,6 @@ class UnitBattleComparator implements Comparator<Unit>
 		m_bonus = bonus;
 	}
 	
-	@Override
 	public int compare(Unit u1, Unit u2)
 	{
 		if (u1.equals(u2))

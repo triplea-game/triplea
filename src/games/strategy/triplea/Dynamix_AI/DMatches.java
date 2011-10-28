@@ -54,6 +54,7 @@ public class DMatches
 	{
 		return new Match<UnitGroup>()
 		{
+			
 			@Override
 			public boolean match(UnitGroup ug)
 			{
@@ -69,6 +70,7 @@ public class DMatches
 	{
 		return new Match<UnitGroup>()
 		{
+			
 			@Override
 			public boolean match(UnitGroup ug)
 			{
@@ -84,6 +86,7 @@ public class DMatches
 	{
 		return new Match<UnitGroup>()
 		{
+			
 			@Override
 			public boolean match(UnitGroup ug)
 			{
@@ -96,6 +99,7 @@ public class DMatches
 	{
 		return new Match<UnitGroup>()
 		{
+			
 			@Override
 			public boolean match(UnitGroup ug)
 			{
@@ -108,6 +112,7 @@ public class DMatches
 	{
 		return new Match<UnitGroup>()
 		{
+			
 			@Override
 			public boolean match(UnitGroup ug)
 			{
@@ -118,6 +123,7 @@ public class DMatches
 	
 	public static final Match<UnitGroup> UnitGroupIsSeaOrAir = new Match<UnitGroup>()
 	{
+		
 		@Override
 		public boolean match(UnitGroup unitGroup)
 		{
@@ -127,6 +133,7 @@ public class DMatches
 	};
 	public static final Match<UnitGroup> UnitGroupIsLand = new Match<UnitGroup>()
 	{
+		
 		@Override
 		public boolean match(UnitGroup unitGroup)
 		{
@@ -142,6 +149,7 @@ public class DMatches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u2)
 			{
@@ -154,6 +162,7 @@ public class DMatches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit ter)
 			{
@@ -166,6 +175,7 @@ public class DMatches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit ter)
 			{
@@ -178,6 +188,7 @@ public class DMatches
 	{
 		return new Match<Unit>()
 		{
+			
 			@Override
 			public boolean match(Unit u)
 			{
@@ -188,8 +199,9 @@ public class DMatches
 		};
 	}
 	
-    public static final Match<Unit> UnitIsMoveableType = new Match<Unit>()
+	public static final Match<Unit> UnitIsMoveableType = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -199,6 +211,7 @@ public class DMatches
 	};
 	public static Match<Unit> UnitIsNonAAMoveableType = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -206,8 +219,9 @@ public class DMatches
 			return ua.getMovement(unit.getOwner()) > 0 && !ua.isAA();
 		}
 	};
-    public static final Match<Unit> UnitCanAttack = new Match<Unit>()
+	public static final Match<Unit> UnitCanAttack = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -219,8 +233,9 @@ public class DMatches
 			return true;
 		}
 	};
-    public static final Match<Unit> UnitCanDefend = new Match<Unit>()
+	public static final Match<Unit> UnitCanDefend = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit unit)
 		{
@@ -240,6 +255,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -259,6 +275,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -274,6 +291,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -289,6 +307,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -301,6 +320,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -313,6 +333,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory territory)
 			{
@@ -332,6 +353,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -347,6 +369,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -361,6 +384,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -369,12 +393,13 @@ public class DMatches
 		};
 	}
 	
-    public static final Match<Territory> TerritoryIsLandAndPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
+	public static final Match<Territory> TerritoryIsLandAndPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
 	
 	public static Match<Territory> territoryIsLandAndPassableTo(final PlayerID player)
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -399,6 +424,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -427,6 +453,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -439,6 +466,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -451,6 +479,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -463,6 +492,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -475,6 +505,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -491,8 +522,9 @@ public class DMatches
 		};
 	}
 	
-    public static final Match<Territory> territoryIsCapital = new Match<Territory>()
+	public static final Match<Territory> territoryIsCapital = new Match<Territory>()
 	{
+		
 		@Override
 		public boolean match(Territory ter)
 		{
@@ -517,6 +549,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -547,6 +580,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -567,6 +601,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -588,6 +623,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -605,6 +641,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -617,6 +654,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory t)
 			{
@@ -629,6 +667,7 @@ public class DMatches
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -653,6 +692,7 @@ public class DMatches
 	// /////////////////////////////////////////////Territory Status Matches///////////////////////////////////////////////
 	public static final Match<TerritoryStatus> TS_WasAttacked = new Match<TerritoryStatus>()
 	{
+		
 		@Override
 		public boolean match(TerritoryStatus ts)
 		{
@@ -661,6 +701,7 @@ public class DMatches
 	};
 	public static final Match<TerritoryStatus> TS_WasAttacked_LandGrab = new Match<TerritoryStatus>()
 	{
+		
 		@Override
 		public boolean match(TerritoryStatus ts)
 		{
@@ -669,6 +710,7 @@ public class DMatches
 	};
 	public static final Match<TerritoryStatus> TS_WasAttacked_Stabalize = new Match<TerritoryStatus>()
 	{
+		
 		@Override
 		public boolean match(TerritoryStatus ts)
 		{
@@ -677,6 +719,7 @@ public class DMatches
 	};
 	public static final Match<TerritoryStatus> TS_WasAttacked_Offensive = new Match<TerritoryStatus>()
 	{
+		
 		@Override
 		public boolean match(TerritoryStatus ts)
 		{
@@ -685,6 +728,7 @@ public class DMatches
 	};
 	public static final Match<TerritoryStatus> TS_WasAttacked_Trade = new Match<TerritoryStatus>()
 	{
+		
 		@Override
 		public boolean match(TerritoryStatus ts)
 		{
@@ -693,6 +737,7 @@ public class DMatches
 	};
 	public static final Match<TerritoryStatus> TS_WasReinforced = new Match<TerritoryStatus>()
 	{
+		
 		@Override
 		public boolean match(TerritoryStatus ts)
 		{
@@ -701,6 +746,7 @@ public class DMatches
 	};
 	public static final Match<TerritoryStatus> TS_WasReinforced_Block = new Match<TerritoryStatus>()
 	{
+		
 		@Override
 		public boolean match(TerritoryStatus ts)
 		{
@@ -709,6 +755,7 @@ public class DMatches
 	};
 	public static final Match<TerritoryStatus> TS_WasReinforced_Stabalize = new Match<TerritoryStatus>()
 	{
+		
 		@Override
 		public boolean match(TerritoryStatus ts)
 		{
@@ -717,6 +764,7 @@ public class DMatches
 	};
 	public static final Match<TerritoryStatus> TS_WasReinforced_Frontline = new Match<TerritoryStatus>()
 	{
+		
 		@Override
 		public boolean match(TerritoryStatus ts)
 		{
@@ -725,6 +773,7 @@ public class DMatches
 	};
 	public static final Match<TerritoryStatus> TS_WasRetreatedFrom = new Match<TerritoryStatus>()
 	{
+		
 		@Override
 		public boolean match(TerritoryStatus ts)
 		{

@@ -36,6 +36,7 @@ public class GameDescription implements Externalizable, Cloneable
 	{
 		LAUNCHING
 		{
+			
 			@Override
 			public String toString()
 			{
@@ -44,6 +45,7 @@ public class GameDescription implements Externalizable, Cloneable
 		},
 		IN_PROGRESS
 		{
+			
 			@Override
 			public String toString()
 			{
@@ -52,6 +54,7 @@ public class GameDescription implements Externalizable, Cloneable
 		},
 		WAITING_FOR_PLAYERS
 		{
+			
 			@Override
 			public String toString()
 			{
@@ -212,7 +215,6 @@ public class GameDescription implements Externalizable, Cloneable
 		m_comment = comment;
 	}
 	
-	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		
@@ -230,7 +232,6 @@ public class GameDescription implements Externalizable, Cloneable
 		m_gameName = in.readUTF();
 	}
 	
-	@Override
 	public void writeExternal(ObjectOutput out) throws IOException
 	{
 		((Node) m_hostedBy).writeExternal(out);

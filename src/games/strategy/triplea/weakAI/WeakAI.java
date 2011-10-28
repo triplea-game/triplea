@@ -97,6 +97,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Territory ourCapitol = TerritoryAttachment.getCapital(player, data);
 		Match<Territory> endMatch = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory o)
 			{
@@ -536,6 +537,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							Matches.unitIsOwnedBy(player),
 							new Match<Unit>()
 						{
+							
 							@Override
 							public boolean match(Unit o)
 							{
@@ -733,6 +735,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Matches.isTerritoryAllied(player, getPlayerBridge().getGameData()),
 					new Match<Territory>()
 				{
+					
 					@Override
 					public boolean match(Territory o)
 					{
@@ -782,7 +785,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			private Map<Territory, Integer> randomInts = new HashMap<Territory, Integer>();
 			
-			@Override
 			public int compare(Territory o1, Territory o2)
 			{
 				
@@ -883,6 +885,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							Matches.UnitIsStrategicBomber.invert(),
 							new Match<Unit>()
 						{
+							
 							@Override
 							public boolean match(Unit o)
 							{
@@ -1222,7 +1225,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				for (RepairRule rrule : rrules)
 				{
-					if (capUnit == null || !capUnit.getUnitType().equals((UnitType) rrule.getResults().keySet().iterator().next()))
+					if (capUnit == null || !capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next()))
 						continue;
 					if (!Matches.territoryHasOwnedFactory(data, player).match(capitol))
 						continue;
@@ -1257,7 +1260,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					for (Unit fixUnit : unitsThatCanProduceNeedingRepair)
 					{
-						if (fixUnit == null || !fixUnit.getType().equals((UnitType) rrule.getResults().keySet().iterator().next()))
+						if (fixUnit == null || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next()))
 							continue;
 						if (!Matches.territoryHasOwnedFactory(data, player).match(fixUnit.getTerritoryUnitIsIn()))
 							continue;
@@ -1342,13 +1345,13 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (amphibRoute != null)
 				{
 					// 25% transports - can be more if frontier is far away
-					goodNumberOfTransports = (int) (landUnitCount / 4);
+					goodNumberOfTransports = (landUnitCount / 4);
 					// boost for transport production
 					if (isTransport && defUnitsAtAmpibRoute > goodNumberOfTransports
 								&& landUnitCount > defUnitsAtAmpibRoute
 								&& defUnitsAtAmpibRoute > transportCount)
 					{
-						int transports = (int) (leftToSpend / cost);
+						int transports = (leftToSpend / cost);
 						leftToSpend -= cost * transports;
 						purchase.add(rule, transports);
 						continue;
@@ -1469,7 +1472,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	 *      Added new collection autoKilled to handle killing units prior to casualty selection
 	 */
 
-	@Override
 	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit,
 				CasualtyList defaultCasualties, GUID battleID)
 	{
@@ -1497,7 +1499,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
-	@Override
+
 	public boolean shouldBomberBomb(Territory territory)
 	{
 		return true;
@@ -1507,7 +1509,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
-	@Override
+
 	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
 	{
 		if (units == null || units.isEmpty())
@@ -1523,7 +1525,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
 	 */
-	@Override
+
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
 	{
 		List<Unit> rVal = new ArrayList<Unit>();
@@ -1538,25 +1540,22 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
 	 */
-	@Override
+
 	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
 	{
 		return candidates.iterator().next();
 	}
 	
-	@Override
 	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
 	{
 		return true;
 	}
 	
-	@Override
 	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
 	{
 		return null;
 	}
 	
-	@Override
 	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
 	{
 		return null;
@@ -1565,7 +1564,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
 	 */
-	@Override
+
 	public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
 	{
 		int[] dice = new int[numRolls];
@@ -1579,6 +1578,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	// some additional matches
 	public static final Match<Unit> HasntMoved = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit o)
 		{
@@ -1588,6 +1588,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	
 	public static final Match<Unit> Transporting = new Match<Unit>()
 	{
+		
 		@Override
 		public boolean match(Unit o)
 		{
@@ -1599,6 +1600,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		return new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory o)
 			{

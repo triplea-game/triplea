@@ -70,7 +70,7 @@ public class KingsTablePlayer extends AbstractHumanPlayer<KingsTableFrame> imple
 		
 		while (play == null)
 		{
-			play = (PlayData) m_ui.waitForPlay(m_id, m_bridge);
+			play = m_ui.waitForPlay(m_id, m_bridge);
 			
 			if (play == null)
 			{

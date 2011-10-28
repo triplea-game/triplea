@@ -67,20 +67,23 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 *            Player2 in the relationship
 	 * @return the current RelationshipType between those two players
 	 */
+	
 	@Override
 	public RelationshipType getRelationshipType(PlayerID p1, PlayerID p2)
 	{
 		return getRelationship(p1, p2).getRelationshipType();
 	}
-
-	public Relationship getRelationship(PlayerID p1, PlayerID p2) {
+	
+	public Relationship getRelationship(PlayerID p1, PlayerID p2)
+	{
 		return m_relationships.get(new RelatedPlayers(p1, p2));
 	}
 	
-	public int getRoundRelationshipWasCreated(PlayerID p1, PlayerID p2) {
+	public int getRoundRelationshipWasCreated(PlayerID p1, PlayerID p2)
+	{
 		return m_relationships.get(new RelatedPlayers(p1, p2)).getRoundCreated();
 	}
-
+	
 	/**
 	 * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two players
 	 * 
@@ -149,6 +152,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 		 * even if it was put in as (p1,p2) and you want to get it out as (p2,p1)
 		 * and
 		 */
+		
 		@Override
 		public int hashCode()
 		{
@@ -203,19 +207,25 @@ public class RelationshipTracker extends RelationshipInterpreter
 		
 	}
 	
-	public class Relationship implements Serializable {
+
+	public class Relationship implements Serializable
+	{
 		
-		public Relationship(RelationshipType relationshipType) {
+		public Relationship(RelationshipType relationshipType)
+		{
 			this.relationshipType = relationshipType;
 		}
+		
 		private final RelationshipType relationshipType;
 		private final int roundCreated = getData().getSequence().getRound();
-
-		public int getRoundCreated() {
+		
+		public int getRoundCreated()
+		{
 			return roundCreated;
 		}
-
-		public RelationshipType getRelationshipType() {
+		
+		public RelationshipType getRelationshipType()
+		{
 			return relationshipType;
 		}
 		

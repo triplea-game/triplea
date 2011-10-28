@@ -37,12 +37,10 @@ public class ChatController implements IChatController
 	private final IConnectionChangeListener m_connectionChangeListener = new IConnectionChangeListener()
 	{
 		
-		@Override
 		public void connectionAdded(INode to)
 		{
 		}
 		
-		@Override
 		public void connectionRemoved(INode to)
 		{
 			synchronized (m_mutex)
@@ -111,7 +109,7 @@ public class ChatController implements IChatController
 	}
 	
 	// a player has joined
-	@Override
+	
 	public Tuple<List<INode>, Long> joinChat()
 	{
 		INode node = MessageContext.getSender();
@@ -130,7 +128,7 @@ public class ChatController implements IChatController
 	}
 	
 	// a player has left
-	@Override
+	
 	public void leaveChat()
 	{
 		leaveChatInternal(MessageContext.getSender());

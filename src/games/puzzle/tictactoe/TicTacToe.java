@@ -60,7 +60,7 @@ public class TicTacToe implements IGameLoader
 	/**
 	 * @see IGameLoader.createPlayers(playerNames)
 	 */
-	@Override
+	
 	public Set<IGamePlayer> createPlayers(Map<String, String> playerNames)
 	{
 		Set<IGamePlayer> players = new HashSet<IGamePlayer>();
@@ -100,14 +100,13 @@ public class TicTacToe implements IGameLoader
 	/**
 	 * Return an array of player types that can play on the server.
 	 */
-	@Override
+	
 	public String[] getServerPlayerTypes()
 	{
 		return new String[] { HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
 		
 	}
 	
-	@Override
 	public void shutDown()
 	{
 		if (m_display != null)
@@ -117,7 +116,6 @@ public class TicTacToe implements IGameLoader
 		}
 	}
 	
-	@Override
 	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
 	{
 		try
@@ -126,7 +124,7 @@ public class TicTacToe implements IGameLoader
 			
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					final TicTacToeFrame frame = new TicTacToeFrame(game, players);
@@ -139,7 +137,7 @@ public class TicTacToe implements IGameLoader
 					SwingUtilities.invokeLater(
 								new Runnable()
 							{
-								@Override
+								
 								public void run()
 								{
 									// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -179,7 +177,6 @@ public class TicTacToe implements IGameLoader
 		}
 	}
 	
-	@Override
 	public IPBEMMessenger[] getPBEMMessengers()
 	{
 		return new IPBEMMessenger[] { new AllYouCanUploadDotComPBEMMessenger() };
@@ -188,19 +185,17 @@ public class TicTacToe implements IGameLoader
 	/**
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
-	@Override
+	
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return ITicTacToeDisplay.class;
 	}
 	
-	@Override
 	public Class<? extends IRemote> getRemotePlayerType()
 	{
 		return ITicTacToePlayer.class;
 	}
 	
-	@Override
 	public IUnitFactory getUnitFactory()
 	{
 		return new DefaultUnitFactory();

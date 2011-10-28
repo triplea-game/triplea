@@ -49,7 +49,6 @@ public abstract class BaseDelegate implements IDelegate
 	{
 	}
 	
-	@Override
 	public void initialize(String name, String displayName)
 	{
 		m_name = name;
@@ -59,7 +58,7 @@ public abstract class BaseDelegate implements IDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	@Override
+	
 	public void start(IDelegateBridge bridge)
 	{
 		m_bridge = bridge;
@@ -67,13 +66,11 @@ public abstract class BaseDelegate implements IDelegate
 		triggerWhenTriggerAttachments(TriggerAttachment.BEFORE);
 	}
 	
-	@Override
 	public String getName()
 	{
 		return m_name;
 	}
 	
-	@Override
 	public String getDisplayName()
 	{
 		return m_displayName;
@@ -82,7 +79,7 @@ public abstract class BaseDelegate implements IDelegate
 	/**
 	 * Called before the delegate will stop running.
 	 */
-	@Override
+	
 	public void end()
 	{
 		// normally nothing to do here
@@ -93,7 +90,7 @@ public abstract class BaseDelegate implements IDelegate
 	/**
 	 * Returns the state of the Delegate.
 	 */
-	@Override
+	
 	public Serializable saveState()
 	{
 		// This delegate does not maintain internal state
@@ -103,7 +100,7 @@ public abstract class BaseDelegate implements IDelegate
 	/**
 	 * Loads the delegates state
 	 */
-	@Override
+	
 	public void loadState(Serializable state)
 	{
 		// This delegate does not maintain internal state
@@ -113,10 +110,9 @@ public abstract class BaseDelegate implements IDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
-	@Override
+	
 	public abstract Class<? extends IRemote> getRemoteType();
 	
-	@Override
 	public IDelegateBridge getBridge()
 	{
 		return m_bridge;
@@ -159,7 +155,8 @@ public abstract class BaseDelegate implements IDelegate
 					String notificationMessageKey = notificationMessages.next();
 					String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
 					message = "<html>" + message + "</html>";
-					((ITripleaPlayer)m_bridge.getRemote(m_player)).reportMessage(message);			;
+					((ITripleaPlayer) m_bridge.getRemote(m_player)).reportMessage(message);
+					;
 				}
 				
 				// now do victory messages:

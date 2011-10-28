@@ -123,7 +123,7 @@ public class ProductionPanel extends JPanel
 		
 		Action closeAction = new AbstractAction("")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				m_dialog.setVisible(false);
@@ -204,7 +204,7 @@ public class ProductionPanel extends JPanel
 	
 	Action m_done_action = new AbstractAction("Done")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 		{
 			m_dialog.setVisible(false);
@@ -367,7 +367,7 @@ public class ProductionPanel extends JPanel
 		
 		private ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
 		{
-			@Override
+			
 			public void changedValue(ScrollableTextField stf)
 			{
 				if (stf.getValue() != m_quantity)

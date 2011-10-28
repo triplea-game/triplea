@@ -469,7 +469,7 @@ public class DiceRoll implements Externalizable
 		
 		Comparator<Unit> comp = new Comparator<Unit>()
 		{
-			@Override
+			
 			public int compare(Unit u1, Unit u2)
 			{
 				Integer v1, v2;
@@ -494,7 +494,7 @@ public class DiceRoll implements Externalizable
 		
 		Comparator<UnitSupportAttachment> comp = new Comparator<UnitSupportAttachment>()
 		{
-			@Override
+			
 			public int compare(UnitSupportAttachment u1, UnitSupportAttachment u2)
 			{
 				Integer v1 = new Integer(Math.abs(u1.getBonus()));
@@ -922,7 +922,6 @@ public class DiceRoll implements Externalizable
 		return m_rolls.get(index);
 	}
 	
-	@Override
 	public void writeExternal(ObjectOutput out) throws IOException
 	{
 		int[] dice = new int[m_rolls.size()];
@@ -935,7 +934,6 @@ public class DiceRoll implements Externalizable
 		
 	}
 	
-	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		int[] dice = (int[]) in.readObject();

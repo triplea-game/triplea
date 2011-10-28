@@ -57,7 +57,6 @@ public class ModeratorController implements IModeratorController
 		m_messenger = messenger;
 	}
 	
-	@Override
 	public void banUsername(INode node, Date banExpires)
 	{
 		assertUserIsAdmin();
@@ -74,7 +73,6 @@ public class ModeratorController implements IModeratorController
 					, banExpires.toString()));
 	}
 	
-	@Override
 	public void banIp(INode node, Date banExpires)
 	{
 		assertUserIsAdmin();
@@ -91,7 +89,6 @@ public class ModeratorController implements IModeratorController
 					, banExpires.toString()));
 	}
 	
-	@Override
 	public void banMac(INode node, Date banExpires)
 	{
 		assertUserIsAdmin();
@@ -108,7 +105,6 @@ public class ModeratorController implements IModeratorController
 					, banExpires.toString()));
 	}
 	
-	@Override
 	public void muteUsername(INode node, Date muteExpires)
 	{
 		assertUserIsAdmin();
@@ -126,7 +122,6 @@ public class ModeratorController implements IModeratorController
 					, muteExpires.toString()));
 	}
 	
-	@Override
 	public void muteIp(INode node, Date muteExpires)
 	{
 		assertUserIsAdmin();
@@ -144,7 +139,6 @@ public class ModeratorController implements IModeratorController
 					, muteExpires.toString()));
 	}
 	
-	@Override
 	public void muteMac(INode node, Date muteExpires)
 	{
 		assertUserIsAdmin();
@@ -167,7 +161,6 @@ public class ModeratorController implements IModeratorController
 		return ServerMessenger.getInstance().GetPlayerMac(node.getName());
 	}
 	
-	@Override
 	public void boot(INode node)
 	{
 		assertUserIsAdmin();
@@ -195,7 +188,6 @@ public class ModeratorController implements IModeratorController
 		}
 	}
 	
-	@Override
 	public boolean isAdmin()
 	{
 		INode node = MessageContext.getSender();
@@ -219,7 +211,6 @@ public class ModeratorController implements IModeratorController
 		return name;
 	}
 	
-	@Override
 	public String getInformationOn(INode node)
 	{
 		assertUserIsAdmin();
@@ -263,7 +254,6 @@ public class ModeratorController implements IModeratorController
 		return builder.toString();
 	}
 	
-	@Override
 	public String setPassword(INode node, String hashedPassword)
 	{
 		assertUserIsAdmin();

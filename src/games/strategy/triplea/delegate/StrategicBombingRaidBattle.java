@@ -105,25 +105,21 @@ public class StrategicBombingRaidBattle implements Battle
 		return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
 	}
 	
-	@Override
 	public boolean isOver()
 	{
 		return m_isOver;
 	}
 	
-	@Override
 	public boolean isEmpty()
 	{
 		return m_units.isEmpty();
 	}
 	
-	@Override
 	public void removeAttack(Route route, Collection<Unit> units)
 	{
 		m_units.removeAll(units);
 	}
 	
-	@Override
 	public Change addAttackChange(Route route, Collection<Unit> units)
 	{
 		
@@ -134,14 +130,12 @@ public class StrategicBombingRaidBattle implements Battle
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
-	@Override
 	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
 	{
 		m_units.addAll(units);
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
-	@Override
 	public void fight(IDelegateBridge bridge)
 	{
 		// we were interrupted
@@ -176,7 +170,6 @@ public class StrategicBombingRaidBattle implements Battle
 		steps.add(new IExecutable()
 		{
 			
-			@Override
 			public void execute(ExecutionStack stack, IDelegateBridge bridge)
 			{
 				getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
@@ -237,7 +230,6 @@ public class StrategicBombingRaidBattle implements Battle
 		steps.add(new IExecutable()
 		{
 			
-			@Override
 			public void execute(ExecutionStack stack, IDelegateBridge bridge)
 			{
 				if (isSBRAffectsUnitProduction())
@@ -263,11 +255,10 @@ public class StrategicBombingRaidBattle implements Battle
 	private void showBattle(IDelegateBridge bridge)
 	{
 		String title = "Bombing raid in " + m_battleSite.getName();
-        getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_units, getDefendingUnits(), null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender);
+		getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_units, getDefendingUnits(), null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender);
 		getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
 	}
 	
-	@Override
 	public List<Unit> getDefendingUnits()
 	{
 		Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAA, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert());
@@ -281,7 +272,6 @@ public class StrategicBombingRaidBattle implements Battle
 		}
 	}
 	
-	@Override
 	public List<Unit> getAttackingUnits()
 	{
 		return m_units;
@@ -293,14 +283,13 @@ public class StrategicBombingRaidBattle implements Battle
 		DiceRoll m_dice;
 		Collection<Unit> m_casualties;
 		
-		@Override
 		public void execute(ExecutionStack stack, IDelegateBridge bridge)
 		{
 			boolean isEditMode = EditDelegate.getEditMode(bridge.getData());
 			
 			IExecutable roll = new IExecutable()
 			{
-				@Override
+				
 				public void execute(ExecutionStack stack, IDelegateBridge bridge)
 				{
 					m_dice = DiceRoll.rollAA(m_units, bridge, m_battleSite, Matches.UnitIsAAforBombing);
@@ -310,7 +299,6 @@ public class StrategicBombingRaidBattle implements Battle
 			IExecutable calculateCasualties = new IExecutable()
 			{
 				
-				@Override
 				public void execute(ExecutionStack stack, IDelegateBridge bridge)
 				{
 					m_casualties = calculateCasualties(bridge, m_dice);
@@ -322,7 +310,6 @@ public class StrategicBombingRaidBattle implements Battle
 			IExecutable notifyCasualties = new IExecutable()
 			{
 				
-				@Override
 				public void execute(ExecutionStack stack, IDelegateBridge bridge)
 				{
 					notifyAAHits(bridge, m_dice, m_casualties);
@@ -334,7 +321,6 @@ public class StrategicBombingRaidBattle implements Battle
 			IExecutable removeHits = new IExecutable()
 			{
 				
-				@Override
 				public void execute(ExecutionStack stack, IDelegateBridge bridge)
 				{
 					removeAAHits(bridge, m_dice, m_casualties);
@@ -432,7 +418,7 @@ public class StrategicBombingRaidBattle implements Battle
 		
 		Runnable r = new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				ITripleaPlayer defender = (ITripleaPlayer) bridge.getRemote(m_defender);
@@ -474,13 +460,11 @@ public class StrategicBombingRaidBattle implements Battle
 	{
 		private int[] m_dice;
 		
-		@Override
 		public void execute(ExecutionStack stack, IDelegateBridge bridge)
 		{
 			IExecutable rollDice = new IExecutable()
 			{
 				
-				@Override
 				public void execute(ExecutionStack stack, IDelegateBridge bridge)
 				{
 					rollDice(bridge);
@@ -490,7 +474,7 @@ public class StrategicBombingRaidBattle implements Battle
 			
 			IExecutable findCost = new IExecutable()
 			{
-				@Override
+				
 				public void execute(ExecutionStack stack, IDelegateBridge bridge)
 				{
 					findCost(bridge);
@@ -625,7 +609,7 @@ public class StrategicBombingRaidBattle implements Battle
 			{
 				// determine the max allowed damage
 				Unit current = m_targets.iterator().next();
-				//UnitAttachment ua = UnitAttachment.get(current.getType());
+				// UnitAttachment ua = UnitAttachment.get(current.getType());
 				TripleAUnit taUnit = (TripleAUnit) current;
 				
 				damageLimit = taUnit.getHowMuchMoreDamageCanThisUnitTake(current, m_battleSite);
@@ -711,14 +695,12 @@ public class StrategicBombingRaidBattle implements Battle
 		}
 	}
 	
-	@Override
 	public boolean isBombingRun()
 	{
 		
 		return true;
 	}
 	
-	@Override
 	public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
 	{
 		// should never happen
@@ -747,14 +729,12 @@ public class StrategicBombingRaidBattle implements Battle
 		return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun();
 	}
 	
-	@Override
 	public Territory getTerritory()
 	{
 		
 		return m_battleSite;
 	}
 	
-	@Override
 	public Collection<Unit> getDependentUnits(Collection<Unit> units)
 	{
 		return Collections.emptyList();
@@ -763,7 +743,7 @@ public class StrategicBombingRaidBattle implements Battle
 	/**
 	 * Add bombarding unit. Doesn't make sense here so just do nothing.
 	 */
-	@Override
+	
 	public void addBombardingUnit(Unit unit)
 	{
 		// nothing
@@ -772,25 +752,22 @@ public class StrategicBombingRaidBattle implements Battle
 	/**
 	 * Return whether battle is amphibious.
 	 */
-	@Override
+	
 	public boolean isAmphibious()
 	{
 		return false;
 	}
 	
-	@Override
 	public Collection<Unit> getAmphibiousLandAttackers()
 	{
 		return new ArrayList<Unit>();
 	}
 	
-	@Override
 	public Collection<Unit> getBombardingUnits()
 	{
 		return new ArrayList<Unit>();
 	}
 	
-	@Override
 	public int getBattleRound()
 	{
 		return 0;

@@ -92,7 +92,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	private Observer m_gameSelectorObserver = new Observer()
 	{
 		
-		@Override
 		public void update(Observable o, Object arg)
 		{
 			gameDataChanged();
@@ -264,25 +263,21 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	private IServerStartupRemote m_serverStartupRemote = new IServerStartupRemote()
 	{
 		
-		@Override
 		public PlayerListing getPlayerListing()
 		{
 			return getPlayerListingInternal();
 		}
 		
-		@Override
 		public void takePlayer(INode who, String playerName)
 		{
 			takePlayerInternal(who, true, playerName);
 		}
 		
-		@Override
 		public void releasePlayer(INode who, String playerName)
 		{
 			takePlayerInternal(who, false, playerName);
 		}
 		
-		@Override
 		public boolean isGameStarted(INode newNode)
 		{
 			if (m_serverLauncher != null)
@@ -368,19 +363,16 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		}
 	}
 	
-	@Override
 	public void messengerInvalid(IMessenger messenger, Exception reason)
 	{
 		JOptionPane.showMessageDialog(m_ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
 		m_typePanelModel.showSelectType();
 	}
 	
-	@Override
 	public void connectionAdded(INode to)
 	{
 	}
 	
-	@Override
 	public void connectionRemoved(INode node)
 	{
 		// will be handled elsewhere

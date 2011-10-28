@@ -76,7 +76,6 @@ public class InGameLobbyWatcher
 	private Observer m_gameSelectorModelObserver = new Observer()
 	{
 		
-		@Override
 		public void update(Observable o, Object arg)
 		{
 			gameSelectorModelUpdated();
@@ -87,7 +86,6 @@ public class InGameLobbyWatcher
 	private GameStepListener m_gameStepListener = new GameStepListener()
 	{
 		
-		@Override
 		public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
 		{
 			InGameLobbyWatcher.this.gameStepChanged(stepName, round);
@@ -133,12 +131,10 @@ public class InGameLobbyWatcher
 		IConnectionLogin login = new IConnectionLogin()
 		{
 			
-			@Override
 			public void notifyFailedLogin(String message)
 			{
 			}
 			
-			@Override
 			public Map<String, String> getProperties(Map<String, String> challengProperties)
 			{
 				Map<String, String> rVal = new HashMap<String, String>();
@@ -234,7 +230,6 @@ public class InGameLobbyWatcher
 		m_messenger.addErrorListener(new IMessengerErrorListener()
 		{
 			
-			@Override
 			public void messengerInvalid(IMessenger messenger, Exception reason)
 			{
 				shutDown();
@@ -245,14 +240,12 @@ public class InGameLobbyWatcher
 		m_connectionChangeListener = new IConnectionChangeListener()
 						{
 							
-							@Override
 							public void connectionRemoved(INode to)
 							{
 								updatePlayerCount();
 								
 							}
 							
-							@Override
 							public void connectionAdded(INode to)
 							{
 								updatePlayerCount();
@@ -266,7 +259,7 @@ public class InGameLobbyWatcher
 		
 		Runnable r = new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				final String addressUsed = controller.testGame(m_gameID);
@@ -279,7 +272,6 @@ public class InGameLobbyWatcher
 						SwingUtilities.invokeLater(new Runnable()
 						{
 							
-							@Override
 							public void run()
 							{
 								String message = "Your computer is not reachable from the internet.\n" +

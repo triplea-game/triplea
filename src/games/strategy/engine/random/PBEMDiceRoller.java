@@ -88,7 +88,7 @@ public class PBEMDiceRoller implements IRandomSource
 	/**
 	 * getRandom
 	 */
-	@Override
+	
 	public int[] getRandom(final int max, final int count, final String annotation)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -99,7 +99,6 @@ public class PBEMDiceRoller implements IRandomSource
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
 					
-					@Override
 					public void run()
 					{
 						result.set(getRandom(max, count, annotation));
@@ -153,7 +152,7 @@ public class PBEMDiceRoller implements IRandomSource
 	 *            String
 	 * @return int
 	 */
-	@Override
+	
 	public int getRandom(int max, String annotation)
 	{
 		return getRandom(max, 1, annotation)[0];
@@ -210,7 +209,7 @@ class HttpDiceRollerDialog extends JDialog
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		m_exitButton.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				System.exit(-1);
@@ -221,7 +220,7 @@ class HttpDiceRollerDialog extends JDialog
 		
 		m_reRollButton.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				rollInternal();
@@ -230,7 +229,7 @@ class HttpDiceRollerDialog extends JDialog
 		
 		m_okButton.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				closeAndReturn();
@@ -273,7 +272,6 @@ class HttpDiceRollerDialog extends JDialog
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				m_exitButton.setEnabled(true);
@@ -304,7 +302,7 @@ class HttpDiceRollerDialog extends JDialog
 				
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						roll();
@@ -338,6 +336,7 @@ class HttpDiceRollerDialog extends JDialog
 		
 		Thread t = new Thread("Triplea, roll in seperate thread")
 		{
+			
 			@Override
 			public void run()
 			{
@@ -361,7 +360,6 @@ class HttpDiceRollerDialog extends JDialog
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				setVisible(false);

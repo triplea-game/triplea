@@ -61,7 +61,7 @@ class TestUnit
 	
 	public static TestUnit get(Unit unit)
 	{
-		return m_map.get((TripleAUnit) unit);
+		return m_map.get(unit);
 	}
 	
 	public static List<TestUnit> createList(Collection<Unit> units)
@@ -181,7 +181,7 @@ public class UnitAutoChooserTest extends TestCase
 		{
 			ensureIn(t, u);
 			transporting.add(u);
-			PropertyUtil.set(TripleAUnit.TRANSPORTED_BY, trn, (TripleAUnit) u);
+			PropertyUtil.set(TripleAUnit.TRANSPORTED_BY, trn, u);
 		}
 		mustMoveWith.put(trn, transporting);
 		

@@ -103,7 +103,7 @@ public class ActionButtons extends JPanel
 		// this will minimize the damage
 		map.getUIContext().addActive(new Active()
 		{
-			@Override
+			
 			public void deactivate()
 			{
 				removeAll();
@@ -138,7 +138,7 @@ public class ActionButtons extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				
@@ -156,7 +156,7 @@ public class ActionButtons extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_repairPanel.toString());
@@ -172,7 +172,7 @@ public class ActionButtons extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_purchasePanel.toString());
@@ -188,7 +188,6 @@ public class ActionButtons extends JPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_placePanel.toString());
@@ -208,7 +207,6 @@ public class ActionButtons extends JPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_battlePanel.toString());
@@ -225,7 +223,7 @@ public class ActionButtons extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					m_layout.show(ActionButtons.this, m_politicsPanel.toString());
@@ -241,7 +239,7 @@ public class ActionButtons extends JPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_techPanel.toString());
@@ -257,7 +255,6 @@ public class ActionButtons extends JPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_endTurnPanel.toString());
@@ -310,7 +307,8 @@ public class ActionButtons extends JPanel
 	 * 
 	 * @return null if no action was picked.
 	 */
-	public PoliticalActionAttachment waitForPoliticalAction() {
+	public PoliticalActionAttachment waitForPoliticalAction()
+	{
 		return m_politicsPanel.waitForPoliticalAction();
 	}
 	

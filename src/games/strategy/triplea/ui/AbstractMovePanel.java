@@ -43,7 +43,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 	protected List<UndoableMove> m_undoableMoves;
 	protected AbstractAction m_doneMove = new AbstractAction("Done")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 		{
 			if (doneMoveAction())
@@ -57,7 +57,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 	private final Action m_DONE_MOVE_ACTION = new WeakAction("Done", m_doneMove);
 	private final Action m_cancelMove = new AbstractAction("Cancel")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 		{
 			cancelMoveAction();
@@ -184,7 +184,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				s_logger.fine("cleanup");
@@ -227,7 +227,6 @@ public abstract class AbstractMovePanel extends ActionPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				m_CANCEL_MOVE_ACTION.actionPerformed(null);
@@ -245,7 +244,6 @@ public abstract class AbstractMovePanel extends ActionPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				removeAll();
@@ -289,7 +287,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				s_logger.fine("setup");

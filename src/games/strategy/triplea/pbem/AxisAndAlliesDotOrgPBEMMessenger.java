@@ -71,68 +71,57 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 	{
 	}
 	
-	@Override
 	public String getName()
 	{
 		return "www.AxisAndAllies.org";
 	}
 	
-	@Override
 	public boolean getNeedsUsername()
 	{
 		return true;
 	}
 	
-	@Override
 	public boolean getNeedsPassword()
 	{
 		return true;
 	}
 	
-	@Override
 	public boolean getCanViewPosted()
 	{
 		return true;
 	}
 	
-	@Override
 	public void viewPosted()
 	{
 		String url = "http://" + m_host + "/forums/index.php?topic=" + m_gameId + ".new#new";
 		BrowserControl.displayURL(url);
 	}
 	
-	@Override
 	public void setGameId(String gameId)
 	{
 		m_gameId = gameId;
 	}
 	
-	@Override
 	public String getGameId()
 	{
 		return m_gameId;
 	}
 	
-	@Override
 	public void setUsername(String username)
 	{
 		m_username = username;
 	}
 	
-	@Override
 	public String getUsername()
 	{
 		return m_username;
 	}
 	
-	@Override
 	public void setPassword(String password)
 	{
 		m_password = password;
 	}
 	
-	@Override
 	public String getPassword()
 	{
 		return m_password;
@@ -501,7 +490,6 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		return "http://" + m_host + "/forums/index.php?action=dlattach;topic=" + m_gameId + ".0;attach=" + m_attachId;
 	}
 	
-	@Override
 	public boolean postTurnSummary(String summary, String screenshotRef, String saveGameRef)
 	{
 		URL url = null;
@@ -664,13 +652,11 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		return true;
 	}
 	
-	@Override
 	public String getTurnSummaryRef()
 	{
 		return m_turnSummaryRef;
 	}
 	
-	@Override
 	public boolean postSaveGame(String filename, InputStream fileIn)
 	{
 		// not actually posting, just holding the reference
@@ -680,7 +666,6 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		return true;
 	}
 	
-	@Override
 	public String getSaveGameRef()
 	{
 		return m_saveGameRef;

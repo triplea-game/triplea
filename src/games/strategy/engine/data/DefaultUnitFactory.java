@@ -18,7 +18,6 @@ package games.strategy.engine.data;
 public class DefaultUnitFactory implements IUnitFactory
 {
 	
-	@Override
 	public Unit createUnit(UnitType type, PlayerID owner, GameData data)
 	{
 		return new Unit(type, owner, data);

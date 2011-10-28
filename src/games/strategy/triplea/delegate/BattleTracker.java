@@ -317,6 +317,7 @@ public class BattleTracker implements java.io.Serializable
 		// find the territories that are considered blitz
 		Match<Territory> canBlitz = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory territory)
 			{
@@ -717,7 +718,7 @@ public class BattleTracker implements java.io.Serializable
 			Collection<Unit> toReplace = Match.getMatches(nonCom, Matches.UnitWhenCapturedChangesIntoDifferentUnitType());
 			for (Unit u : toReplace)
 			{
-				LinkedHashMap<String,Tuple<String,IntegerMap<UnitType>>> map = UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
+				LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> map = UnitAttachment.get(u.getType()).getWhenCapturedChangesInto();
 				PlayerID currentOwner = u.getOwner();
 				for (String value : map.keySet())
 				{
@@ -729,14 +730,14 @@ public class BattleTracker implements java.io.Serializable
 						continue;
 					CompositeChange changes = new CompositeChange();
 					Collection<Unit> toAdd = new ArrayList<Unit>();
-					Tuple<String,IntegerMap<UnitType>> toCreate = map.get(value);
+					Tuple<String, IntegerMap<UnitType>> toCreate = map.get(value);
 					boolean translateAttributes = toCreate.getFirst().equalsIgnoreCase("true");
 					Iterator<UnitType> iter = toCreate.getSecond().keySet().iterator();
 					while (iter.hasNext())
 					{
 						UnitType ut = iter.next();
-						//if (ut.equals(u.getType()))
-							//continue;
+						// if (ut.equals(u.getType()))
+						// continue;
 						toAdd.addAll(ut.create(toCreate.getSecond().getInt(ut), newOwner));
 					}
 					if (!toAdd.isEmpty())
@@ -747,7 +748,7 @@ public class BattleTracker implements java.io.Serializable
 							if (!translate.isEmpty())
 								changes.add(translate);
 						}
-
+						
 						changes.add(ChangeFactory.removeUnits(territory, Collections.singleton(u)));
 						changes.add(ChangeFactory.addUnits(territory, toAdd));
 						changes.add(ChangeFactory.markNoMovementChange(toAdd));
@@ -762,7 +763,6 @@ public class BattleTracker implements java.io.Serializable
 				}
 			}
 		}
-		
 		
 		Change capture = ChangeFactory.changeOwner(nonCom, newOwner, territory);
 		bridge.addChange(capture);

@@ -47,69 +47,57 @@ public class AllYouCanUploadDotComPBEMMessenger
 	{
 	}
 	
-	@Override
 	public String getName()
 	{
 		return "www.AllYouCanUpload.com";
 	}
 	
-	@Override
 	public boolean getNeedsUsername()
 	{
 		return false;
 	}
 	
-	@Override
 	public boolean getNeedsPassword()
 	{
 		return false;
 	}
 	
-	@Override
 	public boolean getCanViewPosted()
 	{
 		return false;
 	}
 	
-	@Override
 	public void viewPosted()
 	{
 	}
 	
-	@Override
 	public void setGameId(String gameId)
 	{
 	}
 	
-	@Override
 	public String getGameId()
 	{
 		return null;
 	}
 	
-	@Override
 	public void setUsername(String username)
 	{
 	}
 	
-	@Override
 	public String getUsername()
 	{
 		return null;
 	}
 	
-	@Override
 	public void setPassword(String password)
 	{
 	}
 	
-	@Override
 	public String getPassword()
 	{
 		return null;
 	}
 	
-	@Override
 	public boolean postScreenshot(String fileName, InputStream fileIn)
 				throws IOException
 	{
@@ -187,7 +175,6 @@ public class AllYouCanUploadDotComPBEMMessenger
 		return true;
 	}
 	
-	@Override
 	public String getScreenshotRef()
 	{
 		return m_screenshotRef;

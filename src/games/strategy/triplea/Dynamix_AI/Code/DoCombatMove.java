@@ -61,7 +61,7 @@ public class DoCombatMove
 			DUtils.Log(Level.FINE, message);
 			Runnable runner = new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);
@@ -403,6 +403,7 @@ public class DoCombatMove
 		final List<Territory> ourCaps = TerritoryAttachment.getAllCapitals(player, data);
 		Match<Territory> isLandGrab = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -429,6 +430,7 @@ public class DoCombatMove
 			capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(data, cap, 1));
 		Match<Territory> isAttack_Stabilize = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -456,6 +458,7 @@ public class DoCombatMove
 		};
 		Match<Territory> isAttack_Offensive = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{
@@ -473,6 +476,7 @@ public class DoCombatMove
 		};
 		Match<Territory> isAttack_Trade = new Match<Territory>()
 		{
+			
 			@Override
 			public boolean match(Territory ter)
 			{

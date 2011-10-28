@@ -47,7 +47,7 @@ public class TripleaDisplay implements ITripleaDisplay
 	/*
 	 * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
 	 */
-	@Override
+
 	public void initialize(IDisplayBridge bridge)
 	{
 		m_displayBridge = bridge;
@@ -58,18 +58,19 @@ public class TripleaDisplay implements ITripleaDisplay
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#showBattle(games.strategy.net.GUID, java.util.List, games.strategy.engine.data.Territory, java.lang.String, java.util.Collection, java.util.Collection)
 	 */
-	@Override
-    public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Collection<Unit> killedUnits,
-    			final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> unit_dependents, PlayerID attacker, PlayerID defender)
+
+	public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Collection<Unit> killedUnits,
+				final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> unit_dependents, PlayerID attacker, PlayerID defender)
 	{
-        m_ui.getBattlePanel().showBattle(battleID, location, battleTitle, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie, defendingWaitingToDie, unit_dependents, attacker, defender);
+		m_ui.getBattlePanel().showBattle(battleID, location, battleTitle, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie, defendingWaitingToDie, unit_dependents, attacker,
+					defender);
 		
 	}
 	
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#listBattleSteps(games.strategy.net.GUID, java.lang.String, java.util.List)
 	 */
-	@Override
+
 	public void listBattleSteps(GUID battleID, List<String> steps)
 	{
 		m_ui.getBattlePanel().listBattle(battleID, steps);
@@ -79,7 +80,7 @@ public class TripleaDisplay implements ITripleaDisplay
 	/*
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
 	 */
-	@Override
+
 	public void casualtyNotification(GUID battleID,
 				String step,
 				DiceRoll dice,
@@ -95,7 +96,7 @@ public class TripleaDisplay implements ITripleaDisplay
 	/*
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
 	 */
-	@Override
+
 	public void deadUnitNotification(GUID battleID,
 				PlayerID player,
 				Collection<Unit> killed,
@@ -108,7 +109,7 @@ public class TripleaDisplay implements ITripleaDisplay
 	/*
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
 	 */
-	@Override
+
 	public void scrambleNotification(GUID battleID,
 				String step,
 				PlayerID player,
@@ -121,7 +122,7 @@ public class TripleaDisplay implements ITripleaDisplay
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#battleEnd(games.strategy.net.GUID, java.lang.String)
 	 */
-	@Override
+
 	public void battleEnd(GUID battleID, String message)
 	{
 		m_ui.getBattlePanel().battleEndMessage(battleID, message);
@@ -130,13 +131,12 @@ public class TripleaDisplay implements ITripleaDisplay
 	/* )
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#bombingResults(games.strategy.net.GUID, int[], int)
 	 */
-	@Override
+
 	public void bombingResults(GUID battleID, int[] dice, int cost)
 	{
 		m_ui.getBattlePanel().bombingResults(battleID, dice, cost);
 	}
 	
-	@Override
 	public void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer)
 	{
 		// we just told the game to retreat, so we already know
@@ -146,7 +146,6 @@ public class TripleaDisplay implements ITripleaDisplay
 		m_ui.getBattlePanel().notifyRetreat(shortMessage, message, step, retreatingPlayer);
 	}
 	
-	@Override
 	public void notifyScramble(String shortMessage, String message, String step, PlayerID scramblingPlayer)
 	{
 		// we just told the game to scramble, so we already know
@@ -164,25 +163,22 @@ public class TripleaDisplay implements ITripleaDisplay
 	 * @param the
 	 *            player who must act on the roll, ignore
 	 */
-	@Override
+	
 	public void notifyDice(GUID battleId, DiceRoll dice, String stepName)
 	{
 		m_ui.getBattlePanel().showDice(null, dice, stepName);
 	}
 	
-	@Override
 	public void notifyRetreat(GUID battleId, Collection<Unit> retreating)
 	{
 		m_ui.getBattlePanel().notifyRetreat(retreating);
 	}
 	
-	@Override
 	public void gotoBattleStep(GUID battleId, String step)
 	{
 		m_ui.getBattlePanel().gotoStep(battleId, step);
 	}
 	
-	@Override
 	public void shutDown()
 	{
 		m_ui.stopGame();

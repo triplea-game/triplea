@@ -97,7 +97,6 @@ public class MetaSetupPanel extends SetupPanel
 		m_startLocal.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				m_model.showLocal();
@@ -108,7 +107,6 @@ public class MetaSetupPanel extends SetupPanel
 		m_startPBEM.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				m_model.showPBEM();
@@ -119,7 +117,6 @@ public class MetaSetupPanel extends SetupPanel
 		m_hostGame.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				m_model.showServer(MetaSetupPanel.this);
@@ -130,7 +127,6 @@ public class MetaSetupPanel extends SetupPanel
 		m_connectToHostedGame.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				m_model.showClient(MetaSetupPanel.this);
@@ -140,7 +136,6 @@ public class MetaSetupPanel extends SetupPanel
 		m_connectToLobby.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				connectToLobby();
@@ -151,7 +146,7 @@ public class MetaSetupPanel extends SetupPanel
 		
 		m_downloadMaps.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				downloadMaps();
@@ -160,7 +155,7 @@ public class MetaSetupPanel extends SetupPanel
 		
 		m_ruleBook.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				ruleBook();
@@ -169,7 +164,7 @@ public class MetaSetupPanel extends SetupPanel
 		
 		m_about.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				about();
@@ -349,7 +344,7 @@ public class MetaSetupPanel extends SetupPanel
 		
 		Runnable r = new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				for (int i = 0; i < 5; i++)
@@ -380,7 +375,7 @@ public class MetaSetupPanel extends SetupPanel
 			{
 				Thread t1 = new Thread(new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						ref.set(new LobbyServerProperties(serverPropsURL));

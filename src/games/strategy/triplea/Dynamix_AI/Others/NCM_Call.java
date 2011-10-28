@@ -94,6 +94,7 @@ public class NCM_Call
 			final HashSet<Unit> recruitsAsHashSet = DUtils.ToHashSet(GetRecruitedUnitsAsUnitList());
 			Match<Unit> unitMatch = new Match<Unit>()
 			{
+				
 				@Override
 				public boolean match(Unit unit)
 				{

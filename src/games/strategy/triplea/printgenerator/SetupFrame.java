@@ -90,7 +90,7 @@ public class SetupFrame extends JPanel
 		m_outDirButton.setText("Choose the Output Directory");
 		m_outDirButton.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				int returnVal = m_outChooser.showOpenDialog(null);
@@ -106,7 +106,7 @@ public class SetupFrame extends JPanel
 		m_runButton.setText("Generate the Files");
 		m_runButton.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				if (!m_outField.getText().equals(""))

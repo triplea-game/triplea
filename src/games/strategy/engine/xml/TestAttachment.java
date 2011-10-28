@@ -38,25 +38,21 @@ public class TestAttachment implements games.strategy.engine.data.IAttachment
 	{
 	}
 	
-	@Override
 	public Attachable getAttatchedTo()
 	{
 		return null;
 	}
 	
-	@Override
 	public void setAttatchedTo(Attachable unused)
 	{
 		
 	}
 	
-	@Override
 	public String getName()
 	{
 		return null;
 	}
 	
-	@Override
 	public void setName(String aString)
 	{
 		
@@ -72,12 +68,10 @@ public class TestAttachment implements games.strategy.engine.data.IAttachment
 		return m_value;
 	}
 	
-	@Override
 	public void setData(GameData m_data)
 	{
 	}
 	
-	@Override
 	public void validate(GameData data)
 	{
 	}

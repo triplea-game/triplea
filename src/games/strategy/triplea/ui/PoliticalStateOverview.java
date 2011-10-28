@@ -36,9 +36,9 @@ import javax.swing.JSeparator;
  * 
  */
 @SuppressWarnings("serial")
-public class PoliticalStateOverview extends JPanel {
-
-
+public class PoliticalStateOverview extends JPanel
+{
+	
 	private final UIContext m_uic;
 	private final GameData m_data;
 	public final static String LABEL_SELF = "----";
@@ -51,7 +51,8 @@ public class PoliticalStateOverview extends JPanel {
 	 * @param uic
 	 *            uicontext to use to show this panel.
 	 */
-	public PoliticalStateOverview(GameData data, UIContext uic) {
+	public PoliticalStateOverview(GameData data, UIContext uic)
+	{
 		m_uic = uic;
 		m_data = data;
 		drawPoliticsUI();
@@ -60,41 +61,47 @@ public class PoliticalStateOverview extends JPanel {
 	/**
 	 * does the actual adding of elements to this panel.
 	 */
-	private void drawPoliticsUI() {
+	private void drawPoliticsUI()
+	{
 		this.setLayout(new GridBagLayout());
-
+		
 		// draw horizontal labels
 		int currentCell = 1;
-		Insets insets = new Insets(5,2,5,2);
-		for(PlayerID p: m_data.getPlayerList()) {
-			this.add(getPlayerLabel(p), new GridBagConstraints(currentCell++,0,1,1,1.0,1.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0));
+		Insets insets = new Insets(5, 2, 5, 2);
+		for (PlayerID p : m_data.getPlayerList())
+		{
+			this.add(getPlayerLabel(p), new GridBagConstraints(currentCell++, 0, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
 		}
 		// draw vertical labels and dividers
 		currentCell = 1;
-		for(PlayerID p: m_data.getPlayerList()) {
-			this.add(new JSeparator(), new GridBagConstraints(0,currentCell++,20,1,0.1,0.1,GridBagConstraints.WEST,GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0));
-			this.add(getPlayerLabel(p), new GridBagConstraints(0,currentCell++,1,1,1.0,1.0,GridBagConstraints.WEST,GridBagConstraints.BOTH,insets,0,0));
+		for (PlayerID p : m_data.getPlayerList())
+		{
+			this.add(new JSeparator(), new GridBagConstraints(0, currentCell++, 20, 1, 0.1, 0.1, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+			this.add(getPlayerLabel(p), new GridBagConstraints(0, currentCell++, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, insets, 0, 0));
 		}
 		
 		// draw cells
 		int x = 1;
 		int y = 2;
-		for (PlayerID pVertical:m_data.getPlayerList()) {
-			for (PlayerID pHorizontal:m_data.getPlayerList()) {
+		for (PlayerID pVertical : m_data.getPlayerList())
+		{
+			for (PlayerID pHorizontal : m_data.getPlayerList())
+			{
 				
-				if(pHorizontal.equals(pVertical)) {
-					this.add(new JLabel(PoliticalStateOverview.LABEL_SELF),new GridBagConstraints(x++,y,1,1,1.0,1.0,GridBagConstraints.CENTER,GridBagConstraints.NONE,insets,0,0));
-				} else {
-					this.add(getRelationshipLabel(pVertical, pHorizontal), new GridBagConstraints(x++,y,1,1,1.0,1.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,insets,0,0));
+				if (pHorizontal.equals(pVertical))
+				{
+					this.add(new JLabel(PoliticalStateOverview.LABEL_SELF), new GridBagConstraints(x++, y, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, insets, 0, 0));
+				}
+				else
+				{
+					this.add(getRelationshipLabel(pVertical, pHorizontal), new GridBagConstraints(x++, y, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
 				}
 			}
-			y = y+2;
-			x=1;
+			y = y + 2;
+			x = 1;
 		}
 	}
-
-
-
+	
 	/**
 	 * Gets a label showing the coloured relationshipName between these two
 	 * players.
@@ -103,7 +110,8 @@ public class PoliticalStateOverview extends JPanel {
 	 * @param player2
 	 * @return
 	 */
-	private JPanel getRelationshipLabel(final PlayerID player1,final PlayerID player2) {
+	private JPanel getRelationshipLabel(final PlayerID player1, final PlayerID player2)
+	{
 		final RelationshipType relType = m_data.getRelationshipTracker().getRelationshipType(player1, player2);
 		JLabel relationshipLabel = new JLabel(relType.getName());
 		JPanel relationshipLabelPanel = new JPanel();
@@ -111,7 +119,7 @@ public class PoliticalStateOverview extends JPanel {
 		relationshipLabelPanel.setBackground(getRelationshipTypeColor(relType));
 		return relationshipLabelPanel;
 	}
-
+	
 	/**
 	 * returns a color to represent the relationship
 	 * 
@@ -119,18 +127,19 @@ public class PoliticalStateOverview extends JPanel {
 	 *            which relationship to get the color for
 	 * @return the color to represent this relationship
 	 */
-	private Color getRelationshipTypeColor(final RelationshipType relType) {
+	private Color getRelationshipTypeColor(final RelationshipType relType)
+	{
 		final String archeType = relType.getRelationshipTypeAttachment().getArcheType();
-		if(archeType.equals(Constants.RELATIONSHIP_ARCHETYPE_ALLIED))
+		if (archeType.equals(Constants.RELATIONSHIP_ARCHETYPE_ALLIED))
 			return Color.green;
-		if(archeType.equals(Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL))
+		if (archeType.equals(Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL))
 			return Color.lightGray;
-		if(archeType.equals(Constants.RELATIONSHIP_ARCHETYPE_WAR))
+		if (archeType.equals(Constants.RELATIONSHIP_ARCHETYPE_WAR))
 			return Color.red;
-		throw new IllegalStateException("PoliticsUI: RelationshipType: "+relType.getName()+" can only be of archeType Allied, Neutral or War");
+		throw new IllegalStateException("PoliticsUI: RelationshipType: " + relType.getName() + " can only be of archeType Allied, Neutral or War");
 		
 	}
-
+	
 	/**
 	 * Gets a label showing the flag + name of this player
 	 * 
@@ -138,19 +147,20 @@ public class PoliticalStateOverview extends JPanel {
 	 *            the player to get the label for
 	 * @return the label representing this player
 	 */
-	protected JLabel getPlayerLabel(PlayerID player) {
-		return new JLabel(player.getName(),new ImageIcon(m_uic.getFlagImageFactory().getFlag(player)), JLabel.LEFT);
+	protected JLabel getPlayerLabel(PlayerID player)
+	{
+		return new JLabel(player.getName(), new ImageIcon(m_uic.getFlagImageFactory().getFlag(player)), JLabel.LEFT);
 	}
-
-
+	
 	/**
 	 * Redraw this panel (because of changed politics)
 	 * 
 	 */
-	public void redrawPolitics() {
+	public void redrawPolitics()
+	{
 		this.removeAll();
 		this.drawPoliticsUI();
 		this.updateUI();
 	}
-
+	
 }

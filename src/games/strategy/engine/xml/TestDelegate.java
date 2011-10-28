@@ -102,6 +102,7 @@ public final class TestDelegate extends BaseDelegate
 	/**
 	 * Returns the state of the Delegate.
 	 */
+	
 	@Override
 	public Serializable saveState()
 	{
@@ -111,6 +112,7 @@ public final class TestDelegate extends BaseDelegate
 	/**
 	 * Loads the delegates state
 	 */
+	
 	@Override
 	public void loadState(Serializable state)
 	{

@@ -80,7 +80,7 @@ class ServerLoginHelper
 			}
 			
 			String mac = MacFinder.GetHashedMacAddress();
-			String error = m_loginValidator.verifyConnection(challenge, (Map<String, String>) credentials, m_clientName, mac, m_remoteAddress);
+			String error = m_loginValidator.verifyConnection(challenge, credentials, m_clientName, mac, m_remoteAddress);
 			if (error == null)
 			{
 				out.writeObject(null);

@@ -256,7 +256,6 @@ public class Chat
 				throw new IllegalStateException("The node:" + senderNode + " sent a message as the server!");
 		}
 		
-		@Override
 		public void chatOccured(String message)
 		{
 			INode from = MessageContext.getSender();
@@ -280,7 +279,6 @@ public class Chat
 			}
 		}
 		
-		@Override
 		public void meMessageOccured(String message)
 		{
 			INode from = MessageContext.getSender();
@@ -298,7 +296,6 @@ public class Chat
 			}
 		}
 		
-		@Override
 		public void speakerAdded(final INode node, final long version)
 		{
 			assertMessageFromServer();
@@ -309,7 +306,7 @@ public class Chat
 				{
 					m_queuedInitMessages.add(new Runnable()
 					{
-						@Override
+						
 						public void run()
 						{
 							speakerAdded(node, version);
@@ -331,7 +328,6 @@ public class Chat
 			}
 		}
 		
-		@Override
 		public void speakerRemoved(final INode node, final long version)
 		{
 			assertMessageFromServer();
@@ -342,7 +338,7 @@ public class Chat
 				{
 					m_queuedInitMessages.add(new Runnable()
 					{
-						@Override
+						
 						public void run()
 						{
 							speakerRemoved(node, version);
@@ -368,7 +364,6 @@ public class Chat
 			}
 		}
 		
-		@Override
 		public void slapOccured(String to)
 		{
 			INode from = MessageContext.getSender();

@@ -162,6 +162,7 @@ public class PlacementPicker extends JFrame
 		imagePanel.addMouseMotionListener(
 					new MouseMotionAdapter()
 			{
+				
 				@Override
 				public void mouseMoved(MouseEvent e)
 				{
@@ -180,6 +181,7 @@ public class PlacementPicker extends JFrame
 		imagePanel.addMouseListener(
 					new MouseAdapter()
 			{
+				
 				@Override
 				public void mouseClicked(MouseEvent e)
 				{
@@ -204,7 +206,7 @@ public class PlacementPicker extends JFrame
 		
 		Action openAction = new AbstractAction("Load Placements")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				loadPlacements();
@@ -214,7 +216,7 @@ public class PlacementPicker extends JFrame
 		
 		Action saveAction = new AbstractAction("Save Placements")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				savePlacements();
@@ -224,7 +226,7 @@ public class PlacementPicker extends JFrame
 		
 		Action exitAction = new AbstractAction("Exit")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent event)
 			{
 				System.exit(0);
@@ -292,6 +294,7 @@ public class PlacementPicker extends JFrame
 	{
 		JPanel imagePanel = new JPanel()
 		{
+			
 			@Override
 			public void paint(Graphics g)
 			{

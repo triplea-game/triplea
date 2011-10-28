@@ -112,7 +112,7 @@ public class SimpleUnitPanel extends JPanel
 				// if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 				{
 					// check to see if the repair rule matches the damaged unit
-					if (unit.getType().equals(((UnitType) repairRule.getResults().keySet().iterator().next())))
+					if (unit.getType().equals((repairRule.getResults().keySet().iterator().next())))
 						addUnits(player, data, quantity, unit.getType(), Matches.UnitHasSomeUnitDamage().match(unit), Matches.UnitIsDisabled().match(unit));
 				}
 			}
@@ -151,7 +151,6 @@ public class SimpleUnitPanel extends JPanel
 	{
 		UnitTypeComparator utc = new UnitTypeComparator();
 		
-		@Override
 		public int compare(ProductionRule o1, ProductionRule o2)
 		{
 			UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
@@ -164,7 +163,6 @@ public class SimpleUnitPanel extends JPanel
 	{
 		UnitTypeComparator utc = new UnitTypeComparator();
 		
-		@Override
 		public int compare(RepairRule o1, RepairRule o2)
 		{
 			UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();

@@ -96,7 +96,7 @@ public class SelectCasualties
 				for (Unit unit : selectFrom) // Problem with calcing for the best unit to select as a casualties is that the battle calculator needs to call this very method to calculate the battle, resulting in a never ending loop!
 				{
 					UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-					//TripleAUnit ta = TripleAUnit.get(unit);
+					// TripleAUnit ta = TripleAUnit.get(unit);
 					
 					if (destroyed.contains(unit))
 						continue;

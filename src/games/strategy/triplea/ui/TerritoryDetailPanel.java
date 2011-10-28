@@ -78,7 +78,6 @@ public class TerritoryDetailPanel extends JPanel
 		final Action showBattleCalc = new AbstractAction(show_battle_calc)
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				OddsCalculatorDialog.show(m_frame, m_currentTerritory);
@@ -89,7 +88,6 @@ public class TerritoryDetailPanel extends JPanel
 		m_showOdds.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				showBattleCalc.actionPerformed(e);

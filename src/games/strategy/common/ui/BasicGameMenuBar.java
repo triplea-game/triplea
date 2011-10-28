@@ -122,7 +122,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		
 		allowObservers.addActionListener(new AbstractAction()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				messeneger.setAcceptNewConnections(allowObservers.isSelected());
@@ -203,7 +203,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			AbstractAction optionsAction = new AbstractAction("Show Who is Who...")
 			{
-				@Override
+				
 				public void actionPerformed(ActionEvent e)
 				{
 					PlayersPanel.showPlayers(getGame(), m_frame);
@@ -251,7 +251,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		
 		hostingLink.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -267,7 +267,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		
 		mapLink.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -283,7 +283,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		
 		bugReport.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -299,7 +299,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		
 		lobbyRules.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -315,7 +315,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		
 		warClub.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -331,7 +331,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		
 		devForum.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -347,7 +347,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		
 		guidesLink.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -379,7 +379,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	{
 		parentMenu.add(new AbstractAction("Show Console...")
 				{
-					@Override
+					
 					public void actionPerformed(ActionEvent e)
 					{
 						Console.getConsole().setVisible(true);
@@ -417,7 +417,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			
 			parentMenu.add(new AbstractAction("About...")
 			{
-				@Override
+				
 				public void actionPerformed(ActionEvent e)
 				{
 					JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
@@ -430,6 +430,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			Application.getApplication().addApplicationListener(new ApplicationAdapter()
 			{
+				
 				@Override
 				public void handleAbout(ApplicationEvent event)
 				{
@@ -455,14 +456,13 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			
 			parentMenu.add(new AbstractAction("Game Notes...")
 			{
-				@Override
+				
 				public void actionPerformed(ActionEvent e)
 				{
 					
 					SwingUtilities.invokeLater(new Runnable()
 					{
 						
-						@Override
 						public void run()
 						{
 							JEditorPane editorPane = new JEditorPane();
@@ -478,7 +478,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							
 							final JButton button = new JButton(new AbstractAction("OK")
 							{
-								@Override
+								
 								public void actionPerformed(ActionEvent e)
 								{
 									dialog.setVisible(false);
@@ -512,6 +512,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							
 							dialog.addWindowListener(new WindowAdapter()
 							{
+								
 								@Override
 								public void windowOpened(WindowEvent e)
 								{
@@ -553,7 +554,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	{
 		JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				// For some strange reason,
@@ -567,7 +568,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 					fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
 					fileDialog.setFilenameFilter(new FilenameFilter()
 					{
-						@Override
+						
 						public boolean accept(File dir, String name)
 						{ // the extension should be .tsvg, but find svg extensions as well
 							return name.endsWith(".tsvg") || name.endsWith(".svg");
@@ -674,7 +675,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		
 		JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				m_frame.leaveGame();
@@ -701,7 +702,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{ // On non-Mac operating systems, we need to manually create an Exit menu item
 			JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
 				{
-					@Override
+					
 					public void actionPerformed(ActionEvent e)
 					{
 						m_frame.shutdown();

@@ -128,7 +128,6 @@ public class UnitGroupPanel extends Panel implements ActionListener
 		add(remDef);
 	}
 	
-	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		// ((RollerApplet)this.getParent().getParent().getParent()).resetStats();

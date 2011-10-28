@@ -71,7 +71,6 @@ public class NonFightingBattle implements Battle
 		m_data = data;
 	}
 	
-	@Override
 	public void fight(IDelegateBridge bridge)
 	{
 		if (!m_battleTracker.getDependentOn(this).isEmpty())
@@ -93,7 +92,6 @@ public class NonFightingBattle implements Battle
 		m_isOver = true;
 	}
 	
-	@Override
 	public boolean isOver()
 	{
 		return m_isOver;
@@ -108,13 +106,11 @@ public class NonFightingBattle implements Battle
 		return someAttacking;
 	}
 	
-	@Override
 	public boolean isBombingRun()
 	{
 		return false;
 	}
 	
-	@Override
 	public void removeAttack(Route route, Collection<Unit> units)
 	{
 		Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
@@ -126,13 +122,11 @@ public class NonFightingBattle implements Battle
 		}
 	}
 	
-	@Override
 	public boolean isEmpty()
 	{
 		return !hasAttackingUnits();
 	}
 	
-	@Override
 	public Change addAttackChange(Route route, Collection<Unit> units)
 	{
 		Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
@@ -148,7 +142,6 @@ public class NonFightingBattle implements Battle
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
-	@Override
 	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
 	{
 		Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
@@ -164,13 +157,11 @@ public class NonFightingBattle implements Battle
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
-	@Override
 	public Territory getTerritory()
 	{
 		return m_battleSite;
 	}
 	
-	@Override
 	public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
 	{
 		Collection<Unit> lost = getDependentUnits(units);
@@ -185,7 +176,6 @@ public class NonFightingBattle implements Battle
 		}
 	}
 	
-	@Override
 	public Collection<Unit> getDependentUnits(Collection<Unit> units)
 	{
 		Collection<Unit> rVal = new ArrayList<Unit>();
@@ -226,7 +216,7 @@ public class NonFightingBattle implements Battle
 	 * Add bombarding unit. Doesn't make sense here so just do
 	 * nothing.
 	 */
-	@Override
+	
 	public void addBombardingUnit(Unit unit)
 	{
 		// nothing
@@ -235,37 +225,32 @@ public class NonFightingBattle implements Battle
 	/**
 	 * Return whether battle is amphibious.
 	 */
-	@Override
+	
 	public boolean isAmphibious()
 	{
 		return false;
 	}
 	
-	@Override
 	public Collection<Unit> getAmphibiousLandAttackers()
 	{
 		return new ArrayList<Unit>();
 	}
 	
-	@Override
 	public Collection<Unit> getBombardingUnits()
 	{
 		return new ArrayList<Unit>();
 	}
 	
-	@Override
 	public int getBattleRound()
 	{
 		return 0;
 	}
 	
-	@Override
 	public Collection<Unit> getAttackingUnits()
 	{
 		return new ArrayList<Unit>();
 	}
 	
-	@Override
 	public Collection<Unit> getDefendingUnits()
 	{
 		return new ArrayList<Unit>();

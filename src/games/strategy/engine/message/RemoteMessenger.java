@@ -33,7 +33,6 @@ public class RemoteMessenger implements IRemoteMessenger
 		m_unifiedMessenger = messenger;
 	}
 	
-	@Override
 	public IRemote getRemote(RemoteName remoteName)
 	{
 		
@@ -46,33 +45,28 @@ public class RemoteMessenger implements IRemoteMessenger
 		return rVal;
 	}
 	
-	@Override
 	public void registerRemote(Object implementor,
 				RemoteName name)
 	{
 		m_unifiedMessenger.addImplementor(name, implementor, false);
 	}
 	
-	@Override
 	public void unregisterRemote(RemoteName name)
 	{
 		unregisterRemote(name.getName());
 	}
 	
-	@Override
 	public boolean isServer()
 	{
 		return m_unifiedMessenger.isServer();
 	}
 	
-	@Override
 	public void unregisterRemote(String name)
 	{
 		m_unifiedMessenger.removeImplementor(name, m_unifiedMessenger.getImplementor(name));
 		
 	}
 	
-	@Override
 	public boolean hasLocalImplementor(RemoteName descriptor)
 	{
 		return m_unifiedMessenger.getLocalEndPointCount(descriptor) == 1;

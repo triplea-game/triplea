@@ -105,12 +105,12 @@ public class LobbyMenu extends JMenuBar
 		
 		revive.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				Runnable runner = new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						IModeratorController controller = (IModeratorController) m_frame.getLobbyClient().getMessengers().getRemoteMessenger()
@@ -129,7 +129,7 @@ public class LobbyMenu extends JMenuBar
 						
 						Runnable componentCreation = new Runnable()
 						{
-							@Override
+							
 							public void run()
 							{
 								final JDialog dialog = new JDialog(m_frame, "Players Information");
@@ -150,7 +150,7 @@ public class LobbyMenu extends JMenuBar
 								dialog.add(pane, BorderLayout.CENTER);
 								JButton button = new JButton(new AbstractAction()
 								{
-									@Override
+									
 									public void actionPerformed(ActionEvent e)
 									{
 										dialog.dispose();
@@ -185,7 +185,7 @@ public class LobbyMenu extends JMenuBar
 		
 		item.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				String name = JOptionPane.showInputDialog(null,
@@ -225,7 +225,7 @@ public class LobbyMenu extends JMenuBar
 		
 		item.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				String ip = JOptionPane.showInputDialog(null, "Enter the IP Address that you want to ban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0", "");
@@ -258,7 +258,7 @@ public class LobbyMenu extends JMenuBar
 		
 		item.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				String mac = JOptionPane.showInputDialog(null,
@@ -298,7 +298,7 @@ public class LobbyMenu extends JMenuBar
 		
 		item.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				String name = JOptionPane.showInputDialog(null, "Enter the username that you want to unban from the lobby.", "");
@@ -334,7 +334,7 @@ public class LobbyMenu extends JMenuBar
 		
 		item.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				String ip = JOptionPane.showInputDialog(null, "Enter the IP Address that you want to unban from the lobby.\r\n\r\nIP Addresses should be entered in this format: 192.168.1.0", "");
@@ -364,7 +364,7 @@ public class LobbyMenu extends JMenuBar
 		
 		item.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				String mac = JOptionPane.showInputDialog(null,
@@ -476,7 +476,7 @@ public class LobbyMenu extends JMenuBar
 		
 		hostingLink.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -492,7 +492,7 @@ public class LobbyMenu extends JMenuBar
 		
 		mapLink.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -508,7 +508,7 @@ public class LobbyMenu extends JMenuBar
 		
 		bugReport.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -524,7 +524,7 @@ public class LobbyMenu extends JMenuBar
 		
 		lobbyRules.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -540,7 +540,7 @@ public class LobbyMenu extends JMenuBar
 		
 		warClub.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -556,7 +556,7 @@ public class LobbyMenu extends JMenuBar
 		
 		devForum.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -572,7 +572,7 @@ public class LobbyMenu extends JMenuBar
 		
 		guidesLink.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				try
@@ -601,7 +601,7 @@ public class LobbyMenu extends JMenuBar
 		
 		chatTimeBox.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				m_frame.setShowChatTime(chatTimeBox.isSelected());
@@ -622,7 +622,7 @@ public class LobbyMenu extends JMenuBar
 		
 		soundCheckBox.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				ClipPlayer.getInstance().setBeSilent(!soundCheckBox.isSelected());
@@ -639,7 +639,7 @@ public class LobbyMenu extends JMenuBar
 		
 		update.addActionListener(new ActionListener()
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent e)
 			{
 				updateAccountDetails();
@@ -689,7 +689,7 @@ public class LobbyMenu extends JMenuBar
 		{ // On non-Mac operating systems, we need to manually create an Exit menu item
 			JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
 				{
-					@Override
+					
 					public void actionPerformed(ActionEvent e)
 					{
 						m_frame.shutdown();

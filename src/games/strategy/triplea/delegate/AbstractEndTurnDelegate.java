@@ -75,6 +75,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	/**
 	 * Called before the delegate will run.
 	 */
+	
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
@@ -146,6 +147,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	/**
 	 * Called before the delegate will stop running.
 	 */
+	
 	@Override
 	public void end()
 	{
@@ -284,19 +286,16 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		return false;
 	}
 	
-	@Override
 	public void setHasPostedTurnSummary(boolean hasPostedTurnSummary)
 	{
 		m_hasPostedTurnSummary = hasPostedTurnSummary;
 	}
 	
-	@Override
 	public boolean getHasPostedTurnSummary()
 	{
 		return m_hasPostedTurnSummary;
 	}
 	
-	@Override
 	public boolean postTurnSummary(PBEMMessagePoster poster)
 	{
 		m_hasPostedTurnSummary = poster.post(m_bridge.getHistoryWriter());
@@ -318,6 +317,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
+
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
@@ -327,6 +327,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	/**
 	 * Returns the state of the Delegate.
 	 */
+	
 	@Override
 	public Serializable saveState()
 	{
@@ -339,6 +340,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	/**
 	 * Loads the delegates state
 	 */
+	
 	@Override
 	public void loadState(Serializable aState)
 	{

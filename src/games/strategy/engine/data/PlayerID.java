@@ -51,7 +51,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return m_optional;
 	}
 	
-	@Override
 	public UnitCollection getUnits()
 	{
 		return m_unitsHeld;
@@ -87,7 +86,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return m_repairFrontier;
 	}
 	
-	@Override
 	public void notifyChanged()
 	{
 	}
@@ -115,7 +113,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return "PlayerID named:" + getName();
 	}
 	
-	@Override
 	public String getType()
 	{
 		return UnitHolder.PLAYER;

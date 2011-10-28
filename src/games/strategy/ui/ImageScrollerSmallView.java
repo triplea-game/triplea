@@ -80,7 +80,6 @@ public class ImageScrollerSmallView extends JComponent
 		model.addObserver(new Observer()
 		{
 			
-			@Override
 			public void update(Observable o, Object arg)
 			{
 				repaint();
@@ -177,6 +176,7 @@ public class ImageScrollerSmallView extends JComponent
 	
 	private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
 	{
+		
 		@Override
 		public void mouseDragged(MouseEvent e)
 		{
@@ -205,6 +205,7 @@ public class ImageScrollerSmallView extends JComponent
 	
 	private final MouseAdapter MOUSE_LISTENER = new MouseAdapter()
 	{
+		
 		@Override
 		public void mouseClicked(MouseEvent e)
 		{

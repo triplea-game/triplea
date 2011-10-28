@@ -88,7 +88,7 @@ public class MyFormatter
 		List<UnitType> sortedList = new ArrayList<UnitType>(map.keySet());
 		Comparator<UnitType> comp = new Comparator<UnitType>()
 		{
-			@Override
+			
 			public int compare(UnitType u1, UnitType u2)
 			{
 				
@@ -289,8 +289,8 @@ class UnitOwner
 	@Override
 	public boolean equals(Object o)
 	{
-        if (o == null)
-            return false;
+		if (o == null)
+			return false;
 		UnitOwner other = (UnitOwner) o;
 		return other.type.equals(this.type) && other.owner.equals(this.owner);
 	}

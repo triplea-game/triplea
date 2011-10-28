@@ -138,7 +138,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	 * returns a relationshipTypeIterator
 	 * 
 	 */
-	@Override
+	
 	public Iterator<RelationshipType> iterator()
 	{
 		return m_relationshipTypes.values().iterator();

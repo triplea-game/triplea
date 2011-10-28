@@ -285,7 +285,7 @@ public class Vault
 	
 	private final IRemoteVault m_remoteVault = new IRemoteVault()
 	{
-		@Override
+		
 		public void addLockedValue(VaultID id, byte[] data)
 		{
 			if (id.getGeneratedOn().equals(m_channelMessenger.getLocalNode()))
@@ -303,7 +303,6 @@ public class Vault
 			
 		}
 		
-		@Override
 		public void unlock(VaultID id, byte[] secretKeyBytes)
 		{
 			if (id.getGeneratedOn().equals(m_channelMessenger.getLocalNode()))
@@ -369,7 +368,6 @@ public class Vault
 			
 		}
 		
-		@Override
 		public void release(VaultID id)
 		{
 			m_unverifiedValues.remove(id);

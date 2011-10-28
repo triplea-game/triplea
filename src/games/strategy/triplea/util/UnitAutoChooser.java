@@ -361,6 +361,7 @@ class UnitAutoChooser
 	{
 		Match<Collection<Unit>> unitCategoryCountMatch = new Match<Collection<Unit>>()
 		{
+			
 			@Override
 			public boolean match(Collection<Unit> units)
 			{

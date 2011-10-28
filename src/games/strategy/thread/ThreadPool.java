@@ -151,7 +151,7 @@ public class ThreadPool
 		
 		Runnable dummy = new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 			}
@@ -169,7 +169,6 @@ public class ThreadPool
 	private class ThreadTracker implements Runnable
 	{
 		
-		@Override
 		public void run()
 		{
 			while (m_isRunning)

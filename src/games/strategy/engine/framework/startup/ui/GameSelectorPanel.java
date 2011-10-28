@@ -67,7 +67,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					updateGameData();
@@ -164,7 +164,6 @@ public class GameSelectorPanel extends JPanel implements Observer
 		m_loadNewGame.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				selectGameFile(false);
@@ -174,7 +173,6 @@ public class GameSelectorPanel extends JPanel implements Observer
 		m_loadSavedGame.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				selectGameFile(true);
@@ -185,7 +183,6 @@ public class GameSelectorPanel extends JPanel implements Observer
 		m_gameOptions.addActionListener(new ActionListener()
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				selectGameOptions();
@@ -209,7 +206,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					setWidgetActivation();
@@ -229,7 +226,6 @@ public class GameSelectorPanel extends JPanel implements Observer
 			m_gameOptions.setEnabled(false);
 	}
 	
-	@Override
 	public void update(Observable o, Object arg)
 	{
 		updateGameData();
@@ -252,7 +248,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 				fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
 				fileDialog.setFilenameFilter(new FilenameFilter()
 				{
-					@Override
+					
 					public boolean accept(File dir, String name)
 					{
 						// the extension should be .tsvg, but find svg extensions as well

@@ -35,6 +35,7 @@ import games.strategy.triplea.delegate.InitializationDelegate;
 
 public class InitDelegate extends InitializationDelegate
 {
+	
 	@Override
 	protected void init(IDelegateBridge aBridge)
 	{

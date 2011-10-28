@@ -72,19 +72,16 @@ public class OddsDetailPanel extends JPanel
 		m_territoryListener = new TerritoryListener()
 		{
 			
-			@Override
 			public void ownerChanged(Territory territory)
 							{
 								
 							}
 			
-			@Override
 			public void attachmentChanged(Territory territory)
 							{
 								
 							}
 			
-			@Override
 			public void unitsChanged(Territory territory)
 							{
 								if (m_currentTerritory != null && m_currentTerritory.equals(territory))
@@ -92,7 +89,6 @@ public class OddsDetailPanel extends JPanel
 									SwingUtilities.invokeLater(new Runnable()
 									{
 										
-										@Override
 										public void run()
 										{
 											updateOdds();

@@ -244,7 +244,6 @@ public class UnitCategory implements Comparable
 		return m_type;
 	}
 	
-	@Override
 	public int compareTo(Object o)
 	{
 		if (o == null)

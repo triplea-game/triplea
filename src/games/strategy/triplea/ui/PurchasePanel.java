@@ -92,7 +92,6 @@ public class PurchasePanel extends ActionPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 		{
 			removeAll();
@@ -142,7 +141,6 @@ public class PurchasePanel extends ActionPanel
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 		{
 			actionLabel.setText(getCurrentPlayer().getName() + " production " + (m_bid ? " for bid" : ""));
@@ -161,7 +159,7 @@ public class PurchasePanel extends ActionPanel
 		SwingUtilities.invokeLater(
 					new Runnable()
 				{
-					@Override
+					
 					public void run()
 				{
 					PURCHASE_ACTION.actionPerformed(null);
@@ -175,7 +173,7 @@ public class PurchasePanel extends ActionPanel
 	
 	private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 	{
 		PlayerID player = getCurrentPlayer();
@@ -215,7 +213,6 @@ public class PurchasePanel extends ActionPanel
 	private Action DoneAction = new AbstractAction("Done")
 	{
 		
-		@Override
 		public void actionPerformed(ActionEvent event)
 	{
 		
@@ -284,7 +281,7 @@ public class PurchasePanel extends ActionPanel
 			return false;
 		return ta.hasIncreasedFactoryProduction();
 	}*/
-	
+
 	private boolean isUnlimitedProduction(PlayerID player)
 	{
 		RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);

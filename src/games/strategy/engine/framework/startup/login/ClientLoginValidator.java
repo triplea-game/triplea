@@ -54,7 +54,6 @@ public class ClientLoginValidator implements ILoginValidator
 		m_password = password;
 	}
 	
-	@Override
 	public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress)
 	{
 		Map<String, String> challengeProperties = new HashMap<String, String>();
@@ -78,7 +77,6 @@ public class ClientLoginValidator implements ILoginValidator
 		return challengeProperties;
 	}
 	
-	@Override
 	public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String hashedMac, SocketAddress remoteAddress)
 	{
 		String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);

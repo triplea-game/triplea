@@ -51,18 +51,17 @@ public class ColorProperty extends AEditableProperty
 		m_color = new Color(def);
 	}
 	
-	@Override
 	public Object getValue()
 	{
 		return m_color;
 	}
 	
-	@Override
 	public JComponent getEditorComponent()
 	{
 		@SuppressWarnings("serial")
 		final JLabel label = new JLabel(" ")
 		{
+			
 			@Override
 			public void paintComponent(Graphics g)
 			{
@@ -74,7 +73,7 @@ public class ColorProperty extends AEditableProperty
 		
 		label.addMouseListener(new MouseListener()
 		{
-			@Override
+			
 			public void mouseClicked(MouseEvent e)
 			{
 				System.out.println(m_color);
@@ -83,7 +82,7 @@ public class ColorProperty extends AEditableProperty
 				// Ask Swing to repaint this label when it's convenient
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						label.repaint();
@@ -91,22 +90,18 @@ public class ColorProperty extends AEditableProperty
 				});
 			}
 			
-			@Override
 			public void mouseEntered(MouseEvent e)
 			{
 			}
 			
-			@Override
 			public void mouseExited(MouseEvent e)
 			{
 			}
 			
-			@Override
 			public void mousePressed(MouseEvent e)
 			{
 			}
 			
-			@Override
 			public void mouseReleased(MouseEvent e)
 			{
 			}

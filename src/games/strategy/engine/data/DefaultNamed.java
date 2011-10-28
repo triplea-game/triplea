@@ -41,7 +41,6 @@ public class DefaultNamed extends GameDataComponent implements Named, Serializab
 		m_name = name;
 	}
 	
-	@Override
 	public String getName()
 	{
 		return m_name;

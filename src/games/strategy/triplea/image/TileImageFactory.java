@@ -562,7 +562,7 @@ class ImageRef
 	{
 		Runnable r = new Runnable()
 		{
-			@Override
+			
 			public void run()
 			{
 				while (true)
@@ -686,7 +686,6 @@ class BlendComposite implements java.awt.Composite
 		this.alpha = alpha;
 	}
 	
-	@Override
 	public CompositeContext createContext(ColorModel srcColorModel,
 											ColorModel dstColorModel,
 											RenderingHints hints)
@@ -706,12 +705,10 @@ class BlendComposite implements java.awt.Composite
 			this.blender = Blender.getBlenderFor(composite);
 		}
 		
-		@Override
 		public void dispose()
 		{
 		}
 		
-		@Override
 		public void compose(Raster src, Raster dstIn, WritableRaster dstOut)
 		{
 			if (src.getSampleModel().getDataType() != DataBuffer.TYPE_INT ||
@@ -776,6 +773,7 @@ class BlendComposite implements java.awt.Composite
 				case NORMAL:
 					return new Blender()
 					{
+						
 						@Override
 						public int[] blend(int[] src, int[] dst)
 						{
@@ -789,6 +787,7 @@ class BlendComposite implements java.awt.Composite
 					  	if (Base > pi) R = 1 - (1-Base) ? (1-Blend) x 2 */
 					return new Blender()
 					{
+						
 						@Override
 						public int[] blend(int[] src, int[] dst)
 						{
@@ -816,6 +815,7 @@ class BlendComposite implements java.awt.Composite
 						if (Blend <= pi) R = Base + 2?Blend - 1 */
 					return new Blender()
 					{
+						
 						@Override
 						public int[] blend(int[] src, int[] dst)
 						{
@@ -832,6 +832,7 @@ class BlendComposite implements java.awt.Composite
 				case MULTIPLY:
 					return new Blender()
 					{
+						
 						@Override
 						public int[] blend(int[] src, int[] dst)
 						{
@@ -845,6 +846,7 @@ class BlendComposite implements java.awt.Composite
 				case DIFFERENCE:
 					return new Blender()
 					{
+						
 						@Override
 						public int[] blend(int[] src, int[] dst)
 						{

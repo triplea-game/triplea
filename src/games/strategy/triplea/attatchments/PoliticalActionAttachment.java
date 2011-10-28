@@ -40,11 +40,13 @@ import java.util.Set;
  * 
  */
 
-public class PoliticalActionAttachment extends DefaultAttachment {
+public class PoliticalActionAttachment extends DefaultAttachment
+{
 	
 	public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
 	
-	public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(PlayerID player){
+	public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(PlayerID player)
+	{
 		ArrayList<PoliticalActionAttachment> returnList = new ArrayList<PoliticalActionAttachment>();
 		Map<String, IAttachment> map = player.getAttachments();
 		Iterator<String> iter = map.keySet().iterator();
@@ -73,7 +75,7 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 			throw new IllegalStateException("PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
 		return rVal;
 	}
-
+	
 	// the condition that needs to be true for this action to be active, this can be a metacondition or null for no condition. no condition means always active.
 	private RulesAttachment m_conditions = null;
 	// list of relationship changes to be performed if this action is performed sucessfully
@@ -92,23 +94,25 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	// especially for actions that when france declares war on germany and it automatically causes UK to declare war as well. it is good to set "actionAccept" to "UK" so UK can accept this action to go through.
 	private final Collection<PlayerID> m_actionAccept = new ArrayList<PlayerID>();
 	
-	
 	@Override
-	public void validate(GameData data) throws GameParseException {
-		if(m_relationshipChange.isEmpty())
-			throw new GameParseException("PoliticalActionAttachment: "+getName()+" value: relationshipChange can't be empty");
-		if(m_text.equals(""))
-			throw new GameParseException("PoliticalActionAttachment: "+getName()+" value: text can't be empty");
+	public void validate(GameData data) throws GameParseException
+	{
+		if (m_relationshipChange.isEmpty())
+			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: relationshipChange can't be empty");
+		if (m_text.equals(""))
+			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: text can't be empty");
 	}
 	
-	
 	/**
-	 * @param conditionName The condition that needs to be satisfied for this action to be able to be performed by a player
+	 * @param conditionName
+	 *            The condition that needs to be satisfied for this action to be able to be performed by a player
 	 * @throws GameParseException
 	 */
-	public void setConditions(String conditionName) throws GameParseException {
+	public void setConditions(String conditionName) throws GameParseException
+	{
 		RulesAttachment condition = null;
-		for (PlayerID p : getData().getPlayerList().getPlayers()) {
+		for (PlayerID p : getData().getPlayerList().getPlayers())
+		{
 			condition = (RulesAttachment) p.getAttachment(conditionName);
 			if (condition != null)
 				break;
@@ -124,14 +128,16 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 		m_conditions = condition;
 	}
 	
-	public RulesAttachment getConditions() {
+	public RulesAttachment getConditions()
+	{
 		return m_conditions;
 	}
 	
 	/**
 	 * @return true if there is no condition to this action or if the condition is satisfied
 	 */
-	public boolean canPerform() {
+	public boolean canPerform()
+	{
 		return m_conditions == null || m_conditions.isSatisfied(getData());
 	}
 	
@@ -166,100 +172,114 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 		m_relationshipChange.clear();
 	}
 	
-	
 	/**
-	 * @param text the Key that is used in politicstext.properties for all the texts
+	 * @param text
+	 *            the Key that is used in politicstext.properties for all the texts
 	 */
-	public void setText(String text) {
+	public void setText(String text)
+	{
 		m_text = text;
 	}
 	
 	/**
 	 * @return the Key that is used in politicstext.properties for all the texts
 	 */
-	public String getText() {
+	public String getText()
+	{
 		return m_text;
 	}
 	
-	
 	/**
-	 * @param s the number you need to roll to get the action to succeed format "1:10" for 10% chance
+	 * @param s
+	 *            the number you need to roll to get the action to succeed format "1:10" for 10% chance
 	 * @throws GameParseException
 	 */
-	public void setChance(String chance) throws GameParseException {
+	public void setChance(String chance) throws GameParseException
+	{
 		String[] s = chance.split(":");
-		try {
+		try
+		{
 			int i = getInt(s[0]);
 			int j = getInt(s[1]);
 			if (i > j || i < 1 || j < 1 || i > 120 || j > 120)
 				throw new GameParseException("PoliticalActionAttachment: chance should have a format of \"x:y\" where x is <= y and both x and y are >=1 and <=120");
-		} catch (IllegalArgumentException iae) {
+		} catch (IllegalArgumentException iae)
+		{
 			throw new GameParseException("PoliticalActionAttachment: Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance");
 		}
 		m_chance = chance;
 	}
 	
-
 	/**
-	 * @return  the number you need to roll to get the action to succeed format "1:10" for 10% chance
+	 * @return the number you need to roll to get the action to succeed format "1:10" for 10% chance
 	 */
-	private String getChance() {
+	private String getChance()
+	{
 		return m_chance;
 	}
 	
-	public int toHit() {
+	public int toHit()
+	{
 		return getInt(getChance().split(":")[0]);
 	}
 	
-	public int diceSides() {
+	public int diceSides()
+	{
 		return getInt(getChance().split(":")[1]);
 	}
 	
 	/**
-	 * @param s the amount you need to pay to perform the action
+	 * @param s
+	 *            the amount you need to pay to perform the action
 	 */
-	public void setCostPU(String s) {
+	public void setCostPU(String s)
+	{
 		m_costPU = getInt(s);
 	}
-
+	
 	/**
 	 * @return the amount you need to pay to perform the action
 	 */
-	public int getCostPU() {
+	public int getCostPU()
+	{
 		return m_costPU;
 	}
-
+	
 	/**
 	 * @param s
 	 *            the amount of times you can try this Action per Round
 	 */
-	public void setAttemptsPerTurn(String s) {
+	public void setAttemptsPerTurn(String s)
+	{
 		m_attemptsPerTurn = getInt(s);
 		setAttemptsLeftThisTurn(m_attemptsPerTurn);
 	}
-
+	
 	/**
 	 * @return the amount of times you can try this Action per Round
 	 */
-	public int getAttemptsPerTurn() {
+	public int getAttemptsPerTurn()
+	{
 		return m_attemptsPerTurn;
 	}
-
+	
 	/**
 	 * @param attempts
 	 *            left this turn
 	 */
-	public void setAttemptsLeftThisTurn(int attempts) {
+	public void setAttemptsLeftThisTurn(int attempts)
+	{
 		m_attemptsLeftThisTurn = attempts;
 	}
-
+	
 	/**
 	 * @return attempts that are left this turn
 	 */
-	public int getAttemptsLeftThisTurn() {
+	public int getAttemptsLeftThisTurn()
+	{
 		return m_attemptsLeftThisTurn;
 	}
-
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -281,51 +301,60 @@ public class PoliticalActionAttachment extends DefaultAttachment {
 	/**
 	 * @return a list of players that must accept this action before it takes effect.
 	 */
-	public Collection<PlayerID> getActionAccept() {
+	public Collection<PlayerID> getActionAccept()
+	{
 		return m_actionAccept;
 	}
 	
-	public void clearActionAccept() {
+	public void clearActionAccept()
+	{
 		m_actionAccept.clear();
 	}
-
+	
 	/**
 	 * 
 	 * @return a set of all other players involved in this PoliticalAction
 	 */
-	public Set<PlayerID> getOtherPlayers() {
+	public Set<PlayerID> getOtherPlayers()
+	{
 		HashSet<PlayerID> otherPlayers = new HashSet<PlayerID>();
-		for(String relationshipChange:m_relationshipChange) {
+		for (String relationshipChange : m_relationshipChange)
+		{
 			String[] s = relationshipChange.split(":");
 			otherPlayers.add(getData().getPlayerList().getPlayerID(s[0]));
 			otherPlayers.add(getData().getPlayerList().getPlayerID(s[1]));
 		}
-		otherPlayers.remove( (getAttatchedTo()));
+		otherPlayers.remove((getAttatchedTo()));
 		return otherPlayers;
 	}
-
+	
 	/**
 	 * @param player
 	 * @return gets the valid actions for this player.
 	 */
-	public static Collection<PoliticalActionAttachment> getValidActions(PlayerID player) {
+	public static Collection<PoliticalActionAttachment> getValidActions(PlayerID player)
+	{
 		if (!games.strategy.triplea.Properties.getUsePolitics(player.getData()))
 			return new ArrayList<PoliticalActionAttachment>();
 		return Match.getMatches(getPoliticalActionAttachments(player), Matches.PoliticalActionCanBeAttempted);
 	}
-
-	public void resetAttempts(IDelegateBridge aBridge) {
-		if (m_attemptsLeftThisTurn != m_attemptsPerTurn) {
+	
+	public void resetAttempts(IDelegateBridge aBridge)
+	{
+		if (m_attemptsLeftThisTurn != m_attemptsPerTurn)
+		{
 			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, m_attemptsPerTurn, PoliticalActionAttachment.ATTEMPTS_LEFT_THIS_TURN));
 		}
 	}
-
-	public void useAttempt(IDelegateBridge aBridge) {
+	
+	public void useAttempt(IDelegateBridge aBridge)
+	{
 		aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, (m_attemptsLeftThisTurn - 1), PoliticalActionAttachment.ATTEMPTS_LEFT_THIS_TURN));
 	}
-
-	public boolean hasAttemptsLeft() {
+	
+	public boolean hasAttemptsLeft()
+	{
 		return m_attemptsLeftThisTurn > 0;
 	}
-
+	
 }

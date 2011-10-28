@@ -73,11 +73,11 @@ public class OddsCalculator
 		m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, m_data);
 		m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
 		
-        ChangePerformer changePerformer = new ChangePerformer(m_data);
-        changePerformer.perform(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
-        changePerformer.perform(ChangeFactory.addUnits(m_location, m_attackingUnits));
-        changePerformer.perform(ChangeFactory.addUnits(m_location, m_defendingUnits));
-        
+		ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
+		changePerformer.perform(ChangeFactory.addUnits(m_location, m_attackingUnits));
+		changePerformer.perform(ChangeFactory.addUnits(m_location, m_defendingUnits));
+		
 		return calculate(runCount);
 		
 	}
@@ -151,30 +151,25 @@ class DummyDelegateBridge implements IDelegateBridge
 		m_changePerformer = new ChangePerformer(m_data);
 	}
 	
-	@Override
 	public GameData getData()
 	{
 		return m_data;
 	}
 	
-	@Override
 	public void leaveDelegateExecution()
 	{
 	}
 	
-	@Override
 	public Properties getStepProperties()
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	@Override
 	public String getStepName()
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	@Override
 	public IRemote getRemote(PlayerID id)
 	{
 		if (id.equals(m_attacker))
@@ -183,49 +178,41 @@ class DummyDelegateBridge implements IDelegateBridge
 			return m_defendingPlayer;
 	}
 	
-	@Override
 	public IRemote getRemote()
 	{
 		// the current player is attacker
 		return m_attackingPlayer;
 	}
 	
-	@Override
 	public int[] getRandom(int max, int count, String annotation)
 	{
 		return m_randomSource.getRandom(max, count, annotation);
 	}
 	
-	@Override
 	public int getRandom(int max, String annotation)
 	{
 		return m_randomSource.getRandom(max, annotation);
 	}
 	
-	@Override
 	public PlayerID getPlayerID()
 	{
 		return m_attacker;
 	}
 	
-	@Override
 	public IDelegateHistoryWriter getHistoryWriter()
 	{
 		return m_writer;
 	}
 	
-	@Override
 	public IChannelSubscribor getDisplayChannelBroadcaster()
 	{
 		return m_display;
 	}
 	
-	@Override
 	public void enterDelegateExecution()
 	{
 	}
 	
-	@Override
 	public void addChange(Change aChange)
 	{
 		if (!(aChange instanceof UnitHitsChange))
@@ -236,7 +223,6 @@ class DummyDelegateBridge implements IDelegateBridge
 		
 	}
 	
-	@Override
 	public void stopGameSequence()
 	{
 	}
@@ -247,32 +233,26 @@ class DummyDelegateBridge implements IDelegateBridge
 class DummyGameModifiedChannel implements IGameModifiedChannel
 {
 	
-	@Override
 	public void addChildToEvent(String text, Object renderingData)
 	{
 	}
 	
-	@Override
 	public void gameDataChanged(Change aChange)
 	{
 	}
 	
-	@Override
 	public void setRenderingData(Object renderingData)
 	{
 	}
 	
-	@Override
 	public void shutDown()
 	{
 	}
 	
-	@Override
 	public void startHistoryEvent(String event)
 	{
 	}
 	
-	@Override
 	public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
 	{
 	}
@@ -311,26 +291,22 @@ class DummyPlayer extends AbstractAI
 	{
 	}
 	
-	@Override
 	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	@Override
 	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	@Override
 	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
 	{
 		// no retreat, no surrender
 		return null;
 	}
 	
-	@Override
 	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
 	{
 		// no scramble
@@ -338,7 +314,7 @@ class DummyPlayer extends AbstractAI
 	}
 	
 	// Added new collection autoKilled to handle killing units prior to casualty selection
-	@Override
+	
 	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit,
 				CasualtyList defaultCasualties, GUID battleID)
 	{
@@ -384,19 +360,16 @@ class DummyPlayer extends AbstractAI
 		return m2;
 	}
 	
-	@Override
 	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	@Override
 	public boolean shouldBomberBomb(Territory territory)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	@Override
 	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
 	{
 		throw new UnsupportedOperationException();
@@ -405,7 +378,7 @@ class DummyPlayer extends AbstractAI
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
 	 */
-	@Override
+
 	public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
 	{
 		int[] dice = new int[numRolls];

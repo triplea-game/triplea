@@ -114,7 +114,7 @@ public class ServerPlayerSelector extends JFrame
 	
 	public AbstractAction m_done = new AbstractAction("done")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 		{
 			if (!isVisible())
@@ -141,6 +141,7 @@ public class ServerPlayerSelector extends JFrame
 	
 	private WindowListener m_doneOnClose = new WindowAdapter()
 	{
+		
 		@Override
 		public void windowClosing(WindowEvent e)
 		{

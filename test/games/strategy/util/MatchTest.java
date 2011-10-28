@@ -41,6 +41,7 @@ public class MatchTest extends TestCase
 	
 	Match<Integer> m_pos = new Match<Integer>()
 	{
+		
 		@Override
 		public boolean match(Integer o)
 		{
@@ -50,6 +51,7 @@ public class MatchTest extends TestCase
 	
 	Match<Integer> m_neg = new Match<Integer>()
 	{
+		
 		@Override
 		public boolean match(Integer o)
 		{
@@ -59,6 +61,7 @@ public class MatchTest extends TestCase
 	
 	Match<Integer> m_zero = new Match<Integer>()
 	{
+		
 		@Override
 		public boolean match(Integer o)
 		{
@@ -159,7 +162,7 @@ public class MatchTest extends TestCase
 	
 	public void testMap()
 	{
-		HashMap<String,String> map = new HashMap<String,String>();
+		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("a", "b");
 		map.put("b", "c");
 		map.put("c", "d");

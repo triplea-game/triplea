@@ -108,7 +108,7 @@ public class DelegateExecutionManager
 		
 		InvocationHandler ih = new InvocationHandler()
 		{
-			@Override
+			
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 			{
 				assertGameNotOver();
@@ -162,6 +162,7 @@ public class DelegateExecutionManager
 		
 		InvocationHandler ih = new WrappedInvocationHandler(implementor)
 		{
+			
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 			{

@@ -41,7 +41,6 @@ public class LobbyLoginValidator implements ILoginValidator
 	{
 	}
 	
-	@Override
 	public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress)
 	{
 		// we need to give the user the salt key for the username
@@ -53,7 +52,6 @@ public class LobbyLoginValidator implements ILoginValidator
 		return rVal;
 	}
 	
-	@Override
 	public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String clientMac, SocketAddress remoteAddress)
 	{
 		String error = verifyConnectionInternal(propertiesSentToClient, propertiesReadFromClient, clientName, clientMac, remoteAddress);

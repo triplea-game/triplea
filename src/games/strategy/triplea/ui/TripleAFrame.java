@@ -315,7 +315,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_tabsPanel.addChangeListener(new ChangeListener()
 		{
 			// This method is called whenever the selected tab changes
-			@Override
+			
 			public void stateChanged(ChangeEvent evt)
 			{
 				JTabbedPane pane = (JTabbedPane) evt.getSource();
@@ -356,6 +356,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		// set up the edit mode overlay text
 		this.setGlassPane(new JComponent()
 		{
+			
 			@Override
 			protected void paintComponent(Graphics g)
 			{
@@ -387,7 +388,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		((JComponent) getContentPane()).getActionMap().put(zoom_map_in, new AbstractAction(zoom_map_in)
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				if (getScale() < 100)
@@ -402,7 +402,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		((JComponent) getContentPane()).getActionMap().put(zoom_map_out, new AbstractAction(zoom_map_out)
 		{
 			
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				if (getScale() > 16)
@@ -420,7 +419,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	 */
 	void setScale(double value)
 	{
-		getMapPanel().setScale(value / (double) 100);
+		getMapPanel().setScale(value / 100);
 	}
 	
 	/**
@@ -556,6 +555,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	
 	private WindowListener WINDOW_LISTENER = new WindowAdapter()
 	{
+		
 		@Override
 		public void windowClosing(WindowEvent e)
 		{
@@ -663,7 +663,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				{
 					SwingUtilities.invokeAndWait(new Runnable()
 					{
-						@Override
+						
 						public void run()
 						{
 							requestFocusInWindow();
@@ -749,7 +749,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return choice == 1;
 	}
 	
-	public boolean acceptPoliticalAction(String acceptanceQuestion) {
+	public boolean acceptPoliticalAction(String acceptanceQuestion)
+	{
 		int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion, "Accept Political Proposal?", JOptionPane.YES_NO_OPTION);
 		return choice == JOptionPane.YES_OPTION;
 	}
@@ -768,7 +769,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					TechResultsDisplay display = new TechResultsDisplay(msg, m_uiContext, m_data);
@@ -813,7 +813,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>()
 		{
 			
-			@Override
 			public Tuple<JPanel, JList> run()
 			{
 				JList list = new JList(new Vector<Unit>(units));
@@ -844,7 +843,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	{
 		DiceChooser chooser = Util.runInSwingEventThread(new Util.Task<DiceChooser>()
 			{
-				@Override
+				
 				public DiceChooser run()
 				{
 					return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, m_data);
@@ -865,7 +864,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>()
 		{
 			
-			@Override
 			public Tuple<JPanel, JList> run()
 			{
 				JList list = new JList(new Vector<Territory>(candidates));
@@ -898,7 +896,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		EventThreadJOptionPane.showMessageDialog(this, message, "Political Alert", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player) {
+	public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player)
+	{
 		m_actionButtons.changeToPolitics(player);
 		if (!SwingUtilities.isEventDispatchThread())
 		{
@@ -906,7 +905,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						requestFocusInWindow();
@@ -936,7 +935,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						requestFocusInWindow();
@@ -965,7 +964,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					JList list = new JList(new Vector<Territory>(candidates));
@@ -1064,7 +1062,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	GameStepListener m_stepListener = new GameStepListener()
 	{
 		
-		@Override
 		public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String stepDisplayName)
 		{
 			updateStep();
@@ -1097,7 +1094,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						updateStep();
@@ -1155,14 +1152,14 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	
 	GameDataChangeListener m_dataChangeListener = new GameDataChangeListener()
 	{
-		@Override
+		
 		public void gameDataChanged(Change change)
 		{
 			try
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					@Override
+					
 					public void run()
 					{
 						if (m_uiContext == null)
@@ -1303,7 +1300,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		JPopupMenu popup = new JPopupMenu();
 		popup.add(new AbstractAction("Show Summary Log")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent ae)
 			{
 				HistoryLog historyLog = new HistoryLog();
@@ -1316,7 +1313,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		});
 		popup.add(new AbstractAction("Show Detailed Log")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent ae)
 			{
 				HistoryLog historyLog = new HistoryLog();
@@ -1329,7 +1326,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		});
 		popup.add(new AbstractAction("Save Screenshot")
 		{
-			@Override
+			
 			public void actionPerformed(ActionEvent ae)
 			{
 				saveScreenshot(m_historyTree.getCurrentPopupNode());
@@ -1351,8 +1348,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		validate();
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
+	@SuppressWarnings("deprecation")
 	public void show()
 	{
 		super.show();
@@ -1485,13 +1482,13 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			data.acquireReadLock();
 			try
 			{
-                // workaround to get the whole map
-                // (otherwise the map is cut if current window is not on top of map)
-                int xOffset = mapPanel.getXOffset();
-                int yOffset = mapPanel.getYOffset();
-                mapPanel.setTopLeft(0, 0);
-                mapPanel.print(mapGraphics);
-                mapPanel.setTopLeft(xOffset, yOffset);
+				// workaround to get the whole map
+				// (otherwise the map is cut if current window is not on top of map)
+				int xOffset = mapPanel.getXOffset();
+				int yOffset = mapPanel.getYOffset();
+				mapPanel.setTopLeft(0, 0);
+				mapPanel.print(mapGraphics);
+				mapPanel.setTopLeft(xOffset, yOffset);
 			} finally
 			{
 				data.releaseReadLock();
@@ -1656,6 +1653,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	{
 		FileFilter pngFilter = new FileFilter()
 		{
+			
 			@Override
 			public boolean accept(File f)
 			{
@@ -1693,7 +1691,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			final File file = f;
 			Runnable t = new Runnable()
 			{
-				@Override
+				
 				public void run()
 				{
 					if (saveScreenshot(node, file))
@@ -1724,7 +1722,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			SwingUtilities.invokeLater(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					setWidgetActivation();
@@ -1821,7 +1818,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	
 	private AbstractAction m_showCommentLogAction = new AbstractAction()
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent ae)
 		{
 			if (((ButtonModel) ae.getSource()).isSelected())
@@ -1873,7 +1870,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	
 	private AbstractAction m_showHistoryAction = new AbstractAction("Show history")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 		{
 			showHistory();
@@ -1887,7 +1884,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			setEnabled(false);
 		}
 		
-		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 			showGame();
@@ -1898,7 +1894,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	private AbstractAction m_showMapOnlyAction = new AbstractAction("Show map only")
 	{
 		
-		@Override
 		public void actionPerformed(ActionEvent e)
 		{
 			showMapOnly();
@@ -1908,14 +1903,14 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	
 	private AbstractAction m_saveScreenshotAction = new AbstractAction("Export Screenshot...")
 	{
-		@Override
+		
 		public void actionPerformed(ActionEvent e)
 			{
 				HistoryNode curNode = null;
 				if (m_historyTree == null)
 					curNode = m_data.getHistory().getLastNode();
 				else
-					curNode = (HistoryNode) m_historyTree.getCurrentNode();
+					curNode = m_historyTree.getCurrentNode();
 				saveScreenshot(curNode);
 			}
 	};
@@ -1929,7 +1924,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					JPanel panel = new JPanel();
@@ -2115,7 +2109,6 @@ class CompositeIcon implements Icon
 		m_incons = icons;
 	}
 	
-	@Override
 	public void paintIcon(Component c, Graphics g, int x, int y)
 	{
 		int dx = 0;
@@ -2128,7 +2121,6 @@ class CompositeIcon implements Icon
 		
 	}
 	
-	@Override
 	public int getIconWidth()
 	{
 		int sum = 0;
@@ -2140,7 +2132,6 @@ class CompositeIcon implements Icon
 		return sum;
 	}
 	
-	@Override
 	public int getIconHeight()
 	{
 		int max = 0;

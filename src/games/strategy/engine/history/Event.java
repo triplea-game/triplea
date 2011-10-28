@@ -32,7 +32,6 @@ public class Event extends IndexedHistoryNode implements Renderable
 		
 	}
 	
-	@Override
 	public Object getRenderingData()
 	{
 		return m_renderingData;
@@ -62,7 +61,6 @@ class EventHistorySerializer implements SerializationWriter
 		m_renderingData = renderingData;
 	}
 	
-	@Override
 	public void write(HistoryWriter writer)
 	{
 		writer.startEvent(m_eventName);

@@ -64,7 +64,6 @@ class RemoteMethodCallResults implements Externalizable
 		return m_rVal;
 	}
 	
-	@Override
 	public void writeExternal(ObjectOutput out) throws IOException
 	{
 		if (m_rVal != null)
@@ -79,7 +78,6 @@ class RemoteMethodCallResults implements Externalizable
 		}
 	}
 	
-	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		boolean rVal = in.read() == 1;

@@ -36,6 +36,7 @@ public class MacLobbyWrapper
 		application.addApplicationListener(
 					new ApplicationAdapter()
 					{
+						
 						@Override
 						public void handleQuit(ApplicationEvent event)
 					{

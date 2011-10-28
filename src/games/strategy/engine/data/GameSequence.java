@@ -117,7 +117,6 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		return m_steps.get(index);
 	}
 	
-	@Override
 	public Iterator<GameStep> iterator()
 	{
 		return m_steps.iterator();

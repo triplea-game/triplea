@@ -32,7 +32,6 @@ public abstract class AbstractStat implements IStat
 	
 	protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##0.##");
 	
-	@Override
 	public double getValue(String alliance, GameData data)
 	{
 		Iterator<PlayerID> iter = data.getAllianceTracker().getPlayersInAlliance(alliance).iterator();
@@ -45,7 +44,6 @@ public abstract class AbstractStat implements IStat
 		return rVal;
 	}
 	
-	@Override
 	public NumberFormat getFormatter()
 	{
 		return DECIMAL_FORMAT;

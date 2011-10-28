@@ -52,7 +52,6 @@ public class GameRunner2
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
-			@Override
 			public void run()
 			{
 				MainFrame frame = new MainFrame();
@@ -166,7 +165,6 @@ public class GameRunner2
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
 				
-				@Override
 				public void run()
 				{
 					try
