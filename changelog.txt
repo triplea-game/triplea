@@ -1,4 +1,6 @@
 Changes for 1.4
+* Adding web links to normal game menu bar, and also adding link for guides page on triplea homepage. (veqryn)
+
 * Created two new game options, "Use Politics" and "Units Can Be Changed On Capture". (veqryn)
 
 * Fixing bugs in last patch on politics. Deleted relationshipExistance and instead made it part of "relationship" setter. (veqryn)

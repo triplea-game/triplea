@@ -472,6 +472,7 @@ public class LobbyMenu extends JMenuBar
 		JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
 		JMenuItem warClub = new JMenuItem("War Club & Ladder...");
 		JMenuItem devForum = new JMenuItem("Developer Forum...");
+		JMenuItem guidesLink = new JMenuItem("Guides...");
 		
 		hostingLink.addActionListener(new ActionListener()
 		{
@@ -569,12 +570,29 @@ public class LobbyMenu extends JMenuBar
 			}
 		});
 		
+		guidesLink.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Guides");
+				} catch (Exception e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
 		parentMenu.add(hostingLink);
 		parentMenu.add(mapLink);
 		parentMenu.add(bugReport);
 		parentMenu.add(lobbyRules);
 		parentMenu.add(warClub);
 		parentMenu.add(devForum);
+		parentMenu.add(guidesLink);
 	}
 	
 	private void addChatTimeMenu(JMenu parentMenu)

@@ -180,7 +180,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		menuBar.add(menuGame);
 		
 		addEditMode(menuGame);
-		addPoliticsMenu(menuGame);
 		menuGame.add(m_frame.getShowGameAction());
 		menuGame.add(m_frame.getShowHistoryAction());
 		menuGame.add(m_frame.getShowMapOnlyAction());
@@ -190,6 +189,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		
 		menuGame.addSeparator();
 		addGameOptionsMenu(menuGame);
+		addPoliticsMenu(menuGame);
 		addShowEnemyCasualties(menuGame);
 		addShowAIBattles(menuGame);
 		addChangeDynamixAISettings(menuGame);

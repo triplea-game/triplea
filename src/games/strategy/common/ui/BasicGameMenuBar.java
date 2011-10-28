@@ -15,11 +15,13 @@ import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
+import games.strategy.net.BareBonesBrowserLaunch;
 import games.strategy.net.IServerMessenger;
 
 import java.awt.BorderLayout;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -57,6 +59,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		createGameSpecificMenus(this);
 		createNetworkMenu(this);
 		createLobbyMenu(this);
+		createWebHelpMenu(this);
 		createHelpMenu(this);
 	}
 	
@@ -226,6 +229,145 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		addConsoleMenu(helpMenu);
 		
 		addAboutMenu(helpMenu);
+	}
+	
+	private void createWebHelpMenu(JMenuBar menuBar)
+	{
+		JMenu web = new JMenu("Web");
+		menuBar.add(web);
+		
+		addWebMenu(web);
+	}
+	
+	private void addWebMenu(JMenu parentMenu)
+	{
+		JMenuItem hostingLink = new JMenuItem("How to Host...");
+		JMenuItem mapLink = new JMenuItem("Install Maps...");
+		JMenuItem bugReport = new JMenuItem("Bug Report...");
+		JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
+		JMenuItem warClub = new JMenuItem("War Club & Ladder...");
+		JMenuItem devForum = new JMenuItem("Developer Forum...");
+		JMenuItem guidesLink = new JMenuItem("Guides...");
+		
+		hostingLink.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
+				} catch (Exception e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		mapLink.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
+				} catch (Exception e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		bugReport.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("https://sourceforge.net/tracker/?group_id=44492");
+				} catch (Exception e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		lobbyRules.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
+				} catch (Exception e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		warClub.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("http://www.tripleawarclub.org/");
+				} catch (Exception e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		devForum.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Forum");
+				} catch (Exception e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		guidesLink.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Guides");
+				} catch (Exception e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		parentMenu.add(hostingLink);
+		parentMenu.add(mapLink);
+		parentMenu.add(bugReport);
+		parentMenu.add(lobbyRules);
+		parentMenu.add(warClub);
+		parentMenu.add(devForum);
+		parentMenu.add(guidesLink);
 	}
 	
 	protected void addGameSpecificHelpMenus(JMenu helpMenu)
