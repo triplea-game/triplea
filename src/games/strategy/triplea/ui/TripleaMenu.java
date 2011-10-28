@@ -180,6 +180,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		menuBar.add(menuGame);
 		
 		addEditMode(menuGame);
+		addPoliticsMenu(menuGame);
 		menuGame.add(m_frame.getShowGameAction());
 		menuGame.add(m_frame.getShowHistoryAction());
 		menuGame.add(m_frame.getShowMapOnlyAction());
@@ -449,7 +450,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-						model.setValue((int) 100);
+						model.setValue(100);
 					}
 				});
 				
@@ -562,6 +563,27 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	}
 	
 	/**
+	 * Add a Politics Panel button to the game menu, this panel will show the
+	 * current political landscape as a reference, no actions on this panel.
+	 * 
+	 * @param menuGame
+	 */
+	private void addPoliticsMenu(JMenu menuGame)
+	{
+		AbstractAction politicsAction = new AbstractAction("Show Politics Panel")
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				PoliticalStateOverview ui = new PoliticalStateOverview(getData(),getUIContext());
+				JOptionPane.showMessageDialog(m_frame,ui,"Politics Panel", JOptionPane.PLAIN_MESSAGE);
+			}
+		};
+		menuGame.add(politicsAction);
+
+	}
+	
+	/**
 	 * @param parentMenu
 	 */
 	private void addEnableSound(JMenu parentMenu)
@@ -633,7 +655,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addChangeDynamixAISettings(JMenu parentMenu)
 	{
 		boolean areThereDynamixAIs = false;
-		Set<IGamePlayer> players = ((TripleAFrame) m_frame).GetLocalPlayers();
+		Set<IGamePlayer> players = (m_frame).GetLocalPlayers();
 		for (IGamePlayer player : players)
 		{
 			if (player instanceof Dynamix_AI)
@@ -914,8 +936,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		// extended stats covers stuff that doesn't show up in the game stats menu bar, like custom resources or tech tokens or # techs, etc.
 		IStat[] statsExtended = statPanel.getStatsExtended(getData());
 		
-		String[] alliances = (String[]) statPanel.getAlliances().toArray(new String[statPanel.getAlliances().size()]);
-		PlayerID[] players = (PlayerID[]) statPanel.getPlayers().toArray(new PlayerID[statPanel.getPlayers().size()]);
+		String[] alliances = statPanel.getAlliances().toArray(new String[statPanel.getAlliances().size()]);
+		PlayerID[] players = statPanel.getPlayers().toArray(new PlayerID[statPanel.getPlayers().size()]);
 		
 		// its important here to translate the player objects into our game data
 		// the players for the stat panel are only relevant with respect to
@@ -1387,7 +1409,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		// This is the action listener used
 		class UnitSizeAction extends AbstractAction
 		{
-			private double m_scaleFactor;
+			private final double m_scaleFactor;
 			
 			public UnitSizeAction(double scaleFactor)
 			{

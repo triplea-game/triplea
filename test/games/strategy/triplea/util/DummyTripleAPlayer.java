@@ -92,6 +92,16 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 	}
 	
 	@Override
+	public void reportPoliticalMessage(String message) {
+		
+	}
+	
+	@Override
+	public boolean acceptPoliticalAction(String message) {
+		return true;
+	}
+	
+	@Override
 	public Territory retreatQuery(GUID battleID, boolean submerge,
 				Collection<Territory> possibleTerritories, String message)
 	{

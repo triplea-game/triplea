@@ -31,12 +31,11 @@ import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
 import java.io.Serializable;
 import java.util.HashMap;
 
-@SuppressWarnings("serial")
 public class RelationshipTracker extends RelationshipInterpreter
 {
 	
 	// map of "playername:playername" to RelationshipType that exists between those 2 players
-	private final HashMap<RelatedPlayers, RelationshipType> m_relationships = new HashMap<RelatedPlayers, RelationshipType>();
+	private final HashMap<RelatedPlayers, Relationship> m_relationships = new HashMap<RelatedPlayers, Relationship>();
 	
 	public RelationshipTracker(GameData data)
 	{
@@ -56,7 +55,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 */
 	protected void setRelationship(PlayerID p1, PlayerID p2, RelationshipType r)
 	{
-		m_relationships.put(new RelatedPlayers(p1, p2), r);
+		m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r));
 	}
 	
 	/**
@@ -71,9 +70,17 @@ public class RelationshipTracker extends RelationshipInterpreter
 	@Override
 	public RelationshipType getRelationshipType(PlayerID p1, PlayerID p2)
 	{
+		return getRelationship(p1, p2).getRelationshipType();
+	}
+
+	public Relationship getRelationship(PlayerID p1, PlayerID p2) {
 		return m_relationships.get(new RelatedPlayers(p1, p2));
 	}
 	
+	public int getRoundRelationshipWasCreated(PlayerID p1, PlayerID p2) {
+		return m_relationships.get(new RelatedPlayers(p1, p2)).getTurnCreated();
+	}
+
 	/**
 	 * Convenience method to directly access relationshipTypeAttachment on the relationship that exists between two players
 	 * 
@@ -86,7 +93,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 */
 	protected RelationshipTypeAttachment getRelationshipTypeAttachment(PlayerID p1, PlayerID p2)
 	{
-		RelationshipType relation = getData().getRelationshipTracker().getRelationshipType(p1, p2);
+		RelationshipType relation = getRelationshipType(p1, p2);
 		return RelationshipTypeAttachment.get(relation);
 	}
 	
@@ -148,8 +155,8 @@ public class RelationshipTracker extends RelationshipInterpreter
 			return m_p1.hashCode() + m_p2.hashCode();
 		}
 		
-		private PlayerID m_p1;
-		private PlayerID m_p2;
+		private final PlayerID m_p1;
+		private final PlayerID m_p2;
 		
 		public RelatedPlayers(PlayerID p1, PlayerID p2)
 		{
@@ -196,4 +203,21 @@ public class RelationshipTracker extends RelationshipInterpreter
 		
 	}
 	
+	public class Relationship implements Serializable {
+		
+		public Relationship(RelationshipType relationshipType) {
+			this.relationshipType = relationshipType;
+		}
+		private final RelationshipType relationshipType;
+		private final int turnCreated = getData().getSequence().getRound();
+
+		public int getTurnCreated() {
+			return turnCreated;
+		}
+
+		public RelationshipType getRelationshipType() {
+			return relationshipType;
+		}
+		
+	}
 }

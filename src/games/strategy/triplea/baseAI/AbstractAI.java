@@ -42,6 +42,15 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractAI implements ITripleaPlayer
 {
+	@Override
+	public void reportPoliticalMessage(String message) {		
+	}
+
+	@Override
+	public boolean acceptPoliticalAction(String acceptanceQuestion) {
+		return true;
+	}
+
 	private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 	
 	/**

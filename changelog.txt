@@ -1,4 +1,10 @@
 Changes for 1.4
+* Added Politics UI. (edwin van der wal)
+
+* Created relationshipExistance property in RulesAttachment, if this is set in combination with a relationship property, the relationshipExists property will indicate the number of complete rounds this relationship needs to have been in existance. (edwin van der wal)
+
+* Created new attachment, politicalActionAttachment, which sets which actions are allowed during the politics phase for a player. (edwin van der wal)
+
 * Removing trigger when notifications from TripleAPlayer (because no gamedata changing logic should ever be in TripleAPlayer), and moving them to basedelegate. (edwin van der wal & veqryn)
 
 * Fix for Casualty Reset Bug 1730391, where casualty screen clears after saving and reloading. (frigoref & veqryn)

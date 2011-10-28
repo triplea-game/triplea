@@ -27,6 +27,7 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
@@ -49,7 +50,7 @@ import javax.swing.SwingUtilities;
 public class ActionButtons extends JPanel
 {
 	
-	private CardLayout m_layout = new CardLayout();
+	private final CardLayout m_layout = new CardLayout();
 	
 	private BattlePanel m_battlePanel;
 	
@@ -65,6 +66,7 @@ public class ActionButtons extends JPanel
 	
 	private EndTurnPanel m_endTurnPanel;
 	private ActionPanel m_current;
+	private PoliticsPanel m_politicsPanel;
 	
 	/** Creates new ActionPanel */
 	public ActionButtons(GameData data, MapPanel map, TripleAFrame parent)
@@ -76,6 +78,7 @@ public class ActionButtons extends JPanel
 		m_placePanel = new PlacePanel(data, map, parent);
 		m_techPanel = new TechPanel(data, map);
 		m_endTurnPanel = new EndTurnPanel(data, map);
+		m_politicsPanel = new PoliticsPanel(data, map, parent);	
 		m_current = m_techPanel;
 		
 		setLayout(m_layout);
@@ -88,6 +91,7 @@ public class ActionButtons extends JPanel
 		add(m_placePanel, m_placePanel.toString());
 		add(m_techPanel, m_techPanel.toString());
 		add(m_endTurnPanel, m_endTurnPanel.toString());
+		add(m_politicsPanel, m_politicsPanel.toString());
 		
 		// this should not be necceessary
 		// but it makes tracking down garbage leaks easier
@@ -112,6 +116,7 @@ public class ActionButtons extends JPanel
 				m_placePanel.removeAll();
 				m_techPanel.removeAll();
 				m_endTurnPanel.removeAll();
+				m_politicsPanel.removeAll();
 				m_battlePanel = null;
 				m_movePanel = null;
 				m_repairPanel = null;
@@ -119,7 +124,7 @@ public class ActionButtons extends JPanel
 				m_placePanel = null;
 				m_techPanel = null;
 				m_endTurnPanel = null;
-				
+				m_politicsPanel = null;
 			}
 		});
 		
@@ -212,6 +217,22 @@ public class ActionButtons extends JPanel
 		});
 	}
 	
+	public void changeToPolitics(PlayerID id)
+	{
+		m_current.setActive(false);
+		m_current = m_politicsPanel;
+		m_politicsPanel.display(id);
+		
+		SwingUtilities.invokeLater(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					m_layout.show(ActionButtons.this, m_politicsPanel.toString());
+				}
+			});
+	}
+	
 	public void changeToTech(PlayerID id)
 	{
 		m_current.setActive(false);
@@ -282,6 +303,15 @@ public class ActionButtons extends JPanel
 	public TechRoll waitForTech()
 	{
 		return m_techPanel.waitForTech();
+	}
+	
+	/**
+	 * Blocks until the user selects a political action to attempt
+	 * 
+	 * @return null if no action was picked.
+	 */
+	public PoliticalActionAttachment waitForPoliticalAction() {
+		return m_politicsPanel.waitForPoliticalAction();
 	}
 	
 	/**

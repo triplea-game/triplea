@@ -51,6 +51,7 @@ import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.EditDelegate;
@@ -748,6 +749,11 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return choice == 1;
 	}
 	
+	public boolean acceptPoliticalAction(String acceptanceQuestion) {
+		int choice = EventThreadJOptionPane.showConfirmDialog(this, acceptanceQuestion, "Accept Political Proposal?", JOptionPane.YES_NO_OPTION);
+		return choice == JOptionPane.YES_OPTION;
+	}
+	
 	public boolean getOK(String message)
 	{
 		int choice = EventThreadJOptionPane.showConfirmDialog(this, message, message, JOptionPane.OK_CANCEL_OPTION);
@@ -885,6 +891,39 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		Territory selected = (Territory) list.getSelectedValue();
 		
 		return selected;
+	}
+	
+	public void notifyPoliticalMessage(String message)
+	{
+		EventThreadJOptionPane.showMessageDialog(this, message, "Political Alert", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player) {
+		m_actionButtons.changeToPolitics(player);
+		if (!SwingUtilities.isEventDispatchThread())
+		{
+			try
+			{
+				SwingUtilities.invokeAndWait(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						requestFocusInWindow();
+						transferFocus();
+					}
+				});
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			requestFocusInWindow();
+			transferFocus();
+		}
+		return m_actionButtons.waitForPoliticalAction();
 	}
 	
 	public TechRoll getTechRolls(final PlayerID id)

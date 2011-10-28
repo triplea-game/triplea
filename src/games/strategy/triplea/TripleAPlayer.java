@@ -30,6 +30,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -45,6 +46,7 @@ import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -93,6 +95,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	public void reportMessage(String message)
 	{
 		m_ui.notifyMessage(message);
+	}
+	
+	@Override
+	public void reportPoliticalMessage(String message)
+	{
+		m_ui.notifyPoliticalMessage(message);
 	}
 	
 	@Override
@@ -182,7 +190,20 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	};
 	
 	private void politics()
-	{
+	{	
+	    PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(m_id);
+		
+	    if(actionChoice != null) {
+			IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
+			politicsDelegate.attemptAction(actionChoice);
+			politics();
+	    }
+				
+	}
+	
+	@Override
+	public boolean acceptPoliticalAction(String acceptanceQuestion) {
+		return m_ui.acceptPoliticalAction("To "+m_id.getName()+": "+acceptanceQuestion);
 	}
 	
 	private void tech()
@@ -772,4 +793,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		return games.strategy.triplea.Properties.getScramble_Rules_In_Effect(m_bridge.getGameData());
 	}
+
+
 }

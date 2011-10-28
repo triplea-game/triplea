@@ -1094,7 +1094,7 @@ public class TriggerAttachment extends DefaultAttachment
 		}
 	}
 	
-	private static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge)
+	public static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge)
 	{
 		GameData data = aBridge.getData();
 		for (Territory terr : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player1)))

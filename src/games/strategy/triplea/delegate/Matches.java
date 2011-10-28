@@ -34,6 +34,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.CanalAttachment;
 import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -706,7 +707,7 @@ public class Matches
 				while (iter.hasNext())
 				{
 					UnitSupportAttachment rule = iter.next();
-					if (unit.getType().equals((UnitType) rule.getAttatchedTo()))
+					if (unit.getType().equals(rule.getAttatchedTo()))
 						return true;
 				}
 				return false;
@@ -3230,6 +3231,16 @@ public class Matches
 			}
 		};
 	}
+	
+	public static final Match<PoliticalActionAttachment> PoliticalActionCanBeAttempted = new Match<PoliticalActionAttachment>() {
+		
+		@Override
+		public boolean match(PoliticalActionAttachment paa)
+		{
+			return paa.hasUses() && paa.canPerform();
+		}
+	};
+	
 	
 	/** Creates new Matches */
 	private Matches()
