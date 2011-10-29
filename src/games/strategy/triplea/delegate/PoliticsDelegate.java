@@ -191,7 +191,8 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		int cost = paa.getCostPU();
 		if (cost > 0)
 		{
-			notifyMoney(paa, true);
+			// don't notify user of spending money anymore
+			// notifyMoney(paa, true);
 			String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " PU on Political Action: " + paa.getName();
 			m_bridge.getHistoryWriter().startEvent(transcriptText);
 			
@@ -308,7 +309,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		if (paa.diceSides() == paa.toHit())
 			return true;
 		
-		int rollResult = m_bridge.getRandom(paa.diceSides() - 1, "Attempting the PoliticalAction: " + paa.getName()) + 1;
+		int rollResult = m_bridge.getRandom(paa.diceSides(), "Attempting the PoliticalAction: " + paa.getName()) + 1;
 		boolean success = rollResult <= paa.toHit();
 		String notificationMessage = "rolling (" + paa.toHit() + " out of " + paa.diceSides() + ") result: " + rollResult + " " + (success ? "Success!" : "Failure!");
 		sendNotification(m_player, notificationMessage);

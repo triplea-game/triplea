@@ -174,8 +174,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	private JSplitPane m_chatSplit;
 	private JSplitPane m_commentSplit;
 	private EditPanel m_editPanel;
-	private ButtonModel m_editModeButtonModel;
-	private ButtonModel m_showCommentLogButtonModel;
+	private final ButtonModel m_editModeButtonModel;
+	private final ButtonModel m_showCommentLogButtonModel;
 	private IEditDelegate m_editDelegate;
 	
 	/** Creates new TripleAFrame */
@@ -896,7 +896,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		EventThreadJOptionPane.showMessageDialog(this, message, "Political Alert", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player)
+	public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player, boolean firstRun)
 	{
 		m_actionButtons.changeToPolitics(player);
 		if (!SwingUtilities.isEventDispatchThread())
@@ -922,7 +922,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			requestFocusInWindow();
 			transferFocus();
 		}
-		return m_actionButtons.waitForPoliticalAction();
+		return m_actionButtons.waitForPoliticalAction(firstRun);
 	}
 	
 	public TechRoll getTechRolls(final PlayerID id)
@@ -1901,7 +1901,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		}
 	};
 	
-	private AbstractAction m_saveScreenshotAction = new AbstractAction("Export Screenshot...")
+	private final AbstractAction m_saveScreenshotAction = new AbstractAction("Export Screenshot...")
 	{
 		
 		public void actionPerformed(ActionEvent e)

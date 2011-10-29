@@ -138,7 +138,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		else if (name.endsWith("Place"))
 			place(name.endsWith("BidPlace"));
 		else if (name.endsWith("Politics"))
-			politics();
+			politics(true);
 		else if (name.endsWith("EndTurn"))
 			endTurn();
 		else
@@ -161,7 +161,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		
 	}
 	
-	private AbstractAction m_editModeAction = new AbstractAction()
+	private final AbstractAction m_editModeAction = new AbstractAction()
 	{
 		
 		public void actionPerformed(ActionEvent ae)
@@ -183,15 +183,15 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 	};
 	
-	private void politics()
+	private void politics(boolean firstRun)
 	{
-		PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(m_id);
+		PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(m_id, firstRun);
 		
 		if (actionChoice != null)
 		{
 			IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
 			politicsDelegate.attemptAction(actionChoice);
-			politics();
+			politics(false);
 		}
 		
 	}

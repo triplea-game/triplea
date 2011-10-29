@@ -18,7 +18,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -31,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
@@ -49,6 +49,7 @@ public class PoliticsPanel extends ActionPanel
 	private final JLabel m_actionLabel = new JLabel();
 	private PoliticalActionAttachment m_choice = null;
 	private final TripleAFrame m_parent;
+	private boolean m_firstRun = true;
 	
 	public PoliticsPanel(GameData data, MapPanel map, TripleAFrame parent)
 	{
@@ -66,6 +67,7 @@ public class PoliticsPanel extends ActionPanel
 	public void display(final PlayerID id)
 	{
 		super.display(id);
+		m_choice = null;
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
@@ -76,24 +78,43 @@ public class PoliticsPanel extends ActionPanel
 				add(m_actionLabel);
 				
 				add(new JButton(SelectPoliticalActionAction));
-				add(new JButton(DontBotherAction));
+				final JButton doneButton = new JButton(DontBotherAction);
+
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						doneButton.requestFocusInWindow();
+					}
+				});
+				add(doneButton);
 			}
 			
 		});
 	}
-	
+
 	/**
 	 * waits till someone calls release() and then returns the political action
 	 * chosen
 	 * 
+	 * @param firstRun
+	 * 
 	 * @return the choice of political action
 	 */
-	public PoliticalActionAttachment waitForPoliticalAction()
+	public PoliticalActionAttachment waitForPoliticalAction(boolean firstRun)
 	{
+		m_firstRun = firstRun;
 		
-		if (PoliticalActionAttachment.getValidActions(getCurrentPlayer()).isEmpty())
+		if (m_firstRun && PoliticalActionAttachment.getValidActions(getCurrentPlayer()).isEmpty())
 		{
 			return null; // No Valid political actions, do nothing
+		} else {
+			SwingUtilities.invokeLater(new Runnable() {
+
+				public void run() {
+					// press the politics button for us.
+					SelectPoliticalActionAction.actionPerformed(null);
+				}
+				
+			});
 		}
 		waitForRelease();
 		return m_choice;
@@ -108,7 +129,7 @@ public class PoliticsPanel extends ActionPanel
 		
 		public void actionPerformed(ActionEvent event)
 		{
-			final JDialog politicalChoiceDialog = new JDialog(m_parent, true);
+			final JDialog politicalChoiceDialog = new JDialog(m_parent, "Political Actions", true);
 			Insets insets = new Insets(1, 1, 1, 1);
 			int row = 0;
 			JPanel politicalChoicePanel = new JPanel();
@@ -120,7 +141,7 @@ public class PoliticsPanel extends ActionPanel
 			for (final PoliticalActionAttachment paa : PoliticalActionAttachment.getValidActions(getCurrentPlayer()))
 			{
 				politicalChoicePanel.add(getOtherPlayerFlags(paa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, insets, 0, 0));
-				JButton button = new JButton(PoliticsText.getInstance().getButtonText(paa.getText()));
+				JButton button = new JButton(getActionButtonText(paa));
 				button.addActionListener(new ActionListener()
 				{
 					
@@ -133,25 +154,32 @@ public class PoliticsPanel extends ActionPanel
 					
 				});
 				politicalChoicePanel.add(button, new GridBagConstraints(1, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, insets, 0, 0));
-				politicalChoicePanel.add(new JLabel(PoliticsText.getInstance().getDescription(paa.getText())), new GridBagConstraints(2, row, 1, 1, 5.0, 1.0, GridBagConstraints.WEST,
+				politicalChoicePanel.add(getActionDescriptionLabel(paa), new GridBagConstraints(2, row, 1, 1, 5.0, 1.0, GridBagConstraints.WEST,
 							GridBagConstraints.BOTH, insets, 0, 0));
 				row++;
 			}
-			
-			politicalChoicePanel.add(new JButton(new AbstractAction("No Actions")
-			{
-				
-				public void actionPerformed(ActionEvent arg0)
-				{
+
+			final JButton noActionButton = new JButton(new AbstractAction("No Actions") {
+
+				public void actionPerformed(ActionEvent arg0) {
 					politicalChoiceDialog.setVisible(false);
 				}
-				
-			}), new GridBagConstraints(0, row, 20, 1, 1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.NONE, insets, 0, 0));
+
+			});
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					noActionButton.requestFocusInWindow();
+				}
+			});
+
+			politicalChoicePanel.add(noActionButton, new GridBagConstraints(0, row, 20, 1, 1.0, 1.0, GridBagConstraints.EAST, GridBagConstraints.NONE, insets,
+					0, 0));
 			
 			politicalChoiceDialog.add(politicalChoicePanel);
-			Dimension d = politicalChoiceDialog.getPreferredSize();
-			politicalChoiceDialog.setSize(new Dimension(d.width + 20, d.height + 50));
+			politicalChoiceDialog.pack();
+			politicalChoiceDialog.setLocationRelativeTo(m_parent);
 			politicalChoiceDialog.setVisible(true);
+			politicalChoiceDialog.dispose();
 		}
 	};
 	
@@ -164,10 +192,17 @@ public class PoliticsPanel extends ActionPanel
 		
 		public void actionPerformed(ActionEvent event)
 		{
+			if (!m_firstRun || youSureDoNothing()) {
+				m_choice = null;
+				release();
+			}
 			
-			m_choice = null;
-			release();
-			
+		}
+
+		private boolean youSureDoNothing() {
+			int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PoliticsPanel.this), "Are you sure you dont want to do anything?",
+					"End Politics", JOptionPane.YES_NO_OPTION);
+			return rVal == JOptionPane.YES_OPTION;
 		}
 	};
 	
@@ -187,5 +222,17 @@ public class PoliticsPanel extends ActionPanel
 			panel.add(new JLabel(new ImageIcon(this.getMap().getUIContext().getFlagImageFactory().getFlag(p))));
 		}
 		return panel;
+	}
+
+	private String getActionButtonText(final PoliticalActionAttachment paa) {
+		String costString = paa.getCostPU() == 0 ? "" : "[" + paa.getCostPU() + " PU] ";
+
+		return costString + PoliticsText.getInstance().getButtonText(paa.getText());
+	}
+
+	private JLabel getActionDescriptionLabel(final PoliticalActionAttachment paa) {
+		String chanceString = paa.toHit() == paa.diceSides() ? "" : "[" + paa.toHit() + "/" + paa.diceSides() + "] ";
+
+		return new JLabel(chanceString + PoliticsText.getInstance().getDescription(paa.getText()));
 	}
 }

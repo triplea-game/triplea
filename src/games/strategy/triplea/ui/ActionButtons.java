@@ -301,15 +301,17 @@ public class ActionButtons extends JPanel
 	{
 		return m_techPanel.waitForTech();
 	}
-	
+
 	/**
 	 * Blocks until the user selects a political action to attempt
 	 * 
+	 * @param firstRun
+	 * 
 	 * @return null if no action was picked.
 	 */
-	public PoliticalActionAttachment waitForPoliticalAction()
+	public PoliticalActionAttachment waitForPoliticalAction(boolean firstRun)
 	{
-		return m_politicsPanel.waitForPoliticalAction();
+		return m_politicsPanel.waitForPoliticalAction(firstRun);
 	}
 	
 	/**
