@@ -41,6 +41,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -78,6 +79,23 @@ public class InitializationDelegate extends BaseDelegate
 	public void end()
 	{
 		super.end();
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		InitializationExtendedDelegateState state = new InitializationExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		InitializationExtendedDelegateState s = (InitializationExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	protected void init(IDelegateBridge aBridge)
@@ -297,4 +315,12 @@ public class InitializationDelegate extends BaseDelegate
 		return null;
 	}
 	
+}
+
+
+@SuppressWarnings("serial")
+class InitializationExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

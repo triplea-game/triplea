@@ -100,41 +100,37 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 		
 	}
 	
-	/**
-	 * Returns the state of the Delegate.
-	 */
-	
 	@Override
 	public Serializable saveState()
 	{
-		BidPurchaseState s = new BidPurchaseState();
-		s.superState = super.saveState();
-		s.m_bid = m_bid;
-		s.m_hasBid = m_hasBid;
-		s.m_spent = this.m_spent;
-		return s;
+		BidPurchaseExtendedDelegateState state = new BidPurchaseExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		state.m_bid = m_bid;
+		state.m_hasBid = m_hasBid;
+		state.m_spent = this.m_spent;
+		return state;
 	}
-	
-	/**
-	 * Loads the delegates state
-	 */
 	
 	@Override
 	public void loadState(Serializable state)
 	{
-		BidPurchaseState s = (BidPurchaseState) state;
+		BidPurchaseExtendedDelegateState s = (BidPurchaseExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 		m_bid = s.m_bid;
 		m_spent = s.m_spent;
 		m_hasBid = s.m_hasBid;
-		super.loadState(s.superState);
 	}
 	
 }
 
 
-class BidPurchaseState implements Serializable
+@SuppressWarnings("serial")
+class BidPurchaseExtendedDelegateState implements Serializable
 {
 	Serializable superState;
+	// add other variables here:
 	int m_bid;
 	int m_spent;
 	boolean m_hasBid;

@@ -22,6 +22,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 
+import java.io.Serializable;
+
 /**
  * Responsible for checking for a winner in a game of Tic Tac Toe.
  * 
@@ -57,6 +59,23 @@ public class EndTurnDelegate extends BaseDelegate
 	public void end()
 	{
 		super.end();
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		TicTacToeEndTurnExtendedDelegateState state = new TicTacToeEndTurnExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		TicTacToeEndTurnExtendedDelegateState s = (TicTacToeEndTurnExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	/**
@@ -213,4 +232,11 @@ public class EndTurnDelegate extends BaseDelegate
 		// This class does not implement the IRemote interface, so return null.
 		return null;
 	}
+}
+
+@SuppressWarnings("serial")
+class TicTacToeEndTurnExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

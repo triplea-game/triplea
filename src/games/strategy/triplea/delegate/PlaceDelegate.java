@@ -23,8 +23,6 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 
-import java.io.Serializable;
-
 /**
  * 
  * Logic for placing units.
@@ -51,25 +49,14 @@ public class PlaceDelegate extends AbstractPlaceDelegate
 	
 	/**
 	 * 
-	 * @return gets the production of the territory, ignores whether the territory was an original factory
+	 * @return gets the production of the territory
 	 */
-	
 	@Override
 	protected int getProduction(Territory territory)
 	{
 		TerritoryAttachment ta = TerritoryAttachment.get(territory);
-		return ta.getProduction();
-	}
-	
-	@Override
-	public Serializable saveState()
-	{
-		return super.saveState();
-	}
-	
-	@Override
-	public final void loadState(Serializable aState)
-	{
-		super.loadState(aState);
+		if (ta != null)
+			return ta.getProduction();
+		return 0;
 	}
 }

@@ -48,6 +48,7 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -70,6 +71,8 @@ import java.util.TreeSet;
  */
 public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 {
+	private boolean m_needToInitialize = true;
+	
 	/**
 	 * Called before the delegate will run.
 	 */
@@ -79,11 +82,16 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	{
 		super.start(aBridge);
 		GameData data = getData();
-		if (games.strategy.triplea.Properties.getTriggers(data))
+		if (m_needToInitialize)
 		{
-			TriggerAttachment.triggerProductionChange(m_player, m_bridge, null, null);
-			TriggerAttachment.triggerProductionFrontierEditChange(m_player, m_bridge, null, null);
-			TriggerAttachment.triggerPurchase(m_player, m_bridge, null, null);
+			if (games.strategy.triplea.Properties.getTriggers(data))
+			{
+				TriggerAttachment.triggerProductionChange(m_player, m_bridge, null, null);
+				TriggerAttachment.triggerProductionFrontierEditChange(m_player, m_bridge, null, null);
+				TriggerAttachment.triggerPurchase(m_player, m_bridge, null, null);
+			}
+			
+			m_needToInitialize = false;
 		}
 	}
 	
@@ -91,6 +99,26 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	public void end()
 	{
 		super.end();
+		m_needToInitialize = true;
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		PurchaseExtendedDelegateState state = new PurchaseExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		state.m_needToInitialize = m_needToInitialize;
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		PurchaseExtendedDelegateState s = (PurchaseExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+		m_needToInitialize = s.m_needToInitialize;
 	}
 	
 	/**
@@ -480,4 +508,13 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		return ta.hasIncreasedFactoryProduction();
 	}
 	
+}
+
+
+@SuppressWarnings("serial")
+class PurchaseExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
+	public boolean m_needToInitialize;
 }

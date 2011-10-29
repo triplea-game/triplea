@@ -22,6 +22,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 
+import java.io.Serializable;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -71,6 +72,23 @@ public class EndTurnDelegate extends BaseDelegate
 		else
 			while (m_waiting.getCount() > 0)
 				m_waiting.countDown();
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		SlidingTilesEndTurnExtendedDelegateState state = new SlidingTilesEndTurnExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		SlidingTilesEndTurnExtendedDelegateState s = (SlidingTilesEndTurnExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	public boolean gameOver(GameMap map)
@@ -139,4 +157,11 @@ public class EndTurnDelegate extends BaseDelegate
 		// This class does not implement the IRemote interface, so return null.
 		return null;
 	}
+}
+
+@SuppressWarnings("serial")
+class SlidingTilesEndTurnExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

@@ -210,6 +210,27 @@ public class EndRoundDelegate extends BaseDelegate
 	{
 		super.end();
 	}
+
+	@Override
+	public Serializable saveState()
+	{
+		EndRoundExtendedDelegateState state = new EndRoundExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		state.m_gameOver = m_gameOver;
+		state.m_winners = m_winners;
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		EndRoundExtendedDelegateState s = (EndRoundExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+		m_gameOver = s.m_gameOver;
+		m_winners = s.m_winners;
+	}
 	
 	private void checkVictoryCities(IDelegateBridge aBridge, String victoryMessage, String victoryType)
 	{
@@ -364,26 +385,6 @@ public class EndRoundDelegate extends BaseDelegate
 		return sum;
 	}
 	
-	/**
-	 * Returns the state of the Delegate.
-	 */
-	
-	@Override
-	public Serializable saveState()
-	{
-		return Boolean.valueOf(m_gameOver);
-	}
-	
-	/**
-	 * Loads the delegates state
-	 */
-	
-	@Override
-	public void loadState(Serializable state)
-	{
-		m_gameOver = ((Boolean) state).booleanValue();
-	}
-	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
@@ -394,4 +395,13 @@ public class EndRoundDelegate extends BaseDelegate
 		return null;
 	}
 	
+}
+
+@SuppressWarnings("serial")
+class EndRoundExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
+	public boolean m_gameOver = false;
+	public Collection<PlayerID> m_winners = new ArrayList<PlayerID>();
 }

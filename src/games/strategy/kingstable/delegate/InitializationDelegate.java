@@ -22,6 +22,8 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.kingstable.attachments.PlayerAttachment;
 
+import java.io.Serializable;
+
 /**
  * Responsible for initializing a game of King's Table.
  * 
@@ -87,6 +89,23 @@ public class InitializationDelegate extends BaseDelegate
 	{
 		super.end();
 	}
+
+	@Override
+	public Serializable saveState()
+	{
+		KingsTableInitializationExtendedDelegateState state = new KingsTableInitializationExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		KingsTableInitializationExtendedDelegateState s = (KingsTableInitializationExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+	}
 	
 	/**
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
@@ -99,4 +118,11 @@ public class InitializationDelegate extends BaseDelegate
 		// This class does not implement the IRemote interface, so return null.
 		return null;
 	}
+}
+
+@SuppressWarnings("serial")
+class KingsTableInitializationExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

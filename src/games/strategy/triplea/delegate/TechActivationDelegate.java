@@ -27,6 +27,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,6 +41,8 @@ import java.util.Map;
  */
 public class TechActivationDelegate extends BaseDelegate
 {
+	private boolean m_needToInitialize = true;
+	
 	/** Creates new TechActivationDelegate */
 	public TechActivationDelegate()
 	{
@@ -55,6 +58,10 @@ public class TechActivationDelegate extends BaseDelegate
 	{
 		super.start(aBridge);
 		GameData data = getData();
+		
+		if (!m_needToInitialize)
+			return;
+		
 		// Activate techs
 		Map<PlayerID, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(data).getAdvances();
 		Collection<TechAdvance> advances = techMap.get(m_player);
@@ -73,18 +80,41 @@ public class TechActivationDelegate extends BaseDelegate
 		}
 		// empty
 		techMap.put(m_player, null);
+		
 		if (games.strategy.triplea.Properties.getTriggers(data))
 		{
 			TriggerAttachment.triggerTechChange(m_player, aBridge, null, null);
 			TriggerAttachment.triggerSupportChange(m_player, aBridge, null, null);
 			TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, null, null);
 		}
+		
+		m_needToInitialize = false;
 	}
 	
 	@Override
 	public void end()
 	{
 		super.end();
+		m_needToInitialize = true;
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		TechActivationExtendedDelegateState state = new TechActivationExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		state.m_needToInitialize = m_needToInitialize;
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		TechActivationExtendedDelegateState s = (TechActivationExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+		m_needToInitialize = s.m_needToInitialize;
 	}
 	
 	// Return string representing all advances in collection
@@ -117,4 +147,13 @@ public class TechActivationDelegate extends BaseDelegate
 		return null;
 	}
 	
+}
+
+
+@SuppressWarnings("serial")
+class TechActivationExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
+	public boolean m_needToInitialize;
 }

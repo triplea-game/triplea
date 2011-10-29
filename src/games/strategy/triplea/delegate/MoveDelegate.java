@@ -66,7 +66,8 @@ import java.util.Map;
  */
 public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 {
-	private boolean m_firstRun = true;
+	private boolean m_firstRun = true; // firstRun means when the game is loaded the first time, not when the game is loaded from a save.
+	private boolean m_needToInitialize = true; // needToInitialize means we only do certain things once, so that if a game is saved then loaded, they aren't done again
 	private boolean m_nonCombat;
 	private final TransportTracker m_transportTracker = new TransportTracker();
 	private IntegerMap<Territory> m_PUsLost = new IntegerMap<Territory>();
@@ -82,6 +83,168 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	public MoveDelegate()
 	{
 		
+	}
+	
+	/**
+	 * Called before the delegate will run.
+	 */
+	
+	@Override
+	public void start(IDelegateBridge aBridge)
+	{
+		super.start(new TripleADelegateBridge(aBridge));
+		m_nonCombat = isNonCombat(aBridge);
+		
+		GameData data = getData();
+		
+		if (m_firstRun)
+			firstRun();
+		
+		if (m_needToInitialize)
+		{
+			// territory property changes triggered at beginning of combat move // TODO move to new delegate start of turn
+			if (!m_nonCombat && games.strategy.triplea.Properties.getTriggers(data))
+			{
+				TriggerAttachment.triggerPlayerPropertyChange(m_player, aBridge, null, null);
+				TriggerAttachment.triggerRelationshipTypePropertyChange(m_player, aBridge, null, null);
+				TriggerAttachment.triggerTerritoryPropertyChange(m_player, aBridge, null, null);
+				TriggerAttachment.triggerTerritoryEffectPropertyChange(m_player, aBridge, null, null);
+				triggerDefaultNotificationTriggerAttachments(m_player, aBridge);
+			}
+			
+			// repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
+			if (!m_nonCombat && games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(data))
+				MoveDelegate.repairBattleShips(m_bridge, m_player, true);
+			
+			// give movement to units which begin the turn in the same territory as units with giveMovement (like air and naval bases)
+			if (!m_nonCombat && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(data))
+				giveBonusMovement(m_bridge, m_player);
+			
+			// take away all movement from allied fighters sitting on damaged carriers
+			if (!m_nonCombat)
+				removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_player);
+			
+			// placing triggered units at beginning of combat move.
+			if (!m_nonCombat && games.strategy.triplea.Properties.getTriggers(data))
+				TriggerAttachment.triggerUnitPlacement(m_player, m_bridge, null, null);
+			
+			m_needToInitialize = false;
+		}
+		
+		if (m_tempMovePerformer != null)
+		{
+			m_tempMovePerformer.initialize(this);
+			m_tempMovePerformer.resume();
+			m_tempMovePerformer = null;
+		}
+	}
+	
+	/**
+	 * Called before the delegate will stop running.
+	 */
+	
+	@Override
+	public void end()
+	{
+		super.end();
+		if (m_nonCombat)
+			removeAirThatCantLand();
+		
+		m_movesToUndo.clear();
+		
+		// WW2V2, fires at end of combat move
+		// WW2V1, fires at end of non combat move
+		if ((!m_nonCombat && isWW2V3()) || (m_nonCombat && (!isWW2V2() && !isWW2V3())) || (!m_nonCombat && isWW2V2()))
+		{
+			if (TechTracker.hasRocket(m_bridge.getPlayerID()))
+			{
+				RocketsFireHelper helper = new RocketsFireHelper();
+				helper.fireRockets(m_bridge, m_bridge.getPlayerID());
+			}
+		}
+		CompositeChange change = new CompositeChange();
+		
+		/* This code is already done in BattleDelegate, so why is it duplicated here?
+		if(!m_nonCombat && (isWW2V3() || isWW2V2() || isPreviousUnitsFight()))
+		{
+		    change.add(addLingeringUnitsToBattles());
+		}*/
+
+		// do at the end of the round
+		// if we do it at the start of non combat, then
+		// we may do it in the middle of the round, while loading.
+		if (m_nonCombat)
+		{
+			GameData data = getData();
+			for (Unit u : data.getUnits())
+			{
+				if (TripleAUnit.get(u).getAlreadyMoved() != 0)
+				{
+					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.ALREADY_MOVED));
+				}
+				if (TripleAUnit.get(u).getSubmerged())
+				{
+					change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.SUBMERGED));
+				}
+			}
+			
+			change.add(m_transportTracker.endOfRoundClearStateChange(data));
+			m_PUsLost.clear();
+		}
+		
+		if (!change.isEmpty())
+		{
+			// if no non-combat occurred, we may have cleanup left from combat
+			// that we need to spawn an event for
+			m_bridge.getHistoryWriter().startEvent("Cleaning up after movement phases");
+			m_bridge.addChange(change);
+		}
+
+		m_needToInitialize = true;
+	}
+	
+	@Override
+	public Serializable saveState()
+	{
+		// see below
+		return saveState(true);
+	}
+	
+	/**
+	 * Returns the state of the Delegate. We dont want to save the undoState if
+	 * we are saving the state for an undo move (we dont need it, it will just
+	 * take up extra space).
+	 */
+	private Serializable saveState(boolean saveUndo)
+	{
+		MoveExtendedDelegateState state = new MoveExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		state.m_firstRun = m_firstRun;
+		state.m_needToInitialize = m_needToInitialize;
+		state.m_nonCombat = m_nonCombat;
+		if (saveUndo)
+			state.m_movesToUndo = m_movesToUndo;
+		state.m_PUsLost = m_PUsLost;
+		state.m_tempMovePerformer = m_tempMovePerformer;
+		return state;
+	}
+	
+	@Override
+	public void loadState(Serializable state)
+	{
+		MoveExtendedDelegateState s = (MoveExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+		m_firstRun = s.m_firstRun;
+		m_needToInitialize = s.m_needToInitialize;
+		m_nonCombat = s.m_nonCombat;
+		// if the undo state wasnt saved, then dont load it
+		// prevents overwriting undo state when we restore from an undo move
+		if (s.m_movesToUndo != null)
+			m_movesToUndo = s.m_movesToUndo;
+		m_PUsLost = s.m_PUsLost;
+		m_tempMovePerformer = s.m_tempMovePerformer;
 	}
 	
 	/**
@@ -153,117 +316,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			return false;
 		else
 			throw new IllegalStateException("Cannot determine combat or not");
-	}
-	
-	/**
-	 * Called before the delegate will run.
-	 */
-	
-	@Override
-	public void start(IDelegateBridge aBridge)
-	{
-		super.start(new TripleADelegateBridge(aBridge));
-		m_nonCombat = isNonCombat(aBridge);
-		
-		GameData data = getData();
-		
-		if (m_firstRun)
-			firstRun();
-		
-		// territory property changes triggered at beginning of combat move // TODO move to new delegate start of turn
-		if (!m_nonCombat && games.strategy.triplea.Properties.getTriggers(data))
-		{
-			TriggerAttachment.triggerPlayerPropertyChange(m_player, aBridge, null, null);
-			TriggerAttachment.triggerRelationshipTypePropertyChange(m_player, aBridge, null, null);
-			TriggerAttachment.triggerTerritoryPropertyChange(m_player, aBridge, null, null);
-			TriggerAttachment.triggerTerritoryEffectPropertyChange(m_player, aBridge, null, null);
-			triggerDefaultNotificationTriggerAttachments(m_player, aBridge);
-		}
-		
-		// repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
-		if (!m_nonCombat && games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(data))
-			MoveDelegate.repairBattleShips(m_bridge, m_player, true);
-		
-		// give movement to units which begin the turn in the same territory as units with giveMovement (like air and naval bases)
-		if (!m_nonCombat && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(data))
-			giveBonusMovement(m_bridge, m_player);
-		
-		// take away all movement from allied fighters sitting on damaged carriers
-		if (!m_nonCombat)
-			removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_player);
-		
-		// placing triggered units at beginning of combat move.
-		if (!m_nonCombat && games.strategy.triplea.Properties.getTriggers(data))
-			TriggerAttachment.triggerUnitPlacement(m_player, m_bridge, null, null);
-		
-		if (m_tempMovePerformer != null)
-		{
-			m_tempMovePerformer.initialize(this);
-			m_tempMovePerformer.resume();
-			m_tempMovePerformer = null;
-		}
-	}
-	
-	/**
-	 * Called before the delegate will stop running.
-	 */
-	
-	@Override
-	public void end()
-	{
-		super.end();
-		if (m_nonCombat)
-			removeAirThatCantLand();
-		
-		m_movesToUndo.clear();
-		
-		// WW2V2, fires at end of combat move
-		// WW2V1, fires at end of non combat move
-		if ((!m_nonCombat && isWW2V3()) || (m_nonCombat && (!isWW2V2() && !isWW2V3())) || (!m_nonCombat && isWW2V2()))
-		{
-			if (TechTracker.hasRocket(m_bridge.getPlayerID()))
-			{
-				RocketsFireHelper helper = new RocketsFireHelper();
-				helper.fireRockets(m_bridge, m_bridge.getPlayerID());
-			}
-		}
-		CompositeChange change = new CompositeChange();
-		
-		/* This code is already done in BattleDelegate, so why is it duplicated here?
-		if(!m_nonCombat && (isWW2V3() || isWW2V2() || isPreviousUnitsFight()))
-		{
-		    change.add(addLingeringUnitsToBattles());
-		}*/
-
-		// do at the end of the round
-		// if we do it at the start of non combat, then
-		// we may do it in the middle of the round, while loading.
-		if (m_nonCombat)
-		{
-			GameData data = getData();
-			for (Unit u : data.getUnits())
-			{
-				if (TripleAUnit.get(u).getAlreadyMoved() != 0)
-				{
-					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.ALREADY_MOVED));
-				}
-				if (TripleAUnit.get(u).getSubmerged())
-				{
-					change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.SUBMERGED));
-				}
-			}
-			
-			change.add(m_transportTracker.endOfRoundClearStateChange(data));
-			m_PUsLost.clear();
-		}
-		
-		if (!change.isEmpty())
-		{
-			// if no non-combat occurred, we may have cleanup left from combat
-			// that we need to spawn an event for
-			m_bridge.getHistoryWriter().startEvent("Cleaning up after movement phases");
-			m_bridge.addChange(change);
-		}
 	}
 	
 	private void triggerDefaultNotificationTriggerAttachments(PlayerID player, IDelegateBridge aBridge)
@@ -965,13 +1017,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		return m_transportTracker;
 	}
 	
-	@Override
-	public Serializable saveState()
-	{
-		
-		return saveState(true);
-	}
-	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
@@ -980,44 +1025,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	public Class<IMoveDelegate> getRemoteType()
 	{
 		return IMoveDelegate.class;
-	}
-	
-	/**
-	 * Returns the state of the Delegate. We dont want to save the undoState if
-	 * we are saving the state for an undo move (we dont need it, it will just
-	 * take up extra space).
-	 */
-	Serializable saveState(boolean saveUndo)
-	{
-		
-		MoveState state = new MoveState();
-		state.m_firstRun = m_firstRun;
-		state.m_nonCombat = m_nonCombat;
-		if (saveUndo)
-			state.m_movesToUndo = m_movesToUndo;
-		state.m_PUsLost = m_PUsLost;
-		state.m_tempMovePerformer = this.m_tempMovePerformer;
-		return state;
-	}
-	
-	/**
-	 * Loads the delegates state
-	 * 
-	 */
-	
-	@Override
-	public void loadState(Serializable aState)
-	{
-		
-		MoveState state = (MoveState) aState;
-		m_firstRun = state.m_firstRun;
-		m_nonCombat = state.m_nonCombat;
-		// if the undo state wasnt saved, then dont load it
-		// prevents overwriting undo state when we restore from an undo move
-		if (state.m_movesToUndo != null)
-			m_movesToUndo = state.m_movesToUndo;
-		m_PUsLost = state.m_PUsLost;
-		m_tempMovePerformer = state.m_tempMovePerformer;
 	}
 	
 	/*
@@ -1128,12 +1135,14 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 
 
 @SuppressWarnings("serial")
-class MoveState implements Serializable
+class MoveExtendedDelegateState implements Serializable
 {
+	Serializable superState;
+	// add other variables here:
 	public boolean m_firstRun = true;
+	public boolean m_needToInitialize;
 	public boolean m_nonCombat;
 	public IntegerMap<Territory> m_PUsLost;
 	public List<UndoableMove> m_movesToUndo;
 	public MovePerformer m_tempMovePerformer;
-	
 }

@@ -21,14 +21,10 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 
 import java.io.Serializable;
-import java.util.Iterator;
 
 /**
  * 
@@ -39,9 +35,6 @@ import java.util.Iterator;
  */
 public class GivePUsDelegate extends BaseDelegate
 {
-	
-	private boolean m_gameOver = false;
-	
 	/** Creates a new instance of GivePUsDelegate */
 	public GivePUsDelegate()
 	{
@@ -55,12 +48,6 @@ public class GivePUsDelegate extends BaseDelegate
 	public void start(IDelegateBridge aBridge)
 	{
 		super.start(aBridge);
-		
-		if (m_gameOver)
-			return;
-		
-		if (isWW2V2())
-			return;
 	}
 	
 	@Override
@@ -68,12 +55,25 @@ public class GivePUsDelegate extends BaseDelegate
 	{
 		super.end();
 	}
-	
-	private boolean isWW2V2()
+
+	@Override
+	public Serializable saveState()
 	{
-		return games.strategy.triplea.Properties.getWW2V2(getData());
+		GivePUsExtendedDelegateState state = new GivePUsExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		GivePUsExtendedDelegateState s = (GivePUsExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
+	/*
 	public int getProduction(PlayerID id)
 	{
 		int sum = 0;
@@ -90,26 +90,7 @@ public class GivePUsDelegate extends BaseDelegate
 		}
 		return sum;
 	}
-	
-	/**
-	 * Returns the state of the Delegate.
-	 */
-	
-	@Override
-	public Serializable saveState()
-	{
-		return Boolean.valueOf(m_gameOver);
-	}
-	
-	/**
-	 * Loads the delegates state
-	 */
-	
-	@Override
-	public void loadState(Serializable state)
-	{
-		m_gameOver = ((Boolean) state).booleanValue();
-	}
+	*/
 	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
@@ -121,4 +102,11 @@ public class GivePUsDelegate extends BaseDelegate
 		return null;
 	}
 	
+}
+
+@SuppressWarnings("serial")
+class GivePUsExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

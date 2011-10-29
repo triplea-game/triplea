@@ -31,6 +31,7 @@ import games.strategy.kingstable.attachments.TerritoryAttachment;
 import games.strategy.kingstable.delegate.remote.IPlayDelegate;
 import games.strategy.kingstable.ui.display.IKingsTableDisplay;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -66,6 +67,23 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	public void end()
 	{
 		super.end();
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		KingsTablePlayExtendedDelegateState state = new KingsTablePlayExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		KingsTablePlayExtendedDelegateState s = (KingsTablePlayExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	/**
@@ -530,4 +548,11 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		}
 		
 	}
+}
+
+@SuppressWarnings("serial")
+class KingsTablePlayExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

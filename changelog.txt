@@ -1,4 +1,6 @@
 Changes for 1.4
+* Added ability for BaseDelegate to keep track of whether triggers have fired or not, and changed all delegates to record and load super's saveState data when saving and loading. (veqryn)
+
 * Some small ui fixes for politics. (edwin van der wal)
 
 * Removing @Overrides for implemented methods, in order to maintain Java 1.5 compatibility. Also removing unnecessary casting. (veqryn)

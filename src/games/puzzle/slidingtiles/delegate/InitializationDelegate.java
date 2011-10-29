@@ -26,6 +26,7 @@ import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -128,6 +129,23 @@ public class InitializationDelegate extends BaseDelegate
 	{
 		super.end();
 	}
+
+	@Override
+	public Serializable saveState()
+	{
+		SlidingTilesInitializationExtendedDelegateState state = new SlidingTilesInitializationExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		SlidingTilesInitializationExtendedDelegateState s = (SlidingTilesInitializationExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+	}
 	
 	/**
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
@@ -140,4 +158,11 @@ public class InitializationDelegate extends BaseDelegate
 		// This class does not implement the IRemote interface, so return null.
 		return null;
 	}
+}
+
+@SuppressWarnings("serial")
+class SlidingTilesInitializationExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

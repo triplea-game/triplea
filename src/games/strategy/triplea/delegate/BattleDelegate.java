@@ -51,13 +51,9 @@ import java.util.Map;
 @AutoSave(beforeStepStart = true, afterStepEnd = true)
 public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 {
-	
 	private BattleTracker m_battleTracker = new BattleTracker();
-	
 	private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
-	
 	private boolean m_needToInitialize = true;
-	
 	private Battle m_currentBattle = null;
 	
 	/**
@@ -87,6 +83,31 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	{
 		super.end();
 		m_needToInitialize = true;
+	}
+	
+	@Override
+	public Serializable saveState()
+	{
+		BattleExtendedDelegateState state = new BattleExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		state.m_battleTracker = m_battleTracker;
+		state.m_originalOwnerTracker = m_originalOwnerTracker;
+		state.m_needToInitialize = m_needToInitialize;
+		state.m_currentBattle = m_currentBattle;
+		return state;
+	}
+	
+	@Override
+	public void loadState(Serializable state)
+	{
+		BattleExtendedDelegateState s = (BattleExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+		m_battleTracker = s.m_battleTracker;
+		m_originalOwnerTracker = s.m_originalOwnerTracker;
+		m_needToInitialize = s.m_needToInitialize;
+		m_currentBattle = s.m_currentBattle;
 	}
 	
 	public String fightBattle(Territory territory, boolean bombing)
@@ -473,35 +494,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	}
 	
 	/**
-	 * Returns the state of the Delegate.
-	 */
-	
-	@Override
-	public Serializable saveState()
-	{
-		BattleState state = new BattleState();
-		state.m_battleTracker = m_battleTracker;
-		state.m_originalOwnerTracker = m_originalOwnerTracker;
-		state.m_needToInitialize = m_needToInitialize;
-		state.m_currentBattle = m_currentBattle;
-		return state;
-	}
-	
-	/**
-	 * Loads the delegates state
-	 */
-	
-	@Override
-	public void loadState(Serializable aState)
-	{
-		BattleState state = (BattleState) aState;
-		m_battleTracker = state.m_battleTracker;
-		m_originalOwnerTracker = state.m_originalOwnerTracker;
-		m_needToInitialize = state.m_needToInitialize;
-		m_currentBattle = state.m_currentBattle;
-	}
-	
-	/**
 	 * @return
 	 */
 	private static boolean isIgnoreTransportInMovement(GameData data)
@@ -546,13 +538,12 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 
 
 @SuppressWarnings("serial")
-class BattleState implements Serializable
+class BattleExtendedDelegateState implements Serializable
 {
+	Serializable superState;
+	// add other variables here:
 	public BattleTracker m_battleTracker = new BattleTracker();
-	
 	public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
-	
 	public boolean m_needToInitialize;
-	
 	public Battle m_currentBattle;
 }

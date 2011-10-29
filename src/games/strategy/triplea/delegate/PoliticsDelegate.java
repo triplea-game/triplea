@@ -34,6 +34,8 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.PoliticsText;
 
+import java.io.Serializable;
+
 /**
  * 
  * Responsible allowing players to perform politicalActions
@@ -69,6 +71,23 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		{
 			TriggerAttachment.triggerRelationshipChange(m_player, m_bridge, null, null);
 		}
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		PoliticsExtendedDelegateState state = new PoliticsExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		PoliticsExtendedDelegateState s = (PoliticsExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	/*
@@ -329,4 +348,12 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			paa.resetAttempts(getBridge());
 		}
 	}
+}
+
+
+@SuppressWarnings("serial")
+class PoliticsExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

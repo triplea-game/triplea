@@ -1186,7 +1186,7 @@ public class TriggerAttachment extends DefaultAttachment
 	
 	//
 	// And now for the actual triggers, as called throughout the engine.
-	// Each trigger should be called exactly twice, once in TripleAPlayer.java (for use with 'when'), and a second time as the default location for when 'when' is not used.
+	// Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the default location for when 'when' is not used.
 	// Should be void unless you have a really good reason otherwise.
 	//
 	

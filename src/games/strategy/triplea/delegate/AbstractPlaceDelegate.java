@@ -128,6 +128,27 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		new AirThatCantLandUtil(m_bridge).removeAirThatCantLand(m_player, false);
 	}
 	
+	@Override
+	public Serializable saveState()
+	{
+		PlaceExtendedDelegateState state = new PlaceExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		state.m_produced = m_produced;
+		state.m_placements = m_placements;
+		return state;
+	}
+	
+	@Override
+	public void loadState(Serializable state)
+	{
+		PlaceExtendedDelegateState s = (PlaceExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+		m_produced = s.m_produced;
+		m_placements = s.m_placements;
+	}
+	
 	private Collection<Unit> getAlreadyProduced(Territory t)
 	{
 		if (m_produced.containsKey(t))
@@ -864,8 +885,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	}
 	
 	/**
-	 * @return gets the production of the territory, ignores wether the
-	 *         territory was an original factory
+	 * @return gets the production of the territory
 	 */
 	protected int getProduction(Territory territory)
 	{
@@ -873,8 +893,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (ta != null)
 			return ta.getProduction();
 		return 0;
-		
-		// throw new UnsupportedOperationException("Not implemented");
 	}
 	
 	/**
@@ -1301,33 +1319,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		return IAbstractPlaceDelegate.class;
 	}
 	
-	/**
-	 * Returns the state of the Delegate.
-	 */
-	
-	@Override
-	public Serializable saveState()
-	{
-		
-		PlaceState state = new PlaceState();
-		state.m_produced = m_produced;
-		state.m_placements = m_placements;
-		return state;
-	}
-	
-	/**
-	 * Loads the delegates state
-	 */
-	
-	@Override
-	public void loadState(Serializable aState)
-	{
-		
-		PlaceState state = (PlaceState) aState;
-		m_produced = state.m_produced;
-		m_placements = state.m_placements;
-	}
-	
 	private Collection<Territory> getListedTerritories(String[] list)
 	{
 		List<Territory> rVal = new ArrayList<Territory>();
@@ -1379,9 +1370,10 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 
 
 @SuppressWarnings("serial")
-class PlaceState implements Serializable
+class PlaceExtendedDelegateState implements Serializable
 {
-	
+	Serializable superState;
+	// add other variables here:
 	public Map<Territory, Collection<Unit>> m_produced;
 	public List<UndoablePlacement> m_placements;
 }

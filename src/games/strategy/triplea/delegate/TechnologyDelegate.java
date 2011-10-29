@@ -59,6 +59,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	private HashMap<PlayerID, Collection<TechAdvance>> m_techs;
 	private TechnologyFrontier m_techCategory;
 	private TripleADelegateBridge m_bridge;
+	private boolean m_needToInitialize = true;
 	
 	/** Creates new TechnolgoyDelegate */
 	public TechnologyDelegate()
@@ -82,16 +83,44 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	{
 		m_bridge = new TripleADelegateBridge(aBridge);
 		super.start(m_bridge);
+		
+		if (!m_needToInitialize)
+			return;
+		
 		if (games.strategy.triplea.Properties.getTriggers(getData()))
 		{
 			TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, null, null);
 		}
+		
+		m_needToInitialize = false;
 	}
 	
 	@Override
 	public void end()
 	{
 		super.end();
+		m_needToInitialize = true;
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		TechnologyExtendedDelegateState state = new TechnologyExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		state.m_needToInitialize = m_needToInitialize;
+		state.m_techs = m_techs;
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		TechnologyExtendedDelegateState s = (TechnologyExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+		m_needToInitialize = s.m_needToInitialize;
+		m_techs = s.m_techs;
 	}
 	
 	public Map<PlayerID, Collection<TechAdvance>> getAdvances()
@@ -407,27 +436,6 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		return m_techCost > 0 ? m_techCost : Constants.TECH_ROLL_COST;
 	}
 	
-	/**
-	 * Returns the state of the Delegate.
-	 */
-	
-	@Override
-	public Serializable saveState()
-	{
-		return m_techs;
-	}
-	
-	/**
-	 * Loads the delegates state
-	 */
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public void loadState(Serializable state)
-	{
-		m_techs = (HashMap<PlayerID, Collection<TechAdvance>>) state;
-	}
-	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
@@ -438,4 +446,14 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		return ITechDelegate.class;
 	}
 	
+}
+
+
+@SuppressWarnings("serial")
+class TechnologyExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
+	public boolean m_needToInitialize;
+	public HashMap<PlayerID, Collection<TechAdvance>> m_techs;
 }

@@ -25,6 +25,8 @@ import games.strategy.kingstable.attachments.PlayerAttachment;
 import games.strategy.kingstable.attachments.TerritoryAttachment;
 import games.strategy.kingstable.ui.display.IKingsTableDisplay;
 
+import java.io.Serializable;
+
 /**
  * Responsible for checking for a winner in a game of King's Table.
  * 
@@ -67,6 +69,23 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 	public void end()
 	{
 		super.end();
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		KingsTableEndTurnExtendedDelegateState state = new KingsTableEndTurnExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		KingsTableEndTurnExtendedDelegateState s = (KingsTableEndTurnExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	/*
@@ -165,4 +184,11 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 		// return IEndTurnDelegate.class;
 		return null;
 	}
+}
+
+@SuppressWarnings("serial")
+class KingsTableEndTurnExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

@@ -26,6 +26,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -54,6 +55,23 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	public void end()
 	{
 		super.end();
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		TicTacToePlayExtendedDelegateState state = new TicTacToePlayExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		TicTacToePlayExtendedDelegateState s = (TicTacToePlayExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	/**
@@ -127,4 +145,11 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		// This class implements IPlayDelegate, which inherits from IRemote.
 		return IPlayDelegate.class;
 	}
+}
+
+@SuppressWarnings("serial")
+class TicTacToePlayExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

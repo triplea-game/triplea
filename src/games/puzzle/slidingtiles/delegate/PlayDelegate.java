@@ -27,6 +27,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 
+import java.io.Serializable;
+
 /**
  * Responsible for performing a move in a game of n-puzzle.
  * 
@@ -52,6 +54,23 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	public void end()
 	{
 		super.end();
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		SlidingTilesPlayExtendedDelegateState state = new SlidingTilesPlayExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		SlidingTilesPlayExtendedDelegateState s = (SlidingTilesPlayExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	/**
@@ -183,4 +202,11 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		// This class implements IPlayDelegate, which inherits from IRemote.
 		return IPlayDelegate.class;
 	}
+}
+
+@SuppressWarnings("serial")
+class SlidingTilesPlayExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

@@ -33,6 +33,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -60,6 +61,23 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 	public void end()
 	{
 		super.end();
+	}
+
+	@Override
+	public Serializable saveState()
+	{
+		EditExtendedDelegateState state = new EditExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		return state;
+	}
+
+	@Override
+	public void loadState(Serializable state)
+	{
+		EditExtendedDelegateState s = (EditExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
 	}
 	
 	public static boolean getEditMode(GameData data)
@@ -301,4 +319,11 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		return IEditDelegate.class;
 	}
 	
+}
+
+@SuppressWarnings("serial")
+class EditExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
 }

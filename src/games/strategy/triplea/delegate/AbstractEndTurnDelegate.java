@@ -136,12 +136,13 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		{
 			MoveDelegate.repairBattleShips(aBridge, aBridge.getPlayerID(), false);
 		}
-		m_needToInitialize = false;
 		
 		if (isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null && !pa.getGiveUnitControl().isEmpty())
 		{
 			changeUnitOwnership(aBridge);
 		}
+
+		m_needToInitialize = false;
 	}
 	
 	/**
@@ -154,6 +155,27 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		super.end();
 		m_needToInitialize = true;
 		DelegateFinder.battleDelegate(getData()).getBattleTracker().clear();
+	}
+	
+	@Override
+	public Serializable saveState()
+	{
+		EndTurnExtendedDelegateState state = new EndTurnExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		state.m_needToInitialize = m_needToInitialize;
+		state.m_hasPostedTurnSummary = m_hasPostedTurnSummary;
+		return state;
+	}
+	
+	@Override
+	public void loadState(Serializable state)
+	{
+		EndTurnExtendedDelegateState s = (EndTurnExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+		m_needToInitialize = s.m_needToInitialize;
+		m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
 	}
 	
 	private int rollWarBonds(IDelegateBridge aBridge)
@@ -323,46 +345,14 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	{
 		return IAbstractEndTurnDelegate.class;
 	}
-	
-	/**
-	 * Returns the state of the Delegate.
-	 */
-	
-	@Override
-	public Serializable saveState()
-	{
-		EndTurnState state = new EndTurnState();
-		state.m_needToInitialize = m_needToInitialize;
-		state.m_hasPostedTurnSummary = m_hasPostedTurnSummary;
-		return state;
-	}
-	
-	/**
-	 * Loads the delegates state
-	 */
-	
-	@Override
-	public void loadState(Serializable aState)
-	{
-		if (aState != null)
-		{
-			EndTurnState state = (EndTurnState) aState;
-			m_needToInitialize = state.m_needToInitialize;
-			m_hasPostedTurnSummary = state.m_hasPostedTurnSummary;
-		}
-	}
 }
 
 
 @SuppressWarnings("serial")
-class EndTurnState
-			implements Serializable
+class EndTurnExtendedDelegateState implements Serializable
 {
-	
-	EndTurnState()
-	{
-	}
-	
+	Serializable superState;
+	// add other variables here:
 	public boolean m_needToInitialize;
 	public boolean m_hasPostedTurnSummary;
 }

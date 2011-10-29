@@ -41,6 +41,8 @@ public abstract class BaseDelegate implements IDelegate
 	protected String m_displayName;
 	protected PlayerID m_player;
 	protected IDelegateBridge m_bridge;
+	private boolean m_startBaseStepsFinished = false;
+	private boolean m_endBaseStepsFinished = false;
 	
 	/**
 	 * Creates a new instance of the Delegate
@@ -57,13 +59,17 @@ public abstract class BaseDelegate implements IDelegate
 	
 	/**
 	 * Called before the delegate will run.
+	 * All classes should call super.start if they override this.
 	 */
-	
 	public void start(IDelegateBridge bridge)
 	{
 		m_bridge = bridge;
 		m_player = bridge.getPlayerID();
-		triggerWhenTriggerAttachments(TriggerAttachment.BEFORE);
+		if (!m_startBaseStepsFinished)
+		{
+			m_startBaseStepsFinished = true;
+			triggerWhenTriggerAttachments(TriggerAttachment.BEFORE);
+		}
 	}
 	
 	public String getName()
@@ -78,23 +84,34 @@ public abstract class BaseDelegate implements IDelegate
 	
 	/**
 	 * Called before the delegate will stop running.
+	 * All classes should call super.end if they override this.
 	 */
-	
 	public void end()
 	{
 		// normally nothing to do here
 		// we are firing triggers, for maps that include them
-		triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
+		if (!m_endBaseStepsFinished)
+		{
+			m_endBaseStepsFinished = true;
+			triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
+		}
+		
+		// these should probably be somewhere else, but we are relying on the fact that reloading a save go into the start step,
+		// but nothing goes into the end step, and therefore there is no way to save then have the end step repeat itself
+		m_startBaseStepsFinished = false;
+		m_endBaseStepsFinished = false;
 	}
 	
 	/**
 	 * Returns the state of the Delegate.
+	 * All classes should super.saveState if they override this.
 	 */
-	
 	public Serializable saveState()
 	{
-		// This delegate does not maintain internal state
-		return null;
+		BaseDelegateState state = new BaseDelegateState();
+		state.m_startBaseStepsFinished = m_startBaseStepsFinished;
+		state.m_endBaseStepsFinished = m_endBaseStepsFinished;
+		return state;
 	}
 	
 	/**
@@ -103,7 +120,9 @@ public abstract class BaseDelegate implements IDelegate
 	
 	public void loadState(Serializable state)
 	{
-		// This delegate does not maintain internal state
+		BaseDelegateState s = (BaseDelegateState) state;
+		m_startBaseStepsFinished = s.m_startBaseStepsFinished;
+		m_endBaseStepsFinished = s.m_endBaseStepsFinished;
 	}
 	
 	/**
@@ -173,3 +192,38 @@ public abstract class BaseDelegate implements IDelegate
 		}
 	}
 }
+
+@SuppressWarnings("serial")
+class BaseDelegateState implements Serializable
+{
+	public boolean m_startBaseStepsFinished = false;
+	public boolean m_endBaseStepsFinished = false;
+}
+
+/*
+All overriding classes should use the following format for saveState and loadState, in order to save and load the superstate
+
+@SuppressWarnings("serial")
+class ExtendedDelegateState implements Serializable
+{
+	Serializable superState;
+	// add other variables here:
+}
+
+@Override
+public Serializable saveState()
+{
+	ExtendedDelegateState state = new ExtendedDelegateState();
+	state.superState = super.saveState();
+	// add other variables to state here:
+	return state;
+}
+
+@Override
+public void loadState(Serializable state)
+{
+	ExtendedDelegateState s = (ExtendedDelegateState) state;
+	super.loadState(s.superState);
+	// load other variables from state here:
+}
+*/
