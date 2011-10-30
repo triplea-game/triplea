@@ -1907,21 +1907,21 @@ public class Matches
 		};
 	}
 	
-	public static final Match<Battle> BattleIsEmpty = new Match<Battle>()
+	public static final Match<IBattle> BattleIsEmpty = new Match<IBattle>()
 	{
 		
 		@Override
-		public boolean match(Battle battle)
+		public boolean match(IBattle battle)
 		{
 			return battle.isEmpty();
 		}
 	};
 	
-	public static final Match<Battle> BattleIsAmphibious = new Match<Battle>()
+	public static final Match<IBattle> BattleIsAmphibious = new Match<IBattle>()
 	{
 		
 		@Override
-		public boolean match(Battle battle)
+		public boolean match(IBattle battle)
 		{
 			return battle.isAmphibious();
 		}

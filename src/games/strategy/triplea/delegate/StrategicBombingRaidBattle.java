@@ -53,21 +53,17 @@ import java.util.List;
  * @author Sean Bridges
  * @version 1.0
  */
-public class StrategicBombingRaidBattle implements Battle
+@SuppressWarnings("serial")
+public class StrategicBombingRaidBattle extends AbstractBattle
 {
 	
 	private final static String RAID = "Strategic bombing raid";
 	private final static String FIRE_AA = "Fire AA";
 	
-	private Territory m_battleSite;
 	private List<Unit> m_units = new ArrayList<Unit>();
 	private Collection<Unit> m_targets = new ArrayList<Unit>();
 	
 	private PlayerID m_defender;
-	private PlayerID m_attacker;
-	private GameData m_data;
-	private BattleTracker m_tracker;
-	private boolean m_isOver = false;
 	
 	private final GUID m_battleID = new GUID();
 	
@@ -75,24 +71,46 @@ public class StrategicBombingRaidBattle implements Battle
 	private List<String> m_steps;
 	private int m_bombingRaidCost;
 	
-	/** Creates new StrategicBombingRaidBattle */
-	public StrategicBombingRaidBattle(Territory territory, GameData data, PlayerID attacker, PlayerID defender, BattleTracker tracker)
+	/**
+	 * Creates new StrategicBombingRaidBattle
+	 * 
+	 * @param battleSite
+	 *            - battle territory
+	 * @param data
+	 *            - game data
+	 * @param attacker
+	 *            - attacker PlayerID
+	 * @param defender
+	 *            - defender PlayerID
+	 * @param battleTracker
+	 *            - BattleTracker
+	 **/
+	public StrategicBombingRaidBattle(Territory battleSite, GameData data, PlayerID attacker, PlayerID defender, BattleTracker battleTracker)
 	{
-		m_battleSite = territory;
-		m_data = data;
-		m_attacker = attacker;
+		super(battleSite, attacker, battleTracker, data);
 		m_defender = defender;
-		m_tracker = tracker;
 	}
 	
-	/** Creates new StrategicBombingRaidBattle */
-	public StrategicBombingRaidBattle(Territory territory, GameData data, PlayerID attacker, PlayerID defender, BattleTracker tracker, Collection<Unit> targets)
+	/**
+	 * Creates new StrategicBombingRaidBattle
+	 * 
+	 * @param battleSite
+	 *            - battle territory
+	 * @param data
+	 *            - game data
+	 * @param attacker
+	 *            - attacker PlayerID
+	 * @param defender
+	 *            - defender PlayerID
+	 * @param battleTracker
+	 *            - BattleTracker
+	 * @param targets
+	 *            - target units
+	 **/
+	public StrategicBombingRaidBattle(Territory battleSite, GameData data, PlayerID attacker, PlayerID defender, BattleTracker battleTracker, Collection<Unit> targets)
 	{
-		m_battleSite = territory;
-		m_data = data;
-		m_attacker = attacker;
+		super(battleSite, attacker, battleTracker, data);
 		m_defender = defender;
-		m_tracker = tracker;
 		m_targets = targets;
 	}
 	
@@ -105,21 +123,19 @@ public class StrategicBombingRaidBattle implements Battle
 		return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
 	}
 	
-	public boolean isOver()
-	{
-		return m_isOver;
-	}
-	
+	@Override
 	public boolean isEmpty()
 	{
 		return m_units.isEmpty();
 	}
 	
+	@Override
 	public void removeAttack(Route route, Collection<Unit> units)
 	{
 		m_units.removeAll(units);
 	}
 	
+	@Override
 	public Change addAttackChange(Route route, Collection<Unit> units)
 	{
 		
@@ -130,12 +146,14 @@ public class StrategicBombingRaidBattle implements Battle
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
+	@Override
 	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
 	{
 		m_units.addAll(units);
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
+	@Override
 	public void fight(IDelegateBridge bridge)
 	{
 		// we were interrupted
@@ -174,7 +192,7 @@ public class StrategicBombingRaidBattle implements Battle
 			{
 				getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
 				
-				m_tracker.removeBattle(StrategicBombingRaidBattle.this);
+				m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
 				// TODO Kev add unitDamage setting here
 				if (isSBRAffectsUnitProduction())
 					bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidCost + " " + " production in " + m_battleSite.getName());
@@ -259,19 +277,18 @@ public class StrategicBombingRaidBattle implements Battle
 		getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
 	}
 	
+	@Override
 	public List<Unit> getDefendingUnits()
 	{
 		Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAA, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert());
 		if (m_targets.isEmpty())
 			return Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
-		else
-		{
-			List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAforBombing);
-			targets.addAll(m_targets);
-			return targets;
-		}
+		List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAforBombing);
+		targets.addAll(m_targets);
+		return targets;
 	}
 	
+	@Override
 	public List<Unit> getAttackingUnits()
 	{
 		return m_units;
@@ -392,20 +409,15 @@ public class StrategicBombingRaidBattle implements Battle
 	
 	private Collection<Unit> calculateCasualties(IDelegateBridge bridge, DiceRoll dice)
 	{
-		Collection<Unit> casualties = null;
 		boolean isEditMode = EditDelegate.getEditMode(m_data);
 		if (isEditMode)
 		{
 			String text = "AA guns fire";
-			CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker,
-						m_units, bridge, text, /* dice */null,/* defending */false, m_battleID, /* headless */false, 0);
+			CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, m_units, bridge, text, /* dice */null,/* defending */false, m_battleID, /* head-less */false, 0);
 			return casualtySelection.getKilled();
 		}
-		else
-		{
-			casualties = BattleCalculator.getAACasualties(m_units, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite, Matches.UnitIsAAforBombing);
-		}
 		
+		Collection<Unit> casualties = BattleCalculator.getAACasualties(m_units, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite, Matches.UnitIsAAforBombing);
 		if (casualties.size() != dice.getHits())
 			throw new IllegalStateException("Wrong number of casualties, expecting:" + dice + " but got:" + casualties);
 		
@@ -695,13 +707,15 @@ public class StrategicBombingRaidBattle implements Battle
 		}
 	}
 	
-	public boolean isBombingRun()
+	@Override
+	public final boolean isBombingRun()
 	{
 		
 		return true;
 	}
 	
-	public void unitsLostInPrecedingBattle(Battle battle, Collection<Unit> units, IDelegateBridge bridge)
+	@Override
+	public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge)
 	{
 		// should never happen
 		throw new IllegalStateException("say what, why you telling me that");
@@ -722,19 +736,14 @@ public class StrategicBombingRaidBattle implements Battle
 		// and occur on the same territory
 		// equals in the sense that they should never occupy the same Set
 		// if these conditions are met
-		if (o == null || !(o instanceof Battle))
+		if (o == null || !(o instanceof IBattle))
 			return false;
 		
-		Battle other = (Battle) o;
+		IBattle other = (IBattle) o;
 		return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun();
 	}
 	
-	public Territory getTerritory()
-	{
-		
-		return m_battleSite;
-	}
-	
+	@Override
 	public Collection<Unit> getDependentUnits(Collection<Unit> units)
 	{
 		return Collections.emptyList();
@@ -744,6 +753,7 @@ public class StrategicBombingRaidBattle implements Battle
 	 * Add bombarding unit. Doesn't make sense here so just do nothing.
 	 */
 	
+	@Override
 	public void addBombardingUnit(Unit unit)
 	{
 		// nothing
@@ -753,21 +763,25 @@ public class StrategicBombingRaidBattle implements Battle
 	 * Return whether battle is amphibious.
 	 */
 	
+	@Override
 	public boolean isAmphibious()
 	{
 		return false;
 	}
 	
+	@Override
 	public Collection<Unit> getAmphibiousLandAttackers()
 	{
 		return new ArrayList<Unit>();
 	}
 	
+	@Override
 	public Collection<Unit> getBombardingUnits()
 	{
 		return new ArrayList<Unit>();
 	}
 	
+	@Override
 	public int getBattleRound()
 	{
 		return 0;

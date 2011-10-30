@@ -192,7 +192,7 @@ public class DiceRoll implements Externalizable
 	 * @param annotation
 	 * 
 	 */
-	public static DiceRoll rollDice(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
+	public static DiceRoll rollDice(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, IBattle battle, String annotation)
 	{
 		// Decide whether to use low luck rules or normal rules.
 		if (games.strategy.triplea.Properties.getLow_Luck(bridge.getData()))
@@ -238,7 +238,7 @@ public class DiceRoll implements Externalizable
 	 * Roll dice for units using low luck rules. Low luck rules based on rules
 	 * in DAAK.
 	 */
-	private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
+	private static DiceRoll rollDiceLowLuck(List<Unit> units, boolean defending, PlayerID player, IDelegateBridge bridge, IBattle battle, String annotation)
 	{
 		GameData data = bridge.getData();
 		boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
@@ -512,7 +512,7 @@ public class DiceRoll implements Externalizable
 	/**
 	 * Roll dice for units per normal rules.
 	 */
-	private static DiceRoll rollDiceNormal(List<Unit> unitsList, boolean defending, PlayerID player, IDelegateBridge bridge, Battle battle, String annotation)
+	private static DiceRoll rollDiceNormal(List<Unit> unitsList, boolean defending, PlayerID player, IDelegateBridge bridge, IBattle battle, String annotation)
 	{
 		GameData data = bridge.getData();
 		List<Unit> units = new ArrayList<Unit>(unitsList);
@@ -727,16 +727,16 @@ public class DiceRoll implements Externalizable
 	                    	//TODO probably need a map here to properly add artilleryBonus
 	                        strength++;
 	                        artillerySupportAvailable--;
-	                    } 
+	                    }
 	                    if (ua.getIsMarine() && battle.isAmphibious())
 	                    {
 	                        Collection<Unit> landUnits = battle.getAmphibiousLandAttackers();
 	                        if(landUnits.contains(current))
 	                            ++strength;
-	                    } 
+	                    }
 	                    //get bombarding unit's strength
 	                    if (ua.isSea() && battle.isAmphibious())
-	                    	strength = ua.getBombard(current.getOwner());                        	
+	                    	strength = ua.getBombard(current.getOwner());
 	                }
 	
 	                boolean hit = strength > random[diceIndex];
@@ -816,7 +816,7 @@ public class DiceRoll implements Externalizable
 		while (territories.hasNext())
 		{
 			Territory terr = territories.next();
-			Battle battle = bt.getPendingBattle(terr, false);
+			IBattle battle = bt.getPendingBattle(terr, false);
 			if (battle != null && battle.isAmphibious() && ua.getIsMarine())
 				return true;
 		}
@@ -837,7 +837,7 @@ public class DiceRoll implements Externalizable
 	 * @param battle
 	 * @return
 	 */
-	public static String getAnnotation(List<Unit> units, PlayerID player, Battle battle)
+	public static String getAnnotation(List<Unit> units, PlayerID player, IBattle battle)
 	{
 		StringBuilder buffer = new StringBuilder(80);
 		buffer.append(player.getName()).append(" roll dice for ").append(MyFormatter.unitsToTextNoOwner(units));

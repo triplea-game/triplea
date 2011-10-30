@@ -54,7 +54,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	private BattleTracker m_battleTracker = new BattleTracker();
 	private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
 	private boolean m_needToInitialize = true;
-	private Battle m_currentBattle = null;
+	private IBattle m_currentBattle = null;
 	
 	/**
 	 * Called before the delegate will run.
@@ -113,7 +113,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	public String fightBattle(Territory territory, boolean bombing)
 	{
 		
-		Battle battle = m_battleTracker.getPendingBattle(territory, bombing);
+		IBattle battle = m_battleTracker.getPendingBattle(territory, bombing);
 		if (m_currentBattle != null && m_currentBattle != battle)
 		{
 			return "Must finish " + getFightingWord(m_currentBattle) + " in " + m_currentBattle.getTerritory() + " first";
@@ -124,10 +124,10 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			return "No pending battle in" + territory.getName();
 		
 		// are there battles that must occur first
-		Collection<Battle> allMustPrecede = m_battleTracker.getDependentOn(battle);
+		Collection<IBattle> allMustPrecede = m_battleTracker.getDependentOn(battle);
 		if (!allMustPrecede.isEmpty())
 		{
-			Battle firstPrecede = allMustPrecede.iterator().next();
+			IBattle firstPrecede = allMustPrecede.iterator().next();
 			String name = firstPrecede.getTerritory().getName();
 			return "Must complete " + getFightingWord(battle) + " in " + name + " first";
 		}
@@ -143,7 +143,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		
 	}
 	
-	private String getFightingWord(Battle battle)
+	private String getFightingWord(IBattle battle)
 	{
 		return battle.isBombingRun() ? "Bombing Run" : "Battle";
 	}
@@ -217,7 +217,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		Match<Unit> ownedAndCanBombard = new CompositeMatchAnd<Unit>(Matches
 					.unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
 		
-		Map<Territory, Collection<Battle>> adjBombardment = getPossibleBombardingTerritories();
+		Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
 		Iterator<Territory> territories = adjBombardment.keySet().iterator();
 		boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(getData());
 		
@@ -226,7 +226,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			Territory t = territories.next();
 			if (!m_battleTracker.hasPendingBattle(t, false))
 			{
-				Collection<Battle> battles = adjBombardment.get(t);
+				Collection<IBattle> battles = adjBombardment.get(t);
 				battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
 				if (!battles.isEmpty())
 				{
@@ -246,7 +246,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					while (bombarding.hasNext())
 					{
 						Unit u = bombarding.next();
-						Battle battle = selectBombardingBattle(u, t, battles);
+						IBattle battle = selectBombardingBattle(u, t, battles);
 						if (battle != null)
 						{
 							if (shoreBombardPerGroundUnitRestricted)
@@ -279,15 +279,15 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	/**
 	 * Return map of adjacent territories along attack routes in battles where fighting will occur.
 	 */
-	private Map<Territory, Collection<Battle>> getPossibleBombardingTerritories()
+	private Map<Territory, Collection<IBattle>> getPossibleBombardingTerritories()
 	{
-		Map<Territory, Collection<Battle>> possibleBombardingTerritories = new HashMap<Territory, Collection<Battle>>();
+		Map<Territory, Collection<IBattle>> possibleBombardingTerritories = new HashMap<Territory, Collection<IBattle>>();
 		Iterator<Territory> battleTerritories = m_battleTracker.getPendingBattleSites(
 					false).iterator();
 		while (battleTerritories.hasNext())
 		{
 			Territory t = battleTerritories.next();
-			Battle battle = m_battleTracker.getPendingBattle(t, false);
+			IBattle battle = m_battleTracker.getPendingBattle(t, false);
 			
 			// we only care about battles where we must fight
 			// this check is really to avoid implementing getAttackingFrom() in other battle subclasses
@@ -304,11 +304,11 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				{
 					continue;
 				}
-				Collection<Battle> battles = possibleBombardingTerritories
+				Collection<IBattle> battles = possibleBombardingTerritories
 							.get(neighbor);
 				if (battles == null)
 				{
-					battles = new ArrayList<Battle>();
+					battles = new ArrayList<IBattle>();
 					possibleBombardingTerritories.put(neighbor, battles);
 				}
 				battles.add(battle);
@@ -321,8 +321,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	/**
 	 * Select which territory to bombard.
 	 */
-	private Battle selectBombardingBattle(Unit u, Territory uTerritory,
-				Collection<Battle> battles)
+	private IBattle selectBombardingBattle(Unit u, Territory uTerritory,
+				Collection<IBattle> battles)
 	{
 		Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(getData());
 		// If only one battle to select from just return that battle
@@ -334,11 +334,11 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		}
 		
 		List<Territory> territories = new ArrayList<Territory>();
-		Map<Territory, Battle> battleTerritories = new HashMap<Territory, Battle>();
-		Iterator<Battle> battlesIter = battles.iterator();
+		Map<Territory, IBattle> battleTerritories = new HashMap<Territory, IBattle>();
+		Iterator<IBattle> battlesIter = battles.iterator();
 		while (battlesIter.hasNext())
 		{
-			Battle battle = battlesIter.next();
+			IBattle battle = battlesIter.next();
 			// If Restricted & # of bombarding units => landing units, don't add territory to list to bombard
 			if (bombardRestricted)
 			{
@@ -410,7 +410,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					continue;
 			}
 			
-			Battle battle = m_battleTracker.getPendingBattle(territory, false);
+			IBattle battle = m_battleTracker.getPendingBattle(territory, false);
 			if (battle == null)
 			{
 				Route route = new Route();
@@ -523,7 +523,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	
 	public Territory getCurentBattle()
 	{
-		Battle b = m_currentBattle;
+		IBattle b = m_currentBattle;
 		if (b != null)
 		{
 			return b.getTerritory();
@@ -545,5 +545,5 @@ class BattleExtendedDelegateState implements Serializable
 	public BattleTracker m_battleTracker = new BattleTracker();
 	public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
 	public boolean m_needToInitialize;
-	public Battle m_currentBattle;
+	public IBattle m_currentBattle;
 }

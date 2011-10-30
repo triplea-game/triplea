@@ -136,8 +136,8 @@ public class UndoableMove extends AbstractUndoableMove
 		
 		// if we are moving out of a battle zone, mark it
 		// this can happen for air units moving out of a battle zone
-		Battle battleLand = battleTracker.getPendingBattle(m_route.getStart(), false);
-		Battle battleAir = battleTracker.getPendingBattle(m_route.getStart(), true);
+		IBattle battleLand = battleTracker.getPendingBattle(m_route.getStart(), false);
+		IBattle battleAir = battleTracker.getPendingBattle(m_route.getStart(), true);
 		if (battleLand != null || battleAir != null)
 		{
 			Iterator<Unit> iter2 = m_units.iterator();

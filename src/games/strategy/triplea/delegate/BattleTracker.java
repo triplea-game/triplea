@@ -68,11 +68,11 @@ import java.util.Set;
 public class BattleTracker implements java.io.Serializable
 {
 	// List of pending battles
-	private Set<Battle> m_pendingBattles = new HashSet<Battle>();
+	private Set<IBattle> m_pendingBattles = new HashSet<IBattle>();
 	
 	// List of battle dependencies
 	// maps blocked -> Collection of battles that must precede
-	private Map<Battle, HashSet<Battle>> m_dependencies = new HashMap<Battle, HashSet<Battle>>();
+	private Map<IBattle, HashSet<IBattle>> m_dependencies = new HashMap<IBattle, HashSet<IBattle>>();
 	
 	// enemy and neutral territories that have been conquered
 	// blitzed is a subset of this
@@ -139,10 +139,10 @@ public class BattleTracker implements java.io.Serializable
 	
 	public void undoBattle(Route route, Collection<Unit> units, PlayerID player, IDelegateBridge bridge)
 	{
-		Iterator<Battle> battleIter = new ArrayList<Battle>(m_pendingBattles).iterator();
+		Iterator<IBattle> battleIter = new ArrayList<IBattle>(m_pendingBattles).iterator();
 		while (battleIter.hasNext())
 		{
-			Battle battle = battleIter.next();
+			IBattle battle = battleIter.next();
 			if (battle.getTerritory().equals(route.getEnd()))
 			{
 				battle.removeAttack(route, units);
@@ -177,14 +177,14 @@ public class BattleTracker implements java.io.Serializable
 		
 	}
 	
-	private void removeBattleForUndo(Battle battle)
+	private void removeBattleForUndo(IBattle battle)
 	{
 		m_pendingBattles.remove(battle);
 		m_dependencies.remove(battle);
-		Iterator<HashSet<Battle>> iter = m_dependencies.values().iterator();
+		Iterator<HashSet<IBattle>> iter = m_dependencies.values().iterator();
 		while (iter.hasNext())
 		{
-			Collection<Battle> battles = iter.next();
+			Collection<IBattle> battles = iter.next();
 			battles.remove(battle);
 		}
 		
@@ -266,7 +266,7 @@ public class BattleTracker implements java.io.Serializable
 	
 	private void addBombingBattle(Route route, Collection<Unit> units, PlayerID attacker, GameData data)
 	{
-		Battle battle = getPendingBattle(route.getEnd(), true);
+		IBattle battle = getPendingBattle(route.getEnd(), true);
 		if (battle == null)
 		{
 			battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this);
@@ -281,14 +281,14 @@ public class BattleTracker implements java.io.Serializable
 		}
 		
 		// dont let land battles in the same territory occur before bombing battles
-		Battle dependent = getPendingBattle(route.getEnd(), false);
+		IBattle dependent = getPendingBattle(route.getEnd(), false);
 		if (dependent != null)
 			addDependency(dependent, battle);
 	}
 	
 	private void addBombingBattle(Route route, Collection<Unit> units, PlayerID attacker, GameData data, Collection<Unit> targets)
 	{
-		Battle battle = getPendingBattle(route.getEnd(), true);
+		IBattle battle = getPendingBattle(route.getEnd(), true);
 		if (battle == null)
 		{
 			battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this, targets);
@@ -303,7 +303,7 @@ public class BattleTracker implements java.io.Serializable
 		}
 		
 		// dont let land battles in the same territory occur before bombing battles
-		Battle dependent = getPendingBattle(route.getEnd(), false);
+		IBattle dependent = getPendingBattle(route.getEnd(), false);
 		if (dependent != null)
 			addDependency(dependent, battle);
 	}
@@ -354,7 +354,7 @@ public class BattleTracker implements java.io.Serializable
 		// check the last territory
 		if (conquerable.match(route.getEnd()))
 		{
-			Battle precede = getDependentAmphibiousAssault(route);
+			IBattle precede = getDependentAmphibiousAssault(route);
 			if (precede == null)
 			{
 				precede = getPendingBattle(route.getEnd(), true);
@@ -370,7 +370,7 @@ public class BattleTracker implements java.io.Serializable
 			}
 			else
 			{
-				Battle nonFight = getPendingBattle(route.getEnd(), false);
+				IBattle nonFight = getPendingBattle(route.getEnd(), false);
 				if (nonFight == null)
 				{
 					nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data);
@@ -608,7 +608,7 @@ public class BattleTracker implements java.io.Serializable
 		// Remove any bombing raids against captured territory
 		if (Match.someMatch(territory.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, id), Matches.UnitIsFactoryOrCanBeDamaged)))
 		{
-			Battle bombingBattle = getPendingBattle(territory, true);
+			IBattle bombingBattle = getPendingBattle(territory, true);
 			if (bombingBattle != null)
 			{
 				removeBattle(bombingBattle);
@@ -794,7 +794,7 @@ public class BattleTracker implements java.io.Serializable
 		if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure))
 			return ChangeFactory.EMPTY_CHANGE;
 		
-		Battle battle = getPendingBattle(site, false);
+		IBattle battle = getPendingBattle(site, false);
 		// If there are no pending battles- add one for units already in the combat zone
 		if (battle == null)
 		{
@@ -808,7 +808,7 @@ public class BattleTracker implements java.io.Serializable
 		// make amphibious assaults dependent on possible naval invasions
 		
 		// its only a dependency if we are unloading
-		Battle precede = getDependentAmphibiousAssault(route);
+		IBattle precede = getDependentAmphibiousAssault(route);
 		if (precede != null && Match.someMatch(units, Matches.UnitIsLand))
 		{
 			addDependency(battle, precede);
@@ -816,25 +816,25 @@ public class BattleTracker implements java.io.Serializable
 		
 		// dont let land battles in the same territory occur before bombing
 		// battles
-		Battle bombing = getPendingBattle(route.getEnd(), true);
+		IBattle bombing = getPendingBattle(route.getEnd(), true);
 		if (bombing != null)
 			addDependency(battle, bombing);
 		return change;
 	}
 	
-	private Battle getDependentAmphibiousAssault(Route route)
+	private IBattle getDependentAmphibiousAssault(Route route)
 	{
 		if (!MoveValidator.isUnload(route))
 			return null;
 		return getPendingBattle(route.getStart(), false);
 	}
 	
-	public Battle getPendingBattle(Territory t, boolean bombing)
+	public IBattle getPendingBattle(Territory t, boolean bombing)
 	{
-		Iterator<Battle> iter = m_pendingBattles.iterator();
+		Iterator<IBattle> iter = m_pendingBattles.iterator();
 		while (iter.hasNext())
 		{
-			Battle battle = iter.next();
+			IBattle battle = iter.next();
 			if (battle.getTerritory().equals(t) && battle.isBombingRun() == bombing)
 				return battle;
 		}
@@ -849,10 +849,10 @@ public class BattleTracker implements java.io.Serializable
 	public Collection<Territory> getPendingBattleSites(boolean bombing)
 	{
 		Collection<Territory> battles = new ArrayList<Territory>(m_pendingBattles.size());
-		Iterator<Battle> iter = m_pendingBattles.iterator();
+		Iterator<IBattle> iter = m_pendingBattles.iterator();
 		while (iter.hasNext())
 		{
-			Battle battle = iter.next();
+			IBattle battle = iter.next();
 			if (!battle.isEmpty() && battle.isBombingRun() == bombing)
 				battles.add(battle.getTerritory());
 			
@@ -865,14 +865,14 @@ public class BattleTracker implements java.io.Serializable
 	 *            the battle that is blocked
 	 * @return the battle that must occur before dependent can occur
 	 */
-	public Collection<Battle> getDependentOn(Battle blocked)
+	public Collection<IBattle> getDependentOn(IBattle blocked)
 	{
-		Collection<Battle> dependent = m_dependencies.get(blocked);
+		Collection<IBattle> dependent = m_dependencies.get(blocked);
 		
 		if (dependent == null)
 			return Collections.emptyList();
 		
-		return Match.getMatches(dependent, new InverseMatch<Battle>(Matches.BattleIsEmpty));
+		return Match.getMatches(dependent, new InverseMatch<IBattle>(Matches.BattleIsEmpty));
 	}
 	
 	/**
@@ -880,32 +880,32 @@ public class BattleTracker implements java.io.Serializable
 	 *            the battle that is blocking the other battles
 	 * @return the battles that cannot occur until the given battle occurs
 	 */
-	public Collection<Battle> getBlocked(Battle blocking)
+	public Collection<IBattle> getBlocked(IBattle blocking)
 	{
-		Iterator<Battle> iter = m_dependencies.keySet().iterator();
-		Collection<Battle> allBlocked = new ArrayList<Battle>();
+		Iterator<IBattle> iter = m_dependencies.keySet().iterator();
+		Collection<IBattle> allBlocked = new ArrayList<IBattle>();
 		while (iter.hasNext())
 		{
-			Battle current = iter.next();
-			Collection<Battle> currentBlockedBy = getDependentOn(current);
+			IBattle current = iter.next();
+			Collection<IBattle> currentBlockedBy = getDependentOn(current);
 			if (currentBlockedBy.contains(blocking))
 				allBlocked.add(current);
 		}
 		return allBlocked;
 	}
 	
-	private void addDependency(Battle blocked, Battle blocking)
+	private void addDependency(IBattle blocked, IBattle blocking)
 	{
 		if (m_dependencies.get(blocked) == null)
 		{
-			m_dependencies.put(blocked, new HashSet<Battle>());
+			m_dependencies.put(blocked, new HashSet<IBattle>());
 		}
 		m_dependencies.get(blocked).add(blocking);
 	}
 	
-	private void removeDependency(Battle blocked, Battle blocking)
+	private void removeDependency(IBattle blocked, IBattle blocking)
 	{
-		Collection<Battle> dependencies = m_dependencies.get(blocked);
+		Collection<IBattle> dependencies = m_dependencies.get(blocked);
 		dependencies.remove(blocking);
 		if (dependencies.isEmpty())
 		{
@@ -913,14 +913,14 @@ public class BattleTracker implements java.io.Serializable
 		}
 	}
 	
-	public void removeBattle(Battle battle)
+	public void removeBattle(IBattle battle)
 	{
 		if (battle != null)
 		{
-			Iterator<Battle> blocked = getBlocked(battle).iterator();
+			Iterator<IBattle> blocked = getBlocked(battle).iterator();
 			while (blocked.hasNext())
 			{
-				Battle current = blocked.next();
+				IBattle current = blocked.next();
 				removeDependency(current, battle);
 			}
 			

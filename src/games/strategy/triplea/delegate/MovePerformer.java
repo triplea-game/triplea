@@ -122,8 +122,8 @@ public class MovePerformer implements Serializable
 			{
 				// if we are moving out of a battle zone, mark it
 				// this can happen for air units moving out of a battle zone
-				Battle nonBombingBattle = MoveDelegate.getBattleTracker(bridge.getData()).getPendingBattle(route.getStart(), false);
-				Battle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
+				IBattle nonBombingBattle = MoveDelegate.getBattleTracker(bridge.getData()).getPendingBattle(route.getStart(), false);
+				IBattle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
 				if (nonBombingBattle != null || bombingBattle != null)
 				{
 					Iterator<Unit> iter = units.iterator();

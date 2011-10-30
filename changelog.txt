@@ -1,4 +1,6 @@
 Changes for 1.4
+* Abstraction of various fighting battles into AbstractBattle, and renaming of Battle.java to IBattle. (frigoref)
+
 * Added ability for BaseDelegate to keep track of whether triggers have fired or not, and changed all delegates to record and load super's saveState data when saving and loading. (veqryn)
 
 * Some small ui fixes for politics. (edwin van der wal)

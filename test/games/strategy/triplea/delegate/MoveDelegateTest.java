@@ -1149,8 +1149,8 @@ public class MoveDelegateTest extends DelegateTest
 		results = m_delegate.move(getUnits(map, route.getStart()), route);
 		assertValid(results);
 		
-		Battle inBrazil = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(brazil, false);
-		Battle inBrazilSea = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(southBrazilSeaZone, false);
+		IBattle inBrazil = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(brazil, false);
+		IBattle inBrazilSea = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(southBrazilSeaZone, false);
 		
 		assertNotNull(inBrazilSea);
 		assertNotNull(inBrazil);
@@ -1200,8 +1200,8 @@ public class MoveDelegateTest extends DelegateTest
 		Integer defendingLandSizeInt = defendingLandUnits.size();
 		
 		// Set up the battles and the dependent battles
-		Battle inFinlandNorway = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(finlandNorway, false);
-		Battle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false);
+		IBattle inFinlandNorway = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(finlandNorway, false);
+		IBattle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false);
 		
 		assertNotNull(balticSeaZone);
 		assertNotNull(finlandNorway);
@@ -1276,8 +1276,8 @@ public class MoveDelegateTest extends DelegateTest
 		Integer defendingLandSizeInt = defendingLandUnits.size();
 		
 		// Set up the battles and the dependent battles
-		Battle inFinlandNorway = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(finlandNorway, false);
-		Battle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false);
+		IBattle inFinlandNorway = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(finlandNorway, false);
+		IBattle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false);
 		
 		assertNotNull(balticSeaZone);
 		assertNotNull(finlandNorway);
@@ -1352,7 +1352,7 @@ public class MoveDelegateTest extends DelegateTest
 		Integer defendingLandSizeInt = defendingLandUnits.size();
 		
 		// Set up the battles and the dependent battles
-		Battle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false);
+		IBattle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false);
 		
 		assertNotNull(balticSeaZone);
 		
@@ -1425,7 +1425,7 @@ public class MoveDelegateTest extends DelegateTest
 		Integer defendingLandSizeInt = defendingLandUnits.size();
 		
 		// Set up the battles and the dependent battles
-		Battle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false);
+		IBattle inBalticSeaZone = DelegateFinder.battleDelegate(m_data).getBattleTracker().getPendingBattle(balticSeaZone, false);
 		
 		assertNotNull(balticSeaZone);
 		
