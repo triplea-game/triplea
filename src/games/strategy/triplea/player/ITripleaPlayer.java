@@ -151,7 +151,7 @@ public interface ITripleaPlayer extends IRemote
 	 * 
 	 * @param message
 	 */
-	public void reportMessage(String message);
+	public void reportMessage(String message, String title);
 	
 	/**
 	 * One or more bombers have just moved into a territory where a strategic bombing

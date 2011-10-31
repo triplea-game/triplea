@@ -224,7 +224,7 @@ class AAInMoveUtil implements Serializable
 				
 				if (hitCount == 0)
 				{
-					getRemotePlayer().reportMessage("No aa hits in " + territory.getName());
+					getRemotePlayer().reportMessage("No aa hits in " + territory.getName(), "No aa hits in " + territory.getName());
 				}
 				else
 					selectCasualties(dice[0], units, territory, null);
@@ -248,7 +248,7 @@ class AAInMoveUtil implements Serializable
 		
 		casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, battleID, territory, Matches.UnitIsAAforCombat);
 		
-		getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName());
+		getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName(), casualties.size() + " AA hits in " + territory.getName());
 		
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
 		units.removeAll(casualties);

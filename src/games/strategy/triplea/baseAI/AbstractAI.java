@@ -9,18 +9,22 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
+import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.UIContext;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -302,7 +306,7 @@ public abstract class AbstractAI implements ITripleaPlayer
 	{
 	}
 	
-	public void reportMessage(String message)
+	public void reportMessage(String message, String title)
 	{
 	}
 	
@@ -348,6 +352,8 @@ public abstract class AbstractAI implements ITripleaPlayer
 			move(name.endsWith("NonCombatMove"), (IMoveDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
 		else if (name.endsWith("Battle"))
 			battle((IBattleDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+		else if (name.endsWith("Politics"))
+			getPoliticalActions();
 		else if (name.endsWith("Place"))
 			place(name.indexOf("Bid") != -1, (IAbstractPlaceDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
 		else if (name.endsWith("EndTurn"))
@@ -355,6 +361,27 @@ public abstract class AbstractAI implements ITripleaPlayer
 		}
 	}
 	
+	public void getPoliticalActions() {
+		List<PoliticalActionAttachment> actionChoices = BasicPoliticalAI.getPoliticalAction(m_id);
+		if (actionChoices == null || actionChoices.isEmpty())
+			return;
+		Collections.shuffle(actionChoices);
+		IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
+		
+		int i = 0;
+		final int MAX_ACTIONS_PER_TURN = 3;
+		
+		Iterator<PoliticalActionAttachment> actionIter = actionChoices.iterator();
+		while (actionIter.hasNext())
+		{
+			PoliticalActionAttachment action = actionIter.next();
+			i++;
+			if (i>MAX_ACTIONS_PER_TURN)
+				break;
+			politicsDelegate.attemptAction(action);
+		}
+	}
+
 	public final Class<ITripleaPlayer> getRemotePlayerType()
 	{
 		return ITripleaPlayer.class;

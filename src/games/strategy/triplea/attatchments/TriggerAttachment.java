@@ -458,19 +458,21 @@ public class TriggerAttachment extends DefaultAttachment
 	public void setRelationshipChange(String relChange) throws GameParseException
 	{
 		String[] s = relChange.split(":");
-		if (s.length != 3)
-			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n Use: player:oldRelation:newRelation\n");
+		if (s.length != 4)
+			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n Use: player1:player2:oldRelation:newRelation\n");
 		if (getData().getPlayerList().getPlayerID(s[0]) == null)
 			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0] + " unknown in: " + getName());
+		if (getData().getPlayerList().getPlayerID(s[1]) == null)
+			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1] + " unknown in: " + getName());
 		
-		if (!(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) ||
-					s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY) ||
-					s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) ||
-					s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) || Matches.isValidRelationshipName(getData()).match(s[1])))
-			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[1] + " unknown in: " + getName());
-		
-		if (Matches.isValidRelationshipName(getData()).invert().match(s[2]))
+		if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) ||
+					s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY) ||
+					s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) ||
+					s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) || Matches.isValidRelationshipName(getData()).match(s[2])))
 			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2] + " unknown in: " + getName());
+		
+		if (Matches.isValidRelationshipName(getData()).invert().match(s[3]))
+			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[3] + " unknown in: " + getName());
 		
 		m_relationshipChange.add(relChange);
 	}
@@ -701,8 +703,8 @@ public class TriggerAttachment extends DefaultAttachment
 		if (s.length != 2)
 			throw new GameParseException("Triggers: playerAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
 		// covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
-		if (!(s[1].equals("PlayerAttachment") || s[1].equals("RulesAttachment") || s[1].equals("TriggerAttachment") || s[1].equals("TechAttachment")))
-			throw new GameParseException("Triggers: playerAttachmentName value must be PlayerAttachment or RulesAttachment or TriggerAttachment or TechAttachment");
+		if (!(s[1].equals("PlayerAttachment") || s[1].equals("RulesAttachment") || s[1].equals("TriggerAttachment") || s[1].equals("TechAttachment") || s[1].equals("PoliticalActionAttachment")))
+			throw new GameParseException("Triggers: playerAttachmentName value must be PlayerAttachment or RulesAttachment or TriggerAttachment or TechAttachment or PoliticalActionAttachment");
 		// TODO validate attachment exists?
 		if (s[0].length() < 1)
 			throw new GameParseException("Triggers: playerAttachmentName count must be a valid attachment name");
@@ -714,6 +716,8 @@ public class TriggerAttachment extends DefaultAttachment
 		if (s[1].equals("TriggerAttachment") && !s[0].startsWith(Constants.TRIGGER_ATTACHMENT_PREFIX))
 			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
 		if (s[1].equals("TechAttachment") && !s[0].startsWith(Constants.TECH_ATTACHMENT_NAME))
+			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+		if (s[1].equals("PoliticalActionAttachment") && !s[0].startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
 			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
 		m_playerAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
@@ -1464,23 +1468,24 @@ public class TriggerAttachment extends DefaultAttachment
 				for (String relationshipChange : t.getRelationshipChange())
 				{
 					String[] s = relationshipChange.split(":");
-					PlayerID player2 = data.getPlayerList().getPlayerID(s[0]);
-					RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player, player2);
+					PlayerID player1 = data.getPlayerList().getPlayerID(s[0]);
+					PlayerID player2 = data.getPlayerList().getPlayerID(s[1]);
+					RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player1, player2);
 					
-					if (s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY) ||
-								(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelation)) ||
-								(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) && Matches.RelationshipIsAllied.match(currentRelation)) ||
-								(s[1].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) && Matches.RelationshipIsAtWar.match(currentRelation)) ||
-								currentRelation.equals(data.getRelationshipTypeList().getRelationshipType(s[1])))
+					if (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY) ||
+								(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelation)) ||
+								(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) && Matches.RelationshipIsAllied.match(currentRelation)) ||
+								(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) && Matches.RelationshipIsAtWar.match(currentRelation)) ||
+								currentRelation.equals(data.getRelationshipTypeList().getRelationshipType(s[2])))
 					{
 						
-						RelationshipType triggerNewRelation = data.getRelationshipTypeList().getRelationshipType(s[2]);
-						change.add(ChangeFactory.relationshipChange(player, player2, currentRelation, triggerNewRelation));
+						RelationshipType triggerNewRelation = data.getRelationshipTypeList().getRelationshipType(s[3]);
+						change.add(ChangeFactory.relationshipChange(player1, player2, currentRelation, triggerNewRelation));
 						aBridge.getHistoryWriter().startEvent(
-									MyFormatter.attachmentNameToText(t.getName()) + ": Changing Relationship for " + player.getName() + " and " + player2.getName() + " from "
+									MyFormatter.attachmentNameToText(t.getName()) + ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from "
 												+ currentRelation.getName() + " to " + triggerNewRelation.getName());
 						if (Matches.RelationshipIsAtWar.match(triggerNewRelation))
-							triggerMustFightBattle(player, player2, aBridge);
+							triggerMustFightBattle(player1, player2, aBridge);
 					}
 				}
 			}
@@ -1681,6 +1686,19 @@ public class TriggerAttachment extends DefaultAttachment
 						else if (t.getPlayerAttachmentName().getFirst().equals("TechAttachment"))
 						{
 							TechAttachment attachment = TechAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+							if (attachment.getRawProperty(property.getFirst()).equals(newValue))
+								continue;
+							if (clearFirst && newValue.length() < 1)
+								change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							else
+								change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
+							aBridge.getHistoryWriter().startEvent(
+										MyFormatter.attachmentNameToText(t.getName()) + ": Setting " + property.getFirst() + (newValue.length() > 0 ? " to " + newValue : " cleared ") + " for "
+													+ t.getPlayerAttachmentName().getSecond() + " attached to " + aPlayer.getName());
+						}
+						else if (t.getPlayerAttachmentName().getFirst().equals("PoliticalActionAttachment"))
+						{
+							PoliticalActionAttachment attachment = PoliticalActionAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
 							if (attachment.getRawProperty(property.getFirst()).equals(newValue))
 								continue;
 							if (clearFirst && newValue.length() < 1)

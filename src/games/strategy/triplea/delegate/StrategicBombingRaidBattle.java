@@ -648,7 +648,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				bridge.addChange(change);
 				
 				bridge.getHistoryWriter().startEvent("Bombing raid in " + m_battleSite.getName() + " causes: " + cost + " damage.");
-				getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " causes: " + cost + " damage.");
+				getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " causes: " + cost + " damage.", "Bombing raid in " + m_battleSite.getName() + " causes: " + cost + " damage.");
 			}
 			else if (isSBRAffectsUnitProduction())
 			{
@@ -683,7 +683,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				bridge.addChange(change);
 				bridge.getHistoryWriter().startEvent("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
 				
-				getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
+				getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.", "Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
 			}
 			else
 			{

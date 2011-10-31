@@ -615,7 +615,7 @@
 		<relationshipTypes>
 				<relationshipType name="Allied"/>
 				<relationshipType name="War"/>
-				<relationshipType name="Neutral"/>
+				<relationshipType name="Neutrality"/>
 				<relationshipType name="NAP"/>
 				<relationshipType name="ColdWar"/>
 		</relationshipTypes>
@@ -1514,7 +1514,7 @@
 						<option name="archeType" value="allied"/>
 				</attatchment>
 
-				<attatchment name="relationshipTypeAttachment" attatchTo="Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+				<attatchment name="relationshipTypeAttachment" attatchTo="Neutrality" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="neutral"/>
 				</attatchment>
 
@@ -3193,8 +3193,25 @@
                 	<option name="alliedOwnershipTerritories" value="Karelia S.S.R.:Caucus" count="2"/>
                 </attatchment>
                 
+				<attatchment name="conditionAttachmentRussiansNeutralAmericans" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Russians:Americans:anyNeutral"/>
+                </attatchment>
+                
+				<attatchment name="conditionAttachmentRussiansNeutralJapan" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Japanese:Russians:anyNeutral"/>
+                </attatchment>
+                
+				<attatchment name="conditionAttachmentRussiansNeutralJapanTurn5plus" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="turns" value="5-+"/>
+                	<option name="relationship" value="Japanese:Russians:anyNeutral"/>
+                </attatchment>
+                
 				<attatchment name="conditionAttachmentRussiansNeutralItalians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="relationship" value="Italians:Russians:anyNeutral"/>
+                </attatchment>
+                
+				<attatchment name="conditionAttachmentRussiansWarItalians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="relationship" value="Italians:Russians:anyWar"/>
                 </attatchment>
                 
                 <attatchment name="conditionAttachmentRussiansNeutralItaliansFor2Turns" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -3262,7 +3279,7 @@
 			purchase							values: adds listed units to user's purchase at beginning of purchase phase (example: value="infantry:destroyer" count="3")
 			support								values: name of support attachment, adds specified player to the list of players a supportAttachment supports. Can be a list. (example: value="supportAttachmentGermans1AwesomeArtillery")
 														If prefixed with "-" then it will remove that player from the support attachment (example: value="-supportAttachmentArtyOldartillery")
-			relationshipChange					values: the change in relationship for this attached player, format: "player:oldRelation:newRelation" example: "Russia:coldWar:allOutWar"
+			relationshipChange					values: the change in relationship for these players, format: "player1:player2:oldRelation:newRelation" example: "Russians:Americans:coldWar:allOutWar"
 														oldRelation may be "any", "anyWar", "anyNeutral", "anyAllied", or an actual relationshipType used in this xml
 														You can enter multiple relationshipChanges in the trigger and it will perform every change in the trigger which is valid.
 			victory								values: the string message from notifications.properties to be displayed if the condition is true.
@@ -3273,7 +3290,7 @@
 		For the following, you are actually changing raw data in the engine by calling the setters in the same way the engine does when it parses the xml.  The following are not validated at all, so if you don't use them correctly you will probably cause the engine to crash mid-game.
 		You may prefix the property count portion with "-clear-" if you wish to clear out the data in an array first (example: <option name="unitProperty" value="requiresUnits" count="-clear-factory:hangar"/> )
 			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians"). Also used as list of players affected by a playerProperty change.
-			playerAttachmentName				values: the type of attachment (PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment) and the exact full name of the attachment to be changed. (example: value="RulesAttachment" count="rulesAttatchment"). Defaults to PlayerAttachment if missing.
+			playerAttachmentName				values: the type of attachment (PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, PoliticalActionAttachment) and the exact full name of the attachment to be changed. (example: value="RulesAttachment" count="rulesAttatchment"). Defaults to PlayerAttachment if missing.
 			playerProperty						values: the name of any actual attachment property, with a count equal to the property's values (examples: value="destroysPUs" count="true"). (requires players to be set, otherwise it uses the attached player)
 			unitType							values: the exact names of the unit to be affected by a unitProperty change (example: value="cruiser:super_cruiser")
 			unitAttachmentName					values: the type of attachment (UnitAttachment, UnitSupportAttachment) and the exact full name of the attachment to be changed. Defaults to UnitAttachment if missing.
@@ -3351,6 +3368,11 @@
 					relationshipTypeProperty
 					territoryEffects
 					territoryEffectProperty
+					
+				Political Action Attachments:
+					conditions
+					relationshipChange
+					actionAccept
 					
 		-->
 	<!-- Victory Triggers -->
@@ -3566,7 +3588,7 @@
 				<!-- on turn 2 italy will go automatically to war with Russia 
                 <attatchment name="triggerAttachmentItaliansWarRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentItalianTurn2"/>
-					<option name="relationshipChange" value="Russians:any:War"/>					
+					<option name="relationshipChange" value="Italians:Russians:any:War"/>					
                 </attatchment>-->
 				
 				
@@ -3714,13 +3736,13 @@
                 <!-- when Italy is at War with Russia, Russia will automatically go to war with Japan from any Neutral stance 
 	            <attatchment name="triggerAttachmentRussiansWarJapanese" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentRussiansNeutralItalians"/>
-					<option name="relationshipChange" value="Japanese:anyNeutral:War"/>
+					<option name="relationshipChange" value="Russians:Japanese:anyNeutral:War"/>
                 </attatchment>-->
                 
                 <!-- when Italy is at War with Russia, Russia will automatically go to war with Germany from exactly Neutral state
                 <attatchment name="triggerAttachmentRussiansWarGermans" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentRussiansNeutralItalians"/>
-					<option name="relationshipChange" value="Germans:Neutral:War"/>
+					<option name="relationshipChange" value="Russians:Germans:Neutrality:War"/>
                 </attatchment>-->
                 
                 <attatchment name="triggerAttachmentRussians3_RecoveredGermanTech" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3771,6 +3793,13 @@
 					<option name="productionRule" value="Russians_production:buyBattleshipShipyards"/>
 					<option name="productionRule" value="Russians_production:buySuper_CarrierShipyards"/>
 					<option name="uses" value="1"/>
+                </attatchment>
+				
+				<attatchment name="triggerAttachmentRussiansWarJapanese" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentRussiansNeutralJapanTurn5plus"/>
+					<option name="relationshipChange" value="Russians:Japanese:anyNeutral:War"/>
+					<option name="notification" value="RUSSIANS_AT_WAR_WITH_JAPAN"/>
+					<option name="when" value="before:russianPolitics"/>
                 </attatchment>
 				
 	<!-- Chinese Triggers and Conditions -->
@@ -3913,9 +3942,12 @@
 				
 <!-- Political Action Attachments -->
 	<!-- the following options are allowed for "politicalActionAttachmentXXX"
+			conditions							value: this is a colon delimited list of conditions, and this politicalActionAttachment is only active (thus can be performed) if this returns true
+			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
+														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
+			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 			relationshipChange					value: the relationshipType that will exist after the action is succesful between the player and the otherPlayer format: "player1:player2:relationship"
 													You can add multiple relationshipchanges per attachment
-			conditions							value: this action is only active (thus can be performed) if this condition is true
 			chance								value: diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
 			costPU								value: ammount of PU you will be charged to attempt this action
 			text								value: a KEY referring to politicstext.properties to indicate the texts used for regarding this action
@@ -3929,22 +3961,68 @@
 	     			<option name="chance" value="6:6"/>
 	     			<option name="costPU" value="0"/>
 	     		</attatchment>
-	     		<attatchment name="politicalActionAttachmentItaliansProposePeaceToRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachmentRussiansNeutralItalians"/>
-	     			<option name="relationshipChange" value="Italians:Russians:Allied"/>
+	     		<attatchment name="politicalActionAttachmentItaliansProposeCeasefireRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansWarItalians"/>
+	     			<option name="relationshipChange" value="Italians:Russians:Neutrality"/>
 	     			<option name="text" value="ITALY_PROPOSEPEACE_RUSSIA"/>
 	     			<option name="chance" value="6:6"/>
 	     			<option name="costPU" value="0"/>
 	     			<option name="actionAccept" value="Russians"/>
-	     			<option name="attemptsPerTurn" value="2"/> <!--  this will allow you to ask for a treaty twice per round -->
+	     			<option name="attemptsPerTurn" value="1"/>
 	     		</attatchment>
-	     		<attatchment name="politicalActionAttachmentItaliansDeclareWarOnChinese" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     		<attatchment name="politicalActionAttachmentItaliansDeclareWarOnChineseAndAmericans" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 	     			<option name="conditions" value="conditionAttachmentChineseNeutralItalians"/>
 	     			<option name="relationshipChange" value="Italians:Chinese:War"/>
 	     			<option name="relationshipChange" value="Italians:Americans:War"/>
-	     			<option name="text" value="ITALY_DECLAREWAR_CHINA"/>
-	     			<option name="chance" value="1:6"/>
-	     			<option name="costPU" value="5"/>
+	     			<option name="text" value="ITALY_DECLAREWAR_CHINA_USA"/>
+	     			<option name="chance" value="2:6"/>
+	     			<option name="costPU" value="0"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentJapaneseDeclareWarOnRussians" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralJapan"/>
+	     			<option name="relationshipChange" value="Japanese:Russians:War"/>
+	     			<option name="text" value="JAPANESE_DECLAREWAR_RUSSIANS"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="0"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentRussiansDeclareWarOnJapanese" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralJapan"/>
+	     			<option name="relationshipChange" value="Japanese:Russians:War"/>
+	     			<option name="text" value="RUSSIANS_DECLAREWAR_JAPANESE"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="0"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentRussiansAllyWithAmericansAndBritish" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralAmericans"/>
+	     			<option name="relationshipChange" value="Americans:Russians:Allied"/>
+	     			<option name="relationshipChange" value="British:Russians:Allied"/>
+	     			<option name="text" value="RUSSIANS_ALLY_AMERICANS_BRITISH"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="1"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     			<option name="actionAccept" value="Americans:British"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentBritishAndAmericansAllyWithRussians" attatchTo="British" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralAmericans"/>
+	     			<option name="relationshipChange" value="Americans:Russians:Allied"/>
+	     			<option name="relationshipChange" value="British:Russians:Allied"/>
+	     			<option name="text" value="AMERICANS_BRITISH_ALLY_RUSSIANS"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="2"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     			<option name="actionAccept" value="Russians"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentAmericansAndBritishAllyWithRussians" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralAmericans"/>
+	     			<option name="relationshipChange" value="Americans:Russians:Allied"/>
+	     			<option name="relationshipChange" value="British:Russians:Allied"/>
+	     			<option name="text" value="AMERICANS_BRITISH_ALLY_RUSSIANS"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="3"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     			<option name="actionAccept" value="Russians"/>
 	     		</attatchment>
 
         </attatchmentList>
@@ -4257,8 +4335,8 @@
 						<relationship type="Allied" player1="Italians" player2="Japanese"/>
 						<relationship type="Allied" player1="Germans" player2="Japanese"/>
 
-						<relationship type="Allied" player1="Russians" player2="British"/>
-						<relationship type="Allied" player1="Russians" player2="Americans"/>
+						<relationship type="Neutrality" player1="Russians" player2="British"/>
+						<relationship type="Neutrality" player1="Russians" player2="Americans"/>
 						<relationship type="Allied" player1="Russians" player2="Chinese"/>
 						<relationship type="Allied" player1="Americans" player2="British"/>
 						<relationship type="Allied" player1="Americans" player2="Chinese"/>
@@ -4269,18 +4347,18 @@
 						<relationship type="War" player1="British" player2="Japanese"/>
 
 						<relationship type="War" player1="Americans" player2="Germans"/>
-						<relationship type="Neutral" player1="Americans" player2="Italians"/>
+						<relationship type="War" player1="Americans" player2="Italians"/>
 						<relationship type="War" player1="Americans" player2="Japanese"/>
 
 						<relationship type="War" player1="Russians" player2="Germans"/>
-						<relationship type="Neutral" player1="Russians" player2="Italians"/>
-						<relationship type="War" player1="Russians" player2="Japanese"/>
-						<!--<relationship type="Neutral" player1="Russians" player2="Germans"/>
+						<relationship type="War" player1="Russians" player2="Italians"/>
+						<relationship type="Neutrality" player1="Russians" player2="Japanese"/>
+						<!--<relationship type="Neutrality" player1="Russians" player2="Germans"/>
 						<relationship type="Allied" player1="Russians" player2="Italians"/>
-						<relationship type="Neutral" player1="Russians" player2="Japanese"/>-->
+						<relationship type="Neutrality" player1="Russians" player2="Japanese"/>-->
 
 						<relationship type="War" player1="Chinese" player2="Germans"/>
-						<relationship type="Neutral" player1="Chinese" player2="Italians"/>
+						<relationship type="War" player1="Chinese" player2="Italians"/>
 						<relationship type="War" player1="Chinese" player2="Japanese"/>
 				</relationshipInitialize>
 
@@ -4855,6 +4933,7 @@
 						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours) where you also have a land unit, but there is a limit of 1 per territory.
 						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att). Available to Germans after they get superSubs.
 						<br>12. Each nation may only purchase factories up to 3 total, if a nation controls more than 3 they can not purchase new factories (they can keep capturing new ones though).
+        				<br>13. Politics phase: alliances and states of war are now dynamic and can be changed in game.  Japan and Russia start out in a state of Neutrality towards each other, while Russia, America and the UK also start out as neutral towards each other.  Japan and Russia will go to war on the 5th turn if they are still neutral by then.  Italy and Russia have the option of declaring a 2 round ceasefire.
         				<br>
         				<br>
         				<br>

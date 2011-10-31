@@ -31,6 +31,10 @@ import java.util.Map;
 public class DummyTripleAPlayer implements ITripleaPlayer
 {
 	
+	public void politics(boolean firstRun) {
+
+	}
+
 	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
 	{
 		
@@ -77,7 +81,7 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 		
 	}
 	
-	public void reportMessage(String message)
+	public void reportMessage(String message, String title)
 	{
 		
 	}

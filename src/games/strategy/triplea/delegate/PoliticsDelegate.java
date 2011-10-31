@@ -283,7 +283,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	private void sendNotification(PlayerID player, String text)
 	{
 		if (!"NONE".equals(text))
-			((ITripleaPlayer) m_bridge.getRemote(player)).reportMessage("To " + player.getName() + ": " + text);
+			((ITripleaPlayer) m_bridge.getRemote(player)).reportMessage("To " + player.getName() + ": " + text, "To " + player.getName() + ": " + text);
 	}
 	
 	/**

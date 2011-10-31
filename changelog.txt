@@ -1,4 +1,16 @@
 Changes for 1.4
+* Some code cleanup. (veqryn)
+
+* Fixed null pointer error in Moore AI's rank territories method, due to politics change. (veqryn)
+
+* Adding PoliticalActionAttachment to the list of attachments that triggers can change through players + playerAttachmentName + playerProperty. (veqryn)
+
+* Adding invert and conditionType to Political Action Attachments, also changing conditions to allow multiple conditions. (veqryn)
+
+* Changing Pact of Steel 2 to allow for politics, without greatly affecting the game. (veqryn)
+
+* Adding baseAI code for AIs to declare war on people. (edwin van der wal & veqryn)
+
 * Abstraction of various fighting battles into AbstractBattle, and renaming of Battle.java to IBattle. (frigoref)
 
 * Added ability for BaseDelegate to keep track of whether triggers have fired or not, and changed all delegates to record and load super's saveState data when saving and loading. (veqryn)

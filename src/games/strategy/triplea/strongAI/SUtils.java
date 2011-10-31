@@ -5182,6 +5182,7 @@ public class SUtils
 					landRankMap.put(eTerr, eTerrValue + netStrength * 0.50F);
 				}
 			}
+			// Currently there are a lot of territories that don't make it into the list, especially if the politics involves neutral nations.  we should add them here.
 		}
 		if (nonCombat)
 		{
@@ -5189,6 +5190,8 @@ public class SUtils
 			// Set<Territory> terrList = landRankMap.keySet();
 			for (Territory terr1 : alliedFactories)
 			{
+				if (!landRankMap.containsKey(terr1))
+					continue;
 				float landRank = landRankMap.get(terr1);
 				if (Matches.territoryHasEnemyLandNeighbor(data, player).match(terr1))
 				{

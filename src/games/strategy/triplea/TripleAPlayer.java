@@ -90,9 +90,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		m_ui.notifyError(error);
 	}
 	
-	public void reportMessage(String message)
+	public void reportMessage(String message, String title)
 	{
-		m_ui.notifyMessage(message);
+		m_ui.notifyMessage(message, title);
 	}
 	
 	public void reportPoliticalMessage(String message)

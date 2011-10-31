@@ -326,7 +326,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			String notificationMessageKey = notificationMessages.next();
 			String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
 			message = "<html>" + message + "</html>";
-			((ITripleaPlayer) aBridge.getRemote(player)).reportMessage(message);
+			((ITripleaPlayer) aBridge.getRemote(player)).reportMessage(message, "Notification");
 		}
 	}
 	

@@ -189,7 +189,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		dice = DiceRoll.rollNDice(aBridge, count, sides, annotation);
 		int total = dice.getDie(0).getValue() + 1;
 		// TODO kev add dialog showing dice when built
-		getRemotePlayer(player).reportMessage(annotation + total);
+		getRemotePlayer(player).reportMessage(annotation + total, annotation + total);
 		return total;
 	}
 	

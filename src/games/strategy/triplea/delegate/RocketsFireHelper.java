@@ -107,7 +107,7 @@ public class RocketsFireHelper
 		Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
 		if (rocketTerritories.isEmpty())
 		{
-			getRemote(bridge).reportMessage("No aa guns to fire rockets with");
+			getRemote(bridge).reportMessage("No aa guns to fire rockets with", "No aa guns to fire rockets with");
 			return;
 		}
 		// TODO this is weird! Check the parens
@@ -152,7 +152,7 @@ public class RocketsFireHelper
 		
 		if (targets.isEmpty())
 		{
-			getRemote(bridge).reportMessage("No targets to attack with rockets");
+			getRemote(bridge).reportMessage("No targets to attack with rockets", "No targets to attack with rockets");
 			return;
 		}
 		
@@ -367,7 +367,7 @@ public class RocketsFireHelper
 		
 		if (SBRAffectsUnitProd)
 		{
-			getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
+			getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.", "Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
 			
 			bridge.getHistoryWriter().startEvent("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
 			
@@ -376,14 +376,14 @@ public class RocketsFireHelper
 		}
 		else if (DamageFromBombingDoneToUnits && !targets.isEmpty())
 		{
-			getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next());
+			getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next(), "Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next());
 			
 			bridge.getHistoryWriter().startEvent("Rocket attack in " + attackedTerritory.getName() + " does " + cost + " damage to " + targets.iterator().next());
 		}
 		else
 		{
 			cost *= Properties.getPU_Multiplier(data);
-			getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);
+			getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs:" + cost, "Rocket attack in " + attackedTerritory.getName() + " costs:" + cost);
 			
 			// Trying to remove more PUs than the victim has is A Bad Thing[tm]
 			int availForRemoval = attacked.getResources().getQuantity(PUs);

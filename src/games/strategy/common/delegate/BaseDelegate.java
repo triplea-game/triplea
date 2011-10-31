@@ -150,6 +150,18 @@ public abstract class BaseDelegate implements IDelegate
 			String stepName = data.getSequence().getStep().getName();
 			for (PlayerID aPlayer : data.getPlayerList())
 			{
+				// first do notifications, since we want the condition to still be true (after the non-notification trigger fires, the notification might not be true anymore)
+				Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(aPlayer, m_bridge, beforeOrAfter, stepName).iterator();
+				while (notificationMessages.hasNext())
+				{
+					String notificationMessageKey = notificationMessages.next();
+					String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+					message = "<html>" + message + "</html>";
+					((ITripleaPlayer) m_bridge.getRemote(m_player)).reportMessage(message, "Notification");
+					;
+				}
+				
+				// now do all non-notification, non-victory triggers
 				// TODO: add all possible triggers here (in addition to their default locations)
 				TriggerAttachment.triggerPlayerPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerRelationshipTypePropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
@@ -166,17 +178,6 @@ public abstract class BaseDelegate implements IDelegate
 				TriggerAttachment.triggerSupportChange(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerUnitPlacement(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerResourceChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				
-				// now do notifications:
-				Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(aPlayer, m_bridge, beforeOrAfter, stepName).iterator();
-				while (notificationMessages.hasNext())
-				{
-					String notificationMessageKey = notificationMessages.next();
-					String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
-					message = "<html>" + message + "</html>";
-					((ITripleaPlayer) m_bridge.getRemote(m_player)).reportMessage(message);
-					;
-				}
 				
 				// now do victory messages:
 				Tuple<String, Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(aPlayer, m_bridge, beforeOrAfter, stepName);

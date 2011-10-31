@@ -77,7 +77,11 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	}
 	
 	// the condition that needs to be true for this action to be active, this can be a metacondition or null for no condition. no condition means always active.
-	private RulesAttachment m_conditions = null;
+	private List<RulesAttachment> m_conditions = null;
+	// the type, when there are multiple conditions listed
+	private String m_conditionType = "AND";
+	// do we invert the conditions?
+	private boolean m_invert = false;
 	// list of relationship changes to be performed if this action is performed sucessfully
 	private final List<String> m_relationshipChange = new ArrayList<String>();
 	// a key referring to politicaltexts.properties for all the UI messages belonging to this action.
@@ -108,29 +112,154 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 *            The condition that needs to be satisfied for this action to be able to be performed by a player
 	 * @throws GameParseException
 	 */
-	public void setConditions(String conditionName) throws GameParseException
+	public void setConditions(String conditions) throws GameParseException
 	{
-		RulesAttachment condition = null;
-		for (PlayerID p : getData().getPlayerList().getPlayers())
+		String[] s = conditions.split(":");
+		for (int i = 0; i < s.length; i++)
 		{
-			condition = (RulesAttachment) p.getAttachment(conditionName);
-			if (condition != null)
-				break;
-			/*try {
-				m_conditions = RulesAttachment.get(p, conditionName);
-			} catch (IllegalStateException ise) {
+			RulesAttachment condition = null;
+			for (PlayerID p : getData().getPlayerList().getPlayers())
+			{
+				condition = (RulesAttachment) p.getAttachment(s[i]);
+				if (condition != null)
+					break;
+				/*try {
+					m_conditions = RulesAttachment.get(p, conditionName);
+				} catch (IllegalStateException ise) {
+				}
+				if (m_conditions != null)
+					break;*/
 			}
-			if (m_conditions != null)
-				break;*/
+			if (condition == null)
+				throw new GameParseException("PoliticalActionAttachment: Could not find rule. name:" + s[i]);
+			if (m_conditions == null)
+				m_conditions = new ArrayList<RulesAttachment>();
+			m_conditions.add(condition);
 		}
-		if (condition == null)
-			throw new GameParseException("PoliticalActionAttachment: Could not find rule. name:" + conditionName);
-		m_conditions = condition;
 	}
 	
-	public RulesAttachment getConditions()
+	public List<RulesAttachment> getConditions()
 	{
 		return m_conditions;
+	}
+	
+	public void clearConditions()
+	{
+		m_conditions.clear();
+	}
+	
+	public void setConditionType(String s) throws GameParseException
+	{
+		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
+		{
+			String[] nums = s.split("-");
+			if (nums.length == 1)
+			{
+				if (Integer.parseInt(nums[0]) < 0)
+					throw new GameParseException(
+								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
+			}
+			else if (nums.length == 2)
+			{
+				if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0 || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1])))
+					throw new GameParseException(
+								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
+			}
+			else
+				throw new GameParseException(
+							"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
+		}
+		m_conditionType = s;
+	}
+	
+	public String getConditionType()
+	{
+		return m_conditionType;
+	}
+	
+	public void setInvert(String s)
+	{
+		m_invert = getBool(s);
+	}
+	
+	public boolean getInvert()
+	{
+		return m_invert;
+	}
+	
+	/**
+	 * This will account for Invert and conditionType
+	 */
+	private static boolean isMet(PoliticalActionAttachment paa, GameData data)
+	{
+		boolean met = false;
+		String conditionType = paa.getConditionType();
+		if (conditionType.equals("AND") || conditionType.equals("and"))
+		{
+			for (RulesAttachment c : paa.getConditions())
+			{
+				met = c.isSatisfied(data) != paa.getInvert();
+				if (!met)
+					break;
+			}
+		}
+		else if (conditionType.equals("OR") || conditionType.equals("or"))
+		{
+			for (RulesAttachment c : paa.getConditions())
+			{
+				met = c.isSatisfied(data) != paa.getInvert();
+				if (met)
+					break;
+			}
+		}
+		else if (conditionType.equals("XOR") || conditionType.equals("xor"))
+		{
+			// XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others must be false
+			boolean isOneTrue = false;
+			for (RulesAttachment c : paa.getConditions())
+			{
+				met = c.isSatisfied(data) != paa.getInvert();
+				if (isOneTrue && met)
+				{
+					isOneTrue = false;
+					break;
+				}
+				else if (met)
+					isOneTrue = true;
+			}
+			met = isOneTrue;
+		}
+		else
+		{
+			String[] nums = conditionType.split("-");
+			if (nums.length == 1)
+			{
+				int start = Integer.parseInt(nums[0]);
+				int count = 0;
+				for (RulesAttachment c : paa.getConditions())
+				{
+					met = c.isSatisfied(data) != paa.getInvert();
+					if (met)
+						count++;
+				}
+				met = (count == start);
+			}
+			else if (nums.length == 2)
+			{
+				int start = Integer.parseInt(nums[0]);
+				int end = Integer.parseInt(nums[1]);
+				int count = 0;
+				for (RulesAttachment c : paa.getConditions())
+				{
+					met = c.isSatisfied(data) != paa.getInvert();
+					if (met)
+						count++;
+				}
+				met = (count >= start && count <= end);
+			}
+		}
+		
+		return met;
 	}
 	
 	/**
@@ -138,7 +267,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 */
 	public boolean canPerform()
 	{
-		return m_conditions == null || m_conditions.isSatisfied(getData());
+		return m_conditions == null || isMet(this, getData());
 	}
 	
 	/**
