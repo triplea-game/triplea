@@ -1147,6 +1147,7 @@ public class TriggerAttachment extends DefaultAttachment
 			if (ta.m_usedThisRound && currentUses > 0)
 			{
 				change.add(ChangeFactory.attachmentPropertyChange(ta, new Integer(currentUses - 1).toString(), "uses"));
+				change.add(ChangeFactory.attachmentPropertyChange(ta, false, "usedThisRound"));
 			}
 		}
 		return change;

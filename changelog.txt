@@ -1,5 +1,5 @@
 Changes for 1.4
-* Changed triggers "uses" to use up a single 'use' every round that they are used.  So a trigger with 4 action types will use up a single use, assuming those four actions were done in the same round. (veqryn)
+* Changed triggers "uses" to use up a single 'use' every round that they are used.  So a trigger with 4 action types will use up a single use (instead of 4), assuming those four actions were done in the same round. (veqryn)
 
 * Some code cleanup. (veqryn)
 
