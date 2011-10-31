@@ -69,6 +69,7 @@ public class TriggerAttachment extends DefaultAttachment
 	private String m_resource = null;
 	private int m_resourceCount = 0;
 	private int m_uses = -1;
+	private boolean m_usedThisRound = false;
 	private Map<UnitSupportAttachment, Boolean> m_support = null;
 	// List of relationshipChanges that should be executed when this trigger hits.
 	private List<String> m_relationshipChange = new ArrayList<String>();
@@ -120,6 +121,14 @@ public class TriggerAttachment extends DefaultAttachment
 		return rVal;
 	}
 	
+	/**
+	 * If you use null for the match condition, you will get all triggers for this player.
+	 * 
+	 * @param player
+	 * @param data
+	 * @param cond
+	 * @return
+	 */
 	public static Set<TriggerAttachment> getTriggers(PlayerID player, GameData data, Match<TriggerAttachment> cond)
 	{
 		Set<TriggerAttachment> trigs = new HashSet<TriggerAttachment>();
@@ -128,8 +137,11 @@ public class TriggerAttachment extends DefaultAttachment
 		while (iter.hasNext())
 		{
 			IAttachment a = map.get(iter.next());
-			if (a instanceof TriggerAttachment && cond.match((TriggerAttachment) a))
-				trigs.add((TriggerAttachment) a);
+			if (a instanceof TriggerAttachment)
+			{
+				if (cond == null || cond.match((TriggerAttachment) a))
+					trigs.add((TriggerAttachment) a);
+			}
 		}
 		return trigs;
 	}
@@ -234,6 +246,26 @@ public class TriggerAttachment extends DefaultAttachment
 	public void setUses(Integer u)
 	{
 		m_uses = u;
+	}
+	
+	public void setUses(int u)
+	{
+		m_uses = u;
+	}
+	
+	public void setUsedThisRound(String s)
+	{
+		m_usedThisRound = getBool(s);
+	}
+	
+	public void setUsedThisRound(boolean usedThisRound)
+	{
+		m_usedThisRound = usedThisRound;
+	}
+	
+	public boolean getUsedThisRound()
+	{
+		return m_usedThisRound;
 	}
 	
 	public int getUses()
@@ -1092,10 +1124,32 @@ public class TriggerAttachment extends DefaultAttachment
 	
 	private void use(IDelegateBridge aBridge)
 	{
-		if (m_uses > 0)
+		// instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this round
+		// this is in order to let a trigger that contains multiple actions, fire all of them in a single use
+		if (!m_usedThisRound && m_uses > 0)
+		{
+			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
+		}
+		/*if (m_uses > 0)
 		{
 			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_uses - 1).toString(), "uses"));
+		}*/
+	}
+	
+	public static CompositeChange triggerSetUsedForThisRound(PlayerID player, IDelegateBridge aBridge)
+	{
+		CompositeChange change = new CompositeChange();
+		Iterator<TriggerAttachment> iter = getTriggers(player, aBridge.getData(), null).iterator();
+		while (iter.hasNext())
+		{
+			TriggerAttachment ta = iter.next();
+			int currentUses = ta.getUses();
+			if (ta.m_usedThisRound && currentUses > 0)
+			{
+				change.add(ChangeFactory.attachmentPropertyChange(ta, new Integer(currentUses - 1).toString(), "uses"));
+			}
 		}
+		return change;
 	}
 	
 	public static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge)

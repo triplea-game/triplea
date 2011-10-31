@@ -1727,7 +1727,8 @@
 			
 			canBeDamaged						values: sets if a unit can be attacked by strategic bombing raids or by rockets.  isFactory also allows these things
 			maxDamage							values: is the total damage the unit can take.  If a factory, and canProduceXUnits = -1 or is missing then maxDamage will be a multiple of the territory value (maxDamage defaults to 2 if canProduceXUnits = -1), otherwise it will be a set number 
-															So for example, if the unit isFactory Or canProduceUnits, And canProduceXUnits = -1, And maxDamage = 3, THEN you will be able to do 3x the territory value in damage to this unit. If However, canProduceXUnits = 2, and maxDamage = 3, then you can do up to 3 damage to this unit.
+															So for example, if the unit isFactory Or canProduceUnits, And canProduceXUnits = -1, And maxDamage = 3, THEN you will be able to do 3x the territory value in damage to this unit. 
+															If However, canProduceXUnits = 2, and maxDamage = 3, then you can do up to 3 damage to this unit.
 			maxOperationalDamage				values: is used with certain features like isAirBase, repairsUnits, and givesMovement to determine if those features work or not based on the current damage of this unit. A disabled unit will not participate in combat too.  Does Not work with isFactory or canProduceUnits.
 			canDieFromReachingMaxDamage			values: means that if this unit reaches its maxDamage, then it will die.  maxDamage must be larger than zero
 			isInfrastructure					values: means a unit does not participate in combat, and they will be captured if the attacker is successful
@@ -1748,13 +1749,15 @@
 	
 	production related:
 			isFactory							values: allows a unit to produce other units, not participate in combat, be placed anywhere you owned at the beginning of the turn, be capturable, and be damaged by rockets and raids
-			canProduceXUnits					values: allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing
+			canProduceXUnits					values: allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  
+															if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing
 			canProduceUnits						values: allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors.
 			createsUnitsList					values: is a list of units that this unit will create every turn at the end of the turn. can have multiple instances
 			createsResourcesList				values: is a list of resources that this unit will create every turn at the end of the turn. can have multiple instances
 	
 	placement related:
-			maxBuiltPerPlayer					values: is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more [this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable]
+			maxBuiltPerPlayer					values: is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more 
+															[this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable]
 			canOnlyBePlacedInTerritoryValuedAtX	values: the minimum territory value to place the unit there. defaults to "-1" which means anywhere
 			unitPlacementRestrictions			values: a list of territories where this unit can not be built. list can contain any number of territories, including sea zones .
 															every unit may have a list, and the lists may be different for each unit. default is no list.  
@@ -2125,12 +2128,14 @@
 						 <option name="unitPlacementRestrictions" value="Midway:Greenland:Gibraltar:Solomon Islands:Wake Island:Caroline Islands"/>
 						 <!-- canOnlyBePlacedInTerritoryValuedAtX means the minimum territory value to place the unit there. defaults to "-1" which means anywhere -->
 						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="2"/>
-						 <!-- maxBuiltPerPlayer is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more [this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable] -->
+						 <!-- maxBuiltPerPlayer is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, 
+								if they have more than this number they can not build more [this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable] -->
 						 <option name="maxBuiltPerPlayer" value="3"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <!-- unitPlacementOnlyAllowedIn is the direct inverse of unitPlacementRestrictions
 						 <option name="unitPlacementOnlyAllowedIn" value="Germany:East Balkans"/>-->
-						 <!-- canProduceXUnits allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing -->
+						 <!-- canProduceXUnits allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  
+								if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing -->
 						 <option name="canProduceXUnits" value="-1"/>
 						 <!-- canProduceUnits allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors. 
 						 <option name="canProduceUnits" value="true"/>-->
@@ -2150,7 +2155,8 @@
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <option name="destroyedWhenCapturedFrom" value="Russians"/>
 						 <!-- destroyedWhenCapturedBy and destroyedWhenCapturedFrom let a unit be destroyed instead of captured.  They can be a colon delimited list of players. 
-								You can prefix them with single instance of "BY:" or "FROM:" in order to determine if it is being captured by, or captured from, that determines if the unit is destroyed. destroyedWhenCapturedFrom just takes the value input then adds "FROM:" to the beginning, then calls destroyedWhenCapturedBy with the new value.
+								You can prefix them with single instance of "BY:" or "FROM:" in order to determine if it is being captured by, or captured from, that determines if the unit is destroyed. 
+								destroyedWhenCapturedFrom just takes the value input then adds "FROM:" to the beginning, then calls destroyedWhenCapturedBy with the new value.
 						 <option name="destroyedWhenCapturedBy" value="BY:Chinese:Japanese"/>
 						 <option name="destroyedWhenCapturedBy" value="FROM:Russians:Chinese"/>-->
 						 <option name="bombingMaxDieSides" value="2"/>
@@ -2666,7 +2672,8 @@
                         <option name="production" value="2"/>
                 </attatchment>
 				
-				<!-- Blockade Zones are areas where if the enemy has ships there, they subtract money from each of the connecting land territories up to the value of the territory. if there are many enemy ships, you will collect no income from the connecting land territories. should be set to zero production otherwise they become convoy zones too -->
+				<!-- Blockade Zones are areas where if the enemy has ships there, they subtract money from each of the connecting land territories up to the value of the territory. 
+						if there are many enemy ships, you will collect no income from the connecting land territories. should be set to zero production otherwise they become convoy zones too -->
 				<attatchment name="territoryAttatchment" attatchTo="37 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
 						<option name="blockadeZone" value="true"/>
@@ -3259,7 +3266,8 @@
 				
 				
 <!-- Triggers -->
-	<!-- Triggers that have a "uses" amount (ie: they are not infinite) should ONLY have 1 purpose. In other words, if you set a trigger to have 2 uses, and to give resources, change a production frontier, and notify the player, THEN each action will use up a 'use', so you should instead make 3 separate triggers. -->
+	<!-- Triggers with "uses" will use up a single 'use' every round that they are used.  So a trigger that gives a player a tech, adds units to a territory, changes a relationship, and sends a notification to a player,
+				will use up a Single (1) use, assuming those four actions were done in a single round (as determined by the endRound phase [EndRoundDelegate])-->
 	<!-- the following options are allowed for "triggerAttachmentXXX"
 			trigger								values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
 															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
@@ -3290,7 +3298,8 @@
 		For the following, you are actually changing raw data in the engine by calling the setters in the same way the engine does when it parses the xml.  The following are not validated at all, so if you don't use them correctly you will probably cause the engine to crash mid-game.
 		You may prefix the property count portion with "-clear-" if you wish to clear out the data in an array first (example: <option name="unitProperty" value="requiresUnits" count="-clear-factory:hangar"/> )
 			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians"). Also used as list of players affected by a playerProperty change.
-			playerAttachmentName				values: the type of attachment (PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, PoliticalActionAttachment) and the exact full name of the attachment to be changed. (example: value="RulesAttachment" count="rulesAttatchment"). Defaults to PlayerAttachment if missing.
+			playerAttachmentName				values: the type of attachment (PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, PoliticalActionAttachment) and the exact full name of the attachment to be changed. 
+															(example: value="RulesAttachment" count="rulesAttatchment"). Defaults to PlayerAttachment if missing.
 			playerProperty						values: the name of any actual attachment property, with a count equal to the property's values (examples: value="destroysPUs" count="true"). (requires players to be set, otherwise it uses the attached player)
 			unitType							values: the exact names of the unit to be affected by a unitProperty change (example: value="cruiser:super_cruiser")
 			unitAttachmentName					values: the type of attachment (UnitAttachment, UnitSupportAttachment) and the exact full name of the attachment to be changed. Defaults to UnitAttachment if missing.
@@ -4927,13 +4936,16 @@
         				<br>4. Air_Transport is an air unit that specializes in dropping off units, has 4 movement, and can carry into battle or drop off in a friendly territory any 2-3 units. Enabled when you get "paratroopers" tech.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery. It has only 1 hitpoint, just like normal carriers and cruisers.
 						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement (costs 4). If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after certain conditions are met, and they don't receive bonus movement from harbours.
-						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, do not require a landing zone for movement, and they will die after rolling their dice.
+						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, 
+									do not require a landing zone for movement, and they will die after rolling their dice.
 						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones if you turn on "Scramble Rules In Effect".
 						<br>9. Harbour gives +1 movement to warships, and are needed to repair Battleships if you turn on "Two HitPoint Units Require Repair Facilities".
-						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours) where you also have a land unit, but there is a limit of 1 per territory.
+						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  
+									They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours) where you also have a land unit, but there is a limit of 1 per territory.
 						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att). Available to Germans after they get superSubs.
 						<br>12. Each nation may only purchase factories up to 3 total, if a nation controls more than 3 they can not purchase new factories (they can keep capturing new ones though).
-        				<br>13. Politics phase: alliances and states of war are now dynamic and can be changed in game.  Japan and Russia start out in a state of Neutrality towards each other, while Russia, America and the UK also start out as neutral towards each other.  Japan and Russia will go to war on the 5th turn if they are still neutral by then.  Italy and Russia have the option of declaring a 2 round ceasefire.
+        				<br>13. Politics phase: alliances and states of war are now dynamic and can be changed in game.  Japan and Russia start out in a state of Neutrality towards each other, while Russia, America and the UK also start out as neutral towards each other.  
+									Japan and Russia will go to war on the 5th turn if they are still neutral by then.  Italy and Russia have the option of declaring a 2 round ceasefire.
         				<br>
         				<br>
         				<br>
@@ -5055,7 +5067,8 @@
 						<br>1.  In ww2v2 transport units are just like any other unit, and can be used as fodder by being taken casualty first in combat, however in ww2v3 style rules, transports have no defense power and may only be taken casualty after all other non-transport ships are dead.
 						<br>2.  In ww2v2, you can build fighters on carriers if you build both at the same time, and if you build a carrier you can move existing fighters to carriers when you build a carrier in the adjacent sea zone. In ww2v3, you can build new fighters onto existing
 								carriers as well as new carriers, but you may not move existing fighters onto new carriers, as instead you can non-combat move the fighters to where the carrier will be built, then place the carrier under it.
-						<br>3.  In ww2v2, when you strategic bomb or rocket a factory, you immediately reduce the enemy's PUs. In ww2v3, you do damage to the factory, up to twice the value of the territory. Each point of damage reduces the number of units that can be produced there by 1. The player may repair the damage during their purchase phase.
+						<br>3.  In ww2v2, when you strategic bomb or rocket a factory, you immediately reduce the enemy's PUs. In ww2v3, you do damage to the factory, up to twice the value of the territory. 
+								Each point of damage reduces the number of units that can be produced there by 1. The player may repair the damage during their purchase phase.
 						<br>4.  In ww2v2, when you fly over a territory with an AA Gun, the gun gets to fire at each aircraft. In ww2v3, the AA Gun only fires when you attack or bomb the territory it is in.
 						<br>5.  In ww2v2, submarines and transports block the movement of other sea units. In ww2v3, submarines and transports do not block the movement of other sea units, and may be bypassed or attacked.
 						<br>6.  In ww2v2, technology is rolled for, and if you miss nothing happens. In ww2v3, you buy tech tokens, and at the beginning of your turn you roll for each of your tokens. If you roll a 6, you discard all tokens and roll a second time to see which technology you get.

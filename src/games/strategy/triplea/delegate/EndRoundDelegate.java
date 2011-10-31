@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
@@ -209,6 +210,20 @@ public class EndRoundDelegate extends BaseDelegate
 	public void end()
 	{
 		super.end();
+		GameData data = getData();
+		if(games.strategy.triplea.Properties.getTriggers(data))
+		{
+			CompositeChange change = new CompositeChange();
+			for (PlayerID player : data.getPlayerList().getPlayers())
+			{
+				change.add(TriggerAttachment.triggerSetUsedForThisRound(player, m_bridge));
+			}
+			if (!change.isEmpty())
+			{
+				m_bridge.addChange(change);
+				m_bridge.getHistoryWriter().startEvent("Setting uses for triggers used this round.");
+			}
+		}
 	}
 
 	@Override
