@@ -5477,7 +5477,15 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			</p>
 		</blockquote>
 		
-		<h4><a name="sec_6.1">6.1</a> </h4>
+		<h4><a name="sec_6.1">6.1</a> Design Goals</h4>
+		<blockquote>
+
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.2">6.2</a> The Big Picture</h4>
 		<blockquote>
 			
 			<p>
@@ -5485,7 +5493,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			</p>
 		</blockquote>
 		
-		<h4><a name="sec_6.2">6.2</a> </h4>
+		<h4><a name="sec_6.3">6.3</a> Game Data</h4>
 		<blockquote>
 			
 			<p>
@@ -5493,7 +5501,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			</p>
 		</blockquote>
 		
-		<h4><a name="sec_6.3">6.3</a> </h4>
+		<h4><a name="sec_6.4">6.4</a> Attachments</h4>
 		<blockquote>
 			
 			<p>
@@ -5501,7 +5509,28 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			</p>
 		</blockquote>
 		
-		<h4><a name="sec_6.4">6.4</a> </h4>
+		<h4><a name="sec_6.5">6.5</a> Game Play Sequence</h4>
+		<blockquote>
+			
+			<p>
+			 The game sequence is definied in the XML file (game-gamePlay-sequence). Each step entry defined here
+			 basically creates a <a href="#sec_6.6">delegate</a> for a certain player which then handles the current step.
+			 The end of a round is defined by a step for the endRound delegate and leads to a loop back to the first step.
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.6">6.6</a> Delegates</h4>
+		<blockquote>
+			
+			<p>
+			  Delegates are the class which are responsible for a certain game step. They are supposed to be the only
+			  place where changes are added and therefore the game data is actually changed.
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h4><a name="sec_6.7">6.7</a> Step Life Cycle</h4>
 		<blockquote>
 			
 			<p>
@@ -5509,7 +5538,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			</p>
 		</blockquote>
 		
-		<h4><a name="sec_6.5">6.5</a> </h4>
+		<h4><a name="sec_6.8">6.8</a> Changing Game Data</h4>
 		<blockquote>
 			
 			<p>
@@ -5517,7 +5546,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			</p>
 		</blockquote>
 		
-		<h4><a name="sec_6.6">6.6</a> </h4>
+		<h4><a name="sec_6.9">6.9</a> Game Players</h4>
 		<blockquote>
 			
 			<p>
@@ -5525,31 +5554,7 @@ public static InetAddress findInetAddress() throws SocketException, UnknownHostE
 			</p>
 		</blockquote>
 		
-		<h4><a name="sec_6.7">6.7</a> </h4>
-		<blockquote>
-			
-			<p>
-				<a href="#top">- Top -</a>
-			</p>
-		</blockquote>
-		
-		<h4><a name="sec_6.8">6.8</a> </h4>
-		<blockquote>
-			
-			<p>
-				<a href="#top">- Top -</a>
-			</p>
-		</blockquote>
-		
-		<h4><a name="sec_6.9">6.9</a> </h4>
-		<blockquote>
-			
-			<p>
-				<a href="#top">- Top -</a>
-			</p>
-		</blockquote>
-		
-		<h4><a name="sec_6.10">6.10</a> </h4>
+		<h4><a name="sec_6.10">6.10</a> Communication</h4>
 		<blockquote>
 			
 			<p>

@@ -1,4 +1,8 @@
 Changes for 1.4
+* Fixed bug surrounding infinite loop caused by having nations A and B neutral with each other, but at war with C nation owning both subs and transports in a sea zone, attacked by the C nation. (frigoref & veqryn) 
+
+* Fixing bug introduced into must fight battle, by the battle class abstraction. Also slightly updating the dev documentation. (frigoref)
+
 * Changed triggers "uses" to use up a single 'use' every round that they are used.  So a trigger with 4 action types will use up a single use (instead of 4), assuming those four actions were done in the same round. (veqryn)
 
 * Some code cleanup. (veqryn)
