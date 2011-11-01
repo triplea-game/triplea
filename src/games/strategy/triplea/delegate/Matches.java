@@ -2694,7 +2694,7 @@ public class Matches
 			{
 				if (types == null || types.isEmpty())
 					return false;
-				return types.contains(unit);
+				return types.contains(unit.getType());
 			}
 		};
 	}

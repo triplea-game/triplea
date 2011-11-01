@@ -353,7 +353,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Guides");
+					BareBonesBrowserLaunch.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
 				} catch (Exception e1)
 				{
 					// TODO Auto-generated catch block

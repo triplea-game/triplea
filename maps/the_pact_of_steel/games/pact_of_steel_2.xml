@@ -3969,6 +3969,7 @@
 	     			<option name="text" value="ITALY_DECLAREWAR_RUSSIA"/>
 	     			<option name="chance" value="6:6"/>
 	     			<option name="costPU" value="0"/>
+					<option name="attemptsPerTurn" value="1"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachmentItaliansProposeCeasefireRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 	     			<option name="conditions" value="conditionAttachmentRussiansWarItalians"/>
@@ -3986,11 +3987,20 @@
 	     			<option name="text" value="ITALY_DECLAREWAR_CHINA_USA"/>
 	     			<option name="chance" value="2:6"/>
 	     			<option name="costPU" value="0"/>
+					<option name="attemptsPerTurn" value="1"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachmentJapaneseDeclareWarOnRussians" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 	     			<option name="conditions" value="conditionAttachmentRussiansNeutralJapan"/>
 	     			<option name="relationshipChange" value="Japanese:Russians:War"/>
 	     			<option name="text" value="JAPANESE_DECLAREWAR_RUSSIANS"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="0"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentRussiansDeclareWarOnItalians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralItaliansFor2Turns"/>
+	     			<option name="relationshipChange" value="Italians:Russians:War"/>
+	     			<option name="text" value="RUSSIANS_DECLAREWAR_ITALIANS"/>
 	     			<option name="chance" value="6:6"/>
 	     			<option name="costPU" value="0"/>
 					<option name="attemptsPerTurn" value="1"/>
