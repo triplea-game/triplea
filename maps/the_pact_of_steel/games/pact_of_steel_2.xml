@@ -2825,10 +2825,17 @@
 <!--  National Objectives -->
 	<!-- all Objective Attachments, Conditions, Triggers, Rules, etc, must have a unique name (if you don't use unique names, you may get funny results with your trigger attachments, or even java errors) -->
 	<!-- the following options are allowed for "objectiveAttachmentXXX" (and also for "conditionAttachmentXXX")
+			conditions							values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
+															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
+															any condition which includes other conditions, is considered a meta-condition, and it must come AFTER any conditions that it includes.
+			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the conditions. 
+														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
+														conditionType only affects the conditions listed under the option name="conditions", and does not affect any additional things also present.
+			invert								values: true or false. default if missing is false. if true, this attachment's condition will be reversed (does not reverse the effect). 
+														This reverses ALL conditions INDIVIDUALLY (that are part of the "conditions" list of conditionAttachments).  This is NOT the same as a logical negation of the entire collection of conditions.
 			objectiveValue						values: any integer number of PUs to be given (example: value="4")
 			turns								values: which turns this will be checked on (example: value="1:4:6-8:11-+" means turns 1,4,6,7,8,11,and all turns after 11)
 			uses								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
-			invert								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 			count								values: the number required to satisfy a rule. if missing, it defaults to ALL. the below options use count:
 			atWarPlayers						values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players)
 			directOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
@@ -2847,12 +2854,6 @@
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
 			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" (will set #rounds to -1 by default) OR "player1:player2:relationship:numberOfRoundsThisRelationshipMustExistForMinimum"
 														for example: "Japan:China:War" or "Japan:China:War:-1" or "Japan:China:War:3".  It will accept "anyWar", "anyNeutral" and "anyAllied" as well.
-			conditions							values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
-															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
-															any condition which includes other conditions, is considered a meta-condition, and it must come AFTER any conditions that it includes.
-			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the conditions. 
-														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
-														conditionType only affects the conditions listed under the option name="conditions", and does not affect any additional things also present.
 			
 	-->
 	<!-- German Objectives -->
@@ -3274,6 +3275,8 @@
 			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
 														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
 			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
+														This reverses ALL conditions INDIVIDUALLY.  This is NOT the same as a logical negation of the entire collection of conditions.
+														In other words, if there are conditions A, B, and C, and our conditionType is "OR", then we have X = (A || B || C).  If we set invert to true, we get X = (!A || !B || !C), instead of X = (!A && !B && !C).
 			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
 			tech		 						values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
 			availableTech						values: the name of the category to be added to, followed by the names of the technologies to add to it. (example: value="airCategory:longRangeAir:jetPower:superHeavyBomber")
@@ -3951,17 +3954,19 @@
 				
 <!-- Political Action Attachments -->
 	<!-- the following options are allowed for "politicalActionAttachmentXXX"
-			conditions							value: this is a colon delimited list of conditions, and this politicalActionAttachment is only active (thus can be performed) if this returns true
-			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
+			conditions							value: 	this is a colon delimited list of conditions, and this politicalActionAttachment is only active (thus can be performed) if this returns true
+			conditionType 						value: 	AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
 														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
-			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
-			relationshipChange					value: the relationshipType that will exist after the action is succesful between the player and the otherPlayer format: "player1:player2:relationship"
-													You can add multiple relationshipchanges per attachment
-			chance								value: diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
-			costPU								value: ammount of PU you will be charged to attempt this action
-			text								value: a KEY referring to politicstext.properties to indicate the texts used for regarding this action
-			actionAccept						value: a list of players that must accept this action before it takes effect (handy for peacetreaties)
-			attemptsPerTurn						value: the number of times this action can be attempted per round (default: 1)
+			invert 								value: 	true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
+														This reverses ALL conditions INDIVIDUALLY.  This is NOT the same as a logical negation of the entire collection of conditions.
+														In other words, if there are conditions A, B, and C, and our conditionType is "OR", then we have X = (A || B || C).  If we set invert to true, we get X = (!A || !B || !C), instead of X = (!A && !B && !C).
+			relationshipChange					value: 	the relationshipType that will exist after the action is succesful between the player and the otherPlayer format: "player1:player2:relationship"
+														You can add multiple relationshipchanges per attachment
+			chance								value: 	diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
+			costPU								value: 	ammount of PU you will be charged to attempt this action
+			text								value: 	a KEY referring to politicstext.properties to indicate the texts used for regarding this action
+			actionAccept						value: 	a list of players that must accept this action before it takes effect (handy for peacetreaties)
+			attemptsPerTurn						value: 	the number of times this action can be attempted per round (default: 1)
 	-->
 	     		<attatchment name="politicalActionAttachmentItaliansDeclareWarOnRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 	     			<option name="conditions" value="conditionAttachmentRussiansNeutralItaliansFor2Turns"/>

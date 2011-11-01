@@ -864,29 +864,23 @@ public class RulesAttachment extends DefaultAttachment
 		return value;
 	}
 	
-	/**
-	 * This will account for Invert and conditionType while looking at all the conditions,
-	 * but if invert is true we will reverse at the end since RulesAttachment.isSatisfied() will test for invert again later.
-	 * Similar to TriggerAttachment.isMet()
-	 */
-	private boolean isMetForMetaConditions(GameData data)
+	public static boolean areConditionsMet(List<RulesAttachment> rules, String conditionType, boolean invert, GameData data)
 	{
 		boolean met = false;
-		String conditionType = getConditionType();
 		if (conditionType.equals("AND") || conditionType.equals("and"))
 		{
-			for (RulesAttachment c : getConditions())
+			for (RulesAttachment c : rules)
 			{
-				met = c.isSatisfied(data) != m_invert;
+				met = c.isSatisfied(data) != invert;
 				if (!met)
 					break;
 			}
 		}
 		else if (conditionType.equals("OR") || conditionType.equals("or"))
 		{
-			for (RulesAttachment c : getConditions())
+			for (RulesAttachment c : rules)
 			{
-				met = c.isSatisfied(data) != m_invert;
+				met = c.isSatisfied(data) != invert;
 				if (met)
 					break;
 			}
@@ -895,9 +889,9 @@ public class RulesAttachment extends DefaultAttachment
 		{
 			// XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others must be false
 			boolean isOneTrue = false;
-			for (RulesAttachment c : getConditions())
+			for (RulesAttachment c : rules)
 			{
-				met = c.isSatisfied(data) != m_invert;
+				met = c.isSatisfied(data) != invert;
 				if (isOneTrue && met)
 				{
 					isOneTrue = false;
@@ -915,9 +909,9 @@ public class RulesAttachment extends DefaultAttachment
 			{
 				int start = Integer.parseInt(nums[0]);
 				int count = 0;
-				for (RulesAttachment c : getConditions())
+				for (RulesAttachment c : rules)
 				{
-					met = c.isSatisfied(data) != m_invert;
+					met = c.isSatisfied(data) != invert;
 					if (met)
 						count++;
 				}
@@ -928,9 +922,9 @@ public class RulesAttachment extends DefaultAttachment
 				int start = Integer.parseInt(nums[0]);
 				int end = Integer.parseInt(nums[1]);
 				int count = 0;
-				for (RulesAttachment c : getConditions())
+				for (RulesAttachment c : rules)
 				{
-					met = c.isSatisfied(data) != m_invert;
+					met = c.isSatisfied(data) != invert;
 					if (met)
 						count++;
 				}
@@ -938,10 +932,7 @@ public class RulesAttachment extends DefaultAttachment
 			}
 		}
 		
-		if (m_invert)
-			return !met;
-		else
-			return met;
+		return met;
 	}
 	
 	public boolean isSatisfied(GameData data)
@@ -954,7 +945,9 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		if (objectiveMet && m_conditions.size() > 0)
 		{
-			objectiveMet = isMetForMetaConditions(data);
+			// This will account for Invert and conditionType while looking at all the conditions,
+			// but if invert is true we will reverse at the end since RulesAttachment.isSatisfied() will test for invert again later.
+			objectiveMet = (m_invert ? !areConditionsMet(m_conditions, m_conditionType, m_invert, data) : areConditionsMet(m_conditions, m_conditionType, m_invert, data));
 		}
 		
 		//

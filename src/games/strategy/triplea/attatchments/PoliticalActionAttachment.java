@@ -42,6 +42,7 @@ import java.util.Set;
 
 public class PoliticalActionAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = 4392770599777282477L;
 	
 	public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
 	
@@ -192,74 +193,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 */
 	private static boolean isMet(PoliticalActionAttachment paa, GameData data)
 	{
-		boolean met = false;
-		String conditionType = paa.getConditionType();
-		if (conditionType.equals("AND") || conditionType.equals("and"))
-		{
-			for (RulesAttachment c : paa.getConditions())
-			{
-				met = c.isSatisfied(data) != paa.getInvert();
-				if (!met)
-					break;
-			}
-		}
-		else if (conditionType.equals("OR") || conditionType.equals("or"))
-		{
-			for (RulesAttachment c : paa.getConditions())
-			{
-				met = c.isSatisfied(data) != paa.getInvert();
-				if (met)
-					break;
-			}
-		}
-		else if (conditionType.equals("XOR") || conditionType.equals("xor"))
-		{
-			// XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others must be false
-			boolean isOneTrue = false;
-			for (RulesAttachment c : paa.getConditions())
-			{
-				met = c.isSatisfied(data) != paa.getInvert();
-				if (isOneTrue && met)
-				{
-					isOneTrue = false;
-					break;
-				}
-				else if (met)
-					isOneTrue = true;
-			}
-			met = isOneTrue;
-		}
-		else
-		{
-			String[] nums = conditionType.split("-");
-			if (nums.length == 1)
-			{
-				int start = Integer.parseInt(nums[0]);
-				int count = 0;
-				for (RulesAttachment c : paa.getConditions())
-				{
-					met = c.isSatisfied(data) != paa.getInvert();
-					if (met)
-						count++;
-				}
-				met = (count == start);
-			}
-			else if (nums.length == 2)
-			{
-				int start = Integer.parseInt(nums[0]);
-				int end = Integer.parseInt(nums[1]);
-				int count = 0;
-				for (RulesAttachment c : paa.getConditions())
-				{
-					met = c.isSatisfied(data) != paa.getInvert();
-					if (met)
-						count++;
-				}
-				met = (count >= start && count <= end);
-			}
-		}
-		
-		return met;
+		return RulesAttachment.areConditionsMet(paa.getConditions(), paa.getConditionType(), paa.getInvert(), data);
 	}
 	
 	/**
