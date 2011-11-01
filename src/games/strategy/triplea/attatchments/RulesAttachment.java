@@ -158,7 +158,7 @@ public class RulesAttachment extends DefaultAttachment
 	
 	// production per X territories
 	private final IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<UnitType>();
-	private final IntegerMap<UnitType> m_unitPresence = new IntegerMap<UnitType>();
+	private final IntegerMap<String> m_unitPresence = new IntegerMap<String>();
 	
 	private Set<PlayerID> m_atWarPlayers = null;
 	// using map as tuple set, describes ranges from Integer-Integer
@@ -493,25 +493,27 @@ public class RulesAttachment extends DefaultAttachment
 	public void setUnitPresence(String value)
 	{
 		String[] s = value.split(":");
-		if (s.length <= 0 || s.length > 2)
-			throw new IllegalStateException("Rules Attachments: unitPresence can not be empty or have more than two fields");
-		
-		String unitTypeToProduce = s[1];
-		
-		// validate that this unit exists in the xml
-		UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
-		if (ut == null && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY")))
-			throw new IllegalStateException("Rules Attachments: No unit called: " + unitTypeToProduce);
+		if (s.length <= 1)
+			throw new IllegalStateException("Rules Attachments: unitPresence must have at least 2 fields. Format value=unit1 count=number, or value=unit1:unit2:unit3 count=number");
 		
 		int n = getInt(s[0]);
 		if (n <= 0)
 			throw new IllegalStateException("Rules Attachments: unitPresence must be a positive integer");
 		
-		// null UnitType will mean any unit for the purposes of this
-		m_unitPresence.put(ut, n);
+		for (int i=1;i<s.length;i++)
+		{
+			String unitTypeToProduce = s[i];
+			// validate that this unit exists in the xml
+			UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
+			if (ut == null && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY")))
+				throw new IllegalStateException("Rules Attachments: No unit called: " + unitTypeToProduce);
+		}
+		
+		value = value.replaceFirst(s[0] + ":", "");
+		m_unitPresence.put(value, n);
 	}
 	
-	public IntegerMap<UnitType> getUnitPresence()
+	public IntegerMap<String> getUnitPresence()
 	{
 		return m_unitPresence;
 	}
@@ -1409,13 +1411,13 @@ public class RulesAttachment extends DefaultAttachment
 				}
 				else if (useSpecific)
 				{
-					IntegerMap<UnitType> unitsMap = getUnitPresence();
-					Set<UnitType> units = unitsMap.keySet();
+					IntegerMap<String> unitComboMap = getUnitPresence();
+					Set<String> unitCombos = unitComboMap.keySet();
 					boolean hasEnough = false;
-					for (UnitType ut : units)
+					for (String uc : unitCombos)
 					{
-						int unitsNeeded = unitsMap.getInt(ut);
-						if (ut == null)
+						int unitsNeeded = unitComboMap.getInt(uc);
+						if (uc == null || uc.equals("ANY") || uc.equals("any"))
 						{
 							if (allUnits.size() >= unitsNeeded)
 								hasEnough = true;
@@ -1424,7 +1426,8 @@ public class RulesAttachment extends DefaultAttachment
 						}
 						else
 						{
-							if (Match.getMatches(allUnits, Matches.unitIsOfType(ut)).size() >= unitsNeeded)
+							Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(uc.split(":"));
+							if (Match.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() >= unitsNeeded)
 								hasEnough = true;
 							else
 								hasEnough = false;
@@ -1499,13 +1502,13 @@ public class RulesAttachment extends DefaultAttachment
 			}
 			else if (useSpecific)
 			{
-				IntegerMap<UnitType> unitsMap = getUnitPresence();
-				Set<UnitType> units = unitsMap.keySet();
+				IntegerMap<String> unitComboMap = getUnitPresence();
+				Set<String> unitCombos = unitComboMap.keySet();
 				boolean hasLess = false;
-				for (UnitType ut : units)
+				for (String uc : unitCombos)
 				{
-					int unitsMax = unitsMap.getInt(ut);
-					if (ut == null)
+					int unitsMax = unitComboMap.getInt(uc);
+					if (uc == null || uc.equals("ANY") || uc.equals("any"))
 					{
 						if (allUnits.size() <= unitsMax)
 							hasLess = true;
@@ -1514,7 +1517,8 @@ public class RulesAttachment extends DefaultAttachment
 					}
 					else
 					{
-						if (Match.getMatches(allUnits, Matches.unitIsOfType(ut)).size() <= unitsMax)
+						Set<UnitType> typesAllowed = data.getUnitTypeList().getUnitTypes(uc.split(":"));
+						if (Match.getMatches(allUnits, Matches.unitIsOfTypes(typesAllowed)).size() <= unitsMax)
 							hasLess = true;
 						else
 							hasLess = false;

@@ -1,4 +1,6 @@
 Changes for 1.4
+* Changed unitPresence to allow inputting of multiple units on one line for an OR relationship between those units. (veqryn)
+
 * Fixed bug surrounding infinite loop caused by having nations A and B neutral with each other, but at war with C nation owning both subs and transports in a sea zone, attacked by the C nation. (frigoref & veqryn) 
 
 * Fixing bug introduced into must fight battle, by the battle class abstraction. Also slightly updating the dev documentation. (frigoref)

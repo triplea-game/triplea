@@ -247,6 +247,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
 		JMenuItem warClub = new JMenuItem("War Club & Ladder...");
 		JMenuItem devForum = new JMenuItem("Developer Forum...");
+		JMenuItem donateLink = new JMenuItem("Donate...");
 		JMenuItem guidesLink = new JMenuItem("Guides...");
 		
 		hostingLink.addActionListener(new ActionListener()
@@ -345,6 +346,22 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			}
 		});
 		
+		donateLink.addActionListener(new ActionListener()
+		{
+			
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Guides");
+				} catch (Exception e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
 		guidesLink.addActionListener(new ActionListener()
 		{
 			
@@ -367,6 +384,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		parentMenu.add(lobbyRules);
 		parentMenu.add(warClub);
 		parentMenu.add(devForum);
+		parentMenu.add(donateLink);
 		parentMenu.add(guidesLink);
 	}
 	

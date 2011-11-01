@@ -21,8 +21,10 @@
 package games.strategy.engine.data;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -56,6 +58,25 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
 	public UnitType getUnitType(String name)
 	{
 		return m_unitTypes.get(name);
+	}
+	
+	/**
+	 * Will return null if even a single name is not on the unit list.
+	 * 
+	 * @param names
+	 * @return
+	 */
+	public Set<UnitType> getUnitTypes(String[] names)
+	{
+		Set<UnitType> types = new HashSet<UnitType>();
+		for (String name : names)
+		{
+			UnitType type = m_unitTypes.get(name);
+			if (type == null)
+				return null;
+			types.add(type);
+		}
+		return types;
 	}
 	
 	public int size()

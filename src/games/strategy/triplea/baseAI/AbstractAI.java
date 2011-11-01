@@ -11,6 +11,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
@@ -46,16 +47,6 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractAI implements ITripleaPlayer
 {
-	
-	public void reportPoliticalMessage(String message)
-	{
-	}
-	
-	public boolean acceptPoliticalAction(String acceptanceQuestion)
-	{
-		return true;
-	}
-	
 	private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 	
 	/**
@@ -284,6 +275,14 @@ public abstract class AbstractAI implements ITripleaPlayer
 		return false;
 	}
 	
+	public boolean acceptPoliticalAction(String acceptanceQuestion)
+	{
+		// should we use bridge's random source here?
+		if (Math.random() < .4)
+			return true;
+		return false;
+	}
+	
 	/*****************************************
 	 * The following methods are more for the ui, and the
 	 * ai will generally not care
@@ -291,6 +290,10 @@ public abstract class AbstractAI implements ITripleaPlayer
 	 *****************************************/
 	
 	public void battleInfoMessage(String shortMessage, DiceRoll dice)
+	{
+	}
+	
+	public void reportPoliticalMessage(String message)
 	{
 	}
 	
@@ -369,12 +372,15 @@ public abstract class AbstractAI implements ITripleaPlayer
 		IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
 		
 		int i = 0;
-		final int MAX_ACTIONS_PER_TURN = 3;
+		double random = Math.random(); // should we use bridge's random source here?
+		final int MAX_ACTIONS_PER_TURN = (random < .2 ? 0 : (random < .4 ? 1 : (random < .8 ? 2 : (random < .98 ? 3 : 100))));
 		
 		Iterator<PoliticalActionAttachment> actionIter = actionChoices.iterator();
 		while (actionIter.hasNext())
 		{
 			PoliticalActionAttachment action = actionIter.next();
+			if (!Matches.PoliticalActionCanBeAttempted.match(action))
+				continue;
 			i++;
 			if (i>MAX_ACTIONS_PER_TURN)
 				break;

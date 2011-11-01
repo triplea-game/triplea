@@ -2840,7 +2840,7 @@
 			directPresenceTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
 			alliedPresenceTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
 			enemyPresenceTerritories 			values: "original", "map" (map = all territories on map), or a : delimited list of territories
-			unitPresence 						values: "ANY" or the exact name of the unit, and the number of that unit.  (example: value="infantry" count="2", or: value="ANY" count="3")
+			unitPresence 						values: "ANY" or the exact name or names of the units, and the number of that unit.  (example: value="infantry" count="2", or: value="ANY" count="3", or: value="infantry:artillery:armour" count="3")
 														unitPresence can be put in multiple times. Its purpose is to specify the units for presence and excluded territories. If missing, then presence needs only 1 of any unit, and excluded needs to be completely devoid of units
 														It can be used in conjunction with directPresenceTerritories, alliedPresenceTerritories, enemyPresenceTerritories, directExclusionTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories
 														If used with an exclusion, then the number of units of that type must be less than or equal the count.  (Use count="0" if you want no units of that type in the territories).

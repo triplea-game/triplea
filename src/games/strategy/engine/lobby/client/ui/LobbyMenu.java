@@ -472,6 +472,7 @@ public class LobbyMenu extends JMenuBar
 		JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
 		JMenuItem warClub = new JMenuItem("War Club & Ladder...");
 		JMenuItem devForum = new JMenuItem("Developer Forum...");
+		JMenuItem donateLink = new JMenuItem("Donate...");
 		JMenuItem guidesLink = new JMenuItem("Guides...");
 		
 		hostingLink.addActionListener(new ActionListener()
@@ -570,6 +571,22 @@ public class LobbyMenu extends JMenuBar
 			}
 		});
 		
+		donateLink.addActionListener(new ActionListener()
+		{
+			
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
+				} catch (Exception e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
 		guidesLink.addActionListener(new ActionListener()
 		{
 			
@@ -592,6 +609,7 @@ public class LobbyMenu extends JMenuBar
 		parentMenu.add(lobbyRules);
 		parentMenu.add(warClub);
 		parentMenu.add(devForum);
+		parentMenu.add(donateLink);
 		parentMenu.add(guidesLink);
 	}
 	

@@ -2684,6 +2684,21 @@ public class Matches
 		};
 	}
 	
+	public static Match<Unit> unitIsOfTypes(final Set<UnitType> types)
+	{
+		return new Match<Unit>()
+		{
+			
+			@Override
+			public boolean match(Unit unit)
+			{
+				if (types == null || types.isEmpty())
+					return false;
+				return types.contains(unit);
+			}
+		};
+	}
+	
 	public static Match<Territory> territoryWasFoughOver(final BattleTracker tracker)
 	{
 		return new Match<Territory>()
