@@ -242,6 +242,8 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 */
 	private void notifyFailure(PoliticalActionAttachment paa)
 	{
+		String transcriptText = m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
+		m_bridge.getHistoryWriter().startEvent(transcriptText);
 		sendNotification(m_player, PoliticsText.getInstance().getNotificationFailure(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
 	}
@@ -307,9 +309,8 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			
 			change.add(ChangeFactory.relationshipChange(player1, player2, oldRelation, newRelation));
 			
-			m_bridge.getHistoryWriter().startEvent(
-						MyFormatter.attachmentNameToText(paa.getName()) + ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from " + oldRelation.getName() + " to "
-									+ newRelation.getName());
+			m_bridge.getHistoryWriter().startEvent(m_bridge.getPlayerID().getName() + " succeeds on action: " + MyFormatter.attachmentNameToText(paa.getName())
+						+ ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from " + oldRelation.getName() + " to " + newRelation.getName());
 			
 			if (Matches.RelationshipIsAtWar.match(newRelation))
 				TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge); // TODO: see if this causes problems to do with savestate, or relations that don't cause battles. better to leave this in the battle delegate i think.
