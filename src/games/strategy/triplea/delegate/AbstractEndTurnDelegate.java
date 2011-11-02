@@ -26,6 +26,7 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -116,6 +117,19 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			total += bonds;
 			toAdd += bonds;
 			transcriptText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds) + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
+			aBridge.getHistoryWriter().startEvent(transcriptText);
+		}
+		
+		int relationshipUpkeepCost = 0;
+		for (Relationship r : data.getRelationshipTracker().getRelationships(m_player))
+		{
+			relationshipUpkeepCost += r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost();
+		}
+		if (relationshipUpkeepCost != 0)
+		{
+			total -= relationshipUpkeepCost;
+			toAdd -= relationshipUpkeepCost;
+			transcriptText = m_player.getName() + (relationshipUpkeepCost > 0 ? " pays " : " taxes ") + relationshipUpkeepCost + MyFormatter.pluralize(" PU", relationshipUpkeepCost) + " in order to maintain current relationships with other players, for a total of " + total + MyFormatter.pluralize(" PU", total);
 			aBridge.getHistoryWriter().startEvent(transcriptText);
 		}
 		

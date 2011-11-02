@@ -51,6 +51,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
 	private String m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
 	
+	private String m_upkeepCost = PROPERTY_DEFAULT;
+	
 	/**
 	 * Convenience method.
 	 * 
@@ -156,6 +158,24 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 			return isWar() || isAllied();
 		}
 		return m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_TRUE);
+	}
+	
+	public void setUpkeepCost(String integerCost)
+	{
+		if (integerCost.equals(PROPERTY_DEFAULT))
+			m_upkeepCost = PROPERTY_DEFAULT;
+		else
+		{
+			getInt(integerCost);
+			m_upkeepCost = integerCost;
+		}
+	}
+	
+	public int getUpkeepCost()
+	{
+		if (m_upkeepCost.equals(PROPERTY_DEFAULT))
+			return 0;
+		return getInt(m_upkeepCost);
 	}
 	
 	/**

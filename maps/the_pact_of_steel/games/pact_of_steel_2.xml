@@ -1504,6 +1504,7 @@
 			archeType								values: "allied" or "war" or "neutral"
 			canMoveLandUnitsOverOwnedLand			values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
 			canMoveAirUnitsOverOwnedLand			values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
+			upkeepCost								values: "default", or any valid integer. Default = zero (0). This determines if there is a cost to maintain a relationship, which would be subtracted from PUs gained at end of turn.
 	-->
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -4351,7 +4352,7 @@
 				<relationshipInitialize>
 						<!-- the order of player1 and player2 does not matter. roundValue is only used for conditions and can be positive or negative (use "1" if you don't know what you are doing).
 								having them listed twice in different orders will just have the later one overwrite the earlier one.
-								Make sure you cover all possibilities!
+								Make sure you cover all possibilities! (the number of possibilities is equal to the triangular number sequence: 1,3,6,10,15,21,28,36,45,55,66,78,91,105,120)
 						-->
 						
 						<relationship type="Allied" player1="Italians" player2="Germans" roundValue="1"/>

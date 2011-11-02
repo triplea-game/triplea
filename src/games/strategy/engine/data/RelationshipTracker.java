@@ -30,6 +30,7 @@ import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class RelationshipTracker extends RelationshipInterpreter
 {
@@ -89,6 +90,18 @@ public class RelationshipTracker extends RelationshipInterpreter
 	public Relationship getRelationship(PlayerID p1, PlayerID p2)
 	{
 		return m_relationships.get(new RelatedPlayers(p1, p2));
+	}
+	
+	public HashSet<Relationship> getRelationships(PlayerID player1)
+	{
+		HashSet<Relationship> relationships = new HashSet<Relationship>();
+		for (PlayerID player2 : getData().getPlayerList().getPlayers())
+		{
+			if (player2 == null || player2.equals(player1))
+				continue;
+			relationships.add(getRelationship(player1, player2));
+		}
+		return relationships;
 	}
 	
 	public int getRoundRelationshipWasCreated(PlayerID p1, PlayerID p2)

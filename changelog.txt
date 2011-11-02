@@ -1,4 +1,8 @@
 Changes for 1.4
+* Massive update to Napoleonic Empires: FFA, to allow it to use Politics. (veqryn)
+
+* Added "upkeepCost" as an attachment for RelationshipTypeAttachment, which allows you to have a cost in order to maintain a relationship. (veqryn)
+
 * Changed "invert" in rules attachments, trigger attachments, and political attachments, to work as a real logical negation. Now correctly follows boolean math. (veqryn)
 
 * Added roundValue to relationshipInitialize, which is the beginning round a relationship starts out at. This should normally be "1", but if you have certain conditions set up, you may wish to change this to a negative or positive number to reflect what round you would like the condition to be true on. (veqryn)
