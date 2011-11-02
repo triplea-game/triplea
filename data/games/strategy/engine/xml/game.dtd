@@ -240,8 +240,9 @@
 	
 		<!ATTLIST relationship
 			player1 IDREF #REQUIRED
-			player2 IDREF #REQUIRED 
+			player2 IDREF #REQUIRED
 			type IDREF #REQUIRED
+			roundValue CDATA #REQUIRED
 		>
 
 	

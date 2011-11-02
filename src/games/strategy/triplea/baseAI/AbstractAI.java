@@ -278,7 +278,7 @@ public abstract class AbstractAI implements ITripleaPlayer
 	public boolean acceptPoliticalAction(String acceptanceQuestion)
 	{
 		// should we use bridge's random source here?
-		if (Math.random() < .4)
+		if (Math.random() < .5)
 			return true;
 		return false;
 	}
@@ -365,26 +365,52 @@ public abstract class AbstractAI implements ITripleaPlayer
 	}
 	
 	public void getPoliticalActions() {
-		List<PoliticalActionAttachment> actionChoices = BasicPoliticalAI.getPoliticalAction(m_id);
-		if (actionChoices == null || actionChoices.isEmpty())
-			return;
-		Collections.shuffle(actionChoices);
 		IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
 		
-		int i = 0;
-		double random = Math.random(); // should we use bridge's random source here?
-		final int MAX_ACTIONS_PER_TURN = (random < .2 ? 0 : (random < .4 ? 1 : (random < .8 ? 2 : (random < .98 ? 3 : 100))));
-		
-		Iterator<PoliticalActionAttachment> actionIter = actionChoices.iterator();
-		while (actionIter.hasNext())
+		List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id);
+		if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty())
 		{
-			PoliticalActionAttachment action = actionIter.next();
-			if (!Matches.PoliticalActionCanBeAttempted.match(action))
-				continue;
-			i++;
-			if (i>MAX_ACTIONS_PER_TURN)
-				break;
-			politicsDelegate.attemptAction(action);
+			Collections.shuffle(actionChoicesTowardsWar);
+			
+			int i = 0;
+			double random = Math.random(); // should we use bridge's random source here?
+			final int MAX_WAR_ACTIONS_PER_TURN = (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .985 ? 3 : 100))));
+			
+			Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
+			while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0)
+			{
+				PoliticalActionAttachment action = actionWarIter.next();
+				if (!Matches.PoliticalActionCanBeAttempted.match(action))
+					continue;
+				i++;
+				if (i>MAX_WAR_ACTIONS_PER_TURN)
+					break;
+				politicsDelegate.attemptAction(action);
+			}
+		}
+
+		List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(m_id);
+		if (actionChoicesOther != null && !actionChoicesOther.isEmpty())
+		{
+			Collections.shuffle(actionChoicesOther);
+			
+			int i = 0;
+			double random = Math.random(); // should we use bridge's random source here?
+			final int MAX_OTHER_ACTIONS_PER_TURN = (random < .4 ? 0 : (random < .8 ? 1 : (random < .99 ? 2 : 100)));
+			
+			Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
+			while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0)
+			{
+				PoliticalActionAttachment action = actionOtherIter.next();
+				if (!Matches.PoliticalActionCanBeAttempted.match(action))
+					continue;
+				if (action.getCostPU() > 0 && action.getCostPU() > m_id.getResources().getQuantity(Constants.PUS))
+					continue;
+				i++;
+				if (i>MAX_OTHER_ACTIONS_PER_TURN)
+					break;
+				politicsDelegate.attemptAction(action);
+			}
 		}
 	}
 

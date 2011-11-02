@@ -43,8 +43,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 	}
 	
 	/**
-	 * method for setting a relationship between two players, this is called during gameparser,
-	 * at any other moment this should be called through the changefactory.
+	 * Method for setting a relationship between two players, this should only be called through the Change Factory.
 	 * 
 	 * @param p1
 	 *            Player1 that will get the relationship
@@ -56,6 +55,19 @@ public class RelationshipTracker extends RelationshipInterpreter
 	protected void setRelationship(PlayerID p1, PlayerID p2, RelationshipType r)
 	{
 		m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r));
+	}
+	
+	/**
+	 * Method for setting a relationship between two players, this should only be called during the Game Parser.
+	 * 
+	 * @param p1
+	 * @param p2
+	 * @param r
+	 * @param roundValue
+	 */
+	protected void setRelationship(PlayerID p1, PlayerID p2, RelationshipType r, int roundValue)
+	{
+		m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
 	}
 	
 	/**
@@ -210,14 +222,31 @@ public class RelationshipTracker extends RelationshipInterpreter
 
 	public class Relationship implements Serializable
 	{
-		
+		/**
+		 * This should never be called outside of the change factory.
+		 * 
+		 * @param relationshipType
+		 */
 		public Relationship(RelationshipType relationshipType)
 		{
 			this.relationshipType = relationshipType;
+			this.roundCreated = getData().getSequence().getRound();
+		}
+		
+		/**
+		 * This should never be called outside of the game parser.
+		 * 
+		 * @param relationshipType
+		 * @param roundValue
+		 */
+		public Relationship(RelationshipType relationshipType, int roundValue)
+		{
+			this.relationshipType = relationshipType;
+			this.roundCreated = roundValue;
 		}
 		
 		private final RelationshipType relationshipType;
-		private final int roundCreated = getData().getSequence().getRound();
+		private final int roundCreated;
 		
 		public int getRoundCreated()
 		{

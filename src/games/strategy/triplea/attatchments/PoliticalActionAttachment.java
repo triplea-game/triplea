@@ -193,7 +193,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 */
 	private static boolean isMet(PoliticalActionAttachment paa, GameData data)
 	{
-		return RulesAttachment.areConditionsMet(paa.getConditions(), paa.getConditionType(), paa.getInvert(), data);
+		return RulesAttachment.areConditionsMet(paa.getConditions(), paa.getConditionType(), data) != paa.getInvert();
 	}
 	
 	/**

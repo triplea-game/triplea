@@ -851,7 +851,8 @@ public class GameParser
 				PlayerID p1 = getPlayerID(current, "player1", true);
 				PlayerID p2 = getPlayerID(current, "player2", true);
 				RelationshipType r = getRelationshipType(current, "type", true);
-				tracker.setRelationship(p1, p2, r);
+				int roundValue = Integer.valueOf(current.getAttribute("roundValue"));
+				tracker.setRelationship(p1, p2, r, roundValue);
 			}
 		}
 	}
@@ -1486,6 +1487,8 @@ public class GameParser
 		Node resource = getSingleChild("resourceInitialize", root, true);
 		if (resource != null)
 			parseResourceInitialization(getChildren("resourceGiven", resource));
+		
+		// parse relationships
 		Node relationInitialize = getSingleChild("relationshipInitialize", root, true);
 		if (relationInitialize != null)
 			parseRelationInitialize(getChildren("relationship", relationInitialize));

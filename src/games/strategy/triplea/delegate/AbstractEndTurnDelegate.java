@@ -233,6 +233,11 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	
 	protected int getProduction(Collection<Territory> territories)
 	{
+		return getProduction(territories, getData());
+	}
+	
+	public static int getProduction(Collection<Territory> territories, GameData data)
+	{
 		int value = 0;
 		Iterator<Territory> iter = territories.iterator();
 		while (iter.hasNext())
@@ -249,7 +254,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 				// Preset the original owner
 				PlayerID origOwner = attatchment.getOccupiedTerrOf();
 				if (origOwner == null)
-					origOwner = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().getOriginalOwner(current);
+					origOwner = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(current);
 				
 				if (origOwner != PlayerID.NULL_PLAYERID && origOwner == current.getOwner())
 					value += attatchment.getProduction();
@@ -260,7 +265,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 				if (TerritoryAttachment.get(current).isConvoyRoute())
 				{
 					// Determine if both parts of the convoy route are owned by the attacker or allies
-					boolean ownedConvoyRoute = getData().getMap().getNeighbors(current, Matches.territoryHasConvoyOwnedBy(current.getOwner(), getData(), current)).size() > 0;
+					boolean ownedConvoyRoute = data.getMap().getNeighbors(current, Matches.territoryHasConvoyOwnedBy(current.getOwner(), data, current)).size() > 0;
 					if (ownedConvoyRoute)
 						value += attatchment.getProduction();
 					

@@ -864,14 +864,23 @@ public class RulesAttachment extends DefaultAttachment
 		return value;
 	}
 	
-	public static boolean areConditionsMet(List<RulesAttachment> rules, String conditionType, boolean invert, GameData data)
+	/**
+	 * Accounts for all listed rules, according to the conditionType.
+	 * 
+	 * @param rules
+	 * @param conditionType
+	 * @param data
+	 * @return
+	 */
+	public static boolean areConditionsMet(List<RulesAttachment> rules, String conditionType, GameData data)
 	{
 		boolean met = false;
 		if (conditionType.equals("AND") || conditionType.equals("and"))
 		{
 			for (RulesAttachment c : rules)
 			{
-				met = c.isSatisfied(data) != invert;
+				//met = c.isSatisfied(data) != invert;
+				met = c.isSatisfied(data);
 				if (!met)
 					break;
 			}
@@ -880,7 +889,8 @@ public class RulesAttachment extends DefaultAttachment
 		{
 			for (RulesAttachment c : rules)
 			{
-				met = c.isSatisfied(data) != invert;
+				//met = c.isSatisfied(data) != invert;
+				met = c.isSatisfied(data);
 				if (met)
 					break;
 			}
@@ -891,7 +901,8 @@ public class RulesAttachment extends DefaultAttachment
 			boolean isOneTrue = false;
 			for (RulesAttachment c : rules)
 			{
-				met = c.isSatisfied(data) != invert;
+				//met = c.isSatisfied(data) != invert;
+				met = c.isSatisfied(data);
 				if (isOneTrue && met)
 				{
 					isOneTrue = false;
@@ -911,7 +922,8 @@ public class RulesAttachment extends DefaultAttachment
 				int count = 0;
 				for (RulesAttachment c : rules)
 				{
-					met = c.isSatisfied(data) != invert;
+					//met = c.isSatisfied(data) != invert;
+					met = c.isSatisfied(data);
 					if (met)
 						count++;
 				}
@@ -924,7 +936,8 @@ public class RulesAttachment extends DefaultAttachment
 				int count = 0;
 				for (RulesAttachment c : rules)
 				{
-					met = c.isSatisfied(data) != invert;
+					//met = c.isSatisfied(data) != invert;
+					met = c.isSatisfied(data);
 					if (met)
 						count++;
 				}
@@ -945,9 +958,7 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		if (objectiveMet && m_conditions.size() > 0)
 		{
-			// This will account for Invert and conditionType while looking at all the conditions,
-			// but if invert is true we will reverse at the end since RulesAttachment.isSatisfied() will test for invert again later.
-			objectiveMet = (m_invert ? !areConditionsMet(m_conditions, m_conditionType, m_invert, data) : areConditionsMet(m_conditions, m_conditionType, m_invert, data));
+			objectiveMet = areConditionsMet(m_conditions, m_conditionType, data);
 		}
 		
 		//

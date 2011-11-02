@@ -1,4 +1,10 @@
 Changes for 1.4
+* Changed "invert" in rules attachments, trigger attachments, and political attachments, to work as a real logical negation. Now correctly follows boolean math. (veqryn)
+
+* Added roundValue to relationshipInitialize, which is the beginning round a relationship starts out at. This should normally be "1", but if you have certain conditions set up, you may wish to change this to a negative or positive number to reflect what round you would like the condition to be true on. (veqryn)
+
+* Made AI behavior towards politics to be a bit more random, allowing it to take any political action so long as it has 10x the amount of PUs as the political action's cost. (veqryn)
+
 * Abstracting isMet logic for rules attachments into a single place, areConditionsMet, in RulesAttachment. (veqryn)
 
 * Changed unitPresence to allow inputting of multiple units on one line for an OR relationship between those units. (veqryn)

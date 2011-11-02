@@ -2824,15 +2824,15 @@
 
 <!--  National Objectives -->
 	<!-- all Objective Attachments, Conditions, Triggers, Rules, etc, must have a unique name (if you don't use unique names, you may get funny results with your trigger attachments, or even java errors) -->
-	<!-- the following options are allowed for "objectiveAttachmentXXX" (and also for "conditionAttachmentXXX")
+	<!-- the following options are allowed for "objectiveAttachmentXXX" (and also for "conditionAttachmentXXX").  all options below have an "AND" relationship with each other.
 			conditions							values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
 															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
 															any condition which includes other conditions, is considered a meta-condition, and it must come AFTER any conditions that it includes.
-			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the conditions. 
+			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the "conditions" option.
 														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
 														conditionType only affects the conditions listed under the option name="conditions", and does not affect any additional things also present.
 			invert								values: true or false. default if missing is false. if true, this attachment's condition will be reversed (does not reverse the effect). 
-														This reverses ALL conditions INDIVIDUALLY (that are part of the "conditions" list of conditionAttachments).  This is NOT the same as a logical negation of the entire collection of conditions.
+														This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 			objectiveValue						values: any integer number of PUs to be given (example: value="4")
 			turns								values: which turns this will be checked on (example: value="1:4:6-8:11-+" means turns 1,4,6,7,8,11,and all turns after 11)
 			uses								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
@@ -3215,11 +3215,11 @@
                 </attatchment>
                 
 				<attatchment name="conditionAttachmentRussiansNeutralItalians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="relationship" value="Italians:Russians:anyNeutral"/>
+                	<option name="relationship" value="Italians:Russians:anyNeutral:1"/>
                 </attatchment>
                 
 				<attatchment name="conditionAttachmentRussiansWarItalians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="relationship" value="Italians:Russians:anyWar"/>
+                	<option name="relationship" value="Italians:Russians:anyWar:1"/>
                 </attatchment>
                 
                 <attatchment name="conditionAttachmentRussiansNeutralItaliansFor2Turns" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -3275,8 +3275,7 @@
 			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
 														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
 			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
-														This reverses ALL conditions INDIVIDUALLY.  This is NOT the same as a logical negation of the entire collection of conditions.
-														In other words, if there are conditions A, B, and C, and our conditionType is "OR", then we have X = (A || B || C).  If we set invert to true, we get X = (!A || !B || !C), instead of X = (!A && !B && !C).
+														This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
 			tech		 						values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
 			availableTech						values: the name of the category to be added to, followed by the names of the technologies to add to it. (example: value="airCategory:longRangeAir:jetPower:superHeavyBomber")
@@ -3673,9 +3672,10 @@
                 	<option name="uses" value="1"/>
                 </attatchment>
 
+						<!-- Here we want to see if Japan has Either Zero Battleships or Zero Carriers. So we set the relationship to AND, and then invert it.  So !X = (A && B)  becomes  X = !(A && B)  becomes  X = (!A || !B) -->
                 <attatchment name="triggerAttachmentAmericans4_JapaneseCapitalShipsSunk" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapaneseCarriers:conditionAttachmentJapaneseBattleships"/>
-					<option name="conditionType" value="OR"/>
+					<option name="conditionType" value="AND"/>
 					<option name="invert" value="true"/>
 					<option name="resource" value="PUs"/>
 					<option name="resourceCount" value="4"/>
@@ -3958,8 +3958,7 @@
 			conditionType 						value: 	AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
 														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
 			invert 								value: 	true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
-														This reverses ALL conditions INDIVIDUALLY.  This is NOT the same as a logical negation of the entire collection of conditions.
-														In other words, if there are conditions A, B, and C, and our conditionType is "OR", then we have X = (A || B || C).  If we set invert to true, we get X = (!A || !B || !C), instead of X = (!A && !B && !C).
+														This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 			relationshipChange					value: 	the relationshipType that will exist after the action is succesful between the player and the otherPlayer format: "player1:player2:relationship"
 														You can add multiple relationshipchanges per attachment
 			chance								value: 	diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
@@ -4350,40 +4349,40 @@
                 </resourceInitialize>
 
 				<relationshipInitialize>
-						<!-- the order of player1 and player2 does not matter. 
+						<!-- the order of player1 and player2 does not matter. roundValue is only used for conditions and can be positive or negative (use "1" if you don't know what you are doing).
 								having them listed twice in different orders will just have the later one overwrite the earlier one.
 								Make sure you cover all possibilities!
 						-->
 						
-						<relationship type="Allied" player1="Italians" player2="Germans"/>
-						<relationship type="Allied" player1="Italians" player2="Japanese"/>
-						<relationship type="Allied" player1="Germans" player2="Japanese"/>
+						<relationship type="Allied" player1="Italians" player2="Germans" roundValue="1"/>
+						<relationship type="Allied" player1="Italians" player2="Japanese" roundValue="1"/>
+						<relationship type="Allied" player1="Germans" player2="Japanese" roundValue="1"/>
 
-						<relationship type="Neutrality" player1="Russians" player2="British"/>
-						<relationship type="Neutrality" player1="Russians" player2="Americans"/>
-						<relationship type="Allied" player1="Russians" player2="Chinese"/>
-						<relationship type="Allied" player1="Americans" player2="British"/>
-						<relationship type="Allied" player1="Americans" player2="Chinese"/>
-						<relationship type="Allied" player1="British" player2="Chinese"/>
+						<relationship type="Neutrality" player1="Russians" player2="British" roundValue="1"/>
+						<relationship type="Neutrality" player1="Russians" player2="Americans" roundValue="1"/>
+						<relationship type="Allied" player1="Russians" player2="Chinese" roundValue="1"/>
+						<relationship type="Allied" player1="Americans" player2="British" roundValue="1"/>
+						<relationship type="Allied" player1="Americans" player2="Chinese" roundValue="1"/>
+						<relationship type="Allied" player1="British" player2="Chinese" roundValue="1"/>
 
-						<relationship type="War" player1="British" player2="Germans"/>
-						<relationship type="War" player1="British" player2="Italians"/>
-						<relationship type="War" player1="British" player2="Japanese"/>
+						<relationship type="War" player1="British" player2="Germans" roundValue="1"/>
+						<relationship type="War" player1="British" player2="Italians" roundValue="1"/>
+						<relationship type="War" player1="British" player2="Japanese" roundValue="1"/>
 
-						<relationship type="War" player1="Americans" player2="Germans"/>
-						<relationship type="War" player1="Americans" player2="Italians"/>
-						<relationship type="War" player1="Americans" player2="Japanese"/>
+						<relationship type="War" player1="Americans" player2="Germans" roundValue="1"/>
+						<relationship type="War" player1="Americans" player2="Italians" roundValue="1"/>
+						<relationship type="War" player1="Americans" player2="Japanese" roundValue="1"/>
 
-						<relationship type="War" player1="Russians" player2="Germans"/>
-						<relationship type="War" player1="Russians" player2="Italians"/>
-						<relationship type="Neutrality" player1="Russians" player2="Japanese"/>
-						<!--<relationship type="Neutrality" player1="Russians" player2="Germans"/>
-						<relationship type="Allied" player1="Russians" player2="Italians"/>
-						<relationship type="Neutrality" player1="Russians" player2="Japanese"/>-->
+						<relationship type="War" player1="Russians" player2="Germans" roundValue="1"/>
+						<relationship type="War" player1="Russians" player2="Italians" roundValue="-1"/>
+						<relationship type="Neutrality" player1="Russians" player2="Japanese" roundValue="1"/>
+						<!--<relationship type="Neutrality" player1="Russians" player2="Germans" roundValue="1"/>
+						<relationship type="Allied" player1="Russians" player2="Italians" roundValue="1"/>
+						<relationship type="Neutrality" player1="Russians" player2="Japanese" roundValue="1"/>-->
 
-						<relationship type="War" player1="Chinese" player2="Germans"/>
-						<relationship type="War" player1="Chinese" player2="Italians"/>
-						<relationship type="War" player1="Chinese" player2="Japanese"/>
+						<relationship type="War" player1="Chinese" player2="Germans" roundValue="1"/>
+						<relationship type="War" player1="Chinese" player2="Italians" roundValue="1"/>
+						<relationship type="War" player1="Chinese" player2="Japanese" roundValue="1"/>
 				</relationshipInitialize>
 
         </initialize>

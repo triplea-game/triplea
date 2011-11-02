@@ -263,6 +263,11 @@ public class TriggerAttachment extends DefaultAttachment
 		m_usedThisRound = usedThisRound;
 	}
 	
+	public void setUsedThisRound(Boolean usedThisRound)
+	{
+		m_usedThisRound = usedThisRound;
+	}
+	
 	public boolean getUsedThisRound()
 	{
 		return m_usedThisRound;
@@ -1173,7 +1178,7 @@ public class TriggerAttachment extends DefaultAttachment
 	 */
 	private static boolean isMet(TriggerAttachment t, GameData data)
 	{
-		return RulesAttachment.areConditionsMet(t.getTrigger(), t.getConditionType(), t.getInvert(), data);
+		return RulesAttachment.areConditionsMet(t.getTrigger(), t.getConditionType(), data) != t.getInvert();
 	}
 	
 	//
