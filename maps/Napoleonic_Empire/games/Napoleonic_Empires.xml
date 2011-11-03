@@ -7454,10 +7454,14 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
-&lt;br&gt;Version 2.0 - 3.x changes made by Veqryn.
+&lt;br&gt;Version 2.0 - 4.x changes made by Veqryn.
 &lt;br&gt;
 &lt;br&gt;You may or may not notice that Spain collect 10 less income per turn than their total production, and that France collects 6 less, and the UK 4 less.
 &lt;br&gt;This is because of their convoy zones.  In order to balance the game, but at the same time keep the convoy zone value high, I was forced to give these nations -negative national objectives that lower their income each turn for balancing purposes, in order to equal out the increased value of their convoy zones.
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;Version 3.9.2 - 3.9.3 changes:
+&lt;br&gt;Added politics as an option, which defaults to false. If turned on, you may change your alliances during the game.
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 3.9.2 - 3.9.3 changes:

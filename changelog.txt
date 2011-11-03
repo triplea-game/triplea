@@ -1,4 +1,6 @@
 Changes for 1.4
+* Adding politicstext.properties for Napoleonic Empires. (veqryn)
+
 * Massive update to Napoleonic Empires: FFA, to allow it to use Politics. (veqryn)
 
 * Added "upkeepCost" as an attachment for RelationshipTypeAttachment, which allows you to have a cost in order to maintain a relationship. (veqryn)

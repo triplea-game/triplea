@@ -20,7 +20,7 @@ public class RelationshipInterpreter extends GameDataComponent
 	 */
 	public boolean isAllied(PlayerID p1, PlayerID p2)
 	{
-		return Matches.RelationshipIsAllied.match((getRelationshipType(p1, p2)));
+		return Matches.RelationshipTypeIsAllied.match((getRelationshipType(p1, p2)));
 		
 	}
 	
@@ -35,7 +35,7 @@ public class RelationshipInterpreter extends GameDataComponent
 	 */
 	public boolean isAtWar(PlayerID p1, PlayerID p2)
 	{
-		return Matches.RelationshipIsAtWar.match((getRelationshipType(p1, p2)));
+		return Matches.RelationshipTypeIsAtWar.match((getRelationshipType(p1, p2)));
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public class RelationshipInterpreter extends GameDataComponent
 	 */
 	public boolean isNeutral(PlayerID p1, PlayerID p2)
 	{
-		return Matches.RelationshipIsNeutral.match((getRelationshipType(p1, p2)));
+		return Matches.RelationshipTypeIsNeutral.match((getRelationshipType(p1, p2)));
 	}
 	
 	/**
@@ -63,17 +63,17 @@ public class RelationshipInterpreter extends GameDataComponent
 	 */
 	public boolean helpsDefendAtSea(PlayerID p1, PlayerID p2)
 	{
-		return Matches.RelationshipHelpsDefendAtSea.match((getRelationshipType(p1, p2)));
+		return Matches.RelationshipTypeHelpsDefendAtSea.match((getRelationshipType(p1, p2)));
 	}
 	
 	public boolean canMoveLandUnitsOverOwnedLand(PlayerID p1, PlayerID p2)
 	{
-		return Matches.RelationshipCanMoveLandUnitsOverOwnedLand.match(getRelationshipType(p1, p2));
+		return Matches.RelationshipTypeCanMoveLandUnitsOverOwnedLand.match(getRelationshipType(p1, p2));
 	}
 	
 	public boolean canMoveAirUnitsOverOwnedLand(PlayerID p1, PlayerID p2)
 	{
-		return Matches.RelationshipCanMoveAirUnitsOverOwnedLand.match(getRelationshipType(p1, p2));
+		return Matches.RelationshipTypeCanMoveAirUnitsOverOwnedLand.match(getRelationshipType(p1, p2));
 	}
 	
 	/**

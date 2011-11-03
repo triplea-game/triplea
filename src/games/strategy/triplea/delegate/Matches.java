@@ -24,6 +24,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -3218,7 +3219,7 @@ public class Matches
 		}
 	};
 	
-	public static final Match<RelationshipType> RelationshipIsAllied = new Match<RelationshipType>()
+	public static final Match<RelationshipType> RelationshipTypeIsAllied = new Match<RelationshipType>()
 	{
 		
 		@Override
@@ -3228,7 +3229,17 @@ public class Matches
 		}
 	};
 	
-	public static final Match<RelationshipType> RelationshipIsNeutral = new Match<RelationshipType>()
+	public static final Match<Relationship> RelationshipIsAllied = new Match<Relationship>()
+	{
+		
+		@Override
+		public boolean match(Relationship relationship)
+		{
+			return relationship.getRelationshipType().getRelationshipTypeAttachment().isAllied();
+		}
+	};
+	
+	public static final Match<RelationshipType> RelationshipTypeIsNeutral = new Match<RelationshipType>()
 	{
 		
 		@Override
@@ -3238,7 +3249,17 @@ public class Matches
 		}
 	};
 	
-	public static final Match<RelationshipType> RelationshipIsAtWar = new Match<RelationshipType>()
+	public static final Match<Relationship> RelationshipIsNeutral = new Match<Relationship>()
+	{
+		
+		@Override
+		public boolean match(Relationship relationship)
+		{
+			return relationship.getRelationshipType().getRelationshipTypeAttachment().isNeutral();
+		}
+	};
+	
+	public static final Match<RelationshipType> RelationshipTypeIsAtWar = new Match<RelationshipType>()
 	{
 		
 		@Override
@@ -3248,7 +3269,17 @@ public class Matches
 		}
 	};
 	
-	public static final Match<RelationshipType> RelationshipHelpsDefendAtSea = new Match<RelationshipType>()
+	public static final Match<Relationship> RelationshipIsAtWar = new Match<Relationship>()
+	{
+		
+		@Override
+		public boolean match(Relationship relationship)
+		{
+			return relationship.getRelationshipType().getRelationshipTypeAttachment().isWar();
+		}
+	};
+	
+	public static final Match<RelationshipType> RelationshipTypeHelpsDefendAtSea = new Match<RelationshipType>()
 	{
 		
 		@Override
@@ -3258,7 +3289,7 @@ public class Matches
 		}
 	};
 	
-	public static final Match<RelationshipType> RelationshipCanMoveLandUnitsOverOwnedLand = new Match<RelationshipType>()
+	public static final Match<RelationshipType> RelationshipTypeCanMoveLandUnitsOverOwnedLand = new Match<RelationshipType>()
 	{
 		
 		@Override
@@ -3268,7 +3299,7 @@ public class Matches
 		}
 	};
 	
-	public static final Match<RelationshipType> RelationshipCanMoveAirUnitsOverOwnedLand = new Match<RelationshipType>()
+	public static final Match<RelationshipType> RelationshipTypeCanMoveAirUnitsOverOwnedLand = new Match<RelationshipType>()
 	{
 		
 		@Override
@@ -3299,7 +3330,7 @@ public class Matches
 			@Override
 			public boolean match(PlayerID player2)
 			{
-				return Matches.RelationshipIsAtWar.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
+				return Matches.RelationshipTypeIsAtWar.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	};
@@ -3312,7 +3343,7 @@ public class Matches
 			@Override
 			public boolean match(PlayerID player2)
 			{
-				return Matches.RelationshipIsAllied.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
+				return Matches.RelationshipTypeIsAllied.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	};
@@ -3325,7 +3356,7 @@ public class Matches
 			@Override
 			public boolean match(PlayerID player2)
 			{
-				return Matches.RelationshipIsNeutral.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
+				return Matches.RelationshipTypeIsNeutral.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	};
@@ -3460,6 +3491,18 @@ public class Matches
 			return paa.hasAttemptsLeft() && paa.canPerform();
 		}
 	};
+	
+	public static final Match<PoliticalActionAttachment> PoliticalActionHasCostBetween(final int greaterThanEqualTo, final int lessThanEqualTo)
+	{
+		return new Match<PoliticalActionAttachment>()
+		{
+			@Override
+			public boolean match(PoliticalActionAttachment paa)
+			{
+				return (paa.getCostPU() >= greaterThanEqualTo && paa.getCostPU() <= lessThanEqualTo);
+			}
+		};
+	}
 	
 	/** Creates new Matches */
 	private Matches()

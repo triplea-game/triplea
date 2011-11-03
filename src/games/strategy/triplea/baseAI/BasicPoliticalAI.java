@@ -19,8 +19,11 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -52,20 +55,24 @@ public class BasicPoliticalAI
 	{
 		final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id);
 		final List<PoliticalActionAttachment> acceptableActions = new ArrayList<PoliticalActionAttachment>();
-		for (final PoliticalActionAttachment nextAction : PoliticalActionAttachment.getValidActions(id))
+		final Collection<PoliticalActionAttachment> validActions = PoliticalActionAttachment.getValidActions(id);
+		validActions.removeAll(warActions);
+		for (final PoliticalActionAttachment nextAction : validActions)
 		{
 			if (warActions.contains(nextAction))
 				continue;
-			if (awayFromAlly(nextAction, id) && Math.random() < .7)
+			if (goesTowardsWar(nextAction, id) && Math.random() < .5)
+				continue;
+			if (awayFromAlly(nextAction, id) && Math.random() < .9)
 				continue;
 			if (isFree(nextAction))
 				acceptableActions.add(nextAction);
-			else if (acceptableActions.isEmpty())
+			else if (Match.countMatches(validActions, Matches.PoliticalActionHasCostBetween(0, 0)) > 1)
 			{
-				if (Math.random() < .8 && isAcceptableCost(nextAction, id))
+				if (Math.random() < .9 && isAcceptableCost(nextAction, id))
 					acceptableActions.add(nextAction);
 			}
-			else if (!acceptableActions.isEmpty())
+			else
 			{
 				if (Math.random() < .4 && isAcceptableCost(nextAction, id))
 					acceptableActions.add(nextAction);

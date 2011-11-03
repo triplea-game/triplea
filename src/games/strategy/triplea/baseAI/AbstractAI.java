@@ -21,6 +21,7 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.UIContext;
+import games.strategy.util.Match;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -365,51 +366,66 @@ public abstract class AbstractAI implements ITripleaPlayer
 	}
 	
 	public void getPoliticalActions() {
+		GameData data = m_bridge.getGameData();
+		float numPlayers = data.getPlayerList().getPlayers().size();
 		IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
 		
-		List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id);
-		if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty())
+		if (Math.random() < .45)
 		{
-			Collections.shuffle(actionChoicesTowardsWar);
-			
-			int i = 0;
-			double random = Math.random(); // should we use bridge's random source here?
-			final int MAX_WAR_ACTIONS_PER_TURN = (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .985 ? 3 : 100))));
-			
-			Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
-			while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0)
+			List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id);
+			if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty())
 			{
-				PoliticalActionAttachment action = actionWarIter.next();
-				if (!Matches.PoliticalActionCanBeAttempted.match(action))
-					continue;
-				i++;
-				if (i>MAX_WAR_ACTIONS_PER_TURN)
-					break;
-				politicsDelegate.attemptAction(action);
+				Collections.shuffle(actionChoicesTowardsWar);
+				
+				int i = 0;
+				double random = Math.random(); // should we use bridge's random source here?
+				int MAX_WAR_ACTIONS_PER_TURN = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers/2)));
+				if ((MAX_WAR_ACTIONS_PER_TURN > 0) && ((float) Match.countMatches(data.getRelationshipTracker().getRelationships(m_id), Matches.RelationshipIsAtWar)) / numPlayers < 0.4)
+				{
+					if (Math.random() < .9)
+						MAX_WAR_ACTIONS_PER_TURN = 0;
+					else
+						MAX_WAR_ACTIONS_PER_TURN = 1;
+
+				}
+				
+				Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
+				while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0)
+				{
+					PoliticalActionAttachment action = actionWarIter.next();
+					if (!Matches.PoliticalActionCanBeAttempted.match(action))
+						continue;
+					i++;
+					if (i>MAX_WAR_ACTIONS_PER_TURN)
+						break;
+					politicsDelegate.attemptAction(action);
+				}
 			}
 		}
-
-		List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(m_id);
-		if (actionChoicesOther != null && !actionChoicesOther.isEmpty())
+		else
 		{
-			Collections.shuffle(actionChoicesOther);
-			
-			int i = 0;
-			double random = Math.random(); // should we use bridge's random source here?
-			final int MAX_OTHER_ACTIONS_PER_TURN = (random < .4 ? 0 : (random < .8 ? 1 : (random < .99 ? 2 : 100)));
-			
-			Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
-			while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0)
+			List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(m_id);
+			if (actionChoicesOther != null && !actionChoicesOther.isEmpty())
 			{
-				PoliticalActionAttachment action = actionOtherIter.next();
-				if (!Matches.PoliticalActionCanBeAttempted.match(action))
-					continue;
-				if (action.getCostPU() > 0 && action.getCostPU() > m_id.getResources().getQuantity(Constants.PUS))
-					continue;
-				i++;
-				if (i>MAX_OTHER_ACTIONS_PER_TURN)
-					break;
-				politicsDelegate.attemptAction(action);
+				Collections.shuffle(actionChoicesOther);
+				
+				int i = 0;
+				double random = Math.random(); // should we use bridge's random source here?
+				final int MAX_OTHER_ACTIONS_PER_TURN = (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
+				
+				Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
+				while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0)
+				{
+					PoliticalActionAttachment action = actionOtherIter.next();
+					if (!Matches.PoliticalActionCanBeAttempted.match(action))
+						continue;
+					if (action.getCostPU() > 0 && action.getCostPU() > m_id.getResources().getQuantity(Constants.PUS))
+						continue;
+					i++;
+					if (i>MAX_OTHER_ACTIONS_PER_TURN)
+						break;
+					politicsDelegate.attemptAction(action);
+				}
 			}
 		}
 	}

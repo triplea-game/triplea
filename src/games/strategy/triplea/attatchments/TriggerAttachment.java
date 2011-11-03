@@ -1466,9 +1466,9 @@ public class TriggerAttachment extends DefaultAttachment
 					RelationshipType currentRelation = data.getRelationshipTracker().getRelationshipType(player1, player2);
 					
 					if (s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY) ||
-								(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelation)) ||
-								(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) && Matches.RelationshipIsAllied.match(currentRelation)) ||
-								(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) && Matches.RelationshipIsAtWar.match(currentRelation)) ||
+								(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipTypeIsNeutral.match(currentRelation)) ||
+								(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) && Matches.RelationshipTypeIsAllied.match(currentRelation)) ||
+								(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) && Matches.RelationshipTypeIsAtWar.match(currentRelation)) ||
 								currentRelation.equals(data.getRelationshipTypeList().getRelationshipType(s[2])))
 					{
 						
@@ -1477,7 +1477,7 @@ public class TriggerAttachment extends DefaultAttachment
 						aBridge.getHistoryWriter().startEvent(
 									MyFormatter.attachmentNameToText(t.getName()) + ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from "
 												+ currentRelation.getName() + " to " + triggerNewRelation.getName());
-						if (Matches.RelationshipIsAtWar.match(triggerNewRelation))
+						if (Matches.RelationshipTypeIsAtWar.match(triggerNewRelation))
 							triggerMustFightBattle(player1, player2, aBridge);
 					}
 				}

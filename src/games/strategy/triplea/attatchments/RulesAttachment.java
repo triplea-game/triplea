@@ -1352,9 +1352,9 @@ public class RulesAttachment extends DefaultAttachment
 			{
 				return false;
 			}
-			if (!(relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) && Matches.RelationshipIsAllied.match(currentRelationshipType)
-						|| relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipIsNeutral.match(currentRelationshipType)
-						|| relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) && Matches.RelationshipIsAtWar.match(currentRelationshipType) || currentRelationshipType
+			if (!(relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) && Matches.RelationshipTypeIsAllied.match(currentRelationshipType)
+						|| relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) && Matches.RelationshipTypeIsNeutral.match(currentRelationshipType)
+						|| relationCheck[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) && Matches.RelationshipTypeIsAtWar.match(currentRelationshipType) || currentRelationshipType
 						.equals(getData().getRelationshipTypeList().getRelationshipType(relationCheck[2]))))
 				return false;
 		}
