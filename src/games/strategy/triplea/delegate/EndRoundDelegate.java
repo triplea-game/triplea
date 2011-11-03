@@ -260,9 +260,8 @@ public class EndRoundDelegate extends BaseDelegate
 			
 			Set<PlayerID> teamMembers = data.getAllianceTracker().getPlayersInAlliance(allianceName);
 			
-			Iterator<PlayerID> teamIter = teamMembers.iterator();
 			int teamVCs = Match.countMatches(data.getMap().getTerritories(),
-						new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity, Matches.isTerritoryAllied(teamIter.next(), data)));
+						new CompositeMatchAnd<Territory>(Matches.TerritoryIsVictoryCity, Matches.isTerritoryOwnedBy(teamMembers)));
 			
 			if (teamVCs >= vcAmount)
 			{

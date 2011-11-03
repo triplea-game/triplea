@@ -2117,6 +2117,24 @@ public class Matches
 			}
 		};
 	}
+
+	public static Match<Territory> isTerritoryOwnedBy(final Collection<PlayerID> players)
+	{
+		return new Match<Territory>()
+		{
+			
+			@Override
+			public boolean match(Territory t)
+			{
+				for (PlayerID player : players)
+				{
+					if (t.getOwner().equals(player))
+						return true;
+				}
+				return false;
+			}
+		};
+	}
 	
 	public static Match<Unit> isUnitAllied(final PlayerID player, final GameData data)
 	{
