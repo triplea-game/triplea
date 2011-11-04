@@ -5,9 +5,11 @@ Changes for 1.4
 
 * Updating Pact of Steel 2 and Pacific test xmls. (veqryn)
 
+* Added scroll bars to select casualties dialog panel. (veqryn)
+
 * Sorted political actions based on player, type, and name. (veqryn)
 
-* Capped Politics ui out at 8 actions, and added scroll bars to the bottom button part. (veqryn)
+* Capped Politics ui actions, and added scroll bars to the bottom button part. (veqryn)
 
 * Fixed rendering issue where nations that were neutral to each other still caused red markup when in the same territory or sea zone. (frigoref)
 

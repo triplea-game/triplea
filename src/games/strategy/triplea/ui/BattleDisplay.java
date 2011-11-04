@@ -44,6 +44,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -51,6 +52,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -86,6 +88,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -932,8 +935,19 @@ public class BattleDisplay extends JPanel
 							chooser.setMax(count);
 						String[] options =
 						{ "Ok", "Cancel" };
+
+						JScrollPane chooserScrollPane = new JScrollPane(chooser);
 						
-						int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooser, hit.getName() + " select casualties",
+						Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+						int availHeight = screenResolution.height - 80;
+						int availWidth = screenResolution.width - 30;
+						availHeight -= 50;
+						
+						chooserScrollPane.setPreferredSize(new Dimension((chooserScrollPane.getPreferredSize().width > availWidth ? availWidth : (chooserScrollPane.getPreferredSize().height > availHeight ? chooserScrollPane.getPreferredSize().width+22 : chooserScrollPane.getPreferredSize().width)),
+									(chooserScrollPane.getPreferredSize().height > availHeight ? availHeight : chooserScrollPane.getPreferredSize().height)));
+						chooserScrollPane.setBorder(new LineBorder(chooser.getBackground()));
+						
+						int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane, hit.getName() + " select casualties",
 									JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 						if (option != 0)
 							return;
