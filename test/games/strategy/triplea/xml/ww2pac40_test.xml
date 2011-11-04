@@ -559,7 +559,8 @@
 		<relationshipTypes>
 				<relationshipType name="Allied"/>
 				<relationshipType name="War"/>
-				<relationshipType name="Neutral"/>
+				<relationshipType name="Neutrality"/>
+				<relationshipType name="Custodianship"/>
 		</relationshipTypes>
 		
         <gamePlay>
@@ -996,11 +997,11 @@
 						<frontierRules name="buyHarbour"/>
                 </productionFrontier>
 				
-				<productionFrontier name="productionChineseAlt1">
+				<productionFrontier name="productionChinese_Burma_Road_Open">
                         <frontierRules name="buyInfantry"/>
                         <frontierRules name="buyArtillery"/>        
                 </productionFrontier>
-				<productionFrontier name="productionChineseAlt2">
+				<productionFrontier name="productionChinese_Burma_Road_Closed">
                         <frontierRules name="buyInfantry"/>
                 </productionFrontier>
                 
@@ -1036,7 +1037,7 @@
                 
                 <playerProduction player="Japanese" frontier="production"/>
 				<playerProduction player="Americans" frontier="production"/>
-                <playerProduction player="Chinese" frontier="productionChineseAlt1"/>
+                <playerProduction player="Chinese" frontier="productionChinese_Burma_Road_Open"/>
                 <playerProduction player="British" frontier="production"/>
                 <playerProduction player="ANZAC" frontier="production"/>
 				<playerProduction player="Russians" frontier="production"/>
@@ -1062,8 +1063,12 @@
 						<option name="archeType" value="allied"/>
 					</attatchment>
 
-					<attatchment name="relationshipTypeAttachment" attatchTo="Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+					<attatchment name="relationshipTypeAttachment" attatchTo="Neutrality" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="neutral"/>
+					</attatchment>
+					
+					<attatchment name="relationshipTypeAttachment" attatchTo="Custodianship" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="war"/>
 					</attatchment>
 				
                     <attatchment name="techAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -1806,60 +1811,65 @@
 					</attatchment>
 				   
 				   <!--  National Objectives -->
-					<attatchment name="objectiveAttachment1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<attatchment name="objectiveAttachment_Japanese1_Control_Dutch_East_Indies" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
 						<option name="alliedOwnershipTerritories" value="Java:Sumatra:Borneo:Celebes" count="4"/>
 					</attatchment>
-					<attatchment name="objectiveAttachment2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Solomon Islands:Dutch New Guinea:New Guinea:New Britain" count="4"/>
-					</attatchment>
-					<attatchment name="objectiveAttachment3" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<attatchment name="objectiveAttachment_Japanese2a_Control_Honolulu" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
 						<option name="alliedOwnershipTerritories" value="Hawaiian Islands" count="1"/>
 					</attatchment>
-					<attatchment name="objectiveAttachment4" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<attatchment name="objectiveAttachment_Japanese2b_Control_Sydney" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
 						<option name="alliedOwnershipTerritories" value="New South Wales" count="1"/>
 					</attatchment>
-					<attatchment name="objectiveAttachment5" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<attatchment name="objectiveAttachment_Japanese2c_Control_Calcutta" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
 						<option name="alliedOwnershipTerritories" value="India" count="1"/>
 					</attatchment>
+					<attatchment name="objectiveAttachment_Japanese3_Control_Strategic_Islands" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="objectiveValue" value="5"/>
+						<option name="alliedOwnershipTerritories" value="Solomon Islands:Dutch New Guinea:New Guinea:New Britain" count="4"/>
+					</attatchment>
 					
-					<attatchment name="objectiveAttachment1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Philippines" count="1"/>
-					</attatchment>
-					<attatchment name="objectiveAttachment2" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Okinawa:Iwo Jima" count="2"/>
-					</attatchment>
-					<attatchment name="objectiveAttachment3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<attatchment name="objectiveAttachment_Americans1_Wartime_Economy" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="40"/>
 						<option name="relationship" value="Americans:Japanese:anyWar"/>
 					</attatchment>
-					
-					<attatchment name="objectiveAttachmentChinese1" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="objectiveValue" value="6"/>
-						<option name="alliedOwnershipTerritories" value="India:Burma:Yunnan:Szechwan" count="4"/>
+					<attatchment name="objectiveAttachment_Americans2_Control_Philippines" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="objectiveValue" value="5"/>
+						<option name="alliedOwnershipTerritories" value="Philippines" count="1"/>
+					</attatchment>
+					<attatchment name="objectiveAttachment_Americans3_Control_Japanese_Islands" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="objectiveValue" value="5"/>
+						<option name="alliedOwnershipTerritories" value="Okinawa:Iwo Jima" count="2"/>
 					</attatchment>
 					
-					<attatchment name="objectiveAttachment1" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<attatchment name="conditionAttachmentJapaneseDoNotControlBurmaRoad" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="alliedOwnershipTerritories" value="India:Burma:Yunnan:Szechwan" count="4"/>
+						<option name="invert" value="true"/>
+					</attatchment>
+					
+					<attatchment name="objectiveAttachment_Chinese1_Burma_Road" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="objectiveValue" value="6"/>
+						<option name="conditions" value="conditionAttachmentJapaneseDoNotControlBurmaRoad"/>
+					</attatchment>
+					
+					<attatchment name="objectiveAttachment_British1_Control_Dutch_East_Indies" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
 						<option name="alliedOwnershipTerritories" value="Java:Sumatra:Borneo:Celebes" count="4"/>
 					</attatchment>
-					<attatchment name="objectiveAttachment2" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<attatchment name="objectiveAttachment_British2_Retaining_Empire" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
 						<option name="alliedOwnershipTerritories" value="Kwangtung:Malaya" count="2"/>
 					</attatchment>
 					
-					<attatchment name="objectiveAttachment1" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<attatchment name="objectiveAttachment_ANZAC1_Control_Strategic_Islands" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
 						<option name="alliedOwnershipTerritories" value="Solomon Islands:Dutch New Guinea:New Guinea:New Britain" count="4"/>
 					</attatchment>
 					
-					<attatchment name="objectiveAttachment2" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<attatchment name="objectiveAttachment_ANZAC2_High_Morale" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
 						<option name="uses" value="1"/>
 						<option name="directOwnershipTerritories" value="Japan:Siam:Hainan:Formosa:Caroline Islands:Marshall Islands:Marianas:Paulau Island:Okinawa:Iwo Jima:Korea" count="1"/>
@@ -1899,29 +1909,30 @@
 					
 					
 					<!-- Triggers -->
-					<attatchment name="triggerAttachmentAxisVictory1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<attatchment name="triggerAttachment_Axis_Victory" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 						<option name="trigger" value="conditionAttachmentAxisVictory1:conditionAttachmentAxisVictory2"/>
 						<option name="victory" value="The Japan (Axis) achieve a Triggered Victory, by controlling Japan plus 5 victory cities!"/>
 					</attatchment>
 					
-					<attatchment name="triggerAttachmentAlliesVictory1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<attatchment name="triggerAttachment_Allies_Victory" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 						<option name="trigger" value="conditionAttachmentAlliesVictory1:conditionAttachmentAlliesVictory2"/>
 						<option name="victory" value="The Allies achieve a Triggered Victory, by controlling 1 Allied Capital plus Japan!"/>
+						<option name="when" value="after:japaneseEndTurn"/>
 					</attatchment>
 				
 				
-					<attatchment name="triggerAttachmentChinese1" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="trigger" value="objectiveAttachmentChinese1"/>
-						<option name="frontier" value="productionChineseAlt1"/>
+					<attatchment name="triggerAttachment_Chinese_Artillery_Supplies" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+						<option name="trigger" value="objectiveAttachment_Chinese1_Burma_Road"/>
+						<option name="frontier" value="productionChinese_Burma_Road_Open"/>
 					</attatchment>
 				
-					<attatchment name="triggerAttachmentChinese2" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-						<option name="trigger" value="objectiveAttachmentChinese1"/>
-						<option name="frontier" value="productionChineseAlt2"/>
+					<attatchment name="triggerAttachment_Chinese_Loses_Burma_Road" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+						<option name="trigger" value="objectiveAttachment_Chinese1_Burma_Road"/>
+						<option name="frontier" value="productionChinese_Burma_Road_Closed"/>
 						<option name="invert" value="true"/>
 					</attatchment>
 				
-					<attatchment name="triggerAttachmentAmericansWarJapanese" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<attatchment name="triggerAttachment_Americans_War_Japanese" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 						<option name="trigger" value="conditionAttachmentAmericansNotYetAtWar"/>
 						<option name="relationshipChange" value="Japanese:Americans:anyNeutral:War"/>
 						<option name="relationshipChange" value="Japanese:British:anyNeutral:War"/>
@@ -1932,8 +1943,8 @@
 						<option name="relationshipChange" value="Chinese:ANZAC:anyNeutral:Allied"/>
 						<option name="relationshipChange" value="British:Americans:anyNeutral:Allied"/>
 						<option name="relationshipChange" value="ANZAC:Americans:anyNeutral:Allied"/>
-						<option name="relationshipChange" value="Americans:French:anyNeutral:War"/>
-						<option name="relationshipChange" value="Americans:Dutch:anyNeutral:War"/>
+						<option name="relationshipChange" value="Americans:French:anyNeutral:Custodianship"/>
+						<option name="relationshipChange" value="Americans:Dutch:anyNeutral:Custodianship"/>
 						<option name="notification" value="Americans_War_Japanese"/>
 						<option name="when" value="after:americanPlace"/>
 					</attatchment>
@@ -1991,8 +2002,8 @@
 						<option name="relationshipChange" value="Chinese:ANZAC:Allied"/>
 						<option name="relationshipChange" value="British:Americans:Allied"/>
 						<option name="relationshipChange" value="ANZAC:Americans:Allied"/>
-						<option name="relationshipChange" value="Americans:French:War"/>
-						<option name="relationshipChange" value="Americans:Dutch:War"/>
+						<option name="relationshipChange" value="Americans:French:Custodianship"/>
+						<option name="relationshipChange" value="Americans:Dutch:Custodianship"/>
 						<option name="text" value="Japanese_War_Americans"/>
 					</attatchment>
 					<attatchment name="politicalActionAttachment_British_To_War" attatchTo="British" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
@@ -2265,31 +2276,31 @@
 						<relationship type="Allied" player1="British" player2="ANZAC" roundValue="1"/>
 						<relationship type="War" player1="Japanese" player2="Chinese" roundValue="1"/>
 						<relationship type="War" player1="Japanese" player2="French" roundValue="1"/>
-						<relationship type="War" player1="Chinese" player2="French" roundValue="1"/>
-						<relationship type="War" player1="British" player2="French" roundValue="1"/>
-						<relationship type="War" player1="British" player2="Dutch" roundValue="1"/>
-						<relationship type="War" player1="ANZAC" player2="French" roundValue="1"/>
-						<relationship type="War" player1="ANZAC" player2="Dutch" roundValue="1"/>
-						<relationship type="Neutral" player1="Japanese" player2="British" roundValue="1"/>
-						<relationship type="Neutral" player1="Japanese" player2="ANZAC" roundValue="1"/>
-						<relationship type="Neutral" player1="Japanese" player2="Americans" roundValue="1"/>
-						<relationship type="Neutral" player1="Japanese" player2="Russians" roundValue="1"/>
-						<relationship type="Neutral" player1="Japanese" player2="Dutch" roundValue="1"/>
-						<relationship type="Neutral" player1="Chinese" player2="British" roundValue="1"/>
-						<relationship type="Neutral" player1="Chinese" player2="ANZAC" roundValue="1"/>
-						<relationship type="Neutral" player1="Chinese" player2="Americans" roundValue="1"/>
-						<relationship type="Neutral" player1="Chinese" player2="Russians" roundValue="1"/>
-						<relationship type="Neutral" player1="Chinese" player2="Dutch" roundValue="1"/>
-						<relationship type="Neutral" player1="British" player2="Americans" roundValue="1"/>
-						<relationship type="Neutral" player1="British" player2="Russians" roundValue="1"/>
-						<relationship type="Neutral" player1="ANZAC" player2="Americans" roundValue="1"/>
-						<relationship type="Neutral" player1="ANZAC" player2="Russians" roundValue="1"/>
-						<relationship type="Neutral" player1="Americans" player2="Russians" roundValue="1"/>
-						<relationship type="Neutral" player1="Americans" player2="French" roundValue="1"/>
-						<relationship type="Neutral" player1="Americans" player2="Dutch" roundValue="1"/>
-						<relationship type="Neutral" player1="Russians" player2="French" roundValue="1"/>
-						<relationship type="Neutral" player1="Russians" player2="Dutch" roundValue="1"/>
-						<relationship type="Neutral" player1="French" player2="Dutch" roundValue="1"/>
+						<relationship type="Custodianship" player1="Chinese" player2="French" roundValue="1"/>
+						<relationship type="Custodianship" player1="British" player2="French" roundValue="1"/>
+						<relationship type="Custodianship" player1="British" player2="Dutch" roundValue="1"/>
+						<relationship type="Custodianship" player1="ANZAC" player2="French" roundValue="1"/>
+						<relationship type="Custodianship" player1="ANZAC" player2="Dutch" roundValue="1"/>
+						<relationship type="Neutrality" player1="Japanese" player2="British" roundValue="1"/>
+						<relationship type="Neutrality" player1="Japanese" player2="ANZAC" roundValue="1"/>
+						<relationship type="Neutrality" player1="Japanese" player2="Americans" roundValue="1"/>
+						<relationship type="Neutrality" player1="Japanese" player2="Russians" roundValue="1"/>
+						<relationship type="Neutrality" player1="Japanese" player2="Dutch" roundValue="1"/>
+						<relationship type="Neutrality" player1="Chinese" player2="British" roundValue="1"/>
+						<relationship type="Neutrality" player1="Chinese" player2="ANZAC" roundValue="1"/>
+						<relationship type="Neutrality" player1="Chinese" player2="Americans" roundValue="1"/>
+						<relationship type="Neutrality" player1="Chinese" player2="Russians" roundValue="1"/>
+						<relationship type="Neutrality" player1="Chinese" player2="Dutch" roundValue="1"/>
+						<relationship type="Neutrality" player1="British" player2="Americans" roundValue="1"/>
+						<relationship type="Neutrality" player1="British" player2="Russians" roundValue="1"/>
+						<relationship type="Neutrality" player1="ANZAC" player2="Americans" roundValue="1"/>
+						<relationship type="Neutrality" player1="ANZAC" player2="Russians" roundValue="1"/>
+						<relationship type="Neutrality" player1="Americans" player2="Russians" roundValue="1"/>
+						<relationship type="Neutrality" player1="Americans" player2="French" roundValue="1"/>
+						<relationship type="Neutrality" player1="Americans" player2="Dutch" roundValue="1"/>
+						<relationship type="Neutrality" player1="Russians" player2="French" roundValue="1"/>
+						<relationship type="Neutrality" player1="Russians" player2="Dutch" roundValue="1"/>
+						<relationship type="Neutrality" player1="French" player2="Dutch" roundValue="1"/>
 				</relationshipInitialize>
 				
         </initialize>
@@ -2737,7 +2748,7 @@
                         <![CDATA[
 						
 						    WW2 Pacific 1940
-						<br>TripleA map created by:
+						<br>TripleA map adaptation created by:
 						<br>Veqryn - map code, xml file, txt files, flags, art, lots of engine code
 						<br>Edwin - politics framework and ui
 						<br>Squid Daddy - lots of engine code
@@ -2757,8 +2768,7 @@
 						<br>Last updated 2011 Oct.
 						<br>
 						<br>Known issues:
-						<br>China and maybe others should not have a capitol.
-						<br>Scrambling has some bugs, but should work in the near future. Naval Bases repair BBs and Carrier correctly.
+						<br>Scrambling has some bugs, but should work in the near future.
 						<br>There are no Kamikaze zones right now, as the engine does not support the kinds of kamikaze rules that the rules state.
 						<br>Need full description of rules as part of this game description.
 						<br>Need new artwork for the misc folder, as well as complete txt files for vc.txt, decorations.txt, capitols.txt, pu_place.txt.
@@ -2769,8 +2779,6 @@
 						<br>Please report any bugs NOT listed at http://sourceforge.net/tracker/?group_id=328171
 						<br>
 						<br>thank you for playing!
-						<br>
-						<br>
 						<br>
 						<br>
 						<br>

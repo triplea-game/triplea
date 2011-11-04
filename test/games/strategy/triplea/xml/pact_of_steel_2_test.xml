@@ -615,7 +615,7 @@
 		<relationshipTypes>
 				<relationshipType name="Allied"/>
 				<relationshipType name="War"/>
-				<relationshipType name="Neutral"/>
+				<relationshipType name="Neutrality"/>
 				<relationshipType name="NAP"/>
 				<relationshipType name="ColdWar"/>
 		</relationshipTypes>
@@ -1504,6 +1504,7 @@
 			archeType								values: "allied" or "war" or "neutral"
 			canMoveLandUnitsOverOwnedLand			values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
 			canMoveAirUnitsOverOwnedLand			values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
+			upkeepCost								values: "default", or any valid integer. Default = zero (0). This determines if there is a cost to maintain a relationship, which would be subtracted from PUs gained at end of turn.
 	-->
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -1514,7 +1515,7 @@
 						<option name="archeType" value="allied"/>
 				</attatchment>
 
-				<attatchment name="relationshipTypeAttachment" attatchTo="Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+				<attatchment name="relationshipTypeAttachment" attatchTo="Neutrality" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="neutral"/>
 				</attatchment>
 
@@ -1527,6 +1528,8 @@
 				</attatchment>
 							
 <!-- Tech Attachments -->
+	<!-- IF you are using custom technologies (generic techs), then ALL players need a tech attachment, even if it is an empty tech attachment, otherwise there will be errors
+	-->
 	<!-- the following options are allowed for "techAttatchment".  These are not required, they only determine if a country starts with a tech or not.  All default to False.
 			techCost							values: the cost of buying tech rolls for this player, defaults to 5
 			superSub
@@ -1647,6 +1650,14 @@
                         <option name="warBonds" value="false"/>
                         <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
+
+                <!-- Chinese -->
+                <attatchment name="techAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                        <option name="improvedArtillerySupport" value="false"/>
+						<!-- even the chinese, who can not roll for tech because they don't have a phase for it, must have a tech attachment because we are using custom techs,
+								so this here is an almost empty tech attachment.  actually, we could fill it with more stuff, that is false or true, but 1 is enough
+								just because something is in this list doesn't mean we can get it.  whether we can get it or not is determined by what is in "playerTech" -->
+                </attatchment>
 				
 				
 				
@@ -1717,7 +1728,8 @@
 			
 			canBeDamaged						values: sets if a unit can be attacked by strategic bombing raids or by rockets.  isFactory also allows these things
 			maxDamage							values: is the total damage the unit can take.  If a factory, and canProduceXUnits = -1 or is missing then maxDamage will be a multiple of the territory value (maxDamage defaults to 2 if canProduceXUnits = -1), otherwise it will be a set number 
-															So for example, if the unit isFactory Or canProduceUnits, And canProduceXUnits = -1, And maxDamage = 3, THEN you will be able to do 3x the territory value in damage to this unit. If However, canProduceXUnits = 2, and maxDamage = 3, then you can do up to 3 damage to this unit.
+															So for example, if the unit isFactory Or canProduceUnits, And canProduceXUnits = -1, And maxDamage = 3, THEN you will be able to do 3x the territory value in damage to this unit. 
+															If However, canProduceXUnits = 2, and maxDamage = 3, then you can do up to 3 damage to this unit.
 			maxOperationalDamage				values: is used with certain features like isAirBase, repairsUnits, and givesMovement to determine if those features work or not based on the current damage of this unit. A disabled unit will not participate in combat too.  Does Not work with isFactory or canProduceUnits.
 			canDieFromReachingMaxDamage			values: means that if this unit reaches its maxDamage, then it will die.  maxDamage must be larger than zero
 			isInfrastructure					values: means a unit does not participate in combat, and they will be captured if the attacker is successful
@@ -1725,6 +1737,8 @@
 			destroyedWhenCapturedBy				values: is a list of the players who destroy this non-combat unit instead of capturing it.  all non-combat units are normally captured by default. is a colon delimited list of player names.
 															You can prefix them with single instance of "BY:" or "FROM:" in order to determine if it is being captured by, or captured from, that determines if the unit is destroyed.
 															examples: <option name="destroyedWhenCapturedBy" value="BY:Chinese:Japanese"/> and <option name="destroyedWhenCapturedBy" value="FROM:Russians:Chinese"/>
+			whenCapturedChangesInto				values: allows a unit to change into a different unit when captured from a specific player to a specific player.  "fromPlayer:toPlayer:transferAttributes:unitType:numberOfUnits".  accepts "any" instead of a player name. allows multiple.
+															examples: <option name="whenCapturedChangesInto" value="any:any:true:Minor_Factory:1"/> and <option name="whenCapturedChangesInto" value="Russians:Germans:false:gold:3:lumber:1"/>
 			isAirBase							values: allows units with canScramble to scramble from a territory with this unit
 			givesMovement						values: allows a unit to give movement to other units.  must be an integer, followed by a colon ":", followed by the name of the unit
 			repairsUnits						values: is a colon delimited list of all the units this unit can repair. units to be repaired must be in the same territory as this unit. 
@@ -1736,13 +1750,15 @@
 	
 	production related:
 			isFactory							values: allows a unit to produce other units, not participate in combat, be placed anywhere you owned at the beginning of the turn, be capturable, and be damaged by rockets and raids
-			canProduceXUnits					values: allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing
+			canProduceXUnits					values: allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  
+															if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing
 			canProduceUnits						values: allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors.
 			createsUnitsList					values: is a list of units that this unit will create every turn at the end of the turn. can have multiple instances
 			createsResourcesList				values: is a list of resources that this unit will create every turn at the end of the turn. can have multiple instances
 	
 	placement related:
-			maxBuiltPerPlayer					values: is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more [this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable]
+			maxBuiltPerPlayer					values: is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more 
+															[this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable]
 			canOnlyBePlacedInTerritoryValuedAtX	values: the minimum territory value to place the unit there. defaults to "-1" which means anywhere
 			unitPlacementRestrictions			values: a list of territories where this unit can not be built. list can contain any number of territories, including sea zones .
 															every unit may have a list, and the lists may be different for each unit. default is no list.  
@@ -2070,6 +2086,8 @@
 						 <option name="givesMovement" value="1:bomber"/>
 						 <option name="givesMovement" value="1:air_transport"/>
 						 <!--<option name="isAAforBombingThisUnitOnly" value="true"/>-->
+						 <!--<option name="whenCapturedChangesInto" value="any:Italians:false:aaGun:2:infantry:1"/>
+						 <option name="whenCapturedChangesInto" value="Russians:any:true:factory:1"/>-->
                 </attatchment>
 				
 				<!-- Harbour -->
@@ -2111,12 +2129,14 @@
 						 <option name="unitPlacementRestrictions" value="Midway:Greenland:Gibraltar:Solomon Islands:Wake Island:Caroline Islands"/>
 						 <!-- canOnlyBePlacedInTerritoryValuedAtX means the minimum territory value to place the unit there. defaults to "-1" which means anywhere -->
 						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="2"/>
-						 <!-- maxBuiltPerPlayer is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, if they have more than this number they can not build more [this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable] -->
+						 <!-- maxBuiltPerPlayer is the number of this unit that can be BUILT by a player.  If they have fewer than this number they can build more, 
+								if they have more than this number they can not build more [this does not cause excess ones to disappear, and the player can still capture more and more of them if they are capturable] -->
 						 <option name="maxBuiltPerPlayer" value="3"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <!-- unitPlacementOnlyAllowedIn is the direct inverse of unitPlacementRestrictions
 						 <option name="unitPlacementOnlyAllowedIn" value="Germany:East Balkans"/>-->
-						 <!-- canProduceXUnits allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing -->
+						 <!-- canProduceXUnits allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  
+								if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing -->
 						 <option name="canProduceXUnits" value="-1"/>
 						 <!-- canProduceUnits allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors. 
 						 <option name="canProduceUnits" value="true"/>-->
@@ -2136,7 +2156,8 @@
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <option name="destroyedWhenCapturedFrom" value="Russians"/>
 						 <!-- destroyedWhenCapturedBy and destroyedWhenCapturedFrom let a unit be destroyed instead of captured.  They can be a colon delimited list of players. 
-								You can prefix them with single instance of "BY:" or "FROM:" in order to determine if it is being captured by, or captured from, that determines if the unit is destroyed. destroyedWhenCapturedFrom just takes the value input then adds "FROM:" to the beginning, then calls destroyedWhenCapturedBy with the new value.
+								You can prefix them with single instance of "BY:" or "FROM:" in order to determine if it is being captured by, or captured from, that determines if the unit is destroyed. 
+								destroyedWhenCapturedFrom just takes the value input then adds "FROM:" to the beginning, then calls destroyedWhenCapturedBy with the new value.
 						 <option name="destroyedWhenCapturedBy" value="BY:Chinese:Japanese"/>
 						 <option name="destroyedWhenCapturedBy" value="FROM:Russians:Chinese"/>-->
 						 <option name="bombingMaxDieSides" value="2"/>
@@ -2189,6 +2210,7 @@
 			blockadeZone							values: true or false, can this territory be blockaded by neighboring sea zones?
 			kamikazeZone							values: true or false, does nothing right now, but it will put a symbol on the map (the kamikazeZone symbol must be in the flags folder and be named "<owner_name>_fade"
 			territoryEffect							values: adds a territoryEffect to a territory, can have multiple
+			whenCapturedByGoesTo					values: the player that captures the territory, then the player that will get the territory, separated by a colon.  Can have multiple. For example: value="Americans:Russians"
 			
 	-->
 				
@@ -2535,6 +2557,9 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="West Russia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
+						<option name="whenCapturedByGoesTo" value="Americans:Russians"/>
+						<option name="whenCapturedByGoesTo" value="British:Russians"/>
+						<option name="whenCapturedByGoesTo" value="Chinese:Russians"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Peru" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2648,7 +2673,8 @@
                         <option name="production" value="2"/>
                 </attatchment>
 				
-				<!-- Blockade Zones are areas where if the enemy has ships there, they subtract money from each of the connecting land territories up to the value of the territory. if there are many enemy ships, you will collect no income from the connecting land territories. should be set to zero production otherwise they become convoy zones too -->
+				<!-- Blockade Zones are areas where if the enemy has ships there, they subtract money from each of the connecting land territories up to the value of the territory. 
+						if there are many enemy ships, you will collect no income from the connecting land territories. should be set to zero production otherwise they become convoy zones too -->
 				<attatchment name="territoryAttatchment" attatchTo="37 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
 						<option name="blockadeZone" value="true"/>
@@ -2679,22 +2705,22 @@
 			canalName							values: any string name for the canal. must match its counterpart attachment.
 			landTerritories						values: a colon (":") delimited list of the territories that make up this canal. must match its counterpart attachment.
 	-->
-			    <attatchment name="canalAttatchment" attatchTo="15 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+			    <attatchment name="canalAttatchmentSuez" attatchTo="15 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 			    	<option name="canalName" value="Suez Canal"/>
 			    	<option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
 			    </attatchment>
 			
-			    <attatchment name="canalAttatchment" attatchTo="34 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+			    <attatchment name="canalAttatchmentSuez" attatchTo="34 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 			    	<option name="canalName" value="Suez Canal"/>
 			    	<option name="landTerritories" value="Anglo Egypt:Trans-Jordan"/>
 			    </attatchment>
 			
-		   	    <attatchment name="canalAttatchment" attatchTo="19 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+		   	    <attatchment name="canalAttatchmentPanama" attatchTo="19 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 			    	<option name="canalName" value="Panama Canal"/>
 			    	<option name="landTerritories" value="Panama"/>
 			    </attatchment>
 			
-			    <attatchment name="canalAttatchment" attatchTo="20 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
+			    <attatchment name="canalAttatchmentPanama" attatchTo="20 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 			    	<option name="canalName" value="Panama Canal"/>
 			    	<option name="landTerritories" value="Panama"/>
 			    </attatchment>
@@ -2799,11 +2825,18 @@
 
 <!--  National Objectives -->
 	<!-- all Objective Attachments, Conditions, Triggers, Rules, etc, must have a unique name (if you don't use unique names, you may get funny results with your trigger attachments, or even java errors) -->
-	<!-- the following options are allowed for "objectiveAttachmentXXX" (and also for "conditionAttachmentXXX")
+	<!-- the following options are allowed for "objectiveAttachmentXXX" (and also for "conditionAttachmentXXX").  all options below have an "AND" relationship with each other.
+			conditions							values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
+															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
+															any condition which includes other conditions, is considered a meta-condition, and it must come AFTER any conditions that it includes.
+			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the "conditions" option.
+														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
+														conditionType only affects the conditions listed under the option name="conditions", and does not affect any additional things also present.
+			invert								values: true or false. default if missing is false. if true, this attachment's condition will be reversed (does not reverse the effect). 
+														This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 			objectiveValue						values: any integer number of PUs to be given (example: value="4")
 			turns								values: which turns this will be checked on (example: value="1:4:6-8:11-+" means turns 1,4,6,7,8,11,and all turns after 11)
 			uses								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
-			invert								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 			count								values: the number required to satisfy a rule. if missing, it defaults to ALL. the below options use count:
 			atWarPlayers						values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players)
 			directOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
@@ -2815,18 +2848,13 @@
 			directPresenceTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
 			alliedPresenceTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
 			enemyPresenceTerritories 			values: "original", "map" (map = all territories on map), or a : delimited list of territories
-			unitPresence 						values: "ANY" or the exact name of the unit, and the number of that unit.  (example: value="infantry" count="2", or: value="ANY" count="3")
+			unitPresence 						values: "ANY" or the exact name or names of the units, and the number of that unit.  (example: value="infantry" count="2", or: value="ANY" count="3", or: value="infantry:artillery:armour" count="3")
 														unitPresence can be put in multiple times. Its purpose is to specify the units for presence and excluded territories. If missing, then presence needs only 1 of any unit, and excluded needs to be completely devoid of units
 														It can be used in conjunction with directPresenceTerritories, alliedPresenceTerritories, enemyPresenceTerritories, directExclusionTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories
 														If used with an exclusion, then the number of units of that type must be less than or equal the count.  (Use count="0" if you want no units of that type in the territories).
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
-			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" for example: "Japan:China:War" it will accept "anyWar", "anyNeutral" and "anyAllied" as well.
-			conditions							values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
-															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
-															any condition which includes other conditions, is considered a meta-condition, and it must come AFTER any conditions that it includes.
-			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the conditions. 
-														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
-														conditionType only affects the conditions listed under the option name="conditions", and does not affect any additional things also present.
+			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" (will set #rounds to -1 by default) OR "player1:player2:relationship:numberOfRoundsThisRelationshipMustExistForMinimum"
+														for example: "Japan:China:War" or "Japan:China:War:-1" or "Japan:China:War:3".  It will accept "anyWar", "anyNeutral" and "anyAllied" as well.
 			
 	-->
 	<!-- German Objectives -->
@@ -3174,8 +3202,33 @@
                 	<option name="alliedOwnershipTerritories" value="Karelia S.S.R.:Caucus" count="2"/>
                 </attatchment>
                 
+				<attatchment name="conditionAttachmentRussiansNeutralAmericans" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Russians:Americans:anyNeutral"/>
+                </attatchment>
+                
+				<attatchment name="conditionAttachmentRussiansNeutralJapan" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Japanese:Russians:anyNeutral"/>
+                </attatchment>
+                
+				<attatchment name="conditionAttachmentRussiansNeutralJapanTurn5plus" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="turns" value="5-+"/>
+                	<option name="relationship" value="Japanese:Russians:anyNeutral"/>
+                </attatchment>
+                
+				<attatchment name="conditionAttachmentRussiansNeutralItalians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="relationship" value="Italians:Russians:anyNeutral:1"/>
+                </attatchment>
+                
 				<attatchment name="conditionAttachmentRussiansWarItalians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="relationship" value="Italians:Russians:anyWar"/>
+                	<option name="relationship" value="Italians:Russians:anyWar:1"/>
+                </attatchment>
+                
+                <attatchment name="conditionAttachmentRussiansNeutralItaliansFor2Turns" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="relationship" value="Italians:Russians:anyNeutral:2"/>
+                </attatchment>
+                
+                <attatchment name="conditionAttachmentChineseNeutralItalians" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="relationship" value="Italians:Chinese:anyNeutral"/>
                 </attatchment>
                 
                 <attatchment name="conditionAttachmentRussians3" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -3215,13 +3268,15 @@
 				
 				
 <!-- Triggers -->
-	<!-- Triggers that have a "uses" amount (ie: they are not infinite) should ONLY have 1 purpose. In other words, if you set a trigger to have 2 uses, and to give resources, change a production frontier, and notify the player, THEN each action will use up a 'use', so you should instead make 3 separate triggers. -->
+	<!-- Triggers with "uses" will use up a single 'use' every round that they are used.  So a trigger that gives a player a tech, adds units to a territory, changes a relationship, and sends a notification to a player,
+				will use up a Single (1) use, assuming those four actions were done in a single round (as determined by the endRound phase [EndRoundDelegate])-->
 	<!-- the following options are allowed for "triggerAttachmentXXX"
 			trigger								values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
 															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
 			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
 														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
 			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
+														This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
 			tech		 						values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
 			availableTech						values: the name of the category to be added to, followed by the names of the technologies to add to it. (example: value="airCategory:longRangeAir:jetPower:superHeavyBomber")
@@ -3235,7 +3290,7 @@
 			purchase							values: adds listed units to user's purchase at beginning of purchase phase (example: value="infantry:destroyer" count="3")
 			support								values: name of support attachment, adds specified player to the list of players a supportAttachment supports. Can be a list. (example: value="supportAttachmentGermans1AwesomeArtillery")
 														If prefixed with "-" then it will remove that player from the support attachment (example: value="-supportAttachmentArtyOldartillery")
-			relationshipChange					values: the change in relationship for this attached player, format: "player:oldRelation:newRelation" example: "Russia:coldWar:allOutWar"
+			relationshipChange					values: the change in relationship for these players, format: "player1:player2:oldRelation:newRelation" example: "Russians:Americans:coldWar:allOutWar"
 														oldRelation may be "any", "anyWar", "anyNeutral", "anyAllied", or an actual relationshipType used in this xml
 														You can enter multiple relationshipChanges in the trigger and it will perform every change in the trigger which is valid.
 			victory								values: the string message from notifications.properties to be displayed if the condition is true.
@@ -3246,7 +3301,8 @@
 		For the following, you are actually changing raw data in the engine by calling the setters in the same way the engine does when it parses the xml.  The following are not validated at all, so if you don't use them correctly you will probably cause the engine to crash mid-game.
 		You may prefix the property count portion with "-clear-" if you wish to clear out the data in an array first (example: <option name="unitProperty" value="requiresUnits" count="-clear-factory:hangar"/> )
 			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians"). Also used as list of players affected by a playerProperty change.
-			playerAttachmentName				values: the type of attachment (PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment) and the exact full name of the attachment to be changed. (example: value="RulesAttachment" count="rulesAttatchment"). Defaults to PlayerAttachment if missing.
+			playerAttachmentName				values: the type of attachment (PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, PoliticalActionAttachment) and the exact full name of the attachment to be changed. 
+															(example: value="RulesAttachment" count="rulesAttatchment"). Defaults to PlayerAttachment if missing.
 			playerProperty						values: the name of any actual attachment property, with a count equal to the property's values (examples: value="destroysPUs" count="true"). (requires players to be set, otherwise it uses the attached player)
 			unitType							values: the exact names of the unit to be affected by a unitProperty change (example: value="cruiser:super_cruiser")
 			unitAttachmentName					values: the type of attachment (UnitAttachment, UnitSupportAttachment) and the exact full name of the attachment to be changed. Defaults to UnitAttachment if missing.
@@ -3277,6 +3333,7 @@
 					createsUnitsList
 					createsResourcesList
 					receivesAbilityWhenWith
+					whenCapturedChangesInto
 					
 				Unit Support Attachments:
 					players
@@ -3285,6 +3342,7 @@
 					changeUnitOwners
 					captureUnitOnEnteringBy
 					territoryEffect
+					whenCapturedByGoesTo
 					
 				Territory Effect Attachments:
 					combatDefenseEffect
@@ -3323,20 +3381,28 @@
 					territoryEffects
 					territoryEffectProperty
 					
+				Political Action Attachments:
+					conditions
+					relationshipChange
+					actionAccept
+					
 		-->
 	<!-- Victory Triggers -->
 						<!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->
                 <attatchment name="triggerAttachmentAxisVictory1_CapitalControl" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAxisVictory1"/>
-					<option name="when" value="after:chineseEndTurn"/>
+					<!--<option name="when" value="after:chineseEndTurn"/>-->
 					<!-- both "victory" and "notification" will look in the "notifications.properties" in your maps root folder for a string with the value's name, and then it will use whatever is to the right of the = sign.-->
                 	<option name="victory" value="AXIS_VICTORY"/>
+					<!-- "players" when used with "victory" set which players are the winner. this is important for stats generation and for future use -->
+                	<option name="players" value="Germans:Italians:Japanese"/>
                 </attatchment>
 				
                 <attatchment name="triggerAttachmentAlliesVictory1_CapitalControl" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentAlliesVictory1"/>
 					<option name="when" value="after:chineseEndTurn"/>
                 	<option name="victory" value="ALLIES_VICTORY"/>
+                	<option name="players" value="Russians:British:Americans:Chinese"/>
                 </attatchment>
 	
 	<!-- Germans Triggers -->
@@ -3534,7 +3600,7 @@
 				<!-- on turn 2 italy will go automatically to war with Russia 
                 <attatchment name="triggerAttachmentItaliansWarRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentItalianTurn2"/>
-					<option name="relationshipChange" value="Russians:any:War"/>					
+					<option name="relationshipChange" value="Italians:Russians:any:War"/>					
                 </attatchment>-->
 				
 				
@@ -3607,9 +3673,10 @@
                 	<option name="uses" value="1"/>
                 </attatchment>
 
+						<!-- Here we want to see if Japan has Either Zero Battleships or Zero Carriers. So we set the relationship to AND, and then invert it.  So !X = (A && B)  becomes  X = !(A && B)  becomes  X = (!A || !B) -->
                 <attatchment name="triggerAttachmentAmericans4_JapaneseCapitalShipsSunk" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachmentJapaneseCarriers:conditionAttachmentJapaneseBattleships"/>
-					<option name="conditionType" value="OR"/>
+					<option name="conditionType" value="AND"/>
 					<option name="invert" value="true"/>
 					<option name="resource" value="PUs"/>
 					<option name="resourceCount" value="4"/>
@@ -3676,19 +3743,19 @@
 					<option name="trigger" value="conditionAttachmentRussianCapitalLost"/>
 					<option name="when" value="before:russianPurchase"/>
 					<option name="notification" value="RUSSIAN_CAPITAL_LOST"/>
-					<!--<option name="uses" value="1"/> currently causing bugs-->
+					<option name="uses" value="1"/>
 				</attatchment>
 				
                 <!-- when Italy is at War with Russia, Russia will automatically go to war with Japan from any Neutral stance 
 	            <attatchment name="triggerAttachmentRussiansWarJapanese" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentRussiansWarItalians"/>
-					<option name="relationshipChange" value="Japanese:anyNeutral:War"/>
+                	<option name="trigger" value="conditionAttachmentRussiansNeutralItalians"/>
+					<option name="relationshipChange" value="Russians:Japanese:anyNeutral:War"/>
                 </attatchment>-->
                 
                 <!-- when Italy is at War with Russia, Russia will automatically go to war with Germany from exactly Neutral state
                 <attatchment name="triggerAttachmentRussiansWarGermans" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentRussiansWarItalians"/>
-					<option name="relationshipChange" value="Germans:Neutral:War"/>
+                	<option name="trigger" value="conditionAttachmentRussiansNeutralItalians"/>
+					<option name="relationshipChange" value="Russians:Germans:Neutrality:War"/>
                 </attatchment>-->
                 
                 <attatchment name="triggerAttachmentRussians3_RecoveredGermanTech" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -3739,6 +3806,13 @@
 					<option name="productionRule" value="Russians_production:buyBattleshipShipyards"/>
 					<option name="productionRule" value="Russians_production:buySuper_CarrierShipyards"/>
 					<option name="uses" value="1"/>
+                </attatchment>
+				
+				<attatchment name="triggerAttachmentRussiansWarJapanese" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentRussiansNeutralJapanTurn5plus"/>
+					<option name="relationshipChange" value="Russians:Japanese:anyNeutral:War"/>
+					<option name="notification" value="RUSSIANS_AT_WAR_WITH_JAPAN"/>
+					<option name="when" value="before:russianPolitics"/>
                 </attatchment>
 				
 	<!-- Chinese Triggers and Conditions -->
@@ -3878,6 +3952,102 @@
 							must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"
 					<option name="captureUnitOnEnteringBy" value="Americans:British"/>
 				</attatchment>-->
+				
+<!-- Political Action Attachments -->
+	<!-- the following options are allowed for "politicalActionAttachmentXXX"
+			conditions							value: 	this is a colon delimited list of conditions, and this politicalActionAttachment is only active (thus can be performed) if this returns true
+			conditionType 						value: 	AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
+														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
+			invert 								value: 	true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
+														This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
+			relationshipChange					value: 	the relationshipType that will exist after the action is succesful between the player and the otherPlayer format: "player1:player2:relationship"
+														You can add multiple relationshipchanges per attachment
+			chance								value: 	diceroll:dicesides to hit for this action to succeed for example "1:6" for the action to succeed 1 out of 6 times
+			costPU								value: 	ammount of PU you will be charged to attempt this action
+			text								value: 	a KEY referring to politicstext.properties to indicate the texts used for regarding this action
+			actionAccept						value: 	a list of players that must accept this action before it takes effect (handy for peacetreaties)
+			attemptsPerTurn						value: 	the number of times this action can be attempted per round (default: 1)
+	-->
+	     		<attatchment name="politicalActionAttachmentItaliansDeclareWarOnRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralItaliansFor2Turns"/>
+	     			<option name="relationshipChange" value="Italians:Russians:War"/>
+	     			<option name="text" value="ITALY_DECLAREWAR_RUSSIA"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="0"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentItaliansProposeCeasefireRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansWarItalians"/>
+	     			<option name="relationshipChange" value="Italians:Russians:Neutrality"/>
+	     			<option name="text" value="ITALY_PROPOSEPEACE_RUSSIA"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="0"/>
+	     			<option name="actionAccept" value="Russians"/>
+	     			<option name="attemptsPerTurn" value="1"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentItaliansDeclareWarOnChineseAndAmericans" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentChineseNeutralItalians"/>
+	     			<option name="relationshipChange" value="Italians:Chinese:War"/>
+	     			<option name="relationshipChange" value="Italians:Americans:War"/>
+	     			<option name="text" value="ITALY_DECLAREWAR_CHINA_USA"/>
+	     			<option name="chance" value="2:6"/>
+	     			<option name="costPU" value="0"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentJapaneseDeclareWarOnRussians" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralJapan"/>
+	     			<option name="relationshipChange" value="Japanese:Russians:War"/>
+	     			<option name="text" value="JAPANESE_DECLAREWAR_RUSSIANS"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="0"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentRussiansDeclareWarOnItalians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralItaliansFor2Turns"/>
+	     			<option name="relationshipChange" value="Italians:Russians:War"/>
+	     			<option name="text" value="RUSSIANS_DECLAREWAR_ITALIANS"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="0"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentRussiansDeclareWarOnJapanese" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralJapan"/>
+	     			<option name="relationshipChange" value="Japanese:Russians:War"/>
+	     			<option name="text" value="RUSSIANS_DECLAREWAR_JAPANESE"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="0"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentRussiansAllyWithAmericansAndBritish" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralAmericans"/>
+	     			<option name="relationshipChange" value="Americans:Russians:Allied"/>
+	     			<option name="relationshipChange" value="British:Russians:Allied"/>
+	     			<option name="text" value="RUSSIANS_ALLY_AMERICANS_BRITISH"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="1"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     			<option name="actionAccept" value="Americans:British"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentBritishAndAmericansAllyWithRussians" attatchTo="British" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralAmericans"/>
+	     			<option name="relationshipChange" value="Americans:Russians:Allied"/>
+	     			<option name="relationshipChange" value="British:Russians:Allied"/>
+	     			<option name="text" value="AMERICANS_BRITISH_ALLY_RUSSIANS"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="2"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     			<option name="actionAccept" value="Russians"/>
+	     		</attatchment>
+	     		<attatchment name="politicalActionAttachmentAmericansAndBritishAllyWithRussians" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+	     			<option name="conditions" value="conditionAttachmentRussiansNeutralAmericans"/>
+	     			<option name="relationshipChange" value="Americans:Russians:Allied"/>
+	     			<option name="relationshipChange" value="British:Russians:Allied"/>
+	     			<option name="text" value="AMERICANS_BRITISH_ALLY_RUSSIANS"/>
+	     			<option name="chance" value="6:6"/>
+	     			<option name="costPU" value="3"/>
+					<option name="attemptsPerTurn" value="1"/>
+	     			<option name="actionAccept" value="Russians"/>
+	     		</attatchment>
 
         </attatchmentList>
 
@@ -4180,40 +4350,40 @@
                 </resourceInitialize>
 
 				<relationshipInitialize>
-						<!-- the order of player1 and player2 does not matter. 
+						<!-- the order of player1 and player2 does not matter. roundValue is only used for conditions and can be positive or negative (use "1" if you don't know what you are doing).
 								having them listed twice in different orders will just have the later one overwrite the earlier one.
-								Make sure you cover all possibilities!
+								Make sure you cover all possibilities! (the number of possibilities is equal to the triangular number sequence: 1,3,6,10,15,21,28,36,45,55,66,78,91,105,120)
 						-->
 						
-						<relationship type="Allied" player1="Italians" player2="Germans"/>
-						<relationship type="Allied" player1="Italians" player2="Japanese"/>
-						<relationship type="Allied" player1="Germans" player2="Japanese"/>
+						<relationship type="Allied" player1="Italians" player2="Germans" roundValue="1"/>
+						<relationship type="Allied" player1="Italians" player2="Japanese" roundValue="1"/>
+						<relationship type="Allied" player1="Germans" player2="Japanese" roundValue="1"/>
 
-						<relationship type="Allied" player1="Russians" player2="British"/>
-						<relationship type="Allied" player1="Russians" player2="Americans"/>
-						<relationship type="Allied" player1="Russians" player2="Chinese"/>
-						<relationship type="Allied" player1="Americans" player2="British"/>
-						<relationship type="Allied" player1="Americans" player2="Chinese"/>
-						<relationship type="Allied" player1="British" player2="Chinese"/>
+						<relationship type="Neutrality" player1="Russians" player2="British" roundValue="1"/>
+						<relationship type="Neutrality" player1="Russians" player2="Americans" roundValue="1"/>
+						<relationship type="Allied" player1="Russians" player2="Chinese" roundValue="1"/>
+						<relationship type="Allied" player1="Americans" player2="British" roundValue="1"/>
+						<relationship type="Allied" player1="Americans" player2="Chinese" roundValue="1"/>
+						<relationship type="Allied" player1="British" player2="Chinese" roundValue="1"/>
 
-						<relationship type="War" player1="British" player2="Germans"/>
-						<relationship type="War" player1="British" player2="Italians"/>
-						<relationship type="War" player1="British" player2="Japanese"/>
+						<relationship type="War" player1="British" player2="Germans" roundValue="1"/>
+						<relationship type="War" player1="British" player2="Italians" roundValue="1"/>
+						<relationship type="War" player1="British" player2="Japanese" roundValue="1"/>
 
-						<relationship type="War" player1="Americans" player2="Germans"/>
-						<relationship type="War" player1="Americans" player2="Italians"/>
-						<relationship type="War" player1="Americans" player2="Japanese"/>
+						<relationship type="War" player1="Americans" player2="Germans" roundValue="1"/>
+						<relationship type="War" player1="Americans" player2="Italians" roundValue="1"/>
+						<relationship type="War" player1="Americans" player2="Japanese" roundValue="1"/>
 
-						<relationship type="War" player1="Russians" player2="Germans"/>
-						<relationship type="War" player1="Russians" player2="Italians"/>
-						<relationship type="War" player1="Russians" player2="Japanese"/>
-						<!--<relationship type="Neutral" player1="Russians" player2="Germans"/>
-						<relationship type="Allied" player1="Russians" player2="Italians"/>
-						<relationship type="Neutral" player1="Russians" player2="Japanese"/>-->
+						<relationship type="War" player1="Russians" player2="Germans" roundValue="1"/>
+						<relationship type="War" player1="Russians" player2="Italians" roundValue="-1"/>
+						<relationship type="Neutrality" player1="Russians" player2="Japanese" roundValue="1"/>
+						<!--<relationship type="Neutrality" player1="Russians" player2="Germans" roundValue="1"/>
+						<relationship type="Allied" player1="Russians" player2="Italians" roundValue="1"/>
+						<relationship type="Neutrality" player1="Russians" player2="Japanese" roundValue="1"/>-->
 
-						<relationship type="War" player1="Chinese" player2="Germans"/>
-						<relationship type="War" player1="Chinese" player2="Italians"/>
-						<relationship type="War" player1="Chinese" player2="Japanese"/>
+						<relationship type="War" player1="Chinese" player2="Germans" roundValue="1"/>
+						<relationship type="War" player1="Chinese" player2="Italians" roundValue="1"/>
+						<relationship type="War" player1="Chinese" player2="Japanese" roundValue="1"/>
 				</relationshipInitialize>
 
         </initialize>
@@ -4319,6 +4489,10 @@
 				</property>
 
 				<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Use Politics" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -4499,6 +4673,11 @@
 				<!-- land related -->
 						<!-- if true, units with destroyedWhenCapturedBy will be destroyed instead of captured. only applies to non-combat units, since combat units die in combat -->
 				<property name="Units Can Be Destroyed Instead Of Captured" value ="true" editable="false">
+						<boolean/>
+				</property>
+				
+						<!-- allows units to change into other units using the whenCapturedChangesInto ability -->
+				<property name="Units Can Be Changed On Capture" value ="true" editable="false">
 						<boolean/>
 				</property>
 				
@@ -4772,12 +4951,16 @@
         				<br>4. Air_Transport is an air unit that specializes in dropping off units, has 4 movement, and can carry into battle or drop off in a friendly territory any 2-3 units. Enabled when you get "paratroopers" tech.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery. It has only 1 hitpoint, just like normal carriers and cruisers.
 						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement (costs 4). If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after certain conditions are met, and they don't receive bonus movement from harbours.
-						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, do not require a landing zone for movement, and they will die after rolling their dice.
+						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, 
+									do not require a landing zone for movement, and they will die after rolling their dice.
 						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones if you turn on "Scramble Rules In Effect".
 						<br>9. Harbour gives +1 movement to warships, and are needed to repair Battleships if you turn on "Two HitPoint Units Require Repair Facilities".
-						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours) where you also have a land unit, but there is a limit of 1 per territory.
+						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  
+									They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours) where you also have a land unit, but there is a limit of 1 per territory.
 						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att). Available to Germans after they get superSubs.
 						<br>12. Each nation may only purchase factories up to 3 total, if a nation controls more than 3 they can not purchase new factories (they can keep capturing new ones though).
+        				<br>13. Politics phase: alliances and states of war are now dynamic and can be changed in game.  Japan and Russia start out in a state of Neutrality towards each other, while Russia, America and the UK also start out as neutral towards each other.  
+									Japan and Russia will go to war on the 5th turn if they are still neutral by then.  Italy and Russia have the option of declaring a 2 round ceasefire.
         				<br>
         				<br>
         				<br>
@@ -4899,7 +5082,8 @@
 						<br>1.  In ww2v2 transport units are just like any other unit, and can be used as fodder by being taken casualty first in combat, however in ww2v3 style rules, transports have no defense power and may only be taken casualty after all other non-transport ships are dead.
 						<br>2.  In ww2v2, you can build fighters on carriers if you build both at the same time, and if you build a carrier you can move existing fighters to carriers when you build a carrier in the adjacent sea zone. In ww2v3, you can build new fighters onto existing
 								carriers as well as new carriers, but you may not move existing fighters onto new carriers, as instead you can non-combat move the fighters to where the carrier will be built, then place the carrier under it.
-						<br>3.  In ww2v2, when you strategic bomb or rocket a factory, you immediately reduce the enemy's PUs. In ww2v3, you do damage to the factory, up to twice the value of the territory. Each point of damage reduces the number of units that can be produced there by 1. The player may repair the damage during their purchase phase.
+						<br>3.  In ww2v2, when you strategic bomb or rocket a factory, you immediately reduce the enemy's PUs. In ww2v3, you do damage to the factory, up to twice the value of the territory. 
+								Each point of damage reduces the number of units that can be produced there by 1. The player may repair the damage during their purchase phase.
 						<br>4.  In ww2v2, when you fly over a territory with an AA Gun, the gun gets to fire at each aircraft. In ww2v3, the AA Gun only fires when you attack or bomb the territory it is in.
 						<br>5.  In ww2v2, submarines and transports block the movement of other sea units. In ww2v3, submarines and transports do not block the movement of other sea units, and may be bypassed or attacked.
 						<br>6.  In ww2v2, technology is rolled for, and if you miss nothing happens. In ww2v3, you buy tech tokens, and at the beginning of your turn you roll for each of your tokens. If you roll a 6, you discard all tokens and roll a second time to see which technology you get.
