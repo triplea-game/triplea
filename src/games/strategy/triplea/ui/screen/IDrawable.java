@@ -92,7 +92,7 @@ public interface IDrawable
 class DrawableComparator implements Comparator<IDrawable>
 {
 	
-	public int compare(IDrawable o1, IDrawable o2)
+	public int compare(final IDrawable o1, final IDrawable o2)
 	{
 		return o1.getLevel() - o2.getLevel();
 	}
@@ -105,16 +105,16 @@ class TerritoryNameDrawable implements IDrawable
 	private final String m_territoryName;
 	private final UIContext m_uiContext;
 	
-	public TerritoryNameDrawable(final String territoryName, UIContext context)
+	public TerritoryNameDrawable(final String territoryName, final UIContext context)
 	{
 		this.m_territoryName = territoryName;
 		this.m_uiContext = context;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
-		Territory territory = data.getMap().getTerritory(m_territoryName);
-		TerritoryAttachment ta = TerritoryAttachment.get(territory);
+		final Territory territory = data.getMap().getTerritory(m_territoryName);
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		
 		boolean drawComments = false;
 		String commentText = null;
@@ -159,17 +159,17 @@ class TerritoryNameDrawable implements IDrawable
 			}
 		}
 		
-		Rectangle territoryBounds = mapData.getBoundingRect(territory);
+		final Rectangle territoryBounds = mapData.getBoundingRect(territory);
 		graphics.setFont(MapImage.MAP_FONT);
 		
 		graphics.setColor(Color.black);
-		FontMetrics fm = graphics.getFontMetrics();
+		final FontMetrics fm = graphics.getFontMetrics();
 		int x;
 		int y;
 		
 		// if we specify a placement point, use it
 		// otherwise, put it in the center
-		Point namePlace = mapData.getNamePlacementPoint(territory);
+		final Point namePlace = mapData.getNamePlacementPoint(territory);
 		if (namePlace == null)
 		{
 			x = territoryBounds.x;
@@ -200,10 +200,10 @@ class TerritoryNameDrawable implements IDrawable
 		// draw the PUs.
 		if (ta != null && ta.getProduction() > 0)
 		{
-			Image img = m_uiContext.getPUImageFactory().getPUImage(ta.getProduction());
-			String prod = Integer.valueOf(ta.getProduction()).toString();
+			final Image img = m_uiContext.getPUImageFactory().getPUImage(ta.getProduction());
+			final String prod = Integer.valueOf(ta.getProduction()).toString();
 			
-			Point place = mapData.getPUPlacementPoint(territory);
+			final Point place = mapData.getPUPlacementPoint(territory);
 			// if pu_place.txt is specified draw there
 			if (place != null)
 			{
@@ -224,7 +224,7 @@ class TerritoryNameDrawable implements IDrawable
 		}
 	}
 	
-	private void draw(Rectangle bounds, Graphics2D graphics, int x, int y, Image img, String prod)
+	private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, int y, final Image img, final String prod)
 	{
 		if (img == null)
 		{
@@ -245,7 +245,7 @@ class TerritoryNameDrawable implements IDrawable
 		return TERRITORY_TEXT_LEVEL;
 	}
 	
-	private static boolean isDisplaySeaNames(GameData data)
+	private static boolean isDisplaySeaNames(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getDisplaySeaNames(data);
 	}
@@ -263,9 +263,9 @@ class VCDrawable implements IDrawable
 		m_location = location;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
-		Point point = mapData.getVCPlacementPoint(m_location);
+		final Point point = mapData.getVCPlacementPoint(m_location);
 		graphics.drawImage(mapData.getVCImage(), point.x - bounds.x, point.y - bounds.y, null);
 		
 	}
@@ -291,7 +291,7 @@ class DecoratorDrawable implements IDrawable
 		m_image = image;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		graphics.drawImage(m_image, m_point.x - bounds.x, m_point.y - bounds.y, null);
 	}
@@ -313,7 +313,7 @@ class CapitolMarkerDrawable implements IDrawable
 	
 	private final UIContext m_uiContext;
 	
-	public CapitolMarkerDrawable(final PlayerID player, final Territory location, UIContext uiContext)
+	public CapitolMarkerDrawable(final PlayerID player, final Territory location, final UIContext uiContext)
 	{
 		super();
 		if (player == null)
@@ -326,11 +326,11 @@ class CapitolMarkerDrawable implements IDrawable
 		m_uiContext = uiContext;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		// Changed back to use Large flags
-		Image img = m_uiContext.getFlagImageFactory().getLargeFlag(data.getPlayerList().getPlayerID(m_player));
-		Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(m_location));
+		final Image img = m_uiContext.getFlagImageFactory().getLargeFlag(data.getPlayerList().getPlayerID(m_player));
+		final Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(m_location));
 		
 		graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
 		
@@ -352,7 +352,7 @@ abstract class MapTileDrawable implements IDrawable
 	protected final UIContext m_uiContext;
 	protected boolean m_unscaled;
 	
-	public MapTileDrawable(final int x, final int y, UIContext context)
+	public MapTileDrawable(final int x, final int y, final UIContext context)
 	{
 		m_x = x;
 		m_y = y;
@@ -364,20 +364,20 @@ abstract class MapTileDrawable implements IDrawable
 	
 	protected abstract Image getImage();
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
-		Image img = getImage();
+		final Image img = getImage();
 		
 		if (img == null)
 			return;
 		
-		Object oldValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
+		final Object oldValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
 		graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
 		// the tile images are already scaled
 		if (unscaled != null)
 			graphics.setTransform(unscaled);
 		
-		Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing tile images");
+		final Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing tile images");
 		
 		graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y, null);
 		drawStopWatch.done();
@@ -396,7 +396,7 @@ abstract class MapTileDrawable implements IDrawable
 class ReliefMapDrawable extends MapTileDrawable
 {
 	
-	public ReliefMapDrawable(int x, int y, UIContext context)
+	public ReliefMapDrawable(final int x, final int y, final UIContext context)
 	{
 		super(x, y, context);
 		
@@ -405,7 +405,7 @@ class ReliefMapDrawable extends MapTileDrawable
 	@Override
 	public MapTileDrawable getUnscaledCopy()
 	{
-		ReliefMapDrawable copy = new ReliefMapDrawable(m_x, m_y, m_uiContext);
+		final ReliefMapDrawable copy = new ReliefMapDrawable(m_x, m_y, m_uiContext);
 		copy.m_unscaled = true;
 		return copy;
 	}
@@ -442,7 +442,7 @@ class ReliefMapDrawable extends MapTileDrawable
 class BaseMapDrawable extends MapTileDrawable
 {
 	
-	public BaseMapDrawable(final int x, final int y, UIContext context)
+	public BaseMapDrawable(final int x, final int y, final UIContext context)
 	{
 		super(x, y, context);
 	}
@@ -450,7 +450,7 @@ class BaseMapDrawable extends MapTileDrawable
 	@Override
 	public MapTileDrawable getUnscaledCopy()
 	{
-		BaseMapDrawable copy = new BaseMapDrawable(m_x, m_y, m_uiContext);
+		final BaseMapDrawable copy = new BaseMapDrawable(m_x, m_y, m_uiContext);
 		copy.m_unscaled = true;
 		return copy;
 	}
@@ -489,7 +489,7 @@ class ConvoyZoneDrawable implements IDrawable
 	private final String m_location;
 	private final UIContext m_uiContext;
 	
-	public ConvoyZoneDrawable(final PlayerID player, final Territory location, UIContext uiContext)
+	public ConvoyZoneDrawable(final PlayerID player, final Territory location, final UIContext uiContext)
 	{
 		super();
 		m_player = player.getName();
@@ -497,14 +497,14 @@ class ConvoyZoneDrawable implements IDrawable
 		m_uiContext = uiContext;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		Image img;
 		if (mapData.useNation_convoyFlags())
 			img = m_uiContext.getFlagImageFactory().getConvoyFlag(data.getPlayerList().getPlayerID(m_player));
 		else
 			img = m_uiContext.getFlagImageFactory().getFlag(data.getPlayerList().getPlayerID(m_player));
-		Point point = mapData.getConvoyMarkerLocation(data.getMap().getTerritory(m_location));
+		final Point point = mapData.getConvoyMarkerLocation(data.getMap().getTerritory(m_location));
 		graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
 	}
 	
@@ -521,19 +521,19 @@ class KamikazeZoneDrawable implements IDrawable
 	private final String m_location;
 	private final UIContext m_uiContext;
 	
-	public KamikazeZoneDrawable(final PlayerID player, final Territory location, UIContext uiContext)
+	public KamikazeZoneDrawable(final PlayerID player, final Territory location, final UIContext uiContext)
 	{
 		super();
 		m_location = location.getName();
 		m_uiContext = uiContext;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		// Change so only original owner gets the kamikazi zone marker
-		Territory terr = data.getMap().getTerritory(m_location);
-		Image img = m_uiContext.getFlagImageFactory().getFadedFlag(data.getPlayerList().getPlayerID(TerritoryAttachment.get(terr).getOriginalOwner().getName()));
-		Point point = mapData.getKamikazeMarkerLocation(data.getMap().getTerritory(m_location));
+		final Territory terr = data.getMap().getTerritory(m_location);
+		final Image img = m_uiContext.getFlagImageFactory().getFadedFlag(data.getPlayerList().getPlayerID(TerritoryAttachment.get(terr).getOriginalOwner().getName()));
+		final Point point = mapData.getKamikazeMarkerLocation(data.getMap().getTerritory(m_location));
 		graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
 	}
 	
@@ -550,17 +550,17 @@ class BlockadeZoneDrawable implements IDrawable
 	
 	// private final UIContext m_uiContext;
 	
-	public BlockadeZoneDrawable(final Territory location, UIContext uiContext)
+	public BlockadeZoneDrawable(final Territory location, final UIContext uiContext)
 	{
 		super();
 		m_location = location.getName();
 		// m_uiContext = uiContext;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		// Find blockade.png from misc folder
-		Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(m_location));
+		final Point point = mapData.getBlockadePlacementPoint(data.getMap().getTerritory(m_location));
 		graphics.drawImage(mapData.getBlockadeImage(), point.x - bounds.x, point.y - bounds.y, null);
 	}
 	
@@ -580,13 +580,13 @@ class SeaZoneOutlineDrawable implements IDrawable
 		m_territoryName = territoryName;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		
-		Territory territory = data.getMap().getTerritory(m_territoryName);
-		List<Polygon> polys = mapData.getPolygons(territory);
+		final Territory territory = data.getMap().getTerritory(m_territoryName);
+		final List<Polygon> polys = mapData.getPolygons(territory);
 		
-		Iterator<Polygon> iter2 = polys.iterator();
+		final Iterator<Polygon> iter2 = polys.iterator();
 		while (iter2.hasNext())
 		{
 			Polygon polygon = iter2.next();
@@ -615,12 +615,12 @@ class SeaZoneOutlineDrawable implements IDrawable
 
 abstract class TerritoryDrawable
 {
-	protected final void draw(Rectangle bounds, Graphics2D graphics, MapData mapData,
-				AffineTransform unscaled, AffineTransform scaled, Territory territory, Paint territoryPaint)
+	protected final void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
+				final AffineTransform unscaled, final AffineTransform scaled, final Territory territory, final Paint territoryPaint)
 	{
-		List<Polygon> polys = mapData.getPolygons(territory);
+		final List<Polygon> polys = mapData.getPolygons(territory);
 		
-		Object oldAAValue = graphics.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+		final Object oldAAValue = graphics.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
 		// at 100% scale, this makes the lines look worse
 		if (!(scaled == unscaled))
 			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -654,25 +654,25 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 		m_territoryName = territoryName;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData,
-				AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
+				final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		
-		Set<PlayerID> players = new HashSet<PlayerID>();
-		for (Unit u : data.getMap().getTerritory(m_territoryName).getUnits())
+		final Set<PlayerID> players = new HashSet<PlayerID>();
+		for (final Unit u : data.getMap().getTerritory(m_territoryName).getUnits())
 		{
 			if (!TripleAUnit.get(u).getSubmerged())
 				players.add(u.getOwner());
 		}
 		
-		Territory territory = data.getMap().getTerritory(m_territoryName);
+		final Territory territory = data.getMap().getTerritory(m_territoryName);
 		PlayerID attacker = null;
 		boolean draw = false;
-		for (PlayerID p : players)
+		for (final PlayerID p : players)
 		{
 			if (!territory.isWater())
 			{
-				if (!data.getRelationshipTracker().isAllied(p, territory.getOwner()))
+                if (data.getRelationshipTracker().isAtWar(p, territory.getOwner()))
 				{
 					attacker = p;
 					draw = true;
@@ -682,9 +682,9 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 			else
 			{
 				// O(n^2), but n is usually 2, and almost always < 10
-				for (PlayerID p2 : players)
+				for (final PlayerID p2 : players)
 				{
-					if (!data.getRelationshipTracker().isAllied(p, p2))
+                    if (data.getRelationshipTracker().isAtWar(p, p2))
 					{
 						draw = true;
 						break;
@@ -703,7 +703,7 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 				stripeColor = mapData.getPlayerColor(attacker.getName());
 			}
 			
-			Paint paint = new GradientPaint(
+			final Paint paint = new GradientPaint(
 						0 - (float) bounds.getX(), 0 - (float) bounds.getY(),
 						// (float) (tBounds.getX() - bounds.getX()),
 						// (float) (tBounds.getY() - bounds.getY()),
@@ -738,10 +738,10 @@ class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable
 		m_territoryName = territoryName;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		
-		Territory territory = data.getMap().getTerritory(m_territoryName);
+		final Territory territory = data.getMap().getTerritory(m_territoryName);
 		Color territoryColor;
 		
 		if (TerritoryAttachment.get(territory).isImpassible())

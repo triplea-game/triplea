@@ -1,9 +1,11 @@
 Changes for 1.4
-* Fixed bug where victory city victories happened in FFA maps according to the current alliance rather than the player's alliance tracker. (veqryn)
-
 * Adding politicstext.properties for Napoleonic Empires. (veqryn)
 
 * Massive update to Napoleonic Empires: FFA, to allow it to use Politics. (veqryn)
+
+* Fixed rendering issue where nations that were neutral to each other still caused red markup when in the same territory or sea zone. (frigoref)
+
+* Fixed bug where victory city victories happened in FFA maps according to the current alliance rather than the player's alliance tracker. (veqryn)
 
 * Added "upkeepCost" as an attachment for RelationshipTypeAttachment, which allows you to have a cost in order to maintain a relationship. (veqryn)
 
