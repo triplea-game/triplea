@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Eight puzzle" version="1.0"/>
+	<info name="Eight puzzle" version="1.1"/>
 	
 	<loader javaClass="games.puzzle.slidingtiles.NPuzzle"/>
 	
@@ -14,6 +14,8 @@
 	<playerList>
 		<!-- In turn order -->
 		<player name="Player" optional="false"/>
+		
+        <alliance player="Player" alliance="Player"/>
 	</playerList>
 
 	<gamePlay>

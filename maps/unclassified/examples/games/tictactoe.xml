@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="Tic Tac Toe" version="0.1"/>
+	<info name="Tic Tac Toe" version="0.3"/>
 	
 	<loader javaClass="games.puzzle.tictactoe.TicTacToe"/>
 	
@@ -16,6 +16,9 @@
 		<!-- In turn order -->
 		<player name="X" optional="false"/>
 		<player name="O" optional="false"/>
+		
+        <alliance player="X" alliance="X"/>
+        <alliance player="O" alliance="O"/>
 	</playerList>
 	
 	

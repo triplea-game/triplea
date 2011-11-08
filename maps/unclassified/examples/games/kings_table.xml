@@ -3,7 +3,7 @@
 
 <game>
 
-	<info name="King’s Table" version="1.0"/>
+	<info name="King’s Table" version="1.1"/>
 	
 	<loader javaClass="games.strategy.kingstable.KingsTable"/>
 	
@@ -16,6 +16,9 @@
 		<!-- In turn order -->
 		<player name="Black" optional="false"/>
 		<player name="White" optional="false"/>
+		
+        <alliance player="Black" alliance="Black"/>
+        <alliance player="White" alliance="White"/>
 	</playerList>
 	
 	

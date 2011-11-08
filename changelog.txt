@@ -1,3 +1,7 @@
+Changes for 1.5
+* Fixing bugs in 'example' maps: Tic Tac Toe, King's Table, and Sliding Tiles 8-number. (veqryn)
+
+
 Changes for 1.4
 * Adding politicstext.properties for Napoleonic Empires. (veqryn)
 
