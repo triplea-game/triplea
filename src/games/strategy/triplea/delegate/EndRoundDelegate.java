@@ -86,7 +86,7 @@ public class EndRoundDelegate extends BaseDelegate
 			{
 				victoryMessage = "Axis achieve VP victory";
 				aBridge.getHistoryWriter().startEvent(victoryMessage);
-				Collection<PlayerID> winners = data.getAllianceTracker().getPlayersCollectionInAlliance(
+				Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance(
 							data.getAllianceTracker().getAlliancesPlayerIsIn(japanese).iterator().next());
 				signalGameOver(victoryMessage, winners, aBridge);
 			}
@@ -134,7 +134,7 @@ public class EndRoundDelegate extends BaseDelegate
 					{
 						victoryMessage = allianceName + " achieve economic victory";
 						aBridge.getHistoryWriter().startEvent(victoryMessage);
-						Collection<PlayerID> winners = data.getAllianceTracker().getPlayersCollectionInAlliance(allianceName);
+						Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
 						// Added this to end the game on victory conditions
 						signalGameOver(victoryMessage, winners, aBridge);
 					}
@@ -194,14 +194,14 @@ public class EndRoundDelegate extends BaseDelegate
 		if (germany && japan && count >= 2)
 		{
 			aBridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
-			Collection<PlayerID> winners = data.getAllianceTracker().getPlayersCollectionInAlliance("Axis");
+			Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance("Axis");
 			signalGameOver(victoryMessage, winners, aBridge);
 		}
 		
 		if (russia && !germany && britain && !japan && america)
 		{
 			aBridge.getHistoryWriter().startEvent("Allies" + victoryMessage);
-			Collection<PlayerID> winners = data.getAllianceTracker().getPlayersCollectionInAlliance("Allies");
+			Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance("Allies");
 			signalGameOver(victoryMessage, winners, aBridge);
 		}
 	}
@@ -266,7 +266,7 @@ public class EndRoundDelegate extends BaseDelegate
 			if (teamVCs >= vcAmount)
 			{
 				aBridge.getHistoryWriter().startEvent(allianceName + victoryMessage + vcAmount + " Victory Cities!");
-				Collection<PlayerID> winners = data.getAllianceTracker().getPlayersCollectionInAlliance(allianceName);
+				Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
 				// Added this to end the game on victory conditions
 				signalGameOver(allianceName + victoryMessage + vcAmount + " Victory Cities!", winners, aBridge);
 			}

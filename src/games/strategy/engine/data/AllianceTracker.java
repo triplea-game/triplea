@@ -20,8 +20,8 @@
 
 package games.strategy.engine.data;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,6 +32,10 @@ import java.util.Set;
  * Tracks alliances between players.
  * 
  * An alliance is a named entity, players are added to an alliance.
+ * 
+ * Currently only used for tracking stats (like TUV, total production, etc), and for tracking total victory cities for alliance based victory conditions.
+ * 
+ * Not used for determining in-game alliances (instead, see the Relationship tracker for that).
  * 
  * @author Sean Bridges, modified by Erik von der Osten
  * @version 1.0
@@ -71,59 +75,63 @@ public class AllianceTracker extends GameDataComponent
 		}
 	}
 	
-	/**
-	 * Removes player from alliance allianceName. Throws an exception if
-	 * player is not in that alliance. Throws an exception if the player
-	 * is not in the specified alliance.
-	 * 
-	 * @param player
-	 *            The player to remove from the alliance.
-	 * @param allianceName
-	 *            The alliance to remove from.
-	 * 
-	 *            protected void removeFromAlliance(PlayerID player, String allianceName) {
-	 *            if (!m_alliances.containsKey(player)) {
-	 *            throw new IllegalStateException(
-	 *            "Cannot remove player from alliance they are not in.");
-	 *            } else {
-	 *            Collection<String> alliances = m_alliances.get(player);
-	 *            if (!alliances.contains(allianceName)) {
-	 *            throw new IllegalStateException(
-	 *            "Cannot remove player from alliance they are not in.");
-	 *            } else {
-	 *            alliances.remove(allianceName);
-	 *            }
-	 *            }
-	 *            }
-	 */
+	/*
+	  Removes player from alliance allianceName. Throws an exception if
+	  player is not in that alliance. Throws an exception if the player
+	  is not in the specified alliance.
+	  
+	  @param player
+	             The player to remove from the alliance.
+	  @param allianceName
+	             The alliance to remove from.
+	*/
+	/*
+	protected void removeFromAlliance(PlayerID player, String allianceName)
+	{
+		if (!m_alliances.containsKey(player))
+		{
+			throw new IllegalStateException("Cannot remove player from alliance they are not in.");
+		}
+		else
+		{
+			Collection<String> alliances = m_alliances.get(player);
+			if (!alliances.contains(allianceName))
+			{
+				throw new IllegalStateException("Cannot remove player from alliance they are not in.");
+			}
+			else
+			{
+				alliances.remove(allianceName);
+			}
+		}
+	}
+	*/
 	
-	/**
-	 * Returns whether two players are allied.<br>
-	 * isAllied(a,a) returns true.
-	 * 
-	 * public boolean isAllied(PlayerID p1, PlayerID p2)
-	 * {
-	 * if(useRelationshipModel()) {
-	 * return Matches.RelationshipIsAllied.match((getRelationshipType(p1,p2)));
-	 * }
-	 * 
-	 * if(p1 == null || p2 == null)
-	 * throw new IllegalArgumentException("Arguments cannot be null p1:" + p1 + " p2:" + p2);
-	 * 
-	 * if(p1.equals(p2))
-	 * return true;
-	 * 
-	 * 
-	 * if(!m_alliances.containsKey(p1) || !m_alliances.containsKey(p2))
-	 * return false;
-	 * 
-	 * Collection<String> a1 = m_alliances.get(p1);
-	 * Collection<String> a2 = m_alliances.get(p2);
-	 * 
-	 * return games.strategy.util.Util.someIntersect(a1,a2);
-	 * 
-	 * }
-	 */
+	/*
+	//Returns whether two players are allied.	isAllied(a,a) returns true.
+	public boolean isAllied(PlayerID p1, PlayerID p2)
+	{
+		if (useRelationshipModel())
+		{
+			return Matches.RelationshipIsAllied.match((getRelationshipType(p1, p2)));
+		}
+		
+		if (p1 == null || p2 == null)
+			throw new IllegalArgumentException("Arguments cannot be null p1:" + p1 + " p2:" + p2);
+		
+		if (p1.equals(p2))
+			return true;
+		
+		if (!m_alliances.containsKey(p1) || !m_alliances.containsKey(p2))
+			return false;
+		
+		Collection<String> a1 = m_alliances.get(p1);
+		Collection<String> a2 = m_alliances.get(p2);
+		
+		return games.strategy.util.Util.someIntersect(a1, a2);
+		
+	}
+	*/
 	
 	/**
 	 * 
@@ -166,20 +174,16 @@ public class AllianceTracker extends GameDataComponent
 		return rVal;
 	}
 	
-	public Collection<PlayerID> getPlayersCollectionInAlliance(String allianceName)
-	{
-		HashSet<PlayerID> players = getPlayersInAlliance(allianceName);
-		Collection<PlayerID> rVal = new ArrayList<PlayerID>();
-		for (PlayerID p : players)
-		{
-			rVal.add(p);
-		}
-		return rVal;
-	}
-	
 	public Collection<String> getAlliancesPlayerIsIn(PlayerID player)
 	{
-		return m_alliances.get(player);
+		Collection<String> rVal = m_alliances.get(player);
+		if (rVal == null)
+		{
+			//throw new IllegalStateException("Player, " + player.getName() + ", is not a member of any alliance!");
+			System.out.println("Player, " + player.getName() + ", is not a member of any alliance!");
+			return Collections.singleton(player.getName());
+		}
+		return rVal;
 	}
 	
 	public Map<PlayerID, Collection<String>> getAlliancesMap()
