@@ -1,9 +1,11 @@
 Changes for 1.5
-* Fixing bug where clicking cancel in order to look around the map, during casualty selection, generated an error. (frigoref)
+* Fixed bug in stats and xml exporter where the file name contained illegal characters, causing the file creation to fail. (veqryn)
 
-* Fixing bugs in alliance tracker related to players not being in an alliance. (veqryn)
+* Fixed bug where clicking cancel in order to look around the map, during casualty selection, generated an error. (frigoref)
 
-* Fixing bugs in 'example' maps: Tic Tac Toe, King's Table, and Sliding Tiles 8-number. (veqryn)
+* Fixed bugs in alliance tracker related to players not being in an alliance. (veqryn)
+
+* Fixed bugs in 'example' maps: Tic Tac Toe, King's Table, and Sliding Tiles 8-number. (veqryn)
 
 
 Changes for 1.4

@@ -17,7 +17,6 @@ import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.net.BareBonesBrowserLaunch;
 import games.strategy.net.IServerMessenger;
-
 import java.awt.BorderLayout;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -27,7 +26,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FilenameFilter;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -596,7 +594,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 					fileDialog.setVisible(true);
 					
 					/*DateFormat format = new SimpleDateFormat("yyyy_MM_dd");
-					String defaultFileName = "game_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound() + ".tsvg";
+					String defaultFileName = "game_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound();
+					defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
+					defaultFileName = defaultFileName + ".tsvg";
 					
 					fileDialog.setFile(defaultFileName);*/
 					String fileName = fileDialog.getFile();

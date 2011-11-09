@@ -42,6 +42,7 @@ import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.EventThreadJOptionPane;
+import games.strategy.util.IllegalCharacterRemover;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -834,8 +835,10 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				File rootDir = new File(System.getProperties().getProperty("user.dir"));
 				
-				DateFormat format = new SimpleDateFormat("yyyy_MM_dd");
-				String defaultFileName = "xml_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound() + ".xml";
+				DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
+				String defaultFileName = "xml_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound();
+				defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
+				defaultFileName = defaultFileName + ".xml";
 				
 				chooser.setSelectedFile(new File(rootDir, defaultFileName));
 				
@@ -909,8 +912,10 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		File rootDir = new File(System.getProperties().getProperty("user.dir"));
 		
-		DateFormat format = new SimpleDateFormat("yyyy_MM_dd");
-		String defaultFileName = "stats_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound() + (showPhaseStats ? "_full" : "_short") + ".csv";
+		DateFormat formatDate = new SimpleDateFormat("yyyy_MM_dd");
+		String defaultFileName = "stats_" + formatDate.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound() + (showPhaseStats ? "_full" : "_short");
+		defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
+		defaultFileName = defaultFileName + ".csv";
 		
 		chooser.setSelectedFile(new File(rootDir, defaultFileName));
 		
