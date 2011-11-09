@@ -921,32 +921,37 @@ public class BattleDisplay extends JPanel
 				final String btnText = hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
 				m_actionButton.setAction(new AbstractAction(btnText)
 				{
-					
+                    private UnitChooser chooser;
+                    private JScrollPane chooserScrollPane;
+
 					public void actionPerformed(ActionEvent e)
 					{
 						
 						String messageText = message + " " + btnText + ".";
-						UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
 						
-						chooser.setTitle(messageText);
-						if (isEditMode)
-							chooser.setMax(selectFrom.size());
-						else
-							chooser.setMax(count);
-						String[] options =
-						{ "Ok", "Cancel" };
-
-						JScrollPane chooserScrollPane = new JScrollPane(chooser);
+                        if (chooser == null || chooserScrollPane == null) {
+                            chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, m_data, true, m_mapPanel.getUIContext());
+                            
+                            chooser.setTitle(messageText);
+                            if (isEditMode)
+                                chooser.setMax(selectFrom.size());
+                            else
+                                chooser.setMax(count);
+                            
+                            chooserScrollPane = new JScrollPane(chooser);
+                            
+                            Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+                            int availHeight = screenResolution.height - 80;
+                            int availWidth = screenResolution.width - 30;
+                            availHeight -= 50;
+                            
+                            chooserScrollPane.setPreferredSize(new Dimension(
+                                    (chooserScrollPane.getPreferredSize().width > availWidth ? availWidth : (chooserScrollPane.getPreferredSize().height > availHeight ? chooserScrollPane.getPreferredSize().width + 22 : chooserScrollPane.getPreferredSize().width)), (chooserScrollPane
+                                            .getPreferredSize().height > availHeight ? availHeight : chooserScrollPane.getPreferredSize().height)));
+                            chooserScrollPane.setBorder(new LineBorder(chooserScrollPane.getBackground()));
+                        }
 						
-						Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-						int availHeight = screenResolution.height - 80;
-						int availWidth = screenResolution.width - 30;
-						availHeight -= 50;
-						
-						chooserScrollPane.setPreferredSize(new Dimension((chooserScrollPane.getPreferredSize().width > availWidth ? availWidth : (chooserScrollPane.getPreferredSize().height > availHeight ? chooserScrollPane.getPreferredSize().width+22 : chooserScrollPane.getPreferredSize().width)),
-									(chooserScrollPane.getPreferredSize().height > availHeight ? availHeight : chooserScrollPane.getPreferredSize().height)));
-						chooserScrollPane.setBorder(new LineBorder(chooser.getBackground()));
-						
+                        String[] options = { "Ok", "Cancel" };
 						int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane, hit.getName() + " select casualties",
 									JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 						if (option != 0)
