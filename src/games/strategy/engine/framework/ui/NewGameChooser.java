@@ -12,6 +12,8 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -29,9 +31,11 @@ import javax.swing.event.ListSelectionListener;
 
 public class NewGameChooser extends JDialog
 {
+	private static NewGameChooserModel s_cachedGameModel = null;
 	
 	private JButton m_okButton;
 	private JButton m_cancelButton;
+	private JButton m_refreshGamesButton;
 	private JList m_gameList;
 	private JPanel m_infoPanel;
 	private JEditorPane m_notesPanel;
@@ -53,7 +57,16 @@ public class NewGameChooser extends JDialog
 	{
 		m_okButton = new JButton("OK");
 		m_cancelButton = new JButton("Cancel");
-		m_gameListModel = new NewGameChooserModel();
+		m_refreshGamesButton = new JButton("Refresh Game List");
+		if (s_cachedGameModel == null)
+		{
+			m_gameListModel = new NewGameChooserModel();
+			s_cachedGameModel = m_gameListModel;
+		}
+		else
+		{
+			m_gameListModel = s_cachedGameModel;
+		}
 		m_gameList = new JList(m_gameListModel);
 		
 		m_infoPanel = new JPanel();
@@ -98,6 +111,8 @@ public class NewGameChooser extends JDialog
 		
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
 		
+		buttonsPanel.add(Box.createHorizontalStrut(30));
+		buttonsPanel.add(m_refreshGamesButton);
 		buttonsPanel.add(Box.createGlue());
 		buttonsPanel.add(m_okButton);
 		buttonsPanel.add(m_cancelButton);
@@ -203,6 +218,14 @@ public class NewGameChooser extends JDialog
 	
 	private void setupListeners()
 	{
+		m_refreshGamesButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				refreshGameList();
+			}
+		});
+		
 		m_okButton.addActionListener(new ActionListener()
 		{
 			
@@ -230,6 +253,63 @@ public class NewGameChooser extends JDialog
 				updateInfoPanel();
 			}
 			
+		});
+		
+		m_gameList.addMouseListener(new MouseListener()
+		{
+			public void mouseClicked(MouseEvent event)
+			{
+				if (event.getClickCount() == 2)
+				{
+					selectAndReturn();
+				}
+			}
+			
+			public void mousePressed(MouseEvent e)
+			{} // ignore
+			
+			public void mouseReleased(MouseEvent e)
+			{} // ignore
+			
+			public void mouseEntered(MouseEvent e)
+			{} // ignore
+			
+			public void mouseExited(MouseEvent e)
+			{} // ignore
+		});
+	}
+	
+	/**
+	 * Refreshes the game list (from disk) then caches the new list
+	 */
+	private void refreshGameList()
+	{
+		m_gameList.setEnabled(false);
+		final NewGameChooserEntry selected = getSelected();
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
+					m_gameListModel = new NewGameChooserModel();
+					s_cachedGameModel = m_gameListModel;
+					m_gameList.setModel(m_gameListModel);
+					if (selected != null)
+					{
+						String name = selected.getGameData().getGameName();
+						NewGameChooserEntry found = m_gameListModel.findByName(name);
+						if (name != null)
+						{
+							m_gameList.setSelectedValue(found, true);
+						}
+					}
+				}
+				finally
+				{
+					m_gameList.setEnabled(true);
+				}
+			}
 		});
 	}
 	

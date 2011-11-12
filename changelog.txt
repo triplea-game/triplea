@@ -1,4 +1,6 @@
 Changes for 1.5
+* Allowed double clicking for selecting a game, and had the choose game list be cached, with a refresh button. (qwertgold)
+
 * Fixed bug in stats and xml exporter where the file name contained illegal characters, causing the file creation to fail. (veqryn)
 
 * Fixed bug where clicking cancel in order to look around the map, during casualty selection, generated an error. (frigoref)
