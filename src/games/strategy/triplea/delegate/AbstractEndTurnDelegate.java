@@ -105,7 +105,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		int blockadeLoss = getProductionLoss(m_player, data);
 		toAdd -= blockadeLoss;
 		toAdd *= Properties.getPU_Multiplier(data);
-		int total = leftOverPUs + toAdd;
+		int total = m_player.getResources().getQuantity(PUs) + toAdd;
 		
 		String transcriptText;
 		if (blockadeLoss == 0)
