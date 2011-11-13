@@ -36,6 +36,7 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -80,11 +81,15 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	@Override
 	public void start(IDelegateBridge aBridge)
 	{
+		// figure out our current PUs before we do anything else, including super methods
+		GameData data = aBridge.getData();
+		Resource PUs = data.getResourceList().getResource(Constants.PUS);
+		final int leftOverPUs = aBridge.getPlayerID().getResources().getQuantity(PUs);
+		
 		super.start(aBridge);
 		if (!m_needToInitialize)
 			return;
 		m_hasPostedTurnSummary = false;
-		GameData data = getData();
 		
 		// can't collect unless you own your own capital
 		PlayerAttachment pa = PlayerAttachment.get(m_player);
@@ -93,7 +98,6 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
 			return;
 		
-		Resource PUs = data.getResourceList().getResource(Constants.PUS);
 		// just collect resources
 		Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
 		
@@ -101,7 +105,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		int blockadeLoss = getProductionLoss(m_player, data);
 		toAdd -= blockadeLoss;
 		toAdd *= Properties.getPU_Multiplier(data);
-		int total = m_player.getResources().getQuantity(PUs) + toAdd;
+		int total = leftOverPUs + toAdd;
 		
 		String transcriptText;
 		if (blockadeLoss == 0)
@@ -117,19 +121,6 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			total += bonds;
 			toAdd += bonds;
 			transcriptText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds) + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
-			aBridge.getHistoryWriter().startEvent(transcriptText);
-		}
-		
-		int relationshipUpkeepCost = 0;
-		for (Relationship r : data.getRelationshipTracker().getRelationships(m_player))
-		{
-			relationshipUpkeepCost += r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost();
-		}
-		if (relationshipUpkeepCost != 0)
-		{
-			total -= relationshipUpkeepCost;
-			toAdd -= relationshipUpkeepCost;
-			transcriptText = m_player.getName() + (relationshipUpkeepCost > 0 ? " pays " : " taxes ") + relationshipUpkeepCost + MyFormatter.pluralize(" PU", relationshipUpkeepCost) + " in order to maintain current relationships with other players, for a total of " + total + MyFormatter.pluralize(" PU", total);
 			aBridge.getHistoryWriter().startEvent(transcriptText);
 		}
 		
@@ -155,7 +146,40 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		{
 			changeUnitOwnership(aBridge);
 		}
-
+		
+		// now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including NOs)
+		final int currentPUs = m_player.getResources().getQuantity(PUs);
+		final float gainedPUS = Math.max(0, currentPUs - leftOverPUs);
+		
+		int relationshipUpkeepCostFlat = 0;
+		int relationshipUpkeepCostPercentage = 0;
+		int relationshipUpkeepTotalCost = 0;
+		for (Relationship r : data.getRelationshipTracker().getRelationships(m_player))
+		{
+			String[] upkeep = r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost().split(":");
+			if (upkeep.length == 1 || upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_FLAT))
+				relationshipUpkeepCostFlat += Integer.parseInt(upkeep[0]);
+			else if (upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_PERCENTAGE))
+				relationshipUpkeepCostPercentage += Integer.parseInt(upkeep[0]);
+		}
+		relationshipUpkeepCostPercentage = Math.min(100, relationshipUpkeepCostPercentage);
+		if (relationshipUpkeepCostPercentage != 0)
+		{
+			relationshipUpkeepTotalCost += Math.round(gainedPUS * (relationshipUpkeepCostPercentage) / 100f);
+		}
+		if (relationshipUpkeepCostFlat != 0)
+		{
+			relationshipUpkeepTotalCost += relationshipUpkeepCostFlat;
+		}
+		// we can't remove more than we have, and we also must flip the sign
+		relationshipUpkeepTotalCost = Math.min(currentPUs, relationshipUpkeepTotalCost);
+		relationshipUpkeepTotalCost = -1 * relationshipUpkeepTotalCost;
+		int newTotal = currentPUs + relationshipUpkeepTotalCost;
+		transcriptText = m_player.getName() + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ") + (-1*relationshipUpkeepTotalCost) + MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost) + " in order to maintain current relationships with other players, and ends the turn with " + newTotal + MyFormatter.pluralize(" PU", newTotal);
+		aBridge.getHistoryWriter().startEvent(transcriptText);
+		Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
+		aBridge.addChange(upkeep);
+		
 		m_needToInitialize = false;
 	}
 	

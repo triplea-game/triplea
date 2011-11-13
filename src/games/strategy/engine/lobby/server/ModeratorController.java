@@ -164,8 +164,8 @@ public class ModeratorController implements IModeratorController
 	public void boot(INode node)
 	{
 		assertUserIsAdmin();
-		if (!MessageContext.getSender().getName().equals("Admin") && isPlayerAdmin(node)) // Let the master lobby administrator boot admins
-			throw new IllegalStateException("Can't boot an admin");
+		/*if (!MessageContext.getSender().getName().equals("Admin") && isPlayerAdmin(node)) // Let the master lobby administrator boot admins
+			throw new IllegalStateException("Can't boot an admin");*/
 		
 		// You can't boot the server node
 		if (m_messenger.getServerNode().equals(node))

@@ -42,6 +42,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
 	public static final String ARCHETYPE_ALLIED = Constants.RELATIONSHIP_ARCHETYPE_ALLIED;
 	
+	public static final String UPKEEP_FLAT = "flat";
+	public static final String UPKEEP_PERCENTAGE = "percentage";
+	
 	private final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
 	private final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
 	private final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
@@ -106,8 +109,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		else if (archeType.toLowerCase().equals(ARCHETYPE_NEUTRAL))
 			m_archeType = ARCHETYPE_NEUTRAL;
 		else
-			throw new GameParseException("archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or " + ARCHETYPE_NEUTRAL + " for " + Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME + ": "
-						+ getName());
+			throw new GameParseException("RelationshipTypeAttachment: archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or " + ARCHETYPE_NEUTRAL + " for "
+						+ Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME + ": " + getName());
 	}
 	
 	/**
@@ -160,22 +163,39 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_TRUE);
 	}
 	
-	public void setUpkeepCost(String integerCost)
+	public void setUpkeepCost(String integerCost) throws GameParseException
 	{
 		if (integerCost.equals(PROPERTY_DEFAULT))
 			m_upkeepCost = PROPERTY_DEFAULT;
 		else
 		{
-			getInt(integerCost);
+			String[] s = integerCost.split(":");
+			if (s.length < 1 || s.length > 2)
+				throw new GameParseException("RelationshipTypeAttachment: upkeepCost must have either 1 or 2 fields");
+			int cost = getInt(s[0]);
+			if (s.length == 2)
+			{
+				if (s[1].equals(UPKEEP_FLAT))
+				{}
+				else if (s[1].equals(UPKEEP_PERCENTAGE))
+				{
+					if (cost > 100)
+						throw new GameParseException("RelationshipTypeAttachment: upkeepCost may not have a percentage greater than 100");
+				}
+				else
+				{
+					throw new GameParseException("RelationshipTypeAttachment: upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE);
+				}
+			}
 			m_upkeepCost = integerCost;
 		}
 	}
 	
-	public int getUpkeepCost()
+	public String getUpkeepCost()
 	{
 		if (m_upkeepCost.equals(PROPERTY_DEFAULT))
-			return 0;
-		return getInt(m_upkeepCost);
+			return String.valueOf(0);
+		return m_upkeepCost;
 	}
 	
 	/**

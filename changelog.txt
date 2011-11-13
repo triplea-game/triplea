@@ -1,4 +1,8 @@
 Changes for 1.5
+* Changing relationship type attachment, upkeepCost, to allow an integer percentage, which will effect all income gained during the end of turn step. (veqryn)
+
+* Re-allow booting (boot-slapping) of admins. (veqryn)
+
 * Allowed double clicking for selecting a game, and had the choose game list be cached, with a refresh button. (qwertgold)
 
 * Fixed bug in stats and xml exporter where the file name contained illegal characters, causing the file creation to fail. (veqryn)
