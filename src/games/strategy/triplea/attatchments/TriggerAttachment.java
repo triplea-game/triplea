@@ -2097,9 +2097,11 @@ public class TriggerAttachment extends DefaultAttachment
 	}
 	
 	
-	// shameless cheating. making a fake route, so as to handle battles
-	// properly without breaking battleTracker protected status or duplicating
-	// a zillion lines of code.
+	/**
+	 * shameless cheating. making a fake route, so as to handle battles
+	 * properly without breaking battleTracker protected status or duplicating
+	 * a zillion lines of code.
+	 */
 	private static class CRoute extends Route
 	{
 		private static final long serialVersionUID = -4571007882522107666L;

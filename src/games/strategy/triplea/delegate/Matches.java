@@ -2218,6 +2218,25 @@ public class Matches
 		};
 	}
 	
+	public static Match<Territory> isTerritoryEnemyAndNotUnownedWater(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			
+			@Override
+			public boolean match(Territory t)
+			{
+				if (t.getOwner().equals(player))
+					return false;
+				// if we look at territory attachments, may have funny results for blockades or other things that are passable and not owned. better to check them by alliance. (veqryn)
+				// OLD code included: if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null){return false;}
+				if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater()) // this will still return true for enemy and neutral owned convoy zones (water)
+					return false;
+				return data.getRelationshipTracker().isAtWar(player, t.getOwner());
+			}
+		};
+	}
+	
 	public static Match<Territory> isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()

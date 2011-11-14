@@ -155,35 +155,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		return new BattleListing(battles, bombing);
 	}
 	
-	private void addContinuedBattles(PlayerID id)
-	{
-		Collection<Territory> terrs = m_bridge.getData().getMap().getTerritories();
-		CompositeMatch<Territory> enemyAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(id, m_bridge.getData()));
-		enemyAndOwnedUnits.add(Matches.territoryHasUnitsOwnedBy(id));
-		
-		Collection<Territory> battleTerrs = Match.getMatches(terrs, enemyAndOwnedUnits);
-		
-		for (Territory terr : battleTerrs)
-		{
-			Collection<Unit> ownedUnits = Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsOwnedBy(id));
-			// we need to remove any units which are participating in bombing raids
-			if (getBattleTracker().getPendingBattle(terr, true) != null)
-			{
-				ownedUnits.removeAll(getBattleTracker().getPendingBattle(terr, true).getAttackingUnits());
-			}
-			
-			if (Match.someMatch(ownedUnits, Matches.unitCanAttack(id)))
-			{
-				if (getBattleTracker().getPendingBattle(terr, false) == null)
-				{
-					Route route = new Route();
-					route.setStart(terr);
-					getBattleTracker().addBattle(route, ownedUnits, false, id, m_bridge, null);
-				}
-			}
-		}
-	}
-	
 	/**
 	 * @return
 	 */
@@ -367,6 +338,37 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		return null; // User elected not to bombard with this unit
 	}
 	
+	private void addContinuedBattles(PlayerID id)
+	{
+		Collection<Territory> terrs = m_bridge.getData().getMap().getTerritories();
+		CompositeMatch<Territory> enemyAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(id, getData()), Matches.territoryHasUnitsOwnedBy(id));
+		CompositeMatch<Territory> enemyTerritoryAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWater(id, getData()), Matches.territoryHasUnitsOwnedBy(id));
+		CompositeMatch<Territory> enemyUnitsOrEnemyTerritory = new CompositeMatchOr<Territory>(enemyAndOwnedUnits, enemyTerritoryAndOwnedUnits);
+		
+		Collection<Territory> battleTerrs = Match.getMatches(terrs, enemyUnitsOrEnemyTerritory);
+		
+		for (Territory terr : battleTerrs)
+		{
+			Collection<Unit> ownedUnits = Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsOwnedBy(id));
+			// we need to remove any units which are participating in bombing raids
+			if (getBattleTracker().getPendingBattle(terr, true) != null)
+			{
+				ownedUnits.removeAll(getBattleTracker().getPendingBattle(terr, true).getAttackingUnits());
+			}
+			
+			if (Match.someMatch(ownedUnits, Matches.unitCanAttack(id)))
+			{
+				if (getBattleTracker().getPendingBattle(terr, false) == null)
+				{
+					if (Match.someMatch(ownedUnits, Matches.UnitIsSub))
+						getBattleTracker().addBattle(new Route(terr), ownedUnits, false, id, m_bridge, null);
+					else
+						getBattleTracker().addBattle(new CRoute(terr), ownedUnits, false, id, m_bridge, null);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Setup the battles where the battle occurs because sea units are in the
 	 * same sea zone. This happens when subs emerge (after being submerged), and
@@ -531,6 +533,40 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		else
 		{
 			return null;
+		}
+	}
+	
+	
+	/**
+	 * shameless cheating. making a fake route, so as to handle battles
+	 * properly without breaking battleTracker protected status or duplicating
+	 * a zillion lines of code.
+	 */
+	private static class CRoute extends Route
+	{
+		private static final long serialVersionUID = -4571007882522107666L;
+		
+		public CRoute(Territory terr)
+		{
+			super(terr);
+		}
+		
+		@Override
+		public Territory getEnd()
+		{
+			return getStart();
+		}
+		
+		@Override
+		public int getLength()
+		{
+			return 1;
+		}
+		
+		@Override
+		public Territory at(int i)
+		{
+			return getStart();
 		}
 	}
 	

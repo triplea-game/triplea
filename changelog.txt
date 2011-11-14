@@ -1,4 +1,8 @@
 Changes for 1.5
+* Fixed bug where territories with no units, had enemy units in them from a previous turn, did not start any battle, and where therefore never taken over. (veqryn)
+
+* Fixed null pointer in Moore AI for when it owns a factory in a territory it does not control. (veqryn)
+
 * Created new unit attachment, "special", which currently allows for "canOnlyPlaceInOriginalTerritories". (veqryn)
 
 * Fixed zoom out and zoom in on the map with the Mouse Wheel, by holding down the "ALT" key. (veqryn)

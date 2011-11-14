@@ -6044,7 +6044,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			float diffStrength = eStrength - myStrength;
 			landMap.put(ourTerr, diffStrength);
 		}
-		List<Territory> myFactories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
+		List<Territory> myFactories = Match.getMatches(SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory), Matches.isTerritoryAllied(player, data));
 		for (Territory factTerr : myFactories)
 		{
 			float diffStrength = landMap.get(factTerr).floatValue();
