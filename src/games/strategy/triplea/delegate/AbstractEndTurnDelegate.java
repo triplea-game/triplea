@@ -174,11 +174,14 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		// we can't remove more than we have, and we also must flip the sign
 		relationshipUpkeepTotalCost = Math.min(currentPUs, relationshipUpkeepTotalCost);
 		relationshipUpkeepTotalCost = -1 * relationshipUpkeepTotalCost;
-		int newTotal = currentPUs + relationshipUpkeepTotalCost;
-		transcriptText = m_player.getName() + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ") + (-1*relationshipUpkeepTotalCost) + MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost) + " in order to maintain current relationships with other players, and ends the turn with " + newTotal + MyFormatter.pluralize(" PU", newTotal);
-		aBridge.getHistoryWriter().startEvent(transcriptText);
-		Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
-		aBridge.addChange(upkeep);
+		if (relationshipUpkeepTotalCost != 0)
+		{
+			int newTotal = currentPUs + relationshipUpkeepTotalCost;
+			transcriptText = m_player.getName() + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ") + (-1*relationshipUpkeepTotalCost) + MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost) + " in order to maintain current relationships with other players, and ends the turn with " + newTotal + MyFormatter.pluralize(" PU", newTotal);
+			aBridge.getHistoryWriter().startEvent(transcriptText);
+			Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
+			aBridge.addChange(upkeep);
+		}
 		
 		m_needToInitialize = false;
 	}
