@@ -585,6 +585,9 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			
 			if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
 				return "Cannot place these units in " + to.getName() + " as territory does not contain required units at start of turn";
+			
+			if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit) && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to))
+				return "Cannot place these units in " + to.getName() + " as territory is not originally owned";
 		}
 		
 		return null;
@@ -650,6 +653,9 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 				continue;
 			
 			if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
+				continue;
+			
+			if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit) && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to))
 				continue;
 			
 			// account for any unit placement restrictions by territory
@@ -736,6 +742,9 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 				continue;
 			
 			if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
+				continue;
+			
+			if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit) && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to))
 				continue;
 			
 			// account for any unit placement restrictions by territory

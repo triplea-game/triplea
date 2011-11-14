@@ -3522,6 +3522,50 @@ public class Matches
 		};
 	}
 	
+	public static final Match<Unit> UnitCanOnlyPlaceInOriginalTerritories = new Match<Unit>()
+	{
+		@Override
+		public boolean match(Unit u)
+		{
+			UnitAttachment ua = UnitAttachment.get(u.getType());
+			Set<String> specialOptions = ua.getSpecial();
+			for (String option : specialOptions)
+			{
+				if (option.equals("canOnlyPlaceInOriginalTerritories"))
+					return true;
+			}
+			return false;
+		}
+	};
+	
+	/**
+	 * Accounts for OccupiedTerrOf.  Returns false if there is no territory attachment (like if it is water).
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public static final Match<Territory> TerritoryIsOriginallyOwnedBy(final PlayerID player)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(Territory t)
+			{
+				TerritoryAttachment ta = TerritoryAttachment.get(t);
+				if (ta == null)
+					return false;
+				PlayerID originalOwner = ta.getOriginalOwner();
+				if ((originalOwner == null && player != null) || (originalOwner != null && player == null))
+					return false;
+				PlayerID occupiedTerrOf = ta.getOccupiedTerrOf();
+				if (occupiedTerrOf == null)
+					return originalOwner.equals(player);
+				else
+					return occupiedTerrOf.equals(player);
+			}
+		};
+	}
+	
 	/** Creates new Matches */
 	private Matches()
 	{

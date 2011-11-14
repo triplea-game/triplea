@@ -133,6 +133,9 @@ public class UnitAttachment extends DefaultAttachment
 	// a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
 	private String[] m_repairsUnits;
 	
+	// currently used for: placement in original territories only,
+	private HashSet<String> m_special = new HashSet<String>();
+	
 	// multiple colon delimited lists of the unit combos required for this unit to be built somewhere. (units must be in same territory, owned by player, not be disabled)
 	private ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>();
 	
@@ -573,6 +576,37 @@ public class UnitAttachment extends DefaultAttachment
 		m_repairsUnits = value.split(":");
 	}
 	
+	public String[] getRepairsUnits()
+	{
+		return m_repairsUnits;
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 */
+	public void setSpecial(String value)
+	{
+		String[] s = value.split(":");
+		for (String option : s)
+		{
+			if (!(option.equals("none") || option.equals("canOnlyPlaceInOriginalTerritories")))
+				throw new IllegalStateException("Unit Attachments: special does not allow: " + option);
+			m_special.add(option);
+		}
+	}
+	
+	public HashSet<String> getSpecial()
+	{
+		return m_special;
+	}
+	
+	public void clearSpecial()
+	{
+		m_special.clear();
+	}
+	
 	public void setCanInvadeOnlyFrom(String value) throws GameParseException
 	{
 		String[] canOnlyInvadeFrom = value.split(":");
@@ -607,11 +641,6 @@ public class UnitAttachment extends DefaultAttachment
 			return true;
 		}
 		return Arrays.asList(m_canInvadeOnlyFrom).contains(transport);
-	}
-	
-	public String[] getRepairsUnits()
-	{
-		return m_repairsUnits;
 	}
 	
 	/**
@@ -1649,6 +1678,7 @@ public class UnitAttachment extends DefaultAttachment
 					"  canOnlyBePlacedInTerritoryValuedAtX:" + m_canOnlyBePlacedInTerritoryValuedAtX +
 					"  maxBuiltPerPlayer:" + m_maxBuiltPerPlayer +
 
+					"  special:" + m_special +
 					"  isSuicide:" + m_isSuicide +
 					"  isKamikaze:" + m_isKamikaze +
 					"  combatTransport:" + m_isCombatTransport +

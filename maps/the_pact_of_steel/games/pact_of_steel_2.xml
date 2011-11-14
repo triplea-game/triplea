@@ -1778,6 +1778,7 @@
 			maxConstructionsPerTypePerTerr		values: is how many max of this type may be in a territory. this must be greater than constructionsPerTerrPerTypePerTurn
 															if "More Constructions with/without Factory" = true, then the minimum will be either maxConstructionsPerTypePerTerr or the PU value of the territory (whichever number is greater) in territories with/without factories
 															if "Unlimited Constructions" = true, then this number becomes 10000
+			special								values:	a colon delimited list of possible options for this unit.  Currently only supports: "canOnlyPlaceInOriginalTerritories"
 	
 	aa related:
 			isAA								values: allows a unit to shoot at air units before combat starts and not participate in the rest of combat, have certain movement restrictions, and be capturable
@@ -2147,6 +2148,8 @@
 						 <!-- createsResourcesList is a list of resources that this unit will create every turn at the end of the turn. can have multiple instances 
 						 <option name="createsResourcesList" value="3:PUs"/>
 						 <option name="createsResourcesList" value="2:techTokens"/>-->
+						 <!-- special allows for some different options for the unit.
+						 <option name="special" value="canOnlyPlaceInOriginalTerritories"/>-->
                 </attatchment>
 
                 <!-- AA Gun -->
@@ -3335,6 +3338,7 @@
 					createsResourcesList
 					receivesAbilityWhenWith
 					whenCapturedChangesInto
+					special
 					
 				Unit Support Attachments:
 					players
