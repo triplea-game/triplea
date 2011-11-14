@@ -1,4 +1,6 @@
 Changes for 1.5
+* Allowed people to zoom out and zoom in on the map with the Mouse Wheel, by holding down the "ALT" key. (veqryn)
+
 * Changing relationship type attachment, upkeepCost, to allow an integer percentage, which will effect all income gained during the end of turn step. (veqryn)
 
 * Re-allow booting (boot-slapping) of admins. (veqryn)

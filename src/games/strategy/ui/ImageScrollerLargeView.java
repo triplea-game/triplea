@@ -329,14 +329,41 @@ public class ImageScrollerLargeView extends JComponent
 			else
 			{
 				double value = m_scale;
+				int positive = 1;
 				
-				if (e.getUnitsToScroll() < 0)
-					value = value - 0.15;
+				if (e.getUnitsToScroll() > 0)
+					positive = -1;
+				
+				if ((positive > 0 && value == 1 ) || (positive < 0 && value <= .21))
+					return;
+				
+				if (positive > 0)
+				{
+					if (value >= .79)
+						value = 1.0;
+					else if (value >= .59)
+						value = .8;
+					else if (value >= .39)
+						value = .6;
+					else if (value >= .19)
+						value = .4;
+					else
+						value = .2;
+				}
 				else
-					value = value + 0.15;
-				
+				{
+					if (value <= .41)
+						value = .2;
+					else if (value <= .61)
+						value = .4;
+					else if (value <= .81)
+						value = .6;
+					else if (value <= 1.0)
+						value = .8;
+					else
+						value = 1.0;
+				}
 				setScale(value);
-				
 			}
 		}
 	};
