@@ -387,9 +387,9 @@ public class BattleTracker implements java.io.Serializable
 	{
 		GameData data = bridge.getData();
 		OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+		boolean isTerritoryOwnerAnEnemy = data.getRelationshipTracker().isAtWar(id, territory.getOwner());
 		
-		// If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers
-		// have more than just transports
+		// If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers have more than just transports. If they don't, exit here.
 		if (territory.isWater() && arrivingUnits != null)
 		{
 			int totalMatches = 0;
@@ -466,6 +466,7 @@ public class BattleTracker implements java.io.Serializable
 			}
 			else
 			{
+				System.out.println("Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay " + PUChargeReal + ", but did not have enough PUs to pay! This is a bug.");
 				bridge.getHistoryWriter().addChildToEvent(id.getName() + " loses " + -PUChargeReal + " "
 							+ MyFormatter.pluralize("PU", -PUChargeReal) + " for violating " + territory.getName()
 							+ "s neutrality.  Correct amount to charge is: " + -PUChargeIdeal
@@ -476,7 +477,7 @@ public class BattleTracker implements java.io.Serializable
 		// if its a capital we take the money
 		// NOTE: this is not checking to see if it is an enemy. instead it is relying on the fact that the capital should be owned by the person it is attached to
 		TerritoryAttachment ta = TerritoryAttachment.get(territory);
-		if (ta.getCapital() != null)
+		if (isTerritoryOwnerAnEnemy && ta.getCapital() != null)
 		{
 			// if the capital is owned by the capitols player
 			// take the money
@@ -546,7 +547,7 @@ public class BattleTracker implements java.io.Serializable
 			terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
 		
 		PlayerID newOwner;
-		if (terrOrigOwner != null && data.getRelationshipTracker().isAllied(terrOrigOwner, id))
+		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && data.getRelationshipTracker().isAllied(terrOrigOwner, id))
 		{
 			if (territory.equals(TerritoryAttachment.getCapital(terrOrigOwner, data)))
 				newOwner = terrOrigOwner;
@@ -573,7 +574,7 @@ public class BattleTracker implements java.io.Serializable
 			newOwner = id;
 		
 		// if we have specially set this territory to have whenCapturedByGoesTo, then we set that here (except we don't set it if we are liberating allied owned territory)
-		if (newOwner.equals(id) && Matches.TerritoryHasWhenCapturedByGoesTo().match(territory))
+		if (isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.TerritoryHasWhenCapturedByGoesTo().match(territory))
 		{
 			for (String value : ta.getWhenCapturedByGoesTo())
 			{
@@ -590,16 +591,20 @@ public class BattleTracker implements java.io.Serializable
 			}
 		}
 		
-		Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
-		bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
-		bridge.addChange(takeOver);
-		if (changeTracker != null)
+		if (isTerritoryOwnerAnEnemy)
 		{
-			changeTracker.addChange(takeOver);
-			changeTracker.addToConquered(territory);
+			Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
+			bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
+			bridge.addChange(takeOver);
+			if (changeTracker != null)
+			{
+				changeTracker.addChange(takeOver);
+				changeTracker.addToConquered(territory);
+			}
 		}
 		
 		// Remove any bombing raids against captured territory
+		// TODO: see if necessary
 		if (Match.someMatch(territory.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, id), Matches.UnitIsFactoryOrCanBeDamaged)))
 		{
 			IBattle bombingBattle = getPendingBattle(territory, true);
@@ -613,7 +618,7 @@ public class BattleTracker implements java.io.Serializable
 		
 		// is this territory our capitol or a capitol of our ally
 		// Also check to make sure playerAttachment even HAS a capital to fix abend
-		if (terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
+		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
 					&& data.getRelationshipTracker().isAllied(terrOrigOwner, id))
 		{
 			// if it is give it back to the original owner
