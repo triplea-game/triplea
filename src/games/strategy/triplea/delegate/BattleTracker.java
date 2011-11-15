@@ -208,40 +208,31 @@ public class BattleTracker implements java.io.Serializable
 			{
 				changeTracker.addChange(change);
 			}
-			// battles resulting from
-			// emerging subs cant be neutral or empty
-			if (route.getLength() != 0)
-			{
-				if (games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea))
-					addEmptyBattle(route, units, id, bridge, changeTracker);
-			}
+			if (games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea))
+				addEmptyBattle(route, units, id, bridge, changeTracker);
 		}
 	}
 	
 	public void addBattle(Route route, Collection<Unit> units, boolean bombing, PlayerID id,
 				IDelegateBridge bridge, UndoableMove changeTracker, Collection<Unit> targets)
 	{
+		GameData data = bridge.getData();
 		if (bombing)
 		{
-			addBombingBattle(route, units, id, bridge.getData(), targets);
+			addBombingBattle(route, units, id, data, targets);
 			// say they were in combat
 			markWasInCombat(units, bridge, changeTracker);
 		}
 		else
 		{
-			Change change = addMustFightBattleChange(route, units, id, bridge.getData());
+			Change change = addMustFightBattleChange(route, units, id, data);
 			bridge.addChange(change);
 			if (changeTracker != null)
 			{
 				changeTracker.addChange(change);
 			}
-			// battles resulting from
-			// emerging subs cant be neutral or empty
-			if (route.getLength() != 0)
-			{
-				if (games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea))
-					addEmptyBattle(route, units, id, bridge, changeTracker);
-			}
+			if (games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea))
+				addEmptyBattle(route, units, id, bridge, changeTracker);
 		}
 	}
 	
@@ -336,6 +327,9 @@ public class BattleTracker implements java.io.Serializable
 		
 		Collection<Territory> conquered = route.getMatches(conquerable);
 		
+		// in case we begin in enemy territory, and blitz out of it, check the first territory
+		if (route.getStart() != route.getEnd() && Matches.territoryIsEmptyOfCombatUnits(data, id).match(route.getStart()))
+			conquered.add(route.getStart());
 		// we handle the end of the route later
 		conquered.remove(route.getEnd());
 		Collection<Territory> blitzed = Match.getMatches(conquered, canBlitz);

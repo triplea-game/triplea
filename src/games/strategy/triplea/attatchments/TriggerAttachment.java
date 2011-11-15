@@ -12,7 +12,6 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.Route;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -22,7 +21,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -1123,8 +1121,9 @@ public class TriggerAttachment extends DefaultAttachment
 
 		aBridge.addChange(change);
 		// handle adding to enemy territories
+		/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
 		if (Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data).match(terr))
-			getBattleTracker(data).addBattle(new CRoute(terr), units, false, player, aBridge, null);
+			getBattleTracker(data).addBattle(new RouteScripted(terr), units, false, player, aBridge, null);*/
 	}
 	
 	private void use(IDelegateBridge aBridge)
@@ -1158,20 +1157,21 @@ public class TriggerAttachment extends DefaultAttachment
 		return change;
 	}
 	
+	/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
 	public static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge)
 	{
 		GameData data = aBridge.getData();
 		for (Territory terr : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player1)))
 		{
 			if (Matches.territoryHasEnemyUnits(player1, data).match(terr))
-				DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new CRoute(terr), terr.getUnits().getMatches(Matches.unitIsOwnedBy(player1)), false, player1, aBridge, null);
+				DelegateFinder.battleDelegate(data).getBattleTracker().addBattle(new RouteScripted(terr), terr.getUnits().getMatches(Matches.unitIsOwnedBy(player1)), false, player1, aBridge, null);
 		}
 	}
 	
 	private static BattleTracker getBattleTracker(GameData data)
 	{
 		return DelegateFinder.battleDelegate(data).getBattleTracker();
-	}
+	}*/
 	
 	/**
 	 * This will account for Invert and conditionType
@@ -1477,8 +1477,9 @@ public class TriggerAttachment extends DefaultAttachment
 						aBridge.getHistoryWriter().startEvent(
 									MyFormatter.attachmentNameToText(t.getName()) + ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from "
 												+ currentRelation.getName() + " to " + triggerNewRelation.getName());
+						/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
 						if (Matches.RelationshipTypeIsAtWar.match(triggerNewRelation))
-							triggerMustFightBattle(player1, player2, aBridge);
+							triggerMustFightBattle(player1, player2, aBridge);*/
 					}
 				}
 			}
@@ -2094,40 +2095,6 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		if (m_trigger == null)
 			throw new GameParseException("Triggers: Invalid Unit attatchment" + this);
-	}
-	
-	
-	/**
-	 * shameless cheating. making a fake route, so as to handle battles
-	 * properly without breaking battleTracker protected status or duplicating
-	 * a zillion lines of code.
-	 */
-	private static class CRoute extends Route
-	{
-		private static final long serialVersionUID = -4571007882522107666L;
-		
-		public CRoute(Territory terr)
-		{
-			super(terr);
-		}
-		
-		@Override
-		public Territory getEnd()
-		{
-			return getStart();
-		}
-		
-		@Override
-		public int getLength()
-		{
-			return 1;
-		}
-		
-		@Override
-		public Territory at(int i)
-		{
-			return getStart();
-		}
 	}
 	
 }

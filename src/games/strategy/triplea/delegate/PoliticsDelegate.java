@@ -312,8 +312,9 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			m_bridge.getHistoryWriter().startEvent(m_bridge.getPlayerID().getName() + " succeeds on action: " + MyFormatter.attachmentNameToText(paa.getName())
 						+ ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from " + oldRelation.getName() + " to " + newRelation.getName());
 			
+			/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
 			if (Matches.RelationshipTypeIsAtWar.match(newRelation))
-				TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge); // TODO: see if this causes problems to do with savestate, or relations that don't cause battles. better to leave this in the battle delegate i think.
+				TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge);*/
 		}
 		if (!change.isEmpty())
 			m_bridge.addChange(change);

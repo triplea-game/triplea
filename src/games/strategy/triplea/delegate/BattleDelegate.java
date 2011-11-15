@@ -21,7 +21,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Route;
+import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.AutoSave;
@@ -68,7 +68,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		// only initialize once
 		if (m_needToInitialize)
 		{
-			setupUnitsInSameTerritoryBattles(m_bridge);
+			setupUnitsInSameTerritoryBattles();
 			addBombardmentSources();
 			m_needToInitialize = false;
 		}
@@ -338,93 +338,61 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		return null; // User elected not to bombard with this unit
 	}
 	
-	private void addContinuedBattles(PlayerID id)
-	{
-		Collection<Territory> terrs = m_bridge.getData().getMap().getTerritories();
-		CompositeMatch<Territory> enemyAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(id, getData()), Matches.territoryHasUnitsOwnedBy(id));
-		CompositeMatch<Territory> enemyTerritoryAndOwnedUnits = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWater(id, getData()), Matches.territoryHasUnitsOwnedBy(id));
-		CompositeMatch<Territory> enemyUnitsOrEnemyTerritory = new CompositeMatchOr<Territory>(enemyAndOwnedUnits, enemyTerritoryAndOwnedUnits);
-		
-		Collection<Territory> battleTerrs = Match.getMatches(terrs, enemyUnitsOrEnemyTerritory);
-		
-		for (Territory terr : battleTerrs)
-		{
-			Collection<Unit> ownedUnits = Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsOwnedBy(id));
-			// we need to remove any units which are participating in bombing raids
-			if (getBattleTracker().getPendingBattle(terr, true) != null)
-			{
-				ownedUnits.removeAll(getBattleTracker().getPendingBattle(terr, true).getAttackingUnits());
-			}
-			
-			if (Match.someMatch(ownedUnits, Matches.unitCanAttack(id)))
-			{
-				if (getBattleTracker().getPendingBattle(terr, false) == null)
-				{
-					if (Match.someMatch(ownedUnits, Matches.UnitIsSub))
-						getBattleTracker().addBattle(new Route(terr), ownedUnits, false, id, m_bridge, null);
-					else
-						getBattleTracker().addBattle(new CRoute(terr), ownedUnits, false, id, m_bridge, null);
-				}
-			}
-		}
-	}
-	
 	/**
-	 * Setup the battles where the battle occurs because sea units are in the
-	 * same sea zone. This happens when subs emerge (after being submerged), and
-	 * when naval units are placed in enemy occupied sea zones
+	 * Setup the battles where the battle occurs because units are in the
+	 * same territory. This happens when subs emerge (after being submerged), and
+	 * when naval units are placed in enemy occupied sea zones, and also
+	 * when political relationships change and potentially leave units in now-hostile territories.
 	 */
-	private void setupUnitsInSameTerritoryBattles(IDelegateBridge aBridge)
+	private void setupUnitsInSameTerritoryBattles()
 	{
 		PlayerID player = m_bridge.getPlayerID();
+		GameData data = getData();
 		
-		// Set up any continued battles from previous actions
-		// This can be the basis for multi-round games like D-Day
-		addContinuedBattles(player);
+		boolean ignoreTransports = isIgnoreTransportInMovement(data);
+		boolean ignoreSubs = isIgnoreSubInMovement(data);
+		
+		CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea);
+		CompositeMatchOr<Unit> seaTranportsOrSubs = new CompositeMatchOr<Unit>(seaTransports, Matches.UnitIsSub);
 		
 		// we want to match all sea zones with our units and enemy units
-		CompositeMatch<Territory> territoryWithOwnAndEnemy = new CompositeMatchAnd<Territory>();
-		territoryWithOwnAndEnemy.add(Matches.territoryHasUnitsOwnedBy(player));
-		territoryWithOwnAndEnemy.add(Matches.territoryHasEnemyUnits(player, getData()));
+		CompositeMatch<Territory> anyTerritoryWithOwnAndEnemy = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsOwnedBy(player), Matches.territoryHasEnemyUnits(player, data));
+		CompositeMatch<Territory> enemyTerritoryAndOwnUnits = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWater(player, getData()), Matches.territoryHasUnitsOwnedBy(player));
+		CompositeMatch<Territory> enemyUnitsOrEnemyTerritory = new CompositeMatchOr<Territory>(anyTerritoryWithOwnAndEnemy, enemyTerritoryAndOwnUnits);
 		
-		boolean ignoreTransports = isIgnoreTransportInMovement(getData());
-		boolean ignoreSubs = isIgnoreSubInMovement(getData());
+		Iterator<Territory> battleTerritories = Match.getMatches(data.getMap().getTerritories(), enemyUnitsOrEnemyTerritory).iterator();
 		
-		Iterator<Territory> territories = Match.getMatches(getData().getMap().getTerritories(), territoryWithOwnAndEnemy).iterator();
-		
-		Match<Unit> ownedUnit = Matches.unitIsOwnedBy(player);
-		Match<Unit> enemyUnit = Matches.enemyUnit(player, getData());
-		CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea);
-		CompositeMatchOr<Unit> seaTranportsAndSubs = new CompositeMatchOr<Unit>(seaTransports, Matches.UnitIsSub);
-		
-		while (territories.hasNext())
+		while (battleTerritories.hasNext())
 		{
-			Territory territory = territories.next();
+			Territory territory = battleTerritories.next();
 			
-			List<Unit> attackingUnits = territory.getUnits().getMatches(ownedUnit);
-			List<Unit> enemyUnits = territory.getUnits().getMatches(enemyUnit);
+			List<Unit> attackingUnits = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+			List<Unit> enemyUnits = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
 			
-			if (getBattleTracker().getPendingBattle(territory, true) != null)
+			if (m_battleTracker.getPendingBattle(territory, true) != null)
 			{
 				// we need to remove any units which are participating in bombing raids
-				attackingUnits.removeAll(getBattleTracker().getPendingBattle(territory, true).getAttackingUnits());
-				if (attackingUnits.isEmpty())
-					continue;
+				attackingUnits.removeAll(m_battleTracker.getPendingBattle(territory, true).getAttackingUnits());
 			}
+			
+			if (attackingUnits.isEmpty() || Match.allMatch(attackingUnits, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure))
+				continue;
 			
 			IBattle battle = m_battleTracker.getPendingBattle(territory, false);
 			if (battle == null)
 			{
-				Route route = new Route();
-				route.setStart(territory);
-				getBattleTracker().addBattle(route, attackingUnits, false, player, m_bridge, null);
+				m_bridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());
+				m_battleTracker.addBattle(new RouteScripted(territory), attackingUnits, false, player, m_bridge, null);
 				battle = m_battleTracker.getPendingBattle(territory, false);
 			}
 			
-			if (battle.isEmpty())
-				battle.addAttackChange(new Route(territory), attackingUnits);
+			if (battle == null)
+				continue;
 			
-			if (!battle.getAttackingUnits().containsAll(attackingUnits))
+			if (battle != null && battle.isEmpty())
+				battle.addAttackChange(new RouteScripted(territory), attackingUnits);
+			
+			if (battle != null && !battle.getAttackingUnits().containsAll(attackingUnits))
 			{
 				List<Unit> attackingUnitsNeedToBeAdded = attackingUnits;
 				attackingUnitsNeedToBeAdded.removeAll(battle.getAttackingUnits());
@@ -435,13 +403,12 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				
 				if (!attackingUnitsNeedToBeAdded.isEmpty())
 				{
-					// TODO: don't we need a change object here?
-					battle.addAttackChange(new Route(territory), attackingUnitsNeedToBeAdded);
+					battle.addAttackChange(new RouteScripted(territory), attackingUnitsNeedToBeAdded);
 				}
 			}
 			
 			// Reach stalemate if all attacking and defending units are transports
-			if ((ignoreTransports && battle != null && Match.allMatch(attackingUnits, seaTransports) && Match.allMatch(enemyUnits, seaTransports))
+			if (battle != null && (ignoreTransports && Match.allMatch(attackingUnits, seaTransports) && Match.allMatch(enemyUnits, seaTransports))
 						|| ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert())))
 			{
 				m_battleTracker.removeBattle(battle);
@@ -483,7 +450,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				}
 				
 				// if only enemy transports and subs... attack them?
-				if (ignoreSubs && ignoreTransports && Match.allMatch(enemyUnits, seaTranportsAndSubs))
+				if (ignoreSubs && ignoreTransports && Match.allMatch(enemyUnits, seaTranportsOrSubs))
 				{
 					if (!remotePlayer.selectAttackUnits(territory))
 					{
@@ -533,40 +500,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		else
 		{
 			return null;
-		}
-	}
-	
-	
-	/**
-	 * shameless cheating. making a fake route, so as to handle battles
-	 * properly without breaking battleTracker protected status or duplicating
-	 * a zillion lines of code.
-	 */
-	private static class CRoute extends Route
-	{
-		private static final long serialVersionUID = -4571007882522107666L;
-		
-		public CRoute(Territory terr)
-		{
-			super(terr);
-		}
-		
-		@Override
-		public Territory getEnd()
-		{
-			return getStart();
-		}
-		
-		@Override
-		public int getLength()
-		{
-			return 1;
-		}
-		
-		@Override
-		public Territory at(int i)
-		{
-			return getStart();
 		}
 	}
 	

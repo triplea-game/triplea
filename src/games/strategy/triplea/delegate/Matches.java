@@ -2270,7 +2270,7 @@ public class Matches
 					return false;
 				if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && (t.isWater() | !games.strategy.triplea.Properties.getNeutralsBlitzable(data)))
 					return false;
-				return !data.getRelationshipTracker().isAllied(player, t.getOwner());
+				return data.getRelationshipTracker().isAtWar(player, t.getOwner());
 			}
 		};
 	}
