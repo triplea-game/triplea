@@ -28,9 +28,9 @@ import games.strategy.common.player.AbstractHumanPlayer;
 public class NPuzzlePlayer extends AbstractHumanPlayer<NPuzzleFrame> implements INPuzzlePlayer
 {
 	
-	public NPuzzlePlayer(String name)
+	public NPuzzlePlayer(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	@Override

@@ -68,6 +68,7 @@ public class TripleA implements IGameLoader
 	private static final String WEAK_COMPUTER_PLAYER_TYPE = "E.Z. Fodder (AI)";
 	private static final String STRONG_COMPUTER_PLAYER_TYPE = "Moore N. Able (AI)";
 	private static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Dynamix (AI)";
+	private static final String NONE = "None (AI)";
 	
 	private transient TripleaDisplay m_display;
 	private transient IGame m_game;
@@ -86,19 +87,19 @@ public class TripleA implements IGameLoader
 			String type = playerNames.get(name);
 			if (type.equals(WEAK_COMPUTER_PLAYER_TYPE))
 			{
-				players.add(new WeakAI(name));
+				players.add(new WeakAI(name, type));
 			}
 			else if (type.equals(STRONG_COMPUTER_PLAYER_TYPE))
 			{
-				players.add(new StrongAI(name));
+				players.add(new StrongAI(name, type));
 			}
 			else if (type.equals(DYNAMIX_COMPUTER_PLAYER_TYPE))
 			{
-				players.add(new Dynamix_AI(name));
+				players.add(new Dynamix_AI(name, type));
 			}
 			else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
 			{
-				TripleAPlayer player = new TripleAPlayer(name);
+				TripleAPlayer player = new TripleAPlayer(name, type);
 				players.add(player);
 			}
 			else
@@ -145,6 +146,9 @@ public class TripleA implements IGameLoader
 					((ServerGame) game).addDelegateMessenger(delegate);
 				}
 			}
+			
+			// add info to gamedata to reflect who is playing the players
+			addPlayersToGameData(players, m_game.getData());
 			
 			SwingUtilities.invokeAndWait(new Runnable()
 				{
@@ -221,6 +225,19 @@ public class TripleA implements IGameLoader
 			if (player instanceof TripleAPlayer)
 				((TripleAPlayer) player).setFrame(frame);
 		}
+	}
+	
+	private void addPlayersToGameData(Set<IGamePlayer> players, GameData data)
+	{
+		//CompositeChange change = new CompositeChange();
+		for (IGamePlayer player : players)
+		{
+			boolean isHuman = player instanceof TripleAPlayer;
+			data.getPlayerList().getPlayerID(player.getName()).setWhoAmI((isHuman ? "Human" : "AI") + ":" + player.getType());
+			//change.add(ChangeFactory.changePlayerWhoAmIChange(data.getPlayerList().getPlayerID(player.getName()), ((isHuman ? "Human" : "AI") + ":" + player.getType())));
+			//aBridge.getHistoryWriter().startEvent(player.getName() + " is now being played by: " + player.getType());
+		}
+		//aBridge.addChange(change);
 	}
 	
 	/**

@@ -3585,6 +3585,35 @@ public class Matches
 		};
 	}
 	
+	/*public static final Match<Territory> TerritoryContainsUnitsOfAtLeastTwoPlayersAtWar(final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(Territory t)
+			{
+				Collection<PlayerID> players = data.getPlayerList().getPlayers();
+				Iterator<PlayerID> p1Iter = players.iterator();
+				while (p1Iter.hasNext())
+				{
+					PlayerID p1 = p1Iter.next();
+					p1Iter.remove();
+					for (PlayerID p2 : players)
+					{
+						if (!data.getRelationshipTracker().isAtWar(p1, p2))
+							continue;
+						if (!t.getUnits().someMatch(unitIsOwnedBy(p1)))
+							continue;
+						if (!t.getUnits().someMatch(unitIsOwnedBy(p2)))
+							continue;
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+	}*/
+	
 	/** Creates new Matches */
 	private Matches()
 	{

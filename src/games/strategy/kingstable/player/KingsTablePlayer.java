@@ -28,9 +28,9 @@ import games.strategy.kingstable.ui.PlayData;
 public class KingsTablePlayer extends AbstractHumanPlayer<KingsTableFrame> implements IKingsTablePlayer
 {
 	
-	public KingsTablePlayer(String name)
+	public KingsTablePlayer(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	@Override

@@ -678,6 +678,18 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 					draw = true;
 					break;
 				}
+                else
+                {
+    				// O(n^2), but n is usually 2, and almost always < 10
+    				for (final PlayerID p2 : players)
+    				{
+                        if (data.getRelationshipTracker().isAtWar(p, p2))
+    					{
+    						draw = true;
+    						break;
+    					}
+    				}
+                }
 			}
 			else
 			{
@@ -696,7 +708,7 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 		if (draw)
 		{
 			Color stripeColor;
-			if (territory.isWater())
+			if (attacker == null || territory.isWater())
 				stripeColor = Color.RED.brighter();
 			else
 			{

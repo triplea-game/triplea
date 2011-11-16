@@ -83,12 +83,12 @@ public class KingsTable implements IGameLoader
 			String type = playerNames.get(name);
 			if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
 			{
-				KingsTablePlayer player = new KingsTablePlayer(name);
+				KingsTablePlayer player = new KingsTablePlayer(name, type);
 				players.add(player);
 			}
 			else if (type.equals(RANDOM_COMPUTER_PLAYER_TYPE))
 			{
-				RandomAI ai = new RandomAI(name);
+				RandomAI ai = new RandomAI(name, type);
 				players.add(ai);
 			}
 			// else if (type.equals(MINIMAX_COMPUTER_PLAYER_TYPE))
@@ -98,7 +98,7 @@ public class KingsTable implements IGameLoader
 			// }
 			else if (type.equals(ALPHABETA_COMPUTER_PLAYER_TYPE))
 			{
-				BetterAI ai = new BetterAI(name, BetterAI.Algorithm.ALPHABETA);
+				BetterAI ai = new BetterAI(name, type, BetterAI.Algorithm.ALPHABETA);
 				players.add(ai);
 			}
 			else

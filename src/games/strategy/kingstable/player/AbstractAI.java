@@ -25,9 +25,9 @@ import games.strategy.common.player.AbstractBaseAI;
 public abstract class AbstractAI extends AbstractBaseAI implements IKingsTablePlayer
 {
 	
-	public AbstractAI(String name)
+	public AbstractAI(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	protected abstract void play();

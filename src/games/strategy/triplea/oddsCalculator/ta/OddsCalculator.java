@@ -142,8 +142,8 @@ class DummyDelegateBridge implements IDelegateBridge
 	
 	public DummyDelegateBridge(PlayerID attacker, GameData data, CompositeChange allChanges, boolean attackerKeepOneLandUnit)
 	{
-		m_attackingPlayer = new DummyPlayer("battle calc dummy", attackerKeepOneLandUnit);
-		m_defendingPlayer = new DummyPlayer("battle calc dummy", false);
+		m_attackingPlayer = new DummyPlayer("battle calc dummy", "None (AI)", attackerKeepOneLandUnit);
+		m_defendingPlayer = new DummyPlayer("battle calc dummy", "None (AI)", false);
 		
 		m_data = data;
 		m_attacker = attacker;
@@ -265,9 +265,9 @@ class DummyPlayer extends AbstractAI
 	
 	private final boolean m_keepAtLeastOneLand;
 	
-	public DummyPlayer(String name, boolean keepAtLeastOneLand)
+	public DummyPlayer(String name, String type, boolean keepAtLeastOneLand)
 	{
-		super(name);
+		super(name, type);
 		m_keepAtLeastOneLand = keepAtLeastOneLand;
 	}
 	

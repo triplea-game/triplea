@@ -24,8 +24,11 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 import games.strategy.util.PropertyUtil;
 
 import java.io.IOException;
@@ -139,6 +142,11 @@ public class ChangeFactory
 	public static Change changeProductionFrontierChange(PlayerID player, ProductionFrontier newFrontier)
 	{
 		return new ProductionFrontierChange(newFrontier, player);
+	}
+	
+	public static Change changePlayerWhoAmIChange(PlayerID player, String humanOrAI_colon_playerName)
+	{
+		return new PlayerWhoAmIChange(humanOrAI_colon_playerName, player);
 	}
 	
 	public static Change changeResourcesChange(PlayerID player, Resource resource, int quantity)
@@ -444,6 +452,15 @@ class RelationshipChange extends Change
 
 		data.getRelationshipTracker().setRelationship(data.getPlayerList().getPlayerID(m_player1), data.getPlayerList().getPlayerID(m_player2),
 					data.getRelationshipTypeList().getRelationshipType(m_NewRelation));
+		
+		// now redraw territories in case of new hostility
+		if (Matches.RelationshipTypeIsAtWar.match(data.getRelationshipTypeList().getRelationshipType(m_NewRelation)))
+		{
+			for (Territory t : Match.getMatches(data.getMap().getTerritories(), new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player1)), Matches.territoryHasUnitsOwnedBy(data.getPlayerList().getPlayerID(m_player2)))))
+			{
+				t.notifyChanged();
+			}
+		}
 	}
 	
 	@Override
@@ -1393,5 +1410,46 @@ class GenericTechChange extends Change
 
 		return "GenericTechChange attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
 	}
+}
+
+
+class PlayerWhoAmIChange extends Change
+{
+	private static final long serialVersionUID = -1486914230174337300L;
+	private final String m_startWhoAmI;
+	private final String m_endWhoAmI;
+	private final String m_player;
 	
+	PlayerWhoAmIChange(String newWhoAmI, PlayerID player)
+	{
+		m_startWhoAmI = player.getWhoAmI();
+		m_endWhoAmI = newWhoAmI;
+		m_player = player.getName();
+	}
+	
+	PlayerWhoAmIChange(String startWhoAmI, String endWhoAmI, String player)
+	{
+		m_startWhoAmI = startWhoAmI;
+		m_endWhoAmI = endWhoAmI;
+		m_player = player;
+	}
+	
+	@Override
+	protected void perform(GameData data)
+	{
+		PlayerID player = data.getPlayerList().getPlayerID(m_player);
+		player.setWhoAmI(m_endWhoAmI);
+	}
+	
+	@Override
+	public Change invert()
+	{
+		return new PlayerWhoAmIChange(m_endWhoAmI, m_startWhoAmI, m_player);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return m_player + " changed from " + m_startWhoAmI + " to " + m_endWhoAmI;
+	}
 }

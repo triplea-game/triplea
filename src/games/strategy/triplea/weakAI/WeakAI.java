@@ -77,9 +77,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private final static Logger s_logger = Logger.getLogger(WeakAI.class.getName());
 	
 	/** Creates new TripleAPlayer */
-	public WeakAI(String name)
+	public WeakAI(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	@Override

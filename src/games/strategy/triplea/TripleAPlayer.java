@@ -80,9 +80,9 @@ import javax.swing.SwingUtilities;
 public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements IGamePlayer, ITripleaPlayer
 {
 	/** Creates new TripleAPlayer */
-	public TripleAPlayer(String name)
+	public TripleAPlayer(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	public void reportError(String error)

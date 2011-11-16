@@ -341,7 +341,7 @@ public class BattleCalculator
 		
 		ITripleaPlayer tripleaPlayer;
 		if (player.isNull())
-			tripleaPlayer = new WeakAI(player.getName());
+			tripleaPlayer = new WeakAI(player.getName(), "E.Z. Fodder (AI)");
 		else
 			tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
 		CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, hitsRemaining, text, dice, player,
@@ -531,7 +531,7 @@ public class BattleCalculator
 		{
 			synchronized (s_cachedLock)
 			{
-				/*if (s_cachedSortedCasualties.get(targets.hashCode()).isEmpty() || !s_cachedSortedCasualties.get(targets.hashCode()).containsAll(targets) 
+				/*if (s_cachedSortedCasualties.get(targets.hashCode()).isEmpty() || !s_cachedSortedCasualties.get(targets.hashCode()).containsAll(targets)
 				    		|| !targets.containsAll(s_cachedSortedCasualties.get(targets.hashCode())) || s_cachedSortedCasualties.get(targets.hashCode()).size() != targets.size())
 					s_cachedSortedCasualties.clear();
 				else*/
@@ -1111,7 +1111,7 @@ public class BattleCalculator
 			UnitSupportAttachment rule = iter.next();
 			if(rule.getPlayers().isEmpty())
 				continue;
-			if( defending && rule.getDefence() || 
+			if( defending && rule.getDefence() ||
 					!defending && rule.getOffence() )
 			{
 				CompositeMatchAnd<Unit> canSupport = new CompositeMatchAnd<Unit>(Matches.unitIsOfType((UnitType)rule.getAttatchedTo()),Matches.unitOwnedBy(rule.getPlayers()));
@@ -1121,7 +1121,7 @@ public class BattleCalculator
 					numSupport += Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()).size();
 				String bonusType = rule.getBonusType();
 				//supportLeft.put(rule, numSupport*rule.getNumber());
-				Iterator<List<UnitSupportAttachment>> iter2 = supportRules.iterator(); 
+				Iterator<List<UnitSupportAttachment>> iter2 = supportRules.iterator();
 				List<UnitSupportAttachment> ruleType = null;
 				boolean found = false;
 				while( iter2.hasNext()){

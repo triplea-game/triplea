@@ -89,9 +89,9 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return s_logger;
 	}
 	
-	public Dynamix_AI(String name)
+	public Dynamix_AI(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	// These static dynamix AI instances are going to be used by the settings window to let the player change AI goals, aggresiveness, etc.

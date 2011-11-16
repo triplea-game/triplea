@@ -3228,7 +3228,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		// if its the null player, return a do nothing proxy
 		if (player.isNull())
-			return new WeakAI(player.getName());
+			return new WeakAI(player.getName(), "E.Z. Fodder (AI)");
 		return (ITripleaPlayer) bridge.getRemote(player);
 	}
 	

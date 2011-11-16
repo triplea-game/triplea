@@ -31,9 +31,9 @@ import java.util.Random;
 public class RandomAI extends AbstractAI
 {
 	
-	public RandomAI(String name)
+	public RandomAI(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	@Override

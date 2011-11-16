@@ -28,9 +28,9 @@ import games.strategy.engine.data.Territory;
 public class TicTacToePlayer extends AbstractHumanPlayer<TicTacToeFrame> implements ITicTacToePlayer
 {
 	
-	public TicTacToePlayer(String name)
+	public TicTacToePlayer(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	@Override

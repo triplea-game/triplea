@@ -116,9 +116,9 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	private Collection<Territory> m_impassableTerrs = new ArrayList<Territory>();
 	
 	/** Creates new TripleAPlayer */
-	public StrongAI(String name)
+	public StrongAI(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	private void set_onOffense(boolean value)

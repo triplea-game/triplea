@@ -1,4 +1,8 @@
 Changes for 1.5
+* Changed PlayerID to record if the player is Human or AI, and which type of AI. (veqryn)
+
+* Allowed territories with now hostile units to be redrawn, and have red markup, at the end of the politics delegate. (veqryn)
+
 * Fixed bug where you could capture territory from a power you were neutral or allied with, if you attacked an enemy on their territory. (veqryn)
 
 * Fixed multiple bugs surround territories suddenly made hostile. And created a new class, "RouteScripted", which allows for Routes that do not follow the normal rules. (veqryn)

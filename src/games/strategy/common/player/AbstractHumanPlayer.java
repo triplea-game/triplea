@@ -30,9 +30,9 @@ public abstract class AbstractHumanPlayer<CustomGameFrame extends MainGameFrame>
 	 * @param name
 	 *            - the name of the player.
 	 */
-	public AbstractHumanPlayer(String name)
+	public AbstractHumanPlayer(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	@Override

@@ -53,9 +53,9 @@ public class BetterAI extends AbstractAI
 	// The algorithm to be used
 	private final Algorithm algorithm;
 	
-	public BetterAI(String name, Algorithm algorithm)
+	public BetterAI(String name, String type, Algorithm algorithm)
 	{
-		super(name);
+		super(name, type);
 		this.algorithm = algorithm;
 		
 	}

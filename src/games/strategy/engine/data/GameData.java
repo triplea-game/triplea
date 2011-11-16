@@ -323,7 +323,7 @@ public class GameData implements java.io.Serializable
 		while (iter.hasNext())
 		{
 			TerritoryListener listener = iter.next();
-			listener.unitsChanged(t);
+			listener.attachmentChanged(t);
 		}
 	}
 	

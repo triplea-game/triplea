@@ -71,17 +71,17 @@ public class NPuzzle implements IGameLoader
 			String type = playerNames.get(name);
 			if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
 			{
-				NPuzzlePlayer player = new NPuzzlePlayer(name);
+				NPuzzlePlayer player = new NPuzzlePlayer(name, type);
 				players.add(player);
 			}
 			else if (type.equals(RANDOM_COMPUTER_PLAYER_TYPE))
 			{
-				RandomAI ai = new RandomAI(name);
+				RandomAI ai = new RandomAI(name, type);
 				players.add(ai);
 			}
 			else if (type.equals(DFS_COMPUTER_PLAYER_TYPE))
 			{
-				BetterAI ai = new BetterAI(name, Algorithm.DFS, Heuristic.NUMBER_OF_MISPLACED_TILES);
+				BetterAI ai = new BetterAI(name, type, Algorithm.DFS, Heuristic.NUMBER_OF_MISPLACED_TILES);
 				players.add(ai);
 			}
 			else

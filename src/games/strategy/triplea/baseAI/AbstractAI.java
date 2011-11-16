@@ -5,6 +5,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
@@ -46,7 +47,7 @@ import java.util.logging.Logger;
  * 
  * @author sgb
  */
-public abstract class AbstractAI implements ITripleaPlayer
+public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 {
 	private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
 	
@@ -70,16 +71,19 @@ public abstract class AbstractAI implements ITripleaPlayer
 	}
 	
 	private final String m_name;
+	private final String m_type;
 	private IPlayerBridge m_bridge;
 	private PlayerID m_id;
 	
 	/**
-	 * @param name
-	 *            - the name of the player.
+	 * 
+	 * @param name - the name of the player (the nation)
+	 * @param type - the type of player we are
 	 */
-	public AbstractAI(String name)
+	public AbstractAI(String name, String type)
 	{
 		m_name = name;
+		m_type = type;
 	}
 	
 	public final void initialize(IPlayerBridge bridge, PlayerID id)
@@ -438,6 +442,11 @@ public abstract class AbstractAI implements ITripleaPlayer
 	public final String getName()
 	{
 		return m_name;
+	}
+	
+	public final String getType()
+	{
+		return m_type;
 	}
 	
 	public final PlayerID getID()

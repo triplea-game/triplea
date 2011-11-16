@@ -55,9 +55,9 @@ public class BetterAI extends AbstractAI
 	// Default to a search depth of 2-ply
 	private int cutoffDepth = 2;
 	
-	public BetterAI(String name, Algorithm algorithm)
+	public BetterAI(String name, String type, Algorithm algorithm)
 	{
-		super(name);
+		super(name, type);
 		this.algorithm = algorithm;
 		
 	}
@@ -143,7 +143,7 @@ public class BetterAI extends AbstractAI
 	{/*
 		PlayerID currentPlayer = m_id;
 		PlayerID otherPlayer = null;
-		for (PlayerID p : m_bridge.getGameData().getPlayerList().getPlayers()) 
+		for (PlayerID p : m_bridge.getGameData().getPlayerList().getPlayers())
 		{
 			if (!p.equals(currentPlayer))
 			{
@@ -520,7 +520,7 @@ public class BetterAI extends AbstractAI
 		}
 		
 		/*
-		private float getUtilityBasedOnMobility() 
+		private float getUtilityBasedOnMobility()
 		{
 		    
 		}

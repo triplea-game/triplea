@@ -42,9 +42,15 @@ public interface IGamePlayer
 	
 	/**
 	 * 
-	 * @return the name of the game player
+	 * @return the name of the game player (what nation we are)
 	 */
 	public String getName();
+	
+	/**
+	 * 
+	 * @return the type of player we are (human or a kind of ai)
+	 */
+	public String getType();
 	
 	/**
 	 * 

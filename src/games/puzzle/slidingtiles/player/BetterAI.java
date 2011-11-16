@@ -63,9 +63,9 @@ public class BetterAI extends AbstractAI
 	
 	private Stack<Move> m_moves;
 	
-	public BetterAI(String name, Algorithm algorithm, Heuristic heuristic)
+	public BetterAI(String name, String type, Algorithm algorithm, Heuristic heuristic)
 	{
-		super(name);
+		super(name, type);
 		m_algorithm = algorithm;
 		m_heuristic = heuristic;
 		m_moves = null;

@@ -28,9 +28,9 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer
 	 * @param name
 	 *            - the name of the player.
 	 */
-	public AbstractBaseAI(String name)
+	public AbstractBaseAI(String name, String type)
 	{
-		super(name);
+		super(name, type);
 	}
 	
 	protected void pause()

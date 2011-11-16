@@ -26,7 +26,8 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
  */
 public abstract class AbstractBasePlayer implements IGamePlayer
 {
-	protected final String m_name;
+	protected final String m_name; // what nation are we playing?  ex: "Americans"
+	protected final String m_type; // what are we? ex: "Human", or "Moore N. Able (AI)"
 	protected PlayerID m_id;
 	protected IPlayerBridge m_bridge;
 	
@@ -36,9 +37,10 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 	 * @param name
 	 *            - the name of the player.
 	 */
-	public AbstractBasePlayer(String name)
+	public AbstractBasePlayer(String name, String type)
 	{
 		m_name = name;
+		m_type = type;
 	}
 	
 	public void initialize(IPlayerBridge bridge, PlayerID id)
@@ -66,6 +68,11 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 	public final String getName()
 	{
 		return m_name;
+	}
+	
+	public final String getType()
+	{
+		return m_type;
 	}
 	
 	public final PlayerID getID()

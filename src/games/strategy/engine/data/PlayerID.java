@@ -35,6 +35,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	private ProductionFrontier m_productionFrontier;
 	private RepairFrontier m_repairFrontier;
 	private final TechnologyFrontierList m_technologyFrontiers;
+	private String m_whoAmI = null;
 	
 	/** Creates new Player */
 	public PlayerID(String name, boolean optional, GameData data)
@@ -116,6 +117,29 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	public String getType()
 	{
 		return UnitHolder.PLAYER;
+	}
+	
+	/**
+	 * First string is "Human" or "AI", while second string is the name of the player, like "Moore N. Able (AI)". Separate with a colon.
+	 * @param humanOrAI_and_playerName
+	 */
+	public void setWhoAmI(String humanOrAI_colon_playerName)
+	{
+		// so for example, it should be "AI:Moore N. Able (AI)".
+		String[] s = humanOrAI_colon_playerName.split(":");
+		if (s.length != 2)
+			throw new IllegalStateException("whoAmI must have two strings, separated by a colon");
+		if (!(s[0].equalsIgnoreCase("AI") || s[0].equalsIgnoreCase("Human"))) // || s[0].equalsIgnoreCase("client")))
+			throw new IllegalStateException("whoAmI first part must be, ai or human or client");
+		m_whoAmI = humanOrAI_colon_playerName;
+	}
+	
+	/**
+	 * @return whoAmI, first string is "Human" or "AI", while second string is the name of the player, like "Moore N. Able (AI)"
+	 */
+	public String getWhoAmI()
+	{
+		return m_whoAmI;
 	}
 	
 }
