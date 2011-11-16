@@ -123,9 +123,9 @@ public class EditValidator
 		}
 		else
 		{
-			// Can't add to neutral or enemy territory
-			if (!Matches.isTerritoryFriendly(player, data).match(territory))
-				return "Can't add units to neutral or enemy territory";
+			/*// Can't add to enemy territory
+			if (Matches.isTerritoryEnemy(player, data).match(territory) && !Matches.TerritoryIsWater.match(territory))
+				return "Can't add units to enemy territory";*/
 			
 			if (Match.someMatch(units, Matches.UnitIsSea))
 				return "Can't add sea units to land";

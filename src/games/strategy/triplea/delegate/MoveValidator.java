@@ -878,6 +878,16 @@ public class MoveValidator
 		if (getEditMode(data))
 			return result;
 		
+		if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner()).match(player) && Matches.isAtWar(route.getEnd().getOwner()).match(player))
+		{
+			if (!MoveValidator.isBlitzable(route.getStart(), data, player))
+				return result.setErrorReturnResult("Can not blitz out of a battle into enemy territory");
+			for (Unit u : Match.getMatches(units, Matches.UnitCanBlitz.invert()))
+			{
+				result.addDisallowedUnit("Not all units can blitz", u);
+			}
+		}
+		
 		// Don't allow aa guns to move in combat unless they are in a transport
 		if (Match.someMatch(units, Matches.UnitIsAAorIsAAmovement) && (!route.getStart().isWater() || !route.getEnd().isWater()))
 		{
@@ -1736,12 +1746,12 @@ public class MoveValidator
 		// find out how much movement we have left
 		/*
 		     //If the route.getEnd or a neighboring zone within the max remaining fuel is an allied airbase, increase the range.
-		     Iterator <Territory> neighboriter = data.getMap().getNeighbors(route.getEnd(), maxMovement).iterator();            
+		     Iterator <Territory> neighboriter = data.getMap().getNeighbors(route.getEnd(), maxMovement).iterator();
 		     while (neighboriter.hasNext())
 		     {
 		     	Territory terrNext = (Territory) neighboriter.next();
 		     	TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
-		     	if ((taEnd != null && taEnd.isAirBase() && data.getRelationshipTracker().isAllied(route.getEnd().getOwner(), unit.getOwner())) || 
+		     	if ((taEnd != null && taEnd.isAirBase() && data.getRelationshipTracker().isAllied(route.getEnd().getOwner(), unit.getOwner())) ||
 		     			(taNeighbor != null && taNeighbor.isAirBase()) && data.getRelationshipTracker().isAllied(terrNext.getOwner(), unit.getOwner()))
 		     	{
 		     		movement++;

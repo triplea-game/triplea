@@ -1,4 +1,8 @@
 Changes for 1.5
+* Stopped blitzing out of a combat into further combat, if you began in same territory. (veqryn)
+
+* Allowed less strict Edit Mode options. (veqryn)
+
 * Changed PlayerID to record if the player is Human or AI, and which type of AI. (veqryn)
 
 * Allowed territories with now hostile units to be redrawn, and have red markup, at the end of the politics delegate. (veqryn)
