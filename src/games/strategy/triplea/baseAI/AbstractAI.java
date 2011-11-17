@@ -374,7 +374,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		float numPlayers = data.getPlayerList().getPlayers().size();
 		IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
 		
-		if (Math.random() < .45)
+		if (Math.random() < .5)
 		{
 			List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id);
 			if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty())
