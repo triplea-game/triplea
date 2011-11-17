@@ -23,7 +23,9 @@ package games.strategy.engine.framework;
 import games.strategy.debug.Console;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
+import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
@@ -33,6 +35,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.DefaultDelegateBridge;
 import games.strategy.engine.delegate.DelegateExecutionManager;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.display.DefaultDisplayBridge;
 import games.strategy.engine.display.IDisplay;
@@ -58,6 +61,7 @@ import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
+import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.util.ListenerList;
@@ -67,6 +71,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -107,6 +112,9 @@ public class ServerGame implements IGame
 	private volatile boolean m_isGameOver = false;
 	
 	private InGameLobbyWatcher m_inGameLobbyWatcher;
+	
+	private boolean m_needToInitialize = true;
+	private boolean m_firstRun = true;
 	
 	/**
 	 * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from returning.
@@ -646,6 +654,13 @@ public class ServerGame implements IGame
 		
 		bridge.setRandomSource(m_delegateRandomSource);
 		
+		// do any initialization of game data for all players here (not based on a delegate, and should not be)
+		// we can not do this the very first run through, because there are no history nodes yet. We should do after first node is created.
+		if (m_needToInitialize)
+		{
+			addPlayerTypesToGameData(m_gamePlayers.values(), m_players, bridge);
+		}
+		
 		notifyGameStepChanged(stepIsRestoredFromSavedGame);
 		
 		m_delegateExecutionManager.enterDelegateExecution();
@@ -706,6 +721,50 @@ public class ServerGame implements IGame
 			GameStepListener listener = iter.next();
 			listener.gameStepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), getCurrentStep().getDisplayName());
 		}
+	}
+	
+	private void addPlayerTypesToGameData(Collection<IGamePlayer> localPlayers, PlayerManager allPlayers, IDelegateBridge aBridge)
+	{
+		GameData data = aBridge.getData();
+
+		// potential bugs with adding changes to a game that has not yet started and has no history nodes yet.  So wait for the first delegate to start before making changes.
+		if (getCurrentStep() == null || getCurrentStep().getPlayerID() == null || (m_firstRun && data.getPlayerList().getPlayers().iterator().next().getWhoAmI().equals("null:no_one")))
+		{
+			m_firstRun = false;
+			return;
+		}
+		
+		CompositeChange change = new CompositeChange();
+		Set<String> allPlayersString = allPlayers.getPlayers();
+		aBridge.getHistoryWriter().startEvent("Game Loaded");
+		for (IGamePlayer player : localPlayers)
+		{
+			allPlayersString.remove(player.getName());
+			boolean isHuman = player instanceof TripleAPlayer;
+			aBridge.getHistoryWriter().addChildToEvent(player.getName() + ((player.getName().endsWith("s") || player.getName().endsWith("ese")) ? " are" : " is") + " now being played by: " + player.getType());
+			PlayerID p = data.getPlayerList().getPlayerID(player.getName());
+			String newWhoAmI = ((isHuman ? "Human" : "AI") + ":" + player.getType());
+			if (!p.getWhoAmI().equals(newWhoAmI))
+				change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
+		}
+		Iterator<String> playerIter = allPlayersString.iterator();
+		while (playerIter.hasNext())
+		{
+			String player = playerIter.next();
+			playerIter.remove();
+			aBridge.getHistoryWriter().addChildToEvent(player + ((player.endsWith("s") || player.endsWith("ese")) ? " are" : " is") + " now being played by: Human:Client");
+			PlayerID p = data.getPlayerList().getPlayerID(player);
+			String newWhoAmI = "Human:Client";
+			if (!p.getWhoAmI().equals(newWhoAmI))
+				change.add(ChangeFactory.changePlayerWhoAmIChange(p, newWhoAmI));
+		}
+		if (!change.isEmpty())
+			aBridge.addChange(change);
+		
+		m_needToInitialize = false;
+		
+		if (!allPlayersString.isEmpty())
+			throw new IllegalStateException("Not all Player Types (ai/human/client) could be added to game data.");
 	}
 	
 	public IMessenger getMessenger()

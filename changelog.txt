@@ -1,4 +1,8 @@
 Changes for 1.5
+* Fixed "not all units can blitz" bug. (veqryn)
+
+* Made the engine write who (ai/human/client) is playing each player, each time game is loaded, to the history panel. (veqryn)
+
 * Adding political map skin, and reconstructed basetiles, for Napoleonic Empires. (veqryn)
 
 * Stopped blitzing out of a combat into further combat, if you began in same territory. (veqryn)

@@ -880,11 +880,11 @@ public class MoveValidator
 		
 		if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner()).match(player) && Matches.isAtWar(route.getEnd().getOwner()).match(player))
 		{
-			if (!MoveValidator.isBlitzable(route.getStart(), data, player))
+			if (!MoveValidator.isBlitzable(route.getStart(), data, player) && !Match.allMatch(units, Matches.UnitIsAir))
 				return result.setErrorReturnResult("Can not blitz out of a battle into enemy territory");
-			for (Unit u : Match.getMatches(units, Matches.UnitCanBlitz.invert()))
+			for (Unit u : Match.getMatches(units, new CompositeMatchAnd<Unit>(Matches.UnitCanBlitz.invert(), Matches.UnitIsNotAir)))
 			{
-				result.addDisallowedUnit("Not all units can blitz", u);
+				result.addDisallowedUnit("Not all units can blitz out of empty enemy territory", u);
 			}
 		}
 		

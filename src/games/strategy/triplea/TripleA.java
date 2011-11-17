@@ -147,9 +147,6 @@ public class TripleA implements IGameLoader
 				}
 			}
 			
-			// add info to gamedata to reflect who is playing the players
-			addPlayersToGameData(players, m_game.getData());
-			
 			SwingUtilities.invokeAndWait(new Runnable()
 				{
 					
@@ -225,19 +222,6 @@ public class TripleA implements IGameLoader
 			if (player instanceof TripleAPlayer)
 				((TripleAPlayer) player).setFrame(frame);
 		}
-	}
-	
-	private void addPlayersToGameData(Set<IGamePlayer> players, GameData data)
-	{
-		//CompositeChange change = new CompositeChange();
-		for (IGamePlayer player : players)
-		{
-			boolean isHuman = player instanceof TripleAPlayer;
-			data.getPlayerList().getPlayerID(player.getName()).setWhoAmI((isHuman ? "Human" : "AI") + ":" + player.getType());
-			//change.add(ChangeFactory.changePlayerWhoAmIChange(data.getPlayerList().getPlayerID(player.getName()), ((isHuman ? "Human" : "AI") + ":" + player.getType())));
-			//aBridge.getHistoryWriter().startEvent(player.getName() + " is now being played by: " + player.getType());
-		}
-		//aBridge.addChange(change);
 	}
 	
 	/**

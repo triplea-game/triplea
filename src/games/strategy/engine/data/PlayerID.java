@@ -35,7 +35,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	private ProductionFrontier m_productionFrontier;
 	private RepairFrontier m_repairFrontier;
 	private final TechnologyFrontierList m_technologyFrontiers;
-	private String m_whoAmI = null;
+	private String m_whoAmI = "null:no_one";
 	
 	/** Creates new Player */
 	public PlayerID(String name, boolean optional, GameData data)
@@ -129,7 +129,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		String[] s = humanOrAI_colon_playerName.split(":");
 		if (s.length != 2)
 			throw new IllegalStateException("whoAmI must have two strings, separated by a colon");
-		if (!(s[0].equalsIgnoreCase("AI") || s[0].equalsIgnoreCase("Human"))) // || s[0].equalsIgnoreCase("client")))
+		if (!(s[0].equalsIgnoreCase("AI") || s[0].equalsIgnoreCase("Human") || s[0].equalsIgnoreCase("null")))
 			throw new IllegalStateException("whoAmI first part must be, ai or human or client");
 		m_whoAmI = humanOrAI_colon_playerName;
 	}
