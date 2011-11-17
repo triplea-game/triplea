@@ -1,0 +1,120 @@
+Napoleonic Empires 3.1 by Veqryn
+
+Possible Future Changes:
+Artillery made 2/1/1/4 cost and defense lowered by 1
+Mortars made 4/2/1/6 cost and attack lowered by 1, defense increased by 1 or 4/1/1/6 cost and attack lowered by 1
+Marines made 2(3)/2/1/5 defense boosted by 1, OR stay at 2(3)/1/1/5 and be supportable.
+Grenadier made 3/2/1/5 cost and defense lowered by 1
+Hussar, Dragoons, Cuirassiers, General, cost lowered by 1
+Corvette made 2/2/2/10 cost and defense increased by 1
+Frigate cost made 13
+Battleship cost made 19 or 20 or 21
+Horse Artillery made 2/0/2/4 attack increased by 1, defense decreased by 1, OR made 1/2/2/4 defense increased by 1, OR made 1/0/2/3 defense and cost decreased by 1, OR made 0/1/2/3 attack and cost decreased by 1
+Fortress made 0/5/0/7 cost and defense raised by 1, or made 0/4/0/8 with 2 hits points (non-repairable) cost raised by 2.
+Some name changes for units.
+
+
+Version 2.0 - 3.x changes made by Veqryn.
+
+Version 3.0 - 3.1 changes:
+New Unit: Marshal, a 4/3/2/9 unit that is supportable and has blitz, similar to Marshal of France, but available to all non-france powers. 
+New Graphics: Marshal of France based on Michel Ney, United Kingdom Marshal based on Arthur Wellesley the Duke of Wellington, Prussian Marshal based on Gebhard Leberecht von Blucher, Austrian Marshal based on Archduke Charles, Russian Marshal based on Mikhail Kutuzov (thx Pulicat for these, i did a number of after effects on them tho).
+Fixed baseTiles to reflect new units.
+Battleships increased in cost by 1, to 20.
+Sweden and Prussia starting pu increased by 1 each, so that they may still do an opening purchase of 1 bb and 1 cutter.
+Returned the Fortresses to Majorica and Candia.
+Returned 1 Fusilier to Sussex.
+Removed 3 Fusilier and 1 Marine from Navarre, that I had placed their earlier.
+The 2 Chasseurs removed from Lisbon earlier have been re-added to Algarve.
+Paris has 1 less production, Auvergne has 1 more.
+Cheshire has 1 more production, Northumberland has 1 less.
+
+
+Version 2.9.1 - 3.0 changes:
+Changed names: Crete - Candia, Tras os Montes - Oporto, Urals - Tsaritsyn, Budapest - Zala, Flankers - Chasseurs, Lancers - Cuirassiers, Entrenchment - Mortella_Tower, Mortars - Howitzer
+Dragoons and Cuirassiers graphics switched around
+New Graphic: Mortella_Tower (replacing the old Entrenchment)(thx pulicat)
+New Graphic: Howitzer (replacing the old Mortars)(thx pulicat)
+Game name and folder changed from 'Empires' to 'Napoleonic Empires'
+Unit Changed: Mortars is now a 5/1/1/7 unit that supports
+New Unit: Howitzer, 1/1/1/3 unit that supports (taking over the old Mortars stats)
+New Unit: Marshal_of_France, a 4/3/3/9 unit that can be supportable, and has blitz
+SZ86 Grenadiers changed to Marshal_of_France
+
+
+Version 2.9 - 2.9.1 changes:
+Added a connection between SZ67 and SZ70
+Added a connection and canal between SZ70 and SZ71
+Added an Mortella_Tower to Candia, changed Candia Flanker to Fusilier.
+Removed 1 Fusilier from Essex and removed 1 Fusilier from Sussex.
+Added an Mortella_Tower to Constantinople.
+Moved 1 Fusilier back from Kiev to Severia, changed 2 Moscow Flanker into Fusilier.
+Changed 1 Zala Flanker into a Fusilier.
+Changed 4 French Howitzer into Horse_Artillery.
+SZ29 1 Brigantine changed to Cutter
+SZ30 Corvette moved to SZ24
+Provence upped to 2 production and Paris lowered to 11 to compensate, and French starting PUs lowered by 1 to 46.
+
+
+Version 2.8 - 2.9 changes:
+Changed name of AngloSaxons to Coalition
+moved sz82 french fleet to sz81, sz64 flanker upgraded to grenadier
+removed 1 fortress from Candia and majorica, removed 1 Mortella_Tower from gibraltar
+added 1 Howitzer to jutland, upgraded 1 fusilier to grenadier in jutland, removed 1 fusilier from svealand
+moved Mortella_Tower from kiev to estonia, removed 1 barque from sz101
+added 1 Mortella_Tower to prussia, turned 2 prussian Chasseurs into fusiliers, and moved 1 one space back
+turned 3 austrian Chasseurs into fusiliers, and moved 1 one space back from front
+added 1 neutral to astrakahn, removed 2 neutrals from lisbon, removed 1 neutral from barca and sinai, added few more neutrals to mid-east
+
+
+Version 2.7 - 2.8 changes:
+Battleships no longer repair at end of turn.  BB price dropped to 19 (18? 20?).
+Corvette and Frigate dropped by 1 each in price (might have to drop Frigate 1 more).  General costs 2 less also.
+Removed the Austrian and Prussian Hussar that I added in 2.7.  Moved 2 Prussian Fusilier backwards towards capital. Removed 1 Russian Fusilier from Lith, added 1 Dragoon to Finland. Changed 2 French Hussars into Dragoons. Removed 1 marine from Majorica and Candia. Removed the Austrian Fusilier I added to Hollande.
+Added 1 French Hussar to Poitou, 1 Cuirassiers to Burgundy, 1 Marine to Brittany.  Removed Austrian Brigantine.  Added 1 Artillery to Jutland.
+Moved French Brig in SZ63 to SZ64
+Switched Swedish Frigate and Battleship around.
+Prussian Cutter turned into a Brigantine, Prussian Barque turned into Russian Brigantine.
+Egypt now worth 3 instead of 4.
+
+
+Version 2.6 - 2.7 changes:
+Removed 1 Russian Barque.  Added 4 units to Jutland, 3 units to Finland. Added 2 ottomon and 1 austrian fusilier.  Added a Swedish Barque to SZ20, to keep UK from capturing Swedish convoy round 1 (I recommend not attacking this barque with less than a BB, because you will lose a ship 1/4th of the time. You can go around the barque instead.)
+Added Options for: Partial Amphibious Retreat (defaults false), Naval Bombardment Casualties Fire Back (defaults false), and Naval Bombard Restricted To Number of Units offloading (defaults true, to avoid bombard abuse).
+Candia and convoy SZ73 are now UK, along with a starting UK fleet in 73.
+France has a fleet off Egypt, ready to take it or return home.  France now owns SZ38 convoy zone.  Removed 2 French Fusilier from Poitou.  
+Moved Ottomon Marines to Istanbul, so that Ottos can not take Egypt til turn 3 or 4 if France declines to take it.  Added Ottomon Artillery back to Tarsus.
+Removed 2 Russian Fusiliers from Severia, added 1 Hussar to Zala and Warszowa.  
+Removed 1 Mortella_Tower from Gibraltar, 1 Flanker from Majorica.
+Addition of various Pirate vessels around and about the map, particularly concentrated where the Barbary corsairs were.
+Fixed polygons.txt file, Corsica was hidden beneath the sea zone.  Also added Pirate flag to neutral vessels.
+
+
+Version 2.4 - 2.6 changes:
+Purchasing now comes AFTER Combat Move.
+SZ73 is now a UK convoy that is occupied by the Ottomons.
+Prussian Brigantine changed to Cutter, to cut down on luck slightly.
+Hussars given blitz.
+New unit and graphic created: Horse Artillery
+New unit and graphic created: Mortella_Tower
+Dragoons, Cuirassiers given attack supportable.
+Fortress price lowered by 2 to 6, General lowered by 3 to 22.
+Slight Changes to setup, more units for neutrals, 1 less artillery for ottomons, french force made more mobile, Gibraltar troops turned into fortresses, so that Spain can ignore taking Gibraltar without suffering if it chooses to, and created an austrian fleet of a single ship.
+
+
+Version 2 - 2.4 changes:
+Fixed various properties (triplea engine upgraded from 1.0.3.4 to 1.2.3.0 required many updates)
+Chasseurs, Grenadiers, Hussars, reduced in price by 1.
+Dragoons, Corvettes, reduced in price by 2.
+Cuirassiers, Frigates, reduced in price by 3.
+Battleships price increaded by 1.
+Grenadiers switched from 2/3 to 3/3 att/def.
+Fixed bug: All ships except for Barques can capture Convoy Zones.  This is user-enforced.  The game engine lets Barques capture convoy zones, but this is a bug in the engine.  Barques are not allowed to capture convoy zones.
+Fixed bug: Dragoons now have Blitz, to match the chart.
+All Neutral Grenadiers changed to Chasseurs.
+Minor changes to unit startup with neutrals: less luck for defenses.
+Minor changes to unit startup for Carolingians: all Dragoons turned into Hussars, plus extra Hussars for France.
+
+
+Original Map and Game, complete to Version 2 by LSSAH.
+Changes 2.0-3.x by Veqryn (with additional help from Pulicat, Lalapaloza, Cal2), Last Edited March 22, 2010.

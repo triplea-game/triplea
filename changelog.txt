@@ -1,4 +1,6 @@
 Changes for 1.5
+* Adding political map skin, and reconstructed basetiles, for Napoleonic Empires. (veqryn)
+
 * Stopped blitzing out of a combat into further combat, if you began in same territory. (veqryn)
 
 * Allowed less strict Edit Mode options. (veqryn)
