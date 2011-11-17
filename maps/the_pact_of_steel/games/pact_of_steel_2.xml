@@ -4931,6 +4931,19 @@
 				<property name="Neutral Flyover Allowed" value="false" editable="false">
 						<boolean/>
 				</property>
+				
+				<!-- AI related -->
+				<property name="AI Bonus Income Percentage" value="20" editable="true">
+						<number min="0" max="100"/>
+				</property>
+				
+				<property name="AI Bonus Attack" value="0" editable="true">
+						<number min="0" max="2"/>
+				</property>
+				
+				<property name="AI Bonus Defense" value="0" editable="true">
+						<number min="0" max="2"/>
+				</property>
 
 				<!-- Map Name: also used for map utils when asked (MUST exactly match the folder or zip name of your map (do not include the .zip of course). May point to another map folder if you are making a mod of that map) -->
 				<property name="mapName" value="the_pact_of_steel" editable="false"/>

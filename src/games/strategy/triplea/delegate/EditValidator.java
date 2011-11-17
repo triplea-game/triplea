@@ -40,16 +40,16 @@ public class EditValidator
 	{
 		String result = null;
 		
-		// territory cannot contain enemy units
+		/*// territory cannot contain enemy units
 		if (!Matches.territoryIsEmptyOfCombatUnits(data, player).match(territory))
-			return "Territory contains enemy units";
+			return "Territory contains enemy units";*/
 		
-		// territory cannot be in a pending battle
+		/*// territory cannot be in a pending battle
 		BattleTracker battleTracker = DelegateFinder.battleDelegate(data).getBattleTracker();
 		if (battleTracker.getPendingBattle(territory, true) != null)
 			return "Territory contains a pending SBR battle";
 		if (battleTracker.getPendingBattle(territory, false) != null)
-			return "Territory contains a pending battle";
+			return "Territory contains a pending battle";*/
 		
 		// territory cannot be in an UndoableMove route
 		List<UndoableMove> moves = DelegateFinder.moveDelegate(data).getMovesMade();

@@ -1,4 +1,6 @@
 Changes for 1.5
+* Added methods for AI to cheat in all games, using new properties: "AI Bonus Income Percentage", "AI Bonus Attack", "AI Bonus Defense". (veqryn)
+
 * Fixed "not all units can blitz" bug. (veqryn)
 
 * Made the engine write who (ai/human/client) is playing each player, each time game is loaded, to the history panel. (veqryn)

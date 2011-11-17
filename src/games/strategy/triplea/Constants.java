@@ -215,6 +215,9 @@ public interface Constants
 	public static final String DAMAGE_FROM_BOMBING_DONE_TO_UNITS_INSTEAD_OF_TERRITORIES = "Damage From Bombing Done To Units Instead Of Territories";
 	public static final String NEUTRAL_FLYOVER_ALLOWED = "Neutral Flyover Allowed";
 	public static final String UNITS_CAN_BE_CHANGED_ON_CAPTURE = "Units Can Be Changed On Capture";
+	public static final String AI_BONUS_INCOME_PERCENTAGE = "AI Bonus Income Percentage";
+	public static final String AI_BONUS_ATTACK = "AI Bonus Attack";
+	public static final String AI_BONUS_DEFENSE = "AI Bonus Defense";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

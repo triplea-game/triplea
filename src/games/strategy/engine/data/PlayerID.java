@@ -142,4 +142,9 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return m_whoAmI;
 	}
 	
+	public boolean isAI()
+	{
+		return m_whoAmI.split(":")[0].equalsIgnoreCase("AI");
+	}
+	
 }

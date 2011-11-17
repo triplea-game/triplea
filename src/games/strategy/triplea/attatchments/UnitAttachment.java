@@ -954,11 +954,14 @@ public class UnitAttachment extends DefaultAttachment
 			if (TechTracker.hasSuperSubs(player))
 				attackValue++;
 		}
-		
 		if (attackValue > 0 && m_isAir && !m_isStrategicBomber)
 		{
 			if (TechTracker.hasJetFighter(player) && isWW2V3TechModel(player.getData()))
 				attackValue++;
+		}
+		if (attackValue > 0 && player.isAI())
+		{
+			attackValue += games.strategy.triplea.Properties.getAIBonusAttack(getData());
 		}
 		
 		return Math.min(attackValue, maxDiceSides);
@@ -1000,6 +1003,10 @@ public class UnitAttachment extends DefaultAttachment
 			
 			if (bonus > 0)
 				defenseValue += bonus;
+		}
+		if (defenseValue > 0 && player.isAI())
+		{
+			defenseValue += games.strategy.triplea.Properties.getAIBonusDefense(getData());
 		}
 		
 		return Math.min(defenseValue, maxDiceSides);

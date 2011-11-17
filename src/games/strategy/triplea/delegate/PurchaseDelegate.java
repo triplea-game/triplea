@@ -90,7 +90,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 				TriggerAttachment.triggerProductionFrontierEditChange(m_player, m_bridge, null, null);
 				TriggerAttachment.triggerPurchase(m_player, m_bridge, null, null);
 			}
-			
+			giveBonusIncomeToAI();
 			m_needToInitialize = false;
 		}
 	}
@@ -498,6 +498,23 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			return m_player.getResources().getQuantity(resource) - cost + " PUs remaining";
 		}
 		return "";
+	}
+	
+	private void giveBonusIncomeToAI()
+	{
+		if (!m_player.isAI())
+			return;
+		int currentPUs = m_player.getResources().getQuantity(Constants.PUS);
+		if (currentPUs == 0)
+			return;
+		int bonusPercent = games.strategy.triplea.Properties.getAIBonusIncomePercentage(getData());
+		if (bonusPercent == 0)
+			return;
+		int toGive = (int) Math.ceil(((double) currentPUs * (double) bonusPercent / 100));
+		if (toGive == 0)
+			return;
+		m_bridge.getHistoryWriter().startEvent("Giving AI player bonus income of " + toGive + MyFormatter.pluralize("PU", toGive));
+		m_bridge.addChange(ChangeFactory.changeResourcesChange(m_player, getData().getResourceList().getResource(Constants.PUS), toGive));
 	}
 	
 	private boolean isIncreasedFactoryProduction(PlayerID player)

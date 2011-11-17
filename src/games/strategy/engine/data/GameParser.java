@@ -30,6 +30,7 @@ import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
@@ -865,6 +866,7 @@ public class GameParser
 	
 	private void parseProperties(Node root) throws GameParseException
 	{
+		Collection<String> runningList = new ArrayList<String>();
 		GameProperties properties = data.getProperties();
 		Iterator<Node> children = getChildren("property", root).iterator();
 		while (children.hasNext())
@@ -874,6 +876,7 @@ public class GameParser
 			String editable = current.getAttribute("editable");
 			String property = current.getAttribute("name");
 			String value = current.getAttribute("value");
+			runningList.add(property);
 			if (value == null || value.length() == 0)
 			{
 				List<Node> valueChildren = getChildren("value", current);
@@ -911,6 +914,20 @@ public class GameParser
 					}
 				}
 			}
+		}
+		
+		// add properties for all maps here:
+		if (!runningList.contains(Constants.AI_BONUS_INCOME_PERCENTAGE))
+		{
+			data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_PERCENTAGE, 200, -100, 0));
+		}
+		if (!runningList.contains(Constants.AI_BONUS_ATTACK))
+		{
+			data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_ATTACK, data.getDiceSides(), 0, 0));
+		}
+		if (!runningList.contains(Constants.AI_BONUS_DEFENSE))
+		{
+			data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_DEFENSE, data.getDiceSides(), 0, 0));
 		}
 	}
 	

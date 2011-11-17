@@ -930,6 +930,39 @@ public class Properties implements Constants
 		return data.getProperties().get(USE_POLITICS, false);
 	}
 	
+	public static int getAIBonusIncomePercentage(GameData data)
+	{
+		try
+		{
+			return Integer.parseInt((String) data.getProperties().get(AI_BONUS_INCOME_PERCENTAGE));
+		} catch (NumberFormatException e)
+		{
+			return 0;
+		}
+	}
+	
+	public static int getAIBonusAttack(GameData data)
+	{
+		try
+		{
+			return Integer.parseInt((String) data.getProperties().get(AI_BONUS_ATTACK));
+		} catch (NumberFormatException e)
+		{
+			return 0;
+		}
+	}
+	
+	public static int getAIBonusDefense(GameData data)
+	{
+		try
+		{
+			return Integer.parseInt((String) data.getProperties().get(AI_BONUS_DEFENSE));
+		} catch (NumberFormatException e)
+		{
+			return 0;
+		}
+	}
+	
 	private Properties()
 	{
 	}

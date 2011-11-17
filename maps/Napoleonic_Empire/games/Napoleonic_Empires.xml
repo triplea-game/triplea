@@ -7259,6 +7259,19 @@
 				<property name="maxFactoriesPerTerritory" value="2" editable="false">
 						<number min="1" max="6"/>
 				</property>
+				
+				<!-- AI related -->
+				<property name="AI Bonus Income Percentage" value="20" editable="true">
+						<number min="0" max="100"/>
+				</property>
+				
+				<property name="AI Bonus Attack" value="0" editable="true">
+						<number min="0" max="2"/>
+				</property>
+				
+				<property name="AI Bonus Defense" value="0" editable="true">
+						<number min="0" max="2"/>
+				</property>
 
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="Napoleonic_Empire" editable="false"/>
