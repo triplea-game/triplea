@@ -1,4 +1,6 @@
 Changes for 1.5
+* Added ability for TripleA to remember which type of player you selected when you reload the game. And fixed bug where hosted online games did not remember your selection. (veqryn)
+
 * Added methods for AI to cheat in all games, using new properties: "AI Bonus Income Percentage", "AI Bonus Attack", "AI Bonus Defense". (veqryn)
 
 * Fixed "not all units can blitz" bug. (veqryn)

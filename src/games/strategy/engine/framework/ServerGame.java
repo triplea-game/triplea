@@ -741,7 +741,7 @@ public class ServerGame implements IGame
 		{
 			allPlayersString.remove(player.getName());
 			boolean isHuman = player instanceof TripleAPlayer;
-			aBridge.getHistoryWriter().addChildToEvent(player.getName() + ((player.getName().endsWith("s") || player.getName().endsWith("ese")) ? " are" : " is") + " now being played by: " + player.getType());
+			aBridge.getHistoryWriter().addChildToEvent(player.getName() + ((player.getName().endsWith("s") || player.getName().endsWith("ese") || player.getName().endsWith("ish")) ? " are" : " is") + " now being played by: " + player.getType());
 			PlayerID p = data.getPlayerList().getPlayerID(player.getName());
 			String newWhoAmI = ((isHuman ? "Human" : "AI") + ":" + player.getType());
 			if (!p.getWhoAmI().equals(newWhoAmI))
@@ -752,7 +752,7 @@ public class ServerGame implements IGame
 		{
 			String player = playerIter.next();
 			playerIter.remove();
-			aBridge.getHistoryWriter().addChildToEvent(player + ((player.endsWith("s") || player.endsWith("ese")) ? " are" : " is") + " now being played by: Human:Client");
+			aBridge.getHistoryWriter().addChildToEvent(player + ((player.endsWith("s") || player.endsWith("ese") || player.endsWith("ish")) ? " are" : " is") + " now being played by: Human:Client");
 			PlayerID p = data.getPlayerList().getPlayerID(player);
 			String newWhoAmI = "Human:Client";
 			if (!p.getWhoAmI().equals(newWhoAmI))

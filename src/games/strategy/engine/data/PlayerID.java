@@ -21,6 +21,7 @@
 package games.strategy.engine.data;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 
 /**
  * 
@@ -134,9 +135,6 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		m_whoAmI = humanOrAI_colon_playerName;
 	}
 	
-	/**
-	 * @return whoAmI, first string is "Human" or "AI", while second string is the name of the player, like "Moore N. Able (AI)"
-	 */
 	public String getWhoAmI()
 	{
 		return m_whoAmI;
@@ -145,6 +143,16 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	public boolean isAI()
 	{
 		return m_whoAmI.split(":")[0].equalsIgnoreCase("AI");
+	}
+	
+	public static LinkedHashMap<String, String> currentPlayers(GameData data)
+	{
+		LinkedHashMap<String,String> rVal = new LinkedHashMap<String,String>();
+		for (PlayerID player : data.getPlayerList().getPlayers())
+		{
+			rVal.put(player.getName(), player.getWhoAmI().split(":")[1]);
+		}
+		return rVal;
 	}
 	
 }

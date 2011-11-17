@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -12,6 +13,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,6 +48,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 	private void layoutComponents()
 	{
 		GameData data = m_gameSelectorModel.getGameData();
+		Map<String,String> reloadSelections = PlayerID.currentPlayers(data);
 		
 		removeAll();
 		m_playerTypes.clear();
@@ -65,8 +68,8 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 		
 		for (int i = 0; i < playerNames.length; i++)
 		{
-			LocalPlayerComboBoxSelector selector = new LocalPlayerComboBoxSelector(playerNames[i], data.getAllianceTracker().getAlliancesPlayerIsIn(data.getPlayerList().getPlayerID(playerNames[i])),
-						playerTypes);
+			LocalPlayerComboBoxSelector selector = new LocalPlayerComboBoxSelector(playerNames[i], reloadSelections,
+						data.getAllianceTracker().getAlliancesPlayerIsIn(data.getPlayerList().getPlayerID(playerNames[i])), playerTypes);
 			m_playerTypes.add(selector);
 			selector.layout(i, this);
 		}
@@ -155,11 +158,18 @@ class LocalPlayerComboBoxSelector
 	private final JComboBox m_playerTypes;
 	private final String m_playerAlliances;
 	
-	LocalPlayerComboBoxSelector(String playerName, Collection<String> playerAlliances, String[] types)
+	LocalPlayerComboBoxSelector(String playerName, Map<String,String> reloadSelections, Collection<String> playerAlliances, String[] types)
 	{
 		m_playerName = playerName;
 		m_playerTypes = new JComboBox(types);
-		if (m_playerName.startsWith("Neutral") || playerName.startsWith("AI"))
+		String previousSelection = reloadSelections.get(playerName);
+		if (previousSelection.equalsIgnoreCase("Client"))
+			previousSelection = "Human";
+		if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection))
+		{
+			m_playerTypes.setSelectedItem(previousSelection);
+		}
+		else if (m_playerName.startsWith("Neutral") || playerName.startsWith("AI"))
 		{
 			m_playerTypes.setSelectedItem("Moore N. Able (AI)");
 			// Uncomment to disallow players from changing the default

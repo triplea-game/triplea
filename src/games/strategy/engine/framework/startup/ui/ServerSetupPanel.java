@@ -15,6 +15,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.framework.networkMaintenance.BanPlayerAction;
 import games.strategy.engine.framework.networkMaintenance.BootPlayerAction;
 import games.strategy.engine.framework.networkMaintenance.MutePlayerAction;
@@ -37,6 +38,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -329,12 +331,13 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		m_playerRows = new ArrayList<PlayerRow>();
 		Map<String, String> players = m_model.getPlayers();
 		Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
+		Map<String,String> reloadSelections = PlayerID.currentPlayers(m_gameSelectorModel.getGameData());
 		// List<String> keys = new ArrayList<String>(players.keySet());
 		// Collections.sort(keys);//we don't want to sort them alphabetically. let them stay in turn order.
 		Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
 		for (String name : playerNames)
 		{
-			PlayerRow newPlayerRow = new PlayerRow(name,
+			PlayerRow newPlayerRow = new PlayerRow(name, reloadSelections,
 						m_playerNamesAndAlliancesInTurnOrder.get(name),
 						m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
 			
@@ -355,7 +358,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		private JComboBox m_type;
 		private JLabel m_alliance;
 		
-		PlayerRow(String playerName, Collection<String> playerAlliances, String[] types)
+		PlayerRow(String playerName, Map<String,String> reloadSelections, Collection<String> playerAlliances, String[] types)
 		{
 			m_nameLabel = new JLabel(playerName);
 			m_playerLabel = new JLabel(m_model.getMessenger().getLocalNode().getName());
@@ -363,11 +366,18 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 			m_localCheckBox.addActionListener(m_actionListener);
 			m_localCheckBox.setSelected(true);
 			m_type = new JComboBox(types);
-			if (playerName.startsWith("Neutral") || playerName.startsWith("AI"))
+			String previousSelection = reloadSelections.get(playerName);
+			if (previousSelection.equalsIgnoreCase("Client"))
+				previousSelection = "Human";
+			if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection))
+			{
+				m_type.setSelectedItem(previousSelection);
+				m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
+			}
+			else if (playerName.startsWith("Neutral") || playerName.startsWith("AI"))
 			{
 				m_type.setSelectedItem("Moore N. Able (AI)");
-				// Uncomment to disallow players from changing the default
-				// m_playerTypes.setEnabled(false);
+				m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
 			}
 			if (playerAlliances.contains(playerName))
 				m_alliance = new JLabel();
