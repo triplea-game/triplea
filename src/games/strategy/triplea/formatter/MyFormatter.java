@@ -274,13 +274,13 @@ public class MyFormatter
 	 * @param collection
 	 * @return
 	 */
-	public static String asList(@SuppressWarnings("rawtypes") Collection collection)
+	public static String asList(Collection<? extends DefaultNamed> collection)
 	{
 		StringBuilder buf = new StringBuilder();
-		for (Object o : collection)
+		for (DefaultNamed o : collection)
 		{
 			buf.append(", ");
-			buf.append(((DefaultNamed) o).getName());
+			buf.append(o.getName());
 		}
 		return buf.toString().replaceFirst(", ", "");
 	}
