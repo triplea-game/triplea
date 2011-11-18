@@ -20,6 +20,8 @@
 
 package games.strategy.engine.data;
 
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CompositeMatchAnd;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
@@ -143,6 +145,30 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	public boolean isAI()
 	{
 		return m_whoAmI.split(":")[0].equalsIgnoreCase("AI");
+	}
+	
+	/**
+	 * If I have no units with movement,
+	 * And I own zero factories or have have no owned land,
+	 * then I am basically dead, and therefore should not participate in things like politics.
+	 * @return
+	 */
+	public boolean amNotDeadYet()
+	{
+		boolean hasFactory = false;
+		boolean ownsLand = false;
+		for (Territory t : getData().getMap().getTerritories())
+		{
+			if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.unitHasAttackValueOfAtLeast(1), Matches.UnitIsNotStatic(this), Matches.UnitIsLand)))
+				return true;
+			if (t.getOwner().equals(this))
+				ownsLand = true;
+			if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.UnitIsFactoryOrCanProduceUnits)))
+				hasFactory = true;
+			if (ownsLand && hasFactory)
+				return true;
+		}
+		return false;
 	}
 	
 	public static LinkedHashMap<String, String> currentPlayers(GameData data)

@@ -282,6 +282,9 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	
 	public boolean acceptPoliticalAction(String acceptanceQuestion)
 	{
+		// we are dead, just accept
+		if (!m_id.amNotDeadYet())
+			return true;
 		// should we use bridge's random source here?
 		if (Math.random() < .5)
 			return true;
@@ -370,6 +373,8 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	}
 	
 	public void getPoliticalActions() {
+		if (!m_id.amNotDeadYet())
+			return;
 		GameData data = m_bridge.getGameData();
 		float numPlayers = data.getPlayerList().getPlayers().size();
 		IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();

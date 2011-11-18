@@ -22,6 +22,7 @@ import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -397,9 +398,9 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 */
 	public static Collection<PoliticalActionAttachment> getValidActions(PlayerID player)
 	{
-		if (!games.strategy.triplea.Properties.getUsePolitics(player.getData()))
+		if (!games.strategy.triplea.Properties.getUsePolitics(player.getData()) || !player.amNotDeadYet())
 			return new ArrayList<PoliticalActionAttachment>();
-		return Match.getMatches(getPoliticalActionAttachments(player), Matches.PoliticalActionCanBeAttempted);
+		return Match.getMatches(getPoliticalActionAttachments(player), new CompositeMatchAnd<PoliticalActionAttachment>(Matches.PoliticalActionCanBeAttempted, Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, player.getData())));
 	}
 	
 	public void resetAttempts(IDelegateBridge aBridge)

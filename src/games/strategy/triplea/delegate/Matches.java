@@ -3643,7 +3643,7 @@ public class Matches
 	 * @param data can NOT be null
 	 * @return
 	 */
-	public static final Match<PoliticalActionAttachment> isRelationshipChangeOf(final PlayerID player, final Match<RelationshipType> currentRelation, final Match<RelationshipType> newRelation, final GameData data)
+	public static final Match<PoliticalActionAttachment> politicalActionIsRelationshipChangeOf(final PlayerID player, final Match<RelationshipType> currentRelation, final Match<RelationshipType> newRelation, final GameData data)
 	{
 		return new Match<PoliticalActionAttachment>()
 		{
@@ -3661,6 +3661,34 @@ public class Matches
 					final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
 					if (currentRelation.match(currentType) && newRelation.match(newType))
 						return true;
+				}
+				return false;
+			}
+		};
+	}
+	
+	public static Match<PoliticalActionAttachment> politicalActionAffectsAtLeastOneAlivePlayer(final PlayerID currentPlayer, final GameData data)
+	{
+		return new Match<PoliticalActionAttachment>()
+		{
+			@Override
+			public boolean match(PoliticalActionAttachment paa)
+			{
+				for (final String relationshipChangeString : paa.getRelationshipChange())
+				{
+					final String[] relationshipChange = relationshipChangeString.split(":");
+					final PlayerID p1 = data.getPlayerList().getPlayerID(relationshipChange[0]);
+					final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
+					if (!currentPlayer.equals(p1))
+					{
+						if (p1.amNotDeadYet())
+							return true;
+					}
+					if (!currentPlayer.equals(p2))
+					{
+						if (p2.amNotDeadYet())
+							return true;
+					}
 				}
 				return false;
 			}

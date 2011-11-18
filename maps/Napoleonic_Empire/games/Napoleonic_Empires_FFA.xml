@@ -1939,7 +1939,7 @@
 						<option name="archeType" value="allied"/>
 						<option name="alliancesCanChainTogether" value="true"/>
 						<!-- In case I want a flat PU rate back: <option name="upkeepCost" value="3"/>-->
-						<option name="upkeepCost" value="percentage" count="9"/>
+						<option name="upkeepCost" value="percentage" count="8"/>
 				</attatchment>
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -1950,7 +1950,7 @@
 				<attatchment name="relationshipTypeAttachment" attatchTo="Ceasefire" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="neutral"/>
 						<!--<option name="upkeepCost" value="1"/>-->
-						<option name="upkeepCost" value="percentage" count="3"/>
+						<option name="upkeepCost" value="percentage" count="4"/>
 				</attatchment>
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="Open_Borders" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -7452,7 +7452,7 @@
 				
 				<!-- AI related -->
 				<property name="AI Bonus Income Percentage" value="20" editable="true">
-						<number min="0" max="100"/>
+						<number min="-30" max="120"/>
 				</property>
 				
 				<property name="AI Bonus Attack" value="0" editable="true">
@@ -7553,9 +7553,9 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;Politics:
 &lt;br&gt;The further away from war you are with a nation, the less resources you are devoting to war. In addition, keeping treaties has an upkeep cost per turn, that affects your total income for that turn.
 &lt;br&gt;0% upkeep - War
-&lt;br&gt;3% upkeep - Ceasefire
+&lt;br&gt;4% upkeep - Ceasefire
 &lt;br&gt;6% upkeep - Open Borders
-&lt;br&gt;9% upkeep - Allied
+&lt;br&gt;8% upkeep - Allied
 &lt;br&gt;
 &lt;br&gt;When Political Actions become available:
 &lt;br&gt;Moving from - Moving to - take X rounds (including current round)

@@ -160,9 +160,9 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	{
 		GameData data = getData();
 		CompositeMatchOr<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar = new CompositeMatchOr<PoliticalActionAttachment>(
-					Matches.isRelationshipChangeOf(null, Matches.isAlliedAndAlliancesCanChainTogether.invert(), Matches.isAlliedAndAlliancesCanChainTogether, data),
-					Matches.isRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar.invert(), Matches.RelationshipTypeIsAtWar, data),
-					Matches.isRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar, Matches.RelationshipTypeIsAtWar.invert(), data));
+					Matches.politicalActionIsRelationshipChangeOf(null, Matches.isAlliedAndAlliancesCanChainTogether.invert(), Matches.isAlliedAndAlliancesCanChainTogether, data),
+					Matches.politicalActionIsRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar.invert(), Matches.RelationshipTypeIsAtWar, data),
+					Matches.politicalActionIsRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar, Matches.RelationshipTypeIsAtWar.invert(), data));
 		
 		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data) || !intoAlliedChainOrIntoOrOutOfWar.match(paa))
 		{
@@ -261,11 +261,10 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		{
 			// don't notify user of spending money anymore
 			// notifyMoney(paa, true);
-			String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " PU on Political Action: " + paa.getName();
+			String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " PU on Political Action: " + MyFormatter.attachmentNameToText(paa.getName());
 			m_bridge.getHistoryWriter().startEvent(transcriptText);
 			
-			Change charge = ChangeFactory.changeResourcesChange(m_bridge
-						.getPlayerID(), PUs, -cost);
+			Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), PUs, -cost);
 			m_bridge.addChange(charge);
 		}
 	}

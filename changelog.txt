@@ -1,4 +1,6 @@
 Changes for 1.5
+* Players who have both no movable attacking land units units, and either no factories or no land, will no longer be able to do any political actions, and any political actions affecting only them can not be done. They will now auto-accept any action from another player in addition. (veqryn) 
+
 * Allowed alliances to stop having war with each other. (veqryn)
 
 * Allowed players to leave an alliance completely, with all members. (veqryn)
