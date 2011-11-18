@@ -1506,6 +1506,8 @@
 			canMoveAirUnitsOverOwnedLand			values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
 			upkeepCost								values: "default", or any valid integer, or "percentage" with a count of a valid integer. Default = zero (0). This determines if there is a cost to maintain a relationship, which would be subtracted from PUs gained at end of turn.
 																examples: a cost of 1 PU per turn: <option name="upkeepCost" value="1"/> or <option name="upkeepCost" value="flat" count="1"/>, or a cost of 9% of your income per turn: <option name="upkeepCost" value="percentage" count="9"/>
+			alliancesCanChainTogether				values: "true", "false", or "default". can only be applied to a relationship that is archetype "allied", and only 1 relationship can have it. if true, any nations that reach this relationship will share both allies and enemies.
+			isDefaultWarPosition					values: "true", "false", or "default". can only be applied to a relationship that is archetype "war", and only 1 relationship can have it. if true, any nations that reach an alliance chaining relationship, will have their enemies who are not yet at war with, set to this relationship.
 	-->
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -4504,6 +4506,10 @@
 						<!-- If this is set, it adds or subtracks from any conditions that require a relationship to last for X rounds -->
 				<property name="Relationships Last Extra Rounds" value="0" editable="true">
 						<number min="-1" max="2"/>
+				</property>
+
+				<property name="Alliances Can Chain Together" value="false" editable="false">
+						<boolean/>
 				</property>
 				
 				<property name="National Objectives" value="true" editable="true">

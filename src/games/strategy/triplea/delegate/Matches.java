@@ -3614,6 +3614,59 @@ public class Matches
 		};
 	}*/
 	
+	public static final Match<PlayerID> isAlliedAndAlliancesCanChainTogether(final PlayerID player)
+	{
+		return new Match<PlayerID>()
+		{
+			@Override
+			public boolean match(PlayerID player2)
+			{
+				return isAlliedAndAlliancesCanChainTogether.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
+			}
+		};
+	}
+	
+	public static final Match<RelationshipType> isAlliedAndAlliancesCanChainTogether = new Match<RelationshipType>()
+	{
+		@Override
+		public boolean match(RelationshipType rt)
+		{
+			return RelationshipTypeIsAllied.match(rt) && rt.getRelationshipTypeAttachment().getAlliancesCanChainTogether();
+		}
+	};
+	
+	/**
+	 * If player is null, this match Will return true if ANY of the relationship changes match the conditions. (since paa's can have more than 1 change).
+	 * @param player CAN be null
+	 * @param currentRelation can NOT be null
+	 * @param newRelation can NOT be null
+	 * @param data can NOT be null
+	 * @return
+	 */
+	public static final Match<PoliticalActionAttachment> isRelationshipChangeOf(final PlayerID player, final Match<RelationshipType> currentRelation, final Match<RelationshipType> newRelation, final GameData data)
+	{
+		return new Match<PoliticalActionAttachment>()
+		{
+			@Override
+			public boolean match(PoliticalActionAttachment paa)
+			{
+				for (final String relationshipChangeString : paa.getRelationshipChange())
+				{
+					final String[] relationshipChange = relationshipChangeString.split(":");
+					final PlayerID p1 = data.getPlayerList().getPlayerID(relationshipChange[0]);
+					final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
+					if (player != null && !(p1.equals(player) || p2.equals(player)))
+						continue;
+					final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
+					final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
+					if (currentRelation.match(currentType) && newRelation.match(newType))
+						return true;
+				}
+				return false;
+			}
+		};
+	}
+	
 	/** Creates new Matches */
 	private Matches()
 	{

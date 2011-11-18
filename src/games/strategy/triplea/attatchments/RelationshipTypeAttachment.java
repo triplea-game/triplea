@@ -54,6 +54,9 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
 	private String m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
 	
+	private String m_alliancesCanChainTogether = PROPERTY_DEFAULT;
+	private String m_isDefaultWarPosition = PROPERTY_DEFAULT;
+	
 	private String m_upkeepCost = PROPERTY_DEFAULT;
 	
 	/**
@@ -196,6 +199,34 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		if (m_upkeepCost.equals(PROPERTY_DEFAULT))
 			return String.valueOf(0);
 		return m_upkeepCost;
+	}
+	
+	public void setAlliancesCanChainTogether(String value) throws GameParseException
+	{
+		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
+			throw new GameParseException("RelationshipTypeAttachment: alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE);
+		m_alliancesCanChainTogether = value;
+	}
+	
+	public boolean getAlliancesCanChainTogether()
+	{
+		if (m_alliancesCanChainTogether.equals(PROPERTY_DEFAULT) || isWar() || isNeutral())
+			return false;
+		return m_alliancesCanChainTogether.equals(PROPERTY_TRUE);
+	}
+	
+	public void setIsDefaultWarPosition(String value) throws GameParseException
+	{
+		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
+			throw new GameParseException("RelationshipTypeAttachment: isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE);
+		m_isDefaultWarPosition = value;
+	}
+	
+	public boolean getIsDefaultWarPosition()
+	{
+		if (m_isDefaultWarPosition.equals(PROPERTY_DEFAULT) || isAllied() || isNeutral())
+			return false;
+		return m_isDefaultWarPosition.equals(PROPERTY_TRUE);
 	}
 	
 	/**

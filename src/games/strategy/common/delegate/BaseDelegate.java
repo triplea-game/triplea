@@ -21,6 +21,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.EndRoundDelegate;
+import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.util.Tuple;
@@ -190,6 +191,7 @@ public abstract class BaseDelegate implements IDelegate
 					((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage, winnersMessage.getSecond(), m_bridge);
 				}
 			}
+			PoliticsDelegate.chainAlliancesTogether(m_bridge);
 		}
 	}
 }

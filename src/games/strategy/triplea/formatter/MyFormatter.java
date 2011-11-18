@@ -20,6 +20,7 @@
 
 package games.strategy.triplea.formatter;
 
+import games.strategy.engine.data.DefaultNamed;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -213,6 +214,8 @@ public class MyFormatter
 		else if (attachmentGetName.startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
 			toText = attachmentGetName.replaceFirst(Constants.POLITICALACTION_ATTACHMENT_PREFIX, "Political Action ");
 		
+		toText = toText.replaceAll("_", " ");
+		toText = toText.replaceAll("  ", " ");
 		toText = toText.trim();
 		return toText;
 	}
@@ -264,6 +267,22 @@ public class MyFormatter
 				buf.append(",");
 		}
 		return buf.toString();
+	}
+	
+	/**
+	 * For use with any DefaultNamed (this includes any NamedAttachable, like PlayerID, UnitType, etc.)
+	 * @param collection
+	 * @return
+	 */
+	public static String asList(@SuppressWarnings("rawtypes") Collection collection)
+	{
+		StringBuilder buf = new StringBuilder();
+		for (Object o : collection)
+		{
+			buf.append(", ");
+			buf.append(((DefaultNamed) o).getName());
+		}
+		return buf.toString().replaceFirst(", ", "");
 	}
 	
 	/** Creates a new instance of MyFormatter */

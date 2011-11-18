@@ -22,6 +22,7 @@ import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
@@ -33,7 +34,13 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.PoliticsText;
+import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.Match;
+
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 /**
  * 
@@ -69,6 +76,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		if (games.strategy.triplea.Properties.getTriggers(getData()))
 		{
 			TriggerAttachment.triggerRelationshipChange(m_player, m_bridge, null, null);
+			chainAlliancesTogether(m_bridge);
 		}
 	}
 
@@ -150,10 +158,52 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 */
 	private boolean actionIsAccepted(PoliticalActionAttachment paa)
 	{
-		for (PlayerID player : paa.getActionAccept())
+		GameData data = getData();
+		CompositeMatchOr<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar = new CompositeMatchOr<PoliticalActionAttachment>(
+					Matches.isRelationshipChangeOf(null, Matches.isAlliedAndAlliancesCanChainTogether.invert(), Matches.isAlliedAndAlliancesCanChainTogether, data),
+					Matches.isRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar.invert(), Matches.RelationshipTypeIsAtWar, data),
+					Matches.isRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar, Matches.RelationshipTypeIsAtWar.invert(), data));
+		
+		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data) || !intoAlliedChainOrIntoOrOutOfWar.match(paa))
 		{
-			if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
-				return false;
+			for (PlayerID player : paa.getActionAccept())
+			{
+				if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
+					return false;
+			}
+		}
+		else
+		{
+			// if alliances chain together, then our allies must have a say in anyone becoming a new ally/enemy
+			LinkedHashSet<PlayerID> playersWhoNeedToAccept = new LinkedHashSet<PlayerID>();
+			playersWhoNeedToAccept.addAll(paa.getActionAccept());
+			playersWhoNeedToAccept.addAll(Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedAndAlliancesCanChainTogether(m_player)));
+			for (PlayerID player : paa.getActionAccept())
+			{
+				playersWhoNeedToAccept.addAll(Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedAndAlliancesCanChainTogether(player)));
+			}
+			HashSet<PlayerID> alliesWhoMustAccept = playersWhoNeedToAccept;
+			alliesWhoMustAccept.removeAll(paa.getActionAccept());
+			for (PlayerID player : playersWhoNeedToAccept)
+			{
+				String actionText = PoliticsText.getInstance().getAcceptanceQuestion(paa.getText());
+				if (actionText.equals("NONE"))
+				{
+					actionText = m_player.getName() + " wants to take the following action: " + MyFormatter.attachmentNameToText(paa.getName()) + " \r\n Do you approve?";
+				}
+				else
+				{
+					actionText = m_player.getName() + " wants to take the following action: " + MyFormatter.attachmentNameToText(paa.getName()) + ".  Do you approve? \r\n\r\n "
+					+ m_player.getName() + " will ask " + MyFormatter.asList(paa.getActionAccept()) + ", the following question: \r\n " + actionText;
+				}
+				if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(actionText))
+					return false;
+			}
+			for (PlayerID player : paa.getActionAccept())
+			{
+				if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
+					return false;
+			}
 		}
 		return true;
 	}
@@ -295,6 +345,9 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 */
 	private void changeRelationships(PoliticalActionAttachment paa)
 	{
+		getMyselfOutOfAlliance(paa, m_player, m_bridge);
+		getNeutralOutOfWarWithAllies(paa, m_player, m_bridge);
+		
 		CompositeChange change = new CompositeChange();
 		for (String relationshipChange : paa.getRelationshipChange())
 		{
@@ -317,6 +370,8 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		}
 		if (!change.isEmpty())
 			m_bridge.addChange(change);
+		
+		chainAlliancesTogether(m_bridge);
 	}
 	
 	/**
@@ -347,6 +402,153 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		for (PoliticalActionAttachment paa : PoliticalActionAttachment.getPoliticalActionAttachments(m_player))
 		{
 			paa.resetAttempts(getBridge());
+		}
+	}
+	
+	public static void getMyselfOutOfAlliance(PoliticalActionAttachment paa, PlayerID player, IDelegateBridge aBridge)
+	{
+		GameData data = aBridge.getData();
+		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data))
+			return;
+		Collection<PlayerID> players = data.getPlayerList().getPlayers();
+		Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player));
+		p1AlliedWith.remove(player);
+		CompositeChange change = new CompositeChange();
+		for (final String relationshipChangeString : paa.getRelationshipChange())
+		{
+			final String[] relationshipChange = relationshipChangeString.split(":");
+			final PlayerID p1 = data.getPlayerList().getPlayerID(relationshipChange[0]);
+			final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
+			if (!(p1.equals(player) || p2.equals(player)))
+				continue;
+			PlayerID pOther = (p1.equals(player) ? p2 : p1);
+			if (!p1AlliedWith.contains(pOther))
+				continue;
+			final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
+			final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
+			if (Matches.isAlliedAndAlliancesCanChainTogether.match(currentType) && Matches.isAlliedAndAlliancesCanChainTogether.invert().match(newType))
+			{
+				for (PlayerID p3 : p1AlliedWith)
+				{
+					final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, player);
+					if (!currentOther.equals(newType))
+					{
+						change.add(ChangeFactory.relationshipChange(p3, player, currentOther, newType));
+						aBridge.getHistoryWriter().startEvent(player.getName() + " and " + p3.getName() + " sign a " + newType.getName() + " treaty");
+					}
+				}
+			}
+		}
+		if (!change.isEmpty())
+			aBridge.addChange(change);
+	}
+	
+	public static void getNeutralOutOfWarWithAllies(PoliticalActionAttachment paa, PlayerID player, IDelegateBridge aBridge)
+	{
+		GameData data = aBridge.getData();
+		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data))
+			return;
+		//if (!Matches.isRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar, Matches.RelationshipTypeIsAtWar.invert(), data).match(paa))
+			//return;
+		Collection<PlayerID> players = data.getPlayerList().getPlayers();
+		Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player));
+		CompositeChange change = new CompositeChange();
+		for (final String relationshipChangeString : paa.getRelationshipChange())
+		{
+			final String[] relationshipChange = relationshipChangeString.split(":");
+			final PlayerID p1 = data.getPlayerList().getPlayerID(relationshipChange[0]);
+			final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
+			if (!(p1.equals(player) || p2.equals(player)))
+				continue;
+			PlayerID pOther = (p1.equals(player) ? p2 : p1);
+			final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
+			final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
+			if (Matches.RelationshipTypeIsAtWar.match(currentType) && Matches.RelationshipTypeIsAtWar.invert().match(newType))
+			{
+				Collection<PlayerID> pOtherAlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(pOther));
+				if (!pOtherAlliedWith.contains(pOther))
+					pOtherAlliedWith.add(pOther);
+				if (!p1AlliedWith.contains(player))
+					p1AlliedWith.add(player);
+				for (PlayerID p3 : p1AlliedWith)
+				{
+					for (PlayerID p4 : pOtherAlliedWith)
+					{
+						final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, p4);
+						if (!currentOther.equals(newType) && Matches.RelationshipTypeIsAtWar.match(currentOther))
+						{
+							change.add(ChangeFactory.relationshipChange(p3, p4, currentOther, newType));
+							aBridge.getHistoryWriter().startEvent(p3.getName() + " and " + p4.getName() + " sign a " + newType.getName() + " treaty");
+						}
+					}
+				}
+			}
+		}
+		if (!change.isEmpty())
+			aBridge.addChange(change);
+	}
+	
+	public static void chainAlliancesTogether(IDelegateBridge aBridge)
+	{
+		GameData data = aBridge.getData();
+		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data))
+			return;
+		Collection<RelationshipType> allTypes = data.getRelationshipTypeList().getAllRelationshipTypes();
+		RelationshipType alliedType = null;
+		RelationshipType warType = null;
+		for (RelationshipType type : allTypes)
+		{
+			if (type.getRelationshipTypeAttachment().getIsDefaultWarPosition())
+				warType = type;
+			else if (type.getRelationshipTypeAttachment().getAlliancesCanChainTogether())
+				alliedType = type;
+		}
+		if (alliedType == null)
+			return;
+		
+		// first do alliances.  then, do war (since we don't want to declare war on a potential ally).
+		Collection<PlayerID> players = data.getPlayerList().getPlayers();
+		for (PlayerID p1 : players)
+		{
+			HashSet<PlayerID> p1NewAllies = new HashSet<PlayerID>();
+			Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1));
+			for (PlayerID p2 : p1AlliedWith)
+			{
+				p1NewAllies.addAll(Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p2)));
+			}
+			p1NewAllies.removeAll(p1AlliedWith);
+			p1NewAllies.remove(p1);
+			for (PlayerID p3 : p1NewAllies)
+			{
+				if (!data.getRelationshipTracker().getRelationshipType(p1, p3).equals(alliedType))
+				{
+					aBridge.addChange(ChangeFactory.relationshipChange(p1, p3, data.getRelationshipTracker().getRelationshipType(p1, p3), alliedType));
+					aBridge.getHistoryWriter().startEvent(p1.getName() + " and " + p3.getName() + " are joined together in an " + alliedType.getName() + " treaty");
+				}
+			}
+		}
+		// now war
+		if (warType == null)
+			return;
+		for (PlayerID p1 : players)
+		{
+			HashSet<PlayerID> p1NewWar = new HashSet<PlayerID>();
+			Collection<PlayerID> p1WarWith = Match.getMatches(players, Matches.isAtWar(p1));
+			Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1));
+			for (PlayerID p2 : p1AlliedWith)
+			{
+				p1NewWar.addAll(Match.getMatches(players, Matches.isAtWar(p2)));
+			}
+			p1NewWar.removeAll(p1WarWith);
+			p1NewWar.remove(p1);
+			for (PlayerID p3 : p1NewWar)
+			{
+				if (!data.getRelationshipTracker().getRelationshipType(p1, p3).equals(warType))
+				{
+					aBridge.addChange(ChangeFactory.relationshipChange(p1, p3, data.getRelationshipTracker().getRelationshipType(p1, p3), warType));
+					aBridge.getHistoryWriter().startEvent(p1.getName() + " and " + p3.getName() + " declare " + warType.getName() + " on each other");
+				}
+			}
 		}
 	}
 }

@@ -1,4 +1,16 @@
 Changes for 1.5
+* Allowed alliances to stop having war with each other. (veqryn)
+
+* Allowed players to leave an alliance completely, with all members. (veqryn)
+
+* Forced all alliance players to go out of war if one of them goes out of war, with a player. (veqryn)
+
+* Forced players to have their ally's agreement when going into or out of war, and letting new people into the alliance. (veqryn)
+
+* Created new relationshipTypeAttachment, isDefaultWarPosition and alliancesCanChainTogether, which handle if and when relationships will chain. (veqryn)
+
+* Created new game option, "Alliances Can Chain Together", which causes anyone who is allied with your ally, to become your ally, and any of your ally's enemies to become your enemy. (veqryn)
+
 * Created new game option, "Relationships Last Extra Rounds", which lets a player have relationships last additional or fewer rounds than default. (veqryn)
 
 * Added ability for TripleA to remember which type of player you selected when you reload the game. And fixed bug where hosted online games did not remember your selection. (veqryn)

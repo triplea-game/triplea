@@ -31,6 +31,7 @@ package games.strategy.engine.data;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -161,6 +162,11 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	public RelationshipType getDefaultWarRelationship()
 	{
 		return this.getRelationshipType(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR);
+	}
+	
+	public Collection<RelationshipType> getAllRelationshipTypes()
+	{
+		return m_relationshipTypes.values();
 	}
 	
 }
