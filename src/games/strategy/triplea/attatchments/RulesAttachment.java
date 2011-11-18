@@ -1364,6 +1364,7 @@ public class RulesAttachment extends DefaultAttachment
 	private boolean relationShipExistsLongEnnough(Relationship r, int relationshipsExistance)
 	{
 		int roundCurrentRelationshipWasCreated = r.getRoundCreated();
+		roundCurrentRelationshipWasCreated += games.strategy.triplea.Properties.getRelationshipsLastExtraRounds(getData());
 		if (getData().getSequence().getRound() - roundCurrentRelationshipWasCreated < relationshipsExistance)
 			return false;
 		return true;

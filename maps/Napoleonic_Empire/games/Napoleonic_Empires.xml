@@ -3511,7 +3511,7 @@
                 	<option name="relationship" value="OttomanEmpire:Russia:Allied:2"/>
                 </attatchment>
 				
-                <attatchment name="conditionAttachment_France_UnitedKingdom_Allied3Rounds" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <!--<attatchment name="conditionAttachment_France_UnitedKingdom_Allied3Rounds" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="relationship" value="France:UnitedKingdom:Allied:3"/>
                 </attatchment>
                 <attatchment name="conditionAttachment_France_Spain_Allied3Rounds" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -3594,7 +3594,7 @@
                 </attatchment>
                 <attatchment name="conditionAttachment_OttomanEmpire_Russia_Allied3Rounds" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="relationship" value="OttomanEmpire:Russia:Allied:3"/>
-                </attatchment>
+                </attatchment>-->
 				
                 <attatchment name="conditionAttachment_UnitedKingdom_France_War2Rounds" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="relationship" value="France:UnitedKingdom:War:2"/>
@@ -4106,7 +4106,7 @@
                 	<option name="relationship" value="OttomanEmpire:Russia:Allied:2"/>
                 </attatchment>
 				
-                <attatchment name="conditionAttachment_UnitedKingdom_France_Allied3Rounds" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <!--<attatchment name="conditionAttachment_UnitedKingdom_France_Allied3Rounds" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="relationship" value="France:UnitedKingdom:Allied:3"/>
                 </attatchment>
                 <attatchment name="conditionAttachment_Spain_France_Allied3Rounds" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -4189,349 +4189,349 @@
                 </attatchment>
                 <attatchment name="conditionAttachment_Russia_OttomanEmpire_Allied3Rounds" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="relationship" value="OttomanEmpire:Russia:Allied:3"/>
-                </attatchment>
+                </attatchment>-->
 				
 				
 			<!-- Political Action Attachments -->
 	     		<attatchment name="politicalActionAttachment_France_War_UnitedKingdom" attatchTo="France" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_France_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_France_UnitedKingdom_Open_Borders2Rounds:conditionAttachment_France_UnitedKingdom_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_France_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_France_UnitedKingdom_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="France:UnitedKingdom:War"/>
 	     			<option name="text" value="France_War_UnitedKingdom"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_France_War_Spain" attatchTo="France" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_France_Spain_Ceasefire1Rounds:conditionAttachment_France_Spain_Open_Borders2Rounds:conditionAttachment_France_Spain_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_France_Spain_Ceasefire1Rounds:conditionAttachment_France_Spain_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="France:Spain:War"/>
 	     			<option name="text" value="France_War_Spain"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_France_War_KingdomOfPrussia" attatchTo="France" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_France_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_France_KingdomOfPrussia_Open_Borders2Rounds:conditionAttachment_France_KingdomOfPrussia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_France_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_France_KingdomOfPrussia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="France:KingdomOfPrussia:War"/>
 	     			<option name="text" value="France_War_KingdomOfPrussia"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_France_War_Sweden" attatchTo="France" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_France_Sweden_Ceasefire1Rounds:conditionAttachment_France_Sweden_Open_Borders2Rounds:conditionAttachment_France_Sweden_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_France_Sweden_Ceasefire1Rounds:conditionAttachment_France_Sweden_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="France:Sweden:War"/>
 	     			<option name="text" value="France_War_Sweden"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_France_War_AustrianEmpire" attatchTo="France" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_France_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_France_AustrianEmpire_Open_Borders2Rounds:conditionAttachment_France_AustrianEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_France_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_France_AustrianEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="France:AustrianEmpire:War"/>
 	     			<option name="text" value="France_War_AustrianEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_France_War_OttomanEmpire" attatchTo="France" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_France_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_France_OttomanEmpire_Open_Borders2Rounds:conditionAttachment_France_OttomanEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_France_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_France_OttomanEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="France:OttomanEmpire:War"/>
 	     			<option name="text" value="France_War_OttomanEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_France_War_Russia" attatchTo="France" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_France_Russia_Ceasefire1Rounds:conditionAttachment_France_Russia_Open_Borders2Rounds:conditionAttachment_France_Russia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_France_Russia_Ceasefire1Rounds:conditionAttachment_France_Russia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="France:Russia:War"/>
 	     			<option name="text" value="France_War_Russia"/>
 	     		</attatchment>
 				
 	     		<attatchment name="politicalActionAttachment_UnitedKingdom_War_France" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_France_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_France_Open_Borders2Rounds:conditionAttachment_UnitedKingdom_France_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_France_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_France_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="UnitedKingdom:France:War"/>
 	     			<option name="text" value="UnitedKingdom_War_France"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_UnitedKingdom_War_Spain" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_Spain_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_Spain_Open_Borders2Rounds:conditionAttachment_UnitedKingdom_Spain_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_Spain_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_Spain_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="UnitedKingdom:Spain:War"/>
 	     			<option name="text" value="UnitedKingdom_War_Spain"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_UnitedKingdom_War_KingdomOfPrussia" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_KingdomOfPrussia_Open_Borders2Rounds:conditionAttachment_UnitedKingdom_KingdomOfPrussia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_KingdomOfPrussia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="UnitedKingdom:KingdomOfPrussia:War"/>
 	     			<option name="text" value="UnitedKingdom_War_KingdomOfPrussia"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_UnitedKingdom_War_Sweden" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_Sweden_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_Sweden_Open_Borders2Rounds:conditionAttachment_UnitedKingdom_Sweden_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_Sweden_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_Sweden_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="UnitedKingdom:Sweden:War"/>
 	     			<option name="text" value="UnitedKingdom_War_Sweden"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_UnitedKingdom_War_AustrianEmpire" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_AustrianEmpire_Open_Borders2Rounds:conditionAttachment_UnitedKingdom_AustrianEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_AustrianEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="UnitedKingdom:AustrianEmpire:War"/>
 	     			<option name="text" value="UnitedKingdom_War_AustrianEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_UnitedKingdom_War_OttomanEmpire" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_OttomanEmpire_Open_Borders2Rounds:conditionAttachment_UnitedKingdom_OttomanEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_OttomanEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="UnitedKingdom:OttomanEmpire:War"/>
 	     			<option name="text" value="UnitedKingdom_War_OttomanEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_UnitedKingdom_War_Russia" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_Russia_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_Russia_Open_Borders2Rounds:conditionAttachment_UnitedKingdom_Russia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_UnitedKingdom_Russia_Ceasefire1Rounds:conditionAttachment_UnitedKingdom_Russia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="UnitedKingdom:Russia:War"/>
 	     			<option name="text" value="UnitedKingdom_War_Russia"/>
 	     		</attatchment>
 				
 	     		<attatchment name="politicalActionAttachment_Spain_War_France" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Spain_France_Ceasefire1Rounds:conditionAttachment_Spain_France_Open_Borders2Rounds:conditionAttachment_Spain_France_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Spain_France_Ceasefire1Rounds:conditionAttachment_Spain_France_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Spain:France:War"/>
 	     			<option name="text" value="Spain_War_France"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Spain_War_UnitedKingdom" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Spain_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_Spain_UnitedKingdom_Open_Borders2Rounds:conditionAttachment_Spain_UnitedKingdom_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Spain_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_Spain_UnitedKingdom_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Spain:UnitedKingdom:War"/>
 	     			<option name="text" value="Spain_War_UnitedKingdom"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Spain_War_KingdomOfPrussia" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Spain_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_Spain_KingdomOfPrussia_Open_Borders2Rounds:conditionAttachment_Spain_KingdomOfPrussia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Spain_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_Spain_KingdomOfPrussia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Spain:KingdomOfPrussia:War"/>
 	     			<option name="text" value="Spain_War_KingdomOfPrussia"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Spain_War_Sweden" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Spain_Sweden_Ceasefire1Rounds:conditionAttachment_Spain_Sweden_Open_Borders2Rounds:conditionAttachment_Spain_Sweden_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Spain_Sweden_Ceasefire1Rounds:conditionAttachment_Spain_Sweden_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Spain:Sweden:War"/>
 	     			<option name="text" value="Spain_War_Sweden"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Spain_War_AustrianEmpire" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Spain_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_Spain_AustrianEmpire_Open_Borders2Rounds:conditionAttachment_Spain_AustrianEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Spain_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_Spain_AustrianEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Spain:AustrianEmpire:War"/>
 	     			<option name="text" value="Spain_War_AustrianEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Spain_War_OttomanEmpire" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Spain_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_Spain_OttomanEmpire_Open_Borders2Rounds:conditionAttachment_Spain_OttomanEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Spain_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_Spain_OttomanEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Spain:OttomanEmpire:War"/>
 	     			<option name="text" value="Spain_War_OttomanEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Spain_War_Russia" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Spain_Russia_Ceasefire1Rounds:conditionAttachment_Spain_Russia_Open_Borders2Rounds:conditionAttachment_Spain_Russia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Spain_Russia_Ceasefire1Rounds:conditionAttachment_Spain_Russia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Spain:Russia:War"/>
 	     			<option name="text" value="Spain_War_Russia"/>
 	     		</attatchment>
 				
 	     		<attatchment name="politicalActionAttachment_KingdomOfPrussia_War_France" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_France_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_France_Open_Borders2Rounds:conditionAttachment_KingdomOfPrussia_France_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_France_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_France_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="KingdomOfPrussia:France:War"/>
 	     			<option name="text" value="KingdomOfPrussia_War_France"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_KingdomOfPrussia_War_UnitedKingdom" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_UnitedKingdom_Open_Borders2Rounds:conditionAttachment_KingdomOfPrussia_UnitedKingdom_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_UnitedKingdom_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="KingdomOfPrussia:UnitedKingdom:War"/>
 	     			<option name="text" value="KingdomOfPrussia_War_UnitedKingdom"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_KingdomOfPrussia_War_Spain" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_Spain_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_Spain_Open_Borders2Rounds:conditionAttachment_KingdomOfPrussia_Spain_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_Spain_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_Spain_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="KingdomOfPrussia:Spain:War"/>
 	     			<option name="text" value="KingdomOfPrussia_War_Spain"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_KingdomOfPrussia_War_Sweden" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_Sweden_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_Sweden_Open_Borders2Rounds:conditionAttachment_KingdomOfPrussia_Sweden_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_Sweden_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_Sweden_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="KingdomOfPrussia:Sweden:War"/>
 	     			<option name="text" value="KingdomOfPrussia_War_Sweden"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_KingdomOfPrussia_War_AustrianEmpire" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_AustrianEmpire_Open_Borders2Rounds:conditionAttachment_KingdomOfPrussia_AustrianEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_AustrianEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="KingdomOfPrussia:AustrianEmpire:War"/>
 	     			<option name="text" value="KingdomOfPrussia_War_AustrianEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_KingdomOfPrussia_War_OttomanEmpire" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_OttomanEmpire_Open_Borders2Rounds:conditionAttachment_KingdomOfPrussia_OttomanEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_OttomanEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="KingdomOfPrussia:OttomanEmpire:War"/>
 	     			<option name="text" value="KingdomOfPrussia_War_OttomanEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_KingdomOfPrussia_War_Russia" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_Russia_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_Russia_Open_Borders2Rounds:conditionAttachment_KingdomOfPrussia_Russia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_KingdomOfPrussia_Russia_Ceasefire1Rounds:conditionAttachment_KingdomOfPrussia_Russia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="KingdomOfPrussia:Russia:War"/>
 	     			<option name="text" value="KingdomOfPrussia_War_Russia"/>
 	     		</attatchment>
 				
 	     		<attatchment name="politicalActionAttachment_Sweden_War_France" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Sweden_France_Ceasefire1Rounds:conditionAttachment_Sweden_France_Open_Borders2Rounds:conditionAttachment_Sweden_France_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Sweden_France_Ceasefire1Rounds:conditionAttachment_Sweden_France_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Sweden:France:War"/>
 	     			<option name="text" value="Sweden_War_France"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Sweden_War_UnitedKingdom" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Sweden_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_Sweden_UnitedKingdom_Open_Borders2Rounds:conditionAttachment_Sweden_UnitedKingdom_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Sweden_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_Sweden_UnitedKingdom_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Sweden:UnitedKingdom:War"/>
 	     			<option name="text" value="Sweden_War_UnitedKingdom"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Sweden_War_Spain" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Sweden_Spain_Ceasefire1Rounds:conditionAttachment_Sweden_Spain_Open_Borders2Rounds:conditionAttachment_Sweden_Spain_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Sweden_Spain_Ceasefire1Rounds:conditionAttachment_Sweden_Spain_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Sweden:Spain:War"/>
 	     			<option name="text" value="Sweden_War_Spain"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Sweden_War_KingdomOfPrussia" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Sweden_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_Sweden_KingdomOfPrussia_Open_Borders2Rounds:conditionAttachment_Sweden_KingdomOfPrussia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Sweden_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_Sweden_KingdomOfPrussia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Sweden:KingdomOfPrussia:War"/>
 	     			<option name="text" value="Sweden_War_KingdomOfPrussia"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Sweden_War_AustrianEmpire" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Sweden_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_Sweden_AustrianEmpire_Open_Borders2Rounds:conditionAttachment_Sweden_AustrianEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Sweden_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_Sweden_AustrianEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Sweden:AustrianEmpire:War"/>
 	     			<option name="text" value="Sweden_War_AustrianEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Sweden_War_OttomanEmpire" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Sweden_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_Sweden_OttomanEmpire_Open_Borders2Rounds:conditionAttachment_Sweden_OttomanEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Sweden_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_Sweden_OttomanEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Sweden:OttomanEmpire:War"/>
 	     			<option name="text" value="Sweden_War_OttomanEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Sweden_War_Russia" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Sweden_Russia_Ceasefire1Rounds:conditionAttachment_Sweden_Russia_Open_Borders2Rounds:conditionAttachment_Sweden_Russia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Sweden_Russia_Ceasefire1Rounds:conditionAttachment_Sweden_Russia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Sweden:Russia:War"/>
 	     			<option name="text" value="Sweden_War_Russia"/>
 	     		</attatchment>
 				
 	     		<attatchment name="politicalActionAttachment_AustrianEmpire_War_France" attatchTo="AustrianEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_France_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_France_Open_Borders2Rounds:conditionAttachment_AustrianEmpire_France_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_France_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_France_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="AustrianEmpire:France:War"/>
 	     			<option name="text" value="AustrianEmpire_War_France"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_AustrianEmpire_War_UnitedKingdom" attatchTo="AustrianEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_UnitedKingdom_Open_Borders2Rounds:conditionAttachment_AustrianEmpire_UnitedKingdom_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_UnitedKingdom_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="AustrianEmpire:UnitedKingdom:War"/>
 	     			<option name="text" value="AustrianEmpire_War_UnitedKingdom"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_AustrianEmpire_War_Spain" attatchTo="AustrianEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_Spain_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_Spain_Open_Borders2Rounds:conditionAttachment_AustrianEmpire_Spain_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_Spain_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_Spain_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="AustrianEmpire:Spain:War"/>
 	     			<option name="text" value="AustrianEmpire_War_Spain"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_AustrianEmpire_War_KingdomOfPrussia" attatchTo="AustrianEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_KingdomOfPrussia_Open_Borders2Rounds:conditionAttachment_AustrianEmpire_KingdomOfPrussia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_KingdomOfPrussia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="AustrianEmpire:KingdomOfPrussia:War"/>
 	     			<option name="text" value="AustrianEmpire_War_KingdomOfPrussia"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_AustrianEmpire_War_Sweden" attatchTo="AustrianEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_Sweden_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_Sweden_Open_Borders2Rounds:conditionAttachment_AustrianEmpire_Sweden_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_Sweden_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_Sweden_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="AustrianEmpire:Sweden:War"/>
 	     			<option name="text" value="AustrianEmpire_War_Sweden"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_AustrianEmpire_War_OttomanEmpire" attatchTo="AustrianEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_OttomanEmpire_Open_Borders2Rounds:conditionAttachment_AustrianEmpire_OttomanEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_OttomanEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="AustrianEmpire:OttomanEmpire:War"/>
 	     			<option name="text" value="AustrianEmpire_War_OttomanEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_AustrianEmpire_War_Russia" attatchTo="AustrianEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_Russia_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_Russia_Open_Borders2Rounds:conditionAttachment_AustrianEmpire_Russia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_AustrianEmpire_Russia_Ceasefire1Rounds:conditionAttachment_AustrianEmpire_Russia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="AustrianEmpire:Russia:War"/>
 	     			<option name="text" value="AustrianEmpire_War_Russia"/>
 	     		</attatchment>
 				
 	     		<attatchment name="politicalActionAttachment_OttomanEmpire_War_France" attatchTo="OttomanEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_France_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_France_Open_Borders2Rounds:conditionAttachment_OttomanEmpire_France_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_France_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_France_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="OttomanEmpire:France:War"/>
 	     			<option name="text" value="OttomanEmpire_War_France"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_OttomanEmpire_War_UnitedKingdom" attatchTo="OttomanEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_UnitedKingdom_Open_Borders2Rounds:conditionAttachment_OttomanEmpire_UnitedKingdom_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_UnitedKingdom_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="OttomanEmpire:UnitedKingdom:War"/>
 	     			<option name="text" value="OttomanEmpire_War_UnitedKingdom"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_OttomanEmpire_War_Spain" attatchTo="OttomanEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_Spain_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_Spain_Open_Borders2Rounds:conditionAttachment_OttomanEmpire_Spain_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_Spain_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_Spain_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="OttomanEmpire:Spain:War"/>
 	     			<option name="text" value="OttomanEmpire_War_Spain"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_OttomanEmpire_War_KingdomOfPrussia" attatchTo="OttomanEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_KingdomOfPrussia_Open_Borders2Rounds:conditionAttachment_OttomanEmpire_KingdomOfPrussia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_KingdomOfPrussia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="OttomanEmpire:KingdomOfPrussia:War"/>
 	     			<option name="text" value="OttomanEmpire_War_KingdomOfPrussia"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_OttomanEmpire_War_Sweden" attatchTo="OttomanEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_Sweden_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_Sweden_Open_Borders2Rounds:conditionAttachment_OttomanEmpire_Sweden_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_Sweden_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_Sweden_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="OttomanEmpire:Sweden:War"/>
 	     			<option name="text" value="OttomanEmpire_War_Sweden"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_OttomanEmpire_War_AustrianEmpire" attatchTo="OttomanEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_AustrianEmpire_Open_Borders2Rounds:conditionAttachment_OttomanEmpire_AustrianEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_AustrianEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="OttomanEmpire:AustrianEmpire:War"/>
 	     			<option name="text" value="OttomanEmpire_War_AustrianEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_OttomanEmpire_War_Russia" attatchTo="OttomanEmpire" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_Russia_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_Russia_Open_Borders2Rounds:conditionAttachment_OttomanEmpire_Russia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_OttomanEmpire_Russia_Ceasefire1Rounds:conditionAttachment_OttomanEmpire_Russia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="OttomanEmpire:Russia:War"/>
 	     			<option name="text" value="OttomanEmpire_War_Russia"/>
 	     		</attatchment>
 				
 	     		<attatchment name="politicalActionAttachment_Russia_War_France" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Russia_France_Ceasefire1Rounds:conditionAttachment_Russia_France_Open_Borders2Rounds:conditionAttachment_Russia_France_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Russia_France_Ceasefire1Rounds:conditionAttachment_Russia_France_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Russia:France:War"/>
 	     			<option name="text" value="Russia_War_France"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Russia_War_UnitedKingdom" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Russia_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_Russia_UnitedKingdom_Open_Borders2Rounds:conditionAttachment_Russia_UnitedKingdom_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Russia_UnitedKingdom_Ceasefire1Rounds:conditionAttachment_Russia_UnitedKingdom_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Russia:UnitedKingdom:War"/>
 	     			<option name="text" value="Russia_War_UnitedKingdom"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Russia_War_Spain" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Russia_Spain_Ceasefire1Rounds:conditionAttachment_Russia_Spain_Open_Borders2Rounds:conditionAttachment_Russia_Spain_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Russia_Spain_Ceasefire1Rounds:conditionAttachment_Russia_Spain_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Russia:Spain:War"/>
 	     			<option name="text" value="Russia_War_Spain"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Russia_War_KingdomOfPrussia" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Russia_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_Russia_KingdomOfPrussia_Open_Borders2Rounds:conditionAttachment_Russia_KingdomOfPrussia_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Russia_KingdomOfPrussia_Ceasefire1Rounds:conditionAttachment_Russia_KingdomOfPrussia_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Russia:KingdomOfPrussia:War"/>
 	     			<option name="text" value="Russia_War_KingdomOfPrussia"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Russia_War_Sweden" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Russia_Sweden_Ceasefire1Rounds:conditionAttachment_Russia_Sweden_Open_Borders2Rounds:conditionAttachment_Russia_Sweden_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Russia_Sweden_Ceasefire1Rounds:conditionAttachment_Russia_Sweden_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Russia:Sweden:War"/>
 	     			<option name="text" value="Russia_War_Sweden"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Russia_War_AustrianEmpire" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Russia_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_Russia_AustrianEmpire_Open_Borders2Rounds:conditionAttachment_Russia_AustrianEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Russia_AustrianEmpire_Ceasefire1Rounds:conditionAttachment_Russia_AustrianEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Russia:AustrianEmpire:War"/>
 	     			<option name="text" value="Russia_War_AustrianEmpire"/>
 	     		</attatchment>
 	     		<attatchment name="politicalActionAttachment_Russia_War_OttomanEmpire" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-	     			<option name="conditions" value="conditionAttachment_Russia_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_Russia_OttomanEmpire_Open_Borders2Rounds:conditionAttachment_Russia_OttomanEmpire_Allied3Rounds"/>
+	     			<option name="conditions" value="conditionAttachment_Russia_OttomanEmpire_Ceasefire1Rounds:conditionAttachment_Russia_OttomanEmpire_Open_Borders2Rounds"/>
 					<option name="conditionType" value="OR"/>
 	     			<option name="relationshipChange" value="Russia:OttomanEmpire:War"/>
 	     			<option name="text" value="Russia_War_OttomanEmpire"/>
@@ -7152,6 +7152,10 @@
 
 				<property name="Use Politics" value="false" editable="true">
 						<boolean/>
+				</property>
+				
+				<property name="Relationships Last Extra Rounds" value="0" editable="true">
+						<number min="-1" max="2"/>
 				</property>
 
 				<property name="Use Triggers" value="true" editable="true">

@@ -218,6 +218,8 @@ public interface Constants
 	public static final String AI_BONUS_INCOME_PERCENTAGE = "AI Bonus Income Percentage";
 	public static final String AI_BONUS_ATTACK = "AI Bonus Attack";
 	public static final String AI_BONUS_DEFENSE = "AI Bonus Defense";
+	public static final String RELATIONSHIPS_LAST_EXTRA_ROUNDS = "Relationships Last Extra Rounds";
+	public static final String ALLIANCES_CAN_CHAIN_TOGETHER = "Alliances Can Chain Together";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

@@ -4500,11 +4500,16 @@
 				<property name="Use Politics" value="true" editable="true">
 						<boolean/>
 				</property>
-
+				
+						<!-- If this is set, it adds or subtracks from any conditions that require a relationship to last for X rounds -->
+				<property name="Relationships Last Extra Rounds" value="0" editable="true">
+						<number min="-1" max="2"/>
+				</property>
+				
 				<property name="National Objectives" value="true" editable="true">
 						<boolean/>
 				</property>
-
+				
 				<property name="Use Triggers" value="true" editable="true">
 						<boolean/>
 				</property>

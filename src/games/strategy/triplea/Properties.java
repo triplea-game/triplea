@@ -963,6 +963,22 @@ public class Properties implements Constants
 		}
 	}
 	
+	public static int getRelationshipsLastExtraRounds(GameData data)
+	{
+		try
+		{
+			return Integer.parseInt((String) data.getProperties().get(RELATIONSHIPS_LAST_EXTRA_ROUNDS));
+		} catch (NumberFormatException e)
+		{
+			return 0;
+		}
+	}
+	
+	public static boolean getAlliancesCanChainTogether(GameData data)
+	{
+		return data.getProperties().get(ALLIANCES_CAN_CHAIN_TOGETHER, false);
+	}
+	
 	private Properties()
 	{
 	}
