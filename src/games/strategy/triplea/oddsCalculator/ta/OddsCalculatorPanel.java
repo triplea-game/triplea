@@ -525,7 +525,7 @@ public class OddsCalculatorPanel extends JPanel
 		m_numRuns.setMin(1);
 		m_numRuns.setMax(20000);
 		
-		m_numRuns.setValue(2000);
+		m_numRuns.setValue((games.strategy.triplea.Properties.getLow_Luck(m_data) ? 500 : 2000));
 		
 		m_calculateButton = new JButton("Calculate Odds");
 		m_resultsPanel = new JPanel();

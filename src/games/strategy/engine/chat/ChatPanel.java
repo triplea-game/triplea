@@ -112,4 +112,11 @@ public class ChatPanel extends JPanel
 		m_chatMessagePanel.setShowTime(showTime);
 	}
 	
+	/*public void setMessage(String message)
+	{
+		if (message == null)
+			return;
+		m_chatMessagePanel.addMessage(message, "Server", true);
+	}*/
+	
 }
