@@ -46,8 +46,10 @@ public class PlayersPanel extends JPanel
 		for (String player : m_players.getPlayers())
 		{
 			PlayerID playerID = data.getPlayerList().getPlayerID(player);
-			
-			add(new JLabel(m_players.getNode(player).getName() + " is " + playerID.getName(), JLabel.RIGHT));
+			if (playerID.isAI())
+				add(new JLabel(playerID.getWhoAmI().split(":")[1] + " is " + playerID.getName(), JLabel.RIGHT));
+			else
+				add(new JLabel(m_players.getNode(player).getName() + " is " + playerID.getName(), JLabel.RIGHT));
 			
 		}
 		
