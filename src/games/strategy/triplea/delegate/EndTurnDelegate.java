@@ -238,6 +238,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			{
 				int toAdd = rule.getObjectiveValue();
 				toAdd *= Properties.getPU_Multiplier(data);
+				toAdd *= rule.getEachMultiple();
 				int total = player.getResources().getQuantity(Constants.PUS) + toAdd;
 				if (total < 0)
 				{
@@ -253,8 +254,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 					Change use = ChangeFactory.attachmentPropertyChange(rule, new Integer(uses).toString(), "uses");
 					bridge.addChange(use);
 				}
-				String PUMessage = MyFormatter.attachmentNameToText(rule.getName()) + ": " + player.getName() + " met a national objective for an additional " + rule.getObjectiveValue()
-							+ MyFormatter.pluralize(" PU", rule.getObjectiveValue()) +
+				String PUMessage = MyFormatter.attachmentNameToText(rule.getName()) + ": " + player.getName() + " met a national objective for an additional " + toAdd
+							+ MyFormatter.pluralize(" PU", toAdd) +
 									"; end with " + total + MyFormatter.pluralize(" PU", total);
 				bridge.getHistoryWriter().startEvent(PUMessage);
 			}

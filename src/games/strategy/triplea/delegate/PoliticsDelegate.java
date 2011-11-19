@@ -383,7 +383,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		if (paa.diceSides() == paa.toHit())
 			return true;
 		
-		int rollResult = m_bridge.getRandom(paa.diceSides(), "Attempting the PoliticalAction: " + paa.getName()) + 1;
+		int rollResult = m_bridge.getRandom(paa.diceSides(), "Attempting the PoliticalAction: " + MyFormatter.attachmentNameToText(paa.getName())) + 1;
 		boolean success = rollResult <= paa.toHit();
 		String notificationMessage = "rolling (" + paa.toHit() + " out of " + paa.diceSides() + ") result: " + rollResult + " " + (success ? "Success!" : "Failure!");
 		sendNotification(m_player, notificationMessage);

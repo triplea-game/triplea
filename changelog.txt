@@ -1,4 +1,6 @@
 Changes for 1.5
+* Allowed "each" as a count number for National Objectives, which then multiplies the bonus by the number of territories in that list who have their conditions met. (veqryn)
+
 * Network menu option, "Show Who is Who", now shows players who are AI. (veqryn)
 
 * Players who have both no movable attacking land units units, and either no factories or no land, will no longer be able to do any political actions, and any political actions affecting only them can not be done. They will now auto-accept any action from another player in addition. (veqryn) 

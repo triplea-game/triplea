@@ -145,8 +145,10 @@ public class RulesAttachment extends DefaultAttachment
 	private boolean m_dominatingFirstRoundAttack = false;
 	private boolean m_negateDominatingFirstRoundAttack = false;
 	private boolean m_invert = false;
+	private boolean m_countEach = false;
 	
 	// Integers
+	private int m_eachMultiple = 1;
 	private int m_territoryCount = -1;
 	private int m_objectiveValue = 0;
 	private int m_perOwnedTerritories = -1;
@@ -393,14 +395,47 @@ public class RulesAttachment extends DefaultAttachment
 		return m_directOwnershipTerritories;
 	}
 	
-	public void setTerritoryCount(String value)
+	private void setTerritoryCount(String value)
 	{
-		m_territoryCount = getInt(value);
+		if (value.equals("each"))
+		{
+			m_territoryCount = 1;
+			setCountEach(true);
+		}
+		else
+			m_territoryCount = getInt(value);
 	}
 	
 	public int getTerritoryCount()
 	{
 		return m_territoryCount;
+	}
+	
+	private void setEachMultiple(int value)
+	{
+		m_eachMultiple = value;
+	}
+	
+	/**
+	 * Used to determine if there is a multiple on this national objective (if the user specified 'each' in the count.
+	 * For example, you may want to have the player receive 3 PUs for controlling each territory, in a list of territories.
+	 * @return
+	 */
+	public int getEachMultiple()
+	{
+		if (!getCountEach())
+			return 1;
+		return m_eachMultiple;
+	}
+	
+	private void setCountEach(boolean value)
+	{
+		m_countEach = value;
+	}
+	
+	private boolean getCountEach()
+	{
+		return m_countEach;
 	}
 	
 	public void setPerOwnedTerritories(String value)
@@ -1320,6 +1355,13 @@ public class RulesAttachment extends DefaultAttachment
 			{
 			}
 			
+			if (name.equals("each"))
+			{
+				setTerritoryCount(String.valueOf(1));
+				setCountEach(true);
+				continue;
+			}
+			
 			// Skip looking for the territory if the original list contains one of the 'group' commands
 			if (name.equals("controlled") || name.equals("controlledNoWater") || name.equals("original") || name.equals("all") || name.equals("map") || name.equals("enemy"))
 				break;
@@ -1411,7 +1453,8 @@ public class RulesAttachment extends DefaultAttachment
 					if (numberMet >= numberNeeded)
 					{
 						satisfied = true;
-						break;
+						if (!getCountEach())
+							break;
 					}
 				}
 				else if (useSpecific)
@@ -1446,12 +1489,15 @@ public class RulesAttachment extends DefaultAttachment
 						if (numberMet >= numberNeeded)
 						{
 							satisfied = true;
-							break;
+							if (!getCountEach())
+								break;
 						}
 					}
 				}
 			}
 		}
+		if (getCountEach())
+			setEachMultiple(numberMet);
 		return satisfied;
 	}
 	
@@ -1502,7 +1548,8 @@ public class RulesAttachment extends DefaultAttachment
 				if (numberMet >= numberNeeded)
 				{
 					satisfied = true;
-					break;
+					if (!getCountEach())
+						break;
 				}
 			}
 			else if (useSpecific)
@@ -1537,11 +1584,14 @@ public class RulesAttachment extends DefaultAttachment
 					if (numberMet >= numberNeeded)
 					{
 						satisfied = true;
-						break;
+						if (!getCountEach())
+							break;
 					}
 				}
 			}
 		}
+		if (getCountEach())
+			setEachMultiple(numberMet);
 		return satisfied;
 	}
 	
@@ -1566,10 +1616,13 @@ public class RulesAttachment extends DefaultAttachment
 				if (numberMet >= numberNeeded)
 				{
 					satisfied = true;
-					break;
+					if (!getCountEach())
+						break;
 				}
 			}
 		}
+		if (getCountEach())
+			setEachMultiple(numberMet);
 		return satisfied;
 	}
 	
@@ -1595,10 +1648,13 @@ public class RulesAttachment extends DefaultAttachment
 				if (numberMet >= numberNeeded)
 				{
 					satisfied = true;
-					break;
+					if (!getCountEach())
+						break;
 				}
 			}
 		}
+		if (getCountEach())
+			setEachMultiple(numberMet);
 		return satisfied;
 	}
 	
@@ -1610,6 +1666,8 @@ public class RulesAttachment extends DefaultAttachment
 				found++;
 		if (count == 0)
 			return count == found;
+		if (getCountEach())
+			setEachMultiple(found);
 		return found >= count;
 	}
 	
@@ -1621,6 +1679,8 @@ public class RulesAttachment extends DefaultAttachment
 				found++;
 		if (m_techCount == 0)
 			return m_techCount == found;
+		if (getCountEach())
+			setEachMultiple(found);
 		return found >= m_techCount;
 	}
 }
