@@ -123,6 +123,12 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			transcriptText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds) + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
 			aBridge.getHistoryWriter().startEvent(transcriptText);
 		}
+
+		if (total < 0)
+		{
+			toAdd -= total;
+			total = 0;
+		}
 		
 		Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
 		aBridge.addChange(change);
