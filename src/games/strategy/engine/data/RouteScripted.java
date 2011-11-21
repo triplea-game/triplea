@@ -20,6 +20,9 @@
 
 package games.strategy.engine.data;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A scripted or cheating Route, designed for use with Triggers and with units stranded in enemy territory, or other situations where you want the "end" to not be null.
  * If the Route only has a start, it will return the start when you call .end(), and it will return a length of 1 if the length is really zero.
@@ -57,11 +60,33 @@ public class RouteScripted extends Route
 	}
 	
 	@Override
+	@Deprecated
 	public int getLength()
 	{
 		if (super.getLength() < 1)
 			return 1;
 		return super.getLength();
+	}
+	
+	@Override
+	public int getMovementCost(Unit u) {
+		if (super.getMovementCost(u) <= 0)
+			return 1;
+		return super.getMovementCost(u);
+	}
+
+	@Override
+	public int numberOfSteps() {
+		if (super.numberOfSteps() <= 0)
+			return 1;
+		return super.numberOfSteps();
+	}
+
+	@Override
+	public List<Territory> getSteps() {
+		if (numberOfSteps() <= 0)
+			return Collections.singletonList(getStart());
+		return super.getSteps();
 	}
 	
 	@Override
@@ -73,17 +98,34 @@ public class RouteScripted extends Route
 	}
 	
 	@Override
-	public Territory at(int i)
+	public Territory getTerritoryAtStep(int i)
 	{
 		try
 		{
-			if (super.getEnd() == null || super.at(i) == null)
+			if (super.getEnd() == null || super.getTerritoryAtStep(i) == null)
 				return super.getStart();
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
 			return super.getStart();
 		}
-		return super.at(i);
+		return super.getTerritoryAtStep(i);
+	}
+	
+	@Override
+	public boolean hasSteps() {
+		return true;
+	}
+	
+	@Override
+	public boolean hasNoSteps() {
+		return false;
+	}
+	
+	@Override
+	public boolean hasExactlyOneStep() {
+		if (numberOfSteps() <= 1)
+			return true;
+		return false;
 	}
 }

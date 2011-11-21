@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+//TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not always...
 public class RouteFinder
 {
 	

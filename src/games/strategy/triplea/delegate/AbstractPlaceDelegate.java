@@ -287,8 +287,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	private String validateNewAirCanLandOnCarriers(Territory to, Collection<Unit> units)
 	{
 		int cost = MoveValidator.carrierCost(units);
-		int capacity = MoveValidator.carrierCapacity(units);
-		capacity += MoveValidator.carrierCapacity(to.getUnits().getUnits());
+		int capacity = MoveValidator.carrierCapacity(units, to);
+		capacity += MoveValidator.carrierCapacity(to.getUnits().getUnits(), null);
 		
 		if (cost > capacity)
 			return "Not enough new carriers to land all the fighters";
@@ -1204,7 +1204,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			return;
 		
 		// do we have any spare carrier capacity
-		int capacity = MoveValidator.carrierCapacity(units);
+		int capacity = MoveValidator.carrierCapacity(units, territory);
 		// subtract fighters that have already been produced with this carrier
 		// this turn.
 		capacity -= MoveValidator.carrierCost(units);

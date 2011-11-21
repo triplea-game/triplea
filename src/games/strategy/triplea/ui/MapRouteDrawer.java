@@ -74,7 +74,7 @@ public class MapRouteDrawer
 			
 			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
-			List<Territory> territories = route.getTerritories();
+			List<Territory> territories = route.getAllTerritories();
 			
 			int numTerritories = territories.size();
 			Point[] points = new Point[numTerritories];

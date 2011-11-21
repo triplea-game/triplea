@@ -23,13 +23,14 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -1929,12 +1930,13 @@ public class Matches
 	};
 	
 	/**
-	 * @param lowerLimit
-	 *            lower limit for movement
-	 * @param movement
-	 *            referring movement
+	 * @param lowerLimit lower limit for movement
+	 * @param movement referring movement
+	 * @deprecated we can't trust on ints to see if we have enough movement, use hasEnnoughMovementforRoute()
 	 * @return units match that have at least lower limit movement
 	 */
+
+	@Deprecated
 	public static Match<Unit> unitHasEnoughMovement(final int lowerLimit, final IntegerMap<Unit> movement)
 	{
 		return new Match<Unit>()
@@ -1948,6 +1950,10 @@ public class Matches
 		};
 	}
 	
+	/**
+	 * @deprecated we can't trust on ints to see if we have enough movement, use hasEnnoughMovementforRoute()
+	 */
+	@Deprecated
 	public static Match<Unit> UnitHasEnoughMovement(final int minMovement)
 	{
 		return new Match<Unit>()
@@ -1961,6 +1967,66 @@ public class Matches
 		};
 	}
 	
+	public static Match<Unit> UnitHasEnoughMovementForRoute(final Route route) {
+		return new Match<Unit>() {
+			@Override
+			public boolean match(Unit unit) {
+				int left = TripleAUnit.get(unit).getMovementLeft();
+				int movementcost = route.getMovementCost(unit);
+				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				PlayerID player = unit.getOwner();
+
+				TerritoryAttachment taStart = null;
+				TerritoryAttachment taEnd = null;
+
+				if (route.getStart() != null)
+					taStart = TerritoryAttachment.get(route.getStart());
+				if (route.getEnd() != null)
+					taEnd = TerritoryAttachment.get(route.getEnd());
+
+				if (ua.isAir()) {
+					movementcost = route.getMovementCost(unit);
+					if (taStart != null && taStart.isAirBase())
+						left++;
+
+					if (taEnd != null && taEnd.isAirBase())
+						left++;
+				}
+
+				GameStep stepName = unit.getData().getSequence().getStep();
+
+				if (ua.isSea() && stepName.getDisplayName().equals("Non Combat Move")) {
+					movementcost = route.getMovementCost(unit);
+					// If a zone adjacent to the starting and ending sea zones
+					// are allied navalbases, increase the range.
+					// TODO Still need to be able to handle stops on the way
+					// (history to get route.getStart()
+					Iterator<Territory> startNeighborIter = unit.getData().getMap().getNeighbors(route.getStart(), 1).iterator();
+					while (startNeighborIter.hasNext()) {
+						Territory terrNext = startNeighborIter.next();
+						TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
+						if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrNext.getOwner(), player)) {
+							Iterator<Territory> endNeighborIter = unit.getData().getMap().getNeighbors(route.getEnd(), 1).iterator();
+							while (endNeighborIter.hasNext()) {
+								Territory terrEnd = endNeighborIter.next();
+								TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
+								if (taEndNeighbor != null && taEndNeighbor.isNavalBase()
+										&& unit.getData().getRelationshipTracker().isAllied(terrEnd.getOwner(), player)) {
+									left++;
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				if (left == -1 || left < movementcost)
+					return false;
+				return true;
+			}
+		};
+	}
+
 	/**
 	 * Match units that have at least 1 movement left
 	 */
@@ -2331,6 +2397,11 @@ public class Matches
 			}
 		};
 	}
+	
+	public static Match<Unit> carrierOwnedBy(final PlayerID player) {
+		return new CompositeMatchAnd(unitOwnedBy(player),Matches.UnitIsCarrier);
+	}
+	
 	
 	public static Match<Unit> unitOwnedBy(final List<PlayerID> players)
 	{
@@ -3700,4 +3771,41 @@ public class Matches
 	{
 	}
 	
+	public static Match<Territory> territoryIsNotNeutralAndNotImpassibleOrRestricted(
+			PlayerID player) {
+		Match<Territory> notNeutralAndNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(TerritoryIsPassableAndNotRestricted(player), new InverseMatch<Territory>(TerritoryIsNeutral));
+		return notNeutralAndNotImpassibleOrRestricted;
 }
+
+	public static CompositeMatch<Territory> alliedNonConqueredNonPendingTerritory(final GameData data, PlayerID player)
+	{
+		// these is a place where we can land
+		// must be friendly and non conqueuerd land
+		CompositeMatch<Territory> friendlyGround = new CompositeMatchAnd<Territory>();
+		friendlyGround.add(isTerritoryAllied(player, data));
+		friendlyGround.add(new Match<Territory>()
+				{
+					
+					@Override
+					public boolean match(Territory o)
+					{
+						return !MoveDelegate.getBattleTracker(data).wasConquered(o);
+					}
+				}
+					);
+		friendlyGround.add(new Match<Territory>()
+				{
+					
+					@Override
+					public boolean match(Territory o)
+					{
+						return !MoveDelegate.getBattleTracker(data).hasPendingBattle(o, false);
+					}
+				}
+					);
+		friendlyGround.add(TerritoryIsLand);
+		return friendlyGround;
+	}
+	
+}
+

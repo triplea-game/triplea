@@ -229,9 +229,9 @@ public class UnitComparator
 				int left2 = TripleAUnit.get(u2).getMovementLeft();
 				if (route != null)
 				{
-					if (left1 >= route.getLength() && left2 < route.getLength())
+					if (left1 >= route.getMovementCost(u1) && left2 < route.getMovementCost(u2))
 						return -1;
-					if (left1 < route.getLength() && left2 >= route.getLength())
+					if (left1 < route.getMovementCost(u1) && left2 >= route.getMovementCost(u2))
 						return 1;
 				}
 				
@@ -258,7 +258,7 @@ public class UnitComparator
 				// (to filter out armour that has already moved)
 				if (left1 != left2)
 				{
-					if (MoveValidator.isLoad(route))
+					if (route.isLoad())
 						return left2 - left1;
 					else
 						return left1 - left2;

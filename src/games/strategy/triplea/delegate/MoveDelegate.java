@@ -728,9 +728,9 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	 */
 	public static Map<Unit, Unit> mapTransports(Route route, Collection<Unit> units, Collection<Unit> transportsToLoad)
 	{
-		if (MoveValidator.isLoad(route))
+		if (route.isLoad())
 			return mapTransportsToLoad(units, transportsToLoad);
-		if (MoveValidator.isUnload(route))
+		if (route.isUnload())
 			return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
 		return mapTransportsAlreadyLoaded(units, units);
 	}
@@ -755,7 +755,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	{
 		if (isload)
 			return mapTransportsToLoad(units, transportsToLoad);
-		if (MoveValidator.isUnload(route))
+		if (route.isUnload())
 			return mapTransportsAlreadyLoaded(units, route.getStart().getUnits().getUnits());
 		return mapTransportsAlreadyLoaded(units, units);
 	}

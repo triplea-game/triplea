@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Route;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 
@@ -59,6 +60,10 @@ public class MoveValidatorTest extends DelegateTest
 		super.setUp();
 	}
 	
+	/**
+	 * @deprecated test Matches / Route class instead
+	 */
+	@Deprecated
 	public void testHasEnoughMovement()
 	{
 		
@@ -68,6 +73,12 @@ public class MoveValidatorTest extends DelegateTest
 		
 		assertTrue(MoveValidator.hasEnoughMovement(units, 2));
 	}
+	
+	
+	/**
+	 * @deprecated test Matches / Route class instead
+	 */
+	@Deprecated
 	
 	public void testHasWater()
 	{
@@ -86,6 +97,11 @@ public class MoveValidatorTest extends DelegateTest
 		assertTrue(MoveValidator.hasWater(route));
 	}
 	
+	
+	/**
+	 * @deprecated test Matches / Route class instead
+	 */
+	@Deprecated	
 	public void testNotEnoughMovement()
 	{
 		
@@ -124,6 +140,10 @@ public class MoveValidatorTest extends DelegateTest
 		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));
 	}
 	
+	/**
+	 * @deprecated test Matches / Route class instead
+	 */
+	@Deprecated
 	public void testHasNeutralBeforEnd()
 	{
 		Route route = new Route();
@@ -153,7 +173,7 @@ public class MoveValidatorTest extends DelegateTest
 	public void testCarrierCapacity()
 	{
 		Collection<Unit> units = carrier.create(5, british);
-		assertEquals(10, MoveValidator.carrierCapacity(units));
+		assertEquals(10, MoveValidator.carrierCapacity(units, new Territory("TestTerritory", true, m_data)));
 	}
 	
 	public void testCarrierCost()

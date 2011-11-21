@@ -1133,7 +1133,7 @@ public class DUtils
 			if (ter.isWater())
 			{
 				// Land unit on a transport
-				if (ua.isAA() && GlobalCenter.CurrentPhaseType != GlobalCenter.CurrentPhaseType.Non_Combat_Move)
+				if (ua.isAA() && GlobalCenter.CurrentPhaseType != PhaseType.Non_Combat_Move) // previously != GlobalCenter.CurrentPhaseType.Non_Combat_Move
 					return false; // AA's can't move unless in ncm phase
 				Route route = DUtils.GetAttackRouteFromXToY_ByLand_CountZAsPassthroughs(data, player, ter, target, passthroughTers);
 				if (route != null && ta.getMovementLeft() >= route.getLength())
@@ -1141,7 +1141,7 @@ public class DUtils
 			}
 			else
 			{
-				if (ua.isAA() && GlobalCenter.CurrentPhaseType != GlobalCenter.CurrentPhaseType.Non_Combat_Move)
+				if (ua.isAA() && GlobalCenter.CurrentPhaseType != PhaseType.Non_Combat_Move) // previously != GlobalCenter.CurrentPhaseType.Non_Combat_Move
 					return false; // AA's can't move unless in ncm phase
 				Route route = DUtils.GetAttackRouteFromXToY_ByLand_CountZAsPassthroughs(data, player, ter, target, passthroughTers);
 				if (route != null && ta.getMovementLeft() >= route.getLength())

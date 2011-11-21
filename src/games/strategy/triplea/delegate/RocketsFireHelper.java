@@ -203,7 +203,8 @@ public class RocketsFireHelper
 			Territory current = iter.next();
 			
 			Route route = data.getMap().getRoute(territory, current, impassable);
-			if (route != null && route.getLength() <= 3)
+			//TODO EW: this assumes range 3 territories for Rockets, doesn't take movementCost into account. //TODO veq: make new unit attachment for rocket range, defaults to 3 movement cost.
+			if (route != null && route.numberOfSteps() <= 3)
 			{
 				if (current.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(current).invert())))
 					hasFactory.add(current);

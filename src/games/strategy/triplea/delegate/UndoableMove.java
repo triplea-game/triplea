@@ -197,7 +197,7 @@ public class UndoableMove extends AbstractUndoableMove
 						// we should be able to take this out later
 						// we need to add logic for this move to take over the same territories
 						// when the other move is undone
-						!Util.intersection(other.m_conquered, m_route.getTerritories()).isEmpty() ||
+						!Util.intersection(other.m_conquered, m_route.getAllTerritories()).isEmpty() ||
 						// or we are unloading transports that have moved in another turn
 						!Util.intersection(other.m_units, this.m_unloaded).isEmpty() || !Util.intersection(other.m_unloaded, this.m_unloaded).isEmpty())
 			{

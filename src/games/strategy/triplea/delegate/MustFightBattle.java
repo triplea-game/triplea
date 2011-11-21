@@ -380,7 +380,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// the route could be null, in the case of a unit in a territory where a sub is submerged.
 		if (route == null)
 			return;
-		final Territory attackingFrom = getAttackFrom(route);
+		final Territory attackingFrom = route.getTerritoryBeforeEnd();
 		
 		Collection<Unit> attackingFromMapUnits = m_attackingFromMap
 					.get(attackingFrom);
@@ -440,7 +440,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final Collection<Unit> attackingUnits = isWW2V2() ? Match.getMatches(units,
 					ownedBy) : units;
 		
-		final Territory attackingFrom = getAttackFrom(route);
+		final Territory attackingFrom = route.getTerritoryBeforeEnd();
 		
 		m_attackingFrom.add(attackingFrom);
 		
@@ -556,7 +556,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
 		final Collection<Unit> fightingUnits = isWW2V2() ? Match.getMatches(units, ownedBy) : units;
 		
-		final Territory fightingFrom = getAttackFrom(route);
+		final Territory fightingFrom = route.getTerritoryBeforeEnd();
 		
 		m_attackingFrom.add(fightingFrom);
 		
@@ -682,13 +682,15 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 	}
 	
+	/**
+	 * @deprecated use: route.getTerritoryBeforeEnd();
+	 * @param route
+	 * @return
+	 */
+	@Deprecated
 	private Territory getAttackFrom(final Route route)
 	{
-		final int routeSize = route.getLength();
-		
-		if (routeSize <= 1)
-			return route.getStart();
-		return route.at(routeSize - 2);
+		return route.getTerritoryBeforeEnd();
 	}
 	
 	private String getBattleTitle()
@@ -2031,7 +2033,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				final Territory t = u.getTerritoryUnitIsIn();
 				final Route route = m_data.getMap().getRoute(t, m_battleSite);
 				change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
-				change.add(ChangeFactory.unitPropertyChange(u, route.getLength(), TripleAUnit.ALREADY_MOVED));
+				change.add(ChangeFactory.unitPropertyChange(u, route.getMovementCost(u), TripleAUnit.ALREADY_MOVED));
 				change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
 				change.add(ChangeFactory.moveUnits(t, m_battleSite, Collections.singleton(u)));
 				change.add(battle.addCombatChange(route, Collections.singleton(u), scramblingPlayer));
@@ -3403,7 +3405,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			return;
 		
 		int carrierCost = MoveValidator.carrierCost(m_defendingAir);
-		final int carrierCapacity = MoveValidator.carrierCapacity(m_defendingUnits);
+		final int carrierCapacity = MoveValidator.carrierCapacity(m_defendingUnits, m_battleSite);
 		// add dependant air to carrier cost
 		carrierCost += MoveValidator.carrierCost(Match.getMatches(getDependentUnits(m_defendingUnits), alliedDefendingAir));
 		
@@ -3462,7 +3464,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// get the capacity of the carriers and cost of fighters
 			final Collection<Unit> alliedCarriers = currentTerritory.getUnits().getMatches(alliedCarrier);
 			final Collection<Unit> alliedPlanes = currentTerritory.getUnits().getMatches(alliedPlane);
-			final int alliedCarrierCapacity = MoveValidator.carrierCapacity(alliedCarriers);
+			final int alliedCarrierCapacity = MoveValidator.carrierCapacity(alliedCarriers, null);
 			final int alliedPlaneCost = MoveValidator.carrierCost(alliedPlanes);
 			// if there is free capacity, add the territory to landing possibilities
 			if (alliedCarrierCapacity - alliedPlaneCost >= 1)
@@ -3594,7 +3596,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// Get the capacity of the carriers in the selected zone
 		final Collection<Unit> alliedCarriersSelected = territory.getUnits().getMatches(alliedCarrier);
 		final Collection<Unit> alliedPlanesSelected = territory.getUnits().getMatches(alliedPlane);
-		final int alliedCarrierCapacitySelected = MoveValidator.carrierCapacity(alliedCarriersSelected);
+		final int alliedCarrierCapacitySelected = MoveValidator.carrierCapacity(alliedCarriersSelected, territory);
 		final int alliedPlaneCostSelected = MoveValidator.carrierCost(alliedPlanesSelected);
 		
 		// Find the available capacity of the carriers in that territory

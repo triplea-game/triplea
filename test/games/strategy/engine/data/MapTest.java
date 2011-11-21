@@ -223,7 +223,7 @@ public class MapTest extends TestCase
 	public void testLongRoute()
 	{
 		Route route = map.getLandRoute(ad, da);
-		assertEquals(route.getLength(), 6);
+		assertEquals(route.numberOfSteps(), 6);
 	}
 	
 	public void testNeighborLandNoSeaConnect()
@@ -239,13 +239,13 @@ public class MapTest extends TestCase
 	public void testRouteToSelf()
 	{
 		Route rt = map.getRoute(aa, aa);
-		assertTrue(rt.getLength() == 0);
+		assertTrue(rt.numberOfSteps() == 0);
 	}
 	
 	public void testRouteSizeOne()
 	{
 		Route rt = map.getRoute(aa, ab);
-		assertTrue(rt.getLength() == 1);
+		assertTrue(rt.numberOfSteps() == 1);
 	}
 	
 	public void testImpossibleRoute()
@@ -269,10 +269,10 @@ public class MapTest extends TestCase
 	public void testWaterRout()
 	{
 		Route rt = map.getWaterRoute(bd, dd);
-		assertTrue("bc:" + rt, rt.at(0).equals(bc));
-		assertTrue("cc", rt.at(1).equals(cc));
-		assertTrue("dc", rt.at(2).equals(dc));
-		assertTrue("dd", rt.at(3).equals(dd));
+		assertTrue("bc:" + rt, rt.getTerritoryAtStep(0).equals(bc));
+		assertTrue("cc", rt.getTerritoryAtStep(1).equals(cc));
+		assertTrue("dc", rt.getTerritoryAtStep(2).equals(dc));
+		assertTrue("dd", rt.getTerritoryAtStep(3).equals(dd));
 	}
 	
 	public void testMultiplePossible()
@@ -280,7 +280,7 @@ public class MapTest extends TestCase
 		Route rt = map.getRoute(aa, dd);
 		assertEquals(rt.getStart(), aa);
 		assertEquals(rt.getEnd(), dd);
-		assertEquals(rt.getLength(), 6);
+		assertEquals(rt.numberOfSteps(), 6);
 	}
 	
 	public void testNeighbors()

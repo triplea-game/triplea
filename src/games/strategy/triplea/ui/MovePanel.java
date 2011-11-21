@@ -154,7 +154,7 @@ public class MovePanel extends AbstractMovePanel
 			return;
 		
 		// sort units based on which transports are allowed to unload
-		if (MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand))
+		if (route.isUnload() && Match.someMatch(units, Matches.UnitIsLand))
 		{
 			
 			Collections.sort(units, UnitComparator.getUnloadableUnitsComparator(units, route, getUnitOwner(units), true));
@@ -403,11 +403,11 @@ public class MovePanel extends AbstractMovePanel
 				{
 					if (EditDelegate.getEditMode(getData()))
 						return true;
-					return TripleAUnit.get(u).getMovementLeft() >= route.getLength();
+					return TripleAUnit.get(u).getMovementLeft() >= route.getMovementCost(u);
 				}
 				
 			};
-			if (MoveValidator.isUnload(route) && route.getLength() == 1)
+			if (route.isUnload())
 			{
 				CompositeMatch<Unit> landOrCanMove = new CompositeMatchOr<Unit>();
 				landOrCanMove.add(Matches.UnitIsLand);
@@ -424,8 +424,7 @@ public class MovePanel extends AbstractMovePanel
 		if (route != null && route.getEnd() != null)
 		{
 			boolean water = route.getEnd().isWater();
-			boolean load = MoveValidator.isLoad(route);
-			if (water && !load)
+			if (water && !route.isLoad())
 				movable.add(Matches.UnitIsNotLand);
 			if (!water)
 				movable.add(Matches.UnitIsNotSea);
@@ -517,7 +516,7 @@ public class MovePanel extends AbstractMovePanel
 	
 	private void updateUnitsThatCanMoveOnRoute(Collection<Unit> units, final Route route)
 	{
-		if (route == null || route.getLength() == 0)
+		if (route == null || route.hasNoSteps())
 		{
 			clearStatusMessage();
 			getMap().showMouseCursor();
@@ -538,7 +537,7 @@ public class MovePanel extends AbstractMovePanel
 		// if the player selects a land unit and other units
 		// when the
 		// only consider the non land units
-		if (route.getStart().isWater() && route.getEnd() != null && route.getEnd().isWater() && !MoveValidator.isLoad(route))
+		if (route.getStart().isWater() && route.getEnd() != null && route.getEnd().isWater() && !route.isLoad())
 		{
 			best = Match.getMatches(best, new InverseMatch<Unit>(Matches.UnitIsLand));
 		}
@@ -562,7 +561,7 @@ public class MovePanel extends AbstractMovePanel
 		if (!allResults.isMoveValid())
 		{
 			// if the player is invading only consider units that can invade
-			if (!m_nonCombat && MoveValidator.isUnload(route) && Matches.isTerritoryEnemy(getCurrentPlayer(), getData()).match(route.getEnd()))
+			if (!m_nonCombat && route.isUnload() && Matches.isTerritoryEnemy(getCurrentPlayer(), getData()).match(route.getEnd()))
 			{
 				best = Match.getMatches(best, Matches.UnitCanInvade);
 				bestWithDependents = addMustMoveWith(best);
@@ -662,7 +661,7 @@ public class MovePanel extends AbstractMovePanel
 	
 	private Collection<Unit> getTransportsToLoad(final Route route, final Collection<Unit> unitsToLoad, boolean disablePrompts)
 	{
-		if (!MoveValidator.isLoad(route))
+		if (!route.isLoad())
 			return Collections.emptyList();
 		if (Match.someMatch(unitsToLoad, Matches.UnitIsAir)) // Air units should never be asked to select transport
 			return Collections.emptyList();
@@ -1375,7 +1374,7 @@ public class MovePanel extends AbstractMovePanel
 			paratroopNBombers.add(Matches.UnitIsAirTransportable);
 			boolean paratroopsLanding = Match.someMatch(units, paratroopNBombers);
 			
-			if (MoveValidator.isLoad(route) && Match.someMatch(units, Matches.UnitIsLand))
+			if (route.isLoad() && Match.someMatch(units, Matches.UnitIsLand))
 			{
 				transports = getTransportsToLoad(route, units, false);
 				if (transports.isEmpty())
@@ -1384,7 +1383,7 @@ public class MovePanel extends AbstractMovePanel
 					return;
 				}
 			}
-			else if ((MoveValidator.isUnload(route) && Match.someMatch(units, Matches.UnitIsLand)) || paratroopsLanding)
+			else if ((route.isUnload() && Match.someMatch(units, Matches.UnitIsLand)) || paratroopsLanding)
 			{
 				List<Unit> unloadAble = Match.getMatches(m_selectedUnits, getUnloadableMatch());
 				
@@ -1495,7 +1494,7 @@ public class MovePanel extends AbstractMovePanel
 			
 			List<Unit> defaultSelections = new ArrayList<Unit>(units.size());
 			
-			if (MoveValidator.isLoad(route))
+			if (route.isLoad())
 			{
 				final Collection<Unit> transportsToLoad = new ArrayList<Unit>(getTransportsToLoad(route, units, false));
 				defaultSelections.addAll(MoveDelegate.mapTransports(route, units, transportsToLoad).keySet());

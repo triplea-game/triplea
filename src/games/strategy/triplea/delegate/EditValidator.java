@@ -111,7 +111,7 @@ public class EditValidator
 					Match<Unit> friendlyCarriers = new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
 					Match<Unit> friendlyAirUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.alliedUnit(player, data));
 					// Determine transport capacity
-					int carrierCapacityTotal = MoveValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers));
+					int carrierCapacityTotal = MoveValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory);
 					int carrierCost = MoveValidator.carrierCost(territory.getUnits().getMatches(friendlyAirUnits)) + MoveValidator.carrierCost(units);
 					// Get any transports in the sea zone
 					Collection<Unit> carriers = territory.getUnits().getMatches(friendlyCarriers);

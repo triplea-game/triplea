@@ -106,7 +106,7 @@ public class AirThatCantLandUtil
 		{
 			// find the carrier capacity
 			Collection<Unit> carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, m_bridge.getData()));
-			int capacity = MoveValidator.carrierCapacity(carriers);
+			int capacity = MoveValidator.carrierCapacity(carriers, territory);
 			
 			Iterator<Unit> iter = airUnits.iterator();
 			while (iter.hasNext())

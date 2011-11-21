@@ -273,9 +273,7 @@ public class MovePerformer implements Serializable
 	private Change markMovementChange(Collection<Unit> units, Route route)
 	{
 		CompositeChange change = new CompositeChange();
-		
-		int moved = route.getLength();
-		
+				
 		Territory routeStart = route.getStart();
 		TerritoryAttachment taRouteStart = TerritoryAttachment.get(routeStart);
 		Territory routeEnd = route.getEnd();
@@ -289,7 +287,7 @@ public class MovePerformer implements Serializable
 		while (iter.hasNext())
 		{
 			TripleAUnit unit = (TripleAUnit) iter.next();
-			
+			int moved = route.getMovementCost(unit);
 			UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua.isAir())
 			{
@@ -350,7 +348,7 @@ public class MovePerformer implements Serializable
 		}
 		
 		// load the transports
-		if (MoveValidator.isLoad(route) || paratroopsLanding)
+		if (route.isLoad() || paratroopsLanding)
 		{
 			// mark transports as having transported
 			Iterator<Unit> units = transporting.keySet().iterator();
@@ -382,7 +380,7 @@ public class MovePerformer implements Serializable
 			}
 		}
 		
-		if (MoveValidator.isUnload(route) || paratroopsLanding)
+		if (route.isUnload() || paratroopsLanding)
 		{
 			Collection<Unit> units = new ArrayList<Unit>();
 			units.addAll(transporting.values());
@@ -426,9 +424,7 @@ public class MovePerformer implements Serializable
 	{
 		BattleTracker tracker = getBattleTracker();
 		
-		for (int i = 0; i < route.getLength(); i++)
-		{
-			Territory current = route.at(i);
+		for(Territory current:route.getSteps()) {
 			if (tracker.wasConquered(current) && !tracker.wasBlitzed(current))
 				return true;
 		}

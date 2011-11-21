@@ -158,10 +158,8 @@ class AAInMoveUtil implements Serializable
 		
 		List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 		
-		for (int i = 0; i < route.getLength() - 1; i++)
-		{
-			Territory current = route.at(i);
-			
+		for (Territory current:route.getMiddleSteps())
+		{			
 			// AA guns in transports shouldn't be able to fire
 			// TODO COMCO- Chance to add rule to support air suppression naval units here
 			if (current.getUnits().someMatch(hasAA) && !current.isWater())

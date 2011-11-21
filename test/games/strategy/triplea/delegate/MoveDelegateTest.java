@@ -1644,6 +1644,8 @@ public class MoveDelegateTest extends DelegateTest
 		// this was causing an exception when the validator tried to find if they
 		// could both land
 		
+		//EW: I don't know why this test is failing or what it is supposed to do... 
+		
 		Route route = new Route();
 		route.setStart(congoSeaZone);
 		route.add(southAtlantic);

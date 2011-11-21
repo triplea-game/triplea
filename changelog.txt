@@ -1,4 +1,8 @@
 Changes for 1.5
+* Redoing of movement validation to use movement costs, and completely rewriting the movement validation of carriers and aircraft for landing zones. (edwin van der wal)
+
+* Refactoring Route class to use movement costs, rather than number of steps. (edwin van der wal)
+
 * Changing the internal logic of scrambling to correctly test for the max scrambling length, and a new unit attachment, maxScrambleCount, which determines how many units can scramble. (bung)
 
 * Allowed "each" as a count number for National Objectives, which then multiplies the bonus by the number of territories in that list who have their conditions met. (veqryn)

@@ -1493,7 +1493,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			for (Territory tT : transTerr2)
 			{
-				Territory amphibDockTerr = amphibRoute.at(amphibRoute.getLength() - 2);
+				Territory amphibDockTerr = amphibRoute.getTerritoryAtStep(amphibRoute.getLength() - 2);
 				if (amphibDockTerr != null)
 				{
 					List<Unit> transUnits = tT.getUnits().getMatches(Matches.transportIsTransporting());
@@ -2036,11 +2036,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Territory endTerr = goRoute.getStart();
 		Territory firstEndTerr = goRoute.getStart();
 		if (goRoute.getLength() > 1)
-			endTerr = goRoute.at(goRoute.getLength() - 2);
+			endTerr = goRoute.getTerritoryAtStep(goRoute.getLength() - 2);
 		if (goRoute2 != null && goRoute2.getLength() > 1)
-			firstEndTerr = goRoute2.at(goRoute2.getLength() - 2);
+			firstEndTerr = goRoute2.getTerritoryAtStep(goRoute2.getLength() - 2);
 		else if (goRoute.getLength() > 1)
-			firstEndTerr = goRoute.at(goRoute.getLength() - 2);
+			firstEndTerr = goRoute.getTerritoryAtStep(goRoute.getLength() - 2);
 		
 		List<Territory> TransportDropOffLocales = new ArrayList<Territory>(getTransportDropOffLocales());
 		if (TransportDropOffLocales.isEmpty())
