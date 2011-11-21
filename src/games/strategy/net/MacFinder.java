@@ -68,6 +68,8 @@ public class MacFinder
 			if (localHostNI != null)
 			{
 				byte[] rawMac = localHostNI.getHardwareAddress();
+				//Method m = NetworkInterface.class.getMethod("getHardwareAddress");
+				//byte[] rawMac = (byte[]) m.invoke(localHostNI);
 				String mac = convertMacBytesToString(rawMac);
 				if (isMacValid(mac))
 					return mac;
@@ -85,6 +87,8 @@ public class MacFinder
 			{
 				NetworkInterface ni = niIter.nextElement();
 				byte[] rawMac = ni.getHardwareAddress();
+				//Method m = NetworkInterface.class.getMethod("getHardwareAddress");
+				//byte[] rawMac = (byte[]) m.invoke(localHostNI);
 				String mac = convertMacBytesToString(rawMac);
 				if (isMacValid(mac))
 					return mac;

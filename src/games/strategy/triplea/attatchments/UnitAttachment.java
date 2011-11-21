@@ -156,8 +156,12 @@ public class UnitAttachment extends DefaultAttachment
 	// -1 if can't scramble
 	private int m_maxScrambleDistance = -1;
 	
+	// -1 for infinite
+	private int m_maxScrambleCount = -1;
+		
 	// -1 if can't be disabled
 	private int m_maxOperationalDamage = -1;
+	
 	// -1 if can't be damaged
 	private int m_maxDamage = -1;
 	
@@ -1048,6 +1052,16 @@ public class UnitAttachment extends DefaultAttachment
 		return m_canScramble;
 	}
 	
+	public void setMaxScrambleCount(String s)
+	{
+		m_maxScrambleCount = getInt(s);
+	}
+	
+	public int getMaxScrambleCount()
+	{
+		return m_maxScrambleCount;
+	}
+	
 	public void setMaxScrambleDistance(String s)
 	{
 		m_maxScrambleDistance = getInt(s);
@@ -1701,6 +1715,7 @@ public class UnitAttachment extends DefaultAttachment
 					"  canScramble:" + m_canScramble +
 					"  maxScrambleDistance:" + m_maxScrambleDistance +
 					"  airBase:" + m_isAirBase +
+					"  maxScrambleCount:" + m_maxScrambleCount +
 					"  whenCapturedChangesInto:" + m_whenCapturedChangesInto;
 	}
 	
@@ -1939,4 +1954,5 @@ public class UnitAttachment extends DefaultAttachment
 		
 		return stats.toString();
 	}
+
 }

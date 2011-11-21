@@ -745,9 +745,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	 * @see games.strategy.triplea.player.ITripleaPlayer#scrambleQuery(games.strategy.net.GUID, java.util.Collection, java.lang.String, java.lang.String)
 	 */
 
-	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
+	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message, PlayerID player)
 	{
-		return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories);
+		return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories, player);
 	}
 	
 	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)

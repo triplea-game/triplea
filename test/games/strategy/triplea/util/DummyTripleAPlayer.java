@@ -104,7 +104,7 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 	}
 	
 	public Collection<Unit> scrambleQuery(GUID battleID,
-				Collection<Territory> possibleTerritories, String message)
+				Collection<Territory> possibleTerritories, String message, PlayerID player)
 	{
 		
 		return null;

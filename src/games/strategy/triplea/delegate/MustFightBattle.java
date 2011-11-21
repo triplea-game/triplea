@@ -26,7 +26,6 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -206,73 +205,171 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private void determineScrambledUnits(final IDelegateBridge bridge)
 	{
-		// If we can only scramble to water and it's not, nevermind
+		// If we can only scramble to water and the battleSite is not water, return
 		if (!m_battleSite.isWater() && getScramble_To_Sea_Only())
 		{
 			return;
 		}
 		
-		// Get the unit types that can scramble
-		final Collection<UnitType> unitTypesCanScramble = new ArrayList<UnitType>();
-		int maxScrambleDistance = 1;
-		// Get all the players except the attacker
-		for (final PlayerID p : m_data.getPlayerList())
+		// Get a list of the defending nations in the zone
+		List<PlayerID> zoneDefenders = new ArrayList<PlayerID>();
+		for (final Unit zoneDefender : m_defendingUnits)
 		{
-			// Get their production rules
-			if (!p.equals(m_attacker) && !p.equals(PlayerID.NULL_PLAYERID))
+			PlayerID defenderID = zoneDefender.getOwner();
+			if(!zoneDefenders.contains(defenderID)) zoneDefenders.add(defenderID);
+		}
+		
+		// Get a list of their allies (since they may be able to scramble in range of the battleSite as well)
+		List<PlayerID> possibleAlliedDefenders = new ArrayList<PlayerID>();
+		for (final PlayerID player : m_data.getPlayerList())
+		{
+			for (final PlayerID defender : zoneDefenders)
 			{
-				final List<ProductionRule> rules = p.getProductionFrontier().getRules();
+			    if ( player!=defender && !possibleAlliedDefenders.contains(player) && m_data.getRelationshipTracker().isAllied(player, defender) )
+			    {
+			    	possibleAlliedDefenders.add(player);
+			    }
+		    }
+		}
+		
+		// Merge the lists to get all possible defenders (HashSets are unique)
+		Set<PlayerID> allDefenders = new HashSet<PlayerID>();
+		allDefenders.addAll(zoneDefenders);
+		allDefenders.addAll(possibleAlliedDefenders);
+		
+		// Now determine maxScrambleDistance for each player (by cycling through all their units which can scramble)
+		// then find out if they have anything in range on an operational air base,
+		// and finally query them if they wish to scramble
+		
+		for (final PlayerID p : allDefenders)
+		{
+
+			if (!p.equals(PlayerID.NULL_PLAYERID))
+			{
+
+				// Helps reduce the number of checks
+				final Collection<UnitType> unitTypesCanScramble = new ArrayList<UnitType>();
+
+				int maxScrambleDistance = 1;
 				
-				// Get the unit types that can scramble
-				// TODO: kev, why on earth are you looking at production rules here. what if the player has a unit that can scramble, but they can't build it? then it would not be in their production rules!
-				for (final ProductionRule rule : rules)
+				// TODO get all of a players units which can scramble (needs to be abstracted)
+				Iterator<Territory> allTerritories = bridge.getData().getMap().getTerritories().iterator();
+				while (allTerritories.hasNext())
 				{
-					final UnitType ut = (UnitType) rule.getResults().keySet().iterator().next();
-					if (!unitTypesCanScramble.contains(ut) && UnitAttachment.get(ut).getCanScramble())
+					Territory current = allTerritories.next();
+					// only care about land for now ... if there was some naval unit that allowed scrambling, change this
+					if (!current.isWater())
+						continue;
+					
+					Collection<Unit> playerUnits = current.getUnits().getUnits();
+					if (playerUnits.size() == 0 || !Match.someMatch(playerUnits, Matches.UnitCanScramble))
+						continue;
+					
+					
+					// map transports, try to fill
+					Collection<Unit> scrambleUnits = Match.getMatches(playerUnits, Matches.UnitCanScramble);
+					Iterator<Unit> unitIter = scrambleUnits.iterator();
+					
+					while (unitIter.hasNext())
 					{
-						unitTypesCanScramble.add(ut);
-						// Get their maxScrambleDistance
-						maxScrambleDistance = UnitAttachment.get(ut).getMaxScrambleDistance() > maxScrambleDistance ? UnitAttachment.get(ut).getMaxScrambleDistance() : maxScrambleDistance;
+						Unit u = unitIter.next();
+						final UnitType ut = u.getUnitType();
+						if(!unitTypesCanScramble.contains(ut))
+						{
+							unitTypesCanScramble.add(ut);
+							maxScrambleDistance = UnitAttachment.get(ut).getMaxScrambleDistance() > maxScrambleDistance ? UnitAttachment.get(ut).getMaxScrambleDistance() : maxScrambleDistance;
+						}
 					}
 				}
-			}
-		}
-		
-		// See if there are any airbases within that distance that are operable
-		final Collection<Territory> neighbors = m_data.getMap().getNeighbors(m_battleSite, maxScrambleDistance);
-		final Collection<Territory> neighborsWithActiveAirbases = new ArrayList<Territory>();
-		
-		final boolean scrambleFromIsland = getScramble_From_Islands_Only();
-		
-		for (final Territory t : neighbors)
-		{
-			// If we scramble from islands only, and it's not- skip it
-			if (scrambleFromIsland && m_data.getMap().getNeighbors(t).size() != 1)
-				continue;
 			
-			// check if the airbase(s) is/are operational
-			if (t.getUnits().someMatch(Matches.UnitIsAirBase) && t.getUnits().someMatch(Matches.UnitCanScramble))
-			{
-				for (final Unit u : t.getUnits())
+				// See if there are any air bases within that distance that are operable
+				final Collection<Territory> neighbors = m_data.getMap().getNeighbors(m_battleSite, maxScrambleDistance);
+				final Collection<Territory> neighborsWithActiveAirbasesAndUnitsToScramble = new ArrayList<Territory>();
+				
+				final boolean scrambleFromIsland = getScramble_From_Islands_Only();
+				
+				// Ensure no one else has used up any of the available air bases
+				// Different air bases could have different maxScrambleCounts: Integer[] = [maxCount, count]
+				// TODO Store this data within each air base instance itself
+				Map<Territory, int[]> usedAirbaseTerritories = new HashMap<Territory, int[]>();
+				for(Unit unit : m_battleSite.getUnits() )
 				{
-					// TODO we can add other types of bases here as well (naval base, fire base, etc...)
-					// if it's an airbase and operational
-					if (Matches.UnitIsAirBase.match(u) && Matches.UnitIsDisabled().invert().match(u))
-					{
-						neighborsWithActiveAirbases.add(t);
-						break;
+					if( !unit.getOwner().equals(m_attacker) && UnitAttachment.get(unit.getType()).getCanScramble() ){
+						Territory base = TripleAUnit.get(unit).getOriginatedFrom();
+						int[] countData = usedAirbaseTerritories.get(base);
+						int[] baseData = {-1,1};
+						if (countData == null) {
+							usedAirbaseTerritories.put(base,baseData);
+						}
+						else {
+							countData[1]++;
+							usedAirbaseTerritories.put(base, countData);
+						}
 					}
+				}
+				
+
+				for (Map.Entry<Territory, int[]> territoryAirBaseDataPair : usedAirbaseTerritories.entrySet())
+				{
+					Territory t = territoryAirBaseDataPair.getKey();
+					int[] data = territoryAirBaseDataPair.getValue();
+					
+					for(Unit u : t.getUnits())
+					{
+						if(Matches.UnitIsAirBase.match(u))
+						{
+							data[0] = UnitAttachment.get(u.getType()).getMaxScrambleCount();
+						}
+					}
+					
+				}
+				
+				for (final Territory t : neighbors)
+				{
+					// If we scramble from islands only, and it's not- skip it
+					if ( scrambleFromIsland || !allDefenders.contains(t.getOwner()) )
+						continue;
+					
+					// If we've already used up maxScrambleCount- skip it
+					// Different air bases could have different maxScrambleCounts: Integer[] = [maxCount, count]
+					int[] data = usedAirbaseTerritories.get(t);
+					if( data!=null && data[0]>0 && data[1] >= data[0] ){
+						continue;
+					}
+						
+					
+					// check if the air base is operational
+					boolean territoryHasOperationalAirBase = false;
+					for (final Unit u : t.getUnits())
+					{
+						if( Matches.UnitIsAirBase.match(u) && Matches.UnitIsDisabled().invert().match(u) )
+						{
+							territoryHasOperationalAirBase = true;
+							break;
+						}
+					}
+					
+					if(territoryHasOperationalAirBase)
+					{
+						for (final Unit u : t.getUnits())
+						{
+							final UnitType ut = u.getType();
+							
+							if( UnitAttachment.get(ut).getCanScramble() && p.getName().equals(u.getOwner().getName()) )
+							{
+								neighborsWithActiveAirbasesAndUnitsToScramble.add(t);
+								break;
+							}
+						}
+					}
+				}
+	
+				// Ask the aircraft owner if they wish to scramble their units
+				if (!neighborsWithActiveAirbasesAndUnitsToScramble.isEmpty()){
+					queryScrambleUnits(SCRAMBLE_UNITS, bridge, p, neighborsWithActiveAirbasesAndUnitsToScramble);
 				}
 			}
 		}
-		
-		if (neighborsWithActiveAirbases.isEmpty())
-		{
-			return;
-		}
-		
-		// Ask the aircraft owners if they wish to scramble the units
-		queryScrambleUnits(SCRAMBLE_UNITS, bridge, neighborsWithActiveAirbases);
 	}
 	
 	@Override
@@ -1686,7 +1783,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		Collection<Territory> possible = Match.getMatches(m_attackingFrom, Matches
 					.territoryHasNoEnemyUnits(m_attacker, m_data));
 		
-		// In WW2V2 we need to filter out territories where only planes
+		// In WW2V2 and WW2V3 we need to filter out territories where only planes
 		// came from since planes cannot define retreat paths
 		if (isWW2V2() || isWW2V3())
 		{
@@ -1697,8 +1794,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				public boolean match(final Territory t)
 				{
 					final Collection<Unit> units = m_attackingFromMap.get(t);
-					return !Match.allMatch(units, Matches.UnitIsAir);
-				}
+						return !Match.allMatch(units, Matches.UnitIsAir);
+					}
 			});
 		}
 		/*else
@@ -1881,20 +1978,44 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return possible;
 	}
 	
-	private void queryScrambleUnits(final String actionType, final IDelegateBridge bridge, final Collection<Territory> availableTerritories)
+	private void queryScrambleUnits(final String actionType, final IDelegateBridge bridge, final PlayerID scramblingPlayer, final Collection<Territory> availableTerritories)
 	{
-		// TODO kev break out each Scrambled Unit's owner for the query
-		final PlayerID scramblingPlayer = findDefender(m_battleSite);
+
 		final String text = scramblingPlayer.getName() + SCRAMBLE_UNITS;
 		
 		final String step = SCRAMBLE_UNITS_FOR_DEFENSE;
 		
 		getDisplay(bridge).gotoBattleStep(m_battleID, step);
 		
+		//for(Territory t : availableTerritories){
 		// Ask players if they want to scramble and get the list of scrambled units with territories
-		getRemote(scramblingPlayer, bridge).scrambleQuery(m_battleID, availableTerritories, text);
+			//Collection<Territory> singleTerritory = new ArrayList<Territory>();
+			//singleTerritory.add(t);
+			//getRemote(scramblingPlayer, bridge).scrambleQuery(m_battleID, singleTerritory, text, scramblingPlayer);
+		//}
+		
+		getRemote(scramblingPlayer, bridge).scrambleQuery(m_battleID, availableTerritories, text, scramblingPlayer);
 		
 		final Map<Unit, Territory> scrambledUnits = BattleDisplay.getScrambledUnits();
+		
+		// Ensure we don't add units that are already scrambled (comment this loop out and see what happens! TODO architectural problem?)
+		/*for(Unit s : m_scrambled) {
+			Territory st = s.getTerritoryUnitIsIn();
+			boolean alreadyScrambled = false;
+			for (Map.Entry<Unit, Territory> unitTerritoryPair : scrambledUnits.entrySet())
+			{
+				Unit u = unitTerritoryPair.getKey();
+				Territory t = unitTerritoryPair.getValue();
+				System.out.println("Comparing: " + s.toString() + " and " + u.toString());
+				System.out.println("Comparing: " + st.toString() + " and " + t.toString());
+				if(s==u && st==t) alreadyScrambled = true;
+			}
+			if(!alreadyScrambled || st==m_battleSite){
+				System.out.println("Found match");
+				scrambledUnits.remove(s);
+			}
+		}*/
+		
 		// Move the scrambled units to the battle
 		if (!scrambledUnits.isEmpty())
 		{
@@ -1902,12 +2023,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			final IBattle battle = tracker.getPendingBattle(m_battleSite, false);
 			
 			final CompositeChange change = new CompositeChange();
+
 			m_scrambled.addAll(scrambledUnits.keySet());
+			
 			for (final Unit u : scrambledUnits.keySet())
 			{
-				final Territory t = scrambledUnits.get(u);
+				final Territory t = u.getTerritoryUnitIsIn();
 				final Route route = m_data.getMap().getRoute(t, m_battleSite);
-				
 				change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
 				change.add(ChangeFactory.unitPropertyChange(u, route.getLength(), TripleAUnit.ALREADY_MOVED));
 				change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
@@ -1915,7 +2037,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				change.add(battle.addCombatChange(route, Collections.singleton(u), scramblingPlayer));
 			}
 			bridge.addChange(change);
-			
+
 			final String messageShort = scramblingPlayer.getName() + " scramble units";
 			getDisplay(bridge).notifyScramble(messageShort, messageShort, step, scramblingPlayer);
 		}
@@ -3264,7 +3386,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private void checkDefendingPlanesCanLand(final IDelegateBridge bridge,
 				final PlayerID defender)
 	{
-		
+
 		if (m_headless)
 			return;
 		
@@ -3386,7 +3508,29 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				}
 				else
 				{
-					moveAirAndLand(bridge, m_defendingAir, territory);
+					Collection<Unit> nonScrambledAir = new ArrayList<Unit>(m_defendingAir);
+					/*
+					// Scrambled units need to go back where they came from!
+					if (Match.someMatch(m_defendingAir, Matches.UnitWasScrambled)){
+						
+						for(Unit u : m_defendingAir){
+							
+							TripleAUnit tu = TripleAUnit.get(u);
+							if(tu.getWasScrambled()){
+								Territory originalTerritory = tu.getOriginatedFrom();
+								Collection<Unit> scrambledUnit = new ArrayList<Unit>();
+								scrambledUnit.add(u);
+								Change change = ChangeFactory.moveUnits(m_battleSite, originalTerritory, scrambledUnit);
+								bridge.addChange(change);
+							} else {
+								nonScrambledAir.add(u);
+							}
+						}
+						
+					}*/
+						
+					moveAirAndLand(bridge, nonScrambledAir, territory);
+					
 					return;
 				}
 				
@@ -3411,11 +3555,31 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		
 		if (m_defendingAir.size() > 0)
 		{
+			// Scrambled units need to go back where they came from!
+			Collection<Unit> nonScrambledAir = new ArrayList<Unit>(m_defendingAir);
+			/*if (Match.someMatch(m_defendingAir, Matches.UnitWasScrambled)){
+				
+				for(Unit u : m_defendingAir){
+					
+					TripleAUnit tu = TripleAUnit.get(u);
+					if(tu.getWasScrambled()){
+						Territory originalTerritory = tu.getOriginatedFrom();
+						Collection<Unit> scrambledUnit = new ArrayList<Unit>();
+						scrambledUnit.add(u);
+						Change change = ChangeFactory.moveUnits(m_battleSite, originalTerritory, scrambledUnit);
+						bridge.addChange(change);
+					} else {
+						nonScrambledAir.add(u);
+					}
+				}
+				
+			}*/
+			
 			// no where to go, they must die
 			bridge.getHistoryWriter().addChildToEvent(
 						MyFormatter.unitsToText(m_defendingAir)
-									+ " could not land and were killed", m_defendingAir);
-			final Change change = ChangeFactory.removeUnits(m_battleSite, m_defendingAir);
+									+ " could not land and were killed", nonScrambledAir);
+			final Change change = ChangeFactory.removeUnits(m_battleSite, nonScrambledAir);
 			bridge.addChange(change);
 		}
 	}
@@ -3444,14 +3608,16 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	// Refactored this method
-	private void moveAirAndLand(final IDelegateBridge bridge,
-				final Collection<Unit> defendingAir, final Territory territory)
+	private void moveAirAndLand(final IDelegateBridge bridge, final Collection<Unit> defendingAir, final Territory territory)
 	{
+		
 		bridge.getHistoryWriter().addChildToEvent(
 					MyFormatter.unitsToText(defendingAir) + " forced to land in "
 								+ territory.getName(), defendingAir);
-		final Change change = ChangeFactory.moveUnits(m_battleSite, territory,
-					defendingAir);
+
+		final Change change = ChangeFactory.moveUnits(m_battleSite, territory,defendingAir);
+
+		
 		bridge.addChange(change);
 		
 		// remove those that landed in case it was a carrier

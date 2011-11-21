@@ -588,12 +588,12 @@ public class BattlePanel extends ActionPanel
 		return m_battleDisplay.getRetreat(message, possible, submerge);
 	}
 	
-	public Collection<Unit> getScramble(IPlayerBridge bridge, GUID battleID, String message, Collection<Territory> possible)
+	public Collection<Unit> getScramble(IPlayerBridge bridge, GUID battleID, String message, Collection<Territory> possible, PlayerID player)
 	{
 		// something is really wrong
 		if (!ensureBattleIsDisplayed(battleID))
 			return null;
-		return m_battleDisplay.getScramble(bridge, message, possible);
+		return m_battleDisplay.getScramble(bridge, message, possible, player);
 	}
 	
 	public void gotoStep(GUID battleID, final String step)

@@ -22,6 +22,7 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
@@ -437,9 +438,9 @@ public class BattleDisplay extends JPanel
 		}
 	}
 	
-	public Collection<Unit> getScramble(IPlayerBridge bridge, String message, Collection<Territory> possible)
+	public Collection<Unit> getScramble(IPlayerBridge bridge, String message, Collection<Territory> possible, PlayerID player)
 	{
-		return getScrambleInternal(bridge, message, possible);
+		return getScrambleInternal(bridge, message, possible, player);
 	}
 	
 	private Territory getSubmerge(final String message)
@@ -627,14 +628,14 @@ public class BattleDisplay extends JPanel
 		return retreatTo[0];
 	}
 	
-	private Collection<Unit> getScrambleInternal(final IPlayerBridge bridge, final String message, final Collection<Territory> possible)
+	private Collection<Unit> getScrambleInternal(final IPlayerBridge bridge, final String message, final Collection<Territory> possible, final PlayerID player)
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
 			throw new IllegalStateException("Should not be called from dispatch thread");
 		}
 		
-		final Collection<Territory> scrambleFrom = new ArrayList<Territory>();
+		
 		final Collection<Unit> chosenUnits = new ArrayList<Unit>();
 		final CountDownLatch continueLatch = new CountDownLatch(1);
 		
@@ -651,8 +652,7 @@ public class BattleDisplay extends JPanel
 				{ ok, cancel, wait };
 				int choice = JOptionPane.showOptionDialog(BattleDisplay.this, message, "Scramble?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options,
 							cancel);
-				
-				// dialog dismissed
+
 				if (choice == -1)
 					return;
 				// wait
@@ -670,33 +670,77 @@ public class BattleDisplay extends JPanel
 				// how improbable, must be the truth
 				
 				// Scramble
-				ScrambleComponent comp = new ScrambleComponent(possible);
-				int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, (Icon) null);
-				if (option == JOptionPane.OK_OPTION)
+				Collection<Territory> possibleIterator = possible;
+				for (final Iterator<Territory> pIter = possibleIterator.iterator(); pIter.hasNext();)
 				{
-					scrambleFrom.addAll(comp.getSelection());
-					if (scrambleFrom != null)
+					Collection<Territory> scrambleFrom = new ArrayList<Territory>();
+					ScrambleComponent comp = new ScrambleComponent(possible);
+					int option = JOptionPane.showConfirmDialog(BattleDisplay.this, comp, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, (Icon) null);
+					// Remove from list after decision to scramble from it or not
+					
+					if (option == JOptionPane.OK_OPTION)
 					{
-						if (!possible.containsAll(scrambleFrom))
-						{
-							System.err.println("Invalid scramble selection :" + scrambleFrom + " not in " + MyFormatter.territoriesToText(scrambleFrom));
-							Thread.dumpStack();
-							return;
-						}
-						
+
+						possible.removeAll(comp.getSelection());
+						scrambleFrom.addAll(comp.getSelection());
+
 						// get the units from the chosen territories
 						List<Unit> unitsToChoose = new ArrayList<Unit>();
+						int maxScrambleCount = 0;
 						
-						for (Territory t : scrambleFrom)
+						Map<Territory,Integer> airbaseUsageCount = new HashMap<Territory,Integer>();
+						Collection<Unit> battleUnits = m_location.getUnits().getUnits(); // get all existing units in battle
+						Collection<Unit> scrambledUnits = Match.getMatches(battleUnits, Matches.UnitCanScramble);
+						Collection<Unit> defendingScrambledUnits = new ArrayList<Unit>();
+						for(Unit b : scrambledUnits)
 						{
-							Collection<Unit> units = Match.getMatches(t.getUnits().getUnits(), Matches.UnitCanScramble);
+							if(!b.getOwner().equals(m_attacker)){
+								defendingScrambledUnits.add(b);
+							}
+						}
+
+						for(Unit u : defendingScrambledUnits)
+						{
+							Territory originatedFrom = TripleAUnit.get(u).getOriginatedFrom();
+							Integer count = airbaseUsageCount.get(originatedFrom);
+							if (count == null) {
+								airbaseUsageCount.put(originatedFrom,1);
+							} else {
+								airbaseUsageCount.put(originatedFrom, count + 1);
+							}
+						}
+						
+						
+						for (Territory t : scrambleFrom) // the single territory chosen
+						{
 							
-							unitsToChoose.addAll(units);
+							Collection<Unit> territoryUnits = t.getUnits().getUnits();
+							Collection<Unit> allScramblingUnits = Match.getMatches(territoryUnits, Matches.UnitCanScramble);
+							Collection<Unit> playersUnits = new ArrayList<Unit>();
+							Integer scrambleCount = (airbaseUsageCount.get(t)!=null) ? airbaseUsageCount.get(t) : 0;
 							
-							for (Unit u : units)
+							for (Unit u : territoryUnits) {
+								if(Matches.UnitIsAirBase.match(u))
+								{
+									maxScrambleCount = UnitAttachment.get(u.getType()).getMaxScrambleCount();
+								}
+							}
+							
+							for (Unit u : allScramblingUnits){
+								if(u.getOwner()==player && scrambleCount<=(maxScrambleCount-1)) 
+								{
+									playersUnits.add(u);
+									scrambleCount++;
+								}
+							}
+							
+							unitsToChoose.addAll(playersUnits);
+							
+							for (Unit u : playersUnits)
 							{
 								m_ScrambledUnits.put(u, t);
 							}
+							
 						}
 						
 						// Allow player to select which to load.
@@ -711,7 +755,7 @@ public class BattleDisplay extends JPanel
 									m_mapPanel.getUIContext(),
 									/*unitsToScrambleMatch*/null);
 						
-						chooser.setTitle("Scramble units for defense");
+						chooser.setTitle("Scramble up to (" + unitsToChoose.size() + ") units for defense");
 						int option2 = JOptionPane.showOptionDialog(getTopLevelAncestor(),
 									chooser, "What units do you want to scramble",
 									JOptionPane.OK_CANCEL_OPTION,
@@ -727,7 +771,9 @@ public class BattleDisplay extends JPanel
 						for (Unit u : m_ScrambledUnits.keySet())
 						{
 							if (!chosenUnits.contains(u))
+							{
 								unitsToRemove.add(u);
+							}
 						}
 						
 						// Actually remove them, leaving only the scrambled units and their territories.
@@ -735,9 +781,9 @@ public class BattleDisplay extends JPanel
 						{
 							m_ScrambledUnits.remove(u);
 						}
+
 					}
 				}
-				
 				continueLatch.countDown();
 			}
 		});

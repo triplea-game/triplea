@@ -183,8 +183,10 @@ public class ClassLoaderUtil
 			try
 			{
 				// java 1.7 has a close method, thanks guys
-				Method close = loader.getClass().getMethod("close", null);
-				close.invoke(loader, null);
+				//Method close = loader.getClass().getMethod("close", null);
+				//close.invoke(loader, null);
+				Method close = loader.getClass().getMethod("close");
+				close.invoke(loader);
 				return;
 			} catch (Exception e)
 			{

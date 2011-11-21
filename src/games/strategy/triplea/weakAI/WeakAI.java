@@ -1556,7 +1556,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return null;
 	}
 	
-	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
+	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message, PlayerID player)
 	{
 		return null;
 	}

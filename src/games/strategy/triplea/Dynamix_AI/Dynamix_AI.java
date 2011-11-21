@@ -378,7 +378,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	
 	Territory m_battleTer = null;
 	
-	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message)
+	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message, PlayerID player)
 	{
 		return null;
 	}
