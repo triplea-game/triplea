@@ -1,4 +1,8 @@
 Changes for 1.5
+* Completely re-wrote how scrambling works.  All scrambling now takes place before any battles begin.  (veqryn)
+
+* New game option, "Scramble To Any Amphibious Assault", allows bases not being attacked to scramble to defend bases that are being attacked amphibiously. (veqryn)
+
 * Allowed double clicking on a game in the lobby to equal joining that game. (veqryn)
 
 * Removing all scrambling code from the engine, in order to start over and code correctly. (veqryn)

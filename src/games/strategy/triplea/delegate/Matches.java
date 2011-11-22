@@ -689,6 +689,18 @@ public class Matches
 		}
 	};
 	
+	public static final Match<Territory> TerritoryIsIsland = new Match<Territory>()
+	{
+		@Override
+		public boolean match(final Territory t)
+		{
+			final Collection<Territory> neighbors = t.getData().getMap().getNeighbors(t);
+			if (neighbors.size() == 1 && TerritoryIsWater.match(neighbors.iterator().next()))
+				return true;
+			return false;
+		}
+	};
+	
 	public static Match<Unit> unitCanBombard(final PlayerID id)
 	{
 		return new Match<Unit>()

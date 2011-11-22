@@ -139,7 +139,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		super(battleSite, attacker, battleTracker, data);
 		m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
-		m_defender = findDefender(battleSite);
+		m_defender = findDefender(battleSite, m_attacker, m_data);
 	}
 	
 	/**
@@ -453,7 +453,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return m_attacker.getName() + " attack " + m_defender.getName() + " in " + m_battleSite.getName();
 	}
 	
-	private PlayerID findDefender(final Territory battleSite)
+	public static PlayerID findDefender(final Territory battleSite, final PlayerID attacker, final GameData data)
 	{
 		if (!battleSite.isWater())
 			return battleSite.getOwner();
@@ -466,7 +466,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		while (iter.hasNext())
 		{
 			final PlayerID current = iter.next();
-			if (m_data.getRelationshipTracker().isAllied(m_attacker, current) || current.equals(m_attacker))
+			if (data.getRelationshipTracker().isAllied(attacker, current) || current.equals(attacker) || !data.getRelationshipTracker().isAtWar(attacker, current))
 				continue;
 			final int count = players.getInt(current);
 			if (count > max)

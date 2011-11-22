@@ -169,6 +169,7 @@ public interface Constants
 	public static final String SCRAMBLED_UNITS_RETURN_TO_BASE = "Scrambled Units Return To Base";
 	public static final String SCRAMBLE_TO_SEA_ONLY = "Scramble To Sea Only";
 	public static final String SCRAMBLE_FROM_ISLAND_ONLY = "Scramble From Island Only";
+	public static final String SCRAMBLE_TO_ANY_AMPHIBIOUS_ASSAULT = "Scramble To Any Amphibious Assault";
 	// squid
 	public static final String OLD_ART_RULE_NAME = "ArtyOld";
 	public static final String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;

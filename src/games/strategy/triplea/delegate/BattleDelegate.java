@@ -17,14 +17,19 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -32,12 +37,14 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +73,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		if (m_needToInitialize)
 		{
 			setupUnitsInSameTerritoryBattles();
+			// do pre-combat stuff, like scrambling, after we have setup all battles, but before we have bombardment, etc.
+			doScrambling();
 			addBombardmentSources();
 			m_needToInitialize = false;
 		}
@@ -77,6 +86,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	@Override
 	public void end()
 	{
+		scramblingCleanup();
 		super.end();
 		m_needToInitialize = true;
 	}
@@ -416,6 +426,178 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					}
 					continue;
 				}
+			}
+		}
+	}
+	
+	private void doScrambling()
+	{
+		// first, figure out all the territories where scrambling units could scramble to
+		// then ask the defending player if they wish to scramble units there, and actually move the units there
+		final GameData data = getData();
+		if (!games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data))
+			return;
+		final boolean fromIslandOnly = games.strategy.triplea.Properties.getScramble_From_Island_Only(data);
+		final boolean toSeaOnly = games.strategy.triplea.Properties.getScramble_To_Sea_Only(data);
+		final boolean toAnyAmphibious = games.strategy.triplea.Properties.getScrambleToAnyAmphibiousAssault(data);
+		int maxScrambleDistance = 0;
+		final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
+		while (utIter.hasNext())
+		{
+			final UnitAttachment ua = UnitAttachment.get(utIter.next());
+			if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance())
+				maxScrambleDistance = ua.getMaxScrambleDistance();
+		}
+		final CompositeMatchAnd<Territory> canScramble = new CompositeMatchAnd<Territory>(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(m_player, data)),
+					Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitCanScramble, Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsDisabled().invert())),
+					Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitIsAirBase, Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsDisabled().invert())));
+		if (fromIslandOnly)
+			canScramble.add(Matches.TerritoryIsIsland);
+		final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<Territory, HashSet<Territory>>();
+		final Collection<Territory> territoriesWithBattles = m_battleTracker.getPendingBattleSites(false);
+		final Collection<Territory> territoriesWithBattlesWater = Match.getMatches(territoriesWithBattles, Matches.TerritoryIsWater);
+		final Collection<Territory> territoriesWithBattlesLand = Match.getMatches(territoriesWithBattles, Matches.TerritoryIsLand);
+		for (final Territory battleTerr : territoriesWithBattlesWater)
+		{
+			final HashSet<Territory> canScrambleFrom = new HashSet<Territory>(Match.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
+			if (!canScrambleFrom.isEmpty())
+				scrambleTerrs.put(battleTerr, canScrambleFrom);
+		}
+		for (final Territory battleTerr : territoriesWithBattlesLand)
+		{
+			final IBattle battle = m_battleTracker.getPendingBattle(battleTerr, false);
+			if (!toSeaOnly)
+			{
+				final HashSet<Territory> canScrambleFrom = new HashSet<Territory>(Match.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
+				if (!canScrambleFrom.isEmpty())
+					scrambleTerrs.put(battleTerr, canScrambleFrom);
+			}
+			// do not forget we may already have the territory in the list, so we need to add to the collection, not overwrite it.
+			if (battle.isAmphibious())
+			{
+				if (battle instanceof MustFightBattle)
+				{
+					final MustFightBattle mfb = (MustFightBattle) battle;
+					final Collection<Territory> amphibFromTerrs = mfb.getAmphibiousAttackTerritories();
+					amphibFromTerrs.removeAll(territoriesWithBattlesWater);
+					for (final Territory amphibFrom : amphibFromTerrs)
+					{
+						HashSet<Territory> canScrambleFrom = scrambleTerrs.get(amphibFrom);
+						if (canScrambleFrom == null)
+							canScrambleFrom = new HashSet<Territory>();
+						if (toAnyAmphibious)
+							canScrambleFrom.addAll(Match.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
+						else if (canScramble.match(battleTerr))
+							canScrambleFrom.add(battleTerr);
+						if (!canScrambleFrom.isEmpty())
+							scrambleTerrs.put(amphibFrom, canScrambleFrom);
+					}
+				}
+			}
+		}
+		
+		// now scrambleTerrs is a list of places we can scramble from
+		if (scrambleTerrs.isEmpty())
+			return;
+		final HashMap<Tuple<Territory, PlayerID>, Collection<HashMap<Territory, Tuple<Integer, Collection<Unit>>>>> scramblersByTerritoryPlayer = new HashMap<Tuple<Territory, PlayerID>, Collection<HashMap<Territory, Tuple<Integer, Collection<Unit>>>>>();
+		for (final Territory to : scrambleTerrs.keySet())
+		{
+			final HashMap<Territory, Tuple<Integer, Collection<Unit>>> scramblers = new HashMap<Territory, Tuple<Integer, Collection<Unit>>>();
+			// find who we should ask
+			PlayerID defender = null;
+			if (m_battleTracker.hasPendingBattle(to, false))
+				defender = MustFightBattle.findDefender(to, m_player, data);
+			for (final Territory from : scrambleTerrs.get(to))
+			{
+				final Collection<Unit> airbases = from.getUnits().getMatches(new CompositeMatchAnd<Unit>(
+							Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsAirBase, Matches.UnitIsDisabled().invert()));
+				if (defender == null)
+				{
+					defender = MustFightBattle.findDefender(from, m_player, data);
+				}
+				
+				// find how many is the max this territory can scramble
+				int maxScrambled = 0;
+				for (final Unit base : airbases)
+				{
+					int tempMax = UnitAttachment.get(base.getType()).getMaxScrambleCount();
+					if (tempMax == -1)
+						tempMax = Integer.MAX_VALUE;
+					if (tempMax > maxScrambled)
+						maxScrambled = tempMax;
+				}
+				final Collection<Unit> canScrambleAir = from.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player),
+							Matches.UnitCanScramble, Matches.UnitIsDisabled().invert(), Matches.UnitWasScrambled.invert()));
+				if (maxScrambled > 0 && !canScrambleAir.isEmpty())
+					scramblers.put(from, new Tuple<Integer, Collection<Unit>>(maxScrambled, canScrambleAir));
+			}
+			if (defender == null || scramblers.isEmpty())
+				continue;
+			final Tuple<Territory, PlayerID> terrPlayer = new Tuple<Territory, PlayerID>(to, defender);
+			Collection<HashMap<Territory, Tuple<Integer, Collection<Unit>>>> tempScrambleList = scramblersByTerritoryPlayer.get(terrPlayer);
+			if (tempScrambleList == null)
+				tempScrambleList = new ArrayList<HashMap<Territory, Tuple<Integer, Collection<Unit>>>>();
+			tempScrambleList.add(scramblers);
+			scramblersByTerritoryPlayer.put(terrPlayer, tempScrambleList);
+		}
+		
+		// now scramble them
+		for (final Tuple<Territory, PlayerID> terrPlayer : scramblersByTerritoryPlayer.keySet())
+		{
+			final Territory to = terrPlayer.getFirst();
+			final PlayerID defender = terrPlayer.getSecond();
+			for (final HashMap<Territory, Tuple<Integer, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer.get(terrPlayer))
+			{
+				// TODO: ask the defender if they want to scramble anything, using remote and "scramblersByPlayer". for now, say the first bunch!
+				final Map<Territory, Collection<Unit>> toScramble = new HashMap<Territory, Collection<Unit>>();
+				toScramble.put(scramblers.keySet().iterator().next(), scramblers.get(scramblers.keySet().iterator().next()).getSecond());
+				
+				final CompositeChange change = new CompositeChange();
+				for (final Territory t : toScramble.keySet())
+				{
+					final Collection<Unit> scrambling = toScramble.get(t);
+					if (scrambling == null || scrambling.isEmpty())
+						continue;
+					for (final Unit u : scrambling)
+					{
+						change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
+						change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
+					}
+					change.add(ChangeFactory.moveUnits(t, to, scrambling)); // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
+					m_bridge.getHistoryWriter().startEvent(defender.getName() + " scrambles " + scrambling.size() + " units out of "
+								+ t.getName() + " to defend against the attack in " + to.getName());
+					m_bridge.getHistoryWriter().setRenderingData(scrambling);
+				}
+				if (!change.isEmpty())
+					m_bridge.addChange(change);
+			}
+		}
+		setupUnitsInSameTerritoryBattles(); // TODO: need to make sure that there are preceeding battles for any amphibious assault (dependant battles)
+	}
+	
+	private void scramblingCleanup()
+	{
+		// return scrambled units to their original territories, or let them move 1 or x to a new territory.
+		final GameData data = getData();
+		if (!games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data))
+			return;
+		final boolean mustReturnToBase = games.strategy.triplea.Properties.getScrambled_Units_Return_To_Base(data);
+		for (final Territory t : data.getMap().getTerritories())
+		{
+			final CompositeChange change = new CompositeChange();
+			final Collection<Unit> wasScrambled = t.getUnits().getMatches(Matches.UnitWasScrambled);
+			for (final Unit u : wasScrambled)
+			{
+				// TODO: we need to account for mustReturnToBase and also account for if we no longer own originating territory.
+				change.add(ChangeFactory.moveUnits(t, TripleAUnit.get(u).getOriginatedFrom(), Collections.singletonList(u)));
+				change.add(ChangeFactory.unitPropertyChange(u, null, TripleAUnit.ORIGINATED_FROM));
+				change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_SCRAMBLED));
+			}
+			if (!change.isEmpty())
+			{
+				m_bridge.getHistoryWriter().startEvent("Moving scrambled units from " + t.getName() + " back to originating territories");
+				m_bridge.getHistoryWriter().setRenderingData(wasScrambled);
+				m_bridge.addChange(change);
 			}
 		}
 	}

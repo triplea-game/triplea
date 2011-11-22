@@ -698,6 +698,11 @@ public class Properties implements Constants
 		return data.getProperties().get(SCRAMBLE_FROM_ISLAND_ONLY, false);
 	}
 	
+	public static boolean getScrambleToAnyAmphibiousAssault(final GameData data)
+	{
+		return data.getProperties().get(SCRAMBLE_TO_ANY_AMPHIBIOUS_ASSAULT, false);
+	}
+	
 	public static Integer getPU_Multiplier(final GameData data)
 	{
 		try

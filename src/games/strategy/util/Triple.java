@@ -14,4 +14,11 @@ public class Triple<F, S, T> extends Tuple<F, S>
 	{
 		return m_third;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "[" + (super.getFirst() == null ? "null" : super.getFirst().toString()) + ", " + (super.getSecond() == null ? "null" : super.getSecond().toString()) + ", "
+					+ (m_third == null ? "null" : m_third.toString()) + "]";
+	}
 }
