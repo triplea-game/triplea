@@ -156,7 +156,7 @@ public class BattleTracker implements java.io.Serializable
 		RelationshipTracker relationshipTracker = bridge.getData().getRelationshipTracker();
 		// if we have no longer conquered it, clear the blitz state
 		// EW: Does this have to look at all Territories? or just middle-territories or steps? // answer: veq: yes, we look at all, because we could have conquered the end territory if there are no units there
-		for(Territory current:route.getAllTerritories()) { 
+		for(Territory current:route.getAllTerritories()) {
 			if (!relationshipTracker.isAllied(current.getOwner(), player) && m_conquered.contains(current))
 			{
 				m_conquered.remove(current);
@@ -353,7 +353,6 @@ public class BattleTracker implements java.io.Serializable
 			}
 			if (precede == null)
 			{
-				takeOver(route.getEnd(), id, bridge, changeTracker, units);
 				if (Matches.isTerritoryEnemy(id, data).match(route.getEnd()))
 				{
 					if (canBlitz.match(route.getEnd()))
@@ -362,6 +361,7 @@ public class BattleTracker implements java.io.Serializable
 					}
 					m_conquered.add(route.getEnd());
 				}
+				takeOver(route.getEnd(), id, bridge, changeTracker, units);
 			}
 			else
 			{

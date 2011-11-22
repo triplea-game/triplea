@@ -23,18 +23,15 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitCollection;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.CanalAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
@@ -53,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -417,6 +413,13 @@ public class MoveValidator
 		return !getUnitsThatCantGoOnWater(units).isEmpty();
 	}
 	
+	/**
+	 * Does not, and is not supposed to, account for any units already on this carrier (like allied/cargo fighters).
+	 * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special properties and restrictions.
+	 * @param units
+	 * @param territory
+	 * @return
+	 */
 	public static int carrierCapacity(Collection<Unit> units, Territory territory)
 	{
 		int sum = 0;
@@ -688,13 +691,13 @@ public class MoveValidator
 		if(route.hasNoSteps())
 			return result;
 		
-		if (!units.isEmpty()
-					&& !Match.allMatch(Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data).invert()), Matches.unitIsOwnedBy(player))
-					&& !getEditMode(data))
+		if (!units.isEmpty() && !getEditMode(data)
+					&& !Match.allMatch(Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data).invert()), Matches.unitIsOwnedBy(player)))
 		{
 			result.setError("Player, " + player.getName() + ", is not owner of all the units: " + MyFormatter.unitsToTextNoOwner(units));
 			return result;
 		}
+		
 		
 		// this should never happen
 		if (new HashSet<Unit>(units).size() != units.size())
@@ -1317,7 +1320,7 @@ public class MoveValidator
 		// First check if we even need to check
 		if (	getEditMode(data) || 														// Edit Mode, no need to check
 				!Match.someMatch(units, Matches.UnitIsAir) 	|| 								// No Airunits, nothing to check
-				route.hasNoSteps()	||														// if there are no steps, we didn't move, so it is always OK! 
+				route.hasNoSteps()	||														// if there are no steps, we didn't move, so it is always OK!
 				Matches.alliedNonConqueredNonPendingTerritory(data, player).match(route.getEnd())   // we can land at the end, nothing left to check
 			)
 			return result;
@@ -1379,7 +1382,7 @@ private static boolean findCarrierToLand(GameData data,PlayerID player, Unit uni
 			landingSpotsToCheck.add(currentSpot);
 		
 		// check if I can find a legal route to these spots
-		for(Territory landingSpot:landingSpotsToCheck) { 
+		for(Territory landingSpot:landingSpotsToCheck) {
 			
 			if(!canAirReachThisSpot(data, player, unit, currentSpot, movementLeft,landingSpot)) {
 				continue;
@@ -1403,7 +1406,7 @@ private static boolean findCarrierToLand(GameData data,PlayerID player, Unit uni
 		}
 			
 		/*
-		 * After all spots are checked and we can't find a good spot, we will check them again 
+		 * After all spots are checked and we can't find a good spot, we will check them again
 		 * but look further to see if we can find a friendly carrier that can reach us
 		 */
 		for(Territory landingSpot:landingSpotsToCheck) {
@@ -1414,7 +1417,7 @@ private static boolean findCarrierToLand(GameData data,PlayerID player, Unit uni
 			for(Territory carrierSpot:territoriesToCheckForCarriersThatCanMove) {
 				int capacity = MoveValidator.carrierCapacity(getFriendly(carrierSpot, player, data), carrierSpot);
 				capacity -= usedCarrierSpace.getInt(carrierSpot); // remove already claimed space...
-				if(capacity>=ua.getCarrierCost()) {				
+				if(capacity>=ua.getCarrierCost()) {
 					Collection<Unit> carriers = Match.getMatches(carrierSpot.getUnits().getUnits(), Matches.carrierOwnedBy(player));
 					Route carrierRoute = data.getMap().getRoute(carrierSpot,landingSpot);
 					carriers = Match.getMatches(carriers,Matches.UnitHasEnoughMovementForRoute(carrierRoute));
@@ -1447,7 +1450,7 @@ private static boolean canAirReachThisSpot(GameData data, PlayerID player,Unit u
 	}
 }
 	
-private static boolean placeOnBuiltCarrier(Unit airUnit, Territory landingSpot,IntegerMap<Territory> usedCarrierSpace,List<Unit> carriersInQueue, GameData data, PlayerID player) {	
+private static boolean placeOnBuiltCarrier(Unit airUnit, Territory landingSpot,IntegerMap<Territory> usedCarrierSpace,List<Unit> carriersInQueue, GameData data, PlayerID player) {
 	if(!Matches.territoryHasOwnedFactoryNeighbor(data, player).match(landingSpot))
 		return false;
 	//TODO EW: existing bug -- can this factory actually produce carriers? ie: shipyards vs. factories
@@ -1463,7 +1466,7 @@ private static boolean placeOnBuiltCarrier(Unit airUnit, Territory landingSpot,I
 			 * if I don't do this and remove the carrier from the queue the carrier could be built in multiple spots.
 			 */
 			int newUsedCapacity = usedCarrierSpace.getInt(landingSpot) + aua.getCarrierCost() - cua.getCarrierCapacity();
-			usedCarrierSpace.put(landingSpot, newUsedCapacity); 
+			usedCarrierSpace.put(landingSpot, newUsedCapacity);
 		
 			//remove the Carrier from the Queue so it can't be placed somewhere else
 			carriersInQueue.remove(carrierCandidate);
