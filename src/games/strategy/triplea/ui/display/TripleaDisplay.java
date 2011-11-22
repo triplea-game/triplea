@@ -91,12 +91,20 @@ public class TripleaDisplay implements ITripleaDisplay
 	
 	/*
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#casualtyNotification(java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.Collection, java.util.Collection, java.util.Map, boolean)
-	 */
+	 
 	public void scrambleNotification(final GUID battleID, final String step, final PlayerID player, final Collection<Unit> scrambled, final Map<Unit, Collection<Unit>> dependents)
 	{
 		m_ui.getBattlePanel().scrambleNotification(step, player, scrambled, dependents);
 	}
 	
+	public void notifyScramble(final String shortMessage, final String message, final String step, final PlayerID scramblingPlayer)
+	{
+		// we just told the game to scramble, so we already know
+		if (m_ui.playing(scramblingPlayer))
+			return;
+		m_ui.getBattlePanel().notifyScramble(shortMessage, message, step, scramblingPlayer);
+	}*/
+
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#battleEnd(games.strategy.net.GUID, java.lang.String)
 	 */
@@ -119,14 +127,6 @@ public class TripleaDisplay implements ITripleaDisplay
 		if (m_ui.playing(retreatingPlayer))
 			return;
 		m_ui.getBattlePanel().notifyRetreat(shortMessage, message, step, retreatingPlayer);
-	}
-	
-	public void notifyScramble(final String shortMessage, final String message, final String step, final PlayerID scramblingPlayer)
-	{
-		// we just told the game to scramble, so we already know
-		if (m_ui.playing(scramblingPlayer))
-			return;
-		m_ui.getBattlePanel().notifyScramble(shortMessage, message, step, scramblingPlayer);
 	}
 	
 	/**

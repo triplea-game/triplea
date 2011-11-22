@@ -285,12 +285,12 @@ class DummyPlayer extends AbstractAI
 		return null;
 	}
 	
-	public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
+	/*public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
 	{
 		// no scramble
 		return null;
-	}
-	
+	}*/
+
 	// Added new collection autoKilled to handle killing units prior to casualty selection
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)

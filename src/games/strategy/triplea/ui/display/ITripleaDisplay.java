@@ -85,12 +85,13 @@ public interface ITripleaDisplay extends IDisplay
 	 */
 	public void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> dead, Map<Unit, Collection<Unit>> dependents);
 	
-	/**
+	/*
 	 * Notify that the casualties occurred
 	 * 
-	 */
 	public void scrambleNotification(GUID battleID, String step, PlayerID player, Collection<Unit> scrambled, Map<Unit, Collection<Unit>> dependents);
 	
+	public void notifyScramble(String shortMessage, String message, String step, PlayerID scramblingPlayer);*/
+
 	/**
 	 * Notification of the results of a bombing raid
 	 */
@@ -104,8 +105,6 @@ public interface ITripleaDisplay extends IDisplay
 	 * @param step
 	 */
 	public void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer);
-	
-	public void notifyScramble(String shortMessage, String message, String step, PlayerID scramblingPlayer);
 	
 	public void notifyRetreat(GUID battleId, Collection<Unit> retreating);
 	

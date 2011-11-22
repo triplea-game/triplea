@@ -219,21 +219,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void move(final boolean nonCombat)
 	{
-		if (!m_scrambledUnitsReturned && nonCombat && getScramble_Rules_In_Effect())
-		{
-			m_scrambledUnitsReturned = true;
-			final CompositeMatchAnd<Unit> unitWasScrambled = new CompositeMatchAnd<Unit>();
-			unitWasScrambled.add(Matches.UnitWasScrambled);
-			final Collection<Unit> scrambledUnits = new ArrayList<Unit>();
-			// territories
-			for (final Territory t : m_bridge.getGameData().getMap().getTerritories())
-			{
-				scrambledUnits.addAll(t.getUnits().getMatches(unitWasScrambled));
-			}
-			// units were scrambled, move them
-			if (!scrambledUnits.isEmpty())
-				returnScrambledUnits(scrambledUnits);
-		}
 		if (!hasUnitsThatCanMove(nonCombat))
 			return;
 		final MoveDescription moveDescription = m_ui.getMove(m_id, m_bridge, nonCombat);
@@ -256,40 +241,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		if (error != null)
 			m_ui.notifyError(error);
 		move(nonCombat);
-	}
-	
-	private void returnScrambledUnits(final Collection<Unit> scrambledUnits)
-	{
-		// find only players with units in the collection
-		final Collection<PlayerID> players = new ArrayList<PlayerID>();
-		for (final Unit unit : scrambledUnits)
-		{
-			if (!players.contains(unit.getOwner()))
-				players.add(unit.getOwner());
-		}
-		for (final PlayerID player : players)
-		{
-			final MoveDescription moveDescription = m_ui.getMove(player, m_bridge, true);
-			if (moveDescription == null)
-			{
-				if (!canAirLand(true, player))
-					move(true);
-				return;
-			}
-			final IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
-			final String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute());
-			if (error != null)
-				m_ui.notifyError(error);
-			// get just the player's units
-			final Collection<Unit> playerUnits = new ArrayList<Unit>();
-			playerUnits.addAll(Match.getMatches(scrambledUnits, Matches.unitIsOwnedBy(player)));
-			// if they haven't all been moved- do it again
-			if (Match.someMatch(playerUnits, Matches.UnitWasScrambled))
-			{
-				returnScrambledUnits(scrambledUnits);
-			}
-		}
-		return;
 	}
 	
 	private boolean canAirLand(final boolean movePhase, final PlayerID player)
@@ -664,12 +615,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#scrambleQuery(games.strategy.net.GUID, java.util.Collection, java.lang.String, java.lang.String)
-	 */
+	 
 	public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
 	{
 		return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories, player);
-	}
-	
+	}*/
+
 	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
 	{
 		// no need, we have already confirmed since we are firing player
@@ -699,10 +650,5 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	private static boolean isTechDevelopment(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getTechDevelopment(data);
-	}
-	
-	private boolean getScramble_Rules_In_Effect()
-	{
-		return games.strategy.triplea.Properties.getScramble_Rules_In_Effect(m_bridge.getGameData());
 	}
 }

@@ -327,12 +327,12 @@ class DummyPlayer extends AbstractAI
 		return null;
 	}
 	
-	public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
+	/*public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
 	{
 		// no scramble
 		return null;
-	}
-	
+	}*/
+
 	boolean useDefaultSelectionThisTime = false;
 	
 	@Override

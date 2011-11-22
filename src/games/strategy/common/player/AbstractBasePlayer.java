@@ -29,7 +29,6 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 	protected final String m_type; // what are we? ex: "Human", or "Moore N. Able (AI)"
 	protected PlayerID m_id;
 	protected IPlayerBridge m_bridge;
-	protected boolean m_scrambledUnitsReturned = false;
 	
 	/**
 	 * @param name

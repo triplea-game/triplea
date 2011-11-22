@@ -25,7 +25,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -173,18 +172,6 @@ public class BattlePanel extends ActionPanel
 	}
 	
 	public void notifyRetreat(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
-	{
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				if (m_battleDisplay != null)
-					m_battleDisplay.battleInfo(messageShort, messageLong, step);
-			}
-		});
-	}
-	
-	public void notifyScramble(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -438,18 +425,6 @@ public class BattlePanel extends ActionPanel
 		});
 	}
 	
-	public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled, final Map<Unit, Collection<Unit>> dependents)
-	{
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				if (m_battleDisplay != null)
-					m_battleDisplay.scrambleNotification(step, player, scrambled, dependents);
-			}
-		});
-	}
-	
 	public void confirmCasualties(final GUID battleId, final String message)
 	{
 		// something is wrong
@@ -516,14 +491,6 @@ public class BattlePanel extends ActionPanel
 		return m_battleDisplay.getRetreat(message, possible, submerge);
 	}
 	
-	public Collection<Unit> getScramble(final IPlayerBridge bridge, final GUID battleID, final String message, final Collection<Territory> possible, final PlayerID player)
-	{
-		// something is really wrong
-		if (!ensureBattleIsDisplayed(battleID))
-			return null;
-		return m_battleDisplay.getScramble(bridge, message, possible, player);
-	}
-	
 	public void gotoStep(final GUID battleID, final String step)
 	{
 		SwingUtilities.invokeLater(new Runnable()
@@ -548,6 +515,37 @@ public class BattlePanel extends ActionPanel
 		});
 	}
 	
+	/*
+	public void notifyScramble(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.battleInfo(messageShort, messageLong, step);
+			}
+		});
+	}
+	public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled, final Map<Unit, Collection<Unit>> dependents)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.scrambleNotification(step, player, scrambled, dependents);
+			}
+		});
+	}
+	public Collection<Unit> getScramble(final IPlayerBridge bridge, final GUID battleID, final String message, final Collection<Territory> possible, final PlayerID player)
+	{
+		// something is really wrong
+		if (!ensureBattleIsDisplayed(battleID))
+			return null;
+		return m_battleDisplay.getScramble(bridge, message, possible, player);
+	}*/
+
 	public void bombingResults(final GUID battleID, final int[] dice, final int cost)
 	{
 		SwingUtilities.invokeLater(new Runnable()

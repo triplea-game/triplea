@@ -89,16 +89,6 @@ public class MovePerformer implements Serializable
 		m_executionStack.execute(m_bridge);
 	}
 	
-	public void setOriginatingTerritory(final Collection<Unit> units, final Territory t)
-	{
-		final CompositeChange change = new CompositeChange();
-		for (final Unit u : units)
-		{
-			change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
-		}
-		m_bridge.addChange(change);
-	}
-	
 	/**
 	 * We assume that the move is valid
 	 */
@@ -256,10 +246,6 @@ public class MovePerformer implements Serializable
 					moved--;
 			}
 			change.add(ChangeFactory.unitPropertyChange(unit, moved + unit.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
-			if (MoveDelegate.isNonCombat(m_bridge))
-			{
-				change.add(ChangeFactory.unitPropertyChange(unit, false, TripleAUnit.WAS_SCRAMBLED));
-			}
 		}
 		// if neutrals were taken over mark land units with 0 movement
 		// if entered a non blitzed conquered territory, mark with 0 movement

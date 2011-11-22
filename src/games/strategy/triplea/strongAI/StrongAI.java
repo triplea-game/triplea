@@ -10058,11 +10058,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return null;
 	}
 	
-	public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
+	/*public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
 	{
 		return null;
-	}
-	
+	}*/
+
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
 	 */

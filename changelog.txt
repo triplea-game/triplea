@@ -1,4 +1,6 @@
 Changes for 1.5
+* Removing all scrambling code from the engine, in order to start over and code correctly. (veqryn)
+
 * Created new TripleAUnit variable for keeping track of bonus movement, and eliminated use of unit attachment getMovement.  In order to see a units movement, please use either getMaxMovementAllowed() or getMovementLeft(), both in TripleAUnit. (veqryn)
 
 * Complete cleanup of all code, adding final on to everything that can take it. (veqryn)

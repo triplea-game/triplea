@@ -19,7 +19,6 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -47,7 +46,7 @@ interface IBattle extends java.io.Serializable
 	 */
 	public Change addAttackChange(Route route, Collection<Unit> units);
 	
-	/**
+	/*
 	 * Add a bunch of defending units to the battle.
 	 * 
 	 * @param route
@@ -57,9 +56,8 @@ interface IBattle extends java.io.Serializable
 	 * @param scramblingPlayer
 	 *            - playerID
 	 * @return combat change object
-	 */
-	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID scramblingPlayer);
-	
+	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID scramblingPlayer);*/
+
 	/**
 	 * @return whether this battle is a bombing run
 	 */
