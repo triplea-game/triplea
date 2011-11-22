@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * RelationshipTypeAttachment.java
  * 
  * Created on July 13th, 2011
  */
-
 /**
  * 
  * 
@@ -26,7 +24,6 @@
  * @version 1.0
  * 
  */
-
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
@@ -37,26 +34,20 @@ import games.strategy.triplea.Constants;
 @SuppressWarnings("serial")
 public class RelationshipTypeAttachment extends DefaultAttachment
 {
-	
 	public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;
 	public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
 	public static final String ARCHETYPE_ALLIED = Constants.RELATIONSHIP_ARCHETYPE_ALLIED;
-	
 	public static final String UPKEEP_FLAT = "flat";
 	public static final String UPKEEP_PERCENTAGE = "percentage";
-	
 	private final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
 	private final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
 	private final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
-	
 	private String m_archeType = ARCHETYPE_WAR;
 	private String m_helpsDefendAtSea = PROPERTY_DEFAULT;
 	private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
 	private String m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
-	
 	private String m_alliancesCanChainTogether = PROPERTY_DEFAULT;
 	private String m_isDefaultWarPosition = PROPERTY_DEFAULT;
-	
 	private String m_upkeepCost = PROPERTY_DEFAULT;
 	
 	/**
@@ -64,17 +55,17 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	 * 
 	 * @return RelationshipTypeAttachment belonging to the RelationshipType pr
 	 */
-	public static RelationshipTypeAttachment get(RelationshipType pr)
+	public static RelationshipTypeAttachment get(final RelationshipType pr)
 	{
-		RelationshipTypeAttachment rVal = (RelationshipTypeAttachment) pr.getAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
+		final RelationshipTypeAttachment rVal = (RelationshipTypeAttachment) pr.getAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
 		if (rVal == null)
 			throw new IllegalStateException("No relationshipType attachment for:" + pr.getName());
 		return rVal;
 	}
 	
-	public static RelationshipTypeAttachment get(RelationshipType pr, String nameOfAttachment)
+	public static RelationshipTypeAttachment get(final RelationshipType pr, final String nameOfAttachment)
 	{
-		RelationshipTypeAttachment rVal = (RelationshipTypeAttachment) pr.getAttachment(nameOfAttachment);
+		final RelationshipTypeAttachment rVal = (RelationshipTypeAttachment) pr.getAttachment(nameOfAttachment);
 		if (rVal == null)
 			throw new IllegalStateException("No relationshipType attachment for:" + pr.getName());
 		return rVal;
@@ -103,7 +94,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	 * @throws GameParseException
 	 *             if archeType isn't set to war, allied or neutral
 	 */
-	public void setArcheType(String archeType) throws GameParseException
+	public void setArcheType(final String archeType) throws GameParseException
 	{
 		if (archeType.toLowerCase().equals(ARCHETYPE_WAR))
 			m_archeType = ARCHETYPE_WAR;
@@ -132,7 +123,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	 * @param canFlyOver
 	 *            should be "true", "false" or "default"
 	 */
-	public void setCanMoveAirUnitsOverOwnedLand(String canFlyOver)
+	public void setCanMoveAirUnitsOverOwnedLand(final String canFlyOver)
 	{
 		m_canMoveAirUnitsOverOwnedLand = canFlyOver;
 	}
@@ -152,7 +143,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_canMoveAirUnitsOverOwnedLand.equals(PROPERTY_TRUE);
 	}
 	
-	public void setCanMoveLandUnitsOverOwnedLand(String canFlyOver)
+	public void setCanMoveLandUnitsOverOwnedLand(final String canFlyOver)
 	{
 		m_canMoveLandUnitsOverOwnedLand = canFlyOver;
 	}
@@ -166,20 +157,21 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_TRUE);
 	}
 	
-	public void setUpkeepCost(String integerCost) throws GameParseException
+	public void setUpkeepCost(final String integerCost) throws GameParseException
 	{
 		if (integerCost.equals(PROPERTY_DEFAULT))
 			m_upkeepCost = PROPERTY_DEFAULT;
 		else
 		{
-			String[] s = integerCost.split(":");
+			final String[] s = integerCost.split(":");
 			if (s.length < 1 || s.length > 2)
 				throw new GameParseException("RelationshipTypeAttachment: upkeepCost must have either 1 or 2 fields");
-			int cost = getInt(s[0]);
+			final int cost = getInt(s[0]);
 			if (s.length == 2)
 			{
 				if (s[1].equals(UPKEEP_FLAT))
-				{}
+				{
+				}
 				else if (s[1].equals(UPKEEP_PERCENTAGE))
 				{
 					if (cost > 100)
@@ -201,7 +193,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_upkeepCost;
 	}
 	
-	public void setAlliancesCanChainTogether(String value) throws GameParseException
+	public void setAlliancesCanChainTogether(final String value) throws GameParseException
 	{
 		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
 			throw new GameParseException("RelationshipTypeAttachment: alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE);
@@ -215,7 +207,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_alliancesCanChainTogether.equals(PROPERTY_TRUE);
 	}
 	
-	public void setIsDefaultWarPosition(String value) throws GameParseException
+	public void setIsDefaultWarPosition(final String value) throws GameParseException
 	{
 		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
 			throw new GameParseException("RelationshipTypeAttachment: isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE);
@@ -264,7 +256,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	 *            should be "true", "false" or "default"
 	 * @throws GameParseException
 	 */
-	public void setHelpsDefendAtSea(String helpsDefendAtSea) throws GameParseException
+	public void setHelpsDefendAtSea(final String helpsDefendAtSea) throws GameParseException
 	{
 		if (helpsDefendAtSea.toLowerCase().equals(PROPERTY_TRUE))
 			m_helpsDefendAtSea = PROPERTY_TRUE;

@@ -20,41 +20,38 @@ public class CanalAttachment extends DefaultAttachment
 	private String m_canalName;
 	private String[] m_landTerritories;
 	
-	public static Set<Territory> getAllCanalSeaZones(String canalName, GameData data)
+	public static Set<Territory> getAllCanalSeaZones(final String canalName, final GameData data)
 	{
-		Set<Territory> rVal = new HashSet<Territory>();
-		for (Territory t : data.getMap())
+		final Set<Territory> rVal = new HashSet<Territory>();
+		for (final Territory t : data.getMap())
 		{
-			Set<CanalAttachment> canalAttachments = get(t);
+			final Set<CanalAttachment> canalAttachments = get(t);
 			if (canalAttachments.isEmpty())
 				continue;
-			
-			Iterator<CanalAttachment> iter = canalAttachments.iterator();
+			final Iterator<CanalAttachment> iter = canalAttachments.iterator();
 			while (iter.hasNext())
 			{
-				CanalAttachment canalAttachment = iter.next();
+				final CanalAttachment canalAttachment = iter.next();
 				if (canalAttachment.getCanalName().equals(canalName))
 				{
 					rVal.add(t);
 				}
 			}
 		}
-		
 		if (rVal.size() != 2)
 			throw new IllegalStateException("Wrong number of sea zones for canal:" + rVal);
-		
 		return rVal;
 	}
 	
-	public static Set<CanalAttachment> get(Territory t)
+	public static Set<CanalAttachment> get(final Territory t)
 	{
-		Set<CanalAttachment> rVal = new HashSet<CanalAttachment>();
-		Map<String, IAttachment> map = t.getAttachments();
-		Iterator<String> iter = map.keySet().iterator();
+		final Set<CanalAttachment> rVal = new HashSet<CanalAttachment>();
+		final Map<String, IAttachment> map = t.getAttachments();
+		final Iterator<String> iter = map.keySet().iterator();
 		while (iter.hasNext())
 		{
-			IAttachment attachment = map.get(iter.next());
-			String name = attachment.getName();
+			final IAttachment attachment = map.get(iter.next());
+			final String name = attachment.getName();
 			if (name.startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
 			{
 				rVal.add((CanalAttachment) attachment);
@@ -63,15 +60,15 @@ public class CanalAttachment extends DefaultAttachment
 		return rVal;
 	}
 	
-	public static CanalAttachment get(Territory t, String nameOfAttachment)
+	public static CanalAttachment get(final Territory t, final String nameOfAttachment)
 	{
-		CanalAttachment rVal = (CanalAttachment) t.getAttachment(nameOfAttachment);
+		final CanalAttachment rVal = (CanalAttachment) t.getAttachment(nameOfAttachment);
 		if (rVal == null)
 			throw new IllegalStateException("CanalAttachment: No canal attachment for:" + t.getName() + " with name: " + nameOfAttachment);
 		return rVal;
 	}
 	
-	public void setCanalName(String name)
+	public void setCanalName(final String name)
 	{
 		m_canalName = name;
 	}
@@ -81,7 +78,7 @@ public class CanalAttachment extends DefaultAttachment
 		return m_canalName;
 	}
 	
-	public void setLandTerritories(String landTerritories)
+	public void setLandTerritories(final String landTerritories)
 	{
 		m_landTerritories = landTerritories.split(":");
 	}
@@ -98,16 +95,14 @@ public class CanalAttachment extends DefaultAttachment
 	
 	public Collection<Territory> getLandTerritories()
 	{
-		List<Territory> rVal = new ArrayList<Territory>();
-		
-		for (String name : m_landTerritories)
+		final List<Territory> rVal = new ArrayList<Territory>();
+		for (final String name : m_landTerritories)
 		{
-			Territory territory = getData().getMap().getTerritory(name);
+			final Territory territory = getData().getMap().getTerritory(name);
 			if (territory == null)
 				throw new IllegalStateException("Canals: No territory called:" + territory);
 			rVal.add(territory);
 		}
 		return rVal;
 	}
-	
 }

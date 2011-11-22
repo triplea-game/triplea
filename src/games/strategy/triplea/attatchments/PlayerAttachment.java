@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * PlayerAttatchment.java
  * 
  * Created on August 29, 2005, 3:14 PM
  */
-
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
@@ -37,16 +35,16 @@ public class PlayerAttachment extends DefaultAttachment
 	/**
 	 * Convenience method. can be null
 	 */
-	public static PlayerAttachment get(PlayerID p)
+	public static PlayerAttachment get(final PlayerID p)
 	{
-		PlayerAttachment rVal = (PlayerAttachment) p.getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
+		final PlayerAttachment rVal = (PlayerAttachment) p.getAttachment(Constants.PLAYER_ATTACHMENT_NAME);
 		// allow null
 		return rVal;
 	}
 	
-	public static PlayerAttachment get(PlayerID p, String nameOfAttachment)
+	public static PlayerAttachment get(final PlayerID p, final String nameOfAttachment)
 	{
-		PlayerAttachment rVal = (PlayerAttachment) p.getAttachment(nameOfAttachment);
+		final PlayerAttachment rVal = (PlayerAttachment) p.getAttachment(nameOfAttachment);
 		if (rVal == null)
 			throw new IllegalStateException("No player attachment for:" + p.getName() + " with name:" + nameOfAttachment);
 		return rVal;
@@ -56,8 +54,8 @@ public class PlayerAttachment extends DefaultAttachment
 	private int m_captureVps = 0; // need to store some data during a turn
 	private int m_retainCapitalNumber = 1; // number of capitals needed before we lose all our money
 	private int m_retainCapitalProduceNumber = 1; // number of capitals needed before we lose ability to gain money and produce units
-	private Collection<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
-	private Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+	private final Collection<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
+	private final Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
 	
 	/** Creates new PlayerAttachment */
@@ -65,7 +63,7 @@ public class PlayerAttachment extends DefaultAttachment
 	{
 	}
 	
-	public void setVps(String value)
+	public void setVps(final String value)
 	{
 		m_vps = getInt(value);
 	}
@@ -75,7 +73,7 @@ public class PlayerAttachment extends DefaultAttachment
 		return "" + m_vps;
 	}
 	
-	public void setCaptureVps(String value)
+	public void setCaptureVps(final String value)
 	{
 		m_captureVps = getInt(value);
 	}
@@ -85,7 +83,7 @@ public class PlayerAttachment extends DefaultAttachment
 		return "" + m_captureVps;
 	}
 	
-	public void setRetainCapitalNumber(String value)
+	public void setRetainCapitalNumber(final String value)
 	{
 		m_retainCapitalNumber = getInt(value);
 	}
@@ -95,7 +93,7 @@ public class PlayerAttachment extends DefaultAttachment
 		return m_retainCapitalNumber;
 	}
 	
-	public void setRetainCapitalProduceNumber(String value)
+	public void setRetainCapitalProduceNumber(final String value)
 	{
 		m_retainCapitalProduceNumber = getInt(value);
 	}
@@ -106,7 +104,7 @@ public class PlayerAttachment extends DefaultAttachment
 	}
 	
 	// setTakeUnitControl and getTakeUnitControl DO NOTHING. They are kept for backwards compatibility only, otherwise users get Java errors.
-	public void setTakeUnitControl(String value)
+	public void setTakeUnitControl(final String value)
 	{
 	}
 	
@@ -115,12 +113,12 @@ public class PlayerAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
-	public void setGiveUnitControl(String value)
+	public void setGiveUnitControl(final String value)
 	{
-		String[] temp = value.split(":");
-		for (String name : temp)
+		final String[] temp = value.split(":");
+		for (final String name : temp)
 		{
-			PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+			final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
 			if (tempPlayer != null)
 				m_giveUnitControl.add(tempPlayer);
 			else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false"))
@@ -145,12 +143,12 @@ public class PlayerAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
-	public void setCaptureUnitOnEnteringBy(String value)
+	public void setCaptureUnitOnEnteringBy(final String value)
 	{
-		String[] temp = value.split(":");
-		for (String name : temp)
+		final String[] temp = value.split(":");
+		for (final String name : temp)
 		{
-			PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+			final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
 			if (tempPlayer != null)
 				m_captureUnitOnEnteringBy.add(tempPlayer);
 			else
@@ -168,7 +166,7 @@ public class PlayerAttachment extends DefaultAttachment
 		m_captureUnitOnEnteringBy.clear();
 	}
 	
-	public void setDestroysPUs(String value)
+	public void setDestroysPUs(final String value)
 	{
 		m_destroysPUs = getBool(value);
 	}

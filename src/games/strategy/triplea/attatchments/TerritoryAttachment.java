@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TerritoryAttachment.java
  * 
  * Created on November 8, 2001, 3:08 PM
  */
-
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
@@ -40,20 +38,18 @@ import java.util.List;
  */
 public class TerritoryAttachment extends DefaultAttachment
 {
-	
-	public static Territory getCapital(PlayerID player, GameData data)
+	public static Territory getCapital(final PlayerID player, final GameData data)
 	{
-		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory current = iter.next();
-			TerritoryAttachment ta = TerritoryAttachment.get(current);
+			final Territory current = iter.next();
+			final TerritoryAttachment ta = TerritoryAttachment.get(current);
 			if (ta != null && ta.getCapital() != null)
 			{
-				PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
+				final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
 				if (whoseCapital == null)
 					throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
-				
 				if (player.equals(whoseCapital))
 					return current;
 			}
@@ -61,27 +57,25 @@ public class TerritoryAttachment extends DefaultAttachment
 		// Added check for optional players- no error thrown for them
 		if (player.getOptional())
 			return null;
-		
 		throw new IllegalStateException("Capital not found for:" + player);
 	}
 	
 	/**
 	 * will return empty list if none controlled, never returns null
 	 */
-	public static List<Territory> getAllCapitals(PlayerID player, GameData data)
+	public static List<Territory> getAllCapitals(final PlayerID player, final GameData data)
 	{
-		List<Territory> capitals = new ArrayList<Territory>();
-		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+		final List<Territory> capitals = new ArrayList<Territory>();
+		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory current = iter.next();
-			TerritoryAttachment ta = TerritoryAttachment.get(current);
+			final Territory current = iter.next();
+			final TerritoryAttachment ta = TerritoryAttachment.get(current);
 			if (ta != null && ta.getCapital() != null)
 			{
-				PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
+				final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
 				if (whoseCapital == null)
 					throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
-				
 				if (player.equals(whoseCapital))
 					capitals.add(current);
 			}
@@ -91,27 +85,25 @@ public class TerritoryAttachment extends DefaultAttachment
 		// Added check for optional players- no error thrown for them
 		if (player.getOptional())
 			return capitals;
-		
 		throw new IllegalStateException("Capital not found for:" + player);
 	}
 	
 	/**
 	 * will return empty list if none controlled, never returns null
 	 */
-	public static List<Territory> getAllCurrentlyOwnedCapitals(PlayerID player, GameData data)
+	public static List<Territory> getAllCurrentlyOwnedCapitals(final PlayerID player, final GameData data)
 	{
-		List<Territory> capitals = new ArrayList<Territory>();
-		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+		final List<Territory> capitals = new ArrayList<Territory>();
+		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory current = iter.next();
-			TerritoryAttachment ta = TerritoryAttachment.get(current);
+			final Territory current = iter.next();
+			final TerritoryAttachment ta = TerritoryAttachment.get(current);
 			if (ta != null && ta.getCapital() != null)
 			{
-				PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
+				final PlayerID whoseCapital = data.getPlayerList().getPlayerID(ta.getCapital());
 				if (whoseCapital == null)
 					throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
-				
 				if (player.equals(whoseCapital) && player.equals(current.getOwner()))
 					capitals.add(current);
 			}
@@ -122,17 +114,17 @@ public class TerritoryAttachment extends DefaultAttachment
 	/**
 	 * Convenience method. can return null.
 	 */
-	public static TerritoryAttachment get(Territory t)
+	public static TerritoryAttachment get(final Territory t)
 	{
-		TerritoryAttachment rVal = (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+		final TerritoryAttachment rVal = (TerritoryAttachment) t.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 		if (rVal == null && !t.isWater())
 			throw new IllegalStateException("No territory attachment for:" + t.getName());
 		return rVal;
 	}
 	
-	public static TerritoryAttachment get(Territory t, String nameOfAttachment)
+	public static TerritoryAttachment get(final Territory t, final String nameOfAttachment)
 	{
-		TerritoryAttachment rVal = (TerritoryAttachment) t.getAttachment(nameOfAttachment);
+		final TerritoryAttachment rVal = (TerritoryAttachment) t.getAttachment(nameOfAttachment);
 		if (rVal == null && !t.isWater())
 			throw new IllegalStateException("No territory attachment for:" + t.getName() + " with name:" + nameOfAttachment);
 		return rVal;
@@ -146,23 +138,23 @@ public class TerritoryAttachment extends DefaultAttachment
 	private PlayerID m_originalOwner = null;
 	private PlayerID m_occupiedTerrOf = null;
 	private boolean m_isConvoyRoute = false;
-	private Collection<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
-	private Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+	private final Collection<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
+	private final Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	private String m_convoyAttached = null;
 	private boolean m_navalBase = false;
 	private boolean m_airBase = false;
 	private boolean m_kamikazeZone = false;
 	private int m_unitProduction = 0;
 	private boolean m_blockadeZone = false;
-	private Collection<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
-	private Collection<String> m_whenCapturedByGoesTo = new ArrayList<String>();
+	private final Collection<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
+	private final Collection<String> m_whenCapturedByGoesTo = new ArrayList<String>();
 	
 	/** Creates new TerritoryAttatchment */
 	public TerritoryAttachment()
 	{
 	}
 	
-	public void setIsImpassible(String value)
+	public void setIsImpassible(final String value)
 	{
 		m_isImpassible = getBool(value);
 	}
@@ -172,7 +164,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_isImpassible;
 	}
 	
-	public void setCapital(String value)
+	public void setCapital(final String value)
 	{
 		m_capital = value;
 	}
@@ -187,7 +179,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_capital;
 	}
 	
-	public void setVictoryCity(String value)
+	public void setVictoryCity(final String value)
 	{
 		m_isVictoryCity = getBool(value);
 	}
@@ -197,7 +189,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_isVictoryCity;
 	}
 	
-	public void setOriginalFactory(String value)
+	public void setOriginalFactory(final String value)
 	{
 		m_originalFactory = getBool(value);
 	}
@@ -212,7 +204,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
-	public void setProduction(String value)
+	public void setProduction(final String value)
 	{
 		m_production = getInt(value);
 		m_unitProduction = m_production; // do NOT remove. unitProduction should always default to production
@@ -223,7 +215,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
-	public void setProductionOnly(int value)
+	public void setProductionOnly(final int value)
 	{
 		m_production = value;
 	}
@@ -233,7 +225,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
-	public void setProductionOnly(String value)
+	public void setProductionOnly(final String value)
 	{
 		m_production = getInt(value);
 	}
@@ -243,12 +235,12 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_production;
 	}
 	
-	public void setUnitProduction(Integer value)
+	public void setUnitProduction(final Integer value)
 	{
 		m_unitProduction = value;
 	}
 	
-	public void setUnitProduction(String value)
+	public void setUnitProduction(final String value)
 	{
 		m_unitProduction = Integer.parseInt(value);
 	}
@@ -258,7 +250,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_unitProduction;
 	}
 	
-	public void setOccupiedTerrOf(String value)
+	public void setOccupiedTerrOf(final String value)
 	{
 		if (value != null)
 			m_occupiedTerrOf = getData().getPlayerList().getPlayerID(value);
@@ -269,7 +261,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_occupiedTerrOf;
 	}
 	
-	public void setOriginalOwner(PlayerID player)
+	public void setOriginalOwner(final PlayerID player)
 	{
 		m_originalOwner = player;
 	}
@@ -279,7 +271,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_originalOwner;
 	}
 	
-	public void setConvoyRoute(String value)
+	public void setConvoyRoute(final String value)
 	{
 		m_isConvoyRoute = getBool(value);
 	}
@@ -294,12 +286,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
-	public void setChangeUnitOwners(String value)
+	public void setChangeUnitOwners(final String value)
 	{
-		String[] temp = value.split(":");
-		for (String name : temp)
+		final String[] temp = value.split(":");
+		for (final String name : temp)
 		{
-			PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+			final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
 			if (tempPlayer != null)
 				m_changeUnitOwners.add(tempPlayer);
 			else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false"))
@@ -324,12 +316,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
-	public void setCaptureUnitOnEnteringBy(String value)
+	public void setCaptureUnitOnEnteringBy(final String value)
 	{
-		String[] temp = value.split(":");
-		for (String name : temp)
+		final String[] temp = value.split(":");
+		for (final String name : temp)
 		{
-			PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+			final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
 			if (tempPlayer != null)
 				m_captureUnitOnEnteringBy.add(tempPlayer);
 			else
@@ -353,14 +345,14 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * @param value
 	 * @throws GameParseException
 	 */
-	public void setWhenCapturedByGoesTo(String value) throws GameParseException
+	public void setWhenCapturedByGoesTo(final String value) throws GameParseException
 	{
-		String[] s = value.split(":");
+		final String[] s = value.split(":");
 		if (s.length != 2)
 			throw new GameParseException("whenCapturedByGoesTo must have 2 player names separated by a colon");
-		for (String name : s)
+		for (final String name : s)
 		{
-			PlayerID player = getData().getPlayerList().getPlayerID(name);
+			final PlayerID player = getData().getPlayerList().getPlayerID(name);
 			if (player == null)
 				throw new IllegalStateException("Territory Attachments: No player named: " + name);
 		}
@@ -382,12 +374,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
-	public void setTerritoryEffect(String value) throws GameParseException
+	public void setTerritoryEffect(final String value) throws GameParseException
 	{
-		String[] s = value.split(":");
-		for (String name : s)
+		final String[] s = value.split(":");
+		for (final String name : s)
 		{
-			TerritoryEffect effect = getData().getTerritoryEffectList().get(name);
+			final TerritoryEffect effect = getData().getTerritoryEffectList().get(name);
 			if (effect != null)
 				m_territoryEffect.add(effect);
 			else
@@ -405,7 +397,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_territoryEffect.clear();
 	}
 	
-	public void setConvoyAttached(String value)
+	public void setConvoyAttached(final String value)
 	{
 		m_convoyAttached = value;
 	}
@@ -415,7 +407,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_convoyAttached;
 	}
 	
-	public void setNavalBase(String value)
+	public void setNavalBase(final String value)
 	{
 		m_navalBase = getBool(value);
 	}
@@ -425,7 +417,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_navalBase;
 	}
 	
-	public void setAirBase(String value)
+	public void setAirBase(final String value)
 	{
 		m_airBase = getBool(value);
 	}
@@ -440,12 +432,12 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_kamikazeZone;
 	}
 	
-	public void setKamikazeZone(String value)
+	public void setKamikazeZone(final String value)
 	{
 		m_kamikazeZone = getBool(value);
 	}
 	
-	public void setBlockadeZone(String value)
+	public void setBlockadeZone(final String value)
 	{
 		m_blockadeZone = getBool(value);
 	}

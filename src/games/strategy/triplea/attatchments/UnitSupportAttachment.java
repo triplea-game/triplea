@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * 
  *
  * 
  */
-
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
@@ -41,15 +39,12 @@ import java.util.Set;
  * @author Squid
  * 
  */
-
 public class UnitSupportAttachment extends DefaultAttachment
 {
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3015679930172496082L;
-	
 	private Set<UnitType> m_unitType = null;
 	private boolean m_offence = false;
 	private boolean m_defence = false;
@@ -62,7 +57,6 @@ public class UnitSupportAttachment extends DefaultAttachment
 	private String m_bonusType = null;
 	private List<PlayerID> m_players = new ArrayList<PlayerID>();
 	private boolean m_impArtTech = false;
-	
 	// strings
 	private String m_dice = null;
 	private String m_faction = null;
@@ -72,15 +66,15 @@ public class UnitSupportAttachment extends DefaultAttachment
 	{
 	}
 	
-	public static Set<UnitSupportAttachment> get(UnitType u)
+	public static Set<UnitSupportAttachment> get(final UnitType u)
 	{
-		Set<UnitSupportAttachment> supports = new HashSet<UnitSupportAttachment>();
-		Map<String, IAttachment> map = u.getAttachments();
-		Iterator<String> objsIter = map.keySet().iterator();
+		final Set<UnitSupportAttachment> supports = new HashSet<UnitSupportAttachment>();
+		final Map<String, IAttachment> map = u.getAttachments();
+		final Iterator<String> objsIter = map.keySet().iterator();
 		while (objsIter.hasNext())
 		{
-			IAttachment attachment = map.get(objsIter.next());
-			String name = attachment.getName();
+			final IAttachment attachment = map.get(objsIter.next());
+			final String name = attachment.getName();
 			if (name.startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX))
 			{
 				supports.add((UnitSupportAttachment) attachment);
@@ -89,18 +83,18 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return supports;
 	}
 	
-	public static UnitSupportAttachment get(UnitType u, String nameOfAttachment)
+	public static UnitSupportAttachment get(final UnitType u, final String nameOfAttachment)
 	{
-		UnitSupportAttachment rVal = (UnitSupportAttachment) u.getAttachment(nameOfAttachment);
+		final UnitSupportAttachment rVal = (UnitSupportAttachment) u.getAttachment(nameOfAttachment);
 		if (rVal == null)
 			throw new IllegalStateException("No unit type attachment for:" + u.getName() + " with name:" + nameOfAttachment);
 		return rVal;
 	}
 	
-	public static Set<UnitSupportAttachment> get(GameData data)
+	public static Set<UnitSupportAttachment> get(final GameData data)
 	{
-		Set<UnitSupportAttachment> supports = new HashSet<UnitSupportAttachment>();
-		Iterator<UnitType> i = data.getUnitTypeList().iterator();
+		final Set<UnitSupportAttachment> supports = new HashSet<UnitSupportAttachment>();
+		final Iterator<UnitType> i = data.getUnitTypeList().iterator();
 		while (i.hasNext())
 		{
 			supports.addAll(get(i.next()));
@@ -108,22 +102,22 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return supports;
 	}
 	
-	public void setUnitType(String names) throws GameParseException
+	public void setUnitType(final String names) throws GameParseException
 	{
 		m_unitType = new HashSet<UnitType>();
-		String[] s = names.split(":");
+		final String[] s = names.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
-			UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
+			final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
 			if (type == null)
 				throw new GameParseException("Supports: Could not find unitType. name:" + s[i]);
 			m_unitType.add(type);
 		}
 	}
 	
-	public void setFaction(String faction) throws GameParseException
+	public void setFaction(final String faction) throws GameParseException
 	{
-		String[] s = faction.split(":");
+		final String[] s = faction.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
 			if (s[i].equalsIgnoreCase("allied"))
@@ -133,7 +127,6 @@ public class UnitSupportAttachment extends DefaultAttachment
 			else
 				throw new GameParseException("Supports: " + faction + " faction must be allied, or enemy");
 		}
-		
 		m_faction = faction;
 	}
 	
@@ -142,10 +135,9 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return m_faction;
 	}
 	
-	public void setSide(String side) throws GameParseException
+	public void setSide(final String side) throws GameParseException
 	{
-		
-		String[] s = side.split(":");
+		final String[] s = side.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
 			if (s[i].equalsIgnoreCase("defence"))
@@ -155,7 +147,6 @@ public class UnitSupportAttachment extends DefaultAttachment
 			else
 				throw new GameParseException("Supports: " + side + " side must be defence or offence");
 		}
-		
 		m_side = side;
 	}
 	
@@ -164,10 +155,9 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return m_side;
 	}
 	
-	public void setDice(String dice) throws GameParseException
+	public void setDice(final String dice) throws GameParseException
 	{
-		
-		String[] s = dice.split(":");
+		final String[] s = dice.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
 			if (s[i].equalsIgnoreCase("roll"))
@@ -177,7 +167,6 @@ public class UnitSupportAttachment extends DefaultAttachment
 			else
 				throw new GameParseException("Supports: " + dice + " dice must be roll or strength");
 		}
-		
 		m_dice = dice;
 	}
 	
@@ -186,17 +175,17 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return m_dice;
 	}
 	
-	public void setBonus(String bonus)
+	public void setBonus(final String bonus)
 	{
 		m_bonus = getInt(bonus);
 	}
 	
-	public void setNumber(String number)
+	public void setNumber(final String number)
 	{
 		m_number = getInt(number);
 	}
 	
-	public void setBonusType(String type)
+	public void setBonusType(final String type)
 	{
 		m_bonusType = type;
 	}
@@ -207,12 +196,12 @@ public class UnitSupportAttachment extends DefaultAttachment
 	 * @param names
 	 * @throws GameParseException
 	 */
-	public void setPlayers(String names) throws GameParseException
+	public void setPlayers(final String names) throws GameParseException
 	{
-		String[] s = names.split(":");
+		final String[] s = names.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
-			PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
+			final PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
 			if (player == null)
 				throw new GameParseException("Supports: Could not find player. name:" + s[i]);
 			else
@@ -220,7 +209,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 	}
 	
-	public void setPlayers(ArrayList<PlayerID> players)
+	public void setPlayers(final ArrayList<PlayerID> players)
 	{
 		m_players = players;
 	}
@@ -235,7 +224,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		m_players.clear();
 	}
 	
-	public void setImpArtTech(String tech)
+	public void setImpArtTech(final String tech)
 	{
 		m_impArtTech = getBool(tech);
 	}
@@ -280,10 +269,9 @@ public class UnitSupportAttachment extends DefaultAttachment
 	 * boolean first is a cheat, adds a bogus support to a unit
 	 * in the case that supportable units are declared before any artillery
 	 */
-	public static void addRule(UnitType type, GameData data, boolean first) throws GameParseException
+	public static void addRule(final UnitType type, final GameData data, final boolean first) throws GameParseException
 	{
-		
-		UnitSupportAttachment rule = new UnitSupportAttachment();
+		final UnitSupportAttachment rule = new UnitSupportAttachment();
 		rule.setData(data);
 		rule.setBonus("1");
 		rule.setBonusType(Constants.OLD_ART_RULE_NAME);
@@ -305,19 +293,19 @@ public class UnitSupportAttachment extends DefaultAttachment
 		rule.setName(Constants.SUPPORT_RULE_NAME_OLD + type.getName());
 	}
 	
-	private static Set<UnitType> getTargets(GameData data)
+	private static Set<UnitType> getTargets(final GameData data)
 	{
-		Iterator<UnitSupportAttachment> iter = get(data).iterator();
+		final Iterator<UnitSupportAttachment> iter = get(data).iterator();
 		while (iter.hasNext())
 		{
-			UnitSupportAttachment rule = iter.next();
+			final UnitSupportAttachment rule = iter.next();
 			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME))
 				return rule.getUnitTypes();
 		}
 		return null;
 	}
 	
-	private void addUnitTypes(Set<UnitType> types)
+	private void addUnitTypes(final Set<UnitType> types)
 	{
 		if (types == null)
 			return;
@@ -326,26 +314,24 @@ public class UnitSupportAttachment extends DefaultAttachment
 		m_unitType.addAll(types);
 	}
 	
-	public static void setOldSupportCount(UnitType type, GameData data, String count)
+	public static void setOldSupportCount(final UnitType type, final GameData data, final String count)
 	{
-		Iterator<UnitSupportAttachment> iter = get(data).iterator();
+		final Iterator<UnitSupportAttachment> iter = get(data).iterator();
 		while (iter.hasNext())
 		{
-			UnitSupportAttachment rule = iter.next();
-			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME)
-						&& rule.getAttatchedTo() == type)
+			final UnitSupportAttachment rule = iter.next();
+			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttatchedTo() == type)
 				rule.setNumber(count);
-			
 		}
 	}
 	
-	public static void addTarget(UnitType type, GameData data) throws GameParseException
+	public static void addTarget(final UnitType type, final GameData data) throws GameParseException
 	{
-		Iterator<UnitSupportAttachment> iter = get(data).iterator();
+		final Iterator<UnitSupportAttachment> iter = get(data).iterator();
 		boolean first = true;
 		while (iter.hasNext())
 		{
-			UnitSupportAttachment rule = iter.next();
+			final UnitSupportAttachment rule = iter.next();
 			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME))
 			{
 				rule.addUnitTypes(Collections.singleton(type));
@@ -354,7 +340,5 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 		if (first)
 			addRule(type, data, first);
-		
 	}
-	
 }

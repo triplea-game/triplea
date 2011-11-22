@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
@@ -27,26 +26,23 @@ import java.util.Map;
 /**
  * @author Sean Bridges
  */
-
 public class TechAttachment extends DefaultAttachment
 {
-	
 	// attatches to a PlayerID
-	
-	public static TechAttachment get(PlayerID id)
+	public static TechAttachment get(final PlayerID id)
 	{
-		TechAttachment attatchment = (TechAttachment) id.getAttachment(Constants.TECH_ATTACHMENT_NAME);
+		final TechAttachment attatchment = (TechAttachment) id.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		// dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them
 		if (attatchment == null)
 			return new TechAttachment();
 		return attatchment;
 	}
 	
-	public static TechAttachment get(PlayerID id, String nameOfAttachment)
+	public static TechAttachment get(final PlayerID id, final String nameOfAttachment)
 	{
 		if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME))
 			throw new IllegalStateException("TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
-		TechAttachment attatchment = (TechAttachment) id.getAttachment(nameOfAttachment);
+		final TechAttachment attatchment = (TechAttachment) id.getAttachment(nameOfAttachment);
 		// dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them
 		if (attatchment == null)
 			return new TechAttachment();
@@ -70,77 +66,77 @@ public class TechAttachment extends DefaultAttachment
 	private boolean m_shipyards;
 	private final Map<String, Boolean> m_GenericTech = new HashMap<String, Boolean>();
 	
-	public void setTechCost(String s)
+	public void setTechCost(final String s)
 	{
 		m_techCost = getInt(s);
 	}
 	
-	public void setHeavyBomber(String s)
+	public void setHeavyBomber(final String s)
 	{
 		m_heavyBomber = getBool(s);
 	}
 	
-	public void setDestroyerBombard(String s)
+	public void setDestroyerBombard(final String s)
 	{
 		m_destroyerBombard = getBool(s);
 	}
 	
-	public void setLongRangeAir(String s)
+	public void setLongRangeAir(final String s)
 	{
 		m_longRangeAir = getBool(s);
 	}
 	
-	public void setJetPower(String s)
+	public void setJetPower(final String s)
 	{
 		m_jetPower = getBool(s);
 	}
 	
-	public void setRocket(String s)
+	public void setRocket(final String s)
 	{
 		m_rocket = getBool(s);
 	}
 	
-	public void setIndustrialTechnology(String s)
+	public void setIndustrialTechnology(final String s)
 	{
 		m_industrialTechnology = getBool(s);
 	}
 	
-	public void setSuperSub(String s)
+	public void setSuperSub(final String s)
 	{
 		m_superSub = getBool(s);
 	}
 	
-	public void setImprovedArtillerySupport(String s)
+	public void setImprovedArtillerySupport(final String s)
 	{
 		m_improvedArtillerySupport = getBool(s);
 	}
 	
-	public void setParatroopers(String s)
+	public void setParatroopers(final String s)
 	{
 		m_paratroopers = getBool(s);
 	}
 	
-	public void setIncreasedFactoryProduction(String s)
+	public void setIncreasedFactoryProduction(final String s)
 	{
 		m_increasedFactoryProduction = getBool(s);
 	}
 	
-	public void setWarBonds(String s)
+	public void setWarBonds(final String s)
 	{
 		m_warBonds = getBool(s);
 	}
 	
-	public void setMechanizedInfantry(String s)
+	public void setMechanizedInfantry(final String s)
 	{
 		m_mechanizedInfantry = getBool(s);
 	}
 	
-	public void setAARadar(String s)
+	public void setAARadar(final String s)
 	{
 		m_aARadar = getBool(s);
 	}
 	
-	public void setShipyards(String s)
+	public void setShipyards(final String s)
 	{
 		m_shipyards = getBool(s);
 	}
@@ -295,10 +291,10 @@ public class TechAttachment extends DefaultAttachment
 	}
 	
 	@Override
-	public void setData(GameData data)
+	public void setData(final GameData data)
 	{
 		super.setData(data);
-		for (TechAdvance ta : data.getTechnologyFrontier())
+		for (final TechAdvance ta : data.getTechnologyFrontier())
 		{
 			if (ta instanceof GenericTechAdvance)
 				if (((GenericTechAdvance) ta).getAdvance() == null)
@@ -306,7 +302,7 @@ public class TechAttachment extends DefaultAttachment
 		}
 	}
 	
-	public Boolean hasGenericTech(String name)
+	public Boolean hasGenericTech(final String name)
 	{
 		return m_GenericTech.get(name);
 	}
@@ -317,7 +313,7 @@ public class TechAttachment extends DefaultAttachment
 	 * @param name
 	 * @param value
 	 */
-	public void setGenericTech(String name, Boolean value)
+	public void setGenericTech(final String name, final Boolean value)
 	{
 		m_GenericTech.put(name, value);
 	}
@@ -331,5 +327,4 @@ public class TechAttachment extends DefaultAttachment
 	{
 		m_GenericTech.clear();
 	}
-	
 }

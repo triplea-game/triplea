@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.ChangeFactory;
@@ -40,21 +39,19 @@ import java.util.Set;
  * @author Edwin van der Wal
  * 
  */
-
 public class PoliticalActionAttachment extends DefaultAttachment
 {
 	private static final long serialVersionUID = 4392770599777282477L;
-	
 	public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
 	
-	public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(PlayerID player)
+	public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(final PlayerID player)
 	{
-		ArrayList<PoliticalActionAttachment> returnList = new ArrayList<PoliticalActionAttachment>();
-		Map<String, IAttachment> map = player.getAttachments();
-		Iterator<String> iter = map.keySet().iterator();
+		final ArrayList<PoliticalActionAttachment> returnList = new ArrayList<PoliticalActionAttachment>();
+		final Map<String, IAttachment> map = player.getAttachments();
+		final Iterator<String> iter = map.keySet().iterator();
 		while (iter.hasNext())
 		{
-			IAttachment a = map.get(iter.next());
+			final IAttachment a = map.get(iter.next());
 			if (a instanceof PoliticalActionAttachment) // we could also or instead check that the attachment is prefixed with CONSTANTS.POLITICALACTION_ATTACHMENT_PREFIX = "politicalActionAttachment"
 				returnList.add((PoliticalActionAttachment) a);
 		}
@@ -70,9 +67,9 @@ public class PoliticalActionAttachment extends DefaultAttachment
 		return returnList;
 	}
 	
-	public static PoliticalActionAttachment get(PlayerID player, String nameOfAttachment)
+	public static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment)
 	{
-		PoliticalActionAttachment rVal = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
+		final PoliticalActionAttachment rVal = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
 		if (rVal == null)
 			throw new IllegalStateException("PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
 		return rVal;
@@ -101,7 +98,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	private final Collection<PlayerID> m_actionAccept = new ArrayList<PlayerID>();
 	
 	@Override
-	public void validate(GameData data) throws GameParseException
+	public void validate(final GameData data) throws GameParseException
 	{
 		if (m_relationshipChange.isEmpty())
 			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: relationshipChange can't be empty");
@@ -114,13 +111,13 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 *            The condition that needs to be satisfied for this action to be able to be performed by a player
 	 * @throws GameParseException
 	 */
-	public void setConditions(String conditions) throws GameParseException
+	public void setConditions(final String conditions) throws GameParseException
 	{
-		String[] s = conditions.split(":");
+		final String[] s = conditions.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
 			RulesAttachment condition = null;
-			for (PlayerID p : getData().getPlayerList().getPlayers())
+			for (final PlayerID p : getData().getPlayerList().getPlayers())
 			{
 				condition = (RulesAttachment) p.getAttachment(s[i]);
 				if (condition != null)
@@ -150,11 +147,11 @@ public class PoliticalActionAttachment extends DefaultAttachment
 		m_conditions.clear();
 	}
 	
-	public void setConditionType(String s) throws GameParseException
+	public void setConditionType(final String s) throws GameParseException
 	{
 		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
 		{
-			String[] nums = s.split("-");
+			final String[] nums = s.split("-");
 			if (nums.length == 1)
 			{
 				if (Integer.parseInt(nums[0]) < 0)
@@ -179,7 +176,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 		return m_conditionType;
 	}
 	
-	public void setInvert(String s)
+	public void setInvert(final String s)
 	{
 		m_invert = getBool(s);
 	}
@@ -192,7 +189,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	/**
 	 * This will account for Invert and conditionType
 	 */
-	private static boolean isMet(PoliticalActionAttachment paa, GameData data)
+	private static boolean isMet(final PoliticalActionAttachment paa, final GameData data)
 	{
 		return RulesAttachment.areConditionsMet(paa.getConditions(), paa.getConditionType(), data) != paa.getInvert();
 	}
@@ -211,9 +208,9 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 * @param relChange
 	 * @throws GameParseException
 	 */
-	public void setRelationshipChange(String relChange) throws GameParseException
+	public void setRelationshipChange(final String relChange) throws GameParseException
 	{
-		String[] s = relChange.split(":");
+		final String[] s = relChange.split(":");
 		if (s.length != 3)
 			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n Use: player1:player2:newRelation\n");
 		if (getData().getPlayerList().getPlayerID(s[0]) == null)
@@ -222,7 +219,6 @@ public class PoliticalActionAttachment extends DefaultAttachment
 			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1] + " unknown in: " + getName());
 		if (!Matches.isValidRelationshipName(getData()).match(s[2]))
 			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2] + " unknown in: " + getName());
-		
 		m_relationshipChange.add(relChange);
 	}
 	
@@ -240,7 +236,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 * @param text
 	 *            the Key that is used in politicstext.properties for all the texts
 	 */
-	public void setText(String text)
+	public void setText(final String text)
 	{
 		m_text = text;
 	}
@@ -258,16 +254,16 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 *            the number you need to roll to get the action to succeed format "1:10" for 10% chance
 	 * @throws GameParseException
 	 */
-	public void setChance(String chance) throws GameParseException
+	public void setChance(final String chance) throws GameParseException
 	{
-		String[] s = chance.split(":");
+		final String[] s = chance.split(":");
 		try
 		{
-			int i = getInt(s[0]);
-			int j = getInt(s[1]);
+			final int i = getInt(s[0]);
+			final int j = getInt(s[1]);
 			if (i > j || i < 1 || j < 1 || i > 120 || j > 120)
 				throw new GameParseException("PoliticalActionAttachment: chance should have a format of \"x:y\" where x is <= y and both x and y are >=1 and <=120");
-		} catch (IllegalArgumentException iae)
+		} catch (final IllegalArgumentException iae)
 		{
 			throw new GameParseException("PoliticalActionAttachment: Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance");
 		}
@@ -296,7 +292,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 * @param s
 	 *            the amount you need to pay to perform the action
 	 */
-	public void setCostPU(String s)
+	public void setCostPU(final String s)
 	{
 		m_costPU = getInt(s);
 	}
@@ -313,7 +309,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 * @param s
 	 *            the amount of times you can try this Action per Round
 	 */
-	public void setAttemptsPerTurn(String s)
+	public void setAttemptsPerTurn(final String s)
 	{
 		m_attemptsPerTurn = getInt(s);
 		setAttemptsLeftThisTurn(m_attemptsPerTurn);
@@ -331,7 +327,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 * @param attempts
 	 *            left this turn
 	 */
-	public void setAttemptsLeftThisTurn(int attempts)
+	public void setAttemptsLeftThisTurn(final int attempts)
 	{
 		m_attemptsLeftThisTurn = attempts;
 	}
@@ -349,12 +345,12 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
-	public void setActionAccept(String value)
+	public void setActionAccept(final String value)
 	{
-		String[] temp = value.split(":");
-		for (String name : temp)
+		final String[] temp = value.split(":");
+		for (final String name : temp)
 		{
-			PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+			final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
 			if (tempPlayer != null)
 				m_actionAccept.add(tempPlayer);
 			else
@@ -381,10 +377,10 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 */
 	public Set<PlayerID> getOtherPlayers()
 	{
-		HashSet<PlayerID> otherPlayers = new HashSet<PlayerID>();
-		for (String relationshipChange : m_relationshipChange)
+		final HashSet<PlayerID> otherPlayers = new HashSet<PlayerID>();
+		for (final String relationshipChange : m_relationshipChange)
 		{
-			String[] s = relationshipChange.split(":");
+			final String[] s = relationshipChange.split(":");
 			otherPlayers.add(getData().getPlayerList().getPlayerID(s[0]));
 			otherPlayers.add(getData().getPlayerList().getPlayerID(s[1]));
 		}
@@ -396,14 +392,15 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 * @param player
 	 * @return gets the valid actions for this player.
 	 */
-	public static Collection<PoliticalActionAttachment> getValidActions(PlayerID player)
+	public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player)
 	{
 		if (!games.strategy.triplea.Properties.getUsePolitics(player.getData()) || !player.amNotDeadYet())
 			return new ArrayList<PoliticalActionAttachment>();
-		return Match.getMatches(getPoliticalActionAttachments(player), new CompositeMatchAnd<PoliticalActionAttachment>(Matches.PoliticalActionCanBeAttempted, Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, player.getData())));
+		return Match.getMatches(getPoliticalActionAttachments(player),
+					new CompositeMatchAnd<PoliticalActionAttachment>(Matches.PoliticalActionCanBeAttempted, Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, player.getData())));
 	}
 	
-	public void resetAttempts(IDelegateBridge aBridge)
+	public void resetAttempts(final IDelegateBridge aBridge)
 	{
 		if (m_attemptsLeftThisTurn != m_attemptsPerTurn)
 		{
@@ -411,7 +408,7 @@ public class PoliticalActionAttachment extends DefaultAttachment
 		}
 	}
 	
-	public void useAttempt(IDelegateBridge aBridge)
+	public void useAttempt(final IDelegateBridge aBridge)
 	{
 		aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, (m_attemptsLeftThisTurn - 1), PoliticalActionAttachment.ATTEMPTS_LEFT_THIS_TURN));
 	}
@@ -420,5 +417,4 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	{
 		return m_attemptsLeftThisTurn > 0;
 	}
-	
 }

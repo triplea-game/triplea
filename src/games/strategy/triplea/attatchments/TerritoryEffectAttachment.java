@@ -11,11 +11,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TerritoryEffectAttachment.java
  */
-
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
@@ -33,30 +31,28 @@ import java.util.Iterator;
  * @author Edwin van der Wal
  * @version 1.0
  */
-
 @SuppressWarnings("serial")
 public class TerritoryEffectAttachment extends DefaultAttachment
 {
-	
-	private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<UnitType>();
-	private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<UnitType>();
+	private final IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<UnitType>();
+	private final IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<UnitType>();
 	
 	/**
 	 * Convenience method.
 	 * 
 	 * @return TerritoryEffectAttachment belonging to the RelationshipType pr
 	 */
-	public static TerritoryEffectAttachment get(TerritoryEffect te)
+	public static TerritoryEffectAttachment get(final TerritoryEffect te)
 	{
-		TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
+		final TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(Constants.TERRITORYEFFECT_ATTACHMENT_NAME);
 		if (rVal == null)
 			throw new IllegalStateException("No territoryEffect attachment for:" + te.getName());
 		return rVal;
 	}
 	
-	public static TerritoryEffectAttachment get(TerritoryEffect te, String nameOfAttachment)
+	public static TerritoryEffectAttachment get(final TerritoryEffect te, final String nameOfAttachment)
 	{
-		TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(nameOfAttachment);
+		final TerritoryEffectAttachment rVal = (TerritoryEffectAttachment) te.getAttachment(nameOfAttachment);
 		if (rVal == null)
 			throw new IllegalStateException("No territoryEffect attachment for:" + te.getName() + " with name:" + nameOfAttachment);
 		return rVal;
@@ -76,7 +72,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	 * @param combatDefenseEffect
 	 * @throws GameParseException
 	 */
-	public void setCombatDefenseEffect(String combatDefenseEffect) throws GameParseException
+	public void setCombatDefenseEffect(final String combatDefenseEffect) throws GameParseException
 	{
 		setCombatEffect(combatDefenseEffect, true);
 	}
@@ -97,7 +93,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	 * @param combatOffenseEffect
 	 * @throws GameParseException
 	 */
-	public void setCombatOffenseEffect(String combatOffenseEffect) throws GameParseException
+	public void setCombatOffenseEffect(final String combatOffenseEffect) throws GameParseException
 	{
 		setCombatEffect(combatOffenseEffect, false);
 	}
@@ -112,17 +108,17 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 		m_combatOffenseEffect.clear();
 	}
 	
-	private void setCombatEffect(String combatEffect, boolean defending) throws GameParseException
+	private void setCombatEffect(final String combatEffect, final boolean defending) throws GameParseException
 	{
-		String[] s = combatEffect.split(":");
+		final String[] s = combatEffect.split(":");
 		if (s.length < 2)
 			throw new GameParseException("TerritoryEffect Attachments: combatDefenseEffect and combatOffenseEffect must have a count and at least one unitType");
-		Iterator<String> iter = Arrays.asList(s).iterator();
-		int effect = getInt(iter.next());
+		final Iterator<String> iter = Arrays.asList(s).iterator();
+		final int effect = getInt(iter.next());
 		while (iter.hasNext())
 		{
-			String unitTypeToProduce = iter.next();
-			UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
+			final String unitTypeToProduce = iter.next();
+			final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
 			if (ut == null)
 				throw new IllegalStateException("TerritoryEffect Attachments: No unit called:" + unitTypeToProduce);
 			if (defending)
@@ -132,7 +128,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 		}
 	}
 	
-	public int getCombatEffect(UnitType aType, boolean defending)
+	public int getCombatEffect(final UnitType aType, final boolean defending)
 	{
 		if (defending)
 		{
