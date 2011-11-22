@@ -28,6 +28,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -149,6 +151,33 @@ public class LobbyGamePanel extends JPanel
 			{
 				setWidgetActivation();
 			}
+		});
+		
+		m_gameTable.addMouseListener(new MouseListener()
+		{
+			public void mouseClicked(final MouseEvent event)
+			{
+				if (event.getClickCount() == 2)
+				{
+					joinGame();
+				}
+			}
+			
+			public void mousePressed(final MouseEvent e)
+			{
+			} // ignore
+			
+			public void mouseReleased(final MouseEvent e)
+			{
+			} // ignore
+			
+			public void mouseEntered(final MouseEvent e)
+			{
+			} // ignore
+			
+			public void mouseExited(final MouseEvent e)
+			{
+			} // ignore
 		});
 	}
 	
