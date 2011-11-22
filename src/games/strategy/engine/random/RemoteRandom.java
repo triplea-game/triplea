@@ -34,14 +34,13 @@ public class RemoteRandom implements IRemoteRandom
 		return new ArrayList<VerifiedRandomNumbers>(s_verifiedRandomNumbers);
 	}
 	
-	private synchronized static void addVerifiedRandomNumber(VerifiedRandomNumbers number)
+	private synchronized static void addVerifiedRandomNumber(final VerifiedRandomNumbers number)
 	{
 		s_verifiedRandomNumbers.add(number);
 	}
 	
 	private final PlainRandomSource m_plainRandom = new PlainRandomSource();
 	private final IGame m_game;
-	
 	// remembered from generate to unlock
 	private VaultID m_remoteVaultID;
 	private String m_annotation;
@@ -53,7 +52,7 @@ public class RemoteRandom implements IRemoteRandom
 	/**
 	 * @param id
 	 */
-	public RemoteRandom(IGame game)
+	public RemoteRandom(final IGame game)
 	{
 		m_game = game;
 	}
@@ -61,13 +60,11 @@ public class RemoteRandom implements IRemoteRandom
 	/* 
 	 * @see games.strategy.engine.random.IRemoteRandom#generate(int, int, java.lang.String)
 	 */
-
-	public int[] generate(int max, int count, String annotation, VaultID remoteVaultID)
+	public int[] generate(final int max, final int count, final String annotation, final VaultID remoteVaultID)
 	{
 		if (m_waitingForUnlock)
 			throw new IllegalStateException("Being asked to generate random numbers, but we havent finished last generation");
 		m_waitingForUnlock = true;
-		
 		// clean up here, we know these keys arent needed anymore so release them
 		// we cant do this earlier without synchronizing between the server and the client
 		// but here we know they arent needed anymore
@@ -75,47 +72,36 @@ public class RemoteRandom implements IRemoteRandom
 		{
 			m_game.getVault().release(m_remoteVaultID);
 		}
-		
 		m_remoteVaultID = remoteVaultID;
 		m_annotation = annotation;
 		m_max = max;
-		
 		m_localNumbers = m_plainRandom.getRandom(max, count, annotation);
-		
 		m_game.getVault().waitForID(remoteVaultID, 15000);
 		if (!m_game.getVault().knowsAbout(remoteVaultID))
 			throw new IllegalStateException("Vault id not known, have:" + m_game.getVault().knownIds() + " looking for:" + remoteVaultID);
-		
 		return m_localNumbers;
 	}
 	
 	/* 
 	 * @see games.strategy.engine.random.IRemoteRandom#unlock()
 	 */
-
 	public void verifyNumbers()
 	{
-		Vault vault = m_game.getVault();
-		
+		final Vault vault = m_game.getVault();
 		vault.waitForIdToUnlock(m_remoteVaultID, 15000);
-		
 		if (!vault.isUnlocked(m_remoteVaultID))
 			throw new IllegalStateException("Server did not unlock random numbers, cheating is suspected");
-		
 		int[] remoteNumbers;
 		try
 		{
 			remoteNumbers = CryptoRandomSource.bytesToInts(vault.get(m_remoteVaultID));
-		} catch (NotUnlockedException e1)
+		} catch (final NotUnlockedException e1)
 		{
 			e1.printStackTrace();
 			throw new IllegalStateException("Could not unlock numbers, cheating suspected");
 		}
-		int[] verifiedNumbers = CryptoRandomSource.xor(remoteNumbers, m_localNumbers, m_max);
-		
+		final int[] verifiedNumbers = CryptoRandomSource.xor(remoteNumbers, m_localNumbers, m_max);
 		addVerifiedRandomNumber(new VerifiedRandomNumbers(m_annotation, verifiedNumbers));
 		m_waitingForUnlock = false;
-		
 	}
-	
 }

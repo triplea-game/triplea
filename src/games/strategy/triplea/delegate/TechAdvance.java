@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TechAdvance.java
  * 
  * Created on November 25, 2001, 4:22 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
@@ -50,7 +48,6 @@ public abstract class TechAdvance implements java.io.Serializable
 	// private static List<TechAdvance> s_WW2V3AdvanceCategories;
 	private static List<TechAdvance> s_allDefined;
 	private static List<TechnologyFrontier> s_WW2V3Categories;
-	
 	public static final TechAdvance JET_POWER = new JetPowerAdvance();
 	public static final TechAdvance SUPER_SUBS = new SuperSubsAdvance();
 	public static final TechAdvance LONG_RANGE_AIRCRAFT = new LongRangeAircraftAdvance();
@@ -69,27 +66,21 @@ public abstract class TechAdvance implements java.io.Serializable
 	// Technology Categories
 	// public static final TechAdvance AIR_NAVAL_ADVANCES = new AirNavalAdvances();
 	// public static final TechAdvance LAND_PRODUCTION_ADVANCES = new LandProductionAdvances();
-	
-	public static List<TechAdvance> getTechAdvances(GameData data, PlayerID player)
+	public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerID player)
 	{
-		boolean isWW2V2 = games.strategy.triplea.Properties.getWW2V2(data);
-		boolean isWW2V3 = games.strategy.triplea.Properties.getWW2V3(data);
-		
+		final boolean isWW2V2 = games.strategy.triplea.Properties.getWW2V2(data);
+		final boolean isWW2V3 = games.strategy.triplea.Properties.getWW2V3(data);
 		if (!data.getTechnologyFrontier().isEmpty())
 		{
-			
 			if (player != null)
 			{
-				
 				return player.getTechnologyFrontierList().getAdvances();
 			}
 			else
 			{
-				
 				return data.getTechnologyFrontier().getTechs();
 			}
 		}
-		
 		if (isWW2V2)
 			return s_WW2V2Advances;
 		else if (isWW2V3)
@@ -107,9 +98,9 @@ public abstract class TechAdvance implements java.io.Serializable
 	        return s_LandProductionAdvances;
 	}
 	*/
-	public static TechAdvance findDefinedAdvance(String s)
+	public static TechAdvance findDefinedAdvance(final String s)
 	{
-		for (TechAdvance t : s_allDefined)
+		for (final TechAdvance t : s_allDefined)
 		{
 			if (t.getProperty().equals(s))
 				return t;
@@ -117,16 +108,16 @@ public abstract class TechAdvance implements java.io.Serializable
 		throw new IllegalArgumentException(s + " is not a valid technology");
 	}
 	
-	public static List<TechnologyFrontier> getTechCategories(GameData data, PlayerID player)
+	public static List<TechnologyFrontier> getTechCategories(final GameData data, final PlayerID player)
 	{
 		if (player != null && !data.getTechnologyFrontier().isEmpty())
 			return player.getTechnologyFrontierList().getFrontiers();
 		if (s_WW2V3Categories == null)
 		{
-			List<TechnologyFrontier> tf = new ArrayList<TechnologyFrontier>();
-			TechnologyFrontier an = new TechnologyFrontier("Air and Naval Advances", data);
+			final List<TechnologyFrontier> tf = new ArrayList<TechnologyFrontier>();
+			final TechnologyFrontier an = new TechnologyFrontier("Air and Naval Advances", data);
 			an.addAdvance(s_AirNavalAdvances);
-			TechnologyFrontier lp = new TechnologyFrontier("Land and Production Advances", data);
+			final TechnologyFrontier lp = new TechnologyFrontier("Land and Production Advances", data);
 			lp.addAdvance(s_LandProductionAdvances);
 			tf.add(an);
 			tf.add(lp);
@@ -135,9 +126,9 @@ public abstract class TechAdvance implements java.io.Serializable
 		return s_WW2V3Categories;
 	}
 	
-	public static TechAdvance findAdvance(String s, GameData data, PlayerID player)
+	public static TechAdvance findAdvance(final String s, final GameData data, final PlayerID player)
 	{
-		for (TechAdvance t : getTechAdvances(data, player))
+		for (final TechAdvance t : getTechAdvances(data, player))
 		{
 			if (t.getProperty().equals(s))
 				return t;
@@ -164,7 +155,6 @@ public abstract class TechAdvance implements java.io.Serializable
 		s_WW2V1Advances.add(INDUSTRIAL_TECHNOLOGY);
 		s_WW2V1Advances.add(HEAVY_BOMBER);
 		s_WW2V1Advances = Collections.unmodifiableList(s_WW2V1Advances);
-		
 		/*
 		 * World War 2 Version 2 Tech
 		 */
@@ -177,7 +167,6 @@ public abstract class TechAdvance implements java.io.Serializable
 		s_WW2V2Advances.add(HEAVY_BOMBER);
 		s_WW2V2Advances.add(INDUSTRIAL_TECHNOLOGY);
 		s_WW2V2Advances = Collections.unmodifiableList(s_WW2V2Advances);
-		
 		/*
 		 * World War 2 Version 3 Tech
 		 */
@@ -195,7 +184,6 @@ public abstract class TechAdvance implements java.io.Serializable
 		s_WW2V3Advances.add(WAR_BONDS);
 		s_WW2V3Advances.add(MECHANIZED_INFANTRY);
 		s_WW2V3Advances = Collections.unmodifiableList(s_WW2V3Advances);
-		
 		/*
 		 * WW2V3 Air/Naval Tech
 		 */
@@ -207,7 +195,6 @@ public abstract class TechAdvance implements java.io.Serializable
 		s_AirNavalAdvances.add(LONG_RANGE_AIRCRAFT);
 		s_AirNavalAdvances.add(HEAVY_BOMBER);
 		s_AirNavalAdvances = Collections.unmodifiableList(s_AirNavalAdvances);
-		
 		/*
 		 * WW2V3 Land/Production Tech
 		 */
@@ -219,7 +206,6 @@ public abstract class TechAdvance implements java.io.Serializable
 		s_LandProductionAdvances.add(WAR_BONDS);
 		s_LandProductionAdvances.add(MECHANIZED_INFANTRY);
 		s_LandProductionAdvances = Collections.unmodifiableList(s_LandProductionAdvances);
-		
 		/*
 		 * WW2V3 Land/Production Tech Categories
 		 */
@@ -248,16 +234,13 @@ public abstract class TechAdvance implements java.io.Serializable
 	public abstract boolean hasTech(TechAttachment ta);
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (!(o instanceof TechAdvance))
 			return false;
-		
-		TechAdvance ta = (TechAdvance) o;
-		
+		final TechAdvance ta = (TechAdvance) o;
 		if (ta.getName() == null || getName() == null)
 			return false;
-		
 		return getName().equals(ta.getName());
 	}
 	
@@ -266,7 +249,6 @@ public abstract class TechAdvance implements java.io.Serializable
 	{
 		if (getName() == null)
 			return super.hashCode();
-		
 		return getName().hashCode();
 	}
 	
@@ -280,7 +262,6 @@ public abstract class TechAdvance implements java.io.Serializable
 
 class SuperSubsAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -294,12 +275,12 @@ class SuperSubsAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasSuperSub();
 	}
@@ -308,7 +289,6 @@ class SuperSubsAdvance extends TechAdvance
 
 class HeavyBomberAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -322,12 +302,12 @@ class HeavyBomberAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasHeavyBomber();
 	}
@@ -336,7 +316,6 @@ class HeavyBomberAdvance extends TechAdvance
 
 class IndustrialTechnologyAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -350,30 +329,26 @@ class IndustrialTechnologyAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
-		ProductionFrontier current = id.getProductionFrontier();
+		final ProductionFrontier current = id.getProductionFrontier();
 		// they already have it
 		if (current.getName().endsWith("IndustrialTechnology"))
 			return;
-		
-		String industrialTechName = current.getName() + "IndustrialTechnology";
-		
-		ProductionFrontier advancedTech = bridge.getData().getProductionFrontierList().getProductionFrontier(industrialTechName);
-		
+		final String industrialTechName = current.getName() + "IndustrialTechnology";
+		final ProductionFrontier advancedTech = bridge.getData().getProductionFrontierList().getProductionFrontier(industrialTechName);
 		// it doesnt exist, dont crash
 		if (advancedTech == null)
 		{
 			Logger.getLogger(TechAdvance.class.getName()).log(Level.WARNING, "No tech named:" + industrialTechName + " not adding tech");
 			return;
 		}
-		
-		Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
+		final Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
 		bridge.addChange(prodChange);
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasIndustrialTechnology();
 	}
@@ -382,7 +357,6 @@ class IndustrialTechnologyAdvance extends TechAdvance
 
 class JetPowerAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -396,12 +370,12 @@ class JetPowerAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasJetPower();
 	}
@@ -410,7 +384,6 @@ class JetPowerAdvance extends TechAdvance
 
 class RocketsAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -424,12 +397,12 @@ class RocketsAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasRocket();
 	}
@@ -438,7 +411,6 @@ class RocketsAdvance extends TechAdvance
 
 class DestroyerBombardTechAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -452,12 +424,12 @@ class DestroyerBombardTechAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasDestroyerBombard();
 	}
@@ -466,7 +438,6 @@ class DestroyerBombardTechAdvance extends TechAdvance
 
 class LongRangeAircraftAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -480,12 +451,12 @@ class LongRangeAircraftAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasLongRangeAir();
 	}
@@ -500,7 +471,6 @@ class LongRangeAircraftAdvance extends TechAdvance
  */
 class ImprovedArtillerySupportAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -514,12 +484,12 @@ class ImprovedArtillerySupportAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasImprovedArtillerySupport();
 	}
@@ -531,7 +501,6 @@ class ImprovedArtillerySupportAdvance extends TechAdvance
  */
 class ParatroopersAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -545,12 +514,12 @@ class ParatroopersAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasParatroopers();
 	}
@@ -562,7 +531,6 @@ class ParatroopersAdvance extends TechAdvance
  */
 class IncreasedFactoryProductionAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -576,12 +544,12 @@ class IncreasedFactoryProductionAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasIncreasedFactoryProduction();
 	}
@@ -593,7 +561,6 @@ class IncreasedFactoryProductionAdvance extends TechAdvance
  */
 class WarBondsAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -607,12 +574,12 @@ class WarBondsAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasWarBonds();
 	}
@@ -624,7 +591,6 @@ class WarBondsAdvance extends TechAdvance
  */
 class MechanizedInfantryAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -638,12 +604,12 @@ class MechanizedInfantryAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasMechanizedInfantry();
 	}
@@ -655,7 +621,6 @@ class MechanizedInfantryAdvance extends TechAdvance
  */
 class AARadarAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -669,12 +634,12 @@ class AARadarAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasAARadar();
 	}
@@ -683,7 +648,6 @@ class AARadarAdvance extends TechAdvance
 
 class ImprovedShipyardsAdvance extends TechAdvance
 {
-	
 	@Override
 	public String getName()
 	{
@@ -697,39 +661,33 @@ class ImprovedShipyardsAdvance extends TechAdvance
 	}
 	
 	@Override
-	public void perform(PlayerID id, IDelegateBridge bridge)
+	public void perform(final PlayerID id, final IDelegateBridge bridge)
 	{
-		GameData data = bridge.getData();
+		final GameData data = bridge.getData();
 		if (!games.strategy.triplea.Properties.getUse_Shipyards(data))
 			return;
-		
-		ProductionFrontier current = id.getProductionFrontier();
+		final ProductionFrontier current = id.getProductionFrontier();
 		// they already have it
 		if (current.getName().endsWith("Shipyards"))
 			return;
-		
-		String industrialTechName = current.getName() + "Shipyards";
-		
-		ProductionFrontier advancedTech = data.getProductionFrontierList().getProductionFrontier(industrialTechName);
-		
+		final String industrialTechName = current.getName() + "Shipyards";
+		final ProductionFrontier advancedTech = data.getProductionFrontierList().getProductionFrontier(industrialTechName);
 		// it doesnt exist, dont crash
 		if (advancedTech == null)
 		{
 			Logger.getLogger(TechAdvance.class.getName()).log(Level.WARNING, "No tech named:" + industrialTechName + " not adding tech");
 			return;
 		}
-		
-		Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
+		final Change prodChange = ChangeFactory.changeProductionFrontier(id, advancedTech);
 		bridge.addChange(prodChange);
 	}
 	
 	@Override
-	public boolean hasTech(TechAttachment ta)
+	public boolean hasTech(final TechAttachment ta)
 	{
 		return ta.hasShipyards();
 	}
 }
-
 /*
  * Land & Production Tech Category
  */
@@ -751,7 +709,6 @@ class LandProductionAdvances extends TechAdvance
     }
 }
 */
-
 /*
  * Land & Production Tech Category
  */
@@ -773,7 +730,6 @@ class AirNavalAdvances extends TechAdvance
     }
 }
 */
-
 /**
  * End of AA 50 rules
  */

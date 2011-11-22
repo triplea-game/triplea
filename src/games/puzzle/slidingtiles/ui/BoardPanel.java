@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.slidingtiles.ui;
 
 import games.puzzle.slidingtiles.attachments.Tile;
@@ -46,47 +45,35 @@ import javax.swing.SwingUtilities;
  */
 public class BoardPanel extends JComponent implements MouseListener
 {
-	private BoardData m_mapData;
-	
+	private final BoardData m_mapData;
 	private Territory m_clickedAt = null;
 	private Territory m_releasedAt = null;
-	
 	private CountDownLatch m_waiting;
-	
 	private BufferedImage m_image;
 	
-	public BoardPanel(BoardData mapData, File file)
+	public BoardPanel(final BoardData mapData, final File file)
 	{
 		m_waiting = null;
-		
 		m_mapData = mapData;
-		
-		Dimension mapDimension = m_mapData.getMapDimensions();
-		
+		final Dimension mapDimension = m_mapData.getMapDimensions();
 		this.setMinimumSize(mapDimension);
 		this.setPreferredSize(mapDimension);
 		this.setSize(mapDimension);
-		
 		this.addMouseListener(this);
-		
 		this.setOpaque(true);
-		
 		if (file != null)
 		{
 			try
 			{
-				BufferedImage bigimage = ImageIO.read(file);
-				AffineTransform trans = new AffineTransform();
-				
-				double scalex = mapDimension.getWidth() / bigimage.getWidth();
-				double scaley = mapDimension.getHeight() / bigimage.getHeight();
+				final BufferedImage bigimage = ImageIO.read(file);
+				final AffineTransform trans = new AffineTransform();
+				final double scalex = mapDimension.getWidth() / bigimage.getWidth();
+				final double scaley = mapDimension.getHeight() / bigimage.getHeight();
 				trans.scale(scalex, scaley);
-				AffineTransformOp scale = new AffineTransformOp(trans, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-				
+				final AffineTransformOp scale = new AffineTransformOp(trans, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
 				m_image = new BufferedImage((int) mapDimension.getWidth(), (int) mapDimension.getHeight(), bigimage.getType());
 				scale.filter(bigimage, m_image);
-				
-			} catch (IOException e)
+			} catch (final IOException e)
 			{
 				m_image = null;
 			}
@@ -95,7 +82,6 @@ public class BoardPanel extends JComponent implements MouseListener
 		{
 			m_image = null;
 		}
-		
 	}
 	
 	/**
@@ -116,7 +102,6 @@ public class BoardPanel extends JComponent implements MouseListener
 		// Ask Swing to repaint this panel when it's convenient
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				repaint();
@@ -127,32 +112,25 @@ public class BoardPanel extends JComponent implements MouseListener
 	/**
 	 * Draw the current map and pieces.
 	 */
-	
 	@Override
-	protected void paintComponent(Graphics g)
+	protected void paintComponent(final Graphics g)
 	{
 		g.setColor(Color.white);
-		
-		Dimension mapDimension = m_mapData.getMapDimensions();
+		final Dimension mapDimension = m_mapData.getMapDimensions();
 		g.fillRect(0, 0, mapDimension.width, mapDimension.height);
-		
 		// g.fillRect(0, 0, getWidth(), getHeight());
-		
-		for (Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
+		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
 		{
-			Polygon p = entry.getValue();
-			Territory at = entry.getKey();
-			Tile tile = (Tile) at.getAttachment("tile");
+			final Polygon p = entry.getValue();
+			final Territory at = entry.getKey();
+			final Tile tile = (Tile) at.getAttachment("tile");
 			if (tile != null)
 			{
-				int value = tile.getValue();
-				
+				final int value = tile.getValue();
 				if (value != 0)
 				{
-					Rectangle square = p.getBounds();
-					
-					Rectangle tileData = m_mapData.getLocation(value);
-					
+					final Rectangle square = p.getBounds();
+					final Rectangle tileData = m_mapData.getLocation(value);
 					if (m_image == null)
 					{
 						g.setColor(Color.black);
@@ -168,34 +146,29 @@ public class BoardPanel extends JComponent implements MouseListener
 						g.setColor(Color.white);
 						g.fillRect(square.x, square.y, square.width, square.height);
 					}
-					
 				}
 			}
-			
 			g.setColor(Color.black);
 			g.drawPolygon(p);
-			
 		}
-		
 	}
 	
-	public void mouseClicked(MouseEvent e)
+	public void mouseClicked(final MouseEvent e)
 	{
 	}
 	
-	public void mouseEntered(MouseEvent e)
+	public void mouseEntered(final MouseEvent e)
 	{
 	}
 	
-	public void mouseExited(MouseEvent e)
+	public void mouseExited(final MouseEvent e)
 	{
 	}
 	
 	/**
 	 * Process the mouse button being pressed.
 	 */
-	
-	public void mousePressed(MouseEvent e)
+	public void mousePressed(final MouseEvent e)
 	{
 		// After this method has been called,
 		// the Territory corresponding to the cursor location when the mouse was pressed
@@ -206,14 +179,12 @@ public class BoardPanel extends JComponent implements MouseListener
 	/**
 	 * Process the mouse button being released.
 	 */
-	
-	public void mouseReleased(MouseEvent e)
+	public void mouseReleased(final MouseEvent e)
 	{
 		// After this method has been called,
 		// the Territory corresponding to the cursor location when the mouse was released
 		// will be stored in the private member variable m_releasedAt.
 		m_releasedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
-		
 		// The waitForPlay method is waiting for mouse input.
 		// Let it know that we have processed mouse input.
 		if (m_waiting != null)
@@ -233,18 +204,15 @@ public class BoardPanel extends JComponent implements MouseListener
 	 * @throws InterruptedException
 	 *             if the play was interrupted
 	 */
-	public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge, CountDownLatch waiting) throws InterruptedException
+	public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
 	{
 		// Make sure we have a valid CountDownLatch.
 		if (waiting == null || waiting.getCount() != 1)
 			throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
-		
 		// The mouse listeners need access to the CountDownLatch, so store as a member variable.
 		m_waiting = waiting;
-		
 		// Wait for a play or an attempt to leave the game
 		m_waiting.await();
-		
 		if (m_clickedAt == null || m_releasedAt == null)
 		{
 			// If either m_clickedAt==null or m_releasedAt==null,
@@ -258,12 +226,10 @@ public class BoardPanel extends JComponent implements MouseListener
 		{
 			// We have a valid play!
 			// Reset the member variables, and return the play.
-			PlayData play = new PlayData(m_clickedAt, m_releasedAt);
+			final PlayData play = new PlayData(m_clickedAt, m_releasedAt);
 			m_clickedAt = null;
 			m_releasedAt = null;
 			return play;
 		}
-		
 	}
-	
 }

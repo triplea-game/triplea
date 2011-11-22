@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * CompositeChange.java
  * 
  * Created on January 3, 2002, 10:32 PM
  */
-
 package games.strategy.engine.data;
 
 import java.util.ArrayList;
@@ -30,12 +28,10 @@ import java.util.List;
  */
 public class CompositeChange extends Change
 {
-	
 	static final long serialVersionUID = 8152962976769419486L;
-	
 	private final List<Change> m_changes;
 	
-	public CompositeChange(Change... changes)
+	public CompositeChange(final Change... changes)
 	{
 		this();
 		add(changes);
@@ -46,41 +42,40 @@ public class CompositeChange extends Change
 		m_changes = new ArrayList<Change>();
 	}
 	
-	public CompositeChange(List<Change> changes)
+	public CompositeChange(final List<Change> changes)
 	{
 		m_changes = new ArrayList<Change>(changes);
 	}
 	
-	public void add(Change... changes)
+	public void add(final Change... changes)
 	{
-		for (Change aChange : changes)
+		for (final Change aChange : changes)
 		{
 			if (!aChange.isEmpty())
 				m_changes.add(aChange);
 		}
-		
 	}
 	
 	@Override
 	public Change invert()
 	{
-		List<Change> newChanges = new ArrayList<Change>();
+		final List<Change> newChanges = new ArrayList<Change>();
 		// to invert a list of changes, process the opposite of
 		// each change in the reverse order of the original list
 		for (int i = m_changes.size() - 1; i >= 0; i--)
 		{
-			Change current = m_changes.get(i);
+			final Change current = m_changes.get(i);
 			newChanges.add(current.invert());
 		}
 		return new CompositeChange(newChanges);
 	}
 	
 	@Override
-	protected void perform(GameData data)
+	protected void perform(final GameData data)
 	{
 		for (int i = 0; i < m_changes.size(); i++)
 		{
-			Change current = m_changes.get(i);
+			final Change current = m_changes.get(i);
 			current.perform(data);
 		}
 	}
@@ -89,11 +84,10 @@ public class CompositeChange extends Change
 	 * 
 	 * @return true if this change is empty, or composed of empty changes
 	 */
-	
 	@Override
 	public boolean isEmpty()
 	{
-		for (Change c : m_changes)
+		for (final Change c : m_changes)
 		{
 			if (!c.isEmpty())
 				return false;

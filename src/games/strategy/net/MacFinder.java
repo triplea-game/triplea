@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net;
 
 import games.strategy.util.MD5Crypt;
@@ -32,7 +31,7 @@ import java.util.List;
 public class MacFinder
 {
 	// For quick testing
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		System.out.println(GetHashedMacAddress());
 		System.out.println(tryToParseMACFromOutput("ether 12:34:56:78:89:01 ", Arrays.asList("-", ":", "."), false)); // should be valid
@@ -50,7 +49,7 @@ public class MacFinder
 	 */
 	public static String GetHashedMacAddress()
 	{
-		String mac = GetMacAddress();
+		final String mac = GetMacAddress();
 		if (mac == null)
 			throw new IllegalArgumentException("You have an invalid MAC address! (Or your Java is out of date, or TripleA simply can't find your mac address)");
 		return MD5Crypt.crypt(mac, "MH");
@@ -59,45 +58,42 @@ public class MacFinder
 	private static String GetMacAddress()
 	{
 		// We must try different methods of obtaining the mac address because not all the methods work on each system, and if we can't obtain the mac, we can't login to the lobby
-		
 		// First, try to get the mac address of the local host network interface
 		try
 		{
-			InetAddress address = InetAddress.getLocalHost();
-			NetworkInterface localHostNI = NetworkInterface.getByInetAddress(address);
+			final InetAddress address = InetAddress.getLocalHost();
+			final NetworkInterface localHostNI = NetworkInterface.getByInetAddress(address);
 			if (localHostNI != null)
 			{
-				byte[] rawMac = localHostNI.getHardwareAddress();
-				//Method m = NetworkInterface.class.getMethod("getHardwareAddress");
-				//byte[] rawMac = (byte[]) m.invoke(localHostNI);
-				String mac = convertMacBytesToString(rawMac);
+				final byte[] rawMac = localHostNI.getHardwareAddress();
+				// Method m = NetworkInterface.class.getMethod("getHardwareAddress");
+				// byte[] rawMac = (byte[]) m.invoke(localHostNI);
+				final String mac = convertMacBytesToString(rawMac);
 				if (isMacValid(mac))
 					return mac;
 			}
-		} catch (Throwable ex) // Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
+		} catch (final Throwable ex) // Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
 		{
 			System.out.println("Attempting to join the lobby. Lobby detects that your Java is out of date (older than Java 6)! Ignore this message if you join the lobby successfully.");
 		}
-		
 		// Next, try to get the mac address of the first network interfaces that has an accessible mac address
 		try
 		{
-			Enumeration<NetworkInterface> niIter = NetworkInterface.getNetworkInterfaces();
+			final Enumeration<NetworkInterface> niIter = NetworkInterface.getNetworkInterfaces();
 			while (niIter.hasMoreElements())
 			{
-				NetworkInterface ni = niIter.nextElement();
-				byte[] rawMac = ni.getHardwareAddress();
-				//Method m = NetworkInterface.class.getMethod("getHardwareAddress");
-				//byte[] rawMac = (byte[]) m.invoke(localHostNI);
-				String mac = convertMacBytesToString(rawMac);
+				final NetworkInterface ni = niIter.nextElement();
+				final byte[] rawMac = ni.getHardwareAddress();
+				// Method m = NetworkInterface.class.getMethod("getHardwareAddress");
+				// byte[] rawMac = (byte[]) m.invoke(localHostNI);
+				final String mac = convertMacBytesToString(rawMac);
 				if (isMacValid(mac))
 					return mac;
 			}
-		} catch (Throwable ex) // Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
+		} catch (final Throwable ex) // Older java's don't have the getHardwareAddress method, so we catch not only Throwable->Exception's but all Throwable's, including Throwable->Error. (NoSuchMethodError is otherwise thrown)
 		{
 			// System.out.println("Attempting to join the lobby. Lobby detects that your Java is out of date (older than Java 6)! Ignore this message if you join the lobby successfully.");
 		}
-		
 		// Next, try to get the mac address by calling the 'getmac' app that exists in Windows, Mac, and possibly others.
 		/*
 		Physical Address    Transport Name
@@ -106,70 +102,66 @@ public class MacFinder
 		*/
 		try
 		{
-			String results = executeCommandAndGetResults("getmac");
-			String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
+			final String results = executeCommandAndGetResults("getmac");
+			final String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
 			if (isMacValid(mac))
 				return mac;
-		} catch (Throwable ex)
+		} catch (final Throwable ex)
 		{
 			ex.printStackTrace();
 		}
-		
 		// Next, try to get the mac address by calling the 'ipconfig -all' app that exists in Windows and possibly others.
 		/*...
 		Physical Address. . . . . . . . . : 00-1C-D3-F8-DC-E8
 		...*/
 		try
 		{
-			String results = executeCommandAndGetResults("ipconfig -all");
-			String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
+			final String results = executeCommandAndGetResults("ipconfig -all");
+			final String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
 			if (isMacValid(mac))
 				return mac;
-		} catch (Throwable ex)
+		} catch (final Throwable ex)
 		{
 			ex.printStackTrace();
 		}
 		try
 		{
-			String results = executeCommandAndGetResults("ipconfig /all"); // ipconfig -all does not work on my computer, while ipconfig /all does not work on others computers
-			String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
+			final String results = executeCommandAndGetResults("ipconfig /all"); // ipconfig -all does not work on my computer, while ipconfig /all does not work on others computers
+			final String mac = tryToParseMACFromOutput(results, Arrays.asList("-", ":", "."), false);
 			if (isMacValid(mac))
 				return mac;
-		} catch (Throwable ex)
+		} catch (final Throwable ex)
 		{
 			ex.printStackTrace();
 		}
-		
 		// Next, try to get the mac address by calling the 'ifconfig -a' app that exists in Linux and possibly others. May have 1 or 2 spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
 		/*...
 		eth0      Link encap:Ethernet HWaddr 00:08:C7:1B:8C:02
 		...*/
 		try
 		{
-			String results = executeCommandAndGetResults("ifconfig -a");
-			String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); // Allow the parser to try adding a zero to the beginning
+			final String results = executeCommandAndGetResults("ifconfig -a");
+			final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); // Allow the parser to try adding a zero to the beginning
 			if (isMacValid(mac))
 				return mac;
-		} catch (Throwable ex)
+		} catch (final Throwable ex)
 		{
 			ex.printStackTrace();
 		}
-		
 		// Next, try to get the mac address by calling the '/sbin/ifconfig -a' app that exists in Linux and possibly others. May have 1 or 2 spaces between Ethernet and HWaddr, and may be wireless instead of ethernet.
 		/*...
 		eth0      Link encap:Ethernet HWaddr 00:08:C7:1B:8C:02
 		...*/
 		try
 		{
-			String results = executeCommandAndGetResults("/sbin/ifconfig -a");
-			String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); // Allow the parser to try adding a zero to the beginning
+			final String results = executeCommandAndGetResults("/sbin/ifconfig -a");
+			final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), true); // Allow the parser to try adding a zero to the beginning
 			if (isMacValid(mac))
 				return mac;
-		} catch (Throwable ex)
+		} catch (final Throwable ex)
 		{
 			ex.printStackTrace();
 		}
-		
 		// Next, try to get the mac address by calling the 'dmesg' app that exists in FreeBSD and possibly others.
 		/*...
 		[  405.681688] wlan0_rename: associate with AP 00:16:f8:40:3e:bd
@@ -177,30 +169,29 @@ public class MacFinder
 		...*/
 		try
 		{
-			String results = executeCommandAndGetResults("dmesg");
-			String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), false);
+			final String results = executeCommandAndGetResults("dmesg");
+			final String mac = tryToParseMACFromOutput(results, Arrays.asList(":", "-", "."), false);
 			if (isMacValid(mac))
 				return mac;
-		} catch (Throwable ex)
+		} catch (final Throwable ex)
 		{
 			ex.printStackTrace();
 		}
-		
 		return null;
 	}
 	
-	private static String executeCommandAndGetResults(String command)
+	private static String executeCommandAndGetResults(final String command)
 	{
 		Process p = null;
 		try
 		{
 			p = new ProcessBuilder(command).start();
-		} catch (Exception ex)
+		} catch (final Exception ex)
 		{
 			try
 			{
 				p = Runtime.getRuntime().exec(command);
-			} catch (IOException ex2)
+			} catch (final IOException ex2)
 			{
 			}
 		}
@@ -208,48 +199,47 @@ public class MacFinder
 			return null;
 		try
 		{
-			StringBuilder builder = new StringBuilder();
-			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			final StringBuilder builder = new StringBuilder();
+			final BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			while (true)
 			{
 				try
 				{
-					String line = in.readLine();
+					final String line = in.readLine();
 					if (line == null)
 						break;
 					builder.append(line).append("\r\n");
-				} catch (IOException ex)
+				} catch (final IOException ex)
 				{
 					break;
 				}
 			}
 			in.close();
 			return builder.toString();
-		} catch (IOException ex)
+		} catch (final IOException ex)
 		{
 			ex.printStackTrace();
 			return null;
 		}
 	}
 	
-	private static String convertMacBytesToString(byte[] mac)
+	private static String convertMacBytesToString(final byte[] mac)
 	{
 		if (mac == null)
 			return null;
-		
-		StringBuilder macStringBuilder = new StringBuilder();
+		final StringBuilder macStringBuilder = new StringBuilder();
 		// Extract each array of mac address and convert it to the following format 00.1E.F3.C8.FC.E6
 		for (int i = 0; i < mac.length; i++)
 		{
 			if (i != 0)
 				macStringBuilder.append(".");
-			String hex = String.format("%02X", mac[i]);
+			final String hex = String.format("%02X", mac[i]);
 			macStringBuilder.append(hex);
 		}
 		return macStringBuilder.toString();
 	}
 	
-	public static boolean isMacValid(String mac)
+	public static boolean isMacValid(final String mac)
 	{
 		if (mac == null)
 			return false;
@@ -259,11 +249,11 @@ public class MacFinder
 			return false;
 		if (!mac.matches("[0-9A-Fa-f.]+"))
 			return false;
-		char[] chars = mac.toCharArray();
+		final char[] chars = mac.toCharArray();
 		int periodCount = 0;
 		int nonZeroNumberCount = 0;
 		int i = 1;
-		for (char ch : chars)
+		for (final char ch : chars)
 		{
 			if (ch == '.' && (i % 3 != 0)) // If a period has a non-divisible-by-three index(+1), we know the .'s are misaligned
 				return false;
@@ -282,11 +272,11 @@ public class MacFinder
 		return true;
 	}
 	
-	private static String tryToParseMACFromOutput(String output, List<String> possibleSeparators, boolean allowAppendedZeroCheck)
+	private static String tryToParseMACFromOutput(final String output, final List<String> possibleSeparators, final boolean allowAppendedZeroCheck)
 	{
 		if (output == null || output.trim().length() < 6)
 			return null;
-		for (String separator : possibleSeparators)
+		for (final String separator : possibleSeparators)
 		{
 			String leftToSearch = output;
 			while (leftToSearch != null && leftToSearch.length() > 0 && leftToSearch.contains(separator))
@@ -302,13 +292,11 @@ public class MacFinder
 					{
 						macStartIndex = Math.max(0, leftToSearch.indexOf(separator) - 1);
 						rawMac = "0" + leftToSearch.substring(macStartIndex, Math.min(macStartIndex + 16, leftToSearch.length()));
-						
 						mac = rawMac.replace(separator, ".");
 						if (isMacValid(mac))
 							return mac;
 					}
 				}
-				
 				// We only invalidate the one separator char and what's before it, so that '-ether 89-94-19...' would not fail, then cause the - after 89 to get ignored (Not sure if this situation really occurs)
 				leftToSearch = leftToSearch.substring(Math.min(macStartIndex + 1, leftToSearch.length()));
 			}

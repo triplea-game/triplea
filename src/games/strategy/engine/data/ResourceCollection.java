@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ResourceCollection.java
  * 
  * Created on October 23, 2001, 8:24 PM
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.util.IntegerMap;
@@ -30,7 +28,6 @@ import games.strategy.util.IntegerMap;
 @SuppressWarnings("serial")
 public class ResourceCollection extends GameDataComponent
 {
-	
 	private final IntegerMap<Resource> m_resources = new IntegerMap<Resource>();
 	
 	/**
@@ -39,17 +36,16 @@ public class ResourceCollection extends GameDataComponent
 	 * @param data
 	 *            game data
 	 */
-	public ResourceCollection(GameData data)
+	public ResourceCollection(final GameData data)
 	{
 		super(data);
 	}
 	
-	public void addResource(Resource resource, int quantity)
+	public void addResource(final Resource resource, final int quantity)
 	{
 		if (quantity < 0)
 			throw new IllegalArgumentException("quantity must be positive");
 		change(resource, quantity);
-		
 	}
 	
 	/**
@@ -60,33 +56,32 @@ public class ResourceCollection extends GameDataComponent
 	 * @param quantity
 	 *            quantity of the resource that should be removed
 	 */
-	public void removeResource(Resource resource, int quantity)
+	public void removeResource(final Resource resource, final int quantity)
 	{
 		if (quantity < 0)
 			throw new IllegalArgumentException("quantity must be positive");
-		int current = getQuantity(resource);
+		final int current = getQuantity(resource);
 		if ((current - quantity) < 0)
 			throw new IllegalArgumentException("Cant remove more than player has. current:" + current + " toRemove: " + quantity);
-		
 		change(resource, -quantity);
 	}
 	
-	private void change(Resource resource, int quantity)
+	private void change(final Resource resource, final int quantity)
 	{
 		m_resources.add(resource, quantity);
 	}
 	
-	public int getQuantity(Resource resource)
+	public int getQuantity(final Resource resource)
 	{
 		return m_resources.getInt(resource);
 	}
 	
-	public int getQuantity(String name)
+	public int getQuantity(final String name)
 	{
 		getData().acquireReadLock();
 		try
 		{
-			Resource resource = getData().getResourceList().getResource(name);
+			final Resource resource = getData().getResourceList().getResource(name);
 			if (resource == null)
 				throw new IllegalArgumentException("No resource named:" + name);
 			return getQuantity(resource);
@@ -96,7 +91,7 @@ public class ResourceCollection extends GameDataComponent
 		}
 	}
 	
-	public boolean has(IntegerMap<Resource> map)
+	public boolean has(final IntegerMap<Resource> map)
 	{
 		return m_resources.greaterThanOrEqualTo(map);
 	}

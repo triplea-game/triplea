@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.chat.ChatController;
@@ -58,25 +57,22 @@ import javax.swing.JOptionPane;
 
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener
 {
-	
 	public static final String CHAT_NAME = "games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME";
 	public static final RemoteName SERVER_REMOTE_NAME = new RemoteName("games.strategy.engine.framework.ui.ServerStartup.SERVER_REMOTE", IServerStartupRemote.class);
 	
-	public static RemoteName getObserverWaitingToStartName(INode node)
+	public static RemoteName getObserverWaitingToStartName(final INode node)
 	{
 		return new RemoteName("games.strategy.engine.framework.startup.mc.ServerModel.OBSERVER" + node.getName(), IObserverWaitingToJoin.class);
 	}
 	
 	final static String PLAYERNAME = "PlayerName";
 	private static Logger s_logger = Logger.getLogger(ServerModel.class.getName());
-	
 	private final GameObjectStreamFactory m_objectStreamFactory = new GameObjectStreamFactory(null);
 	private final SetupPanelModel m_typePanelModel;
 	private IServerMessenger m_serverMessenger;
 	private IRemoteMessenger m_remoteMessenger;
 	private IChannelMessenger m_channelMessenger;
 	private GameData m_data;
-	
 	private Map<String, String> m_players = new HashMap<String, String>();
 	private Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
 	private IRemoteModelListener m_listener = IRemoteModelListener.NULL_LISTENER;
@@ -84,21 +80,18 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	private Component m_ui;
 	private ChatPanel m_chatPanel;
 	private ChatController m_chatController;
-	private Map<String, String> m_localPlayerTypes = new HashMap<String, String>();
-	
+	private final Map<String, String> m_localPlayerTypes = new HashMap<String, String>();
 	// while our server launcher is not null, delegate new/lost connections to it
 	private volatile ServerLauncher m_serverLauncher;
-	
-	private Observer m_gameSelectorObserver = new Observer()
+	private final Observer m_gameSelectorObserver = new Observer()
 	{
-		
-		public void update(Observable o, Object arg)
+		public void update(final Observable o, final Object arg)
 		{
 			gameDataChanged();
 		}
 	};
 	
-	public ServerModel(GameSelectorModel gameSelectorModel, SetupPanelModel typePanelModel)
+	public ServerModel(final GameSelectorModel gameSelectorModel, final SetupPanelModel typePanelModel)
 	{
 		m_gameSelectorModel = gameSelectorModel;
 		m_typePanelModel = typePanelModel;
@@ -108,7 +101,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	public void cancel()
 	{
 		m_gameSelectorModel.deleteObserver(m_gameSelectorObserver);
-		
 		if (m_serverMessenger != null)
 		{
 			m_chatController.deactivate();
@@ -122,11 +114,10 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	{
 		if (listener == null)
 			listener = IRemoteModelListener.NULL_LISTENER;
-		
 		m_listener = listener;
 	}
 	
-	public void setLocalPlayerType(String player, String type)
+	public void setLocalPlayerType(final String player, final String type)
 	{
 		synchronized (this)
 		{
@@ -134,7 +125,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		}
 	}
 	
-	public String getLocalPlayerType(String player)
+	public String getLocalPlayerType(final String player)
 	{
 		return m_localPlayerTypes.get(player);
 	}
@@ -148,7 +139,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			{
 				m_players = new HashMap<String, String>();
 				m_playerNamesAndAlliancesInTurnOrder = new LinkedHashMap<String, Collection<String>>();
-				for (String name : m_data.getPlayerList().getNames())
+				for (final String name : m_data.getPlayerList().getNames())
 				{
 					m_players.put(name, m_serverMessenger.getLocalNode().getName());
 					m_playerNamesAndAlliancesInTurnOrder.put(name, m_data.getAllianceTracker().getAlliancesPlayerIsIn(m_data.getPlayerList().getPlayerID(name)));
@@ -157,61 +148,48 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			m_objectStreamFactory.setData(m_data);
 			m_localPlayerTypes.clear();
 		}
-		
 		notifyChanellPlayersChanged();
 		m_listener.playerListChanged();
 	}
 	
-	private ServerProps getServerProps(Component ui)
+	private ServerProps getServerProps(final Component ui)
 	{
-		if (System.getProperties().getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true") &&
-					System.getProperties().getProperty(GameRunner2.TRIPLEA_STARTED, "").equals(""))
+		if (System.getProperties().getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true") && System.getProperties().getProperty(GameRunner2.TRIPLEA_STARTED, "").equals(""))
 		{
-			ServerProps props = new ServerProps();
+			final ServerProps props = new ServerProps();
 			props.setName(System.getProperty(GameRunner2.TRIPLEA_NAME_PROPERTY));
 			props.setPort(Integer.parseInt(System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY)));
-			
 			if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY) != null)
 			{
 				props.setPassword(System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY));
 			}
-			
 			System.setProperty(GameRunner2.TRIPLEA_STARTED, "true");
 			return props;
 		}
-		
-		Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-		String playername = prefs.get(PLAYERNAME, System.getProperty("user.name"));
-		
-		ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
+		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+		final String playername = prefs.get(PLAYERNAME, System.getProperty("user.name"));
+		final ServerOptions options = new ServerOptions(ui, playername, GameRunner.PORT, false);
 		options.setLocationRelativeTo(ui);
-		
 		options.setVisible(true);
 		options.dispose();
-		
 		if (!options.getOKPressed())
 		{
 			return null;
 		}
-		
-		String name = options.getName();
+		final String name = options.getName();
 		s_logger.log(Level.FINE, "Server playing as:" + name);
 		// save the name! -- lnxduk
 		prefs.put(PLAYERNAME, name);
-		
-		int port = options.getPort();
+		final int port = options.getPort();
 		if (port >= 65536 || port == 0)
 		{
 			JOptionPane.showMessageDialog(ui, "Invalid Port: " + port, "Error", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
-		
-		ServerProps props = new ServerProps();
-		
+		final ServerProps props = new ServerProps();
 		props.setName(options.getName());
 		props.setPort(options.getPort());
 		props.setPassword(options.getPassword());
-		
 		return props;
 	}
 	
@@ -223,36 +201,27 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	{
 		ui = JOptionPane.getFrameForComponent(ui);
 		m_ui = ui;
-		
-		ServerProps props = getServerProps(ui);
+		final ServerProps props = getServerProps(ui);
 		if (props == null)
 			return false;
-		
 		try
 		{
 			m_serverMessenger = new ServerMessenger(props.getName(), props.getPort(), m_objectStreamFactory);
-			ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
+			final ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
 			clientLoginValidator.setGamePassword(props.getPassword());
 			m_serverMessenger.setLoginValidator(clientLoginValidator);
-			
 			m_serverMessenger.addErrorListener(this);
 			m_serverMessenger.addConnectionChangeListener(this);
-			UnifiedMessenger unifiedMessenger = new UnifiedMessenger(m_serverMessenger);
-			
+			final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(m_serverMessenger);
 			m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
 			m_remoteMessenger.registerRemote(m_serverStartupRemote, SERVER_REMOTE_NAME);
-			
 			m_channelMessenger = new ChannelMessenger(unifiedMessenger);
-			
 			m_chatController = new ChatController(CHAT_NAME, m_serverMessenger, m_remoteMessenger, m_channelMessenger);
 			m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME);
-			
 			m_serverMessenger.setAcceptNewConnections(true);
-			
 			gameDataChanged();
-			
 			return true;
-		} catch (IOException ioe)
+		} catch (final IOException ioe)
 		{
 			ioe.printStackTrace(System.out);
 			JOptionPane.showMessageDialog(ui, "Unable to create server socket:" + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -260,29 +229,28 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		}
 	}
 	
-	private IServerStartupRemote m_serverStartupRemote = new IServerStartupRemote()
+	private final IServerStartupRemote m_serverStartupRemote = new IServerStartupRemote()
 	{
-		
 		public PlayerListing getPlayerListing()
 		{
 			return getPlayerListingInternal();
 		}
 		
-		public void takePlayer(INode who, String playerName)
+		public void takePlayer(final INode who, final String playerName)
 		{
 			takePlayerInternal(who, true, playerName);
 		}
 		
-		public void releasePlayer(INode who, String playerName)
+		public void releasePlayer(final INode who, final String playerName)
 		{
 			takePlayerInternal(who, false, playerName);
 		}
 		
-		public boolean isGameStarted(INode newNode)
+		public boolean isGameStarted(final INode newNode)
 		{
 			if (m_serverLauncher != null)
 			{
-				IObserverWaitingToJoin observerWaitingToJoin = (IObserverWaitingToJoin) m_remoteMessenger.getRemote(getObserverWaitingToStartName(newNode));
+				final IObserverWaitingToJoin observerWaitingToJoin = (IObserverWaitingToJoin) m_remoteMessenger.getRemote(getObserverWaitingToStartName(newNode));
 				m_serverLauncher.addObserver(observerWaitingToJoin, newNode);
 				return true;
 			}
@@ -291,7 +259,6 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 				return false;
 			}
 		}
-		
 	};
 	
 	private PlayerListing getPlayerListingInternal()
@@ -307,37 +274,34 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		}
 	}
 	
-	private void takePlayerInternal(INode from, boolean take, String playerName)
+	private void takePlayerInternal(final INode from, final boolean take, final String playerName)
 	{
 		// synchronize to make sure two adds arent executed at once
 		synchronized (this)
 		{
 			if (!m_players.containsKey(playerName))
 				return;
-			
 			if (take)
 				m_players.put(playerName, from.getName());
 			else
 				m_players.put(playerName, null);
 		}
-		
 		notifyChanellPlayersChanged();
 		m_listener.playersTakenChanged();
-		
 	}
 	
 	private void notifyChanellPlayersChanged()
 	{
-		IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+		final IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
 		channel.playerListingChanged(getPlayerListingInternal());
 	}
 	
-	public void takePlayer(String playerName)
+	public void takePlayer(final String playerName)
 	{
 		takePlayerInternal(m_serverMessenger.getLocalNode(), true, playerName);
 	}
 	
-	public void releasePlayer(String playerName)
+	public void releasePlayer(final String playerName)
 	{
 		takePlayerInternal(m_serverMessenger.getLocalNode(), false, playerName);
 	}
@@ -363,17 +327,17 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		}
 	}
 	
-	public void messengerInvalid(IMessenger messenger, Exception reason)
+	public void messengerInvalid(final IMessenger messenger, final Exception reason)
 	{
 		JOptionPane.showMessageDialog(m_ui, "Connection lost", "Error", JOptionPane.ERROR_MESSAGE);
 		m_typePanelModel.showSelectType();
 	}
 	
-	public void connectionAdded(INode to)
+	public void connectionAdded(final INode to)
 	{
 	}
 	
-	public void connectionRemoved(INode node)
+	public void connectionRemoved(final INode node)
 	{
 		// will be handled elsewhere
 		if (m_serverLauncher != null)
@@ -381,27 +345,23 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			m_serverLauncher.connectionLost(node);
 			return;
 		}
-		
 		// we lost a node. Remove the players he plays.
-		
-		List<String> free = new ArrayList<String>();
+		final List<String> free = new ArrayList<String>();
 		synchronized (this)
 		{
-			for (String player : m_players.keySet())
+			for (final String player : m_players.keySet())
 			{
-				String playedBy = m_players.get(player);
+				final String playedBy = m_players.get(player);
 				if (playedBy != null && playedBy.equals(node.getName()))
 				{
 					free.add(player);
 				}
 			}
 		}
-		
-		for (String player : free)
+		for (final String player : free)
 		{
 			takePlayerInternal(node, false, player);
 		}
-		
 	}
 	
 	public ChatPanel getChatPanel()
@@ -414,15 +374,13 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		synchronized (this)
 		{
 			// -1 since we dont count outselves
-			int clientCount = m_serverMessenger.getNodes().size() - 1;
-			Map<String, String> localPlayerMappings = new HashMap<String, String>();
-			Map<String, INode> remotePlayers = new HashMap<String, INode>();
-			
-			String defaultLocalType = m_data.getGameLoader().getServerPlayerTypes()[0];
-			
-			for (String player : m_players.keySet())
+			final int clientCount = m_serverMessenger.getNodes().size() - 1;
+			final Map<String, String> localPlayerMappings = new HashMap<String, String>();
+			final Map<String, INode> remotePlayers = new HashMap<String, INode>();
+			final String defaultLocalType = m_data.getGameLoader().getServerPlayerTypes()[0];
+			for (final String player : m_players.keySet())
 			{
-				String playedBy = m_players.get(player);
+				final String playedBy = m_players.get(player);
 				if (playedBy.equals(m_serverMessenger.getLocalNode().getName()))
 				{
 					String type = defaultLocalType;
@@ -432,8 +390,8 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 				}
 				else
 				{
-					Set<INode> nodes = m_serverMessenger.getNodes();
-					for (INode node : nodes)
+					final Set<INode> nodes = m_serverMessenger.getNodes();
+					for (final INode node : nodes)
 					{
 						if (node.getName().equals(playedBy))
 						{
@@ -443,8 +401,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 					}
 				}
 			}
-			
-			ServerLauncher launcher = new ServerLauncher(clientCount, m_remoteMessenger, m_channelMessenger, m_serverMessenger, m_gameSelectorModel, localPlayerMappings, remotePlayers, this);
+			final ServerLauncher launcher = new ServerLauncher(clientCount, m_remoteMessenger, m_channelMessenger, m_serverMessenger, m_gameSelectorModel, localPlayerMappings, remotePlayers, this);
 			return launcher;
 		}
 	}
@@ -452,22 +409,20 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 	public void newGame()
 	{
 		m_serverMessenger.setAcceptNewConnections(true);
-		IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
+		final IClientChannel channel = (IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME);
 		notifyChanellPlayersChanged();
 		channel.gameReset();
 	}
 	
-	public void setServerLauncher(ServerLauncher launcher)
+	public void setServerLauncher(final ServerLauncher launcher)
 	{
 		m_serverLauncher = launcher;
 	}
-	
 }
 
 
 class ServerProps
 {
-	
 	private String name;
 	private int port;
 	private String password;
@@ -477,7 +432,7 @@ class ServerProps
 		return password;
 	}
 	
-	public void setPassword(String password)
+	public void setPassword(final String password)
 	{
 		this.password = password;
 	}
@@ -487,7 +442,7 @@ class ServerProps
 		return name;
 	}
 	
-	public void setName(String name)
+	public void setName(final String name)
 	{
 		this.name = name;
 	}
@@ -497,9 +452,8 @@ class ServerProps
 		return port;
 	}
 	
-	public void setPort(int port)
+	public void setPort(final int port)
 	{
 		this.port = port;
 	}
-	
 }

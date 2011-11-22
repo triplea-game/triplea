@@ -11,19 +11,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * RelationshipTracker.java
  * 
  * Created on July 13th, 2011
  */
-
 /**
  * @author Edwin van der Wal
  * @version 1.0
  * 
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
@@ -34,11 +31,10 @@ import java.util.HashSet;
 
 public class RelationshipTracker extends RelationshipInterpreter
 {
-	
 	// map of "playername:playername" to RelationshipType that exists between those 2 players
 	private final HashMap<RelatedPlayers, Relationship> m_relationships = new HashMap<RelatedPlayers, Relationship>();
 	
-	public RelationshipTracker(GameData data)
+	public RelationshipTracker(final GameData data)
 	{
 		super(data);
 	}
@@ -53,7 +49,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 * @param r
 	 *            the RelationshipType between those two players that will be set.
 	 */
-	protected void setRelationship(PlayerID p1, PlayerID p2, RelationshipType r)
+	protected void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType r)
 	{
 		m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r));
 	}
@@ -66,7 +62,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 * @param r
 	 * @param roundValue
 	 */
-	protected void setRelationship(PlayerID p1, PlayerID p2, RelationshipType r, int roundValue)
+	protected void setRelationship(final PlayerID p1, final PlayerID p2, final RelationshipType r, final int roundValue)
 	{
 		m_relationships.put(new RelatedPlayers(p1, p2), new Relationship(r, roundValue));
 	}
@@ -80,22 +76,21 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 *            Player2 in the relationship
 	 * @return the current RelationshipType between those two players
 	 */
-	
 	@Override
-	public RelationshipType getRelationshipType(PlayerID p1, PlayerID p2)
+	public RelationshipType getRelationshipType(final PlayerID p1, final PlayerID p2)
 	{
 		return getRelationship(p1, p2).getRelationshipType();
 	}
 	
-	public Relationship getRelationship(PlayerID p1, PlayerID p2)
+	public Relationship getRelationship(final PlayerID p1, final PlayerID p2)
 	{
 		return m_relationships.get(new RelatedPlayers(p1, p2));
 	}
 	
-	public HashSet<Relationship> getRelationships(PlayerID player1)
+	public HashSet<Relationship> getRelationships(final PlayerID player1)
 	{
-		HashSet<Relationship> relationships = new HashSet<Relationship>();
-		for (PlayerID player2 : getData().getPlayerList().getPlayers())
+		final HashSet<Relationship> relationships = new HashSet<Relationship>();
+		for (final PlayerID player2 : getData().getPlayerList().getPlayers())
 		{
 			if (player2 == null || player2.equals(player1))
 				continue;
@@ -104,7 +99,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 		return relationships;
 	}
 	
-	public int getRoundRelationshipWasCreated(PlayerID p1, PlayerID p2)
+	public int getRoundRelationshipWasCreated(final PlayerID p1, final PlayerID p2)
 	{
 		return m_relationships.get(new RelatedPlayers(p1, p2)).getRoundCreated();
 	}
@@ -119,9 +114,9 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 * @return the current RelationshipTypeAttachment attached to the current relationship that exists between those 2 players
 	 * 
 	 */
-	protected RelationshipTypeAttachment getRelationshipTypeAttachment(PlayerID p1, PlayerID p2)
+	protected RelationshipTypeAttachment getRelationshipTypeAttachment(final PlayerID p1, final PlayerID p2)
 	{
-		RelationshipType relation = getRelationshipType(p1, p2);
+		final RelationshipType relation = getRelationshipType(p1, p2);
 		return RelationshipTypeAttachment.get(relation);
 	}
 	
@@ -131,7 +126,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 */
 	protected void setSelfRelations()
 	{
-		for (PlayerID p : getData().getPlayerList().getPlayers())
+		for (final PlayerID p : getData().getPlayerList().getPlayers())
 		{
 			setRelationship(p, p, getSelfRelationshipType());
 		}
@@ -144,7 +139,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 */
 	protected void setNullPlayerRelations()
 	{
-		for (PlayerID p : getData().getPlayerList().getPlayers())
+		for (final PlayerID p : getData().getPlayerList().getPlayers())
 		{
 			setRelationship(p, PlayerID.NULL_PLAYERID, getNullRelationshipType());
 		}
@@ -171,13 +166,11 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 */
 	public class RelatedPlayers implements Serializable
 	{
-		
 		/**
 		 * override hashCode to make sure that each new instance of this class can be matched in the Hashtable
 		 * even if it was put in as (p1,p2) and you want to get it out as (p2,p1)
 		 * and
 		 */
-		
 		@Override
 		public int hashCode()
 		{
@@ -187,18 +180,18 @@ public class RelationshipTracker extends RelationshipInterpreter
 		private final PlayerID m_p1;
 		private final PlayerID m_p2;
 		
-		public RelatedPlayers(PlayerID p1, PlayerID p2)
+		public RelatedPlayers(final PlayerID p1, final PlayerID p2)
 		{
 			m_p1 = p1;
 			m_p2 = p2;
 		}
 		
 		@Override
-		public boolean equals(Object object)
+		public boolean equals(final Object object)
 		{
 			if (object instanceof RelatedPlayers)
 			{
-				RelatedPlayers relatedPlayers2 = (RelatedPlayers) object;
+				final RelatedPlayers relatedPlayers2 = (RelatedPlayers) object;
 				return (relatedPlayers2.m_p1.equals(m_p1) && relatedPlayers2.m_p2.equals(m_p2)) || (relatedPlayers2.m_p2.equals(m_p1) && relatedPlayers2.m_p1.equals(m_p2));
 			}
 			return super.equals(object);
@@ -229,7 +222,6 @@ public class RelationshipTracker extends RelationshipInterpreter
 		{
 			return m_p1.getName() + "-" + m_p2.getName();
 		}
-		
 	}
 	
 
@@ -240,7 +232,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 		 * 
 		 * @param relationshipType
 		 */
-		public Relationship(RelationshipType relationshipType)
+		public Relationship(final RelationshipType relationshipType)
 		{
 			this.relationshipType = relationshipType;
 			this.roundCreated = getData().getSequence().getRound();
@@ -252,7 +244,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 		 * @param relationshipType
 		 * @param roundValue
 		 */
-		public Relationship(RelationshipType relationshipType, int roundValue)
+		public Relationship(final RelationshipType relationshipType, final int roundValue)
 		{
 			this.relationshipType = relationshipType;
 			this.roundCreated = roundValue;

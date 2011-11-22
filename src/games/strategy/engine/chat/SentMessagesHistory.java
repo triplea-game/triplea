@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Created on May 20, 2004
  */
@@ -24,7 +23,6 @@ import java.util.List;
  */
 class SentMessagesHistory
 {
-	
 	private final List<String> m_history = new ArrayList<String>();
 	private int m_HistoryPosition;
 	
@@ -46,19 +44,16 @@ class SentMessagesHistory
 	{
 		if (m_HistoryPosition == m_history.size())
 			return "";
-		
 		return m_history.get(m_HistoryPosition).toString();
 	}
 	
-	public void append(String s)
+	public void append(final String s)
 	{
 		m_history.add(s);
 		m_HistoryPosition = m_history.size();
-		
 		if (m_history.size() > 100)
 		{
 			m_history.subList(0, 50).clear();
 		}
-		
 	}
 }

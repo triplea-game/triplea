@@ -4,7 +4,6 @@ import games.strategy.util.Version;
 
 public class DownloadFileDescription
 {
-	
 	private final String url;
 	private final String description;
 	private final String mapName;
@@ -16,8 +15,7 @@ public class DownloadFileDescription
 		return hostedUrl;
 	}
 	
-	public DownloadFileDescription(String url, String description,
-				String mapName, Version version, String hostedUrl)
+	public DownloadFileDescription(final String url, final String description, final String mapName, final Version version, final String hostedUrl)
 	{
 		super();
 		this.url = url;
@@ -51,5 +49,4 @@ public class DownloadFileDescription
 	{
 		return version;
 	}
-	
 }

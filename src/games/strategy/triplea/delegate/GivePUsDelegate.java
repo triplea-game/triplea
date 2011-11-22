@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * EndRoundDelegate.java
  * 
  * Created on January 18, 2002, 9:50 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -43,9 +41,8 @@ public class GivePUsDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge aBridge)
+	public void start(final IDelegateBridge aBridge)
 	{
 		super.start(aBridge);
 	}
@@ -55,20 +52,20 @@ public class GivePUsDelegate extends BaseDelegate
 	{
 		super.end();
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		GivePUsExtendedDelegateState state = new GivePUsExtendedDelegateState();
+		final GivePUsExtendedDelegateState state = new GivePUsExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		GivePUsExtendedDelegateState s = (GivePUsExtendedDelegateState) state;
+		final GivePUsExtendedDelegateState s = (GivePUsExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 	}
@@ -91,18 +88,16 @@ public class GivePUsDelegate extends BaseDelegate
 		return sum;
 	}
 	*/
-	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
-
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
 		return null;
 	}
-	
 }
+
 
 @SuppressWarnings("serial")
 class GivePUsExtendedDelegateState implements Serializable

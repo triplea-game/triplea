@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.history;
 
 import games.strategy.engine.framework.IGame;
@@ -24,17 +23,16 @@ import games.strategy.engine.message.IChannelMessenger;
  * The rest of the history writers functions should only
  * be used by the GameData
  */
-
 public class DelegateHistoryWriter implements IDelegateHistoryWriter
 {
 	private final IGameModifiedChannel m_channel;
 	
-	public DelegateHistoryWriter(IChannelMessenger messenger)
+	public DelegateHistoryWriter(final IChannelMessenger messenger)
 	{
 		m_channel = (IGameModifiedChannel) messenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
 	}
 	
-	public DelegateHistoryWriter(IGameModifiedChannel channel)
+	public DelegateHistoryWriter(final IGameModifiedChannel channel)
 	{
 		m_channel = channel;
 	}
@@ -44,30 +42,26 @@ public class DelegateHistoryWriter implements IDelegateHistoryWriter
 		return m_channel;
 	}
 	
-	public void startEvent(String eventName)
+	public void startEvent(final String eventName)
 	{
 		getGameModifiedChannel().startHistoryEvent(eventName);
-		
 	}
 	
-	public void addChildToEvent(String child)
+	public void addChildToEvent(final String child)
 	{
 		addChildToEvent(child, null);
 	}
 	
-	public void addChildToEvent(String child, Object renderingData)
+	public void addChildToEvent(final String child, final Object renderingData)
 	{
 		getGameModifiedChannel().addChildToEvent(child, renderingData);
-		
 	}
 	
 	/**
 	 * Set the redering data for the current event.
 	 */
-	
-	public void setRenderingData(Object renderingData)
+	public void setRenderingData(final Object renderingData)
 	{
 		getGameModifiedChannel().setRenderingData(renderingData);
 	}
-	
 }

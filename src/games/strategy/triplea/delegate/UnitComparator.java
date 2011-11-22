@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.PlayerID;
@@ -33,12 +32,10 @@ public class UnitComparator
 	{
 		return new Comparator<Unit>()
 		{
-			
-			public int compare(Unit u1, Unit u2)
+			public int compare(final Unit u1, final Unit u2)
 			{
-				int left1 = TripleAUnit.get(u1).getMovementLeft();
-				int left2 = TripleAUnit.get(u2).getMovementLeft();
-				
+				final int left1 = TripleAUnit.get(u1).getMovementLeft();
+				final int left2 = TripleAUnit.get(u2).getMovementLeft();
 				if (left1 == left2)
 					return 0;
 				if (left1 > left2)
@@ -52,12 +49,10 @@ public class UnitComparator
 	{
 		return new Comparator<Unit>()
 		{
-			
-			public int compare(Unit u1, Unit u2)
+			public int compare(final Unit u1, final Unit u2)
 			{
-				int left1 = TripleAUnit.get(u1).getMovementLeft();
-				int left2 = TripleAUnit.get(u2).getMovementLeft();
-				
+				final int left1 = TripleAUnit.get(u1).getMovementLeft();
+				final int left2 = TripleAUnit.get(u2).getMovementLeft();
 				if (left1 == left2)
 					return 0;
 				if (left1 < left2)
@@ -81,19 +76,17 @@ public class UnitComparator
 	{
 		// this makes it more efficient
 		final IntegerMap<Unit> capacityMap = new IntegerMap<Unit>(transports.size() + 1, 1);
-		for (Unit transport : transports)
+		for (final Unit transport : transports)
 		{
-			Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
+			final Collection<Unit> transporting = TripleAUnit.get(transport).getTransporting();
 			capacityMap.add(transport, MoveValidator.getTransportCost(transporting));
 		}
-		
 		return new Comparator<Unit>()
 		{
-			
-			public int compare(Unit t1, Unit t2)
+			public int compare(final Unit t1, final Unit t2)
 			{
-				int cost1 = capacityMap.getInt(t1);
-				int cost2 = capacityMap.getInt(t2);
+				final int cost1 = capacityMap.getInt(t1);
+				final int cost2 = capacityMap.getInt(t2);
 				if (increasing)
 					return cost1 - cost2;
 				else
@@ -105,49 +98,39 @@ public class UnitComparator
 	/**
 	 * Return a Comparator that will order the specified transports in preferred load order.
 	 */
-	public static Comparator<Unit> getLoadableTransportsComparator(final List<Unit> transports,
-																	final Route route,
-																	final PlayerID player,
-																	final boolean noTies)
+	public static Comparator<Unit> getLoadableTransportsComparator(final List<Unit> transports, final Route route, final PlayerID player, final boolean noTies)
 	{
 		final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
 		final Match<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
-		
 		return new Comparator<Unit>()
 		{
-			
-			public int compare(Unit u1, Unit u2)
+			public int compare(final Unit u1, final Unit u2)
 			{
-				TripleAUnit t1 = TripleAUnit.get(u1);
-				TripleAUnit t2 = TripleAUnit.get(u2);
-				
+				final TripleAUnit t1 = TripleAUnit.get(u1);
+				final TripleAUnit t2 = TripleAUnit.get(u2);
 				// check if transport is incapable due to game state
-				boolean isIncapable1 = incapableTransportMatch.match(t1);
-				boolean isIncapable2 = incapableTransportMatch.match(t2);
+				final boolean isIncapable1 = incapableTransportMatch.match(t1);
+				final boolean isIncapable2 = incapableTransportMatch.match(t2);
 				if (!isIncapable1 && isIncapable2)
 					return -1;
 				if (isIncapable1 && !isIncapable2)
 					return 1;
-				
 				// use allied transports as a last resort
-				boolean isAlliedTrn1 = !t1.getOwner().equals(player);
-				boolean isAlliedTrn2 = !t2.getOwner().equals(player);
+				final boolean isAlliedTrn1 = !t1.getOwner().equals(player);
+				final boolean isAlliedTrn2 = !t2.getOwner().equals(player);
 				if (!isAlliedTrn1 && isAlliedTrn2)
 					return -1;
 				if (isAlliedTrn1 && !isAlliedTrn2)
 					return 1;
-				
 				// sort by decreasing transport capacity
-				int compareCapacity = decreasingCapacityComparator.compare(t1, t2);
+				final int compareCapacity = decreasingCapacityComparator.compare(t1, t2);
 				if (compareCapacity != 0)
 					return compareCapacity;
-				
 				// sort by decreasing movement
-				int left1 = t1.getMovementLeft();
-				int left2 = t1.getMovementLeft();
+				final int left1 = t1.getMovementLeft();
+				final int left2 = t1.getMovementLeft();
 				if (left1 != left2)
 					return left2 - left1;
-				
 				// if noTies is set, sort by hashcode so that result is deterministic
 				if (noTies)
 					return t1.hashCode() - t2.hashCode();
@@ -160,46 +143,37 @@ public class UnitComparator
 	/**
 	 * Return a Comparator that will order the specified transports in preferred unload order.
 	 */
-	public static Comparator<Unit> getUnloadableTransportsComparator(final List<Unit> transports,
-																		final Route route,
-																		final PlayerID player,
-																		final boolean noTies)
+	public static Comparator<Unit> getUnloadableTransportsComparator(final List<Unit> transports, final Route route, final PlayerID player, final boolean noTies)
 	{
 		final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(transports);
 		final Match<Unit> incapableTransportMatch = Matches.transportCannotUnload(route.getEnd());
-		
 		return new Comparator<Unit>()
 		{
-			
-			public int compare(Unit t1, Unit t2)
+			public int compare(final Unit t1, final Unit t2)
 			{
 				// check if transport is incapable due to game state
-				boolean isIncapable1 = incapableTransportMatch.match(t1);
-				boolean isIncapable2 = incapableTransportMatch.match(t2);
+				final boolean isIncapable1 = incapableTransportMatch.match(t1);
+				final boolean isIncapable2 = incapableTransportMatch.match(t2);
 				if (!isIncapable1 && isIncapable2)
 					return -1;
 				if (isIncapable1 && !isIncapable2)
 					return 1;
-				
 				// prioritize allied transports
-				boolean isAlliedTrn1 = !t1.getOwner().equals(player);
-				boolean isAlliedTrn2 = !t2.getOwner().equals(player);
+				final boolean isAlliedTrn1 = !t1.getOwner().equals(player);
+				final boolean isAlliedTrn2 = !t2.getOwner().equals(player);
 				if (isAlliedTrn1 && !isAlliedTrn2)
 					return -1;
 				if (!isAlliedTrn1 && isAlliedTrn2)
 					return 1;
-				
 				// sort by decreasing transport capacity
-				int compareCapacity = decreasingCapacityComparator.compare(t1, t2);
+				final int compareCapacity = decreasingCapacityComparator.compare(t1, t2);
 				if (compareCapacity != 0)
 					return compareCapacity;
-				
 				// sort by increasing movement
-				int left1 = TripleAUnit.get(t1).getMovementLeft();
-				int left2 = TripleAUnit.get(t2).getMovementLeft();
+				final int left1 = TripleAUnit.get(t1).getMovementLeft();
+				final int left2 = TripleAUnit.get(t2).getMovementLeft();
 				if (left1 != left2)
 					return left1 - left2;
-				
 				// if noTies is set, sort by hashcode so that result is deterministic
 				if (noTies)
 					return t1.hashCode() - t2.hashCode();
@@ -212,21 +186,16 @@ public class UnitComparator
 	/**
 	 * Return a Comparator that will order the specified units in preferred move order.
 	 */
-	public static Comparator<Unit> getMovableUnitsComparator(final List<Unit> units,
-																final Route route,
-																final PlayerID player,
-																final boolean noTies)
+	public static Comparator<Unit> getMovableUnitsComparator(final List<Unit> units, final Route route, final PlayerID player, final boolean noTies)
 	{
 		final Comparator<Unit> decreasingCapacityComparator = getDecreasingCapacityComparator(units);
-		
 		return new Comparator<Unit>()
 		{
-			
-			public int compare(Unit u1, Unit u2)
+			public int compare(final Unit u1, final Unit u2)
 			{
 				// ensure units have enough movement
-				int left1 = TripleAUnit.get(u1).getMovementLeft();
-				int left2 = TripleAUnit.get(u2).getMovementLeft();
+				final int left1 = TripleAUnit.get(u1).getMovementLeft();
+				final int left2 = TripleAUnit.get(u2).getMovementLeft();
 				if (route != null)
 				{
 					if (left1 >= route.getMovementCost(u1) && left2 < route.getMovementCost(u2))
@@ -234,25 +203,21 @@ public class UnitComparator
 					if (left1 < route.getMovementCost(u1) && left2 >= route.getMovementCost(u2))
 						return 1;
 				}
-				
 				Collection<Unit> transporting1 = TripleAUnit.get(u1).getTransporting();
 				Collection<Unit> transporting2 = TripleAUnit.get(u2).getTransporting();
 				if (transporting1 == null)
 					transporting1 = Collections.emptyList();
 				if (transporting2 == null)
 					transporting2 = Collections.emptyList();
-				
 				// prefer transports for which dependents are also selected
-				int hasDepends1 = units.containsAll(transporting1) ? 1 : 0;
-				int hasDepends2 = units.containsAll(transporting2) ? 1 : 0;
+				final int hasDepends1 = units.containsAll(transporting1) ? 1 : 0;
+				final int hasDepends2 = units.containsAll(transporting2) ? 1 : 0;
 				if (hasDepends1 != hasDepends2)
 					return hasDepends1 - hasDepends2;
-				
 				// sort by decreasing transport capacity (only valid for transports)
-				int compareCapacity = decreasingCapacityComparator.compare(u1, u2);
+				final int compareCapacity = decreasingCapacityComparator.compare(u1, u2);
 				if (compareCapacity != 0)
 					return compareCapacity;
-				
 				// sort by increasing movement normally,
 				// but by decreasing movement during loading
 				// (to filter out armour that has already moved)
@@ -263,7 +228,6 @@ public class UnitComparator
 					else
 						return left1 - left2;
 				}
-				
 				// if noTies is set, sort by hashcode so that result is deterministic
 				if (noTies)
 					return u1.hashCode() - u2.hashCode();
@@ -277,38 +241,29 @@ public class UnitComparator
 	 * Return a Comparator that will order the specified units in preferred unload order.
 	 * If needed it may also inspect the transport holding the units.
 	 */
-	public static Comparator<Unit> getUnloadableUnitsComparator(final List<Unit> units,
-																final Route route,
-																final PlayerID player,
-																final boolean noTies)
+	public static Comparator<Unit> getUnloadableUnitsComparator(final List<Unit> units, final Route route, final PlayerID player, final boolean noTies)
 	{
-		
 		// compare transports
 		final Comparator<Unit> unloadableTransportsComparator = getUnloadableTransportsComparator(units, route, player, false);
-		
 		// if noTies is set, sort by hashcode so that result is deterministic
 		final Comparator<Unit> movableUnitsComparator = getMovableUnitsComparator(units, route, player, noTies);
-		
 		return new Comparator<Unit>()
 		{
-			
-			public int compare(Unit u1, Unit u2)
+			public int compare(final Unit u1, final Unit u2)
 			{
-				Unit t1 = TripleAUnit.get(u1).getTransportedBy();
-				Unit t2 = TripleAUnit.get(u2).getTransportedBy();
+				final Unit t1 = TripleAUnit.get(u1).getTransportedBy();
+				final Unit t2 = TripleAUnit.get(u2).getTransportedBy();
 				// check if unloadable units are in a transport
 				if (t1 != null && t2 == null)
 					return -1;
 				if (t1 == null && t2 != null)
 					return 1;
-				
 				if (t1 != null && t2 != null)
 				{
-					int compareTransports = unloadableTransportsComparator.compare(t1, t2);
+					final int compareTransports = unloadableTransportsComparator.compare(t1, t2);
 					if (compareTransports != 0)
 						return compareTransports;
 				}
-				
 				// we are sorting air units, or no difference found yet
 				// if noTies is set, sort by hashcode so that result is deterministic
 				return movableUnitsComparator.compare(u1, u2);
@@ -320,14 +275,12 @@ public class UnitComparator
 	{
 		return new Comparator<Unit>()
 		{
-			
-			public int compare(Unit u1, Unit u2)
+			public int compare(final Unit u1, final Unit u2)
 			{
-				UnitAttachment ua1 = UnitAttachment.get(u1.getType());
-				UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-				int attack1 = ua1.getAttack(player);
-				int attack2 = ua2.getAttack(player);
-				
+				final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
+				final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+				final int attack1 = ua1.getAttack(player);
+				final int attack2 = ua2.getAttack(player);
 				if (attack1 == attack2)
 					return 0;
 				if (attack1 < attack2)
@@ -336,5 +289,4 @@ public class UnitComparator
 			}
 		};
 	}
-	
 }

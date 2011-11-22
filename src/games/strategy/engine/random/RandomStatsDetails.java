@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.random;
 
 import games.strategy.util.IntegerMap;
@@ -27,26 +26,21 @@ public class RandomStatsDetails implements Serializable
 	private double m_stdDeviation;
 	private double m_variance;
 	
-	public RandomStatsDetails(IntegerMap<Integer> data)
+	public RandomStatsDetails(final IntegerMap<Integer> data)
 	{
 		m_data = data;
-		
 		if (data.totalValues() != 0)
 		{
-			
 			int sumTotal = 0;
 			int total = 0;
-			
 			// TODO: does this need to be updated to take data.getDiceSides() ?
 			for (int i = 1; i <= 6; i++)
 			{
 				sumTotal += i * m_data.getInt(Integer.valueOf(i));
 				total += m_data.getInt(Integer.valueOf(i));
 			}
-			
 			m_total = total;
 			m_average = ((double) sumTotal) / ((double) data.totalValues());
-			
 			/**
 			 * calculate median
 			 */
@@ -62,24 +56,19 @@ public class RandomStatsDetails implements Serializable
 				tmp2 = calcMedian((total / 2) + 1);
 				m_median = (tmp1 + tmp2) / 2;
 			}
-			
 			/**
 			 * calculate variance
 			 */
 			double variance = 0;
-			
 			// TODO: does this need to be updated to take data.getDiceSides() ?
 			for (int i = 1; i <= 6; i++)
 			{
 				variance += (m_data.getInt(new Integer(i)) - (total / 6)) * (m_data.getInt(new Integer(i)) - (total / 6));
 			}
-			
 			m_variance = variance / (total - 1);
-			
 			/**
 			 * calculate standard deviation
 			 */
-			
 			m_stdDeviation = Math.sqrt(m_variance);
 		}
 		else
@@ -122,24 +111,20 @@ public class RandomStatsDetails implements Serializable
 		return m_stdDeviation;
 	}
 	
-	private int calcMedian(int centerPoint)
+	private int calcMedian(final int centerPoint)
 	{
 		int sum = 0;
 		int i = 1;
-		
 		// TODO: does this need to be updated to take data.getDiceSides() ?
 		for (i = 1; i <= 6; i++)
 		{
 			sum += m_data.getInt(new Integer(i));
-			
 			if (sum >= centerPoint)
 			{
 				return i;
 			}
 		}
-		
 		return i; // This is to stop java from complaining
 		// it should never reach this part.
 	}
-	
 } // end class RandomStatsDetails

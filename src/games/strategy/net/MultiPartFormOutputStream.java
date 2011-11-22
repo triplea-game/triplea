@@ -22,17 +22,14 @@ public class MultiPartFormOutputStream
 	 * The line end characters.
 	 */
 	private static final String NEWLINE = "\r\n";
-	
 	/**
 	 * The boundary prefix.
 	 */
 	private static final String PREFIX = "--";
-	
 	/**
 	 * The output stream to write to.
 	 */
 	private DataOutputStream out = null;
-	
 	/**
 	 * The multipart boundary string.
 	 */
@@ -54,7 +51,7 @@ public class MultiPartFormOutputStream
 	 * @see #createBoundary()
 	 * @see #getContentType(String)
 	 */
-	public MultiPartFormOutputStream(OutputStream os, String boundary)
+	public MultiPartFormOutputStream(final OutputStream os, final String boundary)
 	{
 		if (os == null)
 		{
@@ -78,8 +75,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeField(String name, boolean value)
-				throws java.io.IOException
+	public void writeField(final String name, final boolean value) throws java.io.IOException
 	{
 		writeField(name, new Boolean(value).toString());
 	}
@@ -94,8 +90,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeField(String name, double value)
-				throws java.io.IOException
+	public void writeField(final String name, final double value) throws java.io.IOException
 	{
 		writeField(name, Double.toString(value));
 	}
@@ -110,8 +105,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeField(String name, float value)
-				throws java.io.IOException
+	public void writeField(final String name, final float value) throws java.io.IOException
 	{
 		writeField(name, Float.toString(value));
 	}
@@ -126,8 +120,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeField(String name, long value)
-				throws java.io.IOException
+	public void writeField(final String name, final long value) throws java.io.IOException
 	{
 		writeField(name, Long.toString(value));
 	}
@@ -142,8 +135,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeField(String name, int value)
-				throws java.io.IOException
+	public void writeField(final String name, final int value) throws java.io.IOException
 	{
 		writeField(name, Integer.toString(value));
 	}
@@ -158,8 +150,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeField(String name, short value)
-				throws java.io.IOException
+	public void writeField(final String name, final short value) throws java.io.IOException
 	{
 		writeField(name, Short.toString(value));
 	}
@@ -174,8 +165,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeField(String name, char value)
-				throws java.io.IOException
+	public void writeField(final String name, final char value) throws java.io.IOException
 	{
 		writeField(name, new Character(value).toString());
 	}
@@ -191,8 +181,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeField(String name, String value)
-				throws java.io.IOException
+	public void writeField(final String name, String value) throws java.io.IOException
 	{
 		if (name == null)
 		{
@@ -235,8 +224,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeFile(String name, String mimeType, File file)
-				throws java.io.IOException
+	public void writeFile(final String name, final String mimeType, final File file) throws java.io.IOException
 	{
 		if (file == null)
 		{
@@ -267,9 +255,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeFile(String name, String mimeType,
-				String fileName, InputStream is)
-				throws java.io.IOException
+	public void writeFile(final String name, final String mimeType, final String fileName, final InputStream is) throws java.io.IOException
 	{
 		if (is == null)
 		{
@@ -291,8 +277,7 @@ public class MultiPartFormOutputStream
 		out.writeBytes(boundary);
 		out.writeBytes(NEWLINE);
 		// write content header
-		out.writeBytes("Content-Disposition: form-data; name=\"" + name +
-					"\"; filename=\"" + fileName + "\"");
+		out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + fileName + "\"");
 		out.writeBytes(NEWLINE);
 		if (mimeType != null)
 		{
@@ -301,7 +286,7 @@ public class MultiPartFormOutputStream
 		}
 		out.writeBytes(NEWLINE);
 		// write content
-		byte[] data = new byte[1024];
+		final byte[] data = new byte[1024];
 		int r = 0;
 		while ((r = is.read(data, 0, data.length)) != -1)
 		{
@@ -311,7 +296,7 @@ public class MultiPartFormOutputStream
 		try
 		{
 			is.close();
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 		}
 		out.writeBytes(NEWLINE);
@@ -333,9 +318,7 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public void writeFile(String name, String mimeType,
-				String fileName, byte[] data)
-				throws java.io.IOException
+	public void writeFile(final String name, final String mimeType, final String fileName, final byte[] data) throws java.io.IOException
 	{
 		if (data == null)
 		{
@@ -357,8 +340,7 @@ public class MultiPartFormOutputStream
 		out.writeBytes(boundary);
 		out.writeBytes(NEWLINE);
 		// write content header
-		out.writeBytes("Content-Disposition: form-data; name=\"" + name +
-					"\"; filename=\"" + fileName + "\"");
+		out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + fileName + "\"");
 		out.writeBytes(NEWLINE);
 		if (mimeType != null)
 		{
@@ -424,13 +406,12 @@ public class MultiPartFormOutputStream
 	 * @throws java.io.IOException
 	 *             on input/output errors
 	 */
-	public static URLConnection createConnection(URL url)
-				throws java.io.IOException
+	public static URLConnection createConnection(final URL url) throws java.io.IOException
 	{
-		URLConnection urlConn = url.openConnection();
+		final URLConnection urlConn = url.openConnection();
 		if (urlConn instanceof HttpURLConnection)
 		{
-			HttpURLConnection httpConn = (HttpURLConnection) urlConn;
+			final HttpURLConnection httpConn = (HttpURLConnection) urlConn;
 			httpConn.setRequestMethod("POST");
 		}
 		urlConn.setDoInput(true);
@@ -450,8 +431,7 @@ public class MultiPartFormOutputStream
 	 */
 	public static String createBoundary()
 	{
-		return "--------------------" +
-					Long.toString(System.currentTimeMillis(), 16);
+		return "--------------------" + Long.toString(System.currentTimeMillis(), 16);
 	}
 	
 	/**
@@ -469,7 +449,7 @@ public class MultiPartFormOutputStream
 	 * @return the content type string
 	 * @see #createBoundary()
 	 */
-	public static String getContentType(String boundary)
+	public static String getContentType(final String boundary)
 	{
 		return "multipart/form-data; boundary=" + boundary;
 	}

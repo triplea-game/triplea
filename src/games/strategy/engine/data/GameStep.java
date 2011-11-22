@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GameStep.java
  * 
  * Created on October 14, 2001, 7:28 AM
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.engine.delegate.IDelegate;
@@ -62,7 +60,7 @@ public class GameStep extends GameDataComponent
 	 * @param stepProperties
 	 *            properties of the game step
 	 */
-	public GameStep(String name, String displayName, PlayerID player, IDelegate delegate, GameData data, Properties stepProperties)
+	public GameStep(final String name, final String displayName, final PlayerID player, final IDelegate delegate, final GameData data, final Properties stepProperties)
 	{
 		super(data);
 		m_name = name;
@@ -88,16 +86,12 @@ public class GameStep extends GameDataComponent
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == null || !(o instanceof GameStep))
 			return false;
-		
-		GameStep other = (GameStep) o;
-		
-		return other.m_name.equals(this.m_name) &&
-					other.m_delegate.equals(this.m_delegate) &&
-					other.m_player.equals(this.m_player);
+		final GameStep other = (GameStep) o;
+		return other.m_name.equals(this.m_name) && other.m_delegate.equals(this.m_delegate) && other.m_player.equals(this.m_player);
 	}
 	
 	public boolean hasReachedMaxRunCount()
@@ -117,7 +111,7 @@ public class GameStep extends GameDataComponent
 		m_runCount++;
 	}
 	
-	public void setMaxRunCount(int count)
+	public void setMaxRunCount(final int count)
 	{
 		m_maxRunCount = count;
 	}
@@ -132,10 +126,9 @@ public class GameStep extends GameDataComponent
 	{
 		if (m_hashCode == -1)
 		{
-			String s = m_name + m_delegate + m_player;
+			final String s = m_name + m_delegate + m_player;
 			m_hashCode = s.hashCode();
 		}
-		
 		return m_hashCode;
 	}
 	

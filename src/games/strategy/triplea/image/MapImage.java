@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * CountryImage.java
  * 
  * Created on January 8, 2002, 9:15 PM
  */
-
 package games.strategy.triplea.image;
 
 import games.strategy.triplea.Constants;
@@ -39,18 +37,15 @@ import javax.imageio.ImageIO;
  */
 public class MapImage
 {
-	
-	private static Image loadImage(ResourceLoader loader, String name)
+	private static Image loadImage(final ResourceLoader loader, final String name)
 	{
-		URL mapFileUrl = loader.getResource(name);
-		
+		final URL mapFileUrl = loader.getResource(name);
 		if (mapFileUrl == null)
 			throw new IllegalStateException("resource not found:" + name);
-		
 		try
 		{
 			return ImageIO.read(mapFileUrl);
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException(e.getMessage());
@@ -79,7 +74,6 @@ public class MapImage
 	/** Creates a new instance of CountryImage */
 	public MapImage()
 	{
-		
 	}
 	
 	public BufferedImage getSmallMapImage()
@@ -87,17 +81,13 @@ public class MapImage
 		return m_smallMapImage;
 	}
 	
-	public void loadMaps(ResourceLoader loader)
+	public void loadMaps(final ResourceLoader loader)
 	{
-		Image smallFromFile = loadImage(loader, Constants.SMALL_MAP_FILENAME);
-		
+		final Image smallFromFile = loadImage(loader, Constants.SMALL_MAP_FILENAME);
 		m_smallMapImage = Util.createImage(smallFromFile.getWidth(null), smallFromFile.getHeight(null), false);
-		Graphics g = m_smallMapImage.getGraphics();
+		final Graphics g = m_smallMapImage.getGraphics();
 		g.drawImage(smallFromFile, 0, 0, null);
 		g.dispose();
-		
 		smallFromFile.flush();
-		
 	}
-	
 }

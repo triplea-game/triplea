@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -20,13 +19,13 @@ import games.strategy.triplea.delegate.UndoableMove;
 
 public class UndoableMovesPanel extends AbstractUndoableMovesPanel
 {
-	public UndoableMovesPanel(GameData data, AbstractMovePanel movePanel)
+	public UndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel)
 	{
 		super(data, movePanel);
 	}
 	
 	@Override
-	protected final void specificViewAction(AbstractUndoableMove move)
+	protected final void specificViewAction(final AbstractUndoableMove move)
 	{
 		m_movePanel.getMap().setRoute(((UndoableMove) move).getRoute());
 	}

@@ -11,14 +11,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.history;
 
 public class Round extends IndexedHistoryNode
 {
 	private final int m_RoundNo;
 	
-	Round(int round, int changeStartIndex)
+	Round(final int round, final int changeStartIndex)
 	{
 		super("Round :" + round, changeStartIndex, true);
 		m_RoundNo = round;
@@ -34,22 +33,20 @@ public class Round extends IndexedHistoryNode
 	{
 		return new RoundHistorySerializer(m_RoundNo);
 	}
-	
 }
 
 
 class RoundHistorySerializer implements SerializationWriter
 {
-	private int m_roundNo;
+	private final int m_roundNo;
 	
-	public RoundHistorySerializer(int roundNo)
+	public RoundHistorySerializer(final int roundNo)
 	{
 		m_roundNo = roundNo;
 	}
 	
-	public void write(HistoryWriter writer)
+	public void write(final HistoryWriter writer)
 	{
 		writer.startNextRound(m_roundNo);
 	}
-	
 }

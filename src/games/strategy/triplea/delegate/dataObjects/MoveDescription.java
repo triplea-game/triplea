@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * BuyMessage.java
  * 
  * Created on November 6, 2001, 8:26 PM
  */
-
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Route;
@@ -36,14 +34,14 @@ public class MoveDescription extends AbstractMoveDescription
 	private final Route m_route;
 	private Collection<Unit> m_transportsThatCanBeLoaded;
 	
-	public MoveDescription(Collection<Unit> units, Route route, Collection<Unit> transportsThatCanBeLoaded)
+	public MoveDescription(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded)
 	{
 		super(units);
 		m_route = route;
 		m_transportsThatCanBeLoaded = transportsThatCanBeLoaded;
 	}
 	
-	public MoveDescription(Collection<Unit> units, Route route)
+	public MoveDescription(final Collection<Unit> units, final Route route)
 	{
 		super(units);
 		m_route = route;

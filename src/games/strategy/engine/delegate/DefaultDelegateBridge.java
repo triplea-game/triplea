@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.delegate;
 
 import games.strategy.engine.GameOverException;
@@ -38,19 +37,16 @@ import java.util.Properties;
  */
 public class DefaultDelegateBridge implements IDelegateBridge
 {
-	
 	private final GameData m_data;
 	private final IGame m_game;
 	private final IDelegateHistoryWriter m_historyWriter;
 	private final RandomStats m_randomStats;
 	private final DelegateExecutionManager m_delegateExecutionManager;
-	
 	private IRandomSource m_randomSource;
 	
 	/** Creates new DefaultDelegateBridge */
-	public DefaultDelegateBridge(GameData data, IGame game,
-				IDelegateHistoryWriter historyWriter, RandomStats randomStats,
-				DelegateExecutionManager delegateExecutionManager)
+	public DefaultDelegateBridge(final GameData data, final IGame game, final IDelegateHistoryWriter historyWriter, final RandomStats randomStats,
+				final DelegateExecutionManager delegateExecutionManager)
 	{
 		m_data = data;
 		m_game = game;
@@ -69,7 +65,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
 		return m_data.getSequence().getStep().getPlayerID();
 	}
 	
-	public void setRandomSource(IRandomSource randomSource)
+	public void setRandomSource(final IRandomSource randomSource)
 	{
 		m_randomSource = randomSource;
 	}
@@ -78,10 +74,9 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	 * All delegates should use random data that comes from both players so that
 	 * neither player cheats.
 	 */
-	
-	public int getRandom(int max, String annotation)
+	public int getRandom(final int max, final String annotation)
 	{
-		int random = m_randomSource.getRandom(max, annotation);
+		final int random = m_randomSource.getRandom(max, annotation);
 		m_randomStats.addRandom(random);
 		return random;
 	}
@@ -89,19 +84,18 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
-	
-	public int[] getRandom(int max, int count, String annotation)
+	public int[] getRandom(final int max, final int count, final String annotation)
 	{
-		int[] rVal = m_randomSource.getRandom(max, count, annotation);
+		final int[] rVal = m_randomSource.getRandom(max, count, annotation);
 		m_randomStats.addRandom(rVal);
 		return rVal;
 	}
 	
-	public void addChange(Change aChange)
+	public void addChange(final Change aChange)
 	{
 		if (aChange instanceof CompositeChange)
 		{
-			CompositeChange c = (CompositeChange) aChange;
+			final CompositeChange c = (CompositeChange) aChange;
 			if (c.getChanges().size() == 1)
 			{
 				addChange(c.getChanges().get(0));
@@ -115,7 +109,6 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	/**
 	 * Returns the current step name
 	 */
-	
 	public String getStepName()
 	{
 		return m_data.getSequence().getStep().getName();
@@ -126,16 +119,15 @@ public class DefaultDelegateBridge implements IDelegateBridge
 		return m_historyWriter;
 	}
 	
-	private Object getOutbound(Object o)
+	private Object getOutbound(final Object o)
 	{
-		Class<?>[] interfaces = o.getClass().getInterfaces();
+		final Class<?>[] interfaces = o.getClass().getInterfaces();
 		return m_delegateExecutionManager.createOutboundImplementation(o, interfaces);
 	}
 	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
 	 */
-
 	public IRemote getRemote()
 	{
 		return getRemote(getPlayerID());
@@ -144,15 +136,13 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
 	 */
-
-	public IRemote getRemote(PlayerID id)
+	public IRemote getRemote(final PlayerID id)
 	{
 		try
 		{
-			Object implementor = m_game.getRemoteMessenger().getRemote(
-						ServerGame.getRemoteName(id, id.getData()));
+			final Object implementor = m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(id, id.getData()));
 			return (IRemote) getOutbound(implementor);
-		} catch (MessengerException me)
+		} catch (final MessengerException me)
 		{
 			throw new GameOverException("Game Over");
 		}
@@ -161,10 +151,9 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
 	 */
-
 	public IChannelSubscribor getDisplayChannelBroadcaster()
 	{
-		Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getDisplayChannel(m_game.getData()));
+		final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getDisplayChannel(m_game.getData()));
 		return (IChannelSubscribor) getOutbound(implementor);
 	}
 	
@@ -186,6 +175,5 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	public void stopGameSequence()
 	{
 		((ServerGame) m_game).stopGameSequence();
-		
 	}
 }

@@ -6,7 +6,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public abstract class HistoryNode extends DefaultMutableTreeNode implements Serializable
 {
-	public HistoryNode(String title, boolean allowsChildren)
+	public HistoryNode(final String title, final boolean allowsChildren)
 	{
 		super(title, allowsChildren);
 	}

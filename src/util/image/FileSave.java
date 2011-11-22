@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * @author George El-Haddad
  * 
  * @email nekromancer@users.sourceforge.net
  */
-
 package util.image;
 
 import java.io.File;
@@ -42,18 +40,16 @@ public class FileSave
 	 * @exception java.lang.Exception
 	 *                ex
 	 */
-	public FileSave(String title, String name)
+	public FileSave(final String title, final String name)
 	{
-		JFileChooser chooser = new JFileChooser();
-		
+		final JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		chooser.setDialogTitle(title);
 		chooser.setCurrentDirectory(new File(System.getProperties().getProperty("user.dir")));
 		chooser.setFileFilter(new javax.swing.filechooser.FileFilter()
 		{
-			
 			@Override
-			public boolean accept(File f)
+			public boolean accept(final File f)
 			{
 				return f.isDirectory();
 			}
@@ -64,10 +60,8 @@ public class FileSave
 				return "Folder To Save In";
 			}
 		});
-		
 		// show the file chooser dialog
-		int r = chooser.showSaveDialog(null);
-		
+		final int r = chooser.showSaveDialog(null);
 		if (r == JFileChooser.APPROVE_OPTION)
 		{
 			if (name != null)
@@ -113,5 +107,4 @@ public class FileSave
 			return file.getPath();
 		}
 	}
-	
 }// end class FileSave

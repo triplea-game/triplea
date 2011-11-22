@@ -44,15 +44,12 @@ public class VaultTest extends TestCase
 		SERVER_PORT = TestUtil.getUniquePort();
 		m_server = new ServerMessenger("Server", SERVER_PORT);
 		m_server.setAcceptNewConnections(true);
-		String mac = MacFinder.GetHashedMacAddress();
+		final String mac = MacFinder.GetHashedMacAddress();
 		m_client1 = new ClientMessenger("localhost", SERVER_PORT, "client1", mac);
-		
-		UnifiedMessenger serverUM = new UnifiedMessenger(m_server);
-		UnifiedMessenger clientUM = new UnifiedMessenger(m_client1);
-		
+		final UnifiedMessenger serverUM = new UnifiedMessenger(m_server);
+		final UnifiedMessenger clientUM = new UnifiedMessenger(m_client1);
 		m_serverVault = new Vault(new ChannelMessenger(serverUM));
 		m_clientVault = new Vault(new ChannelMessenger(clientUM));
-		
 		Thread.yield();
 	}
 	
@@ -63,27 +60,26 @@ public class VaultTest extends TestCase
 		{
 			if (m_server != null)
 				m_server.shutDown();
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
-		
 		try
 		{
 			if (m_client1 != null)
 				m_client1.shutDown();
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
 	
-	public VaultTest(String arg0)
+	public VaultTest(final String arg0)
 	{
 		super(arg0);
 	}
 	
-	public void assertEquals(byte[] b1, byte[] b2)
+	public void assertEquals(final byte[] b1, final byte[] b2)
 	{
 		assertEquals(b1.length, b2.length);
 		for (int i = 0; i < b1.length; i++)
@@ -94,16 +90,13 @@ public class VaultTest extends TestCase
 	
 	public void testLocal() throws NotUnlockedException
 	{
-		DummyMessenger messenger = new DummyMessenger();
-		
-		UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
-		ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
+		final DummyMessenger messenger = new DummyMessenger();
+		final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
+		final ChannelMessenger channelMessenger = new ChannelMessenger(unifiedMessenger);
 		// RemoteMessenger remoteMessenger = new RemoteMessenger(unifiedMessenger);
-		
-		Vault vault = new Vault(channelMessenger);
-		
-		byte[] data = new byte[] { 0, 1, 2, 3, 4, 5 };
-		VaultID id = vault.lock(data);
+		final Vault vault = new Vault(channelMessenger);
+		final byte[] data = new byte[] { 0, 1, 2, 3, 4, 5 };
+		final VaultID id = vault.lock(data);
 		vault.unlock(id);
 		assertEquals(data, vault.get(id));
 		vault.release(id);
@@ -111,79 +104,58 @@ public class VaultTest extends TestCase
 	
 	public void testServerLock() throws NotUnlockedException
 	{
-		byte[] data = new byte[] { 0, 1, 2, 3, 4, 5 };
-		VaultID id = m_serverVault.lock(data);
+		final byte[] data = new byte[] { 0, 1, 2, 3, 4, 5 };
+		final VaultID id = m_serverVault.lock(data);
 		m_clientVault.waitForID(id, 1000);
-		
 		assertTrue(m_clientVault.knowsAbout(id));
-		
 		m_serverVault.unlock(id);
-		
 		m_clientVault.waitForIdToUnlock(id, 1000);
 		assertTrue(m_clientVault.isUnlocked(id));
-		
 		assertEquals(data, m_clientVault.get(id));
 		assertEquals(m_serverVault.get(id), m_clientVault.get(id));
-		
 		m_clientVault.release(id);
-		
 	}
 	
 	public void testClientLock() throws NotUnlockedException
 	{
-		byte[] data = new byte[] { 0, 1, 2, 3, 4, 5 };
-		VaultID id = m_clientVault.lock(data);
+		final byte[] data = new byte[] { 0, 1, 2, 3, 4, 5 };
+		final VaultID id = m_clientVault.lock(data);
 		m_serverVault.waitForID(id, 1000);
-		
 		assertTrue(m_serverVault.knowsAbout(id));
-		
 		m_clientVault.unlock(id);
-		
 		m_serverVault.waitForIdToUnlock(id, 1000);
 		assertTrue(m_serverVault.isUnlocked(id));
-		
 		assertEquals(data, m_serverVault.get(id));
 		assertEquals(m_clientVault.get(id), m_serverVault.get(id));
-		
 		m_clientVault.release(id);
-		
 	}
 	
 	public void testMultiple() throws NotUnlockedException
 	{
-		byte[] data1 = new byte[] { 0, 1, 2, 3, 4, 5 };
-		byte[] data2 = new byte[] { 0xE, 0xF, 2, 1, 3, 1, 2, 12, 3, 31, 124, 12, 1 };
-		VaultID id1 = m_serverVault.lock(data1);
-		VaultID id2 = m_serverVault.lock(data2);
-		
+		final byte[] data1 = new byte[] { 0, 1, 2, 3, 4, 5 };
+		final byte[] data2 = new byte[] { 0xE, 0xF, 2, 1, 3, 1, 2, 12, 3, 31, 124, 12, 1 };
+		final VaultID id1 = m_serverVault.lock(data1);
+		final VaultID id2 = m_serverVault.lock(data2);
 		m_clientVault.waitForID(id1, 2000);
 		m_clientVault.waitForID(id2, 2000);
-		
 		assertTrue(m_clientVault.knowsAbout(id1));
 		assertTrue(m_clientVault.knowsAbout(id2));
-		
 		m_serverVault.unlock(id1);
 		m_serverVault.unlock(id2);
-		
 		m_clientVault.waitForIdToUnlock(id1, 1000);
 		m_clientVault.waitForIdToUnlock(id2, 1000);
-		
 		assertTrue(m_clientVault.isUnlocked(id1));
 		assertTrue(m_clientVault.isUnlocked(id2));
-		
 		assertEquals(data1, m_clientVault.get(id1));
 		assertEquals(data2, m_clientVault.get(id2));
-		
 		m_clientVault.release(id1);
 		m_clientVault.release(id2);
-		
 	}
 	
 	public void testJoin()
 	{
-		byte[] data = new byte[] { 0, 1, 2, 3, 4, 5 };
-		byte[] joined = Vault.joinDataAndKnown(data);
+		final byte[] data = new byte[] { 0, 1, 2, 3, 4, 5 };
+		final byte[] joined = Vault.joinDataAndKnown(data);
 		assertEquals(new byte[] { 0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE, 0, 1, 2, 3, 4, 5 }, joined);
 	}
-	
 }

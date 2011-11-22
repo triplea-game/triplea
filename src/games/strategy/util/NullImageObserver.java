@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.util;
 
 import java.awt.Image;
@@ -23,10 +22,8 @@ public class NullImageObserver implements ImageObserver
 	{
 	}
 	
-	public boolean imageUpdate(Image image, int flags, int int2, int int3,
-								int int4, int int5)
+	public boolean imageUpdate(final Image image, final int flags, final int int2, final int int3, final int int4, final int int5)
 	{
 		return !((flags & ALLBITS) != 0) || ((flags & ABORT) != 0);
-		
 	}
 }

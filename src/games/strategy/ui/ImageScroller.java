@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ImageScroller.java
  * 
  * Created on November 1, 2001, 6:29 PM
  */
-
 package games.strategy.ui;
 
 import javax.swing.JPanel;
@@ -32,15 +30,13 @@ import javax.swing.OverlayLayout;
  */
 public class ImageScroller extends JPanel
 {
-	
 	/**
 	 * Creates new ImageScroller
 	 */
-	public ImageScroller(ImageScrollerLargeView large, ImageScrollerSmallView small)
+	public ImageScroller(final ImageScrollerLargeView large, final ImageScrollerSmallView small)
 	{
-		OverlayLayout overlay = new OverlayLayout(this);
+		final OverlayLayout overlay = new OverlayLayout(this);
 		this.setLayout(overlay);
-		
 		this.add(small);
 		this.add(large);
 		small.setAlignmentX(1);

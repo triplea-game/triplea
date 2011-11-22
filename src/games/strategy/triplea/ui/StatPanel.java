@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * StatPanel.java
  * 
  * Created on January 6, 2002, 4:07 PM
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Change;
@@ -79,40 +77,37 @@ public class StatPanel extends JPanel
 	private IStat[] m_stats = new IStat[] { new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat() };
 	private IStat[] m_statsExtended = new IStat[] {};
 	private GameData m_data;
-	private JTable m_statsTable;
+	private final JTable m_statsTable;
 	private Image m_statsImage;
 	
 	/** Creates a new instance of InfoPanel */
-	public StatPanel(GameData data)
+	public StatPanel(final GameData data)
 	{
 		m_data = data;
 		// only add the vc stat if we have some victory cities
 		if (Match.someMatch(data.getMap().getTerritories(), Matches.TerritoryIsVictoryCity))
 		{
-			List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
+			final List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
 			stats.add(new VictoryCityStat());
 			m_stats = stats.toArray(new IStat[stats.size()]);
 		}
 		// only add the vps in pacific
 		if (data.getProperties().get(Constants.PACIFIC_THEATER, false))
 		{
-			List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
+			final List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
 			stats.add(new VPStat());
 			m_stats = stats.toArray(new IStat[stats.size()]);
 		}
 		// fill out the extended stats
 		// fillExtendedStats(data);//moved to only fill out if requested by export stats
-		
 		setLayout(new GridLayout(2, 1));
-		
 		m_dataModel = new StatTableModel();
 		m_techModel = new TechTableModel();
 		m_statsImage = null;
 		m_statsTable = new JTable(m_dataModel)
 		{
-			
 			@Override
-			public void print(Graphics g)
+			public void print(final Graphics g)
 			{
 				if (m_statsImage != null)
 					g.drawImage(m_statsImage, 0, 0, null, null);
@@ -122,106 +117,95 @@ public class StatPanel extends JPanel
 		JTable table = m_statsTable;
 		// Strangely, this is enabled by default
 		table.getTableHeader().setReorderingAllowed(false);
-		
 		// Set width of country column
 		TableColumn column = table.getColumnModel().getColumn(0);
 		column.setPreferredWidth(175);
-		
 		JScrollPane scroll = new JScrollPane(table);
 		// add(scroll, BorderLayout.NORTH);
 		add(scroll);
-		
 		table = new JTable(m_techModel);
 		// Strangely, this is enabled by default
 		table.getTableHeader().setReorderingAllowed(false);
-		
 		// Make the technology column big. Value chosen by trial and error
 		// The right way to do this is probably to get a FontMetrics object
 		// and measure the pixel width of the longest technology name in the
 		// current font.
 		column = table.getColumnModel().getColumn(0);
 		column.setPreferredWidth(500);
-		
 		scroll = new JScrollPane(table);
 		// add(scroll, BorderLayout.SOUTH);
 		add(scroll);
-		
 	}
 	
-	private void fillExtendedStats(GameData data)
+	private void fillExtendedStats(final GameData data)
 	{
 		// add other resources, other than PUs and tech tokens
-		List<Resource> resources = data.getResourceList().getResources();
-		for (Resource r : resources)
+		final List<Resource> resources = data.getResourceList().getResources();
+		for (final Resource r : resources)
 		{
 			if (r.getName().equals(Constants.PUS) || r.getName().equals(Constants.TECH_TOKENS))
 				continue;
 			else
 			{
-				GenericResourceStat resourceStat = new GenericResourceStat();
+				final GenericResourceStat resourceStat = new GenericResourceStat();
 				resourceStat.init(r.getName());
-				List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+				final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
 				statsExtended.add(resourceStat);
 				m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
 			}
 		}
-		
 		// add tech related stuff
 		if (games.strategy.triplea.Properties.getTechDevelopment(data))
 		{
 			// add tech tokens
 			if (data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
 			{
-				List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+				final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
 				statsExtended.add(new TechTokenStat());
 				m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
 			}
-			
 			// add number of techs
 			if (true)
 			{
-				List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+				final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
 				statsExtended.add(new TechCountStat());
 				m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
 			}
-			
 			// add individual techs
-			Iterator<TechAdvance> allTechsIter = TechAdvance.getTechAdvances(m_data, null).iterator();
+			final Iterator<TechAdvance> allTechsIter = TechAdvance.getTechAdvances(m_data, null).iterator();
 			while (allTechsIter.hasNext())
 			{
-				TechAdvance ta = allTechsIter.next();
-				GenericTechNameStat techNameStat = new GenericTechNameStat();
+				final TechAdvance ta = allTechsIter.next();
+				final GenericTechNameStat techNameStat = new GenericTechNameStat();
 				techNameStat.init(ta);
-				List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+				final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
 				statsExtended.add(techNameStat);
 				m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
 			}
 		}
-		
 		// now add actual number of each unit type (holy gumdrops batman, this is going to be long!)
-		Iterator<UnitType> allUnitTypes = data.getUnitTypeList().iterator();
+		final Iterator<UnitType> allUnitTypes = data.getUnitTypeList().iterator();
 		while (allUnitTypes.hasNext())
 		{
-			UnitType ut = allUnitTypes.next();
-			GenericUnitNameStat unitNameStat = new GenericUnitNameStat();
+			final UnitType ut = allUnitTypes.next();
+			final GenericUnitNameStat unitNameStat = new GenericUnitNameStat();
 			unitNameStat.init(ut);
-			List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
+			final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
 			statsExtended.add(unitNameStat);
 			m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
 		}
 	}
 	
-	public void setGameData(GameData data)
+	public void setGameData(final GameData data)
 	{
 		m_data = data;
 		m_dataModel.setGameData(data);
 		m_techModel.setGameData(data);
 		m_dataModel.gameDataChanged(null);
 		m_techModel.gameDataChanged(null);
-		
 	}
 	
-	public void setStatsBgImage(Image image)
+	public void setStatsBgImage(final Image image)
 	{
 		m_statsImage = image;
 	}
@@ -247,13 +231,12 @@ public class StatPanel extends JPanel
 	 */
 	public Collection<String> getAlliances()
 	{
-		Iterator<String> allAlliances = m_data.getAllianceTracker().getAlliances().iterator();
+		final Iterator<String> allAlliances = m_data.getAllianceTracker().getAlliances().iterator();
 		// order the alliances use a Tree Set
-		Collection<String> rVal = new TreeSet<String>();
-		
+		final Collection<String> rVal = new TreeSet<String>();
 		while (allAlliances.hasNext())
 		{
-			String alliance = allAlliances.next();
+			final String alliance = allAlliances.next();
 			if (m_data.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1)
 			{
 				rVal.add(alliance);
@@ -264,10 +247,9 @@ public class StatPanel extends JPanel
 	
 	public List<PlayerID> getPlayers()
 	{
-		List<PlayerID> players = new ArrayList<PlayerID>(m_data.getPlayerList().getPlayers());
+		final List<PlayerID> players = new ArrayList<PlayerID>(m_data.getPlayerList().getPlayers());
 		Collections.sort(players, new PlayerOrderComparator(m_data));
 		return players;
-		
 	}
 	
 	public IStat[] getStats()
@@ -275,7 +257,7 @@ public class StatPanel extends JPanel
 		return m_stats;
 	}
 	
-	public IStat[] getStatsExtended(GameData data)
+	public IStat[] getStatsExtended(final GameData data)
 	{
 		if (m_statsExtended.length == 0)
 			fillExtendedStats(data);
@@ -293,7 +275,6 @@ public class StatPanel extends JPanel
 		/* Flag to indicate whether data needs to be recalculated */
 		private boolean m_isDirty = true;
 		/* Column Header Names */
-
 		/* Underlying data for the table */
 		private String[][] m_collectedData;
 		
@@ -301,7 +282,6 @@ public class StatPanel extends JPanel
 		{
 			m_data.addDataChangeListener(this);
 			m_isDirty = true;
-			
 		}
 		
 		private synchronized void loadData()
@@ -309,17 +289,14 @@ public class StatPanel extends JPanel
 			m_data.acquireReadLock();
 			try
 			{
-				List<PlayerID> players = getPlayers();
-				Collection<String> alliances = getAlliances();
-				
+				final List<PlayerID> players = getPlayers();
+				final Collection<String> alliances = getAlliances();
 				m_collectedData = new String[players.size() + alliances.size()][m_stats.length + 1];
-				
 				int row = 0;
-				Iterator<PlayerID> playerIter = players.iterator();
+				final Iterator<PlayerID> playerIter = players.iterator();
 				while (playerIter.hasNext())
 				{
-					PlayerID player = playerIter.next();
-					
+					final PlayerID player = playerIter.next();
 					m_collectedData[row][0] = player.getName();
 					for (int i = 0; i < m_stats.length; i++)
 					{
@@ -327,11 +304,10 @@ public class StatPanel extends JPanel
 					}
 					row++;
 				}
-				Iterator<String> allianceIterator = alliances.iterator();
+				final Iterator<String> allianceIterator = alliances.iterator();
 				while (allianceIterator.hasNext())
 				{
-					String alliance = allianceIterator.next();
-					
+					final String alliance = allianceIterator.next();
 					m_collectedData[row][0] = alliance;
 					for (int i = 0; i < m_stats.length; i++)
 					{
@@ -343,48 +319,40 @@ public class StatPanel extends JPanel
 			{
 				m_data.releaseReadLock();
 			}
-			
 		}
 		
-		public void gameDataChanged(Change aChange)
+		public void gameDataChanged(final Change aChange)
 		{
 			synchronized (this)
 			{
 				m_isDirty = true;
 			}
-			
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				
 				public void run()
 				{
 					repaint();
 				}
-				
 			});
-			
 		}
 		
 		/*
 		 * Recalcs the underlying data in a lazy manner Limitation: This is not
 		 * a threadsafe implementation
 		 */
-
-		public synchronized Object getValueAt(int row, int col)
+		public synchronized Object getValueAt(final int row, final int col)
 		{
 			if (m_isDirty)
 			{
 				loadData();
 				m_isDirty = false;
 			}
-			
 			return m_collectedData[row][col];
 		}
 		
 		// Trivial implementations of required methods
-		
 		@Override
-		public String getColumnName(int col)
+		public String getColumnName(final int col)
 		{
 			if (col == 0)
 				return "Player";
@@ -409,7 +377,6 @@ public class StatPanel extends JPanel
 				try
 				{
 					return m_data.getPlayerList().size() + getAlliances().size();
-					
 				} finally
 				{
 					m_data.releaseReadLock();
@@ -417,7 +384,7 @@ public class StatPanel extends JPanel
 			}
 		}
 		
-		public synchronized void setGameData(GameData data)
+		public synchronized void setGameData(final GameData data)
 		{
 			synchronized (this)
 			{
@@ -428,7 +395,6 @@ public class StatPanel extends JPanel
 			}
 			repaint();
 		}
-		
 	}
 	
 
@@ -437,7 +403,6 @@ public class StatPanel extends JPanel
 		/* Flag to indicate whether data needs to be recalculated */
 		private boolean isDirty = true;
 		/* Column Header Names */
-
 		/* Row Header Names */
 		private String[] colList;
 		/* Underlying data for the table */
@@ -450,16 +415,13 @@ public class StatPanel extends JPanel
 		public TechTableModel()
 		{
 			m_data.addDataChangeListener(this);
-			
 			initColList();
-			
 			/* Load the country -> col mapping */
 			colMap = new HashMap<String, Integer>();
 			for (int i = 0; i < colList.length; i++)
 			{
 				colMap.put(colList[i], new Integer(i + 1));
 			}
-			
 			/*
 			 * .size()+1 added to stop index out of bounds errors when using an
 			 * Italian player.
@@ -474,33 +436,28 @@ public class StatPanel extends JPanel
 			{
 				data = new String[TechAdvance.getTechAdvances(m_data, null).size()][colList.length + 1];
 			}
-			
 			/* Load the technology -> row mapping */
 			rowMap = new HashMap<String, Integer>();
-			Iterator<TechAdvance> iter = TechAdvance.getTechAdvances(m_data, null).iterator();
+			final Iterator<TechAdvance> iter = TechAdvance.getTechAdvances(m_data, null).iterator();
 			int row = 0;
-			
 			if (useTech)
 			{
 				rowMap.put("Tokens", new Integer(row));
 				data[row][0] = "Tokens";
 				row++;
 			}
-			
 			while (iter.hasNext())
 			{
-				TechAdvance tech = iter.next();
+				final TechAdvance tech = iter.next();
 				rowMap.put((tech).getName(), new Integer(row));
 				data[row][0] = tech.getName();
 				row++;
 			}
-			
 			clearAdvances();
 		}
 		
 		private void clearAdvances()
 		{
-			
 			/* Initialize the table with the tech names */
 			for (int i = 0; i < data.length; i++)
 			{
@@ -509,20 +466,16 @@ public class StatPanel extends JPanel
 					data[i][j] = "";
 				}
 			}
-			
 		}
 		
 		private void initColList()
 		{
-			java.util.List<PlayerID> players = new ArrayList<PlayerID>(m_data.getPlayerList().getPlayers());
-			
+			final java.util.List<PlayerID> players = new ArrayList<PlayerID>(m_data.getPlayerList().getPlayers());
 			colList = new String[players.size()];
-			
 			for (int i = 0; i < players.size(); i++)
 			{
 				colList[i] = players.get(i).getName();
 			}
-			
 			Arrays.sort(colList, 0, players.size());
 		}
 		
@@ -531,44 +484,38 @@ public class StatPanel extends JPanel
 			clearAdvances();
 			// copy so aquire/release read lock are on the same object!
 			final GameData gameData = m_data;
-			
 			gameData.acquireReadLock();
 			try
 			{
-				Iterator<PlayerID> playerIter = gameData.getPlayerList().getPlayers().iterator();
+				final Iterator<PlayerID> playerIter = gameData.getPlayerList().getPlayers().iterator();
 				while (playerIter.hasNext())
 				{
-					PlayerID pid = playerIter.next();
+					final PlayerID pid = playerIter.next();
 					if (colMap.get(pid.getName()) == null)
 						throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
-					
-					int col = colMap.get(pid.getName()).intValue();
-					
+					final int col = colMap.get(pid.getName()).intValue();
 					int row = 0;
 					boolean useTokens = false;
 					if (m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
 					{
 						useTokens = true;
-						Integer tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
+						final Integer tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
 						data[row][col] = tokens.toString();
 					}
-					
 					Iterator<TechAdvance> advances = TechTracker.getTechAdvances(pid, m_data).iterator();
-					
 					while (advances.hasNext())
 					{
-						
-						TechAdvance advance = advances.next();
+						final TechAdvance advance = advances.next();
 						row = rowMap.get(advance.getName()).intValue();
 						// System.err.println("(" + row + ", " + col + ")");
 						data[row][col] = "X";
 						// data[row][col] = colList[col].substring(0, 1);
 					}
 					advances = TechAdvance.getTechAdvances(m_data, null).iterator();
-					List<TechAdvance> has = TechAdvance.getTechAdvances(m_data, pid);
+					final List<TechAdvance> has = TechAdvance.getTechAdvances(m_data, pid);
 					while (advances.hasNext())
 					{
-						TechAdvance advance = advances.next();
+						final TechAdvance advance = advances.next();
 						// if(!pid.getTechnologyFrontierList().getAdvances().contains(advance)){
 						if (!has.contains(advance))
 						{
@@ -584,7 +531,7 @@ public class StatPanel extends JPanel
 		}
 		
 		@Override
-		public String getColumnName(int col)
+		public String getColumnName(final int col)
 		{
 			if (col == 0)
 				return "Technology";
@@ -595,20 +542,17 @@ public class StatPanel extends JPanel
 		 * Recalcs the underlying data in a lazy manner Limitation: This is not
 		 * a threadsafe implementation
 		 */
-
-		public Object getValueAt(int row, int col)
+		public Object getValueAt(final int row, final int col)
 		{
 			if (isDirty)
 			{
 				update();
 				isDirty = false;
 			}
-			
 			return data[row][col];
 		}
 		
 		// Trivial implementations of required methods
-		
 		public int getColumnCount()
 		{
 			return colList.length + 1;
@@ -619,22 +563,19 @@ public class StatPanel extends JPanel
 			return data.length;
 		}
 		
-		public void gameDataChanged(Change aChange)
+		public void gameDataChanged(final Change aChange)
 		{
 			isDirty = true;
-			
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				
 				public void run()
 				{
 					repaint();
 				}
-				
 			});
 		}
 		
-		public void setGameData(GameData data)
+		public void setGameData(final GameData data)
 		{
 			m_data.removeDataChangeListener(this);
 			m_data = data;
@@ -647,23 +588,21 @@ public class StatPanel extends JPanel
 
 class ProductionStat extends AbstractStat
 {
-	
 	public String getName()
 	{
 		return "Production";
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
 		int rVal = 0;
-		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
 			boolean isOwnedConvoyOrLand = false;
-			Territory place = iter.next();
-			OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
-			TerritoryAttachment ta = TerritoryAttachment.get(place);
-			
+			final Territory place = iter.next();
+			final OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
+			final TerritoryAttachment ta = TerritoryAttachment.get(place);
 			/* Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone*/
 			if (ta != null)
 			{
@@ -674,11 +613,9 @@ class ProductionStat extends AbstractStat
 					PlayerID origOwner = ta.getOccupiedTerrOf();
 					if (origOwner == null)
 						origOwner = origOwnerTracker.getOriginalOwner(place);
-					
 					// Can't get PUs for capturing a CC, only original owner can get them.
 					if (origOwner != PlayerID.NULL_PLAYERID && origOwner == player)
 						isOwnedConvoyOrLand = true;
-					
 					if (origOwner == null)
 						isOwnedConvoyOrLand = true;
 				}
@@ -688,7 +625,7 @@ class ProductionStat extends AbstractStat
 					if (TerritoryAttachment.get(place).isConvoyRoute())
 					{
 						// Determine if both parts of the convoy route are owned by the attacker or allies
-						boolean ownedConvoyRoute = data.getMap().getNeighbors(place, Matches.territoryHasConvoyOwnedBy(player, data, place)).size() > 0;
+						final boolean ownedConvoyRoute = data.getMap().getNeighbors(place, Matches.territoryHasConvoyOwnedBy(player, data, place)).size() > 0;
 						if (ownedConvoyRoute)
 							isOwnedConvoyOrLand = true;
 					}
@@ -698,7 +635,6 @@ class ProductionStat extends AbstractStat
 						isOwnedConvoyOrLand = true;
 					}
 				}
-				
 				/*add 'em all up*/
 				if (place.getOwner().equals(player) && isOwnedConvoyOrLand)
 				{
@@ -709,19 +645,17 @@ class ProductionStat extends AbstractStat
 		rVal *= Properties.getPU_Multiplier(data);
 		return rVal;
 	}
-	
 }
 
 
 class PUStat extends AbstractStat
 {
-	
 	public String getName()
 	{
 		return "PUs";
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
 		return player.getResources().getQuantity(Constants.PUS);
 	}
@@ -730,22 +664,20 @@ class PUStat extends AbstractStat
 
 class UnitsStat extends AbstractStat
 {
-	
 	public String getName()
 	{
 		return "Units";
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
 		int rVal = 0;
-		Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
-		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+		final Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
+		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory place = iter.next();
+			final Territory place = iter.next();
 			rVal += place.getUnits().countMatches(ownedBy);
-			
 		}
 		return rVal;
 	}
@@ -754,24 +686,21 @@ class UnitsStat extends AbstractStat
 
 class TUVStat extends AbstractStat
 {
-	
 	public String getName()
 	{
 		return "TUV";
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
-		IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
-		
-		Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
-		
+		final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
+		final Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
 		int rVal = 0;
-		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory place = iter.next();
-			Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
+			final Territory place = iter.next();
+			final Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
 			rVal += BattleCalculator.getTUV(owned, costs);
 		}
 		return rVal;
@@ -781,26 +710,23 @@ class TUVStat extends AbstractStat
 
 class VictoryCityStat extends AbstractStat
 {
-	
 	public String getName()
 	{
 		return "VC";
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
 		int rVal = 0;
-		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory place = iter.next();
+			final Territory place = iter.next();
 			if (!place.getOwner().equals(player))
 				continue;
-			
-			TerritoryAttachment ta = TerritoryAttachment.get(place);
+			final TerritoryAttachment ta = TerritoryAttachment.get(place);
 			if (ta == null)
 				continue;
-			
 			if (ta.isVictoryCity())
 				rVal++;
 		}
@@ -811,15 +737,14 @@ class VictoryCityStat extends AbstractStat
 
 class VPStat extends AbstractStat
 {
-	
 	public String getName()
 	{
 		return "VPs";
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
-		PlayerAttachment pa = PlayerAttachment.get(player);
+		final PlayerAttachment pa = PlayerAttachment.get(player);
 		if (pa != null)
 			return Double.parseDouble(pa.getVps());
 		return 0;
@@ -829,16 +754,15 @@ class VPStat extends AbstractStat
 
 class TechCountStat extends AbstractStat
 {
-	
 	public String getName()
 	{
 		return "Techs";
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
 		int count = 0;
-		TechAttachment ta = TechAttachment.get(player);
+		final TechAttachment ta = TechAttachment.get(player);
 		if (getBool(ta.getHeavyBomber()))
 			count++;
 		if (getBool(ta.getLongRangeAir()))
@@ -867,7 +791,7 @@ class TechCountStat extends AbstractStat
 			count++;
 		if (getBool(ta.getShipyards()))
 			count++;
-		for (boolean value : ta.getGenericTech().values())
+		for (final boolean value : ta.getGenericTech().values())
 		{
 			if (value)
 				count++;
@@ -875,7 +799,7 @@ class TechCountStat extends AbstractStat
 		return count;
 	}
 	
-	private static boolean getBool(String aString)
+	private static boolean getBool(final String aString)
 	{
 		if (aString.equalsIgnoreCase("true"))
 			return true;
@@ -889,13 +813,12 @@ class TechCountStat extends AbstractStat
 
 class TechTokenStat extends AbstractStat
 {
-	
 	public String getName()
 	{
 		return "Resource: " + "Tech Tokens";
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
 		return player.getResources().getQuantity(Constants.TECH_TOKENS);
 	}
@@ -906,7 +829,7 @@ class GenericResourceStat extends AbstractStat
 {
 	private String m_name = null;
 	
-	public void init(String name)
+	public void init(final String name)
 	{
 		m_name = name;
 	}
@@ -916,7 +839,7 @@ class GenericResourceStat extends AbstractStat
 		return "Resource: " + m_name;
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
 		return player.getResources().getQuantity(m_name);
 	}
@@ -927,7 +850,7 @@ class GenericTechNameStat extends AbstractStat
 {
 	private TechAdvance m_ta = null;
 	
-	public void init(TechAdvance ta)
+	public void init(final TechAdvance ta)
 	{
 		m_ta = ta;
 	}
@@ -937,7 +860,7 @@ class GenericTechNameStat extends AbstractStat
 		return "TechAdvance: " + m_ta.getName();
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
 		if (m_ta.hasTech(TechAttachment.get(player)))
 			return 1;
@@ -950,7 +873,7 @@ class GenericUnitNameStat extends AbstractStat
 {
 	private UnitType m_ut = null;
 	
-	public void init(UnitType ut)
+	public void init(final UnitType ut)
 	{
 		m_ut = ut;
 	}
@@ -960,14 +883,14 @@ class GenericUnitNameStat extends AbstractStat
 		return "UnitType: " + m_ut.getName();
 	}
 	
-	public double getValue(PlayerID player, GameData data)
+	public double getValue(final PlayerID player, final GameData data)
 	{
 		int rVal = 0;
-		Match<Unit> ownedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
-		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+		final Match<Unit> ownedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
+		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
-			Territory place = iter.next();
+			final Territory place = iter.next();
 			rVal += place.getUnits().countMatches(ownedBy);
 		}
 		return rVal;
@@ -977,9 +900,9 @@ class GenericUnitNameStat extends AbstractStat
 
 class PlayerOrderComparator implements Comparator<PlayerID>
 {
-	private GameData m_data;
+	private final GameData m_data;
 	
-	public PlayerOrderComparator(GameData data)
+	public PlayerOrderComparator(final GameData data)
 	{
 		m_data = data;
 	}
@@ -987,30 +910,23 @@ class PlayerOrderComparator implements Comparator<PlayerID>
 	/**
 	 * sort based on first step that isn't a bid related step.
 	 */
-	
-	public int compare(PlayerID p1, PlayerID p2)
+	public int compare(final PlayerID p1, final PlayerID p2)
 	{
-		Iterator<GameStep> iter = m_data.getSequence().iterator();
-		
+		final Iterator<GameStep> iter = m_data.getSequence().iterator();
 		while (iter.hasNext())
 		{
-			GameStep s = iter.next();
-			
+			final GameStep s = iter.next();
 			if (s.getPlayerID() == null)
 				continue;
-			
 			if (s.getDelegate() != null && s.getDelegate().getClass() != null)
 			{
-				String delegateClassName = s.getDelegate().getClass().getName();
-				if (delegateClassName.equals("games.strategy.triplea.delegate.InitializationDelegate")
-							|| delegateClassName.equals("games.strategy.triplea.delegate.BidPurchaseDelegate")
-							|| delegateClassName.equals("games.strategy.triplea.delegate.BidPlaceDelegate")
-							|| delegateClassName.equals("games.strategy.triplea.delegate.EndRoundDelegate"))
+				final String delegateClassName = s.getDelegate().getClass().getName();
+				if (delegateClassName.equals("games.strategy.triplea.delegate.InitializationDelegate") || delegateClassName.equals("games.strategy.triplea.delegate.BidPurchaseDelegate")
+							|| delegateClassName.equals("games.strategy.triplea.delegate.BidPlaceDelegate") || delegateClassName.equals("games.strategy.triplea.delegate.EndRoundDelegate"))
 					continue;
 			}
 			else if (s.getName() != null && (s.getName().endsWith("Bid") || s.getName().endsWith("BidPlace")))
 				continue;
-			
 			if (s.getPlayerID().equals(p1))
 				return -1;
 			else if (s.getPlayerID().equals(p2))

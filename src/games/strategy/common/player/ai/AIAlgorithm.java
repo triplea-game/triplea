@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.common.player.ai;
 
 import java.util.HashSet;
@@ -29,10 +28,9 @@ import java.util.Stack;
  */
 public class AIAlgorithm
 {
-	
-	public static <Play> Stack<Play> depthFirstSearch(GameState<Play> state, int maxDepth)
+	public static <Play> Stack<Play> depthFirstSearch(final GameState<Play> state, final int maxDepth)
 	{
-		Stack<Play> stack = new Stack<Play>();
+		final Stack<Play> stack = new Stack<Play>();
 		try
 		{
 			if (state.gameIsOver())
@@ -43,39 +41,33 @@ public class AIAlgorithm
 			else
 			{
 				// System.out.println("Starting with " + state);
-				Set<GameState<Play>> visitedStates = new HashSet<GameState<Play>>();
+				final Set<GameState<Play>> visitedStates = new HashSet<GameState<Play>>();
 				visitedStates.add(state);
 				return dfs(state, visitedStates, stack, 0, maxDepth);
 			}
-		} catch (StackOverflowError e)
+		} catch (final StackOverflowError e)
 		{
 			return null;
 		}
 	}
 	
-	private static <Play> Stack<Play> dfs(GameState<Play> state, Set<GameState<Play>> visitedStates, Stack<Play> plays, int depth, int maxDepth)
+	private static <Play> Stack<Play> dfs(final GameState<Play> state, final Set<GameState<Play>> visitedStates, Stack<Play> plays, final int depth, final int maxDepth)
 	{
-		
-		int playsSoFar = plays.size();
-		
+		final int playsSoFar = plays.size();
 		if (depth < maxDepth)
 		{
 			int childCounter = -1;
-			
 			// Find all of the possible next states
-			for (GameState<Play> child : state.successors())
+			for (final GameState<Play> child : state.successors())
 			{
 				childCounter++;
-				
 				// Have we seen this child state before?
 				if (!visitedStates.contains(child))
 				{
 					// System.out.println("Considering child " + child + " #"+childCounter + " at depth " + depth + " created by move " + child.getMove());
-					
 					// Mark that we've now seen this child state
 					// System.out.println("We have now seen " + child + " at depth " + depth + " created by move " + child.getMove());
 					visitedStates.add(child);
-					
 					// Is the child state a win state?
 					if (child.gameIsOver())
 					{
@@ -95,7 +87,6 @@ public class AIAlgorithm
 					}
 				}
 				// else System.out.println("HAVE already seen " + child + " #"+childCounter + " now at depth " + depth+ " created by move " + child.getMove());
-				
 			}
 		}
 		return plays;
@@ -111,21 +102,19 @@ public class AIAlgorithm
 	 *            current game state
 	 * @return the optimal next play
 	 */
-	public static <Play> Play alphaBetaSearch(GameState<Play> state)
+	public static <Play> Play alphaBetaSearch(final GameState<Play> state)
 	{
-		Pair<Float, Play> m = maxValue(state, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
+		final Pair<Float, Play> m = maxValue(state, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
 		return m.getSecond();
-		
 	}
 	
-	private static <Play> Pair<Float, Play> maxValue(GameState<Play> state, float alpha, float beta)
+	private static <Play> Pair<Float, Play> maxValue(final GameState<Play> state, float alpha, final float beta)
 	{
 		float value = Float.NEGATIVE_INFINITY;
 		Play bestMove = null;
-		
-		for (GameState<Play> s : state.successors())
+		for (final GameState<Play> s : state.successors())
 		{
-			Play a = s.getMove();
+			final Play a = s.getMove();
 			float minValue;
 			if (s.cutoffTest())
 				minValue = s.getUtility();
@@ -141,18 +130,16 @@ public class AIAlgorithm
 			if (value > alpha)
 				alpha = value;
 		}
-		
 		return new Pair<Float, Play>(value, bestMove);
 	}
 	
-	private static <Play> Pair<Float, Play> minValue(GameState<Play> state, float alpha, float beta)
+	private static <Play> Pair<Float, Play> minValue(final GameState<Play> state, final float alpha, float beta)
 	{
 		float value = Float.POSITIVE_INFINITY;
 		Play bestMove = null;
-		
-		for (GameState<Play> s : state.successors())
+		for (final GameState<Play> s : state.successors())
 		{
-			Play a = s.getMove();
+			final Play a = s.getMove();
 			float maxValue;
 			if (s.cutoffTest())
 				maxValue = s.getUtility();
@@ -168,7 +155,6 @@ public class AIAlgorithm
 			if (value < beta)
 				beta = value;
 		}
-		
 		return new Pair<Float, Play>(value, bestMove);
 	}
 	
@@ -182,70 +168,61 @@ public class AIAlgorithm
 	 *            current game state
 	 * @return the optimal next play
 	 */
-	public static <Play> Play minimaxSearch(GameState<Play> state)
+	public static <Play> Play minimaxSearch(final GameState<Play> state)
 	{
-		Pair<Float, Play> m = maxValue(state);
+		final Pair<Float, Play> m = maxValue(state);
 		return m.getSecond();
 	}
 	
-	private static <Play> Pair<Float, Play> maxValue(GameState<Play> state)
+	private static <Play> Pair<Float, Play> maxValue(final GameState<Play> state)
 	{
 		float value = Float.NEGATIVE_INFINITY;
 		Play bestMove = null;
-		
-		for (GameState<Play> s : state.successors())
+		for (final GameState<Play> s : state.successors())
 		{
-			Play a = s.getMove();
-			
+			final Play a = s.getMove();
 			float minValue;
 			if (s.gameIsOver())
 				minValue = s.getUtility();
 			else
 				minValue = minValue(s).getFirst();
-			
 			if (minValue > value)
 			{
 				value = minValue;
 				bestMove = a;
 			}
 		}
-		
 		return new Pair<Float, Play>(value, bestMove);
 	}
 	
-	private static <Play> Pair<Float, Play> minValue(GameState<Play> state)
+	private static <Play> Pair<Float, Play> minValue(final GameState<Play> state)
 	{
 		float value = Float.POSITIVE_INFINITY;
 		Play bestMove = null;
-		
-		for (GameState<Play> s : state.successors())
+		for (final GameState<Play> s : state.successors())
 		{
-			Play a = s.getMove();
-			
+			final Play a = s.getMove();
 			float maxValue;
 			if (s.gameIsOver())
 				maxValue = s.getUtility();
 			else
 				maxValue = maxValue(s).getFirst();
-			
 			if (maxValue < value)
 			{
 				value = maxValue;
 				bestMove = a;
 			}
-			
 		}
-		
 		return new Pair<Float, Play>(value, bestMove);
 	}
 	
 	
 	static class Pair<First, Second>
 	{
-		private First m_first;
-		private Second m_second;
+		private final First m_first;
+		private final Second m_second;
 		
-		Pair(First first, Second second)
+		Pair(final First first, final Second second)
 		{
 			m_first = first;
 			m_second = second;

@@ -34,7 +34,7 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler
 	private final boolean m_ignoreResults;
 	private final Class<?> m_remoteType;
 	
-	public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults, Class<?> remoteType)
+	public UnifiedInvocationHandler(final UnifiedMessenger messenger, final String endPointName, final boolean ignoreResults, final Class<?> remoteType)
 	{
 		// equality and hash code are bassed on end point name
 		super(endPointName);
@@ -45,24 +45,21 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler
 	}
 	
 	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 	{
 		if (super.shouldHandle(method, args))
 			return super.handle(method, args);
-		
 		if (args != null)
 		{
-			for (Object o : args)
+			for (final Object o : args)
 			{
 				if (o != null && !(o instanceof Serializable))
 				{
 					throw new IllegalArgumentException(o + " is not serializable, all remote method args must be serializable.  method:" + method);
 				}
-				
 			}
 		}
-		
-		RemoteMethodCall remoteMethodMsg = new RemoteMethodCall(m_endPointName, method.getName(), args, method.getParameterTypes(), m_remoteType);
+		final RemoteMethodCall remoteMethodMsg = new RemoteMethodCall(m_endPointName, method.getName(), args, method.getParameterTypes(), m_remoteType);
 		if (m_ignoreResults)
 		{
 			m_messenger.invoke(m_endPointName, remoteMethodMsg);
@@ -70,15 +67,13 @@ class UnifiedInvocationHandler extends WrappedInvocationHandler
 		}
 		else
 		{
-			RemoteMethodCallResults response = m_messenger.invokeAndWait(m_endPointName, remoteMethodMsg);
-			
+			final RemoteMethodCallResults response = m_messenger.invokeAndWait(m_endPointName, remoteMethodMsg);
 			if (response.getException() != null)
 			{
 				if (response.getException() instanceof MessengerException)
 				{
-					MessengerException cle = (MessengerException) response.getException();
+					final MessengerException cle = (MessengerException) response.getException();
 					cle.fillInInvokerStackTrace();
-					
 				}
 				throw response.getException();
 			}

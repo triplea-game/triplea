@@ -35,7 +35,6 @@ package games.strategy.util;
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -63,31 +62,23 @@ import sun.misc.URLClassPath;
  */
 public class ClassLoaderUtil
 {
-	
 	/** records whether initialization has been completed */
 	// private static boolean isInitialized = false;
-	
 	/** names of classes and fields of interest for closing the loader's jar files */
 	private static final String URLCLASSLOADER_UCP_FIELD_NAME = "ucp";
-	
 	private static final String URLCLASSPATH_LOADERS_FIELD_NAME = "loaders"; // ArrayList of URLClassPath.Loader
 	private static final String URLCLASSPATH_URLS_FIELD_NAME = "urls"; // Stack of URL
 	private static final String URLCLASSPATH_LMAP_FIELD_NAME = "lmap"; // HashMap of String -> URLClassPath.Loader
-	
 	private static final String URLCLASSPATH_JARLOADER_INNER_CLASS_NAME = "sun.misc.URLClassPath$JarLoader";
 	private static final String URLCLASSPATH_JARLOADER_JARFILE_FIELD_NAME = "jar";
-	
 	/* Fields used during processing - they can be set up once and then used repeatedly */
 	private static Field jcpField;
 	private static Field loadersField;
 	private static Field urlsField;
 	private static Field lmapField;
-	
 	@SuppressWarnings("rawtypes")
 	private static Class jarLoaderInnerClass;
-	
 	private static Field jarFileField;
-	
 	private static boolean initDone = false;
 	
 	/**
@@ -119,7 +110,6 @@ public class ClassLoaderUtil
 		loadersField = getField(URLClassPath.class, URLCLASSPATH_LOADERS_FIELD_NAME);
 		urlsField = getField(URLClassPath.class, URLCLASSPATH_URLS_FIELD_NAME);
 		lmapField = getField(URLClassPath.class, URLCLASSPATH_LMAP_FIELD_NAME);
-		
 		jarLoaderInnerClass = getInnerClass(URLClassPath.class, URLCLASSPATH_JARLOADER_INNER_CLASS_NAME);
 		jarFileField = getField(jarLoaderInnerClass, URLCLASSPATH_JARLOADER_JARFILE_FIELD_NAME);
 	}
@@ -136,20 +126,19 @@ public class ClassLoaderUtil
 	 *             in case of any error retriving information about the field
 	 */
 	@SuppressWarnings("rawtypes")
-	private static Field getField(Class cls, String fieldName) throws NoSuchFieldException
+	private static Field getField(final Class cls, final String fieldName) throws NoSuchFieldException
 	{
 		try
 		{
-			Field field = cls.getDeclaredField(fieldName);
+			final Field field = cls.getDeclaredField(fieldName);
 			field.setAccessible(true);
 			return field;
-		} catch (NoSuchFieldException nsfe)
+		} catch (final NoSuchFieldException nsfe)
 		{
-			NoSuchFieldException e = new NoSuchFieldException(getMessage("classloaderutil.errorGettingField", fieldName));
+			final NoSuchFieldException e = new NoSuchFieldException(getMessage("classloaderutil.errorGettingField", fieldName));
 			e.initCause(nsfe);
 			throw e;
 		}
-		
 	}
 	
 	/**
@@ -161,11 +150,11 @@ public class ClassLoaderUtil
 	 *            the fully-qualified name of the inner class of interest
 	 */
 	@SuppressWarnings("rawtypes")
-	private static Class getInnerClass(Class cls, String innerClassName)
+	private static Class getInnerClass(final Class cls, final String innerClassName)
 	{
 		Class result = null;
-		Class[] innerClasses = cls.getDeclaredClasses();
-		for (Class c : innerClasses)
+		final Class[] innerClasses = cls.getDeclaredClasses();
+		for (final Class c : innerClasses)
 		{
 			if (c.getName().equals(innerClassName))
 			{
@@ -176,25 +165,24 @@ public class ClassLoaderUtil
 		return result;
 	}
 	
-	public static void closeLoader(URLClassLoader loader)
+	public static void closeLoader(final URLClassLoader loader)
 	{
 		try
 		{
 			try
 			{
 				// java 1.7 has a close method, thanks guys
-				//Method close = loader.getClass().getMethod("close", null);
-				//close.invoke(loader, null);
-				Method close = loader.getClass().getMethod("close");
+				// Method close = loader.getClass().getMethod("close", null);
+				// close.invoke(loader, null);
+				final Method close = loader.getClass().getMethod("close");
 				close.invoke(loader);
 				return;
-			} catch (Exception e)
+			} catch (final Exception e)
 			{
 				// ignore
 			}
-			
 			releaseLoader(loader);
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace(System.out);
 		}
@@ -209,7 +197,7 @@ public class ClassLoaderUtil
 	 *            the instance of URLClassLoader (or a subclass)
 	 * @return array of IOExceptions reporting jars that failed to close
 	 */
-	private static void releaseLoader(URLClassLoader classLoader)
+	private static void releaseLoader(final URLClassLoader classLoader)
 	{
 		releaseLoader(classLoader, null);
 	}
@@ -234,28 +222,22 @@ public class ClassLoaderUtil
 	 *         indicates at least one error attempting to close an open jar.
 	 */
 	@SuppressWarnings("rawtypes")
-	private static IOException[] releaseLoader(URLClassLoader classLoader, Vector<String> jarsClosed)
+	private static IOException[] releaseLoader(final URLClassLoader classLoader, final Vector<String> jarsClosed)
 	{
-		
 		IOException[] result = null;
-		
 		try
 		{
 			init();
-			
 			/* Records all IOExceptions thrown while closing jar files. */
-			Vector<IOException> ioExceptions = new Vector<IOException>();
-			
+			final Vector<IOException> ioExceptions = new Vector<IOException>();
 			if (jarsClosed != null)
 			{
 				jarsClosed.clear();
 			}
-			
-			URLClassPath ucp = (URLClassPath) jcpField.get(classLoader);
-			ArrayList loaders = (ArrayList) loadersField.get(ucp);
-			Stack urls = (Stack) urlsField.get(ucp);
-			HashMap lmap = (HashMap) lmapField.get(ucp);
-			
+			final URLClassPath ucp = (URLClassPath) jcpField.get(classLoader);
+			final ArrayList loaders = (ArrayList) loadersField.get(ucp);
+			final Stack urls = (Stack) urlsField.get(ucp);
+			final HashMap lmap = (HashMap) lmapField.get(ucp);
 			/*
 			 *The urls variable in the URLClassPath object holds URLs that have not yet
 			 *been used to resolve a resource or load a class and, therefore, do
@@ -268,7 +250,6 @@ public class ClassLoaderUtil
 			{
 				urls.clear();
 			}
-			
 			/*
 			 *Also clear the map of URLs to loaders so the class loader cannot use
 			 *previously-opened jar files - they are about to be closed.
@@ -277,7 +258,6 @@ public class ClassLoaderUtil
 			{
 				lmap.clear();
 			}
-			
 			/*
 			 *The URLClassPath object's path variable records the list of all URLs that are on
 			 *the URLClassPath's class path.  Leave that unchanged.  This might
@@ -294,7 +274,6 @@ public class ClassLoaderUtil
 			 *files - it uses the urls Stack for that - so leaving the path variable
 			 *will not by itself allow the class loader to continue handling requests.
 			 */
-
 			/*
 			 *For each loader, close the jar file associated with that loader.
 			 *
@@ -303,7 +282,7 @@ public class ClassLoaderUtil
 			 */
 			synchronized (ucp)
 			{
-				for (Object o : loaders)
+				for (final Object o : loaders)
 				{
 					if (o != null)
 					{
@@ -316,7 +295,7 @@ public class ClassLoaderUtil
 						{
 							try
 							{
-								JarFile jarFile = (JarFile) jarFileField.get(o);
+								final JarFile jarFile = (JarFile) jarFileField.get(o);
 								try
 								{
 									if (jarFile != null)
@@ -327,25 +306,24 @@ public class ClassLoaderUtil
 											jarsClosed.add(jarFile.getName());
 										}
 									}
-								} catch (IOException ioe)
+								} catch (final IOException ioe)
 								{
 									/*
 									 *Wrap the IOException to identify which jar
 									 *could not be closed and add it to the list
 									 *of IOExceptions to be returned to the caller.
 									 */
-									String jarFileName = (jarFile == null) ? getMessage("classloaderutil.jarFileNameNotAvailable") : jarFile.getName();
-									String msg = getMessage("classloaderutil.errorClosingJar", jarFileName);
-									IOException newIOE = new IOException(msg);
+									final String jarFileName = (jarFile == null) ? getMessage("classloaderutil.jarFileNameNotAvailable") : jarFile.getName();
+									final String msg = getMessage("classloaderutil.errorClosingJar", jarFileName);
+									final IOException newIOE = new IOException(msg);
 									newIOE.initCause(ioe);
 									ioExceptions.add(newIOE);
-									
 									/*
 									 *Log the error also.
 									 */
 									getLogger().log(Level.WARNING, msg, ioe);
 								}
-							} catch (Throwable thr)
+							} catch (final Throwable thr)
 							{
 								getLogger().log(Level.WARNING, "classloaderutil.errorReleasingJarNoName", thr);
 							}
@@ -358,12 +336,11 @@ public class ClassLoaderUtil
 				loaders.clear();
 			}
 			result = ioExceptions.toArray(new IOException[ioExceptions.size()]);
-		} catch (Throwable thr)
+		} catch (final Throwable thr)
 		{
 			getLogger().log(Level.WARNING, "classloaderutil.errorReleasingLoader", thr);
 			result = null;
 		}
-		
 		return result;
 	}
 	
@@ -387,9 +364,9 @@ public class ClassLoaderUtil
 	 *            the object(s), if any, to be substituted into the message
 	 * @return a String containing the formatted message
 	 */
-	private static String getMessage(String key, Object... o)
+	private static String getMessage(final String key, final Object... o)
 	{
-		String msg = getLogger().getResourceBundle().getString(key);
+		final String msg = getLogger().getResourceBundle().getString(key);
 		return MessageFormat.format(msg, o);
 	}
 }

@@ -11,56 +11,43 @@ import javax.swing.border.LineBorder;
 
 public class WaitWindow extends JWindow
 {
-	
 	private final Object m_mutex = new Object();
 	private Timer m_timer = new Timer();
 	
-	public WaitWindow(String waitMessage)
+	public WaitWindow(final String waitMessage)
 	{
 		// super("Game Loading, Please wait");
 		// setIconImage(GameRunner.getGameIcon(this));
 		setSize(200, 80);
-		
-		WaitPanel mainPanel = new WaitPanel(waitMessage);
-		
+		final WaitPanel mainPanel = new WaitPanel(waitMessage);
 		setLocationRelativeTo(null);
 		// setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		
 		mainPanel.setBorder(new LineBorder(Color.BLACK));
-		
 		setLayout(new BorderLayout());
 		add(mainPanel, BorderLayout.CENTER);
 	}
 	
 	public void showWait()
 	{
-		TimerTask task = new TimerTask()
+		final TimerTask task = new TimerTask()
 		{
-			
 			@Override
 			public void run()
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					
 					public void run()
 					{
 						toFront();
 					}
-				}
-
-				);
-				
+				});
 			}
-			
 		};
-		
 		synchronized (m_mutex)
 		{
 			if (m_timer != null)
 				m_timer.schedule(task, 15, 15);
 		}
-		
 	}
 	
 	public void doneWait()
@@ -73,39 +60,27 @@ public class WaitWindow extends JWindow
 				m_timer = null;
 			}
 		}
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
-				
 				setVisible(false);
 				removeAll();
 				dispose();
-				
 			}
 		});
-		
 	}
 	
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				final WaitWindow window = new WaitWindow("Loading game, please wait.");
 				window.setVisible(true);
-				
 				window.showWait();
-				
 			}
-			
 		});
-		
 	}
-	
 }

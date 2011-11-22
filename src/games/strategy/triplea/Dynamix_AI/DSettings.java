@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI;
 
 import games.strategy.triplea.Dynamix_AI.Others.BattleCalculationType;
@@ -33,23 +32,18 @@ import java.util.prefs.Preferences;
 public class DSettings implements Serializable
 {
 	public boolean UseActionLengthGoals = true;
-	
 	public int PurchaseWait_AL = 750;
 	public int CombatMoveWait_AL = 750;
 	public int NonCombatMoveWait_AL = 750;
 	public int PlacementWait_AL = 750;
-	
 	public int PurchaseWait_AW = 250;
 	public int CombatMoveWait_AW = 250;
 	public int NonCombatMoveWait_AW = 250;
 	public int PlacementWait_AW = 250;
-	
 	public boolean AllowCalcingDecrease = true;
 	public int CalcingDecreaseToPercentage = 75;
-	
 	public boolean AIC_disableAllUnitPurchasesAndPlacements = false;
 	public boolean AIC_disableAllUnitMovements = false;
-	
 	public int CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost = 50;
 	public int CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance = 250;
 	public int CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense = 25;
@@ -61,19 +55,15 @@ public class DSettings implements Serializable
 	public int CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers = 250;
 	public int CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove = 100;
 	public int CA_Retreat_determinesIfAIShouldRetreat = 2000;
-	
 	public boolean LimitLogHistory = true;
 	public int LimitLogHistoryTo = 5;
-	
 	public BattleCalculationType BattleCalculationMethod = BattleCalculationType.BattleCalculator;
-	
 	public boolean EnableResourceCollectionMultiplier = false;
 	public int ResourceCollectionMultiplyPercent = 100;
 	public boolean EnableResourceCollectionIncreaser = false;
 	public int ResourceCollectionIncreaseAmount = 0;
 	public boolean EnableUnitPlacementMultiplier = false;
 	public int UnitPlacementMultiplyPercent = 100;
-	
 	public boolean TR_enableAttackOffensive = true;
 	public int TR_attackOffensive_takeoverChanceRequired = 70;
 	public int TR_attackOffensive_counterAttackSurvivalChanceRequired = 55;
@@ -99,24 +89,18 @@ public class DSettings implements Serializable
 	public boolean TR_enableReinforceStabalize = true;
 	public int TR_reinforceStabalize_enemyAttackSurvivalChanceRequired = 50;
 	public boolean TR_enableReinforceBlock = true;
-	
 	public boolean CR_enableCallForLandGrab = true;
 	public boolean CR_enableCallForDefensiveFront = true;
 	public boolean CR_enableCallForCapitalDefense = true;
-	
 	public boolean EnableAILogging = false;
 	public Level AILoggingDepth = Level.FINEST;
-	
 	public int AA_resourcePercentageThatMustExistForFactoryBuy = 50;
 	public int AA_maxUnitTypesForPurchaseMix = 5;
-	
 	public ThreatInvalidationType AA_threatInvalidationType = ThreatInvalidationType.AroundHotspot;
 	public int AA_threatInvalidationAroundHotspotRadius = 1;
 	public int AA_percentageOfResistedThreatThatTasksInvalidate = 50;
 	public boolean AA_ignoreAlliedUnitsAsDefenses = false;
-	
 	public int AA_survivalChanceOfLandingTerRequiredForPlaneRecruit = 75;
-	
 	private static DSettings s_lastSettings = null;
 	private static String PROGRAM_SETTINGS = "Program Settings";
 	
@@ -127,12 +111,12 @@ public class DSettings implements Serializable
 			DSettings result = new DSettings();
 			try
 			{
-				byte[] pool = Preferences.userNodeForPackage(Dynamix_AI.class).getByteArray(PROGRAM_SETTINGS, null);
+				final byte[] pool = Preferences.userNodeForPackage(Dynamix_AI.class).getByteArray(PROGRAM_SETTINGS, null);
 				if (pool != null)
 				{
 					result = (DSettings) new ObjectInputStream(new ByteArrayInputStream(pool)).readObject();
 				}
-			} catch (Exception ex)
+			} catch (final Exception ex)
 			{
 			}
 			if (result == null)
@@ -146,26 +130,25 @@ public class DSettings implements Serializable
 			return s_lastSettings;
 	}
 	
-	public static void SaveSettings(DSettings settings)
+	public static void SaveSettings(final DSettings settings)
 	{
 		s_lastSettings = settings;
 		ObjectOutputStream outputStream = null;
 		try
 		{
-			ByteArrayOutputStream pool = new ByteArrayOutputStream(10000);
+			final ByteArrayOutputStream pool = new ByteArrayOutputStream(10000);
 			outputStream = new ObjectOutputStream(pool);
 			outputStream.writeObject(settings);
-			
-			Preferences prefs = Preferences.userNodeForPackage(Dynamix_AI.class);
+			final Preferences prefs = Preferences.userNodeForPackage(Dynamix_AI.class);
 			prefs.putByteArray(PROGRAM_SETTINGS, pool.toByteArray());
 			try
 			{
 				prefs.flush();
-			} catch (BackingStoreException ex)
+			} catch (final BackingStoreException ex)
 			{
 				ex.printStackTrace();
 			}
-		} catch (Exception ex)
+		} catch (final Exception ex)
 		{
 			ex.printStackTrace();
 		} finally
@@ -173,7 +156,7 @@ public class DSettings implements Serializable
 			try
 			{
 				outputStream.close();
-			} catch (Exception ex)
+			} catch (final Exception ex)
 			{
 				ex.printStackTrace();
 			}

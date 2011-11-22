@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.message;
 
 import games.strategy.util.Tuple;
@@ -24,21 +23,19 @@ public class RemoteInterfaceHelper
 {
 	private static final Logger s_logger = Logger.getLogger(RemoteInterfaceHelper.class.getName());
 	
-	public static int getNumber(String methodName, Class<?>[] argTypes, Class<?> remoteInterface)
+	public static int getNumber(final String methodName, final Class<?>[] argTypes, final Class<?> remoteInterface)
 	{
-		Method[] methods = remoteInterface.getMethods();
+		final Method[] methods = remoteInterface.getMethods();
 		Arrays.sort(methods, methodComparator);
-		
 		if (s_logger.isLoggable(Level.FINEST))
 		{
 			s_logger.fine("Sorted methods:" + Arrays.asList(methods));
 		}
-		
 		for (int i = 0; i < methods.length; i++)
 		{
 			if (methods[i].getName().equals(methodName))
 			{
-				Class<?>[] types = methods[i].getParameterTypes();
+				final Class<?>[] types = methods[i].getParameterTypes();
 				// both null
 				if (types == argTypes)
 				{
@@ -63,11 +60,10 @@ public class RemoteInterfaceHelper
 		throw new IllegalStateException("Method not found");
 	}
 	
-	public static Tuple<String, Class<?>[]> getMethodInfo(int methodNumber, Class<?> remoteInterface)
+	public static Tuple<String, Class<?>[]> getMethodInfo(final int methodNumber, final Class<?> remoteInterface)
 	{
-		Method[] methods = remoteInterface.getMethods();
+		final Method[] methods = remoteInterface.getMethods();
 		Arrays.sort(methods, methodComparator);
-		
 		if (s_logger.isLoggable(Level.FINEST))
 		{
 			s_logger.fine("Sorted methods:" + Arrays.asList(methods));
@@ -80,18 +76,14 @@ public class RemoteInterfaceHelper
 	 */
 	private static Comparator<Method> methodComparator = new Comparator<Method>()
 	{
-		
-		public int compare(Method o1, Method o2)
+		public int compare(final Method o1, final Method o2)
 		{
 			if (o1 == o2)
 				return 0;
-			
 			if (!o1.getName().equals(o2.getName()))
 				return o1.getName().compareTo(o2.getName());
-			
-			Class<?>[] t1 = o1.getParameterTypes();
-			Class<?>[] t2 = o2.getParameterTypes();
-			
+			final Class<?>[] t1 = o1.getParameterTypes();
+			final Class<?>[] t2 = o2.getParameterTypes();
 			// both null
 			if (t1 == t2)
 				return 0;
@@ -99,7 +91,6 @@ public class RemoteInterfaceHelper
 				return -1;
 			if (t2 == null)
 				return 1;
-			
 			if (t1.length != t2.length)
 				return t1.length - t2.length;
 			for (int i = 0; i < t1.length; i++)
@@ -111,7 +102,5 @@ public class RemoteInterfaceHelper
 			}
 			return 0;
 		}
-		
 	};
-	
 }

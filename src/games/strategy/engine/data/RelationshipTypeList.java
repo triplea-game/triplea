@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * RelationshipTypeList.java
  * 
  * Created on July 10, 2011
  */
-
 package games.strategy.engine.data;
 
 /**
@@ -27,7 +25,6 @@ package games.strategy.engine.data;
  * 
  *          A collection of Relationship types
  */
-
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
 
@@ -37,7 +34,6 @@ import java.util.Iterator;
 
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType>
 {
-	
 	private final HashMap<String, RelationshipType> m_relationshipTypes = new HashMap<String, RelationshipType>();
 	
 	/**
@@ -67,7 +63,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	 *            GameData used for construction
 	 * @throws GameParseException
 	 */
-	protected RelationshipTypeList(GameData data)
+	protected RelationshipTypeList(final GameData data)
 	{
 		super(data);
 		try
@@ -76,7 +72,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_NULL, RelationshipTypeAttachment.ARCHETYPE_WAR, data);
 			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR, RelationshipTypeAttachment.ARCHETYPE_WAR, data);
 			createDefaultRelationship(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED, RelationshipTypeAttachment.ARCHETYPE_ALLIED, data);
-		} catch (GameParseException e)
+		} catch (final GameParseException e)
 		{
 			// this should never happen, createDefaultRelationship only throws a GameParseException when the wrong ArcheType is supplied, but we never do that
 			throw new IllegalStateException(e);
@@ -95,13 +91,12 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	 * @throws GameParseException
 	 *             if the wrong relationshipArcheType is used
 	 */
-	
-	private void createDefaultRelationship(final String relationshipTypeConstant, final String relationshipArcheType, GameData data) throws GameParseException
+	private void createDefaultRelationship(final String relationshipTypeConstant, final String relationshipArcheType, final GameData data) throws GameParseException
 	{
 		// create a new relationshipType with the name from the constant
-		RelationshipType relationshipType = new RelationshipType(relationshipTypeConstant, data);
+		final RelationshipType relationshipType = new RelationshipType(relationshipTypeConstant, data);
 		// create a new attachment to attach to this type
-		RelationshipTypeAttachment at = new RelationshipTypeAttachment();
+		final RelationshipTypeAttachment at = new RelationshipTypeAttachment();
 		// set the archeType to this attachment
 		at.setArcheType(relationshipArcheType);
 		// attach this attachment to this type
@@ -117,7 +112,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	 *            RelationshipType
 	 * @return the RelationshipType just created (convenience method for the GameParser)
 	 */
-	protected RelationshipType addRelationshipType(RelationshipType p)
+	protected RelationshipType addRelationshipType(final RelationshipType p)
 	{
 		m_relationshipTypes.put(p.getName(), p);
 		return p;
@@ -130,7 +125,7 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	 *            name of the relationshipType
 	 * @return RelationshipType with this name
 	 */
-	public RelationshipType getRelationshipType(String name)
+	public RelationshipType getRelationshipType(final String name)
 	{
 		return m_relationshipTypes.get(name);
 	}
@@ -139,7 +134,6 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	 * returns a relationshipTypeIterator
 	 * 
 	 */
-	
 	public Iterator<RelationshipType> iterator()
 	{
 		return m_relationshipTypes.values().iterator();
@@ -168,5 +162,4 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 	{
 		return m_relationshipTypes.values();
 	}
-	
 }

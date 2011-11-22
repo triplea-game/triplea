@@ -11,12 +11,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * 
  * Created on October 30, 2001, 6:57 PM
  */
-
 package games.strategy.ui;
 
 import java.awt.Color;
@@ -47,54 +45,46 @@ import javax.swing.border.EtchedBorder;
  */
 public class ImageScrollerSmallView extends JComponent
 {
-	
 	private final ImageScrollModel m_model;
-	
 	private Image m_image;
 	
-	public ImageScrollerSmallView(Image image, ImageScrollModel model)
+	public ImageScrollerSmallView(final Image image, final ImageScrollModel model)
 	{
 		m_model = model;
 		try
 		{
 			Util.ensureImageLoaded(image);
 			setDoubleBuffered(false);
-		} catch (InterruptedException ie)
+		} catch (final InterruptedException ie)
 		{
 			ie.printStackTrace();
 		}
 		m_image = image;
-		
 		this.setBorder(new EtchedBorder());
-		
-		int prefWidth = getInsetsWidth() + m_image.getWidth(this);
-		int prefHeight = getInsetsHeight() + m_image.getHeight(this);
-		Dimension prefSize = new Dimension(prefWidth, prefHeight);
-		
+		final int prefWidth = getInsetsWidth() + m_image.getWidth(this);
+		final int prefHeight = getInsetsHeight() + m_image.getHeight(this);
+		final Dimension prefSize = new Dimension(prefWidth, prefHeight);
 		setPreferredSize(prefSize);
 		setMinimumSize(prefSize);
 		setMaximumSize(prefSize);
-		
 		this.addMouseListener(MOUSE_LISTENER);
 		this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
 		model.addObserver(new Observer()
 		{
-			
-			public void update(Observable o, Object arg)
+			public void update(final Observable o, final Object arg)
 			{
 				repaint();
 			}
-			
 		});
 	}
 	
-	public void changeImage(Image image)
+	public void changeImage(final Image image)
 	{
 		try
 		{
 			Util.ensureImageLoaded(image);
 			setDoubleBuffered(false);
-		} catch (InterruptedException ie)
+		} catch (final InterruptedException ie)
 		{
 			ie.printStackTrace();
 		}
@@ -111,10 +101,9 @@ public class ImageScrollerSmallView extends JComponent
 		return getInsets().top + getInsets().bottom;
 	}
 	
-	void setCoords(int x, int y)
+	void setCoords(final int x, final int y)
 	{
 		m_model.set(x, y);
-		
 	}
 	
 	public Dimension getImageDimensions()
@@ -123,37 +112,28 @@ public class ImageScrollerSmallView extends JComponent
 	}
 	
 	@Override
-	public void paintComponent(Graphics g)
+	public void paintComponent(final Graphics g)
 	{
 		g.drawImage(m_image, 0, 0, this);
 		g.setColor(Color.white);
-		
 		drawViewBox((Graphics2D) g);
-		
 	}
 	
-	private void drawViewBox(Graphics2D g)
+	private void drawViewBox(final Graphics2D g)
 	{
-		if (m_model.getBoxWidth() > m_model.getMaxWidth() &&
-					m_model.getBoxHeight() > m_model.getMaxHeight())
+		if (m_model.getBoxWidth() > m_model.getMaxWidth() && m_model.getBoxHeight() > m_model.getMaxHeight())
 			return;
-		
-		double ratioX = getRatioX();
-		double ratioY = getRatioY();
-		
-		double x = m_model.getX() * ratioX;
-		double y = m_model.getY() * ratioY;
-		
-		double width = m_model.getBoxWidth() * ratioX;
-		double height = m_model.getBoxHeight() * ratioY;
-		
-		Rectangle2D.Double rect = new Rectangle2D.Double(x, y, width, height);
+		final double ratioX = getRatioX();
+		final double ratioY = getRatioY();
+		final double x = m_model.getX() * ratioX;
+		final double y = m_model.getY() * ratioY;
+		final double width = m_model.getBoxWidth() * ratioX;
+		final double height = m_model.getBoxHeight() * ratioY;
+		final Rectangle2D.Double rect = new Rectangle2D.Double(x, y, width, height);
 		g.draw(rect);
-		
 		if (m_model.getScrollX())
 		{
-			double mapWidth = m_model.getMaxWidth() * ratioX;
-			
+			final double mapWidth = m_model.getMaxWidth() * ratioX;
 			rect.x += mapWidth;
 			g.draw(rect);
 			rect.x -= 2 * mapWidth;
@@ -166,53 +146,42 @@ public class ImageScrollerSmallView extends JComponent
 		return m_image;
 	}
 	
-	private void setSelection(int x, int y)
+	private void setSelection(final int x, final int y)
 	{
 		m_model.set(x, y);
 	}
 	
 	private long mLastUpdate = 0;
-	private long MIN_UPDATE_DELAY = 30;
-	
+	private final long MIN_UPDATE_DELAY = 30;
 	private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
 	{
-		
 		@Override
-		public void mouseDragged(MouseEvent e)
+		public void mouseDragged(final MouseEvent e)
 		{
-			
-			long now = System.currentTimeMillis();
+			final long now = System.currentTimeMillis();
 			if (now < mLastUpdate + MIN_UPDATE_DELAY)
 				return;
-			
 			mLastUpdate = now;
-			
-			Rectangle bounds = (Rectangle) getBounds().clone();
+			final Rectangle bounds = (Rectangle) getBounds().clone();
 			// if the mouse is a little off the screen, allow it to still scroll
 			// the screen
 			bounds.grow(30, 0);
-			
 			if (!bounds.contains(e.getPoint()))
 				return;
-			
 			// try to center around the click
-			int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
-			int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
-			
+			final int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
+			final int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
 			setSelection(x, y);
 		}
 	};
-	
 	private final MouseAdapter MOUSE_LISTENER = new MouseAdapter()
 	{
-		
 		@Override
-		public void mouseClicked(MouseEvent e)
+		public void mouseClicked(final MouseEvent e)
 		{
 			// try to center around the click
-			int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
-			int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
-			
+			final int x = (int) (e.getX() / getRatioX()) - (m_model.getBoxWidth() / 2);
+			final int y = (int) (e.getY() / getRatioY()) - (m_model.getBoxHeight() / 2);
 			m_model.set(x, y);
 		}
 	};
@@ -226,5 +195,4 @@ public class ImageScrollerSmallView extends JComponent
 	{
 		return m_image.getWidth(null) / (double) m_model.getMaxWidth();
 	}
-	
 }

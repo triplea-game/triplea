@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.ui.ImageScrollModel;
@@ -21,10 +20,8 @@ import java.awt.Image;
 
 public class MapPanelSmallView extends ImageScrollerSmallView
 {
-	
-	public MapPanelSmallView(Image img, ImageScrollModel model)
+	public MapPanelSmallView(final Image img, final ImageScrollModel model)
 	{
 		super(img, model);
-		
 	}
 }

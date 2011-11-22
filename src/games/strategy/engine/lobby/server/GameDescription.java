@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server;
 
 import games.strategy.net.INode;
@@ -36,7 +35,6 @@ public class GameDescription implements Externalizable, Cloneable
 	{
 		LAUNCHING
 		{
-			
 			@Override
 			public String toString()
 			{
@@ -45,7 +43,6 @@ public class GameDescription implements Externalizable, Cloneable
 		},
 		IN_PROGRESS
 		{
-			
 			@Override
 			public String toString()
 			{
@@ -54,7 +51,6 @@ public class GameDescription implements Externalizable, Cloneable
 		},
 		WAITING_FOR_PLAYERS
 		{
-			
 			@Override
 			public String toString()
 			{
@@ -75,13 +71,13 @@ public class GameDescription implements Externalizable, Cloneable
 	private String m_comment;
 	
 	// if you add a field, add it to write/read object as well
-	
 	// for externalizable
 	public GameDescription()
 	{
 	}
 	
-	public GameDescription(INode hostedBy, int port, Date startDateTime, String gameName, int playerCount, GameStatus status, String round, String hostName, String comment)
+	public GameDescription(final INode hostedBy, final int port, final Date startDateTime, final String gameName, final int playerCount, final GameStatus status, final String round,
+				final String hostName, final String comment)
 	{
 		m_hostName = hostName;
 		m_hostedBy = hostedBy;
@@ -100,7 +96,7 @@ public class GameDescription implements Externalizable, Cloneable
 		try
 		{
 			return super.clone();
-		} catch (CloneNotSupportedException e)
+		} catch (final CloneNotSupportedException e)
 		{
 			throw new IllegalStateException("how did that happen");
 		}
@@ -116,43 +112,43 @@ public class GameDescription implements Externalizable, Cloneable
 		return m_version;
 	}
 	
-	public void setGameName(String gameName)
+	public void setGameName(final String gameName)
 	{
 		m_version++;
 		m_gameName = gameName;
 	}
 	
-	public void setHostedBy(INode hostedBy)
+	public void setHostedBy(final INode hostedBy)
 	{
 		m_version++;
 		m_hostedBy = hostedBy;
 	}
 	
-	public void setPlayerCount(int playerCount)
+	public void setPlayerCount(final int playerCount)
 	{
 		m_version++;
 		m_playerCount = playerCount;
 	}
 	
-	public void setPort(int port)
+	public void setPort(final int port)
 	{
 		m_version++;
 		m_port = port;
 	}
 	
-	public void setRound(String round)
+	public void setRound(final String round)
 	{
 		m_version++;
 		m_round = round;
 	}
 	
-	public void setStartDateTime(Date startDateTime)
+	public void setStartDateTime(final Date startDateTime)
 	{
 		m_version++;
 		m_startDateTime = startDateTime;
 	}
 	
-	public void setStatus(GameStatus status)
+	public void setStatus(final GameStatus status)
 	{
 		m_version++;
 		m_status = status;
@@ -198,7 +194,7 @@ public class GameDescription implements Externalizable, Cloneable
 		return m_hostName;
 	}
 	
-	public void setHostName(String hostName)
+	public void setHostName(final String hostName)
 	{
 		m_version++;
 		m_hostName = hostName;
@@ -209,15 +205,14 @@ public class GameDescription implements Externalizable, Cloneable
 		return m_comment;
 	}
 	
-	public void setComment(String comment)
+	public void setComment(final String comment)
 	{
 		m_version++;
 		m_comment = comment;
 	}
 	
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
-		
 		m_hostedBy = new Node();
 		((Node) m_hostedBy).readExternal(in);
 		m_port = in.readInt();
@@ -232,7 +227,7 @@ public class GameDescription implements Externalizable, Cloneable
 		m_gameName = in.readUTF();
 	}
 	
-	public void writeExternal(ObjectOutput out) throws IOException
+	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		((Node) m_hostedBy).writeExternal(out);
 		out.writeInt(m_port);
@@ -244,7 +239,6 @@ public class GameDescription implements Externalizable, Cloneable
 		out.writeUTF(m_hostName);
 		out.writeUTF(m_comment);
 		out.writeUTF(m_gameName);
-		
 	}
 	
 	@Override
@@ -252,5 +246,4 @@ public class GameDescription implements Externalizable, Cloneable
 	{
 		return "Game Hosted By:" + m_hostName + " gameName:" + m_gameName + " at:" + m_hostedBy.getAddress() + ":" + m_port + " playerCount:" + m_playerCount;
 	}
-	
 }

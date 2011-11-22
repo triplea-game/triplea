@@ -9,13 +9,11 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * PoliticsDelegate.java
  * 
  * Created on July 16, 2011
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -55,15 +53,13 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	/** Creates new PoliticsDelegate */
 	public PoliticsDelegate()
 	{
-		
 	}
 	
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge aBridge)
+	public void start(final IDelegateBridge aBridge)
 	{
 		super.start(aBridge);
 	}
@@ -79,20 +75,20 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			chainAlliancesTogether(m_bridge);
 		}
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		PoliticsExtendedDelegateState state = new PoliticsExtendedDelegateState();
+		final PoliticsExtendedDelegateState state = new PoliticsExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		PoliticsExtendedDelegateState s = (PoliticsExtendedDelegateState) state;
+		final PoliticsExtendedDelegateState s = (PoliticsExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 	}
@@ -100,14 +96,13 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
-
 	@Override
 	public Class<IPoliticsDelegate> getRemoteType()
 	{
 		return IPoliticsDelegate.class;
 	}
 	
-	public void attemptAction(PoliticalActionAttachment paa)
+	public void attemptAction(final PoliticalActionAttachment paa)
 	{
 		if (!games.strategy.triplea.Properties.getUsePolitics(getData()))
 		{
@@ -156,17 +151,16 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 *            the politicalActionAttachment that should be accepted
 	 * @return
 	 */
-	private boolean actionIsAccepted(PoliticalActionAttachment paa)
+	private boolean actionIsAccepted(final PoliticalActionAttachment paa)
 	{
-		GameData data = getData();
-		CompositeMatchOr<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar = new CompositeMatchOr<PoliticalActionAttachment>(
-					Matches.politicalActionIsRelationshipChangeOf(null, Matches.isAlliedAndAlliancesCanChainTogether.invert(), Matches.isAlliedAndAlliancesCanChainTogether, data),
-					Matches.politicalActionIsRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar.invert(), Matches.RelationshipTypeIsAtWar, data),
-					Matches.politicalActionIsRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar, Matches.RelationshipTypeIsAtWar.invert(), data));
-		
+		final GameData data = getData();
+		final CompositeMatchOr<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar = new CompositeMatchOr<PoliticalActionAttachment>(Matches.politicalActionIsRelationshipChangeOf(null,
+					Matches.isAlliedAndAlliancesCanChainTogether.invert(), Matches.isAlliedAndAlliancesCanChainTogether, data), Matches.politicalActionIsRelationshipChangeOf(null,
+					Matches.RelationshipTypeIsAtWar.invert(), Matches.RelationshipTypeIsAtWar, data), Matches.politicalActionIsRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar,
+					Matches.RelationshipTypeIsAtWar.invert(), data));
 		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data) || !intoAlliedChainOrIntoOrOutOfWar.match(paa))
 		{
-			for (PlayerID player : paa.getActionAccept())
+			for (final PlayerID player : paa.getActionAccept())
 			{
 				if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
 					return false;
@@ -175,16 +169,16 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		else
 		{
 			// if alliances chain together, then our allies must have a say in anyone becoming a new ally/enemy
-			LinkedHashSet<PlayerID> playersWhoNeedToAccept = new LinkedHashSet<PlayerID>();
+			final LinkedHashSet<PlayerID> playersWhoNeedToAccept = new LinkedHashSet<PlayerID>();
 			playersWhoNeedToAccept.addAll(paa.getActionAccept());
 			playersWhoNeedToAccept.addAll(Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedAndAlliancesCanChainTogether(m_player)));
-			for (PlayerID player : paa.getActionAccept())
+			for (final PlayerID player : paa.getActionAccept())
 			{
 				playersWhoNeedToAccept.addAll(Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedAndAlliancesCanChainTogether(player)));
 			}
-			HashSet<PlayerID> alliesWhoMustAccept = playersWhoNeedToAccept;
+			final HashSet<PlayerID> alliesWhoMustAccept = playersWhoNeedToAccept;
 			alliesWhoMustAccept.removeAll(paa.getActionAccept());
-			for (PlayerID player : playersWhoNeedToAccept)
+			for (final PlayerID player : playersWhoNeedToAccept)
 			{
 				String actionText = PoliticsText.getInstance().getAcceptanceQuestion(paa.getText());
 				if (actionText.equals("NONE"))
@@ -193,13 +187,13 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 				}
 				else
 				{
-					actionText = m_player.getName() + " wants to take the following action: " + MyFormatter.attachmentNameToText(paa.getName()) + ".  Do you approve? \r\n\r\n "
-					+ m_player.getName() + " will ask " + MyFormatter.asList(paa.getActionAccept()) + ", the following question: \r\n " + actionText;
+					actionText = m_player.getName() + " wants to take the following action: " + MyFormatter.attachmentNameToText(paa.getName()) + ".  Do you approve? \r\n\r\n " + m_player.getName()
+								+ " will ask " + MyFormatter.asList(paa.getActionAccept()) + ", the following question: \r\n " + actionText;
 				}
 				if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(actionText))
 					return false;
 			}
-			for (PlayerID player : paa.getActionAccept())
+			for (final PlayerID player : paa.getActionAccept())
 			{
 				if (!((ITripleaPlayer) m_bridge.getRemote(player)).acceptPoliticalAction(PoliticsText.getInstance().getAcceptanceQuestion(paa.getText())))
 					return false;
@@ -215,7 +209,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * 
 	 * @param paa
 	 */
-	private void notifyNoValidAction(PoliticalActionAttachment paa)
+	private void notifyNoValidAction(final PoliticalActionAttachment paa)
 	{
 		sendNotification(m_player, "This action isn't available anymore (this shouldn't happen!?!)");
 	}
@@ -234,7 +228,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param ennough
 	 *            is this a notificaiton about ennough or not ennough money.
 	 */
-	private void notifyMoney(PoliticalActionAttachment paa, boolean ennough)
+	private void notifyMoney(final PoliticalActionAttachment paa, final boolean ennough)
 	{
 		if (ennough)
 		{
@@ -244,7 +238,6 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		{
 			sendNotification(m_player, "You don't have ennough money, you need " + paa.getCostPU() + " PU's to perform this action");
 		}
-		
 	}
 	
 	/**
@@ -253,18 +246,17 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param paa
 	 *            the politicalactionattachment this the money is charged for.
 	 */
-	private void chargeForAction(PoliticalActionAttachment paa)
+	private void chargeForAction(final PoliticalActionAttachment paa)
 	{
-		Resource PUs = getData().getResourceList().getResource(Constants.PUS);
-		int cost = paa.getCostPU();
+		final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+		final int cost = paa.getCostPU();
 		if (cost > 0)
 		{
 			// don't notify user of spending money anymore
 			// notifyMoney(paa, true);
-			String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " PU on Political Action: " + MyFormatter.attachmentNameToText(paa.getName());
+			final String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " PU on Political Action: " + MyFormatter.attachmentNameToText(paa.getName());
 			m_bridge.getHistoryWriter().startEvent(transcriptText);
-			
-			Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), PUs, -cost);
+			final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), PUs, -cost);
 			m_bridge.addChange(charge);
 		}
 	}
@@ -274,11 +266,11 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 *            The Political Action the player should be charged for
 	 * @return false if the player can't afford the action
 	 */
-	private boolean checkEnoughMoney(PoliticalActionAttachment paa)
+	private boolean checkEnoughMoney(final PoliticalActionAttachment paa)
 	{
-		Resource PUs = getData().getResourceList().getResource(Constants.PUS);
-		int cost = paa.getCostPU();
-		int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
+		final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+		final int cost = paa.getCostPU();
+		final int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
 		return has >= cost;
 	}
 	
@@ -288,9 +280,9 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param paa
 	 *            the political action attachment that just failed.
 	 */
-	private void notifyFailure(PoliticalActionAttachment paa)
+	private void notifyFailure(final PoliticalActionAttachment paa)
 	{
-		String transcriptText = m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
+		final String transcriptText = m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
 		m_bridge.getHistoryWriter().startEvent(transcriptText);
 		sendNotification(m_player, PoliticsText.getInstance().getNotificationFailure(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
@@ -302,7 +294,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param paa
 	 *            the political action attachment that just failed.
 	 */
-	private void notifySuccess(PoliticalActionAttachment paa)
+	private void notifySuccess(final PoliticalActionAttachment paa)
 	{
 		sendNotification(m_player, PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
@@ -315,9 +307,9 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param paa
 	 * @param notification
 	 */
-	private void notifyOtherPlayers(PoliticalActionAttachment paa, String notification)
+	private void notifyOtherPlayers(final PoliticalActionAttachment paa, final String notification)
 	{
-		for (PlayerID otherPlayer : paa.getOtherPlayers())
+		for (final PlayerID otherPlayer : paa.getOtherPlayers())
 		{
 			sendNotification(otherPlayer, notification);
 		}
@@ -330,7 +322,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param text
 	 *            if NONE don't send a notification
 	 */
-	private void sendNotification(PlayerID player, String text)
+	private void sendNotification(final PlayerID player, final String text)
 	{
 		if (!"NONE".equals(text))
 			((ITripleaPlayer) m_bridge.getRemote(player)).reportMessage("To " + player.getName() + ": " + text, "To " + player.getName() + ": " + text);
@@ -342,34 +334,30 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param paa
 	 *            the political action to change the relationships for
 	 */
-	private void changeRelationships(PoliticalActionAttachment paa)
+	private void changeRelationships(final PoliticalActionAttachment paa)
 	{
 		getMyselfOutOfAlliance(paa, m_player, m_bridge);
 		getNeutralOutOfWarWithAllies(paa, m_player, m_bridge);
-		
-		CompositeChange change = new CompositeChange();
-		for (String relationshipChange : paa.getRelationshipChange())
+		final CompositeChange change = new CompositeChange();
+		for (final String relationshipChange : paa.getRelationshipChange())
 		{
-			String[] s = relationshipChange.split(":");
-			PlayerID player1 = getData().getPlayerList().getPlayerID(s[0]);
-			PlayerID player2 = getData().getPlayerList().getPlayerID(s[1]);
-			RelationshipType oldRelation = getData().getRelationshipTracker().getRelationshipType(player1, player2);
-			RelationshipType newRelation = getData().getRelationshipTypeList().getRelationshipType(s[2]);
+			final String[] s = relationshipChange.split(":");
+			final PlayerID player1 = getData().getPlayerList().getPlayerID(s[0]);
+			final PlayerID player2 = getData().getPlayerList().getPlayerID(s[1]);
+			final RelationshipType oldRelation = getData().getRelationshipTracker().getRelationshipType(player1, player2);
+			final RelationshipType newRelation = getData().getRelationshipTypeList().getRelationshipType(s[2]);
 			if (oldRelation.equals(newRelation))
 				continue;
-			
 			change.add(ChangeFactory.relationshipChange(player1, player2, oldRelation, newRelation));
-			
-			m_bridge.getHistoryWriter().startEvent(m_bridge.getPlayerID().getName() + " succeeds on action: " + MyFormatter.attachmentNameToText(paa.getName())
-						+ ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from " + oldRelation.getName() + " to " + newRelation.getName());
-			
+			m_bridge.getHistoryWriter().startEvent(
+						m_bridge.getPlayerID().getName() + " succeeds on action: " + MyFormatter.attachmentNameToText(paa.getName()) + ": Changing Relationship for " + player1.getName() + " and "
+									+ player2.getName() + " from " + oldRelation.getName() + " to " + newRelation.getName());
 			/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
 			if (Matches.RelationshipTypeIsAtWar.match(newRelation))
 				TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge);*/
 		}
 		if (!change.isEmpty())
 			m_bridge.addChange(change);
-		
 		chainAlliancesTogether(m_bridge);
 	}
 	
@@ -378,14 +366,13 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 *            the action to check if it succeeds
 	 * @return true if the action succeeds, usually because the die-roll succeeded.
 	 */
-	private boolean actionSucceeds(PoliticalActionAttachment paa)
+	private boolean actionSucceeds(final PoliticalActionAttachment paa)
 	{
 		if (paa.diceSides() == paa.toHit())
 			return true;
-		
-		int rollResult = m_bridge.getRandom(paa.diceSides(), "Attempting the PoliticalAction: " + MyFormatter.attachmentNameToText(paa.getName())) + 1;
-		boolean success = rollResult <= paa.toHit();
-		String notificationMessage = "rolling (" + paa.toHit() + " out of " + paa.diceSides() + ") result: " + rollResult + " " + (success ? "Success!" : "Failure!");
+		final int rollResult = m_bridge.getRandom(paa.diceSides(), "Attempting the PoliticalAction: " + MyFormatter.attachmentNameToText(paa.getName())) + 1;
+		final boolean success = rollResult <= paa.toHit();
+		final String notificationMessage = "rolling (" + paa.toHit() + " out of " + paa.diceSides() + ") result: " + rollResult + " " + (success ? "Success!" : "Failure!");
 		sendNotification(m_player, notificationMessage);
 		m_bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(paa.getName()) + " : " + notificationMessage);
 		return success;
@@ -398,21 +385,21 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 */
 	private void resetAttempts()
 	{
-		for (PoliticalActionAttachment paa : PoliticalActionAttachment.getPoliticalActionAttachments(m_player))
+		for (final PoliticalActionAttachment paa : PoliticalActionAttachment.getPoliticalActionAttachments(m_player))
 		{
 			paa.resetAttempts(getBridge());
 		}
 	}
 	
-	public static void getMyselfOutOfAlliance(PoliticalActionAttachment paa, PlayerID player, IDelegateBridge aBridge)
+	public static void getMyselfOutOfAlliance(final PoliticalActionAttachment paa, final PlayerID player, final IDelegateBridge aBridge)
 	{
-		GameData data = aBridge.getData();
+		final GameData data = aBridge.getData();
 		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data))
 			return;
-		Collection<PlayerID> players = data.getPlayerList().getPlayers();
-		Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player));
+		final Collection<PlayerID> players = data.getPlayerList().getPlayers();
+		final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player));
 		p1AlliedWith.remove(player);
-		CompositeChange change = new CompositeChange();
+		final CompositeChange change = new CompositeChange();
 		for (final String relationshipChangeString : paa.getRelationshipChange())
 		{
 			final String[] relationshipChange = relationshipChangeString.split(":");
@@ -420,14 +407,14 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
 			if (!(p1.equals(player) || p2.equals(player)))
 				continue;
-			PlayerID pOther = (p1.equals(player) ? p2 : p1);
+			final PlayerID pOther = (p1.equals(player) ? p2 : p1);
 			if (!p1AlliedWith.contains(pOther))
 				continue;
 			final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
 			final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
 			if (Matches.isAlliedAndAlliancesCanChainTogether.match(currentType) && Matches.isAlliedAndAlliancesCanChainTogether.invert().match(newType))
 			{
-				for (PlayerID p3 : p1AlliedWith)
+				for (final PlayerID p3 : p1AlliedWith)
 				{
 					final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, player);
 					if (!currentOther.equals(newType))
@@ -442,16 +429,16 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			aBridge.addChange(change);
 	}
 	
-	public static void getNeutralOutOfWarWithAllies(PoliticalActionAttachment paa, PlayerID player, IDelegateBridge aBridge)
+	public static void getNeutralOutOfWarWithAllies(final PoliticalActionAttachment paa, final PlayerID player, final IDelegateBridge aBridge)
 	{
-		GameData data = aBridge.getData();
+		final GameData data = aBridge.getData();
 		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data))
 			return;
-		//if (!Matches.isRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar, Matches.RelationshipTypeIsAtWar.invert(), data).match(paa))
-			//return;
-		Collection<PlayerID> players = data.getPlayerList().getPlayers();
-		Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player));
-		CompositeChange change = new CompositeChange();
+		// if (!Matches.isRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar, Matches.RelationshipTypeIsAtWar.invert(), data).match(paa))
+		// return;
+		final Collection<PlayerID> players = data.getPlayerList().getPlayers();
+		final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player));
+		final CompositeChange change = new CompositeChange();
 		for (final String relationshipChangeString : paa.getRelationshipChange())
 		{
 			final String[] relationshipChange = relationshipChangeString.split(":");
@@ -459,19 +446,19 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
 			if (!(p1.equals(player) || p2.equals(player)))
 				continue;
-			PlayerID pOther = (p1.equals(player) ? p2 : p1);
+			final PlayerID pOther = (p1.equals(player) ? p2 : p1);
 			final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
 			final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
 			if (Matches.RelationshipTypeIsAtWar.match(currentType) && Matches.RelationshipTypeIsAtWar.invert().match(newType))
 			{
-				Collection<PlayerID> pOtherAlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(pOther));
+				final Collection<PlayerID> pOtherAlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(pOther));
 				if (!pOtherAlliedWith.contains(pOther))
 					pOtherAlliedWith.add(pOther);
 				if (!p1AlliedWith.contains(player))
 					p1AlliedWith.add(player);
-				for (PlayerID p3 : p1AlliedWith)
+				for (final PlayerID p3 : p1AlliedWith)
 				{
-					for (PlayerID p4 : pOtherAlliedWith)
+					for (final PlayerID p4 : pOtherAlliedWith)
 					{
 						final RelationshipType currentOther = data.getRelationshipTracker().getRelationshipType(p3, p4);
 						if (!currentOther.equals(newType) && Matches.RelationshipTypeIsAtWar.match(currentOther))
@@ -487,15 +474,15 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			aBridge.addChange(change);
 	}
 	
-	public static void chainAlliancesTogether(IDelegateBridge aBridge)
+	public static void chainAlliancesTogether(final IDelegateBridge aBridge)
 	{
-		GameData data = aBridge.getData();
+		final GameData data = aBridge.getData();
 		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data))
 			return;
-		Collection<RelationshipType> allTypes = data.getRelationshipTypeList().getAllRelationshipTypes();
+		final Collection<RelationshipType> allTypes = data.getRelationshipTypeList().getAllRelationshipTypes();
 		RelationshipType alliedType = null;
 		RelationshipType warType = null;
-		for (RelationshipType type : allTypes)
+		for (final RelationshipType type : allTypes)
 		{
 			if (type.getRelationshipTypeAttachment().getIsDefaultWarPosition())
 				warType = type;
@@ -504,20 +491,19 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		}
 		if (alliedType == null)
 			return;
-		
-		// first do alliances.  then, do war (since we don't want to declare war on a potential ally).
-		Collection<PlayerID> players = data.getPlayerList().getPlayers();
-		for (PlayerID p1 : players)
+		// first do alliances. then, do war (since we don't want to declare war on a potential ally).
+		final Collection<PlayerID> players = data.getPlayerList().getPlayers();
+		for (final PlayerID p1 : players)
 		{
-			HashSet<PlayerID> p1NewAllies = new HashSet<PlayerID>();
-			Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1));
-			for (PlayerID p2 : p1AlliedWith)
+			final HashSet<PlayerID> p1NewAllies = new HashSet<PlayerID>();
+			final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1));
+			for (final PlayerID p2 : p1AlliedWith)
 			{
 				p1NewAllies.addAll(Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p2)));
 			}
 			p1NewAllies.removeAll(p1AlliedWith);
 			p1NewAllies.remove(p1);
-			for (PlayerID p3 : p1NewAllies)
+			for (final PlayerID p3 : p1NewAllies)
 			{
 				if (!data.getRelationshipTracker().getRelationshipType(p1, p3).equals(alliedType))
 				{
@@ -529,18 +515,18 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		// now war
 		if (warType == null)
 			return;
-		for (PlayerID p1 : players)
+		for (final PlayerID p1 : players)
 		{
-			HashSet<PlayerID> p1NewWar = new HashSet<PlayerID>();
-			Collection<PlayerID> p1WarWith = Match.getMatches(players, Matches.isAtWar(p1));
-			Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1));
-			for (PlayerID p2 : p1AlliedWith)
+			final HashSet<PlayerID> p1NewWar = new HashSet<PlayerID>();
+			final Collection<PlayerID> p1WarWith = Match.getMatches(players, Matches.isAtWar(p1));
+			final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1));
+			for (final PlayerID p2 : p1AlliedWith)
 			{
 				p1NewWar.addAll(Match.getMatches(players, Matches.isAtWar(p2)));
 			}
 			p1NewWar.removeAll(p1WarWith);
 			p1NewWar.remove(p1);
-			for (PlayerID p3 : p1NewWar)
+			for (final PlayerID p3 : p1NewWar)
 			{
 				if (!data.getRelationshipTracker().getRelationshipType(p1, p3).equals(warType))
 				{

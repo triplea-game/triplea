@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.pbem;
 
 import java.io.IOException;
@@ -19,9 +18,7 @@ import java.io.InputStream;
 
 public interface IPBEMSaveGameMessenger extends IPBEMMessenger
 {
-	
-	public boolean postSaveGame(String fname, InputStream is)
-				throws IOException;
+	public boolean postSaveGame(String fname, InputStream is) throws IOException;
 	
 	public String getSaveGameRef();
 }

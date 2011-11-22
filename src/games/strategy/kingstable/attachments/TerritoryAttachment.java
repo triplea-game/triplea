@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.kingstable.attachments;
 
 import games.strategy.engine.data.DefaultAttachment;
@@ -32,7 +31,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	{
 	}
 	
-	public void setKingsSquare(String value)
+	public void setKingsSquare(final String value)
 	{
 		m_isKingsSquare = getBool(value);
 	}
@@ -42,7 +41,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_isKingsSquare;
 	}
 	
-	public void setKingsExit(String value)
+	public void setKingsExit(final String value)
 	{
 		m_isKingsExit = getBool(value);
 	}

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * MapPanel.java
  * 
  * Created on October 30, 2001, 2:02 PM
  */
-
 package games.strategy.ui;
 
 import java.awt.Component;
@@ -44,32 +42,29 @@ import javax.swing.JComponent;
 class ZoomableImage extends JComponent
 {
 	private double m_zoom = 1.0;
-	private Image m_original;
+	private final Image m_original;
 	private Image m_current;
 	
 	/** Creates new MapPanel */
-	public ZoomableImage(Image anImage)
+	public ZoomableImage(final Image anImage)
 	{
 		ensureImageLoaded(anImage);
 		m_original = anImage;
 		m_current = anImage;
-		
-		Dimension dim = new Dimension(m_current.getWidth(this), m_current.getHeight(this));
+		final Dimension dim = new Dimension(m_current.getWidth(this), m_current.getHeight(this));
 		this.setPreferredSize(dim);
-		
 	}
 	
-	private void ensureImageLoaded(Image anImage)
+	private void ensureImageLoaded(final Image anImage)
 	{
 		if (anImage.getWidth(this) != -1)
 			return;
-		
-		MediaTracker tracker = new MediaTracker(this);
+		final MediaTracker tracker = new MediaTracker(this);
 		tracker.addImage(anImage, 1);
 		try
 		{
 			tracker.waitForAll(1);
-		} catch (InterruptedException ie)
+		} catch (final InterruptedException ie)
 		{
 			ie.printStackTrace();
 			System.err.println("<<<<<<<<<<<<<<<<<<<<<<>trying again to load Image");
@@ -82,33 +77,30 @@ class ZoomableImage extends JComponent
 		return m_zoom;
 	}
 	
-	public void setZoom(double newZoom)
+	public void setZoom(final double newZoom)
 	{
 		if (newZoom <= 1.0)
 			throw new IllegalArgumentException("Zoom must be > 1.  Got:" + newZoom);
-		
 		m_zoom = newZoom;
 		stretchImage();
-		Dimension dim = new Dimension(m_current.getWidth(this), m_current.getHeight(this));
+		final Dimension dim = new Dimension(m_current.getWidth(this), m_current.getHeight(this));
 		this.setPreferredSize(dim);
 		this.invalidate();
 	}
 	
 	private void stretchImage()
 	{
-		int width = (int) (m_original.getWidth(this) * m_zoom);
-		int height = (int) (m_original.getHeight(this) * m_zoom);
+		final int width = (int) (m_original.getWidth(this) * m_zoom);
+		final int height = (int) (m_original.getHeight(this) * m_zoom);
 		m_current = m_original.getScaledInstance(width, height, Image.SCALE_FAST);
 	}
 	
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 		// draw the image
 		g.drawImage(m_current, 0, 0, this);
-		
-		Rectangle rect = g.getClipBounds();
-		
+		final Rectangle rect = g.getClipBounds();
 		if (rect.getWidth() > m_current.getWidth(this) || rect.getHeight() > m_current.getHeight(this))
 		{
 			// we are being asked to draw on a canvas bigger than the image
@@ -117,7 +109,7 @@ class ZoomableImage extends JComponent
 		}
 	}
 	
-	public void addComponent(Component comp)
+	public void addComponent(final Component comp)
 	{
 		throw new IllegalStateException("Cannot add componenets to an image panel");
 	}

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TestDelegate.java
  * 
  * Created on October 22, 2001, 9:39 AM
  */
-
 package games.strategy.engine.xml;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -44,13 +42,13 @@ public final class TestDelegate extends BaseDelegate
 		return false;
 	}
 	
-	public void initialize(String name)
+	public void initialize(final String name)
 	{
 		m_name = name;
 	}
 	
 	@Override
-	public void initialize(String name, String displayName)
+	public void initialize(final String name, final String displayName)
 	{
 		m_name = name;
 	}
@@ -102,7 +100,6 @@ public final class TestDelegate extends BaseDelegate
 	/**
 	 * Returns the state of the Delegate.
 	 */
-	
 	@Override
 	public Serializable saveState()
 	{
@@ -112,10 +109,8 @@ public final class TestDelegate extends BaseDelegate
 	/**
 	 * Loads the delegates state
 	 */
-	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
 	}
-	
 }

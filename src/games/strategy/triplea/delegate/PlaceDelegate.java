@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * PlaceDelegate.java
  * 
  * Created on November 2, 2001, 12:29 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Territory;
@@ -46,15 +44,14 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
  */
 public class PlaceDelegate extends AbstractPlaceDelegate
 {
-	
 	/**
 	 * 
 	 * @return gets the production of the territory
 	 */
 	@Override
-	protected int getProduction(Territory territory)
+	protected int getProduction(final Territory territory)
 	{
-		TerritoryAttachment ta = TerritoryAttachment.get(territory);
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		if (ta != null)
 			return ta.getProduction();
 		return 0;

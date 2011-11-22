@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.ui;
 
 import games.strategy.net.IConnectionChangeListener;
@@ -32,19 +31,16 @@ import javax.swing.SwingUtilities;
 
 public class AllUsersPanel extends JPanel
 {
-	
 	private final IMessenger m_messenger;
 	private JList m_nodes;
 	private DefaultListModel m_nodesModel;
 	private LobbyAdminStatPanel m_statPane;
 	private final List<INode> m_orderedNodes;
 	
-	public AllUsersPanel(IMessenger messenger)
+	public AllUsersPanel(final IMessenger messenger)
 	{
 		m_messenger = messenger;
-		
 		m_orderedNodes = new ArrayList<INode>();
-		
 		createComponents();
 		layoutComponents();
 		setupListeners();
@@ -56,7 +52,6 @@ public class AllUsersPanel extends JPanel
 		m_nodesModel = new DefaultListModel();
 		m_nodes = new JList(m_nodesModel);
 		m_statPane = new LobbyAdminStatPanel(m_messenger);
-		
 	}
 	
 	private void layoutComponents()
@@ -64,64 +59,49 @@ public class AllUsersPanel extends JPanel
 		setLayout(new BorderLayout());
 		add(new JScrollPane(m_nodes), BorderLayout.CENTER);
 		add(m_statPane, BorderLayout.SOUTH);
-		
 	}
 	
 	private void setupListeners()
 	{
 		((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener()
 		{
-			
 			public void connectionRemoved(final INode to)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					
 					public void run()
 					{
 						m_orderedNodes.remove(to);
 						refreshModel();
-						
 					}
-					
 				});
-				
 			}
 			
 			public void connectionAdded(final INode to)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					
 					public void run()
 					{
 						m_orderedNodes.add(to);
 						refreshModel();
-						
 					}
-					
 				});
-				
 			}
-			
 		});
-		
 	}
 	
 	private void refreshModel()
 	{
 		Collections.sort(m_orderedNodes);
 		m_nodesModel.clear();
-		for (INode node : m_orderedNodes)
+		for (final INode node : m_orderedNodes)
 		{
 			m_nodesModel.addElement(node);
 		}
-		
 	}
 	
 	private void setWidgetActivation()
 	{
-		
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ProductionRuleList.java
  * 
  * Created on October 22, 2001, 10:23 AM
  */
-
 package games.strategy.engine.data;
 
 import java.util.Collection;
@@ -34,12 +32,12 @@ public class ProductionRuleList extends GameDataComponent
 {
 	private final Map<String, ProductionRule> m_productionRules = new HashMap<String, ProductionRule>();
 	
-	public ProductionRuleList(GameData data)
+	public ProductionRuleList(final GameData data)
 	{
 		super(data);
 	}
 	
-	protected void addProductionRule(ProductionRule pf)
+	protected void addProductionRule(final ProductionRule pf)
 	{
 		m_productionRules.put(pf.getName(), pf);
 	}
@@ -49,7 +47,7 @@ public class ProductionRuleList extends GameDataComponent
 		return m_productionRules.size();
 	}
 	
-	public ProductionRule getProductionRule(String name)
+	public ProductionRule getProductionRule(final String name)
 	{
 		return m_productionRules.get(name);
 	}

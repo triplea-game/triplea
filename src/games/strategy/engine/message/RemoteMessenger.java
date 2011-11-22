@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.message;
 
 import java.lang.reflect.InvocationHandler;
@@ -25,33 +24,26 @@ import java.lang.reflect.Proxy;
  */
 public class RemoteMessenger implements IRemoteMessenger
 {
-	
 	private final UnifiedMessenger m_unifiedMessenger;
 	
-	public RemoteMessenger(UnifiedMessenger messenger)
+	public RemoteMessenger(final UnifiedMessenger messenger)
 	{
 		m_unifiedMessenger = messenger;
 	}
 	
-	public IRemote getRemote(RemoteName remoteName)
+	public IRemote getRemote(final RemoteName remoteName)
 	{
-		
-		InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger, remoteName.getName(), false, remoteName.getClazz());
-		
-		IRemote rVal = (IRemote) Proxy.newProxyInstance(
-					Thread.currentThread().getContextClassLoader(),
-					new Class[] { remoteName.getClazz() }, ih);
-		
+		final InvocationHandler ih = new UnifiedInvocationHandler(m_unifiedMessenger, remoteName.getName(), false, remoteName.getClazz());
+		final IRemote rVal = (IRemote) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] { remoteName.getClazz() }, ih);
 		return rVal;
 	}
 	
-	public void registerRemote(Object implementor,
-				RemoteName name)
+	public void registerRemote(final Object implementor, final RemoteName name)
 	{
 		m_unifiedMessenger.addImplementor(name, implementor, false);
 	}
 	
-	public void unregisterRemote(RemoteName name)
+	public void unregisterRemote(final RemoteName name)
 	{
 		unregisterRemote(name.getName());
 	}
@@ -61,15 +53,13 @@ public class RemoteMessenger implements IRemoteMessenger
 		return m_unifiedMessenger.isServer();
 	}
 	
-	public void unregisterRemote(String name)
+	public void unregisterRemote(final String name)
 	{
 		m_unifiedMessenger.removeImplementor(name, m_unifiedMessenger.getImplementor(name));
-		
 	}
 	
-	public boolean hasLocalImplementor(RemoteName descriptor)
+	public boolean hasLocalImplementor(final RemoteName descriptor)
 	{
 		return m_unifiedMessenger.getLocalEndPointCount(descriptor) == 1;
 	}
-	
 }

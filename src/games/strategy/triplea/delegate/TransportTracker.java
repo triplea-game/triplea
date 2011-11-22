@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TransportTracker.java
  * 
@@ -19,7 +18,6 @@
  * 
  * @version $LastChangedDate$
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
@@ -50,13 +48,12 @@ import java.util.Map;
  */
 public class TransportTracker
 {
-	
-	public static int getCost(Collection<Unit> units)
+	public static int getCost(final Collection<Unit> units)
 	{
 		return MoveValidator.getTransportCost(units);
 	}
 	
-	private static void assertTransport(Unit u)
+	private static void assertTransport(final Unit u)
 	{
 		if (UnitAttachment.get(u.getType()).getTransportCapacity() == -1)
 		{
@@ -75,12 +72,12 @@ public class TransportTracker
 	 * Returns the collection of units that the given transport is transporting.
 	 * Could be null.
 	 */
-	public Collection<Unit> transporting(Unit transport)
+	public Collection<Unit> transporting(final Unit transport)
 	{
 		return new ArrayList<Unit>(((TripleAUnit) transport).getTransporting());
 	}
 	
-	public boolean isTransporting(Unit transport)
+	public boolean isTransporting(final Unit transport)
 	{
 		return !((TripleAUnit) transport).getTransporting().isEmpty();
 	}
@@ -89,18 +86,16 @@ public class TransportTracker
 	 * Returns the collection of units that the given transport has unloaded
 	 * this turn. Could be empty.
 	 */
-	public Collection<Unit> unloaded(Unit transport)
+	public Collection<Unit> unloaded(final Unit transport)
 	{
 		return ((TripleAUnit) transport).getUnloaded();
 	}
 	
-	public Collection<Unit> transportingAndUnloaded(Unit transport)
+	public Collection<Unit> transportingAndUnloaded(final Unit transport)
 	{
-		
 		Collection<Unit> rVal = transporting(transport);
 		if (rVal == null)
 			rVal = new ArrayList<Unit>();
-		
 		rVal.addAll(unloaded(transport));
 		return rVal;
 	}
@@ -108,14 +103,12 @@ public class TransportTracker
 	/**
 	 * Returns a map of transport -> collection of transported units.
 	 */
-	public Map<Unit, Collection<Unit>> transporting(Collection<Unit> units)
+	public Map<Unit, Collection<Unit>> transporting(final Collection<Unit> units)
 	{
-		Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
-		
-		for (Unit transported : units)
+		final Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
+		for (final Unit transported : units)
 		{
-			Unit transport = transportedBy(transported);
-			
+			final Unit transport = transportedBy(transported);
 			Collection<Unit> transporting = null;
 			if (transport != null)
 				transporting = transporting(transport);
@@ -130,66 +123,57 @@ public class TransportTracker
 	/**
 	 * Return the transport that holds the given unit. Could be null.
 	 */
-	public Unit transportedBy(Unit unit)
+	public Unit transportedBy(final Unit unit)
 	{
 		return ((TripleAUnit) unit).getTransportedBy();
 	}
 	
-	private boolean isNonCombat(GameData data)
+	private boolean isNonCombat(final GameData data)
 	{
 		return data.getSequence().getStep().getName().endsWith("NonCombatMove");
 	}
 	
-	public Change unloadTransportChange(TripleAUnit unit, Territory territory, PlayerID id, boolean dependentBattle)
+	public Change unloadTransportChange(final TripleAUnit unit, final Territory territory, final PlayerID id, final boolean dependentBattle)
 	{
-		CompositeChange change = new CompositeChange();
-		TripleAUnit transport = (TripleAUnit) transportedBy(unit);
+		final CompositeChange change = new CompositeChange();
+		final TripleAUnit transport = (TripleAUnit) transportedBy(unit);
 		if (transport == null)
 			return change;
-		
 		assertTransport(transport);
 		if (!transport.getTransporting().contains(unit))
 		{
 			throw new IllegalStateException("Not being carried, unit:" + unit + " transport:" + transport);
 		}
-		
-		ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
+		final ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
 		newUnloaded.add(unit);
-		
 		change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
 		if (!isNonCombat(unit.getData()))
 		{
 			change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
 			change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
-			
 			change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
 			change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
 		}
-		
 		if (!dependentBattle)
 		{
 			change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
 		}
-		
 		change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, TripleAUnit.UNLOADED));
-		
 		return change;
 	}
 	
-	public Change loadTransportChange(TripleAUnit transport, Unit unit, PlayerID id)
+	public Change loadTransportChange(final TripleAUnit transport, final Unit unit, final PlayerID id)
 	{
 		assertTransport(transport);
-		CompositeChange change = new CompositeChange();
+		final CompositeChange change = new CompositeChange();
 		// clear the loaded by
 		change.add(ChangeFactory.unitPropertyChange(unit, transport, TripleAUnit.TRANSPORTED_BY));
-		
-		Collection<Unit> newCarrying = new ArrayList<Unit>(transport.getTransporting());
+		final Collection<Unit> newCarrying = new ArrayList<Unit>(transport.getTransporting());
 		if (newCarrying.contains(unit))
 		{
 			throw new IllegalStateException("Already carrying, transport:" + transport + " unt:" + unit);
 		}
 		newCarrying.add(unit);
-		
 		change.add(ChangeFactory.unitPropertyChange(unit, Boolean.TRUE, TripleAUnit.LOADED_THIS_TURN));
 		change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.LOADED_THIS_TURN));
 		// If the transport was in combat, flag it as being loaded AFTER combat
@@ -197,37 +181,35 @@ public class TransportTracker
 		{
 			change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.LOADED_AFTER_COMBAT));
 		}
-		
 		return change;
 	}
 	
-	public Change combatTransportChange(TripleAUnit transport, PlayerID id)
+	public Change combatTransportChange(final TripleAUnit transport, final PlayerID id)
 	{
 		assertTransport(transport);
-		CompositeChange change = new CompositeChange();
+		final CompositeChange change = new CompositeChange();
 		change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.WAS_IN_COMBAT));
-		
 		return change;
 	}
 	
-	public int getAvailableCapacity(Unit unit)
+	public int getAvailableCapacity(final Unit unit)
 	{
-		UnitAttachment ua = UnitAttachment.get(unit.getType());
+		final UnitAttachment ua = UnitAttachment.get(unit.getType());
 		// Check if there are transports available, also check for destroyer capacity (Tokyo Express)
 		if (ua.getTransportCapacity() == -1 || (unit.getData().getProperties().get(Constants.PACIFIC_THEATER, false) && ua.getIsDestroyer() && !unit.getOwner().getName().equals("Japanese")))
 			return 0;
-		int capacity = ua.getTransportCapacity();
-		int used = getCost(transporting(unit));
-		int unloaded = getCost(unloaded(unit));
+		final int capacity = ua.getTransportCapacity();
+		final int used = getCost(transporting(unit));
+		final int unloaded = getCost(unloaded(unit));
 		return capacity - used - unloaded;
 	}
 	
-	public Change endOfRoundClearStateChange(GameData data)
+	public Change endOfRoundClearStateChange(final GameData data)
 	{
-		CompositeChange change = new CompositeChange();
-		for (Unit unit : data.getUnits().getUnits())
+		final CompositeChange change = new CompositeChange();
+		for (final Unit unit : data.getUnits().getUnits())
 		{
-			TripleAUnit taUnit = (TripleAUnit) unit;
+			final TripleAUnit taUnit = (TripleAUnit) unit;
 			if (!taUnit.getUnloaded().isEmpty())
 			{
 				change.add(ChangeFactory.unitPropertyChange(unit, Collections.EMPTY_LIST, TripleAUnit.UNLOADED));
@@ -256,12 +238,10 @@ public class TransportTracker
 		return change;
 	}
 	
-	public Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(Collection<Unit> units)
+	public Collection<Unit> getUnitsLoadedOnAlliedTransportsThisTurn(final Collection<Unit> units)
 	{
-		
-		Collection<Unit> rVal = new ArrayList<Unit>();
-		
-		for (Unit u : units)
+		final Collection<Unit> rVal = new ArrayList<Unit>();
+		for (final Unit u : units)
 		{
 			// a unit loaded onto an allied transport
 			// cannot be unloaded in the same turn, so
@@ -270,27 +250,24 @@ public class TransportTracker
 			// we were loaded onto an allied transport
 			// if we are no longer being transported,
 			// then we must have been transported on our own transport
-			TripleAUnit taUnit = (TripleAUnit) u;
-			if (taUnit.getWasLoadedThisTurn() &&
-						taUnit.getTransportedBy() != null &&
-						// an allied transport if the owner of the transport is not the owner of the unit
+			final TripleAUnit taUnit = (TripleAUnit) u;
+			if (taUnit.getWasLoadedThisTurn() && taUnit.getTransportedBy() != null &&
+			// an allied transport if the owner of the transport is not the owner of the unit
 						!taUnit.getTransportedBy().getOwner().equals(taUnit.getOwner()))
 			{
 				rVal.add(u);
 			}
 		}
-		
 		return rVal;
 	}
 	
-	public boolean hasTransportUnloadedInPreviousPhase(Unit transport)
+	public boolean hasTransportUnloadedInPreviousPhase(final Unit transport)
 	{
-		Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
-		
+		final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
 		// See if transport has unloaded anywhere yet
-		for (Unit u : unloaded)
+		for (final Unit u : unloaded)
 		{
-			TripleAUnit taUnit = (TripleAUnit) u;
+			final TripleAUnit taUnit = (TripleAUnit) u;
 			// cannot unload in two different phases
 			if (isNonCombat(transport.getData()) && taUnit.getWasUnloadedInCombatPhase())
 				return true;
@@ -298,13 +275,13 @@ public class TransportTracker
 		return false;
 	}
 	
-	private boolean isWW2V2(GameData data)
+	private boolean isWW2V2(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getWW2V2(data);
 	}
 	
 	// TODO here's a bug COMCO
-	private boolean isTransportUnloadRestricted(GameData data)
+	private boolean isTransportUnloadRestricted(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getTransportUnloadRestricted(data);
 	}
@@ -313,17 +290,16 @@ public class TransportTracker
 	// multiple territories in a given turn.
 	// In WW2V1 a transport can unload to multiple territories in
 	// non-combat phase, provided they are both adjacent to the sea zone.
-	public boolean isTransportUnloadRestrictedToAnotherTerritory(Unit transport, Territory territory)
+	public boolean isTransportUnloadRestrictedToAnotherTerritory(final Unit transport, final Territory territory)
 	{
-		Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
+		final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
 		if (unloaded.isEmpty())
 			return false;
-		
 		// See if transport has unloaded anywhere yet
-		GameData data = transport.getData();
-		for (Unit u : unloaded)
+		final GameData data = transport.getData();
+		for (final Unit u : unloaded)
 		{
-			TripleAUnit taUnit = (TripleAUnit) u;
+			final TripleAUnit taUnit = (TripleAUnit) u;
 			if (isWW2V2(data) || isTransportUnloadRestricted(data))
 			{
 				// cannot unload to two different territories
@@ -333,8 +309,7 @@ public class TransportTracker
 			else
 			{
 				// cannot unload to two different territories in combat phase
-				if (!isNonCombat(transport.getData())
-							&& !taUnit.getUnloadedTo().equals(territory))
+				if (!isNonCombat(transport.getData()) && !taUnit.getUnloadedTo().equals(territory))
 					return true;
 			}
 		}
@@ -346,23 +321,21 @@ public class TransportTracker
 	// However, we only need to call this method to determine why we can't
 	// unload an additional unit. Since transports only hold up to two units,
 	// we only need to return one territory, not multiple territories.
-	public Territory getTerritoryTransportHasUnloadedTo(Unit transport)
+	public Territory getTerritoryTransportHasUnloadedTo(final Unit transport)
 	{
-		Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
+		final Collection<Unit> unloaded = ((TripleAUnit) transport).getUnloaded();
 		if (unloaded.isEmpty())
 			return null;
-		
-		Iterator<Unit> iter = unloaded.iterator();
+		final Iterator<Unit> iter = unloaded.iterator();
 		return ((TripleAUnit) iter.next()).getUnloadedTo();
 	}
 	
 	// If a transport has been in combat, it cannot load AND unload in non-combat
-	public boolean isTransportUnloadRestrictedInNonCombat(Unit transport)
+	public boolean isTransportUnloadRestrictedInNonCombat(final Unit transport)
 	{
-		TripleAUnit taUnit = (TripleAUnit) transport;
+		final TripleAUnit taUnit = (TripleAUnit) transport;
 		if (isNonCombat(transport.getData()) && taUnit.getWasInCombat() && taUnit.getWasLoadedAfterCombat())
 			return true;
 		return false;
 	}
-	
 }

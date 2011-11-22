@@ -12,7 +12,7 @@ public class UserManager implements IUserManager
 {
 	private final static Logger s_logger = Logger.getLogger(UserManager.class.getName());
 	
-	public void register(IRemoteMessenger messenger)
+	public void register(final IRemoteMessenger messenger)
 	{
 		messenger.registerRemote(this, IUserManager.USER_MANAGER);
 	}
@@ -20,41 +20,35 @@ public class UserManager implements IUserManager
 	/**
 	 * Update hte user info, returning an error string if an error occurs
 	 */
-	
-	public String updateUser(String userName, String emailAddress, String hashedPassword)
+	public String updateUser(final String userName, final String emailAddress, final String hashedPassword)
 	{
-		INode remote = MessageContext.getSender();
+		final INode remote = MessageContext.getSender();
 		if (!userName.equals(remote.getName()))
 		{
 			s_logger.severe("Tried to update user permission, but not correct user, userName:" + userName + " node:" + remote);
 			return "Sorry, but I can't let you do that";
 		}
-		
 		try
 		{
 			new DBUserController().updateUser(userName, emailAddress, hashedPassword, false);
-		} catch (IllegalStateException e)
+		} catch (final IllegalStateException e)
 		{
 			return e.getMessage();
 		}
 		return null;
-		
 	}
 	
 	/**
 	 * Update hte user info, returning an error string if an error occurs
 	 */
-	
-	public DBUser getUserInfo(String userName)
+	public DBUser getUserInfo(final String userName)
 	{
-		INode remote = MessageContext.getSender();
+		final INode remote = MessageContext.getSender();
 		if (!userName.equals(remote.getName()))
 		{
 			s_logger.severe("Tried to get user info, but not correct user, userName:" + userName + " node:" + remote);
 			throw new IllegalStateException("Sorry, but I can't let you do that");
 		}
-		
 		return new DBUserController().getUser(userName);
 	}
-	
 }

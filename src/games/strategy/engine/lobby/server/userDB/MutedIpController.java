@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.userDB;
 
 import java.sql.Connection;
@@ -32,13 +31,12 @@ import java.util.logging.Logger;
  */
 public class MutedIpController
 {
-	
 	private static final Logger s_logger = Logger.getLogger(MutedIpController.class.getName());
 	
 	/**
 	 * Mute the ip permanently
 	 */
-	public void addMutedIp(String ip)
+	public void addMutedIp(final String ip)
 	{
 		addMutedIp(ip, null);
 	}
@@ -49,28 +47,26 @@ public class MutedIpController
 	 * 
 	 * If this ip is already muted, this call will update the mute_end.
 	 */
-	public void addMutedIp(String ip, Date muteTill)
+	public void addMutedIp(final String ip, final Date muteTill)
 	{
 		if (isIpMuted(ip))
 			removeMutedIp(ip);
-		
 		Timestamp muteTillTs = null;
 		if (muteTill != null)
 		{
 			muteTillTs = new Timestamp(muteTill.getTime());
 		}
-		
 		s_logger.fine("Muting ip:" + ip);
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("insert into muted_ips (ip, mute_till) values (?, ?)");
+			final PreparedStatement ps = con.prepareStatement("insert into muted_ips (ip, mute_till) values (?, ?)");
 			ps.setString(1, ip);
 			ps.setTimestamp(2, muteTillTs);
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			if (sqle.getErrorCode() == 30000)
 			{
@@ -79,7 +75,6 @@ public class MutedIpController
 				s_logger.info("Tried to create duplicate muted ip:" + ip + " error:" + sqle.getMessage());
 				return;
 			}
-			
 			s_logger.log(Level.SEVERE, "Error inserting muted ip:" + ip, sqle);
 			throw new IllegalStateException(sqle.getMessage());
 		} finally
@@ -88,18 +83,18 @@ public class MutedIpController
 		}
 	}
 	
-	public void removeMutedIp(String ip)
+	public void removeMutedIp(final String ip)
 	{
 		s_logger.fine("Removing muted ip:" + ip);
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("delete from muted_ips where ip = ?");
+			final PreparedStatement ps = con.prepareStatement("delete from muted_ips where ip = ?");
 			ps.setString(1, ip);
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.log(Level.SEVERE, "Error deleting muted ip:" + ip, sqle);
 			throw new IllegalStateException(sqle.getMessage());
@@ -113,28 +108,27 @@ public class MutedIpController
 	 * Is the given ip muted? This may have the side effect of removing from the
 	 * database any ip's whose mute has expired
 	 */
-	public boolean isIpMuted(String ip)
+	public boolean isIpMuted(final String ip)
 	{
-		long muteTill = getIpUnmuteTime(ip);
+		final long muteTill = getIpUnmuteTime(ip);
 		return muteTill > System.currentTimeMillis();
 	}
 	
-	public long getIpUnmuteTime(String ip)
+	public long getIpUnmuteTime(final String ip)
 	{
 		long result = -1;
 		boolean expired = false;
-		String sql = "select ip, mute_till from muted_ips where ip = ?";
-		Connection con = Database.getConnection();
+		final String sql = "select ip, mute_till from muted_ips where ip = ?";
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement(sql);
+			final PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, ip);
-			ResultSet rs = ps.executeQuery();
-			boolean found = rs.next();
-			
+			final ResultSet rs = ps.executeQuery();
+			final boolean found = rs.next();
 			if (found)
 			{
-				Timestamp muteTill = rs.getTimestamp(2);
+				final Timestamp muteTill = rs.getTimestamp(2);
 				result = muteTill.getTime();
 				if (result < System.currentTimeMillis())
 				{
@@ -144,10 +138,9 @@ public class MutedIpController
 			}
 			else
 				result = -1;
-			
 			rs.close();
 			ps.close();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.info("Error for testing muted ip existence:" + ip + " error:" + sqle.getMessage());
 			throw new IllegalStateException(sqle.getMessage());
@@ -155,7 +148,6 @@ public class MutedIpController
 		{
 			DbUtil.closeConnection(con);
 		}
-		
 		// If the mute has expired, allow the ip
 		if (expired)
 		{
@@ -165,42 +157,37 @@ public class MutedIpController
 		return result;
 	}
 	
-	public List<String> getIPsThatAreStillMuted(List<String> ips)
+	public List<String> getIPsThatAreStillMuted(final List<String> ips)
 	{
-		List<String> results = new ArrayList<String>();
-		
-		String sql = "select ip, mute_till from muted_ips where ip = ?";
-		Connection con = Database.getConnection();
+		final List<String> results = new ArrayList<String>();
+		final String sql = "select ip, mute_till from muted_ips where ip = ?";
+		final Connection con = Database.getConnection();
 		try
 		{
-			for (String ip : ips)
+			for (final String ip : ips)
 			{
 				boolean found = false;
 				boolean expired = false;
-				
-				PreparedStatement ps = con.prepareStatement(sql);
+				final PreparedStatement ps = con.prepareStatement(sql);
 				ps.setString(1, ip);
-				ResultSet rs = ps.executeQuery();
+				final ResultSet rs = ps.executeQuery();
 				found = rs.next();
-				
 				// If the mute has expired, allow the ip
 				if (found)
 				{
-					Timestamp muteTill = rs.getTimestamp(2);
+					final Timestamp muteTill = rs.getTimestamp(2);
 					if (muteTill != null && muteTill.getTime() < System.currentTimeMillis())
 					{
 						s_logger.fine("Mute expired for: " + ip);
 						expired = true;
 					}
 				}
-				
 				rs.close();
 				ps.close();
-				
 				if (found && !expired)
 					results.add(ip);
 			}
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.info("Error testing whether ips were muted: " + ips);
 			throw new IllegalStateException(sqle.getMessage());
@@ -208,7 +195,6 @@ public class MutedIpController
 		{
 			DbUtil.closeConnection(con);
 		}
-		
 		return results;
 	}
 }

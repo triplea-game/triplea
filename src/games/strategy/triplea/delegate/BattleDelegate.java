@@ -9,13 +9,11 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * BattleDelegate.java
  * 
  * Created on November 2, 2001, 12:26 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -59,9 +57,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge aBridge)
+	public void start(final IDelegateBridge aBridge)
 	{
 		super.start(new TripleADelegateBridge(aBridge));
 		// we may start multiple times due to loading after saving
@@ -77,7 +74,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	/**
 	 * Called before the delegate will stop running.
 	 */
-	
 	@Override
 	public void end()
 	{
@@ -88,7 +84,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	@Override
 	public Serializable saveState()
 	{
-		BattleExtendedDelegateState state = new BattleExtendedDelegateState();
+		final BattleExtendedDelegateState state = new BattleExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		state.m_battleTracker = m_battleTracker;
@@ -99,9 +95,9 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	}
 	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		BattleExtendedDelegateState s = (BattleExtendedDelegateState) state;
+		final BattleExtendedDelegateState s = (BattleExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 		m_battleTracker = s.m_battleTracker;
@@ -110,55 +106,48 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		m_currentBattle = s.m_currentBattle;
 	}
 	
-	public String fightBattle(Territory territory, boolean bombing)
+	public String fightBattle(final Territory territory, final boolean bombing)
 	{
-		
-		IBattle battle = m_battleTracker.getPendingBattle(territory, bombing);
+		final IBattle battle = m_battleTracker.getPendingBattle(territory, bombing);
 		if (m_currentBattle != null && m_currentBattle != battle)
 		{
 			return "Must finish " + getFightingWord(m_currentBattle) + " in " + m_currentBattle.getTerritory() + " first";
 		}
-		
 		// does the battle exist
 		if (battle == null)
 			return "No pending battle in" + territory.getName();
-		
 		// are there battles that must occur first
-		Collection<IBattle> allMustPrecede = m_battleTracker.getDependentOn(battle);
+		final Collection<IBattle> allMustPrecede = m_battleTracker.getDependentOn(battle);
 		if (!allMustPrecede.isEmpty())
 		{
-			IBattle firstPrecede = allMustPrecede.iterator().next();
-			String name = firstPrecede.getTerritory().getName();
+			final IBattle firstPrecede = allMustPrecede.iterator().next();
+			final String name = firstPrecede.getTerritory().getName();
 			return "Must complete " + getFightingWord(battle) + " in " + name + " first";
 		}
-		
 		m_currentBattle = battle;
 		// fight the battle
 		battle.fight(m_bridge);
-		
 		m_currentBattle = null;
-		
 		// and were done
 		return null;
-		
 	}
 	
-	private String getFightingWord(IBattle battle)
+	private String getFightingWord(final IBattle battle)
 	{
 		return battle.isBombingRun() ? "Bombing Run" : "Battle";
 	}
 	
 	public BattleListing getBattles()
 	{
-		Collection<Territory> battles = m_battleTracker.getPendingBattleSites(false);
-		Collection<Territory> bombing = m_battleTracker.getPendingBattleSites(true);
+		final Collection<Territory> battles = m_battleTracker.getPendingBattleSites(false);
+		final Collection<Territory> bombing = m_battleTracker.getPendingBattleSites(true);
 		return new BattleListing(battles, bombing);
 	}
 	
 	/**
 	 * @return
 	 */
-	private boolean isShoreBombardPerGroundUnitRestricted(GameData data)
+	private boolean isShoreBombardPerGroundUnitRestricted(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getShoreBombardPerGroundUnitRestricted(data);
 	}
@@ -183,29 +172,26 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	 */
 	private void addBombardmentSources()
 	{
-		PlayerID attacker = m_bridge.getPlayerID();
-		ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
-		Match<Unit> ownedAndCanBombard = new CompositeMatchAnd<Unit>(Matches
-					.unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
-		
-		Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
-		Iterator<Territory> territories = adjBombardment.keySet().iterator();
-		boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(getData());
-		
+		final PlayerID attacker = m_bridge.getPlayerID();
+		final ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
+		final Match<Unit> ownedAndCanBombard = new CompositeMatchAnd<Unit>(Matches.unitCanBombard(attacker), Matches.unitIsOwnedBy(attacker));
+		final Map<Territory, Collection<IBattle>> adjBombardment = getPossibleBombardingTerritories();
+		final Iterator<Territory> territories = adjBombardment.keySet().iterator();
+		final boolean shoreBombardPerGroundUnitRestricted = isShoreBombardPerGroundUnitRestricted(getData());
 		while (territories.hasNext())
 		{
-			Territory t = territories.next();
+			final Territory t = territories.next();
 			if (!m_battleTracker.hasPendingBattle(t, false))
 			{
 				Collection<IBattle> battles = adjBombardment.get(t);
 				battles = Match.getMatches(battles, Matches.BattleIsAmphibious);
 				if (!battles.isEmpty())
 				{
-					Collection<Unit> bombardUnits = t.getUnits().getMatches(ownedAndCanBombard);
-					List<Unit> ListedBombardUnits = new ArrayList<Unit>();
+					final Collection<Unit> bombardUnits = t.getUnits().getMatches(ownedAndCanBombard);
+					final List<Unit> ListedBombardUnits = new ArrayList<Unit>();
 					ListedBombardUnits.addAll(bombardUnits);
 					sortUnitsToBombard(ListedBombardUnits, attacker);
-					Iterator<Unit> bombarding = ListedBombardUnits.iterator();
+					final Iterator<Unit> bombarding = ListedBombardUnits.iterator();
 					if (!bombardUnits.isEmpty())
 					{
 						// ask if they want to bombard
@@ -216,8 +202,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					}
 					while (bombarding.hasNext())
 					{
-						Unit u = bombarding.next();
-						IBattle battle = selectBombardingBattle(u, t, battles);
+						final Unit u = bombarding.next();
+						final IBattle battle = selectBombardingBattle(u, t, battles);
 						if (battle != null)
 						{
 							if (shoreBombardPerGroundUnitRestricted)
@@ -243,7 +229,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	{
 		if (units.isEmpty())
 			return;
-		
 		Collections.sort(units, UnitComparator.getDecreasingAttackComparator(player));
 	}
 	
@@ -252,31 +237,28 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	 */
 	private Map<Territory, Collection<IBattle>> getPossibleBombardingTerritories()
 	{
-		Map<Territory, Collection<IBattle>> possibleBombardingTerritories = new HashMap<Territory, Collection<IBattle>>();
-		Iterator<Territory> battleTerritories = m_battleTracker.getPendingBattleSites(
-					false).iterator();
+		final Map<Territory, Collection<IBattle>> possibleBombardingTerritories = new HashMap<Territory, Collection<IBattle>>();
+		final Iterator<Territory> battleTerritories = m_battleTracker.getPendingBattleSites(false).iterator();
 		while (battleTerritories.hasNext())
 		{
-			Territory t = battleTerritories.next();
-			IBattle battle = m_battleTracker.getPendingBattle(t, false);
-			
+			final Territory t = battleTerritories.next();
+			final IBattle battle = m_battleTracker.getPendingBattle(t, false);
 			// we only care about battles where we must fight
 			// this check is really to avoid implementing getAttackingFrom() in other battle subclasses
 			if (!(battle instanceof MustFightBattle))
 				continue;
 			// bombarding can only occur in territories from which at least 1 land unit attacked
-			Map<Territory, Collection<Unit>> attackingFromMap = ((MustFightBattle) battle).getAttackingFromMap();
-			Iterator<Territory> bombardingTerritories = ((MustFightBattle) battle).getAttackingFrom().iterator();
+			final Map<Territory, Collection<Unit>> attackingFromMap = ((MustFightBattle) battle).getAttackingFromMap();
+			final Iterator<Territory> bombardingTerritories = ((MustFightBattle) battle).getAttackingFrom().iterator();
 			while (bombardingTerritories.hasNext())
 			{
-				Territory neighbor = bombardingTerritories.next();
+				final Territory neighbor = bombardingTerritories.next();
 				// If all units from a territory are air- no bombard
 				if (Match.allMatch(attackingFromMap.get(neighbor), Matches.UnitIsAir))
 				{
 					continue;
 				}
-				Collection<IBattle> battles = possibleBombardingTerritories
-							.get(neighbor);
+				Collection<IBattle> battles = possibleBombardingTerritories.get(neighbor);
 				if (battles == null)
 				{
 					battles = new ArrayList<IBattle>();
@@ -285,17 +267,15 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				battles.add(battle);
 			}
 		}
-		
 		return possibleBombardingTerritories;
 	}
 	
 	/**
 	 * Select which territory to bombard.
 	 */
-	private IBattle selectBombardingBattle(Unit u, Territory uTerritory,
-				Collection<IBattle> battles)
+	private IBattle selectBombardingBattle(final Unit u, final Territory uTerritory, final Collection<IBattle> battles)
 	{
-		Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(getData());
+		final Boolean bombardRestricted = isShoreBombardPerGroundUnitRestricted(getData());
 		// If only one battle to select from just return that battle
 		// boolean hasNotMoved = TripleAUnit.get(u).getAlreadyMoved() == 0;
 		// if ((battles.size() == 1) && !hasNotMoved)
@@ -303,13 +283,12 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		{
 			return battles.iterator().next();
 		}
-		
-		List<Territory> territories = new ArrayList<Territory>();
-		Map<Territory, IBattle> battleTerritories = new HashMap<Territory, IBattle>();
-		Iterator<IBattle> battlesIter = battles.iterator();
+		final List<Territory> territories = new ArrayList<Territory>();
+		final Map<Territory, IBattle> battleTerritories = new HashMap<Territory, IBattle>();
+		final Iterator<IBattle> battlesIter = battles.iterator();
 		while (battlesIter.hasNext())
 		{
-			IBattle battle = battlesIter.next();
+			final IBattle battle = battlesIter.next();
 			// If Restricted & # of bombarding units => landing units, don't add territory to list to bombard
 			if (bombardRestricted)
 			{
@@ -320,21 +299,16 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			{
 				territories.add(battle.getTerritory());
 			}
-			
 			battleTerritories.put(battle.getTerritory(), battle);
 		}
-		
-		ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
+		final ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
 		Territory bombardingTerritory = null;
-		
 		if (!territories.isEmpty())
 			bombardingTerritory = remotePlayer.selectBombardingTerritory(u, uTerritory, territories, true);
-		
 		if (bombardingTerritory != null)
 		{
 			return battleTerritories.get(bombardingTerritory);
 		}
-		
 		return null; // User elected not to bombard with this unit
 	}
 	
@@ -346,38 +320,30 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	 */
 	private void setupUnitsInSameTerritoryBattles()
 	{
-		PlayerID player = m_bridge.getPlayerID();
-		GameData data = getData();
-		
-		boolean ignoreTransports = isIgnoreTransportInMovement(data);
-		boolean ignoreSubs = isIgnoreSubInMovement(data);
-		
-		CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea);
-		CompositeMatchOr<Unit> seaTranportsOrSubs = new CompositeMatchOr<Unit>(seaTransports, Matches.UnitIsSub);
-		
+		final PlayerID player = m_bridge.getPlayerID();
+		final GameData data = getData();
+		final boolean ignoreTransports = isIgnoreTransportInMovement(data);
+		final boolean ignoreSubs = isIgnoreSubInMovement(data);
+		final CompositeMatchAnd<Unit> seaTransports = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsSea);
+		final CompositeMatchOr<Unit> seaTranportsOrSubs = new CompositeMatchOr<Unit>(seaTransports, Matches.UnitIsSub);
 		// we want to match all sea zones with our units and enemy units
-		CompositeMatch<Territory> anyTerritoryWithOwnAndEnemy = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsOwnedBy(player), Matches.territoryHasEnemyUnits(player, data));
-		CompositeMatch<Territory> enemyTerritoryAndOwnUnits = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWater(player, getData()), Matches.territoryHasUnitsOwnedBy(player));
-		CompositeMatch<Territory> enemyUnitsOrEnemyTerritory = new CompositeMatchOr<Territory>(anyTerritoryWithOwnAndEnemy, enemyTerritoryAndOwnUnits);
-		
-		Iterator<Territory> battleTerritories = Match.getMatches(data.getMap().getTerritories(), enemyUnitsOrEnemyTerritory).iterator();
-		
+		final CompositeMatch<Territory> anyTerritoryWithOwnAndEnemy = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsOwnedBy(player), Matches.territoryHasEnemyUnits(player, data));
+		final CompositeMatch<Territory> enemyTerritoryAndOwnUnits = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWater(player, getData()),
+					Matches.territoryHasUnitsOwnedBy(player));
+		final CompositeMatch<Territory> enemyUnitsOrEnemyTerritory = new CompositeMatchOr<Territory>(anyTerritoryWithOwnAndEnemy, enemyTerritoryAndOwnUnits);
+		final Iterator<Territory> battleTerritories = Match.getMatches(data.getMap().getTerritories(), enemyUnitsOrEnemyTerritory).iterator();
 		while (battleTerritories.hasNext())
 		{
-			Territory territory = battleTerritories.next();
-			
-			List<Unit> attackingUnits = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
-			List<Unit> enemyUnits = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
-			
+			final Territory territory = battleTerritories.next();
+			final List<Unit> attackingUnits = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+			final List<Unit> enemyUnits = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
 			if (m_battleTracker.getPendingBattle(territory, true) != null)
 			{
 				// we need to remove any units which are participating in bombing raids
 				attackingUnits.removeAll(m_battleTracker.getPendingBattle(territory, true).getAttackingUnits());
 			}
-			
 			if (attackingUnits.isEmpty() || Match.allMatch(attackingUnits, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure))
 				continue;
-			
 			IBattle battle = m_battleTracker.getPendingBattle(territory, false);
 			if (battle == null)
 			{
@@ -385,13 +351,10 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				m_battleTracker.addBattle(new RouteScripted(territory), attackingUnits, false, player, m_bridge, null);
 				battle = m_battleTracker.getPendingBattle(territory, false);
 			}
-			
 			if (battle == null)
 				continue;
-			
 			if (battle != null && battle.isEmpty())
 				battle.addAttackChange(new RouteScripted(territory), attackingUnits);
-			
 			if (battle != null && !battle.getAttackingUnits().containsAll(attackingUnits))
 			{
 				List<Unit> attackingUnitsNeedToBeAdded = attackingUnits;
@@ -400,13 +363,11 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsLand.invert());
 				else
 					attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsSea.invert());
-				
 				if (!attackingUnitsNeedToBeAdded.isEmpty())
 				{
 					battle.addAttackChange(new RouteScripted(territory), attackingUnitsNeedToBeAdded);
 				}
 			}
-			
 			// Reach stalemate if all attacking and defending units are transports
 			if (battle != null && (ignoreTransports && Match.allMatch(attackingUnits, seaTransports) && Match.allMatch(enemyUnits, seaTransports))
 						|| ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert())))
@@ -414,12 +375,11 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				m_battleTracker.removeBattle(battle);
 				continue;
 			}
-			
 			// Check for ignored units
 			if (battle != null && !attackingUnits.isEmpty() && (ignoreTransports || ignoreSubs))
 			{
 				// TODO check if incoming units can attack before asking
-				ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
+				final ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
 				// if only enemy transports... attack them?
 				if (ignoreTransports && Match.allMatch(enemyUnits, seaTransports))
 				{
@@ -438,7 +398,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					}
 					continue;
 				}
-				
 				// if only enemy subs... attack them?
 				if (ignoreSubs && Match.allMatch(enemyUnits, Matches.UnitIsSub))
 				{
@@ -448,7 +407,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					}
 					continue;
 				}
-				
 				// if only enemy transports and subs... attack them?
 				if (ignoreSubs && ignoreTransports && Match.allMatch(enemyUnits, seaTranportsOrSubs))
 				{
@@ -465,7 +423,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	/**
 	 * @return
 	 */
-	private static boolean isIgnoreTransportInMovement(GameData data)
+	private static boolean isIgnoreTransportInMovement(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
 	}
@@ -473,7 +431,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	/**
 	 * @return
 	 */
-	private static boolean isIgnoreSubInMovement(GameData data)
+	private static boolean isIgnoreSubInMovement(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
 	}
@@ -483,7 +441,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	 * 
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
-
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
@@ -492,7 +449,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	
 	public Territory getCurentBattle()
 	{
-		IBattle b = m_currentBattle;
+		final IBattle b = m_currentBattle;
 		if (b != null)
 		{
 			return b.getTerritory();
@@ -502,7 +459,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			return null;
 		}
 	}
-	
 }
 
 

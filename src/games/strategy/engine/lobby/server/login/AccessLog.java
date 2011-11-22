@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.login;
 
 import java.net.InetAddress;
@@ -27,17 +26,15 @@ import java.util.logging.Logger;
  */
 public class AccessLog
 {
-	
 	private static final Logger s_logger = Logger.getLogger(AccessLog.class.getName());
 	
-	public static void successfulLogin(String userName, InetAddress from)
+	public static void successfulLogin(final String userName, final InetAddress from)
 	{
 		s_logger.info("LOGIN name:" + userName + " ip:" + from.getHostAddress() + " time_ms:" + System.currentTimeMillis() + " time:" + new Date());
 	}
 	
-	public static void failedLogin(String userName, InetAddress from, String error)
+	public static void failedLogin(final String userName, final InetAddress from, final String error)
 	{
 		s_logger.info("FAILED name:" + userName + " ip:" + from.getHostAddress() + " time_ms:" + System.currentTimeMillis() + " error:" + error + " time:" + new Date());
 	}
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.client.ui;
 
 import games.strategy.engine.lobby.server.GameDescription;
@@ -41,56 +40,49 @@ public class LobbyGameTableModel extends AbstractTableModel
 	private final IMessenger m_messenger;
 	private final IChannelMessenger m_channelMessenger;
 	private final IRemoteMessenger m_remoteMessenger;
-	
 	// these must only be accessed in the swing event thread
-	private List<GUID> m_gameIDs = new ArrayList<GUID>();
-	private List<GameDescription> m_games = new ArrayList<GameDescription>();
+	private final List<GUID> m_gameIDs = new ArrayList<GUID>();
+	private final List<GameDescription> m_games = new ArrayList<GameDescription>();
 	
 	public LobbyGameTableModel(final IMessenger messenger, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger)
 	{
 		m_messenger = messenger;
 		m_channelMessenger = channelMessenger;
 		m_remoteMessenger = remoteMessenger;
-		
 		m_channelMessenger.registerChannelSubscriber(new ILobbyGameBroadcaster()
 		{
-			
-			public void gameUpdated(GUID gameId, GameDescription description)
+			public void gameUpdated(final GUID gameId, final GameDescription description)
 			{
 				assertSentFromServer();
 				updateGame(gameId, description);
 			}
 			
-			public void gameAdded(GUID gameId, GameDescription description)
+			public void gameAdded(final GUID gameId, final GameDescription description)
 			{
 				assertSentFromServer();
 				addGame(gameId, description);
 			}
 			
-			public void gameRemoved(GUID gameId)
+			public void gameRemoved(final GUID gameId)
 			{
 				assertSentFromServer();
 				removeGame(gameId);
-				
 			}
-			
 		}, ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL);
-		
-		Map<GUID, GameDescription> games = ((ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE)).listGames();
-		for (GUID id : games.keySet())
+		final Map<GUID, GameDescription> games = ((ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE)).listGames();
+		for (final GUID id : games.keySet())
 		{
 			addGame(id, games.get(id));
 		}
-		
 	}
 	
-	public GameDescription get(int i)
+	public GameDescription get(final int i)
 	{
 		return m_games.get(i);
 	}
 	
 	@Override
-	public Class<?> getColumnClass(int columnIndex)
+	public Class<?> getColumnClass(final int columnIndex)
 	{
 		if (columnIndex == getColumnIndex(Column.Started))
 			return Date.class;
@@ -99,72 +91,57 @@ public class LobbyGameTableModel extends AbstractTableModel
 	
 	private void removeGame(final GUID gameId)
 	{
-		SwingUtilities.invokeLater(
-					new Runnable()
-				{
-					
-					public void run()
-					{
-						int index = m_gameIDs.indexOf(gameId);
-						
-						m_gameIDs.remove(index);
-						m_games.remove(index);
-						
-						fireTableRowsDeleted(index, index);
-					}
-				});
-		
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				final int index = m_gameIDs.indexOf(gameId);
+				m_gameIDs.remove(index);
+				m_games.remove(index);
+				fireTableRowsDeleted(index, index);
+			}
+		});
 	}
 	
 	private void addGame(final GUID gameId, final GameDescription description)
 	{
-		SwingUtilities.invokeLater(
-					new Runnable()
+		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_gameIDs.add(gameId);
 				m_games.add(description);
-				
 				fireTableRowsInserted(m_gameIDs.size() - 1, m_gameIDs.size() - 1);
 			}
 		});
-		
 	}
 	
 	private void assertSentFromServer()
 	{
 		if (!MessageContext.getSender().equals(m_messenger.getServerNode()))
 			throw new IllegalStateException("Invalid sender");
-		
 	}
 	
 	private void updateGame(final GUID gameId, final GameDescription description)
 	{
-		SwingUtilities.invokeLater(
-					new Runnable()
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
 			{
-				
-				public void run()
-				{
-					int index = m_gameIDs.indexOf(gameId);
-					
-					m_games.set(index, description);
-					
-					fireTableRowsUpdated(index, index);
-				}
-			});
-		
+				final int index = m_gameIDs.indexOf(gameId);
+				m_games.set(index, description);
+				fireTableRowsUpdated(index, index);
+			}
+		});
 	}
 	
 	@Override
-	public String getColumnName(int column)
+	public String getColumnName(final int column)
 	{
 		return Column.values()[column].toString();
 	}
 	
-	public int getColumnIndex(Column column)
+	public int getColumnIndex(final Column column)
 	{
 		return column.ordinal();
 	}
@@ -180,31 +157,24 @@ public class LobbyGameTableModel extends AbstractTableModel
 		return m_gameIDs.size();
 	}
 	
-	public Object getValueAt(int rowIndex, int columnIndex)
+	public Object getValueAt(final int rowIndex, final int columnIndex)
 	{
-		Column column = Column.values()[columnIndex];
-		GameDescription description = m_games.get(rowIndex);
-		
+		final Column column = Column.values()[columnIndex];
+		final GameDescription description = m_games.get(rowIndex);
 		switch (column)
 		{
 			case Host:
 				return description.getHostName();
-				
 			case Round:
 				return description.getRound();
-				
 			case Name:
 				return description.getGameName();
-				
 			case Players:
 				return description.getPlayerCount();
-				
 			case Status:
 				return description.getStatus();
-				
 			case Comments:
 				return description.getComment();
-				
 			case Started:
 				return description.getStartDateTime();
 			case GUID:
@@ -213,5 +183,4 @@ public class LobbyGameTableModel extends AbstractTableModel
 				throw new IllegalStateException("Unknown column:" + column);
 		}
 	}
-	
 }

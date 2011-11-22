@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * IntTextField.java
  * 
  * Created on November 26, 2001, 10:16 AM
  */
-
 package games.strategy.ui;
 
 import games.strategy.util.ListenerList;
@@ -45,15 +43,14 @@ import javax.swing.text.PlainDocument;
  */
 public class IntTextField extends JTextField
 {
-	
 	private int m_max = Integer.MAX_VALUE;
 	private int m_min = Integer.MIN_VALUE;
 	private String m_terr = null;
-	private ListenerList<IntTextFieldChangeListener> m_listeners = new ListenerList<IntTextFieldChangeListener>();
+	private final ListenerList<IntTextFieldChangeListener> m_listeners = new ListenerList<IntTextFieldChangeListener>();
 	
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
-		JFrame frame = new JFrame();
+		final JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FlowLayout());
 		frame.getContentPane().add(new JLabel("no range"));
@@ -62,7 +59,6 @@ public class IntTextField extends JTextField
 		frame.getContentPane().add(new IntTextField(0));
 		frame.getContentPane().add(new JLabel("0 to 5"));
 		frame.getContentPane().add(new IntTextField(0, 5));
-		
 		frame.setSize(400, 60);
 		frame.setVisible(true);
 	}
@@ -74,13 +70,13 @@ public class IntTextField extends JTextField
 		initTextField();
 	}
 	
-	public IntTextField(int min)
+	public IntTextField(final int min)
 	{
 		this();
 		setMin(min);
 	}
 	
-	public IntTextField(int min, int max)
+	public IntTextField(final int min, final int max)
 	{
 		this();
 		setMin(min);
@@ -105,66 +101,55 @@ public class IntTextField extends JTextField
 		{
 			setText(String.valueOf(m_min));
 		}
-		
 		try
 		{
 			Integer.parseInt(getText());
-		} catch (NumberFormatException e)
+		} catch (final NumberFormatException e)
 		{
 			setText(String.valueOf(m_min));
 		}
-		
 		if (getValue() > m_max)
 		{
 			setText(String.valueOf(m_max));
-			
 		}
-		
 		if (getValue() < m_min)
 		{
 			setText(String.valueOf(m_min));
 		}
 	}
 	
-	public void setValue(int value)
+	public void setValue(final int value)
 	{
 		if (isGood(value))
 		{
 			setText(String.valueOf(value));
-			
 		}
 	}
 	
-	public void setMax(int max)
+	public void setMax(final int max)
 	{
 		if (max < m_min)
 			throw new IllegalArgumentException("Max cant be less than min");
-		
 		m_max = max;
-		
 		if (getValue() > m_max)
 		{
 			setText(String.valueOf(max));
-			
 		}
 	}
 	
-	public void setTerr(String terr)
+	public void setTerr(final String terr)
 	{
 		m_terr = terr;
 	}
 	
-	public void setMin(int min)
+	public void setMin(final int min)
 	{
 		if (min > m_max)
 			throw new IllegalArgumentException("Min cant be greater than max");
-		
 		m_min = min;
-		
 		if (getValue() < m_min)
 		{
 			setText(String.valueOf(min));
-			
 		}
 	}
 	
@@ -183,7 +168,7 @@ public class IntTextField extends JTextField
 		return m_min;
 	}
 	
-	private final boolean isGood(int value)
+	private final boolean isGood(final int value)
 	{
 		return value <= m_max && value >= m_min;
 	}
@@ -194,15 +179,13 @@ public class IntTextField extends JTextField
 	 */
 	private class IntegerDocument extends PlainDocument
 	{
-		
 		@Override
-		public void insertString(int offs, String str, AttributeSet a) throws BadLocationException
+		public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException
 		{
-			String currentText = this.getText(0, getLength());
-			String beforeOffset = currentText.substring(0, offs);
-			String afterOffset = currentText.substring(offs, currentText.length());
-			String proposedResult = beforeOffset + str + afterOffset;
-			
+			final String currentText = this.getText(0, getLength());
+			final String beforeOffset = currentText.substring(0, offs);
+			final String afterOffset = currentText.substring(offs, currentText.length());
+			final String proposedResult = beforeOffset + str + afterOffset;
 			// allow start of negative
 			try
 			{
@@ -210,7 +193,7 @@ public class IntTextField extends JTextField
 				super.insertString(offs, str, a);
 				checkValue();
 				notifyListeners();
-			} catch (NumberFormatException e)
+			} catch (final NumberFormatException e)
 			{
 				// if an error dont insert
 				// allow start of negative numbers
@@ -224,7 +207,7 @@ public class IntTextField extends JTextField
 		}
 		
 		@Override
-		public void remove(int offs, int len) throws BadLocationException
+		public void remove(final int offs, final int len) throws BadLocationException
 		{
 			super.remove(offs, len);
 			// if its a valid number weve changed
@@ -232,29 +215,28 @@ public class IntTextField extends JTextField
 			{
 				Integer.parseInt(IntTextField.this.getText());
 				notifyListeners();
-			} catch (NumberFormatException e)
+			} catch (final NumberFormatException e)
 			{
 			}
-			
 		}
 	}
 	
-	public void addChangeListener(IntTextFieldChangeListener listener)
+	public void addChangeListener(final IntTextFieldChangeListener listener)
 	{
 		m_listeners.add(listener);
 	}
 	
-	public void removeChangeListener(IntTextFieldChangeListener listener)
+	public void removeChangeListener(final IntTextFieldChangeListener listener)
 	{
 		m_listeners.remove(listener);
 	}
 	
 	private void notifyListeners()
 	{
-		Iterator<IntTextFieldChangeListener> iter = m_listeners.iterator();
+		final Iterator<IntTextFieldChangeListener> iter = m_listeners.iterator();
 		while (iter.hasNext())
 		{
-			IntTextFieldChangeListener listener = iter.next();
+			final IntTextFieldChangeListener listener = iter.next();
 			listener.changedValue(this);
 		}
 	}
@@ -262,9 +244,8 @@ public class IntTextField extends JTextField
 	
 	private class LostFocus extends FocusAdapter
 	{
-		
 		@Override
-		public void focusLost(FocusEvent e)
+		public void focusLost(final FocusEvent e)
 		{
 			// make sure the value is valid
 			checkValue();

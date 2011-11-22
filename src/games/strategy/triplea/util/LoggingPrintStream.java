@@ -7,41 +7,37 @@ import java.util.logging.Logger;
 
 public class LoggingPrintStream extends PrintStream
 {
-	
-	public LoggingPrintStream(String loggerName, Level level)
+	public LoggingPrintStream(final String loggerName, final Level level)
 	{
 		super(new LoggingOutputStream(loggerName, level));
 	}
-	
 }
 
 
 class LoggingOutputStream extends ByteArrayOutputStream
 {
 	private final Object m_lock = new Object();
-	
 	private final Logger m_logger;
 	private final Level m_level;
 	
-	public LoggingOutputStream(String name, Level level)
+	public LoggingOutputStream(final String name, final Level level)
 	{
 		m_logger = Logger.getLogger(name);
 		m_level = level;
 	}
 	
 	@Override
-	public void write(int b)
+	public void write(final int b)
 	{
 		synchronized (m_lock)
 		{
 			super.write(b);
 			dump();
 		}
-		
 	}
 	
 	@Override
-	public void write(byte[] b, int off, int len)
+	public void write(final byte[] b, final int off, final int len)
 	{
 		synchronized (m_lock)
 		{
@@ -52,12 +48,11 @@ class LoggingOutputStream extends ByteArrayOutputStream
 	
 	private void dump()
 	{
-		String content = toString();
+		final String content = toString();
 		if (content.indexOf("\n") != -1)
 		{
 			reset();
 			m_logger.log(m_level, content);
 		}
 	}
-	
 }

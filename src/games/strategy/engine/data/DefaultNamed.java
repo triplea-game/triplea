@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * DefaultNamed.java
  * 
  * Created on October 17, 2001, 9:29 PM
  */
-
 package games.strategy.engine.data;
 
 import java.io.Serializable;
@@ -29,11 +27,10 @@ import java.io.Serializable;
  */
 public class DefaultNamed extends GameDataComponent implements Named, Serializable
 {
-	
 	private final String m_name;
 	
 	/** Creates new DefaultNamed */
-	public DefaultNamed(String name, GameData data)
+	public DefaultNamed(final String name, final GameData data)
 	{
 		super(data);
 		if (name == null || name.length() == 0)
@@ -47,13 +44,11 @@ public class DefaultNamed extends GameDataComponent implements Named, Serializab
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == null || !(o instanceof Named))
 			return false;
-		
-		Named other = (Named) o;
-		
+		final Named other = (Named) o;
 		return this.m_name.equals(other.getName());
 	}
 	
@@ -68,5 +63,4 @@ public class DefaultNamed extends GameDataComponent implements Named, Serializab
 	{
 		return this.getClass().getName() + " called " + m_name;
 	}
-	
 }

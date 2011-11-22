@@ -11,22 +11,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.message;
 
 import games.strategy.net.GUID;
 
 public class HubInvocationResults extends InvocationResults
 {
-	
 	public HubInvocationResults()
 	{
 		super();
 	}
 	
-	public HubInvocationResults(RemoteMethodCallResults results, GUID methodCallID)
+	public HubInvocationResults(final RemoteMethodCallResults results, final GUID methodCallID)
 	{
 		super(results, methodCallID);
 	}
-	
 }

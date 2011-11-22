@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.random;
 
 import java.awt.BorderLayout;
@@ -49,7 +48,6 @@ public class PBEMDiceRoller implements IRandomSource
 	private final String m_gameID;
 	private final String m_gameUUID;
 	private final IRemoteDiceServer m_remoteDiceServer;
-	
 	private static Frame s_focusWindow;
 	
 	/*
@@ -58,12 +56,12 @@ public class PBEMDiceRoller implements IRandomSource
 	 * if set to null, or not set, we try to guess by finding the currently 
 	 * focused window (or a visble window if none are focused).
 	 */
-	public static void setFocusWindow(Frame w)
+	public static void setFocusWindow(final Frame w)
 	{
 		s_focusWindow = w;
 	}
 	
-	public PBEMDiceRoller(String player1Email, String player2Email, String gameID, IRemoteDiceServer diceServer, String gameUUID)
+	public PBEMDiceRoller(final String player1Email, final String player2Email, final String gameID, final IRemoteDiceServer diceServer, final String gameUUID)
 	{
 		m_player1Email = player1Email;
 		m_player2Email = player2Email;
@@ -78,17 +76,14 @@ public class PBEMDiceRoller implements IRandomSource
 	public void test()
 	{
 		// TODO: do a test based on data.getDiceSides()
-		HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer, "test-roll");
+		final HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer, "test-roll");
 		dialog.setTest();
-		
 		dialog.roll();
-		
 	}
 	
 	/**
 	 * getRandom
 	 */
-	
 	public int[] getRandom(final int max, final int count, final String annotation)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
@@ -98,22 +93,21 @@ public class PBEMDiceRoller implements IRandomSource
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
-					
 					public void run()
 					{
 						result.set(getRandom(max, count, annotation));
 					}
 				});
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				throw new IllegalStateException(e);
-			} catch (InvocationTargetException e)
+			} catch (final InvocationTargetException e)
 			{
 				throw new IllegalStateException(e);
 			}
 			return result.get();
 		}
-		HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer, m_gameUUID);
+		final HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer, m_gameUUID);
 		dialog.roll();
 		return dialog.getDiceRoll();
 	}
@@ -122,8 +116,7 @@ public class PBEMDiceRoller implements IRandomSource
 	{
 		if (s_focusWindow != null)
 			return s_focusWindow;
-		
-		Frame[] frames = Frame.getFrames();
+		final Frame[] frames = Frame.getFrames();
 		Frame rVal = null;
 		for (int i = 0; i < frames.length; i++)
 		{
@@ -138,9 +131,7 @@ public class PBEMDiceRoller implements IRandomSource
 				rVal = frames[i];
 			}
 		}
-		
 		return rVal;
-		
 	}
 	
 	/**
@@ -152,48 +143,35 @@ public class PBEMDiceRoller implements IRandomSource
 	 *            String
 	 * @return int
 	 */
-	
-	public int getRandom(int max, String annotation)
+	public int getRandom(final int max, final String annotation)
 	{
 		return getRandom(max, 1, annotation)[0];
 	}
-	
 }
 
 
 class HttpDiceRollerDialog extends JDialog
 {
-	private JButton m_exitButton = new JButton("Exit");
-	
-	private JButton m_reRollButton = new JButton("Roll Again");
-	
-	private JButton m_okButton = new JButton("OK");
-	
-	private JTextArea m_text = new JTextArea();
-	
+	private final JButton m_exitButton = new JButton("Exit");
+	private final JButton m_reRollButton = new JButton("Roll Again");
+	private final JButton m_okButton = new JButton("OK");
+	private final JTextArea m_text = new JTextArea();
 	private int[] m_diceRoll;
-	
 	private final int m_count;
-	
 	private final int m_max;
-	
 	private final String m_annotation;
-	
 	private final String m_email1;
-	
 	private final String m_email2;
 	private final String m_gameID;
 	private final IRemoteDiceServer m_diceServer;
 	private final String m_gameUUID;
-	
 	private final Object m_lock = new Object();
-	
 	public boolean m_test = false;
-	
-	private JPanel m_buttons = new JPanel();
+	private final JPanel m_buttons = new JPanel();
 	private final Window m_owner;
 	
-	public HttpDiceRollerDialog(Frame owner, int max, int count, String annotation, String email1, String email2, String gameID, IRemoteDiceServer diceServer, String gameUUID)
+	public HttpDiceRollerDialog(final Frame owner, final int max, final int count, final String annotation, final String email1, final String email2, final String gameID,
+				final IRemoteDiceServer diceServer, final String gameUUID)
 	{
 		super(owner, "Dice roller", true);
 		m_owner = owner;
@@ -205,49 +183,38 @@ class HttpDiceRollerDialog extends JDialog
 		m_gameID = gameID;
 		m_diceServer = diceServer;
 		m_gameUUID = gameUUID;
-		
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		m_exitButton.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				System.exit(-1);
 			}
 		});
-		
 		m_exitButton.setEnabled(false);
-		
 		m_reRollButton.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				rollInternal();
 			}
 		});
-		
 		m_okButton.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				closeAndReturn();
 			}
 		});
-		
 		m_reRollButton.setEnabled(false);
-		
 		getContentPane().setLayout(new BorderLayout());
 		m_buttons.add(m_exitButton);
 		m_buttons.add(m_reRollButton);
 		getContentPane().add(m_buttons, BorderLayout.SOUTH);
 		getContentPane().add(new JScrollPane(m_text));
 		m_text.setEditable(false);
-		
 		setSize(400, 300);
 		games.strategy.ui.Util.center(this); // games.strategy.ui.Util
-		
 	}
 	
 	/**
@@ -262,7 +229,7 @@ class HttpDiceRollerDialog extends JDialog
 		m_buttons.add(m_reRollButton);
 	}
 	
-	public void appendText(String aString)
+	public void appendText(final String aString)
 	{
 		m_text.setText(m_text.getText() + aString);
 	}
@@ -271,15 +238,12 @@ class HttpDiceRollerDialog extends JDialog
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_exitButton.setEnabled(true);
 				m_reRollButton.setEnabled(true);
 			}
-			
 		});
-		
 	}
 	
 	public int[] getDiceRoll()
@@ -292,37 +256,31 @@ class HttpDiceRollerDialog extends JDialog
 	// wont return until the roll is done.
 	public void roll()
 	{
-		
 		// if we are not the event thread, then start again in the event thread
 		// pausing this thread until we are done
 		if (!SwingUtilities.isEventDispatchThread())
 		{
 			synchronized (m_lock)
 			{
-				
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					
 					public void run()
 					{
 						roll();
 					}
 				});
-				
 				try
 				{
 					m_lock.wait();
-				} catch (InterruptedException ie)
+				} catch (final InterruptedException ie)
 				{
 					ie.printStackTrace();
 				}
 			}
 			return;
 		}
-		
 		rollInternal();
 		setVisible(true);
-		
 	}
 	
 	// should be called from the event thread
@@ -330,13 +288,10 @@ class HttpDiceRollerDialog extends JDialog
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
-		
 		m_reRollButton.setEnabled(false);
 		m_exitButton.setEnabled(false);
-		
-		Thread t = new Thread("Triplea, roll in seperate thread")
+		final Thread t = new Thread("Triplea, roll in seperate thread")
 		{
-			
 			@Override
 			public void run()
 			{
@@ -356,18 +311,14 @@ class HttpDiceRollerDialog extends JDialog
 				m_lock.notifyAll();
 			}
 		}
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				setVisible(false);
 				m_owner.toFront();
 			}
-			
 		});
-		
 	}
 	
 	/**
@@ -384,25 +335,20 @@ class HttpDiceRollerDialog extends JDialog
 	{
 		if (SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
-		
 		while (!isVisible())
 			Thread.yield();
-		
 		appendText(m_annotation + "\n");
 		appendText("Contacting  " + m_diceServer.getName() + "\n");
-		
 		String text = null;
 		try
 		{
 			text = m_diceServer.postRequest(m_email1, m_email2, m_max, m_count, m_annotation, m_gameID, m_gameUUID);
-			
 			if (text.length() == 0)
 			{
 				appendText("Nothing could be read from dice server\n");
 				appendText("Please check your firewall settings");
 				notifyError();
 			}
-			
 			if (!m_test)
 				appendText("Contacted :" + text + "\n");
 			m_diceRoll = m_diceServer.getDice(text, m_count);
@@ -411,11 +357,11 @@ class HttpDiceRollerDialog extends JDialog
 				closeAndReturn();
 		}
 		// an error in networking
-		catch (SocketException ex)
+		catch (final SocketException ex)
 		{
 			appendText("Connection failure:" + ex.getMessage() + "\n" + "Please ensure your Internet connection is working, and try again.");
 			notifyError();
-		} catch (InvocationTargetException e)
+		} catch (final InvocationTargetException e)
 		{
 			appendText("\nError:" + e.getMessage() + "\n\n");
 			if (text != null)
@@ -423,7 +369,7 @@ class HttpDiceRollerDialog extends JDialog
 				appendText("Text from dice server:\n" + text + "\n");
 			}
 			notifyError();
-		} catch (IOException ex)
+		} catch (final IOException ex)
 		{
 			try
 			{
@@ -434,23 +380,19 @@ class HttpDiceRollerDialog extends JDialog
 				appendText("  3: The e-mail address does not exist\n");
 				appendText("  4: An unknown error, please see the error console and consult the forums for help\n");
 				appendText("     Visit http://tripleadev.org  for extra help\n");
-				
 				if (text != null)
 				{
 					appendText("Text from dice server:\n" + text + "\n");
 				}
-				
-				StringWriter writer = new StringWriter();
+				final StringWriter writer = new StringWriter();
 				ex.printStackTrace(new PrintWriter(writer));
 				writer.close();
 				appendText(writer.toString());
-			} catch (IOException ex1)
+			} catch (final IOException ex1)
 			{
 				ex1.printStackTrace();
 			}
 			notifyError();
-			
 		}
-		
 	}// end of method
 }

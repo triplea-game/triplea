@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.kingstable.ui.display;
 
 import games.strategy.engine.data.Territory;
@@ -47,12 +46,10 @@ public class KingsTableDisplay implements IKingsTableDisplay
 	/**
 	 * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
 	 */
-	
-	public void initialize(IDisplayBridge bridge)
+	public void initialize(final IDisplayBridge bridge)
 	{
 		m_displayBridge = bridge;
 		m_displayBridge.toString();
-		
 	}
 	
 	/**
@@ -60,7 +57,6 @@ public class KingsTableDisplay implements IKingsTableDisplay
 	 * 
 	 * @see games.strategy.engine.display.IDisplay#shutdown()
 	 */
-	
 	public void shutDown()
 	{
 		m_ui.stopGame();
@@ -72,8 +68,7 @@ public class KingsTableDisplay implements IKingsTableDisplay
 	 * @param error
 	 *            the status message to display
 	 */
-	
-	public void setStatus(String status)
+	public void setStatus(final String status)
 	{
 		m_ui.setStatus(status);
 	}
@@ -81,7 +76,6 @@ public class KingsTableDisplay implements IKingsTableDisplay
 	/**
 	 * Set the game over status for this display to <code>true</code>.
 	 */
-	
 	public void setGameOver()// (CountDownLatch waiting)
 	{
 		m_ui.setGameOver();// waiting);
@@ -97,10 +91,8 @@ public class KingsTableDisplay implements IKingsTableDisplay
 	 * @param captured
 	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
 	 */
-	
-	public void performPlay(Territory start, Territory end, Collection<Territory> captured)
+	public void performPlay(final Territory start, final Territory end, final Collection<Territory> captured)
 	{
 		m_ui.performPlay(start, end, captured);
 	}
-	
 }

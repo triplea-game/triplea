@@ -9,13 +9,11 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TerritoryEffectCalculator.java
  * 
  * Created on November 2, 2001, 12:26 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Territory;
@@ -36,29 +34,25 @@ import java.util.Iterator;
  */
 public class TerritoryEffectCalculator
 {
-	
-	public static Collection<TerritoryEffect> getEffects(Territory location)
+	public static Collection<TerritoryEffect> getEffects(final Territory location)
 	{
-		TerritoryAttachment ta = TerritoryAttachment.get(location);
+		final TerritoryAttachment ta = TerritoryAttachment.get(location);
 		if (ta != null)
 			return TerritoryAttachment.get(location).getTerritoryEffect();
 		else
 			return new ArrayList<TerritoryEffect>();
 	}
 	
-	public static int getTerritoryCombatBonus(UnitType type, Territory location, boolean defending)
+	public static int getTerritoryCombatBonus(final UnitType type, final Territory location, final boolean defending)
 	{
 		if (location == null || type == null)
 			return 0;
 		int combatBonus = 0;
-		Iterator<TerritoryEffect> effectsIter = getEffects(location).iterator();
+		final Iterator<TerritoryEffect> effectsIter = getEffects(location).iterator();
 		while (effectsIter.hasNext())
 		{
 			combatBonus += TerritoryEffectAttachment.get(effectsIter.next()).getCombatEffect(type, defending);
-			
 		}
-		
 		return combatBonus;
 	}
-	
 }

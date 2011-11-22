@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.chat;
 
 import games.strategy.engine.message.MessageContext;
@@ -23,39 +22,34 @@ import java.util.Map;
 
 public class StatusController implements IStatusController
 {
-	
 	private final Object m_mutex = new Object();
-	private Map<INode, String> m_status = new HashMap<INode, String>();
+	private final Map<INode, String> m_status = new HashMap<INode, String>();
 	private final Messengers m_messengers;
 	
-	public StatusController(Messengers messengers)
+	public StatusController(final Messengers messengers)
 	{
 		m_messengers = messengers;
-		
 		((IServerMessenger) m_messengers.getMessenger()).addConnectionChangeListener(new IConnectionChangeListener()
 		{
-			
-			public void connectionRemoved(INode to)
+			public void connectionRemoved(final INode to)
 			{
 				StatusController.this.connectionRemoved(to);
 			}
 			
-			public void connectionAdded(INode to)
+			public void connectionAdded(final INode to)
 			{
 			}
-			
 		});
 	}
 	
-	protected void connectionRemoved(INode to)
+	protected void connectionRemoved(final INode to)
 	{
 		synchronized (m_mutex)
 		{
 			m_status.remove(to);
 		}
-		IStatusChannel channel = (IStatusChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
+		final IStatusChannel channel = (IStatusChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
 		channel.statusChanged(to, null);
-		
 	}
 	
 	public Map<INode, String> getAllStatus()
@@ -66,17 +60,14 @@ public class StatusController implements IStatusController
 		}
 	}
 	
-	public void setStatus(String newStatus)
+	public void setStatus(final String newStatus)
 	{
-		INode node = MessageContext.getSender();
-		
+		final INode node = MessageContext.getSender();
 		synchronized (m_mutex)
 		{
 			m_status.put(node, newStatus);
 		}
-		
-		IStatusChannel channel = (IStatusChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
+		final IStatusChannel channel = (IStatusChannel) m_messengers.getChannelMessenger().getChannelBroadcastor(IStatusChannel.STATUS_CHANNEL);
 		channel.statusChanged(node, newStatus);
 	}
-	
 }

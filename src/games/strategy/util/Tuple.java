@@ -7,7 +7,7 @@ public class Tuple<T, S> implements Serializable
 	private final T m_first;
 	private final S m_second;
 	
-	public Tuple(T first, S second)
+	public Tuple(final T first, final S second)
 	{
 		m_first = first;
 		m_second = second;

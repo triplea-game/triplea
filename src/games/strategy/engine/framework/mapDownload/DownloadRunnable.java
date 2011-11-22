@@ -7,12 +7,11 @@ import java.net.URL;
 
 public class DownloadRunnable implements Runnable
 {
-	
 	private final String urlString;
 	private volatile byte[] contents;
 	private volatile String error;
 	
-	public DownloadRunnable(String urlString)
+	public DownloadRunnable(final String urlString)
 	{
 		super();
 		this.urlString = urlString;
@@ -23,7 +22,7 @@ public class DownloadRunnable implements Runnable
 		return contents;
 	}
 	
-	public void setContents(byte[] contents)
+	public void setContents(final byte[] contents)
 	{
 		this.contents = contents;
 	}
@@ -33,20 +32,18 @@ public class DownloadRunnable implements Runnable
 		return error;
 	}
 	
-	public void setError(String error)
+	public void setError(final String error)
 	{
 		this.error = error;
 	}
 	
 	public void run()
 	{
-		
 		URL url;
 		try
 		{
 			url = new URL(urlString.trim());
-			
-		} catch (MalformedURLException e1)
+		} catch (final MalformedURLException e1)
 		{
 			error = "invalid url";
 			return;
@@ -57,17 +54,16 @@ public class DownloadRunnable implements Runnable
 			stream = url.openStream();
 			try
 			{
-				ByteArrayOutputStream sink = new ByteArrayOutputStream();
+				final ByteArrayOutputStream sink = new ByteArrayOutputStream();
 				InstallMapDialog.copy(sink, stream);
 				contents = sink.toByteArray();
 			} finally
 			{
 				stream.close();
 			}
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			error = e.getMessage();
 		}
 	}
-	
 }

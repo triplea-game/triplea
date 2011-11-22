@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.slidingtiles.player;
 
 import games.puzzle.slidingtiles.attachments.Tile;
@@ -37,7 +36,6 @@ import java.util.Stack;
  */
 public class BetterAI extends AbstractAI
 {
-	
 	private int m_xDimension;
 	private int m_yDimension;
 	
@@ -57,46 +55,38 @@ public class BetterAI extends AbstractAI
 	
 	// The algorithm to be used
 	private final Algorithm m_algorithm;
-	
 	//
 	private final Heuristic m_heuristic;
-	
 	private Stack<Move> m_moves;
 	
-	public BetterAI(String name, String type, Algorithm algorithm, Heuristic heuristic)
+	public BetterAI(final String name, final String type, final Algorithm algorithm, final Heuristic heuristic)
 	{
 		super(name, type);
 		m_algorithm = algorithm;
 		m_heuristic = heuristic;
 		m_moves = null;
-		
 	}
 	
 	@Override
-	public void initialize(IPlayerBridge bridge, PlayerID id)
+	public void initialize(final IPlayerBridge bridge, final PlayerID id)
 	{
 		super.initialize(bridge, id);
-		
 		m_xDimension = m_bridge.getGameData().getMap().getXDimension();
 		m_yDimension = m_bridge.getGameData().getMap().getYDimension();
-		
 	}
 	
 	@Override
 	protected void play()
 	{
-		
 		if (m_moves == null)
 		{
 			((IPlayDelegate) m_bridge.getRemote()).signalStatus("Thinking...");
-			
 			try
 			{
 				if (m_algorithm.equals(Algorithm.DFS))
 				{
 					// GameProperties properties = m_bridge.getGameData().getProperties();
 					int numberOfShuffles = 1;// Integer.valueOf((String) properties.get("Difficulty Level"));
-					
 					while (m_moves == null || m_moves.isEmpty())
 					{
 						m_moves = AIAlgorithm.depthFirstSearch(getInitialState(), numberOfShuffles++);
@@ -107,7 +97,7 @@ public class BetterAI extends AbstractAI
 				}
 				else
 					throw new RuntimeException("Invalid algorithm");
-			} catch (OutOfMemoryError e)
+			} catch (final OutOfMemoryError e)
 			{
 				System.out.println("Ran out of memory while searching for next move: " + counter + " moves examined.");
 				System.exit(-1);
@@ -119,7 +109,6 @@ public class BetterAI extends AbstractAI
 			// pause for 0.8 seconds to give the impression of thinking
 			pause();
 		}
-		
 		if (m_moves == null || m_moves.isEmpty())
 		{
 			((IPlayDelegate) m_bridge.getRemote()).signalStatus("Too hard to solve!");
@@ -127,21 +116,16 @@ public class BetterAI extends AbstractAI
 		else
 		{
 			((IPlayDelegate) m_bridge.getRemote()).signalStatus(" ");
-			
-			Move move = m_moves.pop();
-			
-			IPlayDelegate playDel = (IPlayDelegate) m_bridge.getRemote();
-			Territory start = m_bridge.getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
-			Territory end = m_bridge.getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
-			
+			final Move move = m_moves.pop();
+			final IPlayDelegate playDel = (IPlayDelegate) m_bridge.getRemote();
+			final Territory start = m_bridge.getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
+			final Territory end = m_bridge.getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
 			playDel.play(start, end);
-			
 			// if (playDel.play(start,end)==null)
 			// System.out.println("Moving from " + start + " to " + end);
 			// else
 			// System.out.println("Illegal move from " + start + " to " + end);
 		}
-		
 	}
 	
 	private State getInitialState()
@@ -154,12 +138,9 @@ public class BetterAI extends AbstractAI
 	
 	class State extends GameState<Move>
 	{
-		private int[][] m_data;
-		
-		private int m_depth;
-		
+		private final int[][] m_data;
+		private final int m_depth;
 		private final Move m_move;
-		
 		private int m_blankX;
 		private int m_blankY;
 		
@@ -167,35 +148,29 @@ public class BetterAI extends AbstractAI
 		{
 			m_depth = 0;
 			m_move = null;
-			
 			m_data = new int[m_xDimension][m_yDimension];
-			
 			m_data[0][0] = 3;
 			m_data[1][0] = 1;
 			m_data[2][0] = 2;
-			
 			m_data[0][1] = 4;
 			m_data[1][1] = 0;
 			m_data[2][1] = 5;
-			
 			m_data[0][2] = 6;
 			m_data[1][2] = 7;
 			m_data[2][2] = 8;
 		}
 		
-		public State(GameMap map)
+		public State(final GameMap map)
 		{
 			m_depth = 0;
 			m_move = null;
-			
 			m_data = new int[m_xDimension][m_yDimension];
-			
 			for (int y = 0; y < m_yDimension; y++)
 			{
 				for (int x = 0; x < m_xDimension; x++)
 				{
-					Territory territory = map.getTerritoryFromCoordinates(x, y);
-					Tile tile = (Tile) territory.getAttachment("tile");
+					final Territory territory = map.getTerritoryFromCoordinates(x, y);
+					final Tile tile = (Tile) territory.getAttachment("tile");
 					if (tile == null)
 						throw new RuntimeException("Territory " + territory + " does not have an associated tile.");
 					else
@@ -208,7 +183,6 @@ public class BetterAI extends AbstractAI
 							m_blankY = y;
 						}
 					}
-					
 				}
 			}
 			// throw new RuntimeException("stop");
@@ -219,7 +193,6 @@ public class BetterAI extends AbstractAI
 		{
 			int code = 0;
 			int digit = 1;
-			
 			for (int y = 0; y < m_yDimension; y++)
 			{
 				for (int x = 0; x < m_xDimension; x++)
@@ -228,11 +201,10 @@ public class BetterAI extends AbstractAI
 					digit *= 10;
 				}
 			}
-			
 			return code;
 		}
 		
-		public boolean equals(GameState<Move> state)
+		public boolean equals(final GameState<Move> state)
 		{
 			if (hashCode() == state.hashCode())
 				return true;
@@ -244,7 +216,6 @@ public class BetterAI extends AbstractAI
 		public String toString()
 		{
 			String s = "";
-			
 			for (int y = 0; y < m_yDimension; y++)
 			{
 				for (int x = 0; x < m_xDimension; x++)
@@ -257,7 +228,7 @@ public class BetterAI extends AbstractAI
 		}
 		
 		@Override
-		public State getSuccessor(Move move)
+		public State getSuccessor(final Move move)
 		{
 			return new State(move, this);
 		}
@@ -268,20 +239,16 @@ public class BetterAI extends AbstractAI
 			return m_move;
 		}
 		
-		private State(Move move, State parentState)
+		private State(final Move move, final State parentState)
 		{
 			m_move = move;
 			m_depth = parentState.m_depth + 1;
 			counter++;
-			
-			int startX = move.getStart().getFirst();
-			int startY = move.getStart().getSecond();
-			
-			int endX = move.getEnd().getFirst();
-			int endY = move.getEnd().getSecond();
-			
+			final int startX = move.getStart().getFirst();
+			final int startY = move.getStart().getSecond();
+			final int endX = move.getEnd().getFirst();
+			final int endY = move.getEnd().getSecond();
 			m_data = new int[m_xDimension][m_yDimension];
-			
 			for (int y = 0; y < m_yDimension; y++)
 			{
 				for (int x = 0; x < m_xDimension; x++)
@@ -289,11 +256,9 @@ public class BetterAI extends AbstractAI
 					m_data[x][y] = parentState.m_data[x][y];
 				}
 			}
-			
-			int tmp = m_data[startX][startY];
+			final int tmp = m_data[startX][startY];
 			m_data[startX][startY] = m_data[endX][endY];
 			m_data[endX][endY] = tmp;
-			
 			for (int y = 0; y < m_yDimension; y++)
 			{
 				for (int x = 0; x < m_xDimension; x++)
@@ -305,28 +270,21 @@ public class BetterAI extends AbstractAI
 					}
 				}
 			}
-			
 		}
 		
 		@Override
 		public Collection<GameState<Move>> successors()
 		{
-			Collection<GameState<Move>> successors = new ArrayList<GameState<Move>>();
-			
-			Pair<Integer, Integer> blankTile = new Pair<Integer, Integer>(m_blankX, m_blankY);
-			
+			final Collection<GameState<Move>> successors = new ArrayList<GameState<Move>>();
+			final Pair<Integer, Integer> blankTile = new Pair<Integer, Integer>(m_blankX, m_blankY);
 			if (m_blankX > 0)
 				successors.add(new State(new Move(new Pair<Integer, Integer>(m_blankX - 1, m_blankY), blankTile), this));
-			
 			if (m_blankX < m_xDimension - 1)
 				successors.add(new State(new Move(new Pair<Integer, Integer>(m_blankX + 1, m_blankY), blankTile), this));
-			
 			if (m_blankY > 0)
 				successors.add(new State(new Move(new Pair<Integer, Integer>(m_blankX, m_blankY - 1), blankTile), this));
-			
 			if (m_blankY < m_yDimension - 1)
 				successors.add(new State(new Move(new Pair<Integer, Integer>(m_blankX, m_blankY + 1), blankTile), this));
-			
 			return successors;
 		}
 		
@@ -334,29 +292,24 @@ public class BetterAI extends AbstractAI
 		public float getUtility()
 		{
 			float utility = 0.0f;
-			
 			switch (m_heuristic)
 			{
 				case NUMBER_OF_MISPLACED_TILES:
 				{
 					int misplacedTiles = 0;
 					int value = 0;
-					
 					for (int y = 0; y < m_yDimension; y++)
 					{
 						for (int x = 0; x < m_xDimension; x++)
 						{
 							if (value != m_data[x][y])
 								misplacedTiles++;
-							
 							value++;
 						}
 					}
-					
 					utility = -1 * misplacedTiles;
 				}
 			}
-			
 			return utility;
 		}
 		
@@ -365,7 +318,6 @@ public class BetterAI extends AbstractAI
 		{
 			// if (m_data[0][0]==0 && m_data[1][0]==1) return true;
 			int value = -1;
-			
 			for (int y = 0; y < m_yDimension; y++)
 			{
 				for (int x = 0; x < m_xDimension; x++)
@@ -376,7 +328,6 @@ public class BetterAI extends AbstractAI
 						return false;
 				}
 			}
-			
 			return true;
 		}
 		
@@ -395,10 +346,10 @@ public class BetterAI extends AbstractAI
 
 	class Move
 	{
-		private Pair<Integer, Integer> m_start;
-		private Pair<Integer, Integer> m_end;
+		private final Pair<Integer, Integer> m_start;
+		private final Pair<Integer, Integer> m_end;
 		
-		public Move(Pair<Integer, Integer> start, Pair<Integer, Integer> end)
+		public Move(final Pair<Integer, Integer> start, final Pair<Integer, Integer> end)
 		{
 			m_start = start;
 			m_end = end;
@@ -419,16 +370,15 @@ public class BetterAI extends AbstractAI
 		{
 			return m_start + " -> " + m_end;
 		}
-		
 	}
 	
 
 	class Pair<First, Second>
 	{
-		private First m_first;
-		private Second m_second;
+		private final First m_first;
+		private final Second m_second;
 		
-		Pair(First first, Second second)
+		Pair(final First first, final Second second)
 		{
 			m_first = first;
 			m_second = second;
@@ -450,5 +400,4 @@ public class BetterAI extends AbstractAI
 			return "(" + m_first + "," + m_second + ")";
 		}
 	}
-	
 }

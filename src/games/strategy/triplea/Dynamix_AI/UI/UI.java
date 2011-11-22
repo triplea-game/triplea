@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.UI;
 
 import games.strategy.triplea.ui.TripleAFrame;
@@ -30,7 +29,6 @@ public class UI
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread, should be running on AWT thread.");
-		
 		s_frame = frame;
 		s_settingsWindow = new SettingsWindow(frame);
 	}
@@ -46,14 +44,14 @@ public class UI
 		s_settingsWindow.setLocationRelativeTo(s_frame);
 	}
 	
-	public static void NotifyAILogMessage(Level level, String message)
+	public static void NotifyAILogMessage(final Level level, final String message)
 	{
 		if (s_settingsWindow == null) // Shouldn't happen
 			return;
 		s_settingsWindow.addMessage(level, message);
 	}
 	
-	public static void NotifyStartOfRound(int round)
+	public static void NotifyStartOfRound(final int round)
 	{
 		if (s_settingsWindow == null) // Shouldn't happen
 			return;

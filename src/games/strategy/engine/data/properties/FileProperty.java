@@ -41,7 +41,6 @@ public class FileProperty extends AEditableProperty
 {
 	// compatible with 0.9.0.2 saved games
 	private static final long serialVersionUID = 6826763550643504789L;
-	
 	/** The file associated with this property. */
 	private File m_file;
 	
@@ -53,12 +52,10 @@ public class FileProperty extends AEditableProperty
 	 * @param fileName
 	 *            The name of the file to be associated with this property
 	 */
-	public FileProperty(String name, String fileName)
+	public FileProperty(final String name, final String fileName)
 	{
 		super(name);
-		
 		m_file = new File(fileName);
-		
 		if (!m_file.exists())
 			m_file = null;
 	}
@@ -68,7 +65,6 @@ public class FileProperty extends AEditableProperty
 	 * 
 	 * @return The file associated with this property
 	 */
-	
 	public Object getValue()
 	{
 		return m_file;
@@ -79,7 +75,6 @@ public class FileProperty extends AEditableProperty
 	 * 
 	 * @return a non-editable JTextField
 	 */
-	
 	public JComponent getEditorComponent()
 	{
 		final JTextField label;
@@ -87,25 +82,19 @@ public class FileProperty extends AEditableProperty
 			label = new JTextField();
 		else
 			label = new JTextField(m_file.getAbsolutePath());
-		
 		label.setEditable(false);
-		
 		label.addMouseListener(new MouseListener()
 		{
-			
-			public void mouseClicked(MouseEvent e)
+			public void mouseClicked(final MouseEvent e)
 			{
-				File selection = getFileUsingDialog("png", "jpg", "jpeg", "gif");
+				final File selection = getFileUsingDialog("png", "jpg", "jpeg", "gif");
 				if (selection != null)
 				{
 					m_file = selection;
-					
 					label.setText(m_file.getAbsolutePath());
-					
 					// Ask Swing to repaint this label when it's convenient
 					SwingUtilities.invokeLater(new Runnable()
 					{
-						
 						public void run()
 						{
 							label.repaint();
@@ -114,25 +103,23 @@ public class FileProperty extends AEditableProperty
 				}
 			}
 			
-			public void mouseEntered(MouseEvent e)
+			public void mouseEntered(final MouseEvent e)
 			{
 			}
 			
-			public void mouseExited(MouseEvent e)
+			public void mouseExited(final MouseEvent e)
 			{
 			}
 			
-			public void mousePressed(MouseEvent e)
+			public void mousePressed(final MouseEvent e)
 			{
 			}
 			
-			public void mouseReleased(MouseEvent e)
+			public void mouseReleased(final MouseEvent e)
 			{
 			}
 		});
-		
 		return label;
-		
 	}
 	
 	/**
@@ -148,42 +135,34 @@ public class FileProperty extends AEditableProperty
 		// is to use an AWT FileDialog instead of a Swing JDialog
 		if (GameRunner.isMac())
 		{
-			FileDialog fileDialog = new FileDialog(MainFrame.getInstance());
+			final FileDialog fileDialog = new FileDialog(MainFrame.getInstance());
 			fileDialog.setMode(FileDialog.LOAD);
 			fileDialog.setFilenameFilter(new FilenameFilter()
 			{
-				
-				public boolean accept(File dir, String name)
+				public boolean accept(final File dir, final String name)
 				{
 					if (acceptableSuffixes == null || acceptableSuffixes.length == 0)
 						return true;
-					for (String suffix : acceptableSuffixes)
+					for (final String suffix : acceptableSuffixes)
 					{
 						if (name.toLowerCase().endsWith(suffix))
 							return true;
 					}
-					
 					return false;
-					
 				}
 			});
-			
 			fileDialog.setVisible(true);
-			
-			String fileName = fileDialog.getFile();
-			String dirName = fileDialog.getDirectory();
-			
+			final String fileName = fileDialog.getFile();
+			final String dirName = fileDialog.getDirectory();
 			if (fileName == null)
 				return null;
 			return new File(dirName, fileName);
-			
 		}
-		JFileChooser fileChooser = new JFileChooser();
+		final JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new FileFilter()
 		{
-			
 			@Override
-			public boolean accept(File file)
+			public boolean accept(final File file)
 			{
 				if (file == null)
 					return false;
@@ -191,16 +170,14 @@ public class FileProperty extends AEditableProperty
 					return true;
 				else
 				{
-					String name = file.getAbsolutePath().toLowerCase();
-					for (String suffix : acceptableSuffixes)
+					final String name = file.getAbsolutePath().toLowerCase();
+					for (final String suffix : acceptableSuffixes)
 					{
 						if (name.endsWith(suffix))
 							return true;
 					}
-					
 					return false;
 				}
-				
 			}
 			
 			@Override
@@ -209,13 +186,11 @@ public class FileProperty extends AEditableProperty
 				return Arrays.toString(acceptableSuffixes);
 			}
 		});
-		
-		int rVal = fileChooser.showOpenDialog(MainFrame.getInstance());
+		final int rVal = fileChooser.showOpenDialog(MainFrame.getInstance());
 		if (rVal == JFileChooser.APPROVE_OPTION)
 		{
 			return fileChooser.getSelectedFile();
 		}
 		return null;
 	}
-	
 }

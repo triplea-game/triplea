@@ -29,15 +29,13 @@ import org.apache.commons.httpclient.methods.GetMethod;
 public class LobbyServerProperties
 {
 	private final static Logger s_logger = Logger.getLogger(LobbyServerProperties.class.getName());
-	
 	private final String m_host;
 	private final int m_port;
 	private final String m_serverErrorMessage;
 	private final String m_serverMessage;
-	
 	private volatile boolean m_done;
 	
-	public LobbyServerProperties(final String host, final int port, final String serverErrorMessage, String serverMessage)
+	public LobbyServerProperties(final String host, final int port, final String serverErrorMessage, final String serverMessage)
 	{
 		m_host = host;
 		m_port = port;
@@ -54,12 +52,12 @@ public class LobbyServerProperties
 	 * Read the server properties from a given url.
 	 * If an error occurs during read, then ErrorMessage will be populated.
 	 */
-	public LobbyServerProperties(URL url)
+	public LobbyServerProperties(final URL url)
 	{
 		this(getProperties(url));
 	}
 	
-	public LobbyServerProperties(Properties props)
+	public LobbyServerProperties(final Properties props)
 	{
 		m_host = props.getProperty("HOST");
 		m_port = Integer.parseInt(props.getProperty("PORT", "-1"));
@@ -68,23 +66,20 @@ public class LobbyServerProperties
 		m_done = true;
 	}
 	
-	private static Properties getProperties(URL url)
+	private static Properties getProperties(final URL url)
 	{
-		Properties props = new Properties();
-		HttpClient client = new HttpClient();
+		final Properties props = new Properties();
+		final HttpClient client = new HttpClient();
 		client.getHostConfiguration().setHost(url.getHost());
-		
-		GetMethod method = new GetMethod(url.getPath());
+		final GetMethod method = new GetMethod(url.getPath());
 		// pretend to be ie
 		method.setRequestHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
-		
 		try
 		{
 			client.executeMethod(method);
-			String propsString = method.getResponseBodyAsString();
-			
+			final String propsString = method.getResponseBodyAsString();
 			props.load(new ByteArrayInputStream(propsString.getBytes()));
-		} catch (IOException ioe)
+		} catch (final IOException ioe)
 		{
 			s_logger.log(Level.WARNING, ioe.getMessage(), ioe);
 			props.put("ERROR_MESSAGE", ioe.getMessage());
@@ -123,10 +118,10 @@ public class LobbyServerProperties
 		return m_serverErrorMessage.trim().length() <= 0;
 	}
 	
-	public static void main(String[] args) throws Exception
+	public static void main(final String[] args) throws Exception
 	{
-		URL url = new URL("http://triplea.sourceforge.net/lobby/server.properties");
-		LobbyServerProperties props = new LobbyServerProperties(url);
+		final URL url = new URL("http://triplea.sourceforge.net/lobby/server.properties");
+		final LobbyServerProperties props = new LobbyServerProperties(url);
 		System.out.println(props.getHost());
 		System.out.println(props.getPort());
 		System.out.println(props.getServerErrorMessage());
@@ -136,5 +131,4 @@ public class LobbyServerProperties
 	{
 		return m_serverMessage;
 	}
-	
 }

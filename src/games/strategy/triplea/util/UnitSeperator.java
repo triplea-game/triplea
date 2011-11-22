@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.Territory;
@@ -33,25 +32,25 @@ import java.util.TreeSet;
  * 
  * 
  */
-
 public class UnitSeperator
 {
 	private UnitSeperator()
 	{
 	}
 	
-	public static Set<UnitCategory> categorize(Collection<Unit> units)
+	public static Set<UnitCategory> categorize(final Collection<Unit> units)
 	{
 		return categorize(units, null, false, false);
 	}
 	
-	public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, boolean sort)
+	public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement, final boolean categorizeTransportCost,
+				final boolean sort)
 	{
 		return categorize(units, dependent, categorizeMovement, categorizeTransportCost, /*ctgzTrnMovement*/false, /*categorizeTerritories*/false, sort);
 	}
 	
-	public static Set<UnitCategory> categorize(boolean sort, Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost,
-				boolean categorizeTerritories)
+	public static Set<UnitCategory> categorize(final boolean sort, final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
+				final boolean categorizeTransportCost, final boolean categorizeTerritories)
 	{
 		return categorize(units, dependent, categorizeMovement, categorizeTransportCost, /*ctgzTrnMovement*/false, categorizeTerritories, sort);
 	}
@@ -71,13 +70,8 @@ public class UnitSeperator
 	 *        - if false, then leave categories in original order (based on units)
 	 * @return a Collection of UnitCategories
 	 */
-	public static Set<UnitCategory> categorize(Collection<Unit> units,
-												Map<Unit, Collection<Unit>> dependent,
-												boolean categorizeMovement,
-												boolean categorizeTransportCost,
-												boolean categorizeTrnMovement,
-												boolean categorizeTerritories,
-												boolean sort)
+	public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement, final boolean categorizeTransportCost,
+				final boolean categorizeTrnMovement, final boolean categorizeTerritories, final boolean sort)
 	{
 		// somewhat odd, but we map UnitCategory->UnitCategory,
 		// key and value are the same
@@ -88,42 +82,35 @@ public class UnitSeperator
 			categories = new HashMap<UnitCategory, UnitCategory>();
 		else
 			categories = new LinkedHashMap<UnitCategory, UnitCategory>();
-		
-		for (Unit current : units)
+		for (final Unit current : units)
 		{
 			int unitMovement = -1;
 			if (categorizeMovement || (categorizeTrnMovement && Matches.UnitIsTransport.match(current)))
 				unitMovement = TripleAUnit.get(current).getMovementLeft();
-			
 			int unitTransportCost = -1;
 			if (categorizeTransportCost)
 				unitTransportCost = UnitAttachment.get((current).getUnitType()).getTransportCost();
-			
 			Collection<Unit> currentDependents = null;
 			if (dependent != null)
 			{
 				currentDependents = dependent.get(current);
 			}
-			boolean damaged = current.getHits() == 1;
+			final boolean damaged = current.getHits() == 1;
 			if (damaged)
 			{
-				String kev = "here";
+				final String kev = "here";
 			}
-			
-			boolean disabled = Matches.UnitIsDisabled().match(current);
-			
+			final boolean disabled = Matches.UnitIsDisabled().match(current);
 			Territory originatingTerr = null;
 			if (categorizeTerritories)
 				originatingTerr = TripleAUnit.get(current).getOriginatedFrom();
-			
-			UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, damaged, disabled, unitTransportCost, originatingTerr);
-			
+			final UnitCategory entry = new UnitCategory(current, currentDependents, unitMovement, damaged, disabled, unitTransportCost, originatingTerr);
 			// we test to see if we have the key using equals, then since
 			// key maps to key, we retrieve it to add the unit to the correct
 			// category
 			if (categories.containsKey(entry))
 			{
-				UnitCategory stored = categories.get(entry);
+				final UnitCategory stored = categories.get(entry);
 				stored.addUnit(current);
 			}
 			else
@@ -131,7 +118,6 @@ public class UnitSeperator
 				categories.put(entry, entry);
 			}
 		}
-		
 		if (sort)
 			return new TreeSet<UnitCategory>(categories.keySet());
 		else
@@ -150,13 +136,14 @@ public class UnitSeperator
 	 *            - whether to categorize by movement
 	 * @return a Collection of UnitCategories
 	 */
-	public static Set<UnitCategory> categorize(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost)
+	public static Set<UnitCategory> categorize(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement, final boolean categorizeTransportCost)
 	{
 		// sort by default
 		return categorize(units, dependent, categorizeMovement, categorizeTransportCost, true);
 	}
 	
-	public static Set<UnitCategory> categorize(Map<Unit, Collection<Unit>> dependent, Collection<Unit> units, boolean categorizeMovement, boolean categorizeTransportCost, boolean categorizeTerritories)
+	public static Set<UnitCategory> categorize(final Map<Unit, Collection<Unit>> dependent, final Collection<Unit> units, final boolean categorizeMovement, final boolean categorizeTransportCost,
+				final boolean categorizeTerritories)
 	{
 		// sort by default
 		return categorize(true, units, dependent, categorizeMovement, categorizeTransportCost, categorizeTerritories);

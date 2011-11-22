@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * RulesAttachmentExporter.java
  * 
@@ -33,11 +32,10 @@ import java.util.Set;
 
 public class RulesAttachmentExporter extends DefaultAttachmentExporter
 {
-	
 	@Override
-	protected String printOption(Field field, IAttachment attachment) throws AttachmentExportException
+	protected String printOption(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
-		String fieldName = field.getName();
+		final String fieldName = field.getName();
 		if (fieldName.equals("m_turns"))
 			return mTurnsHandler(field, attachment);
 		if (fieldName.equals("m_unitPresence"))
@@ -56,11 +54,10 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter
 			return mTechsHandler(field, attachment);
 		if (fieldName.equals("m_techCount"))
 			return ""; // techCount is part of m_techs
-			
 		return super.printOption(field, attachment);
 	}
 	
-	private String territoryCountListHandler(Field field, IAttachment attachment, String fieldName) throws AttachmentExportException
+	private String territoryCountListHandler(final Field field, final IAttachment attachment, final String fieldName) throws AttachmentExportException
 	{
 		String[] valueArray;
 		try
@@ -68,7 +65,7 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter
 			valueArray = (String[]) field.get(attachment);
 			if (valueArray == null || valueArray.length == 0)
 				return "";
-			Iterator<String> values = Arrays.asList(valueArray).iterator();
+			final Iterator<String> values = Arrays.asList(valueArray).iterator();
 			if (valueArray.length > 1)
 				values.next(); // skip the arrayLength entry in the array because for Arrays > 1 the first entry is the count;
 			String returnValue = values.next();
@@ -78,89 +75,88 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter
 			}
 			if (returnValue.length() == 0)
 				return "";
-			String count = "" + ((RulesAttachment) attachment).getTerritoryCount();
+			final String count = "" + ((RulesAttachment) attachment).getTerritoryCount();
 			return printCountOption(fieldName.substring(2), returnValue, count);
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName + " on Attachment: " + attachment.getName());
-		} catch (SecurityException e)
+		} catch (final SecurityException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for territoryCountListHandler on option: " + fieldName + " on Attachment: " + attachment.getName());
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String mAtWarPlayersHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mAtWarPlayersHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			Set<PlayerID> atWarPlayers = (Set<PlayerID>) field.get(attachment);
+			final Set<PlayerID> atWarPlayers = (Set<PlayerID>) field.get(attachment);
 			if (atWarPlayers == null)
 				return "";
-			String option = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
-			Field atWarPlayerCountField = RulesAttachment.class.getDeclaredField("m_atWarCount");
+			final String option = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
+			final Field atWarPlayerCountField = RulesAttachment.class.getDeclaredField("m_atWarCount");
 			atWarPlayerCountField.setAccessible(true);
-			int count = atWarPlayerCountField.getInt(attachment);
-			Iterator<PlayerID> iWarPlayer = atWarPlayers.iterator();
+			final int count = atWarPlayerCountField.getInt(attachment);
+			final Iterator<PlayerID> iWarPlayer = atWarPlayers.iterator();
 			String value = iWarPlayer.next().getName();
 			while (iWarPlayer.hasNext())
 			{
 				value = value + ":" + iWarPlayer.next().getName();
 			}
 			return printCountOption(option, value, "" + count);
-			
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (SecurityException e)
+		} catch (final SecurityException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (NoSuchFieldException e)
+		} catch (final NoSuchFieldException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mAtWarPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
 	
-	private String mUnitPresenceHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mUnitPresenceHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printUnitIntegerMap(field, attachment);
 	}
 	
-	private String mProductionPerXTerritoriesHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mProductionPerXTerritoriesHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printUnitIntegerMap(field, attachment);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String mTurnsHandler(Field field, IAttachment attachment)
+	private String mTurnsHandler(final Field field, final IAttachment attachment)
 	{
 		Object oValue = null;
 		try
 		{
 			oValue = field.get(attachment);
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		String intList = "";
-		HashMap<Integer, Integer> intMap = (HashMap<Integer, Integer>) oValue;
+		final HashMap<Integer, Integer> intMap = (HashMap<Integer, Integer>) oValue;
 		if (intMap == null)
 			return "";
-		for (Integer curInt : intMap.keySet())
+		for (final Integer curInt : intMap.keySet())
 		{
-			int start = curInt.intValue();
-			int end = intMap.get(curInt);
+			final int start = curInt.intValue();
+			final int end = intMap.get(curInt);
 			if (intList.length() > 0)
 				intList = intList + ":";
 			if (start == end)
@@ -174,14 +170,14 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String mTechsHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mTechsHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			List<TechAdvance> techAdvanceList = (List<TechAdvance>) field.get(attachment);
+			final List<TechAdvance> techAdvanceList = (List<TechAdvance>) field.get(attachment);
 			if (techAdvanceList == null)
 				return "";
-			Iterator<TechAdvance> iTechAdvances = techAdvanceList.iterator();
+			final Iterator<TechAdvance> iTechAdvances = techAdvanceList.iterator();
 			String returnValue = "";
 			if (iTechAdvances.hasNext())
 				returnValue = iTechAdvances.next().getName();
@@ -192,10 +188,10 @@ public class RulesAttachmentExporter extends DefaultAttachmentExporter
 			if (returnValue.length() == 0)
 				return "";
 			return super.printCountOption("techs", returnValue, "" + ((RulesAttachment) attachment).getTechCount());
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mTechHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mTechHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}

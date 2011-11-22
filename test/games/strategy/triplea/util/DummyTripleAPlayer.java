@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.PlayerID;
@@ -30,151 +29,123 @@ import java.util.Map;
 
 public class DummyTripleAPlayer implements ITripleaPlayer
 {
-	
-	public void politics(boolean firstRun) {
-
-	}
-
-	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
+	public void politics(final boolean firstRun)
 	{
-		
+	}
+	
+	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
+	{
 	}
 	
 	public boolean confirmMoveHariKari()
 	{
-		
 		return false;
 	}
 	
-	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
+	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
-		
 		return false;
 	}
 	
 	public boolean confirmMoveKamikaze()
 	{
-		
 		return false;
 	}
 	
-	public void confirmOwnCasualties(GUID battleId, String message)
+	public void confirmOwnCasualties(final GUID battleId, final String message)
 	{
-		
 	}
 	
 	public PlayerID getID()
 	{
-		
 		return null;
 	}
 	
-	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(
-				Collection<Unit> fightersThatCanBeMoved, Territory from)
+	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
 	{
-		
 		return null;
 	}
 	
-	public void reportError(String error)
+	public void reportError(final String error)
 	{
-		
 	}
 	
-	public void reportMessage(String message, String title)
+	public void reportMessage(final String message, final String title)
 	{
-		
 	}
 	
-	public void reportPoliticalMessage(String message)
+	public void reportPoliticalMessage(final String message)
 	{
-		
 	}
 	
-	public boolean acceptPoliticalAction(String message)
+	public boolean acceptPoliticalAction(final String message)
 	{
 		return true;
 	}
 	
-	public Territory retreatQuery(GUID battleID, boolean submerge,
-				Collection<Territory> possibleTerritories, String message)
+	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Collection<Territory> possibleTerritories, final String message)
 	{
-		
 		return null;
 	}
 	
-	public Collection<Unit> scrambleQuery(GUID battleID,
-				Collection<Territory> possibleTerritories, String message, PlayerID player)
+	public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
 	{
-		
 		return null;
 	}
 	
-	public boolean selectAttackSubs(Territory unitTerritory)
+	public boolean selectAttackSubs(final Territory unitTerritory)
 	{
-		
 		return false;
 	}
 	
-	public boolean selectAttackTransports(Territory unitTerritory)
+	public boolean selectAttackTransports(final Territory unitTerritory)
 	{
-		
 		return false;
 	}
 	
-	public boolean selectAttackUnits(Territory unitTerritory)
+	public boolean selectAttackUnits(final Territory unitTerritory)
 	{
-		
 		return false;
 	}
 	
-	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory,
-				Collection<Territory> territories, boolean noneAvailable)
+	public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable)
 	{
-		
 		return null;
 	}
 	
-	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom,
-				Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice,
-				PlayerID hit, CasualtyList defaultCasualties, GUID battleID)
+	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)
 	{
-		
 		return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
 	}
 	
-	public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides)
+	public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title, final int diceSides)
 	{
-		
 		return null;
 	}
 	
-	public boolean selectShoreBombard(Territory unitTerritory)
-	{
-		
-		return false;
-	}
-	
-	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
-	{
-		
-		return null;
-	}
-	
-	public boolean shouldBomberBomb(Territory territory)
+	public boolean selectShoreBombard(final Territory unitTerritory)
 	{
 		return false;
 	}
 	
-	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
+	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates)
+	{
+		return null;
+	}
+	
+	public boolean shouldBomberBomb(final Territory territory)
+	{
+		return false;
+	}
+	
+	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> units)
 	{
 		return (Unit) Match.getNMatches(units, 1, Matches.UnitIsFactory);
 	}
 	
-	public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
+	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)
 	{
-		
 		return null;
 	}
-	
 }

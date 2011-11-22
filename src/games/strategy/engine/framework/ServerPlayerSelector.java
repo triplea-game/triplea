@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ServerPlayerSelecter.java
  * 
  * Created on December 14, 2001, 9:06 AM
  */
-
 package games.strategy.engine.framework;
 
 import java.awt.FlowLayout;
@@ -44,40 +42,34 @@ import javax.swing.JTextField;
  */
 public class ServerPlayerSelector extends JFrame
 {
-	private Collection<PlayerChoice> m_playerChoices;
-	private Object m_lock = new Object();
+	private final Collection<PlayerChoice> m_playerChoices;
+	private final Object m_lock = new Object();
 	private Collection<String> m_remote;
-	private JTextField m_nameField;
+	private final JTextField m_nameField;
 	
 	/** Creates a new instance of PlayerSelecter */
-	public ServerPlayerSelector(String[] players)
+	public ServerPlayerSelector(final String[] players)
 	{
 		super("Choose players");
-		
-		JPanel namePanel = new JPanel();
+		final JPanel namePanel = new JPanel();
 		namePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		namePanel.add(new JLabel("Name:"));
-		
 		m_nameField = new JTextField();
 		m_nameField.setColumns(10);
 		namePanel.add(m_nameField);
 		getContentPane().add(namePanel);
-		
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		getContentPane().add(new JLabel("Choose player location."));
-		
 		m_playerChoices = new ArrayList<PlayerChoice>();
 		for (int i = 0; i < players.length; i++)
 		{
-			PlayerChoice current = new PlayerChoice(players[i]);
+			final PlayerChoice current = new PlayerChoice(players[i]);
 			m_playerChoices.add(current);
 			getContentPane().add(current);
 		}
-		
 		this.addWindowListener(m_doneOnClose);
 		getContentPane().add(new JButton(m_done));
 		this.pack();
-		
 	}
 	
 	/**
@@ -98,12 +90,11 @@ public class ServerPlayerSelector extends JFrame
 				return getRemotePlayers();
 			else
 				return m_remote;
-		} catch (InterruptedException ie)
+		} catch (final InterruptedException ie)
 		{
 			ie.printStackTrace();
 			return getRemotePlayers();
 		}
-		
 	}
 	
 	@Override
@@ -114,17 +105,15 @@ public class ServerPlayerSelector extends JFrame
 	
 	public AbstractAction m_done = new AbstractAction("done")
 	{
-		
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 			if (!isVisible())
 				return;
-			
 			m_remote = new ArrayList<String>();
-			Iterator<PlayerChoice> iter = m_playerChoices.iterator();
+			final Iterator<PlayerChoice> iter = m_playerChoices.iterator();
 			while (iter.hasNext())
 			{
-				PlayerChoice choice = iter.next();
+				final PlayerChoice choice = iter.next();
 				if (choice.isRemote())
 				{
 					m_remote.add(choice.getPlayerName());
@@ -138,12 +127,10 @@ public class ServerPlayerSelector extends JFrame
 			dispose();
 		}
 	};
-	
-	private WindowListener m_doneOnClose = new WindowAdapter()
+	private final WindowListener m_doneOnClose = new WindowAdapter()
 	{
-		
 		@Override
-		public void windowClosing(WindowEvent e)
+		public void windowClosing(final WindowEvent e)
 		{
 			m_done.actionPerformed(null);
 		}
@@ -156,11 +143,10 @@ class PlayerChoice extends JPanel
 	private static final String REMOTE = "Remote";
 	private static final String LOCAL = "Local";
 	private static final String[] s_choices = { LOCAL, REMOTE };
+	private final String m_name;
+	private final JComboBox m_choice;
 	
-	private String m_name;
-	private JComboBox m_choice;
-	
-	public PlayerChoice(String name)
+	public PlayerChoice(final String name)
 	{
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		m_name = name;

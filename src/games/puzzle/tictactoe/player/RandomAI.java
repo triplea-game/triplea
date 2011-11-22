@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.tictactoe.player;
 
 import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
@@ -30,8 +29,7 @@ import java.util.Random;
  */
 public class RandomAI extends AbstractAI
 {
-	
-	public RandomAI(String name, String type)
+	public RandomAI(final String name, final String type)
 	{
 		super(name, type);
 	}
@@ -42,18 +40,14 @@ public class RandomAI extends AbstractAI
 		// Unless the triplea.ai.pause system property is set to false,
 		// pause for 0.8 seconds to give the impression of thinking
 		pause();
-		
 		// Get the collection of territories from the map
-		Collection<Territory> territories = getGameData().getMap().getTerritories();
-		Territory[] territoryArray = territories.toArray(new Territory[territories.size()]);
-		
-		Random generator = new Random();
+		final Collection<Territory> territories = getGameData().getMap().getTerritories();
+		final Territory[] territoryArray = territories.toArray(new Territory[territories.size()]);
+		final Random generator = new Random();
 		int trymeStart;
 		String error;
-		
 		// Get the play delegate
-		IPlayDelegate playDel = (IPlayDelegate) this.getPlayerBridge().getRemote();
-		
+		final IPlayDelegate playDel = (IPlayDelegate) this.getPlayerBridge().getRemote();
 		// Randomly select a territory and try playing there
 		// If that play isn't legal, try again
 		do
@@ -62,7 +56,5 @@ public class RandomAI extends AbstractAI
 			// trymeEnd = generator.nextInt(territoryArray.length);
 			error = playDel.play(territoryArray[trymeStart]);
 		} while (error != null);
-		
 	}
-	
 }

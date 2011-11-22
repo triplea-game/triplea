@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.CompositeChange;
@@ -38,7 +37,7 @@ class UndoablePlacement extends AbstractUndoableMove
 	final Territory m_producer_territory;
 	PlayerID m_player;
 	
-	public UndoablePlacement(PlayerID player, CompositeChange change, Territory producer_territory, Territory place_territory, Collection<Unit> units)
+	public UndoablePlacement(final PlayerID player, final CompositeChange change, final Territory producer_territory, final Territory place_territory, final Collection<Unit> units)
 	{
 		super(change, units);
 		m_place_territory = place_territory;
@@ -47,11 +46,11 @@ class UndoablePlacement extends AbstractUndoableMove
 	}
 	
 	@Override
-	protected final void undoSpecific(IDelegateBridge bridge)
+	protected final void undoSpecific(final IDelegateBridge bridge)
 	{
-		GameData data = bridge.getData();
-		Map<Territory, Collection<Unit>> produced = DelegateFinder.placeDelegate(data).getProduced();
-		Collection<Unit> units = produced.get(m_producer_territory);
+		final GameData data = bridge.getData();
+		final Map<Territory, Collection<Unit>> produced = DelegateFinder.placeDelegate(data).getProduced();
+		final Collection<Unit> units = produced.get(m_producer_territory);
 		units.removeAll(getUnits());
 		if (units.isEmpty())
 		{

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.ui;
 
 import java.awt.Component;
@@ -37,15 +36,13 @@ public class SwingEventThreadGoon
 		if (s_isInitialized)
 			return;
 		s_isInitialized = true;
-		
-		RepaintManager manager = new RepaintManager()
+		final RepaintManager manager = new RepaintManager()
 		{
 			/**
 			 * We are updating a portion of the screen, check to see if we are in the right thread.
 			 */
-			
 			@Override
-			public void addDirtyRegion(JComponent c, int x, int y, int w, int h)
+			public void addDirtyRegion(final JComponent c, final int x, final int y, final int w, final int h)
 			{
 				// if a component is not displayable, then we can modify
 				// if outside the swing event thread.
@@ -56,15 +53,11 @@ public class SwingEventThreadGoon
 						Thread.dumpStack();
 					}
 				}
-				
 				super.addDirtyRegion(c, x, y, w, h);
 			}
-			
 		};
-		
 		// update the repaint manager
 		RepaintManager.setCurrentManager(manager);
-		
 	}
 	
 	/**
@@ -74,28 +67,23 @@ public class SwingEventThreadGoon
 	 * Check the component (and its parent recursivly) till you get to the top
 	 * window (or null). If the window is displayable, then the component is displayable.
 	 */
-	private static boolean isComponentDisplayable(Component c)
+	private static boolean isComponentDisplayable(final Component c)
 	{
 		// we are not visible
 		if (!c.isVisible())
 			return false;
-		
 		// if we have no parent, we are not part of a display hierarchy, and
 		// we are not displayable
-		Container parent = c.getParent();
+		final Container parent = c.getParent();
 		if (parent == null)
 			return false;
-		
 		// is our window displayable?
 		if (parent instanceof Window)
 		{
-			Window w = (Window) parent;
-			
+			final Window w = (Window) parent;
 			return w.isDisplayable();
 		}
-		
 		// recursivly check our parent
 		return isComponentDisplayable(parent);
 	}
-	
 }

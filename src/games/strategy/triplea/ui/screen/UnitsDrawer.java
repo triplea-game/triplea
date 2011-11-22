@@ -40,8 +40,8 @@ public class UnitsDrawer implements IDrawable
 	private final String m_territoryName;
 	private final UIContext m_uiContext;
 	
-	public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, final boolean disabled, boolean overflow,
-				String territoryName, UIContext uiContext)
+	public UnitsDrawer(final int count, final String unitType, final String playerName, final Point placementPoint, final boolean damaged, final boolean disabled, final boolean overflow,
+				final String territoryName, final UIContext uiContext)
 	{
 		m_count = count;
 		m_unitType = unitType;
@@ -68,7 +68,7 @@ public class UnitsDrawer implements IDrawable
 		return m_playerName;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		if (m_overflow)
 		{
@@ -76,14 +76,11 @@ public class UnitsDrawer implements IDrawable
 			graphics.fillRect(m_placementPoint.x - bounds.x - 2, m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight(), m_uiContext.getUnitImageFactory()
 						.getUnitImageWidth() + 2, 3);
 		}
-		
-		UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
+		final UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
 		if (type == null)
 			throw new IllegalStateException("Type not found:" + m_unitType);
-		PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
-		
+		final PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
 		Image img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
-		
 		// figure the unitDamage here, for disabled or not
 		if ((UnitAttachment.get(type).isFactory() || UnitAttachment.get(type).getCanBeDamaged()) && (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
 		{
@@ -91,9 +88,8 @@ public class UnitsDrawer implements IDrawable
 			if (m_territoryName.length() != 0)
 			{
 				// kev, why are we doing a for loop here? each unit that needs to be drawn individually will be drawn if sorted properly, at least that was my understanding
-				Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(), Matches.unitIsOfType(type));
-				
-				for (Unit current : units)
+				final Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(), Matches.unitIsOfType(type));
+				for (final Unit current : units)
 				{
 					if (Matches.UnitIsDisabled().match(current))
 					{
@@ -107,7 +103,6 @@ public class UnitsDrawer implements IDrawable
 				img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
 			}
 		}
-		
 		if (!m_damaged && (UnitAttachment.get(type).isFactory() || UnitAttachment.get(type).getCanBeDamaged())
 					&& (isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
 		{
@@ -116,9 +111,9 @@ public class UnitsDrawer implements IDrawable
 			{
 				if (isSBRAffectsUnitProduction(data))
 				{
-					TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
-					int prod = ta.getProduction();
-					int unitProd = ta.getUnitProduction();
+					final TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
+					final int prod = ta.getProduction();
+					final int unitProd = ta.getUnitProduction();
 					if (unitProd < prod)
 					{
 						img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, true, m_disabled);
@@ -127,9 +122,8 @@ public class UnitsDrawer implements IDrawable
 				else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 				{
 					// kev, why are we doing a for loop here? each unit that needs to be drawn individually will be drawn if sorted properly, at least that was my understanding
-					Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(), Matches.unitIsOfType(type));
-					
-					for (Unit current : units)
+					final Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(), Matches.unitIsOfType(type));
+					for (final Unit current : units)
 					{
 						if (Matches.UnitHasSomeUnitDamage().match(current))
 						{
@@ -149,9 +143,7 @@ public class UnitsDrawer implements IDrawable
 			// needed, don't delete please. if it is a mouse over, we need to carry the unit on our mouse
 			img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
 		}
-		
 		graphics.drawImage(img, m_placementPoint.x - bounds.x, m_placementPoint.y - bounds.y, null);
-		
 		// more then 1 unit of this category
 		if (m_count != 1)
 		{
@@ -166,19 +158,18 @@ public class UnitsDrawer implements IDrawable
 					graphics.setColor(Color.white);
 					graphics.setFont(MapImage.MAP_FONT);
 					graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + 2 * Properties.getCountersDisplay(data)
-								+ (m_uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10),
-								m_placementPoint.y - 2 * Properties.getCountersDisplay(data) - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight() * 1 / 3);
+								+ (m_uiContext.getUnitImageFactory().getUnitImageWidth() * 6 / 10), m_placementPoint.y - 2 * Properties.getCountersDisplay(data) - bounds.y
+								+ m_uiContext.getUnitImageFactory().getUnitImageHeight() * 1 / 3);
 				}
 			}
 			else
 			{ // Display a white number at the bottom of the unit
 				graphics.setColor(Color.white);
 				graphics.setFont(MapImage.MAP_FONT);
-				graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
-							m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight());
+				graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4), m_placementPoint.y - bounds.y
+							+ m_uiContext.getUnitImageFactory().getUnitImageHeight());
 			}
 		}
-		
 		// Display Factory Damage
 		if ((isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) && (UnitAttachment.get(type).isFactory() || UnitAttachment.get(type).getCanBeDamaged()))
 		{
@@ -186,61 +177,54 @@ public class UnitsDrawer implements IDrawable
 		}
 	}
 	
-	private void displayFactoryDamage(Rectangle bounds, GameData data, Graphics2D graphics, UnitType type)
+	private void displayFactoryDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics, final UnitType type)
 	{
 		graphics.setColor(Color.black);
 		graphics.setFont(MapImage.MAP_FONT);
-		
 		if (m_territoryName.length() != 0)
 		{
 			if (isSBRAffectsUnitProduction(data))
 			{
-				TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
-				int damageCount = ta.getProduction() - ta.getUnitProduction();
-				
+				final TerritoryAttachment ta = TerritoryAttachment.get(data.getMap().getTerritory(m_territoryName));
+				final int damageCount = ta.getProduction() - ta.getUnitProduction();
 				if (damageCount > 0)
 				{
-					graphics.drawString(String.valueOf(damageCount), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
-								m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
+					graphics.drawString(String.valueOf(damageCount), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4), m_placementPoint.y - bounds.y
+								+ m_uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
 				}
 			}
 			else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 			{
 				// kev, why are we doing a for loop here? each unit that needs to be drawn individually will be drawn if sorted properly, at least that was my understanding
-				Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(), Matches.unitIsOfType(type));
-				
-				for (Unit current : units)
+				final Collection<Unit> units = Match.getMatches(data.getMap().getTerritory(m_territoryName).getUnits().getUnits(), Matches.unitIsOfType(type));
+				for (final Unit current : units)
 				{
-					TripleAUnit taUnit = (TripleAUnit) current;
+					final TripleAUnit taUnit = (TripleAUnit) current;
 					if (taUnit.getUnitDamage() > 0)
 					{
-						graphics.drawString(String.valueOf(taUnit.getUnitDamage()), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4),
-									m_placementPoint.y - bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
+						graphics.drawString(String.valueOf(taUnit.getUnitDamage()), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4), m_placementPoint.y
+									- bounds.y + m_uiContext.getUnitImageFactory().getUnitImageHeight() / 4);
 					}
 				}
 			}
 		}
 	}
 	
-	public Tuple<Territory, List<Unit>> getUnits(GameData data)
+	public Tuple<Territory, List<Unit>> getUnits(final GameData data)
 	{
 		// note - it may be the case where the territory is being changed as a result
 		// to a mouse click, and the map units haven't updated yet, so the unit count
 		// from the territory wont match the units in m_count
-		
-		Territory t = data.getMap().getTerritory(m_territoryName);
-		UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
-		
-		CompositeMatch<Unit> selectedUnits = new CompositeMatchAnd<Unit>();
+		final Territory t = data.getMap().getTerritory(m_territoryName);
+		final UnitType type = data.getUnitTypeList().getUnitType(m_unitType);
+		final CompositeMatch<Unit> selectedUnits = new CompositeMatchAnd<Unit>();
 		selectedUnits.add(Matches.unitIsOfType(type));
 		selectedUnits.add(Matches.unitIsOwnedBy(data.getPlayerList().getPlayerID(m_playerName)));
 		if (m_damaged)
 			selectedUnits.add(Matches.UnitIsDamaged);
 		else
 			selectedUnits.add(Matches.UnitIsNotDamaged);
-		
-		List<Unit> rVal = t.getUnits().getMatches(selectedUnits);
-		
+		final List<Unit> rVal = t.getUnits().getMatches(selectedUnits);
 		return new Tuple<Territory, List<Unit>>(t, rVal);
 	}
 	
@@ -255,14 +239,13 @@ public class UnitsDrawer implements IDrawable
 		return "UnitsDrawer for " + m_count + " " + MyFormatter.pluralize(m_unitType) + " in  " + m_territoryName;
 	}
 	
-	private boolean isSBRAffectsUnitProduction(GameData data)
+	private boolean isSBRAffectsUnitProduction(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
 	}
 	
-	private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(GameData data)
+	private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
 	}
-	
 }

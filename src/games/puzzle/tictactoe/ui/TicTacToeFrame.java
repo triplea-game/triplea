@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.tictactoe.ui;
 
 import games.strategy.common.ui.MacWrapper;
@@ -50,13 +49,10 @@ public class TicTacToeFrame extends MainGameFrame
 {
 	private GameData m_data;
 	private IGame m_game;
-	
 	private MapPanel m_mapPanel;
 	private JLabel m_status;
-	private JLabel m_error;
-	
+	private final JLabel m_error;
 	private boolean m_gameOver;
-	
 	private CountDownLatch m_waiting;
 	
 	/**
@@ -65,59 +61,48 @@ public class TicTacToeFrame extends MainGameFrame
 	 * @param game
 	 * @param players
 	 */
-	public TicTacToeFrame(IGame game, Set<IGamePlayer> players)
+	public TicTacToeFrame(final IGame game, final Set<IGamePlayer> players)
 	{
 		m_gameOver = false;
 		m_waiting = null;
-		
 		m_game = game;
 		m_data = game.getData();
-		
 		// Get the dimension of the gameboard - specified in the game's xml file.
-		int x_dim = m_data.getMap().getXDimension();
-		int y_dim = m_data.getMap().getYDimension();
-		
+		final int x_dim = m_data.getMap().getXDimension();
+		final int y_dim = m_data.getMap().getYDimension();
 		// The MapData holds info for the map,
 		// including the dimensions (x_dim and y_dim)
 		// and the size of each square (50 by 50)
-		MapData mapData = new MapData(m_data, x_dim, y_dim, 50, 50);
-		
+		final MapData mapData = new MapData(m_data, x_dim, y_dim, 50, 50);
 		// MapPanel is the Swing component that actually displays the gameboard.
 		m_mapPanel = new MapPanel(mapData);
-		
 		// This label will display whose turn it is
 		m_status = new JLabel(" ");
 		m_status.setAlignmentX(Component.CENTER_ALIGNMENT);
 		m_status.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
-		
 		// This label will display any error messages
 		m_error = new JLabel(" ");
 		m_error.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
 		// We need somewhere to put the map panel, status label, and error label
-		JPanel mainPanel = new JPanel();
+		final JPanel mainPanel = new JPanel();
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		mainPanel.add(m_mapPanel);
 		mainPanel.add(m_status);
 		mainPanel.add(m_error);
 		this.setContentPane(mainPanel);
-		
 		// Set up the menu bar and window title
 		this.setJMenuBar(new TicTacToeMenu(this));
 		this.setTitle(m_game.getData().getGameName());
-		
 		// If a user tries to close this frame, treat it as if they have asked to leave the game
 		this.addWindowListener(new WindowAdapter()
 		{
-			
 			@Override
-			public void windowClosing(WindowEvent e)
+			public void windowClosing(final WindowEvent e)
 			{
 				leaveGame();
 			}
 		});
-		
 		// Resize the window, then make it visible
 		this.pack();
 		this.setResizable(false);
@@ -134,7 +119,7 @@ public class TicTacToeFrame extends MainGameFrame
 	 * @param captured
 	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
 	 */
-	public void performPlay(Territory at)
+	public void performPlay(final Territory at)
 	{
 		m_mapPanel.performPlay(at);
 	}
@@ -156,29 +141,24 @@ public class TicTacToeFrame extends MainGameFrame
 			try
 			{
 				m_waiting.await();
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				// ignore
 			}
 			return null;
-			
 		}
-		
 		Territory play = null;
-		
 		try
 		{
 			while (play == null)
 			{
 				m_waiting = new CountDownLatch(1);
-				
 				play = m_mapPanel.waitForPlay(player, bridge, m_waiting);
 			}
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			return null;
 		}
-		
 		return play;
 	}
 	
@@ -187,7 +167,6 @@ public class TicTacToeFrame extends MainGameFrame
 	 * 
 	 * @return the <code>IGame</code> for the current game
 	 */
-	
 	@Override
 	public IGame getGame()
 	{
@@ -197,18 +176,16 @@ public class TicTacToeFrame extends MainGameFrame
 	/**
 	 * Process a user request to leave the game.
 	 */
-	
 	@Override
 	public void leaveGame()
 	{
 		if (!m_gameOver)
 		{
 			// Make sure the user really wants to leave the game.
-			int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
+			final int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to leave?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
 			if (rVal != JOptionPane.OK_OPTION)
 				return;
 		}
-		
 		// We need to let the MapPanel know that we're leaving the game.
 		// Once the CountDownLatch has counted down to zero,
 		// the MapPanel will stop listening for mouse clicks,
@@ -221,7 +198,6 @@ public class TicTacToeFrame extends MainGameFrame
 					m_waiting.countDown();
 			}
 		}
-		
 		// Exit the game.
 		if (m_game instanceof ServerGame)
 		{
@@ -231,7 +207,6 @@ public class TicTacToeFrame extends MainGameFrame
 		{
 			m_game.getMessenger().shutDown();
 			((ClientGame) m_game).shutDown();
-			
 			// an ugly hack, we need a better
 			// way to get the main frame
 			MainFrame.getInstance().clientLeftGame();
@@ -245,7 +220,6 @@ public class TicTacToeFrame extends MainGameFrame
 	 */
 	public void stopGame()
 	{
-		
 		if (GameRunner.isMac())
 		{
 			// this frame should not handle shutdowns anymore
@@ -253,31 +227,25 @@ public class TicTacToeFrame extends MainGameFrame
 		}
 		this.setVisible(false);
 		this.dispose();
-		
 		m_game = null;
-		
 		if (m_data != null)
 			m_data.clearAllListeners();
 		m_data = null;
-		
 		m_mapPanel = null;
-		
 		m_status = null;
-		
-		for (WindowListener l : this.getWindowListeners())
+		for (final WindowListener l : this.getWindowListeners())
 			this.removeWindowListener(l);
 	}
 	
 	/**
 	 * Process a user request to exit the program.
 	 */
-	
 	@Override
 	public void shutdown()
 	{
 		if (!m_gameOver)
 		{
-			int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
+			final int rVal = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?\nUnsaved game data will be lost.", "Exit", JOptionPane.YES_NO_OPTION);
 			if (rVal != JOptionPane.OK_OPTION)
 				return;
 		}
@@ -308,9 +276,8 @@ public class TicTacToeFrame extends MainGameFrame
 	 * @param error
 	 *            the error message to display
 	 */
-	
 	@Override
-	public void notifyError(String error)
+	public void notifyError(final String error)
 	{
 		m_error.setText(error);
 	}
@@ -321,10 +288,9 @@ public class TicTacToeFrame extends MainGameFrame
 	 * @param error
 	 *            the status message to display
 	 */
-	public void setStatus(String status)
+	public void setStatus(final String status)
 	{
 		m_error.setText(" ");
 		m_status.setText(status);
 	}
-	
 }

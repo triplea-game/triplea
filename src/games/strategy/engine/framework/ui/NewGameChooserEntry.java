@@ -13,15 +13,13 @@ import org.xml.sax.SAXException;
 
 public class NewGameChooserEntry
 {
-	
 	private final URI m_url;
 	private final GameData m_data;
 	
-	public NewGameChooserEntry(URI uri) throws IOException, GameParseException, SAXException
+	public NewGameChooserEntry(final URI uri) throws IOException, GameParseException, SAXException
 	{
 		m_url = uri;
-		
-		InputStream input = uri.toURL().openStream();
+		final InputStream input = uri.toURL().openStream();
 		try
 		{
 			m_data = new GameParser().parse(input);
@@ -30,7 +28,7 @@ public class NewGameChooserEntry
 			try
 			{
 				input.close();
-			} catch (IOException e)
+			} catch (final IOException e)
 			{// ignore
 			}
 		}
@@ -54,8 +52,8 @@ public class NewGameChooserEntry
 	
 	public String getLocation()
 	{
-		String raw = m_url.toString();
-		String base = GameRunner.getRootFolder().toURI().toString() + "maps";
+		final String raw = m_url.toString();
+		final String base = GameRunner.getRootFolder().toURI().toString() + "maps";
 		if (raw.startsWith(base))
 		{
 			return raw.substring(base.length());
@@ -66,5 +64,4 @@ public class NewGameChooserEntry
 		}
 		return raw;
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * IServerMessageListener.java
  * 
  * Created on December 14, 2001, 1:03 PM
  */
-
 package games.strategy.net;
 
 /**
@@ -35,5 +33,4 @@ public interface IConnectionChangeListener
 	 * A connection has been removed.
 	 */
 	public void connectionRemoved(INode to);
-	
 }

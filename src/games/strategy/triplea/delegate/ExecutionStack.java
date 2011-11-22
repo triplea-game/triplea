@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -40,12 +39,11 @@ public class ExecutionStack implements Serializable
 	private IExecutable m_current;
 	private final Stack<IExecutable> m_stack = new Stack<IExecutable>();
 	
-	public void execute(IDelegateBridge bridge)
+	public void execute(final IDelegateBridge bridge)
 	{
 		// we were interrupted before, resume where we left off
 		if (m_current != null)
 			m_stack.push(m_current);
-		
 		while (!m_stack.isEmpty())
 		{
 			m_current = m_stack.pop();
@@ -54,16 +52,15 @@ public class ExecutionStack implements Serializable
 		m_current = null;
 	}
 	
-	public void push(Collection<IExecutable> executables)
+	public void push(final Collection<IExecutable> executables)
 	{
-		for (IExecutable ex : executables)
+		for (final IExecutable ex : executables)
 		{
 			push(ex);
 		}
-		
 	}
 	
-	public void push(IExecutable executable)
+	public void push(final IExecutable executable)
 	{
 		m_stack.push(executable);
 	}
@@ -77,5 +74,4 @@ public class ExecutionStack implements Serializable
 	{
 		return m_stack.isEmpty();
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * MoveValidatorTest.java
  * 
  * Created on November 8, 2001, 5:00 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Route;
@@ -39,18 +37,16 @@ import junit.framework.TestSuite;
  */
 public class MoveValidatorTest extends DelegateTest
 {
-	
 	/** Creates new PlaceDelegateTest */
-	public MoveValidatorTest(String name)
+	public MoveValidatorTest(final String name)
 	{
 		super(name);
 	}
 	
 	public static Test suite()
 	{
-		TestSuite suite = new TestSuite();
+		final TestSuite suite = new TestSuite();
 		suite.addTestSuite(MoveValidatorTest.class);
-		
 		return suite;
 	}
 	
@@ -66,53 +62,42 @@ public class MoveValidatorTest extends DelegateTest
 	@Deprecated
 	public void testHasEnoughMovement()
 	{
-		
-		List<Unit> units = bomber.create(3, british);
+		final List<Unit> units = bomber.create(3, british);
 		TripleAUnit.get(units.get(0)).setAlreadyMoved(2);
 		TripleAUnit.get(units.get(1)).setAlreadyMoved(1);
-		
 		assertTrue(MoveValidator.hasEnoughMovement(units, 2));
 	}
-	
 	
 	/**
 	 * @deprecated test Matches / Route class instead
 	 */
 	@Deprecated
-	
 	public void testHasWater()
 	{
 		Route route = new Route();
 		route.setStart(eastMediteranean);
 		assertTrue(MoveValidator.hasWater(route));
-		
 		route = new Route();
 		route.setStart(eastAfrica);
 		assertTrue(!MoveValidator.hasWater(route));
-		
 		route.add(kenya);
 		assertTrue(!MoveValidator.hasWater(route));
-		
 		route.add(eastMediteranean);
 		assertTrue(MoveValidator.hasWater(route));
 	}
 	
-	
 	/**
 	 * @deprecated test Matches / Route class instead
 	 */
-	@Deprecated	
+	@Deprecated
 	public void testNotEnoughMovement()
 	{
-		
-		Collection<Unit> units = bomber.create(3, british);
-		Object[] objs = units.toArray();
+		final Collection<Unit> units = bomber.create(3, british);
+		final Object[] objs = units.toArray();
 		assertTrue(MoveValidator.hasEnoughMovement(units, 6));
 		assertTrue(!MoveValidator.hasEnoughMovement(units, 7));
-		
 		((TripleAUnit) objs[1]).setAlreadyMoved(1);
 		assertTrue(!MoveValidator.hasEnoughMovement(units, 6));
-		
 		((TripleAUnit) objs[1]).setAlreadyMoved(2);
 		assertTrue(!MoveValidator.hasEnoughMovement(units, 5));
 	}
@@ -120,21 +105,17 @@ public class MoveValidatorTest extends DelegateTest
 	public void testEnemyUnitsInPath()
 	{
 		// japanese unit in congo
-		Route bad = new Route();
+		final Route bad = new Route();
 		// the empty case
 		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data));
-		
 		bad.add(egypt);
 		bad.add(congo);
 		bad.add(kenya);
-		
 		assertTrue(!MoveValidator.onlyAlliedUnitsOnPath(bad, british, m_data));
-		
-		Route good = new Route();
+		final Route good = new Route();
 		good.add(egypt);
 		good.add(kenya);
 		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));
-		
 		// at end so should still be good
 		good.add(congo);
 		assertTrue(MoveValidator.onlyAlliedUnitsOnPath(good, british, m_data));
@@ -146,69 +127,60 @@ public class MoveValidatorTest extends DelegateTest
 	@Deprecated
 	public void testHasNeutralBeforEnd()
 	{
-		Route route = new Route();
+		final Route route = new Route();
 		route.add(egypt);
 		assertTrue(!MoveValidator.hasNeutralBeforeEnd(route));
-		
 		// nuetral
 		route.add(westAfrica);
 		assertTrue(!MoveValidator.hasNeutralBeforeEnd(route));
-		
 		route.add(libya);
 		assertTrue(MoveValidator.hasNeutralBeforeEnd(route));
 	}
 	
 	public void testHasUnitsThatCantGoOnWater()
 	{
-		Collection<Unit> units = new ArrayList<Unit>();
+		final Collection<Unit> units = new ArrayList<Unit>();
 		units.addAll(infantry.create(1, british));
 		units.addAll(armour.create(1, british));
 		units.addAll(transport.create(1, british));
 		units.addAll(fighter.create(1, british));
 		assertTrue(!MoveValidator.hasUnitsThatCantGoOnWater(units));
-		
 		assertTrue(MoveValidator.hasUnitsThatCantGoOnWater(factory.create(1, british)));
 	}
 	
 	public void testCarrierCapacity()
 	{
-		Collection<Unit> units = carrier.create(5, british);
+		final Collection<Unit> units = carrier.create(5, british);
 		assertEquals(10, MoveValidator.carrierCapacity(units, new Territory("TestTerritory", true, m_data)));
 	}
 	
 	public void testCarrierCost()
 	{
-		Collection<Unit> units = fighter.create(5, british);
+		final Collection<Unit> units = fighter.create(5, british);
 		assertEquals(5, MoveValidator.carrierCost(units));
 	}
 	
 	public void testGetLeastMovement()
 	{
-		
-		Collection<Unit> collection = bomber.create(1, british);
-		
+		final Collection<Unit> collection = bomber.create(1, british);
 		assertEquals(MoveValidator.getLeastMovement(collection), 6);
-		
-		Object[] objs = collection.toArray();
+		final Object[] objs = collection.toArray();
 		((TripleAUnit) objs[0]).setAlreadyMoved(1);
-		
 		assertEquals(MoveValidator.getLeastMovement(collection), 5);
-		
 		collection.addAll(factory.create(2, british));
 		assertEquals(MoveValidator.getLeastMovement(collection), 0);
 	}
 	
 	public void testCanLand()
 	{
-		Collection<Unit> units = fighter.create(4, british);
+		final Collection<Unit> units = fighter.create(4, british);
 		// 2 carriers in red sea
 		assertTrue(MoveValidator.canLand(units, redSea, british, m_data));
 		// britian owns egypt
 		assertTrue(MoveValidator.canLand(units, egypt, british, m_data));
 		// only 2 carriers
-		Collection<Unit> tooMany = fighter.create(6, british);
+		final Collection<Unit> tooMany = fighter.create(6, british);
 		assertTrue(!MoveValidator.canLand(tooMany, redSea, british, m_data));
-		
 		// nowhere to land
 		assertTrue(!MoveValidator.canLand(units, japanSeaZone, british, m_data));
 		// nuetral
@@ -219,29 +191,26 @@ public class MoveValidatorTest extends DelegateTest
 	{
 		try
 		{
-			Collection<Unit> units = infantry.create(1, british);
+			final Collection<Unit> units = infantry.create(1, british);
 			MoveValidator.canLand(units, redSea, british, m_data);
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			return;
 		}
 		fail("No exception thrown");
-		
 	}
 	
 	public void testCanLandBomber()
 	{
-		Collection<Unit> units = bomber.create(1, british);
+		final Collection<Unit> units = bomber.create(1, british);
 		assertTrue(!MoveValidator.canLand(units, redSea, british, m_data));
 	}
 	
 	public void testHasSomeLand()
 	{
-		Collection<Unit> units = transport.create(3, british);
+		final Collection<Unit> units = transport.create(3, british);
 		assertTrue(!MoveValidator.hasSomeLand(units));
-		
 		units.addAll(infantry.create(2, british));
 		assertTrue(MoveValidator.hasSomeLand(units));
 	}
-	
 }

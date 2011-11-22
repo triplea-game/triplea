@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  */
-
 package games.strategy.engine.message;
 
 import games.strategy.net.INode;
@@ -22,12 +21,11 @@ import games.strategy.net.INode;
  */
 public class MessageContext
 {
-	
 	// the current caller of the remote or channel
 	private static final ThreadLocal<INode> m_sender = new ThreadLocal<INode>();
 	
 	// should only be called by EndPoint
-	public static void setSenderNodeForThread(INode node)
+	public static void setSenderNodeForThread(final INode node)
 	{
 		m_sender.set(node);
 	}

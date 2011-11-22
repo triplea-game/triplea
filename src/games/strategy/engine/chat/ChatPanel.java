@@ -9,13 +9,11 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ChatFrame.java Swing ui for chatting.
  * 
  * Created on January 14, 2002, 11:08 AM
  */
-
 package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IChannelMessenger;
@@ -45,14 +43,14 @@ public class ChatPanel extends JPanel
 	private ChatMessagePanel m_chatMessagePanel;
 	
 	/** Creates a new instance of ChatFrame */
-	public ChatPanel(IMessenger messenger, IChannelMessenger channelMessenger, IRemoteMessenger remoteMessenger, String chatName)
+	public ChatPanel(final IMessenger messenger, final IChannelMessenger channelMessenger, final IRemoteMessenger remoteMessenger, final String chatName)
 	{
 		init();
-		Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger);
+		final Chat chat = new Chat(messenger, chatName, channelMessenger, remoteMessenger);
 		setChat(chat);
 	}
 	
-	public ChatPanel(Chat chat)
+	public ChatPanel(final Chat chat)
 	{
 		init();
 		setChat(chat);
@@ -62,11 +60,10 @@ public class ChatPanel extends JPanel
 	{
 		createComponents();
 		layoutComponents();
-		
 		setSize(300, 200);
 	}
 	
-	public void setChat(Chat chat)
+	public void setChat(final Chat chat)
 	{
 		m_chatMessagePanel.setChat(chat);
 		m_chatPlayerPanel.setChat(chat);
@@ -79,44 +76,36 @@ public class ChatPanel extends JPanel
 	
 	private void layoutComponents()
 	{
-		
-		Container content = this;
+		final Container content = this;
 		content.setLayout(new BorderLayout());
-		
-		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		split.setLeftComponent(m_chatMessagePanel);
 		split.setRightComponent(m_chatPlayerPanel);
-		
 		split.setOneTouchExpandable(false);
 		split.setDividerSize(5);
 		split.setResizeWeight(1);
-		
 		content.add(split, BorderLayout.CENTER);
 	}
 	
 	private void createComponents()
 	{
-		
 		m_chatPlayerPanel = new ChatPlayerPanel(null);
 		m_chatMessagePanel = new ChatMessagePanel(null);
 	}
 	
-	public void setPlayerRenderer(DefaultListCellRenderer renderer)
+	public void setPlayerRenderer(final DefaultListCellRenderer renderer)
 	{
 		m_chatPlayerPanel.setPlayerRenderer(renderer);
-		
 	}
 	
-	public void setShowChatTime(boolean showTime)
+	public void setShowChatTime(final boolean showTime)
 	{
 		m_chatMessagePanel.setShowTime(showTime);
 	}
-	
 	/*public void setMessage(String message)
 	{
 		if (message == null)
 			return;
 		m_chatMessagePanel.addMessage(message, "Server", true);
 	}*/
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.kingstable.ui;
 
 import games.strategy.common.ui.IPlayData;
@@ -28,8 +27,8 @@ import games.strategy.engine.data.Territory;
  */
 public class PlayData implements IPlayData
 {
-	private Territory m_start;
-	private Territory m_end;
+	private final Territory m_start;
+	private final Territory m_end;
 	
 	/**
 	 * Construct a new play, with the given start location and end location.
@@ -39,7 +38,7 @@ public class PlayData implements IPlayData
 	 * @param end
 	 *            <code>Territory</code> where the play should end
 	 */
-	public PlayData(Territory start, Territory end)
+	public PlayData(final Territory start, final Territory end)
 	{
 		m_start = start;
 		m_end = end;

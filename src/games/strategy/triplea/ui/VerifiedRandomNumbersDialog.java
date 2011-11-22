@@ -37,7 +37,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class VerifiedRandomNumbersDialog extends JDialog
 {
-	public VerifiedRandomNumbersDialog(Component parent)
+	public VerifiedRandomNumbersDialog(final Component parent)
 	{
 		super(JOptionPane.getFrameForComponent(parent), "Verified Random Numbers", false);
 		init();
@@ -46,40 +46,30 @@ public class VerifiedRandomNumbersDialog extends JDialog
 	
 	private void init()
 	{
-		List<VerifiedRandomNumbers> verified = RemoteRandom.getVerifiedRandomNumbers();
-		String[][] tableValues = getTableValues(verified);
-		
-		DefaultTableModel model = new DefaultTableModel(tableValues, new String[] { "Reason", "Dice Rolls" })
+		final List<VerifiedRandomNumbers> verified = RemoteRandom.getVerifiedRandomNumbers();
+		final String[][] tableValues = getTableValues(verified);
+		final DefaultTableModel model = new DefaultTableModel(tableValues, new String[] { "Reason", "Dice Rolls" })
 		{
-			
 			@Override
-			public boolean isCellEditable(int row, int column)
+			public boolean isCellEditable(final int row, final int column)
 			{
 				return false;
 			}
 		};
-		
-		JTable table = new JTable(model);
-		
+		final JTable table = new JTable(model);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(new JScrollPane(table), BorderLayout.CENTER);
-		
-		JPanel buttons = new JPanel();
+		final JPanel buttons = new JPanel();
 		buttons.setLayout(new FlowLayout(FlowLayout.CENTER));
 		getContentPane().add(buttons, BorderLayout.SOUTH);
-		
-		JButton close = new JButton("Close");
-		close.addActionListener(
-					new ActionListener()
-				{
-					
-					public void actionPerformed(ActionEvent e)
-					{
-						setVisible(false);
-					}
-				}
-					);
-		
+		final JButton close = new JButton("Close");
+		close.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				setVisible(false);
+			}
+		});
 		buttons.add(close);
 	}
 	
@@ -87,19 +77,17 @@ public class VerifiedRandomNumbersDialog extends JDialog
 	 * @param verified
 	 * @return
 	 */
-	private String[][] getTableValues(List<VerifiedRandomNumbers> verified)
+	private String[][] getTableValues(final List<VerifiedRandomNumbers> verified)
 	{
 		if (verified.isEmpty())
 			return new String[][] { { "", "" } };
-		
-		String[][] tableValues = new String[verified.size()][2];
+		final String[][] tableValues = new String[verified.size()][2];
 		for (int i = 0; i < verified.size(); i++)
 		{
-			VerifiedRandomNumbers number = verified.get(i);
+			final VerifiedRandomNumbers number = verified.get(i);
 			tableValues[i][0] = number.getAnnotation();
 			tableValues[i][1] = MyFormatter.asDice(number.getValues());
 		}
 		return tableValues;
 	}
-	
 }

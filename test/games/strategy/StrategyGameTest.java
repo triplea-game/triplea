@@ -27,14 +27,12 @@ import junit.framework.TestSuite;
  */
 public class StrategyGameTest extends TestCase
 {
-	
 	public static Test suite()
 	{
-		TestSuite suite = new TestSuite(StrategyGameTest.class.getSimpleName());
+		final TestSuite suite = new TestSuite(StrategyGameTest.class.getSimpleName());
 		suite.addTestSuite(games.strategy.util.IntegerMapTest.class);
 		suite.addTestSuite(games.strategy.util.MatchTest.class);
 		suite.addTestSuite(games.strategy.util.PropertyUtilTest.class);
-		
 		suite.addTestSuite(games.strategy.engine.xml.ParserTest.class);
 		suite.addTestSuite(games.strategy.engine.data.AllianceTrackerTest.class);
 		suite.addTestSuite(games.strategy.engine.data.MapTest.class);
@@ -42,7 +40,6 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(games.strategy.engine.data.SerializationTest.class);
 		suite.addTestSuite(games.strategy.net.MessengerTest.class);
 		suite.addTestSuite(games.strategy.net.MessengerLoginTest.class);
-		
 		suite.addTestSuite(games.strategy.thread.ThreadPoolTest.class);
 		suite.addTestSuite(games.strategy.thread.LockUtilTest.class);
 		suite.addTestSuite(games.strategy.engine.framework.GameDataManagerTest.class);
@@ -55,22 +52,18 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(ChatIgnoreListTest.class);
 		suite.addTestSuite(ChatTest.class);
 		suite.addTestSuite(StatusTest.class);
-		
 		suite.addTestSuite(DBUserControllerTest.class);
 		suite.addTestSuite(BannedIpControllerTest.class);
 		suite.addTestSuite(BadWordControllerTest.class);
 		suite.addTestSuite(LobbyLoginValidatorTest.class);
 		suite.addTestSuite(ModeratorControllerTest.class);
-		
 		suite.addTestSuite(RemoteInterfaceHelperTest.class);
-		
 		suite.addTestSuite(NewGameChooserModelTest.class);
-		
 		return suite;
 	}
 	
 	/** Creates new StrategyGameTest */
-	public StrategyGameTest(String name)
+	public StrategyGameTest(final String name)
 	{
 		super(name);
 	}

@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 
 public class ChatIgnoreListTest extends TestCase
 {
-	
 	@Override
 	public void setUp() throws BackingStoreException
 	{
@@ -23,7 +22,7 @@ public class ChatIgnoreListTest extends TestCase
 	
 	private void clearStore() throws BackingStoreException
 	{
-		Preferences prefs = ChatIgnoreList.getPrefNode();
+		final Preferences prefs = ChatIgnoreList.getPrefNode();
 		prefs.clear();
 		prefs.flush();
 	}
@@ -31,12 +30,9 @@ public class ChatIgnoreListTest extends TestCase
 	public void testLoadStore()
 	{
 		ChatIgnoreList list = new ChatIgnoreList();
-		
 		assertFalse(list.shouldIgnore("test"));
-		
 		list.add("test");
 		assertTrue(list.shouldIgnore("test"));
-		
 		list = new ChatIgnoreList();
 		assertTrue(list.shouldIgnore("test"));
 	}

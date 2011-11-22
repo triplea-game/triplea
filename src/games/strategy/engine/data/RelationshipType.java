@@ -5,7 +5,6 @@
  * 
  *          A Type of Relationship between PlayerIDs
  */
-
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +18,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
@@ -28,7 +26,6 @@ import java.io.Serializable;
 
 public class RelationshipType extends NamedAttachable implements Serializable
 {
-	
 	/**
 	 * create new RelationshipType
 	 * 
@@ -37,7 +34,7 @@ public class RelationshipType extends NamedAttachable implements Serializable
 	 * @param data
 	 *            GameData Object used for construction
 	 */
-	public RelationshipType(String name, GameData data)
+	public RelationshipType(final String name, final GameData data)
 	{
 		super(name, data);
 	}
@@ -57,5 +54,4 @@ public class RelationshipType extends NamedAttachable implements Serializable
 	{
 		return this.getName();
 	}
-	
 }

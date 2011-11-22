@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.debug.HeartBeat;
@@ -61,47 +60,36 @@ import javax.swing.SwingUtilities;
  */
 public class InGameLobbyWatcher
 {
-	
 	public static final String LOBBY_WATCHER_NAME = "lobby_watcher";
-	
 	// this is the messenger used by the game
 	// it is different than the messenger we use to connect to
 	// the game lobby
 	private final IServerMessenger m_gameMessenger;
 	private boolean m_shutdown = false;
-	
 	private final GUID m_gameID = new GUID();
-	
 	private GameSelectorModel m_gameSelectorModel;
-	private Observer m_gameSelectorModelObserver = new Observer()
+	private final Observer m_gameSelectorModelObserver = new Observer()
 	{
-		
-		public void update(Observable o, Object arg)
+		public void update(final Observable o, final Object arg)
 		{
 			gameSelectorModelUpdated();
 		}
 	};
-	
 	private IGame m_game;
-	private GameStepListener m_gameStepListener = new GameStepListener()
+	private final GameStepListener m_gameStepListener = new GameStepListener()
 	{
-		
-		public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+		public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
 		{
 			InGameLobbyWatcher.this.gameStepChanged(stepName, round);
 		}
-		
 	};
-	
 	// we create this messenger, and use it to connect to the
 	// game lobby
 	private final IMessenger m_messenger;
 	private final IRemoteMessenger m_remoteMessenger;
-	private GameDescription m_gameDescription;
-	
+	private final GameDescription m_gameDescription;
 	private final Object m_mutex = new Object();
-	
-	private IConnectionChangeListener m_connectionChangeListener;
+	private final IConnectionChangeListener m_connectionChangeListener;
 	
 	/**
 	 * Reads SystemProperties to see if we should connect to a lobby server
@@ -112,74 +100,65 @@ public class InGameLobbyWatcher
 	 * 
 	 * @return null if no watcher should be created
 	 */
-	public static InGameLobbyWatcher newInGameLobbyWatcher(IServerMessenger gameMessenger, JComponent parent)
+	public static InGameLobbyWatcher newInGameLobbyWatcher(final IServerMessenger gameMessenger, final JComponent parent)
 	{
-		String host = System.getProperties().getProperty(GameRunner2.LOBBY_HOST);
-		String port = System.getProperties().getProperty(GameRunner2.LOBBY_PORT);
-		String hostedBy = System.getProperties().getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY);
-		
+		final String host = System.getProperties().getProperty(GameRunner2.LOBBY_HOST);
+		final String port = System.getProperties().getProperty(GameRunner2.LOBBY_PORT);
+		final String hostedBy = System.getProperties().getProperty(GameRunner2.LOBBY_GAME_HOSTED_BY);
 		if (host == null || port == null)
 		{
 			return null;
 		}
-		
 		// clear the properties
 		System.getProperties().remove(GameRunner2.LOBBY_HOST);
 		System.getProperties().remove(GameRunner2.LOBBY_PORT);
 		System.getProperties().remove(GameRunner2.LOBBY_GAME_HOSTED_BY);
-		
-		IConnectionLogin login = new IConnectionLogin()
+		final IConnectionLogin login = new IConnectionLogin()
 		{
-			
-			public void notifyFailedLogin(String message)
+			public void notifyFailedLogin(final String message)
 			{
 			}
 			
-			public Map<String, String> getProperties(Map<String, String> challengProperties)
+			public Map<String, String> getProperties(final Map<String, String> challengProperties)
 			{
-				Map<String, String> rVal = new HashMap<String, String>();
+				final Map<String, String> rVal = new HashMap<String, String>();
 				rVal.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
 				rVal.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
 				rVal.put(LobbyLoginValidator.LOBBY_WATCHER_LOGIN, Boolean.TRUE.toString());
 				return rVal;
 			}
 		};
-		
 		try
 		{
 			System.out.println("host:" + host + " port:" + port);
-			String mac = MacFinder.GetHashedMacAddress();
-			ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port), getRealName(hostedBy) + "_" + LOBBY_WATCHER_NAME, mac, login);
-			UnifiedMessenger um = new UnifiedMessenger(messenger);
-			RemoteMessenger rm = new RemoteMessenger(um);
-			
-			HeartBeat h = new HeartBeat(messenger.getServerNode());
+			final String mac = MacFinder.GetHashedMacAddress();
+			final ClientMessenger messenger = new ClientMessenger(host, Integer.parseInt(port), getRealName(hostedBy) + "_" + LOBBY_WATCHER_NAME, mac, login);
+			final UnifiedMessenger um = new UnifiedMessenger(messenger);
+			final RemoteMessenger rm = new RemoteMessenger(um);
+			final HeartBeat h = new HeartBeat(messenger.getServerNode());
 			rm.registerRemote(h, HeartBeat.getHeartBeatName(um.getLocalNode()));
-			
 			return new InGameLobbyWatcher(messenger, rm, gameMessenger, parent);
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 			return null;
 		}
 	}
 	
-	private static String getRealName(String uniqueName)
+	private static String getRealName(final String uniqueName)
 	{
 		// Remove any (n) that is added to distinguish duplicate names
-		String name = uniqueName.split(" ")[0];
+		final String name = uniqueName.split(" ")[0];
 		return name;
 	}
 	
-	public void setGame(IGame game)
+	public void setGame(final IGame game)
 	{
 		if (m_game != null)
 		{
 			m_game.removeGameStepListener(m_gameStepListener);
 		}
-		
 		m_game = game;
-		
 		if (game != null)
 		{
 			game.addGameStepListener(m_gameStepListener);
@@ -187,7 +166,7 @@ public class InGameLobbyWatcher
 		}
 	}
 	
-	private void gameStepChanged(String stepName, int round)
+	private void gameStepChanged(final String stepName, final int round)
 	{
 		synchronized (m_mutex)
 		{
@@ -206,60 +185,45 @@ public class InGameLobbyWatcher
 			m_gameDescription.setGameName(m_gameSelectorModel.getGameName());
 			postUpdate();
 		}
-		
 	}
 	
 	public InGameLobbyWatcher(final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IServerMessenger serverMessenger, final JComponent parent)
 	{
 		m_messenger = messenger;
 		m_remoteMessenger = remoteMessenger;
-		
 		m_gameMessenger = serverMessenger;
-		
 		m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), new Date(), "???", 1, GameStatus.WAITING_FOR_PLAYERS, "-", m_gameMessenger
 					.getLocalNode().getName(), System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS));
-		
 		final ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
 		synchronized (m_mutex)
 		{
-			
 			controller.postGame(m_gameID, (GameDescription) m_gameDescription.clone());
 		}
-		
 		// if we loose our connection, then shutdown
 		m_messenger.addErrorListener(new IMessengerErrorListener()
 		{
-			
-			public void messengerInvalid(IMessenger messenger, Exception reason)
+			public void messengerInvalid(final IMessenger messenger, final Exception reason)
 			{
 				shutDown();
 			}
-			
 		});
-		
 		m_connectionChangeListener = new IConnectionChangeListener()
-						{
-							
-							public void connectionRemoved(INode to)
-							{
-								updatePlayerCount();
-								
-							}
-							
-							public void connectionAdded(INode to)
-							{
-								updatePlayerCount();
-								
-							}
-							
-						};
+		{
+			public void connectionRemoved(final INode to)
+			{
+				updatePlayerCount();
+			}
+			
+			public void connectionAdded(final INode to)
+			{
+				updatePlayerCount();
+			}
+		};
 		// when players join or leave the game
 		// update the connection count
 		m_gameMessenger.addConnectionChangeListener(m_connectionChangeListener);
-		
-		Runnable r = new Runnable()
+		final Runnable r = new Runnable()
 		{
-			
 			public void run()
 			{
 				final String addressUsed = controller.testGame(m_gameID);
@@ -271,31 +235,24 @@ public class InGameLobbyWatcher
 						shutDown();
 						SwingUtilities.invokeLater(new Runnable()
 						{
-							
 							public void run()
 							{
-								String message = "Your computer is not reachable from the internet.\n" +
-												"Please check your firewall or router configuration.\n" +
-												"See 'How To Host...' in the help menu, at the top of the lobby screen.\n" +
-												"The server tried to connect to " + addressUsed;
-								
+								final String message = "Your computer is not reachable from the internet.\n" + "Please check your firewall or router configuration.\n"
+											+ "See 'How To Host...' in the help menu, at the top of the lobby screen.\n" + "The server tried to connect to " + addressUsed;
 								JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Could Not Host", JOptionPane.ERROR_MESSAGE);
 								System.exit(-1);
 							}
-							
 						});
 					}
 				}
 			}
 		};
-		
 		new Thread(r).start();
 	}
 	
-	public void setGameSelectorModel(GameSelectorModel model)
+	public void setGameSelectorModel(final GameSelectorModel model)
 	{
 		cleanUpGameModelListener();
-		
 		if (model != null)
 		{
 			m_gameSelectorModel = model;
@@ -319,17 +276,15 @@ public class InGameLobbyWatcher
 			m_gameDescription.setPlayerCount(m_gameMessenger.getNodes().size());
 			postUpdate();
 		}
-		
 	}
 	
 	private void postUpdate()
 	{
 		if (m_shutdown)
 			return;
-		
 		synchronized (m_mutex)
 		{
-			ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
+			final ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
 			controller.updateGame(m_gameID, (GameDescription) m_gameDescription.clone());
 		}
 	}
@@ -347,12 +302,11 @@ public class InGameLobbyWatcher
 		return !m_shutdown;
 	}
 	
-	public void setGameStatus(GameDescription.GameStatus status, IGame game)
+	public void setGameStatus(final GameDescription.GameStatus status, final IGame game)
 	{
 		synchronized (m_mutex)
 		{
 			m_gameDescription.setStatus(status);
-			
 			if (game == null)
 			{
 				m_gameDescription.setRound("-");
@@ -362,7 +316,6 @@ public class InGameLobbyWatcher
 				m_gameDescription.setRound(game.getData().getSequence().getRound() + "");
 			}
 			setGame(game);
-			
 			postUpdate();
 		}
 	}
@@ -372,7 +325,7 @@ public class InGameLobbyWatcher
 		return m_gameDescription.getComment();
 	}
 	
-	public void setGameComments(String comments)
+	public void setGameComments(final String comments)
 	{
 		synchronized (m_mutex)
 		{
@@ -380,5 +333,4 @@ public class InGameLobbyWatcher
 			postUpdate();
 		}
 	}
-	
 }

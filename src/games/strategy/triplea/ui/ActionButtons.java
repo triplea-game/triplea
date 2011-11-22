@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ActionButtons.java
  * 
  * Created on November 7, 2001, 5:49 PM
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -49,27 +47,19 @@ import javax.swing.SwingUtilities;
  */
 public class ActionButtons extends JPanel
 {
-	
 	private final CardLayout m_layout = new CardLayout();
-	
 	private BattlePanel m_battlePanel;
-	
 	private MovePanel m_movePanel;
-	
 	private PurchasePanel m_purchasePanel;
-	
 	private RepairPanel m_repairPanel;
-	
 	private PlacePanel m_placePanel;
-	
 	private TechPanel m_techPanel;
-	
 	private EndTurnPanel m_endTurnPanel;
 	private ActionPanel m_current;
 	private PoliticsPanel m_politicsPanel;
 	
 	/** Creates new ActionPanel */
-	public ActionButtons(GameData data, MapPanel map, TripleAFrame parent)
+	public ActionButtons(final GameData data, final MapPanel map, final TripleAFrame parent)
 	{
 		m_battlePanel = new BattlePanel(data, map);
 		m_movePanel = new MovePanel(data, map, parent);
@@ -80,9 +70,7 @@ public class ActionButtons extends JPanel
 		m_endTurnPanel = new EndTurnPanel(data, map);
 		m_politicsPanel = new PoliticsPanel(data, map, parent);
 		m_current = m_techPanel;
-		
 		setLayout(m_layout);
-		
 		add(new JLabel(""), "");
 		add(m_battlePanel, m_battlePanel.toString());
 		add(m_movePanel, m_movePanel.toString());
@@ -92,7 +80,6 @@ public class ActionButtons extends JPanel
 		add(m_techPanel, m_techPanel.toString());
 		add(m_endTurnPanel, m_endTurnPanel.toString());
 		add(m_politicsPanel, m_politicsPanel.toString());
-		
 		// this should not be necceessary
 		// but it makes tracking down garbage leaks easier
 		// in the profiler
@@ -103,12 +90,10 @@ public class ActionButtons extends JPanel
 		// this will minimize the damage
 		map.getUIContext().addActive(new Active()
 		{
-			
 			public void deactivate()
 			{
 				removeAll();
 				m_current = null;
-				
 				m_battlePanel.removeAll();
 				m_movePanel.removeAll();
 				m_repairPanel.removeAll();
@@ -127,7 +112,6 @@ public class ActionButtons extends JPanel
 				m_politicsPanel = null;
 			}
 		});
-		
 	}
 	
 	public void changeToMove(final PlayerID id, final boolean nonCombat)
@@ -135,17 +119,13 @@ public class ActionButtons extends JPanel
 		m_current.setActive(false);
 		m_current = m_movePanel;
 		m_movePanel.display(id, nonCombat);
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
-				
 				m_layout.show(ActionButtons.this, m_movePanel.toString());
 			}
 		});
-		
 	}
 	
 	public void changeToRepair(final PlayerID id)
@@ -153,10 +133,8 @@ public class ActionButtons extends JPanel
 		m_current.setActive(false);
 		m_current = m_repairPanel;
 		m_repairPanel.display(id);
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_repairPanel.toString());
@@ -169,10 +147,8 @@ public class ActionButtons extends JPanel
 		m_current.setActive(false);
 		m_current = m_purchasePanel;
 		m_purchasePanel.display(id);
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_purchasePanel.toString());
@@ -180,66 +156,55 @@ public class ActionButtons extends JPanel
 		});
 	}
 	
-	public void changeToPlace(PlayerID id)
+	public void changeToPlace(final PlayerID id)
 	{
 		m_current.setActive(false);
 		m_current = m_placePanel;
 		m_placePanel.display(id);
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_placePanel.toString());
 			}
-			
 		});
-		
 	}
 	
-	public void changeToBattle(PlayerID id, Collection<Territory> battles,
-				Collection<Territory> bombing)
+	public void changeToBattle(final PlayerID id, final Collection<Territory> battles, final Collection<Territory> bombing)
 	{
 		m_current.setActive(false);
 		m_current = m_battlePanel;
 		m_battlePanel.display(id, battles, bombing);
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_battlePanel.toString());
 			}
-			
 		});
 	}
 	
-	public void changeToPolitics(PlayerID id)
+	public void changeToPolitics(final PlayerID id)
 	{
 		m_current.setActive(false);
 		m_current = m_politicsPanel;
 		m_politicsPanel.display(id);
-		
 		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
 			{
-				
-				public void run()
-				{
-					m_layout.show(ActionButtons.this, m_politicsPanel.toString());
-				}
-			});
+				m_layout.show(ActionButtons.this, m_politicsPanel.toString());
+			}
+		});
 	}
 	
-	public void changeToTech(PlayerID id)
+	public void changeToTech(final PlayerID id)
 	{
 		m_current.setActive(false);
 		m_current = m_techPanel;
 		m_techPanel.display(id);
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_techPanel.toString());
@@ -247,14 +212,13 @@ public class ActionButtons extends JPanel
 		});
 	}
 	
-	public void changeToEndTurn(PlayerID id)
+	public void changeToEndTurn(final PlayerID id)
 	{
 		m_current.setActive(false);
 		m_current = m_endTurnPanel;
 		m_endTurnPanel.display(id);
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_layout.show(ActionButtons.this, m_endTurnPanel.toString());
@@ -267,7 +231,7 @@ public class ActionButtons extends JPanel
 	 * 
 	 * @return null if no move was made.
 	 */
-	public IntegerMap<ProductionRule> waitForPurchase(boolean bid)
+	public IntegerMap<ProductionRule> waitForPurchase(final boolean bid)
 	{
 		return m_purchasePanel.waitForPurchase(bid);
 	}
@@ -277,7 +241,7 @@ public class ActionButtons extends JPanel
 	 * 
 	 * @return null if no move was made.
 	 */
-	public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(boolean bid)
+	public HashMap<Unit, IntegerMap<RepairRule>> waitForRepair(final boolean bid)
 	{
 		return m_repairPanel.waitForRepair(bid);
 	}
@@ -287,7 +251,7 @@ public class ActionButtons extends JPanel
 	 * 
 	 * @return null if no move was made.
 	 */
-	public MoveDescription waitForMove(IPlayerBridge bridge)
+	public MoveDescription waitForMove(final IPlayerBridge bridge)
 	{
 		return m_movePanel.waitForMove(bridge);
 	}
@@ -301,7 +265,7 @@ public class ActionButtons extends JPanel
 	{
 		return m_techPanel.waitForTech();
 	}
-
+	
 	/**
 	 * Blocks until the user selects a political action to attempt
 	 * 
@@ -309,7 +273,7 @@ public class ActionButtons extends JPanel
 	 * 
 	 * @return null if no action was picked.
 	 */
-	public PoliticalActionAttachment waitForPoliticalAction(boolean firstRun)
+	public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun)
 	{
 		return m_politicsPanel.waitForPoliticalAction(firstRun);
 	}
@@ -319,7 +283,7 @@ public class ActionButtons extends JPanel
 	 * 
 	 * @return null if no placement was made.
 	 */
-	public PlaceData waitForPlace(boolean bid, IPlayerBridge bridge)
+	public PlaceData waitForPlace(final boolean bid, final IPlayerBridge bridge)
 	{
 		return m_placePanel.waitForPlace(bid, bridge);
 	}
@@ -329,7 +293,7 @@ public class ActionButtons extends JPanel
 	 * 
 	 * @return null if no action was made.
 	 */
-	public void waitForEndTurn(TripleAFrame frame, IPlayerBridge bridge)
+	public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge)
 	{
 		m_endTurnPanel.waitForEndTurn(frame, bridge);
 	}

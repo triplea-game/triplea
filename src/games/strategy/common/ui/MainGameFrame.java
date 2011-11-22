@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.common.ui;
 
 import games.strategy.engine.framework.IGame;
@@ -29,7 +28,7 @@ public abstract class MainGameFrame extends JFrame
 	{
 	}
 	
-	public MainGameFrame(String name)
+	public MainGameFrame(final String name)
 	{
 		super(name);
 	}

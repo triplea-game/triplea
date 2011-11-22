@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.player;
 
 import games.strategy.engine.data.PlayerID;
@@ -33,7 +32,6 @@ import java.util.Map;
  */
 public interface ITripleaPlayer extends IRemote
 {
-	
 	/**
 	 * Select casualties
 	 * 
@@ -57,10 +55,8 @@ public interface ITripleaPlayer extends IRemote
 	 * 
 	 *         Added new collection autoKilled to handle killing units prior to casualty selection
 	 */
-	
-	public CasualtyDetails selectCasualties(
-				Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit, CasualtyList defaultCasualties, GUID battleID
-				);
+	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit,
+				CasualtyList defaultCasualties, GUID battleID);
 	
 	/**
 	 * Select a fixed dice roll
@@ -91,12 +87,7 @@ public interface ITripleaPlayer extends IRemote
 	 * @param noneAvailable
 	 * @return the Territory to bombard in, null if the unit should not bombard
 	 */
-	public Territory selectBombardingTerritory(
-				Unit unit,
-				Territory unitTerritory,
-				Collection<Territory> territories,
-				boolean noneAvailable
-				);
+	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable);
 	
 	/**
 	 * Ask if the player wants to attack lone subs
@@ -104,9 +95,7 @@ public interface ITripleaPlayer extends IRemote
 	 * @param unitTerritory
 	 *            - where the potential battle is
 	 */
-	public boolean selectAttackSubs(
-				Territory unitTerritory
-				);
+	public boolean selectAttackSubs(Territory unitTerritory);
 	
 	/**
 	 * Ask if the player wants to attack lone transports
@@ -114,9 +103,7 @@ public interface ITripleaPlayer extends IRemote
 	 * @param unitTerritory
 	 *            - where the potential battle is
 	 */
-	public boolean selectAttackTransports(
-				Territory unitTerritory
-				);
+	public boolean selectAttackTransports(Territory unitTerritory);
 	
 	/**
 	 * Ask if the player wants to attack units
@@ -124,9 +111,7 @@ public interface ITripleaPlayer extends IRemote
 	 * @param unitTerritory
 	 *            - where the potential battle is
 	 */
-	public boolean selectAttackUnits(
-				Territory unitTerritory
-				);
+	public boolean selectAttackUnits(Territory unitTerritory);
 	
 	/**
 	 * Ask if the player wants to shore bombard
@@ -134,9 +119,7 @@ public interface ITripleaPlayer extends IRemote
 	 * @param unitTerritory
 	 *            - where the potential battle is
 	 */
-	public boolean selectShoreBombard(
-				Territory unitTerritory
-				);
+	public boolean selectShoreBombard(Territory unitTerritory);
 	
 	/**
 	 * Report an error to the user.
@@ -275,5 +258,4 @@ public interface ITripleaPlayer extends IRemote
 	 *            the message sent
 	 */
 	void reportPoliticalMessage(String message);
-	
 }

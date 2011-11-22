@@ -22,10 +22,9 @@ import junit.framework.TestSuite;
 
 public class TripleATest
 {
-	
 	public static Test suite()
 	{
-		TestSuite suite = new TestSuite(TripleATest.class.getSimpleName());
+		final TestSuite suite = new TestSuite(TripleATest.class.getSimpleName());
 		suite.addTestSuite(PlaceDelegateTest.class);
 		suite.addTestSuite(MoveDelegateTest.class);
 		suite.addTestSuite(MoveValidatorTest.class);
@@ -45,5 +44,4 @@ public class TripleATest
 		suite.addTestSuite(BattleCalculatorTest.class);
 		return suite;
 	}
-	
 }

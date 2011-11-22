@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * MessengerErrorListener.java
  * 
  * Created on December 12, 2001, 10:46 AM
  */
-
 package games.strategy.net;
 
 /**
@@ -27,7 +25,6 @@ package games.strategy.net;
  */
 public interface IMessengerErrorListener
 {
-	
 	/**
 	 * The messenger is no longer able to send or receive messages.
 	 * This signals that an error has occured, will not be sent if the

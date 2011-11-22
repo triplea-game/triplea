@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -33,14 +32,12 @@ public class InitialSetup
 {
 	private Iterator<UnitType> m_unitTypeIterator;
 	private Iterator<PlayerID> m_playerIterator;
-	private Map<UnitType, UnitAttachment> m_unitInfoMap = new HashMap<UnitType, UnitAttachment>();
+	private final Map<UnitType, UnitAttachment> m_unitInfoMap = new HashMap<UnitType, UnitAttachment>();
 	private GameData m_data;
-	
 	private PrintGenerationData m_printData;
 	
 	protected InitialSetup()
 	{
-		
 	}
 	
 	/**
@@ -48,43 +45,37 @@ public class InitialSetup
 	 *            data
 	 * @param boolean useOriginalState
 	 */
-	protected void run(PrintGenerationData printData, boolean useOriginalState)
+	protected void run(final PrintGenerationData printData, final boolean useOriginalState)
 	{
 		m_data = printData.getData();
 		m_printData = printData;
-		
 		if (useOriginalState)
 		{
-			HistoryNode root = (HistoryNode) m_data.getHistory().getRoot();
+			final HistoryNode root = (HistoryNode) m_data.getHistory().getRoot();
 			m_data.getHistory().gotoNode(root);
 		}
-		
 		m_unitTypeIterator = m_data.getUnitTypeList().iterator();
 		while (m_unitTypeIterator.hasNext())
 		{
-			UnitType currentType = m_unitTypeIterator.next();
-			UnitAttachment currentTypeUnitAttachment = UnitAttachment.get(currentType);
+			final UnitType currentType = m_unitTypeIterator.next();
+			final UnitAttachment currentTypeUnitAttachment = UnitAttachment.get(currentType);
 			m_unitInfoMap.put(currentType, currentTypeUnitAttachment);
 		}
-		
 		new UnitInformation().saveToFile(m_printData, m_unitInfoMap);
-		
 		m_playerIterator = m_data.getPlayerList().iterator();
 		while (m_playerIterator.hasNext())
 		{
-			PlayerID currentPlayer = m_playerIterator.next();
+			final PlayerID currentPlayer = m_playerIterator.next();
 			new CountryChart().saveToFile(currentPlayer, m_printData);
-			
 		}
 		new PUInfo().saveToFile(m_printData);
 		try
 		{
 			new PlayerOrder().saveToFile(m_printData);
 			new PUChart(m_printData).saveToFile();
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			e.printStackTrace();
 		}
-		
 	}
 }

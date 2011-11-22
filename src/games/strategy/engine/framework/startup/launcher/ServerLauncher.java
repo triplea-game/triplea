@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework.startup.launcher;
 
 import games.strategy.engine.data.GameData;
@@ -56,11 +55,8 @@ import javax.swing.SwingUtilities;
 
 public class ServerLauncher implements ILauncher
 {
-	
 	private static final Logger s_logger = Logger.getLogger(ServerLauncher.class.getName());
-	
 	public static final String SERVER_ROOT_DIR_PROPERTY = "triplea.server.root.dir";
-	
 	private final int m_clientCount;
 	private final IRemoteMessenger m_remoteMessenger;
 	private final IChannelMessenger m_channelMessenger;
@@ -79,13 +75,12 @@ public class ServerLauncher implements ILauncher
 	// a list of observers that tried to join the game during starup
 	// we need to track these, because when we loose connections to them
 	// we can ignore the connection lost
-	private List<INode> m_observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<INode>());
-	
-	private WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
+	private final List<INode> m_observersThatTriedToJoinDuringStartup = Collections.synchronizedList(new ArrayList<INode>());
+	private final WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
 	private InGameLobbyWatcher m_inGameLobbyWatcher;
 	
-	public ServerLauncher(int clientCount, IRemoteMessenger remoteMessenger, IChannelMessenger channelMessenger, IMessenger messenger, GameSelectorModel gameSelectorModel,
-				Map<String, String> localPlayerMapping, Map<String, INode> remotelPlayers, ServerModel serverModel)
+	public ServerLauncher(final int clientCount, final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger, final IMessenger messenger,
+				final GameSelectorModel gameSelectorModel, final Map<String, String> localPlayerMapping, final Map<String, INode> remotelPlayers, final ServerModel serverModel)
 	{
 		m_clientCount = clientCount;
 		m_remoteMessenger = remoteMessenger;
@@ -98,7 +93,7 @@ public class ServerLauncher implements ILauncher
 		m_serverModel = serverModel;
 	}
 	
-	public void setInGameLobbyWatcher(InGameLobbyWatcher watcher)
+	public void setInGameLobbyWatcher(final InGameLobbyWatcher watcher)
 	{
 		m_inGameLobbyWatcher = watcher;
 	}
@@ -107,105 +102,80 @@ public class ServerLauncher implements ILauncher
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
-		
-		Runnable r = new Runnable()
+		final Runnable r = new Runnable()
 		{
-			
 			public void run()
 			{
 				try
 				{
 					launchInNewThread(parent);
-				}
-					finally
-					{
-						m_gameLoadingWindow.doneWait();
-						
-						if (m_inGameLobbyWatcher != null)
+				} finally
+				{
+					m_gameLoadingWindow.doneWait();
+					if (m_inGameLobbyWatcher != null)
 					{
 						m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.IN_PROGRESS, m_serverGame);
 					}
-					
 				}
-				
 			}
-			
 		};
-		Thread t = new Thread(r);
-		
+		final Thread t = new Thread(r);
 		m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
 		m_gameLoadingWindow.setVisible(true);
 		m_gameLoadingWindow.showWait();
-		
 		JOptionPane.getFrameForComponent(parent).setVisible(false);
-		
 		t.start();
 	}
 	
 	private void launchInNewThread(final Component parent)
 	{
-		
 		if (m_inGameLobbyWatcher != null)
 		{
 			m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.LAUNCHING, null);
 		}
-		
 		m_ui = parent;
-		
 		m_serverModel.setServerLauncher(this);
-		
 		s_logger.fine("Starting server");
 		m_serverReady = new ServerReady(m_clientCount);
 		m_remoteMessenger.registerRemote(m_serverReady, ClientModel.CLIENT_READY_CHANNEL);
-		
 		byte[] gameDataAsBytes;
 		try
 		{
 			gameDataAsBytes = gameDataToBytes(m_gameData);
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException(e.getMessage());
 		}
-		
-		Set<IGamePlayer> localPlayerSet = m_gameData.getGameLoader().createPlayers(m_localPlayerMapping);
-		
-		Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger);
+		final Set<IGamePlayer> localPlayerSet = m_gameData.getGameLoader().createPlayers(m_localPlayerMapping);
+		final Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger);
 		m_serverGame = new ServerGame(m_gameData, localPlayerSet, m_remotelPlayers, messengers);
 		m_serverGame.setInGameLobbyWatcher(m_inGameLobbyWatcher);
-		
 		// tell the clients to start,
 		// later we will wait for them to all
 		// signal that they are ready.
 		((IClientChannel) m_channelMessenger.getChannelBroadcastor(IClientChannel.CHANNEL_NAME)).doneSelectingPlayers(gameDataAsBytes, m_serverGame.getPlayerManager().getPlayerMapping());
-		
 		final boolean useSecureRandomSource = !m_remotelPlayers.isEmpty() && !m_localPlayerMapping.isEmpty();
-		
 		if (useSecureRandomSource)
 		{
 			// server game.
 			// try to find an opponent to be the other side of the crypto random source.
-			PlayerID remotePlayer = m_serverGame.getPlayerManager().getRemoteOpponent(m_messenger.getLocalNode(), m_gameData);
-			
-			CryptoRandomSource randomSource = new CryptoRandomSource(remotePlayer, m_serverGame);
+			final PlayerID remotePlayer = m_serverGame.getPlayerManager().getRemoteOpponent(m_messenger.getLocalNode(), m_gameData);
+			final CryptoRandomSource randomSource = new CryptoRandomSource(remotePlayer, m_serverGame);
 			m_serverGame.setRandomSource(randomSource);
 		}
-		
 		try
 		{
 			m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet);
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 			m_abortLaunch = true;
 		}
-		
 		m_serverReady.await();
 		m_remoteMessenger.unregisterRemote(ClientModel.CLIENT_READY_CHANNEL);
-		
-		Thread t = new Thread("Triplea, start server game")
+		final Thread t = new Thread("Triplea, start server game")
 		{
-			
 			@Override
 			public void run()
 			{
@@ -218,7 +188,6 @@ public class ServerLauncher implements ILauncher
 						{
 							warmUpCryptoRandomSource();
 						}
-						
 						m_gameLoadingWindow.doneWait();
 						m_serverGame.startGame();
 					}
@@ -227,18 +196,15 @@ public class ServerLauncher implements ILauncher
 						m_serverGame.stopGame();
 						SwingUtilities.invokeLater(new Runnable()
 						{
-							
 							public void run()
 							{
 								JOptionPane.showMessageDialog(m_ui, "Error during startup, game aborted.");
 							}
 						});
 					}
-					
-				} catch (MessengerException me)
+				} catch (final MessengerException me)
 				{
 					me.printStackTrace(System.out);
-					
 					// we lost a connection
 					// wait for the connection handler to notice, and shut us down
 					try
@@ -246,23 +212,19 @@ public class ServerLauncher implements ILauncher
 						// we are already aborting the launch
 						if (!m_abortLaunch)
 							m_erroLatch.await();
-					} catch (InterruptedException e)
+					} catch (final InterruptedException e)
 					{
 						e.printStackTrace();
 					}
 				}
-				
 				m_gameSelectorModel.loadDefaultGame(parent);
-				
 				SwingUtilities.invokeLater(new Runnable()
-						{
-							
-							public void run()
-							{
-								JOptionPane.getFrameForComponent(parent).setVisible(true);
-							}
-						});
-				
+				{
+					public void run()
+					{
+						JOptionPane.getFrameForComponent(parent).setVisible(true);
+					}
+				});
 				m_serverModel.setServerLauncher(null);
 				m_serverModel.newGame();
 				if (m_inGameLobbyWatcher != null)
@@ -270,7 +232,6 @@ public class ServerLauncher implements ILauncher
 					m_inGameLobbyWatcher.setGameStatus(GameDescription.GameStatus.WAITING_FOR_PLAYERS, null);
 				}
 			}
-			
 		};
 		t.start();
 	}
@@ -279,16 +240,15 @@ public class ServerLauncher implements ILauncher
 	{
 		// the first roll takes a while, initialize
 		// here in the background so that the user doesnt notice
-		Thread t = new Thread("Warming up crypto random source")
+		final Thread t = new Thread("Warming up crypto random source")
 		{
-			
 			@Override
 			public void run()
 			{
 				try
 				{
 					m_serverGame.getRandomSource().getRandom(m_gameData.getDiceSides(), 2, "Warming up crpyto random source");
-				} catch (RuntimeException re)
+				} catch (final RuntimeException re)
 				{
 					re.printStackTrace(System.out);
 				}
@@ -297,7 +257,7 @@ public class ServerLauncher implements ILauncher
 		t.start();
 	}
 	
-	public void addObserver(IObserverWaitingToJoin observer, INode newNode)
+	public void addObserver(final IObserverWaitingToJoin observer, final INode newNode)
 	{
 		if (m_isLaunching)
 		{
@@ -305,14 +265,12 @@ public class ServerLauncher implements ILauncher
 			observer.cannotJoinGame("Game is launching, try again soon");
 			return;
 		}
-		
 		m_serverGame.addObserver(observer);
 	}
 	
-	public static byte[] gameDataToBytes(GameData data) throws IOException
+	public static byte[] gameDataToBytes(final GameData data) throws IOException
 	{
-		ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
-		
+		final ByteArrayOutputStream sink = new ByteArrayOutputStream(25000);
 		new GameDataManager().saveGame(sink, data);
 		sink.flush();
 		sink.close();
@@ -327,14 +285,12 @@ public class ServerLauncher implements ILauncher
 			// he couldnt join, so now we loose the connection
 			if (m_observersThatTriedToJoinDuringStartup.remove(node))
 				return;
-			
 			// a player has dropped out
 			// abort
 			m_serverReady.clientReady();
 			m_abortLaunch = true;
 			return;
 		}
-		
 		// if we loose a connection to a player, shut down
 		// the game (after saving) and go back to the main screen
 		if (m_serverGame.getPlayerManager().isPlaying(node))
@@ -343,7 +299,6 @@ public class ServerLauncher implements ILauncher
 				saveAndEndGame(node);
 			else
 				m_serverGame.stopGame();
-			
 			// if the game already exited do to a networking error
 			// we need to let them continue
 			m_erroLatch.countDown();
@@ -354,40 +309,32 @@ public class ServerLauncher implements ILauncher
 			// we just lost a connection to an observer
 			// which is ok.
 		}
-		
 	}
 	
 	private void saveAndEndGame(final INode node)
 	{
-		DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
-		
+		final DateFormat format = new SimpleDateFormat("MMM_dd_'at'_HH_mm");
 		SaveGameFileChooser.ensureDefaultDirExists();
-		
 		final File f = new File(SaveGameFileChooser.DEFAULT_DIRECTORY, "connection_lost_on_" + format.format(new Date()) + ".tsvg");
 		m_serverGame.saveGame(f);
 		m_serverGame.stopGame();
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
-				String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
+				final String message = "Connection lost to:" + node.getName() + " game is over.  Game saved to:" + f.getName();
 				JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(m_ui), message);
 			}
-			
 		});
 	}
-	
 }
 
 
 class ServerReady implements IServerReady
 {
-	
 	private final CountDownLatch m_latch;
 	
-	ServerReady(int waitCount)
+	ServerReady(final int waitCount)
 	{
 		m_latch = new CountDownLatch(waitCount);
 	}
@@ -402,10 +349,9 @@ class ServerReady implements IServerReady
 		try
 		{
 			m_latch.await();
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
 }

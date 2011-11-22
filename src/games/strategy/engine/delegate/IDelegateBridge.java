@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * DelegateBridge.java
  * 
  * Created on October 13, 2001, 4:35 PM
  */
-
 package games.strategy.engine.delegate;
 
 import games.strategy.engine.data.Change;
@@ -46,7 +44,6 @@ import java.util.Properties;
  */
 public interface IDelegateBridge
 {
-	
 	/**
 	 * equivalent to getRemote(getPlayerID())
 	 * 

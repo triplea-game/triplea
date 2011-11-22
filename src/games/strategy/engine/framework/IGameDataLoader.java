@@ -13,7 +13,6 @@ package games.strategy.engine.framework;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 import games.strategy.engine.data.GameData;
 
 /**
@@ -25,7 +24,6 @@ import games.strategy.engine.data.GameData;
  * 
  *         Performs the loading of game data.
  */
-
 public interface IGameDataLoader
 {
 	public GameData loadData();

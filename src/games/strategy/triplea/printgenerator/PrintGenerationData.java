@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -44,7 +43,7 @@ public class PrintGenerationData
 	 * @param outDir
 	 *            the outDir to set
 	 */
-	protected void setOutDir(File outDir)
+	protected void setOutDir(final File outDir)
 	{
 		m_outDir = outDir;
 	}
@@ -61,7 +60,7 @@ public class PrintGenerationData
 	 * @param samePUMap
 	 *            the samePUMap to set
 	 */
-	protected void setSamePUMap(Map<Integer, Integer> samePUMap)
+	protected void setSamePUMap(final Map<Integer, Integer> samePUMap)
 	{
 		m_SamePUMap = samePUMap;
 	}
@@ -78,9 +77,8 @@ public class PrintGenerationData
 	 * @param data
 	 *            the data to set
 	 */
-	protected void setData(GameData data)
+	protected void setData(final GameData data)
 	{
 		m_data = data;
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * NOPUEndTurnDelegate.java
  * 
  * Created on August 11, 205, 2:16 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Territory;
@@ -35,9 +33,8 @@ import java.util.Collection;
 @AutoSave(afterStepEnd = true)
 public class NoPUEndTurnDelegate extends EndTurnDelegate
 {
-	
 	@Override
-	protected int getProduction(Collection<Territory> territories)
+	protected int getProduction(final Collection<Territory> territories)
 	{
 		return 0;
 	}

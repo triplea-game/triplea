@@ -11,32 +11,27 @@ import java.io.InputStream;
 
 public class LoadGameUtil
 {
-	
-	public static GameData loadGame(String map, String game)
+	public static GameData loadGame(final String map, final String game)
 	{
-		
 		InputStream is = LoadGameUtil.class.getResourceAsStream(game);
 		if (is == null)
 		{
-			File f = new File(new File(GameRunner.getRootFolder(), "maps"), game);
+			final File f = new File(new File(GameRunner.getRootFolder(), "maps"), game);
 			if (f.exists())
 			{
 				try
 				{
 					is = new FileInputStream(f);
-				} catch (FileNotFoundException e)
+				} catch (final FileNotFoundException e)
 				{
 					throw new IllegalStateException(e);
 				}
 			}
-			
 		}
-		
 		if (is == null)
 			throw new IllegalStateException(game + " does not exist");
 		try
 		{
-			
 			try
 			{
 				return (new GameParser()).parse(is);
@@ -44,7 +39,7 @@ public class LoadGameUtil
 			{
 				is.close();
 			}
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			throw new IllegalStateException(e);
 		}

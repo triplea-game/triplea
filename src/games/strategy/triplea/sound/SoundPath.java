@@ -11,14 +11,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.sound;
 
 import games.strategy.engine.sound.ClipPlayer;
 
 public class SoundPath
 {
-	
 	public static final String NAVAL_BATTLE = "naval_battle.wav";
 	public static final String LAND_BATTLE = "terrain_battle.wav";
 	public static final String START_TURN = "start.wav";

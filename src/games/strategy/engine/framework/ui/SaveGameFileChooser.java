@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework.ui;
 
 import games.strategy.engine.framework.GameRunner;
@@ -25,16 +24,12 @@ import javax.swing.filechooser.FileFilter;
  * @author Sean Bridges
  * 
  */
-
 public class SaveGameFileChooser extends JFileChooser
 {
-	
 	public static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
 	public static final String AUTOSAVE_ODD_ROUND_FILE_NAME = "autosave_round_odd.tsvg";
 	public static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = "autosave_round_even.tsvg";
-	
 	public static final File DEFAULT_DIRECTORY = new File(GameRunner.getUserRootFolder(), "savedGames");
-	
 	private static SaveGameFileChooser s_instance;
 	
 	public static SaveGameFileChooser getInstance()
@@ -57,12 +52,10 @@ public class SaveGameFileChooser extends JFileChooser
 		ensureDirectoryExists(DEFAULT_DIRECTORY);
 	}
 	
-	private static void ensureDirectoryExists(File f)
+	private static void ensureDirectoryExists(final File f)
 	{
-		
 		if (!f.getParentFile().exists())
 			ensureDirectoryExists(f.getParentFile());
-		
 		if (!f.exists())
 		{
 			f.mkdir();
@@ -71,13 +64,11 @@ public class SaveGameFileChooser extends JFileChooser
 	
 	FileFilter m_gameDataFileFilter = new FileFilter()
 	{
-		
 		@Override
-		public boolean accept(File f)
+		public boolean accept(final File f)
 		{
 			if (f.isDirectory())
 				return true;
-			
 			// the extension should be .tsvg, but find svg extensions as well
 			// also, macs download the file as tsvg.gz, so accept that as well
 			return f.getName().endsWith(".tsvg") || f.getName().endsWith(".svg") || f.getName().endsWith("tsvg.gz");

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.ui;
 
 import java.util.Observable;
@@ -33,15 +32,13 @@ public class ImageScrollModel extends Observable
 {
 	private int m_x;
 	private int m_y;
-	
 	private int m_boxWidth = 5;
 	private int m_boxHeight = 5;
-	
 	private int m_maxWidth;
 	private int m_maxHeight;
 	private boolean m_scrollX;
 	
-	public void setMaxBounds(int maxWidth, int maxHeight)
+	public void setMaxBounds(final int maxWidth, final int maxHeight)
 	{
 		m_maxWidth = maxWidth;
 		m_maxHeight = maxHeight;
@@ -49,7 +46,7 @@ public class ImageScrollModel extends Observable
 		updateListeners();
 	}
 	
-	public void setBoxDimensions(int maxX, int maxy)
+	public void setBoxDimensions(final int maxX, final int maxy)
 	{
 		m_boxWidth = maxX;
 		m_boxHeight = maxy;
@@ -63,12 +60,11 @@ public class ImageScrollModel extends Observable
 		super.notifyObservers();
 	}
 	
-	public void setScrollX(boolean aBool)
+	public void setScrollX(final boolean aBool)
 	{
 		m_scrollX = aBool;
 		enforceBounds();
 		updateListeners();
-		
 	}
 	
 	private void enforceBounds()
@@ -85,7 +81,6 @@ public class ImageScrollModel extends Observable
 		{
 			m_y = 0;
 		}
-		
 		if (!m_scrollX)
 		{
 			if (m_x < 0)
@@ -104,14 +99,11 @@ public class ImageScrollModel extends Observable
 			{
 				m_x -= m_maxWidth;
 			}
-			
 			while (m_x < -m_maxWidth)
 			{
 				m_x += m_maxWidth;
 			}
-			
 		}
-		
 		// if the box is bigger than the map
 		// put us at 0,0
 		if (m_boxWidth > m_maxWidth)
@@ -155,12 +147,11 @@ public class ImageScrollModel extends Observable
 		return m_maxHeight;
 	}
 	
-	public void set(int x, int y)
+	public void set(final int x, final int y)
 	{
 		m_x = x;
 		m_y = y;
 		enforceBounds();
 		updateListeners();
 	}
-	
 }

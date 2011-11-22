@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.pbem;
 
 import games.strategy.engine.data.Change;
@@ -19,7 +18,6 @@ import games.strategy.engine.data.PlayerID;
 
 public class NullPBEMMessenger implements IPBEMMessenger
 {
-	
 	public NullPBEMMessenger()
 	{
 	}
@@ -44,15 +42,15 @@ public class NullPBEMMessenger implements IPBEMMessenger
 		return false;
 	}
 	
-	public void setGameId(String s)
+	public void setGameId(final String s)
 	{
 	}
 	
-	public void setUsername(String s)
+	public void setUsername(final String s)
 	{
 	}
 	
-	public void setPassword(String s)
+	public void setPassword(final String s)
 	{
 	}
 	
@@ -75,11 +73,11 @@ public class NullPBEMMessenger implements IPBEMMessenger
 	{
 	}
 	
-	public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+	public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
 	{
 	}
 	
-	public void gameDataChanged(Change change)
+	public void gameDataChanged(final Change change)
 	{
 	}
 	

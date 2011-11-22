@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.message;
 
 import games.strategy.net.INode;
@@ -27,7 +26,6 @@ import games.strategy.net.INode;
  * 
  * <pre>
  * RemoteName FOO = new RemoteName(&quot;Foo&quot;, IFoo.class);
- * 
  * IFoo aFoo = new Foo();
  * someChannelMessenger.registerChannelSubscribor(aFoo, FOO);
  * 
@@ -39,7 +37,6 @@ import games.strategy.net.INode;
  * 
  * IFoo anotherFoo = new Foo();
  * anotherChannelMessenger.registerChannelSubscribor(anotherFoo, FOO);
- * 
  * IFoo multicastFoo = (IFoo) anotherChannelMessenger.getChannelBroadcastor(FOO);
  * multicastFoo.fee();
  * 
@@ -93,5 +90,4 @@ public interface IChannelMessenger
 	 * Is the underlying messenger a server?
 	 */
 	public boolean isServer();
-	
 }

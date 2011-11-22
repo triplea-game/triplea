@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.data.properties;
 
 import javax.swing.JComponent;
@@ -21,7 +20,7 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
 {
 	private final String m_name;
 	
-	public AEditableProperty(String name)
+	public AEditableProperty(final String name)
 	{
 		m_name = name;
 	}
@@ -33,7 +32,7 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
 	
 	public JComponent getViewComponent()
 	{
-		JComponent rVal = getEditorComponent();
+		final JComponent rVal = getEditorComponent();
 		rVal.setEnabled(false);
 		return rVal;
 	}
@@ -45,7 +44,7 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
 	}
 	
 	@Override
-	public boolean equals(Object other)
+	public boolean equals(final Object other)
 	{
 		if (other instanceof AEditableProperty)
 		{
@@ -54,7 +53,7 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
 		return false;
 	}
 	
-	public int compareTo(Object other)
+	public int compareTo(final Object other)
 	{
 		if (other instanceof AEditableProperty)
 		{
@@ -68,5 +67,4 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
 	{
 		return getName() + "=" + getValue().toString();
 	}
-	
 }

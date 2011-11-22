@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea;
 
 import games.strategy.engine.data.Change;
@@ -48,7 +47,6 @@ public class TripleAUnit extends Unit
 {
 	// compatable with 0.9.2
 	private static final long serialVersionUID = 8811372406957115036L;
-	
 	public static final String TRANSPORTED_BY = "transportedBy";
 	public static final String UNLOADED = "unloaded";
 	public static final String LOADED_THIS_TURN = "wasLoadedThisTurn";
@@ -65,10 +63,8 @@ public class TripleAUnit extends Unit
 	public static final String WAS_SCRAMBLED = "wasScrambled";
 	public static final String UNIT_DAMAGE = "unitDamage";
 	public static final String DISABLED = "disabled";
-	
 	// the transport that is currently transporting us
 	private TripleAUnit m_transportedBy = null;
-	
 	// the units we have unloaded this turn
 	private List<Unit> m_unloaded = Collections.emptyList();
 	// was this unit loaded this turn?
@@ -94,12 +90,12 @@ public class TripleAUnit extends Unit
 	private boolean m_wasScrambled = false;
 	private boolean m_disabled = false;
 	
-	public static TripleAUnit get(Unit u)
+	public static TripleAUnit get(final Unit u)
 	{
 		return (TripleAUnit) u;
 	}
 	
-	public TripleAUnit(UnitType type, PlayerID owner, GameData data)
+	public TripleAUnit(final UnitType type, final PlayerID owner, final GameData data)
 	{
 		super(type, owner, data);
 	}
@@ -113,7 +109,7 @@ public class TripleAUnit extends Unit
 	 * private since this should only be called by UnitPropertyChange
 	 */
 	@SuppressWarnings("unused")
-	private void setTransportedBy(TripleAUnit transportedBy)
+	private void setTransportedBy(final TripleAUnit transportedBy)
 	{
 		m_transportedBy = transportedBy;
 	}
@@ -122,23 +118,21 @@ public class TripleAUnit extends Unit
 	{
 		// we don't store the units we are transporting
 		// rather we look at the transported by property of units
-		for (Territory t : getData().getMap())
+		for (final Territory t : getData().getMap())
 		{
 			// find the territory this transport is in
 			if (t.getUnits().getUnits().contains(this))
 			{
 				return t.getUnits().getMatches(new Match<Unit>()
 				{
-					
 					@Override
-					public boolean match(Unit o)
+					public boolean match(final Unit o)
 					{
 						return TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this;
 					}
 				});
 			}
 		}
-		
 		return Collections.emptyList();
 	}
 	
@@ -150,7 +144,7 @@ public class TripleAUnit extends Unit
 	/**
 	 * private since this should only be called by UnitPropertyChange
 	 */
-	public void setUnloaded(List<Unit> unloaded)
+	public void setUnloaded(final List<Unit> unloaded)
 	{
 		if (unloaded == null || unloaded.isEmpty())
 		{
@@ -160,7 +154,6 @@ public class TripleAUnit extends Unit
 		{
 			m_unloaded = new ArrayList<Unit>(unloaded);
 		}
-		
 	}
 	
 	public boolean getWasLoadedThisTurn()
@@ -172,7 +165,7 @@ public class TripleAUnit extends Unit
 	 * private since this should only be called by UnitPropertyChange
 	 */
 	@SuppressWarnings("unused")
-	private void setWasLoadedThisTurn(Boolean value)
+	private void setWasLoadedThisTurn(final Boolean value)
 	{
 		m_wasLoadedThisTurn = Boolean.valueOf(value.booleanValue());
 	}
@@ -185,7 +178,7 @@ public class TripleAUnit extends Unit
 	/**
 	 * private since this should only be called by UnitPropertyChange
 	 */
-	public void setUnloadedTo(Territory unloadedTo)
+	public void setUnloadedTo(final Territory unloadedTo)
 	{
 		m_unloadedTo = unloadedTo;
 	}
@@ -198,7 +191,7 @@ public class TripleAUnit extends Unit
 	/**
 	 * private since this should only be called by UnitPropertyChange
 	 */
-	public void setOriginatedFrom(Territory t)
+	public void setOriginatedFrom(final Territory t)
 	{
 		m_originatedFrom = t;
 	}
@@ -211,7 +204,7 @@ public class TripleAUnit extends Unit
 	/**
 	 * private since this should only be called by UnitPropertyChange
 	 */
-	public void setWasUnloadedInCombatPhase(Boolean value)
+	public void setWasUnloadedInCombatPhase(final Boolean value)
 	{
 		m_wasUnloadedInCombatPhase = Boolean.valueOf(value.booleanValue());
 	}
@@ -221,14 +214,14 @@ public class TripleAUnit extends Unit
 		return m_alreadyMoved;
 	}
 	
-	public void setAlreadyMoved(Integer alreadyMoved)
+	public void setAlreadyMoved(final Integer alreadyMoved)
 	{
 		m_alreadyMoved = alreadyMoved;
 	}
 	
 	public int getMovementLeft()
 	{
-		int canMove = UnitAttachment.get(getType()).getMovement(getOwner());
+		final int canMove = UnitAttachment.get(getType()).getMovement(getOwner());
 		return canMove - m_alreadyMoved;
 	}
 	
@@ -237,7 +230,7 @@ public class TripleAUnit extends Unit
 		return m_unitDamage;
 	}
 	
-	public void setUnitDamage(Integer unitDamage)
+	public void setUnitDamage(final Integer unitDamage)
 	{
 		m_unitDamage = unitDamage;
 	}
@@ -247,7 +240,7 @@ public class TripleAUnit extends Unit
 		return m_submerged;
 	}
 	
-	public void setSubmerged(boolean submerged)
+	public void setSubmerged(final boolean submerged)
 	{
 		m_submerged = submerged;
 	}
@@ -257,7 +250,7 @@ public class TripleAUnit extends Unit
 		return m_originalOwner;
 	}
 	
-	public void setOriginalOwner(PlayerID originalOwner)
+	public void setOriginalOwner(final PlayerID originalOwner)
 	{
 		m_originalOwner = originalOwner;
 	}
@@ -270,7 +263,7 @@ public class TripleAUnit extends Unit
 	/**
 	 * private since this should only be called by UnitPropertyChange
 	 */
-	public void setWasInCombat(Boolean value)
+	public void setWasInCombat(final Boolean value)
 	{
 		m_wasInCombat = Boolean.valueOf(value.booleanValue());
 	}
@@ -283,7 +276,7 @@ public class TripleAUnit extends Unit
 	/**
 	 * private since this should only be called by UnitPropertyChange
 	 */
-	public void setWasScrambled(Boolean value)
+	public void setWasScrambled(final Boolean value)
 	{
 		m_wasScrambled = Boolean.valueOf(value.booleanValue());
 	}
@@ -296,7 +289,7 @@ public class TripleAUnit extends Unit
 	/**
 	 * private since this should only be called by UnitPropertyChange
 	 */
-	public void setWasLoadedAfterCombat(Boolean value)
+	public void setWasLoadedAfterCombat(final Boolean value)
 	{
 		m_wasLoadedAfterCombat = Boolean.valueOf(value.booleanValue());
 	}
@@ -322,7 +315,7 @@ public class TripleAUnit extends Unit
 	/**
 	 * private since this should only be called by UnitPropertyChange
 	 */
-	public void setWasAmphibious(Boolean value)
+	public void setWasAmphibious(final Boolean value)
 	{
 		m_wasAmphibious = Boolean.valueOf(value.booleanValue());
 	}
@@ -335,7 +328,7 @@ public class TripleAUnit extends Unit
 	/**
 	 * private since this should only be called by UnitPropertyChange
 	 */
-	public void setDisabled(Boolean value)
+	public void setDisabled(final Boolean value)
 	{
 		m_disabled = Boolean.valueOf(value.booleanValue());
 	}
@@ -348,15 +341,13 @@ public class TripleAUnit extends Unit
 	{
 		if (!Matches.UnitIsFactoryOrCanBeDamaged.match(u))
 			return 0;
-		
-		TripleAUnit taUnit = (TripleAUnit) u;
-		
+		final TripleAUnit taUnit = (TripleAUnit) u;
 		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getData()))
 		{
-			TerritoryAttachment ta = TerritoryAttachment.get(t);
+			final TerritoryAttachment ta = TerritoryAttachment.get(t);
 			if (ta == null)
 				return 0;
-			int currentDamage = ta.getProduction() - ta.getUnitProduction();
+			final int currentDamage = ta.getProduction() - ta.getUnitProduction();
 			return (2 * ta.getProduction()) - currentDamage;
 		}
 		else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData()))
@@ -375,9 +366,8 @@ public class TripleAUnit extends Unit
 	{
 		if (!Matches.UnitIsFactoryOrCanBeDamaged.match(u))
 			return -1;
-		
-		UnitAttachment ua = UnitAttachment.get(u.getType());
-		TerritoryAttachment ta = TerritoryAttachment.get(t);
+		final UnitAttachment ua = UnitAttachment.get(u.getType());
+		final TerritoryAttachment ta = TerritoryAttachment.get(t);
 		int territoryProduction = 0;
 		int territoryUnitProduction = 0;
 		if (ta != null)
@@ -385,7 +375,6 @@ public class TripleAUnit extends Unit
 			territoryProduction = ta.getProduction();
 			territoryUnitProduction = ta.getUnitProduction();
 		}
-		
 		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getData()))
 			return territoryProduction * 2;
 		else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(u.getData()))
@@ -426,34 +415,32 @@ public class TripleAUnit extends Unit
 	
 	public int getHowMuchShouldUnitBeRepairedToNotBeDisabled(final Unit u, final Territory t)
 	{
-		UnitAttachment ua = UnitAttachment.get(u.getType());
-		int maxOperationalDamage = ua.getMaxOperationalDamage();
+		final UnitAttachment ua = UnitAttachment.get(u.getType());
+		final int maxOperationalDamage = ua.getMaxOperationalDamage();
 		if (maxOperationalDamage < 0)
 			return 0;
-		
-		TripleAUnit taUnit = (TripleAUnit) u;
-		int currentDamage = taUnit.getUnitDamage();
-		
+		final TripleAUnit taUnit = (TripleAUnit) u;
+		final int currentDamage = taUnit.getUnitDamage();
 		return Math.max(0, currentDamage - maxOperationalDamage);
 	}
 	
-	public static int getProductionPotentialOfTerritory(Collection<Unit> unitsAtStartOfStepInTerritory, Territory producer, PlayerID player, GameData data, boolean accountForDamage,
-				boolean mathMaxZero)
+	public static int getProductionPotentialOfTerritory(final Collection<Unit> unitsAtStartOfStepInTerritory, final Territory producer, final PlayerID player, final GameData data,
+				final boolean accountForDamage, final boolean mathMaxZero)
 	{
 		return getHowMuchCanUnitProduce(getBiggestProducer(unitsAtStartOfStepInTerritory, producer, player, data, accountForDamage), producer, player, data, accountForDamage, mathMaxZero);
 	}
 	
-	public static Unit getBiggestProducer(Collection<Unit> units, Territory producer, PlayerID player, GameData data, boolean accountForDamage)
+	public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player, final GameData data, final boolean accountForDamage)
 	{
-		Collection<Unit> factories = Match.getMatches(units, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
+		final Collection<Unit> factories = Match.getMatches(units, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
 		if (factories.isEmpty())
 			return null;
-		IntegerMap<Unit> productionPotential = new IntegerMap<Unit>();
+		final IntegerMap<Unit> productionPotential = new IntegerMap<Unit>();
 		Unit highestUnit = factories.iterator().next();
 		int highestCapacity = Integer.MIN_VALUE;
-		for (Unit u : factories)
+		for (final Unit u : factories)
 		{
-			int capacity = getHowMuchCanUnitProduce(u, producer, player, data, accountForDamage, false);
+			final int capacity = getHowMuchCanUnitProduce(u, producer, player, data, accountForDamage, false);
 			productionPotential.put(u, capacity);
 			if (capacity > highestCapacity)
 			{
@@ -464,19 +451,16 @@ public class TripleAUnit extends Unit
 		return highestUnit;
 	}
 	
-	public static int getHowMuchCanUnitProduce(Unit u, Territory producer, PlayerID player, GameData data, boolean accountForDamage, boolean mathMaxZero)
+	public static int getHowMuchCanUnitProduce(final Unit u, final Territory producer, final PlayerID player, final GameData data, final boolean accountForDamage, final boolean mathMaxZero)
 	{
 		if (u == null)
 			return 0;
-		
 		if (!Matches.UnitIsFactoryOrCanProduceUnits.match(u))
 			return 0;
-		
 		int productionCapacity = 0;
-		
-		UnitAttachment ua = UnitAttachment.get(u.getType());
-		TripleAUnit taUnit = (TripleAUnit) u;
-		TerritoryAttachment ta = TerritoryAttachment.get(producer);
+		final UnitAttachment ua = UnitAttachment.get(u.getType());
+		final TripleAUnit taUnit = (TripleAUnit) u;
+		final TerritoryAttachment ta = TerritoryAttachment.get(producer);
 		int territoryProduction = 0;
 		int territoryUnitProduction = 0;
 		if (ta != null)
@@ -484,7 +468,6 @@ public class TripleAUnit extends Unit
 			territoryProduction = ta.getProduction();
 			territoryUnitProduction = ta.getUnitProduction();
 		}
-		
 		if (accountForDamage)
 		{
 			if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
@@ -516,21 +499,17 @@ public class TripleAUnit extends Unit
 				productionCapacity = territoryUnitProduction;
 			else
 				productionCapacity = ua.getCanProduceXUnits();
-			
 			if (productionCapacity < 1 && !games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data)
 						&& !games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 				productionCapacity = 1;
 		}
-		
 		// Increase production if have industrial technology
 		boolean isIncreasedFactoryProduction = false;
-		TechAttachment techa = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
+		final TechAttachment techa = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (techa != null && techa.hasIncreasedFactoryProduction())
 			isIncreasedFactoryProduction = true;
-		
 		if (isIncreasedFactoryProduction && territoryProduction > 2)
 			productionCapacity += 2;
-		
 		if (mathMaxZero)
 			return Math.max(0, productionCapacity);
 		else
@@ -545,40 +524,35 @@ public class TripleAUnit extends Unit
 	 * @param t
 	 * @return change for unit's properties
 	 */
-	public static Change translateAttributesToOtherUnits(Unit unitGivingAttributes, Collection<Unit> unitsThatWillGetAttributes, Territory t)
+	public static Change translateAttributesToOtherUnits(final Unit unitGivingAttributes, final Collection<Unit> unitsThatWillGetAttributes, final Territory t)
 	{
-		CompositeChange changes = new CompositeChange();
-		
+		final CompositeChange changes = new CompositeChange();
 		// must look for m_hits, m_unitDamage,
-		
-		TripleAUnit taUnit = (TripleAUnit) unitGivingAttributes;
-		
-		int combatDamage = taUnit.getHits();
-		IntegerMap<Unit> hits = new IntegerMap<Unit>();
+		final TripleAUnit taUnit = (TripleAUnit) unitGivingAttributes;
+		final int combatDamage = taUnit.getHits();
+		final IntegerMap<Unit> hits = new IntegerMap<Unit>();
 		if (combatDamage > 0)
 		{
-			for (Unit u : unitsThatWillGetAttributes)
+			for (final Unit u : unitsThatWillGetAttributes)
 			{
 				hits.put(u, combatDamage);
 			}
 		}
 		if (hits.size() > 0)
 			changes.add(ChangeFactory.unitsHit(hits));
-		
-		int unitDamage = taUnit.getUnitDamage();
+		final int unitDamage = taUnit.getUnitDamage();
 		if (unitDamage > 0)
 		{
-			for (Unit u : unitsThatWillGetAttributes)
+			for (final Unit u : unitsThatWillGetAttributes)
 			{
-				TripleAUnit taNew = (TripleAUnit) u;
-				int maxDamage = taNew.getHowMuchDamageCanThisUnitTakeTotal(u, t);
-				int transferDamage = Math.max(0, Math.min(unitDamage, maxDamage));
+				final TripleAUnit taNew = (TripleAUnit) u;
+				final int maxDamage = taNew.getHowMuchDamageCanThisUnitTakeTotal(u, t);
+				final int transferDamage = Math.max(0, Math.min(unitDamage, maxDamage));
 				if (transferDamage <= 0)
 					continue;
 				changes.add(ChangeFactory.unitPropertyChange(u, transferDamage, TripleAUnit.UNIT_DAMAGE));
 			}
 		}
-		
 		return changes;
 	}
 }

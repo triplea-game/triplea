@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IChannelSubscribor;
@@ -18,7 +17,6 @@ import games.strategy.net.INode;
 
 public interface IStatusChannel extends IChannelSubscribor
 {
-	
 	public static final RemoteName STATUS_CHANNEL = new RemoteName("games.strategy.engine.chat.IStatusChannel.STATUS", IStatusChannel.class);
 	
 	public void statusChanged(INode node, String status);

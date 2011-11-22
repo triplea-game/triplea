@@ -11,14 +11,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * AllYouCanUploadDotComPBEMMessenger.java
  * 
  * 
  * Created on November 21, 2006, 8:56 PM
  */
-
 package games.strategy.engine.pbem;
 
 import games.strategy.net.MultiPartFormOutputStream;
@@ -38,8 +36,7 @@ import java.util.regex.Pattern;
  * @author Tony Clayton
  * @version 1.0
  */
-public class AllYouCanUploadDotComPBEMMessenger
-			implements IPBEMScreenshotMessenger
+public class AllYouCanUploadDotComPBEMMessenger implements IPBEMScreenshotMessenger
 {
 	private transient String m_screenshotRef = null;
 	
@@ -71,7 +68,7 @@ public class AllYouCanUploadDotComPBEMMessenger
 	{
 	}
 	
-	public void setGameId(String gameId)
+	public void setGameId(final String gameId)
 	{
 	}
 	
@@ -80,7 +77,7 @@ public class AllYouCanUploadDotComPBEMMessenger
 		return null;
 	}
 	
-	public void setUsername(String username)
+	public void setUsername(final String username)
 	{
 	}
 	
@@ -89,7 +86,7 @@ public class AllYouCanUploadDotComPBEMMessenger
 		return null;
 	}
 	
-	public void setPassword(String password)
+	public void setPassword(final String password)
 	{
 	}
 	
@@ -98,27 +95,24 @@ public class AllYouCanUploadDotComPBEMMessenger
 		return null;
 	}
 	
-	public boolean postScreenshot(String fileName, InputStream fileIn)
-				throws IOException
+	public boolean postScreenshot(final String fileName, final InputStream fileIn) throws IOException
 	{
 		URL url = null;
 		URLConnection urlConn = null;
 		MultiPartFormOutputStream out = null;
-		
 		m_screenshotRef = null;
-		
 		// set up connection
 		try
 		{
 			url = new URL("http://allyoucanupload.webshots.com/uploadcomplete");
-		} catch (MalformedURLException e)
+		} catch (final MalformedURLException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
 		try
 		{
-			String boundary = MultiPartFormOutputStream.createBoundary();
+			final String boundary = MultiPartFormOutputStream.createBoundary();
 			urlConn = MultiPartFormOutputStream.createConnection(url);
 			urlConn.setRequestProperty("Accept", "*/*");
 			urlConn.setRequestProperty("Content-Type", MultiPartFormOutputStream.getContentType(boundary));
@@ -128,40 +122,38 @@ public class AllYouCanUploadDotComPBEMMessenger
 			out = new MultiPartFormOutputStream(urlConn.getOutputStream(), boundary);
 			out.writeField("imagesCount", "1");
 			out.writeField("images[0].submittedPhotoSize", "100%");
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 			return false;
 		}
 		// this one throws an exception
 		out.writeFile("images[0].fileName", "image/png", fileName, fileIn);
-		
 		// send request to server
 		out.close();
-		
-		int code = ((HttpURLConnection) urlConn).getResponseCode();
+		final int code = ((HttpURLConnection) urlConn).getResponseCode();
 		if (code != 200)
 		{
 			// http error
-			String msg = ((HttpURLConnection) urlConn).getResponseMessage();
+			final String msg = ((HttpURLConnection) urlConn).getResponseMessage();
 			m_screenshotRef = String.valueOf(code) + ": " + msg;
 			return false;
 		}
 		// read response from server
 		try
 		{
-			BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+			final BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
 			String line = "";
 			// server will always serve images in .jpg format
-			Pattern p = Pattern.compile(".*?<input type=\"text\" .*?value=\"(http://.*?jpg)\">.*");
+			final Pattern p = Pattern.compile(".*?<input type=\"text\" .*?value=\"(http://.*?jpg)\">.*");
 			while ((line = in.readLine()) != null)
 			{
-				Matcher m = p.matcher(line);
+				final Matcher m = p.matcher(line);
 				if (m.matches())
 					m_screenshotRef = m.group(1);
 			}
 			in.close();
-		} catch (IOException ioe)
+		} catch (final IOException ioe)
 		{
 			ioe.printStackTrace();
 			return false;
@@ -171,7 +163,6 @@ public class AllYouCanUploadDotComPBEMMessenger
 			m_screenshotRef = "Error: screenshot URL could not be found after posting.";
 			return false;
 		}
-		
 		return true;
 	}
 	

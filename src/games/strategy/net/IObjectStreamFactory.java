@@ -3,7 +3,6 @@
  * 
  * Created on December 14, 2001, 8:53 AM
  */
-
 package games.strategy.net;
 
 import java.io.IOException;

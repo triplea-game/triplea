@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.CommandCenter;
 
 import games.strategy.engine.data.GameData;
@@ -32,14 +31,14 @@ public class StatusCenter
 {
 	private static HashMap<PlayerID, StatusCenter> s_SCInstances = new HashMap<PlayerID, StatusCenter>();
 	
-	public static StatusCenter get(GameData data, PlayerID player)
+	public static StatusCenter get(final GameData data, final PlayerID player)
 	{
 		if (!s_SCInstances.containsKey(player))
 			s_SCInstances.put(player, create(data, player));
 		return s_SCInstances.get(player);
 	}
 	
-	private static StatusCenter create(GameData data, PlayerID player)
+	private static StatusCenter create(final GameData data, final PlayerID player)
 	{
 		return new StatusCenter(data, player);
 	}
@@ -59,32 +58,32 @@ public class StatusCenter
 	@SuppressWarnings("unused")
 	private PlayerID m_player = null;
 	
-	public StatusCenter(GameData data, PlayerID player)
+	public StatusCenter(final GameData data, final PlayerID player)
 	{
 		m_data = data;
 		m_player = player;
 	}
 	
-	private HashMap<String, TerritoryStatus> TerritoryStatuses = new HashMap<String, TerritoryStatus>();
+	private final HashMap<String, TerritoryStatus> TerritoryStatuses = new HashMap<String, TerritoryStatus>();
 	
-	public TerritoryStatus GetStatusOfTerritory(Territory ter)
+	public TerritoryStatus GetStatusOfTerritory(final Territory ter)
 	{
 		return GetStatusOfTerritory(ter.getName());
 	}
 	
-	public TerritoryStatus GetStatusOfTerritory(String terName)
+	public TerritoryStatus GetStatusOfTerritory(final String terName)
 	{
 		if (!TerritoryStatuses.containsKey(terName))
 			TerritoryStatuses.put(terName, new TerritoryStatus());
 		return TerritoryStatuses.get(terName);
 	}
 	
-	public List<Territory> GetTerritoriesThatHaveStatusesMatching(GameData data, Match<TerritoryStatus> match)
+	public List<Territory> GetTerritoriesThatHaveStatusesMatching(final GameData data, final Match<TerritoryStatus> match)
 	{
-		List<Territory> result = new ArrayList<Territory>();
-		for (String key : TerritoryStatuses.keySet())
+		final List<Territory> result = new ArrayList<Territory>();
+		for (final String key : TerritoryStatuses.keySet())
 		{
-			TerritoryStatus status = TerritoryStatuses.get(key);
+			final TerritoryStatus status = TerritoryStatuses.get(key);
 			if (status != null && match.match(status))
 				result.add(data.getMap().getTerritory(key));
 		}

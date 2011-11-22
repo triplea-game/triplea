@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
@@ -45,20 +44,18 @@ class AAInMoveUtil implements Serializable
 	private transient IDelegateBridge m_bridge;
 	private transient PlayerID m_player;
 	private Collection<Unit> m_casualties;
-	
-	private ExecutionStack m_executionStack = new ExecutionStack();
+	private final ExecutionStack m_executionStack = new ExecutionStack();
 	
 	AAInMoveUtil()
 	{
 	}
 	
-	public AAInMoveUtil initialize(IDelegateBridge bridge)
+	public AAInMoveUtil initialize(final IDelegateBridge bridge)
 	{
 		m_nonCombat = MoveDelegate.isNonCombat(bridge);
 		m_bridge = bridge;
 		m_player = bridge.getPlayerID();
 		return this;
-		
 	}
 	
 	private GameData getData()
@@ -76,7 +73,7 @@ class AAInMoveUtil implements Serializable
 		return games.strategy.triplea.Properties.getAATerritoryRestricted(getData());
 	}
 	
-	private ITripleaPlayer getRemotePlayer(PlayerID id)
+	private ITripleaPlayer getRemotePlayer(final PlayerID id)
 	{
 		return (ITripleaPlayer) m_bridge.getRemote(id);
 	}
@@ -89,77 +86,60 @@ class AAInMoveUtil implements Serializable
 	/**
 	 * Fire aa guns. Returns units to remove.
 	 */
-	Collection<Unit> fireAA(Route route, Collection<Unit> units, Comparator<Unit> decreasingMovement, final UndoableMove currentMove)
+	Collection<Unit> fireAA(final Route route, final Collection<Unit> units, final Comparator<Unit> decreasingMovement, final UndoableMove currentMove)
 	{
 		if (m_executionStack.isEmpty())
 			populateExecutionStack(route, units, decreasingMovement, currentMove);
-		
 		m_executionStack.execute(m_bridge);
 		return m_casualties;
-		
 	}
 	
-	private void populateExecutionStack(Route route, Collection<Unit> units, Comparator<Unit> decreasingMovement, final UndoableMove currentMove)
+	private void populateExecutionStack(final Route route, final Collection<Unit> units, final Comparator<Unit> decreasingMovement, final UndoableMove currentMove)
 	{
 		final List<Unit> targets = Match.getMatches(units, Matches.UnitIsAir);
-		
 		// select units with lowest movement first
 		Collections.sort(targets, decreasingMovement);
-		
-		List<IExecutable> executables = new ArrayList<IExecutable>();
-		
-		Iterator<Territory> iter = getTerritoriesWhereAAWillFire(route, units).iterator();
-		
+		final List<IExecutable> executables = new ArrayList<IExecutable>();
+		final Iterator<Territory> iter = getTerritoriesWhereAAWillFire(route, units).iterator();
 		while (iter.hasNext())
 		{
 			final Territory location = iter.next();
-			
 			executables.add(new IExecutable()
 			{
-				
-				public void execute(ExecutionStack stack, IDelegateBridge bridge)
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					fireAA(location, targets, currentMove);
 				}
-				
 			});
 		}
-		
 		Collections.reverse(executables);
 		m_executionStack.push(executables);
 	}
 	
-	Collection<Territory> getTerritoriesWhereAAWillFire(Route route, Collection<Unit> units)
+	Collection<Territory> getTerritoriesWhereAAWillFire(final Route route, final Collection<Unit> units)
 	{
-		boolean alwaysOnAA = isAlwaysONAAEnabled();
-		
+		final boolean alwaysOnAA = isAlwaysONAAEnabled();
 		// Just the attacked territory will have AA firing
 		if (!alwaysOnAA && isAATerritoryRestricted())
 			return Collections.emptyList();
-		
 		// No AA in nonCombat unless 'Always on AA'
 		if (m_nonCombat && !alwaysOnAA)
 			return Collections.emptyList();
-		
 		// No air, return empty list
 		if (Match.noneMatch(units, Matches.UnitIsAir))
 			return Collections.emptyList();
-		
 		// can't rely on m_player being the unit owner in Edit Mode
 		// look at the units being moved to determine allies and enemies
-		PlayerID ally = units.iterator().next().getOwner();
-		
+		final PlayerID ally = units.iterator().next().getOwner();
 		// don't iterate over the end
 		// that will be a battle
 		// and handled else where in this tangled mess
-		CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>();
+		final CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>();
 		hasAA.add(Matches.UnitIsAAforCombat);
 		hasAA.add(Matches.enemyUnit(ally, getData()));
-		
-		List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
-		
-		for (Territory current:route.getMiddleSteps())
-		{			
+		final List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
+		for (final Territory current : route.getMiddleSteps())
+		{
 			// AA guns in transports shouldn't be able to fire
 			// TODO COMCO- Chance to add rule to support air suppression naval units here
 			if (current.getUnits().someMatch(hasAA) && !current.isWater())
@@ -167,7 +147,6 @@ class AAInMoveUtil implements Serializable
 				territoriesWhereAAWillFire.add(current);
 			}
 		}
-		
 		// check start as well, prevent user from moving to and from AA sites
 		// one at a time
 		// if there was a battle fought there then don't fire
@@ -176,10 +155,8 @@ class AAInMoveUtil implements Serializable
 		// TODO
 		// there is a bug in which if you move an air unit to a battle site
 		// in the middle of non combat, it wont fire
-		if (route.getStart().getUnits().someMatch(hasAA) && !route.getStart().isWater()
-					&& !getBattleTracker().wasBattleFought(route.getStart()))
+		if (route.getStart().getUnits().someMatch(hasAA) && !route.getStart().isWater() && !getBattleTracker().wasBattleFought(route.getStart()))
 			territoriesWhereAAWillFire.add(route.getStart());
-		
 		return territoriesWhereAAWillFire;
 	}
 	
@@ -193,33 +170,25 @@ class AAInMoveUtil implements Serializable
 	 */
 	private void fireAA(final Territory territory, final Collection<Unit> units, final UndoableMove currentMove)
 	{
-		
 		if (units.isEmpty())
 			return;
-		
 		// once we fire the AA guns, we can't undo
 		// otherwise you could keep undoing and redoing
 		// until you got the roll you wanted
 		currentMove.setCantUndo("Move cannot be undone after AA has fired.");
-		
 		final DiceRoll[] dice = new DiceRoll[1];
-		
-		IExecutable rollDice = new IExecutable()
+		final IExecutable rollDice = new IExecutable()
 		{
-			
-			public void execute(ExecutionStack stack, IDelegateBridge bridge)
+			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				dice[0] = DiceRoll.rollAA(units, m_bridge, territory, Matches.UnitIsAAforCombat);
 			}
 		};
-		
-		IExecutable selectCasualties = new IExecutable()
+		final IExecutable selectCasualties = new IExecutable()
 		{
-			
-			public void execute(ExecutionStack stack, IDelegateBridge bridge)
+			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				int hitCount = dice[0].getHits();
-				
+				final int hitCount = dice[0].getHits();
 				if (hitCount == 0)
 				{
 					getRemotePlayer().reportMessage("No aa hits in " + territory.getName(), "No aa hits in " + territory.getName());
@@ -227,30 +196,23 @@ class AAInMoveUtil implements Serializable
 				else
 					selectCasualties(dice[0], units, territory, null);
 			}
-			
 		};
-		
 		// push in reverse order of execution
 		m_executionStack.push(selectCasualties);
 		m_executionStack.push(rollDice);
-		
 	}
 	
 	/**
 	 * hits are removed from units. Note that units are removed in the order
 	 * that the iterator will move through them.
 	 */
-	private void selectCasualties(DiceRoll dice, Collection<Unit> units, Territory territory, GUID battleID)
+	private void selectCasualties(final DiceRoll dice, final Collection<Unit> units, final Territory territory, final GUID battleID)
 	{
 		Collection<Unit> casualties = null;
-		
 		casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, battleID, territory, Matches.UnitIsAAforCombat);
-		
 		getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName(), casualties.size() + " AA hits in " + territory.getName());
-		
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
 		units.removeAll(casualties);
-		
 		if (m_casualties == null)
 			m_casualties = casualties;
 		else

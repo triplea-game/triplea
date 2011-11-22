@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.ChangeFactory;
@@ -38,45 +37,44 @@ import junit.framework.AssertionFailedError;
 
 public class GameDataTestUtil
 {
-	
-	public static PlayerID germans(GameData data)
+	public static PlayerID germans(final GameData data)
 	{
 		return data.getPlayerList().getPlayerID("Germans");
 	}
 	
-	public static PlayerID italians(GameData data)
+	public static PlayerID italians(final GameData data)
 	{
 		return data.getPlayerList().getPlayerID("Italians");
 	}
 	
-	public static PlayerID russians(GameData data)
+	public static PlayerID russians(final GameData data)
 	{
 		return data.getPlayerList().getPlayerID("Russians");
 	}
 	
-	public static PlayerID americans(GameData data)
+	public static PlayerID americans(final GameData data)
 	{
 		return data.getPlayerList().getPlayerID("Americans");
 	}
 	
-	public static PlayerID british(GameData data)
+	public static PlayerID british(final GameData data)
 	{
 		return data.getPlayerList().getPlayerID("British");
 	}
 	
-	public static PlayerID japanese(GameData data)
+	public static PlayerID japanese(final GameData data)
 	{
 		return data.getPlayerList().getPlayerID("Japanese");
 	}
 	
-	public static PlayerID chinese(GameData data)
+	public static PlayerID chinese(final GameData data)
 	{
 		return data.getPlayerList().getPlayerID("Chinese");
 	}
 	
-	public static Territory territory(String name, GameData data)
+	public static Territory territory(final String name, final GameData data)
 	{
-		Territory t = data.getMap().getTerritory(name);
+		final Territory t = data.getMap().getTerritory(name);
 		if (t == null)
 		{
 			throw new IllegalStateException("no territory:" + name);
@@ -84,82 +82,82 @@ public class GameDataTestUtil
 		return t;
 	}
 	
-	public static UnitType armour(GameData data)
+	public static UnitType armour(final GameData data)
 	{
 		return unitType("armour", data);
 	}
 	
-	public static UnitType aaGun(GameData data)
+	public static UnitType aaGun(final GameData data)
 	{
 		return unitType("aaGun", data);
 	}
 	
-	public static UnitType transports(GameData data)
+	public static UnitType transports(final GameData data)
 	{
 		return unitType("transport", data);
 	}
 	
-	public static UnitType battleship(GameData data)
+	public static UnitType battleship(final GameData data)
 	{
 		return unitType("battleship", data);
 	}
 	
-	public static UnitType carrier(GameData data)
+	public static UnitType carrier(final GameData data)
 	{
 		return unitType("carrier", data);
 	}
 	
-	public static UnitType fighter(GameData data)
+	public static UnitType fighter(final GameData data)
 	{
 		return unitType("fighter", data);
 	}
 	
-	public static UnitType destroyer(GameData data)
+	public static UnitType destroyer(final GameData data)
 	{
 		return unitType("destroyer", data);
 	}
 	
-	public static UnitType submarine(GameData data)
+	public static UnitType submarine(final GameData data)
 	{
 		return unitType("submarine", data);
 	}
 	
-	public static UnitType infantry(GameData data)
+	public static UnitType infantry(final GameData data)
 	{
 		return unitType("infantry", data);
 	}
 	
-	public static UnitType bomber(GameData data)
+	public static UnitType bomber(final GameData data)
 	{
 		return unitType("bomber", data);
 	}
 	
-	public static UnitType factory(GameData data)
+	public static UnitType factory(final GameData data)
 	{
 		return unitType("factory", data);
 	}
 	
-	private static UnitType unitType(String name, GameData data)
+	private static UnitType unitType(final String name, final GameData data)
 	{
 		return data.getUnitTypeList().getUnitType(name);
 	}
 	
-	public static void removeFrom(Territory t, Collection<Unit> units)
+	public static void removeFrom(final Territory t, final Collection<Unit> units)
 	{
 		new ChangePerformer(t.getData()).perform(ChangeFactory.removeUnits(t, units));
 	}
 	
-	public static void addTo(Territory t, Collection<Unit> units)
+	public static void addTo(final Territory t, final Collection<Unit> units)
 	{
 		new ChangePerformer(t.getData()).perform(ChangeFactory.addUnits(t, units));
 	}
 	
-	public static void addTo(PlayerID t, Collection<Unit> units)
+	public static void addTo(final PlayerID t, final Collection<Unit> units)
 	{
 		new ChangePerformer(t.getData()).perform(ChangeFactory.addUnits(t, units));
 	}
 	
-	public static PlaceDelegate placeDelegate(GameData data)
+	public static PlaceDelegate placeDelegate(final GameData data)
 	{
 		return (PlaceDelegate) data.getDelegateList().getDelegate("place");
 	}
@@ -167,70 +165,69 @@ public class GameDataTestUtil
 	/*    public static PurchaseDelegate purchaseDelegate(GameData data) {
 	        return (PurchaseDelegate) data.getDelegateList().getDelegate("purchase");
 	    }*/
-
-	public static BattleDelegate battleDelegate(GameData data)
+	public static BattleDelegate battleDelegate(final GameData data)
 	{
 		return (BattleDelegate) data.getDelegateList().getDelegate("battle");
 	}
 	
-	public static MoveDelegate moveDelegate(GameData data)
+	public static MoveDelegate moveDelegate(final GameData data)
 	{
 		return (MoveDelegate) data.getDelegateList().getDelegate("move");
 	}
 	
-	public static TechnologyDelegate techDelegate(GameData data)
+	public static TechnologyDelegate techDelegate(final GameData data)
 	{
 		return (TechnologyDelegate) data.getDelegateList().getDelegate("tech");
 	}
 	
-	public static PurchaseDelegate purchaseDelegate(GameData data)
+	public static PurchaseDelegate purchaseDelegate(final GameData data)
 	{
 		return (PurchaseDelegate) data.getDelegateList().getDelegate("purchase");
 	}
 	
-	public static BidPlaceDelegate bidPlaceDelegate(GameData data)
+	public static BidPlaceDelegate bidPlaceDelegate(final GameData data)
 	{
 		return (BidPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
 	}
 	
-	public static ITestDelegateBridge getDelegateBridge(PlayerID player)
+	public static ITestDelegateBridge getDelegateBridge(final PlayerID player)
 	{
 		return new TestDelegateBridge(player.getData(), player, new DummyDisplay());
 	}
 	
-	public static void load(Collection<Unit> units, Route route)
+	public static void load(final Collection<Unit> units, final Route route)
 	{
 		if (units.isEmpty())
 		{
 			throw new AssertionFailedError("No units");
 		}
-		MoveDelegate moveDelegate = moveDelegate(route.getStart().getData());
-		Collection<Unit> transports = route.getEnd().getUnits().getMatches(Matches.unitIsOwnedBy(units.iterator().next().getOwner()));
-		String error = moveDelegate.move(units, route, transports);
+		final MoveDelegate moveDelegate = moveDelegate(route.getStart().getData());
+		final Collection<Unit> transports = route.getEnd().getUnits().getMatches(Matches.unitIsOwnedBy(units.iterator().next().getOwner()));
+		final String error = moveDelegate.move(units, route, transports);
 		if (error != null)
 		{
 			throw new AssertionFailedError("Illegal move:" + error);
 		}
 	}
 	
-	public static void move(Collection<Unit> units, Route route)
+	public static void move(final Collection<Unit> units, final Route route)
 	{
 		if (units.isEmpty())
 		{
 			throw new AssertionFailedError("No units");
 		}
-		String error = moveDelegate(route.getStart().getData()).move(units, route);
+		final String error = moveDelegate(route.getStart().getData()).move(units, route);
 		if (error != null)
 		{
 			throw new AssertionFailedError("Illegal move:" + error);
 		}
 	}
 	
-	public static int getIndex(List<IExecutable> steps, Class<?> type)
+	public static int getIndex(final List<IExecutable> steps, final Class<?> type)
 	{
 		int rVal = -1;
 		int index = 0;
-		for (IExecutable e : steps)
+		for (final IExecutable e : steps)
 		{
 			if (type.isInstance(e))
 			{
@@ -247,12 +244,11 @@ public class GameDataTestUtil
 			throw new AssertionFailedError("No instance:" + steps);
 		}
 		return rVal;
-		
 	}
 	
-	public static void setSelectAACasualties(GameData data, boolean val)
+	public static void setSelectAACasualties(final GameData data, final boolean val)
 	{
-		for (IEditableProperty property : data.getProperties().getEditableProperties())
+		for (final IEditableProperty property : data.getProperties().getEditableProperties())
 		{
 			if (property.getName().equals(Constants.CHOOSE_AA))
 			{
@@ -263,9 +259,9 @@ public class GameDataTestUtil
 		throw new IllegalStateException();
 	}
 	
-	public static void makeGameLowLuck(GameData data)
+	public static void makeGameLowLuck(final GameData data)
 	{
-		for (IEditableProperty property : data.getProperties().getEditableProperties())
+		for (final IEditableProperty property : data.getProperties().getEditableProperties())
 		{
 			if (property.getName().equals(Constants.LOW_LUCK))
 			{
@@ -274,22 +270,20 @@ public class GameDataTestUtil
 			}
 		}
 		throw new IllegalStateException();
-		
 	}
 	
-	public static void givePlayerRadar(PlayerID player)
+	public static void givePlayerRadar(final PlayerID player)
 	{
 		TechAttachment.get(player).setAARadar(Boolean.TRUE.toString());
 	}
 	
-	public static void assertValid(String string)
+	public static void assertValid(final String string)
 	{
 		Assert.assertNull(string, string);
 	}
 	
-	public static void assertError(String string)
+	public static void assertError(final String string)
 	{
 		Assert.assertNotNull(string, string);
 	}
-	
 }

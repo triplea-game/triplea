@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.message;
 
 import games.strategy.net.IConnectionChangeListener;
@@ -33,10 +32,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * A messenger that doesnt do anything.
  */
-
 public class DummyMessenger implements IServerMessenger
 {
-	
 	private final CopyOnWriteArrayList<IConnectionChangeListener> m_connectionChangeListeners = new CopyOnWriteArrayList<IConnectionChangeListener>();
 	
 	public DummyMessenger()
@@ -44,7 +41,7 @@ public class DummyMessenger implements IServerMessenger
 		try
 		{
 			m_node = new Node("dummy", InetAddress.getLocalHost(), 0);
-		} catch (UnknownHostException e)
+		} catch (final UnknownHostException e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException(e.getMessage());
@@ -54,48 +51,42 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Send a message to the given node. Returns immediately.
 	 */
-	
-	public void send(Serializable msg, INode to)
+	public void send(final Serializable msg, final INode to)
 	{
 	}
 	
 	/**
 	 * Send a message to all nodes.
 	 */
-	
-	public void broadcast(Serializable msg)
+	public void broadcast(final Serializable msg)
 	{
 	}
 	
 	/**
 	 * Listen for messages of a certain type.
 	 */
-	
-	public void addMessageListener(IMessageListener listener)
+	public void addMessageListener(final IMessageListener listener)
 	{
 	}
 	
 	/**
 	 * Stop listening to messages.
 	 */
-	
-	public void removeMessageListener(IMessageListener listener)
+	public void removeMessageListener(final IMessageListener listener)
 	{
 	}
 	
 	/**
 	 * Listen for messages of a certain type.
 	 */
-	
-	public void addErrorListener(IMessengerErrorListener listener)
+	public void addErrorListener(final IMessengerErrorListener listener)
 	{
 	}
 	
 	/**
 	 * Stop listening to messages.
 	 */
-	
-	public void removeErrorListener(IMessengerErrorListener listener)
+	public void removeErrorListener(final IMessengerErrorListener listener)
 	{
 	}
 	
@@ -104,7 +95,6 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Get the local node
 	 */
-	
 	public INode getLocalNode()
 	{
 		return m_node;
@@ -113,7 +103,6 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Get a list of nodes.
 	 */
-	
 	public Set<INode> getNodes()
 	{
 		return new HashSet<INode>();
@@ -122,7 +111,6 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * test the connection.
 	 */
-	
 	public boolean isConnected()
 	{
 		return true;
@@ -131,7 +119,6 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Shut the connection down.
 	 */
-	
 	public void shutDown()
 	{
 	}
@@ -139,8 +126,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Add a listener for change in connection status.
 	 */
-	
-	public void addConnectionChangeListener(IConnectionChangeListener listener)
+	public void addConnectionChangeListener(final IConnectionChangeListener listener)
 	{
 		m_connectionChangeListeners.add(listener);
 	}
@@ -148,8 +134,7 @@ public class DummyMessenger implements IServerMessenger
 	/**
 	 * Remove a listener for change in connection status.
 	 */
-	
-	public void removeConnectionChangeListener(IConnectionChangeListener listener)
+	public void removeConnectionChangeListener(final IConnectionChangeListener listener)
 	{
 		m_connectionChangeListeners.remove(listener);
 	}
@@ -163,13 +148,12 @@ public class DummyMessenger implements IServerMessenger
 	{
 	}
 	
-	public void setAcceptNewConnections(boolean accept)
+	public void setAcceptNewConnections(final boolean accept)
 	{
 	}
 	
 	public void waitForAllMessagsToBeProcessed()
 	{
-		
 	}
 	
 	public boolean isServer()
@@ -182,9 +166,9 @@ public class DummyMessenger implements IServerMessenger
 		return false;
 	}
 	
-	public void removeConnection(INode node)
+	public void removeConnection(final INode node)
 	{
-		for (IConnectionChangeListener listener : m_connectionChangeListeners)
+		for (final IConnectionChangeListener listener : m_connectionChangeListeners)
 		{
 			listener.connectionRemoved(node);
 		}
@@ -195,7 +179,7 @@ public class DummyMessenger implements IServerMessenger
 		return m_node;
 	}
 	
-	public void setLoginValidator(ILoginValidator loginValidator)
+	public void setLoginValidator(final ILoginValidator loginValidator)
 	{
 	}
 	
@@ -208,5 +192,4 @@ public class DummyMessenger implements IServerMessenger
 	{
 		return m_node.getSocketAddress();
 	}
-	
 }

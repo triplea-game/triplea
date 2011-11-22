@@ -78,31 +78,18 @@ public interface ITripleaDisplay extends IDisplay
 	 * Notify that the casualties occurred
 	 * 
 	 */
-	public void casualtyNotification(GUID battleID,
-				String step,
-				DiceRoll dice,
-				PlayerID player,
-				Collection<Unit> killed,
-				Collection<Unit> damaged,
-				Map<Unit, Collection<Unit>> dependents);
+	public void casualtyNotification(GUID battleID, String step, DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged, Map<Unit, Collection<Unit>> dependents);
 	
 	/**
 	 * Notify that the casualties occurred, and only the casualty
 	 */
-	public void deadUnitNotification(GUID battleID,
-				PlayerID player,
-				Collection<Unit> dead,
-				Map<Unit, Collection<Unit>> dependents);
+	public void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> dead, Map<Unit, Collection<Unit>> dependents);
 	
 	/**
 	 * Notify that the casualties occurred
 	 * 
 	 */
-	public void scrambleNotification(GUID battleID,
-				String step,
-				PlayerID player,
-				Collection<Unit> scrambled,
-				Map<Unit, Collection<Unit>> dependents);
+	public void scrambleNotification(GUID battleID, String step, PlayerID player, Collection<Unit> scrambled, Map<Unit, Collection<Unit>> dependents);
 	
 	/**
 	 * Notification of the results of a bombing raid
@@ -131,5 +118,4 @@ public interface ITripleaDisplay extends IDisplay
 	public void notifyDice(GUID battleId, DiceRoll dice, String stepName);
 	
 	public void gotoBattleStep(GUID battleId, String step);
-	
 }

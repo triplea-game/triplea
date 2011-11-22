@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * BattlePanel.java
  * 
  * Created on December 4, 2001, 7:00 PM
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.debug.Console;
@@ -76,89 +74,76 @@ import javax.swing.WindowConstants;
 @SuppressWarnings("serial")
 public class BattlePanel extends ActionPanel
 {
-	
-	private JLabel m_actionLabel = new JLabel();
+	private final JLabel m_actionLabel = new JLabel();
 	private FightBattleDetails m_fightBattleMessage;
-	
 	private volatile BattleDisplay m_battleDisplay;
 	// if we are showing a battle, then this will be set to the currently
 	// displayed battle. This will only be set after the display
 	// is shown on the screen
 	private volatile GUID m_currentBattleDisplayed;
-	
 	// there is a bug in linux jdk1.5.0_6 where frames are not
 	// being garbage collected
 	// reuse one frame
 	private final JFrame m_battleFrame;
 	
 	/** Creates new BattlePanel */
-	public BattlePanel(GameData data, MapPanel map)
+	public BattlePanel(final GameData data, final MapPanel map)
 	{
 		super(data, map);
 		m_battleFrame = new JFrame();
 		m_battleFrame.setIconImage(GameRunner.getGameIcon(m_battleFrame));
 		getMap().getUIContext().addShutdownWindow(m_battleFrame);
-		
 		m_battleFrame.addWindowListener(new WindowListener()
 		{
-			
-			public void windowActivated(WindowEvent e)
+			public void windowActivated(final WindowEvent e)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					
 					public void run()
 					{
 						if (m_battleDisplay != null)
 							m_battleDisplay.takeFocus();
 					}
-					
 				});
-				
 			}
 			
-			public void windowClosed(WindowEvent e)
+			public void windowClosed(final WindowEvent e)
 			{
 			}
 			
-			public void windowClosing(WindowEvent e)
+			public void windowClosing(final WindowEvent e)
 			{
 			}
 			
-			public void windowDeactivated(WindowEvent e)
+			public void windowDeactivated(final WindowEvent e)
 			{
 			}
 			
-			public void windowDeiconified(WindowEvent e)
+			public void windowDeiconified(final WindowEvent e)
 			{
 			}
 			
-			public void windowIconified(WindowEvent e)
+			public void windowIconified(final WindowEvent e)
 			{
 			}
 			
-			public void windowOpened(WindowEvent e)
+			public void windowOpened(final WindowEvent e)
 			{
 			}
-			
 		});
-		
 	}
 	
 	public void display(final PlayerID id, final Collection<Territory> battles, final Collection<Territory> bombing)
 	{
 		super.display(id);
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				removeAll();
 				m_actionLabel.setText(id.getName() + " battle");
-				
 				setLayout(new BorderLayout());
-				JPanel panel = new JPanel();
+				final JPanel panel = new JPanel();
 				panel.setLayout(new GridLayout(0, 1));
 				panel.add(m_actionLabel);
 				Iterator<Territory> iter = battles.iterator();
@@ -166,7 +151,6 @@ public class BattlePanel extends ActionPanel
 				{
 					addBattleActions(panel, iter, false);
 				}
-				
 				iter = bombing.iterator();
 				while (iter.hasNext())
 				{
@@ -174,19 +158,17 @@ public class BattlePanel extends ActionPanel
 				}
 				add(panel, BorderLayout.NORTH);
 				SwingUtilities.invokeLater(REFRESH);
-				
 			}
 			
-			private void addBattleActions(JPanel panel, Iterator<Territory> iter, boolean bomb)
+			private void addBattleActions(final JPanel panel, final Iterator<Territory> iter, final boolean bomb)
 			{
-				Territory next = iter.next();
-				JPanel innerPanel = new JPanel();
+				final Territory next = iter.next();
+				final JPanel innerPanel = new JPanel();
 				innerPanel.setLayout(new BorderLayout());
 				innerPanel.add(new JButton(new FightBattleAction(next, bomb)), BorderLayout.CENTER);
 				innerPanel.add(new JButton(new CenterBattleAction(next)), BorderLayout.EAST);
 				panel.add(innerPanel);
 			}
-			
 		});
 	}
 	
@@ -194,45 +176,35 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				if (m_battleDisplay != null)
 					m_battleDisplay.battleInfo(messageShort, messageLong, step);
 			}
-		}
-
-		);
-		
+		});
 	}
 	
 	public void notifyScramble(final String messageShort, final String messageLong, final String step, final PlayerID retreatingPlayer)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				if (m_battleDisplay != null)
 					m_battleDisplay.battleInfo(messageShort, messageLong, step);
 			}
-		}
-
-		);
-		
+		});
 	}
 	
 	public void showDice(final String messageShort, final DiceRoll dice, final String step)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				if (m_battleDisplay != null)
 					m_battleDisplay.battleInfo(messageShort, dice, step);
 			}
-			
 		});
 	}
 	
@@ -240,14 +212,12 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				if (m_battleDisplay != null)
 					m_battleDisplay.endBattle(message, m_battleFrame);
 			}
 		});
-		
 	}
 	
 	/**
@@ -262,15 +232,13 @@ public class BattlePanel extends ActionPanel
 			m_battleFrame.getContentPane().removeAll();
 			m_battleDisplay = null;
 			games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
-			
 		}
 	}
 	
-	private boolean ensureBattleIsDisplayed(GUID battleID)
+	private boolean ensureBattleIsDisplayed(final GUID battleID)
 	{
 		if (SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong threads");
-		
 		GUID displayed = m_currentBattleDisplayed;
 		int count = 0;
 		while (displayed == null || !battleID.equals(displayed))
@@ -279,11 +247,10 @@ public class BattlePanel extends ActionPanel
 			{
 				count++;
 				Thread.sleep(count);
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				return false;
 			}
-			
 			// something is wrong, we shouldnt have to wait this long
 			if (count > 200)
 			{
@@ -293,7 +260,6 @@ public class BattlePanel extends ActionPanel
 			}
 			displayed = m_currentBattleDisplayed;
 		}
-		
 		return true;
 	}
 	
@@ -306,9 +272,8 @@ public class BattlePanel extends ActionPanel
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 		{
-			Runnable r = new Runnable()
+			final Runnable r = new Runnable()
 			{
-				
 				public void run()
 				{
 					// recursive call
@@ -318,15 +283,13 @@ public class BattlePanel extends ActionPanel
 			try
 			{
 				SwingUtilities.invokeLater(r);
-			} catch (Exception e)
+			} catch (final Exception e)
 			{
 				e.printStackTrace();
 			}
 			return;
 		}
-		
 		removeAll();
-		
 		if (m_battleDisplay != null)
 		{
 			getMap().centerOn(m_battleDisplay.getBattleLocation());
@@ -334,44 +297,36 @@ public class BattlePanel extends ActionPanel
 		}
 	}
 	
-	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits,
-				final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-				final Map<Unit, Collection<Unit>> unit_dependents, final PlayerID attacker,
-				final PlayerID defender)
+	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
+				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> unit_dependents,
+				final PlayerID attacker, final PlayerID defender)
 	{
 		try
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
-				
 				public void run()
 				{
-					
 					if (m_battleDisplay != null)
 					{
 						cleanUpBattleWindow();
 						m_currentBattleDisplayed = null;
 					}
-					
 					if (!getMap().getUIContext().getShowMapOnly())
-			{
-				
-				m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie, defendingWaitingToDie, battleID,
-							BattlePanel.this.getMap());
-				
-				m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
-				
-				m_battleFrame.getContentPane().removeAll();
-				m_battleFrame.getContentPane().add(m_battleDisplay);
-				m_battleFrame.setSize(750, 540);
-				m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
-				
-				games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
-				boolean foundHumanInBattle = false;
-				Iterator<IGamePlayer> iter = getMap().getUIContext().getPlayerList().iterator();
-				while (iter.hasNext())
+					{
+						m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie, defendingWaitingToDie,
+									battleID, BattlePanel.this.getMap());
+						m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
+						m_battleFrame.getContentPane().removeAll();
+						m_battleFrame.getContentPane().add(m_battleDisplay);
+						m_battleFrame.setSize(750, 540);
+						m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
+						games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
+						boolean foundHumanInBattle = false;
+						final Iterator<IGamePlayer> iter = getMap().getUIContext().getPlayerList().iterator();
+						while (iter.hasNext())
 						{
-							IGamePlayer gamePlayer = iter.next();
+							final IGamePlayer gamePlayer = iter.next();
 							if ((gamePlayer.getID().equals(attacker) && gamePlayer instanceof TripleAPlayer) || (gamePlayer.getID().equals(defender) && gamePlayer instanceof TripleAPlayer))
 							{
 								foundHumanInBattle = true;
@@ -379,51 +334,42 @@ public class BattlePanel extends ActionPanel
 							}
 						}
 						if (getMap().getUIContext().getShowBattlesBetweenAIs() || foundHumanInBattle)
-				{
-					m_battleFrame.setVisible(true);
-					m_battleFrame.validate();
-					m_battleFrame.invalidate();
-					m_battleFrame.repaint();
-				}
-				else
-				{
-					m_battleFrame.setVisible(false);
-				}
-				m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-				
-				m_currentBattleDisplayed = battleID;
-				
-				SwingUtilities.invokeLater(new Runnable()
-				{
-					
-					public void run()
-					{
-						m_battleFrame.toFront();
+						{
+							m_battleFrame.setVisible(true);
+							m_battleFrame.validate();
+							m_battleFrame.invalidate();
+							m_battleFrame.repaint();
+						}
+						else
+						{
+							m_battleFrame.setVisible(false);
+						}
+						m_battleFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+						m_currentBattleDisplayed = battleID;
+						SwingUtilities.invokeLater(new Runnable()
+						{
+							public void run()
+							{
+								m_battleFrame.toFront();
+							}
+						});
 					}
-					
-				});
-			}
-		}
+				}
 			});
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
-			
 			e.printStackTrace();
-		} catch (InvocationTargetException e)
+		} catch (final InvocationTargetException e)
 		{
-			
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public FightBattleDetails waitForBattleSelection()
 	{
 		waitForRelease();
-		
 		if (m_fightBattleMessage != null)
 			getMap().centerOn(m_fightBattleMessage.getWhere());
-		
 		return m_fightBattleMessage;
 	}
 	
@@ -432,15 +378,13 @@ public class BattlePanel extends ActionPanel
 	 */
 	public Territory getBombardment(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable)
 	{
-		BombardComponent comp = Util.runInSwingEventThread(new Util.Task<BombardComponent>()
+		final BombardComponent comp = Util.runInSwingEventThread(new Util.Task<BombardComponent>()
 		{
-			
 			public BombardComponent run()
 			{
 				return new BombardComponent(unit, unitTerritory, territories, noneAvailable);
 			}
 		});
-		
 		int option = JOptionPane.NO_OPTION;
 		while (option != JOptionPane.OK_OPTION)
 		{
@@ -469,12 +413,11 @@ public class BattlePanel extends ActionPanel
 		return EventThreadJOptionPane.showConfirmDialog(null, "Conduct naval bombard in " + terr.toString() + "?", "Bombard", JOptionPane.YES_NO_OPTION) == 0;
 	}
 	
-	public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed,
-				final Collection<Unit> damaged, final Map<Unit, Collection<Unit>> dependents)
+	public void casualtyNotification(final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed, final Collection<Unit> damaged,
+				final Map<Unit, Collection<Unit>> dependents)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -487,7 +430,6 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -496,12 +438,10 @@ public class BattlePanel extends ActionPanel
 		});
 	}
 	
-	public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled,
-				final Map<Unit, Collection<Unit>> dependents)
+	public void scrambleNotification(final String step, final PlayerID player, final Collection<Unit> scrambled, final Map<Unit, Collection<Unit>> dependents)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -520,8 +460,8 @@ public class BattlePanel extends ActionPanel
 		m_battleDisplay.waitForConfirmation(message);
 	}
 	
-	public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message,
-				final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties, GUID battleID)
+	public CasualtyDetails getCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)
 	{
 		// if the battle display is null, then this is an aa fire during move
 		if (battleID == null)
@@ -531,56 +471,44 @@ public class BattlePanel extends ActionPanel
 			// something is wong
 			if (!ensureBattleIsDisplayed(battleID))
 				return new CasualtyDetails(defaultCasualties.getKilled(), defaultCasualties.getDamaged(), true);
-			
 			return m_battleDisplay.getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties);
 		}
-		
 	}
 	
-	private CasualtyDetails getCasualtiesAA(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents,
-				final int count, final String message, final DiceRoll dice,
+	private CasualtyDetails getCasualtiesAA(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final CasualtyList defaultCasualties)
 	{
-		Task<CasualtyDetails> task = new Task<CasualtyDetails>()
+		final Task<CasualtyDetails> task = new Task<CasualtyDetails>()
 		{
-			
 			public CasualtyDetails run()
 			{
-				boolean isEditMode = (dice == null);
-				UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, getData(), false, getMap().getUIContext());
+				final boolean isEditMode = (dice == null);
+				final UnitChooser chooser = new UnitChooser(selectFrom, defaultCasualties, dependents, getData(), false, getMap().getUIContext());
 				chooser.setTitle(message);
 				if (isEditMode)
 					chooser.setMax(selectFrom.size());
 				else
 					chooser.setMax(count);
-				
-				DicePanel dicePanel = new DicePanel(getMap().getUIContext(), getData());
+				final DicePanel dicePanel = new DicePanel(getMap().getUIContext(), getData());
 				if (!isEditMode)
 					dicePanel.setDiceRoll(dice);
-				
-				JPanel panel = new JPanel();
+				final JPanel panel = new JPanel();
 				panel.setLayout(new BorderLayout());
 				panel.add(chooser, BorderLayout.CENTER);
 				dicePanel.setMaximumSize(new Dimension(450, 600));
-				
 				dicePanel.setPreferredSize(new Dimension(300, (int) dicePanel.getPreferredSize().getHeight()));
 				panel.add(dicePanel, BorderLayout.SOUTH);
-				
-				String[] options =
-				{ "OK" };
-				EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
-							null, options, null);
-				List<Unit> killed = chooser.getSelected(false);
-				CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedFirstHit(), false);
+				final String[] options = { "OK" };
+				EventThreadJOptionPane.showOptionDialog(getRootPane(), panel, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+				final List<Unit> killed = chooser.getSelected(false);
+				final CasualtyDetails response = new CasualtyDetails(killed, chooser.getSelectedFirstHit(), false);
 				return response;
 			}
-			
 		};
 		return Util.runInSwingEventThread(task);
-		
 	}
 	
-	public Territory getRetreat(GUID battleID, String message, Collection<Territory> possible, boolean submerge)
+	public Territory getRetreat(final GUID battleID, final String message, final Collection<Territory> possible, final boolean submerge)
 	{
 		// something is really wrong
 		if (!ensureBattleIsDisplayed(battleID))
@@ -588,7 +516,7 @@ public class BattlePanel extends ActionPanel
 		return m_battleDisplay.getRetreat(message, possible, submerge);
 	}
 	
-	public Collection<Unit> getScramble(IPlayerBridge bridge, GUID battleID, String message, Collection<Territory> possible, PlayerID player)
+	public Collection<Unit> getScramble(final IPlayerBridge bridge, final GUID battleID, final String message, final Collection<Territory> possible, final PlayerID player)
 	{
 		// something is really wrong
 		if (!ensureBattleIsDisplayed(battleID))
@@ -596,11 +524,10 @@ public class BattlePanel extends ActionPanel
 		return m_battleDisplay.getScramble(bridge, message, possible, player);
 	}
 	
-	public void gotoStep(GUID battleID, final String step)
+	public void gotoStep(final GUID battleID, final String step)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -611,10 +538,8 @@ public class BattlePanel extends ActionPanel
 	
 	public void notifyRetreat(final Collection<Unit> retreating)
 	{
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				if (m_battleDisplay != null)
@@ -627,14 +552,12 @@ public class BattlePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				if (m_battleDisplay != null)
 					m_battleDisplay.bombingResults(dice, cost);
 			}
 		});
-		
 	}
 	
 	Territory m_oldCenteredTerritory = null;
@@ -645,22 +568,19 @@ public class BattlePanel extends ActionPanel
 	{
 		Territory m_territory;
 		
-		CenterBattleAction(Territory battleSite)
+		CenterBattleAction(final Territory battleSite)
 		{
 			super("Center");
 			m_territory = battleSite;
 		}
 		
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_CenterBattleActionTimer != null)
 				m_CenterBattleActionTimer.cancel();
-			
 			if (m_oldCenteredTerritory != null)
 				getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
-			
 			getMap().centerOn(m_territory);
-			
 			m_CenterBattleActionTimer = new Timer();
 			m_CenterBattleActionTimer.scheduleAtFixedRate(new MyTimerTask(m_territory, m_CenterBattleActionTimer), 150, 150);
 			m_oldCenteredTerritory = m_territory;
@@ -673,7 +593,7 @@ public class BattlePanel extends ActionPanel
 			Timer m_stopTimer;
 			int m_count = 0;
 			
-			MyTimerTask(Territory battleSite, Timer stopTimer)
+			MyTimerTask(final Territory battleSite, final Timer stopTimer)
 			{
 				m_territory = battleSite;
 				m_stopTimer = stopTimer;
@@ -700,7 +620,6 @@ public class BattlePanel extends ActionPanel
 				}
 				m_count++;
 			}
-			
 		}
 	}
 	
@@ -710,14 +629,14 @@ public class BattlePanel extends ActionPanel
 		Territory m_territory;
 		boolean m_bomb;
 		
-		FightBattleAction(Territory battleSite, boolean bomb)
+		FightBattleAction(final Territory battleSite, final boolean bomb)
 		{
 			super((bomb ? "Bombing raid in " : "Battle in ") + battleSite.getName() + "...");
 			m_territory = battleSite;
 			m_bomb = bomb;
 		}
 		
-		public void actionPerformed(ActionEvent actionEvent)
+		public void actionPerformed(final ActionEvent actionEvent)
 		{
 			if (m_oldCenteredTerritory != null)
 				getMap().clearTerritoryOverlay(m_oldCenteredTerritory);
@@ -735,40 +654,34 @@ public class BattlePanel extends ActionPanel
 	
 	private class BombardComponent extends JPanel
 	{
+		private final JList m_list;
 		
-		private JList m_list;
-		
-		BombardComponent(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
+		BombardComponent(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable)
 		{
-			
 			this.setLayout(new BorderLayout());
-			
-			String unitName = unit.getUnitType().getName() + " in " + unitTerritory;
-			JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
+			final String unitName = unit.getUnitType().getName() + " in " + unitTerritory;
+			final JLabel label = new JLabel("Which territory should " + unitName + " bombard?");
 			this.add(label, BorderLayout.NORTH);
-			
-			Vector<Object> listElements = new Vector<Object>(territories);
+			final Vector<Object> listElements = new Vector<Object>(territories);
 			if (noneAvailable)
 			{
 				listElements.add(0, "None");
 			}
-			
 			m_list = new JList(listElements);
 			m_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			if (listElements.size() >= 1)
 				m_list.setSelectedIndex(0);
-			JScrollPane scroll = new JScrollPane(m_list);
+			final JScrollPane scroll = new JScrollPane(m_list);
 			this.add(scroll, BorderLayout.CENTER);
 		}
 		
 		public Territory getSelection()
 		{
-			Object selected = m_list.getSelectedValue();
+			final Object selected = m_list.getSelectedValue();
 			if (selected instanceof Territory)
 			{
 				return (Territory) selected;
 			}
-			
 			return null; // User selected "None" option
 		}
 	}

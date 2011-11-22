@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.common.player;
 
 import games.strategy.common.ui.MainGameFrame;
@@ -30,7 +29,7 @@ public abstract class AbstractHumanPlayer<CustomGameFrame extends MainGameFrame>
 	 * @param name
 	 *            - the name of the player.
 	 */
-	public AbstractHumanPlayer(String name, String type)
+	public AbstractHumanPlayer(final String name, final String type)
 	{
 		super(name, type);
 	}
@@ -38,9 +37,8 @@ public abstract class AbstractHumanPlayer<CustomGameFrame extends MainGameFrame>
 	@Override
 	public abstract void start(String stepName);
 	
-	public final void setFrame(CustomGameFrame frame)
+	public final void setFrame(final CustomGameFrame frame)
 	{
 		m_ui = frame;
 	}
-	
 }

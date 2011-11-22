@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.util.PropertyUtil;
@@ -35,18 +34,16 @@ public class ChangeAttachmentChange extends Change
 		return m_attatchmentName;
 	}
 	
-	ChangeAttachmentChange(IAttachment attatchment, Object newValue, String property)
+	ChangeAttachmentChange(final IAttachment attatchment, final Object newValue, final String property)
 	{
 		if (attatchment == null)
 			throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
-		
 		m_attatchedTo = attatchment.getAttatchedTo();
 		m_clearFirst = false;
-		
 		m_attatchmentName = attatchment.getName();
 		if (property.equals("rawProperty"))
 		{
-			String[] s = ((String) newValue).split(":");
+			final String[] s = ((String) newValue).split(":");
 			m_oldValue = PropertyUtil.getRaw(s[0], attatchment);
 			m_newValue = s[1];
 			m_property = s[0];
@@ -62,14 +59,12 @@ public class ChangeAttachmentChange extends Change
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	ChangeAttachmentChange(IAttachment attatchment, Object newValue, String property, boolean getRaw, boolean clearFirst)
+	ChangeAttachmentChange(final IAttachment attatchment, final Object newValue, final String property, final boolean getRaw, final boolean clearFirst)
 	{
 		if (attatchment == null)
 			throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
-		
 		m_attatchedTo = attatchment.getAttatchedTo();
 		m_clearFirst = clearFirst;
-		
 		m_attatchmentName = attatchment.getName();
 		if (getRaw)
 		{
@@ -88,7 +83,7 @@ public class ChangeAttachmentChange extends Change
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	public ChangeAttachmentChange(Attachable attatchTo, String attatchmentName, Object newValue, Object oldValue, String property, boolean clearFirst)
+	public ChangeAttachmentChange(final Attachable attatchTo, final String attatchmentName, final Object newValue, final Object oldValue, final String property, final boolean clearFirst)
 	{
 		m_attatchmentName = attatchmentName;
 		m_attatchedTo = attatchTo;
@@ -99,9 +94,9 @@ public class ChangeAttachmentChange extends Change
 	}
 	
 	@Override
-	public void perform(GameData data)
+	public void perform(final GameData data)
 	{
-		IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
+		final IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
 		PropertyUtil.set(m_property, m_newValue, attachment, m_clearFirst);
 	}
 	
@@ -116,5 +111,4 @@ public class ChangeAttachmentChange extends Change
 	{
 		return "ChangAttatchmentChange attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
 	}
-	
 }

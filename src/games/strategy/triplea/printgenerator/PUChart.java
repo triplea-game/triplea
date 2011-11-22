@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -41,23 +40,21 @@ import javax.imageio.ImageIO;
  */
 class PUChart
 {
-	private GameData m_data;
-	private Iterator<PlayerID> m_playerIterator;
-	private IntegerMap<PlayerID> m_moneyMap;
-	private int m_numPlayers;
-	private PlayerID[] m_playerArray;
-	private Integer[] m_moneyArray;
-	private Map<Integer, Integer> m_avoidMap;
-	
+	private final GameData m_data;
+	private final Iterator<PlayerID> m_playerIterator;
+	private final IntegerMap<PlayerID> m_moneyMap;
+	private final int m_numPlayers;
+	private final PlayerID[] m_playerArray;
+	private final Integer[] m_moneyArray;
+	private final Map<Integer, Integer> m_avoidMap;
 	private final int X_DIMENSION = 7;
 	private final int Y_DIMENSION = 6;
 	private final Font CHART_FONT = new Font("Serif", Font.PLAIN, 12);
-	private BufferedImage m_PUImage;
-	private Graphics2D m_g2d;
+	private final BufferedImage m_PUImage;
+	private final Graphics2D m_g2d;
+	private final File m_outDir;
 	
-	private File m_outDir;
-	
-	PUChart(PrintGenerationData printData)
+	PUChart(final PrintGenerationData printData)
 	{
 		m_data = printData.getData();
 		m_playerIterator = m_data.getPlayerList().iterator();
@@ -76,13 +73,10 @@ class PUChart
 		int count = 0;
 		while (m_playerIterator.hasNext())
 		{
-			PlayerID currentPlayer = m_playerIterator.next();
-			m_moneyMap.put(currentPlayer, currentPlayer.getResources()
-						.getQuantity(Constants.PUS));
-			
+			final PlayerID currentPlayer = m_playerIterator.next();
+			m_moneyMap.put(currentPlayer, currentPlayer.getResources().getQuantity(Constants.PUS));
 			m_playerArray[count] = currentPlayer;
-			m_moneyArray[count] = currentPlayer.getResources().getQuantity(
-						Constants.PUS);
+			m_moneyArray[count] = currentPlayer.getResources().getQuantity(Constants.PUS);
 			count++;
 		}
 	}
@@ -103,14 +97,13 @@ class PUChart
 		}
 	}
 	
-	private void drawEllipseAndString(int x, int y, String string)
+	private void drawEllipseAndString(final int x, final int y, final String string)
 	{
 		m_g2d.setFont(CHART_FONT);
 		m_g2d.draw(new Ellipse2D.Double(5 + 87 * x, 5 + 87 * y, 72, 72));
 		final FontMetrics metrics = m_g2d.getFontMetrics();
 		final int h = metrics.stringWidth(string) / 2;
 		final int k = metrics.getHeight() / 2;
-		
 		m_g2d.drawString(string, 42 + 87 * x - h, 39 + 87 * y + k);
 	}
 	
@@ -118,67 +111,54 @@ class PUChart
 	{
 		initializeMap();
 		initializeAvoidMap();
-		int numChartsNeeded = (int) Math.ceil(((double) m_moneyMap
-					.totalValues())
-					/ (X_DIMENSION * Y_DIMENSION));
+		final int numChartsNeeded = (int) Math.ceil(((double) m_moneyMap.totalValues()) / (X_DIMENSION * Y_DIMENSION));
 		for (int i = 0; i < numChartsNeeded; i++)
 		{
 			m_g2d.setColor(Color.black);
 			// Draw Country Names
 			for (int z = 0; z < m_playerArray.length; z++)
 			{
-				int valMod42 = m_moneyArray[z] % 42;
-				int valModXDim = valMod42 % X_DIMENSION;
-				int valFloorXDim = valMod42 / X_DIMENSION;
-				
+				final int valMod42 = m_moneyArray[z] % 42;
+				final int valModXDim = valMod42 % X_DIMENSION;
+				final int valFloorXDim = valMod42 / X_DIMENSION;
 				if (m_avoidMap.containsKey(z) && m_moneyArray[z] / 42 == i)
 				{
-					FontMetrics metrics = m_g2d.getFontMetrics();
-					int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
-					m_g2d.drawString(m_playerArray[z].getName(), 42 + 87
-								* valModXDim - width, 63 + 87 * valFloorXDim);
+					final FontMetrics metrics = m_g2d.getFontMetrics();
+					final int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
+					m_g2d.drawString(m_playerArray[z].getName(), 42 + 87 * valModXDim - width, 63 + 87 * valFloorXDim);
 				}
-				else if (m_avoidMap.containsValue(z)
-							&& m_moneyArray[z] / 42 == i)
+				else if (m_avoidMap.containsValue(z) && m_moneyArray[z] / 42 == i)
 				{
-					FontMetrics metrics = m_g2d.getFontMetrics();
-					int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
-					m_g2d.drawString(m_playerArray[z].getName(), 42 + 87
-								* valModXDim - width, 30 + 87 * valFloorXDim);
+					final FontMetrics metrics = m_g2d.getFontMetrics();
+					final int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
+					m_g2d.drawString(m_playerArray[z].getName(), 42 + 87 * valModXDim - width, 30 + 87 * valFloorXDim);
 				}
 				else if (m_moneyArray[z] / 42 == i)
 				{
-					FontMetrics metrics = m_g2d.getFontMetrics();
-					int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
-					m_g2d.drawString(m_playerArray[z].getName(), 42 + 87
-								* valModXDim - width, 60 + 87 * valFloorXDim);
+					final FontMetrics metrics = m_g2d.getFontMetrics();
+					final int width = metrics.stringWidth(m_playerArray[z].getName()) / 2;
+					m_g2d.drawString(m_playerArray[z].getName(), 42 + 87 * valModXDim - width, 60 + 87 * valFloorXDim);
 				}
 			}
-			
 			// Draw Ellipses and Numbers
 			for (int j = 0; j < Y_DIMENSION; j++)
 			{
 				for (int k = 0; k < X_DIMENSION; k++)
 				{
-					int numberincircle = X_DIMENSION * Y_DIMENSION * i
-								+ X_DIMENSION * j + k;
-					String string = "" + numberincircle;
+					final int numberincircle = X_DIMENSION * Y_DIMENSION * i + X_DIMENSION * j + k;
+					final String string = "" + numberincircle;
 					drawEllipseAndString(k, j, string);
 				}
 			}
-			
 			// Write to file
 			final int firstnum = X_DIMENSION * Y_DIMENSION * i;
 			final int secondnum = X_DIMENSION * Y_DIMENSION * (i + 1) - 1;
-			final File outputfile = new File(m_outDir, "PUchart" + firstnum
-						+ "-" + secondnum + ".png");
+			final File outputfile = new File(m_outDir, "PUchart" + firstnum + "-" + secondnum + ".png");
 			ImageIO.write(m_PUImage, "png", outputfile);
-			
 			final Color transparent = new Color(0, 0, 0, 0);
 			m_g2d.setColor(transparent);
 			m_g2d.setComposite(AlphaComposite.Src);
 			m_g2d.fill(new Rectangle2D.Float(0, 0, 600, 600));
 		}
 	}
-	
 }

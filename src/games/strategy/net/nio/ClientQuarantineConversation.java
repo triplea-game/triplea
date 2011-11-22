@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net.nio;
 
 import games.strategy.net.IConnectionLogin;
@@ -28,7 +27,6 @@ import java.util.logging.Logger;
 
 public class ClientQuarantineConversation extends QuarantineConversation
 {
-	
 	private static final Logger s_logger = Logger.getLogger(ClientQuarantineConversation.class.getName());
 	
 	
@@ -42,31 +40,24 @@ public class ClientQuarantineConversation extends QuarantineConversation
 	private final NIOSocket m_socket;
 	private STEP m_step = STEP.READ_CHALLENGE;
 	private String m_localName;
-	private String m_macAddress;
+	private final String m_macAddress;
 	private String m_serverName;
 	private InetSocketAddress m_networkVisibleAddress;
 	private InetSocketAddress m_serverLocalAddress;
-	
 	private Map<String, String> m_challengeProperties;
 	private Map<String, String> m_challengeResponse;
-	
 	private final CountDownLatch m_showLatch = new CountDownLatch(1);
 	private final CountDownLatch m_doneShowLatch = new CountDownLatch(1);
-	
 	private volatile boolean m_closed = false;
-	
 	private volatile String m_errorMessage;
 	
-	public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NIOSocket socket, String localName, String mac)
+	public ClientQuarantineConversation(final IConnectionLogin login, final SocketChannel channel, final NIOSocket socket, final String localName, final String mac)
 	{
 		m_login = login;
 		m_localName = localName;
-		
 		m_macAddress = mac;
-		
 		m_socket = socket;
 		m_channel = channel;
-		
 		// Send the local name
 		send(m_localName);
 		// Send the mac address
@@ -103,14 +94,12 @@ public class ClientQuarantineConversation extends QuarantineConversation
 		 * 
 		 * So we have complex code to switch back and forth.
 		 */
-		
 		try
 		{
 			m_showLatch.await();
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 		}
-		
 		if (m_login != null && m_challengeProperties != null)
 		{
 			try
@@ -127,7 +116,7 @@ public class ClientQuarantineConversation extends QuarantineConversation
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public ACTION message(Object o)
+	public ACTION message(final Object o)
 	{
 		try
 		{
@@ -135,35 +124,28 @@ public class ClientQuarantineConversation extends QuarantineConversation
 			{
 				case READ_CHALLENGE:
 					// read name, send challenge
-					Map<String, String> challenge = (Map) o;
-					
+					final Map<String, String> challenge = (Map) o;
 					if (s_logger.isLoggable(Level.FINER))
 					{
 						s_logger.log(Level.FINER, "read challenge:" + challenge);
 					}
-					
 					if (challenge != null)
 					{
-						
 						m_challengeProperties = challenge;
 						m_showLatch.countDown();
-						
 						try
 						{
 							m_doneShowLatch.await();
-						} catch (InterruptedException e)
+						} catch (final InterruptedException e)
 						{
 							// ignore
 						}
-						
 						if (m_closed)
 							return ACTION.NONE;
-						
 						if (s_logger.isLoggable(Level.FINER))
 						{
 							s_logger.log(Level.FINER, "writing response" + m_challengeResponse);
 						}
-						
 						send((Serializable) m_challengeResponse);
 					}
 					else
@@ -173,83 +155,65 @@ public class ClientQuarantineConversation extends QuarantineConversation
 						{
 							s_logger.log(Level.FINER, "sending null response");
 						}
-						
 						send(null);
 					}
-					
 					m_step = STEP.READ_ERROR;
 					return ACTION.NONE;
-					
 				case READ_ERROR:
-
 					if (o != null)
 					{
 						if (s_logger.isLoggable(Level.FINER))
 						{
 							s_logger.log(Level.FINER, "error:" + o);
 						}
-						
 						m_errorMessage = (String) o;
 						// acknowledge the error
 						send(null);
-						
 						return ACTION.TERMINATE;
 					}
 					m_step = STEP.READ_NAMES;
 					return ACTION.NONE;
-					
 				case READ_NAMES:
-
-					String[] strings = ((String[]) o);
+					final String[] strings = ((String[]) o);
 					if (s_logger.isLoggable(Level.FINER))
 					{
 						s_logger.log(Level.FINER, "new local name:" + strings[0]);
 					}
-					
 					m_localName = strings[0];
 					m_serverName = strings[1];
 					m_step = STEP.READ_ADDRESS;
 					return ACTION.NONE;
-					
 				case READ_ADDRESS:
-
 					// this is the adress that others see us as
-					InetSocketAddress[] address = (InetSocketAddress[]) o;
+					final InetSocketAddress[] address = (InetSocketAddress[]) o;
 					// this is the address the server thinks he is
 					m_networkVisibleAddress = address[0];
 					m_serverLocalAddress = address[1];
-					
 					if (s_logger.isLoggable(Level.FINE))
 					{
 						s_logger.log(Level.FINE, "Server local address:" + m_serverLocalAddress);
 						s_logger.log(Level.FINE, "channel remote address:" + m_channel.socket().getRemoteSocketAddress());
 						s_logger.log(Level.FINE, "network visible address:" + m_networkVisibleAddress);
 						s_logger.log(Level.FINE, "channel local adresss:" + m_channel.socket().getLocalSocketAddress());
-						
 					}
-					
 					return ACTION.UNQUARANTINE;
-					
 				default:
 					throw new IllegalStateException("Invalid state");
 			}
-		} catch (Throwable t)
+		} catch (final Throwable t)
 		{
 			m_closed = true;
 			m_showLatch.countDown();
 			m_doneShowLatch.countDown();
-			
 			s_logger.log(Level.SEVERE, "error with connection", t);
 			return ACTION.TERMINATE;
 		}
-		
 	}
 	
-	private void send(Serializable object)
+	private void send(final Serializable object)
 	{
 		// this messenger is quarantined, so to and from dont matter
-		MessageHeader header = new MessageHeader(Node.NULL_NODE, Node.NULL_NODE, object);
-		
+		final MessageHeader header = new MessageHeader(Node.NULL_NODE, Node.NULL_NODE, object);
 		m_socket.send(m_channel, header);
 	}
 	
@@ -269,7 +233,5 @@ public class ClientQuarantineConversation extends QuarantineConversation
 		m_closed = true;
 		m_showLatch.countDown();
 		m_doneShowLatch.countDown();
-		
 	}
-	
 }

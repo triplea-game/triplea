@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.chat;
 
 import games.strategy.engine.message.DummyMessenger;
@@ -18,24 +17,15 @@ import junit.framework.TestCase;
 
 public class StatusTest extends TestCase
 {
-	
 	public void testStatus() throws Exception
 	{
-		DummyMessenger messenger = new DummyMessenger();
-		Messengers messengers = new Messengers(messenger);
-		
-		StatusManager manager = new StatusManager(messengers);
-		
+		final DummyMessenger messenger = new DummyMessenger();
+		final Messengers messengers = new Messengers(messenger);
+		final StatusManager manager = new StatusManager(messengers);
 		assertNull(manager.getStatus(messenger.getLocalNode()));
-		
 		manager.setStatus("test");
-		
 		Thread.sleep(200);
-		
 		assertEquals("test", manager.getStatus(messenger.getLocalNode()));
-		
 		assertEquals("test", new StatusManager(messengers).getStatus(messenger.getLocalNode()));
-		
 	}
-	
 }

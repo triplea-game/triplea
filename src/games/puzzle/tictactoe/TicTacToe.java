@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.tictactoe;
 
 import games.puzzle.tictactoe.player.BetterAI;
@@ -47,11 +46,9 @@ import javax.swing.SwingUtilities;
  */
 public class TicTacToe implements IGameLoader
 {
-	
 	// When serializing, do not save transient member variables
 	private transient TicTacToeDisplay m_display;
 	private transient IGame m_game;
-	
 	private static final String HUMAN_PLAYER_TYPE = "Human";
 	private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
 	private static final String MINIMAX_COMPUTER_PLAYER_TYPE = "Minimax AI";
@@ -60,33 +57,32 @@ public class TicTacToe implements IGameLoader
 	/**
 	 * @see IGameLoader.createPlayers(playerNames)
 	 */
-	
-	public Set<IGamePlayer> createPlayers(Map<String, String> playerNames)
+	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
-		Set<IGamePlayer> players = new HashSet<IGamePlayer>();
-		Iterator<String> iter = playerNames.keySet().iterator();
+		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
+		final Iterator<String> iter = playerNames.keySet().iterator();
 		while (iter.hasNext())
 		{
-			String name = iter.next();
-			String type = playerNames.get(name);
+			final String name = iter.next();
+			final String type = playerNames.get(name);
 			if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
 			{
-				TicTacToePlayer player = new TicTacToePlayer(name, type);
+				final TicTacToePlayer player = new TicTacToePlayer(name, type);
 				players.add(player);
 			}
 			else if (type.equals(RANDOM_COMPUTER_PLAYER_TYPE))
 			{
-				RandomAI ai = new RandomAI(name, type);
+				final RandomAI ai = new RandomAI(name, type);
 				players.add(ai);
 			}
 			else if (type.equals(MINIMAX_COMPUTER_PLAYER_TYPE))
 			{
-				BetterAI ai = new BetterAI(name, type, BetterAI.Algorithm.MINIMAX);
+				final BetterAI ai = new BetterAI(name, type, BetterAI.Algorithm.MINIMAX);
 				players.add(ai);
 			}
 			else if (type.equals(ALPHABETA_COMPUTER_PLAYER_TYPE))
 			{
-				BetterAI ai = new BetterAI(name, type, BetterAI.Algorithm.ALPHABETA);
+				final BetterAI ai = new BetterAI(name, type, BetterAI.Algorithm.ALPHABETA);
 				players.add(ai);
 			}
 			else
@@ -100,11 +96,9 @@ public class TicTacToe implements IGameLoader
 	/**
 	 * Return an array of player types that can play on the server.
 	 */
-	
 	public String[] getServerPlayerTypes()
 	{
 		return new String[] { HUMAN_PLAYER_TYPE, ALPHABETA_COMPUTER_PLAYER_TYPE, MINIMAX_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
-		
 	}
 	
 	public void shutDown()
@@ -121,38 +115,29 @@ public class TicTacToe implements IGameLoader
 		try
 		{
 			m_game = game;
-			
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
-				
 				public void run()
 				{
 					final TicTacToeFrame frame = new TicTacToeFrame(game, players);
-					
 					m_display = new TicTacToeDisplay(frame);
 					m_game.addDisplay(m_display);
 					frame.setVisible(true);
 					connectPlayers(players, frame);
-					
-					SwingUtilities.invokeLater(
-								new Runnable()
-							{
-								
-								public void run()
-								{
-									// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-									frame.toFront();
-								}
-							}
-								);
-					
+					SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+							frame.toFront();
+						}
+					});
 				}
-				
 			});
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
-		} catch (InvocationTargetException e)
+		} catch (final InvocationTargetException e)
 		{
 			if (e.getCause() instanceof Exception)
 				throw (Exception) e.getCause();
@@ -161,17 +146,15 @@ public class TicTacToe implements IGameLoader
 				e.printStackTrace();
 				throw new IllegalStateException(e.getCause().getMessage());
 			}
-			
 		}
-		
 	}
 	
-	private void connectPlayers(Set<IGamePlayer> players, TicTacToeFrame frame)
+	private void connectPlayers(final Set<IGamePlayer> players, final TicTacToeFrame frame)
 	{
-		Iterator<IGamePlayer> iter = players.iterator();
+		final Iterator<IGamePlayer> iter = players.iterator();
 		while (iter.hasNext())
 		{
-			IGamePlayer player = iter.next();
+			final IGamePlayer player = iter.next();
 			if (player instanceof TicTacToePlayer)
 				((TicTacToePlayer) player).setFrame(frame);
 		}
@@ -185,7 +168,6 @@ public class TicTacToe implements IGameLoader
 	/**
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
-	
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return ITicTacToeDisplay.class;
@@ -200,5 +182,4 @@ public class TicTacToe implements IGameLoader
 	{
 		return new DefaultUnitFactory();
 	}
-	
 }

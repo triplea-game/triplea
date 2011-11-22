@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.history;
 
 public class EventChild extends HistoryNode implements Renderable
@@ -17,7 +16,7 @@ public class EventChild extends HistoryNode implements Renderable
 	public final String m_text;
 	public final Object m_renderingData;
 	
-	public EventChild(String text, Object renderingData)
+	public EventChild(final String text, final Object renderingData)
 	{
 		super(text, true);
 		m_text = text;
@@ -40,7 +39,6 @@ public class EventChild extends HistoryNode implements Renderable
 	{
 		return new EventChildWriter(m_text, m_renderingData);
 	}
-	
 }
 
 
@@ -55,9 +53,8 @@ class EventChildWriter implements SerializationWriter
 		m_renderingData = renderingData;
 	}
 	
-	public void write(HistoryWriter writer)
+	public void write(final HistoryWriter writer)
 	{
 		writer.addChildToEvent(new EventChild(m_text, m_renderingData));
 	}
-	
 }

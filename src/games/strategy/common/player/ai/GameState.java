@@ -76,5 +76,4 @@ public abstract class GameState<Play>
 	 * @return <code>true</code> this state represents a pseudo-terminal state, <code>false</code> otherwise.
 	 */
 	public abstract boolean cutoffTest();
-	
 }

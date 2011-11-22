@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Route.java
  * 
  * Created on October 12, 2001, 5:23 PM
  */
-
 package games.strategy.engine.data;
 
 import java.util.Collections;
@@ -36,24 +34,25 @@ public class RouteScripted extends Route
 	private static final long serialVersionUID = 604474811874966546L;
 	
 	public RouteScripted()
-	{}
+	{
+	}
 	
 	/**
 	 * Shameless cheating. Making a fake route, so as to handle battles properly without breaking battleTracker protected status or duplicating a zillion lines of code.
 	 * The End will return the Start, and the Length will be 1.
 	 */
-	public RouteScripted(Territory terr)
+	public RouteScripted(final Territory terr)
 	{
 		super(terr);
 	}
 	
-	public RouteScripted(Territory start, Territory... route)
+	public RouteScripted(final Territory start, final Territory... route)
 	{
 		super(start, route);
 	}
 	
 	@Override
-	public void add(Territory t)
+	public void add(final Territory t)
 	{
 		// maybe we don't check for loops?
 		super.add(t);
@@ -69,21 +68,24 @@ public class RouteScripted extends Route
 	}
 	
 	@Override
-	public int getMovementCost(Unit u) {
+	public int getMovementCost(final Unit u)
+	{
 		if (super.getMovementCost(u) <= 0)
 			return 1;
 		return super.getMovementCost(u);
 	}
-
+	
 	@Override
-	public int numberOfSteps() {
+	public int numberOfSteps()
+	{
 		if (super.numberOfSteps() <= 0)
 			return 1;
 		return super.numberOfSteps();
 	}
-
+	
 	@Override
-	public List<Territory> getSteps() {
+	public List<Territory> getSteps()
+	{
 		if (numberOfSteps() <= 0)
 			return Collections.singletonList(getStart());
 		return super.getSteps();
@@ -98,14 +100,13 @@ public class RouteScripted extends Route
 	}
 	
 	@Override
-	public Territory getTerritoryAtStep(int i)
+	public Territory getTerritoryAtStep(final int i)
 	{
 		try
 		{
 			if (super.getEnd() == null || super.getTerritoryAtStep(i) == null)
 				return super.getStart();
-		}
-		catch (ArrayIndexOutOfBoundsException e)
+		} catch (final ArrayIndexOutOfBoundsException e)
 		{
 			return super.getStart();
 		}
@@ -113,17 +114,20 @@ public class RouteScripted extends Route
 	}
 	
 	@Override
-	public boolean hasSteps() {
+	public boolean hasSteps()
+	{
 		return true;
 	}
 	
 	@Override
-	public boolean hasNoSteps() {
+	public boolean hasNoSteps()
+	{
 		return false;
 	}
 	
 	@Override
-	public boolean hasExactlyOneStep() {
+	public boolean hasExactlyOneStep()
+	{
 		if (numberOfSteps() <= 1)
 			return true;
 		return false;

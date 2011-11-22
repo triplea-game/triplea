@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net.nio;
 
 import games.strategy.engine.message.HubInvocationResults;
@@ -44,38 +43,31 @@ import java.util.logging.Logger;
  */
 public class Decoder
 {
-	
 	private static final Logger s_logger = Logger.getLogger(Decoder.class.getName());
-	
 	private final NIOReader m_reader;
 	private volatile boolean m_running = true;
 	private final IErrorReporter m_errorReporter;
 	private final IObjectStreamFactory m_objectStreamFactory;
 	private final NIOSocket m_nioSocket;
-	
 	/**
 	 * These sockets are quarantined. They have not logged in, and messages
 	 * read from them are not passed outside of the quarantine conversation.
 	 */
-	private ConcurrentHashMap<SocketChannel, QuarantineConversation> m_quarantine = new ConcurrentHashMap<SocketChannel, QuarantineConversation>();
-	
+	private final ConcurrentHashMap<SocketChannel, QuarantineConversation> m_quarantine = new ConcurrentHashMap<SocketChannel, QuarantineConversation>();
 	private final Thread m_thread;
 	
-	public Decoder(NIOSocket nioSocket, final NIOReader reader, IErrorReporter reporter, IObjectStreamFactory objectStreamFactory, String threadSuffix)
+	public Decoder(final NIOSocket nioSocket, final NIOReader reader, final IErrorReporter reporter, final IObjectStreamFactory objectStreamFactory, final String threadSuffix)
 	{
 		m_reader = reader;
 		m_errorReporter = reporter;
 		m_objectStreamFactory = objectStreamFactory;
 		m_nioSocket = nioSocket;
-		
 		m_thread = new Thread(new Runnable()
 		{
-			
 			public void run()
 			{
 				loop();
 			}
-			
 		}, "Decoder -" + threadSuffix);
 		m_thread.start();
 	}
@@ -96,36 +88,29 @@ public class Decoder
 				try
 				{
 					data = m_reader.take();
-				} catch (InterruptedException e)
+				} catch (final InterruptedException e)
 				{
 					continue;
 				}
-				
 				if (data == null || !m_running)
 					continue;
-				
 				if (s_logger.isLoggable(Level.FINEST))
 				{
 					s_logger.finest("Decoding packet:" + data);
 				}
-				
-				ByteArrayInputStream stream = new ByteArrayInputStream(data.getData());
-				
+				final ByteArrayInputStream stream = new ByteArrayInputStream(data.getData());
 				try
 				{
-					MessageHeader header = readMessageHeader(data.getChannel(), m_objectStreamFactory.create(stream));
-					
+					final MessageHeader header = readMessageHeader(data.getChannel(), m_objectStreamFactory.create(stream));
 					if (s_logger.isLoggable(Level.FINEST))
 					{
 						s_logger.log(Level.FINEST, "header decoded:" + header);
 					}
-					
 					// make sure we are still open
-					Socket s = data.getChannel().socket();
+					final Socket s = data.getChannel().socket();
 					if (!m_running || s == null || s.isInputShutdown())
 						continue;
-					
-					QuarantineConversation converstation = m_quarantine.get(data.getChannel());
+					final QuarantineConversation converstation = m_quarantine.get(data.getChannel());
 					if (converstation != null)
 					{
 						sendQuarantine(data.getChannel(), converstation, header);
@@ -134,18 +119,15 @@ public class Decoder
 					{
 						if (m_nioSocket.getLocalNode() == null)
 							throw new IllegalStateException("we are writing messages, but no local node");
-						
 						if (header.getFrom() == null)
 							throw new IllegalArgumentException("Null from:" + header);
-						
 						if (s_logger.isLoggable(Level.FINER))
 						{
 							s_logger.log(Level.FINER, "decoded  msg:" + header.getMessage() + " size:" + data.size());
 						}
-						
 						m_nioSocket.messageReceived(header, data.getChannel());
 					}
-				} catch (Exception ioe)
+				} catch (final Exception ioe)
 				{
 					// we are reading from memory here
 					// there should be no network errors, something
@@ -153,26 +135,24 @@ public class Decoder
 					s_logger.log(Level.SEVERE, "error reading object", ioe);
 					m_errorReporter.error(data.getChannel(), ioe);
 				}
-			} catch (Exception e)
+			} catch (final Exception e)
 			{
 				// catch unhandles exceptions to that the decoder
 				// thread doesnt die
 				s_logger.log(Level.WARNING, "error in decoder", e);
 			}
-			
 		}
 	}
 	
-	private void sendQuarantine(SocketChannel channel, QuarantineConversation conversation, MessageHeader header)
+	private void sendQuarantine(final SocketChannel channel, final QuarantineConversation conversation, final MessageHeader header)
 	{
-		ACTION a = conversation.message(header.getMessage());
+		final ACTION a = conversation.message(header.getMessage());
 		if (a == ACTION.TERMINATE)
 		{
 			if (s_logger.isLoggable(Level.FINER))
 			{
 				s_logger.log(Level.FINER, "Terminating quarantined connection to:" + channel.socket().getRemoteSocketAddress());
 			}
-			
 			conversation.close();
 			// we need to indicate the channel was closed
 			m_errorReporter.error(channel, new CouldNotLogInException());
@@ -183,15 +163,13 @@ public class Decoder
 			{
 				s_logger.log(Level.FINER, "Accepting quarantined connection to:" + channel.socket().getRemoteSocketAddress());
 			}
-			
 			m_nioSocket.unquarantine(channel, conversation);
 			m_quarantine.remove(channel);
 		}
 	}
 	
-	private MessageHeader readMessageHeader(SocketChannel channel, ObjectInputStream objectInput) throws IOException, ClassNotFoundException
+	private MessageHeader readMessageHeader(final SocketChannel channel, final ObjectInputStream objectInput) throws IOException, ClassNotFoundException
 	{
-		
 		INode to;
 		if (objectInput.read() == 1)
 		{
@@ -211,9 +189,8 @@ public class Decoder
 				((Node) to).readExternal(objectInput);
 			}
 		}
-		
 		INode from;
-		int readMark = objectInput.read();
+		final int readMark = objectInput.read();
 		if (readMark == 1)
 		{
 			from = m_nioSocket.getRemoteNode(channel);
@@ -227,12 +204,11 @@ public class Decoder
 			from = new Node();
 			((Node) from).readExternal(objectInput);
 		}
-		
 		Serializable message;
-		byte type = (byte) objectInput.read();
+		final byte type = (byte) objectInput.read();
 		if (type != Byte.MAX_VALUE)
 		{
-			Externalizable template = getTemplate(type);
+			final Externalizable template = getTemplate(type);
 			template.readExternal(objectInput);
 			message = template;
 		}
@@ -243,7 +219,7 @@ public class Decoder
 		return new MessageHeader(to, from, message);
 	}
 	
-	public static Externalizable getTemplate(byte type)
+	public static Externalizable getTemplate(final byte type)
 	{
 		switch (type)
 		{
@@ -258,7 +234,6 @@ public class Decoder
 			default:
 				throw new IllegalStateException("not recognized, " + type);
 		}
-		
 	}
 	
 	/**
@@ -268,7 +243,7 @@ public class Decoder
 	 * writing of the full identifiers, and simply write a single
 	 * byte to show the type.
 	 */
-	public static byte getType(Object msg)
+	public static byte getType(final Object msg)
 	{
 		if (msg instanceof HubInvoke)
 			return 1;
@@ -278,23 +253,19 @@ public class Decoder
 			return 3;
 		else if (msg instanceof SpokeInvocationResults)
 			return 4;
-		
 		return Byte.MAX_VALUE;
-		
 	}
 	
-	public void add(SocketChannel channel, QuarantineConversation conversation)
+	public void add(final SocketChannel channel, final QuarantineConversation conversation)
 	{
 		m_quarantine.put(channel, conversation);
 	}
 	
-	public void closed(SocketChannel channel)
+	public void closed(final SocketChannel channel)
 	{
 		// remove if it exists
-		QuarantineConversation conversation = m_quarantine.remove(channel);
+		final QuarantineConversation conversation = m_quarantine.remove(channel);
 		if (conversation != null)
 			conversation.close();
-		
 	}
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.common.ui;
 
 import games.strategy.engine.data.GameData;
@@ -37,28 +36,23 @@ public class PlayersPanel extends JPanel
 {
 	private final PlayerManager m_players;
 	
-	public PlayersPanel(PlayerManager players, GameData data)
+	public PlayersPanel(final PlayerManager players, final GameData data)
 	{
 		m_players = players;
-		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		
-		for (String player : m_players.getPlayers())
+		for (final String player : m_players.getPlayers())
 		{
-			PlayerID playerID = data.getPlayerList().getPlayerID(player);
+			final PlayerID playerID = data.getPlayerList().getPlayerID(player);
 			if (playerID.isAI())
 				add(new JLabel(playerID.getWhoAmI().split(":")[1] + " is " + playerID.getName(), JLabel.RIGHT));
 			else
 				add(new JLabel(m_players.getNode(player).getName() + " is " + playerID.getName(), JLabel.RIGHT));
-			
 		}
-		
 	}
 	
-	public static void showPlayers(IGame game, Component parent)
+	public static void showPlayers(final IGame game, final Component parent)
 	{
-		PlayersPanel panel = new PlayersPanel(game.getPlayerManager(), game.getData());
+		final PlayersPanel panel = new PlayersPanel(game.getPlayerManager(), game.getData());
 		EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), panel, "Players", JOptionPane.PLAIN_MESSAGE);
 	}
-	
 }

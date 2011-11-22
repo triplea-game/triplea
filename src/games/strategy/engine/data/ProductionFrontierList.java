@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ProductionFrontierList.java
  * 
  * Created on October 22, 2001, 10:20 AM
  */
-
 package games.strategy.engine.data;
 
 import java.util.HashMap;
@@ -34,12 +32,12 @@ public class ProductionFrontierList extends GameDataComponent
 {
 	private final Map<String, ProductionFrontier> m_productionFrontiers = new HashMap<String, ProductionFrontier>();
 	
-	public ProductionFrontierList(GameData data)
+	public ProductionFrontierList(final GameData data)
 	{
 		super(data);
 	}
 	
-	protected void addProductionFrontier(ProductionFrontier pf)
+	protected void addProductionFrontier(final ProductionFrontier pf)
 	{
 		m_productionFrontiers.put(pf.getName(), pf);
 	}
@@ -49,7 +47,7 @@ public class ProductionFrontierList extends GameDataComponent
 		return m_productionFrontiers.size();
 	}
 	
-	public ProductionFrontier getProductionFrontier(String name)
+	public ProductionFrontier getProductionFrontier(final String name)
 	{
 		return m_productionFrontiers.get(name);
 	}

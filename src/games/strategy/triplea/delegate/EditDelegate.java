@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -49,9 +48,8 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge bridge)
+	public void start(final IDelegateBridge bridge)
 	{
 		m_bridge = new TripleADelegateBridge(bridge);
 		super.start(m_bridge);
@@ -62,27 +60,27 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 	{
 		super.end();
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		EditExtendedDelegateState state = new EditExtendedDelegateState();
+		final EditExtendedDelegateState state = new EditExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		EditExtendedDelegateState s = (EditExtendedDelegateState) state;
+		final EditExtendedDelegateState s = (EditExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 	}
 	
-	public static boolean getEditMode(GameData data)
+	public static boolean getEditMode(final GameData data)
 	{
-		Object editMode = data.getProperties().get(Constants.EDIT_MODE);
+		final Object editMode = data.getProperties().get(Constants.EDIT_MODE);
 		if (editMode == null)
 			return false;
 		if (!(editMode instanceof Boolean))
@@ -92,7 +90,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 	
 	private String checkPlayerID()
 	{
-		ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
+		final ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
 		if (!m_bridge.getPlayerID().equals(remotePlayer.getID()))
 			return "Edit actions can only be performed during players turn";
 		return null;
@@ -100,7 +98,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 	
 	private String checkEditMode()
 	{
-		String result = checkPlayerID();
+		final String result = checkPlayerID();
 		if (null != result)
 			return result;
 		if (!getEditMode(getData()))
@@ -108,17 +106,16 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		return null;
 	}
 	
-	public void initialize(String name)
+	public void initialize(final String name)
 	{
 		initialize(name, name);
 	}
 	
-	public String setEditMode(boolean editMode)
+	public String setEditMode(final boolean editMode)
 	{
-		ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
+		final ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
 		if (!m_bridge.getPlayerID().equals(remotePlayer.getID()))
 			return "Edit Mode can only be toggled during players turn";
-		
 		logEvent("Turning " + (editMode ? "on" : "off") + " Edit Mode", null);
 		m_bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, Boolean.valueOf(editMode), getData()));
 		return null;
@@ -129,29 +126,25 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		return EditDelegate.getEditMode(getData());
 	}
 	
-	public String removeUnits(Territory territory, Collection<Unit> units)
+	public String removeUnits(final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
 		if (null != (result = checkEditMode()))
 			return result;
-		
 		if (null != (result = EditValidator.validateRemoveUnits(getData(), territory, units)))
 			return result;
-		
 		logEvent("Removing units owned by " + m_bridge.getPlayerID().getName() + " from " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
 		m_bridge.addChange(ChangeFactory.removeUnits(territory, units));
 		return null;
 	}
 	
-	public String addUnits(Territory territory, Collection<Unit> units)
+	public String addUnits(final Territory territory, final Collection<Unit> units)
 	{
 		String result = null;
 		if (null != (result = checkEditMode()))
 			return result;
-		
 		if (null != (result = EditValidator.validateAddUnits(getData(), territory, units)))
 			return result;
-		
 		/* No longer needed, as territory unitProduction is now set by default to equal the territory value. Therefore any time it is different from the default, the map maker set it, so we shouldn't screw with it.
 		if(Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits) && !Match.someMatch(territory.getUnits().getUnits(), Matches.UnitIsFactoryOrCanProduceUnits)&& games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
 		{
@@ -160,7 +153,6 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		    Change change = ChangeFactory.changeUnitProduction(territory, getProduction(territory));
 		    m_bridge.addChange(change);
 		}*/
-
 		logEvent("Adding units owned by " + m_bridge.getPlayerID().getName() + " to " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
 		m_bridge.addChange(ChangeFactory.addUnits(territory, units));
 		return null;
@@ -170,103 +162,86 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 	 * @return gets the production of the territory, ignores wether the
 	 *         territory was an original factory
 	 */
-	protected int getProduction(Territory territory)
+	protected int getProduction(final Territory territory)
 	{
-		TerritoryAttachment ta = TerritoryAttachment.get(territory);
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		if (ta != null)
 			return ta.getProduction();
 		return 0;
-		
 		// throw new UnsupportedOperationException("Not implemented");
 	}
 	
-	public String changeTerritoryOwner(Territory territory, PlayerID player)
+	public String changeTerritoryOwner(final Territory territory, final PlayerID player)
 	{
 		String result = null;
 		if (null != (result = checkEditMode()))
 			return result;
-		
-		GameData data = getData();
-		
+		final GameData data = getData();
 		// validate this edit
 		if (null != (result = EditValidator.validateChangeTerritoryOwner(data, territory, player)))
 			return result;
-		
 		logEvent("Changing ownership of " + territory.getName() + " from " + territory.getOwner().getName() + " to " + player.getName(), territory);
-		
 		if (data.getRelationshipTracker().isAllied(territory.getOwner(), player))
 		{
 			// change ownership of friendly factories
-			Collection<Unit> units = territory.getUnits().getMatches(Matches.UnitIsFactory);
-			for (Unit unit : units)
+			final Collection<Unit> units = territory.getUnits().getMatches(Matches.UnitIsFactory);
+			for (final Unit unit : units)
 				m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
 		}
 		else
 		{
-			CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>();
+			final CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>();
 			enemyNonCom.add(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
 			enemyNonCom.add(Matches.enemyUnit(player, data));
-			Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
+			final Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
 			// mark no movement for enemy units
 			m_bridge.addChange(ChangeFactory.markNoMovementChange(units));
 			// change ownership of enemy AA and factories
-			for (Unit unit : units)
+			for (final Unit unit : units)
 				m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
 		}
-		
 		// change ownership of territory
 		m_bridge.addChange(ChangeFactory.changeOwner(territory, player));
-		
 		return null;
 	}
 	
-	public String changePUs(PlayerID player, int newTotal)
+	public String changePUs(final PlayerID player, final int newTotal)
 	{
 		String result = null;
 		if (null != (result = checkEditMode()))
 			return result;
-		
-		Resource PUs = getData().getResourceList().getResource(Constants.PUS);
-		int oldTotal = player.getResources().getQuantity(PUs);
-		
+		final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+		final int oldTotal = player.getResources().getQuantity(PUs);
 		if (oldTotal == newTotal)
 			return "New PUs total is unchanged";
 		if (newTotal < 0)
 			return "New PUs total is invalid";
-		
 		logEvent("Changing PUs for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
 		m_bridge.addChange(ChangeFactory.changeResourcesChange(player, PUs, (newTotal - oldTotal)));
-		
 		return null;
 	}
 	
-	public String changeTechTokens(PlayerID player, int newTotal)
+	public String changeTechTokens(final PlayerID player, final int newTotal)
 	{
 		String result = null;
 		if (null != (result = checkEditMode()))
 			return result;
-		
-		Resource techTokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
-		int oldTotal = player.getResources().getQuantity(techTokens);
-		
+		final Resource techTokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
+		final int oldTotal = player.getResources().getQuantity(techTokens);
 		if (oldTotal == newTotal)
 			return "New token total is unchanged";
 		if (newTotal < 0)
 			return "New token total is invalid";
-		
 		logEvent("Changing tech tokens for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
 		m_bridge.addChange(ChangeFactory.changeResourcesChange(player, techTokens, (newTotal - oldTotal)));
-		
 		return null;
 	}
 	
-	public String addComment(String message)
+	public String addComment(final String message)
 	{
-		
 		String result = null;
 		if (null != (result = checkPlayerID()))
 			return result;
-		
 		logEvent("COMMENT: " + message, null);
 		return null;
 	}
@@ -275,12 +250,11 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 	// out whether it makes more sense to log a new event or a child.
 	// If any child events came before us, then we'll log a child event.
 	// Otherwise, we'll log a new event.
-	private void logEvent(String message, Object data)
+	private void logEvent(final String message, final Object data)
 	{
 		// find last event node
-		
 		boolean foundChild = false;
-		GameData game_data = getData();
+		final GameData game_data = getData();
 		game_data.acquireReadLock();
 		try
 		{
@@ -298,7 +272,6 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		{
 			game_data.releaseReadLock();
 		}
-		
 		if (foundChild)
 			m_bridge.getHistoryWriter().addChildToEvent(message, game_data);
 		else
@@ -306,20 +279,18 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 			m_bridge.getHistoryWriter().startEvent(message);
 			m_bridge.getHistoryWriter().setRenderingData(game_data);
 		}
-		
 	}
 	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
-
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
 		return IEditDelegate.class;
 	}
-	
 }
+
 
 @SuppressWarnings("serial")
 class EditExtendedDelegateState implements Serializable

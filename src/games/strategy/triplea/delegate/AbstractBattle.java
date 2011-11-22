@@ -36,7 +36,7 @@ abstract public class AbstractBattle implements IBattle
 	// then we lose the corresponding collection of units
 	final protected Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
 	
-	public AbstractBattle(Territory battleSite, PlayerID attacker, BattleTracker battleTracker, GameData data)
+	public AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final GameData data)
 	{
 		m_battleTracker = battleTracker;
 		m_attacker = attacker;
@@ -44,13 +44,13 @@ abstract public class AbstractBattle implements IBattle
 		m_data = data;
 	}
 	
-	public Change addAttackChange(Route route, Collection<Unit> units)
+	public Change addAttackChange(final Route route, final Collection<Unit> units)
 	{
-		Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
-		Iterator<Unit> iter = addedTransporting.keySet().iterator();
+		final Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
+		final Iterator<Unit> iter = addedTransporting.keySet().iterator();
 		while (iter.hasNext())
 		{
-			Unit unit = iter.next();
+			final Unit unit = iter.next();
 			if (m_dependentUnits.get(unit) != null)
 				m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
 			else
@@ -59,13 +59,13 @@ abstract public class AbstractBattle implements IBattle
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
-	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
+	public Change addCombatChange(final Route route, final Collection<Unit> units, final PlayerID player)
 	{
-		Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
-		Iterator<Unit> iter = addedTransporting.keySet().iterator();
+		final Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
+		final Iterator<Unit> iter = addedTransporting.keySet().iterator();
 		while (iter.hasNext())
 		{
-			Unit unit = iter.next();
+			final Unit unit = iter.next();
 			if (m_dependentUnits.get(unit) != null)
 				m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
 			else
@@ -85,15 +85,14 @@ abstract public class AbstractBattle implements IBattle
 	 */
 	abstract public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge);
 	
-	public Collection<Unit> getDependentUnits(Collection<Unit> units)
+	public Collection<Unit> getDependentUnits(final Collection<Unit> units)
 	{
-		Collection<Unit> rVal = new ArrayList<Unit>();
-		
-		Iterator<Unit> iter = units.iterator();
+		final Collection<Unit> rVal = new ArrayList<Unit>();
+		final Iterator<Unit> iter = units.iterator();
 		while (iter.hasNext())
 		{
-			Unit unit = iter.next();
-			Collection<Unit> dependent = m_dependentUnits.get(unit);
+			final Unit unit = iter.next();
+			final Collection<Unit> dependent = m_dependentUnits.get(unit);
 			if (dependent != null)
 				rVal.addAll(dependent);
 		}
@@ -104,7 +103,7 @@ abstract public class AbstractBattle implements IBattle
 	 * Add bombarding unit. Doesn't make sense here so just do
 	 * nothing.
 	 */
-	public void addBombardingUnit(Unit unit)
+	public void addBombardingUnit(final Unit unit)
 	{
 		// nothing
 	}
@@ -176,5 +175,4 @@ abstract public class AbstractBattle implements IBattle
 	{
 		return false;
 	}
-	
 }

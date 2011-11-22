@@ -33,7 +33,6 @@ import javax.swing.SwingUtilities;
  */
 public class MainFrame extends JFrame
 {
-	
 	// a hack, till i think of something better
 	private static MainFrame s_instance;
 	
@@ -42,34 +41,27 @@ public class MainFrame extends JFrame
 		return s_instance;
 	}
 	
-	private GameSelectorModel m_gameSelectorModel;
-	private SetupPanelModel m_setupPanelModel;
+	private final GameSelectorModel m_gameSelectorModel;
+	private final SetupPanelModel m_setupPanelModel;
 	
 	public MainFrame()
 	{
 		super("TripleA");
-		
 		if (s_instance != null)
 			throw new IllegalStateException("Instance already exists");
-		
 		s_instance = this;
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setIconImage(GameRunner.getGameIcon(this));
-		
 		m_gameSelectorModel = new GameSelectorModel();
-		
 		m_gameSelectorModel.loadDefaultGame(this);
-		
 		m_setupPanelModel = new SetupPanelModel(m_gameSelectorModel);
 		m_setupPanelModel.showSelectType();
-		MainPanel mainPanel = new MainPanel(m_setupPanelModel);
+		final MainPanel mainPanel = new MainPanel(m_setupPanelModel);
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
 		// this is a good idea, but in networked play pressing enter should
 		// send a new message
 		// getRootPane().setDefaultButton(mainPanel.getDefaultButton());
 		pack();
-		
 		setLocationRelativeTo(null);
 	}
 	
@@ -80,8 +72,7 @@ public class MainFrame extends JFrame
 	 */
 	public Chat getChat()
 	{
-		SetupPanel model = m_setupPanelModel.getPanel();
-		
+		final SetupPanel model = m_setupPanelModel.getPanel();
 		if (model instanceof ServerSetupPanel)
 		{
 			return model.getChatPanel().getChat();
@@ -94,7 +85,6 @@ public class MainFrame extends JFrame
 		{
 			return null;
 		}
-		
 	}
 	
 	/**
@@ -109,16 +99,15 @@ public class MainFrame extends JFrame
 			{
 				SwingUtilities.invokeAndWait(new Runnable()
 				{
-					
 					public void run()
 					{
 						clientLeftGame();
 					}
 				});
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				throw new IllegalStateException(e);
-			} catch (InvocationTargetException e)
+			} catch (final InvocationTargetException e)
 			{
 				throw new IllegalStateException(e);
 			}
@@ -130,7 +119,7 @@ public class MainFrame extends JFrame
 	}
 	
 	@Override
-	public void setVisible(boolean aValue)
+	public void setVisible(final boolean aValue)
 	{
 		super.setVisible(aValue);
 		if (aValue)
@@ -139,9 +128,9 @@ public class MainFrame extends JFrame
 		}
 	}
 	
-	private void loadGameFile(String fileName)
+	private void loadGameFile(final String fileName)
 	{
-		File f = new File(fileName);
+		final File f = new File(fileName);
 		m_gameSelectorModel.load(f, this);
 	}
 	
@@ -155,15 +144,12 @@ public class MainFrame extends JFrame
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
-				String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+				final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
 				if (fileName.length() > 0)
 					loadGameFile(fileName);
-				
 				setVisible(true);
-				
 				if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equals("true"))
 				{
 					m_setupPanelModel.showServer(MainFrame.this);
@@ -173,9 +159,6 @@ public class MainFrame extends JFrame
 					m_setupPanelModel.showClient(MainFrame.this);
 				}
 			}
-			
 		});
-		
 	}
-	
 }

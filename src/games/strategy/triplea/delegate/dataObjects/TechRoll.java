@@ -23,16 +23,16 @@ import games.strategy.engine.data.TechnologyFrontier;
 public class TechRoll
 {
 	private final TechnologyFrontier m_tech;
-	private int m_rolls;
+	private final int m_rolls;
 	private int m_newTokens;
 	
-	public TechRoll(TechnologyFrontier advance, int rolls)
+	public TechRoll(final TechnologyFrontier advance, final int rolls)
 	{
 		m_rolls = rolls;
 		m_tech = advance;
 	}
 	
-	public TechRoll(TechnologyFrontier advance, int rolls, int newTokens)
+	public TechRoll(final TechnologyFrontier advance, final int rolls, final int newTokens)
 	{
 		m_rolls = rolls;
 		m_tech = advance;
@@ -54,7 +54,7 @@ public class TechRoll
 		return m_newTokens;
 	}
 	
-	public void setNewTokens(int tokens)
+	public void setNewTokens(final int tokens)
 	{
 		this.m_newTokens = tokens;
 	}

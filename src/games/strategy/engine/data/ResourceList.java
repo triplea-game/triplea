@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ResourceList.java
  * 
  * Created on October 19, 2001, 10:29 AM
  */
-
 package games.strategy.engine.data;
 
 import java.util.ArrayList;
@@ -33,14 +31,14 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class ResourceList extends GameDataComponent
 {
-	private Map<String, Resource> m_resourceList = new HashMap<String, Resource>();
+	private final Map<String, Resource> m_resourceList = new HashMap<String, Resource>();
 	
-	public ResourceList(GameData data)
+	public ResourceList(final GameData data)
 	{
 		super(data);
 	}
 	
-	protected void addResource(Resource resource)
+	protected void addResource(final Resource resource)
 	{
 		m_resourceList.put(resource.getName(), resource);
 	}
@@ -50,7 +48,7 @@ public class ResourceList extends GameDataComponent
 		return m_resourceList.size();
 	}
 	
-	public Resource getResource(String name)
+	public Resource getResource(final String name)
 	{
 		return m_resourceList.get(name);
 	}
@@ -59,5 +57,4 @@ public class ResourceList extends GameDataComponent
 	{
 		return new ArrayList<Resource>(m_resourceList.values());
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * EngineVersion.java
  * 
  * Created on January 18, 2002, 3:37 PM
  */
-
 package games.strategy.engine;
 
 import games.strategy.util.Version;

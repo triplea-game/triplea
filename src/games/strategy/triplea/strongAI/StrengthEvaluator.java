@@ -40,12 +40,12 @@ public class StrengthEvaluator
 		return (m_enemyStrengthInRange);
 	}
 	
-	public boolean inDanger(float dangerFactor)
+	public boolean inDanger(final float dangerFactor)
 	{
 		return (strengthMissing(dangerFactor) <= 0);
 	}
 	
-	public float strengthMissing(float dangerFactor)
+	public float strengthMissing(final float dangerFactor)
 	{
 		return (m_enemyStrengthInRange - (m_alliedStrengthInRange * dangerFactor - 3.00F));
 	}
@@ -53,8 +53,8 @@ public class StrengthEvaluator
 	// gives our sea Strength within one and two territories of ourTerr
 	// defensive strength
 	// allied determines whether allied or enemy evaluation
-	public void evalStrength(GameData data, PlayerID player, Territory ourTerr,
-				boolean sea, boolean contiguous, boolean tFirst, boolean includeAllies, boolean allied)
+	public void evalStrength(final GameData data, final PlayerID player, final Territory ourTerr, final boolean sea, final boolean contiguous, final boolean tFirst, final boolean includeAllies,
+				final boolean allied)
 	{
 		Collection<Unit> seaUnits = new ArrayList<Unit>();
 		Collection<Unit> airUnits = new ArrayList<Unit>();
@@ -62,16 +62,14 @@ public class StrengthEvaluator
 		int rDist = 0, r = 2;
 		float inRangeStrength = 0.0F, thisStrength = 0.0F;
 		float inRangeAirStrength = 0.0F, thisAirStrength = 0.0F;
-		
 		if (!ourTerr.isWater() && sea)
 			r = 3; // if we have a land terr and looking at sea...look 3 out rather than 2
-		List<Territory> nearNeighbors = new ArrayList<Territory>();
-		Set<Territory> nN = data.getMap().getNeighbors(ourTerr, r);
+		final List<Territory> nearNeighbors = new ArrayList<Territory>();
+		final Set<Territory> nN = data.getMap().getNeighbors(ourTerr, r);
 		nearNeighbors.addAll(nN);
 		if (ourTerr.isWater() == sea)
 			nearNeighbors.add(ourTerr);
-		CompositeMatch<Unit> owned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
-		
+		final CompositeMatch<Unit> owned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
 		CompositeMatch<Unit> seaUnit = new CompositeMatchAnd<Unit>(owned, Matches.UnitIsSea);
 		CompositeMatch<Unit> airUnit = new CompositeMatchAnd<Unit>(owned, Matches.UnitIsAir);
 		CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(owned, Matches.UnitIsLand);
@@ -94,10 +92,9 @@ public class StrengthEvaluator
 			m_alliedNeighborStrength = 0.0F;
 			m_alliedStrengthInRange = 0.0F;
 		}
-		
-		for (Territory t : nearNeighbors)
+		for (final Territory t : nearNeighbors)
 		{
-			boolean isLand = Matches.TerritoryIsLand.match(t);
+			final boolean isLand = Matches.TerritoryIsLand.match(t);
 			if (contiguous)
 			{
 				if (!isLand && sea)
@@ -105,8 +102,8 @@ public class StrengthEvaluator
 					rDist = data.getMap().getWaterDistance(ourTerr, t);
 					seaUnits = t.getUnits().getMatches(seaUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					float seaStrength = SUtils.strength(seaUnits, false, true, tFirst);
-					float airStrength = SUtils.allairstrength(airUnits, false);
+					final float seaStrength = SUtils.strength(seaUnits, false, true, tFirst);
+					final float airStrength = SUtils.allairstrength(airUnits, false);
 					if (rDist == 0 || rDist == 1)
 					{
 						thisStrength += seaStrength;
@@ -123,8 +120,8 @@ public class StrengthEvaluator
 					rDist = data.getMap().getLandDistance(ourTerr, t);
 					landUnits = t.getUnits().getMatches(landUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					float xLandStrength = SUtils.strength(landUnits, false, false, tFirst);
-					float airStrength = SUtils.allairstrength(airUnits, false);
+					final float xLandStrength = SUtils.strength(landUnits, false, false, tFirst);
+					final float airStrength = SUtils.allairstrength(airUnits, false);
 					if (rDist == 0 || rDist == 1)
 					{
 						thisStrength += xLandStrength;
@@ -146,8 +143,8 @@ public class StrengthEvaluator
 				{ // don't count anything in a transport
 					seaUnits = t.getUnits().getMatches(seaUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					float seaStrength = SUtils.strength(seaUnits, false, true, tFirst);
-					float airStrength = SUtils.allairstrength(airUnits, false);
+					final float seaStrength = SUtils.strength(seaUnits, false, true, tFirst);
+					final float airStrength = SUtils.allairstrength(airUnits, false);
 					if (rDist == 0 || rDist == 1)
 					{
 						thisStrength += seaStrength;
@@ -163,8 +160,8 @@ public class StrengthEvaluator
 				{
 					landUnits = t.getUnits().getMatches(landUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
-					float xLandStrength = SUtils.strength(landUnits, false, false, tFirst);
-					float airStrength = SUtils.allairstrength(airUnits, false);
+					final float xLandStrength = SUtils.strength(landUnits, false, false, tFirst);
+					final float airStrength = SUtils.allairstrength(airUnits, false);
 					if (rDist == 0 || rDist == 1)
 					{
 						thisStrength += xLandStrength;
@@ -205,7 +202,6 @@ public class StrengthEvaluator
 				m_enemyNeighborStrength += thisStrength + thisAirStrength;
 				m_enemyStrengthInRange += inRangeStrength + inRangeAirStrength;
 			}
-			
 		}
 	}
 	
@@ -277,14 +273,12 @@ public class StrengthEvaluator
 			}
 		}
 	*/
-	public static StrengthEvaluator evalStrengthAt(GameData data, PlayerID player, Territory ourTerr,
-				boolean sea, boolean contiguous, boolean tFirst, boolean includeAllies)
+	public static StrengthEvaluator evalStrengthAt(final GameData data, final PlayerID player, final Territory ourTerr, final boolean sea, final boolean contiguous, final boolean tFirst,
+				final boolean includeAllies)
 	{
-		StrengthEvaluator strEval = new StrengthEvaluator();
-		
+		final StrengthEvaluator strEval = new StrengthEvaluator();
 		strEval.evalStrength(data, player, ourTerr, sea, contiguous, tFirst, includeAllies, true);
 		strEval.evalStrength(data, player, ourTerr, sea, contiguous, tFirst, false, false);
-		
 		return (strEval);
 	}
 }

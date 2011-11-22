@@ -15,19 +15,19 @@ public class WrappedInvocationHandler implements InvocationHandler
 		m_delegate = delegate;
 	}
 	
-	public boolean wrappedEquals(Object other)
+	public boolean wrappedEquals(final Object other)
 	{
 		if (other == this)
 			return true;
 		if (Proxy.isProxyClass(other.getClass()) && Proxy.getInvocationHandler(other) instanceof WrappedInvocationHandler)
 		{
-			WrappedInvocationHandler otherWrapped = (WrappedInvocationHandler) Proxy.getInvocationHandler(other);
+			final WrappedInvocationHandler otherWrapped = (WrappedInvocationHandler) Proxy.getInvocationHandler(other);
 			return otherWrapped.m_delegate.equals(m_delegate);
 		}
 		return false;
 	}
 	
-	public boolean shouldHandle(Method method, Object[] args)
+	public boolean shouldHandle(final Method method, final Object[] args)
 	{
 		if (method.getName().equals("equals") && args != null && args.length == 1)
 		{
@@ -40,7 +40,7 @@ public class WrappedInvocationHandler implements InvocationHandler
 		return false;
 	}
 	
-	public Object handle(Method method, Object[] args)
+	public Object handle(final Method method, final Object[] args)
 	{
 		if (method.getName().equals("equals") && args != null && args.length == 1)
 		{
@@ -52,7 +52,6 @@ public class WrappedInvocationHandler implements InvocationHandler
 		}
 		else
 			throw new IllegalStateException("how did we get here");
-		
 	}
 	
 	public int wrappedashCode()
@@ -60,11 +59,10 @@ public class WrappedInvocationHandler implements InvocationHandler
 		return m_delegate.hashCode();
 	}
 	
-	public Object invoke(Object arg0, Method arg1, Object[] arg2) throws Throwable
+	public Object invoke(final Object arg0, final Method arg1, final Object[] arg2) throws Throwable
 	{
 		if (shouldHandle(arg1, arg2))
 			return handle(arg1, arg2);
 		throw new IllegalStateException("not configured");
 	}
-	
 }

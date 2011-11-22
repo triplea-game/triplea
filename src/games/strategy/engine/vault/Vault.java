@@ -52,28 +52,21 @@ import javax.crypto.spec.DESKeySpec;
 public class Vault
 {
 	private static final RemoteName VAULT_CHANNEL = new RemoteName("games.strategy.engine.vault.IServerVault.VAULT_CHANNEL", IRemoteVault.class);
-	
 	private static final String ALGORITHM = "DES";
-	
 	private SecretKeyFactory mSecretKeyFactory;
-	
 	// 0xCAFEBABE
 	// we encrypt both this value and data when we encrypt data.
 	// when decrypting we ensure that KNOWN_VAL is correct
 	// and thus guarantee that we are being given the right key
 	private static final byte[] KNOWN_VAL = new byte[] { 0xC, 0xA, 0xF, 0xE, 0xB, 0xA, 0xB, 0xE };
-	
 	private final KeyGenerator m_keyGen;
 	private final IChannelMessenger m_channelMessenger;
-	
 	// Maps VaultID -> SecretKey
 	private final ConcurrentMap<VaultID, SecretKey> m_secretKeys = new ConcurrentHashMap<VaultID, SecretKey>();
-	
 	// maps ValutID -> encrypted byte[]
 	private final ConcurrentMap<VaultID, byte[]> m_unverifiedValues = new ConcurrentHashMap<VaultID, byte[]>();
 	// maps VaultID -> byte[]
 	private final ConcurrentMap<VaultID, byte[]> m_verifiedValues = new ConcurrentHashMap<VaultID, byte[]>();
-	
 	private final Object m_waitForLock = new Object();
 	
 	/**
@@ -82,14 +75,12 @@ public class Vault
 	public Vault(final IChannelMessenger channelMessenger)
 	{
 		m_channelMessenger = channelMessenger;
-		
 		m_channelMessenger.registerChannelSubscriber(m_remoteVault, VAULT_CHANNEL);
-		
 		try
 		{
 			mSecretKeyFactory = SecretKeyFactory.getInstance(ALGORITHM);
 			m_keyGen = KeyGenerator.getInstance(ALGORITHM);
-		} catch (NoSuchAlgorithmException e)
+		} catch (final NoSuchAlgorithmException e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException("Nothing known about algorithm:" + ALGORITHM);
@@ -105,30 +96,29 @@ public class Vault
 	// preserve jdk 1.4 to 1.5 compatability
 	// they should be compatable, but we are
 	// getting errors with serializing secret keys
-	private SecretKey bytesToKey(byte[] bytes)
+	private SecretKey bytesToKey(final byte[] bytes)
 	{
 		try
 		{
-			DESKeySpec spec = new DESKeySpec(bytes);
+			final DESKeySpec spec = new DESKeySpec(bytes);
 			return mSecretKeyFactory.generateSecret(spec);
-		} catch (GeneralSecurityException e)
+		} catch (final GeneralSecurityException e)
 		{
 			throw new IllegalStateException(e.getMessage());
 		}
 	}
 	
-	private byte[] secretKeyToBytes(SecretKey key)
+	private byte[] secretKeyToBytes(final SecretKey key)
 	{
 		DESKeySpec ks;
 		try
 		{
 			ks = (DESKeySpec) mSecretKeyFactory.getKeySpec(key, DESKeySpec.class);
 			return ks.getKey();
-		} catch (GeneralSecurityException e)
+		} catch (final GeneralSecurityException e)
 		{
 			throw new IllegalStateException(e.getMessage());
 		}
-		
 	}
 	
 	private IRemoteVault getRemoteBroadcaster()
@@ -146,52 +136,47 @@ public class Vault
 	 *            - the data to lock
 	 * @return the VaultId of the data
 	 */
-	public VaultID lock(byte[] data)
+	public VaultID lock(final byte[] data)
 	{
-		VaultID id = new VaultID(m_channelMessenger.getLocalNode());
-		SecretKey key = m_keyGen.generateKey();
+		final VaultID id = new VaultID(m_channelMessenger.getLocalNode());
+		final SecretKey key = m_keyGen.generateKey();
 		if (m_secretKeys.putIfAbsent(id, key) != null)
 		{
 			throw new IllegalStateException("dupliagte id:" + id);
 		}
 		// we already know it, so might as well keep it
 		m_verifiedValues.put(id, data);
-		
 		Cipher cipher;
 		try
 		{
 			cipher = Cipher.getInstance(ALGORITHM);
 			cipher.init(Cipher.ENCRYPT_MODE, key);
-		} catch (NoSuchAlgorithmException e)
+		} catch (final NoSuchAlgorithmException e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException(e.getMessage());
-		} catch (NoSuchPaddingException e)
+		} catch (final NoSuchPaddingException e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException(e.getMessage());
-		} catch (InvalidKeyException e)
+		} catch (final InvalidKeyException e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException(e.getMessage());
 		}
-		
 		// join the data and known value into one array
-		byte[] dataAndCheck = joinDataAndKnown(data);
-		
+		final byte[] dataAndCheck = joinDataAndKnown(data);
 		byte[] encrypted;
 		try
 		{
 			encrypted = cipher.doFinal(dataAndCheck);
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException(e.getMessage());
 		}
-		
 		// tell the world
 		getRemoteBroadcaster().addLockedValue(id, encrypted);
-		
 		return id;
 	}
 	
@@ -200,9 +185,9 @@ public class Vault
 	 * <p>
 	 * package access so we can test.
 	 */
-	static byte[] joinDataAndKnown(byte[] data)
+	static byte[] joinDataAndKnown(final byte[] data)
 	{
-		byte[] dataAndCheck = new byte[KNOWN_VAL.length + data.length];
+		final byte[] dataAndCheck = new byte[KNOWN_VAL.length + data.length];
 		System.arraycopy(KNOWN_VAL, 0, dataAndCheck, 0, KNOWN_VAL.length);
 		System.arraycopy(data, 0, dataAndCheck, KNOWN_VAL.length, data.length);
 		return dataAndCheck;
@@ -217,14 +202,13 @@ public class Vault
 	 * @param id
 	 *            - the vault id to unlock
 	 */
-	public void unlock(VaultID id)
+	public void unlock(final VaultID id)
 	{
 		if (!id.getGeneratedOn().equals(m_channelMessenger.getLocalNode()))
 		{
 			throw new IllegalArgumentException("Cant unlock data that wasnt locked on this node");
 		}
-		SecretKey key = m_secretKeys.remove(id);
-		
+		final SecretKey key = m_secretKeys.remove(id);
 		// let everyone unlock it
 		getRemoteBroadcaster().unlock(id, secretKeyToBytes(key));
 	}
@@ -236,7 +220,7 @@ public class Vault
 	 * 
 	 * @return - has this id been unlocked
 	 */
-	public boolean isUnlocked(VaultID id)
+	public boolean isUnlocked(final VaultID id)
 	{
 		return m_verifiedValues.containsKey(id);
 	}
@@ -245,7 +229,7 @@ public class Vault
 	 * Get the unlocked data.
 	 * 
 	 */
-	public byte[] get(VaultID id) throws NotUnlockedException
+	public byte[] get(final VaultID id) throws NotUnlockedException
 	{
 		if (m_verifiedValues.containsKey(id))
 			return m_verifiedValues.get(id);
@@ -258,14 +242,14 @@ public class Vault
 	/**
 	 * Do we know about the given vault id.
 	 */
-	public boolean knowsAbout(VaultID id)
+	public boolean knowsAbout(final VaultID id)
 	{
 		return m_verifiedValues.containsKey(id) || m_unverifiedValues.containsKey(id);
 	}
 	
 	public List<VaultID> knownIds()
 	{
-		ArrayList<VaultID> rVal = new ArrayList<VaultID>(m_verifiedValues.keySet());
+		final ArrayList<VaultID> rVal = new ArrayList<VaultID>(m_verifiedValues.keySet());
 		rVal.addAll(m_unverifiedValues.keySet());
 		return rVal;
 	}
@@ -278,72 +262,62 @@ public class Vault
 	 * If the id has already been released, then nothing will happen.
 	 * 
 	 */
-	public void release(VaultID id)
+	public void release(final VaultID id)
 	{
 		getRemoteBroadcaster().release(id);
 	}
 	
 	private final IRemoteVault m_remoteVault = new IRemoteVault()
 	{
-		
-		public void addLockedValue(VaultID id, byte[] data)
+		public void addLockedValue(final VaultID id, final byte[] data)
 		{
 			if (id.getGeneratedOn().equals(m_channelMessenger.getLocalNode()))
 				return;
-			
 			if (m_unverifiedValues.putIfAbsent(id, data) != null)
 			{
 				throw new IllegalStateException("duplicate values for id:" + id);
 			}
-			
 			synchronized (m_waitForLock)
 			{
 				m_waitForLock.notifyAll();
 			}
-			
 		}
 		
-		public void unlock(VaultID id, byte[] secretKeyBytes)
+		public void unlock(final VaultID id, final byte[] secretKeyBytes)
 		{
 			if (id.getGeneratedOn().equals(m_channelMessenger.getLocalNode()))
 				return;
-			
-			SecretKey key = bytesToKey(secretKeyBytes);
-			
+			final SecretKey key = bytesToKey(secretKeyBytes);
 			Cipher cipher;
 			try
 			{
 				cipher = Cipher.getInstance(ALGORITHM);
 				cipher.init(Cipher.DECRYPT_MODE, key);
-			} catch (NoSuchAlgorithmException e)
+			} catch (final NoSuchAlgorithmException e)
 			{
 				e.printStackTrace();
 				throw new IllegalStateException(e.getMessage());
-			} catch (NoSuchPaddingException e)
+			} catch (final NoSuchPaddingException e)
 			{
 				e.printStackTrace();
 				throw new IllegalStateException(e.getMessage());
-			} catch (InvalidKeyException e)
+			} catch (final InvalidKeyException e)
 			{
 				e.printStackTrace();
 				throw new IllegalStateException(e.getMessage());
 			}
-			
-			byte[] encrypted = m_unverifiedValues.remove(id);
+			final byte[] encrypted = m_unverifiedValues.remove(id);
 			byte[] decrypted;
-			
 			try
 			{
 				decrypted = cipher.doFinal(encrypted);
-			} catch (Exception e1)
+			} catch (final Exception e1)
 			{
 				e1.printStackTrace();
 				throw new IllegalStateException(e1.getMessage());
 			}
-			
 			if (decrypted.length < KNOWN_VAL.length)
 				throw new IllegalStateException("decrypted is not long enough to have known value, cheating is suspected");
-			
 			// check that the known value is correct
 			// we use the known value to check that the key given to
 			// us was the key used to encrypt the value in the first place
@@ -352,23 +326,19 @@ public class Vault
 				if (KNOWN_VAL[i] != decrypted[i])
 					throw new IllegalStateException("Known value of cipher not correct, cheating is suspected");
 			}
-			
-			byte[] data = new byte[decrypted.length - KNOWN_VAL.length];
+			final byte[] data = new byte[decrypted.length - KNOWN_VAL.length];
 			System.arraycopy(decrypted, KNOWN_VAL.length, data, 0, data.length);
-			
 			if (m_verifiedValues.putIfAbsent(id, data) != null)
 			{
 				throw new IllegalStateException("duplicate values for id:" + id);
 			}
-			
 			synchronized (m_waitForLock)
 			{
 				m_waitForLock.notifyAll();
 			}
-			
 		}
 		
-		public void release(VaultID id)
+		public void release(final VaultID id)
 		{
 			m_unverifiedValues.remove(id);
 			m_verifiedValues.remove(id);
@@ -379,13 +349,11 @@ public class Vault
 	 * Waits until we know about a given vault id.
 	 * waits for at most timeout milliseconds
 	 */
-	public void waitForID(VaultID id, long timeoutMS)
+	public void waitForID(final VaultID id, final long timeoutMS)
 	{
 		if (timeoutMS <= 0)
 			throw new IllegalArgumentException("Must suppply positive timeout argument");
-		
-		long endTime = timeoutMS + System.currentTimeMillis();
-		
+		final long endTime = timeoutMS + System.currentTimeMillis();
 		while (System.currentTimeMillis() < endTime && !knowsAbout(id))
 		{
 			synchronized (m_waitForLock)
@@ -394,31 +362,28 @@ public class Vault
 					return;
 				try
 				{
-					long waitTime = endTime - System.currentTimeMillis();
+					final long waitTime = endTime - System.currentTimeMillis();
 					if (waitTime > 0)
 					{
 						m_waitForLock.wait(waitTime);
 					}
-				} catch (InterruptedException e)
+				} catch (final InterruptedException e)
 				{
 					// not a big deal
 				}
 			}
 		}
-		
 	}
 	
 	/**
 	 * Wait until the given id is unlocked
 	 */
-	public void waitForIdToUnlock(VaultID id, long timeout)
+	public void waitForIdToUnlock(final VaultID id, final long timeout)
 	{
 		if (timeout <= 0)
 			throw new IllegalArgumentException("Must suppply positive timeout argument");
-		
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		long leftToWait = timeout;
-		
 		while (leftToWait > 0 && !isUnlocked(id))
 		{
 			synchronized (m_waitForLock)
@@ -428,7 +393,7 @@ public class Vault
 				try
 				{
 					m_waitForLock.wait(leftToWait);
-				} catch (InterruptedException e)
+				} catch (final InterruptedException e)
 				{
 					// not a big deal
 				}
@@ -436,7 +401,6 @@ public class Vault
 			}
 		}
 	}
-	
 }
 
 

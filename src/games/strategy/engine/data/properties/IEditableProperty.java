@@ -19,7 +19,6 @@ import javax.swing.JComponent;
  * @author unascribed
  * @version 1.0
  */
-
 public interface IEditableProperty
 {
 	public String getName();
@@ -33,5 +32,4 @@ public interface IEditableProperty
 	public JComponent getEditorComponent();
 	
 	public JComponent getViewComponent();
-	
 }

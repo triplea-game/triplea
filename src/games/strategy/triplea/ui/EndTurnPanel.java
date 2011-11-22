@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * EndTurnPanel.java
  * 
  * Created on December 2, 2006, 10:04 AM
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -67,24 +65,21 @@ public class EndTurnPanel extends ActionPanel
 	private Action m_showDetailsAction;
 	private Action m_doneAction;
 	
-	public EndTurnPanel(GameData data, MapPanel map)
+	public EndTurnPanel(final GameData data, final MapPanel map)
 	{
 		super(data, map);
 		m_actionLabel = new JLabel();
 		m_viewAction = new AbstractAction("View Turn Summary")
 		{
-			
-			public void actionPerformed(ActionEvent event)
+			public void actionPerformed(final ActionEvent event)
 			{
 				m_historyLog.setVisible(true);
 			}
 		};
 		m_postAction = new AbstractAction("Post Turn Summary")
 		{
-			
-			public void actionPerformed(ActionEvent event)
+			public void actionPerformed(final ActionEvent event)
 			{
-				
 				String message = "";
 				final IPBEMMessenger screenshotMsgr = m_poster.getScreenshotMessenger();
 				final IPBEMMessenger saveGameMsgr = m_poster.getSaveGameMessenger();
@@ -95,7 +90,7 @@ public class EndTurnPanel extends ActionPanel
 					message = (new StringBuilder()).append(message).append("Post save game file to ").append(saveGameMsgr.getName()).append("?\n").toString();
 				if (turnSummaryMsgr != null)
 					message = (new StringBuilder()).append(message).append("Post turn summary to ").append(turnSummaryMsgr.getName()).append("?\n").toString();
-				int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message, "Post Turn Summary?", 2, -1, null);
+				final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message, "Post Turn Summary?", 2, -1, null);
 				if (choice != 0)
 				{
 					return;
@@ -103,15 +98,14 @@ public class EndTurnPanel extends ActionPanel
 				else
 				{
 					m_postButton.setEnabled(false);
-					Runnable t = new Runnable()
+					final Runnable t = new Runnable()
 					{
-						
 						public void run()
 						{
 							boolean postOk = true;
-							ProgressWindow progressWindow = new ProgressWindow(m_frame, "Posting Turn Summary...");
+							final ProgressWindow progressWindow = new ProgressWindow(m_frame, "Posting Turn Summary...");
 							progressWindow.setVisible(true);
-							IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
+							final IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
 							delegate.setHasPostedTurnSummary(true);
 							File screenshotFile = null;
 							File saveGameFile = null;
@@ -122,8 +116,7 @@ public class EndTurnPanel extends ActionPanel
 									screenshotFile = File.createTempFile("triplea", ".png");
 									if (screenshotFile != null && m_frame.saveScreenshot(getData().getHistory().getLastNode(), screenshotFile))
 										m_poster.setScreenshot(screenshotFile);
-								}
-								catch (Exception e)
+								} catch (final Exception e)
 								{
 									postOk = false;
 									e.printStackTrace();
@@ -137,16 +130,16 @@ public class EndTurnPanel extends ActionPanel
 									if (saveGameFile != null)
 									{
 										int round = 0;
-										Object pathFromRoot[] = getData().getHistory().getLastNode().getPath();
-										Object arr$[] = pathFromRoot;
-										int len$ = arr$.length;
+										final Object pathFromRoot[] = getData().getHistory().getLastNode().getPath();
+										final Object arr$[] = pathFromRoot;
+										final int len$ = arr$.length;
 										int i$ = 0;
 										do
 										{
 											if (i$ >= len$)
 												break;
-											Object pathNode = arr$[i$];
-											HistoryNode curNode = (HistoryNode) pathNode;
+											final Object pathNode = arr$[i$];
+											final HistoryNode curNode = (HistoryNode) pathNode;
 											if (curNode instanceof Round)
 											{
 												round = ((Round) curNode).getRoundNo();
@@ -155,16 +148,11 @@ public class EndTurnPanel extends ActionPanel
 											i$++;
 										} while (true);
 										m_frame.getGame().saveGame(saveGameFile);
-										StringBuilder saveGameSb = (new StringBuilder()).append("triplea_")
-																						.append(saveGameMsgr.getGameId())
-																						.append("_")
-																						.append(getCurrentPlayer().getName().substring(0, 1))
-																						.append(round)
-																						.append(".tsvg");
+										final StringBuilder saveGameSb = (new StringBuilder()).append("triplea_").append(saveGameMsgr.getGameId()).append("_")
+													.append(getCurrentPlayer().getName().substring(0, 1)).append(round).append(".tsvg");
 										m_poster.setSaveGame(saveGameSb.toString(), new FileInputStream(saveGameFile));
 									}
-								}
-								catch (Exception e)
+								} catch (final Exception e)
 								{
 									postOk = false;
 									e.printStackTrace();
@@ -176,15 +164,14 @@ public class EndTurnPanel extends ActionPanel
 							{
 								if (!delegate.postTurnSummary(m_poster))
 									postOk = false;
-							}
-								catch (Exception e)
+							} catch (final Exception e)
 							{
 								postOk = false;
 								e.printStackTrace();
 							}
-							String screenshotRef = m_poster.getScreenshotRef();
-							String saveGameRef = m_poster.getSaveGameRef();
-							String turnSummaryRef = m_poster.getTurnSummaryRef();
+							final String screenshotRef = m_poster.getScreenshotRef();
+							final String saveGameRef = m_poster.getSaveGameRef();
+							final String turnSummaryRef = m_poster.getTurnSummaryRef();
 							String message = "";
 							if (screenshotRef != null)
 								message = (new StringBuilder()).append(message).append("\nScreenshot: ").append(screenshotRef).toString();
@@ -201,8 +188,7 @@ public class EndTurnPanel extends ActionPanel
 									System.err.println((new StringBuilder()).append("couldn't delete ").append(screenshotFile.getCanonicalPath()).toString());
 								if (saveGameFile != null && !saveGameFile.delete())
 									System.err.println((new StringBuilder()).append("couldn't delete ").append(saveGameFile.getCanonicalPath()).toString());
-							}
-								catch (IOException ioe)
+							} catch (final IOException ioe)
 							{
 								ioe.printStackTrace();
 							}
@@ -221,36 +207,31 @@ public class EndTurnPanel extends ActionPanel
 					return;
 				}
 			}
-			
 		};
 		m_includeTerritoryAction = new AbstractAction("Include territory summary")
 		{
-			
-			public void actionPerformed(ActionEvent event)
+			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
 			}
 		};
 		m_includeProductionAction = new AbstractAction("Include production summary")
 		{
-			
-			public void actionPerformed(ActionEvent event)
+			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
 			}
 		};
 		m_showDetailsAction = new AbstractAction("Show dice/battle details")
 		{
-			
-			public void actionPerformed(ActionEvent event)
+			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
 			}
 		};
 		m_doneAction = new AbstractAction("Done")
 		{
-			
-			public void actionPerformed(ActionEvent event)
+			public void actionPerformed(final ActionEvent event)
 			{
 				release();
 			}
@@ -266,13 +247,11 @@ public class EndTurnPanel extends ActionPanel
 		super.display(id);
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_actionLabel.setText(id.getName() + " Turn Summary");
 				// defer componenet layout until waitForEndTurn()
 			}
-			
 		});
 	}
 	
@@ -285,8 +264,7 @@ public class EndTurnPanel extends ActionPanel
 	private void updateHistoryLog()
 	{
 		m_historyLog.clear();
-		m_historyLog.printFullTurn(getData().getHistory().getLastNode(),
-									m_showDetailsCheckbox.isSelected());
+		m_historyLog.printFullTurn(getData().getHistory().getLastNode(), m_showDetailsCheckbox.isSelected());
 		if (m_includeTerritoryCheckbox.isSelected())
 			m_historyLog.printTerritorySummary(getData());
 		if (m_includeProductionCheckbox.isSelected())
@@ -294,23 +272,20 @@ public class EndTurnPanel extends ActionPanel
 		m_historyLog.requestFocus();
 	}
 	
-	public void waitForEndTurn(TripleAFrame frame, IPlayerBridge bridge)
+	public void waitForEndTurn(final TripleAFrame frame, final IPlayerBridge bridge)
 	{
 		m_frame = frame;
 		m_bridge = bridge;
-		
 		// Nothing to do if there are no PBEM messengers
 		m_poster = new PBEMMessagePoster(getData());
 		if (!m_poster.hasMessengers())
 			return;
-		
 		m_historyLog = new HistoryLog();
 		updateHistoryLog();
-		IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
+		final IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
 		final boolean hasPosted = delegate.getHasPostedTurnSummary();
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				// only show widgets if there are PBEM messengers
@@ -326,7 +301,6 @@ public class EndTurnPanel extends ActionPanel
 				add(new JButton(m_doneAction));
 				validate();
 			}
-			
 		});
 		waitForRelease();
 	}

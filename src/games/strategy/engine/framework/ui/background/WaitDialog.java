@@ -10,27 +10,23 @@ import javax.swing.JOptionPane;
 
 public class WaitDialog extends JDialog
 {
-	
-	public WaitDialog(Component parent, String waitMessage)
+	public WaitDialog(final Component parent, final String waitMessage)
 	{
 		this(parent, waitMessage, null);
 	}
 	
-	public WaitDialog(Component parent, String waitMessage, Action cancelAction)
+	public WaitDialog(final Component parent, final String waitMessage, final Action cancelAction)
 	{
 		super(JOptionPane.getFrameForComponent(parent), "Please Wait", true);
-		
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		WaitPanel panel = new WaitPanel(waitMessage);
+		final WaitPanel panel = new WaitPanel(waitMessage);
 		setLayout(new BorderLayout());
 		add(panel, BorderLayout.CENTER);
-		
 		if (cancelAction != null)
 		{
-			JButton cancelButton = new JButton("Cancel");
+			final JButton cancelButton = new JButton("Cancel");
 			cancelButton.addActionListener(cancelAction);
 			add(cancelButton, BorderLayout.SOUTH);
 		}
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GUID.java
  * 
  * Created on January 4, 2002, 2:33 PM
  */
-
 package games.strategy.net;
 
 import java.io.ByteArrayOutputStream;
@@ -44,12 +42,10 @@ public class GUID implements Externalizable
 {
 	// this prefix is unique across vms
 	private static VMID vm_prefix = new java.rmi.dgc.VMID();
-	
 	// the local identifier
 	// this coupled with the unique vm prefix comprise
 	// our unique id
 	private static AtomicInteger s_lastID = new AtomicInteger();
-	
 	private int m_id;
 	private VMID m_prefix;
 	
@@ -57,7 +53,6 @@ public class GUID implements Externalizable
 	{
 		m_id = s_lastID.getAndIncrement();
 		m_prefix = vm_prefix;
-		
 		// handle wrap around if needed
 		if (m_id < 0)
 		{
@@ -67,20 +62,16 @@ public class GUID implements Externalizable
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == null)
 			return false;
 		if (!(o instanceof GUID))
 			return false;
-		
-		GUID other = (GUID) o;
-		
+		final GUID other = (GUID) o;
 		if (other == this)
 			return true;
-		
-		return this.m_id == other.m_id &&
-					(other.m_prefix == this.m_prefix || other.m_prefix.equals(this.m_prefix));
+		return this.m_id == other.m_id && (other.m_prefix == this.m_prefix || other.m_prefix.equals(this.m_prefix));
 	}
 	
 	@Override
@@ -95,30 +86,27 @@ public class GUID implements Externalizable
 		return "GUID:" + m_prefix + ":" + m_id;
 	}
 	
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		m_id = in.readInt();
 		m_prefix = (VMID) in.readObject();
 	}
 	
-	public void writeExternal(ObjectOutput out) throws IOException
+	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		out.writeInt(m_id);
 		out.writeObject(m_prefix);
 	}
 	
-	public static void main(String[] args) throws IOException
+	public static void main(final String[] args) throws IOException
 	{
 		System.out.println(new GUID().toString());
-		
-		ByteArrayOutputStream sink = new ByteArrayOutputStream();
-		ObjectOutputStream out = new ObjectOutputStream(sink);
-		
+		final ByteArrayOutputStream sink = new ByteArrayOutputStream();
+		final ObjectOutputStream out = new ObjectOutputStream(sink);
 		for (int i = 0; i < 1000; i++)
 		{
 			out.writeObject(new GUID());
 		}
-		
 		out.close();
 		System.out.println("1000 ids is:" + sink.toByteArray().length + " bytes");
 	}

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.util;
 
 import java.awt.Component;
@@ -34,39 +33,23 @@ import javax.swing.SwingUtilities;
  */
 public class EventThreadJOptionPane
 {
-	
-	public static int showOptionDialog(
-				final Component parentComponent,
-				final Object message,
-				final String title,
-				final int optionType,
-				final int messageType,
-				final Icon icon,
-				final Object[] options,
+	public static int showOptionDialog(final Component parentComponent, final Object message, final String title, final int optionType, final int messageType, final Icon icon, final Object[] options,
 				final Object initialValue)
 	{
-		
 		if (SwingUtilities.isEventDispatchThread())
 		{
-			return JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType,
-						icon, options, initialValue);
+			return JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue);
 		}
-		
 		final CountDownLatch latch = new CountDownLatch(1);
 		final AtomicInteger rVal = new AtomicInteger();
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
-				rVal.set(
-							JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType,
-										icon, options, initialValue)
-							);
+				rVal.set(JOptionPane.showOptionDialog(parentComponent, message, title, optionType, messageType, icon, options, initialValue));
 				latch.countDown();
 			}
 		});
-		
 		boolean done = false;
 		while (!done)
 		{
@@ -74,7 +57,7 @@ public class EventThreadJOptionPane
 			{
 				latch.await();
 				done = true;
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				// ignore
 			}
@@ -82,42 +65,27 @@ public class EventThreadJOptionPane
 		return rVal.get();
 	}
 	
-	public static void showMessageDialog(
-				final Component parentComponent,
-				final Object message,
-				final String title,
-				final int messageType
-				)
+	public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType)
 	{
 		EventThreadJOptionPane.showMessageDialog(parentComponent, message, title, messageType, false);
 	}
 	
-	public static void showMessageDialog(
-				final Component parentComponent,
-				final Object message,
-				final String title,
-				final int messageType,
-				final boolean useJLabel)
+	public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType, final boolean useJLabel)
 	{
-		
 		if (SwingUtilities.isEventDispatchThread())
 		{
-			
 			JOptionPane.showMessageDialog(parentComponent, useJLabel ? new JLabel((String) message) : message, title, messageType);
 			return;
 		}
-		
 		final CountDownLatch latch = new CountDownLatch(1);
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				JOptionPane.showMessageDialog(parentComponent, useJLabel ? new JLabel((String) message) : message, title, messageType);
 				latch.countDown();
 			}
 		});
-		
 		boolean done = false;
 		while (!done)
 		{
@@ -125,7 +93,7 @@ public class EventThreadJOptionPane
 			{
 				latch.await();
 				done = true;
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				// ignore
 			}
@@ -133,33 +101,22 @@ public class EventThreadJOptionPane
 		return;
 	}
 	
-	public static int showConfirmDialog(
-				final Component parentComponent,
-				final Object message,
-				final String title,
-				final int optionType)
-				throws HeadlessException
+	public static int showConfirmDialog(final Component parentComponent, final Object message, final String title, final int optionType) throws HeadlessException
 	{
-		
 		if (SwingUtilities.isEventDispatchThread())
 		{
 			return JOptionPane.showConfirmDialog(parentComponent, message, title, optionType);
 		}
-		
 		final CountDownLatch latch = new CountDownLatch(1);
 		final AtomicInteger rVal = new AtomicInteger();
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
-				rVal.set(
-							JOptionPane.showConfirmDialog(parentComponent, message, title, optionType)
-							);
+				rVal.set(JOptionPane.showConfirmDialog(parentComponent, message, title, optionType));
 				latch.countDown();
 			}
 		});
-		
 		boolean done = false;
 		while (!done)
 		{
@@ -167,13 +124,12 @@ public class EventThreadJOptionPane
 			{
 				latch.await();
 				done = true;
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				// ignore
 			}
 		}
 		return rVal.get();
-		
 	}
 	
 	public static void showMessageDialog(final Frame parentComponent, final String message)
@@ -183,18 +139,15 @@ public class EventThreadJOptionPane
 			JOptionPane.showMessageDialog(parentComponent, message);
 			return;
 		}
-		
 		final CountDownLatch latch = new CountDownLatch(1);
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				JOptionPane.showMessageDialog(parentComponent, message);
 				latch.countDown();
 			}
 		});
-		
 		boolean done = false;
 		while (!done)
 		{
@@ -202,42 +155,35 @@ public class EventThreadJOptionPane
 			{
 				latch.await();
 				done = true;
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				// ignore
 			}
 		}
 		return;
-		
 	}
 	
-	public static void showMessageDialog(Component parentComponent,
-				Object message, String title, int messageType, Icon icon)
+	public static void showMessageDialog(final Component parentComponent, final Object message, final String title, final int messageType, final Icon icon)
 	{
-		showOptionDialog(parentComponent, message, title, JOptionPane.DEFAULT_OPTION,
-							messageType, icon, null, null);
+		showOptionDialog(parentComponent, message, title, JOptionPane.DEFAULT_OPTION, messageType, icon, null, null);
 	}
 	
-	public static void showMessageDialog(final Component parentComponent,
-				final Object message) throws HeadlessException
+	public static void showMessageDialog(final Component parentComponent, final Object message) throws HeadlessException
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
 			JOptionPane.showMessageDialog(parentComponent, message);
 			return;
 		}
-		
 		final CountDownLatch latch = new CountDownLatch(1);
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				JOptionPane.showMessageDialog(parentComponent, message);
 				latch.countDown();
 			}
 		});
-		
 		boolean done = false;
 		while (!done)
 		{
@@ -245,12 +191,11 @@ public class EventThreadJOptionPane
 			{
 				latch.await();
 				done = true;
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				// ignore
 			}
 		}
 		return;
 	}
-	
 }

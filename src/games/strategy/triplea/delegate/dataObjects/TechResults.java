@@ -21,25 +21,18 @@ import java.util.List;
  * @author unascribed
  * @version 1.0
  */
-
 @SuppressWarnings("serial")
 public class TechResults implements java.io.Serializable
 {
-	
 	private int[] m_rolls;
-	
 	private int m_hits;
-	
 	private int m_remainder = 0;
-	
 	// a list of Strings
 	private List<String> m_advances;
-	
 	private PlayerID m_playerID;
-	
 	private String m_errorString;
 	
-	public TechResults(String errorString)
+	public TechResults(final String errorString)
 	{
 		m_errorString = errorString;
 	}
@@ -73,7 +66,7 @@ public class TechResults implements java.io.Serializable
 	 * @param id
 	 *            player id
 	 */
-	public TechResults(int[] rolls, int remainder, int hits, List<String> advances, PlayerID id)
+	public TechResults(final int[] rolls, final int remainder, final int hits, final List<String> advances, final PlayerID id)
 	{
 		m_rolls = rolls;
 		m_remainder = remainder;

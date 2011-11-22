@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.headless;
 
 import games.strategy.debug.Console;
@@ -42,56 +41,47 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Sean Bridges
  * 
  */
-
 public class HeadlessLobbyConsole
 {
 	private final LobbyServer server;
 	private final PrintStream out;
 	private final BufferedReader in;
-	
 	@SuppressWarnings("deprecation")
 	private final String startDate = new Date().toGMTString();
 	private final AtomicInteger totalLogins = new AtomicInteger();
 	private final AtomicInteger currentConnections = new AtomicInteger();
 	private volatile int maxConcurrentLogins = 0;
 	
-	public HeadlessLobbyConsole(LobbyServer server, InputStream in, PrintStream out)
+	public HeadlessLobbyConsole(final LobbyServer server, final InputStream in, final PrintStream out)
 	{
 		this.out = out;
 		this.in = new BufferedReader(new InputStreamReader(in));
 		this.server = server;
-		
 		server.getMessenger().addConnectionChangeListener(new IConnectionChangeListener()
 		{
-			
-			public void connectionAdded(INode to)
+			public void connectionAdded(final INode to)
 			{
 				currentConnections.incrementAndGet();
 				totalLogins.incrementAndGet();
-				
 				// not strictly thread safe, but good enough
 				maxConcurrentLogins = Math.max(maxConcurrentLogins, currentConnections.get());
 			}
 			
-			public void connectionRemoved(INode to)
+			public void connectionRemoved(final INode to)
 			{
 				currentConnections.decrementAndGet();
 			}
-			
 		});
 	}
 	
 	public void start()
 	{
-		Thread t = new Thread(new Runnable()
+		final Thread t = new Thread(new Runnable()
 		{
-			
 			public void run()
 			{
 				printEvalLoop();
-				
 			}
-			
 		}, "Headless console eval print loop");
 		t.start();
 	}
@@ -99,25 +89,23 @@ public class HeadlessLobbyConsole
 	private void printEvalLoop()
 	{
 		out.println();
-		
 		while (true)
 		{
 			out.print(">>>>");
 			out.flush();
 			try
 			{
-				String command = in.readLine();
+				final String command = in.readLine();
 				process(command.trim());
-			} catch (Throwable t)
+			} catch (final Throwable t)
 			{
 				t.printStackTrace();
 				t.printStackTrace(out);
 			}
 		}
-		
 	}
 	
-	private void process(String command)
+	private void process(final String command)
 	{
 		if (command.equals(""))
 		{
@@ -157,13 +145,11 @@ public class HeadlessLobbyConsole
 			out.println("unrecognized command:" + command);
 			showHelp();
 		}
-		
 	}
 	
 	private void threads()
 	{
 		out.println(Console.getThreadDumps());
-		
 	}
 	
 	private void memory()
@@ -185,33 +171,30 @@ public class HeadlessLobbyConsole
 			{
 				System.exit(0);
 			}
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
 	
-	private void executeSql(String sql)
+	private void executeSql(final String sql)
 	{
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			
-			Statement ps = con.createStatement();
-			
+			final Statement ps = con.createStatement();
 			if (DBExplorerPanel.isNotQuery(sql))
 			{
-				int rs = ps.executeUpdate(sql);
+				final int rs = ps.executeUpdate(sql);
 				out.println("Update count:" + rs);
 			}
 			else
 			{
-				ResultSet rs = ps.executeQuery(sql);
+				final ResultSet rs = ps.executeQuery(sql);
 				print(rs);
 				rs.close();
 			}
-			
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			sqle.printStackTrace();
 			out.println(sqle.getMessage());
@@ -220,7 +203,7 @@ public class HeadlessLobbyConsole
 			try
 			{
 				con.close();
-			} catch (SQLException e)
+			} catch (final SQLException e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -228,29 +211,25 @@ public class HeadlessLobbyConsole
 		}
 	}
 	
-	private void print(ResultSet rs)
+	private void print(final ResultSet rs)
 	{
 		try
 		{
-			Formatter f = new Formatter(out);
-			String itemFormat = "%20s ";
+			final Formatter f = new Formatter(out);
+			final String itemFormat = "%20s ";
 			f.format(itemFormat, "Count");
-			
-			int count = rs.getMetaData().getColumnCount();
-			
+			final int count = rs.getMetaData().getColumnCount();
 			for (int i = 1; i <= count; i++)
 			{
-				String columnName = rs.getMetaData().getColumnName(i);
+				final String columnName = rs.getMetaData().getColumnName(i);
 				f.format(itemFormat, columnName);
 			}
-			
 			f.format("\n");
 			for (int i = 0; i < count; i++)
 			{
 				f.format(itemFormat, "-----------");
 			}
 			f.format("\n");
-			
 			int row = 1;
 			while (rs.next())
 			{
@@ -262,7 +241,7 @@ public class HeadlessLobbyConsole
 				f.format("\n");
 				f.flush();
 			}
-		} catch (SQLException e)
+		} catch (final SQLException e)
 		{
 			e.printStackTrace(out);
 		}
@@ -270,37 +249,14 @@ public class HeadlessLobbyConsole
 	
 	private void showStatus()
 	{
-		
-		int port = server.getMessenger().getServerNode().getPort();
-		
-		out.print(
-					String.format(
-								"port:%s\n" +
-											"up since:%s\n" +
-											"total logins:%s\n" +
-											"current connections:%s\n" +
-											"max concurrent connections:%s\n",
-								port,
-								startDate,
-								totalLogins.get(),
-								currentConnections.get(),
-								maxConcurrentLogins
-								)
-					);
-		
+		final int port = server.getMessenger().getServerNode().getPort();
+		out.print(String.format("port:%s\n" + "up since:%s\n" + "total logins:%s\n" + "current connections:%s\n" + "max concurrent connections:%s\n", port, startDate, totalLogins.get(),
+					currentConnections.get(), maxConcurrentLogins));
 	}
 	
 	private void showHelp()
 	{
-		out.println("available commands:\n" +
-					"  backup - backup the database \n" +
-					"  help - show this message\n" +
-					"  memory - show memory usage\n" +
-					"  status - show status information\n" +
-					"  sql {sql} - execute a sql command and print the results\n" +
-					"  threads - get thread dumps\n" +
-					"  quit - quit\n"
-					);
+		out.println("available commands:\n" + "  backup - backup the database \n" + "  help - show this message\n" + "  memory - show memory usage\n" + "  status - show status information\n"
+					+ "  sql {sql} - execute a sql command and print the results\n" + "  threads - get thread dumps\n" + "  quit - quit\n");
 	}
-	
 }

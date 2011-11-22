@@ -3,7 +3,6 @@
  * 
  * Created on October 26, 2001, 2:26 PM
  */
-
 package games.strategy.engine.data;
 
 /**

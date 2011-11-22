@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.history;
 
 /**
@@ -20,7 +19,6 @@ package games.strategy.engine.history;
  * The rest of the history writers functions should only
  * be used by the GameData
  */
-
 public interface IDelegateHistoryWriter
 {
 	public void startEvent(String eventName);
@@ -33,5 +31,4 @@ public interface IDelegateHistoryWriter
 	 * Set the redering data for the current event.
 	 */
 	public void setRenderingData(Object renderingData);
-	
 }

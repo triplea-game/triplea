@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.Others;
 
 import games.strategy.engine.data.GameData;
@@ -40,51 +39,43 @@ import java.util.Random;
  */
 public class Purchase_UnitPlacementLocationSorter
 {
-	public static List<Territory> CalculateAndSortUnitPlacementLocations(Dynamix_AI ai, boolean purchaseForBid, GameData data, PlayerID player)
+	public static List<Territory> CalculateAndSortUnitPlacementLocations(final Dynamix_AI ai, final boolean purchaseForBid, final GameData data, final PlayerID player)
 	{
 		List<Territory> result = new ArrayList<Territory>();
-		
-		List<Territory> possibles = Match.getMatches(data.getMap().getTerritories(), DMatches.territoryCanHaveUnitsPlacedOnIt(data, player));
-		HashMap<Territory, Integer> scores = new HashMap<Territory, Integer>();
-		List<Territory> ourCaps = DUtils.GetAllOurCaps_ThatWeOwn(data, player);
-		List<Territory> ownedCaps = DUtils.GetAllCapsOwnedBy(data, player);
-		
+		final List<Territory> possibles = Match.getMatches(data.getMap().getTerritories(), DMatches.territoryCanHaveUnitsPlacedOnIt(data, player));
+		final HashMap<Territory, Integer> scores = new HashMap<Territory, Integer>();
+		final List<Territory> ourCaps = DUtils.GetAllOurCaps_ThatWeOwn(data, player);
+		final List<Territory> ownedCaps = DUtils.GetAllCapsOwnedBy(data, player);
 		Collections.shuffle(possibles); // Shuffle list so if there are equal-scored ters, they don't always show up in the same order
-		for (Territory ter : possibles)
+		for (final Territory ter : possibles)
 		{
 			if (DMatches.territoryIsIsolated(data).match(ter))
 				continue; // We never place units on an isolated territory
 			if (!DMatches.territoryCanHaveUnitsPlacedOnIt(data, player).match(ter))
 				continue;
-			
-			List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
-			AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), ter, data, 500, true);
-			
+			final List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
+			final AggregateResults results = DUtils.GetBattleResults(possibleAttackers, DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), ter, data, 500, true);
 			int score = 0;
 			// If ter is our cap and our cap has some danger
 			if (ourCaps.contains(ter) && results.getAttackerWinPercent() > .1F)
 				score += 1000;
 			if (ownedCaps.contains(ter))
 				score += 100;
-			
 			score += DUtils.GetValueOfLandTer(ter, data, player);
-			
-			Territory target = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, ter.getUnits().getUnits(), new ArrayList<NCM_Task>());
+			final Territory target = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, ter.getUnits().getUnits(), new ArrayList<NCM_Task>());
 			if (target != null)
 			{
-				Route terToTargetRoute = CachedCalculationCenter.GetPassableLandRoute(data, ter, target);
+				final Route terToTargetRoute = CachedCalculationCenter.GetPassableLandRoute(data, ter, target);
 				if (terToTargetRoute != null)
 					score -= terToTargetRoute.getLength() * 5; // We like to place units at factories closer to our ncm target
 			}
-			
-			Territory closestEnemy = DUtils.GetClosestTerMatchingXAndHavingRouteMatchingY(data, ter, DMatches.territoryIsOwnedByNNEnemy(data, player), Matches.TerritoryIsLandOrWater);
+			final Territory closestEnemy = DUtils.GetClosestTerMatchingXAndHavingRouteMatchingY(data, ter, DMatches.territoryIsOwnedByNNEnemy(data, player), Matches.TerritoryIsLandOrWater);
 			if (closestEnemy != null)
 			{
-				Route terToClosestEnemyRoute = CachedCalculationCenter.GetPassableLandRoute(data, ter, closestEnemy);
+				final Route terToClosestEnemyRoute = CachedCalculationCenter.GetPassableLandRoute(data, ter, closestEnemy);
 				if (terToClosestEnemyRoute != null)
 					score -= terToClosestEnemyRoute.getLength() * 10; // We like to place units at factories closer to the enemy
 			}
-			
 			// If this ter is in danger, but not to much
 			if (results.getAttackerWinPercent() > .30F && results.getAttackerWinPercent() < .70F)
 				score += (results.getAttackerWinPercent() * 10);
@@ -92,23 +83,18 @@ public class Purchase_UnitPlacementLocationSorter
 				score -= (results.getAttackerWinPercent() * 10);
 			else if (results.getAttackerWinPercent() > .95F)
 				score -= 10000; // If this ter's gonna get taken over, lower score a ton
-				
 			if (DMatches.territoryIsOnSmallIsland(data).match(ter))
 				score -= 10000; // Atm, never place on islands unless we have to
-				
 			// We multiply the scores by a random number between 100%-110%, so slightly lower ranked ters get units placed on them sometimes
-			int randNum = 100 + new Random().nextInt(10);
-			double randomMultiplyAmount = (randNum / 100.0F);
+			final int randNum = 100 + new Random().nextInt(10);
+			final double randomMultiplyAmount = (randNum / 100.0F);
 			score = (int) (score * randomMultiplyAmount);
-			
 			result.add(ter);
 			scores.put(ter, score);
 		}
-		
 		result = DSorting.SortListByScores_HashMap_D(result, scores);
 		if (purchaseForBid && result.size() > 0)
 			return result.subList(0, 1); // Atm, put all bid units on best ter(almost always cap)...
-			
 		return result;
 	}
 }

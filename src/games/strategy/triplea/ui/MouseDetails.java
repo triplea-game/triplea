@@ -12,7 +12,6 @@ public class MouseDetails
 	private final double m_x;
 	// the x position of the event on the map
 	// this is in absolute pixels of the unscaled map
-	
 	private final double m_y;
 	
 	public MouseDetails(final MouseEvent mouseEvent, final double x, final double y)
@@ -71,5 +70,4 @@ public class MouseDetails
 	{
 		return m_mouseEvent.getButton();
 	}
-	
 }

@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.message;
 
 import java.util.Collection;
@@ -22,9 +21,7 @@ public class RemoteInterfaceHelperTest extends TestCase
 	public void testSimple()
 	{
 		assertEquals("compare", RemoteInterfaceHelper.getMethodInfo(0, Comparator.class).getFirst());
-		
 		assertEquals("add", RemoteInterfaceHelper.getMethodInfo(0, Collection.class).getFirst());
-		
 		assertEquals(0, RemoteInterfaceHelper.getNumber("add", new Class[] { Object.class }, Collection.class));
 		assertEquals(2, RemoteInterfaceHelper.getNumber("clear", new Class[] {}, Collection.class));
 	}

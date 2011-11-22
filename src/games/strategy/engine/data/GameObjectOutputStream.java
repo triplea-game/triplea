@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GameObjectOutputStream.java
  * 
  * Created on January 3, 2002, 2:47 PM
  */
-
 package games.strategy.engine.data;
 
 import java.io.IOException;
@@ -44,7 +42,6 @@ import java.io.OutputStream;
  */
 public class GameObjectOutputStream extends ObjectOutputStream
 {
-	
 	/**
 	 * Creates a new instance of GameObjectOutputStream
 	 * 
@@ -52,18 +49,18 @@ public class GameObjectOutputStream extends ObjectOutputStream
 	 *            output stream
 	 * @throws IOException
 	 */
-	public GameObjectOutputStream(OutputStream output) throws IOException
+	public GameObjectOutputStream(final OutputStream output) throws IOException
 	{
 		super(output);
 		enableReplaceObject(true);
 	}
 	
 	@Override
-	protected Object replaceObject(Object obj) throws IOException
+	protected Object replaceObject(final Object obj) throws IOException
 	{
 		if (obj instanceof Named)
 		{
-			Named named = (Named) obj;
+			final Named named = (Named) obj;
 			if (GameObjectStreamData.canSerialize(named))
 			{
 				return new GameObjectStreamData(named);

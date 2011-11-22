@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * NotificationMessages.java
  * 
  * Created on August 3, 2011
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.triplea.ResourceLoader;
@@ -31,15 +29,14 @@ public class NotificationMessages
 {
 	// Filename
 	private static final String PROPERTY_FILE = "notifications.properties";
-	
 	private static NotificationMessages s_nm = null;
 	private static long s_timestamp = 0;
-	private Properties m_properties = new Properties();
+	private final Properties m_properties = new Properties();
 	
 	protected NotificationMessages()
 	{
-		ResourceLoader loader = ResourceLoader.getMapresourceLoader(UIContext.getMapDir());
-		URL url = loader.getResource(PROPERTY_FILE);
+		final ResourceLoader loader = ResourceLoader.getMapresourceLoader(UIContext.getMapDir());
+		final URL url = loader.getResource(PROPERTY_FILE);
 		if (url == null)
 		{
 			// no propertyfile found
@@ -49,7 +46,7 @@ public class NotificationMessages
 			try
 			{
 				m_properties.load(url.openStream());
-			} catch (IOException e)
+			} catch (final IOException e)
 			{
 				System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
 			}
@@ -66,9 +63,8 @@ public class NotificationMessages
 		return s_nm;
 	}
 	
-	public String getMessage(String notificationMessageKey)
+	public String getMessage(final String notificationMessageKey)
 	{
 		return m_properties.getProperty(notificationMessageKey, notificationMessageKey);
 	}
-	
 }

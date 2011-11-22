@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GamePlayer.java
  * 
  * Created on October 27, 2001, 5:15 PM
  */
-
 package games.strategy.engine.gamePlayer;
 
 import games.strategy.engine.data.PlayerID;
@@ -34,7 +32,6 @@ import games.strategy.engine.data.PlayerID;
  */
 public interface IGamePlayer
 {
-	
 	/**
 	 * Called before the game starts.
 	 */
@@ -65,5 +62,4 @@ public interface IGamePlayer
 	 * 
 	 */
 	public void start(String stepName);
-	
 }

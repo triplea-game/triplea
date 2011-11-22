@@ -22,20 +22,17 @@ public class NumberProperty extends AEditableProperty
 {
 	// compatible with 0.9.0.2 saved games
 	private static final long serialVersionUID = 6826763550643504789L;
-	
-	private int m_max;
-	private int m_min;
+	private final int m_max;
+	private final int m_min;
 	private int m_value;
 	
-	public NumberProperty(String name, int max, int min, int def)
+	public NumberProperty(final String name, final int max, final int min, final int def)
 	{
 		super(name);
-		
 		if (max < min)
 			throw new IllegalThreadStateException("Max must be greater than min");
 		if (def > max || def < min)
 			throw new IllegalThreadStateException("Default value out of range");
-		
 		m_max = max;
 		m_min = min;
 		m_value = def;
@@ -48,18 +45,15 @@ public class NumberProperty extends AEditableProperty
 	
 	public JComponent getEditorComponent()
 	{
-		IntTextField field = new IntTextField(m_min, m_max);
+		final IntTextField field = new IntTextField(m_min, m_max);
 		field.setValue(m_value);
 		field.addChangeListener(new IntTextFieldChangeListener()
 		{
-			
-			public void changedValue(IntTextField aField)
-		{
-			m_value = aField.getValue();
-		}
-		}
-					);
+			public void changedValue(final IntTextField aField)
+			{
+				m_value = aField.getValue();
+			}
+		});
 		return field;
 	}
-	
 }

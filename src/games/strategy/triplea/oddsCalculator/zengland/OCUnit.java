@@ -11,17 +11,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.oddsCalculator.zengland;
 
 public class OCUnit
 {
-	
 	public static final int LANDUNIT = 1;
 	public static final int AIRUNIT = 2;
 	public static final int SEAUNIT = 3;
 	public static final int AAUNIT = 4;
-	
 	private int cost;
 	private int attackValue;
 	private int defendValue;
@@ -44,7 +41,7 @@ public class OCUnit
 		return boostAmphib;
 	}
 	
-	public void setBoostAmphib(boolean boostAmphib)
+	public void setBoostAmphib(final boolean boostAmphib)
 	{
 		this.boostAmphib = boostAmphib;
 	}
@@ -54,7 +51,7 @@ public class OCUnit
 		return boostsInfAtt;
 	}
 	
-	public void setBoostsInfAtt(boolean boostsInfAtt)
+	public void setBoostsInfAtt(final boolean boostsInfAtt)
 	{
 		this.boostsInfAtt = boostsInfAtt;
 	}
@@ -64,7 +61,7 @@ public class OCUnit
 		return blockNoRetalHit;
 	}
 	
-	public void setBlockNoRetalHit(boolean blockNoRetalHit)
+	public void setBlockNoRetalHit(final boolean blockNoRetalHit)
 	{
 		this.blockNoRetalHit = blockNoRetalHit;
 	}
@@ -74,7 +71,7 @@ public class OCUnit
 		return hp;
 	}
 	
-	public void setHp(int hp)
+	public void setHp(final int hp)
 	{
 		this.hp = hp;
 	}
@@ -84,7 +81,7 @@ public class OCUnit
 		return maxHP;
 	}
 	
-	public void setMaxHP(int maxHP)
+	public void setMaxHP(final int maxHP)
 	{
 		this.maxHP = maxHP;
 	}
@@ -94,7 +91,7 @@ public class OCUnit
 		return maxHits;
 	}
 	
-	public void setMaxHits(int maxHits)
+	public void setMaxHits(final int maxHits)
 	{
 		this.maxHits = maxHits;
 	}
@@ -104,7 +101,7 @@ public class OCUnit
 		return maxRolls;
 	}
 	
-	public void setMaxRolls(int maxRolls)
+	public void setMaxRolls(final int maxRolls)
 	{
 		this.maxRolls = maxRolls;
 	}
@@ -114,7 +111,7 @@ public class OCUnit
 		return canHitAir;
 	}
 	
-	public void setCanHitAir(boolean canHitAir)
+	public void setCanHitAir(final boolean canHitAir)
 	{
 		this.canHitAir = canHitAir;
 	}
@@ -229,8 +226,8 @@ public class OCUnit
 		return rtl;
 	}
 	
-	public OCUnit(int cost, int attackValue, int defendValue, int moveValue, String name, boolean noRetaliationHit, int unitType, boolean supportShot, boolean canHitAir, int maxHits, int maxRolls,
-				int maxHp, boolean blocksNoRetHit, boolean boostsInfAtt, boolean boostAmphib)
+	public OCUnit(final int cost, final int attackValue, final int defendValue, final int moveValue, final String name, final boolean noRetaliationHit, final int unitType, final boolean supportShot,
+				final boolean canHitAir, final int maxHits, final int maxRolls, final int maxHp, final boolean blocksNoRetHit, final boolean boostsInfAtt, final boolean boostAmphib)
 	{
 		super();
 		this.cost = cost;
@@ -250,7 +247,8 @@ public class OCUnit
 		setBoostAmphib(boostAmphib);
 	}
 	
-	public OCUnit(int cost, int attackValue, int defendValue, int moveValue, String name, boolean noRetaliationHit, int unitType, boolean supportShot, boolean canHitAir)
+	public OCUnit(final int cost, final int attackValue, final int defendValue, final int moveValue, final String name, final boolean noRetaliationHit, final int unitType, final boolean supportShot,
+				final boolean canHitAir)
 	{
 		super();
 		this.cost = cost;
@@ -272,7 +270,7 @@ public class OCUnit
 		return name;
 	}
 	
-	public void setName(String name)
+	public void setName(final String name)
 	{
 		this.name = name;
 	}
@@ -282,7 +280,7 @@ public class OCUnit
 		return attackValue;
 	}
 	
-	public void setAttackValue(int attackValue)
+	public void setAttackValue(final int attackValue)
 	{
 		this.attackValue = attackValue;
 	}
@@ -292,7 +290,7 @@ public class OCUnit
 		return cost;
 	}
 	
-	public void setCost(int cost)
+	public void setCost(final int cost)
 	{
 		this.cost = cost;
 	}
@@ -302,7 +300,7 @@ public class OCUnit
 		return defendValue;
 	}
 	
-	public void setDefendValue(int defendValue)
+	public void setDefendValue(final int defendValue)
 	{
 		this.defendValue = defendValue;
 	}
@@ -312,7 +310,7 @@ public class OCUnit
 		return moveValue;
 	}
 	
-	public void setMoveValue(int moveValue)
+	public void setMoveValue(final int moveValue)
 	{
 		this.moveValue = moveValue;
 	}
@@ -322,7 +320,7 @@ public class OCUnit
 		return noRetaliationHit;
 	}
 	
-	public void setNoRetaliationHit(boolean noRetaliationHit)
+	public void setNoRetaliationHit(final boolean noRetaliationHit)
 	{
 		this.noRetaliationHit = noRetaliationHit;
 	}
@@ -332,16 +330,16 @@ public class OCUnit
 		return unitType;
 	}
 	
-	public void setUnitType(int unitType)
+	public void setUnitType(final int unitType)
 	{
 		this.unitType = unitType;
 	}
 	
-	public int roll(int hitAt)
+	public int roll(final int hitAt)
 	{
 		// Random rand = new Random();
 		// int roll = Math.abs(rand.nextInt())%6+1;
-		int roll = (int) (Math.random() * 100) % 6 + 1;
+		final int roll = (int) (Math.random() * 100) % 6 + 1;
 		return roll;
 	}
 	
@@ -350,7 +348,7 @@ public class OCUnit
 		return supportShot;
 	}
 	
-	public void setSupportShot(boolean supportShot)
+	public void setSupportShot(final boolean supportShot)
 	{
 		this.supportShot = supportShot;
 	}
@@ -371,13 +369,12 @@ public class OCUnit
 		return name;
 	}
 	
-	public static void main(String args[])
+	public static void main(final String args[])
 	{
-		OCUnit u = OCUnit.newHeavyBomber();
+		final OCUnit u = OCUnit.newHeavyBomber();
 		for (int j = 0; j < 10000; j++)
 		{
 			System.out.println(u.rollAttack());
 		}
 	}
-	
 }

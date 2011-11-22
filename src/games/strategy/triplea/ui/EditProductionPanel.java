@@ -11,11 +11,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * EditProductionPanel.java
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -35,19 +33,18 @@ import javax.swing.JFrame;
  */
 public class EditProductionPanel extends ProductionPanel
 {
-	
-	public static IntegerMap<ProductionRule> getProduction(PlayerID id, JFrame parent, GameData data, UIContext context)
+	public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final UIContext context)
 	{
 		return new EditProductionPanel(context).show(id, parent, data, false, new IntegerMap<ProductionRule>());
 	}
 	
 	/** Creates new ProductionPanel */
-	private EditProductionPanel(UIContext uiContext)
+	private EditProductionPanel(final UIContext uiContext)
 	{
 		super(uiContext);
 	}
 	
-	protected void setLeft(int left)
+	protected void setLeft(final int left)
 	{
 		// no limits, so do nothing here
 	}
@@ -55,12 +52,11 @@ public class EditProductionPanel extends ProductionPanel
 	@Override
 	protected void calculateLimits()
 	{
-		Iterator<Rule> iter = getRules().iterator();
+		final Iterator<Rule> iter = getRules().iterator();
 		while (iter.hasNext())
 		{
-			Rule current = iter.next();
+			final Rule current = iter.next();
 			current.setMax(99);
 		}
 	}
-	
 }

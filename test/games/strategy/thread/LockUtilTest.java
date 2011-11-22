@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.thread;
 
 import java.util.ArrayList;
@@ -23,8 +22,7 @@ import junit.framework.TestCase;
 
 public class LockUtilTest extends TestCase
 {
-	
-	private TestErrorReporter m_reporter = new TestErrorReporter();
+	private final TestErrorReporter m_reporter = new TestErrorReporter();
 	
 	@Override
 	public void setUp()
@@ -39,70 +37,57 @@ public class LockUtilTest extends TestCase
 	
 	public void testMultipleLocks()
 	{
-		
-		List<Lock> locks = new ArrayList<Lock>();
-		
+		final List<Lock> locks = new ArrayList<Lock>();
 		for (int i = 0; i < 10; i++)
 		{
 			locks.add(new ReentrantLock());
 		}
-		for (Lock l : locks)
+		for (final Lock l : locks)
 		{
 			LockUtil.acquireLock(l);
 			assertTrue(LockUtil.isLockHeld(l));
 		}
-		for (Lock l : locks)
+		for (final Lock l : locks)
 		{
 			LockUtil.releaseLock(l);
 			assertFalse(LockUtil.isLockHeld(l));
 		}
-		
 		assertFalse(m_reporter.errorOccured());
-		
 		// repeat the sequence, make sure no errors
-		for (Lock l : locks)
+		for (final Lock l : locks)
 		{
 			LockUtil.acquireLock(l);
 		}
-		
 		assertFalse(m_reporter.errorOccured());
-		
 	}
 	
 	public void testFail()
 	{
-		Lock l1 = new ReentrantLock();
-		Lock l2 = new ReentrantLock();
-		
+		final Lock l1 = new ReentrantLock();
+		final Lock l2 = new ReentrantLock();
 		// acquire in the correct order
 		LockUtil.acquireLock(l1);
 		LockUtil.acquireLock(l2);
 		// release
 		LockUtil.releaseLock(l2);
 		LockUtil.releaseLock(l1);
-		
 		assertFalse(m_reporter.errorOccured());
-		
 		// acquire locks in the wrong order
 		LockUtil.acquireLock(l2);
 		LockUtil.acquireLock(l1);
-		
 		assertTrue(m_reporter.errorOccured());
 	}
 	
 	public void testAcquireTwice()
 	{
-		ReentrantLock l1 = new ReentrantLock();
+		final ReentrantLock l1 = new ReentrantLock();
 		LockUtil.acquireLock(l1);
 		LockUtil.acquireLock(l1);
-		
 		LockUtil.releaseLock(l1);
 		LockUtil.releaseLock(l1);
-		
 		assertTrue(l1.getHoldCount() == 0);
 		assertFalse(LockUtil.isLockHeld(l1));
 	}
-	
 }
 
 
@@ -111,7 +96,7 @@ class TestErrorReporter extends ErrorReporter
 	private boolean m_errorOccured = false;
 	
 	@Override
-	public void reportError(Lock from, Lock to)
+	public void reportError(final Lock from, final Lock to)
 	{
 		m_errorOccured = true;
 	}
@@ -120,5 +105,4 @@ class TestErrorReporter extends ErrorReporter
 	{
 		return m_errorOccured;
 	}
-	
 };

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI;
 
 import games.strategy.engine.data.GameData;
@@ -46,9 +45,8 @@ public class DynamixAITests extends TestCase
 	
 	public void testCost()
 	{
-		UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
-		PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
-		
+		final UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
+		final PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
 		assertEquals(3, AIUtils.getCost(infantry, superior, m_data));
 	}
 }

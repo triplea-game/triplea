@@ -32,36 +32,31 @@ import javax.swing.SwingUtilities;
 @SuppressWarnings("serial")
 public abstract class AbstractMovePanel extends ActionPanel
 {
-	
 	private static final String s_MOVE_PANEL_CANCEL = "movePanel.cancel";
 	private static final Logger s_logger = Logger.getLogger(MovePanel.class.getName());
 	private static final int s_entryPadding = 15;
-	private TripleAFrame m_frame;
+	private final TripleAFrame m_frame;
 	private boolean m_listening = false;
-	private JLabel m_actionLabel = new JLabel();
+	private final JLabel m_actionLabel = new JLabel();
 	protected MoveDescription m_moveMessage;
 	protected List<UndoableMove> m_undoableMoves;
 	protected AbstractAction m_doneMove = new AbstractAction("Done")
 	{
-		
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 			if (doneMoveAction())
 			{
 				m_moveMessage = null;
 				release();
 			}
-			
 		}
 	};
 	private final Action m_DONE_MOVE_ACTION = new WeakAction("Done", m_doneMove);
 	private final Action m_cancelMove = new AbstractAction("Cancel")
 	{
-		
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 			cancelMoveAction();
-			
 			m_frame.clearStatusMessage();
 			this.setEnabled(false);
 			m_CANCEL_MOVE_ACTION.setEnabled(false);
@@ -87,7 +82,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 		return m_bridge;
 	}
 	
-	public AbstractMovePanel(GameData data, MapPanel map, TripleAFrame frame)
+	public AbstractMovePanel(final GameData data, final MapPanel map, final TripleAFrame frame)
 	{
 		super(data, map);
 		m_frame = frame;
@@ -116,7 +111,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 		return m_listening;
 	}
 	
-	protected final void setMoveMessage(MoveDescription message)
+	protected final void setMoveMessage(final MoveDescription message)
 	{
 		m_moveMessage = message;
 	}
@@ -155,13 +150,12 @@ public abstract class AbstractMovePanel extends ActionPanel
 		m_CANCEL_MOVE_ACTION.actionPerformed(null);
 	}
 	
-	public final void undoMove(int moveIndex)
+	public final void undoMove(final int moveIndex)
 	{
 		// clean up any state we may have
 		m_CANCEL_MOVE_ACTION.actionPerformed(null);
-		
 		// undo the move
-		String error = getDelegate().undoMove(moveIndex);
+		final String error = getDelegate().undoMove(moveIndex);
 		if (error != null)
 		{
 			JOptionPane.showMessageDialog(getTopLevelAncestor(), error, "Could not undo move", JOptionPane.ERROR_MESSAGE);
@@ -171,7 +165,6 @@ public abstract class AbstractMovePanel extends ActionPanel
 			updateMoves();
 		}
 		undoMoveSpecific();
-		
 	}
 	
 	/*
@@ -181,38 +174,28 @@ public abstract class AbstractMovePanel extends ActionPanel
 	
 	protected final void cleanUp()
 	{
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				s_logger.fine("cleanup");
-				
 				if (!m_listening)
 				{
 					throw new IllegalStateException("Not listening");
 				}
 				m_listening = false;
-				
 				cleanUpSpecific();
-				
 				m_bridge = null;
-				
 				m_CANCEL_MOVE_ACTION.setEnabled(false);
-				JComponent rootPane = getRootPane();
+				final JComponent rootPane = getRootPane();
 				if (rootPane != null)
 				{
 					rootPane.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), null);
 				}
-				
 				removeAll();
 				REFRESH.run();
-				
 			}
-			
 		});
-		
 	}
 	
 	/*
@@ -221,29 +204,23 @@ public abstract class AbstractMovePanel extends ActionPanel
 	abstract protected void cleanUpSpecific();
 	
 	@Override
-	public final void setActive(boolean active)
+	public final void setActive(final boolean active)
 	{
 		super.setActive(active);
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_CANCEL_MOVE_ACTION.actionPerformed(null);
 			}
-			
 		});
-		
 	}
 	
 	protected final void display(final PlayerID id, final String actionLabel)
 	{
-		
 		super.display(id);
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				removeAll();
@@ -252,32 +229,24 @@ public abstract class AbstractMovePanel extends ActionPanel
 				if (setCancelButton())
 					add(leftBox(new JButton(m_CANCEL_MOVE_ACTION)));
 				add(leftBox(new JButton(m_DONE_MOVE_ACTION)));
-				
 				addAdditionalButtons();
-				
 				add(Box.createVerticalStrut(s_entryPadding));
-				
 				add(m_undoableMovesPanel);
 				add(Box.createGlue());
-				
 				SwingUtilities.invokeLater(REFRESH);
-				
 			}
-			
 		});
-		
 	}
 	
 	protected void addAdditionalButtons()
 	{
-		
 	}
 	
 	abstract protected boolean setCancelButton();
 	
-	protected final JComponent leftBox(JComponent c)
+	protected final JComponent leftBox(final JComponent c)
 	{
-		Box b = new Box(BoxLayout.X_AXIS);
+		final Box b = new Box(BoxLayout.X_AXIS);
 		b.add(c);
 		b.add(Box.createHorizontalGlue());
 		return b;
@@ -287,28 +256,22 @@ public abstract class AbstractMovePanel extends ActionPanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				s_logger.fine("setup");
-				
 				setUpSpecific();
 				m_bridge = bridge;
 				updateMoves();
-				
 				if (m_listening)
 				{
 					throw new IllegalStateException("Not listening");
 				}
 				m_listening = true;
-				
-				String key = s_MOVE_PANEL_CANCEL;
+				final String key = s_MOVE_PANEL_CANCEL;
 				getRootPane().getActionMap().put(key, m_CANCEL_MOVE_ACTION);
 				getRootPane().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), key);
 			}
-			
 		});
-		
 	}
 	
 	/*
@@ -316,17 +279,13 @@ public abstract class AbstractMovePanel extends ActionPanel
 	 */
 	abstract protected void setUpSpecific();
 	
-	public final MoveDescription waitForMove(IPlayerBridge bridge)
+	public final MoveDescription waitForMove(final IPlayerBridge bridge)
 	{
 		setUp(bridge);
-		
 		waitForRelease();
-		
 		cleanUp();
-		
-		MoveDescription rVal = m_moveMessage;
+		final MoveDescription rVal = m_moveMessage;
 		m_moveMessage = null;
 		return rVal;
-		
 	}
 }

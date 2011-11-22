@@ -37,18 +37,17 @@ import javax.swing.tree.TreePath;
 
 public class HistoryLog extends JFrame
 {
-	private JTextArea m_textArea;
-	private StringWriter m_stringWriter;
-	private PrintWriter m_printWriter;
+	private final JTextArea m_textArea;
+	private final StringWriter m_stringWriter;
+	private final PrintWriter m_printWriter;
 	
 	public HistoryLog()
 	{
 		m_textArea = new JTextArea(50, 50);
 		m_textArea.setEditable(false);
-		JScrollPane scrollingArea = new JScrollPane(m_textArea);
-		
+		final JScrollPane scrollingArea = new JScrollPane(m_textArea);
 		// ... Get the content pane, set layout, add to center
-		JPanel content = new JPanel();
+		final JPanel content = new JPanel();
 		content.setLayout(new BorderLayout());
 		content.add(scrollingArea, BorderLayout.CENTER);
 		m_stringWriter = new StringWriter();
@@ -77,13 +76,12 @@ public class HistoryLog extends JFrame
 		m_textArea.setText("");
 	}
 	
-	public void printFullTurn(HistoryNode printNode, boolean verbose)
+	public void printFullTurn(final HistoryNode printNode, final boolean verbose)
 	{
 		HistoryNode curNode = printNode;
 		Step stepNode = null;
 		Step turnStartNode = null;
 		PlayerID curPlayer = null;
-		
 		// find Step node, if exists in this path
 		while (curNode != null)
 		{
@@ -94,7 +92,6 @@ public class HistoryLog extends JFrame
 			}
 			curNode = (HistoryNode) curNode.getPreviousNode();
 		}
-		
 		if (stepNode != null)
 		{
 			curPlayer = stepNode.getPlayerID();
@@ -110,7 +107,6 @@ public class HistoryLog extends JFrame
 				if (!stepNode.getPlayerID().getName().equals(curPlayer.getName()))
 					break;
 			}
-			
 			printRemainingTurn(turnStartNode, verbose, curPlayer.getData().getDiceSides());
 		}
 		else
@@ -118,51 +114,47 @@ public class HistoryLog extends JFrame
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void printRemainingTurn(HistoryNode printNode, boolean verbose, int diceSides)
+	public void printRemainingTurn(final HistoryNode printNode, final boolean verbose, final int diceSides)
 	{
-		PrintWriter logWriter = m_printWriter;
-		
-		String moreIndent = "    ";
+		final PrintWriter logWriter = m_printWriter;
+		final String moreIndent = "    ";
 		// print out the parent nodes
 		DefaultMutableTreeNode curNode = printNode;
-		TreePath parentPath = (new TreePath(printNode.getPath())).getParentPath();
+		final TreePath parentPath = (new TreePath(printNode.getPath())).getParentPath();
 		PlayerID curPlayer = null;
 		if (parentPath != null)
 		{
-			Object pathToNode[] = parentPath.getPath();
-			for (Object pathNode : pathToNode)
+			final Object pathToNode[] = parentPath.getPath();
+			for (final Object pathNode : pathToNode)
 			{
-				HistoryNode node = (HistoryNode) pathNode;
+				final HistoryNode node = (HistoryNode) pathNode;
 				for (int i = 0; i < node.getLevel(); i++)
 					logWriter.print(moreIndent);
-				
 				logWriter.println(node.getTitle());
 				if (node.getLevel() == 0)
 					logWriter.println();
 				if (node instanceof Step)
 					curPlayer = ((Step) node).getPlayerID();
 			}
-			
 		}
-		List<String> moveList = new ArrayList<String>();
+		final List<String> moveList = new ArrayList<String>();
 		boolean moving = false;
 		do
 		{
 			// keep track of conquered territory during combat
 			String conquerStr = "";
-			Enumeration nodeEnum = curNode.preorderEnumeration();
+			final Enumeration nodeEnum = curNode.preorderEnumeration();
 			while (nodeEnum.hasMoreElements())
 			{
-				HistoryNode node = (HistoryNode) nodeEnum.nextElement();
-				String title = node.getTitle();
+				final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
+				final String title = node.getTitle();
 				String indent = "";
 				for (int i = 0; i < node.getLevel(); i++)
 					indent = indent + moreIndent;
-				
 				// flush move list
 				if (moving && !(node instanceof Renderable))
 				{
-					Iterator<String> moveIter = moveList.iterator();
+					final Iterator<String> moveIter = moveList.iterator();
 					while (moveIter.hasNext())
 					{
 						logWriter.println(moveIter.next());
@@ -172,13 +164,12 @@ public class HistoryLog extends JFrame
 				}
 				if (node instanceof Renderable)
 				{
-					Object details = ((Renderable) node).getRenderingData();
+					final Object details = ((Renderable) node).getRenderingData();
 					// flush move list
 					// support conquering territory on combat move
-					if (moving && !(details instanceof MoveDescription
-										|| title.matches("\\w+ takes? .*? from \\w+")))
+					if (moving && !(details instanceof MoveDescription || title.matches("\\w+ takes? .*? from \\w+")))
 					{
-						Iterator<String> moveIter = moveList.iterator();
+						final Iterator<String> moveIter = moveList.iterator();
 						while (moveIter.hasNext())
 						{
 							logWriter.println(moveIter.next());
@@ -190,8 +181,7 @@ public class HistoryLog extends JFrame
 					{
 						if (!verbose)
 							continue;
-						
-						String diceMsg1 = title.substring(0, title.indexOf(':') + 1);
+						final String diceMsg1 = title.substring(0, title.indexOf(':') + 1);
 						if (diceMsg1.equals(""))
 						{
 							// tech roll
@@ -202,20 +192,19 @@ public class HistoryLog extends JFrame
 							// dice roll
 							// Japanese roll dice for 1 armour in Russia, round 1
 							logWriter.print(indent + moreIndent + diceMsg1);
-							DiceRoll diceRoll = (DiceRoll) details;
-							int hits = diceRoll.getHits();
+							final DiceRoll diceRoll = (DiceRoll) details;
+							final int hits = diceRoll.getHits();
 							int rolls = 0;
 							for (int i = 1; i <= diceSides; i++)
 								rolls += diceRoll.getRolls(i).size();
-							
 							logWriter.println("  " + hits + "/" + rolls + " hits");
 						}
 					}
 					else if (details instanceof MoveDescription)
 					{
 						// movement
-						Pattern p = Pattern.compile("\\w+ undo move (\\d+).");
-						Matcher m = p.matcher(title);
+						final Pattern p = Pattern.compile("\\w+ undo move (\\d+).");
+						final Matcher m = p.matcher(title);
 						if (m.matches())
 						{
 							moveList.remove(Integer.valueOf(m.group(1)).intValue() - 1);
@@ -228,11 +217,11 @@ public class HistoryLog extends JFrame
 					}
 					else if (details instanceof Collection)
 					{
-						Collection<Unit> objects = (Collection) details;
-						Iterator objIter = objects.iterator();
+						final Collection<Unit> objects = (Collection) details;
+						final Iterator objIter = objects.iterator();
 						if (objIter.hasNext())
 						{
-							Object obj = objIter.next();
+							final Object obj = objIter.next();
 							if (obj instanceof Unit)
 							{
 								// purchase/place units - don't need details
@@ -264,21 +253,20 @@ public class HistoryLog extends JFrame
 								else if (title.startsWith("Battle casualty summary:"))
 								{
 									// logWriter.println(indent+"CAS1: "+title);
-									logWriter.println(indent + conquerStr + ". Battle score " +
-												title.substring(title.indexOf("for attacker is")));
+									logWriter.println(indent + conquerStr + ". Battle score " + title.substring(title.indexOf("for attacker is")));
 									conquerStr = "";
 									// separate units by player and show casualty summary
-									IntegerMap<PlayerID> unitCount = new IntegerMap<PlayerID>();
+									final IntegerMap<PlayerID> unitCount = new IntegerMap<PlayerID>();
 									unitCount.add(unit.getOwner(), 1);
 									while (objIter.hasNext())
 									{
 										unit = (Unit) objIter.next();
 										unitCount.add(unit.getOwner(), 1);
 									}
-									Iterator<PlayerID> playerIter = unitCount.keySet().iterator();
+									final Iterator<PlayerID> playerIter = unitCount.keySet().iterator();
 									while (playerIter.hasNext())
 									{
-										PlayerID player = playerIter.next();
+										final PlayerID player = playerIter.next();
 										logWriter.println(indent + "Casualties for " + player.getName() + ": " + MyFormatter.unitsToTextNoOwner(objects, player));
 									}
 								}
@@ -339,7 +327,7 @@ public class HistoryLog extends JFrame
 							// British take Libya from Germans
 							if (moving)
 							{
-								String str = moveList.remove(moveList.size() - 1);
+								final String str = moveList.remove(moveList.size() - 1);
 								moveList.add(str + "\n  " + indent + title.replaceAll(" takes ", " take "));
 							}
 							else
@@ -374,7 +362,7 @@ public class HistoryLog extends JFrame
 				}
 				else if (node instanceof Step)
 				{
-					PlayerID playerId = ((Step) node).getPlayerID();
+					final PlayerID playerId = ((Step) node).getPlayerID();
 					if (title.equals("Initializing Delegates"))
 					{
 					}
@@ -389,7 +377,6 @@ public class HistoryLog extends JFrame
 						}
 						logWriter.println();
 					}
-					
 				}
 				else if (node instanceof Round)
 				{
@@ -405,21 +392,16 @@ public class HistoryLog extends JFrame
 					// unknown node type
 					logWriter.println(indent + title);
 				}
-				
 			} // while (nodeEnum.hasMoreElements())
-			
 			curNode = curNode.getNextSibling();
 		} while ((curNode instanceof Step) && ((Step) curNode).getPlayerID().equals(curPlayer));
-		
 		logWriter.println();
-		
 		m_textArea.setText(m_stringWriter.toString());
-		
 	}
 	
-	public void printTerritorySummary(GameData data)
+	public void printTerritorySummary(final GameData data)
 	{
-		PrintWriter logWriter = m_printWriter;
+		final PrintWriter logWriter = m_printWriter;
 		Collection<Territory> territories;
 		PlayerID player;
 		// print all units in all territories, including "flags"
@@ -433,17 +415,16 @@ public class HistoryLog extends JFrame
 			data.releaseReadLock();
 		}
 		logWriter.println("Territory Summary for " + player.getName() + " : \n");
-		for (Territory t : territories)
+		for (final Territory t : territories)
 		{
-			List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+			final List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
 			// see if there's a flag
-			TerritoryAttachment ta = TerritoryAttachment.get(t);
+			final TerritoryAttachment ta = TerritoryAttachment.get(t);
 			boolean hasFlag = false;
 			if (t == null || ta == null)
 				hasFlag = false;
 			else
 				hasFlag = t.getOwner().equals(player) && !ta.getOriginalOwner().equals(player);
-			
 			if (hasFlag || !ownedUnits.isEmpty())
 			{
 				logWriter.print("    " + t.getName() + " : ");
@@ -454,13 +435,12 @@ public class HistoryLog extends JFrame
 			}
 		}
 		logWriter.println();
-		
 		m_textArea.setText(m_stringWriter.toString());
 	}
 	
-	public void printProductionSummary(GameData data)
+	public void printProductionSummary(final GameData data)
 	{
-		PrintWriter logWriter = m_printWriter;
+		final PrintWriter logWriter = m_printWriter;
 		Collection<PlayerID> players;
 		logWriter.println("Production/PUs Summary :\n");
 		data.acquireReadLock();
@@ -471,49 +451,41 @@ public class HistoryLog extends JFrame
 		{
 			data.releaseReadLock();
 		}
-		
-		for (PlayerID player : players)
+		for (final PlayerID player : players)
 		{
-			int PUs = player.getResources().getQuantity(Constants.PUS);
-			int production = getProduction(player, data);
+			final int PUs = player.getResources().getQuantity(Constants.PUS);
+			final int production = getProduction(player, data);
 			logWriter.println("    " + player.getName() + " : " + production + " / " + PUs);
 		}
 		logWriter.println();
-		
 		m_textArea.setText(m_stringWriter.toString());
 	}
 	
 	// copied from StatPanel
-	private int getProduction(PlayerID player, GameData data)
+	private int getProduction(final PlayerID player, final GameData data)
 	{
 		int rVal = 0;
-		Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 		while (iter.hasNext())
 		{
 			boolean isConvoyOrLand = false;
-			Territory place = iter.next();
-			OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
-			TerritoryAttachment ta = TerritoryAttachment.get(place);
-			
+			final Territory place = iter.next();
+			final OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
+			final TerritoryAttachment ta = TerritoryAttachment.get(place);
 			if (!place.isWater())
 			{
 				isConvoyOrLand = true;
 			}
-			else if (place.isWater() &&
-						ta != null &&
-						origOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID &&
-						origOwnerTracker.getOriginalOwner(place) == player &&
-						place.getOwner().equals(player))
+			else if (place.isWater() && ta != null && origOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID && origOwnerTracker.getOriginalOwner(place) == player
+						&& place.getOwner().equals(player))
 			{
 				isConvoyOrLand = true;
 			}
-			
 			if (place.getOwner().equals(player) && isConvoyOrLand)
 			{
 				if (ta != null)
 					rVal += ta.getProduction();
 			}
-			
 		}
 		return rVal;
 	}

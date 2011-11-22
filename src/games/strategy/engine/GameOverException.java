@@ -14,10 +14,8 @@ package games.strategy.engine;
  */
 public class GameOverException extends RuntimeException
 {
-	
-	public GameOverException(String string)
+	public GameOverException(final String string)
 	{
 		super(string);
 	}
-	
 }

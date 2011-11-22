@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TerritoryAttachmentExporter.java
  * 
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
-
 package games.strategy.engine.data.export;
 
 import games.strategy.engine.data.IAttachment;
@@ -29,11 +27,10 @@ import java.lang.reflect.Field;
 
 public class TerritoryAttachmentExporter extends DefaultAttachmentExporter
 {
-	
 	@Override
-	protected String printOption(Field field, IAttachment attachment) throws AttachmentExportException
+	protected String printOption(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
-		String fieldName = field.getName();
+		final String fieldName = field.getName();
 		if (fieldName.equals("m_changeUnitOwners"))
 			return mChangeUnitOwnersHandler(field, attachment);
 		if (fieldName.equals("m_captureUnitOnEnteringBy"))
@@ -46,48 +43,43 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter
 			return mOccupiedTerrOfHandler(field, attachment);
 		if (fieldName.equals("m_occupiedTerrOf"))
 			return ""; // we want to skip this, since we already check this when we look ad original owner.
-			
 		return super.printOption(field, attachment);
 	}
 	
-	private String mOccupiedTerrOfHandler(Field field, IAttachment attachment)
+	private String mOccupiedTerrOfHandler(final Field field, final IAttachment attachment)
 	{
-		TerritoryAttachment att = (TerritoryAttachment) attachment;
-		PlayerID occupiedTerrOf = att.getOccupiedTerrOf();
+		final TerritoryAttachment att = (TerritoryAttachment) attachment;
+		final PlayerID occupiedTerrOf = att.getOccupiedTerrOf();
 		if (occupiedTerrOf != null)
 			return printDefaultOption("occupiedTerrOf", occupiedTerrOf.getName()); // if we have a specific occupiedTerrOf then use it
-			
 		// otherwise, check to see if someone else has conquered the territory in the mean time. must check for neutrals too. neutrals can be either NULL or PlayerID.NULL_PLAYERID
 		// we only want to add an occupiedTerrOf IF the current owner does not equal the original owner. Since any time they are equal, this is not needed.
-		PlayerID originalOwner = att.getOriginalOwner();
-		Territory t = (Territory) att.getAttatchedTo();
+		final PlayerID originalOwner = att.getOriginalOwner();
+		final Territory t = (Territory) att.getAttatchedTo();
 		if (originalOwner == null && (t.getOwner() != null && !t.getOwner().equals(PlayerID.NULL_PLAYERID)))
 			return printDefaultOption("occupiedTerrOf", PlayerID.NULL_PLAYERID.getName());
 		else if (originalOwner == null)
 			return ""; // must be that original owner and current owner are both null
-			
 		if (!originalOwner.equals(t.getOwner()))
 			return printDefaultOption("occupiedTerrOf", originalOwner.getName());
-		
 		return "";
 	}
 	
-	private String mUnitProductionHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mUnitProductionHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
-		TerritoryAttachment att = (TerritoryAttachment) attachment;
+		final TerritoryAttachment att = (TerritoryAttachment) attachment;
 		if (!(att.getProduction() == att.getUnitProduction()))
 			return printIntegerOption(field, "unitProduction", attachment, true);
 		return "";
 	}
 	
-	private String mCaptureUnitOnEnteringByHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mCaptureUnitOnEnteringByHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);
 	}
 	
-	private String mChangeUnitOwnersHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mChangeUnitOwnersHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);
 	}
-	
 }

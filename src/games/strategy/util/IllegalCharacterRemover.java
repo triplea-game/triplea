@@ -7,11 +7,11 @@ package games.strategy.util;
  * Designed to remove/replace / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
  * 
  * @author Chris Duncan
- *
+ * 
  */
 public class IllegalCharacterRemover
 {
-	private static final char[] ILLEGAL_CHARACTERS = {'/', '\b', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', '\'', ':', '.', ',', '^', '[', ']', '=', '+', ';'};
+	private static final char[] ILLEGAL_CHARACTERS = { '/', '\b', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', '\'', ':', '.', ',', '^', '[', ']', '=', '+', ';' };
 	
 	/**
 	 * Designed to remove / \b \n \r \t \0 \f ` ? * \ < > | " ' : . , ^ [ ] = + ;
@@ -19,9 +19,9 @@ public class IllegalCharacterRemover
 	 * @param text
 	 * @return
 	 */
-	public static String removeIllegalCharacter(String text)
+	public static String removeIllegalCharacter(final String text)
 	{
-		StringBuilder rVal = new StringBuilder();
+		final StringBuilder rVal = new StringBuilder();
 		for (int i = 0; i < text.length(); ++i)
 		{
 			if (!isIllegalFileNameChar(text.charAt(i)))
@@ -37,9 +37,9 @@ public class IllegalCharacterRemover
 	 * @param replacement
 	 * @return
 	 */
-	public static String replaceIllegalCharacter(String text, char replacement)
+	public static String replaceIllegalCharacter(final String text, final char replacement)
 	{
-		StringBuilder rVal = new StringBuilder();
+		final StringBuilder rVal = new StringBuilder();
 		for (int i = 0; i < text.length(); ++i)
 		{
 			if (!isIllegalFileNameChar(text.charAt(i)))
@@ -50,7 +50,7 @@ public class IllegalCharacterRemover
 		return rVal.toString();
 	}
 	
-	private static boolean isIllegalFileNameChar(char c)
+	private static boolean isIllegalFileNameChar(final char c)
 	{
 		boolean isIllegal = false;
 		for (int i = 0; i < ILLEGAL_CHARACTERS.length; i++)

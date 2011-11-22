@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.tictactoe.ui;
 
 import games.strategy.common.image.UnitImageFactory;
@@ -45,50 +44,37 @@ import javax.swing.JComponent;
  */
 public class MapPanel extends JComponent implements MouseListener
 {
-	private MapData m_mapData;
-	private GameData m_gameData;
-	
+	private final MapData m_mapData;
+	private final GameData m_gameData;
 	private Territory m_clickedAt = null;
-	
-	private Map<Territory, Image> m_images;
-	
+	private final Map<Territory, Image> m_images;
 	private CountDownLatch m_waiting;
 	
-	public MapPanel(MapData mapData)
+	public MapPanel(final MapData mapData)
 	{
 		m_waiting = null;
-		
 		m_mapData = mapData;
 		m_gameData = m_mapData.getGameData();
-		
-		Dimension mapDimension = m_mapData.getMapDimensions();
-		
+		final Dimension mapDimension = m_mapData.getMapDimensions();
 		this.setMinimumSize(mapDimension);
 		this.setPreferredSize(mapDimension);
 		this.setSize(mapDimension);
-		
 		m_images = new HashMap<Territory, Image>();
 		updateAllImages();
-		
 		this.addMouseListener(this);
-		
 		this.setOpaque(true);
-		
 		m_gameData.addDataChangeListener(new GameDataChangeListener()
 		{
-			
-			public void gameDataChanged(Change change)
+			public void gameDataChanged(final Change change)
 			{
 				updateAllImages();
-				
 			}
-			
 		});
 	}
 	
 	private void updateAllImages()
 	{
-		for (Territory at : m_mapData.getPolygons().keySet())
+		for (final Territory at : m_mapData.getPolygons().keySet())
 		{
 			updateImage(at);
 		}
@@ -115,9 +101,8 @@ public class MapPanel extends JComponent implements MouseListener
 	 * @param captured
 	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
 	 */
-	protected void performPlay(Territory at)
+	protected void performPlay(final Territory at)
 	{
-		
 	}
 	
 	/**
@@ -126,16 +111,16 @@ public class MapPanel extends JComponent implements MouseListener
 	 * @param at
 	 *            the <code>Territory</code> to update
 	 */
-	private void updateImage(Territory at)
+	private void updateImage(final Territory at)
 	{
 		if (at != null)
 		{
 			if (at.getUnits().size() == 1)
 			{
-				UnitImageFactory f = new UnitImageFactory();
+				final UnitImageFactory f = new UnitImageFactory();
 				// Get image for exactly one unit
-				Unit u = (Unit) at.getUnits().getUnits().toArray()[0];
-				Image image = f.getImage(u.getType(), u.getOwner(), m_gameData);
+				final Unit u = (Unit) at.getUnits().getUnits().toArray()[0];
+				final Image image = f.getImage(u.getType(), u.getOwner(), m_gameData);
 				m_images.put(at, image);
 			}
 			else
@@ -148,56 +133,48 @@ public class MapPanel extends JComponent implements MouseListener
 	/**
 	 * Draw the current map and pieces.
 	 */
-	
 	@Override
-	protected void paintComponent(Graphics g)
+	protected void paintComponent(final Graphics g)
 	{
 		g.setColor(Color.white);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		
-		for (Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
+		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
 		{
-			Polygon p = entry.getValue();
-			Territory at = entry.getKey();
-			Color backgroundColor = Color.WHITE;
-			
+			final Polygon p = entry.getValue();
+			final Territory at = entry.getKey();
+			final Color backgroundColor = Color.WHITE;
 			g.setColor(Color.black);
-			Image image = m_images.get(at);
-			
+			final Image image = m_images.get(at);
 			if (image != null)
 			{
-				Rectangle square = p.getBounds();
+				final Rectangle square = p.getBounds();
 				g.drawImage(image, square.x, square.y, square.width, square.height, backgroundColor, null);
 			}
-			
 			g.drawPolygon(p);
-			
 		}
 	}
 	
-	public void mouseClicked(MouseEvent e)
+	public void mouseClicked(final MouseEvent e)
 	{
 	}
 	
-	public void mouseEntered(MouseEvent e)
+	public void mouseEntered(final MouseEvent e)
 	{
 	}
 	
-	public void mouseExited(MouseEvent e)
+	public void mouseExited(final MouseEvent e)
 	{
 	}
 	
 	/**
 	 * Process the mouse button being pressed.
 	 */
-	
-	public void mousePressed(MouseEvent e)
+	public void mousePressed(final MouseEvent e)
 	{
 		// After this method has been called,
 		// the Territory corresponding to the cursor location when the mouse was pressed
 		// will be stored in the private member variable m_clickedAt.
 		m_clickedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
-		
 		// The waitForPlay method is waiting for mouse input.
 		// Let it know that we have processed mouse input.
 		if (m_waiting != null)
@@ -207,8 +184,7 @@ public class MapPanel extends JComponent implements MouseListener
 	/**
 	 * Process the mouse button being released.
 	 */
-	
-	public void mouseReleased(MouseEvent e)
+	public void mouseReleased(final MouseEvent e)
 	{
 	}
 	
@@ -225,18 +201,15 @@ public class MapPanel extends JComponent implements MouseListener
 	 * @throws InterruptedException
 	 *             if the play was interrupted
 	 */
-	public Territory waitForPlay(final PlayerID player, final IPlayerBridge bridge, CountDownLatch waiting) throws InterruptedException
+	public Territory waitForPlay(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
 	{
 		// Make sure we have a valid CountDownLatch.
 		if (waiting == null || waiting.getCount() != 1)
 			throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
-		
 		// The mouse listeners need access to the CountDownLatch, so store as a member variable.
 		m_waiting = waiting;
-		
 		// Wait for a play or an attempt to leave the game
 		m_waiting.await();
-		
 		if (m_clickedAt == null)
 		{
 			// If m_clickedAt==null,
@@ -249,11 +222,9 @@ public class MapPanel extends JComponent implements MouseListener
 		{
 			// We have a valid play!
 			// Reset the member variables, and return the play.
-			Territory play = m_clickedAt;
+			final Territory play = m_clickedAt;
 			m_clickedAt = null;
 			return play;
 		}
-		
 	}
-	
 }

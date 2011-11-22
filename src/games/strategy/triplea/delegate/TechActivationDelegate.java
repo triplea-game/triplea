@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TechActivationDelegate.java
  * 
  * Created on December 7, 2004, 9:55 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -52,42 +50,36 @@ public class TechActivationDelegate extends BaseDelegate
 	 * Called before the delegate will run. In this class, this does all the
 	 * work.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge aBridge)
+	public void start(final IDelegateBridge aBridge)
 	{
 		super.start(aBridge);
-		GameData data = getData();
-		
+		final GameData data = getData();
 		if (!m_needToInitialize)
 			return;
-		
 		// Activate techs
-		Map<PlayerID, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(data).getAdvances();
-		Collection<TechAdvance> advances = techMap.get(m_player);
+		final Map<PlayerID, Collection<TechAdvance>> techMap = DelegateFinder.techDelegate(data).getAdvances();
+		final Collection<TechAdvance> advances = techMap.get(m_player);
 		if ((advances != null) && (advances.size() > 0))
 		{
 			// Start event
 			m_bridge.getHistoryWriter().startEvent(m_player.getName() + " activating " + advancesAsString(advances));
-			
-			Iterator<TechAdvance> techsIter = advances.iterator();
+			final Iterator<TechAdvance> techsIter = advances.iterator();
 			while (techsIter.hasNext())
 			{
-				TechAdvance advance = techsIter.next();
+				final TechAdvance advance = techsIter.next();
 				// advance.perform(m_bridge.getPlayerID(), m_bridge, m_data);
 				TechTracker.addAdvance(m_player, m_bridge, advance);
 			}
 		}
 		// empty
 		techMap.put(m_player, null);
-		
 		if (games.strategy.triplea.Properties.getTriggers(data))
 		{
 			TriggerAttachment.triggerTechChange(m_player, aBridge, null, null);
 			TriggerAttachment.triggerSupportChange(m_player, aBridge, null, null);
 			TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, null, null);
 		}
-		
 		m_needToInitialize = false;
 	}
 	
@@ -97,36 +89,35 @@ public class TechActivationDelegate extends BaseDelegate
 		super.end();
 		m_needToInitialize = true;
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		TechActivationExtendedDelegateState state = new TechActivationExtendedDelegateState();
+		final TechActivationExtendedDelegateState state = new TechActivationExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		state.m_needToInitialize = m_needToInitialize;
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		TechActivationExtendedDelegateState s = (TechActivationExtendedDelegateState) state;
+		final TechActivationExtendedDelegateState s = (TechActivationExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 		m_needToInitialize = s.m_needToInitialize;
 	}
 	
 	// Return string representing all advances in collection
-	private String advancesAsString(Collection<TechAdvance> advances)
+	private String advancesAsString(final Collection<TechAdvance> advances)
 	{
-		Iterator<TechAdvance> iter = advances.iterator();
+		final Iterator<TechAdvance> iter = advances.iterator();
 		int count = advances.size();
-		StringBuilder text = new StringBuilder();
-		
+		final StringBuilder text = new StringBuilder();
 		while (iter.hasNext())
 		{
-			TechAdvance advance = iter.next();
+			final TechAdvance advance = iter.next();
 			text.append(advance.getName());
 			count--;
 			if (count > 1)
@@ -140,13 +131,11 @@ public class TechActivationDelegate extends BaseDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
-
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
 		return null;
 	}
-	
 }
 
 

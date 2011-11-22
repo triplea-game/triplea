@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * SelectCasualtyQueryMessage.java
  * 
  * Created on November 19, 2001, 2:59 PM
  */
-
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Unit;
@@ -46,23 +44,21 @@ public class CasualtyDetails extends CasualtyList implements Serializable
 	 * @param autoCalculated
 	 *            whether casualties should be selected automatically
 	 */
-	public CasualtyDetails(List<Unit> killed, List<Unit> damaged, boolean autoCalculated)
+	public CasualtyDetails(final List<Unit> killed, final List<Unit> damaged, final boolean autoCalculated)
 	{
 		if (killed == null)
 			throw new IllegalArgumentException("null killed");
 		if (damaged == null)
 			throw new IllegalArgumentException("null damaged");
-		
 		m_killed = killed;
 		m_damaged = damaged;
 		m_autoCalculated = autoCalculated;
 	}
 	
-	public CasualtyDetails(CasualtyList casualties, boolean autoCalculated)
+	public CasualtyDetails(final CasualtyList casualties, final boolean autoCalculated)
 	{
 		if (casualties == null)
 			throw new IllegalArgumentException("null casualties");
-		
 		m_killed = casualties.getKilled();
 		m_damaged = casualties.getDamaged();
 		m_autoCalculated = autoCalculated;

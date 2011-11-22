@@ -25,14 +25,12 @@ import javax.swing.JTextField;
 
 public class CreateUpdateAccountPanel extends JPanel
 {
-	
 	public static enum ReturnValue
 	{
 		CANCEL, OK
 	}
 	
 	private JDialog m_dialog;
-	
 	private JTextField m_userName;
 	private JTextField m_email;
 	private JPasswordField m_password;
@@ -41,9 +39,9 @@ public class CreateUpdateAccountPanel extends JPanel
 	private JButton m_cancelButton;
 	private ReturnValue m_returnValue;
 	
-	public static CreateUpdateAccountPanel newUpdatePanel(DBUser user)
+	public static CreateUpdateAccountPanel newUpdatePanel(final DBUser user)
 	{
-		CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(false);
+		final CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(false);
 		panel.m_userName.setText(user.getName());
 		panel.m_userName.setEditable(false);
 		panel.m_email.setText(user.getEmail());
@@ -52,13 +50,12 @@ public class CreateUpdateAccountPanel extends JPanel
 	
 	public static CreateUpdateAccountPanel newCreatePanel()
 	{
-		CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(true);
+		final CreateUpdateAccountPanel panel = new CreateUpdateAccountPanel(true);
 		return panel;
 	}
 	
-	private CreateUpdateAccountPanel(boolean create)
+	private CreateUpdateAccountPanel(final boolean create)
 	{
-		
 		createComponents();
 		layoutComponents(create);
 		setupListeners();
@@ -73,45 +70,35 @@ public class CreateUpdateAccountPanel extends JPanel
 		m_password2 = new JPasswordField();
 		m_cancelButton = new JButton("Cancel");
 		m_okButton = new JButton("OK");
-		
 	}
 	
-	private void layoutComponents(boolean create)
+	private void layoutComponents(final boolean create)
 	{
-		JLabel label = new JLabel(new ImageIcon(Util.getBanner(create ? "Create Account" : "Update Account")));
+		final JLabel label = new JLabel(new ImageIcon(Util.getBanner(create ? "Create Account" : "Update Account")));
 		setLayout(new BorderLayout());
 		add(label, BorderLayout.NORTH);
-		
-		JPanel main = new JPanel();
+		final JPanel main = new JPanel();
 		add(main, BorderLayout.CENTER);
 		main.setLayout(new GridBagLayout());
-		
 		main.add(new JLabel("Username:"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 20, 0, 0), 0, 0));
 		main.add(m_userName, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(10, 5, 0, 40), 0, 0));
-		
 		main.add(new JLabel("Password:"), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
 		main.add(m_password, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 0, 40), 0, 0));
-		
 		main.add(new JLabel("Re-type Password:"), new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 20, 0, 0), 0, 0));
 		main.add(m_password2, new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 0, 40), 0, 0));
-		
 		main.add(new JLabel("Email:"), new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 20, 15, 0), 0, 0));
 		main.add(m_email, new GridBagConstraints(1, 3, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 15, 40), 0, 0));
-		
-		JPanel buttons = new JPanel();
+		final JPanel buttons = new JPanel();
 		buttons.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		buttons.add(m_okButton);
 		buttons.add(m_cancelButton);
-		
 		add(buttons, BorderLayout.SOUTH);
-		
 	}
 	
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		GameRunner2.setupLookAndFeel();
-		
-		JDialog d = new JDialog();
+		final JDialog d = new JDialog();
 		d.add(new CreateUpdateAccountPanel(false));
 		d.setDefaultCloseOperation(JDialog.EXIT_ON_CLOSE);
 		d.pack();
@@ -122,23 +109,17 @@ public class CreateUpdateAccountPanel extends JPanel
 	{
 		m_cancelButton.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				m_dialog.setVisible(false);
 			}
-			
 		});
-		
 		m_okButton.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				okPressed();
-				
 			}
-			
 		});
 	}
 	
@@ -172,31 +153,25 @@ public class CreateUpdateAccountPanel extends JPanel
 			JOptionPane.showMessageDialog(this, "Passwords must be at least three characters long", "Invalid password", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
 		m_returnValue = ReturnValue.OK;
 		m_dialog.setVisible(false);
 	}
 	
 	private void setWidgetActivation()
 	{
-		
 	}
 	
-	public ReturnValue show(Window parent)
+	public ReturnValue show(final Window parent)
 	{
 		m_dialog = new JDialog(JOptionPane.getFrameForComponent(parent), "Login", true);
-		
 		m_dialog.getContentPane().add(this);
 		m_dialog.pack();
 		m_dialog.setLocationRelativeTo(parent);
 		m_dialog.setVisible(true);
-		
 		m_dialog.dispose();
 		m_dialog = null;
-		
 		if (m_returnValue == null)
 			return ReturnValue.CANCEL;
-		
 		return m_returnValue;
 	}
 	

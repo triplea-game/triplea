@@ -31,7 +31,6 @@ import javax.swing.border.EmptyBorder;
 @SuppressWarnings("serial")
 public class DownloadMapDialog extends JDialog
 {
-	
 	private JComboBox m_urlComboBox;
 	private JButton m_listGamesButton;
 	private JButton m_cancelButton;
@@ -39,7 +38,7 @@ public class DownloadMapDialog extends JDialog
 	private final String DOWNLOAD_SITES_PREF = "downloadSites";
 	private final Frame owner;
 	
-	private DownloadMapDialog(Frame owner)
+	private DownloadMapDialog(final Frame owner)
 	{
 		super(owner, "Select Download Site", true);
 		this.owner = owner;
@@ -47,7 +46,6 @@ public class DownloadMapDialog extends JDialog
 		layoutCoponents();
 		setupListeners();
 		setWidgetActivation();
-		
 	}
 	
 	private void createComponents()
@@ -55,31 +53,25 @@ public class DownloadMapDialog extends JDialog
 		m_listGamesButton = new JButton("List Games");
 		m_cancelButton = new JButton("Cancel");
 		m_findMapsButton = new JButton("Find Maps and Games");
-		
 		m_urlComboBox = new JComboBox(getStoredDownloadSites());
 		m_urlComboBox.setEditable(true);
-		m_urlComboBox.setPrototypeDisplayValue(
-					"                                                                                                                                                                            ");
+		m_urlComboBox
+					.setPrototypeDisplayValue("                                                                                                                                                                            ");
 	}
 	
 	private void layoutCoponents()
 	{
-		
 		setLayout(new BorderLayout());
-		
-		JPanel buttonsPanel = new JPanel();
+		final JPanel buttonsPanel = new JPanel();
 		add(buttonsPanel, BorderLayout.SOUTH);
-		
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
-		
 		buttonsPanel.add(Box.createGlue());
 		buttonsPanel.add(m_cancelButton);
 		buttonsPanel.add(m_findMapsButton);
 		buttonsPanel.add(m_listGamesButton);
 		buttonsPanel.add(Box.createGlue());
 		buttonsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
-		
-		JPanel main = new JPanel();
+		final JPanel main = new JPanel();
 		main.setBorder(new EmptyBorder(30, 30, 30, 30));
 		main.setLayout(new BoxLayout(main, BoxLayout.X_AXIS));
 		main.add(new JLabel("Select download site:"));
@@ -91,17 +83,14 @@ public class DownloadMapDialog extends JDialog
 	{
 		m_cancelButton.addActionListener(new AbstractAction()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				setVisible(false);
 			}
 		});
-		
 		m_listGamesButton.addActionListener(new AbstractAction()
 		{
-			
-			public void actionPerformed(ActionEvent event)
+			public void actionPerformed(final ActionEvent event)
 			{
 				final String selectedUrl = (String) m_urlComboBox.getSelectedItem();
 				if (selectedUrl == null || selectedUrl.trim().length() == 0)
@@ -109,17 +98,13 @@ public class DownloadMapDialog extends JDialog
 					Util.notifyError(m_cancelButton, "nothing selected");
 					return;
 				}
-				
-				DownloadRunnable download = new DownloadRunnable(selectedUrl);
-				
+				final DownloadRunnable download = new DownloadRunnable(selectedUrl);
 				BackgroundTaskRunner.runInBackground(getRootPane(), "Downloading....", download);
-				
 				if (download.getError() != null)
 				{
 					Util.notifyError(m_cancelButton, download.getError());
 					return;
 				}
-				
 				List<DownloadFileDescription> downloads;
 				try
 				{
@@ -128,41 +113,36 @@ public class DownloadMapDialog extends JDialog
 					{
 						throw new IllegalStateException("No games listed.");
 					}
-				} catch (Exception e)
+				} catch (final Exception e)
 				{
 					Util.notifyError(m_cancelButton, e.getMessage());
 					return;
 				}
-				
 				addDownloadSites(selectedUrl.trim());
 				setVisible(false);
 				InstallMapDialog.installGames(owner, downloads);
-				
 			}
 		});
-		
 		m_findMapsButton.addActionListener(new AbstractAction()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
 					BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
-				} catch (Exception ex)
+				} catch (final Exception ex)
 				{
 					Util.notifyError(m_cancelButton, ex.getMessage());
 					return;
 				}
 			}
 		});
-		
 	}
 	
 	private Vector getStoredDownloadSites()
 	{
-		Preferences pref = getPrefNode();
-		byte[] stored = pref.getByteArray(DOWNLOAD_SITES_PREF, null);
+		final Preferences pref = getPrefNode();
+		final byte[] stored = pref.getByteArray(DOWNLOAD_SITES_PREF, null);
 		if (stored == null)
 		{
 			/* Code to have a default map listing:  (choose only one)
@@ -177,10 +157,10 @@ public class DownloadMapDialog extends JDialog
 		try
 		{
 			return (Vector) new ObjectInputStream(new ByteArrayInputStream(stored)).readObject();
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			e.printStackTrace(System.out);
-		} catch (ClassNotFoundException e)
+		} catch (final ClassNotFoundException e)
 		{
 			e.printStackTrace(System.out);
 		}
@@ -192,23 +172,22 @@ public class DownloadMapDialog extends JDialog
 		return Preferences.userNodeForPackage(DownloadMapDialog.class);
 	}
 	
-	private void addDownloadSites(String url)
+	private void addDownloadSites(final String url)
 	{
 		Vector old = getStoredDownloadSites();
 		old.remove(url);
 		old.add(0, url);
-		
 		if (old.size() > 10)
 		{
 			old = new Vector(old.subList(0, 10));
 		}
-		ByteArrayOutputStream sink = new ByteArrayOutputStream();
+		final ByteArrayOutputStream sink = new ByteArrayOutputStream();
 		try
 		{
-			ObjectOutputStream writer = new ObjectOutputStream(sink);
+			final ObjectOutputStream writer = new ObjectOutputStream(sink);
 			writer.writeObject(old);
 			writer.flush();
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace(System.out);
 		}
@@ -220,23 +199,20 @@ public class DownloadMapDialog extends JDialog
 	
 	private void setWidgetActivation()
 	{
-		
 	}
 	
-	public static void downloadGames(JComponent parent)
+	public static void downloadGames(final JComponent parent)
 	{
-		Frame parentFrame = JOptionPane.getFrameForComponent(parent);
-		DownloadMapDialog dia = new DownloadMapDialog(parentFrame);
+		final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
+		final DownloadMapDialog dia = new DownloadMapDialog(parentFrame);
 		dia.pack();
 		dia.setLocationRelativeTo(parentFrame);
 		dia.setVisible(true);
-		
 	}
 	
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		downloadGames(null);
 		// System.exit(-1);
 	}
-	
 }

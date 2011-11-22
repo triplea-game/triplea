@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * IntegerMapTest.java
  * 
  * Created on November 7, 2001, 1:46 PM
  */
-
 package games.strategy.util;
 
 import junit.framework.Test;
@@ -31,27 +29,26 @@ import junit.framework.TestSuite;
  */
 public class IntegerMapTest extends TestCase
 {
-	
-	private Object v1 = new Object();
-	private Object v2 = new Object();
-	private Object v3 = new Object();
+	private final Object v1 = new Object();
+	private final Object v2 = new Object();
+	private final Object v3 = new Object();
 	
 	public static Test suite()
 	{
-		TestSuite suite = new TestSuite();
+		final TestSuite suite = new TestSuite();
 		suite.addTestSuite(IntegerMapTest.class);
 		return suite;
 	}
 	
 	/** Creates new IntegerMapTest */
-	public IntegerMapTest(String name)
+	public IntegerMapTest(final String name)
 	{
 		super(name);
 	}
 	
 	public void testAdd()
 	{
-		IntegerMap<Object> map = new IntegerMap<Object>();
+		final IntegerMap<Object> map = new IntegerMap<Object>();
 		map.add(v1, 5);
 		assertEquals(map.getInt(v1), 5);
 		map.add(v1, 10);
@@ -60,7 +57,6 @@ public class IntegerMapTest extends TestCase
 		assertEquals(map.getInt(v1), -5);
 		map.add(v1, new Integer(5));
 		assertEquals(map.getInt(v1), 0);
-		
 	}
 	
 	public void testPositive()
@@ -70,7 +66,6 @@ public class IntegerMapTest extends TestCase
 		map.add(v2, 3);
 		map.add(v3, 0);
 		assertTrue(map.isPositive());
-		
 		map = new IntegerMap<Object>();
 		map.add(v1, 5);
 		map.add(v2, -3);
@@ -80,17 +75,14 @@ public class IntegerMapTest extends TestCase
 	
 	public void testAddMap()
 	{
-		IntegerMap<Object> map1 = new IntegerMap<Object>();
+		final IntegerMap<Object> map1 = new IntegerMap<Object>();
 		map1.add(v1, 5);
 		map1.add(v2, 3);
-		
-		IntegerMap<Object> map2 = new IntegerMap<Object>();
+		final IntegerMap<Object> map2 = new IntegerMap<Object>();
 		map2.add(v1, 5);
 		map2.add(v2, -3);
 		map2.add(v3, 1);
-		
 		map1.add(map2);
-		
 		assertEquals(10, map1.getInt(v1));
 		assertEquals(0, map1.getInt(v2));
 		assertEquals(1, map1.getInt(v3));
@@ -98,18 +90,15 @@ public class IntegerMapTest extends TestCase
 	
 	public void testGreaterThan()
 	{
-		IntegerMap<Object> map1 = new IntegerMap<Object>();
+		final IntegerMap<Object> map1 = new IntegerMap<Object>();
 		map1.add(v1, 5);
 		map1.add(v2, 3);
-		
-		IntegerMap<Object> map2 = new IntegerMap<Object>();
+		final IntegerMap<Object> map2 = new IntegerMap<Object>();
 		map2.add(v1, 5);
 		map2.add(v2, 3);
 		map2.add(v3, 1);
-		
 		assertTrue(!map1.greaterThanOrEqualTo(map2));
 		assertTrue(map2.greaterThanOrEqualTo(map2));
-		
 		map1.add(v3, 3);
 		assertTrue(map1.greaterThanOrEqualTo(map2));
 	}

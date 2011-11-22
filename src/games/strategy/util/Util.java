@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Util.java
  * 
  * Created on November 13, 2001, 1:57 PM
  */
-
 package games.strategy.util;
 
 import java.util.ArrayList;
@@ -39,18 +37,17 @@ public class Util
 	 * return a such that a exists in c1 and a exists in c2.
 	 * always returns a new collection.
 	 */
-	public static <T> List<T> intersection(Collection<T> c1, Collection<T> c2)
+	public static <T> List<T> intersection(final Collection<T> c1, final Collection<T> c2)
 	{
 		if (c1 == null || c2 == null)
 			return new ArrayList<T>();
 		if (c1.size() == 0 || c2.size() == 0)
 			return new ArrayList<T>();
-		
-		List<T> intersection = new ArrayList<T>();
-		Iterator<T> iter = c1.iterator();
+		final List<T> intersection = new ArrayList<T>();
+		final Iterator<T> iter = c1.iterator();
 		while (iter.hasNext())
 		{
-			T current = iter.next();
+			final T current = iter.next();
 			if (c2.contains(current))
 				intersection.add(current);
 		}
@@ -62,14 +59,13 @@ public class Util
 	 * 
 	 * @return true if some element in c1 is in c2
 	 */
-	public static <T> boolean someIntersect(Collection<T> c1, Collection<T> c2)
+	public static <T> boolean someIntersect(final Collection<T> c1, final Collection<T> c2)
 	{
 		if (c1.isEmpty())
 			return false;
 		if (c2.isEmpty())
 			return false;
-		
-		Iterator<T> iter = c1.iterator();
+		final Iterator<T> iter = c1.iterator();
 		while (iter.hasNext())
 		{
 			if (c2.contains(iter.next()))
@@ -82,18 +78,17 @@ public class Util
 	 * Returns a such that a exists in c1 but not in c2.
 	 * Always returns a new collection.
 	 */
-	public static <T> List<T> difference(Collection<T> c1, Collection<T> c2)
+	public static <T> List<T> difference(final Collection<T> c1, final Collection<T> c2)
 	{
 		if (c1 == null || c1.size() == 0)
 			return new ArrayList<T>(0);
 		if (c2 == null || c2.size() == 0)
 			return new ArrayList<T>(c1);
-		
-		List<T> difference = new ArrayList<T>();
-		Iterator<T> iter = c1.iterator();
+		final List<T> difference = new ArrayList<T>();
+		final Iterator<T> iter = c1.iterator();
 		while (iter.hasNext())
 		{
-			T current = iter.next();
+			final T current = iter.next();
 			if (!c2.contains(current))
 				difference.add(current);
 		}
@@ -106,48 +101,38 @@ public class Util
 	 * and c1 and c2 are the same size.
 	 * Note that (a,a,b) (a,b,b) are equal.
 	 */
-	public static <T> boolean equals(Collection<T> c1, Collection<T> c2)
+	public static <T> boolean equals(final Collection<T> c1, final Collection<T> c2)
 	{
 		if (c1 == null || c2 == null)
 			return c1 == c2;
-		
 		if (c1.size() != c2.size())
 			return false;
-		
 		if (c1 == c2)
 			return true;
-		
 		if (!c1.containsAll(c2))
 			return false;
-		
 		if (!c2.containsAll(c1))
 			return false;
-		
 		return true;
 	}
 	
 	/**
 	 * returns a list of everything in source, with the first count units moved to the end
 	 */
-	public static <T> List<T> shiftElementsToEnd(List<T> source, int count)
+	public static <T> List<T> shiftElementsToEnd(final List<T> source, final int count)
 	{
-		ArrayList<T> rVal = new ArrayList<T>(source.size());
-		
+		final ArrayList<T> rVal = new ArrayList<T>(source.size());
 		for (int i = count; i < source.size(); i++)
 		{
 			rVal.add(source.get(i));
 		}
-		
 		for (int i = 0; i < count; i++)
 		{
 			rVal.add(source.get(i));
 		}
-		
 		if (source.size() != rVal.size())
 			throw new IllegalStateException("Didnt work for: " + count + " " + source + " : " + rVal);
-		
 		return rVal;
-		
 	}
 	
 	/** Creates new Util */
@@ -158,7 +143,7 @@ public class Util
 	/**
 	 * allow multiple fully qualified email adresses seperated by spaces, or a blank string
 	 */
-	public static boolean isMailValid(String emailAddress)
+	public static boolean isMailValid(final String emailAddress)
 	{
 		final String QUOTEDSTRING = "\"(?:[^\"\\\\]|\\\\\\p{ASCII})*\"";
 		final String ATOM = "[^()<>@,;:\\\\\".\\[\\] \\x28\\p{Cntrl}]+";
@@ -167,45 +152,40 @@ public class Util
 		final String DOMAIN = SUBDOMAIN + "(?:\\." + SUBDOMAIN + ")*";
 		final String LOCALPART = WORD + "(?:\\." + WORD + ")*";
 		final String EMAIL = LOCALPART + "@" + DOMAIN;
-		
 		// String regex = "(\\s*[\\w\\.-]+@\\w+\\.[\\w\\.]+\\s*)*";
-		String regex = "(\\s*" + EMAIL + "\\s*)*";
+		final String regex = "(\\s*" + EMAIL + "\\s*)*";
 		return emailAddress.matches(regex);
 	}
 	
 	public static String createUniqueTimeStamp()
 	{
-		long time = System.currentTimeMillis();
+		final long time = System.currentTimeMillis();
 		while (time == System.currentTimeMillis())
 		{
 			try
 			{
 				Thread.sleep(1);
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
-				
 			}
 		}
 		return "" + System.currentTimeMillis();
 	}
 	
-	public static <T> void reorder(List<T> reorder, final List<T> order)
+	public static <T> void reorder(final List<T> reorder, final List<T> order)
 	{
-		
 		final IntegerMap<T> map = new IntegerMap<T>();
-		for (T o : order)
+		for (final T o : order)
 		{
 			map.put(o, order.indexOf(o));
 		}
 		Collections.sort(reorder, new Comparator<T>()
 		{
-			
-			public int compare(T o1, T o2)
+			public int compare(final T o1, final T o2)
 			{
 				// get int returns 0 if no value
-				int v1 = map.getInt(o1);
-				int v2 = map.getInt(o2);
-				
+				final int v1 = map.getInt(o1);
+				final int v2 = map.getInt(o2);
 				if (v1 > v2)
 				{
 					return 1;

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
@@ -32,7 +31,6 @@ import java.util.Properties;
  */
 public class TripleADelegateBridge implements IDelegateBridge
 {
-	
 	private final IDelegateBridge m_bridge;
 	private final TripleADelegateHistoryWriter m_historyWriter;
 	
@@ -44,7 +42,7 @@ public class TripleADelegateBridge implements IDelegateBridge
 	 * @param data
 	 *            GameData object
 	 * */
-	public TripleADelegateBridge(IDelegateBridge bridge)
+	public TripleADelegateBridge(final IDelegateBridge bridge)
 	{
 		m_bridge = bridge;
 		m_historyWriter = new TripleADelegateHistoryWriter(m_bridge.getHistoryWriter(), getData());
@@ -59,7 +57,6 @@ public class TripleADelegateBridge implements IDelegateBridge
 	 * Return our custom historyWriter instead of the default one
 	 * 
 	 */
-	
 	public IDelegateHistoryWriter getHistoryWriter()
 	{
 		return m_historyWriter;
@@ -74,8 +71,7 @@ public class TripleADelegateBridge implements IDelegateBridge
 	 * All delegates should use random data that comes from both players so that
 	 * neither player cheats.
 	 */
-	
-	public int getRandom(int max, String annotation)
+	public int getRandom(final int max, final String annotation)
 	{
 		return m_bridge.getRandom(max, annotation);
 	}
@@ -83,13 +79,12 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
-	
-	public int[] getRandom(int max, int count, String annotation)
+	public int[] getRandom(final int max, final int count, final String annotation)
 	{
 		return m_bridge.getRandom(max, count, annotation);
 	}
 	
-	public void addChange(Change aChange)
+	public void addChange(final Change aChange)
 	{
 		m_bridge.addChange(aChange);
 	}
@@ -97,7 +92,6 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/**
 	 * Returns the current step name
 	 */
-	
 	public String getStepName()
 	{
 		return m_bridge.getStepName();
@@ -106,7 +100,6 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
 	 */
-
 	public IRemote getRemote()
 	{
 		return m_bridge.getRemote();
@@ -115,8 +108,7 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
 	 */
-
-	public IRemote getRemote(PlayerID id)
+	public IRemote getRemote(final PlayerID id)
 	{
 		return m_bridge.getRemote(id);
 	}
@@ -124,7 +116,6 @@ public class TripleADelegateBridge implements IDelegateBridge
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
 	 */
-
 	public IChannelSubscribor getDisplayChannelBroadcaster()
 	{
 		return m_bridge.getDisplayChannelBroadcaster();

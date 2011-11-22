@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net.nio;
 
 import games.strategy.net.IObjectStreamFactory;
@@ -33,7 +32,6 @@ import java.util.logging.Logger;
 public class Encoder
 {
 	private static final Logger s_logger = Logger.getLogger(Encoder.class.getName());
-	
 	private final NIOWriter m_writer;
 	private final IObjectStreamFactory m_objectStreamFactory;
 	private final NIOSocket m_nioSocket;
@@ -47,46 +45,38 @@ public class Encoder
 	
 	public void write(final SocketChannel to, final MessageHeader header)
 	{
-		
 		if (s_logger.isLoggable(Level.FINEST))
 		{
 			s_logger.log(Level.FINEST, "Encoding msg:" + header + " to:" + to);
 		}
-		
 		if (header.getFrom() == null)
 			throw new IllegalArgumentException("No from node");
 		if (to == null)
 			throw new IllegalArgumentException("No to channel!");
-		
-		ByteArrayOutputStream2 sink = new ByteArrayOutputStream2(512);
-		
+		final ByteArrayOutputStream2 sink = new ByteArrayOutputStream2(512);
 		SocketWriteData data;
 		try
 		{
 			write(header, m_objectStreamFactory.create(sink), to);
 			data = new SocketWriteData(sink.getBuffer(), sink.size());
-			
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			// we arent doing any io, just writing in memory
 			// so something is very wrong
 			s_logger.log(Level.SEVERE, "Error writing object:" + header, e);
 			return;
 		}
-		
 		if (s_logger.isLoggable(Level.FINER))
 		{
 			s_logger.log(Level.FINER, "encoded  msg:" + header.getMessage() + " size:" + data.size());
 		}
-		
 		m_writer.enque(data, to);
 	}
 	
-	private void write(MessageHeader header, ObjectOutputStream out, SocketChannel remote) throws IOException
+	private void write(final MessageHeader header, final ObjectOutputStream out, final SocketChannel remote) throws IOException
 	{
 		if (header.getFrom() == null)
 			throw new IllegalArgumentException("null from");
-		
 		// a broadcast
 		if (header.getFor() == null)
 		{
@@ -108,7 +98,6 @@ public class Encoder
 				((Node) header.getFor()).writeExternal(out);
 			}
 		}
-		
 		if (header.getFrom().equals(m_nioSocket.getLocalNode()))
 		{
 			out.write(1);
@@ -122,8 +111,7 @@ public class Encoder
 			out.write(0);
 			((Node) header.getFrom()).writeExternal(out);
 		}
-		
-		byte type = Decoder.getType(header.getMessage());
+		final byte type = Decoder.getType(header.getMessage());
 		out.write(type);
 		if (type != Byte.MAX_VALUE)
 		{
@@ -135,5 +123,4 @@ public class Encoder
 		}
 		out.reset();
 	}
-	
 }

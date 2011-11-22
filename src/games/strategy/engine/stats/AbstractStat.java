@@ -29,16 +29,15 @@ import java.util.Iterator;
  */
 public abstract class AbstractStat implements IStat
 {
-	
 	protected static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##0.##");
 	
-	public double getValue(String alliance, GameData data)
+	public double getValue(final String alliance, final GameData data)
 	{
-		Iterator<PlayerID> iter = data.getAllianceTracker().getPlayersInAlliance(alliance).iterator();
+		final Iterator<PlayerID> iter = data.getAllianceTracker().getPlayersInAlliance(alliance).iterator();
 		double rVal = 0;
 		while (iter.hasNext())
 		{
-			PlayerID player = iter.next();
+			final PlayerID player = iter.next();
 			rVal += getValue(player, data);
 		}
 		return rVal;
@@ -48,5 +47,4 @@ public abstract class AbstractStat implements IStat
 	{
 		return DECIMAL_FORMAT;
 	}
-	
 }

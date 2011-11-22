@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.Group;
 
 import games.strategy.engine.data.GameData;
@@ -33,7 +32,7 @@ public class MovePackage
 	public Object Obj2 = null;
 	public Object Obj3 = null;
 	
-	public MovePackage(Dynamix_AI ai, GameData data, IMoveDelegate mover, PlayerID player, Object obj1, Object obj2, Object obj3)
+	public MovePackage(final Dynamix_AI ai, final GameData data, final IMoveDelegate mover, final PlayerID player, final Object obj1, final Object obj2, final Object obj3)
 	{
 		AI = ai;
 		Data = data;
@@ -44,13 +43,13 @@ public class MovePackage
 		Obj3 = obj3;
 	}
 	
-	public MovePackage SetObj1To(Object obj1)
+	public MovePackage SetObj1To(final Object obj1)
 	{
 		Obj1 = obj1;
 		return this;
 	}
 	
-	public MovePackage SetObjectsTo(Object obj1, Object obj2, Object obj3)
+	public MovePackage SetObjectsTo(final Object obj1, final Object obj2, final Object obj3)
 	{
 		Obj1 = obj1;
 		Obj2 = obj2;

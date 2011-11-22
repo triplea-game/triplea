@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.message.IRemote;
@@ -38,5 +37,4 @@ public interface IObserverWaitingToJoin extends IRemote
 	 * You could not join the game, usually this is due to an error.
 	 */
 	public void cannotJoinGame(String reason);
-	
 }

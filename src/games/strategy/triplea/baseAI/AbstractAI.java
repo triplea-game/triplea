@@ -57,17 +57,15 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	 */
 	protected void pause()
 	{
-		
 		try
 		{
 			Thread.sleep(UIContext.getAIPauseDuration());
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
-		} catch (Exception ex)
+		} catch (final Exception ex)
 		{
 		}
-		
 	}
 	
 	private final String m_name;
@@ -77,16 +75,18 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	
 	/**
 	 * 
-	 * @param name - the name of the player (the nation)
-	 * @param type - the type of player we are
+	 * @param name
+	 *            - the name of the player (the nation)
+	 * @param type
+	 *            - the type of player we are
 	 */
-	public AbstractAI(String name, String type)
+	public AbstractAI(final String name, final String type)
 	{
 		m_name = name;
 		m_type = type;
 	}
 	
-	public final void initialize(IPlayerBridge bridge, PlayerID id)
+	public final void initialize(final IPlayerBridge bridge, final PlayerID id)
 	{
 		m_bridge = bridge;
 		m_id = id;
@@ -95,7 +95,6 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	/************************
 	 * Allow the AI to get game data, playerID
 	 *************************/
-	
 	/**
 	 * Get the GameData for the game.
 	 */
@@ -123,7 +122,6 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	/************************
 	 * The following methods are called when the AI starts a phase.
 	 *************************/
-	
 	/**
 	 * It is the AI's turn to purchase units.
 	 * 
@@ -191,41 +189,34 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	 * @param player
 	 *            - the player to fight for
 	 */
-	protected void battle(IBattleDelegate battleDelegate, GameData data, PlayerID player)
+	protected void battle(final IBattleDelegate battleDelegate, final GameData data, final PlayerID player)
 	{
 		// generally all AI's will follow the same logic.
-		
 		// loop until all battles are fought.
 		// rather than try to analyze battles to figure out which must be fought before others
 		// as in the case of a naval battle preceding an amphibious attack,
 		// keep trying to fight every battle
 		while (true)
 		{
-			
-			BattleListing listing = battleDelegate.getBattles();
-			
+			final BattleListing listing = battleDelegate.getBattles();
 			// all fought
 			if (listing.getBattles().isEmpty() && listing.getStrategicRaids().isEmpty())
 				return;
-			
-			Iterator<Territory> raidBattles = listing.getStrategicRaids().iterator();
-			
+			final Iterator<Territory> raidBattles = listing.getStrategicRaids().iterator();
 			// fight strategic bombing raids
 			while (raidBattles.hasNext())
 			{
-				Territory current = raidBattles.next();
-				String error = battleDelegate.fightBattle(current, true);
+				final Territory current = raidBattles.next();
+				final String error = battleDelegate.fightBattle(current, true);
 				if (error != null)
 					s_logger.fine(error);
 			}
-			
-			Iterator<Territory> nonRaidBattles = listing.getBattles().iterator();
-			
+			final Iterator<Territory> nonRaidBattles = listing.getBattles().iterator();
 			// fight normal battles
 			while (nonRaidBattles.hasNext())
 			{
-				Territory current = nonRaidBattles.next();
-				String error = battleDelegate.fightBattle(current, false);
+				final Territory current = nonRaidBattles.next();
+				final String error = battleDelegate.fightBattle(current, false);
 				if (error != null)
 					s_logger.fine(error);
 			}
@@ -237,34 +228,33 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	 * but in general won't
 	 * 
 	 *******************************************/
-	
-	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
+	public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable)
 	{
 		// return the first one
 		return territories.iterator().next();
 	}
 	
-	public boolean selectAttackSubs(Territory unitTerritory)
+	public boolean selectAttackSubs(final Territory unitTerritory)
 	{
 		return true;
 	}
 	
-	public boolean selectAttackTransports(Territory unitTerritory)
+	public boolean selectAttackTransports(final Territory unitTerritory)
 	{
 		return true;
 	}
 	
-	public boolean selectAttackUnits(Territory unitTerritory)
+	public boolean selectAttackUnits(final Territory unitTerritory)
 	{
 		return true;
 	}
 	
-	public boolean selectShoreBombard(Territory unitTerritory)
+	public boolean selectShoreBombard(final Territory unitTerritory)
 	{
 		return true;
 	}
 	
-	public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
+	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)
 	{
 		// just use the first one
 		return candidates.iterator().next();
@@ -280,7 +270,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		return false;
 	}
 	
-	public boolean acceptPoliticalAction(String acceptanceQuestion)
+	public boolean acceptPoliticalAction(final String acceptanceQuestion)
 	{
 		// we are dead, just accept
 		if (!m_id.amNotDeadYet())
@@ -296,32 +286,31 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	 * ai will generally not care
 	 * 
 	 *****************************************/
-	
-	public void battleInfoMessage(String shortMessage, DiceRoll dice)
+	public void battleInfoMessage(final String shortMessage, final DiceRoll dice)
 	{
 	}
 	
-	public void reportPoliticalMessage(String message)
+	public void reportPoliticalMessage(final String message)
 	{
 	}
 	
-	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
+	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
 	{
 	}
 	
-	public void retreatNotificationMessage(Collection<Unit> units)
+	public void retreatNotificationMessage(final Collection<Unit> units)
 	{
 	}
 	
-	public void reportError(String error)
+	public void reportError(final String error)
 	{
 	}
 	
-	public void reportMessage(String message, String title)
+	public void reportMessage(final String message, final String title)
 	{
 	}
 	
-	public void confirmOwnCasualties(GUID battleId, String message)
+	public void confirmOwnCasualties(final GUID battleId, final String message)
 	{
 		pause();
 	}
@@ -330,17 +319,15 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	 * Game Player Methods
 	 * 
 	 *****************************************/
-	
 	/**
 	 * The given phase has started. We parse the phase name and call the apropiate method.
 	 */
-	public final void start(String name)
+	public final void start(final String name)
 	{
 		if (name.endsWith("Bid"))
 		{
-			String propertyName = m_id.getName() + " bid";
-			int bidAmount = Integer.parseInt(m_bridge.getGameData().getProperties().get(propertyName).toString());
-			
+			final String propertyName = m_id.getName() + " bid";
+			final int bidAmount = Integer.parseInt(m_bridge.getGameData().getProperties().get(propertyName).toString());
 			purchase(true, bidAmount, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
 		}
 		else if (name.endsWith("Tech"))
@@ -353,10 +340,8 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		}
 		else if (name.endsWith("Purchase"))
 		{
-			
-			Resource PUs = m_bridge.getGameData().getResourceList().getResource(Constants.PUS);
-			int leftToSpend = m_id.getResources().getQuantity(PUs);
-			
+			final Resource PUs = m_bridge.getGameData().getResourceList().getResource(Constants.PUS);
+			final int leftToSpend = m_id.getResources().getQuantity(PUs);
 			purchase(false, leftToSpend, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
 		}
 		else if (name.endsWith("Move"))
@@ -372,40 +357,37 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		}
 	}
 	
-	public void getPoliticalActions() {
+	public void getPoliticalActions()
+	{
 		if (!m_id.amNotDeadYet())
 			return;
-		GameData data = m_bridge.getGameData();
-		float numPlayers = data.getPlayerList().getPlayers().size();
-		IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
-		
+		final GameData data = m_bridge.getGameData();
+		final float numPlayers = data.getPlayerList().getPlayers().size();
+		final IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
 		if (Math.random() < .5)
 		{
-			List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id);
+			final List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id);
 			if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty())
 			{
 				Collections.shuffle(actionChoicesTowardsWar);
-				
 				int i = 0;
-				double random = Math.random(); // should we use bridge's random source here?
-				int MAX_WAR_ACTIONS_PER_TURN = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers/2)));
-				if ((MAX_WAR_ACTIONS_PER_TURN > 0) && ((float) Match.countMatches(data.getRelationshipTracker().getRelationships(m_id), Matches.RelationshipIsAtWar)) / numPlayers < 0.4)
+				final double random = Math.random(); // should we use bridge's random source here?
+				int MAX_WAR_ACTIONS_PER_TURN = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
+				if ((MAX_WAR_ACTIONS_PER_TURN > 0) && (Match.countMatches(data.getRelationshipTracker().getRelationships(m_id), Matches.RelationshipIsAtWar)) / numPlayers < 0.4)
 				{
 					if (Math.random() < .9)
 						MAX_WAR_ACTIONS_PER_TURN = 0;
 					else
 						MAX_WAR_ACTIONS_PER_TURN = 1;
-
 				}
-				
-				Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
+				final Iterator<PoliticalActionAttachment> actionWarIter = actionChoicesTowardsWar.iterator();
 				while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0)
 				{
-					PoliticalActionAttachment action = actionWarIter.next();
+					final PoliticalActionAttachment action = actionWarIter.next();
 					if (!Matches.PoliticalActionCanBeAttempted.match(action))
 						continue;
 					i++;
-					if (i>MAX_WAR_ACTIONS_PER_TURN)
+					if (i > MAX_WAR_ACTIONS_PER_TURN)
 						break;
 					politicsDelegate.attemptAction(action);
 				}
@@ -413,32 +395,30 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		}
 		else
 		{
-			List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(m_id);
+			final List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(m_id);
 			if (actionChoicesOther != null && !actionChoicesOther.isEmpty())
 			{
 				Collections.shuffle(actionChoicesOther);
-				
 				int i = 0;
-				double random = Math.random(); // should we use bridge's random source here?
+				final double random = Math.random(); // should we use bridge's random source here?
 				final int MAX_OTHER_ACTIONS_PER_TURN = (random < .3 ? 0 : (random < .6 ? 1 : (random < .9 ? 2 : (random < .99 ? 3 : (int) numPlayers))));
-				
-				Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
+				final Iterator<PoliticalActionAttachment> actionOtherIter = actionChoicesOther.iterator();
 				while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0)
 				{
-					PoliticalActionAttachment action = actionOtherIter.next();
+					final PoliticalActionAttachment action = actionOtherIter.next();
 					if (!Matches.PoliticalActionCanBeAttempted.match(action))
 						continue;
 					if (action.getCostPU() > 0 && action.getCostPU() > m_id.getResources().getQuantity(Constants.PUS))
 						continue;
 					i++;
-					if (i>MAX_OTHER_ACTIONS_PER_TURN)
+					if (i > MAX_OTHER_ACTIONS_PER_TURN)
 						break;
 					politicsDelegate.attemptAction(action);
 				}
 			}
 		}
 	}
-
+	
 	public final Class<ITripleaPlayer> getRemotePlayerType()
 	{
 		return ITripleaPlayer.class;
@@ -458,5 +438,4 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	{
 		return m_id;
 	}
-	
 }

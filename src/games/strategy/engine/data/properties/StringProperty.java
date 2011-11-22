@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.data.properties;
 
 import java.awt.event.ActionEvent;
@@ -23,13 +22,11 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class StringProperty extends AEditableProperty
 {
-	
 	private String m_value;
 	
-	public StringProperty(String name, String defaultValue)
+	public StringProperty(final String name, final String defaultValue)
 	{
 		super(name);
-		
 		m_value = defaultValue;
 	}
 	
@@ -38,14 +35,11 @@ public class StringProperty extends AEditableProperty
 		final JTextField text = new JTextField(m_value);
 		text.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
-		{
-			m_value = text.getText();
-		}
-		}
-					);
-		
+			public void actionPerformed(final ActionEvent e)
+			{
+				m_value = text.getText();
+			}
+		});
 		return text;
 	}
 	

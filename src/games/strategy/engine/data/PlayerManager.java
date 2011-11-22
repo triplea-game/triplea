@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.net.INode;
@@ -30,7 +29,7 @@ public class PlayerManager
 {
 	private final Map<String, INode> m_playerMapping;
 	
-	public PlayerManager(Map<String, INode> map)
+	public PlayerManager(final Map<String, INode> map)
 	{
 		m_playerMapping = new HashMap<String, INode>(map);
 	}
@@ -45,7 +44,7 @@ public class PlayerManager
 		return new HashSet<INode>(m_playerMapping.values());
 	}
 	
-	public INode getNode(String playerName)
+	public INode getNode(final String playerName)
 	{
 		return m_playerMapping.get(playerName);
 	}
@@ -55,7 +54,7 @@ public class PlayerManager
 	 *            referring node
 	 * @return whether the given node playing as anyone
 	 */
-	public boolean isPlaying(INode node)
+	public boolean isPlaying(final INode node)
 	{
 		return m_playerMapping.containsValue(node);
 	}
@@ -65,10 +64,10 @@ public class PlayerManager
 		return new HashSet<String>(m_playerMapping.keySet());
 	}
 	
-	public Set<String> getPlayedBy(String playerName)
+	public Set<String> getPlayedBy(final String playerName)
 	{
-		Set<String> rVal = new HashSet<String>();
-		for (String player : m_playerMapping.keySet())
+		final Set<String> rVal = new HashSet<String>();
+		for (final String player : m_playerMapping.keySet())
 		{
 			if (m_playerMapping.get(player).getName().equals(playerName))
 			{
@@ -88,11 +87,11 @@ public class PlayerManager
 	 *            game data
 	 * @return player found
 	 */
-	public PlayerID getRemoteOpponent(INode localNode, GameData data)
+	public PlayerID getRemoteOpponent(final INode localNode, final GameData data)
 	{
 		// find a local player
 		PlayerID local = null;
-		for (String player : m_playerMapping.keySet())
+		for (final String player : m_playerMapping.keySet())
 		{
 			if (m_playerMapping.get(player).equals(localNode))
 			{
@@ -100,31 +99,26 @@ public class PlayerManager
 				break;
 			}
 		}
-		
 		// we arent playing anyone, return any
 		if (local == null)
 		{
-			String remote = m_playerMapping.keySet().iterator().next();
+			final String remote = m_playerMapping.keySet().iterator().next();
 			return data.getPlayerList().getPlayerID(remote);
 		}
-		
 		String any = null;
-		for (String player : m_playerMapping.keySet())
+		for (final String player : m_playerMapping.keySet())
 		{
 			if (!m_playerMapping.get(player).equals(localNode))
 			{
 				any = player;
-				PlayerID remotePlayerID = data.getPlayerList().getPlayerID(player);
+				final PlayerID remotePlayerID = data.getPlayerList().getPlayerID(player);
 				if (!data.getRelationshipTracker().isAllied(local, remotePlayerID))
 				{
 					return remotePlayerID;
 				}
 			}
 		}
-		
 		// no un allied players were found, any will do
 		return data.getPlayerList().getPlayerID(any);
-		
 	}
-	
 }

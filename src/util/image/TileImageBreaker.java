@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package util.image;
 
 import games.strategy.triplea.ui.screen.TileManager;
@@ -42,13 +41,10 @@ import javax.swing.JFrame;
  * 
  * sea zone images directory must be renamed to "seazone
  */
-
 public class TileImageBreaker
 {
 	private static final String SMALL_MAPS_LOCATION = new FileSave("Where to save Tile Images?", null).getPathString();
-	
 	private static JFrame observer = new JFrame();
-	
 	private boolean m_baseMap;
 	
 	/**
@@ -64,7 +60,7 @@ public class TileImageBreaker
 	 * @exception java.lang.Exception
 	 *                throws
 	 */
-	public static void main(String[] args) throws Exception
+	public static void main(final String[] args) throws Exception
 	{
 		new TileImageBreaker().createMaps();
 	}
@@ -81,9 +77,7 @@ public class TileImageBreaker
 	 */
 	public void createMaps() throws IOException
 	{
-		
-		Image map = loadImage(); // ask user to input image location
-		
+		final Image map = loadImage(); // ask user to input image location
 		if (map == null)
 		{
 			System.out.println("You need to select a map image for this to work");
@@ -91,7 +85,6 @@ public class TileImageBreaker
 			System.exit(0);
 			return;
 		}
-		
 		// m_baseMap = doBaseMap(); //ask user wether it is sea zone only or
 		// not
 		// String mapDir = getMapDirectory(); //ask user where the map is
@@ -112,21 +105,15 @@ public class TileImageBreaker
 		// System.out.println("Bad data given or missing text files, shutting down");
 		// System.exit(0);
 		// }
-		
 		for (int x = 0; (x) * TileManager.TILE_SIZE < map.getWidth(null); x++)
 		{
 			for (int y = 0; (y) * TileManager.TILE_SIZE < map.getHeight(null); y++)
 			{
-				Rectangle bounds = new Rectangle(x * TileManager.TILE_SIZE, y * TileManager.TILE_SIZE, TileManager.TILE_SIZE, TileManager.TILE_SIZE);
-				
-				GraphicsConfiguration m_localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-							.getDefaultConfiguration();
-				
-				BufferedImage relief = m_localGraphicSystem.createCompatibleImage(TileManager.TILE_SIZE, TileManager.TILE_SIZE,
-							m_baseMap ? Transparency.BITMASK : Transparency.TRANSLUCENT);
-				relief.getGraphics().drawImage(map, 0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE, bounds.x, bounds.y,
-							bounds.x + TileManager.TILE_SIZE, bounds.y + TileManager.TILE_SIZE, observer);
-				
+				final Rectangle bounds = new Rectangle(x * TileManager.TILE_SIZE, y * TileManager.TILE_SIZE, TileManager.TILE_SIZE, TileManager.TILE_SIZE);
+				final GraphicsConfiguration m_localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+				final BufferedImage relief = m_localGraphicSystem.createCompatibleImage(TileManager.TILE_SIZE, TileManager.TILE_SIZE, m_baseMap ? Transparency.BITMASK : Transparency.TRANSLUCENT);
+				relief.getGraphics().drawImage(map, 0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE, bounds.x, bounds.y, bounds.x + TileManager.TILE_SIZE, bounds.y + TileManager.TILE_SIZE,
+							observer);
 				// boolean match = false;
 				// Iterator territories = MapData.getInstance().getTerritories().iterator();
 				// while(territories.hasNext())
@@ -144,20 +131,16 @@ public class TileImageBreaker
 				// break;
 				// }
 				// }
-				
-				String outFileName = SMALL_MAPS_LOCATION + File.separator + x + "_" + y + ".png";
-				
+				final String outFileName = SMALL_MAPS_LOCATION + File.separator + x + "_" + y + ".png";
 				// if(!match)
 				// {
 				// System.out.println("Skipping" + outFileName);
 				// continue;
 				// }
-				
 				ImageIO.write(relief, "png", new File(outFileName));
 				System.out.println("wrote " + outFileName);
 			}
 		}
-		
 		System.out.println("All Finished!");
 		System.exit(0);
 	}
@@ -198,7 +181,6 @@ public class TileImageBreaker
 	//
 	// }//while
 	// }
-	
 	/**
 	 * java.lang.String getMapDirectory()
 	 * 
@@ -222,7 +204,6 @@ public class TileImageBreaker
 	// return null;
 	// }
 	// }
-	
 	/**
 	 * java.awt.Image loadImage()
 	 * 
@@ -234,19 +215,17 @@ public class TileImageBreaker
 	private static Image loadImage()
 	{
 		System.out.println("Select the map");
-		String mapName = new FileOpen("Select The Map").getPathString();
-		
+		final String mapName = new FileOpen("Select The Map").getPathString();
 		if (mapName != null)
 		{
-			Image img = Toolkit.getDefaultToolkit().createImage(mapName);
-			MediaTracker tracker = new MediaTracker(new Panel());
+			final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
+			final MediaTracker tracker = new MediaTracker(new Panel());
 			tracker.addImage(img, 1);
-			
 			try
 			{
 				tracker.waitForAll();
 				return img;
-			} catch (InterruptedException ie)
+			} catch (final InterruptedException ie)
 			{
 				ie.printStackTrace();
 				return loadImage();
@@ -257,5 +236,4 @@ public class TileImageBreaker
 			return null;
 		}
 	}
-	
 }// end class ReliefImageBreaker

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.kingstable.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -44,22 +43,18 @@ import java.util.HashSet;
 @AutoSave(beforeStepStart = false, afterStepEnd = true)
 public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 {
-	
 	private Matches matches = null;
 	
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge bridge)
+	public void start(final IDelegateBridge bridge)
 	{
 		super.start(bridge);
-		
 		if (matches == null)
 			matches = new Matches(getData());
-		
-		IKingsTableDisplay display = (IKingsTableDisplay) bridge.getDisplayChannelBroadcaster();
+		final IKingsTableDisplay display = (IKingsTableDisplay) bridge.getDisplayChannelBroadcaster();
 		display.setStatus(m_player.getName() + "'s turn");
 	}
 	
@@ -68,20 +63,20 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	{
 		super.end();
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		KingsTablePlayExtendedDelegateState state = new KingsTablePlayExtendedDelegateState();
+		final KingsTablePlayExtendedDelegateState state = new KingsTablePlayExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		KingsTablePlayExtendedDelegateState s = (KingsTablePlayExtendedDelegateState) state;
+		final KingsTablePlayExtendedDelegateState s = (KingsTablePlayExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 	}
@@ -94,16 +89,13 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * @param end
 	 *            <code>Territory</code> where the move should end
 	 */
-	
-	public String play(Territory start, Territory end)
+	public String play(final Territory start, final Territory end)
 	{
-		String error = isValidPlay(start, end);
+		final String error = isValidPlay(start, end);
 		if (error != null)
 			return error;
-		
-		Collection<Territory> captured = checkForCaptures(end);
+		final Collection<Territory> captured = checkForCaptures(end);
 		performPlay(start, end, captured, m_player);
-		
 		return null;
 	}
 	
@@ -114,129 +106,109 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 *            <code>Territory</code> where the move ended. All potential captures must involve this <code>Territory</code>.
 	 * @return
 	 */
-	private Collection<Territory> checkForCaptures(Territory end)
+	private Collection<Territory> checkForCaptures(final Territory end)
 	{
 		// At most, four pieces will be captured
-		Collection<Territory> captured = new HashSet<Territory>(4);
-		
+		final Collection<Territory> captured = new HashSet<Territory>(4);
 		// Failsafe - end should never be null, so only check for captures if it isn't null
 		if (end != null)
 		{
 			// Get the coordinates where the move ended
-			int endX = end.getX();
-			int endY = end.getY();
-			
-			GameMap map = getData().getMap();
+			final int endX = end.getX();
+			final int endY = end.getY();
+			final GameMap map = getData().getMap();
 			// Look above end for a potential capture
 			// This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
 			{
-				Territory possibleCapture = map.getTerritoryFromCoordinates(endX, endY - 1);
+				final Territory possibleCapture = map.getTerritoryFromCoordinates(endX, endY - 1);
 				if (matches.eligibleForCapture(possibleCapture, m_player))
 				{
 					// Get the territory to the left of the possible capture
-					Territory above = map.getTerritoryFromCoordinates(endX, endY - 2);
-					
+					final Territory above = map.getTerritoryFromCoordinates(endX, endY - 2);
 					// Can the king be captured?
 					if (matches.kingInSquare(possibleCapture))
 					{
-						Territory left = map.getTerritoryFromCoordinates(endX - 1, endY - 1);
-						Territory right = map.getTerritoryFromCoordinates(endX + 1, endY - 1);
-						
+						final Territory left = map.getTerritoryFromCoordinates(endX - 1, endY - 1);
+						final Territory right = map.getTerritoryFromCoordinates(endX + 1, endY - 1);
 						if (matches.eligibleParticipantsInKingCapture(m_player, above, left, right))
 							captured.add(possibleCapture);
 						else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, above))
 							captured.add(possibleCapture);
-						
 					}
 					// Can a pawn be captured?
 					else if (matches.eligibleParticipantInPawnCapture(m_player, above))
 					{
 						captured.add(possibleCapture);
 					}
-					
 				}
 			}
-			
 			// Look below end for a potential capture
 			// This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
 			{
-				Territory possibleCapture = map.getTerritoryFromCoordinates(endX, endY + 1);
+				final Territory possibleCapture = map.getTerritoryFromCoordinates(endX, endY + 1);
 				if (matches.eligibleForCapture(possibleCapture, m_player))
 				{
 					// Get the territory to the left of the possible capture
-					Territory below = map.getTerritoryFromCoordinates(endX, endY + 2);
-					
+					final Territory below = map.getTerritoryFromCoordinates(endX, endY + 2);
 					// Can the king be captured?
 					if (matches.kingInSquare(possibleCapture))
 					{
-						Territory left = map.getTerritoryFromCoordinates(endX - 1, endY + 1);
-						Territory right = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
-						
+						final Territory left = map.getTerritoryFromCoordinates(endX - 1, endY + 1);
+						final Territory right = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
 						if (matches.eligibleParticipantsInKingCapture(m_player, below, left, right))
 							captured.add(possibleCapture);
 						else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, below))
 							captured.add(possibleCapture);
-						
 					}
 					// Can a pawn be captured?
 					else if (matches.eligibleParticipantInPawnCapture(m_player, below))
 					{
 						captured.add(possibleCapture);
 					}
-					
 				}
 			}
-			
 			// Look left end for a potential capture
 			// This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
 			{
-				Territory possibleCapture = map.getTerritoryFromCoordinates(endX - 1, endY);
+				final Territory possibleCapture = map.getTerritoryFromCoordinates(endX - 1, endY);
 				if (matches.eligibleForCapture(possibleCapture, m_player))
 				{
 					// Get the territory to the left of the possible capture
-					Territory left = map.getTerritoryFromCoordinates(endX - 2, endY);
-					
+					final Territory left = map.getTerritoryFromCoordinates(endX - 2, endY);
 					// Can the king be captured?
 					if (matches.kingInSquare(possibleCapture))
 					{
-						Territory above = map.getTerritoryFromCoordinates(endX - 1, endY - 1);
-						Territory below = map.getTerritoryFromCoordinates(endX - 1, endY + 1);
-						
+						final Territory above = map.getTerritoryFromCoordinates(endX - 1, endY - 1);
+						final Territory below = map.getTerritoryFromCoordinates(endX - 1, endY + 1);
 						if (matches.eligibleParticipantsInKingCapture(m_player, left, above, below))
 							captured.add(possibleCapture);
 						else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, left))
 							captured.add(possibleCapture);
-						
 					}
 					// Can a pawn be captured?
 					else if (matches.eligibleParticipantInPawnCapture(m_player, left))
 					{
 						captured.add(possibleCapture);
 					}
-					
 				}
 			}
-			
 			// Look right end for a potential capture
 			// This extra set of braces is for bug prevention - it makes sure that the scope of possibleCapture stays within the braces
 			{
-				Territory possibleCapture = map.getTerritoryFromCoordinates(endX + 1, endY);
+				final Territory possibleCapture = map.getTerritoryFromCoordinates(endX + 1, endY);
 				if (matches.eligibleForCapture(possibleCapture, m_player))
 				{
 					// Get the territory to the left of the possible capture
-					Territory right = map.getTerritoryFromCoordinates(endX + 2, endY);
-					
+					final Territory right = map.getTerritoryFromCoordinates(endX + 2, endY);
 					// Can the king be captured?
 					if (matches.kingInSquare(possibleCapture))
 					{
-						Territory above = map.getTerritoryFromCoordinates(endX + 1, endY - 1);
-						Territory below = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
-						
+						final Territory above = map.getTerritoryFromCoordinates(endX + 1, endY - 1);
+						final Territory below = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
 						if (matches.eligibleParticipantsInKingCapture(m_player, right, above, below))
 							captured.add(possibleCapture);
 						else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, right))
 							captured.add(possibleCapture);
-						
 					}
 					// Can a pawn be captured?
 					else if (matches.eligibleParticipantInPawnCapture(m_player, right))
@@ -246,7 +218,6 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 				}
 			}
 		}
-		
 		return captured;
 	}
 	
@@ -258,26 +229,22 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * @param end
 	 *            <code>Territory</code> where the move should end
 	 */
-	private String isValidPlay(Territory start, Territory end)
+	private String isValidPlay(final Territory start, final Territory end)
 	{
-		int unitCount = start.getUnits().getUnitCount(m_player);
-		
+		final int unitCount = start.getUnits().getUnitCount(m_player);
 		// The current player must have exactly one unit in the starting territory
 		if (unitCount < 1)
 			return m_player.getName() + " doesn't have a piece in the selected starting square.";
 		else if (unitCount > 1)
 			return "The selected starting square contains more than one piece - that shouldn't be possible.";
-		
 		// The destination territory must be empty
 		if (!end.getUnits().isEmpty())
 			return "The selected destination square is not empty";
-		
-		int startX = start.getX();
-		int endX = end.getX();
-		int startY = start.getY();
-		int endY = end.getY();
-		
-		GameMap map = getData().getMap();
+		final int startX = start.getX();
+		final int endX = end.getX();
+		final int startY = start.getY();
+		final int endY = end.getY();
+		final GameMap map = getData().getMap();
 		// Pieces can only move in a straight line
 		// and the intervening spaces must be empty
 		if (startX == endX)
@@ -293,14 +260,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 				y1 = endY + 1;
 				y2 = startY - 1;
 			}
-			
 			for (int y = y1; y <= y2; y++)
 			{
-				Territory at = map.getTerritoryFromCoordinates(startX, y);
+				final Territory at = map.getTerritoryFromCoordinates(startX, y);
 				if (at.getUnits().size() > 0)
 					return "Pieces can only move through empty spaces.";
 			}
-			
 		}
 		else if (startY == endY)
 		{
@@ -315,23 +280,20 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 				x1 = endX + 1;
 				x2 = startX - 1;
 			}
-			
 			for (int x = x1; x <= x2; x++)
 			{
-				Territory at = map.getTerritoryFromCoordinates(x, startY);
+				final Territory at = map.getTerritoryFromCoordinates(x, startY);
 				if (at.getUnits().size() > 0)
 					return "Intervening square (" + x + "," + startY + ") is not empty.";
 			}
 		}
 		else
 			return "Pieces can only move in a straight line.";
-		
 		// Only the king can move to king's squares
 		if (!matches.kingInSquare(start) && matches.isKingsSquare(end))
 		{
 			return "Only the king can go there";
 		}
-		
 		return null;
 	}
 	
@@ -343,40 +305,34 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * @param end
 	 *            <code>Territory</code> where the move should end
 	 */
-	private void performPlay(Territory start, Territory end, Collection<Territory> captured, PlayerID player)
+	private void performPlay(final Territory start, final Territory end, final Collection<Territory> captured, final PlayerID player)
 	{
-		Collection<Unit> units = start.getUnits().getUnits();
-		
-		String transcriptText = player.getName() + " moved from " + start.getName() + " to " + end.getName();
+		final Collection<Unit> units = start.getUnits().getUnits();
+		final String transcriptText = player.getName() + " moved from " + start.getName() + " to " + end.getName();
 		m_bridge.getHistoryWriter().startEvent(transcriptText);
 		m_bridge.getHistoryWriter().setRenderingData(units);
-		
-		Change removeUnit = ChangeFactory.removeUnits(start, units);
-		Change removeStartOwner = ChangeFactory.changeOwner(start, PlayerID.NULL_PLAYERID);
-		Change addUnit = ChangeFactory.addUnits(end, units);
-		Change addEndOwner = ChangeFactory.changeOwner(end, player);
-		
-		CompositeChange change = new CompositeChange();
+		final Change removeUnit = ChangeFactory.removeUnits(start, units);
+		final Change removeStartOwner = ChangeFactory.changeOwner(start, PlayerID.NULL_PLAYERID);
+		final Change addUnit = ChangeFactory.addUnits(end, units);
+		final Change addEndOwner = ChangeFactory.changeOwner(end, player);
+		final CompositeChange change = new CompositeChange();
 		change.add(removeUnit);
 		change.add(removeStartOwner);
 		change.add(addUnit);
 		change.add(addEndOwner);
-		
-		for (Territory at : captured)
+		for (final Territory at : captured)
 		{
 			if (at != null)
 			{
-				Collection<Unit> capturedUnits = at.getUnits().getUnits();
-				Change capture = ChangeFactory.removeUnits(at, capturedUnits);
+				final Collection<Unit> capturedUnits = at.getUnits().getUnits();
+				final Change capture = ChangeFactory.removeUnits(at, capturedUnits);
 				change.add(capture);
-				
-				Change removeOwner = ChangeFactory.changeOwner(at, PlayerID.NULL_PLAYERID);
+				final Change removeOwner = ChangeFactory.changeOwner(at, PlayerID.NULL_PLAYERID);
 				change.add(removeOwner);
 			}
 		}
 		m_bridge.addChange(change);
-		
-		IKingsTableDisplay display = (IKingsTableDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final IKingsTableDisplay display = (IKingsTableDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.performPlay(start, end, captured);
 	}
 	
@@ -384,7 +340,6 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
-	
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
@@ -408,9 +363,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		private final boolean edgeOfBoardCanBeUsedToCaptureTheKing;
 		private final boolean kingCanBeCapturedLikeAPawn;
 		
-		Matches(GameData gameData)
+		Matches(final GameData gameData)
 		{
-			GameProperties properties = gameData.getProperties();
+			final GameProperties properties = gameData.getProperties();
 			kingCanParticipateInCaptures = properties.get("King can participate in captures", true);
 			cornerSquaresCanBeUsedToCapturePawns = properties.get("Corner squares can be used to capture pawns", true);
 			centerSquareCanBeUsedToCapturePawns = properties.get("Center square can be used to capture pawns", false);
@@ -418,10 +373,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 			centerSquareCanBeUsedToCaptureTheKing = properties.get("Center square can be used to capture the king", true);
 			edgeOfBoardCanBeUsedToCaptureTheKing = properties.get("Edge of board can be used to capture the king", false);
 			kingCanBeCapturedLikeAPawn = properties.get("King can be captured like a pawn", false);
-			
 		}
 		
-		public boolean kingInSquare(Territory t)
+		public boolean kingInSquare(final Territory t)
 		{
 			if (t == null)
 			{
@@ -429,12 +383,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 			}
 			else
 			{
-				Collection<Unit> units = t.getUnits().getUnits();
+				final Collection<Unit> units = t.getUnits().getUnits();
 				if (units.isEmpty())
 					return false;
 				else
 				{
-					Unit unit = (Unit) units.toArray()[0];
+					final Unit unit = (Unit) units.toArray()[0];
 					if (unit.getType().getName().equals("king"))
 						return true;
 					else
@@ -443,9 +397,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 			}
 		}
 		
-		public boolean isKingsExit(Territory t)
+		public boolean isKingsExit(final Territory t)
 		{
-			TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
+			final TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
 			if (ta == null)
 				return false;
 			else if (ta.isKingsExit())
@@ -454,9 +408,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 				return false;
 		}
 		
-		public boolean isKingsSquare(Territory t)
+		public boolean isKingsSquare(final Territory t)
 		{
-			TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
+			final TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
 			if (ta == null)
 				return false;
 			else if (ta.isKingsSquare())
@@ -465,7 +419,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 				return false;
 		}
 		
-		public boolean eligibleParticipantInPawnCapture(PlayerID currentPlayer, Territory territory)
+		public boolean eligibleParticipantInPawnCapture(final PlayerID currentPlayer, final Territory territory)
 		{
 			// System.out.println("eligibleParticipantInPawnCapture" + currentPlayer.getName() + " " + territory.getName());
 			if (territory == null)
@@ -495,7 +449,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 			}
 		}
 		
-		public boolean eligibleParticipantInKingCapture(PlayerID currentPlayer, Territory territory)
+		public boolean eligibleParticipantInKingCapture(final PlayerID currentPlayer, final Territory territory)
 		{
 			if (territory == null)
 			{
@@ -525,30 +479,28 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 			}
 		}
 		
-		public boolean eligibleParticipantsInKingCapture(PlayerID currentPlayer, Territory... territories)
+		public boolean eligibleParticipantsInKingCapture(final PlayerID currentPlayer, final Territory... territories)
 		{
 			if (territories == null || territories.length == 0)
 				return false;
-			
-			for (Territory territory : territories)
+			for (final Territory territory : territories)
 			{
 				if (!eligibleParticipantInKingCapture(currentPlayer, territory))
 					return false;
 			}
-			
 			return true;
 		}
 		
-		public boolean eligibleForCapture(Territory territory, PlayerID currentPlayer)
+		public boolean eligibleForCapture(final Territory territory, final PlayerID currentPlayer)
 		{
 			if (territory == null || territory.getUnits().isEmpty() || territory.getOwner().equals(currentPlayer))
 				return false;
 			else
 				return true;
 		}
-		
 	}
 }
+
 
 @SuppressWarnings("serial")
 class KingsTablePlayExtendedDelegateState implements Serializable

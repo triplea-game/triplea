@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.kingstable.ui;
 
 import games.strategy.common.ui.BasicGameMenuBar;
@@ -33,20 +32,19 @@ import javax.swing.JScrollPane;
  */
 public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
 {
-	
-	public KingsTableMenu(KingsTableFrame frame)
+	public KingsTableMenu(final KingsTableFrame frame)
 	{
 		super(frame);
 	}
 	
 	@Override
-	protected void createGameSpecificMenus(JMenuBar menuBar)
+	protected void createGameSpecificMenus(final JMenuBar menuBar)
 	{
 		createGameMenu(menuBar);
 	}
 	
 	@Override
-	protected void addGameSpecificHelpMenus(JMenu helpMenu)
+	protected void addGameSpecificHelpMenus(final JMenu helpMenu)
 	{
 		addHowToPlayHelpMenu(helpMenu);
 	}
@@ -54,77 +52,52 @@ public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
 	/**
 	 * @param menuGame
 	 */
-	private void createGameMenu(JMenuBar menuBar)
+	private void createGameMenu(final JMenuBar menuBar)
 	{
 		if (!getGame().getData().getProperties().getEditableProperties().isEmpty())
 		{
-			JMenu menuGame = new JMenu("Game");
+			final JMenu menuGame = new JMenu("Game");
 			menuBar.add(menuGame);
-			
-			AbstractAction optionsAction = new AbstractAction("View Game Options...")
+			final AbstractAction optionsAction = new AbstractAction("View Game Options...")
 			{
-				
-				public void actionPerformed(ActionEvent e)
+				public void actionPerformed(final ActionEvent e)
 				{
-					PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), false);
+					final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), false);
 					JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
 				}
 			};
-			
 			menuGame.add(optionsAction);
-			
 		}
 	}
 	
 	/**
 	 * @param parentMenu
 	 */
-	private void addHowToPlayHelpMenu(JMenu parentMenu)
+	private void addHowToPlayHelpMenu(final JMenu parentMenu)
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string
-				String hints =
-
-				"<p><b>Winning</b><br>" +
-							"White wins by moving the king into a corner square.<br>" +
-							"Black wins by capturing the king.</p>" +
-
-							"<p><b>Moving:</b><br>" +
-							"All pieces move like rooks in chess.<br>" +
-							"Click on a piece, then drag it and drop it on an empty square.</p>" +
-
-							"<p><b>Capturing the King</b><br>" +
-							"The king can be captured by surrounding it on all four sides with opposing pieces, " +
-							"or by surrounding it on three sides with opposing pieces, with the center square on the fourth side. " +
-
-							"<p><b>Capturing a Pawn</b><br>" +
-							"A pawn can be captured by sandwiching it between two of the opposing side's pieces, " +
-							"or by sandwiching it between an opposing piece and a corner square.<br>" +
-							"Note: If a pawn moves into one of these two situations, that does not cause it to be captured.<br>" +
-							"Note: The king may participate in a capture.</p>" +
-
-							"<p><b>Restrictions</b><br>" +
-							"Only the king may occupy the center square and the corner squares.<br>" +
-							"Pawns may not occupy the center square or the corner squares.<br>" +
-							"However, any piece may move through the center square.</p>";
-				
-				JEditorPane editorPane = new JEditorPane();
+				final String hints = "<p><b>Winning</b><br>" + "White wins by moving the king into a corner square.<br>" + "Black wins by capturing the king.</p>" + "<p><b>Moving:</b><br>"
+							+ "All pieces move like rooks in chess.<br>" + "Click on a piece, then drag it and drop it on an empty square.</p>" + "<p><b>Capturing the King</b><br>"
+							+ "The king can be captured by surrounding it on all four sides with opposing pieces, "
+							+ "or by surrounding it on three sides with opposing pieces, with the center square on the fourth side. " + "<p><b>Capturing a Pawn</b><br>"
+							+ "A pawn can be captured by sandwiching it between two of the opposing side's pieces, " + "or by sandwiching it between an opposing piece and a corner square.<br>"
+							+ "Note: If a pawn moves into one of these two situations, that does not cause it to be captured.<br>" + "Note: The king may participate in a capture.</p>"
+							+ "<p><b>Restrictions</b><br>" + "Only the king may occupy the center square and the corner squares.<br>"
+							+ "Pawns may not occupy the center square or the corner squares.<br>" + "However, any piece may move through the center square.</p>";
+				final JEditorPane editorPane = new JEditorPane();
 				editorPane.setEditable(false);
 				editorPane.setContentType("text/html");
 				editorPane.setText(hints);
 				editorPane.setPreferredSize(new Dimension(550, 380));
-				
-				JScrollPane scroll = new JScrollPane(editorPane);
-				
+				final JScrollPane scroll = new JScrollPane(editorPane);
 				JOptionPane.showMessageDialog(m_frame, scroll, "Movement Help", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 	}
-	
 	/*
 	protected void createGameSpecificMenus (JMenuBar menuBar) 
 	{
@@ -146,5 +119,4 @@ public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
 	    }
 	}
 	*/
-
 }

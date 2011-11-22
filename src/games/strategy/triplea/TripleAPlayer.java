@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TripleAPlayer.java
  * 
  * Created on November 2, 2001, 8:45 PM
  */
-
 package games.strategy.triplea;
 
 import games.strategy.common.player.AbstractHumanPlayer;
@@ -80,48 +78,44 @@ import javax.swing.SwingUtilities;
 public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements IGamePlayer, ITripleaPlayer
 {
 	/** Creates new TripleAPlayer */
-	public TripleAPlayer(String name, String type)
+	public TripleAPlayer(final String name, final String type)
 	{
 		super(name, type);
 	}
 	
-	public void reportError(String error)
+	public void reportError(final String error)
 	{
 		m_ui.notifyError(error);
 	}
 	
-	public void reportMessage(String message, String title)
+	public void reportMessage(final String message, final String title)
 	{
 		m_ui.notifyMessage(message, title);
 	}
 	
-	public void reportPoliticalMessage(String message)
+	public void reportPoliticalMessage(final String message)
 	{
 		m_ui.notifyPoliticalMessage(message);
 	}
 	
 	@Override
-	public void start(String name)
+	public void start(final String name)
 	{
 		boolean badStep = false;
-		
 		try
 		{
 			m_ui.setEditDelegate((IEditDelegate) m_bridge.getRemote("edit"));
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 		}
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_ui.getEditModeButtonModel().addActionListener(m_editModeAction);
 				m_ui.getEditModeButtonModel().setEnabled(true);
 			}
 		});
-		
 		if (name.endsWith("Bid"))
 			purchase(true);
 		else if (name.endsWith("Tech"))
@@ -143,38 +137,31 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			endTurn();
 		else
 			badStep = true;
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				m_ui.getEditModeButtonModel().setEnabled(false);
 				m_ui.getEditModeButtonModel().removeActionListener(m_editModeAction);
 				m_ui.setEditDelegate(null);
 			}
-		}
-					);
-		
+		});
 		if (badStep)
 			throw new IllegalArgumentException("Unrecognized step name:" + name);
-		
 	}
 	
 	private final AbstractAction m_editModeAction = new AbstractAction()
 	{
-		
-		public void actionPerformed(ActionEvent ae)
+		public void actionPerformed(final ActionEvent ae)
 		{
-			boolean editMode = ((ButtonModel) ae.getSource()).isSelected();
+			final boolean editMode = ((ButtonModel) ae.getSource()).isSelected();
 			try
 			{
 				// Set edit mode
 				// All GameDataChangeListeners will be notified upon success
-				IEditDelegate editDelegate = (IEditDelegate) m_bridge.getRemote("edit");
+				final IEditDelegate editDelegate = (IEditDelegate) m_bridge.getRemote("edit");
 				editDelegate.setEditMode(editMode);
-			}
-				catch (Exception e)
+			} catch (final Exception e)
 			{
 				e.printStackTrace();
 				// toggle back to previous state since setEditMode failed
@@ -183,22 +170,20 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 	};
 	
-	private void politics(boolean firstRun)
+	private void politics(final boolean firstRun)
 	{
 		if (!m_id.amNotDeadYet())
 			return;
-		
-		PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(m_id, firstRun);
-		
+		final PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(m_id, firstRun);
 		if (actionChoice != null)
 		{
-			IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
+			final IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
 			politicsDelegate.attemptAction(actionChoice);
 			politics(false);
 		}
 	}
 	
-	public boolean acceptPoliticalAction(String acceptanceQuestion)
+	public boolean acceptPoliticalAction(final String acceptanceQuestion)
 	{
 		if (!m_id.amNotDeadYet())
 			return true;
@@ -217,14 +202,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		{
 			m_bridge.getGameData().releaseReadLock();
 		}
-		
-		TechRoll techRoll = m_ui.getTechRolls(m_id);
+		final TechRoll techRoll = m_ui.getTechRolls(m_id);
 		if (techRoll != null)
 		{
-			ITechDelegate techDelegate = (ITechDelegate) m_bridge.getRemote();
-			TechResults techResults = techDelegate.rollTech(
-						techRoll.getRolls(), techRoll.getTech(), techRoll.getNewTokens());
-			
+			final ITechDelegate techDelegate = (ITechDelegate) m_bridge.getRemote();
+			final TechResults techResults = techDelegate.rollTech(techRoll.getRolls(), techRoll.getTech(), techRoll.getNewTokens());
 			if (techResults.isError())
 			{
 				m_ui.notifyError(techResults.getErrorString());
@@ -235,31 +217,26 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 	}
 	
-	private void move(boolean nonCombat)
+	private void move(final boolean nonCombat)
 	{
 		if (!m_scrambledUnitsReturned && nonCombat && getScramble_Rules_In_Effect())
 		{
 			m_scrambledUnitsReturned = true;
-			CompositeMatchAnd<Unit> unitWasScrambled = new CompositeMatchAnd<Unit>();
+			final CompositeMatchAnd<Unit> unitWasScrambled = new CompositeMatchAnd<Unit>();
 			unitWasScrambled.add(Matches.UnitWasScrambled);
-			
-			Collection<Unit> scrambledUnits = new ArrayList<Unit>();
-			
+			final Collection<Unit> scrambledUnits = new ArrayList<Unit>();
 			// territories
-			for (Territory t : m_bridge.getGameData().getMap().getTerritories())
+			for (final Territory t : m_bridge.getGameData().getMap().getTerritories())
 			{
 				scrambledUnits.addAll(t.getUnits().getMatches(unitWasScrambled));
 			}
-			
 			// units were scrambled, move them
 			if (!scrambledUnits.isEmpty())
 				returnScrambledUnits(scrambledUnits);
 		}
-		
 		if (!hasUnitsThatCanMove(nonCombat))
 			return;
-		
-		MoveDescription moveDescription = m_ui.getMove(m_id, m_bridge, nonCombat);
+		final MoveDescription moveDescription = m_ui.getMove(m_id, m_bridge, nonCombat);
 		if (moveDescription == null)
 		{
 			if (nonCombat)
@@ -274,71 +251,60 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			}
 			return;
 		}
-		
-		IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
-		String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded());
-		
+		final IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
+		final String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded());
 		if (error != null)
 			m_ui.notifyError(error);
 		move(nonCombat);
 	}
 	
-	private void returnScrambledUnits(Collection<Unit> scrambledUnits)
+	private void returnScrambledUnits(final Collection<Unit> scrambledUnits)
 	{
 		// find only players with units in the collection
-		Collection<PlayerID> players = new ArrayList<PlayerID>();
-		for (Unit unit : scrambledUnits)
+		final Collection<PlayerID> players = new ArrayList<PlayerID>();
+		for (final Unit unit : scrambledUnits)
 		{
 			if (!players.contains(unit.getOwner()))
 				players.add(unit.getOwner());
 		}
-		
-		for (PlayerID player : players)
+		for (final PlayerID player : players)
 		{
-			MoveDescription moveDescription = m_ui.getMove(player, m_bridge, true);
+			final MoveDescription moveDescription = m_ui.getMove(player, m_bridge, true);
 			if (moveDescription == null)
 			{
 				if (!canAirLand(true, player))
 					move(true);
 				return;
 			}
-			
-			IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
-			String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute());
-			
+			final IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
+			final String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute());
 			if (error != null)
 				m_ui.notifyError(error);
-			
 			// get just the player's units
-			Collection<Unit> playerUnits = new ArrayList<Unit>();
+			final Collection<Unit> playerUnits = new ArrayList<Unit>();
 			playerUnits.addAll(Match.getMatches(scrambledUnits, Matches.unitIsOwnedBy(player)));
-			
 			// if they haven't all been moved- do it again
 			if (Match.someMatch(playerUnits, Matches.UnitWasScrambled))
 			{
 				returnScrambledUnits(scrambledUnits);
 			}
 		}
-		
 		return;
 	}
 	
-	private boolean canAirLand(boolean movePhase, PlayerID player)
+	private boolean canAirLand(final boolean movePhase, final PlayerID player)
 	{
-		
 		Collection<Territory> airCantLand;
 		if (movePhase)
 			airCantLand = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand(player);
 		else
 			airCantLand = ((IAbstractPlaceDelegate) m_bridge.getRemote()).getTerritoriesWhereAirCantLand();
-		
 		if (airCantLand.isEmpty())
 			return true;
 		else
 		{
-			StringBuilder buf = new StringBuilder(
-						"Air in following territories cant land:");
-			Iterator<Territory> iter = airCantLand.iterator();
+			final StringBuilder buf = new StringBuilder("Air in following territories cant land:");
+			final Iterator<Territory> iter = airCantLand.iterator();
 			while (iter.hasNext())
 			{
 				buf.append((iter.next()).getName());
@@ -353,16 +319,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	private boolean canUnitsFight()
 	{
 		Collection<Territory> unitsCantFight;
-		
 		unitsCantFight = ((IMoveDelegate) m_bridge.getRemote()).getTerritoriesWhereUnitsCantFight();
-		
 		if (unitsCantFight.isEmpty())
 			return false;
 		else
 		{
-			StringBuilder buf = new StringBuilder(
-						"Units in the following territories will die:");
-			Iterator<Territory> iter = unitsCantFight.iterator();
+			final StringBuilder buf = new StringBuilder("Units in the following territories will die:");
+			final Iterator<Territory> iter = unitsCantFight.iterator();
 			while (iter.hasNext())
 			{
 				buf.append((iter.next()).getName());
@@ -374,23 +337,21 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 	}
 	
-	private boolean hasUnitsThatCanMove(boolean nonCom)
+	private boolean hasUnitsThatCanMove(final boolean nonCom)
 	{
-		CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
+		final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
 		moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(m_id));
 		moveableUnitOwnedByMe.add(Matches.UnitIsNotStatic(m_id));
 		// if not non combat, can not move aa units
 		if (!nonCom)
 			moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsAAorIsAAmovement));
-		
 		m_bridge.getGameData().acquireReadLock();
 		try
 		{
-			Iterator<Territory> territoryIter = m_bridge.getGameData().getMap()
-						.getTerritories().iterator();
+			final Iterator<Territory> territoryIter = m_bridge.getGameData().getMap().getTerritories().iterator();
 			while (territoryIter.hasNext())
 			{
-				Territory item = territoryIter.next();
+				final Territory item = territoryIter.next();
 				if (item.getUnits().someMatch(moveableUnitOwnedByMe))
 				{
 					return true;
@@ -401,21 +362,18 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		{
 			m_bridge.getGameData().releaseReadLock();
 		}
-		
 	}
 	
-	private void purchase(boolean bid)
+	private void purchase(final boolean bid)
 	{
 		if (bid)
 		{
 			if (!BidPurchaseDelegate.doesPlayerHaveBid(m_bridge.getGameData(), m_id))
 				return;
 		}
-		
 		// NoPUPurchaseDelegate will run first, before this section. After running, the engine will wait for the player by coming here. Exit if we are a No PU delegate purchase
 		if (this.m_bridge.getStepName().endsWith("NoPUPurchase"))
 			return;
-		
 		// we have no production frontier
 		else if (m_id.getProductionFrontier() == null || m_id.getProductionFrontier().getRules().isEmpty())
 		{
@@ -424,33 +382,30 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		else
 		{
 			// if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
-			List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(m_id, m_bridge.getGameData()));
-			List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(m_id, m_bridge.getGameData()));
-			PlayerAttachment pa = PlayerAttachment.get(m_id);
+			final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(m_id, m_bridge.getGameData()));
+			final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(m_id, m_bridge.getGameData()));
+			final PlayerAttachment pa = PlayerAttachment.get(m_id);
 			if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
 				return;
-			
 			int minPUsNeededToBuild = Integer.MAX_VALUE;
 			m_bridge.getGameData().acquireReadLock();
 			try
 			{
-				Iterator<ProductionRule> prodRules = m_id.getProductionFrontier().getRules().iterator();
+				final Iterator<ProductionRule> prodRules = m_id.getProductionFrontier().getRules().iterator();
 				while (prodRules.hasNext())
 				{
-					ProductionRule rule = prodRules.next();
+					final ProductionRule rule = prodRules.next();
 					minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
 				}
-				
 				if (m_id.getRepairFrontier() != null)
 				{
-					Iterator<RepairRule> repairRules = m_id.getRepairFrontier().getRules().iterator();
+					final Iterator<RepairRule> repairRules = m_id.getRepairFrontier().getRules().iterator();
 					while (repairRules.hasNext())
 					{
-						RepairRule rule = repairRules.next();
+						final RepairRule rule = repairRules.next();
 						minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
 					}
 				}
-				
 				// can we buy anything
 				if (m_id.getResources().getQuantity(Constants.PUS) < minPUsNeededToBuild)
 					return;
@@ -459,36 +414,31 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				m_bridge.getGameData().releaseReadLock();
 			}
 		}
-		
 		// Check if any factories need to be repaired
 		String error = null;
 		IPurchaseDelegate purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
-		
 		if (isSBRAffectsUnitProduction(m_bridge.getGameData()))
 		{
-			GameData data = m_bridge.getGameData();
-			Collection<Territory> bombedTerrs = new ArrayList<Territory>();
-			for (Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, m_id)))
+			final GameData data = m_bridge.getGameData();
+			final Collection<Territory> bombedTerrs = new ArrayList<Territory>();
+			for (final Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, m_id)))
 			{
-				TerritoryAttachment ta = TerritoryAttachment.get(t);
+				final TerritoryAttachment ta = TerritoryAttachment.get(t);
 				// changed this to > from !=
 				if (ta.getProduction() > ta.getUnitProduction())
 				{
 					bombedTerrs.add(t);
 				}
 			}
-			
-			Collection<Unit> damagedUnits = new ArrayList<Unit>();
-			Match<Unit> myFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitIsFactoryOrCanBeDamaged);
-			
-			for (Territory t : bombedTerrs)
+			final Collection<Unit> damagedUnits = new ArrayList<Unit>();
+			final Match<Unit> myFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitIsFactoryOrCanBeDamaged);
+			for (final Territory t : bombedTerrs)
 			{
 				damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myFactories));
 			}
-			
 			if (bombedTerrs.size() > 0 && damagedUnits.size() > 0)
 			{
-				HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
+				final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
 				if (repair != null)
 				{
 					purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
@@ -498,24 +448,22 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 						m_ui.notifyError(error);
 						// dont give up, keep going
 						purchase(bid);
-						
 					}
 				}
 			}
 		}
 		else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(m_bridge.getGameData()))
 		{
-			GameData data = m_bridge.getGameData();
-			Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitHasSomeUnitDamage());
-			Collection<Unit> damagedUnits = new ArrayList<Unit>();
-			for (Territory t : data.getMap().getTerritories())
+			final GameData data = m_bridge.getGameData();
+			final Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitHasSomeUnitDamage());
+			final Collection<Unit> damagedUnits = new ArrayList<Unit>();
+			for (final Territory t : data.getMap().getTerritories())
 			{
 				damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
 			}
-			
 			if (damagedUnits.size() > 0)
 			{
-				HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
+				final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
 				if (repair != null)
 				{
 					purchaseDel = (IPurchaseDelegate) m_bridge.getRemote(); // TODO: veq fix
@@ -529,19 +477,16 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				}
 			}
 		}
-		
-		IntegerMap<ProductionRule> prod = m_ui.getProduction(m_id, bid);
+		final IntegerMap<ProductionRule> prod = m_ui.getProduction(m_id, bid);
 		if (prod == null)
 			return;
 		purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
 		error = purchaseDel.purchase(prod);
-		
 		if (error != null)
 		{
 			m_ui.notifyError(error);
 			// dont give up, keep going
 			purchase(bid);
-			
 		}
 		return;
 	}
@@ -550,38 +495,31 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		while (true)
 		{
-			IBattleDelegate battleDel = (IBattleDelegate) m_bridge.getRemote();
-			BattleListing battles = battleDel.getBattles();
-			
+			final IBattleDelegate battleDel = (IBattleDelegate) m_bridge.getRemote();
+			final BattleListing battles = battleDel.getBattles();
 			if (battles.isEmpty())
 			{
 				return;
 			}
-			
-			FightBattleDetails details = m_ui.getBattle(m_id, battles
-						.getBattles(), battles.getStrategicRaids());
-			
+			final FightBattleDetails details = m_ui.getBattle(m_id, battles.getBattles(), battles.getStrategicRaids());
 			if (m_bridge.isGameOver())
 				return;
-			
-			String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid());
-			
+			final String error = battleDel.fightBattle(details.getWhere(), details.isBombingRaid());
 			if (error != null)
 				m_ui.notifyError(error);
 		}
 	}
 	
-	private void place(boolean bid)
+	private void place(final boolean bid)
 	{
-		IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
+		final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) m_bridge.getRemote();
 		// nothing to place
 		// nothing placed
 		if (m_id.getUnits().size() == 0 && placeDel.getPlacementsMade() == 0)
 			return;
-		
 		while (true)
 		{
-			PlaceData data = m_ui.waitForPlace(m_id, bid, m_bridge);
+			final PlaceData data = m_ui.waitForPlace(m_id, bid, m_bridge);
 			if (data == null)
 			{
 				// this only happens in lhtr rules
@@ -590,8 +528,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				else
 					continue;
 			}
-			
-			String error = placeDel.placeUnits(data.getUnits(), data.getAt());
+			final String error = placeDel.placeUnits(data.getUnits(), data.getAt());
 			if (error != null)
 				m_ui.notifyError(error);
 		}
@@ -605,9 +542,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectCasualties(java.lang.String, java.util.Collection, java.util.Map, int, java.lang.String, games.strategy.triplea.delegate.DiceRoll, games.strategy.engine.data.PlayerID, java.util.List)
 	 */
-
-	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit,
-				CasualtyList defaultCasualties, GUID battleID)
+	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)
 	{
 		return m_ui.getBattlePanel().getCasualties(selectFrom, dependents, count, message, dice, hit, defaultCasualties, battleID);
 	}
@@ -615,8 +551,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, int, boolean, java.lang.String)
 	 */
-
-	public int[] selectFixedDice(int numDice, int hitAt, boolean hitOnlyIfEquals, String title, int diceSides)
+	public int[] selectFixedDice(final int numDice, final int hitAt, final boolean hitOnlyIfEquals, final String title, final int diceSides)
 	{
 		return m_ui.selectFixedDice(numDice, hitAt, hitOnlyIfEquals, title, diceSides);
 	}
@@ -624,8 +559,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectBombardingTerritory(games.strategy.engine.data.Unit, games.strategy.engine.data.Territory, java.util.Collection, boolean)
 	 */
-
-	public Territory selectBombardingTerritory(Unit unit, Territory unitTerritory, Collection<Territory> territories, boolean noneAvailable)
+	public Territory selectBombardingTerritory(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable)
 	{
 		return m_ui.getBattlePanel().getBombardment(unit, unitTerritory, territories, noneAvailable);
 	}
@@ -633,8 +567,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * Ask if the player wants to attack subs
 	 */
-
-	public boolean selectAttackSubs(Territory unitTerritory)
+	public boolean selectAttackSubs(final Territory unitTerritory)
 	{
 		return m_ui.getBattlePanel().getAttackSubs(unitTerritory);
 	}
@@ -642,8 +575,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * Ask if the player wants to attack transports
 	 */
-
-	public boolean selectAttackTransports(Territory unitTerritory)
+	public boolean selectAttackTransports(final Territory unitTerritory)
 	{
 		return m_ui.getBattlePanel().getAttackTransports(unitTerritory);
 	}
@@ -651,8 +583,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * Ask if the player wants to attack units
 	 */
-
-	public boolean selectAttackUnits(Territory unitTerritory)
+	public boolean selectAttackUnits(final Territory unitTerritory)
 	{
 		return m_ui.getBattlePanel().getAttackUnits(unitTerritory);
 	}
@@ -660,8 +591,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * Ask if the player wants to shore bombard
 	 */
-
-	public boolean selectShoreBombard(Territory unitTerritory)
+	public boolean selectShoreBombard(final Territory unitTerritory)
 	{
 		return m_ui.getBattlePanel().getShoreBombard(unitTerritory);
 	}
@@ -669,24 +599,20 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
-
-	public boolean shouldBomberBomb(Territory territory)
+	public boolean shouldBomberBomb(final Territory territory)
 	{
 		return m_ui.getStrategicBombingRaid(territory);
-		
 	}
 	
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
-
-	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
+	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> units)
 	{
 		return m_ui.getStrategicBombingRaidTarget(territory, units);
-		
 	}
 	
-	public Territory whereShouldRocketsAttack(Collection<Territory> candidates, Territory from)
+	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)
 	{
 		return m_ui.getRocketAttack(candidates, from);
 	}
@@ -694,8 +620,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#getNumberOfFightersToMoveToNewCarrier(java.util.Collection, games.strategy.engine.data.Territory)
 	 */
-
-	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
+	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
 	{
 		return m_ui.moveFightersToCarrier(fightersThatCanBeMoved, from);
 	}
@@ -703,8 +628,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
 	 */
-
-	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
+	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates)
 	{
 		return m_ui.selectTerritoryForAirToLand(candidates);
 	}
@@ -712,31 +636,28 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#confirmMoveInFaceOfAA(java.util.Collection)
 	 */
-
-	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
+	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
-		String question = "AA guns will fire in " + MyFormatter.territoriesToText(aaFiringTerritories, "and") + ", do you still want to move?";
+		final String question = "AA guns will fire in " + MyFormatter.territoriesToText(aaFiringTerritories, "and") + ", do you still want to move?";
 		return m_ui.getOK(question);
-		
 	}
 	
 	public boolean confirmMoveKamikaze()
 	{
-		String question = "Not all air units in destination territory can land, do you still want to move?";
+		final String question = "Not all air units in destination territory can land, do you still want to move?";
 		return m_ui.getOK(question);
 	}
 	
 	public boolean confirmMoveHariKari()
 	{
-		String question = "All units in destination territory will automatically die, do you still want to move?";
+		final String question = "All units in destination territory will automatically die, do you still want to move?";
 		return m_ui.getOK(question);
 	}
 	
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
 	 */
-
-	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
+	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Collection<Territory> possibleTerritories, final String message)
 	{
 		return m_ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories, submerge);
 	}
@@ -744,13 +665,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#scrambleQuery(games.strategy.net.GUID, java.util.Collection, java.lang.String, java.lang.String)
 	 */
-
-	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message, PlayerID player)
+	public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
 	{
 		return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories, player);
 	}
 	
-	public void confirmEnemyCasualties(GUID battleId, String message, PlayerID hitPlayer)
+	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
 	{
 		// no need, we have already confirmed since we are firing player
 		if (m_ui.playing(hitPlayer))
@@ -758,26 +678,25 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		// we dont want to confirm enemy casualties
 		if (!BattleDisplay.getShowEnemyCasualtyNotification())
 			return;
-		
 		m_ui.getBattlePanel().confirmCasualties(battleId, message);
 	}
 	
-	public void confirmOwnCasualties(GUID battleId, String message)
+	public void confirmOwnCasualties(final GUID battleId, final String message)
 	{
 		m_ui.getBattlePanel().confirmCasualties(battleId, message);
 	}
 	
-	public final boolean isSBRAffectsUnitProduction(GameData data)
+	public final boolean isSBRAffectsUnitProduction(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
 	}
 	
-	public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(GameData data)
+	public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
 	}
 	
-	private static boolean isTechDevelopment(GameData data)
+	private static boolean isTechDevelopment(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getTechDevelopment(data);
 	}
@@ -786,5 +705,4 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		return games.strategy.triplea.Properties.getScramble_Rules_In_Effect(m_bridge.getGameData());
 	}
-	
 }

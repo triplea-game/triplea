@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net.nio;
 
 import java.io.IOException;
@@ -35,26 +34,21 @@ import java.util.logging.Logger;
 public class SocketWriteData
 {
 	private static final Logger s_logger = Logger.getLogger(SocketWriteData.class.getName());
-	
 	private static final AtomicInteger s_counter = new AtomicInteger();
-	
 	private final ByteBuffer m_size;
 	private final ByteBuffer m_content;
 	private final int m_number = s_counter.incrementAndGet();
-	
 	// how many times we called write before we finished writing ourselves
 	private int m_writeCalls = 0;
 	
-	public SocketWriteData(byte[] data, int count)
+	public SocketWriteData(final byte[] data, int count)
 	{
 		m_content = ByteBuffer.allocate(count);
 		m_content.put(data, 0, count);
 		m_size = ByteBuffer.allocate(4);
-		
 		if (count < 0 || count > SocketReadData.MAX_MESSAGE_SIZE)
 			throw new IllegalStateException("Invalid message size:" + count);
 		count = count ^ SocketReadData.MAGIC;
-		
 		m_size.putInt(count);
 		m_size.flip();
 		m_content.flip();
@@ -74,36 +68,30 @@ public class SocketWriteData
 	 * 
 	 * @return true if the write has written the entire message
 	 */
-	public boolean write(SocketChannel channel) throws IOException
+	public boolean write(final SocketChannel channel) throws IOException
 	{
 		m_writeCalls++;
 		if (m_size.hasRemaining())
 		{
-			int count = channel.write(m_size);
+			final int count = channel.write(m_size);
 			if (count == -1)
 				throw new IOException("triplea: end of stream detected");
-			
 			if (s_logger.isLoggable(Level.FINEST))
 			{
 				s_logger.finest("wrote size_buffer bytes:" + count);
 			}
-			
 			// we could not write everything
 			if (m_size.hasRemaining())
 				return false;
 		}
-		
-		int count = channel.write(m_content);
+		final int count = channel.write(m_content);
 		if (count == -1)
 			throw new IOException("triplea: end of stream detected");
-		
 		if (s_logger.isLoggable(Level.FINEST))
 		{
 			s_logger.finest("wrote content bytes:" + count);
 		}
-		
 		return !m_content.hasRemaining();
-		
 	}
 	
 	@Override
@@ -111,5 +99,4 @@ public class SocketWriteData
 	{
 		return "<id:" + m_number + " size:" + m_content.capacity() + ">";
 	}
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.common.image;
 
 import games.strategy.engine.data.GameData;
@@ -40,7 +39,6 @@ import javax.imageio.ImageIO;
 public class UnitImageFactory
 {
 	private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), "images/units/");
-	
 	// Image cache
 	private final Map<String, Image> m_images = new HashMap<String, Image>();
 	
@@ -54,51 +52,41 @@ public class UnitImageFactory
 	/**
 	 * Return the appropriate unit image.
 	 */
-	public Image getImage(UnitType type, PlayerID player, GameData data)
+	public Image getImage(final UnitType type, final PlayerID player, final GameData data)
 	{
-		String baseName = getBaseImageName(type, player, data);
-		String fullName = baseName + player.getName();
-		
+		final String baseName = getBaseImageName(type, player, data);
+		final String fullName = baseName + player.getName();
 		if (m_images.containsKey(fullName))
 		{
 			return m_images.get(fullName);
 		}
-		
-		Image baseImage = getBaseImage(baseName, player);
-		
+		final Image baseImage = getBaseImage(baseName, player);
 		m_images.put(fullName, baseImage);
 		return baseImage;
-		
 	}
 	
-	private BufferedImage getBaseImage(String baseImageName, PlayerID id)
+	private BufferedImage getBaseImage(final String baseImageName, final PlayerID id)
 	{
-		String fileName = id.getName() + File.separator + baseImageName + ".png";
-		
+		final String fileName = id.getName() + File.separator + baseImageName + ".png";
 		BufferedImage image = null;
 		try
 		{
 			image = ImageIO.read(new File(BASE_FOLDER, fileName));
-			
 			Util.ensureImageLoaded(image);
-		} catch (InterruptedException ex)
+		} catch (final InterruptedException ex)
 		{
 			ex.printStackTrace();
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			e.printStackTrace();
 		}
-		
 		return image;
-		
 	}
 	
-	private String getBaseImageName(UnitType type, PlayerID id, GameData data)
+	private String getBaseImageName(final UnitType type, final PlayerID id, final GameData data)
 	{
-		StringBuilder name = new StringBuilder(32);
+		final StringBuilder name = new StringBuilder(32);
 		name.append(type.getName());
-		
 		return name.toString();
 	}
-	
 }

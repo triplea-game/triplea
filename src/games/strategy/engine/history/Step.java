@@ -9,24 +9,21 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.history;
 
 import games.strategy.engine.data.PlayerID;
 
 public class Step extends IndexedHistoryNode
 {
-	private PlayerID m_player;
-	private String m_stepName;
-	private String m_delegateName;
+	private final PlayerID m_player;
+	private final String m_stepName;
+	private final String m_delegateName;
 	
 	/** Creates a new instance of StepChangedMessage */
-	
 	/** Creates a new instance of StepChangedMessage */
-	Step(String stepName, String delegateName, PlayerID player, int changeStartIndex, String displayName)
+	Step(final String stepName, final String delegateName, final PlayerID player, final int changeStartIndex, final String displayName)
 	{
 		super(displayName, changeStartIndex, true);
-		
 		m_stepName = stepName;
 		m_delegateName = delegateName;
 		m_player = player;
@@ -52,19 +49,17 @@ public class Step extends IndexedHistoryNode
 	{
 		return m_stepName;
 	}
-	
 }
 
 
 class StepHistorySerializer implements SerializationWriter
 {
+	private final String m_stepName;
+	private final String m_delegateName;
+	private final PlayerID m_playerID;
+	private final String m_displayName;
 	
-	private String m_stepName;
-	private String m_delegateName;
-	private PlayerID m_playerID;
-	private String m_displayName;
-	
-	public StepHistorySerializer(String stepName, String delegateName, PlayerID playerID, String displayName)
+	public StepHistorySerializer(final String stepName, final String delegateName, final PlayerID playerID, final String displayName)
 	{
 		m_stepName = stepName;
 		m_delegateName = delegateName;
@@ -72,10 +67,8 @@ class StepHistorySerializer implements SerializationWriter
 		m_displayName = displayName;
 	}
 	
-	public void write(HistoryWriter writer)
+	public void write(final HistoryWriter writer)
 	{
 		writer.startNextStep(m_stepName, m_delegateName, m_playerID, m_displayName);
-		
 	}
-	
 }

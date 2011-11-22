@@ -3,7 +3,6 @@
  * 
  * Created on January 29, 2002, 12:38 PM
  */
-
 package games.strategy.engine.xml;
 
 import games.strategy.engine.data.DefaultUnitFactory;
@@ -28,7 +27,6 @@ public class TestGameLoader implements IGameLoader
 	 * Return an array of player types that can play on the server.
 	 * This array must not contain any entries that could play on the client.
 	 */
-	
 	public String[] getServerPlayerTypes()
 	{
 		return null;
@@ -46,15 +44,13 @@ public class TestGameLoader implements IGameLoader
 	/**
 	 * The game is about to start.
 	 */
-	
-	public void startGame(IGame game, Set<IGamePlayer> players)
+	public void startGame(final IGame game, final Set<IGamePlayer> players)
 	{
 	}
 	
 	/**
 	 * Get PBEM messengers for Turn Summary notification
 	 */
-	
 	public IPBEMMessenger[] getPBEMMessengers()
 	{
 		return new IPBEMMessenger[0];
@@ -64,8 +60,7 @@ public class TestGameLoader implements IGameLoader
 	 * Create the players. Given a map of playerName -> type,
 	 * where type is one of the Strings returned by a get*PlayerType() method.
 	 */
-	
-	public Set<IGamePlayer> createPlayers(Map<String, String> players)
+	public Set<IGamePlayer> createPlayers(final Map<String, String> players)
 	{
 		return null;
 	}
@@ -73,7 +68,6 @@ public class TestGameLoader implements IGameLoader
 	/*
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
-
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return IChannelSubscribor.class;
@@ -82,7 +76,6 @@ public class TestGameLoader implements IGameLoader
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.framework.IGameLoader#getRemotePlayerType()
 	 */
-
 	public Class<? extends IRemote> getRemotePlayerType()
 	{
 		return IRemote.class;
@@ -96,5 +89,4 @@ public class TestGameLoader implements IGameLoader
 	{
 		return new DefaultUnitFactory();
 	}
-	
 }

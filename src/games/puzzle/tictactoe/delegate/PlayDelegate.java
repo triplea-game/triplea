@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.tictactoe.delegate;
 
 import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
@@ -41,13 +40,11 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge bridge)
+	public void start(final IDelegateBridge bridge)
 	{
 		super.start(bridge);
-		
-		ITicTacToeDisplay display = (ITicTacToeDisplay) bridge.getDisplayChannelBroadcaster();
+		final ITicTacToeDisplay display = (ITicTacToeDisplay) bridge.getDisplayChannelBroadcaster();
 		display.setStatus(m_player.getName() + "'s turn");
 	}
 	
@@ -56,20 +53,20 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	{
 		super.end();
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		TicTacToePlayExtendedDelegateState state = new TicTacToePlayExtendedDelegateState();
+		final TicTacToePlayExtendedDelegateState state = new TicTacToePlayExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		TicTacToePlayExtendedDelegateState s = (TicTacToePlayExtendedDelegateState) state;
+		final TicTacToePlayExtendedDelegateState s = (TicTacToePlayExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 	}
@@ -80,15 +77,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * @param play
 	 *            <code>Territory</code> where the play should occur
 	 */
-	
-	public String play(Territory play)
+	public String play(final Territory play)
 	{
-		String error = isValidPlay(play);
+		final String error = isValidPlay(play);
 		if (error != null)
 			return error;
-		
 		performPlay(play, m_player);
-		
 		return null;
 	}
 	
@@ -98,7 +92,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * @param play
 	 *            <code>Territory</code> where the play should occur
 	 */
-	private String isValidPlay(Territory territory)
+	private String isValidPlay(final Territory territory)
 	{
 		if (territory.getOwner().equals(PlayerID.NULL_PLAYERID))
 			return null;
@@ -112,25 +106,20 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * @param play
 	 *            <code>Territory</code> where the play should occur
 	 */
-	private void performPlay(Territory at, PlayerID player)
+	private void performPlay(final Territory at, final PlayerID player)
 	{
-		Collection<Unit> units = new ArrayList<Unit>(1);
+		final Collection<Unit> units = new ArrayList<Unit>(1);
 		units.add(getData().getUnitTypeList().getUnitType("ticmark").create(player));
-		
-		String transcriptText = player.getName() + " played in " + at.getName();
+		final String transcriptText = player.getName() + " played in " + at.getName();
 		m_bridge.getHistoryWriter().startEvent(transcriptText);
 		m_bridge.getHistoryWriter().setRenderingData(units);
-		
-		Change place = ChangeFactory.addUnits(at, units);
-		Change owner = ChangeFactory.changeOwner(at, player);
-		
-		CompositeChange change = new CompositeChange();
+		final Change place = ChangeFactory.addUnits(at, units);
+		final Change owner = ChangeFactory.changeOwner(at, player);
+		final CompositeChange change = new CompositeChange();
 		change.add(place);
 		change.add(owner);
-		
 		m_bridge.addChange(change);
-		
-		ITicTacToeDisplay display = (ITicTacToeDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final ITicTacToeDisplay display = (ITicTacToeDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.performPlay(at);
 	}
 	
@@ -138,7 +127,6 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
-	
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
@@ -146,6 +134,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		return IPlayDelegate.class;
 	}
 }
+
 
 @SuppressWarnings("serial")
 class TicTacToePlayExtendedDelegateState implements Serializable

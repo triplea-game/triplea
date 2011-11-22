@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * AttachmentExporterFactory.java
  * 
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
-
 package games.strategy.engine.data.export;
 
 import games.strategy.engine.data.IAttachment;
@@ -30,7 +28,6 @@ import games.strategy.engine.data.IAttachment;
  */
 public class AttachmentExporterFactory
 {
-	
 	/**
 	 * 
 	 * @param attachment
@@ -38,9 +35,8 @@ public class AttachmentExporterFactory
 	 * @return an Exporter to export the attachment
 	 * @throws AttachmentExportException
 	 */
-	public static IAttachmentExporter getExporter(IAttachment attachment) throws AttachmentExportException
+	public static IAttachmentExporter getExporter(final IAttachment attachment) throws AttachmentExportException
 	{
-		
 		if (attachment.getClass() == games.strategy.triplea.attatchments.CanalAttachment.class)
 			return new DefaultAttachmentExporter();
 		if (attachment.getClass() == games.strategy.triplea.attatchments.RulesAttachment.class)

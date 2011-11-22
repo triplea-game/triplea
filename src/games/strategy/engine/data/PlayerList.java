@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * PlayerList.java
  * 
  * Created on October 17, 2001, 9:21 PM
  */
-
 package games.strategy.engine.data;
 
 import java.util.Collection;
@@ -34,7 +32,6 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 {
-	
 	// maps String playerName -> PlayerID
 	private final Map<String, PlayerID> m_players = new LinkedHashMap<String, PlayerID>();
 	
@@ -44,13 +41,12 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 	 * @param data
 	 *            game data
 	 */
-	public PlayerList(GameData data)
+	public PlayerList(final GameData data)
 	{
 		super(data);
-		
 	}
 	
-	protected void addPlayerID(PlayerID player)
+	protected void addPlayerID(final PlayerID player)
 	{
 		m_players.put(player.getName(), player);
 	}
@@ -60,7 +56,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 		return m_players.size();
 	}
 	
-	public PlayerID getPlayerID(String name)
+	public PlayerID getPlayerID(final String name)
 	{
 		if (PlayerID.NULL_PLAYERID.getName().equals(name))
 			return PlayerID.NULL_PLAYERID;
@@ -69,7 +65,7 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 	
 	public String[] getNames()
 	{
-		String[] values = new String[size()];
+		final String[] values = new String[size()];
 		m_players.keySet().toArray(values);
 		return values;
 	}

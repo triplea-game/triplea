@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * UnitIconImageFactory.java
  * 
  * Created on November 25, 2001, 8:27 PM
  */
-
 package games.strategy.triplea.image;
 
 import games.strategy.engine.data.GameData;
@@ -53,31 +51,26 @@ public class UnitImageFactory
 	 * You probably want getUnitImageWidth(), which takes scale factor into account.
 	 */
 	public static final int UNIT_ICON_WIDTH = 48;
-	
 	/**
 	 * Height of all icons.
 	 * You probably want getUnitImageHeight(), which takes scale factor into account.
 	 **/
 	public static final int UNIT_ICON_HEIGHT = 48;
-	
 	private static final String FILE_NAME_BASE = "units/";
-	
 	// maps Point -> image
 	private final Map<String, Image> m_images = new HashMap<String, Image>();
 	// maps Point -> Icon
 	private final Map<String, ImageIcon> m_icons = new HashMap<String, ImageIcon>();
 	// Scaling factor for unit images
 	private double m_scaleFactor;
-	
 	private ResourceLoader m_resourceLoader;
 	
 	/** Creates new IconImageFactory */
 	public UnitImageFactory()
 	{
-		
 	}
 	
-	public void setResourceLoader(ResourceLoader loader, double scaleFactor)
+	public void setResourceLoader(final ResourceLoader loader, final double scaleFactor)
 	{
 		m_scaleFactor = scaleFactor;
 		m_resourceLoader = loader;
@@ -87,7 +80,7 @@ public class UnitImageFactory
 	/**
 	 * Set the unitScaling factor
 	 */
-	public void setScaleFactor(double scaleFactor)
+	public void setScaleFactor(final double scaleFactor)
 	{
 		if (m_scaleFactor != scaleFactor)
 		{
@@ -130,110 +123,95 @@ public class UnitImageFactory
 	/**
 	 * Return the appropriate unit image.
 	 */
-	public Image getImage(UnitType type, PlayerID player, GameData data, boolean damaged, boolean disabled)
+	public Image getImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged, final boolean disabled)
 	{
-		String baseName = getBaseImageName(type, player, data, damaged, disabled);
-		String fullName = baseName + player.getName();
+		final String baseName = getBaseImageName(type, player, data, damaged, disabled);
+		final String fullName = baseName + player.getName();
 		if (m_images.containsKey(fullName))
 		{
 			return m_images.get(fullName);
 		}
-		
-		Image baseImage = getBaseImage(baseName, player, damaged);
-		
+		final Image baseImage = getBaseImage(baseName, player, damaged);
 		// We want to scale units according to the given scale factor.
 		// We use smooth scaling since the images are cached to allow
 		// to take our time in doing the scaling.
 		// Image observer is null, since the image should have been
 		// guaranteed to be loaded.
-		int width = (int) (baseImage.getWidth(null) * m_scaleFactor);
-		int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
-		Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-		
+		final int width = (int) (baseImage.getWidth(null) * m_scaleFactor);
+		final int height = (int) (baseImage.getHeight(null) * m_scaleFactor);
+		final Image scaledImage = baseImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 		// Ensure the scaling is completed.
 		try
 		{
 			Util.ensureImageLoaded(scaledImage);
-		} catch (InterruptedException ex)
+		} catch (final InterruptedException ex)
 		{
 			ex.printStackTrace();
 		}
-		
 		m_images.put(fullName, scaledImage);
 		return scaledImage;
 	}
 	
-	private Image getBaseImage(String baseImageName, PlayerID id, boolean damaged)
+	private Image getBaseImage(final String baseImageName, final PlayerID id, final boolean damaged)
 	{
-		String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
-		URL url = m_resourceLoader.getResource(fileName);
+		final String fileName = FILE_NAME_BASE + id.getName() + "/" + baseImageName + ".png";
+		final URL url = m_resourceLoader.getResource(fileName);
 		if (url == null)
 			throw new IllegalStateException("Cant load :" + baseImageName + " looking in:" + fileName);
-		
-		Image image = Toolkit.getDefaultToolkit().getImage(url);
+		final Image image = Toolkit.getDefaultToolkit().getImage(url);
 		try
 		{
 			Util.ensureImageLoaded(image);
-		} catch (InterruptedException ex)
+		} catch (final InterruptedException ex)
 		{
 			ex.printStackTrace();
 		}
-		
 		return image;
-		
 	}
 	
-	public Image getHighlightImage(UnitType type, PlayerID player, GameData data, boolean damaged, boolean disabled)
+	public Image getHighlightImage(final UnitType type, final PlayerID player, final GameData data, final boolean damaged, final boolean disabled)
 	{
-		Image base = getImage(type, player, data, damaged, disabled);
-		BufferedImage newImage = Util.createImage(base.getWidth(null), base.getHeight(null), true);
-		
+		final Image base = getImage(type, player, data, damaged, disabled);
+		final BufferedImage newImage = Util.createImage(base.getWidth(null), base.getHeight(null), true);
 		// copy the real image
-		Graphics2D g = newImage.createGraphics();
+		final Graphics2D g = newImage.createGraphics();
 		g.drawImage(base, 0, 0, null);
-		
 		// we want a highlight only over the area
 		// that is not clear
 		g.setComposite(AlphaComposite.SrcIn);
 		g.setColor(new Color(200, 200, 200, 80));
 		g.fillRect(0, 0, base.getWidth(null), base.getHeight(null));
-		
 		g.dispose();
 		return newImage;
-		
 	}
 	
 	/**
 	 * Return a icon image for a unit.
 	 */
-	public ImageIcon getIcon(UnitType type, PlayerID player, GameData data, boolean damaged, boolean disabled)
+	public ImageIcon getIcon(final UnitType type, final PlayerID player, final GameData data, final boolean damaged, final boolean disabled)
 	{
-		String baseName = getBaseImageName(type, player, data, damaged, disabled);
-		String fullName = baseName + player.getName();
+		final String baseName = getBaseImageName(type, player, data, damaged, disabled);
+		final String fullName = baseName + player.getName();
 		if (m_icons.containsKey(fullName))
 		{
 			return m_icons.get(fullName);
 		}
-		
-		Image img = getBaseImage(baseName, player, damaged);
-		ImageIcon icon = new ImageIcon(img);
+		final Image img = getBaseImage(baseName, player, damaged);
+		final ImageIcon icon = new ImageIcon(img);
 		m_icons.put(fullName, icon);
-		
 		return icon;
 	}
 	
-	public String getBaseImageName(UnitType type, PlayerID id, GameData data, boolean damaged, boolean disabled)
+	public String getBaseImageName(final UnitType type, final PlayerID id, final GameData data, final boolean damaged, final boolean disabled)
 	{
 		StringBuilder name = new StringBuilder(32);
 		name.append(type.getName());
-		
 		if (!type.getName().endsWith("_hit") && !type.getName().endsWith("_disabled"))
 		{
 			if (type.getName().equals(Constants.AAGUN_TYPE))
 			{
 				if (TechTracker.hasRocket(id))
 					name = new StringBuilder("rockets");
-				
 				if (TechTracker.hasAARadar(id))
 					name.append("_r");
 			}
@@ -242,7 +220,6 @@ public class UnitImageFactory
 			{
 				if (TechTracker.hasRocket(id))
 					name.append("_rockets");
-				
 				if (TechTracker.hasAARadar(id))
 					name.append("_r");
 			}
@@ -256,7 +233,6 @@ public class UnitImageFactory
 				if (TechTracker.hasAARadar(id))
 					name.append("_r");
 			}
-			
 			if (UnitAttachment.get(type).isAir() && !UnitAttachment.get(type).isStrategicBomber())
 			{
 				if (TechTracker.hasLongRangeAir(id))
@@ -268,20 +244,17 @@ public class UnitImageFactory
 					name.append("_jp");
 				}
 			}
-			
 			if (UnitAttachment.get(type).isAir() && UnitAttachment.get(type).isStrategicBomber())
 			{
 				if (TechTracker.hasLongRangeAir(id))
 				{
 					name.append("_lr");
 				}
-				
 				if (TechTracker.hasHeavyBomber(id))
 				{
 					name.append("_hb");
 				}
 			}
-			
 			if (UnitAttachment.get(type).isSub() && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0))
 			{
 				if (TechTracker.hasSuperSubs(id))
@@ -300,13 +273,10 @@ public class UnitImageFactory
 				}
 			}
 		}
-		
 		if (disabled)
 			name.append("_disabled");
 		else if (damaged)
 			name.append("_hit");
-		
 		return name.toString();
 	}
-	
 }

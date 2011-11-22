@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * DefaultMapSelectionListener.java
  * 
  * Created on November 7, 2001, 8:36 PM
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Territory;
@@ -29,17 +27,15 @@ import games.strategy.engine.data.Territory;
  */
 public class DefaultMapSelectionListener implements MapSelectionListener
 {
-	
-	public void territorySelected(Territory territory, MouseDetails me)
+	public void territorySelected(final Territory territory, final MouseDetails me)
 	{
 	}
 	
-	public void mouseEntered(Territory territory)
+	public void mouseEntered(final Territory territory)
 	{
 	}
 	
-	public void mouseMoved(Territory territory, MouseDetails me)
+	public void mouseMoved(final Territory territory, final MouseDetails me)
 	{
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * PlacePanel.java
  * 
  * Created on December 4, 2001, 7:45 PM
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -49,15 +47,12 @@ import javax.swing.SwingUtilities;
  */
 public class PlacePanel extends AbstractMovePanel
 {
-	
-	private JLabel actionLabel = new JLabel();
-	
+	private final JLabel actionLabel = new JLabel();
 	private PlaceData m_placeData;
-	
-	private SimpleUnitPanel m_unitsToPlace;
+	private final SimpleUnitPanel m_unitsToPlace;
 	
 	/** Creates new PlacePanel */
-	public PlacePanel(GameData data, MapPanel map, TripleAFrame frame)
+	public PlacePanel(final GameData data, final MapPanel map, final TripleAFrame frame)
 	{
 		super(data, map, frame);
 		m_undoableMovesPanel = new UndoablePlacementsPanel(data, this);
@@ -74,25 +69,19 @@ public class PlacePanel extends AbstractMovePanel
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				actionLabel.setText(getCurrentPlayer().getName() + " place" + (bid ? " for bid" : ""));
 			}
-			
 		});
-		
 	}
 	
-	public PlaceData waitForPlace(boolean bid, IPlayerBridge playerBridge)
+	public PlaceData waitForPlace(final boolean bid, final IPlayerBridge playerBridge)
 	{
 		setUp(playerBridge);
 		refreshActionLabelText(bid); // workaround: meant to be in setUpSpecific, but it requires a variable
-		
 		waitForRelease();
-		
 		cleanUp();
-		
 		return m_placeData;
 	}
 	
@@ -113,28 +102,23 @@ public class PlacePanel extends AbstractMovePanel
 	
 	private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
 	{
-		
 		@Override
-		public void territorySelected(Territory territory, MouseDetails e)
+		public void territorySelected(final Territory territory, final MouseDetails e)
 		{
 			if (!getActive() || (e.getButton() != MouseEvent.BUTTON1))
 				return;
-			
-			int maxUnits[] = new int[1];
-			Collection<Unit> units = getUnitsToPlace(territory, maxUnits);
+			final int maxUnits[] = new int[1];
+			final Collection<Unit> units = getUnitsToPlace(territory, maxUnits);
 			if (units.isEmpty())
 				return;
-			
-			UnitChooser chooser = new UnitChooser(units, Collections.<Unit, Collection<Unit>> emptyMap(), getData(), false, getMap().getUIContext());
-			String messageText = "Place units in " + territory.getName();
+			final UnitChooser chooser = new UnitChooser(units, Collections.<Unit, Collection<Unit>> emptyMap(), getData(), false, getMap().getUIContext());
+			final String messageText = "Place units in " + territory.getName();
 			if (maxUnits[0] > 0)
 				chooser.setMaxAndShowMaxButton(maxUnits[0]);
-			
-			int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+			final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, messageText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 			if (option == JOptionPane.OK_OPTION)
 			{
-				Collection<Unit> choosen = chooser.getSelected();
-				
+				final Collection<Unit> choosen = chooser.getSelected();
 				m_placeData = new PlaceData(choosen, territory);
 				updateUnits();
 				release();
@@ -142,16 +126,14 @@ public class PlacePanel extends AbstractMovePanel
 		}
 	};
 	
-	private Collection<Unit> getUnitsToPlace(Territory territory, int maxUnits[])
+	private Collection<Unit> getUnitsToPlace(final Territory territory, final int maxUnits[])
 	{
-		
 		getData().acquireReadLock();
 		try
 		{
 			// not our territory
 			if (!territory.isWater() && !territory.getOwner().equals(getCurrentPlayer()))
 				return Collections.emptyList();
-			
 			// get the units that can be placed on this territory.
 			Collection<Unit> units = getCurrentPlayer().getUnits().getUnits();
 			if (territory.isWater())
@@ -160,26 +142,21 @@ public class PlacePanel extends AbstractMovePanel
 					units = Match.getMatches(units, Matches.UnitIsSea);
 				else
 				{
-					CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
+					final CompositeMatch<Unit> unitIsSeaOrCanLandOnCarrier = new CompositeMatchOr<Unit>(Matches.UnitIsSea, Matches.UnitCanLandOnCarrier);
 					units = Match.getMatches(units, unitIsSeaOrCanLandOnCarrier);
 				}
 			}
 			else
 				units = Match.getMatches(units, Matches.UnitIsNotSea);
-			
 			if (units.isEmpty())
 				return Collections.emptyList();
-			
-			IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
-			
-			PlaceableUnits production = placeDel.getPlaceableUnits(units, territory);
-			
+			final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
+			final PlaceableUnits production = placeDel.getPlaceableUnits(units, territory);
 			if (production.isError())
 			{
 				JOptionPane.showMessageDialog(getTopLevelAncestor(), production.getErrorMessage(), "No units", JOptionPane.INFORMATION_MESSAGE);
 				return Collections.emptyList();
 			}
-			
 			maxUnits[0] = production.getMaxUnits();
 			return production.getUnits();
 		} finally
@@ -190,7 +167,7 @@ public class PlacePanel extends AbstractMovePanel
 	
 	private void updateUnits()
 	{
-		Collection<UnitCategory> unitCategories = UnitSeperator.categorize(getCurrentPlayer().getUnits().getUnits());
+		final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(getCurrentPlayer().getUnits().getUnits());
 		m_unitsToPlace.setUnitsFromCategories(unitCategories, getData());
 	}
 	
@@ -235,7 +212,7 @@ public class PlacePanel extends AbstractMovePanel
 		// TODO Auto-generated method stub
 		if (getCurrentPlayer().getUnits().size() > 0)
 		{
-			int option = JOptionPane.showConfirmDialog(getTopLevelAncestor(), "You have not placed all your units yet.  Are you sure you want to end your turn?", "TripleA",
+			final int option = JOptionPane.showConfirmDialog(getTopLevelAncestor(), "You have not placed all your units yet.  Are you sure you want to end your turn?", "TripleA",
 						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 			// TODO COMCO add code here to store the units until next time
 			if (option != JOptionPane.YES_OPTION)

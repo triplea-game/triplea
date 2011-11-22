@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.slidingtiles.ui;
 
 import games.strategy.common.ui.BasicGameMenuBar;
@@ -33,14 +32,13 @@ import javax.swing.JScrollPane;
  */
 public class NPuzzleMenu extends BasicGameMenuBar<NPuzzleFrame>
 {
-	
-	public NPuzzleMenu(NPuzzleFrame frame)
+	public NPuzzleMenu(final NPuzzleFrame frame)
 	{
 		super(frame);
 	}
 	
 	@Override
-	protected void addGameSpecificHelpMenus(JMenu helpMenu)
+	protected void addGameSpecificHelpMenus(final JMenu helpMenu)
 	{
 		addHowToPlayHelpMenu(helpMenu);
 	}
@@ -48,33 +46,23 @@ public class NPuzzleMenu extends BasicGameMenuBar<NPuzzleFrame>
 	/**
 	 * @param parentMenu
 	 */
-	private void addHowToPlayHelpMenu(JMenu parentMenu)
+	private void addHowToPlayHelpMenu(final JMenu parentMenu)
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string
-				String hints =
-
-				"<p><b>Winning</b><br>" +
-							"Rearrange the tiles into numerical order, with the blank square in the upper left corner.</p>" +
-
-							"<p><b>Moving:</b><br>" +
-							"Any square which is horizontally or vertically adjacent to the blank square may be moved into the blank square</p>";
-				
-				JEditorPane editorPane = new JEditorPane();
+				final String hints = "<p><b>Winning</b><br>" + "Rearrange the tiles into numerical order, with the blank square in the upper left corner.</p>" + "<p><b>Moving:</b><br>"
+							+ "Any square which is horizontally or vertically adjacent to the blank square may be moved into the blank square</p>";
+				final JEditorPane editorPane = new JEditorPane();
 				editorPane.setEditable(false);
 				editorPane.setContentType("text/html");
 				editorPane.setText(hints);
 				editorPane.setPreferredSize(new Dimension(550, 380));
-				
-				JScrollPane scroll = new JScrollPane(editorPane);
-				
+				final JScrollPane scroll = new JScrollPane(editorPane);
 				JOptionPane.showMessageDialog(m_frame, scroll, "Movement Help", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 	}
-	
 }

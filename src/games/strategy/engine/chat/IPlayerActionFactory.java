@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.chat;
 
 import games.strategy.net.INode;
@@ -23,11 +22,9 @@ import javax.swing.Action;
 
 public interface IPlayerActionFactory
 {
-	
 	public static final IPlayerActionFactory NULL_FACTORY = new IPlayerActionFactory()
 	{
-		
-		public List<Action> mouseOnPlayer(INode clickedOn)
+		public List<Action> mouseOnPlayer(final INode clickedOn)
 		{
 			return Collections.emptyList();
 		}

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.common.delegate;
 
 import games.strategy.engine.data.GameData;
@@ -52,7 +51,7 @@ public abstract class BaseDelegate implements IDelegate
 	{
 	}
 	
-	public void initialize(String name, String displayName)
+	public void initialize(final String name, final String displayName)
 	{
 		m_name = name;
 		m_displayName = displayName;
@@ -62,7 +61,7 @@ public abstract class BaseDelegate implements IDelegate
 	 * Called before the delegate will run.
 	 * All classes should call super.start if they override this.
 	 */
-	public void start(IDelegateBridge bridge)
+	public void start(final IDelegateBridge bridge)
 	{
 		m_bridge = bridge;
 		m_player = bridge.getPlayerID();
@@ -96,7 +95,6 @@ public abstract class BaseDelegate implements IDelegate
 			m_endBaseStepsFinished = true;
 			triggerWhenTriggerAttachments(TriggerAttachment.AFTER);
 		}
-		
 		// these should probably be somewhere else, but we are relying on the fact that reloading a save go into the start step,
 		// but nothing goes into the end step, and therefore there is no way to save then have the end step repeat itself
 		m_startBaseStepsFinished = false;
@@ -109,7 +107,7 @@ public abstract class BaseDelegate implements IDelegate
 	 */
 	public Serializable saveState()
 	{
-		BaseDelegateState state = new BaseDelegateState();
+		final BaseDelegateState state = new BaseDelegateState();
 		state.m_startBaseStepsFinished = m_startBaseStepsFinished;
 		state.m_endBaseStepsFinished = m_endBaseStepsFinished;
 		return state;
@@ -118,10 +116,9 @@ public abstract class BaseDelegate implements IDelegate
 	/**
 	 * Loads the delegates state
 	 */
-	
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		BaseDelegateState s = (BaseDelegateState) state;
+		final BaseDelegateState s = (BaseDelegateState) state;
 		m_startBaseStepsFinished = s.m_startBaseStepsFinished;
 		m_endBaseStepsFinished = s.m_endBaseStepsFinished;
 	}
@@ -130,7 +127,6 @@ public abstract class BaseDelegate implements IDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
-	
 	public abstract Class<? extends IRemote> getRemoteType();
 	
 	public IDelegateBridge getBridge()
@@ -143,25 +139,24 @@ public abstract class BaseDelegate implements IDelegate
 		return m_bridge.getData();
 	}
 	
-	private void triggerWhenTriggerAttachments(String beforeOrAfter)
+	private void triggerWhenTriggerAttachments(final String beforeOrAfter)
 	{
-		GameData data = getData();
+		final GameData data = getData();
 		if (games.strategy.triplea.Properties.getTriggers(data))
 		{
-			String stepName = data.getSequence().getStep().getName();
-			for (PlayerID aPlayer : data.getPlayerList())
+			final String stepName = data.getSequence().getStep().getName();
+			for (final PlayerID aPlayer : data.getPlayerList())
 			{
 				// first do notifications, since we want the condition to still be true (after the non-notification trigger fires, the notification might not be true anymore)
-				Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(aPlayer, m_bridge, beforeOrAfter, stepName).iterator();
+				final Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(aPlayer, m_bridge, beforeOrAfter, stepName).iterator();
 				while (notificationMessages.hasNext())
 				{
-					String notificationMessageKey = notificationMessages.next();
+					final String notificationMessageKey = notificationMessages.next();
 					String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
 					message = "<html>" + message + "</html>";
 					((ITripleaPlayer) m_bridge.getRemote(m_player)).reportMessage(message, "Notification");
 					;
 				}
-				
 				// now do all non-notification, non-victory triggers
 				// TODO: add all possible triggers here (in addition to their default locations)
 				TriggerAttachment.triggerPlayerPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
@@ -169,7 +164,6 @@ public abstract class BaseDelegate implements IDelegate
 				TriggerAttachment.triggerTerritoryPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerUnitPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerTerritoryEffectPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				
 				TriggerAttachment.triggerRelationshipChange(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerAvailableTechChange(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerTechChange(aPlayer, m_bridge, beforeOrAfter, stepName);
@@ -179,15 +173,14 @@ public abstract class BaseDelegate implements IDelegate
 				TriggerAttachment.triggerSupportChange(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerUnitPlacement(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerResourceChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				
 				// now do victory messages:
-				Tuple<String, Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(aPlayer, m_bridge, beforeOrAfter, stepName);
+				final Tuple<String, Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(aPlayer, m_bridge, beforeOrAfter, stepName);
 				if (winnersMessage != null && winnersMessage.getFirst() != null)
 				{
 					String victoryMessage = winnersMessage.getFirst();
 					victoryMessage = NotificationMessages.getInstance().getMessage(victoryMessage);
 					victoryMessage = "<html>" + victoryMessage + "</html>";
-					IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
+					final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
 					((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage, winnersMessage.getSecond(), m_bridge);
 				}
 			}
@@ -196,13 +189,13 @@ public abstract class BaseDelegate implements IDelegate
 	}
 }
 
+
 @SuppressWarnings("serial")
 class BaseDelegateState implements Serializable
 {
 	public boolean m_startBaseStepsFinished = false;
 	public boolean m_endBaseStepsFinished = false;
 }
-
 /*
 All overriding classes should use the following format for saveState and loadState, in order to save and load the superstate
 

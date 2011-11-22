@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.userDB;
 
 import java.sql.Connection;
@@ -30,13 +29,12 @@ import java.util.logging.Logger;
  */
 public class BannedIpController
 {
-	
 	private static final Logger s_logger = Logger.getLogger(BannedIpController.class.getName());
 	
 	/**
 	 * Ban the ip permanently
 	 */
-	public void addBannedIp(String ip)
+	public void addBannedIp(final String ip)
 	{
 		addBannedIp(ip, null);
 	}
@@ -47,31 +45,28 @@ public class BannedIpController
 	 * 
 	 * If this ip is already banned, this call will update the ban_end.
 	 */
-	public void addBannedIp(String ip, Date banTill)
+	public void addBannedIp(final String ip, final Date banTill)
 	{
-		
 		if (isIpBanned(ip))
 		{
 			removeBannedIp(ip);
 		}
-		
 		Timestamp banTillTs = null;
 		if (banTill != null)
 		{
 			banTillTs = new Timestamp(banTill.getTime());
 		}
-		
 		s_logger.fine("Banning ip:" + ip);
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("insert into banned_ips (ip, ban_till) values (?, ?)");
+			final PreparedStatement ps = con.prepareStatement("insert into banned_ips (ip, ban_till) values (?, ?)");
 			ps.setString(1, ip);
 			ps.setTimestamp(2, banTillTs);
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			if (sqle.getErrorCode() == 30000)
 			{
@@ -80,7 +75,6 @@ public class BannedIpController
 				s_logger.info("Tried to create duplicate banned ip:" + ip + " error:" + sqle.getMessage());
 				return;
 			}
-			
 			s_logger.log(Level.SEVERE, "Error inserting banned ip:" + ip, sqle);
 			throw new IllegalStateException(sqle.getMessage());
 		} finally
@@ -89,18 +83,18 @@ public class BannedIpController
 		}
 	}
 	
-	public void removeBannedIp(String ip)
+	public void removeBannedIp(final String ip)
 	{
 		s_logger.fine("Removing banned ip:" + ip);
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("delete from banned_ips where ip = ?");
+			final PreparedStatement ps = con.prepareStatement("delete from banned_ips where ip = ?");
 			ps.setString(1, ip);
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.log(Level.SEVERE, "Error deleting banned ip:" + ip, sqle);
 			throw new IllegalStateException(sqle.getMessage());
@@ -114,51 +108,43 @@ public class BannedIpController
 	 * Is the given ip banned? This may have the side effect of removing from the
 	 * database any ip's whose ban has expired
 	 */
-	public boolean isIpBanned(String ip)
+	public boolean isIpBanned(final String ip)
 	{
 		boolean found = false;
 		boolean expired = false;
-		String sql = "select ip, ban_till from banned_ips where ip = ?";
-		Connection con = Database.getConnection();
+		final String sql = "select ip, ban_till from banned_ips where ip = ?";
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement(sql);
+			final PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, ip);
-			
-			ResultSet rs = ps.executeQuery();
+			final ResultSet rs = ps.executeQuery();
 			found = rs.next();
-			
 			// if the ban has expird, allow the ip
 			if (found)
 			{
-				Timestamp banTill = rs.getTimestamp(2);
+				final Timestamp banTill = rs.getTimestamp(2);
 				if (banTill != null && banTill.getTime() < System.currentTimeMillis())
 				{
 					s_logger.fine("Ban expired for:" + ip);
 					expired = true;
 				}
 			}
-			
 			rs.close();
 			ps.close();
-			
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.info("Error for testing banned ip existence:" + ip + " error:" + sqle.getMessage());
 			throw new IllegalStateException(sqle.getMessage());
-			
 		} finally
 		{
 			DbUtil.closeConnection(con);
 		}
-		
 		if (expired)
 		{
 			removeBannedIp(ip);
 			return false;
 		}
 		return found;
-		
 	}
-	
 }

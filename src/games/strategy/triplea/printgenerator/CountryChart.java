@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -42,46 +41,39 @@ class CountryChart
 	private Collection<Territory> m_terrCollection;
 	private GameData m_data;
 	private Iterator<Territory> m_terrIterator;
-	private Map<Territory, List<Map<UnitType, Integer>>> m_infoMap = new HashMap<Territory, List<Map<UnitType, Integer>>>();
+	private final Map<Territory, List<Map<UnitType, Integer>>> m_infoMap = new HashMap<Territory, List<Map<UnitType, Integer>>>();
 	private PrintGenerationData m_printData;
 	
-	protected void saveToFile(PlayerID player, PrintGenerationData printData)
+	protected void saveToFile(final PlayerID player, final PrintGenerationData printData)
 	{
 		m_data = printData.getData();
 		m_printData = printData;
 		m_terrCollection = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player));
 		m_terrIterator = m_terrCollection.iterator();
 		Iterator<UnitType> availableUnits = m_data.getUnitTypeList().iterator();
-		
 		while (m_terrIterator.hasNext())
 		{
-			Territory currentTerritory = m_terrIterator.next();
-			UnitCollection unitsHere = currentTerritory.getUnits();
-			List<Map<UnitType, Integer>> unitPairs = new ArrayList<Map<UnitType, Integer>>();
+			final Territory currentTerritory = m_terrIterator.next();
+			final UnitCollection unitsHere = currentTerritory.getUnits();
+			final List<Map<UnitType, Integer>> unitPairs = new ArrayList<Map<UnitType, Integer>>();
 			while (availableUnits.hasNext())
 			{
-				UnitType currentUnit = availableUnits.next();
-				Integer amountHere = unitsHere
-							.getUnitCount(currentUnit, player);
-				Map<UnitType, Integer> innerMap = new HashMap<UnitType, Integer>();
+				final UnitType currentUnit = availableUnits.next();
+				final Integer amountHere = unitsHere.getUnitCount(currentUnit, player);
+				final Map<UnitType, Integer> innerMap = new HashMap<UnitType, Integer>();
 				innerMap.put(currentUnit, amountHere);
 				unitPairs.add(innerMap);
 			}
 			m_infoMap.put(currentTerritory, unitPairs);
 			availableUnits = m_data.getUnitTypeList().iterator();
 		}
-		
 		FileWriter countryFileWriter = null;
 		try
 		{
-			
-			File outFile = new File(m_printData.getOutDir(), player
-						.getName()
-						+ ".csv");
+			final File outFile = new File(m_printData.getOutDir(), player.getName() + ".csv");
 			countryFileWriter = new FileWriter(outFile, true);
-			
 			// Print Title
-			int numUnits = m_data.getUnitTypeList().size();
+			final int numUnits = m_data.getUnitTypeList().size();
 			for (int i = 0; i < numUnits / 2 - 1 + numUnits % 2; i++)
 			{
 				countryFileWriter.write(",");
@@ -92,53 +84,44 @@ class CountryChart
 				countryFileWriter.write(",");
 			}
 			countryFileWriter.write("\r\n");
-			
 			// Print Unit Types
-			
-			Iterator<UnitType> unitIterator = m_data.getUnitTypeList()
-						.iterator();
+			final Iterator<UnitType> unitIterator = m_data.getUnitTypeList().iterator();
 			countryFileWriter.write(",");
 			while (unitIterator.hasNext())
 			{
-				UnitType currentType = unitIterator.next();
+				final UnitType currentType = unitIterator.next();
 				countryFileWriter.write(currentType.getName() + ",");
 			}
 			countryFileWriter.write("\r\n");
-			
 			// Print Territories and Info
-			
 			m_terrIterator = Match.getMatches(m_data.getMap().getTerritories(), Matches.territoryHasUnitsOwnedBy(player)).iterator();
 			while (m_terrIterator.hasNext())
 			{
-				Territory currentTerritory = m_terrIterator.next();
+				final Territory currentTerritory = m_terrIterator.next();
 				countryFileWriter.write(currentTerritory.getName());
-				List<Map<UnitType, Integer>> currentList = m_infoMap
-							.get(currentTerritory);
-				Iterator<Map<UnitType, Integer>> mapIterator = currentList
-							.iterator();
+				final List<Map<UnitType, Integer>> currentList = m_infoMap.get(currentTerritory);
+				final Iterator<Map<UnitType, Integer>> mapIterator = currentList.iterator();
 				while (mapIterator.hasNext())
 				{
-					Map<UnitType, Integer> currentMap = mapIterator.next();
-					Iterator<UnitType> uIter = currentMap.keySet().iterator();
+					final Map<UnitType, Integer> currentMap = mapIterator.next();
+					final Iterator<UnitType> uIter = currentMap.keySet().iterator();
 					while (uIter.hasNext())
 					{
-						UnitType uHere = uIter.next();
-						Integer here = currentMap.get(uHere);
+						final UnitType uHere = uIter.next();
+						final Integer here = currentMap.get(uHere);
 						countryFileWriter.write("," + here);
 					}
 				}
 				countryFileWriter.write("\r\n");
 			}
-			
 			countryFileWriter.close();
-		} catch (FileNotFoundException e)
+		} catch (final FileNotFoundException e)
 		{
 			e.printStackTrace();
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.PlayerID;
@@ -41,13 +40,12 @@ public class UnitCategory implements Comparable
 	private final PlayerID m_owner;
 	// the units in the category, may be duplicates.
 	private final List<Unit> m_units = new ArrayList<Unit>();
-	
 	private boolean m_damaged = false;
 	private boolean m_disabled = false;
 	
-	public UnitCategory(Unit unit, boolean categorizeDependents, boolean categorizeMovement, boolean categorizeTransportcost, boolean categorizeTerritory)
+	public UnitCategory(final Unit unit, final boolean categorizeDependents, final boolean categorizeMovement, final boolean categorizeTransportcost, final boolean categorizeTerritory)
 	{
-		TripleAUnit taUnit = (TripleAUnit) unit;
+		final TripleAUnit taUnit = (TripleAUnit) unit;
 		m_type = taUnit.getType();
 		m_owner = taUnit.getOwner();
 		m_movement = categorizeMovement ? taUnit.getMovementLeft() : -1;
@@ -61,12 +59,12 @@ public class UnitCategory implements Comparable
 			m_dependents = Collections.emptyList();
 	}
 	
-	public UnitCategory(Unit unit, Collection<Unit> dependents, int movement, int transportCost)
+	public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final int transportCost)
 	{
 		this(unit, dependents, movement, false, false, transportCost, null);
 	}
 	
-	public UnitCategory(UnitType type, PlayerID owner)
+	public UnitCategory(final UnitType type, final PlayerID owner)
 	{
 		m_type = type;
 		m_dependents = Collections.emptyList();
@@ -76,7 +74,7 @@ public class UnitCategory implements Comparable
 		m_originatingTerr = null;
 	}
 	
-	public UnitCategory(Unit unit, Collection<Unit> dependents, int movement, boolean damaged, boolean disabled, int transportCost, Territory t)
+	public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final boolean damaged, final boolean disabled, final int transportCost, final Territory t)
 	{
 		m_type = unit.getType();
 		m_movement = movement;
@@ -104,80 +102,60 @@ public class UnitCategory implements Comparable
 		return UnitAttachment.get(m_type).isTwoHit();
 	}
 	
-	private void createDependents(Collection<Unit> dependents)
+	private void createDependents(final Collection<Unit> dependents)
 	{
 		m_dependents = new ArrayList<UnitOwner>();
-		
 		if (dependents == null)
 			return;
-		
-		Iterator<Unit> iter = dependents.iterator();
-		
+		final Iterator<Unit> iter = dependents.iterator();
 		while (iter.hasNext())
 		{
-			Unit current = iter.next();
+			final Unit current = iter.next();
 			m_dependents.add(new UnitOwner(current));
 		}
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == null)
 			return false;
 		if (!(o instanceof UnitCategory))
 			return false;
-		
-		UnitCategory other = (UnitCategory) o;
-		
+		final UnitCategory other = (UnitCategory) o;
 		// equality of categories does not compare the number
 		// of units in the category, so don't compare on m_units
-		boolean equalsIgnoreDamaged = equalsIgnoreDamaged(other);
-		boolean equalsIgnoreDisabled = equalsIgnoreDisabled(other);
-		
+		final boolean equalsIgnoreDamaged = equalsIgnoreDamaged(other);
+		final boolean equalsIgnoreDisabled = equalsIgnoreDisabled(other);
 		// return equalsIgnoreDamaged && other.m_damaged == this.m_damaged;
 		return equalsIgnoreDamaged && equalsIgnoreDisabled && other.m_damaged == this.m_damaged && other.m_disabled == this.m_disabled;
 	}
 	
-	public boolean equalsIgnoreDamaged(UnitCategory other)
+	public boolean equalsIgnoreDamaged(final UnitCategory other)
 	{
-		boolean equalsIgnoreDamaged =
-					other.m_type.equals(this.m_type) &&
-								other.m_movement == this.m_movement &&
-								other.m_owner.equals(this.m_owner) &&
-								Util.equals(this.m_dependents, other.m_dependents);
+		final boolean equalsIgnoreDamaged = other.m_type.equals(this.m_type) && other.m_movement == this.m_movement && other.m_owner.equals(this.m_owner)
+					&& Util.equals(this.m_dependents, other.m_dependents);
 		return equalsIgnoreDamaged;
 	}
 	
-	public boolean equalsIgnoreDisabled(UnitCategory other)
+	public boolean equalsIgnoreDisabled(final UnitCategory other)
 	{
-		boolean equalsIgnoreDisabled =
-					other.m_type.equals(this.m_type) &&
-								other.m_movement == this.m_movement &&
-								other.m_owner.equals(this.m_owner) &&
-								Util.equals(this.m_dependents, other.m_dependents);
+		final boolean equalsIgnoreDisabled = other.m_type.equals(this.m_type) && other.m_movement == this.m_movement && other.m_owner.equals(this.m_owner)
+					&& Util.equals(this.m_dependents, other.m_dependents);
 		return equalsIgnoreDisabled;
 	}
 	
-	public boolean equalsIgnoreMovement(UnitCategory other)
+	public boolean equalsIgnoreMovement(final UnitCategory other)
 	{
-		boolean equalsIgnoreMovement =
-					other.m_type.equals(this.m_type) &&
-								other.m_owner.equals(this.m_owner) &&
-								other.m_damaged == this.m_damaged &&
-								other.m_disabled == this.m_disabled &&
-								Util.equals(this.m_dependents, other.m_dependents);
+		final boolean equalsIgnoreMovement = other.m_type.equals(this.m_type) && other.m_owner.equals(this.m_owner) && other.m_damaged == this.m_damaged && other.m_disabled == this.m_disabled
+					&& Util.equals(this.m_dependents, other.m_dependents);
 		return equalsIgnoreMovement;
 	}
 	
-	public boolean equalsIgnoreDependents(UnitCategory other)
+	public boolean equalsIgnoreDependents(final UnitCategory other)
 	{
-		boolean equalsIgnoreDependents =
-					other.m_type.equals(this.m_type) &&
-								other.m_owner.equals(this.m_owner) &&
-								other.m_movement == this.m_movement &&
-								other.m_damaged == this.m_damaged &&
-								other.m_disabled == this.m_disabled;
+		final boolean equalsIgnoreDependents = other.m_type.equals(this.m_type) && other.m_owner.equals(this.m_owner) && other.m_movement == this.m_movement && other.m_damaged == this.m_damaged
+					&& other.m_disabled == this.m_disabled;
 		;
 		return equalsIgnoreDependents;
 	}
@@ -191,13 +169,9 @@ public class UnitCategory implements Comparable
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("Entry type:").append(m_type.getName())
-					.append(" owner:").append(m_owner.getName())
-					.append(" damaged:").append(m_damaged)
-					.append(" disabled:").append(m_disabled)
-					.append(" dependents:").append(m_dependents)
-					.append(" movement:").append(m_movement);
+		final StringBuilder sb = new StringBuilder();
+		sb.append("Entry type:").append(m_type.getName()).append(" owner:").append(m_owner.getName()).append(" damaged:").append(m_damaged).append(" disabled:").append(m_disabled)
+					.append(" dependents:").append(m_dependents).append(" movement:").append(m_movement);
 		return sb.toString();
 	}
 	
@@ -229,12 +203,12 @@ public class UnitCategory implements Comparable
 		return m_owner;
 	}
 	
-	public void addUnit(Unit unit)
+	public void addUnit(final Unit unit)
 	{
 		m_units.add(unit);
 	}
 	
-	void removeUnit(Unit unit)
+	void removeUnit(final Unit unit)
 	{
 		m_units.remove(unit);
 	}
@@ -244,44 +218,34 @@ public class UnitCategory implements Comparable
 		return m_type;
 	}
 	
-	public int compareTo(Object o)
+	public int compareTo(final Object o)
 	{
 		if (o == null)
 			return -1;
-		
-		UnitCategory other = (UnitCategory) o;
-		
+		final UnitCategory other = (UnitCategory) o;
 		if (!other.m_owner.equals(this.m_owner))
 			return this.m_owner.getName().compareTo(other.m_owner.getName());
-		
-		int typeCompare = new UnitTypeComparator().compare(this.getType(),
-					other.getType());
+		final int typeCompare = new UnitTypeComparator().compare(this.getType(), other.getType());
 		if (typeCompare != 0)
 			return typeCompare;
-		
 		if (m_movement != other.m_movement)
 			return m_movement - other.m_movement;
-		
 		if (!Util.equals(this.m_dependents, other.m_dependents))
 		{
-			return m_dependents.toString().compareTo(other.m_dependents.
-						toString());
+			return m_dependents.toString().compareTo(other.m_dependents.toString());
 		}
-		
 		if (this.m_damaged != other.m_damaged)
 		{
 			if (m_damaged)
 				return 1;
 			return -1;
 		}
-		
 		if (this.m_disabled != other.m_disabled)
 		{
 			if (m_disabled)
 				return 1;
 			return -1;
 		}
-		
 		return 0;
 	}
 }

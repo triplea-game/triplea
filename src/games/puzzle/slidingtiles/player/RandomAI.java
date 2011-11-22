@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.slidingtiles.player;
 
 import games.puzzle.slidingtiles.attachments.Tile;
@@ -34,8 +33,7 @@ import java.util.Random;
  */
 public class RandomAI extends AbstractAI
 {
-	
-	public RandomAI(String name, String type)
+	public RandomAI(final String name, final String type)
 	{
 		super(name, type);
 	}
@@ -46,40 +44,31 @@ public class RandomAI extends AbstractAI
 		// Unless the triplea.ai.pause system property is set to false,
 		// pause for 0.8 seconds to give the impression of thinking
 		pause();
-		
 		// Get the collection of territories from the map
-		GameMap map = getGameData().getMap();
-		Collection<Territory> territories = map.getTerritories();
-		
+		final GameMap map = getGameData().getMap();
+		final Collection<Territory> territories = map.getTerritories();
 		// Get the play delegate
-		IPlayDelegate playDel = (IPlayDelegate) this.getPlayerBridge().getRemote();
-		
+		final IPlayDelegate playDel = (IPlayDelegate) this.getPlayerBridge().getRemote();
 		// Find the blank tile
 		Territory blank = null;
-		for (Territory t : territories)
+		for (final Territory t : territories)
 		{
-			Tile tile = (Tile) t.getAttachment("tile");
+			final Tile tile = (Tile) t.getAttachment("tile");
 			if (tile != null)
 			{
-				int value = tile.getValue();
+				final int value = tile.getValue();
 				if (value == 0)
 				{
 					blank = t;
 					break;
 				}
-				
 			}
 		}
-		
 		if (blank == null)
 			throw new RuntimeException("No blank tile");
-		
-		Random random = new Random();
-		List<Territory> neighbors = new ArrayList<Territory>(map.getNeighbors(blank));
-		Territory swap = neighbors.get(random.nextInt(neighbors.size()));
-		
+		final Random random = new Random();
+		final List<Territory> neighbors = new ArrayList<Territory>(map.getNeighbors(blank));
+		final Territory swap = neighbors.get(random.nextInt(neighbors.size()));
 		playDel.play(swap, blank);
-		
 	}
-	
 }

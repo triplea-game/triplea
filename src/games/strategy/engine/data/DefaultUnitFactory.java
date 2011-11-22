@@ -11,16 +11,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.data;
 
 @SuppressWarnings("serial")
 public class DefaultUnitFactory implements IUnitFactory
 {
-	
-	public Unit createUnit(UnitType type, PlayerID owner, GameData data)
+	public Unit createUnit(final UnitType type, final PlayerID owner, final GameData data)
 	{
 		return new Unit(type, owner, data);
 	}
-	
 }

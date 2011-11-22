@@ -18,11 +18,10 @@ import games.strategy.util.IntegerMap;
 
 public class RandomStats implements IRandomStats
 {
-	
 	private final IRemoteMessenger m_remoteMessenger;
-	private IntegerMap<Integer> m_randomStats = new IntegerMap<Integer>();
+	private final IntegerMap<Integer> m_randomStats = new IntegerMap<Integer>();
 	
-	public RandomStats(IRemoteMessenger remoteMessenger)
+	public RandomStats(final IRemoteMessenger remoteMessenger)
 	{
 		m_remoteMessenger = remoteMessenger;
 		remoteMessenger.registerRemote(this, RANDOM_STATS_REMOTE_NAME);
@@ -33,7 +32,7 @@ public class RandomStats implements IRandomStats
 		m_remoteMessenger.unregisterRemote(RANDOM_STATS_REMOTE_NAME);
 	}
 	
-	public synchronized void addRandom(int[] random)
+	public synchronized void addRandom(final int[] random)
 	{
 		for (int i = 0; i < random.length; i++)
 		{
@@ -41,7 +40,7 @@ public class RandomStats implements IRandomStats
 		}
 	}
 	
-	public synchronized void addRandom(int random)
+	public synchronized void addRandom(final int random)
 	{
 		m_randomStats.add(Integer.valueOf(random + 1), 1);
 	}
@@ -50,5 +49,4 @@ public class RandomStats implements IRandomStats
 	{
 		return new RandomStatsDetails(m_randomStats);
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GameSequence.java
  * 
  * Created on October 14, 2001, 7:25 AM
  */
-
 package games.strategy.engine.data;
 
 import java.io.IOException;
@@ -36,16 +34,15 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	private int m_currentIndex;
 	private int m_round = 1;
 	private transient Object m_currentStepMutex = new Object();
-	
 	// compatible with 0.9.0.2 saved games
 	private static final long serialVersionUID = 8205078386807440137L;
 	
-	public GameSequence(GameData data)
+	public GameSequence(final GameData data)
 	{
 		super(data);
 	}
 	
-	protected void addStep(GameStep step)
+	protected void addStep(final GameStep step)
 	{
 		m_steps.add(step);
 	}
@@ -53,15 +50,14 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	/**
 	 * Removes the first instance of step.
 	 */
-	protected void remove(GameStep step)
+	protected void remove(final GameStep step)
 	{
 		if (!m_steps.contains(step))
 			throw new IllegalArgumentException("Step does not exist");
-		
 		m_steps.remove(step);
 	}
 	
-	protected void removeStep(int index)
+	protected void removeStep(final int index)
 	{
 		m_steps.remove(index);
 	}
@@ -109,11 +105,10 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		}
 	}
 	
-	public GameStep getStep(int index)
+	public GameStep getStep(final int index)
 	{
 		if ((index < 0) || (index >= m_steps.size()))
 			throw new IllegalArgumentException("Attempt to access invalid state: " + index);
-		
 		return m_steps.get(index);
 	}
 	
@@ -123,8 +118,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	}
 	
 	/** make sure transient lock object is initialized on deserialization. */
-	private void readObject(java.io.ObjectInputStream in)
-				throws IOException, ClassNotFoundException
+	private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
 	{
 		in.defaultReadObject();
 		if (m_currentStepMutex == null)
@@ -132,5 +126,4 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 			m_currentStepMutex = new Object();
 		}
 	}
-	
 }

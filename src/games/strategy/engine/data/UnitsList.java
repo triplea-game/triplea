@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.net.GUID;
@@ -30,12 +29,12 @@ public class UnitsList implements java.io.Serializable, Iterable<Unit>
 	// note, weak hash maps are not serializable
 	private Map<GUID, Unit> m_allUnits;
 	
-	Unit get(GUID id)
+	Unit get(final GUID id)
 	{
 		return m_allUnits.get(id);
 	}
 	
-	public void put(Unit unit)
+	public void put(final Unit unit)
 	{
 		m_allUnits.put(unit.getID(), unit);
 	}
@@ -62,5 +61,4 @@ public class UnitsList implements java.io.Serializable, Iterable<Unit>
 	{
 		return getUnits().iterator();
 	}
-	
 }

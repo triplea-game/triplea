@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.message;
 
 import games.strategy.net.GUID;
@@ -24,7 +23,6 @@ import java.io.ObjectOutput;
 
 public class SpokeInvoke extends Invoke
 {
-	
 	private INode m_invoker;
 	
 	public SpokeInvoke()
@@ -32,7 +30,7 @@ public class SpokeInvoke extends Invoke
 		super();
 	}
 	
-	public SpokeInvoke(GUID methodCallID, boolean needReturnValues, RemoteMethodCall call, INode invoker)
+	public SpokeInvoke(final GUID methodCallID, final boolean needReturnValues, final RemoteMethodCall call, final INode invoker)
 	{
 		super(methodCallID, needReturnValues, call);
 		m_invoker = invoker;
@@ -44,19 +42,17 @@ public class SpokeInvoke extends Invoke
 	}
 	
 	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		super.readExternal(in);
 		m_invoker = new Node();
 		((Node) m_invoker).readExternal(in);
-		
 	}
 	
 	@Override
-	public void writeExternal(ObjectOutput out) throws IOException
+	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		super.writeExternal(out);
 		((Node) m_invoker).writeExternal(out);
 	}
-	
 }

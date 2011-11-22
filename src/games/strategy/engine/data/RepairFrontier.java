@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * RepairFrontier.java
  * 
  * Created on October 13, 2001, 10:48 AM
  */
-
 package games.strategy.engine.data;
 
 import java.util.ArrayList;
@@ -33,7 +31,6 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
 {
-	
 	private final List<RepairRule> m_rules = new ArrayList<RepairRule>();
 	private List<RepairRule> m_cachedRules;
 	
@@ -45,25 +42,23 @@ public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
 	 * @param data
 	 *            game data
 	 */
-	public RepairFrontier(String name, GameData data)
+	public RepairFrontier(final String name, final GameData data)
 	{
 		super(name, data);
 	}
 	
-	public void addRule(RepairRule rule)
+	public void addRule(final RepairRule rule)
 	{
 		if (m_rules.contains(rule))
 			throw new IllegalStateException("Rule already added:" + rule);
-		
 		m_rules.add(rule);
 		m_cachedRules = null;
 	}
 	
-	public void removeRule(RepairRule rule)
+	public void removeRule(final RepairRule rule)
 	{
 		if (!m_rules.contains(rule))
 			throw new IllegalStateException("Rule not present:" + rule);
-		
 		m_rules.remove(rule);
 		m_cachedRules = null;
 	}

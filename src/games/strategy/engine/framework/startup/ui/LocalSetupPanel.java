@@ -29,9 +29,9 @@ import javax.swing.SwingUtilities;
 public class LocalSetupPanel extends SetupPanel implements Observer
 {
 	private final GameSelectorModel m_gameSelectorModel;
-	private List<LocalPlayerComboBoxSelector> m_playerTypes = new ArrayList<LocalPlayerComboBoxSelector>();
+	private final List<LocalPlayerComboBoxSelector> m_playerTypes = new ArrayList<LocalPlayerComboBoxSelector>();
 	
-	public LocalSetupPanel(GameSelectorModel model)
+	public LocalSetupPanel(final GameSelectorModel model)
 	{
 		m_gameSelectorModel = model;
 		createComponents();
@@ -42,41 +42,33 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 	
 	private void createComponents()
 	{
-		
 	}
 	
 	private void layoutComponents()
 	{
-		GameData data = m_gameSelectorModel.getGameData();
-		Map<String,String> reloadSelections = PlayerID.currentPlayers(data);
-		
+		final GameData data = m_gameSelectorModel.getGameData();
+		final Map<String, String> reloadSelections = PlayerID.currentPlayers(data);
 		removeAll();
 		m_playerTypes.clear();
 		setLayout(new GridBagLayout());
-		
 		if (data == null)
 		{
 			add(new JLabel("No game selected!"));
 			return;
 		}
-		
-		String[] playerTypes = data.getGameLoader().getServerPlayerTypes();
-		
-		String[] playerNames = data.getPlayerList().getNames();
+		final String[] playerTypes = data.getGameLoader().getServerPlayerTypes();
+		final String[] playerNames = data.getPlayerList().getNames();
 		// if the xml was created correctly, this list will be in turn order. we want to keep it that way.
 		// Arrays.sort(playerNames); // alphabetical order
-		
 		for (int i = 0; i < playerNames.length; i++)
 		{
-			LocalPlayerComboBoxSelector selector = new LocalPlayerComboBoxSelector(playerNames[i], reloadSelections,
-						data.getAllianceTracker().getAlliancesPlayerIsIn(data.getPlayerList().getPlayerID(playerNames[i])), playerTypes);
+			final LocalPlayerComboBoxSelector selector = new LocalPlayerComboBoxSelector(playerNames[i], reloadSelections, data.getAllianceTracker().getAlliancesPlayerIsIn(
+						data.getPlayerList().getPlayerID(playerNames[i])), playerTypes);
 			m_playerTypes.add(selector);
 			selector.layout(i, this);
 		}
-		
 		validate();
 		invalidate();
-		
 	}
 	
 	private void setupListeners()
@@ -86,7 +78,6 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 	
 	private void setWidgetActivation()
 	{
-		
 	}
 	
 	@Override
@@ -99,34 +90,30 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 	public void cancel()
 	{
 		m_gameSelectorModel.deleteObserver(this);
-		
 	}
 	
-	public void update(Observable o, Object arg)
+	public void update(final Observable o, final Object arg)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				
 				public void run()
 				{
 					layoutComponents();
 				}
-				
 			});
 			return;
 		}
-		
 		layoutComponents();
 	}
 	
-	public String getPlayerType(String playerName)
+	public String getPlayerType(final String playerName)
 	{
-		Iterator<LocalPlayerComboBoxSelector> iter = m_playerTypes.iterator();
+		final Iterator<LocalPlayerComboBoxSelector> iter = m_playerTypes.iterator();
 		while (iter.hasNext())
 		{
-			LocalPlayerComboBoxSelector item = iter.next();
+			final LocalPlayerComboBoxSelector item = iter.next();
 			if (item.getPlayerName().equals(playerName))
 				return item.getPlayerType();
 		}
@@ -136,19 +123,15 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 	@Override
 	public ILauncher getLauncher()
 	{
-		IRandomSource randomSource = new PlainRandomSource();
-		Map<String, String> playerTypes = new HashMap<String, String>();
-		
-		for (LocalPlayerComboBoxSelector player : m_playerTypes)
+		final IRandomSource randomSource = new PlainRandomSource();
+		final Map<String, String> playerTypes = new HashMap<String, String>();
+		for (final LocalPlayerComboBoxSelector player : m_playerTypes)
 		{
 			playerTypes.put(player.getPlayerName(), player.getPlayerType());
 		}
-		
-		LocalLauncher launcher = new LocalLauncher(m_gameSelectorModel, randomSource, playerTypes);
+		final LocalLauncher launcher = new LocalLauncher(m_gameSelectorModel, randomSource, playerTypes);
 		return launcher;
-		
 	}
-	
 }
 
 
@@ -158,7 +141,7 @@ class LocalPlayerComboBoxSelector
 	private final JComboBox m_playerTypes;
 	private final String m_playerAlliances;
 	
-	LocalPlayerComboBoxSelector(String playerName, Map<String,String> reloadSelections, Collection<String> playerAlliances, String[] types)
+	LocalPlayerComboBoxSelector(final String playerName, final Map<String, String> reloadSelections, final Collection<String> playerAlliances, final String[] types)
 	{
 		m_playerName = playerName;
 		m_playerTypes = new JComboBox(types);
@@ -181,7 +164,7 @@ class LocalPlayerComboBoxSelector
 			m_playerAlliances = playerAlliances.toString();
 	}
 	
-	public void layout(int row, Container container)
+	public void layout(final int row, final Container container)
 	{
 		container.add(new JLabel(m_playerName + ":"), new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 		container.add(m_playerTypes, new GridBagConstraints(1, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
@@ -197,5 +180,4 @@ class LocalPlayerComboBoxSelector
 	{
 		return (String) m_playerTypes.getSelectedItem();
 	}
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -45,14 +44,13 @@ import javax.swing.border.EmptyBorder;
 
 public class TerritoryDetailPanel extends JPanel
 {
-	
 	private GameData m_data;
 	private final UIContext m_uiContext;
-	private JButton m_showOdds;
+	private final JButton m_showOdds;
 	private Territory m_currentTerritory;
 	private final TripleAFrame m_frame;
 	
-	public TerritoryDetailPanel(MapPanel mapPanel, GameData data, UIContext uiContext, TripleAFrame frame)
+	public TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final UIContext uiContext, final TripleAFrame frame)
 	{
 		m_data = data;
 		m_frame = frame;
@@ -60,67 +58,51 @@ public class TerritoryDetailPanel extends JPanel
 		m_uiContext = uiContext;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(new EmptyBorder(5, 5, 0, 0));
-		
-		mapPanel.addMapSelectionListener(
-					new DefaultMapSelectionListener()
+		mapPanel.addMapSelectionListener(new DefaultMapSelectionListener()
 		{
-			
 			@Override
-			public void mouseEntered(Territory territory)
+			public void mouseEntered(final Territory territory)
 			{
 				territoryChanged(territory);
 			}
-			
-		}
-					);
-		
-		String show_battle_calc = "show_battle_calc";
+		});
+		final String show_battle_calc = "show_battle_calc";
 		final Action showBattleCalc = new AbstractAction(show_battle_calc)
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				OddsCalculatorDialog.show(m_frame, m_currentTerritory);
 			}
-			
 		};
-		
 		m_showOdds.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				showBattleCalc.actionPerformed(e);
 			}
 		});
-		
 		((JComponent) m_frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.META_MASK), show_battle_calc);
 		((JComponent) m_frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.CTRL_MASK), show_battle_calc);
 		((JComponent) m_frame.getContentPane()).getActionMap().put(show_battle_calc, showBattleCalc);
-		
 	}
 	
-	public void setGameData(GameData data)
+	public void setGameData(final GameData data)
 	{
 		m_data = data;
 		territoryChanged(null);
 	}
 	
-	private void territoryChanged(Territory territory)
+	private void territoryChanged(final Territory territory)
 	{
 		m_currentTerritory = territory;
 		removeAll();
 		refresh();
-		
 		if (territory == null)
 		{
 			return;
 		}
-		
 		add(new JLabel(territory.getName()));
-		
 		add(m_showOdds);
-		
 		Collection<Unit> unitsInTerritory;
 		m_data.acquireReadLock();
 		try
@@ -130,42 +112,28 @@ public class TerritoryDetailPanel extends JPanel
 		{
 			m_data.releaseReadLock();
 		}
-		
-		Set<UnitCategory> units = UnitSeperator.categorize(unitsInTerritory);
-		Iterator<UnitCategory> iter = units.iterator();
+		final Set<UnitCategory> units = UnitSeperator.categorize(unitsInTerritory);
+		final Iterator<UnitCategory> iter = units.iterator();
 		PlayerID currentPlayer = null;
 		while (iter.hasNext())
 		{
 			// seperate players with a seperator
-			UnitCategory item = iter.next();
+			final UnitCategory item = iter.next();
 			if (item.getOwner() != currentPlayer)
 			{
 				currentPlayer = item.getOwner();
 				add(Box.createVerticalStrut(15));
 			}
-			
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
-			ImageIcon unitIcon = m_uiContext.getUnitImageFactory().getIcon(
-						item.getType(), item.getOwner(), m_data, item.getDamaged(), item.getDisabled());
-			ImageIcon flagIcon = new ImageIcon(
-						m_uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
-			
+			final ImageIcon unitIcon = m_uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), m_data, item.getDamaged(), item.getDisabled());
+			final ImageIcon flagIcon = new ImageIcon(m_uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
 			// overlay flag onto upper-right of icon
-			Icon flaggedUnitIcon = new OverlayIcon(unitIcon, flagIcon,
-						unitIcon.getIconWidth() - flagIcon.getIconWidth() - 3, 3);
-			
-			JLabel label = new JLabel("x" + item.getUnits().size(),
-						flaggedUnitIcon,
-						SwingConstants.LEFT
-						);
-			
-			String toolTipText = "<html>" + item.getType().getName() + ": " + item.getType().getTooltip(currentPlayer, true) + "</html>";
+			final Icon flaggedUnitIcon = new OverlayIcon(unitIcon, flagIcon, unitIcon.getIconWidth() - flagIcon.getIconWidth() - 3, 3);
+			final JLabel label = new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
+			final String toolTipText = "<html>" + item.getType().getName() + ": " + item.getType().getTooltip(currentPlayer, true) + "</html>";
 			label.setToolTipText(toolTipText);
-			
 			add(label);
-			
 			refresh();
-			
 		}
 	}
 	
@@ -174,5 +142,4 @@ public class TerritoryDetailPanel extends JPanel
 		validate();
 		repaint();
 	}
-	
 }

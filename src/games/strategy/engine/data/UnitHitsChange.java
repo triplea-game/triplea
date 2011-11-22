@@ -26,7 +26,7 @@ public class UnitHitsChange extends Change
 	private final IntegerMap<Unit> m_hits;
 	private final IntegerMap<Unit> m_undoHits;
 	
-	private UnitHitsChange(IntegerMap<Unit> hits, IntegerMap<Unit> undoHits)
+	private UnitHitsChange(final IntegerMap<Unit> hits, final IntegerMap<Unit> undoHits)
 	{
 		m_hits = hits;
 		m_undoHits = undoHits;
@@ -37,33 +37,32 @@ public class UnitHitsChange extends Change
 		return m_hits.keySet();
 	}
 	
-	UnitHitsChange(IntegerMap<Unit> hits)
+	UnitHitsChange(final IntegerMap<Unit> hits)
 	{
 		m_hits = hits.copy();
 		m_undoHits = new IntegerMap<Unit>();
-		Iterator<Unit> iter = m_hits.keySet().iterator();
+		final Iterator<Unit> iter = m_hits.keySet().iterator();
 		while (iter.hasNext())
 		{
-			Unit item = iter.next();
+			final Unit item = iter.next();
 			m_undoHits.put(item, item.getHits());
 		}
 	}
 	
 	@Override
-	protected void perform(GameData data)
+	protected void perform(final GameData data)
 	{
-		Iterator<Unit> iter = m_hits.keySet().iterator();
+		final Iterator<Unit> iter = m_hits.keySet().iterator();
 		while (iter.hasNext())
 		{
-			Unit item = iter.next();
+			final Unit item = iter.next();
 			item.setHits(m_hits.getInt(item));
 		}
-		
-		Set<Unit> units = m_hits.keySet();
-		Iterator<Territory> terrIter = data.getMap().getTerritories().iterator();
+		final Set<Unit> units = m_hits.keySet();
+		final Iterator<Territory> terrIter = data.getMap().getTerritories().iterator();
 		while (terrIter.hasNext())
 		{
-			Territory element = terrIter.next();
+			final Territory element = terrIter.next();
 			if (Util.someIntersect(element.getUnits().getUnits(), units))
 			{
 				element.notifyChanged();
@@ -76,5 +75,4 @@ public class UnitHitsChange extends Change
 	{
 		return new UnitHitsChange(m_undoHits, m_hits);
 	}
-	
 }

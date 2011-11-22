@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * UnitChooser.java
  * 
  * Created on December 3, 2001, 7:32 PM
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -60,106 +58,99 @@ import javax.swing.JTextArea;
 @SuppressWarnings("serial")
 public class UnitChooser extends JPanel
 {
-	
-	private List<ChooserEntry> m_entries = new ArrayList<ChooserEntry>();
+	private final List<ChooserEntry> m_entries = new ArrayList<ChooserEntry>();
 	private final Map<Unit, Collection<Unit>> m_dependents;
 	private JTextArea m_title;
 	private int m_total = -1;
-	private JLabel m_leftToSelect = new JLabel();
-	private GameData m_data;
+	private final JLabel m_leftToSelect = new JLabel();
+	private final GameData m_data;
 	private boolean m_allowTwoHit = false;
 	private JButton m_autoSelectButton;
 	private JButton m_selectNoneButton;
 	private final UIContext m_uiContext;
-	private Match<Collection<Unit>> m_match;
+	private final Match<Collection<Unit>> m_match;
 	
 	/** Creates new UnitChooser */
-	public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, GameData data, UIContext context)
+	public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement, final boolean categorizeTransportCost, final GameData data,
+				final UIContext context)
 	{
 		m_dependents = dependent;
 		m_data = data;
 		m_uiContext = context;
 		m_match = null;
-		
 		createEntries(units, dependent, categorizeMovement, categorizeTransportCost, Collections.<Unit> emptyList());
 		layoutEntries();
-		
 	}
 	
-	public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, GameData data, UIContext context,
-				Match<Collection<Unit>> match)
+	public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement, final boolean categorizeTransportCost, final GameData data,
+				final UIContext context, final Match<Collection<Unit>> match)
 	{
 		m_match = match;
-		
 		m_dependents = dependent;
 		m_data = data;
 		m_uiContext = context;
-		
 		createEntries(units, dependent, categorizeMovement, categorizeTransportCost, Collections.<Unit> emptyList());
 		layoutEntries();
-		
 	}
 	
-	public UnitChooser(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit, UIContext uiContext)
+	public UnitChooser(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit, final UIContext uiContext)
 	{
 		this(units, Collections.<Unit> emptyList(), dependent, data, allowTwoHit, uiContext);
 	}
 	
-	public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit, UIContext uiContext)
+	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit,
+				final UIContext uiContext)
 	{
 		this(units, defaultSelections, dependent, false, false, data, allowTwoHit, uiContext);
 	}
 	
-	public UnitChooser(Collection<Unit> units, CasualtyList defaultSelections, Map<Unit, Collection<Unit>> dependent, GameData data, boolean allowTwoHit, UIContext uiContext)
+	public UnitChooser(final Collection<Unit> units, final CasualtyList defaultSelections, final Map<Unit, Collection<Unit>> dependent, final GameData data, final boolean allowTwoHit,
+				final UIContext uiContext)
 	{
 		m_dependents = dependent;
 		m_data = data;
 		m_allowTwoHit = allowTwoHit;
 		m_uiContext = uiContext;
 		m_match = null;
-		
-		List<Unit> combinedList = defaultSelections.getDamaged();
+		final List<Unit> combinedList = defaultSelections.getDamaged();
 		combinedList.addAll(defaultSelections.getKilled());
-		
 		createEntries(units, dependent, false, false, combinedList);
 		layoutEntries();
 	}
 	
-	public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, GameData data,
-				boolean allowTwoHit, UIContext uiContext)
+	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
+				final boolean categorizeTransportCost, final GameData data, final boolean allowTwoHit, final UIContext uiContext)
 	{
 		m_dependents = dependent;
 		m_data = data;
 		m_allowTwoHit = allowTwoHit;
 		m_uiContext = uiContext;
 		m_match = null;
-		
 		createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
 		layoutEntries();
 	}
 	
-	public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, GameData data,
-				boolean allowTwoHit, UIContext uiContext, Match<Collection<Unit>> match)
+	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
+				final boolean categorizeTransportCost, final GameData data, final boolean allowTwoHit, final UIContext uiContext, final Match<Collection<Unit>> match)
 	{
 		m_dependents = dependent;
 		m_data = data;
 		m_allowTwoHit = allowTwoHit;
 		m_uiContext = uiContext;
 		m_match = match;
-		
 		createEntries(units, dependent, categorizeMovement, categorizeTransportCost, defaultSelections);
 		layoutEntries();
 	}
 	
-	public UnitChooser(Collection<Unit> units, Collection<Unit> defaultSelections, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost,
-				boolean categorizeTerritories, GameData data, boolean allowTwoHit, UIContext uiContext, Match<Collection<Unit>> match)
+	public UnitChooser(final Collection<Unit> units, final Collection<Unit> defaultSelections, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement,
+				final boolean categorizeTransportCost, final boolean categorizeTerritories, final GameData data, final boolean allowTwoHit, final UIContext uiContext,
+				final Match<Collection<Unit>> match)
 	{
 		m_dependents = dependent;
 		m_data = data;
 		m_allowTwoHit = allowTwoHit;
 		m_uiContext = uiContext;
 		m_match = match;
-		
 		createEntries(units, dependent, categorizeMovement, categorizeTransportCost, categorizeTerritories, defaultSelections);
 		layoutEntries();
 	}
@@ -167,7 +158,7 @@ public class UnitChooser extends JPanel
 	/**
 	 * Set the maximum number of units that we can choose.
 	 */
-	public void setMax(int max)
+	public void setMax(final int max)
 	{
 		m_total = max;
 		m_textFieldListener.changedValue(null);
@@ -175,16 +166,14 @@ public class UnitChooser extends JPanel
 		m_selectNoneButton.setVisible(false);
 	}
 	
-	public void setMaxAndShowMaxButton(int max)
+	public void setMaxAndShowMaxButton(final int max)
 	{
-		
 		m_total = max;
 		m_textFieldListener.changedValue(null);
-		
 		m_autoSelectButton.setText("Max");
 	}
 	
-	public void setTitle(String title)
+	public void setTitle(final String title)
 	{
 		m_title.setText(title);
 	}
@@ -193,40 +182,34 @@ public class UnitChooser extends JPanel
 	{
 		if (m_total == -1)
 			return;
-		
 		Iterator<ChooserEntry> iter;
-		int selected = getSelectedCount();
-		
+		final int selected = getSelectedCount();
 		m_leftToSelect.setText("Left to select:" + (m_total - selected));
-		
 		iter = m_entries.iterator();
 		while (iter.hasNext())
 		{
-			ChooserEntry entry = iter.next();
+			final ChooserEntry entry = iter.next();
 			entry.setLeftToSelect(m_total - selected);
 		}
-		
 		m_leftToSelect.setText("Left to select:" + (m_total - selected));
-		
 	}
 	
 	private void checkMatches()
 	{
-		Collection<Unit> allSelectedUnits = new ArrayList<Unit>();
-		for (ChooserEntry entry : m_entries)
+		final Collection<Unit> allSelectedUnits = new ArrayList<Unit>();
+		for (final ChooserEntry entry : m_entries)
 			addToCollection(allSelectedUnits, entry, entry.getTotalHits(), false);
-		
 		// check match against each scroll button
-		for (ChooserEntry entry : m_entries)
+		for (final ChooserEntry entry : m_entries)
 		{
-			Collection<Unit> newSelectedUnits = new ArrayList<Unit>(allSelectedUnits);
-			int totalHits = entry.getTotalHits();
-			int totalUnits = entry.getCategory().getUnits().size();
+			final Collection<Unit> newSelectedUnits = new ArrayList<Unit>(allSelectedUnits);
+			final int totalHits = entry.getTotalHits();
+			final int totalUnits = entry.getCategory().getUnits().size();
 			int leftToSelect = 0;
-			Iterator<Unit> unitIter = entry.getCategory().getUnits().iterator();
+			final Iterator<Unit> unitIter = entry.getCategory().getUnits().iterator();
 			for (int i = 1; i <= totalUnits; i++)
 			{
-				Unit unit = unitIter.next();
+				final Unit unit = unitIter.next();
 				if (i > totalHits)
 					newSelectedUnits.add(unit);
 				if (i >= totalHits)
@@ -244,126 +227,108 @@ public class UnitChooser extends JPanel
 	private int getSelectedCount()
 	{
 		int selected = 0;
-		Iterator<ChooserEntry> iter = m_entries.iterator();
+		final Iterator<ChooserEntry> iter = m_entries.iterator();
 		while (iter.hasNext())
 		{
-			ChooserEntry entry = iter.next();
+			final ChooserEntry entry = iter.next();
 			selected += entry.getTotalHits();
 		}
 		return selected;
 	}
 	
-	private void createEntries(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, Collection<Unit> defaultSelections)
+	private void createEntries(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement, final boolean categorizeTransportCost,
+				final Collection<Unit> defaultSelections)
 	{
-		Collection<UnitCategory> categories = UnitSeperator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
-		Collection<UnitCategory> defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
-		IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
-		Iterator<UnitCategory> iter = categories.iterator();
+		final Collection<UnitCategory> categories = UnitSeperator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
+		final Collection<UnitCategory> defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
+		final IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
+		final Iterator<UnitCategory> iter = categories.iterator();
 		while (iter.hasNext())
 		{
-			UnitCategory category = iter.next();
+			final UnitCategory category = iter.next();
 			addCategory(category, defaultValues.getInt(category));
 		}
 	}
 	
-	private void createEntries(Collection<Unit> units, Map<Unit, Collection<Unit>> dependent, boolean categorizeMovement, boolean categorizeTransportCost, boolean categorizeTerritories,
-				Collection<Unit> defaultSelections)
+	private void createEntries(final Collection<Unit> units, final Map<Unit, Collection<Unit>> dependent, final boolean categorizeMovement, final boolean categorizeTransportCost,
+				final boolean categorizeTerritories, final Collection<Unit> defaultSelections)
 	{
-		Collection<UnitCategory> categories = UnitSeperator.categorize(dependent, units, categorizeMovement, categorizeTransportCost, categorizeTerritories);
-		Collection<UnitCategory> defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
-		IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
-		Iterator<UnitCategory> iter = categories.iterator();
+		final Collection<UnitCategory> categories = UnitSeperator.categorize(dependent, units, categorizeMovement, categorizeTransportCost, categorizeTerritories);
+		final Collection<UnitCategory> defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
+		final IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
+		final Iterator<UnitCategory> iter = categories.iterator();
 		while (iter.hasNext())
 		{
-			UnitCategory category = iter.next();
+			final UnitCategory category = iter.next();
 			addCategory(category, defaultValues.getInt(category));
 		}
 	}
 	
-	private IntegerMap<UnitCategory> createDefaultSelectionsMap(Collection<UnitCategory> categories)
+	private IntegerMap<UnitCategory> createDefaultSelectionsMap(final Collection<UnitCategory> categories)
 	{
-		IntegerMap<UnitCategory> defaultValues = new IntegerMap<UnitCategory>();
-		Iterator<UnitCategory> iter = categories.iterator();
+		final IntegerMap<UnitCategory> defaultValues = new IntegerMap<UnitCategory>();
+		final Iterator<UnitCategory> iter = categories.iterator();
 		while (iter.hasNext())
 		{
-			UnitCategory category = iter.next();
-			int defaultValue = category.getUnits().size();
+			final UnitCategory category = iter.next();
+			final int defaultValue = category.getUnits().size();
 			defaultValues.put(category, defaultValue);
 		}
 		return defaultValues;
 	}
 	
-	private void addCategory(UnitCategory category, int defaultValue)
+	private void addCategory(final UnitCategory category, final int defaultValue)
 	{
-		ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data, m_allowTwoHit, defaultValue, m_uiContext);
+		final ChooserEntry entry = new ChooserEntry(category, m_textFieldListener, m_data, m_allowTwoHit, defaultValue, m_uiContext);
 		m_entries.add(entry);
-		
 	}
 	
 	private void layoutEntries()
 	{
 		this.setLayout(new GridBagLayout());
-		
 		m_title = new JTextArea("Choose units");
 		m_title.setBackground(this.getBackground());
 		m_title.setEditable(false);
 		// m_title.setColumns(15);
 		m_title.setWrapStyleWord(true);
-		Insets nullInsets = new Insets(0, 0, 0, 0);
-		
-		Dimension buttonSize = new Dimension(80, 20);
-		
+		final Insets nullInsets = new Insets(0, 0, 0, 0);
+		final Dimension buttonSize = new Dimension(80, 20);
 		m_selectNoneButton = new JButton("None");
 		m_selectNoneButton.setPreferredSize(buttonSize);
 		m_autoSelectButton = new JButton("All");
 		m_autoSelectButton.setPreferredSize(buttonSize);
-		
 		add(m_title, new GridBagConstraints(0, 0, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-		
-		m_selectNoneButton.addActionListener
-					(
-					new ActionListener()
+		m_selectNoneButton.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				selectNone();
 			}
-		}
-					);
-		
-		m_autoSelectButton.addActionListener
-					(
-					new ActionListener()
+		});
+		m_autoSelectButton.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
-		{
-			autoSelect();
-		}
-		}
-					);
-		
+			public void actionPerformed(final ActionEvent e)
+			{
+				autoSelect();
+			}
+		});
 		int yIndex = 1;
-		Iterator<ChooserEntry> iter = m_entries.iterator();
+		final Iterator<ChooserEntry> iter = m_entries.iterator();
 		while (iter.hasNext())
 		{
-			ChooserEntry entry = iter.next();
+			final ChooserEntry entry = iter.next();
 			entry.createComponents(this, yIndex);
 			yIndex++;
 		}
-		
 		add(m_autoSelectButton, new GridBagConstraints(0, yIndex, 7, 1, 0, 0.5, GridBagConstraints.EAST, GridBagConstraints.NONE, nullInsets, 0, 0));
 		yIndex++;
 		add(m_leftToSelect, new GridBagConstraints(0, yIndex, 5, 2, 0, 0.5, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-		
 		if (m_match != null)
 		{
 			m_autoSelectButton.setVisible(false);
 			m_selectNoneButton.setVisible(false);
 			checkMatches();
 		}
-		
 	}
 	
 	public Collection<Unit> getSelected()
@@ -375,11 +340,10 @@ public class UnitChooser extends JPanel
 	 * get the units selected.
 	 * If units are two hit enabled, returns those with two hits.
 	 */
-	public List<Unit> getSelected(boolean selectDependents)
+	public List<Unit> getSelected(final boolean selectDependents)
 	{
-		List<Unit> selectedUnits = new ArrayList<Unit>();
-		
-		for (ChooserEntry entry : m_entries)
+		final List<Unit> selectedUnits = new ArrayList<Unit>();
+		for (final ChooserEntry entry : m_entries)
 		{
 			if (entry.isTwoHit())
 				addToCollection(selectedUnits, entry, entry.getSecondHits(), selectDependents);
@@ -394,12 +358,11 @@ public class UnitChooser extends JPanel
 	 */
 	public List<Unit> getSelectedFirstHit()
 	{
-		List<Unit> selectedUnits = new ArrayList<Unit>();
-		
-		Iterator<ChooserEntry> entries = m_entries.iterator();
+		final List<Unit> selectedUnits = new ArrayList<Unit>();
+		final Iterator<ChooserEntry> entries = m_entries.iterator();
 		while (entries.hasNext())
 		{
-			ChooserEntry chooserEntry = entries.next();
+			final ChooserEntry chooserEntry = entries.next();
 			if (chooserEntry.isTwoHit())
 				addToCollection(selectedUnits, chooserEntry, chooserEntry.getFirstHits(), false);
 		}
@@ -408,33 +371,31 @@ public class UnitChooser extends JPanel
 	
 	private void selectNone()
 	{
-		Iterator<ChooserEntry> iter = m_entries.iterator();
+		final Iterator<ChooserEntry> iter = m_entries.iterator();
 		while (iter.hasNext())
 		{
-			ChooserEntry entry = iter.next();
+			final ChooserEntry entry = iter.next();
 			entry.selectNone();
 		}
 	}
 	
 	private void autoSelect()
 	{
-		
 		if (m_total == -1)
 		{
-			Iterator<ChooserEntry> iter = m_entries.iterator();
+			final Iterator<ChooserEntry> iter = m_entries.iterator();
 			while (iter.hasNext())
 			{
-				ChooserEntry entry = iter.next();
-				
+				final ChooserEntry entry = iter.next();
 				entry.selectAll();
 			}
 		}
 		else
 		{
 			int leftToSelect = m_total - getSelectedCount();
-			for (ChooserEntry entry : m_entries)
+			for (final ChooserEntry entry : m_entries)
 			{
-				int canSelect = entry.getMax() - entry.getFirstHits();
+				final int canSelect = entry.getMax() - entry.getFirstHits();
 				if (leftToSelect >= canSelect)
 				{
 					entry.selectAll();
@@ -450,40 +411,35 @@ public class UnitChooser extends JPanel
 		}
 	}
 	
-	private void addToCollection(Collection<Unit> addTo, ChooserEntry entry, int quantity, boolean addDependents)
+	private void addToCollection(final Collection<Unit> addTo, final ChooserEntry entry, final int quantity, final boolean addDependents)
 	{
-		
-		Collection<Unit> possible = entry.getCategory().getUnits();
+		final Collection<Unit> possible = entry.getCategory().getUnits();
 		if (possible.size() < quantity)
 			throw new IllegalStateException("Not enough units");
-		
-		Iterator<Unit> iter = possible.iterator();
+		final Iterator<Unit> iter = possible.iterator();
 		for (int i = 0; i < quantity; i++)
 		{
-			Unit current = iter.next();
+			final Unit current = iter.next();
 			addTo.add(current);
 			if (addDependents)
 			{
-				Collection<Unit> dependents = m_dependents.get(current);
+				final Collection<Unit> dependents = m_dependents.get(current);
 				if (dependents != null)
 					addTo.addAll(dependents);
 			}
 		}
 	}
 	
-	private ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener()
+	private final ScrollableTextFieldListener m_textFieldListener = new ScrollableTextFieldListener()
 	{
-		
-		public void changedValue(ScrollableTextField field)
-	{
-		if (m_match != null)
-			checkMatches();
-		else
-			updateLeft();
-		
-	}
+		public void changedValue(final ScrollableTextField field)
+		{
+			if (m_match != null)
+				checkMatches();
+			else
+				updateLeft();
+		}
 	};
-	
 }
 
 
@@ -494,81 +450,58 @@ class ChooserEntry
 	private final ScrollableTextFieldListener m_hitTextFieldListener;
 	private final GameData m_data;
 	private final boolean m_hasSecondHit;
-	
 	private final int m_defaultValueFirstHits;
 	private final int m_defaultValueSecondHits;
-	
 	private ScrollableTextField m_secondHitText;
-	
 	private JLabel m_secondHitLabel;
 	private int m_leftToSelect = 0;
 	private static Insets nullInsets = new Insets(0, 0, 0, 0);
 	private final UIContext m_uiContext;
 	
-	ChooserEntry(UnitCategory category, ScrollableTextFieldListener listener, GameData data, boolean allowTwoHit, int defaultValue, UIContext uiContext)
+	ChooserEntry(final UnitCategory category, final ScrollableTextFieldListener listener, final GameData data, final boolean allowTwoHit, final int defaultValue, final UIContext uiContext)
 	{
 		m_hitTextFieldListener = listener;
 		m_data = data;
 		m_category = category;
 		m_hasSecondHit = allowTwoHit && category.isTwoHit() && !category.getDamaged();
-		int numUnits = category.getUnits().size();
+		final int numUnits = category.getUnits().size();
 		m_defaultValueFirstHits = numUnits < defaultValue ? numUnits : defaultValue;
 		m_defaultValueSecondHits = numUnits < defaultValue ? defaultValue - numUnits : 0;
 		m_uiContext = uiContext;
 		// System.out.println("Default hits: " + m_defaultValueFirstHits + " " + m_defaultValueSecondHits);
 	}
 	
-	public void createComponents(JPanel panel, int yIndex)
+	public void createComponents(final JPanel panel, final int yIndex)
 	{
-		
-		panel.add(new UnitChooserEntryIcon(false, m_uiContext),
-					new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-		
+		panel.add(new UnitChooserEntryIcon(false, m_uiContext), new GridBagConstraints(0, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
 		if (m_category.getMovement() != -1)
 			panel.add(new JLabel("mvt " + m_category.getMovement()),
 						new GridBagConstraints(1, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
-		
 		if (m_category.getTransportCost() != -1)
-			panel.add(new JLabel("cst " + m_category.getTransportCost()),
-						new GridBagConstraints(1, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4), 0, 0));
-		
-		panel.add(new JLabel("x" + m_category.getUnits().size()),
-					new GridBagConstraints(2, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-		
+			panel.add(new JLabel("cst " + m_category.getTransportCost()), new GridBagConstraints(1, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 4),
+						0, 0));
+		panel.add(new JLabel("x" + m_category.getUnits().size()), new GridBagConstraints(2, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
 		m_hitText = new ScrollableTextField(0, m_category.getUnits().size());
 		m_hitText.setValue(m_defaultValueFirstHits);
 		m_hitText.addChangeListener(m_hitTextFieldListener);
-		panel.add(m_hitText,
-					new GridBagConstraints(3, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
-		
+		panel.add(m_hitText, new GridBagConstraints(3, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0));
 		if (m_hasSecondHit)
 		{
-			panel.add(new UnitChooserEntryIcon(true, m_uiContext),
-						new GridBagConstraints(4, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 8, 0, 0), 0, 0));
-			
+			panel.add(new UnitChooserEntryIcon(true, m_uiContext), new GridBagConstraints(4, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 8, 0, 0), 0, 0));
 			m_secondHitLabel = new JLabel("x0");
-			
 			m_secondHitText = new ScrollableTextField(0, 0);
 			m_secondHitText.setValue(m_defaultValueSecondHits);
 			updateLeftToSelect();
-			panel.add(m_secondHitLabel,
-						new GridBagConstraints(5, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 4), 0, 0));
-			
-			panel.add(m_secondHitText,
-						new GridBagConstraints(6, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
-			
-			m_hitText.addChangeListener(
-						new ScrollableTextFieldListener()
+			panel.add(m_secondHitLabel, new GridBagConstraints(5, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 4), 0, 0));
+			panel.add(m_secondHitText, new GridBagConstraints(6, yIndex, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, nullInsets, 0, 0));
+			m_hitText.addChangeListener(new ScrollableTextFieldListener()
 			{
-				
-				public void changedValue(ScrollableTextField field)
+				public void changedValue(final ScrollableTextField field)
 				{
 					m_secondHitLabel.setText("x" + field.getValue());
 					updateLeftToSelect();
 				}
-			}
-						);
-			
+			});
 			m_secondHitText.addChangeListener(m_hitTextFieldListener);
 		}
 	}
@@ -578,7 +511,7 @@ class ChooserEntry
 		return m_hitText.getMax();
 	}
 	
-	public void set(int value)
+	public void set(final int value)
 	{
 		m_hitText.setValue(value);
 	}
@@ -598,22 +531,19 @@ class ChooserEntry
 		m_hitText.setValue(0);
 	}
 	
-	public void setLeftToSelect(int leftToSelect)
+	public void setLeftToSelect(final int leftToSelect)
 	{
 		m_leftToSelect = leftToSelect;
 		updateLeftToSelect();
-		
 	}
 	
 	private void updateLeftToSelect()
 	{
-		int newMax = m_leftToSelect + m_hitText.getValue();
-		
+		final int newMax = m_leftToSelect + m_hitText.getValue();
 		m_hitText.setMax(Math.min(newMax, m_category.getUnits().size()));
-		
 		if (m_hasSecondHit)
 		{
-			int newSecondHitMax = m_leftToSelect + m_secondHitText.getValue();
+			final int newSecondHitMax = m_leftToSelect + m_secondHitText.getValue();
 			m_secondHitText.setMax(Math.min(newSecondHitMax, m_hitText.getValue()));
 		}
 	}
@@ -644,30 +574,29 @@ class ChooserEntry
 	@SuppressWarnings("serial")
 	class UnitChooserEntryIcon extends JComponent
 	{
-		private boolean m_forceDamaged;
+		private final boolean m_forceDamaged;
 		private final UIContext m_uiContext;
 		
-		UnitChooserEntryIcon(boolean forceDamaged, UIContext uiContext)
+		UnitChooserEntryIcon(final boolean forceDamaged, final UIContext uiContext)
 		{
 			m_forceDamaged = forceDamaged;
 			m_uiContext = uiContext;
 		}
 		
 		@Override
-		public void paint(Graphics g)
+		public void paint(final Graphics g)
 		{
 			super.paint(g);
 			g.drawImage(m_uiContext.getUnitImageFactory().getImage(m_category.getType(), m_category.getOwner(), m_data, m_forceDamaged || m_category.getDamaged(), m_category.getDisabled()), 0, 0,
 						this);
-			Iterator<UnitOwner> iter = m_category.getDependents().iterator();
+			final Iterator<UnitOwner> iter = m_category.getDependents().iterator();
 			int index = 1;
 			while (iter.hasNext())
 			{
-				UnitOwner holder = iter.next();
-				int x = m_uiContext.getUnitImageFactory().getUnitImageWidth() * index;
-				Image unitImg = m_uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
+				final UnitOwner holder = iter.next();
+				final int x = m_uiContext.getUnitImageFactory().getUnitImageWidth() * index;
+				final Image unitImg = m_uiContext.getUnitImageFactory().getImage(holder.getType(), holder.getOwner(), m_data, false, false);
 				g.drawImage(unitImg, x, 0, this);
-				
 				index++;
 			}
 		}

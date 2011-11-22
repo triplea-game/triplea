@@ -26,7 +26,6 @@ public class Tile extends DefaultAttachment
 	private int m_value;
 	
 	// private Rectangle m_location;
-	
 	/**
 	 * Construct a new tile with no value.
 	 */
@@ -37,7 +36,7 @@ public class Tile extends DefaultAttachment
 	/**
 	 * Construct a new tile with the specified value.
 	 */
-	public Tile(int value)
+	public Tile(final int value)
 	{
 		this.m_value = value;
 	}
@@ -58,7 +57,7 @@ public class Tile extends DefaultAttachment
 	 * @param value
 	 *            String representation of the int value to store in this tile
 	 */
-	public void setValue(String value)
+	public void setValue(final String value)
 	{
 		this.m_value = getInt(value);
 	}
@@ -74,11 +73,9 @@ public class Tile extends DefaultAttachment
 	    return m_location;
 	}
 	*/
-
 	@Override
 	public int hashCode()
 	{
 		return m_value;
 	}
-	
 }

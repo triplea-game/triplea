@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Change.java
  * 
  * Created on October 25, 2001, 1:27 PM
  */
-
 package games.strategy.engine.data;
 
 import java.io.Serializable;
@@ -42,7 +40,6 @@ import java.io.Serializable;
  */
 public abstract class Change implements Serializable
 {
-	
 	static final long serialVersionUID = -5563487769423328606L;
 	
 	protected abstract void perform(GameData data);
@@ -53,5 +50,4 @@ public abstract class Change implements Serializable
 	{
 		return false;
 	}
-	
 }

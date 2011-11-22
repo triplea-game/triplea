@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.oddsCalculator.zengland;
 
 import java.awt.Button;
@@ -25,12 +24,9 @@ import java.awt.event.ActionListener;
 
 public class UnitGroupPanel extends Panel implements ActionListener
 {
-	
 	private static final long serialVersionUID = 7544343415837468319L;
-	
 	private UnitGroup attUnitGroup;
 	private UnitGroup defUnitGroup;
-	
 	Button att10 = new Button("10");
 	Button att5 = new Button("5");
 	Button att1 = new Button("1");
@@ -45,9 +41,7 @@ public class UnitGroupPanel extends Panel implements ActionListener
 	TextField totalDefenders = null;
 	TextField attOol = null;
 	TextField defOol = null;
-	
 	private Label remAtt;
-	
 	private Label remDef;
 	
 	public UnitGroup getAttUnitGroup()
@@ -55,7 +49,7 @@ public class UnitGroupPanel extends Panel implements ActionListener
 		return attUnitGroup;
 	}
 	
-	public void setAttUnitGroup(UnitGroup attUnitGroup)
+	public void setAttUnitGroup(final UnitGroup attUnitGroup)
 	{
 		this.attUnitGroup = attUnitGroup;
 	}
@@ -65,17 +59,16 @@ public class UnitGroupPanel extends Panel implements ActionListener
 		return defUnitGroup;
 	}
 	
-	public void setDefUnitGroup(UnitGroup defUnitGroup)
+	public void setDefUnitGroup(final UnitGroup defUnitGroup)
 	{
 		this.defUnitGroup = defUnitGroup;
 	}
 	
-	public UnitGroupPanel(OCUnit unit)
+	public UnitGroupPanel(final OCUnit unit)
 	{
 		super();
 		setLayout(new GridLayout(1, 16));
 		setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-		
 		setAttUnitGroup(new UnitGroup(unit, 0));
 		setDefUnitGroup(new UnitGroup(unit, 0));
 		att10.setName("att10");
@@ -98,7 +91,6 @@ public class UnitGroupPanel extends Panel implements ActionListener
 		def0.addActionListener(this);
 		defNeg1.setName("defNeg1");
 		defNeg1.addActionListener(this);
-		
 		attOol = new TextField(2);
 		attOol.addActionListener(this);
 		add(attOol);
@@ -128,11 +120,11 @@ public class UnitGroupPanel extends Panel implements ActionListener
 		add(remDef);
 	}
 	
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		// ((RollerApplet)this.getParent().getParent().getParent()).resetStats();
 		// ((RollerApplet)this.getParent().getParent().getParent()).resetBattle();
-		Object o = e.getSource();
+		final Object o = e.getSource();
 		if (o instanceof Button)
 		{
 			((RollerApplet) this.getParent().getParent().getParent()).processUGPButton(this, (Button) o);
@@ -140,7 +132,7 @@ public class UnitGroupPanel extends Panel implements ActionListener
 			try
 			{
 				Thread.sleep(100);
-			} catch (InterruptedException ex)
+			} catch (final InterruptedException ex)
 			{
 			}
 		}
@@ -177,7 +169,6 @@ public class UnitGroupPanel extends Panel implements ActionListener
 		// totalDefenders.setText(String.valueOf(defUnitGroup.getNumUnits()));
 		// }
 		// }
-		
 	}
 	
 	public Label getRemAtt()
@@ -185,12 +176,12 @@ public class UnitGroupPanel extends Panel implements ActionListener
 		return remAtt;
 	}
 	
-	public void setRemAtt(Label remAtt)
+	public void setRemAtt(final Label remAtt)
 	{
 		this.remAtt = remAtt;
 	}
 	
-	public void setRemAtt(int remVal)
+	public void setRemAtt(final int remVal)
 	{
 		remAtt.setText(String.valueOf(remVal));
 	}
@@ -200,12 +191,12 @@ public class UnitGroupPanel extends Panel implements ActionListener
 		return remDef;
 	}
 	
-	public void setRemDef(Label remDef)
+	public void setRemDef(final Label remDef)
 	{
 		this.remDef = remDef;
 	}
 	
-	public void setRemDef(int remVal)
+	public void setRemDef(final int remVal)
 	{
 		remDef.setText(String.valueOf(remVal));
 	}

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.random;
 
 import games.strategy.util.IntegerMap;
@@ -19,10 +18,8 @@ import games.strategy.util.IntegerMap;
 /**
  * Gets random numbers from javas random number generators.
  */
-
 public class PlainRandomSource implements IRandomSource
 {
-	
 	/**
 	 * Knowing the seed gives a player an advantage.
 	 * Do something a little more clever than current time.
@@ -38,10 +35,8 @@ public class PlainRandomSource implements IRandomSource
 	 */
 	public static long getSeed()
 	{
-		
-		Object seedObj = new Object();
+		final Object seedObj = new Object();
 		long seed = seedObj.hashCode(); // hash code is an int, 32 bits
-		
 		seed += System.currentTimeMillis();
 		seed += System.nanoTime(); // seed with current time as well
 		return seed;
@@ -50,14 +45,13 @@ public class PlainRandomSource implements IRandomSource
 	// private static Random s_random;
 	private static MersenneTwister s_random;
 	
-	public synchronized int[] getRandom(int max, int count, String annotation)
+	public synchronized int[] getRandom(final int max, final int count, final String annotation)
 	{
 		if (count <= 0)
 		{
 			throw new IllegalStateException("count must be > o, annotation:" + annotation);
 		}
-		
-		int[] numbers = new int[count];
+		final int[] numbers = new int[count];
 		for (int i = 0; i < count; i++)
 		{
 			numbers[i] = getRandom(max, annotation);
@@ -65,25 +59,22 @@ public class PlainRandomSource implements IRandomSource
 		return numbers;
 	}
 	
-	public synchronized int getRandom(int max, String annotation)
+	public synchronized int getRandom(final int max, final String annotation)
 	{
 		if (s_random == null)
 			s_random = new MersenneTwister(getSeed());
 		return s_random.nextInt(max);
-		
 	}
 	
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
-		IntegerMap<Integer> results = new IntegerMap<Integer>();
-		
+		final IntegerMap<Integer> results = new IntegerMap<Integer>();
 		// TODO: does this need to be updated to take data.getDiceSides() ?
-		int[] random = new PlainRandomSource().getRandom(6, 100000, "Test");
+		final int[] random = new PlainRandomSource().getRandom(6, 100000, "Test");
 		for (int i = 0; i < random.length; i++)
 		{
 			results.add(Integer.valueOf(random[i] + 1), 1);
 		}
 		System.out.println(results);
 	}
-	
 }

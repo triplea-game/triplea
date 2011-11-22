@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * BattleListingMessage.java
  * 
  * Created on November 29, 2001, 6:12 PM
  */
-
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Territory;
@@ -35,9 +33,8 @@ import java.util.Collection;
 @SuppressWarnings("serial")
 public class BattleListing implements Serializable
 {
-	
-	private Collection<Territory> m_battles;
-	private Collection<Territory> m_strategicRaids;
+	private final Collection<Territory> m_battles;
+	private final Collection<Territory> m_strategicRaids;
 	
 	/**
 	 * Creates new BattleListingMessage
@@ -47,7 +44,7 @@ public class BattleListing implements Serializable
 	 * @param strategicRaids
 	 *            strategic raids
 	 */
-	public BattleListing(Collection<Territory> battles, Collection<Territory> strategicRaids)
+	public BattleListing(final Collection<Territory> battles, final Collection<Territory> strategicRaids)
 	{
 		m_battles = battles;
 		m_strategicRaids = strategicRaids;
@@ -67,5 +64,4 @@ public class BattleListing implements Serializable
 	{
 		return m_battles.size() == 0 && m_strategicRaids.size() == 0;
 	}
-	
 }

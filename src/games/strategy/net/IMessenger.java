@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net;
 
 import java.io.Serializable;
@@ -98,5 +97,4 @@ public interface IMessenger
 	 * different than the actual port we use.
 	 */
 	public InetSocketAddress getRemoteServerSocketAddress();
-	
 }

@@ -25,17 +25,16 @@ public class EndPointTest extends TestCase
 {
 	public void testEndPoint()
 	{
-		EndPoint endPoint = new EndPoint("", Comparator.class, false);
+		final EndPoint endPoint = new EndPoint("", Comparator.class, false);
 		endPoint.addImplementor(new Comparator()
 		{
-			
-			public int compare(Object o1, Object o2)
+			public int compare(final Object o1, final Object o2)
 			{
 				return 2;
 			}
 		});
-		RemoteMethodCall call = new RemoteMethodCall("", "compare", new Object[] { "", "" }, new Class[] { Object.class, Object.class }, Comparator.class);
-		List<RemoteMethodCallResults> results = endPoint.invokeLocal(call, endPoint.takeANumber(), null);
+		final RemoteMethodCall call = new RemoteMethodCall("", "compare", new Object[] { "", "" }, new Class[] { Object.class, Object.class }, Comparator.class);
+		final List<RemoteMethodCallResults> results = endPoint.invokeLocal(call, endPoint.takeANumber(), null);
 		assertEquals(results.size(), 1);
 		assertEquals(2, (results.iterator().next()).getRVal());
 	}

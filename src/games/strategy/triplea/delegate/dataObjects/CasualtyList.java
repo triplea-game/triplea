@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * SelectCasualtyQueryMessage.java
  * 
  * Created on November 19, 2001, 2:59 PM
  */
-
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Unit;
@@ -43,13 +41,12 @@ public class CasualtyList implements Serializable
 	 * @param killed
 	 * @param damaged
 	 */
-	public CasualtyList(List<Unit> killed, List<Unit> damaged)
+	public CasualtyList(final List<Unit> killed, final List<Unit> damaged)
 	{
 		if (killed == null)
 			throw new IllegalArgumentException("null killed");
 		if (damaged == null)
 			throw new IllegalArgumentException("null damaged");
-		
 		m_killed = killed;
 		m_damaged = damaged;
 	}
@@ -76,22 +73,22 @@ public class CasualtyList implements Serializable
 		return m_damaged;
 	}
 	
-	public void addToKilled(Unit deadUnit)
+	public void addToKilled(final Unit deadUnit)
 	{
 		m_killed.add(deadUnit);
 	}
 	
-	public void addToDamaged(Unit damagedUnit)
+	public void addToDamaged(final Unit damagedUnit)
 	{
 		m_damaged.add(damagedUnit);
 	}
 	
-	public void removeFromKilled(Unit deadUnit)
+	public void removeFromKilled(final Unit deadUnit)
 	{
 		m_killed.remove(deadUnit);
 	}
 	
-	public void removeFromDamaged(Unit damagedUnit)
+	public void removeFromDamaged(final Unit damagedUnit)
 	{
 		m_damaged.remove(damagedUnit);
 	}

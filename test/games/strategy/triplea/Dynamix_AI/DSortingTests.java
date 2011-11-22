@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI;
 
 import games.strategy.engine.data.GameData;
@@ -47,11 +46,10 @@ public class DSortingTests extends TestCase
 	
 	public void testDSorting()
 	{
-		List<String> origItems = Arrays.asList("b", "a", "c", "g", "h", "d", "f", "e");
-		List<String> items_Ascending = Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h");
-		List<String> items_Descending = Arrays.asList("h", "g", "f", "e", "d", "c", "b", "a");
+		final List<String> origItems = Arrays.asList("b", "a", "c", "g", "h", "d", "f", "e");
+		final List<String> items_Ascending = Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h");
+		final List<String> items_Descending = Arrays.asList("h", "g", "f", "e", "d", "c", "b", "a");
 		List<String> vals;
-		
 		// Positive integer testing
 		HashMap<String, Number> map = new HashMap<String, Number>();
 		map.put("a", 1);
@@ -62,15 +60,12 @@ public class DSortingTests extends TestCase
 		map.put("f", 6);
 		map.put("g", 7);
 		map.put("h", 8);
-		
 		vals = new ArrayList<String>(origItems);
 		vals = DSorting.SortListByScores_HashMap_A(vals, map);
 		assertEquals(vals, items_Ascending);
-		
 		vals = new ArrayList<String>(origItems);
 		vals = DSorting.SortListByScores_HashMap_D(vals, map);
 		assertEquals(vals, items_Descending);
-		
 		// Negative integer testing
 		map = new HashMap<String, Number>();
 		map.put("a", -8);
@@ -81,15 +76,12 @@ public class DSortingTests extends TestCase
 		map.put("f", -3);
 		map.put("g", -2);
 		map.put("h", -1);
-		
 		vals = new ArrayList<String>(origItems);
 		vals = DSorting.SortListByScores_HashMap_A(vals, map);
 		assertEquals(vals, items_Ascending);
-		
 		vals = new ArrayList<String>(origItems);
 		vals = DSorting.SortListByScores_HashMap_D(vals, map);
 		assertEquals(vals, items_Descending);
-		
 		// Assorted integer testing
 		map = new HashMap<String, Number>();
 		map.put("a", -39);
@@ -100,15 +92,12 @@ public class DSortingTests extends TestCase
 		map.put("f", -7);
 		map.put("g", -6);
 		map.put("h", 12);
-		
 		vals = new ArrayList<String>(origItems);
 		vals = DSorting.SortListByScores_HashMap_A(vals, map);
 		assertEquals(vals, items_Ascending);
-		
 		vals = new ArrayList<String>(origItems);
 		vals = DSorting.SortListByScores_HashMap_D(vals, map);
 		assertEquals(vals, items_Descending);
-		
 		// Assorted double testing
 		map = new HashMap<String, Number>();
 		map.put("a", -19.23D);
@@ -119,11 +108,9 @@ public class DSortingTests extends TestCase
 		map.put("f", 4.2);
 		map.put("g", 9.99);
 		map.put("h", 12.8);
-		
 		vals = new ArrayList<String>(origItems);
 		vals = DSorting.SortListByScores_HashMap_A(vals, map);
 		assertEquals(vals, items_Ascending);
-		
 		vals = new ArrayList<String>(origItems);
 		vals = DSorting.SortListByScores_HashMap_D(vals, map);
 		assertEquals(vals, items_Descending);

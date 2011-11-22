@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net.nio;
 
 import java.io.IOException;
@@ -43,7 +42,6 @@ import java.util.logging.Logger;
 public class NIOWriter
 {
 	private static final Logger s_logger = Logger.getLogger(NIOWriter.class.getName());
-	
 	private final Selector m_selector;
 	private final IErrorReporter m_errorReporter;
 	// this is the data we are writing
@@ -52,32 +50,27 @@ public class NIOWriter
 	private List<SocketChannel> m_socketsToWake = new ArrayList<SocketChannel>();
 	// the writing thread and threads adding data to write synchronize on this lock
 	private final Object m_mutex = new Object();
-	
 	private long m_totalBytes = 0;
-	
 	private volatile boolean m_running = true;
 	
-	public NIOWriter(IErrorReporter reporter, String threadSuffix)
+	public NIOWriter(final IErrorReporter reporter, final String threadSuffix)
 	{
 		m_errorReporter = reporter;
 		try
 		{
 			m_selector = Selector.open();
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			s_logger.log(Level.SEVERE, "Could not create Selector", e);
 			throw new IllegalStateException(e);
 		}
-		
-		Thread t = new Thread(new Runnable()
+		final Thread t = new Thread(new Runnable()
 		{
-			
 			public void run()
 			{
 				loop();
 			}
 		}, "NIO Writer - " + threadSuffix);
-		
 		t.start();
 	}
 	
@@ -87,7 +80,7 @@ public class NIOWriter
 		try
 		{
 			m_selector.close();
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			s_logger.log(Level.WARNING, "error closing selector", e);
 		}
@@ -100,107 +93,85 @@ public class NIOWriter
 		{
 			if (m_socketsToWake.isEmpty())
 				return;
-			
 			socketsToWriteCopy = m_socketsToWake;
 			m_socketsToWake = new ArrayList<SocketChannel>();
 		}
-		
-		for (SocketChannel channel : socketsToWriteCopy)
+		for (final SocketChannel channel : socketsToWriteCopy)
 		{
 			try
 			{
 				channel.register(m_selector, SelectionKey.OP_WRITE);
-			} catch (ClosedChannelException e)
+			} catch (final ClosedChannelException e)
 			{
 				s_logger.log(Level.FINEST, "socket already closed", e);
 			}
-			
 		}
-		
 	}
 	
 	private void loop()
 	{
 		while (m_running)
 		{
-			
 			try
 			{
-				
 				if (s_logger.isLoggable(Level.FINEST))
 				{
 					s_logger.finest("selecting...");
 				}
-				
 				try
 				{
 					m_selector.select();
 				}
 				// exceptions can be thrown here, nothing we can do
 				// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4729342
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					s_logger.log(Level.INFO, "error reading selection", e);
 				}
 				if (!m_running)
 					continue;
-				
 				// select any new sockets that can be written to
 				addNewSocketsToSelector();
-				
-				Set<SelectionKey> selected = m_selector.selectedKeys();
-				
+				final Set<SelectionKey> selected = m_selector.selectedKeys();
 				if (s_logger.isLoggable(Level.FINEST))
 				{
 					s_logger.finest("selected:" + selected.size());
 				}
-				
-				Iterator<SelectionKey> iter = selected.iterator();
+				final Iterator<SelectionKey> iter = selected.iterator();
 				while (iter.hasNext())
 				{
-					SelectionKey key = iter.next();
+					final SelectionKey key = iter.next();
 					iter.remove();
 					if (key.isValid() && key.isWritable())
 					{
-						
-						SocketChannel channel = (SocketChannel) key.channel();
-						
-						SocketWriteData packet = getData(channel);
-						
+						final SocketChannel channel = (SocketChannel) key.channel();
+						final SocketWriteData packet = getData(channel);
 						if (packet != null)
 						{
-							
 							try
 							{
 								if (s_logger.isLoggable(Level.FINEST))
 								{
 									s_logger.finest("writing packet:" + packet + " to:" + channel.socket().getRemoteSocketAddress());
 								}
-								
-								boolean done = packet.write(channel);
-								
+								final boolean done = packet.write(channel);
 								if (done)
 								{
-									
 									m_totalBytes += packet.size();
 									if (s_logger.isLoggable(Level.FINE))
 									{
 										String remote = "null";
-										Socket s = channel.socket();
-										
+										final Socket s = channel.socket();
 										SocketAddress sa = null;
 										if (s != null)
 											sa = s.getRemoteSocketAddress();
 										if (sa != null)
 											remote = sa.toString();
-										
 										s_logger.log(Level.FINE, " done writing to:" + remote + " size:" + packet.size() + " writeCalls;" + packet.getWriteCalls() + " total:" + m_totalBytes);
 									}
-									
 									removeLast(channel);
 								}
-								
-							} catch (Exception e)
+							} catch (final Exception e)
 							{
 								s_logger.log(Level.FINER, "exception writing", e);
 								m_errorReporter.error(channel, e);
@@ -216,26 +187,24 @@ public class NIOWriter
 						}
 					}
 				}
-			} catch (Exception e)
+			} catch (final Exception e)
 			{
 				// catch unhandles exceptions to that the writer
 				// thread doesnt die
 				s_logger.log(Level.WARNING, "error in writer", e);
 			}
-			
 		}
-		
 	}
 	
 	/**
 	 * Remove the data for this channel
 	 */
-	public void closed(SocketChannel channel)
+	public void closed(final SocketChannel channel)
 	{
 		removeAll(channel);
 	}
 	
-	private void removeAll(SocketChannel to)
+	private void removeAll(final SocketChannel to)
 	{
 		synchronized (m_mutex)
 		{
@@ -243,17 +212,16 @@ public class NIOWriter
 		}
 	}
 	
-	private void removeLast(SocketChannel to)
+	private void removeLast(final SocketChannel to)
 	{
 		synchronized (m_mutex)
 		{
-			List<SocketWriteData> values = m_writing.get(to);
+			final List<SocketWriteData> values = m_writing.get(to);
 			if (values == null)
 			{
 				s_logger.log(Level.SEVERE, "NO socket data to:" + to + " all:" + values);
 				return;
 			}
-			
 			values.remove(0);
 			// remove empty lists, so we can detect that we need to wake up the socket
 			if (values.isEmpty())
@@ -261,33 +229,32 @@ public class NIOWriter
 		}
 	}
 	
-	private SocketWriteData getData(SocketChannel to)
+	private SocketWriteData getData(final SocketChannel to)
 	{
 		synchronized (m_mutex)
 		{
 			if (!m_writing.containsKey(to))
 				return null;
-			List<SocketWriteData> values = m_writing.get(to);
+			final List<SocketWriteData> values = m_writing.get(to);
 			if (values.isEmpty())
 				return null;
 			return values.get(0);
 		}
 	}
 	
-	public void enque(SocketWriteData data, SocketChannel channel)
+	public void enque(final SocketWriteData data, final SocketChannel channel)
 	{
 		synchronized (m_mutex)
 		{
 			if (!m_running)
 				return;
-			
 			if (m_writing.containsKey(channel))
 			{
 				m_writing.get(channel).add(data);
 			}
 			else
 			{
-				List<SocketWriteData> values = new ArrayList<SocketWriteData>();
+				final List<SocketWriteData> values = new ArrayList<SocketWriteData>();
 				values.add(data);
 				m_writing.put(channel, values);
 				m_socketsToWake.add(channel);
@@ -295,5 +262,4 @@ public class NIOWriter
 			}
 		}
 	}
-	
 }

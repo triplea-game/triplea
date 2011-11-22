@@ -3,7 +3,6 @@
  * 
  * Created on January 25, 2002, 3:34 PM
  */
-
 package games.strategy.thread;
 
 import java.util.ArrayList;
@@ -20,24 +19,23 @@ import junit.framework.TestSuite;
  */
 public class ThreadPoolTest extends TestCase
 {
-	
 	/** Creates a new instance of ThreadPoolTest */
-	public ThreadPoolTest(String s)
+	public ThreadPoolTest(final String s)
 	{
 		super(s);
 	}
 	
 	public static Test suite()
 	{
-		TestSuite suite = new TestSuite();
+		final TestSuite suite = new TestSuite();
 		suite.addTestSuite(ThreadPoolTest.class);
 		return suite;
 	}
 	
 	public void testRunOneTask()
 	{
-		ThreadPool pool = new ThreadPool(50, "test");
-		Task task = new Task();
+		final ThreadPool pool = new ThreadPool(50, "test");
+		final Task task = new Task();
 		pool.runTask(task);
 		pool.waitForAll();
 		assertTrue(task.isDone());
@@ -45,20 +43,16 @@ public class ThreadPoolTest extends TestCase
 	
 	public void testSingleThread()
 	{
-		ThreadPool pool = new ThreadPool(1, "test");
-		Collection<Runnable> tasks = new ArrayList<Runnable>();
-		
+		final ThreadPool pool = new ThreadPool(1, "test");
+		final Collection<Runnable> tasks = new ArrayList<Runnable>();
 		for (int i = 0; i < 30; i++)
 		{
-			Runnable task = new Task();
+			final Runnable task = new Task();
 			tasks.add(task);
 			pool.runTask(task);
-			
 		}
-		
 		pool.waitForAll();
-		
-		Iterator<Runnable> iter = tasks.iterator();
+		final Iterator<Runnable> iter = tasks.iterator();
 		while (iter.hasNext())
 		{
 			assertTrue(((Task) iter.next()).isDone());
@@ -68,21 +62,17 @@ public class ThreadPoolTest extends TestCase
 	
 	public void testSimple()
 	{
-		ThreadPool pool = new ThreadPool(5, "test");
-		Collection<Task> tasks = new ArrayList<Task>();
-		
+		final ThreadPool pool = new ThreadPool(5, "test");
+		final Collection<Task> tasks = new ArrayList<Task>();
 		for (int i = 0; i < 3000; i++)
 		{
-			Task task = new Task();
+			final Task task = new Task();
 			tasks.add(task);
 			pool.runTask(task);
 		}
-		
 		assertEquals(5, pool.getThreadCount());
-		
 		pool.waitForAll();
-		
-		Iterator<Task> iter = tasks.iterator();
+		final Iterator<Task> iter = tasks.iterator();
 		while (iter.hasNext())
 		{
 			assertTrue(iter.next().isDone());
@@ -92,30 +82,27 @@ public class ThreadPoolTest extends TestCase
 	
 	public void testBlocked()
 	{
-		Collection<Thread> threads = new ArrayList<Thread>();
-		
+		final Collection<Thread> threads = new ArrayList<Thread>();
 		for (int j = 0; j < 20; j++)
 		{
-			Runnable r = new Runnable()
+			final Runnable r = new Runnable()
 			{
-				
 				public void run()
-			{
-				threadTestBlock();
-			}
+				{
+					threadTestBlock();
+				}
 			};
-			Thread t = new Thread(r);
+			final Thread t = new Thread(r);
 			threads.add(t);
 			t.start();
 		}
-		
-		Iterator<Thread> iter = threads.iterator();
+		final Iterator<Thread> iter = threads.iterator();
 		while (iter.hasNext())
 		{
 			try
 			{
 				iter.next().join();
-			} catch (InterruptedException ex)
+			} catch (final InterruptedException ex)
 			{
 				ex.printStackTrace();
 			}
@@ -124,29 +111,23 @@ public class ThreadPoolTest extends TestCase
 	
 	private void threadTestBlock()
 	{
-		ThreadPool pool = new ThreadPool(10, "test");
-		
-		ArrayList<BlockedTask> blockedTasks = new ArrayList<BlockedTask>();
+		final ThreadPool pool = new ThreadPool(10, "test");
+		final ArrayList<BlockedTask> blockedTasks = new ArrayList<BlockedTask>();
 		for (int i = 0; i < 50; i++)
 		{
-			BlockedTask task = new BlockedTask();
+			final BlockedTask task = new BlockedTask();
 			blockedTasks.add(task);
 			pool.runTask(task);
 		}
-		
 		pool.waitForAll();
-		
-		Iterator<BlockedTask> iter = blockedTasks.iterator();
+		final Iterator<BlockedTask> iter = blockedTasks.iterator();
 		while (iter.hasNext())
 		{
-			BlockedTask task = iter.next();
+			final BlockedTask task = iter.next();
 			assertTrue(task.isDone());
 		}
-		
 		pool.shutDown();
-		
 	}
-	
 }
 
 
@@ -164,7 +145,7 @@ class Task implements Runnable
 		try
 		{
 			Thread.sleep(0, 1);
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
 		}
@@ -175,7 +156,6 @@ class Task implements Runnable
 
 class BlockedTask extends Task
 {
-	
 	@Override
 	public void run()
 	{
@@ -183,13 +163,11 @@ class BlockedTask extends Task
 		{
 			try
 			{
-				
 				wait(400);
-			} catch (InterruptedException ie)
+			} catch (final InterruptedException ie)
 			{
 			}
 			super.run();
 		}
 	}
-	
 }

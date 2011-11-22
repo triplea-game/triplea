@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Attatchment.java
  * 
  * Created on November 8, 2001, 3:09 PM
  */
-
 package games.strategy.engine.data;
 
 import java.lang.reflect.Field;
@@ -29,7 +27,6 @@ import java.lang.reflect.Field;
  */
 public class DefaultAttachment implements IAttachment
 {
-	
 	private GameData m_data;
 	private Attachable m_attatchedTo;
 	private String m_name;
@@ -37,13 +34,13 @@ public class DefaultAttachment implements IAttachment
 	/**
 	 * Throws an error if format is invalid.
 	 */
-	protected static int getInt(String aString)
+	protected static int getInt(final String aString)
 	{
 		int val = 0;
 		try
 		{
 			val = Integer.parseInt(aString);
-		} catch (NumberFormatException nfe)
+		} catch (final NumberFormatException nfe)
 		{
 			throw new IllegalArgumentException(aString + " is not a valid int value");
 		}
@@ -53,7 +50,7 @@ public class DefaultAttachment implements IAttachment
 	/**
 	 * Throws an error if format is invalid. Must be either true or false ignoring case.
 	 */
-	protected static boolean getBool(String aString)
+	protected static boolean getBool(final String aString)
 	{
 		if (aString.equalsIgnoreCase("true"))
 			return true;
@@ -63,22 +60,22 @@ public class DefaultAttachment implements IAttachment
 			throw new IllegalArgumentException(aString + " is not a valid boolean");
 	}
 	
-	public String getRawProperty(String property)
+	public String getRawProperty(final String property)
 	{
 		String s = "";
 		try
 		{
-			Field field = getClass().getDeclaredField("m_" + property);
+			final Field field = getClass().getDeclaredField("m_" + property);
 			field.setAccessible(true);
 			s += field.get(this);
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			throw new IllegalStateException("No such Property: m_" + property);
 		}
 		return s;
 	}
 	
-	public void setData(GameData data)
+	public void setData(final GameData data)
 	{
 		m_data = data;
 	}
@@ -91,8 +88,7 @@ public class DefaultAttachment implements IAttachment
 	/**
 	 * Called after the attatchment is created.
 	 */
-	
-	public void validate(GameData data) throws GameParseException
+	public void validate(final GameData data) throws GameParseException
 	{
 	}
 	
@@ -101,7 +97,7 @@ public class DefaultAttachment implements IAttachment
 		return m_attatchedTo;
 	}
 	
-	public void setAttatchedTo(Attachable attatchable)
+	public void setAttatchedTo(final Attachable attatchable)
 	{
 		m_attatchedTo = attatchable;
 	}
@@ -109,7 +105,6 @@ public class DefaultAttachment implements IAttachment
 	/** Creates new Attatchment */
 	public DefaultAttachment()
 	{
-		
 	}
 	
 	public String getName()
@@ -117,7 +112,7 @@ public class DefaultAttachment implements IAttachment
 		return m_name;
 	}
 	
-	public void setName(String aString)
+	public void setName(final String aString)
 	{
 		m_name = aString;
 	}
@@ -127,5 +122,4 @@ public class DefaultAttachment implements IAttachment
 	{
 		return getClass().getSimpleName() + " attched to:" + m_attatchedTo + " with name:" + m_name;
 	}
-	
 }

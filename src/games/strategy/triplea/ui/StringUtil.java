@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui;
 
 public class StringUtil
 {
-	
-	public static String plural(String aString, int aCount)
+	public static String plural(final String aString, final int aCount)
 	{
 		if (aCount == 1)
 			return aString;
@@ -30,5 +28,4 @@ public class StringUtil
 	private StringUtil()
 	{
 	}
-	
 }

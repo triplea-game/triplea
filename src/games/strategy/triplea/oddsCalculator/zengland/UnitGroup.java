@@ -15,12 +15,11 @@ package games.strategy.triplea.oddsCalculator.zengland;
 
 public class UnitGroup implements Cloneable
 {
-	
 	private OCUnit unit;
 	private int numUnits;
 	private int totalHp;
 	
-	public UnitGroup(OCUnit unit, int numUnits)
+	public UnitGroup(final OCUnit unit, final int numUnits)
 	{
 		super();
 		setUnit(unit);
@@ -33,7 +32,7 @@ public class UnitGroup implements Cloneable
 		return numUnits;
 	}
 	
-	public void setNumUnits(int numUnits)
+	public void setNumUnits(final int numUnits)
 	{
 		this.numUnits = numUnits;
 		if (this.numUnits < 0)
@@ -45,7 +44,7 @@ public class UnitGroup implements Cloneable
 		return unit;
 	}
 	
-	public void setUnit(OCUnit unit)
+	public void setUnit(final OCUnit unit)
 	{
 		this.unit = unit;
 	}
@@ -67,11 +66,11 @@ public class UnitGroup implements Cloneable
 			this.numUnits = 0;
 	}
 	
-	public int rollUnitsAttack(int numBoosted)
+	public int rollUnitsAttack(final int numBoosted)
 	{
 		int hits = 0;
-		int maxHits = unit.getMaxHits();
-		int maxRolls = unit.getMaxRolls();
+		final int maxHits = unit.getMaxHits();
+		final int maxRolls = unit.getMaxRolls();
 		int curAttValue = unit.getAttackValue() + 1;
 		for (int i = 0; i < numUnits; i++)
 		{
@@ -82,7 +81,7 @@ public class UnitGroup implements Cloneable
 				boolean gotAHit = false;
 				for (int k = 0; k < maxRolls && !gotAHit; k++)
 				{
-					int roll = unit.rollAttack();
+					final int roll = unit.rollAttack();
 					if (roll <= curAttValue)
 					{
 						gotAHit = true;
@@ -98,8 +97,8 @@ public class UnitGroup implements Cloneable
 	public int rollUnitsAttack()
 	{
 		int hits = 0;
-		int maxHits = unit.getMaxHits();
-		int maxRolls = unit.getMaxRolls();
+		final int maxHits = unit.getMaxHits();
+		final int maxRolls = unit.getMaxRolls();
 		for (int i = 0; i < numUnits; i++)
 		{
 			for (int j = 0; j < maxHits; j++)
@@ -107,7 +106,7 @@ public class UnitGroup implements Cloneable
 				boolean gotAHit = false;
 				for (int k = 0; k < maxRolls && !gotAHit; k++)
 				{
-					int roll = unit.rollAttack();
+					final int roll = unit.rollAttack();
 					if (roll <= unit.getAttackValue())
 					{
 						gotAHit = true;
@@ -125,7 +124,7 @@ public class UnitGroup implements Cloneable
 		int hits = 0;
 		for (int i = 0; i < numUnits; i++)
 		{
-			int roll = unit.rollDefend();
+			final int roll = unit.rollDefend();
 			if (roll <= unit.getDefendValue())
 				hits++;
 		}
@@ -141,14 +140,14 @@ public class UnitGroup implements Cloneable
 		return unitGroup;
 	}
 	
-	public static void main(String args[])
+	public static void main(final String args[])
 	{
 		// UnitGroup ug = new UnitGroup(Unit.newRevisedHeavyBomber(), 1);
-		UnitGroup ug = new UnitGroup(OCUnit.newInf(), 10);
+		final UnitGroup ug = new UnitGroup(OCUnit.newInf(), 10);
 		System.out.println(ug);
 		int defHits = 0;
 		int attHits = 0;
-		int rounds = 1;
+		final int rounds = 1;
 		for (int i = 0; i < rounds; i++)
 		{
 			defHits += ug.rollUnitsDefend();
@@ -158,7 +157,6 @@ public class UnitGroup implements Cloneable
 		}
 		System.out.println("Avg Attack hits " + (float) attHits / (float) rounds);
 		System.out.println("Avg Defense hits " + (float) defHits / (float) rounds);
-		
 	}
 	
 	public int getTotalHp()
@@ -166,7 +164,7 @@ public class UnitGroup implements Cloneable
 		return totalHp;
 	}
 	
-	public void setTotalHp(int totalHp)
+	public void setTotalHp(final int totalHp)
 	{
 		this.totalHp = totalHp;
 	}
@@ -178,5 +176,4 @@ public class UnitGroup implements Cloneable
 		c = new UnitGroup(this.getUnit(), this.getNumUnits());
 		return c;
 	}
-	
 }

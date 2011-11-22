@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TestAttatchment.java
  * 
  * Created on October 22, 2001, 7:32 PM
  */
-
 package games.strategy.engine.xml;
 
 import games.strategy.engine.data.Attachable;
@@ -30,7 +28,6 @@ import games.strategy.engine.data.GameData;
  */
 public class TestAttachment implements games.strategy.engine.data.IAttachment
 {
-	
 	private String m_value;
 	
 	/** Creates new TestAttatchment */
@@ -43,9 +40,8 @@ public class TestAttachment implements games.strategy.engine.data.IAttachment
 		return null;
 	}
 	
-	public void setAttatchedTo(Attachable unused)
+	public void setAttatchedTo(final Attachable unused)
 	{
-		
 	}
 	
 	public String getName()
@@ -53,12 +49,11 @@ public class TestAttachment implements games.strategy.engine.data.IAttachment
 		return null;
 	}
 	
-	public void setName(String aString)
+	public void setName(final String aString)
 	{
-		
 	}
 	
-	public void setValue(String value)
+	public void setValue(final String value)
 	{
 		m_value = value;
 	}
@@ -68,12 +63,11 @@ public class TestAttachment implements games.strategy.engine.data.IAttachment
 		return m_value;
 	}
 	
-	public void setData(GameData m_data)
+	public void setData(final GameData m_data)
 	{
 	}
 	
-	public void validate(GameData data)
+	public void validate(final GameData data)
 	{
 	}
-	
 }

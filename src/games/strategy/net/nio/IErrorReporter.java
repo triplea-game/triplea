@@ -11,17 +11,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net.nio;
 
 import java.nio.channels.SocketChannel;
 
 public interface IErrorReporter
 {
-	
 	/**
 	 * An io error occured while reading or writing to the socket, and it should be removed from the network
 	 */
 	public void error(SocketChannel channel, Exception e);
-	
 }

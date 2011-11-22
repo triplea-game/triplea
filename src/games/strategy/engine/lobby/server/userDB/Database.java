@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.userDB;
 
 import games.strategy.engine.framework.GameRunner;
@@ -56,22 +55,20 @@ import javax.swing.JOptionPane;
 public class Database
 {
 	private final static Logger s_logger = Logger.getLogger(Database.class.getName());
-	
 	private static final Object s_dbSetupLock = new Object();
 	private static boolean s_isDbSetup = false;
 	private static boolean s_areDBTablesCreated = false;
 	
 	private static File getCurrentDataBaseDir()
 	{
-		File dbRootDir = getDBRoot();
-		File dbDir = new File(dbRootDir, "current");
+		final File dbRootDir = getDBRoot();
+		final File dbDir = new File(dbRootDir, "current");
 		if (!dbDir.exists())
 		{
 			if (!dbDir.mkdirs())
 				throw new IllegalStateException("Could not create derby dir");
 		}
 		return dbDir;
-		
 	}
 	
 	private static File getDBRoot()
@@ -85,23 +82,19 @@ public class Database
 		{
 			root = GameRunner.getRootFolder();
 		}
-		
 		if (!root.exists())
 		{
 			throw new IllegalStateException("Root dir does not exist");
 		}
-		
-		File dbRootDir = new File(root, "derby_db");
+		final File dbRootDir = new File(root, "derby_db");
 		return dbRootDir;
 	}
 	
 	public static Connection getConnection()
 	{
 		ensureDbIsSetup();
-		
 		Connection conn = null;
-		Properties props = getDbProps();
-		
+		final Properties props = getDbProps();
 		/*
 		   The connection specifies create=true to cause
 		   the database to be created. To remove the database,
@@ -111,25 +104,23 @@ public class Database
 		   derby.system.home points to, or the current
 		   directory if derby.system.home is not set.
 		 */
-		String url = "jdbc:derby:ta_users;create=true";
+		final String url = "jdbc:derby:ta_users;create=true";
 		try
 		{
 			conn = DriverManager.getConnection(url, props);
-		} catch (SQLException e)
+		} catch (final SQLException e)
 		{
 			s_logger.log(Level.SEVERE, e.getMessage(), e);
 			throw new IllegalStateException("Could not create db connection");
 		}
-		
 		ensureDbTablesAreCreated(conn);
-		
 		return conn;
 	}
 	
 	/**
 	 * The connection passed in to this method is not closed, except in case of error.
 	 */
-	private static void ensureDbTablesAreCreated(Connection conn)
+	private static void ensureDbTablesAreCreated(final Connection conn)
 	{
 		synchronized (s_dbSetupLock)
 		{
@@ -137,133 +128,76 @@ public class Database
 			{
 				if (s_areDBTablesCreated)
 					return;
-				
-				ResultSet rs = conn.getMetaData().getTables(null, null, null, null);
-				
-				List<String> existing = new ArrayList<String>();
+				final ResultSet rs = conn.getMetaData().getTables(null, null, null, null);
+				final List<String> existing = new ArrayList<String>();
 				while (rs.next())
 				{
 					existing.add(rs.getString("TABLE_NAME").toUpperCase());
 				}
 				rs.close();
-				
 				if (!existing.contains("TA_USERS"))
 				{
-					
-					Statement s = conn.createStatement();
-					s.execute("create table ta_users" +
-								"(" +
-								"userName varchar(40) NOT NULL PRIMARY KEY, " +
-								"password varchar(40) NOT NULL, " +
-								"email varchar(40) NOT NULL, " +
-								"joined timestamp NOT NULL, " +
-								"lastLogin timestamp NOT NULL, " +
-								"admin integer NOT NULL " +
-								")"
-								);
+					final Statement s = conn.createStatement();
+					s.execute("create table ta_users" + "(" + "userName varchar(40) NOT NULL PRIMARY KEY, " + "password varchar(40) NOT NULL, " + "email varchar(40) NOT NULL, "
+								+ "joined timestamp NOT NULL, " + "lastLogin timestamp NOT NULL, " + "admin integer NOT NULL " + ")");
 					s.close();
 				}
-				
 				if (!existing.contains("BANNED_USERNAMES"))
 				{
-					Statement s = conn.createStatement();
-					s.execute("create table banned_usernames" +
-								"(" +
-								"username varchar(40) NOT NULL PRIMARY KEY, " +
-								"ban_till timestamp  " +
-								")"
-								);
+					final Statement s = conn.createStatement();
+					s.execute("create table banned_usernames" + "(" + "username varchar(40) NOT NULL PRIMARY KEY, " + "ban_till timestamp  " + ")");
 					s.close();
 				}
-				
 				if (!existing.contains("BANNED_IPS"))
 				{
-					Statement s = conn.createStatement();
-					s.execute("create table banned_ips" +
-								"(" +
-								"ip varchar(40) NOT NULL PRIMARY KEY, " +
-								"ban_till timestamp  " +
-								")"
-								);
+					final Statement s = conn.createStatement();
+					s.execute("create table banned_ips" + "(" + "ip varchar(40) NOT NULL PRIMARY KEY, " + "ban_till timestamp  " + ")");
 					s.close();
 				}
-				
 				if (!existing.contains("BANNED_MACS"))
 				{
-					Statement s = conn.createStatement();
-					s.execute("create table banned_macs" +
-								"(" +
-								"mac varchar(40) NOT NULL PRIMARY KEY, " +
-								"ban_till timestamp  " +
-								")"
-								);
+					final Statement s = conn.createStatement();
+					s.execute("create table banned_macs" + "(" + "mac varchar(40) NOT NULL PRIMARY KEY, " + "ban_till timestamp  " + ")");
 					s.close();
 				}
-				
 				if (!existing.contains("MUTED_USERNAMES"))
 				{
-					Statement s = conn.createStatement();
-					s.execute("create table muted_usernames" +
-								"(" +
-								"username varchar(40) NOT NULL PRIMARY KEY, " +
-								"mute_till timestamp  " +
-								")"
-								);
+					final Statement s = conn.createStatement();
+					s.execute("create table muted_usernames" + "(" + "username varchar(40) NOT NULL PRIMARY KEY, " + "mute_till timestamp  " + ")");
 					s.close();
 				}
-				
 				if (!existing.contains("MUTED_IPS"))
 				{
-					Statement s = conn.createStatement();
-					s.execute("create table muted_ips" +
-								"(" +
-								"ip varchar(40) NOT NULL PRIMARY KEY, " +
-								"mute_till timestamp  " +
-								")"
-								);
+					final Statement s = conn.createStatement();
+					s.execute("create table muted_ips" + "(" + "ip varchar(40) NOT NULL PRIMARY KEY, " + "mute_till timestamp  " + ")");
 					s.close();
 				}
-				
 				if (!existing.contains("MUTED_MACS"))
 				{
-					Statement s = conn.createStatement();
-					s.execute("create table muted_macs" +
-								"(" +
-								"mac varchar(40) NOT NULL PRIMARY KEY, " +
-								"mute_till timestamp  " +
-								")"
-								);
+					final Statement s = conn.createStatement();
+					s.execute("create table muted_macs" + "(" + "mac varchar(40) NOT NULL PRIMARY KEY, " + "mute_till timestamp  " + ")");
 					s.close();
 				}
-				
 				if (!existing.contains("BAD_WORDS"))
 				{
-					Statement s = conn.createStatement();
-					s.execute("create table bad_words" +
-								"(" +
-								"word varchar(40) NOT NULL PRIMARY KEY " +
-								")"
-								);
+					final Statement s = conn.createStatement();
+					s.execute("create table bad_words" + "(" + "word varchar(40) NOT NULL PRIMARY KEY " + ")");
 					s.close();
 				}
-				
 				s_areDBTablesCreated = true;
-			} catch (SQLException sqle)
+			} catch (final SQLException sqle)
 			{
 				// only close if an error occurs
 				try
 				{
 					conn.close();
-				} catch (SQLException e)
+				} catch (final SQLException e)
 				{
 				}
-				
 				s_logger.log(Level.SEVERE, sqle.getMessage(), sqle);
 				throw new IllegalStateException("Could not create tables");
 			}
-			
 		}
-		
 	}
 	
 	/**
@@ -275,61 +209,49 @@ public class Database
 		{
 			if (s_isDbSetup)
 				return;
-			
 			// setup the derby location
 			System.getProperties().setProperty("derby.system.home", getCurrentDataBaseDir().getAbsolutePath());
-			
 			// load the driver
 			try
 			{
-				String driver = "org.apache.derby.jdbc.EmbeddedDriver";
+				final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 				Class.forName(driver).newInstance();
-			} catch (Exception e)
+			} catch (final Exception e)
 			{
 				s_logger.log(Level.SEVERE, e.getMessage(), e);
 				throw new Error("Could not load db driver");
 			}
-			
 			// shut the database down on finish
 			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
-					{
-						
-						public void run()
-						{
-							shutDownDB();
-						}
-					}));
-			
+			{
+				public void run()
+				{
+					shutDownDB();
+				}
+			}));
 			s_isDbSetup = true;
 		}
-		
 		// we want to backup the database on occassion
-		Thread backupThread = new Thread(new Runnable()
+		final Thread backupThread = new Thread(new Runnable()
 		{
-			
 			public void run()
 			{
 				while (true)
 				{
-					
 					// wait 7 days
 					try
 					{
 						Thread.sleep(7 * 24 * 60 * 60 * 1000);
-					} catch (InterruptedException e)
+					} catch (final InterruptedException e)
 					{
 						e.printStackTrace();
 					}
 					backup();
-					
 				}
-				
 			}
-			
 		}, "TripleA Database Backup Thread");
 		backupThread.setDaemon(true);
 		backupThread.start();
-		
 	}
 	
 	/**
@@ -340,20 +262,18 @@ public class Database
 	 * @param backupDir
 	 * @throws SQLException
 	 */
-	public static void restoreFromBackup(File backupDir) throws SQLException
+	public static void restoreFromBackup(final File backupDir) throws SQLException
 	{
 		// http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
-		String url = "jdbc:derby:ta_users;restoreFrom=" + backupDir.getAbsolutePath();
-		
-		Properties props = getDbProps();
-		
-		Connection con = DriverManager.getConnection(url, props);
+		final String url = "jdbc:derby:ta_users;restoreFrom=" + backupDir.getAbsolutePath();
+		final Properties props = getDbProps();
+		final Connection con = DriverManager.getConnection(url, props);
 		con.close();
 	}
 	
 	private static Properties getDbProps()
 	{
-		Properties props = new Properties();
+		final Properties props = new Properties();
 		props.put("user", "user1");
 		props.put("password", "user1");
 		return props;
@@ -361,30 +281,25 @@ public class Database
 	
 	public static void backup()
 	{
-		String backupDirName = "backup_at_" + new SimpleDateFormat("yyyy_MM_dd__kk_mm_ss").format(new java.util.Date());
-		
-		File backupRootDir = getBackupDir();
-		File backupDir = new File(backupRootDir, backupDirName);
-		
+		final String backupDirName = "backup_at_" + new SimpleDateFormat("yyyy_MM_dd__kk_mm_ss").format(new java.util.Date());
+		final File backupRootDir = getBackupDir();
+		final File backupDir = new File(backupRootDir, backupDirName);
 		if (!backupDir.mkdirs())
 		{
 			s_logger.severe("Could not create backup dir" + backupDirName);
 			return;
 		}
-		
 		s_logger.log(Level.INFO, "Backing up database to " + backupDir.getAbsolutePath());
-		
-		Connection con = getConnection();
+		final Connection con = getConnection();
 		try
 		{
-			
 			// http://www-128.ibm.com/developerworks/db2/library/techarticle/dm-0502thalamati/
-			String sqlstmt = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
-			CallableStatement cs = con.prepareCall(sqlstmt);
+			final String sqlstmt = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
+			final CallableStatement cs = con.prepareCall(sqlstmt);
 			cs.setString(1, backupDir.getAbsolutePath());
 			cs.execute();
 			cs.close();
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			s_logger.log(Level.SEVERE, "Could not back up database", e);
 		} finally
@@ -392,14 +307,12 @@ public class Database
 			try
 			{
 				con.close();
-			} catch (SQLException e)
+			} catch (final SQLException e)
 			{
 				e.printStackTrace();
 			}
 		}
-		
 		s_logger.log(Level.INFO, "Done backing up database");
-		
 	}
 	
 	public static File getBackupDir()
@@ -412,45 +325,38 @@ public class Database
 		try
 		{
 			DriverManager.getConnection("jdbc:derby:ta_users;shutdown=true");
-		} catch (SQLException se)
+		} catch (final SQLException se)
 		{
 			if (se.getErrorCode() != 45000)
 				s_logger.log(Level.WARNING, se.getMessage(), se);
 		}
 		s_logger.info("Databse shut down");
-		
 	}
 	
 	/**
 	 * 
 	 * Restore the database.
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
-		
 		ensureDbIsSetup();
-		JFileChooser chooser = new JFileChooser(Database.getBackupDir());
+		final JFileChooser chooser = new JFileChooser(Database.getBackupDir());
 		chooser.setMultiSelectionEnabled(false);
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		
-		int rVal = chooser.showOpenDialog(null);
-		
+		final int rVal = chooser.showOpenDialog(null);
 		if (rVal == JFileChooser.APPROVE_OPTION)
 		{
-			File f = chooser.getSelectedFile();
+			final File f = chooser.getSelectedFile();
 			if (!f.exists() && f.isDirectory())
 				throw new IllegalStateException("Does not exist, or not a directory");
-			
 			try
 			{
 				Database.restoreFromBackup(chooser.getSelectedFile());
-				
-			} catch (SQLException sqle)
+			} catch (final SQLException sqle)
 			{
 				JOptionPane.showMessageDialog(null, sqle.getMessage());
 				sqle.printStackTrace();
 			}
 		}
-		
 	}
 }

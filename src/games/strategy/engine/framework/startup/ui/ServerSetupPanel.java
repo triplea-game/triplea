@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.chat.ChatPanel;
@@ -58,200 +57,153 @@ import javax.swing.SwingUtilities;
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 {
 	private final ServerModel m_model;
-	
 	private JTextField m_portField;
 	private JTextField m_addressField;
 	private JTextField m_nameField;
-	
 	private List<PlayerRow> m_playerRows = new ArrayList<PlayerRow>();
 	private final GameSelectorModel m_gameSelectorModel;
-	
 	private JPanel m_info;
 	private JPanel m_networkPanel;
+	private final InGameLobbyWatcher m_lobbyWatcher;
 	
-	private InGameLobbyWatcher m_lobbyWatcher;
-	
-	public ServerSetupPanel(ServerModel model, GameSelectorModel gameSelectorModel)
+	public ServerSetupPanel(final ServerModel model, final GameSelectorModel gameSelectorModel)
 	{
 		m_model = model;
 		m_gameSelectorModel = gameSelectorModel;
 		m_model.setRemoteModelListener(this);
-		
 		m_lobbyWatcher = InGameLobbyWatcher.newInGameLobbyWatcher(m_model.getMessenger(), this);
 		if (m_lobbyWatcher != null)
 		{
 			m_lobbyWatcher.setGameSelectorModel(gameSelectorModel);
 		}
-		
 		createComponents();
 		layoutComponents();
 		setupListeners();
 		setWidgetActivation();
-		
 		internalPlayerListChanged();
 	}
 	
 	private void createComponents()
 	{
-		IServerMessenger messenger = m_model.getMessenger();
-		
-		Color backGround = new JTextField().getBackground();
-		
+		final IServerMessenger messenger = m_model.getMessenger();
+		final Color backGround = new JTextField().getBackground();
 		m_portField = new JTextField("" + messenger.getLocalNode().getPort());
 		m_portField.setEnabled(true);
 		m_portField.setEditable(false);
 		m_portField.setBackground(backGround);
-		
 		m_portField.setColumns(6);
-		
 		m_addressField = new JTextField(messenger.getLocalNode().getAddress().getHostAddress());
 		m_addressField.setEnabled(true);
 		m_addressField.setEditable(false);
 		m_addressField.setBackground(backGround);
-		
 		m_addressField.setColumns(20);
-		
 		m_nameField = new JTextField(messenger.getLocalNode().getName());
 		m_nameField.setEnabled(true);
 		m_nameField.setEditable(false);
 		m_nameField.setBackground(backGround);
-		
 		m_nameField.setColumns(20);
-		
 		m_info = new JPanel();
-		
 		m_networkPanel = new JPanel();
-		
 	}
 	
 	private void layoutComponents()
 	{
 		setLayout(new BorderLayout());
-		
 		m_info.setLayout(new GridBagLayout());
-		
 		m_info.add(new JLabel("Name:"), new GridBagConstraints(0, 0, 1, 1, 0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
 		m_info.add(new JLabel("Address:"), new GridBagConstraints(0, 1, 1, 1, 0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
 		m_info.add(new JLabel("Port:"), new GridBagConstraints(0, 2, 1, 1, 0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 10, 0, 5), 0, 0));
-		
 		m_info.add(m_nameField, new GridBagConstraints(1, 0, 1, 1, 0.5, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
 		m_info.add(m_addressField, new GridBagConstraints(1, 1, 1, 1, 0.5, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
 		m_info.add(m_portField, new GridBagConstraints(1, 2, 1, 1, 0.5, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 0, 0, 5), 0, 0));
-		
 		add(m_info, BorderLayout.NORTH);
-		
 	}
 	
 	private void layoutPlayers()
 	{
-		JPanel players = new JPanel();
-		GridBagLayout layout = new GridBagLayout();
+		final JPanel players = new JPanel();
+		final GridBagLayout layout = new GridBagLayout();
 		players.setLayout(layout);
-		
-		Insets spacing = new Insets(3, 23, 0, 0);
-		Insets lastSpacing = new Insets(3, 23, 0, 23);
-		
-		GridBagConstraints nameConstraints = new GridBagConstraints();
+		final Insets spacing = new Insets(3, 23, 0, 0);
+		final Insets lastSpacing = new Insets(3, 23, 0, 23);
+		final GridBagConstraints nameConstraints = new GridBagConstraints();
 		nameConstraints.anchor = GridBagConstraints.WEST;
 		nameConstraints.gridx = 0;
 		nameConstraints.insets = spacing;
-		
-		GridBagConstraints playerConstraints = new GridBagConstraints();
+		final GridBagConstraints playerConstraints = new GridBagConstraints();
 		playerConstraints.anchor = GridBagConstraints.WEST;
 		playerConstraints.gridx = 1;
 		playerConstraints.insets = spacing;
-		
-		GridBagConstraints localConstraints = new GridBagConstraints();
+		final GridBagConstraints localConstraints = new GridBagConstraints();
 		localConstraints.anchor = GridBagConstraints.WEST;
 		localConstraints.gridx = 2;
 		localConstraints.insets = spacing;
-		
-		GridBagConstraints typeConstraints = new GridBagConstraints();
+		final GridBagConstraints typeConstraints = new GridBagConstraints();
 		typeConstraints.anchor = GridBagConstraints.WEST;
 		typeConstraints.gridx = 3;
 		typeConstraints.insets = spacing;
-		
-		GridBagConstraints allianceConstraints = new GridBagConstraints();
+		final GridBagConstraints allianceConstraints = new GridBagConstraints();
 		allianceConstraints.anchor = GridBagConstraints.WEST;
 		allianceConstraints.gridx = 4;
 		allianceConstraints.insets = lastSpacing;
-		
-		JLabel nameLabel = new JLabel("Name");
+		final JLabel nameLabel = new JLabel("Name");
 		nameLabel.setForeground(Color.black);
 		layout.setConstraints(nameLabel, nameConstraints);
 		players.add(nameLabel);
-		
-		JLabel playedByLabel = new JLabel("Played by");
+		final JLabel playedByLabel = new JLabel("Played by");
 		playedByLabel.setForeground(Color.black);
 		layout.setConstraints(playedByLabel, playerConstraints);
 		players.add(playedByLabel);
-		
-		JLabel localLabel = new JLabel("Local");
+		final JLabel localLabel = new JLabel("Local");
 		localLabel.setForeground(Color.black);
 		layout.setConstraints(localLabel, localConstraints);
 		players.add(localLabel);
-		
-		JLabel typeLabel = new JLabel("Type");
+		final JLabel typeLabel = new JLabel("Type");
 		typeLabel.setForeground(Color.black);
 		layout.setConstraints(typeLabel, typeConstraints);
 		players.add(typeLabel);
-		
-		JLabel allianceLabel = new JLabel("Alliance");
+		final JLabel allianceLabel = new JLabel("Alliance");
 		allianceLabel.setForeground(Color.black);
 		layout.setConstraints(allianceLabel, allianceConstraints);
 		players.add(allianceLabel);
-		
-		Iterator<PlayerRow> iter = m_playerRows.iterator();
-		
+		final Iterator<PlayerRow> iter = m_playerRows.iterator();
 		if (!iter.hasNext())
 		{
-			JLabel noPlayers = new JLabel("Load a game file first");
+			final JLabel noPlayers = new JLabel("Load a game file first");
 			layout.setConstraints(noPlayers, nameConstraints);
 			players.add(noPlayers);
 		}
-		
 		while (iter.hasNext())
 		{
-			PlayerRow row = iter.next();
-			
+			final PlayerRow row = iter.next();
 			layout.setConstraints(row.getName(), nameConstraints);
 			players.add(row.getName());
-			
 			layout.setConstraints(row.getPlayer(), playerConstraints);
 			players.add(row.getPlayer());
-			
 			layout.setConstraints(row.getLocal(), localConstraints);
 			players.add(row.getLocal());
-			
 			layout.setConstraints(row.getType(), typeConstraints);
 			players.add(row.getType());
-			
 			layout.setConstraints(row.getAlliance(), allianceConstraints);
 			players.add(row.getAlliance());
-			
 		}
-		
 		removeAll();
 		add(m_info, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(players);
+		final JScrollPane scroll = new JScrollPane(players);
 		scroll.setBorder(null);
 		scroll.setViewportBorder(null);
 		add(scroll, BorderLayout.CENTER);
 		add(m_networkPanel, BorderLayout.SOUTH);
-		
 		invalidate();
 		validate();
-		
 	}
 	
 	private void setupListeners()
 	{
-		
 	}
 	
 	private void setWidgetActivation()
 	{
-		
 	}
 	
 	@Override
@@ -259,7 +211,6 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	{
 		m_model.setRemoteModelListener(IRemoteModelListener.NULL_LISTENER);
 		m_model.cancel();
-		
 		if (m_lobbyWatcher != null)
 		{
 			m_lobbyWatcher.shutDown();
@@ -271,9 +222,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	{
 		if (m_gameSelectorModel.getGameData() == null)
 			return false;
-		
-		Map<String, String> players = m_model.getPlayers();
-		for (String player : players.keySet())
+		final Map<String, String> players = m_model.getPlayers();
+		for (final String player : players.keySet())
 		{
 			if (players.get(player) == null)
 				return false;
@@ -285,66 +235,54 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				internalPlayerListChanged();
 			}
-			
 		});
-		
 	}
 	
 	public void playersTakenChanged()
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				internalPlayersTakenChanged();
 			}
 		});
-		
 	}
 	
 	private void internalPlayersTakenChanged()
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
-		
-		Map<String, String> players = m_model.getPlayers();
-		for (PlayerRow row : m_playerRows)
+		final Map<String, String> players = m_model.getPlayers();
+		for (final PlayerRow row : m_playerRows)
 		{
 			row.update(players);
 		}
-		
 		super.notifyObservers();
-		
 	}
 	
 	private void internalPlayerListChanged()
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
-		
 		m_playerRows = new ArrayList<PlayerRow>();
-		Map<String, String> players = m_model.getPlayers();
-		Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
-		Map<String,String> reloadSelections = PlayerID.currentPlayers(m_gameSelectorModel.getGameData());
+		final Map<String, String> players = m_model.getPlayers();
+		final Map<String, Collection<String>> m_playerNamesAndAlliancesInTurnOrder = m_model.getPlayerNamesAndAlliancesInTurnOrderLinkedHashMap();
+		final Map<String, String> reloadSelections = PlayerID.currentPlayers(m_gameSelectorModel.getGameData());
 		// List<String> keys = new ArrayList<String>(players.keySet());
 		// Collections.sort(keys);//we don't want to sort them alphabetically. let them stay in turn order.
-		Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
-		for (String name : playerNames)
+		final Set<String> playerNames = m_playerNamesAndAlliancesInTurnOrder.keySet();
+		for (final String name : playerNames)
 		{
-			PlayerRow newPlayerRow = new PlayerRow(name, reloadSelections,
-						m_playerNamesAndAlliancesInTurnOrder.get(name),
-						m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes());
-			
+			final PlayerRow newPlayerRow = new PlayerRow(name, reloadSelections, m_playerNamesAndAlliancesInTurnOrder.get(name), m_gameSelectorModel.getGameData().getGameLoader()
+						.getServerPlayerTypes());
 			m_playerRows.add(newPlayerRow);
 			newPlayerRow.update(players);
 		}
-		
 		layoutPlayers();
 		internalPlayersTakenChanged();
 	}
@@ -352,13 +290,13 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	
 	class PlayerRow
 	{
-		private JLabel m_nameLabel;
-		private JLabel m_playerLabel;
-		private JCheckBox m_localCheckBox;
-		private JComboBox m_type;
+		private final JLabel m_nameLabel;
+		private final JLabel m_playerLabel;
+		private final JCheckBox m_localCheckBox;
+		private final JComboBox m_type;
 		private JLabel m_alliance;
 		
-		PlayerRow(String playerName, Map<String,String> reloadSelections, Collection<String> playerAlliances, String[] types)
+		PlayerRow(final String playerName, final Map<String, String> reloadSelections, final Collection<String> playerAlliances, final String[] types)
 		{
 			m_nameLabel = new JLabel(playerName);
 			m_playerLabel = new JLabel(m_model.getMessenger().getLocalNode().getName());
@@ -383,16 +321,12 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 				m_alliance = new JLabel();
 			else
 				m_alliance = new JLabel(playerAlliances.toString());
-			
 			m_type.addActionListener(new ActionListener()
 			{
-				
-				public void actionPerformed(ActionEvent e)
-			{
-				m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
-				
-			}
-				
+				public void actionPerformed(final ActionEvent e)
+				{
+					m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
+				}
 			});
 		}
 		
@@ -421,7 +355,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 			return m_localCheckBox;
 		}
 		
-		public void update(Map<String, String> players)
+		public void update(final Map<String, String> players)
 		{
 			String text = players.get(m_nameLabel.getText());
 			if (text == null)
@@ -436,18 +370,16 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 			m_type.setEnabled(m_localCheckBox.isSelected());
 		}
 		
-		private ActionListener m_actionListener = new ActionListener()
+		private final ActionListener m_actionListener = new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
-		{
-			if (m_localCheckBox.isSelected())
-				m_model.takePlayer(m_nameLabel.getText());
-			else
-				m_model.releasePlayer(m_nameLabel.getText());
-			
-			setWidgetActivation();
-		}
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (m_localCheckBox.isSelected())
+					m_model.takePlayer(m_nameLabel.getText());
+				else
+					m_model.releasePlayer(m_nameLabel.getText());
+				setWidgetActivation();
+			}
 		};
 	}
 	
@@ -460,7 +392,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	@Override
 	public ILauncher getLauncher()
 	{
-		ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
+		final ServerLauncher launcher = (ServerLauncher) m_model.getLauncher();
 		launcher.setInGameLobbyWatcher(m_lobbyWatcher);
 		return launcher;
 	}
@@ -468,12 +400,11 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	@Override
 	public List<Action> getUserActions()
 	{
-		List<Action> rVal = new ArrayList<Action>();
+		final List<Action> rVal = new ArrayList<Action>();
 		rVal.add(new BootPlayerAction(this, m_model.getMessenger()));
 		rVal.add(new BanPlayerAction(this, m_model.getMessenger()));
 		rVal.add(new MutePlayerAction(this, m_model.getMessenger()));
 		rVal.add(new SetPasswordAction(this, (ClientLoginValidator) m_model.getMessenger().getLoginValidator()));
-		
 		if (m_lobbyWatcher != null && m_lobbyWatcher.isActive())
 		{
 			rVal.add(new EditGameCommentAction(m_lobbyWatcher, ServerSetupPanel.this));
@@ -481,5 +412,4 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		}
 		return rVal;
 	}
-	
 }

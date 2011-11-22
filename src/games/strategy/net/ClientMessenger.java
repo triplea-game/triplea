@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net;
 
 import games.strategy.net.nio.ClientQuarantineConversation;
@@ -32,15 +31,11 @@ import java.util.concurrent.CountDownLatch;
 public class ClientMessenger implements IMessenger, NIOSocketListener
 {
 	private INode m_node;
-	
 	private final ListenerList<IMessageListener> m_listeners = new ListenerList<IMessageListener>();
-	
 	private final ListenerList<IMessengerErrorListener> m_errorListeners = new ListenerList<IMessengerErrorListener>();
-	
-	private CountDownLatch m_initLatch = new CountDownLatch(1);
+	private final CountDownLatch m_initLatch = new CountDownLatch(1);
 	private Exception m_connectionRefusedError;
 	private final NIOSocket m_socket;
-	
 	private final SocketChannel m_socketChannel;
 	private INode m_serverNode;
 	private volatile boolean m_shutDown = false;
@@ -49,7 +44,7 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	 * Note, the name paramater passed in here may not match the name of the
 	 * ClientMessenger after it has been constructed.
 	 */
-	public ClientMessenger(String host, int port, String name, String mac, IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException
+	public ClientMessenger(final String host, final int port, final String name, final String mac, final IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException
 	{
 		this(host, port, name, mac, new DefaultObjectStreamFactory(), login);
 	}
@@ -58,7 +53,7 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	 * Note, the name paramater passed in here may not match the name of the
 	 * ClientMessenger after it has been constructed.
 	 */
-	public ClientMessenger(String host, int port, String name, String mac) throws IOException, UnknownHostException, CouldNotLogInException
+	public ClientMessenger(final String host, final int port, final String name, final String mac) throws IOException, UnknownHostException, CouldNotLogInException
 	{
 		this(host, port, name, mac, new DefaultObjectStreamFactory());
 	}
@@ -67,7 +62,8 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	 * Note, the name paramater passed in here may not match the name of the
 	 * ClientMessenger after it has been constructed.
 	 */
-	public ClientMessenger(String host, int port, String name, String mac, IObjectStreamFactory streamFact) throws IOException, UnknownHostException, CouldNotLogInException
+	public ClientMessenger(final String host, final int port, final String name, final String mac, final IObjectStreamFactory streamFact) throws IOException, UnknownHostException,
+				CouldNotLogInException
 	{
 		this(host, port, name, mac, streamFact, null);
 	}
@@ -76,13 +72,13 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	 * Note, the name paramater passed in here may not match the name of the
 	 * ClientMessenger after it has been constructed.
 	 */
-	public ClientMessenger(String host, int port, String name, String mac, IObjectStreamFactory streamFact, IConnectionLogin login) throws IOException, UnknownHostException, CouldNotLogInException
+	public ClientMessenger(final String host, final int port, final String name, final String mac, final IObjectStreamFactory streamFact, final IConnectionLogin login) throws IOException,
+				UnknownHostException, CouldNotLogInException
 	{
 		m_socketChannel = SocketChannel.open();
 		m_socketChannel.configureBlocking(false);
-		InetSocketAddress remote = new InetSocketAddress(host, port);
+		final InetSocketAddress remote = new InetSocketAddress(host, port);
 		boolean connected = m_socketChannel.connect(remote);
-		
 		// give up after 10 seconds
 		int waitTimeMilliseconds = 0;
 		while (!connected && waitTimeMilliseconds < 10000)
@@ -92,48 +88,41 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 			{
 				Thread.sleep(50);
 				waitTimeMilliseconds += 50;
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 			}
 		}
-		
 		if (!connected)
 		{
 			m_socketChannel.close();
 			throw new IOException("Connection refused");
 		}
-		
-		Socket socket = m_socketChannel.socket();
+		final Socket socket = m_socketChannel.socket();
 		socket.setKeepAlive(true);
-		
 		m_socket = new NIOSocket(streamFact, this, name);
-		ClientQuarantineConversation conversation = new ClientQuarantineConversation(login, m_socketChannel, m_socket, name, mac);
+		final ClientQuarantineConversation conversation = new ClientQuarantineConversation(login, m_socketChannel, m_socket, name, mac);
 		m_socket.add(m_socketChannel, conversation);
-		
 		// allow the credentials to be shown in this thread
 		conversation.showCredentials();
-		
 		// wait for the quarantine to end
 		try
 		{
 			m_initLatch.await();
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			m_connectionRefusedError = e;
 			try
 			{
 				m_socketChannel.close();
-			} catch (IOException e2)
+			} catch (final IOException e2)
 			{
 				// ignore
 			}
 		}
-		
 		if (conversation.getErrorMessage() != null || m_connectionRefusedError != null)
 		{
 			// our socket channel should already be closed
 			m_socket.shutDown();
-			
 			if (conversation.getErrorMessage() != null)
 			{
 				login.notifyFailedLogin(conversation.getErrorMessage());
@@ -144,35 +133,31 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 			else if (m_connectionRefusedError != null)
 				throw new IOException(m_connectionRefusedError.getMessage());
 		}
-		
 	}
 	
 	/*
 	 * @see IMessenger#send(Serializable, INode)
 	 */
-
-	public synchronized void send(Serializable msg, INode to)
+	public synchronized void send(final Serializable msg, final INode to)
 	{
 		// use our nodes address, this is our network visible address
-		MessageHeader header = new MessageHeader(to, m_node, msg);
+		final MessageHeader header = new MessageHeader(to, m_node, msg);
 		m_socket.send(m_socketChannel, header);
 	}
 	
 	/*
 	 * @see IMessenger#broadcast(Serializable)
 	 */
-
-	public synchronized void broadcast(Serializable msg)
+	public synchronized void broadcast(final Serializable msg)
 	{
-		MessageHeader header = new MessageHeader(m_node, msg);
+		final MessageHeader header = new MessageHeader(m_node, msg);
 		m_socket.send(m_socketChannel, header);
 	}
 	
 	/*
 	 * @see IMessenger#addMessageListener(Class, IMessageListener)
 	 */
-
-	public void addMessageListener(IMessageListener listener)
+	public void addMessageListener(final IMessageListener listener)
 	{
 		m_listeners.add(listener);
 	}
@@ -180,18 +165,17 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#removeMessageListener(Class, IMessageListener)
 	 */
-
-	public void removeMessageListener(IMessageListener listener)
+	public void removeMessageListener(final IMessageListener listener)
 	{
 		m_listeners.remove(listener);
 	}
 	
-	public void addErrorListener(IMessengerErrorListener listener)
+	public void addErrorListener(final IMessengerErrorListener listener)
 	{
 		m_errorListeners.add(listener);
 	}
 	
-	public void removeErrorListener(IMessengerErrorListener listener)
+	public void removeErrorListener(final IMessengerErrorListener listener)
 	{
 		m_errorListeners.remove(listener);
 	}
@@ -199,7 +183,6 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#isConnected()
 	 */
-
 	public boolean isConnected()
 	{
 		return m_socketChannel.isConnected();
@@ -212,23 +195,22 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 		try
 		{
 			m_socketChannel.close();
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			// ignore
 		}
 	}
 	
-	public void messageReceived(MessageHeader msg, SocketChannel channel)
+	public void messageReceived(final MessageHeader msg, final SocketChannel channel)
 	{
 		if (msg.getFor() != null && !msg.getFor().equals(m_node))
 		{
 			throw new IllegalStateException("msg not for me:" + msg);
 		}
-		
-		Iterator<IMessageListener> iter = m_listeners.iterator();
+		final Iterator<IMessageListener> iter = m_listeners.iterator();
 		while (iter.hasNext())
 		{
-			IMessageListener listener = iter.next();
+			final IMessageListener listener = iter.next();
 			listener.messageReceived(msg.getMessage(), msg.getFrom());
 		}
 	}
@@ -236,7 +218,6 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 	/**
 	 * Get the local node
 	 */
-	
 	public INode getLocalNode()
 	{
 		return m_node;
@@ -252,48 +233,40 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 		return false;
 	}
 	
-	public void socketUnqaurantined(SocketChannel channel, QuarantineConversation converstaion2)
+	public void socketUnqaurantined(final SocketChannel channel, final QuarantineConversation converstaion2)
 	{
-		ClientQuarantineConversation conversation = (ClientQuarantineConversation) converstaion2;
-		
+		final ClientQuarantineConversation conversation = (ClientQuarantineConversation) converstaion2;
 		// all ids are based on the socket adress of nodes in the network
 		// but the adress of a node changes depending on who is looking at it
 		// ie, sometimes it is the loopback adress if connecting locally,
 		// sometimes the client or server will be behind a NAT
 		// so all node ids are defined as what the server sees the adress as
-		
 		// we are still in the decode thread at this point, set our nodes now
 		// before the socket is unquarantined
 		m_node = new Node(conversation.getLocalName(), conversation.getNetworkVisibleSocketAdress());
 		m_serverNode = new Node(conversation.getServerName(), conversation.getServerLocalAddress());
-		
 		m_initLatch.countDown();
-		
 	}
 	
-	public void socketError(SocketChannel channel, Exception error)
+	public void socketError(final SocketChannel channel, final Exception error)
 	{
 		if (m_shutDown)
 			return;
-		
 		// if an error occurs during set up
 		// we need to return in the constructor
 		// otherwise this is harmless
 		m_connectionRefusedError = error;
-		
-		Iterator<IMessengerErrorListener> iter = m_errorListeners.iterator();
+		final Iterator<IMessengerErrorListener> iter = m_errorListeners.iterator();
 		while (iter.hasNext())
 		{
-			IMessengerErrorListener errorListener = iter.next();
+			final IMessengerErrorListener errorListener = iter.next();
 			errorListener.messengerInvalid(ClientMessenger.this, error);
 		}
-		
 		shutDown();
 		m_initLatch.countDown();
-		
 	}
 	
-	public INode getRemoteNode(SocketChannel channel)
+	public INode getRemoteNode(final SocketChannel channel)
 	{
 		// we only have one channel
 		return m_serverNode;

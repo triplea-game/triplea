@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.chat;
 
 import games.strategy.engine.message.IRemote;
@@ -20,7 +19,6 @@ import java.util.Map;
 
 public interface IStatusController extends IRemote
 {
-	
 	public static final RemoteName STATUS_CONTROLLER = new RemoteName("games.strategy.engine.chat.IStatusController.STATUS_CONTROLLER", IStatusController.class);
 	
 	/**
@@ -33,5 +31,4 @@ public interface IStatusController extends IRemote
 	 * @return the status for all nodes.
 	 */
 	public Map<INode, String> getAllStatus();
-	
 }

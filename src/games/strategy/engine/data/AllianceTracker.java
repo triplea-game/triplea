@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * AllianceTracker.java
  * 
  * Created on October 13, 2001, 9:37 AM
  */
-
 package games.strategy.engine.data;
 
 import java.util.Collection;
@@ -43,11 +41,10 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public class AllianceTracker extends GameDataComponent
 {
-	
 	// maps PlayerID to Collection of alliances names
 	Map<PlayerID, Collection<String>> m_alliances = new HashMap<PlayerID, Collection<String>>();
 	
-	public AllianceTracker(GameData data)
+	public AllianceTracker(final GameData data)
 	{
 		super(data);
 	}
@@ -60,17 +57,17 @@ public class AllianceTracker extends GameDataComponent
 	 * @param allianceName
 	 *            The alliance to add to.
 	 */
-	protected void addToAlliance(PlayerID player, String allianceName)
+	protected void addToAlliance(final PlayerID player, final String allianceName)
 	{
 		if (!m_alliances.containsKey(player))
 		{
-			Collection<String> alliances = new HashSet<String>();
+			final Collection<String> alliances = new HashSet<String>();
 			alliances.add(allianceName);
 			m_alliances.put(player, alliances);
 		}
 		else
 		{
-			Collection<String> alliances = m_alliances.get(player);
+			final Collection<String> alliances = m_alliances.get(player);
 			alliances.add(allianceName);
 		}
 	}
@@ -106,7 +103,6 @@ public class AllianceTracker extends GameDataComponent
 		}
 	}
 	*/
-	
 	/*
 	//Returns whether two players are allied.	isAllied(a,a) returns true.
 	public boolean isAllied(PlayerID p1, PlayerID p2)
@@ -132,22 +128,19 @@ public class AllianceTracker extends GameDataComponent
 		
 	}
 	*/
-	
 	/**
 	 * 
 	 * @return a set of all the games alliances, this will return an empty set if you aren't using alliances
 	 */
 	public Set<String> getAlliances()
 	{
-		Iterator<PlayerID> keys = m_alliances.keySet().iterator();
-		Set<String> rVal = new HashSet<String>();
-		
+		final Iterator<PlayerID> keys = m_alliances.keySet().iterator();
+		final Set<String> rVal = new HashSet<String>();
 		while (keys.hasNext())
 		{
 			rVal.addAll(m_alliances.get(keys.next()));
 		}
 		return rVal;
-		
 	}
 	
 	/**
@@ -159,27 +152,26 @@ public class AllianceTracker extends GameDataComponent
 	 * @return all the players in the given alliance
 	 * 
 	 */
-	public HashSet<PlayerID> getPlayersInAlliance(String allianceName)
+	public HashSet<PlayerID> getPlayersInAlliance(final String allianceName)
 	{
-		Iterator<PlayerID> keys = m_alliances.keySet().iterator();
-		HashSet<PlayerID> rVal = new HashSet<PlayerID>();
-		
+		final Iterator<PlayerID> keys = m_alliances.keySet().iterator();
+		final HashSet<PlayerID> rVal = new HashSet<PlayerID>();
 		while (keys.hasNext())
 		{
-			PlayerID player = keys.next();
-			Collection<String> alliances = m_alliances.get(player);
+			final PlayerID player = keys.next();
+			final Collection<String> alliances = m_alliances.get(player);
 			if (alliances.contains(allianceName))
 				rVal.add(player);
 		}
 		return rVal;
 	}
 	
-	public Collection<String> getAlliancesPlayerIsIn(PlayerID player)
+	public Collection<String> getAlliancesPlayerIsIn(final PlayerID player)
 	{
-		Collection<String> rVal = m_alliances.get(player);
+		final Collection<String> rVal = m_alliances.get(player);
 		if (rVal == null)
 		{
-			//throw new IllegalStateException("Player, " + player.getName() + ", is not a member of any alliance!");
+			// throw new IllegalStateException("Player, " + player.getName() + ", is not a member of any alliance!");
 			System.out.println("Player, " + player.getName() + ", is not a member of any alliance!");
 			return Collections.singleton(player.getName());
 		}

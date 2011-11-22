@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /**
  * InitializationDelegate.java
  * 
@@ -19,7 +18,6 @@
  * 
  * Subclasses can override init(), which will be called exactly once.
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -51,14 +49,13 @@ import java.util.Iterator;
  */
 public class InitializationDelegate extends BaseDelegate
 {
-	
 	/** Creates a new instance of InitializationDelegate */
 	public InitializationDelegate()
 	{
 	}
 	
 	@Override
-	public void initialize(String name, String displayName)
+	public void initialize(final String name, final String displayName)
 	{
 		m_name = name;
 		m_displayName = displayName;
@@ -67,9 +64,8 @@ public class InitializationDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge aBridge)
+	public void start(final IDelegateBridge aBridge)
 	{
 		super.start(aBridge);
 		init(aBridge);
@@ -80,47 +76,41 @@ public class InitializationDelegate extends BaseDelegate
 	{
 		super.end();
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		InitializationExtendedDelegateState state = new InitializationExtendedDelegateState();
+		final InitializationExtendedDelegateState state = new InitializationExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		InitializationExtendedDelegateState s = (InitializationExtendedDelegateState) state;
+		final InitializationExtendedDelegateState s = (InitializationExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 	}
 	
-	protected void init(IDelegateBridge aBridge)
+	protected void init(final IDelegateBridge aBridge)
 	{
 		initDestroyerArtillery(aBridge);
-		
 		initShipyards(aBridge);
-		
 		initTwoHitBattleship(aBridge);
-		
 		initOriginalOwner(aBridge);
-		
 		initTech(aBridge);
-		
 		initSkipUnusedBids(aBridge.getData());
 	}
 	
-	private void initSkipUnusedBids(GameData data)
+	private void initSkipUnusedBids(final GameData data)
 	{
 		// we have a lot of bid steps, 12 for pact of steel
 		// in multi player this can be time consuming, since each vm
 		// must be notified (and have its ui) updated for each step,
 		// so remove the bid steps that arent used
-		
-		for (GameStep step : data.getSequence())
+		for (final GameStep step : data.getSequence())
 		{
 			if (step.getDelegate() instanceof BidPlaceDelegate || step.getDelegate() instanceof BidPurchaseDelegate)
 			{
@@ -130,27 +120,24 @@ public class InitializationDelegate extends BaseDelegate
 				}
 			}
 		}
-		
 	}
 	
-	private void initTech(IDelegateBridge bridge)
+	private void initTech(final IDelegateBridge bridge)
 	{
-		GameData data = bridge.getData();
-		Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
+		final GameData data = bridge.getData();
+		final Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
 		while (players.hasNext())
 		{
-			PlayerID player = players.next();
-			Iterator<TechAdvance> advances = TechTracker.getTechAdvances(player, data).iterator();
+			final PlayerID player = players.next();
+			final Iterator<TechAdvance> advances = TechTracker.getTechAdvances(player, data).iterator();
 			if (advances.hasNext())
 			{
 				bridge.getHistoryWriter().startEvent("Initializing " + player.getName() + " with tech advances");
 				while (advances.hasNext())
 				{
-					
-					TechAdvance advance = advances.next();
+					final TechAdvance advance = advances.next();
 					advance.perform(player, bridge);
 				}
-				
 			}
 		}
 	}
@@ -159,48 +146,40 @@ public class InitializationDelegate extends BaseDelegate
 	 * @param data
 	 * @param aBridge
 	 */
-	private void initDestroyerArtillery(IDelegateBridge aBridge)
+	private void initDestroyerArtillery(final IDelegateBridge aBridge)
 	{
-		GameData data = aBridge.getData();
-		boolean addArtilleryAndDestroyers = games.strategy.triplea.Properties.getUse_Destroyers_And_Artillery(data);
-		
+		final GameData data = aBridge.getData();
+		final boolean addArtilleryAndDestroyers = games.strategy.triplea.Properties.getUse_Destroyers_And_Artillery(data);
 		if (!isWW2V2(data) && addArtilleryAndDestroyers)
 		{
-			CompositeChange change = new CompositeChange();
-			ProductionRule artillery = data.getProductionRuleList().getProductionRule("buyArtillery");
-			ProductionRule destroyer = data.getProductionRuleList().getProductionRule("buyDestroyer");
-			ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier("production");
-			
+			final CompositeChange change = new CompositeChange();
+			final ProductionRule artillery = data.getProductionRuleList().getProductionRule("buyArtillery");
+			final ProductionRule destroyer = data.getProductionRuleList().getProductionRule("buyDestroyer");
+			final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier("production");
 			change.add(ChangeFactory.addProductionRule(artillery, frontier));
 			change.add(ChangeFactory.addProductionRule(destroyer, frontier));
-			
-			ProductionRule artilleryIT = data.getProductionRuleList().getProductionRule("buyArtilleryIndustrialTechnology");
-			ProductionRule destroyerIT = data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
-			ProductionFrontier frontierIT = data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
-			
+			final ProductionRule artilleryIT = data.getProductionRuleList().getProductionRule("buyArtilleryIndustrialTechnology");
+			final ProductionRule destroyerIT = data.getProductionRuleList().getProductionRule("buyDestroyerIndustrialTechnology");
+			final ProductionFrontier frontierIT = data.getProductionFrontierList().getProductionFrontier("productionIndustrialTechnology");
 			change.add(ChangeFactory.addProductionRule(artilleryIT, frontierIT));
 			change.add(ChangeFactory.addProductionRule(destroyerIT, frontierIT));
-			
 			aBridge.getHistoryWriter().startEvent("Adding destroyers and artillery production rules");
 			aBridge.addChange(change);
-			
 		}
-		
 	}
 	
 	/**
 	 * @param data
 	 * @param aBridge
 	 */
-	private void initShipyards(IDelegateBridge aBridge)
+	private void initShipyards(final IDelegateBridge aBridge)
 	{
-		GameData data = aBridge.getData();
-		boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
-		
+		final GameData data = aBridge.getData();
+		final boolean useShipyards = games.strategy.triplea.Properties.getUse_Shipyards(data);
 		if (useShipyards)
 		{
-			CompositeChange change = new CompositeChange();
-			ProductionFrontier frontierShipyards = data.getProductionFrontierList().getProductionFrontier("productionShipyards");
+			final CompositeChange change = new CompositeChange();
+			final ProductionFrontier frontierShipyards = data.getProductionFrontierList().getProductionFrontier("productionShipyards");
 			/*
 			 * Remove the hardcoded productionRules and work through those from the XML as specified
 			 */
@@ -219,35 +198,32 @@ public class InitializationDelegate extends BaseDelegate
 			change.add(ChangeFactory.addProductionRule(buyBomber, frontierShipyards));
 			change.add(ChangeFactory.addProductionRule(buyFactory, frontierShipyards));
 			change.add(ChangeFactory.addProductionRule(buyAAGun, frontierShipyards));*/
-
 			/*
 			 * Find the productionRules, if the unit is NOT a sea unit, add it to the ShipYards prod rule.
 			 */
-			ProductionFrontier frontierNONShipyards = data.getProductionFrontierList().getProductionFrontier("production");
-			Collection<ProductionRule> rules = frontierNONShipyards.getRules();
-			Iterator<ProductionRule> ruleIter = rules.iterator();
+			final ProductionFrontier frontierNONShipyards = data.getProductionFrontierList().getProductionFrontier("production");
+			final Collection<ProductionRule> rules = frontierNONShipyards.getRules();
+			final Iterator<ProductionRule> ruleIter = rules.iterator();
 			while (ruleIter.hasNext())
 			{
-				ProductionRule rule = ruleIter.next();
-				String ruleName = rule.getName();
-				IntegerMap<NamedAttachable> ruleResults = rule.getResults();
-				
-				String unitName = ruleResults.keySet().iterator().next().getName();
-				UnitType unit = data.getUnitTypeList().getUnitType(unitName);
-				boolean isSea = UnitAttachment.get(unit).isSea();
+				final ProductionRule rule = ruleIter.next();
+				final String ruleName = rule.getName();
+				final IntegerMap<NamedAttachable> ruleResults = rule.getResults();
+				final String unitName = ruleResults.keySet().iterator().next().getName();
+				final UnitType unit = data.getUnitTypeList().getUnitType(unitName);
+				final boolean isSea = UnitAttachment.get(unit).isSea();
 				if (!isSea)
 				{
-					ProductionRule prodRule = data.getProductionRuleList().getProductionRule(ruleName);
+					final ProductionRule prodRule = data.getProductionRuleList().getProductionRule(ruleName);
 					change.add(ChangeFactory.addProductionRule(prodRule, frontierShipyards));
 				}
 			}
-			
 			aBridge.getHistoryWriter().startEvent("Adding shipyard production rules - land/air units");
 			aBridge.addChange(change);
 		}
 	}
 	
-	private boolean isWW2V2(GameData data)
+	private boolean isWW2V2(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getWW2V2(data);
 	}
@@ -256,18 +232,15 @@ public class InitializationDelegate extends BaseDelegate
 	 * @param data
 	 * @param aBridge
 	 */
-	private void initTwoHitBattleship(IDelegateBridge aBridge)
+	private void initTwoHitBattleship(final IDelegateBridge aBridge)
 	{
-		GameData data = aBridge.getData();
-		boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
-		
-		UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE);
+		final GameData data = aBridge.getData();
+		final boolean userEnabled = games.strategy.triplea.Properties.getTwoHitBattleships(data);
+		final UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE);
 		if (battleShipUnit == null)
 			return;
-		
-		UnitAttachment battleShipAttatchment = UnitAttachment.get(battleShipUnit);
-		boolean defaultEnabled = battleShipAttatchment.isTwoHit();
-		
+		final UnitAttachment battleShipAttatchment = UnitAttachment.get(battleShipUnit);
+		final boolean defaultEnabled = battleShipAttatchment.isTwoHit();
 		if (userEnabled != defaultEnabled)
 		{
 			aBridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);
@@ -278,28 +251,24 @@ public class InitializationDelegate extends BaseDelegate
 	/**
 	 * @param data
 	 */
-	private void initOriginalOwner(IDelegateBridge aBridge)
+	private void initOriginalOwner(final IDelegateBridge aBridge)
 	{
-		GameData data = aBridge.getData();
-		OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
-		
-		CompositeChange changes = new CompositeChange();
-		
-		for (Territory current : data.getMap())
+		final GameData data = aBridge.getData();
+		final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+		final CompositeChange changes = new CompositeChange();
+		for (final Territory current : data.getMap())
 		{
 			if (!current.getOwner().isNull())
 			{
 				// TODO: veqryn, maybe need to have infrastructure also initialized? Depends on if they should go back to their original owner or not. UnitIsAAOrIsFactoryOrIsInfrastructure
 				changes.add(origOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
-				Collection<Unit> aaAndFactory = current.getUnits().getMatches(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
+				final Collection<Unit> aaAndFactory = current.getUnits().getMatches(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
 				changes.add(origOwnerTracker.addOriginalOwnerChange(aaAndFactory, current.getOwner()));
-				TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
-				
+				final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
 				if (territoryAttachment == null)
 					throw new IllegalStateException("No territory attachment for " + current);
 				changes.add(ChangeFactory.attachmentPropertyChange(territoryAttachment, current.getOwner(), Constants.ORIGINAL_OWNER));
 			}
-			
 		}
 		aBridge.getHistoryWriter().startEvent("Adding original owners");
 		aBridge.addChange(changes);
@@ -308,13 +277,11 @@ public class InitializationDelegate extends BaseDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
-
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
 		return null;
 	}
-	
 }
 
 

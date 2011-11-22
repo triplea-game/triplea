@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui;
 
 import java.awt.BorderLayout;
@@ -39,22 +38,17 @@ import javax.swing.SwingUtilities;
 class BattleStepsPanel extends JPanel implements Active
 {
 	private static final Logger log = Logger.getLogger(BattleStepsPanel.class.getName());
-	
 	// if this is the target step, we want to walk to the last step
 	private final static String LAST_STEP = "NULL MARKER FOR LAST STEP";
-	
 	private final DefaultListModel m_listModel = new DefaultListModel();
 	private final JList m_list = new JList(m_listModel);
 	private final MyListSelectionModel m_listSelectionModel = new MyListSelectionModel();
-	
 	// the step we want to reach
 	private String m_targetStep = null;
-	
 	// all changes to state should be done while locked on this object.
 	// when we reach the target step, or when we want to walk the step
 	// notifyAll on this object
 	private final Object m_mutex = new Object();
-	
 	private final List<CountDownLatch> m_waiters = new ArrayList<CountDownLatch>();
 	private boolean m_hasWalkThread = false;
 	
@@ -75,13 +69,12 @@ class BattleStepsPanel extends JPanel implements Active
 	{
 		synchronized (m_mutex)
 		{
-			for (CountDownLatch l : m_waiters)
+			for (final CountDownLatch l : m_waiters)
 			{
 				l.countDown();
 			}
 			m_waiters.clear();
 		}
-		
 	}
 	
 	/**
@@ -89,28 +82,24 @@ class BattleStepsPanel extends JPanel implements Active
 	 * 
 	 * @param steps
 	 */
-	public void listBattle(List<String> steps)
+	public void listBattle(final List<String> steps)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Not in dispatch thread");
-		
 		synchronized (m_mutex)
 		{
 			m_listModel.removeAllElements();
-			
-			Iterator<String> iter = steps.iterator();
+			final Iterator<String> iter = steps.iterator();
 			while (iter.hasNext())
 			{
 				m_listModel.addElement(iter.next());
 			}
 			m_listSelectionModel.hiddenSetSelectionInterval(0);
-			
 			if (!steps.contains(m_targetStep))
 			{
 				m_targetStep = null;
 			}
 		}
-		
 		validate();
 	}
 	
@@ -130,7 +119,6 @@ class BattleStepsPanel extends JPanel implements Active
 			// not looking for anything
 			if (m_targetStep == null)
 				return true;
-			
 			// we cant find it, something is wrong
 			if (!m_targetStep.equals(LAST_STEP) && m_listModel.lastIndexOf(m_targetStep) == -1)
 			{
@@ -138,13 +126,11 @@ class BattleStepsPanel extends JPanel implements Active
 				clearTargetStep();
 				return true;
 			}
-			
 			// at end, we are done
 			if (m_targetStep.equals(LAST_STEP) && m_list.getSelectedIndex() == m_listModel.getSize() - 1)
 			{
 				return true;
 			}
-			
 			// we found it, we are done
 			if (m_targetStep.equals(m_list.getSelectedValue()))
 			{
@@ -161,27 +147,22 @@ class BattleStepsPanel extends JPanel implements Active
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
-		
 		if (doneWalkingSteps())
 		{
 			wakeAll();
 			return;
 		}
-		
 		int index = m_list.getSelectedIndex() + 1;
 		if (index >= m_list.getModel().getSize())
 			index = 0;
 		m_listSelectionModel.hiddenSetSelectionInterval(index);
-		
 		waitThenWalk();
-		
 	}
 	
 	private void waitThenWalk()
 	{
-		Thread t = new Thread("Walk single step started at:" + new Date())
+		final Thread t = new Thread("Walk single step started at:" + new Date())
 		{
-			
 			@Override
 			public void run()
 			{
@@ -193,17 +174,15 @@ class BattleStepsPanel extends JPanel implements Active
 				}
 				try
 				{
-					
 					try
 					{
 						sleep(330);
-					} catch (InterruptedException e)
+					} catch (final InterruptedException e)
 					{
 						e.printStackTrace();
 					}
 					SwingUtilities.invokeLater(new Runnable()
 					{
-						
 						public void run()
 						{
 							walkStep();
@@ -216,11 +195,9 @@ class BattleStepsPanel extends JPanel implements Active
 						m_hasWalkThread = false;
 					}
 				}
-				
 			}
 		};
 		t.start();
-		
 	}
 	
 	/**
@@ -242,7 +219,7 @@ class BattleStepsPanel extends JPanel implements Active
 	 * 
 	 * This method returns immediatly, and must be called from the swing event thread.
 	 */
-	public void setStep(String step)
+	public void setStep(final String step)
 	{
 		synchronized (m_mutex)
 		{
@@ -254,10 +231,8 @@ class BattleStepsPanel extends JPanel implements Active
 			{
 				log.info("Could not find step name:" + step);
 			}
-			
 		}
 		goToTarget();
-		
 	}
 	
 	private void goToTarget()
@@ -268,7 +243,6 @@ class BattleStepsPanel extends JPanel implements Active
 		}
 		waitThenWalk();
 	}
-	
 }
 
 
@@ -278,16 +252,13 @@ class BattleStepsPanel extends JPanel implements Active
  */
 class MyListSelectionModel extends DefaultListSelectionModel
 {
-	
 	@Override
-	public void setSelectionInterval(int index0, int index1)
+	public void setSelectionInterval(final int index0, final int index1)
 	{
-		
 	}
 	
-	public void hiddenSetSelectionInterval(int index)
+	public void hiddenSetSelectionInterval(final int index)
 	{
-		
 		super.setSelectionInterval(index, index);
 	}
 }

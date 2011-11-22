@@ -21,54 +21,44 @@ import javax.swing.KeyStroke;
 
 public class OddsCalculatorDialog extends JDialog
 {
-	private OddsCalculatorPanel m_panel;
+	private final OddsCalculatorPanel m_panel;
 	
-	public static void show(final TripleAFrame taFrame, Territory t)
+	public static void show(final TripleAFrame taFrame, final Territory t)
 	{
 		final OddsCalculatorDialog dialog = new OddsCalculatorDialog(taFrame.getGame().getData(), taFrame.getUIContext(), taFrame, t);
 		dialog.pack();
-		int maxHeight = 600;
+		final int maxHeight = 600;
 		if (dialog.getHeight() > maxHeight)
 			dialog.setSize(new Dimension(dialog.getWidth(), maxHeight));
-		
 		dialog.addWindowListener(new WindowAdapter()
 		{
-			
 			@Override
-			public void windowClosed(WindowEvent e)
+			public void windowClosed(final WindowEvent e)
 			{
 				if (taFrame != null && taFrame.getUIContext() != null)
 					taFrame.getUIContext().removeShutdownWindow(dialog);
 			}
 		});
-		
 		// close when hitting the escape key
-		KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-		Action closeAction = new AbstractAction()
+		final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+		final Action closeAction = new AbstractAction()
 		{
-			
-			public void actionPerformed(ActionEvent arg0)
+			public void actionPerformed(final ActionEvent arg0)
 			{
 				dialog.setVisible(false);
-				
 			}
-			
 		};
-		
-		String key = "odds.calc.invoke.close";
+		final String key = "odds.calc.invoke.close";
 		dialog.getRootPane().getActionMap().put(key, closeAction);
 		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, key);
-		
 		dialog.setLocationRelativeTo(taFrame);
 		dialog.setVisible(true);
-		
 		taFrame.getUIContext().addShutdownWindow(dialog);
 	}
 	
-	OddsCalculatorDialog(GameData data, UIContext context, JFrame parent, Territory location)
+	OddsCalculatorDialog(final GameData data, final UIContext context, final JFrame parent, final Territory location)
 	{
 		super(parent, "Odds Calculator");
-		
 		m_panel = new OddsCalculatorPanel(data, context, location, this);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(m_panel, BorderLayout.CENTER);
@@ -81,5 +71,4 @@ public class OddsCalculatorDialog extends JDialog
 		super.show();
 		m_panel.selectCalculateButton();
 	}
-	
 }

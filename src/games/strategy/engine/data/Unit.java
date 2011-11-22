@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Unit.java
  * 
  * Created on October 14, 2001, 12:33 PM
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.net.GUID;
@@ -33,14 +31,14 @@ public class Unit extends GameDataComponent implements Serializable
 	private PlayerID m_owner;
 	private final GUID m_uid;
 	private int m_hits = 0;
-	private int m_hitPoints = 1; // TODO: we need to work on this (veqryn)
+	private final int m_hitPoints = 1; // TODO: we need to work on this (veqryn)
 	private final UnitType m_type;
 	
 	/**
 	 * Creates new Unit. Should use a call to UnitType.create() instead.
 	 * owner can be null
 	 */
-	protected Unit(UnitType type, PlayerID owner, GameData data)
+	protected Unit(final UnitType type, final PlayerID owner, final GameData data)
 	{
 		super(data);
 		if (type == null)
@@ -82,7 +80,7 @@ public class Unit extends GameDataComponent implements Serializable
 	public Territory getTerritoryUnitIsIn()
 	{
 		// Collection<Territory> terrs = new ArrayList<Territory>();
-		for (Territory t : this.getData().getMap().getTerritories())
+		for (final Territory t : this.getData().getMap().getTerritories())
 		{
 			if (t.getUnits().getUnits().contains(this))
 				return t;
@@ -104,7 +102,7 @@ public class Unit extends GameDataComponent implements Serializable
 		return m_hits;
 	}
 	
-	void setHits(int hits)
+	void setHits(final int hits)
 	{
 		m_hits = hits;
 	}
@@ -120,12 +118,11 @@ public class Unit extends GameDataComponent implements Serializable
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (!(o instanceof Unit))
 			return false;
-		
-		Unit other = (Unit) o;
+		final Unit other = (Unit) o;
 		return this.m_uid.equals(other.m_uid);
 	}
 	
@@ -145,5 +142,4 @@ public class Unit extends GameDataComponent implements Serializable
 	{
 		return m_type.getName();
 	}
-	
 }

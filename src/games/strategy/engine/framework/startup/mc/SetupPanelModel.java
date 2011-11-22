@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.framework.startup.ui.ClientSetupPanel;
@@ -27,11 +26,10 @@ import java.util.Observable;
 
 public class SetupPanelModel extends Observable
 {
-	
 	private final GameSelectorModel m_gameSelectorModel;
 	private SetupPanel m_panel;
 	
-	public SetupPanelModel(GameSelectorModel gameSelectorModel)
+	public SetupPanelModel(final GameSelectorModel gameSelectorModel)
 	{
 		m_gameSelectorModel = gameSelectorModel;
 	}
@@ -56,26 +54,25 @@ public class SetupPanelModel extends Observable
 		setGameTypePanel(new PBEMSetupPanel(m_gameSelectorModel));
 	}
 	
-	public void showServer(Component ui)
+	public void showServer(final Component ui)
 	{
-		ServerModel model = new ServerModel(m_gameSelectorModel, this);
+		final ServerModel model = new ServerModel(m_gameSelectorModel, this);
 		if (!model.createServerMessenger(ui))
 		{
 			model.cancel();
 			return;
 		}
 		setGameTypePanel(new ServerSetupPanel(model, m_gameSelectorModel));
-		
 		// for whatever reason, the server window is showing very very small, causing the nation info to be cut and requiring scroll bars
-		int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
-		int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
+		final int x = (ui.getPreferredSize().width > 800 ? ui.getPreferredSize().width : 800);
+		final int y = (ui.getPreferredSize().height > 660 ? ui.getPreferredSize().height : 660);
 		ui.setPreferredSize(new Dimension(x, y));
 		ui.setSize(new Dimension(x, y));
 	}
 	
-	public void showClient(Component ui)
+	public void showClient(final Component ui)
 	{
-		ClientModel model = new ClientModel(m_gameSelectorModel, this);
+		final ClientModel model = new ClientModel(m_gameSelectorModel, this);
 		if (!model.createClientMessenger(ui))
 		{
 			model.cancel();
@@ -84,7 +81,7 @@ public class SetupPanelModel extends Observable
 		setGameTypePanel(new ClientSetupPanel(model));
 	}
 	
-	private void setGameTypePanel(SetupPanel panel)
+	private void setGameTypePanel(final SetupPanel panel)
 	{
 		if (m_panel != null)
 		{
@@ -100,5 +97,4 @@ public class SetupPanelModel extends Observable
 	{
 		return m_panel;
 	}
-	
 }

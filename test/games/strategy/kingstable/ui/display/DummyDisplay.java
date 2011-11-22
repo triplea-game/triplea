@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.kingstable.ui.display;
 
 import games.strategy.engine.data.Territory;
@@ -27,50 +26,38 @@ import java.util.Collection;
  */
 public class DummyDisplay implements IKingsTableDisplay
 {
-	
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#performPlay(Territory,Territory,Collection<Territory>)
 	 */
-	
-	public void performPlay(Territory start, Territory end, Collection<Territory> captured)
+	public void performPlay(final Territory start, final Territory end, final Collection<Territory> captured)
 	{
-		
 	}
 	
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#setGameOver()
 	 */
-	
 	public void setGameOver()// CountDownLatch waiting) {
 	{
-		
 	}
 	
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#setStatus(String)
 	 */
-	
-	public void setStatus(String status)
+	public void setStatus(final String status)
 	{
-		
 	}
 	
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#initialize(IDisplayBridge)
 	 */
-	
-	public void initialize(IDisplayBridge bridge)
+	public void initialize(final IDisplayBridge bridge)
 	{
-		
 	}
 	
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#shutDown()
 	 */
-	
 	public void shutDown()
 	{
-		
 	}
-	
 }

@@ -13,7 +13,6 @@ package games.strategy.ui;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 import java.awt.Image;
 import java.awt.image.ImageObserver;
 import java.util.concurrent.CountDownLatch;
@@ -21,7 +20,6 @@ import java.util.concurrent.CountDownLatch;
 /**
  * Code originally contributed by "Thomas Carvin"
  */
-
 public class ImageIoCompletionWatcher implements ImageObserver
 {
 	// we countdown when we are done
@@ -36,13 +34,13 @@ public class ImageIoCompletionWatcher implements ImageObserver
 		try
 		{
 			m_countDownLatch.await();
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
 		}
 	}
 	
-	public boolean imageUpdate(Image image, int flags, int x, int y, int width, int height)
+	public boolean imageUpdate(final Image image, final int flags, final int x, final int y, final int width, final int height)
 	{
 		// wait for complete or error/abort
 		if (((flags & ALLBITS) != 0) || ((flags & ABORT) != 0))
@@ -50,8 +48,6 @@ public class ImageIoCompletionWatcher implements ImageObserver
 			m_countDownLatch.countDown();
 			return false;
 		}
-		
 		return true;
-		
 	}
 }

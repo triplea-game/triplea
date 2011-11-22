@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GameProperties.java
  * 
  * Created on January 15, 2002, 2:21 PM
  */
-
 package games.strategy.engine.data.properties;
 
 import games.strategy.engine.data.GameData;
@@ -39,12 +37,9 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class GameProperties extends GameDataComponent
 {
-	
 	private final Map<String, Object> m_constantProperties = new HashMap<String, Object>();
-	
 	// a set of IEditableProperties
 	private final Map<String, IEditableProperty> m_editableProperties = new HashMap<String, IEditableProperty>();
-	
 	// This list is used to keep track of order properties were
 	// added.
 	private final List<String> m_ordering = new ArrayList<String>();
@@ -55,7 +50,7 @@ public class GameProperties extends GameDataComponent
 	 * @param data
 	 *            game data
 	 */
-	public GameProperties(GameData data)
+	public GameProperties(final GameData data)
 	{
 		super(data);
 	}
@@ -69,7 +64,7 @@ public class GameProperties extends GameDataComponent
 	 * @param value
 	 *            property
 	 */
-	public void set(String key, Object value)
+	public void set(final String key, final Object value)
 	{
 		if (value == null)
 		{
@@ -90,30 +85,30 @@ public class GameProperties extends GameDataComponent
 	 * @return property with key or null if property is not contained in the list
 	 *         (The object returned should not be modified, as modifications will not appear globally.)
 	 */
-	public Object get(String key)
+	public Object get(final String key)
 	{
 		if (m_editableProperties.containsKey(key))
 			return m_editableProperties.get(key).getValue();
 		return m_constantProperties.get(key);
 	}
 	
-	public boolean get(String key, boolean defaultValue)
+	public boolean get(final String key, final boolean defaultValue)
 	{
-		Object value = get(key);
+		final Object value = get(key);
 		if (value == null)
 			return defaultValue;
 		return ((Boolean) value).booleanValue();
 	}
 	
-	public Object get(String key, Object defaultValue)
+	public Object get(final String key, final Object defaultValue)
 	{
-		Object value = get(key);
+		final Object value = get(key);
 		if (value == null)
 			return defaultValue;
 		return value;
 	}
 	
-	public void addEditableProperty(IEditableProperty property)
+	public void addEditableProperty(final IEditableProperty property)
 	{
 		// add to the editable properties
 		m_editableProperties.put(property.getName(), property);
@@ -127,12 +122,11 @@ public class GameProperties extends GameDataComponent
 	 */
 	public List<IEditableProperty> getEditableProperties()
 	{
-		List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
-		Iterator<String> orderIter = m_ordering.iterator();
-		
+		final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
+		final Iterator<String> orderIter = m_ordering.iterator();
 		while (orderIter.hasNext())
 		{
-			String propertyName = orderIter.next();
+			final String propertyName = orderIter.next();
 			if (m_editableProperties.containsKey(propertyName))
 			{
 				properties.add(m_editableProperties.get(propertyName));
@@ -140,5 +134,4 @@ public class GameProperties extends GameDataComponent
 		}
 		return properties;
 	}
-	
 }

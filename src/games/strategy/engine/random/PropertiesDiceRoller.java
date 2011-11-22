@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.random;
 
 import games.strategy.engine.EngineVersion;
@@ -33,10 +32,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
  */
 public class PropertiesDiceRoller implements IRemoteDiceServer
 {
-	
 	private final Properties m_props;
 	
-	public PropertiesDiceRoller(Properties props)
+	public PropertiesDiceRoller(final Properties props)
 	{
 		m_props = props;
 	}
@@ -54,7 +52,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 	
 	public boolean sendsEmail()
 	{
-		String property = m_props.getProperty("send.email");
+		final String property = m_props.getProperty("send.email");
 		if (property == null)
 		{
 			return true;
@@ -62,41 +60,26 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		return Boolean.valueOf(property);
 	}
 	
-	public String postRequest(String player1, String player2, int max, int numDice, String text, String gameID, String gameUUID) throws IOException
+	public String postRequest(final String player1, final String player2, final int max, final int numDice, final String text, String gameID, final String gameUUID) throws IOException
 	{
 		if (gameID.trim().length() == 0)
 			gameID = "TripleA";
 		String message = gameID + ":" + text;
-		
-		int maxLength = Integer.valueOf(m_props.getProperty("message.maxlength"));
-		
+		final int maxLength = Integer.valueOf(m_props.getProperty("message.maxlength"));
 		if (message.length() > maxLength)
 			message = message.substring(0, maxLength - 1);
-		
-		PostMethod post = new PostMethod(m_props.getProperty("path"));
-		NameValuePair[] data = {
-					new NameValuePair("numdice", "" + numDice),
-					new NameValuePair("numsides", "" + max),
-					new NameValuePair("modroll", "No"),
-					new NameValuePair("numroll", "" + 1),
-					new NameValuePair("subject", message),
-					new NameValuePair("roller", player1),
-					new NameValuePair("gm", player2),
-					new NameValuePair("send", "true"),
-		};
-		
+		final PostMethod post = new PostMethod(m_props.getProperty("path"));
+		final NameValuePair[] data = { new NameValuePair("numdice", "" + numDice), new NameValuePair("numsides", "" + max), new NameValuePair("modroll", "No"), new NameValuePair("numroll", "" + 1),
+					new NameValuePair("subject", message), new NameValuePair("roller", player1), new NameValuePair("gm", player2), new NameValuePair("send", "true"), };
 		post.setRequestHeader("User-Agent", "triplea/" + EngineVersion.VERSION);
-		
 		// this is to allow a dice server to allow the user to request the emails for the game
 		// rather than sending out email for each roll
 		post.setRequestHeader("X-Triplea-Game-UUID", gameUUID);
-		
 		post.setRequestBody(data);
-		
-		HttpClient client = new HttpClient();
+		final HttpClient client = new HttpClient();
 		try
 		{
-			String host = m_props.getProperty("host");
+			final String host = m_props.getProperty("host");
 			int port = 80;
 			if (m_props.getProperty("port") != null)
 			{
@@ -104,9 +87,7 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 			}
 			client.getHostConfiguration().setHost(host, port);
 			client.executeMethod(post);
-			
-			String result = post.getResponseBodyAsString();
-			
+			final String result = post.getResponseBodyAsString();
 			return result;
 		} finally
 		{
@@ -124,27 +105,24 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 	 * @throws IOException
 	 *             if there was an error parsing the string
 	 */
-	
-	public int[] getDice(String string, int count) throws IOException, InvocationTargetException
+	public int[] getDice(final String string, final int count) throws IOException, InvocationTargetException
 	{
-		String errorStartString = m_props.getProperty("error.start");
-		String errorEndString = m_props.getProperty("error.end");
+		final String errorStartString = m_props.getProperty("error.start");
+		final String errorEndString = m_props.getProperty("error.end");
 		// if the error strings are defined
 		if (errorStartString != null && errorStartString.length() > 0 && errorEndString != null && errorEndString.length() > 0)
 		{
-			int startIndex = string.indexOf(errorStartString);
+			final int startIndex = string.indexOf(errorStartString);
 			if (startIndex >= 0)
 			{
-				int endIndex = string.indexOf(errorEndString, (startIndex + errorStartString.length()));
+				final int endIndex = string.indexOf(errorEndString, (startIndex + errorStartString.length()));
 				if (endIndex > 0)
 				{
-					String error = string.substring(startIndex + errorStartString.length(), endIndex);
+					final String error = string.substring(startIndex + errorStartString.length(), endIndex);
 					throw new InvocationTargetException(null, error);
-					
 				}
 			}
 		}
-		
 		String rollStartString;
 		String rollEndString;
 		if (count == 1)
@@ -154,42 +132,34 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		}
 		else
 		{
-			
 			rollStartString = m_props.getProperty("roll.multiple.start");
 			rollEndString = m_props.getProperty("roll.multiple.end");
 		}
-		
 		int startIndex = string.indexOf(rollStartString);
 		if (startIndex == -1)
 		{
 			throw new IOException("Cound not find start index, text returned is:" + string);
-			
 		}
 		startIndex += rollStartString.length();
-		
-		int endIndex = string.indexOf(rollEndString, startIndex);
+		final int endIndex = string.indexOf(rollEndString, startIndex);
 		if (endIndex == -1)
 		{
 			throw new IOException("Cound not find end index");
 		}
-		
-		StringTokenizer tokenizer = new StringTokenizer(string.substring(startIndex, endIndex), " ,", false);
-		
-		int[] rVal = new int[count];
+		final StringTokenizer tokenizer = new StringTokenizer(string.substring(startIndex, endIndex), " ,", false);
+		final int[] rVal = new int[count];
 		for (int i = 0; i < count; i++)
 		{
 			try
 			{
 				// -1 since we are 0 based
 				rVal[i] = Integer.parseInt(tokenizer.nextToken()) - 1;
-			} catch (NumberFormatException ex)
+			} catch (final NumberFormatException ex)
 			{
 				ex.printStackTrace();
 				throw new IOException(ex.getMessage());
 			}
 		}
-		
 		return rVal;
 	}
-	
 }

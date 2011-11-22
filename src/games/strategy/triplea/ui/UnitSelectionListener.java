@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Territory;
@@ -21,7 +20,6 @@ import java.util.List;
 
 public interface UnitSelectionListener
 {
-	
 	/**
 	 * Note, if the mouse is clicked where there are no units, units will be empty but territory will still be correct.
 	 */

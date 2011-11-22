@@ -1,4 +1,6 @@
 Changes for 1.5
+* Complete cleanup of all code, adding final on to everything that can take it. (veqryn)
+
 * Redoing of movement validation to use movement costs, and completely rewriting the movement validation of carriers and aircraft for landing zones. (edwin van der wal)
 
 * Refactoring Route class to use movement costs, rather than number of steps. (edwin van der wal)

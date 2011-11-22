@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 
 public interface IRemoteDiceServer
 {
-	
 	/**
 	 * Post a request to the dice server, and return the resulting html page as a string
 	 */
@@ -22,5 +21,4 @@ public interface IRemoteDiceServer
 	 * Get the display name for this dice server
 	 */
 	public String getName();
-	
 }

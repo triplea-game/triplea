@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ClientOptions.java
  * 
@@ -45,7 +44,6 @@ import javax.swing.JTextField;
  */
 public class ClientOptions extends JDialog
 {
-	
 	private JTextField m_nameField;
 	private JTextField m_addressField;
 	private IntTextField m_portField;
@@ -54,17 +52,14 @@ public class ClientOptions extends JDialog
 	/**
 	 * Creates a new instance of ClientOptions
 	 */
-	public ClientOptions(Component parent, String defaultName, int defaultPort, String defaultAddress)
+	public ClientOptions(final Component parent, final String defaultName, final int defaultPort, final String defaultAddress)
 	{
 		super(JOptionPane.getFrameForComponent(parent), "Client options", true);
-		
 		initComponents();
 		layoutComponents();
-		
 		m_nameField.setText(defaultName);
 		m_portField.setValue(defaultPort);
 		m_addressField.setText(defaultAddress);
-		
 		pack();
 	}
 	
@@ -72,7 +67,7 @@ public class ClientOptions extends JDialog
 	public String getName()
 	{
 		// fixes crash by truncating names to 20 characters
-		String s = m_nameField.getText().trim();
+		final String s = m_nameField.getText().trim();
 		if (s.length() > 20)
 			return s.substring(0, 20);
 		return s;
@@ -98,56 +93,43 @@ public class ClientOptions extends JDialog
 	
 	private void layoutComponents()
 	{
-		Container content = getContentPane();
+		final Container content = getContentPane();
 		content.setLayout(new BorderLayout());
-		
-		JPanel title = new JPanel();
+		final JPanel title = new JPanel();
 		title.add(new JLabel("Select client options"));
 		content.add(title, BorderLayout.NORTH);
-		
-		Insets labelSpacing = new Insets(3, 7, 0, 0);
-		Insets fieldSpacing = new Insets(3, 5, 0, 7);
-		
-		GridBagConstraints labelConstraints = new GridBagConstraints();
+		final Insets labelSpacing = new Insets(3, 7, 0, 0);
+		final Insets fieldSpacing = new Insets(3, 5, 0, 7);
+		final GridBagConstraints labelConstraints = new GridBagConstraints();
 		labelConstraints.anchor = GridBagConstraints.EAST;
 		labelConstraints.gridx = 0;
 		labelConstraints.insets = labelSpacing;
-		
-		GridBagConstraints fieldConstraints = new GridBagConstraints();
+		final GridBagConstraints fieldConstraints = new GridBagConstraints();
 		fieldConstraints.anchor = GridBagConstraints.WEST;
 		fieldConstraints.gridx = 1;
 		fieldConstraints.insets = fieldSpacing;
-		
-		JPanel fields = new JPanel();
-		GridBagLayout layout = new GridBagLayout();
-		
+		final JPanel fields = new JPanel();
+		final GridBagLayout layout = new GridBagLayout();
 		fields.setLayout(layout);
-		
-		JLabel nameLabel = new JLabel("Name:");
-		JLabel portLabel = new JLabel("Server Port:");
-		JLabel addressLabel = new JLabel("Server Address:");
-		
+		final JLabel nameLabel = new JLabel("Name:");
+		final JLabel portLabel = new JLabel("Server Port:");
+		final JLabel addressLabel = new JLabel("Server Address:");
 		layout.setConstraints(portLabel, labelConstraints);
 		layout.setConstraints(nameLabel, labelConstraints);
 		layout.setConstraints(addressLabel, labelConstraints);
-		
 		layout.setConstraints(m_portField, fieldConstraints);
 		layout.setConstraints(m_nameField, fieldConstraints);
 		layout.setConstraints(m_addressField, fieldConstraints);
-		
 		fields.add(nameLabel);
 		fields.add(m_nameField);
 		fields.add(portLabel);
 		fields.add(m_portField);
 		fields.add(addressLabel);
 		fields.add(m_addressField);
-		
 		content.add(fields, BorderLayout.CENTER);
-		
-		JPanel buttons = new JPanel();
+		final JPanel buttons = new JPanel();
 		buttons.add(new JButton(m_okAction));
 		buttons.add(new JButton(m_cancelAction));
-		
 		content.add(buttons, BorderLayout.SOUTH);
 	}
 	
@@ -156,22 +138,19 @@ public class ClientOptions extends JDialog
 		return m_okPressed;
 	}
 	
-	private Action m_okAction = new AbstractAction("Connect")
+	private final Action m_okAction = new AbstractAction("Connect")
 	{
-		
-		public void actionPerformed(ActionEvent e)
-	{
-		setVisible(false);
-		m_okPressed = true;
-	}
+		public void actionPerformed(final ActionEvent e)
+		{
+			setVisible(false);
+			m_okPressed = true;
+		}
 	};
-	
-	private Action m_cancelAction = new AbstractAction("Cancel")
+	private final Action m_cancelAction = new AbstractAction("Cancel")
 	{
-		
-		public void actionPerformed(ActionEvent e)
-	{
-		setVisible(false);
-	}
+		public void actionPerformed(final ActionEvent e)
+		{
+			setVisible(false);
+		}
 	};
 }

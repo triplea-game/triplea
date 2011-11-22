@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.debug;
 
 import games.strategy.engine.message.MessageContext;
@@ -22,7 +21,7 @@ public class HeartBeat implements IHeartBeat
 {
 	private final INode m_serverNode;
 	
-	public static final RemoteName getHeartBeatName(INode node)
+	public static final RemoteName getHeartBeatName(final INode node)
 	{
 		return new RemoteName(IHeartBeat.class, "games.strategy.debug.HearBeat:" + node.toString());
 	}
@@ -39,5 +38,4 @@ public class HeartBeat implements IHeartBeat
 		else
 			return "";
 	}
-	
 }

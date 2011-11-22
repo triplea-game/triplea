@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package util.image;
 
 import games.strategy.engine.framework.GameRunner;
@@ -42,14 +41,12 @@ import javax.swing.JPanel;
 
 public class AutoPlacementFinder
 {
-	
 	private static int PLACEWIDTH = 46;
 	private static int PLACEHEIGHT = 46;
 	private static MapData s_mapData;
-	
 	private static double percent;
 	
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		if (args.length == 1)
 		{
@@ -67,28 +64,28 @@ public class AutoPlacementFinder
 	 */
 	static void calculate()
 	{
-		Map<String, Collection<Point>> m_placements = new HashMap<String, Collection<Point>>(); // create hash map of placements
-		String mapDir = getMapDirectory(); // ask user where the map is
+		final Map<String, Collection<Point>> m_placements = new HashMap<String, Collection<Point>>(); // create hash map of placements
+		final String mapDir = getMapDirectory(); // ask user where the map is
 		if (percent == 0)
 		{
 			try
 			{
-				File file = new File(GameRunner.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator + "map.properties");
+				final File file = new File(GameRunner.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator + "map.properties");
 				if (file.exists())
 				{
-					FileReader reader = new FileReader(file);
-					LineNumberReader reader2 = new LineNumberReader(reader);
+					final FileReader reader = new FileReader(file);
+					final LineNumberReader reader2 = new LineNumberReader(reader);
 					int i = 0;
 					while (true)
 					{
 						reader2.setLineNumber(i);
-						String line = reader2.readLine();
+						final String line = reader2.readLine();
 						if (line == null)
 							break;
 						if (line.contains("units.scale="))
 						{
-							int result = JOptionPane.showConfirmDialog(new JPanel(), "A map.properties file was found in the map's folder, do you want to use the file to supply the unit's scale?",
-										"File Suggestion", 1);
+							final int result = JOptionPane.showConfirmDialog(new JPanel(),
+										"A map.properties file was found in the map's folder, do you want to use the file to supply the unit's scale?", "File Suggestion", 1);
 							if (result == 2)
 								return;
 							if (result == 0)
@@ -102,7 +99,7 @@ public class AutoPlacementFinder
 						i++;
 					}
 				}
-			} catch (Exception ex)
+			} catch (final Exception ex)
 			{
 			}
 		}
@@ -110,11 +107,11 @@ public class AutoPlacementFinder
 		{
 			try
 			{
-				String result = getUnitsScale();
+				final String result = getUnitsScale();
 				percent = Double.parseDouble(result.toLowerCase());
 				PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
 				PLACEWIDTH = (int) (percent * PLACEWIDTH);
-			} catch (Exception ex)
+			} catch (final Exception ex)
 			{
 			}
 		}
@@ -124,75 +121,56 @@ public class AutoPlacementFinder
 			System.out.println("Shutting down");
 			System.exit(0);
 		}
-		
 		try
 		{
 			s_mapData = new MapData(mapDir); // makes TripleA read all the text data files for the map.
-		} catch (NullPointerException npe)
+		} catch (final NullPointerException npe)
 		{
 			System.out.println("Caught Null Pointer Exception.");
 			System.out.println("Could be due to some missing text files");
 			npe.printStackTrace();
 			System.exit(0);
 		}
-		
-		Iterator<String> terrIter = s_mapData.getTerritories().iterator();
-		
+		final Iterator<String> terrIter = s_mapData.getTerritories().iterator();
 		System.out.println("Calculating, this may take a while...");
-		
 		while (terrIter.hasNext())
 		{
-			String name = terrIter.next();
+			final String name = terrIter.next();
 			List<Point> points;
-			
 			if (s_mapData.hasContainedTerritory(name))
 			{
-				Set<Polygon> containedPolygons = new HashSet<Polygon>();
-				Iterator<String> containedIter = s_mapData.getContainedTerritory(name).iterator();
-				
+				final Set<Polygon> containedPolygons = new HashSet<Polygon>();
+				final Iterator<String> containedIter = s_mapData.getContainedTerritory(name).iterator();
 				while (containedIter.hasNext())
 				{
-					String containedName = containedIter.next();
+					final String containedName = containedIter.next();
 					containedPolygons.addAll(s_mapData.getPolygons(containedName));
 				}
-				
-				points = getPlacementsStartingAtTopLeft(s_mapData.getPolygons(name),
-							s_mapData.getBoundingRect(name),
-							s_mapData.getCenter(name),
-							containedPolygons);
+				points = getPlacementsStartingAtTopLeft(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name), s_mapData.getCenter(name), containedPolygons);
 				m_placements.put(name, points);
 			}
 			else
 			{
-				points = getPlacementsStartingAtMiddle(s_mapData.getPolygons(name),
-							s_mapData.getBoundingRect(name),
-							s_mapData.getCenter(name));
+				points = getPlacementsStartingAtMiddle(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name), s_mapData.getCenter(name));
 				m_placements.put(name, points);
 			}
-			
 			System.out.println(name + ": " + points.size());
-			
 		}// while
-		
 		try
 		{
-			String fileName = new FileSave("Where To Save place.txt ?", "place.txt").getPathString();
-			
+			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt").getPathString();
 			if (fileName == null)
 			{
 				System.out.println("You chose not to save, Shutting down");
 				System.exit(0);
 			}
-			
 			PointFileReaderWriter.writeOneToMany(new FileOutputStream(fileName), m_placements);
 			System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-		} catch (Exception ex)
+		} catch (final Exception ex)
 		{
 			ex.printStackTrace();
 			System.exit(0);
-			
 		}
-		
 		System.exit(0); // shut down program when done.
 	}
 	
@@ -203,8 +181,7 @@ public class AutoPlacementFinder
 	 */
 	private static String getMapDirectory()
 	{
-		String mapDir = JOptionPane.showInputDialog(null, "Enter the map name (ie. folder name)");
-		
+		final String mapDir = JOptionPane.showInputDialog(null, "Enter the map name (ie. folder name)");
 		if (mapDir != null)
 		{
 			return mapDir;
@@ -217,8 +194,7 @@ public class AutoPlacementFinder
 	
 	private static String getUnitsScale()
 	{
-		String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (e.g. 0.5625)");
-		
+		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (e.g. 0.5625)");
 		if (unitsScale != null)
 		{
 			return unitsScale;
@@ -240,16 +216,14 @@ public class AutoPlacementFinder
 	 *            .awt.Point
 	 * @return java.util.List
 	 */
-	static List<Point> getPlacementsStartingAtMiddle(Collection<Polygon> countryPolygons, Rectangle bounding, Point center)
+	static List<Point> getPlacementsStartingAtMiddle(final Collection<Polygon> countryPolygons, final Rectangle bounding, final Point center)
 	{
-		List<Rectangle2D> placementRects = new ArrayList<Rectangle2D>();
-		List<Point> placementPoints = new ArrayList<Point>();
-		
-		Rectangle2D place = new Rectangle2D.Double(center.x, center.y, PLACEHEIGHT, PLACEWIDTH);
+		final List<Rectangle2D> placementRects = new ArrayList<Rectangle2D>();
+		final List<Point> placementPoints = new ArrayList<Point>();
+		final Rectangle2D place = new Rectangle2D.Double(center.x, center.y, PLACEHEIGHT, PLACEWIDTH);
 		int x = center.x - (PLACEHEIGHT / 2);
 		int y = center.y - (PLACEWIDTH / 2);
 		int step = 1;
-		
 		for (int i = 0; i < 2 * Math.max(bounding.width, bounding.height); i++)
 		{
 			for (int j = 0; j < Math.abs(step); j++)
@@ -264,7 +238,6 @@ public class AutoPlacementFinder
 				}
 				isPlacement(countryPolygons, Collections.<Polygon> emptySet(), placementRects, placementPoints, place, x, y);
 			}
-			
 			for (int j = 0; j < Math.abs(step); j++)
 			{
 				if (step > 0)
@@ -277,9 +250,7 @@ public class AutoPlacementFinder
 				}
 				isPlacement(countryPolygons, Collections.<Polygon> emptySet(), placementRects, placementPoints, place, x, y);
 			}
-			
 			step = -step;
-			
 			if (step > 0)
 			{
 				step++;
@@ -288,17 +259,14 @@ public class AutoPlacementFinder
 			{
 				step--;
 			}
-			
 			// System.out.println("x:" + x + " y:" + y); // For Debugging
 		}
-		
 		if (placementPoints.isEmpty())
 		{
-			int defaultx = center.x - (PLACEHEIGHT / 2);
-			int defaulty = center.y - (PLACEWIDTH / 2);
+			final int defaultx = center.x - (PLACEHEIGHT / 2);
+			final int defaulty = center.y - (PLACEWIDTH / 2);
 			placementPoints.add(new Point(defaultx, defaulty));
 		}
-		
 		return placementPoints;
 	}
 	
@@ -315,13 +283,11 @@ public class AutoPlacementFinder
 	 *            .util.Collection
 	 * @return java.util.List
 	 */
-	static List<Point> getPlacementsStartingAtTopLeft(Collection<Polygon> countryPolygons, Rectangle bounding, Point center, Collection<Polygon> containedCountryPolygons)
+	static List<Point> getPlacementsStartingAtTopLeft(final Collection<Polygon> countryPolygons, final Rectangle bounding, final Point center, final Collection<Polygon> containedCountryPolygons)
 	{
-		List<Rectangle2D> placementRects = new ArrayList<Rectangle2D>();
-		List<Point> placementPoints = new ArrayList<Point>();
-		
-		Rectangle2D place = new Rectangle2D.Double(center.x, center.y, PLACEHEIGHT, PLACEWIDTH);
-		
+		final List<Rectangle2D> placementRects = new ArrayList<Rectangle2D>();
+		final List<Point> placementPoints = new ArrayList<Point>();
+		final Rectangle2D place = new Rectangle2D.Double(center.x, center.y, PLACEHEIGHT, PLACEWIDTH);
 		for (int x = bounding.x; x < bounding.width + bounding.x; x++)
 		{
 			for (int y = bounding.y; y < bounding.height + bounding.y; y++)
@@ -329,14 +295,12 @@ public class AutoPlacementFinder
 				isPlacement(countryPolygons, containedCountryPolygons, placementRects, placementPoints, place, x, y);
 			}
 		}
-		
 		if (placementPoints.isEmpty())
 		{
-			int defaultx = center.x - (PLACEHEIGHT / 2);
-			int defaulty = center.y - (PLACEWIDTH / 2);
+			final int defaultx = center.x - (PLACEHEIGHT / 2);
+			final int defaulty = center.y - (PLACEWIDTH / 2);
 			placementPoints.add(new Point(defaultx, defaulty));
 		}
-		
 		return placementPoints;
 	}
 	
@@ -358,22 +322,18 @@ public class AutoPlacementFinder
 	 * @param java
 	 *            .lang.int y
 	 */
-	private static void isPlacement(Collection<Polygon> countryPolygons, Collection<Polygon> containedCountryPolygons, List<Rectangle2D> placementRects, List<Point> placementPoints,
-				Rectangle2D place, int x, int y)
+	private static void isPlacement(final Collection<Polygon> countryPolygons, final Collection<Polygon> containedCountryPolygons, final List<Rectangle2D> placementRects,
+				final List<Point> placementPoints, final Rectangle2D place, final int x, final int y)
 	{
 		place.setFrame(x, y, PLACEWIDTH, PLACEHEIGHT);
-		if (containedIn(place, countryPolygons) &&
-					!intersectsOneOf(place, placementRects) &&
-
-					// make sure it is not in or intersects the contained country
-					
+		if (containedIn(place, countryPolygons) && !intersectsOneOf(place, placementRects) &&
+		// make sure it is not in or intersects the contained country
 					(!containedIn(place, containedCountryPolygons) && !intersectsOneOf(place, containedCountryPolygons)))
 		{
 			placementPoints.add(new Point((int) place.getX(), (int) place.getY()));
-			Rectangle2D newRect = new Rectangle2D.Double();
+			final Rectangle2D newRect = new Rectangle2D.Double();
 			newRect.setFrame(place);
 			placementRects.add(newRect);
-			
 		}// if
 	}
 	
@@ -389,20 +349,17 @@ public class AutoPlacementFinder
 	 * @param java
 	 *            .util.Collection shapes
 	 */
-	public static boolean containedIn(Rectangle2D r, Collection<Polygon> shapes)
+	public static boolean containedIn(final Rectangle2D r, final Collection<Polygon> shapes)
 	{
-		Iterator<Polygon> iter = shapes.iterator();
-		
+		final Iterator<Polygon> iter = shapes.iterator();
 		while (iter.hasNext())
 		{
-			Shape item = iter.next();
-			
+			final Shape item = iter.next();
 			if (item.contains(r))
 			{
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
@@ -418,26 +375,21 @@ public class AutoPlacementFinder
 	 * @param java
 	 *            .util.Collection shapes
 	 */
-	public static boolean intersectsOneOf(Rectangle2D r, Collection<? extends Shape> shapes)
+	public static boolean intersectsOneOf(final Rectangle2D r, final Collection<? extends Shape> shapes)
 	{
 		if (shapes.isEmpty())
 		{
 			return false;
 		}
-		
-		Iterator<? extends Shape> iter = shapes.iterator();
-		
+		final Iterator<? extends Shape> iter = shapes.iterator();
 		while (iter.hasNext())
 		{
-			Shape item = iter.next();
-			
+			final Shape item = iter.next();
 			if (item.intersects(r))
 			{
 				return true;
 			}
 		}
-		
 		return false;
 	}
-	
 }// end class AutoPlacementFinder

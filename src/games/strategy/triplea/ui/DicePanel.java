@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -33,11 +32,10 @@ import javax.swing.SwingUtilities;
 
 public class DicePanel extends JPanel
 {
-	
 	private final UIContext m_uiContext;
 	private final GameData m_data;
 	
-	public DicePanel(UIContext uiContext, GameData data)
+	public DicePanel(final UIContext uiContext, final GameData data)
 	{
 		m_uiContext = uiContext;
 		m_data = data;
@@ -49,21 +47,17 @@ public class DicePanel extends JPanel
 		removeAll();
 	}
 	
-	public void setDiceRollForBombing(int[] random, int cost)
+	public void setDiceRollForBombing(final int[] random, final int cost)
 	{
 		removeAll();
-		
-		List<Die> dice = new ArrayList<Die>(random.length);
+		final List<Die> dice = new ArrayList<Die>(random.length);
 		for (int i = 0; i < random.length; i++)
 		{
 			dice.add(new Die(random[i]));
 		}
-		
 		add(create(dice, -1));
-		
 		add(Box.createVerticalGlue());
 		add(new JLabel("Cost:" + cost));
-		
 		invalidate();
 	}
 	
@@ -71,56 +65,43 @@ public class DicePanel extends JPanel
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 		{
-			
-			SwingUtilities.invokeLater(
-						new Runnable()
+			SwingUtilities.invokeLater(new Runnable()
 			{
-				
 				public void run()
-			{
-				setDiceRoll(diceRoll);
-			}
-			}
-
-			);
-			
+				{
+					setDiceRoll(diceRoll);
+				}
+			});
 			return;
 		}
-		
 		removeAll();
 		for (int i = 1; i <= m_data.getDiceSides(); i++)
 		{
-			
-			List<Die> dice = diceRoll.getRolls(i);
+			final List<Die> dice = diceRoll.getRolls(i);
 			if (dice.isEmpty())
 				continue;
-			
 			add(new JLabel("Rolled at " + (i) + ":"));
 			add(create(diceRoll.getRolls(i), i));
-			
 		}
-		
 		add(Box.createVerticalGlue());
 		add(new JLabel("Total hits:" + diceRoll.getHits()));
-		
 		validate();
 		invalidate();
 		repaint();
 	}
 	
-	private JComponent create(List<Die> dice, int rollAt)
+	private JComponent create(final List<Die> dice, final int rollAt)
 	{
-		JPanel dicePanel = new JPanel();
+		final JPanel dicePanel = new JPanel();
 		dicePanel.setLayout(new BoxLayout(dicePanel, BoxLayout.X_AXIS));
 		dicePanel.add(Box.createHorizontalStrut(20));
-		for (Die die : dice)
+		for (final Die die : dice)
 		{
-			int roll = die.getValue() + 1;
-			
+			final int roll = die.getValue() + 1;
 			dicePanel.add(new JLabel(m_uiContext.getDiceImageFactory().getDieIcon(roll, die.getType())));
 			dicePanel.add(Box.createHorizontalStrut(2));
 		}
-		JScrollPane scroll = new JScrollPane(dicePanel);
+		final JScrollPane scroll = new JScrollPane(dicePanel);
 		scroll.setBorder(null);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		// we're adding to a box layout, so to prevent the component from
@@ -129,8 +110,6 @@ public class DicePanel extends JPanel
 		scroll.setMinimumSize(new Dimension(scroll.getMinimumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
 		scroll.setMaximumSize(new Dimension(scroll.getMaximumSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
 		scroll.setPreferredSize(new Dimension(scroll.getPreferredSize().width, m_uiContext.getDiceImageFactory().DIE_HEIGHT + 17));
-		
 		return scroll;
 	}
-	
 }

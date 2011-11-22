@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Constants.java
  * 
  * Created on November 8, 2001, 3:28 PM
  */
-
 package games.strategy.triplea;
 
 /**
@@ -37,7 +35,6 @@ public interface Constants
 	public static final String RUSSIANS = "Russians";
 	public static final String ITALIANS = "Italians";
 	public static final String CHINESE = "Chinese";
-	
 	public static final String UNIT_ATTACHMENT_NAME = "unitAttatchment";
 	public static final String INF_ATTACHMENT_NAME = "infAttatchment";
 	public static final String TECH_ATTACHMENT_NAME = "techAttatchment";
@@ -69,7 +66,6 @@ public interface Constants
 	public static final String PRODUCE_NEW_FIGHTERS_ON_OLD_CARRIERS = "Produce new fighters on old carriers";
 	public static final String MOVE_EXISTING_FIGHTERS_TO_NEW_CARRIERS = "Move existing fighters to new carriers";
 	public static final String LAND_EXISTING_FIGHTERS_ON_NEW_CARRIERS = "Land existing fighters on new carriers";
-	
 	public static final String HEAVY_BOMBER_DICE_ROLLS = "Heavy Bomber Dice Rolls";
 	public static final String TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN = "Battleships repair at end of round";
 	public static final String WW2V2 = "WW2V2";
@@ -82,7 +78,6 @@ public interface Constants
 	public static final String NEUTRALS_ARE_BLITZABLE = "Neutrals Are Blitzable";
 	public static final String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
 	public static final String PREVIOUS_UNITS_FIGHT = "Previous Units Fight";
-	
 	/**
 	 * These are the individual rules from a game (All default to FALSE)
 	 */
@@ -109,7 +104,6 @@ public interface Constants
 	/**
 	 * End individual rules (All default to FALSE)
 	 */
-	
 	/**
 	 * These are the individual rules for TripleA WW2V3 (All default to FALSE)
 	 */
@@ -135,13 +129,11 @@ public interface Constants
 	/**
 	 * End individual rules for TripleA WW2V3 (All default to FALSE)
 	 */
-	
 	public static final String PRODUCTION_PER_VALUED_TERRITORY_RESTRICTED = "Production Per Valued Territory Restricted";
 	public static final String CHOOSE_AA = "Choose AA Casualties";
 	public static final String PACIFIC_THEATER = "Pacific Theater";
 	public static final String WW2V3 = "WW2V3";
 	public static final String ECONOMIC_VICTORY = "Economic Victory";
-	
 	public static final String SUBMERSIBLE_SUBS = "Submersible Subs";
 	public static final String TWO_HIT = "isTwoHit";
 	public static final String ORIGINAL_OWNER = "originalOwner";
@@ -152,12 +144,9 @@ public interface Constants
 	public static final String KAMIKAZE = "Kamikaze Airplanes";
 	public static final String LHTR_HEAVY_BOMBERS = "LHTR Heavy Bombers";
 	public static final String EDIT_MODE = "EditMode";
-	
 	// by defaul this is 0, but for lhtr, it is 1
 	public static final String SUPER_SUB_DEFENSE_BONUS = "Super Sub Defence Bonus";
-	
 	public static final int TECH_ROLL_COST = 5;
-	
 	public static final String INFANTRY_TYPE = "infantry";
 	public static final String ARMOUR_TYPE = "armour";
 	public static final String TRANSPORT_TYPE = "transport";
@@ -170,26 +159,21 @@ public interface Constants
 	public static final String AAGUN_TYPE = "aaGun";
 	public static final String ARTILLERY = "artillery";
 	public static final String DESTROYER = "destroyer";
-	
 	public static final String LARGE_MAP_FILENAME = "largeMap.gif";
 	public static final String SMALL_MAP_FILENAME = "smallMap.jpeg";
 	public static final String MAP_NAME = "mapName";
 	public static final String DISPLAY_SEA_NAMES = "Display Sea Names";
-	
 	public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
-	
 	// new scramble property names
 	public static final String SCRAMBLE_RULES_IN_EFFECT = "Scramble Rules In Effect";
 	public static final String SCRAMBLED_UNITS_RETURN_TO_BASE = "Scrambled Units Return To Base";
 	public static final String SCRAMBLE_TO_SEA_ONLY = "Scramble To Sea Only";
 	public static final String SCRAMBLE_FROM_ISLAND_ONLY = "Scramble From Island Only";
-	
 	// squid
 	public static final String OLD_ART_RULE_NAME = "ArtyOld";
 	public static final String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;
 	public static final String TRIGGERS = "Use Triggers";
 	public static final String PU_MULTIPLIER = "Multiply PUs";
-	
 	// veqryn (Mark Christopher Duncan)
 	public static final String LL_AA_ONLY = "Low Luck for AntiAircraft";
 	public static final String COUNTERS_DISPLAY = "Display Units as Counters";
@@ -220,7 +204,6 @@ public interface Constants
 	public static final String AI_BONUS_DEFENSE = "AI Bonus Defense";
 	public static final String RELATIONSHIPS_LAST_EXTRA_ROUNDS = "Relationships Last Extra Rounds";
 	public static final String ALLIANCES_CAN_CHAIN_TOGETHER = "Alliances Can Chain Together";
-	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";
 	public static final String RELATIONSHIP_TYPE_NULL = "null_relation";

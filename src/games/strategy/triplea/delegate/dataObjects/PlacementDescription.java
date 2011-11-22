@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * BuyMessage.java
  * 
  * Created on November 6, 2001, 8:26 PM
  */
-
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Territory;
@@ -34,7 +32,7 @@ public class PlacementDescription extends AbstractMoveDescription
 {
 	private final Territory m_territory;
 	
-	public PlacementDescription(Collection<Unit> units, Territory territory)
+	public PlacementDescription(final Collection<Unit> units, final Territory territory)
 	{
 		super(units);
 		m_territory = territory;

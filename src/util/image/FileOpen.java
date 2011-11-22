@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * @author George El-Haddad
  * 
  * @email nekromancer@users.sourceforge.net
  */
-
 package util.image;
 
 import java.io.File;
@@ -28,7 +26,6 @@ import javax.swing.JOptionPane;
 public class FileOpen
 {
 	private final String ERR_MSG_1 = "Warning! Could not load the file!";
-	
 	private File file = null;
 	
 	/**
@@ -43,32 +40,29 @@ public class FileOpen
 	 *                working directory. Filters out all non-txt files and
 	 *                handles possible file load errors.
 	 */
-	public FileOpen(String title)
+	public FileOpen(final String title)
 	{
 		this(title, ".txt", ".gif", ".png");
-		
 	}
 	
-	public FileOpen(String title, final String... extensions)
+	public FileOpen(final String title, final String... extensions)
 	{
-		JFileChooser chooser = new JFileChooser();
+		final JFileChooser chooser = new JFileChooser();
 		chooser.setDialogTitle(title);
 		chooser.setCurrentDirectory(new File(System.getProperties().getProperty("user.dir")));
-		
 		/*
 		 * Show only text and gif files
 		 */
 		chooser.setFileFilter(new javax.swing.filechooser.FileFilter()
 		{
-			
 			@Override
-			public boolean accept(File f)
+			public boolean accept(final File f)
 			{
 				if (f.isDirectory())
 				{
 					return true;
 				}
-				for (String ex : extensions)
+				for (final String ex : extensions)
 				{
 					if (f.getName().endsWith(ex))
 					{
@@ -81,31 +75,27 @@ public class FileOpen
 			@Override
 			public String getDescription()
 			{
-				StringBuffer buf = new StringBuffer();
-				for (String ex : extensions)
+				final StringBuffer buf = new StringBuffer();
+				for (final String ex : extensions)
 				{
 					buf.append("*").append(ex).append(" ");
 				}
 				return buf.toString();
 			}
 		});
-		
-		int result = chooser.showOpenDialog(null);
-		
+		final int result = chooser.showOpenDialog(null);
 		if (result == JFileChooser.CANCEL_OPTION)
 		{
 			return;
 		}
-		
 		try
 		{
 			file = chooser.getSelectedFile(); // get the file
-		} catch (Exception ex)
+		} catch (final Exception ex)
 		{
 			JOptionPane.showMessageDialog(null, ERR_MSG_1, "Warning!", JOptionPane.WARNING_MESSAGE);
 			file = null;
 		}
-		
 	}// constructor
 	
 	/**
@@ -136,5 +126,4 @@ public class FileOpen
 			return file.getPath();
 		}
 	}
-	
 }// end class FileOpen

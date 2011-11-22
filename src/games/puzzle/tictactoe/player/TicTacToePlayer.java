@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.tictactoe.player;
 
 import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
@@ -27,14 +26,13 @@ import games.strategy.engine.data.Territory;
  */
 public class TicTacToePlayer extends AbstractHumanPlayer<TicTacToeFrame> implements ITicTacToePlayer
 {
-	
-	public TicTacToePlayer(String name, String type)
+	public TicTacToePlayer(final String name, final String type)
 	{
 		super(name, type);
 	}
 	
 	@Override
-	public void start(String stepName)
+	public void start(final String stepName)
 	{
 		if (stepName.endsWith("Play"))
 			play();
@@ -45,13 +43,11 @@ public class TicTacToePlayer extends AbstractHumanPlayer<TicTacToeFrame> impleme
 	private void play()
 	{
 		// Get the relevant delegate
-		IPlayDelegate playDel = (IPlayDelegate) m_bridge.getRemote();
+		final IPlayDelegate playDel = (IPlayDelegate) m_bridge.getRemote();
 		Territory play = null;
-		
 		while (play == null)
 		{
 			play = m_ui.waitForPlay(m_id, m_bridge);
-			
 			if (play == null)
 			{
 				// If play==null, the play was interrupted,
@@ -64,19 +60,15 @@ public class TicTacToePlayer extends AbstractHumanPlayer<TicTacToeFrame> impleme
 				// A play was returned from the user interface.
 				// We need to have the relevant delegate process it
 				// and see if there are any problems with the play.
-				String error = playDel.play(play);
-				
+				final String error = playDel.play(play);
 				if (error != null)
 				{
 					// If there is a problem with the play, notify the user...
 					m_ui.notifyError(error);
-					
 					// ... then have the user try again.
 					play = null;
 				}
 			}
-			
 		}
 	}
-	
 }

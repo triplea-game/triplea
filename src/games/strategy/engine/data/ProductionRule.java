@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ProductionRule.java
  * 
  * Created on October 13, 2001, 10:05 AM
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.util.IntegerMap;
@@ -34,20 +32,20 @@ public class ProductionRule extends DefaultNamed implements Serializable
 	private IntegerMap<NamedAttachable> m_results = new IntegerMap<NamedAttachable>();
 	
 	/** Creates new ProductionRule */
-	public ProductionRule(String name, GameData data)
+	public ProductionRule(final String name, final GameData data)
 	{
 		super(name, data);
 	}
 	
 	/** Creates new ProductionRule */
-	public ProductionRule(String name, GameData data, IntegerMap<NamedAttachable> results, IntegerMap<Resource> costs)
+	public ProductionRule(final String name, final GameData data, final IntegerMap<NamedAttachable> results, final IntegerMap<Resource> costs)
 	{
 		super(name, data);
 		m_results = results;
 		m_cost = costs;
 	}
 	
-	protected void addCost(Resource resource, int quantity)
+	protected void addCost(final Resource resource, final int quantity)
 	{
 		m_cost.put(resource, quantity);
 	}
@@ -55,11 +53,10 @@ public class ProductionRule extends DefaultNamed implements Serializable
 	/**
 	 * Benefits must be a resource or a unit.
 	 */
-	protected void addResult(NamedAttachable obj, int quantity)
+	protected void addResult(final NamedAttachable obj, final int quantity)
 	{
 		if (!(obj instanceof UnitType) && !(obj instanceof Resource))
 			throw new IllegalArgumentException("results must be units or resources, not:" + obj.getClass().getName());
-		
 		m_results.put(obj, quantity);
 	}
 	

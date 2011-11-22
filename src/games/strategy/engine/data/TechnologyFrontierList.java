@@ -8,16 +8,15 @@ import java.util.List;
 
 public class TechnologyFrontierList extends GameDataComponent
 {
-	
 	private static final long serialVersionUID = 2958122401265284935L;
 	private final List<TechnologyFrontier> m_technologyFrontiers = new ArrayList<TechnologyFrontier>();
 	
-	public TechnologyFrontierList(GameData data)
+	public TechnologyFrontierList(final GameData data)
 	{
 		super(data);
 	}
 	
-	protected void addTechnologyFrontier(TechnologyFrontier tf)
+	protected void addTechnologyFrontier(final TechnologyFrontier tf)
 	{
 		m_technologyFrontiers.add(tf);
 	}
@@ -27,9 +26,9 @@ public class TechnologyFrontierList extends GameDataComponent
 		return m_technologyFrontiers.size();
 	}
 	
-	public TechnologyFrontier getTechnologyFrontier(String name)
+	public TechnologyFrontier getTechnologyFrontier(final String name)
 	{
-		for (TechnologyFrontier tf : m_technologyFrontiers)
+		for (final TechnologyFrontier tf : m_technologyFrontiers)
 			if (tf.getName().equals(name))
 				return tf;
 		return null;
@@ -37,8 +36,8 @@ public class TechnologyFrontierList extends GameDataComponent
 	
 	public List<TechAdvance> getAdvances()
 	{
-		List<TechAdvance> techs = new ArrayList<TechAdvance>();
-		for (TechnologyFrontier t : m_technologyFrontiers)
+		final List<TechAdvance> techs = new ArrayList<TechAdvance>();
+		for (final TechnologyFrontier t : m_technologyFrontiers)
 		{
 			techs.addAll(t.getTechs());
 		}

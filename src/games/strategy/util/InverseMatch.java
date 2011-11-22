@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * InverseMatch.java
  * 
  * Created on November 10, 2001, 11:13 AM
  */
-
 package games.strategy.util;
 
 /**
@@ -30,19 +28,17 @@ package games.strategy.util;
  */
 public class InverseMatch<T> extends Match<T>
 {
-	private Match<T> m_match;
+	private final Match<T> m_match;
 	
 	/** Creates new CompositeMatchOr */
-	public InverseMatch(Match<T> aMatch)
+	public InverseMatch(final Match<T> aMatch)
 	{
 		m_match = aMatch;
-		
 	}
 	
 	@Override
-	public boolean match(T o)
+	public boolean match(final T o)
 	{
 		return !m_match.match(o);
 	}
-	
 }

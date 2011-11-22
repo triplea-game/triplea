@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -41,13 +40,12 @@ import javax.swing.JPanel;
  * A Simple panel that displays a list of units.
  * 
  */
-
 @SuppressWarnings("serial")
 public class SimpleUnitPanel extends JPanel
 {
 	private final UIContext m_uiContext;
 	
-	public SimpleUnitPanel(UIContext uiContext)
+	public SimpleUnitPanel(final UIContext uiContext)
 	{
 		m_uiContext = uiContext;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -59,24 +57,18 @@ public class SimpleUnitPanel extends JPanel
 	 *            a HashMap in the form ProductionRule -> number of units
 	 *            assumes that each production rule has 1 result, which is simple the number of units
 	 */
-	public void setUnitsFromProductionRuleMap(IntegerMap<ProductionRule> units, PlayerID player, GameData data)
+	public void setUnitsFromProductionRuleMap(final IntegerMap<ProductionRule> units, final PlayerID player, final GameData data)
 	{
 		removeAll();
-		
-		TreeSet<ProductionRule> productionRules = new TreeSet<ProductionRule>(productionRuleComparator);
+		final TreeSet<ProductionRule> productionRules = new TreeSet<ProductionRule>(productionRuleComparator);
 		productionRules.addAll(units.keySet());
-		Iterator<ProductionRule> iter = productionRules.iterator();
+		final Iterator<ProductionRule> iter = productionRules.iterator();
 		while (iter.hasNext())
 		{
-			ProductionRule productionRule = iter.next();
-			
-			int quantity = units.getInt(productionRule);
-			
-			UnitType unit = (UnitType) productionRule.getResults().keySet().
-						iterator().next();
-			
+			final ProductionRule productionRule = iter.next();
+			final int quantity = units.getInt(productionRule);
+			final UnitType unit = (UnitType) productionRule.getResults().keySet().iterator().next();
 			addUnits(player, data, quantity, unit, false, false);
-			
 		}
 	}
 	
@@ -86,24 +78,22 @@ public class SimpleUnitPanel extends JPanel
 	 *            a HashMap in the form RepairRule -> number of units
 	 *            assumes that each repair rule has 1 result, which is simply the number of units
 	 */
-	public void setUnitsFromRepairRuleMap(HashMap<Unit, IntegerMap<RepairRule>> units, PlayerID player, GameData data)
+	public void setUnitsFromRepairRuleMap(final HashMap<Unit, IntegerMap<RepairRule>> units, final PlayerID player, final GameData data)
 	{
 		removeAll();
-		
-		Set<Unit> entries = units.keySet();
-		Iterator<Unit> iter = entries.iterator();
+		final Set<Unit> entries = units.keySet();
+		final Iterator<Unit> iter = entries.iterator();
 		while (iter.hasNext())
 		{
-			Unit unit = iter.next();
-			IntegerMap<RepairRule> rules = units.get(unit);
-			
-			TreeSet<RepairRule> repairRules = new TreeSet<RepairRule>(repairRuleComparator);
+			final Unit unit = iter.next();
+			final IntegerMap<RepairRule> rules = units.get(unit);
+			final TreeSet<RepairRule> repairRules = new TreeSet<RepairRule>(repairRuleComparator);
 			repairRules.addAll(rules.keySet());
-			Iterator<RepairRule> ruleIter = repairRules.iterator();
+			final Iterator<RepairRule> ruleIter = repairRules.iterator();
 			while (ruleIter.hasNext())
 			{
-				RepairRule repairRule = ruleIter.next();
-				int quantity = rules.getInt(repairRule);
+				final RepairRule repairRule = ruleIter.next();
+				final int quantity = rules.getInt(repairRule);
 				if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
 				{
 					addUnits(player, data, quantity, unit.getType(), true, false);
@@ -124,26 +114,24 @@ public class SimpleUnitPanel extends JPanel
 	 * @param categories
 	 *            a collection of UnitCategories
 	 */
-	public void setUnitsFromCategories(Collection<UnitCategory> categories, GameData data)
+	public void setUnitsFromCategories(final Collection<UnitCategory> categories, final GameData data)
 	{
 		removeAll();
-		
-		Iterator<UnitCategory> iter = categories.iterator();
+		final Iterator<UnitCategory> iter = categories.iterator();
 		while (iter.hasNext())
 		{
-			UnitCategory category = iter.next();
+			final UnitCategory category = iter.next();
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
 			addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.getDamaged(), category.getDisabled());
 		}
 	}
 	
-	private void addUnits(PlayerID player, GameData data, int quantity, UnitType unit, boolean damaged, boolean disabled)
+	private void addUnits(final PlayerID player, final GameData data, final int quantity, final UnitType unit, final boolean damaged, final boolean disabled)
 	{
 		// TODO Kev determine if we need to identify if the unit is hit/disabled
-		JLabel label = new JLabel();
+		final JLabel label = new JLabel();
 		label.setText(" x " + quantity);
-		label.setIcon(m_uiContext.getUnitImageFactory().getIcon(unit, player,
-					data, damaged, disabled));
+		label.setIcon(m_uiContext.getUnitImageFactory().getIcon(unit, player, data, damaged, disabled));
 		add(label);
 	}
 	
@@ -151,24 +139,22 @@ public class SimpleUnitPanel extends JPanel
 	{
 		UnitTypeComparator utc = new UnitTypeComparator();
 		
-		public int compare(ProductionRule o1, ProductionRule o2)
+		public int compare(final ProductionRule o1, final ProductionRule o2)
 		{
-			UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
-			UnitType u2 = (UnitType) o2.getResults().keySet().iterator().next();
+			final UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
+			final UnitType u2 = (UnitType) o2.getResults().keySet().iterator().next();
 			return utc.compare(u1, u2);
 		}
 	};
-	
 	Comparator<RepairRule> repairRuleComparator = new Comparator<RepairRule>()
 	{
 		UnitTypeComparator utc = new UnitTypeComparator();
 		
-		public int compare(RepairRule o1, RepairRule o2)
+		public int compare(final RepairRule o1, final RepairRule o2)
 		{
-			UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
-			UnitType u2 = (UnitType) o2.getResults().keySet().iterator().next();
+			final UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
+			final UnitType u2 = (UnitType) o2.getResults().keySet().iterator().next();
 			return utc.compare(u1, u2);
 		}
 	};
-	
 }

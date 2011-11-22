@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.Others;
 
 import games.strategy.engine.data.GameData;
@@ -30,37 +29,29 @@ import java.util.List;
  */
 public class Battle_RetreatTerCalculator
 {
-	public static Territory CalculateBestRetreatTer(GameData data, PlayerID player, List<Territory> possibles, Territory battleTer)
+	public static Territory CalculateBestRetreatTer(final GameData data, final PlayerID player, final List<Territory> possibles, final Territory battleTer)
 	{
-		List<Territory> ourCaps = DUtils.GetAllOurCaps_ThatWeOwn(data, player);
-		
+		final List<Territory> ourCaps = DUtils.GetAllOurCaps_ThatWeOwn(data, player);
 		Territory highestScoringTer = null;
 		float highestScore = Integer.MIN_VALUE;
-		for (Territory ter : possibles)
+		for (final Territory ter : possibles)
 		{
 			float score = 0;
-			
-			float oldSurvivalChance = DUtils.GetSurvivalChanceOfArmy(data, player, ter, DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), 500);
-			
-			List<Unit> afterDefenders = DUtils.GetTerUnitsAtEndOfTurn(data, player, ter);
+			final float oldSurvivalChance = DUtils.GetSurvivalChanceOfArmy(data, player, ter, DUtils.GetTerUnitsAtEndOfTurn(data, player, ter), 500);
+			final List<Unit> afterDefenders = DUtils.GetTerUnitsAtEndOfTurn(data, player, ter);
 			afterDefenders.removeAll(battleTer.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
 			afterDefenders.addAll(battleTer.getUnits().getMatches(Matches.unitIsOwnedBy(player)));
-			
 			float newSurvivalChance = DUtils.GetSurvivalChanceOfArmy(data, player, ter, afterDefenders, 500);
-			
 			if (newSurvivalChance > .9F) // If this retreat ter is really safe
 				newSurvivalChance = .9F; // Then accept similar chances as equal
-				
-			boolean isImportant = ourCaps.contains(ter);
-			float importantTerChanceRequired = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_enemyAttackSurvivalChanceRequired);
+			final boolean isImportant = ourCaps.contains(ter);
+			final float importantTerChanceRequired = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_enemyAttackSurvivalChanceRequired);
 			// If this ter is important, and retreating here will make the ter safe, boost score a lot
 			if (isImportant && oldSurvivalChance < importantTerChanceRequired && newSurvivalChance >= importantTerChanceRequired)
 				score += 100000;
-			
 			score += newSurvivalChance * 10000;
 			if (!ter.isWater())
 				score += DUtils.GetValueOfLandTer(ter, data, player);
-			
 			if (score > highestScore)
 			{
 				highestScore = score;

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net.nio;
 
 import java.io.IOException;
@@ -45,42 +44,33 @@ import java.util.logging.Logger;
 public class NIOReader
 {
 	private static final Logger s_logger = Logger.getLogger(NIOReader.class.getName());
-	
 	private final LinkedBlockingQueue<SocketReadData> m_outputQueue = new LinkedBlockingQueue<SocketReadData>();
 	private volatile boolean m_running = true;
-	
 	private final Map<SocketChannel, SocketReadData> m_reading = new ConcurrentHashMap<SocketChannel, SocketReadData>();
 	private final IErrorReporter m_errorReporter;
-	
 	private final Selector m_selector;
-	
 	private final Object m_socketsToAddMutex = new Object();
 	private final List<SocketChannel> m_socketsToAdd = new ArrayList<SocketChannel>();
-	
 	private long m_totalBytes;
 	
-	public NIOReader(IErrorReporter reporter, String threadSuffix)
+	public NIOReader(final IErrorReporter reporter, final String threadSuffix)
 	{
 		m_errorReporter = reporter;
 		try
 		{
 			m_selector = Selector.open();
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			s_logger.log(Level.SEVERE, "Could not create Selector", e);
 			throw new IllegalStateException(e);
 		}
-		
-		Thread t = new Thread(new Runnable()
+		final Thread t = new Thread(new Runnable()
 		{
-			
 			public void run()
 			{
 				loop();
 			}
-			
 		}, "NIO Reader - " + threadSuffix);
-		
 		t.start();
 	}
 	
@@ -90,13 +80,13 @@ public class NIOReader
 		try
 		{
 			m_selector.close();
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			s_logger.log(Level.WARNING, "error closing selector", e);
 		}
 	}
 	
-	public void add(SocketChannel channel)
+	public void add(final SocketChannel channel)
 	{
 		synchronized (m_socketsToAddMutex)
 		{
@@ -112,23 +102,20 @@ public class NIOReader
 		{
 			if (m_socketsToAdd.isEmpty())
 				return;
-			
 			toAdd = new ArrayList<SocketChannel>(m_socketsToAdd);
 			m_socketsToAdd.clear();
 		}
-		
-		for (SocketChannel channel : toAdd)
+		for (final SocketChannel channel : toAdd)
 		{
 			try
 			{
 				channel.register(m_selector, SelectionKey.OP_READ);
-			} catch (ClosedChannelException e)
+			} catch (final ClosedChannelException e)
 			{
 				// this is ok, the channel is closed, so dont bother reading it
 				return;
 			}
 		}
-		
 	}
 	
 	private void loop()
@@ -141,70 +128,57 @@ public class NIOReader
 				{
 					s_logger.finest("selecting...");
 				}
-				
 				try
 				{
 					m_selector.select();
 				}
 				// exceptions can be thrown here, nothing we can do
 				// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4729342
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					s_logger.log(Level.INFO, "error reading selection", e);
 				}
 				if (!m_running)
 					continue;
-				
 				selectNewChannels();
-				
-				Set<SelectionKey> selected = m_selector.selectedKeys();
-				
+				final Set<SelectionKey> selected = m_selector.selectedKeys();
 				if (s_logger.isLoggable(Level.FINEST))
 				{
 					s_logger.finest("selected:" + selected.size());
 				}
-				
-				Iterator<SelectionKey> iter = selected.iterator();
+				final Iterator<SelectionKey> iter = selected.iterator();
 				while (iter.hasNext())
 				{
-					SelectionKey key = iter.next();
+					final SelectionKey key = iter.next();
 					iter.remove();
 					if (key.isValid() && key.isReadable())
 					{
-						SocketChannel channel = (SocketChannel) key.channel();
-						
-						SocketReadData packet = getReadData(channel);
-						
+						final SocketChannel channel = (SocketChannel) key.channel();
+						final SocketReadData packet = getReadData(channel);
 						if (s_logger.isLoggable(Level.FINEST))
 						{
 							s_logger.finest("reading packet:" + packet + " from:" + channel.socket().getRemoteSocketAddress());
 						}
-						
 						try
 						{
-							boolean done = packet.read(channel);
+							final boolean done = packet.read(channel);
 							if (done)
 							{
-								
 								m_totalBytes += packet.size();
 								if (s_logger.isLoggable(Level.FINE))
 								{
 									String remote = "null";
-									Socket s = channel.socket();
-									
+									final Socket s = channel.socket();
 									SocketAddress sa = null;
 									if (s != null)
 										sa = s.getRemoteSocketAddress();
 									if (sa != null)
 										remote = sa.toString();
-									
 									s_logger.log(Level.FINE, " done reading from:" + remote + " size:" + packet.size() + " readCalls;" + packet.getReadCalls() + " total:" + m_totalBytes);
 								}
-								
 								enque(packet);
 							}
-							
-						} catch (Exception e)
+						} catch (final Exception e)
 						{
 							s_logger.log(Level.FINER, "exception reading", e);
 							key.cancel();
@@ -214,12 +188,12 @@ public class NIOReader
 					else if (!key.isValid())
 					{
 						s_logger.fine("Remotely closed");
-						SocketChannel channel = (SocketChannel) key.channel();
+						final SocketChannel channel = (SocketChannel) key.channel();
 						key.cancel();
 						m_errorReporter.error(channel, new SocketException("triplea:key cancelled"));
 					}
 				}
-			} catch (Exception e)
+			} catch (final Exception e)
 			{
 				// catch unhandles exceptions to that the reader
 				// thread doesnt die
@@ -228,17 +202,17 @@ public class NIOReader
 		}
 	}
 	
-	private void enque(SocketReadData packet)
+	private void enque(final SocketReadData packet)
 	{
 		m_reading.remove(packet.getChannel());
 		m_outputQueue.offer(packet);
 	}
 	
-	private SocketReadData getReadData(SocketChannel channel)
+	private SocketReadData getReadData(final SocketChannel channel)
 	{
 		if (m_reading.containsKey(channel))
 			return m_reading.get(channel);
-		SocketReadData packet = new SocketReadData(channel);
+		final SocketReadData packet = new SocketReadData(channel);
 		m_reading.put(channel, packet);
 		return packet;
 	}
@@ -248,9 +222,8 @@ public class NIOReader
 		return m_outputQueue.take();
 	}
 	
-	public void closed(SocketChannel channel)
+	public void closed(final SocketChannel channel)
 	{
 		m_reading.remove(channel);
 	}
-	
 }

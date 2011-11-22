@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net;
 
 import java.io.BufferedInputStream;
@@ -32,13 +31,12 @@ import java.net.Socket;
  */
 public class SocketStreams
 {
-	
 	private final InputStream m_socketIn;
 	private final OutputStream m_socketOut;
 	private final BufferedOutputStream m_bufferedOut;
 	private final BufferedInputStream m_bufferedIn;
 	
-	public SocketStreams(Socket s) throws IOException
+	public SocketStreams(final Socket s) throws IOException
 	{
 		m_socketIn = s.getInputStream();
 		m_socketOut = s.getOutputStream();
@@ -65,5 +63,4 @@ public class SocketStreams
 	{
 		return m_socketOut;
 	}
-	
 }

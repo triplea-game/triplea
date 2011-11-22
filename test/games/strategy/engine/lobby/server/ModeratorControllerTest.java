@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server;
 
 import games.strategy.engine.lobby.server.userDB.BannedIpController;
@@ -34,7 +33,6 @@ import junit.framework.TestCase;
 
 public class ModeratorControllerTest extends TestCase
 {
-	
 	private DummyMessenger m_messenger;
 	private ModeratorController m_controller;
 	private ConnectionChangeListener m_listener;
@@ -47,8 +45,7 @@ public class ModeratorControllerTest extends TestCase
 		m_controller = new ModeratorController(m_messenger);
 		m_listener = new ConnectionChangeListener();
 		m_messenger.addConnectionChangeListener(m_listener);
-		
-		String adminName = Util.createUniqueTimeStamp();
+		final String adminName = Util.createUniqueTimeStamp();
 		new DBUserController().createUser(adminName, "n@n.n", MD5Crypt.crypt(adminName), true);
 		m_adminNode = new Node(adminName, InetAddress.getLocalHost(), 0);
 	}
@@ -56,47 +53,42 @@ public class ModeratorControllerTest extends TestCase
 	public void testBoot() throws UnknownHostException
 	{
 		MessageContext.setSenderNodeForThread(m_adminNode);
-		INode booted = new Node("foo", InetAddress.getByAddress(new byte[] { 1, 2, 3, 4 }), 0);
+		final INode booted = new Node("foo", InetAddress.getByAddress(new byte[] { 1, 2, 3, 4 }), 0);
 		m_controller.boot(booted);
 		assertTrue(m_listener.getRemoved().contains(booted));
 	}
 	
 	public void testBan() throws UnknownHostException
 	{
-		InetAddress bannedAddress = Inet4Address.getByAddress(new byte[] { (byte) 10, (byte) 10, (byte) 10, (byte) 10 });
+		final InetAddress bannedAddress = Inet4Address.getByAddress(new byte[] { (byte) 10, (byte) 10, (byte) 10, (byte) 10 });
 		new BannedIpController().removeBannedIp(bannedAddress.getHostAddress());
-		
 		MessageContext.setSenderNodeForThread(m_adminNode);
-		INode booted = new Node("foo", bannedAddress, 0);
+		final INode booted = new Node("foo", bannedAddress, 0);
 		m_controller.banIp(booted, null); // this test is failing because any kind of ban requires a mac address for the logging information, yet this node has no mac address. need to fix this somehow.
 		assertTrue(m_listener.getRemoved().contains(booted));
-		
 		assertTrue(new BannedIpController().isIpBanned(bannedAddress.getHostAddress()));
 	}
 	
 	public void testResetUserPassword() throws UnknownHostException
 	{
-		String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
-		String userName = Util.createUniqueTimeStamp();
-		
+		final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
+		final String userName = Util.createUniqueTimeStamp();
 		new DBUserController().createUser(userName, "n@n.n", newPassword, false);
-		INode node = new Node(userName, InetAddress.getLocalHost(), 0);
-		
+		final INode node = new Node(userName, InetAddress.getLocalHost(), 0);
 		assertNull(m_controller.setPassword(node, newPassword));
-		
 		assertTrue(new DBUserController().login(node.getName(), newPassword));
 	}
 	
 	public void testCantResetAdminPassword() throws UnknownHostException
 	{
-		String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
+		final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
 		assertNotNull(m_controller.setPassword(m_adminNode, newPassword));
 	}
 	
 	public void testResetUserPasswordUnknownUser() throws UnknownHostException
 	{
-		String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
-		INode node = new Node(Util.createUniqueTimeStamp(), InetAddress.getLocalHost(), 0);
+		final String newPassword = MD5Crypt.crypt("" + System.currentTimeMillis());
+		final INode node = new Node(Util.createUniqueTimeStamp(), InetAddress.getLocalHost(), 0);
 		assertNotNull(m_controller.setPassword(node, newPassword));
 	}
 	
@@ -106,7 +98,6 @@ public class ModeratorControllerTest extends TestCase
 		assertTrue(m_controller.isAdmin());
 		m_controller.assertUserIsAdmin();
 	}
-	
 }
 
 
@@ -114,11 +105,11 @@ class ConnectionChangeListener implements IConnectionChangeListener
 {
 	final List<INode> m_removed = new ArrayList<INode>();
 	
-	public void connectionAdded(INode to)
+	public void connectionAdded(final INode to)
 	{
 	}
 	
-	public void connectionRemoved(INode to)
+	public void connectionRemoved(final INode to)
 	{
 		m_removed.add(to);
 	}

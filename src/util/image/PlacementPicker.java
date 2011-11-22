@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package util.image;
 
 import games.strategy.ui.Util;
@@ -62,13 +61,11 @@ public class PlacementPicker extends JFrame
 {
 	private Point m_currentSquare;
 	private Image m_image;
-	private JLabel m_location = new JLabel();
+	private final JLabel m_location = new JLabel();
 	private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>();
-	
 	private Map<String, List<Point>> m_placements;
 	private List<Point> m_currentPlacements;
 	private String m_currentCountry;
-	
 	private static final int PLACE_SIZE = 48;
 	
 	/**
@@ -82,14 +79,13 @@ public class PlacementPicker extends JFrame
 	 *            .lang.String[] args the command line arguments
 	 * @see Picker(java.lang.String) picker
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		System.out.println("Select the map");
-		String mapName = new FileOpen("Select The Map").getPathString();
-		
+		final String mapName = new FileOpen("Select The Map").getPathString();
 		if (mapName != null)
 		{
-			PlacementPicker picker = new PlacementPicker(mapName);
+			final PlacementPicker picker = new PlacementPicker(mapName);
 			picker.setSize(600, 550);
 			picker.setVisible(true);
 		}
@@ -98,7 +94,6 @@ public class PlacementPicker extends JFrame
 			System.out.println("No Image Map Selected. Shutting down.");
 			System.exit(0);
 		}
-		
 	}// end main
 	
 	/**
@@ -111,11 +106,11 @@ public class PlacementPicker extends JFrame
 	 * @param java
 	 *            .lang.String mapName name of map file
 	 */
-	public PlacementPicker(String mapName)
+	public PlacementPicker(final String mapName)
 	{
 		super("Placement Picker");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		File file = new File(new File(mapName).getParent() + File.pathSeparator + "polygons.txt");
+		final File file = new File(new File(mapName).getParent() + File.pathSeparator + "polygons.txt");
 		if (file.exists()
 					&& JOptionPane.showConfirmDialog(new JPanel(), "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories?", "File Suggestion", 1) == 0)
 		{
@@ -123,7 +118,7 @@ public class PlacementPicker extends JFrame
 			{
 				System.out.println("Polygons : " + file.getPath());
 				m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(file.getPath()));
-			} catch (IOException ex1)
+			} catch (final IOException ex1)
 			{
 				ex1.printStackTrace();
 			}
@@ -133,8 +128,7 @@ public class PlacementPicker extends JFrame
 			try
 			{
 				System.out.println("Select the Polygons file");
-				String polyPath = new FileOpen("Select A Polygon File").getPathString();
-				
+				final String polyPath = new FileOpen("Select A Polygon File").getPathString();
 				if (polyPath != null)
 				{
 					System.out.println("Polygons : " + polyPath);
@@ -144,120 +138,90 @@ public class PlacementPicker extends JFrame
 				{
 					System.out.println("Polygons file not given. Will run regardless");
 				}
-			} catch (IOException ex1)
+			} catch (final IOException ex1)
 			{
 				ex1.printStackTrace();
 			}
 		}
-		
 		createImage(mapName);
-		
-		JPanel imagePanel = createMainPanel();
-		
+		final JPanel imagePanel = createMainPanel();
 		/*
 		Add a mouse listener to show
 		X : Y coordinates on the lower
 		left corner of the screen.
 		*/
-		imagePanel.addMouseMotionListener(
-					new MouseMotionAdapter()
+		imagePanel.addMouseMotionListener(new MouseMotionAdapter()
+		{
+			@Override
+			public void mouseMoved(final MouseEvent e)
 			{
-				
-				@Override
-				public void mouseMoved(MouseEvent e)
-				{
-					m_location.setText("x:" + e.getX() + " y:" + e.getY());
-					m_currentSquare = new Point(e.getPoint());
-					repaint();
-				}
+				m_location.setText("x:" + e.getX() + " y:" + e.getY());
+				m_currentSquare = new Point(e.getPoint());
+				repaint();
 			}
-					);
-		
+		});
 		/*
 		   Add a mouse listener to monitor
 		for right mouse button being
 		clicked.	
 		*/
-		imagePanel.addMouseListener(
-					new MouseAdapter()
+		imagePanel.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(final MouseEvent e)
 			{
-				
-				@Override
-				public void mouseClicked(MouseEvent e)
-				{
-					mouseEvent(e.getPoint(), e.isControlDown(), SwingUtilities.isRightMouseButton(e));
-				}
+				mouseEvent(e.getPoint(), e.isControlDown(), SwingUtilities.isRightMouseButton(e));
 			}
-					);
-		
+		});
 		// set up the image panel size dimensions ...etc
-		
 		imagePanel.setMinimumSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
 		imagePanel.setPreferredSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
 		imagePanel.setMaximumSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
-		
 		// set up the layout manager
-		
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
 		this.getContentPane().add(m_location, BorderLayout.SOUTH);
-		
 		// set up the actions
-		
-		Action openAction = new AbstractAction("Load Placements")
+		final Action openAction = new AbstractAction("Load Placements")
 		{
-			
-			public void actionPerformed(ActionEvent event)
+			public void actionPerformed(final ActionEvent event)
 			{
 				loadPlacements();
 			}
 		};
 		openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Placement File");
-		
-		Action saveAction = new AbstractAction("Save Placements")
+		final Action saveAction = new AbstractAction("Save Placements")
 		{
-			
-			public void actionPerformed(ActionEvent event)
+			public void actionPerformed(final ActionEvent event)
 			{
 				savePlacements();
 			}
 		};
 		saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Placements To File");
-		
-		Action exitAction = new AbstractAction("Exit")
+		final Action exitAction = new AbstractAction("Exit")
 		{
-			
-			public void actionPerformed(ActionEvent event)
+			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
 			}
 		};
 		exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
-		
 		// set up the menu items
-		
-		JMenuItem openItem = new JMenuItem(openAction);
+		final JMenuItem openItem = new JMenuItem(openAction);
 		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-		
-		JMenuItem saveItem = new JMenuItem(saveAction);
+		final JMenuItem saveItem = new JMenuItem(saveAction);
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
-		
-		JMenuItem exitItem = new JMenuItem(exitAction);
-		
+		final JMenuItem exitItem = new JMenuItem(exitAction);
 		// set up the menu bar
-		
-		JMenuBar menuBar = new JMenuBar();
+		final JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-		
-		JMenu fileMenu = new JMenu("File");
+		final JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('F');
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
-		
 		menuBar.add(fileMenu);
-		
 	}// end constructor
 	
 	/**
@@ -269,14 +233,13 @@ public class PlacementPicker extends JFrame
 	 * @param java
 	 *            .lang.String mapName the path of image map
 	 */
-	private void createImage(String mapName)
+	private void createImage(final String mapName)
 	{
 		m_image = Toolkit.getDefaultToolkit().createImage(mapName);
-		
 		try
 		{
 			Util.ensureImageLoaded(m_image);
-		} catch (InterruptedException ex)
+		} catch (final InterruptedException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -292,34 +255,28 @@ public class PlacementPicker extends JFrame
 	 */
 	private JPanel createMainPanel()
 	{
-		JPanel imagePanel = new JPanel()
+		final JPanel imagePanel = new JPanel()
 		{
-			
 			@Override
-			public void paint(Graphics g)
+			public void paint(final Graphics g)
 			{
 				// super.paint(g);
 				g.drawImage(m_image, 0, 0, this);
 				g.setColor(Color.red);
-				
 				if (m_currentSquare != null)
 				{
 					g.drawRect(m_currentSquare.x, m_currentSquare.y, PLACE_SIZE, PLACE_SIZE);
 				}
-				
 				if (m_currentPlacements == null)
-		{
-			return;
-		}
-		
-		Iterator<Point> pointIter = m_currentPlacements.iterator();
-		
-		while (pointIter.hasNext())
 				{
-					Point item = pointIter.next();
+					return;
+				}
+				final Iterator<Point> pointIter = m_currentPlacements.iterator();
+				while (pointIter.hasNext())
+				{
+					final Point item = pointIter.next();
 					g.fillRect(item.x, item.y, PLACE_SIZE, PLACE_SIZE);
 				}
-				
 			}// paint
 		};
 		return imagePanel;
@@ -334,25 +291,23 @@ public class PlacementPicker extends JFrame
 	{
 		try
 		{
-			String fileName = new FileSave("Where To Save place.txt ?", "place.txt").getPathString();
-			
+			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt").getPathString();
 			if (fileName == null)
 			{
 				return;
 			}
-			
-			FileOutputStream out = new FileOutputStream(fileName);
+			final FileOutputStream out = new FileOutputStream(fileName);
 			PointFileReaderWriter.writeOneToMany(out, m_placements);
 			out.flush();
 			out.close();
 			System.out.println("Data written to :" + new File(fileName).getCanonicalPath());
-		} catch (FileNotFoundException ex)
+		} catch (final FileNotFoundException ex)
 		{
 			ex.printStackTrace();
-		} catch (HeadlessException ex)
+		} catch (final HeadlessException ex)
 		{
 			ex.printStackTrace();
-		} catch (Exception ex)
+		} catch (final Exception ex)
 		{
 			ex.printStackTrace();
 		}
@@ -368,23 +323,21 @@ public class PlacementPicker extends JFrame
 		try
 		{
 			System.out.println("Load a placement file");
-			String placeName = new FileOpen("Load A Placement File").getPathString();
-			
+			final String placeName = new FileOpen("Load A Placement File").getPathString();
 			if (placeName == null)
 			{
 				return;
 			}
-			
-			FileInputStream in = new FileInputStream(placeName);
+			final FileInputStream in = new FileInputStream(placeName);
 			m_placements = PointFileReaderWriter.readOneToMany(in);
 			repaint();
-		} catch (FileNotFoundException ex)
+		} catch (final FileNotFoundException ex)
 		{
 			ex.printStackTrace();
-		} catch (IOException ex)
+		} catch (final IOException ex)
 		{
 			ex.printStackTrace();
-		} catch (HeadlessException ex)
+		} catch (final HeadlessException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -399,25 +352,20 @@ public class PlacementPicker extends JFrame
 	 * @param java
 	 *            .awt.point p a point on the map
 	 */
-	private String findTerritoryName(Point p)
+	private String findTerritoryName(final Point p)
 	{
 		String seaName = "there be dragons";
-		
 		// try to find a land territory.
 		// sea zones often surround a land territory
-		
-		Iterator<String> keyIter = m_polygons.keySet().iterator();
-		
+		final Iterator<String> keyIter = m_polygons.keySet().iterator();
 		while (keyIter.hasNext())
 		{
-			String name = keyIter.next();
-			Collection<Polygon> polygons = m_polygons.get(name);
-			Iterator<Polygon> polyIter = polygons.iterator();
-			
+			final String name = keyIter.next();
+			final Collection<Polygon> polygons = m_polygons.get(name);
+			final Iterator<Polygon> polyIter = polygons.iterator();
 			while (polyIter.hasNext())
 			{
-				Polygon poly = polyIter.next();
-				
+				final Polygon poly = polyIter.next();
 				if (poly.contains(p))
 				{
 					if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone"))
@@ -428,13 +376,9 @@ public class PlacementPicker extends JFrame
 					{
 						return name;
 					}
-					
 				}// if
-				
 			}// while
-			
 		}// while
-		
 		return seaName;
 	}
 	
@@ -454,7 +398,7 @@ public class PlacementPicker extends JFrame
 	 * @param java
 	 *            .lang.boolean rightMouse true if the right mouse button was hit
 	 */
-	private void mouseEvent(Point point, boolean ctrlDown, boolean rightMouse)
+	private void mouseEvent(final Point point, final boolean ctrlDown, final boolean rightMouse)
 	{
 		if (!rightMouse && !ctrlDown)
 		{
@@ -464,7 +408,6 @@ public class PlacementPicker extends JFrame
 				m_currentPlacements = new ArrayList<Point>();
 			else
 				m_currentPlacements = new ArrayList<Point>(m_placements.get(m_currentCountry));
-			
 			JOptionPane.showMessageDialog(this, m_currentCountry);
 		}
 		else if (!rightMouse && ctrlDown)
@@ -492,8 +435,6 @@ public class PlacementPicker extends JFrame
 				m_currentPlacements.remove(m_currentPlacements.size() - 1);
 			}
 		}
-		
 		repaint();
 	}
-	
 }// end class PlacementPicker

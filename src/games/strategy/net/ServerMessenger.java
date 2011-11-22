@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ServerMessenger.java
  * 
  * Created on December 11, 2001, 7:43 PM
  */
-
 package games.strategy.net;
 
 import games.strategy.engine.chat.ChatController;
@@ -67,24 +65,19 @@ import java.util.logging.Logger;
 public class ServerMessenger implements IServerMessenger, NIOSocketListener
 {
 	private static Logger s_logger = Logger.getLogger(ServerMessenger.class.getName());
-	
 	private final Selector m_acceptorSelector;
 	private final ServerSocketChannel m_socketChannel;
 	private final Node m_node;
 	private boolean m_shutdown = false;
 	private final NIOSocket m_nioSocket;
-	
 	private final CopyOnWriteArrayList<IMessageListener> m_listeners = new CopyOnWriteArrayList<IMessageListener>();
 	private final CopyOnWriteArrayList<IMessengerErrorListener> m_errorListeners = new CopyOnWriteArrayList<IMessengerErrorListener>();
 	private final CopyOnWriteArrayList<IConnectionChangeListener> m_connectionListeners = new CopyOnWriteArrayList<IConnectionChangeListener>();
-	
 	private boolean m_acceptNewConnection = false;
 	private ILoginValidator m_loginValidator;
-	
 	// all our nodes
-	private ConcurrentHashMap<INode, SocketChannel> m_nodeToChannel = new ConcurrentHashMap<INode, SocketChannel>();
-	private ConcurrentHashMap<SocketChannel, INode> m_channelToNode = new ConcurrentHashMap<SocketChannel, INode>();
-	
+	private final ConcurrentHashMap<INode, SocketChannel> m_nodeToChannel = new ConcurrentHashMap<INode, SocketChannel>();
+	private final ConcurrentHashMap<SocketChannel, INode> m_channelToNode = new ConcurrentHashMap<SocketChannel, INode>();
 	// A hack, till I think of something better
 	private static ServerMessenger s_instance;
 	
@@ -93,29 +86,24 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		return s_instance;
 	}
 	
-	public ServerMessenger(String name, int portNumber, IObjectStreamFactory streamFactory) throws IOException
+	public ServerMessenger(final String name, final int portNumber, final IObjectStreamFactory streamFactory) throws IOException
 	{
 		s_instance = this;
-		
 		m_socketChannel = ServerSocketChannel.open();
 		m_socketChannel.configureBlocking(false);
 		m_socketChannel.socket().setReuseAddress(true);
 		m_socketChannel.socket().bind(new InetSocketAddress(portNumber), 10);
-		
 		m_nioSocket = new NIOSocket(streamFactory, this, "Server");
-		
 		m_acceptorSelector = Selector.open();
-		
 		if (IPFinder.findInetAddress() != null)
 			m_node = new Node(name, IPFinder.findInetAddress(), portNumber);
 		else
 			m_node = new Node(name, InetAddress.getLocalHost(), portNumber);
-		
-		Thread t = new Thread(new ConnectionHandler(), "Server Messenger Connection Handler");
+		final Thread t = new Thread(new ConnectionHandler(), "Server Messenger Connection Handler");
 		t.start();
 	}
 	
-	public void setLoginValidator(ILoginValidator loginValidator)
+	public void setLoginValidator(final ILoginValidator loginValidator)
 	{
 		m_loginValidator = loginValidator;
 	}
@@ -126,7 +114,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	}
 	
 	/** Creates new ServerMessenger */
-	public ServerMessenger(String name, int portNumber) throws IOException
+	public ServerMessenger(final String name, final int portNumber) throws IOException
 	{
 		this(name, portNumber, new DefaultObjectStreamFactory());
 	}
@@ -134,8 +122,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#addMessageListener(Class, IMessageListener)
 	 */
-
-	public void addMessageListener(IMessageListener listener)
+	public void addMessageListener(final IMessageListener listener)
 	{
 		m_listeners.add(listener);
 	}
@@ -143,8 +130,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/*
 	 * @see IMessenger#removeMessageListener(Class, IMessageListener)
 	 */
-
-	public void removeMessageListener(IMessageListener listener)
+	public void removeMessageListener(final IMessageListener listener)
 	{
 		m_listeners.remove(listener);
 	}
@@ -152,10 +138,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/**
 	 * Get a list of nodes.
 	 */
-	
 	public Set<INode> getNodes()
 	{
-		Set<INode> rVal = new HashSet<INode>(m_nodeToChannel.keySet());
+		final Set<INode> rVal = new HashSet<INode>(m_nodeToChannel.keySet());
 		rVal.add(m_node);
 		return rVal;
 	}
@@ -165,17 +150,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		if (!m_shutdown)
 		{
 			m_shutdown = true;
-			
 			m_nioSocket.shutDown();
-			
 			try
 			{
 				m_socketChannel.close();
-			} catch (Exception e)
+			} catch (final Exception e)
 			{
 				// ignore
 			}
-			
 			if (m_acceptorSelector != null)
 				m_acceptorSelector.wakeup();
 		}
@@ -189,19 +171,16 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/**
 	 * Send a message to the given node.
 	 */
-	
-	public void send(Serializable msg, INode to)
+	public void send(final Serializable msg, final INode to)
 	{
 		if (m_shutdown)
 			return;
-		
 		if (s_logger.isLoggable(Level.FINEST))
 		{
 			s_logger.log(Level.FINEST, "Sending" + msg + " to:" + to);
 		}
-		
-		MessageHeader header = new MessageHeader(to, m_node, msg);
-		SocketChannel socketChannel = m_nodeToChannel.get(to);
+		final MessageHeader header = new MessageHeader(to, m_node, msg);
+		final SocketChannel socketChannel = m_nodeToChannel.get(to);
 		// the socket was removed
 		if (socketChannel == null)
 		{
@@ -209,21 +188,18 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 			{
 				s_logger.log(Level.FINER, "no channel for node:" + to + " dropping message:" + msg);
 			}
-			
 			// the socket has not been added yet
 			return;
 		}
 		m_nioSocket.send(socketChannel, header);
-		
 	}
 	
 	/**
 	 * Send a message to all nodes.
 	 */
-	
-	public void broadcast(Serializable msg)
+	public void broadcast(final Serializable msg)
 	{
-		MessageHeader header = new MessageHeader(m_node, msg);
+		final MessageHeader header = new MessageHeader(m_node, msg);
 		forwardBroadcast(header);
 	}
 	
@@ -238,9 +214,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	}
 	
 	private final Object m_cachedListLock = new Object();
-	private HashMap<String, String> m_cachedMacAddresses = new HashMap<String, String>();
+	private final HashMap<String, String> m_cachedMacAddresses = new HashMap<String, String>();
 	
-	public String GetPlayerMac(String name)
+	public String GetPlayerMac(final String name)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -252,9 +228,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	}
 	
 	// We need to cache whether players are muted, because otherwise the database would have to be accessed each time a message was sent, which can be very slow
-	private List<String> m_liveMutedUsernames = new ArrayList<String>();
+	private final List<String> m_liveMutedUsernames = new ArrayList<String>();
 	
-	public boolean IsUsernameMuted(String username)
+	public boolean IsUsernameMuted(final String username)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -262,21 +238,20 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyUsernameMutingOfPlayer(String username, long expireDate)
+	public void NotifyUsernameMutingOfPlayer(final String username, final long expireDate)
 	{
 		synchronized (m_cachedListLock)
 		{
 			if (!m_liveMutedUsernames.contains(username))
 				m_liveMutedUsernames.add(username);
-			
 			if (isLobby())
 				ScheduleUsernameUnmuteAt(username, expireDate);
 		}
 	}
 	
-	private List<String> m_liveMutedIpAddresses = new ArrayList<String>();
+	private final List<String> m_liveMutedIpAddresses = new ArrayList<String>();
 	
-	public boolean IsIpMuted(String ip)
+	public boolean IsIpMuted(final String ip)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -284,21 +259,20 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyIPMutingOfPlayer(String ip, long expireDate)
+	public void NotifyIPMutingOfPlayer(final String ip, final long expireDate)
 	{
 		synchronized (m_cachedListLock)
 		{
 			if (!m_liveMutedIpAddresses.contains(ip))
 				m_liveMutedIpAddresses.add(ip);
-			
 			if (isLobby())
 				ScheduleIpUnmuteAt(ip, expireDate);
 		}
 	}
 	
-	private List<String> m_liveMutedMacAddresses = new ArrayList<String>();
+	private final List<String> m_liveMutedMacAddresses = new ArrayList<String>();
 	
-	public boolean IsMacMuted(String mac)
+	public boolean IsMacMuted(final String mac)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -306,48 +280,46 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyMacMutingOfPlayer(String mac, long expireDate)
+	public void NotifyMacMutingOfPlayer(final String mac, final long expireDate)
 	{
 		synchronized (m_cachedListLock)
 		{
 			if (!m_liveMutedMacAddresses.contains(mac))
 				m_liveMutedMacAddresses.add(mac);
-			
 			if (isLobby())
 				ScheduleMacUnmuteAt(mac, expireDate);
 		}
 	}
 	
-	private void ScheduleUsernameUnmuteAt(String username, long checkTime)
+	private void ScheduleUsernameUnmuteAt(final String username, final long checkTime)
 	{
-		Timer unmuteUsernameTimer = new Timer("Username unmute timer");
+		final Timer unmuteUsernameTimer = new Timer("Username unmute timer");
 		unmuteUsernameTimer.schedule(GetUsernameUnmuteTask(username), new Date(checkTime));
 	}
 	
-	private void ScheduleIpUnmuteAt(String ip, long checkTime)
+	private void ScheduleIpUnmuteAt(final String ip, final long checkTime)
 	{
-		Timer unmuteIpTimer = new Timer("IP unmute timer");
+		final Timer unmuteIpTimer = new Timer("IP unmute timer");
 		unmuteIpTimer.schedule(GetIpUnmuteTask(ip), new Date(checkTime));
 	}
 	
-	private void ScheduleMacUnmuteAt(String mac, long checkTime)
+	private void ScheduleMacUnmuteAt(final String mac, final long checkTime)
 	{
-		Timer unmuteMacTimer = new Timer("Mac unmute timer");
+		final Timer unmuteMacTimer = new Timer("Mac unmute timer");
 		unmuteMacTimer.schedule(GetMacUnmuteTask(mac), new Date(checkTime));
 	}
 	
-	public void NotifyPlayerLogin(String uniquePlayerName, String ip, String mac)
+	public void NotifyPlayerLogin(final String uniquePlayerName, final String ip, final String mac)
 	{
 		synchronized (m_cachedListLock)
 		{
 			m_cachedMacAddresses.put(uniquePlayerName, mac);
-			
 			if (isLobby())
 			{
-				String realName = uniquePlayerName.split(" ")[0];
+				final String realName = uniquePlayerName.split(" ")[0];
 				if (!m_liveMutedUsernames.contains(realName))
 				{
-					long muteTill = new MutedUsernameController().getUsernameUnmuteTime(realName);
+					final long muteTill = new MutedUsernameController().getUsernameUnmuteTime(realName);
 					if (muteTill != -1 && muteTill <= System.currentTimeMillis())
 					{
 						m_liveMutedUsernames.add(realName); // Signal the player as muted
@@ -356,7 +328,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 				}
 				if (!m_liveMutedIpAddresses.contains(ip))
 				{
-					long muteTill = new MutedIpController().getIpUnmuteTime(ip);
+					final long muteTill = new MutedIpController().getIpUnmuteTime(ip);
 					if (muteTill != -1 && muteTill <= System.currentTimeMillis())
 					{
 						m_liveMutedIpAddresses.add(ip); // Signal the player as muted
@@ -365,7 +337,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 				}
 				if (!m_liveMutedMacAddresses.contains(mac))
 				{
-					long muteTill = new MutedMacController().getMacUnmuteTime(mac);
+					final long muteTill = new MutedMacController().getMacUnmuteTime(mac);
 					if (muteTill != -1 && muteTill <= System.currentTimeMillis())
 					{
 						m_liveMutedMacAddresses.add(mac); // Signal the player as muted
@@ -376,14 +348,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	private HashMap<String, String> m_playersThatLeftMacs_Last10 = new HashMap<String, String>();
+	private final HashMap<String, String> m_playersThatLeftMacs_Last10 = new HashMap<String, String>();
 	
 	public HashMap<String, String> GetPlayersThatLeftMacs_Last10()
 	{
 		return m_playersThatLeftMacs_Last10;
 	}
 	
-	private void NotifyPlayerRemoval(INode node)
+	private void NotifyPlayerRemoval(final INode node)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -397,9 +369,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	public static final String YOU_HAVE_BEEN_MUTED_LOBBY = "?YOUR LOBBY CHATTING HAS BEEN TEMPORARILY 'MUTED' BY THE ADMINS, TRY AGAIN LATER"; // Special character to stop spoofing by server
 	public static final String YOU_HAVE_BEEN_MUTED_GAME = "?YOUR CHATTING IN THIS GAME HAS BEEN 'MUTED' BY THE HOST"; // Special character to stop spoofing by host
 	
-	public void messageReceived(MessageHeader msg, SocketChannel channel)
+	public void messageReceived(final MessageHeader msg, final SocketChannel channel)
 	{
-		INode expectedReceive = m_channelToNode.get(channel);
+		final INode expectedReceive = m_channelToNode.get(channel);
 		if (!expectedReceive.equals(msg.getFrom()))
 		{
 			throw new IllegalStateException("Expected: " + expectedReceive + " not: " + msg.getFrom());
@@ -408,7 +380,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		{
 			if (isLobby() && ((HubInvoke) msg.getMessage()).call.getRemoteName().equals("_ChatCtrl_LOBBY_CHAT"))
 			{
-				String realName = msg.getFrom().getName().split(" ")[0];
+				final String realName = msg.getFrom().getName().split(" ")[0];
 				if (IsUsernameMuted(realName))
 				{
 					bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_LOBBY, msg.getFrom());
@@ -427,7 +399,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 			}
 			else if (isGame() && ((HubInvoke) msg.getMessage()).call.getRemoteName().equals("_ChatCtrlgames.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"))
 			{
-				String realName = msg.getFrom().getName().split(" ")[0];
+				final String realName = msg.getFrom().getName().split(" ")[0];
 				if (IsUsernameMuted(realName))
 				{
 					bareBonesSendChatMessage(YOU_HAVE_BEEN_MUTED_GAME, msg.getFrom());
@@ -445,7 +417,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 				}
 			}
 		}
-		
 		if (msg.getFor() == null)
 		{
 			forwardBroadcast(msg);
@@ -461,10 +432,10 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	private void bareBonesSendChatMessage(String message, INode to)
+	private void bareBonesSendChatMessage(final String message, final INode to)
 	{
-		List<Object> args = new ArrayList<Object>();
-		Class[] argTypes = new Class[1];
+		final List<Object> args = new ArrayList<Object>();
+		final Class[] argTypes = new Class[1];
 		args.add(message);
 		argTypes[0] = args.get(0).getClass();
 		RemoteName rn;
@@ -472,15 +443,15 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 			rn = new RemoteName(ChatController.getChatChannelName("_LOBBY_CHAT"), IChatChannel.class);
 		else
 			rn = new RemoteName(ChatController.getChatChannelName("games.strategy.engine.framework.ui.ServerStartup.CHAT_NAME"), IChatChannel.class);
-		RemoteMethodCall call = new RemoteMethodCall(rn.getName(), "chatOccured", args.toArray(), argTypes, rn.getClazz());
-		SpokeInvoke spokeInvoke = new SpokeInvoke(null, false, call, getServerNode());
+		final RemoteMethodCall call = new RemoteMethodCall(rn.getName(), "chatOccured", args.toArray(), argTypes, rn.getClazz());
+		final SpokeInvoke spokeInvoke = new SpokeInvoke(null, false, call, getServerNode());
 		send(spokeInvoke, to);
 	}
 	
 	// The following code is used in hosted lobby games by the host for player mini-banning and mini-muting
-	private List<String> m_miniBannedUsernames = new ArrayList<String>();
+	private final List<String> m_miniBannedUsernames = new ArrayList<String>();
 	
-	public boolean IsUsernameMiniBanned(String username)
+	public boolean IsUsernameMiniBanned(final String username)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -488,7 +459,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyUsernameMiniBanningOfPlayer(String username)
+	public void NotifyUsernameMiniBanningOfPlayer(final String username)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -497,9 +468,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	private List<String> m_miniBannedIpAddresses = new ArrayList<String>();
+	private final List<String> m_miniBannedIpAddresses = new ArrayList<String>();
 	
-	public boolean IsIpMiniBanned(String ip)
+	public boolean IsIpMiniBanned(final String ip)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -507,7 +478,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyIPMiniBanningOfPlayer(String ip)
+	public void NotifyIPMiniBanningOfPlayer(final String ip)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -516,9 +487,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	private List<String> m_miniBannedMacAddresses = new ArrayList<String>();
+	private final List<String> m_miniBannedMacAddresses = new ArrayList<String>();
 	
-	public boolean IsMacMiniBanned(String mac)
+	public boolean IsMacMiniBanned(final String mac)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -526,7 +497,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyMacMiniBanningOfPlayer(String mac)
+	public void NotifyMacMiniBanningOfPlayer(final String mac)
 	{
 		synchronized (m_cachedListLock)
 		{
@@ -535,41 +506,36 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	private void forward(MessageHeader msg)
+	private void forward(final MessageHeader msg)
 	{
 		if (m_shutdown)
 			return;
-		
-		SocketChannel socketChannel = m_nodeToChannel.get(msg.getFor());
+		final SocketChannel socketChannel = m_nodeToChannel.get(msg.getFor());
 		if (socketChannel == null)
 			throw new IllegalStateException("No channel for:" + msg.getFor() + " all channels:" + socketChannel);
 		m_nioSocket.send(socketChannel, msg);
 	}
 	
-	private void forwardBroadcast(MessageHeader msg)
+	private void forwardBroadcast(final MessageHeader msg)
 	{
 		if (m_shutdown)
 			return;
-		
-		SocketChannel fromChannel = m_nodeToChannel.get(msg.getFrom());
-		
-		List<SocketChannel> nodes = new ArrayList<SocketChannel>(m_nodeToChannel.values());
-		
+		final SocketChannel fromChannel = m_nodeToChannel.get(msg.getFrom());
+		final List<SocketChannel> nodes = new ArrayList<SocketChannel>(m_nodeToChannel.values());
 		if (s_logger.isLoggable(Level.FINEST))
 		{
 			s_logger.log(Level.FINEST, "broadcasting to" + nodes);
 		}
-		
-		for (SocketChannel channel : nodes)
+		for (final SocketChannel channel : nodes)
 		{
 			if (channel != fromChannel)
 				m_nioSocket.send(channel, msg);
 		}
 	}
 	
-	private boolean isNameTaken(String nodeName)
+	private boolean isNameTaken(final String nodeName)
 	{
-		for (INode node : getNodes())
+		for (final INode node : getNodes())
 		{
 			if (node.getName().equalsIgnoreCase(nodeName))
 				return true;
@@ -587,16 +553,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		{
 			currentName = "aa" + currentName;
 		}
-		
 		synchronized (m_node)
 		{
 			if (isNameTaken(currentName))
 			{
-				
 				int i = 1;
 				while (true)
 				{
-					String newName = currentName + " (" + i + ")";
+					final String newName = currentName + " (" + i + ")";
 					if (!isNameTaken(newName))
 					{
 						currentName = newName;
@@ -609,39 +573,39 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		return currentName;
 	}
 	
-	private void notifyListeners(MessageHeader msg)
+	private void notifyListeners(final MessageHeader msg)
 	{
-		Iterator<IMessageListener> iter = m_listeners.iterator();
+		final Iterator<IMessageListener> iter = m_listeners.iterator();
 		while (iter.hasNext())
 		{
-			IMessageListener listener = iter.next();
+			final IMessageListener listener = iter.next();
 			listener.messageReceived(msg.getMessage(), msg.getFrom());
 		}
 	}
 	
-	public void addErrorListener(IMessengerErrorListener listener)
+	public void addErrorListener(final IMessengerErrorListener listener)
 	{
 		m_errorListeners.add(listener);
 	}
 	
-	public void removeErrorListener(IMessengerErrorListener listener)
+	public void removeErrorListener(final IMessengerErrorListener listener)
 	{
 		m_errorListeners.remove(listener);
 	}
 	
-	public void addConnectionChangeListener(IConnectionChangeListener listener)
+	public void addConnectionChangeListener(final IConnectionChangeListener listener)
 	{
 		m_connectionListeners.add(listener);
 	}
 	
-	public void removeConnectionChangeListener(IConnectionChangeListener listener)
+	public void removeConnectionChangeListener(final IConnectionChangeListener listener)
 	{
 		m_connectionListeners.remove(listener);
 	}
 	
-	private void notifyConnectionsChanged(boolean added, INode node)
+	private void notifyConnectionsChanged(final boolean added, final INode node)
 	{
-		Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
+		final Iterator<IConnectionChangeListener> iter = m_connectionListeners.iterator();
 		while (iter.hasNext())
 		{
 			if (added)
@@ -652,11 +616,10 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 			{
 				iter.next().connectionRemoved(node);
 			}
-			
 		}
 	}
 	
-	public void setAcceptNewConnections(boolean accept)
+	public void setAcceptNewConnections(final boolean accept)
 	{
 		m_acceptNewConnection = accept;
 	}
@@ -669,7 +632,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	/**
 	 * Get the local node
 	 */
-	
 	public INode getLocalNode()
 	{
 		return m_node;
@@ -678,44 +640,37 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	
 	private class ConnectionHandler implements Runnable
 	{
-		
 		public void run()
 		{
-			
 			try
 			{
 				m_socketChannel.register(m_acceptorSelector, SelectionKey.OP_ACCEPT);
-			} catch (ClosedChannelException e)
+			} catch (final ClosedChannelException e)
 			{
 				s_logger.log(Level.SEVERE, "socket closed", e);
 				shutDown();
 			}
-			
 			while (!m_shutdown)
 			{
 				try
 				{
 					m_acceptorSelector.select();
-				} catch (IOException e)
+				} catch (final IOException e)
 				{
 					s_logger.log(Level.SEVERE, "Could not accept on server", e);
 					shutDown();
 				}
-				
 				if (m_shutdown)
 					continue;
-				
-				Set<SelectionKey> keys = m_acceptorSelector.selectedKeys();
-				Iterator<SelectionKey> iter = keys.iterator();
+				final Set<SelectionKey> keys = m_acceptorSelector.selectedKeys();
+				final Iterator<SelectionKey> iter = keys.iterator();
 				while (iter.hasNext())
 				{
-					SelectionKey key = iter.next();
+					final SelectionKey key = iter.next();
 					iter.remove();
-					
 					if (key.isAcceptable() && key.isValid())
 					{
-						ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
-						
+						final ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
 						// Accept the connection and make it non-blocking
 						SocketChannel socketChannel = null;
 						try
@@ -727,45 +682,39 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 							}
 							socketChannel.configureBlocking(false);
 							socketChannel.socket().setKeepAlive(true);
-						} catch (IOException e)
+						} catch (final IOException e)
 						{
 							s_logger.log(Level.FINE, "Could not accept channel", e);
-							
 							try
 							{
 								if (socketChannel != null)
 									socketChannel.close();
-							} catch (IOException e2)
+							} catch (final IOException e2)
 							{
 								s_logger.log(Level.FINE, "Could not close channel", e2);
 							}
 							continue;
-							
 						}
-						
 						// we are not accepting connections
 						if (!m_acceptNewConnection)
 						{
 							try
 							{
 								socketChannel.close();
-							} catch (IOException e)
+							} catch (final IOException e)
 							{
 								s_logger.log(Level.FINE, "Could not close channel", e);
 							}
 							continue;
 						}
-						
-						ServerQuarantineConversation conversation = new ServerQuarantineConversation(m_loginValidator, socketChannel, m_nioSocket, ServerMessenger.this);
+						final ServerQuarantineConversation conversation = new ServerQuarantineConversation(m_loginValidator, socketChannel, m_nioSocket, ServerMessenger.this);
 						m_nioSocket.add(socketChannel, conversation);
 					}
 					else if (!key.isValid())
 					{
 						key.cancel();
 					}
-					
 				}
-				
 			}
 		}
 	}
@@ -774,7 +723,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	{
 		return new TimerTask()
 		{
-			
 			@Override
 			public void run()
 			{
@@ -793,7 +741,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	{
 		return new TimerTask()
 		{
-			
 			@Override
 			public void run()
 			{
@@ -812,7 +759,6 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	{
 		return new TimerTask()
 		{
-			
 			@Override
 			public void run()
 			{
@@ -832,13 +778,11 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		return true;
 	}
 	
-	public void removeConnection(INode node)
+	public void removeConnection(final INode node)
 	{
 		if (node.equals(m_node))
 			throw new IllegalArgumentException("Cant remove ourself!");
-		
 		NotifyPlayerRemoval(node);
-		
 		SocketChannel channel = m_nodeToChannel.remove(node);
 		if (channel == null)
 		{
@@ -849,9 +793,7 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 			s_logger.info("Could not remove connection to node:" + node);
 			return;
 		}
-		
 		m_channelToNode.remove(channel);
-		
 		m_nioSocket.close(channel);
 		notifyConnectionsChanged(false, node);
 		s_logger.info("Connection removed:" + node);
@@ -862,35 +804,31 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		return m_node;
 	}
 	
-	public void socketError(SocketChannel channel, Exception error)
+	public void socketError(final SocketChannel channel, final Exception error)
 	{
 		if (channel == null)
 			throw new IllegalArgumentException("Null channel");
-		
 		// already closed, dont report it again
-		INode node = m_channelToNode.get(channel);
+		final INode node = m_channelToNode.get(channel);
 		if (node != null)
 			removeConnection(node);
 	}
 	
-	public void socketUnqaurantined(SocketChannel channel, QuarantineConversation conversation)
+	public void socketUnqaurantined(final SocketChannel channel, final QuarantineConversation conversation)
 	{
-		ServerQuarantineConversation con = (ServerQuarantineConversation) conversation;
-		INode remote = new Node(con.getRemoteName(), (InetSocketAddress) channel.socket().getRemoteSocketAddress());
-		
+		final ServerQuarantineConversation con = (ServerQuarantineConversation) conversation;
+		final INode remote = new Node(con.getRemoteName(), (InetSocketAddress) channel.socket().getRemoteSocketAddress());
 		if (s_logger.isLoggable(Level.FINER))
 		{
 			s_logger.log(Level.FINER, "Unquarntined node:" + remote);
 		}
-		
 		m_nodeToChannel.put(remote, channel);
 		m_channelToNode.put(channel, remote);
-		
 		notifyConnectionsChanged(true, remote);
 		s_logger.info("Connection added to:" + remote);
 	}
 	
-	public INode getRemoteNode(SocketChannel channel)
+	public INode getRemoteNode(final SocketChannel channel)
 	{
 		return m_channelToNode.get(channel);
 	}

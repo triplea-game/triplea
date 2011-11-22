@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GameDataExporter.java
  * 
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
-
 package games.strategy.engine.data.export;
 
 import games.strategy.engine.data.GameData;
@@ -54,10 +52,9 @@ import java.util.Map;
 
 public class GameDataExporter
 {
+	private final StringBuffer xmlfile;
 	
-	private StringBuffer xmlfile;
-	
-	public GameDataExporter(GameData data)
+	public GameDataExporter(final GameData data)
 	{
 		xmlfile = new StringBuffer();
 		init(data);
@@ -75,16 +72,16 @@ public class GameDataExporter
 		finish();
 	}
 	
-	private void diceSides(GameData data)
+	private void diceSides(final GameData data)
 	{
-		int diceSides = data.getDiceSides();
+		final int diceSides = data.getDiceSides();
 		xmlfile.append("    <diceSides value=\"" + diceSides + "\"/>\n");
 	}
 	
-	private void technology(GameData data)
+	private void technology(final GameData data)
 	{
-		String technologies = technologies(data);
-		String playerTechs = playertechs(data);
+		final String technologies = technologies(data);
+		final String playerTechs = playertechs(data);
 		if (technologies.length() > 0 || playerTechs.length() > 0)
 		{
 			xmlfile.append("    <technology>\n");
@@ -94,35 +91,33 @@ public class GameDataExporter
 		}
 	}
 	
-	private String playertechs(GameData data)
+	private String playertechs(final GameData data)
 	{
-		Iterator<PlayerID> players = data.getPlayerList().iterator();
-		StringBuffer returnValue = new StringBuffer();
-		
+		final Iterator<PlayerID> players = data.getPlayerList().iterator();
+		final StringBuffer returnValue = new StringBuffer();
 		while (players.hasNext())
 		{
-			PlayerID player = players.next();
-			Iterator<TechnologyFrontier> frontierList = player.getTechnologyFrontierList().getFrontiers().iterator();
+			final PlayerID player = players.next();
+			final Iterator<TechnologyFrontier> frontierList = player.getTechnologyFrontierList().getFrontiers().iterator();
 			if (frontierList.hasNext())
 			{
 				returnValue.append("        <playerTech player=\"" + player.getName() + "\">\n");
 				while (frontierList.hasNext())
 				{
-					TechnologyFrontier frontier = frontierList.next();
+					final TechnologyFrontier frontier = frontierList.next();
 					returnValue.append("            <category name=\"" + frontier.getName() + "\">\n");
-					Iterator<TechAdvance> techs = frontier.getTechs().iterator();
+					final Iterator<TechAdvance> techs = frontier.getTechs().iterator();
 					while (techs.hasNext())
 					{
-						TechAdvance tech = techs.next();
+						final TechAdvance tech = techs.next();
 						String name = tech.getName();
-						String cat = tech.getProperty();
-						Iterator<TechAdvance> definedAdvances = TechAdvance.getDefinedAdvances().iterator();
+						final String cat = tech.getProperty();
+						final Iterator<TechAdvance> definedAdvances = TechAdvance.getDefinedAdvances().iterator();
 						while (definedAdvances.hasNext())
 						{
 							if (definedAdvances.next().getName().equals(name))
 								name = cat;
 						}
-						
 						returnValue.append("                <tech name=\"" + name + "\"/>\n");
 					}
 					returnValue.append("            </category>\n");
@@ -133,28 +128,26 @@ public class GameDataExporter
 		return returnValue.toString();
 	}
 	
-	private String technologies(GameData data)
+	private String technologies(final GameData data)
 	{
-		Iterator<TechAdvance> techs = data.getTechnologyFrontier().getTechs().iterator();
-		StringBuffer returnValue = new StringBuffer();
+		final Iterator<TechAdvance> techs = data.getTechnologyFrontier().getTechs().iterator();
+		final StringBuffer returnValue = new StringBuffer();
 		if (techs.hasNext())
 		{
 			returnValue.append("        <technologies>\n");
 			while (techs.hasNext())
 			{
-				TechAdvance tech = techs.next();
+				final TechAdvance tech = techs.next();
 				String name = tech.getName();
-				String cat = tech.getProperty();
-				
+				final String cat = tech.getProperty();
 				// definedAdvances are handled differently by gameparser, they are set in xml with the category as the name but
 				// stored in java with the normal category and name, this causes an xml bug when exporting.
-				Iterator<TechAdvance> definedAdvances = TechAdvance.getDefinedAdvances().iterator();
+				final Iterator<TechAdvance> definedAdvances = TechAdvance.getDefinedAdvances().iterator();
 				while (definedAdvances.hasNext())
 				{
 					if (definedAdvances.next().getName().equals(name))
 						name = cat;
 				}
-				
 				returnValue.append("            <techname name=\"" + name + "\"");
 				if (!name.equals(cat))
 					returnValue.append(" tech=\"" + cat + "\" ");
@@ -166,39 +159,36 @@ public class GameDataExporter
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void propertyList(GameData data)
+	private void propertyList(final GameData data)
 	{
 		xmlfile.append("    <propertyList>\n");
-		
 		try
 		{
-			
-			GameProperties gameProperties = data.getProperties();
-			Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties");
+			final GameProperties gameProperties = data.getProperties();
+			final Field conPropField = GameProperties.class.getDeclaredField("m_constantProperties");
 			conPropField.setAccessible(true);
-			Field edPropField = GameProperties.class.getDeclaredField("m_editableProperties");
+			final Field edPropField = GameProperties.class.getDeclaredField("m_editableProperties");
 			edPropField.setAccessible(true);
 			printConstantProperties((Map<String, Object>) conPropField.get(gameProperties));
 			printEditableProperties((Map<String, IEditableProperty>) edPropField.get(gameProperties));
-		} catch (SecurityException e)
+		} catch (final SecurityException e)
 		{
 			e.printStackTrace();
-		} catch (NoSuchFieldException e)
+		} catch (final NoSuchFieldException e)
 		{
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			e.printStackTrace();
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			e.printStackTrace();
 		}
-		
 		xmlfile.append("    </propertyList>\n");
 	}
 	
-	private void printEditableProperties(Map<String, IEditableProperty> edProperties)
+	private void printEditableProperties(final Map<String, IEditableProperty> edProperties)
 	{
-		Iterator<String> propertyNames = edProperties.keySet().iterator();
+		final Iterator<String> propertyNames = edProperties.keySet().iterator();
 		while (propertyNames.hasNext())
 		{
 			printEditableProperty(edProperties.get(propertyNames.next()));
@@ -206,7 +196,7 @@ public class GameDataExporter
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void printEditableProperty(IEditableProperty prop)
+	private void printEditableProperty(final IEditableProperty prop)
 	{
 		String typeString = "";
 		String value = "" + prop.getValue();
@@ -216,13 +206,11 @@ public class GameDataExporter
 			typeString = "            <file/>\n";
 		if (prop.getClass().equals(StringProperty.class))
 			typeString = "            <string/>\n";
-		
 		if (prop.getClass().equals(ColorProperty.class))
 		{
 			typeString = "            <color/>\n";
 			value = "0x" + Integer.toHexString((((Integer) prop.getValue()).intValue())).toUpperCase();
 		}
-		
 		if (prop.getClass().equals(ListProperty.class))
 		{
 			Field listField;
@@ -230,64 +218,60 @@ public class GameDataExporter
 			{
 				listField = ListProperty.class.getDeclaredField("m_possibleValues");
 				listField.setAccessible(true);
-				Iterator<String> values = ((ArrayList<String>) listField.get(prop)).iterator();
+				final Iterator<String> values = ((ArrayList<String>) listField.get(prop)).iterator();
 				String possibleValues = values.next();
 				while (values.hasNext())
 				{
 					possibleValues = possibleValues + "," + values.next();
 				}
 				typeString = "            <list>" + possibleValues + "</list>\n";
-			} catch (NoSuchFieldException e)
+			} catch (final NoSuchFieldException e)
 			{
 				e.printStackTrace();
-			} catch (IllegalArgumentException e)
+			} catch (final IllegalArgumentException e)
 			{
 				e.printStackTrace();
-			} catch (IllegalAccessException e)
+			} catch (final IllegalAccessException e)
 			{
 				e.printStackTrace();
 			}
-			
 		}
 		if (prop.getClass().equals(NumberProperty.class))
 		{
 			try
 			{
-				Field maxField = NumberProperty.class.getDeclaredField("m_max");
-				Field minField = NumberProperty.class.getDeclaredField("m_min");
+				final Field maxField = NumberProperty.class.getDeclaredField("m_max");
+				final Field minField = NumberProperty.class.getDeclaredField("m_min");
 				maxField.setAccessible(true);
 				minField.setAccessible(true);
-				int max = maxField.getInt(prop);
-				int min = minField.getInt(prop);
+				final int max = maxField.getInt(prop);
+				final int min = minField.getInt(prop);
 				typeString = "            <number min=\"" + min + "\" max=\"" + max + "\"/>\n";
-			} catch (SecurityException e)
+			} catch (final SecurityException e)
 			{
 				e.printStackTrace();
-			} catch (NoSuchFieldException e)
+			} catch (final NoSuchFieldException e)
 			{
 				e.printStackTrace();
-			} catch (IllegalArgumentException e)
+			} catch (final IllegalArgumentException e)
 			{
 				e.printStackTrace();
-			} catch (IllegalAccessException e)
+			} catch (final IllegalAccessException e)
 			{
 				e.printStackTrace();
 			}
-			
 		}
-		
 		xmlfile.append("        <property name=\"" + prop.getName() + "\" value=\"" + value + "\" editable=\"true\">\n");
 		xmlfile.append(typeString);
 		xmlfile.append("        </property>\n");
-		
 	}
 	
-	private void printConstantProperties(Map<String, Object> conProperties)
+	private void printConstantProperties(final Map<String, Object> conProperties)
 	{
-		Iterator<String> propertyNames = conProperties.keySet().iterator();
+		final Iterator<String> propertyNames = conProperties.keySet().iterator();
 		while (propertyNames.hasNext())
 		{
-			String propName = propertyNames.next();
+			final String propName = propertyNames.next();
 			if (propName.equals("notes"))
 			{
 				// Special handling of notes property
@@ -304,7 +288,7 @@ public class GameDataExporter
 		}
 	}
 	
-	private void printNotes(String notes)
+	private void printNotes(final String notes)
 	{
 		xmlfile.append("        <property name=\"notes\">\n");
 		xmlfile.append("            <value>\n");
@@ -315,9 +299,8 @@ public class GameDataExporter
 		xmlfile.append("        </property>\n");
 	}
 	
-	private void printConstantProperty(String propName, Object property)
+	private void printConstantProperty(final String propName, final Object property)
 	{
-		
 		xmlfile.append("        <property name=\"" + propName + "\" value=\"" + property.toString() + "\" editable=\"false\">\n");
 		if (property.getClass().equals(java.lang.String.class))
 			xmlfile.append("            <string/>\n");
@@ -325,31 +308,29 @@ public class GameDataExporter
 			xmlfile.append("            <file/>\n");
 		if (property.getClass().equals(java.lang.Boolean.class))
 			xmlfile.append("            <boolean/>\n");
-		
 		xmlfile.append("        </property>\n");
 	}
 	
-	private void initialize(GameData data)
+	private void initialize(final GameData data)
 	{
 		xmlfile.append("    <initialize>\n");
 		ownerInitialize(data);
 		unitInitialize(data);
 		resourceInitialize(data);
 		xmlfile.append("    </initialize>\n");
-		
 	}
 	
-	private void resourceInitialize(GameData data)
+	private void resourceInitialize(final GameData data)
 	{
 		xmlfile.append("        <resourceInitialize>\n");
-		Iterator<PlayerID> players = data.getPlayerList().iterator();
+		final Iterator<PlayerID> players = data.getPlayerList().iterator();
 		while (players.hasNext())
 		{
-			PlayerID player = players.next();
-			Iterator<Resource> resources = data.getResourceList().getResources().iterator();
+			final PlayerID player = players.next();
+			final Iterator<Resource> resources = data.getResourceList().getResources().iterator();
 			while (resources.hasNext())
 			{
-				Resource resource = resources.next();
+				final Resource resource = resources.next();
 				if (player.getResources().getQuantity(resource.getName()) > 0)
 					xmlfile.append("            <resourceGiven player=\"" + player.getName() + "\" resource=\"" + resource.getName() + "\" quantity=\""
 								+ player.getResources().getQuantity(resource.getName()) + "\"/>\n");
@@ -358,23 +339,23 @@ public class GameDataExporter
 		xmlfile.append("        </resourceInitialize>\n");
 	}
 	
-	private void unitInitialize(GameData data)
+	private void unitInitialize(final GameData data)
 	{
 		xmlfile.append("        <unitInitialize>\n");
-		Iterator<Territory> terrs = data.getMap().getTerritories().iterator();
+		final Iterator<Territory> terrs = data.getMap().getTerritories().iterator();
 		while (terrs.hasNext())
 		{
-			Territory terr = terrs.next();
-			UnitCollection uc = terr.getUnits();
-			Iterator<PlayerID> playersWithUnits = uc.getPlayersWithUnits().iterator();
+			final Territory terr = terrs.next();
+			final UnitCollection uc = terr.getUnits();
+			final Iterator<PlayerID> playersWithUnits = uc.getPlayersWithUnits().iterator();
 			while (playersWithUnits.hasNext())
 			{
-				PlayerID player = playersWithUnits.next();
-				IntegerMap<UnitType> ucp = uc.getUnitsByType(player);
-				Iterator<UnitType> units = ucp.keySet().iterator();
+				final PlayerID player = playersWithUnits.next();
+				final IntegerMap<UnitType> ucp = uc.getUnitsByType(player);
+				final Iterator<UnitType> units = ucp.keySet().iterator();
 				while (units.hasNext())
 				{
-					UnitType unit = units.next();
+					final UnitType unit = units.next();
 					if (player == null || player.getName().equals("Neutral"))
 						xmlfile.append("            <unitPlacement unitType=\"" + unit.getName() + "\" territory=\"" + terr.getName() + "\" quantity=\"" + ucp.getInt(unit) + "\"/>\n");
 					else
@@ -382,29 +363,28 @@ public class GameDataExporter
 									+ player.getName() + "\"/>\n");
 				}
 			}
-			
 		}
 		xmlfile.append("        </unitInitialize>\n");
 	}
 	
-	private void ownerInitialize(GameData data)
+	private void ownerInitialize(final GameData data)
 	{
 		xmlfile.append("        <ownerInitialize>\n");
-		Iterator<Territory> terrs = data.getMap().getTerritories().iterator();
+		final Iterator<Territory> terrs = data.getMap().getTerritories().iterator();
 		while (terrs.hasNext())
 		{
-			Territory terr = terrs.next();
+			final Territory terr = terrs.next();
 			if (!terr.getOwner().getName().equals("Neutral"))
 				xmlfile.append("            <territoryOwner territory=\"" + terr.getName() + "\" owner=\"" + terr.getOwner().getName() + "\"/>\n");
 		}
 		xmlfile.append("        </ownerInitialize>\n");
 	}
 	
-	private void attachments(GameData data)
+	private void attachments(final GameData data)
 	{
 		xmlfile.append("\n");
 		xmlfile.append("    <attatchmentList>\n");
-		Iterator<IAttachment> attachments = data.getOrderedAttachmentList().iterator();
+		final Iterator<IAttachment> attachments = data.getOrderedAttachmentList().iterator();
 		while (attachments.hasNext())
 		{
 			printAttachments(attachments.next());
@@ -412,13 +392,13 @@ public class GameDataExporter
 		xmlfile.append("    </attatchmentList>\n");
 	}
 	
-	private void printAttachments(IAttachment attachment)
+	private void printAttachments(final IAttachment attachment)
 	{
 		try
 		{
-			IAttachmentExporter exporter = AttachmentExporterFactory.getExporter(attachment);
-			String attachmentOptions = exporter.getAttachmentOptions(attachment);
-			NamedAttachable attachTo = (NamedAttachable) attachment.getAttatchedTo();
+			final IAttachmentExporter exporter = AttachmentExporterFactory.getExporter(attachment);
+			final String attachmentOptions = exporter.getAttachmentOptions(attachment);
+			final NamedAttachable attachTo = (NamedAttachable) attachment.getAttatchedTo();
 			String type = "";
 			if (attachTo.getClass().equals(PlayerID.class))
 				type = "player";
@@ -437,13 +417,13 @@ public class GameDataExporter
 				xmlfile.append(attachmentOptions);
 				xmlfile.append("        </attatchment>\n");
 			}
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
 	
-	private void production(GameData data)
+	private void production(final GameData data)
 	{
 		xmlfile.append("\n");
 		xmlfile.append("    <production>\n");
@@ -456,168 +436,163 @@ public class GameDataExporter
 		xmlfile.append("    </production>\n");
 	}
 	
-	private void repairRules(GameData data)
+	private void repairRules(final GameData data)
 	{
-		Iterator<RepairRule> iRepairRules = data.getRepairRuleList().getRepairRules().iterator();
+		final Iterator<RepairRule> iRepairRules = data.getRepairRuleList().getRepairRules().iterator();
 		while (iRepairRules.hasNext())
 		{
-			RepairRule rr = iRepairRules.next();
+			final RepairRule rr = iRepairRules.next();
 			xmlfile.append("        <repairRule name=\"" + rr.getName() + "\">\n");
-			Iterator<Resource> costs = rr.getCosts().keySet().iterator();
+			final Iterator<Resource> costs = rr.getCosts().keySet().iterator();
 			while (costs.hasNext())
 			{
-				Resource cost = costs.next();
+				final Resource cost = costs.next();
 				xmlfile.append("            <cost resource=\"" + cost.getName() + "\" quantity=\"" + rr.getCosts().getInt(cost) + "\"/>\n");
 			}
-			Iterator<NamedAttachable> results = rr.getResults().keySet().iterator();
+			final Iterator<NamedAttachable> results = rr.getResults().keySet().iterator();
 			while (results.hasNext())
 			{
-				NamedAttachable result = results.next();
+				final NamedAttachable result = results.next();
 				xmlfile.append("            <result resourceOrUnit=\"" + result.getName() + "\" quantity=\"" + rr.getResults().getInt(result) + "\"/>\n");
 			}
 			xmlfile.append("        </repairRule>\n");
 		}
 	}
 	
-	private void repairFrontiers(GameData data)
+	private void repairFrontiers(final GameData data)
 	{
-		Iterator<String> frontiers = data.getRepairFrontierList().getRepairFrontierNames().iterator();
+		final Iterator<String> frontiers = data.getRepairFrontierList().getRepairFrontierNames().iterator();
 		while (frontiers.hasNext())
 		{
-			RepairFrontier frontier = data.getRepairFrontierList().getRepairFrontier(frontiers.next());
+			final RepairFrontier frontier = data.getRepairFrontierList().getRepairFrontier(frontiers.next());
 			xmlfile.append("\n");
 			xmlfile.append("        <repairFrontier name=\"" + frontier.getName() + "\">\n");
-			Iterator<RepairRule> rules = frontier.getRules().iterator();
+			final Iterator<RepairRule> rules = frontier.getRules().iterator();
 			while (rules.hasNext())
 			{
 				xmlfile.append("            <repairRules name=\"" + rules.next().getName() + "\"/>\n");
 			}
 			xmlfile.append("        </repairFrontier>\n");
 		}
-		
 		xmlfile.append("\n");
 	}
 	
-	private void playerRepair(GameData data)
+	private void playerRepair(final GameData data)
 	{
-		Iterator<PlayerID> players = data.getPlayerList().iterator();
+		final Iterator<PlayerID> players = data.getPlayerList().iterator();
 		while (players.hasNext())
 		{
-			PlayerID player = players.next();
+			final PlayerID player = players.next();
 			try
 			{
-				String playerRepair = player.getRepairFrontier().getName();
-				String playername = player.getName();
+				final String playerRepair = player.getRepairFrontier().getName();
+				final String playername = player.getName();
 				xmlfile.append("        <playerRepair player=\"" + playername + "\" frontier=\"" + playerRepair + "\"/>\n");
-			} catch (NullPointerException npe)
+			} catch (final NullPointerException npe)
 			{
 				// neutral?
 			}
 		}
 	}
 	
-	private void playerProduction(GameData data)
+	private void playerProduction(final GameData data)
 	{
-		Iterator<PlayerID> players = data.getPlayerList().iterator();
+		final Iterator<PlayerID> players = data.getPlayerList().iterator();
 		while (players.hasNext())
 		{
-			PlayerID player = players.next();
+			final PlayerID player = players.next();
 			try
 			{
-				String playerfrontier = player.getProductionFrontier().getName();
-				String playername = player.getName();
+				final String playerfrontier = player.getProductionFrontier().getName();
+				final String playername = player.getName();
 				xmlfile.append("        <playerProduction player=\"" + playername + "\" frontier=\"" + playerfrontier + "\"/>\n");
-			} catch (NullPointerException npe)
+			} catch (final NullPointerException npe)
 			{
 				// neutral?
 			}
 		}
 	}
 	
-	private void productionFrontiers(GameData data)
+	private void productionFrontiers(final GameData data)
 	{
-		Iterator<String> frontiers = data.getProductionFrontierList().getProductionFrontierNames().iterator();
+		final Iterator<String> frontiers = data.getProductionFrontierList().getProductionFrontierNames().iterator();
 		while (frontiers.hasNext())
 		{
-			ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(frontiers.next());
+			final ProductionFrontier frontier = data.getProductionFrontierList().getProductionFrontier(frontiers.next());
 			xmlfile.append("\n");
 			xmlfile.append("        <productionFrontier name=\"" + frontier.getName() + "\">\n");
-			Iterator<ProductionRule> rules = frontier.getRules().iterator();
+			final Iterator<ProductionRule> rules = frontier.getRules().iterator();
 			while (rules.hasNext())
 			{
 				xmlfile.append("            <frontierRules name=\"" + rules.next().getName() + "\"/>\n");
 			}
 			xmlfile.append("        </productionFrontier>\n");
 		}
-		
 		xmlfile.append("\n");
-		
 	}
 	
-	private void productionRules(GameData data)
+	private void productionRules(final GameData data)
 	{
-		
-		Iterator<ProductionRule> productionRules = data.getProductionRuleList().getProductionRules().iterator();
+		final Iterator<ProductionRule> productionRules = data.getProductionRuleList().getProductionRules().iterator();
 		while (productionRules.hasNext())
 		{
-			ProductionRule pr = productionRules.next();
+			final ProductionRule pr = productionRules.next();
 			xmlfile.append("        <productionRule name=\"" + pr.getName() + "\">\n");
-			Iterator<Resource> costs = pr.getCosts().keySet().iterator();
+			final Iterator<Resource> costs = pr.getCosts().keySet().iterator();
 			while (costs.hasNext())
 			{
-				Resource cost = costs.next();
+				final Resource cost = costs.next();
 				xmlfile.append("            <cost resource=\"" + cost.getName() + "\" quantity=\"" + pr.getCosts().getInt(cost) + "\"/>\n");
 			}
-			Iterator<NamedAttachable> results = pr.getResults().keySet().iterator();
+			final Iterator<NamedAttachable> results = pr.getResults().keySet().iterator();
 			while (results.hasNext())
 			{
-				NamedAttachable result = results.next();
+				final NamedAttachable result = results.next();
 				xmlfile.append("            <result resourceOrUnit=\"" + result.getName() + "\" quantity=\"" + pr.getResults().getInt(result) + "\"/>\n");
 			}
 			xmlfile.append("        </productionRule>\n");
 		}
 	}
 	
-	private void gamePlay(GameData data)
+	private void gamePlay(final GameData data)
 	{
 		xmlfile.append("\n");
 		xmlfile.append("    <gamePlay>\n");
-		Iterator<IDelegate> delegates = data.getDelegateList().iterator();
+		final Iterator<IDelegate> delegates = data.getDelegateList().iterator();
 		while (delegates.hasNext())
 		{
-			IDelegate delegate = delegates.next();
+			final IDelegate delegate = delegates.next();
 			if (!delegate.getName().equals("edit"))
 				xmlfile.append("        <delegate name=\"" + delegate.getName() + "\" javaClass=\"" + delegate.getClass().getCanonicalName() + "\" display=\"" + delegate.getDisplayName() + "\"/>\n");
 		}
 		sequence(data);
 		xmlfile.append("    </gamePlay>\n");
-		
 	}
 	
-	private void sequence(GameData data)
+	private void sequence(final GameData data)
 	{
 		xmlfile.append("\n");
 		xmlfile.append("        <sequence>\n");
-		Iterator<GameStep> steps = data.getSequence().iterator();
+		final Iterator<GameStep> steps = data.getSequence().iterator();
 		while (steps.hasNext())
 		{
-			GameStep step = steps.next();
+			final GameStep step = steps.next();
 			try
 			{
-				Field mDelegateField = GameStep.class.getDeclaredField("m_delegate");
+				final Field mDelegateField = GameStep.class.getDeclaredField("m_delegate");
 				mDelegateField.setAccessible(true);
-				String delegate = (String) mDelegateField.get(step);
+				final String delegate = (String) mDelegateField.get(step);
 				xmlfile.append("            <step name=\"" + step.getName() + "\" delegate=\"" + delegate + "\"");
-			} catch (NullPointerException npe)
+			} catch (final NullPointerException npe)
 			{
 				npe.printStackTrace();
-			} catch (NoSuchFieldException e)
+			} catch (final NoSuchFieldException e)
 			{
 				e.printStackTrace();
-			} catch (IllegalArgumentException e)
+			} catch (final IllegalArgumentException e)
 			{
 				e.printStackTrace();
-			} catch (IllegalAccessException e)
+			} catch (final IllegalAccessException e)
 			{
 				e.printStackTrace();
 			}
@@ -637,12 +612,11 @@ public class GameDataExporter
 		xmlfile.append("        </sequence>\n");
 	}
 	
-	private void unitList(GameData data)
+	private void unitList(final GameData data)
 	{
 		xmlfile.append("\n");
-		
 		xmlfile.append("    <unitList>\n");
-		Iterator<UnitType> units = data.getUnitTypeList().iterator();
+		final Iterator<UnitType> units = data.getUnitTypeList().iterator();
 		while (units.hasNext())
 		{
 			xmlfile.append("        <unit name=\"" + units.next().getName() + "\"/>\n");
@@ -650,23 +624,21 @@ public class GameDataExporter
 		xmlfile.append("    </unitList>\n");
 	}
 	
-	private void playerList(GameData data)
+	private void playerList(final GameData data)
 	{
 		xmlfile.append("\n");
 		xmlfile.append("    <playerList>\n");
-		
-		Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
+		final Iterator<PlayerID> players = data.getPlayerList().getPlayers().iterator();
 		while (players.hasNext())
 		{
-			PlayerID player = players.next();
+			final PlayerID player = players.next();
 			xmlfile.append("        <player name=\"" + player.getName() + "\" optional=\"" + player.getOptional() + "\"/>\n");
 		}
-		
-		Iterator<String> alliances = data.getAllianceTracker().getAlliances().iterator();
+		final Iterator<String> alliances = data.getAllianceTracker().getAlliances().iterator();
 		while (alliances.hasNext())
 		{
-			String allianceName = alliances.next();
-			Iterator<PlayerID> alliedPlayers = data.getAllianceTracker().getPlayersInAlliance(allianceName).iterator();
+			final String allianceName = alliances.next();
+			final Iterator<PlayerID> alliedPlayers = data.getAllianceTracker().getPlayersInAlliance(allianceName).iterator();
 			while (alliedPlayers.hasNext())
 			{
 				xmlfile.append("        <alliance player=\"" + alliedPlayers.next().getName() + "\" alliance=\"" + allianceName + "\"/>\n");
@@ -675,80 +647,72 @@ public class GameDataExporter
 		xmlfile.append("    </playerList>\n");
 	}
 	
-	private void resourceList(GameData data)
+	private void resourceList(final GameData data)
 	{
 		xmlfile.append("\n");
-		
 		xmlfile.append("    <resourceList>\n");
-		Iterator<Resource> resources = data.getResourceList().getResources().iterator();
+		final Iterator<Resource> resources = data.getResourceList().getResources().iterator();
 		while (resources.hasNext())
 		{
-			
 			xmlfile.append("        <resource name=\"" + resources.next().getName() + "\"/>\n");
-			
 		}
 		xmlfile.append("    </resourceList>\n");
 	}
 	
-	private void map(GameData data)
+	private void map(final GameData data)
 	{
 		xmlfile.append("\n");
-		
 		xmlfile.append("    <map>\n");
 		xmlfile.append("        <!-- Territory Definitions -->\n");
-		GameMap map = data.getMap();
-		Iterator<Territory> terrs = map.getTerritories().iterator();
+		final GameMap map = data.getMap();
+		final Iterator<Territory> terrs = map.getTerritories().iterator();
 		while (terrs.hasNext())
 		{
-			Territory ter = terrs.next();
+			final Territory ter = terrs.next();
 			xmlfile.append("        <territory name=\"" + ter.getName() + "\"");
 			if (ter.isWater())
 				xmlfile.append(" water=\"true\"");
 			xmlfile.append("/>\n");
 		}
 		connections(data);
-		
 		xmlfile.append("    </map>\n");
 	}
 	
 	
 	private class Connection
 	{
-		private Territory _t1;
-		private Territory _t2;
+		private final Territory _t1;
+		private final Territory _t2;
 		
-		private Connection(Territory t1, Territory t2)
+		private Connection(final Territory t1, final Territory t2)
 		{
 			_t1 = t1;
 			_t2 = t2;
 		}
 		
 		@Override
-		public boolean equals(Object o)
+		public boolean equals(final Object o)
 		{
 			if (o == null)
 				return false;
-			Connection con = (Connection) o;
+			final Connection con = (Connection) o;
 			return (_t1 == con._t1 && _t2 == con._t2);
 		}
-		
 	}
 	
-	private void connections(GameData data)
+	private void connections(final GameData data)
 	{
 		xmlfile.append("        <!-- Territory Connections -->\n");
-		GameMap map = data.getMap();
-		
-		ArrayList<Connection> reverseConnectionTracker = new ArrayList<Connection>();
-		
-		Iterator<Territory> terrs = map.getTerritories().iterator();
+		final GameMap map = data.getMap();
+		final ArrayList<Connection> reverseConnectionTracker = new ArrayList<Connection>();
+		final Iterator<Territory> terrs = map.getTerritories().iterator();
 		while (terrs.hasNext())
 		{
-			Territory ter = terrs.next();
-			Iterator<Territory> nbs = map.getNeighbors(ter).iterator();
+			final Territory ter = terrs.next();
+			final Iterator<Territory> nbs = map.getNeighbors(ter).iterator();
 			while (nbs.hasNext())
 			{
-				Territory nb = nbs.next();
+				final Territory nb = nbs.next();
 				if (!reverseConnectionTracker.contains(new Connection(ter, nb)))
 				{
 					xmlfile.append("        <connection t1=\"" + ter.getName() + "\" t2=\"" + nb.getName() + "\"/>\n");
@@ -756,10 +720,9 @@ public class GameDataExporter
 				}
 			}
 		}
-		
 	}
 	
-	private void init(GameData data)
+	private void init(final GameData data)
 	{
 		xmlfile.append("<?xml version=\"1.0\"?>\n");
 		xmlfile.append("<!DOCTYPE game SYSTEM \"game.dtd\">\n");
@@ -778,5 +741,4 @@ public class GameDataExporter
 	{
 		return xmlfile.toString();
 	}
-	
 }

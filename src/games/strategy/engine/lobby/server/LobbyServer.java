@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server;
 
 import games.strategy.engine.chat.ChatController;
@@ -42,7 +41,6 @@ import java.util.logging.Logger;
  */
 public class LobbyServer
 {
-	
 	// System properties for the lobby
 	// what port should the lobby use
 	private static final String PORT = "triplea.lobby.port";
@@ -51,89 +49,71 @@ public class LobbyServer
 	// should the lobby take commands from stdin,
 	// set to true to enable
 	private static final String CONSOLE = "triplea.lobby.console";
-	
 	public static final String ADMIN_USERNAME = "Admin";
 	private final static Logger s_logger = Logger.getLogger(LobbyServer.class.getName());
 	public static final String LOBBY_CHAT = "_LOBBY_CHAT";
 	public static final Version LOBBY_VERSION = new Version(1, 0, 0);
-	
-	private Messengers m_messengers;
+	private final Messengers m_messengers;
 	
 	/** Creates a new instance of LobbyServer */
-	public LobbyServer(int port)
+	public LobbyServer(final int port)
 	{
-		
 		IServerMessenger server;
 		try
 		{
 			server = new ServerMessenger(ADMIN_USERNAME, port);
-		} catch (IOException ex)
+		} catch (final IOException ex)
 		{
 			s_logger.log(Level.SEVERE, ex.toString());
 			throw new IllegalStateException(ex.getMessage());
 		}
-		
 		m_messengers = new Messengers(server);
-		
 		server.setLoginValidator(new LobbyLoginValidator());
-		
 		// setup common objects
 		new ChatController(LOBBY_CHAT, m_messengers);
 		// register the status controller
-		StatusManager statusManager = new StatusManager(m_messengers);
+		final StatusManager statusManager = new StatusManager(m_messengers);
 		// we dont need this manager now
 		statusManager.shutDown();
 		new UserManager().register(m_messengers.getRemoteMessenger());
 		new ModeratorController(server).register(m_messengers.getRemoteMessenger());
-		
-		LobbyGameController controller = new LobbyGameController((ILobbyGameBroadcaster) m_messengers.getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL),
-					server);
+		final LobbyGameController controller = new LobbyGameController(
+					(ILobbyGameBroadcaster) m_messengers.getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
 		controller.register(m_messengers.getRemoteMessenger());
-		
 		// now we are open for business
 		server.setAcceptNewConnections(true);
 	}
 	
 	private static void setUpLogging()
 	{
-		
 		// setup logging to read our logging.properties
 		try
 		{
 			LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("server-logging.properties"));
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
-		
 		Logger.getAnonymousLogger().info("Redirecting std out");
 		System.setErr(new LoggingPrintStream("ERROR", Level.SEVERE));
 		System.setOut(new LoggingPrintStream("OUT", Level.INFO));
-		
 	}
 	
-	public static void main(String args[])
+	public static void main(final String args[])
 	{
-		
 		try
 		{
 			// grab these before we override them with the loggers
-			InputStream in = System.in;
-			PrintStream out = System.out;
-			
+			final InputStream in = System.in;
+			final PrintStream out = System.out;
 			setUpLogging();
-			
-			int port = Integer.parseInt(System.getProperty(PORT, "3303"));
-			
+			final int port = Integer.parseInt(System.getProperty(PORT, "3303"));
 			System.out.println("Trying to listen on port:" + port);
-			LobbyServer server = new LobbyServer(port);
-			
+			final LobbyServer server = new LobbyServer(port);
 			System.out.println("Starting database");
 			// initialize the databse
 			Database.getConnection().close();
-			
 			s_logger.info("Lobby started");
-			
 			if (Boolean.parseBoolean(System.getProperty(UI, "false")))
 			{
 				startUI(server);
@@ -142,24 +122,22 @@ public class LobbyServer
 			{
 				startConsole(server, in, out);
 			}
-			
-		} catch (Exception ex)
+		} catch (final Exception ex)
 		{
 			s_logger.log(Level.SEVERE, ex.toString(), ex);
 		}
 	}
 	
-	private static void startConsole(LobbyServer server, InputStream in, PrintStream out)
+	private static void startConsole(final LobbyServer server, final InputStream in, final PrintStream out)
 	{
 		System.out.println("starting console");
 		new HeadlessLobbyConsole(server, in, out).start();
-		
 	}
 	
-	private static void startUI(LobbyServer server)
+	private static void startUI(final LobbyServer server)
 	{
 		System.out.println("starting ui");
-		LobbyAdminConsole console = new LobbyAdminConsole(server);
+		final LobbyAdminConsole console = new LobbyAdminConsole(server);
 		console.setSize(800, 700);
 		console.setLocationRelativeTo(null);
 		console.setVisible(true);

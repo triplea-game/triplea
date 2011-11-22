@@ -27,7 +27,6 @@ import java.util.logging.LogRecord;
  */
 public class TALogFormatter extends Formatter
 {
-	
 	private boolean m_showDates = false;
 	
 	/**
@@ -35,10 +34,9 @@ public class TALogFormatter extends Formatter
      */
 	public TALogFormatter()
 	{
-		
 	}
 	
-	public void setShowDates(boolean aVal)
+	public void setShowDates(final boolean aVal)
 	{
 		m_showDates = aVal;
 	}
@@ -46,20 +44,17 @@ public class TALogFormatter extends Formatter
 	/* 
 	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
 	 */
-
 	@Override
-	public String format(LogRecord record)
+	public String format(final LogRecord record)
 	{
 		String shortName;
-		
 		if (record.getLoggerName() == null)
 			shortName = ".";
 		else if (record.getLoggerName().indexOf('.') == -1)
 			shortName = record.getLoggerName();
 		else
 			shortName = record.getLoggerName().substring(record.getLoggerName().lastIndexOf('.') + 1, record.getLoggerName().length());
-		
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		if (m_showDates)
 		{
 			builder.append(new Date());
@@ -73,18 +68,14 @@ public class TALogFormatter extends Formatter
 		builder.append("->");
 		builder.append(record.getMessage());
 		builder.append("\n");
-		
 		if (record.getThrown() != null)
 		{
-			StringWriter writer = new StringWriter();
-			PrintWriter pw = new PrintWriter(writer);
-			
+			final StringWriter writer = new StringWriter();
+			final PrintWriter pw = new PrintWriter(writer);
 			record.getThrown().printStackTrace(pw);
 			pw.flush();
 			builder.append(writer.getBuffer());
 		}
-		
 		return builder.toString();
 	}
-	
 }

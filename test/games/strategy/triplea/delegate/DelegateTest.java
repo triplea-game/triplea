@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * DelegateTest.java
  * 
  * Created on November 9, 2001, 3:29 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
@@ -42,14 +40,11 @@ import junit.framework.TestCase;
  */
 public class DelegateTest extends TestCase
 {
-	
 	protected GameData m_data;
-	
 	protected PlayerID british;
 	protected PlayerID japanese;
 	protected PlayerID russians;
 	protected PlayerID germans;
-	
 	protected Territory northSea;
 	protected Territory uk;
 	protected Territory germany;
@@ -96,7 +91,6 @@ public class DelegateTest extends TestCase
 	protected Territory karelia;
 	protected Territory westEurope;
 	protected Territory finlandNorway;
-	
 	protected UnitType armour;
 	protected UnitType infantry;
 	protected UnitType transport;
@@ -106,11 +100,10 @@ public class DelegateTest extends TestCase
 	protected UnitType fighter;
 	protected UnitType bomber;
 	protected UnitType carrier;
-	
 	protected Resource PUs;
 	
 	/** Creates new PlaceDelegateTest */
-	public DelegateTest(String name)
+	public DelegateTest(final String name)
 	{
 		super(name);
 	}
@@ -118,14 +111,11 @@ public class DelegateTest extends TestCase
 	@Override
 	public void setUp() throws Exception
 	{
-		
 		// get the xml file
-		URL url = this.getClass().getResource("DelegateTest.xml");
-		
-		InputStream input = url.openStream();
+		final URL url = this.getClass().getResource("DelegateTest.xml");
+		final InputStream input = url.openStream();
 		m_data = (new GameParser()).parse(input);
 		input.close();
-		
 		british = m_data.getPlayerList().getPlayerID("British");
 		british.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
 		japanese = m_data.getPlayerList().getPlayerID("Japanese");
@@ -134,7 +124,6 @@ public class DelegateTest extends TestCase
 		russians.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
 		germans = m_data.getPlayerList().getPlayerID("Germans");
 		germans.addAttachment(Constants.TECH_ATTACHMENT_NAME, new TechAttachment());
-		
 		northSea = m_data.getMap().getTerritory("North Sea Zone");
 		blackSea = m_data.getMap().getTerritory("Black Sea Zone");
 		uk = m_data.getMap().getTerritory("United Kingdom");
@@ -180,7 +169,6 @@ public class DelegateTest extends TestCase
 		karelia = m_data.getMap().getTerritory("Karelia S.S.R.");
 		westEurope = m_data.getMap().getTerritory("West Europe");
 		finlandNorway = m_data.getMap().getTerritory("Finland Norway");
-		
 		armour = m_data.getUnitTypeList().getUnitType("armour");
 		infantry = m_data.getUnitTypeList().getUnitType("infantry");
 		transport = m_data.getUnitTypeList().getUnitType("transport");
@@ -190,21 +178,20 @@ public class DelegateTest extends TestCase
 		fighter = m_data.getUnitTypeList().getUnitType("fighter");
 		bomber = m_data.getUnitTypeList().getUnitType("bomber");
 		carrier = m_data.getUnitTypeList().getUnitType("carrier");
-		
 		PUs = m_data.getResourceList().getResource("PUs");
 	}
 	
-	public void assertValid(String string)
+	public void assertValid(final String string)
 	{
 		assertNull(string, string);
 	}
 	
-	public void assertError(String string)
+	public void assertError(final String string)
 	{
 		assertNotNull(string, string);
 	}
 	
-	protected ITestDelegateBridge getDelegateBridge(PlayerID player)
+	protected ITestDelegateBridge getDelegateBridge(final PlayerID player)
 	{
 		return GameDataTestUtil.getDelegateBridge(player);
 	}
@@ -214,5 +201,4 @@ public class DelegateTest extends TestCase
 		assertValid(null);
 		assertError("Can not do this");
 	}
-	
 }

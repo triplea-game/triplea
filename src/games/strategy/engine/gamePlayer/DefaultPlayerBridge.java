@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * DefaultPlayerBridge.java
  * 
  * Created on October 27, 2001, 8:55 PM
  */
-
 package games.strategy.engine.gamePlayer;
 
 import games.strategy.engine.GameOverException;
@@ -46,13 +44,12 @@ import java.util.Properties;
  */
 public class DefaultPlayerBridge implements IPlayerBridge
 {
-	
 	private final IGame m_game;
 	private String m_currentStep;
 	private String m_currentDelegate;
 	
 	/** Creates new DefaultPlayerBridge */
-	public DefaultPlayerBridge(IGame aGame)
+	public DefaultPlayerBridge(final IGame aGame)
 	{
 		m_game = aGame;
 		m_game.addGameStepListener(m_gameStepListener);
@@ -61,7 +58,6 @@ public class DefaultPlayerBridge implements IPlayerBridge
 	/**
 	 * Get the name of the current step being executed.
 	 */
-	
 	public String getStepName()
 	{
 		return m_currentStep;
@@ -75,22 +71,19 @@ public class DefaultPlayerBridge implements IPlayerBridge
 	/**
 	 * Return the game data
 	 */
-	
 	public GameData getGameData()
 	{
 		return m_game.getData();
 	}
 	
-	private GameStepListener m_gameStepListener = new GameStepListener()
+	private final GameStepListener m_gameStepListener = new GameStepListener()
 	{
-		
-		public void gameStepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName)
+		public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
 		{
 			if (stepName == null)
 				throw new IllegalArgumentException("Null step");
 			if (delegateName == null)
 				throw new IllegalArgumentException("Null delegate");
-			
 			m_currentStep = stepName;
 			m_currentDelegate = delegateName;
 		}
@@ -99,7 +92,6 @@ public class DefaultPlayerBridge implements IPlayerBridge
 	/* 
 	 * @see games.strategy.engine.gamePlayer.PlayerBridge#getRemote()
 	 */
-
 	public IRemote getRemote()
 	{
 		if (m_game.isGameOver())
@@ -109,19 +101,19 @@ public class DefaultPlayerBridge implements IPlayerBridge
 			m_game.getData().acquireReadLock();
 			try
 			{
-				IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
+				final IDelegate delegate = m_game.getData().getDelegateList().getDelegate(m_currentDelegate);
 				return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
 			} finally
 			{
 				m_game.getData().releaseReadLock();
 			}
-		} catch (MessengerException me)
+		} catch (final MessengerException me)
 		{
 			throw new GameOverException("Game Over");
 		}
 	}
 	
-	public IRemote getRemote(String name)
+	public IRemote getRemote(final String name)
 	{
 		if (m_game.isGameOver())
 			throw new GameOverException("Game Over");
@@ -130,16 +122,15 @@ public class DefaultPlayerBridge implements IPlayerBridge
 			m_game.getData().acquireReadLock();
 			try
 			{
-				IDelegate delegate = m_game.getData().getDelegateList().getDelegate(name);
+				final IDelegate delegate = m_game.getData().getDelegateList().getDelegate(name);
 				if (!(delegate instanceof IPersistentDelegate))
 					return null;
-				
 				return getRemoteThatChecksForGameOver(m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(delegate)));
 			} finally
 			{
 				m_game.getData().releaseReadLock();
 			}
-		} catch (MessengerException me)
+		} catch (final MessengerException me)
 		{
 			throw new GameOverException("Game Over");
 		}
@@ -150,13 +141,11 @@ public class DefaultPlayerBridge implements IPlayerBridge
 		return m_game.getData().getSequence().getStep().getProperties();
 	}
 	
-	private IRemote getRemoteThatChecksForGameOver(IRemote implementor)
+	private IRemote getRemoteThatChecksForGameOver(final IRemote implementor)
 	{
-		Class<?>[] classes = implementor.getClass().getInterfaces();
-		GameOverInvocationHandler goih = new GameOverInvocationHandler(implementor, m_game);
-		
+		final Class<?>[] classes = implementor.getClass().getInterfaces();
+		final GameOverInvocationHandler goih = new GameOverInvocationHandler(implementor, m_game);
 		return (IRemote) Proxy.newProxyInstance(implementor.getClass().getClassLoader(), classes, goih);
-		
 	}
 }
 
@@ -166,28 +155,26 @@ class GameOverInvocationHandler implements InvocationHandler
 	private final Object m_delegate;
 	private final IGame m_game;
 	
-	public GameOverInvocationHandler(Object delegate, IGame game)
+	public GameOverInvocationHandler(final Object delegate, final IGame game)
 	{
 		m_delegate = delegate;
 		m_game = game;
 	}
 	
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 	{
 		try
 		{
 			return method.invoke(m_delegate, args);
-		} catch (InvocationTargetException ite)
+		} catch (final InvocationTargetException ite)
 		{
 			if (!m_game.isGameOver())
 				throw ite.getCause();
 			else
 				throw new GameOverException("Game Over Exception");
-		} catch (RemoteNotFoundException rnfe)
+		} catch (final RemoteNotFoundException rnfe)
 		{
 			throw new GameOverException("Game Over");
 		}
-		
 	}
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.userDB;
 
 import games.strategy.util.Util;
@@ -22,47 +21,38 @@ import junit.framework.TestCase;
 
 public class BannedIpControllerTest extends TestCase
 {
-	
 	public void testCRUD()
 	{
-		BannedIpController controller = new BannedIpController();
-		String ip = Util.createUniqueTimeStamp();
+		final BannedIpController controller = new BannedIpController();
+		final String ip = Util.createUniqueTimeStamp();
 		controller.addBannedIp(ip);
-		
 		assertTrue(controller.isIpBanned(ip));
-		
 		controller.removeBannedIp(ip);
 		assertFalse(controller.isIpBanned(ip));
 	}
 	
 	public void testNonBannedIp()
 	{
-		BannedIpController controller = new BannedIpController();
+		final BannedIpController controller = new BannedIpController();
 		assertFalse(controller.isIpBanned(Util.createUniqueTimeStamp()));
 	}
 	
 	public void testBanExpires()
 	{
-		
-		BannedIpController controller = new BannedIpController();
-		String ip = Util.createUniqueTimeStamp();
-		Date expire = new Date(System.currentTimeMillis() - 5000);
+		final BannedIpController controller = new BannedIpController();
+		final String ip = Util.createUniqueTimeStamp();
+		final Date expire = new Date(System.currentTimeMillis() - 5000);
 		controller.addBannedIp(ip, expire);
-		
 		assertFalse(controller.isIpBanned(ip));
 	}
 	
 	public void testUpdate()
 	{
-		
-		BannedIpController controller = new BannedIpController();
-		String ip = Util.createUniqueTimeStamp();
-		Date expire = new Date(System.currentTimeMillis() - 5000);
+		final BannedIpController controller = new BannedIpController();
+		final String ip = Util.createUniqueTimeStamp();
+		final Date expire = new Date(System.currentTimeMillis() - 5000);
 		controller.addBannedIp(ip, expire);
 		controller.addBannedIp(ip);
-		
 		assertTrue(controller.isIpBanned(ip));
-		
 	}
-	
 }

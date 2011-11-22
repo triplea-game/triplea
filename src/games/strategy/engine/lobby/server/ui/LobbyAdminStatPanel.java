@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.ui;
 
 import games.strategy.net.IConnectionChangeListener;
@@ -29,7 +28,6 @@ import javax.swing.SwingUtilities;
 
 public class LobbyAdminStatPanel extends JPanel
 {
-	
 	private JLabel m_upSince;
 	private JLabel m_maxPlayersLabel;
 	private JLabel m_totalLoginsLabel;
@@ -39,7 +37,7 @@ public class LobbyAdminStatPanel extends JPanel
 	private int m_currentLogins;
 	private final IMessenger m_messenger;
 	
-	public LobbyAdminStatPanel(IMessenger messenger)
+	public LobbyAdminStatPanel(final IMessenger messenger)
 	{
 		m_messenger = messenger;
 		createComponents();
@@ -54,7 +52,6 @@ public class LobbyAdminStatPanel extends JPanel
 		m_maxPlayersLabel = new JLabel("Max Concurrent Players : ----");
 		m_totalLoginsLabel = new JLabel("Total Logins : ------");
 		m_upSince = new JLabel("Up since " + new Date());
-		
 	}
 	
 	private void layoutComponents()
@@ -71,32 +68,26 @@ public class LobbyAdminStatPanel extends JPanel
 	{
 		((IServerMessenger) m_messenger).addConnectionChangeListener(new IConnectionChangeListener()
 		{
-			
-			public void connectionRemoved(INode to)
+			public void connectionRemoved(final INode to)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					
 					public void run()
 					{
 						m_currentLogins--;
 						m_currentLoginsLabel.setText("Current Players: " + m_currentLogins);
 					}
-					
 				});
-				
 			}
 			
-			public void connectionAdded(INode to)
+			public void connectionAdded(final INode to)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					
 					public void run()
 					{
 						m_currentLogins++;
 						m_currentLoginsLabel.setText("Current Players: " + m_currentLogins);
-						
 						if (m_currentLogins > m_maxPlayers)
 						{
 							m_maxPlayers = m_currentLogins;
@@ -104,19 +95,13 @@ public class LobbyAdminStatPanel extends JPanel
 						}
 						m_totalLogins++;
 						m_totalLoginsLabel.setText("Total Logins : " + m_totalLogins);
-						
 					}
-					
 				});
-				
 			}
-			
 		});
-		
 	}
 	
 	private void setWidgetActivation()
 	{
-		
 	}
 }

@@ -15,16 +15,15 @@ public class ImageFactory
 	private final Map<String, Image> m_images = new HashMap<String, Image>();
 	private ResourceLoader m_resourceLoader;
 	
-	public void setResourceLoader(ResourceLoader loader)
+	public void setResourceLoader(final ResourceLoader loader)
 	{
 		m_resourceLoader = loader;
 		m_images.clear();
 	}
 	
-	protected Image getImage(String key1, String key2, boolean throwIfNotFound)
+	protected Image getImage(final String key1, final String key2, final boolean throwIfNotFound)
 	{
-		Image i1 = getImage(key1, false);
-		
+		final Image i1 = getImage(key1, false);
 		if (i1 != null)
 		{
 			return i1;
@@ -32,12 +31,11 @@ public class ImageFactory
 		return getImage(key2, throwIfNotFound);
 	}
 	
-	protected Image getImage(String key, boolean throwIfNotFound)
+	protected Image getImage(final String key, final boolean throwIfNotFound)
 	{
-		
 		if (!m_images.containsKey(key))
 		{
-			URL url = m_resourceLoader.getResource(key);
+			final URL url = m_resourceLoader.getResource(key);
 			if (url == null && throwIfNotFound)
 			{
 				throw new IllegalStateException("Image Not Found:" + key);
@@ -47,20 +45,17 @@ public class ImageFactory
 				m_images.put(key, null);
 				return null;
 			}
-			
 			Image image;
 			try
 			{
 				image = ImageIO.read(url);
-			} catch (IOException e)
+			} catch (final IOException e)
 			{
 				e.printStackTrace();
 				throw new IllegalStateException(e.getMessage());
 			}
 			m_images.put(key, image);
 		}
-		
 		return m_images.get(key);
 	}
-	
 }

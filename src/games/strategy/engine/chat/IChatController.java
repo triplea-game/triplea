@@ -29,5 +29,4 @@ public interface IChatController extends IRemote
 	 * Leave the chat, and ask that everyone stops bothering me.
 	 */
 	public void leaveChat();
-	
 }

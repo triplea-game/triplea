@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * PurchaseDelegate.java
  * 
  * Created on November 2, 2001, 12:28 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -76,12 +74,11 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge aBridge)
+	public void start(final IDelegateBridge aBridge)
 	{
 		super.start(aBridge);
-		GameData data = getData();
+		final GameData data = getData();
 		if (m_needToInitialize)
 		{
 			if (games.strategy.triplea.Properties.getTriggers(data))
@@ -101,21 +98,21 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		super.end();
 		m_needToInitialize = true;
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		PurchaseExtendedDelegateState state = new PurchaseExtendedDelegateState();
+		final PurchaseExtendedDelegateState state = new PurchaseExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		state.m_needToInitialize = m_needToInitialize;
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		PurchaseExtendedDelegateState s = (PurchaseExtendedDelegateState) state;
+		final PurchaseExtendedDelegateState s = (PurchaseExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 		m_needToInitialize = s.m_needToInitialize;
@@ -124,7 +121,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	/**
 	 * subclasses can over ride this method to use different restrictions as to what a player can buy
 	 */
-	protected boolean canAfford(IntegerMap<Resource> costs, PlayerID player)
+	protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player)
 	{
 		return player.getResources().has(costs);
 	}
@@ -132,153 +129,130 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	/**
 	 * Returns an error code, or null if all is good.
 	 */
-	
-	public String purchase(IntegerMap<ProductionRule> productionRules)
+	public String purchase(final IntegerMap<ProductionRule> productionRules)
 	{
-		IntegerMap<Resource> costs = getCosts(productionRules, m_player);
-		IntegerMap<NamedAttachable> results = getResults(productionRules);
-		
+		final IntegerMap<Resource> costs = getCosts(productionRules, m_player);
+		final IntegerMap<NamedAttachable> results = getResults(productionRules);
 		if (!(canAfford(costs, m_player)))
 			return "Not enough resources";
-		
 		// check to see if player has too many of any building with a building limit
-		Iterator<NamedAttachable> iter2 = results.keySet().iterator();
+		final Iterator<NamedAttachable> iter2 = results.keySet().iterator();
 		while (iter2.hasNext())
 		{
-			Object next = iter2.next();
+			final Object next = iter2.next();
 			if (!(next instanceof Resource))
 			{
-				UnitType type = (UnitType) next;
-				int quantity = results.getInt(type);
-				UnitAttachment ua = UnitAttachment.get(type);
-				int maxBuilt = ua.getMaxBuiltPerPlayer();
+				final UnitType type = (UnitType) next;
+				final int quantity = results.getInt(type);
+				final UnitAttachment ua = UnitAttachment.get(type);
+				final int maxBuilt = ua.getMaxBuiltPerPlayer();
 				if (maxBuilt == 0)
 					return "May not build any of this unit right now: " + type.getName();
 				else if (maxBuilt > 0)
 				{
 					// check to see how many are currently fielded by this player
 					int currentlyBuilt = 0;
-					CompositeMatch<Unit> unitTypeOwnedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
-					Collection<Territory> allTerrs = getData().getMap().getTerritories();
-					for (Territory t : allTerrs)
+					final CompositeMatch<Unit> unitTypeOwnedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOfType(type), Matches.unitIsOwnedBy(m_player));
+					final Collection<Territory> allTerrs = getData().getMap().getTerritories();
+					for (final Territory t : allTerrs)
 					{
 						currentlyBuilt += t.getUnits().countMatches(unitTypeOwnedBy);
 					}
-					int allowedBuild = maxBuilt - currentlyBuilt;
+					final int allowedBuild = maxBuilt - currentlyBuilt;
 					if (allowedBuild - quantity < 0)
 						return "May only build " + allowedBuild + " of " + type.getName() + " this turn, may only build " + maxBuilt + " total";
 				}
 			}
 		}
 		// remove first, since add logs PUs remaining
-		
-		Iterator<NamedAttachable> iter = results.keySet().iterator();
-		Collection<Unit> totalUnits = new ArrayList<Unit>();
-		CompositeChange changes = new CompositeChange();
-		
+		final Iterator<NamedAttachable> iter = results.keySet().iterator();
+		final Collection<Unit> totalUnits = new ArrayList<Unit>();
+		final CompositeChange changes = new CompositeChange();
 		// add changes for added resources
 		// and find all added units
 		while (iter.hasNext())
 		{
-			Object next = iter.next();
+			final Object next = iter.next();
 			if (next instanceof Resource)
 			{
-				Resource resource = (Resource) next;
-				int quantity = results.getInt(resource);
-				Change change = ChangeFactory.changeResourcesChange(m_player, resource, quantity);
+				final Resource resource = (Resource) next;
+				final int quantity = results.getInt(resource);
+				final Change change = ChangeFactory.changeResourcesChange(m_player, resource, quantity);
 				changes.add(change);
 			}
 			else
 			{
-				UnitType type = (UnitType) next;
-				int quantity = results.getInt(type);
-				Collection<Unit> units = type.create(quantity, m_player);
+				final UnitType type = (UnitType) next;
+				final int quantity = results.getInt(type);
+				final Collection<Unit> units = type.create(quantity, m_player);
 				totalUnits.addAll(units);
-				
 			}
 		}
-		
 		// add changes for added units
 		if (!totalUnits.isEmpty())
 		{
-			Change change = ChangeFactory.addUnits(m_player, totalUnits);
+			final Change change = ChangeFactory.addUnits(m_player, totalUnits);
 			changes.add(change);
 		}
-		
 		// add changes for spent resources
-		String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
-		
+		final String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
 		addHistoryEvent(totalUnits, remaining, false);
-		
 		// commit changes
 		m_bridge.addChange(changes);
-		
 		return null;
 	}
 	
 	/**
 	 * Returns an error code, or null if all is good.
 	 */
-	
-	public String purchaseRepair(Map<Unit, IntegerMap<RepairRule>> repairRules)
+	public String purchaseRepair(final Map<Unit, IntegerMap<RepairRule>> repairRules)
 	{
-		IntegerMap<Resource> costs = getRepairCosts(repairRules, m_player);
-		
-		IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
-		
+		final IntegerMap<Resource> costs = getRepairCosts(repairRules, m_player);
+		final IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
 		if (!(canAfford(costs, m_player)))
 			return "Not enough resources";
-		
 		// remove first, since add logs PUs remaining
-		CompositeChange changes = new CompositeChange();
-		Collection<Unit> totalUnits = new ArrayList<Unit>();
-		
-		Iterator<NamedAttachable> iter = results.keySet().iterator();
-		
+		final CompositeChange changes = new CompositeChange();
+		final Collection<Unit> totalUnits = new ArrayList<Unit>();
+		final Iterator<NamedAttachable> iter = results.keySet().iterator();
 		// add changes for added resources
 		// and find all added units
 		while (iter.hasNext())
 		{
-			Object next = iter.next();
+			final Object next = iter.next();
 			if (next instanceof Resource)
 			{
-				Resource resource = (Resource) next;
-				int quantity = results.getInt(resource);
-				Change change = ChangeFactory.changeResourcesChange(m_player, resource, quantity);
+				final Resource resource = (Resource) next;
+				final int quantity = results.getInt(resource);
+				final Change change = ChangeFactory.changeResourcesChange(m_player, resource, quantity);
 				changes.add(change);
 			}
 			else
 			{
-				UnitType type = (UnitType) next;
-				int quantity = results.getInt(type);
-				Collection<Unit> units = type.create(quantity, m_player);
+				final UnitType type = (UnitType) next;
+				final int quantity = results.getInt(type);
+				final Collection<Unit> units = type.create(quantity, m_player);
 				totalUnits.addAll(units);
-				
 			}
 		}
-		
 		// Get the map of the factories that were repaired and how much for each
-		Map<Unit, Integer> repairMap = getTerritoryRepairs(repairRules);
-		
+		final Map<Unit, Integer> repairMap = getTerritoryRepairs(repairRules);
 		if (!repairMap.isEmpty())
 		{
-			Collection<Unit> repairUnits = repairMap.keySet();
-			
-			for (Unit u : repairUnits)
+			final Collection<Unit> repairUnits = repairMap.keySet();
+			for (final Unit u : repairUnits)
 			{
 				if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
 				{
-					int repairCount = repairMap.get(u);
-					
+					final int repairCount = repairMap.get(u);
 					// Display appropriate damaged/repaired factory and factory damage totals
 					if (repairCount > 0)
 					{
-						Territory terr = u.getTerritoryUnitIsIn();
-						TerritoryAttachment ta = TerritoryAttachment.get(terr);
-						int currentDamage = ta.getUnitProduction();
-						IntegerMap<Unit> hits = new IntegerMap<Unit>();
-						
-						int newDamageTotal = ta.getProduction() - (currentDamage + repairCount);
+						final Territory terr = u.getTerritoryUnitIsIn();
+						final TerritoryAttachment ta = TerritoryAttachment.get(terr);
+						final int currentDamage = ta.getUnitProduction();
+						final IntegerMap<Unit> hits = new IntegerMap<Unit>();
+						final int newDamageTotal = ta.getProduction() - (currentDamage + repairCount);
 						if (newDamageTotal < 0)
 						{
 							return "You cannot repair more than a territory has been hit";
@@ -291,15 +265,13 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 				else
 				// if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data))
 				{
-					int repairCount = repairMap.get(u);
-					
+					final int repairCount = repairMap.get(u);
 					// Display appropriate damaged/repaired factory and factory damage totals
 					if (repairCount > 0)
 					{
-						IntegerMap<Unit> hits = new IntegerMap<Unit>();
-						TripleAUnit taUnit = (TripleAUnit) u;
-						
-						int newDamageTotal = taUnit.getUnitDamage() - repairCount;
+						final IntegerMap<Unit> hits = new IntegerMap<Unit>();
+						final TripleAUnit taUnit = (TripleAUnit) u;
+						final int newDamageTotal = taUnit.getUnitDamage() - repairCount;
 						if (newDamageTotal < 0)
 						{
 							return "You cannot repair more than a unit has been hit";
@@ -316,39 +288,30 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			return null;
 			// return "m_repairCount is empty";
 		}
-		
 		// add changes for spent resources
-		String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
-		
+		final String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
 		addHistoryEvent(totalUnits, remaining, true);
-		
 		// commit changes
 		m_bridge.addChange(changes);
-		
 		return null;
 	}
 	
-	private HashMap<Unit, Integer> getTerritoryRepairs(Map<Unit, IntegerMap<RepairRule>> repairRules)
+	private HashMap<Unit, Integer> getTerritoryRepairs(final Map<Unit, IntegerMap<RepairRule>> repairRules)
 	{
-		HashMap<Unit, Integer> repairMap = new HashMap<Unit, Integer>();
-		
-		for (Unit u : repairRules.keySet())
+		final HashMap<Unit, Integer> repairMap = new HashMap<Unit, Integer>();
+		for (final Unit u : repairRules.keySet())
 		{
-			
-			IntegerMap<RepairRule> rules = repairRules.get(u);
-			
-			TreeSet<RepairRule> repRules = new TreeSet<RepairRule>(repairRuleComparator);
+			final IntegerMap<RepairRule> rules = repairRules.get(u);
+			final TreeSet<RepairRule> repRules = new TreeSet<RepairRule>(repairRuleComparator);
 			repRules.addAll(rules.keySet());
-			Iterator<RepairRule> ruleIter = repRules.iterator();
+			final Iterator<RepairRule> ruleIter = repRules.iterator();
 			while (ruleIter.hasNext())
 			{
-				RepairRule repairRule = ruleIter.next();
-				int quantity = rules.getInt(repairRule);
-				
+				final RepairRule repairRule = ruleIter.next();
+				final int quantity = rules.getInt(repairRule);
 				repairMap.put(u, quantity);
 			}
 		}
-		
 		return repairMap;
 	}
 	
@@ -356,15 +319,15 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	{
 		UnitTypeComparator utc = new UnitTypeComparator();
 		
-		public int compare(RepairRule o1, RepairRule o2)
+		public int compare(final RepairRule o1, final RepairRule o2)
 		{
-			UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
-			UnitType u2 = (UnitType) o2.getResults().keySet().iterator().next();
+			final UnitType u1 = (UnitType) o1.getResults().keySet().iterator().next();
+			final UnitType u2 = (UnitType) o2.getResults().keySet().iterator().next();
 			return utc.compare(u1, u2);
 		}
 	};
 	
-	private void addHistoryEvent(Collection<Unit> totalUnits, String remainingText, boolean repair)
+	private void addHistoryEvent(final Collection<Unit> totalUnits, final String remainingText, final boolean repair)
 	{
 		// add history event
 		String transcriptText;
@@ -386,38 +349,33 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		m_bridge.getHistoryWriter().setRenderingData(totalUnits);
 	}
 	
-	private IntegerMap<Resource> getCosts(IntegerMap<ProductionRule> productionRules, PlayerID player)
+	private IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules, final PlayerID player)
 	{
-		IntegerMap<Resource> costs = new IntegerMap<Resource>();
-		
-		Iterator<ProductionRule> rules = productionRules.keySet().iterator();
+		final IntegerMap<Resource> costs = new IntegerMap<Resource>();
+		final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
 		while (rules.hasNext())
 		{
-			ProductionRule rule = rules.next();
+			final ProductionRule rule = rules.next();
 			costs.addMultiple(rule.getCosts(), productionRules.getInt(rule));
 		}
 		return costs;
 	}
 	
-	private IntegerMap<Resource> getRepairCosts(Map<Unit, IntegerMap<RepairRule>> repairRules, PlayerID player)
+	private IntegerMap<Resource> getRepairCosts(final Map<Unit, IntegerMap<RepairRule>> repairRules, final PlayerID player)
 	{
-		Collection<Unit> units = repairRules.keySet();
-		Iterator<Unit> iter = units.iterator();
-		IntegerMap<Resource> costs = new IntegerMap<Resource>();
-		
+		final Collection<Unit> units = repairRules.keySet();
+		final Iterator<Unit> iter = units.iterator();
+		final IntegerMap<Resource> costs = new IntegerMap<Resource>();
 		while (iter.hasNext())
 		{
-			Unit u = iter.next();
-			
-			Iterator<RepairRule> rules = repairRules.get(u).keySet().iterator();
-			
+			final Unit u = iter.next();
+			final Iterator<RepairRule> rules = repairRules.get(u).keySet().iterator();
 			while (rules.hasNext())
 			{
-				RepairRule rule = rules.next();
+				final RepairRule rule = rules.next();
 				costs.addMultiple(rule.getCosts(), repairRules.get(u).getInt(rule));
 			}
 		}
-		
 		if (isIncreasedFactoryProduction(player))
 		{
 			// UnitCategory unitCategory = categorized.iterator().next();
@@ -425,38 +383,33 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			// cost = (int) (Math.round(quantity/2));
 			costs.multiplyAllValuesBy((float) 0.5, 3);
 		}
-		
 		return costs;
 	}
 	
-	private IntegerMap<NamedAttachable> getResults(IntegerMap<ProductionRule> productionRules)
+	private IntegerMap<NamedAttachable> getResults(final IntegerMap<ProductionRule> productionRules)
 	{
-		IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();
-		
-		Iterator<ProductionRule> rules = productionRules.keySet().iterator();
+		final IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();
+		final Iterator<ProductionRule> rules = productionRules.keySet().iterator();
 		while (rules.hasNext())
 		{
-			ProductionRule rule = rules.next();
+			final ProductionRule rule = rules.next();
 			costs.addMultiple(rule.getResults(), productionRules.getInt(rule));
 		}
 		return costs;
 	}
 	
-	private IntegerMap<NamedAttachable> getRepairResults(Map<Unit, IntegerMap<RepairRule>> repairRules)
+	private IntegerMap<NamedAttachable> getRepairResults(final Map<Unit, IntegerMap<RepairRule>> repairRules)
 	{
-		Collection<Unit> units = repairRules.keySet();
-		Iterator<Unit> iter = units.iterator();
-		IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();
-		
+		final Collection<Unit> units = repairRules.keySet();
+		final Iterator<Unit> iter = units.iterator();
+		final IntegerMap<NamedAttachable> costs = new IntegerMap<NamedAttachable>();
 		while (iter.hasNext())
 		{
-			Unit u = iter.next();
-			
-			Iterator<RepairRule> rules = repairRules.get(u).keySet().iterator();
-			
+			final Unit u = iter.next();
+			final Iterator<RepairRule> rules = repairRules.get(u).keySet().iterator();
 			while (rules.hasNext())
 			{
-				RepairRule rule = rules.next();
+				final RepairRule rule = rules.next();
 				costs.addMultiple(rule.getResults(), repairRules.get(u).getInt(rule));
 			}
 		}
@@ -474,27 +427,23 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
-
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
 		return IPurchaseDelegate.class;
 	}
 	
-	protected String removeFromPlayer(PlayerID player, IntegerMap<Resource> costs, CompositeChange changes, Collection<Unit> totalUnits)
+	protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> costs, final CompositeChange changes, final Collection<Unit> totalUnits)
 	{
-		Iterator<Resource> costsIter = costs.keySet().iterator();
+		final Iterator<Resource> costsIter = costs.keySet().iterator();
 		// int AvailPUs = player.getResources().getQuantity(Constants.PUS);
-		
 		while (costsIter.hasNext())
 		{
-			Resource resource = costsIter.next();
-			float quantity = costs.getInt(resource);
-			int cost = (int) quantity;
-			
-			Change change = ChangeFactory.changeResourcesChange(m_player, resource, -cost);
+			final Resource resource = costsIter.next();
+			final float quantity = costs.getInt(resource);
+			final int cost = (int) quantity;
+			final Change change = ChangeFactory.changeResourcesChange(m_player, resource, -cost);
 			changes.add(change);
-			
 			return m_player.getResources().getQuantity(resource) - cost + " PUs remaining";
 		}
 		return "";
@@ -504,10 +453,10 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	{
 		if (!m_player.isAI())
 			return;
-		int currentPUs = m_player.getResources().getQuantity(Constants.PUS);
+		final int currentPUs = m_player.getResources().getQuantity(Constants.PUS);
 		if (currentPUs == 0)
 			return;
-		int bonusPercent = games.strategy.triplea.Properties.getAIBonusIncomePercentage(getData());
+		final int bonusPercent = games.strategy.triplea.Properties.getAIBonusIncomePercentage(getData());
 		if (bonusPercent == 0)
 			return;
 		int toGive = (int) Math.round(((double) currentPUs * (double) bonusPercent / 100));
@@ -517,14 +466,13 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		m_bridge.addChange(ChangeFactory.changeResourcesChange(m_player, getData().getResourceList().getResource(Constants.PUS), toGive));
 	}
 	
-	private boolean isIncreasedFactoryProduction(PlayerID player)
+	private boolean isIncreasedFactoryProduction(final PlayerID player)
 	{
-		TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
+		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
 		return ta.hasIncreasedFactoryProduction();
 	}
-	
 }
 
 

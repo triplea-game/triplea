@@ -17,7 +17,6 @@ package games.strategy.engine.history;
  * @author not attributable
  * @version 1.0
  */
-
 public abstract class IndexedHistoryNode extends HistoryNode
 {
 	// points to the first change we are responsible for
@@ -25,7 +24,7 @@ public abstract class IndexedHistoryNode extends HistoryNode
 	// points after the last change we are responsible for
 	private int m_changeStopIndex = -1;
 	
-	public IndexedHistoryNode(String value, int changeStartIndex, boolean allowsChildren)
+	public IndexedHistoryNode(final String value, final int changeStartIndex, final boolean allowsChildren)
 	{
 		super(value, true);
 		m_changeStartIndex = changeStartIndex;
@@ -41,9 +40,8 @@ public abstract class IndexedHistoryNode extends HistoryNode
 		return m_changeStopIndex;
 	}
 	
-	void setChangeEndIndex(int index)
+	void setChangeEndIndex(final int index)
 	{
 		m_changeStopIndex = index;
 	}
-	
 }

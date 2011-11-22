@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Map.java
  * 
@@ -45,24 +44,22 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public class GameMap extends GameDataComponent implements Iterable<Territory>
 {
-	
-	private Collection<Territory> m_territories = new ArrayList<Territory>();
+	private final Collection<Territory> m_territories = new ArrayList<Territory>();
 	// note that all entries are unmodifiable
-	private Map<Territory, Set<Territory>> m_connections = new HashMap<Territory, Set<Territory>>();
+	private final Map<Territory, Set<Territory>> m_connections = new HashMap<Territory, Set<Territory>>();
 	// for fast lookup based on the string name of the territory
-	private Map<String, Territory> m_territoryLookup = new HashMap<String, Territory>();
-	
+	private final Map<String, Territory> m_territoryLookup = new HashMap<String, Territory>();
 	// nil if the map is not grid-based
 	// otherwise, m_gridDimensions.length is the number of dimensions,
 	// and each element is the size of a dimension
 	private int[] m_gridDimensions = null;
 	
-	GameMap(GameData data)
+	GameMap(final GameData data)
 	{
 		super(data);
 	}
 	
-	public void setGridDimensions(int... gridDimensions)
+	public void setGridDimensions(final int... gridDimensions)
 	{
 		m_gridDimensions = gridDimensions;
 	}
@@ -82,70 +79,59 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	}
 	
 	// public Territory getTerritoryFromCoordinates(int xCoordinate, int yCoordinate)
-	public Territory getTerritoryFromCoordinates(int... coordinate)
+	public Territory getTerritoryFromCoordinates(final int... coordinate)
 	{
 		if (m_gridDimensions == null)
 			return null;
-		
 		if (!isCoordinateValid(coordinate))
 			return null;
-		
 		int listIndex = coordinate[0];
-		
 		int multiplier = 1;
 		for (int i = 1; i < m_gridDimensions.length; i++)
 		{
 			multiplier *= m_gridDimensions[i - 1];
 			listIndex += coordinate[i] * multiplier; // m_gridDimensions[i];
 		}
-		
 		return ((ArrayList<Territory>) m_territories).get(listIndex);
-		
 	}
 	
-	public boolean isCoordinateValid(int... coordinate)
+	public boolean isCoordinateValid(final int... coordinate)
 	{
 		if (coordinate.length != m_gridDimensions.length)
 			return false;
-		
 		for (int i = 0; i < m_gridDimensions.length; i++)
 		{
 			if (coordinate[i] >= m_gridDimensions[i] || coordinate[i] < 0)
 				return false;
 		}
-		
 		return true;
 	}
 	
-	protected void addTerritory(Territory t1)
+	protected void addTerritory(final Territory t1)
 	{
 		if (m_territories.contains(t1))
 			throw new IllegalArgumentException("Map already contains " + t1.getName());
-		
 		m_territories.add(t1);
 		m_connections.put(t1, Collections.<Territory> emptySet());
 		m_territoryLookup.put(t1.getName(), t1);
 	}
 	
-	protected void addConnection(Territory t1, Territory t2)
+	protected void addConnection(final Territory t1, final Territory t2)
 	{
 		if (t1.equals(t2))
 			throw new IllegalArgumentException("Cannot connect a territory to itself");
-		
 		if (!m_territories.contains(t1) || !m_territories.contains(t2))
 			throw new IllegalArgumentException("Map doesnt know about one of " + t1 + " " + t2);
-		
 		// connect t1 to t2
 		setConnection(t1, t2);
 		setConnection(t2, t1);
-		
 	}
 	
-	private void setConnection(Territory from, Territory to)
+	private void setConnection(final Territory from, final Territory to)
 	{
 		// preserves the unmodifiable nature of the entries
-		Set<Territory> current = m_connections.get(from);
-		Set<Territory> modified = new HashSet<Territory>(current);
+		final Set<Territory> current = m_connections.get(from);
+		final Set<Territory> modified = new HashSet<Territory>(current);
 		modified.add(to);
 		m_connections.put(from, Collections.unmodifiableSet(modified));
 	}
@@ -155,7 +141,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            name of the searched territory (case sensitive)
 	 * @return the territory with the given name, or null if no territory can be found (case sensitive)
 	 */
-	public Territory getTerritory(String s)
+	public Territory getTerritory(final String s)
 	{
 		return m_territoryLookup.get(s);
 	}
@@ -165,11 +151,10 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            referring territory
 	 * @return a territories neighbors
 	 */
-	public Set<Territory> getNeighbors(Territory t)
+	public Set<Territory> getNeighbors(final Territory t)
 	{
 		// ok since all entries in connections are already unmodifiable
-		
-		Set<Territory> neighbors = m_connections.get(t);
+		final Set<Territory> neighbors = m_connections.get(t);
 		if (neighbors == null)
 		{
 			throw new IllegalArgumentException("No neighbors for:" + t);
@@ -184,19 +169,18 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            condition the neighboring territories have to match
 	 * @return a territories neighbors
 	 */
-	public Set<Territory> getNeighbors(Territory t, Match<Territory> cond)
+	public Set<Territory> getNeighbors(final Territory t, final Match<Territory> cond)
 	{
 		if (cond == null)
 			return getNeighbors(t);
-		
-		Set<Territory> possible = m_connections.get(t);
-		Set<Territory> passed = new HashSet<Territory>();
+		final Set<Territory> possible = m_connections.get(t);
+		final Set<Territory> passed = new HashSet<Territory>();
 		if (possible == null)
 			return passed;
-		Iterator<Territory> iter = possible.iterator();
+		final Iterator<Territory> iter = possible.iterator();
 		while (iter.hasNext())
 		{
-			Territory current = iter.next();
+			final Territory current = iter.next();
 			if (cond.match(current))
 				passed.add(current);
 		}
@@ -211,80 +195,64 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 * @return a territories neighbors within a certain distance
 	 */
 	@SuppressWarnings("unchecked")
-	public Set<Territory> getNeighbors(Territory territory, int distance)
+	public Set<Territory> getNeighbors(final Territory territory, int distance)
 	{
 		if (distance < 0)
 			throw new IllegalArgumentException("Distance must be positive not:" + distance);
-		
 		if (distance == 0)
 			return Collections.EMPTY_SET;
-		
-		Set<Territory> start = getNeighbors(territory);
-		
+		final Set<Territory> start = getNeighbors(territory);
 		if (distance == 1)
 			return start;
-		
-		Set<Territory> neighbors = getNeighbors(start, new HashSet<Territory>(start), --distance);
+		final Set<Territory> neighbors = getNeighbors(start, new HashSet<Territory>(start), --distance);
 		neighbors.remove(territory);
-		
 		return neighbors;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<Territory> getNeighbors(Territory territory, int distance, Match<Territory> cond)
+	public Set<Territory> getNeighbors(final Territory territory, int distance, final Match<Territory> cond)
 	{
 		if (distance < 0)
 			throw new IllegalArgumentException("Distance must be positive not:" + distance);
-		
 		if (distance == 0)
 			return Collections.EMPTY_SET;
-		
-		Set<Territory> start = getNeighbors(territory, cond);
-		
+		final Set<Territory> start = getNeighbors(territory, cond);
 		if (distance == 1)
 			return start;
-		
-		Set<Territory> neighbors = getNeighbors(start, new HashSet<Territory>(start), --distance, cond);
+		final Set<Territory> neighbors = getNeighbors(start, new HashSet<Territory>(start), --distance, cond);
 		neighbors.remove(territory);
-		
 		return neighbors;
 	}
 	
-	private Set<Territory> getNeighbors(Set<Territory> frontier, Set<Territory> searched, int distance, Match<Territory> cond)
+	private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched, int distance, final Match<Territory> cond)
 	{
 		if (distance == 0)
 			return searched;
-		
-		Iterator<Territory> iter = frontier.iterator();
-		Set<Territory> newFrontier = new HashSet<Territory>();
+		final Iterator<Territory> iter = frontier.iterator();
+		final Set<Territory> newFrontier = new HashSet<Territory>();
 		while (iter.hasNext())
 		{
-			Territory t = iter.next();
+			final Territory t = iter.next();
 			newFrontier.addAll(getNeighbors(t, cond));
 		}
-		
 		newFrontier.removeAll(searched);
 		searched.addAll(newFrontier);
-		
 		return getNeighbors(newFrontier, searched, --distance, cond);
 	}
 	
-	private Set<Territory> getNeighbors(Set<Territory> frontier, Set<Territory> searched, int distance)
+	private Set<Territory> getNeighbors(final Set<Territory> frontier, final Set<Territory> searched, int distance)
 	{
 		if (distance == 0)
 			return searched;
-		
-		Iterator<Territory> iter = frontier.iterator();
-		Set<Territory> newFrontier = new HashSet<Territory>();
+		final Iterator<Territory> iter = frontier.iterator();
+		final Set<Territory> newFrontier = new HashSet<Territory>();
 		while (iter.hasNext())
 		{
-			Territory t = iter.next();
+			final Territory t = iter.next();
 			newFrontier.addAll(getNeighbors(t));
 		}
-		
 		newFrontier.removeAll(searched);
 		searched.addAll(newFrontier);
-		
 		return getNeighbors(newFrontier, searched, --distance);
 	}
 	
@@ -295,7 +263,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            end territory of the route
 	 * @return the shortest route between two territories or null if no route exists
 	 */
-	public Route getRoute(Territory t1, Territory t2)
+	public Route getRoute(final Territory t1, final Territory t2)
 	{
 		return getRoute(t1, t2, Matches.TerritoryIsLandOrWater);
 	}
@@ -307,7 +275,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            end territory of the route
 	 * @return the shortest land route between two territories or null if no route exists
 	 */
-	public Route getLandRoute(Territory t1, Territory t2)
+	public Route getLandRoute(final Territory t1, final Territory t2)
 	{
 		return getRoute(t1, t2, Matches.TerritoryIsLand);
 	}
@@ -319,7 +287,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            end territory of the route
 	 * @return the shortest water route between two territories or null if no route exists
 	 */
-	public Route getWaterRoute(Territory t1, Territory t2)
+	public Route getWaterRoute(final Territory t1, final Territory t2)
 	{
 		return getRoute(t1, t2, Matches.TerritoryIsWater);
 	}
@@ -334,7 +302,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 * @return the shortest route between two territories so that covered territories match the condition
 	 *         or null if no route exists
 	 */
-	public Route getRoute(Territory t1, Territory t2, Match<Territory> cond)
+	public Route getRoute(final Territory t1, final Territory t2, final Match<Territory> cond)
 	{
 		if (t1 == t2)
 		{
@@ -344,11 +312,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		{
 			return new Route(t1, t2);
 		}
-		RouteFinder engine = new RouteFinder(this, cond);
+		final RouteFinder engine = new RouteFinder(this, cond);
 		return engine.findRoute(t1, t2);
 	}
 	
-	public Route getRoute_IgnoreEnd(Territory t1, Territory t2, Match<Territory> match)
+	public Route getRoute_IgnoreEnd(final Territory t1, final Territory t2, final Match<Territory> match)
 	{
 		return getRoute(t1, t2, new CompositeMatchOr<Territory>(match, Matches.territoryIs(t2)));
 	}
@@ -372,22 +340,22 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            HashMap of territory matches for covered territories
 	 * @return a composite route between two territories
 	 */
-	public Route getCompositeRoute(Territory t1, Territory t2, HashMap<Match<Territory>, Integer> matches)
+	public Route getCompositeRoute(final Territory t1, final Territory t2, final HashMap<Match<Territory>, Integer> matches)
 	{
 		if (t1 == t2)
 		{
 			return new Route(t1);
 		}
-		CompositeMatch<Territory> allCond = new CompositeMatchOr<Territory>(matches.keySet());
+		final CompositeMatch<Territory> allCond = new CompositeMatchOr<Territory>(matches.keySet());
 		if (getNeighbors(t1, allCond).contains(t2))
 		{
 			return new Route(t1, t2);
 		}
-		CompositeRouteFinder engine = new CompositeRouteFinder(this, matches);
+		final CompositeRouteFinder engine = new CompositeRouteFinder(this, matches);
 		return engine.findRoute(t1, t2);
 	}
 	
-	public Route getCompositeRoute_IgnoreEnd(Territory t1, Territory t2, HashMap<Match<Territory>, Integer> matches)
+	public Route getCompositeRoute_IgnoreEnd(final Territory t1, final Territory t2, final HashMap<Match<Territory>, Integer> matches)
 	{
 		matches.put(Matches.territoryIs(t2), 0);
 		return getCompositeRoute(t1, t2, matches);
@@ -400,7 +368,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            end territory of the route
 	 * @return the distance between two territories or -1 if they are not connected
 	 */
-	public int getDistance(Territory t1, Territory t2)
+	public int getDistance(final Territory t1, final Territory t2)
 	{
 		return getDistance(t1, t2, Matches.TerritoryIsLandOrWater);
 	}
@@ -412,7 +380,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            end territory of the route
 	 * @return the land distance between two territories or -1 if they are not connected
 	 */
-	public int getLandDistance(Territory t1, Territory t2)
+	public int getLandDistance(final Territory t1, final Territory t2)
 	{
 		return getDistance(t1, t2, Matches.TerritoryIsLand);
 	}
@@ -424,7 +392,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            end territory of the route
 	 * @return the water distance between two territories or -1 if they are not connected
 	 */
-	public int getWaterDistance(Territory t1, Territory t2)
+	public int getWaterDistance(final Territory t1, final Territory t2)
 	{
 		return getDistance(t1, t2, Matches.TerritoryIsWater);
 	}
@@ -439,12 +407,11 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 * @return the distance between two territories where the covered territories of the route satisfy the condition
 	 *         or -1 if they are not connected
 	 */
-	public int getDistance(Territory t1, Territory t2, Match<Territory> cond)
+	public int getDistance(final Territory t1, final Territory t2, final Match<Territory> cond)
 	{
 		if (t1.equals(t2))
 			return 0;
-		
-		Set<Territory> frontier = new HashSet<Territory>();
+		final Set<Territory> frontier = new HashSet<Territory>();
 		frontier.add(t1);
 		return getDistance(0, new HashSet<Territory>(), frontier, t2, cond);
 	}
@@ -454,36 +421,30 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 * Territories on the frontier are not target. They represent the extent of paths already searched.
 	 * Territories in searched have already been on the frontier.
 	 */
-	private int getDistance(int distance, Set<Territory> searched, Set<Territory> frontier, Territory target, Match<Territory> cond)
+	private int getDistance(final int distance, final Set<Territory> searched, final Set<Territory> frontier, final Territory target, final Match<Territory> cond)
 	{
-		
 		// add the frontier to the searched
 		searched.addAll(frontier);
 		// find the new frontier
-		Set<Territory> newFrontier = new HashSet<Territory>();
-		Iterator<Territory> frontierIterator = frontier.iterator();
+		final Set<Territory> newFrontier = new HashSet<Territory>();
+		final Iterator<Territory> frontierIterator = frontier.iterator();
 		while (frontierIterator.hasNext())
 		{
-			Territory onFrontier = frontierIterator.next();
-			
-			Set<Territory> connections = m_connections.get(onFrontier);
-			
-			Iterator<Territory> connectionIterator = connections.iterator();
+			final Territory onFrontier = frontierIterator.next();
+			final Set<Territory> connections = m_connections.get(onFrontier);
+			final Iterator<Territory> connectionIterator = connections.iterator();
 			while (connectionIterator.hasNext())
 			{
-				Territory nextFrontier = connectionIterator.next();
+				final Territory nextFrontier = connectionIterator.next();
 				if (cond.match(nextFrontier))
 					newFrontier.add(nextFrontier);
 			}
 		}
-		
 		if (newFrontier.contains(target))
 			return distance + 1;
-		
 		newFrontier.removeAll(searched);
 		if (newFrontier.isEmpty())
 			return -1;
-		
 		return getDistance(distance + 1, searched, newFrontier, target, cond);
 	}
 	
@@ -497,14 +458,13 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		return m_territories.iterator();
 	}
 	
-	public Collection<Territory> getTerritoriesOwnedBy(PlayerID player)
+	public Collection<Territory> getTerritoriesOwnedBy(final PlayerID player)
 	{
-		Iterator<Territory> iter = m_territories.iterator();
-		Collection<Territory> owner = new ArrayList<Territory>();
-		
+		final Iterator<Territory> iter = m_territories.iterator();
+		final Collection<Territory> owner = new ArrayList<Territory>();
 		while (iter.hasNext())
 		{
-			Territory territory = iter.next();
+			final Territory territory = iter.next();
 			if (territory.getOwner().equals(player))
 			{
 				owner.add(territory);
@@ -518,10 +478,10 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	 *            route containing the territories in question
 	 * @return whether each territory is connected to the preceding territory
 	 */
-	public boolean isValidRoute(Route route)
+	public boolean isValidRoute(final Route route)
 	{
 		Territory previous = null;
-		for (Territory t : route)
+		for (final Territory t : route)
 		{
 			if (previous != null)
 			{
@@ -529,7 +489,6 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 				{
 					return false;
 				}
-				
 			}
 			previous = t;
 		}

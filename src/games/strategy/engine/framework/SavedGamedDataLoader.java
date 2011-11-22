@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework;
 
 /**
@@ -29,7 +28,6 @@ package games.strategy.engine.framework;
  * @author Sean Bridges
  * 
  */
-
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 
@@ -39,20 +37,17 @@ import javax.swing.JFileChooser;
 
 public class SavedGamedDataLoader implements IGameDataLoader
 {
-	
 	public GameData loadData()
 	{
-		
-		SaveGameFileChooser fileChooser = SaveGameFileChooser.getInstance();
-		
-		int rVal = fileChooser.showOpenDialog(null);
+		final SaveGameFileChooser fileChooser = SaveGameFileChooser.getInstance();
+		final int rVal = fileChooser.showOpenDialog(null);
 		if (rVal == JFileChooser.APPROVE_OPTION)
 		{
-			File f = fileChooser.getSelectedFile();
+			final File f = fileChooser.getSelectedFile();
 			try
 			{
 				return new GameDataManager().loadGame(f);
-			} catch (Exception e)
+			} catch (final Exception e)
 			{
 				e.printStackTrace();
 				System.exit(0);
@@ -65,5 +60,4 @@ public class SavedGamedDataLoader implements IGameDataLoader
 			return null;
 		}
 	}
-	
 }

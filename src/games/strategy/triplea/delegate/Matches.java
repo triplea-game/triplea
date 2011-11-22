@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Matches.java
  * 
@@ -19,18 +18,17 @@
  * 
  * @version $LastChangedDate$
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -69,7 +67,6 @@ import java.util.Set;
  * <pre>
  * boolean hasLand = false;
  * Iterator iter = someCollection.iterator();
- * 
  * while (iter.hasNext())
  * {
  * 	Unit unit = (Unit) iter.next();
@@ -95,95 +92,76 @@ import java.util.Set;
  */
 public class Matches
 {
-	
 	public static final Match<Object> IsTerritory = new Match<Object>()
 	{
-		
 		@Override
-		public boolean match(Object o)
+		public boolean match(final Object o)
 		{
 			return o != null && o instanceof Territory;
 		}
 	};
-	
 	public static final Match<Unit> UnitIsTwoHit = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.isTwoHit();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsDamaged = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
 			return unit.getHits() > 0;
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotDamaged = new InverseMatch<Unit>(UnitIsDamaged);
-	
 	public static final Match<Unit> UnitIsSea = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.isSea();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsSub = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.isSub();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotSub = new InverseMatch<Unit>(UnitIsSub);
-	
 	public static final Match<Unit> UnitIsCombatTransport = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return (ua.isCombatTransport() && ua.isSea());
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotCombatTransport = new InverseMatch<Unit>(UnitIsCombatTransport);
-	
 	public static final Match<Unit> UnitIsTransportButNotCombatTransport = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return (ua.getTransportCapacity() != -1 && ua.isSea() && !ua.isCombatTransport());
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotTransportButCouldBeCombatTransport = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua.getTransportCapacity() == -1)
 				return true;
 			else if (ua.isCombatTransport() && ua.isSea())
@@ -192,149 +170,121 @@ public class Matches
 				return false;
 		}
 	};
-	
 	public static final Match<Unit> UnitCanMove = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit u)
+		public boolean match(final Unit u)
 		{
-			
 			return UnitAttachment.get(u.getType()).getMovement(u.getOwner()) > 0;
 		}
 	};
-	
 	public static final Match<Unit> UnitIsDestroyer = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getIsDestroyer();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsDestroyer = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType type)
+		public boolean match(final UnitType type)
 		{
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getIsDestroyer();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsBB = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (!ua.isSea())
 				return false;
 			return (ua.isTwoHit());
 		}
 	};
-	
 	public static final Match<Unit> UnitIsRadarAA = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
 			if (!(UnitIsAA.match(unit) || UnitIsAAforCombatOnly.match(unit) || UnitIsAAforBombingThisUnitOnly.match(unit)))
 			{
 				return false;
 			}
-			
-			TechAttachment ta = (TechAttachment) unit.getOwner().getAttachment(Constants.TECH_ATTACHMENT_NAME);
+			final TechAttachment ta = (TechAttachment) unit.getOwner().getAttachment(Constants.TECH_ATTACHMENT_NAME);
 			if (ta == null)
 				return false;
 			return ta.hasAARadar();
-			
 		}
 	};
-	
 	public static final Match<Unit> UnitIsTransport = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return (ua.getTransportCapacity() != -1 && ua.isSea());
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotTransport = UnitIsTransport.invert();
-	
 	public static final Match<Unit> UnitIsTransportAndNotDestroyer = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return (!Matches.UnitIsDestroyer.match(unit) && ua.getTransportCapacity() != -1 && ua.isSea());
 		}
 	};
-	
 	public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua == null)
 				return false;
 			return ua.isStrategicBomber();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotStrategicBomber = new InverseMatch<Unit>(UnitIsStrategicBomber);
-	
 	public static final Match<UnitType> UnitTypeCanLandOnCarrier = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitAttachment ua = UnitAttachment.get(obj);
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			if (ua == null)
 				return false;
 			return ua.getCarrierCost() != -1;
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeCannotLandOnCarrier = new InverseMatch<UnitType>(UnitTypeCanLandOnCarrier);
-	
 	public static final Match<Unit> unitHasMoved = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
+			final Unit unit = obj;
 			return TripleAUnit.get(unit).getAlreadyMoved() > 0;
 		}
 	};
-	
 	public static final Match<Unit> unitHasNotMoved = new InverseMatch<Unit>(unitHasMoved);
 	
 	public static Match<Unit> unitCanAttack(final PlayerID id)
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				if (ua.getMovement(id) <= 0)
 					return false;
 				return ua.getAttack(id) > 0;
@@ -346,11 +296,10 @@ public class Matches
 	{
 		return new Match<UnitType>()
 		{
-			
 			@Override
-			public boolean match(UnitType uT)
+			public boolean match(final UnitType uT)
 			{
-				UnitAttachment ua = UnitAttachment.get(uT);
+				final UnitAttachment ua = UnitAttachment.get(uT);
 				return ua.getMovement(id) <= 0;
 			}
 		};
@@ -360,11 +309,10 @@ public class Matches
 	{
 		return new Match<UnitType>()
 		{
-			
 			@Override
-			public boolean match(UnitType uT)
+			public boolean match(final UnitType uT)
 			{
-				UnitAttachment ua = UnitAttachment.get(uT);
+				final UnitAttachment ua = UnitAttachment.get(uT);
 				if (ua.getMovement(id) <= 0)
 					return false;
 				return ua.getAttack(id) > 0;
@@ -376,11 +324,10 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				return ua.getAttack(unit.getOwner()) >= attackValue;
 			}
 		};
@@ -390,11 +337,10 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				return ua.getDefense(unit.getOwner()) >= defendValue;
 			}
 		};
@@ -404,9 +350,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
 				return data.getRelationshipTracker().isAtWar(u.getOwner(), player);
 			}
@@ -415,79 +360,65 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsNotSea = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return !ua.isSea();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsSea = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			
-			UnitAttachment ua = UnitAttachment.get(obj);
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			return ua.isSea();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsNotSea = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType type)
+		public boolean match(final UnitType type)
 		{
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return !ua.isSea();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsSeaOrAir = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType type)
+		public boolean match(final UnitType type)
 		{
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isSea() || ua.isAir();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsCarrier = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType type)
+		public boolean match(final UnitType type)
 		{
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return (ua.getCarrierCapacity() != -1);
 		}
 	};
-	
 	public static final Match<Unit> UnitIsAir = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.isAir();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotAir = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return !ua.isAir();
 		}
 	};
@@ -496,11 +427,10 @@ public class Matches
 	{
 		return new Match<UnitType>()
 		{
-			
 			@Override
-			public boolean match(UnitType type)
+			public boolean match(final UnitType type)
 			{
-				UnitAttachment ua = UnitAttachment.get(type);
+				final UnitAttachment ua = UnitAttachment.get(type);
 				return ua.getCanBombard(id);
 			}
 		};
@@ -510,12 +440,11 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit o)
+			public boolean match(final Unit o)
 			{
-				Unit unit = o;
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final Unit unit = o;
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				return ua.getCanBeGivenByTerritoryTo().contains(player);
 			}
 		};
@@ -525,28 +454,27 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit o)
+			public boolean match(final Unit o)
 			{
 				if (!games.strategy.triplea.Properties.getCaptureUnitsOnEnteringTerritory(data))
 					return false;
-				Unit unit = o;
-				PlayerID unitOwner = unit.getOwner();
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
-				boolean unitCanBeCapturedByPlayer = ua.getCanBeCapturedOnEnteringBy().contains(player);
-				TerritoryAttachment ta = TerritoryAttachment.get(terr);
+				final Unit unit = o;
+				final PlayerID unitOwner = unit.getOwner();
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final boolean unitCanBeCapturedByPlayer = ua.getCanBeCapturedOnEnteringBy().contains(player);
+				final TerritoryAttachment ta = TerritoryAttachment.get(terr);
 				if (ta == null)
 					return false;
 				if (ta.getCaptureUnitOnEnteringBy() == null)
 					return false;
-				boolean territoryCanHaveUnitsThatCanBeCapturedByPlayer = ta.getCaptureUnitOnEnteringBy().contains(player);
-				PlayerAttachment pa = PlayerAttachment.get(unitOwner);
+				final boolean territoryCanHaveUnitsThatCanBeCapturedByPlayer = ta.getCaptureUnitOnEnteringBy().contains(player);
+				final PlayerAttachment pa = PlayerAttachment.get(unitOwner);
 				if (pa == null)
 					return false;
 				if (pa.getCaptureUnitOnEnteringBy() == null)
 					return false;
-				boolean unitOwnerCanLetUnitsBeCapturedByPlayer = pa.getCaptureUnitOnEnteringBy().contains(player);
+				final boolean unitOwnerCanLetUnitsBeCapturedByPlayer = pa.getCaptureUnitOnEnteringBy().contains(player);
 				return (unitCanBeCapturedByPlayer && territoryCanHaveUnitsThatCanBeCapturedByPlayer && unitOwnerCanLetUnitsBeCapturedByPlayer);
 			}
 		};
@@ -556,11 +484,10 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit o)
+			public boolean match(final Unit o)
 			{
-				Match<Unit> byOrFrom = new CompositeMatchOr<Unit>(UnitDestroyedWhenCapturedBy(playerBY), UnitDestroyedWhenCapturedFrom());
+				final Match<Unit> byOrFrom = new CompositeMatchOr<Unit>(UnitDestroyedWhenCapturedBy(playerBY), UnitDestroyedWhenCapturedFrom());
 				return byOrFrom.match(o);
 			}
 		};
@@ -570,14 +497,13 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
-				UnitAttachment ua = UnitAttachment.get(u.getType());
+				final UnitAttachment ua = UnitAttachment.get(u.getType());
 				if (ua.getDestroyedWhenCapturedBy().isEmpty())
 					return false;
-				for (Tuple<String, PlayerID> tuple : ua.getDestroyedWhenCapturedBy())
+				for (final Tuple<String, PlayerID> tuple : ua.getDestroyedWhenCapturedBy())
 				{
 					if (tuple.getFirst().equals("BY") && tuple.getSecond().equals(playerBY))
 						return true;
@@ -591,14 +517,13 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
-				UnitAttachment ua = UnitAttachment.get(u.getType());
+				final UnitAttachment ua = UnitAttachment.get(u.getType());
 				if (ua.getDestroyedWhenCapturedBy().isEmpty())
 					return false;
-				for (Tuple<String, PlayerID> tuple : ua.getDestroyedWhenCapturedBy())
+				for (final Tuple<String, PlayerID> tuple : ua.getDestroyedWhenCapturedBy())
 				{
 					if (tuple.getFirst().equals("FROM") && tuple.getSecond().equals(u.getOwner()))
 						return true;
@@ -610,26 +535,23 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsAirBase = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getIsAirBase();
 		}
 	};
-	
 	/**
 	 * Factories are bombable/rocketable already.
 	 * Use a CompositeMatchOr to find factories + canBeDamaged (Matches.UnitIsFactoryOrCanBeDamaged)
 	 */
 	public static final Match<Unit> UnitCanBeDamagedButIsNotFactory = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getCanBeDamaged() && !ua.isFactory();
 		}
 	};
@@ -638,23 +560,21 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				if (!ua.getCanBeDamaged() && !ua.isFactory())
 					return true;
-				
 				if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getData()))
 				{
-					TerritoryAttachment ta = TerritoryAttachment.get(t);
-					int currentDamage = ta.getProduction() - ta.getUnitProduction();
+					final TerritoryAttachment ta = TerritoryAttachment.get(t);
+					final int currentDamage = ta.getProduction() - ta.getUnitProduction();
 					return currentDamage >= 2 * ta.getProduction();
 				}
 				else if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData()))
 				{
-					TripleAUnit taUnit = (TripleAUnit) unit;
+					final TripleAUnit taUnit = (TripleAUnit) unit;
 					return taUnit.getUnitDamage() >= taUnit.getHowMuchDamageCanThisUnitTakeTotal(unit, t);
 				}
 				else
@@ -667,11 +587,10 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				TripleAUnit taUnit = (TripleAUnit) unit;
+				final TripleAUnit taUnit = (TripleAUnit) unit;
 				return taUnit.getUnitDamage() > 0;
 			}
 		};
@@ -681,20 +600,16 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
 				if (!UnitIsFactoryOrCanBeDamaged.match(unit))
 					return false;
-				
 				if (!games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(unit.getData())
 							|| games.strategy.triplea.Properties.getSBRAffectsUnitProduction(unit.getData()))
 					return false;
-				
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
-				TripleAUnit taUnit = (TripleAUnit) unit;
-				
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final TripleAUnit taUnit = (TripleAUnit) unit;
 				if (ua.getMaxOperationalDamage() < 0)
 				{
 					// factories may or may not have max operational damage set, so we must still determine here
@@ -710,24 +625,21 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanDieFromReachingMaxDamage = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (!ua.getCanBeDamaged() && !ua.isFactory())
 				return false;
 			return ua.getCanDieFromReachingMaxDamage();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsInfrastructure = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getIsInfrastructure();
 		}
 	};
@@ -736,22 +648,20 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
 				// if unit has attack or defense, return true
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				if (attack && ua.getAttack(player) > 0)
 					return true;
 				if (!attack && ua.getDefense(player) > 0)
 					return true;
-				
 				// if unit can support other units, return true
-				Iterator<UnitSupportAttachment> iter = UnitSupportAttachment.get(data).iterator();
+				final Iterator<UnitSupportAttachment> iter = UnitSupportAttachment.get(data).iterator();
 				while (iter.hasNext())
 				{
-					UnitSupportAttachment rule = iter.next();
+					final UnitSupportAttachment rule = iter.next();
 					if (unit.getType().equals(rule.getAttatchedTo()))
 						return true;
 				}
@@ -762,22 +672,19 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanScramble = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getCanScramble();
 		}
 	};
-	
 	public static final Match<Unit> UnitWasScrambled = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			TripleAUnit taUnit = (TripleAUnit) obj;
+			final TripleAUnit taUnit = (TripleAUnit) obj;
 			return taUnit.getWasScrambled();
 		}
 	};
@@ -786,11 +693,10 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				return ua.getCanBombard(id);
 			}
 		};
@@ -798,24 +704,21 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanBlitz = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getCanBlitz();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsLandTransport = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getIsLandTransport();
 		}
 	};
@@ -824,12 +727,11 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit obj)
+			public boolean match(final Unit obj)
 			{
-				Unit unit = obj;
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final Unit unit = obj;
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				return !ua.isFactory() && !ua.isAA() && !ua.getIsInfrastructure() && !UnitCanBeCapturedOnEnteringToInThisTerritory(player, terr, data).match(unit);
 			}
 		};
@@ -837,84 +739,71 @@ public class Matches
 	
 	public static final Match<Unit> UnitIsDestructibleInCombatShort = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return !ua.isFactory() && !ua.isAA() && !ua.getIsInfrastructure();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsSuicide = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getIsSuicide();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsKamikaze = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getIsKamikaze();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsAir = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isAir();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsNotAir = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return !ua.isAir();
 		}
 	};
-	
 	public static final Match<Unit> UnitCanLandOnCarrier = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getCarrierCost() != -1;
 		}
 	};
-	
 	public static final Match<Unit> UnitIsCarrier = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getCarrierCapacity() != -1;
 		}
 	};
@@ -923,12 +812,11 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit obj)
+			public boolean match(final Unit obj)
 			{
-				Unit unit = obj;
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final Unit unit = obj;
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				return ua.getCarrierCapacity() != -1 && data.getRelationshipTracker().isAllied(player, obj.getOwner());
 			}
 		};
@@ -936,489 +824,403 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanBeTransported = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getTransportCost() != -1;
 		}
 	};
-	
 	public static final Match<Unit> UnitCanNotBeTransported = new InverseMatch<Unit>(UnitCanBeTransported);
-	
 	public static final Match<Unit> UnitWasAmphibious = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			TripleAUnit taUnit = (TripleAUnit) obj;
+			final TripleAUnit taUnit = (TripleAUnit) obj;
 			return taUnit.getWasAmphibious();
 		}
 	};
-	
 	public static final Match<Unit> UnitWasNotAmphibious = new InverseMatch<Unit>(UnitWasAmphibious);
-	
 	public static final Match<Unit> UnitWasInCombat = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			TripleAUnit taUnit = (TripleAUnit) obj;
+			final TripleAUnit taUnit = (TripleAUnit) obj;
 			return taUnit.getWasInCombat();
 		}
 	};
-	
 	public static final Match<Unit> UnitWasUnloadedThisTurn = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			TripleAUnit taUnit = (TripleAUnit) obj;
+			final TripleAUnit taUnit = (TripleAUnit) obj;
 			return taUnit.getUnloadedTo() != null;
 		}
 	};
-	
 	public static final Match<Unit> UnitWasLoadedThisTurn = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			TripleAUnit taUnit = (TripleAUnit) obj;
+			final TripleAUnit taUnit = (TripleAUnit) obj;
 			return taUnit.getWasLoadedThisTurn();
 		}
 	};
-	
 	public static final Match<Unit> UnitWasNotLoadedThisTurn = new InverseMatch<Unit>(UnitWasLoadedThisTurn);
-	
 	public static final Match<Unit> UnitCanTransport = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.getTransportCapacity() != -1;
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeCanTransport = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getTransportCapacity() != -1;
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeCanBeTransported = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getTransportCost() != -1;
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsFactory = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isFactory();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeCanProduceUnits = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getCanProduceUnits();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsFactoryOrIsInfrastructure = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isFactory() || ua.getIsInfrastructure();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsFactoryOrIsInfrastructureButNotAAofAnyKind = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return (ua.isFactory() || ua.getIsInfrastructure()) && !(ua.isAA() || ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly());
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsInfantry = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isInfantry();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsArtillery = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isArtillery();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeHasMaxBuildRestrictions = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getMaxBuiltPerPlayer() >= 0;
 		}
 	};
-	
 	public static final Match<Unit> UnitIsFactory = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isFactory();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotFactory = new InverseMatch<Unit>(UnitIsFactory);
-	
 	public static final Match<Unit> UnitCanProduceUnits = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getCanProduceUnits();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsAA = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitAttachment ua = UnitAttachment.get(obj);
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			return ua.isAA();
 		}
 	};
 	public static final Match<UnitType> UnitTypeIsAAofAnyKind = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitAttachment ua = UnitAttachment.get(obj);
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			return ua.isAA() || ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly();
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsAAOrFactory = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitAttachment ua = UnitAttachment.get(obj);
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			if (ua.isAA() || ua.isFactory())
 				return true;
 			return false;
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeIsAAOrIsFactoryOrIsInfrastructure = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitAttachment ua = UnitAttachment.get(obj);
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			if (ua.isAA() || ua.isFactory() || ua.getIsInfrastructure())
 				return true;
 			return false;
 		}
 	};
-	
 	public static final Match<Unit> UnitIsAAorIsRocket = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isAA() || ua.getIsRocket();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsAAorIsAAmovement = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isAA() || ua.getIsAAmovement();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsAA = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isAA();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsAAforCombatOnly = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getIsAAforCombatOnly();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsAAforCombat = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getIsAAforCombatOnly() || ua.isAA();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsAAforBombingThisUnitOnly = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getIsAAforBombingThisUnitOnly();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsAAforBombing = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getIsAAforBombingThisUnitOnly() || ua.isAA();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsAAforAnything = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getIsAAforCombatOnly() || ua.getIsAAforBombingThisUnitOnly() || ua.isAA();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotAA = new InverseMatch<Unit>(UnitIsAA);
-	
 	public static final Match<Unit> UnitIsInfantry = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isInfantry();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotInfantry = new InverseMatch<Unit>(UnitIsInfantry);
-	
 	public static final Match<Unit> UnitIsMarine = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isMarine();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotMarine = new InverseMatch<Unit>(UnitIsMarine);
-	
 	public static final Match<Unit> UnitIsAirTransportable = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			TechAttachment ta = TechAttachment.get(obj.getOwner());
+			final TechAttachment ta = TechAttachment.get(obj.getOwner());
 			if (ta == null || !ta.hasParatroopers())
 			{
 				return false;
 			}
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isAirTransportable();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotAirTransportable = new InverseMatch<Unit>(UnitIsAirTransportable);
-	
 	public static final Match<Unit> UnitIsAirTransport = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			TechAttachment ta = TechAttachment.get(obj.getOwner());
+			final TechAttachment ta = TechAttachment.get(obj.getOwner());
 			if (ta == null || !ta.hasParatroopers())
 			{
 				return false;
 			}
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isAirTransport();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotAirTransport = new InverseMatch<Unit>(UnitIsAirTransport);
-	
 	public static final Match<Unit> UnitIsArtillery = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isArtillery();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsArtillerySupportable = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			UnitType type = obj.getUnitType();
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isArtillerySupportable();
 		}
 	};
-	
 	// TODO: CHECK whether this makes any sense
 	public static final Match<Territory> TerritoryIsLandOrWater = new Match<Territory>()
 	{
-		
 		@Override
-		public boolean match(Territory t)
+		public boolean match(final Territory t)
 		{
 			return t != null && t instanceof Territory;
 		}
 	};
-	
 	public static final Match<Territory> TerritoryIsWater = new Match<Territory>()
 	{
-		
 		@Override
-		public boolean match(Territory t)
+		public boolean match(final Territory t)
 		{
 			return t.isWater();
 		}
 	};
-	
 	public static final Match<Territory> TerritoryIsVictoryCity = new Match<Territory>()
 	{
-		
 		@Override
-		public boolean match(Territory t)
+		public boolean match(final Territory t)
 		{
-			
-			TerritoryAttachment ta = TerritoryAttachment.get(t);
+			final TerritoryAttachment ta = TerritoryAttachment.get(t);
 			if (ta == null)
 				return false;
 			return ta.isVictoryCity();
 		}
 	};
-	
 	public static final Match<Territory> TerritoryHasSomeDamage = new Match<Territory>()
 	{
-		
 		@Override
-		public boolean match(Territory t)
+		public boolean match(final Territory t)
 		{
-			TerritoryAttachment ta = TerritoryAttachment.get(t);
+			final TerritoryAttachment ta = TerritoryAttachment.get(t);
 			if (ta == null)
 				return false;
 			return ta.getUnitProduction() < ta.getProduction();
@@ -1429,9 +1231,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
 				return TerritoryHasSomeDamage.match(t);
 			}
@@ -1439,12 +1240,10 @@ public class Matches
 	}
 	
 	public static final Match<Territory> TerritoryIsLand = new InverseMatch<Territory>(TerritoryIsWater);
-	
 	public static final Match<Territory> TerritoryIsEmpty = new Match<Territory>()
 	{
-		
 		@Override
-		public boolean match(Territory t)
+		public boolean match(final Territory t)
 		{
 			return t.getUnits().size() == 0;
 		}
@@ -1454,9 +1253,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory terr)
+			public boolean match(final Territory terr)
 			{
 				return TerritoryAttachment.get(terr).isConvoyRoute();
 			}
@@ -1467,11 +1265,10 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				TerritoryAttachment ta = TerritoryAttachment.get(t);
+				final TerritoryAttachment ta = TerritoryAttachment.get(t);
 				/*If the neighboring territory is a convoy route and matches the current territory's convoy route
 				*(territories may touch more than 1 route)*/
 				if (ta != null && ta.isConvoyRoute() && ta.getConvoyAttached().equals(origTerr.getName()))
@@ -1489,13 +1286,12 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				// This method will still return true if territory t is an impassible or restricted territory With enemy neighbors. Makes sure your AI does not include any impassible or restricted territories by using this:
 				// CompositeMatch<Territory> territoryHasEnemyLandNeighborAndIsNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player), Matches.territoryHasEnemyLandNeighbor(data, player));
-				CompositeMatch<Territory> condition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
+				final CompositeMatch<Territory> condition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
 				if (data.getMap().getNeighbors(t, condition).size() > 0)
 					return true;
 				return false;
@@ -1507,11 +1303,10 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				CompositeMatch<Unit> destroyerUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsDestroyer, Matches.unitIsOwnedBy(player));
+				final CompositeMatch<Unit> destroyerUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsDestroyer, Matches.unitIsOwnedBy(player));
 				if (Matches.TerritoryIsWater.match(t) && t.getUnits().someMatch(destroyerUnit))
 					return true;
 				return false;
@@ -1523,9 +1318,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (data.getMap().getNeighbors(t, Matches.territoryHasAlliedFactory(data, player)).size() > 0)
 					return true;
@@ -1538,11 +1332,10 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				CompositeMatch<Territory> validLandRoute = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
+				final CompositeMatch<Territory> validLandRoute = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
 				if (data.getMap().getRoute(t, goTerr, validLandRoute) != null)
 					return true;
 				return false;
@@ -1554,9 +1347,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory ter)
+			public boolean match(final Territory ter)
 			{
 				return list.contains(ter);
 			}
@@ -1567,9 +1359,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory ter)
+			public boolean match(final Territory ter)
 			{
 				return !list.contains(ter);
 			}
@@ -1586,17 +1377,16 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				for (PlayerID ePlayer : data.getPlayerList().getPlayers())
+				for (final PlayerID ePlayer : data.getPlayerList().getPlayers())
 				{
-					List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
-					Iterator<Territory> iter = capitalsListOwned.iterator();
+					final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
+					final Iterator<Territory> iter = capitalsListOwned.iterator();
 					while (iter.hasNext())
 					{
-						Territory current = iter.next();
+						final Territory current = iter.next();
 						if (!data.getRelationshipTracker().isAtWar(player, current.getOwner()))
 							continue;
 						if (data.getMap().getDistance(t, current, Matches.TerritoryIsPassableAndNotRestricted(player)) != -1)
@@ -1618,17 +1408,16 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				for (PlayerID ePlayer : data.getPlayerList().getPlayers())
+				for (final PlayerID ePlayer : data.getPlayerList().getPlayers())
 				{
-					List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
-					Iterator<Territory> iter = capitalsListOwned.iterator();
+					final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
+					final Iterator<Territory> iter = capitalsListOwned.iterator();
 					while (iter.hasNext())
 					{
-						Territory current = iter.next();
+						final Territory current = iter.next();
 						if (!data.getRelationshipTracker().isAtWar(player, current.getOwner()))
 							continue;
 						if (data.getMap().getDistance(t, current, Matches.TerritoryIsNotImpassableToLandUnits(player)) != -1)
@@ -1644,9 +1433,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (data.getMap().getNeighbors(t, Matches.territoryHasEnemyFactory(data, player)).size() > 0)
 					return true;
@@ -1659,9 +1447,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (data.getMap().getNeighbors(t, Matches.territoryHasOwnedFactory(data, player)).size() > 0)
 					return true;
@@ -1674,9 +1461,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (data.getMap().getNeighbors(t, Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, player)).size() > 0)
 					return true;
@@ -1689,9 +1475,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (data.getMap().getNeighbors(t, Matches.TerritoryIsWater).size() > 0)
 					return true;
@@ -1704,9 +1489,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (!data.getRelationshipTracker().isAllied(t.getOwner(), player))
 					return false;
@@ -1721,9 +1505,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (!t.getOwner().equals(player))
 					return false;
@@ -1738,9 +1521,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (!t.getOwner().equals(player))
 					return false;
@@ -1755,9 +1537,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (!isTerritoryAllied(player, data).match(t))
 					return false;
@@ -1772,9 +1553,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (!data.getRelationshipTracker().isAtWar(player, t.getOwner()))
 					return false;
@@ -1791,11 +1571,10 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				CompositeMatch<Unit> nonCom = new CompositeMatchOr<Unit>();
+				final CompositeMatch<Unit> nonCom = new CompositeMatchOr<Unit>();
 				nonCom.add(UnitIsAAOrFactory);
 				nonCom.add(enemyUnit(player, data).invert());
 				nonCom.add(UnitIsInfrastructure); // UnitIsAAOrIsFactoryOrIsInfrastructure
@@ -1809,14 +1588,12 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (t.isWater())
 					return false;
-				
-				int terrProd = TerritoryAttachment.get(t).getProduction();
+				final int terrProd = TerritoryAttachment.get(t).getProduction();
 				if (terrProd >= prodVal)
 					return true;
 				return false;
@@ -1826,23 +1603,19 @@ public class Matches
 	
 	public static final Match<Territory> TerritoryIsNeutral = new Match<Territory>()
 	{
-		
 		@Override
-		public boolean match(Territory t)
+		public boolean match(final Territory t)
 		{
 			if (t.isWater())
 				return false;
 			return t.getOwner().equals(PlayerID.NULL_PLAYERID);
 		}
 	};
-	
 	public final static Match<Territory> TerritoryIsNotNeutral = new InverseMatch<Territory>(TerritoryIsNeutral);
-	
 	public static final Match<Territory> TerritoryIsImpassable = new Match<Territory>()
 	{
-		
 		@Override
-		public boolean match(Territory t)
+		public boolean match(final Territory t)
 		{
 			if (t.isWater())
 			{
@@ -1851,29 +1624,25 @@ public class Matches
 			return TerritoryAttachment.get(t).isImpassible();
 		}
 	};
-	
 	public final static Match<Territory> TerritoryIsNotImpassable = new InverseMatch<Territory>(TerritoryIsImpassable);
 	
 	public static final Match<Territory> TerritoryIsPassableAndNotRestricted(final PlayerID player)
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				GameData data = player.getData();
+				final GameData data = player.getData();
 				if (Matches.TerritoryIsImpassable.match(t))
 					return false;
 				if (!Properties.getMovementByTerritoryRestricted(data))
 					return true;
-				
-				RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
+				final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
 				if (ra == null || ra.getMovementRestrictionTerritories() == null)
 					return true;
-				
-				String movementRestrictionType = ra.getMovementRestrictionType();
-				Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories());
+				final String movementRestrictionType = ra.getMovementRestrictionType();
+				final Collection<Territory> listedTerritories = ra.getListedTerritories(ra.getMovementRestrictionTerritories());
 				return (movementRestrictionType.equals("allowed") == listedTerritories.contains(t));
 			}
 		};
@@ -1883,9 +1652,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (t.isWater())
 					return true;
@@ -1900,9 +1668,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return TerritoryIsImpassableToLandUnits(player).invert().match(t);
 			}
@@ -1911,39 +1678,36 @@ public class Matches
 	
 	public static final Match<IBattle> BattleIsEmpty = new Match<IBattle>()
 	{
-		
 		@Override
-		public boolean match(IBattle battle)
+		public boolean match(final IBattle battle)
 		{
 			return battle.isEmpty();
 		}
 	};
-	
 	public static final Match<IBattle> BattleIsAmphibious = new Match<IBattle>()
 	{
-		
 		@Override
-		public boolean match(IBattle battle)
+		public boolean match(final IBattle battle)
 		{
 			return battle.isAmphibious();
 		}
 	};
 	
 	/**
-	 * @param lowerLimit lower limit for movement
-	 * @param movement referring movement
+	 * @param lowerLimit
+	 *            lower limit for movement
+	 * @param movement
+	 *            referring movement
 	 * @deprecated we can't trust on ints to see if we have enough movement, use hasEnnoughMovementforRoute()
 	 * @return units match that have at least lower limit movement
 	 */
-
 	@Deprecated
 	public static Match<Unit> unitHasEnoughMovement(final int lowerLimit, final IntegerMap<Unit> movement)
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit o)
+			public boolean match(final Unit o)
 			{
 				return movement.getInt(o) >= lowerLimit;
 			}
@@ -1958,60 +1722,61 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
 				return TripleAUnit.get(unit).getMovementLeft() >= minMovement;
 			}
 		};
 	}
 	
-	public static Match<Unit> UnitHasEnoughMovementForRoute(final Route route) {
-		return new Match<Unit>() {
+	public static Match<Unit> UnitHasEnoughMovementForRoute(final Route route)
+	{
+		return new Match<Unit>()
+		{
 			@Override
-			public boolean match(Unit unit) {
+			public boolean match(final Unit unit)
+			{
 				int left = TripleAUnit.get(unit).getMovementLeft();
 				int movementcost = route.getMovementCost(unit);
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
-				PlayerID player = unit.getOwner();
-
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final PlayerID player = unit.getOwner();
 				TerritoryAttachment taStart = null;
 				TerritoryAttachment taEnd = null;
-
 				if (route.getStart() != null)
 					taStart = TerritoryAttachment.get(route.getStart());
 				if (route.getEnd() != null)
 					taEnd = TerritoryAttachment.get(route.getEnd());
-
-				if (ua.isAir()) {
+				if (ua.isAir())
+				{
 					movementcost = route.getMovementCost(unit);
 					if (taStart != null && taStart.isAirBase())
 						left++;
-
 					if (taEnd != null && taEnd.isAirBase())
 						left++;
 				}
-
-				GameStep stepName = unit.getData().getSequence().getStep();
-
-				if (ua.isSea() && stepName.getDisplayName().equals("Non Combat Move")) {
+				final GameStep stepName = unit.getData().getSequence().getStep();
+				if (ua.isSea() && stepName.getDisplayName().equals("Non Combat Move"))
+				{
 					movementcost = route.getMovementCost(unit);
 					// If a zone adjacent to the starting and ending sea zones
 					// are allied navalbases, increase the range.
 					// TODO Still need to be able to handle stops on the way
 					// (history to get route.getStart()
-					Iterator<Territory> startNeighborIter = unit.getData().getMap().getNeighbors(route.getStart(), 1).iterator();
-					while (startNeighborIter.hasNext()) {
-						Territory terrNext = startNeighborIter.next();
-						TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
-						if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrNext.getOwner(), player)) {
-							Iterator<Territory> endNeighborIter = unit.getData().getMap().getNeighbors(route.getEnd(), 1).iterator();
-							while (endNeighborIter.hasNext()) {
-								Territory terrEnd = endNeighborIter.next();
-								TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
-								if (taEndNeighbor != null && taEndNeighbor.isNavalBase()
-										&& unit.getData().getRelationshipTracker().isAllied(terrEnd.getOwner(), player)) {
+					final Iterator<Territory> startNeighborIter = unit.getData().getMap().getNeighbors(route.getStart(), 1).iterator();
+					while (startNeighborIter.hasNext())
+					{
+						final Territory terrNext = startNeighborIter.next();
+						final TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
+						if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrNext.getOwner(), player))
+						{
+							final Iterator<Territory> endNeighborIter = unit.getData().getMap().getNeighbors(route.getEnd(), 1).iterator();
+							while (endNeighborIter.hasNext())
+							{
+								final Territory terrEnd = endNeighborIter.next();
+								final TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
+								if (taEndNeighbor != null && taEndNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrEnd.getOwner(), player))
+								{
 									left++;
 									break;
 								}
@@ -2019,28 +1784,26 @@ public class Matches
 						}
 					}
 				}
-
 				if (left == -1 || left < movementcost)
 					return false;
 				return true;
 			}
 		};
 	}
-
+	
 	/**
 	 * Match units that have at least 1 movement left
 	 */
 	public final static Match<Unit> unitHasMovementLeft = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit o)
+		public boolean match(final Unit o)
 		{
 			return TripleAUnit.get(o).getMovementLeft() >= 1;
 		}
 	};
 	
-	public final static Match<Unit> UnitIsNotStatic(PlayerID player)
+	public final static Match<Unit> UnitIsNotStatic(final PlayerID player)
 	{
 		return new InverseMatch<Unit>(UnitIsStatic(player));
 	}
@@ -2050,12 +1813,11 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit obj)
+			public boolean match(final Unit obj)
 			{
-				UnitType type = obj.getUnitType();
-				UnitAttachment ua = UnitAttachment.get(type);
+				final UnitType type = obj.getUnitType();
+				final UnitAttachment ua = UnitAttachment.get(type);
 				return ua.getMovement(player) < 1;
 			}
 		};
@@ -2065,11 +1827,10 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				return !ua.isSea() && !ua.isAir() && unit.getOwner().equals(player);
 			}
 		};
@@ -2079,9 +1840,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
 				return unit.getOwner().equals(player);
 			}
@@ -2092,11 +1852,10 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				if (ua.isAA() || ua.isFactory() || ua.getIsInfrastructure())
 					return false;
 				return ua.getDefense(unit.getOwner()) >= minDefense;
@@ -2108,11 +1867,10 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
+				final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
 				if (transporting == null || transporting.isEmpty())
 					return false;
 				return true;
@@ -2124,13 +1882,12 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+				final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
 				int loadCost = 0;
-				for (Unit cargo : TripleAUnit.get(unit).getTransporting())
+				for (final Unit cargo : TripleAUnit.get(unit).getTransporting())
 					loadCost += UnitAttachment.get(cargo.getUnitType()).getTransportCost();
 				if (ua.getTransportCapacity() - loadCost >= spaceNeeded)
 					return true;
@@ -2143,14 +1900,12 @@ public class Matches
 	public static Match<Unit> unitIsTransportingSomeCategories(final Collection<Unit> units)
 	{
 		final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units);
-		
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
-				Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
+				final Collection<Unit> transporting = TripleAUnit.get(unit).getTransporting();
 				if (transporting == null)
 					return false;
 				return Util.someIntersect(UnitSeperator.categorize(transporting), unitCategories);
@@ -2162,9 +1917,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return data.getRelationshipTracker().isAllied(player, t.getOwner());
 			}
@@ -2175,24 +1929,22 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getOwner().equals(player);
 			}
 		};
 	}
-
+	
 	public static Match<Territory> isTerritoryOwnedBy(final Collection<PlayerID> players)
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				for (PlayerID player : players)
+				for (final PlayerID player : players)
 				{
 					if (t.getOwner().equals(player))
 						return true;
@@ -2206,9 +1958,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit t)
+			public boolean match(final Unit t)
 			{
 				return data.getRelationshipTracker().isAllied(player, t.getOwner());
 			}
@@ -2219,9 +1970,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (t.isWater())
 					return true;
@@ -2234,7 +1984,7 @@ public class Matches
 	
 	public static Match<Unit> unitIsEnemyAA(final PlayerID player, final GameData data)
 	{
-		CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
+		final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
 		comp.add(UnitIsAA);
 		comp.add(enemyUnit(player, data));
 		return comp;
@@ -2242,7 +1992,7 @@ public class Matches
 	
 	public static Match<Unit> unitIsEnemyAAforCombat(final PlayerID player, final GameData data)
 	{
-		CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
+		final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
 		comp.add(new CompositeMatchOr<Unit>(UnitIsAA, UnitIsAAforCombatOnly));
 		comp.add(enemyUnit(player, data));
 		return comp;
@@ -2250,7 +2000,7 @@ public class Matches
 	
 	public static Match<Unit> unitIsEnemyAAforBombing(final PlayerID player, final GameData data)
 	{
-		CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
+		final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
 		comp.add(new CompositeMatchOr<Unit>(UnitIsAA, UnitIsAAforBombingThisUnitOnly));
 		comp.add(enemyUnit(player, data));
 		return comp;
@@ -2260,9 +2010,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit o)
+			public boolean match(final Unit o)
 			{
 				return territory.getUnits().getUnits().contains(o);
 			}
@@ -2273,9 +2022,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (t.getOwner().equals(player))
 					return false;
@@ -2288,9 +2036,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (t.getOwner().equals(player))
 					return false;
@@ -2307,9 +2054,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (t.getOwner().equals(player))
 					return false;
@@ -2328,9 +2074,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				if (t.getOwner().equals(player))
 					return false;
@@ -2345,9 +2090,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return (t.getOwner().equals(PlayerID.NULL_PLAYERID) && Properties.getNeutralCharge(data) <= 0);
 			}
@@ -2370,14 +2114,12 @@ public class Matches
 	        };
 	    }
 	*/
-
 	public static Match<Unit> enemyUnit(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
 				return data.getRelationshipTracker().isAtWar(player, unit.getOwner());
 			}
@@ -2388,45 +2130,41 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit o)
+			public boolean match(final Unit o)
 			{
-				Unit unit = o;
+				final Unit unit = o;
 				return unit.getOwner().equals(player);
 			}
 		};
 	}
 	
-	public static Match<Unit> carrierOwnedBy(final PlayerID player) {
-		return new CompositeMatchAnd(unitOwnedBy(player),Matches.UnitIsCarrier);
+	public static Match<Unit> carrierOwnedBy(final PlayerID player)
+	{
+		return new CompositeMatchAnd(unitOwnedBy(player), Matches.UnitIsCarrier);
 	}
-	
 	
 	public static Match<Unit> unitOwnedBy(final List<PlayerID> players)
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit o)
+			public boolean match(final Unit o)
 			{
-				for (PlayerID p : players)
+				for (final PlayerID p : players)
 					if (o.getOwner().equals(p))
 						return true;
 				return false;
 			}
 		};
-		
 	}
 	
 	public static Match<Unit> alliedUnit(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
 				if (unit.getOwner().equals(player))
 					return true;
@@ -2437,64 +2175,52 @@ public class Matches
 	
 	public static Match<Territory> territoryIs(final Territory test)
 	{
-		
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.equals(test);
 			}
 		};
-		
 	}
 	
 	public static Match<Territory> territoryHasLandUnitsOwnedBy(final PlayerID player)
 	{
 		final CompositeMatch<Unit> unitOwnedBy = new CompositeMatchAnd<Unit>(unitIsOwnedBy(player), Matches.UnitIsLand);
-		
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(unitOwnedBy);
 			}
 		};
-		
 	}
 	
 	public static Match<Territory> territoryHasUnitsOwnedBy(final PlayerID player)
 	{
 		final Match<Unit> unitOwnedBy = unitIsOwnedBy(player);
-		
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(unitOwnedBy);
 			}
 		};
-		
 	}
 	
 	public static Match<Territory> territoryHasUnitsThatMatch(final Match<Unit> cond)
 	{
-		
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(cond);
 			}
 		};
-		
 	}
 	
 	public static Match<Territory> territoryHasEnemyAA(final PlayerID player, final GameData data)
@@ -2504,7 +2230,7 @@ public class Matches
 			Match<Unit> unitIsEnemyAA = unitIsEnemyAA(player, data);
 			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(unitIsEnemyAA);
 			}
@@ -2515,9 +2241,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(Matches.unitIsEnemyAAforCombat(player, data));
 			}
@@ -2528,9 +2253,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(Matches.unitIsEnemyAAforBombing(player, data));
 			}
@@ -2541,9 +2265,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return !t.getUnits().someMatch(enemyUnit(player, data));
 			}
@@ -2554,9 +2277,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return !t.getUnits().someMatch(alliedUnit(player, data));
 			}
@@ -2567,9 +2289,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(alliedUnit(player, data));
 			}
@@ -2578,77 +2299,65 @@ public class Matches
 	
 	public static Match<Territory> territoryHasNonSubmergedEnemyUnits(final PlayerID player, final GameData data)
 	{
-		
 		final CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
 		match.add(enemyUnit(player, data));
 		match.add(new InverseMatch<Unit>(unitIsSubmerged(data)));
-		
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(match);
 			}
 		};
-		
 	}
 	
 	public static Match<Territory> territoryHasEnemyLandUnits(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(enemyUnit(player, data)) && t.getUnits().someMatch(Matches.UnitIsLand);
 			}
 		};
-		
 	}
 	
 	public static Match<Territory> territoryHasEnemyBlitzUnits(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(enemyUnit(player, data)) && t.getUnits().someMatch(Matches.UnitCanBlitz);
 			}
 		};
-		
 	}
 	
 	public static Match<Territory> territoryHasEnemyUnits(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return t.getUnits().someMatch(enemyUnit(player, data));
 			}
 		};
-		
 	}
 	
 	public static Match<Territory> territoryHasOwnedTransportingUnits(final PlayerID player)
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				final CompositeMatch<Unit> match = new CompositeMatchAnd<Unit>();
 				match.add(unitIsOwnedBy(player));
 				match.add(transportIsTransporting());
-				
 				return t.getUnits().someMatch(match);
 			}
 		};
@@ -2657,12 +2366,10 @@ public class Matches
 	public static Match<Unit> transportCannotUnload(final Territory territory)
 	{
 		final TransportTracker transportTracker = new TransportTracker();
-		
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit transport)
+			public boolean match(final Unit transport)
 			{
 				if (transportTracker.hasTransportUnloadedInPreviousPhase(transport))
 					return true;
@@ -2678,12 +2385,10 @@ public class Matches
 	public static Match<Unit> transportIsNotTransporting()
 	{
 		final TransportTracker transportTracker = new TransportTracker();
-		
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit transport)
+			public boolean match(final Unit transport)
 			{
 				if (transportTracker.isTransporting(transport))
 					return false;
@@ -2695,12 +2400,10 @@ public class Matches
 	public static Match<Unit> transportIsTransporting()
 	{
 		final TransportTracker transportTracker = new TransportTracker();
-		
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit transport)
+			public boolean match(final Unit transport)
 			{
 				if (transportTracker.isTransporting(transport))
 					return true;
@@ -2718,9 +2421,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit dependent)
+			public boolean match(final Unit dependent)
 			{
 				return ((TripleAUnit) dependent).getTransportedBy() != null;
 			}
@@ -2743,35 +2445,31 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit dependent)
+			public boolean match(final Unit dependent)
 			{
 				// transported on a sea transport
-				Unit transportedBy = ((TripleAUnit) dependent).getTransportedBy();
+				final Unit transportedBy = ((TripleAUnit) dependent).getTransportedBy();
 				if (transportedBy != null && units.contains(transportedBy))
 					return true;
-				
 				// cargo on a carrier
-				Map<Unit, Collection<Unit>> carrierMustMoveWith = MoveValidator.carrierMustMoveWith(units, units, data, currentPlayer);
+				final Map<Unit, Collection<Unit>> carrierMustMoveWith = MoveValidator.carrierMustMoveWith(units, units, data, currentPlayer);
 				if (carrierMustMoveWith != null)
 				{
-					for (Unit unit : carrierMustMoveWith.keySet())
+					for (final Unit unit : carrierMustMoveWith.keySet())
 					{
 						if (carrierMustMoveWith.get(unit).contains(dependent))
 							return true;
 					}
 				}
-				
 				// paratrooper on an air transport
-				Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
-				Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
+				final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+				final Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
 				if (!airTransports.isEmpty() && !paratroops.isEmpty())
 				{
 					if (MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, currentPlayer).containsKey(dependent))
 						return true;
 				}
-				
 				return false;
 			}
 		};
@@ -2784,9 +2482,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
 				return unit.getType().equals(type);
 			}
@@ -2797,9 +2494,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unit)
+			public boolean match(final Unit unit)
 			{
 				if (types == null || types.isEmpty())
 					return false;
@@ -2812,9 +2508,8 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
 				return tracker.wasBattleFought(t) || tracker.wasBlitzed(t);
 			}
@@ -2825,11 +2520,9 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
-				
 				return TripleAUnit.get(u).getSubmerged();
 			}
 		};
@@ -2839,11 +2532,9 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
-				
 				return !TripleAUnit.get(u).getSubmerged();
 			}
 		};
@@ -2851,27 +2542,24 @@ public class Matches
 	
 	public static final Match<UnitType> UnitTypeIsSub = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isSub();
 		}
 	};
-	
 	/**
 	 * Will match any unit that is 2 hit points
 	 */
 	public static final Match<UnitType> UnitTypeIsBB = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType type = obj;
-			UnitAttachment ua = UnitAttachment.get(type);
+			final UnitType type = obj;
+			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.isTwoHit();
 		}
 	};
@@ -2880,9 +2568,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
 				return TechTracker.hasImprovedArtillerySupport(u.getOwner());
 			}
@@ -2893,18 +2580,17 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
 				if (u == null)
 					return false;
 				if (list.isEmpty())
 					return true;
-				Iterator<Territory> tIter = list.iterator();
+				final Iterator<Territory> tIter = list.iterator();
 				while (tIter.hasNext())
 				{
-					Territory t = tIter.next();
+					final Territory t = tIter.next();
 					if (t.getUnits().getUnits().contains(u))
 						return false;
 				}
@@ -2917,22 +2603,20 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				GameData data = player.getData();
-				Set<CanalAttachment> canalAttachments = CanalAttachment.get(t);
+				final GameData data = player.getData();
+				final Set<CanalAttachment> canalAttachments = CanalAttachment.get(t);
 				if (canalAttachments.isEmpty())
 					return false;
-				
-				Iterator<CanalAttachment> iter = canalAttachments.iterator();
+				final Iterator<CanalAttachment> iter = canalAttachments.iterator();
 				while (iter.hasNext())
 				{
-					CanalAttachment attachment = iter.next();
+					final CanalAttachment attachment = iter.next();
 					if (attachment == null)
 						continue;
-					for (Territory borderTerritory : attachment.getLandTerritories())
+					for (final Territory borderTerritory : attachment.getLandTerritories())
 					{
 						if (!data.getRelationshipTracker().isAllied(player, borderTerritory.getOwner()))
 						{
@@ -2952,29 +2636,26 @@ public class Matches
 	public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data)
 	{
 		// UnitIsAAOrIsFactoryOrIsInfrastructure
-		CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrFactory.invert(), Matches.alliedUnit(player, data).invert(), Matches.UnitIsInfrastructure.invert());
-		CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
-		CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport.invert(), Matches.UnitIsLand.invert());
-		CompositeMatch<Unit> unitCond = ignore;
+		final CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrFactory.invert(), Matches.alliedUnit(player, data).invert(), Matches.UnitIsInfrastructure.invert());
+		final CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
+		final CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport.invert(), Matches.UnitIsLand.invert());
+		final CompositeMatch<Unit> unitCond = ignore;
 		if (Properties.getIgnoreTransportInMovement(data))
 			unitCond.add(transport);
 		if (Properties.getIgnoreSubInMovement(data))
 			unitCond.add(sub);
-		CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
-		
+		final CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(unitCond).invert(), Matches.TerritoryIsWater);
 		return routeCondition;
 	}
 	
 	public static final Match<Unit> UnitCanRepairOthers = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
 			if (UnitIsDisabled().match(unit))
 				return false;
-			
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua.getRepairsUnits() == null)
 				return false;
 			return ua.getRepairsUnits().length > 0;
@@ -2985,14 +2666,12 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unitCanRepair)
+			public boolean match(final Unit unitCanRepair)
 			{
-				UnitType type = unitCanRepair.getUnitType();
-				UnitAttachment ua = UnitAttachment.get(type);
+				final UnitType type = unitCanRepair.getUnitType();
+				final UnitAttachment ua = UnitAttachment.get(type);
 				// TODO: make sure the unit is operational
-				
 				if (ua.getRepairsUnits() != null && ua.getListedUnits(ua.getRepairsUnits()).contains(damagedUnit.getType()))
 					return true;
 				return false;
@@ -3014,27 +2693,23 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit damagedUnit)
+			public boolean match(final Unit damagedUnit)
 			{
-				Match<Unit> damaged = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
+				final Match<Unit> damaged = new CompositeMatchAnd<Unit>(Matches.UnitIsTwoHit, Matches.UnitIsDamaged);
 				if (!damaged.match(damagedUnit))
 					return false;
-				
-				Match<Unit> repairUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitCanRepairOthers, Matches.UnitCanRepairThisUnit(damagedUnit));
-				
+				final Match<Unit> repairUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitCanRepairOthers, Matches.UnitCanRepairThisUnit(damagedUnit));
 				if (Match.someMatch(territory.getUnits().getUnits(), repairUnit))
 					return true;
-				
 				if (Matches.UnitIsSea.match(damagedUnit))
 				{
-					Match<Unit> repairUnitLand = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsLand);
-					List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
-					Iterator<Territory> iter = neighbors.iterator();
+					final Match<Unit> repairUnitLand = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsLand);
+					final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
+					final Iterator<Territory> iter = neighbors.iterator();
 					while (iter.hasNext())
 					{
-						Territory current = iter.next();
+						final Territory current = iter.next();
 						if (Match.someMatch(current.getUnits().getUnits(), repairUnitLand))
 							return true;
 					}
@@ -3046,12 +2721,11 @@ public class Matches
 	
 	public static final Match<Unit> UnitCanGiveBonusMovement = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua == null)
 				return false;
 			return ua.getGivesMovement().size() > 0;
@@ -3062,17 +2736,14 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unitCanGiveBonusMovement)
+			public boolean match(final Unit unitCanGiveBonusMovement)
 			{
 				if (UnitIsDisabled().match(unitCanGiveBonusMovement))
 					return false;
-				
-				UnitType type = unitCanGiveBonusMovement.getUnitType();
-				UnitAttachment ua = UnitAttachment.get(type);
+				final UnitType type = unitCanGiveBonusMovement.getUnitType();
+				final UnitAttachment ua = UnitAttachment.get(type);
 				// TODO: make sure the unit is operational
-				
 				if (UnitCanGiveBonusMovement.match(unitCanGiveBonusMovement) && ua.getGivesMovement().getInt(unitWhichWillGetBonus.getType()) != 0)
 					return true;
 				return false;
@@ -3094,23 +2765,20 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unitWhichWillGetBonus)
+			public boolean match(final Unit unitWhichWillGetBonus)
 			{
-				Match<Unit> givesBonusUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), UnitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
-				
+				final Match<Unit> givesBonusUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), UnitCanGiveBonusMovementToThisUnit(unitWhichWillGetBonus));
 				if (Match.someMatch(territory.getUnits().getUnits(), givesBonusUnit))
 					return true;
-				
 				if (Matches.UnitIsSea.match(unitWhichWillGetBonus))
 				{
-					Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsLand);
-					List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
-					Iterator<Territory> iter = neighbors.iterator();
+					final Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsLand);
+					final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
+					final Iterator<Territory> iter = neighbors.iterator();
 					while (iter.hasNext())
 					{
-						Territory current = iter.next();
+						final Territory current = iter.next();
 						if (Match.someMatch(current.getUnits().getUnits(), givesBonusUnitLand))
 							return true;
 					}
@@ -3122,54 +2790,47 @@ public class Matches
 	
 	public static final Match<Unit> UnitCreatesUnits = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua == null)
 				return false;
 			return (ua.getCreatesUnitsList() != null && ua.getCreatesUnitsList().size() > 0);
 		}
 	};
-	
 	public static final Match<Unit> UnitCreatesResources = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua == null)
 				return false;
 			return (ua.getCreatesResourcesList() != null && ua.getCreatesResourcesList().size() > 0);
 		}
 	};
-	
 	public static final Match<UnitType> UnitTypeConsumesUnitsOnCreation = new Match<UnitType>()
 	{
-		
 		@Override
-		public boolean match(UnitType obj)
+		public boolean match(final UnitType obj)
 		{
-			UnitType unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit);
+			final UnitType unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit);
 			if (ua == null)
 				return false;
 			return (ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0);
 		}
 	};
-	
 	public static final Match<Unit> UnitConsumesUnitsOnCreation = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua == null)
 				return false;
 			return (ua.getConsumesUnits() != null && ua.getConsumesUnits().size() > 0);
@@ -3180,24 +2841,21 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unitWhichRequiresUnits)
+			public boolean match(final Unit unitWhichRequiresUnits)
 			{
 				if (!Matches.UnitConsumesUnitsOnCreation.match(unitWhichRequiresUnits))
 					return true;
-				
-				UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
-				IntegerMap<UnitType> requiredUnitsMap = ua.getConsumesUnits();
-				Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
-				
+				final UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
+				final IntegerMap<UnitType> requiredUnitsMap = ua.getConsumesUnits();
+				final Collection<UnitType> requiredUnits = requiredUnitsMap.keySet();
 				boolean canBuild = true;
-				for (UnitType ut : requiredUnits)
+				for (final UnitType ut : requiredUnits)
 				{
-					Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.unitIsOfType(ut), Matches
+					final Match<Unit> unitIsOwnedByAndOfTypeAndNotDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.unitIsOfType(ut), Matches
 								.UnitHasSomeUnitDamage().invert(), Matches.UnitIsNotDamaged, Matches.UnitIsDisabled().invert(), Matches.unitIsInTerritoryThatHasTerritoryDamage(territory).invert());
-					int requiredNumber = requiredUnitsMap.getInt(ut);
-					int numberInTerritory = Match.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
+					final int requiredNumber = requiredUnitsMap.getInt(ut);
+					final int numberInTerritory = Match.countMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndOfTypeAndNotDamaged);
 					if (numberInTerritory < requiredNumber)
 						canBuild = false;
 					if (!canBuild)
@@ -3210,12 +2868,11 @@ public class Matches
 	
 	public static final Match<Unit> UnitRequiresUnitsOnCreation = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua == null)
 				return false;
 			return (ua.getRequiresUnits() != null && ua.getRequiresUnits().size() > 0);
@@ -3226,26 +2883,23 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit unitWhichRequiresUnits)
+			public boolean match(final Unit unitWhichRequiresUnits)
 			{
 				if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits))
 					return true;
-				
-				Match<Unit> unitIsOwnedByAndNotDisabled = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.UnitIsDisabled().invert());
+				final Match<Unit> unitIsOwnedByAndNotDisabled = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(unitWhichRequiresUnits.getOwner()), Matches.UnitIsDisabled().invert());
 				unitsInTerritoryAtStartOfTurn.retainAll(Match.getMatches(unitsInTerritoryAtStartOfTurn, unitIsOwnedByAndNotDisabled));
-				
 				boolean canBuild = false;
-				UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
-				ArrayList<String[]> unitComboPossibilities = ua.getRequiresUnits();
-				for (String[] combo : unitComboPossibilities)
+				final UnitAttachment ua = UnitAttachment.get(unitWhichRequiresUnits.getType());
+				final ArrayList<String[]> unitComboPossibilities = ua.getRequiresUnits();
+				for (final String[] combo : unitComboPossibilities)
 				{
 					if (combo != null)
 					{
 						boolean haveAll = true;
-						Collection<UnitType> requiredUnits = ua.getListedUnits(combo);
-						for (UnitType ut : requiredUnits)
+						final Collection<UnitType> requiredUnits = ua.getListedUnits(combo);
+						for (final UnitType ut : requiredUnits)
 						{
 							if (Match.countMatches(unitsInTerritoryAtStartOfTurn, Matches.unitIsOfType(ut)) < 1)
 								haveAll = false;
@@ -3264,154 +2918,122 @@ public class Matches
 	}
 	
 	public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
-	
 	public static final Match<Unit> UnitIsAAOrIsAAmovementOrIsFactory = new CompositeMatchOr<Unit>(UnitIsAAorIsAAmovement, UnitIsFactory);
-	
 	public static final Match<Unit> UnitIsAAOrIsFactoryOrIsInfrastructure = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory, UnitIsInfrastructure);
-	
 	public static final Match<Territory> territoryIsBlockadeZone = new Match<Territory>()
+	{
+		@Override
+		public boolean match(final Territory t)
 		{
-			
-			@Override
-			public boolean match(Territory t)
+			final TerritoryAttachment ta = TerritoryAttachment.get(t);
+			if (ta != null)
 			{
-				TerritoryAttachment ta = TerritoryAttachment.get(t);
-				if (ta != null)
-				{
-					return ta.isBlockadeZone();
-				}
-				return false;
+				return ta.isBlockadeZone();
 			}
-		};
-	
+			return false;
+		}
+	};
 	public static final Match<Unit> UnitIsConstruction = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit obj)
+		public boolean match(final Unit obj)
 		{
-			Unit unit = obj;
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final Unit unit = obj;
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua == null)
 				return false;
 			return ua.isConstruction();
 		}
 	};
-	
 	public static final Match<Unit> UnitIsNotConstruction = new InverseMatch<Unit>(UnitIsConstruction);
-	
 	public static final Match<Unit> UnitIsFactoryOrConstruction = new CompositeMatchOr<Unit>(UnitIsFactory, UnitIsConstruction);
-	
 	public static final Match<Unit> UnitIsNotFactoryOrConstruction = new InverseMatch<Unit>(UnitIsFactoryOrConstruction);
-	
 	public static final Match<Unit> UnitIsFactoryOrCanBeDamaged = new CompositeMatchOr<Unit>(UnitIsFactory, UnitCanBeDamagedButIsNotFactory);
-	
 	public static final Match<Unit> UnitIsFactoryOrCanProduceUnits = new CompositeMatchOr<Unit>(UnitIsFactory, UnitCanProduceUnits);
-	
 	/**
 	 * See if a unit can invade. Units with canInvadeFrom not set, or set to "all", can invade from any other unit. Otherwise, units must have a specific unit in this list to be able to invade from that unit.
 	 */
 	public static final Match<Unit> UnitCanInvade = new Match<Unit>()
 	{
-		
 		@Override
-		public boolean match(Unit unit)
+		public boolean match(final Unit unit)
 		{
 			// is the unit being transported?
-			Unit transport = TripleAUnit.get(unit).getTransportedBy();
+			final Unit transport = TripleAUnit.get(unit).getTransportedBy();
 			if (transport == null)
 				return true; // Unit isn't transported so can Invade
-				
-			UnitAttachment ua = UnitAttachment.get(unit.getType());
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			return ua.canInvadeFrom(transport.getUnitType().getName());
 		}
 	};
-	
 	public static final Match<RelationshipType> RelationshipTypeIsAllied = new Match<RelationshipType>()
 	{
-		
 		@Override
-		public boolean match(RelationshipType relationship)
+		public boolean match(final RelationshipType relationship)
 		{
 			return relationship.getRelationshipTypeAttachment().isAllied();
 		}
 	};
-	
 	public static final Match<Relationship> RelationshipIsAllied = new Match<Relationship>()
 	{
-		
 		@Override
-		public boolean match(Relationship relationship)
+		public boolean match(final Relationship relationship)
 		{
 			return relationship.getRelationshipType().getRelationshipTypeAttachment().isAllied();
 		}
 	};
-	
 	public static final Match<RelationshipType> RelationshipTypeIsNeutral = new Match<RelationshipType>()
 	{
-		
 		@Override
-		public boolean match(RelationshipType relationship)
+		public boolean match(final RelationshipType relationship)
 		{
 			return relationship.getRelationshipTypeAttachment().isNeutral();
 		}
 	};
-	
 	public static final Match<Relationship> RelationshipIsNeutral = new Match<Relationship>()
 	{
-		
 		@Override
-		public boolean match(Relationship relationship)
+		public boolean match(final Relationship relationship)
 		{
 			return relationship.getRelationshipType().getRelationshipTypeAttachment().isNeutral();
 		}
 	};
-	
 	public static final Match<RelationshipType> RelationshipTypeIsAtWar = new Match<RelationshipType>()
 	{
-		
 		@Override
-		public boolean match(RelationshipType relationship)
+		public boolean match(final RelationshipType relationship)
 		{
 			return relationship.getRelationshipTypeAttachment().isWar();
 		}
 	};
-	
 	public static final Match<Relationship> RelationshipIsAtWar = new Match<Relationship>()
 	{
-		
 		@Override
-		public boolean match(Relationship relationship)
+		public boolean match(final Relationship relationship)
 		{
 			return relationship.getRelationshipType().getRelationshipTypeAttachment().isWar();
 		}
 	};
-	
 	public static final Match<RelationshipType> RelationshipTypeHelpsDefendAtSea = new Match<RelationshipType>()
 	{
-		
 		@Override
-		public boolean match(RelationshipType relationship)
+		public boolean match(final RelationshipType relationship)
 		{
 			return relationship.getRelationshipTypeAttachment().helpsDefendAtSea();
 		}
 	};
-	
 	public static final Match<RelationshipType> RelationshipTypeCanMoveLandUnitsOverOwnedLand = new Match<RelationshipType>()
 	{
-		
 		@Override
-		public boolean match(RelationshipType relationship)
+		public boolean match(final RelationshipType relationship)
 		{
 			return relationship.getRelationshipTypeAttachment().getCanMoveLandUnitsOverOwnedLand();
 		}
 	};
-	
 	public static final Match<RelationshipType> RelationshipTypeCanMoveAirUnitsOverOwnedLand = new Match<RelationshipType>()
 	{
-		
 		@Override
-		public boolean match(RelationshipType relationship)
+		public boolean match(final RelationshipType relationship)
 		{
 			return relationship.getRelationshipTypeAttachment().getCanMoveAirUnitsOverOwnedLand();
 		}
@@ -3421,9 +3043,8 @@ public class Matches
 	{
 		return new Match<String>()
 		{
-			
 			@Override
-			public boolean match(String relationshipName)
+			public boolean match(final String relationshipName)
 			{
 				return data.getRelationshipTypeList().getRelationshipType(relationshipName) != null;
 			}
@@ -3434,9 +3055,8 @@ public class Matches
 	{
 		return new Match<PlayerID>()
 		{
-			
 			@Override
-			public boolean match(PlayerID player2)
+			public boolean match(final PlayerID player2)
 			{
 				return Matches.RelationshipTypeIsAtWar.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
 			}
@@ -3447,9 +3067,8 @@ public class Matches
 	{
 		return new Match<PlayerID>()
 		{
-			
 			@Override
-			public boolean match(PlayerID player2)
+			public boolean match(final PlayerID player2)
 			{
 				return Matches.RelationshipTypeIsAllied.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
 			}
@@ -3460,9 +3079,8 @@ public class Matches
 	{
 		return new Match<PlayerID>()
 		{
-			
 			@Override
-			public boolean match(PlayerID player2)
+			public boolean match(final PlayerID player2)
 			{
 				return Matches.RelationshipTypeIsNeutral.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
 			}
@@ -3473,9 +3091,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
 				return (UnitIsFactoryOrCanProduceUnits.match(u) && unitIsOwnedBy(player).match(u));
 			}
@@ -3486,9 +3103,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
 				return !UnitAttachment.get(u.getType()).getReceivesAbilityWhenWith().isEmpty();
 			}
@@ -3499,13 +3115,12 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
-				for (String receives : UnitAttachment.get(u.getType()).getReceivesAbilityWhenWith())
+				for (final String receives : UnitAttachment.get(u.getType()).getReceivesAbilityWhenWith())
 				{
-					String[] s = receives.split(":");
+					final String[] s = receives.split(":");
 					if (s[0].equals(filterForAbility) && s[1].equals(filterForUnitType))
 						return true;
 				}
@@ -3518,9 +3133,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
 				return !UnitAttachment.get(u.getType()).getWhenCombatDamaged().isEmpty();
 			}
@@ -3531,24 +3145,23 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
 				if (!UnitHasWhenCombatDamagedEffect().match(u))
 					return false;
-				TripleAUnit taUnit = (TripleAUnit) u;
-				int currentDamage = taUnit.getHits();
-				ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamagedList = UnitAttachment.get(u.getType()).getWhenCombatDamaged();
-				Iterator<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> iter = whenCombatDamagedList.iterator();
+				final TripleAUnit taUnit = (TripleAUnit) u;
+				final int currentDamage = taUnit.getHits();
+				final ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamagedList = UnitAttachment.get(u.getType()).getWhenCombatDamaged();
+				final Iterator<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> iter = whenCombatDamagedList.iterator();
 				while (iter.hasNext())
 				{
-					Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key = iter.next();
-					String effect = key.getSecond().getFirst();
+					final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key = iter.next();
+					final String effect = key.getSecond().getFirst();
 					if (!effect.equals(filterForEffect))
 						continue;
-					int damagedFrom = key.getFirst().getFirst();
-					int damagedTo = key.getFirst().getSecond();
+					final int damagedFrom = key.getFirst().getFirst();
+					final int damagedTo = key.getFirst().getSecond();
 					if (currentDamage >= damagedFrom && currentDamage <= damagedTo)
 						return true;
 				}
@@ -3561,11 +3174,10 @@ public class Matches
 	{
 		return new Match<Territory>()
 		{
-			
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				TerritoryAttachment ta = TerritoryAttachment.get(t);
+				final TerritoryAttachment ta = TerritoryAttachment.get(t);
 				if (ta == null)
 					return false;
 				if (!ta.getWhenCapturedByGoesTo().isEmpty())
@@ -3579,9 +3191,8 @@ public class Matches
 	{
 		return new Match<Unit>()
 		{
-			
 			@Override
-			public boolean match(Unit u)
+			public boolean match(final Unit u)
 			{
 				if (UnitAttachment.get(u.getType()).getWhenCapturedChangesInto().isEmpty())
 					return false;
@@ -3592,9 +3203,8 @@ public class Matches
 	
 	public static final Match<PoliticalActionAttachment> PoliticalActionCanBeAttempted = new Match<PoliticalActionAttachment>()
 	{
-		
 		@Override
-		public boolean match(PoliticalActionAttachment paa)
+		public boolean match(final PoliticalActionAttachment paa)
 		{
 			return paa.hasAttemptsLeft() && paa.canPerform();
 		}
@@ -3605,7 +3215,7 @@ public class Matches
 		return new Match<PoliticalActionAttachment>()
 		{
 			@Override
-			public boolean match(PoliticalActionAttachment paa)
+			public boolean match(final PoliticalActionAttachment paa)
 			{
 				return (paa.getCostPU() >= greaterThanEqualTo && paa.getCostPU() <= lessThanEqualTo);
 			}
@@ -3615,11 +3225,11 @@ public class Matches
 	public static final Match<Unit> UnitCanOnlyPlaceInOriginalTerritories = new Match<Unit>()
 	{
 		@Override
-		public boolean match(Unit u)
+		public boolean match(final Unit u)
 		{
-			UnitAttachment ua = UnitAttachment.get(u.getType());
-			Set<String> specialOptions = ua.getSpecial();
-			for (String option : specialOptions)
+			final UnitAttachment ua = UnitAttachment.get(u.getType());
+			final Set<String> specialOptions = ua.getSpecial();
+			for (final String option : specialOptions)
 			{
 				if (option.equals("canOnlyPlaceInOriginalTerritories"))
 					return true;
@@ -3629,7 +3239,7 @@ public class Matches
 	};
 	
 	/**
-	 * Accounts for OccupiedTerrOf.  Returns false if there is no territory attachment (like if it is water).
+	 * Accounts for OccupiedTerrOf. Returns false if there is no territory attachment (like if it is water).
 	 * 
 	 * @param player
 	 * @return
@@ -3639,15 +3249,15 @@ public class Matches
 		return new Match<Territory>()
 		{
 			@Override
-			public boolean match(Territory t)
+			public boolean match(final Territory t)
 			{
-				TerritoryAttachment ta = TerritoryAttachment.get(t);
+				final TerritoryAttachment ta = TerritoryAttachment.get(t);
 				if (ta == null)
 					return false;
-				PlayerID originalOwner = ta.getOriginalOwner();
+				final PlayerID originalOwner = ta.getOriginalOwner();
 				if ((originalOwner == null && player != null) || (originalOwner != null && player == null))
 					return false;
-				PlayerID occupiedTerrOf = ta.getOccupiedTerrOf();
+				final PlayerID occupiedTerrOf = ta.getOccupiedTerrOf();
 				if (occupiedTerrOf == null)
 					return originalOwner.equals(player);
 				else
@@ -3684,13 +3294,12 @@ public class Matches
 			}
 		};
 	}*/
-	
 	public static final Match<PlayerID> isAlliedAndAlliancesCanChainTogether(final PlayerID player)
 	{
 		return new Match<PlayerID>()
 		{
 			@Override
-			public boolean match(PlayerID player2)
+			public boolean match(final PlayerID player2)
 			{
 				return isAlliedAndAlliancesCanChainTogether.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
 			}
@@ -3700,7 +3309,7 @@ public class Matches
 	public static final Match<RelationshipType> isAlliedAndAlliancesCanChainTogether = new Match<RelationshipType>()
 	{
 		@Override
-		public boolean match(RelationshipType rt)
+		public boolean match(final RelationshipType rt)
 		{
 			return RelationshipTypeIsAllied.match(rt) && rt.getRelationshipTypeAttachment().getAlliancesCanChainTogether();
 		}
@@ -3708,18 +3317,24 @@ public class Matches
 	
 	/**
 	 * If player is null, this match Will return true if ANY of the relationship changes match the conditions. (since paa's can have more than 1 change).
-	 * @param player CAN be null
-	 * @param currentRelation can NOT be null
-	 * @param newRelation can NOT be null
-	 * @param data can NOT be null
+	 * 
+	 * @param player
+	 *            CAN be null
+	 * @param currentRelation
+	 *            can NOT be null
+	 * @param newRelation
+	 *            can NOT be null
+	 * @param data
+	 *            can NOT be null
 	 * @return
 	 */
-	public static final Match<PoliticalActionAttachment> politicalActionIsRelationshipChangeOf(final PlayerID player, final Match<RelationshipType> currentRelation, final Match<RelationshipType> newRelation, final GameData data)
+	public static final Match<PoliticalActionAttachment> politicalActionIsRelationshipChangeOf(final PlayerID player, final Match<RelationshipType> currentRelation,
+				final Match<RelationshipType> newRelation, final GameData data)
 	{
 		return new Match<PoliticalActionAttachment>()
 		{
 			@Override
-			public boolean match(PoliticalActionAttachment paa)
+			public boolean match(final PoliticalActionAttachment paa)
 			{
 				for (final String relationshipChangeString : paa.getRelationshipChange())
 				{
@@ -3743,7 +3358,7 @@ public class Matches
 		return new Match<PoliticalActionAttachment>()
 		{
 			@Override
-			public boolean match(PoliticalActionAttachment paa)
+			public boolean match(final PoliticalActionAttachment paa)
 			{
 				for (final String relationshipChangeString : paa.getRelationshipChange())
 				{
@@ -3771,41 +3386,35 @@ public class Matches
 	{
 	}
 	
-	public static Match<Territory> territoryIsNotNeutralAndNotImpassibleOrRestricted(
-			PlayerID player) {
-		Match<Territory> notNeutralAndNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(TerritoryIsPassableAndNotRestricted(player), new InverseMatch<Territory>(TerritoryIsNeutral));
+	public static Match<Territory> territoryIsNotNeutralAndNotImpassibleOrRestricted(final PlayerID player)
+	{
+		final Match<Territory> notNeutralAndNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(TerritoryIsPassableAndNotRestricted(player), new InverseMatch<Territory>(TerritoryIsNeutral));
 		return notNeutralAndNotImpassibleOrRestricted;
-}
-
-	public static CompositeMatch<Territory> alliedNonConqueredNonPendingTerritory(final GameData data, PlayerID player)
+	}
+	
+	public static CompositeMatch<Territory> alliedNonConqueredNonPendingTerritory(final GameData data, final PlayerID player)
 	{
 		// these is a place where we can land
 		// must be friendly and non conqueuerd land
-		CompositeMatch<Territory> friendlyGround = new CompositeMatchAnd<Territory>();
+		final CompositeMatch<Territory> friendlyGround = new CompositeMatchAnd<Territory>();
 		friendlyGround.add(isTerritoryAllied(player, data));
 		friendlyGround.add(new Match<Territory>()
-				{
-					
-					@Override
-					public boolean match(Territory o)
-					{
-						return !MoveDelegate.getBattleTracker(data).wasConquered(o);
-					}
-				}
-					);
+		{
+			@Override
+			public boolean match(final Territory o)
+			{
+				return !MoveDelegate.getBattleTracker(data).wasConquered(o);
+			}
+		});
 		friendlyGround.add(new Match<Territory>()
-				{
-					
-					@Override
-					public boolean match(Territory o)
-					{
-						return !MoveDelegate.getBattleTracker(data).hasPendingBattle(o, false);
-					}
-				}
-					);
+		{
+			@Override
+			public boolean match(final Territory o)
+			{
+				return !MoveDelegate.getBattleTracker(data).hasPendingBattle(o, false);
+			}
+		});
 		friendlyGround.add(TerritoryIsLand);
 		return friendlyGround;
 	}
-	
 }
-

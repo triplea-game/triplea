@@ -29,7 +29,6 @@ public class ClientLoginValidator implements ILoginValidator
 	static final String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
 	static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
 	static final String INVALID_MAC = "Invalid mac address";
-	
 	// A hack, till I think of something better
 	private static ClientLoginValidator s_instance;
 	
@@ -49,23 +48,21 @@ public class ClientLoginValidator implements ILoginValidator
 	 * Set the password required for the game, or to null if no password is required.
 	 * 
 	 */
-	public void setGamePassword(String password)
+	public void setGamePassword(final String password)
 	{
 		m_password = password;
 	}
 	
-	public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress)
+	public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress)
 	{
-		Map<String, String> challengeProperties = new HashMap<String, String>();
+		final Map<String, String> challengeProperties = new HashMap<String, String>();
 		challengeProperties.put("Sever Version", EngineVersion.VERSION.toString());
-		
 		if (m_password != null)
 		{
 			/**
 			 * Get a new random salt.
 			 */
-			
-			String encryptedPassword = MD5Crypt.crypt(m_password);
+			final String encryptedPassword = MD5Crypt.crypt(m_password);
 			challengeProperties.put(SALT_PROPERTY, MD5Crypt.getSalt(MD5Crypt.MAGIC, encryptedPassword));
 			challengeProperties.put(PASSWORD_REQUIRED_PROPERTY, Boolean.TRUE.toString());
 		}
@@ -73,30 +70,28 @@ public class ClientLoginValidator implements ILoginValidator
 		{
 			challengeProperties.put(PASSWORD_REQUIRED_PROPERTY, Boolean.FALSE.toString());
 		}
-		
 		return challengeProperties;
 	}
 	
-	public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String hashedMac, SocketAddress remoteAddress)
+	public String verifyConnection(final Map<String, String> propertiesSentToClient, final Map<String, String> propertiesReadFromClient, final String clientName, final String hashedMac,
+				final SocketAddress remoteAddress)
 	{
-		String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
+		final String versionString = propertiesReadFromClient.get(ClientLogin.ENGINE_VERSION_PROPERTY);
 		if (versionString == null || versionString.length() > 20 || versionString.trim().length() == 0)
 			return "Invalid version " + versionString;
-		
 		// check for version
-		Version clientVersion = new Version(versionString);
+		final Version clientVersion = new Version(versionString);
 		if (!clientVersion.equals(EngineVersion.VERSION))
 		{
-			String error = "Client is using " + clientVersion + " but server requires version " + EngineVersion.VERSION;
+			final String error = "Client is using " + clientVersion + " but server requires version " + EngineVersion.VERSION;
 			return error;
 		}
-		
-		String realName = clientName.split(" ")[0];
+		final String realName = clientName.split(" ")[0];
 		if (ServerMessenger.getInstance().IsUsernameMiniBanned(realName))
 		{
 			return YOU_HAVE_BEEN_BANNED;
 		}
-		String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
+		final String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
 		if (ServerMessenger.getInstance().IsIpMiniBanned(remoteIp))
 		{
 			return YOU_HAVE_BEEN_BANNED;
@@ -113,15 +108,13 @@ public class ClientLoginValidator implements ILoginValidator
 		{
 			return YOU_HAVE_BEEN_BANNED;
 		}
-		
 		if (propertiesSentToClient.get(PASSWORD_REQUIRED_PROPERTY).equals(Boolean.TRUE.toString()))
 		{
-			String readPassword = propertiesReadFromClient.get(ClientLogin.PASSWORD_PROPERTY);
+			final String readPassword = propertiesReadFromClient.get(ClientLogin.PASSWORD_PROPERTY);
 			if (readPassword == null)
 			{
 				return "No password";
 			}
-			
 			if (!readPassword.equals(MD5Crypt.crypt(m_password, propertiesSentToClient.get(SALT_PROPERTY))))
 			{
 				try
@@ -130,15 +123,13 @@ public class ClientLoginValidator implements ILoginValidator
 					// try to prevent flooding to guess the
 					// password
 					Thread.sleep((int) (4000 * Math.random()));
-				} catch (InterruptedException e)
+				} catch (final InterruptedException e)
 				{
 					// ignore
 				}
-				
 				return "Invalid password";
 			}
 		}
-		
 		return null;
 	}
 }

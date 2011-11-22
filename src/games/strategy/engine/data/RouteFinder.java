@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.util.Match;
@@ -24,26 +23,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-//TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not always...
+// TODO this class doesn't take movementcost into account... typically the shortest route is the fastest route, but not always...
 public class RouteFinder
 {
-	
 	private final GameMap m_map;
 	private final Match<Territory> m_condition;
 	private final Map<Territory, Territory> m_previous;
 	
-	public RouteFinder(GameMap map, Match<Territory> condition)
+	public RouteFinder(final GameMap map, final Match<Territory> condition)
 	{
 		m_map = map;
 		m_condition = condition;
 		m_previous = new HashMap<Territory, Territory>();
 	}
 	
-	public Route findRoute(Territory start, Territory end)
+	public Route findRoute(final Territory start, final Territory end)
 	{
-		
-		Set<Territory> startSet = m_map.getNeighbors(start, m_condition);
-		for (Territory t : startSet)
+		final Set<Territory> startSet = m_map.getNeighbors(start, m_condition);
+		for (final Territory t : startSet)
 		{
 			m_previous.put(t, start);
 		}
@@ -54,16 +51,13 @@ public class RouteFinder
 		return null;
 	}
 	
-	private boolean calculate(Set<Territory> startSet, Territory end)
+	private boolean calculate(final Set<Territory> startSet, final Territory end)
 	{
-		
-		Set<Territory> nextSet = new HashSet<Territory>();
-		
-		for (Territory t : startSet)
+		final Set<Territory> nextSet = new HashSet<Territory>();
+		for (final Territory t : startSet)
 		{
-			
-			Set<Territory> neighbors = m_map.getNeighbors(t, m_condition);
-			for (Territory neighbor : neighbors)
+			final Set<Territory> neighbors = m_map.getNeighbors(t, m_condition);
+			for (final Territory neighbor : neighbors)
 			{
 				if (!m_previous.containsKey(neighbor))
 				{
@@ -81,13 +75,11 @@ public class RouteFinder
 			return false;
 		}
 		return calculate(nextSet, end);
-		
 	}
 	
-	private Route getRoute(Territory start, Territory destination)
+	private Route getRoute(final Territory start, final Territory destination)
 	{
-		List<Territory> route = new ArrayList<Territory>();
-		
+		final List<Territory> route = new ArrayList<Territory>();
 		Territory current = destination;
 		while (current != start)
 		{
@@ -102,5 +94,4 @@ public class RouteFinder
 		Collections.reverse(route);
 		return new Route(route);
 	}
-	
 }

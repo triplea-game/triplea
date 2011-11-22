@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.common.ui;
 
 import com.apple.eawt.Application;
@@ -34,22 +33,19 @@ public class MacWrapper
 {
 	private static MainGameFrame s_shutdownFrame;
 	private static Application application = new Application();
-	
 	static
 	{
-		application.addApplicationListener(
-					new ApplicationAdapter()
-					{
-						
-						@Override
-						public void handleQuit(ApplicationEvent event)
-					{
-						if (s_shutdownFrame != null)
-							s_shutdownFrame.shutdown();
-						else
-							System.exit(0);
-					}
-					});
+		application.addApplicationListener(new ApplicationAdapter()
+		{
+			@Override
+			public void handleQuit(final ApplicationEvent event)
+			{
+				if (s_shutdownFrame != null)
+					s_shutdownFrame.shutdown();
+				else
+					System.exit(0);
+			}
+		});
 	}
 	
 	// keep this in its own class, otherwise we get a no class def error when

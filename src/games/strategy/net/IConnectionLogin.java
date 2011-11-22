@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net;
 
 import java.util.Map;
@@ -28,7 +27,6 @@ import java.util.Map;
  */
 public interface IConnectionLogin
 {
-	
 	/**
 	 * Get the properties to log in given the challenge Properties
 	 */
@@ -38,5 +36,4 @@ public interface IConnectionLogin
 	 * A notification that the login failed. The error message supplied should be shown to the user.
 	 */
 	public void notifyFailedLogin(String message);
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TabbedProductionPanel.java
  * 
  * Created on June 11, 2011
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -57,45 +55,40 @@ public class TabbedProductionPanel extends ProductionPanel
 	private int m_rows;
 	private int m_columns;
 	
-	protected TabbedProductionPanel(UIContext uiContext)
+	protected TabbedProductionPanel(final UIContext uiContext)
 	{
 		super(uiContext);
 	}
 	
-	public static IntegerMap<ProductionRule> getProduction(PlayerID id, JFrame parent, GameData data, boolean bid, IntegerMap<ProductionRule> initialPurchase, UIContext context)
+	public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final boolean bid, final IntegerMap<ProductionRule> initialPurchase,
+				final UIContext context)
 	{
 		return new TabbedProductionPanel(context).show(id, parent, data, bid, initialPurchase);
 	}
 	
 	@Override
-	protected void initLayout(PlayerID id)
+	protected void initLayout(final PlayerID id)
 	{
 		this.removeAll();
 		this.setLayout(new GridBagLayout());
 		add(new JLabel("Attack/Defense/Movement"), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
-		
-		JTabbedPane tabs = new JTabbedPane();
-		
+		final JTabbedPane tabs = new JTabbedPane();
 		add(tabs, new GridBagConstraints(0, 1, 1, 1, 100, 100, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 0), 0, 0));
-		
-		ProductionTabsProperties properties = ProductionTabsProperties.getInstance(m_id, m_rules, UIContext.getMapDir());
-		List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
+		final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(m_id, m_rules, UIContext.getMapDir());
+		final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
 		calculateXY(properties, largestList(ruleLists));
-		
-		for (Tuple<String, List<Rule>> ruleList : ruleLists)
+		for (final Tuple<String, List<Rule>> ruleList : ruleLists)
 		{
 			if (ruleList.getSecond().size() > 0)
 			{
 				tabs.addTab(ruleList.getFirst(), new JScrollPane(getRulesPanel(ruleList.getSecond())));
 			}
 		}
-		
 		add(m_left, new GridBagConstraints(0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
 		m_done = new JButton(m_done_action);
 		add(m_done, new GridBagConstraints(0, 3, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 8, 0), 0, 0));
-		
-		Dimension dtab = tabs.getPreferredSize();
-		Dimension dthis = this.getPreferredSize();
+		final Dimension dtab = tabs.getPreferredSize();
+		final Dimension dthis = this.getPreferredSize();
 		if (dtab != null && dthis != null)
 		{
 			tabs.setPreferredSize(new Dimension(dtab.width + 4, dtab.height + 4)); // for whatever dumb reason, the tabs need a couple extra height and width or else scroll bars will appear
@@ -105,7 +98,7 @@ public class TabbedProductionPanel extends ProductionPanel
 		this.validate();
 	}
 	
-	private void calculateXY(ProductionTabsProperties properties, int largestList)
+	private void calculateXY(final ProductionTabsProperties properties, final int largestList)
 	{
 		if (properties == null || properties.getRows() == 0 || properties.getColumns() == 0 || properties.getRows() * properties.getColumns() < largestList)
 		{
@@ -129,7 +122,7 @@ public class TabbedProductionPanel extends ProductionPanel
 	private int largestList(final List<Tuple<String, List<Rule>>> ruleLists)
 	{
 		int largestList = 0;
-		for (Tuple<String, List<Rule>> tuple : ruleLists)
+		for (final Tuple<String, List<Rule>> tuple : ruleLists)
 		{
 			if (largestList < tuple.getSecond().size())
 				largestList = tuple.getSecond().size();
@@ -139,10 +132,10 @@ public class TabbedProductionPanel extends ProductionPanel
 	
 	private void checkLists(final List<Tuple<String, List<Rule>>> ruleLists)
 	{
-		List<Rule> rulesCopy = new ArrayList<Rule>(m_rules);
-		for (Tuple<String, List<Rule>> tuple : ruleLists)
+		final List<Rule> rulesCopy = new ArrayList<Rule>(m_rules);
+		for (final Tuple<String, List<Rule>> tuple : ruleLists)
 		{
-			for (Rule rule : tuple.getSecond())
+			for (final Rule rule : tuple.getSecond())
 			{
 				rulesCopy.remove(rule);
 			}
@@ -151,12 +144,11 @@ public class TabbedProductionPanel extends ProductionPanel
 			throw new IllegalStateException("production_tabs: must include all player production rules/units");
 	}
 	
-	private List<Tuple<String, List<Rule>>> getRuleLists(ProductionTabsProperties properties)
+	private List<Tuple<String, List<Rule>>> getRuleLists(final ProductionTabsProperties properties)
 	{
-		
 		if (properties != null && !properties.useDefaultTabs())
 		{
-			List<Tuple<String, List<Rule>>> ruleLists = properties.getRuleLists();
+			final List<Tuple<String, List<Rule>>> ruleLists = properties.getRuleLists();
 			checkLists(ruleLists);
 			return ruleLists;
 		}
@@ -164,30 +156,24 @@ public class TabbedProductionPanel extends ProductionPanel
 		{
 			return getDefaultRuleLists();
 		}
-		
 	}
 	
 	private List<Tuple<String, List<Rule>>> getDefaultRuleLists()
 	{
-		
-		List<Tuple<String, List<Rule>>> ruleLists = new ArrayList<Tuple<String, List<Rule>>>();
-		ArrayList<Rule> allRules = new ArrayList<Rule>();
-		ArrayList<Rule> landRules = new ArrayList<Rule>();
-		ArrayList<Rule> airRules = new ArrayList<Rule>();
-		ArrayList<Rule> seaRules = new ArrayList<Rule>();
-		ArrayList<Rule> constructRules = new ArrayList<Rule>();
-		ArrayList<Rule> upgradeConsumesRules = new ArrayList<Rule>();
-		
-		for (Rule rule : m_rules)
+		final List<Tuple<String, List<Rule>>> ruleLists = new ArrayList<Tuple<String, List<Rule>>>();
+		final ArrayList<Rule> allRules = new ArrayList<Rule>();
+		final ArrayList<Rule> landRules = new ArrayList<Rule>();
+		final ArrayList<Rule> airRules = new ArrayList<Rule>();
+		final ArrayList<Rule> seaRules = new ArrayList<Rule>();
+		final ArrayList<Rule> constructRules = new ArrayList<Rule>();
+		final ArrayList<Rule> upgradeConsumesRules = new ArrayList<Rule>();
+		for (final Rule rule : m_rules)
 		{
-			UnitType type = (UnitType) rule.getProductionRule().getResults().keySet().iterator().next();
-			UnitAttachment attach = UnitAttachment.get(type);
-			
+			final UnitType type = (UnitType) rule.getProductionRule().getResults().keySet().iterator().next();
+			final UnitAttachment attach = UnitAttachment.get(type);
 			allRules.add(rule);
-			
 			if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() >= 1)
 				upgradeConsumesRules.add(rule);
-			
 			if (attach.isConstruction() || attach.isFactory())
 			{ // canproduceUnits isn't checked on purpose, since this category is for units that can be placed anywhere (placed without needing a factory).
 				constructRules.add(rule);
@@ -205,23 +191,20 @@ public class TabbedProductionPanel extends ProductionPanel
 				landRules.add(rule);
 			}
 		}
-		
 		ruleLists.add(new Tuple<String, List<Rule>>("All", allRules));
 		ruleLists.add(new Tuple<String, List<Rule>>("Land", landRules));
 		ruleLists.add(new Tuple<String, List<Rule>>("Air", airRules));
 		ruleLists.add(new Tuple<String, List<Rule>>("Sea", seaRules));
 		ruleLists.add(new Tuple<String, List<Rule>>("Construction", constructRules));
 		ruleLists.add(new Tuple<String, List<Rule>>("Upgrades/Consumes", upgradeConsumesRules));
-		
 		return ruleLists;
 	}
 	
-	private JPanel getRulesPanel(List<Rule> rules)
+	private JPanel getRulesPanel(final List<Rule> rules)
 	{
-		JPanel panel = new JPanel();
+		final JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(m_rows, m_columns));
-		JPanel[][] panelHolder = new JPanel[m_rows][m_columns];
-		
+		final JPanel[][] panelHolder = new JPanel[m_rows][m_columns];
 		for (int m = 0; m < m_rows; m++)
 		{
 			for (int n = 0; n < m_columns; n++)
@@ -230,7 +213,6 @@ public class TabbedProductionPanel extends ProductionPanel
 				panel.add(panelHolder[m][n]);
 			}
 		}
-		
 		for (int x = 0; x < m_columns * m_rows; x++)
 		{
 			if (x < rules.size())

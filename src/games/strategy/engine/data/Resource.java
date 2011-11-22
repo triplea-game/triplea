@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Resource.java
  * 
  * Created on October 13, 2001, 9:33 AM
  */
-
 package games.strategy.engine.data;
 
 /**
@@ -36,9 +34,8 @@ public class Resource extends NamedAttachable
 	 * @param data
 	 *            game data
 	 */
-	public Resource(String name, GameData data)
+	public Resource(final String name, final GameData data)
 	{
 		super(name, data);
 	}
-	
 }

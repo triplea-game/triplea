@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * UnitChooser.java
  * 
  * Created on December 3, 2001, 7:32 PM
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.PlayerID;
@@ -43,21 +41,20 @@ import javax.swing.ListSelectionModel;
  */
 public class PlayerChooser extends JPanel
 {
-	
 	private JList m_list;
-	private PlayerList m_players;
-	private PlayerID m_defaultPlayer;
+	private final PlayerList m_players;
+	private final PlayerID m_defaultPlayer;
 	private final UIContext m_uiContext;
-	private boolean m_allowNeutral;
+	private final boolean m_allowNeutral;
 	
 	/** Creates new PlayerChooser */
-	public PlayerChooser(PlayerList players, UIContext uiContext, boolean allowNeutral)
+	public PlayerChooser(final PlayerList players, final UIContext uiContext, final boolean allowNeutral)
 	{
 		this(players, null, uiContext, allowNeutral);
 	}
 	
 	/** Creates new PlayerChooser */
-	public PlayerChooser(PlayerList players, PlayerID defaultPlayer, UIContext uiContext, boolean allowNeutral)
+	public PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final UIContext uiContext, final boolean allowNeutral)
 	{
 		m_players = players;
 		m_defaultPlayer = defaultPlayer;
@@ -69,7 +66,7 @@ public class PlayerChooser extends JPanel
 	
 	private void createComponents()
 	{
-		Collection<PlayerID> players = new ArrayList<PlayerID>(m_players.getPlayers());
+		final Collection<PlayerID> players = new ArrayList<PlayerID>(m_players.getPlayers());
 		if (m_allowNeutral)
 			players.add(PlayerID.NULL_PLAYERID);
 		m_list = new JList(players.toArray());
@@ -89,23 +86,20 @@ public class PlayerChooser extends JPanel
 	{
 		return (PlayerID) m_list.getSelectedValue();
 	}
-	
 }
 
 
 class PlayerChooserRenderer extends DefaultListCellRenderer
 {
-	
 	private final UIContext m_uiContext;
 	
-	PlayerChooserRenderer(PlayerList players, UIContext uiContext)
+	PlayerChooserRenderer(final PlayerList players, final UIContext uiContext)
 	{
-		
 		m_uiContext = uiContext;
 	}
 	
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
+	public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
 	{
 		super.getListCellRendererComponent(list, ((PlayerID) value).getName(), index, isSelected, cellHasFocus);
 		if ((PlayerID) value == PlayerID.NULL_PLAYERID)
@@ -114,5 +108,4 @@ class PlayerChooserRenderer extends DefaultListCellRenderer
 			setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag((PlayerID) value)));
 		return this;
 	}
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework;
 
 import games.strategy.engine.data.GameData;
@@ -43,11 +42,9 @@ import junit.framework.TestCase;
  * @author unascribed
  * @version 1.0
  */
-
 public class GameDataManagerTest extends TestCase
 {
-	
-	public GameDataManagerTest(String name)
+	public GameDataManagerTest(final String name)
 	{
 		super(name);
 	}
@@ -56,25 +53,19 @@ public class GameDataManagerTest extends TestCase
 	public void setUp() throws Exception
 	{
 		// get the xml file
-		URL url = SerializationTest.class.getResource("Test.xml");
-		
+		final URL url = SerializationTest.class.getResource("Test.xml");
 		// get the source data
-		InputStream input = url.openStream();
-		
+		final InputStream input = url.openStream();
 		(new GameParser()).parse(input);
-		
 	}
 	
 	public void testLoadStoreKeepsGamUUID() throws IOException
 	{
-		GameData data = new GameData();
-		GameDataManager m = new GameDataManager();
-		ByteArrayOutputStream sink = new ByteArrayOutputStream();
+		final GameData data = new GameData();
+		final GameDataManager m = new GameDataManager();
+		final ByteArrayOutputStream sink = new ByteArrayOutputStream();
 		m.saveGame(sink, data);
-		
-		GameData loaded = m.loadGame(new ByteArrayInputStream(sink.toByteArray()));
+		final GameData loaded = m.loadGame(new ByteArrayInputStream(sink.toByteArray()));
 		assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
-		
 	}
-	
 }

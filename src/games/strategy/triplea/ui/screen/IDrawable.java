@@ -50,27 +50,16 @@ import java.util.logging.Logger;
 public interface IDrawable
 {
 	public Logger s_logger = Logger.getLogger(IDrawable.class.getName());
-	
 	public static final int BASE_MAP_LEVEL = 1;
-	
 	public static final int POLYGONS_LEVEL = 2;
-	
 	public static final int RELIEF_LEVEL = 3;
-	
 	public static final int CONVOY_LEVEL = 4;
-	
 	public static final int CAPITOL_MARKER_LEVEL = 7;
-	
 	public static final int VC_MARKER_LEVEL = 8;
-	
 	public static final int DECORATOR_LEVEL = 9;
-	
 	public static final int TERRITORY_TEXT_LEVEL = 10;
-	
 	public static final int BATTLE_HIGHLIGHT_LEVEL = 11;
-	
 	public static final int UNITS_LEVEL = 12;
-	
 	public static final int TERRITORY_OVERLAY_LEVEL = 13;
 	
 	/**
@@ -91,12 +80,10 @@ public interface IDrawable
 
 class DrawableComparator implements Comparator<IDrawable>
 {
-	
 	public int compare(final IDrawable o1, final IDrawable o2)
 	{
 		return o1.getLevel() - o2.getLevel();
 	}
-	
 }
 
 
@@ -115,10 +102,8 @@ class TerritoryNameDrawable implements IDrawable
 	{
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
 		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-		
 		boolean drawComments = false;
 		String commentText = null;
-		
 		if (territory.isWater())
 		{
 			// Start by determining if we should display the sea zone name
@@ -135,7 +120,6 @@ class TerritoryNameDrawable implements IDrawable
 					drawComments = true;
 					commentText = ta.getConvoyAttached() + " Convoy Route";
 				}
-				
 				// Check to ensure there's an original owner to fix abend
 				if (ta.getProduction() > 0 && ta.getOriginalOwner() != null)
 				{
@@ -145,28 +129,23 @@ class TerritoryNameDrawable implements IDrawable
 					else
 						commentText = ta.getOccupiedTerrOf().getName() + " Convoy Center";
 				}
-				
 				if (ta.isConvoyRoute() && ta.getProduction() > 0 && ta.getOriginalOwner() != null)
 				{
 					drawComments = true;
 					commentText = ta.getConvoyAttached() + " " + ta.getOriginalOwner().getName() + " Convoy Route";
 				}
 			}
-			
 			if (drawComments == false)
 			{
 				return;
 			}
 		}
-		
 		final Rectangle territoryBounds = mapData.getBoundingRect(territory);
 		graphics.setFont(MapImage.MAP_FONT);
-		
 		graphics.setColor(Color.black);
 		final FontMetrics fm = graphics.getFontMetrics();
 		int x;
 		int y;
-		
 		// if we specify a placement point, use it
 		// otherwise, put it in the center
 		final Point namePlace = mapData.getNamePlacementPoint(territory);
@@ -174,10 +153,8 @@ class TerritoryNameDrawable implements IDrawable
 		{
 			x = territoryBounds.x;
 			y = territoryBounds.y;
-			
 			x += (int) territoryBounds.getWidth() >> 1;
 			y += (int) territoryBounds.getHeight() >> 1;
-			
 			x -= fm.stringWidth(territory.getName()) >> 1;
 			y += fm.getAscent() >> 1;
 		}
@@ -186,7 +163,6 @@ class TerritoryNameDrawable implements IDrawable
 			x = namePlace.x;
 			y = namePlace.y;
 		}
-		
 		if (mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(m_territoryName))
 			if (drawComments)
 			{
@@ -196,29 +172,24 @@ class TerritoryNameDrawable implements IDrawable
 			{
 				graphics.drawString(territory.getName(), x - bounds.x, y - bounds.y);
 			}
-		
 		// draw the PUs.
 		if (ta != null && ta.getProduction() > 0)
 		{
 			final Image img = m_uiContext.getPUImageFactory().getPUImage(ta.getProduction());
 			final String prod = Integer.valueOf(ta.getProduction()).toString();
-			
 			final Point place = mapData.getPUPlacementPoint(territory);
 			// if pu_place.txt is specified draw there
 			if (place != null)
 			{
 				x = place.x;
 				y = place.y;
-				
 				draw(bounds, graphics, x, y, img, prod);
-				
 			}
 			// otherwise, draw under the territory name
 			else
 			{
 				x = x + ((fm.stringWidth(m_territoryName)) >> 1) - ((fm.stringWidth(prod)) >> 1);
 				y += fm.getLeading() + fm.getAscent();
-				
 				draw(bounds, graphics, x, y, img, prod);
 			}
 		}
@@ -249,13 +220,11 @@ class TerritoryNameDrawable implements IDrawable
 	{
 		return games.strategy.triplea.Properties.getDisplaySeaNames(data);
 	}
-	
 }
 
 
 class VCDrawable implements IDrawable
 {
-	
 	private final Territory m_location;
 	
 	public VCDrawable(final Territory location)
@@ -267,20 +236,17 @@ class VCDrawable implements IDrawable
 	{
 		final Point point = mapData.getVCPlacementPoint(m_location);
 		graphics.drawImage(mapData.getVCImage(), point.x - bounds.x, point.y - bounds.y, null);
-		
 	}
 	
 	public int getLevel()
 	{
 		return VC_MARKER_LEVEL;
 	}
-	
 }
 
 
 class DecoratorDrawable implements IDrawable
 {
-	
 	private final Point m_point;
 	private final Image m_image;
 	
@@ -300,17 +266,13 @@ class DecoratorDrawable implements IDrawable
 	{
 		return DECORATOR_LEVEL;
 	}
-	
 }
 
 
 class CapitolMarkerDrawable implements IDrawable
 {
-	
 	private final String m_player;
-	
 	private final String m_location;
-	
 	private final UIContext m_uiContext;
 	
 	public CapitolMarkerDrawable(final PlayerID player, final Territory location, final UIContext uiContext)
@@ -320,7 +282,6 @@ class CapitolMarkerDrawable implements IDrawable
 		{
 			throw new IllegalStateException("no player for capitol:" + location);
 		}
-		
 		m_player = player.getName();
 		m_location = location.getName();
 		m_uiContext = uiContext;
@@ -331,16 +292,13 @@ class CapitolMarkerDrawable implements IDrawable
 		// Changed back to use Large flags
 		final Image img = m_uiContext.getFlagImageFactory().getLargeFlag(data.getPlayerList().getPlayerID(m_player));
 		final Point point = mapData.getCapitolMarkerLocation(data.getMap().getTerritory(m_location));
-		
 		graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
-		
 	}
 	
 	public int getLevel()
 	{
 		return CAPITOL_MARKER_LEVEL;
 	}
-	
 }
 
 
@@ -367,21 +325,16 @@ abstract class MapTileDrawable implements IDrawable
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
 		final Image img = getImage();
-		
 		if (img == null)
 			return;
-		
 		final Object oldValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
 		graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
 		// the tile images are already scaled
 		if (unscaled != null)
 			graphics.setTransform(unscaled);
-		
 		final Stopwatch drawStopWatch = new Stopwatch(s_logger, Level.FINEST, "drawing tile images");
-		
 		graphics.drawImage(img, m_x * TileManager.TILE_SIZE - bounds.x, m_y * TileManager.TILE_SIZE - bounds.y, null);
 		drawStopWatch.done();
-		
 		if (unscaled != null)
 			graphics.setTransform(scaled);
 		if (oldValue == null)
@@ -389,17 +342,14 @@ abstract class MapTileDrawable implements IDrawable
 		else
 			graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldValue);
 	}
-	
 }
 
 
 class ReliefMapDrawable extends MapTileDrawable
 {
-	
 	public ReliefMapDrawable(final int x, final int y, final UIContext context)
 	{
 		super(x, y, context);
-		
 	}
 	
 	@Override
@@ -415,19 +365,15 @@ class ReliefMapDrawable extends MapTileDrawable
 	{
 		if (m_noImage)
 			return null;
-		
 		if (!TileImageFactory.getShowReliefImages())
 			return null;
-		
 		Image rVal;
 		if (m_unscaled)
 			rVal = m_uiContext.getTileImageFactory().getUnscaledUncachedReliefTile(m_x, m_y);
 		else
 			rVal = m_uiContext.getTileImageFactory().getReliefTile(m_x, m_y);
-		
 		if (rVal == null)
 			m_noImage = true;
-		
 		return rVal;
 	}
 	
@@ -435,13 +381,11 @@ class ReliefMapDrawable extends MapTileDrawable
 	{
 		return RELIEF_LEVEL;
 	}
-	
 }
 
 
 class BaseMapDrawable extends MapTileDrawable
 {
-	
 	public BaseMapDrawable(final int x, final int y, final UIContext context)
 	{
 		super(x, y, context);
@@ -460,17 +404,13 @@ class BaseMapDrawable extends MapTileDrawable
 	{
 		if (m_noImage)
 			return null;
-		
 		Image rVal;
-		
 		if (m_unscaled)
 			rVal = m_uiContext.getTileImageFactory().getUnscaledUncachedBaseTile(m_x, m_y);
 		else
 			rVal = m_uiContext.getTileImageFactory().getBaseTile(m_x, m_y);
-		
 		if (rVal == null)
 			m_noImage = true;
-		
 		return rVal;
 	}
 	
@@ -478,7 +418,6 @@ class BaseMapDrawable extends MapTileDrawable
 	{
 		return BASE_MAP_LEVEL;
 	}
-	
 }
 
 
@@ -549,7 +488,6 @@ class BlockadeZoneDrawable implements IDrawable
 	private final String m_location;
 	
 	// private final UIContext m_uiContext;
-	
 	public BlockadeZoneDrawable(final Territory location, final UIContext uiContext)
 	{
 		super();
@@ -582,58 +520,47 @@ class SeaZoneOutlineDrawable implements IDrawable
 	
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
-		
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
 		final List<Polygon> polys = mapData.getPolygons(territory);
-		
 		final Iterator<Polygon> iter2 = polys.iterator();
 		while (iter2.hasNext())
 		{
 			Polygon polygon = iter2.next();
-			
 			// if we dont have to draw, dont
 			if (!polygon.intersects(bounds) && !polygon.contains(bounds))
 				continue;
-			
 			// use a copy since we will move the polygon
 			polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-			
 			polygon.translate(-bounds.x, -bounds.y);
 			graphics.setColor(Color.BLACK);
 			graphics.drawPolygon(polygon);
 		}
-		
 	}
 	
 	public int getLevel()
 	{
 		return POLYGONS_LEVEL;
 	}
-	
 }
 
 
 abstract class TerritoryDrawable
 {
-	protected final void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData,
-				final AffineTransform unscaled, final AffineTransform scaled, final Territory territory, final Paint territoryPaint)
+	protected final void draw(final Rectangle bounds, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled, final Territory territory,
+				final Paint territoryPaint)
 	{
 		final List<Polygon> polys = mapData.getPolygons(territory);
-		
 		final Object oldAAValue = graphics.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
 		// at 100% scale, this makes the lines look worse
 		if (!(scaled == unscaled))
 			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
 		for (Polygon polygon : polys)
 		{
 			// if we dont have to draw, dont
 			if (!polygon.intersects(bounds) && !polygon.contains(bounds))
 				continue;
-			
 			// use a copy since we will move the polygon
 			polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-			
 			polygon.translate(-bounds.x, -bounds.y);
 			graphics.setPaint(territoryPaint);
 			graphics.fillPolygon(polygon);
@@ -654,17 +581,14 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 		m_territoryName = territoryName;
 	}
 	
-	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData,
-				final AffineTransform unscaled, final AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
-		
 		final Set<PlayerID> players = new HashSet<PlayerID>();
 		for (final Unit u : data.getMap().getTerritory(m_territoryName).getUnits())
 		{
 			if (!TripleAUnit.get(u).getSubmerged())
 				players.add(u.getOwner());
 		}
-		
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
 		PlayerID attacker = null;
 		boolean draw = false;
@@ -672,31 +596,31 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 		{
 			if (!territory.isWater())
 			{
-                if (data.getRelationshipTracker().isAtWar(p, territory.getOwner()))
+				if (data.getRelationshipTracker().isAtWar(p, territory.getOwner()))
 				{
 					attacker = p;
 					draw = true;
 					break;
 				}
-                else
-                {
-    				// O(n^2), but n is usually 2, and almost always < 10
-    				for (final PlayerID p2 : players)
-    				{
-                        if (data.getRelationshipTracker().isAtWar(p, p2))
-    					{
-    						draw = true;
-    						break;
-    					}
-    				}
-                }
+				else
+				{
+					// O(n^2), but n is usually 2, and almost always < 10
+					for (final PlayerID p2 : players)
+					{
+						if (data.getRelationshipTracker().isAtWar(p, p2))
+						{
+							draw = true;
+							break;
+						}
+					}
+				}
 			}
 			else
 			{
 				// O(n^2), but n is usually 2, and almost always < 10
 				for (final PlayerID p2 : players)
 				{
-                    if (data.getRelationshipTracker().isAtWar(p, p2))
+					if (data.getRelationshipTracker().isAtWar(p, p2))
 					{
 						draw = true;
 						break;
@@ -704,7 +628,6 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 				}
 			}
 		}
-		
 		if (draw)
 		{
 			Color stripeColor;
@@ -714,18 +637,13 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 			{
 				stripeColor = mapData.getPlayerColor(attacker.getName());
 			}
-			
-			final Paint paint = new GradientPaint(
-						0 - (float) bounds.getX(), 0 - (float) bounds.getY(),
-						// (float) (tBounds.getX() - bounds.getX()),
-						// (float) (tBounds.getY() - bounds.getY()),
+			final Paint paint = new GradientPaint(0 - (float) bounds.getX(), 0 - (float) bounds.getY(),
+			// (float) (tBounds.getX() - bounds.getX()),
+			// (float) (tBounds.getY() - bounds.getY()),
 						new Color(stripeColor.getRed(), stripeColor.getGreen(), stripeColor.getBlue(), 120),
 						// (float) (tBounds.getX() - bounds.getX() + tBounds.getWidth()) ,
 						// (float) (tBounds.getY() - bounds.getY() + tBounds.getHeight()),
-						30 - (float) bounds.getX(), 50 - (float) bounds.getY(),
-						new Color(0, 0, 0, 0),
-						true);
-			
+						30 - (float) bounds.getX(), 50 - (float) bounds.getY(), new Color(0, 0, 0, 0), true);
 			// newColor = new Color(255,120,120);
 			// graphics.setStroke(new BasicStroke(6));
 			// new TerritoryOverLayDrawable(Color.RED, m_territoryName, OP.DRAW).draw(bounds, data, graphics, mapData, unscaled, scaled);
@@ -737,7 +655,6 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 	{
 		return BATTLE_HIGHLIGHT_LEVEL;
 	}
-	
 }
 
 
@@ -752,10 +669,8 @@ class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable
 	
 	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
-		
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
 		Color territoryColor;
-		
 		if (TerritoryAttachment.get(territory).isImpassible())
 		{
 			territoryColor = mapData.impassibleColor();
@@ -764,7 +679,6 @@ class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable
 		{
 			territoryColor = mapData.getPlayerColor(territory.getOwner().getName());
 		}
-		
 		draw(bounds, graphics, mapData, unscaled, scaled, territory, territoryColor);
 	}
 	
@@ -772,5 +686,4 @@ class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable
 	{
 		return POLYGONS_LEVEL;
 	}
-	
 }

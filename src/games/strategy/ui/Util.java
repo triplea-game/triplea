@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Util.java
  * 
  * Created on October 30, 2001, 6:29 PM
  */
-
 package games.strategy.ui;
 
 import games.strategy.util.EventThreadJOptionPane;
@@ -60,7 +58,7 @@ public class Util
 		public T run();
 	}
 	
-	public static void runInSwingEventThread(Runnable r)
+	public static void runInSwingEventThread(final Runnable r)
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
@@ -71,10 +69,10 @@ public class Util
 			try
 			{
 				SwingUtilities.invokeAndWait(r);
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				throw new IllegalStateException(e);
-			} catch (InvocationTargetException e)
+			} catch (final InvocationTargetException e)
 			{
 				throw new IllegalStateException(e);
 			}
@@ -83,28 +81,24 @@ public class Util
 	
 	public static <T> T runInSwingEventThread(final Task<T> task)
 	{
-		
 		if (SwingUtilities.isEventDispatchThread())
 		{
 			return task.run();
 		}
-		
 		final AtomicReference<T> results = new AtomicReference<T>();
-		
 		try
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
-				
 				public void run()
 				{
 					results.set(task.run());
 				}
 			});
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			throw new IllegalStateException(e);
-		} catch (InvocationTargetException e)
+		} catch (final InvocationTargetException e)
 		{
 			throw new IllegalStateException(e);
 		}
@@ -115,24 +109,24 @@ public class Util
 	{
 	};
 	
-	public static void ensureImageLoaded(Image anImage) throws InterruptedException
+	public static void ensureImageLoaded(final Image anImage) throws InterruptedException
 	{
-		MediaTracker tracker = new MediaTracker(c);
+		final MediaTracker tracker = new MediaTracker(c);
 		tracker.addImage(anImage, 1);
 		tracker.waitForAll();
 		tracker.removeImage(anImage);
 	}
 	
-	public static Image copyImage(BufferedImage img, boolean needAlpha)
+	public static Image copyImage(final BufferedImage img, final boolean needAlpha)
 	{
-		BufferedImage copy = createImage(img.getWidth(), img.getHeight(), needAlpha);
-		Graphics2D g = (Graphics2D) copy.getGraphics();
+		final BufferedImage copy = createImage(img.getWidth(), img.getHeight(), needAlpha);
+		final Graphics2D g = (Graphics2D) copy.getGraphics();
 		g.drawImage(img, 0, 0, null);
 		g.dispose();
 		return copy;
 	}
 	
-	public static void notifyError(Component parent, String message)
+	public static void notifyError(final Component parent, final String message)
 	{
 		EventThreadJOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
@@ -145,27 +139,21 @@ public class Util
 	// return localGraphicSystem.createCompatibleVolatileImage(width, height);
 	//
 	// }
-	
 	/**
 	 * Previously used to use TYPE_INT_BGR and TYPE_INT_ABGR but caused memory
 	 * problems. Fix is to use 3Byte rather than INT.
 	 */
-	public static BufferedImage createImage(int width, int height, boolean needAlpha)
+	public static BufferedImage createImage(final int width, final int height, final boolean needAlpha)
 	{
-		
 		//
-		
 		if (needAlpha)
 		{
-			return new BufferedImage(width, height,
-						BufferedImage.TYPE_4BYTE_ABGR);
+			return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		}
 		else
 		{
-			return new BufferedImage(width, height,
-						BufferedImage.TYPE_3BYTE_BGR);
+			return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 		}
-		
 		// the code below should be the correct way to get graphics, but it is
 		// makes the ui quite
 		// unresponsive when drawing the map (as seen when updating the map for
@@ -174,7 +162,6 @@ public class Util
 		// For jdk1.3 on linux and windows, and jdk1.4 on linux there is a very
 		// noticeable difference
 		// jdk1.4 on windows doesnt have a difference
-		
 		// local graphic system is used to create compatible bitmaps
 		// GraphicsConfiguration localGraphicSystem = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 		// .getDefaultConfiguration();
@@ -184,73 +171,60 @@ public class Util
 		// BufferedImage workImage = localGraphicSystem.createCompatibleImage(width, height, needAlpha ? Transparency.TRANSLUCENT : Transparency.OPAQUE);
 		//
 		// return workImage;
-		
 	}
 	
-	public static Dimension getDimension(Image anImage, ImageObserver obs)
+	public static Dimension getDimension(final Image anImage, final ImageObserver obs)
 	{
 		return new Dimension(anImage.getWidth(obs), anImage.getHeight(obs));
 	}
 	
-	public static void center(Window w)
+	public static void center(final Window w)
 	{
-		int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-		int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
-		
-		int windowWidth = w.getWidth();
-		int windowHeight = w.getHeight();
-		
+		final int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+		final int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+		final int windowWidth = w.getWidth();
+		final int windowHeight = w.getHeight();
 		if (windowHeight > screenHeight)
 			return;
 		if (windowWidth > screenWidth)
 			return;
-		
-		int x = (screenWidth - windowWidth) / 2;
-		int y = (screenHeight - windowHeight) / 2;
-		
+		final int x = (screenWidth - windowWidth) / 2;
+		final int y = (screenHeight - windowHeight) / 2;
 		w.setLocation(x, y);
-		
 	}
 	
 	// code stolen from swingx
 	// swingx is lgpl, so no problems with copyright
-	public static Image getBanner(String text)
+	public static Image getBanner(final String text)
 	{
-		int w = 400;
-		int h = 60;
-		float loginStringX = w * .05f;
-		float loginStringY = h * .75f;
-		
-		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2 = img.createGraphics();
-		Font font = new Font("Arial Bold", Font.PLAIN, 36);
+		final int w = 400;
+		final int h = 60;
+		final float loginStringX = w * .05f;
+		final float loginStringY = h * .75f;
+		final BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+		final Graphics2D g2 = img.createGraphics();
+		final Font font = new Font("Arial Bold", Font.PLAIN, 36);
 		g2.setFont(font);
-		Graphics2D originalGraphics = g2;
-		
+		final Graphics2D originalGraphics = g2;
 		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-		
 		// draw a big square
 		g2.setColor(Color.GRAY);
 		g2.fillRect(0, 0, w, h);
-		
 		// create the curve shape
-		GeneralPath curveShape = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+		final GeneralPath curveShape = new GeneralPath(GeneralPath.WIND_NON_ZERO);
 		curveShape.moveTo(0, h * .6f);
 		curveShape.curveTo(w * .167f, h * 1.2f, w * .667f, h * -.5f, w, h * .75f);
 		curveShape.lineTo(w, h);
 		curveShape.lineTo(0, h);
 		curveShape.lineTo(0, h * .8f);
 		curveShape.closePath();
-		
 		// draw into the buffer a gradient (bottom to top), and the text "Login"
-		GradientPaint gp = new GradientPaint(0, h, Color.GRAY,
-					0, 0, Color.LIGHT_GRAY);
+		final GradientPaint gp = new GradientPaint(0, h, Color.GRAY, 0, 0, Color.LIGHT_GRAY);
 		g2.setPaint(gp);
 		g2.fill(curveShape);
-		
 		// g2.setPaint(Color.white);
 		originalGraphics.setColor(Color.WHITE);
 		originalGraphics.drawString(text, loginStringX, loginStringY);

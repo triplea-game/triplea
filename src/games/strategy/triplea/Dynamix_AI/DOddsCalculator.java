@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI;
 
 import games.strategy.engine.data.Change;
@@ -78,10 +77,9 @@ public class DOddsCalculator
 	
 	public DOddsCalculator()
 	{
-		
 	}
 	
-	public static void SetGameData(GameData data)
+	public static void SetGameData(final GameData data)
 	{
 		data.acquireReadLock();
 		try
@@ -94,18 +92,16 @@ public class DOddsCalculator
 	}
 	
 	@SuppressWarnings("unchecked")
-	public AggregateResults calculate(GameData data, PlayerID attacker, PlayerID defender, Territory location, Collection<Unit> attacking, Collection<Unit> defending, Collection<Unit> bombarding,
-				int runCount)
+	public AggregateResults calculate(final GameData data, final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
+				final Collection<Unit> defending, final Collection<Unit> bombarding, final int runCount)
 	{
 		m_attacker = s_dataForSimulation.getPlayerList().getPlayerID(attacker.getName());
 		m_defender = s_dataForSimulation.getPlayerList().getPlayerID(defender.getName());
 		m_location = s_dataForSimulation.getMap().getTerritory(location.getName());
-		
 		if (m_attacker == null)
 			m_attacker = PlayerID.NULL_PLAYERID;
 		if (m_defender == null)
 			m_defender = PlayerID.NULL_PLAYERID;
-		
 		data.acquireReadLock();
 		try
 		{
@@ -116,47 +112,39 @@ public class DOddsCalculator
 		{
 			data.releaseReadLock();
 		}
-		
 		new ChangePerformer(s_dataForSimulation).perform(ChangeFactory.removeUnits(m_location, m_location.getUnits().getUnits()));
 		new ChangePerformer(s_dataForSimulation).perform(ChangeFactory.addUnits(m_location, m_attackingUnits));
 		new ChangePerformer(s_dataForSimulation).perform(ChangeFactory.addUnits(m_location, m_defendingUnits));
-		
 		return calculate(runCount);
 	}
 	
-	public void setKeepOneAttackingLandUnit(boolean aBool)
+	public void setKeepOneAttackingLandUnit(final boolean aBool)
 	{
 		m_keepOneAttackingLandUnit = aBool;
 	}
 	
-	private AggregateResults calculate(int count)
+	private AggregateResults calculate(final int count)
 	{
-		long start = System.currentTimeMillis();
-		AggregateResults rVal = new AggregateResults(count);
-		BattleTracker battleTracker = new BattleTracker();
-		
+		final long start = System.currentTimeMillis();
+		final AggregateResults rVal = new AggregateResults(count);
+		final BattleTracker battleTracker = new BattleTracker();
 		BattleCalculator.EnableCasualtySortingCaching();
 		for (int i = 0; i < count && !m_cancelled; i++)
 		{
 			final CompositeChange allChanges = new CompositeChange();
-			DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, s_dataForSimulation, allChanges, m_keepOneAttackingLandUnit);
-			TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1);
-			MustFightBattle battle = new MustFightBattle(m_location, m_attacker, s_dataForSimulation, battleTracker);
+			final DummyDelegateBridge bridge1 = new DummyDelegateBridge(m_attacker, s_dataForSimulation, allChanges, m_keepOneAttackingLandUnit);
+			final TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1);
+			final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, s_dataForSimulation, battleTracker);
 			battle.setHeadless(true);
 			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender);
-			
 			battle.fight(bridge);
-			
 			rVal.addResult(new BattleResults(battle));
-			
 			// Restore the game to its original state
 			new ChangePerformer(s_dataForSimulation).perform(allChanges.invert());
-			
 			battleTracker.clear();
 		}
 		BattleCalculator.DisableCasualtySortingCaching();
 		rVal.setTime(System.currentTimeMillis() - start);
-		
 		return rVal;
 	}
 	
@@ -179,11 +167,10 @@ class DummyDelegateBridge implements IDelegateBridge
 	private final GameData m_data;
 	private final ChangePerformer m_changePerformer;
 	
-	public DummyDelegateBridge(PlayerID attacker, GameData data, CompositeChange allChanges, boolean attackerKeepOneLandUnit)
+	public DummyDelegateBridge(final PlayerID attacker, final GameData data, final CompositeChange allChanges, final boolean attackerKeepOneLandUnit)
 	{
 		m_attackingPlayer = new DummyPlayer("battle calc dummy", "None (AI)", attackerKeepOneLandUnit);
 		m_defendingPlayer = new DummyPlayer("battle calc dummy", "None (AI)", false);
-		
 		m_data = data;
 		m_attacker = attacker;
 		m_allChanges = allChanges;
@@ -209,7 +196,7 @@ class DummyDelegateBridge implements IDelegateBridge
 		throw new UnsupportedOperationException();
 	}
 	
-	public IRemote getRemote(PlayerID id)
+	public IRemote getRemote(final PlayerID id)
 	{
 		if (id.equals(m_attacker))
 			return m_attackingPlayer;
@@ -223,12 +210,12 @@ class DummyDelegateBridge implements IDelegateBridge
 		return m_attackingPlayer;
 	}
 	
-	public int[] getRandom(int max, int count, String annotation)
+	public int[] getRandom(final int max, final int count, final String annotation)
 	{
 		return m_randomSource.getRandom(max, count, annotation);
 	}
 	
-	public int getRandom(int max, String annotation)
+	public int getRandom(final int max, final String annotation)
 	{
 		return m_randomSource.getRandom(max, annotation);
 	}
@@ -252,11 +239,10 @@ class DummyDelegateBridge implements IDelegateBridge
 	{
 	}
 	
-	public void addChange(Change aChange)
+	public void addChange(final Change aChange)
 	{
 		if (!(aChange instanceof UnitHitsChange))
 			return;
-		
 		m_allChanges.add(aChange);
 		m_changePerformer.perform(aChange);
 	}
@@ -269,16 +255,15 @@ class DummyDelegateBridge implements IDelegateBridge
 
 class DummyGameModifiedChannel implements IGameModifiedChannel
 {
-	
-	public void addChildToEvent(String text, Object renderingData)
+	public void addChildToEvent(final String text, final Object renderingData)
 	{
 	}
 	
-	public void gameDataChanged(Change aChange)
+	public void gameDataChanged(final Change aChange)
 	{
 	}
 	
-	public void setRenderingData(Object renderingData)
+	public void setRenderingData(final Object renderingData)
 	{
 	}
 	
@@ -286,11 +271,11 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 	{
 	}
 	
-	public void startHistoryEvent(String event)
+	public void startHistoryEvent(final String event)
 	{
 	}
 	
-	public void stepChanged(String stepName, String delegateName, PlayerID player, int round, String displayName, boolean loadedFromSavedGame)
+	public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
 	{
 	}
 }
@@ -300,49 +285,49 @@ class DummyPlayer extends AbstractAI
 {
 	private final boolean m_keepAtLeastOneLand;
 	
-	public DummyPlayer(String name, String type, boolean keepAtLeastOneLand)
+	public DummyPlayer(final String name, final String type, final boolean keepAtLeastOneLand)
 	{
 		super(name, type);
 		m_keepAtLeastOneLand = keepAtLeastOneLand;
 	}
 	
 	@Override
-	protected void move(boolean nonCombat, IMoveDelegate moveDel, GameData data, PlayerID player)
+	protected void move(final boolean nonCombat, final IMoveDelegate moveDel, final GameData data, final PlayerID player)
 	{
 	}
 	
 	@Override
-	protected void place(boolean placeForBid, IAbstractPlaceDelegate placeDelegate, GameData data, PlayerID player)
+	protected void place(final boolean placeForBid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player)
 	{
 	}
 	
 	@Override
-	protected void purchase(boolean purcahseForBid, int PUsToSpend, IPurchaseDelegate purchaseDelegate, GameData data, PlayerID player)
+	protected void purchase(final boolean purcahseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
 	{
 	}
 	
 	@Override
-	protected void tech(ITechDelegate techDelegate, GameData data, PlayerID player)
+	protected void tech(final ITechDelegate techDelegate, final GameData data, final PlayerID player)
 	{
 	}
 	
-	public boolean confirmMoveInFaceOfAA(Collection<Territory> aaFiringTerritories)
+	public boolean confirmMoveInFaceOfAA(final Collection<Territory> aaFiringTerritories)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(Collection<Unit> fightersThatCanBeMoved, Territory from)
+	public Collection<Unit> getNumberOfFightersToMoveToNewCarrier(final Collection<Unit> fightersThatCanBeMoved, final Territory from)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message)
+	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Collection<Territory> possibleTerritories, final String message)
 	{
 		// no retreat, no surrender
 		return null;
 	}
 	
-	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message, PlayerID player)
+	public Collection<Unit> scrambleQuery(final GUID battleID, final Collection<Territory> possibleTerritories, final String message, final PlayerID player)
 	{
 		// no scramble
 		return null;
@@ -351,7 +336,7 @@ class DummyPlayer extends AbstractAI
 	boolean useDefaultSelectionThisTime = false;
 	
 	@Override
-	public void reportError(String error)
+	public void reportError(final String error)
 	{
 		DUtils.Log(Level.FINER, "Error message reported in DOddsCalculator class: {0}", error);
 		if (error.equals("Wrong number of casualties selected") || error.equals("Cannot remove enough units of those types"))
@@ -361,13 +346,11 @@ class DummyPlayer extends AbstractAI
 	}
 	
 	// Added new collection autoKilled to handle killing units prior to casualty selection
-	
-	public CasualtyDetails selectCasualties(Collection<Unit> selectFrom, Map<Unit, Collection<Unit>> dependents, int count, String message, DiceRoll dice, PlayerID hit,
-				CasualtyList defaultCasualties, GUID battleID)
+	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
+				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)
 	{
-		HashSet<Unit> damaged = new HashSet<Unit>();
-		HashSet<Unit> destroyed = new HashSet<Unit>();
-		
+		final HashSet<Unit> damaged = new HashSet<Unit>();
+		final HashSet<Unit> destroyed = new HashSet<Unit>();
 		if (useDefaultSelectionThisTime)
 		{
 			useDefaultSelectionThisTime = false;
@@ -391,7 +374,6 @@ class DummyPlayer extends AbstractAI
 		{
 			damaged.addAll(defaultCasualties.getDamaged());
 			destroyed.addAll(defaultCasualties.getKilled());
-			
 			/*for (Unit unit : defaultCasualties)
 			{
 			    boolean twoHit = UnitAttachment.get(unit.getType()).isTwoHit();
@@ -401,23 +383,19 @@ class DummyPlayer extends AbstractAI
 			    else
 			        destroyed.add(unit);
 			}*/
-
 			if (m_keepAtLeastOneLand)
 			{
-				List<Unit> notKilled = new ArrayList<Unit>(selectFrom);
+				final List<Unit> notKilled = new ArrayList<Unit>(selectFrom);
 				notKilled.removeAll(destroyed);
 				// The default casualties would destroy our last land unit,
 				// and the method that called this one wants at least one land unit remaining, so
 				// remove the last land unit from the list of units to kill,
 				// and replace it with a non-land unit. (The cheapest)
-				
 				if (!Match.someMatch(notKilled, Matches.UnitIsLand) && Match.someMatch(notKilled, Matches.UnitIsNotLand) && Match.someMatch(destroyed, Matches.UnitIsLand))
 				{
-					List<Unit> notKilledAndNotLand = Match.getMatches(notKilled, Matches.UnitIsNotLand);
-					
+					final List<Unit> notKilledAndNotLand = Match.getMatches(notKilled, Matches.UnitIsNotLand);
 					// sort according to cost
 					Collections.sort(notKilledAndNotLand, AIUtils.getCostComparator());
-					
 					// remove the last killed unit, this should be the strongest
 					destroyed.remove(destroyed.toArray()[destroyed.size() - 1]);
 					// add the cheapest unit
@@ -425,22 +403,21 @@ class DummyPlayer extends AbstractAI
 				}
 			}
 		}
-		
-		CasualtyDetails m2 = new CasualtyDetails(DUtils.ToList(destroyed), DUtils.ToList(damaged), false);
+		final CasualtyDetails m2 = new CasualtyDetails(DUtils.ToList(destroyed), DUtils.ToList(damaged), false);
 		return m2;
 	}
 	
-	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates)
+	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	public Unit whatShouldBomberBomb(Territory territory, Collection<Unit> units)
+	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> units)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	public boolean shouldBomberBomb(Territory territory)
+	public boolean shouldBomberBomb(final Territory territory)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -448,10 +425,9 @@ class DummyPlayer extends AbstractAI
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
 	 */
-
-	public int[] selectFixedDice(int numRolls, int hitAt, boolean hitOnlyIfEquals, String message, int diceSides)
+	public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message, final int diceSides)
 	{
-		int[] dice = new int[numRolls];
+		final int[] dice = new int[numRolls];
 		for (int i = 0; i < numRolls; i++)
 		{
 			dice[i] = (int) Math.ceil(Math.random() * diceSides);

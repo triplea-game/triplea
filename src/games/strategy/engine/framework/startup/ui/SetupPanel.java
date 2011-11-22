@@ -14,19 +14,19 @@ public abstract class SetupPanel extends JPanel
 {
 	private final List<Observer> m_listeners = new CopyOnWriteArrayList<Observer>();
 	
-	public void addObserver(Observer observer)
+	public void addObserver(final Observer observer)
 	{
 		m_listeners.add(observer);
 	}
 	
-	public void removeObserver(Observer observer)
+	public void removeObserver(final Observer observer)
 	{
 		m_listeners.add(observer);
 	}
 	
 	protected void notifyObservers()
 	{
-		for (Observer observer : m_listeners)
+		for (final Observer observer : m_listeners)
 		{
 			observer.update(null, null);
 		}
@@ -67,5 +67,4 @@ public abstract class SetupPanel extends JPanel
 	{
 		return null;
 	}
-	
 }

@@ -11,14 +11,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * AxisAndAlliesDotOrgPBEMMessenger.java
  * 
  * 
  * Created on November 21, 2006, 8:56 PM
  */
-
 package games.strategy.triplea.pbem;
 
 import games.strategy.engine.pbem.IPBEMSaveGameMessenger;
@@ -41,30 +39,24 @@ import java.util.regex.Pattern;
  * @author Tony Clayton
  * @version 1.0
  */
-public class AxisAndAlliesDotOrgPBEMMessenger
-			implements IPBEMTurnSummaryMessenger, IPBEMSaveGameMessenger
+public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMessenger, IPBEMSaveGameMessenger
 {
 	private static final int m_loginDelayInSeconds = 16;
 	private static final String m_host = "www.axisandallies.org";
-	
 	private transient String m_username = null;
 	private transient String m_password = null;
 	private transient String m_cookies = null;
 	private transient String m_referer = null;
-	
 	private transient String m_sesc = null;
 	private transient String m_numReplies = null;
 	private transient String m_msgNum = null;
 	private transient String m_attachId = null;
 	private transient String m_seqNum = null;
-	
 	private transient String m_screenshotRef = null;
 	private transient String m_saveGameRef = null;
 	private transient String m_turnSummaryRef = null;
-	
 	private transient String m_saveGameFileName = null;
 	private transient InputStream m_saveGameFileIn = null;
-	
 	private String m_gameId = null;
 	
 	public AxisAndAlliesDotOrgPBEMMessenger()
@@ -93,11 +85,11 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 	
 	public void viewPosted()
 	{
-		String url = "http://" + m_host + "/forums/index.php?topic=" + m_gameId + ".new#new";
+		final String url = "http://" + m_host + "/forums/index.php?topic=" + m_gameId + ".new#new";
 		BrowserControl.displayURL(url);
 	}
 	
-	public void setGameId(String gameId)
+	public void setGameId(final String gameId)
 	{
 		m_gameId = gameId;
 	}
@@ -107,7 +99,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		return m_gameId;
 	}
 	
-	public void setUsername(String username)
+	public void setUsername(final String username)
 	{
 		m_username = username;
 	}
@@ -117,7 +109,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		return m_username;
 	}
 	
-	public void setPassword(String password)
+	public void setPassword(final String password)
 	{
 		m_password = password;
 	}
@@ -127,19 +119,19 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		return m_password;
 	}
 	
-	private void readCookies(URLConnection urlConn)
+	private void readCookies(final URLConnection urlConn)
 	{
 		// read cookies from server
 		int n = 1; // n=0 has no key, and the HTTP return status in the value field
 		for (boolean done = false; !done; n++)
 		{
-			String headerKey = urlConn.getHeaderFieldKey(n);
-			String headerVal = urlConn.getHeaderField(n);
+			final String headerKey = urlConn.getHeaderFieldKey(n);
+			final String headerVal = urlConn.getHeaderField(n);
 			if (headerKey != null || headerVal != null)
 			{
 				if (!headerKey.equals("Set-Cookie"))
 					continue;
-				String cookie = headerVal.substring(0, headerVal.indexOf(";"));
+				final String cookie = headerVal.substring(0, headerVal.indexOf(";"));
 				if (m_cookies == null)
 				{
 					m_cookies = cookie;
@@ -153,7 +145,6 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 				done = true;
 			}
 		}
-		
 	}
 	
 	private boolean postLogin()
@@ -167,12 +158,11 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		try
 		{
 			url = new URL("http://" + m_host + "/forums/index.php?action=login2");
-		} catch (MalformedURLException e)
+		} catch (final MalformedURLException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
-		
 		try
 		{
 			urlConn = url.openConnection();
@@ -185,7 +175,6 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 			urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			urlConn.setRequestProperty("Connection", "Keep-Alive");
 			urlConn.setRequestProperty("Cache-Control", "no-cache");
-			
 			// send request to server
 			out = urlConn.getOutputStream();
 			out.write(new String("user=" + m_username + "&passwrd=" + m_password + "&cookielength=60").getBytes());
@@ -219,9 +208,9 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 				if (code == 200)
 				{
 					// fetch PHPSESSID
-					String refreshHdr = urlConn.getHeaderField("Refresh");
-					Pattern p_phpsessid = Pattern.compile(".*?\\?PHPSESSID=(\\w+).*");
-					Matcher match_phpsessid = p_phpsessid.matcher(refreshHdr);
+					final String refreshHdr = urlConn.getHeaderField("Refresh");
+					final Pattern p_phpsessid = Pattern.compile(".*?\\?PHPSESSID=(\\w+).*");
+					final Matcher match_phpsessid = p_phpsessid.matcher(refreshHdr);
 					if (match_phpsessid.matches())
 					{
 						// m_phpsessid = match_phpsessid.group(1);
@@ -231,17 +220,15 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 					continue;
 				}
 				// http error
-				String msg = ((HttpURLConnection) urlConn).getResponseMessage();
+				final String msg = ((HttpURLConnection) urlConn).getResponseMessage();
 				m_turnSummaryRef = String.valueOf(code) + ": " + msg;
 				return false;
 			} while (urlConn != null);
-			
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 			return false;
 		}
-		
 		if (!gotPhpsessid)
 		{
 			m_turnSummaryRef = "Error: PHPSESSID not found after login. ";
@@ -255,7 +242,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		try
 		{
 			Thread.sleep(m_loginDelayInSeconds * 1000);
-		} catch (InterruptedException ie)
+		} catch (final InterruptedException ie)
 		{
 			ie.printStackTrace();
 		}
@@ -266,7 +253,6 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 	{
 		URL url = null;
 		URLConnection urlConn = null;
-		
 		int code = 0;
 		boolean gotNumReplies = false;
 		boolean gotMsgNum = false;
@@ -274,12 +260,11 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		try
 		{
 			url = new URL("http://" + m_host + "/forums/index.php?topic=" + m_gameId + ".new");
-		} catch (MalformedURLException e)
+		} catch (final MalformedURLException e)
 		{
 			e.printStackTrace();
 			return false;
 		}
-		
 		try
 		{
 			urlConn = url.openConnection();
@@ -295,31 +280,29 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 				urlConn.setRequestProperty("Referer", m_referer);
 			if (m_cookies != null)
 				urlConn.setRequestProperty("Cookie", m_cookies);
-			
 			m_referer = url.toString();
 			readCookies(urlConn);
 			code = ((HttpURLConnection) urlConn).getResponseCode();
 			if (code != 200)
 			{
 				// http error
-				String msg = ((HttpURLConnection) urlConn).getResponseMessage();
+				final String msg = ((HttpURLConnection) urlConn).getResponseMessage();
 				m_turnSummaryRef = String.valueOf(code) + ": " + msg;
 				return false;
 			}
-			
 			// parse num_replies
-			BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+			final BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
 			String line = "";
-			Pattern p_numReplies = Pattern.compile(".*?;num_replies=(\\d+)\".*");
+			final Pattern p_numReplies = Pattern.compile(".*?;num_replies=(\\d+)\".*");
 			// parse msg num
-			Pattern p_msgNum = Pattern.compile(".*?<a name=\"msg(\\d+)\"></a><a name=\"new\"></a>.*");
+			final Pattern p_msgNum = Pattern.compile(".*?<a name=\"msg(\\d+)\"></a><a name=\"new\"></a>.*");
 			// parse attachment id
-			Pattern p_attachId = Pattern.compile(".*?action=dlattach;topic=" + m_gameId + ".0;attach=(\\d+)\">.*");
+			final Pattern p_attachId = Pattern.compile(".*?action=dlattach;topic=" + m_gameId + ".0;attach=(\\d+)\">.*");
 			while ((line = in.readLine()) != null)
 			{
 				if (!gotNumReplies)
 				{
-					Matcher match_numReplies = p_numReplies.matcher(line);
+					final Matcher match_numReplies = p_numReplies.matcher(line);
 					if (match_numReplies.matches())
 					{
 						m_numReplies = match_numReplies.group(1);
@@ -329,7 +312,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 				}
 				if (!gotMsgNum)
 				{
-					Matcher match_msgNum = p_msgNum.matcher(line);
+					final Matcher match_msgNum = p_msgNum.matcher(line);
 					if (match_msgNum.matches())
 					{
 						m_msgNum = match_msgNum.group(1);
@@ -337,14 +320,13 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 						continue;
 					}
 				}
-				
 				// must match every line... always take the last attachId
-				Matcher match_attachId = p_attachId.matcher(line);
+				final Matcher match_attachId = p_attachId.matcher(line);
 				if (match_attachId.matches())
 					m_attachId = match_attachId.group(1);
 			}
 			in.close();
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 			return false;
@@ -354,7 +336,6 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 			m_turnSummaryRef = "Error: ";
 			if (!gotNumReplies)
 				m_turnSummaryRef += "No num_replies found in A&A.org forum topic. ";
-			
 			if (!gotMsgNum)
 				m_turnSummaryRef += "No msgXXXXXX found in A&A.org forum topic. ";
 			return false;
@@ -366,7 +347,6 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 	{
 		URL url = null;
 		URLConnection urlConn = null;
-		
 		int code = 0;
 		boolean gotNumReplies = false;
 		boolean gotSeqNum = false;
@@ -374,11 +354,10 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		try
 		{
 			url = new URL("http://" + m_host + "/forums/index.php?action=post;topic=" + m_gameId + ".0;num_replies=" + m_numReplies);
-		} catch (MalformedURLException e)
+		} catch (final MalformedURLException e)
 		{
 			e.printStackTrace();
 		}
-		
 		try
 		{
 			urlConn = url.openConnection();
@@ -394,31 +373,29 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 				urlConn.setRequestProperty("Referer", m_referer);
 			if (m_cookies != null)
 				urlConn.setRequestProperty("Cookie", m_cookies);
-			
 			m_referer = url.toString();
 			readCookies(urlConn);
 			code = ((HttpURLConnection) urlConn).getResponseCode();
 			if (code != 200)
 			{
 				// http error
-				String msg = ((HttpURLConnection) urlConn).getResponseMessage();
+				final String msg = ((HttpURLConnection) urlConn).getResponseMessage();
 				m_turnSummaryRef = String.valueOf(code) + ": " + msg;
 				return false;
 			}
-			
 			// parse num_replies again
-			BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+			final BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
 			String line = "";
-			Pattern p_numReplies = Pattern.compile(".*?<input type=\"hidden\" name=\"num_replies\" value=\"(\\d+)\" />.*");
+			final Pattern p_numReplies = Pattern.compile(".*?<input type=\"hidden\" name=\"num_replies\" value=\"(\\d+)\" />.*");
 			// parse seqnum
-			Pattern p_seqNum = Pattern.compile(".*?<input type=\"hidden\" name=\"seqnum\" value=\"(\\d+)\" />.*");
+			final Pattern p_seqNum = Pattern.compile(".*?<input type=\"hidden\" name=\"seqnum\" value=\"(\\d+)\" />.*");
 			// parse sesc/sc
-			Pattern p_sesc = Pattern.compile(".*?<input type=\"hidden\" name=\"sc\" value=\"(\\w+)\" />.*");
+			final Pattern p_sesc = Pattern.compile(".*?<input type=\"hidden\" name=\"sc\" value=\"(\\w+)\" />.*");
 			while ((line = in.readLine()) != null)
 			{
 				if (!gotNumReplies)
 				{
-					Matcher match_numReplies = p_numReplies.matcher(line);
+					final Matcher match_numReplies = p_numReplies.matcher(line);
 					if (match_numReplies.matches())
 					{
 						m_numReplies = match_numReplies.group(1);
@@ -428,7 +405,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 				}
 				if (!gotSeqNum)
 				{
-					Matcher match_seqNum = p_seqNum.matcher(line);
+					final Matcher match_seqNum = p_seqNum.matcher(line);
 					if (match_seqNum.matches())
 					{
 						m_seqNum = match_seqNum.group(1);
@@ -438,7 +415,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 				}
 				if (!gotSesc)
 				{
-					Matcher match_sesc = p_sesc.matcher(line);
+					final Matcher match_sesc = p_sesc.matcher(line);
 					if (match_sesc.matches())
 					{
 						m_sesc = match_sesc.group(1);
@@ -448,12 +425,11 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 				}
 			}
 			in.close();
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 			return false;
 		}
-		
 		if (!gotNumReplies || !gotSeqNum || !gotSesc)
 		{
 			m_turnSummaryRef = "Error: ";
@@ -470,13 +446,12 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 	
 	private String getNextNumReplies()
 	{
-		int postNum = Integer.parseInt(m_numReplies) + 1;
+		final int postNum = Integer.parseInt(m_numReplies) + 1;
 		return String.valueOf(postNum);
 	}
 	
 	private String getNextReplyUrl()
 	{
-		
 		return "http://" + m_host + "/forums/index.php?topic=" + m_gameId + "." + getNextNumReplies() + "#msg" + m_msgNum;
 	}
 	
@@ -490,7 +465,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		return "http://" + m_host + "/forums/index.php?action=dlattach;topic=" + m_gameId + ".0;attach=" + m_attachId;
 	}
 	
-	public boolean postTurnSummary(String summary, String screenshotRef, String saveGameRef)
+	public boolean postTurnSummary(final String summary, final String screenshotRef, final String saveGameRef)
 	{
 		URL url = null;
 		URLConnection urlConn = null;
@@ -499,7 +474,6 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		String screenshotSummary = "";
 		String saveGameSummary = "";
 		String finalSummary = "";
-		
 		m_turnSummaryRef = null;
 		m_screenshotRef = screenshotRef;
 		// if we aren't the save game poster then set it
@@ -514,12 +488,11 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		// now, prepare post
 		if (!preparePost())
 			return false;
-		
 		// set up connection
 		try
 		{
 			url = new URL("http://" + m_host + "/forums/index.php?action=post2;start=0;board=40");
-		} catch (MalformedURLException e)
+		} catch (final MalformedURLException e)
 		{
 			e.printStackTrace();
 			return false;
@@ -536,11 +509,10 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		Pattern p1;
 		Pattern p2;
 		Pattern p3;
-		
 		// send request to server
 		try
 		{
-			String boundary = MultiPartFormOutputStream.createBoundary();
+			final String boundary = MultiPartFormOutputStream.createBoundary();
 			urlConn = MultiPartFormOutputStream.createConnection(url);
 			((HttpURLConnection) urlConn).setInstanceFollowRedirects(false);
 			urlConn.setRequestProperty("Host", m_host);
@@ -577,7 +549,6 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 			if (code == 200)
 			{
 				// reporting an error
-				
 				in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
 				line = "";
 				p1 = Pattern.compile(".*?<b>(The following error or errors occurred .*?)</b>.*");
@@ -585,12 +556,12 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 				p3 = Pattern.compile(".*?session timed out.*"); // found after p1
 				while ((line = in.readLine()) != null)
 				{
-					Matcher m1 = p1.matcher(line);
+					final Matcher m1 = p1.matcher(line);
 					if (m1.matches())
 					{
 						line = in.readLine(); // div start
 						line = in.readLine().trim(); // message
-						Matcher m3 = p3.matcher(line);
+						final Matcher m3 = p3.matcher(line);
 						if (m3.matches())
 						{
 							// login again and repost
@@ -601,8 +572,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 						in.close();
 						return false;
 					}
-					
-					Matcher m2 = p2.matcher(line);
+					final Matcher m2 = p2.matcher(line);
 					if (m2.matches())
 					{
 						line = in.readLine(); // </tr>
@@ -613,32 +583,27 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 						in.close();
 						return false;
 					}
-					
 					m_turnSummaryRef = "An unknown error occurred while POSTing.";
 					in.close();
 					return false;
 				}
 			}
-			
 			if (code != 301 && code != 302)
 			{
 				// http error
-				String msg = ((HttpURLConnection) urlConn).getResponseMessage();
+				final String msg = ((HttpURLConnection) urlConn).getResponseMessage();
 				m_turnSummaryRef = String.valueOf(code) + ": " + msg;
 				return false;
 			}
-			
 			// success!
 			// now, go back to forum
 			if (!goToForum())
 				return false;
-			
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 			return false;
 		}
-		
 		m_turnSummaryRef = getNewReplyUrl();
 		if (m_saveGameFileIn != null)
 		{
@@ -657,7 +622,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 		return m_turnSummaryRef;
 	}
 	
-	public boolean postSaveGame(String filename, InputStream fileIn)
+	public boolean postSaveGame(final String filename, final InputStream fileIn)
 	{
 		// not actually posting, just holding the reference
 		m_saveGameRef = null;
@@ -676,5 +641,4 @@ public class AxisAndAlliesDotOrgPBEMMessenger
 	{
 		return getName();
 	}
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.baseAI;
 
 import games.strategy.engine.data.GameData;
@@ -29,7 +28,6 @@ import junit.framework.TestCase;
 
 public class AIUtilsTest extends TestCase
 {
-	
 	private GameData m_data;
 	
 	@Override
@@ -46,20 +44,16 @@ public class AIUtilsTest extends TestCase
 	
 	public void testCost()
 	{
-		UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
-		PlayerID british = m_data.getPlayerList().getPlayerID("British");
-		
+		final UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
+		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		assertEquals(3, AIUtils.getCost(infantry, british, m_data));
-		
 	}
 	
 	public void testSortByCost()
 	{
-		Territory germany = m_data.getMap().getTerritory("Germany");
-		List<Unit> sorted = new ArrayList<Unit>(germany.getUnits().getUnits());
+		final Territory germany = m_data.getMap().getTerritory("Germany");
+		final List<Unit> sorted = new ArrayList<Unit>(germany.getUnits().getUnits());
 		Collections.sort(sorted, AIUtils.getCostComparator());
-		
 		assertEquals(sorted.get(0).getUnitType().getName(), "infantry");
-		
 	}
 }

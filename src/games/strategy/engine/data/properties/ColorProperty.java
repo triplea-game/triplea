@@ -36,18 +36,15 @@ public class ColorProperty extends AEditableProperty
 {
 	// compatible with 0.9.0.2 saved games
 	private static final long serialVersionUID = 6826763550643504789L;
-	
 	private final int m_max = 0xFFFFFF;
 	private final int m_min = 0x000000;
 	private Color m_color;
 	
-	public ColorProperty(String name, int def)
+	public ColorProperty(final String name, final int def)
 	{
 		super(name);
-		
 		if (def > m_max || def < m_min)
 			throw new IllegalThreadStateException("Default value out of range");
-		
 		m_color = new Color(def);
 	}
 	
@@ -61,28 +58,23 @@ public class ColorProperty extends AEditableProperty
 		@SuppressWarnings("serial")
 		final JLabel label = new JLabel(" ")
 		{
-			
 			@Override
-			public void paintComponent(Graphics g)
+			public void paintComponent(final Graphics g)
 			{
-				Graphics2D g2 = (Graphics2D) g;
+				final Graphics2D g2 = (Graphics2D) g;
 				g2.setColor(m_color);
 				g2.fill(g2.getClip());
 			}
 		};
-		
 		label.addMouseListener(new MouseListener()
 		{
-			
-			public void mouseClicked(MouseEvent e)
+			public void mouseClicked(final MouseEvent e)
 			{
 				System.out.println(m_color);
 				m_color = JColorChooser.showDialog(label, "Choose color", m_color);
-				
 				// Ask Swing to repaint this label when it's convenient
 				SwingUtilities.invokeLater(new Runnable()
 				{
-					
 					public void run()
 					{
 						label.repaint();
@@ -90,25 +82,22 @@ public class ColorProperty extends AEditableProperty
 				});
 			}
 			
-			public void mouseEntered(MouseEvent e)
+			public void mouseEntered(final MouseEvent e)
 			{
 			}
 			
-			public void mouseExited(MouseEvent e)
+			public void mouseExited(final MouseEvent e)
 			{
 			}
 			
-			public void mousePressed(MouseEvent e)
+			public void mousePressed(final MouseEvent e)
 			{
 			}
 			
-			public void mouseReleased(MouseEvent e)
+			public void mouseReleased(final MouseEvent e)
 			{
 			}
 		});
-		
 		return label;
-		
 	}
-	
 }

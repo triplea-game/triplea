@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.oddsCalculator.zengland;
 
 import games.strategy.engine.data.GameData;
@@ -29,7 +28,6 @@ import java.util.Vector;
 
 public class OCBattle
 {
-	
 	public static final int TAKEN = 1;
 	public static final String TAKENSTRING = "Taken";
 	public static final int DEFENDED = 2;
@@ -40,7 +38,6 @@ public class OCBattle
 	public static final String INDECISIVESTRING = "Indecisive";
 	public static final int CLEAREDAIR = 5;
 	public static final String CLEAREDAIRSTRING = "Cleared with air";
-	
 	private Vector<UnitGroup> attackers;
 	private Vector<UnitGroup> defenders;
 	private int rounds;
@@ -53,7 +50,6 @@ public class OCBattle
 	private String resultStatusString = OCBattle.INDECISIVESTRING;
 	private boolean rollAntiAirSep;
 	private boolean isAmphib;
-	
 	// results section
 	private int battles = 0;
 	private float controlPercent = 0.00f;
@@ -128,13 +124,13 @@ public class OCBattle
 		return lossPercent;
 	}
 	
-	private boolean isWW2V2(GameData data)
+	private boolean isWW2V2(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getWW2V2(data);
 	}
 	
-	public OCBattle(Vector<UnitGroup> attackers, Vector<UnitGroup> defenders, int rounds, boolean preserveLand, boolean aaPresent, boolean landBattle, boolean rollAntiAirSep, boolean isAmphib,
-				Vector<String> ool)
+	public OCBattle(final Vector<UnitGroup> attackers, final Vector<UnitGroup> defenders, final int rounds, final boolean preserveLand, final boolean aaPresent, final boolean landBattle,
+				final boolean rollAntiAirSep, final boolean isAmphib, final Vector<String> ool)
 	{
 		super();
 		setAttackers(attackers);
@@ -149,43 +145,37 @@ public class OCBattle
 		setAmphib(isAmphib);
 	}
 	
-	public OCBattle(Territory territory, GameData m_data)
+	public OCBattle(final Territory territory, final GameData m_data)
 	{
-		Vector<UnitGroup> terrAttackers = new Vector<UnitGroup>(0);
-		Vector<UnitGroup> terrDefenders = new Vector<UnitGroup>(0);
-		int terrRounds = 0;
-		boolean terrPreserveLand = true;
+		final Vector<UnitGroup> terrAttackers = new Vector<UnitGroup>(0);
+		final Vector<UnitGroup> terrDefenders = new Vector<UnitGroup>(0);
+		final int terrRounds = 0;
+		final boolean terrPreserveLand = true;
 		boolean terrAAPresent = false;
 		boolean terrLandBattle = true;
 		if (territory.isWater())
 			terrLandBattle = false;
 		boolean terrRollAntiAirSep = false;
 		// need to detect whether to roll AA shots seperately for fighters and bombers
-		boolean isAmphib = false;
+		final boolean isAmphib = false;
 		// need to detect whether this is an amphib battle
 		// Vector terOOL = null;
 		// get OOL from game data
-		
 		terrRollAntiAirSep = isWW2V2(m_data);
-		
-		Set<UnitCategory> units = UnitSeperator.categorize(territory.getUnits().getUnits());
-		Iterator<UnitCategory> iter = units.iterator();
+		final Set<UnitCategory> units = UnitSeperator.categorize(territory.getUnits().getUnits());
+		final Iterator<UnitCategory> iter = units.iterator();
 		PlayerID currentPlayer = null;
 		while (iter.hasNext())
 		{
-			
-			UnitCategory item = iter.next();
+			final UnitCategory item = iter.next();
 			if (item.getOwner() != currentPlayer)
 			{
 				currentPlayer = item.getOwner();
 			}
-			
-			List<games.strategy.engine.data.Unit> unitList = item.getUnits();
-			int numUnits = item.getUnits().size();
-			
-			Iterator<games.strategy.engine.data.Unit> unitIterator = unitList.iterator();
-			
-			int unitCost = 3;
+			final List<games.strategy.engine.data.Unit> unitList = item.getUnits();
+			final int numUnits = item.getUnits().size();
+			final Iterator<games.strategy.engine.data.Unit> unitIterator = unitList.iterator();
+			final int unitCost = 3;
 			int attackValue = 1;
 			int defendValue = 2;
 			int moveValue = 1;
@@ -200,12 +190,10 @@ public class OCBattle
 			boolean blocksNoRetHit = false;
 			boolean boostsInfAtt = false;
 			boolean boostAmphib = false;
-			
 			UnitAttachment ua = null;
-			
 			while (unitIterator.hasNext())
 			{
-				games.strategy.engine.data.Unit current = unitIterator.next();
+				final games.strategy.engine.data.Unit current = unitIterator.next();
 				ua = UnitAttachment.get(current.getType());
 				attackValue = ua.getAttack(currentPlayer);
 				defendValue = ua.getDefense(currentPlayer);
@@ -240,21 +228,16 @@ public class OCBattle
 				boostsInfAtt = ua.isArtillery();
 				boostAmphib = ua.getIsMarine();
 			}
-			
 			if (ua.isAA())
 			{
 				terrAAPresent = true;
 			}
 			else
 			{
-				games.strategy.triplea.oddsCalculator.zengland.OCUnit currUnit =
-							new games.strategy.triplea.oddsCalculator.zengland.OCUnit(unitCost, attackValue,
-										defendValue, moveValue, name, noRetal, unitType,
-										supportShot, canHitAir, maxHits, maxRolls, maxHp,
-										blocksNoRetHit, boostsInfAtt, boostAmphib);
-				
-				UnitGroup currUnitGroup = new UnitGroup(currUnit, numUnits);
-				PlayerID playerID = m_data.getSequence().getStep().getPlayerID();
+				final games.strategy.triplea.oddsCalculator.zengland.OCUnit currUnit = new games.strategy.triplea.oddsCalculator.zengland.OCUnit(unitCost, attackValue, defendValue, moveValue, name,
+							noRetal, unitType, supportShot, canHitAir, maxHits, maxRolls, maxHp, blocksNoRetHit, boostsInfAtt, boostAmphib);
+				final UnitGroup currUnitGroup = new UnitGroup(currUnit, numUnits);
+				final PlayerID playerID = m_data.getSequence().getStep().getPlayerID();
 				System.out.println(item);
 				System.out.println(playerID);
 				if (playerID != null && playerID.equals(item.getOwner()))
@@ -267,9 +250,7 @@ public class OCBattle
 					terrDefenders.add(currUnitGroup);
 				}
 			}
-			
 		}
-		
 		setAttackers(terrAttackers);
 		setDefenders(terrDefenders);
 		this.rounds = terrRounds;
@@ -280,7 +261,6 @@ public class OCBattle
 		this.attOOL = null;
 		this.defOOL = null;
 		setAmphib(isAmphib);
-		
 	}
 	
 	public boolean isAaPresent()
@@ -288,7 +268,7 @@ public class OCBattle
 		return aaPresent;
 	}
 	
-	public void setAaPresent(boolean aaPresent)
+	public void setAaPresent(final boolean aaPresent)
 	{
 		this.aaPresent = aaPresent;
 	}
@@ -298,14 +278,14 @@ public class OCBattle
 		return attackers;
 	}
 	
-	public void setAttackers(Vector<UnitGroup> attackers)
+	public void setAttackers(final Vector<UnitGroup> attackers)
 	{
 		this.attackers = attackers;
 		// remove empty unitGroups
-		int size = this.attackers.size();
+		final int size = this.attackers.size();
 		for (int i = size - 1; i >= 0; i--)
 		{
-			int curSize = this.attackers.elementAt(i).getNumUnits();
+			final int curSize = this.attackers.elementAt(i).getNumUnits();
 			if (curSize <= 0)
 			{
 				this.attackers.removeElementAt(i);
@@ -318,13 +298,13 @@ public class OCBattle
 		return defenders;
 	}
 	
-	public void setDefenders(Vector<UnitGroup> defenders)
+	public void setDefenders(final Vector<UnitGroup> defenders)
 	{
 		this.defenders = defenders;
-		int size = this.defenders.size();
+		final int size = this.defenders.size();
 		for (int i = size - 1; i >= 0; i--)
 		{
-			int curSize = this.defenders.elementAt(i).getNumUnits();
+			final int curSize = this.defenders.elementAt(i).getNumUnits();
 			if (curSize <= 0)
 			{
 				this.defenders.removeElementAt(i);
@@ -337,7 +317,7 @@ public class OCBattle
 		return preserveLand;
 	}
 	
-	public void setPreserveLand(boolean preserveLand)
+	public void setPreserveLand(final boolean preserveLand)
 	{
 		this.preserveLand = preserveLand;
 	}
@@ -347,7 +327,7 @@ public class OCBattle
 		return rounds;
 	}
 	
-	public void setRounds(int rounds)
+	public void setRounds(final int rounds)
 	{
 		this.rounds = rounds;
 	}
@@ -357,14 +337,13 @@ public class OCBattle
 		return landBattle;
 	}
 	
-	public void setLandBattle(boolean landBattle)
+	public void setLandBattle(final boolean landBattle)
 	{
 		this.landBattle = landBattle;
 	}
 	
 	private void updateStats()
 	{
-		
 		battles++;
 		if (getResultStatus() == OCBattle.CLEARED)
 		{
@@ -386,21 +365,18 @@ public class OCBattle
 		{
 			airWins++;
 		}
-		
 		controlPercent = ((float) controleds / (float) battles) * 100;
 		airWinPercent = ((float) airWins / (float) battles) * 100;
 		clearedPercent = ((float) cleareds / (float) battles) * 100;
 		indecisivePercent = ((float) indecisives / (float) battles) * 100;
 		lossPercent = ((float) losses / (float) battles) * 100;
-		
 		remAtts += getNumberOfUnits(locAttackers);
 		remDefs += getNumberOfUnits(locDefenders);
 		avgRemAtts = (int) remAtts / battles;
 		avgRemDefs = (int) remDefs / battles;
-		
 	}
 	
-	public void rollBattles(int numBattlesToRoll)
+	public void rollBattles(final int numBattlesToRoll)
 	{
 		for (int i = 0; i < numBattlesToRoll; i++)
 		{
@@ -413,24 +389,22 @@ public class OCBattle
 	{
 		locAttackers = cloneVector(attackers);
 		locDefenders = cloneVector(defenders);
-		
 		// Roll AA gun if applicable
 		if (!rollAntiAirSep)
 		{
-			int numberOfAir = getNumberOfAir(locAttackers);
+			final int numberOfAir = getNumberOfAir(locAttackers);
 			int numAAhits = 0;
 			if (aaPresent && landBattle && numberOfAir > 0)
 			{
-				OCUnit aa = OCUnit.newAA();
+				final OCUnit aa = OCUnit.newAA();
 				for (int i = 0; i < numberOfAir; i++)
 				{
-					int hitVal = aa.rollDefend();
+					final int hitVal = aa.rollDefend();
 					if (hitVal <= aa.getDefendValue())
 					{
 						numAAhits++;
 					}
 				}
-				
 				if (numAAhits > 0)
 				{
 					// remove units hit by AAGun
@@ -449,55 +423,50 @@ public class OCBattle
 		else
 		// Roll anti-air separately for fighters and bombers
 		{
-			int numFtrs = getNumberOfFighters(locAttackers);
+			final int numFtrs = getNumberOfFighters(locAttackers);
 			if (aaPresent && landBattle && numFtrs > 0)
 			{
-				OCUnit aa = OCUnit.newAA();
+				final OCUnit aa = OCUnit.newAA();
 				for (int i = 0; i < numFtrs; i++)
 				{
-					int hitVal = aa.rollDefend();
+					final int hitVal = aa.rollDefend();
 					if (hitVal <= aa.getDefendValue())
 					{
 						removeUnit(StandardUnits.FtrName, locAttackers);
 					}
 				}
 			}
-			
-			int numBmbs = getNumberOfBombers(locAttackers);
+			final int numBmbs = getNumberOfBombers(locAttackers);
 			if (aaPresent && landBattle && numBmbs > 0)
 			{
-				OCUnit aa = OCUnit.newAA();
+				final OCUnit aa = OCUnit.newAA();
 				for (int i = 0; i < numBmbs; i++)
 				{
-					int hitVal = aa.rollDefend();
+					final int hitVal = aa.rollDefend();
 					if (hitVal <= aa.getDefendValue())
 					{
 						removeUnit(StandardUnits.BmbName, locAttackers);
 					}
 				}
 			}
-			
 		}
-		
 		// Roll Support Shots if applicable
-		Integer supportUnits[] = getSupportUnits(locAttackers);
+		final Integer supportUnits[] = getSupportUnits(locAttackers);
 		if (supportUnits != null && supportUnits.length > 0)
 		{
 			int supportHits = 0;
 			for (int i = 0; i < supportUnits.length; i++)
 			{
-				UnitGroup curG = locAttackers.elementAt(supportUnits[i].intValue());
+				final UnitGroup curG = locAttackers.elementAt(supportUnits[i].intValue());
 				supportHits += curG.rollUnitsAttack();
 				locAttackers.removeElementAt(supportUnits[i].intValue());
 			}
 			// remove units hit by support shots
 			removeUnits(supportHits, locDefenders, false);
 		}
-		
 		// Remove ineligible units
 		removeIncorrectUnits(locAttackers);
 		removeIncorrectUnits(locDefenders);
-		
 		// Roll rounds
 		int i = 1; // start with round 1
 		while (hasUnits(locAttackers) && hasUnits(locDefenders) && (i <= rounds || rounds == 0))
@@ -505,15 +474,14 @@ public class OCBattle
 			rollRound();
 			i++;
 		}
-		
 		// Set result status
 		setResultStatus();
 	}
 	
-	private Vector<UnitGroup> cloneVector(Vector<UnitGroup> units)
+	private Vector<UnitGroup> cloneVector(final Vector<UnitGroup> units)
 	{
-		Vector<UnitGroup> copy = new Vector<UnitGroup>();
-		int unitSize = units.size();
+		final Vector<UnitGroup> copy = new Vector<UnitGroup>();
+		final int unitSize = units.size();
 		for (int i = 0; i < unitSize; i++)
 		{
 			copy.addElement((UnitGroup) units.elementAt(i).clone());
@@ -521,14 +489,13 @@ public class OCBattle
 		return copy;
 	}
 	
-	private void removeIncorrectUnits(Vector<UnitGroup> units)
+	private void removeIncorrectUnits(final Vector<UnitGroup> units)
 	{
-		
-		int size = units.size();
+		final int size = units.size();
 		for (int i = size - 1; i >= 0; i--)
 		{
-			UnitGroup ug = units.elementAt(i);
-			OCUnit u = ug.getUnit();
+			final UnitGroup ug = units.elementAt(i);
+			final OCUnit u = ug.getUnit();
 			if (landBattle && u.getUnitType() == OCUnit.SEAUNIT)
 			{
 				units.removeElementAt(i);
@@ -538,13 +505,12 @@ public class OCBattle
 				units.removeElementAt(i);
 			}
 		}
-		
 	}
 	
 	private void setResultStatus()
 	{
-		boolean hasA = hasUnits(locAttackers);
-		boolean hasD = hasUnits(locDefenders);
+		final boolean hasA = hasUnits(locAttackers);
+		final boolean hasD = hasUnits(locDefenders);
 		if (!hasD && !hasA)
 		{
 			resultStatus = OCBattle.CLEARED;
@@ -572,50 +538,48 @@ public class OCBattle
 		}
 	}
 	
-	private boolean hasUnits(Vector<UnitGroup> units)
+	private boolean hasUnits(final Vector<UnitGroup> units)
 	{
-		boolean hasU = false;
-		int size = units.size();
+		final boolean hasU = false;
+		final int size = units.size();
 		for (int i = 0; i < size; i++)
 		{
-			UnitGroup ug = units.elementAt(i);
+			final UnitGroup ug = units.elementAt(i);
 			if (ug.getNumUnits() > 0)
 				return true;
 		}
 		return hasU;
 	}
 	
-	private boolean allAir(Vector<UnitGroup> units)
+	private boolean allAir(final Vector<UnitGroup> units)
 	{
-		boolean allAir = true;
-		int size = units.size();
+		final boolean allAir = true;
+		final int size = units.size();
 		for (int i = 0; i < size; i++)
 		{
-			UnitGroup ug = units.elementAt(i);
-			OCUnit u = ug.getUnit();
-			int numUnits = ug.getNumUnits();
+			final UnitGroup ug = units.elementAt(i);
+			final OCUnit u = ug.getUnit();
+			final int numUnits = ug.getNumUnits();
 			if (u.getUnitType() != OCUnit.AIRUNIT && numUnits > 0)
 			{
 				return false;
 			}
-			
 		}
 		return allAir;
 	}
 	
-	private void removeUnits(int hits, Vector<UnitGroup> units, boolean attackers)
+	private void removeUnits(final int hits, final Vector<UnitGroup> units, final boolean attackers)
 	{
 		for (int i = 0; i < hits && units.size() > 0; i++)
 		{
 			removeUnit(units, attackers);
 		}
-		
 	}
 	
-	private void removeUnit(Vector<UnitGroup> units, boolean attackers)
+	private void removeUnit(final Vector<UnitGroup> units, final boolean attackers)
 	{
 		// hit multi-hit units first (eg 2 hit battleships)
-		UnitGroup ug = extraHp(units);
+		final UnitGroup ug = extraHp(units);
 		if (ug != null)
 		{
 			ug.removeExtraHp();
@@ -626,51 +590,44 @@ public class OCBattle
 			localOOL = attOOL;
 		else
 			localOOL = defOOL;
-		
 		if (localOOL != null)
 		{
-			
 			if (getNumberOfLand(units) == 1 && this.preserveLand)
 			{
-				UnitGroup last = getLastLand(units);
+				final UnitGroup last = getLastLand(units);
 				localOOL.remove(last.getUnit().getName());
 				localOOL.addElement(last.getUnit().getName());
 			}
 			for (int i = 0; i < localOOL.size(); i++)
 			{
-				String curRem = localOOL.elementAt(i);
-				boolean removed = removeUnit(curRem, units);
+				final String curRem = localOOL.elementAt(i);
+				final boolean removed = removeUnit(curRem, units);
 				if (removed)
 					return;
 			}
-			
 		}
 		else
 		// no OOL defined, go by lowest attack/defense value
 		{
-			UnitGroup lowest = getLowestUnitGroup(units, attackers);
-			boolean removed = removeUnit(lowest.getUnit().getName(), units);
+			final UnitGroup lowest = getLowestUnitGroup(units, attackers);
+			final boolean removed = removeUnit(lowest.getUnit().getName(), units);
 			if (removed)
 				return;
 		}
 	}
 	
-	private UnitGroup getLowestUnitGroup(Vector<UnitGroup> units, boolean attackers)
+	private UnitGroup getLowestUnitGroup(final Vector<UnitGroup> units, final boolean attackers)
 	{
 		UnitGroup current = null;
-		int unitSize = units.size();
+		final int unitSize = units.size();
 		int lowest = 6;
-		
 		for (int i = 0; i < unitSize; i++)
 		{
 			if (attackers)
 			{
 				if (units.elementAt(i).getUnit().getAttackValue() < lowest)
 				{
-					if (getNumberOfLand(units) == 1
-								&& this.preserveLand
-								&& getNumberOfUnits(units) != 1
-								&& units.elementAt(i).getUnit().getUnitType() == OCUnit.LANDUNIT)
+					if (getNumberOfLand(units) == 1 && this.preserveLand && getNumberOfUnits(units) != 1 && units.elementAt(i).getUnit().getUnitType() == OCUnit.LANDUNIT)
 					{
 						continue;
 					}
@@ -690,13 +647,13 @@ public class OCBattle
 		return current;
 	}
 	
-	private UnitGroup getLastLand(Vector<UnitGroup> units)
+	private UnitGroup getLastLand(final Vector<UnitGroup> units)
 	{
 		UnitGroup lastLand = null;
-		int vectorSize = units.size();
+		final int vectorSize = units.size();
 		for (int i = 0; i < vectorSize; i++)
 		{
-			UnitGroup ug = units.elementAt(i);
+			final UnitGroup ug = units.elementAt(i);
 			if (ug.getUnit().getUnitType() == OCUnit.LANDUNIT && ug.getNumUnits() > 0)
 			{
 				lastLand = ug;
@@ -705,13 +662,13 @@ public class OCBattle
 		return lastLand;
 	}
 	
-	private int getNumberOfLand(Vector<UnitGroup> units)
+	private int getNumberOfLand(final Vector<UnitGroup> units)
 	{
 		int numLand = 0;
-		int vectorSize = units.size();
+		final int vectorSize = units.size();
 		for (int i = 0; i < vectorSize; i++)
 		{
-			UnitGroup ug = units.elementAt(i);
+			final UnitGroup ug = units.elementAt(i);
 			if (ug.getUnit().getUnitType() == OCUnit.LANDUNIT)
 			{
 				numLand += ug.getNumUnits();
@@ -720,13 +677,13 @@ public class OCBattle
 		return numLand;
 	}
 	
-	private UnitGroup extraHp(Vector<UnitGroup> units)
+	private UnitGroup extraHp(final Vector<UnitGroup> units)
 	{
 		UnitGroup ug = null;
-		int size = units.size();
+		final int size = units.size();
 		for (int i = 0; i < size; i++)
 		{
-			UnitGroup curG = units.elementAt(i);
+			final UnitGroup curG = units.elementAt(i);
 			if (curG.getNumUnits() < curG.getTotalHp())
 			{
 				ug = curG;
@@ -736,12 +693,12 @@ public class OCBattle
 		return ug;
 	}
 	
-	private boolean removeUnit(String curName, Vector<UnitGroup> units)
+	private boolean removeUnit(final String curName, final Vector<UnitGroup> units)
 	{
 		for (int j = units.size() - 1; j >= 0; j--)
 		{
-			UnitGroup ug = units.elementAt(j);
-			OCUnit cur = ug.getUnit();
+			final UnitGroup ug = units.elementAt(j);
+			final OCUnit cur = ug.getUnit();
 			if (cur.getName().equals(curName))
 			{
 				ug.removeUnit();
@@ -753,38 +710,37 @@ public class OCBattle
 		return false;
 	}
 	
-	private Integer[] getSupportUnits(Vector<UnitGroup> units)
+	private Integer[] getSupportUnits(final Vector<UnitGroup> units)
 	{
 		Integer suppArray[] = null;
 		if (landBattle)
 		{
 			List<Object> l;
-			Vector<Integer> support = new Vector<Integer>();
-			int aSize = units.size();
+			final Vector<Integer> support = new Vector<Integer>();
+			final int aSize = units.size();
 			for (int i = 0; i < aSize; i++)
 			{
-				UnitGroup curG = units.elementAt(i);
-				OCUnit cur = curG.getUnit();
+				final UnitGroup curG = units.elementAt(i);
+				final OCUnit cur = curG.getUnit();
 				if (cur.isSupportShot())
 				{
 					support.addElement(new Integer(i));
 				}
 			}
-			Object els[] = support.toArray();
+			final Object els[] = support.toArray();
 			l = Arrays.asList(els);
-			
 			suppArray = l.toArray(new Integer[l.size()]);
 		}
 		return suppArray;
 	}
 	
-	private int getNumberOfAir(Vector<UnitGroup> units)
+	private int getNumberOfAir(final Vector<UnitGroup> units)
 	{
 		int numAir = 0;
-		int vectorSize = units.size();
+		final int vectorSize = units.size();
 		for (int i = 0; i < vectorSize; i++)
 		{
-			UnitGroup ug = units.elementAt(i);
+			final UnitGroup ug = units.elementAt(i);
 			if (ug.getUnit().getUnitType() == OCUnit.AIRUNIT)
 			{
 				numAir += ug.getNumUnits();
@@ -793,13 +749,13 @@ public class OCBattle
 		return numAir;
 	}
 	
-	private int getNumberOfFighters(Vector<UnitGroup> units)
+	private int getNumberOfFighters(final Vector<UnitGroup> units)
 	{
 		int numFtrs = 0;
-		int vectorSize = units.size();
+		final int vectorSize = units.size();
 		for (int i = 0; i < vectorSize; i++)
 		{
-			UnitGroup ug = units.elementAt(i);
+			final UnitGroup ug = units.elementAt(i);
 			if (ug.getUnit().getName().equals(StandardUnits.FtrName))
 			{
 				numFtrs += ug.getNumUnits();
@@ -808,13 +764,13 @@ public class OCBattle
 		return numFtrs;
 	}
 	
-	private int getNumberOfBombers(Vector<UnitGroup> units)
+	private int getNumberOfBombers(final Vector<UnitGroup> units)
 	{
 		int numBmbs = 0;
-		int vectorSize = units.size();
+		final int vectorSize = units.size();
 		for (int i = 0; i < vectorSize; i++)
 		{
-			UnitGroup ug = units.elementAt(i);
+			final UnitGroup ug = units.elementAt(i);
 			if (ug.getUnit().getName().equals(StandardUnits.BmbName))
 			{
 				numBmbs += ug.getNumUnits();
@@ -828,14 +784,14 @@ public class OCBattle
 		int size = locAttackers.size();
 		int attackerHits = 0;
 		int specialHits = 0;
-		boolean attAllAir = (getNumberOfUnits(locAttackers) == getNumberOfAir(attackers));
-		boolean defAllAir = (getNumberOfUnits(locDefenders) == getNumberOfAir(defenders));
-		boolean defBlockNoRet = hasBlockNoRet(locDefenders);
-		int boostedInf = getBoosters(locAttackers);
+		final boolean attAllAir = (getNumberOfUnits(locAttackers) == getNumberOfAir(attackers));
+		final boolean defAllAir = (getNumberOfUnits(locDefenders) == getNumberOfAir(defenders));
+		final boolean defBlockNoRet = hasBlockNoRet(locDefenders);
+		final int boostedInf = getBoosters(locAttackers);
 		for (int i = 0; i < size; i++)
 		{
-			UnitGroup curG = locAttackers.elementAt(i);
-			OCUnit cur = curG.getUnit();
+			final UnitGroup curG = locAttackers.elementAt(i);
+			final OCUnit cur = curG.getUnit();
 			if (!cur.isCanHitAir() && defAllAir)
 				continue;
 			int hits = 0;
@@ -862,44 +818,40 @@ public class OCBattle
 				attackerHits += hits;
 			}
 		}
-		
 		removeUnits(specialHits, locDefenders, false);
-		
 		size = locDefenders.size();
 		int defenderHits = 0;
 		for (int i = 0; i < size; i++)
 		{
-			UnitGroup curG = locDefenders.elementAt(i);
-			OCUnit cur = curG.getUnit();
+			final UnitGroup curG = locDefenders.elementAt(i);
+			final OCUnit cur = curG.getUnit();
 			if (!cur.isCanHitAir() && attAllAir)
 				continue;
 			defenderHits += curG.rollUnitsDefend();
 		}
-		
 		removeUnits(attackerHits, locDefenders, false);
 		removeUnits(defenderHits, locAttackers, true);
-		
 	}
 	
-	protected int getNumberOfUnits(Vector<UnitGroup> units)
+	protected int getNumberOfUnits(final Vector<UnitGroup> units)
 	{
 		int numUnits = 0;
-		int size = units.size();
+		final int size = units.size();
 		for (int i = 0; i < size; i++)
 		{
-			UnitGroup ug = units.elementAt(i);
+			final UnitGroup ug = units.elementAt(i);
 			numUnits += ug.getNumUnits();
 		}
 		return numUnits;
 	}
 	
-	private int getBoosters(Vector<UnitGroup> units)
+	private int getBoosters(final Vector<UnitGroup> units)
 	{
 		int boosters = 0;
-		int size = units.size();
+		final int size = units.size();
 		for (int i = 0; i < size; i++)
 		{
-			UnitGroup ug = units.elementAt(i);
+			final UnitGroup ug = units.elementAt(i);
 			if (ug.getUnit().isBoostsInfAtt())
 			{
 				boosters += ug.getNumUnits();
@@ -908,20 +860,20 @@ public class OCBattle
 		return boosters;
 	}
 	
-	private boolean hasBlockNoRet(Vector<UnitGroup> units)
+	private boolean hasBlockNoRet(final Vector<UnitGroup> units)
 	{
 		boolean blocked = false;
-		int size = units.size();
+		final int size = units.size();
 		for (int i = 0; i < size && !blocked; i++)
 		{
-			UnitGroup ug = units.elementAt(i);
+			final UnitGroup ug = units.elementAt(i);
 			if (ug.getUnit().isBlockNoRetalHit())
 				blocked = true;
 		}
 		return blocked;
 	}
 	
-	public static void main(String args[])
+	public static void main(final String args[])
 	{
 	}
 	
@@ -940,7 +892,7 @@ public class OCBattle
 		return results;
 	}
 	
-	private String unitVectorToString(Vector<UnitGroup> units)
+	private String unitVectorToString(final Vector<UnitGroup> units)
 	{
 		String res = "";
 		if (units.size() == 0)
@@ -949,7 +901,7 @@ public class OCBattle
 		}
 		else
 		{
-			int size = units.size();
+			final int size = units.size();
 			for (int i = 0; i < size; i++)
 			{
 				res += " " + units.elementAt(i).toString();
@@ -963,7 +915,7 @@ public class OCBattle
 		return rollAntiAirSep;
 	}
 	
-	public void setRollAntiAirSep(boolean rollAntiAirSep)
+	public void setRollAntiAirSep(final boolean rollAntiAirSep)
 	{
 		this.rollAntiAirSep = rollAntiAirSep;
 	}
@@ -983,7 +935,7 @@ public class OCBattle
 		return attOOL;
 	}
 	
-	public void setAttOOL(Vector<String> attOOL)
+	public void setAttOOL(final Vector<String> attOOL)
 	{
 		this.attOOL = attOOL;
 	}
@@ -993,7 +945,7 @@ public class OCBattle
 		return defOOL;
 	}
 	
-	public void setDefOOL(Vector<String> defOOL)
+	public void setDefOOL(final Vector<String> defOOL)
 	{
 		this.defOOL = defOOL;
 	}
@@ -1003,7 +955,7 @@ public class OCBattle
 		return isAmphib;
 	}
 	
-	public void setAmphib(boolean isAmphib)
+	public void setAmphib(final boolean isAmphib)
 	{
 		this.isAmphib = isAmphib;
 	}
@@ -1017,5 +969,4 @@ public class OCBattle
 	{
 		return avgRemDefs;
 	}
-	
 }

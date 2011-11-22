@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GameDataComponent.java
  * 
  * Created on November 6, 2001, 2:50 PM
  */
-
 package games.strategy.engine.data;
 
 import java.io.IOException;
@@ -34,7 +32,6 @@ import java.io.ObjectOutputStream;
 public class GameDataComponent implements java.io.Serializable
 {
 	static final long serialVersionUID = -2066504666509851740L;
-	
 	private GameData m_data;
 	
 	/**
@@ -43,7 +40,7 @@ public class GameDataComponent implements java.io.Serializable
 	 * @param data
 	 *            game data
 	 */
-	public GameDataComponent(GameData data)
+	public GameDataComponent(final GameData data)
 	{
 		m_data = data;
 	}
@@ -53,12 +50,12 @@ public class GameDataComponent implements java.io.Serializable
 		return m_data;
 	}
 	
-	private void writeObject(ObjectOutputStream stream) throws IOException
+	private void writeObject(final ObjectOutputStream stream) throws IOException
 	{
 		writeInternal(stream);
 	}
 	
-	protected final void writeInternal(ObjectOutput stream) throws IOException
+	protected final void writeInternal(final ObjectOutput stream) throws IOException
 	{
 		// if were writing to a game object stream
 		// then we get the game data from the context
@@ -68,20 +65,19 @@ public class GameDataComponent implements java.io.Serializable
 		stream.writeObject(m_data);
 	}
 	
-	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException
+	private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException
 	{
 		readInternal(stream);
 	}
 	
-	protected final void readInternal(ObjectInput stream) throws IOException, ClassNotFoundException
+	protected final void readInternal(final ObjectInput stream) throws IOException, ClassNotFoundException
 	{
 		if (stream instanceof GameObjectInputStream)
 		{
-			GameObjectInputStream in = (GameObjectInputStream) stream;
+			final GameObjectInputStream in = (GameObjectInputStream) stream;
 			m_data = in.getData();
 		}
 		else
 			m_data = (GameData) stream.readObject();
 	}
-	
 }

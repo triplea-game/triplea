@@ -39,9 +39,7 @@ public class ScriptedRandomSource implements IRandomSource
 {
 	public static final int PAUSE = -2;
 	public static final int ERROR = -3;
-	
 	private static final String SCRIPTED_RANDOM_PROPERTY = "triplea.scriptedRandom";
-	
 	private final int[] m_numbers;
 	private int m_currentIndex = 0;
 	private int m_rolled;
@@ -51,8 +49,7 @@ public class ScriptedRandomSource implements IRandomSource
 	 */
 	public static boolean useScriptedRandom()
 	{
-		return System.getProperty(SCRIPTED_RANDOM_PROPERTY) != null &&
-					System.getProperty(SCRIPTED_RANDOM_PROPERTY).trim().length() > 0;
+		return System.getProperty(SCRIPTED_RANDOM_PROPERTY) != null && System.getProperty(SCRIPTED_RANDOM_PROPERTY).trim().length() > 0;
 	}
 	
 	/**
@@ -60,14 +57,13 @@ public class ScriptedRandomSource implements IRandomSource
 	 */
 	public ScriptedRandomSource()
 	{
-		String property = System.getProperty(SCRIPTED_RANDOM_PROPERTY, "1,2,3");
-		int length = property.split(",").length;
-		StringTokenizer tokenizer = new StringTokenizer(property, ",");
+		final String property = System.getProperty(SCRIPTED_RANDOM_PROPERTY, "1,2,3");
+		final int length = property.split(",").length;
+		final StringTokenizer tokenizer = new StringTokenizer(property, ",");
 		m_numbers = new int[length];
-		
 		for (int i = 0; i < m_numbers.length; i++)
 		{
-			String token = tokenizer.nextToken();
+			final String token = tokenizer.nextToken();
 			if (token.equals("e"))
 			{
 				m_numbers[i] = ERROR;
@@ -88,12 +84,12 @@ public class ScriptedRandomSource implements IRandomSource
 	 * the numbers supplied in order. When the scripted source runs out of random numbers, it
 	 * starts returning elements from the beginning.
 	 */
-	public ScriptedRandomSource(int[] numbers)
+	public ScriptedRandomSource(final int[] numbers)
 	{
 		m_numbers = numbers;
 	}
 	
-	public ScriptedRandomSource(Integer... numbers)
+	public ScriptedRandomSource(final Integer... numbers)
 	{
 		m_numbers = new int[numbers.length];
 		for (int i = 0; i < numbers.length; i++)
@@ -102,32 +98,31 @@ public class ScriptedRandomSource implements IRandomSource
 		}
 	}
 	
-	public int getRandom(int max, String annotation)
+	public int getRandom(final int max, final String annotation)
 	{
 		return getRandom(max, 1, null)[0];
 	}
 	
-	public int[] getRandom(int max, int count, String annotation)
+	public int[] getRandom(final int max, final int count, final String annotation)
 	{
 		if (count <= 0)
 		{
 			throw new IllegalStateException("count must be > o, annotation:" + annotation);
 		}
-		
 		m_rolled += count;
-		int[] rVal = new int[count];
+		final int[] rVal = new int[count];
 		for (int i = 0; i < count; i++)
 		{
 			if (m_numbers[m_currentIndex] == PAUSE)
 			{
 				try
 				{
-					Object o = new Object();
+					final Object o = new Object();
 					synchronized (o)
 					{
 						o.wait();
 					}
-				} catch (InterruptedException e)
+				} catch (final InterruptedException e)
 				{
 				}
 			}
@@ -135,7 +130,6 @@ public class ScriptedRandomSource implements IRandomSource
 			{
 				throw new IllegalStateException("Random number generator generating scripted error");
 			}
-			
 			rVal[i] = m_numbers[m_currentIndex];
 			m_currentIndex++;
 			if (m_currentIndex >= m_numbers.length)

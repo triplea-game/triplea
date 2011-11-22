@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * PointFileReader.java
  * 
  * Created on January 11, 2002, 11:57 AM
  */
-
 package games.strategy.util;
 
 import java.awt.Point;
@@ -47,7 +45,6 @@ import java.util.StringTokenizer;
  */
 public class PointFileReaderWriter
 {
-	
 	/** Creates a new instance of PointFileReader */
 	public PointFileReaderWriter()
 	{
@@ -56,17 +53,15 @@ public class PointFileReaderWriter
 	/**
 	 * Returns a map of the form String -> Point.
 	 */
-	public static Map<String, Point> readOneToOne(InputStream stream) throws IOException
+	public static Map<String, Point> readOneToOne(final InputStream stream) throws IOException
 	{
 		if (stream == null)
 			return Collections.emptyMap();
-		
-		Map<String, Point> mapping = new HashMap<String, Point>();
+		final Map<String, Point> mapping = new HashMap<String, Point>();
 		LineNumberReader reader = null;
 		try
 		{
 			reader = new LineNumberReader(new InputStreamReader(stream));
-			
 			String current = reader.readLine();
 			while (current != null)
 			{
@@ -87,14 +82,13 @@ public class PointFileReaderWriter
 	/**
 	 * Returns a map of the form String -> Point.
 	 */
-	public static Map<String, Point> readOneToOneCenters(InputStream stream) throws IOException
+	public static Map<String, Point> readOneToOneCenters(final InputStream stream) throws IOException
 	{
-		Map<String, Point> mapping = new HashMap<String, Point>();
+		final Map<String, Point> mapping = new HashMap<String, Point>();
 		LineNumberReader reader = null;
 		try
 		{
 			reader = new LineNumberReader(new InputStreamReader(stream));
-			
 			String current = reader.readLine();
 			while (current != null)
 			{
@@ -112,54 +106,50 @@ public class PointFileReaderWriter
 		return mapping;
 	}
 	
-	private static void readSingle(String aLine, Map<String, Point> mapping) throws IOException
+	private static void readSingle(final String aLine, final Map<String, Point> mapping) throws IOException
 	{
-		StringTokenizer tokens = new StringTokenizer(aLine, "", false);
-		String name = tokens.nextToken("(").trim();
-		
+		final StringTokenizer tokens = new StringTokenizer(aLine, "", false);
+		final String name = tokens.nextToken("(").trim();
 		if (mapping.containsKey(name))
 			throw new IOException("name found twice:" + name);
-		
-		int x = Integer.parseInt(tokens.nextToken("(, "));
-		int y = Integer.parseInt(tokens.nextToken(",) "));
-		Point p = new Point(x, y);
+		final int x = Integer.parseInt(tokens.nextToken("(, "));
+		final int y = Integer.parseInt(tokens.nextToken(",) "));
+		final Point p = new Point(x, y);
 		mapping.put(name, p);
 	}
 	
-	public static void writeOneToOne(OutputStream sink, Map<String, Point> mapping) throws Exception
+	public static void writeOneToOne(final OutputStream sink, final Map<String, Point> mapping) throws Exception
 	{
-		StringBuilder out = new StringBuilder();
-		Iterator<String> keyIter = mapping.keySet().iterator();
+		final StringBuilder out = new StringBuilder();
+		final Iterator<String> keyIter = mapping.keySet().iterator();
 		while (keyIter.hasNext())
 		{
-			String name = keyIter.next();
+			final String name = keyIter.next();
 			out.append(name).append(" ");
-			
-			Point point = mapping.get(name);
+			final Point point = mapping.get(name);
 			out.append(" (").append(point.x).append(",").append(point.y).append(")");
 			if (keyIter.hasNext())
 			{
 				out.append("\n");
 			}
-			
 		}
 		write(out, sink);
 	}
 	
-	public static void writeOneToManyPolygons(OutputStream sink, Map<String, List<Polygon>> mapping) throws Exception
+	public static void writeOneToManyPolygons(final OutputStream sink, final Map<String, List<Polygon>> mapping) throws Exception
 	{
-		StringBuilder out = new StringBuilder();
-		Iterator<String> keyIter = mapping.keySet().iterator();
+		final StringBuilder out = new StringBuilder();
+		final Iterator<String> keyIter = mapping.keySet().iterator();
 		while (keyIter.hasNext())
 		{
-			String name = keyIter.next();
+			final String name = keyIter.next();
 			out.append(name).append(" ");
-			List<Polygon> points = mapping.get(name);
-			Iterator<Polygon> polygonIter = points.iterator();
+			final List<Polygon> points = mapping.get(name);
+			final Iterator<Polygon> polygonIter = points.iterator();
 			while (polygonIter.hasNext())
 			{
 				out.append(" < ");
-				Polygon polygon = polygonIter.next();
+				final Polygon polygon = polygonIter.next();
 				for (int i = 0; i < polygon.npoints; i++)
 				{
 					out.append(" (").append(polygon.xpoints[i]).append(",").append(polygon.ypoints[i]).append(")");
@@ -174,31 +164,30 @@ public class PointFileReaderWriter
 		write(out, sink);
 	}
 	
-	private static void write(StringBuilder buf, OutputStream sink) throws IOException
+	private static void write(final StringBuilder buf, final OutputStream sink) throws IOException
 	{
-		OutputStreamWriter out = new OutputStreamWriter(sink);
+		final OutputStreamWriter out = new OutputStreamWriter(sink);
 		out.write(buf.toString());
 		out.flush();
 	}
 	
-	public static void writeOneToMany(OutputStream sink, Map mapping) throws Exception
+	public static void writeOneToMany(final OutputStream sink, Map mapping) throws Exception
 	{
-		StringBuilder out = new StringBuilder();
+		final StringBuilder out = new StringBuilder();
 		if (mapping == null)
 		{
 			mapping = new HashMap();
 		}
-		
-		Iterator keyIter = mapping.keySet().iterator();
+		final Iterator keyIter = mapping.keySet().iterator();
 		while (keyIter.hasNext())
 		{
-			String name = (String) keyIter.next();
+			final String name = (String) keyIter.next();
 			out.append(name).append(" ");
-			Collection points = (Collection) mapping.get(name);
-			Iterator pointIter = points.iterator();
+			final Collection points = (Collection) mapping.get(name);
+			final Iterator pointIter = points.iterator();
 			while (pointIter.hasNext())
 			{
-				Point point = (Point) pointIter.next();
+				final Point point = (Point) pointIter.next();
 				out.append(" (").append(point.x).append(",").append(point.y).append(")");
 				if (pointIter.hasNext())
 					out.append(" ");
@@ -207,7 +196,6 @@ public class PointFileReaderWriter
 			{
 				out.append("\n");
 			}
-			
 		}
 		write(out, sink);
 	}
@@ -215,18 +203,16 @@ public class PointFileReaderWriter
 	/**
 	 * Returns a map of the form String -> Collection of points.
 	 */
-	public static Map<String, List<Point>> readOneToMany(InputStream stream) throws IOException
+	public static Map<String, List<Point>> readOneToMany(final InputStream stream) throws IOException
 	{
-		HashMap<String, List<Point>> mapping = new HashMap<String, List<Point>>();
+		final HashMap<String, List<Point>> mapping = new HashMap<String, List<Point>>();
 		LineNumberReader reader = null;
 		try
 		{
 			// Check to see if there's null input
 			if (stream == null)
 				return Collections.emptyMap();
-			
 			reader = new LineNumberReader(new InputStreamReader(stream));
-			
 			String current = reader.readLine();
 			while (current != null)
 			{
@@ -236,7 +222,7 @@ public class PointFileReaderWriter
 				}
 				current = reader.readLine();
 			}
-		} catch (IOException ioe)
+		} catch (final IOException ioe)
 		{
 			ioe.printStackTrace();
 			System.exit(0);
@@ -246,7 +232,7 @@ public class PointFileReaderWriter
 			{
 				if (reader != null)
 					reader.close();
-			} catch (IOException e)
+			} catch (final IOException e)
 			{
 			}
 		}
@@ -256,14 +242,13 @@ public class PointFileReaderWriter
 	/**
 	 * Returns a map of the form String -> Collection of points.
 	 */
-	public static Map<String, List<Polygon>> readOneToManyPolygons(InputStream stream) throws IOException
+	public static Map<String, List<Polygon>> readOneToManyPolygons(final InputStream stream) throws IOException
 	{
-		HashMap<String, List<Polygon>> mapping = new HashMap<String, List<Polygon>>();
+		final HashMap<String, List<Polygon>> mapping = new HashMap<String, List<Polygon>>();
 		LineNumberReader reader = null;
 		try
 		{
 			reader = new LineNumberReader(new InputStreamReader(stream));
-			
 			String current = reader.readLine();
 			while (current != null)
 			{
@@ -273,7 +258,7 @@ public class PointFileReaderWriter
 				}
 				current = reader.readLine();
 			}
-		} catch (IOException ioe)
+		} catch (final IOException ioe)
 		{
 			ioe.printStackTrace();
 			System.exit(0);
@@ -283,27 +268,23 @@ public class PointFileReaderWriter
 			{
 				if (reader != null)
 					reader.close();
-			} catch (IOException e)
+			} catch (final IOException e)
 			{
 			}
 		}
 		return mapping;
 	}
 	
-	private static void readMultiplePolygons(String line, HashMap<String, List<Polygon>> mapping) throws IOException
+	private static void readMultiplePolygons(final String line, final HashMap<String, List<Polygon>> mapping) throws IOException
 	{
 		try
 		{
 			// this loop is executed a lot when loading games
 			// so it is hand optimized
-			
-			String name = line.substring(0, line.indexOf('<')).trim();
-			
+			final String name = line.substring(0, line.indexOf('<')).trim();
 			int index = name.length();
-			
-			List<Polygon> polygons = new ArrayList<Polygon>(64);
-			ArrayList<Point> points = new ArrayList<Point>();
-			
+			final List<Polygon> polygons = new ArrayList<Polygon>(64);
+			final ArrayList<Point> points = new ArrayList<Point>();
 			final int length = line.length();
 			while (index < length)
 			{
@@ -312,14 +293,11 @@ public class PointFileReaderWriter
 				{
 					int x = 0;
 					int y = 0;
-					
 					int base = 0;
-					
 					// inside a poly
 					while (true)
 					{
 						current = line.charAt(++index);
-						
 						switch (current)
 						{
 							case '0':
@@ -344,11 +322,9 @@ public class PointFileReaderWriter
 								base = 0;
 								points.add(new Point(x, y));
 								break;
-							
 							default:
 								break;
 						}
-						
 						if (current == '>')
 						{
 							// end poly
@@ -358,58 +334,49 @@ public class PointFileReaderWriter
 							break;
 						}
 					}
-					
 				}
 				index++;
 			}
-			
 			if (mapping.containsKey(name))
 				throw new IOException("name found twice:" + name);
-			
 			mapping.put(name, polygons);
-		} catch (StringIndexOutOfBoundsException e)
+		} catch (final StringIndexOutOfBoundsException e)
 		{
 			throw new IllegalStateException("Invalid line:" + line, e);
 		}
-		
 	}
 	
-	private static void createPolygonFromPoints(Collection<Polygon> polygons, ArrayList<Point> points)
+	private static void createPolygonFromPoints(final Collection<Polygon> polygons, final ArrayList<Point> points)
 	{
-		int[] xPoints = new int[points.size()];
-		int[] yPoints = new int[points.size()];
+		final int[] xPoints = new int[points.size()];
+		final int[] yPoints = new int[points.size()];
 		for (int i = 0; i < points.size(); i++)
 		{
-			Point p = points.get(i);
+			final Point p = points.get(i);
 			xPoints[i] = p.x;
 			yPoints[i] = p.y;
 		}
 		polygons.add(new Polygon(xPoints, yPoints, xPoints.length));
 	}
 	
-	private static void readMultiple(String line, HashMap<String, List<Point>> mapping) throws IOException
+	private static void readMultiple(final String line, final HashMap<String, List<Point>> mapping) throws IOException
 	{
-		StringTokenizer tokens = new StringTokenizer(line, "");
-		String name = tokens.nextToken("(").trim();
-		
+		final StringTokenizer tokens = new StringTokenizer(line, "");
+		final String name = tokens.nextToken("(").trim();
 		if (mapping.containsKey(name))
 			throw new IOException("name found twice:" + name);
-		
-		List<Point> points = new ArrayList<Point>();
+		final List<Point> points = new ArrayList<Point>();
 		while (tokens.hasMoreTokens())
 		{
-			String xString = tokens.nextToken(",(), ");
-			
+			final String xString = tokens.nextToken(",(), ");
 			if (!tokens.hasMoreTokens())
 				continue;
-			String yString = tokens.nextToken(",() ");
-			
-			int x = Integer.parseInt(xString);
-			int y = Integer.parseInt(yString);
+			final String yString = tokens.nextToken(",() ");
+			final int x = Integer.parseInt(xString);
+			final int y = Integer.parseInt(yString);
 			points.add(new Point(x, y));
 		}
 		mapping.put(name, points);
 	}
-	
 	// TODO add write methods
 }

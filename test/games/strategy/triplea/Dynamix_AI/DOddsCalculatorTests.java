@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI;
 
 import games.strategy.engine.data.GameData;
@@ -49,17 +48,14 @@ public class DOddsCalculatorTests extends TestCase
 	
 	public void testBattleCalculator()
 	{
-		PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
-		PlayerID huron = m_data.getPlayerList().getPlayerID("Huron");
-		
-		Territory cIsland = m_data.getMap().getTerritory("C");
-		
-		UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
-		UnitType artillery = m_data.getUnitTypeList().getUnitType("artillery");
-		UnitType fighter = m_data.getUnitTypeList().getUnitType("fighter");
-		
-		List<Unit> attacking = new ArrayList<Unit>();
-		List<Unit> defending = new ArrayList<Unit>();
+		final PlayerID superior = m_data.getPlayerList().getPlayerID("Superior");
+		final PlayerID huron = m_data.getPlayerList().getPlayerID("Huron");
+		final Territory cIsland = m_data.getMap().getTerritory("C");
+		final UnitType infantry = m_data.getUnitTypeList().getUnitType("infantry");
+		final UnitType artillery = m_data.getUnitTypeList().getUnitType("artillery");
+		final UnitType fighter = m_data.getUnitTypeList().getUnitType("fighter");
+		final List<Unit> attacking = new ArrayList<Unit>();
+		final List<Unit> defending = new ArrayList<Unit>();
 		for (int i = 0; i < 50; i++)
 		{
 			attacking.add(infantry.create(superior));
@@ -70,12 +66,9 @@ public class DOddsCalculatorTests extends TestCase
 		{
 			defending.add(infantry.create(huron));
 		}
-		
 		DOddsCalculator.SetGameData(m_data);
-		AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
-		
+		final AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
 		System.out.print("Time Taken To Calculate: " + results.getTime() + "\r\n");
-		
 		assertEquals(1.0D, results.getAttackerWinPercent());
 		assertEquals(0.0D, results.getAverageDefendingUnitsLeft());
 		assertEquals(0.0D, results.getDefenderWinPercent());

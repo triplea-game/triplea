@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  */
-
 package games.strategy.net;
 
 import java.net.SocketAddress;
@@ -26,7 +25,6 @@ import java.util.Map;
  */
 public interface ILoginValidator
 {
-	
 	/**
 	 * 
 	 * The challenge properties to send to the client. The client will be sent the challenge properties,
@@ -46,5 +44,4 @@ public interface ILoginValidator
 	 * @return - null if the attempt was successful, an error message otherwise
 	 */
 	public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String clientMac, SocketAddress remoteAddress);
-	
 }

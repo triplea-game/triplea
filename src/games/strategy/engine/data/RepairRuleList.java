@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * RepairRuleList.java
  * 
  * Created on October 22, 2001, 10:23 AM
  */
-
 package games.strategy.engine.data;
 
 import java.util.Collection;
@@ -34,12 +32,12 @@ public class RepairRuleList extends GameDataComponent
 {
 	private final Map<String, RepairRule> m_repairRules = new HashMap<String, RepairRule>();
 	
-	public RepairRuleList(GameData data)
+	public RepairRuleList(final GameData data)
 	{
 		super(data);
 	}
 	
-	protected void addRepairRule(RepairRule pf)
+	protected void addRepairRule(final RepairRule pf)
 	{
 		m_repairRules.put(pf.getName(), pf);
 	}
@@ -49,7 +47,7 @@ public class RepairRuleList extends GameDataComponent
 		return m_repairRules.size();
 	}
 	
-	public RepairRule getRepairRule(String name)
+	public RepairRule getRepairRule(final String name)
 	{
 		return m_repairRules.get(name);
 	}

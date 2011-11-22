@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.chat;
 
 import java.util.HashMap;
@@ -23,15 +22,13 @@ import java.util.Map;
 public class ChatFloodControl
 {
 	private static final int ONE_MINUTE = 60 * 1000;
-	
 	static final int EVENTS_PER_WINDOW = 20;
 	static final int WINDOW = ONE_MINUTE;
-	
 	private final Object lock = new Object();
 	private long clearTime = System.currentTimeMillis();
-	private Map<String, Integer> messageCount = new HashMap<String, Integer>();
+	private final Map<String, Integer> messageCount = new HashMap<String, Integer>();
 	
-	public boolean allow(String from, long now)
+	public boolean allow(final String from, final long now)
 	{
 		synchronized (lock)
 		{
@@ -41,15 +38,12 @@ public class ChatFloodControl
 				messageCount.clear();
 				clearTime = now + WINDOW;
 			}
-			
 			if (!messageCount.containsKey(from))
 			{
 				messageCount.put(from, 0);
 			}
-			
 			messageCount.put(from, messageCount.get(from) + 1);
 			return messageCount.get(from) <= EVENTS_PER_WINDOW;
 		}
 	}
-	
 }

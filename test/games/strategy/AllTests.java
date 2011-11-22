@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy;
 
 import games.strategy.kingstable.KingsTableTest;
@@ -22,21 +21,15 @@ import junit.framework.TestSuite;
 
 public class AllTests extends TestCase
 {
-	
 	public static Test suite()
 	{
-		TestSuite suite = new TestSuite(AllTests.class.getSimpleName());
-		
+		final TestSuite suite = new TestSuite(AllTests.class.getSimpleName());
 		// tests for the engine code
 		suite.addTest(StrategyGameTest.suite());
-		
 		// tests for triplea code
 		suite.addTest(TripleATest.suite());
-		
 		// tests for King's Table code
 		suite.addTest(KingsTableTest.suite());
-		
 		return suite;
 	}
-	
 }

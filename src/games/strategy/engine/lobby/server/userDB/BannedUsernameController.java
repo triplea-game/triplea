@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.userDB;
 
 import java.sql.Connection;
@@ -35,7 +34,7 @@ public class BannedUsernameController
 	/**
 	 * Ban the username permanently
 	 */
-	public void addBannedUsername(String username)
+	public void addBannedUsername(final String username)
 	{
 		addBannedUsername(username, null);
 	}
@@ -46,30 +45,28 @@ public class BannedUsernameController
 	 * 
 	 * If this username is already banned, this call will update the ban_end.
 	 */
-	public void addBannedUsername(String username, Date banTill)
+	public void addBannedUsername(final String username, final Date banTill)
 	{
 		if (isUsernameBanned(username))
 		{
 			removeBannedUsername(username);
 		}
-		
 		Timestamp banTillTs = null;
 		if (banTill != null)
 		{
 			banTillTs = new Timestamp(banTill.getTime());
 		}
-		
 		s_logger.fine("Banning username:" + username);
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)");
+			final PreparedStatement ps = con.prepareStatement("insert into banned_usernames (username, ban_till) values (?, ?)");
 			ps.setString(1, username);
 			ps.setTimestamp(2, banTillTs);
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			if (sqle.getErrorCode() == 30000)
 			{
@@ -78,7 +75,6 @@ public class BannedUsernameController
 				s_logger.info("Tried to create duplicate banned username:" + username + " error:" + sqle.getMessage());
 				return;
 			}
-			
 			s_logger.log(Level.SEVERE, "Error inserting banned username:" + username, sqle);
 			throw new IllegalStateException(sqle.getMessage());
 		} finally
@@ -87,18 +83,18 @@ public class BannedUsernameController
 		}
 	}
 	
-	public void removeBannedUsername(String username)
+	public void removeBannedUsername(final String username)
 	{
 		s_logger.fine("Removing banned username:" + username);
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("delete from banned_usernames where username = ?");
+			final PreparedStatement ps = con.prepareStatement("delete from banned_usernames where username = ?");
 			ps.setString(1, username);
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.log(Level.SEVERE, "Error deleting banned username:" + username, sqle);
 			throw new IllegalStateException(sqle.getMessage());
@@ -112,34 +108,31 @@ public class BannedUsernameController
 	 * Is the given username banned? This may have the side effect of removing from the
 	 * database any username's whose ban has expired
 	 */
-	public boolean isUsernameBanned(String username)
+	public boolean isUsernameBanned(final String username)
 	{
 		boolean found = false;
 		boolean expired = false;
-		String sql = "select username, ban_till from banned_usernames where username = ?";
-		Connection con = Database.getConnection();
+		final String sql = "select username, ban_till from banned_usernames where username = ?";
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement(sql);
+			final PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, username);
-			ResultSet rs = ps.executeQuery();
+			final ResultSet rs = ps.executeQuery();
 			found = rs.next();
-			
 			// If the ban has expired, allow the username
 			if (found)
 			{
-				Timestamp banTill = rs.getTimestamp(2);
+				final Timestamp banTill = rs.getTimestamp(2);
 				if (banTill != null && banTill.getTime() < System.currentTimeMillis())
 				{
 					s_logger.fine("Ban expired for:" + username);
 					expired = true;
 				}
 			}
-			
 			rs.close();
 			ps.close();
-			
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.info("Error for testing banned username existence:" + username + " error:" + sqle.getMessage());
 			throw new IllegalStateException(sqle.getMessage());
@@ -147,7 +140,6 @@ public class BannedUsernameController
 		{
 			DbUtil.closeConnection(con);
 		}
-		
 		if (expired)
 		{
 			removeBannedUsername(username);

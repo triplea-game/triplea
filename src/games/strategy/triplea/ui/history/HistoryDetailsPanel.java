@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui.history;
 
 import games.strategy.engine.data.GameData;
@@ -43,14 +42,11 @@ import javax.swing.JTextArea;
 public class HistoryDetailsPanel extends JPanel
 {
 	private final GameData m_data;
-	
-	private JTextArea m_title = new JTextArea();
-	
-	private JScrollPane m_scroll = new JScrollPane(m_title);
-	
+	private final JTextArea m_title = new JTextArea();
+	private final JScrollPane m_scroll = new JScrollPane(m_title);
 	private final MapPanel m_mapPanel;
 	
-	public HistoryDetailsPanel(GameData data, MapPanel mapPanel)
+	public HistoryDetailsPanel(final GameData data, final MapPanel mapPanel)
 	{
 		m_data = data;
 		setLayout(new GridBagLayout());
@@ -64,35 +60,26 @@ public class HistoryDetailsPanel extends JPanel
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void render(HistoryNode node)
+	public void render(final HistoryNode node)
 	{
 		removeAll();
 		m_mapPanel.setRoute(null);
-		
-		Insets insets = new Insets(5, 0, 0, 0);
-		
+		final Insets insets = new Insets(5, 0, 0, 0);
 		m_title.setText(node.getTitle());
-		add(m_scroll,
-					new GridBagConstraints(0, 0, 1, 1, 1, 0.1,
-								GridBagConstraints.NORTH, GridBagConstraints.BOTH,
-								insets, 0, 0));
-		
-		GridBagConstraints mainConstraints = new GridBagConstraints(0, 1, 1, 1,
-					1, 0.9, GridBagConstraints.NORTH, GridBagConstraints.BOTH,
-					insets, 0, 0);
-		
+		add(m_scroll, new GridBagConstraints(0, 0, 1, 1, 1, 0.1, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0));
+		final GridBagConstraints mainConstraints = new GridBagConstraints(0, 1, 1, 1, 1, 0.9, GridBagConstraints.NORTH, GridBagConstraints.BOTH, insets, 0, 0);
 		if (node instanceof Renderable)
 		{
-			Object details = ((Renderable) node).getRenderingData();
+			final Object details = ((Renderable) node).getRenderingData();
 			if (details instanceof DiceRoll)
 			{
-				DicePanel dicePanel = new DicePanel(m_mapPanel.getUIContext(), m_data);
+				final DicePanel dicePanel = new DicePanel(m_mapPanel.getUIContext(), m_data);
 				dicePanel.setDiceRoll((DiceRoll) details);
 				add(dicePanel, mainConstraints);
 			}
 			else if (details instanceof MoveDescription)
 			{
-				MoveDescription moveMessage = (MoveDescription) details;
+				final MoveDescription moveMessage = (MoveDescription) details;
 				renderUnits(mainConstraints, moveMessage.getUnits());
 				m_mapPanel.setRoute(moveMessage.getRoute());
 				if (!m_mapPanel.isShowing(moveMessage.getRoute().getEnd()))
@@ -100,45 +87,39 @@ public class HistoryDetailsPanel extends JPanel
 			}
 			else if (details instanceof PlacementDescription)
 			{
-				PlacementDescription placeMessage = (PlacementDescription) details;
+				final PlacementDescription placeMessage = (PlacementDescription) details;
 				renderUnits(mainConstraints, placeMessage.getUnits());
 				if (!m_mapPanel.isShowing(placeMessage.getTerritory()))
 					m_mapPanel.centerOn(placeMessage.getTerritory());
 			}
 			else if (details instanceof Collection)
 			{
-				Collection objects = (Collection) details;
-				Iterator objIter = objects.iterator();
+				final Collection objects = (Collection) details;
+				final Iterator objIter = objects.iterator();
 				if (objIter.hasNext())
 				{
-					Object obj = objIter.next();
+					final Object obj = objIter.next();
 					if (obj instanceof Unit)
 						renderUnits(mainConstraints, objects);
 				}
 			}
 			else if (details instanceof Territory)
 			{
-				Territory t = (Territory) details;
+				final Territory t = (Territory) details;
 				if (!m_mapPanel.isShowing(t))
 					m_mapPanel.centerOn(t);
 			}
-			
 		}
 		add(Box.createGlue());
-		
 		validate();
 		repaint();
-		
 	}
 	
-	private void renderUnits(GridBagConstraints mainConstraints,
-				Collection<Unit> units)
+	private void renderUnits(final GridBagConstraints mainConstraints, final Collection<Unit> units)
 	{
-		Collection<UnitCategory> unitsCategories = UnitSeperator.categorize(units);
-		SimpleUnitPanel unitsPanel = new SimpleUnitPanel(m_mapPanel
-					.getUIContext());
+		final Collection<UnitCategory> unitsCategories = UnitSeperator.categorize(units);
+		final SimpleUnitPanel unitsPanel = new SimpleUnitPanel(m_mapPanel.getUIContext());
 		unitsPanel.setUnitsFromCategories(unitsCategories, m_data);
 		add(unitsPanel, mainConstraints);
 	}
-	
 }

@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
@@ -36,38 +35,32 @@ public class UnitsThatCantFightUtil
 	}
 	
 	// TODO Used to notify of kamikazi attacks
-	public Collection<Territory> getTerritoriesWhereUnitsCantFight(PlayerID player)
+	public Collection<Territory> getTerritoriesWhereUnitsCantFight(final PlayerID player)
 	{
-		CompositeMatch<Unit> enemyAttackUnits = new CompositeMatchAnd<Unit>();
+		final CompositeMatch<Unit> enemyAttackUnits = new CompositeMatchAnd<Unit>();
 		enemyAttackUnits.add(Matches.enemyUnit(player, m_data));
 		enemyAttackUnits.add(Matches.unitCanAttack(player));
-		
-		Collection<Territory> cantFight = new ArrayList<Territory>();
-		for (Territory current : m_data.getMap())
+		final Collection<Territory> cantFight = new ArrayList<Territory>();
+		for (final Territory current : m_data.getMap())
 		{
 			// get all owned non-combat units
-			CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
+			final CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
 			ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure));
 			if (current.isWater())
 			{
 				ownedUnitsMatch.add(Matches.UnitIsLand.invert());
 			}
 			ownedUnitsMatch.add(Matches.unitIsOwnedBy(player));
-			
 			// All owned units
-			int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
-			
+			final int countAllOwnedUnits = current.getUnits().countMatches(ownedUnitsMatch);
 			// only noncombat units
 			ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.unitCanAttack(player)));
-			Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
-			
+			final Collection<Unit> nonCombatUnits = current.getUnits().getMatches(ownedUnitsMatch);
 			if (nonCombatUnits.isEmpty() || nonCombatUnits.size() != countAllOwnedUnits)
 				continue;
-			
 			if (current.getUnits().someMatch(enemyAttackUnits))
 				cantFight.add(current);
 		}
 		return cantFight;
 	}
-	
 }

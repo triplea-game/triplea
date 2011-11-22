@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.kingstable.attachments;
 
 import games.strategy.engine.data.DefaultAttachment;
@@ -23,7 +22,6 @@ import games.strategy.engine.data.DefaultAttachment;
  */
 public class PlayerAttachment extends DefaultAttachment
 {
-	
 	private boolean m_needsKing = false;
 	private int m_AbSearchDepth = 2;
 	
@@ -32,7 +30,7 @@ public class PlayerAttachment extends DefaultAttachment
 	{
 	}
 	
-	public void setNeedsKing(String value)
+	public void setNeedsKing(final String value)
 	{
 		m_needsKing = getBool(value);
 	}
@@ -42,7 +40,7 @@ public class PlayerAttachment extends DefaultAttachment
 		return m_needsKing;
 	}
 	
-	public void setAlphaBetaSearchDepth(String value)
+	public void setAlphaBetaSearchDepth(final String value)
 	{
 		m_AbSearchDepth = getInt(value);
 	}
@@ -51,5 +49,4 @@ public class PlayerAttachment extends DefaultAttachment
 	{
 		return m_AbSearchDepth;
 	}
-	
 }

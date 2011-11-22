@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net.nio;
 
 /**
@@ -33,7 +32,6 @@ package games.strategy.net.nio;
  */
 public abstract class QuarantineConversation
 {
-	
 	public static enum ACTION
 	{
 		NONE, TERMINATE, UNQUARANTINE
@@ -49,5 +47,4 @@ public abstract class QuarantineConversation
 	 * returned from a message, or the channel has been closed.
 	 */
 	public abstract void close();
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * PlayerAttachmentExporter.java
  * 
@@ -25,28 +24,24 @@ import java.lang.reflect.Field;
 
 public class PlayerAttachmentExporter extends DefaultAttachmentExporter
 {
-	
 	@Override
-	protected String printOption(Field field, IAttachment attachment) throws AttachmentExportException
+	protected String printOption(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
-		String fieldName = field.getName();
+		final String fieldName = field.getName();
 		if (fieldName.equals("m_captureUnitOnEnteringBy"))
 			return mCaptureUnitOnEnteringByHandler(field, attachment);
 		if (fieldName.equals("m_giveUnitControl"))
 			return mGiveUnitControlHandler(field, attachment);
-		
 		return super.printOption(field, attachment);
 	}
 	
-	private String mGiveUnitControlHandler(Field field, IAttachment attachment) throws AttachmentExportException
-	{
-		return printPlayerList(field, attachment);
-		
-	}
-	
-	private String mCaptureUnitOnEnteringByHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mGiveUnitControlHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printPlayerList(field, attachment);
 	}
 	
+	private String mCaptureUnitOnEnteringByHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
+	{
+		return printPlayerList(field, attachment);
+	}
 }

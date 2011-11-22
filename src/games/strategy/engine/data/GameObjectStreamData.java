@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GameObjectStreamData.java
  * 
  * Created on January 3, 2002, 2:48 PM
  */
-
 package games.strategy.engine.data;
 
 import java.io.Externalizable;
@@ -31,20 +29,14 @@ import java.io.ObjectOutput;
  */
 public class GameObjectStreamData implements Externalizable
 {
-	
 	enum GameType
 	{
 		PLAYERID, UNITTYPE, TERRITORY, PRODUCTIONRULE, PRODUCTIONFRONTIER
 	}
 	
-	public static boolean canSerialize(Named obj)
+	public static boolean canSerialize(final Named obj)
 	{
-		return obj instanceof PlayerID ||
-					obj instanceof UnitType ||
-					obj instanceof Territory ||
-					obj instanceof ProductionRule ||
-					obj instanceof IAttachment ||
-					obj instanceof ProductionFrontier;
+		return obj instanceof PlayerID || obj instanceof UnitType || obj instanceof Territory || obj instanceof ProductionRule || obj instanceof IAttachment || obj instanceof ProductionFrontier;
 	}
 	
 	private String m_name;
@@ -52,7 +44,6 @@ public class GameObjectStreamData implements Externalizable
 	
 	public GameObjectStreamData()
 	{
-		
 	}
 	
 	/**
@@ -61,10 +52,9 @@ public class GameObjectStreamData implements Externalizable
 	 * @param named
 	 *            named entity
 	 */
-	public GameObjectStreamData(Named named)
+	public GameObjectStreamData(final Named named)
 	{
 		m_name = named.getName();
-		
 		if (named instanceof PlayerID)
 		{
 			m_type = GameType.PLAYERID;
@@ -89,11 +79,10 @@ public class GameObjectStreamData implements Externalizable
 			throw new IllegalArgumentException("Wrong type:" + named);
 	}
 	
-	public Named getReference(GameData data)
+	public Named getReference(final GameData data)
 	{
 		if (data == null)
 			throw new IllegalArgumentException("Data cant be null");
-		
 		data.acquireReadLock();
 		try
 		{
@@ -117,14 +106,13 @@ public class GameObjectStreamData implements Externalizable
 		}
 	}
 	
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		m_name = (String) in.readObject();
 		m_type = GameType.values()[in.readByte()];
-		
 	}
 	
-	public void writeExternal(ObjectOutput out) throws IOException
+	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		out.writeObject(m_name);
 		out.writeByte((byte) m_type.ordinal());

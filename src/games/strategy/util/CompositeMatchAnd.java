@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * CompositeMatchAnd.java
  * 
  * Created on November 10, 2001, 11:13 AM
  */
-
 package games.strategy.util;
 
 import java.util.Collection;
@@ -32,29 +30,28 @@ import java.util.List;
  */
 public class CompositeMatchAnd<T> extends CompositeMatch<T>
 {
-	
-	public CompositeMatchAnd(Match... matches)
+	public CompositeMatchAnd(final Match... matches)
 	{
 		super();
-		for (Match<T> m : matches)
+		for (final Match<T> m : matches)
 		{
 			add(m);
 		}
 	}
 	
-	public CompositeMatchAnd(Collection<Match<T>> matches)
+	public CompositeMatchAnd(final Collection<Match<T>> matches)
 	{
 		super();
-		for (Match<T> m : matches)
+		for (final Match<T> m : matches)
 		{
 			add(m);
 		}
 	}
 	
 	@Override
-	public boolean match(T o)
+	public boolean match(final T o)
 	{
-		List<Match<T>> matches = super.getMatches();
+		final List<Match<T>> matches = super.getMatches();
 		for (int i = 0; i < matches.size(); i++)
 		{
 			if (!matches.get(i).match(o))

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * RepairFrontierList.java
  * 
  * Created on October 22, 2001, 10:20 AM
  */
-
 package games.strategy.engine.data;
 
 import java.util.HashMap;
@@ -34,12 +32,12 @@ public class RepairFrontierList extends GameDataComponent
 {
 	private final Map<String, RepairFrontier> m_repairFrontiers = new HashMap<String, RepairFrontier>();
 	
-	public RepairFrontierList(GameData data)
+	public RepairFrontierList(final GameData data)
 	{
 		super(data);
 	}
 	
-	protected void addRepairFrontier(RepairFrontier pf)
+	protected void addRepairFrontier(final RepairFrontier pf)
 	{
 		m_repairFrontiers.put(pf.getName(), pf);
 	}
@@ -49,7 +47,7 @@ public class RepairFrontierList extends GameDataComponent
 		return m_repairFrontiers.size();
 	}
 	
-	public RepairFrontier getRepairFrontier(String name)
+	public RepairFrontier getRepairFrontier(final String name)
 	{
 		return m_repairFrontiers.get(name);
 	}

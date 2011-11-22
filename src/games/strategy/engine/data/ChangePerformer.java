@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ChangePerformer.java
  * 
  * Created on January 1, 2002, 1:18 PM
  */
-
 package games.strategy.engine.data;
 
 import javax.swing.SwingUtilities;
@@ -42,19 +40,17 @@ public class ChangePerformer
 	 * @param data
 	 *            game data
 	 */
-	public ChangePerformer(GameData data)
+	public ChangePerformer(final GameData data)
 	{
 		if (data == null)
 			throw new IllegalArgumentException("Data cannot be null");
 		m_data = data;
 	}
 	
-	public void perform(Change aChange)
+	public void perform(final Change aChange)
 	{
-		
 		if (m_data.areChangesOnlyInSwingEventThread() && !SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
-		
 		try
 		{
 			m_data.acquireWriteLock();
@@ -64,6 +60,5 @@ public class ChangePerformer
 			m_data.releaseWriteLock();
 		}
 		m_data.notifyGameDataChanged(aChange);
-		
 	}
 }

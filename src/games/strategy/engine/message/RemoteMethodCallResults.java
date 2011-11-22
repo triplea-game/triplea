@@ -39,7 +39,6 @@ class RemoteMethodCallResults implements Externalizable
 	
 	public RemoteMethodCallResults()
 	{
-		
 	}
 	
 	public RemoteMethodCallResults(final Object rVal)
@@ -48,7 +47,7 @@ class RemoteMethodCallResults implements Externalizable
 		m_exception = null;
 	}
 	
-	public RemoteMethodCallResults(Throwable exception)
+	public RemoteMethodCallResults(final Throwable exception)
 	{
 		m_rVal = null;
 		m_exception = exception;
@@ -64,7 +63,7 @@ class RemoteMethodCallResults implements Externalizable
 		return m_rVal;
 	}
 	
-	public void writeExternal(ObjectOutput out) throws IOException
+	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		if (m_rVal != null)
 		{
@@ -78,9 +77,9 @@ class RemoteMethodCallResults implements Externalizable
 		}
 	}
 	
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
-		boolean rVal = in.read() == 1;
+		final boolean rVal = in.read() == 1;
 		if (rVal)
 		{
 			m_rVal = in.readObject();

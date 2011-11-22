@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Route.java
  * 
  * Created on October 12, 2001, 5:23 PM
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.triplea.TripleAUnit;
@@ -56,35 +54,30 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 {
 	final static List<Territory> emptyTerritoryList = new ArrayList<Territory>();
 	final static Integer defaultMovementCost = new Integer(1);
-	
 	private final List<Territory> m_steps = new ArrayList<Territory>();
-	
 	private Territory m_start;
 	
 	public Route()
 	{
-		
 	}
 	
-	public Route(List<Territory> route)
+	public Route(final List<Territory> route)
 	{
-		
 		setStart(route.get(0));
 		if (route.size() == 1)
 		{
 			return;
 		}
-		for (Territory t : route.subList(1, route.size()))
+		for (final Territory t : route.subList(1, route.size()))
 		{
 			add(t);
 		}
 	}
 	
-	public Route(Territory start, Territory... route)
+	public Route(final Territory start, final Territory... route)
 	{
-		
 		setStart(start);
-		for (Territory t : route)
+		for (final Territory t : route)
 		{
 			add(t);
 		}
@@ -103,11 +96,10 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 *         form a loop
 	 * 
 	 */
-	public static Route join(Route r1, Route r2)
+	public static Route join(final Route r1, final Route r2)
 	{
 		if (r1 == null || r2 == null)
 			throw new IllegalArgumentException("route cant be null r1:" + r1 + " r2:" + r2);
-		
 		if (r1.numberOfSteps() == 0)
 		{
 			if (!r1.getStart().equals(r2.getStart()))
@@ -118,35 +110,30 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 			if (!r1.getEnd().equals(r2.getStart()))
 				throw new IllegalArgumentException("Cannot join, r1 doesnt end where r2 starts. r1:" + r1 + " r2:" + r2);
 		}
-		
-		Collection<Territory> c1 = new ArrayList<Territory>(r1.m_steps);
+		final Collection<Territory> c1 = new ArrayList<Territory>(r1.m_steps);
 		c1.add(r1.getStart());
-		
-		Collection<Territory> c2 = new ArrayList<Territory>(r2.m_steps);
-		
+		final Collection<Territory> c2 = new ArrayList<Territory>(r2.m_steps);
 		if (!Util.intersection(c1, c2).isEmpty())
 			return null;
-		
-		Route joined = new Route();
+		final Route joined = new Route();
 		joined.setStart(r1.getStart());
-		
-		for (Territory t : r1.getSteps()) {
+		for (final Territory t : r1.getSteps())
+		{
 			joined.add(t);
 		}
-		
-		for (Territory t : r2.getSteps()) {
+		for (final Territory t : r2.getSteps())
+		{
 			joined.add(t);
 		}
-		
 		return joined;
 	}
-
+	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == null)
 			return false;
-		Route other = (Route) o;
+		final Route other = (Route) o;
 		if (!(other.numberOfSteps() == this.numberOfSteps()))
 			return false;
 		if (!other.getStart().equals(this.getStart()))
@@ -154,7 +141,6 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		return other.getAllTerritories().equals(this.getAllTerritories());
 	}
 	
-
 	@Override
 	public int hashCode()
 	{
@@ -167,11 +153,10 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 * @param t
 	 *            new start territory
 	 */
-	public void setStart(Territory t)
+	public void setStart(final Territory t)
 	{
 		if (t == null)
 			throw new IllegalStateException("Null territory");
-		
 		m_start = t;
 	}
 	
@@ -192,9 +177,9 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 */
 	public boolean crossesWater()
 	{
-		boolean startLand = !m_start.isWater();
+		final boolean startLand = !m_start.isWater();
 		boolean overWater = false;
-		Iterator<Territory> routeIter = m_steps.iterator();
+		final Iterator<Territory> routeIter = m_steps.iterator();
 		Territory terr = null;
 		while (routeIter.hasNext())
 		{
@@ -204,10 +189,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 				overWater = true;
 			}
 		}
-		
 		if (terr == null)
 			return false;
-		
 		// If we started on land, went over water, and ended on land, we cross
 		// water.
 		return (startLand && overWater && !terr.isWater());
@@ -219,16 +202,15 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 * @param t
 	 *            referring territory
 	 */
-	public void add(Territory t)
+	public void add(final Territory t)
 	{
 		if (t == null)
 			throw new IllegalStateException("Null territory");
 		if (t.equals(m_start) || m_steps.contains(t))
 			throw new IllegalArgumentException("Loops not allowed in m_routes, route:" + this + " new territory:" + t);
-		
 		m_steps.add(t);
 	}
-
+	
 	/**
 	 * @deprecated use: numberOfSteps(), getMovementCost(unit), getMiddleSteps(), getTerritories() or any other method in this class
 	 * @return the number of steps in this route.
@@ -240,29 +222,31 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	}
 	
 	/**
-	 * @param u unit that is moving on this route
+	 * @param u
+	 *            unit that is moving on this route
 	 * @return the total cost of the route including modifications due to territoryEffects and territoryConnections
 	 */
-	public int getMovementCost(Unit u) {
-		return m_steps.size(); //TODO implement me
+	public int getMovementCost(final Unit u)
+	{
+		return m_steps.size(); // TODO implement me
 	}
-
+	
 	/**
 	 * 
 	 * @return the number of steps in this route.
 	 */
-	public int numberOfSteps() {
+	public int numberOfSteps()
+	{
 		return m_steps.size();
 	}
-
-
+	
 	/**
 	 * @param i
 	 *            step number
 	 * @return territory we will be in after the i'th step for this route has
 	 *         been made
 	 */
-	public Territory getTerritoryAtStep(int i)
+	public Territory getTerritoryAtStep(final int i)
 	{
 		return m_steps.get(i);
 	}
@@ -272,13 +256,13 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 *            referring match
 	 * @return whether all territories in this route match the given match (start territory is not tested)
 	 */
-	public boolean allMatch(Match<Territory> aMatch)
+	public boolean allMatch(final Match<Territory> aMatch)
 	{
-		for (Territory t : m_steps) {
+		for (final Territory t : m_steps)
+		{
 			if (!aMatch.match(t))
 				return false;
 		}
-
 		return true;
 	}
 	
@@ -287,13 +271,13 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 *            referring match
 	 * @return whether some territories in this route match the given match (start territory is not tested)
 	 */
-	public boolean someMatch(Match<Territory> aMatch)
+	public boolean someMatch(final Match<Territory> aMatch)
 	{
-		for (Territory t : m_steps) {
+		for (final Territory t : m_steps)
+		{
 			if (aMatch.match(t))
 				return true;
 		}
-
 		return false;
 	}
 	
@@ -302,7 +286,7 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 *            referring match
 	 * @return all territories in this route match the given match (start territory is not tested)
 	 */
-	public Collection<Territory> getMatches(Match<Territory> aMatch)
+	public Collection<Territory> getMatches(final Match<Territory> aMatch)
 	{
 		return Match.getMatches(m_steps, aMatch);
 	}
@@ -310,8 +294,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	@Override
 	public String toString()
 	{
-		StringBuilder buf = new StringBuilder("Route:").append(m_start);
-		for (Territory t : getSteps())
+		final StringBuilder buf = new StringBuilder("Route:").append(m_start);
+		for (final Territory t : getSteps())
 		{
 			buf.append(" -> ");
 			buf.append(t.getName());
@@ -329,30 +313,34 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		return getAllTerritories();
 	}
 	
-	public List<Territory> getAllTerritories() {
-		ArrayList<Territory> list = new ArrayList<Territory>(m_steps);
+	public List<Territory> getAllTerritories()
+	{
+		final ArrayList<Territory> list = new ArrayList<Territory>(m_steps);
 		list.add(0, m_start);
-		return list;	}
-
+		return list;
+	}
+	
 	/**
 	 * @return collection of all territories in this route, without the start
 	 */
-	public List<Territory> getSteps() {
+	public List<Territory> getSteps()
+	{
 		if (numberOfSteps() > 0)
 			return new ArrayList<Territory>(m_steps);
 		return emptyTerritoryList;
 	}
-
+	
 	/**
 	 * @return collection of all territories in this route without the start or
 	 *         the end
 	 */
-	public List<Territory> getMiddleSteps() {
+	public List<Territory> getMiddleSteps()
+	{
 		if (numberOfSteps() > 1)
 			return new ArrayList<Territory>(m_steps).subList(0, numberOfSteps() - 1);
 		return emptyTerritoryList;
 	}
-
+	
 	/**
 	 * @return last territory in the route, this is the destination or null if
 	 *         the route consists of only a starting territory
@@ -369,48 +357,48 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 *            referring base route
 	 * @return whether this route extend another route
 	 */
-	public boolean extend(Route baseRoute)
+	public boolean extend(final Route baseRoute)
 	{
 		if (!baseRoute.m_start.equals(baseRoute.m_start))
 		{
 			return false;
 		}
-		
 		if (baseRoute.numberOfSteps() > numberOfSteps())
 			return false;
-		
 		for (int i = 0; i < baseRoute.m_steps.size(); i++)
 		{
 			if (!baseRoute.getTerritoryAtStep(i).equals(getTerritoryAtStep(i)))
 				return false;
 		}
 		return true;
-		
 	}
 	
 	public Iterator<Territory> iterator()
 	{
 		return Collections.unmodifiableList(getAllTerritories()).iterator();
 	}
-
+	
 	/**
 	 * @return whether this route has any steps
 	 */
-	public boolean hasSteps() {
+	public boolean hasSteps()
+	{
 		return !m_steps.isEmpty();
 	}
-
+	
 	/**
 	 * @return whether this route has no steps
 	 */
-	public boolean hasNoSteps() {
+	public boolean hasNoSteps()
+	{
 		return !hasSteps();
 	}
-
+	
 	/**
 	 * @return whether the route has 1 step
 	 */
-	public boolean hasExactlyOneStep() {
+	public boolean hasExactlyOneStep()
+	{
 		return this.m_steps.size() == 1;
 	}
 	
@@ -420,80 +408,89 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 * 
 	 * @return the territory before the end territory
 	 */
-	public Territory getTerritoryBeforeEnd() {
-
+	public Territory getTerritoryBeforeEnd()
+	{
 		if (m_steps.size() <= 1)
 			return getStart();
 		else
 			return getTerritoryAtStep(m_steps.size() - 2);
 	}
-
+	
 	/**
 	 * @return whether this route is an unloading route (unloading from transport
 	 *         to land)
 	 */
-	public boolean isUnload() {
+	public boolean isUnload()
+	{
 		return hasExactlyOneStep() && getStart().isWater() && !getEnd().isWater();
 	}
-
+	
 	/**
 	 * @return whether this route is a loading route (loading from land into a transport @ sea)
 	 */
 	// TODO KEV revise these to include paratroop load/unload
-	public boolean isLoad() {
+	public boolean isLoad()
+	{
 		if (hasNoSteps())
 			return false;
-		return !getStart().isWater() && getEnd().isWater();	}
-
+		return !getStart().isWater() && getEnd().isWater();
+	}
+	
 	/**
 	 * @return whether this route has more then one step
 	 */
-	public boolean hasMoreThenOneStep() {
-		return m_steps.size()>1;
+	public boolean hasMoreThenOneStep()
+	{
+		return m_steps.size() > 1;
 	}
-
+	
 	/**
 	 * @return whether there are territories before the end where the territory is owned by null and is not sea
 	 */
-	public boolean hasNeutralBeforeEnd() {
-		for (Territory current:getMiddleSteps()) {
+	public boolean hasNeutralBeforeEnd()
+	{
+		for (final Territory current : getMiddleSteps())
+		{
 			// neutral is owned by null and is not sea
 			if (!current.isWater() && current.getOwner().equals(PlayerID.NULL_PLAYERID))
 				return true;
 		}
 		return false;
 	}
-
+	
 	/**
 	 * @return whether there is some water in the route including start and end
 	 */
-	public boolean hasWater() {
+	public boolean hasWater()
+	{
 		if (getStart().isWater())
 			return true;
-		return Match.someMatch(getSteps(),Matches.TerritoryIsWater);
+		return Match.someMatch(getSteps(), Matches.TerritoryIsWater);
 	}
-
+	
 	/**
 	 * @return whether there is some land in the route including start and end
 	 */
-	public boolean hasLand() {
+	public boolean hasLand()
+	{
 		if (!getStart().isWater())
 			return true;
 		return !Match.allMatch(getAllTerritories(), Matches.TerritoryIsWater);
 	}
-
-	public int getLargestMovementCost(Collection<Unit> units) {
+	
+	public int getLargestMovementCost(final Collection<Unit> units)
+	{
 		int largestCost = 0;
-		for(Unit unit:units) {
-			largestCost = Math.max(largestCost,getMovementCost(unit));
+		for (final Unit unit : units)
+		{
+			largestCost = Math.max(largestCost, getMovementCost(unit));
 		}
 		return largestCost;
 	}
-
-	public int getMovementLeft(Unit unit) {
-		int movementLeft = ((TripleAUnit)unit).getMovementLeft() - getMovementCost(unit);
+	
+	public int getMovementLeft(final Unit unit)
+	{
+		final int movementLeft = ((TripleAUnit) unit).getMovementLeft() - getMovementCost(unit);
 		return movementLeft;
 	}
-
 }
-

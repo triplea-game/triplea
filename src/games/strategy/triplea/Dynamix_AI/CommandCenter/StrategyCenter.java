@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.CommandCenter;
 
 import games.strategy.engine.data.GameData;
@@ -29,14 +28,14 @@ public class StrategyCenter
 {
 	private static HashMap<PlayerID, StrategyCenter> s_SCInstances = new HashMap<PlayerID, StrategyCenter>();
 	
-	public static StrategyCenter get(GameData data, PlayerID player)
+	public static StrategyCenter get(final GameData data, final PlayerID player)
 	{
 		if (!s_SCInstances.containsKey(player))
 			s_SCInstances.put(player, create(data, player));
 		return s_SCInstances.get(player);
 	}
 	
-	private static StrategyCenter create(GameData data, PlayerID player)
+	private static StrategyCenter create(final GameData data, final PlayerID player)
 	{
 		return new StrategyCenter(data, player);
 	}
@@ -54,7 +53,7 @@ public class StrategyCenter
 	private GameData m_data = null;
 	private PlayerID m_player = null;
 	
-	public StrategyCenter(GameData data, PlayerID player)
+	public StrategyCenter(final GameData data, final PlayerID player)
 	{
 		m_data = data;
 		m_player = player;
@@ -66,7 +65,6 @@ public class StrategyCenter
 	{
 		if (CalculatedStrategyAssignments == null || CalculatedStrategyAssignments.isEmpty())
 			CalculatedStrategyAssignments = DUtils.CalculateStrategyAssignments(m_data, m_player);
-		
 		return CalculatedStrategyAssignments;
 	}
 }

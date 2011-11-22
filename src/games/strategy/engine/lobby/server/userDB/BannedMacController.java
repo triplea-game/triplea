@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.userDB;
 
 import java.sql.Connection;
@@ -30,13 +29,12 @@ import java.util.logging.Logger;
  */
 public class BannedMacController
 {
-	
 	private static final Logger s_logger = Logger.getLogger(BannedMacController.class.getName());
 	
 	/**
 	 * Ban the mac permanently
 	 */
-	public void addBannedMac(String mac)
+	public void addBannedMac(final String mac)
 	{
 		addBannedMac(mac, null);
 	}
@@ -47,30 +45,28 @@ public class BannedMacController
 	 * 
 	 * If this mac is already banned, this call will update the ban_end.
 	 */
-	public void addBannedMac(String mac, Date banTill)
+	public void addBannedMac(final String mac, final Date banTill)
 	{
 		if (isMacBanned(mac))
 		{
 			removeBannedMac(mac);
 		}
-		
 		Timestamp banTillTs = null;
 		if (banTill != null)
 		{
 			banTillTs = new Timestamp(banTill.getTime());
 		}
-		
 		s_logger.fine("Banning mac:" + mac);
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)");
+			final PreparedStatement ps = con.prepareStatement("insert into banned_macs (mac, ban_till) values (?, ?)");
 			ps.setString(1, mac);
 			ps.setTimestamp(2, banTillTs);
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			if (sqle.getErrorCode() == 30000)
 			{
@@ -79,7 +75,6 @@ public class BannedMacController
 				s_logger.info("Tried to create duplicate banned mac:" + mac + " error:" + sqle.getMessage());
 				return;
 			}
-			
 			s_logger.log(Level.SEVERE, "Error inserting banned mac:" + mac, sqle);
 			throw new IllegalStateException(sqle.getMessage());
 		} finally
@@ -88,18 +83,18 @@ public class BannedMacController
 		}
 	}
 	
-	public void removeBannedMac(String mac)
+	public void removeBannedMac(final String mac)
 	{
 		s_logger.fine("Removing banned mac:" + mac);
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac = ?");
+			final PreparedStatement ps = con.prepareStatement("delete from banned_macs where mac = ?");
 			ps.setString(1, mac);
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.log(Level.SEVERE, "Error deleting banned mac:" + mac, sqle);
 			throw new IllegalStateException(sqle.getMessage());
@@ -113,34 +108,31 @@ public class BannedMacController
 	 * Is the given mac banned? This may have the side effect of removing from the
 	 * database any mac's whose ban has expired
 	 */
-	public boolean isMacBanned(String mac)
+	public boolean isMacBanned(final String mac)
 	{
 		boolean found = false;
 		boolean expired = false;
-		String sql = "select mac, ban_till from banned_macs where mac = ?";
-		Connection con = Database.getConnection();
+		final String sql = "select mac, ban_till from banned_macs where mac = ?";
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement(sql);
+			final PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, mac);
-			ResultSet rs = ps.executeQuery();
+			final ResultSet rs = ps.executeQuery();
 			found = rs.next();
-			
 			// If the ban has expired, allow the mac
 			if (found)
 			{
-				Timestamp banTill = rs.getTimestamp(2);
+				final Timestamp banTill = rs.getTimestamp(2);
 				if (banTill != null && banTill.getTime() < System.currentTimeMillis())
 				{
 					s_logger.fine("Ban expired for:" + mac);
 					expired = true;
 				}
 			}
-			
 			rs.close();
 			ps.close();
-			
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.info("Error for testing banned mac existence:" + mac + " error:" + sqle.getMessage());
 			throw new IllegalStateException(sqle.getMessage());
@@ -148,7 +140,6 @@ public class BannedMacController
 		{
 			DbUtil.closeConnection(con);
 		}
-		
 		if (expired)
 		{
 			removeBannedMac(mac);

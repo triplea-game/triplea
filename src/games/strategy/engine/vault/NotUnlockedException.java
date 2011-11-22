@@ -20,5 +20,4 @@ package games.strategy.engine.vault;
  */
 public class NotUnlockedException extends Exception
 {
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.history;
 
 /**
@@ -33,7 +32,6 @@ package games.strategy.engine.history;
  * 
  * 
  */
-
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.CompositeChange;
@@ -55,7 +53,6 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 	private final HistoryWriter m_writer = new HistoryWriter(this);
 	private final List<Change> m_changes = new ArrayList<Change>();
 	private final GameData m_data;
-	
 	private HistoryNode m_currentNode;
 	
 	private void assertCorrectThread()
@@ -64,7 +61,7 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 			throw new IllegalStateException("Wrong thread");
 	}
 	
-	public History(GameData data)
+	public History(final GameData data)
 	{
 		super(new RootHistoryNode("Game History", true));
 		m_data = data;
@@ -81,14 +78,14 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 		return getLastChildInternal((HistoryNode) getRoot());
 	}
 	
-	private HistoryNode getLastChildInternal(HistoryNode node)
+	private HistoryNode getLastChildInternal(final HistoryNode node)
 	{
 		if (node.getChildCount() == 0)
 			return node;
 		return getLastChildInternal((HistoryNode) node.getLastChild());
 	}
 	
-	private int getLastChange(HistoryNode node)
+	private int getLastChange(final HistoryNode node)
 	{
 		int rVal;
 		if (node == getRoot())
@@ -96,28 +93,23 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 		else if (node instanceof Event)
 			rVal = ((Event) node).getChangeEndIndex();
 		else if (node instanceof EventChild)
-			
 			rVal = ((Event) node.getParent()).getChangeEndIndex();
 		else
 			rVal = ((IndexedHistoryNode) node).getChangeStartIndex();
-		
 		if (rVal == -1)
 			return m_changes.size();
 		return rVal;
 	}
 	
-	public Change getDelta(HistoryNode start, HistoryNode end)
+	public Change getDelta(final HistoryNode start, final HistoryNode end)
 	{
 		assertCorrectThread();
-		int firstChange = getLastChange(start);
-		int lastChange = getLastChange(end);
-		
+		final int firstChange = getLastChange(start);
+		final int lastChange = getLastChange(end);
 		if (firstChange == lastChange)
 			return null;
-		
-		List<Change> changes = m_changes.subList(Math.min(firstChange, lastChange), Math.max(firstChange, lastChange));
-		
-		Change compositeChange = new CompositeChange(changes);
+		final List<Change> changes = m_changes.subList(Math.min(firstChange, lastChange), Math.max(firstChange, lastChange));
+		final Change compositeChange = new CompositeChange(changes);
 		if (lastChange >= firstChange)
 		{
 			return compositeChange;
@@ -128,19 +120,16 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 		}
 	}
 	
-	public synchronized void gotoNode(HistoryNode node)
+	public synchronized void gotoNode(final HistoryNode node)
 	{
 		assertCorrectThread();
 		getGameData().acquireWriteLock();
 		try
 		{
-			
 			if (m_currentNode == null)
 				m_currentNode = getLastNode();
-			
-			Change dataChange = getDelta(m_currentNode, node);
+			final Change dataChange = getDelta(m_currentNode, node);
 			m_currentNode = node;
-			
 			if (dataChange != null)
 				new ChangePerformer(m_data).perform(dataChange);
 		} finally
@@ -149,24 +138,20 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 		}
 	}
 	
-	synchronized void changeAdded(Change aChange)
+	synchronized void changeAdded(final Change aChange)
 	{
 		getGameData().acquireWriteLock();
 		try
 		{
-			
 			m_changes.add(aChange);
-			
 			if (m_currentNode == null)
 				return;
 			if (m_currentNode == getLastNode())
 				new ChangePerformer(m_data).perform(aChange);
-			
 		} finally
 		{
 			getGameData().releaseWriteLock();
 		}
-		
 	}
 	
 	private Object writeReplace() throws ObjectStreamException
@@ -194,18 +179,17 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 class SerializedHistory implements Serializable
 {
 	private final List<SerializationWriter> m_Writers = new ArrayList<SerializationWriter>();
-	private GameData m_data;
+	private final GameData m_data;
 	
-	public SerializedHistory(History history, GameData data, List<Change> changes)
+	public SerializedHistory(final History history, final GameData data, final List<Change> changes)
 	{
 		m_data = data;
 		int changeIndex = 0;
-		Enumeration enumeration = ((DefaultMutableTreeNode) history.getRoot()).preorderEnumeration();
+		final Enumeration enumeration = ((DefaultMutableTreeNode) history.getRoot()).preorderEnumeration();
 		enumeration.nextElement();
 		while (enumeration.hasMoreElements())
 		{
-			HistoryNode node = (HistoryNode) enumeration.nextElement();
-			
+			final HistoryNode node = (HistoryNode) enumeration.nextElement();
 			// write the changes to the start of the node
 			if (node instanceof IndexedHistoryNode)
 			{
@@ -215,41 +199,35 @@ class SerializedHistory implements Serializable
 					changeIndex++;
 				}
 			}
-			
 			// write the node itself
 			m_Writers.add(node.getWriter());
 		}
-		
 		// write out remaining changes
 		while (changeIndex < changes.size())
 		{
 			m_Writers.add(new ChangeSerializationWriter(changes.get(changeIndex)));
 			changeIndex++;
 		}
-		
 	}
 	
 	public Object readResolve() throws ObjectStreamException
 	{
-		History rVal = new History(m_data);
-		HistoryWriter historyWriter = rVal.getHistoryWriter();
-		Iterator<SerializationWriter> iter = m_Writers.iterator();
-		
+		final History rVal = new History(m_data);
+		final HistoryWriter historyWriter = rVal.getHistoryWriter();
+		final Iterator<SerializationWriter> iter = m_Writers.iterator();
 		while (iter.hasNext())
 		{
-			SerializationWriter element = iter.next();
+			final SerializationWriter element = iter.next();
 			element.write(historyWriter);
 		}
-		
 		return rVal;
 	}
-	
 }
 
 
 class RootHistoryNode extends HistoryNode
 {
-	public RootHistoryNode(String title, boolean allowsChildren)
+	public RootHistoryNode(final String title, final boolean allowsChildren)
 	{
 		super(title, allowsChildren);
 	}
@@ -259,7 +237,6 @@ class RootHistoryNode extends HistoryNode
 	{
 		throw new IllegalStateException("Not implemented");
 	}
-	
 }
 
 
@@ -271,14 +248,14 @@ interface SerializationWriter extends Serializable
 
 class ChangeSerializationWriter implements SerializationWriter
 {
-	private Change aChange;
+	private final Change aChange;
 	
-	public ChangeSerializationWriter(Change change)
+	public ChangeSerializationWriter(final Change change)
 	{
 		aChange = change;
 	}
 	
-	public void write(HistoryWriter writer)
+	public void write(final HistoryWriter writer)
 	{
 		writer.addChange(aChange);
 	}

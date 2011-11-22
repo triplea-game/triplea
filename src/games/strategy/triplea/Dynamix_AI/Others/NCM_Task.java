@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.Others;
 
 import games.strategy.engine.data.GameData;
@@ -59,7 +58,7 @@ public class NCM_Task
 	private float m_priority = 0.0F;
 	private GameData m_data = null;
 	
-	public NCM_Task(GameData data, Territory target, NCM_TaskType type, float priority)
+	public NCM_Task(final GameData data, final Territory target, final NCM_TaskType type, final float priority)
 	{
 		m_data = data;
 		m_taskType = type;
@@ -82,7 +81,7 @@ public class NCM_Task
 		return m_priority;
 	}
 	
-	public void SetPriority(float priority)
+	public void SetPriority(final float priority)
 	{
 		m_priority = priority;
 	}
@@ -91,21 +90,19 @@ public class NCM_Task
 	{
 		final HashMap<Unit, Territory> unitLocations = new HashMap<Unit, Territory>();
 		final HashMap<Unit, Integer> possibles = new HashMap<Unit, Integer>();
-		
 		@SuppressWarnings("unused")
-		boolean addedAA = false;
+		final boolean addedAA = false;
 		for (final Territory ter : m_data.getMap().getTerritories())
 		{
 			if (DMatches.territoryContainsMultipleAlliances(m_data).match(ter)) // If we're battling here
 				continue;
 			final HashSet<Unit> recruitsAsHashSet = DUtils.ToHashSet(GetRecruitedUnitsAsUnitList());
-			Match<Unit> unitMatch = new Match<Unit>()
+			final Match<Unit> unitMatch = new Match<Unit>()
 			{
-				
 				@Override
-				public boolean match(Unit unit)
+				public boolean match(final Unit unit)
 				{
-					UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+					final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
 					if (!Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer).match(unit))
 						return false;
 					if (Matches.UnitIsFactory.match(unit) && ua.getDefense(unit.getOwner()) <= 0)
@@ -114,15 +111,13 @@ public class NCM_Task
 						return false;
 					if (!DUtils.CanUnitReachTer(m_data, ter, unit, m_target))
 						return false;
-					
 					return true;
 				}
 			};
-			List<Unit> units = Match.getMatches(DUtils.ToList(ter.getUnits().getUnits()), unitMatch);
+			final List<Unit> units = Match.getMatches(DUtils.ToList(ter.getUnits().getUnits()), unitMatch);
 			if (units.isEmpty())
 				continue;
-			
-			for (Unit unit : units)
+			for (final Unit unit : units)
 			{
 				if (Matches.UnitIsAA.match(unit))
 				{
@@ -133,23 +128,21 @@ public class NCM_Task
 					// else
 					// addedAA = true;
 				}
-				int suitability = DUtils.HowWellIsUnitSuitedToTask(m_data, this, ter, unit);
+				final int suitability = DUtils.HowWellIsUnitSuitedToTask(m_data, this, ter, unit);
 				if (suitability == Integer.MIN_VALUE)
 					continue;
 				possibles.put(unit, suitability);
 				unitLocations.put(unit, ter);
 			}
 		}
-		
 		List<Unit> sortedPossibles = DUtils.ToList(possibles.keySet());
 		// For now, shuffle,
 		// Collections.shuffle(sortedPossibles);
 		// Then sort by score. In this way, equal scored attack units are shuffled
 		sortedPossibles = DSorting.SortListByScores_List_D(sortedPossibles, possibles.values());
-		
 		// Now put the units into UnitGroups and return the list
-		List<UnitGroup> result = new ArrayList<UnitGroup>();
-		for (Unit unit : sortedPossibles)
+		final List<UnitGroup> result = new ArrayList<UnitGroup>();
+		for (final Unit unit : sortedPossibles)
 			result.add(DUtils.CreateUnitGroupForUnits(Collections.singletonList(unit), unitLocations.get(unit), m_data));
 		return result;
 	}
@@ -160,23 +153,20 @@ public class NCM_Task
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
 			return; // Only one unit needed for block
-			
 		if (m_taskType == NCM_TaskType.Land_Reinforce_FrontLine)
 			m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceFrontLine_enemyAttackSurvivalChanceRequired);
 		else if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Stabilize))
 			m_minSurvivalChance = DUtils.ToFloat(DSettings.LoadSettings().TR_reinforceStabalize_enemyAttackSurvivalChanceRequired);
-		
 		// DUtils.Log(Level.FINER, "    NCM Task requirements calculated. Min Survival Chance: {0}", m_minSurvivalChance);
 	}
 	
-	public void SetTaskRequirements(float minSurvivalChance)
+	public void SetTaskRequirements(final float minSurvivalChance)
 	{
 		m_minSurvivalChance = minSurvivalChance;
-		
 		// DUtils.Log(Level.FINER, "    NCM Task requirements set. Min Survival Chance: {0}", m_minSurvivalChance);
 	}
 	
-	private float getMeetingOfMinSurvivalChanceScore(AggregateResults simulatedAttack, float minSurvivalChance)
+	private float getMeetingOfMinSurvivalChanceScore(final AggregateResults simulatedAttack, final float minSurvivalChance)
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
 		{
@@ -185,11 +175,10 @@ public class NCM_Task
 			else
 				return 0.0F;
 		}
-		
 		return DUtils.Divide_SL((float) simulatedAttack.getDefenderWinPercent(), minSurvivalChance); // We're this close to meeting our min survival chance
 	}
 	
-	private float getMeetingOfMaxBattleVolleysScore(AggregateResults simulatedAttack, int maxBattleVolleys)
+	private float getMeetingOfMaxBattleVolleysScore(final AggregateResults simulatedAttack, final int maxBattleVolleys)
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
 		{
@@ -198,7 +187,6 @@ public class NCM_Task
 			else
 				return 0.0F;
 		}
-		
 		return DUtils.Divide_SL(maxBattleVolleys, (float) simulatedAttack.getAverageBattleRoundsFought()); // We're this close to getting the average battle volley count below max amount
 	}
 	
@@ -213,10 +201,8 @@ public class NCM_Task
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block) && m_recruitedUnits.size() > 0)
 			return; // We only need one unit
-			
-		float minSurvivalChance = .8F;
-		int maxBattleVolleys = 5;
-		
+		final float minSurvivalChance = .8F;
+		final int maxBattleVolleys = 5;
 		recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
 	}
 	
@@ -224,10 +210,8 @@ public class NCM_Task
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block) && m_recruitedUnits.size() > 0)
 			return; // We only need one unit
-			
-		float minSurvivalChance = .9F;
-		int maxBattleVolleys = 3;
-		
+		final float minSurvivalChance = .9F;
+		final int maxBattleVolleys = 3;
 		recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
 	}
 	
@@ -235,84 +219,71 @@ public class NCM_Task
 	{
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block) && m_recruitedUnits.size() > 0)
 			return; // We only need one unit
-			
-		float minSurvivalChance = 1.0F;
-		int maxBattleVolleys = 1;
-		
+		final float minSurvivalChance = 1.0F;
+		final int maxBattleVolleys = 1;
 		recruitEnoughUnitsToMeetXYZ(minSurvivalChance, maxBattleVolleys);
 	}
 	
-	private void recruitEnoughUnitsToMeetXYZ(float minSurvivalChance, int maxBattleVolleys)
+	private void recruitEnoughUnitsToMeetXYZ(final float minSurvivalChance, final int maxBattleVolleys)
 	{
-		List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();
+		final List<UnitGroup> sortedPossibles = getSortedPossibleRecruits();
 		if (sortedPossibles.isEmpty())
 			return;
-		
-		for (UnitGroup ug : sortedPossibles)
+		for (final UnitGroup ug : sortedPossibles)
 		{
 			if (m_recruitedUnits.contains(ug)) // If already recruited
 				continue;
-			
-			List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
-			List<Unit> defenders = GetRecruitedUnitsAsUnitList();
+			final List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
+			final List<Unit> defenders = GetRecruitedUnitsAsUnitList();
 			defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
 			if (!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
 			{
 				defenders.removeAll(m_target.getUnits().getUnits());
 				defenders.addAll(m_target.getUnits().getUnits());
 			}
-			AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, 1, true);
-			
-			float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
+			final AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, 1, true);
+			final float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
 			if (howCloseToMeetingMinSurvivalChance < 1.0F)
 			{
 				m_recruitedUnits.add(ug);
 				continue;
 			}
-			
-			float howCloseToMeetingBattleVolleyMax = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
+			final float howCloseToMeetingBattleVolleyMax = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
 			if (howCloseToMeetingBattleVolleyMax < 1.0F)
 			{
 				m_recruitedUnits.add(ug);
 				continue;
 			}
-			
 			break; // We've met all requirements
 		}
-		
 		m_recruitedUnits = DUtils.TrimRecruits_NonMovedOnes(m_recruitedUnits, 7); // Backtrack 7 units
-		
 		// Now do it carefully
-		for (UnitGroup ug : sortedPossibles)
+		for (final UnitGroup ug : sortedPossibles)
 		{
 			if (m_recruitedUnits.contains(ug)) // If already recruited
 				continue;
-			
-			List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
-			List<Unit> defenders = GetRecruitedUnitsAsUnitList();
+			final List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
+			final List<Unit> defenders = GetRecruitedUnitsAsUnitList();
 			defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
 			if (!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
 			{
 				defenders.removeAll(m_target.getUnits().getUnits());
 				defenders.addAll(m_target.getUnits().getUnits());
 			}
-			AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data,
+			final AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data,
 						DSettings.LoadSettings().CA_CMNCM_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, true);
-			
-			float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
+			final float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, minSurvivalChance);
 			if (howCloseToMeetingMinSurvivalChance < 1.0F)
 			{
 				m_recruitedUnits.add(ug);
 				continue;
 			}
-			
-			float howCloseToMeetingBattleVolleyMax = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
+			final float howCloseToMeetingBattleVolleyMax = getMeetingOfMaxBattleVolleysScore(simulatedAttack, maxBattleVolleys);
 			if (howCloseToMeetingBattleVolleyMax < 1.0F)
 			{
 				m_recruitedUnits.add(ug);
 				continue;
 			}
-			
 			break; // We've met all requirements
 		}
 	}
@@ -324,31 +295,27 @@ public class NCM_Task
 	
 	public List<Unit> GetRecruitedUnitsAsUnitList()
 	{
-		List<Unit> result = new ArrayList<Unit>();
-		for (UnitGroup ug : m_recruitedUnits)
+		final List<Unit> result = new ArrayList<Unit>();
+		for (final UnitGroup ug : m_recruitedUnits)
 		{
 			result.addAll(ug.GetUnits());
 		}
 		return result;
 	}
 	
-	public boolean IsPlannedMoveWorthwhile(List<NCM_Task> allTasks)
+	public boolean IsPlannedMoveWorthwhile(final List<NCM_Task> allTasks)
 	{
 		DUtils.Log(Level.FINEST, "      Determining if ncm task is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
-		
 		// if(m_recruitedUnits.isEmpty()) //Remove check, as a reinforce task can sometimes have requirements met without any units recruited (no threats to, for example, a cap neighbor)
 		// return false;
-		
-		PlayerID player = GlobalCenter.CurrentPlayer;
-		
-		List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
-		
-		List<Territory> capsAndNeighbors = new ArrayList<Territory>();
-		for (Territory cap : ourCaps)
+		final PlayerID player = GlobalCenter.CurrentPlayer;
+		final List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
+		final List<Territory> capsAndNeighbors = new ArrayList<Territory>();
+		for (final Territory cap : ourCaps)
 			capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
-		HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
+		final HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
 		boolean areRecruitsFromCapsOrNeighbors = false;
-		for (Unit recruit : GetRecruitedUnitsAsUnitList())
+		for (final Unit recruit : GetRecruitedUnitsAsUnitList())
 		{
 			if (capsAndNeighborsUnits.contains(recruit))
 			{
@@ -358,10 +325,10 @@ public class NCM_Task
 		}
 		if (areRecruitsFromCapsOrNeighbors && !ourCaps.contains(m_target))
 		{
-			Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
+			final Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
 			ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();
-			List<Unit> recruits = DUtils.CombineCollections(GetRecruitedUnitsAsUnitList(), DUtils.GetUnitsGoingToBePlacedAtX(m_data, player, m_target));
-			List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, recruits,
+			final List<Unit> recruits = DUtils.CombineCollections(GetRecruitedUnitsAsUnitList(), DUtils.GetUnitsGoingToBePlacedAtX(m_data, player, m_target));
+			final List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, recruits,
 						DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
 			ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
 			if (capTakeoverChances.get(1) > .1F) // If takeover chance is 10% or more after move
@@ -374,30 +341,26 @@ public class NCM_Task
 				}
 			}
 		}
-		
-		List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
-		List<Unit> defenders = GetRecruitedUnitsAsUnitList();
+		final List<Unit> attackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
+		final List<Unit> defenders = GetRecruitedUnitsAsUnitList();
 		defenders.addAll(DUtils.GetUnitsGoingToBePlacedAtX(m_data, GlobalCenter.CurrentPlayer, m_target));
 		if (!DSettings.LoadSettings().AA_ignoreAlliedUnitsAsDefenses)
 		{
 			defenders.removeAll(m_target.getUnits().getUnits());
 			defenders.addAll(m_target.getUnits().getUnits());
 		}
-		AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, true);
+		final AggregateResults simulatedAttack = DUtils
+					.GetBattleResults(attackers, defenders, m_target, m_data, DSettings.LoadSettings().CA_CMNCM_determinesResponseResultsToSeeIfTaskWorthwhile, true);
 		DUtils.Log(Level.FINEST, "        Enemy attack simulated. Attackers Size: {0} Defenders Size: {1} Takeover Chance: {2}", attackers.size(), defenders.size(),
 					simulatedAttack.getAttackerWinPercent());
-		
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Block))
 		{
 			if (m_recruitedUnits.isEmpty())
 				return false;
-			
-			int unitCost = DUtils.GetTUVOfUnits(GetRecruitedUnitsAsUnitList(), GlobalCenter.GetPUResource());
-			TerritoryAttachment ta = TerritoryAttachment.get(m_target);
-			
+			final int unitCost = DUtils.GetTUVOfUnits(GetRecruitedUnitsAsUnitList(), GlobalCenter.GetPUResource());
+			final TerritoryAttachment ta = TerritoryAttachment.get(m_target);
 			if (ta.getProduction() < unitCost - 1 && attackers.size() > 0)
 				return false;
-			
 			return true;
 		}
 		else if (m_taskType.equals(NCM_TaskType.Land_Reinforce_FrontLine))
@@ -406,35 +369,29 @@ public class NCM_Task
 			if (StatusCenter.get(m_data, player).GetStatusOfTerritory(m_target).WasAttacked_Stabalize || StatusCenter.get(m_data, player).GetStatusOfTerritory(m_target).WasAttacked_Offensive)
 				howCloseToMeetingMinSurvivalChance = 9.98789F; // If we stabalize/offensive attacked here, consider this ter safe to defend
 			DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, .98F);
-			
 			if (howCloseToMeetingMinSurvivalChance < .98F)
 			{
-				int tradeScoreIfAttacked = -DUtils.GetTaskTradeScore(m_data, m_target, attackers, defenders, simulatedAttack, new ArrayList<Unit>(), new ArrayList<Unit>(), null);
+				final int tradeScoreIfAttacked = -DUtils.GetTaskTradeScore(m_data, m_target, attackers, defenders, simulatedAttack, new ArrayList<Unit>(), new ArrayList<Unit>(), null);
 				DUtils.Log(Level.FINEST, "        Trade score if attacked: {0} Required for bypass: {1}", tradeScoreIfAttacked,
 							DSettings.LoadSettings().TR_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements);
 				if (tradeScoreIfAttacked >= DSettings.LoadSettings().TR_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements)
 					return true; // Attacking this ter would actually hurt the enemy, so we know we're safe
-					
 				return false;
 			}
-			
 			return true; // We've met all requirements
 		}
 		else if (m_taskType.equals(NCM_TaskType.Land_Reinforce_Stabilize))
 		{
-			float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
+			final float howCloseToMeetingMinSurvivalChance = getMeetingOfMinSurvivalChanceScore(simulatedAttack, m_minSurvivalChance);
 			DUtils.Log(Level.FINEST, "        How close to meeting min survival chance: {0} Needed: {1}", howCloseToMeetingMinSurvivalChance, .98F);
-			
 			if (howCloseToMeetingMinSurvivalChance < .98F)
 				return false;
-			
 			// Note: Our airplanes should see the weakened capital and land there...
 			if (ourCaps.contains(m_target)) // If this is our cap, we want to reinforce it, even if the requirements aren't met (this shouldn't happen)
 			{
 				DUtils.Log(Level.FINEST, "        This is our cap, we want to reinforce it, even though the requirements aren't met (this shouldn't happen)");
 				return true;
 			}
-			
 			return true; // We've met all requirements
 		}
 		else
@@ -446,20 +403,16 @@ public class NCM_Task
 	public boolean IsTaskWithAdditionalRecruitsWorthwhile()
 	{
 		DUtils.Log(Level.FINEST, "      Determining if ncm task with additional recruits is worthwhile. Target: {0} Recruits Size: {1}", m_target, m_recruitedUnits.size());
-		
 		if (m_recruitedUnits.isEmpty()) // Can happen if all recruits are waiting for reinforcements to complete a better, nearby task
 			return false;
-		
-		PlayerID player = GlobalCenter.CurrentPlayer;
-		
-		List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
-		
-		List<Territory> capsAndNeighbors = new ArrayList<Territory>();
-		for (Territory cap : ourCaps)
+		final PlayerID player = GlobalCenter.CurrentPlayer;
+		final List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
+		final List<Territory> capsAndNeighbors = new ArrayList<Territory>();
+		for (final Territory cap : ourCaps)
 			capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
-		HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
+		final HashSet<Unit> capsAndNeighborsUnits = DUtils.ToHashSet(DUtils.GetUnitsInTerritories(capsAndNeighbors));
 		boolean areRecruitsFromCapsOrNeighbors = false;
-		for (Unit recruit : GetRecruitedUnitsAsUnitList())
+		for (final Unit recruit : GetRecruitedUnitsAsUnitList())
 		{
 			if (capsAndNeighborsUnits.contains(recruit))
 			{
@@ -469,9 +422,9 @@ public class NCM_Task
 		}
 		if (areRecruitsFromCapsOrNeighbors && !ourCaps.contains(m_target))
 		{
-			Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
+			final Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
 			ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();
-			List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(),
+			final List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(),
 						DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
 			ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
 			if (capTakeoverChances.get(1) > .1F) // If takeover chance is 10% or more after move
@@ -484,7 +437,6 @@ public class NCM_Task
 				}
 			}
 		}
-		
 		return true;
 	}
 	
@@ -500,51 +452,44 @@ public class NCM_Task
 		m_disqualified = true;
 	}
 	
-	public void PerformTargetRetreat(List<NCM_Task> allTasks, IMoveDelegate mover)
+	public void PerformTargetRetreat(final List<NCM_Task> allTasks, final IMoveDelegate mover)
 	{
 		DUtils.Log(Level.FINER, "      Attemping to perform target retreat for task. Target: {0} Recruits: {1}", m_target, DUtils.UnitGroupList_ToString(m_recruitedUnits));
-		
-		PlayerID player = GlobalCenter.CurrentPlayer;
-		
-		List<UnitGroup> retreatUnits = new ArrayList<UnitGroup>();
-		
+		final PlayerID player = GlobalCenter.CurrentPlayer;
+		final List<UnitGroup> retreatUnits = new ArrayList<UnitGroup>();
 		// If we're retreating from this ter, retreat all non air units on this ter
 		retreatUnits.addAll(DUtils.CreateUnitGroupsForUnits(
 					Match.getMatches(m_target.getUnits().getUnits(), DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), DMatches.UnitIsMoveableType, Matches.UnitIsNotAir)), m_target, m_data));
-		
 		if (retreatUnits.isEmpty())
 		{
 			DUtils.Log(Level.FINER, "        No units to retreat for task. Target: {0}", m_target);
 			return; // We have nothing to do, because there are no retreat units
 		}
-		
 		// Have the frontline move to a safe frontline territory, if existing, otherwise, move to safest neighbor.
 		if (m_taskType.equals(NCM_TaskType.Land_Reinforce_FrontLine))
 		{
 			Territory bestRetreatTer = null;
 			float bestRetreatTerScore = Integer.MIN_VALUE;
-			for (NCM_Task task : (List<NCM_Task>) DUtils.ShuffleList(allTasks)) // Shuffle, so our retreat isn't predicatable
+			for (final NCM_Task task : (List<NCM_Task>) DUtils.ShuffleList(allTasks)) // Shuffle, so our retreat isn't predicatable
 			{
 				if (task.IsCompleted() && (task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_FrontLine) || task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_Stabilize)))
 				{
-					Route ncmRoute = m_data.getMap().getLandRoute(m_target, task.GetTarget());
+					final Route ncmRoute = m_data.getMap().getLandRoute(m_target, task.GetTarget());
 					if (ncmRoute == null)
 						continue;
 					if (Match.allMatch(retreatUnits, DMatches.UnitGroupHasEnoughMovement_All(ncmRoute.getLength()))) // If this is a valid, reachable frontline territory
 					{
 						List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, task.GetTarget(), GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
 						possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
-						List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, task.GetTarget());
+						final List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, task.GetTarget());
 						defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); // Only count units that have been frozen here
 						defenders.removeAll(DUtils.ToUnitList(retreatUnits)); // (Don't double add)
 						defenders.addAll(DUtils.ToUnitList(retreatUnits)); // And the units we're retreating
-						AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, task.GetTarget(), m_data, 500, true);
-						
+						final AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, task.GetTarget(), m_data, 500, true);
 						float score = 0;
 						score -= results.getAttackerWinPercent();
 						score -= (DUtils.GetDefenseScoreOfUnits(results.GetAverageAttackingUnitsRemaining()) * .01F); // Have leftover invader strength only decide if takeover chances match
 						score += DUtils.GetValueOfLandTer(task.GetTarget(), m_data, player);
-						
 						if (score > bestRetreatTerScore)
 						{
 							bestRetreatTer = task.GetTarget();
@@ -553,17 +498,15 @@ public class NCM_Task
 					}
 				}
 			}
-			
 			if (bestRetreatTer == null) // If we couldn't find any completed, reachable frontline ters to retreat to
 			{
-				for (Territory ter : (List<Territory>) DUtils.ShuffleList(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, m_target, GlobalCenter.FastestUnitMovement))) // Shuffle, so our retreat isn't predicatable
+				for (final Territory ter : (List<Territory>) DUtils.ShuffleList(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, m_target, GlobalCenter.FastestUnitMovement))) // Shuffle, so our retreat isn't predicatable
 				{
 					if (ter.isWater())
 						continue;
 					if (!DMatches.territoryIsOwnedByXOrAlly(m_data, GlobalCenter.CurrentPlayer).match(ter))
 						continue;
-					
-					Route ncmRoute = m_data.getMap().getLandRoute(m_target, ter);
+					final Route ncmRoute = m_data.getMap().getLandRoute(m_target, ter);
 					if (ncmRoute == null)
 						continue;
 					if (Match.allMatch(retreatUnits, DMatches.UnitGroupHasEnoughMovement_All(ncmRoute.getLength()))) // If this is a valid, reachable reinforce ter
@@ -571,18 +514,16 @@ public class NCM_Task
 						List<Unit> possibleAttackers = DUtils.GetSPNNEnemyUnitsThatCanReach_CountXAsPassthroughs(m_data, ter, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater,
 									Collections.singletonList(m_target));
 						possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
-						List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, ter);
+						final List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, ter);
 						defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); // Only count units that have been frozen here
 						defenders.removeAll(DUtils.ToUnitList(retreatUnits)); // (Don't double add)
 						defenders.addAll(DUtils.ToUnitList(retreatUnits)); // And the units we're retreating
-						AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, ter, m_data, 500, true);
-						
+						final AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, ter, m_data, 500, true);
 						float score = 0;
 						score -= results.getAttackerWinPercent() * 1000;
 						score -= results.GetAverageAttackingUnitsRemaining().size();
 						score -= DUtils.GetDefenseScoreOfUnits(results.GetAverageAttackingUnitsRemaining()); // Have leftover invader strength only decide if takeover chances match
 						score += DUtils.GetValueOfLandTer(ter, m_data, player);
-						
 						if (score > bestRetreatTerScore)
 						{
 							bestRetreatTer = ter;
@@ -591,19 +532,18 @@ public class NCM_Task
 					}
 				}
 			}
-			
 			if (bestRetreatTer != null)
 			{
-				List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
-				List<Territory> capsNeighbors = new ArrayList<Territory>();
-				for (Territory cap : ourCaps)
+				final List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
+				final List<Territory> capsNeighbors = new ArrayList<Territory>();
+				for (final Territory cap : ourCaps)
 					capsNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
 				capsNeighbors.removeAll(ourCaps); // We only want the neighbors
 				if (capsNeighbors.contains(m_target))
 				{
-					Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
+					final Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
 					ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();
-					List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(),
+					final List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(),
 								DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
 					ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
 					if (capTakeoverChances.get(1) > .1F) // If takeover chance is 10% or more after move
@@ -614,9 +554,9 @@ public class NCM_Task
 							DUtils.Log(Level.FINEST, "      Retreating units would endanger capital, so leaving one behind.");
 							UnitGroup cheapestUG = null;
 							int cheapestCost = Integer.MAX_VALUE;
-							for (UnitGroup ug : retreatUnits)
+							for (final UnitGroup ug : retreatUnits)
 							{
-								int cost = DUtils.GetTUVOfUnit(ug.GetFirstUnit(), GlobalCenter.GetPUResource());
+								final int cost = DUtils.GetTUVOfUnit(ug.GetFirstUnit(), GlobalCenter.GetPUResource());
 								if (cost < cheapestCost)
 								{
 									cheapestUG = ug;
@@ -627,20 +567,19 @@ public class NCM_Task
 						}
 					}
 				}
-				
 				DUtils.Log(Level.FINER, "      Attempting to perform target retreat. Target: {0} Retreat To: {1} Retreat Units: {2}", m_target, bestRetreatTer,
 							DUtils.UnitGroupList_ToString(retreatUnits));
 				Dynamix_AI.Pause();
 				UnitGroup.EnableMoveBuffering();
-				for (UnitGroup ug : retreatUnits)
+				for (final UnitGroup ug : retreatUnits)
 				{
-					String error = ug.MoveAsFarTo_NCM(bestRetreatTer, mover);
+					final String error = ug.MoveAsFarTo_NCM(bestRetreatTer, mover);
 					if (error == null)
 						TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).FreezeUnits(ug.GetUnitsAsList());
 					else
 						DUtils.Log(Level.FINER, "        NCM move failed, reason: {0}", error);
 				}
-				String errors = UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
+				final String errors = UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
 				if (errors != null)
 					DUtils.Log(Level.FINER, "      Some errors occurred while performing moves: {0}", errors);
 			}
@@ -652,24 +591,21 @@ public class NCM_Task
 		{
 			Territory bestRetreatTer = null;
 			float bestRetreatTerScore = Integer.MIN_VALUE;
-			
-			List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
-			List<Territory> capsAndNeighbors = new ArrayList<Territory>();
-			for (Territory cap : ourCaps)
+			final List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
+			final List<Territory> capsAndNeighbors = new ArrayList<Territory>();
+			for (final Territory cap : ourCaps)
 				capsAndNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
 			if (capsAndNeighbors.contains(m_target))
 				bestRetreatTer = DUtils.GetOurClosestCap(m_data, player, m_target); // We are endangered and next to cap, so retreat there (not sure if we should do this)
-				
 			if (bestRetreatTer == null)
 			{
-				for (Territory ter : (List<Territory>) DUtils.ShuffleList(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, m_target, GlobalCenter.FastestUnitMovement))) // Shuffle, so our retreat isn't predicatable
+				for (final Territory ter : (List<Territory>) DUtils.ShuffleList(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, m_target, GlobalCenter.FastestUnitMovement))) // Shuffle, so our retreat isn't predicatable
 				{
 					if (ter.isWater())
 						continue;
 					if (!DMatches.territoryIsOwnedByXOrAlly(m_data, GlobalCenter.CurrentPlayer).match(ter))
 						continue;
-					
-					Route ncmRoute = CachedCalculationCenter.GetPassableLandRoute(m_data, m_target, ter);
+					final Route ncmRoute = CachedCalculationCenter.GetPassableLandRoute(m_data, m_target, ter);
 					if (ncmRoute == null)
 						continue;
 					if (Match.allMatch(retreatUnits, DMatches.UnitGroupHasEnoughMovement_All(ncmRoute.getLength()))) // If this is a valid, reachable reinforce ter
@@ -678,18 +614,16 @@ public class NCM_Task
 									Collections.singletonList(m_target));
 						possibleAttackers = Match.getMatches(possibleAttackers, new CompositeMatchOr<Unit>(Matches.UnitIsLand, Matches.UnitIsAir));
 						// Note that since this ter was not a reinforce_task ter(well, at least not a successful one), it is most likely within our territory
-						List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, ter);
+						final List<Unit> defenders = DUtils.GetTerUnitsAtEndOfTurn(m_data, player, ter);
 						defenders.retainAll(TacticalCenter.get(m_data, player).GetFrozenUnits()); // Only count units that have been frozen here
 						defenders.removeAll(DUtils.ToUnitList(retreatUnits)); // (Don't double add)
 						defenders.addAll(DUtils.ToUnitList(retreatUnits)); // And the units we're retreating
-						AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, ter, m_data, 500, true);
-						
+						final AggregateResults results = DUtils.GetBattleResults(possibleAttackers, defenders, ter, m_data, 500, true);
 						float score = 0;
 						score -= results.getAttackerWinPercent() * 1000;
 						score -= results.GetAverageAttackingUnitsRemaining().size();
 						score -= DUtils.GetDefenseScoreOfUnits(results.GetAverageAttackingUnitsRemaining()); // Have leftover invader strength only decide if takeover chances match
 						score += DUtils.GetValueOfLandTer(ter, m_data, player);
-						
 						if (score > bestRetreatTerScore)
 						{
 							bestRetreatTer = ter;
@@ -698,18 +632,17 @@ public class NCM_Task
 					}
 				}
 			}
-			
 			if (bestRetreatTer != null)
 			{
-				List<Territory> capsNeighbors = new ArrayList<Territory>();
-				for (Territory cap : ourCaps)
+				final List<Territory> capsNeighbors = new ArrayList<Territory>();
+				for (final Territory cap : ourCaps)
 					capsNeighbors.addAll(DUtils.GetTerritoriesWithinXDistanceOfY(m_data, cap, 1));
 				capsNeighbors.removeAll(ourCaps); // We only want the neighbors
 				if (capsNeighbors.contains(m_target))
 				{
-					Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
+					final Territory ourClosestCap = DUtils.GetOurClosestCap(m_data, player, m_target);
 					ThreatInvalidationCenter.get(m_data, player).SuspendThreatInvalidation();
-					List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(),
+					final List<Float> capTakeoverChances = DUtils.GetTerTakeoverChanceBeforeAndAfterMove(m_data, player, ourClosestCap, m_target, GetRecruitedUnitsAsUnitList(),
 								DSettings.LoadSettings().CA_CMNCM_determinesIfTaskEndangersCap);
 					ThreatInvalidationCenter.get(m_data, player).ResumeThreatInvalidation();
 					if (capTakeoverChances.get(1) > .1F) // If takeover chance is 10% or more after move
@@ -720,9 +653,9 @@ public class NCM_Task
 							DUtils.Log(Level.FINEST, "      Retreating units would endanger capital, so leaving one behind.");
 							UnitGroup cheapestUG = null;
 							int cheapestCost = Integer.MAX_VALUE;
-							for (UnitGroup ug : retreatUnits)
+							for (final UnitGroup ug : retreatUnits)
 							{
-								int cost = DUtils.GetTUVOfUnit(ug.GetFirstUnit(), GlobalCenter.GetPUResource());
+								final int cost = DUtils.GetTUVOfUnit(ug.GetFirstUnit(), GlobalCenter.GetPUResource());
 								if (cost < cheapestCost)
 								{
 									cheapestUG = ug;
@@ -733,20 +666,19 @@ public class NCM_Task
 						}
 					}
 				}
-				
 				DUtils.Log(Level.FINER, "      Attempting to perform target retreat. Target: {0} Retreat To: {1} Retreat Units: {2}", m_target, bestRetreatTer,
 							DUtils.UnitGroupList_ToString(retreatUnits));
 				Dynamix_AI.Pause();
 				UnitGroup.EnableMoveBuffering();
-				for (UnitGroup ug : retreatUnits)
+				for (final UnitGroup ug : retreatUnits)
 				{
-					String error = ug.MoveAsFarTo_NCM(bestRetreatTer, mover);
+					final String error = ug.MoveAsFarTo_NCM(bestRetreatTer, mover);
 					if (error == null)
 						TacticalCenter.get(m_data, GlobalCenter.CurrentPlayer).FreezeUnits(ug.GetUnitsAsList());
 					else
 						DUtils.Log(Level.FINEST, "        NCM move failed, reason: {0}", error);
 				}
-				String errors = UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
+				final String errors = UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
 				if (errors != null)
 					DUtils.Log(Level.FINER, "      Some errors occurred while performing moves: {0}", errors);
 			}
@@ -763,25 +695,20 @@ public class NCM_Task
 	 */
 	public void InvalidateThreatsThisTaskResists()
 	{
-		PlayerID player = GlobalCenter.CurrentPlayer;
-		
-		List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
+		final PlayerID player = GlobalCenter.CurrentPlayer;
+		final List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
 		if (ourCaps.contains(m_target))
 			return; // If this is one of our caps, don't invalidate it's threats (we can't really threaten enemy attacks with it, cause we need it safe)
-			
 		if (m_target.getUnits().getMatches(Matches.UnitIsFactory).size() > 0) // If this is a factory ter, don't invalidate it's threats (we don't want to attack neighbors that get taken over from fact ters
 			return;
-		
 		if (m_taskType == NCM_TaskType.Land_Reinforce_FrontLine)
 		{
-			List<Unit> threats = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
+			final List<Unit> threats = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
 			if (threats.isEmpty()) // No threats to invalidate
 				return;
-			List<Unit> defenders = GetRecruitedUnitsAsUnitList();
-			
-			AggregateResults simulatedAttack = DUtils.GetBattleResults(threats, defenders, m_target, m_data,
+			final List<Unit> defenders = GetRecruitedUnitsAsUnitList();
+			final AggregateResults simulatedAttack = DUtils.GetBattleResults(threats, defenders, m_target, m_data,
 						DSettings.LoadSettings().CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers, true);
-			
 			if (simulatedAttack.getDefenderWinPercent() > .4F)
 			{
 				ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
@@ -790,14 +717,12 @@ public class NCM_Task
 		}
 		else if (m_taskType == NCM_TaskType.Land_Reinforce_Stabilize)
 		{
-			List<Unit> threats = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
+			final List<Unit> threats = DUtils.GetSPNNEnemyUnitsThatCanReach(m_data, m_target, GlobalCenter.CurrentPlayer, Matches.TerritoryIsLandOrWater);
 			if (threats.isEmpty()) // No threats to invalidate
 				return;
-			List<Unit> defenders = GetRecruitedUnitsAsUnitList();
-			
-			AggregateResults simulatedAttack = DUtils.GetBattleResults(threats, defenders, m_target, m_data,
+			final List<Unit> defenders = GetRecruitedUnitsAsUnitList();
+			final AggregateResults simulatedAttack = DUtils.GetBattleResults(threats, defenders, m_target, m_data,
 						DSettings.LoadSettings().CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers, true);
-			
 			if (simulatedAttack.getDefenderWinPercent() > .4F)
 			{
 				ThreatInvalidationCenter.get(m_data, player).InvalidateThreats(threats, m_target);
@@ -821,7 +746,7 @@ public class NCM_Task
 		return m_completed;
 	}
 	
-	public void PerformTask(IMoveDelegate mover)
+	public void PerformTask(final IMoveDelegate mover)
 	{
 		if (m_recruitedUnits.isEmpty())
 		{
@@ -831,11 +756,11 @@ public class NCM_Task
 		}
 		UnitGroup.EnableMoveBuffering();
 		boolean anythingMoved = false;
-		for (UnitGroup ug : m_recruitedUnits)
+		for (final UnitGroup ug : m_recruitedUnits)
 		{
 			if (ug.GetMovedTo() != null)
 				continue; // If this recruit has already moved
-			String error = ug.MoveAsFarTo_NCM(m_target, mover);
+			final String error = ug.MoveAsFarTo_NCM(m_target, mover);
 			if (error != null)
 				DUtils.Log(Level.FINER, "        NCM task perfoming move failed, reason: {0}", error);
 			else
@@ -844,7 +769,6 @@ public class NCM_Task
 				anythingMoved = true;
 			}
 		}
-		
 		if (!anythingMoved)
 		{
 			m_disqualified = true;
@@ -852,7 +776,7 @@ public class NCM_Task
 		}
 		if (!m_completed) // Only pause if this is the initial attack group
 			Dynamix_AI.Pause();
-		String errors = UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
+		final String errors = UnitGroup.PerformBufferedMovesAndDisableMoveBufferring(mover);
 		if (errors != null)
 		{
 			DUtils.Log(Level.FINER, "      Some errors occurred while performing moves: {0}", errors);
@@ -861,7 +785,6 @@ public class NCM_Task
 		}
 		ReconsiderSignalCenter.get(m_data, GlobalCenter.CurrentPlayer).ObjectsToReconsider.addAll(CachedInstanceCenter.CachedGameData.getMap().getNeighbors(m_target));
 		m_completed = true;
-		
 		StatusCenter.get(m_data, GlobalCenter.CurrentPlayer).GetStatusOfTerritory(m_target).NotifyTaskPerform(this);
 	}
 }

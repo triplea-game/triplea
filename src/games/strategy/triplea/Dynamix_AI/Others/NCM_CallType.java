@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package games.strategy.triplea.Dynamix_AI.Others;
 
 /**
@@ -11,8 +10,5 @@ package games.strategy.triplea.Dynamix_AI.Others;
  */
 public enum NCM_CallType
 {
-	Land_ForLandGrab,
-	Land_ForDefensiveFront,
-	Land_ForCapitalDefense,
-	Empty
+	Land_ForLandGrab, Land_ForDefensiveFront, Land_ForCapitalDefense, Empty
 }

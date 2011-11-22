@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net;
 
 /**
@@ -37,7 +36,6 @@ package games.strategy.net;
  *         some tests, the 1st ip tends to be the IP used by the gateway to connect to the net.
  *         This means that TripleA will still work.
  */
-
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -48,7 +46,6 @@ import java.util.List;
 
 public class IPFinder
 {
-	
 	/**
 	 * We iterate through an enumeration of network interfaces on the machine
 	 * and picks the first IP that is not a loopback and not a link local and not private.
@@ -64,68 +61,58 @@ public class IPFinder
 	 */
 	public static InetAddress findInetAddress() throws SocketException, UnknownHostException
 	{
-		
-		Enumeration enum1 = NetworkInterface.getNetworkInterfaces();
-		
+		final Enumeration enum1 = NetworkInterface.getNetworkInterfaces();
 		// Test if null, no point taking a performance hit by
 		// letting the JVM check for a NullPointerException.
 		if (enum1 == null)
 		{
-			InetAddress ip1 = InetAddress.getLocalHost();
+			final InetAddress ip1 = InetAddress.getLocalHost();
 			return ip1;
 		}
-		
-		List<InetAddress> allButLoopback = new ArrayList<InetAddress>();
-		
+		final List<InetAddress> allButLoopback = new ArrayList<InetAddress>();
 		while (enum1.hasMoreElements())
 		{
-			NetworkInterface netface = (NetworkInterface) enum1.nextElement();
-			Enumeration enum2 = netface.getInetAddresses();
+			final NetworkInterface netface = (NetworkInterface) enum1.nextElement();
+			final Enumeration enum2 = netface.getInetAddresses();
 			while (enum2.hasMoreElements())
 			{
-				InetAddress ip2 = (InetAddress) enum2.nextElement();
+				final InetAddress ip2 = (InetAddress) enum2.nextElement();
 				if (!ip2.isLoopbackAddress())
 				{
 					allButLoopback.add(ip2);
 				}
 			}
 		}
-		
 		// try to find one that is not private and ip4
-		for (InetAddress address : allButLoopback)
+		for (final InetAddress address : allButLoopback)
 		{
 			if (address.getAddress().length == 4 && !isPrivateNetworkAddress(address))
 			{
 				return address;
 			}
 		}
-		
 		// try to find one that is not private
-		for (InetAddress address : allButLoopback)
+		for (final InetAddress address : allButLoopback)
 		{
 			if (!isPrivateNetworkAddress(address))
 			{
 				return address;
 			}
 		}
-		
 		// try to find one that is not link local
-		for (InetAddress address : allButLoopback)
+		for (final InetAddress address : allButLoopback)
 		{
 			if (!address.isLinkLocalAddress())
 			{
 				return address;
 			}
 		}
-		
 		// all else fails, return localhost
 		return InetAddress.getLocalHost();
-		
 	}// end static findInetAddress()
 	
-	private static boolean isPrivateNetworkAddress(InetAddress address)
+	private static boolean isPrivateNetworkAddress(final InetAddress address)
 	{
-		
 		// stupid java signed byte type
 		final byte _192 = (byte) 0xC0;
 		final byte _172 = (byte) 0xAC;
@@ -133,53 +120,42 @@ public class IPFinder
 		final byte _169 = (byte) 0xA9;
 		final byte _252 = (byte) 0xFC;
 		final byte _254 = (byte) 0xFE;
-		
-		byte[] bytes = address.getAddress();
+		final byte[] bytes = address.getAddress();
 		// ip 4
 		if (bytes.length == 4)
 		{
 			// http://en.wikipedia.org/wiki/Private_network
-			if ((bytes[0] == 10) ||
-						(bytes[0] == _172 && bytes[1] >= 16 && bytes[1] <= 31) ||
-						(bytes[0] == _192 && bytes[1] == _168) ||
-						(bytes[0] == _169 && bytes[1] == _254))
+			if ((bytes[0] == 10) || (bytes[0] == _172 && bytes[1] >= 16 && bytes[1] <= 31) || (bytes[0] == _192 && bytes[1] == _168) || (bytes[0] == _169 && bytes[1] == _254))
 				return true;
 		}
 		// ip 6
 		else
 		{
 			// http://en.wikipedia.org/wiki/IPv6#Addressing
-			if ((bytes[0] == _252 && bytes[1] == 0) ||
-						bytes[0] == _254)
+			if ((bytes[0] == _252 && bytes[1] == 0) || bytes[0] == _254)
 			{
 				return true;
 			}
 		}
-		
 		return false;
-		
 	}
 	
-	public static void main(String[] args) throws SocketException, UnknownHostException
+	public static void main(final String[] args) throws SocketException, UnknownHostException
 	{
-		
-		Enumeration enum1 = NetworkInterface.getNetworkInterfaces();
+		final Enumeration enum1 = NetworkInterface.getNetworkInterfaces();
 		while (enum1.hasMoreElements())
 		{
-			
-			NetworkInterface netface = (NetworkInterface) enum1.nextElement();
+			final NetworkInterface netface = (NetworkInterface) enum1.nextElement();
 			System.out.println("interface:" + netface);
-			Enumeration enum2 = netface.getInetAddresses();
+			final Enumeration enum2 = netface.getInetAddresses();
 			while (enum2.hasMoreElements())
 			{
-				InetAddress ip2 = (InetAddress) enum2.nextElement();
+				final InetAddress ip2 = (InetAddress) enum2.nextElement();
 				System.out.println(" address:" + ip2 + " is private:" + isPrivateNetworkAddress(ip2) + " is loopback:" + ip2.isLoopbackAddress());
 			}
 			System.out.println("----------------------");
 		}
-		
 		System.out.println();
 		System.out.println("Found:" + findInetAddress());
 	}
 }// end class IPFinder
-

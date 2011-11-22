@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GameObjectInoutStreamFactory.java
  * 
  * Created on January 1, 2002, 4:50 PM
  */
-
 package games.strategy.engine.framework;
 
 import games.strategy.engine.data.GameData;
@@ -39,22 +37,22 @@ public class GameObjectStreamFactory implements IObjectStreamFactory
 {
 	private GameData m_data;
 	
-	public GameObjectStreamFactory(GameData data)
+	public GameObjectStreamFactory(final GameData data)
 	{
 		m_data = data;
 	}
 	
-	public ObjectInputStream create(InputStream stream) throws IOException
+	public ObjectInputStream create(final InputStream stream) throws IOException
 	{
 		return new GameObjectInputStream(this, stream);
 	}
 	
-	public ObjectOutputStream create(OutputStream stream) throws IOException
+	public ObjectOutputStream create(final OutputStream stream) throws IOException
 	{
 		return new GameObjectOutputStream(stream);
 	}
 	
-	public void setData(GameData data)
+	public void setData(final GameData data)
 	{
 		m_data = data;
 	}

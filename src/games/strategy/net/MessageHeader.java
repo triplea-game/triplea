@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net;
 
 import java.io.Serializable;
@@ -28,12 +27,12 @@ public class MessageHeader
 	/**
 	 * Creates a broadcast message.
 	 */
-	public MessageHeader(INode from, Serializable message)
+	public MessageHeader(final INode from, final Serializable message)
 	{
 		this(null, from, message);
 	}
 	
-	public MessageHeader(INode to, INode from, Serializable message)
+	public MessageHeader(final INode to, final INode from, final Serializable message)
 	{
 		// for can be null if we are a broadcast
 		m_for = to;
@@ -70,5 +69,4 @@ public class MessageHeader
 	{
 		return "Message header. msg:" + m_message + " to:" + m_for + " from:" + m_from;
 	}
-	
 }

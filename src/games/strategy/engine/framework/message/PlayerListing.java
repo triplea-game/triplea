@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * PlayerListinge.java
  * 
  * Created on February 1, 2002, 2:34 PM
  */
-
 package games.strategy.engine.framework.message;
 
 import games.strategy.util.Version;
@@ -40,10 +38,8 @@ import java.util.Set;
  */
 public class PlayerListing implements Serializable
 {
-	
 	// keep compatability with older versions
 	static final long serialVersionUID = -8913538086737733980L;
-	
 	/**
 	 * Maps String player name -> node Name
 	 * if node name is null then the player is available to play.
@@ -57,7 +53,8 @@ public class PlayerListing implements Serializable
 	/**
 	 * Creates a new instance of PlayerListingMessage
 	 */
-	public PlayerListing(Map<String, String> map, Version gameVersion, String gameName, String gameRound, Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrderLinkedHashMap)
+	public PlayerListing(final Map<String, String> map, final Version gameVersion, final String gameName, final String gameRound,
+				final Map<String, Collection<String>> playerNamesAndAlliancesInTurnOrderLinkedHashMap)
 	{
 		m_playerListing = new HashMap<String, String>(map);
 		m_gameVersion = gameVersion;
@@ -101,5 +98,4 @@ public class PlayerListing implements Serializable
 	{
 		return m_gameRound;
 	}
-	
 }

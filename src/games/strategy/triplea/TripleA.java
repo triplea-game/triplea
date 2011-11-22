@@ -11,14 +11,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TripleA.java
  * 
  * 
  * Created on November 2, 2001, 8:56 PM
  */
-
 package games.strategy.triplea;
 
 import games.strategy.engine.data.GameData;
@@ -63,28 +61,25 @@ public class TripleA implements IGameLoader
 {
 	// compatible with 0.9.0.2 saved games
 	private static final long serialVersionUID = -8374315848374732436L;
-	
 	private static final String HUMAN_PLAYER_TYPE = "Human";
 	private static final String WEAK_COMPUTER_PLAYER_TYPE = "E.Z. Fodder (AI)";
 	private static final String STRONG_COMPUTER_PLAYER_TYPE = "Moore N. Able (AI)";
 	private static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Dynamix (AI)";
 	private static final String NONE = "None (AI)";
-	
 	private transient TripleaDisplay m_display;
 	private transient IGame m_game;
 	
 	/**
 	 * @see IGameLoader.createPlayers(playerNames)
 	 */
-	
-	public Set<IGamePlayer> createPlayers(Map<String, String> playerNames)
+	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
-		Set<IGamePlayer> players = new HashSet<IGamePlayer>();
-		Iterator<String> iter = playerNames.keySet().iterator();
+		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
+		final Iterator<String> iter = playerNames.keySet().iterator();
 		while (iter.hasNext())
 		{
-			String name = iter.next();
-			String type = playerNames.get(name);
+			final String name = iter.next();
+			final String type = playerNames.get(name);
 			if (type.equals(WEAK_COMPUTER_PLAYER_TYPE))
 			{
 				players.add(new WeakAI(name, type));
@@ -99,7 +94,7 @@ public class TripleA implements IGameLoader
 			}
 			else if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
 			{
-				TripleAPlayer player = new TripleAPlayer(name, type);
+				final TripleAPlayer player = new TripleAPlayer(name, type);
 				players.add(player);
 			}
 			else
@@ -117,28 +112,25 @@ public class TripleA implements IGameLoader
 			m_game.removeDisplay(m_display);
 			m_display.shutDown();
 		}
-		
 	}
 	
 	public void startGame(final IGame game, final Set<IGamePlayer> players) throws Exception
 	{
 		try
 		{
-			
 			/*
 			   Retreive the map name from xml file
 			   This is the key for triplea to find the maps
 			*/
 			m_game = game;
 			// final String mapDir = game.getData().getProperties().get(Constants.MAP_NAME).toString();
-			
 			if (game.getData().getDelegateList().getDelegate("edit") == null)
 			{
 				// an evil awful hack
 				// we don't want to change the game xml
 				// and invalidate mods so hack it
 				// and force the addition here
-				EditDelegate delegate = new EditDelegate();
+				final EditDelegate delegate = new EditDelegate();
 				delegate.initialize("edit", "edit");
 				m_game.getData().getDelegateList().addDelegate(delegate);
 				if (game instanceof ServerGame)
@@ -146,48 +138,39 @@ public class TripleA implements IGameLoader
 					((ServerGame) game).addDelegateMessenger(delegate);
 				}
 			}
-			
 			SwingUtilities.invokeAndWait(new Runnable()
+			{
+				public void run()
 				{
-					
-					public void run()
+					final TripleAFrame frame;
+					try
 					{
-						final TripleAFrame frame;
-						try
-						{
-							frame = new TripleAFrame(game, players);
-						} catch (IOException e)
-						{
-							e.printStackTrace();
-							System.exit(-1);
-							return;
-						}
-						
-						m_display = new TripleaDisplay(frame);
-						game.addDisplay(m_display);
-						frame.setSize(700, 400);
-						frame.setVisible(true);
-						connectPlayers(players, frame);
-						
-						SwingUtilities.invokeLater(
-									new Runnable()
-							{
-								
-								public void run()
-								{
-									frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-									frame.toFront();
-								}
-							}
-									);
-						
+						frame = new TripleAFrame(game, players);
+					} catch (final IOException e)
+					{
+						e.printStackTrace();
+						System.exit(-1);
+						return;
 					}
-					
-				});
-		} catch (InterruptedException e)
+					m_display = new TripleaDisplay(frame);
+					game.addDisplay(m_display);
+					frame.setSize(700, 400);
+					frame.setVisible(true);
+					connectPlayers(players, frame);
+					SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+							frame.toFront();
+						}
+					});
+				}
+			});
+		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
-		} catch (InvocationTargetException e)
+		} catch (final InvocationTargetException e)
 		{
 			if (e.getCause() instanceof Exception)
 				throw (Exception) e.getCause();
@@ -196,29 +179,25 @@ public class TripleA implements IGameLoader
 				e.printStackTrace();
 				throw new IllegalStateException(e.getCause().getMessage());
 			}
-			
 		}
-		
 		// load the sounds in a background thread,
 		// avoids the pause where sounds dont load right away
-		Runnable loadSounds = new Runnable()
+		final Runnable loadSounds = new Runnable()
+		{
+			public void run()
 			{
-				
-				public void run()
-				{
-					SoundPath.preLoadSounds();
-				}
-			};
+				SoundPath.preLoadSounds();
+			}
+		};
 		new Thread(loadSounds, "Triplea sound loader").start();
-		
 	}
 	
-	private void connectPlayers(Set<IGamePlayer> players, TripleAFrame frame)
+	private void connectPlayers(final Set<IGamePlayer> players, final TripleAFrame frame)
 	{
-		Iterator<IGamePlayer> iter = players.iterator();
+		final Iterator<IGamePlayer> iter = players.iterator();
 		while (iter.hasNext())
 		{
-			IGamePlayer player = iter.next();
+			final IGamePlayer player = iter.next();
 			if (player instanceof TripleAPlayer)
 				((TripleAPlayer) player).setFrame(frame);
 		}
@@ -227,25 +206,19 @@ public class TripleA implements IGameLoader
 	/**
 	 * Return an array of player types that can play on the server.
 	 */
-	
 	public String[] getServerPlayerTypes()
 	{
-		
-		return new String[] {
-					HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE };
+		return new String[] { HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE };
 	}
 	
 	public IPBEMMessenger[] getPBEMMessengers()
 	{
-		return new IPBEMMessenger[] {
-					new AxisAndAlliesDotOrgPBEMMessenger(),
-					new AllYouCanUploadDotComPBEMMessenger() };
+		return new IPBEMMessenger[] { new AxisAndAlliesDotOrgPBEMMessenger(), new AllYouCanUploadDotComPBEMMessenger() };
 	}
 	
 	/*
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
-
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return ITripleaDisplay.class;
@@ -260,13 +233,10 @@ public class TripleA implements IGameLoader
 	{
 		return new IUnitFactory()
 		{
-			
-			public Unit createUnit(UnitType type, PlayerID owner, GameData data)
+			public Unit createUnit(final UnitType type, final PlayerID owner, final GameData data)
 			{
 				return new TripleAUnit(type, owner, data);
 			}
-			
 		};
 	}
-	
 }

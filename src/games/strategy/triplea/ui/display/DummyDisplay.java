@@ -18,93 +18,76 @@ public class DummyDisplay implements ITripleaDisplay
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#showBattle(games.strategy.net.GUID, games.strategy.engine.data.Territory, java.lang.String, java.util.Collection, java.util.Collection, java.util.Collection, java.util.Map, games.strategy.engine.data.PlayerID,
 	 * games.strategy.engine.data.PlayerID)
 	 */
-
-	public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, final Collection<Unit> killedUnits,
-				final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, PlayerID attacker, PlayerID defender)
+	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
+				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> dependentUnits,
+				final PlayerID attacker, final PlayerID defender)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void listBattleSteps(GUID battleID, List<String> steps)
+	public void listBattleSteps(final GUID battleID, final List<String> steps)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void battleEnd(GUID battleID, String message)
+	public void battleEnd(final GUID battleID, final String message)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void casualtyNotification(GUID battleID, String step, DiceRoll dice, PlayerID player, Collection<Unit> killed, Collection<Unit> damaged,
-				Map<Unit, Collection<Unit>> dependents)
+	public void casualtyNotification(final GUID battleID, final String step, final DiceRoll dice, final PlayerID player, final Collection<Unit> killed, final Collection<Unit> damaged,
+				final Map<Unit, Collection<Unit>> dependents)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> killed, Map<Unit, Collection<Unit>> dependents)
+	public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> killed, final Map<Unit, Collection<Unit>> dependents)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void bombingResults(GUID battleID, int[] dice, int cost)
+	public void bombingResults(final GUID battleID, final int[] dice, final int cost)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void notifyRetreat(String shortMessage, String message, String step, PlayerID retreatingPlayer)
+	public void notifyRetreat(final String shortMessage, final String message, final String step, final PlayerID retreatingPlayer)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void notifyScramble(String shortMessage, String message, String step, PlayerID retreatingPlayer)
+	public void notifyScramble(final String shortMessage, final String message, final String step, final PlayerID retreatingPlayer)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void notifyRetreat(GUID battleId, Collection<Unit> retreating)
+	public void notifyRetreat(final GUID battleId, final Collection<Unit> retreating)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void notifyDice(GUID battleId, DiceRoll dice, String stepName)
+	public void notifyDice(final GUID battleId, final DiceRoll dice, final String stepName)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void gotoBattleStep(GUID battleId, String step)
+	public void gotoBattleStep(final GUID battleId, final String step)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void initialize(IDisplayBridge bridge)
+	public void initialize(final IDisplayBridge bridge)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void shutDown()
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
-	public void scrambleNotification(GUID battleID, String step,
-				PlayerID player, Collection<Unit> scrambled,
-				Map<Unit, Collection<Unit>> dependents)
+	public void scrambleNotification(final GUID battleID, final String step, final PlayerID player, final Collection<Unit> scrambled, final Map<Unit, Collection<Unit>> dependents)
 	{
 		// TODO Auto-generated method stub
-		
 	}
-	
 }

@@ -17,6 +17,7 @@ import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.net.BareBonesBrowserLaunch;
 import games.strategy.net.IServerMessenger;
+
 import java.awt.BorderLayout;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -26,6 +27,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FilenameFilter;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -50,7 +52,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 {
 	protected final CustomGameFrame m_frame;
 	
-	public BasicGameMenuBar(CustomGameFrame frame)
+	public BasicGameMenuBar(final CustomGameFrame frame)
 	{
 		m_frame = frame;
 		createFileMenu(this);
@@ -61,25 +63,22 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		createHelpMenu(this);
 	}
 	
-	protected void createGameSpecificMenus(JMenuBar menuBar)
+	protected void createGameSpecificMenus(final JMenuBar menuBar)
 	{
-		
 	}
 	
-	protected void createLobbyMenu(JMenuBar menuBar)
+	protected void createLobbyMenu(final JMenuBar menuBar)
 	{
 		if (!(m_frame.getGame() instanceof ServerGame))
 			return;
-		ServerGame serverGame = (ServerGame) m_frame.getGame();
-		InGameLobbyWatcher watcher = serverGame.getInGameLobbyWatcher();
+		final ServerGame serverGame = (ServerGame) m_frame.getGame();
+		final InGameLobbyWatcher watcher = serverGame.getInGameLobbyWatcher();
 		if (watcher == null || !watcher.isActive())
 		{
 			return;
 		}
-		
-		JMenu lobby = new JMenu("Lobby");
+		final JMenu lobby = new JMenu("Lobby");
 		menuBar.add(lobby);
-		
 		lobby.add(new EditGameCommentAction(watcher, m_frame));
 		lobby.add(new RemoveGameFromLobbyAction(watcher));
 	}
@@ -87,15 +86,14 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	/**
 	 * @param menuBar
 	 */
-	protected void createNetworkMenu(JMenuBar menuBar)
+	protected void createNetworkMenu(final JMenuBar menuBar)
 	{
 		// revisit
 		// if we are not a client or server game
 		// then this will not create the network menu
 		if (getGame().getMessenger() instanceof DummyMessenger)
 			return;
-		
-		JMenu menuNetwork = new JMenu("Network");
+		final JMenu menuNetwork = new JMenu("Network");
 		addAllowObserversToJoin(menuNetwork);
 		addBootPlayer(menuNetwork);
 		addBanPlayer(menuNetwork);
@@ -108,25 +106,20 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	/**
 	 * @param parentMenu
 	 */
-	protected void addAllowObserversToJoin(JMenu parentMenu)
+	protected void addAllowObserversToJoin(final JMenu parentMenu)
 	{
 		if (!getGame().getMessenger().isServer())
 			return;
-		
 		final IServerMessenger messeneger = (IServerMessenger) getGame().getMessenger();
-		
 		final JCheckBoxMenuItem allowObservers = new JCheckBoxMenuItem("Allow New Observers");
 		allowObservers.setSelected(messeneger.isAcceptNewConnections());
-		
 		allowObservers.addActionListener(new AbstractAction()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				messeneger.setAcceptNewConnections(allowObservers.isSelected());
 			}
 		});
-		
 		parentMenu.add(allowObservers);
 		return;
 	}
@@ -134,15 +127,12 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	/**
 	 * @param parentMenu
 	 */
-	protected void addBootPlayer(JMenu parentMenu)
+	protected void addBootPlayer(final JMenu parentMenu)
 	{
 		if (!getGame().getMessenger().isServer())
 			return;
-		
 		final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-		
-		Action boot = new BootPlayerAction(this, messenger);
-		
+		final Action boot = new BootPlayerAction(this, messenger);
 		parentMenu.add(boot);
 		return;
 	}
@@ -150,15 +140,12 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	/**
 	 * @param parentMenu
 	 */
-	protected void addBanPlayer(JMenu parentMenu)
+	protected void addBanPlayer(final JMenu parentMenu)
 	{
 		if (!getGame().getMessenger().isServer())
 			return;
-		
 		final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-		
-		Action ban = new BanPlayerAction(this, messenger);
-		
+		final Action ban = new BanPlayerAction(this, messenger);
 		parentMenu.add(ban);
 		return;
 	}
@@ -166,15 +153,12 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	/**
 	 * @param parentMenu
 	 */
-	protected void addMutePlayer(JMenu parentMenu)
+	protected void addMutePlayer(final JMenu parentMenu)
 	{
 		if (!getGame().getMessenger().isServer())
 			return;
-		
 		final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-		
-		Action mute = new MutePlayerAction(this, messenger);
-		
+		final Action mute = new MutePlayerAction(this, messenger);
 		parentMenu.add(mute);
 		return;
 	}
@@ -182,200 +166,174 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	/**
 	 * @param menuGame
 	 */
-	protected void addSetGamePassword(JMenu parentMenu)
+	protected void addSetGamePassword(final JMenu parentMenu)
 	{
 		if (!getGame().getMessenger().isServer())
 			return;
-		
 		final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-		
 		parentMenu.add(new SetPasswordAction(this, (ClientLoginValidator) messenger.getLoginValidator()));
 	}
 	
 	/**
 	 * @param menuGame
 	 */
-	protected void addShowPlayers(JMenu menuGame)
+	protected void addShowPlayers(final JMenu menuGame)
 	{
 		if (!getGame().getData().getProperties().getEditableProperties().isEmpty())
 		{
-			AbstractAction optionsAction = new AbstractAction("Show Who is Who...")
+			final AbstractAction optionsAction = new AbstractAction("Show Who is Who...")
 			{
-				
-				public void actionPerformed(ActionEvent e)
+				public void actionPerformed(final ActionEvent e)
 				{
 					PlayersPanel.showPlayers(getGame(), m_frame);
 				}
 			};
-			
 			menuGame.add(optionsAction);
-			
 		}
 	}
 	
 	/**
 	 * @param menuBar
 	 */
-	protected void createHelpMenu(JMenuBar menuBar)
+	protected void createHelpMenu(final JMenuBar menuBar)
 	{
-		JMenu helpMenu = new JMenu("Help");
+		final JMenu helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
-		
 		addGameSpecificHelpMenus(helpMenu);
-		
 		addGameNotesMenu(helpMenu);
 		addConsoleMenu(helpMenu);
-		
 		addAboutMenu(helpMenu);
 	}
 	
-	private void createWebHelpMenu(JMenuBar menuBar)
+	private void createWebHelpMenu(final JMenuBar menuBar)
 	{
-		JMenu web = new JMenu("Web");
+		final JMenu web = new JMenu("Web");
 		menuBar.add(web);
-		
 		addWebMenu(web);
 	}
 	
-	private void addWebMenu(JMenu parentMenu)
+	private void addWebMenu(final JMenu parentMenu)
 	{
-		JMenuItem hostingLink = new JMenuItem("How to Host...");
-		JMenuItem mapLink = new JMenuItem("Install Maps...");
-		JMenuItem bugReport = new JMenuItem("Bug Report...");
-		JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
-		JMenuItem warClub = new JMenuItem("War Club & Ladder...");
-		JMenuItem devForum = new JMenuItem("Developer Forum...");
-		JMenuItem donateLink = new JMenuItem("Donate...");
-		JMenuItem guidesLink = new JMenuItem("Guides...");
-		
+		final JMenuItem hostingLink = new JMenuItem("How to Host...");
+		final JMenuItem mapLink = new JMenuItem("Install Maps...");
+		final JMenuItem bugReport = new JMenuItem("Bug Report...");
+		final JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
+		final JMenuItem warClub = new JMenuItem("War Club & Ladder...");
+		final JMenuItem devForum = new JMenuItem("Developer Forum...");
+		final JMenuItem donateLink = new JMenuItem("Donate...");
+		final JMenuItem guidesLink = new JMenuItem("Guides...");
 		hostingLink.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
 					BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
-				} catch (Exception e1)
+				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		
 		mapLink.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
 					BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
-				} catch (Exception e1)
+				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		
 		bugReport.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
 					BareBonesBrowserLaunch.openURL("https://sourceforge.net/tracker/?group_id=44492");
-				} catch (Exception e1)
+				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		
 		lobbyRules.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
 					BareBonesBrowserLaunch.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
-				} catch (Exception e1)
+				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		
 		warClub.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
 					BareBonesBrowserLaunch.openURL("http://www.tripleawarclub.org/");
-				} catch (Exception e1)
+				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		
 		devForum.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
 					BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Forum");
-				} catch (Exception e1)
+				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		
 		donateLink.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
 					BareBonesBrowserLaunch.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
-				} catch (Exception e1)
+				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		
 		guidesLink.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
 					BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Guides");
-				} catch (Exception e1)
+				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		
 		parentMenu.add(hostingLink);
 		parentMenu.add(mapLink);
 		parentMenu.add(bugReport);
@@ -386,126 +344,102 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		parentMenu.add(guidesLink);
 	}
 	
-	protected void addGameSpecificHelpMenus(JMenu helpMenu)
+	protected void addGameSpecificHelpMenus(final JMenu helpMenu)
 	{
-		
 	}
 	
-	protected void addConsoleMenu(JMenu parentMenu)
+	protected void addConsoleMenu(final JMenu parentMenu)
 	{
 		parentMenu.add(new AbstractAction("Show Console...")
-				{
-					
-					public void actionPerformed(ActionEvent e)
-					{
-						Console.getConsole().setVisible(true);
-					}
-				});
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				Console.getConsole().setVisible(true);
+			}
+		});
 	}
 	
 	/**
 	 * @param parentMenu
 	 * @return
 	 */
-	protected void addAboutMenu(JMenu parentMenu)
+	protected void addAboutMenu(final JMenu parentMenu)
 	{
-		String text = "<h2>" + getData().getGameName() + "</h2>" +
-
-		"<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString() +
-					"<br><b>Game:</b> " + getData().getGameName() +
-					"<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>" +
-					"<p>For more information please visit,<br><br>" +
-					"<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";
-		
+		final String text = "<h2>" + getData().getGameName() + "</h2>" + "<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString() + "<br><b>Game:</b> "
+					+ getData().getGameName() + "<br><b>Game Version:</b>" + getData().getGameVersion() + "</p>" + "<p>For more information please visit,<br><br>"
+					+ "<b><a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a></b><br><br>";
 		final JEditorPane editorPane = new JEditorPane();
 		editorPane.setBorder(null);
 		editorPane.setBackground(getBackground());
 		editorPane.setEditable(false);
 		editorPane.setContentType("text/html");
 		editorPane.setText(text);
-		
-		JScrollPane scroll = new JScrollPane(editorPane);
+		final JScrollPane scroll = new JScrollPane(editorPane);
 		scroll.setBorder(null);
-		
 		if (System.getProperty("mrj.version") == null)
 		{
 			parentMenu.addSeparator();
-			
 			parentMenu.add(new AbstractAction("About...")
 			{
-				
-				public void actionPerformed(ActionEvent e)
+				public void actionPerformed(final ActionEvent e)
 				{
 					JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
 				}
 			});
-			
 		}
 		else
 		// On Mac OS X, put the About menu where Mac users expect it to be
 		{
 			Application.getApplication().addApplicationListener(new ApplicationAdapter()
 			{
-				
 				@Override
-				public void handleAbout(ApplicationEvent event)
+				public void handleAbout(final ApplicationEvent event)
 				{
 					event.setHandled(true); // otherwise the default About menu will still show appear
-					
 					JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
 				}
 			});
 		}
-		
 	}
 	
 	/**
 	 * @param parentMenu
 	 */
-	protected void addGameNotesMenu(JMenu parentMenu)
+	protected void addGameNotesMenu(final JMenu parentMenu)
 	{
 		// allow the game developer to write notes that appear in the game
 		// displays whatever is in the notes field in html
 		final String notes = (String) getData().getProperties().get("notes");
 		if (notes != null && notes.trim().length() != 0)
 		{
-			
 			parentMenu.add(new AbstractAction("Game Notes...")
 			{
-				
-				public void actionPerformed(ActionEvent e)
+				public void actionPerformed(final ActionEvent e)
 				{
-					
 					SwingUtilities.invokeLater(new Runnable()
 					{
-						
 						public void run()
 						{
-							JEditorPane editorPane = new JEditorPane();
+							final JEditorPane editorPane = new JEditorPane();
 							editorPane.setEditable(false);
 							editorPane.setContentType("text/html");
 							editorPane.setText(notes);
-							
 							final JScrollPane scroll = new JScrollPane(editorPane);
 							final JDialog dialog = new JDialog(m_frame);
 							dialog.setModal(true);
 							dialog.add(scroll, BorderLayout.CENTER);
-							JPanel buttons = new JPanel();
-							
+							final JPanel buttons = new JPanel();
 							final JButton button = new JButton(new AbstractAction("OK")
 							{
-								
-								public void actionPerformed(ActionEvent e)
+								public void actionPerformed(final ActionEvent e)
 								{
 									dialog.setVisible(false);
 								}
-								
 							});
 							buttons.add(button);
 							dialog.getRootPane().setDefaultButton(button);
 							dialog.add(buttons, BorderLayout.SOUTH);
 							dialog.pack();
-							
 							if (dialog.getWidth() < 300)
 							{
 								dialog.setSize(300, dialog.getHeight());
@@ -514,7 +448,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							{
 								dialog.setSize(dialog.getWidth(), 300);
 							}
-							
 							if (dialog.getWidth() > 500)
 							{
 								dialog.setSize(500, dialog.getHeight());
@@ -523,42 +456,34 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							{
 								dialog.setSize(dialog.getWidth(), 500);
 							}
-							
 							dialog.setLocationRelativeTo(m_frame);
-							
 							dialog.addWindowListener(new WindowAdapter()
 							{
-								
 								@Override
-								public void windowOpened(WindowEvent e)
+								public void windowOpened(final WindowEvent e)
 								{
 									scroll.getVerticalScrollBar().getModel().setValue(0);
 									scroll.getHorizontalScrollBar().getModel().setValue(0);
 									button.requestFocus();
 								}
 							});
-							
 							dialog.setVisible(true);
 							dialog.dispose();
 						}
-						
 					});
-					
 					// JOptionPane.showMessageDialog(m_frame, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
 				}
 			});
-			
 		}
 	}
 	
 	/**
 	 * @param menuBar
 	 */
-	protected void createFileMenu(JMenuBar menuBar)
+	protected void createFileMenu(final JMenuBar menuBar)
 	{
-		JMenu fileMenu = new JMenu("File");
+		final JMenu fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
-		
 		addSaveMenu(fileMenu);
 		addExitMenu(fileMenu);
 	}
@@ -566,33 +491,29 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	/**
 	 * @param parent
 	 */
-	protected void addSaveMenu(JMenu parent)
+	protected void addSaveMenu(final JMenu parent)
 	{
-		JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...")
+		final JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...")
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				// For some strange reason,
 				// the only way to get a Mac OS X native-style file dialog
 				// is to use an AWT FileDialog instead of a Swing JDialog
 				if (GameRunner.isMac())
 				{
-					FileDialog fileDialog = new FileDialog(m_frame);
+					final FileDialog fileDialog = new FileDialog(m_frame);
 					fileDialog.setMode(FileDialog.SAVE);
 					SaveGameFileChooser.ensureDefaultDirExists();
 					fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
 					fileDialog.setFilenameFilter(new FilenameFilter()
 					{
-						
-						public boolean accept(File dir, String name)
+						public boolean accept(final File dir, final String name)
 						{ // the extension should be .tsvg, but find svg extensions as well
 							return name.endsWith(".tsvg") || name.endsWith(".svg");
 						}
 					});
-					
 					fileDialog.setVisible(true);
-					
 					/*DateFormat format = new SimpleDateFormat("yyyy_MM_dd");
 					String defaultFileName = "game_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound();
 					defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
@@ -600,16 +521,14 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 					
 					fileDialog.setFile(defaultFileName);*/
 					String fileName = fileDialog.getFile();
-					String dirName = fileDialog.getDirectory();
-					
+					final String dirName = fileDialog.getDirectory();
 					if (fileName == null)
 						return;
 					else
 					{
 						if (!fileName.endsWith(".tsvg"))
 							fileName += ".tsvg";
-						File f = new File(dirName, fileName);
-						
+						final File f = new File(dirName, fileName);
 						// TODO check this on a MAC
 						// disallow sub directories to be entered (in the form directory/name
 						/* String filePath = f.getPath().substring(0,f.getPath().lastIndexOf("\\"));
@@ -623,78 +542,64 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 						// If the user selects a filename that already exists,
 						// the AWT Dialog on Mac OS X will ask the user for confirmation
 						// so, we don't need to explicitly ask user if they want to overwrite the old file
-						
 						getGame().saveGame(f);
 						JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
-				
 				// Non-Mac platforms should use the normal Swing JFileChooser
 				else
 				{
-					JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-					
-					int rVal = fileChooser.showSaveDialog(m_frame);
+					final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+					final int rVal = fileChooser.showSaveDialog(m_frame);
 					if (rVal == JFileChooser.APPROVE_OPTION)
 					{
 						File f = fileChooser.getSelectedFile();
-						
 						// disallow sub directories to be entered (in the form directory/name) for Windows boxes
 						if (GameRunner.isWindows())
 						{
-							int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
-							String filePath = f.getPath().substring(0, slashIndex);
+							final int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
+							final String filePath = f.getPath().substring(0, slashIndex);
 							if (!fileChooser.getCurrentDirectory().toString().equals(filePath))
 							{
-								int choice = JOptionPane.showConfirmDialog(m_frame,
-											"Sub directories are not allowed in the file name.  Please rename it.", "Cancel?", JOptionPane.DEFAULT_OPTION,
-											JOptionPane.WARNING_MESSAGE);
+								final int choice = JOptionPane.showConfirmDialog(m_frame, "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?",
+											JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
 								return;
 							}
 						}
-						
 						if (!f.getName().toLowerCase().endsWith(".tsvg"))
 						{
 							f = new File(f.getParent(), f.getName() + ".tsvg");
 						}
-						
 						// A small warning so users will not over-write a file,
 						// added by NeKromancer
 						if (f.exists())
 						{
-							int choice = JOptionPane.showConfirmDialog(m_frame,
-										"A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
+							final int choice = JOptionPane.showConfirmDialog(m_frame, "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
 										JOptionPane.WARNING_MESSAGE);
 							if (choice != JOptionPane.OK_OPTION)
 							{
 								return;
 							}
 						}// end if exists
-						
 						getGame().saveGame(f);
 						JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
 					}
-					
 				}
-				
 			}
 		});
 		menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		
 		parent.add(menuFileSave);
 	}
 	
 	/**
 	 * @param parentMenu
 	 */
-	protected void addExitMenu(JMenu parentMenu)
+	protected void addExitMenu(final JMenu parentMenu)
 	{
-		boolean isMac = GameRunner.isMac();
-		
-		JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game")
+		final boolean isMac = GameRunner.isMac();
+		final JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game")
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				m_frame.leaveGame();
 			}
@@ -709,7 +614,6 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			leaveGameMenuExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		}
 		parentMenu.add(leaveGameMenuExit);
-		
 		// Mac OS X automatically creates a Quit menu item under the TripleA menu,
 		// so all we need to do is register that menu item with triplea's shutdown mechanism
 		if (isMac)
@@ -718,14 +622,13 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		}
 		else
 		{ // On non-Mac operating systems, we need to manually create an Exit menu item
-			JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
+			final JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
+			{
+				public void actionPerformed(final ActionEvent e)
 				{
-					
-					public void actionPerformed(ActionEvent e)
-					{
-						m_frame.shutdown();
-					}
-				});
+					m_frame.shutdown();
+				}
+			});
 			parentMenu.add(menuFileExit);
 		}
 	}

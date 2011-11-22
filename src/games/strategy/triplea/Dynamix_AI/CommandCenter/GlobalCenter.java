@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.CommandCenter;
 
 import games.strategy.engine.data.GameData;
@@ -39,7 +38,6 @@ public class GlobalCenter
 {
 	public static boolean IsPaused = false;
 	public static final Object IsPaused_Object = new Object();
-	
 	public static PhaseType FirstDynamixPhase;
 	public static PlayerID FirstDynamixPlayer;
 	public static int GameRound;
@@ -50,7 +48,7 @@ public class GlobalCenter
 		return PUResource;
 	}
 	
-	public static void Initialize(GameData data)
+	public static void Initialize(final GameData data)
 	{
 		// This part just resets all the static variables to their default value so that other code will be able to fill in the real info
 		// (For example, the Dynamix_AI class sets the FirstDynamixPhase variable)
@@ -69,17 +67,15 @@ public class GlobalCenter
 		PUsAtEndOfLastTurn = 0;
 		MergedAndAveragedProductionFronter = null;
 		AllMapUnitTypes = null;
-		
 		// Now we 'initialize' by filling in some of the values (the rest are filled in somewhere else)
 		PUResource = data.getResourceList().getResource(Constants.PUS);
 		MapTerCount = data.getMap().getTerritories().size();
 		// 75 is considered the 'base' map ter count (For comparison, Great Lakes War has 90)
 		MapTerCountScale = (data.getMap().getTerritories().size() / 75.0F);
-		
 		IsFFAGame = true;
-		for (String alliance : data.getAllianceTracker().getAlliances()) // TODO: update this for looking into relationships instead of alliances.
+		for (final String alliance : data.getAllianceTracker().getAlliances()) // TODO: update this for looking into relationships instead of alliances.
 		{
-			List<PlayerID> playersInAlliance = DUtils.ToList(data.getAllianceTracker().getPlayersInAlliance(alliance));
+			final List<PlayerID> playersInAlliance = DUtils.ToList(data.getAllianceTracker().getPlayersInAlliance(alliance));
 			if (playersInAlliance.size() > 1)
 			{
 				IsFFAGame = false;
@@ -87,7 +83,6 @@ public class GlobalCenter
 			}
 		}
 		HighestTerProduction = DUtils.GetHighestTerProduction(data);
-		
 		GenerateMergedAndAveragedProductionFrontier(data);
 	}
 	
@@ -101,7 +96,6 @@ public class GlobalCenter
 	public static int FastestLandUnitMovement;
 	public static int HighestTerProduction;
 	public static int PUsAtEndOfLastTurn;
-	
 	private static ProductionFrontier MergedAndAveragedProductionFronter;
 	public static List<UnitType> AllMapUnitTypes;
 	
@@ -109,49 +103,44 @@ public class GlobalCenter
 	 * Generates a merged and averaged production frontier that can be used to determine TUV of units even when player is neutral or unknown.
 	 * This method also sets the global FastestUnitMovement value and the AllMapUnitTypes list.
 	 */
-	private static void GenerateMergedAndAveragedProductionFrontier(GameData data)
+	private static void GenerateMergedAndAveragedProductionFrontier(final GameData data)
 	{
 		MergedAndAveragedProductionFronter = new ProductionFrontier("Merged and averaged global production frontier", data);
 		AllMapUnitTypes = new ArrayList<UnitType>();
-		
-		HashMap<UnitType, Integer> purchaseCountsForUnit = new HashMap<UnitType, Integer>();
-		HashMap<UnitType, List<Integer>> differentCosts = new HashMap<UnitType, List<Integer>>();
-		for (PlayerID player : data.getPlayerList().getPlayers())
+		final HashMap<UnitType, Integer> purchaseCountsForUnit = new HashMap<UnitType, Integer>();
+		final HashMap<UnitType, List<Integer>> differentCosts = new HashMap<UnitType, List<Integer>>();
+		for (final PlayerID player : data.getPlayerList().getPlayers())
 		{
 			if (player.getProductionFrontier() == null)
 				continue;
-			for (ProductionRule rule : player.getProductionFrontier())
+			for (final ProductionRule rule : player.getProductionFrontier())
 			{
-				UnitType ut = (UnitType) rule.getResults().keySet().iterator().next();
-				UnitAttachment ua = UnitAttachment.get(ut);
+				final UnitType ut = (UnitType) rule.getResults().keySet().iterator().next();
+				final UnitAttachment ua = UnitAttachment.get(ut);
 				DUtils.AddObjToListValueForKeyInMap(differentCosts, ut, rule.getCosts().getInt(PUResource));
 				purchaseCountsForUnit.put(ut, rule.getResults().keySet().size());
-				
-				int movement = ua.getMovement(player);
+				final int movement = ua.getMovement(player);
 				if (movement > FastestUnitMovement)
 					FastestUnitMovement = movement;
 				if (movement > FastestLandUnitMovement && !ua.isSea() && !ua.isAir())
 					FastestLandUnitMovement = movement;
-				
 				AllMapUnitTypes.add(ut);
 			}
 		}
-		
-		for (UnitType unitType : differentCosts.keySet())
+		for (final UnitType unitType : differentCosts.keySet())
 		{
 			int totalCosts = 0;
-			List<Integer> costs = differentCosts.get(unitType);
-			for (int cost : costs)
+			final List<Integer> costs = differentCosts.get(unitType);
+			for (final int cost : costs)
 			{
 				totalCosts += cost;
 			}
-			int averagedCost = (int) ((float) totalCosts / (float) costs.size());
-			
-			IntegerMap<NamedAttachable> results = new IntegerMap<NamedAttachable>();
+			final int averagedCost = (int) ((float) totalCosts / (float) costs.size());
+			final IntegerMap<NamedAttachable> results = new IntegerMap<NamedAttachable>();
 			results.put(unitType, purchaseCountsForUnit.get(unitType));
-			IntegerMap<Resource> cost = new IntegerMap<Resource>();
+			final IntegerMap<Resource> cost = new IntegerMap<Resource>();
 			cost.put(PUResource, averagedCost);
-			ProductionRule rule = new ProductionRule("Averaged production rule for unit " + unitType.getName(), data, results, cost);
+			final ProductionRule rule = new ProductionRule("Averaged production rule for unit " + unitType.getName(), data, results, cost);
 			MergedAndAveragedProductionFronter.addRule(rule);
 		}
 	}

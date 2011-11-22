@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GameObjectReader.java
  * 
  * Created on October 26, 2001, 9:06 PM
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.engine.framework.GameObjectStreamFactory;
@@ -45,10 +43,9 @@ public class GameObjectInputStream extends ObjectInputStream
 	 *            input stream
 	 * @throws IOException
 	 */
-	public GameObjectInputStream(GameObjectStreamFactory dataSource, InputStream input) throws IOException
+	public GameObjectInputStream(final GameObjectStreamFactory dataSource, final InputStream input) throws IOException
 	{
 		super(input);
-		
 		m_dataSource = dataSource;
 		enableResolveObject(true);
 	}
@@ -59,7 +56,7 @@ public class GameObjectInputStream extends ObjectInputStream
 	}
 	
 	@Override
-	protected Object resolveObject(Object obj) throws IOException
+	protected Object resolveObject(final Object obj) throws IOException
 	{
 		// when loading units, we want to maintain == relationships for many
 		// of the game data objects.
@@ -67,7 +64,6 @@ public class GameObjectInputStream extends ObjectInputStream
 		// the same territory, or two object for the same player id or ...
 		// thus, in one vm you can add some units to a territory, and when you serialize the change
 		// and look at the Territory object in another vm, the units have not been added
-		
 		if (obj instanceof GameData)
 		{
 			return m_dataSource.getData();
@@ -84,12 +80,12 @@ public class GameObjectInputStream extends ObjectInputStream
 			return obj;
 	}
 	
-	private Object resolveUnit(Unit unit)
+	private Object resolveUnit(final Unit unit)
 	{
 		m_dataSource.getData().acquireReadLock();
 		try
 		{
-			Unit local = m_dataSource.getData().getUnits().get(unit.getID());
+			final Unit local = m_dataSource.getData().getUnits().get(unit.getID());
 			if (local != null)
 				return local;
 			getData().getUnits().put(unit);
@@ -97,7 +93,6 @@ public class GameObjectInputStream extends ObjectInputStream
 		} finally
 		{
 			m_dataSource.getData().releaseReadLock();
-			
 		}
 	}
 }

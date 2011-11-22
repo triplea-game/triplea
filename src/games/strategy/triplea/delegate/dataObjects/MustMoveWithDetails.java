@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * MustMoveWithReply.java
  * 
  * Created on December 3, 2001, 6:25 PM
  */
-
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Unit;
@@ -41,7 +39,7 @@ public class MustMoveWithDetails implements java.io.Serializable
 	/**
 	 * Maps Unit -> Collection of units.
 	 */
-	private Map<Unit, Collection<Unit>> m_mapping;
+	private final Map<Unit, Collection<Unit>> m_mapping;
 	
 	/**
 	 * Creates new MustMoveWithReplay
@@ -49,15 +47,13 @@ public class MustMoveWithDetails implements java.io.Serializable
 	 * @param mapping
 	 *            a mapping of unit (that must move) -> collection of units
 	 */
-	public MustMoveWithDetails(Map<Unit, Collection<Unit>> mapping)
+	public MustMoveWithDetails(final Map<Unit, Collection<Unit>> mapping)
 	{
 		m_mapping = mapping;
-		
 	}
 	
 	public Map<Unit, Collection<Unit>> getMustMoveWith()
 	{
 		return m_mapping;
 	}
-	
 }

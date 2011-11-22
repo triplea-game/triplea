@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.baseAI;
 
 import games.strategy.engine.data.GameData;
@@ -37,7 +36,6 @@ import java.util.List;
  */
 public class BasicPoliticalAI
 {
-	
 	public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerID id)
 	{
 		final List<PoliticalActionAttachment> acceptableActions = new ArrayList<PoliticalActionAttachment>();
@@ -107,7 +105,6 @@ public class BasicPoliticalAI
 				if (currentType.getRelationshipTypeAttachment().isNeutral() && newType.getRelationshipTypeAttachment().isWar())
 					return true;
 			}
-			
 		}
 		return false;
 	}
@@ -128,7 +125,6 @@ public class BasicPoliticalAI
 				if (currentType.getRelationshipTypeAttachment().isAllied() && (newType.getRelationshipTypeAttachment().isNeutral() || newType.getRelationshipTypeAttachment().isWar()))
 					return true;
 			}
-			
 		}
 		return false;
 	}
@@ -145,5 +141,4 @@ public class BasicPoliticalAI
 		final float production = AbstractEndTurnDelegate.getProduction(data.getMap().getTerritoriesOwnedBy(player), data);
 		return production >= 21 && (nextAction.getCostPU()) <= ((production / 10));
 	}
-	
 }

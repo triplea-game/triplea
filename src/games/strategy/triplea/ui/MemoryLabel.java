@@ -14,43 +14,35 @@ import javax.swing.SwingUtilities;
 
 public class MemoryLabel extends JLabel
 {
-	
 	public MemoryLabel()
 	{
 		update();
-		
 		addMouseListener(new MouseAdapter()
 		{
-			
 			@Override
-			public void mouseReleased(MouseEvent e)
+			public void mouseReleased(final MouseEvent e)
 			{
 				if (e.isPopupTrigger())
 					gc(e);
-				
 			}
 			
 			@Override
-			public void mousePressed(MouseEvent e)
+			public void mousePressed(final MouseEvent e)
 			{
 				if (e.isPopupTrigger())
 					gc(e);
-				
 			}
-			
 		});
-		
-		Thread t = new Thread(new Updater(this), "Memory Label Updater");
+		final Thread t = new Thread(new Updater(this), "Memory Label Updater");
 		t.start();
 	}
 	
-	protected void gc(MouseEvent e)
+	protected void gc(final MouseEvent e)
 	{
-		JPopupMenu menu = new JPopupMenu();
+		final JPopupMenu menu = new JPopupMenu();
 		menu.add(new AbstractAction("Garbage Collect")
 		{
-			
-			public void actionPerformed(ActionEvent arg0)
+			public void actionPerformed(final ActionEvent arg0)
 			{
 				System.gc();
 				System.runFinalization();
@@ -59,31 +51,26 @@ public class MemoryLabel extends JLabel
 				System.gc();
 			}
 		});
-		
 		menu.show(this, e.getX(), e.getY());
 	}
 	
 	public void update()
 	{
-		long free = Runtime.getRuntime().freeMemory();
-		long total = Runtime.getRuntime().totalMemory();
-		long used = total - free;
-		
-		DecimalFormat format = new DecimalFormat("###.##");
-		
+		final long free = Runtime.getRuntime().freeMemory();
+		final long total = Runtime.getRuntime().totalMemory();
+		final long used = total - free;
+		final DecimalFormat format = new DecimalFormat("###.##");
 		setText(format.format(used / 1000000.0) + "/" + format.format(total / 1000000.0) + " MB");
 	}
 	
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
-		JFrame f = new JFrame();
+		final JFrame f = new JFrame();
 		f.add(new MemoryLabel());
 		f.pack();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
-		
 	}
-	
 }
 
 
@@ -97,7 +84,7 @@ class Updater implements Runnable
 {
 	private final WeakReference<MemoryLabel> m_label;
 	
-	Updater(MemoryLabel label)
+	Updater(final MemoryLabel label)
 	{
 		m_label = new WeakReference<MemoryLabel>(label);
 	}
@@ -109,24 +96,20 @@ class Updater implements Runnable
 			sleep();
 			update();
 		}
-		
 	}
 	
 	private void update()
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
-				MemoryLabel label = m_label.get();
+				final MemoryLabel label = m_label.get();
 				if (!label.isVisible())
 					return;
-				
 				if (label != null)
 					label.update();
 			}
-			
 		});
 	}
 	
@@ -135,9 +118,8 @@ class Updater implements Runnable
 		try
 		{
 			Thread.sleep(2000);
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 		}
 	}
-	
 }

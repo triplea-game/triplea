@@ -17,12 +17,12 @@ public class Die
 	// this value is 1 based
 	private final int m_rolledAt;
 	
-	public Die(int value)
+	public Die(final int value)
 	{
 		this(value, -1, DieType.MISS);
 	}
 	
-	public Die(int value, int rolledAt, DieType type)
+	public Die(final int value, final int rolledAt, final DieType type)
 	{
 		m_type = type;
 		m_value = value;
@@ -51,28 +51,25 @@ public class Die
 	{
 		if (m_value > 255 || m_rolledAt > 255)
 			throw new IllegalStateException("too big to serialize");
-		
 		return (m_rolledAt << 8) + (m_value << 16) + (m_type.ordinal());
 	}
 	
 	// read from an int
-	static Die getFromWriteValue(int value)
+	static Die getFromWriteValue(final int value)
 	{
-		int rolledAt = (value & 0x0FF00) >> 8;
-		int roll = (value & 0x0FF0000) >> 16;
-		DieType type = DieType.values()[(value & 0x0F)];
+		final int rolledAt = (value & 0x0FF00) >> 8;
+		final int roll = (value & 0x0FF0000) >> 16;
+		final DieType type = DieType.values()[(value & 0x0F)];
 		return new Die(roll, rolledAt, type);
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (!(o instanceof Die))
 			return false;
-		Die other = (Die) o;
-		return other.m_type == this.m_type &&
-					other.m_value == this.m_value &&
-					other.m_rolledAt == this.m_rolledAt;
+		final Die other = (Die) o;
+		return other.m_type == this.m_type && other.m_value == this.m_value && other.m_rolledAt == this.m_rolledAt;
 	}
 	
 	@Override
@@ -86,5 +83,4 @@ public class Die
 	{
 		return "Die roll:" + m_value + " rolled at:" + m_rolledAt + " type:" + m_type;
 	}
-	
 }

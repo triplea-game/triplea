@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.Others;
 
 /**
@@ -43,7 +42,7 @@ public class TerritoryStatus
 		return WasReinforced_Block || WasReinforced_Frontline || WasReinforced_Stabalize;
 	}
 	
-	public void NotifyTaskPerform(CM_Task task)
+	public void NotifyTaskPerform(final CM_Task task)
 	{
 		if (task.GetTaskType() == CM_TaskType.Land_LandGrab)
 			WasAttacked_LandGrab = true;
@@ -55,7 +54,7 @@ public class TerritoryStatus
 			WasAttacked_Trade = true;
 	}
 	
-	public void NotifyTaskPerform(NCM_Task task)
+	public void NotifyTaskPerform(final NCM_Task task)
 	{
 		if (task.GetTaskType() == NCM_TaskType.Land_Reinforce_Block)
 			WasReinforced_Block = true;

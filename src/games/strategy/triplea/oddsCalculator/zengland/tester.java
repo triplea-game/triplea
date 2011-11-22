@@ -11,14 +11,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.oddsCalculator.zengland;
 
 import java.math.BigDecimal;
 
 public class tester
 {
-	
 	public tester()
 	{
 		super();
@@ -28,9 +26,9 @@ public class tester
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
-		BigDecimal per = new BigDecimal(1.001d);
+		final BigDecimal per = new BigDecimal(1.001d);
 		String res = per.toString();
 		int endSpace = 0;
 		if (res.indexOf(".") + 3 >= res.length() || res.indexOf(".") == -1)
@@ -44,5 +42,4 @@ public class tester
 			res += ".00";
 		res += "%";
 	}
-	
 }

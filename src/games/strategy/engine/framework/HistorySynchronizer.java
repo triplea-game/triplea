@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework;
 
 import games.strategy.engine.data.Change;
@@ -29,7 +28,6 @@ import javax.swing.SwingUtilities;
  */
 public class HistorySynchronizer
 {
-	
 	// Note the GameData here and the game are not the same
 	// we are keeping m_data in synch with the history of the game by listening
 	// for changes
@@ -38,15 +36,13 @@ public class HistorySynchronizer
 	// we want to be able to do this without changing the data for the game
 	private final GameData m_data;
 	private int m_currentRound;
-	
 	private final IGame m_game;
 	
-	public HistorySynchronizer(GameData data, IGame game)
+	public HistorySynchronizer(final GameData data, final IGame game)
 	{
 		// this is not the way to use this.
 		if (game.getData() == data)
 			throw new IllegalStateException("You dont need a history synchronizer to synchronize game data that is managed by an IGame");
-		
 		m_data = data;
 		m_data.forceChangesOnlyInSwingEventThread();
 		data.acquireReadLock();
@@ -57,23 +53,19 @@ public class HistorySynchronizer
 		{
 			data.releaseReadLock();
 		}
-		
 		m_game = game;
 		m_game.getChannelMessenger().registerChannelSubscriber(m_gameModifiedChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
 	}
 	
-	private IGameModifiedChannel m_gameModifiedChannelListener = new IGameModifiedChannel()
+	private final IGameModifiedChannel m_gameModifiedChannelListener = new IGameModifiedChannel()
 	{
-		
 		public void gameDataChanged(final Change aChange)
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				
 				public void run()
 				{
-					
-					Change localizedChange = (Change) translateIntoMyData(aChange);
+					final Change localizedChange = (Change) translateIntoMyData(aChange);
 					m_data.getHistory().getHistoryWriter().addChange(localizedChange);
 				}
 			});
@@ -83,25 +75,20 @@ public class HistorySynchronizer
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				
 				public void run()
 				{
-					
 					m_data.getHistory().getHistoryWriter().startEvent(event);
 				}
 			});
-			
 		}
 		
 		public void addChildToEvent(final String text, final Object renderingData)
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				
 				public void run()
 				{
-					
-					Object translatedRenderingData = translateIntoMyData(renderingData);
+					final Object translatedRenderingData = translateIntoMyData(renderingData);
 					m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, translatedRenderingData));
 				}
 			});
@@ -111,27 +98,21 @@ public class HistorySynchronizer
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				
 				public void run()
 				{
-					
-					Object translatedRenderingData = translateIntoMyData(renderingData);
+					final Object translatedRenderingData = translateIntoMyData(renderingData);
 					m_data.getHistory().getHistoryWriter().setRenderingData(translatedRenderingData);
 				}
 			});
-			
 		}
 		
-		public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, boolean loadedFromSavedGame)
+		public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
 		{
-			
 			// we dont need to advance the game step in this case
 			if (loadedFromSavedGame)
 				return;
-			
 			SwingUtilities.invokeLater(new Runnable()
 			{
-				
 				public void run()
 				{
 					if (m_currentRound != round)
@@ -142,13 +123,11 @@ public class HistorySynchronizer
 					m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
 				}
 			});
-			
 		}
 		
 		public void shutDown()
 		{
 		}
-		
 	};
 	
 	public void deactivate()
@@ -163,9 +142,8 @@ public class HistorySynchronizer
 	 * made so that we can walk up and down the history without changing the
 	 * game.
 	 */
-	private Object translateIntoMyData(Object msg)
+	private Object translateIntoMyData(final Object msg)
 	{
 		return GameDataUtils.translateIntoOtherGameData(msg, m_data);
 	}
-	
 }

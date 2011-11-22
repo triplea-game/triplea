@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * DelegateFinder.java
  * 
  * Created on November 28, 2001, 2:58 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
@@ -30,39 +28,36 @@ import games.strategy.engine.delegate.IDelegate;
  */
 public class DelegateFinder
 {
-	private static final IDelegate findDelegate(GameData data, String delegate_name)
+	private static final IDelegate findDelegate(final GameData data, final String delegate_name)
 	{
-		IDelegate delegate = data.getDelegateList().getDelegate(delegate_name);
+		final IDelegate delegate = data.getDelegateList().getDelegate(delegate_name);
 		if (delegate == null)
 			throw new IllegalStateException(delegate_name + " delegate not found");
 		return delegate;
 	}
 	
-	public static final BattleDelegate battleDelegate(GameData data)
+	public static final BattleDelegate battleDelegate(final GameData data)
 	{
 		return (BattleDelegate) findDelegate(data, "battle");
 	}
 	
-	public static final MoveDelegate moveDelegate(GameData data)
+	public static final MoveDelegate moveDelegate(final GameData data)
 	{
 		return (MoveDelegate) findDelegate(data, "move");
-		
 	}
 	
-	public static final PlaceDelegate placeDelegate(GameData data)
+	public static final PlaceDelegate placeDelegate(final GameData data)
 	{
 		return (PlaceDelegate) findDelegate(data, "place");
-		
 	}
 	
-	public static final TechnologyDelegate techDelegate(GameData data)
+	public static final TechnologyDelegate techDelegate(final GameData data)
 	{
 		return (TechnologyDelegate) findDelegate(data, "tech");
 	}
 	
-	public static final GivePUsDelegate givePUsDelegate(GameData data)
+	public static final GivePUsDelegate givePUsDelegate(final GameData data)
 	{
 		return (GivePUsDelegate) findDelegate(data, "givePUs");
 	}
-	
 }

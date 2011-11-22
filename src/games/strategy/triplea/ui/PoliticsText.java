@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.triplea.ResourceLoader;
@@ -31,11 +30,9 @@ public class PoliticsText
 {
 	// Filename
 	private static final String PROPERTY_FILE = "politicstext.properties";
-	
 	private static PoliticsText s_pt = null;
 	private static long s_timestamp = 0;
 	private final Properties m_properties = new Properties();
-	
 	private final static String BUTTON = "BUTTON";
 	private final static String DESCRIPTION = "DESCRIPTION";
 	private final static String NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
@@ -46,8 +43,8 @@ public class PoliticsText
 	
 	protected PoliticsText()
 	{
-		ResourceLoader loader = ResourceLoader.getMapresourceLoader(UIContext.getMapDir());
-		URL url = loader.getResource(PROPERTY_FILE);
+		final ResourceLoader loader = ResourceLoader.getMapresourceLoader(UIContext.getMapDir());
+		final URL url = loader.getResource(PROPERTY_FILE);
 		if (url == null)
 		{
 			// no propertyfile found
@@ -57,7 +54,7 @@ public class PoliticsText
 			try
 			{
 				m_properties.load(url.openStream());
-			} catch (IOException e)
+			} catch (final IOException e)
 			{
 				System.out.println("Error reading " + PROPERTY_FILE + " : " + e);
 			}
@@ -74,47 +71,47 @@ public class PoliticsText
 		return s_pt;
 	}
 	
-	private String getString(String value)
+	private String getString(final String value)
 	{
 		return m_properties.getProperty(value, "NO: " + value + " set.");
 	}
 	
-	private String getMessage(String politicsKey, String messageKey)
+	private String getMessage(final String politicsKey, final String messageKey)
 	{
 		return getString(politicsKey + "." + messageKey);
 	}
 	
-	public String getButtonText(String politicsKey)
+	public String getButtonText(final String politicsKey)
 	{
 		return getMessage(politicsKey, BUTTON);
 	}
 	
-	public String getDescription(String politicsKey)
+	public String getDescription(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.DESCRIPTION);
 	}
 	
-	public String getNotificationSucccess(String politicsKey)
+	public String getNotificationSucccess(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.NOTIFICATION_SUCCESS);
 	}
 	
-	public String getNotificationSuccessOthers(String politicsKey)
+	public String getNotificationSuccessOthers(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.OTHER_NOTIFICATION_SUCCESS);
 	}
 	
-	public String getNotificationFailure(String politicsKey)
+	public String getNotificationFailure(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.NOTIFICATION_FAILURE);
 	}
 	
-	public String getNotificationFailureOthers(String politicsKey)
+	public String getNotificationFailureOthers(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.OTHER_NOTIFICATION_FAILURE);
 	}
 	
-	public String getAcceptanceQuestion(String politicsKey)
+	public String getAcceptanceQuestion(final String politicsKey)
 	{
 		return getMessage(politicsKey, PoliticsText.ACCEPT_QUESTION);
 	}

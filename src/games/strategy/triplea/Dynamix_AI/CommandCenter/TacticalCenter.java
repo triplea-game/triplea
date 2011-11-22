@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.CommandCenter;
 
 import games.strategy.engine.data.GameData;
@@ -35,14 +34,14 @@ public class TacticalCenter
 {
 	private static HashMap<PlayerID, TacticalCenter> s_TCInstances = new HashMap<PlayerID, TacticalCenter>();
 	
-	public static TacticalCenter get(GameData data, PlayerID player)
+	public static TacticalCenter get(final GameData data, final PlayerID player)
 	{
 		if (!s_TCInstances.containsKey(player))
 			s_TCInstances.put(player, create(data, player));
 		return s_TCInstances.get(player);
 	}
 	
-	private static TacticalCenter create(GameData data, PlayerID player)
+	private static TacticalCenter create(final GameData data, final PlayerID player)
 	{
 		return new TacticalCenter(data, player);
 	}
@@ -61,15 +60,14 @@ public class TacticalCenter
 	@SuppressWarnings("unused")
 	private PlayerID m_player = null;
 	
-	public TacticalCenter(GameData data, PlayerID player)
+	public TacticalCenter(final GameData data, final PlayerID player)
 	{
 		m_data = data;
 		m_player = player;
 	}
 	
 	public List<UnitGroup> AllDelegateUnitGroups = new ArrayList<UnitGroup>();
-	
-	private HashSet<Unit> UnitsToFreezeSoon = new HashSet<Unit>();
+	private final HashSet<Unit> UnitsToFreezeSoon = new HashSet<Unit>();
 	
 	public void PerformBufferedFreezes()
 	{
@@ -80,9 +78,9 @@ public class TacticalCenter
 		UnitsToFreezeSoon.clear();
 	}
 	
-	private HashSet<Unit> FrozenUnits = new HashSet<Unit>();
+	private final HashSet<Unit> FrozenUnits = new HashSet<Unit>();
 	
-	public void FreezeUnits(List<Unit> units)
+	public void FreezeUnits(final List<Unit> units)
 	{
 		if (UnitGroup.IsBufferringMoves())
 			UnitsToFreezeSoon.addAll(units);
@@ -105,22 +103,19 @@ public class TacticalCenter
 	}
 	
 	public HashMap<Territory, Float> BattleRetreatChanceAssignments = new HashMap<Territory, Float>();
+	private final HashMap<Unit, Territory> UnitLocationsAtStartOfTurn = new HashMap<Unit, Territory>();
 	
-	private HashMap<Unit, Territory> UnitLocationsAtStartOfTurn = new HashMap<Unit, Territory>();
-	
-	public void SetUnitStartLocation_IfNotAlreadySet(Unit unit, Territory startTer)
+	public void SetUnitStartLocation_IfNotAlreadySet(final Unit unit, final Territory startTer)
 	{
 		if (UnitLocationsAtStartOfTurn.containsKey(unit))
 			return;
-		
 		UnitLocationsAtStartOfTurn.put(unit, startTer);
 	}
 	
-	public Territory GetUnitLocationAtStartOfTurn(Unit unit)
+	public Territory GetUnitLocationAtStartOfTurn(final Unit unit)
 	{
 		if (!UnitLocationsAtStartOfTurn.containsKey(unit))
 			UnitLocationsAtStartOfTurn.put(unit, DUtils.GetUnitLocation(m_data, unit)); // If it's not set, we must not have moved it yet
-			
 		return UnitLocationsAtStartOfTurn.get(unit);
 	}
 	

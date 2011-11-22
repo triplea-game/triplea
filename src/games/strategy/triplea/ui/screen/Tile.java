@@ -48,28 +48,23 @@ public class Tile
 {
 	private static final boolean DRAW_DEBUG = false;
 	private static final Logger s_logger = Logger.getLogger(Tile.class.getName());
-	
 	// allow the gc to implement memory management
 	private SoftReference<Image> m_imageRef;
 	private boolean m_isDirty = true;
 	private final Rectangle m_bounds;
 	private final int m_x;
 	private final int m_y;
-	
 	private final double m_scale;
-	
 	private final Lock m_lock = new ReentrantLock();
-	
 	private final List<IDrawable> m_contents = new ArrayList<IDrawable>();
 	
-	public Tile(final Rectangle bounds, int x, int y, final double scale)
+	public Tile(final Rectangle bounds, final int x, final int y, final double scale)
 	{
 		// s_logger.log(Level.FINER, "Tile created for:" + bounds);
 		m_bounds = bounds;
 		m_x = x;
 		m_y = y;
 		m_scale = scale;
-		
 	}
 	
 	public boolean isDirty()
@@ -84,18 +79,16 @@ public class Tile
 		}
 	}
 	
-	public Image getImage(GameData data, MapData mapData)
+	public Image getImage(final GameData data, final MapData mapData)
 	{
 		LockUtil.acquireLock(m_lock);
 		try
 		{
-			
 			if (m_imageRef == null)
 			{
 				m_imageRef = new SoftReference<Image>(createBlankImage());
 				m_isDirty = true;
 			}
-			
 			Image image = m_imageRef.get();
 			if (image == null)
 			{
@@ -103,21 +96,17 @@ public class Tile
 				m_imageRef = new SoftReference<Image>(image);
 				m_isDirty = true;
 			}
-			
 			if (m_isDirty)
 			{
-				Graphics2D g = (Graphics2D) image.getGraphics();
-				
+				final Graphics2D g = (Graphics2D) image.getGraphics();
 				draw(g, data, mapData);
 				g.dispose();
 			}
-			
 			return image;
 		} finally
 		{
 			LockUtil.releaseLock(m_lock);
 		}
-		
 	}
 	
 	private BufferedImage createBlankImage()
@@ -139,9 +128,9 @@ public class Tile
 		return m_imageRef.get();
 	}
 	
-	private void draw(Graphics2D g, GameData data, MapData mapData)
+	private void draw(final Graphics2D g, final GameData data, final MapData mapData)
 	{
-		AffineTransform unscaled = g.getTransform();
+		final AffineTransform unscaled = g.getTransform();
 		AffineTransform scaled;
 		if (m_scale != 1)
 		{
@@ -153,39 +142,32 @@ public class Tile
 		{
 			scaled = unscaled;
 		}
-		
-		Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing Tile at" + m_bounds);
-		
+		final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINEST, "Drawing Tile at" + m_bounds);
 		// clear
 		g.setColor(Color.BLACK);
 		g.fill(new Rectangle(0, 0, TileManager.TILE_SIZE, TileManager.TILE_SIZE));
-		
 		Collections.sort(m_contents, new DrawableComparator());
-		Iterator<IDrawable> iter = m_contents.iterator();
-		
+		final Iterator<IDrawable> iter = m_contents.iterator();
 		while (iter.hasNext())
 		{
-			IDrawable drawable = iter.next();
+			final IDrawable drawable = iter.next();
 			drawable.draw(m_bounds, data, g, mapData, unscaled, scaled);
 		}
 		m_isDirty = false;
-		
 		// draw debug graphics
 		if (DRAW_DEBUG)
 		{
 			g.setColor(Color.PINK);
-			Rectangle r = new Rectangle(1, 1, TileManager.TILE_SIZE - 2, TileManager.TILE_SIZE - 2);
+			final Rectangle r = new Rectangle(1, 1, TileManager.TILE_SIZE - 2, TileManager.TILE_SIZE - 2);
 			g.setStroke(new BasicStroke(1));
 			g.draw(r);
 			g.setFont(new Font("Ariel", Font.BOLD, 25));
 			g.drawString(m_x + " " + m_y, 40, 40);
 		}
-		
 		stopWatch.done();
-		
 	}
 	
-	public void addDrawables(Collection<IDrawable> drawables)
+	public void addDrawables(final Collection<IDrawable> drawables)
 	{
 		LockUtil.acquireLock(m_lock);
 		try
@@ -196,10 +178,9 @@ public class Tile
 		{
 			LockUtil.releaseLock(m_lock);
 		}
-		
 	}
 	
-	public void addDrawable(IDrawable d)
+	public void addDrawable(final IDrawable d)
 	{
 		LockUtil.acquireLock(m_lock);
 		try
@@ -210,10 +191,9 @@ public class Tile
 		{
 			LockUtil.releaseLock(m_lock);
 		}
-		
 	}
 	
-	public void removeDrawable(IDrawable d)
+	public void removeDrawable(final IDrawable d)
 	{
 		LockUtil.acquireLock(m_lock);
 		try
@@ -226,7 +206,7 @@ public class Tile
 		}
 	}
 	
-	public void removeDrawables(Collection<IDrawable> c)
+	public void removeDrawables(final Collection<IDrawable> c)
 	{
 		LockUtil.acquireLock(m_lock);
 		try
@@ -237,7 +217,6 @@ public class Tile
 		{
 			LockUtil.releaseLock(m_lock);
 		}
-		
 	}
 	
 	public void clear()
@@ -251,7 +230,6 @@ public class Tile
 		{
 			LockUtil.releaseLock(m_lock);
 		}
-		
 	}
 	
 	public List<IDrawable> getDrawables()
@@ -264,7 +242,6 @@ public class Tile
 		{
 			LockUtil.releaseLock(m_lock);
 		}
-		
 	}
 	
 	public Rectangle getBounds()
@@ -286,5 +263,4 @@ public class Tile
 	{
 		return m_lock;
 	}
-	
 }

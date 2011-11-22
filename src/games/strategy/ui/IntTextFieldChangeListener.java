@@ -3,7 +3,6 @@
  * 
  * Created on December 9, 2001, 9:06 PM
  */
-
 package games.strategy.ui;
 
 /**

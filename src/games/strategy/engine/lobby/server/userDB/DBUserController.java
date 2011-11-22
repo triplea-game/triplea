@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.userDB;
 
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
@@ -34,7 +33,7 @@ public class DBUserController
 	 * 
 	 * @return if this user is valid
 	 */
-	public String validate(String userName, String email, String hashedPassword)
+	public String validate(final String userName, final String email, final String hashedPassword)
 	{
 		if (email == null || !Util.isMailValid(email))
 		{
@@ -44,32 +43,28 @@ public class DBUserController
 		{
 			return "Invalid password";
 		}
-		
 		return validateUserName(userName);
 	}
 	
-	public static String validateUserName(String userName)
+	public static String validateUserName(final String userName)
 	{
 		// is this a valid user?
 		if (userName == null || !userName.matches("[0-9a-zA-Z_-]+") || userName.length() <= 2)
 		{
 			return "Usernames must be at least 3 characters long and can only contain alpha numeric characters, -, and _";
 		}
-		
 		if (userName.contains(InGameLobbyWatcher.LOBBY_WATCHER_NAME))
 		{
 			return InGameLobbyWatcher.LOBBY_WATCHER_NAME + " cannot be part of a name";
 		}
-		
 		if (userName.toLowerCase().indexOf("admin") >= 0)
 		{
 			return "Username can't contain the word admin";
 		}
-		
 		return null;
 	}
 	
-	public static void main(String[] args) throws SQLException
+	public static void main(final String[] args) throws SQLException
 	{
 		Database.getConnection().close();
 	}
@@ -77,86 +72,73 @@ public class DBUserController
 	/**
 	 * @return null if the user does not exist
 	 */
-	public String getPassword(String userName)
+	public String getPassword(final String userName)
 	{
-		String sql = "select password from ta_users where username = ?";
-		Connection con = Database.getConnection();
+		final String sql = "select password from ta_users where username = ?";
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement(sql);
+			final PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, userName);
-			
-			ResultSet rs = ps.executeQuery();
+			final ResultSet rs = ps.executeQuery();
 			String rVal = null;
 			if (rs.next())
 			{
 				rVal = rs.getString(1);
 			}
-			
 			rs.close();
 			ps.close();
-			
 			return rVal;
-			
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
 			throw new IllegalStateException(sqle.getMessage());
-			
 		} finally
 		{
 			DbUtil.closeConnection(con);
 		}
 	}
 	
-	public boolean doesUserExist(String userName)
+	public boolean doesUserExist(final String userName)
 	{
-		String sql = "select username from ta_users where username = ?";
-		Connection con = Database.getConnection();
+		final String sql = "select username from ta_users where username = ?";
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement(sql);
+			final PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, userName);
-			
-			ResultSet rs = ps.executeQuery();
-			boolean found = rs.next();
-			
+			final ResultSet rs = ps.executeQuery();
+			final boolean found = rs.next();
 			rs.close();
 			ps.close();
-			
 			return found;
-			
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
 			throw new IllegalStateException(sqle.getMessage());
-			
 		} finally
 		{
 			DbUtil.closeConnection(con);
 		}
 	}
 	
-	public void updateUser(String name, String email, String hashedPassword, boolean admin)
+	public void updateUser(final String name, final String email, final String hashedPassword, final boolean admin)
 	{
-		String validationErrors = validate(name, email, hashedPassword);
+		final String validationErrors = validate(name, email, hashedPassword);
 		if (validationErrors != null)
 			throw new IllegalStateException(validationErrors);
-		
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
-			
+			final PreparedStatement ps = con.prepareStatement("update ta_users set password = ?,  email = ?, admin = ? where username = ?");
 			ps.setString(1, hashedPassword);
 			ps.setString(2, email);
 			ps.setBoolean(3, admin);
 			ps.setString(4, name);
-			
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.log(Level.SEVERE, "Error updating name:" + name + " email: " + email + " pwd: " + hashedPassword, sqle);
 			throw new IllegalStateException(sqle.getMessage());
@@ -170,16 +152,15 @@ public class DBUserController
 	 * Create a user in the database.
 	 * If an error occured, an IllegalStateException will be thrown with a user displayable error message.
 	 */
-	public void createUser(String name, String email, String hashedPassword, boolean admin)
+	public void createUser(final String name, final String email, final String hashedPassword, final boolean admin)
 	{
-		String validationErrors = validate(name, email, hashedPassword);
+		final String validationErrors = validate(name, email, hashedPassword);
 		if (validationErrors != null)
 			throw new IllegalStateException(validationErrors);
-		
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)");
+			final PreparedStatement ps = con.prepareStatement("insert into ta_users (username, password, email, joined, lastLogin, admin) values (?, ?, ?, ?, ?, ?)");
 			ps.setString(1, name);
 			ps.setString(2, hashedPassword);
 			ps.setString(3, email);
@@ -189,21 +170,19 @@ public class DBUserController
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			if (sqle.getErrorCode() == 30000)
 			{
 				s_logger.info("Tried to create duplicate user for name:" + name + " error:" + sqle.getMessage());
 				throw new IllegalStateException("That user name is already taken");
 			}
-			
 			s_logger.log(Level.SEVERE, "Error inserting name:" + name + " email: " + email + " pwd: " + hashedPassword, sqle);
 			throw new IllegalStateException(sqle.getMessage());
 		} finally
 		{
 			DbUtil.closeConnection(con);
 		}
-		
 	}
 	
 	/**
@@ -211,24 +190,21 @@ public class DBUserController
 	 * 
 	 * This has the side effect of updating the users last login time.
 	 */
-	public boolean login(String userName, String hashedPassword)
+	public boolean login(final String userName, final String hashedPassword)
 	{
-		
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
 			PreparedStatement ps = con.prepareStatement("select username from  ta_users where username = ? and password = ?");
 			ps.setString(1, userName);
 			ps.setString(2, hashedPassword);
-			ResultSet rs = ps.executeQuery();
+			final ResultSet rs = ps.executeQuery();
 			if (!rs.next())
 			{
 				return false;
 			}
-			
 			ps.close();
 			rs.close();
-			
 			// update last login time
 			ps = con.prepareStatement("update ta_users set lastLogin = ? where username = ? ");
 			ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
@@ -236,8 +212,7 @@ public class DBUserController
 			ps.execute();
 			ps.close();
 			return true;
-			
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.log(Level.SEVERE, "Error validating password name:" + userName + " : " + " pwd:" + hashedPassword, sqle);
 			throw new IllegalStateException(sqle.getMessage());
@@ -245,50 +220,36 @@ public class DBUserController
 		{
 			DbUtil.closeConnection(con);
 		}
-		
 	}
 	
 	/**
 	 * 
 	 * @return null if no such user
 	 */
-	public DBUser getUser(String userName)
+	public DBUser getUser(final String userName)
 	{
-		String sql = "select * from ta_users where username = ?";
-		Connection con = Database.getConnection();
+		final String sql = "select * from ta_users where username = ?";
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement(sql);
+			final PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, userName);
-			
-			ResultSet rs = ps.executeQuery();
-			
+			final ResultSet rs = ps.executeQuery();
 			if (!rs.next())
 			{
 				return null;
 			}
-			
-			DBUser user = new DBUser(
-						rs.getString("username"),
-						rs.getString("email"),
-						rs.getBoolean("admin"),
-						rs.getTimestamp("lastLogin"),
-						rs.getTimestamp("joined")
-						);
-			
+			final DBUser user = new DBUser(rs.getString("username"), rs.getString("email"), rs.getBoolean("admin"), rs.getTimestamp("lastLogin"), rs.getTimestamp("joined"));
 			rs.close();
 			ps.close();
-			
 			return user;
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.info("Error for testing user existence:" + userName + " error:" + sqle.getMessage());
 			throw new IllegalStateException(sqle.getMessage());
-			
 		} finally
 		{
 			DbUtil.closeConnection(con);
 		}
 	}
-	
 }

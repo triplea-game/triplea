@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Version.java
  * 
  * Created on January 18, 2002, 3:31 PM
  */
-
 package games.strategy.util;
 
 import java.io.Serializable;
@@ -36,26 +34,24 @@ import java.util.StringTokenizer;
  */
 public class Version implements Serializable, Comparable
 {
-	
 	// maintain compatability with old versions
 	static final long serialVersionUID = -4770210855326775333L;
-	
 	private final int m_major;
 	private final int m_minor;
 	private final int m_point;
 	private final int m_micro;
 	
-	public Version(int major, int minor)
+	public Version(final int major, final int minor)
 	{
 		this(major, minor, 0);
 	}
 	
-	public Version(int major, int minor, int point)
+	public Version(final int major, final int minor, final int point)
 	{
 		this(major, minor, point, 0);
 	}
 	
-	public Version(int major, int minor, int point, int micro)
+	public Version(final int major, final int minor, final int point, final int micro)
 	{
 		m_major = major;
 		m_minor = minor;
@@ -67,18 +63,14 @@ public class Version implements Serializable, Comparable
 	 * version must be of the from xx.xx.xx.xx or xx.xx.xx or
 	 * xx.xx or xx where xx is a positive integer
 	 */
-	public Version(String version)
+	public Version(final String version)
 	{
-		StringTokenizer tokens = new StringTokenizer(version, ".", false);
-		
+		final StringTokenizer tokens = new StringTokenizer(version, ".", false);
 		if (tokens.countTokens() < 1)
 			throw new IllegalArgumentException("invalid version string:" + version);
-		
 		try
 		{
-			
 			m_major = Integer.parseInt(tokens.nextToken());
-			
 			if (tokens.hasMoreTokens())
 			{
 				m_minor = Integer.parseInt(tokens.nextToken());
@@ -87,7 +79,6 @@ public class Version implements Serializable, Comparable
 			{
 				m_minor = 0;
 			}
-			
 			if (tokens.hasMoreTokens())
 			{
 				m_point = Integer.parseInt(tokens.nextToken());
@@ -96,7 +87,6 @@ public class Version implements Serializable, Comparable
 			{
 				m_point = 0;
 			}
-			
 			if (tokens.hasMoreTokens())
 			{
 				m_micro = Integer.parseInt(tokens.nextToken());
@@ -105,15 +95,14 @@ public class Version implements Serializable, Comparable
 			{
 				m_micro = 0;
 			}
-		} catch (NumberFormatException e)
+		} catch (final NumberFormatException e)
 		{
 			throw new IllegalArgumentException("invalid version string:" + version);
 		}
-		
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		return compareTo(o) == 0;
 	}
@@ -124,15 +113,13 @@ public class Version implements Serializable, Comparable
 		return this.toString().hashCode();
 	}
 	
-	public int compareTo(Object o)
+	public int compareTo(final Object o)
 	{
 		if (o == null)
 			return -1;
 		if (!(o instanceof Version))
 			return -1;
-		
-		Version other = (Version) o;
-		
+		final Version other = (Version) o;
 		if (other.m_major > m_major)
 			return 1;
 		if (other.m_major < m_major)
@@ -156,5 +143,4 @@ public class Version implements Serializable, Comparable
 	{
 		return m_major + "." + m_minor + ((m_point != 0 || m_micro != 0) ? "." + m_point : "") + (m_micro != 0 ? "." + m_micro : "");
 	}
-	
 }

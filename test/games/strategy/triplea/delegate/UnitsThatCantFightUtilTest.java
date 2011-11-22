@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
@@ -28,59 +27,40 @@ import junit.framework.TestCase;
 
 public class UnitsThatCantFightUtilTest extends TestCase
 {
-	
 	public void testNoSuicideAttacksAA50AtStart()
 	{
 		// at the start of the game, there are no suicide attacks
-		GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
-		
-		Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
-		
+		final GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
+		final Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
 		assertTrue(territories.isEmpty());
 	}
 	
 	public void testSuicideAttackInAA50()
 	{
-		GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
-		
+		final GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
 		// add a german sub to sz 12
-		Territory sz12 = territory("12 Sea Zone", data);
-		addTo(
-					sz12,
-					transports(data).create(1, germans(data)));
-		
-		Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
-		
+		final Territory sz12 = territory("12 Sea Zone", data);
+		addTo(sz12, transports(data).create(1, germans(data)));
+		final Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
 		assertTrue(territories.contains(sz12));
 	}
 	
 	public void testSuicideAttackInAA50WithTransportedUnits()
 	{
-		GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
-		
+		final GameData data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
 		// add a german sub to sz 12
-		Territory sz12 = territory("12 Sea Zone", data);
-		addTo(
-					sz12,
-					transports(data).create(1, germans(data)));
-		
-		Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
-		
+		final Territory sz12 = territory("12 Sea Zone", data);
+		addTo(sz12, transports(data).create(1, germans(data)));
+		final Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
 		assertTrue(territories.contains(sz12));
 	}
 	
 	public void testSuicideAttackInRevised()
 	{
-		GameData data = LoadGameUtil.loadGame("revised", "revised.xml");
-		
-		Territory sz15 = territory("15 Sea Zone", data);
-		addTo(
-					sz15,
-					transports(data).create(1, germans(data)));
-		
-		Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
-		
+		final GameData data = LoadGameUtil.loadGame("revised", "revised.xml");
+		final Territory sz15 = territory("15 Sea Zone", data);
+		addTo(sz15, transports(data).create(1, germans(data)));
+		final Collection<Territory> territories = new UnitsThatCantFightUtil(data).getTerritoriesWhereUnitsCantFight(germans(data));
 		assertTrue(territories.contains(sz15));
 	}
-	
 }

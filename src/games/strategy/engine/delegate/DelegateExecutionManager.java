@@ -28,9 +28,7 @@ import java.util.logging.Logger;
  */
 public class DelegateExecutionManager
 {
-	
-	private Logger sm_logger = Logger.getLogger(DelegateExecutionManager.class.getName());
-	
+	private final Logger sm_logger = Logger.getLogger(DelegateExecutionManager.class.getName());
 	/*
 	 * Delegate execution can be thought of as a read/write lock.
 	 * Many delegates can be executing at one time (to execute you acquire the read lock), but
@@ -38,8 +36,7 @@ public class DelegateExecutionManager
 	 * 
 	 */
 	private final ReentrantReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
-	private ThreadLocal<Boolean> m_currentThreadHasReadLock = new ThreadLocal<Boolean>();
-	
+	private final ThreadLocal<Boolean> m_currentThreadHasReadLock = new ThreadLocal<Boolean>();
 	private volatile boolean m_isGameOver = false;
 	
 	public void setGameOver()
@@ -62,9 +59,9 @@ public class DelegateExecutionManager
 	 * @param timeToWait
 	 * @return
 	 */
-	public boolean blockDelegateExecution(int timeToWaitMS) throws InterruptedException
+	public boolean blockDelegateExecution(final int timeToWaitMS) throws InterruptedException
 	{
-		boolean rVal = m_readWriteLock.writeLock().tryLock(timeToWaitMS, TimeUnit.MILLISECONDS);
+		final boolean rVal = m_readWriteLock.writeLock().tryLock(timeToWaitMS, TimeUnit.MILLISECONDS);
 		if (!rVal)
 		{
 			// System.out.println(m_readWriteLock.getReadLockCount());
@@ -74,7 +71,6 @@ public class DelegateExecutionManager
 			if (sm_logger.isLoggable(Level.FINE))
 				sm_logger.fine(Thread.currentThread().getName() + " block delegate execution.");
 		}
-		
 		return rVal;
 	}
 	
@@ -86,7 +82,6 @@ public class DelegateExecutionManager
 	{
 		if (sm_logger.isLoggable(Level.FINE))
 			sm_logger.fine(Thread.currentThread().getName() + " resumes delegate execution.");
-		
 		m_readWriteLock.writeLock().unlock();
 	}
 	
@@ -101,47 +96,35 @@ public class DelegateExecutionManager
 	 * 
 	 * Objects on this method will decrement the thread lock count when called, and will increment it again when execution is finished.
 	 */
-	public Object createOutboundImplementation(final Object implementor, Class<?>[] interfaces)
+	public Object createOutboundImplementation(final Object implementor, final Class<?>[] interfaces)
 	{
-		
 		assertGameNotOver();
-		
-		InvocationHandler ih = new InvocationHandler()
+		final InvocationHandler ih = new InvocationHandler()
 		{
-			
-			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
 				assertGameNotOver();
-				
 				final boolean threadLocks = currentThreadHasReadLock();
-				
 				if (threadLocks)
 					leaveDelegateExecution();
 				try
 				{
 					return method.invoke(implementor, args);
-				}
-					catch (MessengerException me)
+				} catch (final MessengerException me)
 				{
 					throw new GameOverException("Game Over");
-				}
-					catch (InvocationTargetException ite)
+				} catch (final InvocationTargetException ite)
 				{
 					assertGameNotOver();
 					throw ite;
-					
+				} finally
+				{
+					if (threadLocks)
+						enterDelegateExecution();
 				}
-					finally
-					{
-						if (threadLocks)
-							enterDelegateExecution();
-					}
-				}
-			
+			}
 		};
-		
 		return Proxy.newProxyInstance(implementor.getClass().getClassLoader(), interfaces, ih);
-		
 	}
 	
 	private void assertGameNotOver()
@@ -156,43 +139,35 @@ public class DelegateExecutionManager
 	 * 
 	 * Objects on this method will increment the thread lock count when called, and will decrement it again when execution is finished.
 	 */
-	public Object createInboundImplementation(final Object implementor, Class<?>[] interfaces)
+	public Object createInboundImplementation(final Object implementor, final Class<?>[] interfaces)
 	{
 		assertGameNotOver();
-		
-		InvocationHandler ih = new WrappedInvocationHandler(implementor)
+		final InvocationHandler ih = new WrappedInvocationHandler(implementor)
 		{
-			
 			@Override
-			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
 				if (super.shouldHandle(method, args))
 					return super.handle(method, args);
-				
 				assertGameNotOver();
-				
 				enterDelegateExecution();
 				try
 				{
 					return method.invoke(implementor, args);
-				}
-					catch (InvocationTargetException ite)
+				} catch (final InvocationTargetException ite)
 				{
 					assertGameNotOver();
 					throw ite.getCause();
-				}
-					catch (RuntimeException re)
+				} catch (final RuntimeException re)
 				{
 					assertGameNotOver();
 					throw re;
+				} finally
+				{
+					leaveDelegateExecution();
 				}
-					finally
-					{
-						leaveDelegateExecution();
-					}
-				}
+			}
 		};
-		
 		return Proxy.newProxyInstance(implementor.getClass().getClassLoader(), interfaces, ih);
 	}
 	
@@ -202,7 +177,6 @@ public class DelegateExecutionManager
 		{
 			sm_logger.fine(Thread.currentThread().getName() + " leaves delegate execution.");
 		}
-		
 		m_readWriteLock.readLock().unlock();
 		m_currentThreadHasReadLock.set(null);
 	}
@@ -213,12 +187,9 @@ public class DelegateExecutionManager
 		{
 			sm_logger.fine(Thread.currentThread().getName() + " enters delegate execution.");
 		}
-		
 		if (currentThreadHasReadLock())
 			throw new IllegalStateException("Already locked?");
-		
 		m_readWriteLock.readLock().lock();
 		m_currentThreadHasReadLock.set(Boolean.TRUE);
 	}
-	
 }

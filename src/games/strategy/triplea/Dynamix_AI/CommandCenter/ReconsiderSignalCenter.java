@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.CommandCenter;
 
 import games.strategy.engine.data.GameData;
@@ -28,14 +27,14 @@ public class ReconsiderSignalCenter
 {
 	private static HashMap<PlayerID, ReconsiderSignalCenter> s_RSCInstances = new HashMap<PlayerID, ReconsiderSignalCenter>();
 	
-	public static ReconsiderSignalCenter get(GameData data, PlayerID player)
+	public static ReconsiderSignalCenter get(final GameData data, final PlayerID player)
 	{
 		if (!s_RSCInstances.containsKey(player))
 			s_RSCInstances.put(player, create(data, player));
 		return s_RSCInstances.get(player);
 	}
 	
-	private static ReconsiderSignalCenter create(GameData data, PlayerID player)
+	private static ReconsiderSignalCenter create(final GameData data, final PlayerID player)
 	{
 		return new ReconsiderSignalCenter(data, player);
 	}
@@ -55,7 +54,7 @@ public class ReconsiderSignalCenter
 	@SuppressWarnings("unused")
 	private PlayerID m_player = null;
 	
-	public ReconsiderSignalCenter(GameData data, PlayerID player)
+	public ReconsiderSignalCenter(final GameData data, final PlayerID player)
 	{
 		m_data = data;
 		m_player = player;

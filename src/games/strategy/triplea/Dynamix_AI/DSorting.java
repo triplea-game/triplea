@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI;
 
 import games.strategy.engine.data.GameData;
@@ -38,26 +37,23 @@ public class DSorting
 {
 	// Think of the compare method like this: the integer returned tells java the position of the first object in relation to the second...
 	// If -1 is return, java puts the first object before the second, 0 means they're equal(not sure which would come first), 1 tells java to put the second object before the first
-	
 	// /////////////////////////////////////////////List Sorting///////////////////////////////////////////////
-	public static List SortListByX(Collection list, Comparator comparator)
+	public static List SortListByX(final Collection list, final Comparator comparator)
 	{
-		List result = new ArrayList(list);
+		final List result = new ArrayList(list);
 		Collections.sort(result, comparator);
 		return result;
 	}
 	
-	public static List SortListByScores_HashMap_A(Collection list, final HashMap<?, ? extends Number> scores)
+	public static List SortListByScores_HashMap_A(final Collection list, final HashMap<?, ? extends Number> scores)
 	{
 		final List result = new ArrayList(list);
 		Collections.sort(result, new Comparator()
 		{
-			
-			public int compare(Object o1, Object o2)
+			public int compare(final Object o1, final Object o2)
 			{
-				double v1 = safeGet(scores, o1);
-				double v2 = safeGet(scores, o2);
-				
+				final double v1 = safeGet(scores, o1);
+				final double v2 = safeGet(scores, o2);
 				if (v1 > v2)
 					return 1;
 				else if (v1 == v2)
@@ -66,7 +62,7 @@ public class DSorting
 					return -1;
 			}
 			
-			private double safeGet(final HashMap<?, ? extends Number> map, Object key)
+			private double safeGet(final HashMap<?, ? extends Number> map, final Object key)
 			{
 				if (!map.containsKey(key))
 					return DConstants.Integer_HalfMin; // Put ones without scores at the bottom of the list
@@ -76,35 +72,32 @@ public class DSorting
 		return result;
 	}
 	
-	public static List SortListByScores_HashMap_D(Collection list, final HashMap<?, ? extends Number> scores)
+	public static List SortListByScores_HashMap_D(final Collection list, final HashMap<?, ? extends Number> scores)
 	{
 		return DUtils.InvertList(SortListByScores_HashMap_A(list, scores));
 	}
 	
-	public static List SortListByScores_List_A(Collection list, Collection scoreList)
+	public static List SortListByScores_List_A(final Collection list, final Collection scoreList)
 	{
 		final HashMap scores = DUtils.ToHashMap(list, scoreList);
 		return SortListByScores_HashMap_A(list, scores);
 	}
 	
-	public static List SortListByScores_List_D(Collection list, Collection scoreList)
+	public static List SortListByScores_List_D(final Collection list, final Collection scoreList)
 	{
 		return DUtils.InvertList(SortListByScores_List_A(list, scoreList));
 	}
 	
 	// /////////////////////////////////////////////End List Sorting///////////////////////////////////////////////
-	
 	// /////////////////////////////////////////////Territory Sorting///////////////////////////////////////////////
 	public static List<Territory> SortTerritoriesByDistance_A(final List<Territory> ters, final GameData data, final Territory target, final Match<Territory> routeMatch)
 	{
 		return SortListByX(ters, new Comparator<Territory>()
 		{
-			
-			public int compare(Territory t1, Territory t2)
+			public int compare(final Territory t1, final Territory t2)
 			{
-				Route route1 = data.getMap().getRoute(t1, target, routeMatch);
-				Route route2 = data.getMap().getRoute(t2, target, routeMatch);
-				
+				final Route route1 = data.getMap().getRoute(t1, target, routeMatch);
+				final Route route2 = data.getMap().getRoute(t2, target, routeMatch);
 				int distance1 = 0;
 				int distance2 = 0;
 				if (route1 == null)
@@ -115,7 +108,6 @@ public class DSorting
 					distance2 = DConstants.Integer_HalfMax;
 				else
 					distance2 = route2.getLength();
-				
 				return ((Integer) distance1).compareTo(distance2);
 			}
 		});
@@ -130,12 +122,10 @@ public class DSorting
 	{
 		return SortListByX(ters, new Comparator<Territory>()
 		{
-			
-			public int compare(Territory t1, Territory t2)
+			public int compare(final Territory t1, final Territory t2)
 			{
-				Route route1 = CachedCalculationCenter.GetLandRoute(data, t1, target);
-				Route route2 = CachedCalculationCenter.GetLandRoute(data, t2, target);
-				
+				final Route route1 = CachedCalculationCenter.GetLandRoute(data, t1, target);
+				final Route route2 = CachedCalculationCenter.GetLandRoute(data, t2, target);
 				int distance1 = 0;
 				int distance2 = 0;
 				if (route1 == null)
@@ -146,7 +136,6 @@ public class DSorting
 					distance2 = DConstants.Integer_HalfMax;
 				else
 					distance2 = route2.getLength();
-				
 				return ((Integer) distance1).compareTo(distance2);
 			}
 		});
@@ -161,12 +150,10 @@ public class DSorting
 	{
 		return SortListByX(ters, new Comparator<Territory>()
 		{
-			
-			public int compare(Territory t1, Territory t2)
+			public int compare(final Territory t1, final Territory t2)
 			{
-				Route route1 = CachedCalculationCenter.GetSeaRoute(data, t1, target);
-				Route route2 = CachedCalculationCenter.GetSeaRoute(data, t2, target);
-				
+				final Route route1 = CachedCalculationCenter.GetSeaRoute(data, t1, target);
+				final Route route2 = CachedCalculationCenter.GetSeaRoute(data, t2, target);
 				int distance1 = 0;
 				int distance2 = 0;
 				if (route1 == null)
@@ -177,7 +164,6 @@ public class DSorting
 					distance2 = DConstants.Integer_HalfMax;
 				else
 					distance2 = route2.getLength();
-				
 				return ((Integer) distance1).compareTo(distance2);
 			}
 		});
@@ -192,12 +178,10 @@ public class DSorting
 	{
 		return SortListByX(ters, new Comparator<Territory>()
 		{
-			
-			public int compare(Territory t1, Territory t2)
+			public int compare(final Territory t1, final Territory t2)
 			{
-				Route route1 = CachedCalculationCenter.GetRoute(data, t1, target);
-				Route route2 = CachedCalculationCenter.GetRoute(data, t2, target);
-				
+				final Route route1 = CachedCalculationCenter.GetRoute(data, t1, target);
+				final Route route2 = CachedCalculationCenter.GetRoute(data, t2, target);
 				int distance1 = 0;
 				int distance2 = 0;
 				if (route1 == null)
@@ -208,7 +192,6 @@ public class DSorting
 					distance2 = DConstants.Integer_HalfMax;
 				else
 					distance2 = route2.getLength();
-				
 				return ((Integer) distance1).compareTo(distance2);
 			}
 		});
@@ -223,28 +206,24 @@ public class DSorting
 	{
 		return SortListByX(ters, new Comparator<Territory>()
 		{
-			
-			public int compare(Territory t1, Territory t2)
+			public int compare(final Territory t1, final Territory t2)
 			{
-				Route route1 = CachedCalculationCenter.GetLandRoute(data, t1, target);
-				Route route2 = CachedCalculationCenter.GetLandRoute(data, t2, target);
-				Route route1_nc = CachedCalculationCenter.GetRoute(data, t1, target);
-				Route route2_nc = CachedCalculationCenter.GetRoute(data, t2, target);
-				
+				final Route route1 = CachedCalculationCenter.GetLandRoute(data, t1, target);
+				final Route route2 = CachedCalculationCenter.GetLandRoute(data, t2, target);
+				final Route route1_nc = CachedCalculationCenter.GetRoute(data, t1, target);
+				final Route route2_nc = CachedCalculationCenter.GetRoute(data, t2, target);
 				if (route1_nc == null && route2_nc == null)
 					return 0; // We can't compare these, so say they're equal
 				if (route1_nc == null)
 					return 1;
 				if (route2_nc == null)
 					return -1;
-				
 				int distance1 = route1_nc.getLength() * 100;
 				int distance2 = route2_nc.getLength() * 100;
 				if (route1 != null)
 					distance1 = route1.getLength();
 				if (route2 != null)
 					distance2 = route2.getLength();
-				
 				return ((Integer) distance1).compareTo(distance2);
 			}
 		});
@@ -256,18 +235,15 @@ public class DSorting
 	}
 	
 	// /////////////////////////////////////////////End Territory Sorting///////////////////////////////////////////////
-	
 	// /////////////////////////////////////////////Unit Sorting///////////////////////////////////////////////
-	public static List<Unit> SortUnitsByCost_A(List<Unit> units, final Resource resource)
+	public static List<Unit> SortUnitsByCost_A(final List<Unit> units, final Resource resource)
 	{
 		return SortListByX(units, new Comparator<Unit>()
 		{
-			
-			public int compare(Unit o1, Unit o2)
+			public int compare(final Unit o1, final Unit o2)
 			{
-				int cost1 = DUtils.GetTUVOfUnits(Collections.singletonList(o1), resource);
-				int cost2 = DUtils.GetTUVOfUnits(Collections.singletonList(o2), resource);
-				
+				final int cost1 = DUtils.GetTUVOfUnits(Collections.singletonList(o1), resource);
+				final int cost2 = DUtils.GetTUVOfUnits(Collections.singletonList(o2), resource);
 				return ((Integer) cost1).compareTo(cost2);
 			}
 		});

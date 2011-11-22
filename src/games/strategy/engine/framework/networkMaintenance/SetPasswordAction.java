@@ -17,7 +17,7 @@ public class SetPasswordAction extends AbstractAction
 	private final ClientLoginValidator m_validator;
 	private final Component m_parent;
 	
-	public SetPasswordAction(Component parent, ClientLoginValidator validator)
+	public SetPasswordAction(final Component parent, final ClientLoginValidator validator)
 	{
 		super("Set Game Password...");
 		// TODO Auto-generated constructor stub
@@ -25,24 +25,18 @@ public class SetPasswordAction extends AbstractAction
 		m_parent = parent;
 	}
 	
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
-		
-		JLabel label = new JLabel("Enter Password, (Leave blank for no password).");
-		JPasswordField passwordField = new JPasswordField();
-		JPanel panel = new JPanel();
+		final JLabel label = new JLabel("Enter Password, (Leave blank for no password).");
+		final JPasswordField passwordField = new JPasswordField();
+		final JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.add(label, BorderLayout.NORTH);
 		panel.add(passwordField, BorderLayout.CENTER);
-		
-		int rVal = JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(m_parent),
-					panel, "Enter Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null
-					);
-		
+		final int rVal = JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(m_parent), panel, "Enter Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 		if (rVal != JOptionPane.OK_OPTION)
 			return;
-		
-		String password = new String(passwordField.getPassword());
+		final String password = new String(passwordField.getPassword());
 		if (password.trim().length() > 0)
 		{
 			m_validator.setGamePassword(password);
@@ -51,7 +45,5 @@ public class SetPasswordAction extends AbstractAction
 		{
 			m_validator.setGamePassword(null);
 		}
-		
 	}
-	
 }

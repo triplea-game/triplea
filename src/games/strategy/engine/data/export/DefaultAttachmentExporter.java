@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * AbstractAttachmentExporter.java
  * 
@@ -40,23 +39,21 @@ import java.util.Iterator;
  */
 public class DefaultAttachmentExporter implements IAttachmentExporter
 {
-	
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.data.export.IAttachmentExporter#getAttachmentOptions(games.strategy.engine.data.IAttachment)
 	 */
-
-	public String getAttachmentOptions(IAttachment attachment)
+	public String getAttachmentOptions(final IAttachment attachment)
 	{
-		StringBuffer xmlfile = new StringBuffer();
-		Iterator<Field> fields = Arrays.asList(attachment.getClass().getDeclaredFields()).iterator();
+		final StringBuffer xmlfile = new StringBuffer();
+		final Iterator<Field> fields = Arrays.asList(attachment.getClass().getDeclaredFields()).iterator();
 		while (fields.hasNext())
 		{
-			Field field = fields.next();
+			final Field field = fields.next();
 			field.setAccessible(true);
 			try
 			{
 				xmlfile.append(printOption(field, attachment));
-			} catch (AttachmentExportException e)
+			} catch (final AttachmentExportException e)
 			{
 				System.err.println(e);
 			}
@@ -72,11 +69,11 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 	 * @return return an xmlline of the option
 	 * @throws AttachmentExportException
 	 */
-	protected String printOption(Field field, IAttachment attachment) throws AttachmentExportException
+	protected String printOption(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			String fieldName = field.getName();
+			final String fieldName = field.getName();
 			if (fieldName.startsWith("m_is"))
 			{
 				// Check for Boolean Options
@@ -85,7 +82,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 				{
 					attachment.getClass().getMethod("setIs" + fieldName.substring(4), java.lang.String.class);
 					return printBooleanOption(field, fieldName.substring(2), attachment);
-				} catch (NoSuchMethodException nsme)
+				} catch (final NoSuchMethodException nsme)
 				{ /* not this one */
 				}
 				try
@@ -93,7 +90,7 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 					// Boolean Option with the set-setter java: boolean m_isFemale & setFemale(String) xml: female
 					attachment.getClass().getMethod("set" + Character.toUpperCase(fieldName.charAt(4)) + fieldName.substring(5), java.lang.String.class);
 					return printBooleanOption(field, "" + Character.toLowerCase(fieldName.charAt(4)) + fieldName.substring(5), attachment);
-				} catch (NoSuchMethodException nsme)
+				} catch (final NoSuchMethodException nsme)
 				{ /* not this one */
 				}
 			}
@@ -116,7 +113,6 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 						{
 							return printIntegerOption(field, fieldName.substring(2), attachment);
 						}
-						
 						if (field.getType().equals(java.lang.String[].class))
 						{
 							return printStringArrayOption(field, fieldName.substring(2), attachment);
@@ -130,60 +126,59 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 							return printUnitTypeOption(field, fieldName.substring(2), attachment);
 						}
 						throw new AttachmentExportException("unknown handler for field: " + field + " of class: " + field.getType());
-					} catch (NullPointerException npe)
+					} catch (final NullPointerException npe)
 					{
 						System.err.println("npe: field: " + fieldName);
 						npe.printStackTrace();
-					} catch (NoSuchMethodException e)
+					} catch (final NoSuchMethodException e)
 					{
 						System.err.println("no method: set" + (Character.toUpperCase(fieldName.charAt(2)) + fieldName.substring(3)) + " found on: " + attachment.getClass().getCanonicalName());
 					}
 				}
 			}
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printOption on field: " + field + " on Attachment: " + attachment.getName());
 		}
 		return "";
 	}
 	
-	private String printUnitTypeOption(Field field, String option, IAttachment attachment) throws AttachmentExportException
+	private String printUnitTypeOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			UnitType value = (UnitType) field.get(attachment);
+			final UnitType value = (UnitType) field.get(attachment);
 			if (value == null)
 				return "";
 			return printDefaultOption(option, value.getName());
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
 		}
 	}
 	
-	private String printPlayerIDOption(Field field, String option, IAttachment attachment) throws AttachmentExportException
+	private String printPlayerIDOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		PlayerID value;
-		
 		try
 		{
 			value = (PlayerID) field.get(attachment);
 			if (value == null)
 				return "";
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printPlayerIDOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
 		}
 		return printDefaultOption(option, value.getName());
 	}
 	
-	private String printStringArrayOption(Field field, String option, IAttachment attachment) throws AttachmentExportException
+	private String printStringArrayOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		String[] valueArray;
 		try
@@ -191,58 +186,58 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 			valueArray = (String[]) field.get(attachment);
 			if (valueArray == null)
 				return "";
-			Iterator<String> values = Arrays.asList(valueArray).iterator();
+			final Iterator<String> values = Arrays.asList(valueArray).iterator();
 			String value = values.next();
 			while (values.hasNext())
 			{
 				value = value + ":" + values.next();
 			}
 			return printDefaultOption(option, value);
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printStringArrayOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printStringArrayOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
 		}
 	}
 	
-	protected String printIntegerOption(Field field, String option, IAttachment attachment, boolean printDefaultValue) throws AttachmentExportException
+	protected String printIntegerOption(final Field field, final String option, final IAttachment attachment, final boolean printDefaultValue) throws AttachmentExportException
 	{
 		int value;
 		try
 		{
 			value = field.getInt(attachment);
 			// don't set default values
-			IAttachment defaultAttachment = attachment.getClass().newInstance();
-			int defaultValue = field.getInt(defaultAttachment);
+			final IAttachment defaultAttachment = attachment.getClass().newInstance();
+			final int defaultValue = field.getInt(defaultAttachment);
 			if (defaultValue != value || printDefaultValue)
 				return printDefaultOption(option, "" + value);
 			else
 				return "";
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printIntegerOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printIntegerOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
-		} catch (InstantiationException e)
+		} catch (final InstantiationException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printIntegerOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
 		}
 	}
 	
-	protected String printIntegerOption(Field field, String option, IAttachment attachment) throws AttachmentExportException
+	protected String printIntegerOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printIntegerOption(field, option, attachment, false);
 	}
 	
-	protected String printStringOption(Field field, String option, IAttachment attachment) throws AttachmentExportException
+	protected String printStringOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printStringOption(field, option, attachment, false);
 	}
 	
-	protected String printStringOption(Field field, String option, IAttachment attachment, boolean printDefaultValue) throws AttachmentExportException
+	protected String printStringOption(final Field field, final String option, final IAttachment attachment, final boolean printDefaultValue) throws AttachmentExportException
 	{
 		String value;
 		try
@@ -251,74 +246,71 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 			if (value == null)
 				return "";
 			// don't set default values
-			IAttachment defaultAttachment = attachment.getClass().newInstance();
-			String defaultValue = (String) field.get(defaultAttachment);
+			final IAttachment defaultAttachment = attachment.getClass().newInstance();
+			final String defaultValue = (String) field.get(defaultAttachment);
 			if (value.equals(defaultValue) && !printDefaultValue)
 				return "";
 			else
 				return printDefaultOption(option, "" + value);
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printStringOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printStringOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
-		} catch (InstantiationException e)
+		} catch (final InstantiationException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printStringOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
-			
 		}
 	}
 	
-	protected String printBooleanOption(Field field, String option, IAttachment attachment) throws AttachmentExportException
+	protected String printBooleanOption(final Field field, final String option, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printBooleanOption(field, option, attachment, false);
 	}
 	
-	protected String printBooleanOption(Field field, String option, IAttachment attachment, boolean printDefaultValue) throws AttachmentExportException
+	protected String printBooleanOption(final Field field, final String option, final IAttachment attachment, final boolean printDefaultValue) throws AttachmentExportException
 	{
 		boolean value = false;
 		try
 		{
 			value = field.getBoolean(attachment);
-			
 			// don't set default values
-			IAttachment defaultAttachment = attachment.getClass().newInstance();
-			boolean defaultValue = field.getBoolean(defaultAttachment);
+			final IAttachment defaultAttachment = attachment.getClass().newInstance();
+			final boolean defaultValue = field.getBoolean(defaultAttachment);
 			if (value == defaultValue && !printDefaultValue)
 				return "";
 			else
 				return printDefaultOption(option, "" + value);
-			
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printBooleanOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printBooleanOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
-		} catch (InstantiationException e)
+		} catch (final InstantiationException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for printBooleanOption on field: " + field + " option: " + option + " on Attachment: " + attachment.getName());
 		}
 	}
 	
-	protected String printDefaultOption(String option, String value)
+	protected String printDefaultOption(final String option, final String value)
 	{
 		return "            <option name=\"" + option + "\" value=\"" + value + "\"/>\n";
 	}
 	
-	protected String printCountOption(String option, String value, String count)
+	protected String printCountOption(final String option, final String value, final String count)
 	{
 		return "            <option name=\"" + option + "\" value=\"" + value + "\" count=\"" + count + "\"/>\n";
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected String printPlayerList(Field field, IAttachment attachment) throws AttachmentExportException
+	protected String printPlayerList(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			ArrayList<PlayerID> playerIds = (ArrayList<PlayerID>) field.get(attachment);
-			Iterator<PlayerID> iplayerIds = playerIds.iterator();
+			final ArrayList<PlayerID> playerIds = (ArrayList<PlayerID>) field.get(attachment);
+			final Iterator<PlayerID> iplayerIds = playerIds.iterator();
 			String returnValue = "";
 			if (iplayerIds.hasNext())
 				returnValue = iplayerIds.next().getName();
@@ -326,50 +318,49 @@ public class DefaultAttachmentExporter implements IAttachmentExporter
 			{
 				returnValue += ":" + iplayerIds.next().getName();
 			}
-			String optionName = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
+			final String optionName = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
 			if (returnValue.length() > 0)
 				return printDefaultOption(optionName, returnValue);
 			return "";
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected String printUnitIntegerMap(Field field, IAttachment attachment) throws AttachmentExportException
+	protected String printUnitIntegerMap(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			String optionName = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
-			IntegerMap<UnitType> map = (IntegerMap<UnitType>) field.get(attachment);
+			final String optionName = "" + Character.toLowerCase(field.getName().charAt(2)) + field.getName().substring(3);
+			final IntegerMap<UnitType> map = (IntegerMap<UnitType>) field.get(attachment);
 			String returnValue = "";
 			if (map == null)
 				return "";
-			Iterator<UnitType> types = map.keySet().iterator();
+			final Iterator<UnitType> types = map.keySet().iterator();
 			while (types.hasNext())
 			{
-				UnitType type = types.next();
-				int number = map.getInt(type);
+				final UnitType type = types.next();
+				final int number = map.getInt(type);
 				if (type == null)
 					returnValue += printCountOption(optionName, "ANY", "" + number);
 				else
 					returnValue += printCountOption(optionName, type.getName(), "" + number);
 			}
 			return returnValue;
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mUnitPresenceHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mUnitPresenceHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (java.lang.ArrayIndexOutOfBoundsException e)
+		} catch (final java.lang.ArrayIndexOutOfBoundsException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mUnitPresenceHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
-	
 }

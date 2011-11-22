@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * MyFormatter.java
  * 
  * Created on January 14, 2002, 4:06 PM
  */
-
 package games.strategy.triplea.formatter;
 
 import games.strategy.engine.data.DefaultNamed;
@@ -47,7 +45,6 @@ import java.util.Map;
  */
 public class MyFormatter
 {
-	
 	/**
 	 * Some exceptions to the rules.
 	 */
@@ -62,53 +59,44 @@ public class MyFormatter
 		s_plural.put("factory", "factories");
 	}
 	
-	public static String unitsToTextNoOwner(Collection<Unit> units)
+	public static String unitsToTextNoOwner(final Collection<Unit> units)
 	{
 		return unitsToTextNoOwner(units, null);
 	}
 	
-	public static String unitsToTextNoOwner(Collection<Unit> units, PlayerID owner)
+	public static String unitsToTextNoOwner(final Collection<Unit> units, final PlayerID owner)
 	{
-		Iterator<Unit> iter = units.iterator();
-		IntegerMap<UnitType> map = new IntegerMap<UnitType>();
-		
+		final Iterator<Unit> iter = units.iterator();
+		final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 		while (iter.hasNext())
 		{
-			Unit unit = iter.next();
+			final Unit unit = iter.next();
 			if (unit == null || unit.getUnitType() == null)
 				throw new IllegalStateException(
 							"Trying to format a unit that does not exist.  If you are using Dynamix AI, then this is being caused by switching maps with the ai (it is still thinking about the last map's units).  Try restarting TripleA every time you switch maps and wish to play with Dynamix AI.");
-			
 			if (owner == null || owner.equals(unit.getOwner()))
 				map.add(unit.getUnitType(), 1);
 		}
-		
-		StringBuilder buf = new StringBuilder();
-		
+		final StringBuilder buf = new StringBuilder();
 		// sort on unit name
-		List<UnitType> sortedList = new ArrayList<UnitType>(map.keySet());
-		Comparator<UnitType> comp = new Comparator<UnitType>()
+		final List<UnitType> sortedList = new ArrayList<UnitType>(map.keySet());
+		final Comparator<UnitType> comp = new Comparator<UnitType>()
 		{
-			
-			public int compare(UnitType u1, UnitType u2)
+			public int compare(final UnitType u1, final UnitType u2)
 			{
-				
 				return u1.getName().compareTo(u2.getName());
 			}
 		};
 		Collections.sort(sortedList, comp);
-		
-		Iterator<UnitType> typeIter = sortedList.iterator();
+		final Iterator<UnitType> typeIter = sortedList.iterator();
 		int count = map.keySet().size();
-		
 		while (typeIter.hasNext())
 		{
-			UnitType type = typeIter.next();
-			int quantity = map.getInt(type);
+			final UnitType type = typeIter.next();
+			final int quantity = map.getInt(type);
 			buf.append(quantity);
 			buf.append(" ");
-			buf.append(quantity > 1 ? pluralize(type.getName()) : type
-						.getName());
+			buf.append(quantity > 1 ? pluralize(type.getName()) : type.getName());
 			count--;
 			if (count > 1)
 				buf.append(", ");
@@ -118,31 +106,26 @@ public class MyFormatter
 		return buf.toString();
 	}
 	
-	public static String unitsToText(Collection<Unit> units)
+	public static String unitsToText(final Collection<Unit> units)
 	{
-		Iterator<Unit> iter = units.iterator();
-		IntegerMap<UnitOwner> map = new IntegerMap<UnitOwner>();
-		
+		final Iterator<Unit> iter = units.iterator();
+		final IntegerMap<UnitOwner> map = new IntegerMap<UnitOwner>();
 		while (iter.hasNext())
 		{
-			Unit unit = iter.next();
-			UnitOwner owner = new UnitOwner(unit.getType(), unit.getOwner());
+			final Unit unit = iter.next();
+			final UnitOwner owner = new UnitOwner(unit.getType(), unit.getOwner());
 			map.add(owner, 1);
 		}
-		
-		StringBuilder buf = new StringBuilder();
-		
-		Iterator<UnitOwner> iter2 = map.keySet().iterator();
+		final StringBuilder buf = new StringBuilder();
+		final Iterator<UnitOwner> iter2 = map.keySet().iterator();
 		int count = map.keySet().size();
-		
 		while (iter2.hasNext())
 		{
-			UnitOwner owner = iter2.next();
-			int quantity = map.getInt(owner);
+			final UnitOwner owner = iter2.next();
+			final int quantity = map.getInt(owner);
 			buf.append(quantity);
 			buf.append(" ");
-			buf.append(quantity > 1 ? pluralize(owner.type.getName())
-						: owner.type.getName());
+			buf.append(quantity > 1 ? pluralize(owner.type.getName()) : owner.type.getName());
 			buf.append(" owned by the ");
 			buf.append(owner.owner.getName());
 			count--;
@@ -157,34 +140,32 @@ public class MyFormatter
 	/**
 	 * Equivalent to territoriesToText(territories, ",");
 	 */
-	public static String territoriesToText(Collection<Territory> territories)
+	public static String territoriesToText(final Collection<Territory> territories)
 	{
 		return territoriesToText(territories, ",");
 	}
 	
-	public static String territoriesToText(Collection<Territory> territories,
-				String seperator)
+	public static String territoriesToText(final Collection<Territory> territories, final String seperator)
 	{
-		Iterator<Territory> iter = territories.iterator();
-		StringBuilder buffer = new StringBuilder();
+		final Iterator<Territory> iter = territories.iterator();
+		final StringBuilder buffer = new StringBuilder();
 		while (iter.hasNext())
 		{
 			buffer.append((iter.next()).getName());
 			if (iter.hasNext())
 				buffer.append(" ").append(seperator).append(" ");
-			
 		}
 		return buffer.toString();
 	}
 	
-	public static String pluralize(String in, int quantity)
+	public static String pluralize(final String in, final int quantity)
 	{
 		if (quantity == -1 || quantity == 1)
 			return in;
 		return pluralize(in);
 	}
 	
-	public static String attachmentNameToText(String attachmentGetName)
+	public static String attachmentNameToText(final String attachmentGetName)
 	{
 		String toText = attachmentGetName;
 		if (attachmentGetName.startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME))
@@ -213,17 +194,16 @@ public class MyFormatter
 			toText = attachmentGetName.replaceFirst(Constants.PLAYER_ATTACHMENT_NAME, "Player Properties ");
 		else if (attachmentGetName.startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
 			toText = attachmentGetName.replaceFirst(Constants.POLITICALACTION_ATTACHMENT_PREFIX, "Political Action ");
-		
 		toText = toText.replaceAll("_", " ");
 		toText = toText.replaceAll("  ", " ");
 		toText = toText.trim();
 		return toText;
 	}
 	
-	public static String listOfArraysToString(ArrayList<String[]> listOfArrays)
+	public static String listOfArraysToString(final ArrayList<String[]> listOfArrays)
 	{
 		String toText = "[";
-		for (String[] s : listOfArrays)
+		for (final String[] s : listOfArrays)
 		{
 			toText += Arrays.toString(s);
 			toText += ",";
@@ -235,19 +215,18 @@ public class MyFormatter
 	/**
 	 * Is pluralize even a word?
 	 */
-	public static String pluralize(String in)
+	public static String pluralize(final String in)
 	{
 		if (s_plural.containsKey(in))
 			return s_plural.get(in);
 		if (in.endsWith("man"))
 			return in.substring(0, in.lastIndexOf("man")) + "men";
-		
 		return in + "s";
 	}
 	
-	public static String asDice(DiceRoll roll)
+	public static String asDice(final DiceRoll roll)
 	{
-		StringBuilder buf = new StringBuilder();
+		final StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < roll.size(); i++)
 		{
 			buf.append(roll.getDie(i).getValue() + 1);
@@ -257,9 +236,9 @@ public class MyFormatter
 		return buf.toString();
 	}
 	
-	public static String asDice(int[] rolls)
+	public static String asDice(final int[] rolls)
 	{
-		StringBuilder buf = new StringBuilder(rolls.length * 2);
+		final StringBuilder buf = new StringBuilder(rolls.length * 2);
 		for (int i = 0; i < rolls.length; i++)
 		{
 			buf.append(rolls[i] + 1);
@@ -271,13 +250,14 @@ public class MyFormatter
 	
 	/**
 	 * For use with any DefaultNamed (this includes any NamedAttachable, like PlayerID, UnitType, etc.)
+	 * 
 	 * @param collection
 	 * @return
 	 */
-	public static String asList(Collection<? extends DefaultNamed> collection)
+	public static String asList(final Collection<? extends DefaultNamed> collection)
 	{
-		StringBuilder buf = new StringBuilder();
-		for (DefaultNamed o : collection)
+		final StringBuilder buf = new StringBuilder();
+		for (final DefaultNamed o : collection)
 		{
 			buf.append(", ");
 			buf.append(o.getName());
@@ -289,28 +269,26 @@ public class MyFormatter
 	private MyFormatter()
 	{
 	}
-	
 }
 
 
 class UnitOwner
 {
 	public UnitType type;
-	
 	public PlayerID owner;
 	
-	UnitOwner(UnitType type, PlayerID id)
+	UnitOwner(final UnitType type, final PlayerID id)
 	{
 		this.type = type;
 		this.owner = id;
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == null)
 			return false;
-		UnitOwner other = (UnitOwner) o;
+		final UnitOwner other = (UnitOwner) o;
 		return other.type.equals(this.type) && other.owner.equals(this.owner);
 	}
 	
@@ -319,5 +297,4 @@ class UnitOwner
 	{
 		return type.hashCode() ^ owner.hashCode();
 	}
-	
 }

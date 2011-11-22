@@ -24,43 +24,26 @@ import junit.framework.TestCase;
  */
 public class EmailValidatorTest extends TestCase
 {
-	
 	/**
 	 * @param arg0
 	 */
-	public EmailValidatorTest(String arg0)
+	public EmailValidatorTest(final String arg0)
 	{
 		super(arg0);
 	}
 	
 	public void testValidEmail()
 	{
-		String[] good = new String[]
-									{
-												"some@some.com",
-												"some.someMore@some.com",
-												"some@some.com some2@some2.com",
-												"some@some.com some2@some2.co.uk",
-												"some@some.com some2@some2.co.br",
-												"",
-												"some@some.some.some.com"
-									};
-		String[] bad = new String[]
-									{
-						"test"
-
-						};
-		
+		final String[] good = new String[] { "some@some.com", "some.someMore@some.com", "some@some.com some2@some2.com", "some@some.com some2@some2.co.uk", "some@some.com some2@some2.co.br", "",
+					"some@some.some.some.com" };
+		final String[] bad = new String[] { "test" };
 		for (int i = 0; i < good.length; i++)
 		{
 			assertTrue(good[i] + " is good but failed", Util.isMailValid(good[i]));
 		}
-		
 		for (int i = 0; i < bad.length; i++)
 		{
 			assertFalse(bad[i] + " is bad but passed", Util.isMailValid(bad[i]));
 		}
-		
 	}
-	
 }

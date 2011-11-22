@@ -10,33 +10,31 @@ import java.util.List;
 
 public class TechnologyFrontier extends GameDataComponent implements Iterable<TechAdvance>
 {
-	
 	private static final long serialVersionUID = -5245743727479551766L;
-	private List<TechAdvance> m_techs = new ArrayList<TechAdvance>();
+	private final List<TechAdvance> m_techs = new ArrayList<TechAdvance>();
 	private List<TechAdvance> m_cachedTechs;
 	private final String m_name;
 	
-	public TechnologyFrontier(String name, GameData data)
+	public TechnologyFrontier(final String name, final GameData data)
 	{
 		super(data);
 		m_name = name;
 	}
 	
-	public void addAdvance(TechAdvance t)
+	public void addAdvance(final TechAdvance t)
 	{
 		m_cachedTechs = null;
 		m_techs.add(t);
 		Util.reorder(m_techs, getData().getTechnologyFrontier().getTechs());
-		
 	}
 	
-	public void addAdvance(List<TechAdvance> list)
+	public void addAdvance(final List<TechAdvance> list)
 	{
-		for (TechAdvance t : list)
+		for (final TechAdvance t : list)
 			addAdvance(t);
 	}
 	
-	public void removeAdvance(TechAdvance t)
+	public void removeAdvance(final TechAdvance t)
 	{
 		if (!m_techs.contains(t))
 		{
@@ -46,17 +44,17 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 		m_techs.remove(t);
 	}
 	
-	public TechAdvance getAdvanceByProperty(String property)
+	public TechAdvance getAdvanceByProperty(final String property)
 	{
-		for (TechAdvance ta : m_techs)
+		for (final TechAdvance ta : m_techs)
 			if (ta.getProperty().equals(property))
 				return ta;
 		return null;
 	}
 	
-	public TechAdvance getAdvanceByName(String name)
+	public TechAdvance getAdvanceByName(final String name)
 	{
-		for (TechAdvance ta : m_techs)
+		for (final TechAdvance ta : m_techs)
 			if (ta.getName().equals(name))
 				return ta;
 		return null;
@@ -91,14 +89,11 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == null || !(o instanceof TechnologyFrontier))
 			return false;
-		
-		TechnologyFrontier other = (TechnologyFrontier) o;
-		
+		final TechnologyFrontier other = (TechnologyFrontier) o;
 		return this.m_name.equals(other.getName());
 	}
-	
 }

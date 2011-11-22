@@ -31,9 +31,9 @@ public class BrowserControl
 	 *            or
 	 *            "file://").
 	 */
-	public static void displayURL(String url)
+	public static void displayURL(final String url)
 	{
-		boolean windows = isWindowsPlatform();
+		final boolean windows = isWindowsPlatform();
 		String cmd = null;
 		try
 		{
@@ -56,7 +56,7 @@ public class BrowserControl
 				{
 					// wait for exit code -- if it's 0, command worked,
 					// otherwise we need to start the browser up.
-					int exitCode = p.waitFor();
+					final int exitCode = p.waitFor();
 					if (exitCode != 0)
 					{
 						// Command failed, start up the browser
@@ -64,14 +64,13 @@ public class BrowserControl
 						cmd = UNIX_PATH + " " + url;
 						p = Runtime.getRuntime().exec(cmd);
 					}
-				} catch (InterruptedException x)
+				} catch (final InterruptedException x)
 				{
-					System.err.println("Error bringing up browser, cmd='" +
-										cmd + "'");
+					System.err.println("Error bringing up browser, cmd='" + cmd + "'");
 					System.err.println("Caught: " + x);
 				}
 			}
-		} catch (IOException x)
+		} catch (final IOException x)
 		{
 			// couldn't exec browser
 			System.err.println("Could not invoke browser, command=" + cmd);
@@ -87,7 +86,7 @@ public class BrowserControl
 	 */
 	public static boolean isWindowsPlatform()
 	{
-		String os = System.getProperty("os.name");
+		final String os = System.getProperty("os.name");
 		if (os != null && os.startsWith(WIN_ID))
 			return true;
 		else
@@ -97,7 +96,7 @@ public class BrowserControl
 	/**
 	 * Simple example.
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		displayURL("http://www.javaworld.com");
 	}

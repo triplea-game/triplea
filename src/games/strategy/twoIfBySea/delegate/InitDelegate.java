@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.twoIfBySea.delegate;
 
 /**
@@ -29,15 +28,13 @@ package games.strategy.twoIfBySea.delegate;
  * @author Sean Bridges
  * 
  */
-
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.InitializationDelegate;
 
 public class InitDelegate extends InitializationDelegate
 {
-	
 	@Override
-	protected void init(IDelegateBridge aBridge)
+	protected void init(final IDelegateBridge aBridge)
 	{
 		super.init(aBridge);
 	}

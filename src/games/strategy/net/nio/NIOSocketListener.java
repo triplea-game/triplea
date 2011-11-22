@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net.nio;
 
 import games.strategy.net.INode;
@@ -24,7 +23,6 @@ import java.nio.channels.SocketChannel;
  */
 public interface NIOSocketListener
 {
-	
 	/**
 	 * This connection will leave quarantine.
 	 * 
@@ -36,7 +34,6 @@ public interface NIOSocketListener
 	/**
 	 * An error occured on the channel and it was shut down.
 	 */
-	
 	public void socketError(SocketChannel channel, Exception error);
 	
 	/**
@@ -57,5 +54,4 @@ public interface NIOSocketListener
 	 * 
 	 */
 	public INode getLocalNode();
-	
 }

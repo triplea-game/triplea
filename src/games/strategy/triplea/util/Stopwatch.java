@@ -51,5 +51,4 @@ public class Stopwatch
 			m_logger.log(m_level, m_taskDescription + " took " + (System.currentTimeMillis() - m_startTime) + " ms");
 		}
 	}
-	
 }

@@ -24,159 +24,130 @@ public class MessengerLoginTest extends TestCase
 	
 	public void testSimple() throws Exception
 	{
-		ILoginValidator validator = new ILoginValidator()
+		final ILoginValidator validator = new ILoginValidator()
 		{
-			
-			public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String mac, SocketAddress remoteAddress)
+			public String verifyConnection(final Map<String, String> propertiesSentToClient, final Map<String, String> propertiesReadFromClient, final String clientName, final String mac,
+						final SocketAddress remoteAddress)
 			{
 				return null;
 			}
 			
-			public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress)
+			public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress)
 			{
 				return new HashMap<String, String>();
 			}
 		};
-		
-		IConnectionLogin login = new IConnectionLogin()
+		final IConnectionLogin login = new IConnectionLogin()
 		{
-			
-			public void notifyFailedLogin(String message)
+			public void notifyFailedLogin(final String message)
 			{
 				fail();
 			}
 			
-			public Map<String, String> getProperties(Map<String, String> challengProperties)
+			public Map<String, String> getProperties(final Map<String, String> challengProperties)
 			{
 				return new HashMap<String, String>();
 			}
-			
 		};
-		
-		ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
+		final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
 		try
 		{
 			server.setLoginValidator(validator);
-			
 			server.setAcceptNewConnections(true);
-			
-			String mac = MacFinder.GetHashedMacAddress();
-			ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
-			
+			final String mac = MacFinder.GetHashedMacAddress();
+			final ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
 			client.shutDown();
 		} finally
 		{
 			server.shutDown();
 		}
-		
 	}
 	
 	public void testRefused() throws Exception
 	{
-		ILoginValidator validator = new ILoginValidator()
+		final ILoginValidator validator = new ILoginValidator()
 		{
-			
-			public String verifyConnection(Map<String, String> propertiesSentToClient, Map<String, String> propertiesReadFromClient, String clientName, String mac, SocketAddress remoteAddress)
+			public String verifyConnection(final Map<String, String> propertiesSentToClient, final Map<String, String> propertiesReadFromClient, final String clientName, final String mac,
+						final SocketAddress remoteAddress)
 			{
 				return "error";
 			}
 			
-			public Map<String, String> getChallengeProperties(String userName, SocketAddress remoteAddress)
+			public Map<String, String> getChallengeProperties(final String userName, final SocketAddress remoteAddress)
 			{
 				return new HashMap<String, String>();
 			}
 		};
-		
-		IConnectionLogin login = new IConnectionLogin()
+		final IConnectionLogin login = new IConnectionLogin()
 		{
-			
-			public void notifyFailedLogin(String message)
+			public void notifyFailedLogin(final String message)
 			{
-				
 			}
 			
-			public Map<String, String> getProperties(Map<String, String> challengProperties)
+			public Map<String, String> getProperties(final Map<String, String> challengProperties)
 			{
 				return new HashMap<String, String>();
 			}
-			
 		};
-		
-		ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
+		final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
 		try
 		{
 			server.setLoginValidator(validator);
-			
 			server.setAcceptNewConnections(true);
-			
 			try
 			{
-				String mac = MacFinder.GetHashedMacAddress();
+				final String mac = MacFinder.GetHashedMacAddress();
 				new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
 				fail("we should not have logged in");
-			} catch (CouldNotLogInException expected)
+			} catch (final CouldNotLogInException expected)
 			{
 				// we expect this exception
 			}
-			
 		} finally
 		{
 			server.shutDown();
 		}
-		
 	}
 	
 	public void testGetMagic()
 	{
-		String salt = "falafel";
-		String password = "king";
-		String encrypted = MD5Crypt.crypt(password, salt, MD5Crypt.MAGIC);
+		final String salt = "falafel";
+		final String password = "king";
+		final String encrypted = MD5Crypt.crypt(password, salt, MD5Crypt.MAGIC);
 		assertEquals(salt, MD5Crypt.getSalt(MD5Crypt.MAGIC, encrypted));
-		
 	}
 	
 	public void testPassword() throws Exception
 	{
-		
-		ClientLoginValidator validator = new ClientLoginValidator();
+		final ClientLoginValidator validator = new ClientLoginValidator();
 		validator.setGamePassword("foo");
-		
-		IConnectionLogin login = new IConnectionLogin()
+		final IConnectionLogin login = new IConnectionLogin()
 		{
-			
-			public void notifyFailedLogin(String message)
+			public void notifyFailedLogin(final String message)
 			{
 				fail();
 			}
 			
-			public Map<String, String> getProperties(Map<String, String> challengProperties)
+			public Map<String, String> getProperties(final Map<String, String> challengProperties)
 			{
-				String salt = challengProperties.get(ClientLoginValidator.SALT_PROPERTY);
-				
-				HashMap<String, String> rVal = new HashMap<String, String>();
+				final String salt = challengProperties.get(ClientLoginValidator.SALT_PROPERTY);
+				final HashMap<String, String> rVal = new HashMap<String, String>();
 				rVal.put(ClientLogin.PASSWORD_PROPERTY, MD5Crypt.crypt("foo", salt));
 				rVal.put(ClientLogin.ENGINE_VERSION_PROPERTY, EngineVersion.VERSION.toString());
 				return rVal;
 			}
-			
 		};
-		
-		ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
+		final ServerMessenger server = new ServerMessenger("test", SERVER_PORT);
 		try
 		{
 			server.setLoginValidator(validator);
-			
 			server.setAcceptNewConnections(true);
-			
-			String mac = MacFinder.GetHashedMacAddress();
-			ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
-			
+			final String mac = MacFinder.GetHashedMacAddress();
+			final ClientMessenger client = new ClientMessenger("localhost", SERVER_PORT, "fee", mac, new DefaultObjectStreamFactory(), login);
 			client.shutDown();
 		} finally
 		{
 			server.shutDown();
 		}
-		
 	}
-	
 }

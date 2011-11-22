@@ -7,45 +7,34 @@ import javax.swing.SwingUtilities;
 
 public class BackgroundTaskRunner
 {
-	
-	public static void runInBackground(Component parent, String waitMessage, final Runnable r)
+	public static void runInBackground(final Component parent, final String waitMessage, final Runnable r)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
-		
 		final WaitDialog window = new WaitDialog(parent, waitMessage);
-		
 		final AtomicBoolean doneWait = new AtomicBoolean(false);
-		
-		Thread t = new Thread(new Runnable()
+		final Thread t = new Thread(new Runnable()
 		{
-			
 			public void run()
 			{
 				try
 				{
 					r.run();
-				}
-					finally
+				} finally
+				{
+					SwingUtilities.invokeLater(new Runnable()
 					{
-						SwingUtilities.invokeLater(new Runnable()
-						{
-							
-							public void run()
+						public void run()
 						{
 							doneWait.set(true);
 							window.setVisible(false);
 							window.dispose();
 						}
-							
-						});
-						
-					}
+					});
 				}
-			
+			}
 		});
 		t.start();
-		
 		if (!doneWait.get())
 		{
 			window.pack();
@@ -53,5 +42,4 @@ public class BackgroundTaskRunner
 			window.setVisible(true);
 		}
 	}
-	
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.common.player;
 
 import games.strategy.engine.data.GameData;
@@ -26,24 +25,23 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
  */
 public abstract class AbstractBasePlayer implements IGamePlayer
 {
-	protected final String m_name; // what nation are we playing?  ex: "Americans"
+	protected final String m_name; // what nation are we playing? ex: "Americans"
 	protected final String m_type; // what are we? ex: "Human", or "Moore N. Able (AI)"
 	protected PlayerID m_id;
 	protected IPlayerBridge m_bridge;
-	
 	protected boolean m_scrambledUnitsReturned = false;
 	
 	/**
 	 * @param name
 	 *            - the name of the player.
 	 */
-	public AbstractBasePlayer(String name, String type)
+	public AbstractBasePlayer(final String name, final String type)
 	{
 		m_name = name;
 		m_type = type;
 	}
 	
-	public void initialize(IPlayerBridge bridge, PlayerID id)
+	public void initialize(final IPlayerBridge bridge, final PlayerID id)
 	{
 		m_bridge = bridge;
 		m_id = id;
@@ -83,9 +81,6 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 	/**
 	 * The given phase has started. We parse the phase name and call the apropiate method.
 	 */
-	
 	public abstract void start(String stepName);
-	
 	// public abstract Class<?> getRemotePlayerType();
-	
 }

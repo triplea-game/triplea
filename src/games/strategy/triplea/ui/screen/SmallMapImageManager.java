@@ -42,102 +42,79 @@ public class SmallMapImageManager
 {
 	private static final Logger s_logger = Logger.getLogger(SmallMapImageManager.class.getName());
 	private final int UNIT_BOX_SIZE = 4;
-	
 	private final ImageScrollerSmallView m_view;
 	private final Image m_offscreen;
 	private final TileManager m_tileManager;
 	
-	public SmallMapImageManager(final ImageScrollerSmallView view, BufferedImage offscreen, TileManager tileManager)
+	public SmallMapImageManager(final ImageScrollerSmallView view, final BufferedImage offscreen, final TileManager tileManager)
 	{
 		m_view = view;
 		m_offscreen = Util.copyImage(offscreen, false);
 		m_tileManager = tileManager;
 	}
 	
-	public void update(GameData data, MapData mapData)
+	public void update(final GameData data, final MapData mapData)
 	{
-		Stopwatch stopwatch = new Stopwatch(s_logger, Level.FINEST, "Small map updating took");
-		
-		Graphics onScreenGraphics = m_view.getOffScreenImage().getGraphics();
-		
+		final Stopwatch stopwatch = new Stopwatch(s_logger, Level.FINEST, "Small map updating took");
+		final Graphics onScreenGraphics = m_view.getOffScreenImage().getGraphics();
 		onScreenGraphics.drawImage(m_offscreen, 0, 0, null);
-		
-		Iterator<UnitsDrawer> iter = new ArrayList<UnitsDrawer>(m_tileManager.getUnitDrawables()).iterator();
+		final Iterator<UnitsDrawer> iter = new ArrayList<UnitsDrawer>(m_tileManager.getUnitDrawables()).iterator();
 		while (iter.hasNext())
 		{
-			UnitsDrawer drawer = iter.next();
-			int x = (int) (drawer.getPlacementPoint().x * m_view.getRatioX());
-			int y = (int) (drawer.getPlacementPoint().y * m_view.getRatioY());
-			
+			final UnitsDrawer drawer = iter.next();
+			final int x = (int) (drawer.getPlacementPoint().x * m_view.getRatioX());
+			final int y = (int) (drawer.getPlacementPoint().y * m_view.getRatioY());
 			onScreenGraphics.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker());
 			onScreenGraphics.fillRect(x, y, UNIT_BOX_SIZE, UNIT_BOX_SIZE);
 		}
-		
 		onScreenGraphics.dispose();
 		stopwatch.done();
-		
 	}
 	
-	public void updateTerritoryOwner(Territory t, GameData data, MapData mapData)
+	public void updateTerritoryOwner(final Territory t, final GameData data, final MapData mapData)
 	{
 		if (t.isWater())
 			return;
-		
-		Rectangle bounds = new Rectangle(mapData.getBoundingRect(t.getName()));
-		
+		final Rectangle bounds = new Rectangle(mapData.getBoundingRect(t.getName()));
 		// create a large image for the territory
-		Image largeImage = Util.createImage(bounds.width, bounds.height, true);
-		
+		final Image largeImage = Util.createImage(bounds.width, bounds.height, true);
 		// make it transparent
 		// http://www-106.ibm.com/developerworks/library/j-begjava/
 		{
-			Graphics2D g = (Graphics2D) largeImage.getGraphics();
+			final Graphics2D g = (Graphics2D) largeImage.getGraphics();
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
 			g.setColor(new Color(0));
 			g.fillRect(0, 0, bounds.width, bounds.height);
 			g.dispose();
 		}
-		
 		// draw the territory
 		{
-			Graphics g = largeImage.getGraphics();
-			LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
+			final Graphics g = largeImage.getGraphics();
+			final LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
 			drawable.draw(bounds, data, (Graphics2D) g, mapData, null, null);
 			g.dispose();
 		}
-		
 		// scale it down
 		int thumbWidth = (int) (bounds.width * m_view.getRatioX());
 		int thumbHeight = (int) (bounds.height * m_view.getRatioY());
-		
 		// make the image a little bigger
 		// the images wont overlap perfectly after being scaled, make them a little bigger to rebalance that
 		thumbWidth += 3;
 		thumbHeight += 3;
-		
-		int thumbsX = (int) (bounds.x * m_view.getRatioX()) - 1;
-		int thumbsY = (int) (bounds.y * m_view.getRatioY()) - 1;
-		
+		final int thumbsX = (int) (bounds.x * m_view.getRatioX()) - 1;
+		final int thumbsY = (int) (bounds.y * m_view.getRatioY()) - 1;
 		// create the thumb image
-		Image thumbImage = Util.createImage(thumbWidth, thumbHeight, true);
+		final Image thumbImage = Util.createImage(thumbWidth, thumbHeight, true);
 		{
-			Graphics g = thumbImage.getGraphics();
+			final Graphics g = thumbImage.getGraphics();
 			g.drawImage(largeImage, 0, 0, thumbImage.getWidth(null), thumbImage.getHeight(null), null);
 			g.dispose();
 		}
-		
 		{
-			Graphics g = m_offscreen.getGraphics();
+			final Graphics g = m_offscreen.getGraphics();
 			// draw it on our offscreen
-			g.drawImage(thumbImage,
-													thumbsX,
-													thumbsY,
-													thumbImage.getWidth(null),
-													thumbImage.getHeight(null),
-													null);
+			g.drawImage(thumbImage, thumbsX, thumbsY, thumbImage.getWidth(null), thumbImage.getHeight(null), null);
 			g.dispose();
 		}
-		
 	}
-	
 }

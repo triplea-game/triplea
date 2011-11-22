@@ -16,7 +16,7 @@ public class VerifiedRandomNumbers
 	private final int[] m_values;
 	private final String m_annotation;
 	
-	public VerifiedRandomNumbers(String annotation, int[] values)
+	public VerifiedRandomNumbers(final String annotation, final int[] values)
 	{
 		m_values = values;
 		m_annotation = annotation;

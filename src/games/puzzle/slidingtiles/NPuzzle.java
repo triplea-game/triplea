@@ -48,11 +48,9 @@ import javax.swing.SwingUtilities;
  */
 public class NPuzzle implements IGameLoader
 {
-	
 	// When serializing, do not save transient member variables
 	private transient NPuzzleDisplay m_display;
 	private transient IGame m_game;
-	
 	private static final String HUMAN_PLAYER_TYPE = "Human";
 	private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
 	private static final String DFS_COMPUTER_PLAYER_TYPE = "Depth First Search AI";
@@ -60,28 +58,27 @@ public class NPuzzle implements IGameLoader
 	/**
 	 * @see IGameLoader.createPlayers(playerNames)
 	 */
-	
-	public Set<IGamePlayer> createPlayers(Map<String, String> playerNames)
+	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
-		Set<IGamePlayer> players = new HashSet<IGamePlayer>();
-		Iterator<String> iter = playerNames.keySet().iterator();
+		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
+		final Iterator<String> iter = playerNames.keySet().iterator();
 		while (iter.hasNext())
 		{
-			String name = iter.next();
-			String type = playerNames.get(name);
+			final String name = iter.next();
+			final String type = playerNames.get(name);
 			if (type.equals(HUMAN_PLAYER_TYPE) || type.equals(CLIENT_PLAYER_TYPE))
 			{
-				NPuzzlePlayer player = new NPuzzlePlayer(name, type);
+				final NPuzzlePlayer player = new NPuzzlePlayer(name, type);
 				players.add(player);
 			}
 			else if (type.equals(RANDOM_COMPUTER_PLAYER_TYPE))
 			{
-				RandomAI ai = new RandomAI(name, type);
+				final RandomAI ai = new RandomAI(name, type);
 				players.add(ai);
 			}
 			else if (type.equals(DFS_COMPUTER_PLAYER_TYPE))
 			{
-				BetterAI ai = new BetterAI(name, type, Algorithm.DFS, Heuristic.NUMBER_OF_MISPLACED_TILES);
+				final BetterAI ai = new BetterAI(name, type, Algorithm.DFS, Heuristic.NUMBER_OF_MISPLACED_TILES);
 				players.add(ai);
 			}
 			else
@@ -95,11 +92,9 @@ public class NPuzzle implements IGameLoader
 	/**
 	 * Return an array of player types that can play on the server.
 	 */
-	
 	public String[] getServerPlayerTypes()
 	{
 		return new String[] { HUMAN_PLAYER_TYPE, DFS_COMPUTER_PLAYER_TYPE, RANDOM_COMPUTER_PLAYER_TYPE };
-		
 	}
 	
 	public void shutDown()
@@ -116,38 +111,29 @@ public class NPuzzle implements IGameLoader
 		try
 		{
 			m_game = game;
-			
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
-				
 				public void run()
 				{
 					final NPuzzleFrame frame = new NPuzzleFrame(game, players);
-					
 					m_display = new NPuzzleDisplay(frame);
 					m_game.addDisplay(m_display);
 					frame.setVisible(true);
 					connectPlayers(players, frame);
-					
-					SwingUtilities.invokeLater(
-								new Runnable()
-							{
-								
-								public void run()
-								{
-									// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-									frame.toFront();
-								}
-							}
-								);
-					
+					SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+							frame.toFront();
+						}
+					});
 				}
-				
 			});
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
-		} catch (InvocationTargetException e)
+		} catch (final InvocationTargetException e)
 		{
 			if (e.getCause() instanceof Exception)
 				throw (Exception) e.getCause();
@@ -156,17 +142,15 @@ public class NPuzzle implements IGameLoader
 				e.printStackTrace();
 				throw new IllegalStateException(e.getCause().getMessage());
 			}
-			
 		}
-		
 	}
 	
-	private void connectPlayers(Set<IGamePlayer> players, NPuzzleFrame frame)
+	private void connectPlayers(final Set<IGamePlayer> players, final NPuzzleFrame frame)
 	{
-		Iterator<IGamePlayer> iter = players.iterator();
+		final Iterator<IGamePlayer> iter = players.iterator();
 		while (iter.hasNext())
 		{
-			IGamePlayer player = iter.next();
+			final IGamePlayer player = iter.next();
 			if (player instanceof NPuzzlePlayer)
 				((NPuzzlePlayer) player).setFrame(frame);
 		}
@@ -180,7 +164,6 @@ public class NPuzzle implements IGameLoader
 	/**
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */
-	
 	public Class<? extends IChannelSubscribor> getDisplayType()
 	{
 		return INPuzzleDisplay.class;
@@ -195,5 +178,4 @@ public class NPuzzle implements IGameLoader
 	{
 		return new DefaultUnitFactory();
 	}
-	
 }

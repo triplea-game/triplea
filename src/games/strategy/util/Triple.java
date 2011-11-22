@@ -4,7 +4,7 @@ public class Triple<F, S, T> extends Tuple<F, S>
 {
 	private final T m_third;
 	
-	public Triple(F first, S second, T third)
+	public Triple(final F first, final S second, final T third)
 	{
 		super(first, second);
 		m_third = third;
@@ -14,5 +14,4 @@ public class Triple<F, S, T> extends Tuple<F, S>
 	{
 		return m_third;
 	}
-	
 }

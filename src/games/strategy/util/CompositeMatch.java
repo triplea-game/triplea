@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * CompositeMatch.java
  * 
  * Created on November 22, 2001, 3:32 PM
  */
-
 package games.strategy.util;
 
 import java.util.ArrayList;
@@ -35,7 +33,7 @@ import java.util.List;
  */
 public abstract class CompositeMatch<T> extends Match<T>
 {
-	private List<Match<T>> m_matches = new ArrayList<Match<T>>(4);
+	private final List<Match<T>> m_matches = new ArrayList<Match<T>>(4);
 	
 	/** Creates new CompositeMatch */
 	public CompositeMatch()
@@ -45,7 +43,7 @@ public abstract class CompositeMatch<T> extends Match<T>
 	/**
 	 * Add a match.
 	 */
-	public void add(Match<T> match)
+	public void add(final Match<T> match)
 	{
 		m_matches.add(match);
 	}
@@ -53,7 +51,7 @@ public abstract class CompositeMatch<T> extends Match<T>
 	/**
 	 * Add the inverse of a match. Equivalant to add(new InverseMatch(aMatch))
 	 */
-	public void addInverse(Match<T> aMatch)
+	public void addInverse(final Match<T> aMatch)
 	{
 		add(new InverseMatch<T>(aMatch));
 	}

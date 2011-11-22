@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.PlayerID;
@@ -28,32 +27,27 @@ import java.util.Collection;
 
 public class BidPlaceDelegate extends AbstractPlaceDelegate
 {
-	
 	public BidPlaceDelegate()
 	{
 	}
 	
 	// Allow production of any number of units
-	
 	@Override
-	protected String checkProduction(Territory to, Collection<Unit> units,
-				PlayerID player)
+	protected String checkProduction(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
 		return null;
 	}
 	
 	// Return whether we can place bid in a certain territory
-	
 	@Override
-	protected String canProduce(Territory to, Collection<Unit> units, PlayerID player)
+	protected String canProduce(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
 		// we can place if no enemy units and its water
 		if (to.isWater())
 		{
 			if (Match.someMatch(units, Matches.UnitIsLand))
 				return "Cant place land units at sea";
-			else if (to.getUnits().allMatch(
-						Matches.alliedUnit(player, getData())))
+			else if (to.getUnits().allMatch(Matches.alliedUnit(player, getData())))
 				return null;
 			else
 				return "Cant place in sea zone containing enemy units";
@@ -68,29 +62,25 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 			else
 				return "You dont own " + to.getName();
 		}
-		
 	}
 	
 	@Override
-	protected int getMaxUnitsToBePlaced(Collection<Unit> units, Territory to, PlayerID player)
+	protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerID player)
 	{
 		return units.size();
 	}
 	
 	// Allow player to place as many units as they want in bid phase
-	protected int getMaxUnitsToBePlaced(Territory to, PlayerID player)
+	protected int getMaxUnitsToBePlaced(final Territory to, final PlayerID player)
 	{
 		return -1;
 	}
 	
 	// Return collection of bid units which can placed in a land territory
-	
 	@Override
-	protected Collection<Unit> getUnitsToBePlacedLand(Territory to, Collection<Unit> units,
-				PlayerID player)
+	protected Collection<Unit> getUnitsToBePlacedLand(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
-		Collection<Unit> placeableUnits = new ArrayList<Unit>();
-		
+		final Collection<Unit> placeableUnits = new ArrayList<Unit>();
 		// make sure only 1 AA in territory for classic
 		if (isWW2V2())
 		{
@@ -100,39 +90,30 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 		{
 			// allow 1 AA to be placed if none already exists
 			if (!to.getUnits().someMatch(Matches.UnitIsAAorIsAAmovement))
-				placeableUnits.addAll(Match.getNMatches(units, 1,
-							Matches.UnitIsAAorIsAAmovement));
+				placeableUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsAAorIsAAmovement));
 		}
-		
-		CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>();
+		final CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>();
 		groundUnits.add(Matches.UnitIsLand);
 		// TODO: do we need to check for infrastructure here?
 		groundUnits.add(new InverseMatch<Unit>(Matches.UnitIsAAOrIsAAmovementOrIsFactory));
 		placeableUnits.addAll(Match.getMatches(units, groundUnits));
 		placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAir));
-		
 		// make sure only max Factories
 		if (Match.countMatches(units, Matches.UnitIsFactory) >= 1)
 		{
 			// if its an original factory then unlimited production
-			TerritoryAttachment ta = TerritoryAttachment.get(to);
-			
+			final TerritoryAttachment ta = TerritoryAttachment.get(to);
 			// WW2V2, you cant place factories in territories with no
 			// production
 			if (!(isWW2V2() && ta.getProduction() == 0))
 			{
 				// this is how many factories exist now
-				int factoryCount = to.getUnits().getMatches(
-							Matches.UnitIsFactory).size();
-				
+				final int factoryCount = to.getUnits().getMatches(Matches.UnitIsFactory).size();
 				// max factories allowed
-				int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(getData());
-				
-				placeableUnits.addAll(Match.getNMatches(units, maxFactory
-							- factoryCount, Matches.UnitIsFactory));
+				final int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(getData());
+				placeableUnits.addAll(Match.getNMatches(units, maxFactory - factoryCount, Matches.UnitIsFactory));
 			}
 		}
-		
 		return placeableUnits;
 	}
 }

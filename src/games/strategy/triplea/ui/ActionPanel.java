@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ActionPanel.java
  * 
  * Created on December 4, 2001, 7:41 PM
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -40,15 +38,15 @@ import javax.swing.border.EmptyBorder;
  */
 public abstract class ActionPanel extends JPanel
 {
-	private GameData m_data;
+	private final GameData m_data;
 	private PlayerID m_currentPlayer;
-	private MapPanel m_map;
+	private final MapPanel m_map;
 	private boolean m_active;
 	private CountDownLatch m_latch;
 	private final Object m_latchLock = new Object();
 	
 	/** Creates new ActionPanel */
-	public ActionPanel(GameData data, MapPanel map)
+	public ActionPanel(final GameData data, final MapPanel map)
 	{
 		m_data = data;
 		m_map = map;
@@ -104,22 +102,18 @@ public abstract class ActionPanel extends JPanel
 			if (m_latch != null)
 				throw new IllegalStateException("Latch not null");
 			m_latch = new CountDownLatch(1);
-			
 			m_map.getUIContext().addShutdownLatch(m_latch);
 		}
-		
 		try
 		{
 			m_latch.await();
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 		}
-		
 		// cross a memory barrier
 		synchronized (m_latchLock)
 		{
 		}
-		
 	}
 	
 	/**
@@ -140,13 +134,10 @@ public abstract class ActionPanel extends JPanel
 			// the user will be able to press done again
 			if (m_latch == null)
 				return;
-			
 			m_map.getUIContext().removeShutdownLatch(m_latch);
-			
 			m_latch.countDown();
 			m_latch = null;
 		}
-		
 	}
 	
 	protected GameData getData()
@@ -154,7 +145,7 @@ public abstract class ActionPanel extends JPanel
 		return m_data;
 	}
 	
-	public void display(PlayerID player)
+	public void display(final PlayerID player)
 	{
 		m_currentPlayer = player;
 		setActive(true);
@@ -174,7 +165,7 @@ public abstract class ActionPanel extends JPanel
 	 * Called when the history panel shows used to disable the panel
 	 * temporarily.
 	 */
-	public void setActive(boolean aBool)
+	public void setActive(final boolean aBool)
 	{
 		m_active = aBool;
 	}
@@ -189,7 +180,6 @@ public abstract class ActionPanel extends JPanel
 	 */
 	protected final Runnable REFRESH = new Runnable()
 	{
-		
 		public void run()
 		{
 			revalidate();

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
@@ -54,34 +53,28 @@ import javax.swing.SwingUtilities;
  */
 public class UIContext
 {
-	
 	private static final String UNIT_SCALE_PREF = "UnitScale";
 	private static final String MAP_SKIN_PREF = "MapSkin";
 	private static final String MAP_SCALE_PREF = "MapScale";
-	
 	private static final Logger s_logger = Logger.getLogger(UIContext.class.getName());
-	
 	private MapData m_mapData;
-	private TileImageFactory m_tileImageFactory = new TileImageFactory();
+	private final TileImageFactory m_tileImageFactory = new TileImageFactory();
 	private static String m_mapDir;
-	private UnitImageFactory m_unitImageFactory = new UnitImageFactory();
-	private MapImage m_mapImage;
-	private FlagIconImageFactory m_flagIconImageFactory = new FlagIconImageFactory();
-	private DiceImageFactory m_diceImageFactory = new DiceImageFactory();
+	private final UnitImageFactory m_unitImageFactory = new UnitImageFactory();
+	private final MapImage m_mapImage;
+	private final FlagIconImageFactory m_flagIconImageFactory = new FlagIconImageFactory();
+	private final DiceImageFactory m_diceImageFactory = new DiceImageFactory();
 	private final PUImageFactory m_PUImageFactory = new PUImageFactory();
 	private boolean m_isShutDown;
 	private boolean m_drawUnits = true;
 	private boolean m_drawMapOnly = false;
-	
-	private List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
-	private List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
-	private List<Active> m_activeToDeactivate = new ArrayList<Active>();
-	
+	private final List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
+	private final List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
+	private final List<Active> m_activeToDeactivate = new ArrayList<Active>();
 	private final static String LOCK_MAP = "LockMap";
 	private final static String SHOW_BATTLES_BETWEEN_AIS = "ShowBattlesBetweenAIs";
 	private final static String AI_PAUSE_DURATION = "AIPauseDuration";
 	private Set<IGamePlayer> m_playerList;
-	
 	private double m_scale = 1;
 	
 	public UIContext()
@@ -91,18 +84,18 @@ public class UIContext
 	
 	public static int getAIPauseDuration()
 	{
-		Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+		final Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
 		return prefs.getInt(AI_PAUSE_DURATION, 800);
 	}
 	
-	public static void setAIPauseDuration(int value)
+	public static void setAIPauseDuration(final int value)
 	{
-		Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+		final Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
 		prefs.putInt(AI_PAUSE_DURATION, value);
 		try
 		{
 			prefs.flush();
-		} catch (BackingStoreException ex)
+		} catch (final BackingStoreException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -113,17 +106,16 @@ public class UIContext
 		return m_scale;
 	}
 	
-	public void setScale(double scale)
+	public void setScale(final double scale)
 	{
 		m_scale = scale;
 		m_tileImageFactory.setScale(scale);
-		
-		Preferences prefs = getPreferencesMapOrSkin(getMapDir());
+		final Preferences prefs = getPreferencesMapOrSkin(getMapDir());
 		prefs.putDouble(MAP_SCALE_PREF, scale);
 		try
 		{
 			prefs.flush();
-		} catch (BackingStoreException e)
+		} catch (final BackingStoreException e)
 		{
 			e.printStackTrace();
 		}
@@ -132,7 +124,7 @@ public class UIContext
 	/**
 	 * Get the preferences for the map.
 	 */
-	private static Preferences getPreferencesForMap(String mapName)
+	private static Preferences getPreferencesForMap(final String mapName)
 	{
 		return Preferences.userNodeForPackage(UIContext.class).node(mapName);
 	}
@@ -140,26 +132,25 @@ public class UIContext
 	/**
 	 * Get the preferences for the map or map skin
 	 */
-	private static Preferences getPreferencesMapOrSkin(String mapDir)
+	private static Preferences getPreferencesMapOrSkin(final String mapDir)
 	{
 		return Preferences.userNodeForPackage(UIContext.class).node(mapDir);
 	}
 	
-	private static String getDefaultMapDir(GameData data)
+	private static String getDefaultMapDir(final GameData data)
 	{
-		String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
+		final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
 		if (mapName == null || mapName.trim().length() == 0)
 		{
 			throw new IllegalStateException("Map name property not set on game");
 		}
-		Preferences prefs = getPreferencesForMap(mapName);
-		String mapDir = prefs.get(MAP_SKIN_PREF, mapName);
-		
+		final Preferences prefs = getPreferencesForMap(mapName);
+		final String mapDir = prefs.get(MAP_SKIN_PREF, mapName);
 		// check for existence
 		try
 		{
 			ResourceLoader.getMapresourceLoader(mapDir).close();
-		} catch (RuntimeException re)
+		} catch (final RuntimeException re)
 		{
 			// an error
 			// clear the skin
@@ -168,58 +159,48 @@ public class UIContext
 			return mapName;
 		}
 		return mapDir;
-		
 	}
 	
-	public void setDefaltMapDir(GameData data)
+	public void setDefaltMapDir(final GameData data)
 	{
 		internalSetMapDir(getDefaultMapDir(data));
 	}
 	
-	public void setMapDir(GameData data, String mapDir)
+	public void setMapDir(final GameData data, final String mapDir)
 	{
 		internalSetMapDir(mapDir);
-		
 		// set the default after internal suceeds, if an error is thrown
 		// we dont want to persist it
-		String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
-		Preferences prefs = getPreferencesForMap(mapName);
+		final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
+		final Preferences prefs = getPreferencesForMap(mapName);
 		prefs.put(MAP_SKIN_PREF, mapDir);
-		
 		try
 		{
 			prefs.flush();
-		} catch (BackingStoreException e)
+		} catch (final BackingStoreException e)
 		{
 			e.printStackTrace();
 		}
 	}
 	
-	private void internalSetMapDir(String dir)
+	private void internalSetMapDir(final String dir)
 	{
-		Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
-		
-		ResourceLoader loader = ResourceLoader.getMapresourceLoader(dir);
-		
+		final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
+		final ResourceLoader loader = ResourceLoader.getMapresourceLoader(dir);
 		if (m_mapData != null)
 		{
 			m_mapData.close();
 		}
 		m_mapData = new MapData(loader);
-		
-		double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
+		final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
 		m_scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
 		m_unitImageFactory.setResourceLoader(loader, unitScale);
-		
 		m_flagIconImageFactory.setResourceLoader(loader);
 		m_PUImageFactory.setResourceLoader(loader);
-		
 		m_tileImageFactory.setMapDir(loader);
 		m_tileImageFactory.setScale(m_scale);
 		m_mapImage.loadMaps(loader); // load map data
-		
 		m_mapDir = dir;
-		
 		stopWatch.done();
 	}
 	
@@ -266,7 +247,7 @@ public class UIContext
 	/**
 	 * Add a latch that will be released when the game shuts down.
 	 */
-	public void addShutdownLatch(CountDownLatch latch)
+	public void addShutdownLatch(final CountDownLatch latch)
 	{
 		synchronized (this)
 		{
@@ -279,7 +260,7 @@ public class UIContext
 		}
 	}
 	
-	public void removeACtive(Active actor)
+	public void removeACtive(final Active actor)
 	{
 		synchronized (this)
 		{
@@ -290,7 +271,7 @@ public class UIContext
 	/**
 	 * Add a latch that will be released when the game shuts down.
 	 */
-	public void addActive(Active actor)
+	public void addActive(final Active actor)
 	{
 		synchronized (this)
 		{
@@ -303,7 +284,7 @@ public class UIContext
 		}
 	}
 	
-	public void removeShutdownLatch(CountDownLatch latch)
+	public void removeShutdownLatch(final CountDownLatch latch)
 	{
 		synchronized (this)
 		{
@@ -314,7 +295,7 @@ public class UIContext
 	/**
 	 * Add a latch that will be released when the game shuts down.
 	 */
-	public void addShutdownWindow(Window window)
+	public void addShutdownWindow(final Window window)
 	{
 		synchronized (this)
 		{
@@ -331,10 +312,8 @@ public class UIContext
 	{
 		window.setVisible(false);
 		window.dispose();
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				// there is a bug in java (1.50._06 for linux at least)
@@ -345,46 +324,38 @@ public class UIContext
 				//
 				// so remove all references to everything
 				// to minimize the damage
-				
 				if (window instanceof JFrame)
-			{
-				JFrame frame = ((JFrame) window);
-				
-				JMenuBar menu = frame.getJMenuBar();
-				if (menu != null)
 				{
-					while (menu.getMenuCount() > 0)
-						menu.remove(0);
+					final JFrame frame = ((JFrame) window);
+					final JMenuBar menu = frame.getJMenuBar();
+					if (menu != null)
+					{
+						while (menu.getMenuCount() > 0)
+							menu.remove(0);
+					}
+					frame.setMenuBar(null);
+					frame.setJMenuBar(null);
+					frame.getRootPane().removeAll();
+					frame.getRootPane().setJMenuBar(null);
+					frame.getContentPane().removeAll();
+					frame.getContentPane().setLayout(new BorderLayout());
+					frame.setContentPane(new JPanel());
+					frame.setIconImage(null);
+					clearInputMap(frame.getRootPane());
 				}
-				
-				frame.setMenuBar(null);
-				frame.setJMenuBar(null);
-				frame.getRootPane().removeAll();
-				frame.getRootPane().setJMenuBar(null);
-				frame.getContentPane().removeAll();
-				frame.getContentPane().setLayout(new BorderLayout());
-				frame.setContentPane(new JPanel());
-				frame.setIconImage(null);
-				
-				clearInputMap(frame.getRootPane());
-				
 			}
-			
-		}
 		});
-		
 	}
 	
-	private static void clearInputMap(JComponent c)
+	private static void clearInputMap(final JComponent c)
 	{
 		c.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
 		c.getInputMap(JComponent.WHEN_FOCUSED).clear();
 		c.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).clear();
-		
 		c.getActionMap().clear();
 	}
 	
-	public void removeShutdownWindow(Window window)
+	public void removeShutdownWindow(final Window window)
 	{
 		synchronized (this)
 		{
@@ -392,13 +363,12 @@ public class UIContext
 		}
 	}
 	
-	private void releaseLatch(CountDownLatch latch)
+	private void releaseLatch(final CountDownLatch latch)
 	{
 		while (latch.getCount() > 0)
 		{
 			latch.countDown();
 		}
-		
 	}
 	
 	public boolean isShutDown()
@@ -414,26 +384,21 @@ public class UIContext
 				return;
 			m_isShutDown = true;
 		}
-		
-		for (CountDownLatch latch : m_latchesToCloseOnShutdown)
+		for (final CountDownLatch latch : m_latchesToCloseOnShutdown)
 		{
 			releaseLatch(latch);
 		}
-		
-		for (Window window : m_windowsToCloseOnShutdown)
+		for (final Window window : m_windowsToCloseOnShutdown)
 		{
 			closeWindow(window);
 		}
-		
-		for (Active actor : m_activeToDeactivate)
+		for (final Active actor : m_activeToDeactivate)
 		{
 			closeActor(actor);
 		}
-		
 		m_activeToDeactivate.clear();
 		m_windowsToCloseOnShutdown.clear();
 		m_latchesToCloseOnShutdown.clear();
-		
 		m_mapData.close();
 	}
 	
@@ -442,31 +407,27 @@ public class UIContext
 	 * 
 	 * returns is a map of display-name -> map directory
 	 */
-	public static Map<String, String> getSkins(GameData data)
+	public static Map<String, String> getSkins(final GameData data)
 	{
-		String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
-		Map<String, String> rVal = new LinkedHashMap<String, String>();
+		final String mapName = data.getProperties().get(Constants.MAP_NAME).toString();
+		final Map<String, String> rVal = new LinkedHashMap<String, String>();
 		rVal.put("Original", mapName);
-		
 		getSkins(mapName, rVal, new File(GameRunner.getRootFolder(), "maps"));
 		getSkins(mapName, rVal, GameRunner.getUserMapsFolder());
-		
 		return rVal;
 	}
 	
-	private static void getSkins(String mapName, Map<String, String> rVal,
-				File root)
+	private static void getSkins(final String mapName, final Map<String, String> rVal, final File root)
 	{
-		for (File f : root.listFiles())
+		for (final File f : root.listFiles())
 		{
 			if (!f.isDirectory())
 			{
 				// jar files
 				if (f.getName().endsWith(".zip") && f.getName().startsWith(mapName + "-"))
 				{
-					String nameWithExtension = f.getName().substring(f.getName().indexOf('-') + 1);
+					final String nameWithExtension = f.getName().substring(f.getName().indexOf('-') + 1);
 					rVal.put(nameWithExtension.substring(0, nameWithExtension.length() - 4), f.getName().substring(0, f.getName().length() - 4));
-					
 				}
 			}
 			// directories
@@ -477,16 +438,15 @@ public class UIContext
 		}
 	}
 	
-	private void closeActor(Active actor)
+	private void closeActor(final Active actor)
 	{
 		try
 		{
 			actor.deactivate();
-		} catch (RuntimeException re)
+		} catch (final RuntimeException re)
 		{
 			re.printStackTrace();
 		}
-		
 	}
 	
 	public boolean getShowUnits()
@@ -494,7 +454,7 @@ public class UIContext
 		return m_drawUnits;
 	}
 	
-	public void setShowUnits(boolean aBool)
+	public void setShowUnits(final boolean aBool)
 	{
 		m_drawUnits = aBool;
 	}
@@ -504,25 +464,25 @@ public class UIContext
 		return m_drawMapOnly;
 	}
 	
-	public void setShowMapOnly(boolean aBool)
+	public void setShowMapOnly(final boolean aBool)
 	{
 		m_drawMapOnly = aBool;
 	}
 	
 	public boolean getLockMap()
 	{
-		Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+		final Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
 		return prefs.getBoolean(LOCK_MAP, false);
 	}
 	
-	public void setLockMap(boolean aBool)
+	public void setLockMap(final boolean aBool)
 	{
-		Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+		final Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
 		prefs.putBoolean(LOCK_MAP, aBool);
 		try
 		{
 			prefs.flush();
-		} catch (BackingStoreException ex)
+		} catch (final BackingStoreException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -530,18 +490,18 @@ public class UIContext
 	
 	public boolean getShowBattlesBetweenAIs()
 	{
-		Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+		final Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
 		return prefs.getBoolean(SHOW_BATTLES_BETWEEN_AIS, true);
 	}
 	
-	public void setShowBattlesBetweenAIs(boolean aBool)
+	public void setShowBattlesBetweenAIs(final boolean aBool)
 	{
-		Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
+		final Preferences prefs = Preferences.userNodeForPackage(UIContext.class);
 		prefs.putBoolean(SHOW_BATTLES_BETWEEN_AIS, aBool);
 		try
 		{
 			prefs.flush();
-		} catch (BackingStoreException ex)
+		} catch (final BackingStoreException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -552,23 +512,22 @@ public class UIContext
 		return m_playerList;
 	}
 	
-	public void setPlayerList(Set<IGamePlayer> value)
+	public void setPlayerList(final Set<IGamePlayer> value)
 	{
 		m_playerList = value;
 	}
 	
-	public void setUnitScaleFactor(double scaleFactor)
+	public void setUnitScaleFactor(final double scaleFactor)
 	{
 		m_unitImageFactory.setScaleFactor(scaleFactor);
-		Preferences prefs = getPreferencesMapOrSkin(getMapDir());
+		final Preferences prefs = getPreferencesMapOrSkin(getMapDir());
 		prefs.putDouble(UNIT_SCALE_PREF, scaleFactor);
 		try
 		{
 			prefs.flush();
-		} catch (BackingStoreException e)
+		} catch (final BackingStoreException e)
 		{
 			e.printStackTrace();
 		}
-		
 	}
 }

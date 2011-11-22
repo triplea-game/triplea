@@ -36,50 +36,35 @@ import javax.swing.JOptionPane;
  */
 public class ImageShrinker
 {
-	
-	public static void main(String[] args) throws Exception
+	public static void main(final String[] args) throws Exception
 	{
-		File mapFile = new FileOpen("Select The Large Image").getFile();
-		
+		final File mapFile = new FileOpen("Select The Large Image").getFile();
 		if (!mapFile.exists())
 			throw new IllegalStateException(mapFile + "File does not exist");
-		
-		String input = JOptionPane.showInputDialog(null, "Select scale");
-		float scale = Float.parseFloat(input);
-		
-		Image baseImg = ImageIO.read(mapFile);
-		int thumbWidth = (int) (baseImg.getWidth(null) * scale);
-		int thumbHeight = (int) (baseImg.getHeight(null) * scale);
-		
+		final String input = JOptionPane.showInputDialog(null, "Select scale");
+		final float scale = Float.parseFloat(input);
+		final Image baseImg = ImageIO.read(mapFile);
+		final int thumbWidth = (int) (baseImg.getWidth(null) * scale);
+		final int thumbHeight = (int) (baseImg.getHeight(null) * scale);
 		// based on code from
 		// http://www.geocities.com/marcoschmidt.geo/java-save-jpeg-thumbnail.html
-		
 		// draw original image to thumbnail image object and
 		// scale it to the new size on-the-fly
-		BufferedImage thumbImage = new BufferedImage(thumbWidth,
-					thumbHeight, BufferedImage.TYPE_INT_RGB);
-		
-		Graphics2D graphics2D = thumbImage.createGraphics();
-		graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-					RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		final BufferedImage thumbImage = new BufferedImage(thumbWidth, thumbHeight, BufferedImage.TYPE_INT_RGB);
+		final Graphics2D graphics2D = thumbImage.createGraphics();
+		graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		graphics2D.drawImage(baseImg, 0, 0, thumbWidth, thumbHeight, null);
-		
 		// save thumbnail image to OUTFILE
-		File file = new File(new File(mapFile.getPath()).getParent() + File.separatorChar + "smallMap.jpeg");
-		FileImageOutputStream out = new FileImageOutputStream(file);
-		ImageWriter encoder = ImageIO.getImageWritersByFormatName("JPEG").next();
-		JPEGImageWriteParam param = new JPEGImageWriteParam(null);
-		
+		final File file = new File(new File(mapFile.getPath()).getParent() + File.separatorChar + "smallMap.jpeg");
+		final FileImageOutputStream out = new FileImageOutputStream(file);
+		final ImageWriter encoder = ImageIO.getImageWritersByFormatName("JPEG").next();
+		final JPEGImageWriteParam param = new JPEGImageWriteParam(null);
 		param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 		param.setCompressionQuality((float) 1.0);
-		
 		encoder.setOutput(out);
 		encoder.write((IIOMetadata) null, new IIOImage(thumbImage, null, null), param);
-		
 		out.close();
 		System.out.println("Image successfully written to " + file.getPath());
 		System.exit(0);
-		
 	}
-	
 }

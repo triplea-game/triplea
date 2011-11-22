@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.kingstable.delegate;
 
 import games.strategy.engine.data.PlayerID;
@@ -29,7 +28,6 @@ import junit.framework.TestSuite;
  */
 public class PlayDelegateTest extends DelegateTest
 {
-	
 	PlayDelegate m_delegate;
 	TestDelegateBridge m_bridgeWhite;
 	TestDelegateBridge m_bridgeBlack;
@@ -37,7 +35,7 @@ public class PlayDelegateTest extends DelegateTest
 	/**
 	 * Creates new PlayDelegateTest
 	 */
-	public PlayDelegateTest(String name)
+	public PlayDelegateTest(final String name)
 	{
 		super(name);
 	}
@@ -49,9 +47,8 @@ public class PlayDelegateTest extends DelegateTest
 	 */
 	public static Test suite()
 	{
-		TestSuite suite = new TestSuite();
+		final TestSuite suite = new TestSuite();
 		suite.addTestSuite(PlayDelegateTest.class);
-		
 		return suite;
 	}
 	
@@ -60,26 +57,22 @@ public class PlayDelegateTest extends DelegateTest
 	 * 
 	 * So, if there were four test methods in this class, this method would be called four times - once per method.
 	 */
-	
 	@Override
 	public void setUp() throws Exception
 	{
 		super.setUp();
-		
 		m_bridgeBlack = new TestDelegateBridge(m_data, black, new DummyDisplay());
 		m_bridgeBlack.setStepName("BlackTurn");
 		m_bridgeWhite = new TestDelegateBridge(m_data, white, new DummyDisplay());
 		m_bridgeWhite.setStepName("WhiteTurn");
-		
 		// setupTurn(white);
 		setupTurn(black);
 	}
 	
-	private void setupTurn(PlayerID player)
+	private void setupTurn(final PlayerID player)
 	{
 		m_delegate = new PlayDelegate();
 		m_delegate.initialize("PlayDelegate", "PlayDelegate");
-		
 		if (player == black)
 			m_delegate.start(m_bridgeBlack);
 		else if (player == white)
@@ -91,10 +84,9 @@ public class PlayDelegateTest extends DelegateTest
 	 */
 	public void testNormalPlay()
 	{
-		Territory start = m_data.getMap().getTerritoryFromCoordinates(4, 0);
-		Territory end = m_data.getMap().getTerritoryFromCoordinates(4, 3);
-		
-		String results = m_delegate.play(start, end);
+		final Territory start = m_data.getMap().getTerritoryFromCoordinates(4, 0);
+		final Territory end = m_data.getMap().getTerritoryFromCoordinates(4, 3);
+		final String results = m_delegate.play(start, end);
 		assertValid(results);
 	}
 	
@@ -103,10 +95,9 @@ public class PlayDelegateTest extends DelegateTest
 	 */
 	public void testMoveFromEmptySquare()
 	{
-		Territory start = m_data.getMap().getTerritoryFromCoordinates(2, 2);
-		Territory end = m_data.getMap().getTerritoryFromCoordinates(2, 3);
-		
-		String results = m_delegate.play(start, end);
+		final Territory start = m_data.getMap().getTerritoryFromCoordinates(2, 2);
+		final Territory end = m_data.getMap().getTerritoryFromCoordinates(2, 3);
+		final String results = m_delegate.play(start, end);
 		assertError(results);
 	}
 	
@@ -115,10 +106,9 @@ public class PlayDelegateTest extends DelegateTest
 	 */
 	public void testMoveToOccupiedSquare()
 	{
-		Territory start = m_data.getMap().getTerritoryFromCoordinates(4, 0);
-		Territory end = m_data.getMap().getTerritoryFromCoordinates(5, 0);
-		
-		String results = m_delegate.play(start, end);
+		final Territory start = m_data.getMap().getTerritoryFromCoordinates(4, 0);
+		final Territory end = m_data.getMap().getTerritoryFromCoordinates(5, 0);
+		final String results = m_delegate.play(start, end);
 		assertError(results);
 	}
 	
@@ -127,13 +117,11 @@ public class PlayDelegateTest extends DelegateTest
 	 */
 	public void testMoveThroughOccupiedSquare()
 	{
-		Territory start = m_data.getMap().getTerritoryFromCoordinates(5, 0);
-		Territory end = m_data.getMap().getTerritoryFromCoordinates(5, 2);
-		
-		String results = m_delegate.play(start, end);
+		final Territory start = m_data.getMap().getTerritoryFromCoordinates(5, 0);
+		final Territory end = m_data.getMap().getTerritoryFromCoordinates(5, 2);
+		final String results = m_delegate.play(start, end);
 		assertError(results);
 	}
-	
 	/*
 	public void prepareForCapturesPt1()
 	{
@@ -228,5 +216,4 @@ public class PlayDelegateTest extends DelegateTest
 	
 	
 	*/
-
 }

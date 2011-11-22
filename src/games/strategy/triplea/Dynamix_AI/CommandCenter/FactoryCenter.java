@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.CommandCenter;
 
 import games.strategy.engine.data.GameData;
@@ -31,14 +30,14 @@ public class FactoryCenter
 {
 	private static HashMap<PlayerID, FactoryCenter> s_FCInstances = new HashMap<PlayerID, FactoryCenter>();
 	
-	public static FactoryCenter get(GameData data, PlayerID player)
+	public static FactoryCenter get(final GameData data, final PlayerID player)
 	{
 		if (!s_FCInstances.containsKey(player))
 			s_FCInstances.put(player, create(data, player));
 		return s_FCInstances.get(player);
 	}
 	
-	private static FactoryCenter create(GameData data, PlayerID player)
+	private static FactoryCenter create(final GameData data, final PlayerID player)
 	{
 		return new FactoryCenter(data, player);
 	}
@@ -58,7 +57,7 @@ public class FactoryCenter
 	@SuppressWarnings("unused")
 	private PlayerID m_player = null;
 	
-	public FactoryCenter(GameData data, PlayerID player)
+	public FactoryCenter(final GameData data, final PlayerID player)
 	{
 		m_data = data;
 		m_player = player;

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ScrollableTextField.java
  * 
  * Created on November 26, 2001, 11:03 AM
  */
-
 package games.strategy.ui;
 
 import games.strategy.engine.framework.GameRunner;
@@ -45,124 +43,105 @@ import javax.swing.JPanel;
  */
 public class ScrollableTextField extends JPanel
 {
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
-		JFrame frame = new JFrame();
+		final JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FlowLayout());
 		frame.getContentPane().add(new JLabel("10 - 20"));
-		
 		frame.getContentPane().add(new ScrollableTextField(10, 20));
 		frame.getContentPane().add(new JLabel("-10 - 10"));
 		frame.getContentPane().add(new ScrollableTextField(-10, 10));
-		
-		ScrollableTextField field = new ScrollableTextField(0, 100);
+		final ScrollableTextField field = new ScrollableTextField(0, 100);
 		field.addChangeListener(new ScrollableTextFieldListener()
 		{
-			
-			public void changedValue(ScrollableTextField aField)
-		{
-			System.out.println(aField.getValue());
-		}
+			public void changedValue(final ScrollableTextField aField)
+			{
+				System.out.println(aField.getValue());
+			}
 		});
 		frame.getContentPane().add(new JLabel("0-100, listened to"));
 		frame.getContentPane().add(field);
-		
 		frame.setSize(400, 140);
 		frame.setVisible(true);
 	}
 	
 	private static boolean s_imagesLoaded;
-	
 	private static Icon s_up;
 	private static Icon s_down;
 	private static Icon s_max;
 	private static Icon s_min;
 	
-	private synchronized static void loadImages(ScrollableTextField field)
+	private synchronized static void loadImages(final ScrollableTextField field)
 	{
 		if (s_imagesLoaded)
 			return;
-		
 		s_up = new ImageIcon(ScrollableTextField.class.getResource("images/up.gif"));
 		s_down = new ImageIcon(ScrollableTextField.class.getResource("images/down.gif"));
 		s_max = new ImageIcon(ScrollableTextField.class.getResource("images/max.gif"));
 		s_min = new ImageIcon(ScrollableTextField.class.getResource("images/min.gif"));
-		
 		s_imagesLoaded = true;
 	}
 	
-	private IntTextField m_text;
-	private JButton m_up;
-	private JButton m_down;
-	private JButton m_max;
-	private JButton m_min;
-	private ListenerList<ScrollableTextFieldListener> m_listeners = new ListenerList<ScrollableTextFieldListener>();
+	private final IntTextField m_text;
+	private final JButton m_up;
+	private final JButton m_down;
+	private final JButton m_max;
+	private final JButton m_min;
+	private final ListenerList<ScrollableTextFieldListener> m_listeners = new ListenerList<ScrollableTextFieldListener>();
 	
 	/** Creates new ScrollableTextField */
-	public ScrollableTextField(int minVal, int maxVal)
+	public ScrollableTextField(final int minVal, final int maxVal)
 	{
 		super();
 		loadImages(this);
-		
 		m_text = new IntTextField(minVal, maxVal);
-		
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		add(m_text);
-		
 		Insets inset = new Insets(0, 0, 0, 0);
 		if (GameRunner.isMac())
 		{
 			inset = new Insets(2, 0, 2, 0);
 		}
-		
 		m_up = new JButton(s_up);
 		m_up.addActionListener(m_incrementAction);
 		m_up.setMargin(inset);
-		
 		m_down = new JButton(s_down);
 		m_down.setMargin(inset);
 		m_down.addActionListener(m_decrementAction);
-		
 		m_max = new JButton(s_max);
 		m_max.setMargin(inset);
 		m_max.addActionListener(m_maxAction);
-		
 		m_min = new JButton(s_min);
 		m_min.setMargin(inset);
 		m_min.addActionListener(m_minAction);
-		
-		JPanel upDown = new JPanel();
+		final JPanel upDown = new JPanel();
 		upDown.setLayout(new BoxLayout(upDown, BoxLayout.Y_AXIS));
 		upDown.add(m_up);
 		upDown.add(m_down);
-		
-		JPanel maxMin = new JPanel();
+		final JPanel maxMin = new JPanel();
 		maxMin.setLayout(new BoxLayout(maxMin, BoxLayout.Y_AXIS));
 		maxMin.add(m_max);
 		maxMin.add(m_min);
-		
 		add(upDown);
 		add(maxMin);
 		// add(new JSpinner());
-		
 		m_text.addChangeListener(m_textListener);
-		
 		setWidgetActivation();
 	}
 	
-	public void setMax(int max)
+	public void setMax(final int max)
 	{
 		m_text.setMax(max);
 		setWidgetActivation();
 	}
 	
-	public void setTerr(String terr)
+	public void setTerr(final String terr)
 	{
 		m_text.setTerr(terr);
 	}
 	
-	public void setShowMaxAndMin(boolean aBool)
+	public void setShowMaxAndMin(final boolean aBool)
 	{
 		m_max.setVisible(aBool);
 		m_min.setVisible(aBool);
@@ -178,7 +157,7 @@ public class ScrollableTextField extends JPanel
 		return m_text.getTerr();
 	}
 	
-	public void setMin(int min)
+	public void setMin(final int min)
 	{
 		m_text.setMin(min);
 		setWidgetActivation();
@@ -186,57 +165,48 @@ public class ScrollableTextField extends JPanel
 	
 	private void setWidgetActivation()
 	{
-		int value = m_text.getValue();
-		
-		int max = m_text.getMax();
-		boolean enableUp = (value != max);
+		final int value = m_text.getValue();
+		final int max = m_text.getMax();
+		final boolean enableUp = (value != max);
 		m_up.setEnabled(enableUp);
 		m_max.setEnabled(enableUp);
-		
-		int min = m_text.getMin();
-		boolean enableDown = (value != min);
+		final int min = m_text.getMin();
+		final boolean enableDown = (value != min);
 		m_down.setEnabled(enableDown);
 		m_min.setEnabled(enableDown);
 	}
 	
-	private Action m_incrementAction = new AbstractAction("inc")
+	private final Action m_incrementAction = new AbstractAction("inc")
 	{
-		
-		public void actionPerformed(ActionEvent e)
-	{
-		m_text.setValue(m_text.getValue() + 1);
-		setWidgetActivation();
-	}
+		public void actionPerformed(final ActionEvent e)
+		{
+			m_text.setValue(m_text.getValue() + 1);
+			setWidgetActivation();
+		}
 	};
-	
-	private Action m_decrementAction = new AbstractAction("dec")
+	private final Action m_decrementAction = new AbstractAction("dec")
 	{
-		
-		public void actionPerformed(ActionEvent e)
-	{
-		m_text.setValue(m_text.getValue() - 1);
-		setWidgetActivation();
-	}
+		public void actionPerformed(final ActionEvent e)
+		{
+			m_text.setValue(m_text.getValue() - 1);
+			setWidgetActivation();
+		}
 	};
-	
-	private Action m_maxAction = new AbstractAction("max")
+	private final Action m_maxAction = new AbstractAction("max")
 	{
-		
-		public void actionPerformed(ActionEvent e)
-	{
-		m_text.setValue(m_text.getMax());
-		setWidgetActivation();
-	}
+		public void actionPerformed(final ActionEvent e)
+		{
+			m_text.setValue(m_text.getMax());
+			setWidgetActivation();
+		}
 	};
-	
-	private Action m_minAction = new AbstractAction("min")
+	private final Action m_minAction = new AbstractAction("min")
 	{
-		
-		public void actionPerformed(ActionEvent e)
-	{
-		m_text.setValue(m_text.getMin());
-		setWidgetActivation();
-	}
+		public void actionPerformed(final ActionEvent e)
+		{
+			m_text.setValue(m_text.getMin());
+			setWidgetActivation();
+		}
 	};
 	
 	public int getValue()
@@ -244,38 +214,37 @@ public class ScrollableTextField extends JPanel
 		return m_text.getValue();
 	}
 	
-	public void setValue(int value)
+	public void setValue(final int value)
 	{
 		m_text.setValue(value);
 		setWidgetActivation();
 	}
 	
-	public void addChangeListener(ScrollableTextFieldListener listener)
+	public void addChangeListener(final ScrollableTextFieldListener listener)
 	{
 		m_listeners.add(listener);
 	}
 	
-	public void removeChangeListener(ScrollableTextFieldListener listener)
+	public void removeChangeListener(final ScrollableTextFieldListener listener)
 	{
 		m_listeners.remove(listener);
 	}
 	
 	private void notifyListeners()
 	{
-		Iterator<ScrollableTextFieldListener> iter = m_listeners.iterator();
+		final Iterator<ScrollableTextFieldListener> iter = m_listeners.iterator();
 		while (iter.hasNext())
 		{
-			ScrollableTextFieldListener listener = iter.next();
+			final ScrollableTextFieldListener listener = iter.next();
 			listener.changedValue(this);
 		}
 	}
 	
-	private IntTextFieldChangeListener m_textListener = new IntTextFieldChangeListener()
+	private final IntTextFieldChangeListener m_textListener = new IntTextFieldChangeListener()
 	{
-		
-		public void changedValue(IntTextField field)
-	{
-		notifyListeners();
-	}
+		public void changedValue(final IntTextField field)
+		{
+			notifyListeners();
+		}
 	};
 }

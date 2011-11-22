@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.message;
 
 import games.strategy.util.Tuple;
@@ -30,16 +29,13 @@ import java.util.logging.Logger;
 public class RemoteMethodCall implements Externalizable
 {
 	private static final Logger s_logger = Logger.getLogger(RemoteMethodCall.class.getName());
-	
 	private String m_remoteName;
 	private String m_methodName;
 	private Object[] m_args;
-	
 	// to save space, we dont serialize method name/types
 	// instead we just serialize a number which can be transalted into
 	// the correct method.
 	private int m_methodNumber;
-	
 	// stored as a String[] so we can be serialzed
 	private String[] m_argTypes;
 	
@@ -47,8 +43,7 @@ public class RemoteMethodCall implements Externalizable
 	{
 	}
 	
-	public RemoteMethodCall(final String remoteName, final String methodName,
-				final Object[] args, final Class<?>[] argTypes, Class<?> remoteInterface)
+	public RemoteMethodCall(final String remoteName, final String methodName, final Object[] args, final Class<?>[] argTypes, final Class<?> remoteInterface)
 	{
 		if (argTypes == null)
 			throw new IllegalArgumentException("ArgTypes are null");
@@ -56,18 +51,15 @@ public class RemoteMethodCall implements Externalizable
 			throw new IllegalArgumentException("args but no types");
 		if (args != null && args.length != argTypes.length)
 			throw new IllegalArgumentException("Arg and arg type lengths dont match");
-		
 		m_remoteName = remoteName;
 		m_methodName = methodName;
 		m_args = args;
 		m_argTypes = classesToString(argTypes, args);
 		m_methodNumber = RemoteInterfaceHelper.getNumber(methodName, argTypes, remoteInterface);
-		
 		if (s_logger.isLoggable(Level.FINE))
 		{
 			s_logger.fine("Remote Method Call:" + debugMethodText());
 		}
-		
 	}
 	
 	private String debugMethodText()
@@ -110,9 +102,9 @@ public class RemoteMethodCall implements Externalizable
 		return stringsToClasses(m_argTypes, m_args);
 	}
 	
-	public static Class<?>[] stringsToClasses(String[] strings, Object[] args)
+	public static Class<?>[] stringsToClasses(final String[] strings, final Object[] args)
 	{
-		Class<?>[] rVal = new Class[strings.length];
+		final Class<?>[] rVal = new Class[strings.length];
 		for (int i = 0; i < strings.length; i++)
 		{
 			try
@@ -159,7 +151,7 @@ public class RemoteMethodCall implements Externalizable
 				{
 					rVal[i] = Class.forName(strings[i]);
 				}
-			} catch (ClassNotFoundException e)
+			} catch (final ClassNotFoundException e)
 			{
 				e.printStackTrace();
 				throw new IllegalStateException(e.getMessage());
@@ -168,13 +160,12 @@ public class RemoteMethodCall implements Externalizable
 		return rVal;
 	}
 	
-	public static String[] classesToString(Class<?>[] classes, Object[] args)
+	public static String[] classesToString(final Class<?>[] classes, final Object[] args)
 	{
 		// as an optimization, if args[i].getClass == classes[i] then leave classes[i] as null
 		// this will reduce the amount of info we write over the network in the common
 		// case where the object is the same type as its arg
-		
-		String[] rVal = new String[classes.length];
+		final String[] rVal = new String[classes.length];
 		for (int i = 0; i < classes.length; i++)
 		{
 			if (args != null && args[i] != null && classes[i] == args[i].getClass())
@@ -185,7 +176,6 @@ public class RemoteMethodCall implements Externalizable
 			{
 				rVal[i] = classes[i].getName();
 			}
-			
 		}
 		return rVal;
 	}
@@ -196,7 +186,7 @@ public class RemoteMethodCall implements Externalizable
 		return "Remote method call:" + m_methodName + " on:" + m_remoteName;
 	}
 	
-	public void writeExternal(ObjectOutput out) throws IOException
+	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		out.writeUTF(m_remoteName);
 		out.writeByte(m_methodNumber);
@@ -213,21 +203,16 @@ public class RemoteMethodCall implements Externalizable
 				out.writeObject(m_args[i]);
 			}
 		}
-		
 	}
 	
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		m_remoteName = in.readUTF();
 		m_methodNumber = in.readByte();
-		
-		byte count = in.readByte();
-		
+		final byte count = in.readByte();
 		if (count != Byte.MAX_VALUE)
 		{
-			
 			m_args = new Object[count];
-			
 			for (int i = 0; i < count; i++)
 			{
 				m_args[i] = in.readObject();
@@ -240,15 +225,13 @@ public class RemoteMethodCall implements Externalizable
 	 * informatin to determine the method without being told
 	 * what class we operate on.
 	 */
-	public void resolve(Class<?> remoteType)
+	public void resolve(final Class<?> remoteType)
 	{
 		if (m_methodName != null)
 			return;
-		
-		Tuple<String, Class<?>[]> values = RemoteInterfaceHelper.getMethodInfo(m_methodNumber, remoteType);
+		final Tuple<String, Class<?>[]> values = RemoteInterfaceHelper.getMethodInfo(m_methodNumber, remoteType);
 		m_methodName = values.getFirst();
 		m_argTypes = classesToString(values.getSecond(), m_args);
-		
 		if (s_logger.isLoggable(Level.FINE))
 		{
 			s_logger.fine("Remote Method for class:" + remoteType.getSimpleName() + " Resolved To:" + debugMethodText());

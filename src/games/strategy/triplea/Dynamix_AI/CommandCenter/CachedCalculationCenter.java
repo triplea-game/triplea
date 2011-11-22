@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.CommandCenter;
 
 import games.strategy.engine.data.GameData;
@@ -40,72 +39,66 @@ public class CachedCalculationCenter
 	/**
 	 * The same as data.getMap().getRoute(ter1, ter2), except that this method caches the resulting List<Territory> for quick retrieval later on.
 	 */
-	public static List<Territory> GetMapTersFromPoint(Territory target)
+	public static List<Territory> GetMapTersFromPoint(final Territory target)
 	{
-		Territory key = target;
+		final Territory key = target;
 		if (!CachedMapTersFromPoints.containsKey(key))
 			CachedMapTersFromPoints.put(key, DUtils.GetTerritoriesWithinXDistanceOfY(target.getData(), target, Integer.MAX_VALUE));
-		
 		return CachedMapTersFromPoints.get(key);
 	}
 	
 	/**
 	 * The same as data.getMap().getRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
 	 */
-	public static Route GetRoute(GameData data, Territory ter1, Territory ter2)
+	public static Route GetRoute(final GameData data, final Territory ter1, final Territory ter2)
 	{
-		List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
+		final List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
 		if (!CachedRoutes.containsKey(key))
 			CachedRoutes.put(key, data.getMap().getRoute(ter1, ter2));
-		
 		return CachedRoutes.get(key);
 	}
 	
 	/**
 	 * The same as data.getMap().getRoute(ter1, ter2, Matches.TerritoryIsNotImpassable), except that this method caches the resulting Route for quick retrieval later on.
 	 */
-	public static Route GetAirPassableRoute(GameData data, Territory ter1, Territory ter2)
+	public static Route GetAirPassableRoute(final GameData data, final Territory ter1, final Territory ter2)
 	{
-		List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
+		final List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
 		if (!CachedAirPassableRoutes.containsKey(key))
 			CachedAirPassableRoutes.put(key, data.getMap().getRoute(ter1, ter2, Matches.TerritoryIsNotImpassable));
-		
 		return CachedAirPassableRoutes.get(key);
 	}
 	
 	/**
 	 * The same as data.getMap().getLandRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
 	 */
-	public static Route GetLandRoute(GameData data, Territory ter1, Territory ter2)
+	public static Route GetLandRoute(final GameData data, final Territory ter1, final Territory ter2)
 	{
-		List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
+		final List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
 		if (!CachedLandRoutes.containsKey(key))
 			CachedLandRoutes.put(key, data.getMap().getLandRoute(ter1, ter2));
-		
 		return CachedLandRoutes.get(key);
 	}
 	
 	/**
 	 * The same as data.getMap().getRoute(ter1, ter2, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable)), except that this method caches the resulting Route for quick retrieval later on.
 	 */
-	public static Route GetPassableLandRoute(GameData data, Territory ter1, Territory ter2)
+	public static Route GetPassableLandRoute(final GameData data, final Territory ter1, final Territory ter2)
 	{
-		List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
+		final List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
 		if (!CachedPassableLandRoutes.containsKey(key))
 			CachedPassableLandRoutes.put(key, data.getMap().getRoute(ter1, ter2, DMatches.TerritoryIsLandAndPassable));
-		
 		return CachedPassableLandRoutes.get(key);
 	}
 	
 	/**
 	 * The same as data.getMap().getWaterRoute(ter1, ter2), except that this method caches the resulting Route for quick retrieval later on.
 	 */
-	public static Route GetSeaRoute(GameData data, Territory ter1, Territory ter2)
+	public static Route GetSeaRoute(final GameData data, final Territory ter1, final Territory ter2)
 	{
-		List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
+		final List key = DUtils.ToList(DUtils.ToArray(ter1, ter2));
 		if (!CachedSeaRoutes.containsKey(key))
 			CachedSeaRoutes.put(key, data.getMap().getWaterRoute(ter1, ter2));
-		
 		return CachedSeaRoutes.get(key);
 	}
 }

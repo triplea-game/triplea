@@ -20,7 +20,6 @@ public class RemoteName
 	{
 		if (!class1.isInterface())
 			throw new IllegalArgumentException("Not an interface");
-		
 		m_name = name;
 		m_class = class1;
 	}
@@ -40,5 +39,4 @@ public class RemoteName
 	{
 		return m_name + ":" + m_class.getSimpleName();
 	}
-	
 }

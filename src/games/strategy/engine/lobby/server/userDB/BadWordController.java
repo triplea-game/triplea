@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.userDB;
 
 import java.sql.Connection;
@@ -30,22 +29,20 @@ import java.util.logging.Logger;
  */
 public class BadWordController
 {
-	
 	private static final Logger s_logger = Logger.getLogger(BadWordController.class.getName());
 	
-	public void addBadWord(String word)
+	public void addBadWord(final String word)
 	{
-		
 		s_logger.fine("Adding bad word word:" + word);
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?)");
+			final PreparedStatement ps = con.prepareStatement("insert into bad_words (word) values (?)");
 			ps.setString(1, word);
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			if (sqle.getErrorCode() == 30000)
 			{
@@ -54,7 +51,6 @@ public class BadWordController
 				s_logger.info("Tried to create duplicate banned word:" + word + " error:" + sqle.getMessage());
 				return;
 			}
-			
 			s_logger.log(Level.SEVERE, "Error inserting banned word:" + word, sqle);
 			throw new IllegalStateException(sqle.getMessage());
 		} finally
@@ -63,19 +59,18 @@ public class BadWordController
 		}
 	}
 	
-	public void removeBannedWord(String word)
+	public void removeBannedWord(final String word)
 	{
-		
 		s_logger.fine("Removing banned word:" + word);
-		Connection con = Database.getConnection();
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?");
+			final PreparedStatement ps = con.prepareStatement("delete from bad_words where word = ?");
 			ps.setString(1, word);
 			ps.execute();
 			ps.close();
 			con.commit();
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.log(Level.SEVERE, "Error deleting banned word:" + word, sqle);
 			throw new IllegalStateException(sqle.getMessage());
@@ -87,34 +82,27 @@ public class BadWordController
 	
 	public List<String> list()
 	{
-		String sql = "select word from bad_words";
-		Connection con = Database.getConnection();
+		final String sql = "select word from bad_words";
+		final Connection con = Database.getConnection();
 		try
 		{
-			PreparedStatement ps = con.prepareStatement(sql);
-			
-			ResultSet rs = ps.executeQuery();
-			
-			List<String> rVal = new ArrayList<String>();
+			final PreparedStatement ps = con.prepareStatement(sql);
+			final ResultSet rs = ps.executeQuery();
+			final List<String> rVal = new ArrayList<String>();
 			while (rs.next())
 			{
 				rVal.add(rs.getString(1));
 			}
-			
 			rs.close();
 			ps.close();
-			
 			return rVal;
-			
-		} catch (SQLException sqle)
+		} catch (final SQLException sqle)
 		{
 			s_logger.info("Error reading bad words error:" + sqle.getMessage());
 			throw new IllegalStateException(sqle.getMessage());
-			
 		} finally
 		{
 			DbUtil.closeConnection(con);
 		}
 	}
-	
 }

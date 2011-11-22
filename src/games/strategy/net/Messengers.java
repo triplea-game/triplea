@@ -9,7 +9,6 @@
  * along with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.net;
 
 import games.strategy.engine.message.ChannelMessenger;
@@ -30,10 +29,10 @@ public class Messengers
 	private final IRemoteMessenger m_remoteMessenger;
 	private final IChannelMessenger m_channelMessenger;
 	
-	public Messengers(IMessenger messenger)
+	public Messengers(final IMessenger messenger)
 	{
 		m_messenger = messenger;
-		UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
+		final UnifiedMessenger unifiedMessenger = new UnifiedMessenger(messenger);
 		m_channelMessenger = new ChannelMessenger(unifiedMessenger);
 		m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
 	}
@@ -59,5 +58,4 @@ public class Messengers
 	{
 		return m_remoteMessenger;
 	}
-	
 }

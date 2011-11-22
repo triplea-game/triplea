@@ -35,10 +35,9 @@ public class SystemOutHandler extends StreamHandler
 	}
 	
 	@Override
-	public void publish(LogRecord record)
+	public void publish(final LogRecord record)
 	{
 		super.publish(record);
 		flush();
 	}
-	
 }

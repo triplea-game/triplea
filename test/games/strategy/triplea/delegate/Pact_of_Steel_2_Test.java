@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
@@ -32,7 +31,6 @@ import junit.framework.TestCase;
 
 public class Pact_of_Steel_2_Test extends TestCase
 {
-	
 	private GameData m_data;
 	
 	@Override
@@ -49,68 +47,54 @@ public class Pact_of_Steel_2_Test extends TestCase
 	
 	public void testDirectOwnershipTerritories()
 	{
-		Territory Norway = m_data.getMap().getTerritory("Norway");
-		Territory Eastern_Europe = m_data.getMap().getTerritory("Eastern Europe");
-		Territory East_Balkans = m_data.getMap().getTerritory("East Balkans");
-		Territory Ukraine_S_S_R_ = m_data.getMap().getTerritory("Ukraine S.S.R.");
-		Territory Belorussia = m_data.getMap().getTerritory("Belorussia");
-		
-		PlayerID british = m_data.getPlayerList().getPlayerID("British");
-		PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
-		PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
-		
+		final Territory Norway = m_data.getMap().getTerritory("Norway");
+		final Territory Eastern_Europe = m_data.getMap().getTerritory("Eastern Europe");
+		final Territory East_Balkans = m_data.getMap().getTerritory("East Balkans");
+		final Territory Ukraine_S_S_R_ = m_data.getMap().getTerritory("Ukraine S.S.R.");
+		final Territory Belorussia = m_data.getMap().getTerritory("Belorussia");
+		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
+		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
+		final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
 		// this National Objective russia has to own at least 3 of the 5 territories by itself
-		RulesAttachment russian_easternEurope = RulesAttachment.get(russians, "objectiveAttachmentRussians1_EasternEurope");
-		
-		Collection<Territory> terrs = new ArrayList<Territory>();
+		final RulesAttachment russian_easternEurope = RulesAttachment.get(russians, "objectiveAttachmentRussians1_EasternEurope");
+		final Collection<Territory> terrs = new ArrayList<Territory>();
 		terrs.add(Norway);
 		terrs.add(Eastern_Europe);
 		terrs.add(East_Balkans);
 		terrs.add(Ukraine_S_S_R_);
 		terrs.add(Belorussia);
-		
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 5);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 0);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
 		assertFalse(russian_easternEurope.isSatisfied(m_data));
-		
 		Norway.setOwner(british);
 		Eastern_Europe.setOwner(russians);
 		East_Balkans.setOwner(russians);
 		Ukraine_S_S_R_.setOwner(germans);
 		Belorussia.setOwner(germans);
-		
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 2);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 2);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 1);
 		assertFalse(russian_easternEurope.isSatisfied(m_data));
-		
 		Ukraine_S_S_R_.setOwner(british);
 		Belorussia.setOwner(british);
-		
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 0);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 2);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 3);
 		assertFalse(russian_easternEurope.isSatisfied(m_data));
-		
 		Norway.setOwner(russians);
 		Ukraine_S_S_R_.setOwner(germans);
 		Belorussia.setOwner(germans);
-		
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 2);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 3);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
 		assertTrue(russian_easternEurope.isSatisfied(m_data));
-		
 		Ukraine_S_S_R_.setOwner(russians);
-		
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 1);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 4);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
 		assertTrue(russian_easternEurope.isSatisfied(m_data));
-		
 		Belorussia.setOwner(russians);
-		
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 0);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 5);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
@@ -234,14 +218,13 @@ public class Pact_of_Steel_2_Test extends TestCase
 	/*
 	 * Add Utilities here
 	 */
-
-	private Collection<Unit> getUnits(IntegerMap<UnitType> units, PlayerID from)
+	private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from)
 	{
-		Iterator<UnitType> iter = units.keySet().iterator();
-		Collection<Unit> rVal = new ArrayList<Unit>(units.totalValues());
+		final Iterator<UnitType> iter = units.keySet().iterator();
+		final Collection<Unit> rVal = new ArrayList<Unit>(units.totalValues());
 		while (iter.hasNext())
 		{
-			UnitType type = iter.next();
+			final UnitType type = iter.next();
 			rVal.addAll(from.getUnits().getUnits(type, units.getInt(type)));
 		}
 		return rVal;
@@ -254,12 +237,12 @@ public class Pact_of_Steel_2_Test extends TestCase
 	/*
 	 * Add assertions here
 	 */
-	public void assertValid(String string)
+	public void assertValid(final String string)
 	{
 		assertNull(string, string);
 	}
 	
-	public void assertError(String string)
+	public void assertError(final String string)
 	{
 		assertNotNull(string, string);
 	}

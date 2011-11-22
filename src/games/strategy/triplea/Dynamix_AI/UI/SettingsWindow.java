@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.Dynamix_AI.UI;
 
 import games.strategy.triplea.Dynamix_AI.DSettings;
@@ -44,10 +43,9 @@ import javax.swing.SwingUtilities;
 public class SettingsWindow extends javax.swing.JDialog
 {
 	/** Creates new form SettingsWindow */
-	public SettingsWindow(TripleAFrame frame)
+	public SettingsWindow(final TripleAFrame frame)
 	{
 		super(frame);
-		
 		initComponents();
 	}
 	
@@ -61,7 +59,6 @@ public class SettingsWindow extends javax.swing.JDialog
 	private void initComponents()
 	{
 		java.awt.GridBagConstraints gridBagConstraints;
-		
 		buttonGroup1 = new javax.swing.ButtonGroup();
 		buttonGroup2 = new javax.swing.ButtonGroup();
 		v_invalidationTypeButtonGroup = new javax.swing.ButtonGroup();
@@ -274,38 +271,33 @@ public class SettingsWindow extends javax.swing.JDialog
 		jLabel69 = new javax.swing.JLabel();
 		v_aa_ignoreAlliedUnitsAsDefenses = new javax.swing.JCheckBox();
 		jPanel22 = new javax.swing.JPanel();
-		
 		setTitle("Dynamix AI Settings");
 		setMinimumSize(new java.awt.Dimension(775, 400));
 		addWindowListener(new java.awt.event.WindowAdapter()
 		{
-			
 			@Override
-			public void windowClosing(java.awt.event.WindowEvent evt)
+			public void windowClosing(final java.awt.event.WindowEvent evt)
 			{
 				formWindowClosing(evt);
 			}
 			
 			@Override
-			public void windowOpened(java.awt.event.WindowEvent evt)
+			public void windowOpened(final java.awt.event.WindowEvent evt)
 			{
 				formWindowOpened(evt);
 			}
 		});
 		getContentPane().setLayout(new java.awt.GridBagLayout());
-		
 		jPanel7.setName("jPanel3"); // NOI18N
 		jPanel7.setPreferredSize(new java.awt.Dimension(600, 45));
 		jPanel7.setLayout(new java.awt.GridBagLayout());
-		
 		v_restoreDefaultsButton.setText("Restore Defaults");
 		v_restoreDefaultsButton.setMinimumSize(new java.awt.Dimension(118, 23));
 		v_restoreDefaultsButton.setName("v_restoreDefaultsButton"); // NOI18N
 		v_restoreDefaultsButton.setPreferredSize(new java.awt.Dimension(118, 23));
 		v_restoreDefaultsButton.addActionListener(new java.awt.event.ActionListener()
 		{
-			
-			public void actionPerformed(java.awt.event.ActionEvent evt)
+			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_restoreDefaultsButtonActionPerformed(evt);
 			}
@@ -316,15 +308,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(11, 0, 11, 0);
 		jPanel7.add(v_restoreDefaultsButton, gridBagConstraints);
-		
 		v_settingsDetailsButton.setText("Settings Details");
 		v_settingsDetailsButton.setMinimumSize(new java.awt.Dimension(115, 23));
 		v_settingsDetailsButton.setName("v_settingsDetailsButton"); // NOI18N
 		v_settingsDetailsButton.setPreferredSize(new java.awt.Dimension(115, 23));
 		v_settingsDetailsButton.addActionListener(new java.awt.event.ActionListener()
 		{
-			
-			public void actionPerformed(java.awt.event.ActionEvent evt)
+			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_settingsDetailsButtonActionPerformed(evt);
 			}
@@ -335,19 +325,15 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
 		gridBagConstraints.insets = new java.awt.Insets(11, 6, 11, 0);
 		jPanel7.add(v_settingsDetailsButton, gridBagConstraints);
-		
 		jPanel14.setName("jPanel14"); // NOI18N
 		jPanel14.setLayout(new java.awt.GridBagLayout());
-		
 		jPanel13.setName("jPanel13"); // NOI18N
 		jPanel13.setLayout(new java.awt.GridBagLayout());
-		
 		v_cancelButton.setText("Cancel");
 		v_cancelButton.setName("v_cancelButton"); // NOI18N
 		v_cancelButton.addActionListener(new java.awt.event.ActionListener()
 		{
-			
-			public void actionPerformed(java.awt.event.ActionEvent evt)
+			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_cancelButtonActionPerformed(evt);
 			}
@@ -357,13 +343,11 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
 		jPanel13.add(v_cancelButton, gridBagConstraints);
-		
 		v_okButton.setText("OK");
 		v_okButton.setName("v_okButton"); // NOI18N
 		v_okButton.addActionListener(new java.awt.event.ActionListener()
 		{
-			
-			public void actionPerformed(java.awt.event.ActionEvent evt)
+			public void actionPerformed(final java.awt.event.ActionEvent evt)
 			{
 				v_okButtonActionPerformed(evt);
 			}
@@ -372,12 +356,10 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		jPanel13.add(v_okButton, gridBagConstraints);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		jPanel14.add(jPanel13, gridBagConstraints);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 0;
@@ -385,7 +367,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(11, 6, 11, 0);
 		jPanel7.add(jPanel14, gridBagConstraints);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
@@ -393,15 +374,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 7);
 		getContentPane().add(jPanel7, gridBagConstraints);
-		
 		v_tabPaneMain.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
 		v_tabPaneMain.setName("v_tabPaneMain"); // NOI18N
 		v_tabPaneMain.setPreferredSize(new java.awt.Dimension(500, 250));
-		
 		jPanel1.setName("jPanel1"); // NOI18N
 		jPanel1.setPreferredSize(new java.awt.Dimension(500, 131));
 		jPanel1.setLayout(new java.awt.GridBagLayout());
-		
 		jLabel14.setText("Battle Calculation Method:");
 		jLabel14.setName("jLabel14"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -410,7 +388,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(12, 10, 5, 0);
 		jPanel1.add(jLabel14, gridBagConstraints);
-		
 		buttonGroup2.add(v_battleCalculator);
 		v_battleCalculator.setSelected(true);
 		v_battleCalculator.setText("Battle Calculator");
@@ -420,7 +397,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 		jPanel1.add(v_battleCalculator, gridBagConstraints);
-		
 		buttonGroup2.add(v_basicStrengthEval);
 		v_basicStrengthEval.setText("Basic Strength Eval");
 		v_basicStrengthEval.setEnabled(false);
@@ -430,7 +406,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 0, 0);
 		jPanel1.add(v_basicStrengthEval, gridBagConstraints);
-		
 		buttonGroup2.add(v_basicScoreEval);
 		v_basicScoreEval.setText("Basic Score Eval");
 		v_basicScoreEval.setEnabled(false);
@@ -440,7 +415,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 		jPanel1.add(v_basicScoreEval, gridBagConstraints);
-		
 		buttonGroup2.add(v_quickBattleCalculator);
 		v_quickBattleCalculator.setText("Quick Battle Calculator");
 		v_quickBattleCalculator.setEnabled(false);
@@ -450,7 +424,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 		jPanel1.add(v_quickBattleCalculator, gridBagConstraints);
-		
 		jPanel26.setName("jPanel26"); // NOI18N
 		jPanel26.setLayout(new java.awt.GridBagLayout());
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -459,13 +432,10 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.weighty = 99.0;
 		jPanel1.add(jPanel26, gridBagConstraints);
-		
 		v_tabPaneMain.addTab("General", jPanel1);
-		
 		v_pausingPanel.setName("v_pausingPanel"); // NOI18N
 		v_pausingPanel.setPreferredSize(new java.awt.Dimension(500, 199));
 		v_pausingPanel.setLayout(new java.awt.GridBagLayout());
-		
 		buttonGroup1.add(v_actionLengthGoalRB);
 		v_actionLengthGoalRB.setSelected(true);
 		v_actionLengthGoalRB.setText("Action Length Goal");
@@ -473,8 +443,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_actionLengthGoalRB.setName("v_actionLengthGoalRB"); // NOI18N
 		v_actionLengthGoalRB.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_actionLengthGoalRBStateChanged(evt);
 			}
@@ -484,7 +453,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 		v_pausingPanel.add(v_actionLengthGoalRB, gridBagConstraints);
-		
 		buttonGroup1.add(v_actionWaitGoalRB);
 		v_actionWaitGoalRB.setText("Action Wait Goal");
 		v_actionWaitGoalRB.setToolTipText("This causes the AI to pause the alloted time after each action is calculated and displayed.");
@@ -494,10 +462,8 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 		v_pausingPanel.add(v_actionWaitGoalRB, gridBagConstraints);
-		
 		v_totalLengthGoalsPanel.setName("v_totalLengthGoalsPanel"); // NOI18N
 		v_totalLengthGoalsPanel.setLayout(new java.awt.GridBagLayout());
-		
 		v_purchaseWait_AL.setModel(new javax.swing.SpinnerNumberModel(750, 0, 25000, 50));
 		v_purchaseWait_AL.setName("v_purchaseWait_AL"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -506,7 +472,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridheight = 2;
 		gridBagConstraints.insets = new java.awt.Insets(11, 10, 0, 0);
 		v_totalLengthGoalsPanel.add(v_purchaseWait_AL, gridBagConstraints);
-		
 		jLabel5.setText("Milliseconds");
 		jLabel5.setName("jLabel5"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -514,7 +479,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(14, 10, 0, 10);
 		v_totalLengthGoalsPanel.add(jLabel5, gridBagConstraints);
-		
 		v_combatMoveWait_AL.setModel(new javax.swing.SpinnerNumberModel(750, 0, 25000, 50));
 		v_combatMoveWait_AL.setName("v_combatMoveWait_AL"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -523,7 +487,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridheight = 2;
 		gridBagConstraints.insets = new java.awt.Insets(11, 10, 0, 0);
 		v_totalLengthGoalsPanel.add(v_combatMoveWait_AL, gridBagConstraints);
-		
 		jLabel6.setText("Milliseconds");
 		jLabel6.setName("jLabel6"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -531,7 +494,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.insets = new java.awt.Insets(14, 10, 0, 10);
 		v_totalLengthGoalsPanel.add(jLabel6, gridBagConstraints);
-		
 		v_nonCombatMoveWait_AL.setModel(new javax.swing.SpinnerNumberModel(750, 0, 25000, 50));
 		v_nonCombatMoveWait_AL.setName("v_nonCombatMoveWait_AL"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -540,7 +502,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridheight = 2;
 		gridBagConstraints.insets = new java.awt.Insets(11, 10, 0, 0);
 		v_totalLengthGoalsPanel.add(v_nonCombatMoveWait_AL, gridBagConstraints);
-		
 		jLabel7.setText("Milliseconds");
 		jLabel7.setName("jLabel7"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -548,7 +509,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 4;
 		gridBagConstraints.insets = new java.awt.Insets(14, 10, 0, 10);
 		v_totalLengthGoalsPanel.add(jLabel7, gridBagConstraints);
-		
 		v_placementWait_AL.setModel(new javax.swing.SpinnerNumberModel(750, 0, 25000, 50));
 		v_placementWait_AL.setName("v_placementWait_AL"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -557,7 +517,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridheight = 2;
 		gridBagConstraints.insets = new java.awt.Insets(11, 10, 11, 0);
 		v_totalLengthGoalsPanel.add(v_placementWait_AL, gridBagConstraints);
-		
 		jLabel8.setText("Milliseconds");
 		jLabel8.setName("jLabel8"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -565,16 +524,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 6;
 		gridBagConstraints.insets = new java.awt.Insets(14, 10, 0, 10);
 		v_totalLengthGoalsPanel.add(jLabel8, gridBagConstraints);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 4;
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.gridheight = 4;
 		v_pausingPanel.add(v_totalLengthGoalsPanel, gridBagConstraints);
-		
 		v_actionWaitGoalsPanel.setName("v_actionWaitGoalsPanel"); // NOI18N
 		v_actionWaitGoalsPanel.setLayout(new java.awt.GridBagLayout());
-		
 		v_combatMoveWait_AW.setModel(new javax.swing.SpinnerNumberModel(250, 0, 25000, 50));
 		v_combatMoveWait_AW.setEnabled(false);
 		v_combatMoveWait_AW.setName("v_combatMoveWait_AW"); // NOI18N
@@ -585,7 +541,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridheight = 2;
 		gridBagConstraints.insets = new java.awt.Insets(11, 10, 0, 0);
 		v_actionWaitGoalsPanel.add(v_combatMoveWait_AW, gridBagConstraints);
-		
 		jLabel9.setText("Milliseconds");
 		jLabel9.setName("jLabel9"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -593,7 +548,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(14, 10, 0, 10);
 		v_actionWaitGoalsPanel.add(jLabel9, gridBagConstraints);
-		
 		v_purchaseWait_AW.setModel(new javax.swing.SpinnerNumberModel(250, 0, 25000, 50));
 		v_purchaseWait_AW.setEnabled(false);
 		v_purchaseWait_AW.setName("v_purchaseWait_AW"); // NOI18N
@@ -604,7 +558,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridheight = 2;
 		gridBagConstraints.insets = new java.awt.Insets(11, 10, 0, 0);
 		v_actionWaitGoalsPanel.add(v_purchaseWait_AW, gridBagConstraints);
-		
 		jLabel10.setText("Milliseconds");
 		jLabel10.setName("jLabel10"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -612,7 +565,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.insets = new java.awt.Insets(14, 10, 0, 10);
 		v_actionWaitGoalsPanel.add(jLabel10, gridBagConstraints);
-		
 		v_nonCombatMoveWait_AW.setModel(new javax.swing.SpinnerNumberModel(250, 0, 25000, 50));
 		v_nonCombatMoveWait_AW.setEnabled(false);
 		v_nonCombatMoveWait_AW.setName("v_nonCombatMoveWait_AW"); // NOI18N
@@ -622,7 +574,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridheight = 2;
 		gridBagConstraints.insets = new java.awt.Insets(11, 10, 0, 0);
 		v_actionWaitGoalsPanel.add(v_nonCombatMoveWait_AW, gridBagConstraints);
-		
 		jLabel11.setText("Milliseconds");
 		jLabel11.setName("jLabel11"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -630,7 +581,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 4;
 		gridBagConstraints.insets = new java.awt.Insets(14, 10, 0, 10);
 		v_actionWaitGoalsPanel.add(jLabel11, gridBagConstraints);
-		
 		v_placementWait_AW.setModel(new javax.swing.SpinnerNumberModel(250, 0, 25000, 50));
 		v_placementWait_AW.setEnabled(false);
 		v_placementWait_AW.setName("v_placementWait_AW"); // NOI18N
@@ -640,7 +590,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridheight = 2;
 		gridBagConstraints.insets = new java.awt.Insets(11, 10, 11, 0);
 		v_actionWaitGoalsPanel.add(v_placementWait_AW, gridBagConstraints);
-		
 		jLabel12.setText("Milliseconds");
 		jLabel12.setName("jLabel12"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -648,13 +597,11 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 6;
 		gridBagConstraints.insets = new java.awt.Insets(14, 10, 0, 10);
 		v_actionWaitGoalsPanel.add(jLabel12, gridBagConstraints);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 5;
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.gridheight = 4;
 		v_pausingPanel.add(v_actionWaitGoalsPanel, gridBagConstraints);
-		
 		jLabel1.setText("Purchase Phase:");
 		jLabel1.setName("jLabel1"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -663,7 +610,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(13, 10, 7, 0);
 		v_pausingPanel.add(jLabel1, gridBagConstraints);
-		
 		jLabel2.setText("Combat Move Phase:");
 		jLabel2.setName("jLabel2"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -672,7 +618,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
 		v_pausingPanel.add(jLabel2, gridBagConstraints);
-		
 		jLabel3.setText("Non Combat Move Phase:");
 		jLabel3.setName("jLabel3"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -681,7 +626,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
 		v_pausingPanel.add(jLabel3, gridBagConstraints);
-		
 		jLabel4.setText("Placement Phase:");
 		jLabel4.setName("jLabel4"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -690,7 +634,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 13, 0);
 		v_pausingPanel.add(jLabel4, gridBagConstraints);
-		
 		jPanel21.setName("jPanel21"); // NOI18N
 		jPanel21.setLayout(new java.awt.GridBagLayout());
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -698,17 +641,14 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 7;
 		gridBagConstraints.weighty = 99.0;
 		v_pausingPanel.add(jPanel21, gridBagConstraints);
-		
 		jPanel23.setName("jPanel23"); // NOI18N
 		jPanel23.setLayout(new java.awt.GridBagLayout());
-		
 		v_allowCalcingDecrease.setSelected(true);
 		v_allowCalcingDecrease.setText("When an action is taking longer than the time specified, reduce the calc'ing run count to:");
 		v_allowCalcingDecrease.setName("v_allowCalcingDecrease"); // NOI18N
 		v_allowCalcingDecrease.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_allowCalcingDecreaseStateChanged(evt);
 			}
@@ -717,7 +657,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		jPanel23.add(v_allowCalcingDecrease, gridBagConstraints);
-		
 		v_calcDecreaseToPercentage.setModel(new javax.swing.SpinnerNumberModel(75, 1, 100, 1));
 		v_calcDecreaseToPercentage.setToolTipText("");
 		v_calcDecreaseToPercentage.setName("v_calcDecreaseToPercentage"); // NOI18N
@@ -727,7 +666,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
 		jPanel23.add(v_calcDecreaseToPercentage, gridBagConstraints);
-		
 		jLabel13.setText("%");
 		jLabel13.setName("jLabel13"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -735,7 +673,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel23.add(jLabel13, gridBagConstraints);
-		
 		jPanel24.setName("jPanel24"); // NOI18N
 		jPanel24.setLayout(new java.awt.GridBagLayout());
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -744,7 +681,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.weighty = 99.0;
 		jPanel23.add(jPanel24, gridBagConstraints);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 5;
@@ -752,7 +688,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_pausingPanel.add(jPanel23, gridBagConstraints);
-		
 		jPanel25.setName("jPanel25"); // NOI18N
 		jPanel25.setLayout(new java.awt.GridBagLayout());
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -761,12 +696,9 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.weighty = 99.0;
 		v_pausingPanel.add(jPanel25, gridBagConstraints);
-		
 		v_tabPaneMain.addTab("AI Pausing", v_pausingPanel);
-		
 		jPanel18.setName("jPanel18"); // NOI18N
 		jPanel18.setLayout(new java.awt.GridBagLayout());
-		
 		v_aic_disableAllUnitPurchasesAndPlacements.setText("Disable All Unit Purchases/Placements");
 		v_aic_disableAllUnitPurchasesAndPlacements.setToolTipText("Causes all Dynamix AI's to skip their purchase and placement phases, as well as destroy their own PU's at the end of each round.");
 		v_aic_disableAllUnitPurchasesAndPlacements.setName("v_aic_disableAllUnitPurchasesAndPlacements"); // NOI18N
@@ -776,7 +708,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(12, 10, 5, 0);
 		jPanel18.add(v_aic_disableAllUnitPurchasesAndPlacements, gridBagConstraints);
-		
 		v_aic_disableAllUnitMovement.setText("Disable All Unit Movement");
 		v_aic_disableAllUnitMovement.setToolTipText("Causes all Dynamix AI's to skip their cm and ncm movement phases.");
 		v_aic_disableAllUnitMovement.setName("v_aic_disableAllUnitMovement"); // NOI18N
@@ -788,19 +719,15 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weighty = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		jPanel18.add(v_aic_disableAllUnitMovement, gridBagConstraints);
-		
 		v_tabPaneMain.addTab("AI Control", jPanel18);
-		
 		jPanel6.setName("jPanel6"); // NOI18N
 		jPanel6.setLayout(new java.awt.GridBagLayout());
-		
 		v_resourceCollectionMultiplier.setText("Resource Collection Multiplier:");
 		v_resourceCollectionMultiplier.setToolTipText("This cheat multiplies the number of resources collected at the end of the round by the percentage supplied.");
 		v_resourceCollectionMultiplier.setName("v_resourceCollectionMultiplier"); // NOI18N
 		v_resourceCollectionMultiplier.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_resourceCollectionMultiplierStateChanged(evt);
 			}
@@ -812,7 +739,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(12, 10, 5, 0);
 		jPanel6.add(v_resourceCollectionMultiplier, gridBagConstraints);
-		
 		v_resourceCollectionMultiplyPercent.setModel(new javax.swing.SpinnerNumberModel(100, 100, 200, 10));
 		v_resourceCollectionMultiplyPercent.setEnabled(false);
 		v_resourceCollectionMultiplyPercent.setName("v_resourceCollectionMultiplyPercent"); // NOI18N
@@ -822,14 +748,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 		jPanel6.add(v_resourceCollectionMultiplyPercent, gridBagConstraints);
-		
 		v_unitPlacementMultiplier.setText("Unit Placement Multiplier:");
 		v_unitPlacementMultiplier.setToolTipText("This cheat multiplies the number of units placed down on each factory by the percentage supplied.");
 		v_unitPlacementMultiplier.setName("v_unitPlacementMultiplier"); // NOI18N
 		v_unitPlacementMultiplier.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_unitPlacementMultiplierStateChanged(evt);
 			}
@@ -841,7 +765,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		jPanel6.add(v_unitPlacementMultiplier, gridBagConstraints);
-		
 		v_unitPlacementMultiplyAmount.setModel(new javax.swing.SpinnerNumberModel(100, 100, 200, 10));
 		v_unitPlacementMultiplyAmount.setEnabled(false);
 		v_unitPlacementMultiplyAmount.setName("v_unitPlacementMultiplyAmount"); // NOI18N
@@ -850,7 +773,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 2;
 		jPanel6.add(v_unitPlacementMultiplyAmount, gridBagConstraints);
-		
 		jLabel47.setText("%");
 		jLabel47.setName("jLabel47"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -858,7 +780,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 5, 0, 5);
 		jPanel6.add(jLabel47, gridBagConstraints);
-		
 		jLabel48.setText("%");
 		jLabel48.setName("jLabel48"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -866,14 +787,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel6.add(jLabel48, gridBagConstraints);
-		
 		v_resourceCollectionIncreaser.setText("Resource Collection Increaser:");
 		v_resourceCollectionIncreaser.setToolTipText("This cheat increases the number of resources collected at the end of the round by the amount supplied.");
 		v_resourceCollectionIncreaser.setName("v_resourceCollectionIncreaser"); // NOI18N
 		v_resourceCollectionIncreaser.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_resourceCollectionIncreaserStateChanged(evt);
 			}
@@ -885,7 +804,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		jPanel6.add(v_resourceCollectionIncreaser, gridBagConstraints);
-		
 		v_resourceCollectionIncreaseAmount.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 10));
 		v_resourceCollectionIncreaseAmount.setEnabled(false);
 		v_resourceCollectionIncreaseAmount.setName("v_resourceCollectionIncreaseAmount"); // NOI18N
@@ -894,7 +812,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 1;
 		jPanel6.add(v_resourceCollectionIncreaseAmount, gridBagConstraints);
-		
 		jPanel20.setName("jPanel20"); // NOI18N
 		jPanel20.setLayout(new java.awt.GridBagLayout());
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -903,19 +820,14 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.weighty = 99.0;
 		jPanel6.add(jPanel20, gridBagConstraints);
-		
 		v_tabPaneMain.addTab("AI Cheating", jPanel6);
-		
 		jPanel4.setName("jPanel4"); // NOI18N
 		jPanel4.setLayout(new java.awt.GridLayout(1, 0));
-		
 		v_calcRunCountAssignmentsScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		v_calcRunCountAssignmentsScrollPane.setName("v_calcRunCountAssignmentsScrollPane"); // NOI18N
-		
 		v_calcRunCountAssignmentsHolderPanel.setName("v_calcRunCountAssignmentsHolderPanel"); // NOI18N
 		v_calcRunCountAssignmentsHolderPanel.setPreferredSize(new java.awt.Dimension(500, 519));
 		v_calcRunCountAssignmentsHolderPanel.setLayout(new java.awt.GridBagLayout());
-		
 		jLabel17.setText("calculations");
 		jLabel17.setName("jLabel17"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -923,7 +835,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel17, gridBagConstraints);
-		
 		v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setModel(new javax.swing.SpinnerNumberModel(50, 1, 5000, 10));
 		v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setName("v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost"); // NOI18N
 		v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -932,7 +843,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost, gridBagConstraints);
-		
 		jLabel16.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel16.setText("Purchase - Calculation That Determines The Unit That Would Help Win Invasion On Enemy Target The Most:");
 		jLabel16.setName("jLabel16"); // NOI18N
@@ -943,7 +853,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(12, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel16, gridBagConstraints);
-		
 		jLabel18.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel18.setText("(Frequency: Very High, Suggested Range: 10 - 250)");
 		jLabel18.setName("jLabel18"); // NOI18N
@@ -953,7 +862,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel18, gridBagConstraints);
-		
 		jLabel19.setText("calculations");
 		jLabel19.setName("jLabel19"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -961,7 +869,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel19, gridBagConstraints);
-		
 		v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
 		v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.setName("v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance"); // NOI18N
 		v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -969,7 +876,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 2;
 		v_calcRunCountAssignmentsHolderPanel.add(v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, gridBagConstraints);
-		
 		jLabel20.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel20.setText("CM - Calculation That Determines If The Creation Of A Task Is Worthwhile Based On Takeover Chance:");
 		jLabel20.setName("jLabel20"); // NOI18N
@@ -980,7 +886,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel20, gridBagConstraints);
-		
 		jLabel21.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel21.setText("(Frequency: Average, Suggested Range: 50 - 500)");
 		jLabel21.setName("jLabel21"); // NOI18N
@@ -990,7 +895,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel21, gridBagConstraints);
-		
 		jLabel22.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel22.setText("CM & NCM - Calculation That Sorts Possible Task Recruits For Optimal Attack/Defense:");
 		jLabel22.setName("jLabel22"); // NOI18N
@@ -1001,7 +905,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel22, gridBagConstraints);
-		
 		v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense.setModel(new javax.swing.SpinnerNumberModel(25, 1, 5000, 5));
 		v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense.setName("v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense"); // NOI18N
 		v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -1009,7 +912,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 4;
 		v_calcRunCountAssignmentsHolderPanel.add(v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense, gridBagConstraints);
-		
 		jLabel23.setText("calculations");
 		jLabel23.setName("jLabel23"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1017,7 +919,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 4;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel23, gridBagConstraints);
-		
 		jLabel24.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel24.setText("(Frequency: Very High, Suggested Range: 5 - 250)");
 		jLabel24.setName("jLabel24"); // NOI18N
@@ -1027,7 +928,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel24, gridBagConstraints);
-		
 		v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
 		v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop.setName("v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop"); // NOI18N
 		v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -1035,7 +935,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 6;
 		v_calcRunCountAssignmentsHolderPanel.add(v_cacmncm_determinesIfTasksRequirementsAreMetEnoughForRecruitingStop, gridBagConstraints);
-		
 		jLabel25.setText("calculations");
 		jLabel25.setName("jLabel25"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1043,7 +942,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 6;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel25, gridBagConstraints);
-		
 		jLabel26.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel26.setText("CM & NCM - Calculation That Determines If The Task's Requirements Are Met Enough For Unit Recruiting To Stop:");
 		jLabel26.setName("jLabel26"); // NOI18N
@@ -1054,7 +952,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel26, gridBagConstraints);
-		
 		jLabel27.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel27.setText("(Frequency: High, Suggested Range: 50 - 1000)");
 		jLabel27.setName("jLabel27"); // NOI18N
@@ -1064,7 +961,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel27, gridBagConstraints);
-		
 		jLabel28.setText("calculations");
 		jLabel28.setName("jLabel28"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1072,7 +968,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 10;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel28, gridBagConstraints);
-		
 		jLabel29.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel29.setText("CM - Calculation That Determines Attack Results For Determining If Task Is Worthwhile:");
 		jLabel29.setName("jLabel29"); // NOI18N
@@ -1083,7 +978,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel29, gridBagConstraints);
-		
 		jLabel30.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel30.setText("(Frequency: Average, Suggested Range: 250 - 2500)");
 		jLabel30.setName("jLabel30"); // NOI18N
@@ -1093,7 +987,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel30, gridBagConstraints);
-		
 		v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile.setModel(new javax.swing.SpinnerNumberModel(500, 1, 5000, 10));
 		v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile.setName("v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile"); // NOI18N
 		v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -1101,7 +994,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 10;
 		v_calcRunCountAssignmentsHolderPanel.add(v_cacm_determinesAttackResultsToSeeIfTaskWorthwhile, gridBagConstraints);
-		
 		v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.setModel(new javax.swing.SpinnerNumberModel(500, 1, 5000, 10));
 		v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.setName("v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile"); // NOI18N
 		v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -1109,7 +1001,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 12;
 		v_calcRunCountAssignmentsHolderPanel.add(v_cacmncm_determinesResponseResultsToSeeIfTaskWorthwhile, gridBagConstraints);
-		
 		jLabel31.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel31.setText("(Frequency: Average, Suggested Range: 250 - 2500)");
 		jLabel31.setName("jLabel31"); // NOI18N
@@ -1119,7 +1010,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel31, gridBagConstraints);
-		
 		jLabel32.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel32.setText("CM & NCM - Calculation That Determines Response Results For Determining If Task Is Worthwhile:");
 		jLabel32.setName("jLabel32"); // NOI18N
@@ -1130,7 +1020,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel32, gridBagConstraints);
-		
 		jLabel33.setText("calculations");
 		jLabel33.setName("jLabel33"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1138,7 +1027,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 12;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel33, gridBagConstraints);
-		
 		jLabel34.setText("calculations");
 		jLabel34.setName("jLabel34"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1146,7 +1034,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 14;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel34, gridBagConstraints);
-		
 		jLabel35.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel35.setText("CM & NCM - Calculation That Determines If Task Endangers The Capital:");
 		jLabel35.setName("jLabel35"); // NOI18N
@@ -1157,7 +1044,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel35, gridBagConstraints);
-		
 		jLabel36.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel36.setText("(Frequency: Low, Suggested Range: 100 - 1500)");
 		jLabel36.setName("jLabel36"); // NOI18N
@@ -1167,7 +1053,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel36, gridBagConstraints);
-		
 		v_cacmncm_determinesIfTaskEndangersCap.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
 		v_cacmncm_determinesIfTaskEndangersCap.setName("v_cacmncm_determinesIfTaskEndangersCap"); // NOI18N
 		v_cacmncm_determinesIfTaskEndangersCap.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -1175,7 +1060,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 14;
 		v_calcRunCountAssignmentsHolderPanel.add(v_cacmncm_determinesIfTaskEndangersCap, gridBagConstraints);
-		
 		jLabel37.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel37.setText("(Frequency: Very Low, Suggested Range: 50 - 1000)");
 		jLabel37.setName("jLabel37"); // NOI18N
@@ -1185,7 +1069,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel37, gridBagConstraints);
-		
 		v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers.setModel(new javax.swing.SpinnerNumberModel(250, 1, 5000, 10));
 		v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers.setName("v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers"); // NOI18N
 		v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -1193,7 +1076,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 16;
 		v_calcRunCountAssignmentsHolderPanel.add(v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers, gridBagConstraints);
-		
 		jLabel38.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel38.setText("CM & NCM - Calc. Determining Survival Chance After Performing Task To Check If We Should Invalidate Attackers:");
 		jLabel38.setName("jLabel38"); // NOI18N
@@ -1204,7 +1086,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel38, gridBagConstraints);
-		
 		jLabel39.setText("calculations");
 		jLabel39.setName("jLabel39"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1212,7 +1093,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 16;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel39, gridBagConstraints);
-		
 		jLabel40.setText("calculations");
 		jLabel40.setName("jLabel40"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1220,7 +1100,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 18;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel40, gridBagConstraints);
-		
 		jLabel41.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel41.setText("NCM - Calculation That Determines Vulnerability Of From Ter After Move To Check If We Should Cancel Move:");
 		jLabel41.setName("jLabel41"); // NOI18N
@@ -1231,7 +1110,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel41, gridBagConstraints);
-		
 		v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.setModel(new javax.swing.SpinnerNumberModel(100, 1, 5000, 10));
 		v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.setName("v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove"); // NOI18N
 		v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -1239,7 +1117,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 18;
 		v_calcRunCountAssignmentsHolderPanel.add(v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove, gridBagConstraints);
-		
 		jLabel42.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel42.setText("(Frequency: Average, Suggested Range: 25 - 1000)");
 		jLabel42.setName("jLabel42"); // NOI18N
@@ -1249,7 +1126,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel42, gridBagConstraints);
-		
 		jLabel43.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel43.setText("(Frequency: Low, Suggested Range: 1000 - 10000)");
 		jLabel43.setName("jLabel43"); // NOI18N
@@ -1260,7 +1136,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weighty = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel43, gridBagConstraints);
-		
 		v_caretreat_determinesIfAIShouldRetreat.setModel(new javax.swing.SpinnerNumberModel(2000, 1, 5000, 10));
 		v_caretreat_determinesIfAIShouldRetreat.setName("v_caretreat_determinesIfAIShouldRetreat"); // NOI18N
 		v_caretreat_determinesIfAIShouldRetreat.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -1268,7 +1143,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 20;
 		v_calcRunCountAssignmentsHolderPanel.add(v_caretreat_determinesIfAIShouldRetreat, gridBagConstraints);
-		
 		jLabel44.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel44.setText("Retreat Query - Calculation That Determines If AI Should Retreat:");
 		jLabel44.setName("jLabel44"); // NOI18N
@@ -1279,7 +1153,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel44, gridBagConstraints);
-		
 		jLabel45.setText("calculations");
 		jLabel45.setName("jLabel45"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1287,7 +1160,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 20;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel45, gridBagConstraints);
-		
 		jLabel63.setText("calculations");
 		jLabel63.setName("jLabel63"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1295,7 +1167,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 8;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel63, gridBagConstraints);
-		
 		jLabel64.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel64.setText("CM - Calculation That Determines If The Trade Task's Requirements Are Met Enough For Unit Reruiting To Stop:");
 		jLabel64.setName("jLabel64"); // NOI18N
@@ -1306,7 +1177,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel64, gridBagConstraints);
-		
 		jLabel82.setFont(new java.awt.Font("Tahoma", 0, 10));
 		jLabel82.setText("(Frequency: Average, Suggested Range: 500 - 2500)");
 		jLabel82.setName("jLabel82"); // NOI18N
@@ -1316,7 +1186,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
 		v_calcRunCountAssignmentsHolderPanel.add(jLabel82, gridBagConstraints);
-		
 		v_cacm_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop.setModel(new javax.swing.SpinnerNumberModel(1000, 1, 5000, 10));
 		v_cacm_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop.setName("v_cacm_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop"); // NOI18N
 		v_cacm_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop.setPreferredSize(new java.awt.Dimension(70, 20));
@@ -1324,24 +1193,17 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 8;
 		v_calcRunCountAssignmentsHolderPanel.add(v_cacm_determinesIfTradeTasksRequirementsAreMetEnoughForRecruitingStop, gridBagConstraints);
-		
 		v_calcRunCountAssignmentsScrollPane.setViewportView(v_calcRunCountAssignmentsHolderPanel);
-		
 		jPanel4.add(v_calcRunCountAssignmentsScrollPane);
-		
 		v_tabPaneMain.addTab("Calc Run Counts", jPanel4);
-		
 		jPanel15.setName("jPanel15"); // NOI18N
 		jPanel15.setLayout(new java.awt.GridLayout(1, 0));
-		
 		v_aa_scrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		v_aa_scrollPane1.setName("v_aa_scrollPane1"); // NOI18N
-		
 		jPanel19.setMinimumSize(new java.awt.Dimension(541, 828));
 		jPanel19.setName("jPanel19"); // NOI18N
 		jPanel19.setPreferredSize(new java.awt.Dimension(500, 900));
 		jPanel19.setLayout(new java.awt.GridBagLayout());
-		
 		jLabel118.setText("        Enemy-Attack Trade Score Required For Survival-Chance Requirement Bypass:");
 		jLabel118.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
 		jLabel118.setName("jLabel118"); // NOI18N
@@ -1352,7 +1214,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel118, gridBagConstraints);
-		
 		v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setName("v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement"); // NOI18N
 		v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1360,7 +1221,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 11;
 		jPanel19.add(v_tr_attackOffensive_Capitals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, gridBagConstraints);
-		
 		jLabel100.setText("%");
 		jLabel100.setName("jLabel100"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1368,7 +1228,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 6;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel19.add(jLabel100, gridBagConstraints);
-		
 		v_tr_attackOffensive_counterAttackSurvivalChanceRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackOffensive_counterAttackSurvivalChanceRequired.setName("v_tr_attackOffensive_counterAttackSurvivalChanceRequired"); // NOI18N
 		v_tr_attackOffensive_counterAttackSurvivalChanceRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1376,14 +1235,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 2;
 		jPanel19.add(v_tr_attackOffensive_counterAttackSurvivalChanceRequired, gridBagConstraints);
-		
 		v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt.setName("v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 20;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
 		jPanel19.add(v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt, gridBagConstraints);
-		
 		jLabel124.setText("        Certainty Of Reaching Desired Number Of Leftover Land Units Required:");
 		jLabel124.setToolTipText("The percentage of times we end up with X land units(ai-determined) when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel124.setName("jLabel124"); // NOI18N
@@ -1394,7 +1251,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel124, gridBagConstraints);
-		
 		jLabel119.setText("        Counter-Attack Trade Score Required For Survival-Chance Requirement Bypass:");
 		jLabel119.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
 		jLabel119.setName("jLabel119"); // NOI18N
@@ -1405,7 +1261,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel119, gridBagConstraints);
-		
 		jLabel103.setText("        Attack Takeover Chance Required:");
 		jLabel103.setToolTipText("The percentage of times we win when we simulate the battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel103.setName("jLabel103"); // NOI18N
@@ -1416,7 +1271,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel103, gridBagConstraints);
-		
 		jLabel109.setText("%");
 		jLabel109.setName("jLabel109"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1424,15 +1278,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 14;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel19.add(jLabel109, gridBagConstraints);
-		
 		v_tr_enableAttackStabalize.setSelected(true);
 		v_tr_enableAttackStabalize.setText("Attack - Stabalize");
 		v_tr_enableAttackStabalize.setToolTipText("Stabalization attacks on our capital(to retake it), and if the game's a FFA, the territories around our capital.");
 		v_tr_enableAttackStabalize.setName("v_tr_enableAttackStabalize"); // NOI18N
 		v_tr_enableAttackStabalize.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableAttackStabalizev_tr_enableAttackStabalizeStateChanged(evt);
 			}
@@ -1444,7 +1296,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(v_tr_enableAttackStabalize, gridBagConstraints);
-		
 		v_tr_attackOffensive_Capitals_takeoverChanceRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackOffensive_Capitals_takeoverChanceRequired.setName("v_tr_attackOffensive_Capitals_takeoverChanceRequired"); // NOI18N
 		v_tr_attackOffensive_Capitals_takeoverChanceRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1452,7 +1303,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 9;
 		jPanel19.add(v_tr_attackOffensive_Capitals_takeoverChanceRequired, gridBagConstraints);
-		
 		jLabel66.setText("        Attack Takeover Chance Required:");
 		jLabel66.setToolTipText("The percentage of times we win when we simulate the battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel66.setName("jLabel66"); // NOI18N
@@ -1463,7 +1313,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel66, gridBagConstraints);
-		
 		jLabel106.setText("%");
 		jLabel106.setName("jLabel106"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1471,7 +1320,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 9;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel19.add(jLabel106, gridBagConstraints);
-		
 		jLabel102.setText("%");
 		jLabel102.setName("jLabel102"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1479,7 +1327,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 5;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel19.add(jLabel102, gridBagConstraints);
-		
 		jLabel104.setText("        Counter-Attack Survival Chance Required:");
 		jLabel104.setToolTipText("The percentage of times we survive when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel104.setName("jLabel104"); // NOI18N
@@ -1490,7 +1337,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel104, gridBagConstraints);
-		
 		jLabel117.setText("        Total Trade Score Required: ");
 		jLabel117.setToolTipText("The trade score(total PU swing) required to perform a trade attack. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
 		jLabel117.setName("jLabel117"); // NOI18N
@@ -1501,7 +1347,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel117, gridBagConstraints);
-		
 		v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setName("v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement"); // NOI18N
 		v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1509,7 +1354,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 3;
 		jPanel19.add(v_tr_attackOffensive_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, gridBagConstraints);
-		
 		jLabel101.setText("        Attack Takeover Chance Required:");
 		jLabel101.setToolTipText("The percentage of times we win when we simulate the battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel101.setName("jLabel101"); // NOI18N
@@ -1520,14 +1364,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel101, gridBagConstraints);
-		
 		jLabel96.setText("%");
 		jLabel96.setName("jLabel96"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 1;
 		jPanel19.add(jLabel96, gridBagConstraints);
-		
 		v_tr_attackOffensive_takeoverChanceRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackOffensive_takeoverChanceRequired.setName("v_tr_attackOffensive_takeoverChanceRequired"); // NOI18N
 		v_tr_attackOffensive_takeoverChanceRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1535,7 +1377,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 1;
 		jPanel19.add(v_tr_attackOffensive_takeoverChanceRequired, gridBagConstraints);
-		
 		jLabel98.setText("%");
 		jLabel98.setName("jLabel98"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1543,7 +1384,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel19.add(jLabel98, gridBagConstraints);
-		
 		v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements.setName("v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements"); // NOI18N
 		v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1551,7 +1391,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 23;
 		jPanel19.add(v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements, gridBagConstraints);
-		
 		v_tr_reinforceFrontLine_enemyAttackSurvivalChanceRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_reinforceFrontLine_enemyAttackSurvivalChanceRequired.setName("v_tr_reinforceFrontLine_enemyAttackSurvivalChanceRequired"); // NOI18N
 		v_tr_reinforceFrontLine_enemyAttackSurvivalChanceRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1559,7 +1398,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 22;
 		jPanel19.add(v_tr_reinforceFrontLine_enemyAttackSurvivalChanceRequired, gridBagConstraints);
-		
 		v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setName("v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement"); // NOI18N
 		v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1567,7 +1405,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 7;
 		jPanel19.add(v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, gridBagConstraints);
-		
 		jLabel97.setText("        Counter-Attack Survival Chance Required:");
 		jLabel97.setToolTipText("The percentage of times we survive when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel97.setName("jLabel97"); // NOI18N
@@ -1578,7 +1415,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel97, gridBagConstraints);
-		
 		jLabel123.setText("%");
 		jLabel123.setName("jLabel123"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1586,7 +1422,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 18;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel19.add(jLabel123, gridBagConstraints);
-		
 		v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setName("v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired"); // NOI18N
 		v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1594,7 +1429,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 18;
 		jPanel19.add(v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired, gridBagConstraints);
-		
 		jLabel107.setText("        Counter-Attack Survival Chance Required:");
 		jLabel107.setToolTipText("The percentage of times we survive when we simulate the counter-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel107.setName("jLabel107"); // NOI18N
@@ -1605,7 +1439,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel107, gridBagConstraints);
-		
 		v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired.setName("v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired"); // NOI18N
 		v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1613,7 +1446,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 25;
 		jPanel19.add(v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired, gridBagConstraints);
-		
 		v_tr_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired.setName("v_tr_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired"); // NOI18N
 		v_tr_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1621,7 +1453,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 6;
 		jPanel19.add(v_tr_attackOffensive_Neutrals_counterAttackSurvivalChanceRequired, gridBagConstraints);
-		
 		jLabel114.setText("%");
 		jLabel114.setName("jLabel114"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1629,7 +1460,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 25;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel19.add(jLabel114, gridBagConstraints);
-		
 		v_tr_attackStabalize_takeoverChanceRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackStabalize_takeoverChanceRequired.setName("v_tr_attackStabalize_takeoverChanceRequired"); // NOI18N
 		v_tr_attackStabalize_takeoverChanceRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1637,7 +1467,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 13;
 		jPanel19.add(v_tr_attackStabalize_takeoverChanceRequired, gridBagConstraints);
-		
 		jLabel110.setText("        Attack Takeover Chance Required:");
 		jLabel110.setToolTipText("The percentage of times we win when we simulate the battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel110.setName("jLabel110"); // NOI18N
@@ -1648,7 +1477,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel110, gridBagConstraints);
-		
 		jLabel115.setText("        Only Grab Land If We Can Blitz It:");
 		jLabel115.setToolTipText("If checked, the AI will only grab empty territories if it can blitz back. In other words, if its checked, the AI will not perform 'walk-ins' on empty territories, only blitz.");
 		jLabel115.setName("jLabel115"); // NOI18N
@@ -1659,7 +1487,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel115, gridBagConstraints);
-		
 		jLabel99.setText("        Counter-Attack Survival Chance Required:");
 		jLabel99.setToolTipText("The percentage of times we survive when we simulate the counter-attack(by enemies) battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel99.setName("jLabel99"); // NOI18N
@@ -1670,7 +1497,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel99, gridBagConstraints);
-		
 		jLabel105.setText("%");
 		jLabel105.setName("jLabel105"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1678,7 +1504,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 10;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel19.add(jLabel105, gridBagConstraints);
-		
 		jLabel111.setText("        Enemy-Attack Survival Chance Required:");
 		jLabel111.setToolTipText("The percentage of times we survive when we simulate the enemy-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel111.setName("jLabel111"); // NOI18N
@@ -1689,7 +1514,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel111, gridBagConstraints);
-		
 		jLabel112.setText("%");
 		jLabel112.setName("jLabel112"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1697,15 +1521,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 22;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel19.add(jLabel112, gridBagConstraints);
-		
 		v_tr_enableAttackOffensive.setSelected(true);
 		v_tr_enableAttackOffensive.setText("Attack - Offensive");
 		v_tr_enableAttackOffensive.setToolTipText("Regular attacks on enemy territories.");
 		v_tr_enableAttackOffensive.setName("v_tr_enableAttackOffensive"); // NOI18N
 		v_tr_enableAttackOffensive.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableAttackOffensivev_tr_enableAttackOffensiveStateChanged(evt);
 			}
@@ -1717,7 +1539,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(12, 10, 7, 0);
 		jPanel19.add(v_tr_enableAttackOffensive, gridBagConstraints);
-		
 		jLabel122.setText("        Counter-Attack Trade Score Required For Survival-Chance Requirement Bypass:");
 		jLabel122.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
 		jLabel122.setName("jLabel122"); // NOI18N
@@ -1728,7 +1549,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel122, gridBagConstraints);
-		
 		v_tr_attackOffensive_Capitals_counterAttackSurvivalChanceRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackOffensive_Capitals_counterAttackSurvivalChanceRequired.setName("v_tr_attackOffensive_Capitals_counterAttackSurvivalChanceRequired"); // NOI18N
 		v_tr_attackOffensive_Capitals_counterAttackSurvivalChanceRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1736,7 +1556,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 10;
 		jPanel19.add(v_tr_attackOffensive_Capitals_counterAttackSurvivalChanceRequired, gridBagConstraints);
-		
 		jLabel116.setText("   Attack - Offensive (Capitals)");
 		jLabel116.setToolTipText("Regular attacks on enemy capitals.");
 		jLabel116.setName("jLabel116"); // NOI18N
@@ -1747,7 +1566,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel116, gridBagConstraints);
-		
 		v_tr_attackTrade_totalTradeScore.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackTrade_totalTradeScore.setName("v_tr_attackTrade_totalTradeScore"); // NOI18N
 		v_tr_attackTrade_totalTradeScore.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1755,15 +1573,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 17;
 		jPanel19.add(v_tr_attackTrade_totalTradeScore, gridBagConstraints);
-		
 		v_tr_enableReinforceStabalize.setSelected(true);
 		v_tr_enableReinforceStabalize.setText("Reinforce - Stabalize");
 		v_tr_enableReinforceStabalize.setToolTipText("Stabalization reinforcements on our capital, and sometimes the territories around our capital.");
 		v_tr_enableReinforceStabalize.setName("v_tr_enableReinforceStabalize"); // NOI18N
 		v_tr_enableReinforceStabalize.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableReinforceStabalizev_tr_enableReinforceStabalizeStateChanged(evt);
 			}
@@ -1775,15 +1591,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(v_tr_enableReinforceStabalize, gridBagConstraints);
-		
 		v_tr_enableAttackTrade.setSelected(true);
 		v_tr_enableAttackTrade.setText("Attack - Trade");
 		v_tr_enableAttackTrade.setToolTipText("Special attacks on territories, for TUV swing against non-neutral enemy, PU gain, or the pushing back or stalling of enemy forces.");
 		v_tr_enableAttackTrade.setName("v_tr_enableAttackTrade"); // NOI18N
 		v_tr_enableAttackTrade.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableAttackTradev_tr_enableAttackTradeStateChanged(evt);
 			}
@@ -1795,7 +1609,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(v_tr_enableAttackTrade, gridBagConstraints);
-		
 		jLabel113.setText("        Enemy-Attack Survival Chance Required:");
 		jLabel113.setToolTipText("The percentage of times we survive when we simulate the enemy-attack battle with the battle calc'er must meet this percentage for the task to be performed.");
 		jLabel113.setName("jLabel113"); // NOI18N
@@ -1806,7 +1619,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel113, gridBagConstraints);
-		
 		jLabel50.setText("   Attack - Offensive (Neutrals)");
 		jLabel50.setToolTipText("Regular attacks on neutral territories.");
 		jLabel50.setName("jLabel50"); // NOI18N
@@ -1817,15 +1629,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel50, gridBagConstraints);
-		
 		v_tr_enableReinforceBlock.setSelected(true);
 		v_tr_enableReinforceBlock.setText("Reinforce - Block");
 		v_tr_enableReinforceBlock.setToolTipText("Reinforcements on empty ters to block the enemy from blitzing our territory, and gaining PUs. Only one unit is used for this block.");
 		v_tr_enableReinforceBlock.setName("v_tr_enableReinforceBlock"); // NOI18N
 		v_tr_enableReinforceBlock.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableReinforceBlockv_tr_enableReinforceBlockStateChanged(evt);
 			}
@@ -1838,7 +1648,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weighty = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(v_tr_enableReinforceBlock, gridBagConstraints);
-		
 		v_tr_attackOffensive_Neutrals_takeoverChanceRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackOffensive_Neutrals_takeoverChanceRequired.setName("v_tr_attackOffensive_Neutrals_takeoverChanceRequired"); // NOI18N
 		v_tr_attackOffensive_Neutrals_takeoverChanceRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1846,7 +1655,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 5;
 		jPanel19.add(v_tr_attackOffensive_Neutrals_takeoverChanceRequired, gridBagConstraints);
-		
 		jLabel121.setText("        Counter-Attack Trade Score Required For Survival-Chance Requirement Bypass:");
 		jLabel121.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
 		jLabel121.setName("jLabel121"); // NOI18N
@@ -1857,15 +1665,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel121, gridBagConstraints);
-		
 		v_tr_enableAttackLandGrab.setSelected(true);
 		v_tr_enableAttackLandGrab.setText("Attack - Land Grab");
 		v_tr_enableAttackLandGrab.setToolTipText("Blitz or walk-in attacks on empty territories owned by enemies.");
 		v_tr_enableAttackLandGrab.setName("v_tr_enableAttackLandGrab"); // NOI18N
 		v_tr_enableAttackLandGrab.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableAttackLandGrabv_tr_enableAttackLandGrabStateChanged(evt);
 			}
@@ -1877,15 +1683,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(v_tr_enableAttackLandGrab, gridBagConstraints);
-		
 		v_tr_enableReinforceFrontline.setSelected(true);
 		v_tr_enableReinforceFrontline.setText("Reinforce - Front Line");
 		v_tr_enableReinforceFrontline.setToolTipText("Regular reinforcements on the front line.");
 		v_tr_enableReinforceFrontline.setName("v_tr_enableReinforceFrontline"); // NOI18N
 		v_tr_enableReinforceFrontline.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_tr_enableReinforceFrontlinev_tr_enableReinforceFrontlineStateChanged(evt);
 			}
@@ -1897,7 +1701,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(v_tr_enableReinforceFrontline, gridBagConstraints);
-		
 		v_tr_attackStabalize_counterAttackSurvivalChanceRequired.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackStabalize_counterAttackSurvivalChanceRequired.setName("v_tr_attackStabalize_counterAttackSurvivalChanceRequired"); // NOI18N
 		v_tr_attackStabalize_counterAttackSurvivalChanceRequired.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1905,7 +1708,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 14;
 		jPanel19.add(v_tr_attackStabalize_counterAttackSurvivalChanceRequired, gridBagConstraints);
-		
 		jLabel108.setText("%");
 		jLabel108.setName("jLabel108"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1913,7 +1715,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 13;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel19.add(jLabel108, gridBagConstraints);
-		
 		v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setName("v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement"); // NOI18N
 		v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setPreferredSize(new java.awt.Dimension(60, 20));
@@ -1921,7 +1722,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 15;
 		jPanel19.add(v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement, gridBagConstraints);
-		
 		jLabel120.setText("        Counter-Attack Trade Score Required For Survival-Chance Requirement Bypass:");
 		jLabel120.setToolTipText("The min trade score(total PU swing, if we get attacked) we need to bypass the survival chance requirement. (Simplified Trade Score: Ter production - our TUV loss + enemy TUV loss)");
 		jLabel120.setName("jLabel120"); // NOI18N
@@ -1932,25 +1732,19 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 10, 7, 0);
 		jPanel19.add(jLabel120, gridBagConstraints);
-		
 		v_aa_scrollPane1.setViewportView(jPanel19);
-		
 		jPanel15.add(v_aa_scrollPane1);
-		
 		v_tabPaneMain.addTab("Task Requirements", jPanel15);
-		
 		jPanel17.setName("jPanel17"); // NOI18N
 		jPanel17.setPreferredSize(new java.awt.Dimension(500, 206));
 		jPanel17.setLayout(new java.awt.GridBagLayout());
-		
 		v_cr_enableCallForLandGrab.setSelected(true);
 		v_cr_enableCallForLandGrab.setText("Call - For Land Grab");
 		v_cr_enableCallForLandGrab.setToolTipText("Calls for a unit to come grab a territory for production gain.");
 		v_cr_enableCallForLandGrab.setName("v_cr_enableCallForLandGrab"); // NOI18N
 		v_cr_enableCallForLandGrab.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_cr_enableCallForLandGrabStateChanged(evt);
 			}
@@ -1962,15 +1756,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(12, 10, 5, 0);
 		jPanel17.add(v_cr_enableCallForLandGrab, gridBagConstraints);
-		
 		v_cr_enableCallForDefensiveFront.setSelected(true);
 		v_cr_enableCallForDefensiveFront.setText("Call - For Defensive Front");
 		v_cr_enableCallForDefensiveFront.setToolTipText("Calls for units to come to a defensive front, usually just to hold the enemy at bay.");
 		v_cr_enableCallForDefensiveFront.setName("v_cr_enableCallForDefensiveFront"); // NOI18N
 		v_cr_enableCallForDefensiveFront.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_cr_enableCallForDefensiveFrontStateChanged(evt);
 			}
@@ -1982,15 +1774,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		jPanel17.add(v_cr_enableCallForDefensiveFront, gridBagConstraints);
-		
 		v_cr_enableCallForCapitalDefense.setSelected(true);
 		v_cr_enableCallForCapitalDefense.setText("Call - For Capital Defense");
 		v_cr_enableCallForCapitalDefense.setToolTipText("Calls for units to come to the capital, or at least nearby, to ensure it's protection.");
 		v_cr_enableCallForCapitalDefense.setName("v_cr_enableCallForCapitalDefense"); // NOI18N
 		v_cr_enableCallForCapitalDefense.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_cr_enableCallForCapitalDefenseStateChanged(evt);
 			}
@@ -2002,7 +1792,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		jPanel17.add(v_cr_enableCallForCapitalDefense, gridBagConstraints);
-		
 		jPanel27.setName("jPanel27"); // NOI18N
 		jPanel27.setLayout(new java.awt.GridBagLayout());
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -2011,33 +1800,24 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.weighty = 99.0;
 		jPanel17.add(jPanel27, gridBagConstraints);
-		
 		v_tabPaneMain.addTab("Call Requirements", jPanel17);
-		
 		jPanel8.setName("jPanel8"); // NOI18N
 		jPanel8.setPreferredSize(new java.awt.Dimension(500, 314));
 		jPanel8.setLayout(new java.awt.GridBagLayout());
-		
 		v_logHolderTabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
 		v_logHolderTabbedPane.setFont(new java.awt.Font("Segoe UI", 0, 10));
 		v_logHolderTabbedPane.setName("v_logHolderTabbedPane"); // NOI18N
-		
 		jPanel9.setName("jPanel9"); // NOI18N
 		jPanel9.setLayout(new java.awt.GridLayout(1, 0));
-		
 		v_aiOutputLogAreaScrollPane.setName("v_aiOutputLogAreaScrollPane"); // NOI18N
-		
 		v_aiOutputLogArea.setColumns(20);
 		v_aiOutputLogArea.setEditable(false);
 		v_aiOutputLogArea.setFont(new java.awt.Font("Segoe UI", 0, 10));
 		v_aiOutputLogArea.setRows(5);
 		v_aiOutputLogArea.setName("v_aiOutputLogArea"); // NOI18N
 		v_aiOutputLogAreaScrollPane.setViewportView(v_aiOutputLogArea);
-		
 		jPanel9.add(v_aiOutputLogAreaScrollPane);
-		
 		v_logHolderTabbedPane.addTab("Pre-Game", jPanel9);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
@@ -2048,14 +1828,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weighty = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 7, 7, 7);
 		jPanel8.add(v_logHolderTabbedPane, gridBagConstraints);
-		
 		v_enableAILogging.setSelected(true);
 		v_enableAILogging.setText("Enable AI Logging");
 		v_enableAILogging.setName("v_enableAILogging"); // NOI18N
 		v_enableAILogging.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_enableAILoggingStateChanged(evt);
 			}
@@ -2065,7 +1843,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 7, 0, 0);
 		jPanel8.add(v_enableAILogging, gridBagConstraints);
-		
 		jLabel15.setText("Log Depth:");
 		jLabel15.setName("jLabel15"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -2073,7 +1850,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 12, 0, 0);
 		jPanel8.add(jLabel15, gridBagConstraints);
-		
 		v_logDepth.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Fine", "Finer", "Finest" }));
 		v_logDepth.setSelectedItem(v_logDepth.getItemAt(2));
 		v_logDepth.setName("v_logDepth"); // NOI18N
@@ -2082,7 +1858,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 5, 0, 0);
 		jPanel8.add(v_logDepth, gridBagConstraints);
-		
 		v_limitLogHistoryToSpinner.setModel(new javax.swing.SpinnerNumberModel(5, 1, 100, 1));
 		v_limitLogHistoryToSpinner.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_limitLogHistoryToSpinner.setName("v_limitLogHistoryToSpinner"); // NOI18N
@@ -2093,14 +1868,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.ipadx = 10;
 		gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 		jPanel8.add(v_limitLogHistoryToSpinner, gridBagConstraints);
-		
 		v_limitLogHistoryCB.setSelected(true);
 		v_limitLogHistoryCB.setText("Limit Log History To:");
 		v_limitLogHistoryCB.setName("v_limitLogHistoryCB"); // NOI18N
 		v_limitLogHistoryCB.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_limitLogHistoryCBStateChanged(evt);
 			}
@@ -2110,7 +1883,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 12);
 		jPanel8.add(v_limitLogHistoryCB, gridBagConstraints);
-		
 		jLabel46.setText("rounds");
 		jLabel46.setName("jLabel46"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -2118,14 +1890,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 5, 0, 7);
 		jPanel8.add(jLabel46, gridBagConstraints);
-		
 		v_pauseAIs.setText("Pause AI's");
 		v_pauseAIs.setToolTipText("Can be used if you want to examine the logs without the AIs running. (Only affects Dynamix AI's)");
 		v_pauseAIs.setName("v_pauseAIs"); // NOI18N
 		v_pauseAIs.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_pauseAIsStateChanged(evt);
 			}
@@ -2136,29 +1906,23 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
 		jPanel8.add(v_pauseAIs, gridBagConstraints);
-		
 		v_tabPaneMain.addTab("Debugging", jPanel8);
-		
 		jPanel2.setName("jPanel2"); // NOI18N
 		jPanel2.setLayout(new java.awt.GridLayout(1, 0));
-		
 		v_aa_scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		v_aa_scrollPane.setName("v_aa_scrollPane"); // NOI18N
 		v_aa_scrollPane.setPreferredSize(new java.awt.Dimension(999, 555));
-		
 		jPanel12.setMaximumSize(new java.awt.Dimension(2000, 1000));
 		jPanel12.setMinimumSize(new java.awt.Dimension(750, 315));
 		jPanel12.setName("jPanel12"); // NOI18N
 		jPanel12.setPreferredSize(new java.awt.Dimension(500, 315));
 		jPanel12.setLayout(new java.awt.GridBagLayout());
-		
 		jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("CM & NCM Task Settings (Tasks are the main components of the combat and non combat move phases)"));
 		jPanel3.setMaximumSize(new java.awt.Dimension(1000, 750));
 		jPanel3.setMinimumSize(new java.awt.Dimension(608, 93));
 		jPanel3.setName("jPanel3"); // NOI18N
 		jPanel3.setPreferredSize(new java.awt.Dimension(625, 93));
 		jPanel3.setLayout(new java.awt.GridBagLayout());
-		
 		jLabel58.setText("Threat Invalidation Type:");
 		jLabel58.setName("jLabel58"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -2167,7 +1931,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 0);
 		jPanel3.add(jLabel58, gridBagConstraints);
-		
 		v_invalidationTypeButtonGroup.add(v_aa_globalThreatInvalidation);
 		v_aa_globalThreatInvalidation.setText("Global Invalidation");
 		v_aa_globalThreatInvalidation
@@ -2179,7 +1942,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 18, 0, 0);
 		jPanel3.add(v_aa_globalThreatInvalidation, gridBagConstraints);
-		
 		jLabel55.setText("Percentage Of Threats That Become Invalidated When A Task Is Resistant To Them:");
 		jLabel55.setToolTipText("If a task is successful and strongly held, the AI will 'invalidate' X percent of the threats to the task. Note that an excessively high invalidation rate may cause the AI to leave units in vulnerable positions.");
 		jLabel55.setName("jLabel55"); // NOI18N
@@ -2191,7 +1953,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
 		jPanel3.add(jLabel55, gridBagConstraints);
-		
 		v_invalidationTypeButtonGroup.add(v_aa_hotspotInvalidation);
 		v_aa_hotspotInvalidation.setText("Hotspot Invalidation, Radius:");
 		v_aa_hotspotInvalidation
@@ -2199,8 +1960,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_aa_hotspotInvalidation.setName("v_aa_hotspotInvalidation"); // NOI18N
 		v_aa_hotspotInvalidation.addChangeListener(new javax.swing.event.ChangeListener()
 		{
-			
-			public void stateChanged(javax.swing.event.ChangeEvent evt)
+			public void stateChanged(final javax.swing.event.ChangeEvent evt)
 			{
 				v_aa_hotspotInvalidationStateChanged(evt);
 			}
@@ -2212,7 +1972,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 18, 0, 0);
 		jPanel3.add(v_aa_hotspotInvalidation, gridBagConstraints);
-		
 		v_aa_radiusOfHotspotThreatInvalidation.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
 		v_aa_radiusOfHotspotThreatInvalidation.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_aa_radiusOfHotspotThreatInvalidation.setName("v_aa_radiusOfHotspotThreatInvalidation"); // NOI18N
@@ -2221,7 +1980,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 4;
 		gridBagConstraints.gridy = 0;
 		jPanel3.add(v_aa_radiusOfHotspotThreatInvalidation, gridBagConstraints);
-		
 		v_aa_percentageOfResistedThreatsThatTasksInvalidate.setModel(new javax.swing.SpinnerNumberModel(50, 0, 100, 1));
 		v_aa_percentageOfResistedThreatsThatTasksInvalidate.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_aa_percentageOfResistedThreatsThatTasksInvalidate.setName("v_aa_percentageOfResistedThreatsThatTasksInvalidate"); // NOI18N
@@ -2230,7 +1988,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 4;
 		gridBagConstraints.gridy = 1;
 		jPanel3.add(v_aa_percentageOfResistedThreatsThatTasksInvalidate, gridBagConstraints);
-		
 		v_invalidationTypeButtonGroup.add(v_aa_noThreatInvalidation);
 		v_aa_noThreatInvalidation.setText("None");
 		v_aa_noThreatInvalidation.setToolTipText("The AI will not invalidate any threats, meaning the AI will attempt to, for example, defend every territory on a front.");
@@ -2241,7 +1998,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		gridBagConstraints.insets = new java.awt.Insets(5, 18, 0, 0);
 		jPanel3.add(v_aa_noThreatInvalidation, gridBagConstraints);
-		
 		jLabel65.setText("%");
 		jLabel65.setName("jLabel65"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -2249,7 +2005,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel3.add(jLabel65, gridBagConstraints);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
@@ -2258,14 +2013,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 10);
 		jPanel12.add(jPanel3, gridBagConstraints);
-		
 		jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Purchase Phase Settings"));
 		jPanel10.setMaximumSize(new java.awt.Dimension(1000, 250));
 		jPanel10.setMinimumSize(new java.awt.Dimension(730, 90));
 		jPanel10.setName("jPanel10"); // NOI18N
 		jPanel10.setPreferredSize(new java.awt.Dimension(625, 90));
 		jPanel10.setLayout(new java.awt.GridBagLayout());
-		
 		v_aa_resourcePercentageThatMustExistForFactoryBuy.setModel(new javax.swing.SpinnerNumberModel(50, 25, 75, 1));
 		v_aa_resourcePercentageThatMustExistForFactoryBuy.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_aa_resourcePercentageThatMustExistForFactoryBuy.setName("v_aa_resourcePercentageThatMustExistForFactoryBuy"); // NOI18N
@@ -2274,7 +2027,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 0;
 		jPanel10.add(v_aa_resourcePercentageThatMustExistForFactoryBuy, gridBagConstraints);
-		
 		jLabel57.setText("Max Unit Types To Calculate For Factory Purchase Mix:");
 		jLabel57.setToolTipText("If you lower this, the AI will purchase faster, but there will also be less of a variety of units in each purchase mix.");
 		jLabel57.setName("jLabel57"); // NOI18N
@@ -2285,7 +2037,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(5, 10, 5, 0);
 		jPanel10.add(jLabel57, gridBagConstraints);
-		
 		jLabel53.setText("Percentage Of Resources That Must Exist After Purchases For AI To Buy Factory:");
 		jLabel53.setToolTipText("The percentage of the resources(PUs) that the AI had at the beginning of the purchase phase that must exist after all purchases for the AI to buy a factory.");
 		jLabel53.setName("jLabel53"); // NOI18N
@@ -2296,7 +2047,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 5, 0);
 		jPanel10.add(jLabel53, gridBagConstraints);
-		
 		jLabel54.setText("%");
 		jLabel54.setName("jLabel54"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -2304,7 +2054,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel10.add(jLabel54, gridBagConstraints);
-		
 		v_aa_maxUnitTypesForPurchaseMix.setModel(new javax.swing.SpinnerNumberModel(5, 1, 25, 1));
 		v_aa_maxUnitTypesForPurchaseMix.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_aa_maxUnitTypesForPurchaseMix.setName("v_aa_maxUnitTypesForPurchaseMix"); // NOI18N
@@ -2313,7 +2062,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 1;
 		jPanel10.add(v_aa_maxUnitTypesForPurchaseMix, gridBagConstraints);
-		
 		jPanel28.setName("jPanel28"); // NOI18N
 		jPanel28.setLayout(new java.awt.GridBagLayout());
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -2321,7 +2069,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.weighty = 99.0;
 		jPanel10.add(jPanel28, gridBagConstraints);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
@@ -2330,14 +2077,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 10);
 		jPanel12.add(jPanel10, gridBagConstraints);
-		
 		jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Others"));
 		jPanel5.setMaximumSize(new java.awt.Dimension(1000, 750));
 		jPanel5.setMinimumSize(new java.awt.Dimension(534, 93));
 		jPanel5.setName("jPanel5"); // NOI18N
 		jPanel5.setPreferredSize(new java.awt.Dimension(625, 93));
 		jPanel5.setLayout(new java.awt.GridBagLayout());
-		
 		jLabel67.setText("Survival Chance That One Of The Landing Ters Must Match For Air Unit To Be Recruitable:");
 		jLabel67.setToolTipText("For an air unit to be considered 'recruitable', it must be able to reach a landing territory that has at least an X percent chance of survival.");
 		jLabel67.setName("jLabel67"); // NOI18N
@@ -2348,7 +2093,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
 		jPanel5.add(jLabel67, gridBagConstraints);
-		
 		v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.setModel(new javax.swing.SpinnerNumberModel(75, 0, 100, 1));
 		v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.setMinimumSize(new java.awt.Dimension(60, 20));
 		v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.setName("v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit"); // NOI18N
@@ -2357,7 +2101,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 0;
 		jPanel5.add(v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit, gridBagConstraints);
-		
 		jLabel68.setText("%");
 		jLabel68.setName("jLabel68"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -2365,7 +2108,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
 		jPanel5.add(jLabel68, gridBagConstraints);
-		
 		jLabel69.setText("Ignore Allied Units When Trying To Reinforce Territories:");
 		jLabel69.setToolTipText("If this is enabled, the AI will completely ignore any allied units when checking for territory defenses.");
 		jLabel69.setName("jLabel69"); // NOI18N
@@ -2376,14 +2118,12 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
 		jPanel5.add(jLabel69, gridBagConstraints);
-		
 		v_aa_ignoreAlliedUnitsAsDefenses.setName("v_aa_ignoreAlliedUnitsAsDefenses"); // NOI18N
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
 		jPanel5.add(v_aa_ignoreAlliedUnitsAsDefenses, gridBagConstraints);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
@@ -2392,7 +2132,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 10);
 		jPanel12.add(jPanel5, gridBagConstraints);
-		
 		jPanel22.setName("jPanel22"); // NOI18N
 		jPanel22.setLayout(new java.awt.GridBagLayout());
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -2401,13 +2140,9 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weightx = 99.0;
 		gridBagConstraints.weighty = 99.0;
 		jPanel12.add(jPanel22, gridBagConstraints);
-		
 		v_aa_scrollPane.setViewportView(jPanel12);
-		
 		jPanel2.add(v_aa_scrollPane);
-		
 		v_tabPaneMain.addTab("Advanced", jPanel2);
-		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
@@ -2416,15 +2151,13 @@ public class SettingsWindow extends javax.swing.JDialog
 		gridBagConstraints.weighty = 99.0;
 		gridBagConstraints.insets = new java.awt.Insets(7, 7, 0, 7);
 		getContentPane().add(v_tabPaneMain, gridBagConstraints);
-		
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds((screenSize.width - 775) / 2, (screenSize.height - 401) / 2, 775, 401);
 	}// </editor-fold>//GEN-END:initComponents
 	
-	private void formWindowOpened(java.awt.event.WindowEvent evt)// GEN-FIRST:event_formWindowOpened
+	private void formWindowOpened(final java.awt.event.WindowEvent evt)// GEN-FIRST:event_formWindowOpened
 	{// GEN-HEADEREND:event_formWindowOpened
 		LoadSettings(DSettings.LoadSettings());
-		
 		this.pack();
 	}// GEN-LAST:event_formWindowOpened
 	
@@ -2433,26 +2166,21 @@ public class SettingsWindow extends javax.swing.JDialog
 	 * 
 	 * @param settings
 	 */
-	private void LoadSettings(DSettings settings)
+	private void LoadSettings(final DSettings settings)
 	{
 		v_actionLengthGoalRB.setSelected(settings.UseActionLengthGoals); // Also triggers change of enabled state of panels
-		
 		v_purchaseWait_AL.setValue(settings.PurchaseWait_AL);
 		v_combatMoveWait_AL.setValue(settings.CombatMoveWait_AL);
 		v_nonCombatMoveWait_AL.setValue(settings.NonCombatMoveWait_AL);
 		v_placementWait_AL.setValue(settings.PlacementWait_AL);
-		
 		v_purchaseWait_AW.setValue(settings.PurchaseWait_AW);
 		v_combatMoveWait_AW.setValue(settings.CombatMoveWait_AW);
 		v_nonCombatMoveWait_AW.setValue(settings.NonCombatMoveWait_AW);
 		v_placementWait_AW.setValue(settings.PlacementWait_AW);
-		
 		v_allowCalcingDecrease.setSelected(settings.AllowCalcingDecrease);
 		v_calcDecreaseToPercentage.setValue(settings.CalcingDecreaseToPercentage);
-		
 		v_aic_disableAllUnitPurchasesAndPlacements.setSelected(settings.AIC_disableAllUnitPurchasesAndPlacements);
 		v_aic_disableAllUnitMovement.setSelected(settings.AIC_disableAllUnitMovements);
-		
 		v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.setValue(settings.CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost);
 		v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.setValue(settings.CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance);
 		v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense.setValue(settings.CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense);
@@ -2464,7 +2192,6 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers.setValue(settings.CA_CMNCM_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers);
 		v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.setValue(settings.CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove);
 		v_caretreat_determinesIfAIShouldRetreat.setValue(settings.CA_Retreat_determinesIfAIShouldRetreat);
-		
 		if (settings.BattleCalculationMethod.equals(BattleCalculationType.BasicStrengthEval))
 			v_basicStrengthEval.setSelected(true);
 		else if (settings.BattleCalculationMethod.equals(BattleCalculationType.BasicScoreEval))
@@ -2473,14 +2200,12 @@ public class SettingsWindow extends javax.swing.JDialog
 			v_quickBattleCalculator.setSelected(true);
 		else if (settings.BattleCalculationMethod.equals(BattleCalculationType.BattleCalculator))
 			v_battleCalculator.setSelected(true);
-		
 		v_resourceCollectionMultiplier.setSelected(settings.EnableResourceCollectionMultiplier);
 		v_resourceCollectionMultiplyPercent.setValue(settings.ResourceCollectionMultiplyPercent);
 		v_resourceCollectionIncreaser.setSelected(settings.EnableResourceCollectionIncreaser);
 		v_resourceCollectionIncreaseAmount.setValue(settings.ResourceCollectionIncreaseAmount);
 		v_unitPlacementMultiplier.setSelected(settings.EnableUnitPlacementMultiplier);
 		v_unitPlacementMultiplyAmount.setValue(settings.UnitPlacementMultiplyPercent);
-		
 		v_tr_enableAttackOffensive.setSelected(settings.TR_enableAttackOffensive);
 		v_tr_attackOffensive_takeoverChanceRequired.setValue(settings.TR_attackOffensive_takeoverChanceRequired);
 		v_tr_attackOffensive_counterAttackSurvivalChanceRequired.setValue(settings.TR_attackOffensive_counterAttackSurvivalChanceRequired);
@@ -2508,11 +2233,9 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_tr_enableReinforceStabalize.setSelected(settings.TR_enableReinforceStabalize);
 		v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired.setValue(settings.TR_reinforceStabalize_enemyAttackSurvivalChanceRequired);
 		v_tr_enableReinforceBlock.setSelected(settings.TR_enableReinforceBlock);
-		
 		v_cr_enableCallForLandGrab.setSelected(settings.CR_enableCallForLandGrab);
 		v_cr_enableCallForDefensiveFront.setSelected(settings.CR_enableCallForDefensiveFront);
 		v_cr_enableCallForCapitalDefense.setSelected(settings.CR_enableCallForCapitalDefense);
-		
 		v_enableAILogging.setSelected(settings.EnableAILogging);
 		if (settings.AILoggingDepth.equals(Level.FINE))
 			v_logDepth.setSelectedIndex(0);
@@ -2520,48 +2243,38 @@ public class SettingsWindow extends javax.swing.JDialog
 			v_logDepth.setSelectedIndex(1);
 		else if (settings.AILoggingDepth.equals(Level.FINEST))
 			v_logDepth.setSelectedIndex(2);
-		
 		v_limitLogHistoryCB.setSelected(settings.LimitLogHistory);
 		v_limitLogHistoryToSpinner.setValue(settings.LimitLogHistoryTo);
-		
 		v_aa_resourcePercentageThatMustExistForFactoryBuy.setValue(settings.AA_resourcePercentageThatMustExistForFactoryBuy);
 		v_aa_maxUnitTypesForPurchaseMix.setValue(settings.AA_maxUnitTypesForPurchaseMix);
-		
 		if (settings.AA_threatInvalidationType.equals(ThreatInvalidationType.None))
 			v_aa_noThreatInvalidation.setSelected(true);
 		else if (settings.AA_threatInvalidationType.equals(ThreatInvalidationType.Global))
 			v_aa_globalThreatInvalidation.setSelected(true);
 		else if (settings.AA_threatInvalidationType.equals(ThreatInvalidationType.AroundHotspot))
 			v_aa_hotspotInvalidation.setSelected(true);
-		
 		v_aa_radiusOfHotspotThreatInvalidation.setValue(settings.AA_threatInvalidationAroundHotspotRadius);
 		v_aa_percentageOfResistedThreatsThatTasksInvalidate.setValue(settings.AA_percentageOfResistedThreatThatTasksInvalidate);
-		
 		v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.setValue(settings.AA_survivalChanceOfLandingTerRequiredForPlaneRecruit);
 		v_aa_ignoreAlliedUnitsAsDefenses.setSelected(settings.AA_ignoreAlliedUnitsAsDefenses);
 	}
 	
 	public DSettings CreateSettings()
 	{
-		DSettings settings = new DSettings();
+		final DSettings settings = new DSettings();
 		settings.UseActionLengthGoals = v_actionLengthGoalRB.isSelected();
-		
 		settings.PurchaseWait_AL = Integer.parseInt(v_purchaseWait_AL.getValue().toString());
 		settings.CombatMoveWait_AL = Integer.parseInt(v_combatMoveWait_AL.getValue().toString());
 		settings.NonCombatMoveWait_AL = Integer.parseInt(v_nonCombatMoveWait_AL.getValue().toString());
 		settings.PlacementWait_AL = Integer.parseInt(v_placementWait_AL.getValue().toString());
-		
 		settings.PurchaseWait_AW = Integer.parseInt(v_purchaseWait_AW.getValue().toString());
 		settings.CombatMoveWait_AW = Integer.parseInt(v_combatMoveWait_AW.getValue().toString());
 		settings.NonCombatMoveWait_AW = Integer.parseInt(v_nonCombatMoveWait_AW.getValue().toString());
 		settings.PlacementWait_AW = Integer.parseInt(v_placementWait_AW.getValue().toString());
-		
 		settings.AllowCalcingDecrease = v_allowCalcingDecrease.isSelected();
 		settings.CalcingDecreaseToPercentage = Integer.parseInt(v_calcDecreaseToPercentage.getValue().toString());
-		
 		settings.AIC_disableAllUnitPurchasesAndPlacements = v_aic_disableAllUnitPurchasesAndPlacements.isSelected();
 		settings.AIC_disableAllUnitMovements = v_aic_disableAllUnitMovement.isSelected();
-		
 		settings.CA_Purchase_determinesUnitThatWouldHelpTargetInvasionMost = Integer.parseInt(v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost.getValue().toString());
 		settings.CA_CM_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance = Integer.parseInt(v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance.getValue().toString());
 		settings.CA_CMNCM_sortsPossibleTaskRecruitsForOptimalAttackDefense = Integer.parseInt(v_cacmncm_sortsPossibleTaskRecruitsForOptimalAttackDefense.getValue().toString());
@@ -2574,7 +2287,6 @@ public class SettingsWindow extends javax.swing.JDialog
 					.toString());
 		settings.CA_NCM_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove = Integer.parseInt(v_cancm_determinesSurvivalChanceOfFromTerAfterMoveToSeeIfToCancelMove.getValue().toString());
 		settings.CA_Retreat_determinesIfAIShouldRetreat = Integer.parseInt(v_caretreat_determinesIfAIShouldRetreat.getValue().toString());
-		
 		if (v_basicStrengthEval.isSelected())
 			settings.BattleCalculationMethod = BattleCalculationType.BasicStrengthEval;
 		else if (v_basicScoreEval.isSelected())
@@ -2583,14 +2295,12 @@ public class SettingsWindow extends javax.swing.JDialog
 			settings.BattleCalculationMethod = BattleCalculationType.QuickBattleCalculator;
 		else if (v_battleCalculator.isSelected())
 			settings.BattleCalculationMethod = BattleCalculationType.BattleCalculator;
-		
 		settings.EnableResourceCollectionMultiplier = v_resourceCollectionMultiplier.isSelected();
 		settings.ResourceCollectionMultiplyPercent = Integer.parseInt(v_resourceCollectionMultiplyPercent.getValue().toString());
 		settings.EnableResourceCollectionIncreaser = v_resourceCollectionIncreaser.isSelected();
 		settings.ResourceCollectionIncreaseAmount = Integer.parseInt(v_resourceCollectionIncreaseAmount.getValue().toString());
 		settings.EnableUnitPlacementMultiplier = v_unitPlacementMultiplier.isSelected();
 		settings.UnitPlacementMultiplyPercent = Integer.parseInt(v_unitPlacementMultiplyAmount.getValue().toString());
-		
 		settings.TR_enableAttackOffensive = v_tr_enableAttackOffensive.isSelected();
 		settings.TR_attackOffensive_takeoverChanceRequired = Integer.parseInt(v_tr_attackOffensive_takeoverChanceRequired.getValue().toString());
 		settings.TR_attackOffensive_counterAttackSurvivalChanceRequired = Integer.parseInt(v_tr_attackOffensive_counterAttackSurvivalChanceRequired.getValue().toString());
@@ -2622,11 +2332,9 @@ public class SettingsWindow extends javax.swing.JDialog
 		settings.TR_enableReinforceStabalize = v_tr_enableReinforceStabalize.isSelected();
 		settings.TR_reinforceStabalize_enemyAttackSurvivalChanceRequired = Integer.parseInt(v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired.getValue().toString());
 		settings.TR_enableReinforceBlock = v_tr_enableReinforceBlock.isSelected();
-		
 		settings.CR_enableCallForLandGrab = v_cr_enableCallForLandGrab.isSelected();
 		settings.CR_enableCallForDefensiveFront = v_cr_enableCallForDefensiveFront.isSelected();
 		settings.CR_enableCallForCapitalDefense = v_cr_enableCallForCapitalDefense.isSelected();
-		
 		settings.EnableAILogging = v_enableAILogging.isSelected();
 		if (v_logDepth.getSelectedIndex() == 0)
 			settings.AILoggingDepth = Level.FINE;
@@ -2634,94 +2342,87 @@ public class SettingsWindow extends javax.swing.JDialog
 			settings.AILoggingDepth = Level.FINER;
 		else if (v_logDepth.getSelectedIndex() == 2)
 			settings.AILoggingDepth = Level.FINEST;
-		
 		settings.LimitLogHistory = v_limitLogHistoryCB.isSelected();
 		settings.LimitLogHistoryTo = Integer.parseInt(v_limitLogHistoryToSpinner.getValue().toString());
-		
 		settings.AA_resourcePercentageThatMustExistForFactoryBuy = Integer.parseInt(v_aa_resourcePercentageThatMustExistForFactoryBuy.getValue().toString());
 		settings.AA_maxUnitTypesForPurchaseMix = Integer.parseInt(v_aa_maxUnitTypesForPurchaseMix.getValue().toString());
-		
 		if (v_aa_noThreatInvalidation.isSelected())
 			settings.AA_threatInvalidationType = ThreatInvalidationType.None;
 		else if (v_aa_globalThreatInvalidation.isSelected())
 			settings.AA_threatInvalidationType = ThreatInvalidationType.Global;
 		else if (v_aa_hotspotInvalidation.isSelected())
 			settings.AA_threatInvalidationType = ThreatInvalidationType.AroundHotspot;
-		
 		settings.AA_threatInvalidationAroundHotspotRadius = Integer.parseInt(v_aa_radiusOfHotspotThreatInvalidation.getValue().toString());
 		settings.AA_percentageOfResistedThreatThatTasksInvalidate = Integer.parseInt(v_aa_percentageOfResistedThreatsThatTasksInvalidate.getValue().toString());
-		
 		settings.AA_survivalChanceOfLandingTerRequiredForPlaneRecruit = Integer.parseInt(v_aa_survivalChanceOfLandingTerRequiredForPlaneRecruit.getValue().toString());
 		settings.AA_ignoreAlliedUnitsAsDefenses = v_aa_ignoreAlliedUnitsAsDefenses.isSelected();
-		
 		return settings;
 	}
 	
-	private void v_actionLengthGoalRBStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_actionLengthGoalRBStateChanged
+	private void v_actionLengthGoalRBStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_actionLengthGoalRBStateChanged
 	{// GEN-HEADEREND:event_v_actionLengthGoalRBStateChanged
 		ChangeTotalLengthPanelsState(v_actionLengthGoalRB.isSelected());
 		ChangeActionWaitPanelsState(!v_actionLengthGoalRB.isSelected());
 	}// GEN-LAST:event_v_actionLengthGoalRBStateChanged
 	
-	private void v_restoreDefaultsButtonActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_v_restoreDefaultsButtonActionPerformed
+	private void v_restoreDefaultsButtonActionPerformed(final java.awt.event.ActionEvent evt)// GEN-FIRST:event_v_restoreDefaultsButtonActionPerformed
 	{// GEN-HEADEREND:event_v_restoreDefaultsButtonActionPerformed
-		int result = JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all Dynamix AI settings?", "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION,
+		final int result = JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to reset all Dynamix AI settings?", "Reset Default Settings", JOptionPane.OK_CANCEL_OPTION,
 					JOptionPane.QUESTION_MESSAGE);
 		if (result == JOptionPane.OK_OPTION)
 		{
-			DSettings defaultSettings = new DSettings(); // Default settings are already contained in a new DSettings instance
+			final DSettings defaultSettings = new DSettings(); // Default settings are already contained in a new DSettings instance
 			LoadSettings(defaultSettings);
 			JOptionPane.showMessageDialog(rootPane, "Default settings restored.\r\n\r\n(If you don't want to keep these default settings, just hit cancel)", "Default Settings Restored",
 						JOptionPane.INFORMATION_MESSAGE);
 		}
 	}// GEN-LAST:event_v_restoreDefaultsButtonActionPerformed
 	
-	private void v_enableAILoggingStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_enableAILoggingStateChanged
+	private void v_enableAILoggingStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_enableAILoggingStateChanged
 	{// GEN-HEADEREND:event_v_enableAILoggingStateChanged
 		v_logDepth.setEnabled(v_enableAILogging.isSelected());
 		v_limitLogHistoryCB.setEnabled(v_enableAILogging.isSelected());
 	}// GEN-LAST:event_v_enableAILoggingStateChanged
 	
-	private void v_limitLogHistoryCBStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_limitLogHistoryCBStateChanged
+	private void v_limitLogHistoryCBStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_limitLogHistoryCBStateChanged
 	{// GEN-HEADEREND:event_v_limitLogHistoryCBStateChanged
 		v_limitLogHistoryToSpinner.setEnabled(v_limitLogHistoryCB.isSelected() && v_enableAILogging.isSelected());
 	}// GEN-LAST:event_v_limitLogHistoryCBStateChanged
 	
-	private void formWindowClosing(java.awt.event.WindowEvent evt)// GEN-FIRST:event_formWindowClosing
+	private void formWindowClosing(final java.awt.event.WindowEvent evt)// GEN-FIRST:event_formWindowClosing
 	{// GEN-HEADEREND:event_formWindowClosing
 		v_cancelButtonActionPerformed(null);
 	}// GEN-LAST:event_formWindowClosing
 	
-	private void v_resourceCollectionMultiplierStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_resourceCollectionMultiplierStateChanged
+	private void v_resourceCollectionMultiplierStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_resourceCollectionMultiplierStateChanged
 	{// GEN-HEADEREND:event_v_resourceCollectionMultiplierStateChanged
 		v_resourceCollectionMultiplyPercent.setEnabled(v_resourceCollectionMultiplier.isSelected());
 	}// GEN-LAST:event_v_resourceCollectionMultiplierStateChanged
 	
-	private void v_unitPlacementMultiplierStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_unitPlacementMultiplierStateChanged
+	private void v_unitPlacementMultiplierStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_unitPlacementMultiplierStateChanged
 	{// GEN-HEADEREND:event_v_unitPlacementMultiplierStateChanged
 		v_unitPlacementMultiplyAmount.setEnabled(v_unitPlacementMultiplier.isSelected());
 	}// GEN-LAST:event_v_unitPlacementMultiplierStateChanged
 	
-	private void v_okButtonActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_v_okButtonActionPerformed
+	private void v_okButtonActionPerformed(final java.awt.event.ActionEvent evt)// GEN-FIRST:event_v_okButtonActionPerformed
 	{// GEN-HEADEREND:event_v_okButtonActionPerformed
-		DSettings settings = CreateSettings();
+		final DSettings settings = CreateSettings();
 		DSettings.SaveSettings(settings);
 		this.setVisible(false);
 		v_pauseAIs.setSelected(false);
 	}// GEN-LAST:event_v_okButtonActionPerformed
 	
-	private void v_cancelButtonActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_v_cancelButtonActionPerformed
+	private void v_cancelButtonActionPerformed(final java.awt.event.ActionEvent evt)// GEN-FIRST:event_v_cancelButtonActionPerformed
 	{// GEN-HEADEREND:event_v_cancelButtonActionPerformed
-		DSettings settings = DSettings.LoadSettings();
+		final DSettings settings = DSettings.LoadSettings();
 		LoadSettings(settings);
 		this.setVisible(false);
 		v_pauseAIs.setSelected(false);
 	}// GEN-LAST:event_v_cancelButtonActionPerformed
 	
-	private void v_settingsDetailsButtonActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_v_settingsDetailsButtonActionPerformed
+	private void v_settingsDetailsButtonActionPerformed(final java.awt.event.ActionEvent evt)// GEN-FIRST:event_v_settingsDetailsButtonActionPerformed
 	{// GEN-HEADEREND:event_v_settingsDetailsButtonActionPerformed
 		final JDialog dialog = new JDialog(this, "Dynamix AI - Settings Details");
-		
 		String message = "";
 		if (v_tabPaneMain.getSelectedIndex() == 0) // General
 		{
@@ -2748,33 +2449,25 @@ public class SettingsWindow extends javax.swing.JDialog
 		}
 		else if (v_tabPaneMain.getSelectedIndex() == 2) // AI Control
 		{
-			message = "AI Control\r\n"
-						+ "\r\n"
+			message = "AI Control\r\n" + "\r\n"
 						+ "Disable All Unit Purchases/Placements: Causes all Dynamix AI's to skip their purchase and placement phases, as well as destroy their own PU's at the end of each round.\r\n"
-						+ "\r\n"
-						+ "Disable All Unit Movements: Causes all Dynamix AI's to skip their cm and ncm movement phases.\r\n"
-						+ "\r\n"
+						+ "\r\n" + "Disable All Unit Movements: Causes all Dynamix AI's to skip their cm and ncm movement phases.\r\n" + "\r\n"
 						+ "Note: These settings only affect Dynamix AI's. They have no effect on Moore N Able or EZ Fodder AI's.";
 		}
 		else if (v_tabPaneMain.getSelectedIndex() == 3) // AI Cheating
 		{
-			message = "AI Cheating\r\n"
-						+ "\r\n"
-						+ "Resource Collection Multiplier: This cheat multiplies the number of resources collected at the end of the round by the percentage supplied.\r\n"
+			message = "AI Cheating\r\n" + "\r\n" + "Resource Collection Multiplier: This cheat multiplies the number of resources collected at the end of the round by the percentage supplied.\r\n"
 						+ "Example 1: The user turns the resource collection multipler cheat on, and sets the percentage to 150%. The AI now starts playing.\r\n"
 						+ "It finishes its turn and collects its resources. Instead of collecting 10 PUs, though, it collects 15, as the resource collection cheat is turned on.\r\n"
 						+ "Note that the actual resource multiplication is done at the start of the next turn. (Meaning it can get messed up by reloading or having complex game triggers)\r\n"
-						+ "\r\n"
-						+ "Resource Collection Increaser: This cheat increases the number of resources collected at the end of the round by the amount supplied.\r\n"
+						+ "\r\n" + "Resource Collection Increaser: This cheat increases the number of resources collected at the end of the round by the amount supplied.\r\n"
 						+ "Example 1: The user turns the resource collection increaser cheat on, and sets the amount to 10. The AI now starts playing.\r\n"
-						+ "It finishes its turn and collects its resources. Instead of collecting 10 PUs, though, it collects 20, as the resource collection cheat is turned on.\r\n"
-						+ "\r\n"
+						+ "It finishes its turn and collects its resources. Instead of collecting 10 PUs, though, it collects 20, as the resource collection cheat is turned on.\r\n" + "\r\n"
 						+ "Unit Placement Multiplier: This cheat multiplies the number of units placed down on each factory by the percentage supplied.\r\n"
 						+ "Example 1: The user turns the unit placement modifier cheat on, and sets the percentage to 150%. The AI now starts playing.\r\n"
 						+ "It finishes its purchase, combat, and non combat phases, and is going to place its units. It has ten infantry, all going to be placed on the cap.\r\n"
 						+ "Instead of placing 10 infantry, though, it places 15, as the unit placement cheat is turned on.\r\n"
-						+ "Note that the AI decides which extra units to place based on how high each possible unit's randomly generated number compares with the multiply percentage.\r\n"
-						+ "\r\n"
+						+ "Note that the AI decides which extra units to place based on how high each possible unit's randomly generated number compares with the multiply percentage.\r\n" + "\r\n"
 						+ "Note: AI cheating is currently only used by Dynamix AI's. They have no effect on Moore N Able or EZ Fodder AI's.";
 		}
 		else if (v_tabPaneMain.getSelectedIndex() == 4) // Calc Run Counts
@@ -2797,41 +2490,30 @@ public class SettingsWindow extends javax.swing.JDialog
 		}
 		else if (v_tabPaneMain.getSelectedIndex() == 5) // Task Requirements
 		{
-			message = "Task Requirements\r\n"
-						+ "\r\n"
-						+ "At the moment, there are no detailed descriptions of these settings, as they are meant to be self-explanatory.\r\n"
+			message = "Task Requirements\r\n" + "\r\n" + "At the moment, there are no detailed descriptions of these settings, as they are meant to be self-explanatory.\r\n"
 						+ "For those of you who unaware of what 'tasks' are, they're basically just 'wrappers' for attacks on territories and territory reinforcements.\r\n"
 						+ "Because of this, these settings give you almost full control over the aggresiveness, defensiveness, etc. for all the AI's attacks and reinforcements.\r\n"
-						+ "As this AI is still in development, any feedback on what these values should default to would be appreciated.\r\n"
-						+ "\r\n"
+						+ "As this AI is still in development, any feedback on what these values should default to would be appreciated.\r\n" + "\r\n"
 						+ "By the way, the checkbox's allow you to turn on or off the different task types.\r\n"
 						+ "Also note that most of these settings are used by the AI as 'base' values, meaning special situations will add or remove some from the setting you provide.";
 		}
 		else if (v_tabPaneMain.getSelectedIndex() == 6) // Call Requirements
 		{
-			message = "Call Requirements\r\n"
-						+ "\r\n"
-						+ "At the moment, there are no detailed descriptions of these settings, as they are meant to be self-explanatory.\r\n"
+			message = "Call Requirements\r\n" + "\r\n" + "At the moment, there are no detailed descriptions of these settings, as they are meant to be self-explanatory.\r\n"
 						+ "For those of you who unaware of what 'calls' are, they're basically just 'wrappers' for moving units to weak defensive fronts, endangered capitals, etc.\r\n"
 						+ "Because of this, these settings give you a lot of control over the AI's long-range movements and reinforcements.\r\n"
-						+ "As this AI is still in development, any feedback on what these values should default to would be appreciated.\r\n"
-						+ "\r\n"
+						+ "As this AI is still in development, any feedback on what these values should default to would be appreciated.\r\n" + "\r\n"
 						+ "By the way, the checkbox's allow you to turn on or off the different call types.\r\n"
 						+ "Also note that most of these settings are used by the AI as 'base' values, meaning special situations will add or remove some from the setting you provide.";
 		}
 		else if (v_tabPaneMain.getSelectedIndex() == 7) // Debugging
 		{
-			message = "AI Pausing\r\n"
-						+ "\r\n"
-						+ "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see exactly what the AI is thinking.\r\n"
-						+ "Note that if you check this on, you still have to press OK then reopen the settings window for the logs to actually start displaying.\r\n"
-						+ "\r\n"
+			message = "AI Pausing\r\n" + "\r\n" + "AI Logging: When this is checked, the AI's will output their logs, as they come in, so you can see exactly what the AI is thinking.\r\n"
+						+ "Note that if you check this on, you still have to press OK then reopen the settings window for the logs to actually start displaying.\r\n" + "\r\n"
 						+ "Log Depth: This setting lets you choose how deep you want the AI logging to be. Fine only displays the high-level events, like the start of a phase, etc.\r\n"
 						+ "Finer displays medium-level events, such as attacks, reinforcements, etc.\r\n"
-						+ "Finest displays all the AI logging available. Can be used for detailed ananlysis, but is a lot harder to read through it.\r\n"
-						+ "\r\n"
-						+ "Pause AI's: This checkbox pauses all the Dynamix AI's while it's checked, so you can look at the logs without the AI's outputing floods of information.\r\n"
-						+ "\r\n"
+						+ "Finest displays all the AI logging available. Can be used for detailed ananlysis, but is a lot harder to read through it.\r\n" + "\r\n"
+						+ "Pause AI's: This checkbox pauses all the Dynamix AI's while it's checked, so you can look at the logs without the AI's outputing floods of information.\r\n" + "\r\n"
 						+ "Limit Log History To X Rounds: If this is checked, the AI log information will be limited to X rounds of information.\r\n";
 		}
 		else if (v_tabPaneMain.getSelectedIndex() == 8) // Advanced
@@ -2871,11 +2553,9 @@ public class SettingsWindow extends javax.swing.JDialog
 						+ "For more info on threat invalidation, read up on the threat invalidation types listed above.\r\n"
 						+ "\r\n"
 						+ "Survival Chance That One Of The Landing Ters Must Match For Air Unit To Be Recruitable: For an air unit to be considered 'recruitable', it must be able to reach a landing territory that has at least an X percent chance of survival.\r\n"
-						+ "\r\n"
-						+ "Ignore Allied Units When Trying To Reinforce Territories: If this is enabled, the AI will completely ignore any allied units when checking for territory defenses.";
+						+ "\r\n" + "Ignore Allied Units When Trying To Reinforce Territories: If this is enabled, the AI will completely ignore any allied units when checking for territory defenses.";
 		}
-		
-		JTextArea label = new JTextArea(message);
+		final JTextArea label = new JTextArea(message);
 		label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		label.setEditable(false);
 		label.setAutoscrolls(true);
@@ -2885,15 +2565,14 @@ public class SettingsWindow extends javax.swing.JDialog
 		label.setLocation(0, 0);
 		dialog.setBackground(label.getBackground());
 		dialog.setLayout(new BorderLayout());
-		JScrollPane pane = new JScrollPane();
+		final JScrollPane pane = new JScrollPane();
 		pane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		pane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		pane.setViewportView(label);
 		dialog.add(pane, BorderLayout.CENTER);
-		JButton button = new JButton(new AbstractAction()
+		final JButton button = new JButton(new AbstractAction()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				dialog.dispose();
 			}
@@ -2909,34 +2588,34 @@ public class SettingsWindow extends javax.swing.JDialog
 		dialog.setVisible(true);
 	}// GEN-LAST:event_v_settingsDetailsButtonActionPerformed
 	
-	private void v_cr_enableCallForLandGrabStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_cr_enableCallForLandGrabStateChanged
+	private void v_cr_enableCallForLandGrabStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_cr_enableCallForLandGrabStateChanged
 	{// GEN-HEADEREND:event_v_cr_enableCallForLandGrabStateChanged
 		// TODO add your handling code here:
 	}// GEN-LAST:event_v_cr_enableCallForLandGrabStateChanged
 	
-	private void v_cr_enableCallForDefensiveFrontStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_cr_enableCallForDefensiveFrontStateChanged
+	private void v_cr_enableCallForDefensiveFrontStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_cr_enableCallForDefensiveFrontStateChanged
 	{// GEN-HEADEREND:event_v_cr_enableCallForDefensiveFrontStateChanged
 		// TODO add your handling code here:
 	}// GEN-LAST:event_v_cr_enableCallForDefensiveFrontStateChanged
 	
-	private void v_cr_enableCallForCapitalDefenseStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_cr_enableCallForCapitalDefenseStateChanged
+	private void v_cr_enableCallForCapitalDefenseStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_cr_enableCallForCapitalDefenseStateChanged
 	{// GEN-HEADEREND:event_v_cr_enableCallForCapitalDefenseStateChanged
 		// TODO add your handling code here:
 	}// GEN-LAST:event_v_cr_enableCallForCapitalDefenseStateChanged
 	
-	private void v_resourceCollectionIncreaserStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_resourceCollectionIncreaserStateChanged
+	private void v_resourceCollectionIncreaserStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_resourceCollectionIncreaserStateChanged
 	{// GEN-HEADEREND:event_v_resourceCollectionIncreaserStateChanged
 		v_resourceCollectionIncreaseAmount.setEnabled(v_resourceCollectionIncreaser.isSelected());
 	}// GEN-LAST:event_v_resourceCollectionIncreaserStateChanged
 	
-	private void v_tr_enableAttackStabalizev_tr_enableAttackStabalizeStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableAttackStabalizev_tr_enableAttackStabalizeStateChanged
+	private void v_tr_enableAttackStabalizev_tr_enableAttackStabalizeStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableAttackStabalizev_tr_enableAttackStabalizeStateChanged
 	{// GEN-HEADEREND:event_v_tr_enableAttackStabalizev_tr_enableAttackStabalizeStateChanged
 		v_tr_attackStabalize_takeoverChanceRequired.setEnabled(v_tr_enableAttackStabalize.isSelected());
 		v_tr_attackStabalize_counterAttackSurvivalChanceRequired.setEnabled(v_tr_enableAttackStabalize.isSelected());
 		v_tr_attackStabalize_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setEnabled(v_tr_enableAttackStabalize.isSelected());
 	}// GEN-LAST:event_v_tr_enableAttackStabalizev_tr_enableAttackStabalizeStateChanged
 	
-	private void v_tr_enableAttackOffensivev_tr_enableAttackOffensiveStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableAttackOffensivev_tr_enableAttackOffensiveStateChanged
+	private void v_tr_enableAttackOffensivev_tr_enableAttackOffensiveStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableAttackOffensivev_tr_enableAttackOffensiveStateChanged
 	{// GEN-HEADEREND:event_v_tr_enableAttackOffensivev_tr_enableAttackOffensiveStateChanged
 		v_tr_attackOffensive_takeoverChanceRequired.setEnabled(v_tr_enableAttackOffensive.isSelected());
 		v_tr_attackOffensive_counterAttackSurvivalChanceRequired.setEnabled(v_tr_enableAttackOffensive.isSelected());
@@ -2949,44 +2628,43 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_tr_attackOffensive_Neutrals_counterAttackTradeScoreRequiredToBypassSurvivalRequirement.setEnabled(v_tr_enableAttackOffensive.isSelected());
 	}// GEN-LAST:event_v_tr_enableAttackOffensivev_tr_enableAttackOffensiveStateChanged
 	
-	private void v_tr_enableReinforceStabalizev_tr_enableReinforceStabalizeStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableReinforceStabalizev_tr_enableReinforceStabalizeStateChanged
+	private void v_tr_enableReinforceStabalizev_tr_enableReinforceStabalizeStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableReinforceStabalizev_tr_enableReinforceStabalizeStateChanged
 	{// GEN-HEADEREND:event_v_tr_enableReinforceStabalizev_tr_enableReinforceStabalizeStateChanged
 		v_tr_reinforceStabalize_enemyAttackSurvivalChanceRequired.setEnabled(v_tr_enableReinforceStabalize.isSelected());
 	}// GEN-LAST:event_v_tr_enableReinforceStabalizev_tr_enableReinforceStabalizeStateChanged
 	
-	private void v_tr_enableAttackTradev_tr_enableAttackTradeStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableAttackTradev_tr_enableAttackTradeStateChanged
+	private void v_tr_enableAttackTradev_tr_enableAttackTradeStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableAttackTradev_tr_enableAttackTradeStateChanged
 	{// GEN-HEADEREND:event_v_tr_enableAttackTradev_tr_enableAttackTradeStateChanged
 		v_tr_attackTrade_totalTradeScore.setEnabled(v_tr_enableAttackTrade.isSelected());
 		v_tr_attackTrade_certaintyOfReachingDesiredNumberOfLeftoverLandUnitsRequired.setEnabled(v_tr_enableAttackTrade.isSelected());
 	}// GEN-LAST:event_v_tr_enableAttackTradev_tr_enableAttackTradeStateChanged
 	
-	private void v_tr_enableReinforceBlockv_tr_enableReinforceBlockStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableReinforceBlockv_tr_enableReinforceBlockStateChanged
+	private void v_tr_enableReinforceBlockv_tr_enableReinforceBlockStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableReinforceBlockv_tr_enableReinforceBlockStateChanged
 	{// GEN-HEADEREND:event_v_tr_enableReinforceBlockv_tr_enableReinforceBlockStateChanged
-	
 	}// GEN-LAST:event_v_tr_enableReinforceBlockv_tr_enableReinforceBlockStateChanged
 	
-	private void v_tr_enableAttackLandGrabv_tr_enableAttackLandGrabStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableAttackLandGrabv_tr_enableAttackLandGrabStateChanged
+	private void v_tr_enableAttackLandGrabv_tr_enableAttackLandGrabStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableAttackLandGrabv_tr_enableAttackLandGrabStateChanged
 	{// GEN-HEADEREND:event_v_tr_enableAttackLandGrabv_tr_enableAttackLandGrabStateChanged
 		v_tr_attackLandGrab_onlyGrabLandIfWeCanBlitzIt.setEnabled(v_tr_enableAttackLandGrab.isSelected());
 	}// GEN-LAST:event_v_tr_enableAttackLandGrabv_tr_enableAttackLandGrabStateChanged
 	
-	private void v_tr_enableReinforceFrontlinev_tr_enableReinforceFrontlineStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableReinforceFrontlinev_tr_enableReinforceFrontlineStateChanged
+	private void v_tr_enableReinforceFrontlinev_tr_enableReinforceFrontlineStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_tr_enableReinforceFrontlinev_tr_enableReinforceFrontlineStateChanged
 	{// GEN-HEADEREND:event_v_tr_enableReinforceFrontlinev_tr_enableReinforceFrontlineStateChanged
 		v_tr_reinforceFrontLine_enemyAttackSurvivalChanceRequired.setEnabled(v_tr_enableReinforceFrontline.isSelected());
 		v_tr_reinforceFrontline_enemyAttackTradeScoreRequiredToBypassRequirements.setEnabled(v_tr_enableReinforceFrontline.isSelected());
 	}// GEN-LAST:event_v_tr_enableReinforceFrontlinev_tr_enableReinforceFrontlineStateChanged
 	
-	private void v_allowCalcingDecreaseStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_allowCalcingDecreaseStateChanged
+	private void v_allowCalcingDecreaseStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_allowCalcingDecreaseStateChanged
 	{// GEN-HEADEREND:event_v_allowCalcingDecreaseStateChanged
 		v_calcDecreaseToPercentage.setEnabled(v_allowCalcingDecrease.isSelected());
 	}// GEN-LAST:event_v_allowCalcingDecreaseStateChanged
 	
-	private void v_aa_hotspotInvalidationStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_aa_hotspotInvalidationStateChanged
+	private void v_aa_hotspotInvalidationStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_aa_hotspotInvalidationStateChanged
 	{// GEN-HEADEREND:event_v_aa_hotspotInvalidationStateChanged
 		v_aa_radiusOfHotspotThreatInvalidation.setEnabled(v_aa_hotspotInvalidation.isSelected());
 	}// GEN-LAST:event_v_aa_hotspotInvalidationStateChanged
 	
-	private void v_pauseAIsStateChanged(javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_pauseAIsStateChanged
+	private void v_pauseAIsStateChanged(final javax.swing.event.ChangeEvent evt)// GEN-FIRST:event_v_pauseAIsStateChanged
 	{// GEN-HEADEREND:event_v_pauseAIsStateChanged
 		if (v_pauseAIs.isSelected())
 			GlobalCenter.IsPaused = true;
@@ -3000,7 +2678,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		}
 	}// GEN-LAST:event_v_pauseAIsStateChanged
 	
-	private void ChangeTotalLengthPanelsState(boolean enabled)
+	private void ChangeTotalLengthPanelsState(final boolean enabled)
 	{
 		v_totalLengthGoalsPanel.setEnabled(enabled);
 		v_purchaseWait_AL.setEnabled(enabled);
@@ -3010,7 +2688,7 @@ public class SettingsWindow extends javax.swing.JDialog
 		v_allowCalcingDecrease.setEnabled(enabled);
 	}
 	
-	private void ChangeActionWaitPanelsState(boolean enabled)
+	private void ChangeActionWaitPanelsState(final boolean enabled)
 	{
 		v_actionWaitGoalsPanel.setEnabled(enabled);
 		v_purchaseWait_AW.setEnabled(enabled);
@@ -3021,7 +2699,7 @@ public class SettingsWindow extends javax.swing.JDialog
 	
 	private JTextArea currentLogTextArea = null;
 	
-	public void addMessage(Level level, String message)
+	public void addMessage(final Level level, final String message)
 	{
 		try
 		{
@@ -3029,7 +2707,7 @@ public class SettingsWindow extends javax.swing.JDialog
 				currentLogTextArea = v_aiOutputLogArea;
 			// currentLogTextArea.append(level.getName() + ": " + getIndentationCompensation(level));
 			currentLogTextArea.append(message + "\r\n");
-		} catch (NullPointerException ex) // This is bad, but we don't want TripleA crashing because of this...
+		} catch (final NullPointerException ex) // This is bad, but we don't want TripleA crashing because of this...
 		{
 			System.out.print("Error adding Dynamix log message! Level: " + level.getName() + " Message: " + message);
 		}
@@ -3044,35 +2722,30 @@ public class SettingsWindow extends javax.swing.JDialog
 	    else
 	        return " ";
 	}*/
-
 	public void notifyNewRound(final int roundNumber)
 	{
 		try
 		{
 			SwingUtilities.invokeAndWait(new Runnable()
 			{
-				
 				public void run()
 				{
-					JPanel newPanel = new JPanel();
-					JScrollPane newScrollPane = new JScrollPane();
-					JTextArea newTextArea = new JTextArea();
-					
+					final JPanel newPanel = new JPanel();
+					final JScrollPane newScrollPane = new JScrollPane();
+					final JTextArea newTextArea = new JTextArea();
 					newTextArea.setColumns(20);
 					newTextArea.setRows(5);
 					newTextArea.setFont(new java.awt.Font("Segoe UI", 0, 10));
 					newTextArea.setEditable(false);
-					
 					newScrollPane.getHorizontalScrollBar().setEnabled(true);
 					newScrollPane.setViewportView(newTextArea);
 					newPanel.setLayout(new GridLayout());
 					newPanel.add(newScrollPane);
 					v_logHolderTabbedPane.addTab(Integer.toString(roundNumber), newPanel);
-					
 					currentLogTextArea = newTextArea;
 				}
 			});
-		} catch (Exception ex)
+		} catch (final Exception ex)
 		{
 			System.out.print("Error initializing Dynamix settings window: " + ex.toString() + "\r\n");
 		}
@@ -3094,9 +2767,8 @@ public class SettingsWindow extends javax.swing.JDialog
 				maxHistoryRounds = 1; // If we're not logging, trim to 1
 			try
 			{
-				Runnable runner = new Runnable()
+				final Runnable runner = new Runnable()
 				{
-					
 					public void run()
 					{
 						for (int i = 0; i < v_logHolderTabbedPane.getTabCount(); i++)
@@ -3112,7 +2784,7 @@ public class SettingsWindow extends javax.swing.JDialog
 					}
 				};
 				SwingUtilities.invokeAndWait(runner);
-			} catch (Exception ex)
+			} catch (final Exception ex)
 			{
 			}
 		}

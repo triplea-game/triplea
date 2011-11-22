@@ -23,7 +23,6 @@ import games.strategy.engine.data.GameData;
  */
 public class DefaultDisplayBridge implements IDisplayBridge
 {
-	
 	private final GameData m_gameData;
 	
 	/**
@@ -39,5 +38,4 @@ public class DefaultDisplayBridge implements IDisplayBridge
 	{
 		return m_gameData;
 	}
-	
 }

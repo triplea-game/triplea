@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.kingstable.ui;
 
 import games.strategy.common.image.UnitImageFactory;
@@ -46,37 +45,28 @@ import javax.swing.SwingUtilities;
  */
 public class MapPanel extends JComponent implements MouseListener
 {
-	private MapData m_mapData;
-	private GameData m_gameData;
-	
+	private final MapData m_mapData;
+	private final GameData m_gameData;
 	private Territory m_clickedAt = null;
 	private Territory m_releasedAt = null;
-	
-	private Map<Territory, Image> m_images;
-	
+	private final Map<Territory, Image> m_images;
 	private CountDownLatch m_waiting;
 	
-	public MapPanel(MapData mapData)
+	public MapPanel(final MapData mapData)
 	{
 		m_waiting = null;
-		
 		m_mapData = mapData;
 		m_gameData = m_mapData.getGameData();
-		
-		Dimension mapDimension = m_mapData.getMapDimensions();
-		
+		final Dimension mapDimension = m_mapData.getMapDimensions();
 		this.setMinimumSize(mapDimension);
 		this.setPreferredSize(mapDimension);
 		this.setSize(mapDimension);
-		
 		m_images = new HashMap<Territory, Image>();
-		for (Territory at : m_mapData.getPolygons().keySet())
+		for (final Territory at : m_mapData.getPolygons().keySet())
 		{
 			updateImage(at);
 		}
-		
 		this.addMouseListener(this);
-		
 		this.setOpaque(true);
 	}
 	
@@ -100,18 +90,15 @@ public class MapPanel extends JComponent implements MouseListener
 	 * @param captured
 	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
 	 */
-	protected void performPlay(Territory start, Territory end, Collection<Territory> captured)
+	protected void performPlay(final Territory start, final Territory end, final Collection<Territory> captured)
 	{
 		updateImage(start);
 		updateImage(end);
-		
-		for (Territory at : captured)
+		for (final Territory at : captured)
 			updateImage(at);
-		
 		// Ask Swing to repaint this panel when it's convenient
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			public void run()
 			{
 				repaint();
@@ -125,16 +112,16 @@ public class MapPanel extends JComponent implements MouseListener
 	 * @param at
 	 *            the <code>Territory</code> to update
 	 */
-	private void updateImage(Territory at)
+	private void updateImage(final Territory at)
 	{
 		if (at != null)
 		{
 			if (at.getUnits().size() == 1)
 			{
-				UnitImageFactory f = new UnitImageFactory();
+				final UnitImageFactory f = new UnitImageFactory();
 				// Get image for exactly one unit
-				Unit u = (Unit) at.getUnits().getUnits().toArray()[0];
-				Image image = f.getImage(u.getType(), u.getOwner(), m_gameData);
+				final Unit u = (Unit) at.getUnits().getUnits().toArray()[0];
+				final Image image = f.getImage(u.getType(), u.getOwner(), m_gameData);
 				m_images.put(at, image);
 			}
 			else
@@ -147,62 +134,53 @@ public class MapPanel extends JComponent implements MouseListener
 	/**
 	 * Draw the current map and pieces.
 	 */
-	
 	@Override
-	protected void paintComponent(Graphics g)
+	protected void paintComponent(final Graphics g)
 	{
 		g.setColor(Color.white);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		
-		for (Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
+		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
 		{
-			Polygon p = entry.getValue();
-			Territory at = entry.getKey();
+			final Polygon p = entry.getValue();
+			final Territory at = entry.getKey();
 			Color backgroundColor = Color.WHITE;
-			
-			TerritoryAttachment ta = (TerritoryAttachment) at.getAttachment("territoryAttachment");
+			final TerritoryAttachment ta = (TerritoryAttachment) at.getAttachment("territoryAttachment");
 			if (ta != null)
 			{
 				if (ta.isKingsExit())
 					backgroundColor = new Color(225, 225, 255);
 				else if (ta.isKingsSquare())
 					backgroundColor = new Color(235, 235, 235);
-				
 				g.setColor(backgroundColor);
 				g.fillPolygon(p);
 			}
-			
 			g.setColor(Color.black);
-			Image image = m_images.get(at);
-			
+			final Image image = m_images.get(at);
 			if (image != null)
 			{
-				Rectangle square = p.getBounds();
+				final Rectangle square = p.getBounds();
 				g.drawImage(image, square.x, square.y, square.width, square.height, backgroundColor, null);
 			}
-			
 			g.drawPolygon(p);
-			
 		}
 	}
 	
-	public void mouseClicked(MouseEvent e)
+	public void mouseClicked(final MouseEvent e)
 	{
 	}
 	
-	public void mouseEntered(MouseEvent e)
+	public void mouseEntered(final MouseEvent e)
 	{
 	}
 	
-	public void mouseExited(MouseEvent e)
+	public void mouseExited(final MouseEvent e)
 	{
 	}
 	
 	/**
 	 * Process the mouse button being pressed.
 	 */
-	
-	public void mousePressed(MouseEvent e)
+	public void mousePressed(final MouseEvent e)
 	{
 		// After this method has been called,
 		// the Territory corresponding to the cursor location when the mouse was pressed
@@ -213,14 +191,12 @@ public class MapPanel extends JComponent implements MouseListener
 	/**
 	 * Process the mouse button being released.
 	 */
-	
-	public void mouseReleased(MouseEvent e)
+	public void mouseReleased(final MouseEvent e)
 	{
 		// After this method has been called,
 		// the Territory corresponding to the cursor location when the mouse was released
 		// will be stored in the private member variable m_releasedAt.
 		m_releasedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
-		
 		// The waitForPlay method is waiting for mouse input.
 		// Let it know that we have processed mouse input.
 		if (m_waiting != null)
@@ -240,18 +216,15 @@ public class MapPanel extends JComponent implements MouseListener
 	 * @throws InterruptedException
 	 *             if the play was interrupted
 	 */
-	public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge, CountDownLatch waiting) throws InterruptedException
+	public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
 	{
 		// Make sure we have a valid CountDownLatch.
 		if (waiting == null || waiting.getCount() != 1)
 			throw new IllegalArgumentException("CountDownLatch must be non-null and have getCount()==1");
-		
 		// The mouse listeners need access to the CountDownLatch, so store as a member variable.
 		m_waiting = waiting;
-		
 		// Wait for a play or an attempt to leave the game
 		m_waiting.await();
-		
 		if (m_clickedAt == null || m_releasedAt == null)
 		{
 			// If either m_clickedAt==null or m_releasedAt==null,
@@ -275,12 +248,10 @@ public class MapPanel extends JComponent implements MouseListener
 		{
 			// We have a valid play!
 			// Reset the member variables, and return the play.
-			PlayData play = new PlayData(m_clickedAt, m_releasedAt);
+			final PlayData play = new PlayData(m_clickedAt, m_releasedAt);
 			m_clickedAt = null;
 			m_releasedAt = null;
 			return play;
 		}
-		
 	}
-	
 }

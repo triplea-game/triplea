@@ -13,7 +13,6 @@ package games.strategy.triplea.delegate.remote;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 
@@ -26,7 +25,6 @@ import java.util.List;
  */
 public interface IAbstractMoveDelegate extends IRemote, IDelegate
 {
-	
 	/**
 	 * Get the moves already made
 	 * 
@@ -43,5 +41,4 @@ public interface IAbstractMoveDelegate extends IRemote, IDelegate
 	 * @return an error string if the move could not be undone, null otherwise
 	 */
 	public abstract String undoMove(int moveIndex);
-	
 }

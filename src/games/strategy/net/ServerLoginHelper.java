@@ -18,14 +18,13 @@ class ServerLoginHelper
 	 * 3) server reads credentials, sends null and then client name if login suceeds, otherwise an error message and the connection is closed
 	 */
 	private final static Logger s_logger = Logger.getLogger(ServerLoginHelper.class.getName());
-	
 	private final SocketAddress m_remoteAddress;
 	private final ILoginValidator m_loginValidator;
 	private final SocketStreams m_streams;
 	private String m_clientName;
 	private final ServerMessenger m_serverMessenger;
 	
-	public ServerLoginHelper(SocketAddress remoteAddress, ILoginValidator loginValidator, SocketStreams streams, ServerMessenger messenger)
+	public ServerLoginHelper(final SocketAddress remoteAddress, final ILoginValidator loginValidator, final SocketStreams streams, final ServerMessenger messenger)
 	{
 		m_remoteAddress = remoteAddress;
 		m_loginValidator = loginValidator;
@@ -38,39 +37,32 @@ class ServerLoginHelper
 	{
 		try
 		{
-			ObjectOutputStream out = new ObjectOutputStream(m_streams.getBufferedOut());
+			final ObjectOutputStream out = new ObjectOutputStream(m_streams.getBufferedOut());
 			// write the object output streams magic number
 			out.flush();
-			
-			ObjectInputStream in = new ObjectInputStream(m_streams.getBufferedIn());
+			final ObjectInputStream in = new ObjectInputStream(m_streams.getBufferedIn());
 			m_clientName = (String) in.readObject();
-			
 			// the degenerate case
 			if (m_loginValidator == null)
 			{
 				out.writeObject(null);
 				out.flush();
-				
 				// cast to string to avoid toString() call on random object if
 				// it isn't null
-				String read = (String) in.readObject();
+				final String read = (String) in.readObject();
 				if (read != null)
 					throw new IllegalArgumentException("something non null read in response to null challenge " + read);
-				
 				System.out.println("Server done");
 				return true;
 			}
-			
-			Map<String, String> challenge = m_loginValidator.getChallengeProperties(m_clientName, m_remoteAddress);
+			final Map<String, String> challenge = m_loginValidator.getChallengeProperties(m_clientName, m_remoteAddress);
 			if (challenge == null)
 				throw new IllegalStateException("Challenge can't be null");
-			
 			out.writeObject(challenge);
 			out.flush();
-			
-			Map credentials = (Map) in.readObject();
-			Set<Map.Entry> entries = credentials.entrySet();
-			for (Map.Entry entry : entries)
+			final Map credentials = (Map) in.readObject();
+			final Set<Map.Entry> entries = credentials.entrySet();
+			for (final Map.Entry entry : entries)
 			{
 				// check what we read is a string
 				if (!(entry.getKey() instanceof String) && !(entry.getValue() instanceof String))
@@ -78,35 +70,28 @@ class ServerLoginHelper
 					throw new IllegalStateException("Value must be a String");
 				}
 			}
-			
-			String mac = MacFinder.GetHashedMacAddress();
-			String error = m_loginValidator.verifyConnection(challenge, credentials, m_clientName, mac, m_remoteAddress);
+			final String mac = MacFinder.GetHashedMacAddress();
+			final String error = m_loginValidator.verifyConnection(challenge, credentials, m_clientName, mac, m_remoteAddress);
 			if (error == null)
 			{
 				out.writeObject(null);
-				
 				m_clientName = m_serverMessenger.getUniqueName(m_clientName);
 				out.writeObject(m_clientName);
 				out.flush();
 				return true;
 			}
-			
 			out.writeObject(error);
 			out.flush();
-			
 			return false;
-			
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			s_logger.log(Level.SEVERE, e.getMessage(), e);
 			return false;
 		}
-		
 	}
 	
 	public String getClientName()
 	{
 		return m_clientName;
 	}
-	
 }

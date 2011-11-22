@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.message;
 
 /**
@@ -21,7 +20,7 @@ package games.strategy.engine.message;
  */
 public class MessengerException extends RuntimeException
 {
-	public MessengerException(String message, Throwable cause)
+	public MessengerException(final String message, final Throwable cause)
 	{
 		super(message, cause);
 	}
@@ -35,5 +34,4 @@ public class MessengerException extends RuntimeException
 	{
 		getCause().setStackTrace(Thread.currentThread().getStackTrace());
 	}
-	
 }

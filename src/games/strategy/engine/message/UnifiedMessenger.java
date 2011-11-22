@@ -46,25 +46,18 @@ import java.util.logging.Logger;
  */
 public class UnifiedMessenger
 {
-	
 	private final static Logger s_logger = Logger.getLogger(UnifiedMessenger.class.getName());
-	
 	// a thread pool to run the invoke on
 	private static ThreadPool m_threadPool = new ThreadPool(15, "UnifiedMessengerPool");
-	
 	// the messenger we are based on
 	private final IMessenger m_messenger;
-	
 	// lock on this for modifications to create or remove local end points
 	private final Object m_endPointMutex = new Object();
-	
 	// maps String -> EndPoint
 	// these are the end points that
 	// have local implementors
 	private final Map<String, EndPoint> m_localEndPoints = new HashMap<String, EndPoint>();
-	
 	private final Object m_pendingLock = new Object();
-	
 	// threads wait on these latches for the hub to return invocations
 	// the latch should be removed from the map when you countdown the last result
 	// access should be synchronized on m_pendingLock
@@ -72,18 +65,14 @@ public class UnifiedMessenger
 	// after the remote has invoked, the results are placed here
 	// access should be synchronized on m_pendingLock
 	private final Map<GUID, RemoteMethodCallResults> m_results = new HashMap<GUID, RemoteMethodCallResults>();
-	
 	// only non null for the server
 	private UnifiedMessengerHub m_hub;
-	
 	private final IMessengerErrorListener m_messengerErrorListener = new IMessengerErrorListener()
 	{
-		
-		public void messengerInvalid(IMessenger messenger, Exception reason)
+		public void messengerInvalid(final IMessenger messenger, final Exception reason)
 		{
 			UnifiedMessenger.this.messengerInvalid();
 		}
-		
 	};
 	
 	/**
@@ -94,7 +83,6 @@ public class UnifiedMessenger
 		m_messenger = messenger;
 		m_messenger.addMessageListener(m_messageListener);
 		m_messenger.addErrorListener(m_messengerErrorListener);
-		
 		if (m_messenger.isServer())
 		{
 			m_hub = new UnifiedMessengerHub(m_messenger, this);
@@ -108,24 +96,22 @@ public class UnifiedMessenger
 	
 	private void messengerInvalid()
 	{
-		
 		synchronized (m_pendingLock)
 		{
-			for (GUID id : m_pendingInvocations.keySet())
+			for (final GUID id : m_pendingInvocations.keySet())
 			{
-				CountDownLatch latch = m_pendingInvocations.remove(id);
+				final CountDownLatch latch = m_pendingInvocations.remove(id);
 				latch.countDown();
 				m_results.put(id, new RemoteMethodCallResults(new ConnectionLostException("Connection Lost")));
 			}
 		}
-		
 	}
 	
 	/**
 	 * Invoke and wait for all implementors on all vms to finish executing.
 	 * 
 	 */
-	public RemoteMethodCallResults invokeAndWait(String endPointName, RemoteMethodCall remoteCall)
+	public RemoteMethodCallResults invokeAndWait(final String endPointName, final RemoteMethodCall remoteCall)
 	{
 		EndPoint local;
 		synchronized (m_endPointMutex)
@@ -137,54 +123,44 @@ public class UnifiedMessenger
 		// we have the implementor here, just invoke it
 		else
 		{
-			long number = local.takeANumber();
-			List<RemoteMethodCallResults> results = local.invokeLocal(remoteCall, number, getLocalNode());
+			final long number = local.takeANumber();
+			final List<RemoteMethodCallResults> results = local.invokeLocal(remoteCall, number, getLocalNode());
 			if (results.size() == 0)
 				throw new RemoteNotFoundException("Not found:" + endPointName);
 			if (results.size() > 1)
 				throw new IllegalStateException("Too many implementors, got back:" + results);
 			return results.get(0);
 		}
-		
 	}
 	
-	private RemoteMethodCallResults invokeAndWaitRemote(RemoteMethodCall remoteCall)
+	private RemoteMethodCallResults invokeAndWaitRemote(final RemoteMethodCall remoteCall)
 	{
 		// prepatory to anything else...
 		// generate a unique id
-		GUID methodCallID = new GUID();
-		CountDownLatch latch = new CountDownLatch(1);
-		
+		final GUID methodCallID = new GUID();
+		final CountDownLatch latch = new CountDownLatch(1);
 		synchronized (m_pendingLock)
 		{
 			m_pendingInvocations.put(methodCallID, latch);
 		}
-		
 		// invoke remotely
-		Invoke invoke = new HubInvoke(methodCallID, true, remoteCall);
-		
+		final Invoke invoke = new HubInvoke(methodCallID, true, remoteCall);
 		send(invoke, m_messenger.getServerNode());
-		
 		if (s_logger.isLoggable(Level.FINER))
 		{
-			s_logger.log(Level.FINER, "Waiting for method:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName()
-						+ " with id:" + methodCallID);
+			s_logger.log(Level.FINER, "Waiting for method:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName() + " with id:" + methodCallID);
 		}
-		
 		try
 		{
 			latch.await();
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			s_logger.log(Level.WARNING, e.getMessage());
 		}
-		
 		if (s_logger.isLoggable(Level.FINER))
 		{
-			s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName()
-						+ " with id:" + methodCallID);
+			s_logger.log(Level.FINER, "Method returned:" + remoteCall.getMethodName() + " for remote name:" + remoteCall.getRemoteName() + " with id:" + methodCallID);
 		}
-		
 		RemoteMethodCallResults results;
 		// the countdownlatch map will be cleared when the results come in
 		synchronized (m_pendingLock)
@@ -193,7 +169,6 @@ public class UnifiedMessenger
 			if (results == null)
 				throw new IllegalStateException("No results");
 		}
-		
 		return results;
 	}
 	
@@ -203,9 +178,8 @@ public class UnifiedMessenger
 	public void invoke(final String endPointName, final RemoteMethodCall call)
 	{
 		// send the remote invocation
-		Invoke invoke = new HubInvoke(null, false, call);
+		final Invoke invoke = new HubInvoke(null, false, call);
 		send(invoke, m_messenger.getServerNode());
-		
 		// invoke locally
 		EndPoint endPoint;
 		synchronized (m_endPointMutex)
@@ -214,9 +188,9 @@ public class UnifiedMessenger
 		}
 		if (endPoint != null)
 		{
-			long number = endPoint.takeANumber();
-			List<RemoteMethodCallResults> results = endPoint.invokeLocal(call, number, getLocalNode());
-			for (RemoteMethodCallResults r : results)
+			final long number = endPoint.takeANumber();
+			final List<RemoteMethodCallResults> results = endPoint.invokeLocal(call, number, getLocalNode());
+			for (final RemoteMethodCallResults r : results)
 			{
 				if (r.getException() != null)
 				{
@@ -225,15 +199,13 @@ public class UnifiedMessenger
 				}
 			}
 		}
-		
 	}
 	
-	public void addImplementor(RemoteName endPointDescriptor, Object implementor, boolean singleThreaded)
+	public void addImplementor(final RemoteName endPointDescriptor, final Object implementor, final boolean singleThreaded)
 	{
 		if (!endPointDescriptor.getClazz().isAssignableFrom(implementor.getClass()))
 			throw new IllegalArgumentException(implementor + " does not implement " + endPointDescriptor.getClazz());
-		
-		EndPoint endPoint = getLocalEndPointOrCreate(endPointDescriptor, singleThreaded);
+		final EndPoint endPoint = getLocalEndPointOrCreate(endPointDescriptor, singleThreaded);
 		endPoint.addImplementor(implementor);
 	}
 	
@@ -245,56 +217,50 @@ public class UnifiedMessenger
 	/**
 	 * Get the 1 and only implementor for the endpoint. throws an exception if there are not exctly 1 implementors
 	 */
-	public Object getImplementor(String name)
+	public Object getImplementor(final String name)
 	{
 		synchronized (m_endPointMutex)
 		{
-			EndPoint endPoint = m_localEndPoints.get(name);
+			final EndPoint endPoint = m_localEndPoints.get(name);
 			return endPoint.getFirstImplementor();
 		}
 	}
 	
-	void removeImplementor(String name, Object implementor)
+	void removeImplementor(final String name, final Object implementor)
 	{
 		EndPoint endPoint;
 		synchronized (m_endPointMutex)
 		{
 			endPoint = m_localEndPoints.get(name);
-			
 			if (endPoint == null)
 				throw new IllegalStateException("No end point for:" + name);
 			if (implementor == null)
 				throw new IllegalArgumentException("null implementor");
-			
-			boolean noneLeft = endPoint.removeImplementor(implementor);
+			final boolean noneLeft = endPoint.removeImplementor(implementor);
 			if (noneLeft)
 			{
 				m_localEndPoints.remove(name);
 				send(new NoLongerHasEndPointImplementor(name), m_messenger.getServerNode());
 			}
 		}
-		
 	}
 	
-	private EndPoint getLocalEndPointOrCreate(RemoteName endPointDescriptor, boolean singleThreaded)
+	private EndPoint getLocalEndPointOrCreate(final RemoteName endPointDescriptor, final boolean singleThreaded)
 	{
 		EndPoint endPoint;
 		synchronized (m_endPointMutex)
 		{
 			if (m_localEndPoints.containsKey(endPointDescriptor.getName()))
 				return m_localEndPoints.get(endPointDescriptor.getName());
-			
 			endPoint = new EndPoint(endPointDescriptor.getName(), endPointDescriptor.getClazz(), singleThreaded);
 			m_localEndPoints.put(endPointDescriptor.getName(), endPoint);
-			
 		}
-		
-		HasEndPointImplementor msg = new HasEndPointImplementor(endPointDescriptor.getName());
+		final HasEndPointImplementor msg = new HasEndPointImplementor(endPointDescriptor.getName());
 		send(msg, m_messenger.getServerNode());
 		return endPoint;
 	}
 	
-	private void send(Serializable msg, INode to)
+	private void send(final Serializable msg, final INode to)
 	{
 		if (m_messenger.getLocalNode().equals(to))
 		{
@@ -304,7 +270,6 @@ public class UnifiedMessenger
 		{
 			m_messenger.send(msg, to);
 		}
-		
 	}
 	
 	public boolean isServer()
@@ -318,27 +283,25 @@ public class UnifiedMessenger
 	 * @param endPointName
 	 * @param timeout
 	 */
-	public void waitForLocalImplement(String endPointName, long timeoutMS)
+	public void waitForLocalImplement(final String endPointName, long timeoutMS)
 	{
 		// dont use Long.MAX_VALUE since that will overflow
 		if (timeoutMS <= 0)
 			timeoutMS = Integer.MAX_VALUE;
-		
-		long endTime = timeoutMS + System.currentTimeMillis();
-		
+		final long endTime = timeoutMS + System.currentTimeMillis();
 		while (System.currentTimeMillis() < endTime && !hasLocalEndPoint(endPointName))
 		{
 			try
 			{
 				Thread.sleep(50);
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 				// whats a devloper to do
 			}
 		}
 	}
 	
-	private boolean hasLocalEndPoint(String endPointName)
+	private boolean hasLocalEndPoint(final String endPointName)
 	{
 		synchronized (m_endPointMutex)
 		{
@@ -346,7 +309,7 @@ public class UnifiedMessenger
 		}
 	}
 	
-	int getLocalEndPointCount(RemoteName descriptor)
+	int getLocalEndPointCount(final RemoteName descriptor)
 	{
 		synchronized (m_endPointMutex)
 		{
@@ -356,37 +319,33 @@ public class UnifiedMessenger
 		}
 	}
 	
-	private IMessageListener m_messageListener = new IMessageListener()
+	private final IMessageListener m_messageListener = new IMessageListener()
 	{
-		
-		public void messageReceived(Serializable msg, final INode from)
+		public void messageReceived(final Serializable msg, final INode from)
 		{
 			UnifiedMessenger.this.messageReceived(msg, from);
 		}
-		
 	};
 	
-	private void assertIsServer(INode from)
+	private void assertIsServer(final INode from)
 	{
 		if (!from.equals(m_messenger.getServerNode()))
 			throw new IllegalStateException("Not from server!  Instead from:" + from);
 	}
 	
-	void messageReceived(Serializable msg, final INode from)
+	void messageReceived(final Serializable msg, final INode from)
 	{
 		if (msg instanceof SpokeInvoke)
 		{
 			// if this isn't the server, something is wrong
 			// maybe an attempt to spoof a message
 			assertIsServer(from);
-			
 			final SpokeInvoke invoke = (SpokeInvoke) msg;
 			EndPoint local;
 			synchronized (m_endPointMutex)
 			{
 				local = m_localEndPoints.get(invoke.call.getRemoteName());
 			}
-			
 			// something a bit strange here, it may be the case
 			// that the endpoint was deleted locally
 			// regardless, the other side is expecting our reply
@@ -398,7 +357,6 @@ public class UnifiedMessenger
 				}
 				return;
 			}
-			
 			// very important
 			// we are guaranteed that here messages will be
 			// read in the same order that they are sent from the client
@@ -411,16 +369,13 @@ public class UnifiedMessenger
 			// reading messages
 			// per connection, so run with out thread pool
 			final EndPoint localFinal = local;
-			Runnable task = new Runnable()
+			final Runnable task = new Runnable()
 			{
-				
 				public void run()
 				{
-					List<RemoteMethodCallResults> results = localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
-					
+					final List<RemoteMethodCallResults> results = localFinal.invokeLocal(invoke.call, methodRunNumber, invoke.getInvoker());
 					if (invoke.needReturnValues)
 					{
-						
 						RemoteMethodCallResults result = null;
 						if (results.size() == 1)
 						{
@@ -428,14 +383,11 @@ public class UnifiedMessenger
 						}
 						else
 							result = new RemoteMethodCallResults(new IllegalStateException("Invalid result count" + results.size()) + " for end point:" + localFinal);
-						
 						send(new HubInvocationResults(result, invoke.methodCallID), from);
 					}
 				}
 			};
-			
 			m_threadPool.runTask(task);
-			
 		}
 		// a remote machine is returning results
 		else if (msg instanceof SpokeInvocationResults)
@@ -443,11 +395,8 @@ public class UnifiedMessenger
 			// if this isn't the server, something is wrong
 			// maybe an attempt to spoof a message
 			assertIsServer(from);
-			
-			SpokeInvocationResults results = (SpokeInvocationResults) msg;
-			
-			GUID methodID = results.methodCallID;
-			
+			final SpokeInvocationResults results = (SpokeInvocationResults) msg;
+			final GUID methodID = results.methodCallID;
 			// both of these should already be populated
 			// this list should be a synchronized list so we can do the add
 			// all
@@ -459,27 +408,23 @@ public class UnifiedMessenger
 		}
 	}
 	
-	public void dumpState(PrintStream stream)
+	public void dumpState(final PrintStream stream)
 	{
 		synchronized (m_endPointMutex)
 		{
 			stream.println("Local Endpoints:" + m_localEndPoints);
 		}
-		
 		synchronized (m_endPointMutex)
 		{
 			stream.println("Remote nodes with implementors:" + m_results);
 			stream.println("Remote nodes with implementors:" + m_pendingInvocations);
 		}
-		
 	}
 	
 	public void waitForAllJobs()
 	{
 		m_threadPool.waitForAll();
-		
 	}
-	
 }
 
 
@@ -493,25 +438,21 @@ public class UnifiedMessenger
  * 
  * @author Sean Bridges
  */
-
 class EndPoint
 {
 	// the next number we are going to give
 	private final AtomicLong m_nextGivenNumber = new AtomicLong();
 	// the next number we can run
 	private long m_currentRunnableNumber = 0;
-	
 	private final Object m_numberMutext = new Object();
 	private final Object m_implementorsMutext = new Object();
-	
 	private final String m_name;
 	private final Class<?> m_remoteClass;
 	private final List<Object> m_implementors = new ArrayList<Object>();
 	private final boolean m_singleThreaded;
 	
-	public EndPoint(final String name, final Class<?> remoteClass, boolean singleThreaded)
+	public EndPoint(final String name, final Class<?> remoteClass, final boolean singleThreaded)
 	{
-		
 		m_name = name;
 		m_remoteClass = remoteClass;
 		m_singleThreaded = singleThreaded;
@@ -534,7 +475,7 @@ class EndPoint
 		return m_nextGivenNumber.getAndIncrement();
 	}
 	
-	private void waitTillCanBeRun(long aNumber)
+	private void waitTillCanBeRun(final long aNumber)
 	{
 		synchronized (m_numberMutext)
 		{
@@ -543,7 +484,7 @@ class EndPoint
 				try
 				{
 					m_numberMutext.wait();
-				} catch (InterruptedException e)
+				} catch (final InterruptedException e)
 				{
 					e.printStackTrace();
 				}
@@ -564,18 +505,15 @@ class EndPoint
 	 * 
 	 * @return is this the first implementor
 	 */
-	public boolean addImplementor(Object implementor)
+	public boolean addImplementor(final Object implementor)
 	{
-		
 		if (!m_remoteClass.isAssignableFrom(implementor.getClass()))
 			throw new IllegalArgumentException(m_remoteClass + " is not assignable from " + implementor.getClass());
-		
 		synchronized (m_implementorsMutext)
 		{
-			boolean rVal = m_implementors.isEmpty();
+			final boolean rVal = m_implementors.isEmpty();
 			m_implementors.add(implementor);
 			return rVal;
-			
 		}
 	}
 	
@@ -604,7 +542,7 @@ class EndPoint
 	 * 
 	 * @return - we have no more implementors
 	 */
-	boolean removeImplementor(Object implementor)
+	boolean removeImplementor(final Object implementor)
 	{
 		synchronized (m_implementorsMutext)
 		{
@@ -631,9 +569,8 @@ class EndPoint
 	 * threaded, then the method will not run until the number comes up. Acquire
 	 * with getNumber() @return a List of RemoteMethodCallResults
 	 */
-	public List<RemoteMethodCallResults> invokeLocal(final RemoteMethodCall call, long number, INode messageOriginator)
+	public List<RemoteMethodCallResults> invokeLocal(final RemoteMethodCall call, final long number, final INode messageOriginator)
 	{
-		
 		try
 		{
 			if (m_singleThreaded)
@@ -645,14 +582,13 @@ class EndPoint
 		{
 			releaseNumber();
 		}
-		
 	}
 	
 	/**
 	 * @param call
 	 * @param rVal
 	 */
-	private List<RemoteMethodCallResults> invokeMultiple(RemoteMethodCall call, INode messageOriginator)
+	private List<RemoteMethodCallResults> invokeMultiple(final RemoteMethodCall call, final INode messageOriginator)
 	{
 		// copy the implementors
 		List<Object> implementorsCopy;
@@ -660,12 +596,11 @@ class EndPoint
 		{
 			implementorsCopy = new ArrayList<Object>(m_implementors);
 		}
-		
-		List<RemoteMethodCallResults> results = new ArrayList<RemoteMethodCallResults>(implementorsCopy.size());
-		Iterator<Object> iter = implementorsCopy.iterator();
+		final List<RemoteMethodCallResults> results = new ArrayList<RemoteMethodCallResults>(implementorsCopy.size());
+		final Iterator<Object> iter = implementorsCopy.iterator();
 		while (iter.hasNext())
 		{
-			Object implementor = iter.next();
+			final Object implementor = iter.next();
 			results.add(invokeSingle(call, implementor, messageOriginator));
 		}
 		return results;
@@ -676,7 +611,7 @@ class EndPoint
 	 * @param implementor
 	 * @return
 	 */
-	private RemoteMethodCallResults invokeSingle(RemoteMethodCall call, Object implementor, INode messageOriginator)
+	private RemoteMethodCallResults invokeSingle(final RemoteMethodCall call, final Object implementor, final INode messageOriginator)
 	{
 		call.resolve(m_remoteClass);
 		Method method;
@@ -684,32 +619,30 @@ class EndPoint
 		{
 			method = implementor.getClass().getMethod(call.getMethodName(), call.getArgTypes());
 			method.setAccessible(true);
-		} catch (SecurityException e)
+		} catch (final SecurityException e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException(e.getMessage());
-		} catch (NoSuchMethodException e)
+		} catch (final NoSuchMethodException e)
 		{
 			e.printStackTrace();
 			throw new IllegalStateException(e.getMessage());
 		}
-		
 		MessageContext.setSenderNodeForThread(messageOriginator);
 		try
 		{
-			Object methodRVal = method.invoke(implementor, call.getArgs());
+			final Object methodRVal = method.invoke(implementor, call.getArgs());
 			return new RemoteMethodCallResults(methodRVal);
-			
-		} catch (InvocationTargetException e)
+		} catch (final InvocationTargetException e)
 		{
 			return new RemoteMethodCallResults(e.getTargetException());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			// this shouldnt happen
 			System.err.println("error in call:" + call);
 			e.printStackTrace();
 			return new RemoteMethodCallResults(e);
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			// this shouldnt happen
 			System.err.println("error in call:" + call);
@@ -721,7 +654,7 @@ class EndPoint
 		}
 	}
 	
-	public boolean equivalent(EndPoint other)
+	public boolean equivalent(final EndPoint other)
 	{
 		if (other.m_singleThreaded != this.m_singleThreaded)
 			return false;
@@ -737,19 +670,17 @@ class EndPoint
 	{
 		return "Name:" + m_name + " singleThreaded:" + m_singleThreaded + " implementors:" + m_implementors;
 	}
-	
 }
 
 
 // an end point has been created, we should follow
-
 class EndPointCreated implements Serializable
 {
 	public final String[] classes;
 	public final String name;
 	public final boolean singleThreaded;
 	
-	public EndPointCreated(String[] classes, String name, boolean singleThreaded)
+	public EndPointCreated(final String[] classes, final String name, final boolean singleThreaded)
 	{
 		this.classes = classes;
 		this.name = name;
@@ -759,12 +690,11 @@ class EndPointCreated implements Serializable
 
 
 // and end point has been destroyed, we too should jump off that bridge
-
 class EndPointDestroyed implements Serializable
 {
 	public final String name;
 	
-	public EndPointDestroyed(String name)
+	public EndPointDestroyed(final String name)
 	{
 		this.name = name;
 	}
@@ -778,12 +708,11 @@ class EndPointDestroyed implements Serializable
 
 
 // someone now has an implementor for an endpoint
-
 class HasEndPointImplementor implements Serializable
 {
 	public final String endPointName;
 	
-	public HasEndPointImplementor(String endPointName)
+	public HasEndPointImplementor(final String endPointName)
 	{
 		this.endPointName = endPointName;
 	}
@@ -793,17 +722,15 @@ class HasEndPointImplementor implements Serializable
 	{
 		return this.getClass().getName() + ":" + endPointName;
 	}
-	
 }
 
 
 // someone no longer has implementors for an endpoint
-
 class NoLongerHasEndPointImplementor implements Serializable
 {
 	public final String endPointName;
 	
-	public NoLongerHasEndPointImplementor(String endPointName)
+	public NoLongerHasEndPointImplementor(final String endPointName)
 	{
 		this.endPointName = endPointName;
 	}
@@ -811,7 +738,6 @@ class NoLongerHasEndPointImplementor implements Serializable
 
 
 // someone wants us to invoke something locally
-
 abstract class Invoke implements Externalizable
 {
 	public GUID methodCallID;
@@ -820,7 +746,6 @@ abstract class Invoke implements Externalizable
 	
 	public Invoke()
 	{
-		
 	}
 	
 	@Override
@@ -829,19 +754,18 @@ abstract class Invoke implements Externalizable
 		return "invoke on:" + call.getRemoteName() + " method name:" + call.getMethodName() + " method call id:" + methodCallID;
 	}
 	
-	public Invoke(GUID methodCallID, boolean needReturnValues, RemoteMethodCall call)
+	public Invoke(final GUID methodCallID, final boolean needReturnValues, final RemoteMethodCall call)
 	{
 		if (needReturnValues && methodCallID == null)
 			throw new IllegalArgumentException("Cant have no id and need return values");
 		if (!needReturnValues && methodCallID != null)
 			throw new IllegalArgumentException("Cant have id and not need return values");
-		
 		this.methodCallID = methodCallID;
 		this.needReturnValues = needReturnValues;
 		this.call = call;
 	}
 	
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		needReturnValues = in.read() == 1;
 		if (needReturnValues)
@@ -850,19 +774,17 @@ abstract class Invoke implements Externalizable
 		call.readExternal(in);
 	}
 	
-	public void writeExternal(ObjectOutput out) throws IOException
+	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		out.write(needReturnValues ? 1 : 0);
 		if (needReturnValues)
 			out.writeObject(methodCallID);
 		call.writeExternal(out);
 	}
-	
 }
 
 
 // the results of a remote invocation
-
 abstract class InvocationResults implements Externalizable
 {
 	public RemoteMethodCallResults results;
@@ -870,17 +792,14 @@ abstract class InvocationResults implements Externalizable
 	
 	public InvocationResults()
 	{
-		
 	}
 	
-	public InvocationResults(RemoteMethodCallResults results, GUID methodCallID)
+	public InvocationResults(final RemoteMethodCallResults results, final GUID methodCallID)
 	{
-		
 		if (results == null)
 			throw new IllegalArgumentException("Null results");
 		if (methodCallID == null)
 			throw new IllegalArgumentException("Null id");
-		
 		this.results = results;
 		this.methodCallID = methodCallID;
 	}
@@ -891,20 +810,17 @@ abstract class InvocationResults implements Externalizable
 		return "Invocation results for method id:" + methodCallID + " results:" + results;
 	}
 	
-	public void writeExternal(ObjectOutput out) throws IOException
+	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		results.writeExternal(out);
 		methodCallID.writeExternal(out);
 	}
 	
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		results = new RemoteMethodCallResults();
 		results.readExternal(in);
-		
 		methodCallID = new GUID();
 		methodCallID.readExternal(in);
-		
 	}
-	
 }

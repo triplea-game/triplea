@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.data.properties;
 
 import java.awt.event.ActionEvent;
@@ -27,8 +26,7 @@ import javax.swing.JComponent;
 @SuppressWarnings("serial")
 public class ListProperty extends AEditableProperty
 {
-	
-	private List<String> m_possibleValues;
+	private final List<String> m_possibleValues;
 	private String m_value;
 	
 	/**
@@ -40,13 +38,11 @@ public class ListProperty extends AEditableProperty
 	 * @param possibleValues
 	 *            collection of Strings
 	 */
-	public ListProperty(String name, String defaultValue, Collection<String> possibleValues)
+	public ListProperty(final String name, final String defaultValue, final Collection<String> possibleValues)
 	{
 		super(name);
-		
 		if (!possibleValues.contains(defaultValue))
 			throw new IllegalStateException("possible values does not contain default");
-		
 		m_possibleValues = new ArrayList<String>(possibleValues);
 		m_value = defaultValue;
 	}
@@ -62,16 +58,11 @@ public class ListProperty extends AEditableProperty
 		box.setSelectedItem(m_value);
 		box.addActionListener(new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
-		{
-			m_value = (String) box.getSelectedItem();
-		}
-		}
-					);
-		
+			public void actionPerformed(final ActionEvent e)
+			{
+				m_value = (String) box.getSelectedItem();
+			}
+		});
 		return box;
-		
 	}
-	
 }

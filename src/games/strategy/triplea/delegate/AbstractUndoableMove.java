@@ -19,7 +19,6 @@ import java.util.Collection;
 @SuppressWarnings("serial")
 abstract public class AbstractUndoableMove implements Serializable
 {
-	
 	/**
 	 * Stores the serialized state of the move and battle delegates (just
 	 * as if they were saved), and a CompositeChange that represents all the changes that
@@ -31,18 +30,17 @@ abstract public class AbstractUndoableMove implements Serializable
 	protected int m_index;
 	protected final Collection<Unit> m_units;
 	
-	public AbstractUndoableMove(CompositeChange change, Collection<Unit> units)
+	public AbstractUndoableMove(final CompositeChange change, final Collection<Unit> units)
 	{
 		m_change = change;
 		m_units = units;
 	}
 	
-	final public void undo(GameData data, IDelegateBridge delegateBridge)
+	final public void undo(final GameData data, final IDelegateBridge delegateBridge)
 	{
 		// undo any changes to the game data
 		delegateBridge.getHistoryWriter().startEvent(delegateBridge.getPlayerID().getName() + " undo move " + (getIndex() + 1) + ".");
 		delegateBridge.getHistoryWriter().setRenderingData(getDescriptionObject());
-		
 		delegateBridge.addChange(m_change.invert());
 		undoSpecific(delegateBridge);
 	}
@@ -54,10 +52,9 @@ abstract public class AbstractUndoableMove implements Serializable
 		return m_change;
 	}
 	
-	public final void addChange(Change aChange)
+	public final void addChange(final Change aChange)
 	{
 		m_change.add(aChange);
-		
 	}
 	
 	public Collection<Unit> getUnits()
@@ -70,7 +67,7 @@ abstract public class AbstractUndoableMove implements Serializable
 		return m_index;
 	}
 	
-	public void setIndex(int index)
+	public void setIndex(final int index)
 	{
 		m_index = index;
 	}

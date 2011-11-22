@@ -12,22 +12,19 @@ import java.util.Properties;
 
 class DownloadFileProperties
 {
-	
 	private static final String VERSION = "map.version";
-	private Properties props = new Properties();
+	private final Properties props = new Properties();
 	
-	public static DownloadFileProperties loadForZip(File zipFile)
+	public static DownloadFileProperties loadForZip(final File zipFile)
 	{
-		
 		if (!fromZip(zipFile).exists())
 		{
 			return new DownloadFileProperties();
 		}
-		
-		DownloadFileProperties rVal = new DownloadFileProperties();
+		final DownloadFileProperties rVal = new DownloadFileProperties();
 		try
 		{
-			FileInputStream fis = new FileInputStream(fromZip(zipFile));
+			final FileInputStream fis = new FileInputStream(fromZip(zipFile));
 			try
 			{
 				rVal.props.load(fis);
@@ -35,19 +32,18 @@ class DownloadFileProperties
 			{
 				fis.close();
 			}
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			e.printStackTrace(System.out);
 		}
 		return rVal;
-		
 	}
 	
-	public static void saveForZip(File zipFile, DownloadFileProperties props)
+	public static void saveForZip(final File zipFile, final DownloadFileProperties props)
 	{
 		try
 		{
-			FileOutputStream fos = new FileOutputStream(fromZip(zipFile));
+			final FileOutputStream fos = new FileOutputStream(fromZip(zipFile));
 			try
 			{
 				props.props.store(fos, null);
@@ -55,7 +51,7 @@ class DownloadFileProperties
 			{
 				fos.close();
 			}
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			e.printStackTrace(System.out);
 		}
@@ -63,10 +59,9 @@ class DownloadFileProperties
 	
 	public DownloadFileProperties()
 	{
-		
 	}
 	
-	private static File fromZip(File zipFile)
+	private static File fromZip(final File zipFile)
 	{
 		return new File(zipFile.getParent(), zipFile.getName() + ".properties");
 	}
@@ -80,7 +75,7 @@ class DownloadFileProperties
 		return new Version(props.getProperty(VERSION));
 	}
 	
-	private void setVersion(Version v)
+	private void setVersion(final Version v)
 	{
 		if (v != null)
 		{
@@ -88,13 +83,12 @@ class DownloadFileProperties
 		}
 	}
 	
-	public void setFrom(DownloadFileDescription selected)
+	public void setFrom(final DownloadFileDescription selected)
 	{
 		setVersion(selected.getVersion());
 		props.setProperty("map.url", selected.getUrl());
 		props.setProperty("download.time", new Date().toString());
 		props.setProperty("download.hostedBy", selected.getHostedUrl());
 		props.setProperty("engine.version", EngineVersion.VERSION.toString());
-		
 	}
 }

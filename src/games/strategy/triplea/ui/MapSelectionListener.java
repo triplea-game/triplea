@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * MapSelectionListener.java
  * 
  * Created on November 5, 2001, 2:12 PM
  */
-
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Territory;

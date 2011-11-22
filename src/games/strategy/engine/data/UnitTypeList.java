@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * UnitTypeList.java
  * 
  * Created on October 17, 2001, 9:21 PM
  */
-
 package games.strategy.engine.data;
 
 import java.util.HashMap;
@@ -36,7 +34,6 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType>
 {
-	
 	private final Map<String, UnitType> m_unitTypes = new HashMap<String, UnitType>();
 	
 	/**
@@ -45,17 +42,17 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
 	 * @param data
 	 *            game data
 	 */
-	public UnitTypeList(GameData data)
+	public UnitTypeList(final GameData data)
 	{
 		super(data);
 	}
 	
-	protected void addUnitType(UnitType type)
+	protected void addUnitType(final UnitType type)
 	{
 		m_unitTypes.put(type.getName(), type);
 	}
 	
-	public UnitType getUnitType(String name)
+	public UnitType getUnitType(final String name)
 	{
 		return m_unitTypes.get(name);
 	}
@@ -66,12 +63,12 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
 	 * @param names
 	 * @return
 	 */
-	public Set<UnitType> getUnitTypes(String[] names)
+	public Set<UnitType> getUnitTypes(final String[] names)
 	{
-		Set<UnitType> types = new HashSet<UnitType>();
-		for (String name : names)
+		final Set<UnitType> types = new HashSet<UnitType>();
+		for (final String name : names)
 		{
-			UnitType type = m_unitTypes.get(name);
+			final UnitType type = m_unitTypes.get(name);
 			if (type == null)
 				return null;
 			types.add(type);
@@ -88,5 +85,4 @@ public class UnitTypeList extends GameDataComponent implements Iterable<UnitType
 	{
 		return m_unitTypes.values().iterator();
 	}
-	
 }

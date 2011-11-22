@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.baseAI;
 
 import games.strategy.engine.data.GameData;
@@ -37,7 +36,6 @@ import java.util.Comparator;
  */
 public class AIUtils
 {
-	
 	/**
 	 * How many PU's does it cost the given player to produce the given unit type.
 	 * <p>
@@ -45,16 +43,14 @@ public class AIUtils
 	 * If the player cannot produce the given unit, return Integer.MAX_VALUE
 	 * <p>
 	 */
-	public static int getCost(UnitType unitType, PlayerID player, GameData data)
+	public static int getCost(final UnitType unitType, final PlayerID player, final GameData data)
 	{
 		if (unitType == null)
 			throw new IllegalArgumentException("null unit type");
 		if (player == null)
 			throw new IllegalArgumentException("null player id");
-		
-		Resource PUs = data.getResourceList().getResource(Constants.PUS);
-		
-		ProductionRule rule = getProductionRule(unitType, player, data);
+		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
+		final ProductionRule rule = getProductionRule(unitType, player, data);
 		if (rule == null)
 		{
 			return Integer.MAX_VALUE;
@@ -73,14 +69,11 @@ public class AIUtils
 	{
 		return new Comparator<Unit>()
 		{
-			
-			public int compare(Unit o1, Unit o2)
+			public int compare(final Unit o1, final Unit o2)
 			{
-				return getCost(o1.getType(), o1.getOwner(), o1.getData()) -
-							getCost(o2.getType(), o2.getOwner(), o2.getData());
+				return getCost(o1.getType(), o1.getOwner(), o1.getData()) - getCost(o2.getType(), o2.getOwner(), o2.getData());
 			}
 		};
-		
 	}
 	
 	/**
@@ -88,15 +81,14 @@ public class AIUtils
 	 * <p>
 	 * If no such rule can be found, then return null.
 	 */
-	public static ProductionRule getProductionRule(UnitType unitType, PlayerID player, GameData data)
+	public static ProductionRule getProductionRule(final UnitType unitType, final PlayerID player, final GameData data)
 	{
 		if (unitType == null)
 			throw new IllegalArgumentException("null unit type");
 		if (player == null)
 			throw new IllegalArgumentException("null player id");
-		
-		ProductionFrontier frontier = player.getProductionFrontier();
-		for (ProductionRule rule : frontier)
+		final ProductionFrontier frontier = player.getProductionFrontier();
+		for (final ProductionRule rule : frontier)
 		{
 			if (rule.getResults().getInt(unitType) == 1)
 			{
@@ -118,13 +110,12 @@ public class AIUtils
 	 *            - calculate the strength of the units in a sea or land battle?
 	 * @return
 	 */
-	public static float strength(Collection<Unit> units, boolean attacking, boolean sea)
+	public static float strength(final Collection<Unit> units, final boolean attacking, final boolean sea)
 	{
 		int strength = 0;
-		
-		for (Unit u : units)
+		for (final Unit u : units)
 		{
-			UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
+			final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
 			if (unitAttatchment.isAA() || unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
 			{
 				// nothing
@@ -133,17 +124,14 @@ public class AIUtils
 			{
 				// 2 points since we can absorb a hit
 				strength += 2;
-				
 				// two hit
 				if (unitAttatchment.isTwoHit())
 					strength += 1.5;
-				
 				// the number of pips on the dice
 				if (attacking)
 					strength += unitAttatchment.getAttack(u.getOwner());
 				else
 					strength += unitAttatchment.getDefense(u.getOwner());
-				
 				if (attacking)
 				{
 					// a unit with attack of 0 isnt worth much
@@ -153,18 +141,14 @@ public class AIUtils
 						strength -= 1.2;
 					}
 				}
-				
 			}
 		}
-		
 		if (attacking)
 		{
-			int art = Match.countMatches(units, Matches.UnitIsArtillery);
-			int artSupport = Match.countMatches(units, Matches.UnitIsArtillerySupportable);
+			final int art = Match.countMatches(units, Matches.UnitIsArtillery);
+			final int artSupport = Match.countMatches(units, Matches.UnitIsArtillerySupportable);
 			strength += Math.min(art, artSupport);
 		}
-		
 		return strength;
 	}
-	
 }

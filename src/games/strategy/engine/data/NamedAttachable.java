@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * NamedAttatchable.java
  * 
  * Created on October 22, 2001, 6:49 PM
  */
-
 package games.strategy.engine.data;
 
 import java.util.Collections;
@@ -31,16 +29,15 @@ import java.util.Map;
  */
 public class NamedAttachable extends DefaultNamed implements Attachable
 {
-	
-	private Map<String, IAttachment> m_attatchments = new HashMap<String, IAttachment>();
+	private final Map<String, IAttachment> m_attatchments = new HashMap<String, IAttachment>();
 	
 	/** Creates new NamedAttatchable */
-	public NamedAttachable(String name, GameData data)
+	public NamedAttachable(final String name, final GameData data)
 	{
 		super(name, data);
 	}
 	
-	public IAttachment getAttachment(String key)
+	public IAttachment getAttachment(final String key)
 	{
 		return m_attatchments.get(key);
 	}
@@ -50,7 +47,7 @@ public class NamedAttachable extends DefaultNamed implements Attachable
 		return Collections.unmodifiableMap(m_attatchments);
 	}
 	
-	public void addAttachment(String key, IAttachment value)
+	public void addAttachment(final String key, final IAttachment value)
 	{
 		m_attatchments.put(key, value);
 	}

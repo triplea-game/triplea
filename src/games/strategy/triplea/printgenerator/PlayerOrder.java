@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.printgenerator;
 
 import games.strategy.engine.data.GameData;
@@ -36,64 +35,51 @@ public class PlayerOrder
 {
 	private Iterator<GameStep> m_gameStepIterator;
 	private GameData m_data;
-	private List<PlayerID> m_playerSet = new ArrayList<PlayerID>();
+	private final List<PlayerID> m_playerSet = new ArrayList<PlayerID>();
 	private PrintGenerationData m_printData;
 	
-	private <E> Set<E> removeDups(Collection<E> c)
+	private <E> Set<E> removeDups(final Collection<E> c)
 	{
 		return new LinkedHashSet<E>(c);
 	}
 	
-	protected void saveToFile(PrintGenerationData printData) throws IOException
+	protected void saveToFile(final PrintGenerationData printData) throws IOException
 	{
 		m_data = printData.getData();
 		m_printData = printData;
-		
 		m_gameStepIterator = m_data.getSequence().iterator();
 		while (m_gameStepIterator.hasNext())
 		{
-			GameStep currentStep = m_gameStepIterator.next();
-			
+			final GameStep currentStep = m_gameStepIterator.next();
 			if (currentStep.getDelegate() != null && currentStep.getDelegate().getClass() != null)
 			{
-				String delegateClassName = currentStep.getDelegate().getClass().getName();
-				if (delegateClassName.equals("games.strategy.triplea.delegate.InitializationDelegate")
-							|| delegateClassName.equals("games.strategy.triplea.delegate.BidPurchaseDelegate")
-							|| delegateClassName.equals("games.strategy.triplea.delegate.BidPlaceDelegate")
-							|| delegateClassName.equals("games.strategy.triplea.delegate.EndRoundDelegate"))
+				final String delegateClassName = currentStep.getDelegate().getClass().getName();
+				if (delegateClassName.equals("games.strategy.triplea.delegate.InitializationDelegate") || delegateClassName.equals("games.strategy.triplea.delegate.BidPurchaseDelegate")
+							|| delegateClassName.equals("games.strategy.triplea.delegate.BidPlaceDelegate") || delegateClassName.equals("games.strategy.triplea.delegate.EndRoundDelegate"))
 					continue;
 			}
 			else if (currentStep.getName() != null && (currentStep.getName().endsWith("Bid") || currentStep.getName().endsWith("BidPlace")))
 				continue;
-			
-			PlayerID currentPlayerID = currentStep.getPlayerID();
-			
+			final PlayerID currentPlayerID = currentStep.getPlayerID();
 			if (currentPlayerID != null && !currentPlayerID.isNull())
 			{
 				m_playerSet.add(currentPlayerID);
 			}
-			
 		}
-		
 		FileWriter turnWriter = null;
 		m_printData.getOutDir().mkdir();
-		File outFile = new File(m_printData.getOutDir(),
-					"General Information.csv");
+		final File outFile = new File(m_printData.getOutDir(), "General Information.csv");
 		turnWriter = new FileWriter(outFile, true);
-		
 		turnWriter.write("Turn Order\r\n");
-		
-		Set<PlayerID> noDuplicates = removeDups(m_playerSet);
-		
-		Iterator<PlayerID> playerIterator = noDuplicates.iterator();
+		final Set<PlayerID> noDuplicates = removeDups(m_playerSet);
+		final Iterator<PlayerID> playerIterator = noDuplicates.iterator();
 		int count = 1;
 		while (playerIterator.hasNext())
 		{
-			PlayerID currentPlayerID = playerIterator.next();
+			final PlayerID currentPlayerID = playerIterator.next();
 			turnWriter.write(count + ". " + currentPlayerID.getName() + "\r\n");
 			count++;
 		}
-		
 		turnWriter.close();
 	}
 }

@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.tictactoe.ui.display;
 
 import games.puzzle.tictactoe.ui.TicTacToeFrame;
@@ -45,12 +44,10 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
 	/**
 	 * @see games.strategy.engine.display.IDisplay#initialize(games.strategy.engine.display.IDisplayBridge)
 	 */
-	
-	public void initialize(IDisplayBridge bridge)
+	public void initialize(final IDisplayBridge bridge)
 	{
 		m_displayBridge = bridge;
 		m_displayBridge.toString();
-		
 	}
 	
 	/**
@@ -58,7 +55,6 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
 	 * 
 	 * @see games.strategy.engine.display.IDisplay#shutdown()
 	 */
-	
 	public void shutDown()
 	{
 		m_ui.stopGame();
@@ -70,8 +66,7 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
 	 * @param error
 	 *            the status message to display
 	 */
-	
-	public void setStatus(String status)
+	public void setStatus(final String status)
 	{
 		if (!m_ui.isGameOver())
 			m_ui.setStatus(status);
@@ -80,7 +75,6 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
 	/**
 	 * Set the game over status for this display to <code>true</code>.
 	 */
-	
 	public void setGameOver()
 	{
 		m_ui.setGameOver();
@@ -96,10 +90,8 @@ public class TicTacToeDisplay implements ITicTacToeDisplay
 	 * @param captured
 	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
 	 */
-	
-	public void performPlay(Territory at)
+	public void performPlay(final Territory at)
 	{
 		m_ui.performPlay(at);
 	}
-	
 }

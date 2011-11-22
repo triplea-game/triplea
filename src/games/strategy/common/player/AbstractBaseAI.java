@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.common.player;
 
 import games.strategy.triplea.ui.UIContext;
@@ -23,12 +22,11 @@ import games.strategy.triplea.ui.UIContext;
  */
 public abstract class AbstractBaseAI extends AbstractBasePlayer
 {
-	
 	/**
 	 * @param name
 	 *            - the name of the player.
 	 */
-	public AbstractBaseAI(String name, String type)
+	public AbstractBaseAI(final String name, final String type)
 	{
 		super(name, type);
 	}
@@ -38,10 +36,9 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer
 		try
 		{
 			Thread.sleep(UIContext.getAIPauseDuration());
-		} catch (InterruptedException e)
+		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
 }

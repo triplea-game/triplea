@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.client.ui;
 
 import games.strategy.net.GUID;
@@ -24,24 +23,20 @@ import javax.swing.table.TableModel;
 
 public class LobbyGameTable extends JTable
 {
-	
 	private GUID m_selectedGame;
 	private boolean inTableChange = false;
 	
-	public LobbyGameTable(TableModel model)
+	public LobbyGameTable(final TableModel model)
 	{
 		super(model);
 		getSelectionModel().addListSelectionListener(new ListSelectionListener()
 		{
-			
 			// track the currently selected row
-			
-			public void valueChanged(ListSelectionEvent e)
+			public void valueChanged(final ListSelectionEvent e)
 			{
 				if (!inTableChange)
 					markSelection();
 			}
-			
 		});
 	}
 	
@@ -49,11 +44,9 @@ public class LobbyGameTable extends JTable
 	 * The sorting model will loose the currently selected row.
 	 * So we need to resotre the selection after it has updated
 	 */
-	
 	@Override
-	public void tableChanged(TableModelEvent e)
+	public void tableChanged(final TableModelEvent e)
 	{
-		
 		inTableChange = true;
 		try
 		{
@@ -63,7 +56,6 @@ public class LobbyGameTable extends JTable
 			inTableChange = false;
 		}
 		restoreSelection();
-		
 	}
 	
 	/**
@@ -71,8 +63,7 @@ public class LobbyGameTable extends JTable
 	 */
 	private void markSelection()
 	{
-		
-		int selected = getSelectedRow();
+		final int selected = getSelectedRow();
 		if (selected >= 0)
 		{
 			m_selectedGame = (GUID) getModel().getValueAt(selected, LobbyGameTableModel.Column.GUID.ordinal());
@@ -90,10 +81,9 @@ public class LobbyGameTable extends JTable
 	{
 		if (m_selectedGame == null)
 			return;
-		
 		for (int i = 0; i < getModel().getRowCount(); i++)
 		{
-			GUID current = (GUID) getModel().getValueAt(i, LobbyGameTableModel.Column.GUID.ordinal());
+			final GUID current = (GUID) getModel().getValueAt(i, LobbyGameTableModel.Column.GUID.ordinal());
 			if (current.equals(m_selectedGame))
 			{
 				getSelectionModel().setSelectionInterval(i, i);
@@ -101,5 +91,4 @@ public class LobbyGameTable extends JTable
 			}
 		}
 	}
-	
 }

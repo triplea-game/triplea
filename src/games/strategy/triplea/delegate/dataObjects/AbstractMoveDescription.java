@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * BuyMessage.java
  * 
  * Created on November 6, 2001, 8:26 PM
  */
-
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Unit;
@@ -33,7 +31,7 @@ abstract public class AbstractMoveDescription implements java.io.Serializable
 {
 	private final Collection<Unit> m_units;
 	
-	public AbstractMoveDescription(Collection<Unit> units)
+	public AbstractMoveDescription(final Collection<Unit> units)
 	{
 		m_units = units;
 	}

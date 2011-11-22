@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.lobby.server.userDB;
 
 import java.sql.Connection;
@@ -23,15 +22,14 @@ public class DbUtil
 {
 	private static final Logger s_logger = Logger.getLogger(DbUtil.class.getName());
 	
-	public static void closeConnection(Connection con)
+	public static void closeConnection(final Connection con)
 	{
 		try
 		{
 			con.close();
-		} catch (SQLException e)
+		} catch (final SQLException e)
 		{
 			s_logger.log(Level.WARNING, "Error closing connection", e);
 		}
 	}
-	
 }

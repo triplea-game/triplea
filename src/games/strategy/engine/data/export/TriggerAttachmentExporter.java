@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TriggerAttachmentExporter.java
  * 
  * Created on May 29, 2011, 12:00 PM by Edwin van der Wal
  */
-
 package games.strategy.engine.data.export;
 
 import games.strategy.engine.data.IAttachment;
@@ -37,11 +35,10 @@ import java.util.Map;
 
 public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 {
-	
 	@Override
-	protected String printOption(Field field, IAttachment attachment) throws AttachmentExportException
+	protected String printOption(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
-		String fieldName = field.getName();
+		final String fieldName = field.getName();
 		if (fieldName.equals("m_trigger"))
 			return mTriggerHandler(field, attachment);
 		if (fieldName.equals("m_frontier"))
@@ -60,147 +57,139 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			return mUnitPropertyHandler(field, attachment);
 		if (fieldName.equals("m_availableTechs"))
 			return mAvailableTechsHandler(field, attachment);
-		
 		return super.printOption(field, attachment);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String mAvailableTechsHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mAvailableTechsHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			Map<String, Map<TechAdvance, Boolean>> availableTechsCategoryMap = (Map<String, Map<TechAdvance, Boolean>>) field.get(attachment);
+			final Map<String, Map<TechAdvance, Boolean>> availableTechsCategoryMap = (Map<String, Map<TechAdvance, Boolean>>) field.get(attachment);
 			String returnValue = "";
 			if (availableTechsCategoryMap == null)
 				return "";
-			
-			Iterator<String> categories = availableTechsCategoryMap.keySet().iterator();
+			final Iterator<String> categories = availableTechsCategoryMap.keySet().iterator();
 			while (categories.hasNext())
 			{
-				String category = categories.next();
-				Map<TechAdvance, Boolean> availableTechMap = availableTechsCategoryMap.get(category);
-				Iterator<TechAdvance> techAdvances = availableTechMap.keySet().iterator();
+				final String category = categories.next();
+				final Map<TechAdvance, Boolean> availableTechMap = availableTechsCategoryMap.get(category);
+				final Iterator<TechAdvance> techAdvances = availableTechMap.keySet().iterator();
 				String tList = "";
 				while (techAdvances.hasNext())
 				{
-					TechAdvance techAdvance = techAdvances.next();
-					String add = availableTechMap.get(techAdvance).booleanValue() ? "" : "-";
-					
+					final TechAdvance techAdvance = techAdvances.next();
+					final String add = availableTechMap.get(techAdvance).booleanValue() ? "" : "-";
 					tList = tList + ":" + add + techAdvance.getName();
 				}
 				returnValue += super.printDefaultOption("availableTech", category + tList);
 			}
 			return returnValue;
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mAvailableTechsHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mAvailableTechsHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
-		
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String mUnitPropertyHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mUnitPropertyHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
 			String returnValue = "";
-			List<String> unitPropertyList = (List<String>) field.get(attachment);
+			final List<String> unitPropertyList = (List<String>) field.get(attachment);
 			if (unitPropertyList == null)
 				return "";
-			for (String unitProperty : unitPropertyList)
+			for (final String unitProperty : unitPropertyList)
 			{
-				String[] s = unitProperty.split(":");
+				final String[] s = unitProperty.split(":");
 				returnValue += super.printCountOption("unitProperty", s[0], s[1]);
 			}
 			return returnValue;
-			
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mUnitPropertyHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-			
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mUnitPropertyHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String mPlacementHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mPlacementHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
 			String returnValue = "";
-			Map<Territory, IntegerMap<UnitType>> placements = (Map<Territory, IntegerMap<UnitType>>) field.get(attachment);
+			final Map<Territory, IntegerMap<UnitType>> placements = (Map<Territory, IntegerMap<UnitType>>) field.get(attachment);
 			if (placements == null)
 				return "";
-			Iterator<Territory> territories = placements.keySet().iterator();
+			final Iterator<Territory> territories = placements.keySet().iterator();
 			while (territories.hasNext())
 			{
-				Territory territory = territories.next();
-				IntegerMap<UnitType> unitMap = placements.get(territory);
-				Iterator<UnitType> unitsOnTerritory = unitMap.keySet().iterator();
+				final Territory territory = territories.next();
+				final IntegerMap<UnitType> unitMap = placements.get(territory);
+				final Iterator<UnitType> unitsOnTerritory = unitMap.keySet().iterator();
 				while (unitsOnTerritory.hasNext())
 				{
-					UnitType unit = unitsOnTerritory.next();
-					int number = unitMap.getInt(unit);
+					final UnitType unit = unitsOnTerritory.next();
+					final int number = unitMap.getInt(unit);
 					returnValue += super.printCountOption("placement", territory.getName() + ":" + unit.getName(), "" + number);
 				}
 			}
 			return returnValue;
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mPlacementHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mPlacementHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
 	
-	private String mPurchaseHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mPurchaseHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		return printUnitIntegerMap(field, attachment);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String mSupportHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mSupportHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			Map<UnitSupportAttachment, Boolean> unitSupportAttachmentMap = (Map<UnitSupportAttachment, Boolean>) field.get(attachment);
+			final Map<UnitSupportAttachment, Boolean> unitSupportAttachmentMap = (Map<UnitSupportAttachment, Boolean>) field.get(attachment);
 			if (unitSupportAttachmentMap == null)
 				return "";
-			Iterator<UnitSupportAttachment> unitSupportAttachments = unitSupportAttachmentMap.keySet().iterator();
+			final Iterator<UnitSupportAttachment> unitSupportAttachments = unitSupportAttachmentMap.keySet().iterator();
 			String returnValue = "";
 			while (unitSupportAttachments.hasNext())
 			{
-				UnitSupportAttachment supportAttachment = unitSupportAttachments.next();
-				String add = (unitSupportAttachmentMap.get(supportAttachment)).booleanValue() ? "" : "-";
+				final UnitSupportAttachment supportAttachment = unitSupportAttachments.next();
+				final String add = (unitSupportAttachmentMap.get(supportAttachment)).booleanValue() ? "" : "-";
 				if (returnValue.length() > 0)
 					returnValue += ":";
 				returnValue = returnValue + add + supportAttachment.getName();
-				
 			}
 			return printDefaultOption("support", returnValue);
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mSupportHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-			
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mSupportHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String mPlayersHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mPlayersHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			List<PlayerID> playerIds = (List<PlayerID>) field.get(attachment);
-			Iterator<PlayerID> iplayerIds = playerIds.iterator();
+			final List<PlayerID> playerIds = (List<PlayerID>) field.get(attachment);
+			final Iterator<PlayerID> iplayerIds = playerIds.iterator();
 			String returnValue = "";
 			if (iplayerIds.hasNext())
 				returnValue = iplayerIds.next().getName();
@@ -211,22 +200,22 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			if (returnValue.length() == 0)
 				return "";
 			return printDefaultOption("players", returnValue);
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mPlayersHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String mTechHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mTechHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			List<TechAdvance> techAdvanceList = (List<TechAdvance>) field.get(attachment);
-			Iterator<TechAdvance> iTechAdvances = techAdvanceList.iterator();
+			final List<TechAdvance> techAdvanceList = (List<TechAdvance>) field.get(attachment);
+			final Iterator<TechAdvance> iTechAdvances = techAdvanceList.iterator();
 			String returnValue = "";
 			if (iTechAdvances.hasNext())
 				returnValue = iTechAdvances.next().getName();
@@ -237,56 +226,54 @@ public class TriggerAttachmentExporter extends DefaultAttachmentExporter
 			if (returnValue.length() == 0)
 				return "";
 			return printDefaultOption("tech", returnValue);
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mTechHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mTechHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
 	
-	private String mFrontierHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mFrontierHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			ProductionFrontier frontier = (ProductionFrontier) field.get(attachment);
+			final ProductionFrontier frontier = (ProductionFrontier) field.get(attachment);
 			if (frontier == null)
 				return "";
 			return super.printDefaultOption("frontier", frontier.getName());
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mFrontierHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mFrontierHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String mTriggerHandler(Field field, IAttachment attachment) throws AttachmentExportException
+	private String mTriggerHandler(final Field field, final IAttachment attachment) throws AttachmentExportException
 	{
 		try
 		{
-			List<RulesAttachment> ruleAttachmentList = (List<RulesAttachment>) field.get(attachment);
-			Iterator<RulesAttachment> rules = ruleAttachmentList.iterator();
+			final List<RulesAttachment> ruleAttachmentList = (List<RulesAttachment>) field.get(attachment);
+			final Iterator<RulesAttachment> rules = ruleAttachmentList.iterator();
 			String returnValue = "";
 			if (rules.hasNext())
 				returnValue = rules.next().getName();
 			while (rules.hasNext())
 			{
-				RulesAttachment rule = rules.next();
+				final RulesAttachment rule = rules.next();
 				returnValue += ":" + rule.getName();
 			}
 			return printDefaultOption("trigger", returnValue);
-		} catch (IllegalArgumentException e)
+		} catch (final IllegalArgumentException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mTriggerHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
-		} catch (IllegalAccessException e)
+		} catch (final IllegalAccessException e)
 		{
 			throw new AttachmentExportException("e: " + e + " for mTriggerHandler on field: " + field.getName() + " on Attachment: " + attachment.getName());
 		}
-		
 	}
-	
 }

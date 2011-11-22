@@ -11,19 +11,16 @@ import games.strategy.net.Messengers;
 public class LobbyClient
 {
 	private final Messengers m_messengers;
-	
 	private final boolean m_isAnonymousLogin;
 	private Boolean isAdmin;
 	
-	public LobbyClient(IMessenger messenger, boolean anonymousLogin)
+	public LobbyClient(final IMessenger messenger, final boolean anonymousLogin)
 	{
 		m_messengers = new Messengers(messenger);
 		m_isAnonymousLogin = anonymousLogin;
-		
 		// add a heart beat server, to allow the server to ping us
 		// we only respond to the server
-		HeartBeat heartBeatServer = new HeartBeat(m_messengers.getMessenger().getServerNode());
-		
+		final HeartBeat heartBeatServer = new HeartBeat(m_messengers.getMessenger().getServerNode());
 		m_messengers.getRemoteMessenger().registerRemote(heartBeatServer, HeartBeat.getHeartBeatName(m_messengers.getMessenger().getLocalNode()));
 	}
 	
@@ -31,7 +28,7 @@ public class LobbyClient
 	{
 		if (isAdmin == null)
 		{
-			IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+			final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
 			isAdmin = controller.isAdmin();
 		}
 		return isAdmin;
@@ -61,5 +58,4 @@ public class LobbyClient
 	{
 		return m_messengers;
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * IntegerMap.java
  * 
  * Created on November 7, 2001, 1:26 PM
  */
-
 package games.strategy.util;
 
 import java.io.Serializable;
@@ -47,17 +45,17 @@ public class IntegerMap<T> implements Cloneable, Serializable
 		m_values = new HashMap<T, Integer>();
 	}
 	
-	public IntegerMap(int size)
+	public IntegerMap(final int size)
 	{
 		m_values = new HashMap<T, Integer>(size);
 	}
 	
-	public IntegerMap(int size, float loadFactor)
+	public IntegerMap(final int size, final float loadFactor)
 	{
 		m_values = new HashMap<T, Integer>(size, loadFactor);
 	}
 	
-	public IntegerMap(Collection<T> objects, int value)
+	public IntegerMap(final Collection<T> objects, final int value)
 	{
 		this(objects.size());
 		addAll(objects, value);
@@ -69,16 +67,16 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 * 
 	 * @param integerMap
 	 */
-	public IntegerMap(IntegerMap<T> integerMap)
+	public IntegerMap(final IntegerMap<T> integerMap)
 	{
 		/* this will also work:
 		m_values = new HashMap<T,Integer>(integerMap.m_values);
 		 */
 		m_values = new HashMap<T, Integer>(integerMap.size());
-		Iterator<T> iter = integerMap.keySet().iterator();
+		final Iterator<T> iter = integerMap.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T t = iter.next();
+			final T t = iter.next();
 			m_values.put(t, integerMap.getInt(t));
 		}
 	}
@@ -88,30 +86,30 @@ public class IntegerMap<T> implements Cloneable, Serializable
 		return m_values.size();
 	}
 	
-	public void put(T key, Integer value)
+	public void put(final T key, final Integer value)
 	{
 		m_values.put(key, value);
 	}
 	
-	public void put(T key, int value)
+	public void put(final T key, final int value)
 	{
-		Integer obj = Integer.valueOf(value);
+		final Integer obj = Integer.valueOf(value);
 		m_values.put(key, obj);
 	}
 	
-	public void putAll(Collection<T> keys, int value)
+	public void putAll(final Collection<T> keys, final int value)
 	{
-		Integer obj = Integer.valueOf(value);
-		Iterator<T> iter = keys.iterator();
+		final Integer obj = Integer.valueOf(value);
+		final Iterator<T> iter = keys.iterator();
 		while (iter.hasNext())
 		{
 			put(iter.next(), obj);
 		}
 	}
 	
-	public void addAll(Collection<T> keys, int value)
+	public void addAll(final Collection<T> keys, final int value)
 	{
-		Iterator<T> iter = keys.iterator();
+		final Iterator<T> iter = keys.iterator();
 		while (iter.hasNext())
 		{
 			add(iter.next(), value);
@@ -121,27 +119,27 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	/**
 	 * returns 0 if no key found.
 	 */
-	public int getInt(T key)
+	public int getInt(final T key)
 	{
-		Integer val = m_values.get(key);
+		final Integer val = m_values.get(key);
 		if (val == null)
 			return 0;
 		return val.intValue();
 	}
 	
-	public void add(T key, Integer value)
+	public void add(final T key, final Integer value)
 	{
 		add(key, value.intValue());
 	}
 	
-	public void add(T key, int value)
+	public void add(final T key, final int value)
 	{
 		if (m_values.get(key) == null)
 			put(key, value);
 		else
 		{
-			Integer oldVal = m_values.get(key);
-			int newVal = oldVal.intValue() + value;
+			final Integer oldVal = m_values.get(key);
+			final int newVal = oldVal.intValue() + value;
 			put(key, newVal);
 		}
 	}
@@ -155,12 +153,12 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 * @param RoundType
 	 *            (1 = floor, 2 = round, 3 = ceil)
 	 */
-	public void multiplyAllValuesBy(float i, int RoundType)
+	public void multiplyAllValuesBy(final float i, final int RoundType)
 	{
-		Iterator<T> iter = keySet().iterator();
+		final Iterator<T> iter = keySet().iterator();
 		while (iter.hasNext())
 		{
-			T t = iter.next();
+			final T t = iter.next();
 			float val = m_values.get(t);
 			switch (RoundType)
 			{
@@ -197,32 +195,32 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	public int totalValues()
 	{
 		int sum = 0;
-		Iterator<Integer> values = m_values.values().iterator();
+		final Iterator<Integer> values = m_values.values().iterator();
 		while (values.hasNext())
 		{
-			Integer obj = values.next();
-			Integer value = obj;
+			final Integer obj = values.next();
+			final Integer value = obj;
 			sum += value.intValue();
 		}
 		return sum;
 	}
 	
-	public void add(IntegerMap<T> map)
+	public void add(final IntegerMap<T> map)
 	{
-		Iterator<T> iter = map.keySet().iterator();
+		final Iterator<T> iter = map.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T key = iter.next();
+			final T key = iter.next();
 			add(key, map.getInt(key));
 		}
 	}
 	
-	public void subtract(IntegerMap<T> map)
+	public void subtract(final IntegerMap<T> map)
 	{
-		Iterator<T> iter = map.keySet().iterator();
+		final Iterator<T> iter = map.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T key = iter.next();
+			final T key = iter.next();
 			add(key, -map.getInt(key));
 		}
 	}
@@ -235,12 +233,12 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 * a.greaterThanOrEqualTo(b) is false, and b.greaterThanOrEqualTo(a) is false, and
 	 * that a and b are not equal.
 	 */
-	public boolean greaterThanOrEqualTo(IntegerMap<T> map)
+	public boolean greaterThanOrEqualTo(final IntegerMap<T> map)
 	{
-		Iterator<T> iter = map.keySet().iterator();
+		final Iterator<T> iter = map.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T key = iter.next();
+			final T key = iter.next();
 			if (!(this.getInt(key) >= map.getInt(key)))
 				return false;
 		}
@@ -252,21 +250,19 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 * match exactly. If a has entries that b doesn't have or vice versa,
 	 * then a and b are not equal.
 	 */
-	
 	@Override
 	@SuppressWarnings("unchecked")
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == null || !(o instanceof IntegerMap))
 			return false;
-		
-		IntegerMap<T> map = (IntegerMap<T>) o;
-		Iterator<T> iter = map.keySet().iterator();
+		final IntegerMap<T> map = (IntegerMap<T>) o;
+		final Iterator<T> iter = map.keySet().iterator();
 		if (!map.keySet().equals(keySet()))
 			return false;
 		while (iter.hasNext())
 		{
-			T key = iter.next();
+			final T key = iter.next();
 			if (!(this.getInt(key) == map.getInt(key)))
 				return false;
 		}
@@ -278,10 +274,10 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 */
 	public boolean isPositive()
 	{
-		Iterator<T> iter = m_values.keySet().iterator();
+		final Iterator<T> iter = m_values.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T key = iter.next();
+			final T key = iter.next();
 			if (getInt(key) < 0)
 				return false;
 		}
@@ -290,7 +286,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	
 	public IntegerMap<T> copy()
 	{
-		IntegerMap<T> copy = new IntegerMap<T>();
+		final IntegerMap<T> copy = new IntegerMap<T>();
 		copy.add(this);
 		return copy;
 	}
@@ -304,89 +300,89 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	/**
 	 * Add map * multiple
 	 */
-	public void addMultiple(IntegerMap<T> map, int multiple)
+	public void addMultiple(final IntegerMap<T> map, final int multiple)
 	{
-		Iterator<T> iter = map.keySet().iterator();
+		final Iterator<T> iter = map.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T key = iter.next();
+			final T key = iter.next();
 			add(key, map.getInt(key) * multiple);
 		}
 	}
 	
-	public boolean someKeysMatch(Match<T> matcher)
+	public boolean someKeysMatch(final Match<T> matcher)
 	{
-		Iterator<T> iter = m_values.keySet().iterator();
+		final Iterator<T> iter = m_values.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T obj = iter.next();
+			final T obj = iter.next();
 			if (matcher.match(obj))
 				return true;
 		}
 		return false;
 	}
 	
-	public boolean allKeysMatch(Match<T> matcher)
+	public boolean allKeysMatch(final Match<T> matcher)
 	{
-		Iterator<T> iter = m_values.keySet().iterator();
+		final Iterator<T> iter = m_values.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T obj = iter.next();
+			final T obj = iter.next();
 			if (!matcher.match(obj))
 				return false;
 		}
 		return true;
 	}
 	
-	public Collection<T> getKeyMatches(Match<T> matcher)
+	public Collection<T> getKeyMatches(final Match<T> matcher)
 	{
-		Collection<T> values = new ArrayList<T>();
-		Iterator<T> iter = m_values.keySet().iterator();
+		final Collection<T> values = new ArrayList<T>();
+		final Iterator<T> iter = m_values.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T obj = iter.next();
+			final T obj = iter.next();
 			if (matcher.match(obj))
 				values.add(obj);
 		}
 		return values;
 	}
 	
-	public int sumMatches(Match<T> matcher)
+	public int sumMatches(final Match<T> matcher)
 	{
 		int sum = 0;
-		Iterator<T> iter = m_values.keySet().iterator();
+		final Iterator<T> iter = m_values.keySet().iterator();
 		while (iter.hasNext())
 		{
-			T obj = iter.next();
+			final T obj = iter.next();
 			if (matcher.match(obj))
 				sum += getInt(obj);
 		}
 		return sum;
 	}
 	
-	public void removeNonMatchingKeys(Match<T> aMatch)
+	public void removeNonMatchingKeys(final Match<T> aMatch)
 	{
-		Match<T> match = new InverseMatch<T>(aMatch);
+		final Match<T> match = new InverseMatch<T>(aMatch);
 		removeMatchingKeys(match);
 	}
 	
-	public void removeMatchingKeys(Match<T> aMatch)
+	public void removeMatchingKeys(final Match<T> aMatch)
 	{
-		Collection<T> badKeys = getKeyMatches(aMatch);
+		final Collection<T> badKeys = getKeyMatches(aMatch);
 		removeKeys(badKeys);
 	}
 	
-	public void removeKey(T key)
+	public void removeKey(final T key)
 	{
 		m_values.remove(key);
 	}
 	
-	private void removeKeys(Collection<T> keys)
+	private void removeKeys(final Collection<T> keys)
 	{
-		Iterator<T> iter = keys.iterator();
+		final Iterator<T> iter = keys.iterator();
 		while (iter.hasNext())
 		{
-			T key = iter.next();
+			final T key = iter.next();
 			removeKey(key);
 		}
 	}
@@ -394,14 +390,14 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	@Override
 	public String toString()
 	{
-		StringBuilder buf = new StringBuilder();
+		final StringBuilder buf = new StringBuilder();
 		buf.append("IntegerMap:\n");
-		Iterator<T> iter = m_values.keySet().iterator();
+		final Iterator<T> iter = m_values.keySet().iterator();
 		if (!iter.hasNext())
 			buf.append("empty\n");
 		while (iter.hasNext())
 		{
-			T current = iter.next();
+			final T current = iter.next();
 			buf.append(current).append(" -> ").append(getInt(current)).append("\n");
 		}
 		return buf.toString();

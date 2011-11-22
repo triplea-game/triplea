@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * EndTurnDelegate.java
  * 
  * Created on November 2, 2001, 12:30 PM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
@@ -77,36 +75,30 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge aBridge)
+	public void start(final IDelegateBridge aBridge)
 	{
 		// figure out our current PUs before we do anything else, including super methods
-		GameData data = aBridge.getData();
-		Resource PUs = data.getResourceList().getResource(Constants.PUS);
+		final GameData data = aBridge.getData();
+		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
 		final int leftOverPUs = aBridge.getPlayerID().getResources().getQuantity(PUs);
-		
 		super.start(aBridge);
 		if (!m_needToInitialize)
 			return;
 		m_hasPostedTurnSummary = false;
-		
 		// can't collect unless you own your own capital
-		PlayerAttachment pa = PlayerAttachment.get(m_player);
-		List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(m_player, data));
-		List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(m_player, data));
+		final PlayerAttachment pa = PlayerAttachment.get(m_player);
+		final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(m_player, data));
+		final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(m_player, data));
 		if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
 			return;
-		
 		// just collect resources
-		Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
-		
+		final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
 		int toAdd = getProduction(territories);
-		int blockadeLoss = getProductionLoss(m_player, data);
+		final int blockadeLoss = getProductionLoss(m_player, data);
 		toAdd -= blockadeLoss;
 		toAdd *= Properties.getPU_Multiplier(data);
 		int total = m_player.getResources().getQuantity(PUs) + toAdd;
-		
 		String transcriptText;
 		if (blockadeLoss == 0)
 			transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + "; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
@@ -114,55 +106,47 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + " (" + blockadeLoss + " lost to blockades)" + "; end with " + total
 						+ MyFormatter.pluralize(" PU", total) + " total";
 		aBridge.getHistoryWriter().startEvent(transcriptText);
-		
 		if (isWarBonds(m_player))
 		{
-			int bonds = rollWarBonds(aBridge);
+			final int bonds = rollWarBonds(aBridge);
 			total += bonds;
 			toAdd += bonds;
 			transcriptText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds) + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
 			aBridge.getHistoryWriter().startEvent(transcriptText);
 		}
-
 		if (total < 0)
 		{
 			toAdd -= total;
 			total = 0;
 		}
-		
-		Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
+		final Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
 		aBridge.addChange(change);
-		
 		if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null)
 		{
-			Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(), "vps"));
-			Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
-			CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
+			final Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(),
+						"vps"));
+			final Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
+			final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
 			aBridge.addChange(ccVP);
 		}
-		
 		doNationalObjectivesAndOtherEndTurnEffects(aBridge);
-		
 		if (doBattleShipsRepairEndOfTurn())
 		{
 			MoveDelegate.repairBattleShips(aBridge, aBridge.getPlayerID(), false);
 		}
-		
 		if (isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null && !pa.getGiveUnitControl().isEmpty())
 		{
 			changeUnitOwnership(aBridge);
 		}
-		
 		// now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including NOs)
 		final int currentPUs = m_player.getResources().getQuantity(PUs);
 		final float gainedPUS = Math.max(0, currentPUs - leftOverPUs);
-		
 		int relationshipUpkeepCostFlat = 0;
 		int relationshipUpkeepCostPercentage = 0;
 		int relationshipUpkeepTotalCost = 0;
-		for (Relationship r : data.getRelationshipTracker().getRelationships(m_player))
+		for (final Relationship r : data.getRelationshipTracker().getRelationships(m_player))
 		{
-			String[] upkeep = r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost().split(":");
+			final String[] upkeep = r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost().split(":");
 			if (upkeep.length == 1 || upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_FLAT))
 				relationshipUpkeepCostFlat += Integer.parseInt(upkeep[0]);
 			else if (upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_PERCENTAGE))
@@ -182,20 +166,20 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		relationshipUpkeepTotalCost = -1 * relationshipUpkeepTotalCost;
 		if (relationshipUpkeepTotalCost != 0)
 		{
-			int newTotal = currentPUs + relationshipUpkeepTotalCost;
-			transcriptText = m_player.getName() + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ") + (-1*relationshipUpkeepTotalCost) + MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost) + " in order to maintain current relationships with other players, and ends the turn with " + newTotal + MyFormatter.pluralize(" PU", newTotal);
+			final int newTotal = currentPUs + relationshipUpkeepTotalCost;
+			transcriptText = m_player.getName() + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ") + (-1 * relationshipUpkeepTotalCost)
+						+ MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost) + " in order to maintain current relationships with other players, and ends the turn with " + newTotal
+						+ MyFormatter.pluralize(" PU", newTotal);
 			aBridge.getHistoryWriter().startEvent(transcriptText);
-			Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
+			final Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
 			aBridge.addChange(upkeep);
 		}
-		
 		m_needToInitialize = false;
 	}
 	
 	/**
 	 * Called before the delegate will stop running.
 	 */
-	
 	@Override
 	public void end()
 	{
@@ -207,7 +191,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	@Override
 	public Serializable saveState()
 	{
-		EndTurnExtendedDelegateState state = new EndTurnExtendedDelegateState();
+		final EndTurnExtendedDelegateState state = new EndTurnExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		state.m_needToInitialize = m_needToInitialize;
@@ -216,58 +200,56 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	}
 	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		EndTurnExtendedDelegateState s = (EndTurnExtendedDelegateState) state;
+		final EndTurnExtendedDelegateState s = (EndTurnExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 		m_needToInitialize = s.m_needToInitialize;
 		m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
 	}
 	
-	private int rollWarBonds(IDelegateBridge aBridge)
+	private int rollWarBonds(final IDelegateBridge aBridge)
 	{
-		PlayerID player = aBridge.getPlayerID();
-		int count = 1;
-		int sides = aBridge.getPlayerID().getData().getDiceSides();
-		String annotation = player.getName() + " roll to resolve War Bonds: ";
-		
+		final PlayerID player = aBridge.getPlayerID();
+		final int count = 1;
+		final int sides = aBridge.getPlayerID().getData().getDiceSides();
+		final String annotation = player.getName() + " roll to resolve War Bonds: ";
 		DiceRoll dice;
 		dice = DiceRoll.rollNDice(aBridge, count, sides, annotation);
-		int total = dice.getDie(0).getValue() + 1;
+		final int total = dice.getDie(0).getValue() + 1;
 		// TODO kev add dialog showing dice when built
 		getRemotePlayer(player).reportMessage(annotation + total, annotation + total);
 		return total;
 	}
 	
-	private ITripleaPlayer getRemotePlayer(PlayerID player)
+	private ITripleaPlayer getRemotePlayer(final PlayerID player)
 	{
 		return (ITripleaPlayer) m_bridge.getRemote(player);
 	}
 	
-	private void changeUnitOwnership(IDelegateBridge aBridge)
+	private void changeUnitOwnership(final IDelegateBridge aBridge)
 	{
-		PlayerID Player = aBridge.getPlayerID();
-		PlayerAttachment pa = PlayerAttachment.get(Player);
-		Collection<PlayerID> PossibleNewOwners = pa.getGiveUnitControl();
-		
-		Collection<Territory> territories = aBridge.getData().getMap().getTerritories();
-		Iterator<Territory> terrIter = territories.iterator();
+		final PlayerID Player = aBridge.getPlayerID();
+		final PlayerAttachment pa = PlayerAttachment.get(Player);
+		final Collection<PlayerID> PossibleNewOwners = pa.getGiveUnitControl();
+		final Collection<Territory> territories = aBridge.getData().getMap().getTerritories();
+		final Iterator<Territory> terrIter = territories.iterator();
 		while (terrIter.hasNext())
 		{
-			Territory currTerritory = terrIter.next();
-			TerritoryAttachment ta = (TerritoryAttachment) currTerritory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+			final Territory currTerritory = terrIter.next();
+			final TerritoryAttachment ta = (TerritoryAttachment) currTerritory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 			// if ownership should change in this territory
 			if (ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty())
 			{
-				Collection<PlayerID> terrNewOwners = ta.getChangeUnitOwners();
-				for (PlayerID terrNewOwner : terrNewOwners)
+				final Collection<PlayerID> terrNewOwners = ta.getChangeUnitOwners();
+				for (final PlayerID terrNewOwner : terrNewOwners)
 				{
 					if (PossibleNewOwners.contains(terrNewOwner))
 					{
 						// PlayerOwnerChange
-						Collection<Unit> units = currTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(Player), Matches.UnitCanBeGivenByTerritoryTo(terrNewOwner)));
-						Change changeOwner = ChangeFactory.changeOwner(units, terrNewOwner, currTerritory);
+						final Collection<Unit> units = currTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(Player), Matches.UnitCanBeGivenByTerritoryTo(terrNewOwner)));
+						final Change changeOwner = ChangeFactory.changeOwner(units, terrNewOwner, currTerritory);
 						aBridge.getHistoryWriter().addChildToEvent(changeOwner.toString());
 						aBridge.addChange(changeOwner);
 					}
@@ -278,23 +260,21 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	
 	protected abstract void doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge);
 	
-	protected int getProduction(Collection<Territory> territories)
+	protected int getProduction(final Collection<Territory> territories)
 	{
 		return getProduction(territories, getData());
 	}
 	
-	public static int getProduction(Collection<Territory> territories, GameData data)
+	public static int getProduction(final Collection<Territory> territories, final GameData data)
 	{
 		int value = 0;
-		Iterator<Territory> iter = territories.iterator();
+		final Iterator<Territory> iter = territories.iterator();
 		while (iter.hasNext())
 		{
-			Territory current = iter.next();
-			TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
-			
+			final Territory current = iter.next();
+			final TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 			if (attatchment == null)
 				throw new IllegalStateException("No attachment for owned territory:" + current.getName());
-			
 			// Check if territory is originally owned convoy center
 			if (current.isWater())
 			{
@@ -302,7 +282,6 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 				PlayerID origOwner = attatchment.getOccupiedTerrOf();
 				if (origOwner == null)
 					origOwner = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(current);
-				
 				if (origOwner != PlayerID.NULL_PLAYERID && origOwner == current.getOwner())
 					value += attatchment.getProduction();
 			}
@@ -312,10 +291,9 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 				if (TerritoryAttachment.get(current).isConvoyRoute())
 				{
 					// Determine if both parts of the convoy route are owned by the attacker or allies
-					boolean ownedConvoyRoute = data.getMap().getNeighbors(current, Matches.territoryHasConvoyOwnedBy(current.getOwner(), data, current)).size() > 0;
+					final boolean ownedConvoyRoute = data.getMap().getNeighbors(current, Matches.territoryHasConvoyOwnedBy(current.getOwner(), data, current)).size() > 0;
 					if (ownedConvoyRoute)
 						value += attatchment.getProduction();
-					
 				}
 				else
 				// just add the normal land territories
@@ -323,44 +301,42 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 					value += attatchment.getProduction();
 				}
 			}
-			
 		}
 		return value;
 	}
 	
 	// finds losses due to blockades etc, positive value returned.
-	protected int getProductionLoss(PlayerID player, GameData data)
+	protected int getProductionLoss(final PlayerID player, final GameData data)
 	{
-		Collection<Territory> blockable = Match.getMatches(data.getMap().getTerritories(), Matches.territoryIsBlockadeZone);
-		Match<Unit> enemyUnits = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
+		final Collection<Territory> blockable = Match.getMatches(data.getMap().getTerritories(), Matches.territoryIsBlockadeZone);
+		final Match<Unit> enemyUnits = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
 		int totalLoss = 0;
-		for (Territory b : blockable)
+		for (final Territory b : blockable)
 		{
 			int maxLoss = 0;
-			for (Territory m : data.getMap().getNeighbors(b))
+			for (final Territory m : data.getMap().getNeighbors(b))
 			{
 				if (m.getOwner().equals(player))
 					maxLoss += TerritoryAttachment.get(m).getProduction();
 			}
 			int loss = 0;
-			Collection<Unit> enemies = Match.getMatches(b.getUnits().getUnits(), enemyUnits);
-			for (Unit u : enemies)
+			final Collection<Unit> enemies = Match.getMatches(b.getUnits().getUnits(), enemyUnits);
+			for (final Unit u : enemies)
 				loss += UnitAttachment.get(u.getType()).getBlockade();
 			totalLoss += Math.min(maxLoss, loss);
 		}
 		return totalLoss;
 	}
 	
-	private boolean isWarBonds(PlayerID player)
+	private boolean isWarBonds(final PlayerID player)
 	{
-		TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
+		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta != null)
 			return ta.hasWarBonds();
-		
 		return false;
 	}
 	
-	public void setHasPostedTurnSummary(boolean hasPostedTurnSummary)
+	public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary)
 	{
 		m_hasPostedTurnSummary = hasPostedTurnSummary;
 	}
@@ -370,7 +346,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		return m_hasPostedTurnSummary;
 	}
 	
-	public boolean postTurnSummary(PBEMMessagePoster poster)
+	public boolean postTurnSummary(final PBEMMessagePoster poster)
 	{
 		m_hasPostedTurnSummary = poster.post(m_bridge.getHistoryWriter());
 		return m_hasPostedTurnSummary;
@@ -391,7 +367,6 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	/*
 	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
 	 */
-
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{

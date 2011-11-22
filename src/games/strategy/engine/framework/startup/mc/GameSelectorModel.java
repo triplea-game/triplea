@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.data.GameData;
@@ -32,10 +31,8 @@ import javax.swing.JOptionPane;
 
 public class GameSelectorModel extends Observable
 {
-	
 	public static final File DEFAULT_DIRECTORY = new File(GameRunner.getRootFolder(), "/games");
 	private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
-	
 	private GameData m_data;
 	private String m_gameName;
 	private String m_gameVersion;
@@ -48,26 +45,24 @@ public class GameSelectorModel extends Observable
 		setGameData(null);
 	}
 	
-	public void load(NewGameChooserEntry entry)
+	public void load(final NewGameChooserEntry entry)
 	{
 		m_fileName = entry.getLocation();
 		setGameData(entry.getGameData());
-		
-		Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		prefs.put(DEFAULT_GAME_NAME_PREF, entry.getGameData().getGameName());
 		try
 		{
 			prefs.flush();
-		} catch (BackingStoreException e)
+		} catch (final BackingStoreException e)
 		{
 			// ignore
 		}
 	}
 	
-	public void load(File file, Component ui)
+	public void load(final File file, final Component ui)
 	{
-		GameDataManager manager = new GameDataManager();
-		
+		final GameDataManager manager = new GameDataManager();
 		if (!file.exists())
 		{
 			error("Could not find file:" + file, ui);
@@ -78,7 +73,6 @@ public class GameSelectorModel extends Observable
 			error("Cannot load a directory:" + file, ui);
 			return;
 		}
-		
 		GameData newData;
 		try
 		{
@@ -93,10 +87,9 @@ public class GameSelectorModel extends Observable
 			{
 				newData = manager.loadGame(file);
 			}
-			
 			m_fileName = file.getName();
 			setGameData(newData);
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace(System.out);
 			error(e.getMessage(), ui);
@@ -108,7 +101,7 @@ public class GameSelectorModel extends Observable
 		return !m_fileName.endsWith(".xml");
 	}
 	
-	private void error(String message, Component ui)
+	private void error(final String message, final Component ui)
 	{
 		JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(ui), message, "Could not load Game", JOptionPane.ERROR_MESSAGE);
 	}
@@ -118,15 +111,13 @@ public class GameSelectorModel extends Observable
 		return m_data;
 	}
 	
-	public void setCanSelect(boolean aBool)
+	public void setCanSelect(final boolean aBool)
 	{
 		synchronized (this)
 		{
 			m_canSelect = aBool;
 		}
-		
 		notifyObs();
-		
 	}
 	
 	public synchronized boolean canSelect()
@@ -138,7 +129,7 @@ public class GameSelectorModel extends Observable
 	 * We dont have a gane data (ie we are a remote player and the data has not been sent yet), but
 	 * we still want to display game info
 	 */
-	public void clearDataButKeepGameInfo(String gameName, String gameRound, String gameVersion)
+	public void clearDataButKeepGameInfo(final String gameName, final String gameRound, final String gameVersion)
 	{
 		synchronized (this)
 		{
@@ -147,7 +138,6 @@ public class GameSelectorModel extends Observable
 			m_gameRound = gameRound;
 			m_gameVersion = gameVersion;
 		}
-		
 		notifyObs();
 	}
 	
@@ -174,7 +164,7 @@ public class GameSelectorModel extends Observable
 		return m_gameVersion;
 	}
 	
-	public void setGameData(GameData data)
+	public void setGameData(final GameData data)
 	{
 		synchronized (this)
 		{
@@ -188,10 +178,8 @@ public class GameSelectorModel extends Observable
 				m_gameRound = "" + data.getSequence().getRound();
 				m_gameVersion = data.getGameVersion().toString();
 			}
-			
 			m_data = data;
 		}
-		
 		notifyObs();
 	}
 	
@@ -202,17 +190,14 @@ public class GameSelectorModel extends Observable
 		super.clearChanged();
 	}
 	
-	public void loadDefaultGame(Component ui)
+	public void loadDefaultGame(final Component ui)
 	{
 		// load the previously saved value
-		Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-		
-		String defaultGameName = "AA50-42";
-		String s = prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName);
-		
-		NewGameChooserModel model = new NewGameChooserModel();
+		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+		final String defaultGameName = "AA50-42";
+		final String s = prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName);
+		final NewGameChooserModel model = new NewGameChooserModel();
 		NewGameChooserEntry selectedGame = model.findByName(s);
-		
 		if (selectedGame == null)
 		{
 			selectedGame = model.findByName(defaultGameName);
@@ -225,8 +210,6 @@ public class GameSelectorModel extends Observable
 		{
 			return;
 		}
-		
 		load(selectedGame);
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Territory.java
  * 
  * Created on October 12, 2001, 1:50 PM
  */
-
 package games.strategy.engine.data;
 
 import java.io.Serializable;
@@ -30,16 +28,14 @@ import java.io.Serializable;
 public class Rule extends NamedAttachable implements NamedUnitHolder, Serializable, Comparable<Rule>
 {
 	private static final long serialVersionUID = -6390555051736721082L;
-	
 	private final boolean m_water;
-	private PlayerID m_owner = PlayerID.NULL_PLAYERID;
+	private final PlayerID m_owner = PlayerID.NULL_PLAYERID;
 	private final UnitCollection m_units;
-	
 	// In a grid-based game, stores the coordinate of the Territory
 	int[] m_coordinate = null;
 	
 	/** Creates new Territory */
-	public Rule(String name, boolean water, GameData data)
+	public Rule(final String name, final boolean water, final GameData data)
 	{
 		super(name, data);
 		m_water = water;
@@ -47,12 +43,11 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 	}
 	
 	/** Creates new Territory */
-	public Rule(String name, boolean water, GameData data, int... coordinate)
+	public Rule(final String name, final boolean water, final GameData data, final int... coordinate)
 	{
 		super(name, data);
 		m_water = water;
 		m_units = new UnitCollection(this, getData());
-		
 		if (data.getMap().isCoordinateValid(coordinate))
 			m_coordinate = coordinate;
 		else
@@ -75,7 +70,6 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 	/**
 	 * Get the units in this territory
 	 */
-	
 	public UnitCollection getUnits()
 	{
 		return m_units;
@@ -83,7 +77,6 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 	
 	public void notifyChanged()
 	{
-		
 	}
 	
 	@Override
@@ -92,7 +85,7 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 		return getName();
 	}
 	
-	public int compareTo(Rule r)
+	public int compareTo(final Rule r)
 	{
 		return getName().compareTo(r.getName());
 	}
@@ -102,7 +95,7 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 		return UnitHolder.TERRITORY;
 	}
 	
-	public boolean matchesCoordinates(int... coordinate)
+	public boolean matchesCoordinates(final int... coordinate)
 	{
 		if (coordinate.length != m_coordinate.length)
 			return false;
@@ -114,7 +107,6 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 					return false;
 			}
 		}
-		
 		return true;
 	}
 	
@@ -123,7 +115,7 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 		try
 		{
 			return m_coordinate[0];
-		} catch (ArrayIndexOutOfBoundsException e)
+		} catch (final ArrayIndexOutOfBoundsException e)
 		{
 			throw new RuntimeException("Territory " + this.getName() + " doesn't have a defined x coordinate");
 		}
@@ -134,10 +126,9 @@ public class Rule extends NamedAttachable implements NamedUnitHolder, Serializab
 		try
 		{
 			return m_coordinate[1];
-		} catch (ArrayIndexOutOfBoundsException e)
+		} catch (final ArrayIndexOutOfBoundsException e)
 		{
 			throw new RuntimeException("Territory " + this.getName() + " doesn't have a defined y coordinate");
 		}
 	}
-	
 }

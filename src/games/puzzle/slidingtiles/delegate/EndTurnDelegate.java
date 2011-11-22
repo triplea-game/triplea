@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.slidingtiles.delegate;
 
 import games.puzzle.slidingtiles.attachments.Tile;
@@ -38,31 +37,26 @@ public class EndTurnDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge bridge)
+	public void start(final IDelegateBridge bridge)
 	{
 		super.start(bridge);
-		
 		if (gameOver(getData().getMap()))
 		{
 			signalGameOver("Board solved!");
-			
 			try
 			{
 				m_waiting = new CountDownLatch(1);
 				m_waiting.await();
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 			}
 		}
-		
 	}
 	
 	/**
 	 * Called before the delegate will stop running.
 	 */
-	
 	@Override
 	public void end()
 	{
@@ -73,48 +67,44 @@ public class EndTurnDelegate extends BaseDelegate
 			while (m_waiting.getCount() > 0)
 				m_waiting.countDown();
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		SlidingTilesEndTurnExtendedDelegateState state = new SlidingTilesEndTurnExtendedDelegateState();
+		final SlidingTilesEndTurnExtendedDelegateState state = new SlidingTilesEndTurnExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		SlidingTilesEndTurnExtendedDelegateState s = (SlidingTilesEndTurnExtendedDelegateState) state;
+		final SlidingTilesEndTurnExtendedDelegateState s = (SlidingTilesEndTurnExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 	}
 	
-	public boolean gameOver(GameMap map)
+	public boolean gameOver(final GameMap map)
 	{
-		int width = map.getXDimension();
-		int height = map.getYDimension();
-		
+		final int width = map.getXDimension();
+		final int height = map.getYDimension();
 		int previous = -1 * Integer.MAX_VALUE;
-		
 		for (int y = 0; y < height; y++)
 		{
 			for (int x = 0; x < width; x++)
 			{
-				Territory t = map.getTerritoryFromCoordinates(x, y);
+				final Territory t = map.getTerritoryFromCoordinates(x, y);
 				if (t != null)
 				{
-					Tile tile = (Tile) t.getAttachment("tile");
+					final Tile tile = (Tile) t.getAttachment("tile");
 					if (tile != null)
 					{
-						int current = tile.getValue();
-						
+						final int current = tile.getValue();
 						if (current > previous)
 							previous = current;
 						else
 							return false;
-						
 					}
 					else
 						return false;
@@ -123,12 +113,9 @@ public class EndTurnDelegate extends BaseDelegate
 				{
 					return false;
 				}
-				
 			}
 		}
-		
 		return true;
-		
 	}
 	
 	/**
@@ -137,11 +124,11 @@ public class EndTurnDelegate extends BaseDelegate
 	 * @param status
 	 *            the "game over" text to be displayed to each user.
 	 */
-	private void signalGameOver(String status)
+	private void signalGameOver(final String status)
 	{
 		// If the game is over, we need to be able to alert all UIs to that fact.
 		// The display object can send a message to all UIs.
-		INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 		display.setGameOver();
 	}
@@ -150,7 +137,6 @@ public class EndTurnDelegate extends BaseDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
-	
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
@@ -158,6 +144,7 @@ public class EndTurnDelegate extends BaseDelegate
 		return null;
 	}
 }
+
 
 @SuppressWarnings("serial")
 class SlidingTilesEndTurnExtendedDelegateState implements Serializable

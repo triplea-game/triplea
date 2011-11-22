@@ -23,53 +23,44 @@ public class TerritoryOverLayDrawable implements IDrawable
 	private final Color m_color;
 	private final OP m_op;
 	
-	public TerritoryOverLayDrawable(Color color, String name, OP op)
+	public TerritoryOverLayDrawable(final Color color, final String name, final OP op)
 	{
 		m_color = color;
 		m_territoryName = name;
 		m_op = op;
 	}
 	
-	public TerritoryOverLayDrawable(Color color, String name, int alpha, OP op)
+	public TerritoryOverLayDrawable(final Color color, final String name, final int alpha, final OP op)
 	{
 		m_color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 		m_territoryName = name;
 		m_op = op;
 	}
 	
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled)
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
 	{
-		Territory territory = data.getMap().getTerritory(m_territoryName);
-		
-		List<Polygon> polys = mapData.getPolygons(territory);
-		
+		final Territory territory = data.getMap().getTerritory(m_territoryName);
+		final List<Polygon> polys = mapData.getPolygons(territory);
 		graphics.setColor(m_color);
-		
-		Iterator<Polygon> polyIter = polys.iterator();
+		final Iterator<Polygon> polyIter = polys.iterator();
 		while (polyIter.hasNext())
 		{
 			Polygon polygon = polyIter.next();
-			
 			// if we dont have to draw, dont
 			if (!polygon.intersects(bounds) && !polygon.contains(bounds))
 				continue;
-			
 			// use a copy since we will move the polygon
 			polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-			
 			polygon.translate(-bounds.x, -bounds.y);
-			
 			if (m_op == OP.FILL)
 				graphics.fillPolygon(polygon);
 			else
 				graphics.drawPolygon(polygon);
 		}
-		
 	}
 	
 	public int getLevel()
 	{
 		return TERRITORY_OVERLAY_LEVEL;
 	}
-	
 }

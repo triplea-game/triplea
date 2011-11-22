@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.message;
 
 import games.strategy.net.GUID;
@@ -29,14 +28,14 @@ public class InvocationInProgress
 	private final INode m_caller;
 	private RemoteMethodCallResults m_results;
 	
-	public InvocationInProgress(INode waitingOn, final HubInvoke methodCalls, final INode methodCallsFrom)
+	public InvocationInProgress(final INode waitingOn, final HubInvoke methodCalls, final INode methodCallsFrom)
 	{
 		m_waitingOn = waitingOn;
 		m_methodCall = methodCalls;
 		m_caller = methodCallsFrom;
 	}
 	
-	public boolean isWaitingOn(INode node)
+	public boolean isWaitingOn(final INode node)
 	{
 		return m_waitingOn.equals(node);
 	}
@@ -45,18 +44,14 @@ public class InvocationInProgress
 	 * 
 	 * @return true if there are no more results to process
 	 */
-	public boolean process(HubInvocationResults hubresults, INode from)
+	public boolean process(final HubInvocationResults hubresults, final INode from)
 	{
 		if (hubresults.results == null)
 			throw new IllegalStateException("No results");
-		
 		m_results = hubresults.results;
-		
 		if (!from.equals(m_waitingOn))
 			throw new IllegalStateException("Wrong node, expecting " + m_waitingOn + " got " + from);
-		
 		return true;
-		
 	}
 	
 	public HubInvoke getMethodCall()
@@ -83,5 +78,4 @@ public class InvocationInProgress
 	{
 		return m_methodCall.needReturnValues;
 	}
-	
 }

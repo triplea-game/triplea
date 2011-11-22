@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * FlagIconImageFactory.java
  * 
  * Created on November 26, 2001, 8:27 PM
  */
-
 package games.strategy.triplea.image;
 
 import games.strategy.engine.data.PlayerID;
@@ -31,12 +29,10 @@ import java.awt.Image;
  */
 public class FlagIconImageFactory extends ImageFactory
 {
-	
 	public static final int FLAG_ICON_WIDTH = 30;
 	public static final int FLAG_ICON_HEIGHT = 15;
 	public static final int SMALL_FLAG_ICON_WIDTH = 12;
 	public static final int SMALL_FLAG_ICON_HEIGHT = 7;
-	
 	private final String PREFIX = "flags/";
 	
 	/** Creates new IconImageFactory */
@@ -44,39 +40,37 @@ public class FlagIconImageFactory extends ImageFactory
 	{
 	}
 	
-	public Image getFlag(PlayerID id)
+	public Image getFlag(final PlayerID id)
 	{
-		String key = PREFIX + id.getName() + ".gif";
-		String key2 = PREFIX + id.getName() + ".png";
-		
+		final String key = PREFIX + id.getName() + ".gif";
+		final String key2 = PREFIX + id.getName() + ".png";
 		return getImage(key, key2, true);
 	}
 	
-	public Image getSmallFlag(PlayerID id)
+	public Image getSmallFlag(final PlayerID id)
 	{
-		String key = PREFIX + id.getName() + "_small.gif";
-		String key2 = PREFIX + id.getName() + "_small.png";
+		final String key = PREFIX + id.getName() + "_small.gif";
+		final String key2 = PREFIX + id.getName() + "_small.png";
 		return getImage(key, key2, true);
 	}
 	
-	public Image getLargeFlag(PlayerID id)
+	public Image getLargeFlag(final PlayerID id)
 	{
-		String key = PREFIX + id.getName() + "_large.png";
+		final String key = PREFIX + id.getName() + "_large.png";
 		return getImage(key, true);
 	}
 	
-	public Image getFadedFlag(PlayerID id)
+	public Image getFadedFlag(final PlayerID id)
 	{
-		String key = PREFIX + id.getName() + "_fade.gif";
-		String key2 = PREFIX + id.getName() + "_fade.png";
+		final String key = PREFIX + id.getName() + "_fade.gif";
+		final String key2 = PREFIX + id.getName() + "_fade.png";
 		return getImage(key, key2, true);
 	}
 	
-	public Image getConvoyFlag(PlayerID id)
+	public Image getConvoyFlag(final PlayerID id)
 	{
-		String key = PREFIX + id.getName() + "_convoy.gif";
-		String key2 = PREFIX + id.getName() + "_convoy.png";
+		final String key = PREFIX + id.getName() + "_convoy.gif";
+		final String key2 = PREFIX + id.getName() + "_convoy.png";
 		return getImage(key, key2, true);
 	}
-	
 }

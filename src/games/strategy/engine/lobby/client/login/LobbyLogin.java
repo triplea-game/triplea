@@ -20,10 +20,9 @@ import javax.swing.JOptionPane;
 public class LobbyLogin
 {
 	private final Window m_parent;
-	
 	private final LobbyServerProperties m_serverProperties;
 	
-	public LobbyLogin(Window parent, LobbyServerProperties properties)
+	public LobbyLogin(final Window parent, final LobbyServerProperties properties)
 	{
 		m_parent = parent;
 		m_serverProperties = properties;
@@ -37,29 +36,23 @@ public class LobbyLogin
 	 */
 	public LobbyClient login()
 	{
-		
 		if (!m_serverProperties.isServerAvailable())
 		{
-			JOptionPane.showMessageDialog(m_parent, m_serverProperties.getServerErrorMessage(), "Could not connect to server",
-						JOptionPane.ERROR_MESSAGE);
-			
+			JOptionPane.showMessageDialog(m_parent, m_serverProperties.getServerErrorMessage(), "Could not connect to server", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		if (m_serverProperties.getPort() == -1)
 		{
-			JOptionPane.showMessageDialog(m_parent, "Could not find lobby server for this version of TripleA", "Could not connect to server",
-						JOptionPane.ERROR_MESSAGE);
-			
+			JOptionPane.showMessageDialog(m_parent, "Could not find lobby server for this version of TripleA", "Could not connect to server", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
-		
 		return loginToServer();
 	}
 	
 	private LobbyClient loginToServer()
 	{
 		final LoginPanel panel = new LoginPanel();
-		LoginPanel.ReturnValue value = panel.show(m_parent);
+		final LoginPanel.ReturnValue value = panel.show(m_parent);
 		if (value == LoginPanel.ReturnValue.LOGON)
 		{
 			return login(panel);
@@ -78,13 +71,11 @@ public class LobbyLogin
 	
 	private LobbyClient login(final LoginPanel panel)
 	{
-		
 		try
 		{
-			String mac = MacFinder.GetHashedMacAddress();
-			ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), panel.getUserName(), mac, new IConnectionLogin()
+			final String mac = MacFinder.GetHashedMacAddress();
+			final ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), panel.getUserName(), mac, new IConnectionLogin()
 			{
-				
 				private final AtomicReference<String> m_internalError = new AtomicReference<String>();
 				
 				public void notifyFailedLogin(String message)
@@ -92,16 +83,14 @@ public class LobbyLogin
 					if (m_internalError.get() != null)
 						message = m_internalError.get();
 					JOptionPane.showMessageDialog(m_parent, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
-					
 				}
 				
-				public Map<String, String> getProperties(Map<String, String> challengProperties)
+				public Map<String, String> getProperties(final Map<String, String> challengProperties)
 				{
-					Map<String, String> props = new HashMap<String, String>();
+					final Map<String, String> props = new HashMap<String, String>();
 					if (panel.isAnonymous())
 					{
 						props.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
-						
 					}
 					else
 					{
@@ -114,27 +103,21 @@ public class LobbyLogin
 							m_internalError.set("No account with that name exists");
 							salt = "none";
 						}
-						
-						String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
+						final String hashedPassword = MD5Crypt.crypt(panel.getPassword(), salt);
 						props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, hashedPassword);
 					}
-					
 					props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-					
 					return props;
 				}
-				
-			}
-
-			);
+			});
 			// sucess, store prefs
 			LoginPanel.storePrefs(panel.getUserName(), panel.isAnonymous());
 			return new LobbyClient(messenger, panel.isAnonymous());
-		} catch (CouldNotLogInException clne)
+		} catch (final CouldNotLogInException clne)
 		{
 			// this has already been dealt with
 			return loginToServer();
-		} catch (IOException ioe)
+		} catch (final IOException ioe)
 		{
 			JOptionPane.showMessageDialog(m_parent, "Could Not Connect to Lobby : " + ioe.getMessage(), "Could not connect", JOptionPane.ERROR_MESSAGE);
 			return null;
@@ -144,7 +127,7 @@ public class LobbyLogin
 	private LobbyClient createAccount()
 	{
 		final CreateUpdateAccountPanel createAccount = CreateUpdateAccountPanel.newCreatePanel();
-		CreateUpdateAccountPanel.ReturnValue value = createAccount.show(m_parent);
+		final CreateUpdateAccountPanel.ReturnValue value = createAccount.show(m_parent);
 		if (value == CreateUpdateAccountPanel.ReturnValue.OK)
 		{
 			return createAccount(createAccount);
@@ -159,42 +142,35 @@ public class LobbyLogin
 	{
 		try
 		{
-			String mac = MacFinder.GetHashedMacAddress();
-			ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), createAccount.getUserName(), mac, new IConnectionLogin()
+			final String mac = MacFinder.GetHashedMacAddress();
+			final ClientMessenger messenger = new ClientMessenger(m_serverProperties.getHost(), m_serverProperties.getPort(), createAccount.getUserName(), mac, new IConnectionLogin()
 			{
-				
-				public void notifyFailedLogin(String message)
+				public void notifyFailedLogin(final String message)
 				{
 					JOptionPane.showMessageDialog(m_parent, message, "Login Failed", JOptionPane.ERROR_MESSAGE);
-					
 				}
 				
-				public Map<String, String> getProperties(Map<String, String> challengProperties)
+				public Map<String, String> getProperties(final Map<String, String> challengProperties)
 				{
-					Map<String, String> props = new HashMap<String, String>();
+					final Map<String, String> props = new HashMap<String, String>();
 					props.put(LobbyLoginValidator.REGISTER_NEW_USER_KEY, Boolean.TRUE.toString());
 					props.put(LobbyLoginValidator.EMAIL_KEY, createAccount.getEmail());
 					props.put(LobbyLoginValidator.HASHED_PASSWORD_KEY, MD5Crypt.crypt(createAccount.getPassword()));
 					props.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-					
 					return props;
 				}
-			}
-						);
-			
+			});
 			// default
 			LoginPanel.storePrefs(createAccount.getUserName(), false);
-			
 			return new LobbyClient(messenger, false);
-		} catch (CouldNotLogInException clne)
+		} catch (final CouldNotLogInException clne)
 		{
 			// this has already been dealt with
 			return createAccount();
-		} catch (IOException ioe)
+		} catch (final IOException ioe)
 		{
 			JOptionPane.showMessageDialog(m_parent, ioe.getMessage(), "Account creation failed", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 	}
-	
 }

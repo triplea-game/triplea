@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.random;
 
 import junit.framework.TestCase;
@@ -21,22 +20,19 @@ import junit.framework.TestCase;
  */
 public class CryptoRandomSourceTest extends TestCase
 {
-	
-	public CryptoRandomSourceTest(String name)
+	public CryptoRandomSourceTest(final String name)
 	{
 		super(name);
 	}
 	
 	public void testIntToRandom()
 	{
-		byte[] bytes = CryptoRandomSource.intsToBytes(new int[] { 0xDDCCBBAA });
+		final byte[] bytes = CryptoRandomSource.intsToBytes(new int[] { 0xDDCCBBAA });
 		assertEquals(bytes.length, 4);
-		
 		assertEquals(bytes[0], (byte) 0xAA);
 		assertEquals(bytes[1], (byte) 0xBB);
 		assertEquals(bytes[2], (byte) 0xCC);
 		assertEquals(bytes[3], (byte) 0xDD);
-		
 	}
 	
 	public void testBytes()
@@ -48,14 +44,11 @@ public class CryptoRandomSourceTest extends TestCase
 	
 	public void testThereAndBackAgain()
 	{
-		int[] ints = new int[] { 0, 1, 12, 123, 0xFF, 0x100, -1, 124152, 532153, 123121, 0xABCDEF12, 0xFF00DD00, Integer.MAX_VALUE, Integer.MIN_VALUE };
-		
-		int[] thereAndBack = CryptoRandomSource.bytesToInts(CryptoRandomSource.intsToBytes(ints));
+		final int[] ints = new int[] { 0, 1, 12, 123, 0xFF, 0x100, -1, 124152, 532153, 123121, 0xABCDEF12, 0xFF00DD00, Integer.MAX_VALUE, Integer.MIN_VALUE };
+		final int[] thereAndBack = CryptoRandomSource.bytesToInts(CryptoRandomSource.intsToBytes(ints));
 		for (int i = 0; i < ints.length; i++)
 		{
 			assertEquals("at " + i, ints[i], thereAndBack[i]);
 		}
-		
 	}
-	
 }

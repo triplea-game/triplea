@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
@@ -25,13 +24,12 @@ import games.strategy.engine.history.IDelegateHistoryWriter;
  * 
  * 
  */
-
 public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 {
 	IDelegateHistoryWriter m_delegateHistoryWriter;
 	GameData m_data;
 	
-	public TripleADelegateHistoryWriter(IDelegateHistoryWriter delegateHistoryWriter, GameData data)
+	public TripleADelegateHistoryWriter(final IDelegateHistoryWriter delegateHistoryWriter, final GameData data)
 	{
 		m_delegateHistoryWriter = delegateHistoryWriter;
 		m_data = data;
@@ -44,7 +42,7 @@ public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 		return "";
 	}
 	
-	public void startEvent(String eventName)
+	public void startEvent(final String eventName)
 	{
 		if (eventName.startsWith("COMMENT: "))
 			m_delegateHistoryWriter.startEvent(eventName);
@@ -52,7 +50,7 @@ public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 			m_delegateHistoryWriter.startEvent(getEventPrefix() + eventName);
 	}
 	
-	public void addChildToEvent(String child)
+	public void addChildToEvent(final String child)
 	{
 		if (child.startsWith("COMMENT: "))
 			m_delegateHistoryWriter.addChildToEvent(child, null);
@@ -60,7 +58,7 @@ public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 			m_delegateHistoryWriter.addChildToEvent(getEventPrefix() + child, null);
 	}
 	
-	public void addChildToEvent(String child, Object renderingData)
+	public void addChildToEvent(final String child, final Object renderingData)
 	{
 		if (child.startsWith("COMMENT: "))
 			m_delegateHistoryWriter.addChildToEvent(child, renderingData);
@@ -71,10 +69,8 @@ public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 	/**
 	 * Set the rendering data for the current event.
 	 */
-	
-	public void setRenderingData(Object renderingData)
+	public void setRenderingData(final Object renderingData)
 	{
 		m_delegateHistoryWriter.setRenderingData(renderingData);
 	}
-	
 }

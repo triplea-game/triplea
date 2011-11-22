@@ -8,10 +8,10 @@ public class DBUser implements Serializable
 	private final String m_name;
 	private final String m_email;
 	private final boolean m_isAdmin;
-	private Date m_lastLogin;
-	private Date m_joined;
+	private final Date m_lastLogin;
+	private final Date m_joined;
 	
-	public DBUser(final String name, final String email, final boolean isAdmin, Date lastLogin, Date joined)
+	public DBUser(final String name, final String email, final boolean isAdmin, final Date lastLogin, final Date joined)
 	{
 		m_name = name;
 		m_email = email;
@@ -44,5 +44,4 @@ public class DBUser implements Serializable
 	{
 		return m_name;
 	}
-	
 }

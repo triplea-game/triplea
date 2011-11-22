@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.history;
 
 public class Event extends IndexedHistoryNode implements Renderable
@@ -25,11 +24,10 @@ public class Event extends IndexedHistoryNode implements Renderable
 		return m_description;
 	}
 	
-	Event(String description, int changeStartIndex)
+	Event(final String description, final int changeStartIndex)
 	{
 		super(description, changeStartIndex, true);
 		m_description = description;
-		
 	}
 	
 	public Object getRenderingData()
@@ -37,7 +35,7 @@ public class Event extends IndexedHistoryNode implements Renderable
 		return m_renderingData;
 	}
 	
-	public void setRenderingData(Object data)
+	public void setRenderingData(final Object data)
 	{
 		m_renderingData = data;
 	}
@@ -52,20 +50,19 @@ public class Event extends IndexedHistoryNode implements Renderable
 
 class EventHistorySerializer implements SerializationWriter
 {
-	private String m_eventName;
-	private Object m_renderingData;
+	private final String m_eventName;
+	private final Object m_renderingData;
 	
-	public EventHistorySerializer(String eventName, Object renderingData)
+	public EventHistorySerializer(final String eventName, final Object renderingData)
 	{
 		m_eventName = eventName;
 		m_renderingData = renderingData;
 	}
 	
-	public void write(HistoryWriter writer)
+	public void write(final HistoryWriter writer)
 	{
 		writer.startEvent(m_eventName);
 		if (m_renderingData != null)
 			writer.setRenderingData(m_renderingData);
 	}
-	
 }

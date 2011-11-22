@@ -15,7 +15,7 @@ public class BattleResults implements Serializable
 	{
 	}
 	
-	public BattleResults(MustFightBattle battle)
+	public BattleResults(final MustFightBattle battle)
 	{
 		m_attackingUnitsLeft = battle.getRemainingAttackingUnits().size();
 		m_battleRoundsFought = battle.getBattleRound();

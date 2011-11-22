@@ -32,15 +32,15 @@ public class NewGameChooserModel extends DefaultListModel
 	}
 	
 	@Override
-	public NewGameChooserEntry get(int i)
+	public NewGameChooserEntry get(final int i)
 	{
 		return (NewGameChooserEntry) super.get(i);
 	}
 	
 	public static Collection<String> getDefaultMapNames()
 	{
-		Collection<String> rVal = new ArrayList<String>();
-		for (File f : getDefaultMapsDir().listFiles())
+		final Collection<String> rVal = new ArrayList<String>();
+		for (final File f : getDefaultMapsDir().listFiles())
 		{
 			if (f.getName().toLowerCase().endsWith(".zip"))
 			{
@@ -56,7 +56,7 @@ public class NewGameChooserModel extends DefaultListModel
 	
 	private List<File> allMapFiles()
 	{
-		List<File> rVal = new ArrayList<File>();
+		final List<File> rVal = new ArrayList<File>();
 		rVal.addAll(safeListFiles(getDefaultMapsDir()));
 		rVal.addAll(safeListFiles(GameRunner.getUserMapsFolder()));
 		return rVal;
@@ -67,9 +67,9 @@ public class NewGameChooserModel extends DefaultListModel
 		return new File(GameRunner.getRootFolder(), "maps");
 	}
 	
-	private List<File> safeListFiles(File f)
+	private List<File> safeListFiles(final File f)
 	{
-		File[] files = f.listFiles();
+		final File[] files = f.listFiles();
 		if (files == null)
 		{
 			return new ArrayList<File>();
@@ -79,9 +79,8 @@ public class NewGameChooserModel extends DefaultListModel
 	
 	private void populate()
 	{
-		
-		List<NewGameChooserEntry> entries = new ArrayList<NewGameChooserEntry>();
-		for (File map : allMapFiles())
+		final List<NewGameChooserEntry> entries = new ArrayList<NewGameChooserEntry>();
+		for (final File map : allMapFiles())
 		{
 			if (map.isDirectory())
 			{
@@ -92,50 +91,45 @@ public class NewGameChooserModel extends DefaultListModel
 				populateFromZip(map, entries);
 			}
 		}
-		
 		// remove any null entries
 		do
 		{
 		} while (entries.remove(null));
-		
 		Collections.sort(entries, new Comparator<NewGameChooserEntry>()
 		{
-			
-			public int compare(NewGameChooserEntry o1, NewGameChooserEntry o2)
+			public int compare(final NewGameChooserEntry o1, final NewGameChooserEntry o2)
 			{
 				return o1.getGameData().getGameName().toLowerCase().compareTo(o2.getGameData().getGameName().toLowerCase());
 			}
-			
 		});
-		for (NewGameChooserEntry entry : entries)
+		for (final NewGameChooserEntry entry : entries)
 		{
 			addElement(entry);
 		}
 	}
 	
-	private void populateFromZip(File map, List<NewGameChooserEntry> entries)
+	private void populateFromZip(final File map, final List<NewGameChooserEntry> entries)
 	{
 		try
 		{
-			FileInputStream fis = new FileInputStream(map);
+			final FileInputStream fis = new FileInputStream(map);
 			try
 			{
-				ZipInputStream zis = new ZipInputStream(fis);
+				final ZipInputStream zis = new ZipInputStream(fis);
 				ZipEntry entry = zis.getNextEntry();
 				while (entry != null)
 				{
-					
 					if (entry.getName().startsWith("games/") && entry.getName().toLowerCase().endsWith(".xml"))
 					{
-						URLClassLoader loader = new URLClassLoader(new URL[] { map.toURI().toURL() });
-						URL url = loader.getResource(entry.getName());
+						final URLClassLoader loader = new URLClassLoader(new URL[] { map.toURI().toURL() });
+						final URL url = loader.getResource(entry.getName());
 						// we have to close the loader to allow files to
 						// be deleted on windows
 						ClassLoaderUtil.closeLoader(loader);
 						try
 						{
 							entries.add(createEntry(new URI(url.toString().replace(" ", "%20"))));
-						} catch (Exception e)
+						} catch (final Exception e)
 						{
 							System.err.println("Could not parse:" + url);
 							e.printStackTrace();
@@ -144,18 +138,17 @@ public class NewGameChooserModel extends DefaultListModel
 					zis.closeEntry();
 					entry = zis.getNextEntry();
 				}
-				
 			} finally
 			{
 				fis.close();
 			}
-		} catch (IOException ioe)
+		} catch (final IOException ioe)
 		{
 			ioe.printStackTrace();
 		}
 	}
 	
-	public NewGameChooserEntry findByName(String name)
+	public NewGameChooserEntry findByName(final String name)
 	{
 		for (int i = 0; i < size(); i++)
 		{
@@ -167,41 +160,37 @@ public class NewGameChooserModel extends DefaultListModel
 		return null;
 	}
 	
-	private NewGameChooserEntry createEntry(URI uri) throws IOException, GameParseException, SAXException
+	private NewGameChooserEntry createEntry(final URI uri) throws IOException, GameParseException, SAXException
 	{
 		return new NewGameChooserEntry(uri);
 	}
 	
-	private void populateFromDirectory(File mapDir, List<NewGameChooserEntry> entries)
+	private void populateFromDirectory(final File mapDir, final List<NewGameChooserEntry> entries)
 	{
-		File games = new File(mapDir, "games");
+		final File games = new File(mapDir, "games");
 		if (!games.exists())
 		{
 			// no games in this map dir
 			return;
 		}
-		
-		for (File game : games.listFiles())
+		for (final File game : games.listFiles())
 		{
 			if (game.isFile() && game.getName().toLowerCase().endsWith("xml"))
 			{
 				try
 				{
-					NewGameChooserEntry entry = createEntry(game.toURI());
+					final NewGameChooserEntry entry = createEntry(game.toURI());
 					entries.add(entry);
-				} catch (SAXParseException e)
+				} catch (final SAXParseException e)
 				{
 					System.err.println("Could not parse:" + game + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
 					e.printStackTrace();
-				} catch (Exception e)
+				} catch (final Exception e)
 				{
 					System.err.println("Could not parse:" + game);
 					e.printStackTrace();
 				}
-				
 			}
 		}
-		
 	}
-	
 }

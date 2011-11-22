@@ -11,17 +11,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * PlayerID.java
  * 
  * Created on October 13, 2001, 9:34 AM
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatchAnd;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
@@ -41,7 +40,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	private String m_whoAmI = "null:no_one";
 	
 	/** Creates new Player */
-	public PlayerID(String name, boolean optional, GameData data)
+	public PlayerID(final String name, final boolean optional, final GameData data)
 	{
 		super(name, data);
 		m_optional = optional;
@@ -70,7 +69,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return m_technologyFrontiers;
 	}
 	
-	public void setProductionFrontier(ProductionFrontier frontier)
+	public void setProductionFrontier(final ProductionFrontier frontier)
 	{
 		m_productionFrontier = frontier;
 	}
@@ -80,7 +79,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return m_productionFrontier;
 	}
 	
-	public void setRepairFrontier(RepairFrontier frontier)
+	public void setRepairFrontier(final RepairFrontier frontier)
 	{
 		m_repairFrontier = frontier;
 	}
@@ -124,12 +123,13 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	
 	/**
 	 * First string is "Human" or "AI", while second string is the name of the player, like "Moore N. Able (AI)". Separate with a colon.
+	 * 
 	 * @param humanOrAI_and_playerName
 	 */
-	public void setWhoAmI(String humanOrAI_colon_playerName)
+	public void setWhoAmI(final String humanOrAI_colon_playerName)
 	{
 		// so for example, it should be "AI:Moore N. Able (AI)".
-		String[] s = humanOrAI_colon_playerName.split(":");
+		final String[] s = humanOrAI_colon_playerName.split(":");
 		if (s.length != 2)
 			throw new IllegalStateException("whoAmI must have two strings, separated by a colon");
 		if (!(s[0].equalsIgnoreCase("AI") || s[0].equalsIgnoreCase("Human") || s[0].equalsIgnoreCase("null")))
@@ -151,13 +151,14 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	 * If I have no units with movement,
 	 * And I own zero factories or have have no owned land,
 	 * then I am basically dead, and therefore should not participate in things like politics.
+	 * 
 	 * @return
 	 */
 	public boolean amNotDeadYet()
 	{
 		boolean hasFactory = false;
 		boolean ownsLand = false;
-		for (Territory t : getData().getMap().getTerritories())
+		for (final Territory t : getData().getMap().getTerritories())
 		{
 			if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.unitHasAttackValueOfAtLeast(1), Matches.UnitIsNotStatic(this), Matches.UnitIsLand)))
 				return true;
@@ -171,16 +172,15 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		return false;
 	}
 	
-	public static LinkedHashMap<String, String> currentPlayers(GameData data)
+	public static LinkedHashMap<String, String> currentPlayers(final GameData data)
 	{
-		LinkedHashMap<String,String> rVal = new LinkedHashMap<String,String>();
-		for (PlayerID player : data.getPlayerList().getPlayers())
+		final LinkedHashMap<String, String> rVal = new LinkedHashMap<String, String>();
+		for (final PlayerID player : data.getPlayerList().getPlayers())
 		{
 			rVal.put(player.getName(), player.getWhoAmI().split(":")[1]);
 		}
 		return rVal;
 	}
-	
 	/*public static String whoIsAI(GameData data)
 	{
 		StringBuilder buf = new StringBuilder("AIs are playing the following players: ");

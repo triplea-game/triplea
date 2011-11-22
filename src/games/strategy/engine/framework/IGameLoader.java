@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.framework;
 
 import games.strategy.engine.data.IUnitFactory;
@@ -37,7 +36,6 @@ import java.util.Set;
  */
 public interface IGameLoader extends java.io.Serializable
 {
-	
 	public static final String CLIENT_PLAYER_TYPE = "Client";
 	
 	/**
@@ -92,5 +90,4 @@ public interface IGameLoader extends java.io.Serializable
 	 * <p>
 	 */
 	public IUnitFactory getUnitFactory();
-	
 }

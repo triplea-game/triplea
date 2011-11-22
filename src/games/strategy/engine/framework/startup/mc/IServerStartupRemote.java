@@ -41,5 +41,4 @@ public interface IServerStartupRemote extends IRemote
 	 * Note, the return value may come back after our ObserverWaitingToJoin has been created
 	 */
 	public boolean isGameStarted(INode newNode);
-	
 }

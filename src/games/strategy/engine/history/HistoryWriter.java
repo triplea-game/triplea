@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.history;
 
 import games.strategy.engine.data.Change;
@@ -32,7 +31,7 @@ public class HistoryWriter implements java.io.Serializable
 	private HistoryNode m_current;
 	private static final Logger s_logger = Logger.getLogger(HistoryWriter.class.getName());
 	
-	public HistoryWriter(History history)
+	public HistoryWriter(final History history)
 	{
 		m_history = history;
 	}
@@ -46,32 +45,24 @@ public class HistoryWriter implements java.io.Serializable
 	/**
 	 * Can only be called if we are currently in a round or a step
 	 */
-	public void startNextStep(String stepName, String delegateName, PlayerID player, String stepDisplayName)
+	public void startNextStep(final String stepName, final String delegateName, final PlayerID player, final String stepDisplayName)
 	{
 		assertCorrectThread();
-		
-		s_logger.log(Level.FINE, "start step, stepName:" + stepName + " delegateName:" + delegateName + " player:" + player + " displayName:"
-					+ stepDisplayName);
-		
+		s_logger.log(Level.FINE, "start step, stepName:" + stepName + " delegateName:" + delegateName + " player:" + player + " displayName:" + stepDisplayName);
 		// we are being called for the first time
 		if (m_current == null)
 			startNextRound(1);
-		
 		if (isCurrentEvent())
 			closeCurrent();
-		
 		// stop the current step
 		if (isCurrentStep())
 			closeCurrent();
-		
 		if (!isCurrentRound())
 		{
 			throw new IllegalStateException("Not in a round");
 		}
-		
-		Step currentStep = new Step(stepName, delegateName, player, m_history.getChanges().size(), stepDisplayName);
-		HistoryNode old = m_current;
-		
+		final Step currentStep = new Step(stepName, delegateName, player, m_history.getChanges().size(), stepDisplayName);
+		final HistoryNode old = m_current;
 		m_history.getGameData().acquireWriteLock();
 		try
 		{
@@ -81,61 +72,49 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		
 		m_history.nodeStructureChanged(old);
 	}
 	
-	public void startNextRound(int round)
+	public void startNextRound(final int round)
 	{
 		assertCorrectThread();
-		
 		s_logger.log(Level.FINE, "Starting round:" + round);
-		
 		if (isCurrentEvent())
 			closeCurrent();
 		if (isCurrentStep())
 			closeCurrent();
 		if (isCurrentRound())
 			closeCurrent();
-		
-		Round currentRound = new Round(round, m_history.getChanges().size());
-		
+		final Round currentRound = new Round(round, m_history.getChanges().size());
 		m_history.getGameData().acquireWriteLock();
 		try
 		{
 			((HistoryNode) m_history.getRoot()).add(currentRound);
-			
 			m_current = currentRound;
 		} finally
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		
 		m_history.reload();
 	}
 	
 	private void closeCurrent()
 	{
 		assertCorrectThread();
-		
-		HistoryNode old = m_current;
+		final HistoryNode old = m_current;
 		m_history.getGameData().acquireWriteLock();
 		try
 		{
-			
 			// remove steps where nothing happened
 			if (isCurrentStep())
 			{
-				HistoryNode parent = (HistoryNode) m_current.getParent();
+				final HistoryNode parent = (HistoryNode) m_current.getParent();
 				if (m_current.getChildCount() == 0)
 				{
-					int index = parent.getChildCount() - 1;
+					final int index = parent.getChildCount() - 1;
 					parent.remove(m_current);
-					m_history.nodesWereRemoved(parent, new int[]
-					{ index }, new Object[]
-					{ m_current });
+					m_history.nodesWereRemoved(parent, new int[] { index }, new Object[] { m_current });
 				}
-				
 				m_current = parent;
 				return;
 			}
@@ -145,39 +124,29 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		
 	}
 	
-	public void startEvent(String eventName)
+	public void startEvent(final String eventName)
 	{
 		assertCorrectThread();
-		
 		s_logger.log(Level.FINE, "Starting event:" + eventName);
-		
 		// close the current event
 		if (isCurrentEvent())
 			closeCurrent();
-		
 		if (!isCurrentStep())
 			throw new IllegalStateException("Cant add an event, not a step");
-		
-		Event event = new Event(eventName, m_history.getChanges().size());
-		
-		HistoryNode oldCurrent = m_current;
-		
+		final Event event = new Event(eventName, m_history.getChanges().size());
+		final HistoryNode oldCurrent = m_current;
 		m_history.getGameData().acquireWriteLock();
 		try
 		{
 			m_current.add(event);
 			m_current = event;
-			
 		} finally
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		
 		m_history.reload(oldCurrent);
-		
 	}
 	
 	private boolean isCurrentEvent()
@@ -198,12 +167,10 @@ public class HistoryWriter implements java.io.Serializable
 	/**
 	 * Add a child to the current event.
 	 */
-	public void addChildToEvent(EventChild node)
+	public void addChildToEvent(final EventChild node)
 	{
 		assertCorrectThread();
-		
 		s_logger.log(Level.FINE, "Adding child:" + node);
-		
 		m_history.getGameData().acquireWriteLock();
 		try
 		{
@@ -212,26 +179,21 @@ public class HistoryWriter implements java.io.Serializable
 				new IllegalStateException("Not in an event, but trying to add child:" + node + " current is:" + m_current).printStackTrace(System.out);
 				startEvent("???");
 			}
-			
 			m_current.add(node);
 		} finally
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		
-		m_history.nodesWereInserted(m_current, new int[]
-		{ m_current.getChildCount() - 1 });
+		m_history.nodesWereInserted(m_current, new int[] { m_current.getChildCount() - 1 });
 	}
 	
 	/**
 	 * Add a change to the current event.
 	 */
-	public void addChange(Change change)
+	public void addChange(final Change change)
 	{
 		assertCorrectThread();
-		
 		s_logger.log(Level.FINE, "Adding change:" + change);
-		
 		if (!isCurrentEvent() && !isCurrentStep())
 		{
 			new IllegalStateException("Not in an event, but trying to add change:" + change + " current is:" + m_current).printStackTrace(System.out);
@@ -240,19 +202,15 @@ public class HistoryWriter implements java.io.Serializable
 		m_history.changeAdded(change);
 	}
 	
-	public void setRenderingData(Object details)
+	public void setRenderingData(final Object details)
 	{
 		assertCorrectThread();
-		
 		s_logger.log(Level.FINE, "Setting rendering data:" + details);
-		
 		if (!isCurrentEvent())
 		{
-			new IllegalStateException("Not in an event, but trying to set details:" + details + " current is:" + m_current)
-						.printStackTrace(System.out);
+			new IllegalStateException("Not in an event, but trying to set details:" + details + " current is:" + m_current).printStackTrace(System.out);
 			startEvent("???");
 		}
-		
 		m_history.getGameData().acquireWriteLock();
 		try
 		{
@@ -261,8 +219,6 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		
 		m_history.reload(m_current);
 	}
-	
 }

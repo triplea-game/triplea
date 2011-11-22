@@ -23,7 +23,6 @@ import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
  * @author Sean Bridges
  * 
  */
-
 public class EndTurnDelegate extends AbstractEndTurnDelegate
 {
 	protected boolean m_gameOver = false;
@@ -33,17 +32,15 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	}
 	
 	@Override
-	protected void doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge)
+	protected void doNationalObjectivesAndOtherEndTurnEffects(final IDelegateBridge bridge)
 	{
-		GameData data = getData();
-		PlayerList playerList = data.getPlayerList();
-		PlayerID british = playerList.getPlayerID(Constants.BRITISH);
-		PlayerID japanese = playerList.getPlayerID(Constants.JAPANESE);
-		
+		final GameData data = getData();
+		final PlayerList playerList = data.getPlayerList();
+		final PlayerID british = playerList.getPlayerID(Constants.BRITISH);
+		final PlayerID japanese = playerList.getPlayerID(Constants.JAPANESE);
 		// Quick check to see who still owns their own capital
-		boolean britain = TerritoryAttachment.getCapital(british, data).getOwner().equals(british);
-		boolean japan = TerritoryAttachment.getCapital(japanese, data).getOwner().equals(japanese);
-		
+		final boolean britain = TerritoryAttachment.getCapital(british, data).getOwner().equals(british);
+		final boolean japan = TerritoryAttachment.getCapital(japanese, data).getOwner().equals(japanese);
 		if (!m_gameOver)
 		{
 			if (britain && !japan)
@@ -57,6 +54,5 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				bridge.getHistoryWriter().startEvent("Japanese win.");
 			}
 		}
-		
 	}
 }

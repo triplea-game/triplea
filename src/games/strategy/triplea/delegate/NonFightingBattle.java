@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * NonFightingBattle.java
  * 
  * Created on November 23, 2001, 11:53 AM
  */
-
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
@@ -48,20 +46,18 @@ import java.util.Iterator;
 @SuppressWarnings("serial")
 public class NonFightingBattle extends AbstractBattle
 {
-	
-	public NonFightingBattle(Territory battleSite, PlayerID attacker, BattleTracker battleTracker, boolean neutral, GameData data)
+	public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean neutral, final GameData data)
 	{
 		super(battleSite, attacker, battleTracker, data);
 	}
 	
 	@Override
-	public void fight(IDelegateBridge bridge)
+	public void fight(final IDelegateBridge bridge)
 	{
 		if (!m_battleTracker.getDependentOn(this).isEmpty())
 			throw new IllegalStateException("Must fight battles that this battle depends on first");
-		
 		// if any attacking non air units then win
-		boolean someAttacking = hasAttackingUnits();
+		final boolean someAttacking = hasAttackingUnits();
 		if (someAttacking)
 		{
 			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, null);
@@ -78,10 +74,10 @@ public class NonFightingBattle extends AbstractBattle
 	
 	boolean hasAttackingUnits()
 	{
-		CompositeMatch<Unit> attackingLand = new CompositeMatchAnd<Unit>();
+		final CompositeMatch<Unit> attackingLand = new CompositeMatchAnd<Unit>();
 		attackingLand.add(Matches.alliedUnit(m_attacker, m_data));
 		attackingLand.add(Matches.UnitIsLand);
-		boolean someAttacking = m_battleSite.getUnits().someMatch(attackingLand);
+		final boolean someAttacking = m_battleSite.getUnits().someMatch(attackingLand);
 		return someAttacking;
 	}
 	
@@ -92,13 +88,13 @@ public class NonFightingBattle extends AbstractBattle
 	}
 	
 	@Override
-	public void removeAttack(Route route, Collection<Unit> units)
+	public void removeAttack(final Route route, final Collection<Unit> units)
 	{
-		Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
+		final Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
 		while (dependents.hasNext())
 		{
-			Unit dependence = dependents.next();
-			Collection<Unit> dependent = m_dependentUnits.get(dependence);
+			final Unit dependence = dependents.next();
+			final Collection<Unit> dependent = m_dependentUnits.get(dependence);
 			dependent.removeAll(units);
 		}
 	}
@@ -110,7 +106,7 @@ public class NonFightingBattle extends AbstractBattle
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		// 2 battles are equal if they are both the same type (bombing or not)
 		// and occur on the same territory
@@ -118,10 +114,8 @@ public class NonFightingBattle extends AbstractBattle
 		// if these conditions are met
 		if (o == null || !(o instanceof IBattle))
 			return false;
-		
-		IBattle other = (IBattle) o;
-		return other.getTerritory().equals(this.m_battleSite) &&
-					other.isBombingRun() == this.isBombingRun();
+		final IBattle other = (IBattle) o;
+		return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun();
 	}
 	
 	@Override
@@ -131,16 +125,15 @@ public class NonFightingBattle extends AbstractBattle
 	}
 	
 	@Override
-	public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge)
+	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge)
 	{
 		Collection<Unit> lost = getDependentUnits(units);
 		lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
 		if (lost.size() != 0)
 		{
-			Change change = ChangeFactory.removeUnits(m_battleSite, lost);
+			final Change change = ChangeFactory.removeUnits(m_battleSite, lost);
 			bridge.addChange(change);
-			
-			String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
+			final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
 			bridge.getHistoryWriter().startEvent(transcriptText);
 		}
 	}

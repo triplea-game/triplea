@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.sound;
 
 import games.strategy.triplea.sound.SoundPath;
@@ -37,13 +36,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * The property will persist and be reloaded after the virtual machine
  * has been stopped and restarted.
  */
-
 public class ClipPlayer
 {
 	private static final String SOUND_PREFERENCE = "beSilent2";
 	private static ClipPlayer s_clipPlayer;
 	private boolean m_beSilent = false;
-	private HashMap<String, Clip> m_sounds = new HashMap<String, Clip>();
+	private final HashMap<String, Clip> m_sounds = new HashMap<String, Clip>();
 	
 	public static synchronized ClipPlayer getInstance()
 	{
@@ -57,7 +55,7 @@ public class ClipPlayer
 	 */
 	private ClipPlayer()
 	{
-		Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		m_beSilent = prefs.getBoolean(SOUND_PREFERENCE, true);
 	}
 	
@@ -75,19 +73,18 @@ public class ClipPlayer
 	 * This property is persisted using the java.util.prefs API, and will
 	 * persist after the vm has stopped.
 	 */
-	public void setBeSilent(boolean aBool)
+	public void setBeSilent(final boolean aBool)
 	{
 		m_beSilent = aBool;
-		Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		prefs.putBoolean(SOUND_PREFERENCE, m_beSilent);
 		try
 		{
 			prefs.flush();
-		} catch (BackingStoreException ex)
+		} catch (final BackingStoreException ex)
 		{
 			ex.printStackTrace();
 		}
-		
 	}
 	
 	/**
@@ -100,13 +97,11 @@ public class ClipPlayer
 	 *            Class - the location of the clip.
 	 */
 	// TODO Kev can call this to play sounds
-	public void playClip(String clipName, Class<SoundPath> resourceLocation)
+	public void playClip(final String clipName, final Class<SoundPath> resourceLocation)
 	{
-		
 		if (m_beSilent)
 			return;
-		
-		Clip clip = loadClip(clipName, resourceLocation);
+		final Clip clip = loadClip(clipName, resourceLocation);
 		if (clip != null)
 		{
 			clip.setFramePosition(0);
@@ -117,17 +112,15 @@ public class ClipPlayer
 	/**
 	 * To reduce the delay when the clip is first played, we can preload clips here.
 	 */
-	public void preLoadClip(String clipName, Class<SoundPath> resourceLocation)
+	public void preLoadClip(final String clipName, final Class<SoundPath> resourceLocation)
 	{
-		
 		loadClip(clipName, resourceLocation);
 	}
 	
-	private Clip loadClip(String clipName, Class<SoundPath> resourceLocation)
+	private Clip loadClip(final String clipName, final Class<SoundPath> resourceLocation)
 	{
 		if (getBeSilent())
 			return null;
-		
 		Clip clip;
 		if (m_sounds.containsKey(clipName))
 		{
@@ -141,41 +134,36 @@ public class ClipPlayer
 		return clip;
 	}
 	
-	private synchronized Clip loadClip(InputStream input)
+	private synchronized Clip loadClip(final InputStream input)
 	{
 		if (getBeSilent())
 			return null;
-		
 		try
 		{
-			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(input);
-			
-			AudioFormat format = audioInputStream.getFormat();
-			DataLine.Info info = new DataLine.Info(Clip.class, format);
-			
-			Clip clip = (Clip) AudioSystem.getLine(info);
+			final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(input);
+			final AudioFormat format = audioInputStream.getFormat();
+			final DataLine.Info info = new DataLine.Info(Clip.class, format);
+			final Clip clip = (Clip) AudioSystem.getLine(info);
 			clip.open(audioInputStream);
 			return clip;
-			
 		}
 		// these can happen if the sound isnt configured, its not that bad.
-		catch (LineUnavailableException e)
+		catch (final LineUnavailableException e)
 		{
 			e.printStackTrace(System.out);
-		} catch (IOException e)
+		} catch (final IOException e)
 		{
 			e.printStackTrace(System.out);
-		} catch (UnsupportedAudioFileException e)
+		} catch (final UnsupportedAudioFileException e)
 		{
 			e.printStackTrace(System.out);
-		} catch (RuntimeException re)
+		} catch (final RuntimeException re)
 		{
 			re.printStackTrace(System.out);
 		}
 		setBeSilent(true);
 		return null;
 	}
-	
 	// public static void main(String[] args) throws Exception
 	// {
 	//
@@ -196,5 +184,4 @@ public class ClipPlayer
 	// getInstance().playClip("start.wav", ClipPlayer.class);
 	//
 	// }
-	
 }

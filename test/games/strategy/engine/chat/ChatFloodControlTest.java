@@ -11,19 +11,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.engine.chat;
 
 import junit.framework.TestCase;
 
 public class ChatFloodControlTest extends TestCase
 {
-	private ChatFloodControl fc = new ChatFloodControl();
+	private final ChatFloodControl fc = new ChatFloodControl();
 	
 	@Override
 	public void setUp()
 	{
-		
 	}
 	
 	public void testSimple()
@@ -37,7 +35,6 @@ public class ChatFloodControlTest extends TestCase
 		{
 			fc.allow("", System.currentTimeMillis());
 		}
-		
 		assertFalse(fc.allow("", System.currentTimeMillis()));
 	}
 	
@@ -47,8 +44,6 @@ public class ChatFloodControlTest extends TestCase
 		{
 			fc.allow("", System.currentTimeMillis());
 		}
-		
 		assertTrue(fc.allow("", System.currentTimeMillis() + 1000 * 60 * 60));
 	}
-	
 }

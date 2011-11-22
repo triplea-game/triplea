@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * Node.java
  * 
  * Created on December 11, 2001, 8:13 PM
  */
-
 package games.strategy.net;
 
 import java.io.ByteArrayOutputStream;
@@ -34,23 +32,20 @@ import java.net.UnknownHostException;
  * 
  * @author Sean Bridges
  */
-
 // written very often over the network, so make externalizable to make faster and reduce traffic
 public class Node implements INode, Externalizable
 {
 	static final long serialVersionUID = -2908980662926959943L;
-	
 	private String m_name;
 	private int m_port;
 	private InetAddress m_address;
-	
 	public static final INode NULL_NODE;
 	static
 	{
 		try
 		{
 			NULL_NODE = new Node("NULL", InetAddress.getLocalHost(), -1);
-		} catch (UnknownHostException e)
+		} catch (final UnknownHostException e)
 		{
 			throw new IllegalStateException(e);
 		}
@@ -59,11 +54,10 @@ public class Node implements INode, Externalizable
 	// needed to support Externalizable
 	public Node()
 	{
-		
 	}
 	
 	/** Creates new Node */
-	public Node(String name, InetSocketAddress address)
+	public Node(final String name, final InetSocketAddress address)
 	{
 		m_name = name;
 		m_address = address.getAddress();
@@ -71,7 +65,7 @@ public class Node implements INode, Externalizable
 	}
 	
 	/** Creates new Node */
-	public Node(String name, InetAddress address, int port)
+	public Node(final String name, final InetAddress address, final int port)
 	{
 		m_name = name;
 		m_address = address;
@@ -87,9 +81,8 @@ public class Node implements INode, Externalizable
 	 * Node equality is done based on network adress/port.
 	 * The name is not part of the node identity.
 	 */
-	
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(final Object obj)
 	{
 		if (obj == this)
 			return true;
@@ -97,12 +90,8 @@ public class Node implements INode, Externalizable
 			return false;
 		if (!(obj instanceof Node))
 			return false;
-		
-		Node other = (Node) obj;
-		
-		return other.m_port == this.m_port
-					&& other.m_address.equals(this.m_address);
-		
+		final Node other = (Node) obj;
+		return other.m_port == this.m_port && other.m_address.equals(this.m_address);
 	}
 	
 	@Override
@@ -127,23 +116,20 @@ public class Node implements INode, Externalizable
 		return m_address;
 	}
 	
-	public void readExternal(ObjectInput in) throws IOException,
-				ClassNotFoundException
+	public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		m_name = in.readUTF();
 		m_port = in.readInt();
-		
-		int length = in.read();
-		byte[] bytes = new byte[length];
+		final int length = in.read();
+		final byte[] bytes = new byte[length];
 		for (int i = 0; i < length; i++)
 		{
 			bytes[i] = in.readByte();
 		}
-		
 		m_address = InetAddress.getByAddress(bytes);
 	}
 	
-	public void writeExternal(ObjectOutput out) throws IOException
+	public void writeExternal(final ObjectOutput out) throws IOException
 	{
 		out.writeUTF(m_name);
 		out.writeInt(m_port);
@@ -151,31 +137,27 @@ public class Node implements INode, Externalizable
 		out.write(m_address.getAddress());
 	}
 	
-	public int compareTo(INode o)
+	public int compareTo(final INode o)
 	{
 		if (o == null)
 			return -1;
 		return this.m_name.compareToIgnoreCase(o.getName());
-		
 	}
 	
-	public static void main(String[] args) throws IOException
+	public static void main(final String[] args) throws IOException
 	{
-		ByteArrayOutputStream sink = new ByteArrayOutputStream();
-		ObjectOutputStream out = new ObjectOutputStream(sink);
+		final ByteArrayOutputStream sink = new ByteArrayOutputStream();
+		final ObjectOutputStream out = new ObjectOutputStream(sink);
 		for (int i = 0; i < 1000; i++)
 		{
 			out.writeObject(new Node("" + i, InetAddress.getLocalHost(), i));
 		}
-		
 		out.close();
 		System.out.println("1000 nodes is:" + sink.toByteArray().length);
-		
 	}
 	
 	public InetSocketAddress getSocketAddress()
 	{
 		return new InetSocketAddress(m_address, m_port);
 	}
-	
 }

@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * GameData.java
  * 
  * Created on October 14, 2001, 7:11 AM
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.engine.data.events.GameDataChangeListener;
@@ -74,21 +72,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class GameData implements java.io.Serializable
 {
 	public static final String GAME_UUID = "GAME_UUID";
-	
 	private final ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
-	
 	private volatile transient boolean m_forceInSwingEventThread = false;
-	
 	private String m_gameName;
 	private Version m_gameVersion;
-	
 	private int m_diceSides;
-	
 	private transient ListenerList<TerritoryListener> m_territoryListeners = new ListenerList<TerritoryListener>();
 	private transient ListenerList<GameDataChangeListener> m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
-	
 	private final AllianceTracker m_alliances = new AllianceTracker(this);
-	
 	// Tracks current relationships between players, this is empty if relationships aren't used
 	private final RelationshipTracker m_relationships = new RelationshipTracker(this);
 	private final DelegateList m_delegateList;
@@ -106,16 +97,12 @@ public class GameData implements java.io.Serializable
 	private final GameProperties m_properties = new GameProperties(this);
 	private final UnitsList m_unitsList = new UnitsList();
 	private final TechnologyFrontier m_technologyFrontier = new TechnologyFrontier("allTechsForGame", this);
-	
 	private transient ResourceLoader m_resourceLoader;
-	
 	private IGameLoader m_loader;
 	private final History m_gameHistory = new History(this);
 	private volatile transient boolean m_testLockIsHeld = false;
-	
-	private List<IAttachment> attachmentOrder = new ArrayList<IAttachment>();
-	
-	private Hashtable<String, TerritoryEffect> m_territoryEffectList = new Hashtable<String, TerritoryEffect>();
+	private final List<IAttachment> attachmentOrder = new ArrayList<IAttachment>();
+	private final Hashtable<String, TerritoryEffect> m_territoryEffectList = new Hashtable<String, TerritoryEffect>();
 	
 	/** Creates new GameData */
 	public GameData()
@@ -145,9 +132,7 @@ public class GameData implements java.io.Serializable
 			return;
 		if (m_readWriteLock == null)
 			return;
-		
-		if (!LockUtil.isLockHeld(m_readWriteLock.readLock()) &&
-					!LockUtil.isLockHeld(m_readWriteLock.writeLock()))
+		if (!LockUtil.isLockHeld(m_readWriteLock.readLock()) && !LockUtil.isLockHeld(m_readWriteLock.writeLock()))
 		{
 			new Exception("Lock not held").printStackTrace(System.out);
 		}
@@ -270,7 +255,7 @@ public class GameData implements java.io.Serializable
 		return m_delegateList;
 	}
 	
-	public UnitHolder getUnitHolder(String name, String type)
+	public UnitHolder getUnitHolder(final String name, final String type)
 	{
 		ensureLockHeld();
 		if (type.equals(UnitHolder.PLAYER))
@@ -279,7 +264,6 @@ public class GameData implements java.io.Serializable
 			return m_map.getTerritory(name);
 		else
 			throw new IllegalStateException("Invalid type:" + type);
-		
 	}
 	
 	public GameProperties getProperties()
@@ -287,62 +271,62 @@ public class GameData implements java.io.Serializable
 		return m_properties;
 	}
 	
-	public void addTerritoryListener(TerritoryListener listener)
+	public void addTerritoryListener(final TerritoryListener listener)
 	{
 		m_territoryListeners.add(listener);
 	}
 	
-	public void removeTerritoryListener(TerritoryListener listener)
+	public void removeTerritoryListener(final TerritoryListener listener)
 	{
 		m_territoryListeners.remove(listener);
 	}
 	
-	public void addDataChangeListener(GameDataChangeListener listener)
+	public void addDataChangeListener(final GameDataChangeListener listener)
 	{
 		m_dataChangeListeners.add(listener);
 	}
 	
-	public void removeDataChangeListener(GameDataChangeListener listener)
+	public void removeDataChangeListener(final GameDataChangeListener listener)
 	{
 		m_dataChangeListeners.remove(listener);
 	}
 	
-	void notifyTerritoryUnitsChanged(Territory t)
+	void notifyTerritoryUnitsChanged(final Territory t)
 	{
-		Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
+		final Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
 		while (iter.hasNext())
 		{
-			TerritoryListener listener = iter.next();
+			final TerritoryListener listener = iter.next();
 			listener.unitsChanged(t);
 		}
 	}
 	
-	void notifyTerritoryAttachmentChanged(Territory t)
+	void notifyTerritoryAttachmentChanged(final Territory t)
 	{
-		Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
+		final Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
 		while (iter.hasNext())
 		{
-			TerritoryListener listener = iter.next();
+			final TerritoryListener listener = iter.next();
 			listener.attachmentChanged(t);
 		}
 	}
 	
-	void notifyTerritoryOwnerChanged(Territory t)
+	void notifyTerritoryOwnerChanged(final Territory t)
 	{
-		Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
+		final Iterator<TerritoryListener> iter = m_territoryListeners.iterator();
 		while (iter.hasNext())
 		{
-			TerritoryListener listener = iter.next();
+			final TerritoryListener listener = iter.next();
 			listener.ownerChanged(t);
 		}
 	}
 	
-	void notifyGameDataChanged(Change aChange)
+	void notifyGameDataChanged(final Change aChange)
 	{
-		Iterator<GameDataChangeListener> iter = m_dataChangeListeners.iterator();
+		final Iterator<GameDataChangeListener> iter = m_dataChangeListeners.iterator();
 		while (iter.hasNext())
 		{
-			GameDataChangeListener listener = iter.next();
+			final GameDataChangeListener listener = iter.next();
 			listener.gameDataChanged(aChange);
 		}
 	}
@@ -352,12 +336,12 @@ public class GameData implements java.io.Serializable
 		return m_loader;
 	}
 	
-	void setGameLoader(IGameLoader loader)
+	void setGameLoader(final IGameLoader loader)
 	{
 		m_loader = loader;
 	}
 	
-	void setGameVersion(Version version)
+	void setGameVersion(final Version version)
 	{
 		m_gameVersion = version;
 	}
@@ -367,7 +351,7 @@ public class GameData implements java.io.Serializable
 		return m_gameVersion;
 	}
 	
-	void setGameName(String gameName)
+	void setGameName(final String gameName)
 	{
 		m_gameName = gameName;
 	}
@@ -377,7 +361,7 @@ public class GameData implements java.io.Serializable
 		return m_gameName;
 	}
 	
-	void setDiceSides(int diceSides)
+	void setDiceSides(final int diceSides)
 	{
 		if (diceSides > 0 && diceSides <= 200)
 			m_diceSides = diceSides;
@@ -405,7 +389,6 @@ public class GameData implements java.io.Serializable
 	{
 		m_territoryListeners = new ListenerList<TerritoryListener>();
 		m_dataChangeListeners = new ListenerList<GameDataChangeListener>();
-		
 	}
 	
 	/**
@@ -419,7 +402,6 @@ public class GameData implements java.io.Serializable
 		// this can happen in very odd cirumcstances while deserializing
 		if (m_readWriteLock == null)
 			return;
-		
 		LockUtil.acquireLock(m_readWriteLock.readLock());
 	}
 	
@@ -428,7 +410,6 @@ public class GameData implements java.io.Serializable
 		// this can happen in very odd cirumcstances while deserializing
 		if (m_readWriteLock == null)
 			return;
-		
 		LockUtil.releaseLock(m_readWriteLock.readLock());
 	}
 	
@@ -451,7 +432,6 @@ public class GameData implements java.io.Serializable
 		// this can happen in very odd cirumcstances while deserializing
 		if (m_readWriteLock == null)
 			return;
-		
 		LockUtil.releaseLock(m_readWriteLock.writeLock());
 	}
 	
@@ -459,7 +439,6 @@ public class GameData implements java.io.Serializable
 	{
 		m_dataChangeListeners.clear();
 		m_territoryListeners.clear();
-		
 		if (m_resourceLoader != null)
 		{
 			m_resourceLoader.close();
@@ -486,7 +465,7 @@ public class GameData implements java.io.Serializable
 		return getResourceLoader();
 	}
 	
-	public void setAttachmentOrder(IAttachment attachment)
+	public void setAttachmentOrder(final IAttachment attachment)
 	{
 		attachmentOrder.add(attachment);
 	}
@@ -520,5 +499,4 @@ public class GameData implements java.io.Serializable
 	{
 		return m_territoryEffectList;
 	}
-	
 }

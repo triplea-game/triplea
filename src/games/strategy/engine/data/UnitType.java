@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * UnitType.java
  * 
  * Created on October 14, 2001, 7:51 AM
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -36,22 +34,21 @@ import java.util.List;
  */
 public class UnitType extends NamedAttachable implements Serializable
 {
-	
 	private static final long serialVersionUID = 4885339076798905247L;
 	
-	public UnitType(String name, GameData data)
+	public UnitType(final String name, final GameData data)
 	{
 		super(name, data);
 	}
 	
-	public List<Unit> create(int quantity, PlayerID owner)
+	public List<Unit> create(final int quantity, final PlayerID owner)
 	{
 		return create(quantity, owner, false);
 	}
 	
-	public List<Unit> create(int quantity, PlayerID owner, boolean isTemp)
+	public List<Unit> create(final int quantity, final PlayerID owner, final boolean isTemp)
 	{
-		List<Unit> collection = new ArrayList<Unit>();
+		final List<Unit> collection = new ArrayList<Unit>();
 		for (int i = 0; i < quantity; i++)
 		{
 			collection.add(create(owner, isTemp));
@@ -59,9 +56,9 @@ public class UnitType extends NamedAttachable implements Serializable
 		return collection;
 	}
 	
-	private Unit create(PlayerID owner, boolean isTemp)
+	private Unit create(final PlayerID owner, final boolean isTemp)
 	{
-		Unit u = getData().getGameLoader().getUnitFactory().createUnit(this, owner, getData());
+		final Unit u = getData().getGameLoader().getUnitFactory().createUnit(this, owner, getData());
 		if (!isTemp)
 		{
 			getData().getUnits().put(u);
@@ -69,13 +66,13 @@ public class UnitType extends NamedAttachable implements Serializable
 		return u;
 	}
 	
-	public Unit create(PlayerID owner)
+	public Unit create(final PlayerID owner)
 	{
 		return create(owner, false);
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == null)
 			return false;
@@ -90,7 +87,7 @@ public class UnitType extends NamedAttachable implements Serializable
 		return getName().hashCode();
 	}
 	
-	public String getTooltip(PlayerID playerId, boolean useHTML)
+	public String getTooltip(final PlayerID playerId, final boolean useHTML)
 	{
 		if (TooltipProperties.getInstance().getToolTip(this, playerId) == null || TooltipProperties.getInstance().getToolTip(this, playerId).equals(""))
 		{
@@ -110,5 +107,4 @@ public class UnitType extends NamedAttachable implements Serializable
 			return TooltipProperties.getInstance().getToolTip(this, playerId);
 		}
 	}
-	
 }

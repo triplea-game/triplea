@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.kingstable.player;
 
 import games.strategy.common.player.AbstractBaseAI;
@@ -24,8 +23,7 @@ import games.strategy.common.player.AbstractBaseAI;
  */
 public abstract class AbstractAI extends AbstractBaseAI implements IKingsTablePlayer
 {
-	
-	public AbstractAI(String name, String type)
+	public AbstractAI(final String name, final String type)
 	{
 		super(name, type);
 	}
@@ -35,9 +33,8 @@ public abstract class AbstractAI extends AbstractBaseAI implements IKingsTablePl
 	/**
 	 * The given phase has started. Parse the phase name and call the appropiate method.
 	 */
-	
 	@Override
-	public void start(String stepName)
+	public void start(final String stepName)
 	{
 		if (stepName.endsWith("Play"))
 			play();
@@ -47,5 +44,4 @@ public abstract class AbstractAI extends AbstractBaseAI implements IKingsTablePl
 	{
 		return IKingsTablePlayer.class;
 	}
-	
 }

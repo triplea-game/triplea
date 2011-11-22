@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.tictactoe.delegate;
 
 import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
@@ -35,13 +34,11 @@ public class EndTurnDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge bridge)
+	public void start(final IDelegateBridge bridge)
 	{
 		super.start(bridge);
-		
-		PlayerID winner = checkForWinner();
+		final PlayerID winner = checkForWinner();
 		if (winner != null)
 		{
 			if (winner.equals(PlayerID.NULL_PLAYERID))
@@ -54,26 +51,25 @@ public class EndTurnDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will stop running.
 	 */
-	
 	@Override
 	public void end()
 	{
 		super.end();
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		TicTacToeEndTurnExtendedDelegateState state = new TicTacToeEndTurnExtendedDelegateState();
+		final TicTacToeEndTurnExtendedDelegateState state = new TicTacToeEndTurnExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		TicTacToeEndTurnExtendedDelegateState s = (TicTacToeEndTurnExtendedDelegateState) state;
+		final TicTacToeEndTurnExtendedDelegateState s = (TicTacToeEndTurnExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 	}
@@ -84,11 +80,11 @@ public class EndTurnDelegate extends BaseDelegate
 	 * @param status
 	 *            the "game over" text to be displayed to each user.
 	 */
-	private void signalGameOver(String status)
+	private void signalGameOver(final String status)
 	{
 		// If the game is over, we need to be able to alert all UIs to that fact.
 		// The display object can send a message to all UIs.
-		ITicTacToeDisplay display = (ITicTacToeDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final ITicTacToeDisplay display = (ITicTacToeDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 		display.setGameOver();
 	}
@@ -100,16 +96,13 @@ public class EndTurnDelegate extends BaseDelegate
 	 */
 	private PlayerID checkForWinner()
 	{
-		GameMap map = getData().getMap();
-		
-		int boardWidth = map.getXDimension();
-		int boardHeight = map.getYDimension();
-		
-		Territory[][] grid = new Territory[boardWidth][boardHeight];
+		final GameMap map = getData().getMap();
+		final int boardWidth = map.getXDimension();
+		final int boardHeight = map.getYDimension();
+		final Territory[][] grid = new Territory[boardWidth][boardHeight];
 		for (int y = 0; y < boardHeight; y++)
 			for (int x = 0; x < boardWidth; x++)
 				grid[x][y] = map.getTerritoryFromCoordinates(x, y);
-		
 		PlayerID player;
 		// Check for horizontal win
 		for (int y = 0; y < boardHeight; y++)
@@ -135,7 +128,6 @@ public class EndTurnDelegate extends BaseDelegate
 				}
 			}
 		}
-		
 		// Check for vertical win
 		for (int x = 0; x < boardWidth; x++)
 		{
@@ -160,7 +152,6 @@ public class EndTurnDelegate extends BaseDelegate
 				}
 			}
 		}
-		
 		// Check for diagonal win
 		player = grid[0][0].getOwner();
 		if (player != null && !player.equals(PlayerID.NULL_PLAYERID))
@@ -179,7 +170,6 @@ public class EndTurnDelegate extends BaseDelegate
 				// signalGameOver(player.getName() + " wins diagonally!");
 			}
 		}
-		
 		// Check for diagonal win
 		player = grid[0][(boardWidth - 1)].getOwner();
 		if (player != null && !player.equals(PlayerID.NULL_PLAYERID))
@@ -198,7 +188,6 @@ public class EndTurnDelegate extends BaseDelegate
 				// signalGameOver(player.getName() + " wins diagonally!");
 			}
 		}
-		
 		// Check for empty squares
 		for (int x = 0; x < boardWidth; x++)
 		{
@@ -212,7 +201,6 @@ public class EndTurnDelegate extends BaseDelegate
 				}
 			}
 		}
-		
 		// If no one has won,
 		// and there are no empty squares
 		// the game is over
@@ -225,7 +213,6 @@ public class EndTurnDelegate extends BaseDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
-	
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
@@ -233,6 +220,7 @@ public class EndTurnDelegate extends BaseDelegate
 		return null;
 	}
 }
+
 
 @SuppressWarnings("serial")
 class TicTacToeEndTurnExtendedDelegateState implements Serializable

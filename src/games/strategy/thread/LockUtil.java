@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.strategy.thread;
 
 import java.lang.ref.WeakReference;
@@ -39,7 +38,6 @@ import java.util.concurrent.locks.Lock;
  */
 public class LockUtil
 {
-	
 	// the locks the current thread has
 	// because locks can be re-entrant, store this as a count
 	private final static ThreadLocal<Map<Lock, Integer>> m_locksHeld = new ThreadLocal<Map<Lock, Integer>>();
@@ -49,7 +47,7 @@ public class LockUtil
 	private final static Object m_mutex = new Object();
 	private static ErrorReporter m_errorReporter = new ErrorReporter();
 	
-	public static void acquireLock(Lock aLock)
+	public static void acquireLock(final Lock aLock)
 	{
 		synchronized (m_mutex)
 		{
@@ -57,37 +55,32 @@ public class LockUtil
 			{
 				m_locksHeld.set(new HashMap<Lock, Integer>());
 			}
-			
 			// we already have the lock, increaase the count
 			if (m_locksHeld.get().containsKey(aLock))
 			{
-				int current = m_locksHeld.get().get(aLock);
+				final int current = m_locksHeld.get().get(aLock);
 				m_locksHeld.get().put(aLock, current + 1);
 			}
 			// we don't have it
 			else
 			{
-				
 				// all the locks currently held must be acquired before a lock
 				if (!m_locksHeldWhenAcquired.containsKey(aLock))
 				{
 					m_locksHeldWhenAcquired.put(aLock, new HashSet<WeakLockRef>());
 				}
-				
-				for (Lock l : m_locksHeld.get().keySet())
+				for (final Lock l : m_locksHeld.get().keySet())
 				{
 					m_locksHeldWhenAcquired.get(aLock).add(new WeakLockRef(l));
 				}
-				
 				// we are lock a, check to
 				// see if any lock we hold (b)
 				// has evern been acquired before a
-				for (Lock l : m_locksHeld.get().keySet())
+				for (final Lock l : m_locksHeld.get().keySet())
 				{
-					Set<WeakLockRef> held = m_locksHeldWhenAcquired.get(l);
-					
+					final Set<WeakLockRef> held = m_locksHeldWhenAcquired.get(l);
 					// clear out of date locks
-					Iterator<WeakLockRef> iter = held.iterator();
+					final Iterator<WeakLockRef> iter = held.iterator();
 					while (iter.hasNext())
 					{
 						if (iter.next().get() == null)
@@ -95,20 +88,18 @@ public class LockUtil
 							iter.remove();
 						}
 					}
-					
 					if (held.contains(new WeakLockRef(aLock)))
 					{
 						m_errorReporter.reportError(aLock, l);
 					}
 				}
-				
 				m_locksHeld.get().put(aLock, 1);
 			}
 		}
 		aLock.lock();
 	}
 	
-	public static void releaseLock(Lock aLock)
+	public static void releaseLock(final Lock aLock)
 	{
 		synchronized (m_mutex)
 		{
@@ -119,11 +110,10 @@ public class LockUtil
 			else
 				m_locksHeld.get().put(aLock, count);
 		}
-		
 		aLock.unlock();
 	}
 	
-	public static boolean isLockHeld(Lock aLock)
+	public static boolean isLockHeld(final Lock aLock)
 	{
 		if (m_locksHeld.get() == null)
 			return false;
@@ -133,27 +123,25 @@ public class LockUtil
 		}
 	}
 	
-	public static void setErrorReporter(ErrorReporter reporter)
+	public static void setErrorReporter(final ErrorReporter reporter)
 	{
 		m_errorReporter = reporter;
 	}
-	
 }
 
 
 class ErrorReporter
 {
-	public void reportError(Lock from, Lock to)
+	public void reportError(final Lock from, final Lock to)
 	{
-		System.err.println("Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:"
-					+ getStackTrace());
+		System.err.println("Invalid lock ordering at, from:" + from + " to:" + to + " stack trace:" + getStackTrace());
 	}
 	
 	private String getStackTrace()
 	{
-		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-		StringBuilder builder = new StringBuilder();
-		for (StackTraceElement e : trace)
+		final StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+		final StringBuilder builder = new StringBuilder();
+		for (final StackTraceElement e : trace)
 		{
 			builder.append(e.toString());
 			builder.append("\n");
@@ -165,25 +153,24 @@ class ErrorReporter
 
 class WeakLockRef extends WeakReference<Lock>
 {
-	
 	// cache the hash code to make sure it doesn't change if our reference
 	// has been cleared
 	private final int hashCode;
 	
-	public WeakLockRef(Lock referent)
+	public WeakLockRef(final Lock referent)
 	{
 		super(referent);
 		hashCode = referent.hashCode();
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		if (o == this)
 			return true;
 		if (o instanceof WeakLockRef)
 		{
-			WeakLockRef other = (WeakLockRef) o;
+			final WeakLockRef other = (WeakLockRef) o;
 			return other.get() == this.get();
 		}
 		return false;
@@ -194,5 +181,4 @@ class WeakLockRef extends WeakReference<Lock>
 	{
 		return hashCode;
 	}
-	
 }

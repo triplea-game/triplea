@@ -14,25 +14,23 @@ import java.util.Collection;
 @SuppressWarnings("serial")
 public class MockBattle extends AbstractBattle
 {
-	
 	private Collection<Unit> m_amphibiousLandAttackers = new ArrayList<Unit>();
 	private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
-	
 	private boolean m_isAmphibious;
 	
-	public MockBattle(Territory battleSite)
+	public MockBattle(final Territory battleSite)
 	{
 		super(battleSite, null, null, null);
 	}
 	
 	@Override
-	public Change addAttackChange(Route route, Collection<Unit> units)
+	public Change addAttackChange(final Route route, final Collection<Unit> units)
 	{
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
 	@Override
-	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID player)
+	public Change addCombatChange(final Route route, final Collection<Unit> units, final PlayerID player)
 	{
 		return ChangeFactory.EMPTY_CHANGE;
 	}
@@ -45,17 +43,15 @@ public class MockBattle extends AbstractBattle
 	}
 	
 	@Override
-	public void fight(IDelegateBridge bridge)
+	public void fight(final IDelegateBridge bridge)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
-	public void unitsLostInPrecedingBattle(IBattle battle, Collection<Unit> units, IDelegateBridge bridge)
+	public void unitsLostInPrecedingBattle(final IBattle battle, final Collection<Unit> units, final IDelegateBridge bridge)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
@@ -64,16 +60,15 @@ public class MockBattle extends AbstractBattle
 		return m_isAmphibious;
 	}
 	
-	public void setIsAmphibious(boolean aBool)
+	public void setIsAmphibious(final boolean aBool)
 	{
 		m_isAmphibious = aBool;
 	}
 	
 	@Override
-	public void removeAttack(Route route, Collection<Unit> units)
+	public void removeAttack(final Route route, final Collection<Unit> units)
 	{
 		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
@@ -84,7 +79,7 @@ public class MockBattle extends AbstractBattle
 	}
 	
 	@Override
-	public Collection<Unit> getDependentUnits(Collection<Unit> units)
+	public Collection<Unit> getDependentUnits(final Collection<Unit> units)
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -96,7 +91,7 @@ public class MockBattle extends AbstractBattle
 		return m_amphibiousLandAttackers;
 	}
 	
-	public void setAmphibiousLandAttackers(Collection<Unit> units)
+	public void setAmphibiousLandAttackers(final Collection<Unit> units)
 	{
 		m_amphibiousLandAttackers = new ArrayList<Unit>(units);
 	}
@@ -107,7 +102,7 @@ public class MockBattle extends AbstractBattle
 		return m_bombardingUnits;
 	}
 	
-	public void setBombardingUnits(Collection<Unit> units)
+	public void setBombardingUnits(final Collection<Unit> units)
 	{
 		m_bombardingUnits = new ArrayList<Unit>(units);
 	}
@@ -130,5 +125,4 @@ public class MockBattle extends AbstractBattle
 	{
 		return new ArrayList<Unit>();
 	}
-	
 }

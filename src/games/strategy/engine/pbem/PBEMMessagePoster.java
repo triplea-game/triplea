@@ -24,21 +24,15 @@ public class PBEMMessagePoster implements Serializable
 	private static final String TURNSUMMARY_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.TURNSUMMARY_MSGR";
 	private static final String SCREENSHOT_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.SCREENSHOT_MSGR";
 	private static final String SAVEGAME_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.SAVEGAME_MSGR";
-	
 	private GameData m_gameData = null;
-	
 	private IPBEMMessenger m_turnSummaryMessenger = null;
 	private IPBEMMessenger m_screenshotMessenger = null;
 	private IPBEMMessenger m_saveGameMessenger = null;
-	
 	private String m_screenshotFilename = null;
 	private InputStream m_screenshotFileIn = null;
-	
 	private String m_saveGameFilename = null;
 	private InputStream m_saveGameFileIn = null;
-	
 	private String m_turnSummary = null;
-	
 	private String m_screenshotRef = null;
 	private String m_saveGameRef = null;
 	private String m_turnSummaryRef = null;
@@ -47,7 +41,7 @@ public class PBEMMessagePoster implements Serializable
 	{
 	}
 	
-	public PBEMMessagePoster(GameData gameData)
+	public PBEMMessagePoster(final GameData gameData)
 	{
 		m_gameData = gameData;
 		setTurnSummaryMessenger((IPBEMMessenger) gameData.getProperties().get(TURNSUMMARY_MSGR_PROP_NAME));
@@ -57,59 +51,57 @@ public class PBEMMessagePoster implements Serializable
 	
 	public boolean hasMessengers()
 	{
-		return (m_turnSummaryMessenger != null
-					|| m_screenshotMessenger != null || m_saveGameMessenger != null);
+		return (m_turnSummaryMessenger != null || m_screenshotMessenger != null || m_saveGameMessenger != null);
 	}
 	
-	public void setTurnSummaryMessenger(IPBEMMessenger msgr)
+	public void setTurnSummaryMessenger(final IPBEMMessenger msgr)
 	{
 		m_turnSummaryMessenger = msgr;
 	}
 	
 	public IPBEMTurnSummaryMessenger getTurnSummaryMessenger()
 	{
-		IPBEMMessenger msgr = m_turnSummaryMessenger;
+		final IPBEMMessenger msgr = m_turnSummaryMessenger;
 		if (msgr instanceof IPBEMTurnSummaryMessenger)
 			return (IPBEMTurnSummaryMessenger) msgr;
 		else
 			return null;
 	}
 	
-	public void setScreenshotMessenger(IPBEMMessenger msgr)
+	public void setScreenshotMessenger(final IPBEMMessenger msgr)
 	{
 		m_screenshotMessenger = msgr;
 	}
 	
 	public IPBEMScreenshotMessenger getScreenshotMessenger()
 	{
-		IPBEMMessenger msgr = m_screenshotMessenger;
+		final IPBEMMessenger msgr = m_screenshotMessenger;
 		if (msgr instanceof IPBEMScreenshotMessenger)
 			return (IPBEMScreenshotMessenger) msgr;
 		else
 			return null;
 	}
 	
-	public void setSaveGameMessenger(IPBEMMessenger msgr)
+	public void setSaveGameMessenger(final IPBEMMessenger msgr)
 	{
 		m_saveGameMessenger = msgr;
 	}
 	
 	public IPBEMSaveGameMessenger getSaveGameMessenger()
 	{
-		IPBEMMessenger msgr = m_saveGameMessenger;
+		final IPBEMMessenger msgr = m_saveGameMessenger;
 		if (msgr instanceof IPBEMSaveGameMessenger)
 			return (IPBEMSaveGameMessenger) msgr;
 		else
 			return null;
 	}
 	
-	public void setTurnSummary(String turnSummary)
+	public void setTurnSummary(final String turnSummary)
 	{
 		m_turnSummary = turnSummary;
 	}
 	
-	public void setScreenshot(File screenshotFile)
-				throws FileNotFoundException
+	public void setScreenshot(final File screenshotFile) throws FileNotFoundException
 	{
 		if (screenshotFile != null)
 			setScreenshot(screenshotFile.getName(), ((new FileInputStream(screenshotFile))));
@@ -117,14 +109,13 @@ public class PBEMMessagePoster implements Serializable
 			setScreenshot(null, null);
 	}
 	
-	public void setScreenshot(String filename, InputStream fileIn)
+	public void setScreenshot(final String filename, final InputStream fileIn)
 	{
 		m_screenshotFilename = filename;
 		m_screenshotFileIn = fileIn;
 	}
 	
-	public void setSaveGame(File saveGameFile)
-				throws FileNotFoundException
+	public void setSaveGame(final File saveGameFile) throws FileNotFoundException
 	{
 		if (saveGameFile != null)
 			setSaveGame(saveGameFile.getName(), ((new FileInputStream(saveGameFile))));
@@ -132,7 +123,7 @@ public class PBEMMessagePoster implements Serializable
 			setSaveGame(null, null);
 	}
 	
-	public void setSaveGame(String filename, InputStream fileIn)
+	public void setSaveGame(final String filename, final InputStream fileIn)
 	{
 		m_saveGameFilename = filename;
 		m_saveGameFileIn = fileIn;
@@ -155,32 +146,30 @@ public class PBEMMessagePoster implements Serializable
 	
 	private void setTestData()
 	{
-		IPBEMScreenshotMessenger screenshotMsgr = getScreenshotMessenger();
-		IPBEMSaveGameMessenger saveGameMsgr = getSaveGameMessenger();
-		IPBEMTurnSummaryMessenger turnSummaryMsgr = getTurnSummaryMessenger();
+		final IPBEMScreenshotMessenger screenshotMsgr = getScreenshotMessenger();
+		final IPBEMSaveGameMessenger saveGameMsgr = getSaveGameMessenger();
+		final IPBEMTurnSummaryMessenger turnSummaryMsgr = getTurnSummaryMessenger();
 		// set screenshot
 		if (screenshotMsgr != null)
 		{
-			BufferedImage testImage = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
-			Graphics g = testImage.createGraphics();
+			final BufferedImage testImage = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
+			final Graphics g = testImage.createGraphics();
 			g.setFont(new Font("Ariel", Font.BOLD, 15));
 			g.setColor(Color.WHITE);
 			g.drawString("Test Post", 15, 15);
-			
 			try
 			{
-				ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+				final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 				if (ImageIO.write(testImage, "jpg", byteOut))
 				{
-					ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
+					final ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
 					setScreenshot("test.jpg", byteIn);
 				}
-			} catch (IOException ioe)
+			} catch (final IOException ioe)
 			{
 				ioe.printStackTrace();
 			}
 		}
-		
 		// set save game
 		if (saveGameMsgr != null)
 		{
@@ -190,7 +179,7 @@ public class PBEMMessagePoster implements Serializable
 				saveGameFile = File.createTempFile("triplea", ".tsvg");
 				(new GameDataManager()).saveGame(saveGameFile, m_gameData);
 				setSaveGame(saveGameFile);
-			} catch (Exception e)
+			} catch (final Exception e)
 			{
 				e.printStackTrace();
 			}
@@ -206,12 +195,12 @@ public class PBEMMessagePoster implements Serializable
 		return post(null);
 	}
 	
-	public boolean post(IDelegateHistoryWriter historyWriter)
+	public boolean post(final IDelegateHistoryWriter historyWriter)
 	{
 		boolean retval = true;
-		IPBEMScreenshotMessenger screenshotMsgr = getScreenshotMessenger();
-		IPBEMSaveGameMessenger saveGameMsgr = getSaveGameMessenger();
-		IPBEMTurnSummaryMessenger turnSummaryMsgr = getTurnSummaryMessenger();
+		final IPBEMScreenshotMessenger screenshotMsgr = getScreenshotMessenger();
+		final IPBEMSaveGameMessenger saveGameMsgr = getSaveGameMessenger();
+		final IPBEMTurnSummaryMessenger turnSummaryMsgr = getTurnSummaryMessenger();
 		try
 		{
 			if (screenshotMsgr != null)
@@ -219,7 +208,7 @@ public class PBEMMessagePoster implements Serializable
 					m_screenshotRef = screenshotMsgr.getScreenshotRef();
 				else
 					retval = false;
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -230,7 +219,7 @@ public class PBEMMessagePoster implements Serializable
 					m_saveGameRef = saveGameMsgr.getSaveGameRef();
 				else
 					retval = false;
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -240,7 +229,7 @@ public class PBEMMessagePoster implements Serializable
 		{
 			if (turnSummaryMsgr != null && !turnSummaryMsgr.postTurnSummary(m_turnSummary, m_screenshotRef, m_saveGameRef))
 				retval = false;
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -249,7 +238,6 @@ public class PBEMMessagePoster implements Serializable
 		// and won't be set yet if there were posting errors
 		if (historyWriter != null)
 			historyWriter.startEvent("Post Turn Summary");
-		
 		if (screenshotMsgr != null)
 		{
 			m_screenshotRef = screenshotMsgr.getScreenshotRef();
@@ -268,13 +256,12 @@ public class PBEMMessagePoster implements Serializable
 			if (m_turnSummaryRef != null && historyWriter != null)
 				historyWriter.addChildToEvent("Turn Summary: " + m_turnSummaryRef, null);
 		}
-		
 		// finally, close input streams
 		try
 		{
 			if (m_screenshotFileIn != null)
 				m_screenshotFileIn.close();
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -282,14 +269,14 @@ public class PBEMMessagePoster implements Serializable
 		{
 			if (m_saveGameFileIn != null)
 				m_saveGameFileIn.close();
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			e.printStackTrace();
 		}
 		return retval;
 	}
 	
-	public void storeMessengers(GameData gameData)
+	public void storeMessengers(final GameData gameData)
 	{
 		// If set to the NullPBEMMessenger object, just save null
 		// to increase portability.
@@ -310,5 +297,4 @@ public class PBEMMessagePoster implements Serializable
 			saveObj = m_saveGameMessenger;
 		gameData.getProperties().set(SAVEGAME_MSGR_PROP_NAME, saveObj);
 	}
-	
 }

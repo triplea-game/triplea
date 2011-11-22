@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ZoomableImageExample.java
  * 
  * Created on October 30, 2001, 2:43 PM
  */
-
 package games.strategy.ui;
 
 import java.awt.Image;
@@ -46,23 +44,22 @@ import javax.swing.JScrollPane;
  */
 public class ZoomableImageExample extends JFrame
 {
-	
 	ZoomableImage panel;
 	
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		if (args.length == 0)
 		{
 			System.out.println("Expecting first and only arg to be the name of the image file");
 		}
-		JFrame frame = new ZoomableImageExample(args[0]);
+		final JFrame frame = new ZoomableImageExample(args[0]);
 		frame.setVisible(true);
 	}
 	
 	/** Creates new ZoomableImageExample */
-	public ZoomableImageExample(String imageName)
+	public ZoomableImageExample(final String imageName)
 	{
-		Image image = Toolkit.getDefaultToolkit().getImage(imageName);
+		final Image image = Toolkit.getDefaultToolkit().getImage(imageName);
 		panel = new ZoomableImage(image);
 		this.setSize(400, 400);
 		this.addWindowListener(EXIT_ON_CLOSE_WINDOW_LISTENER);
@@ -72,11 +69,10 @@ public class ZoomableImageExample extends JFrame
 	
 	final KeyListener KEY_LISTENER = new KeyAdapter()
 	{
-		
 		@Override
-		public void keyPressed(KeyEvent e)
+		public void keyPressed(final KeyEvent e)
 		{
-			char key = e.getKeyChar();
+			final char key = e.getKeyChar();
 			switch (key)
 			{
 				case 'z':
@@ -85,23 +81,18 @@ public class ZoomableImageExample extends JFrame
 			}
 		}
 	};
-	
 	private final Action ZOOM_COMMAND = new AbstractAction("save")
 	{
-		
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
-			String input = JOptionPane.showInputDialog("Get Zoom Factor");
+			final String input = JOptionPane.showInputDialog("Get Zoom Factor");
 			panel.setZoom(Integer.parseInt(input));
-			
 		}
 	};
-	
 	public static final WindowListener EXIT_ON_CLOSE_WINDOW_LISTENER = new WindowAdapter()
 	{
-		
 		@Override
-		public void windowClosing(WindowEvent e)
+		public void windowClosing(final WindowEvent e)
 		{
 			System.exit(0);
 		}

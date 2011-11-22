@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * ProductionResponseMessage.java
  * 
  * Created on August 28, 2004
  */
-
 package games.strategy.triplea.delegate.dataObjects;
 
 import games.strategy.engine.data.Unit;
@@ -27,7 +25,6 @@ import java.util.Collection;
 @SuppressWarnings("serial")
 public class PlaceableUnits implements java.io.Serializable
 {
-	
 	private String m_errorMessage;
 	private Collection<Unit> m_units;
 	private int m_maxUnits;
@@ -38,12 +35,12 @@ public class PlaceableUnits implements java.io.Serializable
 	 * @param errorMessage
 	 *            error message
 	 */
-	public PlaceableUnits(String errorMessage)
+	public PlaceableUnits(final String errorMessage)
 	{
 		m_errorMessage = errorMessage;
 	}
 	
-	public PlaceableUnits(Collection<Unit> units, int maxUnits)
+	public PlaceableUnits(final Collection<Unit> units, final int maxUnits)
 	{
 		m_units = units;
 		m_maxUnits = maxUnits;

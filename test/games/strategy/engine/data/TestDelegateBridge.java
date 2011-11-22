@@ -11,13 +11,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 /*
  * TestDelegateBridge.java
  * 
  * Created on November 10, 2001, 7:39 PM
  */
-
 package games.strategy.engine.data;
 
 import games.strategy.engine.display.IDisplay;
@@ -45,34 +43,28 @@ import java.util.Properties;
  */
 public class TestDelegateBridge implements ITestDelegateBridge
 {
-	private GameData m_data;
+	private final GameData m_data;
 	private PlayerID m_id;
 	private String m_stepName = "no name specified";
-	
 	private IChannelSubscribor m_dummyDisplay;
 	private IRandomSource m_randomSource;
-	
-	private IDelegateHistoryWriter m_historyWriter;
+	private final IDelegateHistoryWriter m_historyWriter;
 	private IRemote m_remote;
 	
 	/** Creates new TestDelegateBridge */
-	public TestDelegateBridge(GameData data, PlayerID id, IDisplay dummyDisplay)
+	public TestDelegateBridge(final GameData data, final PlayerID id, final IDisplay dummyDisplay)
 	{
 		m_data = data;
 		m_id = id;
 		m_dummyDisplay = dummyDisplay;
-		
-		History history = new History(m_data);
-		HistoryWriter historyWriter = new HistoryWriter(history);
+		final History history = new History(m_data);
+		final HistoryWriter historyWriter = new HistoryWriter(history);
 		historyWriter.startNextStep("", "", PlayerID.NULL_PLAYERID, "");
-		
-		ChannelMessenger channelMessenger = new ChannelMessenger(new UnifiedMessenger(new DummyMessenger()));
-		
+		final ChannelMessenger channelMessenger = new ChannelMessenger(new UnifiedMessenger(new DummyMessenger()));
 		m_historyWriter = new DelegateHistoryWriter(channelMessenger);
-		
 	}
 	
-	public void setDisplay(ITripleaDisplay display)
+	public void setDisplay(final ITripleaDisplay display)
 	{
 		m_dummyDisplay = display;
 	}
@@ -80,13 +72,12 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
-	
-	public int getRandom(int max, String annotation)
+	public int getRandom(final int max, final String annotation)
 	{
 		return m_randomSource.getRandom(max, annotation);
 	}
 	
-	public int[] getRandom(int max, int count, String annotation)
+	public int[] getRandom(final int max, final int count, final String annotation)
 	{
 		return m_randomSource.getRandom(max, count, annotation);
 	}
@@ -95,11 +86,9 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	 * Changing the player has the effect of commiting the current transaction.
 	 * Player is initialized to the player specified in the xml data.
 	 */
-	
-	public void setPlayerID(PlayerID aPlayer)
+	public void setPlayerID(final PlayerID aPlayer)
 	{
 		m_id = aPlayer;
-		
 	}
 	
 	public boolean inTransaction()
@@ -112,12 +101,12 @@ public class TestDelegateBridge implements ITestDelegateBridge
 		return m_id;
 	}
 	
-	public void addChange(Change aChange)
+	public void addChange(final Change aChange)
 	{
 		aChange.perform(m_data);
 	}
 	
-	public void setStepName(String name)
+	public void setStepName(final String name)
 	{
 		m_stepName = name;
 	}
@@ -125,7 +114,6 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/**
 	 * Returns the current step name
 	 */
-	
 	public String getStepName()
 	{
 		return m_stepName;
@@ -139,18 +127,15 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote()
 	 */
-
 	public IRemote getRemote()
 	{
-		
 		return m_remote;
 	}
 	
 	/*
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getRemote(games.strategy.engine.data.PlayerID)
 	 */
-
-	public IRemote getRemote(PlayerID id)
+	public IRemote getRemote(final PlayerID id)
 	{
 		return m_remote;
 	}
@@ -158,7 +143,6 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/* (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getDisplayChannelBroadcaster()
 	 */
-
 	public IChannelSubscribor getDisplayChannelBroadcaster()
 	{
 		return m_dummyDisplay;
@@ -177,12 +161,12 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	{
 	}
 	
-	public void setRandomSource(IRandomSource randomSource)
+	public void setRandomSource(final IRandomSource randomSource)
 	{
 		m_randomSource = randomSource;
 	}
 	
-	public void setRemote(IRemote remote)
+	public void setRemote(final IRemote remote)
 	{
 		m_remote = remote;
 	}
@@ -195,7 +179,6 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	 * (non-Javadoc)
 	 * @see games.strategy.engine.delegate.IDelegateBridge#getData()
 	 */
-
 	public GameData getData()
 	{
 		return m_data;

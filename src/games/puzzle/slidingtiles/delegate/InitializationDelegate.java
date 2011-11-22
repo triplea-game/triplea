@@ -11,7 +11,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
 package games.puzzle.slidingtiles.delegate;
 
 import games.puzzle.slidingtiles.attachments.Tile;
@@ -42,84 +41,65 @@ public class InitializationDelegate extends BaseDelegate
 	/**
 	 * Called before the delegate will run.
 	 */
-	
 	@Override
-	public void start(IDelegateBridge bridge)
+	public void start(final IDelegateBridge bridge)
 	{
 		super.start(bridge);
-		
-		GameMap map = getData().getMap();
-		
-		int width = map.getXDimension();
-		int height = map.getYDimension();
-		
-		Territory[][] board = new Territory[width][height];
-		
-		INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
+		final GameMap map = getData().getMap();
+		final int width = map.getXDimension();
+		final int height = map.getYDimension();
+		final Territory[][] board = new Territory[width][height];
+		final INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus("Shuffling tiles...");
-		
 		m_bridge.getHistoryWriter().startEvent("Initializing board");
-		
-		CompositeChange initializingBoard = new CompositeChange();
-		
+		final CompositeChange initializingBoard = new CompositeChange();
 		for (int x = 0; x < width; x++)
 		{
 			for (int y = 0; y < height; y++)
 			{
 				board[x][y] = map.getTerritoryFromCoordinates(x, y);
-				Tile tile = new Tile(x + y * width);
+				final Tile tile = new Tile(x + y * width);
 				// System.out.println("board["+x+"]["+y+"]=="+(x + y*width));
-				Change change = ChangeFactory.addAttachmentChange(tile, board[x][y], "tile");
+				final Change change = ChangeFactory.addAttachmentChange(tile, board[x][y], "tile");
 				initializingBoard.add(change);
 			}
 		}
-		
 		m_bridge.addChange(initializingBoard);
-		
 		// INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.initializeBoard();
 		display.performPlay();
-		
 		m_bridge.getHistoryWriter().startEvent("Randomizing board");
 		// CompositeChange randomizingBoard = new CompositeChange();
-		
 		Territory blank = board[0][0];
 		Territory dontChooseNextTime = null;
 		Territory swap = null;
-		
 		// System.out.println("Random stuff!");
-		GameProperties properties = getData().getProperties();
-		int numberOfShuffles = Integer.valueOf((String) properties.get("Difficulty Level"));
+		final GameProperties properties = getData().getProperties();
+		final int numberOfShuffles = Integer.valueOf((String) properties.get("Difficulty Level"));
 		// int numberOfShuffles = 0;
 		// Randomly shuffle the tiles on the board,
 		// but don't move a tile back to where it just was.
-		Random random = new Random();
+		final Random random = new Random();
 		for (int i = 0; i < numberOfShuffles; i++)
 		{
 			while (swap == null || swap.equals(dontChooseNextTime))
 			{
-				List<Territory> neighbors = new ArrayList<Territory>(map.getNeighbors(blank));
+				final List<Territory> neighbors = new ArrayList<Territory>(map.getNeighbors(blank));
 				swap = neighbors.get(random.nextInt(neighbors.size()));
 			}
-			
 			try
 			{
 				Thread.sleep(75);
-			} catch (InterruptedException e)
+			} catch (final InterruptedException e)
 			{
 			}
-			
 			PlayDelegate.swap(m_bridge, swap, blank);
 			// randomizingBoard.add(change);
-			
 			dontChooseNextTime = blank;
 			blank = swap;
 			swap = null;
-			
 		}
-		
 		display.setStatus(" ");
-		
 		// m_bridge.addChange(randomizingBoard);
 		// display.performPlay();
 	}
@@ -129,20 +109,20 @@ public class InitializationDelegate extends BaseDelegate
 	{
 		super.end();
 	}
-
+	
 	@Override
 	public Serializable saveState()
 	{
-		SlidingTilesInitializationExtendedDelegateState state = new SlidingTilesInitializationExtendedDelegateState();
+		final SlidingTilesInitializationExtendedDelegateState state = new SlidingTilesInitializationExtendedDelegateState();
 		state.superState = super.saveState();
 		// add other variables to state here:
 		return state;
 	}
-
+	
 	@Override
-	public void loadState(Serializable state)
+	public void loadState(final Serializable state)
 	{
-		SlidingTilesInitializationExtendedDelegateState s = (SlidingTilesInitializationExtendedDelegateState) state;
+		final SlidingTilesInitializationExtendedDelegateState s = (SlidingTilesInitializationExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
 	}
@@ -151,7 +131,6 @@ public class InitializationDelegate extends BaseDelegate
 	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
 	 * Otherwise, returns null.
 	 */
-	
 	@Override
 	public Class<? extends IRemote> getRemoteType()
 	{
@@ -159,6 +138,7 @@ public class InitializationDelegate extends BaseDelegate
 		return null;
 	}
 }
+
 
 @SuppressWarnings("serial")
 class SlidingTilesInitializationExtendedDelegateState implements Serializable
