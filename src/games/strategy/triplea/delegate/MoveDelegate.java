@@ -102,18 +102,26 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 				TriggerAttachment.triggerTerritoryEffectPropertyChange(m_player, aBridge, null, null);
 				triggerDefaultNotificationTriggerAttachments(m_player, aBridge);
 			}
+			
 			// repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
 			if (!m_nonCombat && games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(data))
 				MoveDelegate.repairBattleShips(m_bridge, m_player, true);
+			
+			// reset any bonus of units.
+			resetBonusMovement();
+			
 			// give movement to units which begin the turn in the same territory as units with giveMovement (like air and naval bases)
 			if (!m_nonCombat && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(data))
 				giveBonusMovement(m_bridge, m_player);
+			
 			// take away all movement from allied fighters sitting on damaged carriers
 			if (!m_nonCombat)
 				removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_player);
+			
 			// placing triggered units at beginning of combat move.
 			if (!m_nonCombat && games.strategy.triplea.Properties.getTriggers(data))
 				TriggerAttachment.triggerUnitPlacement(m_player, m_bridge, null, null);
+			
 			m_needToInitialize = false;
 		}
 		if (m_tempMovePerformer != null)
@@ -161,6 +169,10 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 				if (TripleAUnit.get(u).getAlreadyMoved() != 0)
 				{
 					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.ALREADY_MOVED));
+				}
+				if (TripleAUnit.get(u).getBonusMovement() != 0)
+				{
+					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.BONUS_MOVEMENT));
 				}
 				if (TripleAUnit.get(u).getSubmerged())
 				{
@@ -288,6 +300,24 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			throw new IllegalStateException("Cannot determine combat or not");
 	}
 	
+	private void resetBonusMovement()
+	{
+		final GameData data = getData();
+		final CompositeChange change = new CompositeChange();
+		for (final Unit u : data.getUnits())
+		{
+			if (TripleAUnit.get(u).getBonusMovement() != 0)
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.BONUS_MOVEMENT));
+			}
+		}
+		if (!change.isEmpty())
+		{
+			m_bridge.getHistoryWriter().startEvent("Reseting Bonus Movement of Units");
+			m_bridge.addChange(change);
+		}
+	}
+	
 	private void triggerDefaultNotificationTriggerAttachments(final PlayerID player, final IDelegateBridge aBridge)
 	{
 		final Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(player, getData().getSequence().getStep().getDelegate().getBridge(), null, null).iterator();
@@ -321,7 +351,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 				if (taUnit.getTransportedBy() != null)
 				{
 					if (crippledAlliedCarriers.contains(taUnit.getTransportedBy()))
-						change.add(ChangeFactory.unitPropertyChange(fighter, UnitAttachment.get(fighter.getType()).getMovement(player), TripleAUnit.ALREADY_MOVED));
+						change.add(ChangeFactory.markNoMovementChange(fighter));
 				}
 			}
 		}
@@ -329,16 +359,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			aBridge.addChange(change);
 	}
 	
-	/**
-	 * This entire method relies on the fact that "TripleAUnit.ALREADY_MOVED" can be a negative value.
-	 * Normally TripleAUnit.ALREADY_MOVED is positive, and so it is increased each time the unit moves.
-	 * But since we make it a negative value here, a unit is temporarily gaining movement for this turn.
-	 * Thankfully the movement validator takes this into account.
-	 * 
-	 * changing ALREADY_MOVED means that a unit will not be able to match certain things like 'has not moved' and 'has moved' correctly... TODO: we should change to a separate bonus somehow
-	 * 
-	 * (veqryn)
-	 */
 	private void giveBonusMovement(final IDelegateBridge aBridge, final PlayerID player)
 	{
 		final GameData data = aBridge.getData();
@@ -372,12 +392,10 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 						if (tempBonus > bonusMovement)
 							bonusMovement = tempBonus;
 					}
-					if (bonusMovement != Integer.MIN_VALUE)
+					if (bonusMovement != Integer.MIN_VALUE && bonusMovement != 0)
 					{
-						// changing ALREADY_MOVED means that a unit will not be able to match certain things like 'has not moved' and 'has moved' correctly... we should change to a separate bonus somehow
-						bonusMovement = bonusMovement * -1;
-						bonusMovement = Math.min(bonusMovement, UnitAttachment.get(u.getType()).getMovement(player));
-						change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, TripleAUnit.ALREADY_MOVED));
+						bonusMovement = Math.max(bonusMovement, (UnitAttachment.get(u.getType()).getMovement(player) * -1));
+						change.add(ChangeFactory.unitPropertyChange(u, bonusMovement, TripleAUnit.BONUS_MOVEMENT));
 					}
 				}
 			}
@@ -590,7 +608,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	{
 		final int alreadyMoved = TripleAUnit.get(unit).getAlreadyMoved();
 		final int maxMovement = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
-		return ChangeFactory.unitPropertyChange(unit, Math.min(alreadyMoved, maxMovement - 1), TripleAUnit.ALREADY_MOVED);
+		final int bonusMovement = TripleAUnit.get(unit).getBonusMovement();
+		return ChangeFactory.unitPropertyChange(unit, Math.min(alreadyMoved, (maxMovement + bonusMovement) - 1), TripleAUnit.ALREADY_MOVED);
 	}
 	
 	/* This code is already done in BattleDelegate, so why is it duplicated here?

@@ -392,7 +392,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 						while(attackIter.hasNext())
 						{
 						 TripleAUnit attacker = (TripleAUnit) attackIter.next();
-						 change.add(ChangeFactory.unitPropertyChange(attacker, attacker.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));
+						 change.add(ChangeFactory.unitPropertyChange(attacker, TripleAUnit.get(unit).getMaxMovementAllowed(), TripleAUnit.ALREADY_MOVED));
 						 //change.add(DelegateFinder.moveDelegate(m_data).markNoMovementChange(attackingUnits));    + attacker.getMovementLeft()
 						}*/
 					}

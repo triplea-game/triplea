@@ -322,7 +322,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			firstSeaZoneOnAmphib = amphibRoute.getTerritories().get(0);
 			lastSeaZoneOnAmphib = amphibRoute.getTerritories().get(amphibRoute.getLength() - 1);
 		}
-		final Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), HasntMoved, Transporting);
+		final Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved, Transporting);
 		final List<Unit> unitsToMove = new ArrayList<Unit>();
 		final List<Unit> transports = firstSeaZoneOnAmphib.getUnits().getMatches(ownedAndNotMoved);
 		if (transports.size() <= maxTrans)
@@ -364,7 +364,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			lastSeaZoneOnAmphib = amphibRoute.getTerritories().get(amphibRoute.getLength() - 1);
 		}
 		final Collection<Unit> alreadyMoved = new HashSet<Unit>();
-		final Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), HasntMoved);
+		final Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved);
 		for (final Territory t : data.getMap())
 		{
 			// move sea units to the capitol, unless they are loaded transports
@@ -517,7 +517,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			if (!transportOnSea.match(t))
 				continue;
-			final CompositeMatchAnd<Unit> ownedTransports = new CompositeMatchAnd<Unit>(Matches.UnitCanTransport, Matches.unitIsOwnedBy(player), HasntMoved);
+			final CompositeMatchAnd<Unit> ownedTransports = new CompositeMatchAnd<Unit>(Matches.UnitCanTransport, Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved);
 			final CompositeMatchAnd<Territory> enemyTerritory = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsLand, new InverseMatch<Territory>(
 						Matches.TerritoryIsNeutral), Matches.TerritoryIsEmpty);
 			final int trans = t.getUnits().countMatches(ownedTransports);
@@ -1361,15 +1361,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return dice;
 	}
 	
-	// some additional matches
-	public static final Match<Unit> HasntMoved = new Match<Unit>()
-	{
-		@Override
-		public boolean match(final Unit o)
-		{
-			return TripleAUnit.get(o).getAlreadyMoved() == 0;
-		}
-	};
 	public static final Match<Unit> Transporting = new Match<Unit>()
 	{
 		@Override

@@ -21,7 +21,6 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.CompositeMatchAnd;
@@ -251,7 +250,7 @@ public class ChangeFactory
 	 *            referring units
 	 * @return change that contains marking of units as having no movement
 	 */
-	static public Change markNoMovementChange(final Collection<Unit> units)
+	public static Change markNoMovementChange(final Collection<Unit> units)
 	{
 		if (units.isEmpty())
 			return EMPTY_CHANGE;
@@ -264,10 +263,9 @@ public class ChangeFactory
 		return change;
 	}
 	
-	private static Change markNoMovementChange(final Unit unit)
+	public static Change markNoMovementChange(final Unit unit)
 	{
-		final UnitAttachment ua = UnitAttachment.get(unit.getType());
-		return unitPropertyChange(unit, ua.getMovement(unit.getOwner()), TripleAUnit.ALREADY_MOVED);
+		return unitPropertyChange(unit, TripleAUnit.get(unit).getMaxMovementAllowed(), TripleAUnit.ALREADY_MOVED);
 	}
 }
 

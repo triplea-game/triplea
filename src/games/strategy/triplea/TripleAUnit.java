@@ -53,6 +53,7 @@ public class TripleAUnit extends Unit
 	public static final String UNLOADED_TO = "unloadedTo";
 	public static final String UNLOADED_IN_COMBAT_PHASE = "wasUnloadedInCombatPhase";
 	public static final String ALREADY_MOVED = "alreadyMoved";
+	public static final String BONUS_MOVEMENT = "bonusMovement";
 	public static final String MOVEMENT_LEFT = "movementLeft";
 	public static final String SUBMERGED = "submerged";
 	public static final String ORIGINAL_OWNER = "originalOwner";
@@ -63,30 +64,25 @@ public class TripleAUnit extends Unit
 	public static final String WAS_SCRAMBLED = "wasScrambled";
 	public static final String UNIT_DAMAGE = "unitDamage";
 	public static final String DISABLED = "disabled";
-	// the transport that is currently transporting us
-	private TripleAUnit m_transportedBy = null;
-	// the units we have unloaded this turn
-	private List<Unit> m_unloaded = Collections.emptyList();
-	// was this unit loaded this turn?
-	private Boolean m_wasLoadedThisTurn = Boolean.FALSE;
-	// the territory this unit was unloaded to this turn
-	private Territory m_unloadedTo = null;
-	// was this unit unloaded in combat phase this turn?
-	private Boolean m_wasUnloadedInCombatPhase = Boolean.FALSE;
-	// movement used this turn
-	private int m_alreadyMoved = 0;
-	// amount of damage unit has sustained
-	private int m_unitDamage = 0;
-	// is this submarine submerged
-	private boolean m_submerged = false;
-	// original owner of this unit
-	private PlayerID m_originalOwner = null;
-	// Was this unit in combat
-	private boolean m_wasInCombat = false;
+	
+	private TripleAUnit m_transportedBy = null; // the transport that is currently transporting us
+	private List<Unit> m_unloaded = Collections.emptyList(); // the units we have unloaded this turn
+	private Boolean m_wasLoadedThisTurn = Boolean.FALSE; // was this unit loaded this turn?
+	private Territory m_unloadedTo = null; // the territory this unit was unloaded to this turn
+	private Boolean m_wasUnloadedInCombatPhase = Boolean.FALSE; // was this unit unloaded in combat phase this turn?
+	
+	private int m_alreadyMoved = 0; // movement used this turn
+	private int m_bonusMovement = 0; // movement used this turn
+	private int m_unitDamage = 0; // amount of damage unit has sustained
+	
+	private boolean m_submerged = false; // is this submarine submerged
+	private PlayerID m_originalOwner = null; // original owner of this unit
+	
+	private boolean m_wasInCombat = false; // Was this unit in combat
 	private boolean m_wasLoadedAfterCombat = false;
 	private boolean m_wasAmphibious = false;
-	// the territory this unit started in
-	private Territory m_originatedFrom = null;
+	
+	private Territory m_originatedFrom = null; // the territory this unit started in (for use with scrambling)
 	private boolean m_wasScrambled = false;
 	private boolean m_disabled = false;
 	
@@ -219,10 +215,27 @@ public class TripleAUnit extends Unit
 		m_alreadyMoved = alreadyMoved;
 	}
 	
+	public void setBonusMovement(final Integer bonusMovement)
+	{
+		m_bonusMovement = bonusMovement;
+	}
+	
+	public int getBonusMovement()
+	{
+		return m_bonusMovement;
+	}
+	
+	/**
+	 * Does not account for any movement already made. Generally equal to UnitType movement
+	 */
+	public int getMaxMovementAllowed()
+	{
+		return Math.max(0, m_bonusMovement + UnitAttachment.get(getType()).getMovement(getOwner()));
+	}
+	
 	public int getMovementLeft()
 	{
-		final int canMove = UnitAttachment.get(getType()).getMovement(getOwner());
-		return canMove - m_alreadyMoved;
+		return Math.max(0, UnitAttachment.get(getType()).getMovement(getOwner()) + m_bonusMovement - m_alreadyMoved);
 	}
 	
 	public int getUnitDamage()

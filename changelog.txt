@@ -1,4 +1,6 @@
 Changes for 1.5
+* Created new TripleAUnit variable for keeping track of bonus movement, and eliminated use of unit attachment getMovement.  In order to see a units movement, please use either getMaxMovementAllowed() or getMovementLeft(), both in TripleAUnit. (veqryn)
+
 * Complete cleanup of all code, adding final on to everything that can take it. (veqryn)
 
 * Redoing of movement validation to use movement costs, and completely rewriting the movement validation of carriers and aircraft for landing zones. (edwin van der wal)

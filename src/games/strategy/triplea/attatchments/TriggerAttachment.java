@@ -20,7 +20,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -1048,8 +1047,7 @@ public class TriggerAttachment extends DefaultAttachment
 		// mark no movement
 		for (final Unit unit : units)
 		{
-			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			change.add(ChangeFactory.unitPropertyChange(unit, ua.getMovement(unit.getOwner()), TripleAUnit.ALREADY_MOVED));
+			change.add(ChangeFactory.markNoMovementChange(unit));
 		}
 		// place units
 		final Collection<Unit> factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);

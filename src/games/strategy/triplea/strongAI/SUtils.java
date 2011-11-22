@@ -4414,7 +4414,7 @@ public class SUtils
 			uAttack--;
 		else if (thisIsSub && uDefense >= 1)
 			uDefense--;
-		// Encourage buying balanced units. Added by veqryn, to decrease the rate at which the AI buys walls, fortresses, and mortars, among other specialy units that should not be bought often if at all.
+		// Encourage buying balanced units. Added by veqryn, to decrease the rate at which the AI buys walls, fortresses, and mortars, among other specialty units that should not be bought often if at all.
 		if (u.getMovement(player) == 0)
 			uAttack = 0;
 		if ((u.getAttack(player) == 0 || u.getDefense(player) - u.getAttack(player) >= 4) && u.getDefense(player) >= 1)

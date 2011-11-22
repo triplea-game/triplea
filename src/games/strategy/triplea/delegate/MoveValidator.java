@@ -1141,8 +1141,8 @@ public class MoveValidator
 					return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
 			}
 		} // !isEditMode
-		// make sure that no non sea non transportable no carriable units
-		// end at sea
+			// make sure that no non sea non transportable no carriable units
+			// end at sea
 		if (route.getEnd() != null && route.getEnd().isWater())
 		{
 			for (final Unit unit : MoveValidator.getUnitsThatCantGoOnWater(units))
@@ -1929,7 +1929,7 @@ public class MoveValidator
 			final int cost = planeAttatchment.getCarrierCost();
 			if (available >= cost)
 			{
-				// this is to test if they started in the same sea zone or not, however a unit could have their alreadyMoved modified by naval or air bases, so until we unify all the different movement/carrying/transporting methods into a single framework, we will just hack this
+				// this is to test if they started in the same sea zone or not, and its not a very good way of testing it.
 				if (tACarrier.getAlreadyMoved() == tAPlane.getAlreadyMoved() || (Matches.unitHasNotMoved.match(plane) && Matches.unitHasNotMoved.match(carrier)))
 				{
 					available -= cost;
