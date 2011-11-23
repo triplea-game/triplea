@@ -50,6 +50,7 @@ import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 import games.strategy.util.Util;
 
 import java.util.ArrayList;
@@ -1348,6 +1349,11 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return null;
 	}*/
 
+	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	{
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectFixedDice(int, java.lang.String)
 	 */

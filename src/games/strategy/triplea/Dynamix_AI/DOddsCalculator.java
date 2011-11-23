@@ -49,6 +49,7 @@ import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -333,6 +334,11 @@ class DummyPlayer extends AbstractAI
 		return null;
 	}*/
 
+	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	{
+		return null;
+	}
+	
 	boolean useDefaultSelectionThisTime = false;
 	
 	@Override

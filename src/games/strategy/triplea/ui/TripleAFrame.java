@@ -76,6 +76,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -96,16 +97,21 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -779,6 +785,77 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		final Territory selected = (Territory) list.getSelectedValue();
 		return selected;
+	}
+	
+	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	{
+		if (SwingUtilities.isEventDispatchThread())
+		{
+			throw new IllegalStateException("Should not be called from dispatch thread");
+		}
+		final CountDownLatch continueLatch = new CountDownLatch(1);
+		final HashMap<Territory, Collection<Unit>> selection = new HashMap<Territory, Collection<Unit>>();
+		final Collection<Tuple<Territory, UnitChooser>> choosers = new ArrayList<Tuple<Territory, UnitChooser>>();
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				m_mapPanel.centerOn(scrambleTo);
+				final JPanel panel = new JPanel();
+				panel.setLayout(new FlowLayout());
+				for (final Territory from : possibleScramblers.keySet())
+				{
+					JScrollPane chooserScrollPane;
+					final JPanel panelChooser = new JPanel();
+					panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
+					panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
+					final JLabel whereFrom = new JLabel("From: " + from.getName());
+					whereFrom.setHorizontalAlignment(JLabel.LEFT);
+					whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
+					panelChooser.add(whereFrom);
+					panelChooser.add(new JLabel(" "));
+					final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
+					final int maxAllowed = Math.min(possibleScramblers.get(from).getFirst(), possible.size());
+					final UnitChooser chooser = new UnitChooser(possible, Collections.<Unit, Collection<Unit>> emptyMap(), m_data, false, m_uiContext);
+					chooser.setMaxAndShowMaxButton(maxAllowed);
+					choosers.add(new Tuple<Territory, UnitChooser>(from, chooser));
+					panelChooser.add(chooser);
+					chooserScrollPane = new JScrollPane(panelChooser);
+					panel.add(chooserScrollPane);
+				}
+				final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units to scramble to " + scrambleTo.getName(),
+							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				if (option == JOptionPane.NO_OPTION)
+				{
+					continueLatch.countDown();
+					return;
+				}
+				if (option == JOptionPane.CANCEL_OPTION)
+				{
+					try
+					{
+						Thread.sleep(10000);
+					} catch (final InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+					run();
+				}
+				for (final Tuple<Territory, UnitChooser> terrChooser : choosers)
+				{
+					selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
+				}
+				continueLatch.countDown();
+			}
+		});
+		try
+		{
+			continueLatch.await();
+		} catch (final InterruptedException ex)
+		{
+			ex.printStackTrace();
+		}
+		return selection;
 	}
 	
 	public void notifyPoliticalMessage(final String message)

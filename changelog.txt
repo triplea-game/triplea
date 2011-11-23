@@ -1,4 +1,6 @@
 Changes for 1.5
+* Wrote new Scrambling ui dialog from scratch, and made it work over the network. (veqryn)
+
 * New game option, "AI Bonus Income Flat Rate", which gives a flat bonus every turn to all AIs. (veqryn)
 
 * Changed PlayerID.getData() to be deprecated, and removed all uses of it that I could. (veqryn)

@@ -553,11 +553,23 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		{
 			final Territory to = terrPlayer.getFirst();
 			final PlayerID defender = terrPlayer.getSecond();
+			boolean scrambledHere = false;
 			for (final HashMap<Territory, Tuple<Integer, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer.get(terrPlayer))
 			{
-				// TODO: ask the defender if they want to scramble anything, using remote and "scramblersByPlayer". for now, say the first bunch!
-				final Map<Territory, Collection<Unit>> toScramble = new HashMap<Territory, Collection<Unit>>();
-				toScramble.put(scramblers.keySet().iterator().next(), scramblers.get(scramblers.keySet().iterator().next()).getSecond());
+				final Map<Territory, Collection<Unit>> toScramble = ((ITripleaPlayer) m_bridge.getRemote(defender)).scrambleUnitsQuery(to, scramblers);
+				if (toScramble == null)
+					continue;
+				
+				// verify max allowed
+				if (!scramblers.keySet().containsAll(toScramble.keySet()))
+					throw new IllegalStateException("Trying to scramble from illegal territory");
+				for (final Territory t : scramblers.keySet())
+				{
+					if (toScramble.get(t) == null)
+						continue;
+					if (toScramble.get(t).size() > scramblers.get(t).getFirst())
+						throw new IllegalStateException("Trying to scramble " + toScramble.get(t).size() + " out of " + t.getName() + ", but max allowed is " + scramblers.get(t).getFirst());
+				}
 				
 				final CompositeChange change = new CompositeChange();
 				for (final Territory t : toScramble.keySet())
@@ -574,10 +586,13 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					m_bridge.getHistoryWriter()
 								.startEvent(defender.getName() + " scrambles " + scrambling.size() + " units out of " + t.getName() + " to defend against the attack in " + to.getName());
 					m_bridge.getHistoryWriter().setRenderingData(scrambling);
+					scrambledHere = true;
 				}
 				if (!change.isEmpty())
 					m_bridge.addChange(change);
 			}
+			if (!scrambledHere)
+				continue;
 			
 			// make sure the units join the battle, or create a new battle.
 			IBattle battle = m_battleTracker.getPendingBattle(to, false);

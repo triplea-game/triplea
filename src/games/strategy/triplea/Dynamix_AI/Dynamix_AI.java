@@ -55,6 +55,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -372,6 +373,11 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return null;
 	}*/
 
+	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	{
+		return null;
+	}
+	
 	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Collection<Territory> possibleTerritories, final String message)
 	{
 		DUtils.Log(Level.FINE, "Retreat query starting. Battle Ter: {0} Possible retreat locations: {1}", getBattleTerritory(), possibleTerritories);

@@ -23,6 +23,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.util.Collection;
 import java.util.Map;
@@ -93,6 +94,11 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 		return null;
 	}*/
 
+	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	{
+		return null;
+	}
+	
 	public boolean selectAttackSubs(final Territory unitTerritory)
 	{
 		return false;

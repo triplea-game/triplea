@@ -34,6 +34,7 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.ui.display.DummyDisplay;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -291,6 +292,11 @@ class DummyPlayer extends AbstractAI
 		return null;
 	}*/
 
+	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	{
+		return null;
+	}
+	
 	// Added new collection autoKilled to handle killing units prior to casualty selection
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)

@@ -56,6 +56,7 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -621,6 +622,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories, player);
 	}*/
 
+	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	{
+		return m_ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);
+	}
+	
 	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
 	{
 		// no need, we have already confirmed since we are firing player

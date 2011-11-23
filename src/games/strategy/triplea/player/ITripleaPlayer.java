@@ -21,6 +21,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+import games.strategy.util.Tuple;
 
 import java.util.Collection;
 import java.util.Map;
@@ -229,6 +230,17 @@ public interface ITripleaPlayer extends IRemote
 	 * @return the territory to retreat to, or null if the player doesn't wish to retreat
 	public Collection<Unit> scrambleQuery(GUID battleID, Collection<Territory> possibleTerritories, String message, PlayerID player);*/
 
+	/**
+	 * Ask the player which units, if any, they want to scramble to defend against the attacker.
+	 * 
+	 * @param scrambleTo
+	 *            - the territory we are scrambling to defend in, where the units will end up if scrambled
+	 * @param possibleScramblers
+	 *            - possible units which we could scramble, with where they are from and how many allowed from that location
+	 * @return a list of units to scramble mapped to where they are coming from
+	 */
+	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo, Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers);
+	
 	/**
 	 * Allows the user to pause and confirm enemy casualties
 	 * 
