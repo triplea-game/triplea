@@ -1401,7 +1401,7 @@ public class Matches
 						final Territory current = iter.next();
 						if (!data.getRelationshipTracker().isAtWar(player, current.getOwner()))
 							continue;
-						if (data.getMap().getDistance(t, current, Matches.TerritoryIsPassableAndNotRestricted(player)) != -1)
+						if (data.getMap().getDistance(t, current, Matches.TerritoryIsPassableAndNotRestricted(player, data)) != -1)
 							return true;
 					}
 				}
@@ -1432,7 +1432,7 @@ public class Matches
 						final Territory current = iter.next();
 						if (!data.getRelationshipTracker().isAtWar(player, current.getOwner()))
 							continue;
-						if (data.getMap().getDistance(t, current, Matches.TerritoryIsNotImpassableToLandUnits(player)) != -1)
+						if (data.getMap().getDistance(t, current, Matches.TerritoryIsNotImpassableToLandUnits(player, data)) != -1)
 							return true;
 					}
 				}
@@ -1638,14 +1638,13 @@ public class Matches
 	};
 	public final static Match<Territory> TerritoryIsNotImpassable = new InverseMatch<Territory>(TerritoryIsImpassable);
 	
-	public static final Match<Territory> TerritoryIsPassableAndNotRestricted(final PlayerID player)
+	public static final Match<Territory> TerritoryIsPassableAndNotRestricted(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
 			@Override
 			public boolean match(final Territory t)
 			{
-				final GameData data = player.getData();
 				if (Matches.TerritoryIsImpassable.match(t))
 					return false;
 				if (!Properties.getMovementByTerritoryRestricted(data))
@@ -1660,7 +1659,7 @@ public class Matches
 		};
 	}
 	
-	public final static Match<Territory> TerritoryIsImpassableToLandUnits(final PlayerID player)
+	public final static Match<Territory> TerritoryIsImpassableToLandUnits(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
@@ -1669,21 +1668,21 @@ public class Matches
 			{
 				if (t.isWater())
 					return true;
-				else if (Matches.TerritoryIsPassableAndNotRestricted(player).invert().match(t))
+				else if (Matches.TerritoryIsPassableAndNotRestricted(player, data).invert().match(t))
 					return true;
 				return false;
 			}
 		};
 	}
 	
-	public final static Match<Territory> TerritoryIsNotImpassableToLandUnits(final PlayerID player)
+	public final static Match<Territory> TerritoryIsNotImpassableToLandUnits(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
 			@Override
 			public boolean match(final Territory t)
 			{
-				return TerritoryIsImpassableToLandUnits(player).invert().match(t);
+				return TerritoryIsImpassableToLandUnits(player, data).invert().match(t);
 			}
 		};
 	}
@@ -2075,7 +2074,7 @@ public class Matches
 				// OLD code included: if(t.isWater() && t.getOwner().isNull() && TerritoryAttachment.get(t) == null){return false;}
 				if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater()) // this will still return true for enemy and neutral owned convoy zones (water)
 					return false;
-				if (!Matches.TerritoryIsPassableAndNotRestricted(player).match(t))
+				if (!Matches.TerritoryIsPassableAndNotRestricted(player, data).match(t))
 					return false;
 				return data.getRelationshipTracker().isAtWar(player, t.getOwner());
 			}
@@ -2611,14 +2610,13 @@ public class Matches
 		};
 	}
 	
-	public static Match<Territory> territoryHasNonAlliedCanal(final PlayerID player)
+	public static Match<Territory> territoryHasNonAlliedCanal(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
 			@Override
 			public boolean match(final Territory t)
 			{
-				final GameData data = player.getData();
 				final Set<CanalAttachment> canalAttachments = CanalAttachment.get(t);
 				if (canalAttachments.isEmpty())
 					return false;
@@ -3063,38 +3061,38 @@ public class Matches
 		};
 	};
 	
-	public static final Match<PlayerID> isAtWar(final PlayerID player)
+	public static final Match<PlayerID> isAtWar(final PlayerID player, final GameData data)
 	{
 		return new Match<PlayerID>()
 		{
 			@Override
 			public boolean match(final PlayerID player2)
 			{
-				return Matches.RelationshipTypeIsAtWar.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
+				return Matches.RelationshipTypeIsAtWar.match(data.getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	};
 	
-	public static final Match<PlayerID> isAllied(final PlayerID player)
+	public static final Match<PlayerID> isAllied(final PlayerID player, final GameData data)
 	{
 		return new Match<PlayerID>()
 		{
 			@Override
 			public boolean match(final PlayerID player2)
 			{
-				return Matches.RelationshipTypeIsAllied.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
+				return Matches.RelationshipTypeIsAllied.match(data.getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	};
 	
-	public static final Match<PlayerID> isNeutral(final PlayerID player)
+	public static final Match<PlayerID> isNeutral(final PlayerID player, final GameData data)
 	{
 		return new Match<PlayerID>()
 		{
 			@Override
 			public boolean match(final PlayerID player2)
 			{
-				return Matches.RelationshipTypeIsNeutral.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
+				return Matches.RelationshipTypeIsNeutral.match(data.getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	};
@@ -3306,14 +3304,14 @@ public class Matches
 			}
 		};
 	}*/
-	public static final Match<PlayerID> isAlliedAndAlliancesCanChainTogether(final PlayerID player)
+	public static final Match<PlayerID> isAlliedAndAlliancesCanChainTogether(final PlayerID player, final GameData data)
 	{
 		return new Match<PlayerID>()
 		{
 			@Override
 			public boolean match(final PlayerID player2)
 			{
-				return isAlliedAndAlliancesCanChainTogether.match(player.getData().getRelationshipTracker().getRelationshipType(player, player2));
+				return isAlliedAndAlliancesCanChainTogether.match(data.getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	}
@@ -3379,12 +3377,12 @@ public class Matches
 					final PlayerID p2 = data.getPlayerList().getPlayerID(relationshipChange[1]);
 					if (!currentPlayer.equals(p1))
 					{
-						if (p1.amNotDeadYet())
+						if (p1.amNotDeadYet(data))
 							return true;
 					}
 					if (!currentPlayer.equals(p2))
 					{
-						if (p2.amNotDeadYet())
+						if (p2.amNotDeadYet(data))
 							return true;
 					}
 				}
@@ -3393,9 +3391,10 @@ public class Matches
 		};
 	}
 	
-	public static Match<Territory> territoryIsNotNeutralAndNotImpassibleOrRestricted(final PlayerID player)
+	public static Match<Territory> territoryIsNotNeutralAndNotImpassibleOrRestricted(final PlayerID player, final GameData data)
 	{
-		final Match<Territory> notNeutralAndNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(TerritoryIsPassableAndNotRestricted(player), new InverseMatch<Territory>(TerritoryIsNeutral));
+		final Match<Territory> notNeutralAndNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(TerritoryIsPassableAndNotRestricted(player, data), new InverseMatch<Territory>(
+					TerritoryIsNeutral));
 		return notNeutralAndNotImpassibleOrRestricted;
 	}
 	

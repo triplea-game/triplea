@@ -117,11 +117,11 @@ public class UnitGroup
 			player = GlobalCenter.CurrentPlayer;
 		if (air)
 		{
-			m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player));
+			m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, m_data));
 		}
 		else if (sea)
 		{
-			m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player));// , Matches.territoryHasNoEnemyUnits(player, m_data));
+			m_cmRouteMatch = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player, m_data));// , Matches.territoryHasNoEnemyUnits(player, m_data));
 		}
 		else
 		{
@@ -138,12 +138,14 @@ public class UnitGroup
 		else if (sea)
 		{
 			m_ncmCRouteMatches = new HashMap<Match<Territory>, Integer>();
-			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player), Matches.territoryHasUnitsOwnedBy(player)), 10); // We love sea with our units, cause we can control the movement
+			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player, m_data), Matches.territoryHasUnitsOwnedBy(player)), 10); // We love sea with our units, cause we can control the movement
 			m_ncmCRouteMatches.put(
-						new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player), Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(m_data,
+						new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player, m_data), Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(
+									m_data,
 									player).invert())), 15); // Allied is ok, but they could move
-			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player), Matches.territoryHasNoEnemyUnits(player, m_data)), 20); // Enemy free is fine
-			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player)), 100); // Ters with enemies, but without having to go through enemy canals, is second worst
+			m_ncmCRouteMatches.put(
+						new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player, m_data), Matches.territoryHasNoEnemyUnits(player, m_data)), 20); // Enemy free is fine
+			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, DMatches.territoryIsWaterAndPassableTo(player, m_data)), 100); // Ters with enemies, but without having to go through enemy canals, is second worst
 			m_ncmCRouteMatches.put(Matches.TerritoryIsWater, 1000000); // Finally, we add the any-sea match, which we unfortunately can't get through... (Well, unless we conquer enemies and canals)
 		}
 		else
@@ -151,7 +153,7 @@ public class UnitGroup
 			m_ncmCRouteMatches = new HashMap<Match<Territory>, Integer>();
 			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, DMatches.territoryIsOwnedBy(player)), 10); // We like ters we own
 			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, DMatches.territoryIsOwnedByXOrAlly(m_data, player)), 11); // Next best is allied ters
-			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player)), 15); // If we must, we take the route with enemy ters we can actually takeover and then walk though
+			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player, m_data)), 15); // If we must, we take the route with enemy ters we can actually takeover and then walk though
 			m_ncmCRouteMatches.put(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand), 1000); // Finally, we add the any-land match, which we unfortunately can't get through...
 		}
 	}

@@ -213,7 +213,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	{
 		final PlayerID player = aBridge.getPlayerID();
 		final int count = 1;
-		final int sides = aBridge.getPlayerID().getData().getDiceSides();
+		final int sides = aBridge.getData().getDiceSides();
 		final String annotation = player.getName() + " roll to resolve War Bonds: ";
 		DiceRoll dice;
 		dice = DiceRoll.rollNDice(aBridge, count, sides, annotation);

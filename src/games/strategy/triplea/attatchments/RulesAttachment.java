@@ -801,7 +801,7 @@ public class RulesAttachment extends DefaultAttachment
 		else if (name.equals("controlledNoWater"))
 		{
 			final Collection<Territory> ownedTerrs = data.getMap().getTerritoriesOwnedBy(player);
-			final Collection<Territory> ownedTerrsNoWater = Match.getMatches(ownedTerrs, Matches.TerritoryIsNotImpassableToLandUnits(player));
+			final Collection<Territory> ownedTerrsNoWater = Match.getMatches(ownedTerrs, Matches.TerritoryIsNotImpassableToLandUnits(player, data));
 			setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
 			// Colon delimit the collection as it would exist in the XML
 			for (final Territory item : ownedTerrsNoWater)

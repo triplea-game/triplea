@@ -146,11 +146,11 @@ public class DiceRoll implements Externalizable
 	
 	private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int power, final String annotation, final int numberOfAirUnits)
 	{
-		int hits = (numberOfAirUnits * power) / bridge.getPlayerID().getData().getDiceSides();
-		final int hitsFractional = (numberOfAirUnits * power) % bridge.getPlayerID().getData().getDiceSides();
+		int hits = (numberOfAirUnits * power) / bridge.getData().getDiceSides();
+		final int hitsFractional = (numberOfAirUnits * power) % bridge.getData().getDiceSides();
 		if (hitsFractional > 0)
 		{
-			final int[] dice = bridge.getRandom(bridge.getPlayerID().getData().getDiceSides(), 1, annotation);
+			final int[] dice = bridge.getRandom(bridge.getData().getDiceSides(), 1, annotation);
 			final boolean hit = hitsFractional > dice[0];
 			if (hit)
 			{
@@ -253,7 +253,7 @@ public class DiceRoll implements Externalizable
 				{
 					strength = ua.getDefense(current.getOwner());
 					// If it's a sneak attack, defenders roll at a 1
-					if (isFirstTurnLimitedRoll(player))
+					if (isFirstTurnLimitedRoll(player, data))
 					{
 						strength = Math.min(1, strength);
 					}
@@ -539,7 +539,7 @@ public class DiceRoll implements Externalizable
 					if (defending)
 					{
 						strength = ua.getDefense(current.getOwner());
-						if (isFirstTurnLimitedRoll(player))
+						if (isFirstTurnLimitedRoll(player, data))
 						{
 							strength = Math.min(1, strength);
 						}
@@ -699,12 +699,12 @@ public class DiceRoll implements Externalizable
 	    return rVal;
 	}
 	*/
-	public static boolean isFirstTurnLimitedRoll(final PlayerID player)
+	public static boolean isFirstTurnLimitedRoll(final PlayerID player, final GameData data)
 	{
 		// If player is null, Round > 1, or player has negate rule set: return false
-		if (player.isNull() || player.getData().getSequence().getRound() != 1 || isNegateDominatingFirstRoundAttack(player))
+		if (player.isNull() || data.getSequence().getRound() != 1 || isNegateDominatingFirstRoundAttack(player))
 			return false;
-		return isDominatingFirstRoundAttack(player.getData().getSequence().getStep().getPlayerID());
+		return isDominatingFirstRoundAttack(data.getSequence().getStep().getPlayerID());
 	}
 	
 	private static boolean isDominatingFirstRoundAttack(final PlayerID player)

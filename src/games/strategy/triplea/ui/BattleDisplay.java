@@ -1141,7 +1141,7 @@ class BattleModel extends DefaultTableModel
 					try
 					{
 						// decrease strength of sneak attack defenders
-						if (DiceRoll.isFirstTurnLimitedRoll(category.getOwner()))
+						if (DiceRoll.isFirstTurnLimitedRoll(category.getOwner(), m_data))
 							strength = Math.min(1, strength);
 						else
 							strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);

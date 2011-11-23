@@ -106,7 +106,7 @@ public class PoliticsPanel extends ActionPanel
 	public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun)
 	{
 		m_firstRun = firstRun;
-		if (m_firstRun && PoliticalActionAttachment.getValidActions(getCurrentPlayer()).isEmpty())
+		if (m_firstRun && PoliticalActionAttachment.getValidActions(getCurrentPlayer(), getData()).isEmpty())
 		{
 			return null; // No Valid political actions, do nothing
 		}
@@ -178,7 +178,7 @@ public class PoliticsPanel extends ActionPanel
 		politicalActionButtonPanel.setLayout(new GridBagLayout());
 		int row = 0;
 		final Insets insets = new Insets(1, 1, 1, 1);
-		final List<PoliticalActionAttachment> validActions = new ArrayList<PoliticalActionAttachment>(PoliticalActionAttachment.getValidActions(getCurrentPlayer()));
+		final List<PoliticalActionAttachment> validActions = new ArrayList<PoliticalActionAttachment>(PoliticalActionAttachment.getValidActions(getCurrentPlayer(), getData()));
 		Collections.sort(validActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
 		for (final PoliticalActionAttachment paa : validActions)
 		{

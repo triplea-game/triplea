@@ -273,7 +273,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	public boolean acceptPoliticalAction(final String acceptanceQuestion)
 	{
 		// we are dead, just accept
-		if (!m_id.amNotDeadYet())
+		if (!m_id.amNotDeadYet(m_bridge.getGameData()))
 			return true;
 		// should we use bridge's random source here?
 		if (Math.random() < .5)
@@ -359,14 +359,14 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	
 	public void getPoliticalActions()
 	{
-		if (!m_id.amNotDeadYet())
-			return;
 		final GameData data = m_bridge.getGameData();
+		if (!m_id.amNotDeadYet(data))
+			return;
 		final float numPlayers = data.getPlayerList().getPlayers().size();
 		final IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
 		if (Math.random() < .5)
 		{
-			final List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id);
+			final List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id, data);
 			if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty())
 			{
 				Collections.shuffle(actionChoicesTowardsWar);
@@ -395,7 +395,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		}
 		else
 		{
-			final List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(m_id);
+			final List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(m_id, data);
 			if (actionChoicesOther != null && !actionChoicesOther.isEmpty())
 			{
 				Collections.shuffle(actionChoicesOther);

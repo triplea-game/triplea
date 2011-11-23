@@ -171,10 +171,10 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			// if alliances chain together, then our allies must have a say in anyone becoming a new ally/enemy
 			final LinkedHashSet<PlayerID> playersWhoNeedToAccept = new LinkedHashSet<PlayerID>();
 			playersWhoNeedToAccept.addAll(paa.getActionAccept());
-			playersWhoNeedToAccept.addAll(Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedAndAlliancesCanChainTogether(m_player)));
+			playersWhoNeedToAccept.addAll(Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedAndAlliancesCanChainTogether(m_player, data)));
 			for (final PlayerID player : paa.getActionAccept())
 			{
-				playersWhoNeedToAccept.addAll(Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedAndAlliancesCanChainTogether(player)));
+				playersWhoNeedToAccept.addAll(Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAlliedAndAlliancesCanChainTogether(player, data)));
 			}
 			final HashSet<PlayerID> alliesWhoMustAccept = playersWhoNeedToAccept;
 			alliesWhoMustAccept.removeAll(paa.getActionAccept());
@@ -397,7 +397,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data))
 			return;
 		final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-		final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player));
+		final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
 		p1AlliedWith.remove(player);
 		final CompositeChange change = new CompositeChange();
 		for (final String relationshipChangeString : paa.getRelationshipChange())
@@ -437,7 +437,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		// if (!Matches.isRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar, Matches.RelationshipTypeIsAtWar.invert(), data).match(paa))
 		// return;
 		final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-		final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player));
+		final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(player, data));
 		final CompositeChange change = new CompositeChange();
 		for (final String relationshipChangeString : paa.getRelationshipChange())
 		{
@@ -451,7 +451,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
 			if (Matches.RelationshipTypeIsAtWar.match(currentType) && Matches.RelationshipTypeIsAtWar.invert().match(newType))
 			{
-				final Collection<PlayerID> pOtherAlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(pOther));
+				final Collection<PlayerID> pOtherAlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(pOther, data));
 				if (!pOtherAlliedWith.contains(pOther))
 					pOtherAlliedWith.add(pOther);
 				if (!p1AlliedWith.contains(player))
@@ -496,10 +496,10 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		for (final PlayerID p1 : players)
 		{
 			final HashSet<PlayerID> p1NewAllies = new HashSet<PlayerID>();
-			final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1));
+			final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));
 			for (final PlayerID p2 : p1AlliedWith)
 			{
-				p1NewAllies.addAll(Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p2)));
+				p1NewAllies.addAll(Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p2, data)));
 			}
 			p1NewAllies.removeAll(p1AlliedWith);
 			p1NewAllies.remove(p1);
@@ -518,11 +518,11 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		for (final PlayerID p1 : players)
 		{
 			final HashSet<PlayerID> p1NewWar = new HashSet<PlayerID>();
-			final Collection<PlayerID> p1WarWith = Match.getMatches(players, Matches.isAtWar(p1));
-			final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1));
+			final Collection<PlayerID> p1WarWith = Match.getMatches(players, Matches.isAtWar(p1, data));
+			final Collection<PlayerID> p1AlliedWith = Match.getMatches(players, Matches.isAlliedAndAlliancesCanChainTogether(p1, data));
 			for (final PlayerID p2 : p1AlliedWith)
 			{
-				p1NewWar.addAll(Match.getMatches(players, Matches.isAtWar(p2)));
+				p1NewWar.addAll(Match.getMatches(players, Matches.isAtWar(p2, data)));
 			}
 			p1NewWar.removeAll(p1WarWith);
 			p1NewWar.remove(p1);

@@ -1,4 +1,6 @@
 Changes for 1.5
+* Changed PlayerID.getData() to be deprecated, and removed all uses of it that I could. (veqryn)
+
 * Fixed various bugs in Scrambling, like not having dependent battles, not adding the units to existing battles, not removing units from old battles. (veqryn)
 
 * Completely re-wrote how scrambling works.  All scrambling now takes place before any battles begin.  (veqryn)

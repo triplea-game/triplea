@@ -36,12 +36,12 @@ import java.util.List;
  */
 public class BasicPoliticalAI
 {
-	public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerID id)
+	public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerID id, final GameData data)
 	{
 		final List<PoliticalActionAttachment> acceptableActions = new ArrayList<PoliticalActionAttachment>();
-		for (final PoliticalActionAttachment nextAction : PoliticalActionAttachment.getValidActions(id))
+		for (final PoliticalActionAttachment nextAction : PoliticalActionAttachment.getValidActions(id, data))
 		{
-			if (wantToPerFormActionTowardsWar(nextAction, id))
+			if (wantToPerFormActionTowardsWar(nextAction, id, data))
 			{
 				acceptableActions.add(nextAction);
 			}
@@ -49,39 +49,39 @@ public class BasicPoliticalAI
 		return acceptableActions;
 	}
 	
-	public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerID id)
+	public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerID id, final GameData data)
 	{
-		final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id);
+		final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id, data);
 		final List<PoliticalActionAttachment> acceptableActions = new ArrayList<PoliticalActionAttachment>();
-		final Collection<PoliticalActionAttachment> validActions = PoliticalActionAttachment.getValidActions(id);
+		final Collection<PoliticalActionAttachment> validActions = PoliticalActionAttachment.getValidActions(id, data);
 		validActions.removeAll(warActions);
 		for (final PoliticalActionAttachment nextAction : validActions)
 		{
 			if (warActions.contains(nextAction))
 				continue;
-			if (goesTowardsWar(nextAction, id) && Math.random() < .5)
+			if (goesTowardsWar(nextAction, id, data) && Math.random() < .5)
 				continue;
-			if (awayFromAlly(nextAction, id) && Math.random() < .9)
+			if (awayFromAlly(nextAction, id, data) && Math.random() < .9)
 				continue;
 			if (isFree(nextAction))
 				acceptableActions.add(nextAction);
 			else if (Match.countMatches(validActions, Matches.PoliticalActionHasCostBetween(0, 0)) > 1)
 			{
-				if (Math.random() < .9 && isAcceptableCost(nextAction, id))
+				if (Math.random() < .9 && isAcceptableCost(nextAction, id, data))
 					acceptableActions.add(nextAction);
 			}
 			else
 			{
-				if (Math.random() < .4 && isAcceptableCost(nextAction, id))
+				if (Math.random() < .4 && isAcceptableCost(nextAction, id, data))
 					acceptableActions.add(nextAction);
 			}
 		}
 		return acceptableActions;
 	}
 	
-	private static boolean wantToPerFormActionTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID id)
+	private static boolean wantToPerFormActionTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID id, final GameData data)
 	{
-		return isFree(nextAction) && goesTowardsWar(nextAction, id);
+		return isFree(nextAction) && goesTowardsWar(nextAction, id, data);
 	}
 	
 	// this code has a rare risk of circular loop actions.. depending on the map
@@ -89,9 +89,8 @@ public class BasicPoliticalAI
 	// only switches from a Neutral to an War state... won't go through
 	// in-between neutral states
 	// TODO have another look at this part.
-	private static boolean goesTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID p0)
+	private static boolean goesTowardsWar(final PoliticalActionAttachment nextAction, final PlayerID p0, final GameData data)
 	{
-		final GameData data = p0.getData();
 		for (final String relationshipChangeString : nextAction.getRelationshipChange())
 		{
 			final String[] relationshipChange = relationshipChangeString.split(":");
@@ -109,9 +108,8 @@ public class BasicPoliticalAI
 		return false;
 	}
 	
-	private static boolean awayFromAlly(final PoliticalActionAttachment nextAction, final PlayerID p0)
+	private static boolean awayFromAlly(final PoliticalActionAttachment nextAction, final PlayerID p0, final GameData data)
 	{
-		final GameData data = p0.getData();
 		for (final String relationshipChangeString : nextAction.getRelationshipChange())
 		{
 			final String[] relationshipChange = relationshipChangeString.split(":");
@@ -134,10 +132,9 @@ public class BasicPoliticalAI
 		return nextAction.getCostPU() <= 0;
 	}
 	
-	private static boolean isAcceptableCost(final PoliticalActionAttachment nextAction, final PlayerID player)
+	private static boolean isAcceptableCost(final PoliticalActionAttachment nextAction, final PlayerID player, final GameData data)
 	{
 		// if we have 21 or more PUs and the cost of the action is l0% or less of our total money, then it is an acceptable price.
-		final GameData data = player.getData();
 		final float production = AbstractEndTurnDelegate.getProduction(data.getMap().getTerritoriesOwnedBy(player), data);
 		return production >= 21 && (nextAction.getCostPU()) <= ((production / 10));
 	}

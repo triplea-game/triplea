@@ -159,7 +159,7 @@ public class BattleCalculator
 	
 	private static Collection<Unit> getLowLuckAACasualties(final Collection<Unit> planes, final DiceRoll dice, final Territory location, final IDelegateBridge bridge, final Match<Unit> typeOfAA)
 	{
-		final int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getPlayerID().getData(), typeOfAA);
+		final int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getData(), typeOfAA);
 		final int highestAttack = attackThenDiceSides[0];
 		final int chosenDiceSize = attackThenDiceSides[1];
 		final Collection<Unit> hitUnits = new ArrayList<Unit>();
@@ -228,7 +228,7 @@ public class BattleCalculator
 	 */
 	public static Collection<Unit> IndividuallyFiredAACasualties(final Collection<Unit> planes, final DiceRoll dice, final Territory location, final IDelegateBridge bridge, final Match<Unit> typeOfAA)
 	{
-		final int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getPlayerID().getData(), typeOfAA);
+		final int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getData(), typeOfAA);
 		final int highestAttack = attackThenDiceSides[0];
 		// int chosenDiceSize = attackThenDiceSides[1];
 		final Collection<Unit> casualties = new ArrayList<Unit>();

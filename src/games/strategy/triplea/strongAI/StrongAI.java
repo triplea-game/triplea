@@ -155,7 +155,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		m_impassableTerrs.clear();
 		for (final Territory t : data.getMap().getTerritories())
 		{
-			if (Matches.TerritoryIsPassableAndNotRestricted(player).invert().match(t) && Matches.TerritoryIsLand.match(t))
+			if (Matches.TerritoryIsPassableAndNotRestricted(player, data).invert().match(t) && Matches.TerritoryIsLand.match(t))
 				m_impassableTerrs.add(t);
 		}
 	}
@@ -1305,11 +1305,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final Set<Territory> xNeighbors = data.getMap().getNeighbors(checkThis);
 			if (isLand)
 			{
-				final CompositeMatch<Territory> noWaterEnemy = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player),
+				final CompositeMatch<Territory> noWaterEnemy = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player, data),
 							Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
-				final CompositeMatch<Territory> noWaterAllied = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryAllied(player, data));
+				final CompositeMatch<Territory> noWaterAllied = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player, data), Matches.isTerritoryAllied(player, data));
 				final Route badGuyDR = SUtils.findNearest(checkThis, noWaterEnemy, noWaterAllied, data);
-				final Route badGuyFactory = SUtils.findNearest(checkThis, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data);
+				final Route badGuyFactory = SUtils.findNearest(checkThis, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
 				// boolean noWater = true;
 				if (badGuyFactory == null)
 					badGuyFactDist = 100;
@@ -1567,7 +1567,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		// TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final CompositeMatch<Unit> loadedTransport = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsTransport, Matches.transportIsTransporting());
 		final CompositeMatch<Territory> friendlyWaterTerr = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasUnitsOwnedBy(player));
-		final CompositeMatch<Territory> landPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player));
+		final CompositeMatch<Territory> landPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player, data));
 		final CompositeMatch<Territory> enemyLandWithWater = new CompositeMatchAnd<Territory>(landPassable, Matches.isTerritoryEnemy(player, data), Matches.territoryHasWaterNeighbor(data));
 		final CompositeMatch<Unit> myBlitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBlitz);
 		final CompositeMatch<Unit> myLandUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand);
@@ -1687,7 +1687,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final HashMap<Territory, Territory> amphibMap = new HashMap<Territory, Territory>();
 		final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.transportIsTransporting());
-		final CompositeMatch<Territory> landPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player));
+		final CompositeMatch<Territory> landPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player, data));
 		final CompositeMatch<Territory> enemyEmpty = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.territoryHasEnemyLandUnits(player, data).invert(), landPassable,
 					Matches.territoryHasWaterNeighbor(data));
 		final CompositeMatch<Territory> enemyTarget = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.territoryHasWaterNeighbor(data),
@@ -1844,7 +1844,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport);
 		final CompositeMatch<Unit> transportingUnit = new CompositeMatchAnd<Unit>(transUnit, Matches.unitIsOwnedBy(player), Matches.transportIsTransporting());
 		// CompositeMatch<Unit> escortUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsNotTransport, Matches.UnitIsCarrier.invert());
-		final CompositeMatch<Territory> landPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player));
+		final CompositeMatch<Territory> landPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsPassableAndNotRestricted(player, data));
 		// CompositeMatch<Territory> endOfRoute = new CompositeMatchAnd<Territory>(landPassable, Matches.territoryHasRouteToEnemyCapital(data, player));
 		final CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater);
 		final List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
@@ -1885,7 +1885,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 			if (!neighborList.isEmpty())
 				continue;
-			final List<Territory> neighborList2 = SUtils.getExactNeighbors(myTerr, 2, player, true);
+			final List<Territory> neighborList2 = SUtils.getExactNeighbors(myTerr, 2, player, data, true);
 			boolean skipTerr = false;
 			for (final Territory nTerr : neighborList2)
 			{
@@ -2239,7 +2239,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			while (tTIter.hasNext())
 			{
 				final Territory tmpTerr = tTIter.next();
-				if (Matches.TerritoryIsWater.match(tmpTerr) || Matches.TerritoryIsPassableAndNotRestricted(player).invert().match(tmpTerr)
+				if (Matches.TerritoryIsWater.match(tmpTerr) || Matches.TerritoryIsPassableAndNotRestricted(player, data).invert().match(tmpTerr)
 							|| Matches.territoryHasWaterNeighbor(data).invert().match(tmpTerr))
 					tTIter.remove();
 			}
@@ -4057,7 +4057,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					skippedTerr.add(shipTerr);
 					continue;
 				}
-				final List<Territory> Neighbors2 = SUtils.getExactNeighbors(shipTerr, 2, player, false);
+				final List<Territory> Neighbors2 = SUtils.getExactNeighbors(shipTerr, 2, player, data, false);
 				boolean continueOn = true;
 				for (final Territory N2 : Neighbors2)
 				{
@@ -4936,7 +4936,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		});
 		final Match<Unit> bomberUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsStrategicBomber);
-		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAA(player, data).invert(), Matches.TerritoryIsPassableAndNotRestricted(player));
+		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAA(player, data).invert(), Matches.TerritoryIsPassableAndNotRestricted(player, data));
 		final Match<Unit> fighterUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanLandOnCarrier);
 		final Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		List<Territory> planeTerr = new ArrayList<Territory>();
@@ -5204,7 +5204,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		final List<Territory> movedInto = new ArrayList<Territory>();
 		final List<Unit> alreadyMoved = new ArrayList<Unit>();
-		final CompositeMatchAnd<Territory> moveThrough = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player), Matches.TerritoryIsNotNeutral, Matches.TerritoryIsLand);
+		final CompositeMatchAnd<Territory> moveThrough = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data), Matches.TerritoryIsNotNeutral,
+					Matches.TerritoryIsLand);
 		final CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsNotSea, Matches.UnitIsNotAA, Matches.UnitIsNotFactory, Matches.unitHasNotMoved);
 		final CompositeMatch<Unit> infantryUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsInfantry);
 		final CompositeMatch<Unit> airUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir);
@@ -5325,7 +5326,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		if (capDanger) // see if we have units 3/2 away from capitol that we can bring back
 		{
-			final List<Territory> outerTerrs = SUtils.getExactNeighbors(myCapital, 3, player, false);
+			final List<Territory> outerTerrs = SUtils.getExactNeighbors(myCapital, 3, player, data, false);
 			final Iterator<Territory> outerIter = outerTerrs.iterator();
 			final HashMap<Territory, Float> outerMap = new HashMap<Territory, Float>();
 			final HashMap<Territory, Float> outerEMap = new HashMap<Territory, Float>();
@@ -5437,10 +5438,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				continue;
 			// check for blitzable units
 			final CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBlitz);
-			final CompositeMatch<Territory> enemyPassableNotWater = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsPassableAndNotRestricted(player),
+			final CompositeMatch<Territory> enemyPassableNotWater = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsPassableAndNotRestricted(player, data),
 						Matches.TerritoryIsLand);
 			final CompositeMatch<Territory> enemyPassableNotWaterNotNeutral = new CompositeMatchAnd<Territory>(enemyPassableNotWater, Matches.TerritoryIsNotNeutral);
-			final CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player), Matches.isTerritoryAllied(player, data));
+			final CompositeMatch<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data), Matches.isTerritoryAllied(player, data));
 			final List<Unit> blitzUnits = t.getUnits().getMatches(blitzUnit);
 			blitzUnits.removeAll(alreadyMoved);
 			Route goRoute = SUtils.findNearest(t, enemyPassableNotWater, routeCondition, data);
@@ -5759,7 +5760,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						while (mLIter.hasNext() && !goodRoute)
 						{
 							final Territory mLT = mLIter.next();
-							goRoute = data.getMap().getRoute(t, mLT, Matches.TerritoryIsNotImpassableToLandUnits(player));
+							goRoute = data.getMap().getRoute(t, mLT, Matches.TerritoryIsNotImpassableToLandUnits(player, data));
 							if (goRoute != null)
 							{
 								goodRoute = true;
@@ -5903,7 +5904,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			float diffStrength = -landMap.get(ownedTerr).floatValue();
 			if (diffStrength > 0.0F && ownedTerr.getUnits().getMatches(unMovedLand).size() > 1 && data.getMap().getNeighbors(ownedTerr, endCondition).isEmpty())
 			{
-				final Route closestERoute = SUtils.findNearest(ownedTerr, endCondition, Matches.TerritoryIsNotImpassableToLandUnits(player), data);
+				final Route closestERoute = SUtils.findNearest(ownedTerr, endCondition, Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
 				if (closestERoute == null || closestERoute.getEnd() == null)
 					continue;
 				final List<Unit> ourOwnedUnits = ownedTerr.getUnits().getMatches(ourUnMovedLand);
@@ -5981,7 +5982,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				return !delegate.getBattleTracker().wasConquered(o);
 			}
 		});
-		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAA(player, data).invert(), Matches.TerritoryIsPassableAndNotRestricted(player));
+		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAA(player, data).invert(), Matches.TerritoryIsPassableAndNotRestricted(player, data));
 		final Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		final List<Territory> alliedFactories = SUtils.findUnitTerr(data, player, alliedFactory);
 		for (final Territory tBomb : delegateRemote.getTerritoriesWhereAirCantLand()) // move bombers to capital first
@@ -6136,7 +6137,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					final Territory landingZone = lzIter.next();
 					s_logger.fine("trying" + landingZone + " " + rankMap.get(landingZone));
-					if (Matches.TerritoryIsPassableAndNotRestricted(player).match(landingZone) && MoveValidator.canLand(fighterGroup, landingZone, player, data))
+					if (Matches.TerritoryIsPassableAndNotRestricted(player, data).match(landingZone) && MoveValidator.canLand(fighterGroup, landingZone, player, data))
 					{
 						final Route landingRoute = data.getMap().getRoute(tFight, landingZone, noNeutralOrAA);
 						if (landingRoute != null && MoveValidator.hasEnoughMovement(fighterGroup, landingRoute))
@@ -6331,7 +6332,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBlitz);
 		final CompositeMatch<Unit> enemyLandAirUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsNotSea, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
 		final CompositeMatch<Territory> enemyTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
-					Matches.TerritoryIsNotImpassableToLandUnits(player));
+					Matches.TerritoryIsNotImpassableToLandUnits(player, data));
 		if (!ownMyCapital) // We lost our capital
 		{
 			attackFactor = 0.78F; // attack like a maniac, maybe we will win
@@ -6539,7 +6540,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			owned.removeAll(existingFactories);
 			final List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
 			owned.removeAll(isWaterConvoy);
-			final CompositeMatch<Territory> goodFactTerr = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player), Matches.isTerritoryOwnedBy(player));
+			final CompositeMatch<Territory> goodFactTerr = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player, data), Matches.isTerritoryOwnedBy(player));
 			for (final Territory moveableFactoryTerr : moveableFactoryTerritories)
 			{
 				final List<Unit> moveableFactories = moveableFactoryTerr.getUnits().getMatches(moveableFactory);
@@ -6555,7 +6556,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						int territoryValue = 0;
 						if (SUtils.hasLandRouteToEnemyOwnedCapitol(moveFactToTerr, player, data))
 							territoryValue += 3;
-						if (SUtils.findNearest(moveFactToTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
+						if (SUtils.findNearest(moveFactToTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data), data) != null)
 							territoryValue += 1;
 						if (Matches.territoryHasWaterNeighbor(data).match(moveFactToTerr))
 							territoryValue += 3;
@@ -6702,7 +6703,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				while (nTIter.hasNext())
 				{
 					final Territory nTcheck = nTIter.next();
-					if (Matches.TerritoryIsImpassableToLandUnits(player).match(nTcheck))
+					if (Matches.TerritoryIsImpassableToLandUnits(player, data).match(nTcheck))
 						nTIter.remove();
 				}
 				final HashMap<Territory, Float> canBeTaken = new HashMap<Territory, Float>();
@@ -6870,7 +6871,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final float myAttackStrength = SUtils.getStrengthOfPotentialAttackers(maxAttackTerr, data, maxAPlayer, tFirst, false, null);
 		// estimate the target route (most likely the closest allied factory)
 		// List<Territory> ourTerr = SUtils.getNeighboringLandTerritories(data, player, maxAttackTerr);
-		final Route enemyRoute = SUtils.findNearest(maxAttackTerr, Matches.territoryHasAlliedFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data);
+		final Route enemyRoute = SUtils.findNearest(maxAttackTerr, Matches.territoryHasAlliedFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
 		if (enemyRoute != null)
 		{
 			if (myAttackStrength > maxEStrength)
@@ -7088,7 +7089,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			if (data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).size() > 0)
 				continue; // Skip, cause we're already next to water
 			if (SUtils.findNearest(ter, new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.TerritoryIsLand),
-						Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
+						Matches.TerritoryIsNotImpassableToLandUnits(player, data), data) != null)
 				continue;
 			final List<Unit> unmovedUnits = ter.getUnits().getMatches(
 						new CompositeMatchAnd<Unit>(Matches.unitHasMovementLeft, Matches.UnitIsNotAA, Matches.UnitCanBeTransported, Matches.unitIsOwnedBy(player)));
@@ -7155,7 +7156,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			if (data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).isEmpty())
 				continue; // Skip, cause we're not next to water
 			if (SUtils.findNearest(ter, new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data), Matches.TerritoryIsLand),
-						Matches.TerritoryIsNotImpassableToLandUnits(player), data) != null)
+						Matches.TerritoryIsNotImpassableToLandUnits(player, data), data) != null)
 				continue; // If this ter has a land route to an enemy don't try to call transports to pick them up
 			int transportSpaceNeededForTerUnits = 0;
 			for (final Unit unit : ter.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitCanBeTransported, Matches.UnitIsNotAA)))
@@ -7631,8 +7632,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final CompositeMatch<Unit> transportableUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeTransported, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
 		final CompositeMatch<Unit> ACUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsCarrier);
 		final CompositeMatch<Territory> enemyAndNoWater = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
-					Matches.TerritoryIsNotImpassableToLandUnits(player));
-		final CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player));
+					Matches.TerritoryIsNotImpassableToLandUnits(player, data));
+		final CompositeMatch<Territory> noEnemyOrWater = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsNotImpassableToLandUnits(player, data));
 		final CompositeMatch<Territory> enemyOnWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data));
 		final Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		boolean factPurchased = false;
@@ -7870,7 +7871,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				// determine minimum ground distance to enemy
 				final Route minDistRoute = SUtils.findNearest(fT, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
-							Matches.TerritoryIsNotImpassableToLandUnits(player), data);
+							Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
 				int thisMinDist = 1000;
 				if (minDistRoute != null)
 					thisMinDist = minDistRoute.getLength();
@@ -9391,7 +9392,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		{
 			final boolean landRoute2 = SUtils.landRouteToEnemyCapital(landCheck2, goRoute, data, player);
 			goRoute = null;
-			goRoute = SUtils.findNearest(landCheck2, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data);
+			goRoute = SUtils.findNearest(landCheck2, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
 			if ((landRoute2 && goRoute != null))
 			{
 				final int lRDist = goRoute.getLength();
@@ -9513,7 +9514,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						landFactTerr = whichOne;
 						if (seaPlaceAtTrans == null)
 						{
-							final Route whichRoute = SUtils.findNearest(whichOne, Matches.territoryHasEnemyLandNeighbor(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player), data);
+							final Route whichRoute = SUtils.findNearest(whichOne, Matches.territoryHasEnemyLandNeighbor(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
 							if (!Matches.territoryHasEnemyLandNeighbor(data, player).match(whichOne) && whichRoute != null && whichRoute.getLength() < 4)
 								seaPlaceAtTrans = whichOne;
 							else

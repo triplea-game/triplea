@@ -367,14 +367,13 @@ public class DMatches
 	
 	public static final Match<Territory> TerritoryIsLandAndPassable = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable);
 	
-	public static Match<Territory> territoryIsLandAndPassableTo(final PlayerID player)
+	public static Match<Territory> territoryIsLandAndPassableTo(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
 			@Override
 			public boolean match(final Territory ter)
 			{
-				final GameData data = player.getData();
 				if (Matches.TerritoryIsImpassable.match(ter))
 					return false;
 				if (!Properties.getMovementByTerritoryRestricted(data))
@@ -389,7 +388,7 @@ public class DMatches
 		};
 	}
 	
-	public static Match<Territory> territoryIsWaterAndPassableTo(final PlayerID player)
+	public static Match<Territory> territoryIsWaterAndPassableTo(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
@@ -398,7 +397,6 @@ public class DMatches
 			{
 				if (!ter.isWater())
 					return false;
-				final GameData data = player.getData();
 				for (final CanalAttachment attachment : CanalAttachment.get(ter))
 				{
 					if (attachment == null)

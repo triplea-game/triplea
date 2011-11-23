@@ -645,7 +645,7 @@ public class DUtils
 					data,
 					player,
 					CompMatchAnd(
-								Matches.TerritoryIsPassableAndNotRestricted(player),
+								Matches.TerritoryIsPassableAndNotRestricted(player, data),
 								CompMatchOr(DMatches.territoryIsOwnedByEnemy(data, player),
 											Matches.territoryHasUnitsThatMatch(CompMatchAnd(Matches.unitIsEnemyOf(data, player), Matches.unitHasDefenseThatIsMoreThanOrEqualTo(1))))), DMatches
 								.territoryIsOwnedByEnemy(data, player).invert(), Matches.unitIsOwnedBy(player));

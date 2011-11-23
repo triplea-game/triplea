@@ -756,7 +756,7 @@ public class MoveValidator
 	{
 		if (getEditMode(data))
 			return result;
-		if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner()).match(player) && Matches.isAtWar(route.getEnd().getOwner()).match(player))
+		if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner(), data).match(player) && Matches.isAtWar(route.getEnd().getOwner(), data).match(player))
 		{
 			if (!MoveValidator.isBlitzable(route.getStart(), data, player) && !Match.allMatch(units, Matches.UnitIsAir))
 				return result.setErrorReturnResult("Can not blitz out of a battle into enemy territory");
@@ -863,7 +863,7 @@ public class MoveValidator
 			return result;
 		if (route.someMatch(Matches.TerritoryIsImpassable))
 			return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSIBLE);
-		if (!route.someMatch(Matches.TerritoryIsPassableAndNotRestricted(player)))
+		if (!route.someMatch(Matches.TerritoryIsPassableAndNotRestricted(player, data)))
 			return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
 		final CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
 		battle.add(Matches.TerritoryIsNeutral);
@@ -917,7 +917,7 @@ public class MoveValidator
 				if (!(!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater) && MoveValidator.onlyAlliedUnitsOnPath(route, player, data) && !Matches.territoryHasEnemyUnits(
 							player, data).match(route.getEnd())))
 				{
-					if (!route.allMatch(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player), Matches
+					if (!route.allMatch(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data), Matches
 								.isTerritoryAllied(player, data), Matches.TerritoryIsLand))) || nonParatroopersPresent(player, units) || !allLandUnitsAreBeingParatroopered(units, route, player))
 						return result.setErrorReturnResult("Cannot move units to neutral or enemy territories in non combat");
 				}
@@ -1287,13 +1287,13 @@ public class MoveValidator
 		// TODO EW: existing bug: Need to check for politics allowing Politics.Neutral Fly-Over? this code is still working on the assumption of alliances. not isNeutral state.
 		if (areNeutralsPassable(data))
 		{
-			final Route neutralViolatingRoute = data.getMap().getRoute(currentSpot, landingSpot, Matches.TerritoryIsPassableAndNotRestricted(player));
+			final Route neutralViolatingRoute = data.getMap().getRoute(currentSpot, landingSpot, Matches.TerritoryIsPassableAndNotRestricted(player, data));
 			return (neutralViolatingRoute != null && neutralViolatingRoute.getMovementCost(unit) <= movementLeft && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(
 						Constants.PUS));
 		}
 		else
 		{
-			final Route noNeutralRoute = data.getMap().getRoute(currentSpot, landingSpot, Matches.territoryIsNotNeutralAndNotImpassibleOrRestricted(player));
+			final Route noNeutralRoute = data.getMap().getRoute(currentSpot, landingSpot, Matches.territoryIsNotNeutralAndNotImpassibleOrRestricted(player, data));
 			return (noNeutralRoute != null && noNeutralRoute.getMovementCost(unit) <= movementLeft);
 		}
 	}

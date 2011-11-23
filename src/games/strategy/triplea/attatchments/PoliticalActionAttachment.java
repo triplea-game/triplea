@@ -392,12 +392,12 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	 * @param player
 	 * @return gets the valid actions for this player.
 	 */
-	public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player)
+	public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player, final GameData data)
 	{
-		if (!games.strategy.triplea.Properties.getUsePolitics(player.getData()) || !player.amNotDeadYet())
+		if (!games.strategy.triplea.Properties.getUsePolitics(data) || !player.amNotDeadYet(data))
 			return new ArrayList<PoliticalActionAttachment>();
 		return Match.getMatches(getPoliticalActionAttachments(player),
-					new CompositeMatchAnd<PoliticalActionAttachment>(Matches.PoliticalActionCanBeAttempted, Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, player.getData())));
+					new CompositeMatchAnd<PoliticalActionAttachment>(Matches.PoliticalActionCanBeAttempted, Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
 	}
 	
 	public void resetAttempts(final IDelegateBridge aBridge)

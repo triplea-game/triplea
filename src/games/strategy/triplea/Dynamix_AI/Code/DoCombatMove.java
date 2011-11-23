@@ -290,7 +290,7 @@ public class DoCombatMove
 				{
 					if (ter2.isWater())
 						continue;
-					if (!Matches.TerritoryIsPassableAndNotRestricted(player).match(ter2))
+					if (!Matches.TerritoryIsPassableAndNotRestricted(player, data).match(ter2))
 						continue; // We have to be able to land units here
 					Territory openPort = null;
 					for (final Territory port : data.getMap().getNeighbors(ter2, Matches.TerritoryIsWater))

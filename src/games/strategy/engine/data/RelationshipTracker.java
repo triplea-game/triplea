@@ -204,7 +204,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 		 */
 		public RelationshipType getRelationshipType()
 		{
-			return m_p1.getData().getRelationshipTracker().getRelationshipType(m_p1, m_p2);
+			return getData().getRelationshipTracker().getRelationshipType(m_p1, m_p2);
 		}
 		
 		/**
@@ -214,7 +214,7 @@ public class RelationshipTracker extends RelationshipInterpreter
 		 */
 		public RelationshipTypeAttachment getRelationshipTypeAttachment()
 		{
-			return m_p1.getData().getRelationshipTracker().getRelationshipTypeAttachment(m_p1, m_p2);
+			return getData().getRelationshipTracker().getRelationshipTypeAttachment(m_p1, m_p2);
 		}
 		
 		@Override

@@ -1020,7 +1020,7 @@ public class WW2V3_41_Test extends TestCase
 		TechAttachment.get(germans).setMechanizedInfantry("true");
 		final ITestDelegateBridge bridge = getDelegateBridge(germans);
 		bridge.setStepName("CombatMove");
-		moveDelegate(germans.getData()).start(bridge);
+		moveDelegate(m_data).start(bridge);
 		final Route r = new Route(france, germany, poland);
 		final List<Unit> toMove = new ArrayList<Unit>();
 		// 1 armour and 1 infantry
@@ -1037,7 +1037,7 @@ public class WW2V3_41_Test extends TestCase
 		TechAttachment.get(germans).setMechanizedInfantry("true");
 		final ITestDelegateBridge bridge = getDelegateBridge(germans);
 		bridge.setStepName("CombatMove");
-		moveDelegate(germans.getData()).start(bridge);
+		moveDelegate(m_data).start(bridge);
 		// get rid of the infantry in france
 		removeFrom(france, france.getUnits().getMatches(Matches.UnitIsInfantry));
 		// move an infantry from germany to france

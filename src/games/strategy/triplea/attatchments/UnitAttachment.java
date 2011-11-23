@@ -925,7 +925,7 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		if (attackValue > 0 && m_isAir && !m_isStrategicBomber)
 		{
-			if (TechTracker.hasJetFighter(player) && isWW2V3TechModel(player.getData()))
+			if (TechTracker.hasJetFighter(player) && isWW2V3TechModel(getData()))
 				attackValue++;
 		}
 		if (attackValue > 0 && player.isAI())
@@ -961,12 +961,12 @@ public class UnitAttachment extends DefaultAttachment
 		final int maxDiceSides = getData().getDiceSides();
 		if (defenseValue > 0 && m_isAir && !m_isStrategicBomber)
 		{
-			if (TechTracker.hasJetFighter(player) && !isWW2V3TechModel(player.getData()))
+			if (TechTracker.hasJetFighter(player) && !isWW2V3TechModel(getData()))
 				defenseValue++;
 		}
 		if (defenseValue > 0 && m_isSub && TechTracker.hasSuperSubs(player))
 		{
-			final int bonus = games.strategy.triplea.Properties.getSuper_Sub_Defense_Bonus(player.getData());
+			final int bonus = games.strategy.triplea.Properties.getSuper_Sub_Defense_Bonus(getData());
 			if (bonus > 0)
 				defenseValue += bonus;
 		}
@@ -992,7 +992,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		if (getDefense(player) == 0)
 			return 0;
-		if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player) && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(player.getData()))
+		if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player) && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(getData()))
 		{
 			return new Integer(games.strategy.triplea.Properties.getHeavy_Bomber_Dice_Rolls(getData()));
 		}

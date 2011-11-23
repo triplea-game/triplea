@@ -44,9 +44,9 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	{
 		super(name, data);
 		m_optional = optional;
-		m_unitsHeld = new UnitCollection(this, getData());
-		m_resources = new ResourceCollection(getData());
-		m_technologyFrontiers = new TechnologyFrontierList(getData());
+		m_unitsHeld = new UnitCollection(this, data);
+		m_resources = new ResourceCollection(data);
+		m_technologyFrontiers = new TechnologyFrontierList(data);
 	}
 	
 	public boolean getOptional()
@@ -154,11 +154,11 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	 * 
 	 * @return
 	 */
-	public boolean amNotDeadYet()
+	public boolean amNotDeadYet(final GameData data)
 	{
 		boolean hasFactory = false;
 		boolean ownsLand = false;
-		for (final Territory t : getData().getMap().getTerritories())
+		for (final Territory t : data.getMap().getTerritories())
 		{
 			if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.unitHasAttackValueOfAtLeast(1), Matches.UnitIsNotStatic(this), Matches.UnitIsLand)))
 				return true;
@@ -181,6 +181,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		}
 		return rVal;
 	}
+	
 	/*public static String whoIsAI(GameData data)
 	{
 		StringBuilder buf = new StringBuilder("AIs are playing the following players: ");
@@ -197,4 +198,14 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 			return null;
 		return buf.toString().replaceFirst(", ", "");
 	}*/
+
+	/**
+	 * Do not use this ever. The Null PlayerID has no GameData associated with it, so you will get a Null Pointer error.
+	 */
+	@Deprecated
+	@Override
+	public GameData getData()
+	{
+		return super.getData();
+	}
 }

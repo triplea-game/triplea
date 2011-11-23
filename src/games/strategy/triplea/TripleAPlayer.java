@@ -172,7 +172,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void politics(final boolean firstRun)
 	{
-		if (!m_id.amNotDeadYet())
+		if (!m_id.amNotDeadYet(m_bridge.getGameData()))
 			return;
 		final PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(m_id, firstRun);
 		if (actionChoice != null)
@@ -185,7 +185,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	public boolean acceptPoliticalAction(final String acceptanceQuestion)
 	{
-		if (!m_id.amNotDeadYet())
+		if (!m_id.amNotDeadYet(m_bridge.getGameData()))
 			return true;
 		return m_ui.acceptPoliticalAction("To " + m_id.getName() + ": " + acceptanceQuestion);
 	}
