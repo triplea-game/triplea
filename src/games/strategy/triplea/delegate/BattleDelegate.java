@@ -21,6 +21,7 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -347,10 +348,11 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			final Territory territory = battleTerritories.next();
 			final List<Unit> attackingUnits = territory.getUnits().getMatches(Matches.unitIsOwnedBy(player));
 			final List<Unit> enemyUnits = territory.getUnits().getMatches(Matches.enemyUnit(player, data));
-			if (m_battleTracker.getPendingBattle(territory, true) != null)
+			final IBattle bombingBattle = m_battleTracker.getPendingBattle(territory, true);
+			if (bombingBattle != null)
 			{
 				// we need to remove any units which are participating in bombing raids
-				attackingUnits.removeAll(m_battleTracker.getPendingBattle(territory, true).getAttackingUnits());
+				attackingUnits.removeAll(bombingBattle.getAttackingUnits());
 			}
 			if (attackingUnits.isEmpty() || Match.allMatch(attackingUnits, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure))
 				continue;
@@ -363,6 +365,10 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			}
 			if (battle == null)
 				continue;
+			if (battle != null && bombingBattle != null)
+			{
+				m_battleTracker.addDependency(battle, bombingBattle);
+			}
 			if (battle != null && battle.isEmpty())
 				battle.addAttackChange(new RouteScripted(territory), attackingUnits);
 			if (battle != null && !battle.getAttackingUnits().containsAll(attackingUnits))
@@ -509,8 +515,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				defender = MustFightBattle.findDefender(to, m_player, data);
 			for (final Territory from : scrambleTerrs.get(to))
 			{
-				final Collection<Unit> airbases = from.getUnits().getMatches(new CompositeMatchAnd<Unit>(
-							Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsAirBase, Matches.UnitIsDisabled().invert()));
+				final Collection<Unit> airbases = from.getUnits().getMatches(
+							new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsAirBase, Matches.UnitIsDisabled().invert()));
 				if (defender == null)
 				{
 					defender = MustFightBattle.findDefender(from, m_player, data);
@@ -526,8 +532,9 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					if (tempMax > maxScrambled)
 						maxScrambled = tempMax;
 				}
-				final Collection<Unit> canScrambleAir = from.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player),
-							Matches.UnitCanScramble, Matches.UnitIsDisabled().invert(), Matches.UnitWasScrambled.invert()));
+				final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.TerritoryIsNotImpassable);
+				final Collection<Unit> canScrambleAir = from.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player), Matches.UnitCanScramble,
+							Matches.UnitIsDisabled().invert(), Matches.UnitWasScrambled.invert(), Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
 				if (maxScrambled > 0 && !canScrambleAir.isEmpty())
 					scramblers.put(from, new Tuple<Integer, Collection<Unit>>(maxScrambled, canScrambleAir));
 			}
@@ -564,15 +571,47 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 						change.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_SCRAMBLED));
 					}
 					change.add(ChangeFactory.moveUnits(t, to, scrambling)); // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
-					m_bridge.getHistoryWriter().startEvent(defender.getName() + " scrambles " + scrambling.size() + " units out of "
-								+ t.getName() + " to defend against the attack in " + to.getName());
+					m_bridge.getHistoryWriter()
+								.startEvent(defender.getName() + " scrambles " + scrambling.size() + " units out of " + t.getName() + " to defend against the attack in " + to.getName());
 					m_bridge.getHistoryWriter().setRenderingData(scrambling);
 				}
 				if (!change.isEmpty())
 					m_bridge.addChange(change);
 			}
+			
+			// make sure the units join the battle, or create a new battle.
+			IBattle battle = m_battleTracker.getPendingBattle(to, false);
+			if (battle == null)
+			{
+				final List<Unit> attackingUnits = to.getUnits().getMatches(Matches.unitIsOwnedBy(m_player));
+				m_bridge.getHistoryWriter().startEvent(defender.getName() + " scrambles to create a battle in territory " + to.getName());
+				// TODO: the attacking sea units do not remember where they came from, so they can not retreat anywhere. Need to fix
+				m_battleTracker.addBattle(new RouteScripted(to), attackingUnits, false, m_player, m_bridge, null);
+				battle = m_battleTracker.getPendingBattle(to, false);
+			}
+			else if (battle instanceof MustFightBattle)
+			{
+				((MustFightBattle) battle).resetDefendingUnits(to, m_player, data);
+			}
+			// now make sure any amphibious battles that are dependent on this 'new' sea battle have their dependencies set.
+			if (to.isWater())
+			{
+				for (final Territory t : data.getMap().getNeighbors(to, Matches.TerritoryIsLand))
+				{
+					final IBattle battleAmphib = m_battleTracker.getPendingBattle(t, false);
+					if (battleAmphib != null)
+					{
+						if (!m_battleTracker.getDependentOn(battle).contains(battleAmphib))
+							m_battleTracker.addDependency(battleAmphib, battle);
+						if (battleAmphib instanceof MustFightBattle)
+						{
+							// and we want to reset the defenders if the scrambling air has left that battle
+							((MustFightBattle) battleAmphib).resetDefendingUnits(t, m_player, data);
+						}
+					}
+				}
+			}
 		}
-		setupUnitsInSameTerritoryBattles(); // TODO: need to make sure that there are preceeding battles for any amphibious assault (dependant battles)
 	}
 	
 	private void scramblingCleanup()

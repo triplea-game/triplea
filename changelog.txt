@@ -1,4 +1,6 @@
 Changes for 1.5
+* Fixed various bugs in Scrambling, like not having dependent battles, not adding the units to existing battles, not removing units from old battles. (veqryn)
+
 * Completely re-wrote how scrambling works.  All scrambling now takes place before any battles begin.  (veqryn)
 
 * New game option, "Scramble To Any Amphibious Assault", allows bases not being attacked to scramble to defend bases that are being attacked amphibiously. (veqryn)

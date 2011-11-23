@@ -817,7 +817,7 @@ public class BattleTracker implements java.io.Serializable
 		return allBlocked;
 	}
 	
-	private void addDependency(final IBattle blocked, final IBattle blocking)
+	public void addDependency(final IBattle blocked, final IBattle blocking)
 	{
 		if (m_dependencies.get(blocked) == null)
 		{

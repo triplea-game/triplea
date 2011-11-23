@@ -142,6 +142,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_defender = findDefender(battleSite, m_attacker, m_data);
 	}
 	
+	public void resetDefendingUnits(final Territory battleSite, final PlayerID attacker, final GameData data)
+	{
+		m_defendingUnits.clear();
+		m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
+	}
+	
 	/**
 	 * Used for head-less battles
 	 * 
@@ -2693,7 +2699,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (!m_battleSite.isWater())
 			return;
 		// TODO: why do we keep checking throughout this entire class if the units in m_defendingUnits are allied with defender, and if the units in m_attackingUnits are allied with the attacker? Does it really matter?
-		final CompositeMatch<Unit> alliedDefendingAir = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.isUnitAllied(m_defender, m_data));
+		final CompositeMatch<Unit> alliedDefendingAir = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.isUnitAllied(m_defender, m_data), Matches.UnitWasScrambled.invert());
 		m_defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
 		// no planes, exit
 		if (m_defendingAir.isEmpty())

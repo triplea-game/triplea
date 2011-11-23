@@ -3393,11 +3393,6 @@ public class Matches
 		};
 	}
 	
-	/** Creates new Matches */
-	private Matches()
-	{
-	}
-	
 	public static Match<Territory> territoryIsNotNeutralAndNotImpassibleOrRestricted(final PlayerID player)
 	{
 		final Match<Territory> notNeutralAndNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(TerritoryIsPassableAndNotRestricted(player), new InverseMatch<Territory>(TerritoryIsNeutral));
@@ -3428,5 +3423,22 @@ public class Matches
 		});
 		friendlyGround.add(TerritoryIsLand);
 		return friendlyGround;
+	}
+	
+	public static Match<Unit> unitCanScrambleOnRouteDistance(final Route route)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				return UnitAttachment.get(u.getType()).getMaxScrambleDistance() >= route.getMovementCost(u);
+			}
+		};
+	}
+	
+	/** Creates new Matches */
+	private Matches()
+	{
 	}
 }
