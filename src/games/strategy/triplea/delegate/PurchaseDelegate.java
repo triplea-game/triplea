@@ -462,7 +462,12 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		int toGive = (int) Math.round(((double) currentPUs * (double) bonusPercent / 100));
 		if (toGive == 0 && bonusPercent > 0 && currentPUs > 0)
 			toGive = 1;
-		m_bridge.getHistoryWriter().startEvent("Giving AI player bonus income of " + toGive + MyFormatter.pluralize(" PU", toGive));
+		toGive += games.strategy.triplea.Properties.getAIBonusIncomeFlatRate(getData());
+		if (toGive + currentPUs < 0)
+			toGive = currentPUs * -1;
+		if (toGive == 0)
+			return;
+		m_bridge.getHistoryWriter().startEvent("Giving AI player bonus income modifier of " + toGive + MyFormatter.pluralize(" PU", toGive));
 		m_bridge.addChange(ChangeFactory.changeResourcesChange(m_player, getData().getResourceList().getResource(Constants.PUS), toGive));
 	}
 	

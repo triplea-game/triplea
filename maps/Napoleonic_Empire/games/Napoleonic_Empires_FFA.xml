@@ -7120,10 +7120,10 @@
                 <property name="" value="false" editable="true">
                         <boolean/>
                 </property>
-                <property name="" value="false" editable="true">
+                <!--<property name="" value="false" editable="true">
                         <boolean/>
                 </property>
-                <!--<property name="" value="false" editable="true">
+                <property name="" value="false" editable="true">
                         <boolean/>
                 </property>
                 <property name="" value="false" editable="true">
@@ -7142,6 +7142,10 @@
                 </property>
 
                 <property name="Spain bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+
+                <property name="KingdomOfPrussia bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
 				
@@ -7190,10 +7194,10 @@
                 <property name="" value="false" editable="true">
                         <boolean/>
                 </property>
-                <property name="" value="false" editable="true">
+                <!--<property name="" value="false" editable="true">
                         <boolean/>
                 </property>
-                <!--<property name="" value="false" editable="true">
+                <property name="" value="false" editable="true">
                         <boolean/>
                 </property>
                 <property name="" value="false" editable="true">
@@ -7203,15 +7207,19 @@
                         <boolean/>
                 </property>-->
 
-                <property name="KingdomOfPrussia bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-
                 <property name="Sweden bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
 
                 <property name="AustrianEmpire bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+
+                <property name="OttomanEmpire bid" value="0" editable="true">
+                        <number min="0" max="1000"/>
+                </property>
+
+                <property name="Russia bid" value="0" editable="true">
                         <number min="0" max="1000"/>
                 </property>
 				
@@ -7260,26 +7268,35 @@
                 <property name="" value="false" editable="true">
                         <boolean/>
                 </property>
-                <property name="" value="false" editable="true">
-                        <boolean/>
-                </property>
-                <property name="" value="false" editable="true">
-                        <boolean/>
-                </property>
                 <!--<property name="" value="false" editable="true">
                         <boolean/>
                 </property>
                 <property name="" value="false" editable="true">
                         <boolean/>
+                </property>
+                <property name="" value="false" editable="true">
+                        <boolean/>
+                </property>
+                <property name="" value="false" editable="true">
+                        <boolean/>
                 </property>-->
-
-                <property name="OttomanEmpire bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
-
-                <property name="Russia bid" value="0" editable="true">
-                        <number min="0" max="1000"/>
-                </property>
+				
+				<!-- AI related -->
+				<property name="AI Bonus Income Flat Rate" value="8" editable="true">
+						<number min="-10" max="30"/>
+				</property>
+				
+				<property name="AI Bonus Income Percentage" value="0" editable="true">
+						<number min="-30" max="120"/>
+				</property>
+				
+				<property name="AI Bonus Attack" value="0" editable="true">
+						<number min="0" max="2"/>
+				</property>
+				
+				<property name="AI Bonus Defense" value="0" editable="true">
+						<number min="0" max="2"/>
+				</property>
 				
 				
 				
@@ -7448,19 +7465,6 @@
 
 				<property name="maxFactoriesPerTerritory" value="2" editable="false">
 						<number min="1" max="6"/>
-				</property>
-				
-				<!-- AI related -->
-				<property name="AI Bonus Income Percentage" value="20" editable="true">
-						<number min="-30" max="120"/>
-				</property>
-				
-				<property name="AI Bonus Attack" value="0" editable="true">
-						<number min="0" max="2"/>
-				</property>
-				
-				<property name="AI Bonus Defense" value="0" editable="true">
-						<number min="0" max="2"/>
 				</property>
 
                 <!-- Map Name: also used for map utils when asked -->

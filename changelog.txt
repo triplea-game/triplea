@@ -1,4 +1,6 @@
 Changes for 1.5
+* New game option, "AI Bonus Income Flat Rate", which gives a flat bonus every turn to all AIs. (veqryn)
+
 * Changed PlayerID.getData() to be deprecated, and removed all uses of it that I could. (veqryn)
 
 * Fixed various bugs in Scrambling, like not having dependent battles, not adding the units to existing battles, not removing units from old battles. (veqryn)

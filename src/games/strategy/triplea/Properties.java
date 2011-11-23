@@ -805,6 +805,17 @@ public class Properties implements Constants
 		}
 	}
 	
+	public static int getAIBonusIncomeFlatRate(final GameData data)
+	{
+		try
+		{
+			return Integer.parseInt((String) data.getProperties().get(AI_BONUS_INCOME_FLAT_RATE));
+		} catch (final NumberFormatException e)
+		{
+			return 0;
+		}
+	}
+	
 	public static int getAIBonusAttack(final GameData data)
 	{
 		try

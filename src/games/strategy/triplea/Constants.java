@@ -201,6 +201,7 @@ public interface Constants
 	public static final String NEUTRAL_FLYOVER_ALLOWED = "Neutral Flyover Allowed";
 	public static final String UNITS_CAN_BE_CHANGED_ON_CAPTURE = "Units Can Be Changed On Capture";
 	public static final String AI_BONUS_INCOME_PERCENTAGE = "AI Bonus Income Percentage";
+	public static final String AI_BONUS_INCOME_FLAT_RATE = "AI Bonus Income Flat Rate";
 	public static final String AI_BONUS_ATTACK = "AI Bonus Attack";
 	public static final String AI_BONUS_DEFENSE = "AI Bonus Defense";
 	public static final String RELATIONSHIPS_LAST_EXTRA_ROUNDS = "Relationships Last Extra Rounds";
