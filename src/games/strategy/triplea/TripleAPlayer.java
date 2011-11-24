@@ -622,7 +622,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories, player);
 	}*/
 
-	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
 	{
 		return m_ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);
 	}

@@ -26,6 +26,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class DummyTripleAPlayer implements ITripleaPlayer
@@ -94,7 +95,7 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 		return null;
 	}*/
 
-	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
 	{
 		return null;
 	}

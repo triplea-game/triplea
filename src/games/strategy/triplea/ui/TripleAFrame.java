@@ -787,7 +787,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return selected;
 	}
 	
-	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
@@ -823,10 +823,13 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 					chooserScrollPane = new JScrollPane(panelChooser);
 					panel.add(chooserScrollPane);
 				}
+				final Object[] options = { "Scramble", "None", "Wait" };
 				final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units to scramble to " + scrambleTo.getName(),
-							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
 				if (option == JOptionPane.NO_OPTION)
 				{
+					choosers.clear();
+					selection.clear();
 					continueLatch.countDown();
 					return;
 				}
@@ -834,11 +837,13 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				{
 					try
 					{
-						Thread.sleep(10000);
+						Thread.sleep(6000);
 					} catch (final InterruptedException e)
 					{
 						e.printStackTrace();
 					}
+					choosers.clear();
+					selection.clear();
 					run();
 				}
 				for (final Tuple<Territory, UnitChooser> terrChooser : choosers)

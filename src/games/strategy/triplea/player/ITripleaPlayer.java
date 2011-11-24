@@ -24,6 +24,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.util.Tuple;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -239,7 +240,7 @@ public interface ITripleaPlayer extends IRemote
 	 *            - possible units which we could scramble, with where they are from and how many allowed from that location
 	 * @return a list of units to scramble mapped to where they are coming from
 	 */
-	public Map<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo, Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers);
+	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo, Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers);
 	
 	/**
 	 * Allows the user to pause and confirm enemy casualties

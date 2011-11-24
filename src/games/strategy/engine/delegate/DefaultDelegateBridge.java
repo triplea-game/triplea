@@ -140,7 +140,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	{
 		try
 		{
-			final Object implementor = m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(id, id.getData()));
+			final Object implementor = m_game.getRemoteMessenger().getRemote(ServerGame.getRemoteName(id, m_data));
 			return (IRemote) getOutbound(implementor);
 		} catch (final MessengerException me)
 		{
@@ -153,7 +153,7 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	 */
 	public IChannelSubscribor getDisplayChannelBroadcaster()
 	{
-		final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getDisplayChannel(m_game.getData()));
+		final Object implementor = m_game.getChannelMessenger().getChannelBroadcastor(ServerGame.getDisplayChannel(m_data));
 		return (IChannelSubscribor) getOutbound(implementor);
 	}
 	

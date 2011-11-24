@@ -556,7 +556,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			boolean scrambledHere = false;
 			for (final HashMap<Territory, Tuple<Integer, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer.get(terrPlayer))
 			{
-				final Map<Territory, Collection<Unit>> toScramble = ((ITripleaPlayer) m_bridge.getRemote(defender)).scrambleUnitsQuery(to, scramblers);
+				final HashMap<Territory, Collection<Unit>> toScramble = ((ITripleaPlayer) m_bridge.getRemote(defender)).scrambleUnitsQuery(to, scramblers);
 				if (toScramble == null)
 					continue;
 				
