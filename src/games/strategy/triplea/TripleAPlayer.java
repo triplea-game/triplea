@@ -580,9 +580,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
 	 */
-	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates)
+	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
-		return m_ui.selectTerritoryForAirToLand(candidates);
+		return m_ui.selectTerritoryForAirToLand(candidates, currentTerritory, unitMessage);
 	}
 	
 	/* (non-Javadoc)

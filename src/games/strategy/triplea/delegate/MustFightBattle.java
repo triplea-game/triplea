@@ -2720,6 +2720,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		while (defendingAirIter.hasNext() && carrierCapacity >= carrierCost)
 		{
 			final Unit currentUnit = defendingAirIter.next();
+			if (!Matches.UnitCanLandOnCarrier.match(currentUnit))
+			{
+				m_defendingAir.remove(currentUnit);
+				continue;
+			}
 			carrierCost += UnitAttachment.get(currentUnit.getType()).getCarrierCost();
 			if (carrierCapacity >= carrierCost)
 			{
@@ -2753,7 +2758,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// get the capacity of the carriers and cost of fighters
 			final Collection<Unit> alliedCarriers = currentTerritory.getUnits().getMatches(alliedCarrier);
 			final Collection<Unit> alliedPlanes = currentTerritory.getUnits().getMatches(alliedPlane);
-			final int alliedCarrierCapacity = MoveValidator.carrierCapacity(alliedCarriers, null);
+			final int alliedCarrierCapacity = MoveValidator.carrierCapacity(alliedCarriers, currentTerritory);
 			final int alliedPlaneCost = MoveValidator.carrierCost(alliedPlanes);
 			// if there is free capacity, add the territory to landing possibilities
 			if (alliedCarrierCapacity - alliedPlaneCost >= 1)
@@ -2766,7 +2771,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			Territory territory = null;
 			while (canLandHere.size() > 1 && m_defendingAir.size() > 0)
 			{
-				territory = getRemote(m_defender, bridge).selectTerritoryForAirToLand(canLandHere);
+				territory = getRemote(m_defender, bridge).selectTerritoryForAirToLand(canLandHere, m_battleSite, MyFormatter.unitsToText(m_defendingAir));
 				// added for test script
 				if (territory == null)
 				{

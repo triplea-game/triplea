@@ -1,4 +1,8 @@
 Changes for 1.5
+* Allowed scrambling to any territory, and allowed moving the units after scrambling is completed, to anywhere. (veqryn)
+
+* Allowed scrambling units to move to find new landing zones if their originating territory was taken or they are not forced to return to it. (veqryn)
+
 * Wrote new Scrambling ui dialog from scratch, and made it work over the network. (veqryn)
 
 * New game option, "AI Bonus Income Flat Rate", which gives a flat bonus every turn to all AIs. (veqryn)

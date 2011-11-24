@@ -444,7 +444,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return true;
 	}
 	
-	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates)
+	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		return candidates.iterator().next();
 	}

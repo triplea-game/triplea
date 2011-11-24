@@ -136,7 +136,7 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 		return false;
 	}
 	
-	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates)
+	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		return null;
 	}

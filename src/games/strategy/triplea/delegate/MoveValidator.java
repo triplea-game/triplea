@@ -401,7 +401,7 @@ public class MoveValidator
 	 * @param territory
 	 * @return
 	 */
-	public static int carrierCapacity(final Collection<Unit> units, final Territory territory)
+	public static int carrierCapacity(final Collection<Unit> units, final Territory territoryUnitsAreCurrentlyIn)
 	{
 		int sum = 0;
 		final Iterator<Unit> iter = units.iterator();
@@ -418,7 +418,7 @@ public class MoveValidator
 					if (Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER).match(unit))
 					{
 						int countCargo = 0;
-						final Collection<Unit> airCargo = territory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier));
+						final Collection<Unit> airCargo = territoryUnitsAreCurrentlyIn.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier));
 						for (final Unit airUnit : airCargo)
 						{
 							final TripleAUnit taUnit = (TripleAUnit) airUnit;

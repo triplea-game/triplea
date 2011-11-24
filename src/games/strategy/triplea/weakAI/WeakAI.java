@@ -1329,7 +1329,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#selectTerritoryForAirToLand(java.util.Collection, java.lang.String)
 	 */
-	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates)
+	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		return candidates.iterator().next();
 	}

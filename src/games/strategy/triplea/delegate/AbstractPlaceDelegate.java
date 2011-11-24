@@ -273,7 +273,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	{
 		final int cost = MoveValidator.carrierCost(units);
 		int capacity = MoveValidator.carrierCapacity(units, to);
-		capacity += MoveValidator.carrierCapacity(to.getUnits().getUnits(), null);
+		capacity += MoveValidator.carrierCapacity(to.getUnits().getUnits(), to);
 		if (cost > capacity)
 			return "Not enough new carriers to land all the fighters";
 		return null;

@@ -33,6 +33,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -556,6 +557,18 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			boolean scrambledHere = false;
 			for (final HashMap<Territory, Tuple<Integer, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer.get(terrPlayer))
 			{
+				// verify that we didn't already scramble any of these units
+				final Iterator<Territory> tIter = scramblers.keySet().iterator();
+				while (tIter.hasNext())
+				{
+					final Territory t = tIter.next();
+					scramblers.get(t).getSecond().retainAll(t.getUnits().getUnits());
+					if (scramblers.get(t).getSecond().isEmpty())
+						tIter.remove();
+				}
+				if (scramblers.isEmpty())
+					continue;
+				
 				final HashMap<Territory, Collection<Unit>> toScramble = ((ITripleaPlayer) m_bridge.getRemote(defender)).scrambleUnitsQuery(to, scramblers);
 				if (toScramble == null)
 					continue;
@@ -638,22 +651,126 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		final boolean mustReturnToBase = games.strategy.triplea.Properties.getScrambled_Units_Return_To_Base(data);
 		for (final Territory t : data.getMap().getTerritories())
 		{
-			final CompositeChange change = new CompositeChange();
+			int carrierCostOfCurrentTerr = 0;
 			final Collection<Unit> wasScrambled = t.getUnits().getMatches(Matches.UnitWasScrambled);
 			for (final Unit u : wasScrambled)
 			{
-				// TODO: we need to account for mustReturnToBase and also account for if we no longer own originating territory.
-				change.add(ChangeFactory.moveUnits(t, TripleAUnit.get(u).getOriginatedFrom(), Collections.singletonList(u)));
+				final CompositeChange change = new CompositeChange();
+				final Territory originatedFrom = TripleAUnit.get(u).getOriginatedFrom();
+				Territory landingTerr = null;
+				String historyText = "";
+				if (!mustReturnToBase || !Matches.isTerritoryAllied(u.getOwner(), data).match(originatedFrom))
+				{
+					final Collection<Territory> possible = whereCanAirLand(Collections.singletonList(u), t, u.getOwner(), data,
+								m_battleTracker, carrierCostOfCurrentTerr, 1, true, !mustReturnToBase, true);
+					if (possible.size() > 1)
+						landingTerr = ((ITripleaPlayer) m_bridge.getRemote(u.getOwner())).selectTerritoryForAirToLand(possible, t, MyFormatter.unitsToText(Collections.singletonList(u)));
+					else if (possible.size() == 1)
+						landingTerr = possible.iterator().next();
+					if (landingTerr == null || landingTerr.equals(t))
+					{
+						carrierCostOfCurrentTerr += MoveValidator.carrierCost(Collections.singletonList(u));
+						historyText = "Scrambled unit stays in territory " + t.getName();
+					}
+					else
+						historyText = "Moving scrambled unit from " + t.getName() + " to " + landingTerr.getName();
+				}
+				else
+				{
+					landingTerr = originatedFrom;
+					historyText = "Moving scrambled unit from " + t.getName() + " back to originating territory: " + landingTerr.getName();
+				}
+				// if null, we leave it to die
+				if (landingTerr != null)
+					change.add(ChangeFactory.moveUnits(t, landingTerr, Collections.singletonList(u)));
 				change.add(ChangeFactory.unitPropertyChange(u, null, TripleAUnit.ORIGINATED_FROM));
 				change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_SCRAMBLED));
-			}
-			if (!change.isEmpty())
-			{
-				m_bridge.getHistoryWriter().startEvent("Moving scrambled units from " + t.getName() + " back to originating territories");
-				m_bridge.getHistoryWriter().setRenderingData(wasScrambled);
-				m_bridge.addChange(change);
+				if (!change.isEmpty())
+				{
+					m_bridge.getHistoryWriter().startEvent(historyText);
+					m_bridge.getHistoryWriter().setRenderingData(u);
+					m_bridge.addChange(change);
+				}
 			}
 		}
+	}
+	
+	public static Collection<Territory> whereCanAirLand(final Collection<Unit> strandedAir, final Territory currentTerr, final PlayerID alliedPlayer, final GameData data,
+				final BattleTracker battleTracker, final int carrierCostForCurrentTerr, final int allowedMovement, final boolean byMovementCost, final boolean useMaxScrambleDistance,
+				final boolean landInConquered)
+	{
+		final HashSet<Territory> whereCanLand = new HashSet<Territory>();
+		int maxDistance = allowedMovement;
+		if ((byMovementCost && maxDistance > 1) || useMaxScrambleDistance)
+		{
+			UnitType ut = null;
+			for (final Unit u : strandedAir)
+			{
+				if (ut == null)
+					ut = u.getType();
+				else if (!ut.equals(u.getType()))
+					throw new IllegalStateException("whereCanAirLand can only accept 1 UnitType if byMovementCost or scrambled is true");
+			}
+			if (useMaxScrambleDistance)
+				maxDistance = UnitAttachment.get(ut).getMaxScrambleDistance();
+		}
+		if (maxDistance < 1 || strandedAir == null || strandedAir.isEmpty())
+			return Collections.singletonList(currentTerr);
+		/*for (final Unit u : strandedAir)
+		{
+			if (!data.getRelationshipTracker().isAllied(u.getOwner(), alliedPlayer))
+				throw new IllegalStateException("whereCanAirLand all air units must be allied with alliedPlayer");
+		}*/
+		final HashSet<Territory> canNotLand = new HashSet<Territory>();
+		canNotLand.addAll(battleTracker.getPendingBattleSites(false));
+		canNotLand.addAll(Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasEnemyUnits(alliedPlayer, data)));
+		if (!landInConquered)
+			canNotLand.addAll(battleTracker.getConquered());
+		
+		final Collection<Territory> possibleTerrs = new ArrayList<Territory>(data.getMap().getNeighbors(currentTerr, maxDistance));
+		if (byMovementCost && maxDistance > 1)
+		{
+			final Iterator<Territory> possibleIter = possibleTerrs.iterator();
+			while (possibleIter.hasNext())
+			{
+				final Route route = data.getMap().getRoute(currentTerr, possibleIter.next(), Matches.territoryIsNotNeutralAndNotImpassibleOrRestricted(alliedPlayer, data));
+				if (route == null || route.getMovementCost(strandedAir.iterator().next()) > maxDistance)
+					possibleIter.remove();
+			}
+		}
+		possibleTerrs.add(currentTerr);
+		
+		final HashSet<Territory> availableLand = new HashSet<Territory>();
+		availableLand.addAll(Match.getMatches(possibleTerrs, new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(alliedPlayer, data), Matches.TerritoryIsLand)));
+		availableLand.removeAll(canNotLand);
+		whereCanLand.addAll(availableLand);
+		
+		// now for carrier-air-landing validation
+		if (Match.allMatch(strandedAir, Matches.UnitCanLandOnCarrier))
+		{
+			final HashSet<Territory> availableWater = new HashSet<Territory>();
+			availableWater.addAll(Match.getMatches(possibleTerrs, new CompositeMatchAnd<Territory>(Matches.territoryHasUnitsThatMatch(Matches.UnitIsAlliedCarrier(alliedPlayer, data)),
+						Matches.TerritoryIsWater)));
+			availableWater.removeAll(battleTracker.getPendingBattleSites(false));
+			// a rather simple calculation, either we can take all the air, or we can't, nothing in the middle
+			final int carrierCost = MoveValidator.carrierCost(strandedAir);
+			final Iterator<Territory> waterIter = availableWater.iterator();
+			while (waterIter.hasNext())
+			{
+				final Territory t = waterIter.next();
+				int carrierCapacity = MoveValidator.carrierCapacity(t.getUnits().getMatches(Matches.UnitIsAlliedCarrier(alliedPlayer, data)), t);
+				if (!t.equals(currentTerr))
+					carrierCapacity -= MoveValidator.carrierCost(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.alliedUnit(alliedPlayer, data))));
+				else
+					carrierCapacity -= carrierCostForCurrentTerr;
+				// carrierCapacity -= MoveValidator.carrierCost(dependentunits)
+				if (carrierCapacity < carrierCost)
+					waterIter.remove();
+			}
+			whereCanLand.addAll(availableWater);
+		}
+		
+		return whereCanLand;
 	}
 	
 	/**

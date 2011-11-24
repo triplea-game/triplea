@@ -337,7 +337,7 @@ class DummyPlayer extends AbstractAI
 		return m2;
 	}
 	
-	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates)
+	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		throw new UnsupportedOperationException();
 	}

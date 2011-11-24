@@ -180,7 +180,7 @@ public interface ITripleaPlayer extends IRemote
 	 *            - a list of territories - these are the places where air units can land
 	 * @return - the territory to land the fighters in, must be non null
 	 */
-	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates);
+	public Territory selectTerritoryForAirToLand(Collection<Territory> candidates, final Territory currentTerritory, String unitMessage);
 	
 	/**
 	 * The attempted move will incur aa fire, confirm that you still want to move

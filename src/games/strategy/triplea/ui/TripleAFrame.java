@@ -127,6 +127,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -762,18 +763,24 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return chooser.getDice();
 	}
 	
-	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates)
+	public Territory selectTerritoryForAirToLand(final Collection<Territory> candidates, final Territory currentTerritory, final String unitMessage)
 	{
 		final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>()
 		{
 			public Tuple<JPanel, JList> run()
 			{
+				m_mapPanel.centerOn(currentTerritory);
 				final JList list = new JList(new Vector<Territory>(candidates));
 				list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				list.setSelectedIndex(0);
 				final JPanel panel = new JPanel();
 				panel.setLayout(new BorderLayout());
 				final JScrollPane scroll = new JScrollPane(list);
+				final JTextArea text = new JTextArea(unitMessage, 8, 30);
+				text.setLineWrap(true);
+				text.setEditable(false);
+				text.setWrapStyleWord(true);
+				panel.add(text, BorderLayout.NORTH);
 				panel.add(scroll, BorderLayout.CENTER);
 				return new Tuple<JPanel, JList>(panel, list);
 			}
@@ -781,8 +788,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		final JPanel panel = comps.getFirst();
 		final JList list = comps.getSecond();
 		final String[] options = { "OK" };
-		final String message = "Select territory for air units to land";
-		EventThreadJOptionPane.showOptionDialog(this, panel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		final String title = "Select territory for air units to land, current territory is " + currentTerritory.getName();
+		EventThreadJOptionPane.showOptionDialog(this, panel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		final Territory selected = (Territory) list.getSelectedValue();
 		return selected;
 	}

@@ -108,7 +108,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 				MoveDelegate.repairBattleShips(m_bridge, m_player, true);
 			
 			// reset any bonus of units.
-			resetBonusMovement();
+			if (!m_nonCombat)
+				resetBonusMovement();
 			
 			// give movement to units which begin the turn in the same territory as units with giveMovement (like air and naval bases)
 			if (!m_nonCombat && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(data))

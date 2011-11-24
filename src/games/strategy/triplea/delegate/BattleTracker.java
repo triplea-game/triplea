@@ -115,6 +115,11 @@ public class BattleTracker implements java.io.Serializable
 		return m_conquered.contains(t);
 	}
 	
+	public Set<Territory> getConquered()
+	{
+		return m_conquered;
+	}
+	
 	/**
 	 * @param t
 	 *            referring territory
