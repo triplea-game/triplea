@@ -23,6 +23,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectCalculator;
@@ -131,7 +132,7 @@ public class BattleDisplay extends JPanel
 	
 	public BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender, final Collection<Unit> attackingUnits,
 				final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-				final GUID battleID, final MapPanel mapPanel)
+				final GUID battleID, final MapPanel mapPanel, final String battleType)
 	{
 		m_battleID = battleID;
 		m_defender = defender;
@@ -139,9 +140,9 @@ public class BattleDisplay extends JPanel
 		m_location = territory;
 		m_mapPanel = mapPanel;
 		m_data = data;
-		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext());
+		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext(), battleType);
 		m_defenderModel.refresh();
-		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext());
+		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext(), battleType);
 		m_attackerModel.refresh();
 		m_uiContext = mapPanel.getUIContext();
 		m_casualties = new CasualtyNotificationPanel(data, m_mapPanel.getUIContext());
@@ -292,6 +293,24 @@ public class BattleDisplay extends JPanel
 		else
 		{
 			m_attackerModel.removeCasualties(killed);
+		}
+	}
+	
+	public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits, final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents)
+	{
+		if (player.equals(m_defender))
+		{
+			if (removedUnits != null)
+				m_defenderModel.removeCasualties(removedUnits);
+			if (addedUnits != null)
+				m_defenderModel.addUnits(addedUnits);
+		}
+		else
+		{
+			if (removedUnits != null)
+				m_attackerModel.removeCasualties(removedUnits);
+			if (addedUnits != null)
+				m_attackerModel.addUnits(addedUnits);
 		}
 	}
 	
@@ -1049,6 +1068,7 @@ class BattleModel extends DefaultTableModel
 	private final boolean m_attack;
 	private final Collection<Unit> m_units;
 	private final Territory m_location;
+	private final String m_battleType;
 	
 	private static String[] VarDiceArray(final GameData data)
 	{
@@ -1066,7 +1086,7 @@ class BattleModel extends DefaultTableModel
 		return diceColumns;
 	}
 	
-	BattleModel(final GameData data, final Collection<Unit> units, final Territory battleLocation, final boolean attack, final UIContext uiContext)
+	BattleModel(final GameData data, final Collection<Unit> units, final Territory battleLocation, final boolean attack, final UIContext uiContext, final String battleType)
 	{
 		super(new Object[0][0], VarDiceArray(data));
 		m_uiContext = uiContext;
@@ -1075,6 +1095,7 @@ class BattleModel extends DefaultTableModel
 		// were going to modify the units
 		m_units = new ArrayList<Unit>(units);
 		m_location = battleLocation;
+		m_battleType = battleType;
 	}
 	
 	public void notifyRetreat(final Collection<Unit> retreating)
@@ -1126,31 +1147,42 @@ class BattleModel extends DefaultTableModel
 			final int[] shift = new int[m_data.getDiceSides() + 1];
 			for (int i = category.getUnits().size(); i > 0; i--)
 			{
-				if (m_attack)
+				if (m_battleType.equals(BattleTracker.BATTLE_TYPE_AIR_BATTLE))
 				{
-					strength = attachment.getAttack(category.getOwner());
-					// Increase attack value if it's an assaulting marine
-					if (DiceRoll.isAmphibiousMarine(attachment, m_data))
-						++strength;
-					strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);
+					if (m_attack)
+						strength = attachment.getAirAttack(category.getOwner());
+					else
+						strength = attachment.getAirDefense(category.getOwner());
 				}
 				else
 				{
-					strength = attachment.getDefense(category.getOwner());
-					m_data.acquireReadLock();
-					try
+					// normal battle
+					if (m_attack)
 					{
-						// decrease strength of sneak attack defenders
-						if (DiceRoll.isFirstTurnLimitedRoll(category.getOwner(), m_data))
-							strength = Math.min(1, strength);
-						else
-							strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);
-					} finally
-					{
-						m_data.releaseReadLock();
+						strength = attachment.getAttack(category.getOwner());
+						// Increase attack value if it's an assaulting marine
+						if (DiceRoll.isAmphibiousMarine(attachment, m_data))
+							++strength;
+						strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);
 					}
+					else
+					{
+						strength = attachment.getDefense(category.getOwner());
+						m_data.acquireReadLock();
+						try
+						{
+							// decrease strength of sneak attack defenders
+							if (DiceRoll.isFirstTurnLimitedRoll(category.getOwner(), m_data))
+								strength = Math.min(1, strength);
+							else
+								strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);
+						} finally
+						{
+							m_data.releaseReadLock();
+						}
+					}
+					strength += TerritoryEffectCalculator.getTerritoryCombatBonus(category.getType(), m_location, !m_attack);
 				}
-				strength += TerritoryEffectCalculator.getTerritoryCombatBonus(category.getType(), m_location, !m_attack);
 				strength = Math.min(Math.max(strength, 0), m_data.getDiceSides());
 				shift[strength]++;
 			}

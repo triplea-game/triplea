@@ -56,7 +56,8 @@ public interface ITripleaDisplay extends IDisplay
 	 *            - PlayerID of defender
 	 */
 	public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Collection<Unit> killedUnits,
-				Collection<Unit> attackingWaitingToDie, Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker, final PlayerID defender);
+				Collection<Unit> attackingWaitingToDie, Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker,
+				final PlayerID defender, final String battleType);
 	
 	/**
 	 * 
@@ -84,6 +85,8 @@ public interface ITripleaDisplay extends IDisplay
 	 * Notify that the casualties occurred, and only the casualty
 	 */
 	public void deadUnitNotification(GUID battleID, PlayerID player, Collection<Unit> dead, Map<Unit, Collection<Unit>> dependents);
+	
+	public void changedUnitsNotification(GUID battleID, PlayerID player, Collection<Unit> removedUnits, Collection<Unit> addedUnits, Map<Unit, Collection<Unit>> dependents);
 	
 	/*
 	 * Notify that the casualties occurred

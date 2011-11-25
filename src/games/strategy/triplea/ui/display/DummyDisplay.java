@@ -20,7 +20,7 @@ public class DummyDisplay implements ITripleaDisplay
 	 */
 	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
 				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> dependentUnits,
-				final PlayerID attacker, final PlayerID defender)
+				final PlayerID attacker, final PlayerID defender, final String battleType)
 	{
 		// TODO Auto-generated method stub
 	}
@@ -42,6 +42,12 @@ public class DummyDisplay implements ITripleaDisplay
 	}
 	
 	public void deadUnitNotification(final GUID battleID, final PlayerID player, final Collection<Unit> killed, final Map<Unit, Collection<Unit>> dependents)
+	{
+		// TODO Auto-generated method stub
+	}
+	
+	public void changedUnitsNotification(final GUID battleID, final PlayerID player, final Collection<Unit> removedUnits, final Collection<Unit> addedUnits,
+				final Map<Unit, Collection<Unit>> dependents)
 	{
 		// TODO Auto-generated method stub
 	}

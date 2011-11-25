@@ -627,6 +627,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		return m_ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);
 	}
 	
+	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
+	{
+		return m_ui.selectUnitsQuery(current, possible, message);
+	}
+	
 	public void confirmEnemyCasualties(final GUID battleId, final String message, final PlayerID hitPlayer)
 	{
 		// no need, we have already confirmed since we are firing player

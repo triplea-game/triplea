@@ -840,7 +840,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 					continueLatch.countDown();
 					return;
 				}
-				if (option == JOptionPane.CANCEL_OPTION)
+				else if (option == JOptionPane.CANCEL_OPTION)
 				{
 					try
 					{
@@ -853,11 +853,82 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 					selection.clear();
 					run();
 				}
-				for (final Tuple<Territory, UnitChooser> terrChooser : choosers)
+				else
 				{
-					selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
+					for (final Tuple<Territory, UnitChooser> terrChooser : choosers)
+					{
+						selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
+					}
+					continueLatch.countDown();
 				}
-				continueLatch.countDown();
+			}
+		});
+		try
+		{
+			continueLatch.await();
+		} catch (final InterruptedException ex)
+		{
+			ex.printStackTrace();
+		}
+		return selection;
+	}
+	
+	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
+	{
+		if (SwingUtilities.isEventDispatchThread())
+		{
+			throw new IllegalStateException("Should not be called from dispatch thread");
+		}
+		final CountDownLatch continueLatch = new CountDownLatch(1);
+		final Collection<Unit> selection = new ArrayList<Unit>();
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				m_mapPanel.centerOn(current);
+				final JPanel panel = new JPanel();
+				panel.setLayout(new FlowLayout());
+				JScrollPane chooserScrollPane;
+				final JPanel panelChooser = new JPanel();
+				panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
+				panelChooser.setBorder(BorderFactory.createLineBorder(getBackground()));
+				final JLabel whereFrom = new JLabel("From: " + current.getName());
+				whereFrom.setHorizontalAlignment(JLabel.LEFT);
+				whereFrom.setFont(new Font("Arial", Font.BOLD, 12));
+				panelChooser.add(whereFrom);
+				panelChooser.add(new JLabel(" "));
+				final int maxAllowed = possible.size();
+				final UnitChooser chooser = new UnitChooser(possible, Collections.<Unit, Collection<Unit>> emptyMap(), m_data, false, m_uiContext);
+				chooser.setMaxAndShowMaxButton(maxAllowed);
+				panelChooser.add(chooser);
+				chooserScrollPane = new JScrollPane(panelChooser);
+				panel.add(chooserScrollPane);
+				final Object[] options = { "Select", "None", "Wait" };
+				final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units" + message,
+							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
+				if (option == JOptionPane.NO_OPTION)
+				{
+					selection.clear();
+					continueLatch.countDown();
+					return;
+				}
+				else if (option == JOptionPane.CANCEL_OPTION)
+				{
+					try
+					{
+						Thread.sleep(6000);
+					} catch (final InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+					selection.clear();
+					run();
+				}
+				else
+				{
+					selection.addAll(chooser.getSelected());
+					continueLatch.countDown();
+				}
 			}
 		});
 		try

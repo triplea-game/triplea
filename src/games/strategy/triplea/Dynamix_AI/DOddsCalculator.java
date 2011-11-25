@@ -340,6 +340,11 @@ class DummyPlayer extends AbstractAI
 		return null;
 	}
 	
+	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
+	{
+		return null;
+	}
+	
 	boolean useDefaultSelectionThisTime = false;
 	
 	@Override

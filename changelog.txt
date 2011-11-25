@@ -1,4 +1,12 @@
 Changes for 1.5
+* Changed BattleModel to show air battle units with different stats then their normal attack/defense stats. (veqryn)
+
+* Made sure units participating in air battles did not participate in any other battles. (veqryn)
+
+* Created launching of interceptors component for air battles. (veqryn)
+
+* Created dice rolling component for Strategic Bombing Air Battles, including for Low Luck. (veqryn)
+
 * Moved 'Fire' out of MustFightBattle with the hopes of abstracting it and making it a general class one day. (veqryn)
 
 * Created battle steps and interfaces for Air Battle, but still not done actual combat. (veqryn)

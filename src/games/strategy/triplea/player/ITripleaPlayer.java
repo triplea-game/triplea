@@ -243,6 +243,16 @@ public interface ITripleaPlayer extends IRemote
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo, Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers);
 	
 	/**
+	 * Ask the player which if any units they want to select.
+	 * 
+	 * @param current
+	 * @param possible
+	 * @param message
+	 * @return
+	 */
+	public Collection<Unit> selectUnitsQuery(Territory current, Collection<Unit> possible, String message);
+	
+	/**
 	 * Allows the user to pause and confirm enemy casualties
 	 * 
 	 * @param battleId

@@ -507,4 +507,9 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			SelectCasualties.NotifyCasualtySelectionError(error);
 		}
 	}
+	
+	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
+	{
+		return null;
+	}
 }

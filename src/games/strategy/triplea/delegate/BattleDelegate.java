@@ -89,6 +89,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	public void end()
 	{
 		scramblingCleanup();
+		airBattleCleanup();
 		super.end();
 		m_needToInitialize = true;
 	}
@@ -692,6 +693,27 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					m_bridge.addChange(change);
 				}
 			}
+		}
+	}
+	
+	private void airBattleCleanup()
+	{
+		// return scrambled units to their original territories, or let them move 1 or x to a new territory.
+		final GameData data = getData();
+		if (!games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data))
+			return;
+		final CompositeChange change = new CompositeChange();
+		for (final Territory t : data.getMap().getTerritories())
+		{
+			for (final Unit u : t.getUnits().getMatches(Matches.UnitWasInAirBattle))
+			{
+				change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_IN_AIR_BATTLE));
+			}
+		}
+		if (!change.isEmpty())
+		{
+			m_bridge.getHistoryWriter().startEvent("Preparing for any air battles");
+			m_bridge.addChange(change);
 		}
 	}
 	

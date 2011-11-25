@@ -155,4 +155,9 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 	{
 		return null;
 	}
+	
+	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
+	{
+		return null;
+	}
 }

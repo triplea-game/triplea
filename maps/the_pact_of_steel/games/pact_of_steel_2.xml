@@ -868,7 +868,7 @@
                 </productionRule>
 
                 <productionRule name="buyHarbour">
-                        <cost resource="PUs" quantity="15" />
+                        <cost resource="PUs" quantity="12" />
                         <result resourceOrUnit="harbour" quantity="1"/>
                 </productionRule>
 
@@ -1043,7 +1043,7 @@
                 </productionRule>
 
                 <productionRule name="buyHarbourIndustrialTechnology">
-                        <cost resource="PUs" quantity="12" />
+                        <cost resource="PUs" quantity="10" />
                         <result resourceOrUnit="harbour" quantity="1"/>
                 </productionRule>
 
@@ -4621,7 +4621,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Scramble Rules In Effect" value="false" editable="true">
+				<property name="Scramble Rules In Effect" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -4633,7 +4633,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Scramble From Island Only" value="true" editable="true">
+				<property name="Scramble From Island Only" value="false" editable="true">
 						<boolean/>
 				</property>
 

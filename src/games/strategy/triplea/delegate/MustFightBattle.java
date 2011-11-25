@@ -422,7 +422,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			final ITripleaDisplay display = getDisplay(bridge);
 			display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender), m_killed,
-						m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender);
+						m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, getBattleType());
 			display.listBattleSteps(m_battleID, m_stepStrings);
 			m_stack.execute(bridge);
 			return;
@@ -453,7 +453,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_stepStrings = determineStepStrings(true, bridge);
 		final ITripleaDisplay display = getDisplay(bridge);
 		display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender), m_killed,
-					m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender);
+					m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, getBattleType());
 		display.listBattleSteps(m_battleID, m_stepStrings);
 		if (!m_headless)
 		{
@@ -2383,6 +2383,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		unitList.removeAll(Match.getMatches(unitList, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(m_attacker, m_battleSite, m_data)));
 		// remove any allied air units that are stuck on damaged carriers (veqryn)
 		unitList.removeAll(Match.getMatches(unitList, new CompositeMatchAnd<Unit>(Matches.unitIsBeingTransported(), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier)));
+		// remove any units that were in air combat (veqryn)
+		unitList.removeAll(Match.getMatches(unitList, Matches.UnitWasInAirBattle));
 		return unitList;
 	}
 	

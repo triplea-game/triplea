@@ -27,6 +27,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
+import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
@@ -148,23 +149,23 @@ public class BattlePanel extends ActionPanel
 				Iterator<Territory> iter = battles.iterator();
 				while (iter.hasNext())
 				{
-					addBattleActions(panel, iter, false);
+					addBattleActions(panel, iter, false, "Normal");
 				}
 				iter = bombing.iterator();
 				while (iter.hasNext())
 				{
-					addBattleActions(panel, iter, true);
+					addBattleActions(panel, iter, true, "Bombing"); // TODO: need to fix
 				}
 				add(panel, BorderLayout.NORTH);
 				SwingUtilities.invokeLater(REFRESH);
 			}
 			
-			private void addBattleActions(final JPanel panel, final Iterator<Territory> iter, final boolean bomb)
+			private void addBattleActions(final JPanel panel, final Iterator<Territory> iter, final boolean bomb, final String battleType)
 			{
 				final Territory next = iter.next();
 				final JPanel innerPanel = new JPanel();
 				innerPanel.setLayout(new BorderLayout());
-				innerPanel.add(new JButton(new FightBattleAction(next, bomb)), BorderLayout.CENTER);
+				innerPanel.add(new JButton(new FightBattleAction(next, bomb, battleType)), BorderLayout.CENTER);
 				innerPanel.add(new JButton(new CenterBattleAction(next)), BorderLayout.EAST);
 				panel.add(innerPanel);
 			}
@@ -286,7 +287,7 @@ public class BattlePanel extends ActionPanel
 	
 	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
 				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> unit_dependents,
-				final PlayerID attacker, final PlayerID defender)
+				final PlayerID attacker, final PlayerID defender, final String battleType)
 	{
 		try
 		{
@@ -302,7 +303,7 @@ public class BattlePanel extends ActionPanel
 					if (!getMap().getUIContext().getShowMapOnly())
 					{
 						m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie, defendingWaitingToDie,
-									battleID, BattlePanel.this.getMap());
+									battleID, BattlePanel.this.getMap(), battleType);
 						m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
 						m_battleFrame.getContentPane().removeAll();
 						m_battleFrame.getContentPane().add(m_battleDisplay);
@@ -421,6 +422,18 @@ public class BattlePanel extends ActionPanel
 			{
 				if (m_battleDisplay != null)
 					m_battleDisplay.deadUnitNotification(player, killed, dependents);
+			}
+		});
+	}
+	
+	public void changedUnitsNotification(final PlayerID player, final Collection<Unit> removedUnits, final Collection<Unit> addedUnits, final Map<Unit, Collection<Unit>> dependents)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				if (m_battleDisplay != null)
+					m_battleDisplay.changedUnitsNotification(player, removedUnits, addedUnits, dependents);
 			}
 		});
 	}
@@ -627,9 +640,9 @@ public class BattlePanel extends ActionPanel
 		Territory m_territory;
 		boolean m_bomb;
 		
-		FightBattleAction(final Territory battleSite, final boolean bomb)
+		FightBattleAction(final Territory battleSite, final boolean bomb, final String battleType)
 		{
-			super((bomb ? "Bombing raid in " : "Battle in ") + battleSite.getName() + "...");
+			super((bomb ? (battleType.equals(BattleTracker.BATTLE_TYPE_AIR_BATTLE) ? "Air Battle in " : "Bombing raid in ") : "Battle in ") + battleSite.getName() + "...");
 			m_territory = battleSite;
 			m_bomb = bomb;
 		}

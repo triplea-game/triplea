@@ -298,6 +298,11 @@ class DummyPlayer extends AbstractAI
 		return null;
 	}
 	
+	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
+	{
+		return null;
+	}
+	
 	// Added new collection autoKilled to handle killing units prior to casualty selection
 	public CasualtyDetails selectCasualties(final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count, final String message, final DiceRoll dice,
 				final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)

@@ -466,9 +466,78 @@ public class DiceRoll implements Externalizable
 		}
 	}
 	
+	/**
+	 * @author veqryn
+	 * 
+	 * @param unitsList
+	 * @param defending
+	 * @param player
+	 * @param bridge
+	 * @param battle
+	 * @param annotation
+	 * @return
+	 */
 	public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation)
 	{
-		return new DiceRoll();
+		final GameData data = bridge.getData();
+		final List<Unit> units = new ArrayList<Unit>(unitsList);
+		final int rollCount = StrategicBombingRaidPreBattle.getAirBattleRolls(unitsList, defending);
+		if (rollCount == 0)
+		{
+			return new DiceRoll(new ArrayList<Die>(), 0);
+		}
+		int[] random;
+		final List<Die> dice = new ArrayList<Die>();
+		int hitCount = 0;
+		if (games.strategy.triplea.Properties.getLow_Luck(data))
+		{
+			final Iterator<Unit> iter = units.iterator();
+			int power = 0;
+			// We iterate through the units to find the total strength of the units
+			while (iter.hasNext())
+			{
+				final Unit current = iter.next();
+				final UnitAttachment ua = UnitAttachment.get(current.getType());
+				final int strength = (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()));
+				power += Math.min(Math.max(strength, 0), data.getDiceSides());
+			}
+			// Get number of hits
+			hitCount = power / data.getDiceSides();
+			random = new int[0];
+			// We need to roll dice for the fractional part of the dice.
+			power = power % data.getDiceSides();
+			if (power != 0)
+			{
+				random = bridge.getRandom(data.getDiceSides(), 1, annotation);
+				final boolean hit = power > random[0];
+				if (hit)
+				{
+					hitCount++;
+				}
+				dice.add(new Die(random[0], power, hit ? DieType.HIT : DieType.MISS));
+			}
+		}
+		else
+		{
+			random = bridge.getRandom(data.getDiceSides(), rollCount, annotation);
+			final Iterator<Unit> iter = units.iterator();
+			int diceIndex = 0;
+			while (iter.hasNext())
+			{
+				final Unit current = iter.next();
+				final UnitAttachment ua = UnitAttachment.get(current.getType());
+				int strength = (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()));
+				strength = Math.min(Math.max(strength, 0), data.getDiceSides());
+				final boolean hit = strength > random[diceIndex];
+				dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
+				if (hit)
+					hitCount++;
+				diceIndex++;
+			}
+		}
+		final DiceRoll rVal = new DiceRoll(dice, hitCount);
+		bridge.getHistoryWriter().addChildToEvent(annotation + " : " + MyFormatter.asDice(random), rVal);
+		return rVal;
 	}
 	
 	/**

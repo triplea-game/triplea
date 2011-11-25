@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -9,11 +10,15 @@ import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.net.GUID;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -43,6 +48,8 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	// protected final ExecutionStack m_stack = new ExecutionStack();
 	// protected List<String> m_steps;
 	protected final List<Unit> m_defendingUnits = new ArrayList<Unit>();
+	private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<Unit>();
+	private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<Unit>();
 	protected boolean m_intercept = false;
 	
 	public StrategicBombingRaidPreBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final PlayerID defender, final BattleTracker battleTracker)
@@ -91,8 +98,8 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		if (Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber) && Match.someMatch(m_battleSite.getUnits().getUnits(), defendingInterceptors(m_attacker, m_data)))
 		{
 			steps.add(new InterceptorsLaunch());
-			steps.add(new AttackersFire());
 			steps.add(new DefendersFire());
+			steps.add(new AttackersFire());
 			steps.add(new IExecutable()
 			{
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
@@ -108,24 +115,23 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 					if (!m_intercept)
 						return;
 					
+					m_attackingUnits.removeAll(m_attackingWaitingToDie);
+					remove(m_attackingWaitingToDie, bridge, m_battleSite);
+					m_defendingUnits.removeAll(m_defendingWaitingToDie);
+					remove(m_defendingWaitingToDie, bridge, m_battleSite);
+					
 					// kill any suicide attackers (veqryn)
 					if (Match.someMatch(m_attackingUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsSuicide, Matches.UnitIsNotStrategicBomber)))
 					{
 						final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
 						m_attackingUnits.removeAll(suicideUnits);
-						final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
-						final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
-						bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
-						bridge.addChange(removeSuicide);
+						remove(suicideUnits, bridge, m_battleSite);
 					}
 					if (Match.someMatch(m_defendingUnits, Matches.UnitIsSuicide))
 					{
 						final List<Unit> suicideUnits = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
 						m_defendingUnits.removeAll(suicideUnits);
-						final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
-						final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
-						bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
-						bridge.addChange(removeSuicide);
+						remove(suicideUnits, bridge, m_battleSite);
 					}
 				}
 			});
@@ -162,6 +168,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				}
 			}
 		});
+		
 		Collections.reverse(steps);
 		for (final IExecutable executable : steps)
 		{
@@ -173,8 +180,8 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	private void showBattle(final IDelegateBridge bridge)
 	{
 		final String title = "Air Battle in " + m_battleSite.getName();
-		getDisplay(bridge)
-					.showBattle(m_battleID, m_battleSite, title, m_attackingUnits, getDefendingUnits(), null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender);
+		getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, getDefendingUnits(),
+					null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender, getBattleType());
 		getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
 	}
 	
@@ -207,7 +214,8 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					getInterceptors(bridge);
-					m_intercept = true;
+					if (!m_defendingUnits.isEmpty())
+						m_intercept = true;
 				}
 			};
 			// push in reverse order of execution
@@ -216,73 +224,124 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		
 		private void getInterceptors(final IDelegateBridge bridge)
 		{
-			// stuff
+			final Collection<Unit> interceptors = getRemote(m_defender, bridge).selectUnitsQuery(m_battleSite, m_defendingUnits, "Select Air to Intercept");
+			if (!m_defendingUnits.containsAll(interceptors))
+				throw new IllegalStateException("Interceptors choose from outside of available units");
+			final Collection<Unit> beingRemoved = new ArrayList<Unit>(m_defendingUnits);
+			m_defendingUnits.clear();
+			if (interceptors != null)
+			{
+				beingRemoved.removeAll(interceptors);
+				m_defendingUnits.addAll(interceptors);
+			}
+			getDisplay(bridge).changedUnitsNotification(m_battleID, m_defender, beingRemoved, null, null);
+			
+			final CompositeChange changeAttacker = new CompositeChange();
+			for (final Unit u : m_attackingUnits)
+			{
+				changeAttacker.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_IN_AIR_BATTLE));
+			}
+			if (!changeAttacker.isEmpty())
+			{
+				bridge.getHistoryWriter().startEvent(m_attacker.getName() + " attacks with " + m_attackingUnits.size() + " units heading to " + m_battleSite.getName());
+				bridge.getHistoryWriter().setRenderingData(m_attackingUnits);
+				bridge.addChange(changeAttacker);
+			}
+			final CompositeChange changeDefender = new CompositeChange();
+			for (final Unit u : m_defendingUnits)
+			{
+				changeDefender.add(ChangeFactory.unitPropertyChange(u, true, TripleAUnit.WAS_IN_AIR_BATTLE));
+			}
+			if (!changeDefender.isEmpty())
+			{
+				bridge.getHistoryWriter().startEvent(m_defender.getName() + " launches " + m_defendingUnits.size() + " interceptors out of " + m_battleSite.getName());
+				bridge.getHistoryWriter().setRenderingData(m_defendingUnits);
+				bridge.addChange(changeDefender);
+			}
 		}
 	}
 	
 
 	class AttackersFire implements IExecutable
 	{
-		private int[] m_dice;
+		DiceRoll m_dice;
+		CasualtyDetails m_details;
 		
 		public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 		{
-			final IExecutable attackersFire = new IExecutable()
+			if (!m_intercept)
+				return;
+			final IExecutable roll = new IExecutable()
 			{
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					rollDice(bridge);
+					m_dice = DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, StrategicBombingRaidPreBattle.this, "Attackers Fire, ");
+				}
+			};
+			final IExecutable calculateCasualties = new IExecutable()
+			{
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					m_details = BattleCalculator.selectCasualties(m_defender, getDefendingUnits(), bridge, ATTACKERS_FIRE, m_dice, true, m_battleID);
+					if (m_details.size() != m_dice.getHits())
+						throw new IllegalStateException("Wrong number of casualties, expecting:" + m_dice.getHits() + " but got:" + m_details.size());
+					m_defendingWaitingToDie.addAll(m_details.getKilled());
+					markDamaged(m_details.getDamaged(), bridge);
+				}
+			};
+			final IExecutable notifyCasualties = new IExecutable()
+			{
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					notifyCasualties(m_battleID, bridge, ATTACKERS_FIRE, m_dice, m_defender, m_attacker, m_details);
 				}
 			};
 			// push in reverse order of execution
-			m_stack.push(attackersFire);
-		}
-		
-		private void rollDice(final IDelegateBridge bridge)
-		{
-			getDisplay(bridge).gotoBattleStep(m_battleID, ATTACKERS_FIRE);
-			final Collection<Unit> firingUnits = Match.getMatches(m_attackingUnits, unitHasAirAttackGreaterThanZero());
-			/*final int rollCount = firingUnits.size();
-			if (rollCount == 0)
-			{
-				m_dice = null;
-				return;
-			}
-			m_dice = new int[rollCount];*/
-
+			stack.push(notifyCasualties);
+			stack.push(calculateCasualties);
+			stack.push(roll);
 		}
 	}
 	
 
 	class DefendersFire implements IExecutable
 	{
-		private int[] m_dice;
+		DiceRoll m_dice;
+		CasualtyDetails m_details;
 		
 		public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 		{
-			final IExecutable defendersFire = new IExecutable()
+			if (!m_intercept)
+				return;
+			final IExecutable roll = new IExecutable()
 			{
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					rollDice(bridge);
+					m_dice = DiceRoll.airBattle(getDefendingUnits(), true, m_defender, bridge, StrategicBombingRaidPreBattle.this, "Defenders Fire, ");
+				}
+			};
+			final IExecutable calculateCasualties = new IExecutable()
+			{
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					m_details = BattleCalculator.selectCasualties(m_attacker, m_attackingUnits, bridge, DEFENDERS_FIRE, m_dice, false, m_battleID);
+					if (m_details.size() != m_dice.getHits())
+						throw new IllegalStateException("Wrong number of casualties, expecting:" + m_dice.getHits() + " but got:" + m_details.size());
+					m_attackingWaitingToDie.addAll(m_details.getKilled());
+					markDamaged(m_details.getDamaged(), bridge);
+				}
+			};
+			final IExecutable notifyCasualties = new IExecutable()
+			{
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					notifyCasualties(m_battleID, bridge, DEFENDERS_FIRE, m_dice, m_attacker, m_defender, m_details);
 				}
 			};
 			// push in reverse order of execution
-			m_stack.push(defendersFire);
-		}
-		
-		private void rollDice(final IDelegateBridge bridge)
-		{
-			getDisplay(bridge).gotoBattleStep(m_battleID, DEFENDERS_FIRE);
-			final Collection<Unit> firingUnits = Match.getMatches(m_defendingUnits, unitHasAirDefenseGreaterThanZero());
-			/*final int rollCount = firingUnits.size();
-			if (rollCount == 0)
-			{
-				m_dice = null;
-				return;
-			}
-			m_dice = new int[rollCount];*/
-
+			stack.push(notifyCasualties);
+			stack.push(calculateCasualties);
+			stack.push(roll);
 		}
 	}
 	
@@ -318,9 +377,71 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 			public boolean match(final Unit u)
 			{
 				final Match<Unit> canIntercept = new CompositeMatchAnd<Unit>(Matches.unitCanIntercept, Matches.unitIsEnemyOf(data, attacker),
-							Matches.UnitWasScrambled.invert(), Matches.UnitIsDisabled().invert());
+							Matches.UnitWasScrambled.invert(), Matches.UnitIsDisabled().invert(), Matches.UnitWasInAirBattle.invert());
 				return canIntercept.match(u);
 			}
 		};
+	}
+	
+	public static int getAirBattleRolls(final Collection<Unit> units, final boolean defending)
+	{
+		final Collection<Unit> firingUnits = Match.getMatches(units, (defending ? unitHasAirDefenseGreaterThanZero() : unitHasAirAttackGreaterThanZero()));
+		return firingUnits.size();
+	}
+	
+	private void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge)
+	{
+		if (damaged.size() == 0)
+			return;
+		Change damagedChange = null;
+		final IntegerMap<Unit> damagedMap = new IntegerMap<Unit>();
+		damagedMap.putAll(damaged, 1);
+		damagedChange = ChangeFactory.unitsHit(damagedMap);
+		bridge.getHistoryWriter().addChildToEvent("Units damaged: " + MyFormatter.unitsToText(damaged), damaged);
+		bridge.addChange(damagedChange);
+	}
+	
+	private void remove(final Collection<Unit> killed, final IDelegateBridge bridge, final Territory battleSite)
+	{
+		if (killed.size() == 0)
+			return;
+		final Change killedChange = ChangeFactory.removeUnits(battleSite, killed);
+		final String transcriptText = MyFormatter.unitsToText(killed) + " lost in " + battleSite.getName();
+		bridge.getHistoryWriter().addChildToEvent(transcriptText, killed);
+		bridge.addChange(killedChange);
+	}
+	
+	private void notifyCasualties(final GUID battleID, final IDelegateBridge bridge, final String stepName, final DiceRoll dice, final PlayerID hitPlayer,
+				final PlayerID firingPlayer, final CasualtyDetails details)
+	{
+		getDisplay(bridge).casualtyNotification(battleID, stepName, dice, hitPlayer, details.getKilled(), details.getDamaged(), Collections.<Unit, Collection<Unit>> emptyMap());
+		final Runnable r = new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
+					getRemote(firingPlayer, bridge).confirmEnemyCasualties(battleID, "Press space to continue", hitPlayer);
+				} catch (final Exception e)
+				{
+				}
+			}
+		};
+		// execute in a seperate thread to allow either player to click continue first.
+		final Thread t = new Thread(r, "Click to continue waiter");
+		t.start();
+		if (true)
+			getRemote(hitPlayer, bridge).confirmOwnCasualties(battleID, "Press space to continue");
+		try
+		{
+			bridge.leaveDelegateExecution();
+			t.join();
+		} catch (final InterruptedException e)
+		{
+			// ignore
+		} finally
+		{
+			bridge.enterDelegateExecution();
+		}
 	}
 }

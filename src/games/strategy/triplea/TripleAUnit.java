@@ -62,6 +62,7 @@ public class TripleAUnit extends Unit
 	public static final String UNLOADED_AMPHIBIOUS = "wasAmphibious";
 	public static final String ORIGINATED_FROM = "originatedFrom";
 	public static final String WAS_SCRAMBLED = "wasScrambled";
+	public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
 	public static final String UNIT_DAMAGE = "unitDamage";
 	public static final String DISABLED = "disabled";
 	
@@ -84,6 +85,7 @@ public class TripleAUnit extends Unit
 	
 	private Territory m_originatedFrom = null; // the territory this unit started in (for use with scrambling)
 	private boolean m_wasScrambled = false;
+	private boolean m_wasInAirBattle = false;
 	private boolean m_disabled = false;
 	
 	public static TripleAUnit get(final Unit u)
@@ -292,6 +294,16 @@ public class TripleAUnit extends Unit
 	public void setWasScrambled(final Boolean value)
 	{
 		m_wasScrambled = Boolean.valueOf(value.booleanValue());
+	}
+	
+	public void setWasInAirBattle(final Boolean value)
+	{
+		m_wasInAirBattle = Boolean.valueOf(value.booleanValue());
+	}
+	
+	public boolean getWasInAirBattle()
+	{
+		return m_wasInAirBattle;
 	}
 	
 	public boolean getWasLoadedAfterCombat()

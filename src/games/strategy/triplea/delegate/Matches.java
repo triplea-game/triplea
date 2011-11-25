@@ -688,6 +688,15 @@ public class Matches
 			return taUnit.getWasScrambled();
 		}
 	};
+	public static final Match<Unit> UnitWasInAirBattle = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			final TripleAUnit taUnit = (TripleAUnit) obj;
+			return taUnit.getWasInAirBattle();
+		}
+	};
 	
 	public static final Match<Territory> TerritoryIsIsland = new Match<Territory>()
 	{
