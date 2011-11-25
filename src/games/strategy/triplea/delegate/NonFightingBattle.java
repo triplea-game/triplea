@@ -48,7 +48,7 @@ public class NonFightingBattle extends AbstractBattle
 {
 	public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean neutral, final GameData data)
 	{
-		super(battleSite, attacker, battleTracker, false, "NonFightingBattle", data);
+		super(battleSite, attacker, battleTracker, false, "Normal", data);
 	}
 	
 	@Override
@@ -91,25 +91,6 @@ public class NonFightingBattle extends AbstractBattle
 			final Collection<Unit> dependent = m_dependentUnits.get(dependence);
 			dependent.removeAll(units);
 		}
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return m_battleSite.hashCode();
-	}
-	
-	@Override
-	public boolean equals(final Object o)
-	{
-		// 2 battles are equal if they are both the same type (bombing or not)
-		// and occur on the same territory
-		// equals in the sense that they should never occupy the same Set
-		// if these conditions are met
-		if (o == null || !(o instanceof IBattle))
-			return false;
-		final IBattle other = (IBattle) o;
-		return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun();
 	}
 	
 	@Override

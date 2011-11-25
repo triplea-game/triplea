@@ -58,12 +58,14 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 {
 	private final static String RAID = "Strategic bombing raid";
 	private final static String FIRE_AA = "Fire AA";
-	private final List<Unit> m_attackingUnits = new ArrayList<Unit>();
-	private final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<Unit, HashSet<Unit>>(); // these would be the factories or other targets. does not include aa.
-	private final PlayerID m_defender;
-	private final GUID m_battleID = new GUID();
-	private final ExecutionStack m_stack = new ExecutionStack();
-	private List<String> m_steps;
+	
+	protected final List<Unit> m_attackingUnits = new ArrayList<Unit>();
+	protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<Unit, HashSet<Unit>>(); // these would be the factories or other targets. does not include aa.
+	protected final PlayerID m_defender;
+	protected final GUID m_battleID = new GUID();
+	protected final ExecutionStack m_stack = new ExecutionStack();
+	protected List<String> m_steps;
+	
 	private int m_bombingRaidTotal;
 	private final IntegerMap<Unit> m_bombingRaidDamage = new IntegerMap<Unit>();
 	
@@ -108,7 +110,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	 * @param bridge
 	 * @return
 	 */
-	private ITripleaDisplay getDisplay(final IDelegateBridge bridge)
+	protected ITripleaDisplay getDisplay(final IDelegateBridge bridge)
 	{
 		return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
 	}
@@ -675,25 +677,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	{
 		// should never happen
 		throw new IllegalStateException("StrategicBombingRaidBattle should not have any preceding battle with which to possibly remove dependents from");
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return m_battleSite.hashCode();
-	}
-	
-	@Override
-	public boolean equals(final Object o)
-	{
-		// 2 battles are equal if they are both the same type (boming or not)
-		// and occur on the same territory
-		// equals in the sense that they should never occupy the same Set
-		// if these conditions are met
-		if (o == null || !(o instanceof IBattle))
-			return false;
-		final IBattle other = (IBattle) o;
-		return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun();
 	}
 	
 	@Override

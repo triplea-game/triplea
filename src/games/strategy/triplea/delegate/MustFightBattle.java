@@ -136,7 +136,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	public MustFightBattle(final Territory battleSite, final PlayerID attacker, final GameData data, final BattleTracker battleTracker)
 	{
-		super(battleSite, attacker, battleTracker, false, "MustFightBattle", data);
+		super(battleSite, attacker, battleTracker, false, "Normal", data);
 		m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
 		m_defender = findDefender(battleSite, m_attacker, m_data);
 	}
@@ -408,25 +408,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// this is ok, we are a headless battle
 		}
 		return defender;
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return m_battleSite.hashCode();
-	}
-	
-	@Override
-	public boolean equals(final Object o)
-	{
-		// 2 battles are equal if they are both the same type (boming or not)
-		// and occur on the same territory
-		// equals in the sense that they should never occupy the same Set
-		// if these conditions are met
-		if (o == null || !(o instanceof IBattle))
-			return false;
-		final IBattle other = (IBattle) o;
-		return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun();
 	}
 	
 	private void removeUnitsThatNoLongerExist()

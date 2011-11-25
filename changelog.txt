@@ -1,4 +1,8 @@
 Changes for 1.5
+* Abstracted hashCode and equals methods from all battles and put into AbstractBattle class. (veqryn)
+
+* Created StrategicBombingRaidPreBattle class, which will handle air battles and other things that occur before bombing raids. (veqryn) 
+
 * Changes to allow Strategic Bombing raids to have multiple targets, with units assigned to different targets. (veqryn)
 
 * Some further abstraction of AbstractBattle class. (veqryn)

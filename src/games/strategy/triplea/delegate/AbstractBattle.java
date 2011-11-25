@@ -186,4 +186,27 @@ abstract public class AbstractBattle implements IBattle
 	{
 		return false;
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		return m_battleSite.hashCode();
+	}
+	
+	/**
+	 * 2 Battles are equal if they occur in the same territory,
+	 * and are both of the same type (bombing / not-bombing),
+	 * and are both of the same sub-type of bombing/normal
+	 * (ex: MustFightBattle, or StrategicBombingRaidBattle, or StrategicBombingRaidPreBattle, or NonFightingBattle, etc). <br>
+	 * 
+	 * Equals in the sense that they should never occupy the same Set if these conditions are met.
+	 */
+	@Override
+	public boolean equals(final Object o)
+	{
+		if (o == null || !(o instanceof IBattle))
+			return false;
+		final IBattle other = (IBattle) o;
+		return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun() && other.getBattleType().equals(this.getBattleType());
+	}
 }
