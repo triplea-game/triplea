@@ -1,4 +1,6 @@
 Changes for 1.5
+* Cleanup of some tests to use ChangePerformer to edit data directly, instead of Change.perform(). (frigoref)
+
 * Allowed scrambling to any territory, and allowed moving the units after scrambling is completed, to anywhere. (veqryn)
 
 * Allowed scrambling units to move to find new landing zones if their originating territory was taken or they are not forced to return to it. (veqryn)

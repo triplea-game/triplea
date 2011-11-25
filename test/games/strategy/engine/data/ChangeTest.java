@@ -84,11 +84,11 @@ public class ChangeTest extends TestCase
 		assertEquals(can.getUnits().getUnitCount(), 5);
 		// add some units
 		Change change = ChangeFactory.addUnits(can, m_data.getUnitTypeList().getUnitType("inf").create(10, null));
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(can.getUnits().getUnitCount(), 15);
 		// invert the change
-		change = change.invert();
-		change.perform(m_data);
+		changePerformer.perform(change.invert());
 		assertEquals(can.getUnits().getUnitCount(), 5);
 	}
 	
@@ -100,11 +100,11 @@ public class ChangeTest extends TestCase
 		// remove some units
 		final Collection<Unit> units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
 		Change change = ChangeFactory.removeUnits(can, units);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(can.getUnits().getUnitCount(), 2);
 		// invert the change
-		change = change.invert();
-		change.perform(m_data);
+		changePerformer.perform(change.invert());
 		assertEquals(can.getUnits().getUnitCount(), 5);
 	}
 	
@@ -117,11 +117,11 @@ public class ChangeTest extends TestCase
 		final Collection<Unit> units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
 		Change change = ChangeFactory.removeUnits(can, units);
 		change = serialize(change);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(can.getUnits().getUnitCount(), 2);
 		// invert the change
-		change = change.invert();
-		change.perform(m_data);
+		changePerformer.perform(change.invert());
 		assertEquals(can.getUnits().getUnitCount(), 5);
 	}
 	
@@ -132,11 +132,11 @@ public class ChangeTest extends TestCase
 		assertEquals(chretian.getUnits().getUnitCount(), 10);
 		// add some units
 		Change change = ChangeFactory.addUnits(chretian, m_data.getUnitTypeList().getUnitType("inf").create(10, null));
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(chretian.getUnits().getUnitCount(), 20);
 		// invert the change
-		change = change.invert();
-		change.perform(m_data);
+		changePerformer.perform(change.invert());
 		assertEquals(chretian.getUnits().getUnitCount(), 10);
 	}
 	
@@ -148,11 +148,11 @@ public class ChangeTest extends TestCase
 		// remove some units
 		final Collection<Unit> units = chretian.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
 		Change change = ChangeFactory.removeUnits(chretian, units);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(chretian.getUnits().getUnitCount(), 7);
 		// invert the change
-		change = change.invert();
-		change.perform(m_data);
+		changePerformer.perform(change.invert());
 		assertEquals(chretian.getUnits().getUnitCount(), 10);
 	}
 	
@@ -164,10 +164,11 @@ public class ChangeTest extends TestCase
 		assertEquals(greenland.getUnits().getUnitCount(), 0);
 		final Collection<Unit> units = canada.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
 		final Change change = ChangeFactory.moveUnits(canada, greenland, units);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(canada.getUnits().getUnitCount(), 2);
 		assertEquals(greenland.getUnits().getUnitCount(), 3);
-		change.invert().perform(m_data);
+		changePerformer.perform(change.invert());
 		assertEquals(canada.getUnits().getUnitCount(), 5);
 		assertEquals(greenland.getUnits().getUnitCount(), 0);
 	}
@@ -181,10 +182,11 @@ public class ChangeTest extends TestCase
 		final Collection<Unit> units = canada.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
 		Change change = ChangeFactory.moveUnits(canada, greenland, units);
 		change = serialize(change);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(canada.getUnits().getUnitCount(), 2);
 		assertEquals(greenland.getUnits().getUnitCount(), 3);
-		serialize(change.invert()).perform(m_data);
+		changePerformer.perform(serialize(change.invert()));
 		assertEquals(canada.getUnits().getUnitCount(), 5);
 		assertEquals(greenland.getUnits().getUnitCount(), 0);
 	}
@@ -196,9 +198,10 @@ public class ChangeTest extends TestCase
 		final ProductionFrontier canpf = m_data.getProductionFrontierList().getProductionFrontier("canProd");
 		assertEquals(can.getProductionFrontier(), canpf);
 		final Change change = ChangeFactory.changeProductionFrontier(can, uspf);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(can.getProductionFrontier(), uspf);
-		change.invert().perform(m_data);
+		changePerformer.perform(change.invert());
 		assertEquals(can.getProductionFrontier(), canpf);
 	}
 	
@@ -208,10 +211,10 @@ public class ChangeTest extends TestCase
 		final Resource gold = m_data.getResourceList().getResource("gold");
 		Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
 		assertEquals(can.getResources().getQuantity(gold), 100);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(can.getResources().getQuantity(gold), 150);
-		change = change.invert();
-		change.perform(m_data);
+		changePerformer.perform(change.invert());
 		assertEquals(can.getResources().getQuantity(gold), 100);
 	}
 	
@@ -222,7 +225,8 @@ public class ChangeTest extends TestCase
 		Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
 		change = serialize(change);
 		assertEquals(can.getResources().getQuantity(gold), 100);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(can.getResources().getQuantity(gold), 150);
 	}
 	
@@ -233,9 +237,10 @@ public class ChangeTest extends TestCase
 		final Territory greenland = m_data.getMap().getTerritory("greenland");
 		final Change change = ChangeFactory.changeOwner(greenland, us);
 		assertEquals(greenland.getOwner(), can);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(greenland.getOwner(), us);
-		change.invert().perform(m_data);
+		changePerformer.perform(change.invert());
 		assertEquals(greenland.getOwner(), can);
 	}
 	
@@ -247,11 +252,12 @@ public class ChangeTest extends TestCase
 		Change change = ChangeFactory.changeOwner(greenland, us);
 		change = serialize(change);
 		assertEquals(greenland.getOwner(), can);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(greenland.getOwner(), us);
 		change = change.invert();
 		change = serialize(change);
-		change.perform(m_data);
+		changePerformer.perform(change);
 		assertEquals(greenland.getOwner(), can);
 	}
 	
@@ -268,11 +274,12 @@ public class ChangeTest extends TestCase
 		assertEquals(can, inf1.getOwner());
 		assertEquals(us, inf2.getOwner());
 		Change change = ChangeFactory.changeOwner(units, can, m_data.getMap().getTerritory("greenland"));
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(can, inf1.getOwner());
 		assertEquals(can, inf2.getOwner());
 		change = change.invert();
-		change.perform(m_data);
+		changePerformer.perform(change);
 		assertEquals(can, inf1.getOwner());
 		assertEquals(us, inf2.getOwner());
 	}
@@ -291,12 +298,13 @@ public class ChangeTest extends TestCase
 		assertEquals(us, inf2.getOwner());
 		Change change = ChangeFactory.changeOwner(units, can, m_data.getMap().getTerritory("greenland"));
 		change = serialize(change);
-		change.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(change);
 		assertEquals(can, inf1.getOwner());
 		assertEquals(can, inf2.getOwner());
 		change = change.invert();
 		change = serialize(change);
-		change.perform(m_data);
+		changePerformer.perform(change);
 		assertEquals(can, inf1.getOwner());
 		assertEquals(us, inf2.getOwner());
 	}
@@ -308,16 +316,17 @@ public class ChangeTest extends TestCase
 		final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
 		assertEquals(can.getProductionFrontier(), canProd);
 		Change prodChange = ChangeFactory.changeProductionFrontier(can, usProd);
-		prodChange.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(prodChange);
 		assertEquals(can.getProductionFrontier(), usProd);
 		prodChange = prodChange.invert();
-		prodChange.perform(m_data);
+		changePerformer.perform(prodChange);
 		assertEquals(can.getProductionFrontier(), canProd);
 		prodChange = serialize(prodChange.invert());
-		prodChange.perform(m_data);
+		changePerformer.perform(prodChange);
 		assertEquals(can.getProductionFrontier(), usProd);
 		prodChange = serialize(prodChange.invert());
-		prodChange.perform(m_data);
+		changePerformer.perform(prodChange);
 		assertEquals(can.getProductionFrontier(), canProd);
 	}
 	

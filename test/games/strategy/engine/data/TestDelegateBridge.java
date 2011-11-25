@@ -103,7 +103,8 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	
 	public void addChange(final Change aChange)
 	{
-		aChange.perform(m_data);
+		final ChangePerformer changePerformer = new ChangePerformer(m_data);
+		changePerformer.perform(aChange);
 	}
 	
 	public void setStepName(final String name)
