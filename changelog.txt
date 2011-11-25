@@ -1,4 +1,8 @@
 Changes for 1.5
+* Changes to allow Strategic Bombing raids to have multiple targets, with units assigned to different targets. (veqryn)
+
+* Some further abstraction of AbstractBattle class. (veqryn)
+
 * Cleanup of some tests to use ChangePerformer to edit data directly, instead of Change.perform(). (frigoref)
 
 * Allowed scrambling to any territory, and allowed moving the units after scrambling is completed, to anywhere. (veqryn)

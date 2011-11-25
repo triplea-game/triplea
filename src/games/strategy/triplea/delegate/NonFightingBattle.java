@@ -48,7 +48,7 @@ public class NonFightingBattle extends AbstractBattle
 {
 	public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean neutral, final GameData data)
 	{
-		super(battleSite, attacker, battleTracker, data);
+		super(battleSite, attacker, battleTracker, false, "NonFightingBattle", data);
 	}
 	
 	@Override
@@ -79,12 +79,6 @@ public class NonFightingBattle extends AbstractBattle
 		attackingLand.add(Matches.UnitIsLand);
 		final boolean someAttacking = m_battleSite.getUnits().someMatch(attackingLand);
 		return someAttacking;
-	}
-	
-	@Override
-	public final boolean isBombingRun()
-	{
-		return false;
 	}
 	
 	@Override

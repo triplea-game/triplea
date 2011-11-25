@@ -371,7 +371,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				m_battleTracker.addDependency(battle, bombingBattle);
 			}
 			if (battle != null && battle.isEmpty())
-				battle.addAttackChange(new RouteScripted(territory), attackingUnits);
+				battle.addAttackChange(new RouteScripted(territory), attackingUnits, null);
 			if (battle != null && !battle.getAttackingUnits().containsAll(attackingUnits))
 			{
 				List<Unit> attackingUnitsNeedToBeAdded = attackingUnits;
@@ -382,7 +382,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					attackingUnitsNeedToBeAdded = Match.getMatches(attackingUnitsNeedToBeAdded, Matches.UnitIsSea.invert());
 				if (!attackingUnitsNeedToBeAdded.isEmpty())
 				{
-					battle.addAttackChange(new RouteScripted(territory), attackingUnitsNeedToBeAdded);
+					battle.addAttackChange(new RouteScripted(territory), attackingUnitsNeedToBeAdded, null);
 				}
 			}
 			// Reach stalemate if all attacking and defending units are transports

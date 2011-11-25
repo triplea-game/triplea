@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -261,6 +262,32 @@ public class MyFormatter
 		{
 			buf.append(", ");
 			buf.append(o.getName());
+		}
+		return buf.toString().replaceFirst(", ", "");
+	}
+	
+	public static String integerMapToString(final IntegerMap<? extends DefaultNamed> map)
+	{
+		final StringBuilder buf = new StringBuilder("");
+		for (final Entry<? extends DefaultNamed, Integer> entry : map.entrySet())
+		{
+			buf.append(", ");
+			final DefaultNamed current = entry.getKey();
+			final int val = entry.getValue();
+			buf.append(current.getName()).append(" = ").append(val);
+		}
+		return buf.toString().replaceFirst(", ", "");
+	}
+	
+	public static String integerUnitMapToString(final IntegerMap<? extends Unit> map)
+	{
+		final StringBuilder buf = new StringBuilder("");
+		for (final Entry<? extends Unit, Integer> entry : map.entrySet())
+		{
+			buf.append(", ");
+			final Unit current = entry.getKey();
+			final int val = entry.getValue();
+			buf.append(current.getType().getName()).append(" = ").append(val);
 		}
 		return buf.toString().replaceFirst(", ", "");
 	}

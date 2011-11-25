@@ -15,6 +15,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -29,6 +30,9 @@ abstract public class AbstractBattle implements IBattle
 	final protected PlayerID m_attacker;
 	final protected BattleTracker m_battleTracker;
 	final protected GameData m_data;
+	protected int m_round = 0;
+	protected boolean m_isBombingRun;
+	protected String m_battleType;
 	protected boolean m_isOver = false;
 	// dependent units
 	// maps unit -> Collection of units
@@ -36,15 +40,17 @@ abstract public class AbstractBattle implements IBattle
 	// then we lose the corresponding collection of units
 	final protected Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
 	
-	public AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final GameData data)
+	public AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean isBombingRun, final String battleType, final GameData data)
 	{
 		m_battleTracker = battleTracker;
 		m_attacker = attacker;
 		m_battleSite = battleSite;
+		m_isBombingRun = isBombingRun;
+		m_battleType = battleType;
 		m_data = data;
 	}
 	
-	public Change addAttackChange(final Route route, final Collection<Unit> units)
+	public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets)
 	{
 		final Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
 		final Iterator<Unit> iter = addedTransporting.keySet().iterator();
@@ -59,7 +65,7 @@ abstract public class AbstractBattle implements IBattle
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
-	public Change addCombatChange(final Route route, final Collection<Unit> units, final PlayerID player)
+	/*public Change addCombatChange(final Route route, final Collection<Unit> units, final PlayerID player)
 	{
 		final Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
 		final Iterator<Unit> iter = addedTransporting.keySet().iterator();
@@ -72,8 +78,8 @@ abstract public class AbstractBattle implements IBattle
 				m_dependentUnits.put(unit, addedTransporting.get(unit));
 		}
 		return ChangeFactory.EMPTY_CHANGE;
-	}
-	
+	}*/
+
 	public final Territory getTerritory()
 	{
 		return m_battleSite;
@@ -128,7 +134,7 @@ abstract public class AbstractBattle implements IBattle
 	
 	public int getBattleRound()
 	{
-		return 0;
+		return m_round;
 	}
 	
 	public Collection<Unit> getAttackingUnits()
@@ -152,7 +158,12 @@ abstract public class AbstractBattle implements IBattle
 	 */
 	public boolean isBombingRun()
 	{
-		return false;
+		return m_isBombingRun;
+	}
+	
+	public String getBattleType()
+	{
+		return m_battleType;
 	}
 	
 	/*

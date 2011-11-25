@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -385,6 +386,11 @@ public class IntegerMap<T> implements Cloneable, Serializable
 			final T key = iter.next();
 			removeKey(key);
 		}
+	}
+	
+	public Set<Entry<T, Integer>> entrySet()
+	{
+		return m_values.entrySet();
 	}
 	
 	@Override

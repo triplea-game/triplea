@@ -36,6 +36,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -179,7 +181,9 @@ public class MovePerformer implements Serializable
 							else
 							{
 								targetedAttack = true;
-								getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove, Collections.singleton(target));
+								final HashMap<Unit, HashSet<Unit>> targets = new HashMap<Unit, HashSet<Unit>>();
+								targets.put(target, new HashSet<Unit>(arrivingUnits[0]));
+								getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove, targets);
 							}
 						}
 					}

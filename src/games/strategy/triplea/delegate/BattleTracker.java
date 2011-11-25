@@ -206,7 +206,7 @@ public class BattleTracker implements java.io.Serializable
 	}
 	
 	public void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker,
-				final Collection<Unit> targets)
+				final HashMap<Unit, HashSet<Unit>> targets)
 	{
 		final GameData data = bridge.getData();
 		if (bombing)
@@ -247,33 +247,18 @@ public class BattleTracker implements java.io.Serializable
 	
 	private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data)
 	{
+		addBombingBattle(route, units, attacker, data, null);
+	}
+	
+	private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data, final HashMap<Unit, HashSet<Unit>> targets)
+	{
 		IBattle battle = getPendingBattle(route.getEnd(), true);
 		if (battle == null)
 		{
 			battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this);
 			m_pendingBattles.add(battle);
 		}
-		final Change change = battle.addAttackChange(route, units);
-		// when state is moved to the game data, this will change
-		if (!change.isEmpty())
-		{
-			throw new IllegalStateException("Non empty change");
-		}
-		// dont let land battles in the same territory occur before bombing battles
-		final IBattle dependent = getPendingBattle(route.getEnd(), false);
-		if (dependent != null)
-			addDependency(dependent, battle);
-	}
-	
-	private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data, final Collection<Unit> targets)
-	{
-		IBattle battle = getPendingBattle(route.getEnd(), true);
-		if (battle == null)
-		{
-			battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this, targets);
-			m_pendingBattles.add(battle);
-		}
-		final Change change = battle.addAttackChange(route, units);
+		final Change change = battle.addAttackChange(route, units, targets);
 		// when state is moved to the game data, this will change
 		if (!change.isEmpty())
 		{
@@ -349,7 +334,7 @@ public class BattleTracker implements java.io.Serializable
 					nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data);
 					m_pendingBattles.add(nonFight);
 				}
-				final Change change = nonFight.addAttackChange(route, units);
+				final Change change = nonFight.addAttackChange(route, units, null);
 				bridge.addChange(change);
 				if (changeTracker != null)
 				{
@@ -737,7 +722,7 @@ public class BattleTracker implements java.io.Serializable
 			m_pendingBattles.add(battle);
 		}
 		// Add the units that moved into the battle
-		final Change change = battle.addAttackChange(route, units);
+		final Change change = battle.addAttackChange(route, units, null);
 		// make amphibious assaults dependent on possible naval invasions
 		// its only a dependency if we are unloading
 		final IBattle precede = getDependentAmphibiousAssault(route);

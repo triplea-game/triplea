@@ -25,6 +25,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * 
@@ -42,12 +44,14 @@ interface IBattle extends java.io.Serializable
 	 *            - attack route
 	 * @param units
 	 *            - attacking units
+	 * @param targets
+	 *            - Can be NULL if this does not apply. A list of defending units with the collection of attacking units targetting them mapped to each defending unit.
 	 * @return attack change object
 	 */
-	public Change addAttackChange(Route route, Collection<Unit> units);
+	public Change addAttackChange(Route route, Collection<Unit> units, HashMap<Unit, HashSet<Unit>> targets);
 	
 	/*
-	 * Add a bunch of defending units to the battle.
+	 * Add a bunch of DEFENDING or ATTACKING units to the battle.
 	 * 
 	 * @param route
 	 *            - unit route
@@ -59,9 +63,19 @@ interface IBattle extends java.io.Serializable
 	public Change addCombatChange(Route route, Collection<Unit> units, PlayerID scramblingPlayer);*/
 
 	/**
+	 * There are two distinct super-types of battles: Bombing battles, and Fighting battles.
+	 * There may be sub-types of each of these.
+	 * 
 	 * @return whether this battle is a bombing run
 	 */
 	public boolean isBombingRun();
+	
+	/**
+	 * The type of battle occurring, example: MustFightBattle, StrategicBombingRaidBattle, etc.
+	 * 
+	 * @return
+	 */
+	public String getBattleType();
 	
 	/**
 	 * @return territory this battle is occurring in.

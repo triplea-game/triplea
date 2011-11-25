@@ -154,7 +154,7 @@ public class LHTRTest extends TestCase
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final BattleTracker tracker = new BattleTracker();
 		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans, tracker);
-		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
 		TechTracker.addAdvance(british, bridge, TechAdvance.HEAVY_BOMBER);
 		// aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
@@ -190,7 +190,7 @@ public class LHTRTest extends TestCase
 		new ChangePerformer(m_data).perform(change);
 		final BattleTracker tracker = new BattleTracker();
 		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans, tracker);
-		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber));
+		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
 		TechTracker.addAdvance(british, bridge, TechAdvance.HEAVY_BOMBER);
 		// aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2

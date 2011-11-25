@@ -126,16 +126,16 @@ public class UndoableMove extends AbstractUndoableMove
 		}
 		// if we are moving out of a battle zone, mark it
 		// this can happen for air units moving out of a battle zone
-		final IBattle battleLand = battleTracker.getPendingBattle(m_route.getStart(), false);
-		final IBattle battleAir = battleTracker.getPendingBattle(m_route.getStart(), true);
-		if (battleLand != null || battleAir != null)
+		final IBattle battleNormal = battleTracker.getPendingBattle(m_route.getStart(), false);
+		final IBattle battleBombing = battleTracker.getPendingBattle(m_route.getStart(), true);
+		if (battleNormal != null || battleBombing != null)
 		{
 			final Iterator<Unit> iter2 = m_units.iterator();
 			while (iter2.hasNext())
 			{
 				final Unit unit = iter2.next();
 				final Route routeUnitUsedToMove = DelegateFinder.moveDelegate(data).getRouteUsedToMoveInto(unit, m_route.getStart());
-				if (battleLand != null && !battleLand.isOver())
+				if (battleNormal != null && !battleNormal.isOver())
 				{
 					// route units used to move will be null in the case
 					// where an enemy sub is submerged in the territory, and another unit
@@ -144,13 +144,13 @@ public class UndoableMove extends AbstractUndoableMove
 					// into the battle zone will be null
 					if (routeUnitUsedToMove != null)
 					{
-						final Change change = battleLand.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit));
+						final Change change = battleNormal.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), null);
 						bridge.addChange(change);
 					}
 				}
-				if (battleAir != null && !battleAir.isOver())
+				if (battleBombing != null && !battleBombing.isOver())
 				{
-					final Change change = battleAir.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit));
+					final Change change = battleBombing.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), null); // TODO: need to ask user for targets again!
 					bridge.addChange(change);
 				}
 			}
@@ -178,7 +178,7 @@ public class UndoableMove extends AbstractUndoableMove
 			}
 			if ( // if the other move has moves that depend on this
 			!Util.intersection(other.getUnits(), this.getUnits()).isEmpty() ||
-			// if the other move has transports that we are loading
+						// if the other move has transports that we are loading
 						!Util.intersection(other.m_units, this.m_loaded).isEmpty() ||
 						// or we are moving through a previously conqueured territory
 						// we should be able to take this out later

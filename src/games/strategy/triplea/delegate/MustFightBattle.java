@@ -122,7 +122,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	// keep track of all the units that die in the battle to show in the history
 	// window
 	private final Collection<Unit> m_killed = new ArrayList<Unit>();
-	private int m_round = 0;
 	// our current execution state
 	// we keep a stack of executables
 	// this allows us to save our state
@@ -137,7 +136,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	public MustFightBattle(final Territory battleSite, final PlayerID attacker, final GameData data, final BattleTracker battleTracker)
 	{
-		super(battleSite, attacker, battleTracker, data);
+		super(battleSite, attacker, battleTracker, false, "MustFightBattle", data);
 		m_defendingUnits.addAll(m_battleSite.getUnits().getMatches(Matches.enemyUnit(attacker, data)));
 		m_defender = findDefender(battleSite, m_attacker, m_data);
 	}
@@ -229,7 +228,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	@Override
-	public Change addAttackChange(final Route route, final Collection<Unit> units)
+	public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets)
 	{
 		final CompositeChange change = new CompositeChange();
 		// Filter out allied units if WW2V2
@@ -320,7 +319,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return change;
 	}
 	
-	@Override
+	/*@Override
 	public Change addCombatChange(final Route route, final Collection<Unit> units, final PlayerID player)
 	{
 		final CompositeChange change = new CompositeChange();
@@ -337,83 +336,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			m_defendingUnits.addAll(fightingUnits);
 		}
-		/* if (m_attackingFromMap.get(fightingFrom) == null)
-		 {
-		     m_attackingFromMap.put(fightingFrom, new ArrayList<Unit>());
-		 }
-		 
-		 Collection<Unit> fightingFromMapUnits = m_attackingFromMap.get(fightingFrom);
-		 fightingFromMapUnits.addAll(fightingUnits);
-		*/
-		/*//are we amphibious
-		if (route.getStart().isWater() && route.getEnd() != null
-		        && !route.getEnd().isWater()
-		        && Match.someMatch(fightingUnits, Matches.UnitIsLand))
-		{
-		    m_amphibiousAttackFrom.add(getAttackFrom(route));
-		    m_amphibiousLandAttackers.addAll(Match.getMatches(fightingUnits,
-		            Matches.UnitIsLand));
-		    m_amphibious = true;
-		}*/
-		/*//TODO add dependencies for transported units?
-		  Map<Unit, Collection<Unit>> dependencies = transporting(units);
-		  
-		  if (isAlliedAirDependents())
-		  {
-		      dependencies.putAll(MoveValidator.carrierMustMoveWith(units, units, m_data, m_attacker));
-		      for(Unit carrier : dependencies.keySet())
-		      {
-		      	UnitAttachment ua = UnitAttachment.get(carrier.getUnitType());
-		      	if (ua.getCarrierCapacity() == -1)
-		      		continue;
-		      	Collection<Unit> fighters = dependencies.get(carrier);
-		      	for (Unit fighter : fighters)
-		      	{
-		      		//Set transportedBy for fighter
-		      		change.add(ChangeFactory.unitPropertyChange(fighter, carrier, TripleAUnit.TRANSPORTED_BY ));
-		      	}
-		      	//remove transported fighters from battle display
-		      	m_attackingUnits.removeAll(fighters);
-		      }
-		  }
-		  
-		  //Set the dependent paratroopers so they die if the bomber dies.
-		  if(isParatroopers(m_attacker))
-		  {
-		      Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
-		      Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
-		      if(!airTransports.isEmpty() && !paratroops.isEmpty())
-		      {
-		      	//Load capable bombers by default>
-		      	Map<Unit,Unit> unitsToCapableAirTransports = MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, m_attacker);
-
-		      	HashMap<Unit, Collection<Unit>> dependentUnits = new HashMap<Unit, Collection<Unit>>();
-		      	Collection<Unit> singleCollection = new ArrayList<Unit>();
-		      	for (Unit unit : unitsToCapableAirTransports.keySet())
-		      	{
-		              Collection<Unit> unitList = new ArrayList<Unit>();
-		              unitList.add(unit);
-		      		Unit bomber = unitsToCapableAirTransports.get(unit);
-		      		singleCollection.add(unit);
-
-		      		//Set transportedBy for paratrooper
-		      		change.add(ChangeFactory.unitPropertyChange(unit, bomber, TripleAUnit.TRANSPORTED_BY ));
-
-		      		//Set the dependents
-		      		if (dependentUnits.get(bomber) != null)
-		      			dependentUnits.get(bomber).addAll(unitList);
-		      		else
-		      			dependentUnits.put(bomber, unitList);
-		      	}
-
-		      	dependencies.putAll(dependentUnits);
-
-		      	UnitSeperator.categorize(airTransports, dependentUnits, false, false);
-		      }
-		  }
-		  
-		  
-		  addDependentUnits(dependencies);*/
 		// mark units with no movement
 		// for all but air
 		Collection<Unit> nonAir = Match.getMatches(fightingUnits, Matches.UnitIsNotAir);
@@ -427,8 +349,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			return change;
 		change.add(ChangeFactory.markNoMovementChange(nonAir));
 		return change;
-	}
-	
+	}*/
+
 	private void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies)
 	{
 		final Iterator<Unit> iter = dependencies.keySet().iterator();
@@ -486,12 +408,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// this is ok, we are a headless battle
 		}
 		return defender;
-	}
-	
-	@Override
-	public final boolean isBombingRun()
-	{
-		return false;
 	}
 	
 	@Override
@@ -3054,12 +2970,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	public boolean isAmphibious()
 	{
 		return m_amphibious;
-	}
-	
-	@Override
-	public int getBattleRound()
-	{
-		return m_round;
 	}
 }
 
