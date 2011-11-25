@@ -466,6 +466,11 @@ public class DiceRoll implements Externalizable
 		}
 	}
 	
+	public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation)
+	{
+		return new DiceRoll();
+	}
+	
 	/**
 	 * Roll dice for units per normal rules.
 	 */

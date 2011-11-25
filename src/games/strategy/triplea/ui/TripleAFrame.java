@@ -707,8 +707,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	
 	public boolean getStrategicBombingRaid(final Territory location)
 	{
-		final String message = "Bomb in " + location.getName();
-		final String bomb = "Bomb";
+		final String message = (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(m_data) ? "Bomb/Escort" : "Bomb") + " in " + location.getName();
+		final String bomb = (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(m_data) ? "Bomb/Escort" : "Bomb");
 		final String normal = "Attack";
 		final String[] choices = { bomb, normal };
 		final int choice = EventThreadJOptionPane.showOptionDialog(this, message, "Bomb?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, choices, bomb);

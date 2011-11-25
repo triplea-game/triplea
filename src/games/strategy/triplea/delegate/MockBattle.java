@@ -21,7 +21,7 @@ public class MockBattle extends AbstractBattle
 	
 	public MockBattle(final Territory battleSite)
 	{
-		super(battleSite, null, null, false, "MockBattle", null);
+		super(battleSite, null, null, false, BattleTracker.BATTLE_TYPE_MOCK_BATTLE, null);
 	}
 	
 	@Override

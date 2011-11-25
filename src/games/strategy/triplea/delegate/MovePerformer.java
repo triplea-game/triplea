@@ -154,8 +154,10 @@ public class MovePerformer implements Serializable
 					boolean bombing = false;
 					boolean ignoreBattle = false;
 					// could it be a bombing raid
-					// TODO kev will need to change this for escorts
-					final boolean allCanBomb = Match.allMatch(arrived, Matches.UnitIsStrategicBomber);
+					final CompositeMatchOr<Unit> allBombingRaid = new CompositeMatchOr<Unit>(Matches.UnitIsStrategicBomber);
+					if (games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data))
+						allBombingRaid.add(Matches.unitCanEscort);
+					final boolean allCanBomb = Match.allMatch(arrived, allBombingRaid);
 					final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
 					final Collection<Unit> enemyTargets = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert());
 					boolean targetedAttack = false;
@@ -169,10 +171,11 @@ public class MovePerformer implements Serializable
 							// CompositeMatchOr<Unit> unitsToBeBombed = new CompositeMatchOr<Unit>(Matches.UnitIsFactory, Matches.UnitCanBeDamagedButIsNotFactory);
 							// determine which unit to bomb
 							Unit target;
-							if (enemyTargets.size() == 1)
-								target = enemyTargets.iterator().next();
-							else
+							if (enemyTargets.size() > 1 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+										&& !games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data))
 								target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), enemyTargets);
+							else
+								target = enemyTargets.iterator().next();
 							if (target == null)
 							{
 								bombing = false;
@@ -183,7 +186,7 @@ public class MovePerformer implements Serializable
 								targetedAttack = true;
 								final HashMap<Unit, HashSet<Unit>> targets = new HashMap<Unit, HashSet<Unit>>();
 								targets.put(target, new HashSet<Unit>(arrivingUnits[0]));
-								getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove, targets);
+								getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove, targets, false);
 							}
 						}
 					}

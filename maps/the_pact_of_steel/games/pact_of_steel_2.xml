@@ -1751,6 +1751,10 @@
 			whenCombatDamaged					values: this property lets you set certain behaviors for when this unit is damaged. the value is the effect, while the count is the damage from where to where. (example: <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>)
 															units start at zero combat damage, and usually die at 1 damage. some units have 2 hp, so you can use this with 1:1 to say that when a unit has 1 damage they have this effect.
 															currently only allows: unitsMayNotLandOnCarrier, unitsMayNotLeaveAlliedCarrier
+			canIntercept						values: allows this unit to participate in air battles, as a defending unit
+			canEscort							values: allows this unit to participate in air battles, as an attacking unit
+			airDefense							values: defense value of interceptor
+			airAttack							values: attack value of escort
 	
 	production related:
 			isFactory							values: allows a unit to produce other units, not participate in combat, be placed anywhere you owned at the beginning of the turn, be capturable, and be damaged by rockets and raids
@@ -1868,6 +1872,10 @@
 						 <!-- canScramble and maxScrambleDistance are properties for scrambling. allows the aircraft to enter a surrounding sea zone if the enemy is doing an attack on or from the surrounding sea zone -->
                          <option name="canScramble" value="true"/>
                          <option name="maxScrambleDistance" value="1"/>
+						 <option name="canIntercept" value="true"/>
+						 <option name="canEscort" value="true"/>
+                         <option name="airDefense" value="2"/>
+                         <option name="airAttack" value="2"/>
                 </attatchment>
 				
                 <attatchment name="unitAttatchment" attatchTo="jp_fighter" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -1882,6 +1890,10 @@
 						 <!--<option name="isSuicide" value="true"/>-->
 						 <!-- isKamikaze allows an air unit to use up all of its movement to go to a battle -->
 						 <!--<option name="isKamikaze" value="true"/>-->
+						 <option name="canIntercept" value="true"/>
+						 <option name="canEscort" value="true"/>
+                         <option name="airDefense" value="2"/>
+                         <option name="airAttack" value="2"/>
                 </attatchment>
 
                 <!-- Bomber -->
@@ -1900,6 +1912,7 @@
                          <option name="bombingMaxDieSides" value="2"/>
 						 <!-- bombingBonus is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only.  This property is optional, and only turns on when you have LL for bombing turned on. -->
                          <option name="bombingBonus" value="2"/>
+                         <option name="airAttack" value="1"/>
                 </attatchment>
 
                 <!-- Air_Transport -->
@@ -4911,6 +4924,10 @@
 				<property name="Unit Placement Restrictions" value="true" editable="false">
 						<boolean/>
 				</property>
+						<!-- Allows Strategic Bombing Raids to have Escort aircraft and also be Intercepted by the defender -->
+				<property name="Raids May Be Preceeded By Air Battles" value="true" editable="true">
+						<boolean/>
+				</property>
 
 						<!-- SBR Affects Unit Production has Strategic Bombing and Rockets do damage to a territory rather than directly to the player's PUs (the bank) -->
 				<property name="SBR Affects Unit Production" value="false" editable="false">
@@ -5001,6 +5018,7 @@
 						<br>12. Each nation may only purchase factories up to 3 total, if a nation controls more than 3 they can not purchase new factories (they can keep capturing new ones though).
         				<br>13. Politics phase: alliances and states of war are now dynamic and can be changed in game.  Japan and Russia start out in a state of Neutrality towards each other, while Russia, America and the UK also start out as neutral towards each other.  
 									Japan and Russia will go to war on the 5th turn if they are still neutral by then.  Italy and Russia have the option of declaring a 2 round ceasefire.
+        				<br>14. Strategic Bombing Raids can now have an Air battle preceeding the raid. Fighters escorting the bombers, and any defending interceptors fire at 2, while the bombers fire at 1.  The battle only lasts 1 round.
         				<br>
         				<br>
         				<br>

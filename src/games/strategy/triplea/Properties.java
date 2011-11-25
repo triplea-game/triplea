@@ -854,6 +854,11 @@ public class Properties implements Constants
 		return data.getProperties().get(ALLIANCES_CAN_CHAIN_TOGETHER, false);
 	}
 	
+	public static boolean getRaidsMayBePreceededByAirBattles(final GameData data)
+	{
+		return data.getProperties().get(RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES, false);
+	}
+	
 	private Properties()
 	{
 	}

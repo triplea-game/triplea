@@ -3436,6 +3436,24 @@ public class Matches
 		};
 	}
 	
+	public static final Match<Unit> unitCanIntercept = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit u)
+		{
+			return UnitAttachment.get(u.getType()).getCanIntercept();
+		}
+	};
+	
+	public static final Match<Unit> unitCanEscort = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit u)
+		{
+			return UnitAttachment.get(u.getType()).getCanEscort();
+		}
+	};
+	
 	/** Creates new Matches */
 	private Matches()
 	{

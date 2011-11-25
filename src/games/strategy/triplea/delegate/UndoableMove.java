@@ -21,11 +21,14 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.MovePanel;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Util;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -150,7 +153,25 @@ public class UndoableMove extends AbstractUndoableMove
 				}
 				if (battleBombing != null && !battleBombing.isOver())
 				{
-					final Change change = battleBombing.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), null); // TODO: need to ask user for targets again!
+					HashMap<Unit, HashSet<Unit>> targets = null;
+					Unit target = null;
+					if (routeUnitUsedToMove != null && routeUnitUsedToMove.getEnd() != null)
+					{
+						final Territory end = routeUnitUsedToMove.getEnd();
+						final Collection<Unit> enemyTargets = end.getUnits().getMatches(
+									new CompositeMatchAnd<Unit>(Matches.enemyUnit(bridge.getPlayerID(), data), Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(end).invert()));
+						if (enemyTargets.size() > 1 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
+									&& !games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data))
+							target = ((ITripleaPlayer) bridge.getRemote(bridge.getPlayerID())).whatShouldBomberBomb(end, enemyTargets);
+						else if (!enemyTargets.isEmpty())
+							target = enemyTargets.iterator().next();
+						if (target != null)
+						{
+							targets = new HashMap<Unit, HashSet<Unit>>();
+							targets.put(target, new HashSet<Unit>(Collections.singleton(unit)));
+						}
+					}
+					final Change change = battleBombing.addAttackChange(routeUnitUsedToMove, Collections.singleton(unit), targets);
 					bridge.addChange(change);
 				}
 			}

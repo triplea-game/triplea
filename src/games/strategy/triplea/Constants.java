@@ -164,17 +164,20 @@ public interface Constants
 	public static final String MAP_NAME = "mapName";
 	public static final String DISPLAY_SEA_NAMES = "Display Sea Names";
 	public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
+	
 	// new scramble property names
 	public static final String SCRAMBLE_RULES_IN_EFFECT = "Scramble Rules In Effect";
 	public static final String SCRAMBLED_UNITS_RETURN_TO_BASE = "Scrambled Units Return To Base";
 	public static final String SCRAMBLE_TO_SEA_ONLY = "Scramble To Sea Only";
 	public static final String SCRAMBLE_FROM_ISLAND_ONLY = "Scramble From Island Only";
 	public static final String SCRAMBLE_TO_ANY_AMPHIBIOUS_ASSAULT = "Scramble To Any Amphibious Assault";
+	
 	// squid
 	public static final String OLD_ART_RULE_NAME = "ArtyOld";
 	public static final String SUPPORT_RULE_NAME_OLD = SUPPORT_ATTACHMENT_PREFIX + OLD_ART_RULE_NAME;
 	public static final String TRIGGERS = "Use Triggers";
 	public static final String PU_MULTIPLIER = "Multiply PUs";
+	
 	// veqryn (Mark Christopher Duncan)
 	public static final String LL_AA_ONLY = "Low Luck for AntiAircraft";
 	public static final String COUNTERS_DISPLAY = "Display Units as Counters";
@@ -206,6 +209,8 @@ public interface Constants
 	public static final String AI_BONUS_DEFENSE = "AI Bonus Defense";
 	public static final String RELATIONSHIPS_LAST_EXTRA_ROUNDS = "Relationships Last Extra Rounds";
 	public static final String ALLIANCES_CAN_CHAIN_TOGETHER = "Alliances Can Chain Together";
+	public static final String RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES = "Raids May Be Preceeded By Air Battles";
+	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";
 	public static final String RELATIONSHIP_TYPE_NULL = "null_relation";

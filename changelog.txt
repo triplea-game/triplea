@@ -1,4 +1,12 @@
 Changes for 1.5
+* Moved 'Fire' out of MustFightBattle with the hopes of abstracting it and making it a general class one day. (veqryn)
+
+* Created battle steps and interfaces for Air Battle, but still not done actual combat. (veqryn)
+
+* Created ability for Air Battles to create Bombing Raids when they are finished if any bombers remain. (veqryn)
+
+* Created new unit attachments, "canIntercept", "canEscort", "airDefense", "airAttack", which can be combined with new game option, "Raids May Be Preceeded By Air Battles", to allow air battles. (veqryn)
+
 * Abstracted hashCode and equals methods from all battles and put into AbstractBattle class. (veqryn)
 
 * Created StrategicBombingRaidPreBattle class, which will handle air battles and other things that occur before bombing raids. (veqryn) 

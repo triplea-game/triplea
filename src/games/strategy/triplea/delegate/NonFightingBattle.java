@@ -48,7 +48,7 @@ public class NonFightingBattle extends AbstractBattle
 {
 	public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean neutral, final GameData data)
 	{
-		super(battleSite, attacker, battleTracker, false, "Normal", data);
+		super(battleSite, attacker, battleTracker, false, BattleTracker.BATTLE_TYPE_NORMAL, data);
 	}
 	
 	@Override

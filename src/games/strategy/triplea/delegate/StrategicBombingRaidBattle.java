@@ -85,27 +85,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	 **/
 	public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final PlayerID defender, final BattleTracker battleTracker)
 	{
-		super(battleSite, attacker, battleTracker, true, "StrategicBombingRaidBattle", data);
+		super(battleSite, attacker, battleTracker, true, BattleTracker.BATTLE_TYPE_BOMBING_RAID, data);
 		m_defender = defender;
 	}
 	
-	/*public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final PlayerID defender, final BattleTracker battleTracker,
-				final HashMap<Unit, ArrayList<Unit>> targets)
-	{
-		super(battleSite, attacker, battleTracker, true, "StrategicBombingRaidBattle", data);
-		m_defender = defender;
-		m_targets = targets;
-	}
-	
-	public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final PlayerID defender, final BattleTracker battleTracker,
-				final HashMap<Unit, ArrayList<Unit>> targets, final List<Unit> defendingUnitsIncludingTargets)
-	{
-		super(battleSite, attacker, battleTracker, true, "StrategicBombingRaidBattle", data);
-		m_defender = defender;
-		m_targets = targets;
-		m_defendingUnitsIncludingTargets = defendingUnitsIncludingTargets;
-	}*/
-
 	/**
 	 * @param bridge
 	 * @return

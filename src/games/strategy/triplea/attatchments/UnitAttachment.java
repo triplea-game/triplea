@@ -180,6 +180,10 @@ public class UnitAttachment extends DefaultAttachment
 	private final IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
 	private final IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<UnitType>();
 	private final IntegerMap<Resource> m_createsResourcesList = new IntegerMap<Resource>();
+	private boolean m_canIntercept = false;
+	private boolean m_canEscort = false;
+	private int m_airDefense = 0;
+	private int m_airAttack = 0;
 	
 	/** Creates new UnitAttatchment */
 	public UnitAttachment()
@@ -194,6 +198,60 @@ public class UnitAttachment extends DefaultAttachment
 	// does nothing, used to keep compatibility with older xml files
 	public void setIsMechanized(final String s)
 	{
+	}
+	
+	public void setCanIntercept(final String value)
+	{
+		m_canIntercept = getBool(value);
+	}
+	
+	public boolean getCanIntercept()
+	{
+		return m_canIntercept;
+	}
+	
+	public void setCanEscort(final String value)
+	{
+		m_canEscort = getBool(value);
+	}
+	
+	public boolean getCanEscort()
+	{
+		return m_canEscort;
+	}
+	
+	public void setAirDefense(final String value)
+	{
+		m_airDefense = getInt(value);
+	}
+	
+	public int getAirDefense(final PlayerID player)
+	{
+		int defenseValue = m_airDefense;
+		final int maxDiceSides = getData().getDiceSides();
+		if (defenseValue > 0 && m_isAir && !m_isStrategicBomber)
+		{
+			if (TechTracker.hasJetFighter(player))
+				defenseValue++;
+		}
+		return Math.min(defenseValue, maxDiceSides);
+	}
+	
+	public void setAirAttack(final String value)
+	{
+		m_airAttack = getInt(value);
+	}
+	
+	public int getAirAttack(final PlayerID player)
+	{
+		int attackValue = m_airAttack;
+		final int maxDiceSides = getData().getDiceSides();
+		if (attackValue > 0 && m_isAir && !m_isStrategicBomber)
+		{
+			if (TechTracker.hasJetFighter(player))
+				attackValue++;
+		}
+		return Math.min(attackValue, maxDiceSides);
 	}
 	
 	public void setIsAirTransport(final String s)
@@ -300,7 +358,7 @@ public class UnitAttachment extends DefaultAttachment
 				throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No unit named: " + s[3]);
 			i++;
 			final int howMany = getInt(s[i]);
-			unitsToMake.add(ut, howMany);
+			unitsToMake.put(ut, howMany);
 		}
 		m_whenCapturedChangesInto.put(s[0] + ":" + s[1], new Tuple<String, IntegerMap<UnitType>>(s[2], unitsToMake));
 	}
@@ -1338,14 +1396,15 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		else if (m_isSea)
 		{
-			if (m_canBlitz || m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_isAir || m_isFactory || m_isStrategicBomber || m_carrierCost != -1 || m_transportCost != -1
-						|| m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isAirTransport || m_isKamikaze)
+			if (m_canIntercept || m_canEscort || m_canBlitz || m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_isAir || m_isFactory || m_isStrategicBomber || m_carrierCost != -1
+						|| m_transportCost != -1 || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isAirTransport || m_isKamikaze)
 				throw new GameParseException("Invalid Unit Attatchment, sea units can not have certain properties, " + this);
 		}
 		else
 		// if land
 		{
-			if (m_canBombard || m_isStrategicBomber || m_isSub || m_carrierCapacity != -1 || m_bombard != -1 || m_transportCapacity != -1 || m_isAirTransport || m_isCombatTransport || m_isKamikaze)
+			if (m_canIntercept || m_canEscort || m_canBombard || m_isStrategicBomber || m_isSub || m_carrierCapacity != -1 || m_bombard != -1 || m_transportCapacity != -1 || m_isAirTransport
+						|| m_isCombatTransport || m_isKamikaze)
 				throw new GameParseException("Invalid Unit Attatchment, land units can not have certain properties, " + this);
 		}
 		if (m_attackAA < 0 || m_attackAAmaxDieSides < -1 || m_attackAAmaxDieSides > 200)
@@ -1590,7 +1649,11 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  maxScrambleDistance:" + m_maxScrambleDistance
 					+ "  airBase:" + m_isAirBase
 					+ "  maxScrambleCount:" + m_maxScrambleCount
-					+ "  whenCapturedChangesInto:" + m_whenCapturedChangesInto;
+					+ "  whenCapturedChangesInto:" + m_whenCapturedChangesInto
+					+ "  canIntercept:" + m_canIntercept
+					+ "  canEscort:" + m_canEscort
+					+ "  airDefense:" + m_airDefense
+					+ "  airAttack:" + m_airAttack;
 	}
 	
 	public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHTML, final boolean includeAttachedToName)
