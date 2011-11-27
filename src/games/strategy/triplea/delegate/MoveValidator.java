@@ -504,7 +504,7 @@ public class MoveValidator
 		}
 		else
 		{
-			return isFriendly(player, territory.getOwner(), data);
+			return Matches.RelationshipTypeCanLandAirUnitsOnOwnedLand.match(data.getRelationshipTracker().getRelationshipType(player, territory.getOwner()));
 		}
 	}
 	
@@ -519,20 +519,6 @@ public class MoveValidator
 	public static Collection<Unit> getFriendly(final Territory territory, final PlayerID player, final GameData data)
 	{
 		return territory.getUnits().getMatches(Matches.alliedUnit(player, data));
-	}
-	
-	public static boolean isFriendly(final PlayerID p1, final PlayerID p2, final GameData data)
-	{
-		if (p1.equals(p2))
-			return true;
-		else
-			return data.getRelationshipTracker().isAllied(p1, p2);
-	}
-	
-	public static boolean ownedByFriendly(final Unit unit, final PlayerID player, final GameData data)
-	{
-		final PlayerID owner = unit.getOwner();
-		return (isFriendly(owner, player, data));
 	}
 	
 	public static int getMaxMovement(final Collection<Unit> units)

@@ -1,4 +1,6 @@
 Changes for 1.5
+* Created new relationship type attachment, canLandAirUnitsOnOwnedLand, which decides if units can land in a player's territory or not. (veqryn) 
+
 * New Map Skin for Napoleonic Empires, which can be enabled in the View menu. (pulicat)
 
 * Changed BattleModel to show air battle units with different stats then their normal attack/defense stats. (veqryn)

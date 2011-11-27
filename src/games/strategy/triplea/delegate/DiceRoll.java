@@ -528,11 +528,14 @@ public class DiceRoll implements Externalizable
 				final UnitAttachment ua = UnitAttachment.get(current.getType());
 				int strength = (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()));
 				strength = Math.min(Math.max(strength, 0), data.getDiceSides());
-				final boolean hit = strength > random[diceIndex];
-				dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
-				if (hit)
-					hitCount++;
-				diceIndex++;
+				if (strength > 0)
+				{
+					final boolean hit = strength > random[diceIndex];
+					dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
+					if (hit)
+						hitCount++;
+					diceIndex++;
+				}
 			}
 		}
 		final DiceRoll rVal = new DiceRoll(dice, hitCount);

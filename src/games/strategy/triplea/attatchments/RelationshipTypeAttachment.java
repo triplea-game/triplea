@@ -49,6 +49,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	private String m_alliancesCanChainTogether = PROPERTY_DEFAULT;
 	private String m_isDefaultWarPosition = PROPERTY_DEFAULT;
 	private String m_upkeepCost = PROPERTY_DEFAULT;
+	private String m_canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
 	
 	/**
 	 * Convenience method.
@@ -155,6 +156,21 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 			return isWar() || isAllied();
 		}
 		return m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_TRUE);
+	}
+	
+	public void setCanLandAirUnitsOnOwnedLand(final String canLandAir)
+	{
+		m_canLandAirUnitsOnOwnedLand = canLandAir;
+	}
+	
+	public boolean getCanLandAirUnitsOnOwnedLand()
+	{
+		// War: false, Allied: true, Neutral: false
+		if (m_canLandAirUnitsOnOwnedLand.equals(PROPERTY_DEFAULT))
+		{
+			return isAllied();
+		}
+		return m_canLandAirUnitsOnOwnedLand.equals(PROPERTY_TRUE);
 	}
 	
 	public void setUpkeepCost(final String integerCost) throws GameParseException

@@ -1504,6 +1504,7 @@
 			archeType								values: "allied" or "war" or "neutral"
 			canMoveLandUnitsOverOwnedLand			values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
 			canMoveAirUnitsOverOwnedLand			values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war and allied can move into, while neutral can not
+			canLandAirUnitsOnOwnedLand				values: "true", "false", or "default". default setting is "default", and "default" means that archeType of allied only lets you land units in the player's territories
 			upkeepCost								values: "default", or any valid integer, or "percentage" with a count of a valid integer. Default = zero (0). This determines if there is a cost to maintain a relationship, which would be subtracted from PUs gained at end of turn.
 																examples: a cost of 1 PU per turn: <option name="upkeepCost" value="1"/> or <option name="upkeepCost" value="flat" count="1"/>, or a cost of 9% of your income per turn: <option name="upkeepCost" value="percentage" count="9"/>
 			alliancesCanChainTogether				values: "true", "false", or "default". can only be applied to a relationship that is archetype "allied", and only 1 relationship can have it. if true, any nations that reach this relationship will share both allies and enemies.

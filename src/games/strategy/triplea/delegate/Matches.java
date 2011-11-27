@@ -3057,6 +3057,14 @@ public class Matches
 			return relationship.getRelationshipTypeAttachment().getCanMoveAirUnitsOverOwnedLand();
 		}
 	};
+	public static final Match<RelationshipType> RelationshipTypeCanLandAirUnitsOnOwnedLand = new Match<RelationshipType>()
+	{
+		@Override
+		public boolean match(final RelationshipType relationship)
+		{
+			return relationship.getRelationshipTypeAttachment().getCanLandAirUnitsOnOwnedLand();
+		}
+	};
 	
 	public static final Match<String> isValidRelationshipName(final GameData data)
 	{
