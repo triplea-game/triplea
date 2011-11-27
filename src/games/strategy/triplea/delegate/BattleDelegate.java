@@ -698,7 +698,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	
 	private void airBattleCleanup()
 	{
-		// return scrambled units to their original territories, or let them move 1 or x to a new territory.
 		final GameData data = getData();
 		if (!games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data))
 			return;

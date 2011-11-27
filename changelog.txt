@@ -1,4 +1,6 @@
 Changes for 1.5
+* New Map Skin for Napoleonic Empires, which can be enabled in the View menu. (pulicat)
+
 * Changed BattleModel to show air battle units with different stats then their normal attack/defense stats. (veqryn)
 
 * Made sure units participating in air battles did not participate in any other battles. (veqryn)
