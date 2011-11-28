@@ -422,7 +422,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	 */
 	public boolean isUnload()
 	{
-		return hasExactlyOneStep() && getStart().isWater() && !getEnd().isWater();
+		// we should not check if there is only 1 step, because otherwise movement validation will let users move their tanks over water, so long as they end on land
+		return getStart().isWater() && !getEnd().isWater();
 	}
 	
 	/**

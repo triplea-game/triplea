@@ -155,9 +155,10 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	{
 		final GameData data = getData();
 		final CompositeMatchOr<PoliticalActionAttachment> intoAlliedChainOrIntoOrOutOfWar = new CompositeMatchOr<PoliticalActionAttachment>(Matches.politicalActionIsRelationshipChangeOf(null,
-					Matches.isAlliedAndAlliancesCanChainTogether.invert(), Matches.isAlliedAndAlliancesCanChainTogether, data), Matches.politicalActionIsRelationshipChangeOf(null,
-					Matches.RelationshipTypeIsAtWar.invert(), Matches.RelationshipTypeIsAtWar, data), Matches.politicalActionIsRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar,
-					Matches.RelationshipTypeIsAtWar.invert(), data));
+					Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether.invert(), Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether, data),
+					Matches.politicalActionIsRelationshipChangeOf(null,
+								Matches.RelationshipTypeIsAtWar.invert(), Matches.RelationshipTypeIsAtWar, data), Matches.politicalActionIsRelationshipChangeOf(null, Matches.RelationshipTypeIsAtWar,
+								Matches.RelationshipTypeIsAtWar.invert(), data));
 		if (!games.strategy.triplea.Properties.getAlliancesCanChainTogether(data) || !intoAlliedChainOrIntoOrOutOfWar.match(paa))
 		{
 			for (final PlayerID player : paa.getActionAccept())
@@ -412,7 +413,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 				continue;
 			final RelationshipType currentType = data.getRelationshipTracker().getRelationshipType(p1, p2);
 			final RelationshipType newType = data.getRelationshipTypeList().getRelationshipType(relationshipChange[2]);
-			if (Matches.isAlliedAndAlliancesCanChainTogether.match(currentType) && Matches.isAlliedAndAlliancesCanChainTogether.invert().match(newType))
+			if (Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether.match(currentType) && Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether.invert().match(newType))
 			{
 				for (final PlayerID p3 : p1AlliedWith)
 				{

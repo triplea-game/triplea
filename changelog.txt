@@ -1,4 +1,10 @@
 Changes for 1.5
+* Fixed bug where I could move my tanks and all land units over water, so long as the end was land. (veqryn)
+
+* Allowed players with canTakeOverOwnedTerritory to take over during noncombat move. (veqryn)
+
+* Created new relationship type attachment, canTakeOverOwnedTerritory, which will allow taking over of an ally's territory. (veqryn) 
+
 * Fixing gamenotes for Lord of the Rings Middle Earth. (veqryn)
 
 * Created new relationship type attachment, canLandAirUnitsOnOwnedLand, which decides if units can land in a player's territory or not. (veqryn) 

@@ -74,6 +74,31 @@ public class RelationshipInterpreter extends GameDataComponent
 		return Matches.RelationshipTypeCanMoveAirUnitsOverOwnedLand.match(getRelationshipType(p1, p2));
 	}
 	
+	public boolean canLandAirUnitsOnOwnedLand(final PlayerID p1, final PlayerID p2)
+	{
+		return Matches.RelationshipTypeCanLandAirUnitsOnOwnedLand.match(getRelationshipType(p1, p2));
+	}
+	
+	public String getUpkeepCost(final PlayerID p1, final PlayerID p2)
+	{
+		return getRelationshipType(p1, p2).getRelationshipTypeAttachment().getUpkeepCost();
+	}
+	
+	public boolean alliancesCanChainTogether(final PlayerID p1, final PlayerID p2)
+	{
+		return Matches.RelationshipTypeIsAlliedAndAlliancesCanChainTogether.match(getRelationshipType(p1, p2));
+	}
+	
+	public boolean isDefaultWarPosition(final PlayerID p1, final PlayerID p2)
+	{
+		return Matches.RelationshipTypeIsDefaultWarPosition.match(getRelationshipType(p1, p2));
+	}
+	
+	public boolean canTakeOverOwnedTerritory(final PlayerID p1, final PlayerID p2)
+	{
+		return Matches.RelationshipTypeCanTakeOverOwnedTerritory.match(getRelationshipType(p1, p2));
+	}
+	
 	/**
 	 * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2 players
 	 * 

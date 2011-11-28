@@ -146,6 +146,7 @@ public class MovePerformer implements Serializable
 				final CompositeMatch<Territory> mustFightThrough = new CompositeMatchOr<Territory>();
 				mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
 				mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, data));
+				mustFightThrough.add(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
 				final Collection<Unit> arrived = Util.intersection(units, arrivingUnits[0]);
 				final Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
 				markTransportsMovement(arrived, transporting, route);
@@ -203,6 +204,15 @@ public class MovePerformer implements Serializable
 					if (!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
 					{
 						getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove);
+					}
+					if (!ignoreBattle && MoveDelegate.isNonCombat(m_bridge) && !targetedAttack && route.allMatch(Matches.isTerritoryEnemy(id, data).invert())
+								&& route.allMatch(Matches.territoryHasNoEnemyUnits(id, data)) && Match.someMatch(arrivingUnits[0], Matches.UnitIsLand)
+								&& Match.noneMatch(arrivingUnits[0], Matches.UnitIsSea))
+					{
+						for (final Territory t : route.getMatches(Matches.TerritoryIsBlitzable(id, data)))
+						{
+							getBattleTracker().takeOver(t, id, bridge, m_currentMove, arrivingUnits[0]);
+						}
 					}
 				}
 				// mark movement

@@ -2101,7 +2101,7 @@ public class Matches
 					return false;
 				if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && (t.isWater() | !games.strategy.triplea.Properties.getNeutralsBlitzable(data)))
 					return false;
-				return data.getRelationshipTracker().isAtWar(player, t.getOwner());
+				return RelationshipTypeCanTakeOverOwnedTerritory.match(data.getRelationshipTracker().getRelationshipType(player, t.getOwner()));// data.getRelationshipTracker().isAtWar(player, t.getOwner());
 			}
 		};
 	}
@@ -3065,6 +3065,14 @@ public class Matches
 			return relationship.getRelationshipTypeAttachment().getCanLandAirUnitsOnOwnedLand();
 		}
 	};
+	public static final Match<RelationshipType> RelationshipTypeCanTakeOverOwnedTerritory = new Match<RelationshipType>()
+	{
+		@Override
+		public boolean match(final RelationshipType relationship)
+		{
+			return relationship.getRelationshipTypeAttachment().getCanTakeOverOwnedTerritory();
+		}
+	};
 	
 	public static final Match<String> isValidRelationshipName(final GameData data)
 	{
@@ -3328,17 +3336,26 @@ public class Matches
 			@Override
 			public boolean match(final PlayerID player2)
 			{
-				return isAlliedAndAlliancesCanChainTogether.match(data.getRelationshipTracker().getRelationshipType(player, player2));
+				return RelationshipTypeIsAlliedAndAlliancesCanChainTogether.match(data.getRelationshipTracker().getRelationshipType(player, player2));
 			}
 		};
 	}
 	
-	public static final Match<RelationshipType> isAlliedAndAlliancesCanChainTogether = new Match<RelationshipType>()
+	public static final Match<RelationshipType> RelationshipTypeIsAlliedAndAlliancesCanChainTogether = new Match<RelationshipType>()
 	{
 		@Override
 		public boolean match(final RelationshipType rt)
 		{
 			return RelationshipTypeIsAllied.match(rt) && rt.getRelationshipTypeAttachment().getAlliancesCanChainTogether();
+		}
+	};
+	
+	public static final Match<RelationshipType> RelationshipTypeIsDefaultWarPosition = new Match<RelationshipType>()
+	{
+		@Override
+		public boolean match(final RelationshipType rt)
+		{
+			return rt.getRelationshipTypeAttachment().getIsDefaultWarPosition();
 		}
 	};
 	
@@ -3470,6 +3487,24 @@ public class Matches
 			return UnitAttachment.get(u.getType()).getCanEscort();
 		}
 	};
+	
+	public static final Match<Territory> territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(final PlayerID attacker)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (t.getOwner().equals(attacker))
+					return false;
+				if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater())
+					return false;
+				if (!Matches.TerritoryIsPassableAndNotRestricted(attacker, t.getData()).match(t))
+					return false;
+				return RelationshipTypeCanTakeOverOwnedTerritory.match(t.getData().getRelationshipTracker().getRelationshipType(attacker, t.getOwner()));
+			}
+		};
+	}
 	
 	/** Creates new Matches */
 	private Matches()

@@ -361,7 +361,7 @@ public class BattleTracker implements java.io.Serializable
 	{
 		final GameData data = bridge.getData();
 		final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
-		final boolean isTerritoryOwnerAnEnemy = data.getRelationshipTracker().isAtWar(id, territory.getOwner());
+		final boolean isTerritoryOwnerAnEnemy = data.getRelationshipTracker().canTakeOverOwnedTerritory(id, territory.getOwner()); // .isAtWar(id, territory.getOwner());
 		// If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers have more than just transports. If they don't, exit here.
 		if (territory.isWater() && arrivingUnits != null)
 		{
