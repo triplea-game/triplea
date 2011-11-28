@@ -657,7 +657,6 @@
         <unitList>
                 <unit name="fortifications"/>
                 <unit name="archers"/>
-                <unit name="peasants"/>
                 <unit name="caravel"/>
                 <unit name="castle"/>
                 <unit name="galleon"/>
@@ -686,7 +685,6 @@
                 <unit name="greatship"/>
                 <unit name="zepplin"/>
                 <unit name="battleship"/>
-                <unit name="wraith"/>
                 <unit name="nazgul"/>
                 <unit name="balrog"/>
                 <unit name="urukhai"/>
@@ -698,7 +696,6 @@
                 <unit name="barge"/>
                 <unit name="bats"/>
                 <unit name="catapult"/>
-                <unit name="giant"/>
                 <unit name="stabbers"/>
                 <unit name="raft"/>
                 <unit name="shooters"/>
@@ -711,6 +708,10 @@
                 <unit name="chariotArchers"/>
                 <unit name="warChariot"/>
                 <unit name="warWagon"/>
+				
+                <!--<unit name="peasants"/>
+                <unit name="wraith"/>
+                <unit name="giant"/>-->
         </unitList>
 
         <gamePlay>
@@ -1099,10 +1100,10 @@
                         <result resourceOrUnit="longship" quantity="1"/>
                 </productionRule>
 
-                <productionRule name="buyPeasants">
+                <!--<productionRule name="buyPeasants">
                         <cost resource="PUs" quantity="3" />
                         <result resourceOrUnit="peasants" quantity="1"/>
-                </productionRule>
+                </productionRule>-->
 
                 <productionRule name="buyRaiders">
                         <cost resource="PUs" quantity="4" />
@@ -1487,13 +1488,13 @@
                          <option name="artillerySupportable" value="true"/>
                     </attatchment>
 
-                    <attatchment name="unitAttatchment" attatchTo="peasants" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                    <!--<attatchment name="unitAttatchment" attatchTo="peasants" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="1"/>
                          <option name="transportCost" value="1"/>
                          <option name="attack" value="0"/>
                          <option name="defense" value="2"/>
                          <option name="artillerySupportable" value="true"/>
-                    </attatchment>
+                    </attatchment>-->
 
                     <attatchment name="unitAttatchment" attatchTo="hunters" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="movement" value="2"/>
@@ -2876,7 +2877,7 @@
 	&lt;/tr&gt;
 	
 	&lt;td&gt;Hobbits&lt;/td&gt;
-	&lt;td&gt;1&lt;/td&gt;
+	&lt;td&gt;0&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
@@ -2887,11 +2888,30 @@
 	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;Archers&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
-	&lt;td&gt;1&lt;/td&gt;
+	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;givesSupport&lt;/td&gt;
+	&lt;/tr&gt;
+	
+	&lt;td&gt;Undead&lt;/td&gt;
+	&lt;td&gt;1&lt;/td&gt;
+	&lt;td&gt;1&lt;/td&gt;
+	&lt;td&gt;1&lt;/td&gt;
+	&lt;td&gt;n/a&lt;/td&gt;
+	&lt;td&gt;1&lt;/td&gt;
+	&lt;td&gt;isSupportable&lt;/td&gt;
+	&lt;/tr&gt;
+	
+	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
+	&lt;td&gt;Ents&lt;/td&gt;
+	&lt;td&gt;3&lt;/td&gt;
+	&lt;td&gt;3&lt;/td&gt;
+	&lt;td&gt;1&lt;/td&gt;
+	&lt;td&gt;n/a&lt;/td&gt;
+	&lt;td&gt;n/a&lt;/td&gt;
+	&lt;td&gt;&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;td&gt;catapult&lt;/td&gt;
@@ -2944,7 +2964,7 @@
 	&lt;tr bgcolor=&quot;A0A0A0&quot;&gt;
 	&lt;td&gt;shooters&lt;/td&gt;
 	&lt;td&gt;0&lt;/td&gt;
-	&lt;td&gt;1&lt;/td&gt;
+	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
