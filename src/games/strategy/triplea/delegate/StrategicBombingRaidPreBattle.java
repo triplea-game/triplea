@@ -225,7 +225,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		private void getInterceptors(final IDelegateBridge bridge)
 		{
 			final Collection<Unit> interceptors = getRemote(m_defender, bridge).selectUnitsQuery(m_battleSite, m_defendingUnits, "Select Air to Intercept");
-			if (!m_defendingUnits.containsAll(interceptors))
+			if (interceptors != null && !m_defendingUnits.containsAll(interceptors))
 				throw new IllegalStateException("Interceptors choose from outside of available units");
 			final Collection<Unit> beingRemoved = new ArrayList<Unit>(m_defendingUnits);
 			m_defendingUnits.clear();

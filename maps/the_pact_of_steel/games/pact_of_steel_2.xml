@@ -3295,7 +3295,7 @@
 	<!-- Triggers with "uses" will use up a single 'use' every round that they are used.  So a trigger that gives a player a tech, adds units to a territory, changes a relationship, and sends a notification to a player,
 				will use up a Single (1) use, assuming those four actions were done in a single round (as determined by the endRound phase [EndRoundDelegate])-->
 	<!-- the following options are allowed for "triggerAttachmentXXX"
-			trigger								values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
+			conditions								values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
 															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
 			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
 														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
@@ -3386,7 +3386,7 @@
 					productionPerXTerritories
 					
 				Trigger Attachments:
-					trigger
+					conditions
 					productionRule
 					tech
 					availableTech
@@ -3415,7 +3415,7 @@
 	<!-- Victory Triggers -->
 						<!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->
                 <attatchment name="triggerAttachmentAxisVictory1_CapitalControl" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentAxisVictory1"/>
+                	<option name="conditions" value="conditionAttachmentAxisVictory1"/>
 					<!--<option name="when" value="after:chineseEndTurn"/>-->
 					<!-- both "victory" and "notification" will look in the "notifications.properties" in your maps root folder for a string with the value's name, and then it will use whatever is to the right of the = sign.-->
                 	<option name="victory" value="AXIS_VICTORY"/>
@@ -3424,7 +3424,7 @@
                 </attatchment>
 				
                 <attatchment name="triggerAttachmentAlliesVictory1_CapitalControl" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentAlliesVictory1"/>
+                	<option name="conditions" value="conditionAttachmentAlliesVictory1"/>
 					<option name="when" value="after:chineseEndTurn"/>
                 	<option name="victory" value="ALLIES_VICTORY"/>
                 	<option name="players" value="Russians:British:Americans:Chinese"/>
@@ -3432,71 +3432,71 @@
 	
 	<!-- Germans Triggers -->
                 <attatchment name="triggerAttachmentGermans3_SuperSubs" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermans1"/>
+                	<option name="conditions" value="conditionAttachmentGermans1"/>
                 	<option name="tech" value="superSub"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermans4_MechanizedInfantry" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermans2"/>
+                	<option name="conditions" value="conditionAttachmentGermans2"/>
                 	<option name="tech" value="mechanizedInfantry"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermans5_Rockets" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermans3a:conditionAttachmentGermans3b"/>
+                	<option name="conditions" value="conditionAttachmentGermans3a:conditionAttachmentGermans3b"/>
                 	<option name="conditionType" value="AND"/>
                 	<option name="tech" value="rocket"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericans5_British4_Paratroopers" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentAmericans1"/>
+                	<option name="conditions" value="conditionAttachmentAmericans1"/>
                 	<option name="tech" value="paratroopers"/>
                 	<option name="players" value="Americans:British"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericans7_WarBonds" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentAmericans3a:conditionAttachmentAmericans3b"/>
+                	<option name="conditions" value="conditionAttachmentAmericans3a:conditionAttachmentAmericans3b"/>
                 	<option name="tech" value="warBonds"/>
                 	<option name="players" value="Americans"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansParatroopersCanProduce" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansParatroopers"/>
+                	<option name="conditions" value="conditionAttachmentGermansParatroopers"/>
 					<option name="productionRule" value="Germans_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansSuperSubs1_NewSubmarineTech" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansSuperSubs"/>
+                	<option name="conditions" value="conditionAttachmentGermansSuperSubs"/>
 					<option name="availableTech" value="Submarine Technology:reinforcedHulls:wolfPackTactics"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansSuperSubs2_NewItalianTechAvailable" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansSuperSubs"/>
+                	<option name="conditions" value="conditionAttachmentGermansSuperSubs"/>
 					<option name="availableTech" value="Italian Technology:reinforcedHulls:-shipyards"/>
                 	<option name="uses" value="1"/>
                 	<option name="players" value="Italians"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansReinforcedHulls" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansReinforcedHulls"/>
+                	<option name="conditions" value="conditionAttachmentGermansReinforcedHulls"/>
                 	<option name="support" value="supportAttachmentSubmarineReinforcedHulls"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansWolfPackTactics" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansWolfPackTactics"/>
+                	<option name="conditions" value="conditionAttachmentGermansWolfPackTactics"/>
                 	<option name="support" value="supportAttachmentSubmarineWolfPackTacticsOffence"/>
                 	<!--<option name="support" value="supportAttachmentSubmarineWolfPackTacticsDefence"/>-->
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansShipyards" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansShipyards"/>
+                	<option name="conditions" value="conditionAttachmentGermansShipyards"/>
 					<option name="productionRule" value="Germans_production:-buyTransport"/>
 					<option name="productionRule" value="Germans_production:-buySubmarine"/>
 					<option name="productionRule" value="Germans_production:-buyDestroyer"/>
@@ -3515,14 +3515,14 @@
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansSubmarineTech2" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansSubmarineTech2:conditionAttachmentGermansShipyardsInvert"/>
+                	<option name="conditions" value="conditionAttachmentGermansSubmarineTech2:conditionAttachmentGermansShipyardsInvert"/>
 					<option name="productionRule" value="Germans_production:-buySubmarine"/>
 					<option name="productionRule" value="Germans_production:buySubmarineTech2"/>
 					<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansSubmarineTech3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansSubmarineTech3:conditionAttachmentGermansShipyardsInvert"/>
+                	<option name="conditions" value="conditionAttachmentGermansSubmarineTech3:conditionAttachmentGermansShipyardsInvert"/>
 					<option name="productionRule" value="Germans_production:-buySubmarine"/>
 					<option name="productionRule" value="Germans_production:-buySubmarineTech2"/>
 					<option name="productionRule" value="Germans_production:buySubmarineTech3"/>
@@ -3530,7 +3530,7 @@
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansSubmarineTech2AndShipyards" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansSubmarineTech2:conditionAttachmentGermansShipyards"/>
+                	<option name="conditions" value="conditionAttachmentGermansSubmarineTech2:conditionAttachmentGermansShipyards"/>
 					<option name="productionRule" value="Germans_production:-buySubmarine"/>
 					<option name="productionRule" value="Germans_production:-buySubmarineShipyards"/>
 					<option name="productionRule" value="Germans_production:-buySubmarineTech2"/>
@@ -3539,7 +3539,7 @@
                 </attatchment>
 
                 <attatchment name="triggerAttachmentGermansSubmarineTech3AndShipyards" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansSubmarineTech3:conditionAttachmentGermansShipyards"/>
+                	<option name="conditions" value="conditionAttachmentGermansSubmarineTech3:conditionAttachmentGermansShipyards"/>
 					<option name="productionRule" value="Germans_production:-buySubmarine"/>
 					<option name="productionRule" value="Germans_production:-buySubmarineShipyards"/>
 					<option name="productionRule" value="Germans_production:-buySubmarineTech2"/>
@@ -3551,7 +3551,7 @@
 				
 	<!-- Japanese Triggers -->
                 <attatchment name="triggerAttachmentJapanese3_TokyoExpress" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapanese1a:conditionAttachmentJapanese1b"/>
+                	<option name="conditions" value="conditionAttachmentJapanese1a:conditionAttachmentJapanese1b"/>
 			    	<option name="unitType" value="jp_destroyer"/>
 					<option name="unitProperty" value="transportCapacity" count="2"/>
 					<option name="unitProperty" value="isCombatTransport" count="true"/>
@@ -3559,32 +3559,32 @@
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapanese4_ArmyControlOfNavy" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapanese2"/>
+                	<option name="conditions" value="conditionAttachmentJapanese2"/>
 			    	<option name="unitType" value="jp_transport"/>
 					<option name="unitProperty" value="transportCapacity" count="6"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapanese5_ForTheEmperor" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapanese3"/>
+                	<option name="conditions" value="conditionAttachmentJapanese3"/>
                 	<option name="placement" value="61 Sea Zone:midget_submarine"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapaneseParatroopersCanProduce" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapaneseParatroopers"/>
+                	<option name="conditions" value="conditionAttachmentJapaneseParatroopers"/>
 					<option name="productionRule" value="Japanese_production:buyAir_Transport"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapanese6_MidgetSubCanProduce" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapaneseMidget"/>
+                	<option name="conditions" value="conditionAttachmentJapaneseMidget"/>
 					<option name="productionRule" value="Japanese_production:buyMidget_Submarine"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapanese7_KamikazeRecruits" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapaneseKamikaze1:conditionAttachmentJapaneseKamikaze2"/>
+                	<option name="conditions" value="conditionAttachmentJapaneseKamikaze1:conditionAttachmentJapaneseKamikaze2"/>
 					<option name="productionRule" value="Japanese_production:-buyJP_Fighter"/>
                 	<option name="productionRule" value="Japanese_production:buyJP_FighterKamikaze"/>
 					<option name="uses" value="1"/>
@@ -3592,7 +3592,7 @@
 
 					<!-- since unit property changes occur at end of turn, we have this trigger as attached to British so that it happens at the end of their turn (British go right before Japan does) -->
                 <attatchment name="triggerAttachmentJapanese7_KamikazeAttack" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapaneseKamikaze1:conditionAttachmentJapaneseKamikaze2"/>
+                	<option name="conditions" value="conditionAttachmentJapaneseKamikaze1:conditionAttachmentJapaneseKamikaze2"/>
 			    	<option name="unitType" value="jp_fighter"/>
 					<option name="unitProperty" value="attack" count="5"/>
 					<option name="unitProperty" value="defense" count="3"/>
@@ -3603,7 +3603,7 @@
                 </attatchment>
 
                 <attatchment name="triggerAttachmentJapaneseShipyards" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapaneseShipyards"/>
+                	<option name="conditions" value="conditionAttachmentJapaneseShipyards"/>
 					<option name="productionRule" value="Japanese_production:-buyTransport"/>
 					<option name="productionRule" value="Japanese_production:-buySubmarine"/>
 					<option name="productionRule" value="Japanese_production:-buyDestroyer"/>
@@ -3624,30 +3624,30 @@
 	<!-- Italians Triggers -->
 				<!-- on turn 2 italy will go automatically to war with Russia 
                 <attatchment name="triggerAttachmentItaliansWarRussians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentItalianTurn2"/>
+                	<option name="conditions" value="conditionAttachmentItalianTurn2"/>
 					<option name="relationshipChange" value="Italians:Russians:any:War"/>					
                 </attatchment>-->
 				
 				
                 <attatchment name="triggerAttachmentItalians2_NorthAfrica" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentItalians1"/>
+                	<option name="conditions" value="conditionAttachmentItalians1"/>
 					<option name="purchase" value="cruiser" count="1"/>
 					<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentItaliansParatroopersCanProduce" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentItaliansParatroopers"/>
+                	<option name="conditions" value="conditionAttachmentItaliansParatroopers"/>
 					<option name="productionRule" value="Italians_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentItaliansReinforcedHulls" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermansReinforcedHulls"/>
+                	<option name="conditions" value="conditionAttachmentGermansReinforcedHulls"/>
                 	<option name="support" value="supportAttachmentSubmarineReinforcedHulls"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentItaliansShipyards" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentItaliansShipyards"/>
+                	<option name="conditions" value="conditionAttachmentItaliansShipyards"/>
 					<option name="productionRule" value="Italians_production:-buyTransport"/>
 					<option name="productionRule" value="Italians_production:-buySubmarine"/>
 					<option name="productionRule" value="Italians_production:-buyDestroyer"/>
@@ -3667,13 +3667,13 @@
                 
 				<!--  these triggers are notificationtriggers 
                 <attatchment name="triggerItalyTurn1CombatMoveNotification" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentItalianTurn1"/>
+                	<option name="conditions" value="conditionAttachmentItalianTurn1"/>
 					<option name="when" value="before:italianCombatMove"/>
 					<option name="notification" value="ITALY_TURN1_BEFORE_CM"/>
                 </attatchment>
                 
                  <attatchment name="triggerItalyTurn1AfterBattleNotification" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentItalianTurn1"/>
+                	<option name="conditions" value="conditionAttachmentItalianTurn1"/>
 					<option name="when" value="after:italianBattle"/>
 					<option name="notification" value="ITALY_TURN1_AFTER_BATTLE"/>
                 </attatchment>-->
@@ -3681,26 +3681,26 @@
 				
 	<!-- Americans Triggers -->
                 <!--<attatchment name="triggerAttachmentAmericans1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentGermans3a:conditionAttachmentAmericans1"/>
+                	<option name="conditions" value="conditionAttachmentGermans3a:conditionAttachmentAmericans1"/>
                 	<option name="tech" value="paratroopers"/>
                 	<option name="uses" value="1"/>
                 </attatchment>-->
 
                 <attatchment name="triggerAttachmentAmericans6_TheTurningPointInThePacific" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentAmericans2"/>
+                	<option name="conditions" value="conditionAttachmentAmericans2"/>
                 	<option name="tech" value="shipyards"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericans8_TacticalAirUse" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentAmericans4"/>
+                	<option name="conditions" value="conditionAttachmentAmericans4"/>
                 	<option name="support" value="supportAttachmentFighter"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
 						<!-- Here we want to see if Japan has Either Zero Battleships or Zero Carriers. So we set the relationship to AND, and then invert it.  So !X = (A && B)  becomes  X = !(A && B)  becomes  X = (!A || !B) -->
                 <attatchment name="triggerAttachmentAmericans4_JapaneseCapitalShipsSunk" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapaneseCarriers:conditionAttachmentJapaneseBattleships"/>
+                	<option name="conditions" value="conditionAttachmentJapaneseCarriers:conditionAttachmentJapaneseBattleships"/>
 					<option name="conditionType" value="AND"/>
 					<option name="invert" value="true"/>
 					<option name="resource" value="PUs"/>
@@ -3708,12 +3708,12 @@
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericansParatroopersCanProduce" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentAmericansParatroopers"/>
+                	<option name="conditions" value="conditionAttachmentAmericansParatroopers"/>
 					<option name="productionRule" value="Americans_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAmericansShipyards" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentAmericansShipyards"/>
+                	<option name="conditions" value="conditionAttachmentAmericansShipyards"/>
 					<option name="productionRule" value="Americans_production:-buyTransport"/>
 					<option name="productionRule" value="Americans_production:-buySubmarine"/>
 					<option name="productionRule" value="Americans_production:-buyDestroyer"/>
@@ -3733,18 +3733,18 @@
 				
 	<!-- British Triggers -->
                 <attatchment name="triggerAttachmentBritish5_CentersOfPower" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentBritish2"/>
+                	<option name="conditions" value="conditionAttachmentBritish2"/>
                 	<option name="tech" value="aARadar"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentBritishParatroopersCanProduce" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentBritishParatroopers"/>
+                	<option name="conditions" value="conditionAttachmentBritishParatroopers"/>
 					<option name="productionRule" value="British_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentBritishShipyards" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentBritishShipyards"/>
+                	<option name="conditions" value="conditionAttachmentBritishShipyards"/>
 					<option name="productionRule" value="British_production:-buyTransport"/>
 					<option name="productionRule" value="British_production:-buySubmarine"/>
 					<option name="productionRule" value="British_production:-buyDestroyer"/>
@@ -3765,7 +3765,7 @@
 	<!-- Russians Triggers and Conditions -->
                 
 				<attatchment name="triggerRussiansCapitalLost" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="trigger" value="conditionAttachmentRussianCapitalLost"/>
+					<option name="conditions" value="conditionAttachmentRussianCapitalLost"/>
 					<option name="when" value="before:russianPurchase"/>
 					<option name="notification" value="RUSSIAN_CAPITAL_LOST"/>
 					<option name="uses" value="1"/>
@@ -3773,49 +3773,49 @@
 				
                 <!-- when Italy is at War with Russia, Russia will automatically go to war with Japan from any Neutral stance 
 	            <attatchment name="triggerAttachmentRussiansWarJapanese" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentRussiansNeutralItalians"/>
+                	<option name="conditions" value="conditionAttachmentRussiansNeutralItalians"/>
 					<option name="relationshipChange" value="Russians:Japanese:anyNeutral:War"/>
                 </attatchment>-->
                 
                 <!-- when Italy is at War with Russia, Russia will automatically go to war with Germany from exactly Neutral state
                 <attatchment name="triggerAttachmentRussiansWarGermans" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentRussiansNeutralItalians"/>
+                	<option name="conditions" value="conditionAttachmentRussiansNeutralItalians"/>
 					<option name="relationshipChange" value="Russians:Germans:Neutrality:War"/>
                 </attatchment>-->
                 
                 <attatchment name="triggerAttachmentRussians3_RecoveredGermanTech" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="objectiveAttachmentRussians3_HardAdvance"/>
+                	<option name="conditions" value="objectiveAttachmentRussians3_HardAdvance"/>
 					<option name="resource" value="techTokens"/>
 					<option name="resourceCount" value="2"/>
 					<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussians4a_LeningradAndStalingrad" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentRussians2"/>
+                	<option name="conditions" value="conditionAttachmentRussians2"/>
                 	<option name="support" value="supportAttachmentRussiansArtillery2"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussians4b_LeningradAndStalingrad" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentRussians2"/>
+                	<option name="conditions" value="conditionAttachmentRussians2"/>
 					<option name="players" value="Russians"/>
                 	<option name="support" value="-supportAttachmentArtyOldartillery"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussians5_FarEastReserves" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentJapanese4"/>
+                	<option name="conditions" value="conditionAttachmentJapanese4"/>
                 	<option name="placement" value="Yakut S.S.R.:infantry" count="3"/>
                 	<option name="uses" value="1"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussiansParatroopersCanProduce" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentRussiansParatroopers"/>
+                	<option name="conditions" value="conditionAttachmentRussiansParatroopers"/>
 					<option name="productionRule" value="Russians_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussiansShipyards" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentRussiansShipyards"/>
+                	<option name="conditions" value="conditionAttachmentRussiansShipyards"/>
 					<option name="productionRule" value="Russians_production:-buyTransport"/>
 					<option name="productionRule" value="Russians_production:-buySubmarine"/>
 					<option name="productionRule" value="Russians_production:-buyDestroyer"/>
@@ -3834,7 +3834,7 @@
                 </attatchment>
 				
 				<attatchment name="triggerAttachmentRussiansWarJapanese" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentRussiansNeutralJapanTurn5plus"/>
+                	<option name="conditions" value="conditionAttachmentRussiansNeutralJapanTurn5plus"/>
 					<option name="relationshipChange" value="Russians:Japanese:anyNeutral:War"/>
 					<option name="notification" value="RUSSIANS_AT_WAR_WITH_JAPAN"/>
 					<option name="when" value="before:russianPolitics"/>
@@ -3842,23 +3842,23 @@
 				
 	<!-- Chinese Triggers and Conditions -->
                 <attatchment name="triggerAttachmentChinese2a_BurmaRoadOpen" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="objectiveAttachmentChinese2_BurmaRoad"/>
+                	<option name="conditions" value="objectiveAttachmentChinese2_BurmaRoad"/>
 					<option name="frontier" value="Chinese_BurmaRoad_production"/>
                 </attatchment>
 				
                 <attatchment name="triggerAttachmentChinese2b_BurmaRoadClosed" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="objectiveAttachmentChinese2_BurmaRoad"/>
+                	<option name="conditions" value="objectiveAttachmentChinese2_BurmaRoad"/>
 					<option name="frontier" value="Chinese_CutOff_production"/>
 					<option name="invert" value="true"/>
                 </attatchment>
 				
                 <attatchment name="triggerAttachmentChinese3_MilitiaRisingUp" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentChinese3"/>
+                	<option name="conditions" value="conditionAttachmentChinese3"/>
                 	<option name="placement" value="Sinkiang:infantry"/>
                 </attatchment>
 				
                 <attatchment name="triggerAttachmentChinese4_ChineseOverrunTheirBorders" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentChinese4"/>
+                	<option name="conditions" value="conditionAttachmentChinese4"/>
 					<option name="uses" value="1"/>
                 	<option name="players" value="Chinese"/>
                 	<option name="playerAttachmentName" value="RulesAttachment" count="rulesAttatchment"/>
@@ -3870,12 +3870,12 @@
                 </attatchment>
 
                 <!--<attatchment name="triggerAttachmentChineseParatroopersCanProduce" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentChineseParatroopers"/>
+                	<option name="conditions" value="conditionAttachmentChineseParatroopers"/>
 					<option name="productionRule" value="Germans_production:buyAir_Transport"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentChineseShipyards" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentChineseShipyards"/>
+                	<option name="conditions" value="conditionAttachmentChineseShipyards"/>
 					<option name="productionRule" value="Chinese_production:-buyTransport"/>
 					<option name="productionRule" value="Chinese_production:-buySubmarine"/>
 					<option name="productionRule" value="Chinese_production:-buyDestroyer"/>

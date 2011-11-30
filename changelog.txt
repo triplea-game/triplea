@@ -1,4 +1,8 @@
 Changes for 1.5
+* Deprecating TriggerAttachments "trigger", and changing name to "conditions" in order to match the other uses of condition attachments. (veqryn)
+
+* Phase 1 of abstraction of TriggerAttachments, creation of AbstractTriggerAttachment. (frigoref)
+
 * Fixed bug where I could move my tanks and all land units over water, so long as the end was land. (veqryn)
 
 * Allowed players with canTakeOverOwnedTerritory to take over during noncombat move. (veqryn)

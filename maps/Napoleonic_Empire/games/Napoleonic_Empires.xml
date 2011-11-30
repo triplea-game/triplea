@@ -2964,42 +2964,42 @@
                 </attatchment>
 
                 <attatchment name="triggerAttachmentFranceSpecial" attatchTo="France" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentTurn2"/>
+                	<option name="conditions" value="conditionAttachmentTurn2"/>
 					<option name="frontier" value="productionFranceSpecial"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentUnitedKingdomSpecial" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentTurn2"/>
+                	<option name="conditions" value="conditionAttachmentTurn2"/>
 					<option name="frontier" value="productionUnitedKingdomSpecial"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentSpainSpecial" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentTurn2"/>
+                	<option name="conditions" value="conditionAttachmentTurn2"/>
 					<option name="frontier" value="productionSpainSpecial"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentKingdomOfPrussiaSpecial" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentTurn2"/>
+                	<option name="conditions" value="conditionAttachmentTurn2"/>
 					<option name="frontier" value="productionKingdomOfPrussiaSpecial"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentSwedenSpecial" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentTurn2"/>
+                	<option name="conditions" value="conditionAttachmentTurn2"/>
 					<option name="frontier" value="productionSwedenSpecial"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentAustrianEmpireSpecial" attatchTo="AustrianEmpire" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentTurn2"/>
+                	<option name="conditions" value="conditionAttachmentTurn2"/>
 					<option name="frontier" value="productionAustrianEmpireSpecial"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentOttomanEmpireSpecial" attatchTo="OttomanEmpire" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentTurn2"/>
+                	<option name="conditions" value="conditionAttachmentTurn2"/>
 					<option name="frontier" value="productionOttomanEmpireSpecial"/>
                 </attatchment>
 
                 <attatchment name="triggerAttachmentRussiaSpecial" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachmentTurn2"/>
+                	<option name="conditions" value="conditionAttachmentTurn2"/>
 					<option name="frontier" value="productionRussiaSpecial"/>
                 </attatchment>
 

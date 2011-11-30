@@ -3,10 +3,8 @@ package games.strategy.triplea.attatchments;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
@@ -45,35 +43,27 @@ import java.util.Set;
  * @author SquidDaddy and Veqryn [Mark Christopher Duncan]
  * 
  */
-public class TriggerAttachment extends DefaultAttachment
+public class TriggerAttachment extends AbstractTriggerAttachment
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3327739180569606093L;
-	public static final String AFTER = "after";
-	public static final String BEFORE = "before";
-	private List<RulesAttachment> m_trigger = null;
+	
 	private ProductionFrontier m_frontier = null;
 	private List<String> m_productionRule = null;
-	private boolean m_invert = false;
 	private final List<TechAdvance> m_tech = new ArrayList<TechAdvance>();
+	private Map<String, Map<TechAdvance, Boolean>> m_availableTech = null;
 	private Map<Territory, IntegerMap<UnitType>> m_placement = null;
 	private IntegerMap<UnitType> m_purchase = null;
 	private String m_resource = null;
 	private int m_resourceCount = 0;
-	private int m_uses = -1;
-	private boolean m_usedThisRound = false;
 	private Map<UnitSupportAttachment, Boolean> m_support = null;
-	// List of relationshipChanges that should be executed when this trigger hits.
-	private final List<String> m_relationshipChange = new ArrayList<String>();
-	private Map<String, Map<TechAdvance, Boolean>> m_availableTech = null;
+	private final List<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this trigger hits.
 	private String m_victory = null;
-	private String m_conditionType = "AND";
-	private String m_notification = null;
-	private Tuple<String, String> m_when = null;
+	
 	// raw property changes below:
-	private final List<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes
+	private final List<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will break all existing maps
 	private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
 	private List<Tuple<String, String>> m_unitProperty = null;
 	private final List<Territory> m_territories = new ArrayList<Territory>();
@@ -91,82 +81,6 @@ public class TriggerAttachment extends DefaultAttachment
 	
 	public TriggerAttachment()
 	{
-	}
-	
-	/**
-	 * Convenience method.
-	 * 
-	 * @param player
-	 * @param nameOfAttachment
-	 * @return
-	 */
-	public static TriggerAttachment get(final PlayerID player, final String nameOfAttachment)
-	{
-		final TriggerAttachment rVal = (TriggerAttachment) player.getAttachment(nameOfAttachment);
-		if (rVal == null)
-			throw new IllegalStateException("Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
-		return rVal;
-	}
-	
-	/**
-	 * If you use null for the match condition, you will get all triggers for this player.
-	 * 
-	 * @param player
-	 * @param data
-	 * @param cond
-	 * @return
-	 */
-	public static Set<TriggerAttachment> getTriggers(final PlayerID player, final GameData data, final Match<TriggerAttachment> cond)
-	{
-		final Set<TriggerAttachment> trigs = new HashSet<TriggerAttachment>();
-		final Map<String, IAttachment> map = player.getAttachments();
-		final Iterator<String> iter = map.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final IAttachment a = map.get(iter.next());
-			if (a instanceof TriggerAttachment)
-			{
-				if (cond == null || cond.match((TriggerAttachment) a))
-					trigs.add((TriggerAttachment) a);
-			}
-		}
-		return trigs;
-	}
-	
-	/**
-	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
-	 * @param triggers
-	 * @throws GameParseException
-	 */
-	public void setTrigger(final String triggers) throws GameParseException
-	{
-		final String[] s = triggers.split(":");
-		for (int i = 0; i < s.length; i++)
-		{
-			RulesAttachment trigger = null;
-			for (final PlayerID p : getData().getPlayerList().getPlayers())
-			{
-				trigger = (RulesAttachment) p.getAttachment(s[i]);
-				if (trigger != null)
-					break;
-			}
-			if (trigger == null)
-				throw new GameParseException("Triggers: Could not find rule. name:" + s[i]);
-			if (m_trigger == null)
-				m_trigger = new ArrayList<RulesAttachment>();
-			m_trigger.add(trigger);
-		}
-	}
-	
-	public List<RulesAttachment> getTrigger()
-	{
-		return m_trigger;
-	}
-	
-	public void clearTrigger()
-	{
-		m_trigger.clear();
 	}
 	
 	public void setFrontier(final String s) throws GameParseException
@@ -225,56 +139,6 @@ public class TriggerAttachment extends DefaultAttachment
 		m_resourceCount = getInt(s);
 	}
 	
-	public void setUses(final String s)
-	{
-		m_uses = getInt(s);
-	}
-	
-	public void setUses(final Integer u)
-	{
-		m_uses = u;
-	}
-	
-	public void setUses(final int u)
-	{
-		m_uses = u;
-	}
-	
-	public void setUsedThisRound(final String s)
-	{
-		m_usedThisRound = getBool(s);
-	}
-	
-	public void setUsedThisRound(final boolean usedThisRound)
-	{
-		m_usedThisRound = usedThisRound;
-	}
-	
-	public void setUsedThisRound(final Boolean usedThisRound)
-	{
-		m_usedThisRound = usedThisRound;
-	}
-	
-	public boolean getUsedThisRound()
-	{
-		return m_usedThisRound;
-	}
-	
-	public int getUses()
-	{
-		return m_uses;
-	}
-	
-	public boolean getInvert()
-	{
-		return m_invert;
-	}
-	
-	public void setInvert(final String s)
-	{
-		m_invert = getBool(s);
-	}
-	
 	public String getVictory()
 	{
 		return m_victory;
@@ -285,60 +149,6 @@ public class TriggerAttachment extends DefaultAttachment
 		m_victory = s;
 	}
 	
-	public void setWhen(final String when) throws GameParseException
-	{
-		final String[] s = when.split(":");
-		if (s.length != 2)
-			throw new GameParseException("Triggers: when must exist in 2 parts: \"before/after:stepName\".");
-		if (!(s[0].equals(AFTER) || s[0].equals(BEFORE)))
-			throw new GameParseException("Triggers: notificaition must start with: " + BEFORE + " or " + AFTER);
-		m_when = new Tuple<String, String>(s[0], s[1]);
-	}
-	
-	public Tuple<String, String> getWhen()
-	{
-		return m_when;
-	}
-	
-	public void setNotification(final String sNotification)
-	{
-		m_notification = sNotification;
-	}
-	
-	protected String getNotification()
-	{
-		return m_notification;
-	}
-	
-	public String getConditionType()
-	{
-		return m_conditionType;
-	}
-	
-	public void setConditionType(final String s) throws GameParseException
-	{
-		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
-		{
-			final String[] nums = s.split("-");
-			if (nums.length == 1)
-			{
-				if (Integer.parseInt(nums[0]) < 0)
-					throw new GameParseException(
-								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-			}
-			else if (nums.length == 2)
-			{
-				if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0 || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1])))
-					throw new GameParseException(
-								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-			}
-			else
-				throw new GameParseException(
-							"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-		}
-		m_conditionType = s;
-	}
-	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -347,14 +157,13 @@ public class TriggerAttachment extends DefaultAttachment
 	 */
 	public void setTech(final String techs) throws GameParseException
 	{
-		final String[] s = techs.split(":");
-		for (int i = 0; i < s.length; i++)
+		for (final String subString : techs.split(":"))
 		{
-			TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
+			TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(subString);
 			if (ta == null)
-				ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
+				ta = getData().getTechnologyFrontier().getAdvanceByName(subString);
 			if (ta == null)
-				throw new GameParseException("Triggers: Technology not found :" + s[i]);
+				throw new GameParseException("Triggers: Technology not found :" + subString);
 			m_tech.add(ta);
 		}
 	}
@@ -570,13 +379,7 @@ public class TriggerAttachment extends DefaultAttachment
 		if (m_unitProperty == null)
 			m_unitProperty = new ArrayList<Tuple<String, String>>();
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
-		String value = "";
-		for (int i = 0; i < s.length - 1; i++)
-			value += ":" + s[i];
-		// Remove the leading colon
-		if (value.length() > 0 && value.startsWith(":"))
-			value = value.replaceFirst(":", "");
-		m_unitProperty.add(new Tuple<String, String>(property, value));
+		m_unitProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
 	}
 	
 	public List<Tuple<String, String>> getUnitProperty()
@@ -654,13 +457,7 @@ public class TriggerAttachment extends DefaultAttachment
 		if (m_territoryProperty == null)
 			m_territoryProperty = new ArrayList<Tuple<String, String>>();
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
-		String value = "";
-		for (int i = 0; i < s.length - 1; i++)
-			value += ":" + s[i];
-		// Remove the leading colon
-		if (value.length() > 0 && value.startsWith(":"))
-			value = value.replaceFirst(":", "");
-		m_territoryProperty.add(new Tuple<String, String>(property, value));
+		m_territoryProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
 	}
 	
 	public List<Tuple<String, String>> getTerritoryProperty()
@@ -748,13 +545,7 @@ public class TriggerAttachment extends DefaultAttachment
 		if (m_playerProperty == null)
 			m_playerProperty = new ArrayList<Tuple<String, String>>();
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
-		String value = "";
-		for (int i = 0; i < s.length - 1; i++)
-			value += ":" + s[i];
-		// Remove the leading colon
-		if (value.length() > 0 && value.startsWith(":"))
-			value = value.replaceFirst(":", "");
-		m_playerProperty.add(new Tuple<String, String>(property, value));
+		m_playerProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
 	}
 	
 	public List<Tuple<String, String>> getPlayerProperty()
@@ -830,13 +621,7 @@ public class TriggerAttachment extends DefaultAttachment
 		if (m_relationshipTypeProperty == null)
 			m_relationshipTypeProperty = new ArrayList<Tuple<String, String>>();
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
-		String value = "";
-		for (int i = 0; i < s.length - 1; i++)
-			value += ":" + s[i];
-		// Remove the leading colon
-		if (value.length() > 0 && value.startsWith(":"))
-			value = value.replaceFirst(":", "");
-		m_relationshipTypeProperty.add(new Tuple<String, String>(property, value));
+		m_relationshipTypeProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
 	}
 	
 	public List<Tuple<String, String>> getRelationshipTypeProperty()
@@ -912,13 +697,7 @@ public class TriggerAttachment extends DefaultAttachment
 		if (m_territoryEffectProperty == null)
 			m_territoryEffectProperty = new ArrayList<Tuple<String, String>>();
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
-		String value = "";
-		for (int i = 0; i < s.length - 1; i++)
-			value += ":" + s[i];
-		// Remove the leading colon
-		if (value.length() > 0 && value.startsWith(":"))
-			value = value.replaceFirst(":", "");
-		m_territoryEffectProperty.add(new Tuple<String, String>(property, value));
+		m_territoryEffectProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
 	}
 	
 	public List<Tuple<String, String>> getTerritoryEffectProperty()
@@ -1076,37 +855,6 @@ public class TriggerAttachment extends DefaultAttachment
 			getBattleTracker(data).addBattle(new RouteScripted(terr), units, false, player, aBridge, null);*/
 	}
 	
-	private void use(final IDelegateBridge aBridge)
-	{
-		// instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this round
-		// this is in order to let a trigger that contains multiple actions, fire all of them in a single use
-		if (!m_usedThisRound && m_uses > 0)
-		{
-			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
-		}
-		/*if (m_uses > 0)
-		{
-			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_uses - 1).toString(), "uses"));
-		}*/
-	}
-	
-	public static CompositeChange triggerSetUsedForThisRound(final PlayerID player, final IDelegateBridge aBridge)
-	{
-		final CompositeChange change = new CompositeChange();
-		final Iterator<TriggerAttachment> iter = getTriggers(player, aBridge.getData(), null).iterator();
-		while (iter.hasNext())
-		{
-			final TriggerAttachment ta = iter.next();
-			final int currentUses = ta.getUses();
-			if (ta.m_usedThisRound && currentUses > 0)
-			{
-				change.add(ChangeFactory.attachmentPropertyChange(ta, new Integer(currentUses - 1).toString(), "uses"));
-				change.add(ChangeFactory.attachmentPropertyChange(ta, false, "usedThisRound"));
-			}
-		}
-		return change;
-	}
-	
 	/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
 	public static void triggerMustFightBattle(PlayerID player1, PlayerID player2, IDelegateBridge aBridge)
 	{
@@ -1122,14 +870,7 @@ public class TriggerAttachment extends DefaultAttachment
 	{
 		return DelegateFinder.battleDelegate(data).getBattleTracker();
 	}*/
-	/**
-	 * This will account for Invert and conditionType
-	 */
-	private static boolean isMet(final TriggerAttachment t, final GameData data)
-	{
-		return RulesAttachment.areConditionsMet(t.getTrigger(), t.getConditionType(), data) != t.getInvert();
-	}
-	
+
 	//
 	// And now for the actual triggers, as called throughout the engine.
 	// Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the default location for when 'when' is not used.
@@ -1607,7 +1348,7 @@ public class TriggerAttachment extends DefaultAttachment
 						}
 						else if (t.getPlayerAttachmentName().getFirst().equals("TriggerAttachment"))
 						{
-							final TriggerAttachment attachment = TriggerAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+							final AbstractTriggerAttachment attachment = AbstractTriggerAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
 							if (attachment.getRawProperty(property.getFirst()).equals(newValue))
 								continue;
 							if (clearFirst && newValue.length() < 1)
@@ -1781,32 +1522,6 @@ public class TriggerAttachment extends DefaultAttachment
 		// {
 		// data.releaseReadLock();
 		// }
-	}
-	
-	/**
-	 * If t.getWhen(), beforeOrAfter, and stepName, are all null, then this returns true.
-	 * Otherwise, all must be not null, and when's values must match the arguments.
-	 * 
-	 * @param beforeOrAfter
-	 *            can be null, or must be "before" or "after"
-	 * @param stepName
-	 *            can be null, or must be exact name of a specific stepName
-	 * @return true if when and both args are null, and true if all are not null and when matches the args, otherwise false
-	 */
-	private static Match<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName)
-	{
-		return new Match<TriggerAttachment>()
-		{
-			@Override
-			public boolean match(final TriggerAttachment t)
-			{
-				if (beforeOrAfter == null && stepName == null && t.getWhen() == null)
-					return true;
-				else if (beforeOrAfter != null && stepName != null && t.getWhen() != null && beforeOrAfter.equals(t.getWhen().getFirst()) && stepName.equals(t.getWhen().getSecond()))
-					return true;
-				return false;
-			}
-		};
 	}
 	
 	//
@@ -1988,18 +1703,6 @@ public class TriggerAttachment extends DefaultAttachment
 		};
 	}
 	
-	private static Match<TriggerAttachment> notificationMatch(final String beforeOrAfter, final String stepName)
-	{
-		return new Match<TriggerAttachment>()
-		{
-			@Override
-			public boolean match(final TriggerAttachment t)
-			{
-				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getNotification() != null;
-			}
-		};
-	}
-	
 	private static Match<TriggerAttachment> victoryMatch(final String beforeOrAfter, final String stepName)
 	{
 		return new Match<TriggerAttachment>()
@@ -2012,10 +1715,142 @@ public class TriggerAttachment extends DefaultAttachment
 		};
 	}
 	
+	// Super methods. These need to be here because otherwise the engine's property util can not access the methods using getClass().getDeclaredMethods()
+	// Do not remove
+	// Do not edit
+	
+	@Deprecated
 	@Override
-	public void validate(final GameData data) throws GameParseException
+	public void setTrigger(final String conditions) throws GameParseException
 	{
-		if (m_trigger == null)
-			throw new GameParseException("Triggers: Invalid Unit attatchment" + this);
+		super.setTrigger(conditions);
+	}
+	
+	@Deprecated
+	@Override
+	public List<RulesAttachment> getTrigger()
+	{
+		return super.getTrigger();
+	}
+	
+	@Deprecated
+	@Override
+	public void clearTrigger()
+	{
+		super.clearTrigger();
+	}
+	
+	@Override
+	public void setConditions(final String conditions) throws GameParseException
+	{
+		super.setConditions(conditions);
+	}
+	
+	@Override
+	public List<RulesAttachment> getConditions()
+	{
+		return super.getConditions();
+	}
+	
+	@Override
+	public void clearConditions()
+	{
+		super.clearConditions();
+	}
+	
+	@Override
+	public void setUses(final String s)
+	{
+		super.setUses(s);
+	}
+	
+	@Override
+	public void setUses(final Integer u)
+	{
+		super.setUses(u);
+	}
+	
+	@Override
+	public void setUses(final int u)
+	{
+		super.setUses(u);
+	}
+	
+	@Override
+	public void setUsedThisRound(final String s)
+	{
+		super.setUsedThisRound(s);
+	}
+	
+	@Override
+	public void setUsedThisRound(final boolean usedThisRound)
+	{
+		super.setUsedThisRound(usedThisRound);
+	}
+	
+	@Override
+	public void setUsedThisRound(final Boolean usedThisRound)
+	{
+		super.setUsedThisRound(usedThisRound);
+	}
+	
+	@Override
+	public boolean getUsedThisRound()
+	{
+		return super.getUsedThisRound();
+	}
+	
+	@Override
+	public int getUses()
+	{
+		return super.getUses();
+	}
+	
+	@Override
+	public boolean getInvert()
+	{
+		return super.getInvert();
+	}
+	
+	@Override
+	public void setInvert(final String s)
+	{
+		super.setInvert(s);
+	}
+	
+	@Override
+	public void setWhen(final String when) throws GameParseException
+	{
+		super.setWhen(when);
+	}
+	
+	@Override
+	public Tuple<String, String> getWhen()
+	{
+		return super.getWhen();
+	}
+	
+	@Override
+	public void setNotification(final String sNotification)
+	{
+		super.setNotification(sNotification);
+	}
+	
+	@Override
+	public String getNotification()
+	{
+		return super.getNotification();
+	}
+	
+	@Override
+	public String getConditionType()
+	{
+		return super.getConditionType();
+	}
+	
+	@Override
+	public void setConditionType(final String s) throws GameParseException
+	{
+		super.setConditionType(s);
 	}
 }
