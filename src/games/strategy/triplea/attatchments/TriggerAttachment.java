@@ -47,7 +47,7 @@ import java.util.Set;
  * @author SquidDaddy and Veqryn [Mark Christopher Duncan]
  * 
  */
-public class TriggerAttachment extends AbstractTriggerAttachment
+public class TriggerAttachment extends AbstractTriggerAttachment implements IConditions
 {
 	/**
 	 * 
@@ -1535,7 +1535,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment
 		{
 			final String notificationMessageKey = notificationMessages.next();
 			final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
-			aBridge.getHistoryWriter().startEvent("Notification to player " + aBridge.getPlayerID() + ": " + message);
+			aBridge.getHistoryWriter().startEvent("Notification to player " + aBridge.getPlayerID().getName() + ": " + message);
 			((ITripleaPlayer) aBridge.getRemote(aBridge.getPlayerID())).reportMessage(("<html>" + message + "</html>"), "Notification");
 		}
 		// } finally

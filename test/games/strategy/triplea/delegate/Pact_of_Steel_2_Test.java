@@ -66,7 +66,7 @@ public class Pact_of_Steel_2_Test extends TestCase
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 5);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 0);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
-		assertFalse(russian_easternEurope.isSatisfied(m_data));
+		assertFalse(russian_easternEurope.isSatisfied(null, m_data));
 		Norway.setOwner(british);
 		Eastern_Europe.setOwner(russians);
 		East_Balkans.setOwner(russians);
@@ -75,30 +75,30 @@ public class Pact_of_Steel_2_Test extends TestCase
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 2);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 2);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 1);
-		assertFalse(russian_easternEurope.isSatisfied(m_data));
+		assertFalse(russian_easternEurope.isSatisfied(null, m_data));
 		Ukraine_S_S_R_.setOwner(british);
 		Belorussia.setOwner(british);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 0);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 2);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 3);
-		assertFalse(russian_easternEurope.isSatisfied(m_data));
+		assertFalse(russian_easternEurope.isSatisfied(null, m_data));
 		Norway.setOwner(russians);
 		Ukraine_S_S_R_.setOwner(germans);
 		Belorussia.setOwner(germans);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 2);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 3);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
-		assertTrue(russian_easternEurope.isSatisfied(m_data));
+		assertTrue(russian_easternEurope.isSatisfied(null, m_data));
 		Ukraine_S_S_R_.setOwner(russians);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 1);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 4);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
-		assertTrue(russian_easternEurope.isSatisfied(m_data));
+		assertTrue(russian_easternEurope.isSatisfied(null, m_data));
 		Belorussia.setOwner(russians);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(germans)), 0);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(russians)), 5);
 		assertEquals(Match.countMatches(terrs, Matches.isTerritoryOwnedBy(british)), 0);
-		assertTrue(russian_easternEurope.isSatisfied(m_data));
+		assertTrue(russian_easternEurope.isSatisfied(null, m_data));
 	}
 	
 	public void testSupportAttachments()

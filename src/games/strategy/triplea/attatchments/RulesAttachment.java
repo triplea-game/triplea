@@ -52,7 +52,7 @@ import java.util.Set;
  * @author Kevin Comcowich and Veqryn (Mark Christopher Duncan)
  * @version 1.2
  */
-public class RulesAttachment extends DefaultAttachment
+public class RulesAttachment extends DefaultAttachment implements IConditions
 {
 	/**
 	 *
@@ -876,6 +876,34 @@ public class RulesAttachment extends DefaultAttachment
 		return value;
 	}
 	
+	public static HashSet<IConditions> getAllConditionsRecursive(final HashSet<IConditions> startingListOfConditions)
+	{
+		final HashSet<IConditions> allConditionsRecursive = new HashSet<IConditions>();
+		allConditionsRecursive.addAll(startingListOfConditions);
+		for (final IConditions condition : allConditionsRecursive)
+		{
+			if (!allConditionsRecursive.containsAll(condition.getConditions()))
+				allConditionsRecursive.addAll(getAllConditionsRecursive(new HashSet<IConditions>(condition.getConditions())));
+		}
+		return allConditionsRecursive;
+	}
+	
+	public static HashMap<IConditions, Boolean> testAllConditions(final List<IConditions> rules, final GameData data)
+	{
+		// if (aBridge == null)
+		// throw new IllegalStateException("IDelegateBridge can not be null");
+		// final GameData data = aBridge.getData();
+		final HashMap<IConditions, Boolean> testedConditions = new HashMap<IConditions, Boolean>();
+		
+		for (final IConditions c : rules)
+		{
+			if (!testedConditions.containsKey(c))
+				testedConditions.put(c, c.isSatisfied(testedConditions, data));
+		}
+		
+		return testedConditions;
+	}
+	
 	/**
 	 * Accounts for all listed rules, according to the conditionType.
 	 * 
@@ -884,25 +912,23 @@ public class RulesAttachment extends DefaultAttachment
 	 * @param data
 	 * @return
 	 */
-	public static boolean areConditionsMet(final List<RulesAttachment> rules, final String conditionType, final GameData data)
+	public static boolean areConditionsMet(final List<IConditions> rulesToTest, final HashMap<IConditions, Boolean> testedConditions, final String conditionType, final GameData data)
 	{
 		boolean met = false;
 		if (conditionType.equals("AND") || conditionType.equals("and"))
 		{
-			for (final RulesAttachment c : rules)
+			for (final IConditions c : rulesToTest)
 			{
-				// met = c.isSatisfied(data) != invert;
-				met = c.isSatisfied(data);
+				met = testedConditions.get(c);
 				if (!met)
 					break;
 			}
 		}
 		else if (conditionType.equals("OR") || conditionType.equals("or"))
 		{
-			for (final RulesAttachment c : rules)
+			for (final IConditions c : rulesToTest)
 			{
-				// met = c.isSatisfied(data) != invert;
-				met = c.isSatisfied(data);
+				met = testedConditions.get(c);
 				if (met)
 					break;
 			}
@@ -911,10 +937,9 @@ public class RulesAttachment extends DefaultAttachment
 		{
 			// XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others must be false
 			boolean isOneTrue = false;
-			for (final RulesAttachment c : rules)
+			for (final IConditions c : rulesToTest)
 			{
-				// met = c.isSatisfied(data) != invert;
-				met = c.isSatisfied(data);
+				met = testedConditions.get(c);
 				if (isOneTrue && met)
 				{
 					isOneTrue = false;
@@ -932,10 +957,9 @@ public class RulesAttachment extends DefaultAttachment
 			{
 				final int start = Integer.parseInt(nums[0]);
 				int count = 0;
-				for (final RulesAttachment c : rules)
+				for (final IConditions c : rulesToTest)
 				{
-					// met = c.isSatisfied(data) != invert;
-					met = c.isSatisfied(data);
+					met = testedConditions.get(c);
 					if (met)
 						count++;
 				}
@@ -946,10 +970,9 @@ public class RulesAttachment extends DefaultAttachment
 				final int start = Integer.parseInt(nums[0]);
 				final int end = Integer.parseInt(nums[1]);
 				int count = 0;
-				for (final RulesAttachment c : rules)
+				for (final IConditions c : rulesToTest)
 				{
-					// met = c.isSatisfied(data) != invert;
-					met = c.isSatisfied(data);
+					met = testedConditions.get(c);
 					if (met)
 						count++;
 				}
@@ -959,7 +982,7 @@ public class RulesAttachment extends DefaultAttachment
 		return met;
 	}
 	
-	public boolean isSatisfied(final GameData data)
+	public boolean isSatisfied(HashMap<IConditions, Boolean> testedConditions, final GameData data)
 	{
 		boolean objectiveMet = true;
 		final PlayerID player = (PlayerID) getAttatchedTo();
@@ -968,7 +991,9 @@ public class RulesAttachment extends DefaultAttachment
 		//
 		if (objectiveMet && m_conditions.size() > 0)
 		{
-			objectiveMet = areConditionsMet(m_conditions, m_conditionType, data);
+			if (testedConditions == null)
+				testedConditions = testAllConditions(new ArrayList<IConditions>(getAllConditionsRecursive(new HashSet<IConditions>(m_conditions))), data);
+			objectiveMet = areConditionsMet(new ArrayList<IConditions>(m_conditions), testedConditions, m_conditionType, data);
 		}
 		//
 		// check turn limits

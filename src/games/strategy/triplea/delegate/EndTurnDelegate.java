@@ -221,7 +221,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			Integer uses = rule.getUses();
 			if (uses == 0)
 				continue;
-			objectiveMet = rule.isSatisfied(data);
+			objectiveMet = rule.isSatisfied(null, data); // TODO: veqryn, collect all conditions, test all at once.
 			//
 			// If all are satisfied add the PUs for this objective
 			//
@@ -250,7 +250,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				bridge.getHistoryWriter().startEvent(PUMessage);
 			}
 		} // end while
-		// now do any triggers that add resources too
+			// now do any triggers that add resources too
 		if (games.strategy.triplea.Properties.getTriggers(data))
 			TriggerAttachment.triggerResourceChange(player, bridge, null, null);
 	} // end determineNationalObjectives

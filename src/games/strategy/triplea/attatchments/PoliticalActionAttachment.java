@@ -26,6 +26,7 @@ import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.Set;
  * @author Edwin van der Wal
  * 
  */
-public class PoliticalActionAttachment extends DefaultAttachment
+public class PoliticalActionAttachment extends DefaultAttachment implements IConditions
 {
 	private static final long serialVersionUID = 4392770599777282477L;
 	public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
@@ -187,11 +188,29 @@ public class PoliticalActionAttachment extends DefaultAttachment
 	}
 	
 	/**
+	 * This one needs to be changed. TODO veqryn
 	 * This will account for Invert and conditionType
 	 */
 	private static boolean isMet(final PoliticalActionAttachment paa, final GameData data)
 	{
-		return RulesAttachment.areConditionsMet(paa.getConditions(), paa.getConditionType(), data) != paa.getInvert();
+		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditions(new ArrayList<IConditions>(paa.getConditions()), data);
+		return isMet(paa, testedConditions, data);
+	}
+	
+	/**
+	 * This will account for Invert and conditionType
+	 */
+	private static boolean isMet(final PoliticalActionAttachment paa, final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	{
+		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(paa.getConditions()), testedConditions, paa.getConditionType(), data) != paa.getInvert();
+	}
+	
+	/**
+	 * This just calls isMet with "this" attachment. isMet accounts for Invert and conditionType.
+	 */
+	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	{
+		return isMet(this, testedConditions, data);
 	}
 	
 	/**

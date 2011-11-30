@@ -1,4 +1,10 @@
 Changes for 1.5
+* Created getAllConditionsRecursive and testAllConditions which will test get and test all IConditions, and now all RulesAttachments get tested through these. (veqryn)
+
+* Had RulesAttachment, TriggerAttachment, and PoliticalActionAttachment all implement IConditions. (veqryn)
+
+* Created IConditions, and interface for any Attachment that had conditions as a part of it. (veqryn)
+
 * Moved actions for victory trigger and notification trigger to be part of the trigger attachment so that they will return void, and therefore can abstract easier. (veqryn)
 
 * Deprecating TriggerAttachments "trigger", and changing name to "conditions" in order to match the other uses of condition attachments. (veqryn)

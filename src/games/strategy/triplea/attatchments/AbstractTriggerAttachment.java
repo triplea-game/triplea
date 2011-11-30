@@ -12,6 +12,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -22,8 +23,10 @@ import java.util.Set;
  * @author Abstraction done by Erik von der Osten, original TriggerAttachment writen by Squid Daddy and Mark Christopher Duncan
  * 
  */
-public class AbstractTriggerAttachment extends DefaultAttachment
+public class AbstractTriggerAttachment extends DefaultAttachment implements IConditions
 {
+	private static final long serialVersionUID = 5866039180681962697L;
+	
 	public static final String AFTER = "after";
 	public static final String BEFORE = "before";
 	
@@ -293,9 +296,27 @@ public class AbstractTriggerAttachment extends DefaultAttachment
 	/**
 	 * This will account for Invert and conditionType
 	 */
+	protected static boolean isMet(final AbstractTriggerAttachment t, final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	{
+		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(t.getConditions()), testedConditions, t.getConditionType(), data) != t.getInvert();
+	}
+	
+	/**
+	 * This one needs to be changed. TODO veqryn
+	 * This will account for Invert and conditionType.
+	 */
 	protected static boolean isMet(final AbstractTriggerAttachment t, final GameData data)
 	{
-		return RulesAttachment.areConditionsMet(t.getConditions(), t.getConditionType(), data) != t.getInvert();
+		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditions(new ArrayList<IConditions>(t.getConditions()), data);
+		return isMet(t, testedConditions, data);
+	}
+	
+	/**
+	 * This just calls isMet with "this" attachment. isMet accounts for Invert and conditionType.
+	 */
+	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	{
+		return isMet(this, testedConditions, data);
 	}
 	
 	/**
