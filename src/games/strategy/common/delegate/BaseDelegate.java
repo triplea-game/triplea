@@ -19,15 +19,9 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.TriggerAttachment;
-import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.PoliticsDelegate;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.NotificationMessages;
-import games.strategy.util.Tuple;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Base class designed to make writing custom delegates simpler.
@@ -148,15 +142,8 @@ public abstract class BaseDelegate implements IDelegate
 			for (final PlayerID aPlayer : data.getPlayerList())
 			{
 				// first do notifications, since we want the condition to still be true (after the non-notification trigger fires, the notification might not be true anymore)
-				final Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(aPlayer, m_bridge, beforeOrAfter, stepName).iterator();
-				while (notificationMessages.hasNext())
-				{
-					final String notificationMessageKey = notificationMessages.next();
-					String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
-					message = "<html>" + message + "</html>";
-					((ITripleaPlayer) m_bridge.getRemote(m_player)).reportMessage(message, "Notification");
-					;
-				}
+				TriggerAttachment.triggerNotifications(aPlayer, m_bridge, beforeOrAfter, stepName);
+				
 				// now do all non-notification, non-victory triggers
 				// TODO: add all possible triggers here (in addition to their default locations)
 				TriggerAttachment.triggerPlayerPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
@@ -173,16 +160,9 @@ public abstract class BaseDelegate implements IDelegate
 				TriggerAttachment.triggerSupportChange(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerUnitPlacement(aPlayer, m_bridge, beforeOrAfter, stepName);
 				TriggerAttachment.triggerResourceChange(aPlayer, m_bridge, beforeOrAfter, stepName);
+				
 				// now do victory messages:
-				final Tuple<String, Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(aPlayer, m_bridge, beforeOrAfter, stepName);
-				if (winnersMessage != null && winnersMessage.getFirst() != null)
-				{
-					String victoryMessage = winnersMessage.getFirst();
-					victoryMessage = NotificationMessages.getInstance().getMessage(victoryMessage);
-					victoryMessage = "<html>" + victoryMessage + "</html>";
-					final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
-					((EndRoundDelegate) delegateEndRound).signalGameOver(victoryMessage, winnersMessage.getSecond(), m_bridge);
-				}
+				TriggerAttachment.triggerVictory(aPlayer, m_bridge, beforeOrAfter, stepName);
 			}
 			PoliticsDelegate.chainAlliancesTogether(m_bridge);
 		}

@@ -30,11 +30,9 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
-import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Match;
-import games.strategy.util.Tuple;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -132,16 +130,10 @@ public class EndRoundDelegate extends BaseDelegate
 			final Collection<PlayerID> playerList = data.getPlayerList().getPlayers();
 			for (final PlayerID p : playerList)
 			{
-				final Tuple<String, Collection<PlayerID>> winnersMessage = TriggerAttachment.triggerVictory(p, aBridge, null, null);
-				if (winnersMessage != null && winnersMessage.getFirst() != null)
-				{
-					victoryMessage = winnersMessage.getFirst();
-					victoryMessage = NotificationMessages.getInstance().getMessage(victoryMessage);
-					victoryMessage = "<html>" + victoryMessage + "</html>";
-					signalGameOver(victoryMessage, winnersMessage.getSecond(), aBridge);
-				}
+				TriggerAttachment.triggerVictory(p, aBridge, null, null); // triggerVictory will call signalGameOver itself
 			}
 		}
+		
 		if (isWW2V2() || isWW2V3())
 			return;
 		final PlayerList playerList = data.getPlayerList();

@@ -1,4 +1,6 @@
 Changes for 1.5
+* Moved actions for victory trigger and notification trigger to be part of the trigger attachment so that they will return void, and therefore can abstract easier. (veqryn)
+
 * Deprecating TriggerAttachments "trigger", and changing name to "conditions" in order to match the other uses of condition attachments. (veqryn)
 
 * Phase 1 of abstraction of TriggerAttachments, creation of AbstractTriggerAttachment. (frigoref)

@@ -213,6 +213,17 @@ public class MyFormatter
 		return toText;
 	}
 	
+	public static String defaultNamedToString(final Collection<? extends DefaultNamed> list)
+	{
+		String toText = ", ";
+		for (final DefaultNamed named : list)
+		{
+			toText += named.getName();
+			toText += ", ";
+		}
+		return toText.replaceFirst(", ", "");
+	}
+	
 	/**
 	 * Is pluralize even a word?
 	 */

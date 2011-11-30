@@ -15,14 +15,18 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -1484,7 +1488,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment
 			aBridge.addChange(change);
 	}
 	
-	public static Tuple<String, Collection<PlayerID>> triggerVictory(final PlayerID player, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerVictory(final PlayerID player, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final GameData data = aBridge.getData();
 		final Set<TriggerAttachment> trigs = getTriggers(player, data, victoryMatch(beforeOrAfter, stepName));
@@ -1494,14 +1498,23 @@ public class TriggerAttachment extends AbstractTriggerAttachment
 			if (met)
 			{
 				t.use(aBridge);
-				// no need for history writing as the method calling this has its own history writer
-				return new Tuple<String, Collection<PlayerID>>(t.getVictory(), t.getPlayers());
+				if (t.getVictory() == null || t.getPlayers() == null)
+					continue;
+				final String victoryMessage = NotificationMessages.getInstance().getMessage(t.getVictory());
+				try
+				{
+					aBridge.getHistoryWriter().startEvent("Players: " + MyFormatter.defaultNamedToString(t.getPlayers()) + " have just won the game, with this victory: " + victoryMessage);
+					final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
+					((EndRoundDelegate) delegateEndRound).signalGameOver(("<html>" + victoryMessage + "</html>"), t.getPlayers(), aBridge);
+				} catch (final Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
-		return null;
 	}
 	
-	public static Set<String> triggerNotifications(final PlayerID player, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerNotifications(final PlayerID player, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final GameData data = aBridge.getData();
 		// try
@@ -1517,7 +1530,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment
 				notifications.add(t.getNotification());
 			}
 		}
-		return notifications;
+		final Iterator<String> notificationMessages = notifications.iterator();
+		while (notificationMessages.hasNext())
+		{
+			final String notificationMessageKey = notificationMessages.next();
+			final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
+			aBridge.getHistoryWriter().startEvent("Notification to player " + aBridge.getPlayerID() + ": " + message);
+			((ITripleaPlayer) aBridge.getRemote(aBridge.getPlayerID())).reportMessage(("<html>" + message + "</html>"), "Notification");
+		}
 		// } finally
 		// {
 		// data.releaseReadLock();

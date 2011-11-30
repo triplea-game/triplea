@@ -33,7 +33,6 @@ import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.NotificationMessages;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatchAnd;
@@ -93,14 +92,14 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			firstRun();
 		if (m_needToInitialize)
 		{
-			// territory property changes triggered at beginning of combat move // TODO move to new delegate start of turn
+			// territory property changes triggered at beginning of combat move // TODO create new delegate called "start of turn" and move them there.
 			if (!m_nonCombat && games.strategy.triplea.Properties.getTriggers(data))
 			{
+				TriggerAttachment.triggerNotifications(m_player, aBridge, null, null);
 				TriggerAttachment.triggerPlayerPropertyChange(m_player, aBridge, null, null);
 				TriggerAttachment.triggerRelationshipTypePropertyChange(m_player, aBridge, null, null);
 				TriggerAttachment.triggerTerritoryPropertyChange(m_player, aBridge, null, null);
 				TriggerAttachment.triggerTerritoryEffectPropertyChange(m_player, aBridge, null, null);
-				triggerDefaultNotificationTriggerAttachments(m_player, aBridge);
 			}
 			
 			// repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
@@ -316,18 +315,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		{
 			m_bridge.getHistoryWriter().startEvent("Reseting Bonus Movement of Units");
 			m_bridge.addChange(change);
-		}
-	}
-	
-	private void triggerDefaultNotificationTriggerAttachments(final PlayerID player, final IDelegateBridge aBridge)
-	{
-		final Iterator<String> notificationMessages = TriggerAttachment.triggerNotifications(player, getData().getSequence().getStep().getDelegate().getBridge(), null, null).iterator();
-		while (notificationMessages.hasNext())
-		{
-			final String notificationMessageKey = notificationMessages.next();
-			String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
-			message = "<html>" + message + "</html>";
-			((ITripleaPlayer) aBridge.getRemote(player)).reportMessage(message, "Notification");
 		}
 	}
 	
