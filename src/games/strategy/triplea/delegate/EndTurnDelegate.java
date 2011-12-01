@@ -37,11 +37,13 @@ import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -252,7 +254,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		} // end while
 			// now do any triggers that add resources too
 		if (games.strategy.triplea.Properties.getTriggers(data))
-			TriggerAttachment.triggerResourceChange(player, bridge, null, null);
+		{
+			final Match<TriggerAttachment> endTurnDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
+						TriggerAttachment.resourceMatch(null, null));
+			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(Collections.singleton(m_player)), endTurnDelegateTriggerMatch, m_bridge);
+		}
 	} // end determineNationalObjectives
 	
 	private boolean isNationalObjectives()

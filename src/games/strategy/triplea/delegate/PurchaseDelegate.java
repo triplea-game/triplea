@@ -44,13 +44,17 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
@@ -83,9 +87,11 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		{
 			if (games.strategy.triplea.Properties.getTriggers(data))
 			{
-				TriggerAttachment.triggerProductionChange(m_player, m_bridge, null, null);
-				TriggerAttachment.triggerProductionFrontierEditChange(m_player, m_bridge, null, null);
-				TriggerAttachment.triggerPurchase(m_player, m_bridge, null, null);
+				final Match<TriggerAttachment> purchaseDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
+							TriggerAttachment.prodMatch(null, null),
+							TriggerAttachment.prodFrontierEditMatch(null, null),
+							TriggerAttachment.purchaseMatch(null, null));
+				TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(Collections.singleton(m_player)), purchaseDelegateTriggerMatch, m_bridge);
 			}
 			giveBonusIncomeToAI();
 			m_needToInitialize = false;

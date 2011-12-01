@@ -33,6 +33,8 @@ import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.Match;
 import games.strategy.util.Util;
 
 import java.io.Serializable;
@@ -40,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +87,10 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 			return;
 		if (games.strategy.triplea.Properties.getTriggers(getData()))
 		{
-			TriggerAttachment.triggerAvailableTechChange(m_player, m_bridge, null, null);
+			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
+			final Match<TriggerAttachment> technologyDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
+						TriggerAttachment.techAvailableMatch(null, null));
+			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(Collections.singleton(m_player)), technologyDelegateTriggerMatch, m_bridge);
 		}
 		m_needToInitialize = false;
 	}

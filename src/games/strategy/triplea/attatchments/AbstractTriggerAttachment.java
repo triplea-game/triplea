@@ -294,29 +294,25 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 	}
 	
 	/**
-	 * This will account for Invert and conditionType
-	 */
-	protected static boolean isMet(final AbstractTriggerAttachment t, final HashMap<IConditions, Boolean> testedConditions, final GameData data)
-	{
-		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(t.getConditions()), testedConditions, t.getConditionType(), data) != t.getInvert();
-	}
-	
-	/**
-	 * This one needs to be changed. TODO veqryn
-	 * This will account for Invert and conditionType.
-	 */
-	protected static boolean isMet(final AbstractTriggerAttachment t, final GameData data)
-	{
-		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditions(new ArrayList<IConditions>(t.getConditions()), data);
-		return isMet(t, testedConditions, data);
-	}
-	
-	/**
-	 * This just calls isMet with "this" attachment. isMet accounts for Invert and conditionType.
+	 * Accounts for Invert and conditionType.
 	 */
 	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
 	{
-		return isMet(this, testedConditions, data);
+		if (testedConditions == null || testedConditions.isEmpty() || data == null)
+			throw new IllegalStateException("testedCondititions can not be null or empty, and neither can data");
+		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType(), data) != this.getInvert();
+	}
+	
+	public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	{
+		return new Match<TriggerAttachment>()
+		{
+			@Override
+			public boolean match(final TriggerAttachment t)
+			{
+				return t.isSatisfied(testedConditions, data);
+			}
+		};
 	}
 	
 	/**
@@ -329,7 +325,7 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 	 *            can be null, or must be exact name of a specific stepName
 	 * @return true if when and both args are null, and true if all are not null and when matches the args, otherwise false
 	 */
-	protected static Match<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> whenOrDefaultMatch(final String beforeOrAfter, final String stepName)
 	{
 		return new Match<TriggerAttachment>()
 		{
@@ -345,14 +341,23 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 		};
 	}
 	
-	protected static Match<TriggerAttachment> notificationMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> availableUses = new Match<TriggerAttachment>()
+	{
+		@Override
+		public boolean match(final TriggerAttachment t)
+		{
+			return t.getUses() != 0;
+		}
+	};
+	
+	public static Match<TriggerAttachment> notificationMatch(final String beforeOrAfter, final String stepName)
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return t.getUses() != 0 && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getNotification() != null;
+				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getNotification() != null;
 			}
 		};
 	}

@@ -36,6 +36,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -46,6 +47,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -95,11 +97,13 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			// territory property changes triggered at beginning of combat move // TODO create new delegate called "start of turn" and move them there.
 			if (!m_nonCombat && games.strategy.triplea.Properties.getTriggers(data))
 			{
-				TriggerAttachment.triggerNotifications(m_player, aBridge, null, null);
-				TriggerAttachment.triggerPlayerPropertyChange(m_player, aBridge, null, null);
-				TriggerAttachment.triggerRelationshipTypePropertyChange(m_player, aBridge, null, null);
-				TriggerAttachment.triggerTerritoryPropertyChange(m_player, aBridge, null, null);
-				TriggerAttachment.triggerTerritoryEffectPropertyChange(m_player, aBridge, null, null);
+				final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
+							TriggerAttachment.notificationMatch(null, null),
+							TriggerAttachment.playerPropertyMatch(null, null),
+							TriggerAttachment.relationshipTypePropertyMatch(null, null),
+							TriggerAttachment.territoryPropertyMatch(null, null),
+							TriggerAttachment.territoryEffectPropertyMatch(null, null));
+				TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(Collections.singleton(m_player)), moveCombatDelegateBeforeBonusTriggerMatch, m_bridge);
 			}
 			
 			// repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
@@ -118,9 +122,13 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			if (!m_nonCombat)
 				removeMovementFromAirOnDamagedAlliedCarriers(m_bridge, m_player);
 			
-			// placing triggered units at beginning of combat move.
+			// placing triggered units at beginning of combat move, but after bonuses and reparing, etc, have been done.
 			if (!m_nonCombat && games.strategy.triplea.Properties.getTriggers(data))
-				TriggerAttachment.triggerUnitPlacement(m_player, m_bridge, null, null);
+			{
+				final Match<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
+							TriggerAttachment.placeMatch(null, null));
+				TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(Collections.singleton(m_player)), moveCombatDelegateAfterBonusTriggerMatch, m_bridge);
+			}
 			
 			m_needToInitialize = false;
 		}

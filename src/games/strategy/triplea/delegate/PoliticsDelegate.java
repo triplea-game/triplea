@@ -37,6 +37,7 @@ import games.strategy.util.Match;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
@@ -71,9 +72,11 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		resetAttempts();
 		if (games.strategy.triplea.Properties.getTriggers(getData()))
 		{
-			TriggerAttachment.triggerRelationshipChange(m_player, m_bridge, null, null);
-			chainAlliancesTogether(m_bridge);
+			final Match<TriggerAttachment> politicsDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
+						TriggerAttachment.relationshipChangeMatch(null, null));
+			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(Collections.singleton(m_player)), politicsDelegateTriggerMatch, m_bridge);
 		}
+		chainAlliancesTogether(m_bridge);
 	}
 	
 	@Override

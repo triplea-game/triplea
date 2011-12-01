@@ -31,12 +31,14 @@ import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -126,12 +128,9 @@ public class EndRoundDelegate extends BaseDelegate
 		// now check for generic trigger based victories
 		if (isTriggeredVictory())
 		{
-			// it is end of round, so loop through all players
-			final Collection<PlayerID> playerList = data.getPlayerList().getPlayers();
-			for (final PlayerID p : playerList)
-			{
-				TriggerAttachment.triggerVictory(p, aBridge, null, null); // triggerVictory will call signalGameOver itself
-			}
+			final Match<TriggerAttachment> endRoundDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
+						TriggerAttachment.victoryMatch(null, null));
+			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch, m_bridge); // will call signalGameOver itself
 		}
 		
 		if (isWW2V2() || isWW2V3())

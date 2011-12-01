@@ -24,9 +24,13 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.TriggerAttachment;
+import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.Match;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -76,9 +80,11 @@ public class TechActivationDelegate extends BaseDelegate
 		techMap.put(m_player, null);
 		if (games.strategy.triplea.Properties.getTriggers(data))
 		{
-			TriggerAttachment.triggerTechChange(m_player, aBridge, null, null);
-			TriggerAttachment.triggerSupportChange(m_player, aBridge, null, null);
-			TriggerAttachment.triggerUnitPropertyChange(m_player, aBridge, null, null);
+			final Match<TriggerAttachment> techActivationDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
+						TriggerAttachment.unitPropertyMatch(null, null),
+						TriggerAttachment.techMatch(null, null),
+						TriggerAttachment.supportMatch(null, null));
+			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(Collections.singleton(m_player)), techActivationDelegateTriggerMatch, m_bridge);
 		}
 		m_needToInitialize = false;
 	}

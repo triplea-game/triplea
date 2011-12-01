@@ -20,8 +20,11 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.Match;
 
 import java.io.Serializable;
+import java.util.HashSet;
 
 /**
  * Base class designed to make writing custom delegates simpler.
@@ -139,33 +142,15 @@ public abstract class BaseDelegate implements IDelegate
 		if (games.strategy.triplea.Properties.getTriggers(data))
 		{
 			final String stepName = data.getSequence().getStep().getName();
-			for (final PlayerID aPlayer : data.getPlayerList())
-			{
-				// first do notifications, since we want the condition to still be true (after the non-notification trigger fires, the notification might not be true anymore)
-				TriggerAttachment.triggerNotifications(aPlayer, m_bridge, beforeOrAfter, stepName);
-				
-				// now do all non-notification, non-victory triggers
-				// TODO: add all possible triggers here (in addition to their default locations)
-				TriggerAttachment.triggerPlayerPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerRelationshipTypePropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerTerritoryPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerUnitPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerTerritoryEffectPropertyChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerRelationshipChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerAvailableTechChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerTechChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerProductionFrontierEditChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerProductionChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerPurchase(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerSupportChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerUnitPlacement(aPlayer, m_bridge, beforeOrAfter, stepName);
-				TriggerAttachment.triggerResourceChange(aPlayer, m_bridge, beforeOrAfter, stepName);
-				
-				// now do victory messages:
-				TriggerAttachment.triggerVictory(aPlayer, m_bridge, beforeOrAfter, stepName);
-			}
-			PoliticsDelegate.chainAlliancesTogether(m_bridge);
+			
+			// we use AND in order to make sure there are uses and when is set correctly.
+			final Match<TriggerAttachment> baseDelegateWhenTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+						TriggerAttachment.availableUses,
+						TriggerAttachment.whenOrDefaultMatch(beforeOrAfter, stepName));
+			
+			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(data.getPlayerList().getPlayers()), baseDelegateWhenTriggerMatch, m_bridge);
 		}
+		PoliticsDelegate.chainAlliancesTogether(m_bridge);
 	}
 }
 
