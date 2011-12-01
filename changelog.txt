@@ -1,4 +1,6 @@
 Changes for 1.5
+* Extended Objective/Condition attachment count "each" to work with Triggers "resource", "purchase", and "placement". (veqryn)
+
 * Fixing null pointer errors and conceptual problems with my way of testing all conditions. (veqryn)
 
 * Phase 2 of abstraction and refactoring of TriggerAttachments: now all triggers get called through a single method, collectAndFireTriggers. (veqryn)

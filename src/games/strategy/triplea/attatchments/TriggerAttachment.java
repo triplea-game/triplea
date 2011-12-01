@@ -144,27 +144,32 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 */
 	private static void fireTriggers(final HashSet<TriggerAttachment> triggersToBeFired, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
-		// Order: Notifications, Attachment Property Changes (Player, Relationship, Territory, TerritoryEffect, Unit),
-		// Relationship, AvailableTech, Tech, ProductionFrontier, ProductionEdit, Purchase, Support, UnitPlacement, Resource, Victory
+		// Order: Notifications, Attachment Property Changes (Player, Relationship, Territory, TerritoryEffect, Unit), Relationship, AvailableTech, Tech, ProductionFrontier, ProductionEdit, Support, Purchase, UnitPlacement, Resource, Victory
+		
+		// Notifications to current player
 		triggerNotifications(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		
+		// Attachment property changes
 		triggerPlayerPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerRelationshipTypePropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerTerritoryPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerTerritoryEffectPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerUnitPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		
+		// Misc changes that only need to happen once (twice or more is meaningless)
 		triggerRelationshipChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerAvailableTechChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerTechChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerProductionChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerProductionFrontierEditChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		
-		triggerPurchase(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerSupportChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
+		
+		// Misc changes that can happen multiple times, because they add or subtract, something from the game
+		triggerPurchase(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerUnitPlacement(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerResourceChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		
+		// Victory messages and recording of winners
 		triggerVictory(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 	}
 	
@@ -1422,31 +1427,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
 	}
 	
-	private static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
-	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, purchaseMatch(beforeOrAfter, stepName));
-		for (final TriggerAttachment t : trigs)
-		{
-			t.use(aBridge);
-			for (final PlayerID aPlayer : t.getPlayers())
-			{
-				final List<Unit> units = new ArrayList<Unit>();
-				for (final UnitType u : t.getPurchase().keySet())
-				{
-					units.addAll(u.create(t.getPurchase().getInt(u), aPlayer));
-				}
-				if (!units.isEmpty())
-				{
-					final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": " + MyFormatter.unitsToTextNoOwner(units) + " gained by " + aPlayer;
-					aBridge.getHistoryWriter().startEvent(transcriptText);
-					aBridge.getHistoryWriter().setRenderingData(units);
-					final Change place = ChangeFactory.addUnits(aPlayer, units);
-					aBridge.addChange(place);
-				}
-			}
-		}
-	}
-	
 	private static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, supportMatch(beforeOrAfter, stepName));
@@ -1484,6 +1464,35 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
+	private static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	{
+		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, purchaseMatch(beforeOrAfter, stepName));
+		for (final TriggerAttachment t : trigs)
+		{
+			t.use(aBridge);
+			for (final PlayerID aPlayer : t.getPlayers())
+			{
+				final int eachMultiple = getEachMultiple(t);
+				for (int i = 0; i < eachMultiple; ++i)
+				{
+					final List<Unit> units = new ArrayList<Unit>();
+					for (final UnitType u : t.getPurchase().keySet())
+					{
+						units.addAll(u.create(t.getPurchase().getInt(u), aPlayer));
+					}
+					if (!units.isEmpty())
+					{
+						final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": " + MyFormatter.unitsToTextNoOwner(units) + " gained by " + aPlayer;
+						aBridge.getHistoryWriter().startEvent(transcriptText);
+						aBridge.getHistoryWriter().setRenderingData(units);
+						final Change place = ChangeFactory.addUnits(aPlayer, units);
+						aBridge.addChange(place);
+					}
+				}
+			}
+		}
+	}
+	
 	private static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final GameData data = aBridge.getData();
@@ -1495,8 +1504,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			{
 				for (final Territory ter : t.getPlacement().keySet())
 				{
-					// aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " places " + t.getPlacement().get(ter).toString() + " in territory " + ter.getName());
-					placeUnits(t, ter, t.getPlacement().get(ter), aPlayer, data, aBridge);
+					final int eachMultiple = getEachMultiple(t);
+					for (int i = 0; i < eachMultiple; ++i)
+					{
+						// aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " places " + t.getPlacement().get(ter).toString() + " in territory " + ter.getName());
+						placeUnits(t, ter, t.getPlacement().get(ter), aPlayer, data, aBridge);
+					}
 				}
 			}
 		}
@@ -1511,19 +1524,23 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			t.use(aBridge);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
-				int toAdd = t.getResourceCount();
-				if (t.getResource().equals(Constants.PUS))
-					toAdd *= Properties.getPU_Multiplier(data);
-				int total = aPlayer.getResources().getQuantity(t.getResource()) + toAdd;
-				if (total < 0)
+				final int eachMultiple = getEachMultiple(t);
+				for (int i = 0; i < eachMultiple; ++i)
 				{
-					toAdd -= total;
-					total = 0;
+					int toAdd = t.getResourceCount();
+					if (t.getResource().equals(Constants.PUS))
+						toAdd *= Properties.getPU_Multiplier(data);
+					int total = aPlayer.getResources().getQuantity(t.getResource()) + toAdd;
+					if (total < 0)
+					{
+						toAdd -= total;
+						total = 0;
+					}
+					aBridge.addChange(ChangeFactory.changeResourcesChange(aPlayer, data.getResourceList().getResource(t.getResource()), toAdd));
+					final String PUMessage = MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " met a national objective for an additional " + t.getResourceCount() + " "
+								+ t.getResource() + "; end with " + total + " " + t.getResource();
+					aBridge.getHistoryWriter().startEvent(PUMessage);
 				}
-				aBridge.addChange(ChangeFactory.changeResourcesChange(aPlayer, data.getResourceList().getResource(t.getResource()), toAdd));
-				final String PUMessage = MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " met a national objective for an additional " + t.getResourceCount() + " "
-							+ t.getResource() + "; end with " + total + " " + t.getResource();
-				aBridge.getHistoryWriter().startEvent(PUMessage);
 			}
 		}
 	}

@@ -3295,23 +3295,24 @@
 	<!-- Triggers with "uses" will use up a single 'use' every round that they are used.  So a trigger that gives a player a tech, adds units to a territory, changes a relationship, and sends a notification to a player,
 				will use up a Single (1) use, assuming those four actions were done in a single round (as determined by the endRound phase [EndRoundDelegate])-->
 	<!-- the following options are allowed for "triggerAttachmentXXX"
-			conditions								values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
+			conditions							values: any objectiveAttachment or conditionAttachment, can be any player's attachment (must have unique names!), tested during attached player's turn
 															can be in a delimited list for an AND relationship (example: value="conditionAttachmentGermans3a:conditionAttachmentGermans3b")
 			conditionType 						values: AND, OR, XOR, y, y-z.  Defaults to AND if missing. Defines the relationship the conditions must have if there are more than one condition or rules attachment in the trigger. 
 														AND means all conditions must be true, OR means just one condition must be true, XOR means that only one condition must be true while all others must be false. 'y' is an exact number of conditions, and 'y-z' is a range of numbers.
 			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 														This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
+			resource							values: "PUs" or "techTokens", given at end of turn phase.  "resource" will be affected by "each" in a condition statement.
+			resourceCount						values: the number of specified resource to be given
+			placement							values: places units at beginning of combat movement phase. first in list is territory to be placed it, then list of units, then count.  "placement" will be affected by "each" in a condition statement.
+														(example: value="Moscow:artillery:infantry" count="2" [if count is missing, defaults to 1])
+			purchase							values: adds listed units to user's purchase at beginning of purchase phase (example: value="infantry:destroyer" count="3").  "purchase" will be affected by "each" in a condition statement.
 			tech		 						values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
 			availableTech						values: the name of the category to be added to, followed by the names of the technologies to add to it. (example: value="airCategory:longRangeAir:jetPower:superHeavyBomber")
 														If prefixed with "-" then it will remove the tech from that category (if the player already has the tech, it will do nothing).
-			resource							values: "PUs" or "techTokens", given at end of turn phase
-			resourceCount						values: the number of specified resource to be given
 			frontier							values: name of a production frontier, changes the player's production frontier to BE the one listed, at beginning of the purchase phase. (does not add the production to the current list, is a new list completely)
 			productionRule						values: the name of the frontier, and then the name of the production rule you want to add or remove from a frontier, at beginning of the purchase phase.
 														If prefixed with "-" then it will remove the production rule instead of adding it. (example: value="Germans_production:buySuper_Carrier" or value="Germans_production:-buyEarly_Fighter")
-			placement							values: places units at beginning of combat movement phase. first in list is territory to be placed it, then list of units, then count (example: value="Moscow:artillery:infantry" count="2" [if count is missing, defaults to 1])
-			purchase							values: adds listed units to user's purchase at beginning of purchase phase (example: value="infantry:destroyer" count="3")
 			support								values: name of support attachment, adds specified player to the list of players a supportAttachment supports. Can be a list. (example: value="supportAttachmentGermans1AwesomeArtillery")
 														If prefixed with "-" then it will remove that player from the support attachment (example: value="-supportAttachmentArtyOldartillery")
 			relationshipChange					values: the change in relationship for these players, format: "player1:player2:oldRelation:newRelation" example: "Russians:Americans:coldWar:allOutWar"
@@ -3345,6 +3346,24 @@
 			territoryEffectProperty				values: the name of any actual attachment property, with a count equal to the property's values, requires territoryEffects declared
 			
 	-->
+		<!-- Clarification on how "each" works.  (Each is just a way to simplify writing national objectives, conditions, and triggers. It does not do anything extra that you could not do before)
+				Lets say you have this objective:
+					<attatchment name="objectiveAttachmentRussians1_EasternEuropeMegaIncome" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="objectiveValue" value="4"/>
+						<option name="directOwnershipTerritories" value="Norway:Eastern Europe:East Balkans:Ukraine S.S.R.:Belorussia" count="each"/>
+					</attatchment>
+				What would happen is that "Russians" would get 4 PUs for EACH territory in that list that satisfied directOwnershipTerritories.
+				If you used it as a condition statement, then it would act as 1 for the purposes of returning true/false (in other words, own at least 1 territory and the condition would be true).
+				Now lets say you have this trigger:
+					<attatchment name="triggerAttachmentRussians5_FarEastReserves" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+						<option name="conditions" value="objectiveAttachmentRussians1_EasternEuropeMegaIncome"/>
+						<option name="placement" value="Russia:infantry" count="2"/>
+					</attatchment>
+				This trigger would add 2 infantry to russia for each territory inside the condition objectiveAttachmentRussians1_EasternEuropeMegaIncome that is true.
+				IF you have more than 1 condition with Each, then the trigger will use the largest Each.  If you have a meta-condition (a condition that contains other conditions), the trigger will NOT look inside the conditions inside the meta-condition.
+				Since it would be meaningless to, for example, change a relation to the same thing 10 times in a row, Each only works with the following kinds of triggers:
+				resource, placement, purchase
+		-->
 		<!-- Clarification on changing properties and clearing of properties. (Any property not in this list overwrites itself if you set it multiple times)
 				The following attachments may have MULTIPLE instances, meaning that they are adding to some variable, meaning that they may be cleared by triggers if you want to (by prefixing with "-clear-"):
 				Unit Attachments:

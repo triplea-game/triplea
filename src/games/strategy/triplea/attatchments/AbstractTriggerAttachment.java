@@ -396,4 +396,16 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 			sb.replace(0, 1, "");
 		return sb.toString();
 	}
+	
+	protected static int getEachMultiple(final AbstractTriggerAttachment t)
+	{
+		int eachMultiple = 1;
+		for (final RulesAttachment condition : t.getConditions())
+		{
+			final int tempEach = condition.getEachMultiple();
+			if (tempEach > eachMultiple)
+				eachMultiple = tempEach;
+		}
+		return eachMultiple;
+	}
 }
