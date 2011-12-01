@@ -1470,9 +1470,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		for (final TriggerAttachment t : trigs)
 		{
 			t.use(aBridge);
+			final int eachMultiple = getEachMultiple(t);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
-				final int eachMultiple = getEachMultiple(t);
 				for (int i = 0; i < eachMultiple; ++i)
 				{
 					final List<Unit> units = new ArrayList<Unit>();
@@ -1500,11 +1500,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		for (final TriggerAttachment t : trigs)
 		{
 			t.use(aBridge);
+			final int eachMultiple = getEachMultiple(t);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
 				for (final Territory ter : t.getPlacement().keySet())
 				{
-					final int eachMultiple = getEachMultiple(t);
 					for (int i = 0; i < eachMultiple; ++i)
 					{
 						// aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " places " + t.getPlacement().get(ter).toString() + " in territory " + ter.getName());
@@ -1522,9 +1522,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		for (final TriggerAttachment t : trigs)
 		{
 			t.use(aBridge);
+			final int eachMultiple = getEachMultiple(t);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
-				final int eachMultiple = getEachMultiple(t);
 				for (int i = 0; i < eachMultiple; ++i)
 				{
 					int toAdd = t.getResourceCount();
