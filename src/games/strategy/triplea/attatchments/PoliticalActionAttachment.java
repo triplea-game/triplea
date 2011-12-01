@@ -193,7 +193,7 @@ public class PoliticalActionAttachment extends DefaultAttachment implements ICon
 	 */
 	private static boolean isMet(final PoliticalActionAttachment paa, final GameData data)
 	{
-		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditions(new HashSet<IConditions>(paa.getConditions()), data);
+		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditionsRecursive(new HashSet<IConditions>(paa.getConditions()), null, data);
 		return isMet(paa, testedConditions, data);
 	}
 	

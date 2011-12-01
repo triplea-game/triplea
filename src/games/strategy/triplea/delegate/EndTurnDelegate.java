@@ -22,7 +22,6 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -32,6 +31,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attatchments.IConditions;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -44,10 +44,10 @@ import games.strategy.util.Match;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 /**
  * 
@@ -193,7 +193,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	}
 	
 	/**
-	 * Determine if National Objectives have been met
+	 * Determine if National Objectives have been met, and then do them.
 	 * 
 	 * @param data
 	 */
@@ -201,68 +201,77 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	{
 		final GameData data = getData();
 		final PlayerID player = data.getSequence().getStep().getPlayerID();
-		// See if the player has National Objectives
-		final Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
-		final Map<String, IAttachment> map = player.getAttachments();
-		final Iterator<String> objsIter = map.keySet().iterator();
-		while (objsIter.hasNext())
+		
+		// First figure out all the conditions that will be tested, so we can test them all at the same time.
+		final HashSet<TriggerAttachment> toFirePossible = new HashSet<TriggerAttachment>();
+		final HashSet<IConditions> allConditionsNeeded = new HashSet<IConditions>();
+		final boolean useTriggers = games.strategy.triplea.Properties.getTriggers(data);
+		if (useTriggers)
 		{
-			final IAttachment attachment = map.get(objsIter.next());
-			final String name = attachment.getName();
-			if (name.startsWith(Constants.RULES_OBJECTIVE_PREFIX))
-			{
-				natObjs.add((RulesAttachment) attachment);
-			}
+			// add conditions required for triggers
+			final Match<TriggerAttachment> endTurnDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
+						TriggerAttachment.resourceMatch(null, null));
+			toFirePossible.addAll(TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(player)), endTurnDelegateTriggerMatch, bridge));
+			allConditionsNeeded.addAll(RulesAttachment.getAllConditionsRecursive(new HashSet<IConditions>(toFirePossible), null));
 		}
-		// Check whether any National Objectives are met
+		// add conditions required for national objectives (nat objs that have uses left)
+		final List<RulesAttachment> natObjs = Match.getMatches(RulesAttachment.getNationalObjectives(player, data), availableUses);
+		allConditionsNeeded.addAll(RulesAttachment.getAllConditionsRecursive(new HashSet<IConditions>(natObjs), null));
+		if (allConditionsNeeded.isEmpty())
+			return;
+		// now test all the conditions
+		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, data);
+		
+		// now that we have all testedConditions, may as well do triggers first.
+		if (useTriggers)
+		{
+			if (!toFirePossible.isEmpty())
+				TriggerAttachment.collectSatisfiedTriggersAndFire(toFirePossible, testedConditions, bridge);
+		}
+		
+		// now do all the national objectives
 		final Iterator<RulesAttachment> rulesIter = natObjs.iterator();
 		while (rulesIter.hasNext())
 		{
 			final RulesAttachment rule = rulesIter.next();
-			boolean objectiveMet = true;
-			Integer uses = rule.getUses();
-			if (uses == 0)
+			int uses = rule.getUses();
+			if (!rule.isSatisfied(testedConditions, data) || uses == 0)
 				continue;
-			objectiveMet = rule.isSatisfied(null, data); // TODO: veqryn, collect all conditions, test all at once.
-			//
-			// If all are satisfied add the PUs for this objective
-			//
-			if (objectiveMet)
+			
+			int toAdd = rule.getObjectiveValue();
+			toAdd *= Properties.getPU_Multiplier(data);
+			toAdd *= rule.getEachMultiple();
+			int total = player.getResources().getQuantity(Constants.PUS) + toAdd;
+			if (total < 0)
 			{
-				int toAdd = rule.getObjectiveValue();
-				toAdd *= Properties.getPU_Multiplier(data);
-				toAdd *= rule.getEachMultiple();
-				int total = player.getResources().getQuantity(Constants.PUS) + toAdd;
-				if (total < 0)
-				{
-					toAdd -= total;
-					total = 0;
-				}
-				final Change change = ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.PUS), toAdd);
-				// player.getResources().addResource(data.getResourceList().getResource(Constants.PUS), rule.getObjectiveValue());
-				bridge.addChange(change);
-				if (uses > 0)
-				{
-					uses--;
-					final Change use = ChangeFactory.attachmentPropertyChange(rule, new Integer(uses).toString(), "uses");
-					bridge.addChange(use);
-				}
-				final String PUMessage = MyFormatter.attachmentNameToText(rule.getName()) + ": " + player.getName() + " met a national objective for an additional " + toAdd
-							+ MyFormatter.pluralize(" PU", toAdd) + "; end with " + total + MyFormatter.pluralize(" PU", total);
-				bridge.getHistoryWriter().startEvent(PUMessage);
+				toAdd -= total;
+				total = 0;
 			}
-		} // end while
-			// now do any triggers that add resources too
-		if (games.strategy.triplea.Properties.getTriggers(data))
-		{
-			final Match<TriggerAttachment> endTurnDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
-						TriggerAttachment.resourceMatch(null, null));
-			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(Collections.singleton(m_player)), endTurnDelegateTriggerMatch, m_bridge);
+			final Change change = ChangeFactory.changeResourcesChange(player, data.getResourceList().getResource(Constants.PUS), toAdd);
+			bridge.addChange(change);
+			if (uses > 0)
+			{
+				uses--;
+				final Change use = ChangeFactory.attachmentPropertyChange(rule, new Integer(uses).toString(), "uses");
+				bridge.addChange(use);
+			}
+			final String PUMessage = MyFormatter.attachmentNameToText(rule.getName()) + ": " + player.getName() + " met a national objective for an additional " + toAdd
+						+ MyFormatter.pluralize(" PU", toAdd) + "; end with " + total + MyFormatter.pluralize(" PU", total);
+			bridge.getHistoryWriter().startEvent(PUMessage);
 		}
-	} // end determineNationalObjectives
+	}
 	
 	private boolean isNationalObjectives()
 	{
 		return games.strategy.triplea.Properties.getNationalObjectives(getData());
 	}
+	
+	private static Match<RulesAttachment> availableUses = new Match<RulesAttachment>()
+	{
+		@Override
+		public boolean match(final RulesAttachment ra)
+		{
+			return ra.getUses() != 0;
+		}
+	};
 }

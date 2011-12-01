@@ -298,8 +298,8 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 	 */
 	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
 	{
-		if (testedConditions == null || testedConditions.isEmpty() || data == null)
-			throw new IllegalStateException("testedCondititions can not be null or empty, and neither can data");
+		if (testedConditions == null)
+			throw new IllegalStateException("testedCondititions can not be null");
 		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType(), data) != this.getInvert();
 	}
 	

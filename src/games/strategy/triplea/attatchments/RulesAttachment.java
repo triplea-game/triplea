@@ -21,10 +21,10 @@ package games.strategy.triplea.attatchments;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
-import games.strategy.engine.data.Rule;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -63,22 +63,6 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 	/**
 	 * Convenience method, will not return objectives and conditions, only the rules attachment (like what China in ww2v3 has).
 	 * 
-	 * @param r
-	 *            rule
-	 * @return new rule attachment
-	 */
-	public static RulesAttachment get(final Rule r)
-	{
-		// why the heck are we using "Rule" here? there are no attachments onto Rule objects, as far as I know RulesAttachments get attached to players only
-		final RulesAttachment rVal = (RulesAttachment) r.getAttachment(Constants.RULES_ATTACHMENT_NAME);
-		if (rVal == null)
-			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + r.getName());
-		return rVal;
-	}
-	
-	/**
-	 * Convenience method, will not return objectives and conditions, only the rules attachment (like what China in ww2v3 has).
-	 * 
 	 * @param player
 	 *            PlayerID
 	 * @return new rule attachment
@@ -106,6 +90,30 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		if (rVal == null)
 			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName() + " with name: " + nameOfAttachment);
 		return rVal;
+	}
+	
+	/**
+	 * Convenience method, for use returning any rules attachment that begins with "objectiveAttachment"
+	 * 
+	 * @param player
+	 * @param data
+	 * @return
+	 */
+	public static Set<RulesAttachment> getNationalObjectives(final PlayerID player, final GameData data)
+	{
+		final Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
+		final Map<String, IAttachment> map = player.getAttachments();
+		final Iterator<String> iter = map.keySet().iterator();
+		while (iter.hasNext())
+		{
+			final IAttachment attachment = map.get(iter.next());
+			final String name = attachment.getName();
+			if (name.startsWith(Constants.RULES_OBJECTIVE_PREFIX) && attachment instanceof RulesAttachment)
+			{
+				natObjs.add((RulesAttachment) attachment);
+			}
+		}
+		return natObjs;
 	}
 	
 	// Players
@@ -646,6 +654,11 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		m_atWarCount = getInt(s);
 	}
 	
+	/**
+	 * Uses on RulesAttachments apply ONLY to giving money (or stuff) to the player, they do NOT apply to the condition, and therefore should not be tested for in isSatisfied.
+	 * 
+	 * @return
+	 */
 	public int getUses()
 	{
 		return m_uses;
@@ -908,20 +921,21 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 	 * @param data
 	 * @return
 	 */
-	public static HashMap<IConditions, Boolean> testAllConditions(final HashSet<IConditions> rules, final GameData data)
+	public static HashMap<IConditions, Boolean> testAllConditionsRecursive(final HashSet<IConditions> rules, HashMap<IConditions, Boolean> allConditionsTestedSoFar, final GameData data)
 	{
-		// if (aBridge == null)
-		// throw new IllegalStateException("IDelegateBridge can not be null");
-		// final GameData data = aBridge.getData();
-		final HashMap<IConditions, Boolean> testedConditions = new HashMap<IConditions, Boolean>();
+		if (allConditionsTestedSoFar == null)
+			allConditionsTestedSoFar = new HashMap<IConditions, Boolean>();
 		
 		for (final IConditions c : rules)
 		{
-			if (!testedConditions.containsKey(c))
-				testedConditions.put(c, c.isSatisfied(testedConditions, data));
+			if (!allConditionsTestedSoFar.containsKey(c))
+			{
+				testAllConditionsRecursive(new HashSet<IConditions>(c.getConditions()), allConditionsTestedSoFar, data);
+				allConditionsTestedSoFar.put(c, c.isSatisfied(allConditionsTestedSoFar, data));
+			}
 		}
 		
-		return testedConditions;
+		return allConditionsTestedSoFar;
 	}
 	
 	/**
@@ -1013,7 +1027,7 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		if (objectiveMet && m_conditions.size() > 0)
 		{
 			if (testedConditions == null)
-				testedConditions = testAllConditions(getAllConditionsRecursive(new HashSet<IConditions>(m_conditions), null), data);
+				testedConditions = testAllConditionsRecursive(getAllConditionsRecursive(new HashSet<IConditions>(m_conditions), null), null, data);
 			objectiveMet = areConditionsMet(new ArrayList<IConditions>(m_conditions), testedConditions, m_conditionType, data);
 		}
 		//

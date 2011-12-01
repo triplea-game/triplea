@@ -98,16 +98,34 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 */
 	public static void collectAndFireTriggers(final HashSet<PlayerID> players, final Match<TriggerAttachment> triggerMatch, final IDelegateBridge aBridge)
 	{
+		final HashSet<TriggerAttachment> toFirePossible = collectForAllTriggersMatching(players, triggerMatch, aBridge);
+		if (toFirePossible.isEmpty())
+			return;
+		final HashMap<IConditions, Boolean> testedConditions = collectTestsForAllTriggers(toFirePossible, aBridge);
+		collectSatisfiedTriggersAndFire(toFirePossible, testedConditions, aBridge);
+	}
+	
+	public static HashSet<TriggerAttachment> collectForAllTriggersMatching(final HashSet<PlayerID> players, final Match<TriggerAttachment> triggerMatch, final IDelegateBridge aBridge)
+	{
 		final GameData data = aBridge.getData();
 		final HashSet<TriggerAttachment> toFirePossible = new HashSet<TriggerAttachment>();
 		for (final PlayerID player : players)
 		{
 			toFirePossible.addAll(TriggerAttachment.getTriggers(player, data, triggerMatch));
 		}
-		if (toFirePossible.isEmpty())
-			return;
+		return toFirePossible;
+	}
+	
+	public static HashMap<IConditions, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible, final IDelegateBridge aBridge)
+	{
+		final GameData data = aBridge.getData();
 		final HashSet<IConditions> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(new HashSet<IConditions>(toFirePossible), null);
-		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditions(allConditionsNeeded, data);
+		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, data);
+	}
+	
+	public static void collectSatisfiedTriggersAndFire(final HashSet<TriggerAttachment> toFirePossible, final HashMap<IConditions, Boolean> testedConditions, final IDelegateBridge aBridge)
+	{
+		final GameData data = aBridge.getData();
 		final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions, data));
 		if (toFireTestedAndSatisfied.isEmpty())
 			return;
