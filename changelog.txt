@@ -1,4 +1,6 @@
 Changes for 1.5
+* Created new Trigger Attachment, chance, which allows you to have a certain chance for a trigger to activate (tested only after all conditions are true). (veqryn)
+
 * Phase 3 of abstraction of RulesAttachment and TriggerAttachment and PoliticalActionAttachment: the creation of an abstract class to hold all common cold related to conditions. (veqryn)
 
 * Created new rules attachment for conditions, chance, which allows you to have a certain chance for a condition to be true. (veqryn)

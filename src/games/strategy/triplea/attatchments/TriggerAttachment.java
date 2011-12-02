@@ -971,6 +971,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final Set<String> notifications = new HashSet<String>();
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			notifications.add(t.getNotification());
 		}
@@ -990,6 +992,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			for (final Tuple<String, String> property : t.getPlayerProperty())
 			{
@@ -1083,6 +1087,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			for (final Tuple<String, String> property : t.getRelationshipTypeProperty())
 			{
@@ -1125,6 +1131,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final HashSet<Territory> territoriesNeedingReDraw = new HashSet<Territory>();
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			for (final Tuple<String, String> property : t.getTerritoryProperty())
 			{
@@ -1188,6 +1196,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			for (final Tuple<String, String> property : t.getTerritoryEffectProperty())
 			{
@@ -1229,6 +1239,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			for (final Tuple<String, String> property : t.getUnitProperty())
 			{
@@ -1284,6 +1296,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			for (final String relationshipChange : t.getRelationshipChange())
 			{
@@ -1316,6 +1330,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techAvailableMatch(beforeOrAfter, stepName));
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
@@ -1350,6 +1366,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techMatch(beforeOrAfter, stepName));
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
@@ -1370,6 +1388,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
@@ -1389,6 +1409,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			final Iterator<String> iter = t.getProductionRule().iterator();
 			while (iter.hasNext())
@@ -1431,6 +1453,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
@@ -1467,6 +1491,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, purchaseMatch(beforeOrAfter, stepName));
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			final int eachMultiple = getEachMultiple(t);
 			for (final PlayerID aPlayer : t.getPlayers())
@@ -1497,6 +1523,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, placeMatch(beforeOrAfter, stepName));
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			final int eachMultiple = getEachMultiple(t);
 			for (final PlayerID aPlayer : t.getPlayers())
@@ -1519,6 +1547,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, resourceMatch(beforeOrAfter, stepName));
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			final int eachMultiple = getEachMultiple(t);
 			for (final PlayerID aPlayer : t.getPlayers())
@@ -1549,6 +1579,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, victoryMatch(beforeOrAfter, stepName));
 		for (final TriggerAttachment t : trigs)
 		{
+			if (!t.testChance(aBridge))
+				continue;
 			t.use(aBridge);
 			if (t.getVictory() == null || t.getPlayers() == null)
 				continue;

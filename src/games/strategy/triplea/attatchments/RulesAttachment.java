@@ -1204,9 +1204,9 @@ public class RulesAttachment extends AbstractConditionsAttachment implements ICo
 		{
 			final int rollResult = aBridge.getRandom(diceSides, "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
 			objectiveMet = rollResult <= hitTarget;
-			final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " " + (objectiveMet ? "Success!" : "Failure!") + " (for "
+			final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (objectiveMet ? "Success!" : "Failure!") + " (for "
 						+ MyFormatter.attachmentNameToText(this.getName()) + ")";
-			aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(notificationMessage));
+			aBridge.getHistoryWriter().startEvent(notificationMessage);
 			((ITripleaPlayer) aBridge.getRemote(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
 		}
 		

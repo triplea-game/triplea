@@ -2859,11 +2859,10 @@
 			invert								values: true or false. default if missing is false. if true, this attachment's condition will be reversed (does not reverse the effect). 
 														This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 			objectiveValue						values: any integer number of PUs to be given (example: value="4")
+			uses								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity. Only applies to objectiveValue, and does NOT determine if the conditions is true or false.
 			turns								values: which turns this will be checked on (example: value="1:4:6-8:11-+" means turns 1,4,6,7,8,11,and all turns after 11)
-			uses								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
 			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" (will set #rounds to -1 by default) OR "player1:player2:relationship:numberOfRoundsThisRelationshipMustExistForMinimum"
 														for example: "Japan:China:War" or "Japan:China:War:-1" or "Japan:China:War:3".  It will accept "anyWar", "anyNeutral" and "anyAllied" as well.
-			chance								values: "x:y", where x = to hit, and y = dice sides.  So "1:6" = 16.7% chance, while "3:10" = 30% chance
 			
 			count								values: the number required to satisfy a rule. if missing, it defaults to ALL (unless specified). it can also be set to "each", which will act as "1" for the purposes of being a condition, but will multiply the bonus (do not use multiple options if you are using each).
 		the below options use count:
@@ -3305,6 +3304,11 @@
 			invert 								values: true or false. default if missing is false. if true, the condition will be reversed (does not reverse the effect)
 														This reverses the result of boolean result of this entire objectiveAttachment/conditionAttachment, and is considered a logical negation.
 			uses 								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
+			when								values: this is a value of when the trigger should fire. it is optional, and if left out the trigger will fire at its default time. "before/after:name-of-step" (example: value="after:chineseEndTurn")
+			chance								values: "x:y", where x = to hit, and y = dice sides.  So "1:6" = 16.7% chance, while "3:10" = 30% chance
+			victory								values: the string message from notifications.properties to be displayed if the condition is true.
+			notification						values: this is a popup window containing a message that will be given to the current player. "name-of-entry-in-notifications.properties" or "message"
+															both "victory" and "notification" will look in the "notifications.properties" in your maps root folder for a string with the value's name, and then it will use whatever is to the right of the = sign.
 			resource							values: "PUs" or "techTokens", given at end of turn phase.  "resource" will be affected by "each" in a condition statement.
 			resourceCount						values: the number of specified resource to be given
 			placement							values: places units at beginning of combat movement phase. first in list is territory to be placed it, then list of units, then count.  "placement" will be affected by "each" in a condition statement.
@@ -3321,10 +3325,6 @@
 			relationshipChange					values: the change in relationship for these players, format: "player1:player2:oldRelation:newRelation" example: "Russians:Americans:coldWar:allOutWar"
 														oldRelation may be "any", "anyWar", "anyNeutral", "anyAllied", or an actual relationshipType used in this xml
 														You can enter multiple relationshipChanges in the trigger and it will perform every change in the trigger which is valid.
-			victory								values: the string message from notifications.properties to be displayed if the condition is true.
-			notification						values: this is a popup window containing a message that will be given to the current player. "name-of-entry-in-notifications.properties" or "message"
-															both "victory" and "notification" will look in the "notifications.properties" in your maps root folder for a string with the value's name, and then it will use whatever is to the right of the = sign.
-			when								values: this is a value of when the trigger should fire. it is optional, and if left out the trigger will fire at its default time. "before/after:name-of-step" (example: value="after:chineseEndTurn")
 			
 		For the following, you are actually changing raw data in the engine by calling the setters in the same way the engine does when it parses the xml.  The following are not validated at all, so if you don't use them correctly you will probably cause the engine to crash mid-game.
 		You may prefix the property count portion with "-clear-" if you wish to clear out the data in an array first (example: <option name="unitProperty" value="requiresUnits" count="-clear-factory:hangar"/> )

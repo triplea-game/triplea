@@ -7,6 +7,8 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -205,6 +207,23 @@ public class AbstractTriggerAttachment extends AbstractConditionsAttachment impl
 		{
 			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_uses - 1).toString(), "uses"));
 		}*/
+	}
+	
+	protected boolean testChance(final IDelegateBridge aBridge)
+	{
+		// "chance" should ALWAYS be checked last!
+		final int hitTarget = getInt(m_chance.split(":")[0]);
+		final int diceSides = getInt(m_chance.split(":")[1]);
+		if (hitTarget == diceSides)
+			return true;
+		
+		final int rollResult = aBridge.getRandom(diceSides, "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
+		final boolean testChance = rollResult <= hitTarget;
+		final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (testChance ? "Success!" : "Failure!") + " (for "
+					+ MyFormatter.attachmentNameToText(this.getName()) + ")";
+		aBridge.getHistoryWriter().startEvent(notificationMessage);
+		((ITripleaPlayer) aBridge.getRemote(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
+		return testChance;
 	}
 	
 	public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions)
