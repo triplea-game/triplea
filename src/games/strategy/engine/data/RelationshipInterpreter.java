@@ -99,6 +99,11 @@ public class RelationshipInterpreter extends GameDataComponent
 		return Matches.RelationshipTypeCanTakeOverOwnedTerritory.match(getRelationshipType(p1, p2));
 	}
 	
+	public boolean givesBackOriginalTerritories(final PlayerID p1, final PlayerID p2)
+	{
+		return Matches.RelationshipTypeGivesBackOriginalTerritories.match(getRelationshipType(p1, p2));
+	}
+	
 	/**
 	 * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2 players
 	 * 

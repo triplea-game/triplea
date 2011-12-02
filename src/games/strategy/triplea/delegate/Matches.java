@@ -3073,6 +3073,14 @@ public class Matches
 			return relationship.getRelationshipTypeAttachment().getCanTakeOverOwnedTerritory();
 		}
 	};
+	public static final Match<RelationshipType> RelationshipTypeGivesBackOriginalTerritories = new Match<RelationshipType>()
+	{
+		@Override
+		public boolean match(final RelationshipType relationship)
+		{
+			return relationship.getRelationshipTypeAttachment().getGivesBackOriginalTerritories();
+		}
+	};
 	
 	public static final Match<String> isValidRelationshipName(final GameData data)
 	{

@@ -24,9 +24,11 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -77,6 +79,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(Collections.singleton(m_player)), politicsDelegateTriggerMatch, m_bridge);
 		}
 		chainAlliancesTogether(m_bridge);
+		givesBackOriginalTerritories(m_bridge);
 	}
 	
 	@Override
@@ -538,6 +541,40 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 					aBridge.getHistoryWriter().startEvent(p1.getName() + " and " + p3.getName() + " declare " + warType.getName() + " on each other");
 				}
 			}
+		}
+	}
+	
+	public static void givesBackOriginalTerritories(final IDelegateBridge aBridge)
+	{
+		final GameData data = aBridge.getData();
+		final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+		final CompositeChange change = new CompositeChange();
+		final Collection<PlayerID> players = data.getPlayerList().getPlayers();
+		for (final PlayerID p1 : players)
+		{
+			for (final PlayerID p2 : players)
+			{
+				if (!data.getRelationshipTracker().givesBackOriginalTerritories(p1, p2))
+					continue;
+				for (final Territory t : data.getMap().getTerritoriesOwnedBy(p1))
+				{
+					final TerritoryAttachment ta = TerritoryAttachment.get(t);
+					PlayerID original = ta.getOccupiedTerrOf();
+					if (original == null)
+						original = origOwnerTracker.getOriginalOwner(t);
+					if (original == null)
+						continue;
+					if (original.equals(p2))
+					{
+						change.add(ChangeFactory.changeOwner(t, original));
+					}
+				}
+			}
+		}
+		if (!change.isEmpty())
+		{
+			aBridge.getHistoryWriter().startEvent("Giving back territories to original owners");
+			aBridge.addChange(change);
 		}
 	}
 }

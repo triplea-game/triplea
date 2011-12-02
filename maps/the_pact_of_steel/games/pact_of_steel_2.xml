@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel 2" version="3.2"/>
+        <info name="Pact of Steel 2" version="3.3"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
 			<!-- A MOD of original POS by VEQRYN
@@ -1510,6 +1510,7 @@
 			alliancesCanChainTogether				values: "true", "false", or "default". can only be applied to a relationship that is archetype "allied", and only 1 relationship can have it. if true, any nations that reach this relationship will share both allies and enemies.
 			isDefaultWarPosition					values: "true", "false", or "default". can only be applied to a relationship that is archetype "war", and only 1 relationship can have it. if true, any nations that reach an alliance chaining relationship, will have their enemies who are not yet at war with, set to this relationship.
 			canTakeOverOwnedTerritory				values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war lets you take over territories.  By setting true, you can take over territories of an ally
+			givesBackOriginalTerritories			values: "true", "false", or "default". default setting is "default", and "default" means false. If true, at the end of each politics phase, any territories originally belonging to the other player will revert to that players control.
 	-->
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -1518,6 +1519,7 @@
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="Allied" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="allied"/>
+						<option name="givesBackOriginalTerritories" value="true"/>
 				</attatchment>
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="Neutrality" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">

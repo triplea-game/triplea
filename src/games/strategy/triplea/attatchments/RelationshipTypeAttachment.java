@@ -51,6 +51,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	private String m_upkeepCost = PROPERTY_DEFAULT;
 	private String m_canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
 	private String m_canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
+	private String m_givesBackOriginalTerritories = PROPERTY_DEFAULT;
 	
 	/**
 	 * Convenience method.
@@ -251,6 +252,20 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		if (m_isDefaultWarPosition.equals(PROPERTY_DEFAULT) || isAllied() || isNeutral())
 			return false;
 		return m_isDefaultWarPosition.equals(PROPERTY_TRUE);
+	}
+	
+	public void setGivesBackOriginalTerritories(final String value) throws GameParseException
+	{
+		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
+			throw new GameParseException("RelationshipTypeAttachment: givesBackOriginalTerritories must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE);
+		m_givesBackOriginalTerritories = value;
+	}
+	
+	public boolean getGivesBackOriginalTerritories()
+	{
+		if (m_givesBackOriginalTerritories.equals(PROPERTY_DEFAULT))
+			return false;
+		return m_givesBackOriginalTerritories.equals(PROPERTY_TRUE);
 	}
 	
 	/**
