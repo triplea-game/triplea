@@ -118,7 +118,7 @@ public class PoliticsPanel extends ActionPanel
 		if (m_firstRun)
 		{
 			final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(getData());
-			if (politicsDelegate.getValidActions(DelegateFinder.politicsDelegate(getData()).getTestedConditions()).isEmpty())
+			if (politicsDelegate.getValidActions(politicsDelegate.getTestedConditions()).isEmpty())
 			{
 				return null; // No Valid political actions, do nothing
 			}

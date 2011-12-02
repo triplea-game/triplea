@@ -14,7 +14,6 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
@@ -40,7 +39,7 @@ import java.util.Set;
  * @author Edwin van der Wal
  * 
  */
-public class PoliticalActionAttachment extends DefaultAttachment implements IConditions
+public class PoliticalActionAttachment extends AbstractConditionsAttachment implements IConditions
 {
 	private static final long serialVersionUID = 4392770599777282477L;
 	public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
@@ -76,18 +75,10 @@ public class PoliticalActionAttachment extends DefaultAttachment implements ICon
 		return rVal;
 	}
 	
-	// the condition that needs to be true for this action to be active, this can be a metacondition or null for no condition. no condition means always active.
-	private List<RulesAttachment> m_conditions = null;
-	// the type, when there are multiple conditions listed
-	private String m_conditionType = "AND";
-	// do we invert the conditions?
-	private boolean m_invert = false;
 	// list of relationship changes to be performed if this action is performed sucessfully
 	private final List<String> m_relationshipChange = new ArrayList<String>();
 	// a key referring to politicaltexts.properties for all the UI messages belonging to this action.
 	private String m_text = "";
-	// chance (x out of y) that this action is successful when attempted, default = 1:1 = always succesful
-	private String m_chance = "1:1";
 	// cost in PU to attempt this action
 	private int m_costPU = 0;
 	// how many times can you perform this action each round?
@@ -105,103 +96,6 @@ public class PoliticalActionAttachment extends DefaultAttachment implements ICon
 			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: relationshipChange can't be empty");
 		if (m_text.equals(""))
 			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: text can't be empty");
-	}
-	
-	/**
-	 * @param conditionName
-	 *            The condition that needs to be satisfied for this action to be able to be performed by a player
-	 * @throws GameParseException
-	 */
-	public void setConditions(final String conditions) throws GameParseException
-	{
-		final String[] s = conditions.split(":");
-		for (int i = 0; i < s.length; i++)
-		{
-			RulesAttachment condition = null;
-			for (final PlayerID p : getData().getPlayerList().getPlayers())
-			{
-				condition = (RulesAttachment) p.getAttachment(s[i]);
-				if (condition != null)
-					break;
-				/*try {
-					m_conditions = RulesAttachment.get(p, conditionName);
-				} catch (IllegalStateException ise) {
-				}
-				if (m_conditions != null)
-					break;*/
-			}
-			if (condition == null)
-				throw new GameParseException("PoliticalActionAttachment: Could not find rule. name:" + s[i]);
-			if (m_conditions == null)
-				m_conditions = new ArrayList<RulesAttachment>();
-			m_conditions.add(condition);
-		}
-	}
-	
-	public List<RulesAttachment> getConditions()
-	{
-		return m_conditions;
-	}
-	
-	public void clearConditions()
-	{
-		m_conditions.clear();
-	}
-	
-	public void setConditionType(final String s) throws GameParseException
-	{
-		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
-		{
-			final String[] nums = s.split("-");
-			if (nums.length == 1)
-			{
-				if (Integer.parseInt(nums[0]) < 0)
-					throw new GameParseException(
-								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-			}
-			else if (nums.length == 2)
-			{
-				if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0 || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1])))
-					throw new GameParseException(
-								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-			}
-			else
-				throw new GameParseException(
-							"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-		}
-		m_conditionType = s;
-	}
-	
-	public String getConditionType()
-	{
-		return m_conditionType;
-	}
-	
-	public void setInvert(final String s)
-	{
-		m_invert = getBool(s);
-	}
-	
-	public boolean getInvert()
-	{
-		return m_invert;
-	}
-	
-	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions)
-	{
-		return isSatisfied(testedConditions, null);
-	}
-	
-	/**
-	 * IDelegateBridge is never used, so can be null.
-	 */
-	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final IDelegateBridge aBridge)
-	{
-		if (testedConditions == null)
-			throw new IllegalStateException("testedCondititions can not be null");
-		if (testedConditions.containsKey(this))
-			return testedConditions.get(this);
-		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType()) != this.getInvert();
 	}
 	
 	public static Match<PoliticalActionAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions)
@@ -269,35 +163,6 @@ public class PoliticalActionAttachment extends DefaultAttachment implements ICon
 	public String getText()
 	{
 		return m_text;
-	}
-	
-	/**
-	 * @param s
-	 *            the number you need to roll to get the action to succeed format "1:10" for 10% chance
-	 * @throws GameParseException
-	 */
-	public void setChance(final String chance) throws GameParseException
-	{
-		final String[] s = chance.split(":");
-		try
-		{
-			final int i = getInt(s[0]);
-			final int j = getInt(s[1]);
-			if (i > j || i < 1 || j < 1 || i > 120 || j > 120)
-				throw new GameParseException("PoliticalActionAttachment: chance should have a format of \"x:y\" where x is <= y and both x and y are >=1 and <=120");
-		} catch (final IllegalArgumentException iae)
-		{
-			throw new GameParseException("PoliticalActionAttachment: Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance");
-		}
-		m_chance = chance;
-	}
-	
-	/**
-	 * @return the number you need to roll to get the action to succeed format "1:10" for 10% chance
-	 */
-	public String getChance()
-	{
-		return m_chance;
 	}
 	
 	public int toHit()

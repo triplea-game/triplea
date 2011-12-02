@@ -18,7 +18,6 @@
  */
 package games.strategy.triplea.attatchments;
 
-import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
@@ -56,23 +55,17 @@ import java.util.Set;
  * @author Kevin Comcowich and Veqryn (Mark Christopher Duncan)
  * @version 1.2
  */
-public class RulesAttachment extends DefaultAttachment implements IConditions
+public class RulesAttachment extends AbstractConditionsAttachment implements IConditions
 {
 	private static final long serialVersionUID = 7301965634079412516L;
 	
 	// START of National Objective and Condition related variables.
-	private final List<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>(); // list of conditions that this condition can contain
-	private String m_conditionType = "AND"; // m_conditionType modifies the relationship of m_conditions
-	private boolean m_invert = false; // will logically negate the entire condition, including contained conditions
-	
 	private boolean m_countEach = false; // determines if we will be counting each for the purposes of m_objectiveValue
 	private int m_eachMultiple = 1; // the multiple that will be applied to m_objectiveValue if m_countEach is true
 	private int m_objectiveValue = 0; // only used if the attachment begins with "objectiveAttachment"
 	private int m_uses = -1; // only matters for objectiveValue, does not affect the condition
 	
 	private Map<Integer, Integer> m_turns = null; // condition for what turn it is
-	
-	private String m_chance = "1:1"; // chance (x out of y) that this action is successful when attempted, default = 1:1 = always successful
 	
 	private List<TechAdvance> m_techs = null; // condition for having techs
 	private int m_techCount = -1;
@@ -186,69 +179,6 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 	public int getObjectiveValue()
 	{
 		return m_objectiveValue;
-	}
-	
-	/**
-	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
-	 * @param conditions
-	 * @throws GameParseException
-	 */
-	public void setConditions(final String conditions) throws GameParseException
-	{
-		final String[] s = conditions.split(":");
-		for (int i = 0; i < s.length; i++)
-		{
-			RulesAttachment condition = null;
-			for (final PlayerID p : getData().getPlayerList().getPlayers())
-			{
-				condition = (RulesAttachment) p.getAttachment(s[i]);
-				if (condition != null)
-					break;
-			}
-			if (condition == null)
-				throw new GameParseException("Rules & Conditions: Could not find rule (conditions which hold other conditions should be listed after the conditions they contain). name:" + s[i]);
-			m_conditions.add(condition);
-		}
-	}
-	
-	public List<RulesAttachment> getConditions()
-	{
-		return m_conditions;
-	}
-	
-	public void clearConditions()
-	{
-		m_conditions.clear();
-	}
-	
-	public String getConditionType()
-	{
-		return m_conditionType;
-	}
-	
-	public void setConditionType(final String s) throws GameParseException
-	{
-		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
-		{
-			final String[] nums = s.split("-");
-			if (nums.length == 1)
-			{
-				if (Integer.parseInt(nums[0]) < 0)
-					throw new GameParseException(
-								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-			}
-			else if (nums.length == 2)
-			{
-				if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0 || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1])))
-					throw new GameParseException(
-								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-			}
-			else
-				throw new GameParseException(
-							"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-		}
-		m_conditionType = s;
 	}
 	
 	/**
@@ -650,16 +580,6 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		m_uses = u;
 	}
 	
-	public boolean getInvert()
-	{
-		return m_invert;
-	}
-	
-	public void setInvert(final String s)
-	{
-		m_invert = getBool(s);
-	}
-	
 	public Set<PlayerID> getAtWarPlayers()
 	{
 		return m_atWarPlayers;
@@ -762,31 +682,6 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 				return true;
 		}
 		return false;
-	}
-	
-	public void setChance(final String chance) throws GameParseException
-	{
-		// the number you need to roll to get the action to succeed format "1:10" for 10% chance
-		final String[] s = chance.split(":");
-		try
-		{
-			final int i = getInt(s[0]);
-			final int j = getInt(s[1]);
-			if (i > j || i < 1 || j < 1 || i > 120 || j > 120)
-				throw new GameParseException("Rules & Conditions: chance should have a format of \"x:y\" where x is <= y and both x and y are >=1 and <=120");
-		} catch (final IllegalArgumentException iae)
-		{
-			throw new GameParseException("Rules & Conditions: Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance");
-		}
-		m_chance = chance;
-	}
-	
-	/**
-	 * @return the number you need to roll to get the action to succeed format "1:10" for 10% chance
-	 */
-	public String getChance()
-	{
-		return m_chance;
 	}
 	
 	/**
@@ -1018,6 +913,7 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		return met;
 	}
 	
+	@Override
 	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions)
 	{
 		if (testedConditions == null)
@@ -1027,6 +923,7 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		return testedConditions.get(this);
 	}
 	
+	@Override
 	public boolean isSatisfied(HashMap<IConditions, Boolean> testedConditions, final IDelegateBridge aBridge)
 	{
 		if (testedConditions != null)

@@ -2,7 +2,6 @@ package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
-import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
@@ -11,7 +10,6 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,16 +21,12 @@ import java.util.Set;
  * @author Abstraction done by Erik von der Osten, original TriggerAttachment writen by Squid Daddy and Mark Christopher Duncan
  * 
  */
-public class AbstractTriggerAttachment extends DefaultAttachment implements IConditions
+public class AbstractTriggerAttachment extends AbstractConditionsAttachment implements IConditions
 {
 	private static final long serialVersionUID = 5866039180681962697L;
 	
 	public static final String AFTER = "after";
 	public static final String BEFORE = "before";
-	
-	private List<RulesAttachment> m_conditions = null;
-	private String m_conditionType = "AND";
-	private boolean m_invert = false;
 	
 	private int m_uses = -1;
 	private boolean m_usedThisRound = false;
@@ -134,47 +128,6 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 		clearConditions();
 	}
 	
-	/**
-	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
-	 * 
-	 * @param conditions
-	 * @throws GameParseException
-	 */
-	public void setConditions(final String conditions) throws GameParseException
-	{
-		for (final String subString : conditions.split(":"))
-		{
-			RulesAttachment condition = null;
-			for (final PlayerID p : getData().getPlayerList().getPlayers())
-			{
-				condition = (RulesAttachment) p.getAttachment(subString);
-				if (condition != null)
-					break;
-				/*try {
-					m_conditions = RulesAttachment.get(p, conditionName);
-				} catch (IllegalStateException ise) {
-				}
-				if (m_conditions != null)
-					break;*/
-			}
-			if (condition == null)
-				throw new GameParseException("Triggers: Could not find rule. name:" + subString);
-			if (m_conditions == null)
-				m_conditions = new ArrayList<RulesAttachment>();
-			m_conditions.add(condition);
-		}
-	}
-	
-	public List<RulesAttachment> getConditions()
-	{
-		return m_conditions;
-	}
-	
-	public void clearConditions()
-	{
-		m_conditions.clear();
-	}
-	
 	public void setUses(final String s)
 	{
 		m_uses = getInt(s);
@@ -215,16 +168,6 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 		return m_uses;
 	}
 	
-	public boolean getInvert()
-	{
-		return m_invert;
-	}
-	
-	public void setInvert(final String s)
-	{
-		m_invert = getBool(s);
-	}
-	
 	public void setWhen(final String when) throws GameParseException
 	{
 		final String[] s = when.split(":");
@@ -250,35 +193,6 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 		return m_notification;
 	}
 	
-	public String getConditionType()
-	{
-		return m_conditionType;
-	}
-	
-	public void setConditionType(final String s) throws GameParseException
-	{
-		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
-		{
-			final String[] nums = s.split("-");
-			if (nums.length == 1)
-			{
-				if (Integer.parseInt(nums[0]) < 0)
-					throw new GameParseException(
-								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-			}
-			else if (nums.length == 2)
-			{
-				if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0 || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1])))
-					throw new GameParseException(
-								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-			}
-			else
-				throw new GameParseException(
-							"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
-		}
-		m_conditionType = s;
-	}
-	
 	protected void use(final IDelegateBridge aBridge)
 	{
 		// instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this round
@@ -291,23 +205,6 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 		{
 			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, new Integer(m_uses - 1).toString(), "uses"));
 		}*/
-	}
-	
-	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions)
-	{
-		return isSatisfied(testedConditions, null);
-	}
-	
-	/**
-	 * Accounts for Invert and conditionType. IDelegateBridge is not used so can be null.
-	 */
-	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final IDelegateBridge aBridge)
-	{
-		if (testedConditions == null)
-			throw new IllegalStateException("testedCondititions can not be null");
-		if (testedConditions.containsKey(this))
-			return testedConditions.get(this);
-		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType()) != this.getInvert();
 	}
 	
 	public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions)

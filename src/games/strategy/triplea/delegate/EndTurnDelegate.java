@@ -235,7 +235,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		{
 			final RulesAttachment rule = rulesIter.next();
 			int uses = rule.getUses();
-			if (!rule.isSatisfied(testedConditions, bridge) || uses == 0)
+			if (!rule.isSatisfied(testedConditions) || uses == 0)
 				continue;
 			
 			int toAdd = rule.getObjectiveValue();
