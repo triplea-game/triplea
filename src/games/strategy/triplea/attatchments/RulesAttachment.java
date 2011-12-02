@@ -55,13 +55,62 @@ import java.util.Set;
  */
 public class RulesAttachment extends DefaultAttachment implements IConditions
 {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 7301965634079412516L;
+	
+	// START of National Objective and Condition related variables.
+	private final List<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>(); // list of conditions that this condition can contain
+	private String m_conditionType = "AND"; // m_conditionType modifies the relationship of m_conditions
+	private boolean m_invert = false; // will logically negate the entire condition, including contained conditions
+	
+	private boolean m_countEach = false; // determines if we will be counting each for the purposes of m_objectiveValue
+	private int m_eachMultiple = 1; // the multiple that will be applied to m_objectiveValue if m_countEach is true
+	private int m_objectiveValue = 0; // only used if the attachment begins with "objectiveAttachment"
+	private int m_uses = -1; // only matters for objectiveValue, does not affect the condition
+	
+	private Map<Integer, Integer> m_turns = null; // condition for what turn it is
+	
+	private List<TechAdvance> m_techs = null; // condition for having techs
+	private int m_techCount = -1;
+	
+	private final List<String> m_relationship = new ArrayList<String>(); // condition for having specific relationships
+	private Set<PlayerID> m_atWarPlayers = null; // condition for being at war
+	private int m_atWarCount = -1;
+	
+	private int m_territoryCount = -1; // used with the next 9 Territory conditions to determine the number of territories needed to be valid
+	private String[] m_alliedOwnershipTerritories; // ownership related
+	private String[] m_directOwnershipTerritories;
+	private String[] m_alliedExclusionTerritories; // exclusion of units
+	private String[] m_directExclusionTerritories;
+	private String[] m_enemyExclusionTerritories;
+	private String[] m_enemySurfaceExclusionTerritories;
+	private String[] m_directPresenceTerritories; // presence of units
+	private String[] m_alliedPresenceTerritories;
+	private String[] m_enemyPresenceTerritories;
+	private final IntegerMap<String> m_unitPresence = new IntegerMap<String>(); // used with above 3 to determine the type of unit that must be present
+	// END of National Objective and Condition related variables.
+	
+	// START of Rules variables. The next 12 variables are related to a "rulesAttatchment" that changes certain rules for the attached player. They are not related to conditions at all.
+	private String m_movementRestrictionType = null;
+	private String[] m_movementRestrictionTerritories;
+	private boolean m_placementAnyTerritory = false; // allows placing units in any owned land
+	private boolean m_placementAnySeaZone = false; // allows placing units in any sea by owned land
+	private boolean m_placementCapturedTerritory = false; // allows placing units in a captured territory
+	private boolean m_unlimitedProduction = false; // turns of the warning to the player when they produce more than they can place
+	private boolean m_placementInCapitalRestricted = false; // can only place units in the capital
+	private boolean m_dominatingFirstRoundAttack = false; // enemy units will defend at 1
+	private boolean m_negateDominatingFirstRoundAttack = false; // negates m_dominatingFirstRoundAttack
+	private final IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<UnitType>(); // automatically produces 1 unit of a certain type per every X territories owned
+	private int m_placementPerTerritory = -1; // stops the user from placing units in any territory that already contains more than this number of owned units
+	private int m_maxPlacePerTerritory = -1; // maximum number of units that can be placed in each territory.
+	
+	// END of Rules variables.
+	// It would wreck most map xmls to move the rulesAttatchment's to another class, so don't move them out of here please!
+	// However, any new rules attachments should be put into the "PlayerAttachment" class.
 	
 	/**
 	 * Convenience method, will not return objectives and conditions, only the rules attachment (like what China in ww2v3 has).
+	 * These attachments returned are not conditions to be tested, they are special rules affecting a player
+	 * (for example: being able to produce without factories, or not being able to move out of specific territories).
 	 * 
 	 * @param player
 	 *            PlayerID
@@ -94,6 +143,9 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 	
 	/**
 	 * Convenience method, for use returning any rules attachment that begins with "objectiveAttachment"
+	 * National Objectives are just conditions that also give money to a player during the end turn delegate. They can be used for testing by triggers as well.
+	 * Conditions that do not give money are not prefixed with "objectiveAttachment",
+	 * and the trigger attachment that uses these kinds of conditions gets them a different way because they are specifically named inside that trigger.
 	 * 
 	 * @param player
 	 * @param data
@@ -116,72 +168,11 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		return natObjs;
 	}
 	
-	// Players
-	// not used?
-	// private PlayerID m_ruleOwner = null;
-	// meta-conditions rules attachment lists
-	private final List<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>();
-	// Strings
-	// private String m_alliedExclusion = null;
-	// private String m_enemyExclusion = null;
-	private String m_allowedUnitType = null;
-	private String m_movementRestrictionType = null;
-	private String m_conditionType = "AND";
-	// Territory lists
-	private String[] m_alliedOwnershipTerritories;
-	private String[] m_alliedExclusionTerritories;
-	private String[] m_directExclusionTerritories;
-	private String[] m_enemyExclusionTerritories;
-	private String[] m_enemySurfaceExclusionTerritories;
-	private String[] m_directOwnershipTerritories;
-	private String[] m_directPresenceTerritories;
-	private String[] m_alliedPresenceTerritories;
-	private String[] m_enemyPresenceTerritories;
-	private String[] m_movementRestrictionTerritories;
-	// booleans
-	private boolean m_placementAnyTerritory = false; // only covers land
-	private boolean m_placementAnySeaZone = false; // only covers sea zones by owned land
-	private boolean m_placementCapturedTerritory = false;
-	private boolean m_unlimitedProduction = false;
-	private boolean m_placementInCapitalRestricted = false;
-	private boolean m_dominatingFirstRoundAttack = false;
-	private boolean m_negateDominatingFirstRoundAttack = false;
-	private boolean m_invert = false;
-	private boolean m_countEach = false;
-	// Integers
-	private int m_eachMultiple = 1;
-	private int m_territoryCount = -1;
-	private int m_objectiveValue = 0;
-	private int m_perOwnedTerritories = -1;
-	private int m_placementPerTerritory = -1;
-	private int m_maxPlacePerTerritory = -1;
-	private int m_atWarCount = -1;
-	private int m_uses = -1;
-	private int m_techCount = -1;
-	// production per X territories
-	private final IntegerMap<UnitType> m_productionPerXTerritories = new IntegerMap<UnitType>();
-	private final IntegerMap<String> m_unitPresence = new IntegerMap<String>();
-	private Set<PlayerID> m_atWarPlayers = null;
-	// using map as tuple set, describes ranges from Integer-Integer
-	private Map<Integer, Integer> m_turns = null;
-	private List<TechAdvance> m_techs = null;
-	// list of all relationships that should be in place for this condition to be valid array of "Germany:Italy:Allied:#ofRoundsExisting", "UK:USA:Allied:2" etc.
-	private final List<String> m_relationship = new ArrayList<String>();
-	
 	/** Creates new RulesAttachment */
 	public RulesAttachment()
 	{
 	}
 	
-	/*public void setRuleOwner(PlayerID player)
-	{
-		m_ruleOwner = player;
-	}
-
-	public PlayerID getRuleOwner()
-	{
-		return m_ruleOwner;
-	}*/
 	public void setObjectiveValue(final String value)
 	{
 		m_objectiveValue = getInt(value);
@@ -436,26 +427,6 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		return m_countEach;
 	}
 	
-	public void setPerOwnedTerritories(final String value)
-	{
-		m_perOwnedTerritories = getInt(value);
-	}
-	
-	public int getPerOwnedTerritories()
-	{
-		return m_perOwnedTerritories;
-	}
-	
-	public void setAllowedUnitType(final String value)
-	{
-		m_allowedUnitType = value;
-	}
-	
-	public String getAllowedUnitType()
-	{
-		return m_allowedUnitType;
-	}
-	
 	public void setMovementRestrictionTerritories(final String value)
 	{
 		m_movementRestrictionTerritories = value.split(":");
@@ -655,7 +626,7 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 	}
 	
 	/**
-	 * Uses on RulesAttachments apply ONLY to giving money (or stuff) to the player, they do NOT apply to the condition, and therefore should not be tested for in isSatisfied.
+	 * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and therefore should not be tested for in isSatisfied.
 	 * 
 	 * @return
 	 */
@@ -1370,7 +1341,7 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 	}
 	
 	/**
-	 * checks if all relationshiprequirements are set
+	 * checks if all relationship requirements are set
 	 * 
 	 * @return whether all relationships as are required are set correctly.
 	 */
