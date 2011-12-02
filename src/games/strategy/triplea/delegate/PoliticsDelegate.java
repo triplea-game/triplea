@@ -57,7 +57,7 @@ import java.util.LinkedHashSet;
 public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 {
 	// protected HashMap<IConditions, Boolean> m_testedConditions = null;
-	private final boolean m_needToInitialize = true;
+	// private final boolean m_needToInitialize = true;
 	
 	/** Creates new PoliticsDelegate */
 	public PoliticsDelegate()
@@ -119,7 +119,16 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	{
 		final HashSet<IConditions> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
 					new HashSet<IConditions>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
-		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, getData());
+		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
+	}
+	
+	/**
+	 * @param player
+	 * @return gets the valid actions for this player.
+	 */
+	public Collection<PoliticalActionAttachment> getValidActions(final HashMap<IConditions, Boolean> testedConditions)
+	{
+		return PoliticalActionAttachment.getValidActions(m_player, testedConditions, getData());
 	}
 	
 	/*

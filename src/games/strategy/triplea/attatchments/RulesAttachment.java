@@ -28,12 +28,15 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -68,6 +71,8 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 	private int m_uses = -1; // only matters for objectiveValue, does not affect the condition
 	
 	private Map<Integer, Integer> m_turns = null; // condition for what turn it is
+	
+	private String m_chance = "1:1"; // chance (x out of y) that this action is successful when attempted, default = 1:1 = always successful
 	
 	private List<TechAdvance> m_techs = null; // condition for having techs
 	private int m_techCount = -1;
@@ -759,6 +764,31 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		return false;
 	}
 	
+	public void setChance(final String chance) throws GameParseException
+	{
+		// the number you need to roll to get the action to succeed format "1:10" for 10% chance
+		final String[] s = chance.split(":");
+		try
+		{
+			final int i = getInt(s[0]);
+			final int j = getInt(s[1]);
+			if (i > j || i < 1 || j < 1 || i > 120 || j > 120)
+				throw new GameParseException("Rules & Conditions: chance should have a format of \"x:y\" where x is <= y and both x and y are >=1 and <=120");
+		} catch (final IllegalArgumentException iae)
+		{
+			throw new GameParseException("Rules & Conditions: Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance");
+		}
+		m_chance = chance;
+	}
+	
+	/**
+	 * @return the number you need to roll to get the action to succeed format "1:10" for 10% chance
+	 */
+	public String getChance()
+	{
+		return m_chance;
+	}
+	
 	/**
 	 * takes a string like "original", "enemy", "controlled", "controlledNoWater", "all", "map", and turns it into an actual list of territories in the form of strings
 	 * (veqryn)
@@ -892,7 +922,7 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 	 * @param data
 	 * @return
 	 */
-	public static HashMap<IConditions, Boolean> testAllConditionsRecursive(final HashSet<IConditions> rules, HashMap<IConditions, Boolean> allConditionsTestedSoFar, final GameData data)
+	public static HashMap<IConditions, Boolean> testAllConditionsRecursive(final HashSet<IConditions> rules, HashMap<IConditions, Boolean> allConditionsTestedSoFar, final IDelegateBridge aBridge)
 	{
 		if (allConditionsTestedSoFar == null)
 			allConditionsTestedSoFar = new HashMap<IConditions, Boolean>();
@@ -901,8 +931,8 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		{
 			if (!allConditionsTestedSoFar.containsKey(c))
 			{
-				testAllConditionsRecursive(new HashSet<IConditions>(c.getConditions()), allConditionsTestedSoFar, data);
-				allConditionsTestedSoFar.put(c, c.isSatisfied(allConditionsTestedSoFar, data));
+				testAllConditionsRecursive(new HashSet<IConditions>(c.getConditions()), allConditionsTestedSoFar, aBridge);
+				allConditionsTestedSoFar.put(c, c.isSatisfied(allConditionsTestedSoFar, aBridge));
 			}
 		}
 		
@@ -918,7 +948,7 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 	 * @param data
 	 * @return
 	 */
-	public static boolean areConditionsMet(final List<IConditions> rulesToTest, final HashMap<IConditions, Boolean> testedConditions, final String conditionType, final GameData data)
+	public static boolean areConditionsMet(final List<IConditions> rulesToTest, final HashMap<IConditions, Boolean> testedConditions, final String conditionType)
 	{
 		boolean met = false;
 		if (conditionType.equals("AND") || conditionType.equals("and"))
@@ -988,7 +1018,16 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		return met;
 	}
 	
-	public boolean isSatisfied(HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions)
+	{
+		if (testedConditions == null)
+			throw new IllegalStateException("testedConditions can not be null");
+		if (!testedConditions.containsKey(this))
+			throw new IllegalStateException("testedConditions is incomplete and does not contain " + this.toString());
+		return testedConditions.get(this);
+	}
+	
+	public boolean isSatisfied(HashMap<IConditions, Boolean> testedConditions, final IDelegateBridge aBridge)
 	{
 		if (testedConditions != null)
 		{
@@ -997,14 +1036,15 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		}
 		boolean objectiveMet = true;
 		final PlayerID player = (PlayerID) getAttatchedTo();
+		final GameData data = aBridge.getData();
 		//
 		// check meta conditions (conditions which hold other conditions)
 		//
 		if (objectiveMet && m_conditions.size() > 0)
 		{
 			if (testedConditions == null)
-				testedConditions = testAllConditionsRecursive(getAllConditionsRecursive(new HashSet<IConditions>(m_conditions), null), null, data);
-			objectiveMet = areConditionsMet(new ArrayList<IConditions>(m_conditions), testedConditions, m_conditionType, data);
+				testedConditions = testAllConditionsRecursive(getAllConditionsRecursive(new HashSet<IConditions>(m_conditions), null), null, aBridge);
+			objectiveMet = areConditionsMet(new ArrayList<IConditions>(m_conditions), testedConditions, m_conditionType);
 		}
 		//
 		// check turn limits
@@ -1259,6 +1299,20 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 		{
 			objectiveMet = checkRelationships();
 		}
+		
+		// "chance" should ALWAYS be checked last!
+		final int hitTarget = getInt(m_chance.split(":")[0]);
+		final int diceSides = getInt(m_chance.split(":")[1]);
+		if (objectiveMet && hitTarget != diceSides)
+		{
+			final int rollResult = aBridge.getRandom(diceSides, "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
+			objectiveMet = rollResult <= hitTarget;
+			final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " " + (objectiveMet ? "Success!" : "Failure!") + " (for "
+						+ MyFormatter.attachmentNameToText(this.getName()) + ")";
+			aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(notificationMessage));
+			((ITripleaPlayer) aBridge.getRemote(aBridge.getPlayerID())).reportMessage(notificationMessage, notificationMessage);
+		}
+		
 		return objectiveMet != m_invert;
 	}
 	

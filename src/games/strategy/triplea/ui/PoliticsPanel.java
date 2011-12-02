@@ -18,6 +18,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
+import games.strategy.triplea.delegate.PoliticsDelegate;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -114,9 +115,13 @@ public class PoliticsPanel extends ActionPanel
 		{
 			m_testedConditions = DelegateFinder.politicsDelegate(getData()).getTestedConditions();
 		}*/
-		if (m_firstRun && PoliticalActionAttachment.getValidActions(getCurrentPlayer(), DelegateFinder.politicsDelegate(getData()).getTestedConditions(), getData()).isEmpty())
+		if (m_firstRun)
 		{
-			return null; // No Valid political actions, do nothing
+			final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(getData());
+			if (politicsDelegate.getValidActions(DelegateFinder.politicsDelegate(getData()).getTestedConditions()).isEmpty())
+			{
+				return null; // No Valid political actions, do nothing
+			}
 		}
 		else
 		{
@@ -186,8 +191,8 @@ public class PoliticsPanel extends ActionPanel
 		politicalActionButtonPanel.setLayout(new GridBagLayout());
 		int row = 0;
 		final Insets insets = new Insets(1, 1, 1, 1);
-		final List<PoliticalActionAttachment> validActions = new ArrayList<PoliticalActionAttachment>(PoliticalActionAttachment.getValidActions(getCurrentPlayer(),
-					DelegateFinder.politicsDelegate(getData()).getTestedConditions(), getData()));
+		final List<PoliticalActionAttachment> validActions = new ArrayList<PoliticalActionAttachment>(DelegateFinder.politicsDelegate(getData()).getValidActions(
+					DelegateFinder.politicsDelegate(getData()).getTestedConditions()));
 		Collections.sort(validActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
 		for (final PoliticalActionAttachment paa : validActions)
 		{

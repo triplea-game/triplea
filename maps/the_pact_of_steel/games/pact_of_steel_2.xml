@@ -2863,6 +2863,7 @@
 			uses								values: integer for the maximum number of times it should be awarded. if missing it defaults to infinity
 			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" (will set #rounds to -1 by default) OR "player1:player2:relationship:numberOfRoundsThisRelationshipMustExistForMinimum"
 														for example: "Japan:China:War" or "Japan:China:War:-1" or "Japan:China:War:3".  It will accept "anyWar", "anyNeutral" and "anyAllied" as well.
+			chance								values: "x:y", where x = to hit, and y = dice sides.  So "1:6" = 16% chance, while "3:10" = 30% chance
 			
 			count								values: the number required to satisfy a rule. if missing, it defaults to ALL (unless specified). it can also be set to "each", which will act as "1" for the purposes of being a condition, but will multiply the bonus (do not use multiple options if you are using each).
 		the below options use count:

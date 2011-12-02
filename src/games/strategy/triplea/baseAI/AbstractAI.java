@@ -14,6 +14,7 @@ import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.PoliticsDelegate;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.remote.IAbstractPlaceDelegate;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
@@ -364,11 +365,12 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		if (!m_id.amNotDeadYet(data))
 			return;
 		final float numPlayers = data.getPlayerList().getPlayers().size();
-		final IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
+		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
+		final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
 		// final HashMap<IConditions, Boolean> testedConditions = DelegateFinder.politicsDelegate(data).getTestedConditions();//this is commented out because we want to test the conditions each time to make sure they are still valid
 		if (Math.random() < .5)
 		{
-			final List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id, DelegateFinder.politicsDelegate(data).getTestedConditions(), data);
+			final List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id, politicsDelegate.getTestedConditions(), data);
 			if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty())
 			{
 				Collections.shuffle(actionChoicesTowardsWar);
@@ -386,18 +388,18 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 				while (actionWarIter.hasNext() && MAX_WAR_ACTIONS_PER_TURN > 0)
 				{
 					final PoliticalActionAttachment action = actionWarIter.next();
-					if (!Matches.PoliticalActionCanBeAttempted(DelegateFinder.politicsDelegate(data).getTestedConditions()).match(action))
+					if (!Matches.PoliticalActionCanBeAttempted(politicsDelegate.getTestedConditions()).match(action))
 						continue;
 					i++;
 					if (i > MAX_WAR_ACTIONS_PER_TURN)
 						break;
-					politicsDelegate.attemptAction(action);
+					iPoliticsDelegate.attemptAction(action);
 				}
 			}
 		}
 		else
 		{
-			final List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(m_id, DelegateFinder.politicsDelegate(data).getTestedConditions(), data);
+			final List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(m_id, politicsDelegate.getTestedConditions(), data);
 			if (actionChoicesOther != null && !actionChoicesOther.isEmpty())
 			{
 				Collections.shuffle(actionChoicesOther);
@@ -408,14 +410,14 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 				while (actionOtherIter.hasNext() && MAX_OTHER_ACTIONS_PER_TURN > 0)
 				{
 					final PoliticalActionAttachment action = actionOtherIter.next();
-					if (!Matches.PoliticalActionCanBeAttempted(DelegateFinder.politicsDelegate(data).getTestedConditions()).match(action))
+					if (!Matches.PoliticalActionCanBeAttempted(politicsDelegate.getTestedConditions()).match(action))
 						continue;
 					if (action.getCostPU() > 0 && action.getCostPU() > m_id.getResources().getQuantity(Constants.PUS))
 						continue;
 					i++;
 					if (i > MAX_OTHER_ACTIONS_PER_TURN)
 						break;
-					politicsDelegate.attemptAction(action);
+					iPoliticsDelegate.attemptAction(action);
 				}
 			}
 		}

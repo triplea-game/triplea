@@ -220,7 +220,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		if (allConditionsNeeded.isEmpty())
 			return;
 		// now test all the conditions
-		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, data);
+		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
 		
 		// now that we have all testedConditions, may as well do triggers first.
 		if (useTriggers)
@@ -235,7 +235,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		{
 			final RulesAttachment rule = rulesIter.next();
 			int uses = rule.getUses();
-			if (!rule.isSatisfied(testedConditions, data) || uses == 0)
+			if (!rule.isSatisfied(testedConditions, bridge) || uses == 0)
 				continue;
 			
 			int toAdd = rule.getObjectiveValue();

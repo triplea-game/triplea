@@ -293,26 +293,31 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 		}*/
 	}
 	
+	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions)
+	{
+		return isSatisfied(testedConditions, null);
+	}
+	
 	/**
-	 * Accounts for Invert and conditionType.
+	 * Accounts for Invert and conditionType. IDelegateBridge is not used so can be null.
 	 */
-	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final IDelegateBridge aBridge)
 	{
 		if (testedConditions == null)
 			throw new IllegalStateException("testedCondititions can not be null");
 		if (testedConditions.containsKey(this))
 			return testedConditions.get(this);
-		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType(), data) != this.getInvert();
+		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType()) != this.getInvert();
 	}
 	
-	public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions)
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return t.isSatisfied(testedConditions, data);
+				return t.isSatisfied(testedConditions);
 			}
 		};
 	}

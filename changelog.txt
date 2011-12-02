@@ -1,4 +1,6 @@
 Changes for 1.5
+* Created new rules attachment for conditions, chance, which allows you to have a certain chance for a condition to be true. (veqryn)
+
 * Temporary fix for the issues caused by only testing political conditions once.  Now we test them after each political action. (veqryn)
 
 * Updated political action attachments validation to only test once per politics phase for all the conditions for each action. (veqryn)

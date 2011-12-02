@@ -118,15 +118,13 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	
 	public static HashMap<IConditions, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible, final IDelegateBridge aBridge)
 	{
-		final GameData data = aBridge.getData();
 		final HashSet<IConditions> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(new HashSet<IConditions>(toFirePossible), null);
-		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, data);
+		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, aBridge);
 	}
 	
 	public static void collectSatisfiedTriggersAndFire(final HashSet<TriggerAttachment> toFirePossible, final HashMap<IConditions, Boolean> testedConditions, final IDelegateBridge aBridge)
 	{
-		final GameData data = aBridge.getData();
-		final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions, data));
+		final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions));
 		if (toFireTestedAndSatisfied.isEmpty())
 			return;
 		TriggerAttachment.fireTriggers(new HashSet<TriggerAttachment>(toFireTestedAndSatisfied), aBridge, null, null);

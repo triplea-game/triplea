@@ -2163,7 +2163,7 @@ public class Matches
 	
 	public static Match<Unit> carrierOwnedBy(final PlayerID player)
 	{
-		return new CompositeMatchAnd(unitOwnedBy(player), Matches.UnitIsCarrier);
+		return new CompositeMatchAnd<Unit>(unitOwnedBy(player), Matches.UnitIsCarrier);
 	}
 	
 	public static Match<Unit> unitOwnedBy(final List<PlayerID> players)

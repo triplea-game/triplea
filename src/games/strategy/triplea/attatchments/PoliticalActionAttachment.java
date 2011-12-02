@@ -187,23 +187,31 @@ public class PoliticalActionAttachment extends DefaultAttachment implements ICon
 		return m_invert;
 	}
 	
-	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions)
+	{
+		return isSatisfied(testedConditions, null);
+	}
+	
+	/**
+	 * IDelegateBridge is never used, so can be null.
+	 */
+	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final IDelegateBridge aBridge)
 	{
 		if (testedConditions == null)
 			throw new IllegalStateException("testedCondititions can not be null");
 		if (testedConditions.containsKey(this))
 			return testedConditions.get(this);
-		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType(), data) != this.getInvert();
+		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType()) != this.getInvert();
 	}
 	
-	public static Match<PoliticalActionAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	public static Match<PoliticalActionAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions)
 	{
 		return new Match<PoliticalActionAttachment>()
 		{
 			@Override
 			public boolean match(final PoliticalActionAttachment paa)
 			{
-				return paa.isSatisfied(testedConditions, data);
+				return paa.isSatisfied(testedConditions);
 			}
 		};
 	}
@@ -213,7 +221,7 @@ public class PoliticalActionAttachment extends DefaultAttachment implements ICon
 	 */
 	public boolean canPerform(final HashMap<IConditions, Boolean> testedConditions)
 	{
-		return m_conditions == null || isSatisfied(testedConditions, getData());
+		return m_conditions == null || isSatisfied(testedConditions);
 	}
 	
 	/**
@@ -410,8 +418,8 @@ public class PoliticalActionAttachment extends DefaultAttachment implements ICon
 	{
 		if (!games.strategy.triplea.Properties.getUsePolitics(data) || !player.amNotDeadYet(data))
 			return new ArrayList<PoliticalActionAttachment>();
-		return Match.getMatches(getPoliticalActionAttachments(player),
-					new CompositeMatchAnd<PoliticalActionAttachment>(Matches.PoliticalActionCanBeAttempted(testedConditions), Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
+		return Match.getMatches(getPoliticalActionAttachments(player), new CompositeMatchAnd<PoliticalActionAttachment>(
+					Matches.PoliticalActionCanBeAttempted(testedConditions), Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
 	}
 	
 	public void resetAttempts(final IDelegateBridge aBridge)
