@@ -292,7 +292,7 @@ public class PoliticalActionAttachment extends DefaultAttachment implements ICon
 	/**
 	 * @return the number you need to roll to get the action to succeed format "1:10" for 10% chance
 	 */
-	private String getChance()
+	public String getChance()
 	{
 		return m_chance;
 	}

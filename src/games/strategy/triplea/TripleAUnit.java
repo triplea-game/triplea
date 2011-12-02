@@ -103,11 +103,7 @@ public class TripleAUnit extends Unit
 		return m_transportedBy;
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
-	@SuppressWarnings("unused")
-	private void setTransportedBy(final TripleAUnit transportedBy)
+	public void setTransportedBy(final TripleAUnit transportedBy)
 	{
 		m_transportedBy = transportedBy;
 	}
@@ -139,9 +135,6 @@ public class TripleAUnit extends Unit
 		return m_unloaded;
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
 	public void setUnloaded(final List<Unit> unloaded)
 	{
 		if (unloaded == null || unloaded.isEmpty())
@@ -159,11 +152,7 @@ public class TripleAUnit extends Unit
 		return m_wasLoadedThisTurn.booleanValue();
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
-	@SuppressWarnings("unused")
-	private void setWasLoadedThisTurn(final Boolean value)
+	public void setWasLoadedThisTurn(final Boolean value)
 	{
 		m_wasLoadedThisTurn = Boolean.valueOf(value.booleanValue());
 	}
@@ -173,9 +162,6 @@ public class TripleAUnit extends Unit
 		return m_unloadedTo;
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
 	public void setUnloadedTo(final Territory unloadedTo)
 	{
 		m_unloadedTo = unloadedTo;
@@ -186,9 +172,6 @@ public class TripleAUnit extends Unit
 		return m_originatedFrom;
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
 	public void setOriginatedFrom(final Territory t)
 	{
 		m_originatedFrom = t;
@@ -199,9 +182,6 @@ public class TripleAUnit extends Unit
 		return m_wasUnloadedInCombatPhase.booleanValue();
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
 	public void setWasUnloadedInCombatPhase(final Boolean value)
 	{
 		m_wasUnloadedInCombatPhase = Boolean.valueOf(value.booleanValue());
@@ -275,9 +255,6 @@ public class TripleAUnit extends Unit
 		return m_wasInCombat;
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
 	public void setWasInCombat(final Boolean value)
 	{
 		m_wasInCombat = Boolean.valueOf(value.booleanValue());
@@ -288,9 +265,6 @@ public class TripleAUnit extends Unit
 		return m_wasScrambled;
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
 	public void setWasScrambled(final Boolean value)
 	{
 		m_wasScrambled = Boolean.valueOf(value.booleanValue());
@@ -311,9 +285,6 @@ public class TripleAUnit extends Unit
 		return m_wasLoadedAfterCombat;
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
 	public void setWasLoadedAfterCombat(final Boolean value)
 	{
 		m_wasLoadedAfterCombat = Boolean.valueOf(value.booleanValue());
@@ -337,9 +308,6 @@ public class TripleAUnit extends Unit
 		return m_wasAmphibious;
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
 	public void setWasAmphibious(final Boolean value)
 	{
 		m_wasAmphibious = Boolean.valueOf(value.booleanValue());
@@ -350,9 +318,6 @@ public class TripleAUnit extends Unit
 		return m_disabled;
 	}
 	
-	/**
-	 * private since this should only be called by UnitPropertyChange
-	 */
 	public void setDisabled(final Boolean value)
 	{
 		m_disabled = Boolean.valueOf(value.booleanValue());

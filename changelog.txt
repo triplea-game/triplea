@@ -1,4 +1,6 @@
 Changes for 1.5
+* Changing PropertyUtil from using getClass().getDeclaredMethods() to using getClass().getMethods() for changing data inside game data objects, like units, players, attachments, etc. (veqryn & frigoref)
+
 * Extended Objective/Condition attachment count "each" to work with Triggers "resource", "purchase", and "placement". (veqryn)
 
 * Fixing null pointer errors and conceptual problems with my way of testing all conditions. (veqryn)

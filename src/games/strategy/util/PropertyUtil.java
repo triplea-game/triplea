@@ -109,7 +109,8 @@ public class PropertyUtil
 	private static Method getSetter(final String propertyName, final Object subject, final Object value)
 	{
 		final String setterName = "set" + capitalizeFirstLetter(propertyName);
-		for (final Method m : subject.getClass().getDeclaredMethods())
+		// for (final Method m : subject.getClass().getDeclaredMethods())
+		for (final Method m : subject.getClass().getMethods())
 		{
 			if (m.getName().equals(setterName))
 			{
@@ -134,7 +135,8 @@ public class PropertyUtil
 	private static Method getClearer(final String propertyName, final Object subject)
 	{
 		final String clearerName = "clear" + capitalizeFirstLetter(propertyName);
-		for (final Method c : subject.getClass().getDeclaredMethods())
+		// for (final Method c : subject.getClass().getDeclaredMethods())
+		for (final Method c : subject.getClass().getMethods())
 		{
 			if (c.getName().equals(clearerName))
 			{

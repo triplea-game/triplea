@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Lord of the Rings: Middle Earth" version="1.2"/>
+        <info name="Lord of the Rings: Middle Earth" version="1.3"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
         <map>
@@ -433,7 +433,7 @@
                 <connection t1="Anduin Mouth" t2="S. Gondor"/>
                 <connection t1="Anduin Mouth" t2="Tolfolas"/>
                 <connection t1="Anduin Mouth" t2="Debatable Land"/>
-                <connection t1="Anduin Mouth" t2="Harad Coast"/>
+                <!--<connection t1="Anduin Mouth" t2="Harad Coast"/>-->
                 <connection t1="Anduin Mouth" t2="S. Ithilien"/>
                 <connection t1="Anduin Mouth" t2="E. Osg."/>
                 <connection t1="Anduin Mouth" t2="W. Osg."/>
@@ -2899,7 +2899,7 @@
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
-	&lt;td&gt;n/a&lt;/td&gt;
+	&lt;td&gt;-&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
 	&lt;td&gt;isSupportable&lt;/td&gt;
 	&lt;/tr&gt;
@@ -2909,8 +2909,8 @@
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
-	&lt;td&gt;n/a&lt;/td&gt;
-	&lt;td&gt;n/a&lt;/td&gt;
+	&lt;td&gt;-&lt;/td&gt;
+	&lt;td&gt;-&lt;/td&gt;
 	&lt;td&gt;&lt;/td&gt;
 	&lt;/tr&gt;
 	
