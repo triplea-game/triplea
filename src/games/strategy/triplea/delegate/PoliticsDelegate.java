@@ -56,8 +56,8 @@ import java.util.LinkedHashSet;
  */
 public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 {
-	protected HashMap<IConditions, Boolean> m_testedConditions = null;
-	private boolean m_needToInitialize = true;
+	// protected HashMap<IConditions, Boolean> m_testedConditions = null;
+	private final boolean m_needToInitialize = true;
 	
 	/** Creates new PoliticsDelegate */
 	public PoliticsDelegate()
@@ -71,14 +71,14 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	public void start(final IDelegateBridge aBridge)
 	{
 		super.start(aBridge);
-		if (m_needToInitialize)
+		/*if (m_needToInitialize)
 		{
 			m_testedConditions = null;
 			final HashSet<IConditions> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
 						new HashSet<IConditions>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
 			m_testedConditions = RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, getData());
 			m_needToInitialize = false;
-		}
+		}*/
 	}
 	
 	@Override
@@ -101,7 +101,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	{
 		final PoliticsExtendedDelegateState state = new PoliticsExtendedDelegateState();
 		state.superState = super.saveState();
-		state.m_testedConditions = m_testedConditions;
+		// state.m_testedConditions = m_testedConditions;
 		// add other variables to state here:
 		return state;
 	}
@@ -111,13 +111,15 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	{
 		final PoliticsExtendedDelegateState s = (PoliticsExtendedDelegateState) state;
 		super.loadState(s.superState);
-		m_testedConditions = s.m_testedConditions;
+		// m_testedConditions = s.m_testedConditions;
 		// load other variables from state here:
 	}
 	
 	public HashMap<IConditions, Boolean> getTestedConditions()
 	{
-		return m_testedConditions;
+		final HashSet<IConditions> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
+					new HashSet<IConditions>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
+		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, getData());
 	}
 	
 	/*
@@ -136,7 +138,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			notifyPoliticsTurnedOff();
 			return;
 		}
-		if (paa.canPerform(m_testedConditions))
+		if (paa.canPerform(getTestedConditions()))
 		{
 			if (checkEnoughMoney(paa))
 			{ // See if the player has got enough money to pay for the action
@@ -606,5 +608,5 @@ class PoliticsExtendedDelegateState implements Serializable
 {
 	Serializable superState;
 	// add other variables here:
-	public HashMap<IConditions, Boolean> m_testedConditions = null;
+	// public HashMap<IConditions, Boolean> m_testedConditions = null;
 }

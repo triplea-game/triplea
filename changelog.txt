@@ -1,4 +1,6 @@
 Changes for 1.5
+* Temporary fix for the issues caused by only testing political conditions once.  Now we test them after each political action. (veqryn)
+
 * Updated political action attachments validation to only test once per politics phase for all the conditions for each action. (veqryn)
 
 * Created new relationship attachment, givesBackOriginalTerritories, which lets a player give back originally controlled territories to another player. (veqryn)

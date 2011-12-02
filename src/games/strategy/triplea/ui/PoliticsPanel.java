@@ -16,7 +16,6 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
-import games.strategy.triplea.attatchments.IConditions;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
 
@@ -30,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -59,13 +57,14 @@ public class PoliticsPanel extends ActionPanel
 	private PoliticalActionAttachment m_choice = null;
 	private final TripleAFrame m_parent;
 	private boolean m_firstRun = true;
-	protected HashMap<IConditions, Boolean> m_testedConditions = null;
+	
+	// protected HashMap<IConditions, Boolean> m_testedConditions = null;
 	
 	public PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent)
 	{
 		super(data, map);
 		m_parent = parent;
-		m_testedConditions = DelegateFinder.politicsDelegate(data).getTestedConditions();
+		// m_testedConditions = DelegateFinder.politicsDelegate(data).getTestedConditions();
 	}
 	
 	@Override
@@ -111,11 +110,11 @@ public class PoliticsPanel extends ActionPanel
 	public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun)
 	{
 		m_firstRun = firstRun;
-		if (m_testedConditions == null)
+		/*if (m_testedConditions == null)
 		{
 			m_testedConditions = DelegateFinder.politicsDelegate(getData()).getTestedConditions();
-		}
-		if (m_firstRun && PoliticalActionAttachment.getValidActions(getCurrentPlayer(), m_testedConditions, getData()).isEmpty())
+		}*/
+		if (m_firstRun && PoliticalActionAttachment.getValidActions(getCurrentPlayer(), DelegateFinder.politicsDelegate(getData()).getTestedConditions(), getData()).isEmpty())
 		{
 			return null; // No Valid political actions, do nothing
 		}
@@ -187,7 +186,8 @@ public class PoliticsPanel extends ActionPanel
 		politicalActionButtonPanel.setLayout(new GridBagLayout());
 		int row = 0;
 		final Insets insets = new Insets(1, 1, 1, 1);
-		final List<PoliticalActionAttachment> validActions = new ArrayList<PoliticalActionAttachment>(PoliticalActionAttachment.getValidActions(getCurrentPlayer(), m_testedConditions, getData()));
+		final List<PoliticalActionAttachment> validActions = new ArrayList<PoliticalActionAttachment>(PoliticalActionAttachment.getValidActions(getCurrentPlayer(),
+					DelegateFinder.politicsDelegate(getData()).getTestedConditions(), getData()));
 		Collections.sort(validActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
 		for (final PoliticalActionAttachment paa : validActions)
 		{
