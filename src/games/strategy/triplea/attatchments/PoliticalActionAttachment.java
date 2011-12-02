@@ -187,38 +187,33 @@ public class PoliticalActionAttachment extends DefaultAttachment implements ICon
 		return m_invert;
 	}
 	
-	/**
-	 * This one needs to be changed. TODO veqryn
-	 * This will account for Invert and conditionType
-	 */
-	private static boolean isMet(final PoliticalActionAttachment paa, final GameData data)
-	{
-		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditionsRecursive(new HashSet<IConditions>(paa.getConditions()), null, data);
-		return isMet(paa, testedConditions, data);
-	}
-	
-	/**
-	 * This will account for Invert and conditionType
-	 */
-	private static boolean isMet(final PoliticalActionAttachment paa, final HashMap<IConditions, Boolean> testedConditions, final GameData data)
-	{
-		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(paa.getConditions()), testedConditions, paa.getConditionType(), data) != paa.getInvert();
-	}
-	
-	/**
-	 * This just calls isMet with "this" attachment. isMet accounts for Invert and conditionType.
-	 */
 	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
 	{
-		return isMet(this, testedConditions, data);
+		if (testedConditions == null)
+			throw new IllegalStateException("testedCondititions can not be null");
+		if (testedConditions.containsKey(this))
+			return testedConditions.get(this);
+		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType(), data) != this.getInvert();
+	}
+	
+	public static Match<PoliticalActionAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	{
+		return new Match<PoliticalActionAttachment>()
+		{
+			@Override
+			public boolean match(final PoliticalActionAttachment paa)
+			{
+				return paa.isSatisfied(testedConditions, data);
+			}
+		};
 	}
 	
 	/**
 	 * @return true if there is no condition to this action or if the condition is satisfied
 	 */
-	public boolean canPerform()
+	public boolean canPerform(final HashMap<IConditions, Boolean> testedConditions)
 	{
-		return m_conditions == null || isMet(this, getData());
+		return m_conditions == null || isSatisfied(testedConditions, getData());
 	}
 	
 	/**
@@ -411,12 +406,12 @@ public class PoliticalActionAttachment extends DefaultAttachment implements ICon
 	 * @param player
 	 * @return gets the valid actions for this player.
 	 */
-	public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player, final GameData data)
+	public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player, final HashMap<IConditions, Boolean> testedConditions, final GameData data)
 	{
 		if (!games.strategy.triplea.Properties.getUsePolitics(data) || !player.amNotDeadYet(data))
 			return new ArrayList<PoliticalActionAttachment>();
 		return Match.getMatches(getPoliticalActionAttachments(player),
-					new CompositeMatchAnd<PoliticalActionAttachment>(Matches.PoliticalActionCanBeAttempted, Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
+					new CompositeMatchAnd<PoliticalActionAttachment>(Matches.PoliticalActionCanBeAttempted(testedConditions), Matches.politicalActionAffectsAtLeastOneAlivePlayer(player, data)));
 	}
 	
 	public void resetAttempts(final IDelegateBridge aBridge)

@@ -36,6 +36,11 @@ public class DelegateFinder
 		return delegate;
 	}
 	
+	public static final PoliticsDelegate politicsDelegate(final GameData data)
+	{
+		return (PoliticsDelegate) findDelegate(data, "politics");
+	}
+	
 	public static final BattleDelegate battleDelegate(final GameData data)
 	{
 		return (BattleDelegate) findDelegate(data, "battle");

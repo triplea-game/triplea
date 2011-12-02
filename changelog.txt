@@ -1,4 +1,6 @@
 Changes for 1.5
+* Updated political action attachments validation to only test once per politics phase for all the conditions for each action. (veqryn)
+
 * Created new relationship attachment, givesBackOriginalTerritories, which lets a player give back originally controlled territories to another player. (veqryn)
 
 * Changing PropertyUtil from using getClass().getDeclaredMethods() to using getClass().getMethods() for changing data inside game data objects, like units, players, attachments, etc. (veqryn & frigoref)

@@ -300,6 +300,8 @@ public class AbstractTriggerAttachment extends DefaultAttachment implements ICon
 	{
 		if (testedConditions == null)
 			throw new IllegalStateException("testedCondititions can not be null");
+		if (testedConditions.containsKey(this))
+			return testedConditions.get(this);
 		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType(), data) != this.getInvert();
 	}
 	

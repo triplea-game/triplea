@@ -1019,6 +1019,11 @@ public class RulesAttachment extends DefaultAttachment implements IConditions
 	
 	public boolean isSatisfied(HashMap<IConditions, Boolean> testedConditions, final GameData data)
 	{
+		if (testedConditions != null)
+		{
+			if (testedConditions.containsKey(this))
+				return testedConditions.get(this);
+		}
 		boolean objectiveMet = true;
 		final PlayerID player = (PlayerID) getAttatchedTo();
 		//

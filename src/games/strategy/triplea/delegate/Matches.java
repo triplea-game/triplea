@@ -33,6 +33,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.CanalAttachment;
+import games.strategy.triplea.attatchments.IConditions;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
@@ -53,6 +54,7 @@ import games.strategy.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -3244,14 +3246,17 @@ public class Matches
 		};
 	}
 	
-	public static final Match<PoliticalActionAttachment> PoliticalActionCanBeAttempted = new Match<PoliticalActionAttachment>()
+	public static final Match<PoliticalActionAttachment> PoliticalActionCanBeAttempted(final HashMap<IConditions, Boolean> testedConditions)
 	{
-		@Override
-		public boolean match(final PoliticalActionAttachment paa)
+		return new Match<PoliticalActionAttachment>()
 		{
-			return paa.hasAttemptsLeft() && paa.canPerform();
-		}
-	};
+			@Override
+			public boolean match(final PoliticalActionAttachment paa)
+			{
+				return paa.hasAttemptsLeft() && paa.canPerform(testedConditions);
+			}
+		};
+	}
 	
 	public static final Match<PoliticalActionAttachment> PoliticalActionHasCostBetween(final int greaterThanEqualTo, final int lessThanEqualTo)
 	{
