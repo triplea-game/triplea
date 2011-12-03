@@ -7,6 +7,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
  * @author veqryn [Mark Christopher Duncan]
  * 
  */
-public abstract class AbstractConditionsAttachment extends DefaultAttachment implements IConditions
+public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition
 {
 	private static final long serialVersionUID = -9008441256118867078L;
 	
@@ -38,10 +39,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	 */
 	public void setConditions(final String conditions) throws GameParseException
 	{
+		final Collection<PlayerID> playerIDs = getData().getPlayerList().getPlayers();
 		for (final String subString : conditions.split(":"))
 		{
 			RulesAttachment condition = null;
-			for (final PlayerID p : getData().getPlayerList().getPlayers())
+			for (final PlayerID p : playerIDs)
 			{
 				condition = (RulesAttachment) p.getAttachment(subString);
 				if (condition != null)
@@ -113,7 +115,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	/**
 	 * Accounts for Invert and conditionType.
 	 */
-	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions)
+	public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions)
 	{
 		return isSatisfied(testedConditions, null);
 	}
@@ -121,16 +123,16 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	/**
 	 * Accounts for Invert and conditionType. IDelegateBridge is not used so can be null.
 	 */
-	public boolean isSatisfied(final HashMap<IConditions, Boolean> testedConditions, final IDelegateBridge aBridge)
+	public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions, final IDelegateBridge aBridge)
 	{
 		if (testedConditions == null)
 			throw new IllegalStateException("testedCondititions can not be null");
 		if (testedConditions.containsKey(this))
 			return testedConditions.get(this);
-		return RulesAttachment.areConditionsMet(new ArrayList<IConditions>(this.getConditions()), testedConditions, this.getConditionType()) != this.getInvert();
+		return RulesAttachment.areConditionsMet(new ArrayList<ICondition>(this.getConditions()), testedConditions, this.getConditionType()) != this.getInvert();
 	}
 	
-	public static Match<AbstractConditionsAttachment> isSatisfiedAbstractConditionsAttachmentMatch(final HashMap<IConditions, Boolean> testedConditions)
+	public static Match<AbstractConditionsAttachment> isSatisfiedAbstractConditionsAttachmentMatch(final HashMap<ICondition, Boolean> testedConditions)
 	{
 		return new Match<AbstractConditionsAttachment>()
 		{

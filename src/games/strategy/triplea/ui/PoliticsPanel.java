@@ -59,7 +59,7 @@ public class PoliticsPanel extends ActionPanel
 	private final TripleAFrame m_parent;
 	private boolean m_firstRun = true;
 	
-	// protected HashMap<IConditions, Boolean> m_testedConditions = null;
+	// protected HashMap<ICondition, Boolean> m_testedConditions = null;
 	
 	public PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent)
 	{

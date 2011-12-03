@@ -28,7 +28,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.IConditions;
+import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
@@ -98,7 +98,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 			if (!toFirePossible.isEmpty())
 			{
 				// get all conditions possibly needed by these triggers, and then test them.
-				final HashMap<IConditions, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
+				final HashMap<ICondition, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
 				// get all triggers that are satisfied based on the tested conditions.
 				final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions));
 				// now list out individual types to fire, once for each of the matches above.

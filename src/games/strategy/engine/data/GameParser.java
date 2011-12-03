@@ -164,6 +164,18 @@ public class GameParser
 		{
 			validateAttachments(r);
 		}
+		for (final PlayerID r : data.getPlayerList().getPlayers())
+		{
+			validateAttachments(r);
+		}
+		for (final RelationshipType r : data.getRelationshipTypeList().getAllRelationshipTypes())
+		{
+			validateAttachments(r);
+		}
+		for (final TerritoryEffect r : data.getTerritoryEffectList().values())
+		{
+			validateAttachments(r);
+		}
 		// if relationships are used, every player should have a relationship with every other player
 		validateRelationships();
 	}

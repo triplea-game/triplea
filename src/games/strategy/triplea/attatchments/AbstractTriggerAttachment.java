@@ -23,7 +23,7 @@ import java.util.Set;
  * @author Abstraction done by Erik von der Osten, original TriggerAttachment writen by Squid Daddy and Mark Christopher Duncan
  * 
  */
-public class AbstractTriggerAttachment extends AbstractConditionsAttachment implements IConditions
+public class AbstractTriggerAttachment extends AbstractConditionsAttachment implements ICondition
 {
 	private static final long serialVersionUID = 5866039180681962697L;
 	
@@ -226,7 +226,7 @@ public class AbstractTriggerAttachment extends AbstractConditionsAttachment impl
 		return testChance;
 	}
 	
-	public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions)
+	public static Match<TriggerAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions)
 	{
 		return new Match<TriggerAttachment>()
 		{

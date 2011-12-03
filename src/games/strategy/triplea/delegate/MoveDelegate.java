@@ -27,7 +27,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.IConditions;
+import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
@@ -99,7 +99,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			// territory property changes triggered at beginning of combat move // TODO create new delegate called "start of turn" and move them there.
 			// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
 			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-			HashMap<IConditions, Boolean> testedConditions = null;
+			HashMap<ICondition, Boolean> testedConditions = null;
 			final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
 						TriggerAttachment.notificationMatch(null, null),
 						TriggerAttachment.playerPropertyMatch(null, null),

@@ -48,7 +48,7 @@ import java.util.Set;
  * @author SquidDaddy and Veqryn [Mark Christopher Duncan]
  * 
  */
-public class TriggerAttachment extends AbstractTriggerAttachment implements IConditions
+public class TriggerAttachment extends AbstractTriggerAttachment implements ICondition
 {
 	/**
 	 * 
@@ -104,7 +104,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final HashSet<TriggerAttachment> toFirePossible = collectForAllTriggersMatching(players, triggerMatch, aBridge);
 		if (toFirePossible.isEmpty())
 			return;
-		final HashMap<IConditions, Boolean> testedConditions = collectTestsForAllTriggers(toFirePossible, aBridge);
+		final HashMap<ICondition, Boolean> testedConditions = collectTestsForAllTriggers(toFirePossible, aBridge);
 		final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions));
 		if (toFireTestedAndSatisfied.isEmpty())
 			return;
@@ -122,9 +122,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		return toFirePossible;
 	}
 	
-	public static HashMap<IConditions, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible, final IDelegateBridge aBridge)
+	public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible, final IDelegateBridge aBridge)
 	{
-		final HashSet<IConditions> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(new HashSet<IConditions>(toFirePossible), null);
+		final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(toFirePossible), null);
 		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, aBridge);
 	}
 	
@@ -1101,7 +1101,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					}
 					else if (t.getPlayerAttachmentName().getFirst().equals("RulesAttachment"))
 					{
-						final RulesAttachment attachment = RulesAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+						final AbstractRulesAttachment attachment = AbstractRulesAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
 						if (attachment.getRawProperty(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)

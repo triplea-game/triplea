@@ -31,7 +31,7 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
-import games.strategy.triplea.attatchments.IConditions;
+import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -205,7 +205,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		
 		// First figure out all the conditions that will be tested, so we can test them all at the same time.
 		final HashSet<TriggerAttachment> toFirePossible = new HashSet<TriggerAttachment>();
-		final HashSet<IConditions> allConditionsNeeded = new HashSet<IConditions>();
+		final HashSet<ICondition> allConditionsNeeded = new HashSet<ICondition>();
 		final boolean useTriggers = games.strategy.triplea.Properties.getTriggers(data);
 		if (useTriggers)
 		{
@@ -213,15 +213,15 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			final Match<TriggerAttachment> endTurnDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
 						TriggerAttachment.resourceMatch(null, null));
 			toFirePossible.addAll(TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(player)), endTurnDelegateTriggerMatch, bridge));
-			allConditionsNeeded.addAll(RulesAttachment.getAllConditionsRecursive(new HashSet<IConditions>(toFirePossible), null));
+			allConditionsNeeded.addAll(RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(toFirePossible), null));
 		}
 		// add conditions required for national objectives (nat objs that have uses left)
 		final List<RulesAttachment> natObjs = Match.getMatches(RulesAttachment.getNationalObjectives(player, data), availableUses);
-		allConditionsNeeded.addAll(RulesAttachment.getAllConditionsRecursive(new HashSet<IConditions>(natObjs), null));
+		allConditionsNeeded.addAll(RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(natObjs), null));
 		if (allConditionsNeeded.isEmpty())
 			return;
 		// now test all the conditions
-		final HashMap<IConditions, Boolean> testedConditions = RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
+		final HashMap<ICondition, Boolean> testedConditions = RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, bridge);
 		
 		// now that we have all testedConditions, may as well do triggers first.
 		if (useTriggers)
@@ -241,7 +241,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		{
 			final RulesAttachment rule = rulesIter.next();
 			int uses = rule.getUses();
-			if (!rule.isSatisfied(testedConditions) || uses == 0)
+			if (uses == 0 || !rule.isSatisfied(testedConditions))
 				continue;
 			
 			int toAdd = rule.getObjectiveValue();

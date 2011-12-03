@@ -33,7 +33,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.CanalAttachment;
-import games.strategy.triplea.attatchments.IConditions;
+import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
@@ -3246,7 +3246,7 @@ public class Matches
 		};
 	}
 	
-	public static final Match<PoliticalActionAttachment> PoliticalActionCanBeAttempted(final HashMap<IConditions, Boolean> testedConditions)
+	public static final Match<PoliticalActionAttachment> PoliticalActionCanBeAttempted(final HashMap<ICondition, Boolean> testedConditions)
 	{
 		return new Match<PoliticalActionAttachment>()
 		{

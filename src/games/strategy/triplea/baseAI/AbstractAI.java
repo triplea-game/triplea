@@ -367,7 +367,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		final float numPlayers = data.getPlayerList().getPlayers().size();
 		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
 		final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
-		// final HashMap<IConditions, Boolean> testedConditions = DelegateFinder.politicsDelegate(data).getTestedConditions();//this is commented out because we want to test the conditions each time to make sure they are still valid
+		// final HashMap<ICondition, Boolean> testedConditions = DelegateFinder.politicsDelegate(data).getTestedConditions();//this is commented out because we want to test the conditions each time to make sure they are still valid
 		if (Math.random() < .5)
 		{
 			final List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id, politicsDelegate.getTestedConditions(), data);

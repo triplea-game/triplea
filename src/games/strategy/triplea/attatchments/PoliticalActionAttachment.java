@@ -39,7 +39,7 @@ import java.util.Set;
  * @author Edwin van der Wal
  * 
  */
-public class PoliticalActionAttachment extends AbstractConditionsAttachment implements IConditions
+public class PoliticalActionAttachment extends AbstractConditionsAttachment implements ICondition
 {
 	private static final long serialVersionUID = 4392770599777282477L;
 	public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
@@ -98,7 +98,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: text can't be empty");
 	}
 	
-	public static Match<PoliticalActionAttachment> isSatisfiedMatch(final HashMap<IConditions, Boolean> testedConditions)
+	public static Match<PoliticalActionAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions)
 	{
 		return new Match<PoliticalActionAttachment>()
 		{
@@ -113,7 +113,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	/**
 	 * @return true if there is no condition to this action or if the condition is satisfied
 	 */
-	public boolean canPerform(final HashMap<IConditions, Boolean> testedConditions)
+	public boolean canPerform(final HashMap<ICondition, Boolean> testedConditions)
 	{
 		return m_conditions == null || isSatisfied(testedConditions);
 	}
@@ -279,7 +279,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	 * @param player
 	 * @return gets the valid actions for this player.
 	 */
-	public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player, final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	public static Collection<PoliticalActionAttachment> getValidActions(final PlayerID player, final HashMap<ICondition, Boolean> testedConditions, final GameData data)
 	{
 		if (!games.strategy.triplea.Properties.getUsePolitics(data) || !player.amNotDeadYet(data))
 			return new ArrayList<PoliticalActionAttachment>();

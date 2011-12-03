@@ -27,7 +27,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.IConditions;
+import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -57,7 +57,7 @@ import java.util.Set;
  */
 public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 {
-	// protected HashMap<IConditions, Boolean> m_testedConditions = null;
+	// protected HashMap<ICondition, Boolean> m_testedConditions = null;
 	// private final boolean m_needToInitialize = true;
 	
 	/** Creates new PoliticsDelegate */
@@ -75,8 +75,8 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		/*if (m_needToInitialize)
 		{
 			m_testedConditions = null;
-			final HashSet<IConditions> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
-						new HashSet<IConditions>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
+			final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
+						new HashSet<ICondition>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
 			m_testedConditions = RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, getData());
 			m_needToInitialize = false;
 		}*/
@@ -99,7 +99,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			if (!toFirePossible.isEmpty())
 			{
 				// get all conditions possibly needed by these triggers, and then test them.
-				final HashMap<IConditions, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
+				final HashMap<ICondition, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
 				// get all triggers that are satisfied based on the tested conditions.
 				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 				// now list out individual types to fire, once for each of the matches above.
@@ -130,10 +130,10 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		// load other variables from state here:
 	}
 	
-	public HashMap<IConditions, Boolean> getTestedConditions()
+	public HashMap<ICondition, Boolean> getTestedConditions()
 	{
-		final HashSet<IConditions> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
-					new HashSet<IConditions>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
+		final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(
+					new HashSet<ICondition>(PoliticalActionAttachment.getPoliticalActionAttachments(m_player)), null);
 		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
 	}
 	
@@ -141,7 +141,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * @param player
 	 * @return gets the valid actions for this player.
 	 */
-	public Collection<PoliticalActionAttachment> getValidActions(final HashMap<IConditions, Boolean> testedConditions)
+	public Collection<PoliticalActionAttachment> getValidActions(final HashMap<ICondition, Boolean> testedConditions)
 	{
 		return PoliticalActionAttachment.getValidActions(m_player, testedConditions, getData());
 	}
@@ -632,5 +632,5 @@ class PoliticsExtendedDelegateState implements Serializable
 {
 	Serializable superState;
 	// add other variables here:
-	// public HashMap<IConditions, Boolean> m_testedConditions = null;
+	// public HashMap<ICondition, Boolean> m_testedConditions = null;
 }

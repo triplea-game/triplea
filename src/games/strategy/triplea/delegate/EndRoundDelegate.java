@@ -27,7 +27,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.IConditions;
+import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
@@ -39,7 +39,6 @@ import games.strategy.util.Match;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -137,11 +136,11 @@ public class EndRoundDelegate extends BaseDelegate
 						TriggerAttachment.victoryMatch(null, null));
 			// get all possible triggers based on this match.
 			final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
-						new HashSet<PlayerID>(Collections.singleton(m_player)), endRoundDelegateTriggerMatch, m_bridge);
+						new HashSet<PlayerID>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch, m_bridge);
 			if (!toFirePossible.isEmpty())
 			{
 				// get all conditions possibly needed by these triggers, and then test them.
-				final HashMap<IConditions, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
+				final HashMap<ICondition, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
 				// get all triggers that are satisfied based on the tested conditions.
 				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 				// now list out individual types to fire, once for each of the matches above.

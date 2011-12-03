@@ -16,7 +16,7 @@ package games.strategy.triplea.baseAI;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
-import games.strategy.triplea.attatchments.IConditions;
+import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.AbstractEndTurnDelegate;
 import games.strategy.triplea.delegate.Matches;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class BasicPoliticalAI
 {
-	public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerID id, final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	public static List<PoliticalActionAttachment> getPoliticalActionsTowardsWar(final PlayerID id, final HashMap<ICondition, Boolean> testedConditions, final GameData data)
 	{
 		final List<PoliticalActionAttachment> acceptableActions = new ArrayList<PoliticalActionAttachment>();
 		for (final PoliticalActionAttachment nextAction : PoliticalActionAttachment.getValidActions(id, testedConditions, data))
@@ -51,7 +51,7 @@ public class BasicPoliticalAI
 		return acceptableActions;
 	}
 	
-	public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerID id, final HashMap<IConditions, Boolean> testedConditions, final GameData data)
+	public static List<PoliticalActionAttachment> getPoliticalActionsOther(final PlayerID id, final HashMap<ICondition, Boolean> testedConditions, final GameData data)
 	{
 		final List<PoliticalActionAttachment> warActions = getPoliticalActionsTowardsWar(id, testedConditions, data);
 		final List<PoliticalActionAttachment> acceptableActions = new ArrayList<PoliticalActionAttachment>();

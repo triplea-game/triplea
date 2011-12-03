@@ -1,4 +1,6 @@
 Changes for 1.5
+* Phase 4 of abstraction, RulesAttachment now abstracted into RulesAttachment, AbstractRulesAttachment, and AbstractPlayerRulesAttachment. (veqryn)
+
 * Created a new overlay for territory effect images, that is enabled in map.properties map.useTerritoryEffectMarkers=true, territory_effects.txt, and territoryEffects folder. (edwin van der wal)
 
 * Fixed bug where 'when' based triggers did not fire at all. (veqryn)
@@ -27,11 +29,11 @@ Changes for 1.5
 
 * Phase 2 of abstraction and refactoring of TriggerAttachments: now all triggers get called through a single method, collectAndFireTriggers. (veqryn)
 
-* Created getAllConditionsRecursive and testAllConditions which will test get and test all IConditions, and now all RulesAttachments get tested through these. (veqryn)
+* Created getAllConditionsRecursive and testAllConditions which will test get and test all ICondition, and now all RulesAttachments get tested through these. (veqryn)
 
-* Had RulesAttachment, TriggerAttachment, and PoliticalActionAttachment all implement IConditions. (veqryn)
+* Had RulesAttachment, TriggerAttachment, and PoliticalActionAttachment all implement ICondition. (veqryn)
 
-* Created IConditions, and interface for any Attachment that had conditions as a part of it. (veqryn)
+* Created ICondition, and interface for any Attachment that had conditions as a part of it. (veqryn)
 
 * Moved actions for victory trigger and notification trigger to be part of the trigger attachment so that they will return void, and therefore can abstract easier. (veqryn)
 

@@ -23,7 +23,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
-import games.strategy.triplea.attatchments.IConditions;
+import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
@@ -95,7 +95,7 @@ public class TechActivationDelegate extends BaseDelegate
 			if (!toFirePossible.isEmpty())
 			{
 				// get all conditions possibly needed by these triggers, and then test them.
-				final HashMap<IConditions, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
+				final HashMap<ICondition, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
 				// get all triggers that are satisfied based on the tested conditions.
 				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 				// now list out individual types to fire, once for each of the matches above.
