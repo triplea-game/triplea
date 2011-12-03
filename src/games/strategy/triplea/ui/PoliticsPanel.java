@@ -115,13 +115,10 @@ public class PoliticsPanel extends ActionPanel
 		{
 			m_testedConditions = DelegateFinder.politicsDelegate(getData()).getTestedConditions();
 		}*/
-		if (m_firstRun)
+		final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(getData());
+		if (m_firstRun && politicsDelegate.getValidActions(politicsDelegate.getTestedConditions()).isEmpty())
 		{
-			final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(getData());
-			if (politicsDelegate.getValidActions(politicsDelegate.getTestedConditions()).isEmpty())
-			{
-				return null; // No Valid political actions, do nothing
-			}
+			return null; // No Valid political actions, do nothing
 		}
 		else
 		{

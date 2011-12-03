@@ -27,6 +27,7 @@ import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.NotificationMessages;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -59,6 +60,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private final List<TechAdvance> m_tech = new ArrayList<TechAdvance>();
 	private Map<String, Map<TechAdvance, Boolean>> m_availableTech = null;
 	private Map<Territory, IntegerMap<UnitType>> m_placement = null;
+	private Map<Territory, IntegerMap<UnitType>> m_removeUnits = null;
 	private IntegerMap<UnitType> m_purchase = null;
 	private String m_resource = null;
 	private int m_resourceCount = 0;
@@ -163,6 +165,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		triggerSupportChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		
 		// Misc changes that can happen multiple times, because they add or subtract, something from the game
+		triggerUnitRemoval(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerPurchase(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerUnitPlacement(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerResourceChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
@@ -857,6 +860,61 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	public void setRemoveUnits(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		int count = -1, i = 0;
+		if (s.length < 1)
+			throw new GameParseException("Triggers: Empty removeUnits list");
+		try
+		{
+			count = getInt(s[0]);
+			i++;
+		} catch (final Exception e)
+		{
+			count = 1;
+		}
+		if (s.length < 1 || s.length == 1 && count != -1)
+			throw new GameParseException("Triggers: Empty removeUnits list");
+		final Territory territory = getData().getMap().getTerritory(s[i]);
+		if (territory == null)
+			throw new GameParseException("Triggers: Territory does not exist " + s[i]);
+		else
+		{
+			i++;
+			final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+			for (; i < s.length; i++)
+			{
+				final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
+				if (type == null)
+					throw new GameParseException("Triggers: UnitType does not exist " + s[i]);
+				else
+					map.add(type, count);
+			}
+			if (m_removeUnits == null)
+				m_removeUnits = new HashMap<Territory, IntegerMap<UnitType>>();
+			if (m_removeUnits.containsKey(territory))
+				map.add(m_removeUnits.get(territory));
+			m_removeUnits.put(territory, map);
+		}
+	}
+	
+	public Map<Territory, IntegerMap<UnitType>> getRemoveUnits()
+	{
+		return m_removeUnits;
+	}
+	
+	public void clearRemoveUnits()
+	{
+		m_removeUnits.clear();
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
 	 * @param place
 	 * @throws GameParseException
 	 */
@@ -901,11 +959,35 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_purchase.clear();
 	}
 	
+	private static void removeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> uMap, final PlayerID player, final IDelegateBridge aBridge)
+	{
+		final CompositeChange change = new CompositeChange();
+		final Collection<Unit> totalRemoved = new ArrayList<Unit>();
+		for (final UnitType ut : uMap.keySet())
+		{
+			final int removeNum = uMap.getInt(ut);
+			final Collection<Unit> toRemove = Match.getNMatches(terr.getUnits().getUnits(), removeNum, new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(ut)));
+			if (!toRemove.isEmpty())
+			{
+				totalRemoved.addAll(toRemove);
+				change.add(ChangeFactory.removeUnits(terr, toRemove));
+			}
+		}
+		if (!change.isEmpty())
+		{
+			final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": has removed " + MyFormatter.unitsToTextNoOwner(totalRemoved) + " owned by "
+						+ player.getName() + " in " + terr.getName();
+			aBridge.getHistoryWriter().startEvent(transcriptText);
+			aBridge.getHistoryWriter().setRenderingData(totalRemoved);
+			aBridge.addChange(change);
+		}
+	}
+	
 	private static void placeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> uMap, final PlayerID player, final GameData data, final IDelegateBridge aBridge)
 	{
 		// createUnits
 		final List<Unit> units = new ArrayList<Unit>();
-		;
+		
 		for (final UnitType u : uMap.keySet())
 		{
 			units.addAll(u.create(uMap.getInt(u), player));
@@ -1517,6 +1599,28 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
+	private static void triggerUnitRemoval(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	{
+		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, removeUnitsMatch(beforeOrAfter, stepName));
+		for (final TriggerAttachment t : trigs)
+		{
+			if (!t.testChance(aBridge))
+				continue;
+			t.use(aBridge);
+			final int eachMultiple = getEachMultiple(t);
+			for (final PlayerID aPlayer : t.getPlayers())
+			{
+				for (final Territory ter : t.getRemoveUnits().keySet())
+				{
+					for (int i = 0; i < eachMultiple; ++i)
+					{
+						removeUnits(t, ter, t.getRemoveUnits().get(ter), aPlayer, aBridge);
+					}
+				}
+			}
+		}
+	}
+	
 	private static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final GameData data = aBridge.getData();
@@ -1653,6 +1757,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			public boolean match(final TriggerAttachment t)
 			{
 				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getAvailableTech() != null;
+			}
+		};
+	}
+	
+	public static Match<TriggerAttachment> removeUnitsMatch(final String beforeOrAfter, final String stepName)
+	{
+		return new Match<TriggerAttachment>()
+		{
+			@Override
+			public boolean match(final TriggerAttachment t)
+			{
+				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getRemoveUnits() != null;
 			}
 		};
 	}

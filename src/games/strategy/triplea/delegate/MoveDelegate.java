@@ -102,7 +102,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 						TriggerAttachment.playerPropertyMatch(null, null),
 						TriggerAttachment.relationshipTypePropertyMatch(null, null),
 						TriggerAttachment.territoryPropertyMatch(null, null),
-						TriggerAttachment.territoryEffectPropertyMatch(null, null));
+						TriggerAttachment.territoryEffectPropertyMatch(null, null),
+						TriggerAttachment.removeUnitsMatch(null, null));
 			
 			final Match<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
 						TriggerAttachment.placeMatch(null, null));

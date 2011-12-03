@@ -1,4 +1,6 @@
 Changes for 1.5
+* Created new Trigger Attachment, removeUnits, which allows you to remove units from a territory for selected players. (veqryn)
+
 * Created new Trigger Attachment, chance, which allows you to have a certain chance for a trigger to activate (tested only after all conditions are true). (veqryn)
 
 * Phase 3 of abstraction of RulesAttachment and TriggerAttachment and PoliticalActionAttachment: the creation of an abstract class to hold all common cold related to conditions. (veqryn)

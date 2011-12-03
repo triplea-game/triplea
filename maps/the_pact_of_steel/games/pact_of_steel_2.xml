@@ -3313,6 +3313,7 @@
 			resourceCount						values: the number of specified resource to be given
 			placement							values: places units at beginning of combat movement phase. first in list is territory to be placed it, then list of units, then count.  "placement" will be affected by "each" in a condition statement.
 														(example: value="Moscow:artillery:infantry" count="2" [if count is missing, defaults to 1])
+			removeUnits							values: removes up to that number of the desired unit, at the beginning of the combat move phase. list is done the same way as placement.
 			purchase							values: adds listed units to user's purchase at beginning of purchase phase (example: value="infantry:destroyer" count="3").  "purchase" will be affected by "each" in a condition statement.
 			tech		 						values: the names of any technology to be given to the active or specified player. given at end of tech activation phase. (example: value="rocket:longRangeAir")
 			availableTech						values: the name of the category to be added to, followed by the names of the technologies to add to it. (example: value="airCategory:longRangeAir:jetPower:superHeavyBomber")
