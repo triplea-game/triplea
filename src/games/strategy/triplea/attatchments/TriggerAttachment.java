@@ -98,13 +98,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param triggerMatch
 	 * @param aBridge
 	 */
-	public static void collectAndFireTriggers(final HashSet<PlayerID> players, final Match<TriggerAttachment> triggerMatch, final IDelegateBridge aBridge)
+	public static void collectAndFireTriggers(final HashSet<PlayerID> players, final Match<TriggerAttachment> triggerMatch, final IDelegateBridge aBridge,
+				final String beforeOrAfter, final String stepName)
 	{
 		final HashSet<TriggerAttachment> toFirePossible = collectForAllTriggersMatching(players, triggerMatch, aBridge);
 		if (toFirePossible.isEmpty())
 			return;
 		final HashMap<IConditions, Boolean> testedConditions = collectTestsForAllTriggers(toFirePossible, aBridge);
-		collectSatisfiedTriggersAndFire(toFirePossible, testedConditions, aBridge);
+		final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions));
+		if (toFireTestedAndSatisfied.isEmpty())
+			return;
+		TriggerAttachment.fireTriggers(new HashSet<TriggerAttachment>(toFireTestedAndSatisfied), aBridge, beforeOrAfter, stepName);
 	}
 	
 	public static HashSet<TriggerAttachment> collectForAllTriggersMatching(final HashSet<PlayerID> players, final Match<TriggerAttachment> triggerMatch, final IDelegateBridge aBridge)
@@ -122,14 +126,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final HashSet<IConditions> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(new HashSet<IConditions>(toFirePossible), null);
 		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, aBridge);
-	}
-	
-	public static void collectSatisfiedTriggersAndFire(final HashSet<TriggerAttachment> toFirePossible, final HashMap<IConditions, Boolean> testedConditions, final IDelegateBridge aBridge)
-	{
-		final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions));
-		if (toFireTestedAndSatisfied.isEmpty())
-			return;
-		TriggerAttachment.fireTriggers(new HashSet<TriggerAttachment>(toFireTestedAndSatisfied), aBridge, null, null);
 	}
 	
 	/**

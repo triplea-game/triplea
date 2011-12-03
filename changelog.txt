@@ -1,4 +1,6 @@
 Changes for 1.5
+* Fixed bug where 'when' based triggers did not fire at all. (veqryn)
+
 * Fixed bug where default based triggers were firing multiple times for each default firing location. (veqryn)
 
 * Created new Trigger Attachment, removeUnits, which allows you to remove units from a territory for selected players. (veqryn)

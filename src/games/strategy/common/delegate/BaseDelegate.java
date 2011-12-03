@@ -148,7 +148,7 @@ public abstract class BaseDelegate implements IDelegate
 						TriggerAttachment.availableUses,
 						TriggerAttachment.whenOrDefaultMatch(beforeOrAfter, stepName));
 			
-			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(data.getPlayerList().getPlayers()), baseDelegateWhenTriggerMatch, m_bridge);
+			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(data.getPlayerList().getPlayers()), baseDelegateWhenTriggerMatch, m_bridge, beforeOrAfter, stepName);
 		}
 		PoliticsDelegate.chainAlliancesTogether(m_bridge);
 	}
