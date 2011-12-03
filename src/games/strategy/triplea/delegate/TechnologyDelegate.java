@@ -28,6 +28,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.IConditions;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
@@ -87,10 +88,22 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 			return;
 		if (games.strategy.triplea.Properties.getTriggers(getData()))
 		{
+			// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
 			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
 			final Match<TriggerAttachment> technologyDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
 						TriggerAttachment.techAvailableMatch(null, null));
-			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(Collections.singleton(m_player)), technologyDelegateTriggerMatch, m_bridge);
+			// get all possible triggers based on this match.
+			final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
+						new HashSet<PlayerID>(Collections.singleton(m_player)), technologyDelegateTriggerMatch, m_bridge);
+			if (!toFirePossible.isEmpty())
+			{
+				// get all conditions possibly needed by these triggers, and then test them.
+				final HashMap<IConditions, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
+				// get all triggers that are satisfied based on the tested conditions.
+				final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions));
+				// now list out individual types to fire, once for each of the matches above.
+				TriggerAttachment.triggerAvailableTechChange(new HashSet<TriggerAttachment>(toFireTestedAndSatisfied), m_bridge, null, null);
+			}
 		}
 		m_needToInitialize = false;
 	}

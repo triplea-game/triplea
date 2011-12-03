@@ -53,6 +53,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -96,6 +97,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		if (m_needToInitialize)
 		{
 			// territory property changes triggered at beginning of combat move // TODO create new delegate called "start of turn" and move them there.
+			// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
+			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
 			HashMap<IConditions, Boolean> testedConditions = null;
 			final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
 						TriggerAttachment.notificationMatch(null, null),
@@ -117,11 +120,23 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 							moveCombatDelegateAllTriggerMatch, aBridge);
 				if (!toFirePossible.isEmpty())
 				{
+					// collect conditions and test them for ALL triggers, both those that we will first before and those we will fire after.
 					testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, aBridge);
 					final HashSet<TriggerAttachment> toFireBeforeBonus = TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(m_player)),
 								moveCombatDelegateBeforeBonusTriggerMatch, aBridge);
 					if (!toFireBeforeBonus.isEmpty())
-						TriggerAttachment.collectSatisfiedTriggersAndFire(toFireBeforeBonus, testedConditions, aBridge);
+					{
+						// get all triggers that are satisfied based on the tested conditions.
+						final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(
+									Match.getMatches(toFireBeforeBonus, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+						// now list out individual types to fire, once for each of the matches above.
+						TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, aBridge, null, null);
+						TriggerAttachment.triggerPlayerPropertyChange(toFireTestedAndSatisfied, aBridge, null, null);
+						TriggerAttachment.triggerRelationshipTypePropertyChange(toFireTestedAndSatisfied, aBridge, null, null);
+						TriggerAttachment.triggerTerritoryPropertyChange(toFireTestedAndSatisfied, aBridge, null, null);
+						TriggerAttachment.triggerTerritoryEffectPropertyChange(toFireTestedAndSatisfied, aBridge, null, null);
+						TriggerAttachment.triggerUnitRemoval(toFireTestedAndSatisfied, aBridge, null, null);
+					}
 				}
 			}
 			
@@ -147,7 +162,12 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 				final HashSet<TriggerAttachment> toFireAfterBonus = TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(m_player)),
 							moveCombatDelegateAfterBonusTriggerMatch, aBridge);
 				if (!toFireAfterBonus.isEmpty())
-					TriggerAttachment.collectSatisfiedTriggersAndFire(toFireAfterBonus, testedConditions, aBridge);
+				{
+					// get all triggers that are satisfied based on the tested conditions.
+					final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFireAfterBonus, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+					// now list out individual types to fire, once for each of the matches above.
+					TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, aBridge, null, null);
+				}
 			}
 			
 			m_needToInitialize = false;

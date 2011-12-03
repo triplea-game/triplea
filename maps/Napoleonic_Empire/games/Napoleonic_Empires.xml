@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Napoleonic Empires" version="3.9.4"/>
+        <info name="Napoleonic Empires" version="3.9.5"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 

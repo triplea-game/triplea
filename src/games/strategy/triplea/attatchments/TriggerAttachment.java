@@ -142,7 +142,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param beforeOrAfter
 	 * @param stepName
 	 */
-	private static void fireTriggers(final HashSet<TriggerAttachment> triggersToBeFired, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void fireTriggers(final HashSet<TriggerAttachment> triggersToBeFired, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		// Order: Notifications, Attachment Property Changes (Player, Relationship, Territory, TerritoryEffect, Unit), Relationship, AvailableTech, Tech, ProductionFrontier, ProductionEdit, Support, Purchase, UnitPlacement, Resource, Victory
 		
@@ -164,7 +164,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		triggerProductionFrontierEditChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerSupportChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		
-		// Misc changes that can happen multiple times, because they add or subtract, something from the game
+		// Misc changes that can happen multiple times, because they add or subtract, something from the game (and therefore can use "each")
 		triggerUnitRemoval(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerPurchase(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 		triggerUnitPlacement(triggersToBeFired, aBridge, beforeOrAfter, stepName);
@@ -1047,7 +1047,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	// Should be void.
 	//
 	
-	private static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, notificationMatch(beforeOrAfter, stepName));
 		final Set<String> notifications = new HashSet<String>();
@@ -1068,7 +1068,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	private static void triggerPlayerPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerPlayerPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, playerPropertyMatch(beforeOrAfter, stepName));
 		final CompositeChange change = new CompositeChange();
@@ -1163,7 +1163,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	private static void triggerRelationshipTypePropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerRelationshipTypePropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, relationshipTypePropertyMatch(beforeOrAfter, stepName));
 		final CompositeChange change = new CompositeChange();
@@ -1206,7 +1206,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	private static void triggerTerritoryPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerTerritoryPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, territoryPropertyMatch(beforeOrAfter, stepName));
 		final CompositeChange change = new CompositeChange();
@@ -1272,7 +1272,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	private static void triggerTerritoryEffectPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerTerritoryEffectPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, territoryEffectPropertyMatch(beforeOrAfter, stepName));
 		final CompositeChange change = new CompositeChange();
@@ -1315,7 +1315,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	private static void triggerUnitPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerUnitPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, unitPropertyMatch(beforeOrAfter, stepName));
 		final CompositeChange change = new CompositeChange();
@@ -1371,7 +1371,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	private static void triggerRelationshipChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerRelationshipChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final GameData data = aBridge.getData();
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, relationshipChangeMatch(beforeOrAfter, stepName));
@@ -1407,7 +1407,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	private static void triggerAvailableTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerAvailableTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techAvailableMatch(beforeOrAfter, stepName));
 		for (final TriggerAttachment t : trigs)
@@ -1442,7 +1442,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	private static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final GameData data = aBridge.getData();
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techMatch(beforeOrAfter, stepName));
@@ -1464,7 +1464,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	private static void triggerProductionChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerProductionChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, prodMatch(beforeOrAfter, stepName));
 		final CompositeChange change = new CompositeChange();
@@ -1484,7 +1484,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	private static void triggerProductionFrontierEditChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerProductionFrontierEditChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final GameData data = aBridge.getData();
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, prodFrontierEditMatch(beforeOrAfter, stepName));
@@ -1529,7 +1529,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
 	}
 	
-	private static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, supportMatch(beforeOrAfter, stepName));
 		final CompositeChange change = new CompositeChange();
@@ -1568,7 +1568,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	private static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, purchaseMatch(beforeOrAfter, stepName));
 		for (final TriggerAttachment t : trigs)
@@ -1599,7 +1599,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	private static void triggerUnitRemoval(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerUnitRemoval(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, removeUnitsMatch(beforeOrAfter, stepName));
 		for (final TriggerAttachment t : trigs)
@@ -1621,7 +1621,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	private static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final GameData data = aBridge.getData();
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, placeMatch(beforeOrAfter, stepName));
@@ -1645,7 +1645,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	private static void triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final GameData data = aBridge.getData();
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, resourceMatch(beforeOrAfter, stepName));
@@ -1677,7 +1677,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	private static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
 	{
 		final GameData data = aBridge.getData();
 		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, victoryMatch(beforeOrAfter, stepName));

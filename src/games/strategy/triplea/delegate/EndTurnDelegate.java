@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -226,7 +227,12 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		if (useTriggers)
 		{
 			if (!toFirePossible.isEmpty())
-				TriggerAttachment.collectSatisfiedTriggersAndFire(toFirePossible, testedConditions, bridge);
+			{
+				// get all triggers that are satisfied based on the tested conditions.
+				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+				// now list out individual types to fire, once for each of the matches above.
+				TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null);
+			}
 		}
 		
 		// now do all the national objectives

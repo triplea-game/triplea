@@ -27,6 +27,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.IConditions;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
@@ -38,6 +39,8 @@ import games.strategy.util.Match;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -128,9 +131,22 @@ public class EndRoundDelegate extends BaseDelegate
 		// now check for generic trigger based victories
 		if (isTriggeredVictory())
 		{
+			// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
+			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
 			final Match<TriggerAttachment> endRoundDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
 						TriggerAttachment.victoryMatch(null, null));
-			TriggerAttachment.collectAndFireTriggers(new HashSet<PlayerID>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch, m_bridge); // will call signalGameOver itself
+			// get all possible triggers based on this match.
+			final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
+						new HashSet<PlayerID>(Collections.singleton(m_player)), endRoundDelegateTriggerMatch, m_bridge);
+			if (!toFirePossible.isEmpty())
+			{
+				// get all conditions possibly needed by these triggers, and then test them.
+				final HashMap<IConditions, Boolean> testedConditions = TriggerAttachment.collectTestsForAllTriggers(toFirePossible, m_bridge);
+				// get all triggers that are satisfied based on the tested conditions.
+				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
+				// now list out individual types to fire, once for each of the matches above.
+				TriggerAttachment.triggerVictory(toFireTestedAndSatisfied, m_bridge, null, null); // will call signalGameOver itself
+			}
 		}
 		
 		if (isWW2V2() || isWW2V3())
