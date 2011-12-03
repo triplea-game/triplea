@@ -50,9 +50,6 @@ import java.util.Set;
  */
 public class TriggerAttachment extends AbstractTriggerAttachment implements ICondition
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3327739180569606093L;
 	
 	private ProductionFrontier m_frontier = null;
@@ -1101,7 +1098,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					}
 					else if (t.getPlayerAttachmentName().getFirst().equals("RulesAttachment"))
 					{
-						final AbstractRulesAttachment attachment = AbstractRulesAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+						final RulesAttachment attachment = RulesAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
 						if (attachment.getRawProperty(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
@@ -1114,7 +1111,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					}
 					else if (t.getPlayerAttachmentName().getFirst().equals("TriggerAttachment"))
 					{
-						final AbstractTriggerAttachment attachment = AbstractTriggerAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
+						final TriggerAttachment attachment = TriggerAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
 						if (attachment.getRawProperty(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)

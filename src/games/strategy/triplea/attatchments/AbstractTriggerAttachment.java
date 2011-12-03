@@ -43,21 +43,23 @@ public class AbstractTriggerAttachment extends AbstractConditionsAttachment impl
 	}
 	
 	/**
-	 * Convenience method.
+	 * Convenience method for returning TriggerAttachments.
 	 * 
 	 * @param player
 	 * @param nameOfAttachment
 	 * @return a new trigger attachment
 	 */
-	public static AbstractTriggerAttachment get(final PlayerID player, final String nameOfAttachment)
+	public static TriggerAttachment get(final PlayerID player, final String nameOfAttachment)
 	{
-		final AbstractTriggerAttachment rVal = (AbstractTriggerAttachment) player.getAttachment(nameOfAttachment);
+		final TriggerAttachment rVal = (TriggerAttachment) player.getAttachment(nameOfAttachment);
 		if (rVal == null)
 			throw new IllegalStateException("Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
 		return rVal;
 	}
 	
 	/**
+	 * Convenience method for return all TriggerAttachments attached to a player.
+	 * 
 	 * @param player
 	 * @param data
 	 * @param cond

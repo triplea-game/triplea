@@ -47,7 +47,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 	}
 	
 	/**
-	 * Convenience method, will not return objectives and conditions, only the rules attachment (like what China in ww2v3 has).
+	 * Convenience method, will not return objectives and conditions, only the RulesAttachment (like what China in ww2v3 has).
 	 * These attachments returned are not conditions to be tested, they are special rules affecting a player
 	 * (for example: being able to produce without factories, or not being able to move out of specific territories).
 	 * 

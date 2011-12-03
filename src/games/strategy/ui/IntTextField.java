@@ -129,7 +129,9 @@ public class IntTextField extends JTextField
 	public void setMax(final int max)
 	{
 		if (max < m_min)
-			throw new IllegalArgumentException("Max cant be less than min");
+		{
+			throw new IllegalArgumentException("Max cant be less than min. Current Min: " + m_min + ", Current Max: " + m_max + ", New Max: " + max);
+		}
 		m_max = max;
 		if (getValue() > m_max)
 		{
@@ -145,7 +147,9 @@ public class IntTextField extends JTextField
 	public void setMin(final int min)
 	{
 		if (min > m_max)
-			throw new IllegalArgumentException("Min cant be greater than max");
+		{
+			throw new IllegalArgumentException("Min cant be greater than max. Current Max: " + m_max + ", Current Min: " + m_min + ", New Min: " + min);
+		}
 		m_min = min;
 		if (getValue() < m_min)
 		{

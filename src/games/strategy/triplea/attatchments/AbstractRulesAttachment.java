@@ -45,7 +45,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	}
 	
 	/**
-	 * Convenience method, for use with rules attachments, objectives, and condition attachments.
+	 * Convenience method, for use with rules attachments, objectives, and condition attachments. Should return RulesAttachments.
 	 * 
 	 * @param player
 	 *            PlayerID
@@ -53,16 +53,16 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 *            exact full name of attachment
 	 * @return new rule attachment
 	 */
-	public static AbstractRulesAttachment get(final PlayerID player, final String nameOfAttachment)
+	public static RulesAttachment get(final PlayerID player, final String nameOfAttachment)
 	{
-		final AbstractRulesAttachment rVal = (AbstractRulesAttachment) player.getAttachment(nameOfAttachment);
+		final RulesAttachment rVal = (RulesAttachment) player.getAttachment(nameOfAttachment);
 		if (rVal == null)
 			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName() + " with name: " + nameOfAttachment);
 		return rVal;
 	}
 	
 	/**
-	 * Convenience method, for use returning any rules attachment that begins with "objectiveAttachment"
+	 * Convenience method, for use returning any RulesAttachment that begins with "objectiveAttachment"
 	 * National Objectives are just conditions that also give money to a player during the end turn delegate. They can be used for testing by triggers as well.
 	 * Conditions that do not give money are not prefixed with "objectiveAttachment",
 	 * and the trigger attachment that uses these kinds of conditions gets them a different way because they are specifically named inside that trigger.
