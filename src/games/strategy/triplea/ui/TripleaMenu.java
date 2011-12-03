@@ -205,8 +205,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		menuBar.add(menuView);
 		addZoomMenu(menuView);
 		addUnitSizeMenu(menuView);
-		addShowUnits(menuView);
 		addLockMap(menuView);
+		addShowUnits(menuView);
+		if (getUIContext().getMapData().useTerritoryEffectMarkers())
+		{
+			addShowTerritoryEffects(menuView);
+		}
 		addMapSkinsMenu(menuView);
 		addShowMapDetails(menuView);
 		addShowMapBlends(menuView);
@@ -532,6 +536,23 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			}
 		});
 		parentMenu.add(showUnitsBox);
+	}
+	
+	private void addShowTerritoryEffects(final JMenu parentMenu)
+	{
+		final JCheckBoxMenuItem territoryEffectsBox = new JCheckBoxMenuItem("Show TerritoryEffects");
+		
+		territoryEffectsBox.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				final boolean tfselected = territoryEffectsBox.isSelected();
+				getUIContext().setShowTerritoryEffects(tfselected);
+				m_frame.getMapPanel().resetMap();
+			}
+		});
+		parentMenu.add(territoryEffectsBox);
+		territoryEffectsBox.setSelected(true);
 	}
 	
 	private void addLockMap(final JMenu parentMenu)

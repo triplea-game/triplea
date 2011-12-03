@@ -16,9 +16,11 @@ package games.strategy.triplea.ui.screen;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.delegate.TerritoryEffectCalculator;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.ui.UIContext;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.OP;
@@ -246,6 +248,9 @@ public class TileManager
 		final Set<IDrawable> drawing = new HashSet<IDrawable>();
 		if (m_territoryOverlays.get(territory.getName()) != null)
 			drawing.add(m_territoryOverlays.get(territory.getName()));
+		if(m_uiContext.getShowTerritoryEffects()) {
+			drawTerritoryEffects(territory,data,mapData,drawnOn,drawing);
+		}
 		if (m_uiContext.getShowUnits())
 		{
 			drawUnits(territory, data, mapData, drawnOn, drawing);
@@ -303,6 +308,16 @@ public class TileManager
 		m_territoryTiles.put(territory.getName(), drawnOn);
 	}
 	
+	private void drawTerritoryEffects(Territory territory, GameData data, MapData mapData, Set<Tile> drawnOn, Set<IDrawable> drawing) {
+		final Iterator<Point> effectPoints = mapData.getTerritoryEffectPoints(territory).iterator();
+		Point drawingPoint = effectPoints.next();
+
+		for(TerritoryEffect te:TerritoryEffectCalculator.getEffects(territory)) {
+			drawing.add(new TerritoryEffectDrawable(te, drawingPoint));
+			drawingPoint = effectPoints.hasNext()?effectPoints.next():drawingPoint;
+		}
+	}
+
 	private void drawUnits(final Territory territory, final GameData data, final MapData mapData, final Set<Tile> drawnOn, final Set<IDrawable> drawing)
 	{
 		final Iterator<Point> placementPoints = mapData.getPlacementPoints(territory).iterator();

@@ -16,6 +16,7 @@ package games.strategy.triplea.ui.screen;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -53,6 +54,7 @@ public interface IDrawable
 	public static final int BASE_MAP_LEVEL = 1;
 	public static final int POLYGONS_LEVEL = 2;
 	public static final int RELIEF_LEVEL = 3;
+	public static final int TERRITORY_EFFECT_LEVEL = 6;
 	public static final int CONVOY_LEVEL = 4;
 	public static final int CAPITOL_MARKER_LEVEL = 7;
 	public static final int VC_MARKER_LEVEL = 8;
@@ -505,6 +507,26 @@ class BlockadeZoneDrawable implements IDrawable
 	public int getLevel()
 	{
 		return CAPITOL_MARKER_LEVEL;
+	}
+}
+
+class TerritoryEffectDrawable implements IDrawable
+{
+	private TerritoryEffect m_effect;
+	private Point m_point;
+
+	public TerritoryEffectDrawable(final TerritoryEffect te, Point point) {
+		super();
+		m_effect  = te;
+		m_point = point;
+	}
+
+	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled) {
+		graphics.drawImage(mapData.getTerritoryEffectImage(m_effect.getName()), m_point.x - bounds.x, m_point.y - bounds.y, null);
+	}
+
+	public int getLevel() {
+		return TERRITORY_EFFECT_LEVEL;
 	}
 }
 

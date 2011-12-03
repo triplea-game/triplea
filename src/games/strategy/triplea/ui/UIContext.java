@@ -67,6 +67,7 @@ public class UIContext
 	private final PUImageFactory m_PUImageFactory = new PUImageFactory();
 	private boolean m_isShutDown;
 	private boolean m_drawUnits = true;
+	private boolean m_drawTerritoryEffects = false;
 	private boolean m_drawMapOnly = false;
 	private final List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
 	private final List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
@@ -201,6 +202,7 @@ public class UIContext
 		m_tileImageFactory.setScale(m_scale);
 		m_mapImage.loadMaps(loader); // load map data
 		m_mapDir = dir;
+		m_drawTerritoryEffects = m_mapData.useTerritoryEffectMarkers();
 		stopWatch.done();
 	}
 	
@@ -459,6 +461,13 @@ public class UIContext
 		m_drawUnits = aBool;
 	}
 	
+	public void setShowTerritoryEffects(final boolean aBool) {
+		m_drawTerritoryEffects = aBool;
+	}
+	
+	public boolean getShowTerritoryEffects() {
+		return m_drawTerritoryEffects;
+	}
 	public boolean getShowMapOnly()
 	{
 		return m_drawMapOnly;
@@ -530,4 +539,6 @@ public class UIContext
 			e.printStackTrace();
 		}
 	}
+
+
 }

@@ -16,6 +16,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.util.PointFileReaderWriter;
 
 import java.awt.Color;
@@ -57,9 +58,11 @@ public class MapData
 	private static final String SHOW_TERRITORY_NAMES = "map.showTerritoryNames";
 	private static final String SHOW_CONVOY_NAMES = "map.showConvoyNames";
 	private static final String USE_NATION_CONVOY_FLAGS = "map.useNation_convoyFlags";
+	private static final String USE_TERRITORY_EFFECTS_MARKERS = "map.useTerritoryEffectMarkers";
 	private static final String CENTERS_FILE = "centers.txt";
 	private static final String POLYGON_FILE = "polygons.txt";
 	private static final String PLACEMENT_FILE = "place.txt";
+	private static final String TERRITORY_EFFECT_FILE = "territory_effects.txt";
 	private static final String MAP_PROPERTIES = "map.properties";
 	private static final String CAPITAL_MARKERS = "capitols.txt";
 	private static final String CONVOY_MARKERS = "convoy.txt";
@@ -99,9 +102,14 @@ public class MapData
 	// maps String -> List of String
 	private Map<String, List<String>> m_contains;
 	private Properties m_mapProperties;
+	
+	private Map<String, List<Point>> m_territoryEffects;
+
+	
 	// we shouldnt draw the names to these territories
 	private Set<String> m_undrawnTerritoriesNames;
 	private Map<Image, List<Point>> m_decorations;
+	private Map<String,Image> m_effectImages = new HashMap<String,Image>();
 	private final ResourceLoader m_resourceLoader;
 	private BufferedImage m_vcImage;
 	private BufferedImage m_blockadeImage;
@@ -137,6 +145,7 @@ public class MapData
 		{
 			final String prefix = "";
 			m_place = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + PLACEMENT_FILE));
+			m_territoryEffects = PointFileReaderWriter.readOneToMany(loader.getResourceAsStream(prefix + TERRITORY_EFFECT_FILE));
 			m_polys = PointFileReaderWriter.readOneToManyPolygons(loader.getResourceAsStream(prefix + POLYGON_FILE));
 			m_centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
 			m_vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
@@ -266,6 +275,10 @@ public class MapData
 	public boolean useNation_convoyFlags()
 	{
 		return Boolean.valueOf(m_mapProperties.getProperty(USE_NATION_CONVOY_FLAGS, "false")).booleanValue();
+	}
+	
+	public boolean useTerritoryEffectMarkers() {
+		return Boolean.valueOf(m_mapProperties.getProperty(USE_TERRITORY_EFFECTS_MARKERS, "false")).booleanValue();
 	}
 	
 	private void initializeContains()
@@ -431,7 +444,7 @@ public class MapData
 	{
 		return m_place.get(terr.getName());
 	}
-	
+		
 	public List<Polygon> getPolygons(final String terr)
 	{
 		return m_polys.get(terr);
@@ -668,5 +681,19 @@ public class MapData
 	public Map<Image, List<Point>> getDecorations()
 	{
 		return Collections.unmodifiableMap(m_decorations);
+	}
+
+	public List<Point> getTerritoryEffectPoints(Territory territory) {
+		if(m_territoryEffects.get(territory) == null)
+			return Arrays.asList(getCenter(territory));
+		return m_territoryEffects.get(territory);
+	}
+
+	public Image getTerritoryEffectImage(String m_effectName) {
+		if (m_effectImages.get(m_effectName) != null)
+			return m_effectImages.get(m_effectName);
+		Image effectImage = loadImage("territoryEffects/"+m_effectName+".png");
+		m_effectImages.put(m_effectName, effectImage);
+		return effectImage;
 	}
 }

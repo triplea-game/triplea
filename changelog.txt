@@ -1,4 +1,6 @@
 Changes for 1.5
+* Created a new overlay for territory effect images, that is enabled in map.properties map.useTerritoryEffectMarkers=true, territory_effects.txt, and territoryEffects folder. (edwin van der wal)
+
 * Fixed bug where 'when' based triggers did not fire at all. (veqryn)
 
 * Fixed bug where default based triggers were firing multiple times for each default firing location. (veqryn)

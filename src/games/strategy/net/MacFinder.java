@@ -18,6 +18,7 @@ import games.strategy.util.MD5Crypt;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Arrays;
@@ -65,9 +66,9 @@ public class MacFinder
 			final NetworkInterface localHostNI = NetworkInterface.getByInetAddress(address);
 			if (localHostNI != null)
 			{
-				final byte[] rawMac = localHostNI.getHardwareAddress();
-				// Method m = NetworkInterface.class.getMethod("getHardwareAddress");
-				// byte[] rawMac = (byte[]) m.invoke(localHostNI);
+				// final byte[] rawMac = localHostNI.getHardwareAddress();
+				final Method m = NetworkInterface.class.getMethod("getHardwareAddress");
+				final byte[] rawMac = (byte[]) m.invoke(localHostNI);
 				final String mac = convertMacBytesToString(rawMac);
 				if (isMacValid(mac))
 					return mac;
@@ -83,9 +84,9 @@ public class MacFinder
 			while (niIter.hasMoreElements())
 			{
 				final NetworkInterface ni = niIter.nextElement();
-				final byte[] rawMac = ni.getHardwareAddress();
-				// Method m = NetworkInterface.class.getMethod("getHardwareAddress");
-				// byte[] rawMac = (byte[]) m.invoke(localHostNI);
+				// final byte[] rawMac = ni.getHardwareAddress();
+				final Method m = NetworkInterface.class.getMethod("getHardwareAddress");
+				final byte[] rawMac = (byte[]) m.invoke(ni);
 				final String mac = convertMacBytesToString(rawMac);
 				if (isMacValid(mac))
 					return mac;
