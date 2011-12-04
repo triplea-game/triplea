@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,14 +74,15 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	{
 		final Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
 		final Map<String, IAttachment> map = player.getAttachments();
-		final Iterator<String> iter = map.keySet().iterator();
-		while (iter.hasNext())
+		for (final Map.Entry<String, IAttachment> entry : map.entrySet())
 		{
-			final IAttachment attachment = map.get(iter.next());
-			final String name = attachment.getName();
-			if (name.startsWith(Constants.RULES_OBJECTIVE_PREFIX) && attachment instanceof RulesAttachment)
+			final IAttachment attachment = entry.getValue();
+			if (attachment instanceof RulesAttachment)
 			{
-				natObjs.add((RulesAttachment) attachment);
+				if (attachment.getName().startsWith(Constants.RULES_OBJECTIVE_PREFIX))
+				{
+					natObjs.add((RulesAttachment) attachment);
+				}
 			}
 		}
 		return natObjs;
@@ -168,16 +168,16 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		final String[] s = turns.split(":");
 		if (s.length < 1)
 			throw new GameParseException("Rules & Conditions: Empty turn list");
-		for (int i = 0; i < s.length; i++)
+		for (final String subString : s)
 		{
 			int start, end;
 			try
 			{
-				start = getInt(s[i]);
+				start = getInt(subString);
 				end = start;
 			} catch (final Exception e)
 			{
-				final String[] s2 = s[i].split("-");
+				final String[] s2 = subString.split("-");
 				if (s2.length != 2)
 					throw new GameParseException("Rules & Conditions: Invalid syntax for range, must be 'int-int'");
 				start = getInt(s2[0]);

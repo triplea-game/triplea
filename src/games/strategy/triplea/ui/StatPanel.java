@@ -74,36 +74,23 @@ public class StatPanel extends JPanel
 {
 	private final StatTableModel m_dataModel;
 	private final TechTableModel m_techModel;
-	private IStat[] m_stats = new IStat[] { new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat() };
+	private final ResourceTableModel m_resourceModel;
+	private IStat[] m_stats;
 	private IStat[] m_statsExtended = new IStat[] {};
-	private GameData m_data;
+	private IStat[] m_statsResource;
+	protected GameData m_data;
 	private final JTable m_statsTable;
-	private Image m_statsImage;
+	private Image m_statsImage = null;
 	
 	/** Creates a new instance of InfoPanel */
+
 	public StatPanel(final GameData data)
 	{
 		m_data = data;
-		// only add the vc stat if we have some victory cities
-		if (Match.someMatch(data.getMap().getTerritories(), Matches.TerritoryIsVictoryCity))
-		{
-			final List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
-			stats.add(new VictoryCityStat());
-			m_stats = stats.toArray(new IStat[stats.size()]);
-		}
-		// only add the vps in pacific
-		if (data.getProperties().get(Constants.PACIFIC_THEATER, false))
-		{
-			final List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
-			stats.add(new VPStat());
-			m_stats = stats.toArray(new IStat[stats.size()]);
-		}
-		// fill out the extended stats
-		// fillExtendedStats(data);//moved to only fill out if requested by export stats
-		setLayout(new GridLayout(2, 1));
+		setLayout(new GridLayout(3, 1));
 		m_dataModel = new StatTableModel();
 		m_techModel = new TechTableModel();
-		m_statsImage = null;
+		m_resourceModel = new ResourceTableModel();
 		m_statsTable = new JTable(m_dataModel)
 		{
 			@Override
@@ -114,15 +101,23 @@ public class StatPanel extends JPanel
 				super.print(g);
 			}
 		};
+		
+		
 		JTable table = m_statsTable;
-		// Strangely, this is enabled by default
 		table.getTableHeader().setReorderingAllowed(false);
 		// Set width of country column
 		TableColumn column = table.getColumnModel().getColumn(0);
 		column.setPreferredWidth(175);
 		JScrollPane scroll = new JScrollPane(table);
-		// add(scroll, BorderLayout.NORTH);
 		add(scroll);
+		
+		table = new JTable(m_resourceModel);
+		table.getTableHeader().setReorderingAllowed(true);
+		column = table.getColumnModel().getColumn(0);
+		column.setPreferredWidth(175);
+		scroll = new JScrollPane(table);
+		add(scroll);
+		
 		table = new JTable(m_techModel);
 		// Strangely, this is enabled by default
 		table.getTableHeader().setReorderingAllowed(false);
@@ -136,6 +131,8 @@ public class StatPanel extends JPanel
 		// add(scroll, BorderLayout.SOUTH);
 		add(scroll);
 	}
+	
+	
 	
 	private void fillExtendedStats(final GameData data)
 	{
@@ -201,8 +198,10 @@ public class StatPanel extends JPanel
 		m_data = data;
 		m_dataModel.setGameData(data);
 		m_techModel.setGameData(data);
+		m_resourceModel.setGameData(data);
 		m_dataModel.gameDataChanged(null);
 		m_techModel.gameDataChanged(null);
+		m_resourceModel.gameDataChanged(null);
 	}
 	
 	public void setStatsBgImage(final Image image)
@@ -210,20 +209,11 @@ public class StatPanel extends JPanel
 		m_statsImage = image;
 	}
 	
-	public StatTableModel getStatsModel()
-	{
-		return m_dataModel;
-	}
-	
 	public JTable getStatsTable()
 	{
 		return m_statsTable;
 	}
 	
-	public TableModel getTechModel()
-	{
-		return m_techModel;
-	}
 	
 	/**
 	 * 
@@ -234,6 +224,7 @@ public class StatPanel extends JPanel
 		final Iterator<String> allAlliances = m_data.getAllianceTracker().getAlliances().iterator();
 		// order the alliances use a Tree Set
 		final Collection<String> rVal = new TreeSet<String>();
+		
 		while (allAlliances.hasNext())
 		{
 			final String alliance = allAlliances.next();
@@ -264,6 +255,130 @@ public class StatPanel extends JPanel
 		return m_statsExtended;
 	}
 	
+	class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener {
+		private boolean m_isDirty = true;
+		private String[][] m_collectedData;
+		
+		public ResourceTableModel() {
+			setResourceCollums();
+			m_data.addDataChangeListener(this);
+			m_isDirty = true;
+		}
+
+		private void setResourceCollums() {
+			List<IStat> statList = new ArrayList<IStat>();
+			for(Resource resource:m_data.getResourceList().getResources()) {
+				if(resource.getName().equals(Constants.TECH_TOKENS) || resource.getName().equals(Constants.PUS))
+					continue;
+				statList.add(new ResourceStat(resource));
+			}
+			m_statsResource = statList.toArray(new IStat[statList.size()]);
+		}
+
+
+		public synchronized Object getValueAt(final int row, final int col)
+		{
+			if (m_isDirty)
+			{
+				loadData();
+				m_isDirty = false;
+			}
+			return m_collectedData[row][col];
+
+		}
+
+		private synchronized void loadData()
+		{
+			m_data.acquireReadLock();
+			try
+			{
+				final List<PlayerID> players = getPlayers();
+				final Collection<String> alliances = getAlliances();
+				m_collectedData = new String[players.size() + alliances.size()][m_statsResource.length + 1];
+				int row = 0;
+				for(PlayerID player:players) {
+					m_collectedData[row][0] = player.getName();
+					for (int i = 0; i < m_statsResource.length; i++)
+					{
+						m_collectedData[row][i + 1] = m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(player, m_data));
+					}
+					row++;
+				}
+				final Iterator<String> allianceIterator = alliances.iterator();
+				while (allianceIterator.hasNext())
+				{
+					final String alliance = allianceIterator.next();
+					m_collectedData[row][0] = alliance;
+					for (int i = 0; i < m_statsResource.length; i++)
+					{
+						m_collectedData[row][i + 1] = m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(alliance, m_data));
+					}
+					row++;
+				}
+			} finally
+			{
+				m_data.releaseReadLock();
+			}
+		}
+
+		public void gameDataChanged(final Change aChange)
+		{
+			synchronized (this)
+			{
+				m_isDirty = true;
+			}
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					repaint();
+				}
+			});
+		}
+		
+		@Override
+		public String getColumnName(final int col)
+		{
+			if (col == 0)
+				return "Player";
+			return m_statsResource[col - 1].getName();
+		}
+		
+		public int getColumnCount()
+		{
+			return m_statsResource.length + 1;
+		}
+		
+		public synchronized int getRowCount()
+		{
+			if (!m_isDirty)
+				return m_collectedData.length;
+			else
+			{
+				m_data.acquireReadLock();
+				try
+				{
+					return m_data.getPlayerList().size() + getAlliances().size();
+				} finally
+				{
+					m_data.releaseReadLock();
+				}
+			}
+		}
+		
+		public synchronized void setGameData(final GameData data)
+		{
+			synchronized (this)
+			{
+				m_data.removeDataChangeListener(this);
+				m_data = data;
+				m_data.addDataChangeListener(this);
+				m_isDirty = true;
+			}
+			repaint();
+		}
+		
+	}
 	
 	/*
 	 * Custom table model.
@@ -280,9 +395,27 @@ public class StatPanel extends JPanel
 		
 		public StatTableModel()
 		{
+			setStatCollums();
 			m_data.addDataChangeListener(this);
 			m_isDirty = true;
 		}
+		
+		public void setStatCollums() {
+			m_stats = new IStat[] { new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat() };
+			if (Match.someMatch(m_data.getMap().getTerritories(), Matches.TerritoryIsVictoryCity))
+			{
+				final List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
+				stats.add(new VictoryCityStat());
+				m_stats = stats.toArray(new IStat[stats.size()]);
+			}
+			// only add the vps in pacific
+			if (m_data.getProperties().get(Constants.PACIFIC_THEATER, false))
+			{
+				final List<IStat> stats = new ArrayList<IStat>(Arrays.asList(m_stats));
+				stats.add(new VPStat());
+				m_stats = stats.toArray(new IStat[stats.size()]);
+			}
+	}
 		
 		private synchronized void loadData()
 		{
@@ -583,320 +716,325 @@ public class StatPanel extends JPanel
 			isDirty = true;
 		}
 	}
-}
 
 
-class ProductionStat extends AbstractStat
-{
-	public String getName()
+
+	class ProductionStat extends AbstractStat
 	{
-		return "Production";
-	}
-	
-	public double getValue(final PlayerID player, final GameData data)
-	{
-		int rVal = 0;
-		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-		while (iter.hasNext())
+		public String getName()
 		{
-			boolean isOwnedConvoyOrLand = false;
-			final Territory place = iter.next();
-			final OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
-			final TerritoryAttachment ta = TerritoryAttachment.get(place);
-			/* Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone*/
-			if (ta != null)
+			return "Production";
+		}
+		
+		public double getValue(final PlayerID player, final GameData data)
+		{
+			int rVal = 0;
+			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+			while (iter.hasNext())
 			{
-				// if it's water, it is a Convoy Center
-				if (place.isWater())
+				boolean isOwnedConvoyOrLand = false;
+				final Territory place = iter.next();
+				final OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
+				final TerritoryAttachment ta = TerritoryAttachment.get(place);
+				/* Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone*/
+				if (ta != null)
 				{
-					// Preset the original owner
-					PlayerID origOwner = ta.getOccupiedTerrOf();
-					if (origOwner == null)
-						origOwner = origOwnerTracker.getOriginalOwner(place);
-					// Can't get PUs for capturing a CC, only original owner can get them.
-					if (origOwner != PlayerID.NULL_PLAYERID && origOwner == player)
-						isOwnedConvoyOrLand = true;
-					if (origOwner == null)
-						isOwnedConvoyOrLand = true;
-				}
-				else
-				{
-					// if it's a convoy route
-					if (TerritoryAttachment.get(place).isConvoyRoute())
+					// if it's water, it is a Convoy Center
+					if (place.isWater())
 					{
-						// Determine if both parts of the convoy route are owned by the attacker or allies
-						final boolean ownedConvoyRoute = data.getMap().getNeighbors(place, Matches.territoryHasConvoyOwnedBy(player, data, place)).size() > 0;
-						if (ownedConvoyRoute)
+						// Preset the original owner
+						PlayerID origOwner = ta.getOccupiedTerrOf();
+						if (origOwner == null)
+							origOwner = origOwnerTracker.getOriginalOwner(place);
+						// Can't get PUs for capturing a CC, only original owner can get them.
+						if (origOwner != PlayerID.NULL_PLAYERID && origOwner == player)
+							isOwnedConvoyOrLand = true;
+						if (origOwner == null)
 							isOwnedConvoyOrLand = true;
 					}
-					// it's a regular land territory
 					else
 					{
-						isOwnedConvoyOrLand = true;
+						// if it's a convoy route
+						if (TerritoryAttachment.get(place).isConvoyRoute())
+						{
+							// Determine if both parts of the convoy route are owned by the attacker or allies
+							final boolean ownedConvoyRoute = data.getMap().getNeighbors(place, Matches.territoryHasConvoyOwnedBy(player, data, place)).size() > 0;
+							if (ownedConvoyRoute)
+								isOwnedConvoyOrLand = true;
+						}
+						// it's a regular land territory
+						else
+						{
+							isOwnedConvoyOrLand = true;
+						}
+					}
+					/*add 'em all up*/
+					if (place.getOwner().equals(player) && isOwnedConvoyOrLand)
+					{
+						rVal += ta.getProduction();
 					}
 				}
-				/*add 'em all up*/
-				if (place.getOwner().equals(player) && isOwnedConvoyOrLand)
-				{
-					rVal += ta.getProduction();
-				}
 			}
+			rVal *= Properties.getPU_Multiplier(data);
+			return rVal;
 		}
-		rVal *= Properties.getPU_Multiplier(data);
-		return rVal;
-	}
-}
-
-
-class PUStat extends AbstractStat
-{
-	public String getName()
-	{
-		return "PUs";
 	}
 	
-	public double getValue(final PlayerID player, final GameData data)
-	{
-		return player.getResources().getQuantity(Constants.PUS);
-	}
-}
-
-
-class UnitsStat extends AbstractStat
-{
-	public String getName()
-	{
-		return "Units";
-	}
 	
-	public double getValue(final PlayerID player, final GameData data)
+	class PUStat extends ResourceStat
 	{
-		int rVal = 0;
-		final Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
-		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-		while (iter.hasNext())
-		{
-			final Territory place = iter.next();
-			rVal += place.getUnits().countMatches(ownedBy);
+		public PUStat() {
+			super(m_data.getResourceList().getResource(Constants.PUS));
 		}
-		return rVal;
-	}
-}
-
-
-class TUVStat extends AbstractStat
-{
-	public String getName()
-	{
-		return "TUV";
 	}
 	
-	public double getValue(final PlayerID player, final GameData data)
+	class ResourceStat extends AbstractStat
 	{
-		final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
-		final Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
-		int rVal = 0;
-		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-		while (iter.hasNext())
-		{
-			final Territory place = iter.next();
-			final Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
-			rVal += BattleCalculator.getTUV(owned, costs);
+		final Resource m_resource;
+		public ResourceStat(Resource resource) {
+			super();
+			 m_resource = resource;
 		}
-		return rVal;
-	}
-}
-
-
-class VictoryCityStat extends AbstractStat
-{
-	public String getName()
-	{
-		return "VC";
-	}
-	
-	public double getValue(final PlayerID player, final GameData data)
-	{
-		int rVal = 0;
-		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-		while (iter.hasNext())
-		{
-			final Territory place = iter.next();
-			if (!place.getOwner().equals(player))
-				continue;
-			final TerritoryAttachment ta = TerritoryAttachment.get(place);
-			if (ta == null)
-				continue;
-			if (ta.isVictoryCity())
-				rVal++;
+		
+		public String getName() {
+			return m_resource.getName();
 		}
-		return rVal;
-	}
-}
-
-
-class VPStat extends AbstractStat
-{
-	public String getName()
-	{
-		return "VPs";
+	
+		public double getValue(PlayerID player, GameData data) {
+			return player.getResources().getQuantity(m_resource);
+		}	
 	}
 	
-	public double getValue(final PlayerID player, final GameData data)
-	{
-		final PlayerAttachment pa = PlayerAttachment.get(player);
-		if (pa != null)
-			return Double.parseDouble(pa.getVps());
-		return 0;
-	}
-}
-
-
-class TechCountStat extends AbstractStat
-{
-	public String getName()
-	{
-		return "Techs";
-	}
 	
-	public double getValue(final PlayerID player, final GameData data)
+	class UnitsStat extends AbstractStat
 	{
-		int count = 0;
-		final TechAttachment ta = TechAttachment.get(player);
-		if (getBool(ta.getHeavyBomber()))
-			count++;
-		if (getBool(ta.getLongRangeAir()))
-			count++;
-		if (getBool(ta.getJetPower()))
-			count++;
-		if (getBool(ta.getRocket()))
-			count++;
-		if (getBool(ta.getIndustrialTechnology()))
-			count++;
-		if (getBool(ta.getSuperSub()))
-			count++;
-		if (getBool(ta.getDestroyerBombard()))
-			count++;
-		if (getBool(ta.getImprovedArtillerySupport()))
-			count++;
-		if (getBool(ta.getParatroopers()))
-			count++;
-		if (getBool(ta.getIncreasedFactoryProduction()))
-			count++;
-		if (getBool(ta.getWarBonds()))
-			count++;
-		if (getBool(ta.getMechanizedInfantry()))
-			count++;
-		if (getBool(ta.getAARadar()))
-			count++;
-		if (getBool(ta.getShipyards()))
-			count++;
-		for (final boolean value : ta.getGenericTech().values())
+		public String getName()
 		{
-			if (value)
+			return "Units";
+		}
+		
+		public double getValue(final PlayerID player, final GameData data)
+		{
+			int rVal = 0;
+			final Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
+			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+			while (iter.hasNext())
+			{
+				final Territory place = iter.next();
+				rVal += place.getUnits().countMatches(ownedBy);
+			}
+			return rVal;
+		}
+	}
+	
+	
+	class TUVStat extends AbstractStat
+	{
+		public String getName()
+		{
+			return "TUV";
+		}
+		
+		public double getValue(final PlayerID player, final GameData data)
+		{
+			final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
+			final Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
+			int rVal = 0;
+			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+			while (iter.hasNext())
+			{
+				final Territory place = iter.next();
+				final Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
+				rVal += BattleCalculator.getTUV(owned, costs);
+			}
+			return rVal;
+		}
+	}
+	
+	
+	class VictoryCityStat extends AbstractStat
+	{
+		public String getName()
+		{
+			return "VC";
+		}
+		
+		public double getValue(final PlayerID player, final GameData data)
+		{
+			int rVal = 0;
+			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+			while (iter.hasNext())
+			{
+				final Territory place = iter.next();
+				if (!place.getOwner().equals(player))
+					continue;
+				final TerritoryAttachment ta = TerritoryAttachment.get(place);
+				if (ta == null)
+					continue;
+				if (ta.isVictoryCity())
+					rVal++;
+			}
+			return rVal;
+		}
+	}
+	
+	
+	class VPStat extends AbstractStat
+	{
+		public String getName()
+		{
+			return "VPs";
+		}
+		
+		public double getValue(final PlayerID player, final GameData data)
+		{
+			final PlayerAttachment pa = PlayerAttachment.get(player);
+			if (pa != null)
+				return Double.parseDouble(pa.getVps());
+			return 0;
+		}
+	}
+	
+	
+	class TechCountStat extends AbstractStat
+	{
+		public String getName()
+		{
+			return "Techs";
+		}
+		
+		public double getValue(final PlayerID player, final GameData data)
+		{
+			int count = 0;
+			final TechAttachment ta = TechAttachment.get(player);
+			if (getBool(ta.getHeavyBomber()))
 				count++;
+			if (getBool(ta.getLongRangeAir()))
+				count++;
+			if (getBool(ta.getJetPower()))
+				count++;
+			if (getBool(ta.getRocket()))
+				count++;
+			if (getBool(ta.getIndustrialTechnology()))
+				count++;
+			if (getBool(ta.getSuperSub()))
+				count++;
+			if (getBool(ta.getDestroyerBombard()))
+				count++;
+			if (getBool(ta.getImprovedArtillerySupport()))
+				count++;
+			if (getBool(ta.getParatroopers()))
+				count++;
+			if (getBool(ta.getIncreasedFactoryProduction()))
+				count++;
+			if (getBool(ta.getWarBonds()))
+				count++;
+			if (getBool(ta.getMechanizedInfantry()))
+				count++;
+			if (getBool(ta.getAARadar()))
+				count++;
+			if (getBool(ta.getShipyards()))
+				count++;
+			for (final boolean value : ta.getGenericTech().values())
+			{
+				if (value)
+					count++;
+			}
+			return count;
 		}
-		return count;
-	}
-	
-	private static boolean getBool(final String aString)
-	{
-		if (aString.equalsIgnoreCase("true"))
-			return true;
-		else if (aString.equalsIgnoreCase("false"))
-			return false;
-		else
-			throw new IllegalArgumentException(aString + " is not a valid boolean");
-	}
-}
-
-
-class TechTokenStat extends AbstractStat
-{
-	public String getName()
-	{
-		return "Resource: " + "Tech Tokens";
-	}
-	
-	public double getValue(final PlayerID player, final GameData data)
-	{
-		return player.getResources().getQuantity(Constants.TECH_TOKENS);
-	}
-}
-
-
-class GenericResourceStat extends AbstractStat
-{
-	private String m_name = null;
-	
-	public void init(final String name)
-	{
-		m_name = name;
-	}
-	
-	public String getName()
-	{
-		return "Resource: " + m_name;
-	}
-	
-	public double getValue(final PlayerID player, final GameData data)
-	{
-		return player.getResources().getQuantity(m_name);
-	}
-}
-
-
-class GenericTechNameStat extends AbstractStat
-{
-	private TechAdvance m_ta = null;
-	
-	public void init(final TechAdvance ta)
-	{
-		m_ta = ta;
-	}
-	
-	public String getName()
-	{
-		return "TechAdvance: " + m_ta.getName();
-	}
-	
-	public double getValue(final PlayerID player, final GameData data)
-	{
-		if (m_ta.hasTech(TechAttachment.get(player)))
-			return 1;
-		return 0;
-	}
-}
-
-
-class GenericUnitNameStat extends AbstractStat
-{
-	private UnitType m_ut = null;
-	
-	public void init(final UnitType ut)
-	{
-		m_ut = ut;
-	}
-	
-	public String getName()
-	{
-		return "UnitType: " + m_ut.getName();
-	}
-	
-	public double getValue(final PlayerID player, final GameData data)
-	{
-		int rVal = 0;
-		final Match<Unit> ownedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
-		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-		while (iter.hasNext())
+		
+		private boolean getBool(final String aString)
 		{
-			final Territory place = iter.next();
-			rVal += place.getUnits().countMatches(ownedBy);
+			if (aString.equalsIgnoreCase("true"))
+				return true;
+			else if (aString.equalsIgnoreCase("false"))
+				return false;
+			else
+				throw new IllegalArgumentException(aString + " is not a valid boolean");
 		}
-		return rVal;
+	}
+	
+	
+	class TechTokenStat extends ResourceStat
+	{
+		public TechTokenStat() {
+			super(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
+		}
+	}
+	
+	
+	class GenericResourceStat extends AbstractStat
+	{
+		private String m_name = null;
+		
+		public void init(final String name)
+		{
+			m_name = name;
+		}
+		
+		public String getName()
+		{
+			return "Resource: " + m_name;
+		}
+		
+		public double getValue(final PlayerID player, final GameData data)
+		{
+			return player.getResources().getQuantity(m_name);
+		}
+	}
+	
+	
+	class GenericTechNameStat extends AbstractStat
+	{
+		private TechAdvance m_ta = null;
+		
+		public void init(final TechAdvance ta)
+		{
+			m_ta = ta;
+		}
+		
+		public String getName()
+		{
+			return "TechAdvance: " + m_ta.getName();
+		}
+		
+		public double getValue(final PlayerID player, final GameData data)
+		{
+			if (m_ta.hasTech(TechAttachment.get(player)))
+				return 1;
+			return 0;
+		}
+	}
+	
+	
+	class GenericUnitNameStat extends AbstractStat
+	{
+		private UnitType m_ut = null;
+		
+		public void init(final UnitType ut)
+		{
+			m_ut = ut;
+		}
+		
+		public String getName()
+		{
+			return "UnitType: " + m_ut.getName();
+		}
+		
+		public double getValue(final PlayerID player, final GameData data)
+		{
+			int rVal = 0;
+			final Match<Unit> ownedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
+			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
+			while (iter.hasNext())
+			{
+				final Territory place = iter.next();
+				rVal += place.getUnits().countMatches(ownedBy);
+			}
+			return rVal;
+		}
 	}
 }
-
 
 class PlayerOrderComparator implements Comparator<PlayerID>
 {

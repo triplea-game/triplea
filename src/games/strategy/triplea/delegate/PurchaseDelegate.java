@@ -458,22 +458,20 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	
 	protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> costs, final CompositeChange changes, final Collection<Unit> totalUnits)
 	{
-		final Iterator<Resource> costsIter = costs.keySet().iterator();
-		// int AvailPUs = player.getResources().getQuantity(Constants.PUS);
-		while (costsIter.hasNext())
-		{
-			final Resource resource = costsIter.next();
+		StringBuffer returnString = new StringBuffer("");
+		for (Resource resource:costs.keySet()){
 			final float quantity = costs.getInt(resource);
 			final int cost = (int) quantity;
 			final Change change = ChangeFactory.changeResourcesChange(m_player, resource, -cost);
 			changes.add(change);
-			return m_player.getResources().getQuantity(resource) - cost + " PUs remaining";
+			returnString.append(m_player.getResources().getQuantity(resource) - cost + " "+resource.getName()+" remaining\n");
 		}
-		return "";
+		return returnString.toString();
 	}
 	
 	private void giveBonusIncomeToAI()
 	{
+		//TODO and other resources?
 		if (!m_player.isAI())
 			return;
 		final int currentPUs = m_player.getResources().getQuantity(Constants.PUS);

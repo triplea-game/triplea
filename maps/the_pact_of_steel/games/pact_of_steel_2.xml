@@ -545,10 +545,13 @@
 
 
         <resourceList>
-				<!-- for now, only these 2 resources are supported -->
+				<!-- PUs and techTokens are default supported resources. -->
                 <resource name="PUs"/>
                 <resource name="techTokens"/>
-				<!-- the following two VPs are only semi-supported by the code as of right now:
+				<!-- These are custom resources.
+				<resource name="Steel"/>
+				<resource name="Aluminium"/>-->
+				<!-- the following two VPs are only semi-supported by the code as of right now. They are used for special pacific rules.
 				<resource name="VPs"/>
 				<resource name="TemporaryVPs"/> -->
         </resourceList>
@@ -622,6 +625,12 @@
 		
 		<territoryEffectList>
         	<territoryEffect name="mountain"/>
+			<!--<territoryEffect name="city"/>
+			<territoryEffect name="desert"/>
+			<territoryEffect name="forest"/>
+			<territoryEffect name="hill"/>
+			<territoryEffect name="marsh"/>
+			<territoryEffect name="sahara"/>-->
         </territoryEffectList>
 
         <gamePlay>
@@ -759,11 +768,14 @@
 
                 <productionRule name="buyArtillery">
                         <cost resource="PUs" quantity="4" />
+						<!--<cost resource="Steel" quantity="2" />-->
                         <result resourceOrUnit="artillery" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyArmour">
                         <cost resource="PUs" quantity="5" />
+						<!--<cost resource="Steel" quantity="4" />
+						<cost resource="Aluminium" quantity="10" />-->
                         <result resourceOrUnit="armour" quantity="1"/>
                 </productionRule>
 
@@ -4395,6 +4407,10 @@
                         <resourceGiven player="Germans" resource="PUs" quantity="40"/>
                         <resourceGiven player="Italians" resource="PUs" quantity="16"/>
                         <resourceGiven player="Chinese" resource="PUs" quantity="0"/>
+						
+						<!-- custom resources below 
+						<resourceGiven player="Italians" resource="Steel" quantity="20"/>
+						<resourceGiven player="Italians" resource="Aluminium" quantity="30"/>-->
                 </resourceInitialize>
 
 				<relationshipInitialize>

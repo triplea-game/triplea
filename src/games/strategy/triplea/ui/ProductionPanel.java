@@ -21,6 +21,8 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -173,11 +175,10 @@ public class ProductionPanel extends JPanel
 	}
 	
 	// This method can be overridden by subclasses
-	protected void setLeft(final int left, final int totalUnits)
+	protected void setLeft(final ResourceCollection left, final int totalUnits)
 	{
-		final int total = getPUs();
-		final int spent = total - left;
-		m_left.setText("You have " + left + " " + StringUtil.plural("PU", spent) + " left out of " + total + " " + StringUtil.plural("PU", total) + ", Purchasing a total of " + totalUnits + " units.");
+		final ResourceCollection total = getResources();
+		m_left.setText("<html>You have " + left + " left.<br>Out of " + total + "<br>Purchasing a total of " + totalUnits + " units.</html>");
 	}
 	
 	Action m_done_action = new AbstractAction("Done")
@@ -207,43 +208,45 @@ public class ProductionPanel extends JPanel
 	// This method can be overridden by subclasses
 	protected void calculateLimits()
 	{
-		final int PUs = getPUs();
-		int spent = 0;
+		final IntegerMap<Resource> cost;
+		final ResourceCollection resources = getResources();
+		final ResourceCollection spent = new ResourceCollection(m_data);
 		int totalUnits = 0;
-		Iterator<Rule> iter = m_rules.iterator();
-		while (iter.hasNext())
+		for (final Rule current : m_rules)
 		{
-			final Rule current = iter.next();
-			spent += current.getQuantity() * current.getCost();
+			spent.add(current.getCost(), current.getQuantity());
 			totalUnits += current.getQuantity() * current.getProductionRule().getResults().totalValues();
 		}
-		final int leftToSpend = PUs - spent;
+		final ResourceCollection leftToSpend = resources.difference(spent);
 		setLeft(leftToSpend, totalUnits);
-		iter = m_rules.iterator();
-		while (iter.hasNext())
+		
+		for (final Rule current : m_rules)
 		{
-			final Rule current = iter.next();
-			int max = leftToSpend / current.getCost();
+			int max = leftToSpend.fitsHowOften(current.getCost());
 			max += current.getQuantity();
 			current.setMax(max);
 		}
 	}
 	
-	private int getPUs()
+	private ResourceCollection getResources()
 	{
 		if (m_bid)
 		{
+			// TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple resources can be given?
 			final String propertyName = m_id.getName() + " bid";
-			return Integer.parseInt(m_data.getProperties().get(propertyName).toString());
+			final int bid = Integer.parseInt(m_data.getProperties().get(propertyName).toString());
+			final ResourceCollection bidCollection = new ResourceCollection(m_data);
+			bidCollection.addResource(m_data.getResourceList().getResource(Constants.PUS), bid);
+			return bidCollection;
 		}
 		else
-			return m_id.getResources().getQuantity(Constants.PUS);
+			return m_id.getResources();
 	}
 	
 	
 	class Rule
 	{
-		private final int m_cost;
+		private final IntegerMap<Resource> m_cost;
 		private int m_quantity;
 		private final ProductionRule m_rule;
 		private final PlayerID m_id;
@@ -268,9 +271,9 @@ public class ProductionPanel extends JPanel
 			final int numberOfUnitsGiven = m_rule.getResults().totalValues();
 			String text;
 			if (numberOfUnitsGiven > 1)
-				text = "<html> x " + (m_cost < 10 ? " " : "") + m_cost + "<br>" + "for " + numberOfUnitsGiven + "<br>" + " units</html>";
+				text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "<br>" + "for " + numberOfUnitsGiven + "<br>" + " units</html>";
 			else
-				text = " x " + (m_cost < 10 ? " " : "") + m_cost;
+				text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "</html>";
 			final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
 			final JLabel info = new JLabel(attack + "/" + defense + "/" + movement);
 			// info.setToolTipText(" attack:" + attack + " defense :" + defense +" movement:" +movement);
@@ -297,11 +300,11 @@ public class ProductionPanel extends JPanel
 		Rule(final ProductionRule rule, final PlayerID id)
 		{
 			m_rule = rule;
-			m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));
+			m_cost = rule.getCosts();
 			m_id = id;
 		}
 		
-		int getCost()
+		IntegerMap<Resource> getCost()
 		{
 			return m_cost;
 		}

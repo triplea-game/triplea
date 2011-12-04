@@ -273,7 +273,7 @@ public class DiceRoll implements Externalizable
 						strength = ua.getBombard(current.getOwner());
 					strength += getSupport(current.getType(), supportRules, supportLeft);
 				}
-				strength += TerritoryEffectCalculator.getTerritoryCombatBonus(current.getType(), location, defending);
+				strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), location, defending);
 				totalStr += strength;
 				power += Math.min(Math.max(strength, 0), data.getDiceSides());
 				;
@@ -585,7 +585,7 @@ public class DiceRoll implements Externalizable
 				else
 					strength = ua.getAttack(current.getOwner());
 				strength += getSupport(current.getType(), supportRules, supportLeft);
-				strength += TerritoryEffectCalculator.getTerritoryCombatBonus(current.getType(), location, defending);
+				strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), location, defending);
 				strength = Math.min(Math.max(strength, 0), data.getDiceSides());
 				int minIndex = 0;
 				int min = data.getDiceSides();
@@ -637,7 +637,7 @@ public class DiceRoll implements Externalizable
 							strength = ua.getBombard(current.getOwner());
 						strength += getSupport(current.getType(), supportRules, supportLeft);
 					}
-					strength += TerritoryEffectCalculator.getTerritoryCombatBonus(current.getType(), location, defending);
+					strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), location, defending);
 					strength = Math.min(Math.max(strength, 0), data.getDiceSides());
 					final boolean hit = strength > random[diceIndex];
 					dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));

@@ -41,6 +41,12 @@ public class ResourceCollection extends GameDataComponent
 		super(data);
 	}
 	
+	public ResourceCollection(final GameData data, final IntegerMap<Resource> resources)
+	{
+		this(data);
+		m_resources.add(resources);
+	}
+	
 	public void addResource(final Resource resource, final int quantity)
 	{
 		if (quantity < 0)
@@ -94,5 +100,109 @@ public class ResourceCollection extends GameDataComponent
 	public boolean has(final IntegerMap<Resource> map)
 	{
 		return m_resources.greaterThanOrEqualTo(map);
+	}
+	
+	/**
+	 * @param spent
+	 * @return new ResourceCollection containing the difference between both collections
+	 */
+	public ResourceCollection difference(final ResourceCollection otherCollection)
+	{
+		final ResourceCollection returnCollection = new ResourceCollection(getData(), m_resources);
+		returnCollection.subtract(otherCollection);
+		return returnCollection;
+	}
+	
+	private void subtract(final ResourceCollection resourceCollection)
+	{
+		subtract(resourceCollection.m_resources);
+	}
+	
+	public void subtract(final IntegerMap<Resource> cost)
+	{
+		for (final Resource resource : cost.keySet())
+		{
+			removeResource(resource, cost.getInt(resource));
+		}
+		
+	}
+	
+	public void subtract(final IntegerMap<Resource> cost, final int quantity)
+	{
+		for (int i = 0; i < quantity; i++)
+		{
+			subtract(cost);
+		}
+	}
+	
+	public void add(final IntegerMap<Resource> resources)
+	{
+		for (final Resource resource : resources.keySet())
+		{
+			addResource(resource, resources.getInt(resource));
+		}
+	}
+	
+	public void add(final IntegerMap<Resource> resources, final int quantity)
+	{
+		for (int i = 0; i < quantity; i++)
+		{
+			add(resources);
+		}
+	}
+	
+	public int fitsHowOften(final IntegerMap<Resource> cost)
+	{
+		final ResourceCollection resources = new ResourceCollection(getData(), m_resources);
+		for (int i = 0; i <= 100; i++)
+		{
+			try
+			{
+				resources.subtract(cost);
+			} catch (final IllegalArgumentException iae)
+			{
+				return i; // when the subtraction isn't possible it will throw an exception, which means we can return i;
+			}
+		}
+		throw new IllegalArgumentException("Unlimited purchases shouldn't be possible");
+	}
+	
+	@Override
+	public String toString()
+	{
+		return toString(m_resources);
+	}
+	
+	public static String toString(final IntegerMap<Resource> resources)
+	{
+		String returnString = "";
+		for (final Resource resource : resources.keySet())
+		{
+			returnString += ", ";
+			returnString += resources.getInt(resource);
+			returnString += " " + resource.getName();
+		}
+		if (returnString.length() > 0 && returnString.startsWith(", "))
+			returnString = returnString.replaceFirst(", ", "");
+		return returnString;
+	}
+	
+	public String toStringForHTML()
+	{
+		return toStringForHTML(m_resources);
+	}
+	
+	public static String toStringForHTML(final IntegerMap<Resource> resources)
+	{
+		String returnString = "";
+		for (final Resource resource : resources.keySet())
+		{
+			returnString += "<br>";
+			returnString += resources.getInt(resource);
+			returnString += " " + resource.getName();
+		}
+		if (returnString.length() > 0 && returnString.startsWith("<br>"))
+			returnString = returnString.replaceFirst("<br>", "");
+		return returnString;
 	}
 }

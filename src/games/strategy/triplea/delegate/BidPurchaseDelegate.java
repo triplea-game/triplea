@@ -6,6 +6,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -55,8 +56,9 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	@Override
 	protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player)
 	{
-		final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
-		return costs.getInt(PUs) <= m_bid;
+		ResourceCollection bidCollection =  new ResourceCollection(getData());
+		bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid); // TODO: allow bids to have more than just PUs
+		return bidCollection.has(costs);
 	}
 	
 	@Override

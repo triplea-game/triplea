@@ -339,33 +339,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			final PlayerAttachment pa = PlayerAttachment.get(m_id);
 			if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
 				return;
-			int minPUsNeededToBuild = Integer.MAX_VALUE;
-			m_bridge.getGameData().acquireReadLock();
-			try
-			{
-				final Iterator<ProductionRule> prodRules = m_id.getProductionFrontier().getRules().iterator();
-				while (prodRules.hasNext())
-				{
-					final ProductionRule rule = prodRules.next();
-					minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
-				}
-				if (m_id.getRepairFrontier() != null)
-				{
-					final Iterator<RepairRule> repairRules = m_id.getRepairFrontier().getRules().iterator();
-					while (repairRules.hasNext())
-					{
-						final RepairRule rule = repairRules.next();
-						minPUsNeededToBuild = Math.min(rule.getCosts().getInt(m_bridge.getGameData().getResourceList().getResource(Constants.PUS)), minPUsNeededToBuild);
-					}
-				}
-				// can we buy anything
-				if (m_id.getResources().getQuantity(Constants.PUS) < minPUsNeededToBuild)
-					return;
-			} finally
-			{
-				m_bridge.getGameData().releaseReadLock();
-			}
 		}
+			
+		if(!canWePurchaseOrRepair())
+				return;
+		
 		// Check if any factories need to be repaired
 		String error = null;
 		IPurchaseDelegate purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
@@ -440,9 +418,20 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			// dont give up, keep going
 			purchase(bid);
 		}
-		return;
 	}
 	
+	private boolean canWePurchaseOrRepair() {
+		for(ProductionRule rule:m_id.getProductionFrontier().getRules()) {
+			if(m_id.getResources().has(rule.getCosts()))
+				return true;
+		}
+		for(RepairRule rule:m_id.getRepairFrontier().getRules()) {
+			if(m_id.getResources().has(rule.getCosts()))
+				return true;
+		}
+		return false;
+	}
+
 	private void battle()
 	{
 		while (true)

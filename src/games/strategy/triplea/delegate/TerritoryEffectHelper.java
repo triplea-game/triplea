@@ -10,7 +10,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 /*
- * TerritoryEffectCalculator.java
+ * TerritoryEffectHelper.java
  * 
  * Created on November 2, 2001, 12:26 PM
  */
@@ -32,7 +32,7 @@ import java.util.Iterator;
  * @author Edwin van der Wal
  * @version 1.0
  */
-public class TerritoryEffectCalculator
+public class TerritoryEffectHelper
 {
 	public static Collection<TerritoryEffect> getEffects(final Territory location)
 	{

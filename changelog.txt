@@ -1,4 +1,6 @@
 Changes for 1.5
+* Fixed engine to allow multiple resources for purchasing of units and repairs. Added new panel on stats tab to show additional resources. (edwin van der wal)
+
 * Phase 4 of abstraction, RulesAttachment now abstracted into RulesAttachment, AbstractRulesAttachment, and AbstractPlayerRulesAttachment. (veqryn)
 
 * Created a new overlay for territory effect images, that is enabled in map.properties map.useTerritoryEffectMarkers=true, territory_effects.txt, and territoryEffects folder. (edwin van der wal)

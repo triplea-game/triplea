@@ -21,6 +21,8 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -228,12 +230,10 @@ public class ProductionRepairPanel extends JPanel
 		add(m_done, new GridBagConstraints(0, 4, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 8, 0), 0, 0));
 	}
 	
-	// This method can be overridden by subclasses
-	protected void setLeft(final int left)
+	protected void setLeft(final ResourceCollection left)
 	{
-		final int total = getPUs();
-		// int spent = total - left;
-		m_left.setText("You have " + left + " " + StringUtil.plural("PU", left) + " left out of " + total + " " + StringUtil.plural("PU", total));
+		final ResourceCollection total = getResources();
+		m_left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
 	}
 	
 	private boolean isIncreasedFactoryProduction(final PlayerID player)
@@ -272,34 +272,39 @@ public class ProductionRepairPanel extends JPanel
 		return prod;
 	}
 	
-	// This method can be overridden by subclasses
 	protected void calculateLimits()
 	{
-		final int PUs = getPUs();
-		float spent = 0;
-		final Iterator<Rule> iter = m_rules.iterator();
-		while (iter.hasNext())
+		final IntegerMap<Resource> cost;
+		final ResourceCollection resources = getResources();
+		final ResourceCollection spent = new ResourceCollection(m_data);
+		for (final Rule current : m_rules)
 		{
-			final Rule current = iter.next();
-			spent += current.getQuantity() * current.getCost();
-			final Unit unit = current.getUnit();
-			final TripleAUnit taUnit = (TripleAUnit) unit;
-			final int maxProd = taUnit.getHowMuchCanThisUnitBeRepaired(unit, unit.getTerritoryUnitIsIn());
-			current.setMax(maxProd);
+			spent.add(current.getCost(), current.getQuantity());
 		}
-		final int leftToSpend = (int) (PUs - spent);
+		final ResourceCollection leftToSpend = resources.difference(spent);
 		setLeft(leftToSpend);
+		
+		for (final Rule current : m_rules)
+		{
+			int max = leftToSpend.fitsHowOften(current.getCost());
+			max += current.getQuantity();
+			current.setMax(max);
+		}
 	}
 	
-	private int getPUs()
+	private ResourceCollection getResources()
 	{
 		if (m_bid)
 		{
+			// TODO bid only allows you to add PU's to the bid... maybe upgrading Bids so multiple resources can be given? (actually, bids should not cover repairing at all...)
 			final String propertyName = m_id.getName() + " bid";
-			return Integer.parseInt(m_data.getProperties().get(propertyName).toString());
+			final int bid = Integer.parseInt(m_data.getProperties().get(propertyName).toString());
+			final ResourceCollection bidCollection = new ResourceCollection(m_data);
+			bidCollection.addResource(m_data.getResourceList().getResource(Constants.PUS), bid);
+			return bidCollection;
 		}
 		else
-			return m_id.getResources().getQuantity(Constants.PUS);
+			return m_id.getResources();
 	}
 	
 	
@@ -307,7 +312,7 @@ public class ProductionRepairPanel extends JPanel
 	public class Rule extends JPanel
 	{
 		private final ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
-		private float m_cost;
+		private final IntegerMap<Resource> m_cost;
 		private final RepairRule m_rule;
 		private Unit m_unit;
 		
@@ -315,32 +320,20 @@ public class ProductionRepairPanel extends JPanel
 		{
 			setLayout(new GridBagLayout());
 			m_rule = rule;
-			m_cost = rule.getCosts().getInt(m_data.getResourceList().getResource(Constants.PUS));
+			m_cost = rule.getCosts();
 			if (isIncreasedFactoryProduction(id))
-				m_cost /= 2;
+				m_cost.multiplyAllValuesBy(0.5f, 2);
 			final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
-			/*if (!type.equals(repairUnit.getType()) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
-			{
-				// older maps use _hit versions in the results tab.  so, change to non _hit version
-				String newType = type.getName();
-				if (newType.endsWith("_hit"))
-				{
-					newType = newType.substring(0, (newType.lastIndexOf("_hit") != -1 ? newType.lastIndexOf("_hit") : newType.length()-1));
-					if (m_data.getUnitTypeList().getUnitType(newType) != null)
-						type = m_data.getUnitTypeList().getUnitType(newType);
-				}
-			}*/
+			
 			if (!type.equals(repairUnit.getType()))
 				throw new IllegalStateException("Rule unit type " + type.getName() + " does not match " + repairUnit.toString() + ".  Please make sure your maps are up to date!");
-			// UnitAttachment attach = UnitAttachment.get(type);
 			final TripleAUnit taUnit = (TripleAUnit) repairUnit;
 			Icon icon;
 			if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
 				icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, true, false);
 			else
-				// if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data))
 				icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, Matches.UnitHasSomeUnitDamage().match(repairUnit), Matches.UnitIsDisabled().match(repairUnit));
-			final String text = " x " + (m_cost < 10 ? " " : "") + m_cost;
+			final String text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "</html>";
 			final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
 			final JLabel info = new JLabel(repairUnit.getTerritoryUnitIsIn().getName());
 			final int toRepair = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, repairUnit.getTerritoryUnitIsIn());
@@ -355,7 +348,7 @@ public class ProductionRepairPanel extends JPanel
 			setBorder(new EtchedBorder());
 		}
 		
-		float getCost()
+		IntegerMap<Resource> getCost()
 		{
 			return m_cost;
 		}

@@ -684,9 +684,9 @@ public class MapData
 	}
 
 	public List<Point> getTerritoryEffectPoints(Territory territory) {
-		if(m_territoryEffects.get(territory) == null)
+		if(m_territoryEffects.get(territory.getName()) == null)
 			return Arrays.asList(getCenter(territory));
-		return m_territoryEffects.get(territory);
+		return m_territoryEffects.get(territory.getName());
 	}
 
 	public Image getTerritoryEffectImage(String m_effectName) {

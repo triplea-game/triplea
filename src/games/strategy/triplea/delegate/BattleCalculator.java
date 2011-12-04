@@ -900,7 +900,7 @@ public class BattleCalculator
 		}
 		if (rolls == 0 && unitAttachment.getAttack(id) == 0)
 		{
-			if (TerritoryEffectCalculator.getTerritoryCombatBonus(unit.getType(), location, defend) > 0)
+			if (TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), location, defend) > 0)
 				rolls += 1;
 		}
 		return rolls;

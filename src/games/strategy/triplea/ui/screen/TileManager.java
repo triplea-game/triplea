@@ -20,7 +20,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.delegate.TerritoryEffectCalculator;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.ui.UIContext;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.OP;
@@ -312,7 +312,7 @@ public class TileManager
 		final Iterator<Point> effectPoints = mapData.getTerritoryEffectPoints(territory).iterator();
 		Point drawingPoint = effectPoints.next();
 
-		for(TerritoryEffect te:TerritoryEffectCalculator.getEffects(territory)) {
+		for(TerritoryEffect te:TerritoryEffectHelper.getEffects(territory)) {
 			drawing.add(new TerritoryEffectDrawable(te, drawingPoint));
 			drawingPoint = effectPoints.hasNext()?effectPoints.next():drawingPoint;
 		}

@@ -26,7 +26,7 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.TerritoryEffectCalculator;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
@@ -1181,7 +1181,7 @@ class BattleModel extends DefaultTableModel
 							m_data.releaseReadLock();
 						}
 					}
-					strength += TerritoryEffectCalculator.getTerritoryCombatBonus(category.getType(), m_location, !m_attack);
+					strength += TerritoryEffectHelper.getTerritoryCombatBonus(category.getType(), m_location, !m_attack);
 				}
 				strength = Math.min(Math.max(strength, 0), m_data.getDiceSides());
 				shift[strength]++;
