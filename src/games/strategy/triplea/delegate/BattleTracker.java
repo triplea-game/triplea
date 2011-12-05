@@ -361,7 +361,8 @@ public class BattleTracker implements java.io.Serializable
 	{
 		final GameData data = bridge.getData();
 		final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
-		final boolean isTerritoryOwnerAnEnemy = data.getRelationshipTracker().canTakeOverOwnedTerritory(id, territory.getOwner()); // .isAtWar(id, territory.getOwner());
+		final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
+		final boolean isTerritoryOwnerAnEnemy = relationshipTracker.canTakeOverOwnedTerritory(id, territory.getOwner()); // .isAtWar(id, territory.getOwner());
 		// If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers have more than just transports. If they don't, exit here.
 		if (territory.isWater() && arrivingUnits != null)
 		{
@@ -388,25 +389,29 @@ public class BattleTracker implements java.io.Serializable
 				return;
 		}
 		// If it was a Convoy Route- check ownership of the associated neighboring territory and set message
-		if (TerritoryAttachment.get(territory).isConvoyRoute())
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+		if (ta.isConvoyRoute())
 		{
-			// Determine if both parts of the convoy route are owned by the attacker or allies
-			final boolean ownedConvoyRoute = data.getMap().getNeighbors(territory, Matches.territoryHasConvoyOwnedBy(id, data, territory)).size() > 0;
-			int PUCharge = TerritoryAttachment.get(territory).getProduction();
-			Territory valuedTerritory = data.getMap().getTerritory(territory.getName());
-			// If the captured territory is water, get the associated land territory for reporting.
-			if (territory.isWater())
+			// we could be part of a convoy route for another territory
+			final Collection<Territory> attachedConvoyTo = TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data);
+			for (final Territory convoy : attachedConvoyTo)
 			{
-				valuedTerritory = data.getMap().getTerritory(TerritoryAttachment.get(territory).getConvoyAttached());
-				PUCharge = TerritoryAttachment.get(valuedTerritory).getProduction();
-			}
-			if (ownedConvoyRoute)
-			{
-				bridge.getHistoryWriter().addChildToEvent(valuedTerritory.getOwner() + " gain " + PUCharge + " production for liberating the convoy route in " + territory.getName());
-			}
-			else
-			{
-				bridge.getHistoryWriter().addChildToEvent(valuedTerritory.getOwner() + " lose " + PUCharge + " production due to the capture of the convoy route in " + territory.getName());
+				final TerritoryAttachment cta = TerritoryAttachment.get(convoy);
+				if (!cta.isConvoyRoute())
+					continue;
+				final PlayerID convoyOwner = convoy.getOwner();
+				if (relationshipTracker.isAllied(id, convoyOwner))
+				{
+					if (Match.getMatches(cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data)).size() <= 0)
+						bridge.getHistoryWriter().addChildToEvent(convoyOwner.getName() + " gains " + cta.getProduction()
+									+ " production in " + convoy.getName() + " for the liberation the convoy route in " + territory.getName());
+				}
+				else if (relationshipTracker.isAtWar(id, convoyOwner))
+				{
+					if (Match.getMatches(cta.getConvoyAttached(), Matches.isTerritoryAllied(convoyOwner, data)).size() == 1)
+						bridge.getHistoryWriter().addChildToEvent(convoyOwner.getName() + " loses " + cta.getProduction()
+									+ " production in " + convoy.getName() + " due to the capture of the convoy route in " + territory.getName());
+				}
 			}
 		}
 		// if neutral, we may charge money to enter
@@ -434,7 +439,6 @@ public class BattleTracker implements java.io.Serializable
 		}
 		// if its a capital we take the money
 		// NOTE: this is not checking to see if it is an enemy. instead it is relying on the fact that the capital should be owned by the person it is attached to
-		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		if (isTerritoryOwnerAnEnemy && ta.getCapital() != null)
 		{
 			// if the capital is owned by the capitols player
@@ -499,7 +503,7 @@ public class BattleTracker implements java.io.Serializable
 		if (terrOrigOwner == null)
 			terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
 		PlayerID newOwner;
-		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && data.getRelationshipTracker().isAllied(terrOrigOwner, id))
+		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && relationshipTracker.isAllied(terrOrigOwner, id))
 		{
 			if (territory.equals(TerritoryAttachment.getCapital(terrOrigOwner, data)))
 				newOwner = terrOrigOwner;
@@ -566,7 +570,7 @@ public class BattleTracker implements java.io.Serializable
 		// is this territory our capitol or a capitol of our ally
 		// Also check to make sure playerAttachment even HAS a capital to fix abend
 		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
-					&& data.getRelationshipTracker().isAllied(terrOrigOwner, id))
+					&& relationshipTracker.isAllied(terrOrigOwner, id))
 		{
 			// if it is give it back to the original owner
 			final Collection<Territory> originallyOwned = origOwnerTracker.getOriginallyOwned(data, terrOrigOwner);

@@ -334,31 +334,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			if (toAdd == null)
 				continue;
 			// Check if territory is originally owned convoy center
-			if (current.isWater())
-			{
-				// Preset the original owner
-				PlayerID origOwner = attatchment.getOccupiedTerrOf();
-				if (origOwner == null)
-					origOwner = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(current);
-				if (origOwner != PlayerID.NULL_PLAYERID && origOwner == current.getOwner())
-					rVal.add(toAdd);
-			}
-			else
-			{
-				// if it's a convoy route
-				if (TerritoryAttachment.get(current).isConvoyRoute())
-				{
-					// Determine if both parts of the convoy route are owned by the attacker or allies
-					final boolean ownedConvoyRoute = data.getMap().getNeighbors(current, Matches.territoryHasConvoyOwnedBy(current.getOwner(), data, current)).size() > 0;
-					if (ownedConvoyRoute)
-						rVal.add(toAdd);
-				}
-				else
-				// just add the normal land territories
-				{
-					rVal.add(toAdd);
-				}
-			}
+			if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).match(current))
+				rVal.add(toAdd);
 		}
 		return rVal;
 	}

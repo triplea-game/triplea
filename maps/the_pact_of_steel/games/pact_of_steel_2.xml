@@ -2242,8 +2242,9 @@
 																it must be a list of the player's names in a ":" delimited list.  For example: value="Russians:Germans"
 			changeUnitOwners						values: allows some players to have their units change to another player's control, if they are located in territories with this attachment 
 																it must be a list of the player's names in a ":" delimited list.  For example: value="Russians:Germans"
-			convoyRoute								values: true or false, must also have ConvoyAttached. 
-			convoyAttached							values: a colon (":") delimited list of the territories this convoy is route is using. Used for setting a land territory to attach to a sea zone. at least one of the attached sea zones must be owned by a friendly to collect income from the land zone
+			convoyRoute								values: true or false. Is this territory part of a Convoy route. (meaning, if this territory Either REQUIRES other territories to be owned, or is REQUIRED BY other territories to be owned).
+			convoyAttached							values: a colon (":") delimited list of the territories this convoy is route is using (list of territories This territory REQUIRES). This can be empty if this territory does not require any other territories but is required by other territories.
+																At least one of the attached territories must be owned by a friendly to collect income from this territory.
 			blockadeZone							values: true or false, can this territory be blockaded by neighboring sea zones?
 			kamikazeZone							values: true or false, does nothing right now, but it will put a symbol on the map (the kamikazeZone symbol must be in the flags folder and be named "<owner_name>_fade"
 			territoryEffect							values: adds a territoryEffect to a territory, can have multiple
@@ -2271,9 +2272,9 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Sardinia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-						<!-- ConvoyRoute and ConvoyAttached are for setting a land territory to attach to a sea zone. at least one of the attached sea zones must be owned by a friendly to collect income from the land zone
-						<option name="ConvoyRoute" value="true"/>
-						<option name="ConvoyAttached" value="14 Sea Zone:13 Sea Zone"/> -->
+						<!-- convoyRoute and convoyAttached are for setting a territory to require another territory in order to collect income. at least one of the listed territories must be owned by a friendly to collect income from this territory.
+						<option name="convoyRoute" value="true"/>
+						<option name="convoyAttached" value="14 Sea Zone:13 Sea Zone"/> -->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Eastern Canada" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2472,8 +2473,8 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Norway" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
-						<option name="ConvoyRoute" value="true"/>
-						<option name="ConvoyAttached" value="5 Sea Zone:6 Sea Zone"/>
+						<option name="convoyRoute" value="true"/>
+						<option name="convoyAttached" value="5 Sea Zone:6 Sea Zone"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="French Indochina" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2681,30 +2682,31 @@
                         <option name="production" value="0"/>
                 </attatchment>
 				
-				<!-- Convoy Zones, Convoy Routes, Blockade Zones -->
-				<!-- Convoy Routes must be attached to both a land territory and a sea territory. you must control at least one of the sea routes in order to collect any income from the land territory. the sea convoys can have income too, and if they do then they operate just like convoy zones for the income
+				<!-- Convoy Centers, Convoy Routes, Blockade Zones -->
+				<!-- Convoy Routes must be attached to both the Requiring territory and the Required territory. Sea convoys can have income too, and if they do then they operate just like Convoy Centers for the income
 				<attatchment name="territoryAttatchment" attatchTo="13 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="ConvoyRoute" value="true"/>
-						<option name="ConvoyAttached" value="Sardinia"/>
+						<option name="convoyRoute" value="true"/>
+						<option name="convoyAttached" value=""/>
                 </attatchment>
 				<attatchment name="territoryAttatchment" attatchTo="14 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="2"/>
-						<option name="ConvoyRoute" value="true"/>
-						<option name="ConvoyAttached" value="Sardinia"/>
+						<option name="convoyRoute" value="true"/>
+						<option name="convoyAttached" value=""/>
                 </attatchment> -->
 				<attatchment name="territoryAttatchment" attatchTo="5 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="2"/>
-						<option name="ConvoyRoute" value="true"/>
-						<option name="ConvoyAttached" value="Norway"/>
+						<!-- Sea zone 5 is part of the convoyRoute of Norway (Norway has it listed under convoyAttached), so Sea zone 5 must have convoyRoute = true -->
+						<option name="convoyRoute" value="true"/>
+						<!-- Sea zone 5 has an income of 2 for Germany, but it does not Require ownership of another territory in order to get the income, so "convoyAttached" is blank -->
+						<option name="convoyAttached" value=""/>
                 </attatchment>
 				<attatchment name="territoryAttatchment" attatchTo="6 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="0"/>
-						<option name="ConvoyRoute" value="true"/>
-						<option name="ConvoyAttached" value="Norway"/>
+						<option name="convoyRoute" value="true"/>
                 </attatchment>
 				
-				<!-- Convoy Zones are simply sea zones with income. if you control your convoy zone, you get the income from it, but if an enemy takes the zone they do not get any income, they just deny you the income. can only be entered during combat movement -->
+				<!-- Convoy Centers are simply sea zones with income. if you control your convoy zone, you get the income from it, but if an enemy takes the zone they do not get any income, they just deny you the income. can only be entered during combat movement -->
                 <attatchment name="territoryAttatchment" attatchTo="3 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
 						<option name="occupiedTerrOf" value="Russians"/>
@@ -3407,6 +3409,7 @@
 					captureUnitOnEnteringBy
 					territoryEffect
 					whenCapturedByGoesTo
+					convoyAttached
 					
 				Territory Effect Attachments:
 					combatDefenseEffect
@@ -5046,9 +5049,9 @@
 						<br>
 						<br>
 						<br><b>New things:</b>
-						<br>1. 4 and 5 Sea Zones are Russian Convoy Zones. If Russia controls it, they get the income from it. If someone else controls it, that player gets no income from it, but they deny the income to Russia. It can not be captured during non-combat phase.
+						<br>1. 4 and 5 Sea Zones are Russian Convoy Centers. If Russia controls it, they get the income from it. If someone else controls it, that player gets no income from it, but they deny the income to Russia. It can not be captured during non-combat phase.
         				<br>2. Sea Zones 5 and 6, are Convoy Routes. They are linked to the land territory of Norway. At least one Convoy Zone must be controlled by the same power that controls the land territory for that power to gain the income from the land territory. 
-								They can not be captured during non-combat phase. If more than 1 route is linked to a single land territory, only 1 route needs to be controlled to get the income from land territory. Routes can have PU values just like convoy zones.
+								They can not be captured during non-combat phase. If more than 1 route is linked to a single land territory, only 1 route needs to be controlled to get the income from land territory. Routes can have PU values just like convoy centers.
         				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of touching land territories by 1 per warship, 2 per normal submarine.
         				<br>4. Air_Transport is an air unit that specializes in dropping off units, has 4 movement, and can carry into battle or drop off in a friendly territory any 2-3 units. Enabled when you get "paratroopers" tech.
 						<br>5. Super_Carrier is a beefed up carrier that can also transport 1 infantry and 1 other land unit like a tank or artillery. It has only 1 hitpoint, just like normal carriers and cruisers.

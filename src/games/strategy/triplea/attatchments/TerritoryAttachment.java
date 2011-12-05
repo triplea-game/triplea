@@ -27,11 +27,14 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.formatter.MyFormatter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -140,7 +143,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	private PlayerID m_originalOwner = null;
 	private PlayerID m_occupiedTerrOf = null;
 	private boolean m_isConvoyRoute = false;
-	private String m_convoyAttached = null;
+	private final Set<Territory> m_convoyAttached = new HashSet<Territory>();
 	private final Collection<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
 	private final Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	private boolean m_navalBase = false;
@@ -151,7 +154,6 @@ public class TerritoryAttachment extends DefaultAttachment
 	private final Collection<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
 	private final Collection<String> m_whenCapturedByGoesTo = new ArrayList<String>();
 	private ResourceCollection m_resources = null;
-	private boolean m_isKamikazeZone;
 	
 	/** Creates new TerritoryAttatchment */
 	public TerritoryAttachment()
@@ -427,13 +429,25 @@ public class TerritoryAttachment extends DefaultAttachment
 	
 	public void setConvoyAttached(final String value)
 	{
-		m_convoyAttached = value;
+		if (value.length() <= 0)
+			return;
+		for (final String subString : value.split(":"))
+		{
+			final Territory territory = getData().getMap().getTerritory(subString);
+			if (territory == null)
+				throw new IllegalStateException("Territory Attachment: No territory called:" + subString);
+			m_convoyAttached.add(territory);
+		}
 	}
 	
-	public String getConvoyAttached()
+	public Set<Territory> getConvoyAttached()
 	{
-		// TODO: this does not look right. what happens to lists of territories?
 		return m_convoyAttached;
+	}
+	
+	public void clearConvoyAttached()
+	{
+		m_convoyAttached.clear();
 	}
 	
 	public void setNavalBase(final String value)
@@ -474,6 +488,23 @@ public class TerritoryAttachment extends DefaultAttachment
 	public boolean isBlockadeZone()
 	{
 		return m_blockadeZone;
+	}
+	
+	public static Set<Territory> getWhatTerritoriesThisIsUsedInConvoysFor(final Territory t, final GameData data)
+	{
+		final Set<Territory> rVal = new HashSet<Territory>();
+		final TerritoryAttachment ta = TerritoryAttachment.get(t);
+		if (ta == null || !ta.isConvoyRoute())
+			return null;
+		for (final Territory current : data.getMap().getTerritories())
+		{
+			final TerritoryAttachment cta = TerritoryAttachment.get(current);
+			if (cta == null || !cta.isConvoyRoute())
+				continue;
+			if (cta.getConvoyAttached().contains(t))
+				rVal.add(current);
+		}
+		return rVal;
 	}
 	
 	public String toStringForInfo(final boolean useHTML, final boolean includeAttachedToName)
@@ -518,7 +549,7 @@ public class TerritoryAttachment extends DefaultAttachment
 			sb.append(br);
 		}
 		
-		if (m_isKamikazeZone)
+		if (m_kamikazeZone)
 		{
 			sb.append("Is Kamikaze Zone");
 			sb.append(br);
@@ -532,9 +563,11 @@ public class TerritoryAttachment extends DefaultAttachment
 		
 		if (m_isConvoyRoute)
 		{
-			sb.append("Has convoys: ");
-			sb.append(m_convoyAttached);
-			sb.append(br);
+			if (!m_convoyAttached.isEmpty())
+				sb.append("Needs: " + MyFormatter.asList(m_convoyAttached) + br);
+			final Set<Territory> requiredBy = getWhatTerritoriesThisIsUsedInConvoysFor(t, getData());
+			if (!requiredBy.isEmpty())
+				sb.append("Required By: " + MyFormatter.asList(requiredBy) + br);
 		}
 		
 		if (!t.isWater() && m_production > 0 && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))

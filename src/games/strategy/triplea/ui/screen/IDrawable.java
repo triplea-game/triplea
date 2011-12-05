@@ -20,6 +20,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.ui.MapData;
@@ -117,24 +118,29 @@ class TerritoryNameDrawable implements IDrawable
 			// Then overlay with any other specials
 			if (ta != null && mapData.drawConvoyNames())
 			{
-				if (ta.isConvoyRoute())
+				if (ta.isConvoyRoute() && ta.getProduction() > 0 && ta.getOriginalOwner() != null)
 				{
 					drawComments = true;
-					commentText = ta.getConvoyAttached() + " Convoy Route";
+					if (ta.getConvoyAttached().isEmpty())
+						commentText = MyFormatter.asList(TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data)) + " " + ta.getOriginalOwner().getName() + " Convoy Route";
+					else
+						commentText = MyFormatter.asList(ta.getConvoyAttached()) + " " + ta.getOriginalOwner().getName() + " Convoy Dependent Route";
 				}
-				// Check to ensure there's an original owner to fix abend
-				if (ta.getProduction() > 0 && ta.getOriginalOwner() != null)
+				else if (ta.isConvoyRoute())
+				{
+					drawComments = true;
+					if (ta.getConvoyAttached().isEmpty())
+						commentText = MyFormatter.asList(TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data)) + " Convoy Route";
+					else
+						commentText = MyFormatter.asList(ta.getConvoyAttached()) + " Convoy Dependent Route";
+				}
+				else if (ta.getProduction() > 0 && ta.getOriginalOwner() != null)
 				{
 					drawComments = true;
 					if (ta.getOccupiedTerrOf() == null)
 						commentText = ta.getOriginalOwner().getName() + " Convoy Center";
 					else
 						commentText = ta.getOccupiedTerrOf().getName() + " Convoy Center";
-				}
-				if (ta.isConvoyRoute() && ta.getProduction() > 0 && ta.getOriginalOwner() != null)
-				{
-					drawComments = true;
-					commentText = ta.getConvoyAttached() + " " + ta.getOriginalOwner().getName() + " Convoy Route";
 				}
 			}
 			if (drawComments == false)
@@ -510,22 +516,26 @@ class BlockadeZoneDrawable implements IDrawable
 	}
 }
 
+
 class TerritoryEffectDrawable implements IDrawable
 {
-	private TerritoryEffect m_effect;
-	private Point m_point;
-
-	public TerritoryEffectDrawable(final TerritoryEffect te, Point point) {
+	private final TerritoryEffect m_effect;
+	private final Point m_point;
+	
+	public TerritoryEffectDrawable(final TerritoryEffect te, final Point point)
+	{
 		super();
-		m_effect  = te;
+		m_effect = te;
 		m_point = point;
 	}
-
-	public void draw(Rectangle bounds, GameData data, Graphics2D graphics, MapData mapData, AffineTransform unscaled, AffineTransform scaled) {
+	
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
+	{
 		graphics.drawImage(mapData.getTerritoryEffectImage(m_effect.getName()), m_point.x - bounds.x, m_point.y - bounds.y, null);
 	}
-
-	public int getLevel() {
+	
+	public int getLevel()
+	{
 		return TERRITORY_EFFECT_LEVEL;
 	}
 }
@@ -660,8 +670,8 @@ class BattleDrawable extends TerritoryDrawable implements IDrawable
 				stripeColor = mapData.getPlayerColor(attacker.getName());
 			}
 			final Paint paint = new GradientPaint(0 - (float) bounds.getX(), 0 - (float) bounds.getY(),
-			// (float) (tBounds.getX() - bounds.getX()),
-			// (float) (tBounds.getY() - bounds.getY()),
+						// (float) (tBounds.getX() - bounds.getX()),
+						// (float) (tBounds.getY() - bounds.getY()),
 						new Color(stripeColor.getRed(), stripeColor.getGreen(), stripeColor.getBlue(), 120),
 						// (float) (tBounds.getX() - bounds.getX() + tBounds.getWidth()) ,
 						// (float) (tBounds.getY() - bounds.getY() + tBounds.getHeight()),

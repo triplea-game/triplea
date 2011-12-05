@@ -282,31 +282,8 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			if (attatchment == null)
 				throw new IllegalStateException("No attachment for owned territory:" + current.getName());
 			// Check if territory is originally owned convoy center
-			if (current.isWater())
-			{
-				// Preset the original owner
-				PlayerID origOwner = attatchment.getOccupiedTerrOf();
-				if (origOwner == null)
-					origOwner = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(current);
-				if (origOwner != PlayerID.NULL_PLAYERID && origOwner == current.getOwner())
-					value += attatchment.getProduction();
-			}
-			else
-			{
-				// if it's a convoy route
-				if (TerritoryAttachment.get(current).isConvoyRoute())
-				{
-					// Determine if both parts of the convoy route are owned by the attacker or allies
-					final boolean ownedConvoyRoute = data.getMap().getNeighbors(current, Matches.territoryHasConvoyOwnedBy(current.getOwner(), data, current)).size() > 0;
-					if (ownedConvoyRoute)
-						value += attatchment.getProduction();
-				}
-				else
-				// just add the normal land territories
-				{
-					value += attatchment.getProduction();
-				}
-			}
+			if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).match(current))
+				value += attatchment.getProduction();
 		}
 		return value;
 	}

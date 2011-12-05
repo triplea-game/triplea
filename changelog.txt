@@ -1,4 +1,7 @@
 Changes for 1.5
+* Completely re-wrote Convoy Routes to be flexible and work with any territories, not just sea zones. Can now be used to many any territory require any other group of territories in order to receive income.
+Syntax is changed so that that convoyRoute is needed by both territories, while convoyAttached is needed by only the territory that requires the other territories. (veqryn)
+
 * Updated Territory tab to carry significantly more information about the territory your mouse is currently over. Also put scroll bars on the list of units. (veqryn)
 
 * Created new Territory attachment, "resources", which will allow territories to produce other resources besides PUs. (veqryn)

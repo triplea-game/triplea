@@ -36,7 +36,6 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.util.CompositeMatchAnd;
@@ -63,7 +62,6 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 
 /**
  * 
@@ -83,7 +81,7 @@ public class StatPanel extends JPanel
 	private Image m_statsImage = null;
 	
 	/** Creates a new instance of InfoPanel */
-
+	
 	public StatPanel(final GameData data)
 	{
 		m_data = data;
@@ -101,7 +99,6 @@ public class StatPanel extends JPanel
 				super.print(g);
 			}
 		};
-		
 		
 		JTable table = m_statsTable;
 		table.getTableHeader().setReorderingAllowed(false);
@@ -131,8 +128,6 @@ public class StatPanel extends JPanel
 		// add(scroll, BorderLayout.SOUTH);
 		add(scroll);
 	}
-	
-	
 	
 	private void fillExtendedStats(final GameData data)
 	{
@@ -214,7 +209,6 @@ public class StatPanel extends JPanel
 		return m_statsTable;
 	}
 	
-	
 	/**
 	 * 
 	 * @return all the alliances with more than one player.
@@ -255,27 +249,31 @@ public class StatPanel extends JPanel
 		return m_statsExtended;
 	}
 	
-	class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener {
+	
+	class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener
+	{
 		private boolean m_isDirty = true;
 		private String[][] m_collectedData;
 		
-		public ResourceTableModel() {
+		public ResourceTableModel()
+		{
 			setResourceCollums();
 			m_data.addDataChangeListener(this);
 			m_isDirty = true;
 		}
-
-		private void setResourceCollums() {
-			List<IStat> statList = new ArrayList<IStat>();
-			for(Resource resource:m_data.getResourceList().getResources()) {
-				if(resource.getName().equals(Constants.TECH_TOKENS) || resource.getName().equals(Constants.PUS))
+		
+		private void setResourceCollums()
+		{
+			final List<IStat> statList = new ArrayList<IStat>();
+			for (final Resource resource : m_data.getResourceList().getResources())
+			{
+				if (resource.getName().equals(Constants.TECH_TOKENS) || resource.getName().equals(Constants.PUS))
 					continue;
 				statList.add(new ResourceStat(resource));
 			}
 			m_statsResource = statList.toArray(new IStat[statList.size()]);
 		}
-
-
+		
 		public synchronized Object getValueAt(final int row, final int col)
 		{
 			if (m_isDirty)
@@ -284,9 +282,9 @@ public class StatPanel extends JPanel
 				m_isDirty = false;
 			}
 			return m_collectedData[row][col];
-
+			
 		}
-
+		
 		private synchronized void loadData()
 		{
 			m_data.acquireReadLock();
@@ -296,7 +294,8 @@ public class StatPanel extends JPanel
 				final Collection<String> alliances = getAlliances();
 				m_collectedData = new String[players.size() + alliances.size()][m_statsResource.length + 1];
 				int row = 0;
-				for(PlayerID player:players) {
+				for (final PlayerID player : players)
+				{
 					m_collectedData[row][0] = player.getName();
 					for (int i = 0; i < m_statsResource.length; i++)
 					{
@@ -320,7 +319,7 @@ public class StatPanel extends JPanel
 				m_data.releaseReadLock();
 			}
 		}
-
+		
 		public void gameDataChanged(final Change aChange)
 		{
 			synchronized (this)
@@ -380,6 +379,7 @@ public class StatPanel extends JPanel
 		
 	}
 	
+
 	/*
 	 * Custom table model.
 	 * 
@@ -400,7 +400,8 @@ public class StatPanel extends JPanel
 			m_isDirty = true;
 		}
 		
-		public void setStatCollums() {
+		public void setStatCollums()
+		{
 			m_stats = new IStat[] { new PUStat(), new ProductionStat(), new UnitsStat(), new TUVStat() };
 			if (Match.someMatch(m_data.getMap().getTerritories(), Matches.TerritoryIsVictoryCity))
 			{
@@ -415,7 +416,7 @@ public class StatPanel extends JPanel
 				stats.add(new VPStat());
 				m_stats = stats.toArray(new IStat[stats.size()]);
 			}
-	}
+		}
 		
 		private synchronized void loadData()
 		{
@@ -716,8 +717,7 @@ public class StatPanel extends JPanel
 			isDirty = true;
 		}
 	}
-
-
+	
 
 	class ProductionStat extends AbstractStat
 	{
@@ -732,47 +732,12 @@ public class StatPanel extends JPanel
 			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
 			while (iter.hasNext())
 			{
-				boolean isOwnedConvoyOrLand = false;
 				final Territory place = iter.next();
-				final OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
 				final TerritoryAttachment ta = TerritoryAttachment.get(place);
 				/* Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone*/
-				if (ta != null)
+				if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place))
 				{
-					// if it's water, it is a Convoy Center
-					if (place.isWater())
-					{
-						// Preset the original owner
-						PlayerID origOwner = ta.getOccupiedTerrOf();
-						if (origOwner == null)
-							origOwner = origOwnerTracker.getOriginalOwner(place);
-						// Can't get PUs for capturing a CC, only original owner can get them.
-						if (origOwner != PlayerID.NULL_PLAYERID && origOwner == player)
-							isOwnedConvoyOrLand = true;
-						if (origOwner == null)
-							isOwnedConvoyOrLand = true;
-					}
-					else
-					{
-						// if it's a convoy route
-						if (TerritoryAttachment.get(place).isConvoyRoute())
-						{
-							// Determine if both parts of the convoy route are owned by the attacker or allies
-							final boolean ownedConvoyRoute = data.getMap().getNeighbors(place, Matches.territoryHasConvoyOwnedBy(player, data, place)).size() > 0;
-							if (ownedConvoyRoute)
-								isOwnedConvoyOrLand = true;
-						}
-						// it's a regular land territory
-						else
-						{
-							isOwnedConvoyOrLand = true;
-						}
-					}
-					/*add 'em all up*/
-					if (place.getOwner().equals(player) && isOwnedConvoyOrLand)
-					{
-						rVal += ta.getProduction();
-					}
+					rVal += ta.getProduction();
 				}
 			}
 			rVal *= Properties.getPU_Multiplier(data);
@@ -780,32 +745,38 @@ public class StatPanel extends JPanel
 		}
 	}
 	
-	
+
 	class PUStat extends ResourceStat
 	{
-		public PUStat() {
+		public PUStat()
+		{
 			super(m_data.getResourceList().getResource(Constants.PUS));
 		}
 	}
 	
+
 	class ResourceStat extends AbstractStat
 	{
 		final Resource m_resource;
-		public ResourceStat(Resource resource) {
+		
+		public ResourceStat(final Resource resource)
+		{
 			super();
-			 m_resource = resource;
+			m_resource = resource;
 		}
 		
-		public String getName() {
+		public String getName()
+		{
 			return m_resource.getName();
 		}
-	
-		public double getValue(PlayerID player, GameData data) {
+		
+		public double getValue(final PlayerID player, final GameData data)
+		{
 			return player.getResources().getQuantity(m_resource);
-		}	
+		}
 	}
 	
-	
+
 	class UnitsStat extends AbstractStat
 	{
 		public String getName()
@@ -827,7 +798,7 @@ public class StatPanel extends JPanel
 		}
 	}
 	
-	
+
 	class TUVStat extends AbstractStat
 	{
 		public String getName()
@@ -851,7 +822,7 @@ public class StatPanel extends JPanel
 		}
 	}
 	
-	
+
 	class VictoryCityStat extends AbstractStat
 	{
 		public String getName()
@@ -878,7 +849,7 @@ public class StatPanel extends JPanel
 		}
 	}
 	
-	
+
 	class VPStat extends AbstractStat
 	{
 		public String getName()
@@ -895,7 +866,7 @@ public class StatPanel extends JPanel
 		}
 	}
 	
-	
+
 	class TechCountStat extends AbstractStat
 	{
 		public String getName()
@@ -954,15 +925,16 @@ public class StatPanel extends JPanel
 		}
 	}
 	
-	
+
 	class TechTokenStat extends ResourceStat
 	{
-		public TechTokenStat() {
+		public TechTokenStat()
+		{
 			super(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
 		}
 	}
 	
-	
+
 	class GenericResourceStat extends AbstractStat
 	{
 		private String m_name = null;
@@ -983,7 +955,7 @@ public class StatPanel extends JPanel
 		}
 	}
 	
-	
+
 	class GenericTechNameStat extends AbstractStat
 	{
 		private TechAdvance m_ta = null;
@@ -1006,7 +978,7 @@ public class StatPanel extends JPanel
 		}
 	}
 	
-	
+
 	class GenericUnitNameStat extends AbstractStat
 	{
 		private UnitType m_ut = null;
@@ -1035,6 +1007,7 @@ public class StatPanel extends JPanel
 		}
 	}
 }
+
 
 class PlayerOrderComparator implements Comparator<PlayerID>
 {

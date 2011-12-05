@@ -1272,19 +1272,15 @@ public class Matches
 		}
 	};
 	
-	public static Match<Territory> territoryHasConvoyRoute(final Territory current)
-	{
-		return new Match<Territory>()
-		{
-			@Override
-			public boolean match(final Territory terr)
-			{
-				return TerritoryAttachment.get(terr).isConvoyRoute();
-			}
-		};
-	}
-	
-	public static Match<Territory> territoryHasConvoyOwnedBy(final PlayerID player, final GameData data, final Territory origTerr)
+	/**
+	 * Tests for Convoys and unowned water.
+	 * Assumes player is either the owner of the territory we are testing, or about to become the owner.
+	 * 
+	 * @param player
+	 * @param data
+	 * @return
+	 */
+	public static Match<Territory> territoryCanCollectIncomeFrom(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
@@ -1292,15 +1288,32 @@ public class Matches
 			public boolean match(final Territory t)
 			{
 				final TerritoryAttachment ta = TerritoryAttachment.get(t);
-				/*If the neighboring territory is a convoy route and matches the current territory's convoy route
-				*(territories may touch more than 1 route)*/
-				if (ta != null && ta.isConvoyRoute() && ta.getConvoyAttached().equals(origTerr.getName()))
+				if (ta == null)
+					return false;
+				final OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
+				PlayerID origOwner = ta.getOccupiedTerrOf();
+				if (origOwner == null)
+					origOwner = origOwnerTracker.getOriginalOwner(t);
+				if (t.isWater())
 				{
-					// And see if it's owned by an ally.
-					if (data.getRelationshipTracker().isAllied(t.getOwner(), player))
-						return true;
+					// if it's water, it is a Convoy Center
+					// Can't get PUs for capturing a CC, only original owner can get them. (Except capturing null player CCs)
+					if (!(origOwner == null || origOwner == PlayerID.NULL_PLAYERID || origOwner == player))
+						return false;
 				}
-				return false;
+				if (ta.isConvoyRoute() && !ta.getConvoyAttached().isEmpty())
+				{
+					// Determine if at least one part of the convoy route is owned by us or an ally
+					boolean atLeastOne = false;
+					for (final Territory convoy : ta.getConvoyAttached())
+					{
+						if (data.getRelationshipTracker().isAllied(convoy.getOwner(), player) && TerritoryAttachment.get(convoy).isConvoyRoute())
+							atLeastOne = true;
+					}
+					if (!atLeastOne)
+						return false;
+				}
+				return true;
 			}
 		};
 	}
