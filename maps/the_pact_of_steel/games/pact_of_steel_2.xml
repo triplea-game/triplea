@@ -545,12 +545,12 @@
 
 
         <resourceList>
-				<!-- PUs and techTokens are default supported resources. -->
+				<!-- PUs and techTokens are default supported resources. (all maps should use "PUs" as the default "money", as a map without PUs may fail. -->
                 <resource name="PUs"/>
                 <resource name="techTokens"/>
-				<!-- These are custom resources.
+				<!-- These are custom resources.-->
 				<resource name="Steel"/>
-				<resource name="Aluminium"/>-->
+				<resource name="Aluminium"/>
 				<!-- the following two VPs are only semi-supported by the code as of right now. They are used for special pacific rules.
 				<resource name="VPs"/>
 				<resource name="TemporaryVPs"/> -->
@@ -2227,6 +2227,7 @@
 																2. 	Second use is used with newer maps which are using the new damage rules ("Damage From Bombing Done To Units Instead Of Territories"), which have damage done to an individual Unit instead of a Territory.
 																		When used with these rules, "unitProduction" lets you set the unit production potential of a territory, separate from the production. This means a territory with unitProduction = 2 will be able to produce 2 units there, regardless of if production is 0 or 20.
 																		(The damage potential of these units will normally be 2x the unitProduction, but this can be set individually by creative use of maxDamage and canProduceXUnits)
+			resources								values: the amount we will get, then the name of the resource. example: value="2:steel"
 			isImpassible							values: true or false, is this territory not passible?
 			capital									values: the capital of a player, and player's can have multiple capitals.  all players except for optional players require a capital. 
 																capital uses an image located in the "flags" folder of a map called "<nation>_large.png", and the location is determined in a file called "capitols.txt" in the map's root directory
@@ -2252,6 +2253,9 @@
 				
 				<attatchment name="territoryAttatchment" attatchTo="West Balkans" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
+						<!-- resources allow you to use custom resource production for a territory.
+						<option name="resources" value="1:Steel"/>
+						<option name="resources" value="1:Aluminium"/>-->
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="Greece" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">

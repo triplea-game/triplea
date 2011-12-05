@@ -1,4 +1,6 @@
 Changes for 1.5
+* Created new Territory attachment, "resources", which will allow territories to produce other resources besides PUs. (veqryn)
+
 * Fixed engine to allow multiple resources for purchasing of units and repairs. Added new panel on stats tab to show additional resources. (edwin van der wal)
 
 * Phase 4 of abstraction, RulesAttachment now abstracted into RulesAttachment, AbstractRulesAttachment, and AbstractPlayerRulesAttachment. (veqryn)

@@ -24,6 +24,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -33,6 +34,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.RulesAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -48,6 +50,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -280,4 +283,83 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			return ra.getUses() != 0;
 		}
 	};
+	
+	@Override
+	protected void addOtherResources(final IDelegateBridge aBridge)
+	{
+		final GameData data = aBridge.getData();
+		final CompositeChange change = new CompositeChange();
+		final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
+		final ResourceCollection productionCollection = getResourceProduction(territories, data);
+		final IntegerMap<Resource> production = productionCollection.getResources();
+		for (final Entry<Resource, Integer> resource : production.entrySet())
+		{
+			final Resource r = resource.getKey();
+			int toAdd = resource.getValue();
+			int total = m_player.getResources().getQuantity(r) + toAdd;
+			if (total < 0)
+			{
+				toAdd -= total;
+				total = 0;
+			}
+			aBridge.getHistoryWriter().startEvent(m_player.getName() + " collects " + toAdd + " " + MyFormatter.pluralize(r.getName(), toAdd)
+						+ "; ends with " + total + " " + MyFormatter.pluralize(r.getName(), total) + " total");
+			change.add(ChangeFactory.changeResourcesChange(m_player, r, toAdd));
+		}
+		if (!change.isEmpty())
+		{
+			aBridge.addChange(change);
+		}
+	}
+	
+	/**
+	 * Since territory resource may contain any resource except PUs (PUs use "getProduction" instead),
+	 * we will now figure out the total production of non-PUs resources.
+	 * 
+	 * @param territories
+	 * @param data
+	 * @return
+	 */
+	public static ResourceCollection getResourceProduction(final Collection<Territory> territories, final GameData data)
+	{
+		final ResourceCollection rVal = new ResourceCollection(data);
+		final Iterator<Territory> iter = territories.iterator();
+		while (iter.hasNext())
+		{
+			final Territory current = iter.next();
+			final TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+			if (attatchment == null)
+				throw new IllegalStateException("No attachment for owned territory:" + current.getName());
+			final ResourceCollection toAdd = attatchment.getResources();
+			if (toAdd == null)
+				continue;
+			// Check if territory is originally owned convoy center
+			if (current.isWater())
+			{
+				// Preset the original owner
+				PlayerID origOwner = attatchment.getOccupiedTerrOf();
+				if (origOwner == null)
+					origOwner = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(current);
+				if (origOwner != PlayerID.NULL_PLAYERID && origOwner == current.getOwner())
+					rVal.add(toAdd);
+			}
+			else
+			{
+				// if it's a convoy route
+				if (TerritoryAttachment.get(current).isConvoyRoute())
+				{
+					// Determine if both parts of the convoy route are owned by the attacker or allies
+					final boolean ownedConvoyRoute = data.getMap().getNeighbors(current, Matches.territoryHasConvoyOwnedBy(current.getOwner(), data, current)).size() > 0;
+					if (ownedConvoyRoute)
+						rVal.add(toAdd);
+				}
+				else
+				// just add the normal land territories
+				{
+					rVal.add(toAdd);
+				}
+			}
+		}
+		return rVal;
+	}
 }

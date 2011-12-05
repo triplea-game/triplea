@@ -55,4 +55,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			}
 		}
 	}
+	
+	@Override
+	protected void addOtherResources(final IDelegateBridge bridge)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

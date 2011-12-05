@@ -22,6 +22,8 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.triplea.Constants;
@@ -148,10 +150,35 @@ public class TerritoryAttachment extends DefaultAttachment
 	private boolean m_blockadeZone = false;
 	private final Collection<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
 	private final Collection<String> m_whenCapturedByGoesTo = new ArrayList<String>();
+	private ResourceCollection m_resources = null;
 	
 	/** Creates new TerritoryAttatchment */
 	public TerritoryAttachment()
 	{
+	}
+	
+	public void setResources(final String value) throws GameParseException
+	{
+		if (m_resources == null)
+			m_resources = new ResourceCollection(getData());
+		final String[] s = value.split(":");
+		final int amount = getInt(s[0]);
+		if (s[1].equals(Constants.PUS))
+			throw new GameParseException("Territory Attachments: Please set PUs using production, not resource");
+		final Resource resource = getData().getResourceList().getResource(s[1]);
+		if (resource == null)
+			throw new GameParseException("Territory Attachments: No resource named: " + s[1]);
+		m_resources.putResource(resource, amount);
+	}
+	
+	public ResourceCollection getResources()
+	{
+		return m_resources;
+	}
+	
+	public void clearResources()
+	{
+		m_resources = new ResourceCollection(getData());
 	}
 	
 	public void setIsImpassible(final String value)

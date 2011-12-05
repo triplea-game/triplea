@@ -27,6 +27,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
@@ -526,8 +527,22 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 							buf.append(")");
 					}
 					final int production = ta.getProduction();
-					if (production > 0)
-						buf.append(" production:" + production);
+					final int unitProduction = ta.getUnitProduction();
+					final ResourceCollection resource = ta.getResources();
+					if (unitProduction > 0 && unitProduction != production)
+						buf.append(", Unit Production: " + unitProduction);
+					if (production > 0 || (resource != null && resource.toString().length() > 0))
+					{
+						buf.append(", Production: ");
+						if (production > 0)
+						{
+							buf.append(production + " PUs");
+							if (resource != null && resource.toString().length() > 0)
+								buf.append(", ");
+						}
+						if (resource != null)
+							buf.append(resource.toString());
+					}
 				}
 			}
 			m_message.setText(buf.toString());

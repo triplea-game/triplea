@@ -129,7 +129,11 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
 			aBridge.addChange(ccVP);
 		}
+		
+		addOtherResources(aBridge);
+		
 		doNationalObjectivesAndOtherEndTurnEffects(aBridge);
+		
 		if (doBattleShipsRepairEndOfTurn())
 		{
 			MoveDelegate.repairBattleShips(aBridge, aBridge.getPlayerID(), false);
@@ -257,6 +261,8 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			}
 		}
 	}
+	
+	protected abstract void addOtherResources(IDelegateBridge bridge);
 	
 	protected abstract void doNationalObjectivesAndOtherEndTurnEffects(IDelegateBridge bridge);
 	
