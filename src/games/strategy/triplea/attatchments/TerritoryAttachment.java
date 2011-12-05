@@ -140,9 +140,9 @@ public class TerritoryAttachment extends DefaultAttachment
 	private PlayerID m_originalOwner = null;
 	private PlayerID m_occupiedTerrOf = null;
 	private boolean m_isConvoyRoute = false;
+	private String m_convoyAttached = null;
 	private final Collection<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
 	private final Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
-	private String m_convoyAttached = null;
 	private boolean m_navalBase = false;
 	private boolean m_airBase = false;
 	private boolean m_kamikazeZone = false;
@@ -151,6 +151,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	private final Collection<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
 	private final Collection<String> m_whenCapturedByGoesTo = new ArrayList<String>();
 	private ResourceCollection m_resources = null;
+	private boolean m_isKamikazeZone;
 	
 	/** Creates new TerritoryAttatchment */
 	public TerritoryAttachment()
@@ -431,6 +432,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	
 	public String getConvoyAttached()
 	{
+		// TODO: this does not look right. what happens to lists of territories?
 		return m_convoyAttached;
 	}
 	
@@ -472,5 +474,113 @@ public class TerritoryAttachment extends DefaultAttachment
 	public boolean isBlockadeZone()
 	{
 		return m_blockadeZone;
+	}
+	
+	public String toStringForInfo(final boolean useHTML, final boolean includeAttachedToName)
+	{
+		final StringBuilder sb = new StringBuilder("");
+		final String br = (useHTML ? "<br>" : ", ");
+		final Territory t = (Territory) this.getAttatchedTo();
+		if (t == null)
+			return sb.toString();
+		if (includeAttachedToName)
+		{
+			sb.append(t.getName());
+			sb.append(br);
+			if (t.isWater())
+				sb.append("Water Territory");
+			else
+				sb.append("Land Territory");
+			sb.append(br);
+			final PlayerID owner = t.getOwner();
+			if (owner != null && !owner.isNull())
+			{
+				sb.append("Owned by " + t.getOwner().getName());
+				sb.append(br);
+			}
+		}
+		
+		if (m_isImpassible)
+		{
+			sb.append("Is Impassable");
+			sb.append(br);
+		}
+		
+		if (m_capital != null && m_capital.length() > 0)
+		{
+			sb.append("A Capital of " + m_capital);
+			sb.append(br);
+		}
+		
+		if (m_isVictoryCity)
+		{
+			sb.append("Is a Victory location");
+			sb.append(br);
+		}
+		
+		if (m_isKamikazeZone)
+		{
+			sb.append("Is Kamikaze Zone");
+			sb.append(br);
+		}
+		
+		if (m_blockadeZone)
+		{
+			sb.append("Is a Blockade Zone");
+			sb.append(br);
+		}
+		
+		if (m_isConvoyRoute)
+		{
+			sb.append("Has convoys: ");
+			sb.append(m_convoyAttached);
+			sb.append(br);
+		}
+		
+		if (!t.isWater() && m_production > 0 && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
+		{
+			sb.append("Unit Production: ");
+			sb.append(m_unitProduction);
+			sb.append(br);
+		}
+		else if (!t.isWater() && m_unitProduction > 0 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+		{
+			sb.append("Base Unit Production: ");
+			sb.append(m_unitProduction);
+			sb.append(br);
+		}
+		
+		if (m_production > 0 || (m_resources != null && m_resources.toString().length() > 0))
+		{
+			sb.append("Production: ");
+			sb.append(br);
+			if (m_production > 0)
+			{
+				sb.append("&nbsp;&nbsp;&nbsp;&nbsp;" + m_production + " PUs");
+				sb.append(br);
+			}
+			if (m_resources != null)
+			{
+				if (useHTML)
+					sb.append("&nbsp;&nbsp;&nbsp;&nbsp;" + (m_resources.toStringForHTML()).replaceAll("<br>", "<br>&nbsp;&nbsp;&nbsp;&nbsp;"));
+				else
+					sb.append(m_resources.toString());
+				sb.append(br);
+			}
+		}
+		
+		final Iterator<TerritoryEffect> iter = m_territoryEffect.iterator();
+		if (iter.hasNext())
+		{
+			sb.append("Territory Effects: ");
+			sb.append(br);
+		}
+		while (iter.hasNext())
+		{
+			sb.append("&nbsp;&nbsp;&nbsp;&nbsp;" + iter.next().getName());
+			sb.append(br);
+		}
+		
+		return sb.toString();
 	}
 }

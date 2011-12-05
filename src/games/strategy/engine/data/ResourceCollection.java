@@ -102,7 +102,7 @@ public class ResourceCollection extends GameDataComponent
 	
 	public IntegerMap<Resource> getResources()
 	{
-		return m_resources;
+		return new IntegerMap<Resource>(m_resources);
 	}
 	
 	public int getQuantity(final String name)

@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -30,6 +31,7 @@ import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -38,6 +40,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -101,8 +104,15 @@ public class TerritoryDetailPanel extends JPanel
 		{
 			return;
 		}
-		add(new JLabel(territory.getName()));
 		add(m_showOdds);
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+		String labelText;
+		if (ta == null)
+			labelText = "<html>" + territory.getName() + "<br>Water Territory" + "<br><br></html>";
+		else
+			labelText = "<html>" + ta.toStringForInfo(true, true) + "<br></html>";
+		add(new JLabel(labelText));
+		add(new JLabel("Units:"));
 		Collection<Unit> unitsInTerritory;
 		m_data.acquireReadLock();
 		try
@@ -112,6 +122,17 @@ public class TerritoryDetailPanel extends JPanel
 		{
 			m_data.releaseReadLock();
 		}
+		final JScrollPane scroll = new JScrollPane(unitsInTerritoryPanel(unitsInTerritory, m_uiContext, m_data));
+		scroll.setBorder(BorderFactory.createEmptyBorder());
+		add(scroll);
+		refresh();
+	}
+	
+	private static JPanel unitsInTerritoryPanel(final Collection<Unit> unitsInTerritory, final UIContext uiContext, final GameData data)
+	{
+		final JPanel panel = new JPanel();
+		panel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 2));
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		final Set<UnitCategory> units = UnitSeperator.categorize(unitsInTerritory);
 		final Iterator<UnitCategory> iter = units.iterator();
 		PlayerID currentPlayer = null;
@@ -122,19 +143,19 @@ public class TerritoryDetailPanel extends JPanel
 			if (item.getOwner() != currentPlayer)
 			{
 				currentPlayer = item.getOwner();
-				add(Box.createVerticalStrut(15));
+				panel.add(Box.createVerticalStrut(15));
 			}
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
-			final ImageIcon unitIcon = m_uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), m_data, item.getDamaged(), item.getDisabled());
-			final ImageIcon flagIcon = new ImageIcon(m_uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
+			final ImageIcon unitIcon = uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data, item.getDamaged(), item.getDisabled());
+			final ImageIcon flagIcon = new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
 			// overlay flag onto upper-right of icon
 			final Icon flaggedUnitIcon = new OverlayIcon(unitIcon, flagIcon, unitIcon.getIconWidth() - flagIcon.getIconWidth() - 3, 3);
 			final JLabel label = new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
 			final String toolTipText = "<html>" + item.getType().getName() + ": " + item.getType().getTooltip(currentPlayer, true) + "</html>";
 			label.setToolTipText(toolTipText);
-			add(label);
-			refresh();
+			panel.add(label);
 		}
+		return panel;
 	}
 	
 	private void refresh()

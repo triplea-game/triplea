@@ -548,9 +548,9 @@
 				<!-- PUs and techTokens are default supported resources. (all maps should use "PUs" as the default "money", as a map without PUs may fail. -->
                 <resource name="PUs"/>
                 <resource name="techTokens"/>
-				<!-- These are custom resources.-->
+				<!-- These are custom resources.
 				<resource name="Steel"/>
-				<resource name="Aluminium"/>
+				<resource name="Aluminium"/>-->
 				<!-- the following two VPs are only semi-supported by the code as of right now. They are used for special pacific rules.
 				<resource name="VPs"/>
 				<resource name="TemporaryVPs"/> -->

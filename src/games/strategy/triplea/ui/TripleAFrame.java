@@ -530,10 +530,10 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 					final int unitProduction = ta.getUnitProduction();
 					final ResourceCollection resource = ta.getResources();
 					if (unitProduction > 0 && unitProduction != production)
-						buf.append(", Unit Production: " + unitProduction);
+						buf.append(", UnitProd: " + unitProduction);
 					if (production > 0 || (resource != null && resource.toString().length() > 0))
 					{
-						buf.append(", Production: ");
+						buf.append(", Prod: ");
 						if (production > 0)
 						{
 							buf.append(production + " PUs");

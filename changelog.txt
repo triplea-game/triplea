@@ -1,4 +1,6 @@
 Changes for 1.5
+* Updated Territory tab to carry significantly more information about the territory your mouse is currently over. Also put scroll bars on the list of units. (veqryn)
+
 * Created new Territory attachment, "resources", which will allow territories to produce other resources besides PUs. (veqryn)
 
 * Fixed engine to allow multiple resources for purchasing of units and repairs. Added new panel on stats tab to show additional resources. (edwin van der wal)
