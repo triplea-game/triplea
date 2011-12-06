@@ -23,6 +23,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.net.GUID;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -169,4 +170,6 @@ interface IBattle extends java.io.Serializable
 	 * @return units which are defending
 	 */
 	public Collection<Unit> getDefendingUnits();
+	
+	public GUID getBattleID();
 }

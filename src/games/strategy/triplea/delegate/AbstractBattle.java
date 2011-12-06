@@ -11,6 +11,8 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.net.GUID;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords.BattleResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,6 +41,10 @@ abstract public class AbstractBattle implements IBattle
 	// if unit is lost in a battle we are dependent on
 	// then we lose the corresponding collection of units
 	final protected Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
+	
+	protected BattleResult m_battleResult;
+	protected int m_attackerLostTUV = 0;
+	protected int m_defenderLostTUV = 0;
 	
 	public AbstractBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean isBombingRun, final String battleType, final GameData data)
 	{
@@ -209,4 +215,6 @@ abstract public class AbstractBattle implements IBattle
 		final IBattle other = (IBattle) o;
 		return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun() && other.getBattleType().equals(this.getBattleType());
 	}
+	
+	public abstract GUID getBattleID();
 }

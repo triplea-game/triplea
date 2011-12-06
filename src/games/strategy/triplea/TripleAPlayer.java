@@ -173,7 +173,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void politics(final boolean firstRun)
 	{
-		if (!m_id.amNotDeadYet(m_bridge.getGameData()))
+		if (!m_id.amNotDeadYet(getGameData()))
+			return;
+		if (!games.strategy.triplea.Properties.getUsePolitics(getGameData()))
 			return;
 		final PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(m_id, firstRun);
 		if (actionChoice != null)
@@ -340,9 +342,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
 				return;
 		}
-			
-		if(!canWePurchaseOrRepair())
-				return;
+		
+		if (!canWePurchaseOrRepair())
+			return;
 		
 		// Check if any factories need to be repaired
 		String error = null;
@@ -420,18 +422,21 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 	}
 	
-	private boolean canWePurchaseOrRepair() {
-		for(ProductionRule rule:m_id.getProductionFrontier().getRules()) {
-			if(m_id.getResources().has(rule.getCosts()))
+	private boolean canWePurchaseOrRepair()
+	{
+		for (final ProductionRule rule : m_id.getProductionFrontier().getRules())
+		{
+			if (m_id.getResources().has(rule.getCosts()))
 				return true;
 		}
-		for(RepairRule rule:m_id.getRepairFrontier().getRules()) {
-			if(m_id.getResources().has(rule.getCosts()))
+		for (final RepairRule rule : m_id.getRepairFrontier().getRules())
+		{
+			if (m_id.getResources().has(rule.getCosts()))
 				return true;
 		}
 		return false;
 	}
-
+	
 	private void battle()
 	{
 		while (true)

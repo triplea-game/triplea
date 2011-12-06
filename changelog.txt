@@ -1,4 +1,14 @@
 Changes for 1.5
+* Updated Napoleonic Empires FFA to use the new destroyedTUV instead of upkeep. (veqryn)
+
+* Created new RulesAttachment, destroyedTUV, which allows you to check if a player has destroyed at least X enemy non-neutral TUV this round or all rounds. (veqryn)
+
+* Created methods inside BattleRecord related classes in order to record the TUV lost during all battles, for the attackers and the defenders. (veqryn)
+
+* Created BattleRecordsList to keep track of all BattleRecords, and made it be updated after the BattleDelegate ends by use of the ChangeFactory. (veqryn)
+
+* Created new data object, BattleRecord, in order to record more information about the battles that take place, and BattleRecords to keep track of these inside the BattleTracker. (veqryn)
+
 * Completely re-wrote Convoy Routes to be flexible and work with any territories, not just sea zones. Can now be used to many any territory require any other group of territories in order to receive income.
 Syntax is changed so that that convoyRoute is needed by both territories, while convoyAttached is needed by only the territory that requires the other territories. (veqryn)
 

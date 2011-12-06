@@ -18,6 +18,7 @@
  */
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
@@ -60,6 +61,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	private final List<String> m_relationship = new ArrayList<String>(); // condition for having specific relationships
 	private Set<PlayerID> m_atWarPlayers = null; // condition for being at war
 	private int m_atWarCount = -1;
+	private String m_destroyedTUV = null; // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to the prices the defender pays for the units]
 	
 	// these next 9 variables use m_territoryCount for determining the number needed.
 	private String[] m_alliedOwnershipTerritories; // ownership related
@@ -77,6 +79,24 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	public RulesAttachment()
 	{
 		super();
+	}
+	
+	public void setDestroyedTUV(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length != 2)
+			throw new GameParseException("destroyedTUV must have 2 fields, value=currentRound/allRounds, count= the amount of TUV that this player must destroy");
+		final int i = getInt(s[0]);
+		if (i < -1)
+			throw new GameParseException("destroyedTUV count can not be less than -1 [with -1 meaning the condition is not active]");
+		if (!(s[1].equals("currentRound") || s[1].equals("allRounds")))
+			throw new GameParseException("destroyedTUV value must be currentRound or allRounds");
+		m_destroyedTUV = value;
+	}
+	
+	public String getDestroyedTUV()
+	{
+		return m_destroyedTUV;
 	}
 	
 	/**
@@ -609,6 +629,22 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (objectiveMet && m_relationship.size() > 0)
 		{
 			objectiveMet = checkRelationships();
+		}
+		// check for battle stats
+		if (objectiveMet && m_destroyedTUV != null)
+		{
+			final String[] s = m_destroyedTUV.split(":");
+			final int requiredDestroyedTUV = getInt(s[0]);
+			if (requiredDestroyedTUV >= 0)
+			{
+				final boolean justCurrentRound = s[1].equals("currentRound");
+				final int destroyedTUVforThisRoundSoFar = BattleRecordsList.getTUVdamageCausedByPlayer(player, data.getBattleRecordsList(),
+							0, data.getSequence().getRound(), justCurrentRound, false);
+				if (requiredDestroyedTUV > destroyedTUVforThisRoundSoFar)
+					objectiveMet = false;
+				if (getCountEach())
+					setEachMultiple(destroyedTUVforThisRoundSoFar);
+			}
 		}
 		
 		// "chance" should ALWAYS be checked last!

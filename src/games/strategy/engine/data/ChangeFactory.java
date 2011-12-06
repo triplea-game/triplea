@@ -23,6 +23,7 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -226,6 +227,11 @@ public class ChangeFactory
 	public static Change addAttachmentChange(final IAttachment attachment, final Attachable attachable, final String name)
 	{
 		return new AddAttachmentChange(attachment, attachable, name);
+	}
+	
+	public static Change addBattleRecords(final BattleRecords records, final GameData data)
+	{
+		return new AddBattleRecordsChange(records, data);
 	}
 	
 	/** Creates new ChangeFactory. No need */
@@ -1323,6 +1329,44 @@ class GenericTechChange extends Change
 		/*if (m_attatchedTo == null || m_attatchmentName == null || m_newValue == null || m_oldValue == null || m_property == null)
 			throw new IllegalStateException("GenericTechChange may not have null arguments");*/
 		return "GenericTechChange attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
+	}
+}
+
+
+/**
+ * 
+ * @author veqryn
+ * 
+ */
+class AddBattleRecordsChange extends Change
+{
+	private final Map<Integer, BattleRecords> m_newRecords;
+	private final Map<Integer, BattleRecords> m_oldRecords;
+	
+	AddBattleRecordsChange(final BattleRecords battleRecords, final GameData data)
+	{
+		// TODO: is this less network traffic, or more network traffic, to have the full records in the change object?
+		m_oldRecords = data.getBattleRecordsList().getBattleRecordsMap();
+		m_newRecords = data.getBattleRecordsList().getBattleRecordsMap();
+		BattleRecordsList.addRecords(m_newRecords, data.getSequence().getRound(), battleRecords);
+	}
+	
+	AddBattleRecordsChange(final Map<Integer, BattleRecords> newList, final Map<Integer, BattleRecords> oldList)
+	{
+		m_oldRecords = oldList;
+		m_newRecords = newList;
+	}
+	
+	@Override
+	protected void perform(final GameData data)
+	{
+		data.getBattleRecordsList().setRecords(m_newRecords);
+	}
+	
+	@Override
+	public Change invert()
+	{
+		return new AddBattleRecordsChange(m_oldRecords, m_newRecords);
 	}
 }
 

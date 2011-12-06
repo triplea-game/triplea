@@ -26,6 +26,8 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.net.GUID;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -46,6 +48,8 @@ import java.util.Iterator;
 @SuppressWarnings("serial")
 public class NonFightingBattle extends AbstractBattle
 {
+	private final GUID m_battleID = new GUID();
+	
 	public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean neutral, final GameData data)
 	{
 		super(battleSite, attacker, battleTracker, false, BattleTracker.BATTLE_TYPE_NORMAL, data);
@@ -58,11 +62,18 @@ public class NonFightingBattle extends AbstractBattle
 			throw new IllegalStateException("Must fight battles that this battle depends on first");
 		// if any attacking non air units then win
 		final boolean someAttacking = hasAttackingUnits();
+		final PlayerID defender = m_battleSite.getOwner();
 		if (someAttacking)
 		{
+			m_battleResult = BattleRecords.BattleResult.BLITZED;
 			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, null);
 			m_battleTracker.addToConquered(m_battleSite);
 		}
+		else
+		{
+			m_battleResult = BattleRecords.BattleResult.LOST;
+		}
+		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, 0);
 		end();
 	}
 	
@@ -111,5 +122,11 @@ public class NonFightingBattle extends AbstractBattle
 			final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
 			bridge.getHistoryWriter().startEvent(transcriptText);
 		}
+	}
+	
+	@Override
+	public GUID getBattleID()
+	{
+		return m_battleID;
 	}
 }

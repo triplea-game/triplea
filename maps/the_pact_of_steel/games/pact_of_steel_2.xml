@@ -2884,6 +2884,8 @@
 			
 			count								values: the number required to satisfy a rule. if missing, it defaults to ALL (unless specified). it can also be set to "each", which will act as "1" for the purposes of being a condition, but will multiply the bonus (do not use multiple options if you are using each).
 		the below options use count:
+			destroyedTUV						values: count=an amount of TUV that the attached player must destroy. value=currentRound/allRounds. This is not counting neutral (null) player, and is based on the cost for the defender to buy the units.
+														Be sure to check this condition only after the player's battle phase is completely over, since the data is only recorded after all battles are done. example: value="currentRound" count="20"
 			atWarPlayers						values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players). if count is zero, then you must be at war with none.
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
 			directOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
@@ -5049,7 +5051,7 @@
 						<br>
 						<br>
 						<br><b>New things:</b>
-						<br>1. 4 and 5 Sea Zones are Russian Convoy Centers. If Russia controls it, they get the income from it. If someone else controls it, that player gets no income from it, but they deny the income to Russia. It can not be captured during non-combat phase.
+						<br>1. Sea Zones 3 and 4, are Russian Convoy Centers. If Russia controls it, they get the income from it. If someone else controls it, that player gets no income from it, but they deny the income to Russia. It can not be captured during non-combat phase.
         				<br>2. Sea Zones 5 and 6, are Convoy Routes. They are linked to the land territory of Norway. At least one Convoy Zone must be controlled by the same power that controls the land territory for that power to gain the income from the land territory. 
 								They can not be captured during non-combat phase. If more than 1 route is linked to a single land territory, only 1 route needs to be controlled to get the income from land territory. Routes can have PU values just like convoy centers.
         				<br>3. Sea Zones 37, 47, 48, 49, 58, are Blockade Zones. Each enemy warship in these zones reduces the income of touching land territories by 1 per warship, 2 per normal submarine.

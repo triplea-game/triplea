@@ -35,6 +35,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
@@ -85,6 +86,8 @@ public class BattleTracker implements java.io.Serializable
 	// these territories have had battleships bombard during a naval invasion
 	// used to make sure that the same battleship doesn't bombard twice
 	private final Set<Territory> m_bombardedFromTerritories = new HashSet<Territory>();
+	
+	private final BattleRecords m_battleRecords = new BattleRecords();
 	
 	/**
 	 * @param t
@@ -151,7 +154,7 @@ public class BattleTracker implements java.io.Serializable
 				battle.removeAttack(route, units);
 				if (battle.isEmpty())
 				{
-					removeBattleForUndo(battle);
+					removeBattleForUndo(player, battle);
 				}
 			}
 		}
@@ -176,8 +179,9 @@ public class BattleTracker implements java.io.Serializable
 		bridge.addChange(change);
 	}
 	
-	private void removeBattleForUndo(final IBattle battle)
+	private void removeBattleForUndo(final PlayerID player, final IBattle battle)
 	{
+		m_battleRecords.removeBattle(player, battle.getBattleID());
 		m_pendingBattles.remove(battle);
 		m_dependencies.remove(battle);
 		final Iterator<HashSet<IBattle>> iter = m_dependencies.values().iterator();
@@ -249,6 +253,7 @@ public class BattleTracker implements java.io.Serializable
 		{
 			battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this);
 			m_pendingBattles.add(battle);
+			m_battleRecords.addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType());
 		}
 		final Change change = battle.addAttackChange(route, units, targets);
 		// when state is moved to the game data, this will change
@@ -269,6 +274,7 @@ public class BattleTracker implements java.io.Serializable
 		{
 			battle = new StrategicBombingRaidPreBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this);
 			m_pendingBattles.add(battle);
+			m_battleRecords.addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType());
 		}
 		final Change change = battle.addAttackChange(route, units, null);
 		// when state is moved to the game data, this will change
@@ -345,6 +351,7 @@ public class BattleTracker implements java.io.Serializable
 				{
 					nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data);
 					m_pendingBattles.add(nonFight);
+					m_battleRecords.addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType());
 				}
 				final Change change = nonFight.addAttackChange(route, units, null);
 				bridge.addChange(change);
@@ -563,7 +570,9 @@ public class BattleTracker implements java.io.Serializable
 			final IBattle bombingBattle = getPendingBattle(territory, true);
 			if (bombingBattle != null)
 			{
+				getBattleRecords().addResultToBattle(id, bombingBattle.getBattleID(), null, 0, 0, BattleRecords.BattleResult.WON_WITHOUT_CONQUERING, 0);
 				removeBattle(bombingBattle);
+				throw new IllegalStateException("Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
 			}
 		}
 		captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker, arrivingUnits);
@@ -736,6 +745,7 @@ public class BattleTracker implements java.io.Serializable
 		{
 			battle = new MustFightBattle(site, id, data, this);
 			m_pendingBattles.add(battle);
+			m_battleRecords.addBattle(id, battle.getBattleID(), site, battle.getBattleType());
 		}
 		// Add the units that moved into the battle
 		final Change change = battle.addAttackChange(route, units, null);
@@ -897,6 +907,21 @@ public class BattleTracker implements java.io.Serializable
 		m_foughBattles.clear();
 		m_conquered.clear();
 		m_dependencies.clear();
+	}
+	
+	public void clearBattleRecords()
+	{
+		m_battleRecords.clear();
+	}
+	
+	public BattleRecords getBattleRecords()
+	{
+		return m_battleRecords;
+	}
+	
+	public void sendBattleRecordsToGameData(final IDelegateBridge aBridge)
+	{
+		aBridge.addChange(ChangeFactory.addBattleRecords((new BattleRecords(m_battleRecords)), aBridge.getData()));
 	}
 	
 	@Override

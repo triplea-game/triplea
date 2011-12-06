@@ -364,6 +364,8 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		final GameData data = m_bridge.getGameData();
 		if (!m_id.amNotDeadYet(data))
 			return;
+		if (!games.strategy.triplea.Properties.getUsePolitics(data))
+			return;
 		final float numPlayers = data.getPlayerList().getPlayers().size();
 		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
 		final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);

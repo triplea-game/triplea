@@ -102,6 +102,7 @@ public class OddsCalculator
 			// restore the game to its original state
 			new ChangePerformer(m_data).perform(allChanges.invert());
 			battleTracker.clear();
+			battleTracker.clearBattleRecords();
 		}
 		BattleCalculator.DisableCasualtySortingCaching();
 		rVal.setTime(System.currentTimeMillis() - start);

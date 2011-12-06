@@ -25,6 +25,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
@@ -33,6 +34,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -219,6 +221,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 					m_attackingUnits.removeAll(suicideUnits);
 					final Change removeSuicide = ChangeFactory.removeUnits(m_battleSite, suicideUnits);
 					final String transcriptText = MyFormatter.unitsToText(suicideUnits) + " lost in " + m_battleSite.getName();
+					final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
+					final int tuvLostAttacker = BattleCalculator.getTUV(suicideUnits, m_attacker, costs, m_data);
+					m_attackerLostTUV += tuvLostAttacker;
 					bridge.getHistoryWriter().addChildToEvent(transcriptText, suicideUnits);
 					bridge.addChange(removeSuicide);
 				}
@@ -232,6 +237,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 						// m_targets.removeAll(unitsCanDie);
 						final Change removeDead = ChangeFactory.removeUnits(m_battleSite, unitsCanDie);
 						final String transcriptText = MyFormatter.unitsToText(unitsCanDie) + " lost in " + m_battleSite.getName();
+						final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_defender, m_data);
+						final int tuvLostDefender = BattleCalculator.getTUV(unitsCanDie, m_defender, costs, m_data);
+						m_defenderLostTUV += tuvLostDefender;
 						bridge.getHistoryWriter().addChildToEvent(transcriptText, unitsCanDie);
 						bridge.addChange(removeDead);
 					}
@@ -249,6 +257,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 								(m_bombingRaidDamage.size() > 1 ? (" To units: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage)) : ""));
 				else
 					getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
+				if (m_bombingRaidTotal > 0)
+					m_battleResult = BattleRecords.BattleResult.BOMBED;
+				else
+					m_battleResult = BattleRecords.BattleResult.LOST;
+				m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, m_bombingRaidTotal);
 				m_isOver = true;
 			}
 		});
@@ -430,6 +443,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	{
 		if (!casualties.isEmpty())
 			bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " killed by AA guns", casualties);
+		
+		final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
+		final int tuvLostAttacker = BattleCalculator.getTUV(casualties, m_attacker, costs, m_data);
+		m_attackerLostTUV += tuvLostAttacker;
 		// m_attackingUnits.removeAll(casualties);
 		removeAttackers(casualties, false);
 		final Change remove = ChangeFactory.removeUnits(m_battleSite, casualties);
@@ -696,5 +713,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	public Collection<Unit> getBombardingUnits()
 	{
 		return new ArrayList<Unit>();
+	}
+	
+	@Override
+	public GUID getBattleID()
+	{
+		return m_battleID;
 	}
 }

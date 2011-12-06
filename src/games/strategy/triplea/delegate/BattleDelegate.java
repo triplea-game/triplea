@@ -32,6 +32,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -88,6 +89,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	@Override
 	public void end()
 	{
+		getBattleTracker().sendBattleRecordsToGameData(m_bridge);
+		getBattleTracker().clearBattleRecords();
 		scramblingCleanup();
 		airBattleCleanup();
 		super.end();
@@ -390,6 +393,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			if (battle != null && (ignoreTransports && Match.allMatch(attackingUnits, seaTransports) && Match.allMatch(enemyUnits, seaTransports))
 						|| ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert())))
 			{
+				m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResult.STALEMATE, 0);
 				m_battleTracker.removeBattle(battle);
 				continue;
 			}
@@ -404,6 +408,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					if (!remotePlayer.selectAttackTransports(territory))
 					{
 						m_battleTracker.removeBattle(battle);
+						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResult.WON_WITH_ENEMY_LEFT, 0);
 						// TODO perhaps try to reverse the setting of 0 movement left
 						/*CompositeChange change = new CompositeChange();
 						Iterator<Unit> attackIter = attackingUnits.iterator();
@@ -422,6 +427,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					if (!remotePlayer.selectAttackSubs(territory))
 					{
 						m_battleTracker.removeBattle(battle);
+						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResult.WON_WITH_ENEMY_LEFT, 0);
 					}
 					continue;
 				}
@@ -431,6 +437,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					if (!remotePlayer.selectAttackUnits(territory))
 					{
 						m_battleTracker.removeBattle(battle);
+						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResult.WON_WITH_ENEMY_LEFT, 0);
 					}
 					continue;
 				}
@@ -711,7 +718,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		}
 		if (!change.isEmpty())
 		{
-			m_bridge.getHistoryWriter().startEvent("Preparing for any air battles");
+			m_bridge.getHistoryWriter().startEvent("Cleaning up after air battles");
 			m_bridge.addChange(change);
 		}
 	}

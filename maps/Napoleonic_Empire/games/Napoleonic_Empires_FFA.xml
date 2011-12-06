@@ -1939,7 +1939,7 @@
 						<option name="archeType" value="allied"/>
 						<option name="alliancesCanChainTogether" value="true"/>
 						<!-- In case I want a flat PU rate back: <option name="upkeepCost" value="3"/>-->
-						<option name="upkeepCost" value="percentage" count="8"/>
+						<!--<option name="upkeepCost" value="percentage" count="8"/>-->
 				</attatchment>
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -1950,7 +1950,7 @@
 				<attatchment name="relationshipTypeAttachment" attatchTo="Ceasefire" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="neutral"/>
 						<!--<option name="upkeepCost" value="1"/>-->
-						<option name="upkeepCost" value="percentage" count="4"/>
+						<!--<option name="upkeepCost" value="percentage" count="4"/>-->
 				</attatchment>
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="Open_Borders" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -1958,7 +1958,7 @@
 						<option name="canMoveLandUnitsOverOwnedLand" value="true"/>
 						<option name="canMoveAirUnitsOverOwnedLand" value="true"/>
 						<!--<option name="upkeepCost" value="2"/>-->
-						<option name="upkeepCost" value="percentage" count="6"/>
+						<!--<option name="upkeepCost" value="percentage" count="6"/>-->
 				</attatchment>
 
 <!-- unit attachments -->
@@ -2951,6 +2951,7 @@
 				    </attatchment>
 					
 					
+			<!-- objectives -->
                 <attatchment name="objectiveAttachment_Balancing_Convoy_Income_for_balanced_game" attatchTo="France" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="-6"/>
                 	<option name="alliedOwnershipTerritories" value="Orleanais" count="1"/>
@@ -2966,6 +2967,38 @@
                 	<option name="alliedOwnershipTerritories" value="New Castille" count="1"/>
                 </attatchment>
 				
+                <attatchment name="objectiveAttachment_France_destroys_TUV" attatchTo="France" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="destroyedTUV" value="currentRound" count="6"/>
+					<option name="objectiveValue" value="6"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_UnitedKingdom_destroys_TUV" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="destroyedTUV" value="currentRound" count="6"/>
+					<option name="objectiveValue" value="6"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Spain_destroys_TUV" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="destroyedTUV" value="currentRound" count="6"/>
+					<option name="objectiveValue" value="6"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_KingdomOfPrussia_destroys_TUV" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="destroyedTUV" value="currentRound" count="6"/>
+					<option name="objectiveValue" value="6"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Sweden_destroys_TUV" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="destroyedTUV" value="currentRound" count="6"/>
+					<option name="objectiveValue" value="6"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_AustrianEmpire_destroys_TUV" attatchTo="AustrianEmpire" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="destroyedTUV" value="currentRound" count="6"/>
+					<option name="objectiveValue" value="6"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_OttomanEmpire_destroys_TUV" attatchTo="OttomanEmpire" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="destroyedTUV" value="currentRound" count="6"/>
+					<option name="objectiveValue" value="6"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Russia_destroys_TUV" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="destroyedTUV" value="currentRound" count="6"/>
+					<option name="objectiveValue" value="6"/>
+                </attatchment>
 				
 				
 			<!-- conditions -->
@@ -7551,15 +7584,15 @@ Nation................................ Allies&lt;br&gt;
 6.Austrian Empire............... UK OTT PRU RUS&lt;br&gt;
 7.Ottoman Empire............... UK AUS SPN&lt;br&gt;
 8.Russia............................. PRU AUS UK&lt;br&gt;
+(Light Blue = Neutral Nations, which can be attacked by anyone and everyone)&lt;br&gt;
 
 &lt;br&gt;
+&lt;br&gt;Politics National Objective:
+&lt;br&gt;+6 PUs per round that you destroy at least 6 PUs worth of enemy units (6 TUV).
+&lt;br&gt;This represents the morale boost your nation receives for victories on the battlefield, however small.
+&lt;br&gt;As light blue Neutral Nations are not aggressors in this conflict, they are not counted towards destroyed enemy TUV, which means you must attack actual players to get this bonus.
+&lt;br&gt;(Both ships and land units count, and you are not required to win the battle)
 &lt;br&gt;
-&lt;br&gt;Politics:
-&lt;br&gt;The further away from war you are with a nation, the less resources you are devoting to war. In addition, keeping treaties has an upkeep cost per turn, that affects your total income for that turn.
-&lt;br&gt;0% upkeep - War
-&lt;br&gt;4% upkeep - Ceasefire
-&lt;br&gt;6% upkeep - Open Borders
-&lt;br&gt;8% upkeep - Allied
 &lt;br&gt;
 &lt;br&gt;When Political Actions become available:
 &lt;br&gt;Moving from - Moving to - take X rounds (including current round)
@@ -7728,6 +7761,11 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;1 Ottoman unit deleted from Bessarabia.
 &lt;br&gt;1 Ottoman unit deleted from Smyna.
 &lt;br&gt;1 Ottoman unit deleted from Anatolia.
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;Version 4.0 - 4.0.x changes:
+&lt;br&gt;Tweaking of Political rules.
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 3.9.x - 4.0 changes:

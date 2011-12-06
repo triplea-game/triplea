@@ -35,6 +35,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
@@ -2539,7 +2540,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		getDisplay(bridge).battleEnd(m_battleID, m_defender.getName() + " win");
 		bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " win", m_defendingUnits);
+		m_battleResult = BattleRecords.BattleResult.LOST;
 		showCasualties(bridge);
+		if (!m_headless)
+			m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, 0);
 		checkDefendingPlanesCanLand(bridge, m_defender);
 		BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null, m_defendingUnits);
 	}
@@ -2548,7 +2552,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		getDisplay(bridge).battleEnd(m_battleID, "Stalemate");
 		bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " and " + m_attacker.getName() + " reach a stalemate");
+		m_battleResult = BattleRecords.BattleResult.STALEMATE;
 		showCasualties(bridge);
+		if (!m_headless)
+			m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, 0);
 	}
 	
 	static ITripleaPlayer getRemote(final PlayerID player, final IDelegateBridge bridge)
@@ -2752,7 +2759,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_defendingAir.removeAll(defendingAir);
 	}
 	
-	GUID getBattleID()
+	@Override
+	public GUID getBattleID()
 	{
 		return m_battleID;
 	}
@@ -2767,6 +2775,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			m_battleTracker.addToConquered(m_battleSite);
 			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, m_attackingUnits);
+			m_battleResult = BattleRecords.BattleResult.CONQUERED;
+		}
+		else
+		{
+			m_battleResult = BattleRecords.BattleResult.WON_WITHOUT_CONQUERING;
 		}
 		// Clear the transported_by for successfully offloaded units
 		final Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.UnitIsTransport);
@@ -2790,6 +2803,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			bridge.addChange(clearAlliedAir);
 		bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);
 		showCasualties(bridge);
+		if (!m_headless)
+			m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, 0);
 	}
 	
 	public static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits, final Territory battleSite, final PlayerID attacker, final GameData data)
@@ -2827,6 +2842,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final int tuvLostDefender = BattleCalculator.getTUV(m_killed, m_defender, costs, m_data);
 		final int tuvChange = tuvLostDefender - tuvLostAttacker;
 		bridge.getHistoryWriter().addChildToEvent("Battle casualty summary: Battle score (TUV change) for attacker is " + tuvChange, m_killed);
+		m_attackerLostTUV += tuvLostAttacker;
+		m_defenderLostTUV += tuvLostDefender;
 	}
 	
 	private void endBattle(final IDelegateBridge bridge)
@@ -2930,7 +2947,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_attackingUnits.removeAll(lost);
 		remove(lost, bridge, m_battleSite, false);
 		if (m_attackingUnits.isEmpty())
+		{
+			final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
+			final int tuvLostAttacker = BattleCalculator.getTUV(lost, m_attacker, costs, m_data);
+			m_attackerLostTUV += tuvLostAttacker;
+			if (!m_headless)
+				m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, BattleRecords.BattleResult.LOST, 0);
 			m_battleTracker.removeBattle(this);
+		}
 	}
 	
 	/**

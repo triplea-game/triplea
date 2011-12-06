@@ -9,10 +9,12 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -107,18 +109,38 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 					getDisplay(bridge).gotoBattleStep(m_battleID, BOMBERS_TO_TARGETS);
 					String text;
 					if (Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber))
+					{
+						if (m_defendingUnits.isEmpty())
+							m_battleResult = BattleRecords.BattleResult.WON_WITHOUT_CONQUERING;
+						else
+							m_battleResult = BattleRecords.BattleResult.WON_WITH_ENEMY_LEFT;
 						text = "Air Battle is over, the remaining Bombers go on to their targets";
-					else
+					}
+					else if (!m_attackingUnits.isEmpty())
+					{
+						m_battleResult = BattleRecords.BattleResult.STALEMATE;
 						text = "Air Battle is over, the bombers have all died";
+					}
+					else
+					{
+						m_battleResult = BattleRecords.BattleResult.LOST;
+						text = "Air Battle is over, the bombers have all died";
+					}
 					bridge.getHistoryWriter().addChildToEvent(text);
 					
 					if (!m_intercept)
 						return;
 					
+					final IntegerMap<UnitType> defenderCosts = BattleCalculator.getCostsForTUV(m_defender, m_data);
+					final IntegerMap<UnitType> attackerCosts = BattleCalculator.getCostsForTUV(m_attacker, m_data);
 					m_attackingUnits.removeAll(m_attackingWaitingToDie);
 					remove(m_attackingWaitingToDie, bridge, m_battleSite);
 					m_defendingUnits.removeAll(m_defendingWaitingToDie);
 					remove(m_defendingWaitingToDie, bridge, m_battleSite);
+					int tuvLostAttacker = BattleCalculator.getTUV(m_attackingWaitingToDie, m_attacker, attackerCosts, m_data);
+					m_attackerLostTUV += tuvLostAttacker;
+					int tuvLostDefender = BattleCalculator.getTUV(m_defendingWaitingToDie, m_defender, defenderCosts, m_data);
+					m_defenderLostTUV += tuvLostDefender;
 					
 					// kill any suicide attackers (veqryn)
 					if (Match.someMatch(m_attackingUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsSuicide, Matches.UnitIsNotStrategicBomber)))
@@ -126,12 +148,16 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 						final List<Unit> suicideUnits = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
 						m_attackingUnits.removeAll(suicideUnits);
 						remove(suicideUnits, bridge, m_battleSite);
+						tuvLostAttacker = BattleCalculator.getTUV(suicideUnits, m_attacker, attackerCosts, m_data);
+						m_attackerLostTUV += tuvLostAttacker;
 					}
 					if (Match.someMatch(m_defendingUnits, Matches.UnitIsSuicide))
 					{
 						final List<Unit> suicideUnits = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
 						m_defendingUnits.removeAll(suicideUnits);
 						remove(suicideUnits, bridge, m_battleSite);
+						tuvLostDefender = BattleCalculator.getTUV(suicideUnits, m_defender, defenderCosts, m_data);
+						m_defenderLostTUV += tuvLostDefender;
 					}
 				}
 			});
@@ -141,6 +167,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		{
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
+				m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, 0);
 				m_battleTracker.removeBattle(StrategicBombingRaidPreBattle.this);
 				getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
 				m_isOver = true;

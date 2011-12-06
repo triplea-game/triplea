@@ -6,6 +6,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.net.GUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -138,5 +139,11 @@ public class MockBattle extends AbstractBattle
 	{
 		// TODO Auto-generated method stub
 		return super.getBattleType();
+	}
+	
+	@Override
+	public GUID getBattleID()
+	{
+		return null;
 	}
 }

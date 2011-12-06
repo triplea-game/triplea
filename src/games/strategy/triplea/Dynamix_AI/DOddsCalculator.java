@@ -144,6 +144,7 @@ public class DOddsCalculator
 			// Restore the game to its original state
 			new ChangePerformer(s_dataForSimulation).perform(allChanges.invert());
 			battleTracker.clear();
+			battleTracker.clearBattleRecords();
 		}
 		BattleCalculator.DisableCasualtySortingCaching();
 		rVal.setTime(System.currentTimeMillis() - start);

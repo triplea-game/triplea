@@ -103,6 +103,7 @@ public class GameData implements java.io.Serializable
 	private volatile transient boolean m_testLockIsHeld = false;
 	private final List<IAttachment> attachmentOrder = new ArrayList<IAttachment>();
 	private final Hashtable<String, TerritoryEffect> m_territoryEffectList = new Hashtable<String, TerritoryEffect>();
+	private final BattleRecordsList m_battleRecordsList = new BattleRecordsList(this);
 	
 	/** Creates new GameData */
 	public GameData()
@@ -498,5 +499,10 @@ public class GameData implements java.io.Serializable
 	public Hashtable<String, TerritoryEffect> getTerritoryEffectList()
 	{
 		return m_territoryEffectList;
+	}
+	
+	public BattleRecordsList getBattleRecordsList()
+	{
+		return m_battleRecordsList;
 	}
 }
