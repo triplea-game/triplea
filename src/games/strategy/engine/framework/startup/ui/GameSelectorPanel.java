@@ -55,8 +55,12 @@ public class GameSelectorPanel extends JPanel implements Observer
 	{
 		m_model = model;
 		m_model.addObserver(this);
-		setOriginalPropertiesMap(model.getGameData());
-		m_gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
+		GameData data = model.getGameData();
+		if (data != null)
+		{
+			setOriginalPropertiesMap(data);
+			m_gamePropertiesCache.loadCachedGamePropertiesInto(data);
+		}
 		createComponents();
 		layoutComponents();
 		setupListeners();
@@ -171,9 +175,13 @@ public class GameSelectorPanel extends JPanel implements Observer
 	
 	private void setOriginalPropertiesMap(final GameData data)
 	{
-		for (final IEditableProperty property : data.getProperties().getEditableProperties())
+		m_originalPropertiesMap.clear();
+		if (data != null)
 		{
-			m_originalPropertiesMap.put(property.getName(), property.getValue());
+			for (final IEditableProperty property : data.getProperties().getEditableProperties())
+			{
+				m_originalPropertiesMap.put(property.getName(), property.getValue());
+			}
 		}
 	}
 	
@@ -214,12 +222,15 @@ public class GameSelectorPanel extends JPanel implements Observer
 		}
 		else if (buttonPressed.equals(reset))
 		{
-			// restore properties, if cancel was pressed, or window was closed
-			final Iterator<IEditableProperty> itr = m_model.getGameData().getProperties().getEditableProperties().iterator();
-			while (itr.hasNext())
+			if (!m_originalPropertiesMap.isEmpty())
 			{
-				final IEditableProperty property = itr.next();
-				property.setValue(m_originalPropertiesMap.get(property.getName()));
+				// restore properties, if cancel was pressed, or window was closed
+				final Iterator<IEditableProperty> itr = m_model.getGameData().getProperties().getEditableProperties().iterator();
+				while (itr.hasNext())
+				{
+					final IEditableProperty property = itr.next();
+					property.setValue(m_originalPropertiesMap.get(property.getName()));
+				}
 				selectGameOptions();
 				return;
 			}
