@@ -40,14 +40,15 @@ public class NumberProperty extends AEditableProperty
 	
 	public Object getValue()
 	{
-		return m_value;
+		// returns a String object because that is how the games.strategy.triplea.Properties.java is setup.
+		return Integer.toString(m_value);
 	}
-
-	public void setValue(Object value) throws ClassCastException
+	
+	public void setValue(final Object value) throws ClassCastException
 	{
-	 	m_value = (Integer) value;
+		m_value = (Integer) value;
 	}
-
+	
 	public JComponent getEditorComponent()
 	{
 		final IntTextField field = new IntTextField(m_min, m_max);

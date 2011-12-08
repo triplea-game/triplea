@@ -69,12 +69,12 @@ public class FileProperty extends AEditableProperty
 	{
 		return m_file;
 	}
-
-	public void setValue(Object value) throws ClassCastException
+	
+	public void setValue(final Object value) throws ClassCastException
 	{
 		m_file = (File) value;
 	}
-
+	
 	/**
 	 * Gets a Swing component to display this property.
 	 * 

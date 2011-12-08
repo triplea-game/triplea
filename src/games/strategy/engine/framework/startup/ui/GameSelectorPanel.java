@@ -220,9 +220,9 @@ public class GameSelectorPanel extends JPanel implements Observer
 			{
 				final IEditableProperty property = itr.next();
 				property.setValue(m_originalPropertiesMap.get(property.getName()));
+				selectGameOptions();
+				return;
 			}
-			selectGameOptions();
-			return;
 		}
 		else if (buttonPressed.equals(makeDefault))
 		{
@@ -325,9 +325,9 @@ public class GameSelectorPanel extends JPanel implements Observer
 	{
 		final JFrame f = new JFrame();
 		final GameSelectorModel model = new GameSelectorModel();
+		model.loadDefaultGame(f);
 		f.getContentPane().add(new GameSelectorPanel(model));
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		model.loadDefaultGame(f);
 		f.pack();
 		f.setVisible(true);
 	}

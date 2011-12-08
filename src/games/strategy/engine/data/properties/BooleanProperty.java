@@ -35,13 +35,16 @@ public class BooleanProperty extends AEditableProperty
 	{
 		return mValue ? Boolean.TRUE : Boolean.FALSE;
 	}
-
-	public void setValue(Object value) throws IllegalArgumentException
+	
+	public void setValue(final Object value) throws IllegalArgumentException
 	{
-	 	mValue = (Boolean) value;
+		mValue = (Boolean) value;
 	}
-
-
+	
+	public void setValue(final boolean value)
+	{
+		mValue = value;
+	}
 	
 	/**
 	 * 

@@ -53,12 +53,12 @@ public class ListProperty extends AEditableProperty
 	{
 		return m_value;
 	}
-
-	public void setValue(Object value) throws ClassCastException
+	
+	public void setValue(final Object value) throws ClassCastException
 	{
 		m_value = (String) value;
 	}
-
+	
 	public JComponent getEditorComponent()
 	{
 		final JComboBox box = new JComboBox(new Vector<String>(m_possibleValues));

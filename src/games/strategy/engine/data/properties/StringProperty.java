@@ -49,9 +49,9 @@ public class StringProperty extends AEditableProperty
 	{
 		return m_value;
 	}
-
-	public void setValue(Object value) throws ClassCastException
+	
+	public void setValue(final Object value) throws ClassCastException
 	{
-	 	m_value = (String) value;
+		m_value = (String) value;
 	}
 }

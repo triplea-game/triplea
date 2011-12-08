@@ -52,12 +52,12 @@ public class ColorProperty extends AEditableProperty
 	{
 		return m_color;
 	}
-
-	public void setValue(Object value) throws ClassCastException
+	
+	public void setValue(final Object value) throws ClassCastException
 	{
-	 	m_color = (Color) value;
+		m_color = (Color) value;
 	}
-
+	
 	public JComponent getEditorComponent()
 	{
 		@SuppressWarnings("serial")
