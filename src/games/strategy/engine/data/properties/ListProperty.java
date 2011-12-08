@@ -23,7 +23,9 @@ import java.util.Vector;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
-@SuppressWarnings("serial")
+/**
+ * A String property that uses a list for selecting the value
+ */
 public class ListProperty extends AEditableProperty
 {
 	private final List<String> m_possibleValues;
@@ -51,7 +53,12 @@ public class ListProperty extends AEditableProperty
 	{
 		return m_value;
 	}
-	
+
+	public void setValue(Object value) throws ClassCastException
+	{
+		m_value = (String) value;
+	}
+
 	public JComponent getEditorComponent()
 	{
 		final JComboBox box = new JComboBox(new Vector<String>(m_possibleValues));

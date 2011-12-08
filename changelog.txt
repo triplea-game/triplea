@@ -1,4 +1,6 @@
 Changes for 1.5
+* Created ability for Game Options to be saved as default options. (qwertgold)
+
 * Updated Napoleonic Empires FFA to use the new destroyedTUV instead of upkeep. (veqryn)
 
 * Created new RulesAttachment, destroyedTUV, which allows you to check if a player has destroyed at least X enemy non-neutral TUV this round or all rounds. (veqryn)

@@ -194,7 +194,7 @@ public class GameSelectorModel extends Observable
 	{
 		// load the previously saved value
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-		final String defaultGameName = "AA50-42";
+		final String defaultGameName = "Big World : 1942";
 		final String s = prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName);
 		final NewGameChooserModel model = new NewGameChooserModel();
 		NewGameChooserEntry selectedGame = model.findByName(s);

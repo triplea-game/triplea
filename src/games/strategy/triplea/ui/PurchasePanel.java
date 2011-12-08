@@ -227,8 +227,8 @@ public class PurchasePanel extends ActionPanel
 				final Collection<Unit> unitsNeedingFactory = Match.getMatches(player.getUnits().getUnits(), Matches.UnitIsNotFactoryOrConstruction);
 				if (!m_bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player))
 				{
-					final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this), "You have purchased more than you can place, continue with purchase?",
-								"End Purchase", JOptionPane.YES_NO_OPTION);
+					final String text = "You have purchased " + (totalProduced + unitsNeedingFactory.size()) + " units, and can only place " + totalProd + " of them. Continue with purchase?";
+					final int rVal = JOptionPane.showConfirmDialog(JOptionPane.getFrameForComponent(PurchasePanel.this), text, "End Purchase", JOptionPane.YES_NO_OPTION);
 					if (rVal != JOptionPane.YES_OPTION)
 					{
 						return;

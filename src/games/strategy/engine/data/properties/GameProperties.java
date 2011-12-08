@@ -34,7 +34,6 @@ import java.util.Map;
  * 
  * @author Sean Bridges
  */
-@SuppressWarnings("serial")
 public class GameProperties extends GameDataComponent
 {
 	private final Map<String, Object> m_constantProperties = new HashMap<String, Object>();
@@ -97,7 +96,7 @@ public class GameProperties extends GameDataComponent
 		final Object value = get(key);
 		if (value == null)
 			return defaultValue;
-		return ((Boolean) value).booleanValue();
+		return (Boolean) value;
 	}
 	
 	public Object get(final String key, final Object defaultValue)

@@ -40,9 +40,14 @@ public class NumberProperty extends AEditableProperty
 	
 	public Object getValue()
 	{
-		return Integer.toString(m_value);
+		return m_value;
 	}
-	
+
+	public void setValue(Object value) throws ClassCastException
+	{
+	 	m_value = (Integer) value;
+	}
+
 	public JComponent getEditorComponent()
 	{
 		final IntTextField field = new IntTextField(m_min, m_max);

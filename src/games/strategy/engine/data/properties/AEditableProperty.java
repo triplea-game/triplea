@@ -15,7 +15,6 @@ package games.strategy.engine.data.properties;
 
 import javax.swing.JComponent;
 
-@SuppressWarnings("serial")
 public abstract class AEditableProperty implements IEditableProperty, java.io.Serializable, Comparable<Object>
 {
 	private final String m_name;

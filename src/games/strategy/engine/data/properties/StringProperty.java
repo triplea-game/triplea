@@ -19,7 +19,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
-@SuppressWarnings("serial")
+/**
+ * A string property with a simple text field editor
+ */
 public class StringProperty extends AEditableProperty
 {
 	private String m_value;
@@ -46,5 +48,10 @@ public class StringProperty extends AEditableProperty
 	public Object getValue()
 	{
 		return m_value;
+	}
+
+	public void setValue(Object value) throws ClassCastException
+	{
+	 	m_value = (String) value;
 	}
 }

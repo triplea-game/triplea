@@ -1,5 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
@@ -16,10 +18,14 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -42,11 +48,15 @@ public class GameSelectorPanel extends JPanel implements Observer
 	private JButton m_loadNewGame;
 	private JButton m_gameOptions;
 	private final GameSelectorModel m_model;
+	private final IGamePropertiesCache m_gamePropertiesCache = new FileBackedGamePropertiesCache();
+	private final Map<String, Object> m_originalPropertiesMap = new HashMap<String, Object>();
 	
 	public GameSelectorPanel(final GameSelectorModel model)
 	{
 		m_model = model;
 		m_model.addObserver(this);
+		setOriginalPropertiesMap(model.getGameData());
+		m_gamePropertiesCache.loadCachedGamePropertiesInto(model.getGameData());
 		createComponents();
 		layoutComponents();
 		setupListeners();
@@ -90,8 +100,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 		{
 			return fileName;
 		}
-		final int defaultCuttoff = 18;
-		int cuttoff = defaultCuttoff;
+		int cuttoff = 18;
 		// /games will be in most paths,
 		// try to ignore it
 		if (fileName.indexOf("games") > 0)
@@ -160,13 +169,69 @@ public class GameSelectorPanel extends JPanel implements Observer
 		});
 	}
 	
+	private void setOriginalPropertiesMap(final GameData data)
+	{
+		for (final IEditableProperty property : data.getProperties().getEditableProperties())
+		{
+			m_originalPropertiesMap.put(property.getName(), property.getValue());
+		}
+	}
+	
 	private void selectGameOptions()
 	{
+		
+		// backup current game properties before showing dialog
+		final Map<String, Object> currentPropertiesMap = new HashMap<String, Object>();
+		for (final IEditableProperty property : m_model.getGameData().getProperties().getEditableProperties())
+		{
+			currentPropertiesMap.put(property.getName(), property.getValue());
+		}
+		
 		final PropertiesUI panel = new PropertiesUI(m_model.getGameData().getProperties(), true);
 		final JScrollPane scroll = new JScrollPane(panel);
 		scroll.setBorder(null);
 		scroll.getViewport().setBorder(null);
-		JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(this), scroll, "Game Options", JOptionPane.PLAIN_MESSAGE, null);
+		
+		final JOptionPane pane = new JOptionPane(scroll, JOptionPane.PLAIN_MESSAGE);
+		final String ok = "OK";
+		final String cancel = "Cancel";
+		final String makeDefault = "Make Default";
+		final String reset = "Reset";
+		pane.setOptions(new Object[] { ok, makeDefault, reset, cancel });
+		final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(this), "Game Options");
+		window.setVisible(true);
+		
+		final Object buttonPressed = pane.getValue();
+		if (buttonPressed == null || buttonPressed.equals(cancel))
+		{
+			// restore properties, if cancel was pressed, or window was closed
+			final Iterator<IEditableProperty> itr = m_model.getGameData().getProperties().getEditableProperties().iterator();
+			while (itr.hasNext())
+			{
+				final IEditableProperty property = itr.next();
+				property.setValue(currentPropertiesMap.get(property.getName()));
+			}
+		}
+		else if (buttonPressed.equals(reset))
+		{
+			// restore properties, if cancel was pressed, or window was closed
+			final Iterator<IEditableProperty> itr = m_model.getGameData().getProperties().getEditableProperties().iterator();
+			while (itr.hasNext())
+			{
+				final IEditableProperty property = itr.next();
+				property.setValue(m_originalPropertiesMap.get(property.getName()));
+			}
+			selectGameOptions();
+			return;
+		}
+		else if (buttonPressed.equals(makeDefault))
+		{
+			m_gamePropertiesCache.cacheGameProperties(m_model.getGameData());
+		}
+		else
+		{
+			// ok was clicked, and we have modified the properties already
+		}
 	}
 	
 	private void setWidgetActivation()
@@ -229,6 +294,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 				{
 					final File f = new File(dirName, fileName);
 					m_model.load(f, this);
+					setOriginalPropertiesMap(m_model.getGameData());
 				}
 			}
 			// Non-Mac platforms should use the normal Swing JFileChooser
@@ -239,6 +305,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 				if (rVal != JFileChooser.APPROVE_OPTION)
 					return;
 				m_model.load(fileChooser.getSelectedFile(), this);
+				setOriginalPropertiesMap(m_model.getGameData());
 			}
 		}
 		else
@@ -247,6 +314,9 @@ public class GameSelectorPanel extends JPanel implements Observer
 			if (entry != null)
 			{
 				m_model.load(entry);
+				setOriginalPropertiesMap(m_model.getGameData());
+				// only for new games, not saved games, we set the default options, and set them only once (the first time it is loaded)
+				m_gamePropertiesCache.loadCachedGamePropertiesInto(m_model.getGameData());
 			}
 		}
 	}
