@@ -27,22 +27,12 @@ public class Properties implements Constants
 {
 	public static int getNeutralCharge(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(NEUTRAL_CHARGE_PROPERTY);
-		if (integer == null)
-		{
-			return 0;
-		}
-		return integer;
+		return data.getProperties().get(NEUTRAL_CHARGE_PROPERTY, 0);
 	}
 	
 	public static int getFactoriesPerCountry(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(FACTORIES_PER_COUNTRY_PROPERTY);
-		if (integer == null)
-		{
-			return 1;
-		}
-		return integer;
+		return data.getProperties().get(FACTORIES_PER_COUNTRY_PROPERTY, 1);
 	}
 	
 	public static boolean getTwoHitBattleships(final GameData data)
@@ -429,12 +419,7 @@ public class Properties implements Constants
 	*/
 	public static int getCountersDisplay(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(COUNTERS_DISPLAY);
-		if (integer == null)
-		{
-			return 0;
-		}
-		return integer;
+		return data.getProperties().get(COUNTERS_DISPLAY, 0);
 	}
 	
 	/*
@@ -545,12 +530,7 @@ public class Properties implements Constants
 	 */
 	public static Integer getHeavy_Bomber_Dice_Rolls(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS);
-		if (integer == null)
-		{
-			return 2;
-		}
-		return integer;
+		return data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS, 2);
 	}
 	
 	/*
@@ -653,12 +633,7 @@ public class Properties implements Constants
 	 */
 	public static Integer getSuper_Sub_Defense_Bonus(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(SUPER_SUB_DEFENSE_BONUS);
-		if (integer == null)
-		{
-			return 0;
-		}
-		return integer;
+		return data.getProperties().get(SUPER_SUB_DEFENSE_BONUS, 0);
 	}
 	
 	/*
@@ -700,12 +675,7 @@ public class Properties implements Constants
 	
 	public static Integer getPU_Multiplier(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(PU_MULTIPLIER);
-		if (integer == null)
-		{
-			return 1;
-		}
-		return integer;
+		return data.getProperties().get(PU_MULTIPLIER, 1);
 	}
 	
 	public static boolean getUnlimitedConstructions(final GameData data)
@@ -790,52 +760,27 @@ public class Properties implements Constants
 	
 	public static int getAIBonusIncomePercentage(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(AI_BONUS_INCOME_PERCENTAGE);
-		if (integer == null)
-		{
-			return 0;
-		}
-		return integer;
+		return data.getProperties().get(AI_BONUS_INCOME_PERCENTAGE, 0);
 	}
 	
 	public static int getAIBonusIncomeFlatRate(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(AI_BONUS_INCOME_FLAT_RATE);
-		if (integer == null)
-		{
-			return 0;
-		}
-		return integer;
+		return data.getProperties().get(AI_BONUS_INCOME_FLAT_RATE, 0);
 	}
 	
 	public static int getAIBonusAttack(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(AI_BONUS_ATTACK);
-		if (integer == null)
-		{
-			return 0;
-		}
-		return integer;
+		return data.getProperties().get(AI_BONUS_ATTACK, 0);
 	}
 	
 	public static int getAIBonusDefense(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(AI_BONUS_DEFENSE);
-		if (integer == null)
-		{
-			return 0;
-		}
-		return integer;
+		return data.getProperties().get(AI_BONUS_DEFENSE, 0);
 	}
 	
 	public static int getRelationshipsLastExtraRounds(final GameData data)
 	{
-		final Integer integer = (Integer) data.getProperties().get(RELATIONSHIPS_LAST_EXTRA_ROUNDS);
-		if (integer == null)
-		{
-			return 0;
-		}
-		return integer;
+		return data.getProperties().get(RELATIONSHIPS_LAST_EXTRA_ROUNDS, 0);
 	}
 	
 	public static boolean getAlliancesCanChainTogether(final GameData data)

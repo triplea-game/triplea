@@ -144,12 +144,12 @@ public class NewGameChooser extends JDialog
 			final GameData data = getSelected().getGameData();
 			final StringBuilder notes = new StringBuilder();
 			notes.append("<h1>").append(data.getGameName()).append("</h1>");
-			appendListItem("Map Name", (String) data.getProperties().get("mapName", ""), notes);
+			appendListItem("Map Name", data.getProperties().get("mapName", ""), notes);
 			appendListItem("Number Of Players", data.getPlayerList().size() + "", notes);
 			appendListItem("Location", getSelected().getLocation() + "", notes);
 			appendListItem("Version", data.getGameVersion() + "", notes);
 			notes.append("<p></p>");
-			notes.append((String) data.getProperties().get("notes", ""));
+			notes.append(data.getProperties().get("notes", ""));
 			m_notesPanel.setText(notes.toString());
 		}
 		else

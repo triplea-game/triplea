@@ -409,7 +409,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	{
 		// allow the game developer to write notes that appear in the game
 		// displays whatever is in the notes field in html
-		final String notes = (String) getData().getProperties().get("notes");
+		final String notes = getData().getProperties().get("notes", "");
 		if (notes != null && notes.trim().length() != 0)
 		{
 			parentMenu.add(new AbstractAction("Game Notes...")

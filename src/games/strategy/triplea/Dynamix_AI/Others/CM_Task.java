@@ -18,7 +18,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.Dynamix_AI.DMatches;
 import games.strategy.triplea.Dynamix_AI.DSettings;
@@ -531,12 +530,12 @@ public class CM_Task
 					return false;
 				// Atm, don't attack neutrals if the neutral attack charge is more than the territory production, 75% of the time
 				if (TerritoryAttachment.get(m_target) == null
-							|| Integer.parseInt(m_data.getProperties().get(Constants.NEUTRAL_CHARGE_PROPERTY, 0).toString()) > TerritoryAttachment.get(m_target).getProduction()
+							|| games.strategy.triplea.Properties.getNeutralCharge(m_data) > TerritoryAttachment.get(m_target).getProduction()
 							&& Math.random() < .75F)
 					return false;
 				// Never attack if neutral charge is over three times the ter value
 				if (TerritoryAttachment.get(m_target) == null
-							|| Integer.parseInt(m_data.getProperties().get(Constants.NEUTRAL_CHARGE_PROPERTY, 0).toString()) > TerritoryAttachment.get(m_target).getProduction() * 3)
+							|| games.strategy.triplea.Properties.getNeutralCharge(m_data) > TerritoryAttachment.get(m_target).getProduction() * 3)
 					return false;
 			}
 		}

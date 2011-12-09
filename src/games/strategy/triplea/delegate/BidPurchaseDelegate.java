@@ -41,7 +41,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	private static int getBidAmount(final GameData data, final PlayerID currentPlayer)
 	{
 		final String propertyName = currentPlayer.getName() + " bid";
-		final int bid = Integer.parseInt(data.getProperties().get(propertyName, "0").toString());
+		final int bid = data.getProperties().get(propertyName, 0);
 		return bid;
 	}
 	
@@ -56,7 +56,7 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	@Override
 	protected boolean canAfford(final IntegerMap<Resource> costs, final PlayerID player)
 	{
-		ResourceCollection bidCollection =  new ResourceCollection(getData());
+		final ResourceCollection bidCollection = new ResourceCollection(getData());
 		bidCollection.addResource(getData().getResourceList().getResource(Constants.PUS), m_bid); // TODO: allow bids to have more than just PUs
 		return bidCollection.has(costs);
 	}

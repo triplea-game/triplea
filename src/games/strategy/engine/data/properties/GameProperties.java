@@ -99,6 +99,22 @@ public class GameProperties extends GameDataComponent
 		return (Boolean) value;
 	}
 	
+	public int get(final String key, final int defaultValue)
+	{
+		final Object value = get(key);
+		if (value == null)
+			return defaultValue;
+		return (Integer) value;
+	}
+	
+	public String get(final String key, final String defaultValue)
+	{
+		final Object value = get(key);
+		if (value == null)
+			return defaultValue;
+		return (String) value;
+	}
+	
 	public Object get(final String key, final Object defaultValue)
 	{
 		final Object value = get(key);

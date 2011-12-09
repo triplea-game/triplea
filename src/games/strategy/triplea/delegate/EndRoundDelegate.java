@@ -256,36 +256,25 @@ public class EndRoundDelegate extends BaseDelegate
 	
 	private int getEconomicVictoryAmount(final GameData data, final String alliance)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(alliance + " Economic Victory"));
-		} catch (final NumberFormatException e)
-		{
-			return 1000;
-		}
+		return data.getProperties().get(alliance + " Economic Victory", 200);
 	}
 	
 	private int getVCAmount(final GameData data, final String alliance, final String type)
 	{
-		try
+		int defaultVC = 20;
+		if (type.equals(" Total Victory VCs"))
 		{
-			return Integer.parseInt((String) data.getProperties().get(alliance + type));
-		} catch (final NumberFormatException e)
-		{
-			if (type.equals(" Total Victory VCs"))
-			{
-				return 18;
-			}
-			else if (type.equals(" Honorable Victory VCs"))
-			{
-				return 15;
-			}
-			else if (type.equals(" Projection of Power VCs"))
-			{
-				return 13;
-			}
-			return 1000;
+			defaultVC = 18;
 		}
+		else if (type.equals(" Honorable Victory VCs"))
+		{
+			defaultVC = 15;
+		}
+		else if (type.equals(" Projection of Power VCs"))
+		{
+			defaultVC = 13;
+		}
+		return data.getProperties().get((alliance + type), defaultVC);
 	}
 	
 	/**

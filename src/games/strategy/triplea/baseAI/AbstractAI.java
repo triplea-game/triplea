@@ -329,7 +329,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		if (name.endsWith("Bid"))
 		{
 			final String propertyName = m_id.getName() + " bid";
-			final int bidAmount = Integer.parseInt(m_bridge.getGameData().getProperties().get(propertyName).toString());
+			final int bidAmount = m_bridge.getGameData().getProperties().get(propertyName, 0);
 			purchase(true, bidAmount, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
 		}
 		else if (name.endsWith("Tech"))

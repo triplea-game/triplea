@@ -21,7 +21,6 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 
@@ -74,8 +73,7 @@ public class InitializationDelegate extends BaseDelegate
 		Territory dontChooseNextTime = null;
 		Territory swap = null;
 		// System.out.println("Random stuff!");
-		final GameProperties properties = getData().getProperties();
-		final int numberOfShuffles = Integer.valueOf((String) properties.get("Difficulty Level"));
+		final int numberOfShuffles = getData().getProperties().get("Difficulty Level", 7);
 		// int numberOfShuffles = 0;
 		// Randomly shuffle the tiles on the board,
 		// but don't move a tile back to where it just was.
