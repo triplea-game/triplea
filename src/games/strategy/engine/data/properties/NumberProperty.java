@@ -13,8 +13,11 @@
  */
 package games.strategy.engine.data.properties;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.IntTextFieldChangeListener;
+
+import java.io.File;
 
 import javax.swing.JComponent;
 
@@ -38,15 +41,24 @@ public class NumberProperty extends AEditableProperty
 		m_value = def;
 	}
 	
-	public Object getValue()
+	public Integer getValue()
 	{
-		// returns a String object because that is how the games.strategy.triplea.Properties.java is setup.
-		return Integer.toString(m_value);
+		return m_value;
 	}
 	
 	public void setValue(final Object value) throws ClassCastException
 	{
-		m_value = (Integer) value;
+		if (value instanceof String)
+		{
+			// warn developer which have run with the option cache when Number properties were stored as strings
+			// todo (kg) remove at a later point
+			throw new RuntimeException("Number properties are no longer stored as Strings. You should delete your option cache, located at "
+						+ new File(GameRunner.getUserRootFolder(), "optionCache").toString());
+		}
+		else
+		{
+			m_value = (Integer) value;
+		}
 	}
 	
 	public JComponent getEditorComponent()

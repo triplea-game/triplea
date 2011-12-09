@@ -830,10 +830,29 @@ public class GameParser
 			{
 				final List<Node> children2 = getNonTextNodesIgnoring(current, "value");
 				if (children2.size() == 0)
-					properties.set(property, value);
+				{
+					// we don't know what type this property is!!, it appears like only numbers and string may be represented without proper type definition
+					
+					try
+					{
+						// test if it is an integer
+						final Integer integer = Integer.parseInt(value);
+						int intValue = 0;
+						if (integer != null)
+						{
+							intValue = integer;
+						}
+						properties.set(property, intValue);
+					} catch (final NumberFormatException e)
+					{
+						// then it must be a string
+						properties.set(property, value);
+					}
+					
+				}
 				else
 				{
-					final String type = ((Element) children2.get(0)).getNodeName();
+					final String type = children2.get(0).getNodeName();
 					if (type.equals("boolean"))
 					{
 						properties.set(property, Boolean.valueOf(value));
@@ -842,6 +861,22 @@ public class GameParser
 					{
 						properties.set(property, new File(value));
 					}
+					else if (type.equals("number"))
+					{
+						int intValue = 0;
+						if (value != null)
+						{
+							try
+							{
+								intValue = Integer.parseInt(value);
+							} catch (final NumberFormatException e)
+							{
+								// value already 0
+							}
+						}
+						properties.set(property, intValue);
+					}
+					
 					else
 					{
 						properties.set(property, value);

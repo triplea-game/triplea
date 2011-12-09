@@ -27,24 +27,22 @@ public class Properties implements Constants
 {
 	public static int getNeutralCharge(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(NEUTRAL_CHARGE_PROPERTY));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(NEUTRAL_CHARGE_PROPERTY);
+		if (integer == null)
 		{
 			return 0;
 		}
+		return integer;
 	}
 	
 	public static int getFactoriesPerCountry(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(FACTORIES_PER_COUNTRY_PROPERTY));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(FACTORIES_PER_COUNTRY_PROPERTY);
+		if (integer == null)
 		{
 			return 1;
 		}
+		return integer;
 	}
 	
 	public static boolean getTwoHitBattleships(final GameData data)
@@ -431,13 +429,12 @@ public class Properties implements Constants
 	*/
 	public static int getCountersDisplay(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(COUNTERS_DISPLAY));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(COUNTERS_DISPLAY);
+		if (integer == null)
 		{
 			return 0;
 		}
+		return integer;
 	}
 	
 	/*
@@ -548,13 +545,12 @@ public class Properties implements Constants
 	 */
 	public static Integer getHeavy_Bomber_Dice_Rolls(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS);
+		if (integer == null)
 		{
 			return 2;
 		}
+		return integer;
 	}
 	
 	/*
@@ -657,13 +653,12 @@ public class Properties implements Constants
 	 */
 	public static Integer getSuper_Sub_Defense_Bonus(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(SUPER_SUB_DEFENSE_BONUS));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(SUPER_SUB_DEFENSE_BONUS);
+		if (integer == null)
 		{
 			return 0;
 		}
+		return integer;
 	}
 	
 	/*
@@ -705,13 +700,12 @@ public class Properties implements Constants
 	
 	public static Integer getPU_Multiplier(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(PU_MULTIPLIER));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(PU_MULTIPLIER);
+		if (integer == null)
 		{
 			return 1;
 		}
+		return integer;
 	}
 	
 	public static boolean getUnlimitedConstructions(final GameData data)
@@ -796,57 +790,52 @@ public class Properties implements Constants
 	
 	public static int getAIBonusIncomePercentage(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(AI_BONUS_INCOME_PERCENTAGE));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(AI_BONUS_INCOME_PERCENTAGE);
+		if (integer == null)
 		{
 			return 0;
 		}
+		return integer;
 	}
 	
 	public static int getAIBonusIncomeFlatRate(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(AI_BONUS_INCOME_FLAT_RATE));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(AI_BONUS_INCOME_FLAT_RATE);
+		if (integer == null)
 		{
 			return 0;
 		}
+		return integer;
 	}
 	
 	public static int getAIBonusAttack(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(AI_BONUS_ATTACK));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(AI_BONUS_ATTACK);
+		if (integer == null)
 		{
 			return 0;
 		}
+		return integer;
 	}
 	
 	public static int getAIBonusDefense(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(AI_BONUS_DEFENSE));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(AI_BONUS_DEFENSE);
+		if (integer == null)
 		{
 			return 0;
 		}
+		return integer;
 	}
 	
 	public static int getRelationshipsLastExtraRounds(final GameData data)
 	{
-		try
-		{
-			return Integer.parseInt((String) data.getProperties().get(RELATIONSHIPS_LAST_EXTRA_ROUNDS));
-		} catch (final NumberFormatException e)
+		final Integer integer = (Integer) data.getProperties().get(RELATIONSHIPS_LAST_EXTRA_ROUNDS);
+		if (integer == null)
 		{
 			return 0;
 		}
+		return integer;
 	}
 	
 	public static boolean getAlliancesCanChainTogether(final GameData data)
