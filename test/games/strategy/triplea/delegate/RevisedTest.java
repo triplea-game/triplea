@@ -852,6 +852,7 @@ public class RevisedTest extends TestCase
 		final List<Unit> bombers = uk.getUnits().getMatches(Matches.UnitIsStrategicBomber);
 		addTo(germany, bombers);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
+		tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
 		bridge.setRemote(getDummyPlayer());
 		// aa guns rolls 0 and hits
@@ -877,6 +878,7 @@ public class RevisedTest extends TestCase
 		final List<Unit> bombers = bomber(m_data).create(2, british);
 		addTo(germany, bombers);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
+		tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
 		bridge.setRemote(getDummyPlayer());
 		// should be exactly 3 rolls total. would be exactly 2 rolls if the number of units being shot at = max dice side of the AA gun, because the casualty selection roll would not happen in LL
@@ -903,6 +905,7 @@ public class RevisedTest extends TestCase
 		final List<Unit> bombers = bomber(m_data).create(7, british);
 		addTo(germany, bombers);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
+		tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
 		bridge.setRemote(getDummyPlayer());
 		// aa guns rolls 0 and hits, next 5 dice are for the bombing raid cost for the
@@ -925,6 +928,7 @@ public class RevisedTest extends TestCase
 		final BattleTracker tracker = new BattleTracker();
 		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans, tracker);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
+		tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
 		TechTracker.addAdvance(british, bridge, TechAdvance.HEAVY_BOMBER);
 		// aa guns rolls 3, misses, bomber rolls 2 dice at 3

@@ -178,7 +178,7 @@ public class ProductionPanel extends JPanel
 	protected void setLeft(final ResourceCollection left, final int totalUnits)
 	{
 		final ResourceCollection total = getResources();
-		m_left.setText("<html>You have " + left + " left.<br>Out of " + total + "<br>Purchasing a total of " + totalUnits + " units.</html>");
+		m_left.setText("Purchasing a total of " + totalUnits + " units.  You have " + left + " left.   (Out of " + total + ")");
 	}
 	
 	Action m_done_action = new AbstractAction("Done")
