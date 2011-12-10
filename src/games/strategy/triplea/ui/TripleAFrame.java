@@ -182,6 +182,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	private final ButtonModel m_editModeButtonModel;
 	private final ButtonModel m_showCommentLogButtonModel;
 	private IEditDelegate m_editDelegate;
+	private JSplitPane m_gameCenterPanel;
 	
 	/** Creates new TripleAFrame */
 	public TripleAFrame(final IGame game, final Set<IGamePlayer> players) throws IOException
@@ -262,9 +263,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_step.setHorizontalTextPosition(SwingConstants.LEADING);
 		m_gameSouthPanel.add(stepPanel, BorderLayout.EAST);
 		m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
-		final JPanel gameCenterPanel = new JPanel();
-		gameCenterPanel.setLayout(new BorderLayout());
-		gameCenterPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
 		m_rightHandSidePanel.setLayout(new BorderLayout());
 		m_rightHandSidePanel.add(m_smallView, BorderLayout.NORTH);
 		m_tabsPanel.setBorder(null);
@@ -310,8 +308,11 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			}
 		});
 		m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize().getHeight()));
-		gameCenterPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
-		m_gameMainPanel.add(gameCenterPanel, BorderLayout.CENTER);
+		m_gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,m_mapAndChatPanel,m_rightHandSidePanel);
+		m_gameCenterPanel.setOneTouchExpandable(true);
+		m_gameCenterPanel.setResizeWeight(1.0);
+		m_gameMainPanel.add(m_gameCenterPanel, BorderLayout.CENTER);
+		m_gameCenterPanel.resetToPreferredSizes();
 		// set up the edit mode overlay text
 		this.setGlassPane(new JComponent()
 		{
@@ -1361,10 +1362,9 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		final JSplitPane split = new JSplitPane();
 		m_historyTree = new HistoryPanel(clonedGameData, historyDetailPanel, popup, m_uiContext);
 		split.setLeftComponent(m_historyTree);
-		split.setRightComponent(m_mapAndChatPanel);
+		split.setRightComponent(m_gameCenterPanel);
 		split.setDividerLocation(150);
 		m_historyPanel.add(split, BorderLayout.CENTER);
-		m_historyPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
 		m_historyPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
 		getContentPane().removeAll();
 		getContentPane().add(m_historyPanel, BorderLayout.CENTER);
@@ -1410,8 +1410,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			m_actionButtons.getCurrent().setActive(true);
 		m_gameMainPanel.removeAll();
 		m_gameMainPanel.setLayout(new BorderLayout());
-		m_gameMainPanel.add(m_mapAndChatPanel, BorderLayout.CENTER);
-		m_gameMainPanel.add(m_rightHandSidePanel, BorderLayout.EAST);
+		m_gameMainPanel.add(m_gameCenterPanel, BorderLayout.CENTER);
 		m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
 		getContentPane().removeAll();
 		getContentPane().add(m_gameMainPanel, BorderLayout.CENTER);

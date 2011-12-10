@@ -1,4 +1,6 @@
 Changes for 1.5
+* Allowed resizing of the right side panel. (edwin van der wal)
+
 * Created ability for Game Options to be saved as default options. (qwertgold)
 
 * Updated Napoleonic Empires FFA to use the new destroyedTUV instead of upkeep. (veqryn)
