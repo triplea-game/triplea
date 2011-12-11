@@ -73,7 +73,7 @@ public class ProductionPanel extends JPanel
 	protected JButton m_done;
 	protected PlayerID m_id;
 	private boolean m_bid;
-	private GameData m_data;
+	protected GameData m_data;
 	
 	public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final boolean bid, final IntegerMap<ProductionRule> initialPurchase,
 				final UIContext context)
@@ -160,7 +160,11 @@ public class ProductionPanel extends JPanel
 		final Insets nullInsets = new Insets(0, 0, 0, 0);
 		this.removeAll();
 		this.setLayout(new GridBagLayout());
-		final JLabel legendLabel = new JLabel("Attack/Defense/Movement");
+		final ResourceCollection totalWithoutTechTokensOrVPs = new ResourceCollection(getResources());
+		totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
+		totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
+		final JLabel legendLabel = new JLabel("<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: " + totalWithoutTechTokensOrVPs.toString()
+					+ ")</html>");
 		add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 		int rows = m_rules.size() / 7;
 		rows = Math.max(2, rows);
@@ -177,8 +181,10 @@ public class ProductionPanel extends JPanel
 	// This method can be overridden by subclasses
 	protected void setLeft(final ResourceCollection left, final int totalUnits)
 	{
-		final ResourceCollection total = getResources();
-		m_left.setText("Purchasing a total of " + totalUnits + " units.  You have " + left + " left.   (Out of " + total + ")");
+		final ResourceCollection leftWithoutTechTokensOrVPs = new ResourceCollection(left);
+		leftWithoutTechTokensOrVPs.removeAllOfResource(left.getData().getResourceList().getResource(Constants.VPS));
+		leftWithoutTechTokensOrVPs.removeAllOfResource(left.getData().getResourceList().getResource(Constants.TECH_TOKENS));
+		m_left.setText(totalUnits + " total units purchased.  You have " + leftWithoutTechTokensOrVPs.toString() + " left");
 	}
 	
 	Action m_done_action = new AbstractAction("Done")
@@ -228,7 +234,7 @@ public class ProductionPanel extends JPanel
 		}
 	}
 	
-	private ResourceCollection getResources()
+	protected ResourceCollection getResources()
 	{
 		if (m_bid)
 		{

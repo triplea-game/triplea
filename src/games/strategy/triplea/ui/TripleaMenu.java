@@ -39,6 +39,7 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
+import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IllegalCharacterRemover;
@@ -814,7 +815,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
      */
 	private void createAndSaveStats(final boolean showPhaseStats)
 	{
-		final StatPanel statPanel = m_frame.getStatPanel();
+		final ExtendedStats statPanel = new ExtendedStats(getData());
 		final JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		final File rootDir = new File(System.getProperties().getProperty("user.dir"));
@@ -873,7 +874,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		text.append("\n");
 		final List<PlayerID> playerOrderList = new ArrayList<PlayerID>();
 		playerOrderList.addAll(getData().getPlayerList().getPlayers());
-		Collections.shuffle(playerOrderList);
 		Collections.sort(playerOrderList, new PlayerOrderComparator(getData()));
 		final Set<PlayerID> playerOrderSetNoDuplicates = new LinkedHashSet<PlayerID>(playerOrderList);
 		final Iterator<PlayerID> playerOrderIterator = playerOrderSetNoDuplicates.iterator();
@@ -921,8 +921,10 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			while (purchaseOptionsIterator.hasNext())
 			{
 				final ProductionRule pr = purchaseOptionsIterator.next();
+				String costString = pr.toStringCosts().replaceAll("; ", ",");
+				costString = costString.replaceAll(" ", ",");
 				text.append(pr.getName() + "," + pr.getResults().keySet().iterator().next().getName() + "," + pr.getResults().getInt(pr.getResults().keySet().iterator().next()) + ","
-							+ pr.getCosts().getInt(pr.getCosts().keySet().iterator().next()) + "," + pr.getCosts().keySet().iterator().next().getName() + ",");
+							+ costString + ",");
 				text.append("\n");
 			}
 			text.append("\n");

@@ -18,9 +18,11 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 import java.io.Serializable;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -74,5 +76,28 @@ public class ProductionRule extends DefaultNamed implements Serializable
 	public String toString()
 	{
 		return "ProductionRule:" + getName();
+	}
+	
+	public String toStringCosts()
+	{
+		final StringBuilder sb = new StringBuilder();
+		final Resource pus = getData().getResourceList().getResource(Constants.PUS);
+		if (m_cost.getInt(pus) != 0)
+		{
+			sb.append("; ");
+			sb.append(m_cost.getInt(pus));
+			sb.append(" " + pus.getName());
+		}
+		for (final Entry<Resource, Integer> entry : m_cost.entrySet())
+		{
+			final Resource r = entry.getKey();
+			if (r.equals(pus))
+				continue;
+			final int c = entry.getValue();
+			sb.append("; ");
+			sb.append(c);
+			sb.append(" " + r.getName());
+		}
+		return sb.toString().replaceFirst("; ", "");
 	}
 }

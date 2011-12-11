@@ -20,7 +20,6 @@ package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
@@ -32,13 +31,12 @@ import games.strategy.engine.stats.IStat;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PlayerAttachment;
-import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.util.CompositeMatchAnd;
+import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -49,7 +47,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -70,14 +67,11 @@ import javax.swing.table.TableColumn;
 @SuppressWarnings("serial")
 public class StatPanel extends JPanel
 {
-	private final StatTableModel m_dataModel;
-	private final TechTableModel m_techModel;
-	private final ResourceTableModel m_resourceModel;
-	private IStat[] m_stats;
-	private IStat[] m_statsExtended = new IStat[] {};
-	private IStat[] m_statsResource;
+	final private StatTableModel m_dataModel;
+	final private TechTableModel m_techModel;
+	protected IStat[] m_stats;
 	protected GameData m_data;
-	private final JTable m_statsTable;
+	private JTable m_statsTable;
 	private Image m_statsImage = null;
 	
 	/** Creates a new instance of InfoPanel */
@@ -85,10 +79,15 @@ public class StatPanel extends JPanel
 	public StatPanel(final GameData data)
 	{
 		m_data = data;
-		setLayout(new GridLayout(3, 1));
 		m_dataModel = new StatTableModel();
 		m_techModel = new TechTableModel();
-		m_resourceModel = new ResourceTableModel();
+		initLayout();
+	}
+	
+	protected void initLayout()
+	{
+		setLayout(new GridLayout(2, 1));
+		
 		m_statsTable = new JTable(m_dataModel)
 		{
 			@Override
@@ -102,90 +101,17 @@ public class StatPanel extends JPanel
 		
 		JTable table = m_statsTable;
 		table.getTableHeader().setReorderingAllowed(false);
-		// Set width of country column
 		TableColumn column = table.getColumnModel().getColumn(0);
 		column.setPreferredWidth(175);
 		JScrollPane scroll = new JScrollPane(table);
 		add(scroll);
 		
-		table = new JTable(m_resourceModel);
-		table.getTableHeader().setReorderingAllowed(true);
-		column = table.getColumnModel().getColumn(0);
-		column.setPreferredWidth(175);
-		scroll = new JScrollPane(table);
-		add(scroll);
-		
 		table = new JTable(m_techModel);
-		// Strangely, this is enabled by default
 		table.getTableHeader().setReorderingAllowed(false);
-		// Make the technology column big. Value chosen by trial and error
-		// The right way to do this is probably to get a FontMetrics object
-		// and measure the pixel width of the longest technology name in the
-		// current font.
 		column = table.getColumnModel().getColumn(0);
 		column.setPreferredWidth(500);
 		scroll = new JScrollPane(table);
-		// add(scroll, BorderLayout.SOUTH);
 		add(scroll);
-	}
-	
-	private void fillExtendedStats(final GameData data)
-	{
-		// add other resources, other than PUs and tech tokens
-		final List<Resource> resources = data.getResourceList().getResources();
-		for (final Resource r : resources)
-		{
-			if (r.getName().equals(Constants.PUS) || r.getName().equals(Constants.TECH_TOKENS))
-				continue;
-			else
-			{
-				final GenericResourceStat resourceStat = new GenericResourceStat();
-				resourceStat.init(r.getName());
-				final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
-				statsExtended.add(resourceStat);
-				m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
-			}
-		}
-		// add tech related stuff
-		if (games.strategy.triplea.Properties.getTechDevelopment(data))
-		{
-			// add tech tokens
-			if (data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
-			{
-				final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
-				statsExtended.add(new TechTokenStat());
-				m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
-			}
-			// add number of techs
-			if (true)
-			{
-				final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
-				statsExtended.add(new TechCountStat());
-				m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
-			}
-			// add individual techs
-			final Iterator<TechAdvance> allTechsIter = TechAdvance.getTechAdvances(m_data, null).iterator();
-			while (allTechsIter.hasNext())
-			{
-				final TechAdvance ta = allTechsIter.next();
-				final GenericTechNameStat techNameStat = new GenericTechNameStat();
-				techNameStat.init(ta);
-				final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
-				statsExtended.add(techNameStat);
-				m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
-			}
-		}
-		// now add actual number of each unit type (holy gumdrops batman, this is going to be long!)
-		final Iterator<UnitType> allUnitTypes = data.getUnitTypeList().iterator();
-		while (allUnitTypes.hasNext())
-		{
-			final UnitType ut = allUnitTypes.next();
-			final GenericUnitNameStat unitNameStat = new GenericUnitNameStat();
-			unitNameStat.init(ut);
-			final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
-			statsExtended.add(unitNameStat);
-			m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
-		}
 	}
 	
 	public void setGameData(final GameData data)
@@ -193,10 +119,8 @@ public class StatPanel extends JPanel
 		m_data = data;
 		m_dataModel.setGameData(data);
 		m_techModel.setGameData(data);
-		m_resourceModel.setGameData(data);
 		m_dataModel.gameDataChanged(null);
 		m_techModel.gameDataChanged(null);
-		m_resourceModel.gameDataChanged(null);
 	}
 	
 	public void setStatsBgImage(final Image image)
@@ -215,13 +139,10 @@ public class StatPanel extends JPanel
 	 */
 	public Collection<String> getAlliances()
 	{
-		final Iterator<String> allAlliances = m_data.getAllianceTracker().getAlliances().iterator();
-		// order the alliances use a Tree Set
-		final Collection<String> rVal = new TreeSet<String>();
 		
-		while (allAlliances.hasNext())
+		final Collection<String> rVal = new TreeSet<String>();
+		for (final String alliance : m_data.getAllianceTracker().getAlliances())
 		{
-			final String alliance = allAlliances.next();
 			if (m_data.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1)
 			{
 				rVal.add(alliance);
@@ -237,149 +158,7 @@ public class StatPanel extends JPanel
 		return players;
 	}
 	
-	public IStat[] getStats()
-	{
-		return m_stats;
-	}
 	
-	public IStat[] getStatsExtended(final GameData data)
-	{
-		if (m_statsExtended.length == 0)
-			fillExtendedStats(data);
-		return m_statsExtended;
-	}
-	
-	
-	class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener
-	{
-		private boolean m_isDirty = true;
-		private String[][] m_collectedData;
-		
-		public ResourceTableModel()
-		{
-			setResourceCollums();
-			m_data.addDataChangeListener(this);
-			m_isDirty = true;
-		}
-		
-		private void setResourceCollums()
-		{
-			final List<IStat> statList = new ArrayList<IStat>();
-			for (final Resource resource : m_data.getResourceList().getResources())
-			{
-				if (resource.getName().equals(Constants.TECH_TOKENS) || resource.getName().equals(Constants.PUS))
-					continue;
-				statList.add(new ResourceStat(resource));
-			}
-			m_statsResource = statList.toArray(new IStat[statList.size()]);
-		}
-		
-		public synchronized Object getValueAt(final int row, final int col)
-		{
-			if (m_isDirty)
-			{
-				loadData();
-				m_isDirty = false;
-			}
-			return m_collectedData[row][col];
-			
-		}
-		
-		private synchronized void loadData()
-		{
-			m_data.acquireReadLock();
-			try
-			{
-				final List<PlayerID> players = getPlayers();
-				final Collection<String> alliances = getAlliances();
-				m_collectedData = new String[players.size() + alliances.size()][m_statsResource.length + 1];
-				int row = 0;
-				for (final PlayerID player : players)
-				{
-					m_collectedData[row][0] = player.getName();
-					for (int i = 0; i < m_statsResource.length; i++)
-					{
-						m_collectedData[row][i + 1] = m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(player, m_data));
-					}
-					row++;
-				}
-				final Iterator<String> allianceIterator = alliances.iterator();
-				while (allianceIterator.hasNext())
-				{
-					final String alliance = allianceIterator.next();
-					m_collectedData[row][0] = alliance;
-					for (int i = 0; i < m_statsResource.length; i++)
-					{
-						m_collectedData[row][i + 1] = m_statsResource[i].getFormatter().format(m_statsResource[i].getValue(alliance, m_data));
-					}
-					row++;
-				}
-			} finally
-			{
-				m_data.releaseReadLock();
-			}
-		}
-		
-		public void gameDataChanged(final Change aChange)
-		{
-			synchronized (this)
-			{
-				m_isDirty = true;
-			}
-			SwingUtilities.invokeLater(new Runnable()
-			{
-				public void run()
-				{
-					repaint();
-				}
-			});
-		}
-		
-		@Override
-		public String getColumnName(final int col)
-		{
-			if (col == 0)
-				return "Player";
-			return m_statsResource[col - 1].getName();
-		}
-		
-		public int getColumnCount()
-		{
-			return m_statsResource.length + 1;
-		}
-		
-		public synchronized int getRowCount()
-		{
-			if (!m_isDirty)
-				return m_collectedData.length;
-			else
-			{
-				m_data.acquireReadLock();
-				try
-				{
-					return m_data.getPlayerList().size() + getAlliances().size();
-				} finally
-				{
-					m_data.releaseReadLock();
-				}
-			}
-		}
-		
-		public synchronized void setGameData(final GameData data)
-		{
-			synchronized (this)
-			{
-				m_data.removeDataChangeListener(this);
-				m_data = data;
-				m_data.addDataChangeListener(this);
-				m_isDirty = true;
-			}
-			repaint();
-		}
-		
-	}
-	
-
 	/*
 	 * Custom table model.
 	 * 
@@ -866,183 +645,4 @@ public class StatPanel extends JPanel
 		}
 	}
 	
-
-	class TechCountStat extends AbstractStat
-	{
-		public String getName()
-		{
-			return "Techs";
-		}
-		
-		public double getValue(final PlayerID player, final GameData data)
-		{
-			int count = 0;
-			final TechAttachment ta = TechAttachment.get(player);
-			if (getBool(ta.getHeavyBomber()))
-				count++;
-			if (getBool(ta.getLongRangeAir()))
-				count++;
-			if (getBool(ta.getJetPower()))
-				count++;
-			if (getBool(ta.getRocket()))
-				count++;
-			if (getBool(ta.getIndustrialTechnology()))
-				count++;
-			if (getBool(ta.getSuperSub()))
-				count++;
-			if (getBool(ta.getDestroyerBombard()))
-				count++;
-			if (getBool(ta.getImprovedArtillerySupport()))
-				count++;
-			if (getBool(ta.getParatroopers()))
-				count++;
-			if (getBool(ta.getIncreasedFactoryProduction()))
-				count++;
-			if (getBool(ta.getWarBonds()))
-				count++;
-			if (getBool(ta.getMechanizedInfantry()))
-				count++;
-			if (getBool(ta.getAARadar()))
-				count++;
-			if (getBool(ta.getShipyards()))
-				count++;
-			for (final boolean value : ta.getGenericTech().values())
-			{
-				if (value)
-					count++;
-			}
-			return count;
-		}
-		
-		private boolean getBool(final String aString)
-		{
-			if (aString.equalsIgnoreCase("true"))
-				return true;
-			else if (aString.equalsIgnoreCase("false"))
-				return false;
-			else
-				throw new IllegalArgumentException(aString + " is not a valid boolean");
-		}
-	}
-	
-
-	class TechTokenStat extends ResourceStat
-	{
-		public TechTokenStat()
-		{
-			super(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
-		}
-	}
-	
-
-	class GenericResourceStat extends AbstractStat
-	{
-		private String m_name = null;
-		
-		public void init(final String name)
-		{
-			m_name = name;
-		}
-		
-		public String getName()
-		{
-			return "Resource: " + m_name;
-		}
-		
-		public double getValue(final PlayerID player, final GameData data)
-		{
-			return player.getResources().getQuantity(m_name);
-		}
-	}
-	
-
-	class GenericTechNameStat extends AbstractStat
-	{
-		private TechAdvance m_ta = null;
-		
-		public void init(final TechAdvance ta)
-		{
-			m_ta = ta;
-		}
-		
-		public String getName()
-		{
-			return "TechAdvance: " + m_ta.getName();
-		}
-		
-		public double getValue(final PlayerID player, final GameData data)
-		{
-			if (m_ta.hasTech(TechAttachment.get(player)))
-				return 1;
-			return 0;
-		}
-	}
-	
-
-	class GenericUnitNameStat extends AbstractStat
-	{
-		private UnitType m_ut = null;
-		
-		public void init(final UnitType ut)
-		{
-			m_ut = ut;
-		}
-		
-		public String getName()
-		{
-			return "UnitType: " + m_ut.getName();
-		}
-		
-		public double getValue(final PlayerID player, final GameData data)
-		{
-			int rVal = 0;
-			final Match<Unit> ownedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
-			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-			while (iter.hasNext())
-			{
-				final Territory place = iter.next();
-				rVal += place.getUnits().countMatches(ownedBy);
-			}
-			return rVal;
-		}
-	}
-}
-
-
-class PlayerOrderComparator implements Comparator<PlayerID>
-{
-	private final GameData m_data;
-	
-	public PlayerOrderComparator(final GameData data)
-	{
-		m_data = data;
-	}
-	
-	/**
-	 * sort based on first step that isn't a bid related step.
-	 */
-	public int compare(final PlayerID p1, final PlayerID p2)
-	{
-		final Iterator<GameStep> iter = m_data.getSequence().iterator();
-		while (iter.hasNext())
-		{
-			final GameStep s = iter.next();
-			if (s.getPlayerID() == null)
-				continue;
-			if (s.getDelegate() != null && s.getDelegate().getClass() != null)
-			{
-				final String delegateClassName = s.getDelegate().getClass().getName();
-				if (delegateClassName.equals("games.strategy.triplea.delegate.InitializationDelegate") || delegateClassName.equals("games.strategy.triplea.delegate.BidPurchaseDelegate")
-							|| delegateClassName.equals("games.strategy.triplea.delegate.BidPlaceDelegate") || delegateClassName.equals("games.strategy.triplea.delegate.EndRoundDelegate"))
-					continue;
-			}
-			else if (s.getName() != null && (s.getName().endsWith("Bid") || s.getName().endsWith("BidPlace")))
-				continue;
-			if (s.getPlayerID().equals(p1))
-				return -1;
-			else if (s.getPlayerID().equals(p2))
-				return 1;
-		}
-		return 0;
-	}
 }

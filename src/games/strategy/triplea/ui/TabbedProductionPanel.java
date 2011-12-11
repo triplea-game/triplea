@@ -21,7 +21,9 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
@@ -71,7 +73,12 @@ public class TabbedProductionPanel extends ProductionPanel
 	{
 		this.removeAll();
 		this.setLayout(new GridBagLayout());
-		add(new JLabel("Attack/Defense/Movement"), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
+		final ResourceCollection totalWithoutTechTokensOrVPs = new ResourceCollection(getResources());
+		totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
+		totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
+		add(new JLabel("<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: " + totalWithoutTechTokensOrVPs.toString() + ")</html>"),
+					new GridBagConstraints(0, 0, 1,
+								1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 		final JTabbedPane tabs = new JTabbedPane();
 		add(tabs, new GridBagConstraints(0, 1, 1, 1, 100, 100, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 0), 0, 0));
 		final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(m_id, m_rules, UIContext.getMapDir());

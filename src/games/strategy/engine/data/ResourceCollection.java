@@ -41,6 +41,12 @@ public class ResourceCollection extends GameDataComponent
 		super(data);
 	}
 	
+	public ResourceCollection(final ResourceCollection other)
+	{
+		super(other.getData());
+		m_resources.add(other.m_resources);
+	}
+	
 	public ResourceCollection(final GameData data, final IntegerMap<Resource> resources)
 	{
 		this(data);
@@ -75,6 +81,11 @@ public class ResourceCollection extends GameDataComponent
 		if ((current - quantity) < 0)
 			throw new IllegalArgumentException("Cant remove more than player has. current:" + current + " toRemove: " + quantity);
 		change(resource, -quantity);
+	}
+	
+	public void removeAllOfResource(final Resource resource)
+	{
+		m_resources.removeKey(resource);
 	}
 	
 	private void change(final Resource resource, final int quantity)

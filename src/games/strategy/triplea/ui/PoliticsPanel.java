@@ -19,6 +19,7 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.util.PlayerOrderComparator;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
