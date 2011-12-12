@@ -149,6 +149,23 @@ public class ChangeFactory
 		return new ChangeResourceChange(player, resource, quantity);
 	}
 	
+	public static Change addResourceCollection(PlayerID id, ResourceCollection rCollection) {
+		CompositeChange cChange = new CompositeChange();
+		for(Resource r:rCollection.getResources().keySet()) {
+			cChange.add(new ChangeResourceChange(id,r,rCollection.getQuantity(r)));
+		}
+		return cChange;
+	}
+	
+	public static Change removeResourceCollection(PlayerID id, ResourceCollection rCollection) {
+		CompositeChange cChange = new CompositeChange();
+		for(Resource r:rCollection.getResources().keySet()) {
+			cChange.add(new ChangeResourceChange(id,r,-rCollection.getQuantity(r)));
+		}
+		return cChange;
+	}
+	
+	
 	public static Change setProperty(final String property, final Object value, final GameData data)
 	{
 		return new SetPropertyChange(property, value, data.getProperties());
@@ -273,6 +290,7 @@ public class ChangeFactory
 	{
 		return unitPropertyChange(unit, TripleAUnit.get(unit).getMaxMovementAllowed(), TripleAUnit.ALREADY_MOVED);
 	}
+
 }
 
 
@@ -753,7 +771,9 @@ class ChangeUnitProduction extends Change
 			throw new IllegalStateException("ChangeUnitProduction may not have null arguments");*/
 		return "Change unit production.  Quantity:" + m_unitProduction + " Territory:" + m_location;
 	}
+
 }
+
 
 
 /**

@@ -550,7 +550,8 @@
                 <resource name="techTokens"/>
 				<!-- These are custom resources.
 				<resource name="Steel"/>
-				<resource name="Aluminium"/>-->
+				<resource name="Aluminium"/>
+				<resource name="Fuel"/>-->
 				<!-- VPs are only semi-supported by the code as of right now. They are used for special pacific rules.
 				<resource name="VPs"/>-->
         </resourceList>
@@ -1770,6 +1771,7 @@
 			canEscort							values: allows this unit to participate in air battles, as an attacking unit
 			airDefense							values: defense value of interceptor
 			airAttack							values: attack value of escort
+			fuelCost							values: fuelCost is a list of at least one resource that get used up for each point of movementCost a unit does.  (can have multiple). example: <option name="fuelCost" value="Fuel" count="5"/> and <option name="fuelCost" value="PUs" count="1"/>
 	
 	production related:
 			isFactory							values: allows a unit to produce other units, not participate in combat, be placed anywhere you owned at the beginning of the turn, be capturable, and be damaged by rockets and raids
@@ -1856,6 +1858,9 @@
 								A unit which can not perform amphibious assaults may instead disembark during non-combat
 								can be set to "all", or "none", or a list of some transports. if this option is not present, it defaults to "all" -->
 						 <option name="canInvadeOnlyFrom" value="transport:jp_transport:air_transport:super_carrier"/>
+						 <!-- fuelCost is a list of at least one resource that get used up for each point of movementCost a unit does
+						 <option name="fuelCost" value="Fuel" count="5"/>
+						 <option name="fuelCost" value="PUs" count="1"/>-->
                 </attatchment>
 
                 <!-- Armour -->
@@ -3401,6 +3406,7 @@
 					receivesAbilityWhenWith
 					whenCapturedChangesInto
 					special
+					fuelCost
 					
 				Unit Support Attachments:
 					players
@@ -4416,9 +4422,10 @@
                         <resourceGiven player="Italians" resource="PUs" quantity="16"/>
                         <resourceGiven player="Chinese" resource="PUs" quantity="0"/>
 						
-						<!-- custom resources below 
+						<!-- custom resources below
 						<resourceGiven player="Italians" resource="Steel" quantity="20"/>
-						<resourceGiven player="Italians" resource="Aluminium" quantity="30"/>-->
+						<resourceGiven player="Italians" resource="Aluminium" quantity="30"/>
+						<resourceGiven player="Italians" resource="Fuel" quantity="20"/>-->
                 </resourceInitialize>
 
 				<relationshipInitialize>

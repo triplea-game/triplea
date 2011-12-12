@@ -23,6 +23,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -180,6 +181,8 @@ public class UnitAttachment extends DefaultAttachment
 	private final IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
 	private final IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<UnitType>();
 	private final IntegerMap<Resource> m_createsResourcesList = new IntegerMap<Resource>();
+	private final IntegerMap<Resource> m_fuelCost = new IntegerMap<Resource>();
+	
 	private boolean m_canIntercept = false;
 	private boolean m_canEscort = false;
 	private int m_airDefense = 0;
@@ -1293,6 +1296,35 @@ public class UnitAttachment extends DefaultAttachment
 			throw new IllegalStateException("Unit Attachments: createsResourcesList must have positive values");
 		m_createsResourcesList.put(r, n);
 	}
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 */
+	public void setFuelCost(final String value)
+	{
+		final String[] s = value.split(":");
+		if (s.length != 2)
+			throw new IllegalStateException("Unit Attachments: fuelCost must have two fields");
+		String resourceToProduce;
+		resourceToProduce = s[1];
+		// validate that this resource exists in the xml
+		final Resource r = getData().getResourceList().getResource(resourceToProduce);
+		if (r == null)
+			throw new IllegalStateException("Unit Attachments: fuelCost: No resource called:" + resourceToProduce);
+		final int n = getInt(s[0]);
+		if (n < 0)
+			throw new IllegalStateException("Unit Attachments: fuelCost must have positive values");
+		m_fuelCost.put(r, n);
+	}
+	
+	public IntegerMap<Resource> getFuelCost() {
+		return m_fuelCost;
+	}
+	
+	public void clearFuelCost() {
+		m_fuelCost.clear();
+	}
 	
 	public IntegerMap<Resource> getCreatesResourcesList()
 	{
@@ -1616,6 +1648,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  canProduceXUnits:" + m_canProduceXUnits
 					+ "  createsUnitsList:" + (m_createsUnitsList.size() == 0 ? "empty" : m_createsUnitsList.toString())
 					+ "  createsResourcesList:" + (m_createsResourcesList.size() == 0 ? "empty" : m_createsResourcesList.toString())
+					+ "  fuelCost:" + (m_fuelCost.size() == 0 ? "empty" : m_fuelCost.toString())
 					+ "  infrastructure:" + m_isInfrastructure
 					+ "  construction:" + m_isConstruction
 					+ "  constructionType:" + m_constructionType
@@ -1691,6 +1724,12 @@ public class UnitAttachment extends DefaultAttachment
 			stats.append("Produces " + m_createsResourcesList.totalValues() + " " + m_createsResourcesList.keySet().iterator().next().getName() + " Each Turn, ");
 		else if (m_createsResourcesList != null && m_createsResourcesList.size() > 1)
 			stats.append("Produces " + m_createsResourcesList.totalValues() + " Resources Each Turn, ");
+		
+		if (m_fuelCost != null && m_fuelCost.size() == 1)
+			stats.append("Uses " + m_fuelCost.totalValues() + " " + m_fuelCost.keySet().iterator().next().getName() + " Each movement point, ");
+		else if (m_fuelCost != null && m_fuelCost.size() > 1)
+			stats.append("Uses " + m_fuelCost.totalValues() + " Resources Each movement point, ");
+		
 		if (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly)
 		{
 			stats.append((playerHasAARadar(player) ? m_attackAA + 1 : m_attackAA) + "/" + (m_attackAAmaxDieSides != -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
@@ -1839,4 +1878,5 @@ public class UnitAttachment extends DefaultAttachment
 			stats.delete(stats.lastIndexOf(", "), stats.length() - 1);
 		return stats.toString();
 	}
+
 }

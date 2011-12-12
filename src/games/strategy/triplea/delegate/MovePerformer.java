@@ -17,6 +17,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -228,16 +229,23 @@ public class MovePerformer implements Serializable
 					add = ChangeFactory.addUnits(route.getEnd(), arrived);
 					change.add(add, remove);
 				}
+				change.add(markResourceChange(units,route, id));
 				m_bridge.addChange(change);
 				m_currentMove.addChange(change);
 				m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(arrived) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName());
 				m_moveDelegate.updateUndoableMoves(m_currentMove);
 			}
+
+
 		};
 		m_executionStack.push(postAAFire);
 		m_executionStack.push(fireAA);
 		m_executionStack.push(preAAFire);
 		m_executionStack.execute(m_bridge);
+	}
+	
+	private Change markResourceChange(Collection<Unit> units,Route route, PlayerID id) {	
+		return ChangeFactory.removeResourceCollection(id, Route.getMovementCharge(units, route));
 	}
 	
 	private Change markMovementChange(final Collection<Unit> units, final Route route)

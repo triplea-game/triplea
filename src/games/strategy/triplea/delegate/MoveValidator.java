@@ -22,6 +22,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -697,6 +698,8 @@ public class MoveValidator
 			return result;
 		if (validateCanal(data, units, route, player, result).getError() != null)
 			return result;
+		if(validateFuel(data,units,route,player,result).getError() != null)
+			return result;
 		// dont let the user move out of a battle zone
 		// the exception is air units and unloading units into a battle zone
 		if (MoveDelegate.getBattleTracker(data).hasPendingBattle(route.getStart(), false) && Match.someMatch(units, Matches.UnitIsNotAir))
@@ -727,6 +730,17 @@ public class MoveValidator
 		return result;
 	}
 	
+	private static MoveValidationResult validateFuel(GameData data,Collection<Unit> units, Route route, PlayerID player,MoveValidationResult result) {
+		if(getEditMode(data))
+			return result;
+		ResourceCollection fuelCost = Route.getMovementCharge(units, route);
+		
+		if(player.getResources().has(fuelCost.getResources()))
+			return result;
+		
+		return result.setErrorReturnResult("Not enough resources to perform this move, you need: "+fuelCost+" for this move");
+	}
+
 	private static MoveValidationResult validateCanal(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
 	{
 		if (getEditMode(data))

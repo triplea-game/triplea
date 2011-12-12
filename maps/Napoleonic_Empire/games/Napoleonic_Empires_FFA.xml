@@ -7588,8 +7588,8 @@ Nation................................ Allies&lt;br&gt;
 
 &lt;br&gt;
 &lt;br&gt;Politics National Objective:
-&lt;br&gt;+6 PUs per round that you destroy at least 6 PUs worth of enemy units (6 TUV).
-&lt;br&gt;This represents the morale boost your nation receives for victories on the battlefield, however small.
+&lt;br&gt;+6 PUs per turn that you attack and destroy as least 6 PUs worth of enemy units
+&lt;br&gt;This represents the morale boost your nation receives for victories on the battlefield, however small (just 6 TUV is enough).
 &lt;br&gt;As light blue Neutral Nations are not aggressors in this conflict, they are not counted towards destroyed enemy TUV, which means you must attack actual players to get this bonus.
 &lt;br&gt;(Both ships and land units count, and you are not required to win the battle)
 &lt;br&gt;

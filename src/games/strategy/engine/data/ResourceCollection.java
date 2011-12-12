@@ -187,8 +187,10 @@ public class ResourceCollection extends GameDataComponent
 	
 	public int fitsHowOften(final IntegerMap<Resource> cost)
 	{
+		if(cost.size() == 0)
+			return Integer.MAX_VALUE;
 		final ResourceCollection resources = new ResourceCollection(getData(), m_resources);
-		for (int i = 0; i <= 100; i++)
+		for (int i = 0; i <= 1000; i++)
 		{
 			try
 			{
@@ -239,4 +241,12 @@ public class ResourceCollection extends GameDataComponent
 			returnString = returnString.replaceFirst("<br>", "");
 		return returnString;
 	}
+
+	/**
+	 * @param times multiply this Collection times times.
+	 */
+	public void multiply(int times) {
+		final IntegerMap<Resource> base = new IntegerMap<Resource>(m_resources);
+		add(base,times-1);
+}
 }

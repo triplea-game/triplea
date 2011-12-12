@@ -19,6 +19,7 @@
 package games.strategy.engine.data;
 
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -493,5 +494,22 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	{
 		final int movementLeft = ((TripleAUnit) unit).getMovementLeft() - getMovementCost(unit);
 		return movementLeft;
+	}
+
+	public ResourceCollection getMovementCharge(Unit unit) {
+		ResourceCollection col = new ResourceCollection(getStart().getData());
+		UnitAttachment ua = UnitAttachment.get(unit.getType());
+		col.add(ua.getFuelCost());
+		col.multiply(getMovementCost(unit));
+		return col;
+	}
+	
+	public static ResourceCollection getMovementCharge(Collection<Unit> units, Route route) {
+		ResourceCollection movementCharge = new ResourceCollection(route.getStart().getData());
+		for(Unit unit:units) {
+			movementCharge.add(route.getMovementCharge(unit));
+		}
+		return movementCharge;
+		
 	}
 }
