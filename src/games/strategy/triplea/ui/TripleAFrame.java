@@ -1069,10 +1069,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	{
 		if (id == null)
 			return false;
-		final Iterator<IGamePlayer> iter = m_localPlayers.iterator();
-		while (iter.hasNext())
-		{
-			final IGamePlayer gamePlayer = iter.next();
+		for (IGamePlayer gamePlayer  : m_localPlayers) {
 			if (gamePlayer.getID().equals(id) && gamePlayer instanceof TripleAPlayer)
 			{
 				return true;
@@ -1729,10 +1726,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		{
 			// We need to check and make sure there are no local human players
 			boolean foundHuman = false;
-			final Iterator<IGamePlayer> iter = m_localPlayers.iterator();
-			while (iter.hasNext())
-			{
-				final IGamePlayer gamePlayer = iter.next();
+			for (IGamePlayer gamePlayer  : m_localPlayers) {
 				if (gamePlayer instanceof TripleAPlayer)
 				{
 					foundHuman = true;

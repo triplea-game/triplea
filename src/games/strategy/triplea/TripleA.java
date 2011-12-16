@@ -75,10 +75,7 @@ public class TripleA implements IGameLoader
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
 		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
-		final Iterator<String> iter = playerNames.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final String name = iter.next();
+		for (String name  : playerNames.keySet()) {
 			final String type = playerNames.get(name);
 			if (type.equals(WEAK_COMPUTER_PLAYER_TYPE))
 			{
@@ -194,10 +191,7 @@ public class TripleA implements IGameLoader
 	
 	private void connectPlayers(final Set<IGamePlayer> players, final TripleAFrame frame)
 	{
-		final Iterator<IGamePlayer> iter = players.iterator();
-		while (iter.hasNext())
-		{
-			final IGamePlayer player = iter.next();
+		for (IGamePlayer player  : players) {
 			if (player instanceof TripleAPlayer)
 				((TripleAPlayer) player).setFrame(frame);
 		}

@@ -327,10 +327,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			final IntegerMap<RepairRule> rules = repairRules.get(u);
 			final TreeSet<RepairRule> repRules = new TreeSet<RepairRule>(repairRuleComparator);
 			repRules.addAll(rules.keySet());
-			final Iterator<RepairRule> ruleIter = repRules.iterator();
-			while (ruleIter.hasNext())
-			{
-				final RepairRule repairRule = ruleIter.next();
+			for (RepairRule repairRule  : repRules) {
 				final int quantity = rules.getInt(repairRule);
 				repairMap.put(u, quantity);
 			}

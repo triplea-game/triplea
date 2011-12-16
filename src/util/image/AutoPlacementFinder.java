@@ -140,10 +140,7 @@ public class AutoPlacementFinder
 			if (s_mapData.hasContainedTerritory(name))
 			{
 				final Set<Polygon> containedPolygons = new HashSet<Polygon>();
-				final Iterator<String> containedIter = s_mapData.getContainedTerritory(name).iterator();
-				while (containedIter.hasNext())
-				{
-					final String containedName = containedIter.next();
+				for (String containedName  : s_mapData.getContainedTerritory(name)) {
 					containedPolygons.addAll(s_mapData.getPolygons(containedName));
 				}
 				points = getPlacementsStartingAtTopLeft(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name), s_mapData.getCenter(name), containedPolygons);
@@ -351,10 +348,7 @@ public class AutoPlacementFinder
 	 */
 	public static boolean containedIn(final Rectangle2D r, final Collection<Polygon> shapes)
 	{
-		final Iterator<Polygon> iter = shapes.iterator();
-		while (iter.hasNext())
-		{
-			final Shape item = iter.next();
+		for (Shape item  : shapes) {
 			if (item.contains(r))
 			{
 				return true;
@@ -381,10 +375,7 @@ public class AutoPlacementFinder
 		{
 			return false;
 		}
-		final Iterator<? extends Shape> iter = shapes.iterator();
-		while (iter.hasNext())
-		{
-			final Shape item = iter.next();
+		for (Shape item  : shapes) {
 			if (item.intersects(r))
 			{
 				return true;

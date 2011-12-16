@@ -84,10 +84,7 @@ public class ExtendedStats extends StatPanel
 				m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
 			}
 			// add individual techs
-			final Iterator<TechAdvance> allTechsIter = TechAdvance.getTechAdvances(m_data, null).iterator();
-			while (allTechsIter.hasNext())
-			{
-				final TechAdvance ta = allTechsIter.next();
+			for (TechAdvance ta  : TechAdvance.getTechAdvances(m_data, null)) {
 				final GenericTechNameStat techNameStat = new GenericTechNameStat();
 				techNameStat.init(ta);
 				final List<IStat> statsExtended = new ArrayList<IStat>(Arrays.asList(m_statsExtended));
@@ -230,10 +227,7 @@ public class ExtendedStats extends StatPanel
 		{
 			int rVal = 0;
 			final Match<Unit> ownedBy = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfType(m_ut));
-			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-			while (iter.hasNext())
-			{
-				final Territory place = iter.next();
+			for (Territory place  : data.getMap().getTerritories()) {
 				rVal += place.getUnits().countMatches(ownedBy);
 			}
 			return rVal;

@@ -237,10 +237,7 @@ public class IntTextField extends JTextField
 	
 	private void notifyListeners()
 	{
-		final Iterator<IntTextFieldChangeListener> iter = m_listeners.iterator();
-		while (iter.hasNext())
-		{
-			final IntTextFieldChangeListener listener = iter.next();
+		for (IntTextFieldChangeListener listener  : m_listeners) {
 			listener.changedValue(this);
 		}
 	}

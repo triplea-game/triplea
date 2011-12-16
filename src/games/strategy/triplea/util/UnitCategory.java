@@ -107,10 +107,7 @@ public class UnitCategory implements Comparable
 		m_dependents = new ArrayList<UnitOwner>();
 		if (dependents == null)
 			return;
-		final Iterator<Unit> iter = dependents.iterator();
-		while (iter.hasNext())
-		{
-			final Unit current = iter.next();
+		for (Unit current  : dependents) {
 			m_dependents.add(new UnitOwner(current));
 		}
 	}

@@ -81,10 +81,7 @@ public abstract class Match<T>
 		if (max < 0)
 			throw new IllegalArgumentException("max must be positive, instead its:" + max);
 		final List<T> matches = new ArrayList<T>(max);
-		final Iterator<T> iter = collection.iterator();
-		while (iter.hasNext())
-		{
-			final T current = iter.next();
+		for (T current  : collection) {
 			if (aMatch.match(current))
 				matches.add(current);
 			if (matches.size() == max)
@@ -100,10 +97,7 @@ public abstract class Match<T>
 	{
 		if (collection.isEmpty())
 			return false;
-		final Iterator<T> iter = collection.iterator();
-		while (iter.hasNext())
-		{
-			final T current = iter.next();
+		for (T current  : collection) {
 			if (!aMatch.match(current))
 				return false;
 		}
@@ -117,10 +111,7 @@ public abstract class Match<T>
 	{
 		if (collection.isEmpty())
 			return false;
-		final Iterator<T> iter = collection.iterator();
-		while (iter.hasNext())
-		{
-			final T current = iter.next();
+		for (T current  : collection) {
 			if (aMatch.match(current))
 				return true;
 		}
@@ -141,10 +132,7 @@ public abstract class Match<T>
 	public static final <T> int countMatches(final Collection<T> collection, final Match<T> aMatch)
 	{
 		int count = 0;
-		final Iterator<T> iter = collection.iterator();
-		while (iter.hasNext())
-		{
-			final T current = iter.next();
+		for (T current  : collection) {
 			if (aMatch.match(current))
 				count++;
 		}

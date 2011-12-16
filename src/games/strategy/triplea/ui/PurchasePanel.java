@@ -174,10 +174,7 @@ public class PurchasePanel extends ActionPanel
 	{
 		int totalUnits = 0;
 		final Collection<ProductionRule> rules = purchase.keySet();
-		final Iterator<ProductionRule> iter = rules.iterator();
-		while (iter.hasNext())
-		{
-			final ProductionRule current = iter.next();
+		for (ProductionRule current  : rules) {
 			totalUnits += purchase.getInt(current) * current.getResults().totalValues();
 		}
 		return totalUnits;

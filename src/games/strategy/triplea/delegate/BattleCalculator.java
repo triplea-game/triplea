@@ -314,10 +314,7 @@ public class BattleCalculator
 			killed = killAmphibiousFirst(killed, targets);
 		final List<Unit> damaged = casualtySelection.getDamaged();
 		int numhits = killed.size();
-		final Iterator<Unit> killedIter = killed.iterator();
-		while (killedIter.hasNext())
-		{
-			final Unit unit = killedIter.next();
+		for (Unit unit  : killed) {
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua.isTwoHit() && (unit.getHits() == 0))
 			{
@@ -364,10 +361,7 @@ public class BattleCalculator
 				amphibTypes.add(ut);
 		}
 		// For each killed unit- see if there is an amphib unit that can be killed instead
-		final Iterator<Unit> killedNonAmphibUnitsIter = killedNonAmphibUnits.iterator();
-		while (killedNonAmphibUnitsIter.hasNext())
-		{
-			final Unit unit = killedNonAmphibUnitsIter.next();
+		for (Unit unit  : killedNonAmphibUnits) {
 			if (amphibTypes.contains(unit.getType()))
 			{ // add a unit from the collection
 				final List<Unit> oneAmphibUnit = Match.getNMatches(allAmphibUnits, 1, Matches.unitIsOfType(unit.getType()));
@@ -514,10 +508,7 @@ public class BattleCalculator
 			unitsByPowerNone.add(new ArrayList<Unit>());
 		}
 		// in order to merge lists, we need to separate sortedUnitsList into multiple lists by power
-		final Iterator<Unit> sortedIter = sortedUnitsList.iterator();
-		while (sortedIter.hasNext())
-		{
-			final Unit current = sortedIter.next();
+		for (Unit current  : sortedUnitsList) {
 			int unitPower = getUnitPowerForSorting(current, defending, player, data);
 			unitPower = Math.max(0, Math.min(unitPower, maxPower)); // getUnitPowerForSorting will return numbers over max_dice IF that units Power * DiceRolls goes over max_dice
 			// TODO: if a unit supports itself, it should be in a different power list, as it will always support itself. getUnitPowerForSorting() should test for this and return a higher number.
@@ -694,10 +685,7 @@ public class BattleCalculator
 		// just worry about transports
 		final TransportTracker tracker = new TransportTracker();
 		final Map<Unit, Collection<Unit>> dependents = new HashMap<Unit, Collection<Unit>>();
-		final Iterator<Unit> iter = targets.iterator();
-		while (iter.hasNext())
-		{
-			final Unit target = iter.next();
+		for (Unit target  : targets) {
 			dependents.put(target, tracker.transportingAndUnloaded(target));
 		}
 		return dependents;
@@ -724,10 +712,7 @@ public class BattleCalculator
 		// any one will do then
 		if (frontier == null)
 			return getCostsForTuvForAllPlayersMergedAndAveraged(data);
-		final Iterator<ProductionRule> iter = frontier.getRules().iterator();
-		while (iter.hasNext())
-		{
-			final ProductionRule rule = iter.next();
+		for (ProductionRule rule  : frontier.getRules()) {
 			final int costPerGroup = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
 			final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
 			final int numberProduced = rule.getResults().getInt(type);
@@ -813,10 +798,7 @@ public class BattleCalculator
 	public static int getTUV(final Collection<Unit> units, final IntegerMap<UnitType> costs)
 	{
 		int tuv = 0;
-		final Iterator<Unit> unitsIter = units.iterator();
-		while (unitsIter.hasNext())
-		{
-			final Unit u = unitsIter.next();
+		for (Unit u  : units) {
 			final int unitValue = costs.getInt(u.getType());
 			tuv += unitValue;
 		}
@@ -868,10 +850,7 @@ public class BattleCalculator
 	{
 		int count = 0;
 		int unitRoll = 0;
-		final Iterator<Unit> iter = units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : units) {
 			unitRoll = getRolls(unit, location, id, defend, supportRulesCopy, supportLeftCopy);
 			count += unitRoll;
 		}

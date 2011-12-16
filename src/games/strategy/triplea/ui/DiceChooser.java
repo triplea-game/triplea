@@ -103,10 +103,7 @@ public class DiceChooser extends JPanel
 	private void updateDiceCount()
 	{
 		final boolean showButtons = (m_diceCount < m_numRolls);
-		final Iterator<JButton> buttonIter = m_buttons.iterator();
-		while (buttonIter.hasNext())
-		{
-			final JButton button = buttonIter.next();
+		for (JButton button  : m_buttons) {
 			button.setEnabled(showButtons);
 		}
 		m_undoButton.setEnabled((m_diceCount > 0));

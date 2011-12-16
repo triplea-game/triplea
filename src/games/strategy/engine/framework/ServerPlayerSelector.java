@@ -110,10 +110,7 @@ public class ServerPlayerSelector extends JFrame
 			if (!isVisible())
 				return;
 			m_remote = new ArrayList<String>();
-			final Iterator<PlayerChoice> iter = m_playerChoices.iterator();
-			while (iter.hasNext())
-			{
-				final PlayerChoice choice = iter.next();
+			for (PlayerChoice choice  : m_playerChoices) {
 				if (choice.isRemote())
 				{
 					m_remote.add(choice.getPlayerName());

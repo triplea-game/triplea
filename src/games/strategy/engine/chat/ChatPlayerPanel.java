@@ -252,10 +252,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 			public void run()
 			{
 				m_listModel.clear();
-				final Iterator<INode> iter = players.iterator();
-				while (iter.hasNext())
-				{
-					final INode name = iter.next();
+				for (INode name  : players) {
 					if (!m_hiddenPlayers.contains(name.getName()))
 						m_listModel.addElement(name);
 				}

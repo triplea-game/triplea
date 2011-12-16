@@ -52,10 +52,7 @@ public class EditProductionPanel extends ProductionPanel
 	@Override
 	protected void calculateLimits()
 	{
-		final Iterator<Rule> iter = getRules().iterator();
-		while (iter.hasNext())
-		{
-			final Rule current = iter.next();
+		for (Rule current  : getRules()) {
 			current.setMax(99);
 		}
 	}

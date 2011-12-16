@@ -203,10 +203,7 @@ public class InitializationDelegate extends BaseDelegate
 			 */
 			final ProductionFrontier frontierNONShipyards = data.getProductionFrontierList().getProductionFrontier("production");
 			final Collection<ProductionRule> rules = frontierNONShipyards.getRules();
-			final Iterator<ProductionRule> ruleIter = rules.iterator();
-			while (ruleIter.hasNext())
-			{
-				final ProductionRule rule = ruleIter.next();
+			for (ProductionRule rule  : rules) {
 				final String ruleName = rule.getName();
 				final IntegerMap<NamedAttachable> ruleResults = rule.getResults();
 				final String unitName = ruleResults.keySet().iterator().next().getName();

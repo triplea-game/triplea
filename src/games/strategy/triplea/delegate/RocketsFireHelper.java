@@ -117,10 +117,7 @@ public class RocketsFireHelper
 	{
 		final GameData data = bridge.getData();
 		final Set<Territory> attackedTerritories = new HashSet<Territory>();
-		final Iterator<Territory> iter = rocketTerritories.iterator();
-		while (iter.hasNext())
-		{
-			final Territory territory = iter.next();
+		for (Territory territory  : rocketTerritories) {
 			final Set<Territory> targets = getTargetsWithinRange(territory, data, player);
 			targets.removeAll(attackedTerritories);
 			if (targets.isEmpty())
@@ -138,10 +135,7 @@ public class RocketsFireHelper
 	{
 		final GameData data = bridge.getData();
 		final Set<Territory> targets = new HashSet<Territory>();
-		final Iterator<Territory> iter = rocketTerritories.iterator();
-		while (iter.hasNext())
-		{
-			final Territory territory = iter.next();
+		for (Territory territory  : rocketTerritories) {
 			targets.addAll(getTargetsWithinRange(territory, data, player));
 		}
 		if (targets.isEmpty())
@@ -161,10 +155,7 @@ public class RocketsFireHelper
 		ownedAA.add(Matches.UnitIsAAorIsRocket);
 		ownedAA.add(Matches.unitIsOwnedBy(player));
 		final BattleTracker tracker = MoveDelegate.getBattleTracker(data);
-		final Iterator<Territory> iter = data.getMap().iterator();
-		while (iter.hasNext())
-		{
-			final Territory current = iter.next();
+		for (Territory current  : data.getMap()) {
 			if (current.isWater())
 				continue;
 			if (tracker.wasConquered(current))
@@ -181,10 +172,7 @@ public class RocketsFireHelper
 		final Set<Territory> hasFactory = new HashSet<Territory>();
 		// boolean rocketsOverImpassables = isRocketsCanFlyOverImpassables(data);
 		final Match<Territory> impassable = Matches.TerritoryIsNotImpassable;
-		final Iterator<Territory> iter = possible.iterator();
-		while (iter.hasNext())
-		{
-			final Territory current = iter.next();
+		for (Territory current  : possible) {
 			final Route route = data.getMap().getRoute(territory, current, impassable);
 			// TODO EW: this assumes range 3 territories for Rockets, doesn't take movementCost into account. //TODO veq: make new unit attachment for rocket range, defaults to 3 movement cost.
 			if (route != null && route.numberOfSteps() <= 3)

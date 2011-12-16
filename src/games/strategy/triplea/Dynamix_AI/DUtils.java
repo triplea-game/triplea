@@ -2208,10 +2208,7 @@ public class DUtils
 	public static List<Unit> getMoveableUnits(final List<Unit> units)
 	{
 		final List<Unit> values = new ArrayList<Unit>();
-		final Iterator<Unit> iter = units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : units) {
 			if (Matches.unitHasMovementLeft.match(unit))
 				values.add(unit);
 		}

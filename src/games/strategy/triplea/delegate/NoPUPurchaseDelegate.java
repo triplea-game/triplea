@@ -77,19 +77,13 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 		else
 			return productionUnits;
 		final Collection<UnitType> unitTypes = new ArrayList<UnitType>(productionPerXTerritories.keySet());
-		final Iterator<UnitType> unitIter = unitTypes.iterator();
-		while (unitIter.hasNext())
-		{
-			final UnitType ut = unitIter.next();
+		for (UnitType ut  : unitTypes) {
 			int unitCount = 0;
 			int terrCount = 0;
 			final int prodPerXTerrs = productionPerXTerritories.getInt(ut);
 			if (isPacific)
 				unitCount += getBurmaRoad(player);
-			final Iterator<Territory> territoryIter = territories.iterator();
-			while (territoryIter.hasNext())
-			{
-				final Territory current = territoryIter.next();
+			for (Territory current  : territories) {
 				if (!isProductionPerValuedTerritoryRestricted())
 					terrCount++;
 				else
@@ -108,10 +102,7 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 	private int getBurmaRoad(final PlayerID player)
 	{
 		int burmaRoadCount = 0; // only for pacific - should equal 4 for extra inf
-		final Iterator<Territory> iter = getData().getMap().getTerritories().iterator();
-		while (iter.hasNext())
-		{
-			final Territory current = iter.next();
+		for (Territory current  : getData().getMap().getTerritories()) {
 			final String terrName = current.getName();
 			if ((terrName.equals("Burma") || terrName.equals("India") || terrName.equals("Yunnan") || terrName.equals("Szechwan"))
 						&& getData().getRelationshipTracker().isAllied(current.getOwner(), player))

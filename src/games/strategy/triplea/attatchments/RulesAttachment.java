@@ -484,10 +484,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				if (terrs[0].equals("original"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					final Iterator<PlayerID> playersIter = players.iterator();
-					while (playersIter.hasNext())
-					{
-						final PlayerID currPlayer = playersIter.next();
+					for (PlayerID currPlayer  : players) {
 						if (data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -499,10 +496,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				else if (terrs[0].equals("enemy"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					final Iterator<PlayerID> playersIter = players.iterator();
-					while (playersIter.hasNext())
-					{
-						final PlayerID currPlayer = playersIter.next();
+					for (PlayerID currPlayer  : players) {
 						if (!data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -519,10 +513,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				if (terrs[1].equals("original"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					final Iterator<PlayerID> playersIter = players.iterator();
-					while (playersIter.hasNext())
-					{
-						final PlayerID currPlayer = playersIter.next();
+					for (PlayerID currPlayer  : players) {
 						if (data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -534,10 +525,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				else if (terrs[1].equals("enemy"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					final Iterator<PlayerID> playersIter = players.iterator();
-					while (playersIter.hasNext())
-					{
-						final PlayerID currPlayer = playersIter.next();
+					for (PlayerID currPlayer  : players) {
 						if (!data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -572,10 +560,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				else if (terrs[0].equals("enemy"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					final Iterator<PlayerID> playersIter = players.iterator();
-					while (playersIter.hasNext())
-					{
-						final PlayerID currPlayer = playersIter.next();
+					for (PlayerID currPlayer  : players) {
 						if (!data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -596,10 +581,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				else if (terrs[1].equals("enemy"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					final Iterator<PlayerID> playersIter = players.iterator();
-					while (playersIter.hasNext())
-					{
-						final PlayerID currPlayer = playersIter.next();
+					for (PlayerID currPlayer  : players) {
 						if (!data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -731,10 +713,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		boolean useSpecific = false;
 		if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty())
 			useSpecific = true;
-		final Iterator<Territory> ownedTerrIter = Territories.iterator();
-		while (ownedTerrIter.hasNext())
-		{
-			final Territory terr = ownedTerrIter.next();
+		for (Territory terr  : Territories) {
 			final Collection<Unit> allUnits = terr.getUnits().getUnits();
 			if (exclType.equals("direct"))
 			{
@@ -904,10 +883,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	{
 		int numberMet = 0;
 		satisfied = false;
-		final Iterator<Territory> listedTerrIter = listedTerrs.iterator();
-		while (listedTerrIter.hasNext())
-		{
-			final Territory listedTerr = listedTerrIter.next();
+		for (Territory listedTerr  : listedTerrs) {
 			// if the territory owner is an ally
 			if (data.getRelationshipTracker().isAllied(listedTerr.getOwner(), player))
 			{
@@ -934,10 +910,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	{
 		int numberMet = 0;
 		satisfied = false;
-		final Iterator<Territory> listedTerrIter = listedTerrs.iterator();
-		while (listedTerrIter.hasNext())
-		{
-			final Territory listedTerr = listedTerrIter.next();
+		for (Territory listedTerr  : listedTerrs) {
 			// if the territory owner is an ally
 			if (listedTerr.getOwner() == player)
 			{

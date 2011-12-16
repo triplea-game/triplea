@@ -74,10 +74,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 		m_values = new HashMap<T,Integer>(integerMap.m_values);
 		 */
 		m_values = new HashMap<T, Integer>(integerMap.size());
-		final Iterator<T> iter = integerMap.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T t = iter.next();
+		for (T t  : integerMap.keySet()) {
 			m_values.put(t, integerMap.getInt(t));
 		}
 	}
@@ -156,10 +153,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 */
 	public void multiplyAllValuesBy(final float i, final int RoundType)
 	{
-		final Iterator<T> iter = keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T t = iter.next();
+		for (T t  : keySet()) {
 			float val = m_values.get(t);
 			switch (RoundType)
 			{
@@ -208,20 +202,14 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	
 	public void add(final IntegerMap<T> map)
 	{
-		final Iterator<T> iter = map.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T key = iter.next();
+		for (T key  : map.keySet()) {
 			add(key, map.getInt(key));
 		}
 	}
 	
 	public void subtract(final IntegerMap<T> map)
 	{
-		final Iterator<T> iter = map.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T key = iter.next();
+		for (T key  : map.keySet()) {
 			add(key, -map.getInt(key));
 		}
 	}
@@ -236,10 +224,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 */
 	public boolean greaterThanOrEqualTo(final IntegerMap<T> map)
 	{
-		final Iterator<T> iter = map.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T key = iter.next();
+		for (T key  : map.keySet()) {
 			if (!(this.getInt(key) >= map.getInt(key)))
 				return false;
 		}
@@ -275,10 +260,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 */
 	public boolean isPositive()
 	{
-		final Iterator<T> iter = m_values.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T key = iter.next();
+		for (T key  : m_values.keySet()) {
 			if (getInt(key) < 0)
 				return false;
 		}
@@ -303,20 +285,14 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 */
 	public void addMultiple(final IntegerMap<T> map, final int multiple)
 	{
-		final Iterator<T> iter = map.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T key = iter.next();
+		for (T key  : map.keySet()) {
 			add(key, map.getInt(key) * multiple);
 		}
 	}
 	
 	public boolean someKeysMatch(final Match<T> matcher)
 	{
-		final Iterator<T> iter = m_values.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T obj = iter.next();
+		for (T obj  : m_values.keySet()) {
 			if (matcher.match(obj))
 				return true;
 		}
@@ -325,10 +301,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	
 	public boolean allKeysMatch(final Match<T> matcher)
 	{
-		final Iterator<T> iter = m_values.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T obj = iter.next();
+		for (T obj  : m_values.keySet()) {
 			if (!matcher.match(obj))
 				return false;
 		}
@@ -338,10 +311,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	public Collection<T> getKeyMatches(final Match<T> matcher)
 	{
 		final Collection<T> values = new ArrayList<T>();
-		final Iterator<T> iter = m_values.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T obj = iter.next();
+		for (T obj  : m_values.keySet()) {
 			if (matcher.match(obj))
 				values.add(obj);
 		}
@@ -351,10 +321,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	public int sumMatches(final Match<T> matcher)
 	{
 		int sum = 0;
-		final Iterator<T> iter = m_values.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final T obj = iter.next();
+		for (T obj  : m_values.keySet()) {
 			if (matcher.match(obj))
 				sum += getInt(obj);
 		}
@@ -380,10 +347,7 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	
 	private void removeKeys(final Collection<T> keys)
 	{
-		final Iterator<T> iter = keys.iterator();
-		while (iter.hasNext())
-		{
-			final T key = iter.next();
+		for (T key  : keys) {
 			removeKey(key);
 		}
 	}

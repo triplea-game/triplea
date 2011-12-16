@@ -85,10 +85,7 @@ public class OriginalOwnerTracker implements java.io.Serializable
 	public Collection<Territory> getOriginallyOwned(final GameData data, final PlayerID player)
 	{
 		final Collection<Territory> rVal = new ArrayList<Territory>();
-		final Iterator<Territory> iter = data.getMap().iterator();
-		while (iter.hasNext())
-		{
-			final Territory t = iter.next();
+		for (Territory t  : data.getMap()) {
 			PlayerID originalOwner = getOriginalOwner(t);
 			if (originalOwner == null)
 			{

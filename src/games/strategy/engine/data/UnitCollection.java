@@ -146,10 +146,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 		if (max_units < 0)
 			throw new IllegalArgumentException("value must be positiive.  Instead its:" + max_units);
 		final Collection<Unit> rVal = new ArrayList<Unit>();
-		final Iterator<Unit> iter = m_units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit current = iter.next();
+		for (Unit current  : m_units) {
 			if (current.getType().equals(type))
 			{
 				rVal.add(current);
@@ -166,10 +163,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	public IntegerMap<UnitType> getUnitsByType()
 	{
 		final IntegerMap<UnitType> units = new IntegerMap<UnitType>();
-		final Iterator<UnitType> iter = getData().getUnitTypeList().iterator();
-		while (iter.hasNext())
-		{
-			final UnitType type = iter.next();
+		for (UnitType type  : getData().getUnitTypeList()) {
 			final int count = getUnitCount(type);
 			if (count > 0)
 				units.put(type, count);
@@ -185,10 +179,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	public IntegerMap<UnitType> getUnitsByType(final PlayerID id)
 	{
 		final IntegerMap<UnitType> count = new IntegerMap<UnitType>();
-		final Iterator<Unit> iter = m_units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : m_units) {
 			if (unit.getOwner().equals(id))
 				count.add(unit.getType(), 1);
 		}
@@ -203,10 +194,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	public Collection<Unit> getUnits(final IntegerMap<UnitType> types)
 	{
 		final Collection<Unit> units = new ArrayList<Unit>();
-		final Iterator<UnitType> iter = types.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final UnitType type = iter.next();
+		for (UnitType type  : types.keySet()) {
 			units.addAll(getUnits(type, types.getInt(type)));
 		}
 		return units;
@@ -235,10 +223,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	{
 		// note nulls are handled by PlayerID.NULL_PLAYERID
 		final Set<PlayerID> ids = new HashSet<PlayerID>();
-		final Iterator<Unit> iter = m_units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : m_units) {
 			ids.add(unit.getOwner());
 		}
 		return ids;
@@ -251,10 +236,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	public IntegerMap<PlayerID> getPlayerUnitCounts()
 	{
 		final IntegerMap<PlayerID> count = new IntegerMap<PlayerID>();
-		final Iterator<Unit> iter = m_units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : m_units) {
 			count.add(unit.getOwner(), 1);
 		}
 		return count;
@@ -272,10 +254,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	
 	public boolean allMatch(final Match<Unit> matcher)
 	{
-		final Iterator<Unit> iter = m_units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : m_units) {
 			if (!matcher.match(unit))
 				return false;
 		}
@@ -284,10 +263,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	
 	public boolean someMatch(final Match<Unit> matcher)
 	{
-		final Iterator<Unit> iter = m_units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : m_units) {
 			if (matcher.match(unit))
 				return true;
 		}
@@ -302,10 +278,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 	public List<Unit> getMatches(final Match<Unit> predicate)
 	{
 		final List<Unit> values = new ArrayList<Unit>();
-		final Iterator<Unit> iter = m_units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : m_units) {
 			if (predicate.match(unit))
 				values.add(unit);
 		}
@@ -319,10 +292,7 @@ public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 		buf.append("Unit collecion held by ").append(m_holder.getName());
 		buf.append(" units:");
 		final IntegerMap<UnitType> units = getUnitsByType();
-		final Iterator<UnitType> iter = units.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final UnitType unit = iter.next();
+		for (UnitType unit  : units.keySet()) {
 			buf.append(" <").append(unit.getName()).append(",").append(units.getInt(unit)).append("> ");
 		}
 		return buf.toString();

@@ -198,10 +198,7 @@ public class ProductionPanel extends JPanel
 	private IntegerMap<ProductionRule> getProduction()
 	{
 		final IntegerMap<ProductionRule> prod = new IntegerMap<ProductionRule>();
-		final Iterator<Rule> iter = m_rules.iterator();
-		while (iter.hasNext())
-		{
-			final Rule rule = iter.next();
+		for (Rule rule  : m_rules) {
 			final int quantity = rule.getQuantity();
 			if (quantity != 0)
 			{

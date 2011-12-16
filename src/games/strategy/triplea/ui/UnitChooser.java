@@ -227,10 +227,7 @@ public class UnitChooser extends JPanel
 	private int getSelectedCount()
 	{
 		int selected = 0;
-		final Iterator<ChooserEntry> iter = m_entries.iterator();
-		while (iter.hasNext())
-		{
-			final ChooserEntry entry = iter.next();
+		for (ChooserEntry entry  : m_entries) {
 			selected += entry.getTotalHits();
 		}
 		return selected;
@@ -242,10 +239,7 @@ public class UnitChooser extends JPanel
 		final Collection<UnitCategory> categories = UnitSeperator.categorize(units, dependent, categorizeMovement, categorizeTransportCost);
 		final Collection<UnitCategory> defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
 		final IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
-		final Iterator<UnitCategory> iter = categories.iterator();
-		while (iter.hasNext())
-		{
-			final UnitCategory category = iter.next();
+		for (UnitCategory category  : categories) {
 			addCategory(category, defaultValues.getInt(category));
 		}
 	}
@@ -256,10 +250,7 @@ public class UnitChooser extends JPanel
 		final Collection<UnitCategory> categories = UnitSeperator.categorize(dependent, units, categorizeMovement, categorizeTransportCost, categorizeTerritories);
 		final Collection<UnitCategory> defaultSelectionsCategorized = UnitSeperator.categorize(defaultSelections, dependent, categorizeMovement, categorizeTransportCost);
 		final IntegerMap<UnitCategory> defaultValues = createDefaultSelectionsMap(defaultSelectionsCategorized);
-		final Iterator<UnitCategory> iter = categories.iterator();
-		while (iter.hasNext())
-		{
-			final UnitCategory category = iter.next();
+		for (UnitCategory category  : categories) {
 			addCategory(category, defaultValues.getInt(category));
 		}
 	}
@@ -267,10 +258,7 @@ public class UnitChooser extends JPanel
 	private IntegerMap<UnitCategory> createDefaultSelectionsMap(final Collection<UnitCategory> categories)
 	{
 		final IntegerMap<UnitCategory> defaultValues = new IntegerMap<UnitCategory>();
-		final Iterator<UnitCategory> iter = categories.iterator();
-		while (iter.hasNext())
-		{
-			final UnitCategory category = iter.next();
+		for (UnitCategory category  : categories) {
 			final int defaultValue = category.getUnits().size();
 			defaultValues.put(category, defaultValue);
 		}
@@ -313,10 +301,7 @@ public class UnitChooser extends JPanel
 			}
 		});
 		int yIndex = 1;
-		final Iterator<ChooserEntry> iter = m_entries.iterator();
-		while (iter.hasNext())
-		{
-			final ChooserEntry entry = iter.next();
+		for (ChooserEntry entry  : m_entries) {
 			entry.createComponents(this, yIndex);
 			yIndex++;
 		}
@@ -371,10 +356,7 @@ public class UnitChooser extends JPanel
 	
 	private void selectNone()
 	{
-		final Iterator<ChooserEntry> iter = m_entries.iterator();
-		while (iter.hasNext())
-		{
-			final ChooserEntry entry = iter.next();
+		for (ChooserEntry entry  : m_entries) {
 			entry.selectNone();
 		}
 	}
@@ -383,10 +365,7 @@ public class UnitChooser extends JPanel
 	{
 		if (m_total == -1)
 		{
-			final Iterator<ChooserEntry> iter = m_entries.iterator();
-			while (iter.hasNext())
-			{
-				final ChooserEntry entry = iter.next();
+			for (ChooserEntry entry  : m_entries) {
 				entry.selectAll();
 			}
 		}

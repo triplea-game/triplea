@@ -239,10 +239,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		}
 		
 		// now do all the national objectives
-		final Iterator<RulesAttachment> rulesIter = natObjs.iterator();
-		while (rulesIter.hasNext())
-		{
-			final RulesAttachment rule = rulesIter.next();
+		for (RulesAttachment rule  : natObjs) {
 			int uses = rule.getUses();
 			if (uses == 0 || !rule.isSatisfied(testedConditions))
 				continue;
@@ -323,10 +320,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	public static ResourceCollection getResourceProduction(final Collection<Territory> territories, final GameData data)
 	{
 		final ResourceCollection rVal = new ResourceCollection(data);
-		final Iterator<Territory> iter = territories.iterator();
-		while (iter.hasNext())
-		{
-			final Territory current = iter.next();
+		for (Territory current  : territories) {
 			final TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 			if (attatchment == null)
 				throw new IllegalStateException("No attachment for owned territory:" + current.getName());

@@ -671,10 +671,7 @@ class PlayerOwnerChange extends Change
 		m_old = new HashMap<GUID, String>();
 		m_new = new HashMap<GUID, String>();
 		m_location = location.getName();
-		final Iterator<Unit> iter = units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : units) {
 			m_old.put(unit.getID(), unit.getOwner().getName());
 			m_new.put(unit.getID(), newOwner.getName());
 		}
@@ -698,10 +695,7 @@ class PlayerOwnerChange extends Change
 	{
 		/*if (m_location == null || m_old == null || m_new == null)
 			throw new IllegalStateException("PlayerOwnerChange may not have null arguments");*/
-		final Iterator<GUID> iter = m_new.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final GUID id = iter.next();
+		for (GUID id  : m_new.keySet()) {
 			final Unit unit = data.getUnits().get(id);
 			if (!m_old.get(id).equals(unit.getOwner().getName()))
 			{

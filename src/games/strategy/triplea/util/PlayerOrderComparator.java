@@ -5,7 +5,6 @@ import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 
 import java.util.Comparator;
-import java.util.Iterator;
 
 public class PlayerOrderComparator implements Comparator<PlayerID>
 {
@@ -21,10 +20,8 @@ public class PlayerOrderComparator implements Comparator<PlayerID>
 	 */
 	public int compare(final PlayerID p1, final PlayerID p2)
 	{
-		final Iterator<GameStep> iter = m_data.getSequence().iterator();
-		while (iter.hasNext())
+		for (GameStep s : m_data.getSequence())
 		{
-			final GameStep s = iter.next();
 			if (s.getPlayerID() == null)
 				continue;
 			if (s.getDelegate() != null && s.getDelegate().getClass() != null)

@@ -654,10 +654,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				final JPanel panel = new JPanel();
 				final BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
 				panel.setLayout(layout);
-				final Iterator<Integer> iter = new TreeSet<Integer>(stats.getData().keySet()).iterator();
-				while (iter.hasNext())
-				{
-					final Integer key = iter.next();
+				for (Integer key  : new TreeSet<Integer>(stats.getData().keySet())) {
 					final int value = stats.getData().getInt(key);
 					final JLabel label = new JLabel(key + " was rolled " + value + " times");
 					panel.add(label);

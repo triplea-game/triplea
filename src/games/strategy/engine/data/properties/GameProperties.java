@@ -138,10 +138,7 @@ public class GameProperties extends GameDataComponent
 	public List<IEditableProperty> getEditableProperties()
 	{
 		final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
-		final Iterator<String> orderIter = m_ordering.iterator();
-		while (orderIter.hasNext())
-		{
-			final String propertyName = orderIter.next();
+		for (String propertyName  : m_ordering) {
 			if (m_editableProperties.containsKey(propertyName))
 			{
 				properties.add(m_editableProperties.get(propertyName));

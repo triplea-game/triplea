@@ -71,10 +71,7 @@ public class TechActivationDelegate extends BaseDelegate
 		{
 			// Start event
 			m_bridge.getHistoryWriter().startEvent(m_player.getName() + " activating " + advancesAsString(advances));
-			final Iterator<TechAdvance> techsIter = advances.iterator();
-			while (techsIter.hasNext())
-			{
-				final TechAdvance advance = techsIter.next();
+			for (TechAdvance advance  : advances) {
 				// advance.perform(m_bridge.getPlayerID(), m_bridge, m_data);
 				TechTracker.addAdvance(m_player, m_bridge, advance);
 			}

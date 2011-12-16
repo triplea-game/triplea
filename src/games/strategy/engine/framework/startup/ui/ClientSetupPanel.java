@@ -126,10 +126,7 @@ public class ClientSetupPanel extends SetupPanel
 		allianceLabel.setForeground(Color.black);
 		layout.setConstraints(allianceLabel, allianceConstraints);
 		players.add(allianceLabel);
-		final Iterator<PlayerRow> iter = m_playerRows.iterator();
-		while (iter.hasNext())
-		{
-			final PlayerRow row = iter.next();
+		for (PlayerRow row  : m_playerRows) {
 			layout.setConstraints(row.getName(), nameConstraints);
 			players.add(row.getName());
 			layout.setConstraints(row.getPlayer(), playerConstraints);

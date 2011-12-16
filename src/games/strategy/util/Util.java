@@ -44,10 +44,7 @@ public class Util
 		if (c1.size() == 0 || c2.size() == 0)
 			return new ArrayList<T>();
 		final List<T> intersection = new ArrayList<T>();
-		final Iterator<T> iter = c1.iterator();
-		while (iter.hasNext())
-		{
-			final T current = iter.next();
+		for (T current  : c1) {
 			if (c2.contains(current))
 				intersection.add(current);
 		}
@@ -85,10 +82,7 @@ public class Util
 		if (c2 == null || c2.size() == 0)
 			return new ArrayList<T>(c1);
 		final List<T> difference = new ArrayList<T>();
-		final Iterator<T> iter = c1.iterator();
-		while (iter.hasNext())
-		{
-			final T current = iter.next();
+		for (T current  : c1) {
 			if (!c2.contains(current))
 				difference.add(current);
 		}

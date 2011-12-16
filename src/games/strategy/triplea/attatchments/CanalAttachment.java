@@ -28,10 +28,7 @@ public class CanalAttachment extends DefaultAttachment
 			final Set<CanalAttachment> canalAttachments = get(t);
 			if (canalAttachments.isEmpty())
 				continue;
-			final Iterator<CanalAttachment> iter = canalAttachments.iterator();
-			while (iter.hasNext())
-			{
-				final CanalAttachment canalAttachment = iter.next();
+			for (CanalAttachment canalAttachment  : canalAttachments) {
 				if (canalAttachment.getCanalName().equals(canalName))
 				{
 					rVal.add(t);

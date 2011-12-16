@@ -59,10 +59,7 @@ abstract public class AbstractBattle implements IBattle
 	public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets)
 	{
 		final Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
-		final Iterator<Unit> iter = addedTransporting.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : addedTransporting.keySet()) {
 			if (m_dependentUnits.get(unit) != null)
 				m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
 			else
@@ -74,10 +71,7 @@ abstract public class AbstractBattle implements IBattle
 	/*public Change addCombatChange(final Route route, final Collection<Unit> units, final PlayerID player)
 	{
 		final Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
-		final Iterator<Unit> iter = addedTransporting.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : addedTransporting.keySet()) {
 			if (m_dependentUnits.get(unit) != null)
 				m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
 			else
@@ -100,10 +94,7 @@ abstract public class AbstractBattle implements IBattle
 	public Collection<Unit> getDependentUnits(final Collection<Unit> units)
 	{
 		final Collection<Unit> rVal = new ArrayList<Unit>();
-		final Iterator<Unit> iter = units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : units) {
 			final Collection<Unit> dependent = m_dependentUnits.get(unit);
 			if (dependent != null)
 				rVal.addAll(dependent);

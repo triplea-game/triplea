@@ -107,10 +107,7 @@ public class MovePerformer implements Serializable
 				final IBattle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
 				if (nonBombingBattle != null || bombingBattle != null)
 				{
-					final Iterator<Unit> iter = units.iterator();
-					while (iter.hasNext())
-					{
-						final Unit unit = iter.next();
+					for (Unit unit  : units) {
 						final Route routeUnitUsedToMove = m_moveDelegate.getRouteUsedToMoveInto(unit, route.getStart());
 						if (nonBombingBattle != null)
 						{

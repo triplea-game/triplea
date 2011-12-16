@@ -62,10 +62,7 @@ public class SimpleUnitPanel extends JPanel
 		removeAll();
 		final TreeSet<ProductionRule> productionRules = new TreeSet<ProductionRule>(productionRuleComparator);
 		productionRules.addAll(units.keySet());
-		final Iterator<ProductionRule> iter = productionRules.iterator();
-		while (iter.hasNext())
-		{
-			final ProductionRule productionRule = iter.next();
+		for (ProductionRule productionRule  : productionRules) {
 			final int quantity = units.getInt(productionRule);
 			final UnitType unit = (UnitType) productionRule.getResults().keySet().iterator().next();
 			addUnits(player, data, quantity, unit, false, false);
@@ -82,17 +79,11 @@ public class SimpleUnitPanel extends JPanel
 	{
 		removeAll();
 		final Set<Unit> entries = units.keySet();
-		final Iterator<Unit> iter = entries.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
+		for (Unit unit  : entries) {
 			final IntegerMap<RepairRule> rules = units.get(unit);
 			final TreeSet<RepairRule> repairRules = new TreeSet<RepairRule>(repairRuleComparator);
 			repairRules.addAll(rules.keySet());
-			final Iterator<RepairRule> ruleIter = repairRules.iterator();
-			while (ruleIter.hasNext())
-			{
-				final RepairRule repairRule = ruleIter.next();
+			for (RepairRule repairRule  : repairRules) {
 				final int quantity = rules.getInt(repairRule);
 				if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
 				{
@@ -117,10 +108,7 @@ public class SimpleUnitPanel extends JPanel
 	public void setUnitsFromCategories(final Collection<UnitCategory> categories, final GameData data)
 	{
 		removeAll();
-		final Iterator<UnitCategory> iter = categories.iterator();
-		while (iter.hasNext())
-		{
-			final UnitCategory category = iter.next();
+		for (UnitCategory category  : categories) {
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
 			addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.getDamaged(), category.getDisabled());
 		}

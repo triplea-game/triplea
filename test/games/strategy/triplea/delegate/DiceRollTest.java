@@ -124,10 +124,7 @@ public class DiceRollTest extends TestCase
 		final UnitType artillery = m_data.getUnitTypeList().getUnitType("artillery");
 		final List<Unit> units = artillery.create(1, russians);
 		// Set the supported unit count
-		final Iterator<Unit> unitsIter = units.iterator();
-		while (unitsIter.hasNext())
-		{
-			final Unit unit = unitsIter.next();
+		for (Unit unit  : units) {
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			ua.setUnitSupportCount("2");
 		}

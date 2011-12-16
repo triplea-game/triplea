@@ -774,10 +774,7 @@ public class UnitAttachment extends DefaultAttachment
 		final Collection<Unit> unitsCopy = new ArrayList<Unit>(units);
 		final HashSet<Unit> whichReceiveNoDuplicates = new HashSet<Unit>();
 		final IntegerMap<Tuple<String, String>> whichGive = getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
-		final Iterator<Tuple<String, String>> abilitiesUnitTypeIter = whichGive.keySet().iterator();
-		while (abilitiesUnitTypeIter.hasNext())
-		{
-			final Tuple<String, String> abilityUnitType = abilitiesUnitTypeIter.next();
+		for (Tuple<String, String> abilityUnitType  : whichGive.keySet()) {
 			final Collection<Unit> receives = Match.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType), Matches.UnitCanReceivesAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
 			whichReceiveNoDuplicates.addAll(receives);
 			unitsCopy.removeAll(receives);
@@ -1525,10 +1522,7 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		if (!m_whenCombatDamaged.isEmpty())
 		{
-			final Iterator<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> iter = m_whenCombatDamaged.iterator();
-			while (iter.hasNext())
-			{
-				final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key = iter.next();
+			for (Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key  : m_whenCombatDamaged) {
 				final String obj = key.getSecond().getFirst();
 				if (obj.equals(UNITSMAYNOTLANDONCARRIER))
 					continue;

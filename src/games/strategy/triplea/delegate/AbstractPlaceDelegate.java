@@ -305,10 +305,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
 		if (Matches.TerritoryIsWater.match(to))
 		{
-			final Iterator<Territory> iter = getAllProducers(to, m_player).iterator();
-			while (iter.hasNext())
-			{
-				final Territory current = iter.next();
+			for (Territory current  : getAllProducers(to, m_player)) {
 				unitsPlacedAlready.addAll(getAlreadyProduced(current));
 			}
 		}
@@ -334,10 +331,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
 		if (Matches.TerritoryIsWater.match(to))
 		{
-			final Iterator<Territory> iter = getAllProducers(to, m_player).iterator();
-			while (iter.hasNext())
-			{
-				final Territory current = iter.next();
+			for (Territory current  : getAllProducers(to, m_player)) {
 				unitsPlacedAlready.addAll(getAlreadyProduced(current));
 			}
 		}
@@ -390,10 +384,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final IntegerMap<String> unitMapTO = new IntegerMap<String>();
 		if (Match.someMatch(unitsInTO, Matches.UnitIsFactoryOrConstruction))
 		{
-			final Iterator<Unit> unitTOIter = Match.getMatches(unitsInTO, Matches.UnitIsFactoryOrConstruction).iterator();
-			while (unitTOIter.hasNext())
-			{
-				final Unit currentUnit = unitTOIter.next();
+			for (Unit currentUnit  : Match.getMatches(unitsInTO, Matches.UnitIsFactoryOrConstruction)) {
 				final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
 				if (Matches.UnitIsFactory.match(currentUnit) && !ua.isConstruction())
 					unitMapTO.add("factory", 1);
@@ -467,10 +458,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 				if (Matches.UnitIsSea.match(unitWhichRequiresUnits))
 				{
 					final List<Territory> neighbors = new ArrayList<Territory>(to.getData().getMap().getNeighbors(to, Matches.TerritoryIsLand));
-					final Iterator<Territory> iter = neighbors.iterator();
-					while (iter.hasNext())
-					{
-						final Territory current = iter.next();
+					for (Territory current  : neighbors) {
 						final Collection<Unit> unitsInCurrent = current.getUnits().getUnits();
 						final Collection<Unit> unitsPlacedAlreadyInCurrent = getAlreadyProduced(current);
 						final Collection<Unit> unitsAtStartOfTurnInCurrent = new ArrayList<Unit>(unitsInCurrent);
@@ -493,10 +481,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			return "Cannot place these units in " + to.getName();
 		}
 		final IntegerMap<String> constructionMap = howManyOfEachConstructionCanPlace(to, units, player);
-		final Iterator<Unit> unitIter = Match.getMatches(units, Matches.UnitIsFactoryOrConstruction).iterator();
-		while (unitIter.hasNext())
-		{
-			final Unit currentUnit = unitIter.next();
+		for (Unit currentUnit  : Match.getMatches(units, Matches.UnitIsFactoryOrConstruction)) {
 			final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
 			if (ua.isFactory() && !ua.isConstruction())
 				constructionMap.add("factory", -1);
@@ -529,10 +514,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (!isUnitPlacementRestrictions())
 			return null;
 		// account for any unit placement restrictions by territory
-		final Iterator<Unit> unitsPlaceableIter = units.iterator();
-		while (unitsPlaceableIter.hasNext())
-		{
-			final Unit currentUnit = unitsPlaceableIter.next();
+		for (Unit currentUnit  : units) {
 			final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
 			final TerritoryAttachment ta = TerritoryAttachment.get(to);
 			if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
@@ -592,10 +574,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (!isUnitPlacementRestrictions())
 			return placeableUnits;
 		final Collection<Unit> placeableUnits2 = new ArrayList<Unit>();
-		final Iterator<Unit> unitsPlaceableIter = placeableUnits.iterator();
-		while (unitsPlaceableIter.hasNext())
-		{
-			final Unit currentUnit = unitsPlaceableIter.next();
+		for (Unit currentUnit  : placeableUnits) {
 			final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
 			final TerritoryAttachment ta = TerritoryAttachment.get(to);
 			if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
@@ -643,10 +622,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		{
 			final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, units, player);
 			final Collection<Unit> skipUnit = new ArrayList<Unit>();
-			final Iterator<Unit> unitsIter = Match.getMatches(units, Matches.UnitIsFactoryOrConstruction).iterator();
-			while (unitsIter.hasNext())
-			{
-				final Unit currentUnit = unitsIter.next();
+			for (Unit currentUnit  : Match.getMatches(units, Matches.UnitIsFactoryOrConstruction)) {
 				final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
 				if (maxUnits > 0)
 				{
@@ -671,10 +647,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (!isUnitPlacementRestrictions())
 			return placeableUnits;
 		final Collection<Unit> placeableUnits2 = new ArrayList<Unit>();
-		final Iterator<Unit> unitsPlaceableIter = placeableUnits.iterator();
-		while (unitsPlaceableIter.hasNext())
-		{
-			final Unit currentUnit = unitsPlaceableIter.next();
+		for (Unit currentUnit  : placeableUnits) {
 			final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
 			final TerritoryAttachment ta = TerritoryAttachment.get(to);
 			if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
@@ -699,10 +672,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
 		if (Matches.TerritoryIsWater.match(to))
 		{
-			final Iterator<Territory> iter = getAllProducers(to, m_player).iterator();
-			while (iter.hasNext())
-			{
-				final Territory current = iter.next();
+			for (Territory current  : getAllProducers(to, m_player)) {
 				unitsPlacedAlready.addAll(getAlreadyProduced(current));
 			}
 		}
@@ -972,10 +942,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (!to.isWater())
 			return to;
 		Territory neighborFactory = null;
-		final Iterator<Territory> iter = getAllProducers(to, player).iterator();
-		while (iter.hasNext())
-		{
-			final Territory current = iter.next();
+		for (Territory current  : getAllProducers(to, player)) {
 			neighborFactory = getBetterProducer(current, neighborFactory, player);
 		}
 		return neighborFactory;
@@ -990,10 +957,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			producers.add(to);
 			return producers;
 		}
-		final Iterator<Territory> iter = getData().getMap().getNeighbors(to).iterator();
-		while (iter.hasNext())
-		{
-			final Territory current = iter.next();
+		for (Territory current  : getData().getMap().getNeighbors(to)) {
 			if (current.getOwner().equals(m_player))
 			{
 				final Collection<Unit> unitsInTO = current.getUnits().getUnits();

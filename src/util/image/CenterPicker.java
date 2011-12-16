@@ -260,10 +260,7 @@ public class CenterPicker extends JFrame
 				// super.paint(g);
 				g.drawImage(m_image, 0, 0, this);
 				g.setColor(Color.red);
-				final Iterator<String> polyIter = m_centers.keySet().iterator();
-				while (polyIter.hasNext())
-				{
-					final String centerName = polyIter.next();
+				for (String centerName  : m_centers.keySet()) {
 					final Point item = m_centers.get(centerName);
 					g.fillOval(item.x, item.y, 15, 15);
 					g.drawString(centerName, item.x + 17, item.y + 13);
@@ -348,15 +345,9 @@ public class CenterPicker extends JFrame
 		String seaName = "unknown";
 		// try to find a land territory.
 		// sea zones often surround a land territory
-		final Iterator<String> keyIter = m_polygons.keySet().iterator();
-		while (keyIter.hasNext())
-		{
-			final String name = keyIter.next();
+		for (String name  : m_polygons.keySet()) {
 			final Collection<Polygon> polygons = m_polygons.get(name);
-			final Iterator<Polygon> polyIter = polygons.iterator();
-			while (polyIter.hasNext())
-			{
-				final Polygon poly = polyIter.next();
+			for (Polygon poly  : polygons) {
 				if (poly.contains(p))
 				{
 					if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone"))

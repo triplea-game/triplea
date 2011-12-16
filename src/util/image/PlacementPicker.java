@@ -271,10 +271,7 @@ public class PlacementPicker extends JFrame
 				{
 					return;
 				}
-				final Iterator<Point> pointIter = m_currentPlacements.iterator();
-				while (pointIter.hasNext())
-				{
-					final Point item = pointIter.next();
+				for (Point item  : m_currentPlacements) {
 					g.fillRect(item.x, item.y, PLACE_SIZE, PLACE_SIZE);
 				}
 			}// paint
@@ -357,15 +354,9 @@ public class PlacementPicker extends JFrame
 		String seaName = "there be dragons";
 		// try to find a land territory.
 		// sea zones often surround a land territory
-		final Iterator<String> keyIter = m_polygons.keySet().iterator();
-		while (keyIter.hasNext())
-		{
-			final String name = keyIter.next();
+		for (String name  : m_polygons.keySet()) {
 			final Collection<Polygon> polygons = m_polygons.get(name);
-			final Iterator<Polygon> polyIter = polygons.iterator();
-			while (polyIter.hasNext())
-			{
-				final Polygon poly = polyIter.next();
+			for (Polygon poly  : polygons) {
 				if (poly.contains(p))
 				{
 					if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone"))

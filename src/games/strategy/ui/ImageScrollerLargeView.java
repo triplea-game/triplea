@@ -164,10 +164,7 @@ public class ImageScrollerLargeView extends JComponent
 	
 	private void notifyScollListeners()
 	{
-		final Iterator<ScrollListener> iter = new ArrayList<ScrollListener>(m_scrollListeners).iterator();
-		while (iter.hasNext())
-		{
-			final ScrollListener element = iter.next();
+		for (ScrollListener element  : new ArrayList<ScrollListener>(m_scrollListeners)) {
 			element.scrolled(m_model.getX(), m_model.getY());
 		}
 	}

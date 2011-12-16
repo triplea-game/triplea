@@ -660,10 +660,7 @@ public class Matches
 				if (!attack && ua.getDefense(player) > 0)
 					return true;
 				// if unit can support other units, return true
-				final Iterator<UnitSupportAttachment> iter = UnitSupportAttachment.get(data).iterator();
-				while (iter.hasNext())
-				{
-					final UnitSupportAttachment rule = iter.next();
+				for (UnitSupportAttachment rule  : UnitSupportAttachment.get(data)) {
 					if (unit.getType().equals(rule.getAttatchedTo()))
 						return true;
 				}
@@ -1419,10 +1416,7 @@ public class Matches
 				for (final PlayerID ePlayer : data.getPlayerList().getPlayers())
 				{
 					final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
-					final Iterator<Territory> iter = capitalsListOwned.iterator();
-					while (iter.hasNext())
-					{
-						final Territory current = iter.next();
+					for (Territory current  : capitalsListOwned) {
 						if (!data.getRelationshipTracker().isAtWar(player, current.getOwner()))
 							continue;
 						if (data.getMap().getDistance(t, current, Matches.TerritoryIsPassableAndNotRestricted(player, data)) != -1)
@@ -1450,10 +1444,7 @@ public class Matches
 				for (final PlayerID ePlayer : data.getPlayerList().getPlayers())
 				{
 					final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
-					final Iterator<Territory> iter = capitalsListOwned.iterator();
-					while (iter.hasNext())
-					{
-						final Territory current = iter.next();
+					for (Territory current  : capitalsListOwned) {
 						if (!data.getRelationshipTracker().isAtWar(player, current.getOwner()))
 							continue;
 						if (data.getMap().getDistance(t, current, Matches.TerritoryIsNotImpassableToLandUnits(player, data)) != -1)
@@ -1798,17 +1789,11 @@ public class Matches
 					// are allied navalbases, increase the range.
 					// TODO Still need to be able to handle stops on the way
 					// (history to get route.getStart()
-					final Iterator<Territory> startNeighborIter = unit.getData().getMap().getNeighbors(route.getStart(), 1).iterator();
-					while (startNeighborIter.hasNext())
-					{
-						final Territory terrNext = startNeighborIter.next();
+					for (Territory terrNext  : unit.getData().getMap().getNeighbors(route.getStart(), 1)) {
 						final TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
 						if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrNext.getOwner(), player))
 						{
-							final Iterator<Territory> endNeighborIter = unit.getData().getMap().getNeighbors(route.getEnd(), 1).iterator();
-							while (endNeighborIter.hasNext())
-							{
-								final Territory terrEnd = endNeighborIter.next();
+							for (Territory terrEnd  : unit.getData().getMap().getNeighbors(route.getEnd(), 1)) {
 								final TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
 								if (taEndNeighbor != null && taEndNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrEnd.getOwner(), player))
 								{
@@ -2622,10 +2607,7 @@ public class Matches
 					return false;
 				if (list.isEmpty())
 					return true;
-				final Iterator<Territory> tIter = list.iterator();
-				while (tIter.hasNext())
-				{
-					final Territory t = tIter.next();
+				for (Territory t  : list) {
 					if (t.getUnits().getUnits().contains(u))
 						return false;
 				}
@@ -2644,10 +2626,7 @@ public class Matches
 				final Set<CanalAttachment> canalAttachments = CanalAttachment.get(t);
 				if (canalAttachments.isEmpty())
 					return false;
-				final Iterator<CanalAttachment> iter = canalAttachments.iterator();
-				while (iter.hasNext())
-				{
-					final CanalAttachment attachment = iter.next();
+				for (CanalAttachment attachment  : canalAttachments) {
 					if (attachment == null)
 						continue;
 					for (final Territory borderTerritory : attachment.getLandTerritories())
@@ -2740,10 +2719,7 @@ public class Matches
 				{
 					final Match<Unit> repairUnitLand = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsLand);
 					final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
-					final Iterator<Territory> iter = neighbors.iterator();
-					while (iter.hasNext())
-					{
-						final Territory current = iter.next();
+					for (Territory current  : neighbors) {
 						if (Match.someMatch(current.getUnits().getUnits(), repairUnitLand))
 							return true;
 					}
@@ -2809,10 +2785,7 @@ public class Matches
 				{
 					final Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsLand);
 					final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
-					final Iterator<Territory> iter = neighbors.iterator();
-					while (iter.hasNext())
-					{
-						final Territory current = iter.next();
+					for (Territory current  : neighbors) {
 						if (Match.someMatch(current.getUnits().getUnits(), givesBonusUnitLand))
 							return true;
 					}
@@ -3211,10 +3184,7 @@ public class Matches
 				final TripleAUnit taUnit = (TripleAUnit) u;
 				final int currentDamage = taUnit.getHits();
 				final ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamagedList = UnitAttachment.get(u.getType()).getWhenCombatDamaged();
-				final Iterator<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> iter = whenCombatDamagedList.iterator();
-				while (iter.hasNext())
-				{
-					final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key = iter.next();
+				for (Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key  : whenCombatDamagedList) {
 					final String effect = key.getSecond().getFirst();
 					if (!effect.equals(filterForEffect))
 						continue;

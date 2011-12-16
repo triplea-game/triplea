@@ -279,30 +279,21 @@ public class MapPanel extends ImageScrollerLargeView
 	
 	private void notifyTerritorySelected(final Territory t, final MouseDetails me)
 	{
-		final Iterator<MapSelectionListener> iter = m_mapSelectionListeners.iterator();
-		while (iter.hasNext())
-		{
-			final MapSelectionListener msl = iter.next();
+		for (MapSelectionListener msl  : m_mapSelectionListeners) {
 			msl.territorySelected(t, me);
 		}
 	}
 	
 	private void notifyMouseMoved(final Territory t, final MouseDetails me)
 	{
-		final Iterator<MapSelectionListener> iter = m_mapSelectionListeners.iterator();
-		while (iter.hasNext())
-		{
-			final MapSelectionListener msl = iter.next();
+		for (MapSelectionListener msl  : m_mapSelectionListeners) {
 			msl.mouseMoved(t, me);
 		}
 	}
 	
 	private void notifyMouseEntered(final Territory t)
 	{
-		final Iterator<MapSelectionListener> iter = m_mapSelectionListeners.iterator();
-		while (iter.hasNext())
-		{
-			final MapSelectionListener msl = iter.next();
+		for (MapSelectionListener msl  : m_mapSelectionListeners) {
 			msl.mouseEntered(t);
 		}
 	}
@@ -551,10 +542,7 @@ public class MapPanel extends ImageScrollerLargeView
 			if (aChange instanceof CompositeChange)
 			{
 				final CompositeChange composite = (CompositeChange) aChange;
-				final Iterator<Change> iter = composite.getChanges().iterator();
-				while (iter.hasNext())
-				{
-					final Change item = iter.next();
+				for (Change item  : composite.getChanges()) {
 					getPlayersWithTechChanges(item, players);
 				}
 			}
@@ -588,10 +576,7 @@ public class MapPanel extends ImageScrollerLargeView
 		final GameData gameData = m_data;
 		final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
 		final Collection<Tile> tileList = m_tileManager.getTiles(bounds);
-		final Iterator<Tile> tilesIter = tileList.iterator();
-		while (tilesIter.hasNext())
-		{
-			final Tile tile = tilesIter.next();
+		for (Tile tile  : tileList) {
 			LockUtil.acquireLock(tile.getLock());
 			try
 			{

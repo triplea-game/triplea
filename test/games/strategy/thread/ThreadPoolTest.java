@@ -120,10 +120,7 @@ public class ThreadPoolTest extends TestCase
 			pool.runTask(task);
 		}
 		pool.waitForAll();
-		final Iterator<BlockedTask> iter = blockedTasks.iterator();
-		while (iter.hasNext())
-		{
-			final BlockedTask task = iter.next();
+		for (BlockedTask task  : blockedTasks) {
 			assertTrue(task.isDone());
 		}
 		pool.shutDown();

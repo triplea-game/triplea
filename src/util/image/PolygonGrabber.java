@@ -333,10 +333,7 @@ public class PolygonGrabber extends JFrame
 				g.setColor(Color.red);
 				if (m_current != null)
 				{
-					final Iterator<Polygon> currentIter = m_current.iterator();
-					while (currentIter.hasNext())
-					{
-						final Polygon item = currentIter.next();
+					for (Polygon item  : m_current) {
 						g.fillPolygon(item.xpoints, item.ypoints, item.npoints);
 					}// while
 				}// if
@@ -465,10 +462,7 @@ public class PolygonGrabber extends JFrame
 		{
 			return false;
 		}
-		final Iterator<Polygon> iter = m_current.iterator();
-		while (iter.hasNext())
-		{
-			final Polygon item = iter.next();
+		for (Polygon item  : m_current) {
 			if (item.contains(p))
 			{
 				return true;
@@ -532,10 +526,7 @@ public class PolygonGrabber extends JFrame
 		{
 			final Entry<String, Point> item = centersiter.next();
 			final Point p = new Point(item.getValue());
-			final Iterator<Polygon> currentIter = m_current.iterator();
-			while (currentIter.hasNext())
-			{
-				final Polygon polygon = currentIter.next();
+			for (Polygon polygon  : m_current) {
 				if (polygon.contains(p))
 				{
 					text.setText(item.getKey().toString());
@@ -727,10 +718,7 @@ public class PolygonGrabber extends JFrame
 		final int[] xpoints = new int[points.size()];
 		final int[] ypoints = new int[points.size()];
 		int i = 0;
-		final Iterator<Point> iter = points.iterator();
-		while (iter.hasNext())
-		{
-			final Point item = iter.next();
+		for (Point item  : points) {
 			xpoints[i] = item.x;
 			ypoints[i] = item.y;
 			i++;

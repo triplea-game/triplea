@@ -242,18 +242,12 @@ public class BattleDisplay extends JPanel
 			final Collection<Unit> dependentCollection = dependentUnitsCollections.next();
 			dependentUnitsReturned.addAll(dependentCollection);
 		}
-		final Iterator<UnitCategory> killedIter = UnitSeperator.categorize(aKilledUnits, dependentsMap, false, false).iterator();
-		while (killedIter.hasNext())
-		{
-			final UnitCategory category = killedIter.next();
+		for (UnitCategory category  : UnitSeperator.categorize(aKilledUnits, dependentsMap, false, false)) {
 			final JPanel panel = new JPanel();
 			JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, false, false));
 			panel.add(unit);
 			panel.add(new JLabel("x " + category.getUnits().size()));
-			final Iterator<UnitOwner> iter = category.getDependents().iterator();
-			while (iter.hasNext())
-			{
-				final UnitOwner owner = iter.next();
+			for (UnitOwner owner  : category.getDependents()) {
 				unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false, false));
 				panel.add(unit);
 				// TODO this size is of the transport collection size, not the transportED collection size.
@@ -1138,10 +1132,7 @@ class BattleModel extends DefaultTableModel
 		DiceRoll.getSupport(units, supportRules, supportLeft, m_data, !m_attack);
 		// Collection unitCategories = UnitSeperator.categorize(m_units);
 		final Collection<UnitCategory> unitCategories = UnitSeperator.categorize(units, null, false, false, false);
-		final Iterator<UnitCategory> categoriesIter = unitCategories.iterator();
-		while (categoriesIter.hasNext())
-		{
-			final UnitCategory category = categoriesIter.next();
+		for (UnitCategory category  : unitCategories) {
 			int strength;
 			final UnitAttachment attachment = UnitAttachment.get(category.getType());
 			final int[] shift = new int[m_data.getDiceSides() + 1];
@@ -1382,10 +1373,7 @@ class CasualtyNotificationPanel extends JPanel
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
 			final JLabel unit = new JLabel(m_uiContext.getUnitImageFactory().getIcon(category.getType(), category.getOwner(), m_data, category.getDamaged(), category.getDisabled()));
 			panel.add(unit);
-			final Iterator<UnitOwner> iter = category.getDependents().iterator();
-			while (iter.hasNext())
-			{
-				final UnitOwner owner = iter.next();
+			for (UnitOwner owner  : category.getDependents()) {
 				// Don't use damaged icons for dependent units (bug 2984310)?
 				unit.add(new JLabel(m_uiContext.getUnitImageFactory().getIcon(owner.getType(), owner.getOwner(), m_data, false, false)));
 				/*//we don't want to use the damaged icon for units that have just been damaged

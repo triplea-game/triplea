@@ -597,10 +597,7 @@ class EndPoint
 			implementorsCopy = new ArrayList<Object>(m_implementors);
 		}
 		final List<RemoteMethodCallResults> results = new ArrayList<RemoteMethodCallResults>(implementorsCopy.size());
-		final Iterator<Object> iter = implementorsCopy.iterator();
-		while (iter.hasNext())
-		{
-			final Object implementor = iter.next();
+		for (Object implementor  : implementorsCopy) {
 			results.add(invokeSingle(call, implementor, messageOriginator));
 		}
 		return results;

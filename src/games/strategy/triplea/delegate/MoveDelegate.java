@@ -309,10 +309,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			// map transports, try to fill
 			final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
 			final Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
-			final Iterator<Unit> landIter = land.iterator();
-			while (landIter.hasNext())
-			{
-				final Unit toLoad = landIter.next();
+			for (Unit toLoad  : land) {
 				final UnitAttachment ua = UnitAttachment.get(toLoad.getType());
 				final int cost = ua.getTransportCost();
 				if (cost == -1)
@@ -415,10 +412,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 					{
 						final Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsLand);
 						final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(t, Matches.TerritoryIsLand));
-						final Iterator<Territory> iter = neighbors.iterator();
-						while (iter.hasNext())
-						{
-							final Territory current = iter.next();
+						for (Territory current  : neighbors) {
 							givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
 						}
 					}
@@ -690,10 +684,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		final AirThatCantLandUtil util = new AirThatCantLandUtil(m_bridge);
 		util.removeAirThatCantLand(m_player, lhtrCarrierProd && hasProducedCarriers);
 		// if edit mode has been on, we need to clean up after all players
-		final Iterator<PlayerID> iter = data.getPlayerList().iterator();
-		while (iter.hasNext())
-		{
-			final PlayerID player = iter.next();
+		for (PlayerID player  : data.getPlayerList()) {
 			// Check if player still has units to place
 			if (!player.equals(m_player)) // && !player.getUnits().isEmpty()
 				util.removeAirThatCantLand(player, ((player.getUnits().someMatch(Matches.UnitIsCarrier) || hasProducedCarriers) && lhtrCarrierProd));
@@ -839,10 +830,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
 		final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
 		final IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
-		final Iterator<Unit> landIter = canBeTransported.iterator();
-		while (landIter.hasNext())
-		{
-			final Unit land = landIter.next();
+		for (Unit land  : canBeTransported) {
 			final UnitAttachment landUA = UnitAttachment.get(land.getType());
 			final int cost = landUA.getTransportCost();
 			boolean loaded = false;

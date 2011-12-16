@@ -110,10 +110,7 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 	
 	public String getPlayerType(final String playerName)
 	{
-		final Iterator<LocalPlayerComboBoxSelector> iter = m_playerTypes.iterator();
-		while (iter.hasNext())
-		{
-			final LocalPlayerComboBoxSelector item = iter.next();
+		for (LocalPlayerComboBoxSelector item  : m_playerTypes) {
 			if (item.getPlayerName().equals(playerName))
 				return item.getPlayerType();
 		}

@@ -206,10 +206,7 @@ public class StatPanel extends JPanel
 				final Collection<String> alliances = getAlliances();
 				m_collectedData = new String[players.size() + alliances.size()][m_stats.length + 1];
 				int row = 0;
-				final Iterator<PlayerID> playerIter = players.iterator();
-				while (playerIter.hasNext())
-				{
-					final PlayerID player = playerIter.next();
+				for (PlayerID player  : players) {
 					m_collectedData[row][0] = player.getName();
 					for (int i = 0; i < m_stats.length; i++)
 					{
@@ -400,10 +397,7 @@ public class StatPanel extends JPanel
 			gameData.acquireReadLock();
 			try
 			{
-				final Iterator<PlayerID> playerIter = gameData.getPlayerList().getPlayers().iterator();
-				while (playerIter.hasNext())
-				{
-					final PlayerID pid = playerIter.next();
+				for (PlayerID pid  : gameData.getPlayerList().getPlayers()) {
 					if (colMap.get(pid.getName()) == null)
 						throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
 					final int col = colMap.get(pid.getName()).intValue();
@@ -508,10 +502,7 @@ public class StatPanel extends JPanel
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			int rVal = 0;
-			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-			while (iter.hasNext())
-			{
-				final Territory place = iter.next();
+			for (Territory place  : data.getMap().getTerritories()) {
 				final TerritoryAttachment ta = TerritoryAttachment.get(place);
 				/* Check if terr is a Land Convoy Route and check ownership of neighboring Sea Zone*/
 				if (place.getOwner().equals(player) && Matches.territoryCanCollectIncomeFrom(player, data).match(place))
@@ -567,10 +558,7 @@ public class StatPanel extends JPanel
 		{
 			int rVal = 0;
 			final Match<Unit> ownedBy = Matches.unitIsOwnedBy(player);
-			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-			while (iter.hasNext())
-			{
-				final Territory place = iter.next();
+			for (Territory place  : data.getMap().getTerritories()) {
 				rVal += place.getUnits().countMatches(ownedBy);
 			}
 			return rVal;
@@ -590,10 +578,7 @@ public class StatPanel extends JPanel
 			final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(player, data);
 			final Match<Unit> unitIsOwnedBy = Matches.unitIsOwnedBy(player);
 			int rVal = 0;
-			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-			while (iter.hasNext())
-			{
-				final Territory place = iter.next();
+			for (Territory place  : data.getMap().getTerritories()) {
 				final Collection<Unit> owned = place.getUnits().getMatches(unitIsOwnedBy);
 				rVal += BattleCalculator.getTUV(owned, costs);
 			}
@@ -612,10 +597,7 @@ public class StatPanel extends JPanel
 		public double getValue(final PlayerID player, final GameData data)
 		{
 			int rVal = 0;
-			final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-			while (iter.hasNext())
-			{
-				final Territory place = iter.next();
+			for (Territory place  : data.getMap().getTerritories()) {
 				if (!place.getOwner().equals(player))
 					continue;
 				final TerritoryAttachment ta = TerritoryAttachment.get(place);

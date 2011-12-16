@@ -302,10 +302,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		m_bridge.getGameData().acquireReadLock();
 		try
 		{
-			final Iterator<Territory> territoryIter = m_bridge.getGameData().getMap().getTerritories().iterator();
-			while (territoryIter.hasNext())
-			{
-				final Territory item = territoryIter.next();
+			for (Territory item  : m_bridge.getGameData().getMap().getTerritories()) {
 				if (item.getUnits().someMatch(moveableUnitOwnedByMe))
 				{
 					return true;

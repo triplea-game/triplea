@@ -214,10 +214,7 @@ class SerializedHistory implements Serializable
 	{
 		final History rVal = new History(m_data);
 		final HistoryWriter historyWriter = rVal.getHistoryWriter();
-		final Iterator<SerializationWriter> iter = m_Writers.iterator();
-		while (iter.hasNext())
-		{
-			final SerializationWriter element = iter.next();
+		for (SerializationWriter element  : m_Writers) {
 			element.write(historyWriter);
 		}
 		return rVal;

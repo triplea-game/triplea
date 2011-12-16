@@ -232,10 +232,7 @@ public class ScrollableTextField extends JPanel
 	
 	private void notifyListeners()
 	{
-		final Iterator<ScrollableTextFieldListener> iter = m_listeners.iterator();
-		while (iter.hasNext())
-		{
-			final ScrollableTextFieldListener listener = iter.next();
+		for (ScrollableTextFieldListener listener  : m_listeners) {
 			listener.changedValue(this);
 		}
 	}

@@ -207,10 +207,7 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 		{
 			throw new IllegalStateException("msg not for me:" + msg);
 		}
-		final Iterator<IMessageListener> iter = m_listeners.iterator();
-		while (iter.hasNext())
-		{
-			final IMessageListener listener = iter.next();
+		for (IMessageListener listener  : m_listeners) {
 			listener.messageReceived(msg.getMessage(), msg.getFrom());
 		}
 	}
@@ -256,10 +253,7 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 		// we need to return in the constructor
 		// otherwise this is harmless
 		m_connectionRefusedError = error;
-		final Iterator<IMessengerErrorListener> iter = m_errorListeners.iterator();
-		while (iter.hasNext())
-		{
-			final IMessengerErrorListener errorListener = iter.next();
+		for (IMessengerErrorListener errorListener  : m_errorListeners) {
 			errorListener.messengerInvalid(ClientMessenger.this, error);
 		}
 		shutDown();

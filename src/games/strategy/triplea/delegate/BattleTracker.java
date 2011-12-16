@@ -145,10 +145,7 @@ public class BattleTracker implements java.io.Serializable
 	
 	public void undoBattle(final Route route, final Collection<Unit> units, final PlayerID player, final IDelegateBridge bridge)
 	{
-		final Iterator<IBattle> battleIter = new ArrayList<IBattle>(m_pendingBattles).iterator();
-		while (battleIter.hasNext())
-		{
-			final IBattle battle = battleIter.next();
+		for (IBattle battle  : new ArrayList<IBattle>(m_pendingBattles)) {
 			if (battle.getTerritory().equals(route.getEnd()))
 			{
 				battle.removeAttack(route, units);
@@ -184,10 +181,7 @@ public class BattleTracker implements java.io.Serializable
 		m_battleRecords.removeBattle(player, battle.getBattleID());
 		m_pendingBattles.remove(battle);
 		m_dependencies.remove(battle);
-		final Iterator<HashSet<IBattle>> iter = m_dependencies.values().iterator();
-		while (iter.hasNext())
-		{
-			final Collection<IBattle> battles = iter.next();
+		for (Collection<IBattle> battles  : m_dependencies.values()) {
 			battles.remove(battle);
 		}
 	}
@@ -318,10 +312,7 @@ public class BattleTracker implements java.io.Serializable
 		final Collection<Territory> blitzed = Match.getMatches(conquered, canBlitz);
 		m_blitzed.addAll(Match.getMatches(blitzed, Matches.isTerritoryEnemy(id, data)));
 		m_conquered.addAll(Match.getMatches(conquered, Matches.isTerritoryEnemy(id, data)));
-		final Iterator<Territory> iter = conquered.iterator();
-		while (iter.hasNext())
-		{
-			final Territory current = iter.next();
+		for (Territory current  : conquered) {
 			takeOver(current, id, bridge, changeTracker, units);
 		}
 		// check the last territory
@@ -683,10 +674,7 @@ public class BattleTracker implements java.io.Serializable
 					final Collection<Unit> toAdd = new ArrayList<Unit>();
 					final Tuple<String, IntegerMap<UnitType>> toCreate = map.get(value);
 					final boolean translateAttributes = toCreate.getFirst().equalsIgnoreCase("true");
-					final Iterator<UnitType> iter = toCreate.getSecond().keySet().iterator();
-					while (iter.hasNext())
-					{
-						final UnitType ut = iter.next();
+					for (UnitType ut  : toCreate.getSecond().keySet()) {
 						// if (ut.equals(u.getType()))
 						// continue;
 						toAdd.addAll(ut.create(toCreate.getSecond().getInt(ut), newOwner));
@@ -778,10 +766,7 @@ public class BattleTracker implements java.io.Serializable
 	
 	public IBattle getPendingBattle(final Territory t, final boolean bombing, final String type)
 	{
-		final Iterator<IBattle> iter = m_pendingBattles.iterator();
-		while (iter.hasNext())
-		{
-			final IBattle battle = iter.next();
+		for (IBattle battle  : m_pendingBattles) {
 			if (battle.getTerritory().equals(t) && battle.isBombingRun() == bombing)
 			{
 				if (type == null)
@@ -801,10 +786,7 @@ public class BattleTracker implements java.io.Serializable
 	public Collection<Territory> getPendingBattleSites(final boolean bombing)
 	{
 		final Collection<Territory> battles = new ArrayList<Territory>(m_pendingBattles.size());
-		final Iterator<IBattle> iter = m_pendingBattles.iterator();
-		while (iter.hasNext())
-		{
-			final IBattle battle = iter.next();
+		for (IBattle battle  : m_pendingBattles) {
 			if (!battle.isEmpty() && battle.isBombingRun() == bombing)
 				battles.add(battle.getTerritory());
 		}

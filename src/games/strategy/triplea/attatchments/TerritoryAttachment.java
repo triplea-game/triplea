@@ -45,10 +45,7 @@ public class TerritoryAttachment extends DefaultAttachment
 {
 	public static Territory getCapital(final PlayerID player, final GameData data)
 	{
-		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-		while (iter.hasNext())
-		{
-			final Territory current = iter.next();
+		for (Territory current  : data.getMap().getTerritories()) {
 			final TerritoryAttachment ta = TerritoryAttachment.get(current);
 			if (ta != null && ta.getCapital() != null)
 			{
@@ -71,10 +68,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	public static List<Territory> getAllCapitals(final PlayerID player, final GameData data)
 	{
 		final List<Territory> capitals = new ArrayList<Territory>();
-		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-		while (iter.hasNext())
-		{
-			final Territory current = iter.next();
+		for (Territory current  : data.getMap().getTerritories()) {
 			final TerritoryAttachment ta = TerritoryAttachment.get(current);
 			if (ta != null && ta.getCapital() != null)
 			{
@@ -99,10 +93,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	public static List<Territory> getAllCurrentlyOwnedCapitals(final PlayerID player, final GameData data)
 	{
 		final List<Territory> capitals = new ArrayList<Territory>();
-		final Iterator<Territory> iter = data.getMap().getTerritories().iterator();
-		while (iter.hasNext())
-		{
-			final Territory current = iter.next();
+		for (Territory current  : data.getMap().getTerritories()) {
 			final TerritoryAttachment ta = TerritoryAttachment.get(current);
 			if (ta != null && ta.getCapital() != null)
 			{

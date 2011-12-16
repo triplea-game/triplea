@@ -188,10 +188,7 @@ public class UndoableMove extends AbstractUndoableMove
 	 */
 	public void initializeDependencies(final List<UndoableMove> undoableMoves)
 	{
-		final Iterator<UndoableMove> iter = undoableMoves.iterator();
-		while (iter.hasNext())
-		{
-			final UndoableMove other = iter.next();
+		for (UndoableMove other  : undoableMoves) {
 			if (other == null)
 			{
 				System.err.println(undoableMoves);

@@ -295,10 +295,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	
 	private static Set<UnitType> getTargets(final GameData data)
 	{
-		final Iterator<UnitSupportAttachment> iter = get(data).iterator();
-		while (iter.hasNext())
-		{
-			final UnitSupportAttachment rule = iter.next();
+		for (UnitSupportAttachment rule  : get(data)) {
 			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME))
 				return rule.getUnitTypes();
 		}
@@ -316,10 +313,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	
 	public static void setOldSupportCount(final UnitType type, final GameData data, final String count)
 	{
-		final Iterator<UnitSupportAttachment> iter = get(data).iterator();
-		while (iter.hasNext())
-		{
-			final UnitSupportAttachment rule = iter.next();
+		for (UnitSupportAttachment rule  : get(data)) {
 			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttatchedTo() == type)
 				rule.setNumber(count);
 		}

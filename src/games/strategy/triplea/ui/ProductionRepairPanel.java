@@ -256,10 +256,7 @@ public class ProductionRepairPanel extends JPanel
 	{
 		final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<Unit, IntegerMap<RepairRule>>();
 		// IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
-		final Iterator<Rule> iter = m_rules.iterator();
-		while (iter.hasNext())
-		{
-			final Rule rule = iter.next();
+		for (Rule rule  : m_rules) {
 			final int quantity = rule.getQuantity();
 			if (quantity != 0)
 			{
