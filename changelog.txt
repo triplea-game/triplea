@@ -1,4 +1,6 @@
 Changes for 1.5
+* Changed most instances of Node to Element in the game parser. (edwin van der wal)
+
 * Created new unit attachment, fuelCost, which allows a unit to use up a resource for each point of movementCost they use. (edwin van der wal)
 
 * Update of Export Stats to include information on all resources costs, not just PUs. Also fixed production screen to show all resources except techTokens and VPs. (veqryn)
