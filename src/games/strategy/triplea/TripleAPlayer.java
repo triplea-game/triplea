@@ -23,6 +23,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -65,6 +66,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
@@ -302,7 +304,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		m_bridge.getGameData().acquireReadLock();
 		try
 		{
-			for (Territory item  : m_bridge.getGameData().getMap().getTerritories()) {
+			for (final Territory item : m_bridge.getGameData().getMap().getTerritories())
+			{
 				if (item.getUnits().someMatch(moveableUnitOwnedByMe))
 				{
 					return true;
@@ -652,5 +655,51 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	private static boolean isTechDevelopment(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getTechDevelopment(data);
+	}
+	
+	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)
+	{
+		final PlayerAttachment pa = PlayerAttachment.get(m_id);
+		if (pa == null)
+			return null;
+		final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
+		if (resourcesAndAttackValues.size() <= 0)
+			return null;
+		final IntegerMap<Resource> playerResourceCollection = m_id.getResources().getResourcesCopy();
+		final IntegerMap<Resource> attackTokens = new IntegerMap<Resource>();
+		for (final Resource possible : resourcesAndAttackValues.keySet())
+		{
+			final int amount = playerResourceCollection.getInt(possible);
+			if (amount > 0)
+				attackTokens.put(possible, amount);
+		}
+		if (attackTokens.size() <= 0)
+			return null;
+		final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal = new HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>>();
+		for (final Entry<Resource, Integer> entry : attackTokens.entrySet())
+		{
+			final Resource r = entry.getKey();
+			final int max = entry.getValue();
+			final HashMap<Territory, IntegerMap<Unit>> selection = m_ui.selectKamikazeSuicideAttacks(possibleUnitsToAttack, r, max);
+			for (final Entry<Territory, IntegerMap<Unit>> selectionEntry : selection.entrySet())
+			{
+				final Territory t = selectionEntry.getKey();
+				HashMap<Unit, IntegerMap<Resource>> currentTerr = rVal.get(t);
+				if (currentTerr == null)
+					currentTerr = new HashMap<Unit, IntegerMap<Resource>>();
+				for (final Entry<Unit, Integer> unitEntry : selectionEntry.getValue().entrySet())
+				{
+					final Unit u = unitEntry.getKey();
+					IntegerMap<Resource> currentUnit = currentTerr.get(u);
+					if (currentUnit == null)
+						currentUnit = new IntegerMap<Resource>();
+					currentUnit.add(r, unitEntry.getValue());
+					currentTerr.put(u, currentUnit);
+				}
+				rVal.put(t, currentTerr);
+			}
+		}
+		
+		return rVal;
 	}
 }

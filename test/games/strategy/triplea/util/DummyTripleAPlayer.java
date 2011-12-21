@@ -14,6 +14,7 @@
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.net.GUID;
@@ -22,6 +23,7 @@ import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -157,6 +159,11 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 	}
 	
 	public Collection<Unit> selectUnitsQuery(final Territory current, final Collection<Unit> possible, final String message)
+	{
+		return null;
+	}
+	
+	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)
 	{
 		return null;
 	}

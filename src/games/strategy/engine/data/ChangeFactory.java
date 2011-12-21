@@ -151,7 +151,7 @@ public class ChangeFactory
 	
 	public static Change addResourceCollection(PlayerID id, ResourceCollection rCollection) {
 		CompositeChange cChange = new CompositeChange();
-		for(Resource r:rCollection.getResources().keySet()) {
+		for(Resource r:rCollection.getResourcesCopy().keySet()) {
 			cChange.add(new ChangeResourceChange(id,r,rCollection.getQuantity(r)));
 		}
 		return cChange;
@@ -159,7 +159,7 @@ public class ChangeFactory
 	
 	public static Change removeResourceCollection(PlayerID id, ResourceCollection rCollection) {
 		CompositeChange cChange = new CompositeChange();
-		for(Resource r:rCollection.getResources().keySet()) {
+		for(Resource r:rCollection.getResourcesCopy().keySet()) {
 			cChange.add(new ChangeResourceChange(id,r,-rCollection.getQuantity(r)));
 		}
 		return cChange;

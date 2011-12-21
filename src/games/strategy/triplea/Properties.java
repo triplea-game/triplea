@@ -793,6 +793,11 @@ public class Properties implements Constants
 		return data.getProperties().get(RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES, false);
 	}
 	
+	public static boolean getUseKamikazeSuicideAttacks(final GameData data)
+	{
+		return data.getProperties().get(USE_KAMIKAZE_SUICIDE_ATTACKS, false);
+	}
+	
 	private Properties()
 	{
 	}

@@ -14,6 +14,7 @@
 package games.strategy.triplea.player;
 
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IRemote;
@@ -21,6 +22,7 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
 import java.util.Collection;
@@ -280,4 +282,12 @@ public interface ITripleaPlayer extends IRemote
 	 *            the message sent
 	 */
 	void reportPoliticalMessage(String message);
+	
+	/**
+	 * Asks the player if they wish to perform any kamikaze suicide attacks
+	 * 
+	 * @param possibleUnitsToAttack
+	 * @return
+	 */
+	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(HashMap<Territory, Collection<Unit>> possibleUnitsToAttack);
 }

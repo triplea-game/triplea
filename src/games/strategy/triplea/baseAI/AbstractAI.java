@@ -10,7 +10,9 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -24,12 +26,16 @@ import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.UIContext;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 /**
@@ -443,5 +449,54 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	public final PlayerID getID()
 	{
 		return m_id;
+	}
+	
+	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)
+	{
+		// we are going to just assign random attacks to each unit randomly, til we run out of tokens to attack with.
+		final PlayerAttachment pa = PlayerAttachment.get(m_id);
+		if (pa == null)
+			return null;
+		final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
+		if (resourcesAndAttackValues.size() <= 0)
+			return null;
+		final IntegerMap<Resource> playerResourceCollection = m_id.getResources().getResourcesCopy();
+		final IntegerMap<Resource> attackTokens = new IntegerMap<Resource>();
+		for (final Resource possible : resourcesAndAttackValues.keySet())
+		{
+			final int amount = playerResourceCollection.getInt(possible);
+			if (amount > 0)
+				attackTokens.put(possible, amount);
+		}
+		if (attackTokens.size() <= 0)
+			return null;
+		final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> rVal = new HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>>();
+		for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet())
+		{
+			if (attackTokens.size() <= 0)
+				continue;
+			final Territory t = entry.getKey();
+			final List<Unit> targets = new ArrayList<Unit>(entry.getValue());
+			Collections.shuffle(targets);
+			for (final Unit u : targets)
+			{
+				if (attackTokens.size() <= 0)
+					continue;
+				final IntegerMap<Resource> rMap = new IntegerMap<Resource>();
+				final Resource r = attackTokens.keySet().iterator().next();
+				final int num = Math.min(attackTokens.getInt(r), ((UnitAttachment.get(u.getType()).isTwoHit() ? 2 : 1)
+							* (Math.random() < .3 ? 1 : (Math.random() < .5 ? 2 : 3))));
+				rMap.put(r, num);
+				HashMap<Unit, IntegerMap<Resource>> attMap = rVal.get(t);
+				if (attMap == null)
+					attMap = new HashMap<Unit, IntegerMap<Resource>>();
+				attMap.put(u, rMap);
+				rVal.put(t, attMap);
+				attackTokens.add(r, -num);
+				if (attackTokens.getInt(r) <= 0)
+					attackTokens.removeKey(r);
+			}
+		}
+		return rVal;
 	}
 }

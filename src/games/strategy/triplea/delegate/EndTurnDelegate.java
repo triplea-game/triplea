@@ -288,7 +288,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		final CompositeChange change = new CompositeChange();
 		final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
 		final ResourceCollection productionCollection = getResourceProduction(territories, data);
-		final IntegerMap<Resource> production = productionCollection.getResources();
+		final IntegerMap<Resource> production = productionCollection.getResourcesCopy();
 		for (final Entry<Resource, Integer> resource : production.entrySet())
 		{
 			final Resource r = resource.getKey();

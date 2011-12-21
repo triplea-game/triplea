@@ -17,10 +17,12 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.RouteScripted;
 import games.strategy.engine.data.Territory;
@@ -30,6 +32,8 @@ import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
@@ -39,6 +43,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -51,6 +56,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Sean Bridges
@@ -78,6 +84,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			setupUnitsInSameTerritoryBattles();
 			// do pre-combat stuff, like scrambling, after we have setup all battles, but before we have bombardment, etc.
 			doScrambling();
+			doKamikazeSuicideAttacks();
 			addBombardmentSources();
 			m_needToInitialize = false;
 		}
@@ -721,6 +728,201 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			m_bridge.getHistoryWriter().startEvent("Cleaning up after air battles");
 			m_bridge.addChange(change);
 		}
+	}
+	
+	private void doKamikazeSuicideAttacks()
+	{
+		final GameData data = getData();
+		if (!games.strategy.triplea.Properties.getUseKamikazeSuicideAttacks(data))
+			return;
+		// the current player is not the one who is doing these attacks, it is the all the enemies of this player who will do attacks
+		final Collection<PlayerID> enemies = Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(m_player, data));
+		if (enemies.isEmpty())
+			return;
+		final Match<Unit> canBeAttacked = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_player), Matches.UnitIsSea,
+					Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSub);
+		// create a list of all kamikaze zones, listed by enemy
+		final HashMap<PlayerID, Collection<Territory>> kamikazeZonesByEnemy = new HashMap<PlayerID, Collection<Territory>>();
+		for (final Territory t : data.getMap().getTerritories())
+		{
+			final TerritoryAttachment ta = TerritoryAttachment.get(t);
+			if (ta == null)
+				continue;
+			if (!ta.isKamikazeZone())
+				continue;
+			// TODO: we should have a game option to decide if it is the original or current owner. default is original.
+			PlayerID owner = null;
+			owner = ta.getOccupiedTerrOf();
+			if (owner == null)
+				owner = ta.getOriginalOwner();
+			if (owner == null)
+				continue;
+			if (enemies.contains(owner))
+			{
+				// TODO: we should have a game option or a couple, or player attachments, to decide what units can be attacked
+				if (Match.noneMatch(t.getUnits().getUnits(), canBeAttacked))
+					continue;
+				Collection<Territory> currentTerrs = kamikazeZonesByEnemy.get(owner);
+				if (currentTerrs == null)
+					currentTerrs = new ArrayList<Territory>();
+				currentTerrs.add(t);
+				kamikazeZonesByEnemy.put(owner, currentTerrs);
+			}
+		}
+		if (kamikazeZonesByEnemy.isEmpty())
+			return;
+		for (final Entry<PlayerID, Collection<Territory>> entry : kamikazeZonesByEnemy.entrySet())
+		{
+			final PlayerID currentEnemy = entry.getKey();
+			final PlayerAttachment pa = PlayerAttachment.get(currentEnemy);
+			if (pa == null)
+				continue;
+			// See if the player has any attack tokens
+			final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
+			if (resourcesAndAttackValues.size() <= 0)
+				continue;
+			final IntegerMap<Resource> playerResourceCollection = currentEnemy.getResources().getResourcesCopy();
+			final IntegerMap<Resource> attackTokens = new IntegerMap<Resource>();
+			for (final Resource possible : resourcesAndAttackValues.keySet())
+			{
+				final int amount = playerResourceCollection.getInt(possible);
+				if (amount > 0)
+					attackTokens.put(possible, amount);
+			}
+			if (attackTokens.size() <= 0)
+				continue;
+			// now let the enemy decide if they will do attacks
+			final Collection<Territory> kamikazeZones = entry.getValue();
+			final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack = new HashMap<Territory, Collection<Unit>>();
+			for (final Territory t : kamikazeZones)
+			{
+				possibleUnitsToAttack.put(t, t.getUnits().getMatches(canBeAttacked));
+			}
+			final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> attacks = ((ITripleaPlayer) m_bridge.getRemote(currentEnemy)).selectKamikazeSuicideAttacks(possibleUnitsToAttack);
+			if (attacks == null || attacks.isEmpty())
+				continue;
+			// now validate that we have the resources and those units are valid targets
+			for (final Entry<Territory, HashMap<Unit, IntegerMap<Resource>>> territoryEntry : attacks.entrySet())
+			{
+				final Territory t = territoryEntry.getKey();
+				final Collection<Unit> possibleUnits = possibleUnitsToAttack.get(t);
+				if (possibleUnits == null || !possibleUnits.containsAll(territoryEntry.getValue().keySet()))
+					throw new IllegalStateException("Player has chosen illegal units during Kamikaze Suicide Attacks");
+				for (final IntegerMap<Resource> rMap : territoryEntry.getValue().values())
+					attackTokens.subtract(rMap);
+			}
+			if (!attackTokens.isPositive())
+				throw new IllegalStateException("Player has chosen illegal resource during Kamikaze Suicide Attacks");
+			for (final Entry<Territory, HashMap<Unit, IntegerMap<Resource>>> territoryEntry : attacks.entrySet())
+			{
+				final Territory location = territoryEntry.getKey();
+				for (final Entry<Unit, IntegerMap<Resource>> unitEntry : territoryEntry.getValue().entrySet())
+				{
+					final Unit unitUnderFire = unitEntry.getKey();
+					final IntegerMap<Resource> numberOfAttacks = unitEntry.getValue();
+					if (numberOfAttacks != null && numberOfAttacks.size() > 0 && numberOfAttacks.totalValues() > 0)
+						fireKamikazeSuicideAttacks(unitUnderFire, numberOfAttacks, resourcesAndAttackValues, currentEnemy, location);
+				}
+			}
+		}
+	}
+	
+	private void fireKamikazeSuicideAttacks(final Unit unitUnderFire, final IntegerMap<Resource> numberOfAttacks,
+				final IntegerMap<Resource> resourcesAndAttackValues, final PlayerID firingEnemy, final Territory location)
+	{
+		// TODO: find a way to autosave after each dice roll.
+		final GameData data = getData();
+		final int diceSides = data.getDiceSides();
+		final CompositeChange change = new CompositeChange();
+		int hits = 0;
+		int[] rolls = null;
+		if (games.strategy.triplea.Properties.getLow_Luck(data))
+		{
+			int power = 0;
+			for (final Entry<Resource, Integer> entry : numberOfAttacks.entrySet())
+			{
+				final Resource r = entry.getKey();
+				final int num = entry.getValue();
+				change.add(ChangeFactory.changeResourcesChange(firingEnemy, r, -num));
+				power += num * resourcesAndAttackValues.getInt(r);
+			}
+			if (power > 0)
+			{
+				hits = power / diceSides;
+				final int remainder = power % diceSides;
+				if (remainder > 0)
+				{
+					rolls = m_bridge.getRandom(diceSides, 1, "Rolling for remainder in Kamikaze Suicide Attack on unit: " + unitUnderFire.getType().getName());
+					if (remainder > rolls[0])
+						hits++;
+				}
+			}
+		}
+		else
+		{
+			final int numTokens = numberOfAttacks.totalValues();
+			rolls = m_bridge.getRandom(diceSides, numTokens, "Rolling for Kamikaze Suicide Attack on unit: " + unitUnderFire.getType().getName());
+			final int[] powerOfTokens = new int[numTokens];
+			int j = 0;
+			for (final Entry<Resource, Integer> entry : numberOfAttacks.entrySet())
+			{
+				final Resource r = entry.getKey();
+				int num = entry.getValue();
+				change.add(ChangeFactory.changeResourcesChange(firingEnemy, r, -num));
+				final int power = resourcesAndAttackValues.getInt(r);
+				while (num > 0)
+				{
+					powerOfTokens[j] = power;
+					j++;
+					num--;
+				}
+			}
+			for (int i = 0; i < rolls.length; i++)
+			{
+				if (powerOfTokens[i] > rolls[i])
+					hits++;
+			}
+		}
+		final String title = "Kamikaze Suicide Attack attacks " + MyFormatter.unitsToText(Collections.singleton(unitUnderFire));
+		final String dice = " scoring " + hits + " hits.  Rolls: " + MyFormatter.asDice(rolls);
+		m_bridge.getHistoryWriter().startEvent(title + dice);
+		m_bridge.getHistoryWriter().setRenderingData(unitUnderFire);
+		if (hits > 0)
+		{
+			final UnitAttachment ua = UnitAttachment.get(unitUnderFire.getType());
+			final int currentHits = unitUnderFire.getHits();
+			if (ua.isTwoHit() && currentHits < 1 && hits == 1)
+			{
+				final IntegerMap<Unit> hitMap = new IntegerMap<Unit>();
+				hitMap.put(unitUnderFire, hits);
+				change.add(ChangeFactory.unitsHit(hitMap));
+				markDamaged(Collections.singleton(unitUnderFire), m_bridge);
+			}
+			else
+			{
+				// TODO: kill dependents
+				change.add(ChangeFactory.removeUnits(location, Collections.singleton(unitUnderFire)));
+			}
+		}
+		if (!change.isEmpty())
+		{
+			m_bridge.addChange(change);
+		}
+		// TODO: display this as actual dice for both players
+		((ITripleaPlayer) m_bridge.getRemote(m_player)).reportMessage(title + dice, title);
+		((ITripleaPlayer) m_bridge.getRemote(firingEnemy)).reportMessage(title + dice, title);
+	}
+	
+	public static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge)
+	{
+		if (damaged.size() == 0)
+			return;
+		Change damagedChange = null;
+		final IntegerMap<Unit> damagedMap = new IntegerMap<Unit>();
+		damagedMap.putAll(damaged, 1);
+		damagedChange = ChangeFactory.unitsHit(damagedMap);
+		bridge.getHistoryWriter().addChildToEvent("Units damaged: " + MyFormatter.unitsToText(damaged), damaged);
+		bridge.addChange(damagedChange);
 	}
 	
 	public static Collection<Territory> whereCanAirLand(final Collection<Unit> strandedAir, final Territory currentTerr, final PlayerID alliedPlayer, final GameData data,

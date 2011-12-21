@@ -19,15 +19,19 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Resource;
 import games.strategy.triplea.Constants;
+import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  * 
- * @author Adam Jette
+ * @author Adam Jette, and Mark Christopher Duncan
+ * 
  * @version 1.0
  */
 public class PlayerAttachment extends DefaultAttachment
@@ -57,10 +61,41 @@ public class PlayerAttachment extends DefaultAttachment
 	private final Collection<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
 	private final Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
+	private final IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>();
 	
 	/** Creates new PlayerAttachment */
 	public PlayerAttachment()
 	{
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	public void setSuicideAttackResources(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length != 2)
+			throw new GameParseException("Player Attachment: suicideAttackResources must have exactly 2 fields");
+		final int attackValue = getInt(s[0]);
+		if (attackValue < 0)
+			throw new GameParseException("Player Attachment: suicideAttackResources attack value must be positive");
+		final Resource r = getData().getResourceList().getResource(s[1]);
+		if (r == null)
+			throw new GameParseException("Player Attachment: no such resource: " + s[1]);
+		m_suicideAttackResources.put(r, attackValue);
+	}
+	
+	public IntegerMap<Resource> getSuicideAttackResources()
+	{
+		return m_suicideAttackResources;
+	}
+	
+	public void clearSuicideAttackResources()
+	{
+		m_suicideAttackResources.clear();
 	}
 	
 	public void setVps(final String value)

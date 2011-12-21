@@ -314,7 +314,8 @@ public class BattleCalculator
 			killed = killAmphibiousFirst(killed, targets);
 		final List<Unit> damaged = casualtySelection.getDamaged();
 		int numhits = killed.size();
-		for (Unit unit  : killed) {
+		for (final Unit unit : killed)
+		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (ua.isTwoHit() && (unit.getHits() == 0))
 			{
@@ -361,7 +362,8 @@ public class BattleCalculator
 				amphibTypes.add(ut);
 		}
 		// For each killed unit- see if there is an amphib unit that can be killed instead
-		for (Unit unit  : killedNonAmphibUnits) {
+		for (final Unit unit : killedNonAmphibUnits)
+		{
 			if (amphibTypes.contains(unit.getType()))
 			{ // add a unit from the collection
 				final List<Unit> oneAmphibUnit = Match.getNMatches(allAmphibUnits, 1, Matches.unitIsOfType(unit.getType()));
@@ -480,7 +482,7 @@ public class BattleCalculator
 			}
 		}
 		final List<Unit> sortedUnitsList = new ArrayList<Unit>(targets);
-		Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, player, costs, data, bonus));
+		Collections.sort(sortedUnitsList, new UnitBattleComparator(defending, costs, data, bonus));
 		final List<Unit> perfectlySortedUnitsList = new ArrayList<Unit>();
 		int artillerySupportAvailable = DiceRoll.getArtillerySupportAvailable(sortedUnitsList, defending, player);
 		int supportableAvailable = DiceRoll.getSupportableAvailable(sortedUnitsList, defending, player);
@@ -497,7 +499,7 @@ public class BattleCalculator
 		// Decide what is the biggest size for the lists that we will support
 		final int maxDiceTimesRolls = 1 + 2 * data.getDiceSides();
 		// Find what the biggest unit we have is. If they are bigger than maxDiceTimesRolls, set to maxDiceTimesRolls.
-		final int maxPower = Math.max(0, Math.min(getUnitPowerForSorting(sortedUnitsList.get(sortedUnitsList.size() - 1), defending, player, data), maxDiceTimesRolls));
+		final int maxPower = Math.max(0, Math.min(getUnitPowerForSorting(sortedUnitsList.get(sortedUnitsList.size() - 1), defending, data), maxDiceTimesRolls));
 		// Fill the lists with the six dice numbers (plus Zero, and any above if we have units with multiple rolls), or unit powers, which we will populate with the units
 		for (int i = 0; i <= maxPower; i++)
 		{
@@ -508,8 +510,9 @@ public class BattleCalculator
 			unitsByPowerNone.add(new ArrayList<Unit>());
 		}
 		// in order to merge lists, we need to separate sortedUnitsList into multiple lists by power
-		for (Unit current  : sortedUnitsList) {
-			int unitPower = getUnitPowerForSorting(current, defending, player, data);
+		for (final Unit current : sortedUnitsList)
+		{
+			int unitPower = getUnitPowerForSorting(current, defending, data);
 			unitPower = Math.max(0, Math.min(unitPower, maxPower)); // getUnitPowerForSorting will return numbers over max_dice IF that units Power * DiceRolls goes over max_dice
 			// TODO: if a unit supports itself, it should be in a different power list, as it will always support itself. getUnitPowerForSorting() should test for this and return a higher number.
 			unitsByPowerAll.get(unitPower).add(current);
@@ -570,8 +573,8 @@ public class BattleCalculator
 						unitsByPowerGives.get(i).clear();
 						unitsByPowerReceives.get(i).clear();
 						unitsByPowerBoth.get(i).clear();
-						Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
-						Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs, data, bonus));
+						Collections.sort(tempList1, new UnitBattleComparator(defending, costs, data, bonus));
+						Collections.sort(tempList2, new UnitBattleComparator(defending, costs, data, bonus));
 						perfectlySortedUnitsList.addAll(tempList1);
 						perfectlySortedUnitsList.addAll(tempList2);
 						continue;
@@ -593,8 +596,8 @@ public class BattleCalculator
 						unitsByPowerGives.get(i).clear();
 						unitsByPowerReceives.get(i).clear();
 						unitsByPowerBoth.get(i).clear();
-						Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
-						Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs, data, bonus));
+						Collections.sort(tempList1, new UnitBattleComparator(defending, costs, data, bonus));
+						Collections.sort(tempList2, new UnitBattleComparator(defending, costs, data, bonus));
 						perfectlySortedUnitsList.addAll(tempList1);
 						perfectlySortedUnitsList.addAll(tempList2);
 						continue;
@@ -612,7 +615,7 @@ public class BattleCalculator
 						tempList1.addAll(unitsByPowerBoth.get(i));
 						unitsByPowerNone.get(i).clear();
 						unitsByPowerBoth.get(i).clear();
-						Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
+						Collections.sort(tempList1, new UnitBattleComparator(defending, costs, data, bonus));
 						perfectlySortedUnitsList.addAll(tempList1);
 						continue;
 					}
@@ -629,7 +632,7 @@ public class BattleCalculator
 						tempList1.addAll(unitsByPowerBoth.get(i));
 						unitsByPowerNone.get(i).clear();
 						unitsByPowerBoth.get(i).clear();
-						Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
+						Collections.sort(tempList1, new UnitBattleComparator(defending, costs, data, bonus));
 						perfectlySortedUnitsList.addAll(tempList1);
 						continue;
 					}
@@ -643,7 +646,7 @@ public class BattleCalculator
 							tempList2.add(unitsByPowerGives.get(i).get(0));
 						if (!unitsByPowerReceives.get(i).isEmpty())
 							tempList2.add(unitsByPowerReceives.get(i).get(0));
-						Collections.sort(tempList2, new UnitBattleComparator(defending, player, costs, data, bonus));
+						Collections.sort(tempList2, new UnitBattleComparator(defending, costs, data, bonus));
 						final Unit u = tempList2.get(0);
 						tempList1.add(u);
 						final UnitAttachment ua = UnitAttachment.get(u.getType());
@@ -657,7 +660,7 @@ public class BattleCalculator
 							unitsByPowerReceives.get(i).remove(0);
 							iSupportable -= DiceRoll.getSupportableAvailable(u, defending, player);
 						}
-						Collections.sort(tempList1, new UnitBattleComparator(defending, player, costs, data, bonus));
+						Collections.sort(tempList1, new UnitBattleComparator(defending, costs, data, bonus));
 						perfectlySortedUnitsList.addAll(tempList1);
 						continue;
 					}
@@ -685,7 +688,8 @@ public class BattleCalculator
 		// just worry about transports
 		final TransportTracker tracker = new TransportTracker();
 		final Map<Unit, Collection<Unit>> dependents = new HashMap<Unit, Collection<Unit>>();
-		for (Unit target  : targets) {
+		for (final Unit target : targets)
+		{
 			dependents.put(target, tracker.transportingAndUnloaded(target));
 		}
 		return dependents;
@@ -712,7 +716,8 @@ public class BattleCalculator
 		// any one will do then
 		if (frontier == null)
 			return getCostsForTuvForAllPlayersMergedAndAveraged(data);
-		for (ProductionRule rule  : frontier.getRules()) {
+		for (final ProductionRule rule : frontier.getRules())
+		{
 			final int costPerGroup = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
 			final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
 			final int numberProduced = rule.getResults().getInt(type);
@@ -798,7 +803,8 @@ public class BattleCalculator
 	public static int getTUV(final Collection<Unit> units, final IntegerMap<UnitType> costs)
 	{
 		int tuv = 0;
-		for (Unit u  : units) {
+		for (final Unit u : units)
+		{
 			final int unitValue = costs.getInt(u.getType());
 			tuv += unitValue;
 		}
@@ -850,7 +856,8 @@ public class BattleCalculator
 	{
 		int count = 0;
 		int unitRoll = 0;
-		for (Unit unit  : units) {
+		for (final Unit unit : units)
+		{
 			unitRoll = getRolls(unit, location, id, defend, supportRulesCopy, supportLeftCopy);
 			count += unitRoll;
 		}
@@ -942,7 +949,7 @@ public class BattleCalculator
 	 * It DOES take into account ROLLS.
 	 * It needs to be updated to take into account isMarine.
 	 */
-	public static int getUnitPowerForSorting(final Unit current, final boolean defending, final PlayerID player, final GameData data)
+	public static int getUnitPowerForSorting(final Unit current, final boolean defending, final GameData data)
 	{
 		/* this is needed if i plan to have it account for support
 		Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
@@ -1036,75 +1043,5 @@ public class BattleCalculator
 				ruleType.add(rule);
 			}
 		}*/
-	}
-}
-
-
-class UnitBattleComparator implements Comparator<Unit>
-{
-	private final boolean m_defending;
-	private final PlayerID m_player;
-	private final IntegerMap<UnitType> m_costs;
-	private final GameData m_data;
-	private final boolean m_bonus;
-	
-	public UnitBattleComparator(final boolean defending, final PlayerID player, final IntegerMap<UnitType> costs, final GameData data, final boolean bonus)
-	{
-		m_defending = defending;
-		m_player = player;
-		m_costs = costs;
-		m_data = data;
-		m_bonus = bonus;
-	}
-	
-	public int compare(final Unit u1, final Unit u2)
-	{
-		if (u1.equals(u2))
-			return 0;
-		final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
-		final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
-		if (ua1 == ua2)
-			return 0;
-		int power1 = BattleCalculator.getUnitPowerForSorting(u1, m_defending, m_player, m_data);
-		int power2 = BattleCalculator.getUnitPowerForSorting(u2, m_defending, m_player, m_data);
-		if (m_bonus)
-		{
-			if ((Matches.UnitIsTransport.match(u1) && Matches.transportIsTransporting().match(u1)) || (Matches.UnitIsAir.match(u1)) || Matches.UnitIsTwoHit.match(u1)
-						|| (Matches.UnitIsCarrier.match(u1)))
-				power1++;
-			if ((Matches.UnitIsTransport.match(u2) && Matches.transportIsTransporting().match(u2)) || (Matches.UnitIsAir.match(u2)) || Matches.UnitIsTwoHit.match(u2)
-						|| (Matches.UnitIsCarrier.match(u2)))
-				power2++;
-		}
-		if (power1 != power2)
-		{
-			return power1 - power2;
-		}
-		final int cost1 = m_costs.getInt(u1.getType());
-		final int cost2 = m_costs.getInt(u2.getType());
-		if (cost1 != cost2)
-		{
-			return cost1 - cost2;
-		}
-		int power1reverse = BattleCalculator.getUnitPowerForSorting(u1, !m_defending, m_player, m_data);
-		int power2reverse = BattleCalculator.getUnitPowerForSorting(u2, !m_defending, m_player, m_data);
-		if (m_bonus)
-		{
-			if ((Matches.UnitIsTransport.match(u1) && Matches.transportIsTransporting().match(u1)) || (Matches.UnitIsAir.match(u1)) || Matches.UnitIsTwoHit.match(u1)
-						|| (Matches.UnitIsCarrier.match(u1)))
-				power1reverse++;
-			if ((Matches.UnitIsTransport.match(u2) && Matches.transportIsTransporting().match(u2)) || (Matches.UnitIsAir.match(u2)) || Matches.UnitIsTwoHit.match(u2)
-						|| (Matches.UnitIsCarrier.match(u2)))
-				power2reverse++;
-		}
-		if (power1reverse != power2reverse)
-		{
-			return power1reverse - power2reverse;
-		}
-		if (Matches.UnitIsTransport.match(u1) && (Matches.UnitIsNotTransport.match(u2) || Matches.transportIsNotTransporting().match(u2)) && Matches.transportIsTransporting().match(u1))
-			return 1;
-		if (Matches.UnitIsTransport.match(u2) && (Matches.UnitIsNotTransport.match(u1) || Matches.transportIsNotTransporting().match(u1)) && Matches.transportIsTransporting().match(u2))
-			return -1;
-		return 0;
 	}
 }

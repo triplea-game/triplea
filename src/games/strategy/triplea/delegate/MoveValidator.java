@@ -735,7 +735,7 @@ public class MoveValidator
 			return result;
 		ResourceCollection fuelCost = Route.getMovementCharge(units, route);
 		
-		if(player.getResources().has(fuelCost.getResources()))
+		if(player.getResources().has(fuelCost.getResourcesCopy()))
 			return result;
 		
 		return result.setErrorReturnResult("Not enough resources to perform this move, you need: "+fuelCost+" for this move");

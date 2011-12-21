@@ -1,4 +1,12 @@
 Changes for 1.5
+* Created new ui for humans to select what they want to attack for these special attacks, and set the AI to just attack randomly. (veqryn)
+
+* Created framework for performing special attacks at the beginning of the battle phase, using resources instead of units. (veqryn)
+
+* New game option to enable kamikaze attacks, "Use Kamikaze Suicide Attacks". (veqryn)
+
+* Created new Player Attachment, suicideAttackResources, which is the resource and attack value we will use for Kamikaze Suicide Attacks. (veqryn)
+
 * Changed most iterator loops into enhanced for loops. (frigoref)
 
 * Changed most instances of Node to Element in the game parser. (edwin van der wal)

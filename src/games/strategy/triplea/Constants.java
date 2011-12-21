@@ -53,6 +53,7 @@ public interface Constants
 	public static final String PUS = "PUs";
 	public static final String TECH_TOKENS = "techTokens";
 	public static final String VPS = "VPs";
+	// public static final String SUICIDE_ATTACK_TOKENS = "SuicideAttackTokens";
 	// public static final int MAX_DICE = 6; now please use data.getDiceSides()
 	public static final String NEUTRAL_CHARGE_PROPERTY = "neutralCharge";
 	public static final String FACTORIES_PER_COUNTRY_PROPERTY = "maxFactoriesPerTerritory";
@@ -210,6 +211,7 @@ public interface Constants
 	public static final String RELATIONSHIPS_LAST_EXTRA_ROUNDS = "Relationships Last Extra Rounds";
 	public static final String ALLIANCES_CAN_CHAIN_TOGETHER = "Alliances Can Chain Together";
 	public static final String RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES = "Raids May Be Preceeded By Air Battles";
+	public static final String USE_KAMIKAZE_SUICIDE_ATTACKS = "Use Kamikaze Suicide Attacks";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

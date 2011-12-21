@@ -27,6 +27,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -53,8 +54,10 @@ import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
+import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
@@ -103,6 +106,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
@@ -311,7 +315,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			}
 		});
 		m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize().getHeight()));
-		m_gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,m_mapAndChatPanel,m_rightHandSidePanel);
+		m_gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, m_mapAndChatPanel, m_rightHandSidePanel);
 		m_gameCenterPanel.setOneTouchExpandable(true);
 		m_gameCenterPanel.setResizeWeight(1.0);
 		m_gameMainPanel.add(m_gameCenterPanel, BorderLayout.CENTER);
@@ -814,6 +818,81 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return selected;
 	}
 	
+	public HashMap<Territory, IntegerMap<Unit>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack,
+				final Resource attackResourceToken, final int maxNumberOfAttacksAllowed)
+	{
+		if (SwingUtilities.isEventDispatchThread())
+		{
+			throw new IllegalStateException("Should not be called from dispatch thread");
+		}
+		final CountDownLatch continueLatch = new CountDownLatch(1);
+		final HashMap<Territory, IntegerMap<Unit>> selection = new HashMap<Territory, IntegerMap<Unit>>();
+		final Collection<IndividualUnitPanelGrouped> unitPanels = new ArrayList<IndividualUnitPanelGrouped>();
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				final HashMap<String, Collection<Unit>> possibleUnitsToAttackStringForm = new HashMap<String, Collection<Unit>>();
+				for (final Entry<Territory, Collection<Unit>> entry : possibleUnitsToAttack.entrySet())
+				{
+					final List<Unit> units = new ArrayList<Unit>(entry.getValue());
+					Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(m_data), m_data, false));
+					Collections.reverse(units);
+					possibleUnitsToAttackStringForm.put(entry.getKey().getName(), units);
+				}
+				m_mapPanel.centerOn(m_data.getMap().getTerritory(possibleUnitsToAttackStringForm.keySet().iterator().next()));
+				
+				final IndividualUnitPanelGrouped unitPanel = new IndividualUnitPanelGrouped(possibleUnitsToAttackStringForm, m_data, m_uiContext,
+							"Select Units to Suicide Attack using " + attackResourceToken.getName(), maxNumberOfAttacksAllowed, true, false);
+				unitPanels.add(unitPanel);
+				final Object[] options = { "Attack", "None", "Wait" };
+				final int option = JOptionPane.showOptionDialog(getParent(), unitPanel, "Select units to Suicide Attack using " + attackResourceToken.getName(),
+							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
+				if (option == JOptionPane.NO_OPTION)
+				{
+					unitPanels.clear();
+					selection.clear();
+					continueLatch.countDown();
+					return;
+				}
+				else if (option == JOptionPane.CANCEL_OPTION)
+				{
+					try
+					{
+						Thread.sleep(6000);
+					} catch (final InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+					unitPanels.clear();
+					selection.clear();
+					run();
+				}
+				else
+				{
+					if (unitPanels.size() != 1)
+						throw new IllegalStateException("unitPanels should only contain 1 entry");
+					for (final IndividualUnitPanelGrouped terrChooser : unitPanels)
+					{
+						for (final Entry<String, IntegerMap<Unit>> entry : terrChooser.getSelected().entrySet())
+						{
+							selection.put(m_data.getMap().getTerritory(entry.getKey()), entry.getValue());
+						}
+					}
+					continueLatch.countDown();
+				}
+			}
+		});
+		try
+		{
+			continueLatch.await();
+		} catch (final InterruptedException ex)
+		{
+			ex.printStackTrace();
+		}
+		return selection;
+	}
+	
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
 	{
 		if (SwingUtilities.isEventDispatchThread())
@@ -1069,7 +1148,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	{
 		if (id == null)
 			return false;
-		for (IGamePlayer gamePlayer  : m_localPlayers) {
+		for (final IGamePlayer gamePlayer : m_localPlayers)
+		{
 			if (gamePlayer.getID().equals(id) && gamePlayer instanceof TripleAPlayer)
 			{
 				return true;
@@ -1319,7 +1399,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_tabsPanel.removeAll();
 		m_tabsPanel.add("History", historyDetailPanel);
 		m_tabsPanel.add("Stats", m_statsPanel);
-		m_tabsPanel.add("Economy",m_economyPanel);
+		m_tabsPanel.add("Economy", m_economyPanel);
 		m_tabsPanel.add("Territory", m_details);
 		if (getEditMode())
 			m_tabsPanel.add("Edit", m_editPanel);
@@ -1407,7 +1487,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		setWidgetActivation();
 		m_tabsPanel.add("Action", m_actionButtons);
 		m_tabsPanel.add("Stats", m_statsPanel);
-		m_tabsPanel.add("Economy",m_economyPanel);
+		m_tabsPanel.add("Economy", m_economyPanel);
 		m_tabsPanel.add("Territory", m_details);
 		if (getEditMode())
 			m_tabsPanel.add("Edit", m_editPanel);
@@ -1726,7 +1806,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		{
 			// We need to check and make sure there are no local human players
 			boolean foundHuman = false;
-			for (IGamePlayer gamePlayer  : m_localPlayers) {
+			for (final IGamePlayer gamePlayer : m_localPlayers)
+			{
 				if (gamePlayer instanceof TripleAPlayer)
 				{
 					foundHuman = true;

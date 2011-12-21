@@ -3425,6 +3425,7 @@
 				Player Attachments:
 					giveUnitControl
 					captureUnitOnEnteringBy
+					suicideAttackResources
 					
 				Objectives & Condition Attachments:
 					conditions
@@ -3995,6 +3996,7 @@
 															If a player has no playerAttachment, then it defaults to X, where X = total number of capitals (ie: you lose your money if a single capital is captured)
 			retainCapitalProduceNumber			values: is similar to above, but only affect gaining income and producing units (probably should be less than or equal to retainCapitalNumber) 
 															If a player has no playerAttachment, then it defaults to 1 (ie: you keep collecting and producing units so long as you control at least 1 capital)
+			suicideAttackResources				values: the first value is the resource we wish to use for the suicide attacks, and the count is the attack value each of that resource has when used in Kamikaze Suicide Attacks
 			vps									values: not sure if it works
 			captureVps							values: not sure if it works
 	-->
@@ -4617,8 +4619,13 @@
 						<boolean/>
 				</property>
 
-						<!-- Kamikaze will allow all air units on the map to use all their movement to get to a battle -->
+						<!-- Kamikaze Airplanes will allow all air units on the map to use all their movement to get to a battle -->
 				<property name="Kamikaze Airplanes" value="false" editable="true">
+						<boolean/>
+				</property>
+
+						<!-- Use Kamikaze Suicide Attacks allows a player to use resources designated in player attachments to make special attacks -->
+				<property name="Use Kamikaze Suicide Attacks" value="false" editable="false">
 						<boolean/>
 				</property>
 

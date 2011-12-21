@@ -111,7 +111,7 @@ public class ResourceCollection extends GameDataComponent
 		return m_resources.getInt(resource);
 	}
 	
-	public IntegerMap<Resource> getResources()
+	public IntegerMap<Resource> getResourcesCopy()
 	{
 		return new IntegerMap<Resource>(m_resources);
 	}

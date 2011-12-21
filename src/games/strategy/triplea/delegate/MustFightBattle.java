@@ -349,7 +349,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 
 	private void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies)
 	{
-		for (Unit holder  : dependencies.keySet()) {
+		for (final Unit holder : dependencies.keySet())
+		{
 			final Collection<Unit> transporting = dependencies.get(holder);
 			if (m_dependentUnits.get(holder) != null)
 				m_dependentUnits.get(holder).addAll(transporting);
@@ -383,7 +384,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final IntegerMap<PlayerID> players = battleSite.getUnits().getPlayerUnitCounts();
 		int max = -1;
 		PlayerID defender = null;
-		for (PlayerID current  : players.keySet()) {
+		for (final PlayerID current : players.keySet())
+		{
 			if (data.getRelationshipTracker().isAllied(attacker, current) || current.equals(attacker) || !data.getRelationshipTracker().isAtWar(attacker, current))
 				continue;
 			final int count = players.getInt(current);
@@ -1541,7 +1543,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private Change retreatFromDependents(final Collection<Unit> units, final IDelegateBridge bridge, final Territory retreatTo, final Collection<IBattle> dependentBattles)
 	{
 		final CompositeChange change = new CompositeChange();
-		for (IBattle dependent  : dependentBattles) {
+		for (final IBattle dependent : dependentBattles)
+		{
 			final Route route = new Route();
 			route.setStart(m_battleSite);
 			route.add(dependent.getTerritory());
@@ -1562,7 +1565,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (!retreated.isEmpty())
 		{
 			Territory retreatedFrom = null;
-			for (Unit unit  : units) {
+			for (final Unit unit : units)
+			{
 				retreatedFrom = getTransportTracker().getTerritoryTransportHasUnloadedTo(unit);
 				if (retreatedFrom != null)
 				{
@@ -1578,9 +1582,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		final Collection<Unit> transports = Match.getMatches(units, Matches.UnitCanTransport);
 		// Put units back on their transports
-		for (Unit transport  : transports) {
+		for (final Unit transport : transports)
+		{
 			final Collection<Unit> unloaded = getTransportTracker().unloaded(transport);
-			for (Unit load  : unloaded) {
+			for (final Unit load : unloaded)
+			{
 				final Change loadChange = getTransportTracker().loadTransportChange((TripleAUnit) transport, load, m_attacker);
 				change.add(loadChange);
 			}
@@ -1714,7 +1720,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	public static int getMaxHits(final Collection<Unit> units)
 	{
 		int count = 0;
-		for (Unit unit  : units) {
+		for (final Unit unit : units)
+		{
 			if (UnitAttachment.get(unit.getUnitType()).isTwoHit())
 			{
 				count += 2;
@@ -2394,7 +2401,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					}
 					bridge.addChange(change);
 					// remove bombers from m_dependentUnits
-					for (Unit unit  : airTransports) {
+					for (final Unit unit : airTransports)
+					{
 						m_dependentUnits.remove(unit);
 					}
 				}
@@ -2430,7 +2438,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			// just worry about transports
 			final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
-			for (Unit target  : targets) {
+			for (final Unit target : targets)
+			{
 				dependents.addAll(tracker.transportingAndUnloaded(target));
 			}
 		}
@@ -2471,7 +2480,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private void removeFromDependents(final Collection<Unit> units, final IDelegateBridge bridge, final Collection<IBattle> dependents)
 	{
-		for (IBattle dependent  : dependents) {
+		for (final IBattle dependent : dependents)
+		{
 			dependent.unitsLostInPrecedingBattle(this, units, bridge);
 		}
 	}
@@ -2587,7 +2597,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		carrierCost = 0;
 		// add dependant air to carrier cost
 		carrierCost += MoveValidator.carrierCost(Match.getMatches(getDependentUnits(m_defendingUnits), alliedDefendingAir));
-		for (Unit currentUnit  : new ArrayList<Unit>(m_defendingAir)) {
+		for (final Unit currentUnit : new ArrayList<Unit>(m_defendingAir))
+		{
 			if (!Matches.UnitCanLandOnCarrier.match(currentUnit))
 			{
 				m_defendingAir.remove(currentUnit);
@@ -2619,7 +2630,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		alliedPlane.add(Matches.UnitIsAir);
 		alliedPlane.add(Matches.alliedUnit(m_defender, m_data));
 		// See if neighboring carriers have any capacity available
-		for (Territory currentTerritory  : areSeaNeighbors) {
+		for (final Territory currentTerritory : areSeaNeighbors)
+		{
 			// get the capacity of the carriers and cost of fighters
 			final Collection<Unit> alliedCarriers = currentTerritory.getUnits().getMatches(alliedCarrier);
 			final Collection<Unit> alliedPlanes = currentTerritory.getUnits().getMatches(alliedPlane);
@@ -2673,7 +2685,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			// now defending air has what cant stay, is there a place we can go?
 			// check for an island in this sea zone
-			for (Territory currentTerritory  : canLandHere) {
+			for (final Territory currentTerritory : canLandHere)
+			{
 				// only one neighbor, its an island.
 				if (m_data.getMap().getNeighbors(currentTerritory).size() == 1)
 				{
