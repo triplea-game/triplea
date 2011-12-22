@@ -60,17 +60,58 @@ public class DefaultAttachment implements IAttachment
 			throw new IllegalArgumentException(aString + " is not a valid boolean");
 	}
 	
+	private Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name, final boolean justFromSuper)
+	{
+		Field rVal = null;
+		try
+		{
+			if (!justFromSuper)
+			{
+				rVal = c.getDeclaredField(name);
+				return rVal;
+			}
+		} catch (final Exception e)
+		{
+			// do nothing, go to finally
+		} finally
+		{
+			try
+			{
+				rVal = c.getSuperclass().getDeclaredField(name);
+			} catch (final Exception e2)
+			{
+				if (c.getSuperclass() == null)
+					throw new IllegalStateException("No such Property: " + name);
+				rVal = getFieldIncludingFromSuperClasses(c.getSuperclass(), name, true);
+			}
+		}
+		return rVal;
+	}
+	
 	public String getRawProperty(final String property)
 	{
 		String s = "";
+		Field field = null;
 		try
 		{
-			final Field field = getClass().getDeclaredField("m_" + property);
+			field = getClass().getDeclaredField("m_" + property);
+		} catch (final Exception e)
+		{
+			try
+			{
+				field = getFieldIncludingFromSuperClasses(getClass(), "m_" + property, true);
+			} catch (final Exception e2)
+			{
+				throw new IllegalStateException("No such Property: " + property);
+			}
+		}
+		try
+		{
 			field.setAccessible(true);
 			s += field.get(this);
 		} catch (final Exception e)
 		{
-			throw new IllegalStateException("No such Property: m_" + property);
+			throw new IllegalStateException("No such Property: " + property);
 		}
 		return s;
 	}

@@ -88,6 +88,12 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		return natObjs;
 	}
 	
+	@Override
+	public void setChance(final String chance) throws GameParseException
+	{
+		throw new GameParseException("RulesAttachment: chance not allowed for use with RulesAttachments, instead use it with Triggers or PoliticalActions");
+	}
+	
 	public void setObjectiveValue(final String value)
 	{
 		m_objectiveValue = getInt(value);
