@@ -551,7 +551,8 @@
 				<!-- These are custom resources.
 				<resource name="Steel"/>
 				<resource name="Aluminium"/>
-				<resource name="Fuel"/>-->
+				<resource name="Fuel"/>
+				<resource name="SuicideAttackTokens"/>-->
 				<!-- VPs are only semi-supported by the code as of right now. They are used for special pacific rules.
 				<resource name="VPs"/>-->
         </resourceList>
@@ -3998,6 +3999,10 @@
 			retainCapitalProduceNumber			values: is similar to above, but only affect gaining income and producing units (probably should be less than or equal to retainCapitalNumber) 
 															If a player has no playerAttachment, then it defaults to 1 (ie: you keep collecting and producing units so long as you control at least 1 capital)
 			suicideAttackResources				values: the first value is the resource we wish to use for the suicide attacks, and the count is the attack value each of that resource has when used in Kamikaze Suicide Attacks
+															The attacks happen during an opponents turn at the beginning of the battle step, so for example Japan may launch these attacks after the American combat move. The attacks target specific warships for destruction.
+															These attacks only occur in territories that are designated as kamikazeZone, and the attacks will be done by the original owner of that territory (owner when the game started, make sure to set it in the ownerInitialize)
+															Currently the attacks only target units owned by the current player, and must be surface warships (not subs, not transports) [I plan to let you specify which units later, and let you target land units too].
+															examples: <option name="suicideAttackResources" value="SuicideAttackTokens" count="2"/> (
 			vps									values: not sure if it works
 			captureVps							values: not sure if it works
 	-->

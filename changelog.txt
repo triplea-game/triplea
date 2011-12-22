@@ -1,4 +1,6 @@
 Changes for 1.5
+* Adding Pacific 1940 updated to use Kamikaze attacks to the test xml suite. (veqryn)
+
 * Fixing bug where changing attachment properties of abstracted attachments failed. (veqryn)
 
 * Created new ui for humans to select what they want to attack for these special attacks, and set the AI to just attack randomly. (veqryn)

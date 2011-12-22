@@ -26,10 +26,15 @@ import javax.swing.JTextArea;
 
 /**
  * For when you do not want things condensed into categories.
+ * <p>
+ * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit individually.
+ * 
+ * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap with the points per unit.
  * 
  * @author Veqryn
  * 
  */
+@SuppressWarnings("serial")
 public class IndividualUnitPanel extends JPanel
 {
 	private final List<SingleUnitPanel> m_entries = new ArrayList<SingleUnitPanel>();
@@ -52,6 +57,20 @@ public class IndividualUnitPanel extends JPanel
 		}
 	};
 	
+	/**
+	 * For when you do not want things condensed into categories.
+	 * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit individually.
+	 * It lets you set a max number of points total (though max per unit is not allowed yet). It can return an IntegerMap with the points per unit.
+	 * 
+	 * @param units
+	 * @param title
+	 * @param data
+	 * @param context
+	 * @param max
+	 * @param showMinAndMax
+	 * @param showSelectAll
+	 * @param optionalListener
+	 */
 	public IndividualUnitPanel(final Collection<Unit> units, final String title, final GameData data, final UIContext context, final int max,
 				final boolean showMinAndMax, final boolean showSelectAll, final ScrollableTextFieldListener optionalListener)
 	{
@@ -213,6 +232,7 @@ public class IndividualUnitPanel extends JPanel
 }
 
 
+@SuppressWarnings("serial")
 class SingleUnitPanel extends JPanel
 {
 	private final Unit m_unit;

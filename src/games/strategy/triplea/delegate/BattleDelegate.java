@@ -730,6 +730,14 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		}
 	}
 	
+	/**
+	 * KamikazeSuicideAttacks are attacks that are made during an Opponent's turn, using Resources that you own that have been designated.
+	 * The resources are designated in PlayerAttachment, and hold information like the attack power of the resource.
+	 * KamikazeSuicideAttacks are done in any territory that is a kamikazeZone, and the attacks are done by the original owner of that territory.
+	 * The user has the option not to do any attacks, and they make target any number of units with any number of resource tokens.
+	 * The units are then attacked individually by each resource token (meaning that casualties do not get selected because the attacks are targeted).
+	 * The enemies of current player should decide all their attacks before the attacks are rolled.
+	 */
 	private void doKamikazeSuicideAttacks()
 	{
 		final GameData data = getData();
@@ -827,6 +835,17 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		}
 	}
 	
+	/**
+	 * This rolls the dice and validates them to see if units died or not.
+	 * It will use LowLuck or normal dice.
+	 * If any units die, we remove them from the game, and if units take damage but live, we also do that here.
+	 * 
+	 * @param unitUnderFire
+	 * @param numberOfAttacks
+	 * @param resourcesAndAttackValues
+	 * @param firingEnemy
+	 * @param location
+	 */
 	private void fireKamikazeSuicideAttacks(final Unit unitUnderFire, final IntegerMap<Resource> numberOfAttacks,
 				final IntegerMap<Resource> resourcesAndAttackValues, final PlayerID firingEnemy, final Territory location)
 	{
@@ -860,6 +879,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		}
 		else
 		{
+			// avoid multiple calls of getRandom, so just do it once at the beginning
 			final int numTokens = numberOfAttacks.totalValues();
 			rolls = m_bridge.getRandom(diceSides, numTokens, "Rolling for Kamikaze Suicide Attack on unit: " + unitUnderFire.getType().getName());
 			final int[] powerOfTokens = new int[numTokens];
@@ -909,6 +929,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			m_bridge.addChange(change);
 		}
 		// TODO: display this as actual dice for both players
+		// TODO: display to all players, and only once per physical machine
 		((ITripleaPlayer) m_bridge.getRemote(m_player)).reportMessage(title + dice, title);
 		((ITripleaPlayer) m_bridge.getRemote(firingEnemy)).reportMessage(title + dice, title);
 	}

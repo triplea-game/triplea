@@ -31,10 +31,15 @@ import javax.swing.JTextArea;
 
 /**
  * For when you want multiple individual unit panels, perhaps one for each territory, etc.
+ * <p>
+ * This lets you create multiple IndividualUnitPanel into a single panel, and have them integrated to use the same MAX.
+ * 
+ * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each unit.
  * 
  * @author Veqryn
  * 
  */
+@SuppressWarnings("serial")
 public class IndividualUnitPanelGrouped extends JPanel
 {
 	private int m_max = 0;
@@ -57,6 +62,19 @@ public class IndividualUnitPanelGrouped extends JPanel
 		}
 	};
 	
+	/**
+	 * For when you want multiple individual unit panels, perhaps one for each territory, etc.
+	 * This lets you create multiple IndividualUnitPanel into a single panel, and have them integrated to use the same MAX.
+	 * IndividualUnitPanel is a group of units each displayed individually, and you can set an integer up to max for each unit.
+	 * 
+	 * @param unitsToChooseFrom
+	 * @param data
+	 * @param context
+	 * @param title
+	 * @param maxTotal
+	 * @param showMinAndMax
+	 * @param showSelectAll
+	 */
 	public IndividualUnitPanelGrouped(final Map<String, Collection<Unit>> unitsToChooseFrom, final GameData data, final UIContext context, final String title,
 				final int maxTotal, final boolean showMinAndMax, final boolean showSelectAll)
 	{
