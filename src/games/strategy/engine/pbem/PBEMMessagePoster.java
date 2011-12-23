@@ -1,300 +1,202 @@
 package games.strategy.engine.pbem;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.GameDataManager;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 
-import javax.imageio.ImageIO;
-
+/**
+ * This class is responsible for posting turn summary and email at the end of each round in a PBEM game.
+ * A new instance is created at end of turn, based on the Email and a forum poster stored in the game data.
+ * The needs to be serialized since it is invoked through the IAbstractEndTurnDelegate which require all objects to be serializable
+ * although the PBEM games will always be local
+ * @author unascribed
+ * @author Klaus Groenbaek
+ *
+ */
 public class PBEMMessagePoster implements Serializable
 {
-	private static final String TURNSUMMARY_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.TURNSUMMARY_MSGR";
-	private static final String SCREENSHOT_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.SCREENSHOT_MSGR";
-	private static final String SAVEGAME_MSGR_PROP_NAME = "games.strategy.engine.framework.PBEMMessagePoster.SAVEGAME_MSGR";
-	private GameData m_gameData = null;
-	private IPBEMMessenger m_turnSummaryMessenger = null;
-	private IPBEMMessenger m_screenshotMessenger = null;
-	private IPBEMMessenger m_saveGameMessenger = null;
-	private String m_screenshotFilename = null;
-	private InputStream m_screenshotFileIn = null;
-	private String m_saveGameFilename = null;
-	private InputStream m_saveGameFileIn = null;
-	private String m_turnSummary = null;
-	private String m_screenshotRef = null;
-	private String m_saveGameRef = null;
-	private String m_turnSummaryRef = null;
-	
-	public PBEMMessagePoster()
+	//-----------------------------------------------------------------------
+	// class fields
+	//-----------------------------------------------------------------------
+	public static final String FORUM_POSTER_PROP_NAME = "games.strategy.engine.pbem.IForumPoster";
+	public static final String EMAIL_SENDER_PROP_NAME  = "games.strategy.engine.pbem.IEmailSender";
+	private static final long serialVersionUID = 2256265436928530566L;
+
+	//-----------------------------------------------------------------------
+	// instance fields
+	//-----------------------------------------------------------------------
+	private IForumPoster m_forumPoster = null;
+	private IEmailSender m_emailSender;
+	private transient File m_saveGameFile = null;
+	private transient String m_turnSummary = null;
+	private transient String m_saveGameRef = null;
+	private transient String m_turnSummaryRef = null;
+	private transient String m_emailSendStatus;
+	private transient PlayerID m_currentPlayer;
+	private transient int m_roundNumber;
+
+	//-----------------------------------------------------------------------
+	// Constructors
+	//-----------------------------------------------------------------------
+
+	public PBEMMessagePoster(final GameData gameData, PlayerID currentPlayer, int roundNumber)
 	{
+		m_currentPlayer = currentPlayer;
+		m_roundNumber = roundNumber;
+		m_forumPoster = (IForumPoster) gameData.getProperties().get(FORUM_POSTER_PROP_NAME);
+		m_emailSender = (IEmailSender) gameData.getProperties().get(EMAIL_SENDER_PROP_NAME);
 	}
-	
-	public PBEMMessagePoster(final GameData gameData)
-	{
-		m_gameData = gameData;
-		setTurnSummaryMessenger((IPBEMMessenger) gameData.getProperties().get(TURNSUMMARY_MSGR_PROP_NAME));
-		setScreenshotMessenger((IPBEMMessenger) gameData.getProperties().get(SCREENSHOT_MSGR_PROP_NAME));
-		setSaveGameMessenger((IPBEMMessenger) gameData.getProperties().get(SAVEGAME_MSGR_PROP_NAME));
-	}
-	
+
+	//-----------------------------------------------------------------------
+	// instance methods
+	//-----------------------------------------------------------------------
 	public boolean hasMessengers()
 	{
-		return (m_turnSummaryMessenger != null || m_screenshotMessenger != null || m_saveGameMessenger != null);
+		return (m_forumPoster != null || m_emailSender != null);
 	}
 	
-	public void setTurnSummaryMessenger(final IPBEMMessenger msgr)
+	public void setForumPoster(final IForumPoster msgr)
 	{
-		m_turnSummaryMessenger = msgr;
+		m_forumPoster = msgr;
 	}
 	
-	public IPBEMTurnSummaryMessenger getTurnSummaryMessenger()
+	public IForumPoster getForumPoster()
 	{
-		final IPBEMMessenger msgr = m_turnSummaryMessenger;
-		if (msgr instanceof IPBEMTurnSummaryMessenger)
-			return (IPBEMTurnSummaryMessenger) msgr;
-		else
-			return null;
+		return m_forumPoster;
 	}
 	
-	public void setScreenshotMessenger(final IPBEMMessenger msgr)
-	{
-		m_screenshotMessenger = msgr;
-	}
-	
-	public IPBEMScreenshotMessenger getScreenshotMessenger()
-	{
-		final IPBEMMessenger msgr = m_screenshotMessenger;
-		if (msgr instanceof IPBEMScreenshotMessenger)
-			return (IPBEMScreenshotMessenger) msgr;
-		else
-			return null;
-	}
-	
-	public void setSaveGameMessenger(final IPBEMMessenger msgr)
-	{
-		m_saveGameMessenger = msgr;
-	}
-	
-	public IPBEMSaveGameMessenger getSaveGameMessenger()
-	{
-		final IPBEMMessenger msgr = m_saveGameMessenger;
-		if (msgr instanceof IPBEMSaveGameMessenger)
-			return (IPBEMSaveGameMessenger) msgr;
-		else
-			return null;
-	}
-	
+
 	public void setTurnSummary(final String turnSummary)
 	{
 		m_turnSummary = turnSummary;
 	}
-	
-	public void setScreenshot(final File screenshotFile) throws FileNotFoundException
-	{
-		if (screenshotFile != null)
-			setScreenshot(screenshotFile.getName(), ((new FileInputStream(screenshotFile))));
-		else
-			setScreenshot(null, null);
-	}
-	
-	public void setScreenshot(final String filename, final InputStream fileIn)
-	{
-		m_screenshotFilename = filename;
-		m_screenshotFileIn = fileIn;
-	}
-	
+
 	public void setSaveGame(final File saveGameFile) throws FileNotFoundException
 	{
-		if (saveGameFile != null)
-			setSaveGame(saveGameFile.getName(), ((new FileInputStream(saveGameFile))));
-		else
-			setSaveGame(null, null);
+		m_saveGameFile = saveGameFile;
 	}
-	
-	public void setSaveGame(final String filename, final InputStream fileIn)
-	{
-		m_saveGameFilename = filename;
-		m_saveGameFileIn = fileIn;
-	}
-	
+
 	public String getTurnSummaryRef()
 	{
 		return m_turnSummaryRef;
-	}
-	
-	public String getScreenshotRef()
-	{
-		return m_screenshotRef;
 	}
 	
 	public String getSaveGameRef()
 	{
 		return m_saveGameRef;
 	}
-	
-	private void setTestData()
+
+	/**
+	 * Post summary to form and/or email, and writes the action performed to the history writer
+	 * @param historyWriter the history writer (which has no effect since save game has already be generated...) // todo (kg)
+	 * @return true if all posts were successful
+	 */
+	public boolean post(final IDelegateHistoryWriter historyWriter)
 	{
-		final IPBEMScreenshotMessenger screenshotMsgr = getScreenshotMessenger();
-		final IPBEMSaveGameMessenger saveGameMsgr = getSaveGameMessenger();
-		final IPBEMTurnSummaryMessenger turnSummaryMsgr = getTurnSummaryMessenger();
-		// set screenshot
-		if (screenshotMsgr != null)
+		boolean forumSuccess = true;
+
+		final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
+		if (m_forumPoster != null)
 		{
-			final BufferedImage testImage = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
-			final Graphics g = testImage.createGraphics();
-			g.setFont(new Font("Ariel", Font.BOLD, 15));
-			g.setColor(Color.WHITE);
-			g.drawString("Test Post", 15, 15);
-			try
-			{
-				final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-				if (ImageIO.write(testImage, "jpg", byteOut))
-				{
-					final ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
-					setScreenshot("test.jpg", byteIn);
-				}
-			} catch (final IOException ioe)
-			{
-				ioe.printStackTrace();
-			}
+			saveGameSb.append(m_forumPoster.getForumId()).append("_");
 		}
-		// set save game
-		if (saveGameMsgr != null)
+		saveGameSb.append(m_currentPlayer.getName().substring(0, 1)).append(m_roundNumber).append(".tsvg");
+
+
+		String saveGameName = saveGameSb.toString();
+		if (m_forumPoster != null)
 		{
-			File saveGameFile = null;
+			if (m_forumPoster.getIncludeSaveGame())
+			{
+				m_forumPoster.addSaveGame(m_saveGameFile,saveGameName);
+			}
 			try
 			{
-				saveGameFile = File.createTempFile("triplea", ".tsvg");
-				(new GameDataManager()).saveGame(saveGameFile, m_gameData);
-				setSaveGame(saveGameFile);
+				forumSuccess = m_forumPoster.postTurnSummary(m_turnSummary);
+				m_turnSummaryRef = m_forumPoster.getTurnSummaryRef();
+				if (m_turnSummaryRef != null && historyWriter != null)
+				{
+					historyWriter.addChildToEvent("Turn Summary: " + m_turnSummaryRef, null);
+				}
 			} catch (final Exception e)
 			{
 				e.printStackTrace();
 			}
 		}
-		// set turn summary
-		if (turnSummaryMsgr != null)
-			setTurnSummary("TripleA test for turn summary auto-posting.");
-	}
-	
-	public boolean postTestData()
-	{
-		setTestData();
-		return post(null);
-	}
-	
-	public boolean post(final IDelegateHistoryWriter historyWriter)
-	{
-		boolean retval = true;
-		final IPBEMScreenshotMessenger screenshotMsgr = getScreenshotMessenger();
-		final IPBEMSaveGameMessenger saveGameMsgr = getSaveGameMessenger();
-		final IPBEMTurnSummaryMessenger turnSummaryMsgr = getTurnSummaryMessenger();
-		try
+
+		boolean emailSuccess = true;
+		if (m_emailSender != null)
 		{
-			if (screenshotMsgr != null)
-				if (screenshotMsgr.postScreenshot(m_screenshotFilename, m_screenshotFileIn))
-					m_screenshotRef = screenshotMsgr.getScreenshotRef();
-				else
-					retval = false;
-		} catch (final Exception e)
-		{
-			e.printStackTrace();
+			StringBuilder subjectPostFix = new StringBuilder(m_currentPlayer.getName());
+			subjectPostFix.append(" - ").append("round ").append(m_roundNumber);
+			try
+			{
+				m_emailSender.sendEmail(subjectPostFix.toString(), convertToHtml(m_turnSummary), m_saveGameFile, saveGameName);
+				m_emailSendStatus = "Success, sent to " + m_emailSender.getToAddress();
+
+			} catch (IOException e)
+			{
+				emailSuccess = false;
+				m_emailSendStatus = "Failed! Error " + e.getMessage();
+				e.printStackTrace();
+			}
 		}
-		try
-		{
-			if (saveGameMsgr != null)
-				if (saveGameMsgr.postSaveGame(m_saveGameFilename, m_saveGameFileIn))
-					m_saveGameRef = saveGameMsgr.getSaveGameRef();
-				else
-					retval = false;
-		} catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
-		// screenshot/save game refs might be null here, if same IPBEMMessenger object is used for turnSummaryMsgr
-		// pass them as-is, but re-fetch them below
-		try
-		{
-			if (turnSummaryMsgr != null && !turnSummaryMsgr.postTurnSummary(m_turnSummary, m_screenshotRef, m_saveGameRef))
-				retval = false;
-		} catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
-		// Re-fetch all refs and write history last.
-		// refs might not be set until all posts are done,
-		// and won't be set yet if there were posting errors
+
 		if (historyWriter != null)
-			historyWriter.startEvent("Post Turn Summary");
-		if (screenshotMsgr != null)
 		{
-			m_screenshotRef = screenshotMsgr.getScreenshotRef();
-			if (m_screenshotRef != null && historyWriter != null)
-				historyWriter.addChildToEvent("Screenshot: " + m_screenshotRef, null);
+			StringBuilder sb = new StringBuilder("Post Turn Summary");
+			if (m_forumPoster != null)
+			{
+				sb.append(" to ").append(m_forumPoster.getDisplayName()).append(" success = ").append(String.valueOf(forumSuccess));
+			}
+			if (m_emailSender != null)
+			{
+				if (m_forumPoster != null)
+				{
+					sb.append(" and to ");
+				} else
+				{
+					sb.append(" to ");
+				}
+				sb.append(m_emailSender.getToAddress()).append(" success = ").append(String.valueOf(emailSuccess));
+			}
+			historyWriter.startEvent(sb.toString());
 		}
-		if (saveGameMsgr != null)
-		{
-			m_saveGameRef = saveGameMsgr.getSaveGameRef();
-			if (m_saveGameRef != null && historyWriter != null)
-				historyWriter.addChildToEvent("Save Game: " + m_saveGameRef, null);
-		}
-		if (turnSummaryMsgr != null)
-		{
-			m_turnSummaryRef = turnSummaryMsgr.getTurnSummaryRef();
-			if (m_turnSummaryRef != null && historyWriter != null)
-				historyWriter.addChildToEvent("Turn Summary: " + m_turnSummaryRef, null);
-		}
-		// finally, close input streams
-		try
-		{
-			if (m_screenshotFileIn != null)
-				m_screenshotFileIn.close();
-		} catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
-		try
-		{
-			if (m_saveGameFileIn != null)
-				m_saveGameFileIn.close();
-		} catch (final Exception e)
-		{
-			e.printStackTrace();
-		}
-		return retval;
+
+
+		return forumSuccess && emailSuccess;
 	}
-	
-	public void storeMessengers(final GameData gameData)
+
+	/**
+	 * Converts text to html, by transforming \n to <br/>
+	 * @param string the string to transform
+	 * @return the transformed string
+	 */
+	private String convertToHtml(String string)
 	{
-		// If set to the NullPBEMMessenger object, just save null
-		// to increase portability.
-		Object saveObj;
-		if (m_turnSummaryMessenger instanceof NullPBEMMessenger)
-			saveObj = null;
-		else
-			saveObj = m_turnSummaryMessenger;
-		gameData.getProperties().set(TURNSUMMARY_MSGR_PROP_NAME, saveObj);
-		if (m_screenshotMessenger instanceof NullPBEMMessenger)
-			saveObj = null;
-		else
-			saveObj = m_screenshotMessenger;
-		gameData.getProperties().set(SCREENSHOT_MSGR_PROP_NAME, saveObj);
-		if (m_saveGameMessenger instanceof NullPBEMMessenger)
-			saveObj = null;
-		else
-			saveObj = m_saveGameMessenger;
-		gameData.getProperties().set(SAVEGAME_MSGR_PROP_NAME, saveObj);
+		return string.replaceAll("\n", "<br/>");
+	}
+
+	/**
+	 * Get the configured email sender
+	 * @return return an email sender or null
+	 */
+	public IEmailSender getEmailSender()
+	{
+		return m_emailSender;
+	}
+
+	/**
+	 * Return the status string from sending the email.
+	 * @return a success of failure string, or null if no email sender was configured
+	 */
+	public String getEmailSendStatus()
+	{
+		return m_emailSendStatus;
 	}
 }

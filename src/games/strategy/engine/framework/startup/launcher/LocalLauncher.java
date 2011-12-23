@@ -25,14 +25,12 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 
-import java.awt.Component;
+import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 public class LocalLauncher implements ILauncher
 {
@@ -109,6 +107,7 @@ public class LocalLauncher implements ILauncher
 					}
 				} finally
 				{
+					//todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
 					m_gameSelectorModel.loadDefaultGame(parent);
 					SwingUtilities.invokeLater(new Runnable()
 					{

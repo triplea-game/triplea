@@ -19,22 +19,15 @@
  */
 package games.strategy.triplea;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.IUnitFactory;
-import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Unit;
-import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.*;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.pbem.AllYouCanUploadDotComPBEMMessenger;
-import games.strategy.engine.pbem.IPBEMMessenger;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.delegate.EditDelegate;
-import games.strategy.triplea.pbem.AxisAndAlliesDotOrgPBEMMessenger;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.strongAI.StrongAI;
@@ -43,15 +36,13 @@ import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
 import games.strategy.triplea.weakAI.WeakAI;
 
-import java.awt.Frame;
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.SwingUtilities;
 
 /**
  * @author Sean Bridges
@@ -69,9 +60,6 @@ public class TripleA implements IGameLoader
 	private transient TripleaDisplay m_display;
 	private transient IGame m_game;
 	
-	/**
-	 * @see IGameLoader.createPlayers(playerNames)
-	 */
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
 		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
@@ -203,11 +191,6 @@ public class TripleA implements IGameLoader
 	public String[] getServerPlayerTypes()
 	{
 		return new String[] { HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE };
-	}
-	
-	public IPBEMMessenger[] getPBEMMessengers()
-	{
-		return new IPBEMMessenger[] { new AxisAndAlliesDotOrgPBEMMessenger(), new AllYouCanUploadDotComPBEMMessenger() };
 	}
 	
 	/*

@@ -1,804 +1,358 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.LocalBeanCache;
 import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.pbem.IPBEMMessenger;
-import games.strategy.engine.pbem.IPBEMSaveGameMessenger;
-import games.strategy.engine.pbem.IPBEMScreenshotMessenger;
-import games.strategy.engine.pbem.IPBEMTurnSummaryMessenger;
-import games.strategy.engine.pbem.NullPBEMMessenger;
-import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.framework.startup.ui.editors.IBean;
+import games.strategy.engine.framework.startup.ui.editors.SelectAndViewEditor;
+import games.strategy.engine.pbem.*;
 import games.strategy.engine.random.IRemoteDiceServer;
+import games.strategy.engine.random.InternalDiceServer;
 import games.strategy.engine.random.PBEMDiceRoller;
 import games.strategy.engine.random.PropertiesDiceRoller;
-import games.strategy.ui.ProgressWindow;
-import games.strategy.util.Util;
+import games.strategy.triplea.pbem.AxisAndAlliesForumPoster;
 
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Properties;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.*;
+import java.util.List;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
-
+/**
+ * A panel for setting up Play by Email/Forum.
+ * This panel listens to the GameSelectionModel so it can refresh when a new (save) game is loaded
+ * The MainPanel also listens to this panel, and we notify it through the notifyObservers()
+ */
 public class PBEMSetupPanel extends SetupPanel implements Observer
 {
-	private static final String EMAIL_1_PROP_NAME = "games.strategy.engine.framework.ui.PBEMStartup.EMAIL2";
-	private static final String EMAIL_2_PROP_NAME = "games.strategy.engine.framework.ui.PBEMStartup.EMAIL1";
-	private static final String EMAIL_ID_PROP_NAME = "games.strategy.engine.framework.ui.PBEMStartup.ID";
-	private final JTextField m_email1TextField = new JTextField();
-	private final JTextField m_email2TextField = new JTextField();
-	private final JTextField m_gameIDTextField = new JTextField();
-	private final JLabel m_email1Label = new JLabel();
-	private final JLabel m_email2Label = new JLabel();
-	private final JLabel m_gameIDLabel = new JLabel();
-	private final JButton m_testDiceyButton = new JButton();
-	private final JTextArea m_instructionsText = new JTextArea();
-	private final JComboBox m_diceServers = new JComboBox();
-	private final JButton m_testPostButton = new JButton();
-	private final JButton m_viewPostButton = new JButton();
-	private final JComboBox m_turnSummaryMsgrs = new JComboBox();
-	private final JComboBox m_screenshotMsgrs = new JComboBox();
-	private final JComboBox m_saveGameMsgrs = new JComboBox();
-	private final JTextField m_turnSummaryMsgrLogin = new JTextField(20);
-	private final JPasswordField m_turnSummaryMsgrPassword = new JPasswordField(20);
-	private final JTextField m_screenshotMsgrLogin = new JTextField(20);
-	private final JPasswordField m_screenshotMsgrPassword = new JPasswordField(20);
-	private final JTextField m_saveGameMsgrLogin = new JTextField(20);
-	private final JPasswordField m_saveGameMsgrPassword = new JPasswordField(20);
-	private final JLabel m_turnSummaryMsgrLabel = new JLabel("Post Turn Summary:");
-	private final JLabel m_turnSummaryMsgrLoginLabel = new JLabel("Login:");
-	private final JLabel m_turnSummaryMsgrPasswordLabel = new JLabel("Password:");
-	private final JLabel m_screenshotMsgrLabel = new JLabel("Post Screenshot File:");
-	private final JLabel m_screenshotMsgrLoginLabel = new JLabel("Login:");
-	private final JLabel m_screenshotMsgrPasswordLabel = new JLabel("Password:");
-	private final JLabel m_saveGameMsgrLabel = new JLabel("Post Save Game File:");
-	private final JLabel m_saveGameMsgrLoginLabel = new JLabel("Login:");
-	private final JLabel m_saveGameMsgrPasswordLabel = new JLabel("Password:");
-	private final JPanel m_topPanel = new JPanel();
-	private final Map<Object, Document> usernameMap = new HashMap<Object, Document>();
-	private final Map<Object, Document> passwordMap = new HashMap<Object, Document>();
+
+	private static final String DICE_ROLLER = "games.strategy.engine.random.IRemoteDiceServer";
+
 	private final GameSelectorModel m_gameSelectorModel;
-	
+
+	private SelectAndViewEditor m_diceServerEditor;
+	private SelectAndViewEditor m_forumPosterEditor;
+	private SelectAndViewEditor m_emailSenderEditor;
+
 	public PBEMSetupPanel(final GameSelectorModel model)
 	{
 		m_gameSelectorModel = model;
-		createComponents();
-		layoutComponents();
+
+		// register, so we get notified when the game model (GameData) changes (e.g if the user load a save game or selects another game)
+		m_gameSelectorModel.addObserver(this);
+
+		setLayout(new GridBagLayout());
+		setBorder(new EmptyBorder(10, 10, 10, 10)); // Empty border works as margin
+
+		m_diceServerEditor = new SelectAndViewEditor("Dice Server");
+		m_forumPosterEditor = new SelectAndViewEditor("Post to Forum");
+		m_emailSenderEditor = new SelectAndViewEditor("Provider");
+
+		int row = 0;
+		add(m_diceServerEditor, new GridBagConstraints(0, row, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 1, 0), 0, 0));
+		row++;
+
+		// the play by Forum settings
+		m_forumPosterEditor.setBorder(new TitledBorder("Play By Forum"));
+		int panelRow = 0;
+		add(m_forumPosterEditor, new GridBagConstraints(0, row, 2, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 1, 0), 0, 0));
+
+
+		row++;
+		panelRow = 0;
+		JPanel emailPanel = new JPanel(new GridBagLayout());
+		emailPanel.setBorder(new TitledBorder("Play By Email"));
+		add(emailPanel, new GridBagConstraints(0, row, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
+		JTextArea emailInstructions = new JTextArea();
+		emailInstructions.setText("Select an email provider if you want to receive an email with the turn summary and save game\n" +
+				"You can provide a subject (player and round # is automatically added)\n" +
+				"You can provide multiple email addresses separated by space");
+		emailInstructions.setWrapStyleWord(true);
+		emailInstructions.setLineWrap(true);
+		emailPanel.add(emailInstructions, new GridBagConstraints(0, panelRow, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
+		panelRow++;
+		emailPanel.add(m_emailSenderEditor, new GridBagConstraints(0, panelRow, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
+
+
+
 		setupListeners();
-		setWidgetActivation();
-		if (model.getGameData() != null)
+		if (m_gameSelectorModel.getGameData() != null)
 		{
-			loadEmails(model.getGameData());
-			loadPBEMMessengers(model.getGameData());
+			loadAll();
 		}
 	}
-	
-	private void createComponents()
-	{
-		m_email1Label.setText("To:");
-		m_email2Label.setText("Cc:");
-		m_gameIDLabel.setText("ID:");
-		m_testDiceyButton.setText("Test Email");
-		m_testPostButton.setText("Test Post");
-		m_viewPostButton.setText("View Posts");
-		m_email2TextField.setText("");
-		m_email2TextField.setColumns(50);
-		m_email1TextField.setText("");
-		m_email1TextField.setColumns(50);
-		m_gameIDTextField.setText("");
-		m_gameIDTextField.setColumns(10);
-		m_instructionsText.setEditable(false);
-		m_instructionsText.setText("PBEM Properties");
-		m_instructionsText.setLineWrap(true);
-		m_instructionsText.setWrapStyleWord(true);
-		final DefaultComboBoxModel diceServerModel = new DefaultComboBoxModel();
-		populateDiceRollModel(diceServerModel);
-		m_diceServers.setModel(diceServerModel);
-		final DefaultComboBoxModel turnSummaryMsgrModel = new DefaultComboBoxModel();
-		final DefaultComboBoxModel screenshotMsgrModel = new DefaultComboBoxModel();
-		final DefaultComboBoxModel saveGameMsgrModel = new DefaultComboBoxModel();
-		final IPBEMMessenger[] messengers = m_gameSelectorModel.getGameData().getGameLoader().getPBEMMessengers();
-		final NullPBEMMessenger nullMsgr = new NullPBEMMessenger();
-		turnSummaryMsgrModel.addElement(nullMsgr);
-		screenshotMsgrModel.addElement(nullMsgr);
-		saveGameMsgrModel.addElement(nullMsgr);
-		for (final IPBEMMessenger m : messengers)
-		{
-			if (m instanceof IPBEMTurnSummaryMessenger)
-				turnSummaryMsgrModel.addElement(m);
-			if (m instanceof IPBEMScreenshotMessenger)
-				screenshotMsgrModel.addElement(m);
-			if (m instanceof IPBEMSaveGameMessenger)
-				saveGameMsgrModel.addElement(m);
-		}
-		m_turnSummaryMsgrs.setModel(turnSummaryMsgrModel);
-		m_screenshotMsgrs.setModel(screenshotMsgrModel);
-		m_saveGameMsgrs.setModel(saveGameMsgrModel);
-		// initialize document maps
-		Document d = new PlainDocument();
-		usernameMap.put(nullMsgr, d);
-		m_turnSummaryMsgrLogin.setDocument(d);
-		m_screenshotMsgrLogin.setDocument(d);
-		m_saveGameMsgrLogin.setDocument(d);
-		d = new PlainDocument();
-		passwordMap.put(nullMsgr, d);
-		m_turnSummaryMsgrPassword.setDocument(d);
-		m_screenshotMsgrPassword.setDocument(d);
-		m_saveGameMsgrPassword.setDocument(d);
-		m_instructionsText.setText("You can enter up to 5 addresses in the To: or CC: fields, seperating each address by a space." + "\n\nYou must enter an address in the To: field.");
-		m_instructionsText.setBackground(this.getBackground());
-	}
-	
-	private void populateDiceRollModel(final DefaultComboBoxModel model)
-	{
-		final File f = new File(GameRunner.getRootFolder(), "dice_servers");
-		if (!f.exists())
-		{
-			throw new IllegalStateException("No dice server folder:" + f);
-		}
-		final java.util.List<Properties> propFiles = new ArrayList<Properties>();
-		final File[] files = f.listFiles();
-		for (final File file : files)
-		{
-			if (!file.isDirectory() && file.getName().endsWith(".properties"))
-			{
-				try
-				{
-					final Properties props = new Properties();
-					final FileInputStream fin = new FileInputStream(file);
-					try
-					{
-						props.load(fin);
-						propFiles.add(props);
-					} finally
-					{
-						fin.close();
-					}
-				} catch (final IOException e)
-				{
-					System.out.println("error reading file:" + file);
-					e.printStackTrace(System.out);
-				}
-			}
-		}
-		Collections.sort(propFiles, new Comparator<Properties>()
-		{
-			public int compare(final Properties o1, final Properties o2)
-			{
-				final int n1 = Integer.parseInt(o1.getProperty("order"));
-				final int n2 = Integer.parseInt(o2.getProperty("order"));
-				return n1 - n2;
-			}
-		});
-		for (final Properties prop : propFiles)
-		{
-			model.addElement(new PropertiesDiceRoller(prop));
-		}
-	}
-	
-	private void layoutComponents()
-	{
-		this.setLayout(new GridBagLayout());
-		layoutTopPanel();
-		this.add(m_topPanel, new GridBagConstraints(0, 0, 4, 2, 1.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-		final GridBagConstraints labelConstraint = new GridBagConstraints();
-		labelConstraint.anchor = GridBagConstraints.EAST;
-		labelConstraint.insets = new Insets(5, 0, 0, 0);
-		final GridBagConstraints widgetConstraint = new GridBagConstraints();
-		widgetConstraint.anchor = GridBagConstraints.WEST;
-		widgetConstraint.gridwidth = GridBagConstraints.REMAINDER;
-		widgetConstraint.fill = GridBagConstraints.HORIZONTAL;
-		widgetConstraint.weightx = 0.20000000000000001D;
-		widgetConstraint.insets = new Insets(5, 0, 0, 0);
-		final GridBagConstraints diceServerConstraint = new GridBagConstraints();
-		diceServerConstraint.anchor = GridBagConstraints.NORTHWEST;
-		diceServerConstraint.gridwidth = GridBagConstraints.REMAINDER;
-		diceServerConstraint.fill = GridBagConstraints.HORIZONTAL;
-		diceServerConstraint.insets = new Insets(5, 0, 0, 0);
-		final JPanel diceServer = new JPanel(new GridBagLayout());
-		diceServer.add(new JLabel("Dice Server:"), labelConstraint);
-		diceServer.add(m_diceServers, widgetConstraint);
-		// hide until we are ready
-		this.add(diceServer, new GridBagConstraints(0, 5, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(10, 15, 0, 0), 0, 0));
-		this.add(m_testDiceyButton, new GridBagConstraints(2, 5, 1, 1, 0.2, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(15, 5, 0, 5), 0, 0));
-		final JPanel pbemMsgrPanel = new JPanel(new GridBagLayout());
-		// turn summary
-		pbemMsgrPanel.add(m_turnSummaryMsgrLabel, labelConstraint);
-		pbemMsgrPanel.add(m_turnSummaryMsgrs, widgetConstraint);
-		pbemMsgrPanel.add(m_turnSummaryMsgrLoginLabel, labelConstraint);
-		pbemMsgrPanel.add(m_turnSummaryMsgrLogin, widgetConstraint);
-		pbemMsgrPanel.add(m_turnSummaryMsgrPasswordLabel, labelConstraint);
-		pbemMsgrPanel.add(m_turnSummaryMsgrPassword, widgetConstraint);
-		// screenshot
-		pbemMsgrPanel.add(m_screenshotMsgrLabel, labelConstraint);
-		pbemMsgrPanel.add(m_screenshotMsgrs, widgetConstraint);
-		pbemMsgrPanel.add(m_screenshotMsgrLoginLabel, labelConstraint);
-		pbemMsgrPanel.add(m_screenshotMsgrLogin, widgetConstraint);
-		pbemMsgrPanel.add(m_screenshotMsgrPasswordLabel, labelConstraint);
-		pbemMsgrPanel.add(m_screenshotMsgrPassword, widgetConstraint);
-		// savegame
-		pbemMsgrPanel.add(m_saveGameMsgrLabel, labelConstraint);
-		pbemMsgrPanel.add(m_saveGameMsgrs, widgetConstraint);
-		pbemMsgrPanel.add(m_saveGameMsgrLoginLabel, labelConstraint);
-		pbemMsgrPanel.add(m_saveGameMsgrLogin, widgetConstraint);
-		pbemMsgrPanel.add(m_saveGameMsgrPasswordLabel, labelConstraint);
-		pbemMsgrPanel.add(m_saveGameMsgrPassword, widgetConstraint);
-		this.add(pbemMsgrPanel, new GridBagConstraints(0, 6, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 15, 0, 0), 0, 0));
-		this.add(m_viewPostButton, new GridBagConstraints(2, 6, 1, 1, 0.2, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(15, 5, 0, 5), 0, 0));
-		this.add(m_testPostButton, new GridBagConstraints(2, 6, 1, 1, 0.2, 0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, new Insets(0, 5, 0, 5), 0, 0));
-	}
-	
-	private void layoutTopPanel()
-	{
-		m_topPanel.removeAll();
-		m_topPanel.setLayout(new GridBagLayout());
-		if (sendsEmail())
-		{
-			m_topPanel.add(m_instructionsText, new GridBagConstraints(0, 0, 5, 1, 0.0, 0.2, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-			m_topPanel.add(m_email1TextField, new GridBagConstraints(1, 2, 2, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 5), 0, 0));
-			// this.add(m_email1Label, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20,
-			m_topPanel.add(m_email1Label, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, new Insets(0, 20, 0, 5), 0, 0));
-			m_topPanel.add(m_email2TextField, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 5), 0, 0));
-			m_topPanel.add(m_email2Label, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20, 0, 5), 0, 0));
-			m_topPanel.add(m_gameIDTextField, new GridBagConstraints(1, 4, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 5), 0, 0));
-			m_topPanel.add(m_gameIDLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 20, 0, 5), 0, 0));
-		}
-		else
-		{
-			String text = ((PropertiesDiceRoller) getDiceServer()).getWebText();
-			if (text == null)
-				text = "The author of the properties file should set web.text property";
-			final JTextArea webText = new JTextArea();
-			webText.setEditable(false);
-			webText.setText("PBEM Properties");
-			webText.setLineWrap(true);
-			webText.setWrapStyleWord(true);
-			webText.setText(text);
-			webText.setBackground(getBackground());
-			m_topPanel.add(webText, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.2, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 20, 0, 20), 0, 0));
-			m_topPanel.add(new JPanel(), new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		}
-		revalidate();
-	}
-	
-	private boolean sendsEmail()
-	{
-		return ((PropertiesDiceRoller) getDiceServer()).sendsEmail();
-	}
-	
-	private IRemoteDiceServer getDiceServer()
-	{
-		return (IRemoteDiceServer) m_diceServers.getSelectedItem();
-	}
-	
-	void testEmail()
-	{
-		final PBEMDiceRoller random = new PBEMDiceRoller(m_email1TextField.getText(), m_email2TextField.getText(), getGameID(), getDiceServer(), null);
-		random.test();
-	}
-	
-	void viewPostedItems()
-	{
-		final IPBEMTurnSummaryMessenger msgr = getTurnSummaryMessenger();
-		msgr.setGameId(m_gameIDTextField.getText().trim());
-		msgr.viewPosted();
-	}
-	
-	void testPost()
-	{
-		final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), "Testing Post...");
-		progressWindow.setVisible(true);
-		final GameData gameData = new GameData();
-		// populate PBEM Messengers from UI fields and store
-		// the messengers in gameData
-		storePBEMMessengers(gameData);
-		// create a new message poster with no IDelegateHistoryWriter
-		final PBEMMessagePoster poster = new PBEMMessagePoster(gameData);
-		poster.postTestData();
-		final String screenshotRef = poster.getScreenshotRef();
-		final String saveGameRef = poster.getSaveGameRef();
-		final String turnSummaryRef = poster.getTurnSummaryRef();
-		String message = "";
-		if (screenshotRef != null)
-			message += "Test Screenshot: " + screenshotRef + "\n";
-		if (saveGameRef != null)
-			message += "Test Save Game: " + saveGameRef + "\n";
-		if (turnSummaryRef != null)
-			message += "Test turn summary: " + turnSummaryRef + "\n";
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				progressWindow.setVisible(false);
-				progressWindow.removeAll();
-				progressWindow.dispose();
-			}
-		});
-		JOptionPane.showMessageDialog(MainFrame.getInstance(), message, "Test Turn Summary Post", JOptionPane.INFORMATION_MESSAGE);
-	}
-	
+
+
+
+
+
+
 	private void setupListeners()
 	{
-		m_gameSelectorModel.addObserver(this);
-		m_testDiceyButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				testEmail();
-			}
-		});
-		m_testPostButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				final Runnable t = new Runnable()
-				{
-					public void run()
-					{
-						testPost();
-					}
-				};
-				(new Thread(t)).start();
-			}
-		});
-		m_viewPostButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				final Runnable t = new Runnable()
-				{
-					public void run()
-					{
-						viewPostedItems();
-					}
-				};
-				(new Thread(t)).start();
-			}
-		});
-		// add document listeners for text-changed events
-		final DocumentListener docListener = new DocumentListener()
-		{
-			public void changedUpdate(final DocumentEvent e)
-			{
-				notifyObservers();
-			}
-			
-			public void insertUpdate(final DocumentEvent e)
-			{
-				notifyObservers();
-			}
-			
-			public void removeUpdate(final DocumentEvent e)
-			{
-				notifyObservers();
-			}
-		};
-		m_turnSummaryMsgrs.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				final IPBEMMessenger msgr = (IPBEMMessenger) ((JComboBox) e.getSource()).getSelectedItem();
-				m_turnSummaryMsgrLogin.setEnabled(msgr.getNeedsUsername());
-				m_turnSummaryMsgrLoginLabel.setEnabled(msgr.getNeedsUsername());
-				m_turnSummaryMsgrPassword.setEnabled(msgr.getNeedsPassword());
-				m_turnSummaryMsgrPasswordLabel.setEnabled(msgr.getNeedsPassword());
-				// update maps
-				final Object key = m_turnSummaryMsgrs.getSelectedItem();
-				Document d = usernameMap.get(key);
-				if (d == null)
-				{
-					d = new PlainDocument();
-					d.addDocumentListener(docListener);
-				}
-				usernameMap.put(key, d);
-				m_turnSummaryMsgrLogin.setDocument(d);
-				d = passwordMap.get(key);
-				if (d == null)
-				{
-					d = new PlainDocument();
-					d.addDocumentListener(docListener);
-				}
-				passwordMap.put(key, d);
-				m_turnSummaryMsgrPassword.setDocument(d);
-				notifyObservers();
-			}
-		});
-		m_turnSummaryMsgrs.setSelectedIndex(m_turnSummaryMsgrs.getSelectedIndex());
-		m_screenshotMsgrs.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				final IPBEMMessenger msgr = (IPBEMMessenger) ((JComboBox) e.getSource()).getSelectedItem();
-				m_screenshotMsgrLogin.setEnabled(msgr.getNeedsUsername());
-				m_screenshotMsgrLoginLabel.setEnabled(msgr.getNeedsUsername());
-				m_screenshotMsgrPassword.setEnabled(msgr.getNeedsPassword());
-				m_screenshotMsgrPasswordLabel.setEnabled(msgr.getNeedsPassword());
-				final Object key = m_screenshotMsgrs.getSelectedItem();
-				Document d = usernameMap.get(key);
-				if (d == null)
-					d = new PlainDocument();
-				usernameMap.put(key, d);
-				m_screenshotMsgrLogin.setDocument(d);
-				d = passwordMap.get(key);
-				if (d == null)
-					d = new PlainDocument();
-				passwordMap.put(key, d);
-				m_screenshotMsgrPassword.setDocument(d);
-				notifyObservers();
-			}
-		});
-		m_screenshotMsgrs.setSelectedIndex(m_screenshotMsgrs.getSelectedIndex());
-		m_saveGameMsgrs.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				final IPBEMMessenger msgr = (IPBEMMessenger) ((JComboBox) e.getSource()).getSelectedItem();
-				m_saveGameMsgrLogin.setEnabled(msgr.getNeedsUsername());
-				m_saveGameMsgrLoginLabel.setEnabled(msgr.getNeedsUsername());
-				m_saveGameMsgrPassword.setEnabled(msgr.getNeedsPassword());
-				m_saveGameMsgrPasswordLabel.setEnabled(msgr.getNeedsPassword());
-				// update maps
-				final Object key = m_saveGameMsgrs.getSelectedItem();
-				Document d = usernameMap.get(key);
-				if (d == null)
-					d = new PlainDocument();
-				usernameMap.put(key, d);
-				m_saveGameMsgrLogin.setDocument(d);
-				d = passwordMap.get(key);
-				if (d == null)
-					d = new PlainDocument();
-				passwordMap.put(key, d);
-				m_saveGameMsgrPassword.setDocument(d);
-				notifyObservers();
-			}
-		});
-		m_saveGameMsgrs.setSelectedIndex(m_saveGameMsgrs.getSelectedIndex());
-		m_email1TextField.getDocument().addDocumentListener(docListener);
-		m_email2TextField.getDocument().addDocumentListener(docListener);
-		m_gameIDTextField.getDocument().addDocumentListener(docListener);
-		m_turnSummaryMsgrLogin.getDocument().addDocumentListener(docListener);
-		m_turnSummaryMsgrPassword.getDocument().addDocumentListener(docListener);
-		m_screenshotMsgrLogin.getDocument().addDocumentListener(docListener);
-		m_screenshotMsgrPassword.getDocument().addDocumentListener(docListener);
-		m_saveGameMsgrLogin.getDocument().addDocumentListener(docListener);
-		m_saveGameMsgrPassword.getDocument().addDocumentListener(docListener);
-		m_diceServers.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				setWidgetActivation();
-				notifyObservers();
-			}
-		});
+		// subscribe to editor changes, so we can notify the MainPanel
+		m_diceServerEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
+		m_forumPosterEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
+		m_emailSenderEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
+
+
+
 	}
-	
-	private String getGameID()
+
+	private void loadAll()
 	{
-		return m_gameIDTextField.getText();
+		loadDiceServer(m_gameSelectorModel.getGameData());
+		loadForumPosters(m_gameSelectorModel.getGameData());
+		loadEmailSender(m_gameSelectorModel.getGameData());
 	}
-	
-	private String getEmail1()
+
+
+
+	/**
+	 * Loads the to/cc email and forum ID if the game is a save game
+	 *
+	 * @param data the game data
+	 */
+	private void loadDiceServer(final GameData data)
 	{
-		return m_email1TextField.getText();
-	}
-	
-	private String getEmail2()
-	{
-		return m_email2TextField.getText();
-	}
-	
-	private IPBEMTurnSummaryMessenger getTurnSummaryMessenger()
-	{
-		final IPBEMMessenger msgr = (IPBEMMessenger) m_turnSummaryMsgrs.getSelectedItem();
-		if (msgr instanceof IPBEMTurnSummaryMessenger)
-			return (IPBEMTurnSummaryMessenger) msgr;
-		else
-			return null;
-	}
-	
-	private IPBEMScreenshotMessenger getScreenshotMessenger()
-	{
-		final IPBEMMessenger msgr = (IPBEMMessenger) m_screenshotMsgrs.getSelectedItem();
-		if (msgr instanceof IPBEMScreenshotMessenger)
-			return (IPBEMScreenshotMessenger) msgr;
-		else
-			return null;
-	}
-	
-	private IPBEMSaveGameMessenger getSaveGameMessenger()
-	{
-		final IPBEMMessenger msgr = (IPBEMMessenger) m_saveGameMsgrs.getSelectedItem();
-		if (msgr instanceof IPBEMSaveGameMessenger)
-			return (IPBEMSaveGameMessenger) msgr;
-		else
-			return null;
-	}
-	
-	private void loadEmails(final GameData data)
-	{
+
+		List<IRemoteDiceServer> diceRollers = new ArrayList<IRemoteDiceServer>(PropertiesDiceRoller.loadFromFile());
+		diceRollers.add(new InternalDiceServer());
+
+		for (IRemoteDiceServer diceRoller : diceRollers)
+		{
+			IRemoteDiceServer cached = (IRemoteDiceServer) LocalBeanCache.getInstance().getSerializable(diceRoller.getDisplayName());
+			if (cached != null) {
+				// Since dice rollers are serialized with their Properties, and the user may have changed these in the files
+				// we only use the gameId and email from the cached version
+				diceRoller.setCcAddress(cached.getCcAddress());
+				diceRoller.setToAddress(cached.getToAddress());
+				diceRoller.setGameId(cached.getGameId());
+			}
+		}
+
+		m_diceServerEditor.setBeans(diceRollers);
+
 		if (m_gameSelectorModel.isSavedGame())
 		{
-			if (data.getProperties().get(EMAIL_1_PROP_NAME) != null)
+			// get the dice roller from the save game, if any
+			IRemoteDiceServer roller = (IRemoteDiceServer) data.getProperties().get(DICE_ROLLER);
+			if (roller != null)
 			{
-				m_email1TextField.setText(data.getProperties().get(EMAIL_1_PROP_NAME).toString());
-			}
-			if (data.getProperties().get(EMAIL_2_PROP_NAME) != null)
-			{
-				m_email2TextField.setText(data.getProperties().get(EMAIL_2_PROP_NAME).toString());
-			}
-			if (data.getProperties().get(EMAIL_ID_PROP_NAME) != null)
-			{
-				m_gameIDTextField.setText(data.getProperties().get(EMAIL_ID_PROP_NAME).toString());
+				m_diceServerEditor.setSelectedBean(roller);
 			}
 		}
 	}
-	
-	private void replaceOrAddComboBoxItem(final JComboBox comboBox, final Object customObj)
+
+
+	/**
+	 * Load the Forum poster that are stored in the GameData, and select it in the list.
+	 * Sensitive information such as passwords are not stored in save games, so the are loaded from the local Serialization Cache
+	 *
+	 * @param data the game data
+	 */
+	private void loadForumPosters(final GameData data)
 	{
-		if (customObj != null)
+
+		// get the forum posters,
+		List<IForumPoster> forumPosters = new ArrayList<IForumPoster>();
+		forumPosters.add((IForumPoster) findCachedOrCreateNew(NullForumPoster.class));
+		forumPosters.add((IForumPoster) findCachedOrCreateNew(AxisAndAlliesForumPoster.class));
+		m_forumPosterEditor.setBeans(forumPosters);
+
+		// now get the poster stored in the save game
+		IForumPoster forumPoster = (IForumPoster) data.getProperties().get(PBEMMessagePoster.FORUM_POSTER_PROP_NAME);
+		if (forumPoster != null)
 		{
-			Object defaultObj;
-			int i;
-			for (i = 0; (defaultObj = comboBox.getItemAt(i)) != null && !defaultObj.toString().equals(customObj.toString()); i++)
-				defaultObj = null;
-			if (defaultObj != null)
+			// if we have a cached version, use the credentials from this, as each player has different forum login
+			IForumPoster cached = (IForumPoster) LocalBeanCache.getInstance().getSerializable(forumPoster.getClass().getCanonicalName());
+			if (cached != null)
 			{
-				((DefaultComboBoxModel) comboBox.getModel()).getIndexOf(defaultObj);
-				comboBox.removeItemAt(i);
-				comboBox.insertItemAt(customObj, i);
+				forumPoster.setUsername(cached.getUsername());
+				forumPoster.setPassword(cached.getPassword());
 			}
-			else
-			{
-				comboBox.addItem(customObj);
-			}
-			comboBox.setSelectedItem(customObj);
+			m_forumPosterEditor.setSelectedBean(forumPoster);
 		}
 	}
-	
-	private void loadPBEMMessengers(final GameData data)
+
+	private void loadEmailSender(GameData data)
 	{
-		// TODO: store username, and password fields in user data
-		// Let a temporary poster do the loading
-		final PBEMMessagePoster poster = new PBEMMessagePoster(data);
-		// We now have two instances of these messengers - deserialized instance and GameLoader instance.
-		// Need to merge the two.
-		if (!(m_turnSummaryMsgrs.getSelectedItem() instanceof IPBEMTurnSummaryMessenger))
-			replaceOrAddComboBoxItem(m_turnSummaryMsgrs, poster.getTurnSummaryMessenger());
-		if (!(m_screenshotMsgrs.getSelectedItem() instanceof IPBEMScreenshotMessenger))
-			replaceOrAddComboBoxItem(m_screenshotMsgrs, poster.getScreenshotMessenger());
-		if (!(m_saveGameMsgrs.getSelectedItem() instanceof IPBEMSaveGameMessenger))
-			replaceOrAddComboBoxItem(m_saveGameMsgrs, poster.getSaveGameMessenger());
+		// The list of email, either loaded from cache or created
+		List<IEmailSender> emailSenders = new ArrayList<IEmailSender>();
+		emailSenders.add((IEmailSender) findCachedOrCreateNew(NullEmailSender.class));
+		emailSenders.add((IEmailSender) findCachedOrCreateNew(GmailEmailSender.class));
+		emailSenders.add((IEmailSender) findCachedOrCreateNew(HotmailEmailSender.class));
+		emailSenders.add((IEmailSender) findCachedOrCreateNew(GenericEmailSender.class));
+		m_emailSenderEditor.setBeans(emailSenders);
+
+		// now get the sender from the save game, update it with credentials from the cache, and set it
+		IEmailSender sender = (IEmailSender) data.getProperties().get(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME);
+		if (sender != null)
+		{
+			IEmailSender cached = (IEmailSender) LocalBeanCache.getInstance().getSerializable(sender.getClass().getCanonicalName());
+			if (cached != null)
+			{
+				sender.setUserName(cached.getUserName());
+				sender.setPassword(cached.getPassword());
+			}
+			m_emailSenderEditor.setSelectedBean(sender);
+		}
 	}
-	
-	private void setWidgetActivation()
+
+	/**
+	 * finds a cached instance of the give type. If a cached version is not available a new one is created
+	 * @param theClassType the type of class
+	 * @return a IBean either loaded from the cache or created
+	 */
+	private IBean findCachedOrCreateNew(Class<? extends IBean> theClassType)
 	{
-		layoutTopPanel();
+		IBean cached = LocalBeanCache.getInstance().getSerializable(theClassType.getCanonicalName());
+		if (cached == null) {
+			try
+			{
+				cached = theClassType.newInstance();
+			} catch (Exception e)
+			{
+				throw new RuntimeException("Bean of type " + theClassType + " doesn't have public default constructor, error: " + e.getMessage());
+			}
+		}
+		return cached;
 	}
-	
+
+
 	@Override
 	public void cancel()
 	{
 		m_gameSelectorModel.deleteObserver(this);
 	}
-	
+
 	@Override
 	public boolean canGameStart()
 	{
-		boolean canStart = true;
-		boolean canTestEmail = true;
-		boolean canTestPost = true;
-		boolean canViewPost = true;
-		IPBEMMessenger turnSummaryMsgr = null;
-		IPBEMMessenger screenshotMsgr = null;
-		IPBEMMessenger saveGameMsgr = null;
-		// verify the emails
-		if (sendsEmail())
-		{
-			if (m_email1TextField.getText().trim().equals("") || !Util.isMailValid(m_email1TextField.getText()))
-			{
-				m_email1Label.setForeground(Color.RED);
-				canTestEmail = false;
-				canStart = false;
-			}
-			else
-			{
-				m_email1Label.setForeground(Color.BLACK);
-			}
-			if (!Util.isMailValid(m_email2TextField.getText()))
-			{
-				m_email2Label.setForeground(Color.RED);
-				canTestEmail = false;
-				canStart = false;
-			}
-			else
-			{
-				m_email2Label.setForeground(Color.BLACK);
-			}
-		}
-		// verify PBEM messenger fields
-		turnSummaryMsgr = (IPBEMMessenger) m_turnSummaryMsgrs.getSelectedItem();
-		if (turnSummaryMsgr.getNeedsUsername() && m_turnSummaryMsgrLogin.getText().trim().equals(""))
-		{
-			m_turnSummaryMsgrLoginLabel.setForeground(Color.RED);
-			canTestPost = false;
-			canStart = false;
-		}
-		else
-		{
-			m_turnSummaryMsgrLoginLabel.setForeground(Color.BLACK);
-		}
-		if (turnSummaryMsgr.getNeedsPassword() && (new String(m_turnSummaryMsgrPassword.getPassword())).trim().equals(""))
-		{
-			m_turnSummaryMsgrPasswordLabel.setForeground(Color.RED);
-			canTestPost = false;
-			canStart = false;
-		}
-		else
-		{
-			m_turnSummaryMsgrPasswordLabel.setForeground(Color.BLACK);
-		}
-		screenshotMsgr = (IPBEMMessenger) m_screenshotMsgrs.getSelectedItem();
-		if (screenshotMsgr.getNeedsUsername() && m_screenshotMsgrLogin.getText().trim().equals(""))
-		{
-			m_screenshotMsgrLoginLabel.setForeground(Color.RED);
-			canTestPost = false;
-			canStart = false;
-		}
-		else
-		{
-			m_screenshotMsgrLoginLabel.setForeground(Color.BLACK);
-		}
-		if (screenshotMsgr.getNeedsPassword() && (new String(m_screenshotMsgrPassword.getPassword())).trim().equals(""))
-		{
-			m_screenshotMsgrPasswordLabel.setForeground(Color.RED);
-			canTestPost = false;
-			canViewPost = false;
-			canStart = false;
-		}
-		else
-		{
-			m_screenshotMsgrPasswordLabel.setForeground(Color.BLACK);
-		}
-		saveGameMsgr = (IPBEMMessenger) m_saveGameMsgrs.getSelectedItem();
-		if (saveGameMsgr.getNeedsUsername() && m_saveGameMsgrLogin.getText().trim().equals(""))
-		{
-			m_saveGameMsgrLoginLabel.setForeground(Color.RED);
-			canTestPost = false;
-			canStart = false;
-		}
-		else
-		{
-			m_saveGameMsgrLoginLabel.setForeground(Color.BLACK);
-		}
-		if (saveGameMsgr.getNeedsPassword() && (new String(m_saveGameMsgrPassword.getPassword())).trim().equals(""))
-		{
-			m_saveGameMsgrPasswordLabel.setForeground(Color.RED);
-			canTestPost = false;
-			canStart = false;
-		}
-		else
-		{
-			m_saveGameMsgrPasswordLabel.setForeground(Color.BLACK);
-		}
-		if (turnSummaryMsgr instanceof NullPBEMMessenger && screenshotMsgr instanceof NullPBEMMessenger && saveGameMsgr instanceof NullPBEMMessenger)
-		{
-			canTestPost = false;
-			m_gameIDLabel.setForeground(Color.BLACK);
-		}
-		else
-		{
-			// if posting, require game id
-			if (m_gameIDTextField.getText().trim().equals(""))
-			{
-				m_gameIDLabel.setForeground(Color.RED);
-				canTestPost = false;
-				canViewPost = false;
-				canStart = false;
-			}
-			else
-			{
-				m_gameIDLabel.setForeground(Color.BLACK);
-			}
-		}
-		if (!turnSummaryMsgr.getCanViewPosted())
-			canViewPost = false;
-		m_testDiceyButton.setEnabled(canTestEmail);
-		m_testPostButton.setEnabled(canTestPost);
-		m_viewPostButton.setEnabled(canViewPost);
-		return canStart && (m_gameSelectorModel.getGameData() != null);
+		boolean diceServerValid = m_diceServerEditor.isInputValid();
+		boolean summaryValid = m_forumPosterEditor.isInputValid();
+		boolean emailValid = m_emailSenderEditor.isInputValid();
+
+		return diceServerValid &&
+				summaryValid &&
+				emailValid &&
+				m_gameSelectorModel.getGameData() != null;
+
 	}
-	
-	private void storeEmails(final GameData data)
-	{
-		data.getProperties().set(EMAIL_1_PROP_NAME, getEmail1());
-		data.getProperties().set(EMAIL_2_PROP_NAME, getEmail2());
-		data.getProperties().set(EMAIL_ID_PROP_NAME, getGameID());
-	}
-	
-	private void storePBEMMessengers(final GameData gameData)
-	{
-		// let a temporary poster do the storing
-		final PBEMMessagePoster poster = new PBEMMessagePoster();
-		IPBEMMessenger msgr;
-		if ((msgr = getTurnSummaryMessenger()) != null)
-		{
-			msgr.setUsername(m_turnSummaryMsgrLogin.getText().trim());
-			msgr.setPassword((new String(m_turnSummaryMsgrPassword.getPassword())).trim());
-			msgr.setGameId(m_gameIDTextField.getText().trim());
-		}
-		poster.setTurnSummaryMessenger(msgr);
-		if ((msgr = getScreenshotMessenger()) != null)
-		{
-			msgr.setUsername(m_screenshotMsgrLogin.getText().trim());
-			msgr.setPassword((new String(m_screenshotMsgrPassword.getPassword())).trim());
-			msgr.setGameId(m_gameIDTextField.getText().trim());
-		}
-		poster.setScreenshotMessenger(msgr);
-		if ((msgr = getSaveGameMessenger()) != null)
-		{
-			msgr.setUsername(m_saveGameMsgrLogin.getText().trim());
-			msgr.setPassword((new String(m_saveGameMsgrPassword.getPassword())).trim());
-			msgr.setGameId(m_gameIDTextField.getText().trim());
-		}
-		poster.setSaveGameMessenger(msgr);
-		poster.storeMessengers(gameData);
-	}
-	
+
+
 	@Override
 	public void postStartGame()
 	{
-		storeEmails(m_gameSelectorModel.getGameData());
-		storePBEMMessengers(m_gameSelectorModel.getGameData());
+		// // store the dice server
+		final GameData data = m_gameSelectorModel.getGameData();
+		data.getProperties().set(DICE_ROLLER, m_diceServerEditor.getBean());
+
+		// store the Turn Summary Poster
+		IForumPoster poster = (IForumPoster) m_forumPosterEditor.getBean();
+		if (poster != null)
+		{
+			IForumPoster summaryPoster = poster;
+			// clone the poster, the remove sensitive info, and put the clone into the game data
+			// this was the sensitive info is not stored in the save game, but the user cache still has the password
+			summaryPoster = summaryPoster.doClone();
+			summaryPoster.clearSensitiveInfo();
+			data.getProperties().set(PBEMMessagePoster.FORUM_POSTER_PROP_NAME, summaryPoster);
+		}
+
+		// store the email poster
+		IEmailSender sender = (IEmailSender) m_emailSenderEditor.getBean();
+		if (sender != null)
+		{
+			// create a clone, delete the sensitive information in the clone, and use it in the game
+			// the locally cached version still has the password so the user doesn't have to enter it every time
+			sender = sender.doClone();
+			sender.clearSensitiveInfo();
+			data.getProperties().set(PBEMMessagePoster.EMAIL_SENDER_PROP_NAME, sender);
+		}
 	}
-	
+
+	/**
+	 * Is called in response to the GameSelectionModel being updated. It means the we have to reload the form
+	 *
+	 * @param o   always null
+	 * @param arg always null
+	 */
 	public void update(final Observable o, final Object arg)
 	{
-		loadEmails(m_gameSelectorModel.getGameData());
-		loadPBEMMessengers(m_gameSelectorModel.getGameData());
+
+		if (!SwingUtilities.isEventDispatchThread())
+		{
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					loadAll();
+				}
+			});
+
+		} else
+		{
+			loadAll();
+		}
 	}
-	
+
+
 	@Override
+	/**
+	 * Called when the user hits play
+	 */
 	public ILauncher getLauncher()
 	{
+		// update local cache and write to disk before game starts
+		IForumPoster poster = (IForumPoster) m_forumPosterEditor.getBean();
+		if (poster != null)
+		{
+			LocalBeanCache.getInstance().storeSerializable(poster.getClass().getCanonicalName(), poster);
+		}
+
+		IEmailSender sender = (IEmailSender) m_emailSenderEditor.getBean();
+		if (sender != null)
+		{
+			LocalBeanCache.getInstance().storeSerializable(sender.getClass().getCanonicalName(), sender);
+		}
+
+		IRemoteDiceServer server = (IRemoteDiceServer) m_diceServerEditor.getBean();
+		LocalBeanCache.getInstance().storeSerializable(server.getDisplayName(), server);
+
+		LocalBeanCache.getInstance().writeToDisk();
+
+		// create local launcher
 		final String gameUUID = (String) m_gameSelectorModel.getGameData().getProperties().get(GameData.GAME_UUID);
-		final PBEMDiceRoller randomSource = new PBEMDiceRoller(getEmail1(), getEmail2(), getGameID(), getDiceServer(), gameUUID);
+		final PBEMDiceRoller randomSource = new PBEMDiceRoller((IRemoteDiceServer) m_diceServerEditor.getBean(), gameUUID);
 		final Map<String, String> playerTypes = new HashMap<String, String>();
 		final String playerType = m_gameSelectorModel.getGameData().getGameLoader().getServerPlayerTypes()[0];
 		for (final String playerName : m_gameSelectorModel.getGameData().getPlayerList().getNames())
 		{
 			playerTypes.put(playerName, playerType);
 		}
-		final LocalLauncher launcher = new LocalLauncher(m_gameSelectorModel, randomSource, playerTypes);
-		return launcher;
+
+ 		return new LocalLauncher(m_gameSelectorModel, randomSource, playerTypes);
 	}
+
+	//-----------------------------------------------------------------------
+	// inner classes
+	//-----------------------------------------------------------------------
+
+	/**
+	 * A property change listener that notify our observers
+	 */
+	private class NotifyingPropertyChangeListener implements PropertyChangeListener
+	{
+		public void propertyChange(PropertyChangeEvent evt)
+		{
+			notifyObservers();
+		}
+	}
+
+
 }

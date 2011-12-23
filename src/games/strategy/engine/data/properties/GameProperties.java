@@ -23,7 +23,6 @@ import games.strategy.engine.data.GameDataComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +62,7 @@ public class GameProperties extends GameDataComponent
 	 * @param value
 	 *            property
 	 */
+	// todo should only accept serializable, not object
 	public void set(final String key, final Object value)
 	{
 		if (value == null)

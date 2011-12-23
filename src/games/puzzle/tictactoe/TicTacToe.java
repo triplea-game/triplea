@@ -27,8 +27,6 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.pbem.AllYouCanUploadDotComPBEMMessenger;
-import games.strategy.engine.pbem.IPBEMMessenger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
@@ -158,11 +156,6 @@ public class TicTacToe implements IGameLoader
 			if (player instanceof TicTacToePlayer)
 				((TicTacToePlayer) player).setFrame(frame);
 		}
-	}
-	
-	public IPBEMMessenger[] getPBEMMessengers()
-	{
-		return new IPBEMMessenger[] { new AllYouCanUploadDotComPBEMMessenger() };
 	}
 	
 	/**

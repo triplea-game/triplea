@@ -15,34 +15,34 @@ package games.strategy.engine.pbem;
 
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
+import games.strategy.engine.framework.startup.ui.editors.IBean;
 
-public class NullPBEMMessenger implements IPBEMMessenger
+import java.io.File;
+
+/**
+ * A dummy forum poster, for when Forum posting is disabled
+ */
+public class NullForumPoster implements IForumPoster
 {
-	public NullPBEMMessenger()
+	private static final long serialVersionUID = 6465230505089142268L;
+
+	public NullForumPoster()
 	{
 	}
 	
-	public String getName()
+	public String getDisplayName()
 	{
 		return "disabled";
 	}
 	
-	public boolean getNeedsUsername()
-	{
-		return false;
-	}
-	
-	public boolean getNeedsPassword()
-	{
-		return false;
-	}
-	
+
 	public boolean getCanViewPosted()
 	{
 		return false;
 	}
 	
-	public void setGameId(final String s)
+	public void setForumId(final String forumId)
 	{
 	}
 	
@@ -54,7 +54,7 @@ public class NullPBEMMessenger implements IPBEMMessenger
 	{
 	}
 	
-	public String getGameId()
+	public String getForumId()
 	{
 		return null;
 	}
@@ -72,7 +72,12 @@ public class NullPBEMMessenger implements IPBEMMessenger
 	public void viewPosted()
 	{
 	}
-	
+
+	public void clearSensitiveInfo()
+	{
+
+	}
+
 	public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
 	{
 	}
@@ -80,10 +85,47 @@ public class NullPBEMMessenger implements IPBEMMessenger
 	public void gameDataChanged(final Change change)
 	{
 	}
-	
-	@Override
-	public String toString()
+
+	public boolean postTurnSummary(String summary)
 	{
-		return getName();
+		return false;
+	}
+
+	public String getTurnSummaryRef()
+	{
+		return null;
+	}
+
+	public boolean getIncludeSaveGame()
+	{
+		return false;
+	}
+
+	public void setIncludeSaveGame(boolean include)
+	{
+	}
+
+	public void addSaveGame(File saveGame, String fileName)
+	{
+	}
+
+	public IForumPoster doClone()
+	{
+		return null;
+	}
+
+	public boolean supportsSaveGame()
+	{
+		return false;
+	}
+
+	public EditorPanel getEditor()
+	{
+		return null;
+	}
+
+	public boolean sameType(IBean other)
+	{
+		return other.getClass() == NullForumPoster.class;
 	}
 }

@@ -11,40 +11,54 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-/*
- * AxisAndAlliesDotOrgPBEMMessenger.java
- * 
- * 
- * Created on November 21, 2006, 8:56 PM
- */
 package games.strategy.triplea.pbem;
 
-import games.strategy.engine.pbem.IPBEMSaveGameMessenger;
-import games.strategy.engine.pbem.IPBEMTurnSummaryMessenger;
+import games.strategy.engine.framework.startup.launcher.ILauncher;
+import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
+import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
+import games.strategy.engine.framework.startup.ui.editors.IBean;
+import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.net.BrowserControl;
 import games.strategy.net.MultiPartFormOutputStream;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Class is serialized and stored the users local cache. Be careful when adding
  * @author Tony Clayton
  * @version 1.0
  */
-public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMessenger, IPBEMSaveGameMessenger
+public class AxisAndAlliesForumPoster implements IForumPoster
 {
+	//-----------------------------------------------------------------------
+	// Class fields
+	//-----------------------------------------------------------------------
+	private static final Logger s_logger = Logger.getLogger(ILauncher.class.getName());
 	private static final int m_loginDelayInSeconds = 16;
 	private static final String m_host = "www.axisandallies.org";
-	private transient String m_username = null;
-	private transient String m_password = null;
+	private static final long serialVersionUID = 7957926213311732949L;
+	private static final String USE_TRANSITIVE_PASSWORD = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
+
+	//-----------------------------------------------------------------------
+	// instance fields
+	//-----------------------------------------------------------------------
+	private String m_username = null;
+	private String m_password = null;
+	private transient String m_transPassword;
+	private String m_gameId = null;
+	private boolean m_includeSaveGame = true;
+
+
+	//-----------------------------------------------------------------------
+	// Transient fields
+	//-----------------------------------------------------------------------
 	private transient String m_cookies = null;
 	private transient String m_referer = null;
 	private transient String m_sesc = null;
@@ -53,48 +67,63 @@ public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMesseng
 	private transient String m_attachId = null;
 	private transient String m_seqNum = null;
 	private transient String m_screenshotRef = null;
-	private transient String m_saveGameRef = null;
 	private transient String m_turnSummaryRef = null;
-	private transient String m_saveGameFileName = null;
-	private transient InputStream m_saveGameFileIn = null;
-	private String m_gameId = null;
-	
-	public AxisAndAlliesDotOrgPBEMMessenger()
+	private transient File m_saveGameFile = null;
+	private transient String m_saveGameRef = null;
+	//-----------------------------------------------------------------------
+	// constructors
+	//-----------------------------------------------------------------------
+	public AxisAndAlliesForumPoster()
 	{
 	}
-	
-	public String getName()
+
+	//-----------------------------------------------------------------------
+	// instance methods
+	//-----------------------------------------------------------------------
+
+	public EditorPanel getEditor()
+	{
+		return new ForumPosterEditor(this);
+	}
+
+	public boolean sameType(IBean other)
+	{
+		return other.getClass() == AxisAndAlliesForumPoster.class;
+	}
+
+	public String getDisplayName()
 	{
 		return "www.AxisAndAllies.org";
 	}
 	
-	public boolean getNeedsUsername()
-	{
-		return true;
-	}
-	
-	public boolean getNeedsPassword()
-	{
-		return true;
-	}
-	
+
 	public boolean getCanViewPosted()
 	{
 		return true;
 	}
-	
+
+	public String getScreenshotRef()
+	{
+		return m_screenshotRef;
+	}
+
 	public void viewPosted()
 	{
 		final String url = "http://" + m_host + "/forums/index.php?topic=" + m_gameId + ".new#new";
 		BrowserControl.displayURL(url);
 	}
-	
-	public void setGameId(final String gameId)
+
+	public void clearSensitiveInfo()
 	{
-		m_gameId = gameId;
+	 	m_password = USE_TRANSITIVE_PASSWORD;
+	}
+
+	public void setForumId(final String forumId)
+	{
+		m_gameId = forumId;
 	}
 	
-	public String getGameId()
+	public String getForumId()
 	{
 		return m_gameId;
 	}
@@ -112,10 +141,14 @@ public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMesseng
 	public void setPassword(final String password)
 	{
 		m_password = password;
+		m_transPassword = password;
 	}
 	
 	public String getPassword()
 	{
+		if (USE_TRANSITIVE_PASSWORD.equals(m_password)) {
+			return m_transPassword;
+		}
 		return m_password;
 	}
 	
@@ -177,7 +210,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMesseng
 			urlConn.setRequestProperty("Cache-Control", "no-cache");
 			// send request to server
 			out = urlConn.getOutputStream();
-			out.write(new String("user=" + m_username + "&passwrd=" + m_password + "&cookielength=60").getBytes());
+			out.write(("user=" + m_username + "&passwrd=" + m_password + "&cookielength=60").getBytes());
 			out.flush();
 			out.close();
 			do
@@ -465,7 +498,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMesseng
 		return "http://" + m_host + "/forums/index.php?action=dlattach;topic=" + m_gameId + ".0;attach=" + m_attachId;
 	}
 	
-	public boolean postTurnSummary(final String summary, final String screenshotRef, final String saveGameRef)
+	public boolean postTurnSummary(final String summary)
 	{
 		URL url = null;
 		URLConnection urlConn = null;
@@ -475,10 +508,7 @@ public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMesseng
 		String saveGameSummary = "";
 		String finalSummary = "";
 		m_turnSummaryRef = null;
-		m_screenshotRef = screenshotRef;
-		// if we aren't the save game poster then set it
-		if (m_saveGameFileIn == null)
-			m_saveGameRef = saveGameRef;
+
 		// first, login if necessary
 		if (m_cookies == null && !postLogin())
 			return false;
@@ -500,11 +530,10 @@ public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMesseng
 		forumSummary = "\n\nA&A Forum : " + getNextReplyUrl();
 		if (m_screenshotRef != null)
 			screenshotSummary = "\nScreenshot: " + m_screenshotRef;
-		if (m_saveGameRef != null)
-			saveGameSummary = "\nSave Game : " + m_saveGameRef;
+
 		finalSummary = summary + forumSummary + screenshotSummary + saveGameSummary;
 		int code;
-		BufferedReader in;
+		BufferedReader in = null;
 		String line;
 		Pattern p1;
 		Pattern p2;
@@ -535,10 +564,28 @@ public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMesseng
 			out.writeField("goback", "1");
 			out.writeField("ns", "NS");
 			// empty attachment
-			if (m_saveGameFileIn != null)
+			if (m_saveGameFile != null)
 			{
-				out.writeFile("attachment[]", "application/octet-stream", m_saveGameFileName, m_saveGameFileIn);
-				out.writeField("attachmentPreview", "");
+				FileInputStream fin = null;
+
+				try
+				{
+					fin = new FileInputStream(m_saveGameFile);
+					out.writeFile("attachment[]", "application/octet-stream", m_saveGameFile.getName(), fin);
+					out.writeField("attachmentPreview", "");
+				} finally
+				{
+					if (fin != null)
+					{
+						try
+						{
+							fin.close();
+						} catch (IOException e)
+						{
+							// ignore
+						}
+					}
+				}
 			}
 			out.writeField("post", "Post");
 			out.writeField("num_replies", m_numReplies);
@@ -546,47 +593,39 @@ public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMesseng
 			out.writeField("seqnum", m_seqNum);
 			out.close();
 			code = ((HttpURLConnection) urlConn).getResponseCode();
+			// 200 OK for error, redirects 301/302 if successful
 			if (code == 200)
 			{
-				// reporting an error
+
 				in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-				line = "";
-				p1 = Pattern.compile(".*?<b>(The following error or errors occurred .*?)</b>.*");
-				p2 = Pattern.compile(".*?<td>(An Error Has Occurred!)</td>.*");
-				p3 = Pattern.compile(".*?session timed out.*"); // found after p1
-				while ((line = in.readLine()) != null)
+				StringBuilder sb = new StringBuilder();
+				String responseBody; // read the whole response for easier debugging
+				try
 				{
-					final Matcher m1 = p1.matcher(line);
-					if (m1.matches())
+					while ((line = in.readLine()) != null)
 					{
-						line = in.readLine(); // div start
-						line = in.readLine().trim(); // message
-						final Matcher m3 = p3.matcher(line);
-						if (m3.matches())
-						{
-							// login again and repost
-							m_cookies = null;
-							postTurnSummary(summary, screenshotRef, saveGameRef);
-						}
-						m_turnSummaryRef = m1.group(1) + "\n" + line;
-						in.close();
-						return false;
+						sb.append(line);
 					}
-					final Matcher m2 = p2.matcher(line);
-					if (m2.matches())
-					{
-						line = in.readLine(); // </tr>
-						line = in.readLine(); // <tr..>
-						line = in.readLine(); // <td..>
-						line = in.readLine(); // message
-						m_turnSummaryRef = m2.group(1) + "\n" + line.trim();
-						in.close();
-						return false;
-					}
-					m_turnSummaryRef = "An unknown error occurred while POSTing.";
+					responseBody = sb.toString();
+
+
+				} finally
+				{
 					in.close();
+				}
+
+				// The forum may also report <div...id="error_list">Sorry, you are not allowed to post links.</div>
+				Pattern p4 = Pattern.compile(".*?id=\"error_list[^>]*>\\s+([^<]*)\\s+<.*");
+				Matcher matcher = p4.matcher(responseBody);
+				if (matcher.matches()) {
+					m_turnSummaryRef = "The site gave an error: '" + matcher.group(1) + "'";
 					return false;
 				}
+
+				s_logger.warning("Unknown error html: " + responseBody);
+				m_turnSummaryRef = "Unknown error, if this problem persists, post an error to the TripleA dev forum";
+				return false;
+
 			}
 			if (code != 301 && code != 302)
 			{
@@ -599,13 +638,26 @@ public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMesseng
 			// now, go back to forum
 			if (!goToForum())
 				return false;
+
 		} catch (final Exception e)
 		{
-			e.printStackTrace();
+
+			s_logger.severe(e.getMessage());
+			m_turnSummaryRef = "Unknown error, message written to debug log";
 			return false;
+		} finally {
+			if (in != null) {
+				try
+				{
+					in.close();
+				} catch (IOException e)
+				{
+					// ignore
+				}
+			}
 		}
 		m_turnSummaryRef = getNewReplyUrl();
-		if (m_saveGameFileIn != null)
+		if (m_saveGameFile != null)
 		{
 			if (m_attachId == null)
 			{
@@ -621,24 +673,36 @@ public class AxisAndAlliesDotOrgPBEMMessenger implements IPBEMTurnSummaryMesseng
 	{
 		return m_turnSummaryRef;
 	}
-	
-	public boolean postSaveGame(final String filename, final InputStream fileIn)
+
+	public boolean getIncludeSaveGame()
 	{
-		// not actually posting, just holding the reference
-		m_saveGameRef = null;
-		m_saveGameFileName = filename;
-		m_saveGameFileIn = fileIn;
+		return m_includeSaveGame;
+	}
+
+	public void setIncludeSaveGame(boolean include)
+	{
+	 	m_includeSaveGame = include;
+	}
+
+	public void addSaveGame(File saveGameFile, String fileName)
+	{
+		m_saveGameFile = saveGameFile;
+	}
+
+	public IForumPoster doClone()
+	{
+		AxisAndAlliesForumPoster clone = new AxisAndAlliesForumPoster();
+		clone.setForumId(getForumId());
+		clone.setIncludeSaveGame(getIncludeSaveGame());
+		clone.setPassword(getPassword());
+		clone.setUsername(getUsername());
+		return clone;
+	}
+
+	public boolean supportsSaveGame()
+	{
 		return true;
 	}
-	
-	public String getSaveGameRef()
-	{
-		return m_saveGameRef;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return getName();
-	}
+
+
 }

@@ -14,15 +14,19 @@
 package games.strategy.engine.random;
 
 import games.strategy.engine.EngineVersion;
-
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
+import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
+import games.strategy.engine.framework.startup.ui.editors.IBean;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 /**
  * A pbem dice roller that reads its configuration from a properties file
@@ -32,24 +36,107 @@ import org.apache.commons.httpclient.methods.PostMethod;
  */
 public class PropertiesDiceRoller implements IRemoteDiceServer
 {
+	//-----------------------------------------------------------------------
+	// class fields
+	//-----------------------------------------------------------------------
+	private static final long serialVersionUID = 6481409417543119539L;
+
+
+	//-----------------------------------------------------------------------
+	// class methods
+	//-----------------------------------------------------------------------
+
+	/**
+	 * Loads the property dice rollers from the properties file
+	 * @return the collection of available dice rollers
+	 */
+	public static Collection<PropertiesDiceRoller> loadFromFile() {
+	    List<PropertiesDiceRoller> rollers = new ArrayList<PropertiesDiceRoller>();
+		final File f = new File(GameRunner.getRootFolder(), "dice_servers");
+		if (!f.exists())
+		{
+			throw new IllegalStateException("No dice server folder:" + f);
+		}
+		final java.util.List<Properties> propFiles = new ArrayList<Properties>();
+		final File[] files = f.listFiles();
+		for (final File file : files)
+		{
+			if (!file.isDirectory() && file.getName().endsWith(".properties"))
+			{
+				try
+				{
+					final Properties props = new Properties();
+					final FileInputStream fin = new FileInputStream(file);
+					try
+					{
+						props.load(fin);
+						propFiles.add(props);
+					} finally
+					{
+						fin.close();
+					}
+				} catch (final IOException e)
+				{
+					System.out.println("error reading file:" + file);
+					e.printStackTrace();
+				}
+			}
+		}
+		Collections.sort(propFiles, new Comparator<Properties>()
+		{
+			public int compare(final Properties o1, final Properties o2)
+			{
+				final int n1 = Integer.parseInt(o1.getProperty("order"));
+				final int n2 = Integer.parseInt(o2.getProperty("order"));
+				return n1 - n2;
+			}
+		});
+
+		for (final Properties prop : propFiles)
+		{
+			rollers.add(new PropertiesDiceRoller(prop));
+		}
+
+		return rollers;
+	}
+
+	//-----------------------------------------------------------------------
+	// instance fields
+	//-----------------------------------------------------------------------
 	private final Properties m_props;
-	
+	private String m_toAddress;
+	private String m_ccAddress;
+	private String m_gameId;
+
+	//-----------------------------------------------------------------------
+	// constructors
+	//-----------------------------------------------------------------------
 	public PropertiesDiceRoller(final Properties props)
 	{
 		m_props = props;
 	}
-	
-	public String getName()
+
+	//-----------------------------------------------------------------------
+	// instance methods
+	//-----------------------------------------------------------------------
+
+
+	public String getDisplayName()
 	{
 		return m_props.getProperty("name");
 	}
-	
-	@Override
-	public String toString()
+
+	public EditorPanel getEditor()
 	{
-		return getName();
+		return new DiceServerEditor(this);
 	}
-	
+
+	public boolean sameType(IBean other)
+	{
+		return other instanceof PropertiesDiceRoller && getDisplayName().equals(other.getDisplayName());
+	}
+
+
 	public boolean sendsEmail()
 	{
 		final String property = m_props.getProperty("send.email");
@@ -60,17 +147,17 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		return Boolean.valueOf(property);
 	}
 	
-	public String postRequest(final String player1, final String player2, final int max, final int numDice, final String text, String gameID, final String gameUUID) throws IOException
+	public String postRequest(final int max, final int numDice, final String subjectMessage, String gameID, final String gameUUID) throws IOException
 	{
 		if (gameID.trim().length() == 0)
 			gameID = "TripleA";
-		String message = gameID + ":" + text;
+		String message = gameID + ":" + subjectMessage;
 		final int maxLength = Integer.valueOf(m_props.getProperty("message.maxlength"));
 		if (message.length() > maxLength)
 			message = message.substring(0, maxLength - 1);
 		final PostMethod post = new PostMethod(m_props.getProperty("path"));
 		final NameValuePair[] data = { new NameValuePair("numdice", "" + numDice), new NameValuePair("numsides", "" + max), new NameValuePair("modroll", "No"), new NameValuePair("numroll", "" + 1),
-					new NameValuePair("subject", message), new NameValuePair("roller", player1), new NameValuePair("gm", player2), new NameValuePair("send", "true"), };
+					new NameValuePair("subject", message), new NameValuePair("roller", getToAddress()), new NameValuePair("gm", getCcAddress()), new NameValuePair("send", "true"), };
 		post.setRequestHeader("User-Agent", "triplea/" + EngineVersion.VERSION);
 		// this is to allow a dice server to allow the user to request the emails for the game
 		// rather than sending out email for each roll
@@ -95,9 +182,9 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		}
 	}
 	
-	public String getWebText()
+	public String getInfoText()
 	{
-		return m_props.getProperty("web.text");
+		return m_props.getProperty("infotext");
 	}
 	
 	/**
@@ -161,5 +248,41 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 			}
 		}
 		return rVal;
+	}
+
+	public String getToAddress()
+	{
+		return m_toAddress;
+	}
+
+	public void setToAddress(String toAddress)
+	{
+		m_toAddress = toAddress;
+	}
+
+	public String getCcAddress()
+	{
+		return m_ccAddress;
+	}
+
+	public void setCcAddress(String ccAddress)
+	{
+		m_ccAddress = ccAddress;
+	}
+
+	public boolean supportsGameId()
+	{
+		String gameid = m_props.getProperty("gameid");
+		return "true".equals(gameid);
+	}
+
+	public void setGameId(String gameId)
+	{
+		 m_gameId = gameId;
+	}
+
+	public String getGameId()
+	{
+		return m_gameId;
 	}
 }

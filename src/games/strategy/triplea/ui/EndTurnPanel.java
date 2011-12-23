@@ -23,24 +23,17 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Round;
-import games.strategy.engine.pbem.IPBEMMessenger;
+import games.strategy.engine.pbem.IEmailSender;
+import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.ProgressWindow;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 /**
  * 
@@ -81,15 +74,25 @@ public class EndTurnPanel extends ActionPanel
 			public void actionPerformed(final ActionEvent event)
 			{
 				String message = "";
-				final IPBEMMessenger screenshotMsgr = m_poster.getScreenshotMessenger();
-				final IPBEMMessenger saveGameMsgr = m_poster.getSaveGameMessenger();
-				final IPBEMMessenger turnSummaryMsgr = m_poster.getTurnSummaryMessenger();
-				if (screenshotMsgr != null)
-					message = (new StringBuilder()).append(message).append("Post screenshot to ").append(screenshotMsgr.getName()).append("?\n").toString();
-				if (saveGameMsgr != null)
-					message = (new StringBuilder()).append(message).append("Post save game file to ").append(saveGameMsgr.getName()).append("?\n").toString();
+				final IForumPoster turnSummaryMsgr = m_poster.getForumPoster();
+
+				StringBuilder sb = new StringBuilder();
 				if (turnSummaryMsgr != null)
-					message = (new StringBuilder()).append(message).append("Post turn summary to ").append(turnSummaryMsgr.getName()).append("?\n").toString();
+				{
+					sb.append(message).append("Post turn summary ");
+					if (turnSummaryMsgr.getIncludeSaveGame())
+					{
+					    sb.append(" and save game ");
+					}
+					sb.append("to ").append(turnSummaryMsgr.getDisplayName()).append("?\n");
+				}
+
+				IEmailSender emailSender = m_poster.getEmailSender();
+				if (emailSender != null) {
+					sb.append("Send email to ").append(emailSender.getToAddress()).append("?\n");
+				}
+
+				message = sb.toString();
 				final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message, "Post Turn Summary?", 2, -1, null);
 				if (choice != 0)
 				{
@@ -98,70 +101,37 @@ public class EndTurnPanel extends ActionPanel
 				else
 				{
 					m_postButton.setEnabled(false);
+					final ProgressWindow progressWindow = new ProgressWindow(m_frame, "Posting Turn Summary...");
+					progressWindow.setVisible(true);
 					final Runnable t = new Runnable()
 					{
 						public void run()
 						{
 							boolean postOk = true;
-							final ProgressWindow progressWindow = new ProgressWindow(m_frame, "Posting Turn Summary...");
-							progressWindow.setVisible(true);
+
 							final IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
 							delegate.setHasPostedTurnSummary(true);
-							File screenshotFile = null;
 							File saveGameFile = null;
-							if (screenshotMsgr != null)
-							{
-								try
-								{
-									screenshotFile = File.createTempFile("triplea", ".png");
-									if (screenshotFile != null && m_frame.saveScreenshot(getData().getHistory().getLastNode(), screenshotFile))
-										m_poster.setScreenshot(screenshotFile);
-								} catch (final Exception e)
-								{
-									postOk = false;
-									e.printStackTrace();
-								}
-							}
-							if (saveGameMsgr != null)
-							{
-								try
-								{
-									saveGameFile = File.createTempFile("triplea", ".tsvg");
-									if (saveGameFile != null)
-									{
-										int round = 0;
-										final Object pathFromRoot[] = getData().getHistory().getLastNode().getPath();
-										final Object arr$[] = pathFromRoot;
-										final int len$ = arr$.length;
-										int i$ = 0;
-										do
-										{
-											if (i$ >= len$)
-												break;
-											final Object pathNode = arr$[i$];
-											final HistoryNode curNode = (HistoryNode) pathNode;
-											if (curNode instanceof Round)
-											{
-												round = ((Round) curNode).getRoundNo();
-												break;
-											}
-											i$++;
-										} while (true);
-										m_frame.getGame().saveGame(saveGameFile);
-										final StringBuilder saveGameSb = (new StringBuilder()).append("triplea_").append(saveGameMsgr.getGameId()).append("_")
-													.append(getCurrentPlayer().getName().substring(0, 1)).append(round).append(".tsvg");
-										m_poster.setSaveGame(saveGameSb.toString(), new FileInputStream(saveGameFile));
-									}
-								} catch (final Exception e)
-								{
-									postOk = false;
-									e.printStackTrace();
-								}
-							}
-							if (turnSummaryMsgr != null)
-								m_poster.setTurnSummary(m_historyLog.toString());
+
 							try
 							{
+								saveGameFile = File.createTempFile("triplea", ".tsvg");
+								if (saveGameFile != null)
+								{
+									m_frame.getGame().saveGame(saveGameFile);
+									m_poster.setSaveGame(saveGameFile);
+								}
+							} catch (final Exception e)
+							{
+								postOk = false;
+								e.printStackTrace();
+							}
+
+							m_poster.setTurnSummary(m_historyLog.toString());
+
+							try
+							{
+								// forward the poster to the delegate which invokes post() on the poster
 								if (!delegate.postTurnSummary(m_poster))
 									postOk = false;
 							} catch (final Exception e)
@@ -169,23 +139,30 @@ public class EndTurnPanel extends ActionPanel
 								postOk = false;
 								e.printStackTrace();
 							}
-							final String screenshotRef = m_poster.getScreenshotRef();
-							final String saveGameRef = m_poster.getSaveGameRef();
-							final String turnSummaryRef = m_poster.getTurnSummaryRef();
-							String message = "";
-							if (screenshotRef != null)
-								message = (new StringBuilder()).append(message).append("\nScreenshot: ").append(screenshotRef).toString();
-							if (saveGameRef != null)
-								message = (new StringBuilder()).append(message).append("\nSave Game : ").append(saveGameRef).toString();
-							if (turnSummaryRef != null)
-								message = (new StringBuilder()).append(message).append("\nSummary Text: ").append(turnSummaryRef).toString();
-							m_historyLog.getWriter().println(message);
-							if (m_historyLog.isVisible())
+
+							StringBuilder sb = new StringBuilder();
+							if (m_poster.getForumPoster() != null)
+							{
+								final String saveGameRef = m_poster.getSaveGameRef();
+								final String turnSummaryRef = m_poster.getTurnSummaryRef();
+
+								if (saveGameRef != null)
+									sb.append("\nSave Game : ").append(saveGameRef);
+								if (turnSummaryRef != null)
+									sb.append("\nSummary Text: ").append(turnSummaryRef);
+							}
+							if (m_poster.getEmailSender() != null)
+							{
+								sb.append("\nEmails: ").append(m_poster.getEmailSendStatus());
+							}
+
+
+							m_historyLog.getWriter().println(sb.toString());
+
+							if (m_historyLog.isVisible()) //todo(kg) I think this is a brain fart, unless is is a workaround for some bug
 								m_historyLog.setVisible(true);
 							try
 							{
-								if (screenshotFile != null && !screenshotFile.delete())
-									System.err.println((new StringBuilder()).append("couldn't delete ").append(screenshotFile.getCanonicalPath()).toString());
 								if (saveGameFile != null && !saveGameFile.delete())
 									System.err.println((new StringBuilder()).append("couldn't delete ").append(saveGameFile.getCanonicalPath()).toString());
 							} catch (final IOException ioe)
@@ -196,15 +173,26 @@ public class EndTurnPanel extends ActionPanel
 							progressWindow.removeAll();
 							progressWindow.dispose();
 							delegate.setHasPostedTurnSummary(postOk);
-							m_postButton.setEnabled(!postOk);
-							if (postOk)
-								JOptionPane.showMessageDialog(m_frame, message, "Turn Summary Posted", 1);
-							else
-								JOptionPane.showMessageDialog(m_frame, message, "Turn Summary Posted", 0);
+
+							final boolean finalPostOk = postOk;
+							final String finalMessage = sb.toString();
+							delegate.setHasPostedTurnSummary(postOk);
+							Runnable runnable = new Runnable()
+							{
+								public void run()
+								{
+									m_postButton.setEnabled(!finalPostOk);
+									if (finalPostOk)
+										JOptionPane.showMessageDialog(m_frame, finalMessage, "Turn Summary Posted", JOptionPane.INFORMATION_MESSAGE);
+									else
+										JOptionPane.showMessageDialog(m_frame, finalMessage, "Turn Summary Posted", JOptionPane.ERROR_MESSAGE);
+								}
+							};
+							SwingUtilities.invokeLater(runnable);
 						}
 					};
-					(new Thread(t)).start();
-					return;
+					// start a new thread for posting the summary.
+					new Thread(t).start();
 				}
 			}
 		};
@@ -240,7 +228,30 @@ public class EndTurnPanel extends ActionPanel
 		m_includeProductionCheckbox = new JCheckBox(m_includeProductionAction);
 		m_showDetailsCheckbox = new JCheckBox(m_showDetailsAction);
 	}
-	
+
+	private int getRound()
+	{
+		int round = 0;
+		final Object pathFromRoot[] = getData().getHistory().getLastNode().getPath();
+		final Object arr$[] = pathFromRoot;
+		final int len$ = arr$.length;
+		int i$ = 0;
+		do
+		{
+			if (i$ >= len$)
+				break;
+			final Object pathNode = arr$[i$];
+			final HistoryNode curNode = (HistoryNode) pathNode;
+			if (curNode instanceof Round)
+			{
+				round = ((Round) curNode).getRoundNo();
+				break;
+			}
+			i$++;
+		} while (true);
+		return round;
+	}
+
 	@Override
 	public void display(final PlayerID id)
 	{
@@ -277,17 +288,18 @@ public class EndTurnPanel extends ActionPanel
 		m_frame = frame;
 		m_bridge = bridge;
 		// Nothing to do if there are no PBEM messengers
-		m_poster = new PBEMMessagePoster(getData());
+		m_poster = new PBEMMessagePoster(getData(), getCurrentPlayer(), getRound());
 		if (!m_poster.hasMessengers())
 			return;
-		m_historyLog = new HistoryLog();
-		updateHistoryLog();
+
 		final IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
 		final boolean hasPosted = delegate.getHasPostedTurnSummary();
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
+				m_historyLog = new HistoryLog();
+				updateHistoryLog();
 				// only show widgets if there are PBEM messengers
 				removeAll();
 				add(m_actionLabel);

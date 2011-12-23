@@ -21,8 +21,6 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.pbem.AllYouCanUploadDotComPBEMMessenger;
-import games.strategy.engine.pbem.IPBEMMessenger;
 import games.strategy.kingstable.player.BetterAI;
 import games.strategy.kingstable.player.IKingsTablePlayer;
 import games.strategy.kingstable.player.KingsTablePlayer;
@@ -31,13 +29,12 @@ import games.strategy.kingstable.ui.KingsTableFrame;
 import games.strategy.kingstable.ui.display.IKingsTableDisplay;
 import games.strategy.kingstable.ui.display.KingsTableDisplay;
 
+import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.SwingUtilities;
 
 /**
  * Main class responsible for a Kings Table game.
@@ -64,9 +61,7 @@ public class KingsTable implements IGameLoader
 	public static boolean edgeOfBoardCanBeUsedToCaptureTheKing;
 	public static boolean kingCanBeCapturedLikeAPawn;
 	
-	/**
-	 * @see IGameLoader.createPlayers(playerNames)
-	 */
+
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
 		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
@@ -179,11 +174,7 @@ public class KingsTable implements IGameLoader
 		}
 	}
 	
-	public IPBEMMessenger[] getPBEMMessengers()
-	{
-		return new IPBEMMessenger[] { new AllYouCanUploadDotComPBEMMessenger() };
-	}
-	
+
 	/**
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */

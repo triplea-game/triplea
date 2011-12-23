@@ -29,16 +29,13 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.pbem.AllYouCanUploadDotComPBEMMessenger;
-import games.strategy.engine.pbem.IPBEMMessenger;
 
+import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.SwingUtilities;
 
 /**
  * Main class responsible for an n-puzzle game.
@@ -55,9 +52,6 @@ public class NPuzzle implements IGameLoader
 	private static final String RANDOM_COMPUTER_PLAYER_TYPE = "Random AI";
 	private static final String DFS_COMPUTER_PLAYER_TYPE = "Depth First Search AI";
 	
-	/**
-	 * @see IGameLoader.createPlayers(playerNames)
-	 */
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
 		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
@@ -155,12 +149,7 @@ public class NPuzzle implements IGameLoader
 				((NPuzzlePlayer) player).setFrame(frame);
 		}
 	}
-	
-	public IPBEMMessenger[] getPBEMMessengers()
-	{
-		return new IPBEMMessenger[] { new AllYouCanUploadDotComPBEMMessenger() };
-	}
-	
+
 	/**
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */

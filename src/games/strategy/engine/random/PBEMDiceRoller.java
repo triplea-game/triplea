@@ -13,9 +13,8 @@
  */
 package games.strategy.engine.random;
 
-import java.awt.BorderLayout;
-import java.awt.Frame;
-import java.awt.Window;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -25,27 +24,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-
 /**
- * Rolls the dice using http://www.irony.com/mailroll.html
- * 
+ *
  * Its a bit messy, but the threads are a pain to deal with We want to be able
  * to call this from any thread, and have a dialog that doesnt close until the
  * dice roll finishes. If there is an error we wait until we get a good roll
  * before returning.
+ * @author George_H
  */
 public class PBEMDiceRoller implements IRandomSource
 {
-	private final String m_player1Email;
-	private final String m_player2Email;
-	private final String m_gameID;
 	private final String m_gameUUID;
 	private final IRemoteDiceServer m_remoteDiceServer;
 	private static Frame s_focusWindow;
@@ -61,11 +49,8 @@ public class PBEMDiceRoller implements IRandomSource
 		s_focusWindow = w;
 	}
 	
-	public PBEMDiceRoller(final String player1Email, final String player2Email, final String gameID, final IRemoteDiceServer diceServer, final String gameUUID)
+	public PBEMDiceRoller( final IRemoteDiceServer diceServer, final String gameUUID)
 	{
-		m_player1Email = player1Email;
-		m_player2Email = player2Email;
-		m_gameID = gameID;
 		m_remoteDiceServer = diceServer;
 		m_gameUUID = gameUUID;
 	}
@@ -76,7 +61,7 @@ public class PBEMDiceRoller implements IRandomSource
 	public void test()
 	{
 		// TODO: do a test based on data.getDiceSides()
-		final HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer, "test-roll");
+		final HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), 6, 1, "Test", m_remoteDiceServer, "test-roll");
 		dialog.setTest();
 		dialog.roll();
 	}
@@ -107,7 +92,7 @@ public class PBEMDiceRoller implements IRandomSource
 			}
 			return result.get();
 		}
-		final HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_player1Email, m_player2Email, m_gameID, m_remoteDiceServer, m_gameUUID);
+		final HttpDiceRollerDialog dialog = new HttpDiceRollerDialog(getFocusedFrame(), max, count, annotation, m_remoteDiceServer, m_gameUUID);
 		dialog.roll();
 		return dialog.getDiceRoll();
 	}
@@ -149,7 +134,9 @@ public class PBEMDiceRoller implements IRandomSource
 	}
 }
 
-
+/**
+ * The dialog that will show while the dice are rolling
+ */
 class HttpDiceRollerDialog extends JDialog
 {
 	private final JButton m_exitButton = new JButton("Exit");
@@ -158,10 +145,9 @@ class HttpDiceRollerDialog extends JDialog
 	private final JTextArea m_text = new JTextArea();
 	private int[] m_diceRoll;
 	private final int m_count;
-	private final int m_max;
-	private final String m_annotation;
-	private final String m_email1;
-	private final String m_email2;
+	private final int m_sides;
+	private final String m_subjectMessage;
+
 	private final String m_gameID;
 	private final IRemoteDiceServer m_diceServer;
 	private final String m_gameUUID;
@@ -169,18 +155,25 @@ class HttpDiceRollerDialog extends JDialog
 	public boolean m_test = false;
 	private final JPanel m_buttons = new JPanel();
 	private final Window m_owner;
-	
-	public HttpDiceRollerDialog(final Frame owner, final int max, final int count, final String annotation, final String email1, final String email2, final String gameID,
+
+	/**
+	 *
+	 * @param owner owner frame
+	 * @param sides the number of sides on the dice
+	 * @param count the number of dice rolled
+	 * @param subjectMessage the subject for the email the dice roller will send (if it sends emails)
+	 * @param diceServer the dice server implementation
+	 * @param gameUUID the TripleA game UUID or null
+	 */
+	public HttpDiceRollerDialog(final Frame owner, final int sides, final int count, final String subjectMessage,
 				final IRemoteDiceServer diceServer, final String gameUUID)
 	{
 		super(owner, "Dice roller", true);
 		m_owner = owner;
-		m_max = max;
+		m_sides = sides;
 		m_count = count;
-		m_annotation = annotation;
-		m_email1 = email1;
-		m_email2 = email2;
-		m_gameID = gameID;
+		m_subjectMessage = subjectMessage;
+		m_gameID = diceServer.getGameId() == null ? "" : diceServer.getGameId();
 		m_diceServer = diceServer;
 		m_gameUUID = gameUUID;
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -324,25 +317,27 @@ class HttpDiceRollerDialog extends JDialog
 	/**
 	 * should be called from a thread other than the event thread after we are
 	 * open (or at least in the process of opening) will close the window and
-	 * notify any waiting threads when completed succeddfully.
+	 * notify any waiting threads when completed successfully.
 	 * 
 	 * Before contacting Irony Dice Server, check if email has a reasonable
 	 * valid syntax.
 	 * 
-	 * @author George_H
+	 *
 	 */
 	private void rollInSeperateThread()
 	{
 		if (SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
 		while (!isVisible())
+		{
 			Thread.yield();
-		appendText(m_annotation + "\n");
-		appendText("Contacting  " + m_diceServer.getName() + "\n");
+		}
+		appendText(m_subjectMessage + "\n");
+		appendText("Contacting  " + m_diceServer.getDisplayName() + "\n");
 		String text = null;
 		try
 		{
-			text = m_diceServer.postRequest(m_email1, m_email2, m_max, m_count, m_annotation, m_gameID, m_gameUUID);
+			text = m_diceServer.postRequest(m_sides, m_count, m_subjectMessage, m_gameID, m_gameUUID);
 			if (text.length() == 0)
 			{
 				appendText("Nothing could be read from dice server\n");
@@ -364,10 +359,7 @@ class HttpDiceRollerDialog extends JDialog
 		} catch (final InvocationTargetException e)
 		{
 			appendText("\nError:" + e.getMessage() + "\n\n");
-			if (text != null)
-			{
-				appendText("Text from dice server:\n" + text + "\n");
-			}
+			appendText("Text from dice server:\n" + text + "\n");
 			notifyError();
 		} catch (final IOException ex)
 		{
