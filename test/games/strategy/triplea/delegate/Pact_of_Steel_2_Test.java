@@ -37,6 +37,7 @@ public class Pact_of_Steel_2_Test extends TestCase
 	@Override
 	protected void setUp() throws Exception
 	{
+		super.setUp();
 		m_data = LoadGameUtil.loadGame("the_pact_of_steel_test", "pact_of_steel_2_test.xml");
 	}
 	
@@ -44,6 +45,7 @@ public class Pact_of_Steel_2_Test extends TestCase
 	protected void tearDown() throws Exception
 	{
 		m_data = null;
+		super.tearDown();
 	}
 	
 	private ITestDelegateBridge getDelegateBridge(final PlayerID player)

@@ -18,13 +18,15 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TerritoryEffectAttachment;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Placeholder for all calculations to do with TerritoryEffects
@@ -48,11 +50,50 @@ public class TerritoryEffectHelper
 		if (location == null || type == null)
 			return 0;
 		int combatBonus = 0;
-		final Iterator<TerritoryEffect> effectsIter = getEffects(location).iterator();
-		while (effectsIter.hasNext())
+		for (final TerritoryEffect effect : getEffects(location))
 		{
-			combatBonus += TerritoryEffectAttachment.get(effectsIter.next()).getCombatEffect(type, defending);
+			combatBonus += TerritoryEffectAttachment.get(effect).getCombatEffect(type, defending);
 		}
 		return combatBonus;
+	}
+	
+	public static boolean unitLoosesBlitz(final Unit unit, final Territory location)
+	{
+		return unitTypeLoosesBlitz(unit.getType(), location);
+	}
+	
+	public static boolean unitTypeLoosesBlitz(final UnitType type, final Territory location)
+	{
+		if (location == null || type == null)
+			throw new IllegalStateException("Location and UnitType can not be null");
+		for (final TerritoryEffect effect : getEffects(location))
+		{
+			if (TerritoryEffectAttachment.get(effect).getNoBlitz().contains(type))
+				return true;
+		}
+		return false;
+	}
+	
+	public static boolean unitKeepsBlitz(final Unit unit, final Territory location)
+	{
+		return unitTypeKeepsBlitz(unit.getType(), location);
+	}
+	
+	public static boolean unitTypeKeepsBlitz(final UnitType type, final Territory location)
+	{
+		return !unitTypeLoosesBlitz(type, location);
+	}
+	
+	public static Set<UnitType> getUnitTypesThatLostBlitz(final Collection<Territory> steps)
+	{
+		final Set<UnitType> rVal = new HashSet<UnitType>();
+		for (final Territory location : steps)
+		{
+			for (final TerritoryEffect effect : getEffects(location))
+			{
+				rVal.addAll(TerritoryEffectAttachment.get(effect).getNoBlitz());
+			}
+		}
+		return rVal;
 	}
 }

@@ -1014,7 +1014,6 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					carrierCapacity -= MoveValidator.carrierCost(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.alliedUnit(alliedPlayer, data))));
 				else
 					carrierCapacity -= carrierCostForCurrentTerr;
-				// carrierCapacity -= MoveValidator.carrierCost(dependentunits)
 				if (carrierCapacity < carrierCost)
 					waterIter.remove();
 			}

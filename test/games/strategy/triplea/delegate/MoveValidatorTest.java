@@ -22,6 +22,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -209,8 +210,8 @@ public class MoveValidatorTest extends DelegateTest
 	public void testHasSomeLand()
 	{
 		final Collection<Unit> units = transport.create(3, british);
-		assertTrue(!MoveValidator.hasSomeLand(units));
+		assertTrue(!Match.someMatch(units, Matches.UnitIsLand));
 		units.addAll(infantry.create(2, british));
-		assertTrue(MoveValidator.hasSomeLand(units));
+		assertTrue(Match.someMatch(units, Matches.UnitIsLand));
 	}
 }

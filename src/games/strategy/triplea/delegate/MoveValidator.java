@@ -73,6 +73,8 @@ public class MoveValidator
 	public static final String CANNOT_VIOLATE_NEUTRALITY = "Cannot violate neutrality";
 	public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
 	public static final String TRANSPORT_CANNOT_LOAD_AND_UNLOAD_AFTER_COMBAT = "Transport cannot both load AND unload after being in combat";
+	public static final String LOST_BLITZ_ABILITY = "Unit lost blitz ability";
+	public static final String NOT_ALL_UNITS_CAN_BLITZ = "Not all units can blitz";
 	
 	/**
 	 * Tests the given collection of units to see if they have the movement necessary
@@ -248,28 +250,6 @@ public class MoveValidator
 				return true;
 		}
 		return false;
-	}
-	
-	public static boolean isBlitzable(final Territory current, final GameData data, final PlayerID player)
-	{
-		if (current.isWater())
-			return false;
-		// cant blitz on neutrals
-		if (current.getOwner().isNull() && !isNeutralsBlitzable(data))
-			return false;
-		if (MoveDelegate.getBattleTracker(data).wasConquered(current) && !MoveDelegate.getBattleTracker(data).wasBlitzed(current))
-			return false;
-		final CompositeMatch<Unit> blitzableUnits = new CompositeMatchOr<Unit>();
-		blitzableUnits.add(Matches.alliedUnit(player, data));
-		// WW2V2, cant blitz through factories and aa guns
-		// WW2V1 you can
-		if (!isWW2V2(data) && !IsBlitzThroughFactoriesAndAARestricted(data))
-		{
-			blitzableUnits.add(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
-		}
-		if (!current.getUnits().allMatch(blitzableUnits))
-			return false;
-		return true;
 	}
 	
 	private static boolean isMechanizedInfantry(final PlayerID player)
@@ -566,12 +546,6 @@ public class MoveValidator
 		return sum;
 	}
 	
-	public static boolean hasSomeLand(final Collection<Unit> units)
-	{
-		final Match<Unit> notAirOrSea = new CompositeMatchAnd<Unit>(Matches.UnitIsNotAir, Matches.UnitIsNotSea);
-		return Match.someMatch(units, notAirOrSea);
-	}
-	
 	private static boolean isWW2V2(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getWW2V2(data);
@@ -584,7 +558,7 @@ public class MoveValidator
 	
 	private static boolean isNeutralsBlitzable(final GameData data)
 	{
-		return games.strategy.triplea.Properties.getNeutralsBlitzable(data);
+		return games.strategy.triplea.Properties.getNeutralsBlitzable(data) && !isNeutralsImpassable(data);
 	}
 	
 	private static boolean isWW2V3(final GameData data)
@@ -603,11 +577,6 @@ public class MoveValidator
 	private static boolean isMovementByTerritoryRestricted(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
-	}
-	
-	private static boolean IsBlitzThroughFactoriesAndAARestricted(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAARestricted(data);
 	}
 	
 	private static boolean IsParatroopersCanMoveDuringNonCombat(final GameData data)
@@ -698,7 +667,7 @@ public class MoveValidator
 			return result;
 		if (validateCanal(data, units, route, player, result).getError() != null)
 			return result;
-		if(validateFuel(data,units,route,player,result).getError() != null)
+		if (validateFuel(data, units, route, player, result).getError() != null)
 			return result;
 		// dont let the user move out of a battle zone
 		// the exception is air units and unloading units into a battle zone
@@ -730,17 +699,18 @@ public class MoveValidator
 		return result;
 	}
 	
-	private static MoveValidationResult validateFuel(GameData data,Collection<Unit> units, Route route, PlayerID player,MoveValidationResult result) {
-		if(getEditMode(data))
+	private static MoveValidationResult validateFuel(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
+	{
+		if (getEditMode(data))
 			return result;
-		ResourceCollection fuelCost = Route.getMovementCharge(units, route);
+		final ResourceCollection fuelCost = Route.getMovementCharge(units, route);
 		
-		if(player.getResources().has(fuelCost.getResourcesCopy()))
+		if (player.getResources().has(fuelCost.getResourcesCopy()))
 			return result;
 		
-		return result.setErrorReturnResult("Not enough resources to perform this move, you need: "+fuelCost+" for this move");
+		return result.setErrorReturnResult("Not enough resources to perform this move, you need: " + fuelCost + " for this move");
 	}
-
+	
 	private static MoveValidationResult validateCanal(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
 	{
 		if (getEditMode(data))
@@ -758,7 +728,7 @@ public class MoveValidator
 			return result;
 		if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner(), data).match(player) && Matches.isAtWar(route.getEnd().getOwner(), data).match(player))
 		{
-			if (!MoveValidator.isBlitzable(route.getStart(), data, player) && !Match.allMatch(units, Matches.UnitIsAir))
+			if (!Matches.TerritoryIsBlitzable(player, data).match(route.getStart()) && !Match.allMatch(units, Matches.UnitIsAir))
 				return result.setErrorReturnResult("Can not blitz out of a battle into enemy territory");
 			for (final Unit u : Match.getMatches(units, new CompositeMatchAnd<Unit>(Matches.UnitCanBlitz.invert(), Matches.UnitIsNotAir)))
 			{
@@ -791,7 +761,7 @@ public class MoveValidator
 				if (!data.getRelationshipTracker().isAllied(current.getOwner(), player) || MoveDelegate.getBattleTracker(data).wasConquered(current))
 				{
 					enemyCount++;
-					allEnemyBlitzable &= MoveValidator.isBlitzable(current, data, player);
+					allEnemyBlitzable &= Matches.TerritoryIsBlitzable(player, data).match(current);
 				}
 			}
 			if (enemyCount > 0 && !allEnemyBlitzable)
@@ -812,6 +782,8 @@ public class MoveValidator
 				final Match<Territory> foughtOver = Matches.territoryWasFoughOver(MoveDelegate.getBattleTracker(data));
 				final Match<Territory> notEndWasFought = new CompositeMatchAnd<Territory>(territoryIsNotEnd, foughtOver);
 				final Boolean wasStartFoughtOver = MoveDelegate.getBattleTracker(data).wasConquered(route.getStart()) || MoveDelegate.getBattleTracker(data).wasBlitzed(route.getStart());
+				nonBlitzingUnits.addAll(Match.getMatches(units,
+							Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesThatLostBlitz((wasStartFoughtOver ? route.getAllTerritories() : route.getSteps())))));
 				for (final Unit unit : nonBlitzingUnits)
 				{
 					if (Matches.UnitIsAirTransportable.match(unit))
@@ -822,6 +794,7 @@ public class MoveValidator
 					if (wasStartFoughtOver || tAUnit.getWasInCombat() || route.someMatch(notEndOrFriendlyTerrs) || route.someMatch(notEndWasFought))
 						result.addDisallowedUnit("Not all units can blitz", unit);
 				}
+				
 			}
 		}
 		else
@@ -1217,17 +1190,20 @@ public class MoveValidator
 		final List<Territory> landingSpotsToCheck = Match.getMatches((data.getMap().getNeighbors(currentSpot, movementLeft + 1)), Matches.TerritoryIsWater);
 		if (currentSpot.isWater())
 			landingSpotsToCheck.add(currentSpot);
-		// check if I can find a legal route to these spots
+		
 		for (final Territory landingSpot : landingSpotsToCheck)
 		{
+			// check if I can find a legal route to these spots
 			if (!canAirReachThisSpot(data, player, unit, currentSpot, movementLeft, landingSpot))
 			{
 				continue;
 			}
 			// can reach this spot, is there space?
-			int capacity = MoveValidator.carrierCapacity(getFriendly(landingSpot, player, data), landingSpot);
-			capacity -= usedCarrierSpace.getInt(landingSpot); // remove already claimed space...
-			if (capacity >= ua.getCarrierCost())
+			int capacity = carrierCapacity(getFriendly(landingSpot, player, data), landingSpot);
+			capacity -= carrierCost(getFriendly(landingSpot, player, data)); // remove space of planes in the territory
+			capacity -= usedCarrierSpace.getInt(landingSpot); // remove already claimed space by planes that wil move to the territory
+			capacity -= ua.getCarrierCost();
+			if (capacity >= 0)
 			{
 				final int newUsedCapacity = usedCarrierSpace.getInt(landingSpot) + ua.getCarrierCost();
 				usedCarrierSpace.put(landingSpot, newUsedCapacity); // claim carrier space
@@ -1238,7 +1214,7 @@ public class MoveValidator
 			{
 				if (placeOnBuiltCarrier(unit, landingSpot, usedCarrierSpace, carriersInProductionQueue, data, player))
 				{
-					return true; // TODO if you move 2 fighter groups to 2 seaspots near a factory it will allow you to do it even though there is only room for 1 fightergroup
+					return true; // TODO FIXME if you move 2 fighter groups to 2 seaspots near a factory it will allow you to do it even though there is only room for 1 fightergroup
 				}
 			}
 		}
@@ -1255,22 +1231,24 @@ public class MoveValidator
 			final Set<Territory> territoriesToCheckForCarriersThatCanMove = data.getMap().getNeighbors(currentSpot, 3, Matches.TerritoryIsWater);
 			for (final Territory carrierSpot : territoriesToCheckForCarriersThatCanMove)
 			{
-				int capacity = MoveValidator.carrierCapacity(getFriendly(carrierSpot, player, data), carrierSpot);
+				int capacity = carrierCapacity(getFriendly(carrierSpot, player, data), carrierSpot);
+				capacity -= carrierCost(getFriendly(landingSpot, player, data)); // remove space of planes in the territory
 				capacity -= usedCarrierSpace.getInt(carrierSpot); // remove already claimed space...
-				if (capacity >= ua.getCarrierCost())
+				if (capacity >= ua.getCarrierCost()) // there is enough free capacity in that zone, see if we can move a carrier to the landing spot
 				{
 					Collection<Unit> carriers = Match.getMatches(carrierSpot.getUnits().getUnits(), Matches.carrierOwnedBy(player));
 					final Route carrierRoute = data.getMap().getRoute(carrierSpot, landingSpot);
 					carriers = Match.getMatches(carriers, Matches.UnitHasEnoughMovementForRoute(carrierRoute));
-					carriers.remove(movedCarriers);
+					carriers.remove(movedCarriers); // remove carriers that have already moved, they can't move again to reach our landingspot
 					for (final Unit carrierCandidate : carriers)
 					{
 						final UnitAttachment cua = UnitAttachment.get(carrierCandidate.getType());
-						if (cua.getCarrierCapacity() >= ua.getCarrierCost())
+						final int dependantCost = carrierCost(((TripleAUnit) carrierCandidate).getDependents());
+						if (cua.getCarrierCapacity() >= ua.getCarrierCost() + dependantCost) // move this carrier
 						{
-							final int newUsedCapacityInCarrierSpot = usedCarrierSpace.getInt(carrierSpot) + cua.getCarrierCapacity();
+							final int newUsedCapacityInCarrierSpot = usedCarrierSpace.getInt(carrierSpot) + cua.getCarrierCapacity() - dependantCost; // virtually remove the carrier as if it is full for future checks on this territory
 							usedCarrierSpace.put(carrierSpot, newUsedCapacityInCarrierSpot);
-							final int newUsedCapacityInLandingSpot = usedCarrierSpace.getInt(landingSpot) + ua.getCarrierCost() - cua.getCarrierCapacity();
+							final int newUsedCapacityInLandingSpot = usedCarrierSpace.getInt(landingSpot) + ua.getCarrierCost() - cua.getCarrierCapacity() + dependantCost;
 							usedCarrierSpace.put(landingSpot, newUsedCapacityInLandingSpot);
 							movedCarriers.add(carrierCandidate);
 							return true;
@@ -1285,7 +1263,7 @@ public class MoveValidator
 	private static boolean canAirReachThisSpot(final GameData data, final PlayerID player, final Unit unit, final Territory currentSpot, final int movementLeft, final Territory landingSpot)
 	{
 		// TODO EW: existing bug: Need to check for politics allowing Politics.Neutral Fly-Over? this code is still working on the assumption of alliances. not isNeutral state.
-		if (areNeutralsPassable(data))
+		if (areNeutralsPassableByAir(data))
 		{
 			final Route neutralViolatingRoute = data.getMap().getRoute(currentSpot, landingSpot, Matches.TerritoryIsPassableAndNotRestricted(player, data));
 			return (neutralViolatingRoute != null && neutralViolatingRoute.getMovementCost(unit) <= movementLeft && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(
@@ -1325,7 +1303,7 @@ public class MoveValidator
 		return false;
 	}
 	
-	private static boolean areNeutralsPassable(final GameData data)
+	private static boolean areNeutralsPassableByAir(final GameData data)
 	{
 		return (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
 	}

@@ -238,6 +238,8 @@ public class MyFormatter
 	
 	public static String asDice(final DiceRoll roll)
 	{
+		if (roll == null || roll.size() == 0)
+			return "none";
 		final StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < roll.size(); i++)
 		{
@@ -250,6 +252,8 @@ public class MyFormatter
 	
 	public static String asDice(final int[] rolls)
 	{
+		if (rolls == null || rolls.length == 0)
+			return "none";
 		final StringBuilder buf = new StringBuilder(rolls.length * 2);
 		for (int i = 0; i < rolls.length; i++)
 		{

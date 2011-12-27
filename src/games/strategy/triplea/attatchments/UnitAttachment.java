@@ -23,7 +23,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
-import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -40,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -774,7 +772,8 @@ public class UnitAttachment extends DefaultAttachment
 		final Collection<Unit> unitsCopy = new ArrayList<Unit>(units);
 		final HashSet<Unit> whichReceiveNoDuplicates = new HashSet<Unit>();
 		final IntegerMap<Tuple<String, String>> whichGive = getReceivesAbilityWhenWithMap(unitsCopy, filterForAbility, data);
-		for (Tuple<String, String> abilityUnitType  : whichGive.keySet()) {
+		for (final Tuple<String, String> abilityUnitType : whichGive.keySet())
+		{
 			final Collection<Unit> receives = Match.getNMatches(unitsCopy, whichGive.getInt(abilityUnitType), Matches.UnitCanReceivesAbilityWhenWith(filterForAbility, abilityUnitType.getSecond()));
 			whichReceiveNoDuplicates.addAll(receives);
 			unitsCopy.removeAll(receives);
@@ -1293,6 +1292,7 @@ public class UnitAttachment extends DefaultAttachment
 			throw new IllegalStateException("Unit Attachments: createsResourcesList must have positive values");
 		m_createsResourcesList.put(r, n);
 	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -1315,11 +1315,13 @@ public class UnitAttachment extends DefaultAttachment
 		m_fuelCost.put(r, n);
 	}
 	
-	public IntegerMap<Resource> getFuelCost() {
+	public IntegerMap<Resource> getFuelCost()
+	{
 		return m_fuelCost;
 	}
 	
-	public void clearFuelCost() {
+	public void clearFuelCost()
+	{
 		m_fuelCost.clear();
 	}
 	
@@ -1522,7 +1524,8 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		if (!m_whenCombatDamaged.isEmpty())
 		{
-			for (Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key  : m_whenCombatDamaged) {
+			for (final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key : m_whenCombatDamaged)
+			{
 				final String obj = key.getSecond().getFirst();
 				if (obj.equals(UNITSMAYNOTLANDONCARRIER))
 					continue;
@@ -1631,7 +1634,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  destroyer:" + m_isDestroyer
 					+ "  canBombard:" + m_canBombard
 					+ "  bombard:" + m_bombard
-
+					
 					+ "  isAAforCombatOnly:" + m_isAAforCombatOnly
 					+ "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
 					+ "  isAAmovement:" + m_isAAmovement
@@ -1872,5 +1875,5 @@ public class UnitAttachment extends DefaultAttachment
 			stats.delete(stats.lastIndexOf(", "), stats.length() - 1);
 		return stats.toString();
 	}
-
+	
 }

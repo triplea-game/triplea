@@ -17,7 +17,6 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker;
-import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -29,6 +28,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.MovePanel;
 import games.strategy.util.CompositeMatch;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
@@ -107,7 +107,8 @@ public class MovePerformer implements Serializable
 				final IBattle bombingBattle = getBattleTracker().getPendingBattle(route.getStart(), true);
 				if (nonBombingBattle != null || bombingBattle != null)
 				{
-					for (Unit unit  : units) {
+					for (final Unit unit : units)
+					{
 						final Route routeUnitUsedToMove = m_moveDelegate.getRouteUsedToMoveInto(unit, route.getStart());
 						if (nonBombingBattle != null)
 						{
@@ -207,7 +208,9 @@ public class MovePerformer implements Serializable
 								&& route.allMatch(Matches.territoryHasNoEnemyUnits(id, data)) && Match.someMatch(arrivingUnits[0], Matches.UnitIsLand)
 								&& Match.noneMatch(arrivingUnits[0], Matches.UnitIsSea))
 					{
-						for (final Territory t : route.getMatches(Matches.TerritoryIsBlitzable(id, data)))
+						for (final Territory t : route.getMatches(new CompositeMatchAnd<Territory>(
+									Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
+									Matches.TerritoryIsBlitzable(id, data))))
 						{
 							getBattleTracker().takeOver(t, id, bridge, m_currentMove, arrivingUnits[0]);
 						}
@@ -226,14 +229,13 @@ public class MovePerformer implements Serializable
 					add = ChangeFactory.addUnits(route.getEnd(), arrived);
 					change.add(add, remove);
 				}
-				change.add(markResourceChange(units,route, id));
+				change.add(markResourceChange(units, route, id));
 				m_bridge.addChange(change);
 				m_currentMove.addChange(change);
 				m_currentMove.setDescription(MyFormatter.unitsToTextNoOwner(arrived) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName());
 				m_moveDelegate.updateUndoableMoves(m_currentMove);
 			}
-
-
+			
 		};
 		m_executionStack.push(postAAFire);
 		m_executionStack.push(fireAA);
@@ -241,7 +243,8 @@ public class MovePerformer implements Serializable
 		m_executionStack.execute(m_bridge);
 	}
 	
-	private Change markResourceChange(Collection<Unit> units,Route route, PlayerID id) {	
+	private Change markResourceChange(final Collection<Unit> units, final Route route, final PlayerID id)
+	{
 		return ChangeFactory.removeResourceCollection(id, Route.getMovementCharge(units, route));
 	}
 	

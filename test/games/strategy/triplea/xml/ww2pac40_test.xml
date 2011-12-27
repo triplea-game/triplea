@@ -2042,7 +2042,7 @@
 						<option name="relationshipChange" value="Americans:French:anyNeutral:Friendly"/>
 						<option name="relationshipChange" value="Americans:Dutch:anyNeutral:Friendly"/>
 						<option name="notification" value="Americans_War_Japanese"/>
-						<option name="when" value="after:americanPlace"/>
+						<option name="when" value="after:americansPlace"/>
 						<option name="uses" value="1"/>
 					</attatchment>
 				    

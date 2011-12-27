@@ -55,7 +55,6 @@ import games.strategy.util.Util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -660,7 +659,8 @@ public class Matches
 				if (!attack && ua.getDefense(player) > 0)
 					return true;
 				// if unit can support other units, return true
-				for (UnitSupportAttachment rule  : UnitSupportAttachment.get(data)) {
+				for (final UnitSupportAttachment rule : UnitSupportAttachment.get(data))
+				{
 					if (unit.getType().equals(rule.getAttatchedTo()))
 						return true;
 				}
@@ -1416,7 +1416,8 @@ public class Matches
 				for (final PlayerID ePlayer : data.getPlayerList().getPlayers())
 				{
 					final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
-					for (Territory current  : capitalsListOwned) {
+					for (final Territory current : capitalsListOwned)
+					{
 						if (!data.getRelationshipTracker().isAtWar(player, current.getOwner()))
 							continue;
 						if (data.getMap().getDistance(t, current, Matches.TerritoryIsPassableAndNotRestricted(player, data)) != -1)
@@ -1444,7 +1445,8 @@ public class Matches
 				for (final PlayerID ePlayer : data.getPlayerList().getPlayers())
 				{
 					final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(ePlayer, data));
-					for (Territory current  : capitalsListOwned) {
+					for (final Territory current : capitalsListOwned)
+					{
 						if (!data.getRelationshipTracker().isAtWar(player, current.getOwner()))
 							continue;
 						if (data.getMap().getDistance(t, current, Matches.TerritoryIsNotImpassableToLandUnits(player, data)) != -1)
@@ -1789,11 +1791,13 @@ public class Matches
 					// are allied navalbases, increase the range.
 					// TODO Still need to be able to handle stops on the way
 					// (history to get route.getStart()
-					for (Territory terrNext  : unit.getData().getMap().getNeighbors(route.getStart(), 1)) {
+					for (final Territory terrNext : unit.getData().getMap().getNeighbors(route.getStart(), 1))
+					{
 						final TerritoryAttachment taNeighbor = TerritoryAttachment.get(terrNext);
 						if (taNeighbor != null && taNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrNext.getOwner(), player))
 						{
-							for (Territory terrEnd  : unit.getData().getMap().getNeighbors(route.getEnd(), 1)) {
+							for (final Territory terrEnd : unit.getData().getMap().getNeighbors(route.getEnd(), 1))
+							{
 								final TerritoryAttachment taEndNeighbor = TerritoryAttachment.get(terrEnd);
 								if (taEndNeighbor != null && taEndNeighbor.isNavalBase() && unit.getData().getRelationshipTracker().isAllied(terrEnd.getOwner(), player))
 								{
@@ -2097,11 +2101,30 @@ public class Matches
 			@Override
 			public boolean match(final Territory t)
 			{
-				if (t.getOwner().equals(player))
+				// cant blitz water
+				if (t.isWater())
 					return false;
+				
+				// cant blitz on neutrals
 				if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && (t.isWater() | !games.strategy.triplea.Properties.getNeutralsBlitzable(data)))
 					return false;
-				return RelationshipTypeCanTakeOverOwnedTerritory.match(data.getRelationshipTracker().getRelationshipType(player, t.getOwner()));// data.getRelationshipTracker().isAtWar(player, t.getOwner());
+				
+				// was conquered but not blitzed
+				if (MoveDelegate.getBattleTracker(data).wasConquered(t) && !MoveDelegate.getBattleTracker(data).wasBlitzed(t))
+					return false;
+				
+				final CompositeMatch<Unit> blitzableUnits = new CompositeMatchOr<Unit>();
+				blitzableUnits.add(Matches.alliedUnit(player, data));
+				// WW2V2, cant blitz through factories and aa guns
+				// WW2V1, you can
+				if (!games.strategy.triplea.Properties.getWW2V2(data) && !games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAARestricted(data))
+				{
+					blitzableUnits.add(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
+				}
+				if (t.getUnits().allMatch(blitzableUnits))
+					return true;
+				
+				return false;
 			}
 		};
 	}
@@ -2607,7 +2630,8 @@ public class Matches
 					return false;
 				if (list.isEmpty())
 					return true;
-				for (Territory t  : list) {
+				for (final Territory t : list)
+				{
 					if (t.getUnits().getUnits().contains(u))
 						return false;
 				}
@@ -2626,7 +2650,8 @@ public class Matches
 				final Set<CanalAttachment> canalAttachments = CanalAttachment.get(t);
 				if (canalAttachments.isEmpty())
 					return false;
-				for (CanalAttachment attachment  : canalAttachments) {
+				for (final CanalAttachment attachment : canalAttachments)
+				{
 					if (attachment == null)
 						continue;
 					for (final Territory borderTerritory : attachment.getLandTerritories())
@@ -2719,7 +2744,8 @@ public class Matches
 				{
 					final Match<Unit> repairUnitLand = new CompositeMatchAnd<Unit>(repairUnit, Matches.UnitIsLand);
 					final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
-					for (Territory current  : neighbors) {
+					for (final Territory current : neighbors)
+					{
 						if (Match.someMatch(current.getUnits().getUnits(), repairUnitLand))
 							return true;
 					}
@@ -2785,7 +2811,8 @@ public class Matches
 				{
 					final Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsLand);
 					final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(territory, Matches.TerritoryIsLand));
-					for (Territory current  : neighbors) {
+					for (final Territory current : neighbors)
+					{
 						if (Match.someMatch(current.getUnits().getUnits(), givesBonusUnitLand))
 							return true;
 					}
@@ -3184,7 +3211,8 @@ public class Matches
 				final TripleAUnit taUnit = (TripleAUnit) u;
 				final int currentDamage = taUnit.getHits();
 				final ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> whenCombatDamagedList = UnitAttachment.get(u.getType()).getWhenCombatDamaged();
-				for (Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key  : whenCombatDamagedList) {
+				for (final Tuple<Tuple<Integer, Integer>, Tuple<String, String>> key : whenCombatDamagedList)
+				{
 					final String effect = key.getSecond().getFirst();
 					if (!effect.equals(filterForEffect))
 						continue;

@@ -23,7 +23,9 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -36,6 +38,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 {
 	private final IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<UnitType>();
 	private final IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<UnitType>();
+	private final ArrayList<UnitType> m_noBlitz = new ArrayList<UnitType>();
 	
 	/**
 	 * Convenience method.
@@ -79,7 +82,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	
 	public IntegerMap<UnitType> getCombatDefenseEffect()
 	{
-		return m_combatDefenseEffect;
+		return new IntegerMap<UnitType>(m_combatDefenseEffect);
 	}
 	
 	public void clearCombatDefenseEffect()
@@ -100,7 +103,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	
 	public IntegerMap<UnitType> getCombatOffenseEffect()
 	{
-		return m_combatOffenseEffect;
+		return new IntegerMap<UnitType>(m_combatOffenseEffect);
 	}
 	
 	public void clearCombatOffenseEffect()
@@ -120,11 +123,24 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 			final String unitTypeToProduce = iter.next();
 			final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
 			if (ut == null)
-				throw new IllegalStateException("TerritoryEffect Attachments: No unit called:" + unitTypeToProduce);
+				throw new GameParseException("TerritoryEffect Attachments: No unit called:" + unitTypeToProduce);
 			if (defending)
 				m_combatDefenseEffect.put(ut, effect);
 			else
 				m_combatOffenseEffect.put(ut, effect);
+		}
+	}
+	
+
+	public void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException {
+		final String[] s = noBlitzUnitTypes.split(":");
+		if(s.length<1)
+			throw new GameParseException("TerritoryEffect Attachments: noBlitz must have at least one unitType");
+		for(String unitTypeName:Arrays.asList(s)) {
+			final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
+			if(ut == null)
+				throw new GameParseException("TerritoryEffect Attachments: No unit called:" + unitTypeName);
+			m_noBlitz.add(ut);
 		}
 	}
 	
@@ -144,5 +160,13 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	public String toString()
 	{
 		return this.getName();
+	}
+
+	public Collection<UnitType> getNoBlitz() {
+		return new ArrayList<UnitType>(m_noBlitz);
+	}
+	
+	public void clearNoBlitz() {
+		m_noBlitz.clear();
 	}
 }

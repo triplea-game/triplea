@@ -495,18 +495,21 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		final int movementLeft = ((TripleAUnit) unit).getMovementLeft() - getMovementCost(unit);
 		return movementLeft;
 	}
-
-	public ResourceCollection getMovementCharge(Unit unit) {
-		ResourceCollection col = new ResourceCollection(getStart().getData());
-		UnitAttachment ua = UnitAttachment.get(unit.getType());
+	
+	public ResourceCollection getMovementCharge(final Unit unit)
+	{
+		final ResourceCollection col = new ResourceCollection(getStart().getData());
+		final UnitAttachment ua = UnitAttachment.get(unit.getType());
 		col.add(ua.getFuelCost());
 		col.multiply(getMovementCost(unit));
 		return col;
 	}
 	
-	public static ResourceCollection getMovementCharge(Collection<Unit> units, Route route) {
-		ResourceCollection movementCharge = new ResourceCollection(route.getStart().getData());
-		for(Unit unit:units) {
+	public static ResourceCollection getMovementCharge(final Collection<Unit> units, final Route route)
+	{
+		final ResourceCollection movementCharge = new ResourceCollection(route.getStart().getData());
+		for (final Unit unit : units)
+		{
 			movementCharge.add(route.getMovementCharge(unit));
 		}
 		return movementCharge;

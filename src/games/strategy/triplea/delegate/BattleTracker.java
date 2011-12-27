@@ -145,7 +145,8 @@ public class BattleTracker implements java.io.Serializable
 	
 	public void undoBattle(final Route route, final Collection<Unit> units, final PlayerID player, final IDelegateBridge bridge)
 	{
-		for (IBattle battle  : new ArrayList<IBattle>(m_pendingBattles)) {
+		for (final IBattle battle : new ArrayList<IBattle>(m_pendingBattles))
+		{
 			if (battle.getTerritory().equals(route.getEnd()))
 			{
 				battle.removeAttack(route, units);
@@ -181,7 +182,8 @@ public class BattleTracker implements java.io.Serializable
 		m_battleRecords.removeBattle(player, battle.getBattleID());
 		m_pendingBattles.remove(battle);
 		m_dependencies.remove(battle);
-		for (Collection<IBattle> battles  : m_dependencies.values()) {
+		for (final Collection<IBattle> battles : m_dependencies.values())
+		{
 			battles.remove(battle);
 		}
 	}
@@ -239,7 +241,7 @@ public class BattleTracker implements java.io.Serializable
 	{
 		addBombingBattle(route, units, attacker, data, null);
 	}*/
-
+	
 	private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data, final HashMap<Unit, HashSet<Unit>> targets)
 	{
 		IBattle battle = getPendingBattle(route.getEnd(), true, BATTLE_TYPE_BOMBING_RAID);
@@ -288,31 +290,21 @@ public class BattleTracker implements java.io.Serializable
 	private void addEmptyBattle(final Route route, final Collection<Unit> units, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker)
 	{
 		final GameData data = bridge.getData();
-		// find the territories that are considered blitz
-		final Match<Territory> canBlitz = new Match<Territory>()
-		{
-			@Override
-			public boolean match(final Territory territory)
-			{
-				return MoveValidator.isBlitzable(territory, data, id);
-			}
-		};
 		final CompositeMatch<Territory> conquerable = new CompositeMatchAnd<Territory>();
 		conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));
-		final CompositeMatch<Territory> blitzable = new CompositeMatchOr<Territory>();
-		blitzable.add(Matches.TerritoryIsBlitzable(id, data));
-		blitzable.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
-		conquerable.add(blitzable);
+		conquerable.add(new CompositeMatchOr<Territory>(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
+					Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data)));
 		final Collection<Territory> conquered = route.getMatches(conquerable);
 		// in case we begin in enemy territory, and blitz out of it, check the first territory
 		if (route.getStart() != route.getEnd() && Matches.territoryIsEmptyOfCombatUnits(data, id).match(route.getStart()))
 			conquered.add(route.getStart());
 		// we handle the end of the route later
 		conquered.remove(route.getEnd());
-		final Collection<Territory> blitzed = Match.getMatches(conquered, canBlitz);
+		final Collection<Territory> blitzed = Match.getMatches(conquered, Matches.TerritoryIsBlitzable(id, data));
 		m_blitzed.addAll(Match.getMatches(blitzed, Matches.isTerritoryEnemy(id, data)));
 		m_conquered.addAll(Match.getMatches(conquered, Matches.isTerritoryEnemy(id, data)));
-		for (Territory current  : conquered) {
+		for (final Territory current : conquered)
+		{
 			takeOver(current, id, bridge, changeTracker, units);
 		}
 		// check the last territory
@@ -327,7 +319,7 @@ public class BattleTracker implements java.io.Serializable
 			{
 				if (Matches.isTerritoryEnemy(id, data).match(route.getEnd()))
 				{
-					if (canBlitz.match(route.getEnd()))
+					if (Matches.TerritoryIsBlitzable(id, data).match(route.getEnd()))
 					{
 						m_blitzed.add(route.getEnd());
 					}
@@ -674,7 +666,8 @@ public class BattleTracker implements java.io.Serializable
 					final Collection<Unit> toAdd = new ArrayList<Unit>();
 					final Tuple<String, IntegerMap<UnitType>> toCreate = map.get(value);
 					final boolean translateAttributes = toCreate.getFirst().equalsIgnoreCase("true");
-					for (UnitType ut  : toCreate.getSecond().keySet()) {
+					for (final UnitType ut : toCreate.getSecond().keySet())
+					{
 						// if (ut.equals(u.getType()))
 						// continue;
 						toAdd.addAll(ut.create(toCreate.getSecond().getInt(ut), newOwner));
@@ -766,7 +759,8 @@ public class BattleTracker implements java.io.Serializable
 	
 	public IBattle getPendingBattle(final Territory t, final boolean bombing, final String type)
 	{
-		for (IBattle battle  : m_pendingBattles) {
+		for (final IBattle battle : m_pendingBattles)
+		{
 			if (battle.getTerritory().equals(t) && battle.isBombingRun() == bombing)
 			{
 				if (type == null)
@@ -786,7 +780,8 @@ public class BattleTracker implements java.io.Serializable
 	public Collection<Territory> getPendingBattleSites(final boolean bombing)
 	{
 		final Collection<Territory> battles = new ArrayList<Territory>(m_pendingBattles.size());
-		for (IBattle battle  : m_pendingBattles) {
+		for (final IBattle battle : m_pendingBattles)
+		{
 			if (!battle.isEmpty() && battle.isBombingRun() == bombing)
 				battles.add(battle.getTerritory());
 		}

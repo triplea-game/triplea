@@ -3,18 +3,10 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel 2" version="3.3"/>
+        <info name="victory test" version="3.3"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
-			<!-- A MOD of original POS by VEQRYN
-					The purpose is to provide a fun game that shows off all the new features of TripleA since 1.2.5.5
-					as well include documentation inside the xml in order to show map makers how to use all the new features.
-					If you have questions on how to use something, or think my documentation is not clear enough,
-					please go to the forum and make a post: http://triplea.sourceforge.net/mywiki/Forum
-			-->
-
-		<!-- diceSides defaults to 6 if not in the xml.  Can be set to any number between 1 and 200.
-				WARNING: Setting diceSides to a number other than 6 can result in unexpected behavior. -->
+		
 		<diceSides value="6"/>
 		
         <map>
@@ -548,13 +540,7 @@
 				<!-- PUs and techTokens are default supported resources. (all maps should use "PUs" as the default "money", as a map without PUs may fail. -->
                 <resource name="PUs"/>
                 <resource name="techTokens"/>
-				<!-- These are custom resources.
-				<resource name="Steel"/>
-				<resource name="Aluminium"/>
 				<resource name="Fuel"/>
-				<resource name="SuicideAttackTokens"/>-->
-				<!-- VPs are only semi-supported by the code as of right now. They are used for special pacific rules.
-				<resource name="VPs"/>-->
         </resourceList>
 
         <playerList>
@@ -591,6 +577,7 @@
                 <unit name="infantry"/>
                 <unit name="artillery"/>
                 <unit name="armour"/>
+                <unit name="motorized"/>
                 <unit name="fighter"/>
                 <unit name="jp_fighter"/>
                 <unit name="bomber"/>
@@ -778,6 +765,11 @@
 						<!--<cost resource="Steel" quantity="4" />
 						<cost resource="Aluminium" quantity="10" />-->
                         <result resourceOrUnit="armour" quantity="1"/>
+                </productionRule>
+                
+                 <productionRule name="buyMotorized">
+                        <cost resource="PUs" quantity="5" />
+                        <result resourceOrUnit="motorized" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyFighter">
@@ -1254,6 +1246,7 @@
                         <frontierRules name="buyInfantry"/>
                         <frontierRules name="buyArtillery"/>
                         <frontierRules name="buyArmour"/>
+                        <frontierRules name="buyMotorized"/>
                         <frontierRules name="buyFighter"/>
                         <frontierRules name="buyBomber"/>
                         <frontierRules name="buyTransport"/>
@@ -1859,9 +1852,6 @@
 								A unit which can not perform amphibious assaults may instead disembark during non-combat
 								can be set to "all", or "none", or a list of some transports. if this option is not present, it defaults to "all" -->
 						 <option name="canInvadeOnlyFrom" value="transport:jp_transport:air_transport:super_carrier"/>
-						 <!-- fuelCost is a list of at least one resource that get used up for each point of movementCost a unit does
-						 <option name="fuelCost" value="Fuel" count="5"/>
-						 <option name="fuelCost" value="PUs" count="1"/>-->
                 </attatchment>
 
                 <!-- Armour -->
@@ -1881,6 +1871,19 @@
                          <option name="isAirTransportable" value="true"/>
 						 <!-- receivesAbilityWhenWith gives a unit an ability when they are with, or on the same route as, another unit 
 						 <option name="receivesAbilityWhenWith" value="canBlitz:armour"/>-->
+                </attatchment>
+                
+                             <!-- Motorized -->
+                <attatchment name="unitAttatchment" attatchTo="motorized" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+                         <option name="movement" value="2"/>
+                         <option name="transportCost" value="3"/>
+						 <!-- canBlitz allows the unit to move through multiple empty enemy territories in one turn -->
+                         <option name="canBlitz" value="false"/>
+                         <option name="attack" value="2"/>
+                         <option name="defense" value="3"/>
+                         <option name="fuelCost" value="Fuel" count="1"/>
+                         <option name="fuelCost" value="PUs" count="1"/>
+                         
                 </attatchment>
 
                 <!-- Fighter -->
@@ -2639,6 +2642,7 @@
 
                 <attatchment name="territoryAttatchment" attatchTo="Anglo Egypt" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
+                        <option name="territoryEffect" value="mountain"/>
                 </attatchment>
 
                 <attatchment name="territoryAttatchment" attatchTo="New Guinea" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2779,8 +2783,6 @@
 	<!-- the following options are allowed for "territoryEffectAttachment"
 			combatOffenseEffect					values: the name of the unit, and the count of how much offense you want to give this unit
 			combatDefenseEffect					values: the name of the unit, and the count of how much defense you want to give this unit
-			noBlitz								values: the name of the unit that can't blitz through this territoryEffect, can be multiple units
-			
 	-->
 				<attatchment name="territoryEffectAttachment" attatchTo="mountain" javaClass="games.strategy.triplea.attatchments.TerritoryEffectAttachment" type="territoryEffect">
 					<option name="combatOffenseEffect" value="infantry" count="1"/>
@@ -4180,7 +4182,7 @@
                         <territoryOwner territory="United Kingdom" owner="British"/>
                         <territoryOwner territory="Western Canada" owner="British"/>
                         <territoryOwner territory="Eastern Canada" owner="British"/>
-                        <territoryOwner territory="French West Africa" owner="British"/>
+                        <territoryOwner territory="French West Africa" owner="Italians"/>
                         <territoryOwner territory="French Equatorial Africa" owner="British"/>
                         <territoryOwner territory="Anglo Egypt" owner="British"/>
                         <territoryOwner territory="Italian East Africa" owner="British"/>
@@ -4266,8 +4268,6 @@
                         <unitPlacement unitType="cruiser" territory="14 Sea Zone" quantity="1" owner="Italians"/>
                         <unitPlacement unitType="transport" territory="14 Sea Zone" quantity="2" owner="Italians"/>
                         <unitPlacement unitType="battleship" territory="14 Sea Zone" quantity="1" owner="Italians"/>
-                        <unitPlacement unitType="infantry" territory="Libya" quantity="1" owner="Italians"/>
-                        <unitPlacement unitType="artillery" territory="Libya" quantity="1" owner="Italians"/>
                         <unitPlacement unitType="aaGun" territory="Italy" quantity="1" owner="Italians"/>
                         <unitPlacement unitType="armour" territory="Italy" quantity="1" owner="Italians"/>
                         <unitPlacement unitType="fighter" territory="Italy" quantity="1" owner="Italians"/>
@@ -4277,6 +4277,7 @@
                         <unitPlacement unitType="infantry" territory="West Balkans" quantity="1" owner="Italians"/>
                         <unitPlacement unitType="infantry" territory="Sicily" quantity="1" owner="Italians"/>
                         <unitPlacement unitType="infantry" territory="Sardinia" quantity="1" owner="Italians"/>
+                        
 
                         <!-- German Unit Placements -->
                         <unitPlacement unitType="aaGun" territory="Western Europe" quantity="1" owner="Germans"/>
@@ -4329,9 +4330,6 @@
                         <unitPlacement unitType="aaGun" territory="India" quantity="1" owner="British"/>
                         <unitPlacement unitType="infantry" territory="India" quantity="3" owner="British"/>
                         <unitPlacement unitType="infantry" territory="Trans-Jordan" quantity="1" owner="British"/>
-                        <unitPlacement unitType="infantry" territory="Anglo Egypt" quantity="2" owner="British"/>
-                        <unitPlacement unitType="armour" territory="Anglo Egypt" quantity="1" owner="British"/>
-                        <unitPlacement unitType="fighter" territory="Anglo Egypt" quantity="1" owner="British"/>
                         <unitPlacement unitType="infantry" territory="Italian East Africa" quantity="1" owner="British"/>
                         <unitPlacement unitType="artillery" territory="Italian East Africa" quantity="1" owner="British"/>
                         <unitPlacement unitType="infantry" territory="Union of South Africa" quantity="1" owner="British"/>
@@ -4432,11 +4430,8 @@
                         <resourceGiven player="Germans" resource="PUs" quantity="40"/>
                         <resourceGiven player="Italians" resource="PUs" quantity="16"/>
                         <resourceGiven player="Chinese" resource="PUs" quantity="0"/>
-						
-						<!-- custom resources below
-						<resourceGiven player="Italians" resource="Steel" quantity="20"/>
-						<resourceGiven player="Italians" resource="Aluminium" quantity="30"/>
-						<resourceGiven player="Italians" resource="Fuel" quantity="20"/>-->
+
+						<resourceGiven player="Italians" resource="Fuel" quantity="20"/>
                 </resourceInitialize>
 
 				<relationshipInitialize>
@@ -5057,7 +5052,7 @@
 				</property>
 
 				<!-- Map Name: also used for map utils when asked (MUST exactly match the folder or zip name of your map (do not include the .zip of course). May point to another map folder if you are making a mod of that map) -->
-				<property name="mapName" value="the_pact_of_steel" editable="false"/>
+				<property name="mapName" value="victory_test" editable="false"/>
 
 				<!-- notes appear in the notes menu in the main screen, format as html -->
 				<property name="notes">
