@@ -1,4 +1,6 @@
 Changes for 1.5
+* Allowed for Dice Skins, which can be placed in the "dice" folder of a map's directory. (crystalct & veqryn)
+
 * Created new player attachment, suicideAttackTargets, which lets you set which units can be targetted during a kamikaze suicide attack. Also fixed null pointer error for neutral owned kamikaze zones. (veqryn)
 
 * Created new game option, "Kamikaze Suicide Attacks Done By Current Territory Owner", which allows you to change from the default of the original owner, to the current owner. (veqryn)

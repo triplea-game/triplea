@@ -63,7 +63,7 @@ public class UIContext
 	private final UnitImageFactory m_unitImageFactory = new UnitImageFactory();
 	private final MapImage m_mapImage;
 	private final FlagIconImageFactory m_flagIconImageFactory = new FlagIconImageFactory();
-	private final DiceImageFactory m_diceImageFactory = new DiceImageFactory();
+	private DiceImageFactory m_diceImageFactory;
 	private final PUImageFactory m_PUImageFactory = new PUImageFactory();
 	private boolean m_isShutDown;
 	private boolean m_drawUnits = true;
@@ -164,12 +164,12 @@ public class UIContext
 	
 	public void setDefaltMapDir(final GameData data)
 	{
-		internalSetMapDir(getDefaultMapDir(data));
+		internalSetMapDir(getDefaultMapDir(data), data);
 	}
 	
 	public void setMapDir(final GameData data, final String mapDir)
 	{
-		internalSetMapDir(mapDir);
+		internalSetMapDir(mapDir, data);
 		// set the default after internal suceeds, if an error is thrown
 		// we dont want to persist it
 		final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
@@ -184,7 +184,7 @@ public class UIContext
 		}
 	}
 	
-	private void internalSetMapDir(final String dir)
+	private void internalSetMapDir(final String dir, final GameData data)
 	{
 		final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
 		final ResourceLoader loader = ResourceLoader.getMapresourceLoader(dir);
@@ -193,6 +193,7 @@ public class UIContext
 			m_mapData.close();
 		}
 		m_mapData = new MapData(loader);
+		m_diceImageFactory = new DiceImageFactory(loader, data.getDiceSides()); // DiceImageFactory needs loader and game data
 		final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
 		m_scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
 		m_unitImageFactory.setResourceLoader(loader, unitScale);
@@ -461,13 +462,16 @@ public class UIContext
 		m_drawUnits = aBool;
 	}
 	
-	public void setShowTerritoryEffects(final boolean aBool) {
+	public void setShowTerritoryEffects(final boolean aBool)
+	{
 		m_drawTerritoryEffects = aBool;
 	}
 	
-	public boolean getShowTerritoryEffects() {
+	public boolean getShowTerritoryEffects()
+	{
 		return m_drawTerritoryEffects;
 	}
+	
 	public boolean getShowMapOnly()
 	{
 		return m_drawMapOnly;
@@ -539,6 +543,5 @@ public class UIContext
 			e.printStackTrace();
 		}
 	}
-
-
+	
 }
