@@ -5,14 +5,13 @@ import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.PBEMDiceRoller;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * An class for editing a Dice Server
+ * An class for editing a Dice Server bean
  *
  * @author Klaus Groenbaek
  */
@@ -35,6 +34,10 @@ public class DiceServerEditor extends EditorPanel
 	// constructors 
 	//-----------------------------------------------------------------------
 
+	/**
+	 * Creating a new instance
+	 * @param diceServer the DiceServer bean to edit
+	 */
 	public DiceServerEditor(IRemoteDiceServer diceServer)
 	{
 		m_bean = diceServer;
@@ -99,26 +102,12 @@ public class DiceServerEditor extends EditorPanel
 			}
 		});
 
-		final DocumentListener docListener = new NotifyListenersDocumentListener();
+		final DocumentListener docListener = new EditorChangedFiringDocumentListener();
 		m_toAddress.getDocument().addDocumentListener(docListener);
 		m_ccAddress.getDocument().addDocumentListener(docListener);
 	}
 
-	/**
-	 * Fires a property change so anyone listening to this editor will be notified
-	 */
-	private void notifyListeners()
-	{
-		firePropertyChange(EDITOR_CHANGE, null, null);
-	}
-
-
-	/**
-	 * call to check if the dice server configuration is valid
-	 *
-	 * @return true if valid
-	 */
-	private boolean validateInput()
+	public boolean isBeanValid()
 	{
 		boolean toValid = true;
 		boolean ccValid = true;
@@ -134,11 +123,6 @@ public class DiceServerEditor extends EditorPanel
 		return allValid;
 	}
 
-	public boolean isInputValid()
-	{
-		return validateInput();
-	}
-
 	@Override
 	public IBean getBean()
 	{
@@ -150,7 +134,7 @@ public class DiceServerEditor extends EditorPanel
 	 * Returns the currently configured dice server
 	 * @return the dice server
 	 */
-	public IRemoteDiceServer getDiceServer()
+	private IRemoteDiceServer getDiceServer()
 	{
 		if (m_bean.sendsEmail())
 		{
@@ -164,28 +148,4 @@ public class DiceServerEditor extends EditorPanel
 		return m_bean;
 	}
 
-	//-----------------------------------------------------------------------
-	// inner classes
-	//-----------------------------------------------------------------------
-
-	/**
-	 * A document listener that notify our listeners when documents change
-	 */
-	private class NotifyListenersDocumentListener implements DocumentListener
-	{
-		public void changedUpdate(final DocumentEvent e)
-		{
-			notifyListeners();
-		}
-
-		public void insertUpdate(final DocumentEvent e)
-		{
-			notifyListeners();
-		}
-
-		public void removeUpdate(final DocumentEvent e)
-		{
-			notifyListeners();
-		}
-	}
 }

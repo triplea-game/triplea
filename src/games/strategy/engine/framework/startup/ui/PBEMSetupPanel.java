@@ -25,20 +25,33 @@ import java.util.List;
 
 /**
  * A panel for setting up Play by Email/Forum.
- * This panel listens to the GameSelectionModel so it can refresh when a new (save) game is loaded
+ * This panel listens to the GameSelectionModel so it can refresh when a new game is selected or save game loaded
  * The MainPanel also listens to this panel, and we notify it through the notifyObservers()
  */
 public class PBEMSetupPanel extends SetupPanel implements Observer
 {
 
+	//-----------------------------------------------------------------------
+	// class fields
+	//-----------------------------------------------------------------------
 	private static final String DICE_ROLLER = "games.strategy.engine.random.IRemoteDiceServer";
 
+	//-----------------------------------------------------------------------
+	// instance fields
+	//-----------------------------------------------------------------------
 	private final GameSelectorModel m_gameSelectorModel;
-
 	private SelectAndViewEditor m_diceServerEditor;
 	private SelectAndViewEditor m_forumPosterEditor;
 	private SelectAndViewEditor m_emailSenderEditor;
 
+	//-----------------------------------------------------------------------
+	// constructors
+	//-----------------------------------------------------------------------
+
+	/**
+	 * Creates a new instance
+	 * @param model the GameSelectionModel, though which changes are obtained when new games are chosen, or save games loaded
+	 */
 	public PBEMSetupPanel(final GameSelectorModel model)
 	{
 		m_gameSelectorModel = model;
@@ -78,19 +91,15 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		panelRow++;
 		emailPanel.add(m_emailSenderEditor, new GridBagConstraints(0, panelRow, 1, 1, 1.0d, 0d, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0));
 
-
-
 		setupListeners();
 		if (m_gameSelectorModel.getGameData() != null)
 		{
 			loadAll();
 		}
 	}
-
-
-
-
-
+	//-----------------------------------------------------------------------
+	// instance methods
+	//-----------------------------------------------------------------------
 
 	private void setupListeners()
 	{
@@ -98,9 +107,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		m_diceServerEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
 		m_forumPosterEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
 		m_emailSenderEditor.addPropertyChangeListener(new NotifyingPropertyChangeListener());
-
-
-
 	}
 
 	private void loadAll()
@@ -111,10 +117,8 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 	}
 
 
-
 	/**
-	 * Loads the to/cc email and forum ID if the game is a save game
-	 *
+	 * Load the dice rollers from cache, if the game was a save game, the dice roller store is selected
 	 * @param data the game data
 	 */
 	private void loadDiceServer(final GameData data)
@@ -127,8 +131,6 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		{
 			IRemoteDiceServer cached = (IRemoteDiceServer) LocalBeanCache.getInstance().getSerializable(diceRoller.getDisplayName());
 			if (cached != null) {
-				// Since dice rollers are serialized with their Properties, and the user may have changed these in the files
-				// we only use the gameId and email from the cached version
 				diceRoller.setCcAddress(cached.getCcAddress());
 				diceRoller.setToAddress(cached.getToAddress());
 				diceRoller.setGameId(cached.getGameId());
@@ -151,7 +153,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 
 	/**
 	 * Load the Forum poster that are stored in the GameData, and select it in the list.
-	 * Sensitive information such as passwords are not stored in save games, so the are loaded from the local Serialization Cache
+	 * Sensitive information such as passwords are not stored in save games, so the are loaded from the LocalBeanCache
 	 *
 	 * @param data the game data
 	 */
@@ -179,6 +181,11 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		}
 	}
 
+	/**
+	 * Configures the list of Email senders. If the game was saved we use this email sender.
+	 * Since passwords are not stored in save games, the LocalBeanCache is checked
+	 * @param data the game data
+	 */
 	private void loadEmailSender(GameData data)
 	{
 		// The list of email, either loaded from cache or created
@@ -223,19 +230,25 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		return cached;
 	}
 
-
+	/**
+	 * Called when the current game changes
+	 */
 	@Override
 	public void cancel()
 	{
 		m_gameSelectorModel.deleteObserver(this);
 	}
 
+	/**
+	 * Called when the observers detect change, to see if the game is in a startable state
+	 * @return
+	 */
 	@Override
 	public boolean canGameStart()
 	{
-		boolean diceServerValid = m_diceServerEditor.isInputValid();
-		boolean summaryValid = m_forumPosterEditor.isInputValid();
-		boolean emailValid = m_emailSenderEditor.isInputValid();
+		boolean diceServerValid = m_diceServerEditor.isBeanValid();
+		boolean summaryValid = m_forumPosterEditor.isBeanValid();
+		boolean emailValid = m_emailSenderEditor.isBeanValid();
 
 		return diceServerValid &&
 				summaryValid &&

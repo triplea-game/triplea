@@ -10,7 +10,9 @@ import java.util.List;
 
 /**
  * Allows you put multiple beans in a list and use drop down to select which bean to configure.
- * The bean's editor is displayed below the dropdown
+ * The bean's editor is displayed below the dropdown.
+ * Use <code>setBeans</code> to set the beans edited by this editor, and <code>setSelectedBean</code> to select a specific bean
+ * The editor automatically realigns the label of nested editors
  *
  * @author Klaus Groenbaek
  */
@@ -29,6 +31,10 @@ public class SelectAndViewEditor extends EditorPanel
 	// constructors 
 	//-----------------------------------------------------------------------
 
+	/**
+	 * creates a new editor
+	 * @param labelTitle the title in front of the combo box
+	 */
 	public SelectAndViewEditor(String labelTitle)
 	{
 		super();
@@ -49,7 +55,7 @@ public class SelectAndViewEditor extends EditorPanel
 				if (e.getStateChange() == ItemEvent.SELECTED)
 				{
 					updateView();
-					notifyListeners();
+					fireEditorChanged();
 				}
 			}
 		});
@@ -58,7 +64,7 @@ public class SelectAndViewEditor extends EditorPanel
 		{
 			public void propertyChange(PropertyChangeEvent evt)
 			{
-				notifyListeners();
+				fireEditorChanged();
 			}
 		};
 	}
@@ -67,6 +73,10 @@ public class SelectAndViewEditor extends EditorPanel
 	// instance methods
 	//-----------------------------------------------------------------------
 
+	/**
+	 * Updates the view panel below the combo box.
+	 *
+	 */
 	private void updateView()
 	{
 		// todo(kg) Have the View use a card layout instead of removing all content
@@ -76,7 +86,6 @@ public class SelectAndViewEditor extends EditorPanel
 			m_editor.removePropertyChangeListener(_properChangeListener);
 		}
 
-		//
 		m_view.removeAll();
 		IBean item = (IBean) m_selector.getSelectedItem();
 		m_editor = item.getEditor();
@@ -85,13 +94,10 @@ public class SelectAndViewEditor extends EditorPanel
 			// register a property change listener so we can re-notify our listeners
 			m_editor.addPropertyChangeListener(_properChangeListener);
 			m_view.add(m_editor, new GridBagConstraints(0, 0, 1, 1, 1.0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-			m_editor.isInputValid();
+			m_editor.isBeanValid();
 		}
 		revalidate();
-
 		alignLabels();
-
-
 	}
 
 	/**
@@ -132,21 +138,17 @@ public class SelectAndViewEditor extends EditorPanel
 		updateView();
 	}
 
-	/**
-	 * Notify objects listening to this editor
-	 */
-	private void notifyListeners()
-	{
-		firePropertyChange(EDITOR_CHANGE, null, null);
-	}
-
 
 	@Override
-	public boolean isInputValid()
+	public boolean isBeanValid()
 	{
-		return m_editor == null || m_editor.isInputValid();
+		return m_editor == null || m_editor.isBeanValid();
 	}
 
+	/**
+	 * Returns the bean being edited
+	 * @return the current bean, or null if the bean doesn't have an editor (is disabled)
+	 */
 	@Override
 	public IBean getBean()
 	{
@@ -192,6 +194,4 @@ public class SelectAndViewEditor extends EditorPanel
 		m_selector.setSelectedItem(bean);
 		updateView();
 	}
-
-
 }

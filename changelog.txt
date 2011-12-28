@@ -1,4 +1,6 @@
 Changes for 1.5
+* Cleanup of new PBEM code. (qwertgold)
+
 * Added new Territory Effect Attachment option, noBlitz, which disallows certain units from blitzing in this effect, and also some general cleanup. (edwin & veqryn)
 
 * Redoing PBEM system to fix bugs and add features. (qwertgold)

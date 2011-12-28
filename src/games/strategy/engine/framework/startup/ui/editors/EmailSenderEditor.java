@@ -4,14 +4,11 @@ package games.strategy.engine.framework.startup.ui.editors;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
-import games.strategy.engine.framework.startup.ui.editors.validators.IntegerValidator;
+import games.strategy.engine.framework.startup.ui.editors.validators.IntegerRangeValidator;
 import games.strategy.engine.pbem.GenericEmailSender;
-import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.ProgressWindow;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,6 +46,12 @@ public class EmailSenderEditor extends EditorPanel
 	//-----------------------------------------------------------------------
 	// constructors
 	//-----------------------------------------------------------------------
+
+	/**
+	 * creates a new instance
+	 * @param bean the EmailSender to edit
+	 * @param editorConfiguration configures which editor fields should be visible
+	 */
 	public EmailSenderEditor(GenericEmailSender bean, EditorConfiguration editorConfiguration)
 	{
 		super();
@@ -108,9 +111,13 @@ public class EmailSenderEditor extends EditorPanel
 		setupListeners();
 	}
 
+	//-----------------------------------------------------------------------
+	// instance fields
+	//-----------------------------------------------------------------------
+
 	private void setupListeners()
 	{
-		ValidateInputOnChangeListener listener = new ValidateInputOnChangeListener();
+		EditorChangedFiringDocumentListener listener = new EditorChangedFiringDocumentListener();
 		m_host.getDocument().addDocumentListener(listener);
 		m_login.getDocument().addDocumentListener(listener);
 		m_port.getDocument().addDocumentListener(listener);
@@ -120,7 +127,7 @@ public class EmailSenderEditor extends EditorPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-			 notifyListeners();
+			 fireEditorChanged();
 			}
 		});
 
@@ -195,12 +202,12 @@ public class EmailSenderEditor extends EditorPanel
 		t.start();
 	}
 
-	public boolean isInputValid() {
+	public boolean isBeanValid() {
 
-		boolean hostValid = validateTextField(m_host, m_hostLabel);
-		boolean portValid = validateTextField(m_port, m_portLabel, new IntegerValidator(0, 65635));
-		boolean loginValid = validateTextField(m_login, m_loginLabel);
-		boolean passwordValid = validateTextField(m_password, m_passwordLabel);
+		boolean hostValid = validateTextFieldNotEmpty(m_host, m_hostLabel);
+		boolean portValid = validateTextField(m_port, m_portLabel, new IntegerRangeValidator(0, 65635));
+		boolean loginValid = validateTextFieldNotEmpty(m_login, m_loginLabel);
+		boolean passwordValid = validateTextFieldNotEmpty(m_password, m_passwordLabel);
 		boolean addressValid = validateTextField(m_toAddress, m_toLabel, new EmailValidator(false));
 
 		boolean allValid = hostValid && portValid && loginValid && passwordValid && addressValid;
@@ -210,17 +217,6 @@ public class EmailSenderEditor extends EditorPanel
 
 	@Override
 	public IBean getBean()
-	{
-		return getEmailSender();
-	}
-
-
-	//-----------------------------------------------------------------------
-	// instance methods
-	//-----------------------------------------------------------------------
-
-
-	public IEmailSender getEmailSender()
 	{
 		m_bean.setEncryption(m_useTLS.isSelected() ? GenericEmailSender.Encryption.TLS : GenericEmailSender.Encryption.NONE);
 		m_bean.setSubjectPrefix(m_subject.getText());
@@ -240,16 +236,13 @@ public class EmailSenderEditor extends EditorPanel
 		return m_bean;
 	}
 
-	private void notifyListeners()
-	{
-		firePropertyChange(EDITOR_CHANGE, null, null);
-	}
-
-
 	//-----------------------------------------------------------------------
 	// inner classes
 	//-----------------------------------------------------------------------
 
+	/**
+	 * class for configuring the editor so some fields can be hidden
+	 */
 	public static class EditorConfiguration {
 		public boolean showHost;
 		public boolean showPort;
@@ -268,26 +261,7 @@ public class EmailSenderEditor extends EditorPanel
 	}
 
 
-	/**
-	 * Document listener which calls validateAndEnableInput in response to any document change
-	 */
-	private class ValidateInputOnChangeListener implements DocumentListener
-	{
-		public void changedUpdate(final DocumentEvent e)
-		{
-			notifyListeners();
-		}
 
-		public void insertUpdate(final DocumentEvent e)
-		{
-			notifyListeners();
-		}
-
-		public void removeUpdate(final DocumentEvent e)
-		{
-			notifyListeners();
-		}
-	}
 
 
 

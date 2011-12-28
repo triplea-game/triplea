@@ -4,11 +4,14 @@ import games.strategy.engine.framework.startup.ui.editors.validators.NonEmptyVal
 import games.strategy.engine.framework.startup.ui.editors.validators.IValidator;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
 
 /**
- * Base class for editors, contains a number of utility methods, suce a validation
+ * Base class for editors.
+ * Editors fire property Events in response when changed, so other editors or GUI can be notified
  *
  * @author Klaus Groenbaek
  */
@@ -27,44 +30,74 @@ public abstract class EditorPanel extends JPanel
 	{
 		super(new GridBagLayout());
 		m_labelColor = new JLabel().getForeground();
-
 	}
 
 	//-----------------------------------------------------------------------
 	// instance methods
 	//-----------------------------------------------------------------------
 
+	/**
+	 * registers a listener for editor changes
+	 * @param listener the listener. be aware that the oldValue and newValue properties of the PropertyChangeEvent
+	 * will both be null
+	 * @see java.beans.PropertyChangeEvent#getOldValue()
+	 * @see java.beans.PropertyChangeEvent#getOldValue()
+	 *
+	 */
 	@Override
 	public void addPropertyChangeListener(PropertyChangeListener listener)
 	{
 		super.addPropertyChangeListener(EDITOR_CHANGE, listener);
 	}
 
-	protected boolean validateTextField(JTextField field, JLabel label)
+	/**
+	 * Validates that a text field is not empty. if the content is not valid the associated label is marked in red
+	 * @param field the field to validate
+	 * @param label the associated label (or null)
+	 * @return true if text field content is valid
+	 */
+	protected boolean validateTextFieldNotEmpty(JTextField field, JLabel label)
 	{
 		return validateTextField(field, label, new NonEmptyValidator());
 	}
 
+	/**
+	 * Validates a the contents of a text field using a specified validator. if the content is not valid the associated label is marked in red
+	 * @param field the field to validate
+	 * @param label the associated label (or null)
+	 * @param IValidator the validator
+	 * @return true if text field content is valid
+	 */
 	protected boolean validateTextField(JTextField field, JLabel label, IValidator IValidator)
 	{
-	  boolean valid = true;
+	  	boolean valid = true;
+		Color color = m_labelColor;
 		if (!IValidator.isValid(field.getText()))
 		{
 			valid = false;
-			label.setForeground(Color.RED);
-		} else
+			color = Color.RED;
+			label.setForeground(color);
+		}
+
+		if (label != null)
 		{
-			label.setForeground(m_labelColor);
+			label.setForeground(color);
 		}
 		return valid;
-
 	}
 
+	/**
+	 * called to see if the bean that is edited is in a valid state.
+	 * This is typically called by editor listeners in response to a change in the editor
+	 * @return true if valid
+	 */
+	public abstract boolean isBeanValid();
 
-	public abstract boolean isInputValid();
-
+	/**
+	 * Get the bean that is being edited. You should only call this when #isBeanValid return true
+	 * @return the bean modified by the editor
+	 */
 	public abstract IBean getBean();
-
 
 	/**
 	 * Returns the Label width, this can be used by wrapping editors to try to align label sizes
@@ -87,11 +120,12 @@ public abstract class EditorPanel extends JPanel
 		return width;
 	}
 
-	protected boolean emptyOrNull(String str)
-	{
-		return str == null || str.trim().equals("");
-	}
-
+	/**
+	 * Sets the label with for labels in the first column of the gridBagLayout.
+	 * This can be used to align components in a GUI, so all editors (or nested editors) have same label width
+	 * @see SelectAndViewEditor
+	 * @param width the new width of the labels
+	 */
 	public void setLabelWidth(int width)
 	{
 		GridBagLayout layout = (GridBagLayout) getLayout();
@@ -106,6 +140,39 @@ public abstract class EditorPanel extends JPanel
 				component.setPreferredSize(dimension);
 				component.setSize(dimension);
 			}
+		}
+	}
+
+	/**
+	 * Fires the EDITOR_CHANGE property change, to notify propertyChangeListeners which have registered to be
+	 * notified when the editor modifies the bean
+	 */
+	protected void fireEditorChanged()
+	{
+		firePropertyChange(EDITOR_CHANGE, null, null);
+	}
+
+	//-----------------------------------------------------------------------
+	// inner classes
+	//-----------------------------------------------------------------------
+	/**
+	 * Document listener which calls fireEditorChanged in response to any document change
+	 */
+	protected class EditorChangedFiringDocumentListener implements DocumentListener
+	{
+		public void changedUpdate(final DocumentEvent e)
+		{
+			fireEditorChanged();
+		}
+
+		public void insertUpdate(final DocumentEvent e)
+		{
+			fireEditorChanged();
+		}
+
+		public void removeUpdate(final DocumentEvent e)
+		{
+			fireEditorChanged();
 		}
 	}
 }

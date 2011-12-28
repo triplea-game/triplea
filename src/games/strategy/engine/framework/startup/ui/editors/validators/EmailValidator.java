@@ -9,21 +9,24 @@ import games.strategy.util.Util;
 public class EmailValidator implements IValidator
 {
 
-	private boolean m_mayBeEmpty;
+	private boolean m_validIfEmpty;
 	//-----------------------------------------------------------------------
 	// instance methods
 	//-----------------------------------------------------------------------
 
-
-	public EmailValidator(boolean mayBeEmpty)
+	/**
+	 * create a new instance
+	 * @param validIfEmpty is the text valid if empty
+	 */
+	public EmailValidator(boolean validIfEmpty)
 	{
-		m_mayBeEmpty = mayBeEmpty;
+		m_validIfEmpty = validIfEmpty;
 	}
 
 	public boolean isValid(String text)
 	{
-		if (text.isEmpty() ) {
-			return m_mayBeEmpty;
+		if (text.length() == 0) {
+			return m_validIfEmpty;
 		}
 		return Util.isMailValid(text);
 

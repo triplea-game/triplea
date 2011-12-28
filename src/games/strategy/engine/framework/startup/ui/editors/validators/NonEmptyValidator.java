@@ -10,7 +10,6 @@ public class NonEmptyValidator implements IValidator
 	// instance methods
 	//-----------------------------------------------------------------------
 
-
 	public boolean isValid(String text)
 	{
 		return text.length() > 0;

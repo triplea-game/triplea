@@ -6,7 +6,6 @@ import games.strategy.engine.pbem.NullForumPoster;
 import games.strategy.ui.ProgressWindow;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -108,7 +107,7 @@ public class ForumPosterEditor extends EditorPanel
 
 
 		// add a document listener which will validate input when the content of any input field is changed
-		DocumentListener docListener = new ValidateInputOnChangeListener();
+		DocumentListener docListener = new EditorChangedFiringDocumentListener();
 		m_login.getDocument().addDocumentListener(docListener);
 		m_password.getDocument().addDocumentListener(docListener);
 		m_forumIdField.getDocument().addDocumentListener(docListener);
@@ -151,37 +150,25 @@ public class ForumPosterEditor extends EditorPanel
 	}
 
 
-
-	/**
-	 * Fires a property change so anyone listening to this editor will be notified
-	 */
-	private void notifyListeners()
-	{
-		firePropertyChange(EDITOR_CHANGE, null, null);
-	}
-
-
-
-	public boolean isInputValid()
+	public boolean isBeanValid()
 	{
 		if (m_bean instanceof NullForumPoster)
 		{
 			return true;
 		}
-		boolean loginValid = validateTextField(m_login, m_loginLabel);
-		boolean passwordValid = validateTextField(m_password, m_passwordLabel);
+		boolean loginValid = validateTextFieldNotEmpty(m_login, m_loginLabel);
+		boolean passwordValid = validateTextFieldNotEmpty(m_password, m_passwordLabel);
 
 		boolean idValid = true;
 		if (m_bean.getCanViewPosted())
 		{
-			idValid = validateTextField(m_forumIdField, m_forumIdLabel);
+			idValid = validateTextFieldNotEmpty(m_forumIdField, m_forumIdLabel);
 			m_viewPosts.setEnabled(idValid);
 		} else
 		{
 			m_forumIdLabel.setForeground(m_labelColor);
 			m_viewPosts.setEnabled(false);
 		}
-
 
 		boolean allValid = loginValid && passwordValid && idValid;
 		m_testForum.setEnabled(allValid);
@@ -191,44 +178,10 @@ public class ForumPosterEditor extends EditorPanel
 	@Override
 	public IBean getBean()
 	{
-		return getForumPoster();
-	}
-	/**
-	 * Get the Forum poster edited  by the editor
-	 *
-	 * @return the poster
-	 */
-	public IForumPoster getForumPoster()
-	{
 		m_bean.setForumId(m_forumIdField.getText());
 		m_bean.setUsername(m_login.getText());
 		m_bean.setPassword(m_password.getText());
 		m_bean.setIncludeSaveGame(m_includeSaveGame.isSelected());
 		return m_bean;
-	}
-
-	//-----------------------------------------------------------------------
-	// inner classes
-	//-----------------------------------------------------------------------
-
-	/**
-	 * Document listener which calls validateAndEnableInput in response to any document change
-	 */
-	private class ValidateInputOnChangeListener implements DocumentListener
-	{
-		public void changedUpdate(final DocumentEvent e)
-		{
-			notifyListeners();
-		}
-
-		public void insertUpdate(final DocumentEvent e)
-		{
-			notifyListeners();
-		}
-
-		public void removeUpdate(final DocumentEvent e)
-		{
-			notifyListeners();
-		}
 	}
 }
