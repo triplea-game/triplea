@@ -4005,7 +4005,9 @@
 															The attacks happen during an opponents turn at the beginning of the battle step, so for example Japan may launch these attacks after the American combat move. The attacks target specific warships for destruction.
 															These attacks only occur in territories that are designated as kamikazeZone, and the attacks will be done by the original owner of that territory (owner when the game started, make sure to set it in the ownerInitialize)
 															Currently the attacks only target units owned by the current player, and must be surface warships (not subs, not transports) [I plan to let you specify which units later, and let you target land units too].
-															examples: <option name="suicideAttackResources" value="SuicideAttackTokens" count="2"/> (
+															examples: <option name="suicideAttackResources" value="SuicideAttackTokens" count="2"/>
+			suicideAttackTargets				values: a colon delimited list of the units that this player may target during a Kamikaze Suicide Attack. If not set, then it defaults to all surface combat sea units.
+															examples: <option name="suicideAttackTargets" value="battleship:carrier"/>
 			vps									values: not sure if it works
 			captureVps							values: not sure if it works
 	-->
@@ -4635,6 +4637,11 @@
 
 						<!-- Use Kamikaze Suicide Attacks allows a player to use resources designated in player attachments to make special attacks -->
 				<property name="Use Kamikaze Suicide Attacks" value="false" editable="false">
+						<boolean/>
+				</property>
+				
+						<!-- Kamikaze Suicide Attacks Done By Current Territory Owner allows you to have the current owner perform the suicide attacks, instead of the original owner -->
+				<property name="Kamikaze Suicide Attacks Done By Current Territory Owner" value="false" editable="false">
 						<boolean/>
 				</property>
 

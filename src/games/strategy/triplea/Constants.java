@@ -212,6 +212,7 @@ public interface Constants
 	public static final String ALLIANCES_CAN_CHAIN_TOGETHER = "Alliances Can Chain Together";
 	public static final String RAIDS_MAY_BE_PRECEEDED_BY_AIR_BATTLES = "Raids May Be Preceeded By Air Battles";
 	public static final String USE_KAMIKAZE_SUICIDE_ATTACKS = "Use Kamikaze Suicide Attacks";
+	public static final String KAMIKAZE_SUICIDE_ATTACKS_DONE_BY_CURRENT_TERRITORY_OWNER = "Kamikaze Suicide Attacks Done By Current Territory Owner";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

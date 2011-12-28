@@ -479,7 +479,30 @@ class KamikazeZoneDrawable implements IDrawable
 	{
 		// Change so only original owner gets the kamikazi zone marker
 		final Territory terr = data.getMap().getTerritory(m_location);
-		final Image img = m_uiContext.getFlagImageFactory().getFadedFlag(data.getPlayerList().getPlayerID(TerritoryAttachment.get(terr).getOriginalOwner().getName()));
+		final TerritoryAttachment ta = TerritoryAttachment.get(terr);
+		PlayerID owner = null;
+		if (games.strategy.triplea.Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data))
+		{
+			owner = terr.getOwner();
+			if (owner == null)
+				owner = PlayerID.NULL_PLAYERID;
+		}
+		else
+		{
+			if (ta == null)
+			{
+				owner = PlayerID.NULL_PLAYERID;
+			}
+			else
+			{
+				owner = ta.getOccupiedTerrOf();
+				if (owner == null)
+					owner = ta.getOriginalOwner();
+				if (owner == null)
+					owner = PlayerID.NULL_PLAYERID;
+			}
+		}
+		final Image img = m_uiContext.getFlagImageFactory().getFadedFlag(owner);
 		final Point point = mapData.getKamikazeMarkerLocation(data.getMap().getTerritory(m_location));
 		graphics.drawImage(img, point.x - bounds.x, point.y - bounds.y, null);
 	}

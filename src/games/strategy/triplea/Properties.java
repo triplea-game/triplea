@@ -798,6 +798,11 @@ public class Properties implements Constants
 		return data.getProperties().get(USE_KAMIKAZE_SUICIDE_ATTACKS, false);
 	}
 	
+	public static boolean getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(final GameData data)
+	{
+		return data.getProperties().get(KAMIKAZE_SUICIDE_ATTACKS_DONE_BY_CURRENT_TERRITORY_OWNER, false);
+	}
+	
 	private Properties()
 	{
 	}

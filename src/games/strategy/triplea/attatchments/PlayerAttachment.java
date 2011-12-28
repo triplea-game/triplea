@@ -22,11 +22,14 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 
@@ -62,10 +65,46 @@ public class PlayerAttachment extends DefaultAttachment
 	private final Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
 	private final IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>();
+	private Set<UnitType> m_suicideAttackTargets = null;
 	
 	/** Creates new PlayerAttachment */
 	public PlayerAttachment()
 	{
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	public void setSuicideAttackTargets(final String value) throws GameParseException
+	{
+		if (value == null)
+		{
+			m_suicideAttackTargets = null;
+			return;
+		}
+		if (m_suicideAttackTargets == null)
+			m_suicideAttackTargets = new HashSet<UnitType>();
+		final String[] s = value.split(":");
+		for (final String u : s)
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(u);
+			if (ut == null)
+				throw new GameParseException("Player Attachment: suicideAttackTargets: no such unit called " + u);
+			m_suicideAttackTargets.add(ut);
+		}
+	}
+	
+	public Set<UnitType> getSuicideAttackTargets()
+	{
+		return m_suicideAttackTargets;
+	}
+	
+	public void clearSuicideAttackTargets()
+	{
+		m_suicideAttackTargets.clear();
 	}
 	
 	/**

@@ -57,6 +57,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * @author Sean Bridges
@@ -747,8 +748,9 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		final Collection<PlayerID> enemies = Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(m_player, data));
 		if (enemies.isEmpty())
 			return;
-		final Match<Unit> canBeAttacked = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_player), Matches.UnitIsSea,
+		final Match<Unit> canBeAttackedDefault = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_player), Matches.UnitIsSea,
 					Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSub);
+		
 		// create a list of all kamikaze zones, listed by enemy
 		final HashMap<PlayerID, Collection<Territory>> kamikazeZonesByEnemy = new HashMap<PlayerID, Collection<Territory>>();
 		for (final Territory t : data.getMap().getTerritories())
@@ -758,17 +760,24 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				continue;
 			if (!ta.isKamikazeZone())
 				continue;
-			// TODO: we should have a game option to decide if it is the original or current owner. default is original.
 			PlayerID owner = null;
-			owner = ta.getOccupiedTerrOf();
-			if (owner == null)
-				owner = ta.getOriginalOwner();
-			if (owner == null)
-				continue;
+			if (!games.strategy.triplea.Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data))
+			{
+				owner = ta.getOccupiedTerrOf();
+				if (owner == null)
+					owner = ta.getOriginalOwner();
+				if (owner == null)
+					continue;
+			}
+			else
+			{
+				owner = t.getOwner();
+				if (owner == null)
+					continue;
+			}
 			if (enemies.contains(owner))
 			{
-				// TODO: we should have a game option or a couple, or player attachments, to decide what units can be attacked
-				if (Match.noneMatch(t.getUnits().getUnits(), canBeAttacked))
+				if (Match.noneMatch(t.getUnits().getUnits(), Matches.unitIsOwnedBy(m_player)))
 					continue;
 				Collection<Territory> currentTerrs = kamikazeZonesByEnemy.get(owner);
 				if (currentTerrs == null)
@@ -785,6 +794,12 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			final PlayerAttachment pa = PlayerAttachment.get(currentEnemy);
 			if (pa == null)
 				continue;
+			Match<Unit> canBeAttacked = canBeAttackedDefault;
+			final Set<UnitType> suicideAttackTargets = pa.getSuicideAttackTargets();
+			if (suicideAttackTargets != null)
+			{
+				canBeAttacked = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_player), Matches.unitIsOfTypes(suicideAttackTargets));
+			}
 			// See if the player has any attack tokens
 			final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
 			if (resourcesAndAttackValues.size() <= 0)
@@ -804,7 +819,9 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack = new HashMap<Territory, Collection<Unit>>();
 			for (final Territory t : kamikazeZones)
 			{
-				possibleUnitsToAttack.put(t, t.getUnits().getMatches(canBeAttacked));
+				final List<Unit> validTargets = t.getUnits().getMatches(canBeAttacked);
+				if (!validTargets.isEmpty())
+					possibleUnitsToAttack.put(t, validTargets);
 			}
 			final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> attacks = ((ITripleaPlayer) m_bridge.getRemote(currentEnemy)).selectKamikazeSuicideAttacks(possibleUnitsToAttack);
 			if (attacks == null || attacks.isEmpty())
