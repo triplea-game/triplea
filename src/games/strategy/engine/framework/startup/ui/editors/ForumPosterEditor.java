@@ -93,7 +93,7 @@ public class ForumPosterEditor extends EditorPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				m_bean.viewPosted();
+				((IForumPoster) getBean()).viewPosted();
 			}
 		});
 

@@ -21,7 +21,12 @@ import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.net.BrowserControl;
 import games.strategy.net.MultiPartFormOutputStream;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,33 +37,33 @@ import java.util.regex.Pattern;
 
 /**
  * Class is serialized and stored the users local cache. Be careful when adding
+ * 
  * @author Tony Clayton
  * @version 1.0
  */
 public class AxisAndAlliesForumPoster implements IForumPoster
 {
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	// Class fields
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	private static final Logger s_logger = Logger.getLogger(ILauncher.class.getName());
 	private static final int m_loginDelayInSeconds = 16;
 	private static final String m_host = "www.axisandallies.org";
 	private static final long serialVersionUID = 7957926213311732949L;
 	private static final String USE_TRANSITIVE_PASSWORD = "d0a11f0f-96d3-4303-8875-4965aefb2ce4";
-
-	//-----------------------------------------------------------------------
+	
+	// -----------------------------------------------------------------------
 	// instance fields
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	private String m_username = null;
 	private String m_password = null;
 	private transient String m_transPassword;
 	private String m_gameId = null;
 	private boolean m_includeSaveGame = true;
-
-
-	//-----------------------------------------------------------------------
+	
+	// -----------------------------------------------------------------------
 	// Transient fields
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	private transient String m_cookies = null;
 	private transient String m_referer = null;
 	private transient String m_sesc = null;
@@ -70,54 +75,54 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 	private transient String m_turnSummaryRef = null;
 	private transient File m_saveGameFile = null;
 	private transient String m_saveGameRef = null;
-	//-----------------------------------------------------------------------
+	
+	// -----------------------------------------------------------------------
 	// constructors
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	public AxisAndAlliesForumPoster()
 	{
 	}
-
-	//-----------------------------------------------------------------------
+	
+	// -----------------------------------------------------------------------
 	// instance methods
-	//-----------------------------------------------------------------------
-
+	// -----------------------------------------------------------------------
+	
 	public EditorPanel getEditor()
 	{
 		return new ForumPosterEditor(this);
 	}
-
-	public boolean sameType(IBean other)
+	
+	public boolean sameType(final IBean other)
 	{
 		return other.getClass() == AxisAndAlliesForumPoster.class;
 	}
-
+	
 	public String getDisplayName()
 	{
 		return "www.AxisAndAllies.org";
 	}
 	
-
 	public boolean getCanViewPosted()
 	{
 		return true;
 	}
-
+	
 	public String getScreenshotRef()
 	{
 		return m_screenshotRef;
 	}
-
+	
 	public void viewPosted()
 	{
 		final String url = "http://" + m_host + "/forums/index.php?topic=" + m_gameId + ".new#new";
 		BrowserControl.displayURL(url);
 	}
-
+	
 	public void clearSensitiveInfo()
 	{
-	 	m_password = USE_TRANSITIVE_PASSWORD;
+		m_password = USE_TRANSITIVE_PASSWORD;
 	}
-
+	
 	public void setForumId(final String forumId)
 	{
 		m_gameId = forumId;
@@ -146,7 +151,8 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 	
 	public String getPassword()
 	{
-		if (USE_TRANSITIVE_PASSWORD.equals(m_password)) {
+		if (USE_TRANSITIVE_PASSWORD.equals(m_password))
+		{
 			return m_transPassword;
 		}
 		return m_password;
@@ -241,9 +247,11 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 				if (code == 200)
 				{
 					// fetch PHPSESSID
-					final String refreshHdr = urlConn.getHeaderField("Refresh");
-					final Pattern p_phpsessid = Pattern.compile(".*?\\?PHPSESSID=(\\w+).*");
-					final Matcher match_phpsessid = p_phpsessid.matcher(refreshHdr);
+					String header = urlConn.getHeaderField("Refresh");
+					if (header == null)
+						header = urlConn.getHeaderField("Set-Cookie");
+					final Pattern p_phpsessid = Pattern.compile(".*?\\?PHPSESSID=(\\w+).*"); // TODO: fix this regex
+					final Matcher match_phpsessid = p_phpsessid.matcher(header);
 					if (match_phpsessid.matches())
 					{
 						// m_phpsessid = match_phpsessid.group(1);
@@ -505,10 +513,10 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 		MultiPartFormOutputStream out = null;
 		String forumSummary = "";
 		String screenshotSummary = "";
-		String saveGameSummary = "";
+		final String saveGameSummary = "";
 		String finalSummary = "";
 		m_turnSummaryRef = null;
-
+		
 		// first, login if necessary
 		if (m_cookies == null && !postLogin())
 			return false;
@@ -530,14 +538,14 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 		forumSummary = "\n\nA&A Forum : " + getNextReplyUrl();
 		if (m_screenshotRef != null)
 			screenshotSummary = "\nScreenshot: " + m_screenshotRef;
-
+		
 		finalSummary = summary + forumSummary + screenshotSummary + saveGameSummary;
 		int code;
 		BufferedReader in = null;
 		String line;
-		Pattern p1;
-		Pattern p2;
-		Pattern p3;
+		final Pattern p1;
+		final Pattern p2;
+		final Pattern p3;
 		// send request to server
 		try
 		{
@@ -567,7 +575,7 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 			if (m_saveGameFile != null)
 			{
 				FileInputStream fin = null;
-
+				
 				try
 				{
 					fin = new FileInputStream(m_saveGameFile);
@@ -580,7 +588,7 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 						try
 						{
 							fin.close();
-						} catch (IOException e)
+						} catch (final IOException e)
 						{
 							// ignore
 						}
@@ -596,9 +604,9 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 			// 200 OK for error, redirects 301/302 if successful
 			if (code == 200)
 			{
-
+				
 				in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-				StringBuilder sb = new StringBuilder();
+				final StringBuilder sb = new StringBuilder();
 				String responseBody; // read the whole response for easier debugging
 				try
 				{
@@ -607,25 +615,25 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 						sb.append(line);
 					}
 					responseBody = sb.toString();
-
-
+					
 				} finally
 				{
 					in.close();
 				}
-
+				
 				// The forum may also report <div...id="error_list">Sorry, you are not allowed to post links.</div>
-				Pattern p4 = Pattern.compile(".*?id=\"error_list[^>]*>\\s+([^<]*)\\s+<.*");
-				Matcher matcher = p4.matcher(responseBody);
-				if (matcher.matches()) {
+				final Pattern p4 = Pattern.compile(".*?id=\"error_list[^>]*>\\s+([^<]*)\\s+<.*");
+				final Matcher matcher = p4.matcher(responseBody);
+				if (matcher.matches())
+				{
 					m_turnSummaryRef = "The site gave an error: '" + matcher.group(1) + "'";
 					return false;
 				}
-
+				
 				s_logger.warning("Unknown error html: " + responseBody);
 				m_turnSummaryRef = "Unknown error, if this problem persists, post an error to the TripleA dev forum";
 				return false;
-
+				
 			}
 			if (code != 301 && code != 302)
 			{
@@ -638,19 +646,21 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 			// now, go back to forum
 			if (!goToForum())
 				return false;
-
+			
 		} catch (final Exception e)
 		{
-
+			
 			s_logger.severe(e.getMessage());
 			m_turnSummaryRef = "Unknown error, message written to debug log";
 			return false;
-		} finally {
-			if (in != null) {
+		} finally
+		{
+			if (in != null)
+			{
 				try
 				{
 					in.close();
-				} catch (IOException e)
+				} catch (final IOException e)
 				{
 					// ignore
 				}
@@ -673,36 +683,35 @@ public class AxisAndAlliesForumPoster implements IForumPoster
 	{
 		return m_turnSummaryRef;
 	}
-
+	
 	public boolean getIncludeSaveGame()
 	{
 		return m_includeSaveGame;
 	}
-
-	public void setIncludeSaveGame(boolean include)
+	
+	public void setIncludeSaveGame(final boolean include)
 	{
-	 	m_includeSaveGame = include;
+		m_includeSaveGame = include;
 	}
-
-	public void addSaveGame(File saveGameFile, String fileName)
+	
+	public void addSaveGame(final File saveGameFile, final String fileName)
 	{
 		m_saveGameFile = saveGameFile;
 	}
-
+	
 	public IForumPoster doClone()
 	{
-		AxisAndAlliesForumPoster clone = new AxisAndAlliesForumPoster();
+		final AxisAndAlliesForumPoster clone = new AxisAndAlliesForumPoster();
 		clone.setForumId(getForumId());
 		clone.setIncludeSaveGame(getIncludeSaveGame());
 		clone.setPassword(getPassword());
 		clone.setUsername(getUsername());
 		return clone;
 	}
-
+	
 	public boolean supportsSaveGame()
 	{
 		return true;
 	}
-
-
+	
 }

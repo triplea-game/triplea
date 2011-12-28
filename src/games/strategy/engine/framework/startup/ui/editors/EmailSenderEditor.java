@@ -6,6 +6,7 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.startup.ui.editors.validators.EmailValidator;
 import games.strategy.engine.framework.startup.ui.editors.validators.IntegerRangeValidator;
 import games.strategy.engine.pbem.GenericEmailSender;
+import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.ProgressWindow;
 
 import javax.swing.*;
@@ -165,7 +166,7 @@ public class EmailSenderEditor extends EditorPanel
 					fout.write("This file would normally be a save game".getBytes());
 					fout.close();
 
-					m_bean.sendEmail("TripleA Test", html, dummy, "dummy.txt");
+					((IEmailSender) getBean()).sendEmail("TripleA Test", html, dummy, "dummy.txt");
 					// email was sent, or an exception would have been thrown
 					message = "Email sent, it should arrive shortly, otherwise check your spam folder";
 					messageType = JOptionPane.INFORMATION_MESSAGE;

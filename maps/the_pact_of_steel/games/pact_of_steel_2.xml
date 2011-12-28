@@ -3431,6 +3431,7 @@
 					giveUnitControl
 					captureUnitOnEnteringBy
 					suicideAttackResources
+					suicideAttackTargets
 					
 				Objectives & Condition Attachments:
 					conditions

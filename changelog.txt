@@ -3,7 +3,7 @@ Changes for 1.5
 
 * Created new game option, "Kamikaze Suicide Attacks Done By Current Territory Owner", which allows you to change from the default of the original owner, to the current owner. (veqryn)
 
-* Cleanup of new PBEM code. (qwertgold)
+* Cleanup of new PBEM code, and some bug fixing. (qwertgold)
 
 * Added new Territory Effect Attachment option, noBlitz, which disallows certain units from blitzing in this effect, and also some general cleanup. (edwin & veqryn)
 
