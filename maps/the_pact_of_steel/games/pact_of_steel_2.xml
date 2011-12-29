@@ -1813,7 +1813,9 @@
 			isAAforCombatOnly					values: allows this unit to be an AA gun for normal combat only.  it will not defend against strategic bombing raids
 			isAAforBombingThisUnitOnly			values: allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid (currently defends against all strategic bombing attacks in this territory, not just against this unit).  it will not defend against a normal attack
 			isRocket							values: allows this unit to become a rocket if the player has the rocket technology.  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name
-			isAAmovement						values: forces this unit to follow the rules for movement of an AA gun, and for placement of AA guns (like no moving during combat phase, max of 1 of each unit per territory, etc.)
+			isAAmovement						values: just sets canNotMoveDuringCombatMove to "true", and only for aa guns it will set the stackingLimit to "1:allied" when playing by classic rules
+			canNotMoveDuringCombatMove			values: true or false, defaults to false, does not allow this unit to move during 'combat move phase'
+			stackingLimit						values: the count is equal to the number of this unit allowed per territory, and the value is equal to "owned" (we are only counting units owned by each player), or "allied" (allied too), or "total" (which counts enemy units too)
 			
 	-->
 
@@ -2214,8 +2216,10 @@
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>-->
 						 <!-- isRocket allows this unit to become a rocket if the player has the rocket technology.  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name.
 						 <option name="isRocket" value="true"/>-->
-						 <!-- isAAmovement forces this unit to follow the rules for movement of an AA gun, and for placement of AA guns (like no moving during combat phase, max of 1 of each unit per territory, etc.)
-						 <option name="isAAmovement" value="true"/>-->
+						 <!-- canNotMoveDuringCombatMove does not allow movement during 'combat move phase'
+						 <option name="canNotMoveDuringCombatMove" value="true"/>-->
+						 <!-- stackingLimit sets a maximum for the number of this unit in any territory. value can be "owned", "allied", or "total".
+						 <option name="stackingLimit" value="allied" count="1"/>-->
                 </attatchment>
 				
 				

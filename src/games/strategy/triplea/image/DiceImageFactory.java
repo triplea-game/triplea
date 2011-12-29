@@ -149,7 +149,7 @@ public class DiceImageFactory
 					graphics.setColor(Color.BLACK);
 					break;
 				case IGNORED:
-					graphics.setColor(new Color(100, 100, 100, 200));
+					graphics.setColor(s_ignored);
 					break;
 				default:
 					throw new IllegalStateException("??");

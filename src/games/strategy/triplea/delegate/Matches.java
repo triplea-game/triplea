@@ -1062,14 +1062,24 @@ public class Matches
 			return ua.isAA() || ua.getIsRocket();
 		}
 	};
-	public static final Match<Unit> UnitIsAAorIsAAmovement = new Match<Unit>()
+	public static final Match<Unit> UnitHasStackingLimit = new Match<Unit>()
 	{
 		@Override
 		public boolean match(final Unit obj)
 		{
 			final UnitType type = obj.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.isAA() || ua.getIsAAmovement();
+			return ua.getStackingLimit() != null;
+		}
+	};
+	public static final Match<Unit> UnitCanNotMoveDuringCombatMove = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
+			return ua.getCanNotMoveDuringCombatMove();
 		}
 	};
 	public static final Match<Unit> UnitIsAA = new Match<Unit>()
@@ -2952,7 +2962,6 @@ public class Matches
 	}
 	
 	public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
-	public static final Match<Unit> UnitIsAAOrIsAAmovementOrIsFactory = new CompositeMatchOr<Unit>(UnitIsAAorIsAAmovement, UnitIsFactory);
 	public static final Match<Unit> UnitIsAAOrIsFactoryOrIsInfrastructure = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory, UnitIsInfrastructure);
 	public static final Match<Territory> territoryIsBlockadeZone = new Match<Territory>()
 	{

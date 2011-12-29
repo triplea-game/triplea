@@ -262,9 +262,9 @@ public class MovePanel extends AbstractMovePanel
 		};
 		// choosing what transports to unload
 		final UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections, m_mustMoveWithDetails.getMustMoveWith(),
-		/* categorizeMovement */true,
-		/* categorizeTransportCost */false, getGameData(),
-		/* allowTwoHit */false, getMap().getUIContext(), transportsToUnloadMatch);
+					/* categorizeMovement */true,
+					/* categorizeTransportCost */false, getGameData(),
+					/* allowTwoHit */false, getMap().getUIContext(), transportsToUnloadMatch);
 		chooser.setTitle("What transports do you want to unload");
 		final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to unload", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
 					null);
@@ -350,7 +350,7 @@ public class MovePanel extends AbstractMovePanel
 		if (!games.strategy.triplea.Properties.getSelectableZeroMovementUnits(getData()))
 			movable.add(Matches.UnitCanMove);
 		if (!m_nonCombat)
-			movable.add(new InverseMatch<Unit>(Matches.UnitIsAAorIsAAmovement));
+			movable.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
 		if (route != null)
 		{
 			final Match<Unit> enoughMovement = new Match<Unit>()
@@ -743,9 +743,9 @@ public class MovePanel extends AbstractMovePanel
 			}
 		};
 		final UnitChooser chooser = new UnitChooser(candidateTransports, defaultSelections, endMustMoveWith.getMustMoveWith(),
-		/* categorizeMovement */true,
-		/* categorizeTransportCost */false, getGameData(),
-		/* allowTwoHit */false, getMap().getUIContext(), transportsToLoadMatch);
+					/* categorizeMovement */true,
+					/* categorizeTransportCost */false, getGameData(),
+					/* allowTwoHit */false, getMap().getUIContext(), transportsToLoadMatch);
 		chooser.setTitle("What transports do you want to load");
 		final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to load", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
 					null);
@@ -835,18 +835,18 @@ public class MovePanel extends AbstractMovePanel
 					{
 						// use matcher to prevent units of different owners being chosen
 						chooser = new UnitChooser(unitsToMove, m_selectedUnits,
-						/* mustMoveWith */null,
-						/* categorizeMovement */false,
-						/* categorizeTransportCost */false, getData(),
-						/* allowTwoHit */false, getMap().getUIContext(), ownerMatch);
+									/* mustMoveWith */null,
+									/* categorizeMovement */false,
+									/* categorizeTransportCost */false, getData(),
+									/* allowTwoHit */false, getMap().getUIContext(), ownerMatch);
 					}
 					else
 					{
 						chooser = new UnitChooser(unitsToMove, m_selectedUnits,
-						/* mustMoveWith */null,
-						/* categorizeMovement */false,
-						/* categorizeTransportCost */false, getData(),
-						/* allowTwoHit */false, getMap().getUIContext());
+									/* mustMoveWith */null,
+									/* categorizeMovement */false,
+									/* categorizeTransportCost */false, getData(),
+									/* allowTwoHit */false, getMap().getUIContext());
 					}
 					final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, text, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 					if (option != JOptionPane.OK_OPTION)
@@ -975,9 +975,9 @@ public class MovePanel extends AbstractMovePanel
 			};
 			// Allow player to select which to load.
 			final UnitChooser chooser = new UnitChooser(candidateAirTransports, defaultSelections, s_dependentUnits,
-			/* categorizeMovement */true,
-			/* categorizeTransportCost */false, getGameData(),
-			/* allowTwoHit */false, getMap().getUIContext(), transportsToLoadMatch);
+						/* categorizeMovement */true,
+						/* categorizeTransportCost */false, getGameData(),
+						/* allowTwoHit */false, getMap().getUIContext(), transportsToLoadMatch);
 			chooser.setTitle("Select air transports to load");
 			final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What transports do you want to load", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
 						null);
@@ -1200,7 +1200,7 @@ public class MovePanel extends AbstractMovePanel
 			unloadable.add(Matches.unitIsOwnedBy(getCurrentPlayer()));
 			unloadable.add(Matches.UnitIsLand);
 			if (m_nonCombat)
-				unloadable.add(new InverseMatch<Unit>(Matches.UnitIsAAorIsAAmovement));
+				unloadable.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
 			return unloadable;
 		}
 		
@@ -1466,9 +1466,9 @@ public class MovePanel extends AbstractMovePanel
 	{
 		// Allow player to select which to load.
 		final UnitChooser chooser = new UnitChooser(unitsToLoad, defaultSelections, s_dependentUnits,
-		/* categorizeMovement */false,
-		/* categorizeTransportCost */true, getGameData(),
-		/* allowTwoHit */false, getMap().getUIContext(), unitsToLoadMatch);
+					/* categorizeMovement */false,
+					/* categorizeTransportCost */true, getGameData(),
+					/* allowTwoHit */false, getMap().getUIContext(), unitsToLoadMatch);
 		chooser.setTitle(title);
 		final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, "What units do you want to " + action, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
 					null);

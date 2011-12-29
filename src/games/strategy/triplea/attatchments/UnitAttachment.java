@@ -31,6 +31,7 @@ import games.strategy.triplea.Properties;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
@@ -88,103 +89,102 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public static final String UNITSMAYNOTLANDONCARRIER = "unitsMayNotLandOnCarrier";
 	public static final String UNITSMAYNOTLEAVEALLIEDCARRIER = "unitsMayNotLeaveAlliedCarrier";
+	
+	// movement related
 	private boolean m_isAir = false;
 	private boolean m_isSea = false;
-	private boolean m_isAA = false;
-	private boolean m_isAAforCombatOnly = false;
-	private boolean m_isAAforBombingThisUnitOnly = false;
-	private boolean m_isAAmovement = false;
-	private boolean m_isRocket = false;
-	private boolean m_isFactory = false;
-	private boolean m_canProduceUnits = false;
+	private int m_movement = 0;
 	private boolean m_canBlitz = false;
-	private boolean m_isAirTransport = false;
-	private boolean m_isAirTransportable = false;
-	private boolean m_isSub = false;
+	private boolean m_isKamikaze = false;
+	private String[] m_canInvadeOnlyFrom; // a colon delimited list of transports where this unit may invade from, it supports "none" and if empty it allows you to invade from all
+	private final IntegerMap<Resource> m_fuelCost = new IntegerMap<Resource>();
+	private boolean m_canNotMoveDuringCombatMove = false;
+	private Tuple<Integer, String> m_stackingLimit = null;
+	
+	// combat related
+	private int m_attack = 0;
+	private int m_defense = 0;
+	private boolean m_isInfrastructure = false;
 	private boolean m_canBombard = false;
-	private boolean m_isStrategicBomber = false;
-	private boolean m_isTwoHit = false;
+	private int m_bombard = -1;
+	private boolean m_isSub = false;
 	private boolean m_isDestroyer = false;
 	private boolean m_isArtillery = false;
 	private boolean m_isArtillerySupportable = false;
+	private int m_unitSupportCount = -1;
 	private boolean m_isMarine = false;
+	private boolean m_isSuicide = false;
+	
+	// transportation related
+	private boolean m_isCombatTransport = false;
+	private int m_transportCapacity = -1; // -1 if cant transport
+	private int m_transportCost = -1; // -1 if cant be transported
+	private int m_carrierCapacity = -1; // -1 if cant act as a carrier
+	private int m_carrierCost = -1; // -1 if cant land on a carrier
+	private boolean m_isAirTransport = false;
+	private boolean m_isAirTransportable = false;
 	private boolean m_isInfantry = false;
 	private boolean m_isLandTransport = false;
-	private boolean m_canScramble = false;
-	private boolean m_isAirBase = false;
-	private boolean m_isInfrastructure = false;
-	private boolean m_canBeDamaged = false;
-	private boolean m_canDieFromReachingMaxDamage = false;
-	private boolean m_isSuicide = false;
-	private boolean m_isKamikaze = false;
-	private boolean m_isCombatTransport = false;
-	private boolean m_isConstruction = false;
-	// a colon delimited list of territories where this unit may not be placed
-	private String[] m_unitPlacementRestrictions;
-	// a colon delimited list of transports where this unit may invade from, it supports "none" and if empty it allows you to invade from all
-	private String[] m_canInvadeOnlyFrom;
-	// a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
-	private String[] m_repairsUnits;
-	// currently used for: placement in original territories only,
-	private final HashSet<String> m_special = new HashSet<String>();
-	// multiple colon delimited lists of the unit combos required for this unit to be built somewhere. (units must be in same territory, owned by player, not be disabled)
-	private final ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>();
-	// a kind of support attachment for giving actual unit attachment abilities or other to a unit, when in the precense or on the same route with another unit
-	private final ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<String>();
-	// a set of information for dealing with special abilities or loss of abilities when a unit takes x-y amount of damage
-	private final ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> m_whenCombatDamaged = new ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>();
-	// can be any String except for "none" if isConstruction is true
-	private String m_constructionType = "none";
-	// -1 if not set, is meaningless
-	private int m_constructionsPerTerrPerTypePerTurn = -1;
-	// -1 if not set, is meaningless
-	private int m_maxConstructionsPerTypePerTerr = -1;
-	// -1 if can't scramble
-	private int m_maxScrambleDistance = -1;
-	// -1 for infinite
-	private int m_maxScrambleCount = -1;
-	// -1 if can't be disabled
-	private int m_maxOperationalDamage = -1;
-	// -1 if can't be damaged
-	private int m_maxDamage = -1;
-	// -1 if cant transport
-	private int m_transportCapacity = -1;
-	// -1 if cant be transported
-	private int m_transportCost = -1;
-	// -1 if cant act as a carrier
-	private int m_carrierCapacity = -1;
-	// -1 if cant land on a carrier
-	private int m_carrierCost = -1;
-	// -1 if infinite (infinite is default)
-	private int m_maxBuiltPerPlayer = -1;
-	private int m_bombard = -1;
-	private int m_unitSupportCount = -1;
-	private int m_blockade = 0;
-	private int m_bombingMaxDieSides = -1;
-	private int m_bombingBonus = -1;
+	
+	// aa related
+	private boolean m_isAA = false;
+	private boolean m_isAAforCombatOnly = false;
+	private boolean m_isAAforBombingThisUnitOnly = false;
+	private boolean m_isRocket = false;
 	private int m_attackAA = 1;
 	private int m_attackAAmaxDieSides = -1;
-	// -1 means either it can't produce any, or it produces at the value of the territory it is located in
-	private int m_canProduceXUnits = -1;
-	// -1 means anywhere
-	private int m_canOnlyBePlacedInTerritoryValuedAtX = -1;
-	private int m_movement = 0;
-	private int m_attack = 0;
-	private int m_defense = 0;
-	private final Collection<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
-	private final Collection<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
-	private final LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto = new LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>>();
-	private final Collection<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
-	private final IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
-	private final IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
-	private final IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<UnitType>();
-	private final IntegerMap<Resource> m_createsResourcesList = new IntegerMap<Resource>();
-	private final IntegerMap<Resource> m_fuelCost = new IntegerMap<Resource>();
 	
+	// strategic bombing related
+	private boolean m_isStrategicBomber = false;
+	private int m_bombingMaxDieSides = -1;
+	private int m_bombingBonus = -1;
 	private boolean m_canIntercept = false;
 	private boolean m_canEscort = false;
 	private int m_airDefense = 0;
 	private int m_airAttack = 0;
+	
+	// production related
+	private boolean m_isFactory = false;
+	private boolean m_canProduceUnits = false;
+	private int m_canProduceXUnits = -1; // -1 means either it can't produce any, or it produces at the value of the territory it is located in
+	private final IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<UnitType>();
+	private final IntegerMap<Resource> m_createsResourcesList = new IntegerMap<Resource>();
+	
+	// damage related
+	private boolean m_isTwoHit = false;
+	private boolean m_canBeDamaged = false;
+	private int m_maxDamage = -1; // -1 if can't be damaged
+	private int m_maxOperationalDamage = -1; // -1 if can't be disabled
+	private boolean m_canDieFromReachingMaxDamage = false;
+	
+	// placement related
+	private boolean m_isConstruction = false;
+	private String m_constructionType = "none"; // can be any String except for "none" if isConstruction is true
+	private int m_constructionsPerTerrPerTypePerTurn = -1; // -1 if not set, is meaningless
+	private int m_maxConstructionsPerTypePerTerr = -1; // -1 if not set, is meaningless
+	private int m_canOnlyBePlacedInTerritoryValuedAtX = -1; // -1 means anywhere
+	private final ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>(); // multiple colon delimited lists of the unit combos required for this unit to be built somewhere. (units must be in same territory, owned by player, not be disabled)
+	private final IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
+	private String[] m_unitPlacementRestrictions; // a colon delimited list of territories where this unit may not be placed
+	private int m_maxBuiltPerPlayer = -1; // -1 if infinite (infinite is default)
+	
+	// scrambling related
+	private boolean m_canScramble = false;
+	private boolean m_isAirBase = false;
+	private int m_maxScrambleDistance = -1; // -1 if can't scramble
+	private int m_maxScrambleCount = -1; // -1 for infinite
+	
+	// special abilities
+	private int m_blockade = 0;
+	private String[] m_repairsUnits; // a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
+	private final IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
+	private final Collection<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
+	private final LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto = new LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>>();
+	private final Collection<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
+	private final Collection<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
+	private final ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>> m_whenCombatDamaged = new ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>(); // a set of information for dealing with special abilities or loss of abilities when a unit takes x-y amount of damage
+	private final ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<String>(); // a kind of support attachment for giving actual unit attachment abilities or other to a unit, when in the precense or on the same route with another unit
+	private final HashSet<String> m_special = new HashSet<String>(); // currently used for: placement in original territories only,
 	
 	/** Creates new UnitAttatchment */
 	public UnitAttachment()
@@ -505,16 +505,6 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean isSea()
 	{
 		return m_isSea;
-	}
-	
-	public void setIsAA(final String s)
-	{
-		m_isAA = getBool(s);
-	}
-	
-	public boolean isAA()
-	{
-		return m_isAA;
 	}
 	
 	public boolean isInfantry()
@@ -1355,6 +1345,18 @@ public class UnitAttachment extends DefaultAttachment
 		return m_bombingMaxDieSides;
 	}
 	
+	public void setIsAA(final String s) throws GameParseException
+	{
+		final boolean value = getBool(s);
+		m_isAA = value;
+		setIsAAmovement(s);
+	}
+	
+	public boolean isAA()
+	{
+		return m_isAA;
+	}
+	
 	public void setAttackAA(final String s)
 	{
 		m_attackAA = getInt(s);
@@ -1395,16 +1397,6 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isAAforBombingThisUnitOnly;
 	}
 	
-	public void setIsAAmovement(final String s)
-	{
-		m_isAAmovement = getBool(s);
-	}
-	
-	public boolean getIsAAmovement()
-	{
-		return m_isAAmovement;
-	}
-	
 	public void setIsRocket(final String s)
 	{
 		m_isRocket = getBool(s);
@@ -1413,6 +1405,74 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsRocket()
 	{
 		return m_isRocket;
+	}
+	
+	public void setIsAAmovement(final String s) throws GameParseException
+	{
+		setCanNotMoveDuringCombatMove(s);
+		if (getBool(s))
+			setStackingLimit(Integer.MAX_VALUE + ":allied");
+		else
+			setStackingLimit(null);
+	}
+	
+	public void setCanNotMoveDuringCombatMove(final String s)
+	{
+		m_canNotMoveDuringCombatMove = getBool(s);
+	}
+	
+	public boolean getCanNotMoveDuringCombatMove()
+	{
+		return m_canNotMoveDuringCombatMove;
+	}
+	
+	public void setStackingLimit(final String value) throws GameParseException
+	{
+		if (value == null)
+			m_stackingLimit = null;
+		final UnitType ut = (UnitType) this.getAttatchedTo();
+		if (ut == null)
+			throw new GameParseException("UnitAttachment: getAttatchedTo returned null");
+		final String[] s = value.split(":");
+		if (s.length != 2)
+			throw new GameParseException("UnitAttachment: stackingLimit must have 2 fields, value and count");
+		final int max = getInt(s[0]);
+		if (max < 0)
+			throw new GameParseException("UnitAttachment: stackingLimit count must have a positive number");
+		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
+			throw new GameParseException("UnitAttachment: stackingLimit value must owned, allied, or total");
+		m_stackingLimit = new Tuple<Integer, String>(max, s[1]);
+	}
+	
+	public Tuple<Integer, String> getStackingLimit()
+	{
+		return m_stackingLimit;
+	}
+	
+	public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(final UnitType ut, final Territory t, final PlayerID owner, final GameData data)
+	{
+		final UnitAttachment ua = UnitAttachment.get(ut);
+		final Tuple<Integer, String> stackingLimit = ua.getStackingLimit();
+		if (stackingLimit == null)
+			return Integer.MAX_VALUE;
+		int max = stackingLimit.getFirst();
+		final String stackingType = stackingLimit.getSecond();
+		if (max == Integer.MAX_VALUE && (ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly() || ua.isAA()))
+		{
+			// under certain rules (classic rules) there can only be 1 aa gun in a territory.
+			if (!(games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data) || games.strategy.triplea.Properties.getMultipleAAPerTerritory(data)))
+			{
+				max = 1;
+			}
+		}
+		final CompositeMatchAnd<Unit> stackingMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOfType(ut));
+		if (stackingType.equals("owned"))
+			stackingMatch.add(Matches.unitIsOwnedBy(owner));
+		else if (stackingType.equals("allied"))
+			stackingMatch.add(Matches.isUnitAllied(owner, data));
+		// else if (stackingType.equals("total"))
+		final int totalInTerritory = Match.countMatches(t.getUnits().getUnits(), stackingMatch);
+		return Math.max(0, max - totalInTerritory);
 	}
 	
 	@Override
@@ -1637,7 +1697,6 @@ public class UnitAttachment extends DefaultAttachment
 					
 					+ "  isAAforCombatOnly:" + m_isAAforCombatOnly
 					+ "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
-					+ "  isAAmovement:" + m_isAAmovement
 					+ "  attackAA:" + m_attackAA
 					+ "  attackAAmaxDieSides:" + m_attackAAmaxDieSides
 					+ "  isRocket:" + m_isRocket
@@ -1683,7 +1742,9 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  canIntercept:" + m_canIntercept
 					+ "  canEscort:" + m_canEscort
 					+ "  airDefense:" + m_airDefense
-					+ "  airAttack:" + m_airAttack;
+					+ "  airAttack:" + m_airAttack
+					+ "  canNotMoveDuringCombatMove:" + m_canNotMoveDuringCombatMove
+					+ "  stackingLimit:" + m_stackingLimit;
 	}
 	
 	public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHTML, final boolean includeAttachedToName)
@@ -1871,6 +1932,19 @@ public class UnitAttachment extends DefaultAttachment
 			stats.append("has Placement Restrictions, ");
 		if (m_canOnlyBePlacedInTerritoryValuedAtX > 0 && games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData()))
 			stats.append("must be Placed In Territory Valued >=" + m_canOnlyBePlacedInTerritoryValuedAtX + ", ");
+		if (m_canNotMoveDuringCombatMove)
+			stats.append("cannot Combat Move, ");
+		if (m_stackingLimit != null)
+		{
+			if (m_stackingLimit.getFirst() == Integer.MAX_VALUE
+						&& (m_isAAforBombingThisUnitOnly || m_isAAforCombatOnly || m_isAA)
+						&& !(games.strategy.triplea.Properties.getWW2V2(getData()) || games.strategy.triplea.Properties.getWW2V3(getData()) || games.strategy.triplea.Properties
+									.getMultipleAAPerTerritory(getData())))
+				stats.append("max of 1 " + m_stackingLimit.getSecond() + " per territory, ");
+			else if (m_stackingLimit.getFirst() < 10000)
+				stats.append("max of " + m_stackingLimit.getFirst() + " " + m_stackingLimit.getSecond() + " per territory, ");
+		}
+		
 		if (stats.indexOf(", ") > -1)
 			stats.delete(stats.lastIndexOf(", "), stats.length() - 1);
 		return stats.toString();

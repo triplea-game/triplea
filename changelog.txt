@@ -1,4 +1,8 @@
 Changes for 1.5
+* Finished phase 1 of abstraction of aaGuns, by removing isAAmovement and removing isAA from dealing with any aspect of movement validation and stacking limits in the engine. Both isAAmovement and isAA just call the two new methods below when they are created. (veqryn)
+
+* Created two new Unit Attachment options, "canNotMoveDuringCombatMove" and "stackingLimit", which will take the place of previous isAA and isAAmovement abilities while making them more flexible. (veqryn)
+
 * Allowed for Dice Skins, which can be placed in the "dice" folder of a map's directory. (crystalct & veqryn)
 
 * Created new player attachment, suicideAttackTargets, which lets you set which units can be targetted during a kamikaze suicide attack. Also fixed null pointer error for neutral owned kamikaze zones. (veqryn)

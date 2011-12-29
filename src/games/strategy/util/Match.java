@@ -76,12 +76,13 @@ public abstract class Match<T>
 	 */
 	public static final <T> List<T> getNMatches(final Collection<T> collection, final int max, final Match<T> aMatch)
 	{
-		if (max == 0)
+		if (max == 0 || collection.isEmpty())
 			return Collections.emptyList();
 		if (max < 0)
 			throw new IllegalArgumentException("max must be positive, instead its:" + max);
-		final List<T> matches = new ArrayList<T>(max);
-		for (T current  : collection) {
+		final List<T> matches = new ArrayList<T>(Math.min(max, collection.size()));
+		for (final T current : collection)
+		{
 			if (aMatch.match(current))
 				matches.add(current);
 			if (matches.size() == max)
@@ -97,7 +98,8 @@ public abstract class Match<T>
 	{
 		if (collection.isEmpty())
 			return false;
-		for (T current  : collection) {
+		for (final T current : collection)
+		{
 			if (!aMatch.match(current))
 				return false;
 		}
@@ -111,7 +113,8 @@ public abstract class Match<T>
 	{
 		if (collection.isEmpty())
 			return false;
-		for (T current  : collection) {
+		for (final T current : collection)
+		{
 			if (aMatch.match(current))
 				return true;
 		}
@@ -132,7 +135,8 @@ public abstract class Match<T>
 	public static final <T> int countMatches(final Collection<T> collection, final Match<T> aMatch)
 	{
 		int count = 0;
-		for (T current  : collection) {
+		for (final T current : collection)
+		{
 			if (aMatch.match(current))
 				count++;
 		}

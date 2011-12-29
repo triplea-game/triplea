@@ -55,7 +55,6 @@ import games.strategy.triplea.ui.PlaceData;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
-import games.strategy.util.InverseMatch;
 import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
@@ -300,7 +299,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		moveableUnitOwnedByMe.add(Matches.UnitIsNotStatic(m_id));
 		// if not non combat, can not move aa units
 		if (!nonCom)
-			moveableUnitOwnedByMe.add(new InverseMatch<Unit>(Matches.UnitIsAAorIsAAmovement));
+			moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
 		m_bridge.getGameData().acquireReadLock();
 		try
 		{
@@ -615,7 +614,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories, player);
 	}*/
-
+	
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
 	{
 		return m_ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);

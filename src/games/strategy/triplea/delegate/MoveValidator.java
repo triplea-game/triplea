@@ -26,6 +26,7 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.CanalAttachment;
@@ -735,12 +736,11 @@ public class MoveValidator
 				result.addDisallowedUnit("Not all units can blitz out of empty enemy territory", u);
 			}
 		}
-		// Don't allow aa guns to move in combat unless they are in a transport
-		if (Match.someMatch(units, Matches.UnitIsAAorIsAAmovement) && (!route.getStart().isWater() || !route.getEnd().isWater()))
+		// Don't allow aa guns (and other disallowed units) to move in combat unless they are in a transport
+		if (Match.someMatch(units, Matches.UnitCanNotMoveDuringCombatMove) && (!route.getStart().isWater() || !route.getEnd().isWater()))
 		{
-			for (final Unit unit : Match.getMatches(units, Matches.UnitIsAAorIsAAmovement))
+			for (final Unit unit : Match.getMatches(units, Matches.UnitCanNotMoveDuringCombatMove))
 				result.addDisallowedUnit("Cannot move AA guns in combat movement phase", unit);
-			return result;
 		}
 		// if there is a neutral in the middle must stop unless all are air or getNeutralsBlitzable
 		if (MoveValidator.hasNeutralBeforeEnd(route))
@@ -1086,36 +1086,24 @@ public class MoveValidator
 				for (final Unit unit : Match.getMatches(units, Matches.UnitIsSea))
 					result.addDisallowedUnit("Sea units cannot go on land", unit);
 		}
-		// make sure that we dont send aa guns to attack
-		if (Match.someMatch(units, Matches.UnitIsAAorIsAAmovement))
+		// test for stack limits per unit
+		if (route.getEnd() != null)
 		{
-			// TODO dont move if some were conquered
-			for (final Territory current : route.getSteps())
+			final Collection<Unit> unitsWithStackingLimits = Match.getMatches(units, Matches.UnitHasStackingLimit);
+			for (final Territory t : route.getSteps())
 			{
-				if (!(current.isWater() || current.getOwner().equals(player) || data.getRelationshipTracker().isAllied(player, current.getOwner())))
+				final Collection<Unit> unitsAllowedSoFar = new ArrayList<Unit>();
+				for (final Unit unit : unitsWithStackingLimits)
 				{
-					for (final Unit unit : Match.getMatches(units, Matches.UnitIsAAorIsAAmovement))
-						result.addDisallowedUnit("AA units cannot advance to battle", unit);
-					break;
+					final UnitType ut = unit.getType();
+					int maxAllowed = UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(ut, t, player, data);
+					maxAllowed -= Match.countMatches(unitsAllowedSoFar, Matches.unitIsOfType(ut));
+					if (maxAllowed > 0)
+						unitsAllowedSoFar.add(unit);
+					else
+						result.addDisallowedUnit("UnitType " + ut.getName() + " has reached stacking limit", unit);
 				}
 			}
-		}
-		// only allow one aa into a land territory unless WW2V2 or WW2V3 or isMultipleAAPerTerritory.
-		// if ((!isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAAorIsAAmovement) && route.getEnd() != null && route.getEnd().getUnits().someMatch(Matches.UnitIsAAorIsAAmovement)
-		if ((!isMultipleAAPerTerritory(data) && !isWW2V3(data) && !isWW2V2(data)) && Match.someMatch(units, Matches.UnitIsAAorIsAAmovement) && route.getEnd() != null
-					&& route.getEnd().getUnits().someMatch(Matches.UnitIsAAorIsAAmovement) && !route.getEnd().isWater())
-		{
-			for (final Unit unit : Match.getMatches(units, Matches.UnitIsAAorIsAAmovement))
-				result.addDisallowedUnit("Only one AA gun allowed in a territory", unit);
-		}
-		// only allow 1 aa to unload unless WW2V2 or WW2V3.
-		if (route.getStart().isWater() && !route.getEnd().isWater() && Match.countMatches(units, Matches.UnitIsAAorIsAAmovement) > 1 && (!isWW2V3(data) && !isWW2V2(data)))
-		{
-			final Collection<Unit> aaGuns = Match.getMatches(units, Matches.UnitIsAAorIsAAmovement);
-			final Iterator<Unit> aaIter = aaGuns.iterator();
-			aaIter.next(); // skip first unit
-			for (; aaIter.hasNext();)
-				result.addUnresolvedUnit("Only one AA gun can unload in a territory", aaIter.next());
 		}
 		// don't allow move through impassible territories
 		if (!isEditMode && route.someMatch(Matches.TerritoryIsImpassable))

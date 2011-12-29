@@ -16,10 +16,11 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
-import games.strategy.util.InverseMatch;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
 import java.util.ArrayList;
@@ -80,40 +81,51 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 	@Override
 	protected Collection<Unit> getUnitsToBePlacedLand(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
+		final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
 		final Collection<Unit> placeableUnits = new ArrayList<Unit>();
-		// make sure only 1 AA in territory for classic
-		if (isWW2V2())
-		{
-			placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAAorIsAAmovement));
-		}
-		else
-		{
-			// allow 1 AA to be placed if none already exists
-			if (!to.getUnits().someMatch(Matches.UnitIsAAorIsAAmovement))
-				placeableUnits.addAll(Match.getNMatches(units, 1, Matches.UnitIsAAorIsAAmovement));
-		}
-		final CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>();
-		groundUnits.add(Matches.UnitIsLand);
-		// TODO: do we need to check for infrastructure here?
-		groundUnits.add(new InverseMatch<Unit>(Matches.UnitIsAAOrIsAAmovementOrIsFactory));
+		final CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotFactoryOrConstruction); // we add factories and constructions later
+		final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotFactoryOrConstruction);
 		placeableUnits.addAll(Match.getMatches(units, groundUnits));
-		placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsAir));
-		// make sure only max Factories
-		if (Match.countMatches(units, Matches.UnitIsFactory) >= 1)
+		placeableUnits.addAll(Match.getMatches(units, airUnits));
+		if (Match.someMatch(units, Matches.UnitIsFactoryOrConstruction))
 		{
-			// if its an original factory then unlimited production
-			final TerritoryAttachment ta = TerritoryAttachment.get(to);
-			// WW2V2, you cant place factories in territories with no
-			// production
-			if (!(isWW2V2() && ta.getProduction() == 0))
+			final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, units, player);
+			final Collection<Unit> skipUnit = new ArrayList<Unit>();
+			for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsFactoryOrConstruction))
 			{
-				// this is how many factories exist now
-				final int factoryCount = to.getUnits().getMatches(Matches.UnitIsFactory).size();
-				// max factories allowed
-				final int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(getData());
-				placeableUnits.addAll(Match.getNMatches(units, maxFactory - factoryCount, Matches.UnitIsFactory));
+				final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
+				if (maxUnits > 0)
+				{
+					// we are doing this because we could have multiple unitTypes with the same constructionType, so we have to be able to place the max placement by constructionType of each unitType
+					if (skipUnit.contains(currentUnit))
+						continue;
+					placeableUnits.addAll(Match.getNMatches(units, maxUnits, Matches.unitIsOfType(currentUnit.getType())));
+					skipUnit.addAll(Match.getMatches(units, Matches.unitIsOfType(currentUnit.getType())));
+				}
 			}
 		}
-		return placeableUnits;
+		// remove any units that require other units to be consumed on creation (veqryn)
+		if (Match.someMatch(placeableUnits, Matches.UnitConsumesUnitsOnCreation))
+		{
+			final Collection<Unit> unitsWhichConsume = Match.getMatches(placeableUnits, Matches.UnitConsumesUnitsOnCreation);
+			for (final Unit unit : unitsWhichConsume)
+			{
+				if (Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(unit))
+					placeableUnits.remove(unit);
+			}
+		}
+		// now check stacking limits
+		final Collection<Unit> placeableUnits2 = new ArrayList<Unit>();
+		final Collection<UnitType> typesAlreadyChecked = new ArrayList<UnitType>();
+		for (final Unit currentUnit : placeableUnits)
+		{
+			final UnitType ut = currentUnit.getType();
+			if (typesAlreadyChecked.contains(ut))
+				continue;
+			typesAlreadyChecked.add(ut);
+			placeableUnits2.addAll(Match.getNMatches(placeableUnits,
+						UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(ut, to, player, getData()), Matches.unitIsOfType(ut)));
+		}
+		return placeableUnits2;
 	}
 }
