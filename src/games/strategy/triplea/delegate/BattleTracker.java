@@ -577,8 +577,7 @@ public class BattleTracker implements java.io.Serializable
 				bridge.getHistoryWriter().addChildToEvent(takeOverFriendlyTerritories.toString());
 				if (changeTracker != null)
 					changeTracker.addChange(takeOverFriendlyTerritories);
-				// TODO: do we need to add in infrastructure here?
-				final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
+				final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsFactoryOrIsInfrastructure);
 				if (!units.isEmpty())
 				{
 					final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, territory);
@@ -642,8 +641,7 @@ public class BattleTracker implements java.io.Serializable
 			}
 		}
 		// take over non combatants
-		final CompositeMatch<Unit> enemyCapturable = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrFactory, Matches.UnitIsInfrastructure); // UnitIsAAOrIsFactoryOrIsInfrastructure
-		final CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), enemyCapturable);
+		final CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitIsFactoryOrIsInfrastructure);
 		final CompositeMatch<Unit> willBeCaptured = new CompositeMatchOr<Unit>(enemyNonCom, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
 		final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
 		// change any units that change unit types on capture
@@ -718,7 +716,7 @@ public class BattleTracker implements java.io.Serializable
 			return ChangeFactory.EMPTY_CHANGE;
 		// if just an enemy factory &/or AA then no battle
 		final Collection<Unit> enemyUnits = Match.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
-		if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure))
+		if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsFactoryOrIsInfrastructure))
 			return ChangeFactory.EMPTY_CHANGE;
 		IBattle battle = getPendingBattle(site, false);
 		// If there are no pending battles- add one for units already in the combat zone

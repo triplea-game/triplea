@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -103,7 +102,7 @@ public class RocketsFireHelper
 		final Set<Territory> rocketTerritories = getTerritoriesWithRockets(data, player);
 		if (rocketTerritories.isEmpty())
 		{
-			getRemote(bridge).reportMessage("No aa guns to fire rockets with", "No aa guns to fire rockets with");
+			getRemote(bridge).reportMessage("No rockets to fire", "No rockets to fire");
 			return;
 		}
 		// TODO this is weird! Check the parens
@@ -117,7 +116,8 @@ public class RocketsFireHelper
 	{
 		final GameData data = bridge.getData();
 		final Set<Territory> attackedTerritories = new HashSet<Territory>();
-		for (Territory territory  : rocketTerritories) {
+		for (final Territory territory : rocketTerritories)
+		{
 			final Set<Territory> targets = getTargetsWithinRange(territory, data, player);
 			targets.removeAll(attackedTerritories);
 			if (targets.isEmpty())
@@ -135,7 +135,8 @@ public class RocketsFireHelper
 	{
 		final GameData data = bridge.getData();
 		final Set<Territory> targets = new HashSet<Territory>();
-		for (Territory territory  : rocketTerritories) {
+		for (final Territory territory : rocketTerritories)
+		{
 			targets.addAll(getTargetsWithinRange(territory, data, player));
 		}
 		if (targets.isEmpty())
@@ -151,16 +152,17 @@ public class RocketsFireHelper
 	Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player)
 	{
 		final Set<Territory> territories = new HashSet<Territory>();
-		final CompositeMatch<Unit> ownedAA = new CompositeMatchAnd<Unit>();
-		ownedAA.add(Matches.UnitIsAAorIsRocket);
-		ownedAA.add(Matches.unitIsOwnedBy(player));
+		final CompositeMatch<Unit> ownedRockets = new CompositeMatchAnd<Unit>();
+		ownedRockets.add(Matches.UnitIsRocket);
+		ownedRockets.add(Matches.unitIsOwnedBy(player));
 		final BattleTracker tracker = MoveDelegate.getBattleTracker(data);
-		for (Territory current  : data.getMap()) {
+		for (final Territory current : data.getMap())
+		{
 			if (current.isWater())
 				continue;
 			if (tracker.wasConquered(current))
 				continue;
-			if (current.getUnits().someMatch(ownedAA))
+			if (current.getUnits().someMatch(ownedRockets))
 				territories.add(current);
 		}
 		return territories;
@@ -172,7 +174,8 @@ public class RocketsFireHelper
 		final Set<Territory> hasFactory = new HashSet<Territory>();
 		// boolean rocketsOverImpassables = isRocketsCanFlyOverImpassables(data);
 		final Match<Territory> impassable = Matches.TerritoryIsNotImpassable;
-		for (Territory current  : possible) {
+		for (final Territory current : possible)
+		{
 			final Route route = data.getMap().getRoute(territory, current, impassable);
 			// TODO EW: this assumes range 3 territories for Rockets, doesn't take movementCost into account. //TODO veq: make new unit attachment for rocket range, defaults to 3 movement cost.
 			if (route != null && route.numberOfSteps() <= 3)
@@ -222,8 +225,8 @@ public class RocketsFireHelper
 			cost = bridge.getRandom(data.getDiceSides(), "Rocket fired by " + player.getName() + " at " + attacked.getName());
 		else
 		{
-			final CompositeMatch<Unit> ownedAA = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAAorIsRocket);
-			final Collection<Unit> rockets = new ArrayList<Unit>(Match.getMatches(attackFrom.getUnits().getUnits(), ownedAA));
+			final CompositeMatch<Unit> ownedRockets = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsRocket);
+			final Collection<Unit> rockets = new ArrayList<Unit>(Match.getMatches(attackFrom.getUnits().getUnits(), ownedRockets));
 			int highestMaxDice = 0;
 			int highestBonus = 0;
 			final int diceSides = data.getDiceSides();
@@ -346,7 +349,7 @@ public class RocketsFireHelper
 		// this is null in WW2V1
 		if (attackFrom != null)
 		{
-			final List<Unit> units = attackFrom.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsAAorIsRocket, Matches.unitIsOwnedBy(player)));
+			final List<Unit> units = attackFrom.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player)));
 			if (units.size() > 0)
 			{
 				// only one fired

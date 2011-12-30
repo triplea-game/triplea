@@ -36,9 +36,9 @@ public class UnitTypeComparator implements Comparator<UnitType>
 			return 1;
 		if (ua2.isFactory() && !ua1.isFactory())
 			return -1;
-		if (ua1.isAA() && !ua2.isAA())
+		if ((ua1.getIsAAforCombatOnly() || ua1.getIsAAforBombingThisUnitOnly()) && !(ua2.getIsAAforCombatOnly() || ua2.getIsAAforBombingThisUnitOnly()))
 			return 1;
-		if (ua2.isAA() && !ua1.isAA())
+		if ((ua2.getIsAAforCombatOnly() || ua2.getIsAAforBombingThisUnitOnly()) && !(ua1.getIsAAforCombatOnly() || ua1.getIsAAforBombingThisUnitOnly()))
 			return -1;
 		if (ua1.isAir() && !ua2.isAir())
 			return 1;

@@ -112,10 +112,10 @@ public class NCM_Call
 				continue;
 			for (final Unit unit : units)
 			{
-				if (Matches.UnitIsAA.match(unit))
+				if (Matches.UnitIsAAforAnything.match(unit))
 				{
 					// If this is an AA and we've already added an AA as a recruit or (the from ter has a factory and this is the only AA), skip AA
-					if (addedAA || (ter.getUnits().getMatches(Matches.UnitIsFactory).size() > 0 && ter.getUnits().getMatches(Matches.UnitIsAA).size() <= 1))
+					if (addedAA || (ter.getUnits().getMatches(Matches.UnitIsFactory).size() > 0 && ter.getUnits().getMatches(Matches.UnitIsAAforAnything).size() <= 1))
 						continue;
 					else
 						addedAA = true;

@@ -216,7 +216,7 @@ public class DoNonCombatMove
 			// If this ter has a factory
 			if (ter.getUnits().getMatches(Matches.UnitIsFactory).size() > 0)
 			{
-				final Unit firstAA = DUtils.GetFirstUnitMatching(terUnits, Matches.UnitIsAA, 0);
+				final Unit firstAA = DUtils.GetFirstUnitMatching(terUnits, Matches.UnitIsAAforAnything, 0);
 				if (firstAA != null)
 					terUnits.remove(firstAA); // Make sure we keep at least one AA here
 			}

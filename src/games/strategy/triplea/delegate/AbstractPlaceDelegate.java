@@ -1012,9 +1012,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final boolean didIt = canWeConsumeUnits(units, at, true, change);
 		if (!didIt)
 			throw new IllegalStateException("Something wrong with consuming/upgrading units");
-		// TODO: veqryn, again, do we need to initialize infrastructure or not?
-		final Collection<Unit> factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
-		change.add(DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndAA, m_player));
+		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(units, Matches.UnitIsFactoryOrIsInfrastructure);
+		change.add(DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, m_player));
 		final Change remove = ChangeFactory.removeUnits(player, units);
 		final Change place = ChangeFactory.addUnits(at, units);
 		change.add(remove);

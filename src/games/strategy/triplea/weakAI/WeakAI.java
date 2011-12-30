@@ -212,7 +212,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final Territory capitol = TerritoryAttachment.getCapital(player, data);
 		if (capitol == null || !capitol.getOwner().equals(player))
 			return;
-		List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure.invert());
+		List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.UnitIsFactoryOrIsInfrastructure.invert());
 		unitsToLoad = Match.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getWhoAmI()));
 		for (final Territory neighbor : data.getMap().getNeighbors(capitol))
 		{
@@ -635,7 +635,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				return !delegate.getBattleTracker().wasConquered(o);
 			}
 		});
-		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAA(player, getPlayerBridge().getGameData()).invert(), Matches.TerritoryIsImpassable.invert());
+		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAAforCombatOnly(player, getPlayerBridge().getGameData()).invert(),
+					Matches.TerritoryIsImpassable.invert());
 		for (final Territory t : delegateRemote.getTerritoriesWhereAirCantLand())
 		{
 			final Route noAARoute = Utils.findNearest(t, canLand, routeCondition, getPlayerBridge().getGameData());
@@ -807,7 +808,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final Collection<Unit> bombers = t.getUnits().getMatches(ownBomber);
 			if (bombers.isEmpty())
 				continue;
-			final Match<Territory> routeCond = new InverseMatch<Territory>(Matches.territoryHasEnemyAA(player, getPlayerBridge().getGameData()));
+			final Match<Territory> routeCond = new InverseMatch<Territory>(Matches.territoryHasEnemyAAforCombatOnly(player, getPlayerBridge().getGameData()));
 			final Route bombRoute = Utils.findNearest(t, enemyFactory, routeCond, getPlayerBridge().getGameData());
 			moveUnits.add(bombers);
 			moveRoutes.add(bombRoute);
@@ -854,7 +855,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				for (final ProductionRule rule : rules)
 				{
 					final UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
-					if (Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results)
+					if (Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsFactoryOrIsInfrastructure.match(results)
+								|| Matches.UnitTypeIsAAofAnyKind.match(results)
 								|| Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.unitTypeIsStatic(player).match(results))
 					{
 						continue;
@@ -1132,8 +1134,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			for (final ProductionRule rule : rules)
 			{
 				final UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
-				if (Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(results) || Matches.UnitTypeHasMaxBuildRestrictions.match(results)
-							|| Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.unitTypeIsStatic(player).match(results))
+				if (Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsFactoryOrIsInfrastructure.match(results) || Matches.UnitTypeIsAAofAnyKind.match(results)
+							|| Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.unitTypeIsStatic(player).match(results))
 				{
 					continue;
 				}
@@ -1348,7 +1350,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		return null;
 	}*/
-
+	
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
 	{
 		return null;

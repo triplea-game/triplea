@@ -210,13 +210,12 @@ public class UnitImageFactory
 		{
 			if (type.getName().equals(Constants.AAGUN_TYPE))
 			{
-				if (TechTracker.hasRocket(id))
+				if (TechTracker.hasRocket(id) && UnitAttachment.get(type).getIsRocket())
 					name = new StringBuilder("rockets");
 				if (TechTracker.hasAARadar(id))
 					name.append("_r");
 			}
-			else if (UnitAttachment.get(type).isAA()
-						|| (UnitAttachment.get(type).getIsRocket() && (UnitAttachment.get(type).getIsAAforBombingThisUnitOnly() || UnitAttachment.get(type).getIsAAforCombatOnly())))
+			else if (UnitAttachment.get(type).getIsRocket() && (UnitAttachment.get(type).getIsAAforBombingThisUnitOnly() || UnitAttachment.get(type).getIsAAforCombatOnly()))
 			{
 				if (TechTracker.hasRocket(id))
 					name.append("_rockets");

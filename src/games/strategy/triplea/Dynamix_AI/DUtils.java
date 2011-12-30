@@ -104,8 +104,8 @@ public class DUtils
 		for (final Unit unit : units)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			if (ua.isAA())
-				continue;
+			// if (ua.isAA()) // TODO: double check this
+			// continue;
 			final PlayerID owner = unit.getOwner();
 			float unitDefense = 1;
 			unitDefense += ua.getDefense(owner);
@@ -1091,7 +1091,7 @@ public class DUtils
 			if (ter.isWater())
 			{
 				// Land unit on a transport
-				if (ua.isAA() && GlobalCenter.CurrentPhaseType != PhaseType.Non_Combat_Move) // previously != GlobalCenter.CurrentPhaseType.Non_Combat_Move
+				if (ua.getCanNotMoveDuringCombatMove() && GlobalCenter.CurrentPhaseType != PhaseType.Non_Combat_Move) // previously != GlobalCenter.CurrentPhaseType.Non_Combat_Move
 					return false; // AA's can't move unless in ncm phase
 				final Route route = DUtils.GetAttackRouteFromXToY_ByLand_CountZAsPassthroughs(data, player, ter, target, passthroughTers);
 				if (route != null && ta.getMovementLeft() >= route.getLength())
@@ -1099,7 +1099,7 @@ public class DUtils
 			}
 			else
 			{
-				if (ua.isAA() && GlobalCenter.CurrentPhaseType != PhaseType.Non_Combat_Move) // previously != GlobalCenter.CurrentPhaseType.Non_Combat_Move
+				if (ua.getCanNotMoveDuringCombatMove() && GlobalCenter.CurrentPhaseType != PhaseType.Non_Combat_Move) // previously != GlobalCenter.CurrentPhaseType.Non_Combat_Move
 					return false; // AA's can't move unless in ncm phase
 				final Route route = DUtils.GetAttackRouteFromXToY_ByLand_CountZAsPassthroughs(data, player, ter, target, passthroughTers);
 				if (route != null && ta.getMovementLeft() >= route.getLength())
@@ -1800,7 +1800,8 @@ public class DUtils
 			final int turnsToGetThere = (int) Math.ceil((double) dist / (double) movementSpeed);
 			result -= turnsToGetThere; // We want to reinforce as quickly as possible
 			// If this is an AA, and we're reinforcing a ter with a factory and no AA yet, we boost the score for this AA
-			if (ua.isAA() && task.GetTarget().getUnits().getMatches(Matches.UnitIsFactory).size() > 0 && task.GetTarget().getUnits().getMatches(Matches.UnitIsAA).isEmpty())
+			if (Matches.UnitIsAAforAnything.match(unit) && task.GetTarget().getUnits().getMatches(Matches.UnitIsFactory).size() > 0
+						&& task.GetTarget().getUnits().getMatches(Matches.UnitIsAAforAnything).isEmpty())
 				result += 10;
 		}
 		else if (task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_Stabilize))
@@ -1812,7 +1813,8 @@ public class DUtils
 			final int turnsToGetThere = (int) Math.ceil((double) dist / (double) movementSpeed);
 			result -= turnsToGetThere; // We want to reinforce as quickly as possible
 			// If this is an AA, and we're reinforcing a ter with a factory and no AA yet, we boost the score for this AA
-			if (ua.isAA() && task.GetTarget().getUnits().getMatches(Matches.UnitIsFactory).size() > 0 && task.GetTarget().getUnits().getMatches(Matches.UnitIsAA).isEmpty())
+			if (Matches.UnitIsAAforAnything.match(unit) && task.GetTarget().getUnits().getMatches(Matches.UnitIsFactory).size() > 0
+						&& task.GetTarget().getUnits().getMatches(Matches.UnitIsAAforAnything).isEmpty())
 				result += 10;
 		}
 		return result;
@@ -1920,7 +1922,7 @@ public class DUtils
 		}
 	}
 	
-
+	
 	static class ValueComparator_D implements Comparator
 	{
 		Map base;
@@ -2208,7 +2210,8 @@ public class DUtils
 	public static List<Unit> getMoveableUnits(final List<Unit> units)
 	{
 		final List<Unit> values = new ArrayList<Unit>();
-		for (Unit unit  : units) {
+		for (final Unit unit : units)
+		{
 			if (Matches.unitHasMovementLeft.match(unit))
 				values.add(unit);
 		}
@@ -3349,7 +3352,7 @@ public class DUtils
 		{
 			final UnitType ut = testUnit.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(ut);
-			if (ua.isSea() || ua.isAA() || ua.isFactory())
+			if (ua.isSea() || ua.isFactory() || ua.getIsInfrastructure()) // || ua.isAA() // TODO: double check this
 				continue;
 			if (!match.match(testUnit))
 				continue;

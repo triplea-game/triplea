@@ -1,5 +1,7 @@
 Changes for 1.5
-* Finished phase 1 of abstraction of aaGuns, by removing isAAmovement and removing isAA from dealing with any aspect of movement validation and stacking limits in the engine. Both isAAmovement and isAA just call the two new methods below when they are created. (veqryn)
+* Finished phase 2 of refactoring of aaGuns, by removing internal references and variables for isAA for rockets, capturing, and aa for bombing and for combat. (veqryn)
+
+* Finished phase 1 of refactoring of aaGuns, by removing isAAmovement and removing isAA from dealing with any aspect of movement validation and stacking limits in the engine. Both isAAmovement and isAA just call the two new methods below when they are created. (veqryn)
 
 * Created two new Unit Attachment options, "canNotMoveDuringCombatMove" and "stackingLimit", which will take the place of previous isAA and isAAmovement abilities while making them more flexible. (veqryn)
 

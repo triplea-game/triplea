@@ -332,7 +332,7 @@ public class WW2V3_41_Test extends TestCase
 		/*
 		 * Move one
 		 */
-		String errorResults = moveDelegate.move(poland.getUnits().getMatches(Matches.UnitIsAA), new Route(poland, germany));
+		String errorResults = moveDelegate.move(poland.getUnits().getMatches(Matches.UnitIsAAforAnything), new Route(poland, germany));
 		assertValid(errorResults);
 		assertEquals(germany.getUnits().getUnitCount(), preCount + 1);
 		/*
@@ -346,10 +346,10 @@ public class WW2V3_41_Test extends TestCase
 		delegateBridge.setStepName("NonCombatMove");
 		moveDelegate.start(delegateBridge);
 		// load the trn
-		errorResults = moveDelegate.move(finland.getUnits().getMatches(Matches.UnitIsAA), new Route(finland, sz5), sz5.getUnits().getMatches(Matches.UnitIsTransport));
+		errorResults = moveDelegate.move(finland.getUnits().getMatches(Matches.UnitIsAAforAnything), new Route(finland, sz5), sz5.getUnits().getMatches(Matches.UnitIsTransport));
 		assertValid(errorResults);
 		// unload the trn
-		errorResults = moveDelegate.move(sz5.getUnits().getMatches(Matches.UnitIsAA), new Route(sz5, germany));
+		errorResults = moveDelegate.move(sz5.getUnits().getMatches(Matches.UnitIsAAforAnything), new Route(sz5, germany));
 		assertValid(errorResults);
 		assertEquals(germany.getUnits().getUnitCount(), preCount + 2);
 		/*

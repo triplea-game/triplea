@@ -195,13 +195,13 @@ public class DMatches
 			return ua.getMovement(unit.getOwner()) > 0;
 		}
 	};
-	public static Match<Unit> UnitIsNonAAMoveableType = new Match<Unit>()
+	public static Match<Unit> UnitIsCombatMoveMoveableType = new Match<Unit>()
 	{
 		@Override
 		public boolean match(final Unit unit)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-			return ua.getMovement(unit.getOwner()) > 0 && !ua.isAA();
+			return ua.getMovement(unit.getOwner()) > 0 && !ua.getCanNotMoveDuringCombatMove();
 		}
 	};
 	public static final Match<Unit> UnitCanAttack = new Match<Unit>()
@@ -210,8 +210,9 @@ public class DMatches
 		public boolean match(final Unit unit)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-			if (ua.isAA())
-				return false;
+			// TODO: check for infrastructure here? for aa guns?
+			// if (ua.isAA())
+			// return false;
 			if (ua.isFactory())
 				return false;
 			return true;
@@ -223,8 +224,9 @@ public class DMatches
 		public boolean match(final Unit unit)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-			if (ua.isAA())
-				return false;
+			// TODO: check for infrastructure here? for aa guns?
+			// if (ua.isAA())
+			// return false;
 			if (ua.isFactory())
 				return false;
 			return true;

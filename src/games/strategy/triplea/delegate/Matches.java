@@ -213,10 +213,8 @@ public class Matches
 		@Override
 		public boolean match(final Unit unit)
 		{
-			if (!(UnitIsAA.match(unit) || UnitIsAAforCombatOnly.match(unit) || UnitIsAAforBombingThisUnitOnly.match(unit)))
-			{
+			if (!(UnitIsAAforCombatOnly.match(unit) || UnitIsAAforBombingThisUnitOnly.match(unit)))
 				return false;
-			}
 			final TechAttachment ta = (TechAttachment) unit.getOwner().getAttachment(Constants.TECH_ATTACHMENT_NAME);
 			if (ta == null)
 				return false;
@@ -752,7 +750,7 @@ public class Matches
 			{
 				final Unit unit = obj;
 				final UnitAttachment ua = UnitAttachment.get(unit.getType());
-				return !ua.isFactory() && !ua.isAA() && !ua.getIsInfrastructure() && !UnitCanBeCapturedOnEnteringToInThisTerritory(player, terr, data).match(unit);
+				return !ua.isFactory() && !ua.getIsInfrastructure() && !UnitCanBeCapturedOnEnteringToInThisTerritory(player, terr, data).match(unit);
 			}
 		};
 	}
@@ -764,7 +762,7 @@ public class Matches
 		{
 			final Unit unit = obj;
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			return !ua.isFactory() && !ua.isAA() && !ua.getIsInfrastructure();
+			return !ua.isFactory() && !ua.getIsInfrastructure();
 		}
 	};
 	public static final Match<Unit> UnitIsSuicide = new Match<Unit>()
@@ -958,7 +956,7 @@ public class Matches
 		{
 			final UnitType type = obj;
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return (ua.isFactory() || ua.getIsInfrastructure()) && !(ua.isAA() || ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly());
+			return (ua.isFactory() || ua.getIsInfrastructure()) && !(ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly());
 		}
 	};
 	public static final Match<UnitType> UnitTypeIsInfantry = new Match<UnitType>()
@@ -1012,54 +1010,23 @@ public class Matches
 			return ua.getCanProduceUnits();
 		}
 	};
-	public static final Match<UnitType> UnitTypeIsAA = new Match<UnitType>()
-	{
-		@Override
-		public boolean match(final UnitType obj)
-		{
-			final UnitAttachment ua = UnitAttachment.get(obj);
-			return ua.isAA();
-		}
-	};
 	public static final Match<UnitType> UnitTypeIsAAofAnyKind = new Match<UnitType>()
 	{
 		@Override
 		public boolean match(final UnitType obj)
 		{
 			final UnitAttachment ua = UnitAttachment.get(obj);
-			return ua.isAA() || ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly();
+			return ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly();
 		}
 	};
-	public static final Match<UnitType> UnitTypeIsAAOrFactory = new Match<UnitType>()
-	{
-		@Override
-		public boolean match(final UnitType obj)
-		{
-			final UnitAttachment ua = UnitAttachment.get(obj);
-			if (ua.isAA() || ua.isFactory())
-				return true;
-			return false;
-		}
-	};
-	public static final Match<UnitType> UnitTypeIsAAOrIsFactoryOrIsInfrastructure = new Match<UnitType>()
-	{
-		@Override
-		public boolean match(final UnitType obj)
-		{
-			final UnitAttachment ua = UnitAttachment.get(obj);
-			if (ua.isAA() || ua.isFactory() || ua.getIsInfrastructure())
-				return true;
-			return false;
-		}
-	};
-	public static final Match<Unit> UnitIsAAorIsRocket = new Match<Unit>()
+	public static final Match<Unit> UnitIsRocket = new Match<Unit>()
 	{
 		@Override
 		public boolean match(final Unit obj)
 		{
 			final UnitType type = obj.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.isAA() || ua.getIsRocket();
+			return ua.getIsRocket();
 		}
 	};
 	public static final Match<Unit> UnitHasStackingLimit = new Match<Unit>()
@@ -1082,16 +1049,6 @@ public class Matches
 			return ua.getCanNotMoveDuringCombatMove();
 		}
 	};
-	public static final Match<Unit> UnitIsAA = new Match<Unit>()
-	{
-		@Override
-		public boolean match(final Unit obj)
-		{
-			final UnitType type = obj.getUnitType();
-			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.isAA();
-		}
-	};
 	public static final Match<Unit> UnitIsAAforCombatOnly = new Match<Unit>()
 	{
 		@Override
@@ -1100,16 +1057,6 @@ public class Matches
 			final UnitType type = obj.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getIsAAforCombatOnly();
-		}
-	};
-	public static final Match<Unit> UnitIsAAforCombat = new Match<Unit>()
-	{
-		@Override
-		public boolean match(final Unit obj)
-		{
-			final UnitType type = obj.getUnitType();
-			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.getIsAAforCombatOnly() || ua.isAA();
 		}
 	};
 	public static final Match<Unit> UnitIsAAforBombingThisUnitOnly = new Match<Unit>()
@@ -1122,16 +1069,6 @@ public class Matches
 			return ua.getIsAAforBombingThisUnitOnly();
 		}
 	};
-	public static final Match<Unit> UnitIsAAforBombing = new Match<Unit>()
-	{
-		@Override
-		public boolean match(final Unit obj)
-		{
-			final UnitType type = obj.getUnitType();
-			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.getIsAAforBombingThisUnitOnly() || ua.isAA();
-		}
-	};
 	public static final Match<Unit> UnitIsAAforAnything = new Match<Unit>()
 	{
 		@Override
@@ -1139,10 +1076,12 @@ public class Matches
 		{
 			final UnitType type = obj.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.getIsAAforCombatOnly() || ua.getIsAAforBombingThisUnitOnly() || ua.isAA();
+			return ua.getIsAAforCombatOnly() || ua.getIsAAforBombingThisUnitOnly();
 		}
 	};
-	public static final Match<Unit> UnitIsNotAA = new InverseMatch<Unit>(UnitIsAA);
+	public static final Match<Unit> UnitIsNotAA = new InverseMatch<Unit>(UnitIsAAforAnything);
+	public static final Match<Unit> UnitIsFactoryOrIsInfrastructure = new CompositeMatchOr<Unit>(UnitIsFactory, UnitIsInfrastructure);
+	
 	public static final Match<Unit> UnitIsInfantry = new Match<Unit>()
 	{
 		@Override
@@ -1614,9 +1553,8 @@ public class Matches
 			public boolean match(final Territory t)
 			{
 				final CompositeMatch<Unit> nonCom = new CompositeMatchOr<Unit>();
-				nonCom.add(UnitIsAAOrFactory);
+				nonCom.add(UnitIsFactoryOrIsInfrastructure);
 				nonCom.add(enemyUnit(player, data).invert());
-				nonCom.add(UnitIsInfrastructure); // UnitIsAAOrIsFactoryOrIsInfrastructure
 				// nonCom.add(UnitCanBeCapturedOnEnteringToInThisTerritory(player, t, data)); //this is causing issues where the newly captured units fight against themselves
 				return t.getUnits().allMatch(nonCom);
 			}
@@ -1890,8 +1828,8 @@ public class Matches
 			public boolean match(final Unit unit)
 			{
 				final UnitAttachment ua = UnitAttachment.get(unit.getType());
-				if (ua.isAA() || ua.isFactory() || ua.getIsInfrastructure())
-					return false;
+				// if (ua.isAA() || ua.isFactory() || ua.getIsInfrastructure())
+				// return false;
 				return ua.getDefense(unit.getOwner()) >= minDefense;
 			}
 		};
@@ -2016,10 +1954,10 @@ public class Matches
 		};
 	}
 	
-	public static Match<Unit> unitIsEnemyAA(final PlayerID player, final GameData data)
+	public static Match<Unit> unitIsEnemyAAforAnything(final PlayerID player, final GameData data)
 	{
 		final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
-		comp.add(UnitIsAA);
+		comp.add(UnitIsAAforAnything);
 		comp.add(enemyUnit(player, data));
 		return comp;
 	}
@@ -2027,7 +1965,7 @@ public class Matches
 	public static Match<Unit> unitIsEnemyAAforCombat(final PlayerID player, final GameData data)
 	{
 		final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
-		comp.add(new CompositeMatchOr<Unit>(UnitIsAA, UnitIsAAforCombatOnly));
+		comp.add(UnitIsAAforCombatOnly);
 		comp.add(enemyUnit(player, data));
 		return comp;
 	}
@@ -2035,7 +1973,7 @@ public class Matches
 	public static Match<Unit> unitIsEnemyAAforBombing(final PlayerID player, final GameData data)
 	{
 		final CompositeMatch<Unit> comp = new CompositeMatchAnd<Unit>();
-		comp.add(new CompositeMatchOr<Unit>(UnitIsAA, UnitIsAAforBombingThisUnitOnly));
+		comp.add(UnitIsAAforBombingThisUnitOnly);
 		comp.add(enemyUnit(player, data));
 		return comp;
 	}
@@ -2129,7 +2067,7 @@ public class Matches
 				// WW2V1, you can
 				if (!games.strategy.triplea.Properties.getWW2V2(data) && !games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAARestricted(data))
 				{
-					blitzableUnits.add(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
+					blitzableUnits.add(Matches.UnitIsFactoryOrIsInfrastructure);
 				}
 				if (t.getUnits().allMatch(blitzableUnits))
 					return true;
@@ -2276,16 +2214,14 @@ public class Matches
 		};
 	}
 	
-	public static Match<Territory> territoryHasEnemyAA(final PlayerID player, final GameData data)
+	public static Match<Territory> territoryHasEnemyAAforAnything(final PlayerID player, final GameData data)
 	{
 		return new Match<Territory>()
 		{
-			Match<Unit> unitIsEnemyAA = unitIsEnemyAA(player, data);
-			
 			@Override
 			public boolean match(final Territory t)
 			{
-				return t.getUnits().someMatch(unitIsEnemyAA);
+				return t.getUnits().someMatch(unitIsEnemyAAforAnything(player, data));
 			}
 		};
 	}
@@ -2683,8 +2619,7 @@ public class Matches
 	
 	public static Match<Territory> territoryIsBlockedSea(final PlayerID player, final GameData data)
 	{
-		// UnitIsAAOrIsFactoryOrIsInfrastructure
-		final CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrFactory.invert(), Matches.alliedUnit(player, data).invert(), Matches.UnitIsInfrastructure.invert());
+		final CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
 		final CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
 		final CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportButNotCombatTransport.invert(), Matches.UnitIsLand.invert());
 		final CompositeMatch<Unit> unitCond = ignore;
@@ -2961,8 +2896,6 @@ public class Matches
 		};
 	}
 	
-	public static final Match<Unit> UnitIsAAOrFactory = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory);
-	public static final Match<Unit> UnitIsAAOrIsFactoryOrIsInfrastructure = new CompositeMatchOr<Unit>(UnitIsAA, UnitIsFactory, UnitIsInfrastructure);
 	public static final Match<Territory> territoryIsBlockadeZone = new Match<Territory>()
 	{
 		@Override

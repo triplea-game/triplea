@@ -127,7 +127,6 @@ public class UnitAttachment extends DefaultAttachment
 	private boolean m_isLandTransport = false;
 	
 	// aa related
-	private boolean m_isAA = false;
 	private boolean m_isAAforCombatOnly = false;
 	private boolean m_isAAforBombingThisUnitOnly = false;
 	private boolean m_isRocket = false;
@@ -1345,16 +1344,15 @@ public class UnitAttachment extends DefaultAttachment
 		return m_bombingMaxDieSides;
 	}
 	
+	// Do not delete, we keep this both for backwards compatibility, and for user convenience when making maps
 	public void setIsAA(final String s) throws GameParseException
 	{
-		final boolean value = getBool(s);
-		m_isAA = value;
+		getBool(s);
+		setIsAAforBombingThisUnitOnly(s);
+		setIsAAforCombatOnly(s);
 		setIsAAmovement(s);
-	}
-	
-	public boolean isAA()
-	{
-		return m_isAA;
+		setIsRocket(s);
+		setIsInfrastructure(s);
 	}
 	
 	public void setAttackAA(final String s)
@@ -1457,7 +1455,7 @@ public class UnitAttachment extends DefaultAttachment
 			return Integer.MAX_VALUE;
 		int max = stackingLimit.getFirst();
 		final String stackingType = stackingLimit.getSecond();
-		if (max == Integer.MAX_VALUE && (ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly() || ua.isAA()))
+		if (max == Integer.MAX_VALUE && (ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly()))
 		{
 			// under certain rules (classic rules) there can only be 1 aa gun in a territory.
 			if (!(games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getWW2V3(data) || games.strategy.triplea.Properties.getMultipleAAPerTerritory(data)))
@@ -1480,14 +1478,14 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		if (m_isAir)
 		{
-			if (m_isSea || m_isFactory || m_isSub || m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_transportCost != -1 ||
+			if (m_isSea || m_isFactory || m_isSub || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_transportCost != -1 ||
 						// m_transportCapacity != -1 ||
 						m_carrierCapacity != -1 || m_canBlitz || m_canBombard || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isCombatTransport)
 				throw new GameParseException("Invalid Unit attatchment, air units can not have certain properties, " + this);
 		}
 		else if (m_isSea)
 		{
-			if (m_canIntercept || m_canEscort || m_canBlitz || m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_isAir || m_isFactory || m_isStrategicBomber || m_carrierCost != -1
+			if (m_canIntercept || m_canEscort || m_canBlitz || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_isAir || m_isFactory || m_isStrategicBomber || m_carrierCost != -1
 						|| m_transportCost != -1 || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isAirTransport || m_isKamikaze)
 				throw new GameParseException("Invalid Unit Attatchment, sea units can not have certain properties, " + this);
 		}
@@ -1510,7 +1508,7 @@ public class UnitAttachment extends DefaultAttachment
 		{
 			throw new GameParseException("Invalid Unit Attatchment, transportCost and transportCapacity can not be set at same time, " + this);
 		}
-		if (((m_bombingBonus >= 0 || m_bombingMaxDieSides >= 0) && !(m_isStrategicBomber || m_isAA)) || (m_bombingBonus < -1 || m_bombingMaxDieSides < -1)
+		if (((m_bombingBonus >= 0 || m_bombingMaxDieSides >= 0) && !(m_isStrategicBomber || m_isRocket)) || (m_bombingBonus < -1 || m_bombingMaxDieSides < -1)
 					|| (m_bombingBonus > 10000 || m_bombingMaxDieSides > 200))
 		{
 			throw new GameParseException("Invalid Unit Attatchment, something wrong with bombingBonus or bombingMaxDieSides, " + this);
@@ -1675,7 +1673,6 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  defense:" + m_defense
 					+ "  twoHit:" + m_isTwoHit
 					+ "  factory:" + m_isFactory
-					+ "  aa:" + m_isAA
 					+ "  blitz:" + m_canBlitz
 					+ "  artillerySupportable:" + m_isArtillerySupportable
 					+ "  artillery:" + m_isArtillery
@@ -1700,6 +1697,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  attackAA:" + m_attackAA
 					+ "  attackAAmaxDieSides:" + m_attackAAmaxDieSides
 					+ "  isRocket:" + m_isRocket
+					
 					+ "  canProduceUnits:" + m_canProduceUnits
 					+ "  canProduceXUnits:" + m_canProduceXUnits
 					+ "  createsUnitsList:" + (m_createsUnitsList.size() == 0 ? "empty" : m_createsUnitsList.toString())
@@ -1788,17 +1786,17 @@ public class UnitAttachment extends DefaultAttachment
 		else if (m_fuelCost != null && m_fuelCost.size() > 1)
 			stats.append("Uses " + m_fuelCost.totalValues() + " Resources Each movement point, ");
 		
-		if (m_isAA || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly)
+		if (m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly)
 		{
 			stats.append((playerHasAARadar(player) ? m_attackAA + 1 : m_attackAA) + "/" + (m_attackAAmaxDieSides != -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
-			if (m_isAA || (m_isAAforCombatOnly && m_isAAforBombingThisUnitOnly))
+			if (m_isAAforCombatOnly && m_isAAforBombingThisUnitOnly)
 				stats.append("Anti-Air, ");
 			else if (m_isAAforCombatOnly)
 				stats.append("Anti-Air for Combat, ");
 			else if (m_isAAforBombingThisUnitOnly)
 				stats.append("Anti-Air for Raids, ");
 		}
-		if ((m_isAA || m_isRocket) && playerHasRockets(player))
+		if (m_isRocket && playerHasRockets(player))
 		{
 			stats.append("can Rocket Attack, ");
 			if ((m_bombingMaxDieSides != -1 || m_bombingBonus != -1) && games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(getData()))
@@ -1812,7 +1810,7 @@ public class UnitAttachment extends DefaultAttachment
 		// line break
 		if (useHTML)
 			stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
-		if (m_isInfrastructure || m_isAA || m_isFactory)
+		if (m_isInfrastructure || m_isFactory)
 			stats.append("can be Captured, ");
 		if (m_isConstruction || m_isFactory)
 			stats.append("can be Placed Without Factory, ");
@@ -1937,7 +1935,7 @@ public class UnitAttachment extends DefaultAttachment
 		if (m_stackingLimit != null)
 		{
 			if (m_stackingLimit.getFirst() == Integer.MAX_VALUE
-						&& (m_isAAforBombingThisUnitOnly || m_isAAforCombatOnly || m_isAA)
+						&& (m_isAAforBombingThisUnitOnly || m_isAAforCombatOnly)
 						&& !(games.strategy.triplea.Properties.getWW2V2(getData()) || games.strategy.triplea.Properties.getWW2V3(getData()) || games.strategy.triplea.Properties
 									.getMultipleAAPerTerritory(getData())))
 				stats.append("max of 1 " + m_stackingLimit.getSecond() + " per territory, ");

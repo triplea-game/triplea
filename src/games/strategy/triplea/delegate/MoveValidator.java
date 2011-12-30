@@ -167,7 +167,7 @@ public class MoveValidator
 	 */
 	public static boolean onlyAlliedUnitsOnPath(final Route route, final PlayerID player, final GameData data)
 	{
-		final CompositeMatch<Unit> alliedOrNonCombat = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure, Matches.alliedUnit(player, data));
+		final CompositeMatch<Unit> alliedOrNonCombat = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.alliedUnit(player, data));
 		// Submerged units do not interfere with movement
 		// only relevant for WW2V2
 		alliedOrNonCombat.add(Matches.unitIsSubmerged(data));
@@ -185,10 +185,10 @@ public class MoveValidator
 	 */
 	public static boolean onlyIgnoredUnitsOnPath(final Route route, final PlayerID player, final GameData data, final boolean ignoreRouteEnd)
 	{
-		final CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure, Matches.UnitIsSub, Matches.alliedUnit(player, data));
-		final CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand,
+		final CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+		final CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand,
 					Matches.alliedUnit(player, data));
-		final CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand,
+		final CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand,
 					Matches.UnitIsSub, Matches.alliedUnit(player, data));
 		final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
 		final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
@@ -1877,7 +1877,7 @@ public class MoveValidator
 		// No neutral countries on route predicate
 		final Match<Territory> noNeutral = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.TerritoryIsNeutral.invert());
 		// No aa guns on route predicate
-		final Match<Territory> noAA = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.territoryHasEnemyAA(player, data).invert());
+		final Match<Territory> noAA = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.territoryHasEnemyAAforAnything(player, data).invert());
 		// no enemy units on the route predicate
 		final Match<Territory> noEnemy = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.territoryHasEnemyUnits(player, data).invert());
 		Route defaultRoute;

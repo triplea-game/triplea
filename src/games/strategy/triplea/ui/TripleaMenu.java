@@ -654,7 +654,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				final JPanel panel = new JPanel();
 				final BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
 				panel.setLayout(layout);
-				for (Integer key  : new TreeSet<Integer>(stats.getData().keySet())) {
+				for (final Integer key : new TreeSet<Integer>(stats.getData().keySet()))
+				{
 					final int value = stats.getData().getInt(key);
 					final JLabel label = new JLabel(key + " was rolled " + value + " times");
 					panel.add(label);
@@ -931,7 +932,10 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			final Iterator<UnitType> allUnitsIterator = getData().getUnitTypeList().iterator();
 			while (allUnitsIterator.hasNext())
 			{
-				String toModify = UnitAttachment.get(allUnitsIterator.next()).toString().replaceFirst("UnitType called ", "").replaceFirst(" with:", "").replaceAll("games.strategy.engine.data.", "")
+				final UnitAttachment ua = UnitAttachment.get(allUnitsIterator.next());
+				if (ua == null)
+					continue;
+				String toModify = ua.toString().replaceFirst("UnitType called ", "").replaceFirst(" with:", "").replaceAll("games.strategy.engine.data.", "")
 							.replaceAll("\n", ";").replaceAll(",", ";");
 				toModify = toModify.replaceAll("  ", ",");
 				toModify = toModify.replaceAll(", ", ",").replaceAll(" ,", ",");

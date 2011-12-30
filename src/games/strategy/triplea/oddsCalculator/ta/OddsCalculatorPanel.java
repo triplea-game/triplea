@@ -520,9 +520,9 @@ class PlayerUnitsPanel extends JPanel
 					{
 						return u1.isSea() ? 1 : -1;
 					}
-					if (u1.isAA() != u2.isAA())
+					if ((u1.getIsAAforCombatOnly() || u1.getIsAAforBombingThisUnitOnly()) != (u2.getIsAAforCombatOnly() || u2.getIsAAforBombingThisUnitOnly()))
 					{
-						return u1.isAA() ? 1 : -1;
+						return (u1.getIsAAforCombatOnly() || u1.getIsAAforBombingThisUnitOnly()) ? 1 : -1;
 					}
 					if (u1.isAir() != u2.isAir())
 					{

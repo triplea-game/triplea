@@ -135,7 +135,7 @@ class AAInMoveUtil implements Serializable
 		// that will be a battle
 		// and handled else where in this tangled mess
 		final CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>();
-		hasAA.add(Matches.UnitIsAAforCombat);
+		hasAA.add(Matches.UnitIsAAforCombatOnly);
 		hasAA.add(Matches.enemyUnit(ally, getData()));
 		final List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 		for (final Territory current : route.getMiddleSteps())
@@ -181,7 +181,7 @@ class AAInMoveUtil implements Serializable
 		{
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				dice[0] = DiceRoll.rollAA(units, m_bridge, territory, Matches.UnitIsAAforCombat);
+				dice[0] = DiceRoll.rollAA(units, m_bridge, territory, Matches.UnitIsAAforCombatOnly);
 			}
 		};
 		final IExecutable selectCasualties = new IExecutable()
@@ -209,7 +209,7 @@ class AAInMoveUtil implements Serializable
 	private void selectCasualties(final DiceRoll dice, final Collection<Unit> units, final Territory territory, final GUID battleID)
 	{
 		Collection<Unit> casualties = null;
-		casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, battleID, territory, Matches.UnitIsAAforCombat);
+		casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, battleID, territory, Matches.UnitIsAAforCombatOnly);
 		getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName(), casualties.size() + " AA hits in " + territory.getName());
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
 		units.removeAll(casualties);

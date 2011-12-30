@@ -74,14 +74,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		ALL, SUBS, NONE
 	}
 	
-
+	
 	// these class exist for testing
 	@SuppressWarnings("serial")
 	public static abstract class AttackSubs implements IExecutable
 	{
 	}
 	
-
+	
 	@SuppressWarnings("serial")
 	public static abstract class DefendSubs implements IExecutable
 	{
@@ -346,7 +346,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		change.add(ChangeFactory.markNoMovementChange(nonAir));
 		return change;
 	}*/
-
+	
 	private void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies)
 	{
 		for (final Unit holder : dependencies.keySet())
@@ -2289,7 +2289,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		
 		private void rollDice(final IDelegateBridge bridge)
 		{
-			m_dice = DiceRoll.rollAA(m_attackingUnits, bridge, m_battleSite, Matches.UnitIsAAforCombat);
+			m_dice = DiceRoll.rollAA(m_attackingUnits, bridge, m_battleSite, Matches.UnitIsAAforCombatOnly);
 		}
 		
 		private void selectCasualties(final IDelegateBridge bridge)
@@ -2298,7 +2298,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// waits for attacker to select casualties
 			getDisplay(bridge).notifyDice(m_battleID, m_dice, SELECT_AA_CASUALTIES);
 			final Collection<Unit> attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
-			m_casualties = BattleCalculator.getAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite, Matches.UnitIsAAforCombat);
+			m_casualties = BattleCalculator.getAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite, Matches.UnitIsAAforCombatOnly);
 		}
 		
 		private void notifyCasualtiesAA(final IDelegateBridge bridge)
@@ -2342,7 +2342,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private boolean canFireAA()
 	{
-		return Match.someMatch(m_defendingUnits, Matches.UnitIsAAforCombat) && Match.someMatch(m_attackingUnits, Matches.UnitIsAir) && !m_battleSite.isWater();
+		return Match.someMatch(m_defendingUnits, Matches.UnitIsAAforCombatOnly) && Match.someMatch(m_attackingUnits, Matches.UnitIsAir) && !m_battleSite.isWater();
 	}
 	
 	/**
@@ -2353,15 +2353,15 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private List<Unit> removeNonCombatants(final Collection<Unit> units, final boolean attacking, final PlayerID player)
 	{
 		final CompositeMatch<Unit> combat = new CompositeMatchAnd<Unit>();
-		combat.add(new InverseMatch<Unit>(Matches.UnitIsAAOrFactory));
+		combat.add(Matches.UnitIsFactory.invert());
 		if (m_battleSite.isWater())
 		{
 			combat.add(Matches.UnitIsNotLand);
 		}
 		final List<Unit> unitList = Match.getMatches(units, combat);
 		// still allow infrastructure type units that can provide support have combat abilities
-		final CompositeMatch<Unit> infrastructureNotSupporterAndNotHasCombatAbilities = new CompositeMatchAnd<Unit>(Matches.UnitIsInfrastructure, Matches.UnitIsSupporterOrHasCombatAbility(attacking,
-					player, m_data).invert());
+		final CompositeMatch<Unit> infrastructureNotSupporterAndNotHasCombatAbilities = new CompositeMatchAnd<Unit>(Matches.UnitIsInfrastructure,
+					Matches.UnitIsSupporterOrHasCombatAbility(attacking, player, m_data).invert());
 		// remove infrastructure units that can't take part in combat (air/naval bases, etc...)
 		unitList.removeAll(Match.getMatches(unitList, infrastructureNotSupporterAndNotHasCombatAbilities));
 		// remove any disabled units from combat

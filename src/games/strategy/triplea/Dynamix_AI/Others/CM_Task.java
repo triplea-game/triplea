@@ -107,7 +107,7 @@ public class CM_Task
 						return false;
 					if (Matches.UnitIsFactory.match(unit) && ua.getAttack(unit.getOwner()) <= 0)
 						return false;
-					if (Matches.UnitIsAA.match(unit))
+					if (Matches.UnitCanNotMoveDuringCombatMove.match(unit))
 						return false;
 					if (recruitsAsHashSet.contains(unit)) // If we've already recruited this unit
 						return false;

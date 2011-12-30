@@ -367,7 +367,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				// we need to remove any units which are participating in bombing raids
 				attackingUnits.removeAll(bombingBattle.getAttackingUnits());
 			}
-			if (attackingUnits.isEmpty() || Match.allMatch(attackingUnits, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure))
+			if (attackingUnits.isEmpty() || Match.allMatch(attackingUnits, Matches.UnitIsFactoryOrIsInfrastructure))
 				continue;
 			IBattle battle = m_battleTracker.getPendingBattle(territory, false);
 			if (battle == null)

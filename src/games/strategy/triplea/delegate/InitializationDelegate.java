@@ -203,7 +203,8 @@ public class InitializationDelegate extends BaseDelegate
 			 */
 			final ProductionFrontier frontierNONShipyards = data.getProductionFrontierList().getProductionFrontier("production");
 			final Collection<ProductionRule> rules = frontierNONShipyards.getRules();
-			for (ProductionRule rule  : rules) {
+			for (final ProductionRule rule : rules)
+			{
 				final String ruleName = rule.getName();
 				final IntegerMap<NamedAttachable> ruleResults = rule.getResults();
 				final String unitName = ruleResults.keySet().iterator().next().getName();
@@ -257,10 +258,9 @@ public class InitializationDelegate extends BaseDelegate
 		{
 			if (!current.getOwner().isNull())
 			{
-				// TODO: veqryn, maybe need to have infrastructure also initialized? Depends on if they should go back to their original owner or not. UnitIsAAOrIsFactoryOrIsInfrastructure
 				changes.add(origOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
-				final Collection<Unit> aaAndFactory = current.getUnits().getMatches(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
-				changes.add(origOwnerTracker.addOriginalOwnerChange(aaAndFactory, current.getOwner()));
+				final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.UnitIsFactoryOrIsInfrastructure);
+				changes.add(origOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, current.getOwner()));
 				final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
 				if (territoryAttachment == null)
 					throw new IllegalStateException("No territory attachment for " + current);

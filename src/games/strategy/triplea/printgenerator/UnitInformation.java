@@ -70,7 +70,7 @@ class UnitInformation
 			{
 				final UnitType currentType = m_unitTypeIterator.next();
 				final UnitAttachment currentAttachment = m_unitInfoMap.get(currentType);
-				if (currentAttachment.isAA())
+				if (currentType.getName().equals(Constants.AAGUN_TYPE))
 				{
 					unitInformation.write(currentType.getName() + ",");
 				}
@@ -83,7 +83,8 @@ class UnitInformation
 							+ currentAttachment.getDefense(PlayerID.NULL_PLAYERID) + "," + (currentAttachment.getCanBlitz() == false ? "-" : "true") + ","
 							+ (currentAttachment.isArtillery() == false ? "-" : "true") + "," + (currentAttachment.isArtillerySupportable() == false ? "-" : "true") + ","
 							+ (currentAttachment.isFactory() == false ? "-" : "true") + "," + (currentAttachment.getIsMarine() == false ? "-" : "true") + ","
-							+ (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + "," + (currentAttachment.isAA() == false ? "-" : "true") + ","
+							+ (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
+							+ ((currentAttachment.getIsAAforCombatOnly() || currentAttachment.getIsAAforBombingThisUnitOnly()) == false ? "-" : "true") + ","
 							+ (currentAttachment.isAir() == false ? "-" : "true") + "," + (currentAttachment.isStrategicBomber() == false ? "-" : "true") + ","
 							+ (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + "," + (currentAttachment.isSea() == false ? "-" : "true") + ","
 							+ (currentAttachment.isTwoHit() == false ? "-" : "true") + "," + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","

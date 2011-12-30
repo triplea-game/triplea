@@ -119,7 +119,7 @@ public class NCM_Task
 				continue;
 			for (final Unit unit : units)
 			{
-				if (Matches.UnitIsAA.match(unit))
+				if (Matches.UnitIsAAforAnything.match(unit))
 				{
 					// NOTE: AA movement is currently disabled. Uncomment below to re-enable.
 					// If this is an AA and we've already added an AA as a recruit or (the from ter has a factory and this is the only AA), skip AA

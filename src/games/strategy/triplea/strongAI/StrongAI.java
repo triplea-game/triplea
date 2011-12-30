@@ -938,7 +938,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final CompositeMatch<Unit> fighterUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanLandOnCarrier);
 		// CompositeMatch<Unit> seaAttackUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsSea, Matches.UnitIsNotTransport, HasntMoved);
 		// CompositeMatch<Unit> seaAirAttackUnitNotMoved = new CompositeMatchOr<Unit>(seaAttackUnit, fighterUnit);
-		final CompositeMatch<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(SUtils.TerritoryIsNotImpassableToAirUnits(data), Matches.territoryHasEnemyAA(player, data).invert());
+		final CompositeMatch<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(SUtils.TerritoryIsNotImpassableToAirUnits(data), Matches.territoryHasEnemyAAforCombatOnly(player, data)
+					.invert());
 		final List<Territory> ACTerrs = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsCarrier);
 		final List<Territory> myFighterTerr = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitCanLandOnCarrier);
 		final List<Unit> alreadyMoved = new ArrayList<Unit>();
@@ -3134,7 +3135,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final Match<Unit> fighterUnit = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, HasntMoved2);
 		final Match<Unit> bomberUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, HasntMoved2);
 		final Match<Unit> destroyerUnit = new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitIsDestroyer);
-		final CompositeMatch<Territory> noEnemyAA = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAA(player, data).invert(), Matches.TerritoryIsNotImpassable);
+		final CompositeMatch<Territory> noEnemyAA = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAAforCombatOnly(player, data).invert(), Matches.TerritoryIsNotImpassable);
 		// Check to see if we have total air superiority...4:1 or greater...if so, let her rip
 		final List<Territory> myAirTerr = SUtils.findUnitTerr(data, player, airAttackUnit);
 		final List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
@@ -3409,7 +3410,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					if (!moveFrom.isWater() && moveFrom.getUnits().someMatch(landUnit))
 					{
 						final List<Unit> helpUnits = moveFrom.getUnits().getMatches(landUnit);
-						final Route aRoute = data.getMap().getRoute(moveFrom, testCap, Matches.territoryHasEnemyAA(player, data).invert());
+						final Route aRoute = data.getMap().getRoute(moveFrom, testCap, Matches.territoryHasEnemyAAforCombatOnly(player, data).invert());
 						if (aRoute != null)
 						{
 							if (MoveValidator.hasEnoughMovement(helpUnits, aRoute))
@@ -3705,7 +3706,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final Match<Unit> alliedSeaAttackUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitIsSea);
 		final Match<Unit> alliedAirAttackUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitIsAir);
 		final Match<Unit> alliedSeaAirAttackUnit = new CompositeMatchOr<Unit>(alliedSeaAttackUnit, alliedAirAttackUnit);
-		final Match<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassable, Matches.territoryHasEnemyAA(player, data).invert());
+		final Match<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassable, Matches.territoryHasEnemyAAforCombatOnly(player, data).invert());
 		final Match<Territory> noEnemyWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, data));
 		final Match<Territory> enemyWater = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data));
 		final List<Territory> seaAttackTerr = SUtils.findTersWithUnitsMatching(data, player, seaAttackUnit);
@@ -4317,7 +4318,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final Match<Unit> fighterAndOwned = new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitCanLandOnCarrier);
 		// Match<Unit> alliedUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data));
 		final List<Unit> unitsAlreadyMoved = new ArrayList<Unit>();
-		final CompositeMatch<Territory> notNeutralOrAA = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassable, Matches.territoryHasEnemyAA(player, data).invert());
+		final CompositeMatch<Territory> notNeutralOrAA = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassable, Matches.territoryHasEnemyAAforCombatOnly(player, data).invert());
 		// Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		// boolean capDanger = markFactoryUnits(data, player, unitsAlreadyMoved);
 		final boolean tFirst = transportsMayDieFirst();
@@ -4937,7 +4938,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			}
 		});
 		final Match<Unit> bomberUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsStrategicBomber);
-		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAA(player, data).invert(), Matches.TerritoryIsPassableAndNotRestricted(player, data));
+		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAAforCombatOnly(player, data).invert(), Matches.TerritoryIsPassableAndNotRestricted(player,
+					data));
 		final Match<Unit> fighterUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanLandOnCarrier);
 		final Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		List<Territory> planeTerr = new ArrayList<Territory>();
@@ -5524,7 +5526,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			// realStrength = SUtils.strength(unitsHere, false, false, tFirst) - SUtils.allairstrength(unitsHere, false);
 			ourStrength = SUtils.strength(t.getUnits().getUnits(), false, false, tFirst) + addStrength.get(t);
 			attackerStrength = SUtils.getStrengthOfPotentialAttackers(t, data, player, tFirst, false, null);
-			if ((t.getUnits().someMatch(Matches.UnitIsFactory) || t.getUnits().someMatch(Matches.UnitIsAA)) && t != myCapital)
+			if ((t.getUnits().someMatch(Matches.UnitIsFactory) || t.getUnits().someMatch(Matches.UnitIsInfrastructure)) && t != myCapital)
 			{ // protect factories...rather than just not moving, plan to move some in if necessary
 				// Don't worry about units that have been moved toward capital
 				if (attackerStrength > (ourStrength + 5.0F))
@@ -5970,7 +5972,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final CompositeMatch<Unit> alliedACUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitIsCarrier);
 		// CompositeMatch<Unit> alliedBomberUnit = new CompositeMatchAnd<Unit>(Matches.alliedUnit(player, data), Matches.UnitCanLandOnCarrier.invert(), Matches.UnitIsAir);
 		final CompositeMatch<Territory> noEnemyNeighbor = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.territoryHasEnemyLandNeighbor(data, player).invert());
-		final CompositeMatch<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotNeutral, Matches.territoryHasEnemyAA(player, data).invert(),
+		final CompositeMatch<Territory> noNeutralOrAA = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotNeutral, Matches.territoryHasEnemyAAforCombatOnly(player, data).invert(),
 					Matches.TerritoryIsNotImpassable);
 		final List<Unit> alreadyMoved = new ArrayList<Unit>();
 		final List<Territory> alreadyCheck = new ArrayList<Territory>();
@@ -5983,7 +5985,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				return !delegate.getBattleTracker().wasConquered(o);
 			}
 		});
-		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAA(player, data).invert(), Matches.TerritoryIsPassableAndNotRestricted(player, data));
+		final Match<Territory> routeCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyAAforCombatOnly(player, data).invert(), Matches.TerritoryIsPassableAndNotRestricted(player,
+					data));
 		final Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		final List<Territory> alliedFactories = SUtils.findUnitTerr(data, player, alliedFactory);
 		for (final Territory tBomb : delegateRemote.getTerritoriesWhereAirCantLand()) // move bombers to capital first
@@ -7244,7 +7247,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		// bombers will be more involved in attacks...if they are still available, then bomb
 		final Match<Unit> ownBomber = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved);
-		final Match<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassable, Matches.territoryHasEnemyAA(player, data).invert());
+		final Match<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassable, Matches.territoryHasEnemyAAforCombatOnly(player, data).invert());
 		final List<Unit> alreadyMoved = new ArrayList<Unit>();
 		final IntegerMap<Territory> bomberImpactMap = new IntegerMap<Territory>();
 		final List<Territory> enemyFactories = new ArrayList<Territory>();
@@ -7373,19 +7376,19 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final int costCheck = ruleCheck.getCosts().getInt(pus);
 			final UnitType x = (UnitType) ruleCheck.getResults().keySet().iterator().next();
 			// Remove from consideration any unit with Zero Movement
-			if (UnitAttachment.get(x).getMovement(player) < 1 && !(UnitAttachment.get(x).isAA() || UnitAttachment.get(x).isFactory()))
+			if (UnitAttachment.get(x).getMovement(player) < 1 && !(UnitAttachment.get(x).isFactory()))
 				continue;
 			// Remove from consideration any unit with Zero defense, or 3 or more attack/defense than defense/attack, that is not a transport/factory/aa unit
 			if (((UnitAttachment.get(x).getAttack(player) - UnitAttachment.get(x).getDefense(player) >= 3 || UnitAttachment.get(x).getDefense(player) - UnitAttachment.get(x).getAttack(player) >= 3) || UnitAttachment
 						.get(x).getDefense(player) < 1)
-						&& !(UnitAttachment.get(x).isAA() || UnitAttachment.get(x).isFactory() || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea.match(x))))
+						&& !(UnitAttachment.get(x).isFactory() || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea.match(x))))
 			{
 				// maybe the map only has weird units. make sure there is at least one of each type before we decide not to use it (we are relying on the fact that map makers generally put specialty units AFTER useful units in their production lists [ie: bombers listed after fighters, mortars after artillery, etc.])
 				if (Matches.UnitTypeIsAir.match(x) && !airProductionRules.isEmpty())
 					continue;
 				if (Matches.UnitTypeIsSea.match(x) && !seaProductionRules.isEmpty())
 					continue;
-				if (!Matches.UnitTypeIsAAOrFactory.match(x) && !landProductionRules.isEmpty() && !Matches.UnitTypeIsAir.match(x) && !Matches.UnitTypeIsSea.match(x))
+				if (!Matches.UnitTypeIsFactory.match(x) && !landProductionRules.isEmpty() && !Matches.UnitTypeIsAir.match(x) && !Matches.UnitTypeIsSea.match(x))
 					continue;
 			}
 			// Remove from consideration any unit which has maxBuiltPerPlayer
@@ -7403,12 +7406,11 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				seaProductionRules.add(ruleCheck);
 				averageSeaMove += UnitAttachment.get(x).getMovement(player);
 			}
-			else if (!Matches.UnitTypeIsAAOrFactory.match(x))
+			else if (!Matches.UnitTypeIsFactory.match(x))
 			{
 				if (costCheck > highPrice)
 				{
 					highPrice = costCheck;
-					// highRule = ruleCheck;
 				}
 				landProductionRules.add(ruleCheck);
 			}
@@ -9097,7 +9099,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (leftToSpend < quickCost || unitCount >= totProd || quickCost < 1)
 					continue;
 				final UnitType intResults = (UnitType) quickProd.getResults().keySet().iterator().next();
-				if (Matches.UnitTypeIsSeaOrAir.match(intResults) || Matches.UnitTypeIsAAOrIsFactoryOrIsInfrastructure.match(intResults))
+				if (Matches.UnitTypeIsSeaOrAir.match(intResults) || Matches.UnitTypeIsFactoryOrIsInfrastructure.match(intResults) || Matches.UnitTypeIsAAofAnyKind.match(intResults))
 					continue;
 				if (quickCost <= leftToSpend && unitCount < totProd)
 				{
@@ -10064,7 +10066,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		return null;
 	}*/
-
+	
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
 	{
 		return null;

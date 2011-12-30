@@ -992,8 +992,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			change.add(ChangeFactory.markNoMovementChange(unit));
 		}
 		// place units
-		final Collection<Unit> factoryAndAA = Match.getMatches(units, Matches.UnitIsAAOrIsFactoryOrIsInfrastructure);
-		change.add(DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndAA, player));
+		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(units, Matches.UnitIsFactoryOrIsInfrastructure);
+		change.add(DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, player));
 		final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName() + " has " + MyFormatter.unitsToTextNoOwner(units) + " placed in " + terr.getName();
 		aBridge.getHistoryWriter().startEvent(transcriptText);
 		aBridge.getHistoryWriter().setRenderingData(units);
@@ -1033,7 +1033,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		return DelegateFinder.battleDelegate(data).getBattleTracker();
 	}*/
-
+	
 	//
 	// And now for the actual triggers, as called throughout the engine.
 	// Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the default location for when 'when' is not used.

@@ -204,7 +204,7 @@ public class OCBattle
 				{
 					unitType = OCUnit.AIRUNIT;
 				}
-				else if (ua.isAA())
+				else if (ua.getIsAAforCombatOnly())
 				{
 					unitType = OCUnit.AAUNIT;
 				}
@@ -228,7 +228,7 @@ public class OCBattle
 				boostsInfAtt = ua.isArtillery();
 				boostAmphib = ua.getIsMarine();
 			}
-			if (ua.isAA())
+			if (ua.getIsAAforCombatOnly())
 			{
 				terrAAPresent = true;
 			}

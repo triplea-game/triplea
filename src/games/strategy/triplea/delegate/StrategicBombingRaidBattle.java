@@ -284,10 +284,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	@Override
 	public List<Unit> getDefendingUnits()
 	{
-		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAAforBombing, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert());
+		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAAforBombingThisUnitOnly, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert());
 		if (m_targets.isEmpty())
 			return Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
-		final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAforBombing);
+		final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAforBombingThisUnitOnly);
 		targets.addAll(m_targets.keySet());
 		return targets;
 	}
@@ -311,7 +311,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			{
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					m_dice = DiceRoll.rollAA(m_attackingUnits, bridge, m_battleSite, Matches.UnitIsAAforBombing);
+					m_dice = DiceRoll.rollAA(m_attackingUnits, bridge, m_battleSite, Matches.UnitIsAAforBombingThisUnitOnly);
 				}
 			};
 			final IExecutable calculateCasualties = new IExecutable()
@@ -405,7 +405,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 						false, 0);
 			return casualtySelection.getKilled();
 		}
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(m_attackingUnits, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite, Matches.UnitIsAAforBombing);
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(m_attackingUnits, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite, Matches.UnitIsAAforBombingThisUnitOnly);
 		if (casualties.size() != dice.getHits())
 			throw new IllegalStateException("Wrong number of casualties, expecting:" + dice + " but got:" + casualties);
 		return casualties;

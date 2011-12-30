@@ -2331,7 +2331,7 @@ public class SUtils
 		float strength = 0.0F;
 		final Unit u = units;
 		final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-		if (unitAttatchment.isAA() || unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
+		if (unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
 		{
 			// nothing
 		}
@@ -2386,7 +2386,7 @@ public class SUtils
 		for (final Unit u : units)
 		{
 			final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-			if (unitAttatchment.isAA() || unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
+			if (unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
 				continue;
 			else if (unitAttatchment.isSea() == sea)
 			{
@@ -4313,7 +4313,7 @@ public class SUtils
 			supportableInfMap.put(rule, UnitAttachment.get(x).isArtillerySupportable());
 			transportMap.put(rule, Matches.UnitTypeCanBeTransported.match(x));
 			infMap.put(rule, Matches.UnitTypeIsInfantry.match(x));
-			nonInfMap.put(rule, Matches.UnitTypeCanBeTransported.match(x) && Matches.UnitTypeIsInfantry.invert().match(x) && Matches.UnitTypeIsAA.invert().match(x));
+			nonInfMap.put(rule, Matches.UnitTypeCanBeTransported.match(x) && Matches.UnitTypeIsInfantry.invert().match(x) && Matches.UnitTypeIsAAofAnyKind.invert().match(x));
 		}
 		final int countNum = 1;
 		final int goodLoop = purchaseLoop(parameters, countNum, bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, transportMap, infMap, nonInfMap, supportableInfMap, data,
@@ -4721,7 +4721,7 @@ public class SUtils
 		{
 			return null;
 		}
-		final CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsAAOrIsFactoryOrIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
+		final CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
 		final CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
 		final CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert());
 		final CompositeMatch<Unit> unitCond = ignore;

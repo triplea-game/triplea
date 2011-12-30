@@ -132,7 +132,8 @@ public class UnitGroup
 			m_ncmCRouteMatches = new HashMap<Match<Territory>, Integer>();
 			m_ncmCRouteMatches.put(
 						DUtils.CompMatchAnd(Matches.TerritoryIsNotImpassable,
-									DUtils.CompMatchOr(DMatches.territoryIsOwnedByXOrAlly(m_data, player), Matches.territoryHasUnitsThatMatch(Matches.UnitIsAA).invert())), 1); // Is passible and without enemy AA's
+									DUtils.CompMatchOr(DMatches.territoryIsOwnedByXOrAlly(m_data, player), Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyAAforAnything(player, m_data))
+												.invert())), 1); // Is passible and without enemy AA's
 			m_ncmCRouteMatches.put(Matches.TerritoryIsNotImpassable, 2); // Is any passable ter
 		}
 		else if (sea)

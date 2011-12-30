@@ -305,13 +305,13 @@ public class Purchase
 	{
 		DUtils.Log(Level.FINER, "    Purchasing units for territory. Ter: {0}", ter);
 		int result = 0;
-		if (!ter.isWater() && ter.getOwner().getName().equals(player.getName()) && ter.getUnits().someMatch(Matches.UnitIsFactory) && !ter.getUnits().someMatch(Matches.UnitIsAA)
+		if (!ter.isWater() && ter.getOwner().getName().equals(player.getName()) && ter.getUnits().someMatch(Matches.UnitIsFactory) && !ter.getUnits().someMatch(Matches.UnitIsAAforAnything)
 					&& TerritoryAttachment.get(ter) != null && DUtils.GetCheckedUnitProduction(ter) > 0)
 		{
 			Unit aa = null;
 			for (final ProductionRule rule : player.getProductionFrontier().getRules())
 			{
-				if (UnitAttachment.get((UnitType) rule.getResults().keySet().toArray()[0]).isAA())
+				if (Matches.UnitTypeIsAAofAnyKind.match((UnitType) rule.getResults().keySet().toArray()[0]))
 				{
 					aa = ((UnitType) rule.getResults().keySet().toArray()[0]).create(player);
 					break;
