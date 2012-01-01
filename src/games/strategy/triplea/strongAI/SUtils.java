@@ -4313,7 +4313,7 @@ public class SUtils
 			supportableInfMap.put(rule, UnitAttachment.get(x).isArtillerySupportable());
 			transportMap.put(rule, Matches.UnitTypeCanBeTransported.match(x));
 			infMap.put(rule, Matches.UnitTypeIsInfantry.match(x));
-			nonInfMap.put(rule, Matches.UnitTypeCanBeTransported.match(x) && Matches.UnitTypeIsInfantry.invert().match(x) && Matches.UnitTypeIsAAofAnyKind.invert().match(x));
+			nonInfMap.put(rule, Matches.UnitTypeCanBeTransported.match(x) && Matches.UnitTypeIsInfantry.invert().match(x) && Matches.UnitTypeIsAAforAnything.invert().match(x));
 		}
 		final int countNum = 1;
 		final int goodLoop = purchaseLoop(parameters, countNum, bestAttack, bestDefense, bestTransport, bestMaxUnits, bestMobileAttack, transportMap, infMap, nonInfMap, supportableInfMap, data,

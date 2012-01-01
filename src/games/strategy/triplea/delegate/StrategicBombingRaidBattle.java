@@ -39,6 +39,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -50,6 +51,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sean Bridges
@@ -67,6 +69,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	protected final GUID m_battleID = new GUID();
 	protected final ExecutionStack m_stack = new ExecutionStack();
 	protected List<String> m_steps;
+	protected List<Unit> m_defendingAA;
+	protected Set<String> m_AAtypes;
 	
 	private int m_bombingRaidTotal;
 	private final IntegerMap<Unit> m_bombingRaidDamage = new IntegerMap<Unit>();
@@ -160,7 +164,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		m_attackingUnits.addAll(units);
 		return ChangeFactory.EMPTY_CHANGE;
 	}*/
-
+	
 	@Override
 	public void fight(final IDelegateBridge bridge)
 	{
@@ -175,23 +179,32 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		bridge.getHistoryWriter().setRenderingData(m_battleSite);
 		BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
 		// TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
-		final boolean hasAA = m_battleSite.getUnits().someMatch(Matches.unitIsEnemyAAforBombing(m_attacker, m_data));
+		m_defendingAA = m_battleSite.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_attacker, m_data), Matches.unitIsBeingTransported().invert(),
+					Matches.UnitIsAAthatCanHitTheseUnits(m_attackingUnits, Matches.UnitIsAAforBombingThisUnitOnly)));
+		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA); // TODO: order this list in some way
+		final boolean hasAA = m_defendingAA.size() > 0;
 		m_steps = new ArrayList<String>();
 		if (hasAA)
-			m_steps.add(FIRE_AA);
+		{
+			for (int i = 0; i < UnitAttachment.getAllOfTypeAAs(m_defendingAA).size(); ++i)
+			{
+				m_steps.add(FIRE_AA);
+			}
+		}
 		m_steps.add(RAID);
 		showBattle(bridge);
 		final List<IExecutable> steps = new ArrayList<IExecutable>();
 		if (hasAA)
+		{
 			steps.add(new FireAA());
-		steps.add(new ConductAA());
+		}
+		steps.add(new ConductBombing());
 		steps.add(new IExecutable()
 		{
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
 				m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
-				// TODO Kev add unitDamage setting here
 				if (isSBRAffectsUnitProduction())
 					bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidTotal + " " + " production in " + m_battleSite.getName());
 				else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
@@ -307,40 +320,46 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 		{
 			final boolean isEditMode = EditDelegate.getEditMode(bridge.getData());
-			final IExecutable roll = new IExecutable()
+			for (final String currentTypeAA : m_AAtypes)
 			{
-				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				final Collection<Unit> currentPossibleAA = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
+				final Set<UnitType> targetUnitTypesForThisTypeAA = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
+				
+				final IExecutable roll = new IExecutable()
 				{
-					m_dice = DiceRoll.rollAA(m_attackingUnits, bridge, m_battleSite, Matches.UnitIsAAforBombingThisUnitOnly);
-				}
-			};
-			final IExecutable calculateCasualties = new IExecutable()
-			{
-				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					{
+						m_dice = DiceRoll.rollAA(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge, m_battleSite);
+					}
+				};
+				final IExecutable calculateCasualties = new IExecutable()
 				{
-					m_casualties = calculateCasualties(bridge, m_dice);
-				}
-			};
-			final IExecutable notifyCasualties = new IExecutable()
-			{
-				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					{
+						m_casualties = calculateCasualties(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge, m_dice);
+					}
+				};
+				final IExecutable notifyCasualties = new IExecutable()
 				{
-					notifyAAHits(bridge, m_dice, m_casualties);
-				}
-			};
-			final IExecutable removeHits = new IExecutable()
-			{
-				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					{
+						notifyAAHits(bridge, m_dice, m_casualties);
+					}
+				};
+				final IExecutable removeHits = new IExecutable()
 				{
-					removeAAHits(bridge, m_dice, m_casualties);
-				}
-			};
-			// push in reverse order of execution
-			stack.push(removeHits);
-			stack.push(notifyCasualties);
-			stack.push(calculateCasualties);
-			if (!isEditMode)
-				stack.push(roll);
+					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					{
+						removeAAHits(bridge, m_dice, m_casualties);
+					}
+				};
+				// push in reverse order of execution
+				stack.push(removeHits);
+				stack.push(notifyCasualties);
+				stack.push(calculateCasualties);
+				if (!isEditMode)
+					stack.push(roll);
+			}
 		}
 	}
 	
@@ -395,17 +414,20 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		return games.strategy.triplea.Properties.getPacificTheater(m_data);
 	}
 	
-	private Collection<Unit> calculateCasualties(final IDelegateBridge bridge, final DiceRoll dice)
+	private Collection<Unit> calculateCasualties(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Set<UnitType> targetUnitTypesForThisTypeAA,
+				final IDelegateBridge bridge, final DiceRoll dice)
 	{
+		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA));
 		final boolean isEditMode = EditDelegate.getEditMode(m_data);
 		if (isEditMode)
 		{
 			final String text = "AA guns fire";
-			final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, m_attackingUnits, bridge, text, /* dice */null,/* defending */false, m_battleID, /* head-less */
+			final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, validAttackingUnitsForThisRoll, bridge, text, /* dice */null,/* defending */false,
+						m_battleID, /* head-less */
 						false, 0);
 			return casualtySelection.getKilled();
 		}
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(m_attackingUnits, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite, Matches.UnitIsAAforBombingThisUnitOnly);
+		final Collection<Unit> casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
 		if (casualties.size() != dice.getHits())
 			throw new IllegalStateException("Wrong number of casualties, expecting:" + dice + " but got:" + casualties);
 		return casualties;
@@ -454,7 +476,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	}
 	
 	
-	class ConductAA implements IExecutable
+	class ConductBombing implements IExecutable
 	{
 		private int[] m_dice;
 		

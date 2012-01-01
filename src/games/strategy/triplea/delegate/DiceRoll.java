@@ -28,7 +28,6 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -62,17 +61,14 @@ public class DiceRoll implements Externalizable
 	private int m_hits;
 	
 	/**
-	 * Returns an int[] with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with that attack value
+	 * Returns a Tuple with 2 values, the first is the max attack, the second is the max dice sides for the AA unit with that attack value
 	 */
-	public static int[] getAAattackAndMaxDiceSides(final Territory location, final PlayerID player, final GameData data, final Match<Unit> typeOfAA)
+	public static Tuple<Integer, Integer> getAAattackAndMaxDiceSides(final Collection<Unit> defendingEnemyAA, final GameData data)
 	{
-		final int[] attackThenDiceSides = new int[2];
-		final CompositeMatch<Unit> enemyAA = new CompositeMatchAnd<Unit>(typeOfAA, Matches.unitIsEnemyOf(data, player));
-		final Collection<Unit> eAA = new ArrayList<Unit>(Match.getMatches(location.getUnits().getUnits(), enemyAA));
 		int highestAttack = 0;
 		final int diceSize = data.getDiceSides();
 		int chosenDiceSize = diceSize;
-		for (final Unit u : eAA)
+		for (final Unit u : defendingEnemyAA)
 		{
 			final UnitAttachment ua = UnitAttachment.get(u.getType());
 			int uaDiceSides = ua.getAttackAAmaxDieSides();
@@ -83,7 +79,7 @@ public class DiceRoll implements Externalizable
 				attack++; // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6
 			if (attack > uaDiceSides)
 				attack = uaDiceSides;
-			if (((float) attack) / ((float) uaDiceSides) > ((float) highestAttack) / ((float) chosenDiceSize))
+			if ((((float) attack) / ((float) uaDiceSides)) > (((float) highestAttack) / ((float) chosenDiceSize)))
 			{
 				highestAttack = attack;
 				chosenDiceSize = uaDiceSides;
@@ -91,19 +87,19 @@ public class DiceRoll implements Externalizable
 		}
 		if (highestAttack > chosenDiceSize / 2 && chosenDiceSize > 1)
 			highestAttack = chosenDiceSize / 2; // sadly the whole low luck section falls apart if AA are hitting at greater than half the value of dice, and I don't feel like rewriting it
-		attackThenDiceSides[0] = highestAttack;
-		attackThenDiceSides[1] = chosenDiceSize;
-		return attackThenDiceSides;
+		return new Tuple<Integer, Integer>(highestAttack, chosenDiceSize);
 	}
 	
-	public static DiceRoll rollAA(final Collection<Unit> attackingUnits, final IDelegateBridge bridge, final Territory location, final Match<Unit> typeOfAA)
+	public static DiceRoll rollAA(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Set<UnitType> targetUnitTypesForThisTypeAA, final IDelegateBridge bridge,
+				final Territory location)
 	{
+		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA));
 		final GameData data = bridge.getData();
 		int hits = 0;
 		final List<Die> sortedDice = new ArrayList<Die>();
-		final int attackThenDiceSides[] = getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), data, typeOfAA);
-		final int highestAttack = attackThenDiceSides[0];
-		final int chosenDiceSize = attackThenDiceSides[1];
+		final Tuple<Integer, Integer> attackThenDiceSides = getAAattackAndMaxDiceSides(defendingAA, data);
+		final int highestAttack = attackThenDiceSides.getFirst();
+		final int chosenDiceSize = attackThenDiceSides.getSecond();
 		final int hitAt = highestAttack - 1; // zero based
 		final int power = highestAttack; // not zero based
 		// LOW LUCK
@@ -111,25 +107,24 @@ public class DiceRoll implements Externalizable
 		{
 			final String annotation = "Roll AA guns in " + location.getName();
 			final int groupSize = chosenDiceSize / power;
-			final List<Unit> airUnits = Match.getMatches(attackingUnits, Matches.UnitIsAir);
 			if (Properties.getChoose_AA_Casualties(data))
 			{
-				hits += getLowLuckHits(bridge, sortedDice, power, annotation, airUnits.size());
+				hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSize, annotation, validAttackingUnitsForThisRoll.size());
 			}
 			else
 			{
-				final Tuple<List<Unit>, List<Unit>> airSplit = BattleCalculator.categorizeLowLuckAirUnits(airUnits, location, chosenDiceSize, groupSize);
+				final Tuple<List<Unit>, List<Unit>> airSplit = BattleCalculator.categorizeLowLuckAirUnits(validAttackingUnitsForThisRoll, location, chosenDiceSize, groupSize);
 				// this will not roll any dice, since the first group is
 				// a multiple of 3 or 6
-				hits += getLowLuckHits(bridge, sortedDice, power, annotation, airSplit.getFirst().size());
+				hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSize, annotation, airSplit.getFirst().size());
 				// this will roll dice, unless it is empty
-				hits += getLowLuckHits(bridge, sortedDice, power, annotation, airSplit.getSecond().size());
+				hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSize, annotation, airSplit.getSecond().size());
 			}
 		}
 		else if (highestAttack > 0) // Normal rolling
 		{
 			final String annotation = "Roll AA guns in " + location.getName();
-			final int[] dice = bridge.getRandom(chosenDiceSize, Match.countMatches(attackingUnits, Matches.UnitIsAir), annotation);
+			final int[] dice = bridge.getRandom(chosenDiceSize, validAttackingUnitsForThisRoll.size(), annotation);
 			for (int i = 0; i < dice.length; i++)
 			{
 				final boolean hit = dice[i] <= hitAt;
@@ -144,13 +139,13 @@ public class DiceRoll implements Externalizable
 		return roll;
 	}
 	
-	private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int power, final String annotation, final int numberOfAirUnits)
+	private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int power, final int chosenDiceSize, final String annotation, final int numberOfAirUnits)
 	{
-		int hits = (numberOfAirUnits * power) / bridge.getData().getDiceSides();
-		final int hitsFractional = (numberOfAirUnits * power) % bridge.getData().getDiceSides();
+		int hits = (numberOfAirUnits * power) / chosenDiceSize;
+		final int hitsFractional = (numberOfAirUnits * power) % chosenDiceSize;
 		if (hitsFractional > 0)
 		{
-			final int[] dice = bridge.getRandom(bridge.getData().getDiceSides(), 1, annotation);
+			final int[] dice = bridge.getRandom(chosenDiceSize, 1, annotation);
 			final boolean hit = hitsFractional > dice[0];
 			if (hit)
 			{

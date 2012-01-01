@@ -124,6 +124,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	// and resume while in the middle of a battle
 	private final ExecutionStack m_stack = new ExecutionStack();
 	private List<String> m_stepStrings;
+	protected List<Unit> m_defendingAA;
+	protected Set<String> m_AAtypes;
 	
 	private TransportTracker getTransportTracker()
 	{
@@ -446,6 +448,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		addDependentUnits(transporting(m_defendingUnits));
 		addDependentUnits(transporting(m_attackingUnits));
+		// determine any AA
+		m_defendingAA = m_battleSite.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_attacker, m_data), Matches.unitIsBeingTransported().invert(),
+					Matches.UnitIsAAthatCanHitTheseUnits(m_attackingUnits, Matches.UnitIsAAforCombatOnly)));
+		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA); // TODO: order this list in some way
 		// list the steps
 		m_stepStrings = determineStepStrings(true, bridge);
 		final ITripleaDisplay display = getDisplay(bridge);
@@ -558,9 +564,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			if (canFireAA())
 			{
-				steps.add(AA_GUNS_FIRE);
-				steps.add(SELECT_AA_CASUALTIES);
-				steps.add(REMOVE_AA_CASUALTIES);
+				for (int i = 0; i < UnitAttachment.getAllOfTypeAAs(m_defendingAA).size(); ++i)
+				{
+					steps.add(AA_GUNS_FIRE);
+					steps.add(SELECT_AA_CASUALTIES);
+					steps.add(REMOVE_AA_CASUALTIES);
+				}
 			}
 			if (!m_battleSite.isWater() && !getBombardingUnits().isEmpty())
 			{
@@ -2259,46 +2268,47 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			if (!canFireAA())
 				return;
-			final IExecutable rollDice = new IExecutable()
+			for (final String currentTypeAA : m_AAtypes)
 			{
-				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				final Collection<Unit> currentPossibleAA = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
+				final Set<UnitType> targetUnitTypesForThisTypeAA = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
+				
+				final IExecutable rollDice = new IExecutable()
 				{
-					rollDice(bridge);
-				}
-			};
-			final IExecutable selectCasualties = new IExecutable()
-			{
-				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					{
+						m_dice = DiceRoll.rollAA(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge, m_battleSite);
+					}
+				};
+				final IExecutable selectCasualties = new IExecutable()
 				{
-					selectCasualties(bridge);
-				}
-			};
-			final IExecutable notifyCasualties = new IExecutable()
-			{
-				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					{
+						selectCasualties(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge);
+					}
+				};
+				final IExecutable notifyCasualties = new IExecutable()
 				{
-					notifyCasualtiesAA(bridge);
-					removeCasualties(m_casualties, ReturnFire.NONE, false, bridge, true);
-				}
-			};
-			// push in reverse order of execution
-			stack.push(notifyCasualties);
-			stack.push(selectCasualties);
-			stack.push(rollDice);
+					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+					{
+						notifyCasualtiesAA(bridge);
+						removeCasualties(m_casualties, ReturnFire.NONE, false, bridge, true);
+					}
+				};
+				// push in reverse order of execution
+				stack.push(notifyCasualties);
+				stack.push(selectCasualties);
+				stack.push(rollDice);
+			}
 		}
 		
-		private void rollDice(final IDelegateBridge bridge)
-		{
-			m_dice = DiceRoll.rollAA(m_attackingUnits, bridge, m_battleSite, Matches.UnitIsAAforCombatOnly);
-		}
-		
-		private void selectCasualties(final IDelegateBridge bridge)
+		private void selectCasualties(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Set<UnitType> targetUnitTypesForThisTypeAA, final IDelegateBridge bridge)
 		{
 			// send defender the dice roll so he can see what the dice are while he
 			// waits for attacker to select casualties
 			getDisplay(bridge).notifyDice(m_battleID, m_dice, SELECT_AA_CASUALTIES);
-			final Collection<Unit> attackable = Match.getMatches(m_attackingUnits, Matches.UnitIsAir);
-			m_casualties = BattleCalculator.getAACasualties(attackable, m_dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite, Matches.UnitIsAAforCombatOnly);
+			final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA));
+			m_casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, m_dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
 		}
 		
 		private void notifyCasualtiesAA(final IDelegateBridge bridge)
@@ -2342,7 +2352,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private boolean canFireAA()
 	{
-		return Match.someMatch(m_defendingUnits, Matches.UnitIsAAforCombatOnly) && Match.someMatch(m_attackingUnits, Matches.UnitIsAir) && !m_battleSite.isWater();
+		if (m_defendingAA == null)
+		{
+			return m_battleSite.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_attacker, m_data), Matches.unitIsBeingTransported().invert(),
+						Matches.UnitIsAAthatCanHitTheseUnits(m_attackingUnits, Matches.UnitIsAAforCombatOnly))).size() > 0;
+		}
+		else
+			return m_defendingAA.size() > 0;
 	}
 	
 	/**
@@ -2362,6 +2378,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// still allow infrastructure type units that can provide support have combat abilities
 		final CompositeMatch<Unit> infrastructureNotSupporterAndNotHasCombatAbilities = new CompositeMatchAnd<Unit>(Matches.UnitIsInfrastructure,
 					Matches.UnitIsSupporterOrHasCombatAbility(attacking, player, m_data).invert());
+		// new CompositeMatchAnd<Unit>(Matches.UnitIsSupporterOrHasCombatAbility(attacking, player, m_data).invert(), Matches.UnitIsAAforCombatOnly.invert())); // TODO: display aa guns then remove after firing them
 		// remove infrastructure units that can't take part in combat (air/naval bases, etc...)
 		unitList.removeAll(Match.getMatches(unitList, infrastructureNotSupporterAndNotHasCombatAbilities));
 		// remove any disabled units from combat

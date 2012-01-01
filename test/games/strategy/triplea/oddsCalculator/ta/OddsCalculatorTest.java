@@ -43,6 +43,8 @@ public class OddsCalculatorTest extends TestCase
 		final List<Unit> bombardingUnits = Collections.emptyList();
 		final OddsCalculator calculator = new OddsCalculator();
 		final AggregateResults results = calculator.calculate(m_data, russians, germans, germany, attackingUnits, defendingUnits, bombardingUnits, 5000);
+		final double att = results.getAttackerWinPercent();
+		final double def = results.getDefenderWinPercent();
 		assertTrue(results.getAttackerWinPercent() > 0.99);
 		assertTrue(results.getDefenderWinPercent() < 0.1);
 		assertTrue(results.getDrawPercent() < 0.1);

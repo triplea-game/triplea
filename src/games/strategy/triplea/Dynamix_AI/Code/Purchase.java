@@ -311,7 +311,7 @@ public class Purchase
 			Unit aa = null;
 			for (final ProductionRule rule : player.getProductionFrontier().getRules())
 			{
-				if (Matches.UnitTypeIsAAofAnyKind.match((UnitType) rule.getResults().keySet().toArray()[0]))
+				if (Matches.UnitTypeIsAAforAnything.match((UnitType) rule.getResults().keySet().toArray()[0]))
 				{
 					aa = ((UnitType) rule.getResults().keySet().toArray()[0]).create(player);
 					break;

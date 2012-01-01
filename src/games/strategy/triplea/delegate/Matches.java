@@ -643,6 +643,14 @@ public class Matches
 		}
 	};
 	
+	/**
+	 * Checks for having attack/defense and for providing support. Does not check for having AA ability.
+	 * 
+	 * @param attack
+	 * @param player
+	 * @param data
+	 * @return
+	 */
 	public static final Match<Unit> UnitIsSupporterOrHasCombatAbility(final boolean attack, final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()
@@ -1010,7 +1018,7 @@ public class Matches
 			return ua.getCanProduceUnits();
 		}
 	};
-	public static final Match<UnitType> UnitTypeIsAAofAnyKind = new Match<UnitType>()
+	public static final Match<UnitType> UnitTypeIsAAforAnything = new Match<UnitType>()
 	{
 		@Override
 		public boolean match(final UnitType obj)
@@ -1049,6 +1057,46 @@ public class Matches
 			return ua.getCanNotMoveDuringCombatMove();
 		}
 	};
+	
+	public static final Match<Unit> UnitIsAAthatCanHitTheseUnits(final Collection<Unit> targets, final Match<Unit> typeOfAA)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit obj)
+			{
+				if (!typeOfAA.match(obj))
+					return false;
+				final UnitAttachment ua = UnitAttachment.get(obj.getType());
+				final Set<UnitType> targetsAA = ua.getTargetsAA(obj.getData());
+				for (final Unit u : targets)
+				{
+					// default is null, which means we target all air units
+					// if (targetsAA == null && UnitIsAir.match(u))
+					// return true;
+					// else
+					// {
+					if (targetsAA.contains(u.getType()))
+						return true;
+					// }
+				}
+				return false;
+			}
+		};
+	}
+	
+	public static final Match<Unit> UnitIsAAofTypeAA(final String typeAA)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit obj)
+			{
+				return UnitAttachment.get(obj.getType()).getTypeAA().matches(typeAA);
+			}
+		};
+	}
+	
 	public static final Match<Unit> UnitIsAAforCombatOnly = new Match<Unit>()
 	{
 		@Override

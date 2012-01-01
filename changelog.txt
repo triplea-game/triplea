@@ -1,4 +1,14 @@
 Changes for 1.5
+* Created new Unit Attachment, "maxAAattacks", which will determine the maximum number of times an AA gun will be allowed to fire per round. (veqryn)
+
+* Finished phase 3 of refactoring of aaGuns, by removing the artificial constraints placed on AA guns and allowing them to operate flexibly, targeting different kinds of units, and having multiple groups of aa guns firing separately. (veqryn)
+
+* Created new Unit Attachment, "targetsAA", which determines what units may be hit by the AA fire of a unit. Defaults to all air units. (veqryn)
+
+* Created new Unit Attachment, "typeAA", which determines which 'group' an AA unit belongs to.  Each group gets to fire once, and only 1 unit in each group may fire. (veqryn)
+
+* Fixed bug in Anti Aircraft low luck where engine ignored attackAAmaxDieSides completely. (veqryn)
+
 * Finished phase 2 of refactoring of aaGuns, by removing internal references and variables for isAA for rockets, capturing, and aa for bombing and for combat. (veqryn)
 
 * Finished phase 1 of refactoring of aaGuns, by removing isAAmovement and removing isAA from dealing with any aspect of movement validation and stacking limits in the engine. Both isAAmovement and isAA just call the two new methods below when they are created. (veqryn)

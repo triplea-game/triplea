@@ -98,8 +98,8 @@ public class BattleCalculator
 	/**
 	 * Choose plane casualties according to specified rules
 	 */
-	public static Collection<Unit> getAACasualties(final Collection<Unit> planes, final DiceRoll dice, final IDelegateBridge bridge, final PlayerID defender, final PlayerID attacker,
-				final GUID battleID, final Territory terr, final Match<Unit> typeOfAA)
+	public static Collection<Unit> getAACasualties(final Collection<Unit> planes, final Collection<Unit> defendingAA, final DiceRoll dice, final IDelegateBridge bridge, final PlayerID defender,
+				final PlayerID attacker, final GUID battleID, final Territory terr)
 	{
 		final GameData data = bridge.getData();
 		if (Properties.getLow_Luck(data) || Properties.getLL_AA_ONLY(data))
@@ -108,7 +108,7 @@ public class BattleCalculator
 			{
 				return chooseAACasualties(planes, dice, bridge, attacker, battleID, terr);
 			}
-			return getLowLuckAACasualties(planes, dice, terr, bridge, typeOfAA);
+			return getLowLuckAACasualties(planes, defendingAA, dice, terr, bridge);
 		}
 		else
 		{
@@ -122,7 +122,7 @@ public class BattleCalculator
 			{
 				return chooseAACasualties(planes, dice, bridge, attacker, battleID, terr);
 			}
-			return (IndividuallyFiredAACasualties(planes, dice, terr, bridge, typeOfAA));
+			return (IndividuallyFiredAACasualties(planes, defendingAA, dice, terr, bridge));
 		}
 	}
 	
@@ -143,8 +143,7 @@ public class BattleCalculator
 	 */
 	public static Tuple<List<Unit>, List<Unit>> categorizeLowLuckAirUnits(final Collection<Unit> units, final Territory location, final int diceSides, final int groupSize)
 	{
-		final List<Unit> airUnits = Match.getMatches(units, Matches.UnitIsAir);
-		final Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(airUnits, null, false, true);
+		final Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(units, null, false, true);
 		final List<Unit> groupsOfSize = new ArrayList<Unit>();
 		final List<Unit> toRoll = new ArrayList<Unit>();
 		for (final UnitCategory uc : categorizedAir)
@@ -157,11 +156,12 @@ public class BattleCalculator
 		return new Tuple<List<Unit>, List<Unit>>(groupsOfSize, toRoll);
 	}
 	
-	private static Collection<Unit> getLowLuckAACasualties(final Collection<Unit> planes, final DiceRoll dice, final Territory location, final IDelegateBridge bridge, final Match<Unit> typeOfAA)
+	private static Collection<Unit> getLowLuckAACasualties(final Collection<Unit> planes, final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location,
+				final IDelegateBridge bridge)
 	{
-		final int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getData(), typeOfAA);
-		final int highestAttack = attackThenDiceSides[0];
-		final int chosenDiceSize = attackThenDiceSides[1];
+		final Tuple<Integer, Integer> attackThenDiceSides = DiceRoll.getAAattackAndMaxDiceSides(defendingAA, bridge.getData());
+		final int highestAttack = attackThenDiceSides.getFirst();
+		final int chosenDiceSize = attackThenDiceSides.getSecond();
 		final Collection<Unit> hitUnits = new ArrayList<Unit>();
 		if (highestAttack < 1)
 			return hitUnits;
@@ -226,10 +226,11 @@ public class BattleCalculator
 	/**
 	 * Choose plane casualties based on individual AA shots at each aircraft.
 	 */
-	public static Collection<Unit> IndividuallyFiredAACasualties(final Collection<Unit> planes, final DiceRoll dice, final Territory location, final IDelegateBridge bridge, final Match<Unit> typeOfAA)
+	public static Collection<Unit> IndividuallyFiredAACasualties(final Collection<Unit> planes, final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location,
+				final IDelegateBridge bridge)
 	{
-		final int attackThenDiceSides[] = DiceRoll.getAAattackAndMaxDiceSides(location, bridge.getPlayerID(), bridge.getData(), typeOfAA);
-		final int highestAttack = attackThenDiceSides[0];
+		final Tuple<Integer, Integer> attackThenDiceSides = DiceRoll.getAAattackAndMaxDiceSides(defendingAA, bridge.getData());
+		final int highestAttack = attackThenDiceSides.getFirst();
 		// int chosenDiceSize = attackThenDiceSides[1];
 		final Collection<Unit> casualties = new ArrayList<Unit>();
 		final int hits = dice.getHits();

@@ -16,8 +16,10 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
@@ -31,6 +33,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -125,37 +128,30 @@ class AAInMoveUtil implements Serializable
 		// No AA in nonCombat unless 'Always on AA'
 		if (m_nonCombat && !alwaysOnAA)
 			return Collections.emptyList();
-		// No air, return empty list
-		if (Match.noneMatch(units, Matches.UnitIsAir))
-			return Collections.emptyList();
 		// can't rely on m_player being the unit owner in Edit Mode
 		// look at the units being moved to determine allies and enemies
-		final PlayerID ally = units.iterator().next().getOwner();
+		PlayerID movingPlayer;
+		if (Match.someMatch(units, Matches.unitIsOwnedBy(m_player)))
+			movingPlayer = m_player;
+		else
+			movingPlayer = units.iterator().next().getOwner();
 		// don't iterate over the end
 		// that will be a battle
 		// and handled else where in this tangled mess
-		final CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>();
-		hasAA.add(Matches.UnitIsAAforCombatOnly);
-		hasAA.add(Matches.enemyUnit(ally, getData()));
+		final CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>(Matches.enemyUnit(movingPlayer, getData()), Matches.unitIsBeingTransported().invert(),
+					Matches.UnitIsAAthatCanHitTheseUnits(units, Matches.UnitIsAAforCombatOnly)); // AA guns in transports shouldn't be able to fire
 		final List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 		for (final Territory current : route.getMiddleSteps())
 		{
-			// AA guns in transports shouldn't be able to fire
-			// TODO COMCO- Chance to add rule to support air suppression naval units here
-			if (current.getUnits().someMatch(hasAA) && !current.isWater())
+			if (current.getUnits().someMatch(hasAA))
 			{
 				territoriesWhereAAWillFire.add(current);
 			}
 		}
-		// check start as well, prevent user from moving to and from AA sites
-		// one at a time
-		// if there was a battle fought there then don't fire
-		// this covers the case where we fight, and always on AA wants to fire
-		// after the battle.
-		// TODO
-		// there is a bug in which if you move an air unit to a battle site
-		// in the middle of non combat, it wont fire
-		if (route.getStart().getUnits().someMatch(hasAA) && !route.getStart().isWater() && !getBattleTracker().wasBattleFought(route.getStart()))
+		// check start as well, prevent user from moving to and from AA sites one at a time
+		// if there was a battle fought there then don't fire, this covers the case where we fight, and always on AA wants to fire after the battle.
+		// TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont fire
+		if (route.getStart().getUnits().someMatch(hasAA) && !getBattleTracker().wasBattleFought(route.getStart()))
 			territoriesWhereAAWillFire.add(route.getStart());
 		return territoriesWhereAAWillFire;
 	}
@@ -172,44 +168,60 @@ class AAInMoveUtil implements Serializable
 	{
 		if (units.isEmpty())
 			return;
-		// once we fire the AA guns, we can't undo
-		// otherwise you could keep undoing and redoing
-		// until you got the roll you wanted
-		currentMove.setCantUndo("Move cannot be undone after AA has fired.");
-		final DiceRoll[] dice = new DiceRoll[1];
-		final IExecutable rollDice = new IExecutable()
+		PlayerID movingPlayer;
+		if (Match.someMatch(units, Matches.unitIsOwnedBy(m_player)))
+			movingPlayer = m_player;
+		else
+			movingPlayer = units.iterator().next().getOwner();
+		final List<Unit> defendingAA = territory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(movingPlayer, getData()), Matches.unitIsBeingTransported().invert(),
+					Matches.UnitIsAAthatCanHitTheseUnits(units, Matches.UnitIsAAforCombatOnly)));
+		final Set<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA); // TODO: order this list in some way
+		for (final String currentTypeAA : AAtypes)
 		{
-			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+			final Collection<Unit> currentPossibleAA = Match.getMatches(defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
+			final Set<UnitType> targetUnitTypesForThisTypeAA = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(getData());
+			
+			// once we fire the AA guns, we can't undo
+			// otherwise you could keep undoing and redoing
+			// until you got the roll you wanted
+			currentMove.setCantUndo("Move cannot be undone after AA has fired.");
+			final DiceRoll[] dice = new DiceRoll[1];
+			final IExecutable rollDice = new IExecutable()
 			{
-				dice[0] = DiceRoll.rollAA(units, m_bridge, territory, Matches.UnitIsAAforCombatOnly);
-			}
-		};
-		final IExecutable selectCasualties = new IExecutable()
-		{
-			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
-			{
-				final int hitCount = dice[0].getHits();
-				if (hitCount == 0)
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					getRemotePlayer().reportMessage("No aa hits in " + territory.getName(), "No aa hits in " + territory.getName());
+					dice[0] = DiceRoll.rollAA(units, currentPossibleAA, targetUnitTypesForThisTypeAA, m_bridge, territory);
 				}
-				else
-					selectCasualties(dice[0], units, territory, null);
-			}
-		};
-		// push in reverse order of execution
-		m_executionStack.push(selectCasualties);
-		m_executionStack.push(rollDice);
+			};
+			final IExecutable selectCasualties = new IExecutable()
+			{
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					final int hitCount = dice[0].getHits();
+					if (hitCount == 0)
+					{
+						getRemotePlayer().reportMessage("No aa hits in " + territory.getName(), "No aa hits in " + territory.getName());
+					}
+					else
+						selectCasualties(dice[0], units, currentPossibleAA, targetUnitTypesForThisTypeAA, territory, null);
+				}
+			};
+			// push in reverse order of execution
+			m_executionStack.push(selectCasualties);
+			m_executionStack.push(rollDice);
+		}
 	}
 	
 	/**
 	 * hits are removed from units. Note that units are removed in the order
 	 * that the iterator will move through them.
 	 */
-	private void selectCasualties(final DiceRoll dice, final Collection<Unit> units, final Territory territory, final GUID battleID)
+	private void selectCasualties(final DiceRoll dice, final Collection<Unit> units, final Collection<Unit> defendingAA, final Set<UnitType> targetUnitTypesForThisTypeAA, final Territory territory,
+				final GUID battleID)
 	{
 		Collection<Unit> casualties = null;
-		casualties = BattleCalculator.getAACasualties(units, dice, m_bridge, territory.getOwner(), m_player, battleID, territory, Matches.UnitIsAAforCombatOnly);
+		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(units, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA));
+		casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, m_bridge, territory.getOwner(), m_player, battleID, territory);
 		getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName(), casualties.size() + " AA hits in " + territory.getName());
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
 		units.removeAll(casualties);

@@ -40,8 +40,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Despite the mis leading name, this attatches not to individual Units but to UnitTypes.
@@ -132,6 +134,9 @@ public class UnitAttachment extends DefaultAttachment
 	private boolean m_isRocket = false;
 	private int m_attackAA = 1;
 	private int m_attackAAmaxDieSides = -1;
+	private int m_maxAAattacks = -1; // -1 means infinite
+	private String m_typeAA = "aaGun_old"; // default value for when it is not set
+	private Set<UnitType> m_targetsAA = null; // null means targeting air units only
 	
 	// strategic bombing related
 	private boolean m_isStrategicBomber = false;
@@ -1375,6 +1380,19 @@ public class UnitAttachment extends DefaultAttachment
 		return m_attackAAmaxDieSides;
 	}
 	
+	public void setMaxAAattacks(final String s) throws GameParseException
+	{
+		final int attacks = getInt(s);
+		if (attacks < -1)
+			throw new GameParseException("UnitAttachment: maxAAattacks must be positive");
+		m_maxAAattacks = getInt(s);
+	}
+	
+	public int getMaxAAattacks()
+	{
+		return m_maxAAattacks;
+	}
+	
 	public void setIsAAforCombatOnly(final String s)
 	{
 		m_isAAforCombatOnly = getBool(s);
@@ -1403,6 +1421,81 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsRocket()
 	{
 		return m_isRocket;
+	}
+	
+	public void setTypeAA(final String s)
+	{
+		m_typeAA = s;
+	}
+	
+	public String getTypeAA()
+	{
+		return m_typeAA;
+	}
+	
+	public static Set<String> getAllOfTypeAAs(final Collection<Unit> aaUnits, final Collection<Unit> targets, final Match<Unit> typeOfAA)
+	{
+		final Set<String> rVal = new HashSet<String>();
+		for (final Unit u : Match.getMatches(aaUnits, Matches.UnitIsAAthatCanHitTheseUnits(targets, typeOfAA)))
+		{
+			rVal.add(UnitAttachment.get(u.getType()).getTypeAA());
+		}
+		return rVal;
+	}
+	
+	public static Set<String> getAllOfTypeAAs(final Collection<Unit> aaUnitsAlreadyVerified)
+	{
+		final Set<String> rVal = new HashSet<String>();
+		for (final Unit u : aaUnitsAlreadyVerified)
+		{
+			rVal.add(UnitAttachment.get(u.getType()).getTypeAA());
+		}
+		return rVal;
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	public void setTargetsAA(final String value) throws GameParseException
+	{
+		if (value == null)
+		{
+			m_targetsAA = null;
+			return;
+		}
+		if (m_targetsAA == null)
+			m_targetsAA = new HashSet<UnitType>();
+		final String[] s = value.split(":");
+		for (final String u : s)
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(u);
+			if (ut == null)
+				throw new GameParseException("UnitAttachment: AAtargets: no such unit type: " + u);
+			m_targetsAA.add(ut);
+		}
+	}
+	
+	public Set<UnitType> getTargetsAA(final GameData data)
+	{
+		if (m_targetsAA != null)
+			return m_targetsAA;
+		final Set<UnitType> airTypes = new HashSet<UnitType>();
+		final Iterator<UnitType> utIter = data.getUnitTypeList().iterator();
+		while (utIter.hasNext())
+		{
+			final UnitType ut = utIter.next();
+			if (UnitAttachment.get(ut).isAir())
+				airTypes.add(ut);
+		}
+		return airTypes;
+	}
+	
+	public void clearTargetsAA()
+	{
+		m_targetsAA.clear();
 	}
 	
 	public void setIsAAmovement(final String s) throws GameParseException
@@ -1696,6 +1789,9 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
 					+ "  attackAA:" + m_attackAA
 					+ "  attackAAmaxDieSides:" + m_attackAAmaxDieSides
+					+ "  maxAAattacks:" + m_maxAAattacks
+					+ "  typeAA:" + m_typeAA
+					+ "  targetsAA:" + m_targetsAA.toString()
 					+ "  isRocket:" + m_isRocket
 					
 					+ "  canProduceUnits:" + m_canProduceUnits
@@ -1795,6 +1891,8 @@ public class UnitAttachment extends DefaultAttachment
 				stats.append("Anti-Air for Combat, ");
 			else if (m_isAAforBombingThisUnitOnly)
 				stats.append("Anti-Air for Raids, ");
+			if (m_maxAAattacks > -1)
+				stats.append(m_maxAAattacks + " AA Attacks");
 		}
 		if (m_isRocket && playerHasRockets(player))
 		{

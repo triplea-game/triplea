@@ -602,7 +602,7 @@ class PlayerUnitsPanel extends JPanel
 		rVal = Match.getMatches(rVal, Matches.UnitTypeIsFactoryOrIsInfrastructureButNotAAofAnyKind.invert());
 		// aa guns can't attack
 		if (!m_defender)
-			rVal = Match.getMatches(rVal, Matches.UnitTypeIsAAofAnyKind.invert());
+			rVal = Match.getMatches(rVal, Matches.UnitTypeIsAAforAnything.invert());
 		return rVal;
 	}
 }
