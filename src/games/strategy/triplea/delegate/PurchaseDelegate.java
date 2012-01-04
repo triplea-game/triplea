@@ -76,6 +76,7 @@ import java.util.TreeSet;
 public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 {
 	private boolean m_needToInitialize = true;
+	public final static String NOT_ENOUGH_RESOURCES = "Not enough resources";
 	
 	/**
 	 * Called before the delegate will run.
@@ -157,7 +158,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		final IntegerMap<Resource> costs = getCosts(productionRules, m_player);
 		final IntegerMap<NamedAttachable> results = getResults(productionRules);
 		if (!(canAfford(costs, m_player)))
-			return "Not enough resources";
+			return NOT_ENOUGH_RESOURCES;
 		// check to see if player has too many of any building with a building limit
 		final Iterator<NamedAttachable> iter2 = results.keySet().iterator();
 		while (iter2.hasNext())
@@ -233,7 +234,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		final IntegerMap<Resource> costs = getRepairCosts(repairRules, m_player);
 		final IntegerMap<NamedAttachable> results = getRepairResults(repairRules);
 		if (!(canAfford(costs, m_player)))
-			return "Not enough resources";
+			return NOT_ENOUGH_RESOURCES;
 		// remove first, since add logs PUs remaining
 		final CompositeChange changes = new CompositeChange();
 		final Collection<Unit> totalUnits = new ArrayList<Unit>();

@@ -5,9 +5,12 @@ import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.util.IntegerMap;
 import junit.framework.TestCase;
 
 /**
@@ -206,7 +209,72 @@ public class VictoryTest extends TestCase
 	
 	public void testMultipleResourcesToPurchase()
 	{
-		// TODO implement test
+
+		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy(); 
+		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
+		m_bridge.setStepName("italianPurchase");
+		purchaseDelegate.start(m_bridge);
+		IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+		ProductionRule armourtest = m_data.getProductionRuleList().getProductionRule("buyArmourtest");
+		assertNotNull(armourtest);
+		italianResources.subtract(armourtest.getCosts());
+		purchaseList.add(armourtest,1);		
+		String error = purchaseDelegate.purchase(purchaseList);
+		assertEquals(null,error);
+		assertEquals(italianResources,m_italians.getResources().getResourcesCopy());
+		
+	}
+	
+	public void testNotEnoughMultipleResourcesToPurchase()
+	{
+
+		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy(); 
+		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
+		m_bridge.setStepName("italianPurchase");
+		purchaseDelegate.start(m_bridge);
+		IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+		ProductionRule armourtest = m_data.getProductionRuleList().getProductionRule("buyArmourtest2");
+		assertNotNull(armourtest);
+		italianResources.subtract(armourtest.getCosts());
+		purchaseList.add(armourtest,1);		
+		String error = purchaseDelegate.purchase(purchaseList);
+		assertEquals(PurchaseDelegate.NOT_ENOUGH_RESOURCES,error);
+		
+	}
+	
+	public void testPUOnlyResourcesToPurchase()
+	{
+
+		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy(); 
+		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
+		m_bridge.setStepName("italianPurchase");
+		purchaseDelegate.start(m_bridge);
+		IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+		ProductionRule buyArmour = m_data.getProductionRuleList().getProductionRule("buyArmour");
+		assertNotNull(buyArmour);
+		italianResources.subtract(buyArmour.getCosts());
+		purchaseList.add(buyArmour,1);		
+		String error = purchaseDelegate.purchase(purchaseList);
+		assertEquals(null,error);
+		assertEquals(italianResources,m_italians.getResources().getResourcesCopy());
+	}
+	
+	public void testNoPUResourcesToPurchase()
+	{
+
+		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy(); 
+		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
+		m_bridge.setStepName("italianPurchase");
+		purchaseDelegate.start(m_bridge);
+		IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+		ProductionRule buyArmour = m_data.getProductionRuleList().getProductionRule("buyArmourtest3");
+		assertNotNull(buyArmour);
+		italianResources.subtract(buyArmour.getCosts());
+		purchaseList.add(buyArmour,1);		
+		String error = purchaseDelegate.purchase(purchaseList);
+		assertEquals(null,error);
+		assertEquals(italianResources,m_italians.getResources().getResourcesCopy());
+		
 	}
 	
 	public void testTerritoryEffectsOnCombat()

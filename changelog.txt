@@ -1,4 +1,6 @@
 Changes for 1.5
+* Creating some unit tests for purchasing with multiple resources. (edwin van der wal)
+
 * Adding folders for future resources images, and filling with some general images. (veqryn, hepster, rofl)
 
 * Finished phase 5 of refactoring of aaGuns, separating isAAforFlyOverOnly from isAAforCombatOnly, and creation of an option to force attacks at the end of a movement, and allowing attacks to be filtered based on accompanying units, thereby finally reaching compatibility with silly pacific rules. (veqryn)

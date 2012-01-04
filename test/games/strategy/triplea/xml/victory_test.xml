@@ -541,6 +541,9 @@
                 <resource name="PUs"/>
                 <resource name="techTokens"/>
 				<resource name="Fuel"/>
+				<resource name="Ore"/>
+				<resource name="FairyDust"/>
+				
         </resourceList>
 
         <playerList>
@@ -756,14 +759,27 @@
 
                 <productionRule name="buyArtillery">
                         <cost resource="PUs" quantity="4" />
-						<!--<cost resource="Steel" quantity="2" />-->
                         <result resourceOrUnit="artillery" quantity="1"/>
                 </productionRule>
 
                 <productionRule name="buyArmour">
                         <cost resource="PUs" quantity="5" />
-						<!--<cost resource="Steel" quantity="4" />
-						<cost resource="Aluminium" quantity="10" />-->
+                        <result resourceOrUnit="armour" quantity="1"/>
+                </productionRule>
+                
+                <productionRule name="buyArmourtest">
+                        <cost resource="PUs" quantity="5" />
+                        <cost resource="Ore" quantity="5" />
+                        <result resourceOrUnit="armour" quantity="1"/>
+                </productionRule>
+                
+                 <productionRule name="buyArmourtest2">
+                        <cost resource="FairyDust" quantity="5" />
+                        <result resourceOrUnit="armour" quantity="1"/>
+                </productionRule>
+                
+                    <productionRule name="buyArmourtest3">
+                        <cost resource="Ore" quantity="5" />
                         <result resourceOrUnit="armour" quantity="1"/>
                 </productionRule>
                 
@@ -4432,6 +4448,8 @@
                         <resourceGiven player="Chinese" resource="PUs" quantity="0"/>
 
 						<resourceGiven player="Italians" resource="Fuel" quantity="20"/>
+						<resourceGiven player="Italians" resource="Ore" quantity="20"/>
+						
                 </resourceInitialize>
 
 				<relationshipInitialize>
