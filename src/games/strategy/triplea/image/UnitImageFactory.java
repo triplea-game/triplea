@@ -24,6 +24,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.ui.Util;
 
@@ -212,10 +213,10 @@ public class UnitImageFactory
 			{
 				if (TechTracker.hasRocket(id) && UnitAttachment.get(type).getIsRocket())
 					name = new StringBuilder("rockets");
-				if (TechTracker.hasAARadar(id))
+				if (TechTracker.hasAARadar(id) && Matches.UnitTypeIsAAforAnything.match(type))
 					name.append("_r");
 			}
-			else if (UnitAttachment.get(type).getIsRocket() && (UnitAttachment.get(type).getIsAAforBombingThisUnitOnly() || UnitAttachment.get(type).getIsAAforCombatOnly()))
+			else if (UnitAttachment.get(type).getIsRocket() && Matches.UnitTypeIsAAforAnything.match(type))
 			{
 				if (TechTracker.hasRocket(id))
 					name.append("_rockets");
@@ -227,7 +228,7 @@ public class UnitImageFactory
 				if (TechTracker.hasRocket(id))
 					name.append("_rockets");
 			}
-			else if (UnitAttachment.get(type).getIsAAforBombingThisUnitOnly() || UnitAttachment.get(type).getIsAAforCombatOnly())
+			else if (Matches.UnitTypeIsAAforAnything.match(type))
 			{
 				if (TechTracker.hasAARadar(id))
 					name.append("_r");

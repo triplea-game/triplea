@@ -1,4 +1,16 @@
 Changes for 1.5
+* Finished phase 5 of refactoring of aaGuns, separating isAAforFlyOverOnly from isAAforCombatOnly, and creation of an option to force attacks at the end of a movement, and allowing attacks to be filtered based on accompanying units, thereby finally reaching compatibility with silly pacific rules. (veqryn)
+
+* Created new game option, "Force AA Attacks For Last Step Of Fly Over", which will force isAAforFlyOver to shoot for the last step of a route, which it normally does not. (veqryn)
+
+* Created new Unit Attachment, "willNotFireIfPresent", which will be used to prevent an AA unit from firing at all if the enemy has any of a list of units in the battle. (veqryn)
+
+* Created new Unit Attachment, "isAAforFlyOverOnly", which will be used to determine if there are any AA shots for units passing through a territory. (veqryn)
+
+* Finished phase 4 of refactoring of aaGuns, by allowing aaGuns to stack, overstack, and getting maxAAattacks to work, thereby allowing aaGuns to shoot a limited number of times instead of infinite. (veqryn) 
+
+* Created new Unit Attachment, "mayOverStackAA", which will be used to allow more AA shots than the total number of aircraft/targets. (veqryn)
+
 * Created new Unit Attachment, "maxAAattacks", which will determine the maximum number of times an AA gun will be allowed to fire per round. (veqryn)
 
 * Finished phase 3 of refactoring of aaGuns, by removing the artificial constraints placed on AA guns and allowing them to operate flexibly, targeting different kinds of units, and having multiple groups of aa guns firing separately. (veqryn)

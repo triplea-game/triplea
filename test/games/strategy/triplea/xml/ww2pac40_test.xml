@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Pacific Test" version="2.0"/>
+        <info name="World War II Pacific Test" version="2.1"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
         <map>
                 <!-- Territory Definitions -->
@@ -1342,6 +1342,15 @@
                          <option name="attack" value="2"/>
                          <option name="defense" value="1"/>
 						 <option name="blockade" value="2"/>
+							<!-- stuff for targeting unescorted transports (we are using the new-fangled aa-gun code) -->
+						 <!--<option name="isAAforCombatOnly" value="true"/>-->
+						 <option name="isAAforFlyOverOnly" value="true"/>
+						 <option name="targetsAA" value="transport"/>
+						 <option name="willNotFireIfPresent" value="destroyer:cruiser:battleship:carrier"/>
+						 <option name="mayOverStackAA" value="true"/>
+						 <option name="maxAAattacks" value="1"/>
+						 <option name="attackAA" value="2"/>
+						 <option name="attackAAmaxDieSides" value="6"/>
                 </attatchment>
 				
 				
@@ -1428,10 +1437,9 @@
             
                 <!-- AA Gun -->
                 <attatchment name="unitAttatchment" attatchTo="aaGun" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
-                         <!--<option name="isAA" value="true"/>-->
-						 <option name="isAAforCombatOnly" value="true"/>
+                         <option name="isAAforCombatOnly" value="true"/>
 						 <option name="isRocket" value="true"/>
-						 <option name="isAAmovement" value="true"/>
+						 <option name="canNotMoveDuringCombatMove" value="true"/>
 						 <option name="isInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="false"/>
                          <option name="movement" value="1"/>
@@ -2090,6 +2098,7 @@
 					<!-- Player attachments -->
 					<attatchment name="playerAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
 						<option name="suicideAttackResources" value="SuicideAttackTokens" count="2"/>
+						<!--<option name="suicideAttackTargets" value="battleship:carrier:cruiser:destroyer"/>-->
 					</attatchment>
 					
 					<!-- Political Action Attachments -->
@@ -2511,7 +2520,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Always on AA" value="false" editable="true">
+				<property name="Always on AA" value="true" editable="false">
 						<boolean/>
 				</property>
 
@@ -2520,6 +2529,10 @@
 				</property>
 
 				<property name="Use Kamikaze Suicide Attacks" value="true" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Kamikaze Suicide Attacks Done By Current Territory Owner" value="false" editable="false">
 						<boolean/>
 				</property>
 
@@ -2677,7 +2690,11 @@
 						<boolean/>
 				</property>
 
-				<property name="AA Territory Restricted" value="true" editable="false">
+				<property name="AA Territory Restricted" value="false" editable="false">
+						<boolean/>
+				</property>
+
+				<property name="Force AA Attacks For Last Step Of Fly Over" value="true" editable="false">
 						<boolean/>
 				</property>
 
@@ -2875,31 +2892,23 @@
 						<br>TripleA map adaptation created by:
 						<br>Veqryn - map code, xml file, txt files, flags, art, lots of engine code
 						<br>Edwin - politics framework and ui
-						<br>Squid Daddy - lots of engine code
+						<br>Squid Daddy - original trigger and support attachment framework
 						<br>CrystalCT - original map png, some unit art
 						<br>GudKarma - relief tiles
 						<br>Bung - making a second set of relief tiles based on ww2v3
-						<br>If you wish to contribute or make any comments, visit the forum http://n2.nabble.com/Project-WW2-Pacific-1940-tp4225367p4225367.html
-						<br>Special thx to SGBridges, and the whole TripleA team.
 						<br>And many thanks to Larry Harris for making A&A.
+						<br>If you wish to contribute or make any comments, visit the forum http://n2.nabble.com/Project-WW2-Pacific-1940-tp4225367p4225367.html
 						<br>
 						<br>
+						<br>As far as I know, this map is 100% working according to official rules, so please report any bugs at http://sourceforge.net/tracker/?group_id=328171
 						<br>
-						<br>Until the TripleA engine supports all rules, please use 'edit' to fix any bugs or missing features (to do this, switch to edit mode, then click the "action" tab on the left part of the screen, then start moving stuff").
 						<br>
-						<br>
-						<br>Last updated 2011 Oct.
-						<br>
-						<br>Known issues:
-						<br>Submarine attacks on unescorted transports not implemented yet.
+						<br>need volunteer for:
 						<br>Need full description of rules as part of this game description.
 						<br>Need new artwork for the misc folder, as well as complete txt files for vc.txt, decorations.txt, capitols.txt, pu_place.txt.
 						<br>May need to edit place.txt to reflect more placements on certain islands.
 						<br>
-						<br>Please report any bugs NOT listed at http://sourceforge.net/tracker/?group_id=328171
-						<br>
 						<br>thank you for playing!
-						<br>
 						<br>
 						<br>
 						

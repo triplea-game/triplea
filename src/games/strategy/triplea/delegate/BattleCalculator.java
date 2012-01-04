@@ -169,10 +169,29 @@ public class BattleCalculator
 		final Tuple<List<Unit>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location, chosenDiceSize, groupSize);
 		int hitsLeft = dice.getHits();
 		// the non rolling air units
-		for (int i = 0; i < airSplit.getFirst().size(); i += groupSize)
+		if (hitsLeft < airSplit.getFirst().size() / groupSize)
 		{
-			hitUnits.add(airSplit.getFirst().get(i));
-			hitsLeft--;
+			final List<Unit> tempPossibleHitUnits = new ArrayList<Unit>();
+			for (int i = 0; i < airSplit.getFirst().size(); i += groupSize)
+			{
+				tempPossibleHitUnits.add(airSplit.getFirst().get(i));
+			}
+			final int[] hitRandom = bridge.getRandom(tempPossibleHitUnits.size(), hitsLeft, "Deciding which planes should die due to AA fire");
+			int pos = 0;
+			for (int i = 0; i < hitRandom.length; i++)
+			{
+				pos += hitRandom[i];
+				hitUnits.add(tempPossibleHitUnits.remove(pos % tempPossibleHitUnits.size()));
+			}
+			hitsLeft = 0;
+		}
+		else
+		{
+			for (int i = 0; i < airSplit.getFirst().size(); i += groupSize)
+			{
+				hitUnits.add(airSplit.getFirst().get(i));
+				hitsLeft--;
+			}
 		}
 		if (hitsLeft == airSplit.getSecond().size())
 		{
@@ -189,6 +208,7 @@ public class BattleCalculator
 				pos += hitRandom[i];
 				hitUnits.add(airSplit.getSecond().remove(pos % airSplit.getSecond().size()));
 			}
+			hitsLeft = 0;
 		}
 		if (hitUnits.size() != dice.getHits())
 		{
@@ -229,6 +249,9 @@ public class BattleCalculator
 	public static Collection<Unit> IndividuallyFiredAACasualties(final Collection<Unit> planes, final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location,
 				final IDelegateBridge bridge)
 	{
+		// if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not enough rolls to have a single roll for each aircraft, or too many rolls
+		if (DiceRoll.getTotalAAattacks(defendingAA, planes, bridge.getData()) != planes.size())
+			return RandomAACasualties(planes, dice, bridge);
 		final Tuple<Integer, Integer> attackThenDiceSides = DiceRoll.getAAattackAndMaxDiceSides(defendingAA, bridge.getData());
 		final int highestAttack = attackThenDiceSides.getFirst();
 		// int chosenDiceSize = attackThenDiceSides[1];

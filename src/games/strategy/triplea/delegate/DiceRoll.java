@@ -90,6 +90,27 @@ public class DiceRoll implements Externalizable
 		return new Tuple<Integer, Integer>(highestAttack, chosenDiceSize);
 	}
 	
+	public static int getTotalAAattacks(final Collection<Unit> defendingEnemyAA, final Collection<Unit> validAttackingUnitsForThisRoll, final GameData data)
+	{
+		int totalAAattacksNormal = 0;
+		int totalAAattacksSurplus = 0;
+		for (final Unit aa : defendingEnemyAA)
+		{
+			final UnitAttachment ua = UnitAttachment.get(aa.getType());
+			if (ua.getMaxAAattacks() == -1)
+				totalAAattacksNormal = validAttackingUnitsForThisRoll.size();
+			else
+			{
+				if (ua.getMayOverStackAA())
+					totalAAattacksSurplus += ua.getMaxAAattacks();
+				else
+					totalAAattacksNormal += ua.getMaxAAattacks();
+			}
+		}
+		totalAAattacksNormal = Math.min(totalAAattacksNormal, validAttackingUnitsForThisRoll.size());
+		return totalAAattacksNormal + totalAAattacksSurplus;
+	}
+	
 	public static DiceRoll rollAA(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Set<UnitType> targetUnitTypesForThisTypeAA, final IDelegateBridge bridge,
 				final Territory location)
 	{
@@ -98,6 +119,7 @@ public class DiceRoll implements Externalizable
 		int hits = 0;
 		final List<Die> sortedDice = new ArrayList<Die>();
 		final Tuple<Integer, Integer> attackThenDiceSides = getAAattackAndMaxDiceSides(defendingAA, data);
+		int totalAAattacks = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll, data);
 		final int highestAttack = attackThenDiceSides.getFirst();
 		final int chosenDiceSize = attackThenDiceSides.getSecond();
 		final int hitAt = highestAttack - 1; // zero based
@@ -109,22 +131,26 @@ public class DiceRoll implements Externalizable
 			final int groupSize = chosenDiceSize / power;
 			if (Properties.getChoose_AA_Casualties(data))
 			{
-				hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSize, annotation, validAttackingUnitsForThisRoll.size());
+				hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSize, annotation, totalAAattacks);
 			}
 			else
 			{
 				final Tuple<List<Unit>, List<Unit>> airSplit = BattleCalculator.categorizeLowLuckAirUnits(validAttackingUnitsForThisRoll, location, chosenDiceSize, groupSize);
 				// this will not roll any dice, since the first group is
 				// a multiple of 3 or 6
-				hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSize, annotation, airSplit.getFirst().size());
+				final int firstGroupSize = airSplit.getFirst().size();
+				hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSize, annotation, Math.min(firstGroupSize, totalAAattacks));
+				totalAAattacks = Math.max(0, totalAAattacks - firstGroupSize);
 				// this will roll dice, unless it is empty
-				hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSize, annotation, airSplit.getSecond().size());
+				final int secondGroupSize = airSplit.getSecond().size();
+				hits += getLowLuckHits(bridge, sortedDice, power, chosenDiceSize, annotation, Math.min(secondGroupSize, totalAAattacks));
+				totalAAattacks = Math.max(0, totalAAattacks - secondGroupSize);
 			}
 		}
 		else if (highestAttack > 0) // Normal rolling
 		{
 			final String annotation = "Roll AA guns in " + location.getName();
-			final int[] dice = bridge.getRandom(chosenDiceSize, validAttackingUnitsForThisRoll.size(), annotation);
+			final int[] dice = bridge.getRandom(chosenDiceSize, totalAAattacks, annotation);
 			for (int i = 0; i < dice.length; i++)
 			{
 				final boolean hit = dice[i] <= hitAt;

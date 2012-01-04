@@ -39,7 +39,6 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -179,8 +178,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		bridge.getHistoryWriter().setRenderingData(m_battleSite);
 		BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
 		// TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
-		m_defendingAA = m_battleSite.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_attacker, m_data), Matches.unitIsBeingTransported().invert(),
-					Matches.UnitIsAAthatCanHitTheseUnits(m_attackingUnits, Matches.UnitIsAAforBombingThisUnitOnly)));
+		m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
 		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA); // TODO: order this list in some way
 		final boolean hasAA = m_defendingAA.size() > 0;
 		m_steps = new ArrayList<String>();
@@ -297,10 +295,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	@Override
 	public List<Unit> getDefendingUnits()
 	{
-		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAAforBombingThisUnitOnly, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert());
+		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker,
+					Matches.UnitIsAAforBombingThisUnitOnly, m_data));
 		if (m_targets.isEmpty())
 			return Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
-		final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAforBombingThisUnitOnly);
+		final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
 		targets.addAll(m_targets.keySet());
 		return targets;
 	}

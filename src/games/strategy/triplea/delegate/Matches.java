@@ -213,7 +213,7 @@ public class Matches
 		@Override
 		public boolean match(final Unit unit)
 		{
-			if (!(UnitIsAAforCombatOnly.match(unit) || UnitIsAAforBombingThisUnitOnly.match(unit)))
+			if (!UnitIsAAforAnything.match(unit))
 				return false;
 			final TechAttachment ta = (TechAttachment) unit.getOwner().getAttachment(Constants.TECH_ATTACHMENT_NAME);
 			if (ta == null)
@@ -962,9 +962,8 @@ public class Matches
 		@Override
 		public boolean match(final UnitType obj)
 		{
-			final UnitType type = obj;
-			final UnitAttachment ua = UnitAttachment.get(type);
-			return (ua.isFactory() || ua.getIsInfrastructure()) && !(ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly());
+			final UnitAttachment ua = UnitAttachment.get(obj);
+			return (ua.isFactory() || ua.getIsInfrastructure()) && !UnitTypeIsAAforAnything.match(obj);
 		}
 	};
 	public static final Match<UnitType> UnitTypeIsInfantry = new Match<UnitType>()
@@ -1024,7 +1023,7 @@ public class Matches
 		public boolean match(final UnitType obj)
 		{
 			final UnitAttachment ua = UnitAttachment.get(obj);
-			return ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly();
+			return ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly() || ua.getIsAAforFlyOverOnly();
 		}
 	};
 	public static final Match<Unit> UnitIsRocket = new Match<Unit>()
@@ -1071,14 +1070,8 @@ public class Matches
 				final Set<UnitType> targetsAA = ua.getTargetsAA(obj.getData());
 				for (final Unit u : targets)
 				{
-					// default is null, which means we target all air units
-					// if (targetsAA == null && UnitIsAir.match(u))
-					// return true;
-					// else
-					// {
 					if (targetsAA.contains(u.getType()))
 						return true;
-					// }
 				}
 				return false;
 			}
@@ -1095,6 +1088,32 @@ public class Matches
 				return UnitAttachment.get(obj.getType()).getTypeAA().matches(typeAA);
 			}
 		};
+	}
+	
+	public static final Match<Unit> UnitIsAAthatWillNotFireIfPresentEnemyUnits(final Collection<Unit> enemyUnitsPresent)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit obj)
+			{
+				for (final Unit u : enemyUnitsPresent)
+				{
+					if (UnitAttachment.get(obj.getType()).getWillNotFireIfPresent().contains(u.getType()))
+						return true;
+				}
+				return false;
+			}
+		};
+	}
+	
+	public static final Match<Unit> UnitIsAAthatCanFire(final Collection<Unit> unitsMovingOrAttacking, final PlayerID playerMovingOrAttacking, final Match<Unit> typeOfAA, final GameData data)
+	{
+		return new CompositeMatchAnd<Unit>(
+					Matches.enemyUnit(playerMovingOrAttacking, data),
+					Matches.unitIsBeingTransported().invert(),
+					Matches.UnitIsAAthatCanHitTheseUnits(unitsMovingOrAttacking, typeOfAA),
+					Matches.UnitIsAAthatWillNotFireIfPresentEnemyUnits(unitsMovingOrAttacking).invert());
 	}
 	
 	public static final Match<Unit> UnitIsAAforCombatOnly = new Match<Unit>()
@@ -1117,14 +1136,22 @@ public class Matches
 			return ua.getIsAAforBombingThisUnitOnly();
 		}
 	};
-	public static final Match<Unit> UnitIsAAforAnything = new Match<Unit>()
+	public static final Match<Unit> UnitIsAAforFlyOverOnly = new Match<Unit>()
 	{
 		@Override
 		public boolean match(final Unit obj)
 		{
 			final UnitType type = obj.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.getIsAAforCombatOnly() || ua.getIsAAforBombingThisUnitOnly();
+			return ua.getIsAAforFlyOverOnly();
+		}
+	};
+	public static final Match<Unit> UnitIsAAforAnything = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			return UnitTypeIsAAforAnything.match(obj.getType());
 		}
 	};
 	public static final Match<Unit> UnitIsNotAA = new InverseMatch<Unit>(UnitIsAAforAnything);

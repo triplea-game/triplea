@@ -131,12 +131,15 @@ public class UnitAttachment extends DefaultAttachment
 	// aa related
 	private boolean m_isAAforCombatOnly = false;
 	private boolean m_isAAforBombingThisUnitOnly = false;
+	private boolean m_isAAforFlyOverOnly = false;
 	private boolean m_isRocket = false;
 	private int m_attackAA = 1;
 	private int m_attackAAmaxDieSides = -1;
 	private int m_maxAAattacks = -1; // -1 means infinite
 	private String m_typeAA = "aaGun_old"; // default value for when it is not set
 	private Set<UnitType> m_targetsAA = null; // null means targeting air units only
+	private boolean m_mayOverStackAA = false; // if false, we can not shoot more times than there are number of planes
+	private final Set<UnitType> m_willNotFireIfPresent = new HashSet<UnitType>(); // if these enemy units are present, the gun does not fire at all
 	
 	// strategic bombing related
 	private boolean m_isStrategicBomber = false;
@@ -1353,8 +1356,9 @@ public class UnitAttachment extends DefaultAttachment
 	public void setIsAA(final String s) throws GameParseException
 	{
 		getBool(s);
-		setIsAAforBombingThisUnitOnly(s);
 		setIsAAforCombatOnly(s);
+		setIsAAforBombingThisUnitOnly(s);
+		setIsAAforFlyOverOnly(s);
 		setIsAAmovement(s);
 		setIsRocket(s);
 		setIsInfrastructure(s);
@@ -1393,6 +1397,16 @@ public class UnitAttachment extends DefaultAttachment
 		return m_maxAAattacks;
 	}
 	
+	public void setMayOverStackAA(final String s)
+	{
+		m_mayOverStackAA = getBool(s);
+	}
+	
+	public boolean getMayOverStackAA()
+	{
+		return m_mayOverStackAA;
+	}
+	
 	public void setIsAAforCombatOnly(final String s)
 	{
 		m_isAAforCombatOnly = getBool(s);
@@ -1411,6 +1425,16 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsAAforBombingThisUnitOnly()
 	{
 		return m_isAAforBombingThisUnitOnly;
+	}
+	
+	public void setIsAAforFlyOverOnly(final String s)
+	{
+		m_isAAforFlyOverOnly = getBool(s);
+	}
+	
+	public boolean getIsAAforFlyOverOnly()
+	{
+		return m_isAAforFlyOverOnly;
 	}
 	
 	public void setIsRocket(final String s)
@@ -1498,6 +1522,28 @@ public class UnitAttachment extends DefaultAttachment
 		m_targetsAA.clear();
 	}
 	
+	public void setWillNotFireIfPresent(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		for (final String u : s)
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(u);
+			if (ut == null)
+				throw new GameParseException("UnitAttachment: willNotFireIfPresent: no such unit type: " + u);
+			m_willNotFireIfPresent.add(ut);
+		}
+	}
+	
+	public Set<UnitType> getWillNotFireIfPresent()
+	{
+		return m_willNotFireIfPresent;
+	}
+	
+	public void clearWillNotFireIfPresent()
+	{
+		m_willNotFireIfPresent.clear();
+	}
+	
 	public void setIsAAmovement(final String s) throws GameParseException
 	{
 		setCanNotMoveDuringCombatMove(s);
@@ -1571,14 +1617,13 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		if (m_isAir)
 		{
-			if (m_isSea || m_isFactory || m_isSub || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_transportCost != -1 ||
-						// m_transportCapacity != -1 ||
+			if (m_isSea || m_isFactory || m_isSub || m_transportCost != -1 ||
 						m_carrierCapacity != -1 || m_canBlitz || m_canBombard || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isCombatTransport)
 				throw new GameParseException("Invalid Unit attatchment, air units can not have certain properties, " + this);
 		}
 		else if (m_isSea)
 		{
-			if (m_canIntercept || m_canEscort || m_canBlitz || m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_isAir || m_isFactory || m_isStrategicBomber || m_carrierCost != -1
+			if (m_canIntercept || m_canEscort || m_canBlitz || m_isAir || m_isFactory || m_isStrategicBomber || m_carrierCost != -1
 						|| m_transportCost != -1 || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isAirTransport || m_isKamikaze)
 				throw new GameParseException("Invalid Unit Attatchment, sea units can not have certain properties, " + this);
 		}
@@ -1787,11 +1832,14 @@ public class UnitAttachment extends DefaultAttachment
 					
 					+ "  isAAforCombatOnly:" + m_isAAforCombatOnly
 					+ "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
+					+ "  isAAforFlyOverOnly:" + m_isAAforFlyOverOnly
 					+ "  attackAA:" + m_attackAA
 					+ "  attackAAmaxDieSides:" + m_attackAAmaxDieSides
 					+ "  maxAAattacks:" + m_maxAAattacks
+					+ "  mayOverStackAA:" + m_mayOverStackAA
 					+ "  typeAA:" + m_typeAA
 					+ "  targetsAA:" + m_targetsAA.toString()
+					+ "  willNotFireIfPresent:" + m_willNotFireIfPresent.toString()
 					+ "  isRocket:" + m_isRocket
 					
 					+ "  canProduceUnits:" + m_canProduceUnits
@@ -1882,15 +1930,21 @@ public class UnitAttachment extends DefaultAttachment
 		else if (m_fuelCost != null && m_fuelCost.size() > 1)
 			stats.append("Uses " + m_fuelCost.totalValues() + " Resources Each movement point, ");
 		
-		if (m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly)
+		if (m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_isAAforFlyOverOnly)
 		{
 			stats.append((playerHasAARadar(player) ? m_attackAA + 1 : m_attackAA) + "/" + (m_attackAAmaxDieSides != -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
-			if (m_isAAforCombatOnly && m_isAAforBombingThisUnitOnly)
+			if (m_isAAforCombatOnly && m_isAAforBombingThisUnitOnly && m_isAAforFlyOverOnly)
 				stats.append("Anti-Air, ");
+			else if (m_isAAforCombatOnly && m_isAAforFlyOverOnly && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData()))
+				stats.append("Anti-Air for Combat & FlyOver, ");
+			else if (m_isAAforBombingThisUnitOnly && m_isAAforFlyOverOnly && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData()))
+				stats.append("Anti-Air for Raids & FlyOver, ");
 			else if (m_isAAforCombatOnly)
 				stats.append("Anti-Air for Combat, ");
 			else if (m_isAAforBombingThisUnitOnly)
 				stats.append("Anti-Air for Raids, ");
+			else if (m_isAAforFlyOverOnly)
+				stats.append("Anti-Air for FlyOver, ");
 			if (m_maxAAattacks > -1)
 				stats.append(m_maxAAattacks + " AA Attacks");
 		}

@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel 2" version="3.3"/>
+        <info name="Pact of Steel 2" version="3.5"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
 			<!-- A MOD of original POS by VEQRYN
@@ -1810,11 +1810,17 @@
 			attackAA							values: the value that an isAA unit will attack at, for shooting at air units before battle
 			attackAAmaxDieSides					values: sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).  
 															Be Warned that all aa attack values (including with Radar and without Radar), MUST divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck!
-			maxAAattacks						values: sets how many times this unit may fire its AA guns. Defaults to -1, which means infinite.
-			isAAforCombatOnly					values: allows this unit to be an AA gun for normal combat only.  it will not defend against strategic bombing raids
-			isAAforBombingThisUnitOnly			values: allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid (currently defends against all strategic bombing attacks in this territory, not just against this unit).  it will not defend against a normal attack
-			typeAA								values: any string which identifies this group of aa guns. Only 1 aa gun per group may fire. (defaults to "aaGun_old")
+			maxAAattacks						values: sets how many times this unit may fire its AA guns. Defaults to -1, which means infinite. If not infinite, then aa guns can stack.
+															(If you have multiple aa of the same type-group in a territory, and they have different attack values or dicesides, and different maxAAattacks, then what happens is that the engine will roll for the best attack/diceSides and for the best maxAAattacks, even if that is two different units
+															  For example, if you have an aa gun that has infinite attacks and rolls a 4/20, and you have another gun with only one attack and rolls 3/6, then you will end up rolling infinite times at 3/6.  This might be fixed in the future.)
+			mayOverStackAA						values: sets if this unit may fire aa more times than there are aircraft (default = false).
+			isAAforCombatOnly					values: allows this unit to be an AA gun for normal combat only.  it will not defend against strategic bombing raids.
+			isAAforBombingThisUnitOnly			values: allows this unit to be an AA gun only when this unit is directly attacked by a strategic bombing raid (currently defends against all strategic bombing attacks in this territory, not just against this unit).  it will not defend against a normal attack.
+			isAAforFlyOverOnly					values: allows this unit to be an AA gun only when being flown over. if the air unit moves into this territory and stays, then this will not fire.
+															isAAforFlyOverOnly will only work if "AA Territory Restricted" is turned off, and will normally only fire during combat move and not during noncombat move, unless you also turn on "Always on AA".
+			typeAA								values: any string which identifies this type-group of aa guns. Only 1 aa gun per group may fire (unless you've set maxAAattacks). (defaults to "aaGun_old")
 			targetsAA							values: a list of unit types which this aa gun can hit. (defaults to all air units) (any aa guns in the same group should have the same targetsAA)
+			willNotFireIfPresent				values: a list of unit types for which if they are present in the battle, this aa gun will not fire.
 			isRocket							values: allows this unit to become a rocket if the player has the rocket technology.  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name
 			isAAmovement						values: just sets canNotMoveDuringCombatMove to "true", and only for aa guns it will set the stackingLimit to "1:allied" when playing by classic rules
 			canNotMoveDuringCombatMove			values: true or false, defaults to false, does not allow this unit to move during 'combat move phase'
@@ -2227,6 +2233,8 @@
 						 <option name="typeAA" value="aaGun"/>-->
 						 <!-- targetsAA sets what this aaGun can shoot at. a guns in the same group must have the same targets
 						 <option name="targetsAA" value="fighter:jp_fighter:bomber:air_transport"/>-->
+						 <!-- maxAAattacks sets the max number of attacks this aa gun can perform. defaults to -1 which means infinite. if not infinite, then aa guns can stack.
+						 <option name="maxAAattacks" value="-1"/>-->
                 </attatchment>
 				
 				
@@ -3424,6 +3432,7 @@
 					special
 					fuelCost
 					targetsAA
+					willNotFireIfPresent
 					
 				Unit Support Attachments:
 					players
@@ -4843,6 +4852,11 @@
 
 						<!-- will only roll aa if aaGun is in the territory getting attacked or bombed -->
 				<property name="AA Territory Restricted" value="true" editable="false">
+						<boolean/>
+				</property>
+
+						<!-- will cause the isAAforFlyOverOnly to shoot for the last step in a movement, instead of just everything but the end. -->
+				<property name="Force AA Attacks For Last Step Of Fly Over" value="false" editable="false">
 						<boolean/>
 				</property>
 

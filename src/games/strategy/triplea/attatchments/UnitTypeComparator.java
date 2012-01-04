@@ -17,6 +17,7 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.delegate.Matches;
 
 import java.util.Comparator;
 
@@ -36,9 +37,9 @@ public class UnitTypeComparator implements Comparator<UnitType>
 			return 1;
 		if (ua2.isFactory() && !ua1.isFactory())
 			return -1;
-		if ((ua1.getIsAAforCombatOnly() || ua1.getIsAAforBombingThisUnitOnly()) && !(ua2.getIsAAforCombatOnly() || ua2.getIsAAforBombingThisUnitOnly()))
+		if (Matches.UnitTypeIsAAforAnything.match(u1) && !Matches.UnitTypeIsAAforAnything.match(u2))
 			return 1;
-		if ((ua2.getIsAAforCombatOnly() || ua2.getIsAAforBombingThisUnitOnly()) && !(ua1.getIsAAforCombatOnly() || ua1.getIsAAforBombingThisUnitOnly()))
+		if (!Matches.UnitTypeIsAAforAnything.match(u1) && Matches.UnitTypeIsAAforAnything.match(u2))
 			return -1;
 		if (ua1.isAir() && !ua2.isAir())
 			return 1;

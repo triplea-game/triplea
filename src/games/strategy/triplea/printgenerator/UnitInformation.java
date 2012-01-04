@@ -20,6 +20,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.Matches;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -84,7 +85,7 @@ class UnitInformation
 							+ (currentAttachment.isArtillery() == false ? "-" : "true") + "," + (currentAttachment.isArtillerySupportable() == false ? "-" : "true") + ","
 							+ (currentAttachment.isFactory() == false ? "-" : "true") + "," + (currentAttachment.getIsMarine() == false ? "-" : "true") + ","
 							+ (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
-							+ ((currentAttachment.getIsAAforCombatOnly() || currentAttachment.getIsAAforBombingThisUnitOnly()) == false ? "-" : "true") + ","
+							+ (Matches.UnitTypeIsAAforAnything.match(currentType) == false ? "-" : "true") + ","
 							+ (currentAttachment.isAir() == false ? "-" : "true") + "," + (currentAttachment.isStrategicBomber() == false ? "-" : "true") + ","
 							+ (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + "," + (currentAttachment.isSea() == false ? "-" : "true") + ","
 							+ (currentAttachment.isTwoHit() == false ? "-" : "true") + "," + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","

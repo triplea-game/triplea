@@ -22,8 +22,6 @@ import games.strategy.net.GUID;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.util.CompositeMatch;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
@@ -99,7 +97,7 @@ class AAInMoveUtil implements Serializable
 	
 	private void populateExecutionStack(final Route route, final Collection<Unit> units, final Comparator<Unit> decreasingMovement, final UndoableMove currentMove)
 	{
-		final List<Unit> targets = Match.getMatches(units, Matches.UnitIsAir);
+		final List<Unit> targets = new ArrayList<Unit>(units);
 		// select units with lowest movement first
 		Collections.sort(targets, decreasingMovement);
 		final List<IExecutable> executables = new ArrayList<IExecutable>();
@@ -138,8 +136,8 @@ class AAInMoveUtil implements Serializable
 		// don't iterate over the end
 		// that will be a battle
 		// and handled else where in this tangled mess
-		final CompositeMatch<Unit> hasAA = new CompositeMatchAnd<Unit>(Matches.enemyUnit(movingPlayer, getData()), Matches.unitIsBeingTransported().invert(),
-					Matches.UnitIsAAthatCanHitTheseUnits(units, Matches.UnitIsAAforCombatOnly)); // AA guns in transports shouldn't be able to fire
+		final Match<Unit> hasAA = Matches.UnitIsAAthatCanFire(units, movingPlayer, Matches.UnitIsAAforFlyOverOnly, getData());
+		// AA guns in transports shouldn't be able to fire
 		final List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 		for (final Territory current : route.getMiddleSteps())
 		{
@@ -153,6 +151,9 @@ class AAInMoveUtil implements Serializable
 		// TODO: there is a bug in which if you move an air unit to a battle site in the middle of non combat, it wont fire
 		if (route.getStart().getUnits().someMatch(hasAA) && !getBattleTracker().wasBattleFought(route.getStart()))
 			territoriesWhereAAWillFire.add(route.getStart());
+		
+		if (games.strategy.triplea.Properties.getForceAAattacksForLastStepOfFlyOver(getData()) && route.getEnd().getUnits().someMatch(hasAA))
+			territoriesWhereAAWillFire.add(route.getEnd());
 		return territoriesWhereAAWillFire;
 	}
 	
@@ -173,8 +174,7 @@ class AAInMoveUtil implements Serializable
 			movingPlayer = m_player;
 		else
 			movingPlayer = units.iterator().next().getOwner();
-		final List<Unit> defendingAA = territory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(movingPlayer, getData()), Matches.unitIsBeingTransported().invert(),
-					Matches.UnitIsAAthatCanHitTheseUnits(units, Matches.UnitIsAAforCombatOnly)));
+		final List<Unit> defendingAA = territory.getUnits().getMatches(Matches.UnitIsAAthatCanFire(units, movingPlayer, Matches.UnitIsAAforFlyOverOnly, getData()));
 		final Set<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA); // TODO: order this list in some way
 		for (final String currentTypeAA : AAtypes)
 		{

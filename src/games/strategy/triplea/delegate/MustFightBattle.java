@@ -449,8 +449,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		addDependentUnits(transporting(m_defendingUnits));
 		addDependentUnits(transporting(m_attackingUnits));
 		// determine any AA
-		m_defendingAA = m_battleSite.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_attacker, m_data), Matches.unitIsBeingTransported().invert(),
-					Matches.UnitIsAAthatCanHitTheseUnits(m_attackingUnits, Matches.UnitIsAAforCombatOnly)));
+		m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforCombatOnly, m_data));
 		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA); // TODO: order this list in some way
 		// list the steps
 		m_stepStrings = determineStepStrings(true, bridge);
@@ -2354,8 +2353,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		if (m_defendingAA == null)
 		{
-			return m_battleSite.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_attacker, m_data), Matches.unitIsBeingTransported().invert(),
-						Matches.UnitIsAAthatCanHitTheseUnits(m_attackingUnits, Matches.UnitIsAAforCombatOnly))).size() > 0;
+			return m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforCombatOnly, m_data)).size() > 0;
 		}
 		else
 			return m_defendingAA.size() > 0;

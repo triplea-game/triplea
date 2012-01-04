@@ -511,8 +511,10 @@ class PlayerUnitsPanel extends JPanel
 		{
 			public int compare(final UnitCategory o1, final UnitCategory o2)
 			{
-				final UnitAttachment u1 = UnitAttachment.get(o1.getType());
-				final UnitAttachment u2 = UnitAttachment.get(o2.getType());
+				final UnitType ut1 = o1.getType();
+				final UnitType ut2 = o2.getType();
+				final UnitAttachment u1 = UnitAttachment.get(ut1);
+				final UnitAttachment u2 = UnitAttachment.get(ut2);
 				// for land, we want land, air, aa gun, then bombarding
 				if (land)
 				{
@@ -520,9 +522,9 @@ class PlayerUnitsPanel extends JPanel
 					{
 						return u1.isSea() ? 1 : -1;
 					}
-					if ((u1.getIsAAforCombatOnly() || u1.getIsAAforBombingThisUnitOnly()) != (u2.getIsAAforCombatOnly() || u2.getIsAAforBombingThisUnitOnly()))
+					if (Matches.UnitTypeIsAAforAnything.match(ut1) != Matches.UnitTypeIsAAforAnything.match(ut2))
 					{
-						return (u1.getIsAAforCombatOnly() || u1.getIsAAforBombingThisUnitOnly()) ? 1 : -1;
+						return Matches.UnitTypeIsAAforAnything.match(ut1) ? 1 : -1;
 					}
 					if (u1.isAir() != u2.isAir())
 					{

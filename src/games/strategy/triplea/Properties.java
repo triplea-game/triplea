@@ -803,6 +803,11 @@ public class Properties implements Constants
 		return data.getProperties().get(KAMIKAZE_SUICIDE_ATTACKS_DONE_BY_CURRENT_TERRITORY_OWNER, false);
 	}
 	
+	public static boolean getForceAAattacksForLastStepOfFlyOver(final GameData data)
+	{
+		return data.getProperties().get(FORCE_AA_ATTACKS_FOR_LAST_STEP_OF_FLY_OVER, false);
+	}
+	
 	private Properties()
 	{
 	}
