@@ -136,7 +136,7 @@ public class UnitAttachment extends DefaultAttachment
 	private int m_attackAA = 1;
 	private int m_attackAAmaxDieSides = -1;
 	private int m_maxAAattacks = -1; // -1 means infinite
-	private String m_typeAA = "aaGun_old"; // default value for when it is not set
+	private String m_typeAA = "AA"; // default value for when it is not set
 	private Set<UnitType> m_targetsAA = null; // null means targeting air units only
 	private boolean m_mayOverStackAA = false; // if false, we can not shoot more times than there are number of planes
 	private final Set<UnitType> m_willNotFireIfPresent = new HashSet<UnitType>(); // if these enemy units are present, the gun does not fire at all
@@ -1829,7 +1829,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  destroyer:" + m_isDestroyer
 					+ "  canBombard:" + m_canBombard
 					+ "  bombard:" + m_bombard
-					
+
 					+ "  isAAforCombatOnly:" + m_isAAforCombatOnly
 					+ "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
 					+ "  isAAforFlyOverOnly:" + m_isAAforFlyOverOnly
@@ -1841,7 +1841,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  targetsAA:" + m_targetsAA.toString()
 					+ "  willNotFireIfPresent:" + m_willNotFireIfPresent.toString()
 					+ "  isRocket:" + m_isRocket
-					
+
 					+ "  canProduceUnits:" + m_canProduceUnits
 					+ "  canProduceXUnits:" + m_canProduceXUnits
 					+ "  createsUnitsList:" + (m_createsUnitsList.size() == 0 ? "empty" : m_createsUnitsList.toString())

@@ -1351,6 +1351,7 @@
 						 <option name="maxAAattacks" value="1"/>
 						 <option name="attackAA" value="2"/>
 						 <option name="attackAAmaxDieSides" value="6"/>
+						 <option name="typeAA" value="Submarine Strike on Unescorted Transports"/>
                 </attatchment>
 				
 				
@@ -2890,7 +2891,7 @@
 						
 						    WW2 Pacific 1940
 						<br>TripleA map adaptation created by:
-						<br>Veqryn - map code, xml file, txt files, flags, art, lots of engine code
+						<br>Veqryn - map code, xml file, txt files, flags, art, scrambling, kamikazes, carrier rules, air/naval bases, lots of other engine code
 						<br>Edwin - politics framework and ui
 						<br>Squid Daddy - original trigger and support attachment framework
 						<br>CrystalCT - original map png, some unit art
@@ -2907,6 +2908,7 @@
 						<br>Need full description of rules as part of this game description.
 						<br>Need new artwork for the misc folder, as well as complete txt files for vc.txt, decorations.txt, capitols.txt, pu_place.txt.
 						<br>May need to edit place.txt to reflect more placements on certain islands.
+						<br>Redone base tiles using ww2v3's basetiles.
 						<br>
 						<br>thank you for playing!
 						<br>
