@@ -1,4 +1,6 @@
 Changes for 1.5
+* Complete rewrite of AxisAndAllies.org forum poster. Also added help html pages for the pbem / pbf system. (qwertgold)
+
 * Creating some unit tests for purchasing with multiple resources. (edwin van der wal)
 
 * Adding folders for future resources images, and filling with some general images. (veqryn, hepster, rofl)

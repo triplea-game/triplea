@@ -78,6 +78,16 @@ public class NullForumPoster implements IForumPoster
 
 	}
 
+	public String getTestMessage()
+	{
+		return "You should not be able to test a Null Poster";
+	}
+
+	public String getHelpText()
+	{
+		return "Will never be called";
+	}
+
 	public void gameStepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName)
 	{
 	}
@@ -86,7 +96,7 @@ public class NullForumPoster implements IForumPoster
 	{
 	}
 
-	public boolean postTurnSummary(String summary)
+	public boolean postTurnSummary(String summary, final String subject)
 	{
 		return false;
 	}

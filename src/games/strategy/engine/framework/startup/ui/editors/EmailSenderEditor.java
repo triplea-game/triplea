@@ -207,11 +207,11 @@ public class EmailSenderEditor extends EditorPanel
 
 		boolean hostValid = validateTextFieldNotEmpty(m_host, m_hostLabel);
 		boolean portValid = validateTextField(m_port, m_portLabel, new IntegerRangeValidator(0, 65635));
-		boolean loginValid = validateTextFieldNotEmpty(m_login, m_loginLabel);
-		boolean passwordValid = validateTextFieldNotEmpty(m_password, m_passwordLabel);
+		//boolean loginValid = validateTextFieldNotEmpty(m_login, m_loginLabel);
+		//boolean passwordValid = validateTextFieldNotEmpty(m_password, m_passwordLabel);
 		boolean addressValid = validateTextField(m_toAddress, m_toLabel, new EmailValidator(false));
 
-		boolean allValid = hostValid && portValid && loginValid && passwordValid && addressValid;
+		boolean allValid = hostValid && portValid && /*loginValid && passwordValid && */ addressValid;
 		m_testEmail.setEnabled(allValid);
 		return allValid;
 	}

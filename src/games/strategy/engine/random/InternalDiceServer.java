@@ -132,4 +132,9 @@ public class InternalDiceServer implements IRemoteDiceServer
 	{
 		return null;
 	}
+
+	public String getHelpText()
+	{
+		return "<html>No help</html>";
+	}
 }

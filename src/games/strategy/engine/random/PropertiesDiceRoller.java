@@ -18,15 +18,22 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
 
 /**
  * A pbem dice roller that reads its configuration from a properties file
@@ -36,22 +43,23 @@ import java.util.*;
  */
 public class PropertiesDiceRoller implements IRemoteDiceServer
 {
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	// class fields
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	private static final long serialVersionUID = 6481409417543119539L;
-
-
-	//-----------------------------------------------------------------------
+	
+	// -----------------------------------------------------------------------
 	// class methods
-	//-----------------------------------------------------------------------
-
+	// -----------------------------------------------------------------------
+	
 	/**
 	 * Loads the property dice rollers from the properties file
+	 * 
 	 * @return the collection of available dice rollers
 	 */
-	public static Collection<PropertiesDiceRoller> loadFromFile() {
-	    List<PropertiesDiceRoller> rollers = new ArrayList<PropertiesDiceRoller>();
+	public static Collection<PropertiesDiceRoller> loadFromFile()
+	{
+		final List<PropertiesDiceRoller> rollers = new ArrayList<PropertiesDiceRoller>();
 		final File f = new File(GameRunner.getRootFolder(), "dice_servers");
 		if (!f.exists())
 		{
@@ -91,52 +99,50 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 				return n1 - n2;
 			}
 		});
-
+		
 		for (final Properties prop : propFiles)
 		{
 			rollers.add(new PropertiesDiceRoller(prop));
 		}
-
+		
 		return rollers;
 	}
-
-	//-----------------------------------------------------------------------
+	
+	// -----------------------------------------------------------------------
 	// instance fields
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	private final Properties m_props;
 	private String m_toAddress;
 	private String m_ccAddress;
 	private String m_gameId;
-
-	//-----------------------------------------------------------------------
+	
+	// -----------------------------------------------------------------------
 	// constructors
-	//-----------------------------------------------------------------------
+	// -----------------------------------------------------------------------
 	public PropertiesDiceRoller(final Properties props)
 	{
 		m_props = props;
 	}
-
-	//-----------------------------------------------------------------------
+	
+	// -----------------------------------------------------------------------
 	// instance methods
-	//-----------------------------------------------------------------------
-
-
+	// -----------------------------------------------------------------------
+	
 	public String getDisplayName()
 	{
 		return m_props.getProperty("name");
 	}
-
+	
 	public EditorPanel getEditor()
 	{
 		return new DiceServerEditor(this);
 	}
-
-	public boolean sameType(IBean other)
+	
+	public boolean sameType(final IBean other)
 	{
 		return other instanceof PropertiesDiceRoller && getDisplayName().equals(other.getDisplayName());
 	}
-
-
+	
 	public boolean sendsEmail()
 	{
 		final String property = m_props.getProperty("send.email");
@@ -249,40 +255,45 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 		}
 		return rVal;
 	}
-
+	
 	public String getToAddress()
 	{
 		return m_toAddress;
 	}
-
-	public void setToAddress(String toAddress)
+	
+	public void setToAddress(final String toAddress)
 	{
 		m_toAddress = toAddress;
 	}
-
+	
 	public String getCcAddress()
 	{
 		return m_ccAddress;
 	}
-
-	public void setCcAddress(String ccAddress)
+	
+	public void setCcAddress(final String ccAddress)
 	{
 		m_ccAddress = ccAddress;
 	}
-
+	
 	public boolean supportsGameId()
 	{
-		String gameid = m_props.getProperty("gameid");
+		final String gameid = m_props.getProperty("gameid");
 		return "true".equals(gameid);
 	}
-
-	public void setGameId(String gameId)
+	
+	public void setGameId(final String gameId)
 	{
-		 m_gameId = gameId;
+		m_gameId = gameId;
 	}
-
+	
 	public String getGameId()
 	{
 		return m_gameId;
+	}
+	
+	public String getHelpText()
+	{
+		return getInfoText();
 	}
 }

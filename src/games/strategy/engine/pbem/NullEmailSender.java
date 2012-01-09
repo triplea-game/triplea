@@ -74,4 +74,9 @@ public class NullEmailSender implements IEmailSender
 	{
 
 	}
+
+	public String getHelpText()
+	{
+		return "will never be called";
+	}
 }

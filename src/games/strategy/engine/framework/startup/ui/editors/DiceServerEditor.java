@@ -45,19 +45,7 @@ public class DiceServerEditor extends EditorPanel
 		int bottomSpace = 1;
 		int labelSpace = 2;
 		int row = 0;
-		JTextArea instructionText = new JTextArea();
-		instructionText.setLineWrap(true);
-		instructionText.setWrapStyleWord(true);
-		add(instructionText, new GridBagConstraints(0, row, 3, 1, 1.0d, 0.2d, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
-		String text = m_bean.getInfoText();
-		if (text == null)
-		{
-			text = "The author of the properties file should set infotext property";
-		}
-		instructionText.setText(text);
-		instructionText.setBackground(getBackground());
 
-		row++;
 		if (m_bean.sendsEmail())
 		{
 

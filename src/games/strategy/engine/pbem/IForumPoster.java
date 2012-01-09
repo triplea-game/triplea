@@ -27,10 +27,12 @@ public interface IForumPoster extends IBean
 	 * Called when the turn summary should be posted
 	 *
 	 *
-	 * @param summary the summary
+	 *
+	 * @param summary the forum summary
+	 * @param subject the forum subject
 	 * @return true if the post was successful
 	 */
-	public boolean postTurnSummary(String summary);
+	public boolean postTurnSummary(String summary, final String subject);
 
 	/**
 	 * Get the reference to the posted turn summary
@@ -131,5 +133,11 @@ public interface IForumPoster extends IBean
 	 */
 	void clearSensitiveInfo();
 
+
+	/**
+	 * Each poster provides a message that is displayed on the progress bar when testing the poster
+	 * @return the progress bar message
+	 */
+	String getTestMessage();
 
 }

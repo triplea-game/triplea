@@ -10,6 +10,11 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * A class for selecting which Forum poster to use
@@ -118,14 +123,33 @@ public class ForumPosterEditor extends EditorPanel
 	 */
 	void testForum()
 	{
-		final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), "Testing Forum Post...");
+
+		final IForumPoster poster = (IForumPoster) getBean();
+		final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), poster.getTestMessage());
 		progressWindow.setVisible(true);
 
 		Runnable runnable = new Runnable()
 		{
 			public void run()
 			{
-				m_bean.postTurnSummary("Test summary");
+
+				if (poster.getIncludeSaveGame()) {
+					try
+					{
+						File f = File.createTempFile("123", "test");
+						f.deleteOnExit();
+
+						FileOutputStream fout = new FileOutputStream(f);
+						fout.write("Test upload".getBytes());
+						fout.close();
+						poster.addSaveGame(f, "test.txt");
+					} catch (IOException e)
+					{
+						// ignore
+					}
+
+				}
+				poster.postTurnSummary("Test summary from TripleA " + new SimpleDateFormat("HH:mm:ss").format(new Date()), "Testing Forum poster");
 				progressWindow.setVisible(false);
 
 				// now that we have a result, marshall it back unto the swing thread
