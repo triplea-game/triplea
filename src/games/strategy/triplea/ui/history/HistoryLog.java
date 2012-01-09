@@ -263,7 +263,8 @@ public class HistoryLog extends JFrame
 										unit = (Unit) objIter.next();
 										unitCount.add(unit.getOwner(), 1);
 									}
-									for (PlayerID player  : unitCount.keySet()) {
+									for (final PlayerID player : unitCount.keySet())
+									{
 										logWriter.println(indent + "Casualties for " + player.getName() + ": " + MyFormatter.unitsToTextNoOwner(objects, player));
 									}
 								}
