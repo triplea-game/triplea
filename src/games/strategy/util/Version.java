@@ -119,7 +119,13 @@ public class Version implements Serializable, Comparable
 			return -1;
 		if (!(o instanceof Version))
 			return -1;
-		final Version other = (Version) o;
+		return compareTo((Version) o);
+	}
+	
+	public int compareTo(final Version other)
+	{
+		if (other == null)
+			return -1;
 		if (other.m_major > m_major)
 			return 1;
 		if (other.m_major < m_major)
@@ -136,6 +142,11 @@ public class Version implements Serializable, Comparable
 		// if the only difference is micro, then ignore
 		else
 			return 0;
+	}
+	
+	public boolean isGreaterThan(final Version other)
+	{
+		return compareTo(other) < 0;
 	}
 	
 	@Override

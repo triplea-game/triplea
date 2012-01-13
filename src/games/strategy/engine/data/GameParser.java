@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.FileProperty;
@@ -77,7 +78,7 @@ public class GameParser
 	{
 	}
 	
-	public synchronized GameData parse(final InputStream stream) throws GameParseException, SAXException
+	public synchronized GameData parse(final InputStream stream) throws GameParseException, SAXException, EngineVersionException
 	{
 		if (stream == null)
 			throw new IllegalArgumentException("Stream must be non null");
@@ -97,6 +98,7 @@ public class GameParser
 		// mandatory fields
 		parseInfo(getSingleChild("info", root));
 		parseGameLoader(getSingleChild("loader", root));
+		parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
 		final Node diceSides = getSingleChild("diceSides", root, true);
 		if (diceSides != null)
 			parseDiceSides(diceSides);
@@ -146,6 +148,18 @@ public class GameParser
 	private void parseDiceSides(final Node diceSides)
 	{
 		data.setDiceSides(Integer.parseInt(((Element) diceSides).getAttribute("value")));
+	}
+	
+	private void parseMinimumEngineVersionNumber(final Node minimumVersion) throws EngineVersionException
+	{
+		if (minimumVersion == null)
+			return;
+		final Version mapCompatibleWithTripleaVersion = new Version(((Element) minimumVersion).getAttribute("minimumVersion"));
+		if (mapCompatibleWithTripleaVersion.isGreaterThan(EngineVersion.VERSION))
+		{
+			throw new EngineVersionException("Trying to play a map made for a newer version of TripleA. Map named '" + data.getGameName() + "' requires at least TripleA version "
+						+ mapCompatibleWithTripleaVersion.toString());
+		}
 	}
 	
 	private void validate() throws GameParseException

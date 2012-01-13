@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!ELEMENT game (info, loader, diceSides?, map, resourceList?, playerList, unitList?, relationshipTypes?, territoryEffectList?, gamePlay, production?, technology?, attatchmentList? , initialize?, propertyList?)>
+<!ELEMENT game (info, loader, triplea?, diceSides?, map, resourceList?, playerList, unitList?, relationshipTypes?, territoryEffectList?, gamePlay, production?, technology?, attatchmentList? , initialize?, propertyList?)>
 
 <!-- version must be in the form xx.xx or xx.xx.xx where xx is a positive integer -->
 <!ELEMENT info EMPTY>
@@ -13,6 +13,12 @@
 <!ELEMENT loader EMPTY>
 <!ATTLIST loader 
 	javaClass CDATA #REQUIRED
+>
+
+<!-- minimum version of triplea required to play this map xml -->
+<!ELEMENT triplea EMPTY>
+<!ATTLIST triplea
+	minimumVersion CDATA #REQUIRED
 >
 
 <!-- Number of sides on dice -->

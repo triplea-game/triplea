@@ -4,7 +4,6 @@
 
 <game>
         <info name="Pact of Steel 2" version="3.5"/>
-        <loader javaClass="games.strategy.triplea.TripleA"/>
 		
 			<!-- A MOD of original POS by VEQRYN
 					The purpose is to provide a fun game that shows off all the new features of TripleA since 1.2.5.5
@@ -12,6 +11,13 @@
 					If you have questions on how to use something, or think my documentation is not clear enough,
 					please go to the forum and make a post: http://triplea.sourceforge.net/mywiki/Forum
 			-->
+		
+		<!-- loader is required by all xmls.  some xmls may use a different loader, like a puzzle game -->
+        <loader javaClass="games.strategy.triplea.TripleA"/>
+		
+		<!-- triplea minimumVersion is the minimum version number of TripleA that can play this game.  Many new xmls require features not present in older versions of TripleA. Should be "xx.xx.xx.xx", "xx.xx.xx", "xx.xx", or "xx".
+				An example would be a map using 'isInfrastructure' unit property would need at least TripleA version "1.2.6", while a map using 'whenCapturedChangesInto' would need at least TripleA version "1.4" -->
+		<triplea minimumVersion="1.5"/>
 
 		<!-- diceSides defaults to 6 if not in the xml.  Can be set to any number between 1 and 200.
 				WARNING: Setting diceSides to a number other than 6 can result in unexpected behavior. -->
@@ -1568,10 +1574,10 @@
 			industrialTechnology
 			
 	-->
-        		<!-- Germans -->
-                <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-						<!-- techCost is optional, and defaults to 5 if missing.  techs default to false if missing -->
-                        <option name="techCost" value="5"/>
+				<!-- Italians -->
+                <attatchment name="techAttatchment" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                        <!-- techCost is optional, and defaults to 5 if missing.  techs default to false if missing -->
+                        <option name="techCost" value="6"/>
 						<option name="superSub" value="false"/>
                         <option name="jetPower" value="false"/>
                         <option name="shipyards" value="false"/>
@@ -1602,10 +1608,10 @@
                         <option name="warBonds" value="false"/>
                         <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
-
-                <!-- Japanese -->
-                <attatchment name="techAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
-                        <option name="techCost" value="6"/>
+				
+        		<!-- Germans -->
+                <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+						<option name="techCost" value="5"/>
 						<option name="superSub" value="false"/>
                         <option name="jetPower" value="false"/>
                         <option name="shipyards" value="false"/>
@@ -1618,6 +1624,9 @@
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
                         <option name="mechanizedInfantry" value="false"/>
+                        <!-- Currently you are not yet allowed to set custom techs at the start of the game through here
+						<option name="reinforcedHulls" value="false"/>
+                        <option name="wolfPackTactics" value="false"/>-->
                 </attatchment>
 
                 <!-- British -->
@@ -1636,9 +1645,9 @@
                         <option name="warBonds" value="false"/>
                         <option name="mechanizedInfantry" value="false"/>
                 </attatchment>
-				
-				<!-- Italians -->
-                <attatchment name="techAttatchment" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+
+                <!-- Japanese -->
+                <attatchment name="techAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="techCost" value="6"/>
 						<option name="superSub" value="false"/>
                         <option name="jetPower" value="false"/>
@@ -1674,9 +1683,9 @@
                 <!-- Chinese -->
                 <attatchment name="techAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="improvedArtillerySupport" value="false"/>
-						<!-- even the chinese, who can not roll for tech because they don't have a phase for it, must have a tech attachment because we are using custom techs,
-								so this here is an almost empty tech attachment.  actually, we could fill it with more stuff, that is false or true, but 1 is enough
-								just because something is in this list doesn't mean we can get it.  whether we can get it or not is determined by what is in "playerTech" -->
+						<!-- Even the Chinese, who can not roll for tech because they don't have a phase for it, must have a tech attachment because we are using custom techs,
+								so this here is an almost empty tech attachment.  Actually, we could fill it with more stuff, that is false or true, but 1 is enough.
+								Just because something is in this list doesn't mean we can get it.  Whether we can get it or not is determined by what is in "playerTech". -->
                 </attatchment>
 				
 				
@@ -3357,7 +3366,7 @@
 			victory								values: the string message from notifications.properties to be displayed if the condition is true.
 			notification						values: this is a popup window containing a message that will be given to the current player. "name-of-entry-in-notifications.properties" or "message"
 															both "victory" and "notification" will look in the "notifications.properties" in your maps root folder for a string with the value's name, and then it will use whatever is to the right of the = sign.
-			resource							values: "PUs" or "techTokens", given at end of turn phase.  "resource" will be affected by "each" in a condition statement.
+			resource							values: "PUs" or "techTokens" or any valid resource, given at end of turn phase.  "resource" will be affected by "each" in a condition statement.
 			resourceCount						values: the number of specified resource to be given
 			placement							values: places units at beginning of combat movement phase. first in list is territory to be placed it, then list of units, then count.  "placement" will be affected by "each" in a condition statement.
 														(example: value="Moscow:artillery:infantry" count="2" [if count is missing, defaults to 1])

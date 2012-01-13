@@ -51,20 +51,21 @@ public class NewGameChooser extends JDialog
 		updateInfoPanel();
 	}
 	
+	public static NewGameChooserModel getNewGameChooserModel()
+	{
+		if (s_cachedGameModel == null)
+		{
+			s_cachedGameModel = new NewGameChooserModel();
+		}
+		return s_cachedGameModel;
+	}
+	
 	private void createComponents()
 	{
 		m_okButton = new JButton("OK");
 		m_cancelButton = new JButton("Cancel");
 		m_refreshGamesButton = new JButton("Refresh Game List");
-		if (s_cachedGameModel == null)
-		{
-			m_gameListModel = new NewGameChooserModel();
-			s_cachedGameModel = m_gameListModel;
-		}
-		else
-		{
-			m_gameListModel = s_cachedGameModel;
-		}
+		m_gameListModel = getNewGameChooserModel();
 		m_gameList = new JList(m_gameListModel);
 		m_infoPanel = new JPanel();
 		m_infoPanel.setLayout(new BorderLayout());
@@ -256,8 +257,8 @@ public class NewGameChooser extends JDialog
 			{
 				try
 				{
-					m_gameListModel = new NewGameChooserModel();
-					s_cachedGameModel = m_gameListModel;
+					s_cachedGameModel = new NewGameChooserModel();
+					m_gameListModel = s_cachedGameModel;
 					m_gameList.setModel(m_gameListModel);
 					if (selected != null)
 					{

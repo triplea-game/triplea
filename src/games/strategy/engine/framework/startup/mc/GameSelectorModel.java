@@ -13,10 +13,12 @@
  */
 package games.strategy.engine.framework.startup.mc;
 
+import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
 
@@ -89,6 +91,9 @@ public class GameSelectorModel extends Observable
 			}
 			m_fileName = file.getName();
 			setGameData(newData);
+		} catch (final EngineVersionException e)
+		{
+			System.out.println(e.getMessage());
 		} catch (final Exception e)
 		{
 			e.printStackTrace(System.out);
@@ -196,7 +201,7 @@ public class GameSelectorModel extends Observable
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		final String defaultGameName = "Big World : 1942";
 		final String s = prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName);
-		final NewGameChooserModel model = new NewGameChooserModel();
+		final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
 		NewGameChooserEntry selectedGame = model.findByName(s);
 		if (selectedGame == null)
 		{

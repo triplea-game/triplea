@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.ui;
 
+import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.util.ClassLoaderUtil;
@@ -129,6 +130,13 @@ public class NewGameChooserModel extends DefaultListModel
 						try
 						{
 							entries.add(createEntry(new URI(url.toString().replace(" ", "%20"))));
+						} catch (final EngineVersionException e)
+						{
+							System.out.println(e.getMessage());
+						} catch (final SAXParseException e)
+						{
+							System.err.println("Could not parse:" + url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
+							e.printStackTrace();
 						} catch (final Exception e)
 						{
 							System.err.println("Could not parse:" + url);
@@ -160,7 +168,7 @@ public class NewGameChooserModel extends DefaultListModel
 		return null;
 	}
 	
-	private NewGameChooserEntry createEntry(final URI uri) throws IOException, GameParseException, SAXException
+	private NewGameChooserEntry createEntry(final URI uri) throws IOException, GameParseException, SAXException, EngineVersionException
 	{
 		return new NewGameChooserEntry(uri);
 	}
@@ -181,6 +189,9 @@ public class NewGameChooserModel extends DefaultListModel
 				{
 					final NewGameChooserEntry entry = createEntry(game.toURI());
 					entries.add(entry);
+				} catch (final EngineVersionException e)
+				{
+					System.out.println(e.getMessage());
 				} catch (final SAXParseException e)
 				{
 					System.err.println("Could not parse:" + game + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());

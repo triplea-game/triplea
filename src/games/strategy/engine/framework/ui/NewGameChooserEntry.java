@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.ui;
 
+import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
@@ -16,7 +17,7 @@ public class NewGameChooserEntry
 	private final URI m_url;
 	private final GameData m_data;
 	
-	public NewGameChooserEntry(final URI uri) throws IOException, GameParseException, SAXException
+	public NewGameChooserEntry(final URI uri) throws IOException, GameParseException, SAXException, EngineVersionException
 	{
 		m_url = uri;
 		final InputStream input = uri.toURL().openStream();
