@@ -1,5 +1,6 @@
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -15,10 +16,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@SuppressWarnings("serial")
 public class CanalAttachment extends DefaultAttachment
 {
 	private String m_canalName;
 	private String[] m_landTerritories;
+	
+	public CanalAttachment(final String name, final Attachable attachable, final GameData gameData)
+	{
+		super(name, attachable, gameData);
+	}
 	
 	public static Set<Territory> getAllCanalSeaZones(final String canalName, final GameData data)
 	{
@@ -28,7 +35,8 @@ public class CanalAttachment extends DefaultAttachment
 			final Set<CanalAttachment> canalAttachments = get(t);
 			if (canalAttachments.isEmpty())
 				continue;
-			for (CanalAttachment canalAttachment  : canalAttachments) {
+			for (final CanalAttachment canalAttachment : canalAttachments)
+			{
 				if (canalAttachment.getCanalName().equals(canalName))
 				{
 					rVal.add(t);
@@ -80,13 +88,11 @@ public class CanalAttachment extends DefaultAttachment
 		m_landTerritories = landTerritories.split(":");
 	}
 	
-	/**
-	 * Called after the attatchment is created.
-	 */
-	public void validate() throws GameParseException
+	@Override
+	public void validate(final GameData data) throws GameParseException
 	{
 		if (m_canalName == null || m_landTerritories == null || m_landTerritories.length == 0)
-			throw new IllegalStateException("Canal error for:" + m_canalName + " not all variables set, land:" + m_landTerritories);
+			throw new IllegalStateException("Canal error for: " + m_canalName + " not all variables set, land: " + m_landTerritories);
 		getLandTerritories();
 	}
 	
@@ -97,7 +103,7 @@ public class CanalAttachment extends DefaultAttachment
 		{
 			final Territory territory = getData().getMap().getTerritory(name);
 			if (territory == null)
-				throw new IllegalStateException("Canals: No territory called:" + territory);
+				throw new IllegalStateException("Canals: No territory called: " + name);
 			rVal.add(territory);
 		}
 		return rVal;

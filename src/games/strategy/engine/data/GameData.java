@@ -26,6 +26,7 @@ import games.strategy.engine.history.History;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.util.ListenerList;
+import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
 import java.util.ArrayList;
@@ -101,7 +102,7 @@ public class GameData implements java.io.Serializable
 	private IGameLoader m_loader;
 	private final History m_gameHistory = new History(this);
 	private volatile transient boolean m_testLockIsHeld = false;
-	private final List<IAttachment> attachmentOrder = new ArrayList<IAttachment>();
+	private final List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachmentOrderAndValues = new ArrayList<Tuple<IAttachment, ArrayList<Tuple<String, String>>>>();
 	private final Hashtable<String, TerritoryEffect> m_territoryEffectList = new Hashtable<String, TerritoryEffect>();
 	private final BattleRecordsList m_battleRecordsList = new BattleRecordsList(this);
 	
@@ -466,14 +467,14 @@ public class GameData implements java.io.Serializable
 		return getResourceLoader();
 	}
 	
-	public void setAttachmentOrder(final IAttachment attachment)
+	public void addToAttachmentOrderAndValues(final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentAndValues)
 	{
-		attachmentOrder.add(attachment);
+		attachmentOrderAndValues.add(attachmentAndValues);
 	}
 	
-	public List<IAttachment> getOrderedAttachmentList()
+	public List<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> getAttachmentOrderAndValues()
 	{
-		return attachmentOrder;
+		return attachmentOrderAndValues;
 	}
 	
 	/**

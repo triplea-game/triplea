@@ -18,6 +18,7 @@
  */
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -56,11 +57,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	private static final long serialVersionUID = 7301965634079412516L;
 	
 	private List<TechAdvance> m_techs = null; // condition for having techs
-	private int m_techCount = -1;
+	private int m_techCount = -1; // Do Not Export (do not include in IAttachment).
 	
 	private final List<String> m_relationship = new ArrayList<String>(); // condition for having specific relationships
 	private Set<PlayerID> m_atWarPlayers = null; // condition for being at war
-	private int m_atWarCount = -1;
+	private int m_atWarCount = -1; // Do Not Export (do not include in IAttachment).
 	private String m_destroyedTUV = null; // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to the prices the defender pays for the units]
 	
 	// these next 9 variables use m_territoryCount for determining the number needed.
@@ -76,9 +77,9 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	private final IntegerMap<String> m_unitPresence = new IntegerMap<String>(); // used with above 3 to determine the type of unit that must be present
 	
 	/** Creates new RulesAttachment */
-	public RulesAttachment()
+	public RulesAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
-		super();
+		super(name, attachable, gameData);
 	}
 	
 	public void setDestroyedTUV(final String value) throws GameParseException
@@ -281,11 +282,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_techCount;
 	}
 	
-	public void setAtWarCount(final String s)
-	{
-		m_atWarCount = getInt(s);
-	}
-	
 	public Set<PlayerID> getAtWarPlayers()
 	{
 		return m_atWarPlayers;
@@ -484,7 +480,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				if (terrs[0].equals("original"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					for (PlayerID currPlayer  : players) {
+					for (final PlayerID currPlayer : players)
+					{
 						if (data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -496,7 +493,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				else if (terrs[0].equals("enemy"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					for (PlayerID currPlayer  : players) {
+					for (final PlayerID currPlayer : players)
+					{
 						if (!data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -513,7 +511,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				if (terrs[1].equals("original"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					for (PlayerID currPlayer  : players) {
+					for (final PlayerID currPlayer : players)
+					{
 						if (data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -525,7 +524,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				else if (terrs[1].equals("enemy"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					for (PlayerID currPlayer  : players) {
+					for (final PlayerID currPlayer : players)
+					{
 						if (!data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -560,7 +560,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				else if (terrs[0].equals("enemy"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					for (PlayerID currPlayer  : players) {
+					for (final PlayerID currPlayer : players)
+					{
 						if (!data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -581,7 +582,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				else if (terrs[1].equals("enemy"))
 				{
 					final Collection<PlayerID> players = data.getPlayerList().getPlayers();
-					for (PlayerID currPlayer  : players) {
+					for (final PlayerID currPlayer : players)
+					{
 						if (!data.getRelationshipTracker().isAllied(currPlayer, player))
 						{
 							value = value + ":" + getTerritoryListAsStringBasedOnInputFromXML(terrs, currPlayer, data);
@@ -625,7 +627,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				if (requiredDestroyedTUV > destroyedTUVforThisRoundSoFar)
 					objectiveMet = false;
 				if (getCountEach())
-					setEachMultiple(destroyedTUVforThisRoundSoFar);
+					m_eachMultiple = destroyedTUVforThisRoundSoFar;
 			}
 		}
 		
@@ -643,27 +645,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		}
 		
 		return objectiveMet != m_invert;
-	}
-	
-	/**
-	 * Called after the attachment is created.
-	 * 
-	 * @throws GameParseException
-	 *             validation failed
-	 */
-	@Override
-	public void validate(final GameData data) throws GameParseException
-	{
-		super.validate(data);
-		validateNames(m_alliedOwnershipTerritories);
-		validateNames(m_enemyExclusionTerritories);
-		validateNames(m_enemySurfaceExclusionTerritories);
-		validateNames(m_alliedExclusionTerritories);
-		validateNames(m_directExclusionTerritories);
-		validateNames(m_directOwnershipTerritories);
-		validateNames(m_directPresenceTerritories);
-		validateNames(m_alliedPresenceTerritories);
-		validateNames(m_enemyPresenceTerritories);
 	}
 	
 	/**
@@ -713,7 +694,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		boolean useSpecific = false;
 		if (getUnitPresence() != null && !getUnitPresence().keySet().isEmpty())
 			useSpecific = true;
-		for (Territory terr  : Territories) {
+		for (final Territory terr : Territories)
+		{
 			final Collection<Unit> allUnits = terr.getUnits().getUnits();
 			if (exclType.equals("direct"))
 			{
@@ -781,7 +763,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			}
 		}
 		if (getCountEach())
-			setEachMultiple(numberMet);
+			m_eachMultiple = numberMet;
 		return satisfied;
 	}
 	
@@ -871,7 +853,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			}
 		}
 		if (getCountEach())
-			setEachMultiple(numberMet);
+			m_eachMultiple = numberMet;
 		return satisfied;
 	}
 	
@@ -883,7 +865,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	{
 		int numberMet = 0;
 		satisfied = false;
-		for (Territory listedTerr  : listedTerrs) {
+		for (final Territory listedTerr : listedTerrs)
+		{
 			// if the territory owner is an ally
 			if (data.getRelationshipTracker().isAllied(listedTerr.getOwner(), player))
 			{
@@ -897,7 +880,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			}
 		}
 		if (getCountEach())
-			setEachMultiple(numberMet);
+			m_eachMultiple = numberMet;
 		return satisfied;
 	}
 	
@@ -910,7 +893,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	{
 		int numberMet = 0;
 		satisfied = false;
-		for (Territory listedTerr  : listedTerrs) {
+		for (final Territory listedTerr : listedTerrs)
+		{
 			// if the territory owner is an ally
 			if (listedTerr.getOwner() == player)
 			{
@@ -924,7 +908,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			}
 		}
 		if (getCountEach())
-			setEachMultiple(numberMet);
+			m_eachMultiple = numberMet;
 		return satisfied;
 	}
 	
@@ -937,7 +921,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (count == 0)
 			return count == found;
 		if (getCountEach())
-			setEachMultiple(found);
+			m_eachMultiple = found;
 		return found >= count;
 	}
 	
@@ -950,7 +934,28 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (m_techCount == 0)
 			return m_techCount == found;
 		if (getCountEach())
-			setEachMultiple(found);
+			m_eachMultiple = found;
 		return found >= m_techCount;
+	}
+	
+	/**
+	 * Called after the attachment is created.
+	 * 
+	 * @throws GameParseException
+	 *             validation failed
+	 */
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		super.validate(data);
+		validateNames(m_alliedOwnershipTerritories);
+		validateNames(m_enemyExclusionTerritories);
+		validateNames(m_enemySurfaceExclusionTerritories);
+		validateNames(m_alliedExclusionTerritories);
+		validateNames(m_directExclusionTerritories);
+		validateNames(m_directOwnershipTerritories);
+		validateNames(m_directPresenceTerritories);
+		validateNames(m_alliedPresenceTerritories);
+		validateNames(m_enemyPresenceTerritories);
 	}
 }

@@ -1,6 +1,8 @@
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -26,9 +28,9 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	protected boolean m_invert = false; // will logically negate the entire condition, including contained conditions
 	protected String m_chance = "1:1"; // chance (x out of y) that this action is successful when attempted, default = 1:1 = always successful
 	
-	public AbstractConditionsAttachment()
+	public AbstractConditionsAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
-		super();
+		super(name, attachable, gameData);
 	}
 	
 	/**
@@ -166,5 +168,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	public String getChance()
 	{
 		return m_chance;
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		// TODO Auto-generated method stub
 	}
 }

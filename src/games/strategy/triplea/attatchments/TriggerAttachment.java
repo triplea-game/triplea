@@ -1,5 +1,6 @@
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -82,8 +83,9 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private Tuple<String, String> m_territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
 	private List<Tuple<String, String>> m_territoryEffectProperty = null;
 	
-	public TriggerAttachment()
+	public TriggerAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
+		super(name, attachable, gameData);
 	}
 	
 	/**
@@ -1033,7 +1035,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		return DelegateFinder.battleDelegate(data).getBattleTracker();
 	}*/
-	
+
 	//
 	// And now for the actual triggers, as called throughout the engine.
 	// Each trigger should be called exactly twice, once in BaseDelegate (for use with 'when'), and a second time as the default location for when 'when' is not used.
@@ -1896,5 +1898,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getVictory() != null && t.getVictory().length() > 0;
 			}
 		};
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		super.validate(data);
+		// TODO Auto-generated method stub
 	}
 }

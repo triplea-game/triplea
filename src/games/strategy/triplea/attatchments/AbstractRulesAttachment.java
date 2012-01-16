@@ -1,5 +1,6 @@
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
@@ -31,16 +32,17 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 {
 	private static final long serialVersionUID = -6977650137928964759L;
 	
-	protected boolean m_countEach = false; // determines if we will be counting each for the purposes of m_objectiveValue
-	protected int m_eachMultiple = 1; // the multiple that will be applied to m_objectiveValue if m_countEach is true
+	protected boolean m_countEach = false; // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the purposes of m_objectiveValue
+	protected int m_eachMultiple = 1; // Do Not Export (do not include in IAttachment). The multiple that will be applied to m_objectiveValue if m_countEach is true
+	protected int m_territoryCount = -1; // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
+	
 	protected int m_objectiveValue = 0; // only used if the attachment begins with "objectiveAttachment"
 	protected int m_uses = -1; // only matters for objectiveValue, does not affect the condition
 	protected Map<Integer, Integer> m_turns = null; // condition for what turn it is
-	protected int m_territoryCount = -1; // used with the next Territory conditions to determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
 	
-	public AbstractRulesAttachment()
+	public AbstractRulesAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
-		super();
+		super(name, attachable, gameData);
 	}
 	
 	/**
@@ -104,12 +106,19 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		return m_objectiveValue;
 	}
 	
+	/**
+	 * Internal use only, is not set by xml or property utils.
+	 * Is used to determine the number of territories we need to satisfy a specific territory based condition check.
+	 * It is set multiple times during each check [isSatisfied], as there might be multiple types of territory checks being done. So it is just a temporary value.
+	 * 
+	 * @param value
+	 */
 	protected void setTerritoryCount(final String value)
 	{
 		if (value.equals("each"))
 		{
 			m_territoryCount = 1;
-			setCountEach(true);
+			m_countEach = true;
 		}
 		else
 			m_territoryCount = getInt(value);
@@ -118,11 +127,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	public int getTerritoryCount()
 	{
 		return m_territoryCount;
-	}
-	
-	protected void setEachMultiple(final int value)
-	{
-		m_eachMultiple = value;
 	}
 	
 	/**
@@ -136,11 +140,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		if (!getCountEach())
 			return 1;
 		return m_eachMultiple;
-	}
-	
-	protected void setCountEach(final boolean value)
-	{
-		m_countEach = value;
 	}
 	
 	protected boolean getCountEach()
@@ -492,7 +491,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			if (name.equals("each"))
 			{
 				setTerritoryCount(String.valueOf(1));
-				setCountEach(true);
+				m_countEach = true;
 				continue;
 			}
 			// Skip looking for the territory if the original list contains one of the 'group' commands
@@ -507,16 +506,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		return rVal;
 	}
 	
-	/**
-	 * Called after the attachment is created.
-	 * (edit: actually this isn't being called AT ALL)
-	 * 
-	 * @throws GameParseException
-	 *             validation failed
-	 */
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{
 		super.validate(data);
+		// TODO Auto-generated method stub
 	}
 }

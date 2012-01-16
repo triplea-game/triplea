@@ -16,7 +16,9 @@
  */
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
@@ -41,6 +43,14 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	private final ArrayList<UnitType> m_noBlitz = new ArrayList<UnitType>();
 	
 	/**
+	 * Creates new TerritoryEffectAttachment
+	 */
+	public TerritoryEffectAttachment(final String name, final Attachable attachable, final GameData gameData)
+	{
+		super(name, attachable, gameData);
+	}
+	
+	/**
 	 * Convenience method.
 	 * 
 	 * @return TerritoryEffectAttachment belonging to the RelationshipType pr
@@ -59,14 +69,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 		if (rVal == null)
 			throw new IllegalStateException("No territoryEffect attachment for:" + te.getName() + " with name:" + nameOfAttachment);
 		return rVal;
-	}
-	
-	/**
-	 * Creates new TerritoryEffectAttachment
-	 * 
-	 */
-	public TerritoryEffectAttachment()
-	{
 	}
 	
 	/**
@@ -131,19 +133,6 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 		}
 	}
 	
-
-	public void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException {
-		final String[] s = noBlitzUnitTypes.split(":");
-		if(s.length<1)
-			throw new GameParseException("TerritoryEffect Attachments: noBlitz must have at least one unitType");
-		for(String unitTypeName:Arrays.asList(s)) {
-			final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
-			if(ut == null)
-				throw new GameParseException("TerritoryEffect Attachments: No unit called:" + unitTypeName);
-			m_noBlitz.add(ut);
-		}
-	}
-	
 	public int getCombatEffect(final UnitType aType, final boolean defending)
 	{
 		if (defending)
@@ -156,17 +145,39 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 		}
 	}
 	
+	public void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException
+	{
+		final String[] s = noBlitzUnitTypes.split(":");
+		if (s.length < 1)
+			throw new GameParseException("TerritoryEffect Attachments: noBlitz must have at least one unitType");
+		for (final String unitTypeName : Arrays.asList(s))
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
+			if (ut == null)
+				throw new GameParseException("TerritoryEffect Attachments: No unit called:" + unitTypeName);
+			m_noBlitz.add(ut);
+		}
+	}
+	
+	public Collection<UnitType> getNoBlitz()
+	{
+		return new ArrayList<UnitType>(m_noBlitz);
+	}
+	
+	public void clearNoBlitz()
+	{
+		m_noBlitz.clear();
+	}
+	
 	@Override
 	public String toString()
 	{
 		return this.getName();
 	}
-
-	public Collection<UnitType> getNoBlitz() {
-		return new ArrayList<UnitType>(m_noBlitz);
-	}
 	
-	public void clearNoBlitz() {
-		m_noBlitz.clear();
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		// TODO Auto-generated method stub
 	}
 }

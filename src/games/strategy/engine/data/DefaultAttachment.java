@@ -18,46 +18,81 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.triplea.Constants;
+
 import java.lang.reflect.Field;
 
 /**
- * Contains some utility methods that subclasses can use to make writing attatchments easier
+ * Contains some utility methods that subclasses can use to make writing attachments easier
  * 
  * @author Sean Bridges
  */
-public class DefaultAttachment implements IAttachment
+@SuppressWarnings("serial")
+public abstract class DefaultAttachment implements IAttachment
 {
 	private GameData m_data;
-	private Attachable m_attatchedTo;
+	private Attachable m_attachedTo;
 	private String m_name;
+	
+	protected DefaultAttachment(final String name, final Attachable attachable, final GameData gameData)
+	{
+		setName(name);
+		setData(gameData);
+		setAttachedTo(attachable);
+	}
+	
+	/**
+	 * Called after ALL attachments are created.
+	 */
+	public abstract void validate(final GameData data) throws GameParseException;
 	
 	/**
 	 * Throws an error if format is invalid.
 	 */
 	protected static int getInt(final String aString)
 	{
-		int val = 0;
 		try
 		{
-			val = Integer.parseInt(aString);
+			return Integer.parseInt(aString);
 		} catch (final NumberFormatException nfe)
 		{
-			throw new IllegalArgumentException(aString + " is not a valid int value");
+			throw new IllegalArgumentException("Attachments: " + aString + " is not a valid int value");
 		}
-		return val;
 	}
 	
+	/*protected static char getChar(final String aString)
+	{
+		if (aString.equalsIgnoreCase(Constants.PROPERTY_DEFAULT))
+			return Constants.VALUE_DEFAULT;
+		else if (aString.equalsIgnoreCase(Constants.PROPERTY_TRUE))
+			return Constants.VALUE_TRUE;
+		else if (aString.equalsIgnoreCase(Constants.PROPERTY_FALSE))
+			return Constants.VALUE_FALSE;
+		else
+			throw new IllegalArgumentException("Attachments: " + aString + " should equal "
+						+ Constants.PROPERTY_DEFAULT + " or " + Constants.PROPERTY_TRUE + " or " + Constants.PROPERTY_FALSE);
+	}*/
+
 	/**
 	 * Throws an error if format is invalid. Must be either true or false ignoring case.
 	 */
-	protected static boolean getBool(final String aString)
+	protected static boolean getBool(final String value)
 	{
-		if (aString.equalsIgnoreCase("true"))
+		if (value.equalsIgnoreCase(Constants.PROPERTY_TRUE))
 			return true;
-		else if (aString.equalsIgnoreCase("false"))
+		else if (value.equalsIgnoreCase(Constants.PROPERTY_FALSE))
 			return false;
 		else
-			throw new IllegalArgumentException(aString + " is not a valid boolean");
+			throw new IllegalArgumentException("Attachments: " + value + " is not a valid boolean");
+	}
+	
+	protected static IllegalArgumentException getSetterExceptionMessage(final DefaultAttachment failingObject, final String propertyName, final String givenValue, final String... allowedValues)
+	{
+		String rVal = failingObject.getClass().getName() + ": " + failingObject.getName() + ": property " + propertyName + " must be either ";
+		rVal += allowedValues[0];
+		for (int i = 1; i < allowedValues.length; ++i)
+			rVal += " or " + allowedValues[i];
+		return new IllegalArgumentException(rVal + " ([Not Allowed] Given: " + givenValue + ")");
 	}
 	
 	private Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name, final boolean justFromSuper)
@@ -126,26 +161,14 @@ public class DefaultAttachment implements IAttachment
 		return m_data;
 	}
 	
-	/**
-	 * Called after the attatchment is created.
-	 */
-	public void validate(final GameData data) throws GameParseException
-	{
-	}
-	
 	public Attachable getAttatchedTo()
 	{
-		return m_attatchedTo;
+		return m_attachedTo;
 	}
 	
-	public void setAttatchedTo(final Attachable attatchable)
+	public void setAttachedTo(final Attachable attachable)
 	{
-		m_attatchedTo = attatchable;
-	}
-	
-	/** Creates new Attatchment */
-	public DefaultAttachment()
-	{
+		m_attachedTo = attachable;
 	}
 	
 	public String getName()
@@ -161,6 +184,6 @@ public class DefaultAttachment implements IAttachment
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + " attched to:" + m_attatchedTo + " with name:" + m_name;
+		return getClass().getSimpleName() + " attached to:" + m_attachedTo + " with name:" + m_name;
 	}
 }

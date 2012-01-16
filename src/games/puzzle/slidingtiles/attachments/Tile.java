@@ -13,7 +13,10 @@
  */
 package games.puzzle.slidingtiles.attachments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
 
 /**
  * Represents a sliding tile in a sliding tile game.
@@ -21,6 +24,7 @@ import games.strategy.engine.data.DefaultAttachment;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
+@SuppressWarnings("serial")
 public class Tile extends DefaultAttachment
 {
 	private int m_value;
@@ -29,8 +33,9 @@ public class Tile extends DefaultAttachment
 	/**
 	 * Construct a new tile with no value.
 	 */
-	public Tile()
+	public Tile(final String name, final Attachable attachable, final GameData gameData)
 	{
+		super(name, attachable, gameData);
 	}
 	
 	/**
@@ -38,6 +43,8 @@ public class Tile extends DefaultAttachment
 	 */
 	public Tile(final int value)
 	{
+		// workaround TODO: check whether the use of this constructor is really necessary
+		this("tile", null, null);
 		this.m_value = value;
 	}
 	
@@ -77,5 +84,11 @@ public class Tile extends DefaultAttachment
 	public int hashCode()
 	{
 		return m_value;
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		// TODO Auto-generated method stub
 	}
 }

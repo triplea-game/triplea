@@ -18,6 +18,7 @@
  */
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -41,11 +42,13 @@ import java.util.Set;
  * @author Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class TerritoryAttachment extends DefaultAttachment
 {
 	public static Territory getCapital(final PlayerID player, final GameData data)
 	{
-		for (Territory current  : data.getMap().getTerritories()) {
+		for (final Territory current : data.getMap().getTerritories())
+		{
 			final TerritoryAttachment ta = TerritoryAttachment.get(current);
 			if (ta != null && ta.getCapital() != null)
 			{
@@ -68,7 +71,8 @@ public class TerritoryAttachment extends DefaultAttachment
 	public static List<Territory> getAllCapitals(final PlayerID player, final GameData data)
 	{
 		final List<Territory> capitals = new ArrayList<Territory>();
-		for (Territory current  : data.getMap().getTerritories()) {
+		for (final Territory current : data.getMap().getTerritories())
+		{
 			final TerritoryAttachment ta = TerritoryAttachment.get(current);
 			if (ta != null && ta.getCapital() != null)
 			{
@@ -93,7 +97,8 @@ public class TerritoryAttachment extends DefaultAttachment
 	public static List<Territory> getAllCurrentlyOwnedCapitals(final PlayerID player, final GameData data)
 	{
 		final List<Territory> capitals = new ArrayList<Territory>();
-		for (Territory current  : data.getMap().getTerritories()) {
+		for (final Territory current : data.getMap().getTerritories())
+		{
 			final TerritoryAttachment ta = TerritoryAttachment.get(current);
 			if (ta != null && ta.getCapital() != null)
 			{
@@ -128,12 +133,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	
 	private String m_capital = null;
 	private boolean m_originalFactory = false;
-	private int m_production = 0;
-	private boolean m_isVictoryCity = false;
+	private int m_production = 0; // "setProduction" will set both m_production and m_unitProduction. While "setProductionOnly" sets only m_production.
+	private boolean m_victoryCity = false;
 	private boolean m_isImpassible = false;
-	private PlayerID m_originalOwner = null;
+	private PlayerID m_originalOwner = null; // Do Not Export (do not include in IAttachment). This is not set by the xml in territory attachments, but instead set during territory initialization.
 	private PlayerID m_occupiedTerrOf = null;
-	private boolean m_isConvoyRoute = false;
+	private boolean m_convoyRoute = false;
 	private final Set<Territory> m_convoyAttached = new HashSet<Territory>();
 	private final Collection<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
 	private final Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
@@ -147,8 +152,9 @@ public class TerritoryAttachment extends DefaultAttachment
 	private ResourceCollection m_resources = null;
 	
 	/** Creates new TerritoryAttatchment */
-	public TerritoryAttachment()
+	public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
+		super(name, attachable, gameData);
 	}
 	
 	public void setResources(final String value) throws GameParseException
@@ -202,12 +208,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	
 	public void setVictoryCity(final String value)
 	{
-		m_isVictoryCity = getBool(value);
+		m_victoryCity = getBool(value);
 	}
 	
 	public boolean isVictoryCity()
 	{
-		return m_isVictoryCity;
+		return m_victoryCity;
 	}
 	
 	public void setOriginalFactory(final String value)
@@ -282,6 +288,11 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_occupiedTerrOf;
 	}
 	
+	/**
+	 * Should not be set by a game xml during attachment parsing, but CAN be set by initialization parsing and/or Property Utils.
+	 * 
+	 * @param player
+	 */
 	public void setOriginalOwner(final PlayerID player)
 	{
 		m_originalOwner = player;
@@ -294,12 +305,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	
 	public void setConvoyRoute(final String value)
 	{
-		m_isConvoyRoute = getBool(value);
+		m_convoyRoute = getBool(value);
 	}
 	
 	public boolean isConvoyRoute()
 	{
-		return m_isConvoyRoute;
+		return m_convoyRoute;
 	}
 	
 	/**
@@ -534,7 +545,7 @@ public class TerritoryAttachment extends DefaultAttachment
 			sb.append(br);
 		}
 		
-		if (m_isVictoryCity)
+		if (m_victoryCity)
 		{
 			sb.append("Is a Victory location");
 			sb.append(br);
@@ -552,7 +563,7 @@ public class TerritoryAttachment extends DefaultAttachment
 			sb.append(br);
 		}
 		
-		if (m_isConvoyRoute)
+		if (m_convoyRoute)
 		{
 			if (!m_convoyAttached.isEmpty())
 				sb.append("Needs: " + MyFormatter.asList(m_convoyAttached) + br);
@@ -606,5 +617,11 @@ public class TerritoryAttachment extends DefaultAttachment
 		}
 		
 		return sb.toString();
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		// TODO Auto-generated method stub
 	}
 }

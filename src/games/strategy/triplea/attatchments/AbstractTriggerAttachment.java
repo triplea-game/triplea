@@ -1,5 +1,6 @@
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -23,23 +24,24 @@ import java.util.Set;
  * @author Abstraction done by Erik von der Osten, original TriggerAttachment writen by Squid Daddy and Mark Christopher Duncan
  * 
  */
-public class AbstractTriggerAttachment extends AbstractConditionsAttachment implements ICondition
+public abstract class AbstractTriggerAttachment extends AbstractConditionsAttachment implements ICondition
 {
 	private static final long serialVersionUID = 5866039180681962697L;
 	
 	public static final String AFTER = "after";
 	public static final String BEFORE = "before";
 	
+	// "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for backwards compatibility.
 	private int m_uses = -1;
-	private boolean m_usedThisRound = false;
+	private boolean m_usedThisRound = false; // Do Not Export (do not include in IAttachment).
 	
 	private String m_notification = null;
 	
 	private Tuple<String, String> m_when = null;
 	
-	public AbstractTriggerAttachment()
+	public AbstractTriggerAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
-		super();
+		super(name, attachable, gameData);
 	}
 	
 	/**
@@ -287,13 +289,6 @@ public class AbstractTriggerAttachment extends AbstractConditionsAttachment impl
 		};
 	}
 	
-	@Override
-	public void validate(final GameData data) throws GameParseException
-	{
-		if (m_conditions == null)
-			throw new GameParseException("Triggers: Invalid Unit attatchment" + this);
-	}
-	
 	protected static String getValueFromStringArrayForAllSubStrings(final String[] s)
 	{
 		final StringBuilder sb = new StringBuilder();
@@ -332,5 +327,13 @@ public class AbstractTriggerAttachment extends AbstractConditionsAttachment impl
 				eachMultiple = tempEach;
 		}
 		return eachMultiple;
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		super.validate(data);
+		if (m_conditions == null)
+			throw new GameParseException("Triggers: must contain at least one condition: " + this);
 	}
 }

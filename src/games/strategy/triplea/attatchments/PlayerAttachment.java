@@ -18,7 +18,9 @@
  */
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -37,6 +39,7 @@ import java.util.Set;
  * 
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class PlayerAttachment extends DefaultAttachment
 {
 	/**
@@ -68,8 +71,9 @@ public class PlayerAttachment extends DefaultAttachment
 	private Set<UnitType> m_suicideAttackTargets = null;
 	
 	/** Creates new PlayerAttachment */
-	public PlayerAttachment()
+	public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
+		super(name, attachable, gameData);
 	}
 	
 	/**
@@ -177,11 +181,6 @@ public class PlayerAttachment extends DefaultAttachment
 		return m_retainCapitalProduceNumber;
 	}
 	
-	// setTakeUnitControl and getTakeUnitControl DO NOTHING. They are kept for backwards compatibility only, otherwise users get Java errors.
-	public void setTakeUnitControl(final String value)
-	{
-	}
-	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -248,5 +247,17 @@ public class PlayerAttachment extends DefaultAttachment
 	public boolean getDestroysPUs()
 	{
 		return m_destroysPUs;
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		// TODO Auto-generated method stub
+	}
+	
+	/** setTakeUnitControl (and getTakeUnitControl) DO NOTHING. They are kept for backwards compatibility only, otherwise users get Java errors. */
+	@Deprecated
+	public void setTakeUnitControl(final String value)
+	{
 	}
 }

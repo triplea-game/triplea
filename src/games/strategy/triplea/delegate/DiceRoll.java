@@ -339,7 +339,7 @@ public class DiceRoll implements Externalizable
 			{
 				final Unit current = iter.next();
 				final UnitAttachment ua = UnitAttachment.get(current.getType());
-				artillerySupportAvailable += ua.getUnitSupportCount(current.getOwner());
+				artillerySupportAvailable += ua.getUnitSupportCount();
 			}
 			// If ImprovedArtillery, double number of units to support
 			if (isImprovedArtillerySupport(player))
@@ -353,7 +353,7 @@ public class DiceRoll implements Externalizable
 		if (Matches.UnitIsArtillery.match(u) && !defending)
 		{
 			final UnitAttachment ua = UnitAttachment.get(u.getType());
-			int artillerySupportAvailable = ua.getUnitSupportCount(u.getOwner());
+			int artillerySupportAvailable = ua.getUnitSupportCount();
 			if (isImprovedArtillerySupport(player))
 				artillerySupportAvailable *= 2;
 			return artillerySupportAvailable;

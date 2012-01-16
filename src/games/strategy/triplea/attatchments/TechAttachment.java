@@ -13,8 +13,10 @@
  */
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GenericTechAdvance;
@@ -26,15 +28,18 @@ import java.util.Map;
 /**
  * @author Sean Bridges
  */
+@SuppressWarnings("serial")
 public class TechAttachment extends DefaultAttachment
 {
-	// attatches to a PlayerID
+	// attaches to a PlayerID
 	public static TechAttachment get(final PlayerID id)
 	{
 		final TechAttachment attatchment = (TechAttachment) id.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		// dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them
 		if (attatchment == null)
+		{
 			return new TechAttachment();
+		}
 		return attatchment;
 	}
 	
@@ -45,7 +50,9 @@ public class TechAttachment extends DefaultAttachment
 		final TechAttachment attatchment = (TechAttachment) id.getAttachment(nameOfAttachment);
 		// dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them
 		if (attatchment == null)
+		{
 			return new TechAttachment();
+		}
 		return attatchment;
 	}
 	
@@ -65,6 +72,24 @@ public class TechAttachment extends DefaultAttachment
 	private boolean m_aARadar;
 	private boolean m_shipyards;
 	private final Map<String, Boolean> m_GenericTech = new HashMap<String, Boolean>();
+	
+	public TechAttachment(final String name, final Attachable attachable, final GameData gameData)
+	{
+		super(name, attachable, gameData);
+		setGenericTechs();
+	}
+	
+	/**
+	 * Since many maps do not include a tech attachment for each player (and no maps include tech attachments for the Null Player),
+	 * we must ensure a default tech attachment is available for all these players. It is preferred to use the full constructor. Do not delete this.
+	 * TODO: create tech attachments all players that don't have one, as the map is initialized.
+	 */
+	@Deprecated
+	public TechAttachment()
+	{
+		super(Constants.TECH_ATTACHMENT_NAME, null, null);
+		// TODO: not having game data, and not having generic techs, causes problems. Fix by creating real tech attachments for all players who are missing them, at the beginning of the game.
+	}
 	
 	public void setTechCost(final String s)
 	{
@@ -216,10 +241,6 @@ public class TechAttachment extends DefaultAttachment
 		return "" + m_shipyards;
 	}
 	
-	public TechAttachment()
-	{
-	}
-	
 	public boolean hasHeavyBomber()
 	{
 		return m_heavyBomber;
@@ -290,11 +311,12 @@ public class TechAttachment extends DefaultAttachment
 		return m_shipyards;
 	}
 	
-	@Override
-	public void setData(final GameData data)
+	/**
+	 * Internal use only, is not set by xml or property utils.
+	 */
+	private void setGenericTechs()
 	{
-		super.setData(data);
-		for (final TechAdvance ta : data.getTechnologyFrontier())
+		for (final TechAdvance ta : getData().getTechnologyFrontier())
 		{
 			if (ta instanceof GenericTechAdvance)
 				if (((GenericTechAdvance) ta).getAdvance() == null)
@@ -308,6 +330,7 @@ public class TechAttachment extends DefaultAttachment
 	}
 	
 	/**
+	 * Internal use only, is not set by xml or property utils.
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param name
@@ -326,5 +349,11 @@ public class TechAttachment extends DefaultAttachment
 	public void clearGenericTech()
 	{
 		m_GenericTech.clear();
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		// TODO Auto-generated method stub
 	}
 }

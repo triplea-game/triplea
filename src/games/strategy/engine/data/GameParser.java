@@ -30,20 +30,22 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -74,6 +76,9 @@ public class GameParser
 	private static final Class<?>[] SETTER_ARGS = { String.class };
 	private GameData data;
 	
+	// public static final String OPTION_SEPARATOR = "<>";
+	private static HashMap<String, String> newClassesForOldNames;
+	
 	public GameParser()
 	{
 	}
@@ -99,6 +104,11 @@ public class GameParser
 		parseInfo(getSingleChild("info", root));
 		parseGameLoader(getSingleChild("loader", root));
 		parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
+		final Node properties = getSingleChild("propertyList", root, true);
+		if (properties != null)
+			parseProperties(properties);
+		// everything until here is needed to select a game, the rest can be parsed when a game is selected
+		// TODO add switch that user can set to always parse every map or to just do the pre-parsing until here
 		final Node diceSides = getSingleChild("diceSides", root, true);
 		if (diceSides != null)
 			parseDiceSides(diceSides);
@@ -135,13 +145,17 @@ public class GameParser
 		final Node initialization = getSingleChild("initialize", root, true);
 		if (initialization != null)
 			parseInitialization(initialization);
-		final Node properties = getSingleChild("propertyList", root, true);
-		if (properties != null)
-			parseProperties(properties);
 		// set & override default relationships
 		data.getRelationshipTracker().setNullPlayerRelations(); // sets the relationship between all players and the NullPlayer to NullRelation (with archeType War)
 		data.getRelationshipTracker().setSelfRelations(); // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
-		validate();
+		try
+		{
+			validate();
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+			throw new GameParseException(e.getMessage());
+		}
 		return data;
 	}
 	
@@ -385,6 +399,32 @@ public class GameParser
 			throw new GameParseException("Constructor could not be accessed ->" + iae.getMessage());
 		}
 		return instance;
+	}
+	
+	/**
+	 * Loads a given class.
+	 */
+	private Class<?> getClassByName(final String className) throws GameParseException
+	{
+		try
+		{
+			final Class<?> instanceClass = Class.forName(className);
+			return instanceClass;
+		}
+		// if class cannot be found than it is either not a valid class or an old class that was deleted/renamed
+		catch (final ClassNotFoundException cnfe)
+		{
+			if (newClassesForOldNames == null)
+			{
+				newClassesForOldNames = new HashMap<String, String>();
+				// put in here class names that have been changed like //newClassesForOldNames.put("<oldClassName>", "<newClassName>"), e.g.
+				// newClassesForOldNames.put("attatchment", "attachment")
+			}
+			final String newClassName = newClassesForOldNames.get(className);
+			if (newClassName != null)
+				return getClassByName(newClassName);
+			throw new GameParseException("Class <" + className + "> could not be found.");
+		}
 	}
 	
 	/**
@@ -1247,34 +1287,54 @@ public class GameParser
 	
 	private void parseAttachments(final Element root) throws GameParseException
 	{
+		final HashMap<String, Constructor<?>> constructors = new HashMap<String, Constructor<?>>();
 		for (final Element current : getChildren("attatchment", root))
 		{
-			// create the attachment
+			// get class name and constructor
 			final String className = current.getAttribute("javaClass");
-			final Object obj = getInstance(className);
-			if (!(obj instanceof IAttachment))
-				throw new IllegalStateException(className + " does not implement Attachable");
-			final IAttachment attachment = (IAttachment) obj;
-			attachment.setData(data);
-			// set the values
-			final List<Element> values = getChildren("option", current);
+			if (!constructors.containsKey(className))
+			{
+				try
+				{
+					final Class<?> objectClass = getClassByName(className);
+					if (!IAttachment.class.isAssignableFrom(objectClass))
+						throw new IllegalStateException(className + " does not implement IAttachable");
+					constructors.put(className, objectClass.getConstructor(IAttachment.attachmentConstructorParameter));
+				} catch (final NoSuchMethodException exception)
+				{
+					throw new GameParseException("Constructor for class " + className + " could not be found: " + exception.getMessage());
+				} catch (final SecurityException exception)
+				{
+					throw new GameParseException("Constructor for class " + className + " could not be found: " + exception.getMessage());
+				}
+			}
+			
 			// find the attachable
 			final String type = current.getAttribute("type");
 			final Attachable attachable = findAttachment(current, type);
-			// attach
-			if (obj instanceof RulesAttachment)
-			{
-				attachable.getAttachments();
-			}
+			
+			// create new attachment
 			final String name = current.getAttribute("name");
-			attachable.addAttachment(name, attachment);
-			attachment.setAttatchedTo(attachable);
-			attachment.setName(name);
-			setValues(attachment, values);
-			data.setAttachmentOrder(attachment); // keep a list of attachment references in the order they were added
-			if (obj instanceof RulesAttachment)
+			final List<Element> options = getChildren("option", current);
+			try
 			{
-				attachable.getAttachments();
+				final IAttachment attachment = (IAttachment) constructors.get(className).newInstance(name, attachable, data);
+				attachable.addAttachment(name, attachment);
+				final ArrayList<Tuple<String, String>> attachmentOptionValues = setValues(attachment, options);
+				// keep a list of attachment references in the order they were added
+				data.addToAttachmentOrderAndValues(new Tuple<IAttachment, ArrayList<Tuple<String, String>>>(attachment, attachmentOptionValues));
+			} catch (final InstantiationException e)
+			{
+				throw new GameParseException("Attachment of type " + className + " could not be instanciated: " + e.getMessage());
+			} catch (final IllegalAccessException e)
+			{
+				throw new GameParseException("Attachment of type " + className + " could not be instanciated: " + e.getMessage());
+			} catch (final IllegalArgumentException e)
+			{
+				throw new GameParseException("Attachment of type " + className + " could not be instanciated: " + e.getMessage());
+			} catch (final InvocationTargetException e)
+			{
+				throw new GameParseException("Attachment of type " + className + " could not be instanciated: " + e.getMessage());
 			}
 		}
 	}
@@ -1321,59 +1381,50 @@ public class GameParser
 		return first + aString.substring(1);
 	}
 	
-	private void setValues(final Object obj, final List<Element> values) throws GameParseException
+	private ArrayList<Tuple<String, String>> setValues(final IAttachment attachment, final List<Element> values) throws GameParseException
 	{
+		final ArrayList<Tuple<String, String>> options = new ArrayList<Tuple<String, String>>();
 		for (final Element current : values)
 		{
 			// find the setter
 			String name = null;
 			Method setter = null;
-			// boolean intArgs = false;
 			try
 			{
 				name = current.getAttribute("name");
 				if (name.length() == 0)
-					throw new GameParseException("option name with 0 length");
-				setter = obj.getClass().getMethod("set" + capitalizeFirstLetter(name), SETTER_ARGS);
+					throw new GameParseException("Option name with 0 length");
+				setter = attachment.getClass().getMethod("set" + capitalizeFirstLetter(name), SETTER_ARGS);
 			} catch (final NoSuchMethodException nsme)
 			{
-				/*try
-				{
-				    if(obj.getClass().getMethod( "set" + capitalizeFirstLetter(name), SETTER_ARGS_INT) != null)
-				    {
-				        intArgs = true;
-				    }
-				} catch(NoSuchMethodException nsmf)
-				{*/
-				throw new GameParseException("No setter for attachment option. Setter:" + name + " Class:" + obj.getClass().getName());
-				// }
+				throw new GameParseException("The following option name of " + attachment.getName() + " of class "
+							+ attachment.getClass().getName().substring(attachment.getClass().getName().lastIndexOf('.') + 1)
+							+ " are either misspelled or exist only in a future version of TripleA. Setter: " + name);
 			}
 			// find the value
 			final String value = current.getAttribute("value");
 			final String count = current.getAttribute("count");
-			String itemValues = new String();
+			String itemValues;
 			if (count.length() > 0)
-				itemValues = count + ":";
-			/*if (intArgs)
-			{
-			    itemValues = itemValues + Integer.parseInt(value);
-			}
-			else*/
-			itemValues = itemValues + value;
+				itemValues = count + ":" + value;
+			else
+				itemValues = value;
 			// invoke
 			try
 			{
 				final Object[] args = { itemValues };
-				setter.invoke(obj, args);
+				setter.invoke(attachment, args);
 			} catch (final IllegalAccessException iae)
 			{
-				throw new GameParseException("Setter not public. Setter:" + name + " Class:" + obj.getClass().getName());
+				throw new GameParseException("Setter not public. Setter:" + name + " Class:" + attachment.getClass().getName());
 			} catch (final InvocationTargetException ite)
 			{
 				ite.getCause().printStackTrace(System.out);
 				throw new GameParseException("Error setting property:" + name + " cause:" + ite.getCause().getMessage());
 			}
+			options.add(new Tuple<String, String>(name, itemValues));
 		}
+		return options;
 	}
 	
 	private void parseInitialization(final Node root) throws GameParseException

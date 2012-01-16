@@ -1,5 +1,6 @@
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
@@ -41,9 +42,9 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 	// It would wreck most map xmls to move the rulesAttatchment's to another class, so don't move them out of here please!
 	// However, any new rules attachments that are not conditions, should be put into the "PlayerAttachment" class.
 	
-	public AbstractPlayerRulesAttachment()
+	public AbstractPlayerRulesAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
-		super();
+		super(name, attachable, gameData);
 	}
 	
 	/**

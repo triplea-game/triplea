@@ -34,6 +34,7 @@ import java.util.Iterator;
 
 public class RelationshipTypeList extends GameDataComponent implements Iterable<RelationshipType>
 {
+	private static final long serialVersionUID = 6590541694575435151L;
 	private final HashMap<String, RelationshipType> m_relationshipTypes = new HashMap<String, RelationshipType>();
 	
 	/**
@@ -96,12 +97,10 @@ public class RelationshipTypeList extends GameDataComponent implements Iterable<
 		// create a new relationshipType with the name from the constant
 		final RelationshipType relationshipType = new RelationshipType(relationshipTypeConstant, data);
 		// create a new attachment to attach to this type
-		final RelationshipTypeAttachment at = new RelationshipTypeAttachment();
-		// set the archeType to this attachment
+		final RelationshipTypeAttachment at = new RelationshipTypeAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME, relationshipType, data);
 		at.setArcheType(relationshipArcheType);
 		// attach this attachment to this type
 		relationshipType.addAttachment(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME, at);
-		at.setAttatchedTo(relationshipType);
 		addRelationshipType(relationshipType);
 	}
 	

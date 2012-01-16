@@ -1049,7 +1049,7 @@ class AddAttachmentChange extends Change
 		m_attachable.addAttachment(m_name, m_attachment);
 		m_attachment.setData(data);
 		m_attachment.setName(m_name);
-		m_attachment.setAttatchedTo(m_attachable);
+		m_attachment.setAttachedTo(m_attachable);
 	}
 	
 	@Override
@@ -1091,7 +1091,7 @@ class RemoveAttachmentChange extends Change
 			throw new IllegalStateException("RemoveAttachmentChange may not have null arguments");*/
 		final Map<String, IAttachment> attachments = m_attachable.getAttachments();
 		attachments.remove(m_attachment);
-		m_attachment.setAttatchedTo(m_attachable);
+		m_attachment.setAttachedTo(m_attachable);
 		m_attachment.setName(m_name);
 		if (m_attachable != null)
 			m_attachable.addAttachment(m_name, m_attachment);

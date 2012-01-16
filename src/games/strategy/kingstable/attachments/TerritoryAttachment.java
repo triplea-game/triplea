@@ -13,7 +13,10 @@
  */
 package games.strategy.kingstable.attachments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
 
 /**
  * Territory attachment for King's Table.
@@ -21,33 +24,41 @@ import games.strategy.engine.data.DefaultAttachment;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
+@SuppressWarnings("serial")
 public class TerritoryAttachment extends DefaultAttachment
 {
-	private boolean m_isKingsSquare = false;
-	private boolean m_isKingsExit = false;
+	private boolean m_kingsSquare = false;
+	private boolean m_kingsExit = false;
 	
 	/** Creates new TerritoryAttatchment */
-	public TerritoryAttachment()
+	public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
+		super(name, attachable, gameData);
 	}
 	
 	public void setKingsSquare(final String value)
 	{
-		m_isKingsSquare = getBool(value);
+		m_kingsSquare = getBool(value);
 	}
 	
 	public boolean isKingsSquare()
 	{
-		return m_isKingsSquare;
+		return m_kingsSquare;
 	}
 	
 	public void setKingsExit(final String value)
 	{
-		m_isKingsExit = getBool(value);
+		m_kingsExit = getBool(value);
 	}
 	
 	public boolean isKingsExit()
 	{
-		return m_isKingsExit;
+		return m_kingsExit;
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		// TODO Auto-generated method stub
 	}
 }

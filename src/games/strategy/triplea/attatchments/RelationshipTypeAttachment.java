@@ -26,7 +26,9 @@
  */
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.triplea.Constants;
@@ -39,9 +41,10 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	public static final String ARCHETYPE_ALLIED = Constants.RELATIONSHIP_ARCHETYPE_ALLIED;
 	public static final String UPKEEP_FLAT = "flat";
 	public static final String UPKEEP_PERCENTAGE = "percentage";
-	private final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
-	private final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
-	private final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
+	public static final String PROPERTY_DEFAULT = Constants.RELATIONSHIP_PROPERTY_DEFAULT;
+	public static final String PROPERTY_TRUE = Constants.RELATIONSHIP_PROPERTY_TRUE;
+	public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
+	
 	private String m_archeType = ARCHETYPE_WAR;
 	private String m_helpsDefendAtSea = PROPERTY_DEFAULT;
 	private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
@@ -52,6 +55,15 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	private String m_canLandAirUnitsOnOwnedLand = PROPERTY_DEFAULT;
 	private String m_canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
 	private String m_givesBackOriginalTerritories = PROPERTY_DEFAULT;
+	
+	/**
+	 * Creates new RelationshipTypeAttachment
+	 * 
+	 */
+	public RelationshipTypeAttachment(final String name, final Attachable attachable, final GameData gameData)
+	{
+		super(name, attachable, gameData);
+	}
 	
 	/**
 	 * Convenience method.
@@ -72,14 +84,6 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		if (rVal == null)
 			throw new IllegalStateException("No relationshipType attachment for:" + pr.getName());
 		return rVal;
-	}
-	
-	/**
-	 * Creates new RelationshipTypeAttachment
-	 * 
-	 */
-	public RelationshipTypeAttachment()
-	{
 	}
 	
 	/**
@@ -327,5 +331,11 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		if (m_helpsDefendAtSea.equals(PROPERTY_DEFAULT))
 			return isAllied();
 		return m_helpsDefendAtSea.equals(PROPERTY_TRUE);
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		// TODO Auto-generated method stub
 	}
 }

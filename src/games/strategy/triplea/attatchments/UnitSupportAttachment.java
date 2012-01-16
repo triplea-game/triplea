@@ -18,6 +18,7 @@
  */
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -41,19 +42,24 @@ import java.util.Set;
  */
 public class UnitSupportAttachment extends DefaultAttachment
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3015679930172496082L;
 	private Set<UnitType> m_unitType = null;
 	private boolean m_offence = false;
 	private boolean m_defence = false;
-	private boolean m_roll = false;
-	private boolean m_strength = false;
+	
+	@SuppressWarnings("unused")
+	private boolean m_roll = false; // TODO: finish support attachments
+	@SuppressWarnings("unused")
+	private boolean m_strength = false; // TODO: finish support attachments
+	
 	private int m_bonus = 0;
 	private int m_number = 0;
-	private boolean m_allied = false;
-	private boolean m_enemy = false;
+	
+	@SuppressWarnings("unused")
+	private boolean m_allied = false; // TODO: finish support attachments
+	@SuppressWarnings("unused")
+	private boolean m_enemy = false; // TODO: finish support attachments
+	
 	private String m_bonusType = null;
 	private List<PlayerID> m_players = new ArrayList<PlayerID>();
 	private boolean m_impArtTech = false;
@@ -62,8 +68,9 @@ public class UnitSupportAttachment extends DefaultAttachment
 	private String m_faction = null;
 	private String m_side = null;
 	
-	public UnitSupportAttachment()
+	public UnitSupportAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
+		super(name, attachable, gameData);
 	}
 	
 	public static Set<UnitSupportAttachment> get(final UnitType u)
@@ -271,8 +278,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	 */
 	public static void addRule(final UnitType type, final GameData data, final boolean first) throws GameParseException
 	{
-		final UnitSupportAttachment rule = new UnitSupportAttachment();
-		rule.setData(data);
+		final UnitSupportAttachment rule = new UnitSupportAttachment(Constants.SUPPORT_RULE_NAME_OLD + type.getName(), type, data);
 		rule.setBonus("1");
 		rule.setBonusType(Constants.OLD_ART_RULE_NAME);
 		rule.setDice("strength");
@@ -289,13 +295,12 @@ public class UnitSupportAttachment extends DefaultAttachment
 			rule.addUnitTypes(getTargets(data));
 		rule.setPlayers(new ArrayList<PlayerID>(data.getPlayerList().getPlayers()));
 		type.addAttachment(Constants.SUPPORT_RULE_NAME_OLD + type.getName(), rule);
-		rule.setAttatchedTo(type);
-		rule.setName(Constants.SUPPORT_RULE_NAME_OLD + type.getName());
 	}
 	
 	private static Set<UnitType> getTargets(final GameData data)
 	{
-		for (UnitSupportAttachment rule  : get(data)) {
+		for (final UnitSupportAttachment rule : get(data))
+		{
 			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME))
 				return rule.getUnitTypes();
 		}
@@ -313,7 +318,8 @@ public class UnitSupportAttachment extends DefaultAttachment
 	
 	public static void setOldSupportCount(final UnitType type, final GameData data, final String count)
 	{
-		for (UnitSupportAttachment rule  : get(data)) {
+		for (final UnitSupportAttachment rule : get(data))
+		{
 			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttatchedTo() == type)
 				rule.setNumber(count);
 		}
@@ -334,5 +340,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 		if (first)
 			addRule(type, data, first);
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		// TODO Auto-generated method stub
 	}
 }

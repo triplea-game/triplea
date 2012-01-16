@@ -17,8 +17,8 @@ import games.strategy.util.PropertyUtil;
 
 public class ChangeAttachmentChange extends Change
 {
-	private final Attachable m_attatchedTo;
-	private final String m_attatchmentName;
+	private final Attachable m_attachedTo;
+	private final String m_attachmentName;
 	private final Object m_newValue;
 	private Object m_oldValue;
 	private final String m_property;
@@ -26,21 +26,21 @@ public class ChangeAttachmentChange extends Change
 	
 	public Attachable getAttatchedTo()
 	{
-		return m_attatchedTo;
+		return m_attachedTo;
 	}
 	
 	public String getAttatchmentName()
 	{
-		return m_attatchmentName;
+		return m_attachmentName;
 	}
 	
 	ChangeAttachmentChange(final IAttachment attatchment, final Object newValue, final String property)
 	{
 		if (attatchment == null)
 			throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
-		m_attatchedTo = attatchment.getAttatchedTo();
+		m_attachedTo = attatchment.getAttatchedTo();
 		m_clearFirst = false;
-		m_attatchmentName = attatchment.getName();
+		m_attachmentName = attatchment.getName();
 		if (property.equals("rawProperty"))
 		{
 			final String[] s = ((String) newValue).split(":");
@@ -63,9 +63,9 @@ public class ChangeAttachmentChange extends Change
 	{
 		if (attatchment == null)
 			throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
-		m_attatchedTo = attatchment.getAttatchedTo();
+		m_attachedTo = attatchment.getAttatchedTo();
 		m_clearFirst = clearFirst;
-		m_attatchmentName = attatchment.getName();
+		m_attachmentName = attatchment.getName();
 		if (getRaw)
 		{
 			m_oldValue = PropertyUtil.getRaw(property, attatchment);
@@ -85,8 +85,8 @@ public class ChangeAttachmentChange extends Change
 	 */
 	public ChangeAttachmentChange(final Attachable attatchTo, final String attatchmentName, final Object newValue, final Object oldValue, final String property, final boolean clearFirst)
 	{
-		m_attatchmentName = attatchmentName;
-		m_attatchedTo = attatchTo;
+		m_attachmentName = attatchmentName;
+		m_attachedTo = attatchTo;
 		m_newValue = newValue;
 		m_oldValue = oldValue;
 		m_property = property;
@@ -96,19 +96,19 @@ public class ChangeAttachmentChange extends Change
 	@Override
 	public void perform(final GameData data)
 	{
-		final IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
+		final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
 		PropertyUtil.set(m_property, m_newValue, attachment, m_clearFirst);
 	}
 	
 	@Override
 	public Change invert()
 	{
-		return new ChangeAttachmentChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property, m_clearFirst);
+		return new ChangeAttachmentChange(m_attachedTo, m_attachmentName, m_oldValue, m_newValue, m_property, m_clearFirst);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "ChangAttatchmentChange attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
+		return "ChangAttatchmentChange attatched to:" + m_attachedTo + " name:" + m_attachmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
 	}
 }

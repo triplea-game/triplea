@@ -44,6 +44,7 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Tuple;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -384,10 +385,12 @@ public class GameDataExporter
 	{
 		xmlfile.append("\n");
 		xmlfile.append("    <attatchmentList>\n");
-		final Iterator<IAttachment> attachments = data.getOrderedAttachmentList().iterator();
+		final Iterator<Tuple<IAttachment, ArrayList<Tuple<String, String>>>> attachments = data.getAttachmentOrderAndValues().iterator();
 		while (attachments.hasNext())
 		{
-			printAttachments(attachments.next());
+			// TODO: use a ui switch to determine if we are printing the xml as it was created, or as it stands right now (including changes to the game data)
+			final Tuple<IAttachment, ArrayList<Tuple<String, String>>> current = attachments.next();
+			printAttachments(current.getFirst()); // TODO: this is just a quick fix. need to redo this whole thing.
 		}
 		xmlfile.append("    </attatchmentList>\n");
 	}

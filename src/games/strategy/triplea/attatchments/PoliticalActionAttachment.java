@@ -13,6 +13,7 @@
  */
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -43,6 +44,11 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 {
 	private static final long serialVersionUID = 4392770599777282477L;
 	public static final String ATTEMPTS_LEFT_THIS_TURN = "attemptsLeftThisTurn";
+	
+	public PoliticalActionAttachment(final String name, final Attachable attachable, final GameData gameData)
+	{
+		super(name, attachable, gameData);
+	}
 	
 	public static Collection<PoliticalActionAttachment> getPoliticalActionAttachments(final PlayerID player)
 	{
@@ -84,19 +90,10 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	// how many times can you perform this action each round?
 	private int m_attemptsPerTurn = 1;
 	// how many times are left to perform this action each round?
-	private int m_attemptsLeftThisTurn = 1; // don't export this one
+	private int m_attemptsLeftThisTurn = 1; // Do Not Export (do not include in IAttachment).
 	// which players should accept this action? this could be the player who is the target of this action in the case of proposing a treaty or the players in your 'alliance' in case you want to declare war...
 	// especially for actions that when france declares war on germany and it automatically causes UK to declare war as well. it is good to set "actionAccept" to "UK" so UK can accept this action to go through.
 	private final Collection<PlayerID> m_actionAccept = new ArrayList<PlayerID>();
-	
-	@Override
-	public void validate(final GameData data) throws GameParseException
-	{
-		if (m_relationshipChange.isEmpty())
-			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: relationshipChange can't be empty");
-		if (m_text.equals(""))
-			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: text can't be empty");
-	}
 	
 	public static Match<PoliticalActionAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions)
 	{
@@ -303,5 +300,15 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	public boolean hasAttemptsLeft()
 	{
 		return m_attemptsLeftThisTurn > 0;
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		super.validate(data);
+		if (m_relationshipChange.isEmpty())
+			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: relationshipChange can't be empty");
+		if (m_text.equals(""))
+			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: text can't be empty");
 	}
 }

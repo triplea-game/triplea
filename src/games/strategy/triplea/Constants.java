@@ -231,4 +231,13 @@ public interface Constants
 	public static final String RELATIONSHIP_PROPERTY_TRUE = "true";
 	public static final String RELATIONSHIP_PROPERTY_FALSE = "false";
 	public static final String USE_POLITICS = "Use Politics";
+	
+	public static final String PROPERTY_TRUE = "true";
+	public static final String PROPERTY_FALSE = "false";
+	public static final String PROPERTY_DEFAULT = "default";
+	
+	/*public static final char VALUE_TRUE = 't';
+	public static final char VALUE_FALSE = 'f';
+	public static final char VALUE_DEFAULT = 'd';*/
+
 }

@@ -18,6 +18,7 @@
  */
 package games.strategy.triplea.attatchments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
@@ -57,6 +58,7 @@ import java.util.Set;
  * @author Sean Bridges
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class UnitAttachment extends DefaultAttachment
 {
 	/**
@@ -111,8 +113,8 @@ public class UnitAttachment extends DefaultAttachment
 	private int m_bombard = -1;
 	private boolean m_isSub = false;
 	private boolean m_isDestroyer = false;
-	private boolean m_isArtillery = false;
-	private boolean m_isArtillerySupportable = false;
+	private boolean m_artillery = false;
+	private boolean m_artillerySupportable = false;
 	private int m_unitSupportCount = -1;
 	private boolean m_isMarine = false;
 	private boolean m_isSuicide = false;
@@ -129,6 +131,7 @@ public class UnitAttachment extends DefaultAttachment
 	private boolean m_isLandTransport = false;
 	
 	// aa related
+	// "isAA" and "isAAmovement" are also valid setters, used as shortcuts for calling multiple aa related setters. Must keep.
 	private boolean m_isAAforCombatOnly = false;
 	private boolean m_isAAforBombingThisUnitOnly = false;
 	private boolean m_isAAforFlyOverOnly = false;
@@ -173,6 +176,7 @@ public class UnitAttachment extends DefaultAttachment
 	private final ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>(); // multiple colon delimited lists of the unit combos required for this unit to be built somewhere. (units must be in same territory, owned by player, not be disabled)
 	private final IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
 	private String[] m_unitPlacementRestrictions; // a colon delimited list of territories where this unit may not be placed
+	// also an allowed setter is "setUnitPlacementOnlyAllowedIn", which just creates m_unitPlacementRestrictions with an inverted list of territories
 	private int m_maxBuiltPerPlayer = -1; // -1 if infinite (infinite is default)
 	
 	// scrambling related
@@ -186,6 +190,7 @@ public class UnitAttachment extends DefaultAttachment
 	private String[] m_repairsUnits; // a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
 	private final IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 	private final Collection<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
+	// also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a specific list
 	private final LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>> m_whenCapturedChangesInto = new LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>>();
 	private final Collection<PlayerID> m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
 	private final Collection<PlayerID> m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
@@ -194,18 +199,9 @@ public class UnitAttachment extends DefaultAttachment
 	private final HashSet<String> m_special = new HashSet<String>(); // currently used for: placement in original territories only,
 	
 	/** Creates new UnitAttatchment */
-	public UnitAttachment()
+	public UnitAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
-	}
-	
-	// does nothing, kept to avoid breaking maps
-	public void setIsParatroop(final String s)
-	{
-	}
-	
-	// does nothing, used to keep compatibility with older xml files
-	public void setIsMechanized(final String s)
-	{
+		super(name, attachable, gameData);
 	}
 	
 	public void setCanIntercept(final String value)
@@ -910,25 +906,25 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public boolean isArtillery()
 	{
-		return m_isArtillery;
+		return m_artillery;
 	}
 	
 	public void setArtillery(final String s) throws GameParseException
 	{
-		m_isArtillery = getBool(s);
-		if (m_isArtillery)
+		m_artillery = getBool(s);
+		if (m_artillery)
 			UnitSupportAttachment.addRule((UnitType) getAttatchedTo(), getData(), false);
 	}
 	
 	public boolean isArtillerySupportable()
 	{
-		return m_isArtillerySupportable;
+		return m_artillerySupportable;
 	}
 	
 	public void setArtillerySupportable(final String s) throws GameParseException
 	{
-		m_isArtillerySupportable = getBool(s);
-		if (m_isArtillerySupportable)
+		m_artillerySupportable = getBool(s);
+		if (m_artillerySupportable)
 			UnitSupportAttachment.addTarget((UnitType) getAttatchedTo(), getData());
 	}
 	
@@ -994,7 +990,7 @@ public class UnitAttachment extends DefaultAttachment
 		return m_bombard > 0 ? m_bombard : m_attack;
 	}
 	
-	public int getUnitSupportCount(final PlayerID player)
+	public int getUnitSupportCount()
 	{
 		return m_unitSupportCount > 0 ? m_unitSupportCount : 1;
 	}
@@ -1037,7 +1033,7 @@ public class UnitAttachment extends DefaultAttachment
 			return 0;
 		if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player))
 		{
-			return new Integer(games.strategy.triplea.Properties.getHeavy_Bomber_Dice_Rolls(getData()));
+			return games.strategy.triplea.Properties.getHeavy_Bomber_Dice_Rolls(getData());
 		}
 		return 1;
 	}
@@ -1048,7 +1044,7 @@ public class UnitAttachment extends DefaultAttachment
 			return 0;
 		if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player) && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(getData()))
 		{
-			return new Integer(games.strategy.triplea.Properties.getHeavy_Bomber_Dice_Rolls(getData()));
+			return games.strategy.triplea.Properties.getHeavy_Bomber_Dice_Rolls(getData());
 		}
 		return 1;
 	}
@@ -1566,7 +1562,10 @@ public class UnitAttachment extends DefaultAttachment
 	public void setStackingLimit(final String value) throws GameParseException
 	{
 		if (value == null)
+		{
 			m_stackingLimit = null;
+			return;
+		}
 		final UnitType ut = (UnitType) this.getAttatchedTo();
 		if (ut == null)
 			throw new GameParseException("UnitAttachment: getAttatchedTo returned null");
@@ -1812,8 +1811,8 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  twoHit:" + m_isTwoHit
 					+ "  factory:" + m_isFactory
 					+ "  blitz:" + m_canBlitz
-					+ "  artillerySupportable:" + m_isArtillerySupportable
-					+ "  artillery:" + m_isArtillery
+					+ "  artillerySupportable:" + m_artillerySupportable
+					+ "  artillery:" + m_artillery
 					+ "  unitSupportCount:" + m_unitSupportCount
 					+ "  marine:" + m_isMarine
 					+ "  infantry:" + m_isInfantry
@@ -1990,10 +1989,10 @@ public class UnitAttachment extends DefaultAttachment
 			stats.append("can Allow Scrambling, ");
 		if (m_canScramble && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
 			stats.append("can Scramble " + (m_maxScrambleDistance > 0 ? m_maxScrambleDistance : 1) + " Distance, ");
-		if (m_isArtillery)
+		if (m_artillery)
 			stats.append("can Give Attack Bonus, ");
 		// TODO: Need to account for support attachments here somehow.
-		if (m_isArtillerySupportable)
+		if (m_artillerySupportable)
 			stats.append("can Receive Attack Bonus, ");
 		if (m_isMarine)
 			stats.append("1" + " Amphibious Attack Bonus, ");
@@ -2098,6 +2097,18 @@ public class UnitAttachment extends DefaultAttachment
 		if (stats.indexOf(", ") > -1)
 			stats.delete(stats.lastIndexOf(", "), stats.length() - 1);
 		return stats.toString();
+	}
+	
+	/** does nothing, kept to avoid breaking maps, do not remove */
+	@Deprecated
+	public void setIsParatroop(final String s)
+	{
+	}
+	
+	/** does nothing, used to keep compatibility with older xml files, do not remove */
+	@Deprecated
+	public void setIsMechanized(final String s)
+	{
 	}
 	
 }

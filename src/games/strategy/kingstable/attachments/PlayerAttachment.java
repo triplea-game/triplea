@@ -13,21 +13,26 @@
  */
 package games.strategy.kingstable.attachments;
 
+import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
 
 /**
  * 
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
+@SuppressWarnings("serial")
 public class PlayerAttachment extends DefaultAttachment
 {
 	private boolean m_needsKing = false;
-	private int m_AbSearchDepth = 2;
+	private int m_alphaBetaSearchDepth = 2;
 	
 	/** Creates new PlayerAttachment */
-	public PlayerAttachment()
+	public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
+		super(name, attachable, gameData);
 	}
 	
 	public void setNeedsKing(final String value)
@@ -42,11 +47,17 @@ public class PlayerAttachment extends DefaultAttachment
 	
 	public void setAlphaBetaSearchDepth(final String value)
 	{
-		m_AbSearchDepth = getInt(value);
+		m_alphaBetaSearchDepth = getInt(value);
 	}
 	
 	public int getAlphaBetaSearchDepth()
 	{
-		return m_AbSearchDepth;
+		return m_alphaBetaSearchDepth;
+	}
+	
+	@Override
+	public void validate(final GameData data) throws GameParseException
+	{
+		// TODO Auto-generated method stub
 	}
 }
