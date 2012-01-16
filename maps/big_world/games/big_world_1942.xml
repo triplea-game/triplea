@@ -1193,9 +1193,9 @@
                 <player name="Russians" optional="false"/>
                 <player name="Germans" optional="false"/>
                 <player name="British" optional="false"/>
+                <player name="Chinese" optional="false"/>
                 <player name="Japanese" optional="false"/>
                 <player name="Americans" optional="false"/>
-                <player name="Chinese" optional="false"/>
 
 
                 <!-- Axis Alliances -->

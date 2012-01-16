@@ -564,7 +564,7 @@
         
                 <resourceInitialize>
                         <resourceGiven player="Russians" resource="PUs" quantity="24"/>
-                        <resourceGiven player="Italians" resource="PUs" quantity="42"/>
+                        <resourceGiven player="Italians" resource="PUs" quantity="44"/>
                 </resourceInitialize>
         </initialize>
 

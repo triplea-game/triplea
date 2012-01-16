@@ -1194,14 +1194,14 @@
                 <player name="Russians" optional="false"/>
                 <player name="Germans" optional="false"/>
                 <player name="British" optional="false"/>
+				<player name="Italians" optional="false"/>
+                <player name="Chinese" optional="false"/>
                 <player name="Japanese" optional="false"/>
                 <player name="Americans" optional="false"/>
-                <player name="Chinese" optional="false"/>
-		<player name="Italians" optional="false"/>
 
                 <!-- Axis Alliance -->
                 <alliance player="Germans" alliance="Axis"/>
-		<alliance player="Italians" alliance="Axis"/>
+				<alliance player="Italians" alliance="Axis"/>
                 <alliance player="Japanese" alliance="Axis"/>
                 
                 <!-- Allied Alliance -->

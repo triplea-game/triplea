@@ -1,4 +1,8 @@
 Changes for 1.5
+* Changing build.xml and editing a test suite to ignore certain tests for the time being.  Also setting svn to ignore 'classes.jar', 'fb.xml', and 'TEST-games.strategy.AllTests.txt/xml'. (qwertgold)
+
+* Adding findbugs folder for use with ANT. (qwertgold)
+
 * Creation of new xml entry, <triplea minimumVersion="1.5"/>, which should be used by ALL new maps. If an older TripleA tries to play a map built for a newer TripleA, then it will simply ignore the map instead of throwing tons of java errors at the user. (veqryn)
 
 * Complete rewrite of AxisAndAllies.org forum poster. Also added help html pages for the pbem / pbf system. (qwertgold)

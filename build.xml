@@ -1,54 +1,55 @@
 <?xml version="1.0"?>
 
 
-<project name="TripleA" basedir="." default="compile">
+<project name="TripleA" basedir="." default="compile" xmlns:fb="antlib:edu.umd.cs.findbugs">
+
+	<taskdef uri="antlib:edu.umd.cs.findbugs" resource="edu/umd/cs/findbugs/anttask/tasks.properties" classpath="ant/findbugs-1.3.9/lib/findbugs-ant.jar"/>
 
 	<property file=".ant.properties" />
+    <property name="src" location="src"/>
+    <property name="classes" location="classes"/>
+
+    <property name="test-src" location="test"/>
+    <property name="test-classes" location="testclasses"/>
 
 	<!-- this path does not have junit on it -->
-	<path id="full.path">
+	<path id="src.classpath">
         <pathelement path="lib\mailapi.jar"/>
         <pathelement path="lib\smtp.jar"/>
         <pathelement path="lib\activation.jar"/>
-		<pathelement path="lib\standalone-compiler.jar" />	
+		<pathelement path="lib\standalone-compiler.jar" />
 		<pathelement path="lib\AppleJavaExtensions.jar" />
 		<pathelement path="lib\commons-httpclient-3.0.1.jar" />
 		<pathelement path="lib\commons-logging-1.1.jar" />
 		<pathelement path="lib\commons-codec-1.3.jar" />
 		<pathelement path="lib\substance_5.3.jar" />
-		<pathelement path="${classpath}" />
 		<pathelement path="classes/" />
 	</path>
-	
-	<path id="test.path">
-		<existing refid="full.path"></existing>
-		<pathelement path="classes/" />
+
+	<path id="test.classpath">
+		<path refid="src.classpath"/>
+        <pathelement path="${test-classes}"/>
 		<pathelement path="lib\junit.jar" />
-	</path>	
-	
-
-
-	<!-- init -->
-	<target name="init">
-	</target>
+        <pathelement path="lib\derby_10_1_2.jar"/>
+	</path>
 
 
 	<!-- All -->
-	<target name="all" depends="init,clean,compile,test,zip, zipSource">
+	<target name="all" depends="clean,compile,test,zip, zipSource" description="cleans, compiles, tests, zips, and zips source">
 	</target>
 
 
 	<!-- Clean -->
-	<target name="clean" depends="init" description="Remove all release, class and saved game files">
+	<target name="clean" description="Remove all release, class and saved game files">
 		<delete dir="release" />
-		<delete dir="classes" />
+		<delete dir="${classes}" />
 		<delete dir="bin" />
-		<delete dir="testclasses" />		
+		<delete dir="${test-classes}" />
 		<delete dir="savedGames" />
 	</target>
 
 	<!-- Compile -->
-	<target name="compile" depends="init" description="Compile the source files and copy over the resource files">
+	<target name="compile" description="Compile the source files and copy over the resource files">
 
 		<!-- we require jdk 1.5 or greater -->
 		<fail message="jdk 1.5 or greater required, you are currently using: ${ant.java.version}">
@@ -63,10 +64,10 @@
 		</fail>
 
 		<!-- we only need this for deployment -->
-		<delete file="bin/triplea.jar" />
+		<delete file="bin/triplea.jar" failonerror="" />
 
-		<mkdir dir="classes" />
-		<mkdir dir="testclasses" />
+		<mkdir dir="${classes}" />
+		<mkdir dir="${test-classes}" />
 		<copy todir="classes">
 			<fileset dir="data">
 				<include name="**/*.dtd" />
@@ -81,7 +82,7 @@
 			</fileset>
 		</copy>
 
-		<javac srcdir="src/" destdir="classes/" debug="true" deprecation="true" classpathref="full.path" target="1.5" encoding="utf8" />
+		<javac srcdir="src/" destdir="${classes}" debug="true" deprecation="true" classpathref="src.classpath" target="1.5" encoding="utf8" />
 
 		<!-- to check the correct java version, we need to compile the startup class so that it will run on older vms -->
 		<!-- delete the startup class, and recompile it -->
@@ -90,26 +91,22 @@
 			</fileset>
 		</delete>
 
-		<javac srcdir="src/" destdir="classes/" debug="true" deprecation="true" classpathref="full.path" target="1.2" source="1.2" />
-
-		<!-- compile test classes -->
-		<javac srcdir="test/" destdir="testclasses/" debug="true" deprecation="true" classpathref="test.path" target="1.5" />
-			
+		<javac srcdir="${src}" destdir="${classes}" debug="true" deprecation="true" classpathref="src.classpath" target="1.2" source="1.2" />
 	</target>
 
 	<target name="run" depends="compile" description="Run Triplea">
-		<java classpathref="full.path" spawn="true" classname="games.strategy.engine.framework.GameRunner" fork="true"/>
+		<java classpathref="src.classpath" spawn="true" classname="games.strategy.engine.framework.GameRunner" fork="true"/>
 	</target>
 
 
 	<!-- compileClean -->
 	<target name="compileClean" depends="clean,compile,zip" description="Clean then compile" />
 
-	<target name="macRelease" depends="init,clean,compile,zip" description="create a mac os x application">
-		
-		<property name="dmg.file" value="release/triplea_${triplea.version}_mac.dmg"></property>
-		<property name="app.file" value="release/Triplea.app"></property>
-		
+	<target name="macRelease" depends="clean,compile,zip" description="create a mac os x end user application">
+
+		<property name="dmg.file" value="release/triplea_${triplea.version}_mac.dmg"/>
+		<property name="app.file" value="release/Triplea.app"/>
+
 
 		<exec executable="hdiutil">
 			<arg line="detach /Volumes/TripleA" />
@@ -127,13 +124,13 @@
 			<arg line="755 ${app.file}/Contents/MacOS/JavaApplicationStub" />
 		</exec>
 
-		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"></copy>
+		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"/>
 
 		<copy file="Info.plist" todir="${app.file}/Contents/" />
 
 		<echo message="APPL????" file="${app.file}/Contents/PkgInfo" />
 
-		
+
 
 		<copy file="icons/icon.icns" todir="${app.file}/Contents/Resources/" />
 
@@ -148,7 +145,7 @@
 		<exec executable="cp">
 			<arg line="-r license ${app.file}/Contents/Resources/" />
 		</exec>
-		
+
 		<exec executable="cp">
 			<arg line="-r dice_servers ${app.file}/Contents/Resources/" />
 		</exec>
@@ -192,21 +189,21 @@
 		<exec executable="hdiutil">
 			<arg line="detach /Volumes/TripleA" />
 		</exec>
-		
+
 		<!-- compress the dmg file -->
 		<move file="${dmg.file}" tofile="temp.dmg"> </move>
 		<exec executable="hdiutil">
 			<arg line="convert temp.dmg -o ${dmg.file} -format UDBZ "/>
  		</exec>
-		<delete file="temp.dmg"></delete>
+		<delete file="temp.dmg"/>
 
 	</target>
 
-	<target name="macServerApp" depends="init,clean,compile,zip" description="create a mac os x application">
-		
-		<property name="dmg.file" value="release/triplea_${triplea.version}_server.dmg"></property>
-		<property name="app.file" value="release/TripleaServer.app"></property>
-		
+	<target name="macServerApp" depends="clean,compile,zip" description="create a mac os x server application">
+
+		<property name="dmg.file" value="release/triplea_${triplea.version}_server.dmg"/>
+		<property name="app.file" value="release/TripleaServer.app"/>
+
 
 		<exec executable="hdiutil">
 			<arg line="detach /Volumes/TripleA" />
@@ -224,12 +221,12 @@
 			<arg line="755 ${app.file}/Contents/MacOS/JavaApplicationStub" />
 		</exec>
 
-		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"></copy>
-		<copy file="lib/derby_10_1_2.jar" todir="${app.file}/Contents/Resources/Java/"></copy>
+		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"/>
+		<copy file="lib/derby_10_1_2.jar" todir="${app.file}/Contents/Resources/Java/"/>
 
-		
+
 		<copy file="ServerInfo.plist" tofile="${app.file}/Contents/Info.plist" />
-		
+
 		<echo message="APPL????" file="${app.file}/Contents/PkgInfo" />
 
 		<copy file="icons/icon.icns" todir="${app.file}/Contents/Resources/" />
@@ -238,7 +235,7 @@
 		<exec executable="cp">
 			<arg line="-r icons ${app.file}/Contents/Resources/" />
 		</exec>
-		
+
 		<exec executable="/Developer/Tools/SetFile">
 			<arg line="-a B ${app.file}" />
 		</exec>
@@ -274,43 +271,43 @@
 		<exec executable="hdiutil">
 			<arg line="detach /Volumes/TripleA" />
 		</exec>
-		
+
 		<!-- compress the dmg file -->
 		<move file="${dmg.file}" tofile="temp.dmg"> </move>
 		<exec executable="hdiutil">
 			<arg line="convert temp.dmg -o ${dmg.file} -format UDBZ "/>
  		</exec>
-		<delete file="temp.dmg"></delete>
+		<delete file="temp.dmg"/>
 
 	</target>
-	
+
 
 	<!-- zip -->
-	<target name="zip" depends="init,compile" description="create a zip file for end users">
+	<target name="zip" depends="compile" description="create a zip file for all end users">
 		<mkdir dir="release" />
 
 		<mkdir dir="bin"/>
 		<delete file="bin/triplea.jar" />
-		
+
 		<!-- we want to merge all the jar files we use
 		     into the triplea.jar file, so unzip everything into
 		     one directory -->
-		<delete dir="deleteme"></delete>
+		<delete dir="deleteme"/>
 		<mkdir dir="deleteme"/>
-		<unjar dest="deleteme" overwrite="yes"> 
+		<unjar dest="deleteme" overwrite="yes">
 			<fileset dir="lib" includes="*.jar" excludes="junit.jar,derby*"> </fileset>
 		</unjar>
 		<delete dir="deleteme/META-INF"/>
 		<copy todir="deleteme">
-			<fileset dir="classes" includes="**"></fileset>
+			<fileset dir="classes" includes="**"/>
 		</copy>
-		
+
 		<jar destfile="bin/triplea.jar" basedir="deleteme">
 			<manifest>
 				<attribute name="Main-Class" value="games.strategy.engine.framework.GameRunner" />
 			</manifest>
 		</jar>
-		<delete dir="deleteme"></delete>
+		<delete dir="deleteme"/>
 
 		<zip zipfile="release/triplea_${triplea.version}_all_platforms.zip" compress="true">
 
@@ -331,7 +328,7 @@
 			<zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
 				<include name="gpl.txt" />
 			</zipfileset>
-			
+
 			<zipfileset dir="dice_servers/" prefix="triplea_${triplea.version}/dice_servers/">
 				<include name="*.properties" />
 			</zipfileset>
@@ -362,27 +359,27 @@
 				<exclude name="fix_mac_icon.sh"/>
 				<exclude name="run-server.sh"/>
 			</zipfileset>
-			
+
 			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/" filemode="755">
 				<include name="**/triplea.jar" />
 			</zipfileset>
 
-			
+
 		</zip>
 	</target>
-	
+
 	<!-- zip -->
-	<target name="zipServer" depends="zip">
+	<target name="zipServer" depends="zip" description="create zip for lobby server">
 		<zip zipfile="release/triplea_${triplea.version}_server.zip" compress="true">
 
 			<zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
 				<include name="gpl.txt" />
 			</zipfileset>
-			
+
 			<zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
 				<include name="**/derby*.jar" />
 			</zipfileset>
-			
+
 			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
 				<include name="**/*.jar" />
 			</zipfileset>
@@ -390,14 +387,14 @@
 			<zipfileset dir="." prefix="triplea_${triplea.version}" filemode="755">
 				<include name="run-server.sh"/>
 			</zipfileset>
-		</zip>			
-			
+		</zip>
+
 	</target>
 
-	<!-- must be done after a ant zip has been executed (we dont depend since ant zip 
+	<!-- must be done after a ant zip has been executed (we dont depend since ant zip
          takes a while.  NSIS must be installed, and makensis must be on the path
 	 -->
-	<target name="zipInstallerWithJava" depends="init" description="prepare_installer">
+	<target name="zipInstallerWithJava" description="creates windows installer with java">
 		<delete dir="release/installer" />
 		<mkdir dir="release/installer" />
 
@@ -424,10 +421,10 @@
 	<target name="release" depends="clean,compile,zip,zipInstaller,zipInstallerWithJava,zipSource" description="do a full windows/generic release, this must be done on a windows machine" />
 
 
-	<!-- must be done after a ant zip has been executed (we dont depend since ant zip 
+	<!-- must be done after a ant zip has been executed (we dont depend since ant zip
          takes a while.  NSIS must be installed, and makensis must be on the path
 	 -->
-	<target name="zipInstaller" depends="init" description="prepare_installer">
+	<target name="zipInstaller" description="creates windows installer">
 		<delete dir="release/installer" />
 		<mkdir dir="release/installer" />
 
@@ -445,7 +442,7 @@
 	</target>
 
 	<!-- zipSource -->
-	<target name="zipSource" depends="init" description="create a zip file for developers">
+	<target name="zipSource" description="create a zip file for developers">
 		<mkdir dir="release" />
 
 		<zip zipfile="release/triplea_${triplea.version}_source_code_only.zip" compress="true">
@@ -453,10 +450,10 @@
 			<zipfileset dir="src/" prefix="triplea_${triplea.version}/src/">
 				<include name="**/*.java" />
 			</zipfileset>
-			
+
 			<zipfileset dir="test/" prefix="triplea_${triplea.version}/test/">
 				<include name="**/*.java" />
-			</zipfileset>			
+			</zipfileset>
 
 			<zipfileset dir="junit/" prefix="triplea_${triplea.version}/junit/">
 				<include name="excluded.properties" />
@@ -520,7 +517,7 @@
 				<include name="*.properties" />
 			</zipfileset>
 
-			
+
 			<zipfileset dir="images/" prefix="triplea_${triplea.version}/images/">
 				<include name="**/*.*" />
 			</zipfileset>
@@ -533,21 +530,8 @@
 	</target>
 
 
-	<!-- patch -->
-	<!--
-    	PBEM patch
-    -->
-	<target name="patch" depends="compile">
-		<jar destfile="patch.jar" basedir="classes">
-			<include name="games/strategy/**/*.class" />
-			<exclude name="**/GameRunner*.class" />
-			<exclude name="**/xml/**/*.class" />
-		</jar>
-	</target>
-
-
 	<!-- javadoc -->
-	<target name="javadoc" depends="init" description="Generate JavaDoc documentation">
+	<target name="javadoc" description="Generate JavaDoc documentation">
 		<delete dir="apidoc" />
 
 		<mkdir dir="apidoc" />
@@ -559,24 +543,34 @@
 			</sourcepath>
 		</javadoc>
 	</target>
-	
 
-		
-	
 	<!-- test -->
-	<target name="test" depends="init,compile" description="run junit tests">
-		<junit fork="yes" haltonerror="on">
-			<classpath>
-				<pathelement path="${junit.jar}" />
-				<pathelement path="${classpath}" />
-				<pathelement path="lib/derby_10_1_2.jar" />
-				<pathelement path="classes/" />
-                <pathelement path="testclasses/" />				
-			</classpath>
+	<target name="test" description="run junit tests">
+        <javac srcdir="${test-src}" destdir="${test-classes}/" debug="true" deprecation="true" target="1.5">
+            <classpath refid="test.classpath"/>
+        </javac>
 
+		<junit fork="yes" haltonerror="off">
+			<classpath refid="test.classpath"/>
 			<formatter type="plain" />
+            <formatter type="xml" />
 			<test name="games.strategy.AllTests" />
 		</junit>
 	</target>
+
+	<!-- analyze code for bugs. run compile first -->
+    <target name="findbugs" description="run findbugs">
+
+        <jar destfile="classes.jar" basedir="classes">
+		</jar>
+
+        <pathconvert refid="src.classpath" property="findbugs-path"/>
+        <fb:findbugs home="ant/findbugs-1.3.9" excludeFilter="ant/FindbugsExcludeFilter.txt" output="xml" outputFile="fb.xml" timeout="3600000" jvmargs="-Xmx256m">
+            <sourcePath path="src"/>
+            <auxclasspath path="${findbugs-path}"/>
+            <class location="classes.jar"/>
+        </fb:findbugs>
+    </target>
+
 
 </project>
