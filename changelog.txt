@@ -1,4 +1,6 @@
 Changes for 1.5
+* Creating annotations to be used for tracking and marking various setters for attachments and other game data. (qwertgold & veqryn)
+
 * Changing how attachments are created by the game parser. (frigoref & veqryn)
 
 * Changing build.xml and editing a test suite to ignore certain tests for the time being.  Also setting svn to ignore 'classes.jar', 'fb.xml', and 'TEST-games.strategy.AllTests.txt/xml'. (qwertgold)
