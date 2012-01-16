@@ -201,6 +201,8 @@ public class GameSelectorModel extends Observable
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		final String defaultGameName = "Big World : 1942";
 		final String s = prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName);
+		// TODO: decide if user base would rather have their game data refreshed after leaving a game (currnet), or keep their game data
+		NewGameChooser.refreshNewGameChooserModel(); // remove this to have the engine maintain all game data between games, allowing users to continue games without saving, so long as they never close triplea
 		final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
 		NewGameChooserEntry selectedGame = model.findByName(s);
 		if (selectedGame == null)

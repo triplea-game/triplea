@@ -51,15 +51,6 @@ public class NewGameChooser extends JDialog
 		updateInfoPanel();
 	}
 	
-	public static NewGameChooserModel getNewGameChooserModel()
-	{
-		if (s_cachedGameModel == null)
-		{
-			s_cachedGameModel = new NewGameChooserModel();
-		}
-		return s_cachedGameModel;
-	}
-	
 	private void createComponents()
 	{
 		m_okButton = new JButton("OK");
@@ -244,6 +235,20 @@ public class NewGameChooser extends JDialog
 		});
 	}
 	
+	public static NewGameChooserModel getNewGameChooserModel()
+	{
+		if (s_cachedGameModel == null)
+		{
+			refreshNewGameChooserModel();
+		}
+		return s_cachedGameModel;
+	}
+	
+	public static void refreshNewGameChooserModel()
+	{
+		s_cachedGameModel = new NewGameChooserModel();
+	}
+	
 	/**
 	 * Refreshes the game list (from disk) then caches the new list
 	 */
@@ -257,8 +262,8 @@ public class NewGameChooser extends JDialog
 			{
 				try
 				{
-					s_cachedGameModel = new NewGameChooserModel();
-					m_gameListModel = s_cachedGameModel;
+					refreshNewGameChooserModel();
+					m_gameListModel = getNewGameChooserModel();
 					m_gameList.setModel(m_gameListModel);
 					if (selected != null)
 					{
