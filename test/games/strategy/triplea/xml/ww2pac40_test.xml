@@ -3,6 +3,7 @@
 <game>
         <info name="World War II Pacific Test" version="2.1"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
+		<triplea minimumVersion="1.5"/>
         <map>
                 <!-- Territory Definitions -->
                 <territory name="Caroline Islands"/>
@@ -1908,7 +1909,9 @@
 					<attatchment name="objectiveAttachment_ANZAC2_High_Morale" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
 						<option name="uses" value="1"/>
-						<option name="directOwnershipTerritories" value="Japan:Siam:Hainan:Formosa:Caroline Islands:Marshall Islands:Marianas:Paulau Island:Okinawa:Iwo Jima:Korea" count="1"/>
+						<!--<option name="directOwnershipTerritories" value="Japan:Siam:Hainan:Formosa:Caroline Islands:Marshall Islands:Marianas:Paulau Island:Okinawa:Iwo Jima:Korea" count="1"/>-->
+						<option name="directPresenceTerritories" value="Japan:Siam:Hainan:Formosa:Caroline Islands:Marshall Islands:Marianas:Paulau Island:Okinawa:Iwo Jima:Korea" count="1"/>
+						<!--<option name="unitPresence" value="ANY" count="1"/>-->
 					</attatchment>
 					
 					

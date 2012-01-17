@@ -63,6 +63,18 @@ public class ModeratorControllerTest extends TestCase
 		final InetAddress bannedAddress = Inet4Address.getByAddress(new byte[] { (byte) 10, (byte) 10, (byte) 10, (byte) 10 });
 		new BannedIpController().removeBannedIp(bannedAddress.getHostAddress());
 		MessageContext.setSenderNodeForThread(m_adminNode);
+		/*ServerMessenger serverMessenger = null;
+		try
+		{
+			// ugly work-around
+			serverMessenger = new ServerMessenger("dummyServer", 3010);
+			serverMessenger.NotifyPlayerLogin("foo", bannedAddress.toString(), "00:00:00:00:00:11");
+			final INode modNode = MessageContext.getSender();
+			serverMessenger.NotifyPlayerLogin(modNode.getName(), modNode.getAddress().toString(), "00:00:00:00:00:12");
+		} catch (final IOException e)
+		{
+			e.printStackTrace();
+		}*/
 		final INode booted = new Node("foo", bannedAddress, 0);
 		m_controller.banIp(booted, null); // this test is failing because any kind of ban requires a mac address for the logging information, yet this node has no mac address. need to fix this somehow.
 		assertTrue(m_listener.getRemoved().contains(booted));

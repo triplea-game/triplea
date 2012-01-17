@@ -7,6 +7,8 @@
 	
 	<loader javaClass="games.puzzle.slidingtiles.NPuzzle"/>
 	
+	<triplea minimumVersion="1.5"/>
+	
 	<map>
 		<grid name="gameboard" type="square" x="3" y="3" horizontal-connections="implicit" vertical-connections="implicit"/>
 	</map>

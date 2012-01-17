@@ -6,6 +6,8 @@
         <info name="Minimap" version="1.2"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
+		
+		<triplea minimumVersion="1.5"/>
 
         <map>
                 <!-- Territory Definitions -->

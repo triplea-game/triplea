@@ -63,8 +63,9 @@ public class ModeratorController implements IModeratorController
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
 		new BannedUsernameController().addBannedUsername(getRealName(node), banExpires);
+		final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
 		s_logger.info(DUtils.Format("User was banned from the lobby(Username ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node
-					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banExpires.toString()));
+					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
 	}
 	
 	public void banIp(final INode node, final Date banExpires)
@@ -75,8 +76,9 @@ public class ModeratorController implements IModeratorController
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
 		new BannedIpController().addBannedIp(node.getAddress().getHostAddress(), banExpires);
+		final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
 		s_logger.info(DUtils.Format("User was banned from the lobby(IP ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node.getAddress()
-					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banExpires.toString()));
+					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
 	}
 	
 	public void banMac(final INode node, final Date banExpires)
@@ -87,8 +89,9 @@ public class ModeratorController implements IModeratorController
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
 		new BannedMacController().addBannedMac(mac, banExpires);
+		final String banUntil = (banExpires == null ? "forever" : banExpires.toString());
 		s_logger.info(DUtils.Format("User was banned from the lobby(Mac ban). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node
-					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banExpires.toString()));
+					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), banUntil));
 	}
 	
 	public void muteUsername(final INode node, final Date muteExpires)
@@ -99,9 +102,10 @@ public class ModeratorController implements IModeratorController
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
 		new MutedUsernameController().addMutedUsername(getRealName(node), muteExpires);
-		ServerMessenger.getInstance().NotifyUsernameMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires.getTime());
+		ServerMessenger.getInstance().NotifyUsernameMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires);
+		final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
 		s_logger.info(DUtils.Format("User was muted on the lobby(Username mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node
-					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteExpires.toString()));
+					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
 	}
 	
 	public void muteIp(final INode node, final Date muteExpires)
@@ -112,9 +116,10 @@ public class ModeratorController implements IModeratorController
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
 		new MutedIpController().addMutedIp(node.getAddress().getHostAddress(), muteExpires);
-		ServerMessenger.getInstance().NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires.getTime());
+		ServerMessenger.getInstance().NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires);
+		final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
 		s_logger.info(DUtils.Format("User was muted on the lobby(IP mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node.getAddress()
-					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteExpires.toString()));
+					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
 	}
 	
 	public void muteMac(final INode node, final Date muteExpires)
@@ -125,9 +130,10 @@ public class ModeratorController implements IModeratorController
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
 		new MutedMacController().addMutedMac(mac, muteExpires);
-		ServerMessenger.getInstance().NotifyMacMutingOfPlayer(mac, muteExpires.getTime());
+		ServerMessenger.getInstance().NotifyMacMutingOfPlayer(mac, muteExpires);
+		final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
 		s_logger.info(DUtils.Format("User was muted on the lobby(Mac mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node.getAddress()
-					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteExpires.toString()));
+					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
 	}
 	
 	private String getNodeMacAddress(final INode node)

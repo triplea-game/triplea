@@ -6,6 +6,8 @@
         <info name="Big World : 1942 v3 Rules" version="3.8"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
+		
+		<triplea minimumVersion="1.5"/>
 
         <map>
                 <!-- Territory Name Definitions -->

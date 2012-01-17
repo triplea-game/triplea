@@ -7,6 +7,8 @@
 	
 	<loader javaClass="games.strategy.kingstable.KingsTable"/>
 	
+	<triplea minimumVersion="1.5"/>
+	
 	<map>
 		<grid name="gameboard" type="square" x="11" y="11" horizontal-connections="implicit" vertical-connections="implicit"/>
 	</map>

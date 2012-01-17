@@ -49,9 +49,9 @@ public class MutePlayerAction extends AbstractAction
 			if (node.getName().equals(name))
 			{
 				final String realName = node.getName().split(" ")[0];
-				ServerMessenger.getInstance().NotifyUsernameMutingOfPlayer(realName, Long.MAX_VALUE);
-				ServerMessenger.getInstance().NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), Long.MAX_VALUE);
-				ServerMessenger.getInstance().NotifyMacMutingOfPlayer(ServerMessenger.getInstance().GetPlayerMac(node.getName()), Long.MAX_VALUE);
+				ServerMessenger.getInstance().NotifyUsernameMutingOfPlayer(realName, null);
+				ServerMessenger.getInstance().NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), null);
+				ServerMessenger.getInstance().NotifyMacMutingOfPlayer(ServerMessenger.getInstance().GetPlayerMac(node.getName()), null);
 				return;
 			}
 		}

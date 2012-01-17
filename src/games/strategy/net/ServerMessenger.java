@@ -238,14 +238,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyUsernameMutingOfPlayer(final String username, final long expireDate)
+	public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires)
 	{
 		synchronized (m_cachedListLock)
 		{
 			if (!m_liveMutedUsernames.contains(username))
 				m_liveMutedUsernames.add(username);
-			if (isLobby())
-				ScheduleUsernameUnmuteAt(username, expireDate);
+			if (isLobby() && muteExpires != null)
+				ScheduleUsernameUnmuteAt(username, muteExpires.getTime());
 		}
 	}
 	
@@ -259,14 +259,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyIPMutingOfPlayer(final String ip, final long expireDate)
+	public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires)
 	{
 		synchronized (m_cachedListLock)
 		{
 			if (!m_liveMutedIpAddresses.contains(ip))
 				m_liveMutedIpAddresses.add(ip);
-			if (isLobby())
-				ScheduleIpUnmuteAt(ip, expireDate);
+			if (isLobby() && muteExpires != null)
+				ScheduleIpUnmuteAt(ip, muteExpires.getTime());
 		}
 	}
 	
@@ -280,14 +280,14 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 		}
 	}
 	
-	public void NotifyMacMutingOfPlayer(final String mac, final long expireDate)
+	public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires)
 	{
 		synchronized (m_cachedListLock)
 		{
 			if (!m_liveMutedMacAddresses.contains(mac))
 				m_liveMutedMacAddresses.add(mac);
-			if (isLobby())
-				ScheduleMacUnmuteAt(mac, expireDate);
+			if (isLobby() && muteExpires != null)
+				ScheduleMacUnmuteAt(mac, muteExpires.getTime());
 		}
 	}
 	

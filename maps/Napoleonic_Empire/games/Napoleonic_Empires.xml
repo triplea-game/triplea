@@ -6,6 +6,8 @@
         <info name="Napoleonic Empires" version="3.9.5"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
+		
+		<triplea minimumVersion="1.5"/>
 
         <map>
                 <!-- Territory Definitions -->

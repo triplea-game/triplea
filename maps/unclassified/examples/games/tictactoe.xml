@@ -7,6 +7,8 @@
 	
 	<loader javaClass="games.puzzle.tictactoe.TicTacToe"/>
 	
+	<triplea minimumVersion="1.5"/>
+	
 	<map>
 		<grid type="square" name="main_board" x="3" y="3"/>
 	</map>
