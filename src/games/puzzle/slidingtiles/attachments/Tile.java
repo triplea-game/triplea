@@ -17,6 +17,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.annotations.GameProperty;
 
 /**
  * Represents a sliding tile in a sliding tile game.
@@ -64,6 +65,7 @@ public class Tile extends DefaultAttachment
 	 * @param value
 	 *            String representation of the int value to store in this tile
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setValue(final String value)
 	{
 		this.m_value = getInt(value);

@@ -5,6 +5,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.util.Match;
 
@@ -39,6 +40,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	 * @param conditions
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setConditions(final String conditions) throws GameParseException
 	{
 		final Collection<PlayerID> playerIDs = getData().getPlayerList().getPlayers();
@@ -80,11 +82,13 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		return m_invert;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setInvert(final String s)
 	{
 		m_invert = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setConditionType(final String s) throws GameParseException
 	{
 		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
@@ -146,6 +150,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		};
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChance(final String chance) throws GameParseException
 	{
 		final String[] s = chance.split(":");

@@ -25,6 +25,8 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 
 import java.util.ArrayList;
@@ -44,11 +46,15 @@ public class UnitSupportAttachment extends DefaultAttachment
 {
 	private static final long serialVersionUID = -3015679930172496082L;
 	private Set<UnitType> m_unitType = null;
-	private boolean m_offence = false;
-	private boolean m_defence = false;
+	@InternalDoNotExport
+	private boolean m_offence = false; // Do Not Export
+	@InternalDoNotExport
+	private boolean m_defence = false; // Do Not Export
 	
 	@SuppressWarnings("unused")
+	@InternalDoNotExport
 	private boolean m_roll = false; // TODO: finish support attachments
+	@InternalDoNotExport
 	@SuppressWarnings("unused")
 	private boolean m_strength = false; // TODO: finish support attachments
 	
@@ -56,8 +62,10 @@ public class UnitSupportAttachment extends DefaultAttachment
 	private int m_number = 0;
 	
 	@SuppressWarnings("unused")
+	@InternalDoNotExport
 	private boolean m_allied = false; // TODO: finish support attachments
 	@SuppressWarnings("unused")
+	@InternalDoNotExport
 	private boolean m_enemy = false; // TODO: finish support attachments
 	
 	private String m_bonusType = null;
@@ -109,6 +117,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return supports;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitType(final String names) throws GameParseException
 	{
 		m_unitType = new HashSet<UnitType>();
@@ -122,6 +131,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setFaction(final String faction) throws GameParseException
 	{
 		final String[] s = faction.split(":");
@@ -142,6 +152,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return m_faction;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setSide(final String side) throws GameParseException
 	{
 		final String[] s = side.split(":");
@@ -162,6 +173,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return m_side;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDice(final String dice) throws GameParseException
 	{
 		final String[] s = dice.split(":");
@@ -182,16 +194,19 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return m_dice;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBonus(final String bonus)
 	{
 		m_bonus = getInt(bonus);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setNumber(final String number)
 	{
 		m_number = getInt(number);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBonusType(final String type)
 	{
 		m_bonusType = type;
@@ -203,6 +218,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	 * @param names
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setPlayers(final String names) throws GameParseException
 	{
 		final String[] s = names.split(":");
@@ -216,6 +232,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setPlayers(final ArrayList<PlayerID> players)
 	{
 		m_players = players;
@@ -231,6 +248,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		m_players.clear();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setImpArtTech(final String tech)
 	{
 		m_impArtTech = getBool(tech);
@@ -276,6 +294,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	 * boolean first is a cheat, adds a bogus support to a unit
 	 * in the case that supportable units are declared before any artillery
 	 */
+	@InternalDoNotExport
 	public static void addRule(final UnitType type, final GameData data, final boolean first) throws GameParseException
 	{
 		final UnitSupportAttachment rule = new UnitSupportAttachment(Constants.SUPPORT_RULE_NAME_OLD + type.getName(), type, data);
@@ -297,6 +316,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		type.addAttachment(Constants.SUPPORT_RULE_NAME_OLD + type.getName(), rule);
 	}
 	
+	@InternalDoNotExport
 	private static Set<UnitType> getTargets(final GameData data)
 	{
 		for (final UnitSupportAttachment rule : get(data))
@@ -307,6 +327,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return null;
 	}
 	
+	@InternalDoNotExport
 	private void addUnitTypes(final Set<UnitType> types)
 	{
 		if (types == null)
@@ -316,6 +337,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		m_unitType.addAll(types);
 	}
 	
+	@InternalDoNotExport
 	public static void setOldSupportCount(final UnitType type, final GameData data, final String count)
 	{
 		for (final UnitSupportAttachment rule : get(data))
@@ -325,6 +347,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 	}
 	
+	@InternalDoNotExport
 	public static void addTarget(final UnitType type, final GameData data) throws GameParseException
 	{
 		final Iterator<UnitSupportAttachment> iter = get(data).iterator();

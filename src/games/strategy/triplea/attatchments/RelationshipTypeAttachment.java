@@ -31,6 +31,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 
 @SuppressWarnings("serial")
@@ -101,6 +102,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	 * @throws GameParseException
 	 *             if archeType isn't set to war, allied or neutral
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setArcheType(final String archeType) throws GameParseException
 	{
 		if (archeType.toLowerCase().equals(ARCHETYPE_WAR))
@@ -130,6 +132,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	 * @param canFlyOver
 	 *            should be "true", "false" or "default"
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanMoveAirUnitsOverOwnedLand(final String canFlyOver)
 	{
 		m_canMoveAirUnitsOverOwnedLand = canFlyOver;
@@ -150,6 +153,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_canMoveAirUnitsOverOwnedLand.equals(PROPERTY_TRUE);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanMoveLandUnitsOverOwnedLand(final String canFlyOver)
 	{
 		m_canMoveLandUnitsOverOwnedLand = canFlyOver;
@@ -164,6 +168,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_canMoveLandUnitsOverOwnedLand.equals(PROPERTY_TRUE);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanLandAirUnitsOnOwnedLand(final String canLandAir)
 	{
 		m_canLandAirUnitsOnOwnedLand = canLandAir;
@@ -179,6 +184,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_canLandAirUnitsOnOwnedLand.equals(PROPERTY_TRUE);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanTakeOverOwnedTerritory(final String canTakeOver)
 	{
 		m_canTakeOverOwnedTerritory = canTakeOver;
@@ -194,6 +200,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_canTakeOverOwnedTerritory.equals(PROPERTY_TRUE);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUpkeepCost(final String integerCost) throws GameParseException
 	{
 		if (integerCost.equals(PROPERTY_DEFAULT))
@@ -230,6 +237,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_upkeepCost;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAlliancesCanChainTogether(final String value) throws GameParseException
 	{
 		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
@@ -244,6 +252,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_alliancesCanChainTogether.equals(PROPERTY_TRUE);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsDefaultWarPosition(final String value) throws GameParseException
 	{
 		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
@@ -258,6 +267,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		return m_isDefaultWarPosition.equals(PROPERTY_TRUE);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setGivesBackOriginalTerritories(final String value) throws GameParseException
 	{
 		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
@@ -307,6 +317,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	 *            should be "true", "false" or "default"
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setHelpsDefendAtSea(final String helpsDefendAtSea) throws GameParseException
 	{
 		if (helpsDefendAtSea.toLowerCase().equals(PROPERTY_TRUE))

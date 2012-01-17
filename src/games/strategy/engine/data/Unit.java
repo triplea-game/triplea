@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.net.GUID;
 
 import java.io.Serializable;
@@ -102,6 +103,7 @@ public class Unit extends GameDataComponent implements Serializable
 		return m_hits;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	void setHits(final int hits)
 	{
 		m_hits = hits;
@@ -110,6 +112,7 @@ public class Unit extends GameDataComponent implements Serializable
 	/**
 	 * can be null.
 	 */
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	void setOwner(PlayerID player)
 	{
 		if (player == null)

@@ -6,6 +6,8 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.DelegateFinder;
@@ -32,8 +34,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 {
 	private static final long serialVersionUID = -6977650137928964759L;
 	
+	@InternalDoNotExport
 	protected boolean m_countEach = false; // Do Not Export (do not include in IAttachment). Determines if we will be counting each for the purposes of m_objectiveValue
+	@InternalDoNotExport
 	protected int m_eachMultiple = 1; // Do Not Export (do not include in IAttachment). The multiple that will be applied to m_objectiveValue if m_countEach is true
+	@InternalDoNotExport
 	protected int m_territoryCount = -1; // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
 	
 	protected int m_objectiveValue = 0; // only used if the attachment begins with "objectiveAttachment"
@@ -91,11 +96,13 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	}
 	
 	@Override
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChance(final String chance) throws GameParseException
 	{
 		throw new GameParseException("RulesAttachment: chance not allowed for use with RulesAttachments, instead use it with Triggers or PoliticalActions");
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setObjectiveValue(final String value)
 	{
 		m_objectiveValue = getInt(value);
@@ -113,6 +120,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 * 
 	 * @param value
 	 */
+	@InternalDoNotExport
 	protected void setTerritoryCount(final String value)
 	{
 		if (value.equals("each"))
@@ -157,16 +165,19 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		return m_uses;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUses(final String s)
 	{
 		m_uses = getInt(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUses(final Integer u)
 	{
 		m_uses = u;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTurns(final String turns) throws GameParseException
 	{
 		m_turns = new HashMap<Integer, Integer>();

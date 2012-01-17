@@ -66,7 +66,7 @@ public class BetterAI extends AbstractAI
 			final PlayerAttachment pa = (PlayerAttachment) m_id.getAttachment("playerAttachment");
 			if (pa != null)
 			{
-				if (pa.needsKing())
+				if (pa.getNeedsKing())
 					m_kingPlayer = true;
 				cutoffDepth = pa.getAlphaBetaSearchDepth();
 			}

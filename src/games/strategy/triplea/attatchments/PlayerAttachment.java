@@ -25,6 +25,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
@@ -82,6 +83,7 @@ public class PlayerAttachment extends DefaultAttachment
 	 * @param value
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setSuicideAttackTargets(final String value) throws GameParseException
 	{
 		if (value == null)
@@ -117,6 +119,7 @@ public class PlayerAttachment extends DefaultAttachment
 	 * @param value
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setSuicideAttackResources(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
@@ -141,6 +144,7 @@ public class PlayerAttachment extends DefaultAttachment
 		m_suicideAttackResources.clear();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setVps(final String value)
 	{
 		m_vps = getInt(value);
@@ -151,6 +155,7 @@ public class PlayerAttachment extends DefaultAttachment
 		return "" + m_vps;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCaptureVps(final String value)
 	{
 		m_captureVps = getInt(value);
@@ -161,6 +166,7 @@ public class PlayerAttachment extends DefaultAttachment
 		return "" + m_captureVps;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRetainCapitalNumber(final String value)
 	{
 		m_retainCapitalNumber = getInt(value);
@@ -171,6 +177,7 @@ public class PlayerAttachment extends DefaultAttachment
 		return m_retainCapitalNumber;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRetainCapitalProduceNumber(final String value)
 	{
 		m_retainCapitalProduceNumber = getInt(value);
@@ -186,6 +193,7 @@ public class PlayerAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setGiveUnitControl(final String value)
 	{
 		final String[] temp = value.split(":");
@@ -216,6 +224,7 @@ public class PlayerAttachment extends DefaultAttachment
 	 * 
 	 * @param value
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setCaptureUnitOnEnteringBy(final String value)
 	{
 		final String[] temp = value.split(":");
@@ -239,6 +248,7 @@ public class PlayerAttachment extends DefaultAttachment
 		m_captureUnitOnEnteringBy.clear();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDestroysPUs(final String value)
 	{
 		m_destroysPUs = getBool(value);
@@ -257,6 +267,7 @@ public class PlayerAttachment extends DefaultAttachment
 	
 	/** setTakeUnitControl (and getTakeUnitControl) DO NOTHING. They are kept for backwards compatibility only, otherwise users get Java errors. */
 	@Deprecated
+	@GameProperty(xmlProperty = true, gameProperty = false, adds = false)
 	public void setTakeUnitControl(final String value)
 	{
 	}

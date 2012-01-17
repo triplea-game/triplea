@@ -19,6 +19,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.CompositeMatchAnd;
@@ -90,6 +92,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	// how many times can you perform this action each round?
 	private int m_attemptsPerTurn = 1;
 	// how many times are left to perform this action each round?
+	@InternalDoNotExport
 	private int m_attemptsLeftThisTurn = 1; // Do Not Export (do not include in IAttachment).
 	// which players should accept this action? this could be the player who is the target of this action in the case of proposing a treaty or the players in your 'alliance' in case you want to declare war...
 	// especially for actions that when france declares war on germany and it automatically causes UK to declare war as well. it is good to set "actionAccept" to "UK" so UK can accept this action to go through.
@@ -121,6 +124,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	 * @param relChange
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setRelationshipChange(final String relChange) throws GameParseException
 	{
 		final String[] s = relChange.split(":");
@@ -149,6 +153,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	 * @param text
 	 *            the Key that is used in politicstext.properties for all the texts
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setText(final String text)
 	{
 		m_text = text;
@@ -176,6 +181,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	 * @param s
 	 *            the amount you need to pay to perform the action
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCostPU(final String s)
 	{
 		m_costPU = getInt(s);
@@ -193,6 +199,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	 * @param s
 	 *            the amount of times you can try this Action per Round
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAttemptsPerTurn(final String s)
 	{
 		m_attemptsPerTurn = getInt(s);
@@ -211,6 +218,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	 * @param attempts
 	 *            left this turn
 	 */
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setAttemptsLeftThisTurn(final int attempts)
 	{
 		m_attemptsLeftThisTurn = attempts;
@@ -229,6 +237,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	 * 
 	 * @param value
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setActionAccept(final String value)
 	{
 		final String[] temp = value.split(":");

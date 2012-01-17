@@ -21,6 +21,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -103,6 +104,7 @@ public class TripleAUnit extends Unit
 		return m_transportedBy;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setTransportedBy(final TripleAUnit transportedBy)
 	{
 		m_transportedBy = transportedBy;
@@ -135,6 +137,7 @@ public class TripleAUnit extends Unit
 		return m_unloaded;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setUnloaded(final List<Unit> unloaded)
 	{
 		if (unloaded == null || unloaded.isEmpty())
@@ -152,6 +155,7 @@ public class TripleAUnit extends Unit
 		return m_wasLoadedThisTurn.booleanValue();
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setWasLoadedThisTurn(final Boolean value)
 	{
 		m_wasLoadedThisTurn = Boolean.valueOf(value.booleanValue());
@@ -162,6 +166,7 @@ public class TripleAUnit extends Unit
 		return m_unloadedTo;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setUnloadedTo(final Territory unloadedTo)
 	{
 		m_unloadedTo = unloadedTo;
@@ -172,6 +177,7 @@ public class TripleAUnit extends Unit
 		return m_originatedFrom;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setOriginatedFrom(final Territory t)
 	{
 		m_originatedFrom = t;
@@ -182,6 +188,7 @@ public class TripleAUnit extends Unit
 		return m_wasUnloadedInCombatPhase.booleanValue();
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setWasUnloadedInCombatPhase(final Boolean value)
 	{
 		m_wasUnloadedInCombatPhase = Boolean.valueOf(value.booleanValue());
@@ -192,11 +199,13 @@ public class TripleAUnit extends Unit
 		return m_alreadyMoved;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setAlreadyMoved(final Integer alreadyMoved)
 	{
 		m_alreadyMoved = alreadyMoved;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setBonusMovement(final Integer bonusMovement)
 	{
 		m_bonusMovement = bonusMovement;
@@ -225,6 +234,7 @@ public class TripleAUnit extends Unit
 		return m_unitDamage;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setUnitDamage(final Integer unitDamage)
 	{
 		m_unitDamage = unitDamage;
@@ -235,6 +245,7 @@ public class TripleAUnit extends Unit
 		return m_submerged;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setSubmerged(final boolean submerged)
 	{
 		m_submerged = submerged;
@@ -245,6 +256,7 @@ public class TripleAUnit extends Unit
 		return m_originalOwner;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setOriginalOwner(final PlayerID originalOwner)
 	{
 		m_originalOwner = originalOwner;
@@ -255,6 +267,7 @@ public class TripleAUnit extends Unit
 		return m_wasInCombat;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setWasInCombat(final Boolean value)
 	{
 		m_wasInCombat = Boolean.valueOf(value.booleanValue());
@@ -265,11 +278,13 @@ public class TripleAUnit extends Unit
 		return m_wasScrambled;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setWasScrambled(final Boolean value)
 	{
 		m_wasScrambled = Boolean.valueOf(value.booleanValue());
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setWasInAirBattle(final Boolean value)
 	{
 		m_wasInAirBattle = Boolean.valueOf(value.booleanValue());
@@ -285,6 +300,7 @@ public class TripleAUnit extends Unit
 		return m_wasLoadedAfterCombat;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setWasLoadedAfterCombat(final Boolean value)
 	{
 		m_wasLoadedAfterCombat = Boolean.valueOf(value.booleanValue());
@@ -308,6 +324,7 @@ public class TripleAUnit extends Unit
 		return m_wasAmphibious;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setWasAmphibious(final Boolean value)
 	{
 		m_wasAmphibious = Boolean.valueOf(value.booleanValue());
@@ -318,6 +335,7 @@ public class TripleAUnit extends Unit
 		return m_disabled;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setDisabled(final Boolean value)
 	{
 		m_disabled = Boolean.valueOf(value.booleanValue());

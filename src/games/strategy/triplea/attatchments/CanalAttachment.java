@@ -6,6 +6,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 
 import java.util.ArrayList;
@@ -73,6 +74,7 @@ public class CanalAttachment extends DefaultAttachment
 		return rVal;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanalName(final String name)
 	{
 		m_canalName = name;
@@ -83,6 +85,7 @@ public class CanalAttachment extends DefaultAttachment
 		return m_canalName;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setLandTerritories(final String landTerritories)
 	{
 		m_landTerritories = landTerritories.split(":");

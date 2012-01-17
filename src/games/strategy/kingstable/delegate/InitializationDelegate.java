@@ -46,7 +46,7 @@ public class InitializationDelegate extends BaseDelegate
 			final PlayerAttachment pa = (PlayerAttachment) player.getAttachment("playerAttachment");
 			if (pa == null)
 				attacker = player;
-			else if (pa.needsKing())
+			else if (pa.getNeedsKing())
 				defender = player;
 			else
 				attacker = player;

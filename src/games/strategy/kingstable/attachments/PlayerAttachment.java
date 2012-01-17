@@ -17,6 +17,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.annotations.GameProperty;
 
 /**
  * 
@@ -35,16 +36,18 @@ public class PlayerAttachment extends DefaultAttachment
 		super(name, attachable, gameData);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setNeedsKing(final String value)
 	{
 		m_needsKing = getBool(value);
 	}
 	
-	public boolean needsKing()
+	public boolean getNeedsKing()
 	{
 		return m_needsKing;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAlphaBetaSearchDepth(final String value)
 	{
 		m_alphaBetaSearchDepth = getInt(value);

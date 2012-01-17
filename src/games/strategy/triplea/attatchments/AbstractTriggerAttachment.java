@@ -7,6 +7,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -33,6 +35,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	
 	// "setTrigger" is also a valid setter, and it just calls "setConditions" in AbstractConditionsAttachment. Kept for backwards compatibility.
 	private int m_uses = -1;
+	@InternalDoNotExport
 	private boolean m_usedThisRound = false; // Do Not Export (do not include in IAttachment).
 	
 	private String m_notification = null;
@@ -110,6 +113,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	 * @throws GameParseException
 	 */
 	@Deprecated
+	@GameProperty(xmlProperty = true, gameProperty = false, adds = true)
 	public void setTrigger(final String conditions) throws GameParseException
 	{
 		setConditions(conditions);
@@ -134,31 +138,37 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		clearConditions();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUses(final String s)
 	{
 		m_uses = getInt(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUses(final Integer u)
 	{
 		m_uses = u;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUses(final int u)
 	{
 		m_uses = u;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setUsedThisRound(final String s)
 	{
 		m_usedThisRound = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setUsedThisRound(final boolean usedThisRound)
 	{
 		m_usedThisRound = usedThisRound;
 	}
 	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setUsedThisRound(final Boolean usedThisRound)
 	{
 		m_usedThisRound = usedThisRound;
@@ -174,6 +184,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		return m_uses;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setWhen(final String when) throws GameParseException
 	{
 		final String[] s = when.split(":");
@@ -189,6 +200,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		return m_when;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setNotification(final String sNotification)
 	{
 		m_notification = sNotification;

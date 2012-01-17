@@ -22,6 +22,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
@@ -77,6 +79,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	 * @param combatDefenseEffect
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setCombatDefenseEffect(final String combatDefenseEffect) throws GameParseException
 	{
 		setCombatEffect(combatDefenseEffect, true);
@@ -98,6 +101,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	 * @param combatOffenseEffect
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setCombatOffenseEffect(final String combatOffenseEffect) throws GameParseException
 	{
 		setCombatEffect(combatOffenseEffect, false);
@@ -113,6 +117,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 		m_combatOffenseEffect.clear();
 	}
 	
+	@InternalDoNotExport
 	private void setCombatEffect(final String combatEffect, final boolean defending) throws GameParseException
 	{
 		final String[] s = combatEffect.split(":");
@@ -145,6 +150,13 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 		}
 	}
 	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param noBlitzUnitTypes
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setNoBlitz(final String noBlitzUnitTypes) throws GameParseException
 	{
 		final String[] s = noBlitzUnitTypes.split(":");

@@ -28,6 +28,8 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
@@ -57,10 +59,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	private static final long serialVersionUID = 7301965634079412516L;
 	
 	private List<TechAdvance> m_techs = null; // condition for having techs
+	@InternalDoNotExport
 	private int m_techCount = -1; // Do Not Export (do not include in IAttachment).
 	
 	private final List<String> m_relationship = new ArrayList<String>(); // condition for having specific relationships
 	private Set<PlayerID> m_atWarPlayers = null; // condition for being at war
+	@InternalDoNotExport
 	private int m_atWarCount = -1; // Do Not Export (do not include in IAttachment).
 	private String m_destroyedTUV = null; // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to the prices the defender pays for the units]
 	
@@ -82,6 +86,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		super(name, attachable, gameData);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDestroyedTUV(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
@@ -108,6 +113,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	 *            should be a string containing: "player:player:relationship"
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setRelationship(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
@@ -135,6 +141,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		m_relationship.clear();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAlliedOwnershipTerritories(final String value)
 	{
 		m_alliedOwnershipTerritories = value.split(":");
@@ -147,6 +154,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	// exclusion types = controlled, controlledNoWater, original, all, or list
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAlliedExclusionTerritories(final String value)
 	{
 		m_alliedExclusionTerritories = value.split(":");
@@ -158,6 +166,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_alliedExclusionTerritories;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDirectExclusionTerritories(final String value)
 	{
 		m_directExclusionTerritories = value.split(":");
@@ -170,6 +179,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	// exclusion types = original or list
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setEnemyExclusionTerritories(final String value)
 	{
 		m_enemyExclusionTerritories = value.split(":");
@@ -181,6 +191,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_enemyExclusionTerritories;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDirectPresenceTerritories(final String value)
 	{
 		m_directPresenceTerritories = value.split(":");
@@ -192,6 +203,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_directPresenceTerritories;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAlliedPresenceTerritories(final String value)
 	{
 		m_alliedPresenceTerritories = value.split(":");
@@ -203,6 +215,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_alliedPresenceTerritories;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setEnemyPresenceTerritories(final String value)
 	{
 		m_enemyPresenceTerritories = value.split(":");
@@ -215,6 +228,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	// exclusion types = original or list
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setEnemySurfaceExclusionTerritories(final String value)
 	{
 		m_enemySurfaceExclusionTerritories = value.split(":");
@@ -226,6 +240,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_enemySurfaceExclusionTerritories;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDirectOwnershipTerritories(final String value)
 	{
 		m_directOwnershipTerritories = value.split(":");
@@ -242,6 +257,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	 * 
 	 * @param value
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setUnitPresence(String value)
 	{
 		final String[] s = value.split(":");
@@ -287,6 +303,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_atWarPlayers;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAtWarPlayers(final String players) throws GameParseException
 	{
 		final String[] s = players.split(":");
@@ -313,6 +330,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		}
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTechs(final String techs) throws GameParseException
 	{
 		{

@@ -17,6 +17,7 @@ import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.annotations.GameProperty;
 
 /**
  * Territory attachment for King's Table.
@@ -36,6 +37,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		super(name, attachable, gameData);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setKingsSquare(final String value)
 	{
 		m_kingsSquare = getBool(value);
@@ -46,6 +48,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_kingsSquare;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setKingsExit(final String value)
 	{
 		m_kingsExit = getBool(value);

@@ -18,6 +18,8 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -71,7 +73,8 @@ public class TechAttachment extends DefaultAttachment
 	private boolean m_mechanizedInfantry;
 	private boolean m_aARadar;
 	private boolean m_shipyards;
-	private final Map<String, Boolean> m_GenericTech = new HashMap<String, Boolean>();
+	@InternalDoNotExport
+	private final Map<String, Boolean> m_GenericTech = new HashMap<String, Boolean>(); // do not export at this point. currently map xml can not define a player having a custom tech at start of game
 	
 	public TechAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -91,76 +94,91 @@ public class TechAttachment extends DefaultAttachment
 		// TODO: not having game data, and not having generic techs, causes problems. Fix by creating real tech attachments for all players who are missing them, at the beginning of the game.
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTechCost(final String s)
 	{
 		m_techCost = getInt(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setHeavyBomber(final String s)
 	{
 		m_heavyBomber = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDestroyerBombard(final String s)
 	{
 		m_destroyerBombard = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setLongRangeAir(final String s)
 	{
 		m_longRangeAir = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setJetPower(final String s)
 	{
 		m_jetPower = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRocket(final String s)
 	{
 		m_rocket = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIndustrialTechnology(final String s)
 	{
 		m_industrialTechnology = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setSuperSub(final String s)
 	{
 		m_superSub = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setImprovedArtillerySupport(final String s)
 	{
 		m_improvedArtillerySupport = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setParatroopers(final String s)
 	{
 		m_paratroopers = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIncreasedFactoryProduction(final String s)
 	{
 		m_increasedFactoryProduction = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setWarBonds(final String s)
 	{
 		m_warBonds = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMechanizedInfantry(final String s)
 	{
 		m_mechanizedInfantry = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAARadar(final String s)
 	{
 		m_aARadar = getBool(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setShipyards(final String s)
 	{
 		m_shipyards = getBool(s);
@@ -314,6 +332,7 @@ public class TechAttachment extends DefaultAttachment
 	/**
 	 * Internal use only, is not set by xml or property utils.
 	 */
+	@InternalDoNotExport
 	private void setGenericTechs()
 	{
 		for (final TechAdvance ta : getData().getTechnologyFrontier())
@@ -336,6 +355,7 @@ public class TechAttachment extends DefaultAttachment
 	 * @param name
 	 * @param value
 	 */
+	@InternalDoNotExport
 	public void setGenericTech(final String name, final Boolean value)
 	{
 		m_GenericTech.put(name, value);

@@ -16,6 +16,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
@@ -169,6 +170,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		triggerVictory(triggersToBeFired, aBridge, beforeOrAfter, stepName);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setFrontier(final String s) throws GameParseException
 	{
 		final ProductionFrontier front = getData().getProductionFrontierList().getProductionFrontier(s);
@@ -188,6 +190,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param prop
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setProductionRule(final String prop) throws GameParseException
 	{
 		final String[] s = prop.split(":");
@@ -220,6 +223,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		return m_resourceCount;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setResourceCount(final String s)
 	{
 		m_resourceCount = getInt(s);
@@ -230,6 +234,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		return m_victory;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setVictory(final String s)
 	{
 		m_victory = s;
@@ -241,6 +246,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param techs
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setTech(final String techs) throws GameParseException
 	{
 		for (final String subString : techs.split(":"))
@@ -270,6 +276,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param techs
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setAvailableTech(final String techs) throws GameParseException
 	{
 		final String[] s = techs.split(":");
@@ -315,6 +322,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param sup
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setSupport(final String sup) throws GameParseException
 	{
 		final String[] s = sup.split(":");
@@ -358,6 +366,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		return m_resource;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setResource(final String s) throws GameParseException
 	{
 		final Resource r = getData().getResourceList().getResource(s);
@@ -373,6 +382,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param relChange
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setRelationshipChange(final String relChange) throws GameParseException
 	{
 		final String[] s = relChange.split(":");
@@ -406,6 +416,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param names
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setUnitType(final String names) throws GameParseException
 	{
 		final String[] s = names.split(":");
@@ -428,6 +439,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_unitType.clear();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitAttachmentName(final String name) throws GameParseException
 	{
 		final String[] s = name.split(":");
@@ -459,6 +471,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param prop
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setUnitProperty(final String prop) throws GameParseException
 	{
 		final String[] s = prop.split(":");
@@ -484,6 +497,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param names
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setTerritories(final String names) throws GameParseException
 	{
 		final String[] s = names.split(":");
@@ -506,6 +520,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_territories.clear();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryAttachmentName(final String name) throws GameParseException
 	{
 		final String[] s = name.split(":");
@@ -537,6 +552,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param prop
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setTerritoryProperty(final String prop) throws GameParseException
 	{
 		final String[] s = prop.split(":");
@@ -562,6 +578,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param names
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setPlayers(final String names) throws GameParseException
 	{
 		final String[] s = names.split(":");
@@ -587,6 +604,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_players.clear();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setPlayerAttachmentName(final String name) throws GameParseException
 	{
 		final String[] s = name.split(":");
@@ -625,6 +643,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param prop
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setPlayerProperty(final String prop) throws GameParseException
 	{
 		final String[] s = prop.split(":");
@@ -650,6 +669,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param names
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setRelationshipTypes(final String names) throws GameParseException
 	{
 		final String[] s = names.split(":");
@@ -672,6 +692,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_relationshipTypes.clear();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRelationshipTypeAttachmentName(final String name) throws GameParseException
 	{
 		final String[] s = name.split(":");
@@ -701,6 +722,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param prop
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setRelationshipTypeProperty(final String prop) throws GameParseException
 	{
 		final String[] s = prop.split(":");
@@ -726,6 +748,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param names
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setTerritoryEffects(final String names) throws GameParseException
 	{
 		final String[] s = names.split(":");
@@ -748,6 +771,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_territoryEffects.clear();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryEffectAttachmentName(final String name) throws GameParseException
 	{
 		final String[] s = name.split(":");
@@ -777,6 +801,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param prop
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setTerritoryEffectProperty(final String prop) throws GameParseException
 	{
 		final String[] s = prop.split(":");
@@ -803,6 +828,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param place
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setPlacement(final String place) throws GameParseException
 	{
 		final String[] s = place.split(":");
@@ -858,6 +884,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param value
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setRemoveUnits(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
@@ -913,6 +940,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param place
 	 * @throws GameParseException
 	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setPurchase(final String place) throws GameParseException
 	{
 		final String[] s = place.split(":");

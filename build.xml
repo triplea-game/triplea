@@ -550,6 +550,11 @@
             <classpath refid="test.classpath"/>
         </javac>
 
+        <!-- copy the game.xml file form the test into the test output directory -->
+	    <copy todir="${test-classes}">
+		<fileset dir="${test-src}" includes="**/*.xml"/>
+	    </copy>
+
 		<junit fork="yes" haltonerror="off">
 			<classpath refid="test.classpath"/>
 			<formatter type="plain" />
