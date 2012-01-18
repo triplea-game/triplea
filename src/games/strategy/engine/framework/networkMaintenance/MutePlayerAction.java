@@ -2,16 +2,11 @@ package games.strategy.engine.framework.networkMaintenance;
 
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.ServerMessenger;
 
-import java.awt.Component;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.TreeSet;
-
-import javax.swing.AbstractAction;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 
 public class MutePlayerAction extends AbstractAction
 {
@@ -49,9 +44,9 @@ public class MutePlayerAction extends AbstractAction
 			if (node.getName().equals(name))
 			{
 				final String realName = node.getName().split(" ")[0];
-				ServerMessenger.getInstance().NotifyUsernameMutingOfPlayer(realName, null);
-				ServerMessenger.getInstance().NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), null);
-				ServerMessenger.getInstance().NotifyMacMutingOfPlayer(ServerMessenger.getInstance().GetPlayerMac(node.getName()), null);
+				m_messenger.NotifyUsernameMutingOfPlayer(realName, null);
+				m_messenger.NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), null);
+				m_messenger.NotifyMacMutingOfPlayer(m_messenger.GetPlayerMac(node.getName()), null);
 				return;
 			}
 		}

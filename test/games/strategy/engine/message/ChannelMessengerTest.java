@@ -78,9 +78,9 @@ public class ChannelMessengerTest extends TestCase
 	
 	public void testLocalCall()
 	{
-		final RemoteName descriptor = new RemoteName(IChannelTest.class, "testLocalCall");
+		final RemoteName descriptor = new RemoteName(IChannelBase.class, "testLocalCall");
 		m_serverMessenger.registerChannelSubscriber(new ChannelSubscribor(), descriptor);
-		final IChannelTest subscribor = (IChannelTest) m_serverMessenger.getChannelBroadcastor(descriptor);
+		final IChannelBase subscribor = (IChannelBase) m_serverMessenger.getChannelBroadcastor(descriptor);
 		subscribor.testNoParams();
 		subscribor.testPrimitives(1, (short) 0, 1, (byte) 1, true, (float) 1.0);
 		subscribor.testString("a");
@@ -88,11 +88,11 @@ public class ChannelMessengerTest extends TestCase
 	
 	public void testRemoteCall()
 	{
-		final RemoteName testRemote = new RemoteName(IChannelTest.class, "testRemote");
+		final RemoteName testRemote = new RemoteName(IChannelBase.class, "testRemote");
 		final ChannelSubscribor subscribor1 = new ChannelSubscribor();
 		m_serverMessenger.registerChannelSubscriber(subscribor1, testRemote);
 		assertHasChannel(testRemote, m_hub);
-		final IChannelTest channelTest = (IChannelTest) m_clientMessenger.getChannelBroadcastor(testRemote);
+		final IChannelBase channelTest = (IChannelBase) m_clientMessenger.getChannelBroadcastor(testRemote);
 		channelTest.testNoParams();
 		assertCallCountIs(subscribor1, 1);
 		channelTest.testString("a");
@@ -128,7 +128,7 @@ public class ChannelMessengerTest extends TestCase
 	{
 		// set up the client and server
 		// so that the client has 1 subscribor, and the server knows about it
-		final RemoteName test = new RemoteName(IChannelTest.class, "test");
+		final RemoteName test = new RemoteName(IChannelBase.class, "test");
 		final ChannelSubscribor client1Subscribor = new ChannelSubscribor();
 		m_clientMessenger.registerChannelSubscriber(client1Subscribor, test);
 		assertHasChannel(test, m_hub);
@@ -137,24 +137,24 @@ public class ChannelMessengerTest extends TestCase
 		final String mac = MacFinder.GetHashedMacAddress();
 		final ClientMessenger clientMessenger2 = new ClientMessenger("localhost", SERVER_PORT, "client2", mac);
 		final ChannelMessenger client2 = new ChannelMessenger(new UnifiedMessenger(clientMessenger2));
-		((IChannelTest) client2.getChannelBroadcastor(test)).testString("a");
+		((IChannelBase) client2.getChannelBroadcastor(test)).testString("a");
 		assertCallCountIs(client1Subscribor, 1);
 	}
 	
 	public void testMultipleChannels()
 	{
-		final RemoteName testRemote2 = new RemoteName(IChannelTest.class, "testRemote2");
-		final RemoteName testRemote3 = new RemoteName(IChannelTest.class, "testRemote3");
+		final RemoteName testRemote2 = new RemoteName(IChannelBase.class, "testRemote2");
+		final RemoteName testRemote3 = new RemoteName(IChannelBase.class, "testRemote3");
 		final ChannelSubscribor subscribor2 = new ChannelSubscribor();
 		m_clientMessenger.registerChannelSubscriber(subscribor2, testRemote2);
 		final ChannelSubscribor subscribor3 = new ChannelSubscribor();
 		m_clientMessenger.registerChannelSubscriber(subscribor3, testRemote3);
 		assertHasChannel(testRemote2, m_hub);
 		assertHasChannel(testRemote3, m_hub);
-		final IChannelTest channelTest2 = (IChannelTest) m_serverMessenger.getChannelBroadcastor(testRemote2);
+		final IChannelBase channelTest2 = (IChannelBase) m_serverMessenger.getChannelBroadcastor(testRemote2);
 		channelTest2.testNoParams();
 		assertCallCountIs(subscribor2, 1);
-		final IChannelTest channelTest3 = (IChannelTest) m_serverMessenger.getChannelBroadcastor(testRemote3);
+		final IChannelBase channelTest3 = (IChannelBase) m_serverMessenger.getChannelBroadcastor(testRemote3);
 		channelTest3.testNoParams();
 		assertCallCountIs(subscribor3, 1);
 	}
@@ -180,7 +180,7 @@ public class ChannelMessengerTest extends TestCase
 }
 
 
-interface IChannelTest extends IChannelSubscribor
+interface IChannelBase extends IChannelSubscribor
 {
 	public void testNoParams();
 	
@@ -192,7 +192,7 @@ interface IChannelTest extends IChannelSubscribor
 }
 
 
-class ChannelSubscribor implements IChannelTest
+class ChannelSubscribor implements IChannelBase
 {
 	private int m_callCount = 0;
 	

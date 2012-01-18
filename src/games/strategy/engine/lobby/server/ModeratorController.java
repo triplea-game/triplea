@@ -13,20 +13,12 @@
  */
 package games.strategy.engine.lobby.server;
 
-import games.strategy.engine.lobby.server.userDB.BannedIpController;
-import games.strategy.engine.lobby.server.userDB.BannedMacController;
-import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
-import games.strategy.engine.lobby.server.userDB.DBUser;
-import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.engine.lobby.server.userDB.MutedIpController;
-import games.strategy.engine.lobby.server.userDB.MutedMacController;
-import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
+import games.strategy.engine.lobby.server.userDB.*;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import games.strategy.net.ServerMessenger;
 import games.strategy.triplea.Dynamix_AI.DUtils;
 import games.strategy.util.MD5Crypt;
 
@@ -102,7 +94,7 @@ public class ModeratorController implements IModeratorController
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
 		new MutedUsernameController().addMutedUsername(getRealName(node), muteExpires);
-		ServerMessenger.getInstance().NotifyUsernameMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires);
+		m_messenger.NotifyUsernameMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires);
 		final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
 		s_logger.info(DUtils.Format("User was muted on the lobby(Username mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node
 					.getAddress().getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
@@ -116,7 +108,7 @@ public class ModeratorController implements IModeratorController
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
 		new MutedIpController().addMutedIp(node.getAddress().getHostAddress(), muteExpires);
-		ServerMessenger.getInstance().NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires);
+		m_messenger.NotifyIPMutingOfPlayer(node.getAddress().getHostAddress(), muteExpires);
 		final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
 		s_logger.info(DUtils.Format("User was muted on the lobby(IP mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node.getAddress()
 					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
@@ -130,7 +122,7 @@ public class ModeratorController implements IModeratorController
 		final INode modNode = MessageContext.getSender();
 		final String mac = getNodeMacAddress(node);
 		new MutedMacController().addMutedMac(mac, muteExpires);
-		ServerMessenger.getInstance().NotifyMacMutingOfPlayer(mac, muteExpires);
+		m_messenger.NotifyMacMutingOfPlayer(mac, muteExpires);
 		final String muteUntil = (muteExpires == null ? "forever" : muteExpires.toString());
 		s_logger.info(DUtils.Format("User was muted on the lobby(Mac mute). Username: {0} IP: {1} Mac: {2} Mod Username: {3} Mod IP: {4} Mod Mac: {5} Expires: {6}", node.getName(), node.getAddress()
 					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
@@ -138,7 +130,7 @@ public class ModeratorController implements IModeratorController
 	
 	private String getNodeMacAddress(final INode node)
 	{
-		return ServerMessenger.getInstance().GetPlayerMac(node.getName());
+		return m_messenger.GetPlayerMac(node.getName());
 	}
 	
 	public void boot(final INode node)

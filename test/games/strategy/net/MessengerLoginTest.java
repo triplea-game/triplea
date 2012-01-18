@@ -3,14 +3,14 @@ package games.strategy.net;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
+import games.strategy.engine.message.DummyMessenger;
 import games.strategy.test.TestUtil;
 import games.strategy.util.MD5Crypt;
+import junit.framework.TestCase;
 
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 public class MessengerLoginTest extends TestCase
 {
@@ -119,7 +119,7 @@ public class MessengerLoginTest extends TestCase
 	
 	public void testPassword() throws Exception
 	{
-		final ClientLoginValidator validator = new ClientLoginValidator();
+		final ClientLoginValidator validator = new ClientLoginValidator(new DummyMessenger());
 		validator.setGamePassword("foo");
 		final IConnectionLogin login = new IConnectionLogin()
 		{

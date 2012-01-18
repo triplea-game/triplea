@@ -79,16 +79,9 @@ public class ServerMessenger implements IServerMessenger, NIOSocketListener
 	private final ConcurrentHashMap<INode, SocketChannel> m_nodeToChannel = new ConcurrentHashMap<INode, SocketChannel>();
 	private final ConcurrentHashMap<SocketChannel, INode> m_channelToNode = new ConcurrentHashMap<SocketChannel, INode>();
 	// A hack, till I think of something better
-	private static ServerMessenger s_instance;
-	
-	public static ServerMessenger getInstance()
-	{
-		return s_instance;
-	}
-	
+
 	public ServerMessenger(final String name, final int portNumber, final IObjectStreamFactory streamFactory) throws IOException
 	{
-		s_instance = this;
 		m_socketChannel = ServerSocketChannel.open();
 		m_socketChannel.configureBlocking(false);
 		m_socketChannel.socket().setReuseAddress(true);

@@ -18,6 +18,7 @@
  */
 package games.strategy.net;
 
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -55,4 +56,24 @@ public interface IServerMessenger extends IMessenger
 	 * Get a list of nodes.
 	 */
 	public Set<INode> getNodes();
+
+	void NotifyIPMiniBanningOfPlayer(String ip);
+
+	void NotifyMacMiniBanningOfPlayer(String mac);
+
+	void NotifyUsernameMiniBanningOfPlayer(String username);
+
+	String GetPlayerMac(String name);
+
+	void NotifyUsernameMutingOfPlayer(String username, Date muteExpires);
+
+	void NotifyIPMutingOfPlayer(String ip, Date muteExpires);
+
+	void NotifyMacMutingOfPlayer(String mac, Date muteExpires);
+
+	boolean IsUsernameMiniBanned(String username);
+
+	boolean IsIpMiniBanned(String ip);
+
+	boolean IsMacMiniBanned(String mac);
 }

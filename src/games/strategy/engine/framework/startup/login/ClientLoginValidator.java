@@ -2,7 +2,7 @@ package games.strategy.engine.framework.startup.login;
 
 import games.strategy.engine.EngineVersion;
 import games.strategy.net.ILoginValidator;
-import games.strategy.net.ServerMessenger;
+import games.strategy.net.IServerMessenger;
 import games.strategy.util.MD5Crypt;
 import games.strategy.util.Version;
 
@@ -29,21 +29,16 @@ public class ClientLoginValidator implements ILoginValidator
 	static final String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
 	static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
 	static final String INVALID_MAC = "Invalid mac address";
-	// A hack, till I think of something better
-	private static ClientLoginValidator s_instance;
-	
-	public static ClientLoginValidator getInstance()
-	{
-		return s_instance;
-	}
-	
-	public ClientLoginValidator()
-	{
-		s_instance = this;
-	}
-	
+
+
+	private IServerMessenger m_serverMessenger;
 	private String m_password;
-	
+
+	public ClientLoginValidator(final IServerMessenger serverMessenger)
+	{
+		m_serverMessenger = serverMessenger;
+	}
+
 	/**
 	 * Set the password required for the game, or to null if no password is required.
 	 * 
@@ -87,12 +82,12 @@ public class ClientLoginValidator implements ILoginValidator
 			return error;
 		}
 		final String realName = clientName.split(" ")[0];
-		if (ServerMessenger.getInstance().IsUsernameMiniBanned(realName))
+		if (m_serverMessenger.IsUsernameMiniBanned(realName))
 		{
 			return YOU_HAVE_BEEN_BANNED;
 		}
 		final String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
-		if (ServerMessenger.getInstance().IsIpMiniBanned(remoteIp))
+		if (m_serverMessenger.IsIpMiniBanned(remoteIp))
 		{
 			return YOU_HAVE_BEEN_BANNED;
 		}
@@ -104,7 +99,7 @@ public class ClientLoginValidator implements ILoginValidator
 		{
 			return INVALID_MAC; // Must have been tampered with
 		}
-		if (ServerMessenger.getInstance().IsMacMiniBanned(hashedMac))
+		if (m_serverMessenger.IsMacMiniBanned(hashedMac))
 		{
 			return YOU_HAVE_BEEN_BANNED;
 		}

@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -191,5 +192,55 @@ public class DummyMessenger implements IServerMessenger
 	public InetSocketAddress getRemoteServerSocketAddress()
 	{
 		return m_node.getSocketAddress();
+	}
+
+	public void NotifyIPMiniBanningOfPlayer(final String ip)
+	{
+
+	}
+
+	public void NotifyMacMiniBanningOfPlayer(final String mac)
+	{
+
+	}
+
+	public void NotifyUsernameMiniBanningOfPlayer(final String username)
+	{
+
+	}
+
+	public String GetPlayerMac(final String name)
+	{
+		return "DummyMacAddress";
+	}
+
+	public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires)
+	{
+
+	}
+
+	public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires)
+	{
+
+	}
+
+	public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires)
+	{
+
+	}
+
+	public boolean IsUsernameMiniBanned(final String username)
+	{
+		return false;
+	}
+
+	public boolean IsIpMiniBanned(final String ip)
+	{
+		return false;
+	}
+
+	public boolean IsMacMiniBanned(final String mac)
+	{
+		return false;
 	}
 }

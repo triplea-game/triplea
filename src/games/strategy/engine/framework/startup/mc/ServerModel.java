@@ -24,36 +24,18 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
-import games.strategy.engine.message.ChannelMessenger;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
-import games.strategy.engine.message.RemoteMessenger;
-import games.strategy.engine.message.RemoteName;
-import games.strategy.engine.message.UnifiedMessenger;
-import games.strategy.net.IConnectionChangeListener;
-import games.strategy.net.IMessenger;
-import games.strategy.net.IMessengerErrorListener;
-import games.strategy.net.INode;
-import games.strategy.net.IServerMessenger;
-import games.strategy.net.ServerMessenger;
+import games.strategy.engine.message.*;
+import games.strategy.net.*;
 import games.strategy.util.Version;
 
-import java.awt.Component;
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-
-import javax.swing.JOptionPane;
 
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener
 {
@@ -207,7 +189,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 		try
 		{
 			m_serverMessenger = new ServerMessenger(props.getName(), props.getPort(), m_objectStreamFactory);
-			final ClientLoginValidator clientLoginValidator = new ClientLoginValidator();
+			final ClientLoginValidator clientLoginValidator = new ClientLoginValidator(m_serverMessenger);
 			clientLoginValidator.setGamePassword(props.getPassword());
 			m_serverMessenger.setLoginValidator(clientLoginValidator);
 			m_serverMessenger.addErrorListener(this);
