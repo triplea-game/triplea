@@ -47,7 +47,6 @@ import games.strategy.util.Match;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -238,7 +237,8 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		final PlayerAttachment pa = PlayerAttachment.get(Player);
 		final Collection<PlayerID> PossibleNewOwners = pa.getGiveUnitControl();
 		final Collection<Territory> territories = aBridge.getData().getMap().getTerritories();
-		for (Territory currTerritory  : territories) {
+		for (final Territory currTerritory : territories)
+		{
 			final TerritoryAttachment ta = (TerritoryAttachment) currTerritory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 			// if ownership should change in this territory
 			if (ta != null && ta.getChangeUnitOwners() != null && !ta.getChangeUnitOwners().isEmpty())
@@ -271,7 +271,8 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	public static int getProduction(final Collection<Territory> territories, final GameData data)
 	{
 		int value = 0;
-		for (Territory current  : territories) {
+		for (final Territory current : territories)
+		{
 			final TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 			if (attatchment == null)
 				throw new IllegalStateException("No attachment for owned territory:" + current.getName());

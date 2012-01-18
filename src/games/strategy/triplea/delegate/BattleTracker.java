@@ -241,7 +241,7 @@ public class BattleTracker implements java.io.Serializable
 	{
 		addBombingBattle(route, units, attacker, data, null);
 	}*/
-	
+
 	private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data, final HashMap<Unit, HashSet<Unit>> targets)
 	{
 		IBattle battle = getPendingBattle(route.getEnd(), true, BATTLE_TYPE_BOMBING_RAID);

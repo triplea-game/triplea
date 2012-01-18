@@ -47,7 +47,6 @@ public class TestGameLoader implements IGameLoader
 	{
 	}
 	
-
 	/**
 	 * Create the players. Given a map of playerName -> type,
 	 * where type is one of the Strings returned by a get*PlayerType() method.

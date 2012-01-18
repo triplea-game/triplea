@@ -30,7 +30,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -597,7 +596,8 @@ class EndPoint
 			implementorsCopy = new ArrayList<Object>(m_implementors);
 		}
 		final List<RemoteMethodCallResults> results = new ArrayList<RemoteMethodCallResults>(implementorsCopy.size());
-		for (Object implementor  : implementorsCopy) {
+		for (final Object implementor : implementorsCopy)
+		{
 			results.add(invokeSingle(call, implementor, messageOriginator));
 		}
 		return results;

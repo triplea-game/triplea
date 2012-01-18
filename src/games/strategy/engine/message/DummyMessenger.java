@@ -193,52 +193,52 @@ public class DummyMessenger implements IServerMessenger
 	{
 		return m_node.getSocketAddress();
 	}
-
+	
 	public void NotifyIPMiniBanningOfPlayer(final String ip)
 	{
-
+		
 	}
-
+	
 	public void NotifyMacMiniBanningOfPlayer(final String mac)
 	{
-
+		
 	}
-
+	
 	public void NotifyUsernameMiniBanningOfPlayer(final String username)
 	{
-
+		
 	}
-
+	
 	public String GetPlayerMac(final String name)
 	{
 		return "DummyMacAddress";
 	}
-
+	
 	public void NotifyUsernameMutingOfPlayer(final String username, final Date muteExpires)
 	{
-
+		
 	}
-
+	
 	public void NotifyIPMutingOfPlayer(final String ip, final Date muteExpires)
 	{
-
+		
 	}
-
+	
 	public void NotifyMacMutingOfPlayer(final String mac, final Date muteExpires)
 	{
-
+		
 	}
-
+	
 	public boolean IsUsernameMiniBanned(final String username)
 	{
 		return false;
 	}
-
+	
 	public boolean IsIpMiniBanned(final String ip)
 	{
 		return false;
 	}
-
+	
 	public boolean IsMacMiniBanned(final String mac)
 	{
 		return false;

@@ -311,7 +311,8 @@ public class BattlePanel extends ActionPanel
 						m_battleFrame.setLocationRelativeTo(JOptionPane.getFrameForComponent(BattlePanel.this));
 						games.strategy.engine.random.PBEMDiceRoller.setFocusWindow(m_battleFrame);
 						boolean foundHumanInBattle = false;
-						for (IGamePlayer gamePlayer  : getMap().getUIContext().getPlayerList()) {
+						for (final IGamePlayer gamePlayer : getMap().getUIContext().getPlayerList())
+						{
 							if ((gamePlayer.getID().equals(attacker) && gamePlayer instanceof TripleAPlayer) || (gamePlayer.getID().equals(defender) && gamePlayer instanceof TripleAPlayer))
 							{
 								foundHumanInBattle = true;

@@ -279,21 +279,24 @@ public class MapPanel extends ImageScrollerLargeView
 	
 	private void notifyTerritorySelected(final Territory t, final MouseDetails me)
 	{
-		for (MapSelectionListener msl  : m_mapSelectionListeners) {
+		for (final MapSelectionListener msl : m_mapSelectionListeners)
+		{
 			msl.territorySelected(t, me);
 		}
 	}
 	
 	private void notifyMouseMoved(final Territory t, final MouseDetails me)
 	{
-		for (MapSelectionListener msl  : m_mapSelectionListeners) {
+		for (final MapSelectionListener msl : m_mapSelectionListeners)
+		{
 			msl.mouseMoved(t, me);
 		}
 	}
 	
 	private void notifyMouseEntered(final Territory t)
 	{
-		for (MapSelectionListener msl  : m_mapSelectionListeners) {
+		for (final MapSelectionListener msl : m_mapSelectionListeners)
+		{
 			msl.mouseEntered(t);
 		}
 	}
@@ -542,7 +545,8 @@ public class MapPanel extends ImageScrollerLargeView
 			if (aChange instanceof CompositeChange)
 			{
 				final CompositeChange composite = (CompositeChange) aChange;
-				for (Change item  : composite.getChanges()) {
+				for (final Change item : composite.getChanges())
+				{
 					getPlayersWithTechChanges(item, players);
 				}
 			}
@@ -576,7 +580,8 @@ public class MapPanel extends ImageScrollerLargeView
 		final GameData gameData = m_data;
 		final Rectangle2D.Double bounds = new Rectangle2D.Double(0, 0, getImageWidth(), getImageHeight());
 		final Collection<Tile> tileList = m_tileManager.getTiles(bounds);
-		for (Tile tile  : tileList) {
+		for (final Tile tile : tileList)
+		{
 			LockUtil.acquireLock(tile.getLock());
 			try
 			{

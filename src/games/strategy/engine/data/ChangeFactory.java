@@ -149,22 +149,25 @@ public class ChangeFactory
 		return new ChangeResourceChange(player, resource, quantity);
 	}
 	
-	public static Change addResourceCollection(PlayerID id, ResourceCollection rCollection) {
-		CompositeChange cChange = new CompositeChange();
-		for(Resource r:rCollection.getResourcesCopy().keySet()) {
-			cChange.add(new ChangeResourceChange(id,r,rCollection.getQuantity(r)));
+	public static Change addResourceCollection(final PlayerID id, final ResourceCollection rCollection)
+	{
+		final CompositeChange cChange = new CompositeChange();
+		for (final Resource r : rCollection.getResourcesCopy().keySet())
+		{
+			cChange.add(new ChangeResourceChange(id, r, rCollection.getQuantity(r)));
 		}
 		return cChange;
 	}
 	
-	public static Change removeResourceCollection(PlayerID id, ResourceCollection rCollection) {
-		CompositeChange cChange = new CompositeChange();
-		for(Resource r:rCollection.getResourcesCopy().keySet()) {
-			cChange.add(new ChangeResourceChange(id,r,-rCollection.getQuantity(r)));
+	public static Change removeResourceCollection(final PlayerID id, final ResourceCollection rCollection)
+	{
+		final CompositeChange cChange = new CompositeChange();
+		for (final Resource r : rCollection.getResourcesCopy().keySet())
+		{
+			cChange.add(new ChangeResourceChange(id, r, -rCollection.getQuantity(r)));
 		}
 		return cChange;
 	}
-	
 	
 	public static Change setProperty(final String property, final Object value, final GameData data)
 	{
@@ -290,7 +293,7 @@ public class ChangeFactory
 	{
 		return unitPropertyChange(unit, TripleAUnit.get(unit).getMaxMovementAllowed(), TripleAUnit.ALREADY_MOVED);
 	}
-
+	
 }
 
 
@@ -671,7 +674,8 @@ class PlayerOwnerChange extends Change
 		m_old = new HashMap<GUID, String>();
 		m_new = new HashMap<GUID, String>();
 		m_location = location.getName();
-		for (Unit unit  : units) {
+		for (final Unit unit : units)
+		{
 			m_old.put(unit.getID(), unit.getOwner().getName());
 			m_new.put(unit.getID(), newOwner.getName());
 		}
@@ -695,7 +699,8 @@ class PlayerOwnerChange extends Change
 	{
 		/*if (m_location == null || m_old == null || m_new == null)
 			throw new IllegalStateException("PlayerOwnerChange may not have null arguments");*/
-		for (GUID id  : m_new.keySet()) {
+		for (final GUID id : m_new.keySet())
+		{
 			final Unit unit = data.getUnits().get(id);
 			if (!m_old.get(id).equals(unit.getOwner().getName()))
 			{
@@ -765,9 +770,8 @@ class ChangeUnitProduction extends Change
 			throw new IllegalStateException("ChangeUnitProduction may not have null arguments");*/
 		return "Change unit production.  Quantity:" + m_unitProduction + " Territory:" + m_location;
 	}
-
+	
 }
-
 
 
 /**

@@ -47,11 +47,11 @@ public class StrategyGameTest extends TestCase
 		suite.addTestSuite(ChatIgnoreListTest.class);
 		suite.addTestSuite(ChatTest.class);
 		suite.addTestSuite(StatusTest.class);
-		//todo(kg) the following classes are comment out because they either have static dependencies
-		//todo(kg)- or starts a derby database, and the next test which tries to start it again gets an error
-		//suite.addTestSuite(DBUserControllerTest.class);
-		//suite.addTestSuite(BannedIpControllerTest.class);
-		//suite.addTestSuite(BadWordControllerTest.class);
+		// todo(kg) the following classes are comment out because they either have static dependencies
+		// todo(kg)- or starts a derby database, and the next test which tries to start it again gets an error
+		// suite.addTestSuite(DBUserControllerTest.class);
+		// suite.addTestSuite(BannedIpControllerTest.class);
+		// suite.addTestSuite(BadWordControllerTest.class);
 		// suite.addTestSuite(ModeratorControllerTest.class);
 		// suite.addTestSuite(LobbyLoginValidatorTest.class);
 		suite.addTestSuite(RemoteInterfaceHelperTest.class);

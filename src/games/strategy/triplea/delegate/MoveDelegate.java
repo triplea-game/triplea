@@ -309,7 +309,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			// map transports, try to fill
 			final Collection<Unit> transports = Match.getMatches(units, Matches.UnitIsTransport);
 			final Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
-			for (Unit toLoad  : land) {
+			for (final Unit toLoad : land)
+			{
 				final UnitAttachment ua = UnitAttachment.get(toLoad.getType());
 				final int cost = ua.getTransportCost();
 				if (cost == -1)
@@ -412,7 +413,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 					{
 						final Match<Unit> givesBonusUnitLand = new CompositeMatchAnd<Unit>(givesBonusUnit, Matches.UnitIsLand);
 						final List<Territory> neighbors = new ArrayList<Territory>(data.getMap().getNeighbors(t, Matches.TerritoryIsLand));
-						for (Territory current  : neighbors) {
+						for (final Territory current : neighbors)
+						{
 							givesBonusUnits.addAll(Match.getMatches(current.getUnits().getUnits(), givesBonusUnitLand));
 						}
 					}
@@ -684,7 +686,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		final AirThatCantLandUtil util = new AirThatCantLandUtil(m_bridge);
 		util.removeAirThatCantLand(m_player, lhtrCarrierProd && hasProducedCarriers);
 		// if edit mode has been on, we need to clean up after all players
-		for (PlayerID player  : data.getPlayerList()) {
+		for (final PlayerID player : data.getPlayerList())
+		{
 			// Check if player still has units to place
 			if (!player.equals(m_player)) // && !player.getUnits().isEmpty()
 				util.removeAirThatCantLand(player, ((player.getUnits().someMatch(Matches.UnitIsCarrier) || hasProducedCarriers) && lhtrCarrierProd));
@@ -830,7 +833,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
 		final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
 		final IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
-		for (Unit land  : canBeTransported) {
+		for (final Unit land : canBeTransported)
+		{
 			final UnitAttachment landUA = UnitAttachment.get(land.getType());
 			final int cost = landUA.getTransportCost();
 			boolean loaded = false;

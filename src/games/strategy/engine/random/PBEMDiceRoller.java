@@ -25,11 +25,12 @@ import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- *
+ * 
  * Its a bit messy, but the threads are a pain to deal with We want to be able
  * to call this from any thread, and have a dialog that doesnt close until the
  * dice roll finishes. If there is an error we wait until we get a good roll
  * before returning.
+ * 
  * @author George_H
  */
 public class PBEMDiceRoller implements IRandomSource
@@ -49,7 +50,7 @@ public class PBEMDiceRoller implements IRandomSource
 		s_focusWindow = w;
 	}
 	
-	public PBEMDiceRoller( final IRemoteDiceServer diceServer, final String gameUUID)
+	public PBEMDiceRoller(final IRemoteDiceServer diceServer, final String gameUUID)
 	{
 		m_remoteDiceServer = diceServer;
 		m_gameUUID = gameUUID;
@@ -134,6 +135,7 @@ public class PBEMDiceRoller implements IRandomSource
 	}
 }
 
+
 /**
  * The dialog that will show while the dice are rolling
  */
@@ -147,7 +149,7 @@ class HttpDiceRollerDialog extends JDialog
 	private final int m_count;
 	private final int m_sides;
 	private final String m_subjectMessage;
-
+	
 	private final String m_gameID;
 	private final IRemoteDiceServer m_diceServer;
 	private final String m_gameUUID;
@@ -155,15 +157,21 @@ class HttpDiceRollerDialog extends JDialog
 	public boolean m_test = false;
 	private final JPanel m_buttons = new JPanel();
 	private final Window m_owner;
-
+	
 	/**
-	 *
-	 * @param owner owner frame
-	 * @param sides the number of sides on the dice
-	 * @param count the number of dice rolled
-	 * @param subjectMessage the subject for the email the dice roller will send (if it sends emails)
-	 * @param diceServer the dice server implementation
-	 * @param gameUUID the TripleA game UUID or null
+	 * 
+	 * @param owner
+	 *            owner frame
+	 * @param sides
+	 *            the number of sides on the dice
+	 * @param count
+	 *            the number of dice rolled
+	 * @param subjectMessage
+	 *            the subject for the email the dice roller will send (if it sends emails)
+	 * @param diceServer
+	 *            the dice server implementation
+	 * @param gameUUID
+	 *            the TripleA game UUID or null
 	 */
 	public HttpDiceRollerDialog(final Frame owner, final int sides, final int count, final String subjectMessage,
 				final IRemoteDiceServer diceServer, final String gameUUID)
@@ -322,7 +330,7 @@ class HttpDiceRollerDialog extends JDialog
 	 * Before contacting Irony Dice Server, check if email has a reasonable
 	 * valid syntax.
 	 * 
-	 *
+	 * 
 	 */
 	private void rollInSeperateThread()
 	{

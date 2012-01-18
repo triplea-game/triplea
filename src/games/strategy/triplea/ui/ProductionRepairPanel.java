@@ -45,7 +45,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -256,7 +255,8 @@ public class ProductionRepairPanel extends JPanel
 	{
 		final HashMap<Unit, IntegerMap<RepairRule>> prod = new HashMap<Unit, IntegerMap<RepairRule>>();
 		// IntegerMap<RepairRule> repairRule = new IntegerMap<RepairRule>();
-		for (Rule rule  : m_rules) {
+		for (final Rule rule : m_rules)
+		{
 			final int quantity = rule.getQuantity();
 			if (quantity != 0)
 			{

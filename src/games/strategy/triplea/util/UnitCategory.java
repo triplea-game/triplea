@@ -26,7 +26,6 @@ import games.strategy.util.Util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 public class UnitCategory implements Comparable
@@ -107,7 +106,8 @@ public class UnitCategory implements Comparable
 		m_dependents = new ArrayList<UnitOwner>();
 		if (dependents == null)
 			return;
-		for (Unit current  : dependents) {
+		for (final Unit current : dependents)
+		{
 			m_dependents.add(new UnitOwner(current));
 		}
 	}

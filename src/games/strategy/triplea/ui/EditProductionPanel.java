@@ -21,8 +21,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.util.IntegerMap;
 
-import java.util.Iterator;
-
 import javax.swing.JFrame;
 
 /**
@@ -52,7 +50,8 @@ public class EditProductionPanel extends ProductionPanel
 	@Override
 	protected void calculateLimits()
 	{
-		for (Rule current  : getRules()) {
+		for (final Rule current : getRules())
+		{
 			current.setMax(99);
 		}
 	}

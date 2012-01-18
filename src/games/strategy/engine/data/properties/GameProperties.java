@@ -138,7 +138,8 @@ public class GameProperties extends GameDataComponent
 	public List<IEditableProperty> getEditableProperties()
 	{
 		final List<IEditableProperty> properties = new ArrayList<IEditableProperty>();
-		for (String propertyName  : m_ordering) {
+		for (final String propertyName : m_ordering)
+		{
 			if (m_editableProperties.containsKey(propertyName))
 			{
 				properties.add(m_editableProperties.get(propertyName));

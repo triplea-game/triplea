@@ -1350,7 +1350,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		return null;
 	}*/
-	
+
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
 	{
 		return null;

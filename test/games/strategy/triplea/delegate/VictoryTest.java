@@ -209,71 +209,71 @@ public class VictoryTest extends TestCase
 	
 	public void testMultipleResourcesToPurchase()
 	{
-
-		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy(); 
+		
+		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
 		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
 		m_bridge.setStepName("italianPurchase");
 		purchaseDelegate.start(m_bridge);
-		IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
-		ProductionRule armourtest = m_data.getProductionRuleList().getProductionRule("buyArmourtest");
+		final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+		final ProductionRule armourtest = m_data.getProductionRuleList().getProductionRule("buyArmourtest");
 		assertNotNull(armourtest);
 		italianResources.subtract(armourtest.getCosts());
-		purchaseList.add(armourtest,1);		
-		String error = purchaseDelegate.purchase(purchaseList);
-		assertEquals(null,error);
-		assertEquals(italianResources,m_italians.getResources().getResourcesCopy());
+		purchaseList.add(armourtest, 1);
+		final String error = purchaseDelegate.purchase(purchaseList);
+		assertEquals(null, error);
+		assertEquals(italianResources, m_italians.getResources().getResourcesCopy());
 		
 	}
 	
 	public void testNotEnoughMultipleResourcesToPurchase()
 	{
-
-		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy(); 
+		
+		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
 		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
 		m_bridge.setStepName("italianPurchase");
 		purchaseDelegate.start(m_bridge);
-		IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
-		ProductionRule armourtest = m_data.getProductionRuleList().getProductionRule("buyArmourtest2");
+		final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+		final ProductionRule armourtest = m_data.getProductionRuleList().getProductionRule("buyArmourtest2");
 		assertNotNull(armourtest);
 		italianResources.subtract(armourtest.getCosts());
-		purchaseList.add(armourtest,1);		
-		String error = purchaseDelegate.purchase(purchaseList);
-		assertEquals(PurchaseDelegate.NOT_ENOUGH_RESOURCES,error);
+		purchaseList.add(armourtest, 1);
+		final String error = purchaseDelegate.purchase(purchaseList);
+		assertEquals(PurchaseDelegate.NOT_ENOUGH_RESOURCES, error);
 		
 	}
 	
 	public void testPUOnlyResourcesToPurchase()
 	{
-
-		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy(); 
+		
+		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
 		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
 		m_bridge.setStepName("italianPurchase");
 		purchaseDelegate.start(m_bridge);
-		IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
-		ProductionRule buyArmour = m_data.getProductionRuleList().getProductionRule("buyArmour");
+		final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+		final ProductionRule buyArmour = m_data.getProductionRuleList().getProductionRule("buyArmour");
 		assertNotNull(buyArmour);
 		italianResources.subtract(buyArmour.getCosts());
-		purchaseList.add(buyArmour,1);		
-		String error = purchaseDelegate.purchase(purchaseList);
-		assertEquals(null,error);
-		assertEquals(italianResources,m_italians.getResources().getResourcesCopy());
+		purchaseList.add(buyArmour, 1);
+		final String error = purchaseDelegate.purchase(purchaseList);
+		assertEquals(null, error);
+		assertEquals(italianResources, m_italians.getResources().getResourcesCopy());
 	}
 	
 	public void testNoPUResourcesToPurchase()
 	{
-
-		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy(); 
+		
+		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
 		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
 		m_bridge.setStepName("italianPurchase");
 		purchaseDelegate.start(m_bridge);
-		IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
-		ProductionRule buyArmour = m_data.getProductionRuleList().getProductionRule("buyArmourtest3");
+		final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
+		final ProductionRule buyArmour = m_data.getProductionRuleList().getProductionRule("buyArmourtest3");
 		assertNotNull(buyArmour);
 		italianResources.subtract(buyArmour.getCosts());
-		purchaseList.add(buyArmour,1);		
-		String error = purchaseDelegate.purchase(purchaseList);
-		assertEquals(null,error);
-		assertEquals(italianResources,m_italians.getResources().getResourcesCopy());
+		purchaseList.add(buyArmour, 1);
+		final String error = purchaseDelegate.purchase(purchaseList);
+		assertEquals(null, error);
+		assertEquals(italianResources, m_italians.getResources().getResourcesCopy());
 		
 	}
 	

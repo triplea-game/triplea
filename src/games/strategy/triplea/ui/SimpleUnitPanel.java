@@ -27,7 +27,6 @@ import games.strategy.util.IntegerMap;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -62,7 +61,8 @@ public class SimpleUnitPanel extends JPanel
 		removeAll();
 		final TreeSet<ProductionRule> productionRules = new TreeSet<ProductionRule>(productionRuleComparator);
 		productionRules.addAll(units.keySet());
-		for (ProductionRule productionRule  : productionRules) {
+		for (final ProductionRule productionRule : productionRules)
+		{
 			final int quantity = units.getInt(productionRule);
 			final UnitType unit = (UnitType) productionRule.getResults().keySet().iterator().next();
 			addUnits(player, data, quantity, unit, false, false);
@@ -79,11 +79,13 @@ public class SimpleUnitPanel extends JPanel
 	{
 		removeAll();
 		final Set<Unit> entries = units.keySet();
-		for (Unit unit  : entries) {
+		for (final Unit unit : entries)
+		{
 			final IntegerMap<RepairRule> rules = units.get(unit);
 			final TreeSet<RepairRule> repairRules = new TreeSet<RepairRule>(repairRuleComparator);
 			repairRules.addAll(rules.keySet());
-			for (RepairRule repairRule  : repairRules) {
+			for (final RepairRule repairRule : repairRules)
+			{
 				final int quantity = rules.getInt(repairRule);
 				if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
 				{
@@ -108,7 +110,8 @@ public class SimpleUnitPanel extends JPanel
 	public void setUnitsFromCategories(final Collection<UnitCategory> categories, final GameData data)
 	{
 		removeAll();
-		for (UnitCategory category  : categories) {
+		for (final UnitCategory category : categories)
+		{
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
 			addUnits(category.getOwner(), data, category.getUnits().size(), category.getType(), category.getDamaged(), category.getDisabled());
 		}

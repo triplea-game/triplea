@@ -38,7 +38,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -198,7 +197,8 @@ public class ProductionPanel extends JPanel
 	private IntegerMap<ProductionRule> getProduction()
 	{
 		final IntegerMap<ProductionRule> prod = new IntegerMap<ProductionRule>();
-		for (Rule rule  : m_rules) {
+		for (final Rule rule : m_rules)
+		{
 			final int quantity = rule.getQuantity();
 			if (quantity != 0)
 			{

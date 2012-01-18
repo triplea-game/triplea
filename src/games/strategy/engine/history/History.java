@@ -41,7 +41,6 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
@@ -214,7 +213,8 @@ class SerializedHistory implements Serializable
 	{
 		final History rVal = new History(m_data);
 		final HistoryWriter historyWriter = rVal.getHistoryWriter();
-		for (SerializationWriter element  : m_Writers) {
+		for (final SerializationWriter element : m_Writers)
+		{
 			element.write(historyWriter);
 		}
 		return rVal;

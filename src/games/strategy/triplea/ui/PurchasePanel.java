@@ -36,8 +36,6 @@ import games.strategy.util.Match;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-import java.util.Iterator;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -174,7 +172,8 @@ public class PurchasePanel extends ActionPanel
 	{
 		int totalUnits = 0;
 		final Collection<ProductionRule> rules = purchase.keySet();
-		for (ProductionRule current  : rules) {
+		for (final ProductionRule current : rules)
+		{
 			totalUnits += purchase.getInt(current) * current.getResults().totalValues();
 		}
 		return totalUnits;

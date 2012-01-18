@@ -16,7 +16,6 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.util.PointFileReaderWriter;
 
 import java.awt.Color;
@@ -104,12 +103,11 @@ public class MapData
 	private Properties m_mapProperties;
 	
 	private Map<String, List<Point>> m_territoryEffects;
-
 	
 	// we shouldnt draw the names to these territories
 	private Set<String> m_undrawnTerritoriesNames;
 	private Map<Image, List<Point>> m_decorations;
-	private Map<String,Image> m_effectImages = new HashMap<String,Image>();
+	private final Map<String, Image> m_effectImages = new HashMap<String, Image>();
 	private final ResourceLoader m_resourceLoader;
 	private BufferedImage m_vcImage;
 	private BufferedImage m_blockadeImage;
@@ -277,7 +275,8 @@ public class MapData
 		return Boolean.valueOf(m_mapProperties.getProperty(USE_NATION_CONVOY_FLAGS, "false")).booleanValue();
 	}
 	
-	public boolean useTerritoryEffectMarkers() {
+	public boolean useTerritoryEffectMarkers()
+	{
 		return Boolean.valueOf(m_mapProperties.getProperty(USE_TERRITORY_EFFECTS_MARKERS, "false")).booleanValue();
 	}
 	
@@ -444,7 +443,7 @@ public class MapData
 	{
 		return m_place.get(terr.getName());
 	}
-		
+	
 	public List<Polygon> getPolygons(final String terr)
 	{
 		return m_polys.get(terr);
@@ -682,17 +681,19 @@ public class MapData
 	{
 		return Collections.unmodifiableMap(m_decorations);
 	}
-
-	public List<Point> getTerritoryEffectPoints(Territory territory) {
-		if(m_territoryEffects.get(territory.getName()) == null)
+	
+	public List<Point> getTerritoryEffectPoints(final Territory territory)
+	{
+		if (m_territoryEffects.get(territory.getName()) == null)
 			return Arrays.asList(getCenter(territory));
 		return m_territoryEffects.get(territory.getName());
 	}
-
-	public Image getTerritoryEffectImage(String m_effectName) {
+	
+	public Image getTerritoryEffectImage(final String m_effectName)
+	{
 		if (m_effectImages.get(m_effectName) != null)
 			return m_effectImages.get(m_effectName);
-		Image effectImage = loadImage("territoryEffects/"+m_effectName+".png");
+		final Image effectImage = loadImage("territoryEffects/" + m_effectName + ".png");
 		m_effectImages.put(m_effectName, effectImage);
 		return effectImage;
 	}

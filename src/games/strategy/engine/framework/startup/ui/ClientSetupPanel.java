@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -126,7 +125,8 @@ public class ClientSetupPanel extends SetupPanel
 		allianceLabel.setForeground(Color.black);
 		layout.setConstraints(allianceLabel, allianceConstraints);
 		players.add(allianceLabel);
-		for (PlayerRow row  : m_playerRows) {
+		for (final PlayerRow row : m_playerRows)
+		{
 			layout.setConstraints(row.getName(), nameConstraints);
 			players.add(row.getName());
 			layout.setConstraints(row.getPlayer(), playerConstraints);

@@ -31,7 +31,6 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * 
@@ -85,7 +84,8 @@ public class OriginalOwnerTracker implements java.io.Serializable
 	public Collection<Territory> getOriginallyOwned(final GameData data, final PlayerID player)
 	{
 		final Collection<Territory> rVal = new ArrayList<Territory>();
-		for (Territory t  : data.getMap()) {
+		for (final Territory t : data.getMap())
+		{
 			PlayerID originalOwner = getOriginalOwner(t);
 			if (originalOwner == null)
 			{

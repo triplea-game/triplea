@@ -39,7 +39,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -260,7 +259,8 @@ public class CenterPicker extends JFrame
 				// super.paint(g);
 				g.drawImage(m_image, 0, 0, this);
 				g.setColor(Color.red);
-				for (String centerName  : m_centers.keySet()) {
+				for (final String centerName : m_centers.keySet())
+				{
 					final Point item = m_centers.get(centerName);
 					g.fillOval(item.x, item.y, 15, 15);
 					g.drawString(centerName, item.x + 17, item.y + 13);
@@ -345,9 +345,11 @@ public class CenterPicker extends JFrame
 		String seaName = "unknown";
 		// try to find a land territory.
 		// sea zones often surround a land territory
-		for (String name  : m_polygons.keySet()) {
+		for (final String name : m_polygons.keySet())
+		{
 			final Collection<Polygon> polygons = m_polygons.get(name);
-			for (Polygon poly  : polygons) {
+			for (final Polygon poly : polygons)
+			{
 				if (poly.contains(p))
 				{
 					if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone"))

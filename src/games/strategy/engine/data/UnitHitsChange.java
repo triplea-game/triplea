@@ -17,7 +17,6 @@ import games.strategy.util.IntegerMap;
 import games.strategy.util.Util;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 
 @SuppressWarnings("serial")
@@ -41,7 +40,8 @@ public class UnitHitsChange extends Change
 	{
 		m_hits = hits.copy();
 		m_undoHits = new IntegerMap<Unit>();
-		for (Unit item  : m_hits.keySet()) {
+		for (final Unit item : m_hits.keySet())
+		{
 			m_undoHits.put(item, item.getHits());
 		}
 	}
@@ -49,11 +49,13 @@ public class UnitHitsChange extends Change
 	@Override
 	protected void perform(final GameData data)
 	{
-		for (Unit item  : m_hits.keySet()) {
+		for (final Unit item : m_hits.keySet())
+		{
 			item.setHits(m_hits.getInt(item));
 		}
 		final Set<Unit> units = m_hits.keySet();
-		for (Territory element  : data.getMap().getTerritories()) {
+		for (final Territory element : data.getMap().getTerritories())
+		{
 			if (Util.someIntersect(element.getUnits().getUnits(), units))
 			{
 				element.notifyChanged();

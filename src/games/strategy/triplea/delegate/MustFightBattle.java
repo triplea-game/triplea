@@ -74,14 +74,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		ALL, SUBS, NONE
 	}
 	
-	
+
 	// these class exist for testing
 	@SuppressWarnings("serial")
 	public static abstract class AttackSubs implements IExecutable
 	{
 	}
 	
-	
+
 	@SuppressWarnings("serial")
 	public static abstract class DefendSubs implements IExecutable
 	{
@@ -348,7 +348,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		change.add(ChangeFactory.markNoMovementChange(nonAir));
 		return change;
 	}*/
-	
+
 	private void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies)
 	{
 		for (final Unit holder : dependencies.keySet())

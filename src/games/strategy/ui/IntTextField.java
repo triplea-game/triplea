@@ -23,8 +23,6 @@ import games.strategy.util.ListenerList;
 import java.awt.FlowLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.util.Iterator;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -237,7 +235,8 @@ public class IntTextField extends JTextField
 	
 	private void notifyListeners()
 	{
-		for (IntTextFieldChangeListener listener  : m_listeners) {
+		for (final IntTextFieldChangeListener listener : m_listeners)
+		{
 			listener.changedValue(this);
 		}
 	}

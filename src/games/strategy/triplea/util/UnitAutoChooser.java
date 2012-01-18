@@ -832,7 +832,7 @@ class UnitAutoChooser
 			// increment index and continue
 			curIndex = Integer.valueOf(curIndex.intValue() + 1);
 		} // while(true)
-		// append greedy solutions if we have any
+			// append greedy solutions if we have any
 		m_candidateCompositeCategories.addAll(greedyCandidateCompositeCategories);
 		// if no exact or greedy solutions, use best incomplete solution
 		if (m_candidateCompositeCategories.isEmpty() && bestCandidateSolution != null)

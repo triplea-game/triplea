@@ -107,7 +107,7 @@ public class LocalLauncher implements ILauncher
 					}
 				} finally
 				{
-					//todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
+					// todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
 					m_gameSelectorModel.loadDefaultGame(parent);
 					SwingUtilities.invokeLater(new Runnable()
 					{

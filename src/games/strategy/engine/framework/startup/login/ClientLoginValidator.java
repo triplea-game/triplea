@@ -29,16 +29,15 @@ public class ClientLoginValidator implements ILoginValidator
 	static final String YOU_HAVE_BEEN_BANNED = "The host has banned you from this game";
 	static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
 	static final String INVALID_MAC = "Invalid mac address";
-
-
-	private IServerMessenger m_serverMessenger;
+	
+	private final IServerMessenger m_serverMessenger;
 	private String m_password;
-
+	
 	public ClientLoginValidator(final IServerMessenger serverMessenger)
 	{
 		m_serverMessenger = serverMessenger;
 	}
-
+	
 	/**
 	 * Set the password required for the game, or to null if no password is required.
 	 * 

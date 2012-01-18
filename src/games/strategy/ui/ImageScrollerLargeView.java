@@ -31,7 +31,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -164,7 +163,8 @@ public class ImageScrollerLargeView extends JComponent
 	
 	private void notifyScollListeners()
 	{
-		for (ScrollListener element  : new ArrayList<ScrollListener>(m_scrollListeners)) {
+		for (final ScrollListener element : new ArrayList<ScrollListener>(m_scrollListeners))
+		{
 			element.scrolled(m_model.getX(), m_model.getY());
 		}
 	}

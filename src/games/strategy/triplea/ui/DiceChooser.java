@@ -20,8 +20,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -103,7 +101,8 @@ public class DiceChooser extends JPanel
 	private void updateDiceCount()
 	{
 		final boolean showButtons = (m_diceCount < m_numRolls);
-		for (JButton button  : m_buttons) {
+		for (final JButton button : m_buttons)
+		{
 			button.setEnabled(showButtons);
 		}
 		m_undoButton.setEnabled((m_diceCount > 0));

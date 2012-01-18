@@ -48,7 +48,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -239,7 +238,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		}
 		
 		// now do all the national objectives
-		for (RulesAttachment rule  : natObjs) {
+		for (final RulesAttachment rule : natObjs)
+		{
 			int uses = rule.getUses();
 			if (uses == 0 || !rule.isSatisfied(testedConditions))
 				continue;
@@ -320,7 +320,8 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 	public static ResourceCollection getResourceProduction(final Collection<Territory> territories, final GameData data)
 	{
 		final ResourceCollection rVal = new ResourceCollection(data);
-		for (Territory current  : territories) {
+		for (final Territory current : territories)
+		{
 			final TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
 			if (attatchment == null)
 				throw new IllegalStateException("No attachment for owned territory:" + current.getName());

@@ -75,23 +75,24 @@ public class EndTurnPanel extends ActionPanel
 			{
 				String message = "";
 				final IForumPoster turnSummaryMsgr = m_poster.getForumPoster();
-
-				StringBuilder sb = new StringBuilder();
+				
+				final StringBuilder sb = new StringBuilder();
 				if (turnSummaryMsgr != null)
 				{
 					sb.append(message).append("Post turn summary ");
 					if (turnSummaryMsgr.getIncludeSaveGame())
 					{
-					    sb.append(" and save game ");
+						sb.append(" and save game ");
 					}
 					sb.append("to ").append(turnSummaryMsgr.getDisplayName()).append("?\n");
 				}
-
-				IEmailSender emailSender = m_poster.getEmailSender();
-				if (emailSender != null) {
+				
+				final IEmailSender emailSender = m_poster.getEmailSender();
+				if (emailSender != null)
+				{
 					sb.append("Send email to ").append(emailSender.getToAddress()).append("?\n");
 				}
-
+				
 				message = sb.toString();
 				final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), message, "Post Turn Summary?", 2, -1, null);
 				if (choice != 0)
@@ -108,11 +109,11 @@ public class EndTurnPanel extends ActionPanel
 						public void run()
 						{
 							boolean postOk = true;
-
+							
 							final IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
 							delegate.setHasPostedTurnSummary(true);
 							File saveGameFile = null;
-
+							
 							try
 							{
 								saveGameFile = File.createTempFile("triplea", ".tsvg");
@@ -126,9 +127,9 @@ public class EndTurnPanel extends ActionPanel
 								postOk = false;
 								e.printStackTrace();
 							}
-
+							
 							m_poster.setTurnSummary(m_historyLog.toString());
-
+							
 							try
 							{
 								// forward the poster to the delegate which invokes post() on the poster
@@ -139,13 +140,13 @@ public class EndTurnPanel extends ActionPanel
 								postOk = false;
 								e.printStackTrace();
 							}
-
-							StringBuilder sb = new StringBuilder();
+							
+							final StringBuilder sb = new StringBuilder();
 							if (m_poster.getForumPoster() != null)
 							{
 								final String saveGameRef = m_poster.getSaveGameRef();
 								final String turnSummaryRef = m_poster.getTurnSummaryRef();
-
+								
 								if (saveGameRef != null)
 									sb.append("\nSave Game : ").append(saveGameRef);
 								if (turnSummaryRef != null)
@@ -155,11 +156,10 @@ public class EndTurnPanel extends ActionPanel
 							{
 								sb.append("\nEmails: ").append(m_poster.getEmailSendStatus());
 							}
-
-
+							
 							m_historyLog.getWriter().println(sb.toString());
-
-							if (m_historyLog.isVisible()) //todo(kg) I think this is a brain fart, unless is is a workaround for some bug
+							
+							if (m_historyLog.isVisible()) // todo(kg) I think this is a brain fart, unless is is a workaround for some bug
 								m_historyLog.setVisible(true);
 							try
 							{
@@ -173,11 +173,11 @@ public class EndTurnPanel extends ActionPanel
 							progressWindow.removeAll();
 							progressWindow.dispose();
 							delegate.setHasPostedTurnSummary(postOk);
-
+							
 							final boolean finalPostOk = postOk;
 							final String finalMessage = sb.toString();
 							delegate.setHasPostedTurnSummary(postOk);
-							Runnable runnable = new Runnable()
+							final Runnable runnable = new Runnable()
 							{
 								public void run()
 								{
@@ -228,7 +228,7 @@ public class EndTurnPanel extends ActionPanel
 		m_includeProductionCheckbox = new JCheckBox(m_includeProductionAction);
 		m_showDetailsCheckbox = new JCheckBox(m_showDetailsAction);
 	}
-
+	
 	private int getRound()
 	{
 		int round = 0;
@@ -251,7 +251,7 @@ public class EndTurnPanel extends ActionPanel
 		} while (true);
 		return round;
 	}
-
+	
 	@Override
 	public void display(final PlayerID id)
 	{
@@ -291,7 +291,7 @@ public class EndTurnPanel extends ActionPanel
 		m_poster = new PBEMMessagePoster(getData(), getCurrentPlayer(), getRound());
 		if (!m_poster.hasMessengers())
 			return;
-
+		
 		final IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();
 		final boolean hasPosted = delegate.getHasPostedTurnSummary();
 		SwingUtilities.invokeLater(new Runnable()

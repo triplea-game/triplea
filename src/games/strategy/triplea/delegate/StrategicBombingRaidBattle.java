@@ -163,7 +163,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		m_attackingUnits.addAll(units);
 		return ChangeFactory.EMPTY_CHANGE;
 	}*/
-	
+
 	@Override
 	public void fight(final IDelegateBridge bridge)
 	{

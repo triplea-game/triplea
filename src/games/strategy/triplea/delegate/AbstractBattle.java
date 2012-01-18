@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -59,7 +58,8 @@ abstract public class AbstractBattle implements IBattle
 	public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets)
 	{
 		final Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
-		for (Unit unit  : addedTransporting.keySet()) {
+		for (final Unit unit : addedTransporting.keySet())
+		{
 			if (m_dependentUnits.get(unit) != null)
 				m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
 			else
@@ -94,7 +94,8 @@ abstract public class AbstractBattle implements IBattle
 	public Collection<Unit> getDependentUnits(final Collection<Unit> units)
 	{
 		final Collection<Unit> rVal = new ArrayList<Unit>();
-		for (Unit unit  : units) {
+		for (final Unit unit : units)
+		{
 			final Collection<Unit> dependent = m_dependentUnits.get(unit);
 			if (dependent != null)
 				rVal.addAll(dependent);

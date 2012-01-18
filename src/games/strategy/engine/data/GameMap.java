@@ -177,7 +177,8 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		final Set<Territory> passed = new HashSet<Territory>();
 		if (possible == null)
 			return passed;
-		for (Territory current  : possible) {
+		for (final Territory current : possible)
+		{
 			if (cond.match(current))
 				passed.add(current);
 		}

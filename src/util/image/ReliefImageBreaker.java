@@ -111,7 +111,8 @@ public class ReliefImageBreaker
 			System.out.println("Bad data given or missing text files, shutting down");
 			System.exit(0);
 		}
-		for (String territoryName  : m_mapData.getTerritories()) {
+		for (final String territoryName : m_mapData.getTerritories())
+		{
 			final boolean seaZone = territoryName.endsWith("Sea Zone") || territoryName.startsWith("Sea Zone");
 			if (!seaZone && m_seaZoneOnly)
 			{

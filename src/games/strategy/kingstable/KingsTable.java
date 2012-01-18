@@ -61,7 +61,6 @@ public class KingsTable implements IGameLoader
 	public static boolean edgeOfBoardCanBeUsedToCaptureTheKing;
 	public static boolean kingCanBeCapturedLikeAPawn;
 	
-
 	public Set<IGamePlayer> createPlayers(final Map<String, String> playerNames)
 	{
 		final Set<IGamePlayer> players = new HashSet<IGamePlayer>();
@@ -174,7 +173,6 @@ public class KingsTable implements IGameLoader
 		}
 	}
 	
-
 	/**
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */

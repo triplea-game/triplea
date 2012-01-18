@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -252,7 +251,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 			public void run()
 			{
 				m_listModel.clear();
-				for (INode name  : players) {
+				for (final INode name : players)
+				{
 					if (!m_hiddenPlayers.contains(name.getName()))
 						m_listModel.addElement(name);
 				}

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
@@ -110,7 +109,8 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 	
 	public String getPlayerType(final String playerName)
 	{
-		for (LocalPlayerComboBoxSelector item  : m_playerTypes) {
+		for (final LocalPlayerComboBoxSelector item : m_playerTypes)
+		{
 			if (item.getPlayerName().equals(playerName))
 				return item.getPlayerType();
 		}

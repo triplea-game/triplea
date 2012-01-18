@@ -32,7 +32,6 @@ import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * 
@@ -77,13 +76,15 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 		else
 			return productionUnits;
 		final Collection<UnitType> unitTypes = new ArrayList<UnitType>(productionPerXTerritories.keySet());
-		for (UnitType ut  : unitTypes) {
+		for (final UnitType ut : unitTypes)
+		{
 			int unitCount = 0;
 			int terrCount = 0;
 			final int prodPerXTerrs = productionPerXTerritories.getInt(ut);
 			if (isPacific)
 				unitCount += getBurmaRoad(player);
-			for (Territory current  : territories) {
+			for (final Territory current : territories)
+			{
 				if (!isProductionPerValuedTerritoryRestricted())
 					terrCount++;
 				else
@@ -102,7 +103,8 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 	private int getBurmaRoad(final PlayerID player)
 	{
 		int burmaRoadCount = 0; // only for pacific - should equal 4 for extra inf
-		for (Territory current  : getData().getMap().getTerritories()) {
+		for (final Territory current : getData().getMap().getTerritories())
+		{
 			final String terrName = current.getName();
 			if ((terrName.equals("Burma") || terrName.equals("India") || terrName.equals("Yunnan") || terrName.equals("Szechwan"))
 						&& getData().getRelationshipTracker().isAllied(current.getOwner(), player))

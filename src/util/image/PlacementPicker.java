@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -271,7 +270,8 @@ public class PlacementPicker extends JFrame
 				{
 					return;
 				}
-				for (Point item  : m_currentPlacements) {
+				for (final Point item : m_currentPlacements)
+				{
 					g.fillRect(item.x, item.y, PLACE_SIZE, PLACE_SIZE);
 				}
 			}// paint
@@ -354,9 +354,11 @@ public class PlacementPicker extends JFrame
 		String seaName = "there be dragons";
 		// try to find a land territory.
 		// sea zones often surround a land territory
-		for (String name  : m_polygons.keySet()) {
+		for (final String name : m_polygons.keySet())
+		{
 			final Collection<Polygon> polygons = m_polygons.get(name);
-			for (Polygon poly  : polygons) {
+			for (final Polygon poly : polygons)
+			{
 				if (poly.contains(p))
 				{
 					if (name.endsWith("Sea Zone") || name.startsWith("Sea Zone"))

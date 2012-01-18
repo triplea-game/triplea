@@ -149,7 +149,7 @@ public class NPuzzle implements IGameLoader
 				((NPuzzlePlayer) player).setFrame(frame);
 		}
 	}
-
+	
 	/**
 	 * @see games.strategy.engine.framework.IGameLoader#getDisplayType()
 	 */

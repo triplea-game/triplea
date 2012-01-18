@@ -140,7 +140,8 @@ public class AutoPlacementFinder
 			if (s_mapData.hasContainedTerritory(name))
 			{
 				final Set<Polygon> containedPolygons = new HashSet<Polygon>();
-				for (String containedName  : s_mapData.getContainedTerritory(name)) {
+				for (final String containedName : s_mapData.getContainedTerritory(name))
+				{
 					containedPolygons.addAll(s_mapData.getPolygons(containedName));
 				}
 				points = getPlacementsStartingAtTopLeft(s_mapData.getPolygons(name), s_mapData.getBoundingRect(name), s_mapData.getCenter(name), containedPolygons);
@@ -324,7 +325,7 @@ public class AutoPlacementFinder
 	{
 		place.setFrame(x, y, PLACEWIDTH, PLACEHEIGHT);
 		if (containedIn(place, countryPolygons) && !intersectsOneOf(place, placementRects) &&
-		// make sure it is not in or intersects the contained country
+					// make sure it is not in or intersects the contained country
 					(!containedIn(place, containedCountryPolygons) && !intersectsOneOf(place, containedCountryPolygons)))
 		{
 			placementPoints.add(new Point((int) place.getX(), (int) place.getY()));
@@ -348,7 +349,8 @@ public class AutoPlacementFinder
 	 */
 	public static boolean containedIn(final Rectangle2D r, final Collection<Polygon> shapes)
 	{
-		for (Shape item  : shapes) {
+		for (final Shape item : shapes)
+		{
 			if (item.contains(r))
 			{
 				return true;
@@ -375,7 +377,8 @@ public class AutoPlacementFinder
 		{
 			return false;
 		}
-		for (Shape item  : shapes) {
+		for (final Shape item : shapes)
+		{
 			if (item.intersects(r))
 			{
 				return true;

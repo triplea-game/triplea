@@ -129,7 +129,7 @@ public class EditPanel extends ActionPanel
 				{
 					final String chooserText = "Remove units from " + m_selectedTerritory + ":";
 					final UnitChooser chooser = new UnitChooser(allUnits, m_selectedUnits, mustMoveWithDetails.getMustMoveWith(), true, false, getData(),
-					/*allowTwoHit=*/false, getMap().getUIContext());
+								/*allowTwoHit=*/false, getMap().getUIContext());
 					final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), chooser, chooserText, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 					if (option != JOptionPane.OK_OPTION)
 					{

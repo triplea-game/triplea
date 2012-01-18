@@ -188,7 +188,8 @@ public class UndoableMove extends AbstractUndoableMove
 	 */
 	public void initializeDependencies(final List<UndoableMove> undoableMoves)
 	{
-		for (UndoableMove other  : undoableMoves) {
+		for (final UndoableMove other : undoableMoves)
+		{
 			if (other == null)
 			{
 				System.err.println(undoableMoves);

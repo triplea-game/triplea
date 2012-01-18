@@ -47,7 +47,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,7 +87,8 @@ public class ClientGame implements IGame
 		m_vault = new Vault(m_channelMessenger);
 		m_channelMessenger.registerChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
 		m_remoteMessenger.registerRemote(m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
-		for (IGamePlayer gp  : gamePlayers) {
+		for (final IGamePlayer gp : gamePlayers)
+		{
 			final PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
 			m_gamePlayers.put(player, gp);
 			final IPlayerBridge bridge = new DefaultPlayerBridge(this);
@@ -143,7 +143,8 @@ public class ClientGame implements IGame
 					m_data.releaseWriteLock();
 				}
 			}
-			for (GameStepListener listener  : m_gameStepListeners) {
+			for (final GameStepListener listener : m_gameStepListeners)
+			{
 				listener.gameStepChanged(stepName, delegateName, player, round, displayName);
 			}
 			if (!loadedFromSavedGame)
@@ -165,7 +166,8 @@ public class ClientGame implements IGame
 		m_channelMessenger.unregisterChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
 		m_remoteMessenger.unregisterRemote(getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
 		m_vault.shutDown();
-		for (IGamePlayer gp  : m_gamePlayers.values()) {
+		for (final IGamePlayer gp : m_gamePlayers.values())
+		{
 			PlayerID player;
 			m_data.acquireReadLock();
 			try

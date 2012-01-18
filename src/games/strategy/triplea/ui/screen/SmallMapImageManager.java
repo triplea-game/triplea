@@ -28,7 +28,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,7 +57,8 @@ public class SmallMapImageManager
 		final Stopwatch stopwatch = new Stopwatch(s_logger, Level.FINEST, "Small map updating took");
 		final Graphics onScreenGraphics = m_view.getOffScreenImage().getGraphics();
 		onScreenGraphics.drawImage(m_offscreen, 0, 0, null);
-		for (UnitsDrawer drawer  : new ArrayList<UnitsDrawer>(m_tileManager.getUnitDrawables())) {
+		for (final UnitsDrawer drawer : new ArrayList<UnitsDrawer>(m_tileManager.getUnitDrawables()))
+		{
 			final int x = (int) (drawer.getPlacementPoint().x * m_view.getRatioX());
 			final int y = (int) (drawer.getPlacementPoint().y * m_view.getRatioY());
 			onScreenGraphics.setColor(mapData.getPlayerColor(drawer.getPlayer()).darker());

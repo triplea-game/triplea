@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
 public class Fire implements IExecutable
 {
 	// compatible with 0.9.0.2 saved games

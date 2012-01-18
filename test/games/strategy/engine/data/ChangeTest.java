@@ -83,7 +83,7 @@ public class ChangeTest extends TestCase
 		final Territory can = m_data.getMap().getTerritory("canada");
 		assertEquals(can.getUnits().getUnitCount(), 5);
 		// add some units
-		Change change = ChangeFactory.addUnits(can, m_data.getUnitTypeList().getUnitType("inf").create(10, null));
+		final Change change = ChangeFactory.addUnits(can, m_data.getUnitTypeList().getUnitType("inf").create(10, null));
 		final ChangePerformer changePerformer = new ChangePerformer(m_data);
 		changePerformer.perform(change);
 		assertEquals(can.getUnits().getUnitCount(), 15);
@@ -99,7 +99,7 @@ public class ChangeTest extends TestCase
 		assertEquals(can.getUnits().getUnitCount(), 5);
 		// remove some units
 		final Collection<Unit> units = can.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
-		Change change = ChangeFactory.removeUnits(can, units);
+		final Change change = ChangeFactory.removeUnits(can, units);
 		final ChangePerformer changePerformer = new ChangePerformer(m_data);
 		changePerformer.perform(change);
 		assertEquals(can.getUnits().getUnitCount(), 2);
@@ -131,7 +131,7 @@ public class ChangeTest extends TestCase
 		final PlayerID chretian = m_data.getPlayerList().getPlayerID("chretian");
 		assertEquals(chretian.getUnits().getUnitCount(), 10);
 		// add some units
-		Change change = ChangeFactory.addUnits(chretian, m_data.getUnitTypeList().getUnitType("inf").create(10, null));
+		final Change change = ChangeFactory.addUnits(chretian, m_data.getUnitTypeList().getUnitType("inf").create(10, null));
 		final ChangePerformer changePerformer = new ChangePerformer(m_data);
 		changePerformer.perform(change);
 		assertEquals(chretian.getUnits().getUnitCount(), 20);
@@ -147,7 +147,7 @@ public class ChangeTest extends TestCase
 		assertEquals(chretian.getUnits().getUnitCount(), 10);
 		// remove some units
 		final Collection<Unit> units = chretian.getUnits().getUnits(m_data.getUnitTypeList().getUnitType("inf"), 3);
-		Change change = ChangeFactory.removeUnits(chretian, units);
+		final Change change = ChangeFactory.removeUnits(chretian, units);
 		final ChangePerformer changePerformer = new ChangePerformer(m_data);
 		changePerformer.perform(change);
 		assertEquals(chretian.getUnits().getUnitCount(), 7);
@@ -209,7 +209,7 @@ public class ChangeTest extends TestCase
 	{
 		final PlayerID can = m_data.getPlayerList().getPlayerID("chretian");
 		final Resource gold = m_data.getResourceList().getResource("gold");
-		Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
+		final Change change = ChangeFactory.changeResourcesChange(can, gold, 50);
 		assertEquals(can.getResources().getQuantity(gold), 100);
 		final ChangePerformer changePerformer = new ChangePerformer(m_data);
 		changePerformer.perform(change);

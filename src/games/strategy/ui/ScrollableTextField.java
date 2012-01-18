@@ -24,8 +24,6 @@ import games.strategy.util.ListenerList;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.Iterator;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -232,7 +230,8 @@ public class ScrollableTextField extends JPanel
 	
 	private void notifyListeners()
 	{
-		for (ScrollableTextFieldListener listener  : m_listeners) {
+		for (final ScrollableTextFieldListener listener : m_listeners)
+		{
 			listener.changedValue(this);
 		}
 	}

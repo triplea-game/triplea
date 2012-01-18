@@ -55,7 +55,7 @@ public class GameSelectorPanel extends JPanel implements Observer
 	{
 		m_model = model;
 		m_model.addObserver(this);
-		GameData data = model.getGameData();
+		final GameData data = model.getGameData();
 		if (data != null)
 		{
 			setOriginalPropertiesMap(data);

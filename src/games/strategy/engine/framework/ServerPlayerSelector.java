@@ -25,8 +25,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -110,7 +108,8 @@ public class ServerPlayerSelector extends JFrame
 			if (!isVisible())
 				return;
 			m_remote = new ArrayList<String>();
-			for (PlayerChoice choice  : m_playerChoices) {
+			for (final PlayerChoice choice : m_playerChoices)
+			{
 				if (choice.isRemote())
 				{
 					m_remote.add(choice.getPlayerName());

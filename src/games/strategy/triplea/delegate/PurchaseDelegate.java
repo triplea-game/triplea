@@ -328,7 +328,8 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			final IntegerMap<RepairRule> rules = repairRules.get(u);
 			final TreeSet<RepairRule> repRules = new TreeSet<RepairRule>(repairRuleComparator);
 			repRules.addAll(rules.keySet());
-			for (RepairRule repairRule  : repRules) {
+			for (final RepairRule repairRule : repRules)
+			{
 				final int quantity = rules.getInt(repairRule);
 				repairMap.put(u, quantity);
 			}
@@ -456,20 +457,21 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	
 	protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> costs, final CompositeChange changes, final Collection<Unit> totalUnits)
 	{
-		StringBuffer returnString = new StringBuffer("");
-		for (Resource resource:costs.keySet()){
+		final StringBuffer returnString = new StringBuffer("");
+		for (final Resource resource : costs.keySet())
+		{
 			final float quantity = costs.getInt(resource);
 			final int cost = (int) quantity;
 			final Change change = ChangeFactory.changeResourcesChange(m_player, resource, -cost);
 			changes.add(change);
-			returnString.append(m_player.getResources().getQuantity(resource) - cost + " "+resource.getName()+" remaining\n");
+			returnString.append(m_player.getResources().getQuantity(resource) - cost + " " + resource.getName() + " remaining\n");
 		}
 		return returnString.toString();
 	}
 	
 	private void giveBonusIncomeToAI()
 	{
-		//TODO and other resources?
+		// TODO and other resources?
 		if (!m_player.isAI())
 			return;
 		final int currentPUs = m_player.getResources().getQuantity(Constants.PUS);

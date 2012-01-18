@@ -20,7 +20,7 @@ public class PlayerOrderComparator implements Comparator<PlayerID>
 	 */
 	public int compare(final PlayerID p1, final PlayerID p2)
 	{
-		for (GameStep s : m_data.getSequence())
+		for (final GameStep s : m_data.getSequence())
 		{
 			if (s.getPlayerID() == null)
 				continue;

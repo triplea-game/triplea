@@ -25,7 +25,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 
 public class ClientMessenger implements IMessenger, NIOSocketListener
@@ -207,7 +206,8 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 		{
 			throw new IllegalStateException("msg not for me:" + msg);
 		}
-		for (IMessageListener listener  : m_listeners) {
+		for (final IMessageListener listener : m_listeners)
+		{
 			listener.messageReceived(msg.getMessage(), msg.getFrom());
 		}
 	}
@@ -253,7 +253,8 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 		// we need to return in the constructor
 		// otherwise this is harmless
 		m_connectionRefusedError = error;
-		for (IMessengerErrorListener errorListener  : m_errorListeners) {
+		for (final IMessengerErrorListener errorListener : m_errorListeners)
+		{
 			errorListener.messengerInvalid(ClientMessenger.this, error);
 		}
 		shutDown();
