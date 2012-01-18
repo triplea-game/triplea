@@ -199,8 +199,8 @@ public class OCBattle
 				defendValue = ua.getDefense(currentPlayer);
 				moveValue = ua.getMovement(currentPlayer);
 				name = current.getType().getName();
-				noRetal = ua.isSub();
-				if (ua.isAir())
+				noRetal = ua.getIsSub();
+				if (ua.getIsAir())
 				{
 					unitType = OCUnit.AIRUNIT;
 				}
@@ -208,7 +208,7 @@ public class OCBattle
 				{
 					unitType = OCUnit.AAUNIT;
 				}
-				else if (ua.isSea())
+				else if (ua.getIsSea())
 				{
 					unitType = OCUnit.SEAUNIT;
 				}
@@ -217,7 +217,7 @@ public class OCBattle
 					unitType = OCUnit.LANDUNIT;
 				}
 				supportShot = ua.getCanBombard(currentPlayer);
-				canHitAir = !ua.isSub();
+				canHitAir = !ua.getIsSub();
 				maxHits = ua.getAttackRolls(currentPlayer);
 				maxRolls = 1; // TODO: Determine if this is an LHTR heavy bomber
 				if (ua.isTwoHit())
@@ -225,7 +225,7 @@ public class OCBattle
 				else
 					maxHp = 1;
 				blocksNoRetHit = ua.getIsDestroyer() && isWW2V2(m_data);
-				boostsInfAtt = ua.isArtillery();
+				boostsInfAtt = ua.getArtillery();
 				boostAmphib = ua.getIsMarine();
 			}
 			if (ua.getIsAAforCombatOnly())

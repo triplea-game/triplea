@@ -380,14 +380,14 @@ public class BattleTracker implements java.io.Serializable
 		}
 		// If it was a Convoy Route- check ownership of the associated neighboring territory and set message
 		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
-		if (ta.isConvoyRoute())
+		if (ta.getConvoyRoute())
 		{
 			// we could be part of a convoy route for another territory
 			final Collection<Territory> attachedConvoyTo = TerritoryAttachment.getWhatTerritoriesThisIsUsedInConvoysFor(territory, data);
 			for (final Territory convoy : attachedConvoyTo)
 			{
 				final TerritoryAttachment cta = TerritoryAttachment.get(convoy);
-				if (!cta.isConvoyRoute())
+				if (!cta.getConvoyRoute())
 					continue;
 				final PlayerID convoyOwner = convoy.getOwner();
 				if (relationshipTracker.isAllied(id, convoyOwner))

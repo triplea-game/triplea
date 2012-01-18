@@ -147,9 +147,9 @@ public class MapPanel extends JComponent implements MouseListener
 			final TerritoryAttachment ta = (TerritoryAttachment) at.getAttachment("territoryAttachment");
 			if (ta != null)
 			{
-				if (ta.isKingsExit())
+				if (ta.getKingsExit())
 					backgroundColor = new Color(225, 225, 255);
-				else if (ta.isKingsSquare())
+				else if (ta.getKingsSquare())
 					backgroundColor = new Color(235, 235, 235);
 				g.setColor(backgroundColor);
 				g.fillPolygon(p);

@@ -74,7 +74,8 @@ public class IntegerMap<T> implements Cloneable, Serializable
 		m_values = new HashMap<T,Integer>(integerMap.m_values);
 		 */
 		m_values = new HashMap<T, Integer>(integerMap.size());
-		for (T t  : integerMap.keySet()) {
+		for (final T t : integerMap.keySet())
+		{
 			m_values.put(t, integerMap.getInt(t));
 		}
 	}
@@ -153,7 +154,8 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 */
 	public void multiplyAllValuesBy(final float i, final int RoundType)
 	{
-		for (T t  : keySet()) {
+		for (final T t : keySet())
+		{
 			float val = m_values.get(t);
 			switch (RoundType)
 			{
@@ -202,14 +204,16 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	
 	public void add(final IntegerMap<T> map)
 	{
-		for (T key  : map.keySet()) {
+		for (final T key : map.keySet())
+		{
 			add(key, map.getInt(key));
 		}
 	}
 	
 	public void subtract(final IntegerMap<T> map)
 	{
-		for (T key  : map.keySet()) {
+		for (final T key : map.keySet())
+		{
 			add(key, -map.getInt(key));
 		}
 	}
@@ -224,7 +228,8 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 */
 	public boolean greaterThanOrEqualTo(final IntegerMap<T> map)
 	{
-		for (T key  : map.keySet()) {
+		for (final T key : map.keySet())
+		{
 			if (!(this.getInt(key) >= map.getInt(key)))
 				return false;
 		}
@@ -260,7 +265,8 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 */
 	public boolean isPositive()
 	{
-		for (T key  : m_values.keySet()) {
+		for (final T key : m_values.keySet())
+		{
 			if (getInt(key) < 0)
 				return false;
 		}
@@ -285,14 +291,16 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	 */
 	public void addMultiple(final IntegerMap<T> map, final int multiple)
 	{
-		for (T key  : map.keySet()) {
+		for (final T key : map.keySet())
+		{
 			add(key, map.getInt(key) * multiple);
 		}
 	}
 	
 	public boolean someKeysMatch(final Match<T> matcher)
 	{
-		for (T obj  : m_values.keySet()) {
+		for (final T obj : m_values.keySet())
+		{
 			if (matcher.match(obj))
 				return true;
 		}
@@ -301,7 +309,8 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	
 	public boolean allKeysMatch(final Match<T> matcher)
 	{
-		for (T obj  : m_values.keySet()) {
+		for (final T obj : m_values.keySet())
+		{
 			if (!matcher.match(obj))
 				return false;
 		}
@@ -311,7 +320,8 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	public Collection<T> getKeyMatches(final Match<T> matcher)
 	{
 		final Collection<T> values = new ArrayList<T>();
-		for (T obj  : m_values.keySet()) {
+		for (final T obj : m_values.keySet())
+		{
 			if (matcher.match(obj))
 				values.add(obj);
 		}
@@ -321,7 +331,8 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	public int sumMatches(final Match<T> matcher)
 	{
 		int sum = 0;
-		for (T obj  : m_values.keySet()) {
+		for (final T obj : m_values.keySet())
+		{
 			if (matcher.match(obj))
 				sum += getInt(obj);
 		}
@@ -347,7 +358,8 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	
 	private void removeKeys(final Collection<T> keys)
 	{
-		for (T key  : keys) {
+		for (final T key : keys)
+		{
 			removeKey(key);
 		}
 	}

@@ -121,7 +121,7 @@ public class DMatches
 		public boolean match(final UnitGroup unitGroup)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unitGroup.GetFirstUnit().getType());
-			return ua.isSea() || ua.isAir();
+			return ua.getIsSea() || ua.getIsAir();
 		}
 	};
 	public static final Match<UnitGroup> UnitGroupIsLand = new Match<UnitGroup>()
@@ -130,7 +130,7 @@ public class DMatches
 		public boolean match(final UnitGroup unitGroup)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unitGroup.GetFirstUnit().getType());
-			return !ua.isSea();
+			return !ua.getIsSea();
 		}
 	};
 	
@@ -213,7 +213,7 @@ public class DMatches
 			// TODO: check for infrastructure here? for aa guns?
 			// if (ua.isAA())
 			// return false;
-			if (ua.isFactory())
+			if (ua.getIsFactory())
 				return false;
 			return true;
 		}
@@ -227,7 +227,7 @@ public class DMatches
 			// TODO: check for infrastructure here? for aa guns?
 			// if (ua.isAA())
 			// return false;
-			if (ua.isFactory())
+			if (ua.getIsFactory())
 				return false;
 			return true;
 		}
@@ -517,7 +517,7 @@ public class DMatches
 					return false;
 				if (!ter.getOwner().equals(player))
 					return false;
-				if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
+				if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).getIsImpassible())
 					return false;
 				if (ter.getUnits().someMatch(Matches.UnitIsFactory))
 					return true;

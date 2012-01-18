@@ -254,7 +254,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		m_impArtTech = getBool(tech);
 	}
 	
-	public Set<UnitType> getUnitTypes()
+	public Set<UnitType> getUnitType()
 	{
 		return m_unitType;
 	}
@@ -322,7 +322,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		for (final UnitSupportAttachment rule : get(data))
 		{
 			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME))
-				return rule.getUnitTypes();
+				return rule.getUnitType();
 		}
 		return null;
 	}

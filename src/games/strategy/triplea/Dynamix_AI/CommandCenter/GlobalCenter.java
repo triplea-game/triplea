@@ -122,7 +122,7 @@ public class GlobalCenter
 				final int movement = ua.getMovement(player);
 				if (movement > FastestUnitMovement)
 					FastestUnitMovement = movement;
-				if (movement > FastestLandUnitMovement && !ua.isSea() && !ua.isAir())
+				if (movement > FastestLandUnitMovement && !ua.getIsSea() && !ua.getIsAir())
 					FastestLandUnitMovement = movement;
 				AllMapUnitTypes.add(ut);
 			}

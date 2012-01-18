@@ -233,7 +233,7 @@ public class UnitImageFactory
 				if (TechTracker.hasAARadar(id))
 					name.append("_r");
 			}
-			if (UnitAttachment.get(type).isAir() && !UnitAttachment.get(type).isStrategicBomber())
+			if (UnitAttachment.get(type).getIsAir() && !UnitAttachment.get(type).getIsStrategicBomber())
 			{
 				if (TechTracker.hasLongRangeAir(id))
 				{
@@ -244,7 +244,7 @@ public class UnitImageFactory
 					name.append("_jp");
 				}
 			}
-			if (UnitAttachment.get(type).isAir() && UnitAttachment.get(type).isStrategicBomber())
+			if (UnitAttachment.get(type).getIsAir() && UnitAttachment.get(type).getIsStrategicBomber())
 			{
 				if (TechTracker.hasLongRangeAir(id))
 				{
@@ -255,7 +255,7 @@ public class UnitImageFactory
 					name.append("_hb");
 				}
 			}
-			if (UnitAttachment.get(type).isSub() && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0))
+			if (UnitAttachment.get(type).getIsSub() && (UnitAttachment.get(type).getAttack(id) > 0 || UnitAttachment.get(type).getDefense(id) > 0))
 			{
 				if (TechTracker.hasSuperSubs(id))
 				{
@@ -265,7 +265,7 @@ public class UnitImageFactory
 				{
 				}
 			}
-			if (type.getName().equals(Constants.FACTORY_TYPE) || UnitAttachment.get(type).isFactory() || UnitAttachment.get(type).getCanProduceUnits())
+			if (type.getName().equals(Constants.FACTORY_TYPE) || UnitAttachment.get(type).getIsFactory() || UnitAttachment.get(type).getCanProduceUnits())
 			{
 				if (TechTracker.hasIndustrialTechnology(id) || TechTracker.hasIncreasedFactoryProduction(id))
 				{

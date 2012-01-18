@@ -361,6 +361,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		}
 	}
 	
+	public List<TechAdvance> getTechs()
+	{
+		return m_techs;
+	}
+	
 	@Override
 	public boolean isSatisfied(final HashMap<ICondition, Boolean> testedConditions)
 	{

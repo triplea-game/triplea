@@ -367,7 +367,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			@Override
 			public boolean match(final Territory o)
 			{
-				final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).isImpassible();
+				final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassible();
 				boolean isLandableOn = false;
 				if (nonCombat)
 					isLandableOn = Matches.isTerritoryAllied(player, data).match(o); // We want to land for amphibious, so we want only friendly ters
@@ -1356,7 +1356,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					{
 						final Unit current = iter.next();
 						final UnitAttachment ua = UnitAttachment.get(current.getType());
-						if (ua.isAir())
+						if (ua.getIsAir())
 							continue;
 						if (ua.getTransportCost() <= free)
 						{
@@ -7376,12 +7376,12 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final int costCheck = ruleCheck.getCosts().getInt(pus);
 			final UnitType x = (UnitType) ruleCheck.getResults().keySet().iterator().next();
 			// Remove from consideration any unit with Zero Movement
-			if (UnitAttachment.get(x).getMovement(player) < 1 && !(UnitAttachment.get(x).isFactory()))
+			if (UnitAttachment.get(x).getMovement(player) < 1 && !(UnitAttachment.get(x).getIsFactory()))
 				continue;
 			// Remove from consideration any unit with Zero defense, or 3 or more attack/defense than defense/attack, that is not a transport/factory/aa unit
 			if (((UnitAttachment.get(x).getAttack(player) - UnitAttachment.get(x).getDefense(player) >= 3 || UnitAttachment.get(x).getDefense(player) - UnitAttachment.get(x).getAttack(player) >= 3) || UnitAttachment
 						.get(x).getDefense(player) < 1)
-						&& !(UnitAttachment.get(x).isFactory() || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea.match(x))))
+						&& !(UnitAttachment.get(x).getIsFactory() || (UnitAttachment.get(x).getTransportCapacity() > 0 && Matches.UnitTypeIsSea.match(x))))
 			{
 				// maybe the map only has weird units. make sure there is at least one of each type before we decide not to use it (we are relying on the fact that map makers generally put specialty units AFTER useful units in their production lists [ie: bombers listed after fighters, mortars after artillery, etc.])
 				if (Matches.UnitTypeIsAir.match(x) && !airProductionRules.isEmpty())

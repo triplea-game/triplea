@@ -116,11 +116,11 @@ public class AIUtils
 		for (final Unit u : units)
 		{
 			final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-			if (unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
+			if (unitAttatchment.getIsFactory() || unitAttatchment.getIsInfrastructure())
 			{
 				// nothing
 			}
-			else if (unitAttatchment.isSea() == sea)
+			else if (unitAttatchment.getIsSea() == sea)
 			{
 				// 2 points since we can absorb a hit
 				strength += 2;

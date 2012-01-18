@@ -518,24 +518,24 @@ class PlayerUnitsPanel extends JPanel
 				// for land, we want land, air, aa gun, then bombarding
 				if (land)
 				{
-					if (u1.isSea() != u2.isSea())
+					if (u1.getIsSea() != u2.getIsSea())
 					{
-						return u1.isSea() ? 1 : -1;
+						return u1.getIsSea() ? 1 : -1;
 					}
 					if (Matches.UnitTypeIsAAforAnything.match(ut1) != Matches.UnitTypeIsAAforAnything.match(ut2))
 					{
 						return Matches.UnitTypeIsAAforAnything.match(ut1) ? 1 : -1;
 					}
-					if (u1.isAir() != u2.isAir())
+					if (u1.getIsAir() != u2.getIsAir())
 					{
-						return u1.isAir() ? 1 : -1;
+						return u1.getIsAir() ? 1 : -1;
 					}
 				}
 				else
 				{
-					if (u1.isSea() != u2.isSea())
+					if (u1.getIsSea() != u2.getIsSea())
 					{
-						return u1.isSea() ? -1 : 1;
+						return u1.getIsSea() ? -1 : 1;
 					}
 				}
 				return u1.getName().compareTo(u2.getName());

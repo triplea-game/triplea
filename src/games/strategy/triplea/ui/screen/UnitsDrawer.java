@@ -82,7 +82,7 @@ public class UnitsDrawer implements IDrawable
 		final PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
 		Image img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
 		// figure the unitDamage here, for disabled or not
-		if ((UnitAttachment.get(type).isFactory() || UnitAttachment.get(type).getCanBeDamaged()) && (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
+		if ((UnitAttachment.get(type).getIsFactory() || UnitAttachment.get(type).getCanBeDamaged()) && (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
 		{
 			// checks to see if this is being carried with a mouse over, or is in a territory.
 			if (m_territoryName.length() != 0)
@@ -103,7 +103,7 @@ public class UnitsDrawer implements IDrawable
 				img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
 			}
 		}
-		if (!m_damaged && (UnitAttachment.get(type).isFactory() || UnitAttachment.get(type).getCanBeDamaged())
+		if (!m_damaged && (UnitAttachment.get(type).getIsFactory() || UnitAttachment.get(type).getCanBeDamaged())
 					&& (isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
 		{
 			// checks to see if this is being carried with a mouse over, or is in a territory.
@@ -171,7 +171,7 @@ public class UnitsDrawer implements IDrawable
 			}
 		}
 		// Display Factory Damage
-		if ((isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) && (UnitAttachment.get(type).isFactory() || UnitAttachment.get(type).getCanBeDamaged()))
+		if ((isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) && (UnitAttachment.get(type).getIsFactory() || UnitAttachment.get(type).getCanBeDamaged()))
 		{
 			displayFactoryDamage(bounds, data, graphics, type);
 		}

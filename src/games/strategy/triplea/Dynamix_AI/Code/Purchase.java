@@ -185,7 +185,7 @@ public class Purchase
 				int factoryCost = 0;
 				for (final ProductionRule rule : player.getProductionFrontier().getRules())
 				{
-					if (UnitAttachment.get((UnitType) rule.getResults().keySet().toArray()[0]).isFactory())
+					if (UnitAttachment.get((UnitType) rule.getResults().keySet().toArray()[0]).getIsFactory())
 					{
 						factory = ((UnitType) rule.getResults().keySet().toArray()[0]).create(player);
 						factoryCost = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));

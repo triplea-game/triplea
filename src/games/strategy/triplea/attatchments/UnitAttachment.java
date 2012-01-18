@@ -269,7 +269,7 @@ public class UnitAttachment extends DefaultAttachment
 		m_isAirTransport = getBool(s);
 	}
 	
-	public boolean isAirTransport()
+	public boolean getIsAirTransport()
 	{
 		return m_isAirTransport;
 	}
@@ -280,7 +280,7 @@ public class UnitAttachment extends DefaultAttachment
 		m_isAirTransportable = getBool(s);
 	}
 	
-	public boolean isAirTransportable()
+	public boolean getIsAirTransportable()
 	{
 		return m_isAirTransportable;
 	}
@@ -455,7 +455,12 @@ public class UnitAttachment extends DefaultAttachment
 		m_isSub = getBool(s);
 	}
 	
-	public boolean isCombatTransport()
+	public boolean getIsSub()
+	{
+		return m_isSub;
+	}
+	
+	public boolean getIsCombatTransport()
 	{
 		return m_isCombatTransport;
 	}
@@ -466,12 +471,7 @@ public class UnitAttachment extends DefaultAttachment
 		m_isCombatTransport = getBool(s);
 	}
 	
-	public boolean isSub()
-	{
-		return m_isSub;
-	}
-	
-	public boolean isStrategicBomber()
+	public boolean getIsStrategicBomber()
 	{
 		return m_isStrategicBomber;
 	}
@@ -514,7 +514,7 @@ public class UnitAttachment extends DefaultAttachment
 		m_isAir = getBool(s);
 	}
 	
-	public boolean isAir()
+	public boolean getIsAir()
 	{
 		return m_isAir;
 	}
@@ -525,7 +525,7 @@ public class UnitAttachment extends DefaultAttachment
 		m_isSea = getBool(s);
 	}
 	
-	public boolean isSea()
+	public boolean getIsSea()
 	{
 		return m_isSea;
 	}
@@ -551,7 +551,7 @@ public class UnitAttachment extends DefaultAttachment
 		m_isFactory = getBool(s);
 	}
 	
-	public boolean isFactory()
+	public boolean getIsFactory()
 	{
 		return m_isFactory;
 	}
@@ -806,7 +806,7 @@ public class UnitAttachment extends DefaultAttachment
 		return whichReceiveNoDuplicates;
 	}
 	
-	public boolean isConstruction()
+	public boolean getIsConstruction()
 	{
 		return m_isConstruction;
 	}
@@ -949,7 +949,7 @@ public class UnitAttachment extends DefaultAttachment
 		m_carrierCost = getInt(s);
 	}
 	
-	public boolean isArtillery()
+	public boolean getArtillery()
 	{
 		return m_artillery;
 	}
@@ -962,7 +962,7 @@ public class UnitAttachment extends DefaultAttachment
 			UnitSupportAttachment.addRule((UnitType) getAttatchedTo(), getData(), false);
 	}
 	
-	public boolean isArtillerySupportable()
+	public boolean getArtillerySupportable()
 	{
 		return m_artillerySupportable;
 	}
@@ -1589,7 +1589,7 @@ public class UnitAttachment extends DefaultAttachment
 		while (utIter.hasNext())
 		{
 			final UnitType ut = utIter.next();
-			if (UnitAttachment.get(ut).isAir())
+			if (UnitAttachment.get(ut).getIsAir())
 				airTypes.add(ut);
 		}
 		return airTypes;

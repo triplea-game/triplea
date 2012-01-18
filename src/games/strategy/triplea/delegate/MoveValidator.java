@@ -364,7 +364,7 @@ public class MoveValidator
 		for (final Unit unit : units)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			if (!ua.isSea() && !ua.isAir() && ua.getTransportCost() == -1)
+			if (!ua.getIsSea() && !ua.getIsAir() && ua.getTransportCost() == -1)
 				retUnits.add(unit);
 		}
 		return retUnits;

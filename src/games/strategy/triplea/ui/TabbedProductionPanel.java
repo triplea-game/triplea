@@ -181,15 +181,15 @@ public class TabbedProductionPanel extends ProductionPanel
 			allRules.add(rule);
 			if (attach.getConsumesUnits() != null && attach.getConsumesUnits().totalValues() >= 1)
 				upgradeConsumesRules.add(rule);
-			if (attach.isConstruction() || attach.isFactory())
+			if (attach.getIsConstruction() || attach.getIsFactory())
 			{ // canproduceUnits isn't checked on purpose, since this category is for units that can be placed anywhere (placed without needing a factory).
 				constructRules.add(rule);
 			}
-			else if (attach.isSea())
+			else if (attach.getIsSea())
 			{
 				seaRules.add(rule);
 			}
-			else if (attach.isAir())
+			else if (attach.getIsAir())
 			{
 				airRules.add(rule);
 			}

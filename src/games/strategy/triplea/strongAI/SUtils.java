@@ -811,7 +811,7 @@ public class SUtils
 				// There is no immediate gain from attacking a neutral country without production,
 				// so they are not included. On the other hand, sometimes conquering those neutral countries
 				// might, on rare occasions, give you a strategic advantage on the next turn.
-				if (ta.getProduction() == 0 || ta.isImpassible())
+				if (ta.getProduction() == 0 || ta.getIsImpassible())
 					continue;
 				if (allied && !data.getMap().getNeighbors(t, Matches.isTerritoryAllied(player, data)).isEmpty())
 					rVal.add(t);
@@ -1300,7 +1300,7 @@ public class SUtils
 		nearNeighbors.remove(t);
 		for (final Territory t2 : nearNeighbors)
 		{
-			if (t2.isWater() || TerritoryAttachment.get(t2).isImpassible())
+			if (t2.isWater() || TerritoryAttachment.get(t2).getIsImpassible())
 				continue;
 			if (friendly)
 			{
@@ -2293,7 +2293,7 @@ public class SUtils
 		float airstrength = 0.0F;
 		final Unit u = airunit;
 		final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-		if (unitAttatchment.isAir())
+		if (unitAttatchment.getIsAir())
 		{
 			airstrength += 1.00F;
 			if (attacking)
@@ -2331,11 +2331,11 @@ public class SUtils
 		float strength = 0.0F;
 		final Unit u = units;
 		final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-		if (unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
+		if (unitAttatchment.getIsFactory() || unitAttatchment.getIsInfrastructure())
 		{
 			// nothing
 		}
-		else if (unitAttatchment.isSea() == sea)
+		else if (unitAttatchment.getIsSea() == sea)
 		{
 			strength += 1.00F;
 			// the number of pips on the dice
@@ -2351,7 +2351,7 @@ public class SUtils
 			if (unitAttatchment.getTransportCapacity() > 0 && !transportsFirst)
 				strength -= 0.50F; // only allow transport to have 0.35 on defense; none on attack
 		}
-		else if (unitAttatchment.isAir() & sea) // we can count airplanes in sea attack
+		else if (unitAttatchment.getIsAir() & sea) // we can count airplanes in sea attack
 		{
 			strength += 1.00F;
 			if (attacking)
@@ -2386,9 +2386,9 @@ public class SUtils
 		for (final Unit u : units)
 		{
 			final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-			if (unitAttatchment.isFactory() || unitAttatchment.getIsInfrastructure())
+			if (unitAttatchment.getIsFactory() || unitAttatchment.getIsInfrastructure())
 				continue;
-			else if (unitAttatchment.isSea() == sea)
+			else if (unitAttatchment.getIsSea() == sea)
 			{
 				final int unitAttack = unitAttatchment.getAttack(u.getOwner());
 				// BB = 6.0; AC=2.0/4.0; SUB=3.0; DS=4.0; TR=0.50/2.0; F=4.0/5.0; B=5.0/2.0;
@@ -2405,7 +2405,7 @@ public class SUtils
 				if (unitAttack == 0 && unitAttatchment.getTransportCapacity() > 0 && !transportsFirst)
 					strength -= 0.50F; // only allow transport to have 0.35 on defense; none on attack
 			}
-			else if (unitAttatchment.isAir() == sea)
+			else if (unitAttatchment.getIsAir() == sea)
 			{
 				strength += 1.00F;
 				if (attacking)
@@ -4310,7 +4310,7 @@ public class SUtils
 			bestMaxUnits.put(rule, 0);
 			bestTransport.put(rule, 0);
 			final UnitType x = (UnitType) rule.getResults().keySet().iterator().next();
-			supportableInfMap.put(rule, UnitAttachment.get(x).isArtillerySupportable());
+			supportableInfMap.put(rule, UnitAttachment.get(x).getArtillerySupportable());
 			transportMap.put(rule, Matches.UnitTypeCanBeTransported.match(x));
 			infMap.put(rule, Matches.UnitTypeIsInfantry.match(x));
 			nonInfMap.put(rule, Matches.UnitTypeCanBeTransported.match(x) && Matches.UnitTypeIsInfantry.invert().match(x) && Matches.UnitTypeIsAAforAnything.invert().match(x));
@@ -4402,14 +4402,14 @@ public class SUtils
 		final boolean thisIsSupportableInf = supportableInfMap.get(rule);
 		final boolean thisIsInf = infMap.get(rule);
 		final boolean thisIsNonInf = nonInfMap.get(rule);
-		final boolean thisIsArt = u.isArtillery();
+		final boolean thisIsArt = u.getArtillery();
 		final int uMovement = u.getMovement(player);
 		int uAttack = u.getAttack(player);
 		int uDefense = u.getDefense(player);
 		final int aRolls = u.getAttackRolls(player);
 		final int cost = rule.getCosts().getInt(key);
 		// Discourage buying submarines, since the AI has no clue how to use them (veqryn)
-		final boolean thisIsSub = u.isSub();
+		final boolean thisIsSub = u.getIsSub();
 		if (thisIsSub && uAttack >= 1)
 			uAttack--;
 		else if (thisIsSub && uDefense >= 1)

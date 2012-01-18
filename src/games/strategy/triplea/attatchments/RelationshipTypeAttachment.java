@@ -337,7 +337,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	 * 
 	 * @return whether in this relationshipType you help each other defend at Sea
 	 */
-	public boolean helpsDefendAtSea()
+	public boolean getHelpsDefendAtSea()
 	{ // War: false, Allied: true, Neutral: false
 		if (m_helpsDefendAtSea.equals(PROPERTY_DEFAULT))
 			return isAllied();

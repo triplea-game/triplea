@@ -260,7 +260,7 @@ public class DiceRoll implements Externalizable
 			int totalStr = 0;
 			for (int i = 0; i < rolls; i++)
 			{
-				if (i > 1 && lhtrBombers && ua.isStrategicBomber())
+				if (i > 1 && lhtrBombers && ua.getIsStrategicBomber())
 				{
 					if (totalStr < data.getDiceSides())
 					{
@@ -290,7 +290,7 @@ public class DiceRoll implements Externalizable
 						if (landUnits.contains(current))
 							++strength;
 					}
-					if (ua.isSea() && battle.isAmphibious())
+					if (ua.getIsSea() && battle.isAmphibious())
 						strength = ua.getBombard(current.getOwner());
 					strength += getSupport(current.getType(), supportRules, supportLeft);
 				}
@@ -435,7 +435,7 @@ public class DiceRoll implements Externalizable
 			while (iter2.hasNext())
 			{
 				final UnitSupportAttachment rule = iter2.next();
-				if (rule.getUnitTypes().contains(type) && supportLeft.getInt(rule) > 0)
+				if (rule.getUnitType().contains(type) && supportLeft.getInt(rule) > 0)
 				{
 					strength += rule.getBonus();
 					supportLeft.add(rule, -1);
@@ -598,7 +598,7 @@ public class DiceRoll implements Externalizable
 			final int rolls = BattleCalculator.getRolls(current, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules),
 						new IntegerMap<UnitSupportAttachment>(supportLeft));
 			// lhtr heavy bombers take best of n dice for both attack and defense
-			if (rolls > 1 && lhtrBombers && ua.isStrategicBomber())
+			if (rolls > 1 && lhtrBombers && ua.getIsStrategicBomber())
 			{
 				int strength;
 				if (defending)
@@ -654,7 +654,7 @@ public class DiceRoll implements Externalizable
 								++strength;
 						}
 						// get bombarding unit's strength
-						if (ua.isSea() && battle.isAmphibious())
+						if (ua.getIsSea() && battle.isAmphibious())
 							strength = ua.getBombard(current.getOwner());
 						strength += getSupport(current.getType(), supportRules, supportLeft);
 					}

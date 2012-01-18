@@ -209,7 +209,7 @@ public class InitializationDelegate extends BaseDelegate
 				final IntegerMap<NamedAttachable> ruleResults = rule.getResults();
 				final String unitName = ruleResults.keySet().iterator().next().getName();
 				final UnitType unit = data.getUnitTypeList().getUnitType(unitName);
-				final boolean isSea = UnitAttachment.get(unit).isSea();
+				final boolean isSea = UnitAttachment.get(unit).getIsSea();
 				if (!isSea)
 				{
 					final ProductionRule prodRule = data.getProductionRuleList().getProductionRule(ruleName);

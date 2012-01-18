@@ -364,7 +364,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			// remove any units that require other units to be consumed on creation (veqryn)
 			if (Matches.UnitConsumesUnitsOnCreation.match(currentUnit) && Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(currentUnit))
 				continue;
-			if (Matches.UnitIsFactory.match(currentUnit) && !ua.isConstruction())
+			if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
 			{
 				unitMapHeld.add("factory", 1);
 				unitMapMaxType.put("factory", maxFactory);
@@ -388,7 +388,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			for (final Unit currentUnit : Match.getMatches(unitsInTO, Matches.UnitIsFactoryOrConstruction))
 			{
 				final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
-				if (Matches.UnitIsFactory.match(currentUnit) && !ua.isConstruction())
+				if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
 					unitMapTO.add("factory", 1);
 				else
 					unitMapTO.add(ua.getConstructionType(), 1);
@@ -431,10 +431,10 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	public int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap)
 	{
 		final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-		if (!ua.isFactory()
-					&& (!ua.isConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1 || ua.getMaxConstructionsPerTypePerTerr() < 1 || constructionsMap.getInt(ua.getConstructionType()) == 0))
+		if (!ua.getIsFactory()
+					&& (!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1 || ua.getMaxConstructionsPerTypePerTerr() < 1 || constructionsMap.getInt(ua.getConstructionType()) == 0))
 			return 0;
-		if (ua.isFactory() && !ua.isConstruction())
+		if (ua.getIsFactory() && !ua.getIsConstruction())
 			return constructionsMap.getInt("factory");
 		return constructionsMap.getInt(ua.getConstructionType());
 	}
@@ -487,7 +487,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsFactoryOrConstruction))
 		{
 			final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
-			if (ua.isFactory() && !ua.isConstruction())
+			if (ua.getIsFactory() && !ua.getIsConstruction())
 				constructionMap.add("factory", -1);
 			else
 				constructionMap.add(ua.getConstructionType(), -1);
@@ -733,7 +733,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final Collection<Unit> factoryUnits = producer.getUnits().getMatches(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
 		// boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
 		final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
-		final boolean originalFactory = ta.isOriginalFactory();
+		final boolean originalFactory = ta.getOriginalFactory();
 		final boolean playerIsOriginalOwner = factoryUnits.size() > 0 ? m_player.equals(getOriginalFactoryOwner(producer)) : false;
 		final RulesAttachment ra = (RulesAttachment) player.getAttachment(Constants.RULES_ATTACHMENT_NAME);
 		final int unitCountAlreadyProduced = getAlreadyProduced(producer).size();
@@ -921,10 +921,10 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			return t1;
 		// original factories are good
 		final TerritoryAttachment t1a = TerritoryAttachment.get(t1);
-		if (t1a.isOriginalFactory() && isOriginalOwner(t1, player))
+		if (t1a.getOriginalFactory() && isOriginalOwner(t1, player))
 			return t1;
 		final TerritoryAttachment t2a = TerritoryAttachment.get(t2);
-		if (t2a.isOriginalFactory() && isOriginalOwner(t2, player))
+		if (t2a.getOriginalFactory() && isOriginalOwner(t2, player))
 			return t2;
 		// which can produce the most
 		if (getProduction(t1) - getAlreadyProduced(t1).size() > getProduction(t2) - getAlreadyProduced(t2).size())

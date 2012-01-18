@@ -43,7 +43,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_kingsSquare = getBool(value);
 	}
 	
-	public boolean isKingsSquare()
+	public boolean getKingsSquare()
 	{
 		return m_kingsSquare;
 	}
@@ -54,7 +54,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_kingsExit = getBool(value);
 	}
 	
-	public boolean isKingsExit()
+	public boolean getKingsExit()
 	{
 		return m_kingsExit;
 	}

@@ -98,7 +98,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			@Override
 			public boolean match(final Territory o)
 			{
-				final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).isImpassible();
+				final boolean impassable = TerritoryAttachment.get(o) != null && TerritoryAttachment.get(o).getIsImpassible();
 				return !impassable && !o.isWater() && Utils.hasLandRouteToEnemyOwnedCapitol(o, player, data);
 			}
 		};
@@ -229,7 +229,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					final Unit current = iter.next();
 					final UnitAttachment ua = UnitAttachment.get(current.getType());
-					if (ua.isAir())
+					if (ua.getIsAir())
 						continue;
 					if (ua.getTransportCost() <= free)
 					{

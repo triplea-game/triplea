@@ -196,7 +196,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_isImpassible = getBool(value);
 	}
 	
-	public boolean isImpassible()
+	public boolean getIsImpassible()
 	{
 		return m_isImpassible;
 	}
@@ -223,7 +223,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_victoryCity = getBool(value);
 	}
 	
-	public boolean isVictoryCity()
+	public boolean getVictoryCity()
 	{
 		return m_victoryCity;
 	}
@@ -234,7 +234,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_originalFactory = getBool(value);
 	}
 	
-	public boolean isOriginalFactory()
+	public boolean getOriginalFactory()
 	{
 		return m_originalFactory;
 	}
@@ -329,7 +329,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_convoyRoute = getBool(value);
 	}
 	
-	public boolean isConvoyRoute()
+	public boolean getConvoyRoute()
 	{
 		return m_convoyRoute;
 	}
@@ -489,7 +489,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_navalBase = getBool(value);
 	}
 	
-	public boolean isNavalBase()
+	public boolean getNavalBase()
 	{
 		return m_navalBase;
 	}
@@ -500,12 +500,12 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_airBase = getBool(value);
 	}
 	
-	public boolean isAirBase()
+	public boolean getAirBase()
 	{
 		return m_airBase;
 	}
 	
-	public boolean isKamikazeZone()
+	public boolean getKamikazeZone()
 	{
 		return m_kamikazeZone;
 	}
@@ -522,7 +522,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_blockadeZone = getBool(value);
 	}
 	
-	public boolean isBlockadeZone()
+	public boolean getBlockadeZone()
 	{
 		return m_blockadeZone;
 	}
@@ -531,12 +531,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	{
 		final Set<Territory> rVal = new HashSet<Territory>();
 		final TerritoryAttachment ta = TerritoryAttachment.get(t);
-		if (ta == null || !ta.isConvoyRoute())
+		if (ta == null || !ta.getConvoyRoute())
 			return null;
 		for (final Territory current : data.getMap().getTerritories())
 		{
 			final TerritoryAttachment cta = TerritoryAttachment.get(current);
-			if (cta == null || !cta.isConvoyRoute())
+			if (cta == null || !cta.getConvoyRoute())
 				continue;
 			if (cta.getConvoyAttached().contains(t))
 				rVal.add(current);

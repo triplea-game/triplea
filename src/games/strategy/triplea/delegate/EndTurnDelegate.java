@@ -101,9 +101,9 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 					final Collection<UnitType> willBeCreated = createsUnitsMap.keySet();
 					for (final UnitType ut : willBeCreated)
 					{
-						if (UnitAttachment.get(ut).isSea() && Matches.TerritoryIsLand.match(t))
+						if (UnitAttachment.get(ut).getIsSea() && Matches.TerritoryIsLand.match(t))
 							toAddSea.addAll(ut.create(createsUnitsMap.getInt(ut), player));
-						else if (!UnitAttachment.get(ut).isSea() && !UnitAttachment.get(ut).isAir() && Matches.TerritoryIsWater.match(t))
+						else if (!UnitAttachment.get(ut).getIsSea() && !UnitAttachment.get(ut).getIsAir() && Matches.TerritoryIsWater.match(t))
 							toAddLand.addAll(ut.create(createsUnitsMap.getInt(ut), player));
 						else
 							toAdd.addAll(ut.create(createsUnitsMap.getInt(ut), player));

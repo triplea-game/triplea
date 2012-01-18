@@ -82,14 +82,14 @@ class UnitInformation
 				unitInformation.write(getCostInformation(currentType) + ",");
 				unitInformation.write(currentAttachment.getMovement(PlayerID.NULL_PLAYERID) + "," + currentAttachment.getAttack(PlayerID.NULL_PLAYERID) + ","
 							+ currentAttachment.getDefense(PlayerID.NULL_PLAYERID) + "," + (currentAttachment.getCanBlitz() == false ? "-" : "true") + ","
-							+ (currentAttachment.isArtillery() == false ? "-" : "true") + "," + (currentAttachment.isArtillerySupportable() == false ? "-" : "true") + ","
-							+ (currentAttachment.isFactory() == false ? "-" : "true") + "," + (currentAttachment.getIsMarine() == false ? "-" : "true") + ","
+							+ (currentAttachment.getArtillery() == false ? "-" : "true") + "," + (currentAttachment.getArtillerySupportable() == false ? "-" : "true") + ","
+							+ (currentAttachment.getIsFactory() == false ? "-" : "true") + "," + (currentAttachment.getIsMarine() == false ? "-" : "true") + ","
 							+ (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
 							+ (Matches.UnitTypeIsAAforAnything.match(currentType) == false ? "-" : "true") + ","
-							+ (currentAttachment.isAir() == false ? "-" : "true") + "," + (currentAttachment.isStrategicBomber() == false ? "-" : "true") + ","
-							+ (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + "," + (currentAttachment.isSea() == false ? "-" : "true") + ","
+							+ (currentAttachment.getIsAir() == false ? "-" : "true") + "," + (currentAttachment.getIsStrategicBomber() == false ? "-" : "true") + ","
+							+ (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + "," + (currentAttachment.getIsSea() == false ? "-" : "true") + ","
 							+ (currentAttachment.isTwoHit() == false ? "-" : "true") + "," + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","
-							+ (currentAttachment.getCarrierCapacity() == -1 ? "-" : currentAttachment.getCarrierCapacity()) + "," + (currentAttachment.isSub() == false ? "-" : "true") + ","
+							+ (currentAttachment.getCarrierCapacity() == -1 ? "-" : currentAttachment.getCarrierCapacity()) + "," + (currentAttachment.getIsSub() == false ? "-" : "true") + ","
 							+ (currentAttachment.getIsDestroyer() == false ? "-" : "true"));
 				unitInformation.write("\r\n");
 			}

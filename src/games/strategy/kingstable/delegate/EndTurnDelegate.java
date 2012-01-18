@@ -144,7 +144,7 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 				numAttackerPieces++;
 			final TerritoryAttachment ta = (TerritoryAttachment) t.getAttachment("territoryAttachment");
 			// System.out.println(ta.getName());
-			if (ta != null && ta.isKingsExit() && !t.getUnits().isEmpty() && unit.getOwner().equals(defender))
+			if (ta != null && ta.getKingsExit() && !t.getUnits().isEmpty() && unit.getOwner().equals(defender))
 				return defender;
 		}
 		if (!defenderHasKing || numDefenderPieces == 0)

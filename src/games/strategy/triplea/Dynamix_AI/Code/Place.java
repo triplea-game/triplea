@@ -273,7 +273,7 @@ public class Place
 	{
 		DUtils.Log(Level.FINER, "    Placing units. Territory: {0} Units: {1}", ter, DUtils.UnitList_ToString(units));
 		// Temporary hack to get ships placed down. Later, I will code this correctly
-		if (units.size() > 0 && UnitAttachment.get(units.iterator().next().getUnitType()).isSea()
+		if (units.size() > 0 && UnitAttachment.get(units.iterator().next().getUnitType()).getIsSea()
 					&& GlobalCenter.CurrentPlayer.getData().getMap().getNeighbors(ter, Matches.TerritoryIsWater).size() > 0)
 		{
 			final Set<Territory> openPorts = ter.getData().getMap()

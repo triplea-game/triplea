@@ -540,14 +540,14 @@ public class BattleCalculator
 			unitPower = Math.max(0, Math.min(unitPower, maxPower)); // getUnitPowerForSorting will return numbers over max_dice IF that units Power * DiceRolls goes over max_dice
 			// TODO: if a unit supports itself, it should be in a different power list, as it will always support itself. getUnitPowerForSorting() should test for this and return a higher number.
 			unitsByPowerAll.get(unitPower).add(current);
-			if (UnitAttachment.get(current.getType()).isArtillery() && UnitAttachment.get(current.getType()).isArtillerySupportable())
+			if (UnitAttachment.get(current.getType()).getArtillery() && UnitAttachment.get(current.getType()).getArtillerySupportable())
 				unitsByPowerBoth.get(unitPower).add(current);
-			else if (UnitAttachment.get(current.getType()).isArtillery())
+			else if (UnitAttachment.get(current.getType()).getArtillery())
 			{
 				unitsByPowerGives.get(unitPower).add(current);
 				artillerySupportAvailable += DiceRoll.getArtillerySupportAvailable(current, defending, player);
 			}
-			else if (UnitAttachment.get(current.getType()).isArtillerySupportable())
+			else if (UnitAttachment.get(current.getType()).getArtillerySupportable())
 			{
 				unitsByPowerReceives.get(unitPower).add(current);
 				supportableAvailable += DiceRoll.getSupportableAvailable(current, defending, player);
@@ -674,7 +674,7 @@ public class BattleCalculator
 						final Unit u = tempList2.get(0);
 						tempList1.add(u);
 						final UnitAttachment ua = UnitAttachment.get(u.getType());
-						if (ua.isArtillery())
+						if (ua.getArtillery())
 						{
 							unitsByPowerGives.get(i).remove(0);
 							iArtillery -= DiceRoll.getArtillerySupportAvailable(u, defending, player);
@@ -991,7 +991,7 @@ public class BattleCalculator
 		int strengthWithoutSupport = 0;
 		// Find the strength the unit has without support
 		// lhtr heavy bombers take best of n dice for both attack and defense
-		if (rolls > 1 && lhtrBombers && ua.isStrategicBomber())
+		if (rolls > 1 && lhtrBombers && ua.getIsStrategicBomber())
 		{
 			if (defending)
 				strengthWithoutSupport = ua.getDefense(current.getOwner());

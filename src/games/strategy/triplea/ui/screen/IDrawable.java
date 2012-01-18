@@ -118,7 +118,7 @@ class TerritoryNameDrawable implements IDrawable
 			// Then overlay with any other specials
 			if (ta != null && mapData.drawConvoyNames())
 			{
-				if (ta.isConvoyRoute() && ta.getProduction() > 0 && ta.getOriginalOwner() != null)
+				if (ta.getConvoyRoute() && ta.getProduction() > 0 && ta.getOriginalOwner() != null)
 				{
 					drawComments = true;
 					if (ta.getConvoyAttached().isEmpty())
@@ -126,7 +126,7 @@ class TerritoryNameDrawable implements IDrawable
 					else
 						commentText = MyFormatter.asList(ta.getConvoyAttached()) + " " + ta.getOriginalOwner().getName() + " Convoy Dependent Route";
 				}
-				else if (ta.isConvoyRoute())
+				else if (ta.getConvoyRoute())
 				{
 					drawComments = true;
 					if (ta.getConvoyAttached().isEmpty())
@@ -726,7 +726,7 @@ class LandTerritoryDrawable extends TerritoryDrawable implements IDrawable
 	{
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
 		Color territoryColor;
-		if (TerritoryAttachment.get(territory).isImpassible())
+		if (TerritoryAttachment.get(territory).getIsImpassible())
 		{
 			territoryColor = mapData.impassibleColor();
 		}

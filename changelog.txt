@@ -1,4 +1,6 @@
 Changes for 1.5
+* Fixing new attachment setter annotation tester, and renaming some isXX methods to getXX. (veqryn)
+
 * Fixing a unit test by removing static instances from messenger classes. (qwertgold)
 
 * Adding @InternalDoNotExport or @GameProperty onto all setter methods in all attachments, and also unit and tripleaunit. (veqryn)

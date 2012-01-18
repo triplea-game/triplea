@@ -603,7 +603,7 @@ public class StatPanel extends JPanel
 				final TerritoryAttachment ta = TerritoryAttachment.get(place);
 				if (ta == null)
 					continue;
-				if (ta.isVictoryCity())
+				if (ta.getVictoryCity())
 					rVal++;
 			}
 			return rVal;

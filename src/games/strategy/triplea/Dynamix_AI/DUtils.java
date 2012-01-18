@@ -125,7 +125,7 @@ public class DUtils
 			result += 1;
 			result += GetAttackStrengthOfUnit(unit);
 			result += GetDefenseStrengthOfUnit(unit);
-			if (ua.isAir())
+			if (ua.getIsAir())
 				result += 3; // Air units can be retreated to safe places, and stuff
 		}
 		return result;
@@ -1056,7 +1056,7 @@ public class DUtils
 			return false; // Yikes, must be a map with entirely disconnected ters... :(
 		if (noCondRoute.getLength() > ta.getMovementLeft()) // If the unit can't even get from ter to territory on a condition-less route, we know it can't make it
 			return false;
-		if (ua.isAir())
+		if (ua.getIsAir())
 		{
 			if (DMatches.territoryIsOwnedByXOrAlly(data, player).match(target))
 			{
@@ -1073,7 +1073,7 @@ public class DUtils
 					return true;
 			}
 		}
-		else if (ua.isSea())
+		else if (ua.getIsSea())
 		{
 			if (ter.isWater())
 			{
@@ -1604,7 +1604,7 @@ public class DUtils
 		{
 			final Unit unit = result.get(i);
 			final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-			if (ua.isArtillerySupportable()) // If this is an infantry
+			if (ua.getArtillerySupportable()) // If this is an infantry
 			{
 				if (processedInfantryCount < infantryThatDontNeedArtillery) // If we haven't ignored enough trailing infantry
 				{
@@ -1656,7 +1656,7 @@ public class DUtils
 						{
 							final Unit unit2 = result.get(i2);
 							final UnitAttachment ua2 = UnitAttachment.get(unit2.getUnitType());
-							if (ua2.isArtillerySupportable())
+							if (ua2.getArtillerySupportable())
 								infantryBetweenHereAndArtillery.add(unit2);
 						}
 						infantryBetweenHereAndArtillery = InvertList(infantryBetweenHereAndArtillery); // Invert list, so they are inserted in the same order
@@ -1750,7 +1750,7 @@ public class DUtils
 		}
 		else if (task.GetTaskType() == CM_TaskType.Land_LandGrab)
 		{
-			if (ua.isAir())
+			if (ua.getIsAir())
 				return Integer.MIN_VALUE;
 			// There's currently a flaw... A blitz unit that's already blitzed a ter is considered in it's 'start' territory for the next blitz (for 3 and up speed units)
 			final int movementAfterBlitz = movementLeft - dist;
@@ -1787,13 +1787,13 @@ public class DUtils
 			movementLeft = 0;
 		if (task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_Block))
 		{
-			if (ua.isAir())
+			if (ua.getIsAir())
 				return Integer.MIN_VALUE;
 			result -= tuv; // We will lose unit, so send cheapest
 		}
 		else if (task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_FrontLine))
 		{
-			if (ua.isAir())
+			if (ua.getIsAir())
 				return Integer.MIN_VALUE;
 			if (movementLeft == 0 && !ter.equals(task.GetTarget()))
 				return Integer.MIN_VALUE;
@@ -1806,7 +1806,7 @@ public class DUtils
 		}
 		else if (task.GetTaskType().equals(NCM_TaskType.Land_Reinforce_Stabilize))
 		{
-			if (ua.isAir())
+			if (ua.getIsAir())
 				return Integer.MIN_VALUE;
 			if (movementLeft == 0 && !ter.equals(task.GetTarget()))
 				return Integer.MIN_VALUE;
@@ -1839,7 +1839,7 @@ public class DUtils
 			movementLeft = 0;
 		if (call.GetCallType().equals(NCM_CallType.Land_ForDefensiveFront))
 		{
-			if (ua.isAir())
+			if (ua.getIsAir())
 				return Integer.MIN_VALUE;
 			// With calls, we'll consider recruiting a unit even if it is currently frozen (we don't need the unit to be able to attack or defend somewhere this round)
 			// if (movementLeft == 0 && ter != call.GetTarget())
@@ -1849,7 +1849,7 @@ public class DUtils
 		}
 		else if (call.GetCallType().equals(NCM_CallType.Land_ForLandGrab))
 		{
-			if (ua.isAir())
+			if (ua.getIsAir())
 				return Integer.MIN_VALUE;
 			// With calls, we'll consider recruiting a unit even if it is currently frozen (we don't need the unit to be able to attack or defend somewhere this round)
 			// if (movementLeft == 0 && ter != call.GetTarget())
@@ -1859,7 +1859,7 @@ public class DUtils
 		}
 		else if (call.GetCallType().equals(NCM_CallType.Land_ForCapitalDefense))
 		{
-			if (ua.isAir())
+			if (ua.getIsAir())
 				return Integer.MIN_VALUE;
 			// With calls, we'll consider recruiting a unit even if it is currently frozen (we don't need the unit to be able to attack or defend somewhere this round)
 			// if (movementLeft == 0 && ter != call.GetTarget())
@@ -2881,7 +2881,7 @@ public class DUtils
 		for (final Unit u : units)
 		{
 			final UnitAttachment ua = UnitAttachment.get(u.getUnitType());
-			if (!ua.isSea() && !ua.isAir())
+			if (!ua.getIsSea() && !ua.getIsAir())
 			{
 				result++;
 			}
@@ -3352,7 +3352,7 @@ public class DUtils
 		{
 			final UnitType ut = testUnit.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(ut);
-			if (ua.isSea() || ua.isFactory() || ua.getIsInfrastructure()) // || ua.isAA() // TODO: double check this
+			if (ua.getIsSea() || ua.getIsFactory() || ua.getIsInfrastructure()) // || ua.isAA() // TODO: double check this
 				continue;
 			if (!match.match(testUnit))
 				continue;

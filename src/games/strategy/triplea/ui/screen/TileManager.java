@@ -263,17 +263,17 @@ public class TileManager
 			if (TerritoryAttachment.get(territory) != null)
 			{
 				// Kamikaze Zones
-				if (TerritoryAttachment.get(territory).isKamikazeZone())
+				if (TerritoryAttachment.get(territory).getKamikazeZone())
 				{
 					drawing.add(new KamikazeZoneDrawable(territory.getOwner(), territory, m_uiContext));
 				}
 				// Blockades
-				if (TerritoryAttachment.get(territory).isBlockadeZone())
+				if (TerritoryAttachment.get(territory).getBlockadeZone())
 				{
 					drawing.add(new BlockadeZoneDrawable(territory, m_uiContext));
 				}
 				// Convoy Routes
-				if (TerritoryAttachment.get(territory).isConvoyRoute())
+				if (TerritoryAttachment.get(territory).getConvoyRoute())
 				{
 					drawing.add(new ConvoyZoneDrawable(territory.getOwner(), territory, m_uiContext));
 				}
@@ -292,7 +292,7 @@ public class TileManager
 			final PlayerID capitalOf = data.getPlayerList().getPlayerID(ta.getCapital());
 			drawing.add(new CapitolMarkerDrawable(capitalOf, territory, m_uiContext));
 		}
-		if (ta != null && ta.isVictoryCity())
+		if (ta != null && ta.getVictoryCity())
 		{
 			drawing.add(new VCDrawable(territory));
 		}

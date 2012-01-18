@@ -265,11 +265,11 @@ public class MovePerformer implements Serializable
 			final TripleAUnit unit = (TripleAUnit) iter.next();
 			int moved = route.getMovementCost(unit);
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			if (ua.isAir())
+			if (ua.getIsAir())
 			{
-				if (taRouteStart != null && taRouteStart.isAirBase() && relationshipTracker.isAllied(route.getStart().getOwner(), unit.getOwner()))
+				if (taRouteStart != null && taRouteStart.getAirBase() && relationshipTracker.isAllied(route.getStart().getOwner(), unit.getOwner()))
 					moved--;
-				if (taRouteEnd != null && taRouteEnd.isAirBase() && relationshipTracker.isAllied(route.getEnd().getOwner(), unit.getOwner()))
+				if (taRouteEnd != null && taRouteEnd.getAirBase() && relationshipTracker.isAllied(route.getEnd().getOwner(), unit.getOwner()))
 					moved--;
 			}
 			change.add(ChangeFactory.unitPropertyChange(unit, moved + unit.getAlreadyMoved(), TripleAUnit.ALREADY_MOVED));

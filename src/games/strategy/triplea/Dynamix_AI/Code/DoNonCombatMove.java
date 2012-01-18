@@ -454,7 +454,7 @@ public class DoNonCombatMove
 					return false;
 				if (ter.isWater())
 					return false;
-				if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
+				if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).getIsImpassible())
 					return false;
 				if (data.getRelationshipTracker().isAllied(ter.getOwner(), player))
 					return false;
@@ -478,7 +478,7 @@ public class DoNonCombatMove
 					return false;
 				if (ter.isWater())
 					return false;
-				if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
+				if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).getIsImpassible())
 					return false;
 				if (!data.getRelationshipTracker().isAllied(ter.getOwner(), player))
 					return false;
@@ -510,7 +510,7 @@ public class DoNonCombatMove
 					return false;
 				if (ter.isWater())
 					return false;
-				if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).isImpassible())
+				if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).getIsImpassible())
 					return false;
 				if (!data.getRelationshipTracker().isAllied(ter.getOwner(), player))
 					return false;

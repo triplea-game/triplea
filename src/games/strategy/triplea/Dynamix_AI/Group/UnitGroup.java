@@ -106,9 +106,9 @@ public class UnitGroup
 		{
 			player = unit.getOwner();
 			final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-			if (ua.isAir())
+			if (ua.getIsAir())
 				air = true;
-			else if (ua.isSea())
+			else if (ua.getIsSea())
 				sea = true;
 			else
 				land = true;
@@ -194,9 +194,9 @@ public class UnitGroup
 		final int slowest = DUtils.GetSlowestMovementUnitInList(new ArrayList<Unit>(m_units));
 		if (slowest < 1)
 			return null;
-		if (UnitAttachment.get(GetFirstUnit().getUnitType()).isAir())
+		if (UnitAttachment.get(GetFirstUnit().getUnitType()).getIsAir())
 			route = DUtils.TrimRoute_ToLength(route, slowest, GetFirstUnit().getOwner(), m_data);
-		else if (UnitAttachment.get(GetFirstUnit().getUnitType()).isSea())
+		else if (UnitAttachment.get(GetFirstUnit().getUnitType()).getIsSea())
 			route = DUtils.TrimRoute_AtFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
 		else
 			route = DUtils.TrimRoute_AtFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
@@ -236,9 +236,9 @@ public class UnitGroup
 		final int slowest = DUtils.GetSlowestMovementUnitInList(new ArrayList<Unit>(m_units));
 		if (slowest < 1)
 			return null;
-		if (UnitAttachment.get(GetFirstUnit().getUnitType()).isAir())
+		if (UnitAttachment.get(GetFirstUnit().getUnitType()).getIsAir())
 			route = DUtils.TrimRoute_ToLength(route, slowest, GetFirstUnit().getOwner(), m_data);
-		else if (UnitAttachment.get(GetFirstUnit().getUnitType()).isSea())
+		else if (UnitAttachment.get(GetFirstUnit().getUnitType()).getIsSea())
 			route = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
 		else
 			route = DUtils.TrimRoute_AtLastFriendlyTer(route, slowest, GetFirstUnit().getOwner(), m_data);
@@ -380,9 +380,9 @@ public class UnitGroup
 			return "The route given is either null or too short(no actual route)";
 		if (slowest < 1)
 			return "Some of the units in this unit group don't have any movement left";
-		if (UnitAttachment.get(GetFirstUnit().getUnitType()).isAir())
+		if (UnitAttachment.get(GetFirstUnit().getUnitType()).getIsAir())
 			route = DUtils.TrimRoute_ToLength(route, slowest, GetFirstUnit().getOwner(), m_data);
-		else if (UnitAttachment.get(GetFirstUnit().getUnitType()).isSea())
+		else if (UnitAttachment.get(GetFirstUnit().getUnitType()).getIsSea())
 			route = DUtils.TrimRoute_BeforeFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
 		else
 			route = DUtils.TrimRoute_AtLastFriendlyTer(route, slowest, GetFirstUnit().getOwner(), m_data);

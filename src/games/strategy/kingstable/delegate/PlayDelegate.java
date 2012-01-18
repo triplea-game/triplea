@@ -402,7 +402,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 			final TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
 			if (ta == null)
 				return false;
-			else if (ta.isKingsExit())
+			else if (ta.getKingsExit())
 				return true;
 			else
 				return false;
@@ -413,7 +413,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 			final TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
 			if (ta == null)
 				return false;
-			else if (ta.isKingsSquare())
+			else if (ta.getKingsSquare())
 				return true;
 			else
 				return false;
