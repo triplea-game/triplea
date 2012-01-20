@@ -3,13 +3,10 @@ package games.strategy.triplea.attatchments;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
-import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
@@ -41,6 +38,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	@InternalDoNotExport
 	protected int m_territoryCount = -1; // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
 	
+	protected final List<PlayerID> m_players = new ArrayList<PlayerID>(); // A list of players that can be used with directOwnershipTerritories, directExclusionTerritories, directPresenceTerritories, or any of the other territory lists
+	
 	protected int m_objectiveValue = 0; // only used if the attachment begins with "objectiveAttachment"
 	protected int m_uses = -1; // only matters for objectiveValue, does not affect the condition
 	protected Map<Integer, Integer> m_turns = null; // condition for what turn it is
@@ -51,48 +50,34 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	}
 	
 	/**
-	 * Convenience method, for use with rules attachments, objectives, and condition attachments. Should return RulesAttachments.
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
-	 * @param player
-	 *            PlayerID
-	 * @param nameOfAttachment
-	 *            exact full name of attachment
-	 * @return new rule attachment
+	 * @param names
+	 * @throws GameParseException
 	 */
-	public static RulesAttachment get(final PlayerID player, final String nameOfAttachment)
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setPlayers(final String names) throws GameParseException
 	{
-		final RulesAttachment rVal = (RulesAttachment) player.getAttachment(nameOfAttachment);
-		if (rVal == null)
-			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName() + " with name: " + nameOfAttachment);
-		return rVal;
+		for (final String p : names.split(":"))
+		{
+			final PlayerID player = getData().getPlayerList().getPlayerID(p);
+			if (player == null)
+				throw new GameParseException("RulesAttachment: Could not find player. name:" + p);
+			m_players.add(player);
+		}
 	}
 	
-	/**
-	 * Convenience method, for use returning any RulesAttachment that begins with "objectiveAttachment"
-	 * National Objectives are just conditions that also give money to a player during the end turn delegate. They can be used for testing by triggers as well.
-	 * Conditions that do not give money are not prefixed with "objectiveAttachment",
-	 * and the trigger attachment that uses these kinds of conditions gets them a different way because they are specifically named inside that trigger.
-	 * 
-	 * @param player
-	 * @param data
-	 * @return
-	 */
-	public static Set<RulesAttachment> getNationalObjectives(final PlayerID player, final GameData data)
+	public List<PlayerID> getPlayers()
 	{
-		final Set<RulesAttachment> natObjs = new HashSet<RulesAttachment>();
-		final Map<String, IAttachment> map = player.getAttachments();
-		for (final Map.Entry<String, IAttachment> entry : map.entrySet())
-		{
-			final IAttachment attachment = entry.getValue();
-			if (attachment instanceof RulesAttachment)
-			{
-				if (attachment.getName().startsWith(Constants.RULES_OBJECTIVE_PREFIX))
-				{
-					natObjs.add((RulesAttachment) attachment);
-				}
-			}
-		}
-		return natObjs;
+		if (m_players.isEmpty())
+			return Collections.singletonList((PlayerID) getAttatchedTo());
+		else
+			return m_players;
+	}
+	
+	public void clearPlayers()
+	{
+		m_players.clear();
 	}
 	
 	@Override
@@ -231,13 +216,17 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 * 
 	 * @author veqryn
 	 */
-	protected String getTerritoriesBasedOnStringName(final String name, final PlayerID player, final GameData data)
+	protected String getTerritoriesBasedOnStringName(final String name, final Collection<PlayerID> players, final GameData data)
 	{
 		String value = new String();
-		if (name.equals("original") || name.equals("enemy"))
-		{ // get all originally owned territories
+		if (name.equals("original") || name.equals("enemy")) // get all originally owned territories
+		{
 			final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
-			final Collection<Territory> originalTerrs = origOwnerTracker.getOriginallyOwned(data, player);
+			final Set<Territory> originalTerrs = new HashSet<Territory>();
+			for (final PlayerID player : players)
+			{
+				originalTerrs.addAll(origOwnerTracker.getOriginallyOwned(data, player)); // TODO: does this account for occupiedTerrOf???
+			}
 			setTerritoryCount(String.valueOf(originalTerrs.size()));
 			// Colon delimit the collection as it would exist in the XML
 			for (final Territory item : originalTerrs)
@@ -245,7 +234,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		}
 		else if (name.equals("controlled"))
 		{
-			final Collection<Territory> ownedTerrs = data.getMap().getTerritoriesOwnedBy(player);
+			final Set<Territory> ownedTerrs = new HashSet<Territory>();
+			for (final PlayerID player : players)
+			{
+				ownedTerrs.addAll(data.getMap().getTerritoriesOwnedBy(player));
+			}
 			setTerritoryCount(String.valueOf(ownedTerrs.size()));
 			// Colon delimit the collection as it would exist in the XML
 			for (final Territory item : ownedTerrs)
@@ -253,8 +246,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		}
 		else if (name.equals("controlledNoWater"))
 		{
-			final Collection<Territory> ownedTerrs = data.getMap().getTerritoriesOwnedBy(player);
-			final Collection<Territory> ownedTerrsNoWater = Match.getMatches(ownedTerrs, Matches.TerritoryIsNotImpassableToLandUnits(player, data));
+			final Set<Territory> ownedTerrsNoWater = new HashSet<Territory>();
+			for (final PlayerID player : players)
+			{
+				ownedTerrsNoWater.addAll(Match.getMatches(data.getMap().getTerritoriesOwnedBy(player), Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+			}
 			setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
 			// Colon delimit the collection as it would exist in the XML
 			for (final Territory item : ownedTerrsNoWater)
@@ -262,9 +258,13 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		}
 		else if (name.equals("all"))
 		{
-			final Collection<Territory> allTerrs = data.getMap().getTerritoriesOwnedBy(player);
+			final Set<Territory> allTerrs = new HashSet<Territory>();
 			final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
-			allTerrs.addAll(origOwnerTracker.getOriginallyOwned(data, player));
+			for (final PlayerID player : players)
+			{
+				allTerrs.addAll(data.getMap().getTerritoriesOwnedBy(player));
+				allTerrs.addAll(origOwnerTracker.getOriginallyOwned(data, player));
+			}
 			setTerritoryCount(String.valueOf(allTerrs.size()));
 			// Colon delimit the collection as it would exist in the XML
 			for (final Territory item : allTerrs)
@@ -291,13 +291,13 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 * 
 	 * @author veqryn
 	 */
-	protected String getTerritoryListAsStringBasedOnInputFromXML(final String[] terrs, final PlayerID player, final GameData data)
+	protected String getTerritoryListAsStringBasedOnInputFromXML(final String[] terrs, final Collection<PlayerID> players, final GameData data)
 	{
 		String value = new String();
 		// If there's only 1, it might be a 'group' (original, controlled, controlledNoWater, all)
 		if (terrs.length == 1)
 		{
-			value = getTerritoriesBasedOnStringName(terrs[0], player, data);
+			value = getTerritoriesBasedOnStringName(terrs[0], players, data);
 		}
 		else if (terrs.length == 2)
 		{
@@ -312,7 +312,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			}
 			else
 			{
-				value = getTerritoriesBasedOnStringName(terrs[1], player, data);
+				value = getTerritoriesBasedOnStringName(terrs[1], players, data);
 				setTerritoryCount(String.valueOf(terrs[0]));
 			}
 		}
@@ -328,136 +328,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		if (value.length() > 0 && value.startsWith(":"))
 			value = value.replaceFirst(":", "");
 		return value;
-	}
-	
-	/**
-	 * Anything that implements ICondition (currently RulesAttachment, TriggerAttachment, and PoliticalActionAttachment)
-	 * can use this to get all the conditions that must be checked for the object to be 'satisfied'. <br>
-	 * Since anything implementing ICondition can contain other ICondition, this must recursively search through all conditions and contained conditions to get the final list.
-	 * 
-	 * @param startingListOfConditions
-	 * @return
-	 * @author veqryn
-	 */
-	public static HashSet<ICondition> getAllConditionsRecursive(final HashSet<ICondition> startingListOfConditions, HashSet<ICondition> allConditionsNeededSoFar)
-	{
-		if (allConditionsNeededSoFar == null)
-			allConditionsNeededSoFar = new HashSet<ICondition>();
-		allConditionsNeededSoFar.addAll(startingListOfConditions);
-		for (final ICondition condition : startingListOfConditions)
-		{
-			for (final ICondition subCondition : condition.getConditions())
-			{
-				if (!allConditionsNeededSoFar.contains(subCondition))
-					allConditionsNeededSoFar.addAll(getAllConditionsRecursive(new HashSet<ICondition>(Collections.singleton(subCondition)), allConditionsNeededSoFar));
-			}
-		}
-		return allConditionsNeededSoFar;
-	}
-	
-	/**
-	 * Takes the list of ICondition that getAllConditionsRecursive generates, and tests each of them, mapping them one by one to their boolean value.
-	 * 
-	 * @param rules
-	 * @param data
-	 * @return
-	 * @author veqryn
-	 */
-	public static HashMap<ICondition, Boolean> testAllConditionsRecursive(final HashSet<ICondition> rules, HashMap<ICondition, Boolean> allConditionsTestedSoFar, final IDelegateBridge aBridge)
-	{
-		if (allConditionsTestedSoFar == null)
-			allConditionsTestedSoFar = new HashMap<ICondition, Boolean>();
-		
-		for (final ICondition c : rules)
-		{
-			if (!allConditionsTestedSoFar.containsKey(c))
-			{
-				testAllConditionsRecursive(new HashSet<ICondition>(c.getConditions()), allConditionsTestedSoFar, aBridge);
-				allConditionsTestedSoFar.put(c, c.isSatisfied(allConditionsTestedSoFar, aBridge));
-			}
-		}
-		
-		return allConditionsTestedSoFar;
-	}
-	
-	/**
-	 * Accounts for all listed rules, according to the conditionType.
-	 * Takes the mapped conditions generated by testAllConditions and uses it to know which conditions are true and which are false. There is no testing of conditions done in this method.
-	 * 
-	 * @param rules
-	 * @param conditionType
-	 * @param data
-	 * @return
-	 * @author veqryn
-	 */
-	public static boolean areConditionsMet(final List<ICondition> rulesToTest, final HashMap<ICondition, Boolean> testedConditions, final String conditionType)
-	{
-		boolean met = false;
-		if (conditionType.equals("AND") || conditionType.equals("and"))
-		{
-			for (final ICondition c : rulesToTest)
-			{
-				met = testedConditions.get(c);
-				if (!met)
-					break;
-			}
-		}
-		else if (conditionType.equals("OR") || conditionType.equals("or"))
-		{
-			for (final ICondition c : rulesToTest)
-			{
-				met = testedConditions.get(c);
-				if (met)
-					break;
-			}
-		}
-		else if (conditionType.equals("XOR") || conditionType.equals("xor"))
-		{
-			// XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others must be false
-			boolean isOneTrue = false;
-			for (final ICondition c : rulesToTest)
-			{
-				met = testedConditions.get(c);
-				if (isOneTrue && met)
-				{
-					isOneTrue = false;
-					break;
-				}
-				else if (met)
-					isOneTrue = true;
-			}
-			met = isOneTrue;
-		}
-		else
-		{
-			final String[] nums = conditionType.split("-");
-			if (nums.length == 1)
-			{
-				final int start = Integer.parseInt(nums[0]);
-				int count = 0;
-				for (final ICondition c : rulesToTest)
-				{
-					met = testedConditions.get(c);
-					if (met)
-						count++;
-				}
-				met = (count == start);
-			}
-			else if (nums.length == 2)
-			{
-				final int start = Integer.parseInt(nums[0]);
-				final int end = Integer.parseInt(nums[1]);
-				int count = 0;
-				for (final ICondition c : rulesToTest)
-				{
-					met = testedConditions.get(c);
-					if (met)
-						count++;
-				}
-				met = (count >= start && count <= end);
-			}
-		}
-		return met;
 	}
 	
 	protected void validateNames(final String[] terrList)
@@ -480,9 +350,9 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 * @param list
 	 * @return
 	 */
-	public Collection<Territory> getListedTerritories(final String[] list)
+	public Set<Territory> getListedTerritories(final String[] list)
 	{
-		final List<Territory> rVal = new ArrayList<Territory>();
+		final Set<Territory> rVal = new HashSet<Territory>();
 		// this list is empty, or contains "", so return a blank list of territories
 		if (list.length == 0 || (list.length == 1 && list[0].length() < 1))
 			return rVal;

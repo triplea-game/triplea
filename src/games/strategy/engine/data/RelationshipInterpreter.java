@@ -2,6 +2,8 @@ package games.strategy.engine.data;
 
 import games.strategy.triplea.delegate.Matches;
 
+import java.util.Collection;
+
 @SuppressWarnings("serial")
 public class RelationshipInterpreter extends GameDataComponent
 {
@@ -22,6 +24,16 @@ public class RelationshipInterpreter extends GameDataComponent
 		return Matches.RelationshipTypeIsAllied.match((getRelationshipType(p1, p2)));
 	}
 	
+	public boolean isAlliedWithAnyOfThesePlayers(final PlayerID p1, final Collection<PlayerID> p2s)
+	{
+		for (final PlayerID p2 : p2s)
+		{
+			if (Matches.RelationshipTypeIsAllied.match((getRelationshipType(p1, p2))))
+				return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * returns true if p1 is at war with p2
 	 * 
@@ -36,6 +48,16 @@ public class RelationshipInterpreter extends GameDataComponent
 		return Matches.RelationshipTypeIsAtWar.match((getRelationshipType(p1, p2)));
 	}
 	
+	public boolean isAtWarWithAnyOfThesePlayers(final PlayerID p1, final Collection<PlayerID> p2s)
+	{
+		for (final PlayerID p2 : p2s)
+		{
+			if (Matches.RelationshipTypeIsAtWar.match((getRelationshipType(p1, p2))))
+				return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * 
 	 * @param p1
@@ -47,6 +69,16 @@ public class RelationshipInterpreter extends GameDataComponent
 	public boolean isNeutral(final PlayerID p1, final PlayerID p2)
 	{
 		return Matches.RelationshipTypeIsNeutral.match((getRelationshipType(p1, p2)));
+	}
+	
+	public boolean isNeutralWithAnyOfThesePlayers(final PlayerID p1, final Collection<PlayerID> p2s)
+	{
+		for (final PlayerID p2 : p2s)
+		{
+			if (Matches.RelationshipTypeIsNeutral.match((getRelationshipType(p1, p2))))
+				return true;
+		}
+		return false;
 	}
 	
 	/**

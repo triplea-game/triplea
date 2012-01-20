@@ -1895,6 +1895,18 @@ public class Matches
 		};
 	}
 	
+	public static Match<Unit> unitIsOwnedByOfAnyOfThesePlayers(final Collection<PlayerID> players)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit unit)
+			{
+				return players.contains(unit.getOwner());
+			}
+		};
+	}
+	
 	public static Match<Unit> unitHasDefenseThatIsMoreThanOrEqualTo(final int minDefense)
 	{
 		return new Match<Unit>()
@@ -2192,6 +2204,20 @@ public class Matches
 		};
 	}
 	
+	public static Match<Unit> enemyUnitOfAnyOfThesePlayers(final Collection<PlayerID> players, final GameData data)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit unit)
+			{
+				if (data.getRelationshipTracker().isAtWarWithAnyOfThesePlayers(unit.getOwner(), players))
+					return true;
+				return false;
+			}
+		};
+	}
+	
 	public static Match<Unit> unitOwnedBy(final PlayerID player)
 	{
 		return new Match<Unit>()
@@ -2235,6 +2261,22 @@ public class Matches
 				if (unit.getOwner().equals(player))
 					return true;
 				return data.getRelationshipTracker().isAllied(player, unit.getOwner());
+			}
+		};
+	}
+	
+	public static Match<Unit> alliedUnitOfAnyOfThesePlayers(final Collection<PlayerID> players, final GameData data)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit unit)
+			{
+				if (Matches.unitIsOwnedByOfAnyOfThesePlayers(players).match(unit))
+					return true;
+				if (data.getRelationshipTracker().isAlliedWithAnyOfThesePlayers(unit.getOwner(), players))
+					return true;
+				return false;
 			}
 		};
 	}
@@ -3138,6 +3180,18 @@ public class Matches
 		};
 	};
 	
+	public static final Match<PlayerID> isAtWarWithAnyOfThesePlayers(final Collection<PlayerID> players, final GameData data)
+	{
+		return new Match<PlayerID>()
+		{
+			@Override
+			public boolean match(final PlayerID player2)
+			{
+				return data.getRelationshipTracker().isAtWarWithAnyOfThesePlayers(player2, players);
+			}
+		};
+	};
+	
 	public static final Match<PlayerID> isAllied(final PlayerID player, final GameData data)
 	{
 		return new Match<PlayerID>()
@@ -3150,6 +3204,18 @@ public class Matches
 		};
 	};
 	
+	public static final Match<PlayerID> isAlliedWithAnyOfThesePlayers(final Collection<PlayerID> players, final GameData data)
+	{
+		return new Match<PlayerID>()
+		{
+			@Override
+			public boolean match(final PlayerID player2)
+			{
+				return data.getRelationshipTracker().isAlliedWithAnyOfThesePlayers(player2, players);
+			}
+		};
+	};
+	
 	public static final Match<PlayerID> isNeutral(final PlayerID player, final GameData data)
 	{
 		return new Match<PlayerID>()
@@ -3158,6 +3224,18 @@ public class Matches
 			public boolean match(final PlayerID player2)
 			{
 				return Matches.RelationshipTypeIsNeutral.match(data.getRelationshipTracker().getRelationshipType(player, player2));
+			}
+		};
+	};
+	
+	public static final Match<PlayerID> isNeutralWithAnyOfThesePlayers(final Collection<PlayerID> players, final GameData data)
+	{
+		return new Match<PlayerID>()
+		{
+			@Override
+			public boolean match(final PlayerID player2)
+			{
+				return data.getRelationshipTracker().isNeutralWithAnyOfThesePlayers(player2, players);
 			}
 		};
 	};

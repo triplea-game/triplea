@@ -1,4 +1,6 @@
 Changes for 1.5
+* Created new Rules Attachment property, players, which can be used with directOwnershipTerritories, directExclusionTerritories, directPresenceTerritories, or any of the other territory lists, to customize which players are required to own/occupy the territories. (veqryn)
+
 * Fixing new attachment setter annotation tester, and renaming some isXX methods to getXX. (veqryn)
 
 * Fixing a unit test by removing static instances from messenger classes. (qwertgold)

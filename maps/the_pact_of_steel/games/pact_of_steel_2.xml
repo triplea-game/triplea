@@ -2925,19 +2925,21 @@
 			atWarPlayers						values: player names, in a : delimited list (example: value="Germans:Italians:Japanese" count="2" means that you must be at war with 2 of the 3 listed players). if count is zero, then you must be at war with none.
 			techs								values: any list of technologies, : delimited (if count = zero, then must have exactly zero technologies [if count is missing, defaults to zero])
 			directOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
-			alliedOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories
+			alliedOwnershipTerritories			values: "original", "enemy", or a : delimited list of territories (alliedOwnershipTerritories DOES count both owned and allied)
 			directExclusionTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
-			alliedExclusionTerritories			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
-			enemyExclusionTerritories			values: "original", "map" (map = all territories on map), or a : delimited list of territories
-			enemySurfaceExclusionTerritories	values: "original", "map" (map = all territories on map), or a : delimited list of territories
+			alliedExclusionTerritories			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories (alliedExclusionTerritories does NOT count owned units, it only counts allied units)
+			enemyExclusionTerritories			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
+			enemySurfaceExclusionTerritories	values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
 			directPresenceTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
-			alliedPresenceTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
-			enemyPresenceTerritories 			values: "original", "map" (map = all territories on map), or a : delimited list of territories
+			alliedPresenceTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories (alliedPresenceTerritories DOES count both owned units and allied units)
+			enemyPresenceTerritories 			values: "original", "controlled", "controlledNoWater", "all" (all = original + controlled), "map" (map = all territories on map), or a : delimited list of territories
 			unitPresence 						values: "ANY" or the exact name or names of the units, and the number of that unit.  (example: value="infantry" count="2", or: value="ANY" count="3", or: value="infantry:artillery:armour" count="3")
 														unitPresence can be put in multiple times. Its purpose is to specify the units for presence and excluded territories. If missing, then presence needs only 1 of any unit, and excluded needs to be completely devoid of units
 														For an "AND" relationship between the required units, put them in separately. For an "OR" relationship, put them in on one line with a colon separating them.
 														It can be used in conjunction with directPresenceTerritories, alliedPresenceTerritories, enemyPresenceTerritories, directExclusionTerritories, alliedExclusionTerritories, enemyExclusionTerritories, enemySurfaceExclusionTerritories
 														If used with an exclusion, then the number of units of that type must be less than or equal the count.  (Use count="0" if you want no units of that type in the territories) (can not use "each" for count here).
+			players								values: players is used with any of the territory lists above. players defaults to the 'attatchTo' player if missing.  When used with directOwnershipTerritories/PresenceTerritories it allows you to specify who must own the selected territories in an OR relationship.
+														example: if we were to say <option name="players" value="Germans:Italians"/> and use it with directOwnershipTerritories, then it means that either Germans or Italians or both must own those territories. (thus you can use this to exclude some allies)
 			
 	-->
 	<!-- German Objectives -->
@@ -3423,7 +3425,7 @@
 				This trigger would add 2 infantry to russia for each territory inside the condition objectiveAttachmentRussians1_EasternEuropeMegaIncome that is true.
 				IF you have more than 1 condition with Each, then the trigger will use the largest Each.  If you have a meta-condition (a condition that contains other conditions), the trigger will NOT look inside the conditions inside the meta-condition.
 				Since it would be meaningless to, for example, change a relation to the same thing 10 times in a row, Each only works with the following kinds of triggers:
-				resource, placement, purchase
+				resource, placement, removeUnits, purchase
 		-->
 		<!-- Clarification on changing properties and clearing of properties. (Any property not in this list overwrites itself if you set it multiple times)
 				The following attachments may have MULTIPLE instances, meaning that they are adding to some variable, meaning that they may be cleared by triggers if you want to (by prefixing with "-clear-"):
@@ -3467,6 +3469,7 @@
 					conditions
 					unitPresence
 					relationship
+					players
 				
 				Rules Attachments:
 					productionPerXTerritories

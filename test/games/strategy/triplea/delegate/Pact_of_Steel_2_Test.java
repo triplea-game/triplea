@@ -19,7 +19,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.triplea.attatchments.AbstractRulesAttachment;
+import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.xml.LoadGameUtil;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -65,7 +65,7 @@ public class Pact_of_Steel_2_Test extends TestCase
 		final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
 		final ITestDelegateBridge bridge = getDelegateBridge(russians);
 		// this National Objective russia has to own at least 3 of the 5 territories by itself
-		final AbstractRulesAttachment russian_easternEurope = AbstractRulesAttachment.get(russians, "objectiveAttachmentRussians1_EasternEurope");
+		final RulesAttachment russian_easternEurope = RulesAttachment.get(russians, "objectiveAttachmentRussians1_EasternEurope");
 		final Collection<Territory> terrs = new ArrayList<Territory>();
 		terrs.add(Norway);
 		terrs.add(Eastern_Europe);

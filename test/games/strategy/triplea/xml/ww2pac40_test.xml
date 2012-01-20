@@ -1875,11 +1875,11 @@
 					</attatchment>
 					<attatchment name="objectiveAttachment_Americans2_Control_Philippines" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Philippines" count="1"/>
+						<option name="directOwnershipTerritories" value="Philippines" count="1"/>
 					</attatchment>
 					<attatchment name="objectiveAttachment_Americans3_Control_Japanese_Islands" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Okinawa:Iwo Jima" count="2"/>
+						<option name="directOwnershipTerritories" value="Okinawa:Iwo Jima" count="2"/>
 					</attatchment>
 					
 					<attatchment name="conditionAttachmentJapaneseDoNotControlBurmaRoad" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -1894,22 +1894,26 @@
 					
 					<attatchment name="objectiveAttachment_British1_Control_Dutch_East_Indies" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Java:Sumatra:Borneo:Celebes" count="4"/>
+						<option name="directOwnershipTerritories" value="Java:Sumatra:Borneo:Celebes" count="4"/>
+							<!-- we do not want dutch control of the east indies to count towards this goal -->
+						<option name="players" value="British:Americans:ANZAC"/>
 					</attatchment>
 					<attatchment name="objectiveAttachment_British2_Retaining_Empire" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Kwangtung:Malaya" count="2"/>
+						<option name="directOwnershipTerritories" value="Kwangtung:Malaya" count="2"/>
 					</attatchment>
 					
 					<attatchment name="objectiveAttachment_ANZAC1_Control_Strategic_Islands" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
-						<option name="alliedOwnershipTerritories" value="Solomon Islands:Dutch New Guinea:New Guinea:New Britain" count="4"/>
+						<option name="directOwnershipTerritories" value="Solomon Islands:Dutch New Guinea:New Guinea:New Britain" count="4"/>
+							<!-- we do not want dutch control of new guinea to count towards this goal -->
+						<option name="players" value="British:Americans:ANZAC"/>
 					</attatchment>
 					
 					<attatchment name="objectiveAttachment_ANZAC2_High_Morale" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="objectiveValue" value="5"/>
 						<option name="uses" value="1"/>
-						<!--<option name="directOwnershipTerritories" value="Japan:Siam:Hainan:Formosa:Caroline Islands:Marshall Islands:Marianas:Paulau Island:Okinawa:Iwo Jima:Korea" count="1"/>-->
+						<!-- occupy means any unit <option name="directOwnershipTerritories" value="Japan:Siam:Hainan:Formosa:Caroline Islands:Marshall Islands:Marianas:Paulau Island:Okinawa:Iwo Jima:Korea" count="1"/>-->
 						<option name="directPresenceTerritories" value="Japan:Siam:Hainan:Formosa:Caroline Islands:Marshall Islands:Marianas:Paulau Island:Okinawa:Iwo Jima:Korea" count="1"/>
 						<!--<option name="unitPresence" value="ANY" count="1"/>-->
 					</attatchment>

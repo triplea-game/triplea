@@ -5,7 +5,6 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
-import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -16,11 +15,7 @@ import games.strategy.util.Match;
 import games.strategy.util.Tuple;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Abstraction done by Erik von der Osten, original TriggerAttachment writen by Squid Daddy and Mark Christopher Duncan
@@ -47,52 +42,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		super(name, attachable, gameData);
 	}
 	
-	/**
-	 * Convenience method for returning TriggerAttachments.
-	 * 
-	 * @param player
-	 * @param nameOfAttachment
-	 * @return a new trigger attachment
-	 */
-	public static TriggerAttachment get(final PlayerID player, final String nameOfAttachment)
-	{
-		final TriggerAttachment rVal = (TriggerAttachment) player.getAttachment(nameOfAttachment);
-		if (rVal == null)
-			throw new IllegalStateException("Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
-		return rVal;
-	}
-	
-	/**
-	 * Convenience method for return all TriggerAttachments attached to a player.
-	 * 
-	 * @param player
-	 * @param data
-	 * @param cond
-	 * @return set of trigger attachments (If you use null for the match condition, you will get all triggers for this player)
-	 */
-	public static Set<TriggerAttachment> getTriggers(final PlayerID player, final GameData data, final Match<TriggerAttachment> cond)
-	{
-		final Set<TriggerAttachment> trigs = new HashSet<TriggerAttachment>();
-		final Map<String, IAttachment> map = player.getAttachments();
-		final Iterator<String> iter = map.keySet().iterator();
-		while (iter.hasNext())
-		{
-			final IAttachment a = map.get(iter.next());
-			if (a instanceof TriggerAttachment)
-			{
-				if (cond == null || cond.match((TriggerAttachment) a))
-					trigs.add((TriggerAttachment) a);
-			}
-		}
-		return trigs;
-	}
-	
 	public static CompositeChange triggerSetUsedForThisRound(final PlayerID player, final IDelegateBridge aBridge)
 	{
 		final CompositeChange change = new CompositeChange();
-		for (final AbstractTriggerAttachment ta : getTriggers(player, aBridge.getData(), null))
+		for (final TriggerAttachment ta : TriggerAttachment.getTriggers(player, aBridge.getData(), null))
 		{
-			if (ta.m_usedThisRound)
+			if (ta.getUsedThisRound())
 			{
 				final int currentUses = ta.getUses();
 				if (currentUses > 0)

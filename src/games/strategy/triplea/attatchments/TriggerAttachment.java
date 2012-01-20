@@ -6,6 +6,7 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
@@ -90,6 +91,46 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	/**
+	 * Convenience method for returning TriggerAttachments.
+	 * 
+	 * @param player
+	 * @param nameOfAttachment
+	 * @return a new trigger attachment
+	 */
+	public static TriggerAttachment get(final PlayerID player, final String nameOfAttachment)
+	{
+		final TriggerAttachment rVal = (TriggerAttachment) player.getAttachment(nameOfAttachment);
+		if (rVal == null)
+			throw new IllegalStateException("Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+		return rVal;
+	}
+	
+	/**
+	 * Convenience method for return all TriggerAttachments attached to a player.
+	 * 
+	 * @param player
+	 * @param data
+	 * @param cond
+	 * @return set of trigger attachments (If you use null for the match condition, you will get all triggers for this player)
+	 */
+	public static Set<TriggerAttachment> getTriggers(final PlayerID player, final GameData data, final Match<TriggerAttachment> cond)
+	{
+		final Set<TriggerAttachment> trigs = new HashSet<TriggerAttachment>();
+		final Map<String, IAttachment> map = player.getAttachments();
+		final Iterator<String> iter = map.keySet().iterator();
+		while (iter.hasNext())
+		{
+			final IAttachment a = map.get(iter.next());
+			if (a instanceof TriggerAttachment)
+			{
+				if (cond == null || cond.match((TriggerAttachment) a))
+					trigs.add((TriggerAttachment) a);
+			}
+		}
+		return trigs;
+	}
+	
+	/**
 	 * This will collect all triggers for the desired players, based on a match provided,
 	 * and then it will gather all the conditions necessary, then test all the conditions,
 	 * and then it will fire all the conditions which are satisfied.
@@ -130,7 +171,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	
 	/**
 	 * This will fire all triggers, and it will not test to see if they are satisfied or not first. Please use collectAndFireTriggers instead of using this directly.
-	 * To see if they are satisfied, first create the list of triggers using Matches + AbstractTriggerAttachment.getTriggers.
+	 * To see if they are satisfied, first create the list of triggers using Matches + TriggerAttachment.getTriggers.
 	 * Then test the triggers using RulesAttachment.getAllConditionsRecursive, and RulesAttachment.testAllConditions
 	 * 
 	 * @param triggersToBeFired
