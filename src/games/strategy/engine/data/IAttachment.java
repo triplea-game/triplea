@@ -75,6 +75,7 @@ public interface IAttachment extends Serializable
 	static final String PROPERTY_PlayerAttachment_SUICIDE_ATTACK_RESOURCES = "suicideAttackResources";
 	static final String PROPERTY_PlayerAttachment_SUICIDE_ATTACK_TARGETS = "suicideAttackTargets"; // just added this
 	static final String PROPERTY_PlayerAttachment_VPS = "vps";
+	static final String PROPERTY_PlayerAttachment_STACKING_LIMIT = "stackingLimit"; // just added this 2
 	
 	// TechAttachment
 	static final String PROPERTY_TechAttachment_AA_RADAR = "aARadar";
@@ -269,6 +270,7 @@ public interface IAttachment extends Serializable
 	static final String PROPERTY_AbstractRulesAttachment_OBJECTIVE_VALUE = "objectiveValue";
 	static final String PROPERTY_AbstractRulesAttachment_TURNS = "turns";
 	static final String PROPERTY_AbstractRulesAttachment_USES = "uses";
+	static final String PROPERTY_AbstractRulesAttachment_PLAYERS = "players"; // just added this 2
 	
 	// RulesAttachment
 	// FYI: "techCount" and "atWarCount" do not belong in IAttachment as the as the user can not set it as a rules attachment property

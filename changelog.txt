@@ -1,4 +1,8 @@
 Changes for 1.5
+* Fixed null pointer error in Bid Placement when undoing a placement. (veqryn)
+
+* Created new Player Attachment property, stackingLimit, which allows stacking limits to be enforced flexibly per player, with multiple rules allowed for owned, allied, and total units. (veqryn)
+
 * Created new Rules Attachment property, players, which can be used with directOwnershipTerritories, directExclusionTerritories, directPresenceTerritories, or any of the other territory lists, to customize which players are required to own/occupy the territories. (veqryn)
 
 * Fixing new attachment setter annotation tester, and renaming some isXX methods to getXX. (veqryn)

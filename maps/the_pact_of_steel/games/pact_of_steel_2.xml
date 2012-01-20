@@ -3464,6 +3464,7 @@
 					captureUnitOnEnteringBy
 					suicideAttackResources
 					suicideAttackTargets
+					stackingLimit
 					
 				Objectives & Condition Attachments:
 					conditions
@@ -4044,6 +4045,8 @@
 															examples: <option name="suicideAttackTargets" value="battleship:carrier"/>
 			vps									values: not sure if it works
 			captureVps							values: not sure if it works
+			stackingLimit						values: count equal to the maximum number of units allowed in a territory. value must start with "owned", "allied", or "total", then after that is a colon delimited list of units or the word "all".
+															You may have multiple instances of this, per player. example: <option name="stackingLimit" value="owned:Battleship:Battlecruiser:Cruiser:Destroyer:Submarine:Transport" count="4"/>
 	-->
 				<!-- Currently "vps" and "captureVps" do not work. if they work in the future they will follow original pacific rules
 				<attatchment name="playerAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">

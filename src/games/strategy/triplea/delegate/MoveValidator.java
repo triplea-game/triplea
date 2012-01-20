@@ -30,6 +30,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.CanalAttachment;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -1089,6 +1090,7 @@ public class MoveValidator
 		// test for stack limits per unit
 		if (route.getEnd() != null)
 		{
+			// per unit test
 			final Collection<Unit> unitsWithStackingLimits = Match.getMatches(units, Matches.UnitHasStackingLimit);
 			for (final Territory t : route.getSteps())
 			{
@@ -1103,6 +1105,12 @@ public class MoveValidator
 					else
 						result.addDisallowedUnit("UnitType " + ut.getName() + " has reached stacking limit", unit);
 				}
+			}
+			// per player test
+			for (final Territory t : route.getSteps())
+			{
+				if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(units, t, player, data))
+					return result.setErrorReturnResult("Units Can Not Go Over Stacking Limit");
 			}
 		}
 		// don't allow move through impassible territories

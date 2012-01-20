@@ -24,10 +24,15 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
+import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
+import games.strategy.util.Triple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,13 +73,96 @@ public class PlayerAttachment extends DefaultAttachment
 	private final Collection<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
 	private final Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
-	private final IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>();
-	private Set<UnitType> m_suicideAttackTargets = null;
+	private final IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>(); // what resources can be used for suicide attacks, and at what attack power
+	private Set<UnitType> m_suicideAttackTargets = null; // what can be hit by suicide attacks
+	private final Set<Triple<Integer, String, Set<UnitType>>> m_stackingLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // stack limits on a flexible per player basis
 	
 	/** Creates new PlayerAttachment */
 	public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setStackingLimit(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length < 3)
+			throw new GameParseException("PlayerAttachment: stackingLimit must have 3 parts: count, type, unit list");
+		final int max = getInt(s[0]);
+		if (max < 0)
+			throw new GameParseException("PlayerAttachment: stackingLimit count must have a positive number");
+		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
+			throw new GameParseException("PlayerAttachment: stackingLimit type must be: owned, allied, or total");
+		final Set<UnitType> types = new HashSet<UnitType>();
+		if (s[3].equalsIgnoreCase("all"))
+			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
+		else
+		{
+			for (int i = 2; i < s.length; i++)
+			{
+				final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
+				if (ut == null)
+					throw new IllegalStateException("PlayerAttachment: No unit called: " + s[i]);
+				else
+					types.add(ut);
+			}
+		}
+		m_stackingLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
+	}
+	
+	public Set<Triple<Integer, String, Set<UnitType>>> getStackingLimit()
+	{
+		return m_stackingLimit;
+	}
+	
+	public void clearStackingLimit()
+	{
+		m_stackingLimit.clear();
+	}
+	
+	public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final Collection<Unit> unitsMoving, final Territory toMoveInto, final PlayerID owner, final GameData data)
+	{
+		final PlayerAttachment pa = PlayerAttachment.get(owner);
+		if (pa == null)
+			return true;
+		final Set<Triple<Integer, String, Set<UnitType>>> stackingLimits = pa.getStackingLimit();
+		if (stackingLimits.isEmpty())
+			return true;
+		for (final Triple<Integer, String, Set<UnitType>> currentLimit : stackingLimits)
+		{
+			// first make a copy of unitsMoving
+			final Collection<Unit> copyUnitsMoving = new ArrayList<Unit>(unitsMoving);
+			final int max = currentLimit.getFirst();
+			final String type = currentLimit.getSecond();
+			final Set<UnitType> unitsToTest = currentLimit.getThird();
+			final Collection<Unit> currentInTerritory = toMoveInto.getUnits().getUnits();
+			// first remove units that do not apply to our current type
+			if (type.equals("owned"))
+			{
+				currentInTerritory.removeAll(Match.getMatches(currentInTerritory, Matches.unitIsOwnedBy(owner).invert()));
+				copyUnitsMoving.removeAll(Match.getMatches(copyUnitsMoving, Matches.unitIsOwnedBy(owner).invert()));
+			}
+			else if (type.equals("allied"))
+			{
+				currentInTerritory.removeAll(Match.getMatches(currentInTerritory, Matches.alliedUnit(owner, data).invert()));
+				copyUnitsMoving.removeAll(Match.getMatches(copyUnitsMoving, Matches.alliedUnit(owner, data).invert()));
+			}
+			// else if (type.equals("total"))
+			// now remove units that are not part of our list
+			currentInTerritory.retainAll(Match.getMatches(currentInTerritory, Matches.unitIsOfTypes(unitsToTest)));
+			copyUnitsMoving.retainAll(Match.getMatches(copyUnitsMoving, Matches.unitIsOfTypes(unitsToTest)));
+			// now test
+			if (max < (currentInTerritory.size() + copyUnitsMoving.size()))
+				return false;
+		}
+		return true;
 	}
 	
 	/**

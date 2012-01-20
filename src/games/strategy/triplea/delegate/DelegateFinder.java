@@ -56,6 +56,12 @@ public class DelegateFinder
 		return (PlaceDelegate) findDelegate(data, "place");
 	}
 	
+	// TODO: this is a really shitty way of figuring out what step / delegate we are in....
+	public static final BidPlaceDelegate bidPlaceDelegate(final GameData data)
+	{
+		return (BidPlaceDelegate) findDelegate(data, "placeBid");
+	}
+	
 	public static final TechnologyDelegate techDelegate(final GameData data)
 	{
 		return (TechnologyDelegate) findDelegate(data, "tech");

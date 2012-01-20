@@ -38,6 +38,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -515,6 +516,21 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		// make sure we can place consuming units
 		if (!canWeConsumeUnits(units, to, false, null))
 			return "Not Enough Units To Upgrade or Be Consumed";
+		// now check for stacking limits
+		final Collection<UnitType> typesAlreadyChecked = new ArrayList<UnitType>();
+		for (final Unit currentUnit : units)
+		{
+			final UnitType ut = currentUnit.getType();
+			if (typesAlreadyChecked.contains(ut))
+				continue;
+			typesAlreadyChecked.add(ut);
+			final int maxForThisType = UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(ut, to, player, getData());
+			if (Match.countMatches(units, Matches.unitIsOfType(ut)) > maxForThisType)
+				return "UnitType " + ut.getName() + " is over stacking limit of " + maxForThisType;
+		}
+		if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(units, to, player, getData()))
+			return "Units Can Not Go Over Stacking Limit";
+		// now return null (valid placement) if we have placement restrictions disabled in game options
 		if (!isUnitPlacementRestrictions())
 			return null;
 		// account for any unit placement restrictions by territory

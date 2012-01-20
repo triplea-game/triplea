@@ -49,14 +49,22 @@ class UndoablePlacement extends AbstractUndoableMove
 	protected final void undoSpecific(final IDelegateBridge bridge)
 	{
 		final GameData data = bridge.getData();
-		final Map<Territory, Collection<Unit>> produced = DelegateFinder.placeDelegate(data).getProduced();
+		final String currentStepName = bridge.getStepName(); // TODO: currently there is no good way to figure out what Delegate and Step we are currently in
+		AbstractPlaceDelegate currentDelegate;
+		if (currentStepName.endsWith("BidPlace"))
+			currentDelegate = DelegateFinder.bidPlaceDelegate(data);
+		else if (currentStepName.endsWith("Place"))
+			currentDelegate = DelegateFinder.placeDelegate(data);
+		else
+			throw new IllegalStateException("Can not find Placement Delegate for current step: " + currentStepName);
+		final Map<Territory, Collection<Unit>> produced = currentDelegate.getProduced();
 		final Collection<Unit> units = produced.get(m_producer_territory);
 		units.removeAll(getUnits());
 		if (units.isEmpty())
 		{
 			produced.remove(m_producer_territory);
 		}
-		DelegateFinder.placeDelegate(data).setProduced(new HashMap<Territory, Collection<Unit>>(produced));
+		currentDelegate.setProduced(new HashMap<Territory, Collection<Unit>>(produced));
 	}
 	
 	@Override
