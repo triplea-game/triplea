@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This class is designed to hold common code for holding "conditions". Any attachment that can hold conditions (ie: RulesAttachments), should extend this instead of DefaultAttachment.
@@ -91,9 +92,14 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setConditionType(final String s) throws GameParseException
+	public void setConditionType(final String value) throws GameParseException
 	{
-		if (!(s.equals("and") || s.equals("AND") || s.equals("or") || s.equals("OR") || s.equals("XOR") || s.equals("xor")))
+		String s = value;
+		if (s.equalsIgnoreCase("AND") || s.equalsIgnoreCase("OR") || s.equalsIgnoreCase("XOR"))
+		{
+			s = s.toUpperCase(Locale.ENGLISH);
+		}
+		else
 		{
 			final String[] nums = s.split("-");
 			if (nums.length == 1)
@@ -215,7 +221,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	public static boolean areConditionsMet(final List<ICondition> rulesToTest, final HashMap<ICondition, Boolean> testedConditions, final String conditionType)
 	{
 		boolean met = false;
-		if (conditionType.equals("AND") || conditionType.equals("and"))
+		if (conditionType.equals("AND"))
 		{
 			for (final ICondition c : rulesToTest)
 			{
@@ -224,7 +230,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 					break;
 			}
 		}
-		else if (conditionType.equals("OR") || conditionType.equals("or"))
+		else if (conditionType.equals("OR"))
 		{
 			for (final ICondition c : rulesToTest)
 			{
@@ -233,7 +239,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 					break;
 			}
 		}
-		else if (conditionType.equals("XOR") || conditionType.equals("xor"))
+		else if (conditionType.equals("XOR"))
 		{
 			// XOR is confusing with more than 2 conditions, so we will just say that one has to be true, while all others must be false
 			boolean isOneTrue = false;

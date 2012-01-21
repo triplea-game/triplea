@@ -2,8 +2,10 @@ package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
@@ -58,9 +60,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setPlayers(final String names) throws GameParseException
 	{
+		final PlayerList pl = getData().getPlayerList();
 		for (final String p : names.split(":"))
 		{
-			final PlayerID player = getData().getPlayerList().getPlayerID(p);
+			final PlayerID player = pl.getPlayerID(p);
 			if (player == null)
 				throw new GameParseException("RulesAttachment: Could not find player. name:" + p);
 			m_players.add(player);
@@ -218,6 +221,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 */
 	protected String getTerritoriesBasedOnStringName(final String name, final Collection<PlayerID> players, final GameData data)
 	{
+		final GameMap gameMap = data.getMap();
 		String value = new String();
 		if (name.equals("original") || name.equals("enemy")) // get all originally owned territories
 		{
@@ -237,7 +241,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			final Set<Territory> ownedTerrs = new HashSet<Territory>();
 			for (final PlayerID player : players)
 			{
-				ownedTerrs.addAll(data.getMap().getTerritoriesOwnedBy(player));
+				ownedTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
 			}
 			setTerritoryCount(String.valueOf(ownedTerrs.size()));
 			// Colon delimit the collection as it would exist in the XML
@@ -249,7 +253,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			final Set<Territory> ownedTerrsNoWater = new HashSet<Territory>();
 			for (final PlayerID player : players)
 			{
-				ownedTerrsNoWater.addAll(Match.getMatches(data.getMap().getTerritoriesOwnedBy(player), Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
+				ownedTerrsNoWater.addAll(Match.getMatches(gameMap.getTerritoriesOwnedBy(player), Matches.TerritoryIsNotImpassableToLandUnits(player, data)));
 			}
 			setTerritoryCount(String.valueOf(ownedTerrsNoWater.size()));
 			// Colon delimit the collection as it would exist in the XML
@@ -262,7 +266,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 			for (final PlayerID player : players)
 			{
-				allTerrs.addAll(data.getMap().getTerritoriesOwnedBy(player));
+				allTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
 				allTerrs.addAll(origOwnerTracker.getOriginallyOwned(data, player));
 			}
 			setTerritoryCount(String.valueOf(allTerrs.size()));
@@ -272,7 +276,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		}
 		else if (name.equals("map"))
 		{
-			final Collection<Territory> allTerrs = data.getMap().getTerritories();
+			final Collection<Territory> allTerrs = gameMap.getTerritories();
 			setTerritoryCount(String.valueOf(allTerrs.size()));
 			// Colon delimit the collection as it would exist in the XML
 			for (final Territory item : allTerrs)
