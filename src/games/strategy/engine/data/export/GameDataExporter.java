@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.data.export;
 
+import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameStep;
@@ -26,11 +27,14 @@ import games.strategy.engine.data.NamedAttachable;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RelationshipTracker;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.RepairFrontier;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.BooleanProperty;
@@ -42,12 +46,15 @@ import games.strategy.engine.data.properties.ListProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Tuple;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -55,22 +62,31 @@ public class GameDataExporter
 {
 	private final StringBuffer xmlfile;
 	
-	public GameDataExporter(final GameData data)
+	public GameDataExporter(final GameData data, final boolean currentAttachmentObjects)
 	{
 		xmlfile = new StringBuffer();
 		init(data);
+		tripleaMinimumVersion();
 		diceSides(data);
 		map(data);
 		resourceList(data);
 		playerList(data);
 		unitList(data);
+		relationshipTypeList(data);
+		territoryEffectList(data);
 		gamePlay(data);
 		production(data);
 		technology(data);
-		attachments(data);
+		attachments(data, currentAttachmentObjects);
 		initialize(data);
 		propertyList(data);
 		finish();
+	}
+	
+	private void tripleaMinimumVersion()
+	{
+		// Since we do not keep the minimum version info in the game data, just put the current version of triplea here (since we have successfully started the map, it is basically correct)
+		xmlfile.append("    <triplea minimumVersion=\"" + EngineVersion.VERSION + "\"/>\n");
 	}
 	
 	private void diceSides(final GameData data)
@@ -318,7 +334,32 @@ public class GameDataExporter
 		ownerInitialize(data);
 		unitInitialize(data);
 		resourceInitialize(data);
+		relationshipInitialize(data);
 		xmlfile.append("    </initialize>\n");
+	}
+	
+	private void relationshipInitialize(final GameData data)
+	{
+		if (data.getRelationshipTypeList().getAllRelationshipTypes().size() <= 4)
+			return;
+		final RelationshipTracker rt = data.getRelationshipTracker();
+		xmlfile.append("        <relationshipInitialize>\n");
+		final Collection<PlayerID> players = data.getPlayerList().getPlayers();
+		final Collection<PlayerID> playersAlreadyDone = new HashSet<PlayerID>();
+		for (final PlayerID p1 : players)
+		{
+			for (final PlayerID p2 : players)
+			{
+				if (p1.equals(p2) || playersAlreadyDone.contains(p2))
+					continue;
+				final RelationshipType type = rt.getRelationshipType(p1, p2);
+				final int roundValue = rt.getRoundRelationshipWasCreated(p1, p2);
+				xmlfile.append("            <relationship type=\"" + type.getName() + "\" player1=\"" + p1.getName() + "\" player2=\""
+							+ p2.getName() + "\" roundValue=\"" + roundValue + "\"/>\n");
+			}
+			playersAlreadyDone.add(p1);
+		}
+		xmlfile.append("        </relationshipInitialize>\n");
 	}
 	
 	private void resourceInitialize(final GameData data)
@@ -381,7 +422,7 @@ public class GameDataExporter
 		xmlfile.append("        </ownerInitialize>\n");
 	}
 	
-	private void attachments(final GameData data)
+	private void attachments(final GameData data, final boolean currentAttachmentObjects)
 	{
 		xmlfile.append("\n");
 		xmlfile.append("    <attatchmentList>\n");
@@ -390,18 +431,41 @@ public class GameDataExporter
 		{
 			// TODO: use a ui switch to determine if we are printing the xml as it was created, or as it stands right now (including changes to the game data)
 			final Tuple<IAttachment, ArrayList<Tuple<String, String>>> current = attachments.next();
-			printAttachments(current.getFirst()); // TODO: this is just a quick fix. need to redo this whole thing.
+			printAttachments(current, currentAttachmentObjects);
 		}
 		xmlfile.append("    </attatchmentList>\n");
 	}
 	
-	private void printAttachments(final IAttachment attachment)
+	private String printAttachmentOptionsBasedOnOriginalXML(final ArrayList<Tuple<String, String>> attachmentPlusValues)
+	{
+		if (attachmentPlusValues.isEmpty())
+			return "";
+		final StringBuffer sb = new StringBuffer("");
+		for (final Tuple<String, String> current : attachmentPlusValues)
+		{
+			sb.append("            <option name=\"" + current.getFirst() + "\" value=\"" + current.getSecond() + "\"/>\n");
+		}
+		return sb.toString();
+	}
+	
+	private void printAttachments(final Tuple<IAttachment, ArrayList<Tuple<String, String>>> attachmentPlusValues, final boolean currentAttachmentObjects)
 	{
 		try
 		{
-			final IAttachmentExporter exporter = AttachmentExporterFactory.getExporter(attachment);
-			final String attachmentOptions = exporter.getAttachmentOptions(attachment);
+			final IAttachment attachment = attachmentPlusValues.getFirst();
+			// TODO: none of the attachment exporter classes have been updated since TripleA version 1.3.2.2
+			final String attachmentOptions;
+			if (currentAttachmentObjects)
+			{
+				final IAttachmentExporter exporter = AttachmentExporterFactory.getExporter(attachment);
+				attachmentOptions = exporter.getAttachmentOptions(attachment);
+			}
+			else
+			{
+				attachmentOptions = printAttachmentOptionsBasedOnOriginalXML(attachmentPlusValues.getSecond());
+			}
 			final NamedAttachable attachTo = (NamedAttachable) attachment.getAttatchedTo();
+			// TODO: keep this list updated
 			String type = "";
 			if (attachTo.getClass().equals(PlayerID.class))
 				type = "player";
@@ -409,8 +473,12 @@ public class GameDataExporter
 				type = "unitType";
 			if (attachTo.getClass().equals(Territory.class))
 				type = "territory";
+			if (attachTo.getClass().equals(TerritoryEffect.class))
+				type = "territoryEffect";
 			if (attachTo.getClass().equals(Resource.class))
 				type = "resource";
+			if (attachTo.getClass().equals(RelationshipType.class))
+				type = "relationship";
 			if (type.equals(""))
 				throw new AttachmentExportException("no attachmentType known for " + attachTo.getClass().getCanonicalName());
 			if (attachmentOptions.length() > 0)
@@ -648,6 +716,42 @@ public class GameDataExporter
 			}
 		}
 		xmlfile.append("    </playerList>\n");
+	}
+	
+	private void relationshipTypeList(final GameData data)
+	{
+		final Collection<RelationshipType> types = data.getRelationshipTypeList().getAllRelationshipTypes();
+		if (types.size() <= 4)
+			return;
+		xmlfile.append("\n");
+		xmlfile.append("    <relationshipTypes>\n");
+		final Iterator<RelationshipType> iter = types.iterator();
+		while (iter.hasNext())
+		{
+			final RelationshipType current = iter.next();
+			final String name = current.getName();
+			if (name.equals(Constants.RELATIONSHIP_TYPE_SELF) || name.equals(Constants.RELATIONSHIP_TYPE_NULL)
+						|| name.equals(Constants.RELATIONSHIP_TYPE_DEFAULT_WAR) || name.equals(Constants.RELATIONSHIP_TYPE_DEFAULT_ALLIED))
+				continue;
+			xmlfile.append("        <relationshipType name=\"" + name + "\"/>\n");
+		}
+		xmlfile.append("    </relationshipTypes>\n");
+	}
+	
+	private void territoryEffectList(final GameData data)
+	{
+		final Collection<TerritoryEffect> types = data.getTerritoryEffectList().values();
+		if (types.isEmpty())
+			return;
+		xmlfile.append("\n");
+		xmlfile.append("    <territoryEffectList>\n");
+		final Iterator<TerritoryEffect> iter = types.iterator();
+		while (iter.hasNext())
+		{
+			final TerritoryEffect current = iter.next();
+			xmlfile.append("        <territoryEffect name=\"" + current.getName() + "\"/>\n");
+		}
+		xmlfile.append("    </territoryEffectList>\n");
 	}
 	
 	private void resourceList(final GameData data)

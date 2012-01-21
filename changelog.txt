@@ -1,4 +1,6 @@
 Changes for 1.5
+* Completely updated the game xml exporter to TripleA 1.5, except that attachments are just copies of what was parsed from the xml originally. (veqryn)
+
 * Fixed null pointer error in Bid Placement when undoing a placement. (veqryn)
 
 * Created new Player Attachment property, stackingLimit, which allows stacking limits to be enforced flexibly per player, with multiple rules allowed for owned, allied, and total units. (veqryn)

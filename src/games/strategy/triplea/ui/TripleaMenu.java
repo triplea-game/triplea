@@ -732,6 +732,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		menuGame.add(showBattleMenu);
 	}
 	
+	// TODO: create a second menu option for parsing current attachments
 	private void addExportXML(final JMenu parentMenu)
 	{
 		final Action exportXML = new AbstractAction("Export game.xml file (Beta)...")
@@ -757,7 +758,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				if (chooser.showSaveDialog(m_frame) != JOptionPane.OK_OPTION)
 					return;
 				final GameData data = getData();
-				final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(data);
+				final GameDataExporter exporter = new games.strategy.engine.data.export.GameDataExporter(data, false);
 				final String xmlFile = exporter.getXML();
 				try
 				{
