@@ -16,6 +16,7 @@ package games.strategy.triplea.Dynamix_AI;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.TripleA;
 import games.strategy.triplea.baseAI.AIUtils;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
@@ -34,7 +35,7 @@ public class DynamixAITests extends TestCase
 	protected void setUp() throws Exception
 	{
 		m_data = LoadGameUtil.loadGame("Great Lakes War", "Great Lakes War v1.4.xml");
-		m_ai = new Dynamix_AI("Superior", "Dynamix (AI)");
+		m_ai = new Dynamix_AI("Superior", TripleA.DYNAMIX_COMPUTER_PLAYER_TYPE);
 	}
 	
 	@Override

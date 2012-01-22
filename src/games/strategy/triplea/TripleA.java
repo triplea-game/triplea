@@ -19,7 +19,11 @@
  */
 package games.strategy.triplea;
 
-import games.strategy.engine.data.*;
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.IUnitFactory;
+import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.IGame;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.framework.ServerGame;
@@ -36,13 +40,14 @@ import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
 import games.strategy.triplea.weakAI.WeakAI;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Frame;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javax.swing.SwingUtilities;
 
 /**
  * @author Sean Bridges
@@ -52,11 +57,11 @@ public class TripleA implements IGameLoader
 {
 	// compatible with 0.9.0.2 saved games
 	private static final long serialVersionUID = -8374315848374732436L;
-	private static final String HUMAN_PLAYER_TYPE = "Human";
-	private static final String WEAK_COMPUTER_PLAYER_TYPE = "E.Z. Fodder (AI)";
-	private static final String STRONG_COMPUTER_PLAYER_TYPE = "Moore N. Able (AI)";
-	private static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Dynamix (AI)";
-	private static final String NONE = "None (AI)";
+	public static final String HUMAN_PLAYER_TYPE = "Human";
+	public static final String WEAK_COMPUTER_PLAYER_TYPE = "E.Z. Fodder (AI)";
+	public static final String STRONG_COMPUTER_PLAYER_TYPE = "Moore N. Able (AI)";
+	public static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Dynamix Land-Only (AI)";
+	// public static final String NONE = "None (AI)";
 	private transient TripleaDisplay m_display;
 	private transient IGame m_game;
 	

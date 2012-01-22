@@ -28,6 +28,7 @@ import games.strategy.engine.framework.startup.mc.ServerModel;
 import games.strategy.engine.lobby.client.ui.action.EditGameCommentAction;
 import games.strategy.engine.lobby.client.ui.action.RemoveGameFromLobbyAction;
 import games.strategy.net.IServerMessenger;
+import games.strategy.triplea.TripleA;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -189,7 +190,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		}
 		removeAll();
 		add(m_info, BorderLayout.NORTH);
-		final JScrollPane scroll = new JScrollPane(players);
+		final JScrollPane scroll = new JScrollPane(players, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setBorder(null);
 		scroll.setViewportBorder(null);
 		add(scroll, BorderLayout.CENTER);
@@ -306,7 +307,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 			m_type = new JComboBox(types);
 			String previousSelection = reloadSelections.get(playerName);
 			if (previousSelection.equalsIgnoreCase("Client"))
-				previousSelection = "Human";
+				previousSelection = TripleA.HUMAN_PLAYER_TYPE;
 			if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection))
 			{
 				m_type.setSelectedItem(previousSelection);
@@ -314,7 +315,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 			}
 			else if (playerName.startsWith("Neutral") || playerName.startsWith("AI"))
 			{
-				m_type.setSelectedItem("Moore N. Able (AI)");
+				m_type.setSelectedItem(TripleA.STRONG_COMPUTER_PLAYER_TYPE);
 				m_model.setLocalPlayerType(m_nameLabel.getText(), (String) m_type.getSelectedItem());
 			}
 			if (playerAlliances.contains(playerName))

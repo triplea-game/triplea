@@ -32,6 +32,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleA;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -74,14 +75,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		ALL, SUBS, NONE
 	}
 	
-
+	
 	// these class exist for testing
 	@SuppressWarnings("serial")
 	public static abstract class AttackSubs implements IExecutable
 	{
 	}
 	
-
+	
 	@SuppressWarnings("serial")
 	public static abstract class DefendSubs implements IExecutable
 	{
@@ -348,7 +349,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		change.add(ChangeFactory.markNoMovementChange(nonAir));
 		return change;
 	}*/
-
+	
 	private void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies)
 	{
 		for (final Unit holder : dependencies.keySet())
@@ -2557,7 +2558,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		// if its the null player, return a do nothing proxy
 		if (player.isNull())
-			return new WeakAI(player.getName(), "E.Z. Fodder (AI)");
+			return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
 		return (ITripleaPlayer) bridge.getRemote(player);
 	}
 	

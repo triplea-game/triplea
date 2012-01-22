@@ -12,6 +12,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.triplea.TripleA;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
@@ -227,7 +228,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	{
 		// if its the null player, return a do nothing proxy
 		if (player.isNull())
-			return new WeakAI(player.getName(), "E.Z. Fodder (AI)");
+			return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
 		return (ITripleaPlayer) bridge.getRemote(player);
 	}
 	
@@ -288,7 +289,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		}
 	}
 	
-
+	
 	class AttackersFire implements IExecutable
 	{
 		DiceRoll m_dice;
@@ -330,7 +331,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		}
 	}
 	
-
+	
 	class DefendersFire implements IExecutable
 	{
 		DiceRoll m_dice;

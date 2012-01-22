@@ -7,6 +7,7 @@ import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.PlainRandomSource;
+import games.strategy.triplea.TripleA;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -144,14 +145,14 @@ class LocalPlayerComboBoxSelector
 		m_playerTypes = new JComboBox(types);
 		String previousSelection = reloadSelections.get(playerName);
 		if (previousSelection.equalsIgnoreCase("Client"))
-			previousSelection = "Human";
+			previousSelection = TripleA.HUMAN_PLAYER_TYPE;
 		if (!(previousSelection.equals("no_one")) && Arrays.asList(types).contains(previousSelection))
 		{
 			m_playerTypes.setSelectedItem(previousSelection);
 		}
 		else if (m_playerName.startsWith("Neutral") || playerName.startsWith("AI"))
 		{
-			m_playerTypes.setSelectedItem("Moore N. Able (AI)");
+			m_playerTypes.setSelectedItem(TripleA.STRONG_COMPUTER_PLAYER_TYPE);
 			// Uncomment to disallow players from changing the default
 			// m_playerTypes.setEnabled(false);
 		}

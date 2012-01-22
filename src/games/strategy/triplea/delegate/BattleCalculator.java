@@ -29,6 +29,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.TripleA;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
@@ -328,7 +329,7 @@ public class BattleCalculator
 		final CasualtyList defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs, data);
 		ITripleaPlayer tripleaPlayer;
 		if (player.isNull())
-			tripleaPlayer = new WeakAI(player.getName(), "E.Z. Fodder (AI)");
+			tripleaPlayer = new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
 		else
 			tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
 		final CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, hitsRemaining, text, dice, player, defaultCasualties, battleID);

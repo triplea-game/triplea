@@ -3,6 +3,7 @@ package games.strategy.engine.framework;
 import games.strategy.debug.Console;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
 
 import java.util.logging.LogManager;
@@ -28,6 +29,7 @@ public class GameRunner2
 	public static final String LOBBY_HOST = "triplea.lobby.host";
 	public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
 	public static final String LOBBY_GAME_HOSTED_BY = "triplea.lobby.game.hostedBy";
+	private static WaitWindow waitWindow;
 	
 	public static void main(final String[] args)
 	{
@@ -37,6 +39,21 @@ public class GameRunner2
 		System.setProperty("sun.awt.exception.handler", ErrorHandler.class.getName());
 		System.setProperty("triplea.engine.version", EngineVersion.VERSION.toString());
 		setupLookAndFeel();
+		try
+		{
+			SwingUtilities.invokeAndWait(new Runnable()
+			{
+				public void run()
+				{
+					waitWindow = new WaitWindow("TripleA is starting...");
+					waitWindow.setVisible(true);
+					waitWindow.showWait();
+				}
+			});
+		} catch (Exception e)
+		{
+			// just don't show the wait window
+		}
 		handleCommandLineArgs(args);
 		showMainFrame();
 	}
@@ -49,6 +66,8 @@ public class GameRunner2
 			{
 				final MainFrame frame = new MainFrame();
 				frame.start();
+				if (waitWindow != null)
+					waitWindow.doneWait();
 				frame.requestFocus();
 				frame.toFront();
 			}

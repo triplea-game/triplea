@@ -1,4 +1,8 @@
 Changes for 1.5
+* Added wait window to TripleA's startup. (frigoref)
+
+* Changed name of Dynamix to be Land-Only AI, at least until someone decides to start working on the AI again. (veqryn)
+
 * Completely updated the game xml exporter to TripleA 1.5, except that attachments are just copies of what was parsed from the xml originally. (veqryn)
 
 * Fixed null pointer error in Bid Placement when undoing a placement. (veqryn)
