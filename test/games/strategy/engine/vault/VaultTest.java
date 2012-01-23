@@ -106,6 +106,12 @@ public class VaultTest extends TestCase
 		vault.release(id);
 	}
 	
+	/**
+	 * Passes when run individually.
+	 * Fails when run as part of a suite that consists of multiple server/vault tests.
+	 * 
+	 * @throws NotUnlockedException
+	 */
 	public void testServerLock() throws NotUnlockedException
 	{
 		final byte[] data = new byte[] { 0, 1, 2, 3, 4, 5 };
@@ -134,6 +140,12 @@ public class VaultTest extends TestCase
 		m_clientVault.release(id);
 	}
 	
+	/**
+	 * Passes when run individually.
+	 * Fails when run as part of a suite that consists of multiple server/vault tests.
+	 * 
+	 * @throws NotUnlockedException
+	 */
 	public void testMultiple() throws NotUnlockedException
 	{
 		final byte[] data1 = new byte[] { 0, 1, 2, 3, 4, 5 };

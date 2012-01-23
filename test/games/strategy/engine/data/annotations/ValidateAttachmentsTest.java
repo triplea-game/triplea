@@ -5,10 +5,7 @@ import games.strategy.util.IntegerMap;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
@@ -45,7 +42,7 @@ public class ValidateAttachmentsTest extends TestCase
 	{
 		final String errors = validateAttachment(InvalidFieldNameExample.class);
 		assertTrue(errors.length() > 0);
-		assertTrue(errors.indexOf("missing field for setter") != -1);
+		assertTrue(errors.contains("missing field for setter"));
 	}
 	
 	/**
@@ -55,7 +52,7 @@ public class ValidateAttachmentsTest extends TestCase
 	{
 		final String errors = validateAttachment(InvalidGetterExample.class);
 		assertTrue(errors.length() > 0);
-		assertTrue(errors.indexOf("with @GameProperty which is not a setter") != -1);
+		assertTrue(errors.contains("with @GameProperty which is not a setter"));
 	}
 	
 	/**
@@ -65,7 +62,7 @@ public class ValidateAttachmentsTest extends TestCase
 	{
 		final String errors = validateAttachment(InvalidReturnTypeExample.class);
 		assertTrue(errors.length() > 0);
-		assertTrue(errors.indexOf("has incorrect return type") != -1);
+		assertTrue(errors.contains("has incorrect return type"));
 	}
 	
 	/**
@@ -75,7 +72,7 @@ public class ValidateAttachmentsTest extends TestCase
 	{
 		final String errors = validateAttachment(InvalidClearExample.class);
 		assertTrue(errors.length() > 0);
-		assertTrue(errors.indexOf("doesn't have a clear method") != -1);
+		assertTrue(errors.contains("doesn't have a clear method"));
 	}
 	
 	/**
@@ -85,7 +82,7 @@ public class ValidateAttachmentsTest extends TestCase
 	{
 		final String errors = validateAttachment(InvalidFieldTypeExample.class);
 		assertTrue(errors.length() > 0);
-		assertTrue(errors.indexOf("is not a Collection or Map or IntegerMap") != -1);
+		assertTrue(errors.contains("is not a Collection or Map or IntegerMap"));
 	}
 	
 	/**
@@ -131,6 +128,7 @@ public class ValidateAttachmentsTest extends TestCase
 		try
 		{
 			file = new File(url.toURI());
+			file = new File(file.getParent(), "classes");
 		} catch (final URISyntaxException e)
 		{
 			fail(e.getMessage());
@@ -139,8 +137,7 @@ public class ValidateAttachmentsTest extends TestCase
 		final String errors = findAttachmentsAndValidate(file);
 		if (errors.length() > 0)
 		{
-			System.out.println(errors);
-			fail(errors);
+			fail("\n" + errors);
 		}
 	}
 	
@@ -189,7 +186,7 @@ public class ValidateAttachmentsTest extends TestCase
 			try
 			{
 				clazz = Class.forName(className);
-				if (!clazz.isInterface() && IAttachment.class.isAssignableFrom(clazz))
+				if (!clazz.isInterface() && IAttachment.class.isAssignableFrom(clazz)) // && !Modifier.isAbstract(clazz.getModifiers())
 				{
 					@SuppressWarnings("unchecked")
 					final Class<? extends IAttachment> attachmentClass = (Class<? extends IAttachment>) clazz;
@@ -211,7 +208,8 @@ public class ValidateAttachmentsTest extends TestCase
 	 * 
 	 */
 	public static final List<String> SKIPCLASSES = Arrays.asList("ReliefImageBreaker", "TileImageBreaker",
-				"InvalidGetterExample", "InvalidFieldNameExample", "InvalidReturnTypeExample", "InvalidClearExample", "InvalidFieldTypeExample");
+				"InvalidGetterExample", "InvalidFieldNameExample", "InvalidReturnTypeExample", "InvalidClearExample", "InvalidFieldTypeExample",
+				"ChatPlayerPanel", "GUID", "Node");
 	
 	/**
 	 * Contains a list of classes which has static initializes, unfortunately you can't reflect this, since loading the class triggers
@@ -264,7 +262,7 @@ public class ValidateAttachmentsTest extends TestCase
 				try
 				{
 					field = clazz.getDeclaredField("m_" + propertyName);
-					// adders must have a field of type IntegerMap, for regular setters we don't know the type
+					// adders must have a field of type IntegerMap, or be a collection of sorts
 					if (annotation.adds())
 					{
 						if (!(Collection.class.isAssignableFrom(field.getType()) || Map.class.isAssignableFrom(field.getType()) || IntegerMap.class.isAssignableFrom(field.getType())))
@@ -288,7 +286,7 @@ public class ValidateAttachmentsTest extends TestCase
 					getter = clazz.getMethod(getterName);
 					if (!type.equals(getter.getReturnType()))
 					{
-						sb.append("Class " + clazz.getCanonicalName() + " has a getter for property " + propertyName + " which has incorrect return type\n");
+						sb.append("Class " + clazz.getCanonicalName() + ". " + getterName + " returns type " + getter.getReturnType().getName() + " but property field is type " + type.getName() + "\n");
 					}
 				} catch (final NoSuchMethodException e)
 				{
@@ -317,9 +315,12 @@ public class ValidateAttachmentsTest extends TestCase
 				else
 				{
 					// check the symmetry of regular setters
+					String method = null;
 					try
 					{
+
 						final Constructor<? extends IAttachment> constructor = clazz.getConstructor(IAttachment.attachmentConstructorParameter);
+						method = constructor.toString();
 						final IAttachment attachment = constructor.newInstance("testAttachment", null, null);
 						Object value = null;
 						if (field.getType().equals(Integer.TYPE))
@@ -339,17 +340,24 @@ public class ValidateAttachmentsTest extends TestCase
 							// we do not handle complex types for now
 							continue;
 						}
-						
-						setter.invoke(attachment, String.valueOf(value));
+						method = setter.toString();
+						if (setter.getParameterTypes()[0] == String.class) {
+							setter.invoke(attachment, String.valueOf(value));
+						} else {
+							setter.invoke(attachment, value);
+						}
+
+						method = getter.toString();
 						final Object getterValue = getter.invoke(attachment);
 						if (!value.equals(getterValue))
 						{
 							sb.append("Class " + clazz.getCanonicalName() + ", value set could not be obtained using " + getterName + "\n");
 						}
 						field.setAccessible(true);
-						if (!getterValue.equals(field.get(attachment)))
+						Object fieldValue = field.get(attachment);
+						if (!getterValue.equals(fieldValue))
 						{
-							sb.append("Class " + clazz.getCanonicalName() + ", value obtained through " + getterName + " doesn't match field\n");
+							sb.append("Class " + clazz.getCanonicalName() + ", " + getterName + " returns type " + getterValue.getClass().getName() + " but field is of type " +fieldValue.getClass().getName());
 						}
 						
 					} catch (final NoSuchMethodException e)
@@ -366,7 +374,8 @@ public class ValidateAttachmentsTest extends TestCase
 						sb.append("Warning, Class " + clazz.getCanonicalName() + " testing '" + propertyName + "', has error: IllegalAccessException: " + e.getMessage() + "\n");
 					} catch (final InvocationTargetException e)
 					{
-						sb.append("Warning, Class " + clazz.getCanonicalName() + " testing '" + propertyName + "', has error: InvocationTargetException: " + e.getMessage() + "\n");
+						// this only occurs if the constructor/getter or setter throws an exception, Usually it is because we pass null to the constructor
+						//sb.append("Warning calling " + method + " threw exception " + e.getTargetException().getClass() + "\n");
 					}
 				}
 			}
