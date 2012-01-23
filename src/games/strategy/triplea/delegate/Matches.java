@@ -71,7 +71,7 @@ import java.util.Set;
  * while (iter.hasNext())
  * {
  * 	Unit unit = (Unit) iter.next();
- * 	UnitAttatchment ua = UnitAttatchment.get(unit.getType());
+ * 	UnitAttachment ua = UnitAttachment.get(unit.getType());
  * 	if (ua.isAir)
  * 	{
  * 		hasAir = true;
@@ -667,7 +667,7 @@ public class Matches
 				// if unit can support other units, return true
 				for (final UnitSupportAttachment rule : UnitSupportAttachment.get(data))
 				{
-					if (unit.getType().equals(rule.getAttatchedTo()))
+					if (unit.getType().equals(rule.getAttachedTo()))
 						return true;
 				}
 				return false;

@@ -1044,7 +1044,7 @@ public class BattleCalculator
 			if( defending && rule.getDefence() ||
 					!defending && rule.getOffence() )
 			{
-				CompositeMatchAnd<Unit> canSupport = new CompositeMatchAnd<Unit>(Matches.unitIsOfType((UnitType)rule.getAttatchedTo()),Matches.unitOwnedBy(rule.getPlayers()));
+				CompositeMatchAnd<Unit> canSupport = new CompositeMatchAnd<Unit>(Matches.unitIsOfType((UnitType)rule.getAttachedTo()),Matches.unitOwnedBy(rule.getPlayers()));
 				List<Unit> supporters = Match.getMatches(sortedUnitsList, canSupport);
 				int numSupport = supporters.size();
 				if(rule.getImpArtTech())

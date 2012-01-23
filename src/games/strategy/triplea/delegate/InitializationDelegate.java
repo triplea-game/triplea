@@ -237,12 +237,12 @@ public class InitializationDelegate extends BaseDelegate
 		final UnitType battleShipUnit = data.getUnitTypeList().getUnitType(Constants.BATTLESHIP_TYPE);
 		if (battleShipUnit == null)
 			return;
-		final UnitAttachment battleShipAttatchment = UnitAttachment.get(battleShipUnit);
-		final boolean defaultEnabled = battleShipAttatchment.isTwoHit();
+		final UnitAttachment battleShipAttachment = UnitAttachment.get(battleShipUnit);
+		final boolean defaultEnabled = battleShipAttachment.isTwoHit();
 		if (userEnabled != defaultEnabled)
 		{
 			aBridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);
-			aBridge.addChange(ChangeFactory.attachmentPropertyChange(battleShipAttatchment, "" + userEnabled, Constants.TWO_HIT));
+			aBridge.addChange(ChangeFactory.attachmentPropertyChange(battleShipAttachment, "" + userEnabled, Constants.TWO_HIT));
 		}
 	}
 	

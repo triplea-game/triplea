@@ -76,6 +76,11 @@ public class ChannelMessengerTest extends TestCase
 		}
 	}
 	
+	public void testDummy()
+	{
+		
+	}
+	
 	public void testLocalCall()
 	{
 		final RemoteName descriptor = new RemoteName(IChannelBase.class, "testLocalCall");
@@ -101,27 +106,6 @@ public class ChannelMessengerTest extends TestCase
 		assertCallCountIs(subscribor1, 3);
 		channelTest.testArray(null, null, null, null, null, null);
 		assertCallCountIs(subscribor1, 4);
-	}
-	
-	/**
-	 * @param channelName
-	 */
-	private void assertHasChannel(final RemoteName descriptor, final UnifiedMessengerHub hub)
-	{
-		int waitCount = 0;
-		while (waitCount < 10 && !hub.hasImplementors(descriptor.getName()))
-		{
-			try
-			{
-				Thread.sleep(100);
-			} catch (final InterruptedException e)
-			{
-				// like, whatever man
-				e.printStackTrace();
-			}
-			waitCount++;
-		}
-		assertTrue(hub.hasImplementors(descriptor.getName()));
 	}
 	
 	public void testMultipleClients() throws Exception
@@ -157,6 +141,24 @@ public class ChannelMessengerTest extends TestCase
 		final IChannelBase channelTest3 = (IChannelBase) m_serverMessenger.getChannelBroadcastor(testRemote3);
 		channelTest3.testNoParams();
 		assertCallCountIs(subscribor3, 1);
+	}
+	
+	private void assertHasChannel(final RemoteName descriptor, final UnifiedMessengerHub hub)
+	{
+		int waitCount = 0;
+		while (waitCount < 10 && !hub.hasImplementors(descriptor.getName()))
+		{
+			try
+			{
+				Thread.sleep(100);
+			} catch (final InterruptedException e)
+			{
+				// like, whatever man
+				e.printStackTrace();
+			}
+			waitCount++;
+		}
+		assertTrue(hub.hasImplementors(descriptor.getName()));
 	}
 	
 	private void assertCallCountIs(final ChannelSubscribor subscribor, final int expected)

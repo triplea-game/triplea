@@ -12,7 +12,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 /*
- * NamedAttatchable.java
+ * NamedAttachable.java
  * 
  * Created on October 22, 2001, 6:49 PM
  */
@@ -29,9 +29,9 @@ import java.util.Map;
  */
 public class NamedAttachable extends DefaultNamed implements Attachable
 {
-	private final Map<String, IAttachment> m_attatchments = new HashMap<String, IAttachment>();
+	private final Map<String, IAttachment> m_attachments = new HashMap<String, IAttachment>();
 	
-	/** Creates new NamedAttatchable */
+	/** Creates new NamedAttachable */
 	public NamedAttachable(final String name, final GameData data)
 	{
 		super(name, data);
@@ -39,16 +39,16 @@ public class NamedAttachable extends DefaultNamed implements Attachable
 	
 	public IAttachment getAttachment(final String key)
 	{
-		return m_attatchments.get(key);
+		return m_attachments.get(key);
 	}
 	
 	public Map<String, IAttachment> getAttachments()
 	{
-		return Collections.unmodifiableMap(m_attatchments);
+		return Collections.unmodifiableMap(m_attachments);
 	}
 	
 	public void addAttachment(final String key, final IAttachment value)
 	{
-		m_attatchments.put(key, value);
+		m_attachments.put(key, value);
 	}
 }

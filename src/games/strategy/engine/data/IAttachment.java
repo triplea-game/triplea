@@ -12,7 +12,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 /*
- * Attatchment.java
+ * Attachment.java
  * 
  * Created on November 8, 2001, 3:09 PM
  */
@@ -43,9 +43,9 @@ public interface IAttachment extends Serializable
 	 */
 	public void validate(GameData data) throws GameParseException;
 	
-	public Attachable getAttatchedTo();
+	public Attachable getAttachedTo();
 	
-	public void setAttachedTo(Attachable attatchable);
+	public void setAttachedTo(Attachable attachable);
 	
 	public String getName();
 	
@@ -54,7 +54,7 @@ public interface IAttachment extends Serializable
 	/* SLIDINGTILES
 	// Tile attachment
 	final static String PROPERTY_SLIDINGTILES_Tile_value = "value"; */
-
+	
 	/* KINGSTABLE
 	// PlayerAttachment
 	final static String PROPERTY_KINGSTABLE_NEEDS_KING = "needsKing";
@@ -62,7 +62,7 @@ public interface IAttachment extends Serializable
 	// TerritoryAttachment
 	static final String PROPERTY_KINGSTABLE_KINGS_EXIT = "kingsExit";
 	static final String PROPERTY_KINGSTABLE_KINGS_SQUARE = "kingsSquare"; */
-
+	
 	/* TRIPLEA
 	// PlayerAttachment
 	static final String PROPERTY_PlayerAttachment_DESTROY_PUS = "destroysPUs";

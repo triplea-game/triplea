@@ -636,7 +636,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			objectiveMet = checkDirectOwnership(objectiveMet, getListedTerritories(terrs), getTerritoryCount(), players);
 		}
 		// get attached to player
-		final PlayerID playerAttachedTo = (PlayerID) getAttatchedTo();
+		final PlayerID playerAttachedTo = (PlayerID) getAttachedTo();
 		if (objectiveMet && getAtWarPlayers() != null)
 		{
 			objectiveMet = checkAtWar(playerAttachedTo, getAtWarPlayers(), getAtWarCount(), data);

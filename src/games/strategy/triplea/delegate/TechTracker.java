@@ -45,68 +45,68 @@ public class TechTracker implements java.io.Serializable
 	public static Collection<TechAdvance> getTechAdvances(final PlayerID id, final GameData data)
 	{
 		final Collection<TechAdvance> rVal = new ArrayList<TechAdvance>();
-		final TechAttachment attatchment = TechAttachment.get(id);
+		final TechAttachment attachment = TechAttachment.get(id);
 		for (final TechAdvance ta : TechAdvance.getTechAdvances(data, id))
 		{
-			if (ta.hasTech(attatchment))
+			if (ta.hasTech(attachment))
 				rVal.add(ta);
 		}
 		/*
-		TechAttachment attatchment = TechAttachment.get(id);
+		TechAttachment attachment = TechAttachment.get(id);
 
-		if(attatchment.hasHeavyBomber())
+		if(attachment.hasHeavyBomber())
 		{
 		  rVal.add(TechAdvance.HEAVY_BOMBER);
 		}
-		if(attatchment.hasIndustrialTechnology())
+		if(attachment.hasIndustrialTechnology())
 		{
 		  rVal.add(TechAdvance.INDUSTRIAL_TECHNOLOGY);
 		}
-		if(attatchment.hasJetPower())
+		if(attachment.hasJetPower())
 		{
 		  rVal.add(TechAdvance.JET_POWER);
 		}
-		if(attatchment.hasLongRangeAir())
+		if(attachment.hasLongRangeAir())
 		{
 		  rVal.add(TechAdvance.LONG_RANGE_AIRCRAFT);
 		}
-		if(attatchment.hasRocket())
+		if(attachment.hasRocket())
 		{
 		  rVal.add(TechAdvance.ROCKETS);
 		}
-		if(attatchment.hasSuperSub())
+		if(attachment.hasSuperSub())
 		{
 		  rVal.add(TechAdvance.SUPER_SUBS);
 		}
-		if(attatchment.hasDestroyerBombard())
+		if(attachment.hasDestroyerBombard())
 		{
 		  rVal.add(TechAdvance.DESTROYER_BOMBARD);
 		}
-		if(attatchment.hasImprovedArtillerySupport())
+		if(attachment.hasImprovedArtillerySupport())
 		{
 		  rVal.add(TechAdvance.IMPROVED_ARTILLERY_SUPPORT);
 		}
-		if(attatchment.hasParatroopers())
+		if(attachment.hasParatroopers())
 		{
 		  rVal.add(TechAdvance.PARATROOPERS);
 		}
-		if(attatchment.hasIncreasedFactoryProduction())
+		if(attachment.hasIncreasedFactoryProduction())
 		{
 		  rVal.add(TechAdvance.INCREASED_FACTORY_PRODUCTION);
 		}
-		if(attatchment.hasWarBonds())
+		if(attachment.hasWarBonds())
 		{
 		  rVal.add(TechAdvance.WAR_BONDS);
 		}
-		if(attatchment.hasMechanizedInfantry())
+		if(attachment.hasMechanizedInfantry())
 		{
 		  rVal.add(TechAdvance.MECHANIZED_INFANTRY);
 		}
-		if(attatchment.hasAARadar())
+		if(attachment.hasAARadar())
 		{
 		  rVal.add(TechAdvance.AA_RADAR);
 		}
-		if(attatchment.hasShipyards())
+		if(attachment.hasShipyards())
 		{
 		  rVal.add(TechAdvance.IMPROVED_SHIPYARDS);
 		}
@@ -132,14 +132,14 @@ public class TechTracker implements java.io.Serializable
 				rVal.add(tf);
 		}
 		/*
-		if(attatchment.hasSuperSub() && attatchment.hasJetPower() && attatchment.hasShipyards() &&
-		                attatchment.hasAARadar() && attatchment.hasLongRangeAir() && attatchment.hasHeavyBomber())
+		if(attachment.hasSuperSub() && attachment.hasJetPower() && attachment.hasShipyards() &&
+		                attachment.hasAARadar() && attachment.hasLongRangeAir() && attachment.hasHeavyBomber())
 		{
 		  rVal.add(TechAdvance.AIR_NAVAL_ADVANCES);
 		}
 
-		if(attatchment.hasImprovedArtillerySupport() && attatchment.hasRocket() && attatchment.hasParatroopers() &&
-		                attatchment.hasIncreasedFactoryProduction() && attatchment.hasWarBonds() && attatchment.hasMechanizedInfantry())
+		if(attachment.hasImprovedArtillerySupport() && attachment.hasRocket() && attachment.hasParatroopers() &&
+		                attachment.hasIncreasedFactoryProduction() && attachment.hasWarBonds() && attachment.hasMechanizedInfantry())
 		{
 		  rVal.add(TechAdvance.LAND_PRODUCTION_ADVANCES);
 		}
@@ -155,19 +155,19 @@ public class TechTracker implements java.io.Serializable
 	
 	public static synchronized void addAdvance(final PlayerID player, final IDelegateBridge bridge, final TechAdvance advance)
 	{
-		Change attatchmentChange;
+		Change attachmentChange;
 		if (advance instanceof GenericTechAdvance)
 		{
 			if (((GenericTechAdvance) advance).getAdvance() == null)
 			{
-				attatchmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
+				attachmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), true, advance.getProperty());
 			}
 			else
-				attatchmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
+				attachmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
 		}
 		else
-			attatchmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
-		bridge.addChange(attatchmentChange);
+			attachmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
+		bridge.addChange(attachmentChange);
 		advance.perform(player, bridge);
 	}
 	

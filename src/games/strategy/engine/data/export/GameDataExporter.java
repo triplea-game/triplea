@@ -464,7 +464,7 @@ public class GameDataExporter
 			{
 				attachmentOptions = printAttachmentOptionsBasedOnOriginalXML(attachmentPlusValues.getSecond());
 			}
-			final NamedAttachable attachTo = (NamedAttachable) attachment.getAttatchedTo();
+			final NamedAttachable attachTo = (NamedAttachable) attachment.getAttachedTo();
 			// TODO: keep this list updated
 			String type = "";
 			if (attachTo.getClass().equals(PlayerID.class))

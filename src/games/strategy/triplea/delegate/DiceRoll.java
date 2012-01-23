@@ -391,7 +391,7 @@ public class DiceRoll implements Externalizable
 				continue;
 			if (defending && rule.getDefence() || !defending && rule.getOffence())
 			{
-				final CompositeMatchAnd<Unit> canSupport = new CompositeMatchAnd<Unit>(Matches.unitIsOfType((UnitType) rule.getAttatchedTo()), Matches.unitOwnedBy(rule.getPlayers()));
+				final CompositeMatchAnd<Unit> canSupport = new CompositeMatchAnd<Unit>(Matches.unitIsOfType((UnitType) rule.getAttachedTo()), Matches.unitOwnedBy(rule.getPlayers()));
 				final List<Unit> supporters = Match.getMatches(units, canSupport);
 				int numSupport = supporters.size();
 				if (rule.getImpArtTech())

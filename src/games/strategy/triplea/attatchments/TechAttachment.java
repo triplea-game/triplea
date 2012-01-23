@@ -36,26 +36,26 @@ public class TechAttachment extends DefaultAttachment
 	// attaches to a PlayerID
 	public static TechAttachment get(final PlayerID id)
 	{
-		final TechAttachment attatchment = (TechAttachment) id.getAttachment(Constants.TECH_ATTACHMENT_NAME);
+		final TechAttachment attachment = (TechAttachment) id.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		// dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them
-		if (attatchment == null)
+		if (attachment == null)
 		{
 			return new TechAttachment();
 		}
-		return attatchment;
+		return attachment;
 	}
 	
 	public static TechAttachment get(final PlayerID id, final String nameOfAttachment)
 	{
 		if (!nameOfAttachment.equals(Constants.TECH_ATTACHMENT_NAME))
 			throw new IllegalStateException("TechAttachment may not yet get attachments not named:" + Constants.TECH_ATTACHMENT_NAME);
-		final TechAttachment attatchment = (TechAttachment) id.getAttachment(nameOfAttachment);
+		final TechAttachment attachment = (TechAttachment) id.getAttachment(nameOfAttachment);
 		// dont crash, as a map xml may not set the tech attachment for all players, so just create a new tech attachment for them
-		if (attatchment == null)
+		if (attachment == null)
 		{
 			return new TechAttachment();
 		}
-		return attatchment;
+		return attachment;
 	}
 	
 	private int m_techCost;

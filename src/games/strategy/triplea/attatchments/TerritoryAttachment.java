@@ -154,7 +154,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	private final Collection<String> m_whenCapturedByGoesTo = new ArrayList<String>();
 	private ResourceCollection m_resources = null;
 	
-	/** Creates new TerritoryAttatchment */
+	/** Creates new TerritoryAttachment */
 	public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);
@@ -548,7 +548,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	{
 		final StringBuilder sb = new StringBuilder("");
 		final String br = (useHTML ? "<br>" : ", ");
-		final Territory t = (Territory) this.getAttatchedTo();
+		final Territory t = (Territory) this.getAttachedTo();
 		if (t == null)
 			return sb.toString();
 		if (includeAttachedToName)

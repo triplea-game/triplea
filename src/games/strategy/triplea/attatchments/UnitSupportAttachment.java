@@ -342,7 +342,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	{
 		for (final UnitSupportAttachment rule : get(data))
 		{
-			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttatchedTo() == type)
+			if (rule.getBonusType().equals(Constants.OLD_ART_RULE_NAME) && rule.getAttachedTo() == type)
 				rule.setNumber(count);
 		}
 	}

@@ -31,7 +31,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	private boolean m_kingsSquare = false;
 	private boolean m_kingsExit = false;
 	
-	/** Creates new TerritoryAttatchment */
+	/** Creates new TerritoryAttachment */
 	public TerritoryAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);

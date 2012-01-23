@@ -12,7 +12,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 /*
- * Attatchable.java
+ * Attachable.java
  * 
  * Created on October 14, 2001, 12:46 PM
  */

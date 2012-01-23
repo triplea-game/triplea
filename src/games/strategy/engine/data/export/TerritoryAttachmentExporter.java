@@ -55,7 +55,7 @@ public class TerritoryAttachmentExporter extends DefaultAttachmentExporter
 		// otherwise, check to see if someone else has conquered the territory in the mean time. must check for neutrals too. neutrals can be either NULL or PlayerID.NULL_PLAYERID
 		// we only want to add an occupiedTerrOf IF the current owner does not equal the original owner. Since any time they are equal, this is not needed.
 		final PlayerID originalOwner = att.getOriginalOwner();
-		final Territory t = (Territory) att.getAttatchedTo();
+		final Territory t = (Territory) att.getAttachedTo();
 		if (originalOwner == null && (t.getOwner() != null && !t.getOwner().equals(PlayerID.NULL_PLAYERID)))
 			return printDefaultOption("occupiedTerrOf", PlayerID.NULL_PLAYERID.getName());
 		else if (originalOwner == null)

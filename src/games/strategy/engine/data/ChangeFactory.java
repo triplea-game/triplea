@@ -199,39 +199,39 @@ public class ChangeFactory
 		return new RemoveAvailableTech(tf, ta, player);
 	}
 	
-	public static Change attachmentPropertyChange(final IAttachment attatchment, final Object newValue, final String property)
+	public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue, final String property)
 	{
-		return new ChangeAttachmentChange(attatchment, newValue, property);
+		return new ChangeAttachmentChange(attachment, newValue, property);
 	}
 	
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	public static Change attachmentPropertyChange(final IAttachment attatchment, final Object newValue, final String property, final boolean getRaw, final boolean clearFirst)
+	public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue, final String property, final boolean getRaw, final boolean clearFirst)
 	{
-		return new ChangeAttachmentChange(attatchment, newValue, property, getRaw, clearFirst);
+		return new ChangeAttachmentChange(attachment, newValue, property, getRaw, clearFirst);
 	}
 	
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	public static Change attachmentPropertyChange(final Attachable attatchment, final String attatchmentName, final Object newValue, final Object oldValue, final String property,
+	public static Change attachmentPropertyChange(final Attachable attachment, final String attachmentName, final Object newValue, final Object oldValue, final String property,
 				final boolean clearFirst)
 	{
-		return new ChangeAttachmentChange(attatchment, attatchmentName, newValue, oldValue, property, clearFirst);
+		return new ChangeAttachmentChange(attachment, attachmentName, newValue, oldValue, property, clearFirst);
 	}
 	
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	public static Change attachmentPropertyClear(final IAttachment attatchment, final String property, final boolean getRaw)
+	public static Change attachmentPropertyClear(final IAttachment attachment, final String property, final boolean getRaw)
 	{
-		return new AttachmentPropertyClear(attatchment, property, getRaw);
+		return new AttachmentPropertyClear(attachment, property, getRaw);
 	}
 	
-	public static Change genericTechChange(final TechAttachment attatchment, final Boolean value, final String property)
+	public static Change genericTechChange(final TechAttachment attachment, final Boolean value, final String property)
 	{
-		return new GenericTechChange(attatchment, value, property);
+		return new GenericTechChange(attachment, value, property);
 	}
 	
 	public static Change changeGameSteps(final GameSequence oldSequence, final GameStep[] newSteps)
@@ -304,28 +304,28 @@ public class ChangeFactory
 class AttachmentPropertyClear extends Change
 {
 	private static final long serialVersionUID = 9208154387325299072L;
-	private final Attachable m_attatchedTo;
-	private final String m_attatchmentName;
+	private final Attachable m_attachedTo;
+	private final String m_attachmentName;
 	private Object m_oldValue;
 	private final String m_property;
 	
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	AttachmentPropertyClear(final IAttachment attatchment, final String property, final boolean getRaw)
+	AttachmentPropertyClear(final IAttachment attachment, final String property, final boolean getRaw)
 	{
-		if (attatchment == null)
+		if (attachment == null)
 			throw new IllegalArgumentException("No attachment, property:" + property);
-		m_attatchedTo = attatchment.getAttatchedTo();
-		m_attatchmentName = attatchment.getName();
+		m_attachedTo = attachment.getAttachedTo();
+		m_attachmentName = attachment.getName();
 		if (getRaw)
 		{
-			m_oldValue = PropertyUtil.getRaw(property, attatchment);
+			m_oldValue = PropertyUtil.getRaw(property, attachment);
 			m_property = property;
 		}
 		else
 		{
-			m_oldValue = PropertyUtil.get(property, attatchment);
+			m_oldValue = PropertyUtil.get(property, attachment);
 			m_property = property;
 		}
 	}
@@ -333,41 +333,41 @@ class AttachmentPropertyClear extends Change
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	AttachmentPropertyClear(final Attachable attatchTo, final String attatchmentName, final Object oldValue, final String property)
+	AttachmentPropertyClear(final Attachable attachTo, final String attachmentName, final Object oldValue, final String property)
 	{
-		m_attatchmentName = attatchmentName;
-		m_attatchedTo = attatchTo;
+		m_attachmentName = attachmentName;
+		m_attachedTo = attachTo;
 		m_oldValue = oldValue;
 		m_property = property;
 	}
 	
-	public Attachable getAttatchedTo()
+	public Attachable getAttachedTo()
 	{
-		return m_attatchedTo;
+		return m_attachedTo;
 	}
 	
-	public String getAttatchmentName()
+	public String getAttachmentName()
 	{
-		return m_attatchmentName;
+		return m_attachmentName;
 	}
 	
 	@Override
 	public void perform(final GameData data)
 	{
-		final IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
+		final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
 		PropertyUtil.clear(m_property, attachment);
 	}
 	
 	@Override
 	public Change invert()
 	{
-		return new AttachmentPropertyClearUndo(m_attatchedTo, m_attatchmentName, m_oldValue, m_property);
+		return new AttachmentPropertyClearUndo(m_attachedTo, m_attachmentName, m_oldValue, m_property);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "AttachmentPropertyClear attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + ", cleared old value:" + m_oldValue;
+		return "AttachmentPropertyClear attached to:" + m_attachedTo + " name:" + m_attachmentName + ", cleared old value:" + m_oldValue;
 	}
 }
 
@@ -375,49 +375,49 @@ class AttachmentPropertyClear extends Change
 class AttachmentPropertyClearUndo extends Change
 {
 	private static final long serialVersionUID = 5943939650116851332L;
-	private final Attachable m_attatchedTo;
-	private final String m_attatchmentName;
+	private final Attachable m_attachedTo;
+	private final String m_attachmentName;
 	private final Object m_newValue;
 	private final String m_property;
 	
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	AttachmentPropertyClearUndo(final Attachable attatchTo, final String attatchmentName, final Object newValue, final String property)
+	AttachmentPropertyClearUndo(final Attachable attachTo, final String attachmentName, final Object newValue, final String property)
 	{
-		m_attatchmentName = attatchmentName;
-		m_attatchedTo = attatchTo;
+		m_attachmentName = attachmentName;
+		m_attachedTo = attachTo;
 		m_newValue = newValue;
 		m_property = property;
 	}
 	
-	public Attachable getAttatchedTo()
+	public Attachable getAttachedTo()
 	{
-		return m_attatchedTo;
+		return m_attachedTo;
 	}
 	
-	public String getAttatchmentName()
+	public String getAttachmentName()
 	{
-		return m_attatchmentName;
+		return m_attachmentName;
 	}
 	
 	@Override
 	public void perform(final GameData data)
 	{
-		final IAttachment attachment = m_attatchedTo.getAttachment(m_attatchmentName);
+		final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
 		PropertyUtil.set(m_property, m_newValue, attachment, false);
 	}
 	
 	@Override
 	public Change invert()
 	{
-		return new AttachmentPropertyClear(m_attatchedTo, m_attatchmentName, m_newValue, m_property);
+		return new AttachmentPropertyClear(m_attachedTo, m_attachmentName, m_newValue, m_property);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "AttachmentPropertyClearUndo attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue;
+		return "AttachmentPropertyClearUndo attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:" + m_newValue;
 	}
 }
 
@@ -1040,7 +1040,7 @@ class AddAttachmentChange extends Change
 	{
 		m_attachment = attachment;
 		m_originalAttachmentName = attachment.getName();
-		m_originalAttachable = attachment.getAttatchedTo();
+		m_originalAttachable = attachment.getAttachedTo();
 		m_attachable = attachable;
 		m_name = name;
 	}
@@ -1083,7 +1083,7 @@ class RemoveAttachmentChange extends Change
 	{
 		m_attachment = attachment;
 		m_originalAttachmentName = attachment.getName();
-		m_originalAttachable = attachment.getAttatchedTo();
+		m_originalAttachable = attachment.getAttachedTo();
 		m_attachable = attachable;
 		m_name = name;
 	}
@@ -1290,37 +1290,37 @@ class ObjectPropertyChange extends Change
 
 class GenericTechChange extends Change
 {
-	private final Attachable m_attatchedTo;
-	private final String m_attatchmentName;
+	private final Attachable m_attachedTo;
+	private final String m_attachmentName;
 	private final Boolean m_newValue;
 	private final Boolean m_oldValue;
 	private final String m_property;
 	
-	public Attachable getAttatchedTo()
+	public Attachable getAttachedTo()
 	{
-		return m_attatchedTo;
+		return m_attachedTo;
 	}
 	
-	public String getAttatchmentName()
+	public String getAttachmentName()
 	{
-		return m_attatchmentName;
+		return m_attachmentName;
 	}
 	
-	GenericTechChange(final TechAttachment attatchment, final Boolean newValue, final String property)
+	GenericTechChange(final TechAttachment attachment, final Boolean newValue, final String property)
 	{
-		if (attatchment == null)
+		if (attachment == null)
 			throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
-		m_attatchedTo = attatchment.getAttatchedTo();
-		m_attatchmentName = attatchment.getName();
-		m_oldValue = Boolean.valueOf(attatchment.hasGenericTech(property));
+		m_attachedTo = attachment.getAttachedTo();
+		m_attachmentName = attachment.getName();
+		m_oldValue = Boolean.valueOf(attachment.hasGenericTech(property));
 		m_newValue = Boolean.valueOf(newValue);
 		m_property = property;
 	}
 	
-	public GenericTechChange(final Attachable attatchTo, final String attatchmentName, final Boolean newValue, final Boolean oldValue, final String property)
+	public GenericTechChange(final Attachable attachTo, final String attachmentName, final Boolean newValue, final Boolean oldValue, final String property)
 	{
-		m_attatchmentName = attatchmentName;
-		m_attatchedTo = attatchTo;
+		m_attachmentName = attachmentName;
+		m_attachedTo = attachTo;
 		m_newValue = newValue;
 		m_oldValue = oldValue;
 		m_property = property;
@@ -1329,24 +1329,24 @@ class GenericTechChange extends Change
 	@Override
 	public void perform(final GameData data)
 	{
-		/*if (m_attatchedTo == null || m_attatchmentName == null || m_newValue == null || m_oldValue == null || m_property == null)
+		/*if (m_attachedTo == null || m_attachmentName == null || m_newValue == null || m_oldValue == null || m_property == null)
 			throw new IllegalStateException("GenericTechChange may not have null arguments");*/
-		final TechAttachment attachment = (TechAttachment) m_attatchedTo.getAttachment(m_attatchmentName);
+		final TechAttachment attachment = (TechAttachment) m_attachedTo.getAttachment(m_attachmentName);
 		attachment.setGenericTech(m_property, m_newValue);
 	}
 	
 	@Override
 	public Change invert()
 	{
-		return new GenericTechChange(m_attatchedTo, m_attatchmentName, m_oldValue, m_newValue, m_property);
+		return new GenericTechChange(m_attachedTo, m_attachmentName, m_oldValue, m_newValue, m_property);
 	}
 	
 	@Override
 	public String toString()
 	{
-		/*if (m_attatchedTo == null || m_attatchmentName == null || m_newValue == null || m_oldValue == null || m_property == null)
+		/*if (m_attachedTo == null || m_attachmentName == null || m_newValue == null || m_oldValue == null || m_property == null)
 			throw new IllegalStateException("GenericTechChange may not have null arguments");*/
-		return "GenericTechChange attatched to:" + m_attatchedTo + " name:" + m_attatchmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
+		return "GenericTechChange attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
 	}
 }
 

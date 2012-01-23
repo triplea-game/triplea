@@ -1015,7 +1015,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	    {
 	        //(re)set the initial and current capacity of the air transport
 	        Unit transport = trnIter.next();
-	        UnitAttachment trnA = (UnitAttachment) transport.getType().getAttachment(Constants.UNIT_ATTATCHMENT_NAME);
+	        UnitAttachment trnA = (UnitAttachment) transport.getType().getAttachment(Constants.UNIT_ATTACHMENT_NAME);
 	        int initCapacity = trnA.getTransportCapacity();
 	        int currCapacity = initCapacity;
 
@@ -1027,7 +1027,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	        {
 	            //For each potential unit, get transport cost
 	            Unit unit = unitIter.next();
-	            UnitAttachment ua = (UnitAttachment) unit.getType().getAttachment(Constants.UNIT_ATTATCHMENT_NAME);
+	            UnitAttachment ua = (UnitAttachment) unit.getType().getAttachment(Constants.UNIT_ATTACHMENT_NAME);
 	            int cost = ua.getTransportCost();
 	            //Check the cost against the air transport's current capacity (including previously loaded units)
 	            currCapacity -= addedLoad.getInt(transport);
@@ -1072,7 +1072,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	                    {
 	                        Integer index = indCosts.next();
 	                        Unit indexedUnit = totalLoad.get(index);
-	                        UnitAttachment indexedUnitAtt = (UnitAttachment) indexedUnit.getType().getAttachment(Constants.UNIT_ATTATCHMENT_NAME);
+	                        UnitAttachment indexedUnitAtt = (UnitAttachment) indexedUnit.getType().getAttachment(Constants.UNIT_ATTACHMENT_NAME);
 	                        currCapacity -= indexedUnitAtt.getTransportCost();
 	                    }
 	                    if(currCapacity >= cost )

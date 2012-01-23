@@ -277,7 +277,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 			otherPlayers.add(getData().getPlayerList().getPlayerID(s[0]));
 			otherPlayers.add(getData().getPlayerList().getPlayerID(s[1]));
 		}
-		otherPlayers.remove((getAttatchedTo()));
+		otherPlayers.remove((getAttachedTo()));
 		return otherPlayers;
 	}
 	

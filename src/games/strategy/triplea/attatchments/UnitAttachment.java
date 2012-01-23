@@ -12,7 +12,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 /*
- * UnitAttatchment.java
+ * UnitAttachment.java
  * 
  * Created on November 8, 2001, 1:35 PM
  */
@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Despite the mis leading name, this attatches not to individual Units but to UnitTypes.
+ * Despite the misleading name, this attaches not to individual Units but to UnitTypes.
  * 
  * Please follow this naming convention:
  * if the property is called "m_fooBar"
@@ -199,7 +199,7 @@ public class UnitAttachment extends DefaultAttachment
 	private final ArrayList<String> m_receivesAbilityWhenWith = new ArrayList<String>(); // a kind of support attachment for giving actual unit attachment abilities or other to a unit, when in the precense or on the same route with another unit
 	private final HashSet<String> m_special = new HashSet<String>(); // currently used for: placement in original territories only,
 	
-	/** Creates new UnitAttatchment */
+	/** Creates new UnitAttachment */
 	public UnitAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);
@@ -727,11 +727,11 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		final String[] s = value.split(":");
 		if (!(s.length == 3 || s.length == 4))
-			throw new GameParseException("Invalid Unit attatchment, whenCombatDamaged must have 3 or 4 parts: value=effect:optionalNumber, count=integer:integer");
+			throw new GameParseException("Invalid Unit attachment, whenCombatDamaged must have 3 or 4 parts: value=effect:optionalNumber, count=integer:integer");
 		final int from = getInt(s[0]);
 		final int to = getInt(s[1]);
 		if (from < 0 || to < 0 || to < from)
-			throw new GameParseException("Invalid Unit attatchment, whenCombatDamaged damaged integers must be positive, and the second integer must be equal to or greater than the first");
+			throw new GameParseException("Invalid Unit attachment, whenCombatDamaged damaged integers must be positive, and the second integer must be equal to or greater than the first");
 		final Tuple<Integer, Integer> fromTo = new Tuple<Integer, Integer>(from, to);
 		Tuple<String, String> effectNum;
 		if (s.length == 3)
@@ -959,7 +959,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		m_artillery = getBool(s);
 		if (m_artillery)
-			UnitSupportAttachment.addRule((UnitType) getAttatchedTo(), getData(), false);
+			UnitSupportAttachment.addRule((UnitType) getAttachedTo(), getData(), false);
 	}
 	
 	public boolean getArtillerySupportable()
@@ -972,14 +972,14 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		m_artillerySupportable = getBool(s);
 		if (m_artillerySupportable)
-			UnitSupportAttachment.addTarget((UnitType) getAttatchedTo(), getData());
+			UnitSupportAttachment.addTarget((UnitType) getAttachedTo(), getData());
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = false, adds = false)
 	public void setUnitSupportCount(final String s)
 	{
 		m_unitSupportCount = getInt(s);
-		UnitSupportAttachment.setOldSupportCount((UnitType) getAttatchedTo(), getData(), s);
+		UnitSupportAttachment.setOldSupportCount((UnitType) getAttachedTo(), getData(), s);
 	}
 	
 	public int getCarrierCost()
@@ -1658,9 +1658,9 @@ public class UnitAttachment extends DefaultAttachment
 			m_stackingLimit = null;
 			return;
 		}
-		final UnitType ut = (UnitType) this.getAttatchedTo();
+		final UnitType ut = (UnitType) this.getAttachedTo();
 		if (ut == null)
-			throw new GameParseException("UnitAttachment: getAttatchedTo returned null");
+			throw new GameParseException("UnitAttachment: getAttachedTo returned null");
 		final String[] s = value.split(":");
 		if (s.length != 2)
 			throw new GameParseException("UnitAttachment: stackingLimit must have 2 fields, value and count");
@@ -1710,45 +1710,45 @@ public class UnitAttachment extends DefaultAttachment
 		{
 			if (m_isSea || m_isFactory || m_isSub || m_transportCost != -1 ||
 						m_carrierCapacity != -1 || m_canBlitz || m_canBombard || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isCombatTransport)
-				throw new GameParseException("Invalid Unit attatchment, air units can not have certain properties, " + this);
+				throw new GameParseException("Invalid Unit attachment, air units can not have certain properties, " + this);
 		}
 		else if (m_isSea)
 		{
 			if (m_canIntercept || m_canEscort || m_canBlitz || m_isAir || m_isFactory || m_isStrategicBomber || m_carrierCost != -1
 						|| m_transportCost != -1 || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isAirTransport || m_isKamikaze)
-				throw new GameParseException("Invalid Unit Attatchment, sea units can not have certain properties, " + this);
+				throw new GameParseException("Invalid Unit Attachment, sea units can not have certain properties, " + this);
 		}
 		else
 		// if land
 		{
 			if (m_canIntercept || m_canEscort || m_canBombard || m_isStrategicBomber || m_isSub || m_carrierCapacity != -1 || m_bombard != -1 || m_transportCapacity != -1 || m_isAirTransport
 						|| m_isCombatTransport || m_isKamikaze)
-				throw new GameParseException("Invalid Unit Attatchment, land units can not have certain properties, " + this);
+				throw new GameParseException("Invalid Unit Attachment, land units can not have certain properties, " + this);
 		}
 		if (m_attackAA < 0 || m_attackAAmaxDieSides < -1 || m_attackAAmaxDieSides > 200)
 		{
-			throw new GameParseException("Invalid Unit Attatchment, attackAA or attackAAmaxDieSides is wrong, " + this);
+			throw new GameParseException("Invalid Unit Attachment, attackAA or attackAAmaxDieSides is wrong, " + this);
 		}
 		if (m_carrierCapacity != -1 && m_carrierCost != -1)
 		{
-			throw new GameParseException("Invalid Unit Attatchment, carrierCost and carrierCapacity can not be set at same time, " + this);
+			throw new GameParseException("Invalid Unit Attachment, carrierCost and carrierCapacity can not be set at same time, " + this);
 		}
 		if (m_transportCost != -1 && m_transportCapacity != -1)
 		{
-			throw new GameParseException("Invalid Unit Attatchment, transportCost and transportCapacity can not be set at same time, " + this);
+			throw new GameParseException("Invalid Unit Attachment, transportCost and transportCapacity can not be set at same time, " + this);
 		}
 		if (((m_bombingBonus >= 0 || m_bombingMaxDieSides >= 0) && !(m_isStrategicBomber || m_isRocket)) || (m_bombingBonus < -1 || m_bombingMaxDieSides < -1)
 					|| (m_bombingBonus > 10000 || m_bombingMaxDieSides > 200))
 		{
-			throw new GameParseException("Invalid Unit Attatchment, something wrong with bombingBonus or bombingMaxDieSides, " + this);
+			throw new GameParseException("Invalid Unit Attachment, something wrong with bombingBonus or bombingMaxDieSides, " + this);
 		}
 		if (m_maxBuiltPerPlayer < -1)
 		{
-			throw new GameParseException("Invalid Unit Attatchment, maxBuiltPerPlayer can not be negative, " + this);
+			throw new GameParseException("Invalid Unit Attachment, maxBuiltPerPlayer can not be negative, " + this);
 		}
 		if (m_isCombatTransport && m_transportCapacity < 1)
 		{
-			throw new GameParseException("Invalid Unit Attatchment, can not have isCombatTransport on unit without transportCapacity, " + this);
+			throw new GameParseException("Invalid Unit Attachment, can not have isCombatTransport on unit without transportCapacity, " + this);
 		}
 		if (m_isSea && m_transportCapacity != -1 && Properties.getTransportCasualtiesRestricted(data) && (m_attack > 0 || m_defense > 0) && !m_isCombatTransport)
 		{
@@ -1780,7 +1780,7 @@ public class UnitAttachment extends DefaultAttachment
 		if ((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && !m_isFactory && (m_maxDamage >= 0)) || (m_canDieFromReachingMaxDamage && !(m_maxDamage >= 0 || m_isFactory))
 					|| (m_canBeDamaged && m_isFactory))
 		{
-			throw new GameParseException("Invalid Unit Attatchment, something wrong with canBeDamaged or maxDamage or canDieFromReachingMaxDamage or isFactory, " + this);
+			throw new GameParseException("Invalid Unit Attachment, something wrong with canBeDamaged or maxDamage or canDieFromReachingMaxDamage or isFactory, " + this);
 		}
 		if (m_canInvadeOnlyFrom != null && !m_canInvadeOnlyFrom[0].equals("all") && !m_canInvadeOnlyFrom[0].equals("none"))
 		{
@@ -1893,7 +1893,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		// should cover all values stored in UnitAttachment
 		// the stats exporter relies on this toString having two spaces after each entry, so do not change this please, except to add new abilities onto the end
-		return ((this != null && this.getAttatchedTo() != null) ? this.getAttatchedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:" : "")
+		return ((this != null && this.getAttachedTo() != null) ? this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:" : "")
 					+ "  air:" + m_isAir
 					+ "  sea:" + m_isSea
 					+ "  movement:" + m_movement
@@ -1919,7 +1919,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  destroyer:" + m_isDestroyer
 					+ "  canBombard:" + m_canBombard
 					+ "  bombard:" + m_bombard
-
+					
 					+ "  isAAforCombatOnly:" + m_isAAforCombatOnly
 					+ "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
 					+ "  isAAforFlyOverOnly:" + m_isAAforFlyOverOnly
@@ -1931,7 +1931,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  targetsAA:" + m_targetsAA.toString()
 					+ "  willNotFireIfPresent:" + m_willNotFireIfPresent.toString()
 					+ "  isRocket:" + m_isRocket
-
+					
 					+ "  canProduceUnits:" + m_canProduceUnits
 					+ "  canProduceXUnits:" + m_canProduceXUnits
 					+ "  createsUnitsList:" + (m_createsUnitsList.size() == 0 ? "empty" : m_createsUnitsList.toString())
@@ -1986,8 +1986,8 @@ public class UnitAttachment extends DefaultAttachment
 		final StringBuilder stats = new StringBuilder();
 		// if (this != null && this.getName() != null)
 		// stats.append(this.getName() + ": ");
-		if (includeAttachedToName && this != null && this.getAttatchedTo() != null)
-			stats.append(this.getAttatchedTo().toString().replaceFirst("games.strategy.engine.data.", "") + ", ");
+		if (includeAttachedToName && this != null && this.getAttachedTo() != null)
+			stats.append(this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + ", ");
 		if (m_isAir)
 			stats.append("Air unit, ");
 		else if (m_isSea)

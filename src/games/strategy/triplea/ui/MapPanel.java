@@ -554,10 +554,10 @@ public class MapPanel extends ImageScrollerLargeView
 			{
 				if (aChange instanceof ChangeAttachmentChange)
 				{
-					final ChangeAttachmentChange changeAttatchment = (ChangeAttachmentChange) aChange;
-					if (changeAttatchment.getAttatchmentName().equals(Constants.TECH_ATTACHMENT_NAME))
+					final ChangeAttachmentChange changeAttachment = (ChangeAttachmentChange) aChange;
+					if (changeAttachment.getAttachmentName().equals(Constants.TECH_ATTACHMENT_NAME))
 					{
-						players.add((PlayerID) changeAttatchment.getAttatchedTo());
+						players.add((PlayerID) changeAttachment.getAttachedTo());
 					}
 				}
 			}

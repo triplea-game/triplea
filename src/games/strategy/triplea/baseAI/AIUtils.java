@@ -115,28 +115,28 @@ public class AIUtils
 		int strength = 0;
 		for (final Unit u : units)
 		{
-			final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-			if (unitAttatchment.getIsFactory() || unitAttatchment.getIsInfrastructure())
+			final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
+			if (unitAttachment.getIsFactory() || unitAttachment.getIsInfrastructure())
 			{
 				// nothing
 			}
-			else if (unitAttatchment.getIsSea() == sea)
+			else if (unitAttachment.getIsSea() == sea)
 			{
 				// 2 points since we can absorb a hit
 				strength += 2;
 				// two hit
-				if (unitAttatchment.isTwoHit())
+				if (unitAttachment.isTwoHit())
 					strength += 1.5;
 				// the number of pips on the dice
 				if (attacking)
-					strength += unitAttatchment.getAttack(u.getOwner());
+					strength += unitAttachment.getAttack(u.getOwner());
 				else
-					strength += unitAttatchment.getDefense(u.getOwner());
+					strength += unitAttachment.getDefense(u.getOwner());
 				if (attacking)
 				{
 					// a unit with attack of 0 isnt worth much
 					// we dont want transports to try and gang up on subs
-					if (unitAttatchment.getAttack(u.getOwner()) == 0)
+					if (unitAttachment.getAttack(u.getOwner()) == 0)
 					{
 						strength -= 1.2;
 					}

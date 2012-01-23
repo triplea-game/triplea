@@ -24,33 +24,33 @@ public class ChangeAttachmentChange extends Change
 	private final String m_property;
 	private boolean m_clearFirst = false;
 	
-	public Attachable getAttatchedTo()
+	public Attachable getAttachedTo()
 	{
 		return m_attachedTo;
 	}
 	
-	public String getAttatchmentName()
+	public String getAttachmentName()
 	{
 		return m_attachmentName;
 	}
 	
-	ChangeAttachmentChange(final IAttachment attatchment, final Object newValue, final String property)
+	ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property)
 	{
-		if (attatchment == null)
+		if (attachment == null)
 			throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
-		m_attachedTo = attatchment.getAttatchedTo();
+		m_attachedTo = attachment.getAttachedTo();
 		m_clearFirst = false;
-		m_attachmentName = attatchment.getName();
+		m_attachmentName = attachment.getName();
 		if (property.equals("rawProperty"))
 		{
 			final String[] s = ((String) newValue).split(":");
-			m_oldValue = PropertyUtil.getRaw(s[0], attatchment);
+			m_oldValue = PropertyUtil.getRaw(s[0], attachment);
 			m_newValue = s[1];
 			m_property = s[0];
 		}
 		else
 		{
-			m_oldValue = PropertyUtil.get(property, attatchment);
+			m_oldValue = PropertyUtil.get(property, attachment);
 			m_newValue = newValue;
 			m_property = property;
 		}
@@ -59,22 +59,22 @@ public class ChangeAttachmentChange extends Change
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	ChangeAttachmentChange(final IAttachment attatchment, final Object newValue, final String property, final boolean getRaw, final boolean clearFirst)
+	ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property, final boolean getRaw, final boolean clearFirst)
 	{
-		if (attatchment == null)
+		if (attachment == null)
 			throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
-		m_attachedTo = attatchment.getAttatchedTo();
+		m_attachedTo = attachment.getAttachedTo();
 		m_clearFirst = clearFirst;
-		m_attachmentName = attatchment.getName();
+		m_attachmentName = attachment.getName();
 		if (getRaw)
 		{
-			m_oldValue = PropertyUtil.getRaw(property, attatchment);
+			m_oldValue = PropertyUtil.getRaw(property, attachment);
 			m_newValue = newValue;
 			m_property = property;
 		}
 		else
 		{
-			m_oldValue = PropertyUtil.get(property, attatchment);
+			m_oldValue = PropertyUtil.get(property, attachment);
 			m_newValue = newValue;
 			m_property = property;
 		}
@@ -83,10 +83,10 @@ public class ChangeAttachmentChange extends Change
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	public ChangeAttachmentChange(final Attachable attatchTo, final String attatchmentName, final Object newValue, final Object oldValue, final String property, final boolean clearFirst)
+	public ChangeAttachmentChange(final Attachable attachTo, final String attachmentName, final Object newValue, final Object oldValue, final String property, final boolean clearFirst)
 	{
-		m_attachmentName = attatchmentName;
-		m_attachedTo = attatchTo;
+		m_attachmentName = attachmentName;
+		m_attachedTo = attachTo;
 		m_newValue = newValue;
 		m_oldValue = oldValue;
 		m_property = property;
@@ -109,6 +109,6 @@ public class ChangeAttachmentChange extends Change
 	@Override
 	public String toString()
 	{
-		return "ChangAttatchmentChange attatched to:" + m_attachedTo + " name:" + m_attachmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
+		return "ChangAttachmentChange attached to:" + m_attachedTo + " name:" + m_attachmentName + " new value:" + m_newValue + " old value:" + m_oldValue;
 	}
 }

@@ -12,7 +12,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 /*
- * TestAttatchment.java
+ * TestAttachment.java
  * 
  * Created on October 22, 2001, 7:32 PM
  */
@@ -32,14 +32,14 @@ public class TestAttachment extends DefaultAttachment
 {
 	private String m_value;
 	
-	/** Creates new TestAttatchment */
+	/** Creates new TestAttachment */
 	public TestAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);
 	}
 	
 	@Override
-	public Attachable getAttatchedTo()
+	public Attachable getAttachedTo()
 	{
 		return null;
 	}

@@ -73,7 +73,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	public List<PlayerID> getPlayers()
 	{
 		if (m_players.isEmpty())
-			return Collections.singletonList((PlayerID) getAttatchedTo());
+			return Collections.singletonList((PlayerID) getAttachedTo());
 		else
 			return m_players;
 	}

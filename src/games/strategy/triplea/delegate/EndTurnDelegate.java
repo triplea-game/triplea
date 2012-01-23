@@ -322,10 +322,10 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		final ResourceCollection rVal = new ResourceCollection(data);
 		for (final Territory current : territories)
 		{
-			final TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
-			if (attatchment == null)
+			final TerritoryAttachment attachment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+			if (attachment == null)
 				throw new IllegalStateException("No attachment for owned territory:" + current.getName());
-			final ResourceCollection toAdd = attatchment.getResources();
+			final ResourceCollection toAdd = attachment.getResources();
 			if (toAdd == null)
 				continue;
 			// Check if territory is originally owned convoy center

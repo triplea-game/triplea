@@ -273,12 +273,12 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		int value = 0;
 		for (final Territory current : territories)
 		{
-			final TerritoryAttachment attatchment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
-			if (attatchment == null)
+			final TerritoryAttachment attachment = (TerritoryAttachment) current.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
+			if (attachment == null)
 				throw new IllegalStateException("No attachment for owned territory:" + current.getName());
 			// Check if territory is originally owned convoy center
 			if (Matches.territoryCanCollectIncomeFrom(current.getOwner(), data).match(current))
-				value += attatchment.getProduction();
+				value += attachment.getProduction();
 		}
 		return value;
 	}

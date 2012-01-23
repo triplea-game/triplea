@@ -12,12 +12,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 /*
- * Attatchment.java
+ * Attachment.java
  * 
  * Created on November 8, 2001, 3:09 PM
  */
 package games.strategy.engine.data;
 
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 
 import java.lang.reflect.Field;
@@ -30,8 +31,11 @@ import java.lang.reflect.Field;
 @SuppressWarnings("serial")
 public abstract class DefaultAttachment implements IAttachment
 {
+	@InternalDoNotExport
 	private GameData m_data;
+	@InternalDoNotExport
 	private Attachable m_attachedTo;
+	@InternalDoNotExport
 	private String m_name;
 	
 	protected DefaultAttachment(final String name, final Attachable attachable, final GameData gameData)
@@ -72,7 +76,7 @@ public abstract class DefaultAttachment implements IAttachment
 			throw new IllegalArgumentException("Attachments: " + aString + " should equal "
 						+ Constants.PROPERTY_DEFAULT + " or " + Constants.PROPERTY_TRUE + " or " + Constants.PROPERTY_FALSE);
 	}*/
-
+	
 	/**
 	 * Throws an error if format is invalid. Must be either true or false ignoring case.
 	 */
@@ -151,6 +155,7 @@ public abstract class DefaultAttachment implements IAttachment
 		return s;
 	}
 	
+	@InternalDoNotExport
 	public void setData(final GameData data)
 	{
 		m_data = data;
@@ -161,11 +166,12 @@ public abstract class DefaultAttachment implements IAttachment
 		return m_data;
 	}
 	
-	public Attachable getAttatchedTo()
+	public Attachable getAttachedTo()
 	{
 		return m_attachedTo;
 	}
 	
+	@InternalDoNotExport
 	public void setAttachedTo(final Attachable attachable)
 	{
 		m_attachedTo = attachable;
@@ -176,6 +182,7 @@ public abstract class DefaultAttachment implements IAttachment
 		return m_name;
 	}
 	
+	@InternalDoNotExport
 	public void setName(final String aString)
 	{
 		m_name = aString;

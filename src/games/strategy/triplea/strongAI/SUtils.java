@@ -2292,14 +2292,14 @@ public class SUtils
 	{
 		float airstrength = 0.0F;
 		final Unit u = airunit;
-		final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-		if (unitAttatchment.getIsAir())
+		final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
+		if (unitAttachment.getIsAir())
 		{
 			airstrength += 1.00F;
 			if (attacking)
-				airstrength += unitAttatchment.getAttack(u.getOwner());
+				airstrength += unitAttachment.getAttack(u.getOwner());
 			else
-				airstrength += unitAttatchment.getDefense(u.getOwner());
+				airstrength += unitAttachment.getDefense(u.getOwner());
 		}
 		return airstrength;
 	}
@@ -2313,12 +2313,12 @@ public class SUtils
 		float airstrength = 0.0F;
 		for (final Unit u : units)
 		{
-			final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
+			final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
 			airstrength += 1.00F;
 			if (attacking)
-				airstrength += unitAttatchment.getAttack(u.getOwner());
+				airstrength += unitAttachment.getAttack(u.getOwner());
 			else
-				airstrength += unitAttatchment.getDefense(u.getOwner());
+				airstrength += unitAttachment.getDefense(u.getOwner());
 		}
 		return airstrength;
 	}
@@ -2330,34 +2330,34 @@ public class SUtils
 	{
 		float strength = 0.0F;
 		final Unit u = units;
-		final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-		if (unitAttatchment.getIsFactory() || unitAttatchment.getIsInfrastructure())
+		final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
+		if (unitAttachment.getIsFactory() || unitAttachment.getIsInfrastructure())
 		{
 			// nothing
 		}
-		else if (unitAttatchment.getIsSea() == sea)
+		else if (unitAttachment.getIsSea() == sea)
 		{
 			strength += 1.00F;
 			// the number of pips on the dice
 			if (attacking)
-				strength += unitAttatchment.getAttack(u.getOwner()) * (unitAttatchment.isTwoHit() ? 2 : 1) * unitAttatchment.getAttackRolls(u.getOwner());
+				strength += unitAttachment.getAttack(u.getOwner()) * (unitAttachment.isTwoHit() ? 2 : 1) * unitAttachment.getAttackRolls(u.getOwner());
 			else
-				strength += unitAttatchment.getDefense(u.getOwner()) * (unitAttatchment.isTwoHit() ? 2 : 1);
+				strength += unitAttachment.getDefense(u.getOwner()) * (unitAttachment.isTwoHit() ? 2 : 1);
 			if (attacking)
 			{
-				if (unitAttatchment.getAttack(u.getOwner()) == 0)
+				if (unitAttachment.getAttack(u.getOwner()) == 0)
 					strength -= 0.50F; // adjusted KDM
 			}
-			if (unitAttatchment.getTransportCapacity() > 0 && !transportsFirst)
+			if (unitAttachment.getTransportCapacity() > 0 && !transportsFirst)
 				strength -= 0.50F; // only allow transport to have 0.35 on defense; none on attack
 		}
-		else if (unitAttatchment.getIsAir() & sea) // we can count airplanes in sea attack
+		else if (unitAttachment.getIsAir() & sea) // we can count airplanes in sea attack
 		{
 			strength += 1.00F;
 			if (attacking)
-				strength += unitAttatchment.getAttack(u.getOwner()) * unitAttatchment.getAttackRolls(u.getOwner());
+				strength += unitAttachment.getAttack(u.getOwner()) * unitAttachment.getAttackRolls(u.getOwner());
 			else
-				strength += unitAttatchment.getDefense(u.getOwner());
+				strength += unitAttachment.getDefense(u.getOwner());
 		}
 		return strength;
 	}
@@ -2385,33 +2385,33 @@ public class SUtils
 			return strength;
 		for (final Unit u : units)
 		{
-			final UnitAttachment unitAttatchment = UnitAttachment.get(u.getType());
-			if (unitAttatchment.getIsFactory() || unitAttatchment.getIsInfrastructure())
+			final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
+			if (unitAttachment.getIsFactory() || unitAttachment.getIsInfrastructure())
 				continue;
-			else if (unitAttatchment.getIsSea() == sea)
+			else if (unitAttachment.getIsSea() == sea)
 			{
-				final int unitAttack = unitAttatchment.getAttack(u.getOwner());
+				final int unitAttack = unitAttachment.getAttack(u.getOwner());
 				// BB = 6.0; AC=2.0/4.0; SUB=3.0; DS=4.0; TR=0.50/2.0; F=4.0/5.0; B=5.0/2.0;
 				strength += 1.00F; // played with this value a good bit
 				if (attacking)
-					strength += unitAttack * (unitAttatchment.isTwoHit() ? 2 : 1);
+					strength += unitAttack * (unitAttachment.isTwoHit() ? 2 : 1);
 				else
-					strength += unitAttatchment.getDefense(u.getOwner()) * (unitAttatchment.isTwoHit() ? 2 : 1);
+					strength += unitAttachment.getDefense(u.getOwner()) * (unitAttachment.isTwoHit() ? 2 : 1);
 				if (attacking)
 				{
 					if (unitAttack == 0)
 						strength -= 0.50F;
 				}
-				if (unitAttack == 0 && unitAttatchment.getTransportCapacity() > 0 && !transportsFirst)
+				if (unitAttack == 0 && unitAttachment.getTransportCapacity() > 0 && !transportsFirst)
 					strength -= 0.50F; // only allow transport to have 0.35 on defense; none on attack
 			}
-			else if (unitAttatchment.getIsAir() == sea)
+			else if (unitAttachment.getIsAir() == sea)
 			{
 				strength += 1.00F;
 				if (attacking)
-					strength += unitAttatchment.getAttack(u.getOwner()) * unitAttatchment.getAttackRolls(u.getOwner());
+					strength += unitAttachment.getAttack(u.getOwner()) * unitAttachment.getAttackRolls(u.getOwner());
 				else
-					strength += unitAttatchment.getDefense(u.getOwner());
+					strength += unitAttachment.getDefense(u.getOwner());
 			}
 		}
 		if (attacking && !sea)

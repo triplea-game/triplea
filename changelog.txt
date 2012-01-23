@@ -1,4 +1,6 @@
 Changes for 1.5
+* Making some small fixes to annotation test, and renaming any methods with attatch to attach. (veqryn)
+
 * Added wait window to TripleA's startup. (frigoref)
 
 * Changed name of Dynamix to be Land-Only AI, at least until someone decides to start working on the AI again. (veqryn)

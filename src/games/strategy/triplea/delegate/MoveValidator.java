@@ -1857,8 +1857,8 @@ public class MoveValidator
 		{
 			final Unit plane = iter.next();
 			final TripleAUnit tAPlane = (TripleAUnit) plane;
-			final UnitAttachment planeAttatchment = UnitAttachment.get(plane.getUnitType());
-			final int cost = planeAttatchment.getCarrierCost();
+			final UnitAttachment planeAttachment = UnitAttachment.get(plane.getUnitType());
+			final int cost = planeAttachment.getCarrierCost();
 			if (available >= cost)
 			{
 				// this is to test if they started in the same sea zone or not, and its not a very good way of testing it.
