@@ -1,4 +1,6 @@
 Changes for 1.5
+* Added new button to main screen, Engine Preferences, which lets a user select various properties specific to the the triplea engine, like setting the look and feel, etc. (veqryn)
+
 * Added scroll bars to both political overview and political action screens. (veqryn)
 
 * Fixed serious bug in DefaultAttachment.getRawProperty() and getFieldIncludingFromSuperClasses, and also updated attachment/annotation test to search super's fields. (veqryn) 

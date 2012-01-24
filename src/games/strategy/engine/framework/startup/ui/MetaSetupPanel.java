@@ -42,6 +42,7 @@ public class MetaSetupPanel extends SetupPanel
 	private JButton m_hostGame;
 	private JButton m_connectToHostedGame;
 	private JButton m_connectToLobby;
+	private JButton m_enginePreferences;
 	private JButton m_downloadMaps;
 	private JButton m_ruleBook;
 	private JButton m_about;
@@ -63,7 +64,8 @@ public class MetaSetupPanel extends SetupPanel
 		m_hostGame = new JButton("Host Networked Game");
 		m_connectToHostedGame = new JButton("Connect to Networked Game");
 		m_connectToLobby = new JButton("Find Games Online on the Lobby Server");
-		m_downloadMaps = new JButton("Download Maps");
+		m_enginePreferences = new JButton("Engine Preferences...");
+		m_downloadMaps = new JButton("Download Maps...");
 		m_ruleBook = new JButton("Rule Book...");
 		m_about = new JButton("About...");
 	}
@@ -78,9 +80,10 @@ public class MetaSetupPanel extends SetupPanel
 		add(m_hostGame, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 		add(m_connectToHostedGame, new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 		add(m_connectToLobby, new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-		add(m_downloadMaps, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-		add(m_ruleBook, new GridBagConstraints(0, 7, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-		add(m_about, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_enginePreferences, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_downloadMaps, new GridBagConstraints(0, 7, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_ruleBook, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_about, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 		// top space
 		add(new JPanel(), new GridBagConstraints(0, 100, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
 	}
@@ -120,6 +123,13 @@ public class MetaSetupPanel extends SetupPanel
 			public void actionPerformed(final ActionEvent e)
 			{
 				connectToLobby();
+			}
+		});
+		m_enginePreferences.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				enginePreferences();
 			}
 		});
 		m_downloadMaps.addActionListener(new ActionListener()
@@ -190,6 +200,11 @@ public class MetaSetupPanel extends SetupPanel
 		}
 
 		 */
+	}
+	
+	private void enginePreferences()
+	{
+		EnginePreferences.showEnginePreferences(this);
 	}
 	
 	private void about()

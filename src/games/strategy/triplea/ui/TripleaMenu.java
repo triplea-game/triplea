@@ -43,6 +43,7 @@ import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IllegalCharacterRemover;
+import games.strategy.util.Triple;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -226,10 +227,60 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		addSetLookAndFeel(menuView);
 	}
 	
-	private boolean isJavaGreatThan5()
+	private static boolean isJavaGreatThan5()
 	{
 		final String version = System.getProperties().getProperty("java.version");
 		return version.indexOf("1.5") == -1;
+	}
+	
+	/**
+	 * First is our JList, second is our LookAndFeels string -> class map, third is our 'current' look and feel.
+	 * 
+	 * @return
+	 */
+	public static Triple<JList, Map<String, String>, String> getLookAndFeelList()
+	{
+		final Map<String, String> lookAndFeels = new LinkedHashMap<String, String>();
+		lookAndFeels.put("Original", UIManager.getSystemLookAndFeelClassName());
+		lookAndFeels.put("Metal", MetalLookAndFeel.class.getName());
+		lookAndFeels.put("Platform Independent", UIManager.getCrossPlatformLookAndFeelClassName());
+		if (isJavaGreatThan5())
+		{
+			try
+			{
+				final List<String> substanceLooks = Arrays.asList(new String[] { "org.jvnet.substance.skin.SubstanceAutumnLookAndFeel",
+							"org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel", "org.jvnet.substance.skin.SubstanceCremeCoffeeLookAndFeel",
+							"org.jvnet.substance.skin.SubstanceCremeLookAndFeel", "org.jvnet.substance.skin.SubstanceDustCoffeeLookAndFeel",
+							"org.jvnet.substance.skin.SubstanceDustLookAndFeel", "org.jvnet.substance.skin.SubstanceEmeraldDuskLookAndFeel",
+							"org.jvnet.substance.skin.SubstanceMagmaLookAndFeel", "org.jvnet.substance.skin.SubstanceMistAquaLookAndFeel",
+							"org.jvnet.substance.skin.SubstanceModerateLookAndFeel", "org.jvnet.substance.skin.SubstanceNebulaLookAndFeel",
+							"org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel", "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
+							"org.jvnet.substance.skin.SubstanceRavenLookAndFeel", "org.jvnet.substance.skin.SubstanceTwilightLookAndFeel", });
+				for (final String s : substanceLooks)
+				{
+					@SuppressWarnings("rawtypes")
+					final Class c = Class.forName(s);
+					final LookAndFeel lf = (LookAndFeel) c.newInstance();
+					lookAndFeels.put(lf.getName(), s);
+				}
+			} catch (final Exception t)
+			{
+				t.printStackTrace();
+			}
+		}
+		final JList list = new JList(new Vector<String>(lookAndFeels.keySet()));
+		String currentKey = null;
+		for (final String s : lookAndFeels.keySet())
+		{
+			final String currentName = UIManager.getLookAndFeel().getClass().getName();
+			if (lookAndFeels.get(s).equals(currentName))
+			{
+				currentKey = s;
+				break;
+			}
+		}
+		list.setSelectedValue(currentKey, false);
+		return new Triple<JList, Map<String, String>, String>(list, lookAndFeels, currentKey);
 	}
 	
 	private void addSetLookAndFeel(final JMenu menuView)
@@ -238,46 +289,10 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				final Map<String, String> lookAndFeels = new LinkedHashMap<String, String>();
-				lookAndFeels.put("Default", UIManager.getSystemLookAndFeelClassName());
-				lookAndFeels.put("Metal", MetalLookAndFeel.class.getName());
-				lookAndFeels.put("Platform Independent", UIManager.getCrossPlatformLookAndFeelClassName());
-				if (isJavaGreatThan5())
-				{
-					try
-					{
-						final List<String> substanceLooks = Arrays.asList(new String[] { "org.jvnet.substance.skin.SubstanceAutumnLookAndFeel",
-									"org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel", "org.jvnet.substance.skin.SubstanceCremeCoffeeLookAndFeel",
-									"org.jvnet.substance.skin.SubstanceCremeLookAndFeel", "org.jvnet.substance.skin.SubstanceDustCoffeeLookAndFeel",
-									"org.jvnet.substance.skin.SubstanceDustLookAndFeel", "org.jvnet.substance.skin.SubstanceEmeraldDuskLookAndFeel",
-									"org.jvnet.substance.skin.SubstanceMagmaLookAndFeel", "org.jvnet.substance.skin.SubstanceMistAquaLookAndFeel",
-									"org.jvnet.substance.skin.SubstanceModerateLookAndFeel", "org.jvnet.substance.skin.SubstanceNebulaLookAndFeel",
-									"org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel", "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
-									"org.jvnet.substance.skin.SubstanceRavenLookAndFeel", "org.jvnet.substance.skin.SubstanceTwilightLookAndFeel", });
-						for (final String s : substanceLooks)
-						{
-							@SuppressWarnings("rawtypes")
-							final Class c = Class.forName(s);
-							final LookAndFeel lf = (LookAndFeel) c.newInstance();
-							lookAndFeels.put(lf.getName(), s);
-						}
-					} catch (final Exception t)
-					{
-						t.printStackTrace();
-					}
-				}
-				final JList list = new JList(new Vector<String>(lookAndFeels.keySet()));
-				String currentKey = null;
-				for (final String s : lookAndFeels.keySet())
-				{
-					final String currentName = UIManager.getLookAndFeel().getClass().getName();
-					if (lookAndFeels.get(s).equals(currentName))
-					{
-						currentKey = s;
-						break;
-					}
-				}
-				list.setSelectedValue(currentKey, false);
+				final Triple<JList, Map<String, String>, String> lookAndFeel = getLookAndFeelList();
+				final JList list = lookAndFeel.getFirst();
+				final String currentKey = lookAndFeel.getThird();
+				final Map<String, String> lookAndFeels = lookAndFeel.getSecond();
 				if (JOptionPane.showConfirmDialog(m_frame, list) == JOptionPane.OK_OPTION)
 				{
 					final String selectedValue = (String) list.getSelectedValue();
