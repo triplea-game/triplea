@@ -35,6 +35,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -144,22 +145,29 @@ public class PoliticsPanel extends ActionPanel
 	{
 		public void actionPerformed(final ActionEvent event)
 		{
+			final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+			final int availHeight = screenResolution.height - 100;
+			final int availWidth = screenResolution.width - 30;
+			final int availHeightOverview = (int) ((float) availHeight * 2 / 3);
+			final int availHeightChoice = (int) ((float) availHeight / 3);
+			// availHeighChoice -= (42 * getData().getPlayerList().getPlayers().size() + 46);
 			final JDialog politicalChoiceDialog = new JDialog(m_parent, "Political Actions", true);
 			final Insets insets = new Insets(1, 1, 1, 1);
 			int row = 0;
 			final JPanel politicalChoicePanel = new JPanel();
 			politicalChoicePanel.setLayout(new GridBagLayout());
 			final PoliticalStateOverview overview = new PoliticalStateOverview(getData(), getMap().getUIContext());
-			politicalChoicePanel.add(overview, new GridBagConstraints(0, row++, 4, 1, 1.0, 20.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+			final JScrollPane overviewScroll = new JScrollPane(overview);
+			overviewScroll.setBorder(BorderFactory.createEmptyBorder());
+			overviewScroll.setPreferredSize(new Dimension((overviewScroll.getPreferredSize().width > availWidth ? availWidth : overviewScroll.getPreferredSize().width),
+						(overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview : overviewScroll.getPreferredSize().height)));
+			politicalChoicePanel.add(overviewScroll, new GridBagConstraints(0, row++, 4, 1, 1.0, 20.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
 			politicalChoicePanel.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, row++, 20, 1, 0.1, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
-			final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
-			int availHeight = screenResolution.height - 80;
-			final int availWidth = screenResolution.width - 30;
-			availHeight -= (42 * getData().getPlayerList().getPlayers().size() + 46);
-			final JScrollPane scrollPane = new JScrollPane(PoliticalActionButtonPanel(politicalChoiceDialog));
-			scrollPane.setPreferredSize(new Dimension((scrollPane.getPreferredSize().width > availWidth ? availWidth : scrollPane.getPreferredSize().width),
-						(scrollPane.getPreferredSize().height > availHeight ? availHeight : scrollPane.getPreferredSize().height)));
-			politicalChoicePanel.add(scrollPane, new GridBagConstraints(0, row++, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+			final JScrollPane choiceScroll = new JScrollPane(PoliticalActionButtonPanel(politicalChoiceDialog));
+			choiceScroll.setBorder(BorderFactory.createEmptyBorder());
+			choiceScroll.setPreferredSize(new Dimension((choiceScroll.getPreferredSize().width > availWidth ? availWidth : choiceScroll.getPreferredSize().width),
+						(choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice : choiceScroll.getPreferredSize().height)));
+			politicalChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
 			final JButton noActionButton = new JButton(new AbstractAction("No Actions")
 			{
 				public void actionPerformed(final ActionEvent arg0)

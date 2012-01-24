@@ -45,9 +45,11 @@ import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.IllegalCharacterRemover;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -73,6 +75,7 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -498,7 +501,16 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			public void actionPerformed(final ActionEvent e)
 			{
 				final PoliticalStateOverview ui = new PoliticalStateOverview(getData(), getUIContext());
-				JOptionPane.showMessageDialog(m_frame, ui, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
+				final JScrollPane scroll = new JScrollPane(ui);
+				scroll.setBorder(BorderFactory.createEmptyBorder());
+				final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+				final int availHeight = screenResolution.height - 120; // not only do we have a start bar, but we also have the message dialog to account for
+				final int availWidth = screenResolution.width - 40; // just the scroll bars plus the window sides
+				// availHeight = (int) ((float) availHeight * 2 / 3);
+				scroll.setPreferredSize(new Dimension((scroll.getPreferredSize().width > availWidth ? availWidth : scroll.getPreferredSize().width),
+							(scroll.getPreferredSize().height > availHeight ? availHeight : scroll.getPreferredSize().height)));
+				// scroll.setMaximumSize(new Dimension(availWidth, availHeight));
+				JOptionPane.showMessageDialog(m_frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
 			}
 		};
 		menuGame.add(politicsAction);

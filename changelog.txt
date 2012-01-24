@@ -1,4 +1,6 @@
 Changes for 1.5
+* Added scroll bars to both political overview and political action screens. (veqryn)
+
 * Fixed serious bug in DefaultAttachment.getRawProperty() and getFieldIncludingFromSuperClasses, and also updated attachment/annotation test to search super's fields. (veqryn) 
 
 * Making some small fixes to attachment/annotation test, and renaming any methods with attatch to attach. (veqryn)
