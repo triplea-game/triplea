@@ -1,5 +1,7 @@
 Changes for 1.5
-* Making some small fixes to annotation test, and renaming any methods with attatch to attach. (veqryn)
+* Fixed serious bug in DefaultAttachment.getRawProperty() and getFieldIncludingFromSuperClasses, and also updated attachment/annotation test to search super's fields. (veqryn) 
+
+* Making some small fixes to attachment/annotation test, and renaming any methods with attatch to attach. (veqryn)
 
 * Added wait window to TripleA's startup. (frigoref)
 

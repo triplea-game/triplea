@@ -99,32 +99,34 @@ public abstract class DefaultAttachment implements IAttachment
 		return new IllegalArgumentException(rVal + " ([Not Allowed] Given: " + givenValue + ")");
 	}
 	
-	private Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name, final boolean justFromSuper)
+	public static Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name, final boolean justFromSuper)
 	{
 		Field rVal = null;
-		try
-		{
-			if (!justFromSuper)
-			{
-				rVal = c.getDeclaredField(name);
-				return rVal;
-			}
-		} catch (final Exception e)
-		{
-			// do nothing, go to finally
-		} finally
+		
+		if (!justFromSuper)
 		{
 			try
 			{
-				rVal = c.getSuperclass().getDeclaredField(name);
-			} catch (final Exception e2)
+				rVal = c.getDeclaredField(name);
+				return rVal;
+			} catch (final NoSuchFieldException e)
 			{
-				if (c.getSuperclass() == null)
-					throw new IllegalStateException("No such Property: " + name);
-				rVal = getFieldIncludingFromSuperClasses(c.getSuperclass(), name, true);
+				return getFieldIncludingFromSuperClasses(c, name, true);
 			}
 		}
-		return rVal;
+		else
+		{
+			if (c.getSuperclass() == null)
+				throw new IllegalStateException("No such Property: " + name);
+			try
+			{
+				rVal = c.getSuperclass().getDeclaredField(name);
+				return rVal;
+			} catch (final NoSuchFieldException e)
+			{
+				return getFieldIncludingFromSuperClasses(c.getSuperclass(), name, true);
+			}
+		}
 	}
 	
 	public String getRawProperty(final String property)
