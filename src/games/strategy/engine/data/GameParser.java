@@ -83,7 +83,7 @@ public class GameParser
 	{
 	}
 	
-	public synchronized GameData parse(final InputStream stream) throws GameParseException, SAXException, EngineVersionException
+	public synchronized GameData parse(final InputStream stream, final boolean delayParsing) throws GameParseException, SAXException, EngineVersionException
 	{
 		if (stream == null)
 			throw new IllegalArgumentException("Stream must be non null");
@@ -104,20 +104,23 @@ public class GameParser
 		parseInfo(getSingleChild("info", root));
 		parseGameLoader(getSingleChild("loader", root));
 		parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
+		parseDiceSides(getSingleChild("diceSides", root, true));
+		final Element playerListNode = getSingleChild("playerList", root);
+		parsePlayerList(playerListNode);
+		parseAlliances(playerListNode);
 		final Node properties = getSingleChild("propertyList", root, true);
 		if (properties != null)
 			parseProperties(properties);
 		// everything until here is needed to select a game, the rest can be parsed when a game is selected
-		// TODO add switch that user can set to always parse every map or to just do the pre-parsing until here
-		final Node diceSides = getSingleChild("diceSides", root, true);
-		if (diceSides != null)
-			parseDiceSides(diceSides);
-		else
-			data.setDiceSides(6);
+		if (delayParsing)
+			return data;
 		parseMap(getSingleChild("map", root));
 		final Element resourceList = getSingleChild("resourceList", root, true);
 		if (resourceList != null)
 			parseResources(resourceList);
+		final Element unitList = getSingleChild("unitList", root, true);
+		if (unitList != null)
+			parseUnits(unitList);
 		// Parse all different relationshipTypes that are defined in the xml, for example: War, Allied, Neutral, NAP
 		final Element relationshipTypes = getSingleChild("relationshipTypes", root, true);
 		if (relationshipTypes != null)
@@ -125,14 +128,7 @@ public class GameParser
 		final Element territoryEffectList = getSingleChild("territoryEffectList", root, true);
 		if (territoryEffectList != null)
 			parseTerritoryEffects(territoryEffectList);
-		final Element playerListNode = getSingleChild("playerList", root);
-		parsePlayerList(playerListNode);
-		parseAlliances(playerListNode);
 		parseGamePlay(getSingleChild("gamePlay", root));
-		// optional
-		final Element unitList = getSingleChild("unitList", root, true);
-		if (unitList != null)
-			parseUnits(unitList);
 		final Element production = getSingleChild("production", root, true);
 		if (production != null)
 			parseProduction(production);
@@ -161,7 +157,10 @@ public class GameParser
 	
 	private void parseDiceSides(final Node diceSides)
 	{
-		data.setDiceSides(Integer.parseInt(((Element) diceSides).getAttribute("value")));
+		if (diceSides == null)
+			data.setDiceSides(6);
+		else
+			data.setDiceSides(Integer.parseInt(((Element) diceSides).getAttribute("value")));
 	}
 	
 	private void parseMinimumEngineVersionNumber(final Node minimumVersion) throws EngineVersionException

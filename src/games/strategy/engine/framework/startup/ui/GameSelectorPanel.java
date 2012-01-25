@@ -324,6 +324,10 @@ public class GameSelectorPanel extends JPanel implements Observer
 			final NewGameChooserEntry entry = NewGameChooser.chooseGame(JOptionPane.getFrameForComponent(this), m_model.getGameName());
 			if (entry != null)
 			{
+				if (!entry.isGameDataLoaded())
+				{
+					entry.fullyParseGameData();
+				}
 				m_model.load(entry);
 				setOriginalPropertiesMap(m_model.getGameData());
 				// only for new games, not saved games, we set the default options, and set them only once (the first time it is loaded)

@@ -81,7 +81,7 @@ public class GameSelectorModel extends Observable
 			// if the file name is xml, load it as a new game
 			if (file.getName().toLowerCase().endsWith("xml"))
 			{
-				newData = (new GameParser()).parse(new FileInputStream(file));
+				newData = (new GameParser()).parse(new FileInputStream(file), false);
 			}
 			// the extension should be tsvg, but
 			// try to load it as a saved game whatever the extension
@@ -216,6 +216,10 @@ public class GameSelectorModel extends Observable
 		if (selectedGame == null)
 		{
 			return;
+		}
+		if (!selectedGame.isGameDataLoaded())
+		{
+			selectedGame.fullyParseGameData();
 		}
 		load(selectedGame);
 	}

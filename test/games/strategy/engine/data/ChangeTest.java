@@ -61,7 +61,7 @@ public class ChangeTest extends TestCase
 		final URL url = this.getClass().getResource("Test.xml");
 		// System.out.println(url);
 		final InputStream input = url.openStream();
-		m_data = (new GameParser()).parse(input);
+		m_data = (new GameParser()).parse(input, false);
 	}
 	
 	private Change serialize(final Change aChange) throws Exception

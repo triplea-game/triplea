@@ -19,16 +19,19 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 public class MainPanel extends JPanel implements Observer
 {
+	private JScrollPane m_gameSetupPanelScroll;
 	private GameSelectorPanel m_gameSelectorPanel;
 	private JButton m_playButton;
 	private JButton m_quitButton;
@@ -81,6 +84,8 @@ public class MainPanel extends JPanel implements Observer
 		m_gameSelectorPanel.setBorder(new EtchedBorder());
 		m_gameSetupPanelHolder = new JPanel();
 		m_gameSetupPanelHolder.setLayout(new BorderLayout());
+		m_gameSetupPanelScroll = new JScrollPane(m_gameSetupPanelHolder);
+		m_gameSetupPanelScroll.setBorder(BorderFactory.createEmptyBorder());
 		m_chatPanelHolder = new JPanel();
 		m_chatPanelHolder.setLayout(new BorderLayout());
 	}
@@ -95,7 +100,7 @@ public class MainPanel extends JPanel implements Observer
 		setLayout(new GridBagLayout());
 		m_gameSetupPanelHolder.setLayout(new BorderLayout());
 		add(m_gameSelectorPanel, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.VERTICAL, new Insets(00, 0, 0, 0), 0, 0));
-		add(m_gameSetupPanelHolder, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
+		add(m_gameSetupPanelScroll, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
 		addChat();
 		add(buttonsPanel, new GridBagConstraints(0, 2, 2, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
 		setPreferredSize(m_initialSize);

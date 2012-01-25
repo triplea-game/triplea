@@ -16,6 +16,7 @@ import javax.swing.UIManager;
 public class GameRunner2
 {
 	public static final String LOOK_AND_FEEL_PREF = "LookAndFeel";
+	public static final String DELAYED_PARSING = "DelayedParsing";
 	public static final String TRIPLEA_GAME_PROPERTY = "triplea.game";
 	public static final String TRIPLEA_HOST_PROPERTY = "triplea.host";
 	public static final String TRIPLEA_PORT_PROPERTY = "triplea.port";
@@ -50,7 +51,7 @@ public class GameRunner2
 					waitWindow.showWait();
 				}
 			});
-		} catch (Exception e)
+		} catch (final Exception e)
 		{
 			// just don't show the wait window
 		}
@@ -202,6 +203,25 @@ public class GameRunner2
 	{
 		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
 		pref.put(LOOK_AND_FEEL_PREF, lookAndFeelClassName);
+		try
+		{
+			pref.sync();
+		} catch (final BackingStoreException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public static boolean getDelayedParsing()
+	{
+		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+		return pref.getBoolean(DELAYED_PARSING, false);
+	}
+	
+	public static void setDelayedParsing(final boolean delayedParsing)
+	{
+		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+		pref.putBoolean(DELAYED_PARSING, delayedParsing);
 		try
 		{
 			pref.sync();

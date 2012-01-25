@@ -68,7 +68,7 @@ public class ParserTest extends TestCase
 		final URL url = this.getClass().getResource("GameExample.xml");
 		// System.out.println(url);
 		final InputStream input = url.openStream();
-		gameData = (new GameParser()).parse(input);
+		gameData = (new GameParser()).parse(input, false);
 	}
 	
 	public void testCanCreateData()

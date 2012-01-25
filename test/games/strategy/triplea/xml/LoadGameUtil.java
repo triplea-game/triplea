@@ -34,7 +34,7 @@ public class LoadGameUtil
 		{
 			try
 			{
-				return (new GameParser()).parse(is);
+				return (new GameParser()).parse(is, false);
 			} finally
 			{
 				is.close();

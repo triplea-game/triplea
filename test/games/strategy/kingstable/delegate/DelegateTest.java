@@ -62,7 +62,7 @@ public class DelegateTest extends TestCase
 		// get the xml file
 		final URL url = this.getClass().getResource("DelegateTest.xml");
 		final InputStream input = url.openStream();
-		m_data = (new GameParser()).parse(input);
+		m_data = (new GameParser()).parse(input, false);
 		input.close();
 		black = m_data.getPlayerList().getPlayerID("Black");
 		white = m_data.getPlayerList().getPlayerID("White");

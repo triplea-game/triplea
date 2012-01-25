@@ -60,7 +60,7 @@ public class EnginePreferences extends JDialog
 	{
 		m_okButton = new JButton("OK");
 		m_lookAndFeel = new JButton("Set Look And Feel...");
-		m_gameParser = new JButton("Enable Delayed Parsing of Game XML's");
+		m_gameParser = new JButton("Enable/Disable Delayed Parsing of Game XML's");
 	}
 	
 	private void layoutCoponents()
@@ -123,7 +123,20 @@ public class EnginePreferences extends JDialog
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				// TODO
+				// TODO: replace with 2 radio buttons
+				final boolean current = GameRunner2.getDelayedParsing();
+				final Object[] options = { "Parse Selected", "Parse All", "Cancel" };
+				final int answer = JOptionPane.showOptionDialog(m_parentFrame, new JLabel("<html>Delay Parsing of Game Data from XML until game is selected?" +
+							"<br><br>Default is '" + options[1] + "', which means each map is fully parsed as TripleA starts." +
+							"<br><br>Your current setting is: " + (current ? options[0].toString() : options[1].toString()) + "</html>"),
+							"Select Parsing Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
+				if (answer == JOptionPane.CANCEL_OPTION)
+					return;
+				final boolean delay = answer == JOptionPane.YES_OPTION;
+				if (delay == current)
+					return;
+				GameRunner2.setDelayedParsing(delay);
+				EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA to avoid any potential errors");
 			}
 		});
 	}

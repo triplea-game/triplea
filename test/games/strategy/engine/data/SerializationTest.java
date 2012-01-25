@@ -52,10 +52,10 @@ public class SerializationTest extends TestCase
 		final URL url = this.getClass().getResource("Test.xml");
 		// get the source data
 		InputStream input = url.openStream();
-		m_dataSource = (new GameParser()).parse(input);
+		m_dataSource = (new GameParser()).parse(input, false);
 		// get the sink data
 		input = url.openStream();
-		m_dataSink = (new GameParser()).parse(input);
+		m_dataSink = (new GameParser()).parse(input, false);
 	}
 	
 	private Object serialize(final Object anObject) throws Exception

@@ -1,4 +1,8 @@
 Changes for 1.5
+* Added scroll bars to main screen player selection area. (frigoref)
+
+* Created option to have TripleA not parse every single xml at startup, and only parse as each game is selected. (veqryn & frigoref)
+
 * Added new button to main screen, Engine Preferences, which lets a user select various properties specific to the the triplea engine, like setting the look and feel, etc. (veqryn)
 
 * Added scroll bars to both political overview and political action screens. (veqryn)

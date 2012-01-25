@@ -5,25 +5,31 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class NewGameChooserEntry
 {
 	private final URI m_url;
-	private final GameData m_data;
+	private GameData m_data;
+	private boolean m_gameDataFullyLoaded = false;
 	
 	public NewGameChooserEntry(final URI uri) throws IOException, GameParseException, SAXException, EngineVersionException
 	{
 		m_url = uri;
 		final InputStream input = uri.toURL().openStream();
+		final boolean delayParsing = GameRunner2.getDelayedParsing();
 		try
 		{
-			m_data = new GameParser().parse(input);
+			m_data = new GameParser().parse(input, delayParsing);
+			m_gameDataFullyLoaded = !delayParsing;
 		} finally
 		{
 			try
@@ -33,6 +39,53 @@ public class NewGameChooserEntry
 			{// ignore
 			}
 		}
+	}
+	
+	public void fullyParseGameData()
+	{
+		m_data = null;
+		InputStream input;
+		try
+		{
+			input = m_url.toURL().openStream();
+			try
+			{
+				m_data = new GameParser().parse(input, false);
+				m_gameDataFullyLoaded = true;
+			} catch (final EngineVersionException e)
+			{
+				System.out.println(e.getMessage());
+			} catch (final SAXParseException e)
+			{
+				System.err.println("Could not parse:" + m_url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
+				e.printStackTrace();
+			} catch (final Exception e)
+			{
+				System.err.println("Could not parse:" + m_url);
+				e.printStackTrace();
+			} finally
+			{
+				try
+				{
+					input.close();
+				} catch (final IOException e)
+				{// ignore
+				}
+			}
+		} catch (final MalformedURLException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (final IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
+	public boolean isGameDataLoaded()
+	{
+		return m_gameDataFullyLoaded;
 	}
 	
 	@Override
