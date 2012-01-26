@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.net.BareBonesBrowserLaunch;
 import games.strategy.triplea.ui.TripleaMenu;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
@@ -8,6 +9,7 @@ import games.strategy.util.Triple;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Map;
@@ -36,6 +38,7 @@ public class EnginePreferences extends JDialog
 	private JButton m_okButton;
 	private JButton m_lookAndFeel;
 	private JButton m_gameParser;
+	private JButton m_donate;
 	
 	private EnginePreferences(final Frame parentFrame)
 	{
@@ -61,6 +64,7 @@ public class EnginePreferences extends JDialog
 		m_okButton = new JButton("OK");
 		m_lookAndFeel = new JButton("Set Look And Feel...");
 		m_gameParser = new JButton("Enable/Disable Delayed Parsing of Game XML's");
+		m_donate = new JButton("Donate...");
 	}
 	
 	private void layoutCoponents()
@@ -76,6 +80,8 @@ public class EnginePreferences extends JDialog
 		buttonsPanel.add(m_lookAndFeel);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_gameParser);
+		buttonsPanel.add(new JLabel(" "));
+		buttonsPanel.add(m_donate);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(Box.createGlue());
 		buttonsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -132,11 +138,24 @@ public class EnginePreferences extends JDialog
 							"Select Parsing Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
 				if (answer == JOptionPane.CANCEL_OPTION)
 					return;
-				final boolean delay = answer == JOptionPane.YES_OPTION;
+				final boolean delay = (answer == JOptionPane.YES_OPTION);
 				if (delay == current)
 					return;
 				GameRunner2.setDelayedParsing(delay);
 				EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA to avoid any potential errors");
+			}
+		});
+		m_donate.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				try
+				{
+					BareBonesBrowserLaunch.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
+				} catch (final Exception e1)
+				{
+					e1.printStackTrace();
+				}
 			}
 		});
 	}

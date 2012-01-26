@@ -225,11 +225,15 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_commentPanel = new CommentPanel(this, m_data);
 		m_chatSplit = new JSplitPane();
 		m_chatSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		m_chatSplit.setOneTouchExpandable(true);
+		m_chatSplit.setDividerSize(8);
 		m_chatSplit.setResizeWeight(0.95);
 		if (MainFrame.getInstance().getChat() != null)
 		{
 			m_commentSplit = new JSplitPane();
 			m_commentSplit.setOrientation(JSplitPane.VERTICAL_SPLIT);
+			m_commentSplit.setOneTouchExpandable(true);
+			m_commentSplit.setDividerSize(8);
 			m_commentSplit.setResizeWeight(0.5);
 			m_commentSplit.setTopComponent(m_commentPanel);
 			m_commentSplit.setBottomComponent(null);
@@ -317,6 +321,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_rightHandSidePanel.setPreferredSize(new Dimension((int) m_smallView.getPreferredSize().getWidth(), (int) m_mapPanel.getPreferredSize().getHeight()));
 		m_gameCenterPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, m_mapAndChatPanel, m_rightHandSidePanel);
 		m_gameCenterPanel.setOneTouchExpandable(true);
+		m_gameCenterPanel.setDividerSize(8);
 		m_gameCenterPanel.setResizeWeight(1.0);
 		m_gameMainPanel.add(m_gameCenterPanel, BorderLayout.CENTER);
 		m_gameCenterPanel.resetToPreferredSizes();
@@ -1443,6 +1448,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			}
 		});
 		final JSplitPane split = new JSplitPane();
+		split.setOneTouchExpandable(true);
+		split.setDividerSize(8);
 		m_historyTree = new HistoryPanel(clonedGameData, historyDetailPanel, popup, m_uiContext);
 		split.setLeftComponent(m_historyTree);
 		split.setRightComponent(m_gameCenterPanel);

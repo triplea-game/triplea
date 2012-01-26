@@ -83,6 +83,17 @@ public class GameParser
 	{
 	}
 	
+	/**
+	 * Parses a file into a GameData object.
+	 * 
+	 * @param stream
+	 * @param delayParsing
+	 *            Should we only parse the game name, notes, and playerlist? Normally this should be "false", except for the game chooser which should use the user set preference.
+	 * @return
+	 * @throws GameParseException
+	 * @throws SAXException
+	 * @throws EngineVersionException
+	 */
 	public synchronized GameData parse(final InputStream stream, final boolean delayParsing) throws GameParseException, SAXException, EngineVersionException
 	{
 		if (stream == null)

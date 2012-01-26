@@ -38,6 +38,7 @@ import javax.swing.JTextField;
  * 
  * @author Sean Bridges
  */
+@SuppressWarnings("serial")
 public class ServerPlayerSelector extends JFrame
 {
 	private final Collection<PlayerChoice> m_playerChoices;
@@ -134,6 +135,7 @@ public class ServerPlayerSelector extends JFrame
 }
 
 
+@SuppressWarnings("serial")
 class PlayerChoice extends JPanel
 {
 	private static final String REMOTE = "Remote";

@@ -1,4 +1,6 @@
 Changes for 1.5
+* Changed political panel to use a split panel, and added the one-touch-expandable feature to all main game screen panels: map panel, chat panel, and history panel. (veqryn)
+
 * Added scroll bars to main screen player selection area. (frigoref)
 
 * Created option to have TripleA not parse every single xml at startup, and only parse as each game is selected. (veqryn & frigoref)

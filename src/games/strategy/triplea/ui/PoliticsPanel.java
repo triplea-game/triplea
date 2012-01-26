@@ -43,7 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -161,13 +161,19 @@ public class PoliticsPanel extends ActionPanel
 			overviewScroll.setBorder(BorderFactory.createEmptyBorder());
 			overviewScroll.setPreferredSize(new Dimension((overviewScroll.getPreferredSize().width > availWidth ? availWidth : overviewScroll.getPreferredSize().width),
 						(overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview : overviewScroll.getPreferredSize().height)));
-			politicalChoicePanel.add(overviewScroll, new GridBagConstraints(0, row++, 4, 1, 1.0, 20.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
-			politicalChoicePanel.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, row++, 20, 1, 0.1, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+			// politicalChoicePanel.add(overviewScroll, new GridBagConstraints(0, row++, 4, 1, 1.0, 10.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+			// politicalChoicePanel.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, row++, 20, 1, 0.1, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
 			final JScrollPane choiceScroll = new JScrollPane(PoliticalActionButtonPanel(politicalChoiceDialog));
 			choiceScroll.setBorder(BorderFactory.createEmptyBorder());
 			choiceScroll.setPreferredSize(new Dimension((choiceScroll.getPreferredSize().width > availWidth ? availWidth : choiceScroll.getPreferredSize().width),
 						(choiceScroll.getPreferredSize().height > availHeightChoice ? availHeightChoice : choiceScroll.getPreferredSize().height)));
-			politicalChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+			// politicalChoicePanel.add(choiceScroll, new GridBagConstraints(0, row++, 1, 1, 1.0, 11.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+			
+			final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScroll, choiceScroll);
+			splitPane.setOneTouchExpandable(true);
+			splitPane.setDividerSize(8);
+			politicalChoicePanel.add(splitPane, new GridBagConstraints(0, row++, 1, 1, 100.0, 100.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
+			
 			final JButton noActionButton = new JButton(new AbstractAction("No Actions")
 			{
 				public void actionPerformed(final ActionEvent arg0)
