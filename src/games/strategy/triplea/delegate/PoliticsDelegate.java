@@ -137,13 +137,13 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, m_bridge);
 	}
 	
-	/**
-	 * @param player
-	 * @return gets the valid actions for this player.
-	 */
-	public Collection<PoliticalActionAttachment> getValidActions(final HashMap<ICondition, Boolean> testedConditions)
+	public Collection<PoliticalActionAttachment> getValidActions()
 	{
-		return PoliticalActionAttachment.getValidActions(m_player, testedConditions, getData());
+		final GameData data = m_bridge.getData();
+		data.acquireReadLock();
+		final HashMap<ICondition, Boolean> testedConditions = getTestedConditions();
+		data.releaseReadLock();
+		return PoliticalActionAttachment.getValidActions(m_player, testedConditions, data);
 	}
 	
 	/*

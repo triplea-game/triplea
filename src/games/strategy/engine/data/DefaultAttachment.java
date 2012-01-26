@@ -76,7 +76,7 @@ public abstract class DefaultAttachment implements IAttachment
 			throw new IllegalArgumentException("Attachments: " + aString + " should equal "
 						+ Constants.PROPERTY_DEFAULT + " or " + Constants.PROPERTY_TRUE + " or " + Constants.PROPERTY_FALSE);
 	}*/
-	
+
 	/**
 	 * Throws an error if format is invalid. Must be either true or false ignoring case.
 	 */
@@ -92,11 +92,12 @@ public abstract class DefaultAttachment implements IAttachment
 	
 	protected static IllegalArgumentException getSetterExceptionMessage(final DefaultAttachment failingObject, final String propertyName, final String givenValue, final String... allowedValues)
 	{
-		String rVal = failingObject.getClass().getName() + ": " + failingObject.getName() + ": property " + propertyName + " must be either ";
-		rVal += allowedValues[0];
+		final StringBuilder rVal = new StringBuilder();
+		rVal.append(failingObject.getClass().getName() + ": " + failingObject.getName() + ": property " + propertyName + " must be either ");
+		rVal.append(allowedValues[0]);
 		for (int i = 1; i < allowedValues.length; ++i)
-			rVal += " or " + allowedValues[i];
-		return new IllegalArgumentException(rVal + " ([Not Allowed] Given: " + givenValue + ")");
+			rVal.append(" or " + allowedValues[i]);
+		return new IllegalArgumentException(rVal.toString() + " ([Not Allowed] Given: " + givenValue + ")");
 	}
 	
 	public static Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name, final boolean justFromSuper)
@@ -194,5 +195,38 @@ public abstract class DefaultAttachment implements IAttachment
 	public String toString()
 	{
 		return getClass().getSimpleName() + " attached to:" + m_attachedTo + " with name:" + m_name;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return toString().hashCode();
+	}
+	
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final DefaultAttachment other = (DefaultAttachment) obj;
+		if (m_attachedTo == null)
+		{
+			if (other.m_attachedTo != null)
+				return false;
+		}
+		// else if (!m_attachedTo.equals(other.m_attachedTo))
+		// return false;
+		if (m_name == null)
+		{
+			if (other.m_name != null)
+				return false;
+		}
+		// else if (!m_name.equals(other.m_name))
+		// return false;
+		return this.toString().equals(other.toString());
 	}
 }

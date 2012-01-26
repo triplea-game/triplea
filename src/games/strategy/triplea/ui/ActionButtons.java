@@ -29,6 +29,7 @@ import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
+import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.util.IntegerMap;
 
 import java.awt.CardLayout;
@@ -273,9 +274,9 @@ public class ActionButtons extends JPanel
 	 * 
 	 * @return null if no action was picked.
 	 */
-	public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun)
+	public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun, final IPoliticsDelegate iPoliticsDelegate)
 	{
-		return m_politicsPanel.waitForPoliticalAction(firstRun);
+		return m_politicsPanel.waitForPoliticalAction(firstRun, iPoliticsDelegate);
 	}
 	
 	/**

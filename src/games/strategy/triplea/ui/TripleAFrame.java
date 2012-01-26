@@ -63,6 +63,7 @@ import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
+import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.sound.SoundPath;
@@ -1050,7 +1051,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		EventThreadJOptionPane.showMessageDialog(this, message, "Political Alert", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player, final boolean firstRun)
+	public PoliticalActionAttachment getPoliticalActionChoice(final PlayerID player, final boolean firstRun, final IPoliticsDelegate iPoliticsDelegate)
 	{
 		m_actionButtons.changeToPolitics(player);
 		if (!SwingUtilities.isEventDispatchThread())
@@ -1075,7 +1076,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			requestFocusInWindow();
 			transferFocus();
 		}
-		return m_actionButtons.waitForPoliticalAction(firstRun);
+		return m_actionButtons.waitForPoliticalAction(firstRun, iPoliticsDelegate);
 	}
 	
 	public TechRoll getTechRolls(final PlayerID id)

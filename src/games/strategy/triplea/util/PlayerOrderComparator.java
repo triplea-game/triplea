@@ -1,8 +1,10 @@
 package games.strategy.triplea.util;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameSequence;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.delegate.IDelegate;
 
 import java.util.Comparator;
 
@@ -20,13 +22,19 @@ public class PlayerOrderComparator implements Comparator<PlayerID>
 	 */
 	public int compare(final PlayerID p1, final PlayerID p2)
 	{
-		for (final GameStep s : m_data.getSequence())
+		m_data.acquireReadLock(); // TODO: see is needed
+		final GameSequence sequence = m_data.getSequence();
+		m_data.releaseReadLock();
+		for (final GameStep s : sequence)
 		{
 			if (s.getPlayerID() == null)
 				continue;
-			if (s.getDelegate() != null && s.getDelegate().getClass() != null)
+			m_data.acquireReadLock(); // TODO: see is needed
+			final IDelegate delegate = s.getDelegate();
+			m_data.releaseReadLock();
+			if (delegate != null && delegate.getClass() != null)
 			{
-				final String delegateClassName = s.getDelegate().getClass().getName();
+				final String delegateClassName = delegate.getClass().getName();
 				if (delegateClassName.equals("games.strategy.triplea.delegate.InitializationDelegate") || delegateClassName.equals("games.strategy.triplea.delegate.BidPurchaseDelegate")
 							|| delegateClassName.equals("games.strategy.triplea.delegate.BidPlaceDelegate") || delegateClassName.equals("games.strategy.triplea.delegate.EndRoundDelegate"))
 					continue;

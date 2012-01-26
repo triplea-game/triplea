@@ -108,7 +108,9 @@ public class PoliticalStateOverview extends JPanel
 	 */
 	private JPanel getRelationshipLabel(final PlayerID player1, final PlayerID player2)
 	{
+		m_data.acquireReadLock(); // TODO: see if this is needed?
 		final RelationshipType relType = m_data.getRelationshipTracker().getRelationshipType(player1, player2);
+		m_data.releaseReadLock();
 		final JLabel relationshipLabel = new JLabel(relType.getName());
 		final JPanel relationshipLabelPanel = new JPanel();
 		relationshipLabelPanel.add(relationshipLabel);

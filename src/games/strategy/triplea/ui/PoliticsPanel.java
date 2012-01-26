@@ -16,9 +16,9 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipType;
+import games.strategy.engine.data.RelationshipTypeList;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
-import games.strategy.triplea.delegate.DelegateFinder;
-import games.strategy.triplea.delegate.PoliticsDelegate;
+import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.util.PlayerOrderComparator;
 
 import java.awt.Dimension;
@@ -57,17 +57,17 @@ import javax.swing.SwingUtilities;
 public class PoliticsPanel extends ActionPanel
 {
 	private final JLabel m_actionLabel = new JLabel();
+	private JButton m_selectPoliticalActionButton = null;
 	private PoliticalActionAttachment m_choice = null;
 	private final TripleAFrame m_parent;
 	private boolean m_firstRun = true;
 	
-	// protected HashMap<ICondition, Boolean> m_testedConditions = null;
+	protected List<PoliticalActionAttachment> m_validPoliticalActions = null;
 	
 	public PoliticsPanel(final GameData data, final MapPanel map, final TripleAFrame parent)
 	{
 		super(data, map);
 		m_parent = parent;
-		// m_testedConditions = DelegateFinder.politicsDelegate(data).getTestedConditions();
 	}
 	
 	@Override
@@ -88,7 +88,9 @@ public class PoliticsPanel extends ActionPanel
 				removeAll();
 				m_actionLabel.setText(id.getName() + " Politics");
 				add(m_actionLabel);
-				add(new JButton(SelectPoliticalActionAction));
+				m_selectPoliticalActionButton = new JButton(SelectPoliticalActionAction);
+				m_selectPoliticalActionButton.setEnabled(false);
+				add(m_selectPoliticalActionButton);
 				final JButton doneButton = new JButton(DontBotherAction);
 				SwingUtilities.invokeLater(new Runnable()
 				{
@@ -110,15 +112,13 @@ public class PoliticsPanel extends ActionPanel
 	 * 
 	 * @return the choice of political action
 	 */
-	public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun)
+	public PoliticalActionAttachment waitForPoliticalAction(final boolean firstRun, final IPoliticsDelegate iPoliticsDelegate)
 	{
 		m_firstRun = firstRun;
-		/*if (m_testedConditions == null)
-		{
-			m_testedConditions = DelegateFinder.politicsDelegate(getData()).getTestedConditions();
-		}*/
-		final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(getData());
-		if (m_firstRun && politicsDelegate.getValidActions(politicsDelegate.getTestedConditions()).isEmpty())
+		// NEVER EVER ACCESS A DELEGATE OR BRIDGE FROM A UI!!!! (or the game won't work in multiplayer) (in other words, do not use the DelegateFinder in any way, or access local delegates, or pass the bridge)
+		m_validPoliticalActions = new ArrayList<PoliticalActionAttachment>(iPoliticsDelegate.getValidActions()); // reset each time, we need to retest the conditions...
+		Collections.sort(m_validPoliticalActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
+		if (m_firstRun && m_validPoliticalActions.isEmpty())
 		{
 			return null; // No Valid political actions, do nothing
 		}
@@ -128,6 +128,7 @@ public class PoliticsPanel extends ActionPanel
 			{
 				public void run()
 				{
+					m_selectPoliticalActionButton.setEnabled(true);
 					// press the politics button for us.
 					SelectPoliticalActionAction.actionPerformed(null);
 				}
@@ -203,10 +204,7 @@ public class PoliticsPanel extends ActionPanel
 		politicalActionButtonPanel.setLayout(new GridBagLayout());
 		int row = 0;
 		final Insets insets = new Insets(1, 1, 1, 1);
-		final List<PoliticalActionAttachment> validActions = new ArrayList<PoliticalActionAttachment>(DelegateFinder.politicsDelegate(getData()).getValidActions(
-					DelegateFinder.politicsDelegate(getData()).getTestedConditions()));
-		Collections.sort(validActions, new PoliticalActionComparator(getCurrentPlayer(), getData()));
-		for (final PoliticalActionAttachment paa : validActions)
+		for (final PoliticalActionAttachment paa : m_validPoliticalActions)
 		{
 			politicalActionButtonPanel.add(getOtherPlayerFlags(paa), new GridBagConstraints(0, row, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, insets, 0, 0));
 			final JButton button = new JButton(getActionButtonText(paa));
@@ -214,6 +212,8 @@ public class PoliticsPanel extends ActionPanel
 			{
 				public void actionPerformed(final ActionEvent ae)
 				{
+					m_selectPoliticalActionButton.setEnabled(false);
+					m_validPoliticalActions = null;
 					m_choice = paa;
 					parent.setVisible(false);
 					release();
@@ -298,8 +298,11 @@ class PoliticalActionComparator implements Comparator<PoliticalActionAttachment>
 			return 0;
 		final String[] paa1RelationChange = paa1.getRelationshipChange().iterator().next().split(":");
 		final String[] paa2RelationChange = paa2.getRelationshipChange().iterator().next().split(":");
-		final RelationshipType paa1NewType = m_data.getRelationshipTypeList().getRelationshipType(paa1RelationChange[2]);
-		final RelationshipType paa2NewType = m_data.getRelationshipTypeList().getRelationshipType(paa2RelationChange[2]);
+		m_data.acquireReadLock(); // TODO: see if needed
+		final RelationshipTypeList relationshipTypeList = m_data.getRelationshipTypeList();
+		m_data.releaseReadLock();
+		final RelationshipType paa1NewType = relationshipTypeList.getRelationshipType(paa1RelationChange[2]);
+		final RelationshipType paa2NewType = relationshipTypeList.getRelationshipType(paa2RelationChange[2]);
 		// sort by player
 		final PlayerID paa1p1 = m_data.getPlayerList().getPlayerID(paa1RelationChange[0]);
 		final PlayerID paa1p2 = m_data.getPlayerList().getPlayerID(paa1RelationChange[1]);

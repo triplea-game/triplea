@@ -178,11 +178,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			return;
 		if (!games.strategy.triplea.Properties.getUsePolitics(getGameData()))
 			return;
-		final PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(m_id, firstRun);
+		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
+		final PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(m_id, firstRun, iPoliticsDelegate);
 		if (actionChoice != null)
 		{
-			final IPoliticsDelegate politicsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
-			politicsDelegate.attemptAction(actionChoice);
+			iPoliticsDelegate.attemptAction(actionChoice);
 			politics(false);
 		}
 	}

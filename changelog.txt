@@ -1,4 +1,10 @@
 Changes for 1.5
+* Disabled political action button when taking actions, to prevent taking multiple actions while waiting for confirmation of the first. (veqryn)
+
+* Fixed major error preventing politics from working over the network, due to the new way condition testing works. (veqryn)
+
+* Fixed Lock not held errors for politics. (veqryn)
+
 * Changed political panel to use a split panel, and added the one-touch-expandable feature to all main game screen panels: map panel, chat panel, and history panel. (veqryn)
 
 * Added scroll bars to main screen player selection area. (frigoref)
