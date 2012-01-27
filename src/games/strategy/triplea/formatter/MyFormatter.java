@@ -203,6 +203,8 @@ public class MyFormatter
 	
 	public static String listOfArraysToString(final ArrayList<String[]> listOfArrays)
 	{
+		if (listOfArrays == null)
+			return "null";
 		String toText = "[";
 		for (final String[] s : listOfArrays)
 		{

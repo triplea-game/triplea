@@ -963,7 +963,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				final UnitAttachment ua = UnitAttachment.get(allUnitsIterator.next());
 				if (ua == null)
 					continue;
-				String toModify = ua.toString().replaceFirst("UnitType called ", "").replaceFirst(" with:", "").replaceAll("games.strategy.engine.data.", "")
+				String toModify = ua.allUnitStatsForExporter();
+				toModify = toModify.replaceFirst("UnitType called ", "").replaceFirst(" with:", "").replaceAll("games.strategy.engine.data.", "")
 							.replaceAll("\n", ";").replaceAll(",", ";");
 				toModify = toModify.replaceAll("  ", ",");
 				toModify = toModify.replaceAll(", ", ",").replaceAll(" ,", ",");

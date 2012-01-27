@@ -191,6 +191,10 @@ public abstract class DefaultAttachment implements IAttachment
 		m_name = aString;
 	}
 	
+	/**
+	 * Any overriding method for toString needs to include at least the Class, m_attachedTo, and m_name.
+	 * Or call super.toString()
+	 */
 	@Override
 	public String toString()
 	{
@@ -218,15 +222,17 @@ public abstract class DefaultAttachment implements IAttachment
 			if (other.m_attachedTo != null)
 				return false;
 		}
-		// else if (!m_attachedTo.equals(other.m_attachedTo))
+		else if (!m_attachedTo.toString().equals(other.m_attachedTo.toString()))
+			return false;
+		// else if (!m_attachedTo.equals(other.m_attachedTo)) // m_attachedTo does not override equals, so we should not test it
 		// return false;
 		if (m_name == null)
 		{
 			if (other.m_name != null)
 				return false;
 		}
-		// else if (!m_name.equals(other.m_name))
-		// return false;
+		else if (!m_name.equals(other.m_name))
+			return false;
 		return this.toString().equals(other.toString());
 	}
 }

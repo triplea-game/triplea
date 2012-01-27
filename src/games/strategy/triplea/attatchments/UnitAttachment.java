@@ -1891,35 +1891,42 @@ public class UnitAttachment extends DefaultAttachment
 	@Override
 	public String toString()
 	{
-		// should cover all values stored in UnitAttachment
+		// Any overriding method for toString on an attachment needs to include at least the Class, m_attachedTo, and m_name. Or call super.toString()
+		return super.toString();
+	}
+	
+	public String allUnitStatsForExporter()
+	{
+		// should cover ALL fields stored in UnitAttachment
+		// remember to test for null and fix arrays
 		// the stats exporter relies on this toString having two spaces after each entry, so do not change this please, except to add new abilities onto the end
-		return ((this != null && this.getAttachedTo() != null) ? this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:" : "")
-					+ "  air:" + m_isAir
-					+ "  sea:" + m_isSea
+		return this.getAttachedTo().toString().replaceFirst("games.strategy.engine.data.", "") + " with:"
+					+ "  isAir:" + m_isAir
+					+ "  isSea:" + m_isSea
 					+ "  movement:" + m_movement
 					+ "  attack:" + m_attack
 					+ "  defense:" + m_defense
-					+ "  twoHit:" + m_isTwoHit
-					+ "  factory:" + m_isFactory
-					+ "  blitz:" + m_canBlitz
+					+ "  isTwoHit:" + m_isTwoHit
+					+ "  isFactory:" + m_isFactory
+					+ "  canBlitz:" + m_canBlitz
 					+ "  artillerySupportable:" + m_artillerySupportable
 					+ "  artillery:" + m_artillery
 					+ "  unitSupportCount:" + m_unitSupportCount
-					+ "  marine:" + m_isMarine
-					+ "  infantry:" + m_isInfantry
-					+ "  landTransport:" + m_isLandTransport
-					+ "  airTransportable:" + m_isAirTransportable
-					+ "  airTransport:" + m_isAirTransport
-					+ "  strategicBomber:" + m_isStrategicBomber
+					+ "  isMarine:" + m_isMarine
+					+ "  isInfantry:" + m_isInfantry
+					+ "  isLandTransport:" + m_isLandTransport
+					+ "  isAirTransportable:" + m_isAirTransportable
+					+ "  isAirTransport:" + m_isAirTransport
+					+ "  isStrategicBomber:" + m_isStrategicBomber
 					+ "  transportCapacity:" + m_transportCapacity
 					+ "  transportCost:" + m_transportCost
 					+ "  carrierCapacity:" + m_carrierCapacity
 					+ "  carrierCost:" + m_carrierCost
-					+ "  sub:" + m_isSub
-					+ "  destroyer:" + m_isDestroyer
+					+ "  isSub:" + m_isSub
+					+ "  isDestroyer:" + m_isDestroyer
 					+ "  canBombard:" + m_canBombard
 					+ "  bombard:" + m_bombard
-					
+
 					+ "  isAAforCombatOnly:" + m_isAAforCombatOnly
 					+ "  isAAforBombingThisUnitOnly:" + m_isAAforBombingThisUnitOnly
 					+ "  isAAforFlyOverOnly:" + m_isAAforFlyOverOnly
@@ -1928,55 +1935,56 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  maxAAattacks:" + m_maxAAattacks
 					+ "  mayOverStackAA:" + m_mayOverStackAA
 					+ "  typeAA:" + m_typeAA
-					+ "  targetsAA:" + m_targetsAA.toString()
-					+ "  willNotFireIfPresent:" + m_willNotFireIfPresent.toString()
+					+ "  targetsAA:" + (m_targetsAA != null ? (m_targetsAA.size() == 0 ? "empty" : m_targetsAA.toString()) : "all air units")
+					+ "  willNotFireIfPresent:" + (m_willNotFireIfPresent != null ? (m_willNotFireIfPresent.size() == 0 ? "empty" : m_willNotFireIfPresent.toString()) : "null")
 					+ "  isRocket:" + m_isRocket
-					
+
 					+ "  canProduceUnits:" + m_canProduceUnits
 					+ "  canProduceXUnits:" + m_canProduceXUnits
-					+ "  createsUnitsList:" + (m_createsUnitsList.size() == 0 ? "empty" : m_createsUnitsList.toString())
-					+ "  createsResourcesList:" + (m_createsResourcesList.size() == 0 ? "empty" : m_createsResourcesList.toString())
-					+ "  fuelCost:" + (m_fuelCost.size() == 0 ? "empty" : m_fuelCost.toString())
-					+ "  infrastructure:" + m_isInfrastructure
-					+ "  construction:" + m_isConstruction
+					+ "  createsUnitsList:" + (m_createsUnitsList != null ? (m_createsUnitsList.size() == 0 ? "empty" : m_createsUnitsList.toString()) : "null")
+					+ "  createsResourcesList:" + (m_createsResourcesList != null ? (m_createsResourcesList.size() == 0 ? "empty" : m_createsResourcesList.toString()) : "null")
+					+ "  fuelCost:" + (m_fuelCost != null ? (m_fuelCost.size() == 0 ? "empty" : m_fuelCost.toString()) : "null")
+					+ "  isInfrastructure:" + m_isInfrastructure
+					+ "  isConstruction:" + m_isConstruction
 					+ "  constructionType:" + m_constructionType
-					+ "  constructionsPerTerrPerType:" + m_constructionsPerTerrPerTypePerTurn
-					+ "  maxConstructionsPerType:" + m_maxConstructionsPerTypePerTerr
-					+ "  destroyedWhenCapturedBy:" + m_destroyedWhenCapturedBy.toString()
-					+ "  canBeCapturedOnEnteringBy:" + m_canBeCapturedOnEnteringBy.toString()
+					+ "  constructionsPerTerrPerTypePerTurn:" + m_constructionsPerTerrPerTypePerTurn
+					+ "  maxConstructionsPerTypePerTerr:" + m_maxConstructionsPerTypePerTerr
+					+ "  destroyedWhenCapturedBy:" + (m_destroyedWhenCapturedBy != null ? (m_destroyedWhenCapturedBy.size() == 0 ? "empty" : m_destroyedWhenCapturedBy.toString()) : "null")
+					+ "  canBeCapturedOnEnteringBy:" + (m_canBeCapturedOnEnteringBy != null ? (m_canBeCapturedOnEnteringBy.size() == 0 ? "empty" : m_canBeCapturedOnEnteringBy.toString()) : "null")
 					+ "  canBeDamaged:" + m_canBeDamaged
 					+ "  canDieFromReachingMaxDamage:" + m_canDieFromReachingMaxDamage
 					+ "  maxOperationalDamage:" + m_maxOperationalDamage
 					+ "  maxDamage:" + m_maxDamage
-					+ "  unitPlacementRestrictions:" + (m_unitPlacementRestrictions != null ? Arrays.toString(m_unitPlacementRestrictions) : "null")
-					+ "  requiresUnits:" + MyFormatter.listOfArraysToString(m_requiresUnits)
-					+ "  consumesUnits:" + (m_consumesUnits.size() == 0 ? "empty" : m_consumesUnits.toString())
+					+ "  unitPlacementRestrictions:"
+					+ (m_unitPlacementRestrictions != null ? (m_unitPlacementRestrictions.length == 0 ? "empty" : Arrays.toString(m_unitPlacementRestrictions)) : "null")
+					+ "  requiresUnits:" + (m_requiresUnits != null ? (m_requiresUnits.size() == 0 ? "empty" : MyFormatter.listOfArraysToString(m_requiresUnits)) : "null")
+					+ "  consumesUnits:" + (m_consumesUnits != null ? (m_consumesUnits.size() == 0 ? "empty" : m_consumesUnits.toString()) : "null")
 					+ "  canOnlyBePlacedInTerritoryValuedAtX:" + m_canOnlyBePlacedInTerritoryValuedAtX
 					+ "  maxBuiltPerPlayer:" + m_maxBuiltPerPlayer
-					+ "  special:" + m_special
+					+ "  special:" + (m_special != null ? (m_special.size() == 0 ? "empty" : m_special.toString()) : "null")
 					+ "  isSuicide:" + m_isSuicide
-					+ "  isKamikaze:" + m_isKamikaze
-					+ "  combatTransport:" + m_isCombatTransport
-					+ "  canInvadeOnlyFrom:" + (m_canInvadeOnlyFrom != null ? Arrays.toString(m_canInvadeOnlyFrom) : "null")
-					+ "  canBeGivenByTerritoryTo:" + m_canBeGivenByTerritoryTo.toString()
-					+ "  receivesAbilityWhenWith:" + m_receivesAbilityWhenWith.toString()
-					+ "  whenCombatDamaged:" + m_whenCombatDamaged.toString()
+					+ "  isSuicide:" + m_isSuicide
+					+ "  isCombatTransport:" + m_isCombatTransport
+					+ "  canInvadeOnlyFrom:" + (m_canInvadeOnlyFrom != null ? (m_canInvadeOnlyFrom.length == 0 ? "empty" : Arrays.toString(m_canInvadeOnlyFrom)) : "null")
+					+ "  canBeGivenByTerritoryTo:" + (m_canBeGivenByTerritoryTo != null ? (m_canBeGivenByTerritoryTo.size() == 0 ? "empty" : m_canBeGivenByTerritoryTo.toString()) : "null")
+					+ "  receivesAbilityWhenWith:" + (m_receivesAbilityWhenWith != null ? (m_receivesAbilityWhenWith.size() == 0 ? "empty" : m_receivesAbilityWhenWith.toString()) : "null")
+					+ "  whenCombatDamaged:" + (m_whenCombatDamaged != null ? (m_whenCombatDamaged.size() == 0 ? "empty" : m_whenCombatDamaged.toString()) : "null")
 					+ "  blockade:" + m_blockade
 					+ "  bombingMaxDieSides:" + m_bombingMaxDieSides
 					+ "  bombingBonus:" + m_bombingBonus
-					+ "  givesMovement:" + (m_givesMovement.size() == 0 ? "empty" : m_givesMovement.toString())
-					+ "  repairsUnits:" + (m_repairsUnits != null ? Arrays.toString(m_repairsUnits) : "null")
+					+ "  givesMovement:" + (m_givesMovement != null ? (m_givesMovement.size() == 0 ? "empty" : m_givesMovement.toString()) : "null")
+					+ "  repairsUnits:" + (m_repairsUnits != null ? (m_repairsUnits.length == 0 ? "empty" : Arrays.toString(m_repairsUnits)) : "null")
 					+ "  canScramble:" + m_canScramble
 					+ "  maxScrambleDistance:" + m_maxScrambleDistance
-					+ "  airBase:" + m_isAirBase
+					+ "  isAirBase:" + m_isAirBase
 					+ "  maxScrambleCount:" + m_maxScrambleCount
-					+ "  whenCapturedChangesInto:" + m_whenCapturedChangesInto
+					+ "  whenCapturedChangesInto:" + (m_whenCapturedChangesInto != null ? (m_whenCapturedChangesInto.size() == 0 ? "empty" : m_whenCapturedChangesInto.toString()) : "null")
 					+ "  canIntercept:" + m_canIntercept
 					+ "  canEscort:" + m_canEscort
 					+ "  airDefense:" + m_airDefense
 					+ "  airAttack:" + m_airAttack
 					+ "  canNotMoveDuringCombatMove:" + m_canNotMoveDuringCombatMove
-					+ "  stackingLimit:" + m_stackingLimit;
+					+ "  stackingLimit:" + (m_stackingLimit != null ? m_stackingLimit.toString() : "null");
 	}
 	
 	public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHTML, final boolean includeAttachedToName)

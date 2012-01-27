@@ -1,4 +1,6 @@
 Changes for 1.5
+* Fixing potential bugs with new .equals for all attachments. (veqryn)
+
 * Disabled political action button when taking actions, to prevent taking multiple actions while waiting for confirmation of the first. (veqryn)
 
 * Fixed major error preventing politics from working over the network, due to the new way condition testing works. (veqryn)

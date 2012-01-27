@@ -58,6 +58,7 @@ public class PoliticsPanel extends ActionPanel
 {
 	private final JLabel m_actionLabel = new JLabel();
 	private JButton m_selectPoliticalActionButton = null;
+	private JButton m_doneButton = null;
 	private PoliticalActionAttachment m_choice = null;
 	private final TripleAFrame m_parent;
 	private boolean m_firstRun = true;
@@ -91,15 +92,16 @@ public class PoliticsPanel extends ActionPanel
 				m_selectPoliticalActionButton = new JButton(SelectPoliticalActionAction);
 				m_selectPoliticalActionButton.setEnabled(false);
 				add(m_selectPoliticalActionButton);
-				final JButton doneButton = new JButton(DontBotherAction);
+				m_doneButton = new JButton(DontBotherAction);
+				m_doneButton.setEnabled(false);
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					public void run()
 					{
-						doneButton.requestFocusInWindow();
+						m_doneButton.requestFocusInWindow();
 					}
 				});
-				add(doneButton);
+				add(m_doneButton);
 			}
 		});
 	}
@@ -129,6 +131,7 @@ public class PoliticsPanel extends ActionPanel
 				public void run()
 				{
 					m_selectPoliticalActionButton.setEnabled(true);
+					m_doneButton.setEnabled(true);
 					// press the politics button for us.
 					SelectPoliticalActionAction.actionPerformed(null);
 				}
@@ -213,6 +216,7 @@ public class PoliticsPanel extends ActionPanel
 				public void actionPerformed(final ActionEvent ae)
 				{
 					m_selectPoliticalActionButton.setEnabled(false);
+					m_doneButton.setEnabled(false);
 					m_validPoliticalActions = null;
 					m_choice = paa;
 					parent.setVisible(false);
