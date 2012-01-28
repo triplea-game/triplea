@@ -204,4 +204,9 @@ public class NewGameChooserModel extends DefaultListModel
 			}
 		}
 	}
+	
+	public boolean removeEntry(final NewGameChooserEntry entryToBeRemoved)
+	{
+		return this.removeElement(entryToBeRemoved);
+	}
 }

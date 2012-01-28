@@ -138,12 +138,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	{
 		final String[] s = value.split(":");
 		if (s.length != 2)
-			throw new GameParseException("destroyedTUV must have 2 fields, value=currentRound/allRounds, count= the amount of TUV that this player must destroy");
+			throw new GameParseException("destroyedTUV must have 2 fields, value=currentRound/allRounds, count= the amount of TUV that this player must destroy" + thisErrorMsg());
 		final int i = getInt(s[0]);
 		if (i < -1)
-			throw new GameParseException("destroyedTUV count can not be less than -1 [with -1 meaning the condition is not active]");
+			throw new GameParseException("destroyedTUV count can not be less than -1 [with -1 meaning the condition is not active]" + thisErrorMsg());
 		if (!(s[1].equals("currentRound") || s[1].equals("allRounds")))
-			throw new GameParseException("destroyedTUV value must be currentRound or allRounds");
+			throw new GameParseException("destroyedTUV value must be currentRound or allRounds" + thisErrorMsg());
 		m_destroyedTUV = value;
 	}
 	
@@ -165,16 +165,16 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	{
 		final String[] s = value.split(":");
 		if (s.length < 3 || s.length > 4)
-			throw new GameParseException("Rules & Conditions: relationship should have value=\"playername1:playername2:relationshiptype:numberOfRoundsExisting\"");
+			throw new GameParseException("relationship should have value=\"playername1:playername2:relationshiptype:numberOfRoundsExisting\"" + thisErrorMsg());
 		if (getData().getPlayerList().getPlayerID(s[0]) == null)
-			throw new GameParseException("Rules & Conditions: playername: " + s[0] + " isn't valid in condition with relationship: " + value + " for RulesAttachment " + getName());
+			throw new GameParseException("playername: " + s[0] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
 		if (getData().getPlayerList().getPlayerID(s[1]) == null)
-			throw new GameParseException("Rules & Conditions: playername: " + s[1] + " isn't valid in condition with relationship: " + value + " for RulesAttachment " + getName());
+			throw new GameParseException("playername: " + s[1] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
 		if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED) || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) || Matches
 					.isValidRelationshipName(getData()).match(s[2])))
-			throw new GameParseException("Rules & Conditions: relationship: " + s[2] + " isn't valid in condition with relationship: " + value + " for RulesAttachment " + getName());
+			throw new GameParseException("relationship: " + s[2] + " isn't valid in condition with relationship: " + value + thisErrorMsg());
 		if (s.length == 4 && Integer.parseInt(s[3]) < -1)
-			throw new GameParseException("Rules & Conditions: numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be default value if you don't know what to put");
+			throw new GameParseException("numberOfRoundsExisting should be a number between -1 and 100000.  -1 should be default value if you don't know what to put" + thisErrorMsg());
 		m_relationship.add((s.length == 3) ? (value + ":-1") : value);
 	}
 	
@@ -189,7 +189,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setAlliedOwnershipTerritories(final String value)
+	public void setAlliedOwnershipTerritories(final String value) throws GameParseException
 	{
 		m_alliedOwnershipTerritories = value.split(":");
 		validateNames(m_alliedOwnershipTerritories);
@@ -202,7 +202,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	
 	// exclusion types = controlled, controlledNoWater, original, all, or list
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setAlliedExclusionTerritories(final String value)
+	public void setAlliedExclusionTerritories(final String value) throws GameParseException
 	{
 		m_alliedExclusionTerritories = value.split(":");
 		validateNames(m_alliedExclusionTerritories);
@@ -214,7 +214,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setDirectExclusionTerritories(final String value)
+	public void setDirectExclusionTerritories(final String value) throws GameParseException
 	{
 		m_directExclusionTerritories = value.split(":");
 		validateNames(m_directExclusionTerritories);
@@ -227,7 +227,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	
 	// exclusion types = original or list
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setEnemyExclusionTerritories(final String value)
+	public void setEnemyExclusionTerritories(final String value) throws GameParseException
 	{
 		m_enemyExclusionTerritories = value.split(":");
 		validateNames(m_enemyExclusionTerritories);
@@ -239,7 +239,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setDirectPresenceTerritories(final String value)
+	public void setDirectPresenceTerritories(final String value) throws GameParseException
 	{
 		m_directPresenceTerritories = value.split(":");
 		validateNames(m_directPresenceTerritories);
@@ -251,7 +251,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setAlliedPresenceTerritories(final String value)
+	public void setAlliedPresenceTerritories(final String value) throws GameParseException
 	{
 		m_alliedPresenceTerritories = value.split(":");
 		validateNames(m_alliedPresenceTerritories);
@@ -263,7 +263,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setEnemyPresenceTerritories(final String value)
+	public void setEnemyPresenceTerritories(final String value) throws GameParseException
 	{
 		m_enemyPresenceTerritories = value.split(":");
 		validateNames(m_enemyPresenceTerritories);
@@ -276,7 +276,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	
 	// exclusion types = original or list
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setEnemySurfaceExclusionTerritories(final String value)
+	public void setEnemySurfaceExclusionTerritories(final String value) throws GameParseException
 	{
 		m_enemySurfaceExclusionTerritories = value.split(":");
 		validateNames(m_enemySurfaceExclusionTerritories);
@@ -288,7 +288,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setDirectOwnershipTerritories(final String value)
+	public void setDirectOwnershipTerritories(final String value) throws GameParseException
 	{
 		m_directOwnershipTerritories = value.split(":");
 		validateNames(m_directOwnershipTerritories);
@@ -303,23 +303,24 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setUnitPresence(String value)
+	public void setUnitPresence(String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
 		if (s.length <= 1)
-			throw new IllegalStateException("Rules Attachments: unitPresence must have at least 2 fields. Format value=unit1 count=number, or value=unit1:unit2:unit3 count=number");
+			throw new GameParseException("unitPresence must have at least 2 fields. Format value=unit1 count=number, or value=unit1:unit2:unit3 count=number" + thisErrorMsg());
 		final int n = getInt(s[0]);
 		if (n <= 0)
-			throw new IllegalStateException("Rules Attachments: unitPresence must be a positive integer");
+			throw new GameParseException("unitPresence must be a positive integer" + thisErrorMsg());
 		for (int i = 1; i < s.length; i++)
 		{
 			final String unitTypeToProduce = s[i];
 			// validate that this unit exists in the xml
 			final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
 			if (ut == null && !(unitTypeToProduce.equals("any") || unitTypeToProduce.equals("ANY")))
-				throw new IllegalStateException("Rules Attachments: No unit called: " + unitTypeToProduce);
+				throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
 		}
 		value = value.replaceFirst(s[0] + ":", "");
 		m_unitPresence.put(value, n);
@@ -356,7 +357,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		final String[] s = players.split(":");
 		int count = -1;
 		if (s.length < 1)
-			throw new GameParseException("Rules & Conditions: Empty enemy list");
+			throw new GameParseException("Empty enemy list" + thisErrorMsg());
 		try
 		{
 			count = getInt(s[0]);
@@ -366,13 +367,13 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			m_atWarCount = 0;
 		}
 		if (s.length < 1 || s.length == 1 && count != -1)
-			throw new GameParseException("Rules & Conditions: Empty enemy list");
+			throw new GameParseException("Empty enemy list" + thisErrorMsg());
 		m_atWarPlayers = new HashSet<PlayerID>();
 		for (int i = count == -1 ? 0 : 1; i < s.length; i++)
 		{
 			final PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
 			if (player == null)
-				throw new GameParseException("Rules & Conditions: Could not find player. name:" + s[i]);
+				throw new GameParseException("Could not find player. name:" + s[i] + thisErrorMsg());
 			m_atWarPlayers.add(player);
 		}
 	}
@@ -384,7 +385,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			final String[] s = techs.split(":");
 			int count = -1;
 			if (s.length < 1)
-				throw new GameParseException("Rules & Conditions: Empty tech list");
+				throw new GameParseException("Empty tech list" + thisErrorMsg());
 			try
 			{
 				count = getInt(s[0]);
@@ -394,7 +395,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				m_techCount = 0;
 			}
 			if (s.length < 1 || s.length == 1 && count != -1)
-				throw new GameParseException("Rules & Conditions: Empty tech list");
+				throw new GameParseException("Empty tech list" + thisErrorMsg());
 			m_techs = new ArrayList<TechAdvance>();
 			for (int i = count == -1 ? 0 : 1; i < s.length; i++)
 			{
@@ -402,7 +403,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				if (ta == null)
 					ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
 				if (ta == null)
-					throw new GameParseException("Rules & Conditions: Technology not found :" + s);
+					throw new GameParseException("Technology not found :" + s + thisErrorMsg());
 				m_techs.add(ta);
 			}
 		}
@@ -836,7 +837,8 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			}
 			else if (exclType.equals("enemy_surface"))
 			{ // any enemy units (not trn/sub) in the territory
-				allUnits.retainAll(Match.getMatches(allUnits, new CompositeMatchAnd<Unit>(Matches.enemyUnitOfAnyOfThesePlayers(players, data), Matches.UnitIsNotSub, Matches.UnitIsNotTransportButCouldBeCombatTransport)));
+				allUnits.retainAll(Match.getMatches(allUnits, new CompositeMatchAnd<Unit>(Matches.enemyUnitOfAnyOfThesePlayers(players, data), Matches.UnitIsNotSub,
+							Matches.UnitIsNotTransportButCouldBeCombatTransport)));
 			}
 			else
 				return false;

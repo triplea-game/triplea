@@ -216,7 +216,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final ProductionFrontier front = getData().getProductionFrontierList().getProductionFrontier(s);
 		if (front == null)
-			throw new GameParseException("Triggers: Could not find frontier. name:" + s);
+			throw new GameParseException("Could not find frontier. name:" + s + thisErrorMsg());
 		m_frontier = front;
 	}
 	
@@ -236,16 +236,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final String[] s = prop.split(":");
 		if (s.length != 2)
-			throw new GameParseException("Triggers: Invalid productionRule declaration: " + prop);
+			throw new GameParseException("Invalid productionRule declaration: " + prop + thisErrorMsg());
 		if (m_productionRule == null)
 			m_productionRule = new ArrayList<String>();
 		if (getData().getProductionFrontierList().getProductionFrontier(s[0]) == null)
-			throw new GameParseException("Triggers: Could not find frontier. name:" + s[0]);
+			throw new GameParseException("Could not find frontier. name:" + s[0] + thisErrorMsg());
 		String rule = s[1];
 		if (rule.startsWith("-"))
 			rule = rule.replaceFirst("-", "");
 		if (getData().getProductionRuleList().getProductionRule(rule) == null)
-			throw new GameParseException("Triggers: Could not find production rule. name:" + rule);
+			throw new GameParseException("Could not find production rule. name:" + rule + thisErrorMsg());
 		m_productionRule.add(prop);
 	}
 	
@@ -296,7 +296,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			if (ta == null)
 				ta = getData().getTechnologyFrontier().getAdvanceByName(subString);
 			if (ta == null)
-				throw new GameParseException("Triggers: Technology not found :" + subString);
+				throw new GameParseException("Technology not found :" + subString + thisErrorMsg());
 			m_tech.add(ta);
 		}
 	}
@@ -322,7 +322,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final String[] s = techs.split(":");
 		if (s.length < 2)
-			throw new GameParseException("Triggers: Invalid tech availability: " + techs + " should be category:techs");
+			throw new GameParseException("Invalid tech availability: " + techs + " should be category:techs" + thisErrorMsg());
 		final String cat = s[0];
 		final Map<TechAdvance, Boolean> tlist = new LinkedHashMap<TechAdvance, Boolean>();
 		for (int i = 1; i < s.length; i++)
@@ -337,7 +337,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			if (ta == null)
 				ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
 			if (ta == null)
-				throw new GameParseException("Triggers: Technology not found :" + s[i]);
+				throw new GameParseException("Technology not found :" + s[i] + thisErrorMsg());
 			tlist.put(ta, add);
 		}
 		if (m_availableTech == null)
@@ -388,7 +388,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				}
 			}
 			if (!found)
-				throw new GameParseException("Triggers: Could not find unitSupportAttachment. name:" + s[i]);
+				throw new GameParseException("Could not find unitSupportAttachment. name:" + s[i] + thisErrorMsg());
 		}
 	}
 	
@@ -412,7 +412,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final Resource r = getData().getResourceList().getResource(s);
 		if (r == null)
-			throw new GameParseException("Triggers: Invalid resource: " + s);
+			throw new GameParseException("Invalid resource: " + s + thisErrorMsg());
 		else
 			m_resource = s;
 	}
@@ -428,16 +428,16 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final String[] s = relChange.split(":");
 		if (s.length != 4)
-			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n Use: player1:player2:oldRelation:newRelation\n");
+			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n Use: player1:player2:oldRelation:newRelation\n" + thisErrorMsg());
 		if (getData().getPlayerList().getPlayerID(s[0]) == null)
-			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0] + " unknown in: " + getName());
+			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0] + " unknown " + thisErrorMsg());
 		if (getData().getPlayerList().getPlayerID(s[1]) == null)
-			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1] + " unknown in: " + getName());
+			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1] + " unknown " + thisErrorMsg());
 		if (!(s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_NEUTRAL) || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY) || s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_ALLIED)
 					|| s[2].equals(Constants.RELATIONSHIP_CONDITION_ANY_WAR) || Matches.isValidRelationshipName(getData()).match(s[2])))
-			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2] + " unknown in: " + getName());
+			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2] + " unknown " + thisErrorMsg());
 		if (Matches.isValidRelationshipName(getData()).invert().match(s[3]))
-			throw new GameParseException("Triggers: Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[3] + " unknown in: " + getName());
+			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[3] + " unknown " + thisErrorMsg());
 		m_relationshipChange.add(relChange);
 	}
 	
@@ -465,7 +465,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		{
 			final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
 			if (type == null)
-				throw new GameParseException("Triggers: Could not find unitType. name:" + s[i]);
+				throw new GameParseException("Could not find unitType. name:" + s[i] + thisErrorMsg());
 			m_unitType.add(type);
 		}
 	}
@@ -485,17 +485,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final String[] s = name.split(":");
 		if (s.length != 2)
-			throw new GameParseException("Triggers: unitAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
+			throw new GameParseException("unitAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
 		// covers UnitAttachment, UnitSupportAttachment
 		if (!(s[1].equals("UnitAttachment") || s[1].equals("UnitSupportAttachment")))
-			throw new GameParseException("Triggers: unitAttachmentName value must be UnitAttachment or UnitSupportAttachment");
+			throw new GameParseException("unitAttachmentName value must be UnitAttachment or UnitSupportAttachment" + thisErrorMsg());
 		// TODO validate attachment exists?
 		if (s[0].length() < 1)
-			throw new GameParseException("Triggers: unitAttachmentName count must be a valid attachment name");
+			throw new GameParseException("unitAttachmentName count must be a valid attachment name" + thisErrorMsg());
 		if (s[1].equals("UnitAttachment") && !s[0].startsWith(Constants.UNIT_ATTACHMENT_NAME))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		if (s[1].equals("UnitSupportAttachment") && !s[0].startsWith(Constants.SUPPORT_ATTACHMENT_PREFIX))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_unitAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
 	
@@ -546,7 +546,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		{
 			final Territory terr = getData().getMap().getTerritory(s[i]);
 			if (terr == null)
-				throw new GameParseException("Triggers: Could not find territory. name:" + s[i]);
+				throw new GameParseException("Could not find territory. name:" + s[i] + thisErrorMsg());
 			m_territories.add(terr);
 		}
 	}
@@ -566,17 +566,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final String[] s = name.split(":");
 		if (s.length != 2)
-			throw new GameParseException("Triggers: territoryAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
+			throw new GameParseException("territoryAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
 		// covers TerritoryAttachment, CanalAttachment
 		if (!(s[1].equals("TerritoryAttachment") || s[1].equals("CanalAttachment")))
-			throw new GameParseException("Triggers: territoryAttachmentName value must be TerritoryAttachment or CanalAttachment");
+			throw new GameParseException("territoryAttachmentName value must be TerritoryAttachment or CanalAttachment" + thisErrorMsg());
 		// TODO validate attachment exists?
 		if (s[0].length() < 1)
-			throw new GameParseException("Triggers: territoryAttachmentName count must be a valid attachment name");
+			throw new GameParseException("territoryAttachmentName count must be a valid attachment name" + thisErrorMsg());
 		if (s[1].equals("TerritoryAttachment") && !s[0].startsWith(Constants.TERRITORY_ATTACHMENT_NAME))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		if (s[1].equals("CanalAttachment") && !s[0].startsWith(Constants.CANAL_ATTACHMENT_PREFIX))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_territoryAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
 	
@@ -627,7 +627,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		{
 			final PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
 			if (player == null)
-				throw new GameParseException("Triggers: Could not find player. name:" + s[i]);
+				throw new GameParseException("Could not find player. name:" + s[i] + thisErrorMsg());
 			m_players.add(player);
 		}
 	}
@@ -650,24 +650,24 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final String[] s = name.split(":");
 		if (s.length != 2)
-			throw new GameParseException("Triggers: playerAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
+			throw new GameParseException("playerAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
 		// covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
 		if (!(s[1].equals("PlayerAttachment") || s[1].equals("RulesAttachment") || s[1].equals("TriggerAttachment") || s[1].equals("TechAttachment") || s[1].equals("PoliticalActionAttachment")))
-			throw new GameParseException("Triggers: playerAttachmentName value must be PlayerAttachment or RulesAttachment or TriggerAttachment or TechAttachment or PoliticalActionAttachment");
+			throw new GameParseException("playerAttachmentName value must be PlayerAttachment or RulesAttachment or TriggerAttachment or TechAttachment or PoliticalActionAttachment" + thisErrorMsg());
 		// TODO validate attachment exists?
 		if (s[0].length() < 1)
-			throw new GameParseException("Triggers: playerAttachmentName count must be a valid attachment name");
+			throw new GameParseException("playerAttachmentName count must be a valid attachment name" + thisErrorMsg());
 		if (s[1].equals("PlayerAttachment") && !s[0].startsWith(Constants.PLAYER_ATTACHMENT_NAME))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		if (s[1].equals("RulesAttachment")
 					&& !(s[0].startsWith(Constants.RULES_ATTACHMENT_NAME) || s[0].startsWith(Constants.RULES_OBJECTIVE_PREFIX) || s[0].startsWith(Constants.RULES_CONDITION_PREFIX)))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		if (s[1].equals("TriggerAttachment") && !s[0].startsWith(Constants.TRIGGER_ATTACHMENT_PREFIX))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		if (s[1].equals("TechAttachment") && !s[0].startsWith(Constants.TECH_ATTACHMENT_NAME))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		if (s[1].equals("PoliticalActionAttachment") && !s[0].startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_playerAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
 	
@@ -718,7 +718,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		{
 			final RelationshipType relation = getData().getRelationshipTypeList().getRelationshipType(s[i]);
 			if (relation == null)
-				throw new GameParseException("Triggers: Could not find relationshipType. name:" + s[i]);
+				throw new GameParseException("Could not find relationshipType. name:" + s[i] + thisErrorMsg());
 			m_relationshipTypes.add(relation);
 		}
 	}
@@ -738,15 +738,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final String[] s = name.split(":");
 		if (s.length != 2)
-			throw new GameParseException("Triggers: relationshipTypeAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
+			throw new GameParseException("relationshipTypeAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
 		// covers RelationshipTypeAttachment
 		if (!(s[1].equals("RelationshipTypeAttachment")))
-			throw new GameParseException("Triggers: relationshipTypeAttachmentName value must be RelationshipTypeAttachment");
+			throw new GameParseException("relationshipTypeAttachmentName value must be RelationshipTypeAttachment" + thisErrorMsg());
 		// TODO validate attachment exists?
 		if (s[0].length() < 1)
-			throw new GameParseException("Triggers: relationshipTypeAttachmentName count must be a valid attachment name");
+			throw new GameParseException("relationshipTypeAttachmentName count must be a valid attachment name" + thisErrorMsg());
 		if (s[1].equals("RelationshipTypeAttachment") && !s[0].startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_relationshipTypeAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
 	
@@ -797,7 +797,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		{
 			final TerritoryEffect effect = getData().getTerritoryEffectList().get(s[i]);
 			if (effect == null)
-				throw new GameParseException("Triggers: Could not find territoryEffect. name:" + s[i]);
+				throw new GameParseException("Could not find territoryEffect. name:" + s[i] + thisErrorMsg());
 			m_territoryEffects.add(effect);
 		}
 	}
@@ -817,15 +817,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	{
 		final String[] s = name.split(":");
 		if (s.length != 2)
-			throw new GameParseException("Triggers: territoryEffectAttachmentName must have 2 entries, the type of attachment and the name of the attachment.");
+			throw new GameParseException("territoryEffectAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
 		// covers TerritoryEffectAttachment
 		if (!(s[1].equals("TerritoryEffectAttachment")))
-			throw new GameParseException("Triggers: territoryEffectAttachmentName value must be TerritoryEffectAttachment");
+			throw new GameParseException("territoryEffectAttachmentName value must be TerritoryEffectAttachment" + thisErrorMsg());
 		// TODO validate attachment exists?
 		if (s[0].length() < 1)
-			throw new GameParseException("Triggers: territoryEffectAttachmentName count must be a valid attachment name");
+			throw new GameParseException("territoryEffectAttachmentName count must be a valid attachment name" + thisErrorMsg());
 		if (s[1].equals("TerritoryEffectAttachment") && !s[0].startsWith(Constants.TERRITORYEFFECT_ATTACHMENT_NAME))
-			throw new GameParseException("Triggers: attachment incorrectly named:" + s[0]);
+			throw new GameParseException("attachment incorrectly named:" + s[0] + thisErrorMsg());
 		m_territoryEffectAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
 	
@@ -875,7 +875,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final String[] s = place.split(":");
 		int count = -1, i = 0;
 		if (s.length < 1)
-			throw new GameParseException("Triggers: Empty placement list");
+			throw new GameParseException("Empty placement list" + thisErrorMsg());
 		try
 		{
 			count = getInt(s[0]);
@@ -885,10 +885,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			count = 1;
 		}
 		if (s.length < 1 || s.length == 1 && count != -1)
-			throw new GameParseException("Triggers: Empty placement list");
+			throw new GameParseException("Empty placement list" + thisErrorMsg());
 		final Territory territory = getData().getMap().getTerritory(s[i]);
 		if (territory == null)
-			throw new GameParseException("Triggers: Territory does not exist " + s[i]);
+			throw new GameParseException("Territory does not exist " + s[i] + thisErrorMsg());
 		else
 		{
 			i++;
@@ -897,7 +897,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			{
 				final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
 				if (type == null)
-					throw new GameParseException("Triggers: UnitType does not exist " + s[i]);
+					throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
 				else
 					map.add(type, count);
 			}
@@ -931,7 +931,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final String[] s = value.split(":");
 		int count = -1, i = 0;
 		if (s.length < 1)
-			throw new GameParseException("Triggers: Empty removeUnits list");
+			throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
 		try
 		{
 			count = getInt(s[0]);
@@ -941,10 +941,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			count = 1;
 		}
 		if (s.length < 1 || s.length == 1 && count != -1)
-			throw new GameParseException("Triggers: Empty removeUnits list");
+			throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
 		final Territory territory = getData().getMap().getTerritory(s[i]);
 		if (territory == null)
-			throw new GameParseException("Triggers: Territory does not exist " + s[i]);
+			throw new GameParseException("Territory does not exist " + s[i] + thisErrorMsg());
 		else
 		{
 			i++;
@@ -953,7 +953,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			{
 				final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
 				if (type == null)
-					throw new GameParseException("Triggers: UnitType does not exist " + s[i]);
+					throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
 				else
 					map.add(type, count);
 			}
@@ -987,7 +987,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final String[] s = place.split(":");
 		int count = -1, i = 0;
 		if (s.length < 1)
-			throw new GameParseException("Triggers: Empty purchase list");
+			throw new GameParseException("Empty purchase list" + thisErrorMsg());
 		try
 		{
 			count = getInt(s[0]);
@@ -997,7 +997,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			count = 1;
 		}
 		if (s.length < 1 || s.length == 1 && count != -1)
-			throw new GameParseException("Triggers: Empty purchase list");
+			throw new GameParseException("Empty purchase list" + thisErrorMsg());
 		else
 		{
 			if (m_purchase == null)
@@ -1006,7 +1006,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			{
 				final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
 				if (type == null)
-					throw new GameParseException("Triggers: UnitType does not exist " + s[i]);
+					throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
 				else
 					m_purchase.add(type, count);
 			}

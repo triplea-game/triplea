@@ -129,13 +129,13 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	{
 		final String[] s = relChange.split(":");
 		if (s.length != 3)
-			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n Use: player1:player2:newRelation\n");
+			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n Use: player1:player2:newRelation\n" + thisErrorMsg());
 		if (getData().getPlayerList().getPlayerID(s[0]) == null)
-			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0] + " unknown in: " + getName());
+			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[0] + " unknown in: " + getName() + thisErrorMsg());
 		if (getData().getPlayerList().getPlayerID(s[1]) == null)
-			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1] + " unknown in: " + getName());
+			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n player: " + s[1] + " unknown in: " + getName() + thisErrorMsg());
 		if (!Matches.isValidRelationshipName(getData()).match(s[2]))
-			throw new GameParseException("PoliticalActionAttachment: Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2] + " unknown in: " + getName());
+			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2] + " unknown in: " + getName() + thisErrorMsg());
 		m_relationshipChange.add(relChange);
 	}
 	
@@ -236,9 +236,10 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setActionAccept(final String value)
+	public void setActionAccept(final String value) throws GameParseException
 	{
 		final String[] temp = value.split(":");
 		for (final String name : temp)
@@ -247,7 +248,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 			if (tempPlayer != null)
 				m_actionAccept.add(tempPlayer);
 			else
-				throw new IllegalStateException("PoliticalActionAttachment: No player named: " + name);
+				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
 	}
 	
@@ -316,8 +317,8 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	{
 		super.validate(data);
 		if (m_relationshipChange.isEmpty())
-			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: relationshipChange can't be empty");
+			throw new GameParseException("value: relationshipChange can't be empty" + thisErrorMsg());
 		if (m_text.equals(""))
-			throw new GameParseException("PoliticalActionAttachment: " + getName() + " value: text can't be empty");
+			throw new GameParseException("value: text can't be empty" + thisErrorMsg());
 	}
 }

@@ -96,12 +96,12 @@ public class PlayerAttachment extends DefaultAttachment
 	{
 		final String[] s = value.split(":");
 		if (s.length < 3)
-			throw new GameParseException("PlayerAttachment: placementLimit must have 3 parts: count, type, unit list");
+			throw new GameParseException("placementLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
 		final int max = getInt(s[0]);
 		if (max < 0)
-			throw new GameParseException("PlayerAttachment: placementLimit count must have a positive number");
+			throw new GameParseException("placementLimit count must have a positive number" + thisErrorMsg());
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
-			throw new GameParseException("PlayerAttachment: placementLimit type must be: owned, allied, or total");
+			throw new GameParseException("placementLimit type must be: owned, allied, or total" + thisErrorMsg());
 		final Set<UnitType> types = new HashSet<UnitType>();
 		if (s[3].equalsIgnoreCase("all"))
 			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
@@ -111,7 +111,7 @@ public class PlayerAttachment extends DefaultAttachment
 			{
 				final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
 				if (ut == null)
-					throw new IllegalStateException("PlayerAttachment: No unit called: " + s[i]);
+					throw new GameParseException("No unit called: " + s[i] + thisErrorMsg());
 				else
 					types.add(ut);
 			}
@@ -140,12 +140,12 @@ public class PlayerAttachment extends DefaultAttachment
 	{
 		final String[] s = value.split(":");
 		if (s.length < 3)
-			throw new GameParseException("PlayerAttachment: movementLimit must have 3 parts: count, type, unit list");
+			throw new GameParseException("movementLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
 		final int max = getInt(s[0]);
 		if (max < 0)
-			throw new GameParseException("PlayerAttachment: movementLimit count must have a positive number");
+			throw new GameParseException("movementLimit count must have a positive number" + thisErrorMsg());
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
-			throw new GameParseException("PlayerAttachment: movementLimit type must be: owned, allied, or total");
+			throw new GameParseException("movementLimit type must be: owned, allied, or total" + thisErrorMsg());
 		final Set<UnitType> types = new HashSet<UnitType>();
 		if (s[3].equalsIgnoreCase("all"))
 			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
@@ -155,7 +155,7 @@ public class PlayerAttachment extends DefaultAttachment
 			{
 				final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
 				if (ut == null)
-					throw new IllegalStateException("PlayerAttachment: No unit called: " + s[i]);
+					throw new GameParseException("No unit called: " + s[i] + thisErrorMsg());
 				else
 					types.add(ut);
 			}
@@ -184,12 +184,12 @@ public class PlayerAttachment extends DefaultAttachment
 	{
 		final String[] s = value.split(":");
 		if (s.length < 3)
-			throw new GameParseException("PlayerAttachment: attackingLimit must have 3 parts: count, type, unit list");
+			throw new GameParseException("attackingLimit must have 3 parts: count, type, unit list" + thisErrorMsg());
 		final int max = getInt(s[0]);
 		if (max < 0)
-			throw new GameParseException("PlayerAttachment: attackingLimit count must have a positive number");
+			throw new GameParseException("attackingLimit count must have a positive number" + thisErrorMsg());
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
-			throw new GameParseException("PlayerAttachment: attackingLimit type must be: owned, allied, or total");
+			throw new GameParseException("attackingLimit type must be: owned, allied, or total" + thisErrorMsg());
 		final Set<UnitType> types = new HashSet<UnitType>();
 		if (s[3].equalsIgnoreCase("all"))
 			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
@@ -199,7 +199,7 @@ public class PlayerAttachment extends DefaultAttachment
 			{
 				final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
 				if (ut == null)
-					throw new IllegalStateException("PlayerAttachment: No unit called: " + s[i]);
+					throw new GameParseException("No unit called: " + s[i] + thisErrorMsg());
 				else
 					types.add(ut);
 			}
@@ -285,7 +285,7 @@ public class PlayerAttachment extends DefaultAttachment
 		{
 			final UnitType ut = getData().getUnitTypeList().getUnitType(u);
 			if (ut == null)
-				throw new GameParseException("Player Attachment: suicideAttackTargets: no such unit called " + u);
+				throw new GameParseException("suicideAttackTargets: no such unit called " + u + thisErrorMsg());
 			m_suicideAttackTargets.add(ut);
 		}
 	}
@@ -311,13 +311,13 @@ public class PlayerAttachment extends DefaultAttachment
 	{
 		final String[] s = value.split(":");
 		if (s.length != 2)
-			throw new GameParseException("Player Attachment: suicideAttackResources must have exactly 2 fields");
+			throw new GameParseException("suicideAttackResources must have exactly 2 fields" + thisErrorMsg());
 		final int attackValue = getInt(s[0]);
 		if (attackValue < 0)
-			throw new GameParseException("Player Attachment: suicideAttackResources attack value must be positive");
+			throw new GameParseException("suicideAttackResources attack value must be positive" + thisErrorMsg());
 		final Resource r = getData().getResourceList().getResource(s[1]);
 		if (r == null)
-			throw new GameParseException("Player Attachment: no such resource: " + s[1]);
+			throw new GameParseException("no such resource: " + s[1] + thisErrorMsg());
 		m_suicideAttackResources.put(r, attackValue);
 	}
 	
@@ -379,9 +379,10 @@ public class PlayerAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setGiveUnitControl(final String value)
+	public void setGiveUnitControl(final String value) throws GameParseException
 	{
 		final String[] temp = value.split(":");
 		for (final String name : temp)
@@ -392,7 +393,7 @@ public class PlayerAttachment extends DefaultAttachment
 			else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false"))
 				m_giveUnitControl.clear();
 			else
-				throw new IllegalStateException("Player Attachments: No player named: " + name);
+				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
 	}
 	
@@ -410,9 +411,10 @@ public class PlayerAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setCaptureUnitOnEnteringBy(final String value)
+	public void setCaptureUnitOnEnteringBy(final String value) throws GameParseException
 	{
 		final String[] temp = value.split(":");
 		for (final String name : temp)
@@ -421,7 +423,7 @@ public class PlayerAttachment extends DefaultAttachment
 			if (tempPlayer != null)
 				m_captureUnitOnEnteringBy.add(tempPlayer);
 			else
-				throw new IllegalStateException("Player Attachments: No player named: " + name);
+				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
 	}
 	

@@ -95,7 +95,7 @@ public class CanalAttachment extends DefaultAttachment
 	public void validate(final GameData data) throws GameParseException
 	{
 		if (m_canalName == null || m_landTerritories == null || m_landTerritories.length == 0)
-			throw new IllegalStateException("Canal error for: " + m_canalName + " not all variables set, land: " + m_landTerritories);
+			throw new GameParseException("Canal error for: " + m_canalName + " not all variables set, land: " + m_landTerritories + thisErrorMsg());
 		getLandTerritories();
 	}
 	
@@ -106,7 +106,7 @@ public class CanalAttachment extends DefaultAttachment
 		{
 			final Territory territory = getData().getMap().getTerritory(name);
 			if (territory == null)
-				throw new IllegalStateException("Canals: No territory called: " + name);
+				throw new IllegalStateException("Canals: No territory called: " + name + thisErrorMsg());
 			rVal.add(territory);
 		}
 		return rVal;

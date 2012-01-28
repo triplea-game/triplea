@@ -291,9 +291,10 @@ public class UnitAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setCanBeGivenByTerritoryTo(final String value)
+	public void setCanBeGivenByTerritoryTo(final String value) throws GameParseException
 	{
 		final String[] temp = value.split(":");
 		for (final String name : temp)
@@ -304,7 +305,7 @@ public class UnitAttachment extends DefaultAttachment
 			else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false"))
 				m_canBeGivenByTerritoryTo.clear();
 			else
-				throw new IllegalStateException("Unit Attachments: No player named: " + name);
+				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
 	}
 	
@@ -322,9 +323,10 @@ public class UnitAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setCanBeCapturedOnEnteringBy(final String value)
+	public void setCanBeCapturedOnEnteringBy(final String value) throws GameParseException
 	{
 		final String[] temp = value.split(":");
 		for (final String name : temp)
@@ -333,7 +335,7 @@ public class UnitAttachment extends DefaultAttachment
 			if (tempPlayer != null)
 				m_canBeCapturedOnEnteringBy.add(tempPlayer);
 			else
-				throw new IllegalStateException("Unit Attachments: No player named: " + name);
+				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
 	}
 	
@@ -351,27 +353,30 @@ public class UnitAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setWhenCapturedChangesInto(final String value)
+	public void setWhenCapturedChangesInto(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
 		if (s.length < 5 || (s.length - 1) % 2 != 0)
-			throw new IllegalStateException(
-						"Unit Attachments: whenCapturedChangesInto must have 5 or more values, playerFrom:playerTo:keepAttributes:unitType:howMany (you may have additional unitType:howMany:unitType:howMany, etc");
+			throw new GameParseException(
+						"whenCapturedChangesInto must have 5 or more values, "
+									+ "playerFrom:playerTo:keepAttributes:unitType:howMany (you may have additional unitType:howMany:unitType:howMany, etc"
+									+ thisErrorMsg());
 		final PlayerID pfrom = getData().getPlayerList().getPlayerID(s[0]);
 		if (pfrom == null && !s[0].equals("any"))
-			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No player named: " + s[0]);
+			throw new GameParseException("whenCapturedChangesInto: No player named: " + s[0] + thisErrorMsg());
 		final PlayerID pto = getData().getPlayerList().getPlayerID(s[1]);
 		if (pto == null && !s[1].equals("any"))
-			throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No player named: " + s[1]);
+			throw new GameParseException("whenCapturedChangesInto: No player named: " + s[1] + thisErrorMsg());
 		getBool(s[2]);
 		final IntegerMap<UnitType> unitsToMake = new IntegerMap<UnitType>();
 		for (int i = 3; i < s.length; i++)
 		{
 			final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
 			if (ut == null)
-				throw new IllegalStateException("Unit Attachments: whenCapturedChangesInto: No unit named: " + s[3]);
+				throw new GameParseException("whenCapturedChangesInto: No unit named: " + s[3] + thisErrorMsg());
 			i++;
 			final int howMany = getInt(s[i]);
 			unitsToMake.put(ut, howMany);
@@ -393,9 +398,10 @@ public class UnitAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setDestroyedWhenCapturedBy(String value)
+	public void setDestroyedWhenCapturedBy(String value) throws GameParseException
 	{
 		// We can prefix this value with "BY" or "FROM" to change the setting. If no setting, default to "BY" since this this is called by destroyedWhenCapturedBy
 		String byOrFrom = "BY";
@@ -416,12 +422,12 @@ public class UnitAttachment extends DefaultAttachment
 			if (tempPlayer != null)
 				m_destroyedWhenCapturedBy.add(new Tuple<String, PlayerID>(byOrFrom, tempPlayer));
 			else
-				throw new IllegalStateException("Unit Attachments: No player named: " + name);
+				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setDestroyedWhenCapturedFrom(String value)
+	public void setDestroyedWhenCapturedFrom(String value) throws GameParseException
 	{
 		if (!(value.startsWith("BY:") || value.startsWith("FROM:")))
 		{
@@ -604,7 +610,7 @@ public class UnitAttachment extends DefaultAttachment
 	
 	// no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions we might as well just use m_unitPlacementRestrictions
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setUnitPlacementOnlyAllowedIn(final String value)
+	public void setUnitPlacementOnlyAllowedIn(final String value) throws GameParseException
 	{
 		String valueRestricted = new String();
 		final String valueAllowed[] = value.split(":");
@@ -643,15 +649,16 @@ public class UnitAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setSpecial(final String value)
+	public void setSpecial(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
 		for (final String option : s)
 		{
 			if (!(option.equals("none") || option.equals("canOnlyPlaceInOriginalTerritories")))
-				throw new IllegalStateException("Unit Attachments: special does not allow: " + option);
+				throw new GameParseException("special does not allow: " + option + thisErrorMsg());
 			m_special.add(option);
 		}
 	}
@@ -667,7 +674,7 @@ public class UnitAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setCanInvadeOnlyFrom(final String value) throws GameParseException
+	public void setCanInvadeOnlyFrom(final String value)
 	{
 		final String[] canOnlyInvadeFrom = value.split(":");
 		if (canOnlyInvadeFrom[0].toLowerCase().equals("none"))
@@ -687,7 +694,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		final UnitType ut = getData().getUnitTypeList().getUnitType(transport);
 		if (ut == null)
-			throw new IllegalStateException("Unit Attachments: No unit called:" + transport);
+			throw new IllegalStateException("No unit called:" + transport + thisErrorMsg());
 		// UnitAttachment ua = UnitAttachment.get(ut); //(UnitAttachment) ut.getAttachments().values().iterator().next();
 		// Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech infantry. The "transporter" may not be an actual transport, so we should not check for that here.
 		if (m_canInvadeOnlyFrom == null || Arrays.asList(m_canInvadeOnlyFrom).isEmpty() || m_canInvadeOnlyFrom[0].equals("") || m_canInvadeOnlyFrom[0].equals("all"))
@@ -729,11 +736,11 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		final String[] s = value.split(":");
 		if (!(s.length == 3 || s.length == 4))
-			throw new GameParseException("Invalid Unit attachment, whenCombatDamaged must have 3 or 4 parts: value=effect:optionalNumber, count=integer:integer");
+			throw new GameParseException("whenCombatDamaged must have 3 or 4 parts: value=effect:optionalNumber, count=integer:integer" + thisErrorMsg());
 		final int from = getInt(s[0]);
 		final int to = getInt(s[1]);
 		if (from < 0 || to < 0 || to < from)
-			throw new GameParseException("Invalid Unit attachment, whenCombatDamaged damaged integers must be positive, and the second integer must be equal to or greater than the first");
+			throw new GameParseException("whenCombatDamaged damaged integers must be positive, and the second integer must be equal to or greater than the first" + thisErrorMsg());
 		final Tuple<Integer, Integer> fromTo = new Tuple<Integer, Integer>(from, to);
 		Tuple<String, String> effectNum;
 		if (s.length == 3)
@@ -1239,19 +1246,20 @@ public class UnitAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setGivesMovement(final String value)
+	public void setGivesMovement(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
 		if (s.length <= 0 || s.length > 2)
-			throw new IllegalStateException("Unit Attachments: givesMovement can not be empty or have more than two fields");
+			throw new GameParseException("givesMovement can not be empty or have more than two fields" + thisErrorMsg());
 		String unitTypeToProduce;
 		unitTypeToProduce = s[1];
 		// validate that this unit exists in the xml
 		final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
 		if (ut == null)
-			throw new IllegalStateException("Unit Attachments: No unit called:" + unitTypeToProduce);
+			throw new GameParseException("No unit called:" + unitTypeToProduce + thisErrorMsg());
 		// we should allow positive and negative numbers, since you can give bonuses to units or take away a unit's movement
 		final int n = getInt(s[0]);
 		m_givesMovement.put(ut, n);
@@ -1271,22 +1279,23 @@ public class UnitAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setConsumesUnits(final String value)
+	public void setConsumesUnits(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
 		if (s.length <= 0 || s.length > 2)
-			throw new IllegalStateException("Unit Attachments: consumesUnits can not be empty or have more than two fields");
+			throw new GameParseException("consumesUnits can not be empty or have more than two fields" + thisErrorMsg());
 		String unitTypeToProduce;
 		unitTypeToProduce = s[1];
 		// validate that this unit exists in the xml
 		final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
 		if (ut == null)
-			throw new IllegalStateException("Unit Attachments: No unit called:" + unitTypeToProduce);
+			throw new GameParseException("No unit called:" + unitTypeToProduce + thisErrorMsg());
 		final int n = getInt(s[0]);
 		if (n < 1)
-			throw new IllegalStateException("Unit Attachments: consumesUnits must have positive values");
+			throw new GameParseException("consumesUnits must have positive values" + thisErrorMsg());
 		m_consumesUnits.put(ut, n);
 	}
 	
@@ -1304,22 +1313,23 @@ public class UnitAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setCreatesUnitsList(final String value)
+	public void setCreatesUnitsList(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
 		if (s.length <= 0 || s.length > 2)
-			throw new IllegalStateException("Unit Attachments: createsUnitsList can not be empty or have more than two fields");
+			throw new GameParseException("createsUnitsList can not be empty or have more than two fields" + thisErrorMsg());
 		String unitTypeToProduce;
 		unitTypeToProduce = s[1];
 		// validate that this unit exists in the xml
 		final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
 		if (ut == null)
-			throw new IllegalStateException("Unit Attachments: createsUnitsList: No unit called:" + unitTypeToProduce);
+			throw new GameParseException("createsUnitsList: No unit called:" + unitTypeToProduce + thisErrorMsg());
 		final int n = getInt(s[0]);
 		if (n < 1)
-			throw new IllegalStateException("Unit Attachments: createsUnitsList must have positive values");
+			throw new GameParseException("createsUnitsList must have positive values" + thisErrorMsg());
 		m_createsUnitsList.put(ut, n);
 	}
 	
@@ -1337,22 +1347,23 @@ public class UnitAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setCreatesResourcesList(final String value)
+	public void setCreatesResourcesList(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
 		if (s.length <= 0 || s.length > 2)
-			throw new IllegalStateException("Unit Attachments: createsResourcesList can not be empty or have more than two fields");
+			throw new GameParseException("createsResourcesList can not be empty or have more than two fields" + thisErrorMsg());
 		String resourceToProduce;
 		resourceToProduce = s[1];
 		// validate that this resource exists in the xml
 		final Resource r = getData().getResourceList().getResource(resourceToProduce);
 		if (r == null)
-			throw new IllegalStateException("Unit Attachments: createsResourcesList: No resource called:" + resourceToProduce);
+			throw new GameParseException("createsResourcesList: No resource called:" + resourceToProduce + thisErrorMsg());
 		final int n = getInt(s[0]);
 		if (n < 1)
-			throw new IllegalStateException("Unit Attachments: createsResourcesList must have positive values");
+			throw new GameParseException("createsResourcesList must have positive values" + thisErrorMsg());
 		m_createsResourcesList.put(r, n);
 	}
 	
@@ -1360,22 +1371,23 @@ public class UnitAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setFuelCost(final String value)
+	public void setFuelCost(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
 		if (s.length != 2)
-			throw new IllegalStateException("Unit Attachments: fuelCost must have two fields");
+			throw new GameParseException("fuelCost must have two fields" + thisErrorMsg());
 		String resourceToProduce;
 		resourceToProduce = s[1];
 		// validate that this resource exists in the xml
 		final Resource r = getData().getResourceList().getResource(resourceToProduce);
 		if (r == null)
-			throw new IllegalStateException("Unit Attachments: fuelCost: No resource called:" + resourceToProduce);
+			throw new GameParseException("fuelCost: No resource called:" + resourceToProduce + thisErrorMsg());
 		final int n = getInt(s[0]);
 		if (n < 0)
-			throw new IllegalStateException("Unit Attachments: fuelCost must have positive values");
+			throw new GameParseException("fuelCost must have positive values" + thisErrorMsg());
 		m_fuelCost.put(r, n);
 	}
 	
@@ -1461,7 +1473,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		final int attacks = getInt(s);
 		if (attacks < -1)
-			throw new GameParseException("UnitAttachment: maxAAattacks must be positive");
+			throw new GameParseException("maxAAattacks must be positive" + thisErrorMsg());
 		m_maxAAattacks = getInt(s);
 	}
 	
@@ -1577,7 +1589,7 @@ public class UnitAttachment extends DefaultAttachment
 		{
 			final UnitType ut = getData().getUnitTypeList().getUnitType(u);
 			if (ut == null)
-				throw new GameParseException("UnitAttachment: AAtargets: no such unit type: " + u);
+				throw new GameParseException("AAtargets: no such unit type: " + u + thisErrorMsg());
 			m_targetsAA.add(ut);
 		}
 	}
@@ -1616,7 +1628,7 @@ public class UnitAttachment extends DefaultAttachment
 		{
 			final UnitType ut = getData().getUnitTypeList().getUnitType(u);
 			if (ut == null)
-				throw new GameParseException("UnitAttachment: willNotFireIfPresent: no such unit type: " + u);
+				throw new GameParseException("willNotFireIfPresent: no such unit type: " + u + thisErrorMsg());
 			m_willNotFireIfPresent.add(ut);
 		}
 	}
@@ -1670,15 +1682,15 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		final UnitType ut = (UnitType) this.getAttachedTo();
 		if (ut == null)
-			throw new GameParseException("UnitAttachment: getAttachedTo returned null");
+			throw new GameParseException("getAttachedTo returned null" + thisErrorMsg());
 		final String[] s = value.split(":");
 		if (s.length != 2)
-			throw new GameParseException("UnitAttachment: movementLimit must have 2 fields, value and count");
+			throw new GameParseException("movementLimit must have 2 fields, value and count" + thisErrorMsg());
 		final int max = getInt(s[0]);
 		if (max < 0)
-			throw new GameParseException("UnitAttachment: movementLimit count must have a positive number");
+			throw new GameParseException("movementLimit count must have a positive number" + thisErrorMsg());
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
-			throw new GameParseException("UnitAttachment: movementLimit value must owned, allied, or total");
+			throw new GameParseException("movementLimit value must owned, allied, or total" + thisErrorMsg());
 		m_movementLimit = new Tuple<Integer, String>(max, s[1]);
 	}
 	
@@ -1697,15 +1709,15 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		final UnitType ut = (UnitType) this.getAttachedTo();
 		if (ut == null)
-			throw new GameParseException("UnitAttachment: getAttachedTo returned null");
+			throw new GameParseException("getAttachedTo returned null" + thisErrorMsg());
 		final String[] s = value.split(":");
 		if (s.length != 2)
-			throw new GameParseException("UnitAttachment: attackingLimit must have 2 fields, value and count");
+			throw new GameParseException("attackingLimit must have 2 fields, value and count" + thisErrorMsg());
 		final int max = getInt(s[0]);
 		if (max < 0)
-			throw new GameParseException("UnitAttachment: attackingLimit count must have a positive number");
+			throw new GameParseException("attackingLimit count must have a positive number" + thisErrorMsg());
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
-			throw new GameParseException("UnitAttachment: attackingLimit value must owned, allied, or total");
+			throw new GameParseException("attackingLimit value must owned, allied, or total" + thisErrorMsg());
 		m_attackingLimit = new Tuple<Integer, String>(max, s[1]);
 	}
 	
@@ -1724,15 +1736,15 @@ public class UnitAttachment extends DefaultAttachment
 		}
 		final UnitType ut = (UnitType) this.getAttachedTo();
 		if (ut == null)
-			throw new GameParseException("UnitAttachment: getAttachedTo returned null");
+			throw new GameParseException("getAttachedTo returned null" + thisErrorMsg());
 		final String[] s = value.split(":");
 		if (s.length != 2)
-			throw new GameParseException("UnitAttachment: placementLimit must have 2 fields, value and count");
+			throw new GameParseException("placementLimit must have 2 fields, value and count" + thisErrorMsg());
 		final int max = getInt(s[0]);
 		if (max < 0)
-			throw new GameParseException("UnitAttachment: placementLimit count must have a positive number");
+			throw new GameParseException("placementLimit count must have a positive number" + thisErrorMsg());
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
-			throw new GameParseException("UnitAttachment: placementLimit value must owned, allied, or total");
+			throw new GameParseException("placementLimit value must owned, allied, or total" + thisErrorMsg());
 		m_placementLimit = new Tuple<Integer, String>(max, s[1]);
 	}
 	
@@ -1782,63 +1794,63 @@ public class UnitAttachment extends DefaultAttachment
 		{
 			if (m_isSea || m_isFactory || m_isSub || m_transportCost != -1 ||
 						m_carrierCapacity != -1 || m_canBlitz || m_canBombard || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isCombatTransport)
-				throw new GameParseException("Invalid Unit attachment, air units can not have certain properties, " + this);
+				throw new GameParseException("air units can not have certain properties, " + thisErrorMsg());
 		}
 		else if (m_isSea)
 		{
 			if (m_canIntercept || m_canEscort || m_canBlitz || m_isAir || m_isFactory || m_isStrategicBomber || m_carrierCost != -1
 						|| m_transportCost != -1 || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isAirTransport || m_isKamikaze)
-				throw new GameParseException("Invalid Unit Attachment, sea units can not have certain properties, " + this);
+				throw new GameParseException("sea units can not have certain properties, " + thisErrorMsg());
 		}
 		else
 		// if land
 		{
 			if (m_canIntercept || m_canEscort || m_canBombard || m_isStrategicBomber || m_isSub || m_carrierCapacity != -1 || m_bombard != -1 || m_transportCapacity != -1 || m_isAirTransport
 						|| m_isCombatTransport || m_isKamikaze)
-				throw new GameParseException("Invalid Unit Attachment, land units can not have certain properties, " + this);
+				throw new GameParseException("land units can not have certain properties, " + thisErrorMsg());
 		}
 		if (m_attackAA < 0 || m_attackAAmaxDieSides < -1 || m_attackAAmaxDieSides > 200)
 		{
-			throw new GameParseException("Invalid Unit Attachment, attackAA or attackAAmaxDieSides is wrong, " + this);
+			throw new GameParseException("attackAA or attackAAmaxDieSides is wrong, " + thisErrorMsg());
 		}
 		if (m_carrierCapacity != -1 && m_carrierCost != -1)
 		{
-			throw new GameParseException("Invalid Unit Attachment, carrierCost and carrierCapacity can not be set at same time, " + this);
+			throw new GameParseException("carrierCost and carrierCapacity can not be set at same time, " + thisErrorMsg());
 		}
 		if (m_transportCost != -1 && m_transportCapacity != -1)
 		{
-			throw new GameParseException("Invalid Unit Attachment, transportCost and transportCapacity can not be set at same time, " + this);
+			throw new GameParseException("transportCost and transportCapacity can not be set at same time, " + thisErrorMsg());
 		}
 		if (((m_bombingBonus >= 0 || m_bombingMaxDieSides >= 0) && !(m_isStrategicBomber || m_isRocket)) || (m_bombingBonus < -1 || m_bombingMaxDieSides < -1)
 					|| (m_bombingBonus > 10000 || m_bombingMaxDieSides > 200))
 		{
-			throw new GameParseException("Invalid Unit Attachment, something wrong with bombingBonus or bombingMaxDieSides, " + this);
+			throw new GameParseException("something wrong with bombingBonus or bombingMaxDieSides, " + thisErrorMsg());
 		}
 		if (m_maxBuiltPerPlayer < -1)
 		{
-			throw new GameParseException("Invalid Unit Attachment, maxBuiltPerPlayer can not be negative, " + this);
+			throw new GameParseException("maxBuiltPerPlayer can not be negative, " + thisErrorMsg());
 		}
 		if (m_isCombatTransport && m_transportCapacity < 1)
 		{
-			throw new GameParseException("Invalid Unit Attachment, can not have isCombatTransport on unit without transportCapacity, " + this);
+			throw new GameParseException("can not have isCombatTransport on unit without transportCapacity, " + thisErrorMsg());
 		}
 		if (m_isSea && m_transportCapacity != -1 && Properties.getTransportCasualtiesRestricted(data) && (m_attack > 0 || m_defense > 0) && !m_isCombatTransport)
 		{
-			throw new GameParseException("Restricted transports cannot have attack or defense, " + this);
+			throw new GameParseException("Restricted transports cannot have attack or defense, " + thisErrorMsg());
 		}
 		if (m_isConstruction
 					&& (m_constructionType == null || m_constructionType.equals("none") || m_constructionType.equals("") || m_constructionsPerTerrPerTypePerTurn < 0 || m_maxConstructionsPerTypePerTerr < 0))
 		{
-			throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType and maxConstructionsPerType, " + this);
+			throw new GameParseException("Constructions must have constructionType and positive constructionsPerTerrPerType and maxConstructionsPerType, " + thisErrorMsg());
 		}
 		if (!m_isConstruction
 					&& (!(m_constructionType == null || m_constructionType.equals("none") || m_constructionType.equals("")) || m_constructionsPerTerrPerTypePerTurn >= 0 || m_maxConstructionsPerTypePerTerr >= 0))
 		{
-			throw new GameParseException("Constructions must have isConstruction true, " + this);
+			throw new GameParseException("Constructions must have isConstruction true, " + thisErrorMsg());
 		}
 		if (m_constructionsPerTerrPerTypePerTurn > m_maxConstructionsPerTypePerTerr)
 		{
-			throw new GameParseException("Constructions must have constructionsPerTerrPerTypePerTurn Less than maxConstructionsPerTypePerTerr, " + this);
+			throw new GameParseException("Constructions must have constructionsPerTerrPerTypePerTurn Less than maxConstructionsPerTypePerTerr, " + thisErrorMsg());
 		}
 		if (m_unitPlacementRestrictions != null)
 			getListedTerritories(m_unitPlacementRestrictions);
@@ -1852,7 +1864,7 @@ public class UnitAttachment extends DefaultAttachment
 		if ((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && !m_isFactory && (m_maxDamage >= 0)) || (m_canDieFromReachingMaxDamage && !(m_maxDamage >= 0 || m_isFactory))
 					|| (m_canBeDamaged && m_isFactory))
 		{
-			throw new GameParseException("Invalid Unit Attachment, something wrong with canBeDamaged or maxDamage or canDieFromReachingMaxDamage or isFactory, " + this);
+			throw new GameParseException("something wrong with canBeDamaged or maxDamage or canDieFromReachingMaxDamage or isFactory, " + thisErrorMsg());
 		}
 		if (m_canInvadeOnlyFrom != null && !m_canInvadeOnlyFrom[0].equals("all") && !m_canInvadeOnlyFrom[0].equals("none"))
 		{
@@ -1860,9 +1872,9 @@ public class UnitAttachment extends DefaultAttachment
 			{
 				final UnitType ut = getData().getUnitTypeList().getUnitType(transport);
 				if (ut == null)
-					throw new GameParseException("Unit Attachments: No unit called:" + transport);
+					throw new GameParseException("No unit called:" + transport + thisErrorMsg());
 				if (ut.getAttachments() == null || ut.getAttachments().isEmpty())
-					throw new GameParseException("Unit Attachments:" + transport + " has no attachments, please declare " + transport + " in the xml before using it as a transport");
+					throw new GameParseException(transport + " has no attachments, please declare " + transport + " in the xml before using it as a transport" + thisErrorMsg());
 				// Units may be considered transported if they are on a carrier, or if they are paratroopers, or if they are mech infantry. The "transporter" may not be an actual transport, so we should not check for that here.
 			}
 		}
@@ -1873,12 +1885,12 @@ public class UnitAttachment extends DefaultAttachment
 				// first is ability, second is unit that we get it from
 				final String[] s = value.split(":");
 				if (s.length != 2)
-					throw new IllegalStateException("Unit Attachments: receivesAbilityWhenWith must have 2 parts, 'ability:unit'");
+					throw new GameParseException("receivesAbilityWhenWith must have 2 parts, 'ability:unit'" + thisErrorMsg());
 				if (getData().getUnitTypeList().getUnitType(s[1]) == null)
-					throw new IllegalStateException("Unit Attachments: receivesAbilityWhenWith, unit does not exist, name:" + s[1]);
+					throw new GameParseException("receivesAbilityWhenWith, unit does not exist, name:" + s[1] + thisErrorMsg());
 				// currently only supports canBlitz (m_canBlitz)
 				if (!s[0].equals("canBlitz"))
-					throw new IllegalStateException("Unit Attachments: receivesAbilityWhenWith so far only supports: canBlitz");
+					throw new GameParseException("receivesAbilityWhenWith so far only supports: canBlitz" + thisErrorMsg());
 			}
 		}
 		if (!m_whenCombatDamaged.isEmpty())
@@ -1890,7 +1902,7 @@ public class UnitAttachment extends DefaultAttachment
 					continue;
 				if (obj.equals(UNITSMAYNOTLEAVEALLIEDCARRIER))
 					continue;
-				throw new IllegalStateException("Unit Attachments: m_whenCombatDamaged so far only supports: " + UNITSMAYNOTLANDONCARRIER + ", " + UNITSMAYNOTLEAVEALLIEDCARRIER);
+				throw new GameParseException("m_whenCombatDamaged so far only supports: " + UNITSMAYNOTLANDONCARRIER + ", " + UNITSMAYNOTLEAVEALLIEDCARRIER + thisErrorMsg());
 			}
 		}
 	}
@@ -1903,13 +1915,13 @@ public class UnitAttachment extends DefaultAttachment
 			// Validate all units exist
 			final UnitType ut = getData().getUnitTypeList().getUnitType(name);
 			if (ut == null)
-				throw new IllegalStateException("Unit Attachments: No unit called: " + name);
+				throw new IllegalStateException("No unit called: " + name + thisErrorMsg());
 			rVal.add(ut);
 		}
 		return rVal;
 	}
 	
-	public Collection<Territory> getListedTerritories(final String[] list)
+	public Collection<Territory> getListedTerritories(final String[] list) throws GameParseException
 	{
 		final List<Territory> rVal = new ArrayList<Territory>();
 		for (final String name : list)
@@ -1917,7 +1929,7 @@ public class UnitAttachment extends DefaultAttachment
 			// Validate all territories exist
 			final Territory territory = getData().getMap().getTerritory(name);
 			if (territory == null)
-				throw new IllegalStateException("Unit Attachments: No territory called: " + name);
+				throw new GameParseException("No territory called: " + name + thisErrorMsg());
 			rVal.add(territory);
 		}
 		return rVal;

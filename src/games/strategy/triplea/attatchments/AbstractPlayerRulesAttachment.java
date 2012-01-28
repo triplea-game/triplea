@@ -66,7 +66,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setMovementRestrictionTerritories(final String value)
+	public void setMovementRestrictionTerritories(final String value) throws GameParseException
 	{
 		m_movementRestrictionTerritories = value.split(":");
 		validateNames(m_movementRestrictionTerritories);
@@ -81,7 +81,7 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 	public void setMovementRestrictionType(final String value) throws GameParseException
 	{
 		if (!(value.equals("disallowed") || value.equals("allowed")))
-			throw new GameParseException("RulesAttachment: movementRestrictionType must be allowed or disallowed");
+			throw new GameParseException("movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
 		m_movementRestrictionType = value;
 	}
 	
@@ -94,13 +94,14 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setProductionPerXTerritories(final String value)
+	public void setProductionPerXTerritories(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
 		if (s.length <= 0 || s.length > 2)
-			throw new IllegalStateException("Rules Attachments: productionPerXTerritories can not be empty or have more than two fields");
+			throw new GameParseException("productionPerXTerritories can not be empty or have more than two fields" + thisErrorMsg());
 		String unitTypeToProduce;
 		if (s.length == 1)
 			unitTypeToProduce = Constants.INFANTRY_TYPE;
@@ -109,10 +110,10 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 		// validate that this unit exists in the xml
 		final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
 		if (ut == null)
-			throw new IllegalStateException("Rules Attachments: No unit called: " + unitTypeToProduce);
+			throw new GameParseException("No unit called: " + unitTypeToProduce + thisErrorMsg());
 		final int n = getInt(s[0]);
 		if (n <= 0)
-			throw new IllegalStateException("Rules Attachments: productionPerXTerritories must be a positive integer");
+			throw new GameParseException("productionPerXTerritories must be a positive integer" + thisErrorMsg());
 		m_productionPerXTerritories.put(ut, n);
 	}
 	

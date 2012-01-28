@@ -144,9 +144,9 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	{
 		final String[] s = when.split(":");
 		if (s.length != 2)
-			throw new GameParseException("Triggers: when must exist in 2 parts: \"before/after:stepName\".");
+			throw new GameParseException("when must exist in 2 parts: \"before/after:stepName\"." + thisErrorMsg());
 		if (!(s[0].equals(AFTER) || s[0].equals(BEFORE)))
-			throw new GameParseException("Triggers: notificaition must start with: " + BEFORE + " or " + AFTER);
+			throw new GameParseException("when must start with: " + BEFORE + " or " + AFTER + thisErrorMsg());
 		m_when = new Tuple<String, String>(s[0], s[1]);
 	}
 	
@@ -301,6 +301,6 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	{
 		super.validate(data);
 		if (m_conditions == null)
-			throw new GameParseException("Triggers: must contain at least one condition: " + this);
+			throw new GameParseException("must contain at least one condition: " + thisErrorMsg());
 	}
 }

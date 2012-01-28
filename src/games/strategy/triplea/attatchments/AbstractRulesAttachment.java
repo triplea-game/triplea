@@ -65,7 +65,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		{
 			final PlayerID player = pl.getPlayerID(p);
 			if (player == null)
-				throw new GameParseException("RulesAttachment: Could not find player. name:" + p);
+				throw new GameParseException("Could not find player. name:" + p + thisErrorMsg());
 			m_players.add(player);
 		}
 	}
@@ -87,7 +87,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChance(final String chance) throws GameParseException
 	{
-		throw new GameParseException("RulesAttachment: chance not allowed for use with RulesAttachments, instead use it with Triggers or PoliticalActions");
+		throw new GameParseException("chance not allowed for use with RulesAttachments, instead use it with Triggers or PoliticalActions" + thisErrorMsg());
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -171,7 +171,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		m_turns = new HashMap<Integer, Integer>();
 		final String[] s = turns.split(":");
 		if (s.length < 1)
-			throw new GameParseException("Rules & Conditions: Empty turn list");
+			throw new GameParseException("Empty turn list" + thisErrorMsg());
 		for (final String subString : s)
 		{
 			int start, end;
@@ -183,7 +183,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			{
 				final String[] s2 = subString.split("-");
 				if (s2.length != 2)
-					throw new GameParseException("Rules & Conditions: Invalid syntax for range, must be 'int-int'");
+					throw new GameParseException("Invalid syntax for turn range, must be 'int-int'" + thisErrorMsg());
 				start = getInt(s2[0]);
 				if (s2[1].equals("+"))
 				{
@@ -294,6 +294,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 * takes the raw data from the xml, and turns it into an actual territory list, in the form of strings
 	 * 
 	 * @author veqryn
+	 * @throws GameParseException
 	 */
 	protected String getTerritoryListAsStringBasedOnInputFromXML(final String[] terrs, final Collection<PlayerID> players, final GameData data)
 	{
@@ -334,7 +335,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		return value;
 	}
 	
-	protected void validateNames(final String[] terrList)
+	protected void validateNames(final String[] terrList) throws GameParseException
 	{
 		/*if (terrList != null && (!terrList.equals("controlled") && !terrList.equals("controlledNoWater") && !terrList.equals("original") && !terrList.equals("all") && !terrList.equals("map") && !terrList.equals("enemy")))
 		{
@@ -353,6 +354,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	 * 
 	 * @param list
 	 * @return
+	 * @throws GameParseException
 	 */
 	public Set<Territory> getListedTerritories(final String[] list)
 	{
@@ -385,7 +387,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			// Validate all territories exist
 			final Territory territory = getData().getMap().getTerritory(name);
 			if (territory == null)
-				throw new IllegalStateException("Rules & Conditions: No territory called:" + name);
+				throw new IllegalStateException("No territory called:" + name + thisErrorMsg());
 			rVal.add(territory);
 		}
 		return rVal;

@@ -15,6 +15,7 @@ package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.data.EngineVersionException;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameRunner;
@@ -35,6 +36,7 @@ public class GameSelectorModel extends Observable
 {
 	public static final File DEFAULT_DIRECTORY = new File(GameRunner.getRootFolder(), "/games");
 	private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
+	private static final String DEFAULT_GAME_NAME = "Big World : 1942";
 	private GameData m_data;
 	private String m_gameName;
 	private String m_gameVersion;
@@ -195,12 +197,32 @@ public class GameSelectorModel extends Observable
 		super.clearChanged();
 	}
 	
+	private void resetDefaultGame()
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+		prefs.put(DEFAULT_GAME_NAME_PREF, DEFAULT_GAME_NAME);
+		try
+		{
+			prefs.flush();
+		} catch (final BackingStoreException e2)
+		{ // ignore
+		}
+	}
+	
 	public void loadDefaultGame(final Component ui)
+	{
+		loadDefaultGame(ui, false);
+	}
+	
+	public void loadDefaultGame(final Component ui, final boolean forceFactoryDefault)
 	{
 		// load the previously saved value
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-		final String defaultGameName = "Big World : 1942";
-		final String s = prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName);
+		final String defaultGameName = DEFAULT_GAME_NAME;
+		if (forceFactoryDefault)
+			resetDefaultGame();
+		// just in case flush doesn't work, we still force it again here
+		final String s = (forceFactoryDefault ? defaultGameName : prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName));
 		// TODO: decide if user base would rather have their game data refreshed after leaving a game (currnet), or keep their game data
 		NewGameChooser.refreshNewGameChooserModel(); // remove this to have the engine maintain all game data between games, allowing users to continue games without saving, so long as they never close triplea
 		final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
@@ -219,7 +241,15 @@ public class GameSelectorModel extends Observable
 		}
 		if (!selectedGame.isGameDataLoaded())
 		{
-			selectedGame.fullyParseGameData();
+			try
+			{
+				selectedGame.fullyParseGameData();
+			} catch (final GameParseException e)
+			{
+				// Load real default game...
+				loadDefaultGame(ui, true);
+				return;
+			}
 		}
 		load(selectedGame);
 	}

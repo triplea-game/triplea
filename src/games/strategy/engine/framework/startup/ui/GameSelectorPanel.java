@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.engine.data.properties.PropertiesUI;
 import games.strategy.engine.framework.GameRunner;
@@ -187,7 +188,6 @@ public class GameSelectorPanel extends JPanel implements Observer
 	
 	private void selectGameOptions()
 	{
-		
 		// backup current game properties before showing dialog
 		final Map<String, Object> currentPropertiesMap = new HashMap<String, Object>();
 		for (final IEditableProperty property : m_model.getGameData().getProperties().getEditableProperties())
@@ -326,7 +326,15 @@ public class GameSelectorPanel extends JPanel implements Observer
 			{
 				if (!entry.isGameDataLoaded())
 				{
-					entry.fullyParseGameData();
+					try
+					{
+						entry.fullyParseGameData();
+					} catch (final GameParseException e)
+					{
+						entry.delayParseGameData();
+						NewGameChooser.getNewGameChooserModel().removeEntry(entry);
+						return;
+					}
 				}
 				m_model.load(entry);
 				setOriginalPropertiesMap(m_model.getGameData());

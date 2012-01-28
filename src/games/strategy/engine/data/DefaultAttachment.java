@@ -100,6 +100,11 @@ public abstract class DefaultAttachment implements IAttachment
 		return new IllegalArgumentException(rVal.toString() + " ([Not Allowed] Given: " + givenValue + ")");
 	}
 	
+	protected String thisErrorMsg()
+	{
+		return "   for: " + this.toString();
+	}
+	
 	public static Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name, final boolean justFromSuper)
 	{
 		Field rVal = null;

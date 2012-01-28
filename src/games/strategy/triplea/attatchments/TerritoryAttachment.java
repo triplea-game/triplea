@@ -173,10 +173,10 @@ public class TerritoryAttachment extends DefaultAttachment
 		final String[] s = value.split(":");
 		final int amount = getInt(s[0]);
 		if (s[1].equals(Constants.PUS))
-			throw new GameParseException("Territory Attachments: Please set PUs using production, not resource");
+			throw new GameParseException("Please set PUs using production, not resource" + thisErrorMsg());
 		final Resource resource = getData().getResourceList().getResource(s[1]);
 		if (resource == null)
-			throw new GameParseException("Territory Attachments: No resource named: " + s[1]);
+			throw new GameParseException("No resource named: " + s[1] + thisErrorMsg());
 		m_resources.putResource(resource, amount);
 	}
 	
@@ -338,9 +338,10 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setChangeUnitOwners(final String value)
+	public void setChangeUnitOwners(final String value) throws GameParseException
 	{
 		final String[] temp = value.split(":");
 		for (final String name : temp)
@@ -351,7 +352,7 @@ public class TerritoryAttachment extends DefaultAttachment
 			else if (name.equalsIgnoreCase("true") || name.equalsIgnoreCase("false"))
 				m_changeUnitOwners.clear();
 			else
-				throw new IllegalStateException("Territory Attachments: No player named: " + name);
+				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
 	}
 	
@@ -369,9 +370,10 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setCaptureUnitOnEnteringBy(final String value)
+	public void setCaptureUnitOnEnteringBy(final String value) throws GameParseException
 	{
 		final String[] temp = value.split(":");
 		for (final String name : temp)
@@ -380,7 +382,7 @@ public class TerritoryAttachment extends DefaultAttachment
 			if (tempPlayer != null)
 				m_captureUnitOnEnteringBy.add(tempPlayer);
 			else
-				throw new IllegalStateException("Territory Attachments: No player named: " + name);
+				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
 	}
 	
@@ -405,12 +407,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	{
 		final String[] s = value.split(":");
 		if (s.length != 2)
-			throw new GameParseException("whenCapturedByGoesTo must have 2 player names separated by a colon");
+			throw new GameParseException("whenCapturedByGoesTo must have 2 player names separated by a colon" + thisErrorMsg());
 		for (final String name : s)
 		{
 			final PlayerID player = getData().getPlayerList().getPlayerID(name);
 			if (player == null)
-				throw new IllegalStateException("Territory Attachments: No player named: " + name);
+				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
 		m_whenCapturedByGoesTo.add(value);
 	}
@@ -440,7 +442,7 @@ public class TerritoryAttachment extends DefaultAttachment
 			if (effect != null)
 				m_territoryEffect.add(effect);
 			else
-				throw new GameParseException("Territory Attachments: No TerritoryEffect named: " + name);
+				throw new GameParseException("No TerritoryEffect named: " + name + thisErrorMsg());
 		}
 	}
 	
@@ -458,9 +460,10 @@ public class TerritoryAttachment extends DefaultAttachment
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
 	 * @param value
+	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setConvoyAttached(final String value)
+	public void setConvoyAttached(final String value) throws GameParseException
 	{
 		if (value.length() <= 0)
 			return;
@@ -468,7 +471,7 @@ public class TerritoryAttachment extends DefaultAttachment
 		{
 			final Territory territory = getData().getMap().getTerritory(subString);
 			if (territory == null)
-				throw new IllegalStateException("Territory Attachment: No territory called:" + subString);
+				throw new GameParseException("No territory called:" + subString + thisErrorMsg());
 			m_convoyAttached.add(territory);
 		}
 	}

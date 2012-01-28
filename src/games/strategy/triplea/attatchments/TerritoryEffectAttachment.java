@@ -122,7 +122,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	{
 		final String[] s = combatEffect.split(":");
 		if (s.length < 2)
-			throw new GameParseException("TerritoryEffect Attachments: combatDefenseEffect and combatOffenseEffect must have a count and at least one unitType");
+			throw new GameParseException("combatDefenseEffect and combatOffenseEffect must have a count and at least one unitType" + thisErrorMsg());
 		final Iterator<String> iter = Arrays.asList(s).iterator();
 		final int effect = getInt(iter.next());
 		while (iter.hasNext())
@@ -130,7 +130,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 			final String unitTypeToProduce = iter.next();
 			final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeToProduce);
 			if (ut == null)
-				throw new GameParseException("TerritoryEffect Attachments: No unit called:" + unitTypeToProduce);
+				throw new GameParseException("No unit called:" + unitTypeToProduce + thisErrorMsg());
 			if (defending)
 				m_combatDefenseEffect.put(ut, effect);
 			else
@@ -161,12 +161,12 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	{
 		final String[] s = noBlitzUnitTypes.split(":");
 		if (s.length < 1)
-			throw new GameParseException("TerritoryEffect Attachments: noBlitz must have at least one unitType");
+			throw new GameParseException("noBlitz must have at least one unitType" + thisErrorMsg());
 		for (final String unitTypeName : Arrays.asList(s))
 		{
 			final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
 			if (ut == null)
-				throw new GameParseException("TerritoryEffect Attachments: No unit called:" + unitTypeName);
+				throw new GameParseException("No unit called:" + unitTypeName + thisErrorMsg());
 			m_noBlitz.add(ut);
 		}
 	}

@@ -112,8 +112,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		else if (archeType.toLowerCase().equals(ARCHETYPE_NEUTRAL))
 			m_archeType = ARCHETYPE_NEUTRAL;
 		else
-			throw new GameParseException("RelationshipTypeAttachment: archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or " + ARCHETYPE_NEUTRAL + " for "
-						+ Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME + ": " + getName());
+			throw new GameParseException("archeType must be " + ARCHETYPE_WAR + "," + ARCHETYPE_ALLIED + " or " + ARCHETYPE_NEUTRAL + " for "
+						+ thisErrorMsg());
 	}
 	
 	/**
@@ -209,7 +209,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		{
 			final String[] s = integerCost.split(":");
 			if (s.length < 1 || s.length > 2)
-				throw new GameParseException("RelationshipTypeAttachment: upkeepCost must have either 1 or 2 fields");
+				throw new GameParseException("upkeepCost must have either 1 or 2 fields" + thisErrorMsg());
 			final int cost = getInt(s[0]);
 			if (s.length == 2)
 			{
@@ -219,11 +219,11 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 				else if (s[1].equals(UPKEEP_PERCENTAGE))
 				{
 					if (cost > 100)
-						throw new GameParseException("RelationshipTypeAttachment: upkeepCost may not have a percentage greater than 100");
+						throw new GameParseException("upkeepCost may not have a percentage greater than 100" + thisErrorMsg());
 				}
 				else
 				{
-					throw new GameParseException("RelationshipTypeAttachment: upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE);
+					throw new GameParseException("upkeepCost must have either: " + UPKEEP_FLAT + " or " + UPKEEP_PERCENTAGE + thisErrorMsg());
 				}
 			}
 			m_upkeepCost = integerCost;
@@ -241,7 +241,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	public void setAlliancesCanChainTogether(final String value) throws GameParseException
 	{
 		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
-			throw new GameParseException("RelationshipTypeAttachment: alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE);
+			throw new GameParseException("alliancesCanChainTogether must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
 		m_alliancesCanChainTogether = value;
 	}
 	
@@ -256,7 +256,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	public void setIsDefaultWarPosition(final String value) throws GameParseException
 	{
 		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
-			throw new GameParseException("RelationshipTypeAttachment: isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE);
+			throw new GameParseException("isDefaultWarPosition must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
 		m_isDefaultWarPosition = value;
 	}
 	
@@ -271,7 +271,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	public void setGivesBackOriginalTerritories(final String value) throws GameParseException
 	{
 		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
-			throw new GameParseException("RelationshipTypeAttachment: givesBackOriginalTerritories must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE);
+			throw new GameParseException("givesBackOriginalTerritories must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
 		m_givesBackOriginalTerritories = value;
 	}
 	
@@ -327,8 +327,8 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		else if (helpsDefendAtSea.toLowerCase().equals(PROPERTY_DEFAULT))
 			m_helpsDefendAtSea = PROPERTY_DEFAULT;
 		else
-			throw new GameParseException("helpsDefendAtSea must be " + PROPERTY_TRUE + "," + PROPERTY_FALSE + " or " + PROPERTY_DEFAULT + " for " + Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME + ": "
-						+ getName());
+			throw new GameParseException("helpsDefendAtSea must be " + PROPERTY_TRUE + "," + PROPERTY_FALSE + " or " + PROPERTY_DEFAULT + " for "
+							+ thisErrorMsg());
 	}
 	
 	/**

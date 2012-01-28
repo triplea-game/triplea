@@ -126,7 +126,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		{
 			final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
 			if (type == null)
-				throw new GameParseException("Supports: Could not find unitType. name:" + s[i]);
+				throw new GameParseException("Could not find unitType. name:" + s[i] + thisErrorMsg());
 			m_unitType.add(type);
 		}
 	}
@@ -142,7 +142,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 			else if (s[i].equalsIgnoreCase("enemy"))
 				m_enemy = true;
 			else
-				throw new GameParseException("Supports: " + faction + " faction must be allied, or enemy");
+				throw new GameParseException(faction + " faction must be allied, or enemy" + thisErrorMsg());
 		}
 		m_faction = faction;
 	}
@@ -163,7 +163,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 			else if (s[i].equalsIgnoreCase("offence"))
 				m_offence = true;
 			else
-				throw new GameParseException("Supports: " + side + " side must be defence or offence");
+				throw new GameParseException(side + " side must be defence or offence" + thisErrorMsg());
 		}
 		m_side = side;
 	}
@@ -184,7 +184,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 			else if (s[i].equalsIgnoreCase("strength"))
 				m_strength = true;
 			else
-				throw new GameParseException("Supports: " + dice + " dice must be roll or strength");
+				throw new GameParseException(dice + " dice must be roll or strength" + thisErrorMsg());
 		}
 		m_dice = dice;
 	}
@@ -226,7 +226,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		{
 			final PlayerID player = getData().getPlayerList().getPlayerID(s[i]);
 			if (player == null)
-				throw new GameParseException("Supports: Could not find player. name:" + s[i]);
+				throw new GameParseException("Could not find player. name:" + s[i] + thisErrorMsg());
 			else
 				m_players.add(player);
 		}

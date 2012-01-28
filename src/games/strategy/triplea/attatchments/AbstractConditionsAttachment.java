@@ -63,7 +63,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 					break;*/
 			}
 			if (condition == null)
-				throw new GameParseException("Attachment, " + this.getName() + ", Could not find rule. name:" + subString);
+				throw new GameParseException("Could not find rule. name:" + subString + thisErrorMsg());
 			if (m_conditions == null)
 				m_conditions = new ArrayList<RulesAttachment>();
 			m_conditions.add(condition);
@@ -106,17 +106,17 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 			{
 				if (Integer.parseInt(nums[0]) < 0)
 					throw new GameParseException(
-								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
+								"conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
 			}
 			else if (nums.length == 2)
 			{
 				if (Integer.parseInt(nums[0]) < 0 || Integer.parseInt(nums[1]) < 0 || !(Integer.parseInt(nums[0]) < Integer.parseInt(nums[1])))
 					throw new GameParseException(
-								"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
+								"conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
 			}
 			else
 				throw new GameParseException(
-							"Rules & Conditions: conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y");
+							"conditionType must be equal to 'AND' or 'OR' or 'XOR' or 'y' or 'y-z' where Y and Z are valid positive integers and Z is greater than Y" + thisErrorMsg());
 		}
 		m_conditionType = s;
 	}
@@ -297,10 +297,10 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 			final int i = getInt(s[0]);
 			final int j = getInt(s[1]);
 			if (i > j || i < 1 || j < 1 || i > 120 || j > 120)
-				throw new GameParseException("PoliticalActionAttachment: chance should have a format of \"x:y\" where x is <= y and both x and y are >=1 and <=120");
+				throw new GameParseException("chance should have a format of \"x:y\" where x is <= y and both x and y are >=1 and <=120" + thisErrorMsg());
 		} catch (final IllegalArgumentException iae)
 		{
-			throw new GameParseException("PoliticalActionAttachment: Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance");
+			throw new GameParseException("Invalid chance declaration: " + chance + " format: \"1:10\" for 10% chance" + thisErrorMsg());
 		}
 		m_chance = chance;
 	}

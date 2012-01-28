@@ -1,4 +1,8 @@
 Changes for 1.5
+* Fixed major bug with new Delayed parsing method, it will now correctly handle maps with errors in them by removing them from the game chooser list. (veqryn)
+
+* Creating better error messages for setting attachment options in xmls. (veqryn)
+
 * Fixing bug where suicide attack units could target units in transports. (veqryn)
 
 * Some major bug fixes to movement with paratroopers, including not allowing units with multiple movement to move through all enemies once you get paratroopers. (veqryn)
