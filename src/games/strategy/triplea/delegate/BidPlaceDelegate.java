@@ -124,7 +124,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 				continue;
 			typesAlreadyChecked.add(ut);
 			placeableUnits2.addAll(Match.getNMatches(placeableUnits,
-						UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(ut, to, player, getData()), Matches.unitIsOfType(ut)));
+						UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit("placementLimit", ut, to, player, getData()), Matches.unitIsOfType(ut)));
 		}
 		return placeableUnits2;
 	}

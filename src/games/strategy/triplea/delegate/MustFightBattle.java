@@ -75,14 +75,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		ALL, SUBS, NONE
 	}
 	
-	
+
 	// these class exist for testing
 	@SuppressWarnings("serial")
 	public static abstract class AttackSubs implements IExecutable
 	{
 	}
 	
-	
+
 	@SuppressWarnings("serial")
 	public static abstract class DefendSubs implements IExecutable
 	{
@@ -349,7 +349,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		change.add(ChangeFactory.markNoMovementChange(nonAir));
 		return change;
 	}*/
-	
+
 	private void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies)
 	{
 		for (final Unit holder : dependencies.keySet())
@@ -2086,7 +2086,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private void fireSuicideUnitsAttack(final IDelegateBridge bridge)
 	{
 		// TODO: add a global toggle for returning fire (Veqryn)
-		final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructibleInCombat(m_attacker, m_battleSite, m_data), Matches.UnitIsSuicide.invert());
+		final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructibleInCombat(m_attacker, m_battleSite, m_data),
+					Matches.UnitIsSuicide.invert(), Matches.unitIsBeingTransported().invert());
 		final Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
 		final Collection<Unit> attackedDefenders = Match.getMatches(m_defendingUnits, attackableUnits);
 		// comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no destroyers, you can't attack subs with anything.
@@ -2105,7 +2106,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (isDefendingSuicideAndMunitionUnitsDoNotFire())
 			return;
 		// TODO: add a global toggle for returning fire (Veqryn)
-		final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructibleInCombatShort, Matches.UnitIsSuicide.invert());
+		final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructibleInCombatShort,
+					Matches.UnitIsSuicide.invert(), Matches.unitIsBeingTransported().invert());
 		final Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
 		final Collection<Unit> attackedAttackers = Match.getMatches(m_attackingUnits, attackableUnits);
 		// comparatively simple rules for isSuicide units. if AirAttackSubRestricted and you have no destroyers, you can't attack subs with anything.

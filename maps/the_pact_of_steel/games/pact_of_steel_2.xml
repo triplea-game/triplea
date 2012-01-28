@@ -1816,7 +1816,7 @@
 	
 	aa related:
 			isAA								values: just sets isAAmovement, isAAforCombatOnly, isAAforBombingThisUnitOnly, isAAforFlyOverOnly, isInfrastructure, and isRocket to true. (allows a unit to shoot at air units before combat starts and not participate in the rest of combat, have certain movement restrictions, and be capturable)
-			isAAmovement						values: just sets canNotMoveDuringCombatMove to "true", and only for aa guns it will set the stackingLimit to "1:allied" when playing by classic rules
+			isAAmovement						values: just sets canNotMoveDuringCombatMove to "true", and only for aa guns it will set the stacking limits (movementLimit, attackingLimit, placementLimit) to "1:allied" when playing by classic rules
 			attackAA							values: the value that an isAA unit will attack at, for shooting at air units before battle
 			attackAAmaxDieSides					values: sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).  
 															Be Warned that all aa attack values (including with Radar and without Radar), MUST divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck!
@@ -1833,7 +1833,10 @@
 			willNotFireIfPresent				values: a list of unit types for which if they are present in the battle, this aa gun will not fire.
 			isRocket							values: allows this unit to become a rocket if the player has the rocket technology.  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name
 			canNotMoveDuringCombatMove			values: true or false, defaults to false, does not allow this unit to move during 'combat move phase'
-			stackingLimit						values: the count is equal to the number of this unit allowed per territory, and the value is equal to "owned" (we are only counting units owned by each player), or "allied" (allied too), or "total" (which counts enemy units too)
+			movementLimit						values: only affects normal movement. the count is equal to the number of this unit allowed per territory, and the value is equal to "owned" (we are only counting units owned by each player), or "allied" (allied too), or "total" (which counts enemy units too)
+			attackingLimit						values: only affects movement into enemy territory/units. the count is equal to the number of this unit allowed per territory, and the value is equal to "owned" (we are only counting units owned by each player), or "allied" (allied too), or "total" (which counts enemy units too)
+			placementLimit						values: only affects placement. the count is equal to the number of this unit allowed per territory, and the value is equal to "owned" (we are only counting units owned by each player), or "allied" (allied too), or "total" (which counts enemy units too)
+															example: <option name="placementLimit" value="allied" count="1"/>
 			
 	-->
 
@@ -2236,8 +2239,8 @@
 						 <option name="isRocket" value="true"/>-->
 						 <!-- canNotMoveDuringCombatMove does not allow movement during 'combat move phase'
 						 <option name="canNotMoveDuringCombatMove" value="true"/>-->
-						 <!-- stackingLimit sets a maximum for the number of this unit in any territory. value can be "owned", "allied", or "total".
-						 <option name="stackingLimit" value="allied" count="1"/>-->
+						 <!-- movementLimit / attackingLimit / placementLimit sets a maximum for the number of this unit in any territory. value can be "owned", "allied", or "total".
+						 <option name="movementLimit" value="allied" count="1"/>-->
 						 <!-- typeAA sets what group this aaGun is considered to fire with. only 1 aa gun per group may fire.
 						 <option name="typeAA" value="aaGun"/>-->
 						 <!-- targetsAA sets what this aaGun can shoot at. a guns in the same group must have the same targets
@@ -3464,7 +3467,9 @@
 					captureUnitOnEnteringBy
 					suicideAttackResources
 					suicideAttackTargets
-					stackingLimit
+					movementLimit
+					attackingLimit
+					placementLimit
 					
 				Objectives & Condition Attachments:
 					conditions
@@ -4045,8 +4050,12 @@
 															examples: <option name="suicideAttackTargets" value="battleship:carrier"/>
 			vps									values: not sure if it works
 			captureVps							values: not sure if it works
-			stackingLimit						values: count equal to the maximum number of units allowed in a territory. value must start with "owned", "allied", or "total", then after that is a colon delimited list of units or the word "all".
-															You may have multiple instances of this, per player. example: <option name="stackingLimit" value="owned:Battleship:Battlecruiser:Cruiser:Destroyer:Submarine:Transport" count="4"/>
+			movementLimit						values: only affects normal movement. count equal to the maximum number of units allowed in a territory. value must start with "owned", "allied", or "total", then after that is a colon delimited list of units or the word "all".
+															You may have multiple instances of this, per player. example: <option name="movementLimit" value="owned:Battleship:Battlecruiser:Cruiser:Destroyer:Submarine:Transport" count="4"/>
+			attackingLimit						values: only affects movement into enemy territory/units. count equal to the maximum number of units allowed in a territory. value must start with "owned", "allied", or "total", then after that is a colon delimited list of units or the word "all".
+															You may have multiple instances of this, per player. example: <option name="attackingLimit" value="owned:Battleship:Battlecruiser:Cruiser:Destroyer:Submarine:Transport" count="4"/>
+			placementLimit						values: only affects placement. count equal to the maximum number of units allowed in a territory. value must start with "owned", "allied", or "total", then after that is a colon delimited list of units or the word "all".
+															You may have multiple instances of this, per player. example: <option name="placementLimit" value="owned:Battleship:Battlecruiser:Cruiser:Destroyer:Submarine:Transport" count="4"/>
 	-->
 				<!-- Currently "vps" and "captureVps" do not work. if they work in the future they will follow original pacific rules
 				<attatchment name="playerAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
@@ -4660,6 +4669,10 @@
 				</property>
 
 				<property name="Paratroopers Can Move During Non Combat" value="true" editable="true">
+						<boolean/>
+				</property>
+
+				<property name="Paratroopers Can Attack Deep Into Enemy Territory" value="false" editable="true">
 						<boolean/>
 				</property>
 

@@ -164,7 +164,8 @@ public class PoliticsPanel extends ActionPanel
 			final JScrollPane overviewScroll = new JScrollPane(overview);
 			overviewScroll.setBorder(BorderFactory.createEmptyBorder());
 			overviewScroll.setPreferredSize(new Dimension((overviewScroll.getPreferredSize().width > availWidth ? availWidth : overviewScroll.getPreferredSize().width),
-						(overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview : overviewScroll.getPreferredSize().height)));
+						(overviewScroll.getPreferredSize().height > availHeightOverview ? availHeightOverview :
+									(overviewScroll.getPreferredSize().height + (m_validPoliticalActions.isEmpty() ? 26 : 0))))); // add 26 when the actions are empty, because for some stupid reason java calculates the pack size wrong (again)...
 			// politicalChoicePanel.add(overviewScroll, new GridBagConstraints(0, row++, 4, 1, 1.0, 10.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
 			// politicalChoicePanel.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, row++, 20, 1, 0.1, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, insets, 0, 0));
 			final JScrollPane choiceScroll = new JScrollPane(PoliticalActionButtonPanel(politicalChoiceDialog));

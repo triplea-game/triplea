@@ -2528,6 +2528,10 @@
 						<boolean/>
 				</property>
 
+				<property name="Paratroopers Can Attack Deep Into Enemy Territory" value="false" editable="true">
+						<boolean/>
+				</property>
+
 				<property name="Always on AA" value="true" editable="false">
 						<boolean/>
 				</property>

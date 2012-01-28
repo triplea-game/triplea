@@ -214,6 +214,7 @@ public interface Constants
 	public static final String USE_KAMIKAZE_SUICIDE_ATTACKS = "Use Kamikaze Suicide Attacks";
 	public static final String KAMIKAZE_SUICIDE_ATTACKS_DONE_BY_CURRENT_TERRITORY_OWNER = "Kamikaze Suicide Attacks Done By Current Territory Owner";
 	public static final String FORCE_AA_ATTACKS_FOR_LAST_STEP_OF_FLY_OVER = "Force AA Attacks For Last Step Of Fly Over";
+	public static final String PARATROOPERS_CAN_ATTACK_DEEP_INTO_ENEMY_TERRITORY = "Paratroopers Can Attack Deep Into Enemy Territory";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

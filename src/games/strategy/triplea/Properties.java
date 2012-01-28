@@ -808,6 +808,11 @@ public class Properties implements Constants
 		return data.getProperties().get(FORCE_AA_ATTACKS_FOR_LAST_STEP_OF_FLY_OVER, false);
 	}
 	
+	public static boolean getParatroopersCanAttackDeepIntoEnemyTerritory(final GameData data)
+	{
+		return data.getProperties().get(PARATROOPERS_CAN_ATTACK_DEEP_INTO_ENEMY_TERRITORY, false);
+	}
+	
 	private Properties()
 	{
 	}

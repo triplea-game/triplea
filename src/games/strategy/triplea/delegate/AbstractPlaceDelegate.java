@@ -524,11 +524,11 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			if (typesAlreadyChecked.contains(ut))
 				continue;
 			typesAlreadyChecked.add(ut);
-			final int maxForThisType = UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(ut, to, player, getData());
+			final int maxForThisType = UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit("placementLimit", ut, to, player, getData());
 			if (Match.countMatches(units, Matches.unitIsOfType(ut)) > maxForThisType)
 				return "UnitType " + ut.getName() + " is over stacking limit of " + maxForThisType;
 		}
-		if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit(units, to, player, getData()))
+		if (!PlayerAttachment.getCanTheseUnitsMoveWithoutViolatingStackingLimit("placementLimit", units, to, player, getData()))
 			return "Units Can Not Go Over Stacking Limit";
 		// now return null (valid placement) if we have placement restrictions disabled in game options
 		if (!isUnitPlacementRestrictions())
@@ -663,7 +663,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 				continue;
 			typesAlreadyChecked.add(ut);
 			placeableUnits2.addAll(Match.getNMatches(placeableUnits,
-						UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit(ut, to, player, getData()), Matches.unitIsOfType(ut)));
+						UnitAttachment.getMaximumNumberOfThisUnitTypeToReachStackingLimit("placementLimit", ut, to, player, getData()), Matches.unitIsOfType(ut)));
 		}
 		if (!isUnitPlacementRestrictions())
 			return placeableUnits2;

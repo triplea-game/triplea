@@ -1036,14 +1036,34 @@ public class Matches
 			return ua.getIsRocket();
 		}
 	};
-	public static final Match<Unit> UnitHasStackingLimit = new Match<Unit>()
+	public static final Match<Unit> UnitHasPlacementLimit = new Match<Unit>()
 	{
 		@Override
 		public boolean match(final Unit obj)
 		{
 			final UnitType type = obj.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.getStackingLimit() != null;
+			return ua.getPlacementLimit() != null;
+		}
+	};
+	public static final Match<Unit> UnitHasMovementLimit = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
+			return ua.getMovementLimit() != null;
+		}
+	};
+	public static final Match<Unit> UnitHasAttackingLimit = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			final UnitType type = obj.getUnitType();
+			final UnitAttachment ua = UnitAttachment.get(type);
+			return ua.getAttackingLimit() != null;
 		}
 	};
 	public static final Match<Unit> UnitCanNotMoveDuringCombatMove = new Match<Unit>()

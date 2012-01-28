@@ -56,7 +56,7 @@ import java.util.Set;
  * and if the set method adds to a list or map, then you also need a "clearFooBar".
  * Do not change the name fooBar to make it plural or any other crap.
  * 
- * @author Sean Bridges
+ * @author Sean Bridges and Mark Christopher Duncan
  * @version 1.0
  */
 @SuppressWarnings("serial")
@@ -104,7 +104,7 @@ public class UnitAttachment extends DefaultAttachment
 	private String[] m_canInvadeOnlyFrom; // a colon delimited list of transports where this unit may invade from, it supports "none" and if empty it allows you to invade from all
 	private final IntegerMap<Resource> m_fuelCost = new IntegerMap<Resource>();
 	private boolean m_canNotMoveDuringCombatMove = false;
-	private Tuple<Integer, String> m_stackingLimit = null;
+	private Tuple<Integer, String> m_movementLimit = null;
 	
 	// combat related
 	private int m_attack = 0;
@@ -119,6 +119,7 @@ public class UnitAttachment extends DefaultAttachment
 	private int m_unitSupportCount = -1;
 	private boolean m_isMarine = false;
 	private boolean m_isSuicide = false;
+	private Tuple<Integer, String> m_attackingLimit = null;
 	
 	// transportation related
 	private boolean m_isCombatTransport = false;
@@ -179,6 +180,7 @@ public class UnitAttachment extends DefaultAttachment
 	private String[] m_unitPlacementRestrictions; // a colon delimited list of territories where this unit may not be placed
 	// also an allowed setter is "setUnitPlacementOnlyAllowedIn", which just creates m_unitPlacementRestrictions with an inverted list of territories
 	private int m_maxBuiltPerPlayer = -1; // -1 if infinite (infinite is default)
+	private Tuple<Integer, String> m_placementLimit = null;
 	
 	// scrambling related
 	private boolean m_canScramble = false;
@@ -1634,9 +1636,17 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		setCanNotMoveDuringCombatMove(s);
 		if (getBool(s))
-			setStackingLimit(Integer.MAX_VALUE + ":allied");
+		{
+			setMovementLimit(Integer.MAX_VALUE + ":allied");
+			setAttackingLimit(Integer.MAX_VALUE + ":allied");
+			setPlacementLimit(Integer.MAX_VALUE + ":allied");
+		}
 		else
-			setStackingLimit(null);
+		{
+			setMovementLimit(null);
+			setAttackingLimit(null);
+			setPlacementLimit(null);
+		}
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1651,11 +1661,11 @@ public class UnitAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setStackingLimit(final String value) throws GameParseException
+	public void setMovementLimit(final String value) throws GameParseException
 	{
 		if (value == null)
 		{
-			m_stackingLimit = null;
+			m_movementLimit = null;
 			return;
 		}
 		final UnitType ut = (UnitType) this.getAttachedTo();
@@ -1663,28 +1673,89 @@ public class UnitAttachment extends DefaultAttachment
 			throw new GameParseException("UnitAttachment: getAttachedTo returned null");
 		final String[] s = value.split(":");
 		if (s.length != 2)
-			throw new GameParseException("UnitAttachment: stackingLimit must have 2 fields, value and count");
+			throw new GameParseException("UnitAttachment: movementLimit must have 2 fields, value and count");
 		final int max = getInt(s[0]);
 		if (max < 0)
-			throw new GameParseException("UnitAttachment: stackingLimit count must have a positive number");
+			throw new GameParseException("UnitAttachment: movementLimit count must have a positive number");
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
-			throw new GameParseException("UnitAttachment: stackingLimit value must owned, allied, or total");
-		m_stackingLimit = new Tuple<Integer, String>(max, s[1]);
+			throw new GameParseException("UnitAttachment: movementLimit value must owned, allied, or total");
+		m_movementLimit = new Tuple<Integer, String>(max, s[1]);
 	}
 	
-	public Tuple<Integer, String> getStackingLimit()
+	public Tuple<Integer, String> getMovementLimit()
 	{
-		return m_stackingLimit;
+		return m_movementLimit;
 	}
 	
-	public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(final UnitType ut, final Territory t, final PlayerID owner, final GameData data)
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAttackingLimit(final String value) throws GameParseException
+	{
+		if (value == null)
+		{
+			m_attackingLimit = null;
+			return;
+		}
+		final UnitType ut = (UnitType) this.getAttachedTo();
+		if (ut == null)
+			throw new GameParseException("UnitAttachment: getAttachedTo returned null");
+		final String[] s = value.split(":");
+		if (s.length != 2)
+			throw new GameParseException("UnitAttachment: attackingLimit must have 2 fields, value and count");
+		final int max = getInt(s[0]);
+		if (max < 0)
+			throw new GameParseException("UnitAttachment: attackingLimit count must have a positive number");
+		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
+			throw new GameParseException("UnitAttachment: attackingLimit value must owned, allied, or total");
+		m_attackingLimit = new Tuple<Integer, String>(max, s[1]);
+	}
+	
+	public Tuple<Integer, String> getAttackingLimit()
+	{
+		return m_attackingLimit;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setPlacementLimit(final String value) throws GameParseException
+	{
+		if (value == null)
+		{
+			m_placementLimit = null;
+			return;
+		}
+		final UnitType ut = (UnitType) this.getAttachedTo();
+		if (ut == null)
+			throw new GameParseException("UnitAttachment: getAttachedTo returned null");
+		final String[] s = value.split(":");
+		if (s.length != 2)
+			throw new GameParseException("UnitAttachment: placementLimit must have 2 fields, value and count");
+		final int max = getInt(s[0]);
+		if (max < 0)
+			throw new GameParseException("UnitAttachment: placementLimit count must have a positive number");
+		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
+			throw new GameParseException("UnitAttachment: placementLimit value must owned, allied, or total");
+		m_placementLimit = new Tuple<Integer, String>(max, s[1]);
+	}
+	
+	public Tuple<Integer, String> getPlacementLimit()
+	{
+		return m_placementLimit;
+	}
+	
+	public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(final String limitType, final UnitType ut, final Territory t, final PlayerID owner, final GameData data)
 	{
 		final UnitAttachment ua = UnitAttachment.get(ut);
-		final Tuple<Integer, String> stackingLimit = ua.getStackingLimit();
+		final Tuple<Integer, String> stackingLimit;
+		if (limitType.equals("movementLimit"))
+			stackingLimit = ua.getMovementLimit();
+		else if (limitType.equals("attackingLimit"))
+			stackingLimit = ua.getAttackingLimit();
+		else if (limitType.equals("placementLimit"))
+			stackingLimit = ua.getPlacementLimit();
+		else
+			throw new IllegalStateException("getMaximumNumberOfThisUnitTypeToReachStackingLimit does not allow limitType: " + limitType);
 		if (stackingLimit == null)
 			return Integer.MAX_VALUE;
 		int max = stackingLimit.getFirst();
-		final String stackingType = stackingLimit.getSecond();
 		if (max == Integer.MAX_VALUE && (ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly()))
 		{
 			// under certain rules (classic rules) there can only be 1 aa gun in a territory.
@@ -1694,6 +1765,7 @@ public class UnitAttachment extends DefaultAttachment
 			}
 		}
 		final CompositeMatchAnd<Unit> stackingMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOfType(ut));
+		final String stackingType = stackingLimit.getSecond();
 		if (stackingType.equals("owned"))
 			stackingMatch.add(Matches.unitIsOwnedBy(owner));
 		else if (stackingType.equals("allied"))
@@ -1984,7 +2056,9 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  airDefense:" + m_airDefense
 					+ "  airAttack:" + m_airAttack
 					+ "  canNotMoveDuringCombatMove:" + m_canNotMoveDuringCombatMove
-					+ "  stackingLimit:" + (m_stackingLimit != null ? m_stackingLimit.toString() : "null");
+					+ "  movementLimit:" + (m_movementLimit != null ? m_movementLimit.toString() : "null")
+					+ "  attackingLimit:" + (m_attackingLimit != null ? m_attackingLimit.toString() : "null")
+					+ "  placementLimit:" + (m_placementLimit != null ? m_placementLimit.toString() : "null");
 	}
 	
 	public String toStringShortAndOnlyImportantDifferences(final PlayerID player, final boolean useHTML, final boolean includeAttachedToName)
@@ -2182,15 +2256,35 @@ public class UnitAttachment extends DefaultAttachment
 			stats.append("must be Placed In Territory Valued >=" + m_canOnlyBePlacedInTerritoryValuedAtX + ", ");
 		if (m_canNotMoveDuringCombatMove)
 			stats.append("cannot Combat Move, ");
-		if (m_stackingLimit != null)
+		if (m_movementLimit != null)
 		{
-			if (m_stackingLimit.getFirst() == Integer.MAX_VALUE
+			if (m_movementLimit.getFirst() == Integer.MAX_VALUE
 						&& (m_isAAforBombingThisUnitOnly || m_isAAforCombatOnly)
 						&& !(games.strategy.triplea.Properties.getWW2V2(getData()) || games.strategy.triplea.Properties.getWW2V3(getData()) || games.strategy.triplea.Properties
 									.getMultipleAAPerTerritory(getData())))
-				stats.append("max of 1 " + m_stackingLimit.getSecond() + " per territory, ");
-			else if (m_stackingLimit.getFirst() < 10000)
-				stats.append("max of " + m_stackingLimit.getFirst() + " " + m_stackingLimit.getSecond() + " per territory, ");
+				stats.append("max of 1 " + m_movementLimit.getSecond() + " moving per territory, ");
+			else if (m_movementLimit.getFirst() < 10000)
+				stats.append("max of " + m_movementLimit.getFirst() + " " + m_movementLimit.getSecond() + " moving per territory, ");
+		}
+		if (m_attackingLimit != null)
+		{
+			if (m_attackingLimit.getFirst() == Integer.MAX_VALUE
+						&& (m_isAAforBombingThisUnitOnly || m_isAAforCombatOnly)
+						&& !(games.strategy.triplea.Properties.getWW2V2(getData()) || games.strategy.triplea.Properties.getWW2V3(getData()) || games.strategy.triplea.Properties
+									.getMultipleAAPerTerritory(getData())))
+				stats.append("max of 1 " + m_attackingLimit.getSecond() + " attacking per territory, ");
+			else if (m_attackingLimit.getFirst() < 10000)
+				stats.append("max of " + m_attackingLimit.getFirst() + " " + m_attackingLimit.getSecond() + " attacking per territory, ");
+		}
+		if (m_placementLimit != null)
+		{
+			if (m_placementLimit.getFirst() == Integer.MAX_VALUE
+						&& (m_isAAforBombingThisUnitOnly || m_isAAforCombatOnly)
+						&& !(games.strategy.triplea.Properties.getWW2V2(getData()) || games.strategy.triplea.Properties.getWW2V3(getData()) || games.strategy.triplea.Properties
+									.getMultipleAAPerTerritory(getData())))
+				stats.append("max of 1 " + m_placementLimit.getSecond() + " placed per territory, ");
+			else if (m_placementLimit.getFirst() < 10000)
+				stats.append("max of " + m_placementLimit.getFirst() + " " + m_placementLimit.getSecond() + " placed per territory, ");
 		}
 		
 		if (stats.indexOf(", ") > -1)

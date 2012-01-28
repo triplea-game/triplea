@@ -75,7 +75,9 @@ public class PlayerAttachment extends DefaultAttachment
 	private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
 	private final IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>(); // what resources can be used for suicide attacks, and at what attack power
 	private Set<UnitType> m_suicideAttackTargets = null; // what can be hit by suicide attacks
-	private final Set<Triple<Integer, String, Set<UnitType>>> m_stackingLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // stack limits on a flexible per player basis
+	private final Set<Triple<Integer, String, Set<UnitType>>> m_placementLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // placement limits on a flexible per player basis
+	private final Set<Triple<Integer, String, Set<UnitType>>> m_movementLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // movement limits on a flexible per player basis
+	private final Set<Triple<Integer, String, Set<UnitType>>> m_attackingLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // attacking number limits on a flexible per player basis
 	
 	/** Creates new PlayerAttachment */
 	public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData)
@@ -90,16 +92,16 @@ public class PlayerAttachment extends DefaultAttachment
 	 * @throws GameParseException
 	 */
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
-	public void setStackingLimit(final String value) throws GameParseException
+	public void setPlacementLimit(final String value) throws GameParseException
 	{
 		final String[] s = value.split(":");
 		if (s.length < 3)
-			throw new GameParseException("PlayerAttachment: stackingLimit must have 3 parts: count, type, unit list");
+			throw new GameParseException("PlayerAttachment: placementLimit must have 3 parts: count, type, unit list");
 		final int max = getInt(s[0]);
 		if (max < 0)
-			throw new GameParseException("PlayerAttachment: stackingLimit count must have a positive number");
+			throw new GameParseException("PlayerAttachment: placementLimit count must have a positive number");
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
-			throw new GameParseException("PlayerAttachment: stackingLimit type must be: owned, allied, or total");
+			throw new GameParseException("PlayerAttachment: placementLimit type must be: owned, allied, or total");
 		final Set<UnitType> types = new HashSet<UnitType>();
 		if (s[3].equalsIgnoreCase("all"))
 			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
@@ -114,25 +116,122 @@ public class PlayerAttachment extends DefaultAttachment
 					types.add(ut);
 			}
 		}
-		m_stackingLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
+		m_placementLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
 	}
 	
-	public Set<Triple<Integer, String, Set<UnitType>>> getStackingLimit()
+	public Set<Triple<Integer, String, Set<UnitType>>> getPlacementLimit()
 	{
-		return m_stackingLimit;
+		return m_placementLimit;
 	}
 	
-	public void clearStackingLimit()
+	public void clearPlacementLimit()
 	{
-		m_stackingLimit.clear();
+		m_placementLimit.clear();
 	}
 	
-	public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final Collection<Unit> unitsMoving, final Territory toMoveInto, final PlayerID owner, final GameData data)
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setMovementLimit(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length < 3)
+			throw new GameParseException("PlayerAttachment: movementLimit must have 3 parts: count, type, unit list");
+		final int max = getInt(s[0]);
+		if (max < 0)
+			throw new GameParseException("PlayerAttachment: movementLimit count must have a positive number");
+		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
+			throw new GameParseException("PlayerAttachment: movementLimit type must be: owned, allied, or total");
+		final Set<UnitType> types = new HashSet<UnitType>();
+		if (s[3].equalsIgnoreCase("all"))
+			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
+		else
+		{
+			for (int i = 2; i < s.length; i++)
+			{
+				final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
+				if (ut == null)
+					throw new IllegalStateException("PlayerAttachment: No unit called: " + s[i]);
+				else
+					types.add(ut);
+			}
+		}
+		m_movementLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
+	}
+	
+	public Set<Triple<Integer, String, Set<UnitType>>> getMovementLimit()
+	{
+		return m_movementLimit;
+	}
+	
+	public void clearMovementLimit()
+	{
+		m_movementLimit.clear();
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setAttackingLimit(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length < 3)
+			throw new GameParseException("PlayerAttachment: attackingLimit must have 3 parts: count, type, unit list");
+		final int max = getInt(s[0]);
+		if (max < 0)
+			throw new GameParseException("PlayerAttachment: attackingLimit count must have a positive number");
+		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
+			throw new GameParseException("PlayerAttachment: attackingLimit type must be: owned, allied, or total");
+		final Set<UnitType> types = new HashSet<UnitType>();
+		if (s[3].equalsIgnoreCase("all"))
+			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
+		else
+		{
+			for (int i = 2; i < s.length; i++)
+			{
+				final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
+				if (ut == null)
+					throw new IllegalStateException("PlayerAttachment: No unit called: " + s[i]);
+				else
+					types.add(ut);
+			}
+		}
+		m_attackingLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
+	}
+	
+	public Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit()
+	{
+		return m_attackingLimit;
+	}
+	
+	public void clearAttackingLimit()
+	{
+		m_attackingLimit.clear();
+	}
+	
+	public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final String limitType, final Collection<Unit> unitsMoving, final Territory toMoveInto, final PlayerID owner,
+				final GameData data)
 	{
 		final PlayerAttachment pa = PlayerAttachment.get(owner);
 		if (pa == null)
 			return true;
-		final Set<Triple<Integer, String, Set<UnitType>>> stackingLimits = pa.getStackingLimit();
+		final Set<Triple<Integer, String, Set<UnitType>>> stackingLimits;
+		if (limitType.equals("movementLimit"))
+			stackingLimits = pa.getMovementLimit();
+		else if (limitType.equals("attackingLimit"))
+			stackingLimits = pa.getAttackingLimit();
+		else if (limitType.equals("placementLimit"))
+			stackingLimits = pa.getPlacementLimit();
+		else
+			throw new IllegalStateException("getCanTheseUnitsMoveWithoutViolatingStackingLimit does not allow limitType: " + limitType);
 		if (stackingLimits.isEmpty())
 			return true;
 		for (final Triple<Integer, String, Set<UnitType>> currentLimit : stackingLimits)

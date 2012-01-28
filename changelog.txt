@@ -1,4 +1,14 @@
 Changes for 1.5
+* Fixing bug where suicide attack units could target units in transports. (veqryn)
+
+* Some major bug fixes to movement with paratroopers, including not allowing units with multiple movement to move through all enemies once you get paratroopers. (veqryn)
+
+* Created new game option, "Paratroopers Can Attack Deep Into Enemy Territory", which will allow movement for air transports during combat move over enemy territories. (veqryn)
+
+* Deleted Player Attachment stackingLimit and replaced with movementLimit, attackingLimit, and placementLimit. (veqryn)
+
+* Deleted Unit Attachment stackingLimit and replaced with movementLimit, attackingLimit, and placementLimit. (veqryn)
+
 * Fixing potential bugs with new .equals for all attachments. (veqryn)
 
 * Disabled political action button when taking actions, to prevent taking multiple actions while waiting for confirmation of the first. (veqryn)
