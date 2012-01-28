@@ -220,11 +220,17 @@ public class GameSelectorModel extends Observable
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		final String defaultGameName = DEFAULT_GAME_NAME;
 		if (forceFactoryDefault)
+		{
 			resetDefaultGame();
+			// we don't refresh the game chooser model because we have just removed a bad map from it
+		}
+		else
+		{
+			// TODO: decide if user base would rather have their game data refreshed after leaving a game (currnet), or keep their game data
+			NewGameChooser.refreshNewGameChooserModel(); // remove this to have the engine maintain all game data between games, allowing users to continue games without saving, so long as they never close triplea
+		}
 		// just in case flush doesn't work, we still force it again here
 		final String s = (forceFactoryDefault ? defaultGameName : prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName));
-		// TODO: decide if user base would rather have their game data refreshed after leaving a game (currnet), or keep their game data
-		NewGameChooser.refreshNewGameChooserModel(); // remove this to have the engine maintain all game data between games, allowing users to continue games without saving, so long as they never close triplea
 		final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
 		NewGameChooserEntry selectedGame = model.findByName(s);
 		if (selectedGame == null)
@@ -247,6 +253,8 @@ public class GameSelectorModel extends Observable
 			} catch (final GameParseException e)
 			{
 				// Load real default game...
+				selectedGame.delayParseGameData();
+				model.removeEntry(selectedGame);
 				loadDefaultGame(ui, true);
 				return;
 			}
