@@ -80,6 +80,7 @@
 				<include name="**/*.xslt" />
 				<include name="**/*.wav" />
 				<include name="**/*.properties" />
+				<include name="**/*.html" />
 			</fileset>
 		</copy>
 
@@ -181,6 +182,10 @@
 
 		<exec executable="cp">
 			<arg line="readme.html /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="TripleA_RuleBook.pdf /Volumes/TripleA/" />
 		</exec>
 
 		<exec executable="cp">
@@ -320,10 +325,7 @@
 			</zipfileset -->
 
 			<zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
-				<include name="**/*.html" />
-				<include name="**/*.png" />
-				<include name="**/*.gif" />
-				<include name="**/*.jpg" />
+				<include name="**/*.*" />
 			</zipfileset>
 
 			<zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
@@ -353,6 +355,7 @@
 				<include name="*.bat" />
 				<include name="triplea.exe" />
 				<include name="changelog.txt" />
+				<include name="TripleA_RuleBook.pdf" />
 			</zipfileset>
 
 			<zipfileset dir="." prefix="triplea_${triplea.version}/" filemode="755">
@@ -475,6 +478,7 @@
 				<include name="**/*.xml" />
 				<include name="**/*.wav" />
 				<include name="**/*.properties" />
+				<include name="**/*.html" />
 			</zipfileset>
 
 			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
@@ -486,6 +490,7 @@
 				<include name="build.xml" />
 				<include name=".ant.properties" />
 				<include name="readme.html" />
+				<include name="TripleA_RuleBook.pdf.html" />
 				<include name="*.bat" />
 				<include name="*.sh" />
 				<include name="changelog.txt" />
@@ -504,10 +509,7 @@
 			</zipfileset>
 
 			<zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
-				<include name="**/*.html" />
-				<include name="**/*.png" />
-				<include name="**/*.gif" />
-				<include name="**/*.jpg" />
+				<include name="**/*.*" />
 			</zipfileset>
 
 			<zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">

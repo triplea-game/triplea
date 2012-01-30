@@ -1,4 +1,8 @@
 Changes for 1.5
+* Adding new Game-Play manual. (victor, veqryn, hepster)
+
+* Fixing build xml to export new docs. (veqryn)
+
 * Fixed major bug with new Delayed parsing method, it will now correctly handle maps with errors in them by removing them from the game chooser list. (veqryn)
 
 * Creating better error messages for setting attachment options in xmls. (veqryn)
