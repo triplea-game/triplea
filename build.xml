@@ -490,7 +490,7 @@
 				<include name="build.xml" />
 				<include name=".ant.properties" />
 				<include name="readme.html" />
-				<include name="TripleA_RuleBook.pdf.html" />
+				<include name="TripleA_RuleBook.pdf" />
 				<include name="*.bat" />
 				<include name="*.sh" />
 				<include name="changelog.txt" />
