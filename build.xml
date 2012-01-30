@@ -491,6 +491,7 @@
 				<include name=".ant.properties" />
 				<include name="readme.html" />
 				<include name="TripleA_RuleBook.pdf" />
+				<include name="TripleA_RuleBook.docx" />
 				<include name="*.bat" />
 				<include name="*.sh" />
 				<include name="changelog.txt" />
