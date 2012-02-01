@@ -134,7 +134,8 @@ public class HistoryWriter implements java.io.Serializable
 		if (isCurrentEvent())
 			closeCurrent();
 		if (!isCurrentStep())
-			throw new IllegalStateException("Cant add an event, not a step");
+			throw new IllegalStateException("Cant add an event, not a step. " +
+						"Must be in a step to add an event to the step. \nTrying to add event: " + eventName);
 		final Event event = new Event(eventName, m_history.getChanges().size());
 		final HistoryNode oldCurrent = m_current;
 		m_history.getGameData().acquireWriteLock();
@@ -197,7 +198,7 @@ public class HistoryWriter implements java.io.Serializable
 		if (!isCurrentEvent() && !isCurrentStep())
 		{
 			new IllegalStateException("Not in an event, but trying to add change:" + change + " current is:" + m_current).printStackTrace(System.out);
-			startEvent("????");
+			startEvent("Bad Event for change: \n" + change.toString());
 		}
 		m_history.changeAdded(change);
 	}
