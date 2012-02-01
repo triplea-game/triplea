@@ -1,3 +1,7 @@
+Changes for 1.5.1
+* Fixed bug with Air Battles where there were more hits than aircraft. (veqryn)
+
+
 Changes for 1.5
 * Adding new Game-Play manual. (victor, veqryn, hepster)
 

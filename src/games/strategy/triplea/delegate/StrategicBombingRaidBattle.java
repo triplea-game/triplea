@@ -427,8 +427,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			return casualtySelection.getKilled();
 		}
 		final Collection<Unit> casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
-		if (casualties.size() != dice.getHits())
-			throw new IllegalStateException("Wrong number of casualties, expecting:" + dice + " but got:" + casualties);
+		if (casualties.size() != (dice.getHits() > validAttackingUnitsForThisRoll.size() ? validAttackingUnitsForThisRoll.size() : dice.getHits()))
+			throw new IllegalStateException("Wrong number of casualties, expecting:"
+						+ (dice.getHits() > validAttackingUnitsForThisRoll.size() ? validAttackingUnitsForThisRoll.size() : dice.getHits()) + " but got:" + casualties.size());
 		return casualties;
 	}
 	

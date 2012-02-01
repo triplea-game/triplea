@@ -332,7 +332,15 @@ public class BattleCalculator
 			tripleaPlayer = new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
 		else
 			tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
-		final CasualtyDetails casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, hitsRemaining, text, dice, player, defaultCasualties, battleID);
+		final CasualtyDetails casualtySelection;
+		if (hitsRemaining >= targets.size())
+		{
+			casualtySelection = new CasualtyDetails(defaultCasualties, true);
+		}
+		else
+		{
+			casualtySelection = tripleaPlayer.selectCasualties(targets, dependents, hitsRemaining, text, dice, player, defaultCasualties, battleID);
+		}
 		List<Unit> killed = casualtySelection.getKilled();
 		// if partial retreat is possible, kill amphibious units first
 		if (isPartialAmphibiousRetreat(data))
@@ -349,7 +357,7 @@ public class BattleCalculator
 			}
 		}
 		// check right number
-		if (!isEditMode && !(numhits + damaged.size() == hitsRemaining))
+		if (!isEditMode && !(numhits + damaged.size() == (hitsRemaining > targets.size() ? targets.size() : hitsRemaining)))
 		{
 			tripleaPlayer.reportError("Wrong number of casualties selected");
 			return selectCasualties(player, targets, bridge, text, dice, defending, battleID);
