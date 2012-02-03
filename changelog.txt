@@ -1,4 +1,10 @@
 Changes for 1.5.1
+* Fixing a couple "Lock not held" errors. (veqryn)
+
+* Fixed the Battle Calculator not displaying combat units with 'AA' abilities. (veqryn)
+
+* Fixed the "Cant add an event, not a step" bug for adding AddBattleRecordsChange. (veqryn)
+
 * Fixed bug with Air Battles where there were more hits than aircraft. (veqryn)
 
 

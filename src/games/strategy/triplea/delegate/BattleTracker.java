@@ -896,7 +896,11 @@ public class BattleTracker implements java.io.Serializable
 	
 	public void sendBattleRecordsToGameData(final IDelegateBridge aBridge)
 	{
-		aBridge.addChange(ChangeFactory.addBattleRecords((new BattleRecords(m_battleRecords)), aBridge.getData()));
+		if (!m_battleRecords.isEmpty())
+		{
+			aBridge.getHistoryWriter().startEvent("Recording Battle Statistics");
+			aBridge.addChange(ChangeFactory.addBattleRecords((new BattleRecords(m_battleRecords)), aBridge.getData()));
+		}
 	}
 	
 	@Override

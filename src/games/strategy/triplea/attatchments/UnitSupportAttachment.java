@@ -109,11 +109,13 @@ public class UnitSupportAttachment extends DefaultAttachment
 	public static Set<UnitSupportAttachment> get(final GameData data)
 	{
 		final Set<UnitSupportAttachment> supports = new HashSet<UnitSupportAttachment>();
+		data.acquireReadLock();
 		final Iterator<UnitType> i = data.getUnitTypeList().iterator();
 		while (i.hasNext())
 		{
 			supports.addAll(get(i.next()));
 		}
+		data.releaseReadLock();
 		return supports;
 	}
 	

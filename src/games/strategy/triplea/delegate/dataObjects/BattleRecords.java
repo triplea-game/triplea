@@ -151,6 +151,11 @@ public class BattleRecords implements Serializable
 		m_records.clear();
 	}
 	
+	public boolean isEmpty()
+	{
+		return m_records.isEmpty();
+	}
+	
 	@Override
 	public String toString()
 	{

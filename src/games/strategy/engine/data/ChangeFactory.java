@@ -1387,11 +1387,11 @@ class AddBattleRecordsChange extends Change
 		return new AddBattleRecordsChange(m_oldRecords, m_newRecords);
 	}
 	
-	/*@Override
+	@Override
 	public String toString()
 	{
-		return "New Battle Record: [" + m_newRecords + "] and Old Battle Record: [" + m_oldRecords + "]";
-	}*/
+		return "New Battle Record: [" + m_newRecords.toString() + "] and Old Battle Record: [" + m_oldRecords.toString() + "]";
+	}
 }
 
 

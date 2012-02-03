@@ -642,6 +642,15 @@ public class Matches
 			return ua.getIsInfrastructure();
 		}
 	};
+	public static final Match<UnitType> UnitTypeIsInfrastructure = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType ut)
+		{
+			final UnitAttachment ua = UnitAttachment.get(ut);
+			return ua.getIsInfrastructure();
+		}
+	};
 	
 	/**
 	 * Checks for having attack/defense and for providing support. Does not check for having AA ability.
@@ -658,8 +667,28 @@ public class Matches
 			@Override
 			public boolean match(final Unit unit)
 			{
+				return Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player, data).match(unit.getType());
+			}
+		};
+	}
+	
+	/**
+	 * Checks for having attack/defense and for providing support. Does not check for having AA ability.
+	 * 
+	 * @param attack
+	 * @param player
+	 * @param data
+	 * @return
+	 */
+	public static final Match<UnitType> UnitTypeIsSupporterOrHasCombatAbility(final boolean attack, final PlayerID player, final GameData data)
+	{
+		return new Match<UnitType>()
+		{
+			@Override
+			public boolean match(final UnitType ut)
+			{
 				// if unit has attack or defense, return true
-				final UnitAttachment ua = UnitAttachment.get(unit.getType());
+				final UnitAttachment ua = UnitAttachment.get(ut);
 				if (attack && ua.getAttack(player) > 0)
 					return true;
 				if (!attack && ua.getDefense(player) > 0)
@@ -667,7 +696,7 @@ public class Matches
 				// if unit can support other units, return true
 				for (final UnitSupportAttachment rule : UnitSupportAttachment.get(data))
 				{
-					if (unit.getType().equals(rule.getAttachedTo()))
+					if (ut.equals(rule.getAttachedTo()))
 						return true;
 				}
 				return false;

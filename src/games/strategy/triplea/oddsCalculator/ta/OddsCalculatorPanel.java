@@ -16,6 +16,7 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.ScrollableTextField;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
@@ -155,9 +156,16 @@ public class OddsCalculatorPanel extends JPanel
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker()))
+				m_data.acquireReadLock();
+				try
 				{
-					m_attackerCombo.setSelectedItem(getNonAllied(getDefender()));
+					if (m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker()))
+					{
+						m_attackerCombo.setSelectedItem(getEnemy(getDefender()));
+					}
+				} finally
+				{
+					m_data.releaseReadLock();
 				}
 				updateDefender(null);
 			}
@@ -171,7 +179,7 @@ public class OddsCalculatorPanel extends JPanel
 				{
 					if (m_data.getRelationshipTracker().isAllied(getDefender(), getAttacker()))
 					{
-						m_defenderCombo.setSelectedItem(getNonAllied(getAttacker()));
+						m_defenderCombo.setSelectedItem(getEnemy(getAttacker()));
 					}
 				} finally
 				{
@@ -330,14 +338,20 @@ public class OddsCalculatorPanel extends JPanel
 		return m_landBattle.isSelected();
 	}
 	
-	private PlayerID getNonAllied(final PlayerID player)
+	private PlayerID getEnemy(final PlayerID player)
 	{
+		for (final PlayerID id : m_data.getPlayerList())
+		{
+			if (m_data.getRelationshipTracker().isAtWar(player, id))
+				return id;
+		}
 		for (final PlayerID id : m_data.getPlayerList())
 		{
 			if (!m_data.getRelationshipTracker().isAllied(player, id))
 				return id;
 		}
-		throw new IllegalStateException("No enemies for :" + player);
+		// TODO: do we allow fighting allies in the battle calc?
+		throw new IllegalStateException("No enemies or non-allies for :" + player);
 	}
 	
 	private void layoutComponents()
@@ -600,11 +614,27 @@ class PlayerUnitsPanel extends JPanel
 					rVal.add(u.getType());
 			}
 		}
-		// filter out factories
-		rVal = Match.getMatches(rVal, Matches.UnitTypeIsFactoryOrIsInfrastructureButNotAAofAnyKind.invert());
-		// aa guns can't attack
-		if (!m_defender)
-			rVal = Match.getMatches(rVal, Matches.UnitTypeIsAAforAnything.invert());
+		// we want to filter out anything like factories, or units that have no combat ability AND can not be taken casualty.
+		// in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too, unless they have other combat abilities.
+		if (m_defender)
+		{
+			rVal = Match.getMatches(rVal, new CompositeMatchOr<UnitType>(
+						Matches.UnitIsFactory,
+						Matches.UnitIsAAforCombatOnly,
+						new CompositeMatchAnd<UnitType>(
+									Matches.UnitTypeIsInfrastructure,
+									Matches.UnitTypeIsSupporterOrHasCombatAbility(!m_defender, player, m_data).invert())
+									).invert());
+		}
+		else
+		{
+			rVal = Match.getMatches(rVal, new CompositeMatchOr<UnitType>(
+						Matches.UnitIsFactory,
+						new CompositeMatchAnd<UnitType>(
+									Matches.UnitTypeIsInfrastructure,
+									Matches.UnitTypeIsSupporterOrHasCombatAbility(!m_defender, player, m_data).invert())
+									).invert());
+		}
 		return rVal;
 	}
 }
