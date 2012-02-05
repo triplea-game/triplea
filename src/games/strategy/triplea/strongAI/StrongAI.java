@@ -7343,6 +7343,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	@Override
 	protected void purchase(final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
 	{
+		if (!this.canWePurchaseOrRepair(purchaseForBid))
+			return;
 		long last, now;
 		last = System.currentTimeMillis();
 		s_logger.fine("Doing Purchase ");

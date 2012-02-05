@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Making the check to see if you can do the purchase phase, the same for both humans and AIs. (veqryn)
+
 * Fixed null pointer error for when a player runs low on resources. (veqryn)
 
 * Fixing a couple "Lock not held" errors. (veqryn)

@@ -2,6 +2,8 @@ package games.strategy.triplea.baseAI;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -12,7 +14,9 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -498,5 +502,48 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 			}
 		}
 		return rVal;
+	}
+	
+	public boolean canWePurchaseOrRepair(final boolean bid)
+	{
+		if (bid)
+		{
+			if (!BidPurchaseDelegate.doesPlayerHaveBid(m_bridge.getGameData(), m_id))
+				return false;
+		}
+		// NoPUPurchaseDelegate will run first, before this section. After running, the engine will wait for the player by coming here. Exit if we are a No PU delegate purchase
+		if (this.m_bridge.getStepName().endsWith("NoPUPurchase"))
+			return false;
+		// we have no production frontier
+		else if (m_id.getProductionFrontier() == null || m_id.getProductionFrontier().getRules().isEmpty())
+		{
+			return false;
+		}
+		else
+		{
+			// if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
+			final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(m_id, m_bridge.getGameData()));
+			final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(m_id, m_bridge.getGameData()));
+			final PlayerAttachment pa = PlayerAttachment.get(m_id);
+			if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
+				return false;
+		}
+		if (m_id.getProductionFrontier() != null)
+		{
+			for (final ProductionRule rule : m_id.getProductionFrontier().getRules())
+			{
+				if (m_id.getResources().has(rule.getCosts()))
+					return true;
+			}
+		}
+		if (m_id.getRepairFrontier() != null)
+		{
+			for (final RepairRule rule : m_id.getRepairFrontier().getRules())
+			{
+				if (m_id.getResources().has(rule.getCosts()))
+					return true;
+			}
+		}
+		return false;
 	}
 }
