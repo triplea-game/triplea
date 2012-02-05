@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Fixed null pointer error for when a player runs low on resources. (veqryn)
+
 * Fixing a couple "Lock not held" errors. (veqryn)
 
 * Fixed the Battle Calculator not displaying combat units with 'AA' abilities. (veqryn)

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Pacific Test" version="2.1"/>
+        <info name="World War II Pacific Test" version="2.2"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5"/>
         <map>
@@ -1883,7 +1883,7 @@
 					</attatchment>
 					
 					<attatchment name="conditionAttachmentJapaneseDoNotControlBurmaRoad" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-						<option name="alliedOwnershipTerritories" value="India:Burma:Yunnan:Szechwan" count="4"/>
+						<option name="alliedOwnershipTerritories" value="India:Burma:Yunnan:Szechwan" count="1"/>
 						<option name="invert" value="true"/>
 					</attatchment>
 					
@@ -2923,6 +2923,14 @@
 						<br>
 						<br>thank you for playing!
 						<br>
+						<br>
+						<br>recent Change Log:
+						<br>
+						<br>Version 2.2 changes:
+						<br>* Fixed Chinese national objective to work properly.
+						<br>
+						<br>Version 2.1 changes:
+						<br>* Got everything working according to OOB rules. Only works on TripleA engine 1.5 and greater.
 						<br>
 						
 						]]>

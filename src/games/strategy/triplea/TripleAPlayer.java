@@ -423,15 +423,21 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private boolean canWePurchaseOrRepair()
 	{
-		for (final ProductionRule rule : m_id.getProductionFrontier().getRules())
+		if (m_id.getProductionFrontier() != null)
 		{
-			if (m_id.getResources().has(rule.getCosts()))
-				return true;
+			for (final ProductionRule rule : m_id.getProductionFrontier().getRules())
+			{
+				if (m_id.getResources().has(rule.getCosts()))
+					return true;
+			}
 		}
-		for (final RepairRule rule : m_id.getRepairFrontier().getRules())
+		if (m_id.getRepairFrontier() != null)
 		{
-			if (m_id.getResources().has(rule.getCosts()))
-				return true;
+			for (final RepairRule rule : m_id.getRepairFrontier().getRules())
+			{
+				if (m_id.getResources().has(rule.getCosts()))
+					return true;
+			}
 		}
 		return false;
 	}

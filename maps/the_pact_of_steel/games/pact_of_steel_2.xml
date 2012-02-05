@@ -1800,6 +1800,8 @@
 															the list may be turned on/off with "Unit Placement Restrictions" game property
 			unitPlacementOnlyAllowedIn			values: is the direct inverse of unitPlacementRestrictions
 			requiresUnits						values: is a list of units required to be present in the territory in order for you to build this unit there.  Can have multiple instances. Only one instance needs to be true in order to build.
+															examples: <option name="requiresUnits" value="CombatEngineer:Truck"/> would mean we need at least one CombatEngineer AND at least one Truck in order to build there.  
+															If after that line we had a second line saying <option name="requiresUnits" value="SuperEngineer"/> then it would mean OR we need at least one SuperEngineer.
 			consumesUnits						values: requires that a unit be present in a territory, then when this unit is placed the other units are destroyed / upgraded into this unit.  Can have multiple instances of this, which means it consumes multiple types of units.
 			isConstruction						values: allows the unit to be placed in territories that don't contain factories. only "constructionsPerTerrPerTypePerTurn" contructions of "constructionType" may be placed per territory per turn. 
 															may have only "maxConstructionsPerTypePerTerr" constructions Total per territory with/without a factory unless you enable "More Constructions with/without Factory", which will allow up a total number of up to the territory value
