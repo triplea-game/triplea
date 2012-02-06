@@ -312,7 +312,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		if (s.length <= 1)
 			throw new GameParseException("unitPresence must have at least 2 fields. Format value=unit1 count=number, or value=unit1:unit2:unit3 count=number" + thisErrorMsg());
 		final int n = getInt(s[0]);
-		if (n <= 0)
+		if (n < 0)
 			throw new GameParseException("unitPresence must be a positive integer" + thisErrorMsg());
 		for (int i = 1; i < s.length; i++)
 		{
