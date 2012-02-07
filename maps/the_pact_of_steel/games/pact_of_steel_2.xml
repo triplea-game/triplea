@@ -2134,7 +2134,7 @@
                          <option name="isInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="6"/>
-						 <option name="maxOperationalDamage" value="3"/>
+						 <option name="maxOperationalDamage" value="2"/>
 						 <!-- isAirBase allows units with canScramble to scramble from a territory with this unit -->
 						 <option name="isAirBase" value="true"/>
 						 <option name="isConstruction" value="true"/>
@@ -2159,7 +2159,7 @@
                          <option name="isInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="6"/>
-						 <option name="maxOperationalDamage" value="3"/>
+						 <option name="maxOperationalDamage" value="2"/>
 						 <!-- repairsUnits is a colon delimited list of all the units this unit can repair. units to be repaired must be in the same territory as this unit. 
 								unless the unit being repaired is sea, and the unit repairing it is land, in which case the sea unit must be adjacent to the land unit 
 								example: option name="repairsUnits" value="battleship:super_carrier" -->
@@ -5146,8 +5146,8 @@
 						<br>6. Midget_Submarine is a Japanese only unit with 3 attack, 2 defence, and 2 movement (costs 4). If it attacks or defends it will die after shooting (it is a suicide unit). Japan can purchase them after certain conditions are met, and they don't receive bonus movement from harbours.
 						<br>7. Kamikaze Fighters are what Japanese fighters turn into if certain conditions are met.  They have 5 attack, 3 defense, and 3 movement (cost 8), and they are allowed to use up all their movement to go to a battle, 
 									do not require a landing zone for movement, and they will die after rolling their dice.
-						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones if you turn on "Scramble Rules In Effect".
-						<br>9. Harbour gives +1 movement to warships, and are needed to repair Battleships if you turn on "Two HitPoint Units Require Repair Facilities".
+						<br>8. Airfield gives +1 movement to air units, and allows fighters to scramble to defend surrounding sea zones if you turn on "Scramble Rules In Effect". Can receive up to 6 damage, and stops working when having more than 2 damage.
+						<br>9. Harbour gives +1 movement to warships, and are needed to repair Battleships if you turn on "Two HitPoint Units Require Repair Facilities". Can receive up to 6 damage, and stops working when having more than 2 damage.
 						<br>10. Bunkers are defensive units that can also be bombed/rocketted, will not participate in battle if damaged, and will die if they reach 4 damage.  
 									They may be placed in any territory you owned at the beginning of the turn (just like Factories, Airfields, and Harbours) where you also have a land unit, but there is a limit of 1 per territory.
 						<br>11. New Technologies: reinforcedHulls (gives +2 defense to subs), and wolfPackTactics (gives +1 att). Available to Germans after they get superSubs.

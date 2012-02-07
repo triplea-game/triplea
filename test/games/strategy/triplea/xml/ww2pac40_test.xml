@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Pacific Test" version="2.2"/>
+        <info name="World War II Pacific Test" version="2.3"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5"/>
         <map>
@@ -1401,7 +1401,7 @@
                          <option name="isInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="6"/>
-						 <option name="maxOperationalDamage" value="3"/>
+						 <option name="maxOperationalDamage" value="2"/>
 						 <option name="isAirBase" value="true"/>
 						 <option name="isConstruction" value="true"/>
 						 <option name="constructionType" value="airfield_structure"/>
@@ -1420,7 +1420,7 @@
                          <option name="isInfrastructure" value="true"/>
 						 <option name="canBeDamaged" value="true"/>
 						 <option name="maxDamage" value="6"/>
-						 <option name="maxOperationalDamage" value="3"/>
+						 <option name="maxOperationalDamage" value="2"/>
 						 <option name="repairsUnits" value="battleship:carrier"/>
 						 <option name="isConstruction" value="true"/>
 						 <option name="constructionType" value="harbour_structure"/>
@@ -2925,6 +2925,9 @@
 						<br>
 						<br>
 						<br>recent Change Log:
+						<br>
+						<br>Version 2.3 changes:
+						<br>* Fixed Air and Naval bases to stop working when having more than 2 damage (ie: 3).  Previously the only stopped at more than 3 damage (ie: 4).
 						<br>
 						<br>Version 2.2 changes:
 						<br>* Fixed Chinese national objective to work properly.

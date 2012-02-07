@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Changing airfields and harbours to stop being operational at 3 damage, instead of 4. (veqryn)
+
 * Fixed bug where you were not allowed zero (0) for the unitPresence count. (veqryn)
 
 * Making the check to see if you can do the purchase phase, the same for both humans and AIs. (veqryn)
