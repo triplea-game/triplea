@@ -619,8 +619,8 @@ class PlayerUnitsPanel extends JPanel
 		if (m_defender)
 		{
 			rVal = Match.getMatches(rVal, new CompositeMatchOr<UnitType>(
-						Matches.UnitIsFactory,
-						Matches.UnitIsAAforCombatOnly,
+						Matches.UnitTypeIsFactory,
+						Matches.UnitTypeIsAAforCombatOnly,
 						new CompositeMatchAnd<UnitType>(
 									Matches.UnitTypeIsInfrastructure,
 									Matches.UnitTypeIsSupporterOrHasCombatAbility(!m_defender, player, m_data).invert())
@@ -629,7 +629,7 @@ class PlayerUnitsPanel extends JPanel
 		else
 		{
 			rVal = Match.getMatches(rVal, new CompositeMatchOr<UnitType>(
-						Matches.UnitIsFactory,
+						Matches.UnitTypeIsFactory,
 						new CompositeMatchAnd<UnitType>(
 									Matches.UnitTypeIsInfrastructure,
 									Matches.UnitTypeIsSupporterOrHasCombatAbility(!m_defender, player, m_data).invert())

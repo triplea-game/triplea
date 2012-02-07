@@ -1046,15 +1046,6 @@ public class Matches
 			return ua.getCanProduceUnits();
 		}
 	};
-	public static final Match<UnitType> UnitTypeIsAAforAnything = new Match<UnitType>()
-	{
-		@Override
-		public boolean match(final UnitType obj)
-		{
-			final UnitAttachment ua = UnitAttachment.get(obj);
-			return ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly() || ua.getIsAAforFlyOverOnly();
-		}
-	};
 	public static final Match<Unit> UnitIsRocket = new Match<Unit>()
 	{
 		@Override
@@ -1170,8 +1161,15 @@ public class Matches
 		@Override
 		public boolean match(final Unit obj)
 		{
-			final UnitType type = obj.getUnitType();
-			final UnitAttachment ua = UnitAttachment.get(type);
+			return UnitTypeIsAAforCombatOnly.match(obj.getType());
+		}
+	};
+	public static final Match<UnitType> UnitTypeIsAAforCombatOnly = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType obj)
+		{
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			return ua.getIsAAforCombatOnly();
 		}
 	};
@@ -1180,8 +1178,15 @@ public class Matches
 		@Override
 		public boolean match(final Unit obj)
 		{
-			final UnitType type = obj.getUnitType();
-			final UnitAttachment ua = UnitAttachment.get(type);
+			return UnitTypeIsAAforBombingThisUnitOnly.match(obj.getType());
+		}
+	};
+	public static final Match<UnitType> UnitTypeIsAAforBombingThisUnitOnly = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType obj)
+		{
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			return ua.getIsAAforBombingThisUnitOnly();
 		}
 	};
@@ -1190,8 +1195,15 @@ public class Matches
 		@Override
 		public boolean match(final Unit obj)
 		{
-			final UnitType type = obj.getUnitType();
-			final UnitAttachment ua = UnitAttachment.get(type);
+			return UnitTypeIsAAforFlyOverOnly.match(obj.getType());
+		}
+	};
+	public static final Match<UnitType> UnitTypeIsAAforFlyOverOnly = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType obj)
+		{
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			return ua.getIsAAforFlyOverOnly();
 		}
 	};
@@ -1201,6 +1213,15 @@ public class Matches
 		public boolean match(final Unit obj)
 		{
 			return UnitTypeIsAAforAnything.match(obj.getType());
+		}
+	};
+	public static final Match<UnitType> UnitTypeIsAAforAnything = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType obj)
+		{
+			final UnitAttachment ua = UnitAttachment.get(obj);
+			return ua.getIsAAforBombingThisUnitOnly() || ua.getIsAAforCombatOnly() || ua.getIsAAforFlyOverOnly();
 		}
 	};
 	public static final Match<Unit> UnitIsNotAA = new InverseMatch<Unit>(UnitIsAAforAnything);
