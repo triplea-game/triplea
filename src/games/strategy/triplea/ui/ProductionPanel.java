@@ -134,7 +134,8 @@ public class ProductionPanel extends JPanel
 		m_uiContext = uiContext;
 	}
 	
-	private void initRules(final PlayerID player, final GameData data, final IntegerMap<ProductionRule> initialPurchase)
+	// made this protected so can be extended by edit production panel
+	protected void initRules(final PlayerID player, final GameData data, final IntegerMap<ProductionRule> initialPurchase)
 	{
 		m_data.acquireReadLock();
 		try

@@ -487,7 +487,8 @@ public class EditPanel extends ActionPanel
 			}
 			else if (m_currentAction == m_addUnitsAction)
 			{
-				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+				final boolean allowNeutral = doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, getData());
+				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), allowNeutral);
 				int option;
 				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), playerChooser, "Select owner for new units", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 				final PlayerID player = playerChooser.getSelected();
@@ -559,4 +560,17 @@ public class EditPanel extends ActionPanel
 			setWidgetActivation();
 		}
 	};
+	
+	private static boolean doesPlayerHaveUnitsOnMap(final PlayerID player, final GameData data)
+	{
+		for (final Territory t : data.getMap())
+		{
+			for (final Unit u : t.getUnits())
+			{
+				if (u.getOwner().equals(player))
+					return true;
+			}
+		}
+		return false;
+	}
 }

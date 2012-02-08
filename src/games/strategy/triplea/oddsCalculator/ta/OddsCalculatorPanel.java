@@ -416,9 +416,12 @@ public class OddsCalculatorPanel extends JPanel
 		m_data.acquireReadLock();
 		try
 		{
-			m_attackerCombo = new JComboBox(new Vector<PlayerID>(m_data.getPlayerList().getPlayers()));
-			m_defenderCombo = new JComboBox(new Vector<PlayerID>(m_data.getPlayerList().getPlayers()));
-			m_SwapSidesCombo = new JComboBox(new Vector<PlayerID>(m_data.getPlayerList().getPlayers()));
+			final Collection<PlayerID> playerList = new ArrayList<PlayerID>(m_data.getPlayerList().getPlayers());
+			if (doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, m_data))
+				playerList.add(PlayerID.NULL_PLAYERID);
+			m_attackerCombo = new JComboBox(new Vector<PlayerID>(playerList));
+			m_defenderCombo = new JComboBox(new Vector<PlayerID>(playerList));
+			m_SwapSidesCombo = new JComboBox(new Vector<PlayerID>(playerList));
 		} finally
 		{
 			m_data.releaseReadLock();
@@ -480,6 +483,19 @@ public class OddsCalculatorPanel extends JPanel
 	public void selectCalculateButton()
 	{
 		m_calculateButton.requestFocus();
+	}
+	
+	private static boolean doesPlayerHaveUnitsOnMap(final PlayerID player, final GameData data)
+	{
+		for (final Territory t : data.getMap())
+		{
+			for (final Unit u : t.getUnits())
+			{
+				if (u.getOwner().equals(player))
+					return true;
+			}
+		}
+		return false;
 	}
 }
 
@@ -598,12 +614,15 @@ class PlayerUnitsPanel extends JPanel
 	{
 		Collection<UnitType> rVal = new HashSet<UnitType>();
 		final ProductionFrontier frontier = player.getProductionFrontier();
-		for (final ProductionRule rule : frontier)
+		if (frontier != null)
 		{
-			for (final NamedAttachable type : rule.getResults().keySet())
+			for (final ProductionRule rule : frontier)
 			{
-				if (type instanceof UnitType)
-					rVal.add((UnitType) type);
+				for (final NamedAttachable type : rule.getResults().keySet())
+				{
+					if (type instanceof UnitType)
+						rVal.add((UnitType) type);
+				}
 			}
 		}
 		for (final Territory t : m_data.getMap())
@@ -619,12 +638,13 @@ class PlayerUnitsPanel extends JPanel
 		if (m_defender)
 		{
 			rVal = Match.getMatches(rVal, new CompositeMatchOr<UnitType>(
-						Matches.UnitTypeIsFactory,
 						Matches.UnitTypeIsAAforCombatOnly,
-						new CompositeMatchAnd<UnitType>(
-									Matches.UnitTypeIsInfrastructure,
-									Matches.UnitTypeIsSupporterOrHasCombatAbility(!m_defender, player, m_data).invert())
-									).invert());
+						new CompositeMatchOr<UnitType>(
+									Matches.UnitTypeIsFactory,
+									new CompositeMatchAnd<UnitType>(
+												Matches.UnitTypeIsInfrastructure,
+												Matches.UnitTypeIsSupporterOrHasCombatAbility(!m_defender, player, m_data).invert())
+												).invert()));
 		}
 		else
 		{

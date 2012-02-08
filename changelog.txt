@@ -1,4 +1,10 @@
 Changes for 1.5.1
+* Allowed users to use Edit Mode to create new units for normal players, based on both their production frontier and any units they have on the board. (veqryn)
+
+* Allowing users to use Edit Mode to create and place new "Neutral" (null player) units, but only selecting from ones on the board. (veqryn)
+
+* Allowing users to Battle Calc against any "Neutral" (null player) units that are still on the board. (veqryn)
+
 * Fixing casting error bug introduced into battle calc. (veqryn)
 
 * Changing airfields and harbours to stop being operational at 3 damage, instead of 4. (veqryn)

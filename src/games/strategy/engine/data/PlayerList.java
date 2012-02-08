@@ -46,6 +46,24 @@ public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 		super(data);
 	}
 	
+	/*public PlayerList(final PlayerList playerList)
+	{
+		super(playerList.getData());
+		for (final PlayerID player : playerList.getPlayers())
+		{
+			this.addPlayerID(player);
+		}
+	}
+	
+	public PlayerList(final Collection<PlayerID> playerList, final GameData data)
+	{
+		super(data);
+		for (final PlayerID player : playerList)
+		{
+			this.addPlayerID(player);
+		}
+	}*/
+
 	protected void addPlayerID(final PlayerID player)
 	{
 		m_players.put(player.getName(), player);
