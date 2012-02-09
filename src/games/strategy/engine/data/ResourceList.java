@@ -33,6 +33,19 @@ public class ResourceList extends GameDataComponent
 {
 	private final Map<String, Resource> m_resourceList = new HashMap<String, Resource>();
 	
+	/* TODO: is this a good way to have a static reference for PUs?
+	private static Resource PUresource = null;
+	public static Resource getPUresource(final GameData data)
+	{
+		if (PUresource == null)
+		{
+			data.acquireReadLock();
+			PUresource = data.getResourceList().getResource(Constants.PUS);
+			data.releaseReadLock();
+		}
+		return PUresource;
+	}*/
+
 	public ResourceList(final GameData data)
 	{
 		super(data);

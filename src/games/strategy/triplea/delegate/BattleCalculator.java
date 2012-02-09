@@ -22,6 +22,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
+import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -744,6 +745,9 @@ public class BattleCalculator
 	 */
 	public static IntegerMap<UnitType> getCostsForTUV(final PlayerID player, final GameData data)
 	{
+		data.acquireReadLock();
+		final Resource PUS = data.getResourceList().getResource(Constants.PUS);
+		data.releaseReadLock();
 		final IntegerMap<UnitType> costs = new IntegerMap<UnitType>();
 		final ProductionFrontier frontier = player.getProductionFrontier();
 		// any one will do then
@@ -751,7 +755,7 @@ public class BattleCalculator
 			return getCostsForTuvForAllPlayersMergedAndAveraged(data);
 		for (final ProductionRule rule : frontier.getRules())
 		{
-			final int costPerGroup = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
+			final int costPerGroup = rule.getCosts().getInt(PUS);
 			final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
 			final int numberProduced = rule.getResults().getInt(type);
 			// we average the cost for a single unit, rounding up
@@ -790,6 +794,9 @@ public class BattleCalculator
 	{
 		/*if (s_costsForTuvForAllPlayersMergedAndAveraged != null && s_costsForTuvForAllPlayersMergedAndAveraged.size() > 0)
 			return s_costsForTuvForAllPlayersMergedAndAveraged;*/
+		data.acquireReadLock();
+		final Resource PUS = data.getResourceList().getResource(Constants.PUS);
+		data.releaseReadLock();
 		final IntegerMap<UnitType> costs = new IntegerMap<UnitType>();
 		final HashMap<UnitType, List<Integer>> differentCosts = new HashMap<UnitType, List<Integer>>();
 		for (final ProductionRule rule : data.getProductionRuleList().getProductionRules())
@@ -797,7 +804,7 @@ public class BattleCalculator
 			// only works for the first result, so we are assuming each purchase frontier only gives one type of unit
 			final UnitType ut = (UnitType) rule.getResults().keySet().iterator().next();
 			final int numberProduced = rule.getResults().getInt(ut);
-			final int costPerGroup = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
+			final int costPerGroup = rule.getCosts().getInt(PUS);
 			// we round up the cost
 			final int roundedCostPerSingle = (int) Math.ceil((double) costPerGroup / (double) numberProduced);
 			if (differentCosts.containsKey(ut))

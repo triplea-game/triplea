@@ -1,4 +1,10 @@
 Changes for 1.5.1
+* Fixed more "Lock not held" errors, and a potential null pointer in the battle calculator. (veqryn)
+
+* Possible fix for ConcurrentModificationException in BattleModel.refresh -> DiceRoll.isAmphibiousMarine -> BattleTracker.getPendingBattleSites. (veqryn)
+
+* Fixing bug with displaying up total resources when more than one unit creates resources. (veqryn)
+
 * Allowed users to use Edit Mode to create new units for normal players, based on both their production frontier and any units they have on the board. (veqryn)
 
 * Allowing users to use Edit Mode to create and place new "Neutral" (null player) units, but only selecting from ones on the board. (veqryn)

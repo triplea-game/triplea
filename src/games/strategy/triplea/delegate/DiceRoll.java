@@ -843,15 +843,16 @@ public class DiceRoll implements Externalizable
 	public static boolean isAmphibiousMarine(final UnitAttachment ua, final GameData data)
 	{
 		BattleTracker bt;
+		final Collection<Territory> m_pendingBattles;
 		data.acquireReadLock();
 		try
 		{
 			bt = DelegateFinder.battleDelegate(data).getBattleTracker();
+			m_pendingBattles = bt.getPendingBattleSites(false);
 		} finally
 		{
 			data.releaseReadLock();
 		}
-		final Collection<Territory> m_pendingBattles = bt.getPendingBattleSites(false);
 		final Iterator<Territory> territories = m_pendingBattles.iterator();
 		while (territories.hasNext())
 		{

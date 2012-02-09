@@ -74,8 +74,10 @@ public class TabbedProductionPanel extends ProductionPanel
 		this.removeAll();
 		this.setLayout(new GridBagLayout());
 		final ResourceCollection totalWithoutTechTokensOrVPs = new ResourceCollection(getResources());
+		m_data.acquireReadLock();
 		totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
 		totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
+		m_data.releaseReadLock();
 		add(new JLabel("<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: " + totalWithoutTechTokensOrVPs.toString() + ")</html>"),
 					new GridBagConstraints(0, 0, 1,
 								1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));

@@ -160,7 +160,6 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		final GameData data = getData();
 		final PlayerID player = data.getSequence().getStep().getPlayerID();
 		final Match<Unit> myCreatorsMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCreatesResources);
-		final CompositeChange change = new CompositeChange();
 		for (final Territory t : data.getMap().getTerritories())
 		{
 			final Collection<Unit> myCreators = Match.getMatches(t.getUnits().getUnits(), myCreatorsMatch);
@@ -168,6 +167,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			{
 				for (final Unit u : myCreators)
 				{
+					final CompositeChange change = new CompositeChange();
 					final UnitAttachment ua = UnitAttachment.get(u.getType());
 					final IntegerMap<Resource> createsUnitsMap = ua.getCreatesResourcesList();
 					final Collection<Resource> willBeCreated = createsUnitsMap.keySet();
@@ -188,11 +188,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 						final Change resources = ChangeFactory.changeResourcesChange(player, r, toAdd);
 						change.add(resources);
 					}
+					if (!change.isEmpty())
+						bridge.addChange(change);
 				}
 			}
 		}
-		if (change != null && !change.isEmpty())
-			bridge.addChange(change);
 	}
 	
 	/**
