@@ -98,7 +98,7 @@ public class OddsCalculatorPanel extends JPanel
 			{
 				m_landBattle.setSelected(!location.isWater());
 				// default to the current player
-				if (!(m_data.getSequence().getStep().getPlayerID() == null) && !m_data.getSequence().getStep().getPlayerID().isNull())
+				if (m_data.getSequence().getStep().getPlayerID() != null && !m_data.getSequence().getStep().getPlayerID().isNull())
 				{
 					m_attackerCombo.setSelectedItem(m_data.getSequence().getStep().getPlayerID());
 				}
