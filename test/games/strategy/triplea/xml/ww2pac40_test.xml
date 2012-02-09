@@ -2569,7 +2569,7 @@
 						<number min="0" max="10"/>
 				</property>
 
-				<property name="Display Sea Names" value="false" editable="true">
+				<property name="Display Sea Names" value="false" editable="false">
 						<boolean/>
 				</property>
 
@@ -2660,7 +2660,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Capture Units On Entering Territory" value ="false" editable="false">
+				<property name="Capture Units On Entering Territory" value ="true" editable="false">
 						<boolean/>
 				</property>
 
