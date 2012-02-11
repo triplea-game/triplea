@@ -348,62 +348,65 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		// Check if any factories need to be repaired
 		String error = null;
 		IPurchaseDelegate purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
-		if (isSBRAffectsUnitProduction(m_bridge.getGameData()))
+		if (m_id.getRepairFrontier() != null && !m_id.getRepairFrontier().getRules().isEmpty())
 		{
-			final GameData data = m_bridge.getGameData();
-			final Collection<Territory> bombedTerrs = new ArrayList<Territory>();
-			for (final Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, m_id)))
+			if (isSBRAffectsUnitProduction(m_bridge.getGameData()))
 			{
-				final TerritoryAttachment ta = TerritoryAttachment.get(t);
-				// changed this to > from !=
-				if (ta.getProduction() > ta.getUnitProduction())
+				final GameData data = m_bridge.getGameData();
+				final Collection<Territory> bombedTerrs = new ArrayList<Territory>();
+				for (final Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, m_id)))
 				{
-					bombedTerrs.add(t);
-				}
-			}
-			final Collection<Unit> damagedUnits = new ArrayList<Unit>();
-			final Match<Unit> myFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitIsFactoryOrCanBeDamaged);
-			for (final Territory t : bombedTerrs)
-			{
-				damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myFactories));
-			}
-			if (bombedTerrs.size() > 0 && damagedUnits.size() > 0)
-			{
-				final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
-				if (repair != null)
-				{
-					purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
-					error = purchaseDel.purchaseRepair(repair);
-					if (error != null)
+					final TerritoryAttachment ta = TerritoryAttachment.get(t);
+					// changed this to > from !=
+					if (ta.getProduction() > ta.getUnitProduction())
 					{
-						m_ui.notifyError(error);
-						// dont give up, keep going
-						purchase(bid);
+						bombedTerrs.add(t);
+					}
+				}
+				final Collection<Unit> damagedUnits = new ArrayList<Unit>();
+				final Match<Unit> myFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitIsFactoryOrCanBeDamaged);
+				for (final Territory t : bombedTerrs)
+				{
+					damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myFactories));
+				}
+				if (bombedTerrs.size() > 0 && damagedUnits.size() > 0)
+				{
+					final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
+					if (repair != null)
+					{
+						purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
+						error = purchaseDel.purchaseRepair(repair);
+						if (error != null)
+						{
+							m_ui.notifyError(error);
+							// dont give up, keep going
+							purchase(bid);
+						}
 					}
 				}
 			}
-		}
-		else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(m_bridge.getGameData()))
-		{
-			final GameData data = m_bridge.getGameData();
-			final Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitHasSomeUnitDamage());
-			final Collection<Unit> damagedUnits = new ArrayList<Unit>();
-			for (final Territory t : data.getMap().getTerritories())
+			else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(m_bridge.getGameData()))
 			{
-				damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
-			}
-			if (damagedUnits.size() > 0)
-			{
-				final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
-				if (repair != null)
+				final GameData data = m_bridge.getGameData();
+				final Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitHasSomeUnitDamage());
+				final Collection<Unit> damagedUnits = new ArrayList<Unit>();
+				for (final Territory t : data.getMap().getTerritories())
 				{
-					purchaseDel = (IPurchaseDelegate) m_bridge.getRemote(); // TODO: veq fix
-					error = purchaseDel.purchaseRepair(repair);
-					if (error != null)
+					damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myDamaged));
+				}
+				if (damagedUnits.size() > 0)
+				{
+					final HashMap<Unit, IntegerMap<RepairRule>> repair = m_ui.getRepair(m_id, bid);
+					if (repair != null)
 					{
-						m_ui.notifyError(error);
-						// dont give up, keep going
-						purchase(bid);
+						purchaseDel = (IPurchaseDelegate) m_bridge.getRemote(); // TODO: veq fix
+						error = purchaseDel.purchaseRepair(repair);
+						if (error != null)
+						{
+							m_ui.notifyError(error);
+							// dont give up, keep going
+							purchase(bid);
+						}
 					}
 				}
 			}
@@ -620,7 +623,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		return m_ui.getBattlePanel().getScramble(m_bridge, battleID, message, possibleTerritories, player);
 	}*/
-
+	
 	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
 	{
 		return m_ui.scrambleUnitsQuery(scrambleTo, possibleScramblers);

@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Fixed null pointer error for players who have damaged units but no repair frontier. (veqryn)
+
 * Adding Europe 1940 as test xml. (veqryn)
 
 * Fixed more "Lock not held" errors, and a potential null pointer in the battle calculator. (veqryn)
