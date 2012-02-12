@@ -118,7 +118,7 @@ public class PBEMMessagePoster implements Serializable
 			}
 			try
 			{
-				forumSuccess = m_forumPoster.postTurnSummary(m_turnSummary, "TripleA: " + m_currentPlayer.getName() + " round " + m_roundNumber);
+				forumSuccess = m_forumPoster.postTurnSummary(m_turnSummary, "TripleA Turn Summary: " + m_currentPlayer.getName() + " round " + m_roundNumber);
 				m_turnSummaryRef = m_forumPoster.getTurnSummaryRef();
 				if (m_turnSummaryRef != null && historyWriter != null)
 				{

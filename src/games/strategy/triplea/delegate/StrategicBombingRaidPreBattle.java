@@ -312,9 +312,6 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				{
 					final List<Unit> defendingUnits = getDefendingUnits();
 					m_details = BattleCalculator.selectCasualties(m_defender, defendingUnits, bridge, ATTACKERS_FIRE, m_dice, true, m_battleID);
-					if (m_details.size() != (m_dice.getHits() > defendingUnits.size() ? defendingUnits.size() : m_dice.getHits()))
-						throw new IllegalStateException("Wrong number of casualties, expecting:" +
-									(m_dice.getHits() > defendingUnits.size() ? defendingUnits.size() : m_dice.getHits()) + " but got:" + m_details.size());
 					m_defendingWaitingToDie.addAll(m_details.getKilled());
 					markDamaged(m_details.getDamaged(), bridge);
 				}
@@ -355,9 +352,6 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					m_details = BattleCalculator.selectCasualties(m_attacker, m_attackingUnits, bridge, DEFENDERS_FIRE, m_dice, false, m_battleID);
-					if (m_details.size() != (m_dice.getHits() > m_attackingUnits.size() ? m_attackingUnits.size() : m_dice.getHits()))
-						throw new IllegalStateException("Wrong number of casualties, expecting:" +
-									(m_dice.getHits() > m_attackingUnits.size() ? m_attackingUnits.size() : m_dice.getHits()) + " but got:" + m_details.size());
 					m_attackingWaitingToDie.addAll(m_details.getKilled());
 					markDamaged(m_details.getDamaged(), bridge);
 				}

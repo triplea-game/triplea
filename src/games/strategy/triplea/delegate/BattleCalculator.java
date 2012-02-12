@@ -85,6 +85,25 @@ public class BattleCalculator
 		Collections.sort(units, comparator);
 	}
 	
+	public static int getTotalHitpoints(final Collection<Unit> units)
+	{
+		if (units == null || units.isEmpty())
+			return 0;
+		int rVal = 0;
+		for (final Unit u : units)
+		{
+			// and everyone has at least one hitpoint...
+			rVal++;
+			final UnitAttachment ua = UnitAttachment.get(u.getType());
+			if (ua.isTwoHit() && (u.getHits() == 0))
+			{
+				// extra one because we have an undamaged two hitpoint unit.
+				rVal++;
+			}
+		}
+		return rVal;
+	}
+	
 	public static int getAAHits(final Collection<Unit> units, final IDelegateBridge bridge, final int[] dice)
 	{
 		final int attackingAirCount = Match.countMatches(units, Matches.UnitIsAir);
@@ -334,7 +353,8 @@ public class BattleCalculator
 		else
 			tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
 		final CasualtyDetails casualtySelection;
-		if (hitsRemaining >= targets.size())
+		final int totalHitpoints = getTotalHitpoints(targets);
+		if (hitsRemaining >= totalHitpoints)
 		{
 			casualtySelection = new CasualtyDetails(defaultCasualties, true);
 		}
@@ -358,7 +378,7 @@ public class BattleCalculator
 			}
 		}
 		// check right number
-		if (!isEditMode && !(numhits + damaged.size() == (hitsRemaining > targets.size() ? targets.size() : hitsRemaining)))
+		if (!isEditMode && !(numhits + damaged.size() == (hitsRemaining > totalHitpoints ? totalHitpoints : hitsRemaining)))
 		{
 			tripleaPlayer.reportError("Wrong number of casualties selected");
 			return selectCasualties(player, targets, bridge, text, dice, defending, battleID);

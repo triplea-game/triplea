@@ -427,9 +427,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			return casualtySelection.getKilled();
 		}
 		final Collection<Unit> casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
-		if (casualties.size() != (dice.getHits() > validAttackingUnitsForThisRoll.size() ? validAttackingUnitsForThisRoll.size() : dice.getHits()))
-			throw new IllegalStateException("Wrong number of casualties, expecting:"
-						+ (dice.getHits() > validAttackingUnitsForThisRoll.size() ? validAttackingUnitsForThisRoll.size() : dice.getHits()) + " but got:" + casualties.size());
+		// AA guns, at this point, kill units outright. so hits should equal casualties unless we have extra hits.
+		final int totalExpectingHits = dice.getHits() > validAttackingUnitsForThisRoll.size() ? validAttackingUnitsForThisRoll.size() : dice.getHits();
+		// TODO: we should allow aa guns to cause hits instead of kills, that way 2-hit air units could survive aa guns if they map maker wants them to.
+		if (casualties.size() != totalExpectingHits)
+			throw new IllegalStateException("Wrong number of casualties, expecting:" + totalExpectingHits + " but got:" + casualties.size());
 		return casualties;
 	}
 	
