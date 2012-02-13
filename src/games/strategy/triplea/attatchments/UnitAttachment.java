@@ -600,6 +600,11 @@ public class UnitAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitPlacementRestrictions(final String value)
 	{
+		if (value == null)
+		{
+			m_unitPlacementRestrictions = null;
+			return;
+		}
 		m_unitPlacementRestrictions = value.split(":");
 	}
 	
@@ -637,6 +642,11 @@ public class UnitAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRepairsUnits(final String value)
 	{
+		if (value == null)
+		{
+			m_repairsUnits = null;
+			return;
+		}
 		m_repairsUnits = value.split(":");
 	}
 	
@@ -676,6 +686,11 @@ public class UnitAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanInvadeOnlyFrom(final String value)
 	{
+		if (value == null)
+		{
+			m_canInvadeOnlyFrom = null;
+			return;
+		}
 		final String[] canOnlyInvadeFrom = value.split(":");
 		if (canOnlyInvadeFrom[0].toLowerCase().equals("none"))
 		{

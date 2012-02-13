@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Making sure that all attachment variables that start out as Null, can return to being null again through their setter. (veqryn)
+
 * Fixing various errors introduced into casualty selection. (veqryn)
 
 * Fixed null pointer error for players who have damaged units but no repair frontier. (veqryn)

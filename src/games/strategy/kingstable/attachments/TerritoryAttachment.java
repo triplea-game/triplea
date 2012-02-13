@@ -43,6 +43,12 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_kingsSquare = getBool(value);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setKingsSquare(final Boolean value)
+	{
+		m_kingsSquare = value;
+	}
+	
 	public boolean getKingsSquare()
 	{
 		return m_kingsSquare;
@@ -52,6 +58,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	public void setKingsExit(final String value)
 	{
 		m_kingsExit = getBool(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setKingsExit(final Boolean value)
+	{
+		m_kingsExit = value;
 	}
 	
 	public boolean getKingsExit()

@@ -168,6 +168,11 @@ public class TerritoryAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setResources(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_resources = null;
+			return;
+		}
 		if (m_resources == null)
 			m_resources = new ResourceCollection(getData());
 		final String[] s = value.split(":");
@@ -204,6 +209,11 @@ public class TerritoryAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCapital(final String value)
 	{
+		if (value == null)
+		{
+			m_capital = null;
+			return;
+		}
 		m_capital = value;
 	}
 	
@@ -298,8 +308,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setOccupiedTerrOf(final String value)
 	{
-		if (value != null)
-			m_occupiedTerrOf = getData().getPlayerList().getPlayerID(value);
+		if (value == null)
+		{
+			m_occupiedTerrOf = null;
+			return;
+		}
+		m_occupiedTerrOf = getData().getPlayerList().getPlayerID(value);
 	}
 	
 	public PlayerID getOccupiedTerrOf()

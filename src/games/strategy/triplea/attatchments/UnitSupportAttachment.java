@@ -122,6 +122,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitType(final String names) throws GameParseException
 	{
+		if (names == null)
+		{
+			m_unitType = null;
+			return;
+		}
 		m_unitType = new HashSet<UnitType>();
 		final String[] s = names.split(":");
 		for (int i = 0; i < s.length; i++)
@@ -136,6 +141,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setFaction(final String faction) throws GameParseException
 	{
+		if (faction == null)
+		{
+			m_faction = null;
+			return;
+		}
 		final String[] s = faction.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
@@ -157,6 +167,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setSide(final String side) throws GameParseException
 	{
+		if (side == null)
+		{
+			m_side = null;
+			return;
+		}
 		final String[] s = side.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
@@ -178,6 +193,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDice(final String dice) throws GameParseException
 	{
+		if (dice == null)
+		{
+			m_dice = null;
+			return;
+		}
 		final String[] s = dice.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
@@ -211,6 +231,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBonusType(final String type)
 	{
+		if (type == null)
+		{
+			m_bonusType = null;
+			return;
+		}
 		m_bonusType = type;
 	}
 	

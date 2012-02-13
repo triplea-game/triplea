@@ -71,6 +71,12 @@ public class Tile extends DefaultAttachment
 		this.m_value = getInt(value);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setValue(final Integer value)
+	{
+		this.m_value = value;
+	}
+	
 	/*
 	public void setLocation(Rectangle location)
 	{

@@ -23,7 +23,7 @@ public class ExampleAttachment extends DefaultAttachment
 	private int m_techCost;
 	private boolean m_heavyBomber;
 	private String m_attribute;
-	private final IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
+	private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 	
 	@InternalDoNotExport
 	private String m_notAProperty = "str";
@@ -52,6 +52,12 @@ public class ExampleAttachment extends DefaultAttachment
 		m_techCost = getInt(techCost);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTechCost(final Integer techCost)
+	{
+		m_techCost = techCost;
+	}
+	
 	public boolean getHeavyBomber()
 	{
 		return m_heavyBomber;
@@ -61,6 +67,12 @@ public class ExampleAttachment extends DefaultAttachment
 	public void setHeavyBomber(final String heavyBomber)
 	{
 		m_heavyBomber = getBool(heavyBomber);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setHeavyBomber(final Boolean heavyBomber)
+	{
+		m_heavyBomber = heavyBomber;
 	}
 	
 	public String getAttribute()
@@ -105,6 +117,12 @@ public class ExampleAttachment extends DefaultAttachment
 		// we should allow positive and negative numbers, since you can give bonuses to units or take away a unit's movement
 		final int n = getInt(s[0]);
 		m_givesMovement.add(ut, n);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setGivesMovement(final IntegerMap<UnitType> value)
+	{
+		m_givesMovement = value;
 	}
 	
 	public void clearGivesMovement()

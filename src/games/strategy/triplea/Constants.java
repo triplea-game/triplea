@@ -147,7 +147,6 @@ public interface Constants
 	public static final String EDIT_MODE = "EditMode";
 	// by defaul this is 0, but for lhtr, it is 1
 	public static final String SUPER_SUB_DEFENSE_BONUS = "Super Sub Defence Bonus";
-	public static final int TECH_ROLL_COST = 5;
 	public static final String INFANTRY_TYPE = "infantry";
 	public static final String ARMOUR_TYPE = "armour";
 	public static final String TRANSPORT_TYPE = "transport";

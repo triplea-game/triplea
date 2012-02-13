@@ -168,6 +168,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTurns(final String turns) throws GameParseException
 	{
+		if (turns == null)
+		{
+			m_turns = null;
+			return;
+		}
 		m_turns = new HashMap<Integer, Integer>();
 		final String[] s = turns.split(":");
 		if (s.length < 1)

@@ -136,6 +136,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDestroyedTUV(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_destroyedTUV = null;
+			return;
+		}
 		final String[] s = value.split(":");
 		if (s.length != 2)
 			throw new GameParseException("destroyedTUV must have 2 fields, value=currentRound/allRounds, count= the amount of TUV that this player must destroy" + thisErrorMsg());
@@ -191,6 +196,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAlliedOwnershipTerritories(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_alliedOwnershipTerritories = null;
+			return;
+		}
 		m_alliedOwnershipTerritories = value.split(":");
 		validateNames(m_alliedOwnershipTerritories);
 	}
@@ -204,6 +214,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAlliedExclusionTerritories(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_alliedExclusionTerritories = null;
+			return;
+		}
 		m_alliedExclusionTerritories = value.split(":");
 		validateNames(m_alliedExclusionTerritories);
 	}
@@ -216,6 +231,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDirectExclusionTerritories(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_directExclusionTerritories = null;
+			return;
+		}
 		m_directExclusionTerritories = value.split(":");
 		validateNames(m_directExclusionTerritories);
 	}
@@ -229,6 +249,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setEnemyExclusionTerritories(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_enemyExclusionTerritories = null;
+			return;
+		}
 		m_enemyExclusionTerritories = value.split(":");
 		validateNames(m_enemyExclusionTerritories);
 	}
@@ -241,6 +266,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDirectPresenceTerritories(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_directPresenceTerritories = null;
+			return;
+		}
 		m_directPresenceTerritories = value.split(":");
 		validateNames(m_directPresenceTerritories);
 	}
@@ -253,6 +283,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAlliedPresenceTerritories(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_alliedPresenceTerritories = null;
+			return;
+		}
 		m_alliedPresenceTerritories = value.split(":");
 		validateNames(m_alliedPresenceTerritories);
 	}
@@ -265,6 +300,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setEnemyPresenceTerritories(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_enemyPresenceTerritories = null;
+			return;
+		}
 		m_enemyPresenceTerritories = value.split(":");
 		validateNames(m_enemyPresenceTerritories);
 	}
@@ -278,6 +318,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setEnemySurfaceExclusionTerritories(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_enemySurfaceExclusionTerritories = null;
+			return;
+		}
 		m_enemySurfaceExclusionTerritories = value.split(":");
 		validateNames(m_enemySurfaceExclusionTerritories);
 	}
@@ -290,6 +335,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDirectOwnershipTerritories(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_directOwnershipTerritories = null;
+			return;
+		}
 		m_directOwnershipTerritories = value.split(":");
 		validateNames(m_directOwnershipTerritories);
 	}
@@ -354,6 +404,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAtWarPlayers(final String players) throws GameParseException
 	{
+		if (players == null)
+		{
+			m_atWarPlayers = null;
+			return;
+		}
 		final String[] s = players.split(":");
 		int count = -1;
 		if (s.length < 1)
@@ -381,31 +436,34 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTechs(final String techs) throws GameParseException
 	{
+		if (techs == null)
 		{
-			final String[] s = techs.split(":");
-			int count = -1;
-			if (s.length < 1)
-				throw new GameParseException("Empty tech list" + thisErrorMsg());
-			try
-			{
-				count = getInt(s[0]);
-				m_techCount = count;
-			} catch (final Exception e)
-			{
-				m_techCount = 0;
-			}
-			if (s.length < 1 || s.length == 1 && count != -1)
-				throw new GameParseException("Empty tech list" + thisErrorMsg());
-			m_techs = new ArrayList<TechAdvance>();
-			for (int i = count == -1 ? 0 : 1; i < s.length; i++)
-			{
-				TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
-				if (ta == null)
-					ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
-				if (ta == null)
-					throw new GameParseException("Technology not found :" + s + thisErrorMsg());
-				m_techs.add(ta);
-			}
+			m_techs = null;
+			return;
+		}
+		final String[] s = techs.split(":");
+		int count = -1;
+		if (s.length < 1)
+			throw new GameParseException("Empty tech list" + thisErrorMsg());
+		try
+		{
+			count = getInt(s[0]);
+			m_techCount = count;
+		} catch (final Exception e)
+		{
+			m_techCount = 0;
+		}
+		if (s.length < 1 || s.length == 1 && count != -1)
+			throw new GameParseException("Empty tech list" + thisErrorMsg());
+		m_techs = new ArrayList<TechAdvance>();
+		for (int i = count == -1 ? 0 : 1; i < s.length; i++)
+		{
+			TechAdvance ta = getData().getTechnologyFrontier().getAdvanceByProperty(s[i]);
+			if (ta == null)
+				ta = getData().getTechnologyFrontier().getAdvanceByName(s[i]);
+			if (ta == null)
+				throw new GameParseException("Technology not found :" + s + thisErrorMsg());
+			m_techs.add(ta);
 		}
 	}
 	

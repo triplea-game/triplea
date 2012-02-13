@@ -214,6 +214,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setFrontier(final String s) throws GameParseException
 	{
+		if (s == null)
+		{
+			m_frontier = null;
+			return;
+		}
 		final ProductionFrontier front = getData().getProductionFrontierList().getProductionFrontier(s);
 		if (front == null)
 			throw new GameParseException("Could not find frontier. name:" + s + thisErrorMsg());
@@ -234,6 +239,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setProductionRule(final String prop) throws GameParseException
 	{
+		if (prop == null)
+		{
+			m_productionRule = null;
+			return;
+		}
 		final String[] s = prop.split(":");
 		if (s.length != 2)
 			throw new GameParseException("Invalid productionRule declaration: " + prop + thisErrorMsg());
@@ -278,6 +288,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setVictory(final String s)
 	{
+		if (s == null)
+		{
+			m_victory = null;
+			return;
+		}
 		m_victory = s;
 	}
 	
@@ -320,6 +335,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setAvailableTech(final String techs) throws GameParseException
 	{
+		if (techs == null)
+		{
+			m_availableTech = null;
+			return;
+		}
 		final String[] s = techs.split(":");
 		if (s.length < 2)
 			throw new GameParseException("Invalid tech availability: " + techs + " should be category:techs" + thisErrorMsg());
@@ -366,6 +386,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setSupport(final String sup) throws GameParseException
 	{
+		if (sup == null)
+		{
+			m_support = null;
+			return;
+		}
 		final String[] s = sup.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
@@ -410,6 +435,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setResource(final String s) throws GameParseException
 	{
+		if (s == null)
+		{
+			m_resource = null;
+			return;
+		}
 		final Resource r = getData().getResourceList().getResource(s);
 		if (r == null)
 			throw new GameParseException("Invalid resource: " + s + thisErrorMsg());
@@ -483,6 +513,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUnitAttachmentName(final String name) throws GameParseException
 	{
+		if (name == null)
+		{
+			m_unitAttachmentName = null;
+			return;
+		}
 		final String[] s = name.split(":");
 		if (s.length != 2)
 			throw new GameParseException("unitAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
@@ -515,6 +550,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setUnitProperty(final String prop) throws GameParseException
 	{
+		if (prop == null)
+		{
+			m_unitProperty = null;
+			return;
+		}
 		final String[] s = prop.split(":");
 		if (m_unitProperty == null)
 			m_unitProperty = new ArrayList<Tuple<String, String>>();
@@ -564,6 +604,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryAttachmentName(final String name) throws GameParseException
 	{
+		if (name == null)
+		{
+			m_territoryAttachmentName = null;
+			return;
+		}
 		final String[] s = name.split(":");
 		if (s.length != 2)
 			throw new GameParseException("territoryAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
@@ -596,6 +641,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setTerritoryProperty(final String prop) throws GameParseException
 	{
+		if (prop == null)
+		{
+			m_territoryProperty = null;
+			return;
+		}
 		final String[] s = prop.split(":");
 		if (m_territoryProperty == null)
 			m_territoryProperty = new ArrayList<Tuple<String, String>>();
@@ -648,6 +698,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setPlayerAttachmentName(final String name) throws GameParseException
 	{
+		if (name == null)
+		{
+			m_playerAttachmentName = null;
+			return;
+		}
 		final String[] s = name.split(":");
 		if (s.length != 2)
 			throw new GameParseException("playerAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
@@ -687,6 +742,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setPlayerProperty(final String prop) throws GameParseException
 	{
+		if (prop == null)
+		{
+			m_playerProperty = null;
+			return;
+		}
 		final String[] s = prop.split(":");
 		if (m_playerProperty == null)
 			m_playerProperty = new ArrayList<Tuple<String, String>>();
@@ -736,6 +796,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRelationshipTypeAttachmentName(final String name) throws GameParseException
 	{
+		if (name == null)
+		{
+			m_relationshipTypeAttachmentName = null;
+			return;
+		}
 		final String[] s = name.split(":");
 		if (s.length != 2)
 			throw new GameParseException("relationshipTypeAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
@@ -766,6 +831,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setRelationshipTypeProperty(final String prop) throws GameParseException
 	{
+		if (prop == null)
+		{
+			m_relationshipTypeProperty = null;
+			return;
+		}
 		final String[] s = prop.split(":");
 		if (m_relationshipTypeProperty == null)
 			m_relationshipTypeProperty = new ArrayList<Tuple<String, String>>();
@@ -815,6 +885,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTerritoryEffectAttachmentName(final String name) throws GameParseException
 	{
+		if (name == null)
+		{
+			m_territoryEffectAttachmentName = null;
+			return;
+		}
 		final String[] s = name.split(":");
 		if (s.length != 2)
 			throw new GameParseException("territoryEffectAttachmentName must have 2 entries, the type of attachment and the name of the attachment." + thisErrorMsg());
@@ -845,6 +920,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setTerritoryEffectProperty(final String prop) throws GameParseException
 	{
+		if (prop == null)
+		{
+			m_territoryEffectProperty = null;
+			return;
+		}
 		final String[] s = prop.split(":");
 		if (m_territoryEffectProperty == null)
 			m_territoryEffectProperty = new ArrayList<Tuple<String, String>>();
@@ -872,6 +952,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setPlacement(final String place) throws GameParseException
 	{
+		if (place == null)
+		{
+			m_placement = null;
+			return;
+		}
 		final String[] s = place.split(":");
 		int count = -1, i = 0;
 		if (s.length < 1)
@@ -928,6 +1013,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setRemoveUnits(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_removeUnits = null;
+			return;
+		}
 		final String[] s = value.split(":");
 		int count = -1, i = 0;
 		if (s.length < 1)
@@ -984,6 +1074,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setPurchase(final String place) throws GameParseException
 	{
+		if (place == null)
+		{
+			m_purchase = null;
+			return;
+		}
 		final String[] s = place.split(":");
 		int count = -1, i = 0;
 		if (s.length < 1)

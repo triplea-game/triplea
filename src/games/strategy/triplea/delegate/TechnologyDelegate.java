@@ -402,7 +402,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	public int getTechCost()
 	{
 		m_techCost = TechTracker.getTechCost(m_player);
-		return m_techCost > 0 ? m_techCost : Constants.TECH_ROLL_COST;
+		return m_techCost;
 	}
 	
 	/*

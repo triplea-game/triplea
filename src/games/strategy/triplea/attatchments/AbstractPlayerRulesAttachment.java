@@ -68,6 +68,11 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMovementRestrictionTerritories(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_movementRestrictionTerritories = null;
+			return;
+		}
 		m_movementRestrictionTerritories = value.split(":");
 		validateNames(m_movementRestrictionTerritories);
 	}
@@ -80,6 +85,11 @@ public abstract class AbstractPlayerRulesAttachment extends AbstractRulesAttachm
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMovementRestrictionType(final String value) throws GameParseException
 	{
+		if (value == null)
+		{
+			m_movementRestrictionType = null;
+			return;
+		}
 		if (!(value.equals("disallowed") || value.equals("allowed")))
 			throw new GameParseException("movementRestrictionType must be allowed or disallowed" + thisErrorMsg());
 		m_movementRestrictionType = value;

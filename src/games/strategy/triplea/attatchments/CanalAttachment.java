@@ -77,6 +77,11 @@ public class CanalAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanalName(final String name)
 	{
+		if (name == null)
+		{
+			m_canalName = null;
+			return;
+		}
 		m_canalName = name;
 	}
 	
@@ -88,6 +93,11 @@ public class CanalAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setLandTerritories(final String landTerritories)
 	{
+		if (landTerritories == null)
+		{
+			m_landTerritories = null;
+			return;
+		}
 		m_landTerritories = landTerritories.split(":");
 	}
 	

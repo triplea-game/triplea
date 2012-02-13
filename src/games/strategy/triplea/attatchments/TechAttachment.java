@@ -58,21 +58,21 @@ public class TechAttachment extends DefaultAttachment
 		return attachment;
 	}
 	
-	private int m_techCost;
-	private boolean m_heavyBomber;
-	private boolean m_longRangeAir;
-	private boolean m_jetPower;
-	private boolean m_rocket;
-	private boolean m_industrialTechnology;
-	private boolean m_superSub;
-	private boolean m_destroyerBombard;
-	private boolean m_improvedArtillerySupport;
-	private boolean m_paratroopers;
-	private boolean m_increasedFactoryProduction;
-	private boolean m_warBonds;
-	private boolean m_mechanizedInfantry;
-	private boolean m_aARadar;
-	private boolean m_shipyards;
+	private int m_techCost = 5;
+	private boolean m_heavyBomber = false;
+	private boolean m_longRangeAir = false;
+	private boolean m_jetPower = false;
+	private boolean m_rocket = false;
+	private boolean m_industrialTechnology = false;
+	private boolean m_superSub = false;
+	private boolean m_destroyerBombard = false;
+	private boolean m_improvedArtillerySupport = false;
+	private boolean m_paratroopers = false;
+	private boolean m_increasedFactoryProduction = false;
+	private boolean m_warBonds = false;
+	private boolean m_mechanizedInfantry = false;
+	private boolean m_aARadar = false;
+	private boolean m_shipyards = false;
 	@InternalDoNotExport
 	private final Map<String, Boolean> m_GenericTech = new HashMap<String, Boolean>(); // do not export at this point. currently map xml can not define a player having a custom tech at start of game
 	
@@ -191,7 +191,7 @@ public class TechAttachment extends DefaultAttachment
 	
 	public String getTechCost()
 	{
-		return "" + (m_techCost > 0 ? m_techCost : Constants.TECH_ROLL_COST);
+		return "" + m_techCost;
 	}
 	
 	public String getLongRangeAir()

@@ -142,6 +142,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setWhen(final String when) throws GameParseException
 	{
+		if (when == null)
+		{
+			m_when = null;
+			return;
+		}
 		final String[] s = when.split(":");
 		if (s.length != 2)
 			throw new GameParseException("when must exist in 2 parts: \"before/after:stepName\"." + thisErrorMsg());
@@ -158,6 +163,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setNotification(final String sNotification)
 	{
+		if (sNotification == null)
+		{
+			m_notification = null;
+			return;
+		}
 		m_notification = sNotification;
 	}
 	

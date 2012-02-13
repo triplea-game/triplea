@@ -42,6 +42,12 @@ public class PlayerAttachment extends DefaultAttachment
 		m_needsKing = getBool(value);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setNeedsKing(final Boolean value)
+	{
+		m_needsKing = value;
+	}
+	
 	public boolean getNeedsKing()
 	{
 		return m_needsKing;
@@ -51,6 +57,12 @@ public class PlayerAttachment extends DefaultAttachment
 	public void setAlphaBetaSearchDepth(final String value)
 	{
 		m_alphaBetaSearchDepth = getInt(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAlphaBetaSearchDepth(final Integer value)
+	{
+		m_alphaBetaSearchDepth = value;
 	}
 	
 	public int getAlphaBetaSearchDepth()
