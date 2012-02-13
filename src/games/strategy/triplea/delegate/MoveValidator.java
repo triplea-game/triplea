@@ -1915,11 +1915,13 @@ public class MoveValidator
 		final Match<Territory> noAA = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.territoryHasEnemyAAforAnything(player, data).invert());
 		// no enemy units on the route predicate
 		final Match<Territory> noEnemy = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.territoryHasEnemyUnits(player, data).invert());
+		// no impassible or restricted territories
+		final Match<Territory> noImpassible = Matches.TerritoryIsPassableAndNotRestricted(player, data);
 		Route defaultRoute;
 		if (isWW2V2(data) || isNeutralsImpassable(data))
-			defaultRoute = data.getMap().getRoute(start, end, noNeutral);
+			defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(noNeutral, noImpassible));
 		else
-			defaultRoute = data.getMap().getRoute(start, end);
+			defaultRoute = data.getMap().getRoute(start, end, noImpassible);
 		if (defaultRoute == null)
 			defaultRoute = data.getMap().getRoute(start, end);
 		if (defaultRoute == null)
@@ -1935,9 +1937,9 @@ public class MoveValidator
 		{
 			Route landRoute;
 			if (isNeutralsImpassable(data))
-				landRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noNeutral));
+				landRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noNeutral, noImpassible));
 			else
-				landRoute = data.getMap().getRoute(start, end, Matches.TerritoryIsLand);
+				landRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noImpassible));
 			if (landRoute != null && (Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))
 			{
 				defaultRoute = landRoute;
@@ -1948,7 +1950,7 @@ public class MoveValidator
 		// dont force a water route, since planes may be moving
 		if (start.isWater() && end.isWater())
 		{
-			final Route waterRoute = data.getMap().getRoute(start, end, Matches.TerritoryIsWater);
+			final Route waterRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, noImpassible));
 			if (waterRoute != null && (Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea)))
 			{
 				defaultRoute = waterRoute;
@@ -1980,11 +1982,11 @@ public class MoveValidator
 		{
 			Match<Territory> testMatch = null;
 			if (mustGoLand)
-				testMatch = new CompositeMatchAnd<Territory>(t, Matches.TerritoryIsLand);
+				testMatch = new CompositeMatchAnd<Territory>(t, Matches.TerritoryIsLand, noImpassible);
 			else if (mustGoSea)
-				testMatch = new CompositeMatchAnd<Territory>(t, Matches.TerritoryIsWater);
+				testMatch = new CompositeMatchAnd<Territory>(t, Matches.TerritoryIsWater, noImpassible);
 			else
-				testMatch = t;
+				testMatch = new CompositeMatchAnd<Territory>(t, noImpassible);
 			final Route testRoute = data.getMap().getRoute(start, end, new CompositeMatchOr<Territory>(testMatch, territoryIsEnd));
 			if (testRoute != null && testRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) == defaultRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
 				return testRoute;

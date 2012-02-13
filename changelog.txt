@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Fixing getBestRoute to never use impassible and restricted territories. (veqryn)
+
 * Adding Global 1940 as test xml. (veqryn)
 
 * Fixing weird tech attachment getters to use booleans rather than strings. (veqryn)
