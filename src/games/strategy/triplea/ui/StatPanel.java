@@ -628,7 +628,7 @@ public class StatPanel extends JPanel
 		{
 			final PlayerAttachment pa = PlayerAttachment.get(player);
 			if (pa != null)
-				return Double.parseDouble(pa.getVps());
+				return pa.getVps();
 			return 0;
 		}
 	}

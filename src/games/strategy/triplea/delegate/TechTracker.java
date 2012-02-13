@@ -150,7 +150,7 @@ public class TechTracker implements java.io.Serializable
 	public static int getTechCost(final PlayerID id)
 	{
 		final TechAttachment ta = TechAttachment.get(id);
-		return Integer.parseInt(ta.getTechCost());
+		return ta.getTechCost();
 	}
 	
 	public static synchronized void addAdvance(final PlayerID player, final IDelegateBridge bridge, final TechAdvance advance)
@@ -181,71 +181,71 @@ public class TechTracker implements java.io.Serializable
 	*/
 	public static boolean hasLongRangeAir(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasLongRangeAir();
+		return TechAttachment.get(player).getLongRangeAir();
 	}
 	
 	public static boolean hasHeavyBomber(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasHeavyBomber();
+		return TechAttachment.get(player).getHeavyBomber();
 	}
 	
 	public static boolean hasSuperSubs(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasSuperSub();
+		return TechAttachment.get(player).getSuperSub();
 	}
 	
 	public static boolean hasJetFighter(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasJetPower();
+		return TechAttachment.get(player).getJetPower();
 	}
 	
 	public static boolean hasRocket(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasRocket();
+		return TechAttachment.get(player).getRocket();
 	}
 	
 	public static boolean hasIndustrialTechnology(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasIndustrialTechnology();
+		return TechAttachment.get(player).getIndustrialTechnology();
 	}
 	
 	public static boolean hasDestroyerBombard(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasDestroyerBombard();
+		return TechAttachment.get(player).getDestroyerBombard();
 	}
 	
 	public static boolean hasImprovedArtillerySupport(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasImprovedArtillerySupport();
+		return TechAttachment.get(player).getImprovedArtillerySupport();
 	}
 	
 	public static boolean hasParatroopers(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasParatroopers();
+		return TechAttachment.get(player).getParatroopers();
 	}
 	
 	public static boolean hasIncreasedFactoryProduction(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasIncreasedFactoryProduction();
+		return TechAttachment.get(player).getIncreasedFactoryProduction();
 	}
 	
 	public static boolean hasWarBonds(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasWarBonds();
+		return TechAttachment.get(player).getWarBonds();
 	}
 	
 	public static boolean hasMechanizedInfantry(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasMechanizedInfantry();
+		return TechAttachment.get(player).getMechanizedInfantry();
 	}
 	
 	public static boolean hasAARadar(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasAARadar();
+		return TechAttachment.get(player).getAARadar();
 	}
 	
 	public static boolean hasShipyards(final PlayerID player)
 	{
-		return TechAttachment.get(player).hasShipyards();
+		return TechAttachment.get(player).getShipyards();
 	}
 }

@@ -74,7 +74,7 @@ public class TechAttachment extends DefaultAttachment
 	private boolean m_aARadar = false;
 	private boolean m_shipyards = false;
 	@InternalDoNotExport
-	private final Map<String, Boolean> m_GenericTech = new HashMap<String, Boolean>(); // do not export at this point. currently map xml can not define a player having a custom tech at start of game
+	private Map<String, Boolean> m_GenericTech = new HashMap<String, Boolean>(); // do not export at this point. currently map xml can not define a player having a custom tech at start of game
 	
 	public TechAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -94,10 +94,17 @@ public class TechAttachment extends DefaultAttachment
 		// TODO: not having game data, and not having generic techs, causes problems. Fix by creating real tech attachments for all players who are missing them, at the beginning of the game.
 	}
 	
+	// setters
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTechCost(final String s)
 	{
 		m_techCost = getInt(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTechCost(final Integer s)
+	{
+		m_techCost = s;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -107,9 +114,21 @@ public class TechAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setHeavyBomber(final Boolean s)
+	{
+		m_heavyBomber = s;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDestroyerBombard(final String s)
 	{
 		m_destroyerBombard = getBool(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setDestroyerBombard(final Boolean s)
+	{
+		m_destroyerBombard = s;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -119,9 +138,21 @@ public class TechAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setLongRangeAir(final Boolean s)
+	{
+		m_longRangeAir = s;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setJetPower(final String s)
 	{
 		m_jetPower = getBool(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setJetPower(final Boolean s)
+	{
+		m_jetPower = s;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -131,9 +162,21 @@ public class TechAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRocket(final Boolean s)
+	{
+		m_rocket = s;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIndustrialTechnology(final String s)
 	{
 		m_industrialTechnology = getBool(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setIndustrialTechnology(final Boolean s)
+	{
+		m_industrialTechnology = s;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -143,9 +186,21 @@ public class TechAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setSuperSub(final Boolean s)
+	{
+		m_superSub = s;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setImprovedArtillerySupport(final String s)
 	{
 		m_improvedArtillerySupport = getBool(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setImprovedArtillerySupport(final Boolean s)
+	{
+		m_improvedArtillerySupport = s;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -155,9 +210,21 @@ public class TechAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setParatroopers(final Boolean s)
+	{
+		m_paratroopers = s;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIncreasedFactoryProduction(final String s)
 	{
 		m_increasedFactoryProduction = getBool(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setIncreasedFactoryProduction(final Boolean s)
+	{
+		m_increasedFactoryProduction = s;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -167,9 +234,21 @@ public class TechAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setWarBonds(final Boolean s)
+	{
+		m_warBonds = s;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMechanizedInfantry(final String s)
 	{
 		m_mechanizedInfantry = getBool(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setMechanizedInfantry(final Boolean s)
+	{
+		m_mechanizedInfantry = s;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -179,156 +258,100 @@ public class TechAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAARadar(final Boolean s)
+	{
+		m_aARadar = s;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setShipyards(final String s)
 	{
 		m_shipyards = getBool(s);
 	}
 	
-	public String getHeavyBomber()
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setShipyards(final Boolean s)
 	{
-		return "" + m_heavyBomber;
+		m_shipyards = s;
 	}
 	
-	public String getTechCost()
+	// getters
+	public int getTechCost()
 	{
-		return "" + m_techCost;
+		return m_techCost;
 	}
 	
-	public String getLongRangeAir()
-	{
-		return "" + m_longRangeAir;
-	}
-	
-	public String getJetPower()
-	{
-		return "" + m_jetPower;
-	}
-	
-	public String getRocket()
-	{
-		return "" + m_rocket;
-	}
-	
-	public String getIndustrialTechnology()
-	{
-		return "" + m_industrialTechnology;
-	}
-	
-	public String getSuperSub()
-	{
-		return "" + m_superSub;
-	}
-	
-	public String getDestroyerBombard()
-	{
-		return "" + m_destroyerBombard;
-	}
-	
-	public String getImprovedArtillerySupport()
-	{
-		return "" + m_improvedArtillerySupport;
-	}
-	
-	public String getParatroopers()
-	{
-		return "" + m_paratroopers;
-	}
-	
-	public String getIncreasedFactoryProduction()
-	{
-		return "" + m_increasedFactoryProduction;
-	}
-	
-	public String getWarBonds()
-	{
-		return "" + m_warBonds;
-	}
-	
-	public String getMechanizedInfantry()
-	{
-		return "" + m_mechanizedInfantry;
-	}
-	
-	public String getAARadar()
-	{
-		return "" + m_aARadar;
-	}
-	
-	public String getShipyards()
-	{
-		return "" + m_shipyards;
-	}
-	
-	public boolean hasHeavyBomber()
+	public boolean getHeavyBomber()
 	{
 		return m_heavyBomber;
 	}
 	
-	public boolean hasLongRangeAir()
+	public boolean getLongRangeAir()
 	{
 		return m_longRangeAir;
 	}
 	
-	public boolean hasJetPower()
+	public boolean getJetPower()
 	{
 		return m_jetPower;
 	}
 	
-	public boolean hasRocket()
+	public boolean getRocket()
 	{
 		return m_rocket;
 	}
 	
-	public boolean hasIndustrialTechnology()
+	public boolean getIndustrialTechnology()
 	{
 		return m_industrialTechnology;
 	}
 	
-	public boolean hasSuperSub()
+	public boolean getSuperSub()
 	{
 		return m_superSub;
 	}
 	
-	public boolean hasDestroyerBombard()
+	public boolean getDestroyerBombard()
 	{
 		return m_destroyerBombard;
 	}
 	
-	public boolean hasImprovedArtillerySupport()
+	public boolean getImprovedArtillerySupport()
 	{
 		return m_improvedArtillerySupport;
 	}
 	
-	public boolean hasParatroopers()
+	public boolean getParatroopers()
 	{
 		return m_paratroopers;
 	}
 	
-	public boolean hasIncreasedFactoryProduction()
+	public boolean getIncreasedFactoryProduction()
 	{
 		return m_increasedFactoryProduction;
 	}
 	
-	public boolean hasWarBonds()
+	public boolean getWarBonds()
 	{
 		return m_warBonds;
 	}
 	
-	public boolean hasMechanizedInfantry()
+	public boolean getMechanizedInfantry()
 	{
 		return m_mechanizedInfantry;
 	}
 	
-	public boolean hasAARadar()
+	public boolean getAARadar()
 	{
 		return m_aARadar;
 	}
 	
-	public boolean hasShipyards()
+	public boolean getShipyards()
 	{
 		return m_shipyards;
 	}
 	
+	// custom techs
 	/**
 	 * Internal use only, is not set by xml or property utils.
 	 */
@@ -359,6 +382,12 @@ public class TechAttachment extends DefaultAttachment
 	public void setGenericTech(final String name, final Boolean value)
 	{
 		m_GenericTech.put(name, value);
+	}
+	
+	@InternalDoNotExport
+	public void setGenericTech(final Map<String, Boolean> value)
+	{
+		m_GenericTech = value;
 	}
 	
 	public Map<String, Boolean> getGenericTech()

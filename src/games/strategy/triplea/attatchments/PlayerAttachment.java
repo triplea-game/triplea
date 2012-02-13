@@ -337,9 +337,15 @@ public class PlayerAttachment extends DefaultAttachment
 		m_vps = getInt(value);
 	}
 	
-	public String getVps()
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setVps(final Integer value)
 	{
-		return "" + m_vps;
+		m_vps = value;
+	}
+	
+	public int getVps()
+	{
+		return m_vps;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -348,9 +354,15 @@ public class PlayerAttachment extends DefaultAttachment
 		m_captureVps = getInt(value);
 	}
 	
-	public String getCaptureVps()
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setCaptureVps(final Integer value)
 	{
-		return "" + m_captureVps;
+		m_captureVps = value;
+	}
+	
+	public int getCaptureVps()
+	{
+		return m_captureVps;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)

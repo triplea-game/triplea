@@ -218,7 +218,7 @@ public class Matches
 			final TechAttachment ta = (TechAttachment) unit.getOwner().getAttachment(Constants.TECH_ATTACHMENT_NAME);
 			if (ta == null)
 				return false;
-			return ta.hasAARadar();
+			return ta.getAARadar();
 		}
 	};
 	public static final Match<Unit> UnitIsTransport = new Match<Unit>()
@@ -1255,7 +1255,7 @@ public class Matches
 		public boolean match(final Unit obj)
 		{
 			final TechAttachment ta = TechAttachment.get(obj.getOwner());
-			if (ta == null || !ta.hasParatroopers())
+			if (ta == null || !ta.getParatroopers())
 			{
 				return false;
 			}
@@ -1271,7 +1271,7 @@ public class Matches
 		public boolean match(final Unit obj)
 		{
 			final TechAttachment ta = TechAttachment.get(obj.getOwner());
-			if (ta == null || !ta.hasParatroopers())
+			if (ta == null || !ta.getParatroopers())
 			{
 				return false;
 			}

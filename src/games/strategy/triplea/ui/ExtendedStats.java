@@ -118,33 +118,33 @@ public class ExtendedStats extends StatPanel
 		{
 			int count = 0;
 			final TechAttachment ta = TechAttachment.get(player);
-			if (getBool(ta.getHeavyBomber()))
+			if (ta.getHeavyBomber())
 				count++;
-			if (getBool(ta.getLongRangeAir()))
+			if (ta.getLongRangeAir())
 				count++;
-			if (getBool(ta.getJetPower()))
+			if (ta.getJetPower())
 				count++;
-			if (getBool(ta.getRocket()))
+			if (ta.getRocket())
 				count++;
-			if (getBool(ta.getIndustrialTechnology()))
+			if (ta.getIndustrialTechnology())
 				count++;
-			if (getBool(ta.getSuperSub()))
+			if (ta.getSuperSub())
 				count++;
-			if (getBool(ta.getDestroyerBombard()))
+			if (ta.getDestroyerBombard())
 				count++;
-			if (getBool(ta.getImprovedArtillerySupport()))
+			if (ta.getImprovedArtillerySupport())
 				count++;
-			if (getBool(ta.getParatroopers()))
+			if (ta.getParatroopers())
 				count++;
-			if (getBool(ta.getIncreasedFactoryProduction()))
+			if (ta.getIncreasedFactoryProduction())
 				count++;
-			if (getBool(ta.getWarBonds()))
+			if (ta.getWarBonds())
 				count++;
-			if (getBool(ta.getMechanizedInfantry()))
+			if (ta.getMechanizedInfantry())
 				count++;
-			if (getBool(ta.getAARadar()))
+			if (ta.getAARadar())
 				count++;
-			if (getBool(ta.getShipyards()))
+			if (ta.getShipyards())
 				count++;
 			for (final boolean value : ta.getGenericTech().values())
 			{
@@ -152,16 +152,6 @@ public class ExtendedStats extends StatPanel
 					count++;
 			}
 			return count;
-		}
-		
-		private boolean getBool(final String aString)
-		{
-			if (aString.equalsIgnoreCase("true"))
-				return true;
-			else if (aString.equalsIgnoreCase("false"))
-				return false;
-			else
-				throw new IllegalArgumentException(aString + " is not a valid boolean");
 		}
 	}
 	

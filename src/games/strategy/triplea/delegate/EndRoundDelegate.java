@@ -77,7 +77,7 @@ public class EndRoundDelegate extends BaseDelegate
 		{
 			final PlayerID japanese = data.getPlayerList().getPlayerID(Constants.JAPANESE);
 			final PlayerAttachment pa = PlayerAttachment.get(japanese);
-			if (pa != null && Integer.parseInt(pa.getVps()) >= 22)
+			if (pa != null && pa.getVps() >= 22)
 			{
 				victoryMessage = "Axis achieve VP victory";
 				aBridge.getHistoryWriter().startEvent(victoryMessage);

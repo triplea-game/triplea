@@ -2144,7 +2144,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
-		return ta.hasParatroopers();
+		return ta.getParatroopers();
 	}
 	
 	/**

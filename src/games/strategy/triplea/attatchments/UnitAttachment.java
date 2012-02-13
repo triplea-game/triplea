@@ -511,7 +511,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		if (m_canBombard)
 			return true;
-		if (m_isDestroyer && TechAttachment.get(player).hasDestroyerBombard())
+		if (m_isDestroyer && TechAttachment.get(player).getDestroyerBombard())
 			return true;
 		return false;
 	}
@@ -1960,7 +1960,7 @@ public class UnitAttachment extends DefaultAttachment
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
-		return ta.hasAARadar();
+		return ta.getAARadar();
 	}
 	
 	private boolean playerHasRockets(final PlayerID player)
@@ -1968,7 +1968,7 @@ public class UnitAttachment extends DefaultAttachment
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
-		return ta.hasRocket();
+		return ta.getRocket();
 	}
 	
 	private boolean playerHasMechInf(final PlayerID player)
@@ -1976,7 +1976,7 @@ public class UnitAttachment extends DefaultAttachment
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
-		return ta.hasMechanizedInfantry();
+		return ta.getMechanizedInfantry();
 	}
 	
 	private boolean playerHasParatroopers(final PlayerID player)
@@ -1984,7 +1984,7 @@ public class UnitAttachment extends DefaultAttachment
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
-		return ta.hasParatroopers();
+		return ta.getParatroopers();
 	}
 	
 	@Override

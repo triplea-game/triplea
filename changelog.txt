@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Fixing weird tech attachment getters to use booleans rather than strings. (veqryn)
+
 * Making sure that all attachment variables that start out as Null, can return to being null again through their setter. (veqryn)
 
 * Fixing various errors introduced into casualty selection. (veqryn)

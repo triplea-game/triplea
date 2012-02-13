@@ -1030,7 +1030,7 @@ public class MoveValidator
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
-		return ta.hasMechanizedInfantry();
+		return ta.getMechanizedInfantry();
 	}
 	
 	private static boolean isParatroopers(final PlayerID player)
@@ -1038,7 +1038,7 @@ public class MoveValidator
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
-		return ta.hasParatroopers();
+		return ta.getParatroopers();
 	}
 	
 	/**

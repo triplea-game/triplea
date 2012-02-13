@@ -282,7 +282,7 @@ class SuperSubsAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasSuperSub();
+		return ta.getSuperSub();
 	}
 }
 
@@ -309,7 +309,7 @@ class HeavyBomberAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasHeavyBomber();
+		return ta.getHeavyBomber();
 	}
 }
 
@@ -350,7 +350,7 @@ class IndustrialTechnologyAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasIndustrialTechnology();
+		return ta.getIndustrialTechnology();
 	}
 }
 
@@ -377,7 +377,7 @@ class JetPowerAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasJetPower();
+		return ta.getJetPower();
 	}
 }
 
@@ -404,7 +404,7 @@ class RocketsAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasRocket();
+		return ta.getRocket();
 	}
 }
 
@@ -431,7 +431,7 @@ class DestroyerBombardTechAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasDestroyerBombard();
+		return ta.getDestroyerBombard();
 	}
 }
 
@@ -458,7 +458,7 @@ class LongRangeAircraftAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasLongRangeAir();
+		return ta.getLongRangeAir();
 	}
 }
 
@@ -491,7 +491,7 @@ class ImprovedArtillerySupportAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasImprovedArtillerySupport();
+		return ta.getImprovedArtillerySupport();
 	}
 }
 
@@ -521,7 +521,7 @@ class ParatroopersAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasParatroopers();
+		return ta.getParatroopers();
 	}
 }
 
@@ -551,7 +551,7 @@ class IncreasedFactoryProductionAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasIncreasedFactoryProduction();
+		return ta.getIncreasedFactoryProduction();
 	}
 }
 
@@ -581,7 +581,7 @@ class WarBondsAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasWarBonds();
+		return ta.getWarBonds();
 	}
 }
 
@@ -611,7 +611,7 @@ class MechanizedInfantryAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasMechanizedInfantry();
+		return ta.getMechanizedInfantry();
 	}
 }
 
@@ -641,7 +641,7 @@ class AARadarAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasAARadar();
+		return ta.getAARadar();
 	}
 }
 
@@ -685,7 +685,7 @@ class ImprovedShipyardsAdvance extends TechAdvance
 	@Override
 	public boolean hasTech(final TechAttachment ta)
 	{
-		return ta.hasShipyards();
+		return ta.getShipyards();
 	}
 }
 /*

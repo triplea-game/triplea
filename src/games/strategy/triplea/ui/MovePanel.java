@@ -1454,7 +1454,7 @@ public class MovePanel extends AbstractMovePanel
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
-		return ta.hasParatroopers();
+		return ta.getParatroopers();
 	}
 	
 	private static boolean IsParatroopersCanMoveDuringNonCombat(final GameData data)

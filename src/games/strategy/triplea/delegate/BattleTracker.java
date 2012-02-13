@@ -450,7 +450,7 @@ public class BattleTracker implements java.io.Serializable
 				{
 					if (isPacificTheater(data))
 					{
-						final Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (Integer.valueOf(capturedPUCount + Integer.parseInt(pa.getCaptureVps()))).toString(), "captureVps");
+						final Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (capturedPUCount + pa.getCaptureVps()), "captureVps");
 						bridge.addChange(changeVP);
 					}
 				}

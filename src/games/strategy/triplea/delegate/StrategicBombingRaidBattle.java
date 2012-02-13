@@ -219,7 +219,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 						final PlayerAttachment pa = PlayerAttachment.get(m_defender);
 						if (pa != null)
 						{
-							changeVP = ChangeFactory.attachmentPropertyChange(pa, (new Integer(-(m_bombingRaidTotal / 10) + Integer.parseInt(pa.getVps()))).toString(), "vps");
+							changeVP = ChangeFactory.attachmentPropertyChange(pa, ((-(m_bombingRaidTotal / 10)) + pa.getVps()), "vps");
 							bridge.addChange(changeVP);
 							bridge.getHistoryWriter().addChildToEvent("AA raid costs " + (m_bombingRaidTotal / 10) + " " + MyFormatter.pluralize("vp", (m_bombingRaidTotal / 10)));
 						}

@@ -497,7 +497,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
-		return ta.hasIncreasedFactoryProduction();
+		return ta.getIncreasedFactoryProduction();
 	}
 }
 

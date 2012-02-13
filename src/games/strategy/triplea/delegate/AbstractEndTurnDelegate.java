@@ -122,8 +122,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		aBridge.addChange(change);
 		if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null)
 		{
-			final Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (new Integer(Integer.parseInt(pa.getVps()) + (toAdd / 10 + Integer.parseInt(pa.getCaptureVps()) / 10))).toString(),
-						"vps"));
+			final Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
 			final Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
 			final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
 			aBridge.addChange(ccVP);
@@ -310,7 +309,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	{
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta != null)
-			return ta.hasWarBonds();
+			return ta.getWarBonds();
 		return false;
 	}
 	

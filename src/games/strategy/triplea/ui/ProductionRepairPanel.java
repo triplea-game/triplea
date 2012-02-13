@@ -240,7 +240,7 @@ public class ProductionRepairPanel extends JPanel
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
 		if (ta == null)
 			return false;
-		return ta.hasIncreasedFactoryProduction();
+		return ta.getIncreasedFactoryProduction();
 	}
 	
 	Action m_done_action = new AbstractAction("Done")

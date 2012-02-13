@@ -514,7 +514,7 @@ public class TripleAUnit extends Unit
 		// Increase production if have industrial technology
 		boolean isIncreasedFactoryProduction = false;
 		final TechAttachment techa = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-		if (techa != null && techa.hasIncreasedFactoryProduction())
+		if (techa != null && techa.getIncreasedFactoryProduction())
 			isIncreasedFactoryProduction = true;
 		if (isIncreasedFactoryProduction && territoryProduction > 2)
 			productionCapacity += 2;
