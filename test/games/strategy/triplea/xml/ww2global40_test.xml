@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test" version="2.0"/>
+        <info name="World War II Global Test" version="2.1"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5"/>
 		<diceSides value="6"/>
@@ -796,6 +796,7 @@
                 <connection t1="Normandy Bordeaux" t2="105 Sea Zone"/>
                 <connection t1="French Central Africa" t2="Nigeria"/>
                 <connection t1="French Central Africa" t2="French West Africa"/>
+				<connection t1="French West Africa" t2="Nigeria"/>
                 <connection t1="French Guiana" t2="86 Sea Zone"/>
                 <connection t1="French Guiana" t2="Brazil"/>
                 <connection t1="French Guiana" t2="Suriname"/>
@@ -1051,7 +1052,7 @@
                 <connection t1="76 Sea Zone" t2="77 Sea Zone"/>
                 <connection t1="76 Sea Zone" t2="Ethiopia"/>
                 <connection t1="76 Sea Zone" t2="Kenya"/>
-                <connection t1="76 Sea Zone" t2="Anglo Egyptian Sudan"/>
+                <!--<connection t1="76 Sea Zone" t2="Anglo Egyptian Sudan"/> TODO: check this-->
                 <connection t1="Mozambique" t2="Union of South Africa"/>
                 <connection t1="Mozambique" t2="72 Sea Zone"/>
                 <connection t1="Mozambique" t2="71 Sea Zone"/>
@@ -2092,7 +2093,7 @@
                          <option name="artillerySupportable" value="true"/>
 						 <option name="isAirTransportable" value="true"/>
 						 <option name="canBeCapturedOnEnteringBy" value="French:Americans:British:Russians:Germans:Italians:Japanese:ANZAC:Chinese"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 				
                 <!-- Mech Infantry -->
@@ -2103,7 +2104,7 @@
                          <option name="defense" value="2"/>
                          <option name="artillerySupportable" value="true"/>
 						 <option name="receivesAbilityWhenWith" value="canBlitz:armour"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 
                 <!-- Artillery -->
@@ -2113,7 +2114,7 @@
                          <option name="attack" value="2"/>
                          <option name="defense" value="2"/>
                          <option name="artillery" value="true"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 
                 <!-- Armour -->
@@ -2124,7 +2125,7 @@
                          <option name="attack" value="3"/>
                          <option name="defense" value="3"/>
 						 <option name="isLandTransport" value="true"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
             
                 <!-- Fighter -->
@@ -2140,7 +2141,7 @@
 						 <option name="canEscort" value="true"/>
                          <option name="airDefense" value="2"/>
                          <option name="airAttack" value="1"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
             
                 <!-- Bomber -->
@@ -2155,7 +2156,7 @@
 						 <!-- the following two properties only activate on LL for bombing -->
 						 <option name="bombingMaxDieSides" value="2"/>
 						 <option name="bombingBonus" value="2"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 
                 <!-- Tactical Bomber -->
@@ -2168,7 +2169,7 @@
 						 <!--<option name="isStrategicBomber" value="true"/>-->
 						 <option name="canScramble" value="true"/>
                          <option name="maxScrambleDistance" value="1"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
             
                 <!-- Transport -->
@@ -2178,7 +2179,7 @@
                          <option name="transportCapacity" value="5"/>   
                          <option name="attack" value="0"/>
                          <option name="defense" value="0"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
             
                 <!-- Battle Ship -->
@@ -2190,7 +2191,7 @@
                          <option name="canBombard" value="true"/>
                          <option name="isTwoHit" value="true"/>
 						 <option name="blockade" value="1"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                  </attatchment>
 				 
 				 <!-- Cruiser -->
@@ -2202,7 +2203,7 @@
                          <option name="canBombard" value="true"/>
                          <option name="isTwoHit" value="false"/>
 						 <option name="blockade" value="1"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                  </attatchment>
                  
                 <!-- Destroyer -->
@@ -2213,7 +2214,7 @@
                          <option name="defense" value="2"/>
                          <option name="isDestroyer" value="true"/>
 						 <option name="blockade" value="1"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
                 
                 <!-- Carrier -->
@@ -2228,7 +2229,7 @@
 						 <!-- whenCombatDamaged means that when this unit has x:y damage on it, it will have this effect -->
 						 <option name="whenCombatDamaged" value="unitsMayNotLandOnCarrier" count="1:2"/>
 						 <option name="whenCombatDamaged" value="unitsMayNotLeaveAlliedCarrier" count="1:2"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 
                 <!-- Submarine -->
@@ -2248,7 +2249,7 @@
 						 <option name="attackAA" value="2"/>
 						 <option name="attackAAmaxDieSides" value="6"/>
 						 <option name="typeAA" value="Submarine Strike on Unescorted Transports"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 				
                 <!-- Factory Minor -->
@@ -2307,7 +2308,7 @@
 						 <option name="givesMovement" value="1:bomber"/>
 						 <option name="givesMovement" value="1:tactical_bomber"/>
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 				
 				<!-- Harbour -->
@@ -2329,7 +2330,7 @@
 						 <option name="givesMovement" value="1:carrier"/>
 						 <option name="givesMovement" value="1:battleship"/>
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 				
                 <!-- AA Gun -->
@@ -2341,7 +2342,7 @@
 						 <option name="canBeDamaged" value="false"/>
                          <option name="movement" value="1"/>
 						 <option name="transportCost" value="3"/>
-						 <option name="canBeGivenByTerritoryTo" value="UK_Pacific"/>
+						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 				
 				<!-- Territory Attachments -->
@@ -4184,7 +4185,7 @@
                 	<option name="movementRestrictionType" value="disallowed"/>
                 </attatchment>
 				
-				
+			
 		<!-- Political Action Attachments -->
 				<attatchment name="politicalActionAttachment_Axis_To_War_With_TrueNeutrals" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAxisNotYetAtWarWithTrueNeutrals"/>
@@ -5855,7 +5856,17 @@ These changes to units are things other than price/movement which you can see in
 <b>Harbour:</b> Any ships that start their turn in a sea zone adjacent to a harbour get +1 movement points. Any damaged ships are repaired by a harbour at the start of the player's purchase and repair turn phase. Lastly, harbours can be bombed, and if they have 3 or more damage then they do not provide the above bonuses.<br>
 <b>Airfield:</b> Any air that start their turn on the ground territory with an airfield get +1 movement points. Airfields <b>on islands (not incl. UK)</b> allow planes on that island to scramble (see Scramble section above). Airfields can be bombed, and if they have 3 or more damage then they do not provide the movement bonus.
 <br><br><hr><br>
-<b>Credits to Veqryn for almost all related Engine code that allows this map to work.
+<b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
+<br><br><hr><br>
+<br>Change Log:
+<br>
+<br>2.1
+<br>Fixed bug preventing UK_Pacific units from turning into British units.
+<br>Adding missing connection from French West Africa to Nigeria.
+<br>
+<br>2.0
+<br>Everything done, now playtesting.
+<br>
 <br><br><hr><br>
 </div>
 						

@@ -275,7 +275,7 @@
                 <connection t1="Gold Coast" t2="82 Sea Zone"/>
                 <connection t1="Ontario" t2="Eastern United States"/>
                 <connection t1="Scotland" t2="United Kingdom"/>
-                <connection t1="Scotland" t2="110 Sea Zone"/>
+                <connection t1="Scotland" t2="109 Sea Zone"/>
                 <connection t1="Scotland" t2="111 Sea Zone"/>
                 <connection t1="South West Africa" t2="Rhodesia"/>
                 <connection t1="Kenya" t2="Anglo Egyptian Sudan"/>
@@ -3935,7 +3935,16 @@ These changes to units are things other than price/movement which you can see in
 <b>Harbour:</b> Any ships that start their turn in a sea zone adjacent to a harbour get +1 movement points. Any damaged ships are repaired by a harbour at the start of the player's purchase and repair turn phase. Lastly, harbours can be bombed, and if they have 3 or more damage then they do not provide the above bonuses.<br>
 <b>Airfield:</b> Any air that start their turn on the ground territory with an airfield get +1 movement points. Airfields <b>on islands (not incl. UK)</b> allow planes on that island to scramble (see Scramble section above). Airfields can be bombed, and if they have 3 or more damage then they do not provide the movement bonus.
 <br><br><hr><br>
-<b>Credits to Veqryn for almost all related Engine code that allows this map to work.
+<b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
+<br><br><hr><br>
+<br>Change Log:
+<br>
+<br>2.2
+<br>Deleting connection between SZ110 and Scotland.
+<br>
+<br>2.1
+<br>Released for everyone to download. Almost everything working, and playable.
+<br>
 <br><br><hr><br>
 </div>
 						
