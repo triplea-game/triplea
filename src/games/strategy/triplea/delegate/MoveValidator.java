@@ -360,9 +360,10 @@ public class MoveValidator
 			if (!route.getEnd().getUnits().allMatch(friendlyOrSubmerged))
 				return result.setErrorReturnResult("Cannot advance to battle in non combat");
 		}
-		if (Match.someMatch(units, Matches.UnitIsAir))
+		if (Match.allMatch(units, Matches.UnitIsAir))
 		{
-			if (route.someMatch(Matches.TerritoryIsNeutral) && (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
+			if (route.someMatch(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral, Matches.TerritoryIsWater.invert()))
+						&& (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
 				return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
 		}
 		else
