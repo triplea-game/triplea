@@ -3193,6 +3193,27 @@ public class Matches
 			return relationship.getRelationshipTypeAttachment().getCanMoveLandUnitsOverOwnedLand();
 		}
 	};
+	
+	/**
+	 * If the territory is not land, returns true. Else, tests relationship of the owners.
+	 */
+	public static final Match<Territory> TerritoryAllowsCanMoveLandUnitsOverOwnedLand(final PlayerID ownerOfUnitsMoving, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (!Matches.TerritoryIsLand.match(t))
+					return true;
+				final PlayerID tOwner = t.getOwner();
+				if (tOwner == null)
+					return true;
+				return data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(tOwner, ownerOfUnitsMoving);
+			}
+		};
+	}
+	
 	public static final Match<RelationshipType> RelationshipTypeCanMoveAirUnitsOverOwnedLand = new Match<RelationshipType>()
 	{
 		@Override
@@ -3201,6 +3222,27 @@ public class Matches
 			return relationship.getRelationshipTypeAttachment().getCanMoveAirUnitsOverOwnedLand();
 		}
 	};
+	
+	/**
+	 * If the territory is not land, returns true. Else, tests relationship of the owners.
+	 */
+	public static final Match<Territory> TerritoryAllowsCanMoveAirUnitsOverOwnedLand(final PlayerID ownerOfUnitsMoving, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (!Matches.TerritoryIsLand.match(t))
+					return true;
+				final PlayerID tOwner = t.getOwner();
+				if (tOwner == null)
+					return true;
+				return data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(tOwner, ownerOfUnitsMoving);
+			}
+		};
+	}
+	
 	public static final Match<RelationshipType> RelationshipTypeCanLandAirUnitsOnOwnedLand = new Match<RelationshipType>()
 	{
 		@Override

@@ -100,6 +100,7 @@ public class MovePanel extends AbstractMovePanel
 	private List<Unit> m_unitsThatCanMoveOnRoute;
 	private Image m_currentCursorImage;
 	private TransportTracker m_transportTracker = null;
+	private Route m_routeCached = null;
 	
 	/** Creates new MovePanel */
 	public MovePanel(final GameData data, final MapPanel map, final TripleAFrame frame)
@@ -577,6 +578,7 @@ public class MovePanel extends AbstractMovePanel
 	 */
 	final void updateRouteAndMouseShadowUnits(final Route route)
 	{
+		m_routeCached = route;
 		getMap().setRoute(route, m_mouseSelectedPoint, m_mouseCurrentPoint, m_currentCursorImage);
 		if (route == null)
 			getMap().setMouseShadowUnits(null);
@@ -1394,9 +1396,10 @@ public class MovePanel extends AbstractMovePanel
 				return;
 			if (getFirstSelectedTerritory() != null && territory != null)
 			{
-				final Route route = getRoute(getFirstSelectedTerritory(), territory);
+				final Route route;
 				if (m_mouseCurrentTerritory == null || !m_mouseCurrentTerritory.equals(territory) || m_mouseCurrentPoint.equals(m_mouseLastUpdatePoint))
 				{
+					route = getRoute(getFirstSelectedTerritory(), territory);
 					getData().acquireReadLock();
 					try
 					{
@@ -1406,6 +1409,8 @@ public class MovePanel extends AbstractMovePanel
 						getData().releaseReadLock();
 					}
 				}
+				else
+					route = m_routeCached;
 				m_mouseCurrentPoint = me.getMapPoint();
 				updateRouteAndMouseShadowUnits(route);
 			}

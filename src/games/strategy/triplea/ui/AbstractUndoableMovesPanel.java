@@ -65,7 +65,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 		Collections.reverse(m_moves);
 		final Iterator<AbstractUndoableMove> iter = m_moves.iterator();
 		if (iter.hasNext())
-			add(new JLabel("Moves:"), BorderLayout.NORTH);
+			add(new JLabel((this instanceof UndoablePlacementsPanel) ? "Placements:" : "Moves:"), BorderLayout.NORTH);
 		int scrollIncrement = 10;
 		final Dimension seperatorSize = new Dimension(150, 20);
 		while (iter.hasNext())

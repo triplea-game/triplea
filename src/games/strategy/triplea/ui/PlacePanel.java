@@ -36,6 +36,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -48,6 +49,7 @@ import javax.swing.SwingUtilities;
 public class PlacePanel extends AbstractMovePanel
 {
 	private final JLabel actionLabel = new JLabel();
+	private final JLabel m_leftToPlaceLabel = new JLabel();
 	private PlaceData m_placeData;
 	private final SimpleUnitPanel m_unitsToPlace;
 	
@@ -57,8 +59,9 @@ public class PlacePanel extends AbstractMovePanel
 		super(data, map, frame);
 		m_undoableMovesPanel = new UndoablePlacementsPanel(data, this);
 		m_unitsToPlace = new SimpleUnitPanel(map.getUIContext());
+		m_leftToPlaceLabel.setText("Units left to place:");
 	}
-	
+
 	@Override
 	public void display(final PlayerID id)
 	{
@@ -110,7 +113,9 @@ public class PlacePanel extends AbstractMovePanel
 			final int maxUnits[] = new int[1];
 			final Collection<Unit> units = getUnitsToPlace(territory, maxUnits);
 			if (units.isEmpty())
+			{
 				return;
+			}
 			final UnitChooser chooser = new UnitChooser(units, Collections.<Unit, Collection<Unit>> emptyMap(), getData(), false, getMap().getUIContext());
 			final String messageText = "Place units in " + territory.getName();
 			if (maxUnits[0] > 0)
@@ -121,6 +126,8 @@ public class PlacePanel extends AbstractMovePanel
 				final Collection<Unit> choosen = chooser.getSelected();
 				m_placeData = new PlaceData(choosen, territory);
 				updateUnits();
+				if (choosen.containsAll(units))
+					m_leftToPlaceLabel.setText("");
 				release();
 			}
 		}
@@ -180,7 +187,6 @@ public class PlacePanel extends AbstractMovePanel
 	@Override
 	protected final void cancelMoveAction()
 	{
-		// TODO Auto-generated method stub
 		getMap().showMouseCursor();
 		getMap().setMouseShadowUnits(null);
 	}
@@ -188,7 +194,7 @@ public class PlacePanel extends AbstractMovePanel
 	@Override
 	protected final void undoMoveSpecific()
 	{
-		// TODO Auto-generated method stub
+		m_leftToPlaceLabel.setText("Units left to place:");
 		updateUnits();
 	}
 	
@@ -209,7 +215,6 @@ public class PlacePanel extends AbstractMovePanel
 	@Override
 	protected boolean doneMoveAction()
 	{
-		// TODO Auto-generated method stub
 		if (getCurrentPlayer().getUnits().size() > 0)
 		{
 			final int option = JOptionPane.showConfirmDialog(getTopLevelAncestor(), "You have not placed all your units yet.  Are you sure you want to end your turn?", "TripleA",
@@ -225,14 +230,13 @@ public class PlacePanel extends AbstractMovePanel
 	@Override
 	protected boolean setCancelButton()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
 	final protected void addAdditionalButtons()
 	{
-		add(leftBox(new JLabel("Units left to place:")));
+		add(leftBox(m_leftToPlaceLabel));
 		add(m_unitsToPlace);
 		updateUnits();
 	}

@@ -109,6 +109,7 @@ public class MoveValidator
 		final Collection<Territory> landOnRoute = route.getMatches(Matches.TerritoryIsLand);
 		if (!landOnRoute.isEmpty())
 		{
+			// TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is also checking to make sure we avoid land territories owned by nations with these 2 relationship type attachment options
 			for (final Territory t : landOnRoute)
 			{
 				if (Match.someMatch(units, Matches.UnitIsLand))
@@ -1916,16 +1917,22 @@ public class MoveValidator
 		// no enemy units on the route predicate
 		final Match<Territory> noEnemy = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.territoryHasEnemyUnits(player, data).invert());
 		// no impassible or restricted territories
-		final Match<Territory> noImpassible = Matches.TerritoryIsPassableAndNotRestricted(player, data);
+		final CompositeMatchAnd<Territory> noImpassible = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data));
+		// if we have air or land, we don't want to move over territories owned by players who's relationships will not let us move into them
+		if (Match.someMatch(units, Matches.UnitIsAir))
+			noImpassible.add(Matches.TerritoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
+		if (Match.someMatch(units, Matches.UnitIsLand))
+			noImpassible.add(Matches.TerritoryAllowsCanMoveLandUnitsOverOwnedLand(player, data));
+		
+		// now find the default route
 		Route defaultRoute;
 		if (isWW2V2(data) || isNeutralsImpassable(data))
 			defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(noNeutral, noImpassible));
 		else
 			defaultRoute = data.getMap().getRoute(start, end, noImpassible);
+		// since all routes require at least noImpassible, then if we can not find a route without impassibles, just return any route
 		if (defaultRoute == null)
-			defaultRoute = data.getMap().getRoute(start, end);
-		if (defaultRoute == null)
-			return null;
+			return defaultRoute = data.getMap().getRoute(start, end);
 		// we don't want to look at the dependents
 		final Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent = new ArrayList<Unit>(Match.getMatches(units,
 					Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, defaultRoute, player, data).invert()));
@@ -1988,7 +1995,7 @@ public class MoveValidator
 			else
 				testMatch = new CompositeMatchAnd<Territory>(t, noImpassible);
 			final Route testRoute = data.getMap().getRoute(start, end, new CompositeMatchOr<Territory>(testMatch, territoryIsEnd));
-			if (testRoute != null && testRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) == defaultRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
+			if (testRoute != null && testRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
 				return testRoute;
 		}
 		return defaultRoute;

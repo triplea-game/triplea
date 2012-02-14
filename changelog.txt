@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Changing getBestRoute to not use territories for which the owner's relationship with us does not allow us to pass. (veqryn)
+
 * Fixing getBestRoute to never use impassible and restricted territories. (veqryn)
 
 * Adding Global 1940 as test xml. (veqryn)
