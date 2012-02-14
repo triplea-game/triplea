@@ -316,7 +316,7 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 	
 	public Route getRoute_IgnoreEnd(final Territory t1, final Territory t2, final Match<Territory> match)
 	{
-		return getRoute(t1, t2, new CompositeMatchOr<Territory>(match, Matches.territoryIs(t2)));
+		return getRoute(t1, t2, new CompositeMatchOr<Territory>(Matches.territoryIs(t2), match));
 	}
 	
 	/**

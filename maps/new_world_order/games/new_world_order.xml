@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-       <info name="New World Order" version="1.8.6"/>
+       <info name="New World Order" version="1.8.7"/>
 
        <loader javaClass="games.strategy.triplea.TripleA"/>
 	   
@@ -480,7 +480,6 @@
 <connection t1="sz58" t2="sz59" />
 <connection t1="sz59" t2="S.Turkey" />
 <connection t1="sz59" t2="Cyprus" />
-<connection t1="sz58" t2="Lebanon" />
 <connection t1="sz58" t2="sz57" />
 <connection t1="sz57" t2="Israel" />
 <connection t1="sz59" t2="Israel" />
@@ -4770,6 +4769,15 @@
 <br>
 <h1 style="text-align: center;font-size:120%;000000"><em>Version History</em></h1>
 All changes by EB unless otherwise specified<br>
+
+<div style="text-align: center;">
+<br> <b>Changes NWO1.8.6 to NWO1.8.7:</b>
+<div style="text-align: left;">
+General:
+	<ul>
+	<li>Deleted connection from SZ 58 to Lebanon. (veqryn)</li>
+	</ul>
+
 
 <div style="text-align: center;">
 <br> <b>Changes NWO1.8.5 to NWO1.8.6:</b>

@@ -100,7 +100,10 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	public static Route join(final Route r1, final Route r2)
 	{
 		if (r1 == null || r2 == null)
-			throw new IllegalArgumentException("route cant be null r1:" + r1 + " r2:" + r2);
+		{
+			// throw new IllegalArgumentException("route cant be null r1:" + r1 + " r2:" + r2);
+			return null;
+		}
 		if (r1.numberOfSteps() == 0)
 		{
 			if (!r1.getStart().equals(r2.getStart()))

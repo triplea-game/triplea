@@ -281,9 +281,9 @@ public class MoveValidator
 				
 			}
 		}
-		else
+		if (Match.someMatch(units, Matches.UnitIsAir))
 		{ // check aircraft
-			if (Match.someMatch(units, Matches.UnitIsAir) && route.hasSteps() && (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
+			if (route.hasSteps() && (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
 			{
 				if (Match.someMatch(route.getMiddleSteps(), Matches.TerritoryIsNeutral))
 					return result.setErrorReturnResult("Air units cannot fly over neutral territories");
@@ -360,7 +360,7 @@ public class MoveValidator
 			if (!route.getEnd().getUnits().allMatch(friendlyOrSubmerged))
 				return result.setErrorReturnResult("Cannot advance to battle in non combat");
 		}
-		if (Match.allMatch(units, Matches.UnitIsAir))
+		if (Match.someMatch(units, Matches.UnitIsAir))
 		{
 			if (route.someMatch(Matches.TerritoryIsNeutral) && (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
 				return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
@@ -1908,31 +1908,44 @@ public class MoveValidator
 	@SuppressWarnings("unchecked")
 	public static Route getBestRoute(final Territory start, final Territory end, final GameData data, final PlayerID player, final Collection<Unit> units)
 	{
-		// ignore the end territory in our tests. it must be in the route, so it shouldn't affect the route choice
-		final Match<Territory> territoryIsEnd = Matches.territoryIs(end);
+		final boolean hasLand = Match.someMatch(units, Matches.UnitIsLand);
+		final boolean hasAir = Match.someMatch(units, Matches.UnitIsAir);
+		// final boolean hasSea = Match.someMatch(units, Matches.UnitIsSea);
+		final boolean isNeutralsImpassable = isNeutralsImpassable(data) || (hasAir && !games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data));
+		
+		// Ignore the end territory in our tests. it must be in the route, so it shouldn't affect the route choice
+		// final Match<Territory> territoryIsEnd = Matches.territoryIs(end);
 		// No neutral countries on route predicate
-		final Match<Territory> noNeutral = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.TerritoryIsNeutral.invert());
+		final Match<Territory> noNeutral = Matches.TerritoryIsNeutral.invert();
 		// No aa guns on route predicate
-		final Match<Territory> noAA = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.territoryHasEnemyAAforAnything(player, data).invert());
+		final Match<Territory> noAA = Matches.territoryHasEnemyAAforAnything(player, data).invert();
 		// no enemy units on the route predicate
-		final Match<Territory> noEnemy = new CompositeMatchOr<Territory>(territoryIsEnd, Matches.territoryHasEnemyUnits(player, data).invert());
+		final Match<Territory> noEnemy = Matches.territoryHasEnemyUnits(player, data).invert();
 		// no impassible or restricted territories
 		final CompositeMatchAnd<Territory> noImpassible = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data));
 		// if we have air or land, we don't want to move over territories owned by players who's relationships will not let us move into them
-		if (Match.someMatch(units, Matches.UnitIsAir))
+		if (hasAir)
 			noImpassible.add(Matches.TerritoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
-		if (Match.someMatch(units, Matches.UnitIsLand))
+		if (hasLand)
 			noImpassible.add(Matches.TerritoryAllowsCanMoveLandUnitsOverOwnedLand(player, data));
 		
 		// now find the default route
 		Route defaultRoute;
-		if (isWW2V2(data) || isNeutralsImpassable(data))
-			defaultRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(noNeutral, noImpassible));
+		if (isNeutralsImpassable)
+			defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end, new CompositeMatchAnd<Territory>(noNeutral, noImpassible));
 		else
-			defaultRoute = data.getMap().getRoute(start, end, noImpassible);
+			defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end, noImpassible);
 		// since all routes require at least noImpassible, then if we can not find a route without impassibles, just return any route
 		if (defaultRoute == null)
-			return defaultRoute = data.getMap().getRoute(start, end);
+		{
+			// at least try for a route without impassible territories, but allowing restricted territories, since there is a chance politics may change in the future.
+			defaultRoute = data.getMap().getRoute_IgnoreEnd(start, end,
+						(isNeutralsImpassable ? new CompositeMatchAnd<Territory>(noNeutral, Matches.TerritoryIsImpassable) : Matches.TerritoryIsImpassable));
+			// ok, so there really is nothing, so just return any route, without conditions
+			if (defaultRoute == null)
+				return data.getMap().getRoute(start, end);
+			return defaultRoute;
+		}
 		// we don't want to look at the dependents
 		final Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent = new ArrayList<Unit>(Match.getMatches(units,
 					Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, defaultRoute, player, data).invert()));
@@ -1943,10 +1956,10 @@ public class MoveValidator
 		if (!start.isWater() && !end.isWater())
 		{
 			Route landRoute;
-			if (isNeutralsImpassable(data))
-				landRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noNeutral, noImpassible));
+			if (isNeutralsImpassable)
+				landRoute = data.getMap().getRoute_IgnoreEnd(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noNeutral, noImpassible));
 			else
-				landRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noImpassible));
+				landRoute = data.getMap().getRoute_IgnoreEnd(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, noImpassible));
 			if (landRoute != null && (Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsLand)))
 			{
 				defaultRoute = landRoute;
@@ -1957,7 +1970,7 @@ public class MoveValidator
 		// dont force a water route, since planes may be moving
 		if (start.isWater() && end.isWater())
 		{
-			final Route waterRoute = data.getMap().getRoute(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, noImpassible));
+			final Route waterRoute = data.getMap().getRoute_IgnoreEnd(start, end, new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, noImpassible));
 			if (waterRoute != null && (Match.someMatch(unitsWhichAreNotBeingTransportedOrDependent, Matches.UnitIsSea)))
 			{
 				defaultRoute = waterRoute;
@@ -1967,7 +1980,7 @@ public class MoveValidator
 		// these are the conditions we would like the route to satisfy, starting
 		// with the most important
 		List<Match<Territory>> tests;
-		if (isNeutralsImpassable(data))
+		if (isNeutralsImpassable)
 		{
 			tests = new ArrayList<Match<Territory>>(Arrays.asList(
 						// best if no enemy and no neutral
@@ -1994,7 +2007,7 @@ public class MoveValidator
 				testMatch = new CompositeMatchAnd<Territory>(t, Matches.TerritoryIsWater, noImpassible);
 			else
 				testMatch = new CompositeMatchAnd<Territory>(t, noImpassible);
-			final Route testRoute = data.getMap().getRoute(start, end, new CompositeMatchOr<Territory>(testMatch, territoryIsEnd));
+			final Route testRoute = data.getMap().getRoute_IgnoreEnd(start, end, testMatch);
 			if (testRoute != null && testRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent) <= defaultRoute.getLargestMovementCost(unitsWhichAreNotBeingTransportedOrDependent))
 				return testRoute;
 		}

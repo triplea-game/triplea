@@ -215,7 +215,7 @@ public class GameRunner2
 	public static boolean getDelayedParsing()
 	{
 		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-		return pref.getBoolean(DELAYED_PARSING, false);
+		return pref.getBoolean(DELAYED_PARSING, true);
 	}
 	
 	public static void setDelayedParsing(final boolean delayedParsing)

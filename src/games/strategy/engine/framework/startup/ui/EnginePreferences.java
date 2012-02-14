@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -133,8 +134,8 @@ public class EnginePreferences extends JDialog
 				final boolean current = GameRunner2.getDelayedParsing();
 				final Object[] options = { "Parse Selected", "Parse All", "Cancel" };
 				final int answer = JOptionPane.showOptionDialog(m_parentFrame, new JLabel("<html>Delay Parsing of Game Data from XML until game is selected?" +
-							"<br><br>Default is '" + options[1] + "', which means each map is fully parsed as TripleA starts." +
-							"<br><br>Your current setting is: " + (current ? options[0].toString() : options[1].toString()) + "</html>"),
+							"<br><br>'" + options[1] + "' means each map is fully parsed as TripleA starts (useful for testing to make sure all your maps are valid)." +
+							"<br><br>Your current setting is: '" + (current ? options[0].toString() : options[1].toString()) + "'</html>"),
 							"Select Parsing Method", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
 				if (answer == JOptionPane.CANCEL_OPTION)
 					return;
