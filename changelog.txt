@@ -1,4 +1,8 @@
 Changes for 1.5.1
+* Preventing history panel from updating if moused over, and allowing it to scroll down if not. (frigoref & veqryn)
+
+* Allowing route to recalculate if only air can make it. (frigoref)
+
 * More optimizations of getBestRoute. Also changing "Parse Selected" to be default parsing strategy of maps. (veqryn)
 
 * Changing getBestRoute to not use territories for which the owner's relationship with us does not allow us to pass. (veqryn)

@@ -95,6 +95,7 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
+		// TODO: is this reload the cause of the history tree always collapsing?
 		m_history.reload();
 	}
 	
@@ -147,6 +148,7 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
+		// TODO: is this reload the cause of the history tree always collapsing?
 		m_history.reload(oldCurrent);
 	}
 	
@@ -220,6 +222,7 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
+		// TODO: is this reload the cause of the history tree always collapsing?
 		m_history.reload(m_current);
 	}
 }

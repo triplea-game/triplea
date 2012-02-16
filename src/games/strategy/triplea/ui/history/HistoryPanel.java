@@ -59,9 +59,40 @@ public class HistoryPanel extends JPanel
 	private final HistoryDetailsPanel m_details;
 	private HistoryNode m_currentPopupNode;
 	private final JPopupMenu m_popup;
+	private boolean m_mouseOverPanel = false;
 	
 	public HistoryPanel(final GameData data, final HistoryDetailsPanel details, final JPopupMenu popup, final UIContext uiContext)
 	{
+		final MouseListener mouseFocusListener = new MouseListener()
+		{
+			@Override
+			public void mouseReleased(final MouseEvent e)
+			{
+			}
+			
+			@Override
+			public void mousePressed(final MouseEvent e)
+			{
+			}
+			
+			@Override
+			public void mouseClicked(final MouseEvent e)
+			{
+			}
+			
+			@Override
+			public void mouseExited(final MouseEvent e)
+			{
+				m_mouseOverPanel = false;
+			}
+			
+			@Override
+			public void mouseEntered(final MouseEvent e)
+			{
+				m_mouseOverPanel = true;
+			}
+		};
+		addMouseListener(mouseFocusListener);
 		m_data = data;
 		m_details = details;
 		setLayout(new BorderLayout());
@@ -70,6 +101,7 @@ public class HistoryPanel extends JPanel
 			throw new IllegalStateException();
 		}
 		m_tree = new JTree(m_data.getHistory());
+		m_tree.expandRow(0);
 		m_popup = popup;
 		m_tree.add(m_popup);
 		m_popup.addPopupMenuListener(new PopupMenuListener()
@@ -95,6 +127,9 @@ public class HistoryPanel extends JPanel
 		m_tree.setCellRenderer(renderer);
 		m_tree.setBackground(getBackground());
 		final JScrollPane scroll = new JScrollPane(m_tree);
+		scroll.addMouseListener(mouseFocusListener);
+		for (final Component comp : scroll.getComponents())
+			comp.addMouseListener(mouseFocusListener);
 		scroll.setBorder(null);
 		scroll.setViewportBorder(null);
 		add(scroll, BorderLayout.CENTER);
@@ -105,6 +140,7 @@ public class HistoryPanel extends JPanel
 		m_tree.setSelectionPath(new TreePath(node.getPath()));
 		m_currentPopupNode = null;
 		final JButton previousButton = new JButton("<-Back");
+		previousButton.addMouseListener(mouseFocusListener);
 		previousButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -113,6 +149,7 @@ public class HistoryPanel extends JPanel
 			}
 		});
 		final JButton nextButton = new JButton("Next->");
+		nextButton.addMouseListener(mouseFocusListener);
 		nextButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -159,10 +196,12 @@ public class HistoryPanel extends JPanel
 			
 			public void mouseEntered(final MouseEvent me)
 			{
+				m_mouseOverPanel = true;
 			}
 			
 			public void mouseExited(final MouseEvent me)
 			{
+				m_mouseOverPanel = false;
 			}
 			
 			public void mousePressed(final MouseEvent me)
@@ -305,11 +344,18 @@ public class HistoryPanel extends JPanel
 		{
 			public void run()
 			{
-				final HistoryNode last = m_data.getHistory().getLastNode();
-				gotoNode(last);
-				final TreePath path = new TreePath(last.getPath());
-				m_tree.expandPath(path);
-				m_tree.setSelectionPath(path);
+				if (!m_mouseOverPanel)
+				{
+					final HistoryNode last = m_data.getHistory().getLastNode();
+					gotoNode(last);
+					final TreePath path = new TreePath(last.getPath());
+					m_tree.expandPath(path);
+					m_tree.setSelectionPath(path);
+					m_tree.scrollPathToVisible(path);
+					final Rectangle rect = m_tree.getVisibleRect();
+					rect.setRect(0, rect.getY(), rect.getWidth(), rect.getHeight());
+					m_tree.scrollRectToVisible(rect);
+				}
 			}
 		};
 		if (SwingUtilities.isEventDispatchThread())

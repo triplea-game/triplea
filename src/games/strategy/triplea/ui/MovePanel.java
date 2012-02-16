@@ -402,15 +402,15 @@ public class MovePanel extends AbstractMovePanel
 		return movable;
 	}
 	
-	private Route getRoute(final Territory start, final Territory end)
+	private Route getRoute(final Territory start, final Territory end, final Collection<Unit> selectedUnits)
 	{
 		getData().acquireReadLock();
 		try
 		{
 			if (m_forced == null)
-				return getRouteNonForced(start, end);
+				return getRouteNonForced(start, end, selectedUnits);
 			else
-				return getRouteForced(start, end);
+				return getRouteForced(start, end, selectedUnits);
 		} finally
 		{
 			getData().releaseReadLock();
@@ -420,7 +420,7 @@ public class MovePanel extends AbstractMovePanel
 	/**
 	 * Get the route including the territories that we are forced to move through.
 	 */
-	private Route getRouteForced(final Territory start, final Territory end)
+	private Route getRouteForced(final Territory start, final Territory end, final Collection<Unit> selectedUnits)
 	{
 		if (m_forced == null || m_forced.size() == 0)
 			throw new IllegalStateException("No forced territories:" + m_forced + " end:" + end + " start:" + start);
@@ -441,7 +441,7 @@ public class MovePanel extends AbstractMovePanel
 		}
 		if (!end.equals(last))
 		{
-			final Route add = getRouteNonForced(last, end);
+			final Route add = getRouteNonForced(last, end, selectedUnits);
 			final Route newTotal = Route.join(total, add);
 			if (newTotal != null)
 				total = newTotal;
@@ -452,12 +452,12 @@ public class MovePanel extends AbstractMovePanel
 	/**
 	 * Get the route ignoring forced territories
 	 */
-	private Route getRouteNonForced(final Territory start, final Territory end)
+	private Route getRouteNonForced(final Territory start, final Territory end, final Collection<Unit> selectedUnits)
 	{
 		// can't rely on current player being the unit owner in Edit Mode
 		// look at the units being moved to determine allies and enemies
-		final PlayerID owner = getUnitOwner(m_selectedUnits);
-		return MoveValidator.getBestRoute(start, end, getData(), owner, m_selectedUnits);
+		final PlayerID owner = getUnitOwner(selectedUnits);
+		return MoveValidator.getBestRoute(start, end, getData(), owner, selectedUnits);
 	}
 	
 	private void updateUnitsThatCanMoveOnRoute(final Collection<Unit> units, final Route route)
@@ -517,8 +517,16 @@ public class MovePanel extends AbstractMovePanel
 		if (allResults.isMoveValid())
 		{
 			// valid move
-			clearStatusMessage();
-			m_currentCursorImage = null;
+			if (bestWithDependents.containsAll(m_selectedUnits))
+			{
+				clearStatusMessage();
+				m_currentCursorImage = null;
+			}
+			else
+			{
+				setStatusWarningMessage("Not all units can move there");
+				m_currentCursorImage = getMap().getWarningImage();
+			}
 		}
 		else
 		{
@@ -915,7 +923,7 @@ public class MovePanel extends AbstractMovePanel
 			if (!m_selectedUnits.isEmpty())
 			{
 				m_mouseLastUpdatePoint = me.getMapPoint();
-				final Route route = getRoute(getFirstSelectedTerritory(), t);
+				final Route route = getRoute(getFirstSelectedTerritory(), t, m_selectedUnits);
 				// Load Bombers with paratroops
 				if ((!m_nonCombat || IsParatroopersCanMoveDuringNonCombat(getData())) && isParatroopers(getCurrentPlayer())
 							&& Match.someMatch(m_selectedUnits, new CompositeMatchAnd<Unit>(Matches.UnitIsAirTransport, Matches.unitHasNotMoved)))
@@ -1181,8 +1189,8 @@ public class MovePanel extends AbstractMovePanel
 			else
 			{
 				m_mouseLastUpdatePoint = me.getMapPoint();
-				updateUnitsThatCanMoveOnRoute(m_selectedUnits, getRoute(getFirstSelectedTerritory(), t));
-				updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), t));
+				updateUnitsThatCanMoveOnRoute(m_selectedUnits, getRoute(getFirstSelectedTerritory(), t, m_selectedUnits));
+				updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), t, m_selectedUnits));
 			}
 		}
 		
@@ -1192,7 +1200,7 @@ public class MovePanel extends AbstractMovePanel
 				m_forced = new ArrayList<Territory>();
 			if (!m_forced.contains(territory))
 				m_forced.add(territory);
-			updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), getFirstSelectedTerritory()));
+			updateRouteAndMouseShadowUnits(getRoute(getFirstSelectedTerritory(), getFirstSelectedTerritory(), m_selectedUnits));
 		}
 		
 		private CompositeMatch<Unit> getUnloadableMatch()
@@ -1208,7 +1216,7 @@ public class MovePanel extends AbstractMovePanel
 		
 		private void selectEndPoint(final Territory territory)
 		{
-			final Route route = getRoute(getFirstSelectedTerritory(), territory);
+			final Route route = getRoute(getFirstSelectedTerritory(), territory, m_selectedUnits);
 			final List<Unit> units = m_unitsThatCanMoveOnRoute;
 			setSelectedEndpointTerritory(territory);
 			if (units.isEmpty())
@@ -1396,14 +1404,24 @@ public class MovePanel extends AbstractMovePanel
 				return;
 			if (getFirstSelectedTerritory() != null && territory != null)
 			{
-				final Route route;
+				Route route;
 				if (m_mouseCurrentTerritory == null || !m_mouseCurrentTerritory.equals(territory) || m_mouseCurrentPoint.equals(m_mouseLastUpdatePoint))
 				{
-					route = getRoute(getFirstSelectedTerritory(), territory);
+					route = getRoute(getFirstSelectedTerritory(), territory, m_selectedUnits);
 					getData().acquireReadLock();
 					try
 					{
 						updateUnitsThatCanMoveOnRoute(m_selectedUnits, route);
+						// now, check if there is a better route for just the units that can get there (we check only air since that is the only one for which the route may actually change much)
+						if (m_unitsThatCanMoveOnRoute.size() < m_selectedUnits.size() && (m_unitsThatCanMoveOnRoute.size() == 0 || Match.allMatch(m_unitsThatCanMoveOnRoute, Matches.UnitIsAir)))
+						{
+							final Collection<Unit> airUnits = Match.getMatches(m_selectedUnits, Matches.UnitIsAir);
+							if (airUnits.size() > 0)
+							{
+								route = getRoute(getFirstSelectedTerritory(), territory, airUnits);
+								updateUnitsThatCanMoveOnRoute(airUnits, route);
+							}
+						}
 					} finally
 					{
 						getData().releaseReadLock();
