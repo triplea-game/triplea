@@ -40,7 +40,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	@InternalDoNotExport
 	protected int m_territoryCount = -1; // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
 	
-	protected final List<PlayerID> m_players = new ArrayList<PlayerID>(); // A list of players that can be used with directOwnershipTerritories, directExclusionTerritories, directPresenceTerritories, or any of the other territory lists
+	protected List<PlayerID> m_players = new ArrayList<PlayerID>(); // A list of players that can be used with directOwnershipTerritories, directExclusionTerritories, directPresenceTerritories, or any of the other territory lists
 	
 	protected int m_objectiveValue = 0; // only used if the attachment begins with "objectiveAttachment"
 	protected int m_uses = -1; // only matters for objectiveValue, does not affect the condition
@@ -70,6 +70,12 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		}
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setPlayers(final List<PlayerID> value)
+	{
+		m_players = value;
+	}
+	
 	public List<PlayerID> getPlayers()
 	{
 		if (m_players.isEmpty())
@@ -94,6 +100,12 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	public void setObjectiveValue(final String value)
 	{
 		m_objectiveValue = getInt(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setObjectiveValue(final Integer value)
+	{
+		m_objectiveValue = value;
 	}
 	
 	public int getObjectiveValue()
@@ -201,6 +213,12 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			final Integer u = new Integer(end);
 			m_turns.put(t, u);
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTurns(final Map<Integer, Integer> value)
+	{
+		m_turns = value;
 	}
 	
 	public Map<Integer, Integer> getTurns()

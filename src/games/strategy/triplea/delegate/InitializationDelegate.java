@@ -238,7 +238,7 @@ public class InitializationDelegate extends BaseDelegate
 		if (battleShipUnit == null)
 			return;
 		final UnitAttachment battleShipAttachment = UnitAttachment.get(battleShipUnit);
-		final boolean defaultEnabled = battleShipAttachment.isTwoHit();
+		final boolean defaultEnabled = battleShipAttachment.getIsTwoHit();
 		if (userEnabled != defaultEnabled)
 		{
 			aBridge.getHistoryWriter().startEvent("TwoHitBattleships:" + userEnabled);

@@ -928,7 +928,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		{
 			final UnitAttachment ua = UnitAttachment.get(unitUnderFire.getType());
 			final int currentHits = unitUnderFire.getHits();
-			if (ua.isTwoHit() && currentHits < 1 && hits == 1)
+			if (ua.getIsTwoHit() && currentHits < 1 && hits == 1)
 			{
 				final IntegerMap<Unit> hitMap = new IntegerMap<Unit>();
 				hitMap.put(unitUnderFire, hits);

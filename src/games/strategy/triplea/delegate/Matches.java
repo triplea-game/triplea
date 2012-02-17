@@ -107,7 +107,7 @@ public class Matches
 		public boolean match(final Unit unit)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			return ua.isTwoHit();
+			return ua.getIsTwoHit();
 		}
 	};
 	public static final Match<Unit> UnitIsDamaged = new Match<Unit>()
@@ -205,7 +205,7 @@ public class Matches
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
 			if (!ua.getIsSea())
 				return false;
-			return (ua.isTwoHit());
+			return (ua.getIsTwoHit());
 		}
 	};
 	public static final Match<Unit> UnitIsRadarAA = new Match<Unit>()
@@ -1002,7 +1002,7 @@ public class Matches
 		{
 			final UnitType type = obj;
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.isInfantry();
+			return ua.getIsInfantry();
 		}
 	};
 	public static final Match<UnitType> UnitTypeIsArtillery = new Match<UnitType>()
@@ -1234,7 +1234,7 @@ public class Matches
 		{
 			final UnitType type = obj.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.isInfantry();
+			return ua.getIsInfantry();
 		}
 	};
 	public static final Match<Unit> UnitIsNotInfantry = new InverseMatch<Unit>(UnitIsInfantry);
@@ -1245,7 +1245,7 @@ public class Matches
 		{
 			final UnitType type = obj.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.isMarine();
+			return ua.getIsMarine();
 		}
 	};
 	public static final Match<Unit> UnitIsNotMarine = new InverseMatch<Unit>(UnitIsMarine);
@@ -2736,7 +2736,7 @@ public class Matches
 		{
 			final UnitType type = obj;
 			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.isTwoHit();
+			return ua.getIsTwoHit();
 		}
 	};
 	

@@ -64,7 +64,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@InternalDoNotExport
 	private int m_techCount = -1; // Do Not Export (do not include in IAttachment).
 	
-	private final List<String> m_relationship = new ArrayList<String>(); // condition for having specific relationships
+	private List<String> m_relationship = new ArrayList<String>(); // condition for having specific relationships
 	private Set<PlayerID> m_atWarPlayers = null; // condition for being at war
 	@InternalDoNotExport
 	private int m_atWarCount = -1; // Do Not Export (do not include in IAttachment).
@@ -80,7 +80,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	private String[] m_directPresenceTerritories; // presence of units
 	private String[] m_alliedPresenceTerritories;
 	private String[] m_enemyPresenceTerritories;
-	private final IntegerMap<String> m_unitPresence = new IntegerMap<String>(); // used with above 3 to determine the type of unit that must be present
+	private IntegerMap<String> m_unitPresence = new IntegerMap<String>(); // used with above 3 to determine the type of unit that must be present
 	
 	/** Creates new RulesAttachment */
 	public RulesAttachment(final String name, final Attachable attachable, final GameData gameData)
@@ -183,6 +183,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		m_relationship.add((s.length == 3) ? (value + ":-1") : value);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRelationship(final List<String> value)
+	{
+		m_relationship = value;
+	}
+	
 	public List<String> getRelationship()
 	{
 		return m_relationship;
@@ -205,6 +211,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		validateNames(m_alliedOwnershipTerritories);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAlliedOwnershipTerritories(final String[] value)
+	{
+		m_alliedOwnershipTerritories = value;
+	}
+	
 	public String[] getAlliedOwnershipTerritories()
 	{
 		return m_alliedOwnershipTerritories;
@@ -223,6 +235,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		validateNames(m_alliedExclusionTerritories);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAlliedExclusionTerritories(final String[] value)
+	{
+		m_alliedExclusionTerritories = value;
+	}
+	
 	public String[] getAlliedExclusionTerritories()
 	{
 		return m_alliedExclusionTerritories;
@@ -238,6 +256,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		}
 		m_directExclusionTerritories = value.split(":");
 		validateNames(m_directExclusionTerritories);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setDirectExclusionTerritories(final String[] value)
+	{
+		m_directExclusionTerritories = value;
 	}
 	
 	public String[] getDirectExclusionTerritories()
@@ -258,6 +282,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		validateNames(m_enemyExclusionTerritories);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setEnemyExclusionTerritories(final String[] value)
+	{
+		m_enemyExclusionTerritories = value;
+	}
+	
 	public String[] getEnemyExclusionTerritories()
 	{
 		return m_enemyExclusionTerritories;
@@ -273,6 +303,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		}
 		m_directPresenceTerritories = value.split(":");
 		validateNames(m_directPresenceTerritories);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setDirectPresenceTerritories(final String[] value)
+	{
+		m_directPresenceTerritories = value;
 	}
 	
 	public String[] getDirectPresenceTerritories()
@@ -292,6 +328,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		validateNames(m_alliedPresenceTerritories);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAlliedPresenceTerritories(final String[] value)
+	{
+		m_alliedPresenceTerritories = value;
+	}
+	
 	public String[] getAlliedPresenceTerritories()
 	{
 		return m_alliedPresenceTerritories;
@@ -307,6 +349,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		}
 		m_enemyPresenceTerritories = value.split(":");
 		validateNames(m_enemyPresenceTerritories);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setEnemyPresenceTerritories(final String[] value)
+	{
+		m_enemyPresenceTerritories = value;
 	}
 	
 	public String[] getEnemyPresenceTerritories()
@@ -327,6 +375,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		validateNames(m_enemySurfaceExclusionTerritories);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setEnemySurfaceExclusionTerritories(final String[] value)
+	{
+		m_enemySurfaceExclusionTerritories = value;
+	}
+	
 	public String[] getEnemySurfaceExclusionTerritories()
 	{
 		return m_enemySurfaceExclusionTerritories;
@@ -342,6 +396,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		}
 		m_directOwnershipTerritories = value.split(":");
 		validateNames(m_directOwnershipTerritories);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setDirectOwnershipTerritories(final String[] value)
+	{
+		m_directOwnershipTerritories = value;
 	}
 	
 	public String[] getDirectOwnershipTerritories()
@@ -376,6 +436,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		m_unitPresence.put(value, n);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setUnitPresence(final IntegerMap<String> value)
+	{
+		m_unitPresence = value;
+	}
+	
 	public IntegerMap<String> getUnitPresence()
 	{
 		return m_unitPresence;
@@ -394,11 +460,6 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	public int getTechCount()
 	{
 		return m_techCount;
-	}
-	
-	public Set<PlayerID> getAtWarPlayers()
-	{
-		return m_atWarPlayers;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -434,6 +495,17 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAtWarPlayers(final Set<PlayerID> value)
+	{
+		m_atWarPlayers = value;
+	}
+	
+	public Set<PlayerID> getAtWarPlayers()
+	{
+		return m_atWarPlayers;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTechs(final String techs) throws GameParseException
 	{
 		if (techs == null)
@@ -465,6 +537,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 				throw new GameParseException("Technology not found :" + s + thisErrorMsg());
 			m_techs.add(ta);
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTechs(final List<TechAdvance> value)
+	{
+		m_techs = value;
 	}
 	
 	public List<TechAdvance> getTechs()

@@ -2340,9 +2340,9 @@ public class SUtils
 			strength += 1.00F;
 			// the number of pips on the dice
 			if (attacking)
-				strength += unitAttachment.getAttack(u.getOwner()) * (unitAttachment.isTwoHit() ? 2 : 1) * unitAttachment.getAttackRolls(u.getOwner());
+				strength += unitAttachment.getAttack(u.getOwner()) * (unitAttachment.getIsTwoHit() ? 2 : 1) * unitAttachment.getAttackRolls(u.getOwner());
 			else
-				strength += unitAttachment.getDefense(u.getOwner()) * (unitAttachment.isTwoHit() ? 2 : 1);
+				strength += unitAttachment.getDefense(u.getOwner()) * (unitAttachment.getIsTwoHit() ? 2 : 1);
 			if (attacking)
 			{
 				if (unitAttachment.getAttack(u.getOwner()) == 0)
@@ -2394,9 +2394,9 @@ public class SUtils
 				// BB = 6.0; AC=2.0/4.0; SUB=3.0; DS=4.0; TR=0.50/2.0; F=4.0/5.0; B=5.0/2.0;
 				strength += 1.00F; // played with this value a good bit
 				if (attacking)
-					strength += unitAttack * (unitAttachment.isTwoHit() ? 2 : 1);
+					strength += unitAttack * (unitAttachment.getIsTwoHit() ? 2 : 1);
 				else
-					strength += unitAttachment.getDefense(u.getOwner()) * (unitAttachment.isTwoHit() ? 2 : 1);
+					strength += unitAttachment.getDefense(u.getOwner()) * (unitAttachment.getIsTwoHit() ? 2 : 1);
 				if (attacking)
 				{
 					if (unitAttack == 0)
@@ -4452,10 +4452,10 @@ public class SUtils
 				int carrierLoad = Math.min(u.getCarrierCapacity(), fightersremaining);
 				if (carrierLoad < 0)
 					carrierLoad = 0;
-				int bonusAttack = (u.isTwoHit() ? uAttack : 0) + (uAttack > 0 && (i % 2) == 0 ? 1 : 0) + carrierLoad * 3;
+				int bonusAttack = (u.getIsTwoHit() ? uAttack : 0) + (uAttack > 0 && (i % 2) == 0 ? 1 : 0) + carrierLoad * 3;
 				if (thisIsArt && i <= supportableInfCount)
 					bonusAttack++; // add one bonus for each artillery purchased with supportable infantry
-				final int bonusDefense = (u.isTwoHit() ? uDefense : 0) + (uDefense > 0 && (i % 2) == 0 ? 1 : 0) + (carrierLoad * 4);
+				final int bonusDefense = (u.getIsTwoHit() ? uDefense : 0) + (uDefense > 0 && (i % 2) == 0 ? 1 : 0) + (carrierLoad * 4);
 				fightersremaining -= carrierLoad;
 				totUnits++;
 				totAttack += uAttack * aRolls + bonusAttack;

@@ -57,7 +57,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	
 	private ProductionFrontier m_frontier = null;
 	private List<String> m_productionRule = null;
-	private final List<TechAdvance> m_tech = new ArrayList<TechAdvance>();
+	private List<TechAdvance> m_tech = new ArrayList<TechAdvance>();
 	private Map<String, Map<TechAdvance, Boolean>> m_availableTech = null;
 	private Map<Territory, IntegerMap<UnitType>> m_placement = null;
 	private Map<Territory, IntegerMap<UnitType>> m_removeUnits = null;
@@ -65,23 +65,23 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private String m_resource = null;
 	private int m_resourceCount = 0;
 	private Map<UnitSupportAttachment, Boolean> m_support = null;
-	private final List<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this trigger hits.
+	private List<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this trigger hits.
 	private String m_victory = null;
 	
 	// raw property changes below:
-	private final List<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will break all existing maps
+	private List<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will break all existing maps
 	private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
 	private List<Tuple<String, String>> m_unitProperty = null;
-	private final List<Territory> m_territories = new ArrayList<Territory>();
+	private List<Territory> m_territories = new ArrayList<Territory>();
 	private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
 	private List<Tuple<String, String>> m_territoryProperty = null;
-	private final List<PlayerID> m_players = new ArrayList<PlayerID>();
+	private List<PlayerID> m_players = new ArrayList<PlayerID>();
 	private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
 	private List<Tuple<String, String>> m_playerProperty = null;
-	private final List<RelationshipType> m_relationshipTypes = new ArrayList<RelationshipType>();
+	private List<RelationshipType> m_relationshipTypes = new ArrayList<RelationshipType>();
 	private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
 	private List<Tuple<String, String>> m_relationshipTypeProperty = null;
-	private final List<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
+	private List<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
 	private Tuple<String, String> m_territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
 	private List<Tuple<String, String>> m_territoryEffectProperty = null;
 	
@@ -225,6 +225,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_frontier = front;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setFrontier(final ProductionFrontier value)
+	{
+		m_frontier = value;
+	}
+	
 	public ProductionFrontier getFrontier()
 	{
 		return m_frontier;
@@ -259,6 +265,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_productionRule.add(prop);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setProductionRule(final List<String> value)
+	{
+		m_productionRule = value;
+	}
+	
 	public List<String> getProductionRule()
 	{
 		return m_productionRule;
@@ -269,20 +281,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_productionRule.clear();
 	}
 	
-	public int getResourceCount()
-	{
-		return m_resourceCount;
-	}
-	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setResourceCount(final String s)
 	{
 		m_resourceCount = getInt(s);
 	}
 	
-	public String getVictory()
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setResourceCount(final Integer s)
 	{
-		return m_victory;
+		m_resourceCount = s;
+	}
+	
+	public int getResourceCount()
+	{
+		return m_resourceCount;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -294,6 +307,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			return;
 		}
 		m_victory = s;
+	}
+	
+	public String getVictory()
+	{
+		return m_victory;
 	}
 	
 	/**
@@ -314,6 +332,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				throw new GameParseException("Technology not found :" + subString + thisErrorMsg());
 			m_tech.add(ta);
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTech(final List<TechAdvance> value)
+	{
+		m_tech = value;
 	}
 	
 	public List<TechAdvance> getTech()
@@ -367,6 +391,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_availableTech.put(cat, tlist);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAvailableTech(final Map<String, Map<TechAdvance, Boolean>> value)
+	{
+		m_availableTech = value;
+	}
+	
 	public Map<String, Map<TechAdvance, Boolean>> getAvailableTech()
 	{
 		return m_availableTech;
@@ -417,6 +447,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setSupport(final Map<UnitSupportAttachment, Boolean> value)
+	{
+		m_support = value;
+	}
+	
 	public Map<UnitSupportAttachment, Boolean> getSupport()
 	{
 		return m_support;
@@ -425,11 +461,6 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearSupport()
 	{
 		m_support.clear();
-	}
-	
-	public String getResource()
-	{
-		return m_resource;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -445,6 +476,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			throw new GameParseException("Invalid resource: " + s + thisErrorMsg());
 		else
 			m_resource = s;
+	}
+	
+	public String getResource()
+	{
+		return m_resource;
 	}
 	
 	/**
@@ -469,6 +505,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (Matches.isValidRelationshipName(getData()).invert().match(s[3]))
 			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[3] + " unknown " + thisErrorMsg());
 		m_relationshipChange.add(relChange);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRelationshipChange(final List<String> value)
+	{
+		m_relationshipChange = value;
 	}
 	
 	public List<String> getRelationshipChange()
@@ -498,6 +540,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				throw new GameParseException("Could not find unitType. name:" + s[i] + thisErrorMsg());
 			m_unitType.add(type);
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setUnitType(final List<UnitType> value)
+	{
+		m_unitType = value;
 	}
 	
 	public List<UnitType> getUnitType()
@@ -534,6 +582,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_unitAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setUnitAttachmentName(final Tuple<String, String> value)
+	{
+		m_unitAttachmentName = value;
+	}
+	
 	public Tuple<String, String> getUnitAttachmentName()
 	{
 		if (m_unitAttachmentName == null)
@@ -560,6 +614,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_unitProperty = new ArrayList<Tuple<String, String>>();
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		m_unitProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setUnitProperty(final List<Tuple<String, String>> value)
+	{
+		m_unitProperty = value;
 	}
 	
 	public List<Tuple<String, String>> getUnitProperty()
@@ -589,6 +649,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				throw new GameParseException("Could not find territory. name:" + s[i] + thisErrorMsg());
 			m_territories.add(terr);
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTerritories(final List<Territory> value)
+	{
+		m_territories = value;
 	}
 	
 	public List<Territory> getTerritories()
@@ -625,6 +691,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_territoryAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTerritoryAttachmentName(final Tuple<String, String> value)
+	{
+		m_territoryAttachmentName = value;
+	}
+	
 	public Tuple<String, String> getTerritoryAttachmentName()
 	{
 		if (m_territoryAttachmentName == null)
@@ -651,6 +723,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_territoryProperty = new ArrayList<Tuple<String, String>>();
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		m_territoryProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTerritoryProperty(final List<Tuple<String, String>> value)
+	{
+		m_territoryProperty = value;
 	}
 	
 	public List<Tuple<String, String>> getTerritoryProperty()
@@ -680,6 +758,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				throw new GameParseException("Could not find player. name:" + s[i] + thisErrorMsg());
 			m_players.add(player);
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setPlayers(final List<PlayerID> value)
+	{
+		m_players = value;
 	}
 	
 	public List<PlayerID> getPlayers()
@@ -726,6 +810,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_playerAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setPlayerAttachmentName(final Tuple<String, String> value)
+	{
+		m_playerAttachmentName = value;
+	}
+	
 	public Tuple<String, String> getPlayerAttachmentName()
 	{
 		if (m_playerAttachmentName == null)
@@ -752,6 +842,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_playerProperty = new ArrayList<Tuple<String, String>>();
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		m_playerProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setPlayerProperty(final List<Tuple<String, String>> value)
+	{
+		m_playerProperty = value;
 	}
 	
 	public List<Tuple<String, String>> getPlayerProperty()
@@ -781,6 +877,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				throw new GameParseException("Could not find relationshipType. name:" + s[i] + thisErrorMsg());
 			m_relationshipTypes.add(relation);
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRelationshipTypes(final List<RelationshipType> value)
+	{
+		m_relationshipTypes = value;
 	}
 	
 	public List<RelationshipType> getRelationshipTypes()
@@ -815,6 +917,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_relationshipTypeAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRelationshipTypeAttachmentName(final Tuple<String, String> value)
+	{
+		m_relationshipTypeAttachmentName = value;
+	}
+	
 	public Tuple<String, String> getRelationshipTypeAttachmentName()
 	{
 		if (m_relationshipTypeAttachmentName == null)
@@ -841,6 +949,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_relationshipTypeProperty = new ArrayList<Tuple<String, String>>();
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		m_relationshipTypeProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRelationshipTypeProperty(final List<Tuple<String, String>> value)
+	{
+		m_relationshipTypeProperty = value;
 	}
 	
 	public List<Tuple<String, String>> getRelationshipTypeProperty()
@@ -870,6 +984,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				throw new GameParseException("Could not find territoryEffect. name:" + s[i] + thisErrorMsg());
 			m_territoryEffects.add(effect);
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTerritoryEffects(final List<TerritoryEffect> value)
+	{
+		m_territoryEffects = value;
 	}
 	
 	public List<TerritoryEffect> getTerritoryEffects()
@@ -904,6 +1024,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_territoryEffectAttachmentName = new Tuple<String, String>(s[1], s[0]);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTerritoryEffectAttachmentName(final Tuple<String, String> value)
+	{
+		m_territoryEffectAttachmentName = value;
+	}
+	
 	public Tuple<String, String> getTerritoryEffectAttachmentName()
 	{
 		if (m_territoryEffectAttachmentName == null)
@@ -930,6 +1056,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_territoryEffectProperty = new ArrayList<Tuple<String, String>>();
 		final String property = s[s.length - 1]; // the last one is the property we are changing, while the rest is the string we are changing it to
 		m_territoryEffectProperty.add(new Tuple<String, String>(property, getValueFromStringArrayForAllExceptLastSubstring(s)));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setTerritoryEffectProperty(final List<Tuple<String, String>> value)
+	{
+		m_territoryEffectProperty = value;
 	}
 	
 	public List<Tuple<String, String>> getTerritoryEffectProperty()
@@ -994,6 +1126,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setPlacement(final Map<Territory, IntegerMap<UnitType>> value)
+	{
+		m_placement = value;
+	}
+	
 	public Map<Territory, IntegerMap<UnitType>> getPlacement()
 	{
 		return m_placement;
@@ -1055,6 +1193,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRemoveUnits(final Map<Territory, IntegerMap<UnitType>> value)
+	{
+		m_removeUnits = value;
+	}
+	
 	public Map<Territory, IntegerMap<UnitType>> getRemoveUnits()
 	{
 		return m_removeUnits;
@@ -1106,6 +1250,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					m_purchase.add(type, count);
 			}
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setPurchase(final IntegerMap<UnitType> value)
+	{
+		m_purchase = value;
 	}
 	
 	public IntegerMap<UnitType> getPurchase()

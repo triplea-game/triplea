@@ -101,6 +101,12 @@ public class CanalAttachment extends DefaultAttachment
 		m_landTerritories = landTerritories.split(":");
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setLandTerritories(final String[] value)
+	{
+		m_landTerritories = value;
+	}
+	
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

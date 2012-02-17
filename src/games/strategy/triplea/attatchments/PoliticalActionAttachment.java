@@ -84,7 +84,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	}
 	
 	// list of relationship changes to be performed if this action is performed sucessfully
-	private final List<String> m_relationshipChange = new ArrayList<String>();
+	private List<String> m_relationshipChange = new ArrayList<String>();
 	// a key referring to politicaltexts.properties for all the UI messages belonging to this action.
 	private String m_text = "";
 	// cost in PU to attempt this action
@@ -96,7 +96,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	private int m_attemptsLeftThisTurn = 1; // Do Not Export (do not include in IAttachment).
 	// which players should accept this action? this could be the player who is the target of this action in the case of proposing a treaty or the players in your 'alliance' in case you want to declare war...
 	// especially for actions that when france declares war on germany and it automatically causes UK to declare war as well. it is good to set "actionAccept" to "UK" so UK can accept this action to go through.
-	private final Collection<PlayerID> m_actionAccept = new ArrayList<PlayerID>();
+	private Collection<PlayerID> m_actionAccept = new ArrayList<PlayerID>();
 	
 	public static Match<PoliticalActionAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions)
 	{
@@ -137,6 +137,12 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 		if (!Matches.isValidRelationshipName(getData()).match(s[2]))
 			throw new GameParseException("Invalid relationshipChange declaration: " + relChange + " \n relationshipType: " + s[2] + " unknown in: " + getName() + thisErrorMsg());
 		m_relationshipChange.add(relChange);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRelationshipChange(final List<String> value)
+	{
+		m_relationshipChange = value;
 	}
 	
 	public List<String> getRelationshipChange()
@@ -187,6 +193,12 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 		m_costPU = getInt(s);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setCostPU(final Integer s)
+	{
+		m_costPU = s;
+	}
+	
 	/**
 	 * @return the amount you need to pay to perform the action
 	 */
@@ -206,6 +218,13 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 		setAttemptsLeftThisTurn(m_attemptsPerTurn);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAttemptsPerTurn(final Integer s)
+	{
+		m_attemptsPerTurn = s;
+		setAttemptsLeftThisTurn(m_attemptsPerTurn);
+	}
+	
 	/**
 	 * @return the amount of times you can try this Action per Round
 	 */
@@ -220,6 +239,12 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	 */
 	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
 	public void setAttemptsLeftThisTurn(final int attempts)
+	{
+		m_attemptsLeftThisTurn = attempts;
+	}
+	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
+	public void setAttemptsLeftThisTurn(final Integer attempts)
 	{
 		m_attemptsLeftThisTurn = attempts;
 	}
@@ -250,6 +275,12 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 			else
 				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setActionAccept(final Collection<PlayerID> value)
+	{
+		m_actionAccept = value;
 	}
 	
 	/**

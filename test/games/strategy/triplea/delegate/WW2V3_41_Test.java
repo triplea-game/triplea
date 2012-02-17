@@ -53,6 +53,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.ITestDelegateBridge;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RepairRule;
@@ -1493,10 +1494,18 @@ public class WW2V3_41_Test extends TestCase
 		final Territory mongolia = territory("Mongolia", m_data);
 		// Remove original capital
 		final TerritoryAttachment taMongolia = TerritoryAttachment.get(mongolia);
-		taMongolia.setCapital(null);
-		// Set as NEW capital
 		final TerritoryAttachment taKiangsu = TerritoryAttachment.get(kiangsu);
-		taKiangsu.setCapital("Chinese");
+		try
+		{
+			final String noVal = null;
+			taMongolia.setCapital(noVal);
+			// Set as NEW capital
+			taKiangsu.setCapital("Chinese");
+		} catch (final GameParseException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// Remove all units
 		removeFrom(kiangsu, kiangsu.getUnits().getUnits());
 		removeFrom(hupeh, hupeh.getUnits().getUnits());

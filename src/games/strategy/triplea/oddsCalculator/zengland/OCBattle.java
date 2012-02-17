@@ -220,7 +220,7 @@ public class OCBattle
 				canHitAir = !ua.getIsSub();
 				maxHits = ua.getAttackRolls(currentPlayer);
 				maxRolls = 1; // TODO: Determine if this is an LHTR heavy bomber
-				if (ua.isTwoHit())
+				if (ua.getIsTwoHit())
 					maxHp = 2;
 				else
 					maxHp = 1;

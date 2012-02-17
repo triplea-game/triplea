@@ -139,6 +139,12 @@ public class UnitSupportAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setUnitType(final Set<UnitType> value)
+	{
+		m_unitType = value;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setFaction(final String faction) throws GameParseException
 	{
 		if (faction == null)
@@ -223,9 +229,21 @@ public class UnitSupportAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setBonus(final Integer bonus)
+	{
+		m_bonus = bonus;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setNumber(final String number)
 	{
 		m_number = getInt(number);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setNumber(final Integer number)
+	{
+		m_number = number;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -259,10 +277,10 @@ public class UnitSupportAttachment extends DefaultAttachment
 		}
 	}
 	
-	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-	public void setPlayers(final ArrayList<PlayerID> players)
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setPlayers(final List<PlayerID> value)
 	{
-		m_players = players;
+		m_players = value;
 	}
 	
 	public List<PlayerID> getPlayers()
@@ -279,6 +297,12 @@ public class UnitSupportAttachment extends DefaultAttachment
 	public void setImpArtTech(final String tech)
 	{
 		m_impArtTech = getBool(tech);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setImpArtTech(final Boolean tech)
+	{
+		m_impArtTech = tech;
 	}
 	
 	public Set<UnitType> getUnitType()

@@ -88,7 +88,7 @@ class UnitInformation
 							+ (Matches.UnitTypeIsAAforAnything.match(currentType) == false ? "-" : "true") + ","
 							+ (currentAttachment.getIsAir() == false ? "-" : "true") + "," + (currentAttachment.getIsStrategicBomber() == false ? "-" : "true") + ","
 							+ (currentAttachment.getCarrierCost() == -1 ? "-" : currentAttachment.getCarrierCost()) + "," + (currentAttachment.getIsSea() == false ? "-" : "true") + ","
-							+ (currentAttachment.isTwoHit() == false ? "-" : "true") + "," + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","
+							+ (currentAttachment.getIsTwoHit() == false ? "-" : "true") + "," + (currentAttachment.getTransportCapacity() == -1 ? "-" : currentAttachment.getTransportCapacity()) + ","
 							+ (currentAttachment.getCarrierCapacity() == -1 ? "-" : currentAttachment.getCarrierCapacity()) + "," + (currentAttachment.getIsSub() == false ? "-" : "true") + ","
 							+ (currentAttachment.getIsDestroyer() == false ? "-" : "true"));
 				unitInformation.write("\r\n");

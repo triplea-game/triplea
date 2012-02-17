@@ -77,7 +77,7 @@ public class SelectCasualties
 				for (final Unit unit : selectFrom)
 				{
 					final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-					if (ua.isTwoHit() && unit.getHits() == 0 && !damaged.contains(unit)) // If this is an undamaged, un-selected as casualty, two hit unit
+					if (ua.getIsTwoHit() && unit.getHits() == 0 && !damaged.contains(unit)) // If this is an undamaged, un-selected as casualty, two hit unit
 					{
 						untouchedTwoHitUnit = unit;
 						break;
@@ -101,7 +101,7 @@ public class SelectCasualties
 					score -= DUtils.GetValueOfUnits(Collections.singleton(unit)); // Valuable units should get killed later
 					if (dependents.containsKey(unit)) // If we have units depending on this unit, knock down the score by 1000. (Such as a transport with units on it)
 						score -= 1000;
-					if (ua.isTwoHit() && (unit.getHits() > 0 || damaged.contains(unit))) // Since two hit units can get repaired, we don't want them destroyed unless necessary, so knock the score down by 100.
+					if (ua.getIsTwoHit() && (unit.getHits() > 0 || damaged.contains(unit))) // Since two hit units can get repaired, we don't want them destroyed unless necessary, so knock the score down by 100.
 						score -= 100;
 					if (score > highestScore)
 					{

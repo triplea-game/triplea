@@ -89,7 +89,7 @@ public class DUtils
 			final PlayerID owner = unit.getOwner();
 			float unitAttack = 1;
 			unitAttack += ua.getAttack(owner);
-			if (ua.isTwoHit())
+			if (ua.getIsTwoHit())
 				unitAttack = unitAttack * 2.0F;
 			if (ua.getAttackRolls(owner) > 1)
 				unitAttack = unitAttack * ua.getAttackRolls(owner);
@@ -109,7 +109,7 @@ public class DUtils
 			final PlayerID owner = unit.getOwner();
 			float unitDefense = 1;
 			unitDefense += ua.getDefense(owner);
-			if (ua.isTwoHit())
+			if (ua.getIsTwoHit())
 				unitDefense = unitDefense * 2.0F;
 			result += unitDefense;
 		}
@@ -364,7 +364,7 @@ public class DUtils
 		for (final Unit unit : units)
 		{
 			result++;
-			if (UnitAttachment.get(unit.getType()).isTwoHit())
+			if (UnitAttachment.get(unit.getType()).getIsTwoHit())
 			{
 				result++;
 			}
@@ -378,7 +378,7 @@ public class DUtils
 		for (final Unit unit : units)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			result += (ua.getAttack(unit.getOwner()) * (ua.isTwoHit() ? 2 : 1));
+			result += (ua.getAttack(unit.getOwner()) * (ua.getIsTwoHit() ? 2 : 1));
 		}
 		return result;
 	}
@@ -389,7 +389,7 @@ public class DUtils
 		for (final Unit unit : units)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			result += (ua.getDefense(unit.getOwner()) * (ua.isTwoHit() ? 2 : 1));
+			result += (ua.getDefense(unit.getOwner()) * (ua.getIsTwoHit() ? 2 : 1));
 		}
 		return result;
 	}

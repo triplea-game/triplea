@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Allowed changes to all attachments to be undone and redone in the history panel, by ensuring each setter has an additional setter for an object of the field's type. (veqryn)
+
 * Preventing history panel from updating if moused over, and allowing it to scroll down if not. (frigoref & veqryn)
 
 * Allowing route to recalculate if only air can make it. (frigoref)

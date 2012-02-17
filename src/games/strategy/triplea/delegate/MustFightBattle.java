@@ -1731,7 +1731,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		int count = 0;
 		for (final Unit unit : units)
 		{
-			if (UnitAttachment.get(unit.getUnitType()).isTwoHit())
+			if (UnitAttachment.get(unit.getUnitType()).getIsTwoHit())
 			{
 				count += 2;
 				count -= unit.getHits();

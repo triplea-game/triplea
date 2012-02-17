@@ -70,6 +70,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		}
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setConditions(final List<RulesAttachment> value)
+	{
+		m_conditions = value;
+	}
+	
 	public List<RulesAttachment> getConditions()
 	{
 		return m_conditions;
@@ -80,15 +86,21 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		m_conditions.clear();
 	}
 	
-	public boolean getInvert()
-	{
-		return m_invert;
-	}
-	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setInvert(final String s)
 	{
 		m_invert = getBool(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setInvert(final Boolean s)
+	{
+		m_invert = s;
+	}
+	
+	public boolean getInvert()
+	{
+		return m_invert;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)

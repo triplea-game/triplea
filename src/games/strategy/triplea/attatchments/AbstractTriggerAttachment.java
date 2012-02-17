@@ -155,6 +155,12 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		m_when = new Tuple<String, String>(s[0], s[1]);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setWhen(final Tuple<String, String> value)
+	{
+		m_when = value;
+	}
+	
 	public Tuple<String, String> getWhen()
 	{
 		return m_when;

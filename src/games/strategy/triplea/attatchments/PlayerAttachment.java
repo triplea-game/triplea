@@ -70,14 +70,14 @@ public class PlayerAttachment extends DefaultAttachment
 	private int m_captureVps = 0; // need to store some data during a turn
 	private int m_retainCapitalNumber = 1; // number of capitals needed before we lose all our money
 	private int m_retainCapitalProduceNumber = 1; // number of capitals needed before we lose ability to gain money and produce units
-	private final Collection<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
-	private final Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+	private Collection<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
+	private Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
-	private final IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>(); // what resources can be used for suicide attacks, and at what attack power
+	private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>(); // what resources can be used for suicide attacks, and at what attack power
 	private Set<UnitType> m_suicideAttackTargets = null; // what can be hit by suicide attacks
-	private final Set<Triple<Integer, String, Set<UnitType>>> m_placementLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // placement limits on a flexible per player basis
-	private final Set<Triple<Integer, String, Set<UnitType>>> m_movementLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // movement limits on a flexible per player basis
-	private final Set<Triple<Integer, String, Set<UnitType>>> m_attackingLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // attacking number limits on a flexible per player basis
+	private Set<Triple<Integer, String, Set<UnitType>>> m_placementLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // placement limits on a flexible per player basis
+	private Set<Triple<Integer, String, Set<UnitType>>> m_movementLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // movement limits on a flexible per player basis
+	private Set<Triple<Integer, String, Set<UnitType>>> m_attackingLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // attacking number limits on a flexible per player basis
 	
 	/** Creates new PlayerAttachment */
 	public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData)
@@ -117,6 +117,12 @@ public class PlayerAttachment extends DefaultAttachment
 			}
 		}
 		m_placementLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setPlacementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value)
+	{
+		m_placementLimit = value;
 	}
 	
 	public Set<Triple<Integer, String, Set<UnitType>>> getPlacementLimit()
@@ -163,6 +169,12 @@ public class PlayerAttachment extends DefaultAttachment
 		m_movementLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setMovementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value)
+	{
+		m_movementLimit = value;
+	}
+	
 	public Set<Triple<Integer, String, Set<UnitType>>> getMovementLimit()
 	{
 		return m_movementLimit;
@@ -205,6 +217,12 @@ public class PlayerAttachment extends DefaultAttachment
 			}
 		}
 		m_attackingLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAttackingLimit(final Set<Triple<Integer, String, Set<UnitType>>> value)
+	{
+		m_attackingLimit = value;
 	}
 	
 	public Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit()
@@ -290,6 +308,12 @@ public class PlayerAttachment extends DefaultAttachment
 		}
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setSuicideAttackTargets(final Set<UnitType> value)
+	{
+		m_suicideAttackTargets = value;
+	}
+	
 	public Set<UnitType> getSuicideAttackTargets()
 	{
 		return m_suicideAttackTargets;
@@ -319,6 +343,12 @@ public class PlayerAttachment extends DefaultAttachment
 		if (r == null)
 			throw new GameParseException("no such resource: " + s[1] + thisErrorMsg());
 		m_suicideAttackResources.put(r, attackValue);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setSuicideAttackResources(final IntegerMap<Resource> value)
+	{
+		m_suicideAttackResources = value;
 	}
 	
 	public IntegerMap<Resource> getSuicideAttackResources()
@@ -371,6 +401,12 @@ public class PlayerAttachment extends DefaultAttachment
 		m_retainCapitalNumber = getInt(value);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRetainCapitalNumber(final Integer value)
+	{
+		m_retainCapitalNumber = value;
+	}
+	
 	public int getRetainCapitalNumber()
 	{
 		return m_retainCapitalNumber;
@@ -380,6 +416,12 @@ public class PlayerAttachment extends DefaultAttachment
 	public void setRetainCapitalProduceNumber(final String value)
 	{
 		m_retainCapitalProduceNumber = getInt(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRetainCapitalProduceNumber(final Integer value)
+	{
+		m_retainCapitalProduceNumber = value;
 	}
 	
 	public int getRetainCapitalProduceNumber()
@@ -407,6 +449,12 @@ public class PlayerAttachment extends DefaultAttachment
 			else
 				throw new GameParseException("No player named: " + name + thisErrorMsg());
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setGiveUnitControl(final Collection<PlayerID> value)
+	{
+		m_giveUnitControl = value;
 	}
 	
 	public Collection<PlayerID> getGiveUnitControl()
@@ -439,6 +487,12 @@ public class PlayerAttachment extends DefaultAttachment
 		}
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setCaptureUnitOnEnteringBy(final Collection<PlayerID> value)
+	{
+		m_captureUnitOnEnteringBy = value;
+	}
+	
 	public Collection<PlayerID> getCaptureUnitOnEnteringBy()
 	{
 		return m_captureUnitOnEnteringBy;
@@ -453,6 +507,12 @@ public class PlayerAttachment extends DefaultAttachment
 	public void setDestroysPUs(final String value)
 	{
 		m_destroysPUs = getBool(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setDestroysPUs(final Boolean value)
+	{
+		m_destroysPUs = value;
 	}
 	
 	public boolean getDestroysPUs()

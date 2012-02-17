@@ -95,7 +95,7 @@ public class BattleCalculator
 			// and everyone has at least one hitpoint...
 			rVal++;
 			final UnitAttachment ua = UnitAttachment.get(u.getType());
-			if (ua.isTwoHit() && (u.getHits() == 0))
+			if (ua.getIsTwoHit() && (u.getHits() == 0))
 			{
 				// extra one because we have an undamaged two hitpoint unit.
 				rVal++;
@@ -371,7 +371,7 @@ public class BattleCalculator
 		for (final Unit unit : killed)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			if (ua.isTwoHit() && (unit.getHits() == 0))
+			if (ua.getIsTwoHit() && (unit.getHits() == 0))
 			{
 				numhits++;
 				damaged.remove(unit);
@@ -486,7 +486,7 @@ public class BattleCalculator
 			}
 			final Unit unit = targetsIter.next();
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			if (ua.isTwoHit() && (unit.getHits() == 0))
+			if (ua.getIsTwoHit() && (unit.getHits() == 0))
 			{
 				numSelectedCasualties++;
 				defaultCasualtySelection.addToDamaged(unit);

@@ -40,9 +40,9 @@ import java.util.Iterator;
 @SuppressWarnings("serial")
 public class TerritoryEffectAttachment extends DefaultAttachment
 {
-	private final IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<UnitType>();
-	private final IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<UnitType>();
-	private final ArrayList<UnitType> m_noBlitz = new ArrayList<UnitType>();
+	private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<UnitType>();
+	private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<UnitType>();
+	private ArrayList<UnitType> m_noBlitz = new ArrayList<UnitType>();
 	
 	/**
 	 * Creates new TerritoryEffectAttachment
@@ -85,6 +85,12 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 		setCombatEffect(combatDefenseEffect, true);
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setCombatDefenseEffect(final IntegerMap<UnitType> value)
+	{
+		m_combatDefenseEffect = value;
+	}
+	
 	public IntegerMap<UnitType> getCombatDefenseEffect()
 	{
 		return new IntegerMap<UnitType>(m_combatDefenseEffect);
@@ -105,6 +111,12 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	public void setCombatOffenseEffect(final String combatOffenseEffect) throws GameParseException
 	{
 		setCombatEffect(combatOffenseEffect, false);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setCombatOffenseEffect(final IntegerMap<UnitType> value)
+	{
+		m_combatOffenseEffect = value;
 	}
 	
 	public IntegerMap<UnitType> getCombatOffenseEffect()
@@ -169,6 +181,12 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 				throw new GameParseException("No unit called:" + unitTypeName + thisErrorMsg());
 			m_noBlitz.add(ut);
 		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setNoBlitz(final ArrayList<UnitType> value)
+	{
+		m_noBlitz = value;
 	}
 	
 	public Collection<UnitType> getNoBlitz()
