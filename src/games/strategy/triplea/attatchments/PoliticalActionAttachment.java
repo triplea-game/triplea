@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,7 +83,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	}
 	
 	// list of relationship changes to be performed if this action is performed sucessfully
-	private List<String> m_relationshipChange = new ArrayList<String>();
+	private ArrayList<String> m_relationshipChange = new ArrayList<String>();
 	// a key referring to politicaltexts.properties for all the UI messages belonging to this action.
 	private String m_text = "";
 	// cost in PU to attempt this action
@@ -96,7 +95,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	private int m_attemptsLeftThisTurn = 1; // Do Not Export (do not include in IAttachment).
 	// which players should accept this action? this could be the player who is the target of this action in the case of proposing a treaty or the players in your 'alliance' in case you want to declare war...
 	// especially for actions that when france declares war on germany and it automatically causes UK to declare war as well. it is good to set "actionAccept" to "UK" so UK can accept this action to go through.
-	private Collection<PlayerID> m_actionAccept = new ArrayList<PlayerID>();
+	private ArrayList<PlayerID> m_actionAccept = new ArrayList<PlayerID>();
 	
 	public static Match<PoliticalActionAttachment> isSatisfiedMatch(final HashMap<ICondition, Boolean> testedConditions)
 	{
@@ -140,12 +139,12 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setRelationshipChange(final List<String> value)
+	public void setRelationshipChange(final ArrayList<String> value)
 	{
 		m_relationshipChange = value;
 	}
 	
-	public List<String> getRelationshipChange()
+	public ArrayList<String> getRelationshipChange()
 	{
 		return m_relationshipChange;
 	}
@@ -278,7 +277,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setActionAccept(final Collection<PlayerID> value)
+	public void setActionAccept(final ArrayList<PlayerID> value)
 	{
 		m_actionAccept = value;
 	}
@@ -286,7 +285,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	/**
 	 * @return a list of players that must accept this action before it takes effect.
 	 */
-	public Collection<PlayerID> getActionAccept()
+	public ArrayList<PlayerID> getActionAccept()
 	{
 		return m_actionAccept;
 	}

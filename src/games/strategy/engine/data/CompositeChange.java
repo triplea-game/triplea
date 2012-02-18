@@ -103,6 +103,6 @@ public class CompositeChange extends Change
 	@Override
 	public String toString()
 	{
-		return "CompositeChange <" + m_changes.toString() + ">";
+		return "CompositeChange <" + (m_changes == null ? "null" : m_changes.toString()) + ">";
 	}
 }

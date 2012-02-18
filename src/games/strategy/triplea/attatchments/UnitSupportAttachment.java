@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,7 +44,7 @@ import java.util.Set;
 public class UnitSupportAttachment extends DefaultAttachment
 {
 	private static final long serialVersionUID = -3015679930172496082L;
-	private Set<UnitType> m_unitType = null;
+	private HashSet<UnitType> m_unitType = null;
 	@InternalDoNotExport
 	private boolean m_offence = false; // Do Not Export
 	@InternalDoNotExport
@@ -69,7 +68,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	private boolean m_enemy = false; // TODO: finish support attachments
 	
 	private String m_bonusType = null;
-	private List<PlayerID> m_players = new ArrayList<PlayerID>();
+	private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
 	private boolean m_impArtTech = false;
 	// strings
 	private String m_dice = null;
@@ -139,7 +138,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setUnitType(final Set<UnitType> value)
+	public void setUnitType(final HashSet<UnitType> value)
 	{
 		m_unitType = value;
 	}
@@ -278,12 +277,12 @@ public class UnitSupportAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setPlayers(final List<PlayerID> value)
+	public void setPlayers(final ArrayList<PlayerID> value)
 	{
 		m_players = value;
 	}
 	
-	public List<PlayerID> getPlayers()
+	public ArrayList<PlayerID> getPlayers()
 	{
 		return m_players;
 	}
@@ -305,7 +304,7 @@ public class UnitSupportAttachment extends DefaultAttachment
 		m_impArtTech = tech;
 	}
 	
-	public Set<UnitType> getUnitType()
+	public HashSet<UnitType> getUnitType()
 	{
 		return m_unitType;
 	}

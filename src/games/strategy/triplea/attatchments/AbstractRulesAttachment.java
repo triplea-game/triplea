@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,11 +38,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	@InternalDoNotExport
 	protected int m_territoryCount = -1; // Do Not Export (do not include in IAttachment). Used with the next Territory conditions to determine the number of territories needed to be valid (ex: m_alliedOwnershipTerritories)
 	
-	protected List<PlayerID> m_players = new ArrayList<PlayerID>(); // A list of players that can be used with directOwnershipTerritories, directExclusionTerritories, directPresenceTerritories, or any of the other territory lists
+	protected ArrayList<PlayerID> m_players = new ArrayList<PlayerID>(); // A list of players that can be used with directOwnershipTerritories, directExclusionTerritories, directPresenceTerritories, or any of the other territory lists
 	
 	protected int m_objectiveValue = 0; // only used if the attachment begins with "objectiveAttachment"
 	protected int m_uses = -1; // only matters for objectiveValue, does not affect the condition
-	protected Map<Integer, Integer> m_turns = null; // condition for what turn it is
+	protected HashMap<Integer, Integer> m_turns = null; // condition for what turn it is
 	
 	public AbstractRulesAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -71,15 +69,15 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setPlayers(final List<PlayerID> value)
+	public void setPlayers(final ArrayList<PlayerID> value)
 	{
 		m_players = value;
 	}
 	
-	public List<PlayerID> getPlayers()
+	public ArrayList<PlayerID> getPlayers()
 	{
 		if (m_players.isEmpty())
-			return Collections.singletonList((PlayerID) getAttachedTo());
+			return new ArrayList<PlayerID>(Collections.singletonList((PlayerID) getAttachedTo()));
 		else
 			return m_players;
 	}
@@ -216,12 +214,12 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setTurns(final Map<Integer, Integer> value)
+	public void setTurns(final HashMap<Integer, Integer> value)
 	{
 		m_turns = value;
 	}
 	
-	public Map<Integer, Integer> getTurns()
+	public HashMap<Integer, Integer> getTurns()
 	{
 		return m_turns;
 	}

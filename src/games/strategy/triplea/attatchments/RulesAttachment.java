@@ -60,12 +60,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 {
 	private static final long serialVersionUID = 7301965634079412516L;
 	
-	private List<TechAdvance> m_techs = null; // condition for having techs
+	private ArrayList<TechAdvance> m_techs = null; // condition for having techs
 	@InternalDoNotExport
 	private int m_techCount = -1; // Do Not Export (do not include in IAttachment).
 	
-	private List<String> m_relationship = new ArrayList<String>(); // condition for having specific relationships
-	private Set<PlayerID> m_atWarPlayers = null; // condition for being at war
+	private ArrayList<String> m_relationship = new ArrayList<String>(); // condition for having specific relationships
+	private HashSet<PlayerID> m_atWarPlayers = null; // condition for being at war
 	@InternalDoNotExport
 	private int m_atWarCount = -1; // Do Not Export (do not include in IAttachment).
 	private String m_destroyedTUV = null; // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to the prices the defender pays for the units]
@@ -184,12 +184,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setRelationship(final List<String> value)
+	public void setRelationship(final ArrayList<String> value)
 	{
 		m_relationship = value;
 	}
 	
-	public List<String> getRelationship()
+	public ArrayList<String> getRelationship()
 	{
 		return m_relationship;
 	}
@@ -495,12 +495,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setAtWarPlayers(final Set<PlayerID> value)
+	public void setAtWarPlayers(final HashSet<PlayerID> value)
 	{
 		m_atWarPlayers = value;
 	}
 	
-	public Set<PlayerID> getAtWarPlayers()
+	public HashSet<PlayerID> getAtWarPlayers()
 	{
 		return m_atWarPlayers;
 	}
@@ -540,12 +540,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setTechs(final List<TechAdvance> value)
+	public void setTechs(final ArrayList<TechAdvance> value)
 	{
 		m_techs = value;
 	}
 	
-	public List<TechAdvance> getTechs()
+	public ArrayList<TechAdvance> getTechs()
 	{
 		return m_techs;
 	}

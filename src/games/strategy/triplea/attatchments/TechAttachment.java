@@ -25,7 +25,6 @@ import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Sean Bridges
@@ -74,7 +73,7 @@ public class TechAttachment extends DefaultAttachment
 	private boolean m_aARadar = false;
 	private boolean m_shipyards = false;
 	@InternalDoNotExport
-	private Map<String, Boolean> m_GenericTech = new HashMap<String, Boolean>(); // do not export at this point. currently map xml can not define a player having a custom tech at start of game
+	private HashMap<String, Boolean> m_GenericTech = new HashMap<String, Boolean>(); // do not export at this point. currently map xml can not define a player having a custom tech at start of game
 	
 	public TechAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -385,12 +384,12 @@ public class TechAttachment extends DefaultAttachment
 	}
 	
 	@InternalDoNotExport
-	public void setGenericTech(final Map<String, Boolean> value)
+	public void setGenericTech(final HashMap<String, Boolean> value)
 	{
 		m_GenericTech = value;
 	}
 	
-	public Map<String, Boolean> getGenericTech()
+	public HashMap<String, Boolean> getGenericTech()
 	{
 		return m_GenericTech;
 	}

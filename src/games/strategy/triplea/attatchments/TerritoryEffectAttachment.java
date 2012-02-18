@@ -29,7 +29,6 @@ import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -189,7 +188,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 		m_noBlitz = value;
 	}
 	
-	public Collection<UnitType> getNoBlitz()
+	public ArrayList<UnitType> getNoBlitz()
 	{
 		return new ArrayList<UnitType>(m_noBlitz);
 	}

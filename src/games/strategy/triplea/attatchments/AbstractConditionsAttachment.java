@@ -27,7 +27,7 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 {
 	private static final long serialVersionUID = -9008441256118867078L;
 	
-	protected List<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>(); // list of conditions that this condition can contain
+	protected ArrayList<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>(); // list of conditions that this condition can contain
 	protected String m_conditionType = "AND"; // m_conditionType modifies the relationship of m_conditions
 	protected boolean m_invert = false; // will logically negate the entire condition, including contained conditions
 	protected String m_chance = "1:1"; // chance (x out of y) that this action is successful when attempted, default = 1:1 = always successful
@@ -71,12 +71,12 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setConditions(final List<RulesAttachment> value)
+	public void setConditions(final ArrayList<RulesAttachment> value)
 	{
 		m_conditions = value;
 	}
 	
-	public List<RulesAttachment> getConditions()
+	public ArrayList<RulesAttachment> getConditions()
 	{
 		return m_conditions;
 	}

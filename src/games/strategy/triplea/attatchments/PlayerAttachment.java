@@ -37,7 +37,6 @@ import games.strategy.util.Triple;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 
@@ -70,14 +69,14 @@ public class PlayerAttachment extends DefaultAttachment
 	private int m_captureVps = 0; // need to store some data during a turn
 	private int m_retainCapitalNumber = 1; // number of capitals needed before we lose all our money
 	private int m_retainCapitalProduceNumber = 1; // number of capitals needed before we lose ability to gain money and produce units
-	private Collection<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
-	private Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+	private ArrayList<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
+	private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
 	private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>(); // what resources can be used for suicide attacks, and at what attack power
-	private Set<UnitType> m_suicideAttackTargets = null; // what can be hit by suicide attacks
-	private Set<Triple<Integer, String, Set<UnitType>>> m_placementLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // placement limits on a flexible per player basis
-	private Set<Triple<Integer, String, Set<UnitType>>> m_movementLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // movement limits on a flexible per player basis
-	private Set<Triple<Integer, String, Set<UnitType>>> m_attackingLimit = new HashSet<Triple<Integer, String, Set<UnitType>>>(); // attacking number limits on a flexible per player basis
+	private HashSet<UnitType> m_suicideAttackTargets = null; // what can be hit by suicide attacks
+	private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_placementLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // placement limits on a flexible per player basis
+	private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_movementLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // movement limits on a flexible per player basis
+	private HashSet<Triple<Integer, String, HashSet<UnitType>>> m_attackingLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>(); // attacking number limits on a flexible per player basis
 	
 	/** Creates new PlayerAttachment */
 	public PlayerAttachment(final String name, final Attachable attachable, final GameData gameData)
@@ -102,7 +101,7 @@ public class PlayerAttachment extends DefaultAttachment
 			throw new GameParseException("placementLimit count must have a positive number" + thisErrorMsg());
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
 			throw new GameParseException("placementLimit type must be: owned, allied, or total" + thisErrorMsg());
-		final Set<UnitType> types = new HashSet<UnitType>();
+		final HashSet<UnitType> types = new HashSet<UnitType>();
 		if (s[3].equalsIgnoreCase("all"))
 			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
 		else
@@ -116,16 +115,16 @@ public class PlayerAttachment extends DefaultAttachment
 					types.add(ut);
 			}
 		}
-		m_placementLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
+		m_placementLimit.add(new Triple<Integer, String, HashSet<UnitType>>(max, s[1], types));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setPlacementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value)
+	public void setPlacementLimit(final HashSet<Triple<Integer, String, HashSet<UnitType>>> value)
 	{
 		m_placementLimit = value;
 	}
 	
-	public Set<Triple<Integer, String, Set<UnitType>>> getPlacementLimit()
+	public HashSet<Triple<Integer, String, HashSet<UnitType>>> getPlacementLimit()
 	{
 		return m_placementLimit;
 	}
@@ -152,7 +151,7 @@ public class PlayerAttachment extends DefaultAttachment
 			throw new GameParseException("movementLimit count must have a positive number" + thisErrorMsg());
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
 			throw new GameParseException("movementLimit type must be: owned, allied, or total" + thisErrorMsg());
-		final Set<UnitType> types = new HashSet<UnitType>();
+		final HashSet<UnitType> types = new HashSet<UnitType>();
 		if (s[3].equalsIgnoreCase("all"))
 			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
 		else
@@ -166,16 +165,16 @@ public class PlayerAttachment extends DefaultAttachment
 					types.add(ut);
 			}
 		}
-		m_movementLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
+		m_movementLimit.add(new Triple<Integer, String, HashSet<UnitType>>(max, s[1], types));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setMovementLimit(final Set<Triple<Integer, String, Set<UnitType>>> value)
+	public void setMovementLimit(final HashSet<Triple<Integer, String, HashSet<UnitType>>> value)
 	{
 		m_movementLimit = value;
 	}
 	
-	public Set<Triple<Integer, String, Set<UnitType>>> getMovementLimit()
+	public HashSet<Triple<Integer, String, HashSet<UnitType>>> getMovementLimit()
 	{
 		return m_movementLimit;
 	}
@@ -202,7 +201,7 @@ public class PlayerAttachment extends DefaultAttachment
 			throw new GameParseException("attackingLimit count must have a positive number" + thisErrorMsg());
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
 			throw new GameParseException("attackingLimit type must be: owned, allied, or total" + thisErrorMsg());
-		final Set<UnitType> types = new HashSet<UnitType>();
+		final HashSet<UnitType> types = new HashSet<UnitType>();
 		if (s[3].equalsIgnoreCase("all"))
 			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
 		else
@@ -216,16 +215,16 @@ public class PlayerAttachment extends DefaultAttachment
 					types.add(ut);
 			}
 		}
-		m_attackingLimit.add(new Triple<Integer, String, Set<UnitType>>(max, s[1], types));
+		m_attackingLimit.add(new Triple<Integer, String, HashSet<UnitType>>(max, s[1], types));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setAttackingLimit(final Set<Triple<Integer, String, Set<UnitType>>> value)
+	public void setAttackingLimit(final HashSet<Triple<Integer, String, HashSet<UnitType>>> value)
 	{
 		m_attackingLimit = value;
 	}
 	
-	public Set<Triple<Integer, String, Set<UnitType>>> getAttackingLimit()
+	public HashSet<Triple<Integer, String, HashSet<UnitType>>> getAttackingLimit()
 	{
 		return m_attackingLimit;
 	}
@@ -241,7 +240,7 @@ public class PlayerAttachment extends DefaultAttachment
 		final PlayerAttachment pa = PlayerAttachment.get(owner);
 		if (pa == null)
 			return true;
-		final Set<Triple<Integer, String, Set<UnitType>>> stackingLimits;
+		final HashSet<Triple<Integer, String, HashSet<UnitType>>> stackingLimits;
 		if (limitType.equals("movementLimit"))
 			stackingLimits = pa.getMovementLimit();
 		else if (limitType.equals("attackingLimit"))
@@ -252,13 +251,13 @@ public class PlayerAttachment extends DefaultAttachment
 			throw new IllegalStateException("getCanTheseUnitsMoveWithoutViolatingStackingLimit does not allow limitType: " + limitType);
 		if (stackingLimits.isEmpty())
 			return true;
-		for (final Triple<Integer, String, Set<UnitType>> currentLimit : stackingLimits)
+		for (final Triple<Integer, String, HashSet<UnitType>> currentLimit : stackingLimits)
 		{
 			// first make a copy of unitsMoving
 			final Collection<Unit> copyUnitsMoving = new ArrayList<Unit>(unitsMoving);
 			final int max = currentLimit.getFirst();
 			final String type = currentLimit.getSecond();
-			final Set<UnitType> unitsToTest = currentLimit.getThird();
+			final HashSet<UnitType> unitsToTest = currentLimit.getThird();
 			final Collection<Unit> currentInTerritory = toMoveInto.getUnits().getUnits();
 			// first remove units that do not apply to our current type
 			if (type.equals("owned"))
@@ -309,12 +308,12 @@ public class PlayerAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setSuicideAttackTargets(final Set<UnitType> value)
+	public void setSuicideAttackTargets(final HashSet<UnitType> value)
 	{
 		m_suicideAttackTargets = value;
 	}
 	
-	public Set<UnitType> getSuicideAttackTargets()
+	public HashSet<UnitType> getSuicideAttackTargets()
 	{
 		return m_suicideAttackTargets;
 	}
@@ -452,12 +451,12 @@ public class PlayerAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setGiveUnitControl(final Collection<PlayerID> value)
+	public void setGiveUnitControl(final ArrayList<PlayerID> value)
 	{
 		m_giveUnitControl = value;
 	}
 	
-	public Collection<PlayerID> getGiveUnitControl()
+	public ArrayList<PlayerID> getGiveUnitControl()
 	{
 		return m_giveUnitControl;
 	}
@@ -488,12 +487,12 @@ public class PlayerAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setCaptureUnitOnEnteringBy(final Collection<PlayerID> value)
+	public void setCaptureUnitOnEnteringBy(final ArrayList<PlayerID> value)
 	{
 		m_captureUnitOnEnteringBy = value;
 	}
 	
-	public Collection<PlayerID> getCaptureUnitOnEnteringBy()
+	public ArrayList<PlayerID> getCaptureUnitOnEnteringBy()
 	{
 		return m_captureUnitOnEnteringBy;
 	}

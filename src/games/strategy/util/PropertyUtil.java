@@ -23,7 +23,9 @@ import java.lang.reflect.Method;
  */
 public class PropertyUtil
 {
+	@SuppressWarnings("unused")
 	private static final Class<?>[] STRING_ARGS = { String.class };
+	@SuppressWarnings("unused")
 	private static final Class<?>[] INT_ARGS = { int.class };
 	
 	public static void set(final String propertyName, final Object value, final Object subject)
@@ -159,7 +161,6 @@ public class PropertyUtil
 		return first + aString.substring(1);
 	}
 	
-	// TODO for some reason, territoryAttachments come into here as Integers in the History panel
 	private static Method getSetter(final String propertyName, final Object subject, final Object value)
 	{
 		final String setterName = "set" + capitalizeFirstLetter(propertyName);

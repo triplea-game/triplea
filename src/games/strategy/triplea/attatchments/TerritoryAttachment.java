@@ -33,7 +33,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.MyFormatter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -142,16 +141,16 @@ public class TerritoryAttachment extends DefaultAttachment
 	private PlayerID m_originalOwner = null; // Do Not Export (do not include in IAttachment). This is not set by the xml in territory attachments, but instead set during territory initialization.
 	private PlayerID m_occupiedTerrOf = null;
 	private boolean m_convoyRoute = false;
-	private Set<Territory> m_convoyAttached = new HashSet<Territory>();
-	private Collection<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
-	private Collection<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
+	private HashSet<Territory> m_convoyAttached = new HashSet<Territory>();
+	private ArrayList<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
+	private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	private boolean m_navalBase = false;
 	private boolean m_airBase = false;
 	private boolean m_kamikazeZone = false;
 	private int m_unitProduction = 0;
 	private boolean m_blockadeZone = false;
-	private Collection<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
-	private Collection<String> m_whenCapturedByGoesTo = new ArrayList<String>();
+	private ArrayList<TerritoryEffect> m_territoryEffect = new ArrayList<TerritoryEffect>();
+	private ArrayList<String> m_whenCapturedByGoesTo = new ArrayList<String>();
 	private ResourceCollection m_resources = null;
 	
 	/** Creates new TerritoryAttachment */
@@ -418,12 +417,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setChangeUnitOwners(final Collection<PlayerID> value)
+	public void setChangeUnitOwners(final ArrayList<PlayerID> value)
 	{
 		m_changeUnitOwners = value;
 	}
 	
-	public Collection<PlayerID> getChangeUnitOwners()
+	public ArrayList<PlayerID> getChangeUnitOwners()
 	{
 		return m_changeUnitOwners;
 	}
@@ -454,12 +453,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setCaptureUnitOnEnteringBy(final Collection<PlayerID> value)
+	public void setCaptureUnitOnEnteringBy(final ArrayList<PlayerID> value)
 	{
 		m_captureUnitOnEnteringBy = value;
 	}
 	
-	public Collection<PlayerID> getCaptureUnitOnEnteringBy()
+	public ArrayList<PlayerID> getCaptureUnitOnEnteringBy()
 	{
 		return m_captureUnitOnEnteringBy;
 	}
@@ -491,12 +490,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setWhenCapturedByGoesTo(final Collection<String> value)
+	public void setWhenCapturedByGoesTo(final ArrayList<String> value)
 	{
 		m_whenCapturedByGoesTo = value;
 	}
 	
-	public Collection<String> getWhenCapturedByGoesTo()
+	public ArrayList<String> getWhenCapturedByGoesTo()
 	{
 		return m_whenCapturedByGoesTo;
 	}
@@ -526,12 +525,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setTerritoryEffect(final Collection<TerritoryEffect> value)
+	public void setTerritoryEffect(final ArrayList<TerritoryEffect> value)
 	{
 		m_territoryEffect = value;
 	}
 	
-	public Collection<TerritoryEffect> getTerritoryEffect()
+	public ArrayList<TerritoryEffect> getTerritoryEffect()
 	{
 		return m_territoryEffect;
 	}
@@ -562,12 +561,12 @@ public class TerritoryAttachment extends DefaultAttachment
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setConvoyAttached(final Set<Territory> value)
+	public void setConvoyAttached(final HashSet<Territory> value)
 	{
 		m_convoyAttached = value;
 	}
 	
-	public Set<Territory> getConvoyAttached()
+	public HashSet<Territory> getConvoyAttached()
 	{
 		return m_convoyAttached;
 	}

@@ -56,34 +56,34 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private static final long serialVersionUID = -3327739180569606093L;
 	
 	private ProductionFrontier m_frontier = null;
-	private List<String> m_productionRule = null;
-	private List<TechAdvance> m_tech = new ArrayList<TechAdvance>();
-	private Map<String, Map<TechAdvance, Boolean>> m_availableTech = null;
-	private Map<Territory, IntegerMap<UnitType>> m_placement = null;
-	private Map<Territory, IntegerMap<UnitType>> m_removeUnits = null;
+	private ArrayList<String> m_productionRule = null;
+	private ArrayList<TechAdvance> m_tech = new ArrayList<TechAdvance>();
+	private HashMap<String, LinkedHashMap<TechAdvance, Boolean>> m_availableTech = null;
+	private HashMap<Territory, IntegerMap<UnitType>> m_placement = null;
+	private HashMap<Territory, IntegerMap<UnitType>> m_removeUnits = null;
 	private IntegerMap<UnitType> m_purchase = null;
 	private String m_resource = null;
 	private int m_resourceCount = 0;
-	private Map<UnitSupportAttachment, Boolean> m_support = null;
-	private List<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this trigger hits.
+	private LinkedHashMap<UnitSupportAttachment, Boolean> m_support = null;
+	private ArrayList<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this trigger hits.
 	private String m_victory = null;
 	
 	// raw property changes below:
-	private List<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will break all existing maps
+	private ArrayList<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will break all existing maps
 	private Tuple<String, String> m_unitAttachmentName = null; // covers UnitAttachment, UnitSupportAttachment
-	private List<Tuple<String, String>> m_unitProperty = null;
-	private List<Territory> m_territories = new ArrayList<Territory>();
+	private ArrayList<Tuple<String, String>> m_unitProperty = null;
+	private ArrayList<Territory> m_territories = new ArrayList<Territory>();
 	private Tuple<String, String> m_territoryAttachmentName = null; // covers TerritoryAttachment, CanalAttachment
-	private List<Tuple<String, String>> m_territoryProperty = null;
-	private List<PlayerID> m_players = new ArrayList<PlayerID>();
+	private ArrayList<Tuple<String, String>> m_territoryProperty = null;
+	private ArrayList<PlayerID> m_players = new ArrayList<PlayerID>();
 	private Tuple<String, String> m_playerAttachmentName = null; // covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
-	private List<Tuple<String, String>> m_playerProperty = null;
-	private List<RelationshipType> m_relationshipTypes = new ArrayList<RelationshipType>();
+	private ArrayList<Tuple<String, String>> m_playerProperty = null;
+	private ArrayList<RelationshipType> m_relationshipTypes = new ArrayList<RelationshipType>();
 	private Tuple<String, String> m_relationshipTypeAttachmentName = null; // covers RelationshipTypeAttachment
-	private List<Tuple<String, String>> m_relationshipTypeProperty = null;
-	private List<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
+	private ArrayList<Tuple<String, String>> m_relationshipTypeProperty = null;
+	private ArrayList<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
 	private Tuple<String, String> m_territoryEffectAttachmentName = null; // covers TerritoryEffectAttachment
-	private List<Tuple<String, String>> m_territoryEffectProperty = null;
+	private ArrayList<Tuple<String, String>> m_territoryEffectProperty = null;
 	
 	public TriggerAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -266,12 +266,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setProductionRule(final List<String> value)
+	public void setProductionRule(final ArrayList<String> value)
 	{
 		m_productionRule = value;
 	}
 	
-	public List<String> getProductionRule()
+	public ArrayList<String> getProductionRule()
 	{
 		return m_productionRule;
 	}
@@ -335,12 +335,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setTech(final List<TechAdvance> value)
+	public void setTech(final ArrayList<TechAdvance> value)
 	{
 		m_tech = value;
 	}
 	
-	public List<TechAdvance> getTech()
+	public ArrayList<TechAdvance> getTech()
 	{
 		return m_tech;
 	}
@@ -368,7 +368,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (s.length < 2)
 			throw new GameParseException("Invalid tech availability: " + techs + " should be category:techs" + thisErrorMsg());
 		final String cat = s[0];
-		final Map<TechAdvance, Boolean> tlist = new LinkedHashMap<TechAdvance, Boolean>();
+		final LinkedHashMap<TechAdvance, Boolean> tlist = new LinkedHashMap<TechAdvance, Boolean>();
 		for (int i = 1; i < s.length; i++)
 		{
 			boolean add = true;
@@ -385,19 +385,19 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			tlist.put(ta, add);
 		}
 		if (m_availableTech == null)
-			m_availableTech = new HashMap<String, Map<TechAdvance, Boolean>>();
+			m_availableTech = new HashMap<String, LinkedHashMap<TechAdvance, Boolean>>();
 		if (m_availableTech.containsKey(cat))
 			tlist.putAll(m_availableTech.get(cat));
 		m_availableTech.put(cat, tlist);
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setAvailableTech(final Map<String, Map<TechAdvance, Boolean>> value)
+	public void setAvailableTech(final HashMap<String, LinkedHashMap<TechAdvance, Boolean>> value)
 	{
 		m_availableTech = value;
 	}
 	
-	public Map<String, Map<TechAdvance, Boolean>> getAvailableTech()
+	public HashMap<String, LinkedHashMap<TechAdvance, Boolean>> getAvailableTech()
 	{
 		return m_availableTech;
 	}
@@ -448,12 +448,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setSupport(final Map<UnitSupportAttachment, Boolean> value)
+	public void setSupport(final LinkedHashMap<UnitSupportAttachment, Boolean> value)
 	{
 		m_support = value;
 	}
 	
-	public Map<UnitSupportAttachment, Boolean> getSupport()
+	public LinkedHashMap<UnitSupportAttachment, Boolean> getSupport()
 	{
 		return m_support;
 	}
@@ -508,12 +508,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setRelationshipChange(final List<String> value)
+	public void setRelationshipChange(final ArrayList<String> value)
 	{
 		m_relationshipChange = value;
 	}
 	
-	public List<String> getRelationshipChange()
+	public ArrayList<String> getRelationshipChange()
 	{
 		return m_relationshipChange;
 	}
@@ -543,12 +543,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setUnitType(final List<UnitType> value)
+	public void setUnitType(final ArrayList<UnitType> value)
 	{
 		m_unitType = value;
 	}
 	
-	public List<UnitType> getUnitType()
+	public ArrayList<UnitType> getUnitType()
 	{
 		return m_unitType;
 	}
@@ -617,12 +617,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setUnitProperty(final List<Tuple<String, String>> value)
+	public void setUnitProperty(final ArrayList<Tuple<String, String>> value)
 	{
 		m_unitProperty = value;
 	}
 	
-	public List<Tuple<String, String>> getUnitProperty()
+	public ArrayList<Tuple<String, String>> getUnitProperty()
 	{
 		return m_unitProperty;
 	}
@@ -652,12 +652,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setTerritories(final List<Territory> value)
+	public void setTerritories(final ArrayList<Territory> value)
 	{
 		m_territories = value;
 	}
 	
-	public List<Territory> getTerritories()
+	public ArrayList<Territory> getTerritories()
 	{
 		return m_territories;
 	}
@@ -726,12 +726,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setTerritoryProperty(final List<Tuple<String, String>> value)
+	public void setTerritoryProperty(final ArrayList<Tuple<String, String>> value)
 	{
 		m_territoryProperty = value;
 	}
 	
-	public List<Tuple<String, String>> getTerritoryProperty()
+	public ArrayList<Tuple<String, String>> getTerritoryProperty()
 	{
 		return m_territoryProperty;
 	}
@@ -761,15 +761,15 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setPlayers(final List<PlayerID> value)
+	public void setPlayers(final ArrayList<PlayerID> value)
 	{
 		m_players = value;
 	}
 	
-	public List<PlayerID> getPlayers()
+	public ArrayList<PlayerID> getPlayers()
 	{
 		if (m_players.isEmpty())
-			return Collections.singletonList((PlayerID) getAttachedTo());
+			return new ArrayList<PlayerID>(Collections.singletonList((PlayerID) getAttachedTo()));
 		else
 			return m_players;
 	}
@@ -845,12 +845,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setPlayerProperty(final List<Tuple<String, String>> value)
+	public void setPlayerProperty(final ArrayList<Tuple<String, String>> value)
 	{
 		m_playerProperty = value;
 	}
 	
-	public List<Tuple<String, String>> getPlayerProperty()
+	public ArrayList<Tuple<String, String>> getPlayerProperty()
 	{
 		return m_playerProperty;
 	}
@@ -880,12 +880,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setRelationshipTypes(final List<RelationshipType> value)
+	public void setRelationshipTypes(final ArrayList<RelationshipType> value)
 	{
 		m_relationshipTypes = value;
 	}
 	
-	public List<RelationshipType> getRelationshipTypes()
+	public ArrayList<RelationshipType> getRelationshipTypes()
 	{
 		return m_relationshipTypes;
 	}
@@ -952,12 +952,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setRelationshipTypeProperty(final List<Tuple<String, String>> value)
+	public void setRelationshipTypeProperty(final ArrayList<Tuple<String, String>> value)
 	{
 		m_relationshipTypeProperty = value;
 	}
 	
-	public List<Tuple<String, String>> getRelationshipTypeProperty()
+	public ArrayList<Tuple<String, String>> getRelationshipTypeProperty()
 	{
 		return m_relationshipTypeProperty;
 	}
@@ -987,12 +987,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setTerritoryEffects(final List<TerritoryEffect> value)
+	public void setTerritoryEffects(final ArrayList<TerritoryEffect> value)
 	{
 		m_territoryEffects = value;
 	}
 	
-	public List<TerritoryEffect> getTerritoryEffects()
+	public ArrayList<TerritoryEffect> getTerritoryEffects()
 	{
 		return m_territoryEffects;
 	}
@@ -1059,12 +1059,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setTerritoryEffectProperty(final List<Tuple<String, String>> value)
+	public void setTerritoryEffectProperty(final ArrayList<Tuple<String, String>> value)
 	{
 		m_territoryEffectProperty = value;
 	}
 	
-	public List<Tuple<String, String>> getTerritoryEffectProperty()
+	public ArrayList<Tuple<String, String>> getTerritoryEffectProperty()
 	{
 		return m_territoryEffectProperty;
 	}
@@ -1127,12 +1127,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setPlacement(final Map<Territory, IntegerMap<UnitType>> value)
+	public void setPlacement(final HashMap<Territory, IntegerMap<UnitType>> value)
 	{
 		m_placement = value;
 	}
 	
-	public Map<Territory, IntegerMap<UnitType>> getPlacement()
+	public HashMap<Territory, IntegerMap<UnitType>> getPlacement()
 	{
 		return m_placement;
 	}
@@ -1194,12 +1194,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setRemoveUnits(final Map<Territory, IntegerMap<UnitType>> value)
+	public void setRemoveUnits(final HashMap<Territory, IntegerMap<UnitType>> value)
 	{
 		m_removeUnits = value;
 	}
 	
-	public Map<Territory, IntegerMap<UnitType>> getRemoveUnits()
+	public HashMap<Territory, IntegerMap<UnitType>> getRemoveUnits()
 	{
 		return m_removeUnits;
 	}
