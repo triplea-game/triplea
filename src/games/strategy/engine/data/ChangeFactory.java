@@ -306,7 +306,7 @@ class AttachmentPropertyClear extends Change
 	private static final long serialVersionUID = 9208154387325299072L;
 	private final Attachable m_attachedTo;
 	private final String m_attachmentName;
-	private Object m_oldValue;
+	private final Object m_oldValue;
 	private final String m_property;
 	
 	/**
@@ -318,7 +318,9 @@ class AttachmentPropertyClear extends Change
 			throw new IllegalArgumentException("No attachment, property:" + property);
 		m_attachedTo = attachment.getAttachedTo();
 		m_attachmentName = attachment.getName();
-		if (getRaw)
+		m_oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
+		m_property = property;
+		/*if (getRaw)
 		{
 			m_oldValue = PropertyUtil.getRaw(property, attachment);
 			m_property = property;
@@ -327,7 +329,7 @@ class AttachmentPropertyClear extends Change
 		{
 			m_oldValue = PropertyUtil.get(property, attachment);
 			m_property = property;
-		}
+		}*/
 	}
 	
 	/**
@@ -1228,7 +1230,8 @@ class ObjectPropertyChange extends Change
 		m_object = object;
 		m_property = property.intern();
 		m_newValue = newValue;
-		m_oldValue = PropertyUtil.get(property, object);
+		// m_oldValue = PropertyUtil.get(property, object);
+		m_oldValue = PropertyUtil.getPropertyFieldObject(property, object);
 	}
 	
 	/**

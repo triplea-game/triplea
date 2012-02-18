@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Changing the way the ChangeFactory uses PropertyUtil for getting the old value of properties. Previously relied on the "get" method for getting the old value. Now it will directly access and store the "m_" object. getRawProperty no longer used. (veqryn)
+
 * Allowed changes to all attachments to be undone and redone in the history panel, by ensuring each setter has an additional setter for an object of the field's type. (veqryn)
 
 * Preventing history panel from updating if moused over, and allowing it to scroll down if not. (frigoref & veqryn)

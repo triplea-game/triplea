@@ -18,6 +18,8 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.util.PropertyUtil;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
@@ -43,6 +45,11 @@ public class GameDataComponent implements java.io.Serializable
 	public GameDataComponent(final GameData data)
 	{
 		m_data = data;
+	}
+	
+	public Object getRawPropertyObject(final String property)
+	{
+		return PropertyUtil.getPropertyFieldObject(property, this);
 	}
 	
 	public GameData getData()

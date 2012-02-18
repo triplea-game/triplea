@@ -13,6 +13,7 @@
  */
 package games.strategy.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
@@ -74,6 +75,59 @@ public class PropertyUtil
 		}
 	}
 	
+	public static Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name, final boolean justFromSuper)
+	{
+		Field rVal = null;
+		
+		if (!justFromSuper)
+		{
+			try
+			{
+				rVal = c.getDeclaredField(name);
+				return rVal;
+			} catch (final NoSuchFieldException e)
+			{
+				return getFieldIncludingFromSuperClasses(c, name, true);
+			}
+		}
+		else
+		{
+			if (c.getSuperclass() == null)
+				throw new IllegalStateException("No such Property Field: " + name);
+			try
+			{
+				rVal = c.getSuperclass().getDeclaredField(name);
+				return rVal;
+			} catch (final NoSuchFieldException e)
+			{
+				return getFieldIncludingFromSuperClasses(c.getSuperclass(), name, true);
+			}
+		}
+	}
+	
+	public static Object getPropertyFieldObject(final String propertyName, final Object subject)
+	{
+		Object rVal = null;
+		Field field = null;
+		try
+		{
+			field = getFieldIncludingFromSuperClasses(subject.getClass(), "m_" + propertyName, false);
+		} catch (final Exception e)
+		{
+			throw new IllegalStateException("No such Property Field: " + "m_" + propertyName + " for Subject: " + subject.toString(), e);
+		}
+		try
+		{
+			field.setAccessible(true);
+			rVal = field.get(subject);
+		} catch (final Exception e)
+		{
+			throw new IllegalStateException("No such Property Field: " + "m_" + propertyName + " for Subject: " + subject.toString(), e);
+		}
+		return rVal;
+	}
+	
+	/* DO NOT DELETE PLEASE
 	public static Object get(final String propertyName, final Object subject)
 	{
 		try
@@ -90,14 +144,14 @@ public class PropertyUtil
 	{
 		try
 		{
-			final Method getter = subject.getClass().getMethod("getRawProperty", String.class);
+			final Method getter = subject.getClass().getMethod("getRawPropertyObject", String.class);
 			return getter.invoke(subject, property);
 		} catch (final Exception e)
 		{
 			throw new IllegalStateException("Could not get property:" + property + " subject:" + subject, e);
 		}
-	}
-	
+	}*/
+
 	private static String capitalizeFirstLetter(final String aString)
 	{
 		char first = aString.charAt(0);

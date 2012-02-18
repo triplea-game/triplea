@@ -20,8 +20,7 @@ package games.strategy.engine.data;
 
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
-
-import java.lang.reflect.Field;
+import games.strategy.util.PropertyUtil;
 
 /**
  * Contains some utility methods that subclasses can use to make writing attachments easier
@@ -105,62 +104,14 @@ public abstract class DefaultAttachment implements IAttachment
 		return "   for: " + this.toString();
 	}
 	
-	public static Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name, final boolean justFromSuper)
+	public String getRawPropertyString(final String property)
 	{
-		Field rVal = null;
-		
-		if (!justFromSuper)
-		{
-			try
-			{
-				rVal = c.getDeclaredField(name);
-				return rVal;
-			} catch (final NoSuchFieldException e)
-			{
-				return getFieldIncludingFromSuperClasses(c, name, true);
-			}
-		}
-		else
-		{
-			if (c.getSuperclass() == null)
-				throw new IllegalStateException("No such Property: " + name);
-			try
-			{
-				rVal = c.getSuperclass().getDeclaredField(name);
-				return rVal;
-			} catch (final NoSuchFieldException e)
-			{
-				return getFieldIncludingFromSuperClasses(c.getSuperclass(), name, true);
-			}
-		}
+		return PropertyUtil.getPropertyFieldObject(property, this).toString();
 	}
 	
-	public String getRawProperty(final String property)
+	public Object getRawPropertyObject(final String property)
 	{
-		String s = "";
-		Field field = null;
-		try
-		{
-			field = getClass().getDeclaredField("m_" + property);
-		} catch (final Exception e)
-		{
-			try
-			{
-				field = getFieldIncludingFromSuperClasses(getClass(), "m_" + property, true);
-			} catch (final Exception e2)
-			{
-				throw new IllegalStateException("No such Property: " + property);
-			}
-		}
-		try
-		{
-			field.setAccessible(true);
-			s += field.get(this);
-		} catch (final Exception e)
-		{
-			throw new IllegalStateException("No such Property: " + property);
-		}
-		return s;
+		return PropertyUtil.getPropertyFieldObject(property, this);
 	}
 	
 	@InternalDoNotExport

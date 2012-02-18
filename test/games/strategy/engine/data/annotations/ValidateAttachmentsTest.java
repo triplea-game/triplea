@@ -1,12 +1,16 @@
 package games.strategy.engine.data.annotations;
 
-import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.PropertyUtil;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
@@ -291,7 +295,7 @@ public class ValidateAttachmentsTest extends TestCase
 			Field field = null;
 			try
 			{
-				field = DefaultAttachment.getFieldIncludingFromSuperClasses(clazz, "m_" + propertyName, false);
+				field = PropertyUtil.getFieldIncludingFromSuperClasses(clazz, "m_" + propertyName, false);
 				// adders must have a field of type IntegerMap, or be a collection of sorts
 				if (annotation.adds())
 				{
