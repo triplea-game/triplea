@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Fixing Battle Calc to not include units that are irrelevant to combat. (veqryn)
+
 * Made sure all m_variable types in attachments exactly match the new instance type that is used. This, combined with the previous 2 changes, should fix the history panel bugs that are being caused by not being able to find the correct setter. (veqryn)
 
 * Changing the way the ChangeFactory uses PropertyUtil for getting the old value of properties. Previously relied on the "get" method for getting the old value. Now it will directly access and store the "m_" object. getRawProperty no longer used. (veqryn)

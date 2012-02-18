@@ -1091,7 +1091,14 @@ public class Matches
 		@Override
 		public boolean match(final Unit obj)
 		{
-			final UnitType type = obj.getUnitType();
+			return UnitTypeCanNotMoveDuringCombatMove.match(obj.getType());
+		}
+	};
+	public static final Match<UnitType> UnitTypeCanNotMoveDuringCombatMove = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType type)
+		{
 			final UnitAttachment ua = UnitAttachment.get(type);
 			return ua.getCanNotMoveDuringCombatMove();
 		}
@@ -3733,6 +3740,55 @@ public class Matches
 				if (!Matches.TerritoryIsPassableAndNotRestricted(attacker, t.getData()).match(t))
 					return false;
 				return RelationshipTypeCanTakeOverOwnedTerritory.match(t.getData().getRelationshipTracker().getRelationshipType(attacker, t.getOwner()));
+			}
+		};
+	}
+	
+	public static final Match<Unit> UnitCanBeInBattle(final boolean attack, final GameData data)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit u)
+			{
+				final PlayerID owner = u.getOwner();
+				return Matches.UnitTypeCanBeInBattle(attack, owner, data).match(u.getType());
+			}
+		};
+	}
+	
+	public static final Match<UnitType> UnitTypeCanBeInBattle(final boolean attack, final PlayerID player, final GameData data)
+	{
+		return new Match<UnitType>()
+		{
+			@Override
+			public boolean match(final UnitType ut)
+			{
+				// we want to filter out anything like factories, or units that have no combat ability AND can not be taken casualty.
+				// in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too, unless they have other combat abilities.
+				Match<UnitType> combat;
+				if (attack)
+				{
+					combat = new CompositeMatchOr<UnitType>(
+								Matches.UnitTypeCanNotMoveDuringCombatMove,
+								Matches.UnitTypeIsFactory,
+								new CompositeMatchAnd<UnitType>(
+											Matches.UnitTypeIsInfrastructure,
+											Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player, data).invert())
+											).invert();
+				}
+				else
+				{
+					combat = new CompositeMatchOr<UnitType>(
+								Matches.UnitTypeIsAAforCombatOnly,
+								new CompositeMatchOr<UnitType>(
+											Matches.UnitTypeIsFactory,
+											new CompositeMatchAnd<UnitType>(
+														Matches.UnitTypeIsInfrastructure,
+														Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player, data).invert())
+														).invert());
+				}
+				return combat.match(ut);
 			}
 		};
 	}

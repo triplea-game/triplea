@@ -16,7 +16,6 @@ import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.ui.IntTextField;
 import games.strategy.ui.ScrollableTextField;
-import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
@@ -329,8 +328,16 @@ public class OddsCalculatorPanel extends JPanel
 	{
 		if (units == null)
 			units = Collections.emptyList();
-		units = Match.getMatches(units, Matches.UnitIsNotFactory);
+		units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, m_data));
 		m_defendingUnitsPanel.init(getDefender(), units, isLand());
+	}
+	
+	private void updateAttacker(List<Unit> units)
+	{
+		if (units == null)
+			units = Collections.emptyList();
+		units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, m_data));
+		m_attackingUnitsPanel.init(getAttacker(), units, isLand());
 	}
 	
 	private boolean isLand()
@@ -452,13 +459,6 @@ public class OddsCalculatorPanel extends JPanel
 		m_clearButton = new JButton("Clear");
 		m_SwapSidesButton = new JButton("Swap Sides");
 		m_keepOneAttackingLandUnitCombo = new JCheckBox("One attacking land must live");
-	}
-	
-	private void updateAttacker(List<Unit> units)
-	{
-		if (units == null)
-			units = Collections.emptyList();
-		m_attackingUnitsPanel.init(getAttacker(), units, isLand());
 	}
 	
 	public void setWidgetActivation()
@@ -635,26 +635,7 @@ class PlayerUnitsPanel extends JPanel
 		}
 		// we want to filter out anything like factories, or units that have no combat ability AND can not be taken casualty.
 		// in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too, unless they have other combat abilities.
-		if (m_defender)
-		{
-			rVal = Match.getMatches(rVal, new CompositeMatchOr<UnitType>(
-						Matches.UnitTypeIsAAforCombatOnly,
-						new CompositeMatchOr<UnitType>(
-									Matches.UnitTypeIsFactory,
-									new CompositeMatchAnd<UnitType>(
-												Matches.UnitTypeIsInfrastructure,
-												Matches.UnitTypeIsSupporterOrHasCombatAbility(!m_defender, player, m_data).invert())
-												).invert()));
-		}
-		else
-		{
-			rVal = Match.getMatches(rVal, new CompositeMatchOr<UnitType>(
-						Matches.UnitTypeIsFactory,
-						new CompositeMatchAnd<UnitType>(
-									Matches.UnitTypeIsInfrastructure,
-									Matches.UnitTypeIsSupporterOrHasCombatAbility(!m_defender, player, m_data).invert())
-									).invert());
-		}
+		rVal = Match.getMatches(rVal, Matches.UnitTypeCanBeInBattle(!m_defender, player, m_data));
 		return rVal;
 	}
 }
