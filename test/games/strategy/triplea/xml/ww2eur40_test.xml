@@ -2204,13 +2204,13 @@
 				 
 				 <attatchment name="canalAttatchmentGibraltar" attatchTo="92 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 					 <option name="canalName" value="Strait of Gibraltar"/>
-					 <option name="landTerritories" value="Gibraltar:Morocco"/>
+					 <option name="landTerritories" value="Gibraltar"/>
 					 <!-- TODO: gibraltar allows subs to pass -->
 				 </attatchment>
 				 
 				 <attatchment name="canalAttatchmentGibraltar" attatchTo="91 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 					 <option name="canalName" value="Strait of Gibraltar"/>
-					 <option name="landTerritories" value="Gibraltar:Morocco"/>
+					 <option name="landTerritories" value="Gibraltar"/>
 					 <!-- TODO: gibraltar allows subs to pass -->
 				 </attatchment>
 			 
@@ -3941,6 +3941,7 @@ These changes to units are things other than price/movement which you can see in
 <br>
 <br>2.2
 <br>Deleting connection between SZ110 and Scotland.
+<br>Deleting Morocco from Gibraltar canal.
 <br>
 <br>2.1
 <br>Released for everyone to download. Almost everything working, and playable.
