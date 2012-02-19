@@ -40,6 +40,7 @@ public class PBEMMessagePoster implements Serializable
 	private transient String m_emailSendStatus;
 	private transient PlayerID m_currentPlayer;
 	private transient int m_roundNumber;
+	private transient String m_gameNameAndInfo;
 	
 	// -----------------------------------------------------------------------
 	// Constructors
@@ -51,6 +52,7 @@ public class PBEMMessagePoster implements Serializable
 		m_roundNumber = roundNumber;
 		m_forumPoster = (IForumPoster) gameData.getProperties().get(FORUM_POSTER_PROP_NAME);
 		m_emailSender = (IEmailSender) gameData.getProperties().get(EMAIL_SENDER_PROP_NAME);
+		m_gameNameAndInfo = "TripleA Turn Summary for game: " + gameData.getGameName() + ", version: " + gameData.getGameVersion();
 	}
 	
 	// -----------------------------------------------------------------------
@@ -118,7 +120,7 @@ public class PBEMMessagePoster implements Serializable
 			}
 			try
 			{
-				forumSuccess = m_forumPoster.postTurnSummary(m_turnSummary, "TripleA Turn Summary: " + m_currentPlayer.getName() + " round " + m_roundNumber);
+				forumSuccess = m_forumPoster.postTurnSummary((m_gameNameAndInfo + "\n\n" + m_turnSummary), "TripleA Turn Summary: " + m_currentPlayer.getName() + " round " + m_roundNumber);
 				m_turnSummaryRef = m_forumPoster.getTurnSummaryRef();
 				if (m_turnSummaryRef != null && historyWriter != null)
 				{
@@ -137,7 +139,7 @@ public class PBEMMessagePoster implements Serializable
 			subjectPostFix.append(" - ").append("round ").append(m_roundNumber);
 			try
 			{
-				m_emailSender.sendEmail(subjectPostFix.toString(), convertToHtml(m_turnSummary), m_saveGameFile, saveGameName);
+				m_emailSender.sendEmail(subjectPostFix.toString(), convertToHtml((m_gameNameAndInfo + "\n\n" + m_turnSummary)), m_saveGameFile, saveGameName);
 				m_emailSendStatus = "Success, sent to " + m_emailSender.getToAddress();
 				
 			} catch (final IOException e)
@@ -182,7 +184,7 @@ public class PBEMMessagePoster implements Serializable
 	 */
 	private String convertToHtml(final String string)
 	{
-		return string.replaceAll("\n", "<br/>");
+		return string.replaceAll("\n", "<br/>").replaceAll("  ", "&nbsp ");
 	}
 	
 	/**

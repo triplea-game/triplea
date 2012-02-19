@@ -4,7 +4,7 @@ import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 
-import java.io.*;
+import java.io.File;
 
 /**
  * Abstract Forum poster that takes care of storing the username, password, and other common properties
@@ -108,15 +108,15 @@ public abstract class AbstractForumPoster implements IForumPoster
 	{
 		m_password = USE_TRANSITIVE_PASSWORD;
 	}
-
+	
 	public boolean sameType(final IBean other)
 	{
 		return getClass() == other.getClass();
 	}
-
+	
 	public EditorPanel getEditor()
 	{
 		return new ForumPosterEditor(this);
 	}
-
+	
 }

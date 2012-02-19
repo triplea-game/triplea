@@ -13,9 +13,6 @@
  */
 package games.strategy.triplea.pbem;
 
-import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
-import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
-import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.pbem.AbstractForumPoster;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.net.BrowserControl;
@@ -389,5 +386,5 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 	{
 		return HelpSupport.loadHelp("axisAndAlliesForum.html");
 	}
-
+	
 }
