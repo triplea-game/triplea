@@ -457,14 +457,14 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	
 	protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> costs, final CompositeChange changes, final Collection<Unit> totalUnits)
 	{
-		final StringBuffer returnString = new StringBuffer("");
+		final StringBuffer returnString = new StringBuffer("Remaining resources: ");
 		for (final Resource resource : costs.keySet())
 		{
 			final float quantity = costs.getInt(resource);
 			final int cost = (int) quantity;
 			final Change change = ChangeFactory.changeResourcesChange(m_player, resource, -cost);
 			changes.add(change);
-			returnString.append(m_player.getResources().getQuantity(resource) - cost + " " + resource.getName() + " remaining\n");
+			returnString.append(m_player.getResources().getQuantity(resource) - cost + " " + resource.getName() + "; ");
 		}
 		return returnString.toString();
 	}

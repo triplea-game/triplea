@@ -804,7 +804,7 @@
                 <connection t1="Algeria" t2="94 Sea Zone"/>
                 <connection t1="Algeria" t2="92 Sea Zone"/>
                 <connection t1="Algeria" t2="Tunisia"/>
-                <connection t1="Southern France" t2="95 Sea Zone"/>
+                <!-- <connection t1="Southern France" t2="95 Sea Zone"/> TODO check this -->
                 <connection t1="Southern France" t2="93 Sea Zone"/>
                 <connection t1="Southern France" t2="Northern Italy"/>
                 <connection t1="Southern France" t2="France"/>
@@ -5863,6 +5863,7 @@ These changes to units are things other than price/movement which you can see in
 <br>2.1
 <br>Fixed bug preventing UK_Pacific units from turning into British units.
 <br>Adding missing connection from French West Africa to Nigeria.
+<br>Deleting connection between SZ95 and Southern France.
 <br>Deleting Morocco from Gibraltar canal.
 <br>
 <br>2.0
