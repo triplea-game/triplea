@@ -68,7 +68,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 		m_client.getParams().setParameter("http.useragent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)");
 		m_httpState = new HttpState();
 		m_hostConfiguration = new HostConfiguration();
-		m_hostConfiguration.setProxy("localhost", 8888); // enable to debug http through Fiddler2
+		// m_hostConfiguration.setProxy("localhost", 8888); // enable to debug http through Fiddler2
 		m_hostConfiguration.setHost("www.tripleawarclub.org");
 		
 		final PostMethod post = new PostMethod("http://www.tripleawarclub.org/user.php");
