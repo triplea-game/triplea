@@ -570,6 +570,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		{
 			final Territory to = terrPlayer.getFirst();
 			final PlayerID defender = terrPlayer.getSecond();
+			if (defender == null || defender.isNull())
+				continue;
 			boolean scrambledHere = false;
 			for (final HashMap<Territory, Tuple<Integer, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer.get(terrPlayer))
 			{
