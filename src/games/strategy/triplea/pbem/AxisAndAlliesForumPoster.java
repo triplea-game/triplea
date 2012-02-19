@@ -167,7 +167,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 			login();
 			
 			// Now we load the post page, and find the hidden fields needed to post
-			final GetMethod get = new GetMethod("http://www.axisandallies.org/forums/index.php?action=post;topic=" + m_forumId + ".0");
+			final GetMethod get = new GetMethod("http://www.axisandallies.org/forums/index.php?action=post;topic=" + m_topicId + ".0");
 			int status = m_client.executeMethod(m_hostConfiguration, get, m_httpState);
 			String body = get.getResponseBodyAsString();
 			if (status == 200)
@@ -213,7 +213,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 					// Construct the multi part post
 					final List<Part> parts = new ArrayList<Part>();
 					
-					parts.add(createStringPart("topic", m_forumId));
+					parts.add(createStringPart("topic", m_topicId));
 					parts.add(createStringPart("subject", subject));
 					parts.add(createStringPart("icon", "xx"));
 					parts.add(createStringPart("message", message));
@@ -238,7 +238,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 					post.setRequestEntity(entity);
 					
 					// add headers
-					post.addRequestHeader("Referer", "http://www.axisandallies.org/forums/index.php?action=post;topic=" + m_forumId + ".0;num_replies=" + numReplies);
+					post.addRequestHeader("Referer", "http://www.axisandallies.org/forums/index.php?action=post;topic=" + m_topicId + ".0;num_replies=" + numReplies);
 					post.addRequestHeader("Accept", "*/*");
 					
 					try
@@ -259,7 +259,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 						
 						// The syntax for post is ".....topic=xx.yy" where xx is the thread id, and yy is the post number in the given thread
 						// since the site is lenient we can just give a high post_number to go to the last post in the thread
-						m_turnSummaryRef = "http://www.axisandallies.org/forums/index.php?topic=" + m_forumId + ".10000";
+						m_turnSummaryRef = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
 					}
 					else
 					{
@@ -320,7 +320,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 			}
 			else
 			{
-				throw new Exception("Unable to load forum post " + m_forumId);
+				throw new Exception("Unable to load forum post " + m_topicId);
 			}
 			
 		} catch (final Exception e)
@@ -362,7 +362,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 	public IForumPoster doClone()
 	{
 		final AxisAndAlliesForumPoster clone = new AxisAndAlliesForumPoster();
-		clone.setForumId(getForumId());
+		clone.setTopicId(getTopicId());
 		clone.setIncludeSaveGame(getIncludeSaveGame());
 		clone.setPassword(getPassword());
 		clone.setUsername(getUsername());
@@ -376,7 +376,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 	
 	public void viewPosted()
 	{
-		final String url = "http://www.axisandallies.org/forums/index.php?topic=" + m_forumId + ".10000";
+		final String url = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
 		BrowserControl.displayURL(url);
 	}
 	
@@ -389,14 +389,5 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 	{
 		return HelpSupport.loadHelp("axisAndAlliesForum.html");
 	}
-	
-	public EditorPanel getEditor()
-	{
-		return new ForumPosterEditor(this);
-	}
-	
-	public boolean sameType(final IBean other)
-	{
-		return AxisAndAlliesForumPoster.class == getClass();
-	}
+
 }

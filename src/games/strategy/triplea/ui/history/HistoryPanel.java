@@ -65,28 +65,23 @@ public class HistoryPanel extends JPanel
 	{
 		final MouseListener mouseFocusListener = new MouseListener()
 		{
-			@Override
 			public void mouseReleased(final MouseEvent e)
 			{
 			}
 			
-			@Override
 			public void mousePressed(final MouseEvent e)
 			{
 			}
 			
-			@Override
 			public void mouseClicked(final MouseEvent e)
 			{
 			}
 			
-			@Override
 			public void mouseExited(final MouseEvent e)
 			{
 				m_mouseOverPanel = false;
 			}
 			
-			@Override
 			public void mouseEntered(final MouseEvent e)
 			{
 				m_mouseOverPanel = true;

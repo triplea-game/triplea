@@ -41,7 +41,7 @@ public class NullForumPoster implements IForumPoster
 		return false;
 	}
 	
-	public void setForumId(final String forumId)
+	public void setTopicId(final String forumId)
 	{
 	}
 	
@@ -53,7 +53,7 @@ public class NullForumPoster implements IForumPoster
 	{
 	}
 	
-	public String getForumId()
+	public String getTopicId()
 	{
 		return null;
 	}

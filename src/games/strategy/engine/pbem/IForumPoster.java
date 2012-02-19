@@ -101,7 +101,7 @@ public interface IForumPoster extends IBean
 	 * 
 	 * @return the forum id
 	 */
-	public String getForumId();
+	public String getTopicId();
 	
 	/**
 	 * get the user name to login
@@ -123,7 +123,7 @@ public interface IForumPoster extends IBean
 	 * @param forumId
 	 *            the new forum id
 	 */
-	public void setForumId(String forumId);
+	public void setTopicId(String forumId);
 	
 	/**
 	 * Set the user name

@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Adding Play-By-Forum method for TripleA War Club, http://www.tripleawarclub.org/  so that people can also play there. (qwertgold)
+
 * Fixing Battle Calc to not include units that are irrelevant to combat. (veqryn)
 
 * Made sure all m_variable types in attachments exactly match the new instance type that is used. This, combined with the previous 2 changes, should fix the history panel bugs that are being caused by not being able to find the correct setter. (veqryn)

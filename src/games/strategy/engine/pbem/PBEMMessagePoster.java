@@ -105,7 +105,7 @@ public class PBEMMessagePoster implements Serializable
 		final StringBuilder saveGameSb = new StringBuilder().append("triplea_");
 		if (m_forumPoster != null)
 		{
-			saveGameSb.append(m_forumPoster.getForumId()).append("_");
+			saveGameSb.append(m_forumPoster.getTopicId()).append("_");
 		}
 		saveGameSb.append(m_currentPlayer.getName().substring(0, 1)).append(m_roundNumber).append(".tsvg");
 		

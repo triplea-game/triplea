@@ -5,16 +5,27 @@ import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.pbem.NullForumPoster;
 import games.strategy.ui.ProgressWindow;
 
-import javax.swing.*;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.HeadlessException;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentListener;
 
 /**
  * A class for selecting which Forum poster to use
@@ -23,7 +34,6 @@ import java.util.Date;
  */
 public class ForumPosterEditor extends EditorPanel
 {
-	
 	// -----------------------------------------------------------------------
 	// instance fields
 	// -----------------------------------------------------------------------
@@ -35,8 +45,8 @@ public class ForumPosterEditor extends EditorPanel
 	private final JTextField m_login = new JTextField();
 	private final JTextField m_password = new JPasswordField();
 	
-	private final JTextField m_forumIdField = new JTextField();
-	private final JLabel m_forumIdLabel = new JLabel("Forum Id:");
+	private final JTextField m_topicIdField = new JTextField();
+	private final JLabel m_topicIdLabel = new JLabel("Topic Id:");
 	
 	private final JCheckBox m_includeSaveGame = new JCheckBox("Attach save game to summary");
 	private final IForumPoster m_bean;
@@ -54,9 +64,9 @@ public class ForumPosterEditor extends EditorPanel
 		int row = 0;
 		if (m_bean.getCanViewPosted())
 		{
-			add(m_forumIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
-			add(m_forumIdField, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
-			m_forumIdField.setText(m_bean.getForumId());
+			add(m_topicIdLabel, new GridBagConstraints(0, row, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, labelSpace), 0, 0));
+			add(m_topicIdField, new GridBagConstraints(1, row, 1, 1, 1.0, 0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, bottomSpace, 0), 0, 0));
+			m_topicIdField.setText(m_bean.getTopicId());
 			add(m_viewPosts, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 2, bottomSpace, 0), 0, 0));
 			row++;
 		}
@@ -115,7 +125,7 @@ public class ForumPosterEditor extends EditorPanel
 		final DocumentListener docListener = new EditorChangedFiringDocumentListener();
 		m_login.getDocument().addDocumentListener(docListener);
 		m_password.getDocument().addDocumentListener(docListener);
-		m_forumIdField.getDocument().addDocumentListener(docListener);
+		m_topicIdField.getDocument().addDocumentListener(docListener);
 	}
 	
 	/**
@@ -123,7 +133,6 @@ public class ForumPosterEditor extends EditorPanel
 	 */
 	void testForum()
 	{
-		
 		final IForumPoster poster = (IForumPoster) getBean();
 		final ProgressWindow progressWindow = new ProgressWindow(MainFrame.getInstance(), poster.getTestMessage());
 		progressWindow.setVisible(true);
@@ -140,10 +149,26 @@ public class ForumPosterEditor extends EditorPanel
 						final File f = File.createTempFile("123", "test");
 						f.deleteOnExit();
 						
+						/* For .txt use this:
 						final FileOutputStream fout = new FileOutputStream(f);
 						fout.write("Test upload".getBytes());
 						fout.close();
 						poster.addSaveGame(f, "test.txt");
+						*/
+
+						// For .jpg use this:
+						final BufferedImage image = new BufferedImage(130, 40, BufferedImage.TYPE_INT_RGB);
+						final Graphics g = image.getGraphics();
+						g.drawString("Testing file upload", 10, 20);
+						try
+						{
+							ImageIO.write(image, "jpg", f);
+						} catch (final IOException e)
+						{
+							// ignore
+						}
+						
+						poster.addSaveGame(f, "Test.jpg");
 					} catch (final IOException e)
 					{
 						// ignore
@@ -187,12 +212,12 @@ public class ForumPosterEditor extends EditorPanel
 		boolean idValid = true;
 		if (m_bean.getCanViewPosted())
 		{
-			idValid = validateTextFieldNotEmpty(m_forumIdField, m_forumIdLabel);
+			idValid = validateTextFieldNotEmpty(m_topicIdField, m_topicIdLabel);
 			m_viewPosts.setEnabled(idValid);
 		}
 		else
 		{
-			m_forumIdLabel.setForeground(m_labelColor);
+			m_topicIdLabel.setForeground(m_labelColor);
 			m_viewPosts.setEnabled(false);
 		}
 		
@@ -204,7 +229,7 @@ public class ForumPosterEditor extends EditorPanel
 	@Override
 	public IBean getBean()
 	{
-		m_bean.setForumId(m_forumIdField.getText());
+		m_bean.setTopicId(m_topicIdField.getText());
 		m_bean.setUsername(m_login.getText());
 		m_bean.setPassword(m_password.getText());
 		m_bean.setIncludeSaveGame(m_includeSaveGame.isSelected());

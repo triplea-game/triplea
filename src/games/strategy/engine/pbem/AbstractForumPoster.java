@@ -1,5 +1,9 @@
 package games.strategy.engine.pbem;
 
+import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
+import games.strategy.engine.framework.startup.ui.editors.ForumPosterEditor;
+import games.strategy.engine.framework.startup.ui.editors.IBean;
+
 import java.io.*;
 
 /**
@@ -25,7 +29,7 @@ public abstract class AbstractForumPoster implements IForumPoster
 	protected String m_username = null;
 	protected String m_password = null;
 	protected transient String m_transPassword;
-	protected String m_forumId = null;
+	protected String m_topicId = null;
 	protected boolean m_includeSaveGame = true;
 	
 	// -----------------------------------------------------------------------
@@ -65,14 +69,14 @@ public abstract class AbstractForumPoster implements IForumPoster
 		return true;
 	}
 	
-	public void setForumId(final String forumId)
+	public void setTopicId(final String topicId)
 	{
-		m_forumId = forumId;
+		m_topicId = topicId;
 	}
 	
-	public String getForumId()
+	public String getTopicId()
 	{
-		return m_forumId;
+		return m_topicId;
 	}
 	
 	public void setUsername(final String username)
@@ -104,4 +108,15 @@ public abstract class AbstractForumPoster implements IForumPoster
 	{
 		m_password = USE_TRANSITIVE_PASSWORD;
 	}
+
+	public boolean sameType(final IBean other)
+	{
+		return getClass() == other.getClass();
+	}
+
+	public EditorPanel getEditor()
+	{
+		return new ForumPosterEditor(this);
+	}
+
 }

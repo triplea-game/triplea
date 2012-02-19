@@ -7,14 +7,7 @@ import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.startup.ui.editors.SelectAndViewEditor;
-import games.strategy.engine.pbem.GenericEmailSender;
-import games.strategy.engine.pbem.GmailEmailSender;
-import games.strategy.engine.pbem.HotmailEmailSender;
-import games.strategy.engine.pbem.IEmailSender;
-import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.engine.pbem.NullEmailSender;
-import games.strategy.engine.pbem.NullForumPoster;
-import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.pbem.*;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.InternalDiceServer;
 import games.strategy.engine.random.PBEMDiceRoller;
@@ -176,6 +169,7 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		final List<IForumPoster> forumPosters = new ArrayList<IForumPoster>();
 		forumPosters.add((IForumPoster) findCachedOrCreateNew(NullForumPoster.class));
 		forumPosters.add((IForumPoster) findCachedOrCreateNew(AxisAndAlliesForumPoster.class));
+		forumPosters.add((IForumPoster) findCachedOrCreateNew(TripleAWarClubForumPoster.class));
 		m_forumPosterEditor.setBeans(forumPosters);
 		
 		// now get the poster stored in the save game
