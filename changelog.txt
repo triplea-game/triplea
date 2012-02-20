@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Adding Global 1940 alpha 3 as test xml. (veqryn)
+
 * Fixing bug where the neutral (null) player might be asked if it wants to scramble, which gives an error. (veqryn)
 
 * Adding Play-By-Forum method for TripleA War Club, http://www.tripleawarclub.org/  so that people can also play there. (qwertgold)
