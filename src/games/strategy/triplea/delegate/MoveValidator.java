@@ -290,11 +290,14 @@ public class MoveValidator
 			}
 		}
 		// make sure no conquered territories on route
-		if (MoveValidator.hasConqueredNonBlitzedOnRoute(route, data))
+		if (MoveValidator.hasConqueredNonBlitzedNonWaterOnRoute(route, data))
 		{
 			// unless we are all air or we are in non combat OR the route is water (was a bug in convoy zone movement)
-			if (!Match.allMatch(units, Matches.UnitIsAir) && !(route.allMatch(Matches.TerritoryIsWater)))
+			if (!Match.allMatch(units, Matches.UnitIsAir))
+			{
+				// what if we are paratroopers?
 				return result.setErrorReturnResult("Cannot move through newly captured territories");
+			}
 		}
 		// See if they've already been in combat
 		if (Match.someMatch(units, Matches.UnitWasInCombat) && Match.someMatch(units, Matches.UnitWasUnloadedThisTurn))
@@ -337,7 +340,7 @@ public class MoveValidator
 				return result;
 			else if (!navalMayNotNonComIntoControlled && !isTransportControlSeaZone(data) && Match.allMatch(units, transportsCanNotControl))
 				return result;
-			else if (!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater) && MoveValidator.onlyAlliedUnitsOnPath(route, player, data)
+			else if (!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater) && MoveValidator.noEnemyUnitsOnPathMiddleSteps(route, player, data)
 						&& !Matches.territoryHasEnemyUnits(player, data).match(route.getEnd()))
 				return result; // fixes a bug in convoy zone movement
 			else
@@ -372,8 +375,9 @@ public class MoveValidator
 						data));
 			if (route.someMatch(neutralOrEnemy))
 			{
-				if (!(!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater) && MoveValidator.onlyAlliedUnitsOnPath(route, player, data) && !Matches.territoryHasEnemyUnits(
-							player, data).match(route.getEnd())))
+				if (!(!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater) && MoveValidator.noEnemyUnitsOnPathMiddleSteps(route, player, data) && !Matches
+							.territoryHasEnemyUnits(
+										player, data).match(route.getEnd())))
 				{
 					if (!route.allMatch(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data), Matches
 								.isTerritoryAllied(player, data), Matches.TerritoryIsLand))) || nonParatroopersPresent(player, units, route))
@@ -421,7 +425,7 @@ public class MoveValidator
 		if (getEditMode(data))
 			return result;
 		// check to see no enemy units on path
-		if (MoveValidator.onlyAlliedUnitsOnPath(route, player, data))
+		if (MoveValidator.noEnemyUnitsOnPathMiddleSteps(route, player, data))
 			return result;
 		// if we are all air, then its ok
 		if (Match.allMatch(units, Matches.UnitIsAir))
@@ -939,12 +943,10 @@ public class MoveValidator
 	 * movement.
 	 * AA and factory dont count as enemy.
 	 */
-	public static boolean onlyAlliedUnitsOnPath(final Route route, final PlayerID player, final GameData data)
+	public static boolean noEnemyUnitsOnPathMiddleSteps(final Route route, final PlayerID player, final GameData data)
 	{
-		final CompositeMatch<Unit> alliedOrNonCombat = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.alliedUnit(player, data));
+		final CompositeMatch<Unit> alliedOrNonCombat = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.enemyUnit(player, data).invert(), Matches.unitIsSubmerged(data));
 		// Submerged units do not interfere with movement
-		// only relevant for WW2V2
-		alliedOrNonCombat.add(Matches.unitIsSubmerged(data));
 		for (final Territory current : route.getMiddleSteps())
 		{
 			if (!current.getUnits().allMatch(alliedOrNonCombat))
@@ -959,11 +961,11 @@ public class MoveValidator
 	 */
 	public static boolean onlyIgnoredUnitsOnPath(final Route route, final PlayerID player, final GameData data, final boolean ignoreRouteEnd)
 	{
-		final CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.UnitIsSub, Matches.alliedUnit(player, data));
+		final CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
 		final CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand,
-					Matches.alliedUnit(player, data));
+					Matches.enemyUnit(player, data).invert());
 		final CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand,
-					Matches.UnitIsSub, Matches.alliedUnit(player, data));
+					Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
 		final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
 		final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);
 		boolean validMove = false;
@@ -1017,11 +1019,11 @@ public class MoveValidator
 		return EditDelegate.getEditMode(data);
 	}
 	
-	public static boolean hasConqueredNonBlitzedOnRoute(final Route route, final GameData data)
+	public static boolean hasConqueredNonBlitzedNonWaterOnRoute(final Route route, final GameData data)
 	{
 		for (final Territory current : route.getMiddleSteps())
 		{
-			if (MoveDelegate.getBattleTracker(data).wasConquered(current) && !MoveDelegate.getBattleTracker(data).wasBlitzed(current))
+			if (!Matches.TerritoryIsWater.match(current) && MoveDelegate.getBattleTracker(data).wasConquered(current) && !MoveDelegate.getBattleTracker(data).wasBlitzed(current))
 				return true;
 		}
 		return false;
@@ -1684,9 +1686,9 @@ public class MoveValidator
 			}
 			if (!games.strategy.triplea.Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data) || nonCombat)
 			{
-				for (final Territory current : route.getMiddleSteps())
+				for (final Territory current : Match.getMatches(route.getMiddleSteps(), Matches.TerritoryIsLand))
 				{
-					if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(current))
+					if (Matches.isTerritoryEnemy(player, data).match(current))
 						return result.setErrorReturnResult("Must stop paratroops in first enemy territory");
 				}
 			}

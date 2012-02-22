@@ -3721,7 +3721,7 @@ public class SUtils
 				newRoute.add(nextTerr);
 				if (MoveValidator.hasEnoughMovement(moveUnits, newRoute))
 				{
-					if (!MoveValidator.onlyAlliedUnitsOnPath(newRoute, player, data))
+					if (!MoveValidator.noEnemyUnitsOnPathMiddleSteps(newRoute, player, data))
 						return newRoute;
 				}
 				else

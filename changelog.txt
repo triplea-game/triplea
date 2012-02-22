@@ -1,4 +1,8 @@
 Changes for 1.5.1
+* Fixed bug where paratroopers could not move over enemy sea zones or captured sea zones. (veqryn)
+
+* Fixed bug with moving sea units through sea units belonging to a power not yet at war with. Also possibly fixed bug with Easy AI's comparison method contract. (veqryn)
+
 * Adding Global 1940 alpha 3 as test xml. (veqryn)
 
 * Fixing bug where the neutral (null) player might be asked if it wants to scramble, which gives an error. (veqryn)
