@@ -5068,6 +5068,8 @@
 						<resourceGiven player="Chinese" resource="PUs" quantity="12"/>
                         <resourceGiven player="French" resource="PUs" quantity="19"/>
 						<!--<resourceGiven player="Dutch" resource="PUs" quantity="0"/>-->
+						
+                        <resourceGiven player="Japanese" resource="SuicideAttackTokens" quantity="6"/>
                 </resourceInitialize>
 				
 				<relationshipInitialize>
