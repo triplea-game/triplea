@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Europe Test" version="2.1"/>
+        <info name="World War II Europe Test" version="2.2"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5"/>
 		<diceSides value="6"/>
@@ -2469,11 +2469,13 @@
 				<attatchment name="triggerAttachment_Axis_Victory1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="trigger" value="conditionAttachment_Axis_Victory1:conditionAttachment_Axis_Victory2"/>
 					<option name="victory" value="The Axis achieve victory by controlling 8 VCs and keeping control of Berlin and/or Rome!"/>
+					<option name="players" value="Germans:Italians"/>
 				</attatchment>
 				
 				<attatchment name="triggerAttachment_Allied_Victory1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="trigger" value="conditionAttachment_Allied_Victory1:conditionAttachment_Allied_Victory2"/>
 					<option name="victory" value="The Allies achieve victory by controlling Rome, Berlin and keeping control of one of their own capitals!"/>
+					<option name="players" value="British:Russians:Americans:French"/>
 				</attatchment>
 				
 				<!-- Germans Triggers -->

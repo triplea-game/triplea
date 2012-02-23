@@ -3498,25 +3498,67 @@
                 </attatchment>
                 <attatchment name="objectiveAttachment_Germans_2_Control_Novgorod_Or_Volgograd_Or_Russia" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="5"/>
-                	<option name="alliedOwnershipTerritories" value="Novgorod:Volgograd:Russia" count="each"/>
+                	<option name="directOwnershipTerritories" value="Novgorod:Volgograd:Russia" count="each"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Germans_3_Control_Caucasus" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Caucasus" count="1"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Germans_6_Control_Iraq_Or_Persia_Or_Northwest_Persia" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="2"/>
+                	<option name="directOwnershipTerritories" value="Iraq:Persia:Northwest Persia" count="each"/>
                 </attatchment>
 				
 			<!-- Russian Objectives -->
+                <attatchment name="objectiveAttachment_Russians_2_Spread_Of_Communism" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="3"/>
+                	<option name="directOwnershipTerritories" value="Bulgaria:Finland:Iraq:Greater Southern Germany:Slovakia Hungary:Western Germany:Romania:Poland:Germany:Norway:Denmark:Holland Belgium:Tobruk:Albania:Northern Italy:Libya:Sicily:Italian Somaliland:Southern Italy:Ethiopia:Sardinia" count="each"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Russians_3_Berlin" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="10"/>
+                	<option name="directOwnershipTerritories" value="Germany" count="1"/>
+					<option name="uses" value="1"/>
+                </attatchment>
 				
 			<!-- Japanese Objectives -->
-				<attatchment name="objectiveAttachment_Japanese_1_Control_Honolulu_Or_Sydney_Or_Calcutta" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="objectiveValue" value="5"/>
-					<option name="directOwnershipTerritories" value="Hawaiian Islands:New South Wales:India" count="each"/>
+				<attatchment name="conditionAttachment_Japanese_1_Not_Attacked_French_Indo_China" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="French Indo China" count="1"/>
+					<option name="invert" value="true" />
+                </attatchment>
+				<attatchment name="objectiveAttachment_Japanese_1_Trade_With_America" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Japanese_1_Not_Attacked_French_Indo_China"/>
+					<option name="objectiveValue" value="10"/>
+					<option name="atWarPlayers" value="Americans" count="0" />
 				</attatchment>
-				<attatchment name="objectiveAttachment_Japanese_2_Control_Dutch_East_Indies" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+				<attatchment name="objectiveAttachment_Japanese_2_Strategic_Defense_Perimeter" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="objectiveValue" value="5"/>
-					<option name="directOwnershipTerritories" value="Java:Sumatra:Borneo:Celebes" count="4"/>
+					<option name="alliedOwnershipTerritories" value="Guam:Midway:Wake Island:Gilbert Islands:Solomon Islands" count="5"/>
+				</attatchment>
+				<attatchment name="objectiveAttachment_Japanese_3_Control_Dutch_East_Indies" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="objectiveValue" value="5"/>
+					<option name="alliedOwnershipTerritories" value="Java:Sumatra:Borneo:Celebes" count="4"/>
 				</attatchment>
 			
 			<!-- British Objectives -->
+				<attatchment name="objectiveAttachment_British_1_Original" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="objectiveValue" value="5"/>
+					<option name="directOwnershipTerritories" value="original"/>
+					<option name="atWarPlayers" value="Germans" count="1" />
+				</attatchment>
+				
+			<!-- UK Pacific Objectives -->
+				<attatchment name="objectiveAttachment_UK_Pacific_2_Kwangtung_And_Malaya" attatchTo="UK_Pacific" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="objectiveValue" value="5"/>
+					<option name="directOwnershipTerritories" value="Malaya:Kwangtung" count="2"/>
+					<option name="atWarPlayers" value="Japanese" count="1" />
+				</attatchment>
 			
 			<!-- ANZAC Objectives -->
-				<attatchment name="objectiveAttachment_ANZAC_1_Control_Strategic_Islands" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+				<attatchment name="conditionAttachmentANZAC_At_War_With_Japanese" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="ANZAC:Japanese:anyWar"/>
+				</attatchment>
+				<attatchment name="objectiveAttachment_ANZAC_2_Control_Strategic_Islands" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentANZAC_At_War_With_Japanese"/>
 					<option name="objectiveValue" value="5"/>
 					<option name="directOwnershipTerritories" value="Solomon Islands:Dutch New Guinea:New Guinea:New Britain" count="4"/>
 						<!-- we do not want dutch control of new guinea to count towards this goal -->
@@ -3524,20 +3566,43 @@
 				</attatchment>
 			
 			<!-- Italians Objectives -->
-				<attatchment name="objectiveAttachment_Italians_1_Control_Greece_And_Egypt_And_Southern_France" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="objectiveValue" value="5"/>
-                	<option name="alliedOwnershipTerritories" value="Greece:Egypt:Southern France" count="3"/>
-                </attatchment>
-                <attatchment name="objectiveAttachment_Italians_2_Control_The_Mediterranean" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <attatchment name="objectiveAttachment_Italians_1_Control_The_Mediterranean" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="5"/>
                 	<option name="enemySurfaceExclusionTerritories" value="92 Sea Zone:93 Sea Zone:94 Sea Zone:95 Sea Zone:96 Sea Zone:97 Sea Zone:98 Sea Zone:99 Sea Zone" count="8"/>
                 </attatchment>
+				<attatchment name="objectiveAttachment_Italians_2_Roman_Empire" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Greece:Egypt:Southern France:Gibraltar" count="3"/>
+                </attatchment>
+				<attatchment name="objectiveAttachment_Italians_3_North_Africa" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+                	<option name="alliedOwnershipTerritories" value="Alexandria:Morocco:Algeria:Tunisia:Tobruk:Libya" count="6"/>
+                </attatchment>
+				<attatchment name="objectiveAttachment_Italians_4_Control_Iraq_Or_Persia_Or_Northwest_Persia" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="2"/>
+                	<option name="directOwnershipTerritories" value="Iraq:Persia:Northwest Persia" count="each"/>
+                </attatchment>
 			
 			<!-- Americans Objectives -->
-                <attatchment name="objectiveAttachment_Americans_1_At_War" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="objectiveValue" value="30"/>
+                <attatchment name="objectiveAttachment_Americans_1_Homeland" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="10"/>
 					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="1" />
-                	<option name="directOwnershipTerritories" value="Central United States:Eastern United States:Western United States" count="2"/>
+                	<option name="directOwnershipTerritories" value="Central United States:Eastern United States:Western United States" count="3"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Americans_2_Outer_Territories" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="1" />
+                	<option name="directOwnershipTerritories" value="Alaska:Aleutian Islands:Hawaiian Islands:Johnston Island:Line Islands" count="5"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Americans_3_Defense_Obligations" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="1" />
+                	<option name="directOwnershipTerritories" value="Mexico:Southeast Mexico:Central America:West Indies" count="4"/>
+                </attatchment>
+                <attatchment name="objectiveAttachment_Americans_4_Philippines" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="objectiveValue" value="5"/>
+					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="1" />
+                	<option name="directOwnershipTerritories" value="Philippines" count="1"/>
                 </attatchment>
 				
 			<!-- Chinese Objectives -->
@@ -3554,18 +3619,19 @@
 			
 				<!-- Axis Victory -->
 				
-				<!-- 8 Europe VCs 
+				<!-- 8 Europe VCs -->
 				<attatchment name="conditionAttachmentAxisVictory1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="alliedOwnershipTerritories" value="United Kingdom:Russia:Germany:Poland:France:Southern Italy:Novgorod:Volgograd:Ontario:Egypt:Eastern United States" count="8"/>
-				</attatchment>-->
+				</attatchment>
 				
-				<!-- 6 Pacific VCs 
+				<!-- 6 Pacific VCs -->
 				<attatchment name="conditionAttachmentAxisVictory2" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="alliedOwnershipTerritories" value="Western United States:Hawaiian Islands:Philippines:New South Wales:India:Kwangtung:Kiangsu:Japan" count="6"/>
-				</attatchment>-->
+				</attatchment>
 				
 				<attatchment name="conditionAttachmentAxisVictory0" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="alliedOwnershipTerritories" value="United Kingdom:Russia:Germany:Poland:France:Southern Italy:Novgorod:Volgograd:Ontario:Egypt:Eastern United States:Western United States:Hawaiian Islands:Philippines:New South Wales:India:Kwangtung:Kiangsu:Japan" count="14"/>
+					<option name="conditions" value="conditionAttachmentAxisVictory1:conditionAttachmentAxisVictory2"/>
+					<option name="conditionType" value="OR"/>
 				</attatchment>
 				
 				<!-- Maintain A Capital -->
@@ -3590,17 +3656,32 @@
 			<!-- Conditions -->
 				
 				<!-- Germans Conditions -->
-                <attatchment name="conditionAttachment_Germans_3_unit_presence" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <attatchment name="conditionAttachment_Germans_4_unit_presence" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="directPresenceTerritories" value="Egypt" count="1"/>
 					<!-- any land unit includes aaGuns but does not include 'facilities' -->
 					<option name="unitPresence" value="infantry:artillery:mech_infantry:armour:aaGun" count="1"/>
                 </attatchment>
-				<attatchment name="conditionAttachment_Germans_4_Control_Norway_And_Denmark" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+				<attatchment name="conditionAttachment_Germans_5_Control_Norway_And_Denmark" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="directOwnershipTerritories" value="Denmark:Norway" count="2" />
 				</attatchment>
-				<attatchment name="conditionAttachment_Germans_4_Allies_Do_Not_Control_Sweden" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+				<attatchment name="conditionAttachment_Germans_5_Allies_Do_Not_Control_Sweden" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="alliedOwnershipTerritories" value="Sweden" count="1" />
                 	<option name="invert" value="true"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Germans_5_Sweden_Not_Pro_Allies" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="British:Neutral_True:Friendly_Neutral"/>
+                	<option name="invert" value="true"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Germans_5_Axis_Control_Sweden" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedOwnershipTerritories" value="Sweden" count="1" />
+				</attatchment>
+				<attatchment name="conditionAttachment_Germans_5_Sweden_Axis_Or_ProAxis_Or_Strict" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Germans_5_Axis_Control_Sweden:conditionAttachment_Germans_5_Sweden_Not_Pro_Allies"/>
+					<option name="conditionType" value="OR"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Germans_5_Sweden_Not_Enemy" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Germans_5_Allies_Do_Not_Control_Sweden:conditionAttachment_Germans_5_Sweden_Axis_Or_ProAxis_Or_Strict"/>
+					<option name="conditionType" value="AND"/>
 				</attatchment>
 				
 				<!-- Russians Conditions -->
@@ -3612,15 +3693,8 @@
                 <attatchment name="conditionAttachment_Russians_1_Lend_Lease" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="conditions" value="conditionAttachment_Russians_1_Convoy_Clear"/>
                 	<option name="directOwnershipTerritories" value="Archangel" count="1"/>
-                	<option name="alliedExclusionTerritories" value="controlledNoWater"/>
+                	<option name="alliedExclusionTerritories" value="original"/>
 					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="1" />
-                </attatchment>
-				<attatchment name="conditionAttachment_Russians_2_Original" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="directOwnershipTerritories" value="original"/>
-                </attatchment>
-				<attatchment name="conditionAttachment_Russians_2_Buffer" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="conditions" value="conditionAttachment_Russians_2_Original"/>
-					<option name="directOwnershipTerritories" value="Greater Southern Germany:Slovakia Hungary:Western Germany:Romania:Poland:Germany:Norway:Denmark:Holland Belgium" count="each"/>
                 </attatchment>
 				
 				<!-- Japanese Conditions -->
@@ -3655,20 +3729,34 @@
                 </attatchment>
 				
 				<!-- ANZAC Conditions -->
-				<attatchment name="conditionAttachment_ANZAC_2_Malaya" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+				<attatchment name="conditionAttachment_ANZAC_1_Malaya" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="alliedOwnershipTerritories" value="Malaya" count="1"/>
                 </attatchment>
 						
 				<!-- Chinese Conditions -->
-				<attatchment name="triggerAttachment_Chinese_Artillery_Supplies" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="objectiveAttachment_Chinese_1_Burma_Road"/>
-					<option name="frontier" value="productionChinese_Burma_Road_Open"/>
-				</attatchment>
-				<attatchment name="triggerAttachment_Chinese_Loses_Burma_Road" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="objectiveAttachment_Chinese_1_Burma_Road"/>
-					<option name="frontier" value="productionChinese_Burma_Road_Closed"/>
+				
+				<!-- Americans Conditions -->
+                <attatchment name="conditionAttachment_Americans_5_unit_presence" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directPresenceTerritories" value="France" count="1"/>
+					<option name="atWarPlayers" value="Japanese:Germans:Italians" count="1" />
+					<!-- any land unit includes aaGuns but does not include 'facilities' -->
+					<option name="unitPresence" value="infantry:artillery:mech_infantry:armour:aaGun" count="1"/>
+                </attatchment>
+                <attatchment name="conditionAttachment_Americans_Major_Factory_Eastern" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directPresenceTerritories" value="Eastern United States" count="1"/>
+					<option name="unitPresence" value="factory_upgrade:factory_major" count="1"/>
 					<option name="invert" value="true"/>
-				</attatchment>
+                </attatchment>
+                <attatchment name="conditionAttachment_Americans_Major_Factory_Central" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directPresenceTerritories" value="Central United States" count="1"/>
+					<option name="unitPresence" value="factory_upgrade:factory_major" count="1"/>
+					<option name="invert" value="true"/>
+                </attatchment>
+                <attatchment name="conditionAttachment_Americans_Major_Factory_Western" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directPresenceTerritories" value="Western United States" count="1"/>
+					<option name="unitPresence" value="factory_upgrade:factory_major" count="1"/>
+					<option name="invert" value="true"/>
+                </attatchment>
 						
 				<!-- French Conditions -->
 				<attatchment name="conditionAttachment_French_1_Lose_France" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -3708,8 +3796,8 @@
 				<attatchment name="conditionAttachmentAxisAtWarWithRussians" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Germans:Russians:anyWar"/>
 				</attatchment>
-				<attatchment name="conditionAttachmentAxisAtWarWithAmericans" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="relationship" value="Germans:Americans:anyWar"/>
+				<attatchment name="conditionAttachmentAxisAtWarWithAmericans" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="atWarPlayers" value="Japanese:Germans:Italians" count="1" />
 				</attatchment>
 				<attatchment name="conditionAttachmentGermansNotYetAtWarWithChinese" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Germans:Chinese:anyNeutral"/>
@@ -3779,13 +3867,13 @@
 				</attatchment>
 				
 				<!-- Germans Triggers -->
-                <attatchment name="triggerAttachment_Germans_3_Presence_In_Egypt" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_Germans_3_unit_presence"/>
+                <attatchment name="triggerAttachment_Germans_4_Presence_In_Egypt" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Germans_4_unit_presence"/>
 					<option name="resource" value="PUs"/>
 					<option name="resourceCount" value="3"/>
                 </attatchment>
-                <attatchment name="triggerAttachment_Germans_4_Swedish_Iron_Ore" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_Germans_4_Control_Norway_And_Denmark:conditionAttachment_Germans_4_Allies_Do_Not_Control_Sweden"/>
+                <attatchment name="triggerAttachment_Germans_5_Swedish_Iron_Ore" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Germans_5_Control_Norway_And_Denmark:conditionAttachment_Germans_5_Sweden_Not_Enemy"/>
 					<option name="conditionType" value="AND"/>
 					<option name="resource" value="PUs"/>
 					<option name="resourceCount" value="5"/>
@@ -3797,13 +3885,9 @@
 					<option name="resource" value="PUs"/>
 					<option name="resourceCount" value="5"/>
                 </attatchment>
-				<attatchment name="triggerAttachment_Russians_2_Territory_Buffer" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_Russians_2_Buffer"/>
-					<option name="resource" value="PUs"/>
-					<option name="resourceCount" value="6"/>
-                </attatchment>
 				
 				<!-- Japanese Triggers -->
+				<!-- OLD Kamikaze trigger:
 				<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAllies_Conquer_Japanese_Islands"/>
 					<option name="conditionType" value="OR"/>
@@ -3883,25 +3967,63 @@
 					<option name="playerProperty" value="conditions" count="conditionAttachmentAllies_Retake_the_Philippines"/>
 					<option name="uses" value="1"/>
 					<option name="when" value="after:japaneseEndTurn"/>
+				</attatchment>-->
+				<!-- New Kamikaze Trigger: -->
+				<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots_alpha" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAxisVictory3"/>
+					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
+					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
+					<option name="territoryProperty" value="kamikazeZone" count="true"/>
+					<option name="uses" value="1"/>
+					<option name="when" value="after:gameInitDelegate"/>
 				</attatchment>
 
 				<!-- British Triggers -->
-                <attatchment name="triggerAttachment_British_1_Original_Territories" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_British_1_Original"/>
-					<option name="resource" value="PUs"/>
-					<option name="resourceCount" value="5"/>
-                </attatchment>
-                <attatchment name="triggerAttachment_British_2_No_German_Submarines" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_British_2_No_German_Submarines"/>
-					<option name="resource" value="PUs"/>
-					<option name="resourceCount" value="5"/>
-                </attatchment>
 
 				<!-- ANZAC Triggers -->
-                <attatchment name="triggerAttachment_ANZAC_2_Control_Original_And_Malaya" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_ANZAC_1_Original:conditionAttachment_ANZAC_2_Malaya"/>
+                <attatchment name="triggerAttachment_ANZAC_1_Control_Original_And_Malaya" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentANZAC_At_War_With_Japanese:conditionAttachment_ANZAC_1_Original:conditionAttachment_ANZAC_1_Malaya"/>
 					<option name="resource" value="PUs"/>
 					<option name="resourceCount" value="5"/>
+                </attatchment>
+				
+				<!-- Chinese Triggers -->
+				<attatchment name="triggerAttachment_Chinese_Artillery_Supplies" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="objectiveAttachment_Chinese_1_Burma_Road"/>
+					<option name="frontier" value="productionChinese_Burma_Road_Open"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Chinese_Loses_Burma_Road" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="objectiveAttachment_Chinese_1_Burma_Road"/>
+					<option name="frontier" value="productionChinese_Burma_Road_Closed"/>
+					<option name="invert" value="true"/>
+				</attatchment>
+				
+				<!-- Americans Triggers -->
+                <attatchment name="triggerAttachment_Americans_5_Presence_In_France" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Americans_5_unit_presence"/>
+					<option name="resource" value="PUs"/>
+					<option name="resourceCount" value="5"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Americans_War_Production_Eastern" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentAxisAtWarWithAmericans:conditionAttachment_Americans_Major_Factory_Eastern"/>
+                	<option name="removeUnits" value="Eastern United States:factory_minor"/>
+                	<option name="placement" value="Eastern United States:factory_major"/>
+                	<option name="uses" value="1"/>
+					<option name="when" value="after:americansPolitics"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Americans_War_Production_Central" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentAxisAtWarWithAmericans:conditionAttachment_Americans_Major_Factory_Central"/>
+                	<option name="removeUnits" value="Central United States:factory_minor"/>
+                	<option name="placement" value="Central United States:factory_major"/>
+                	<option name="uses" value="1"/>
+					<option name="when" value="after:americansPolitics"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Americans_War_Production_Western" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachmentAxisAtWarWithAmericans:conditionAttachment_Americans_Major_Factory_Western"/>
+                	<option name="removeUnits" value="Western United States:factory_minor"/>
+                	<option name="placement" value="Western United States:factory_major"/>
+                	<option name="uses" value="1"/>
+					<option name="when" value="after:americansPolitics"/>
                 </attatchment>
 				
 				<!-- French Triggers -->

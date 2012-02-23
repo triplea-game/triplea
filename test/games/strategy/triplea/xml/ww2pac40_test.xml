@@ -1970,12 +1970,14 @@
 					<attatchment name="triggerAttachment_Axis_Victory" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 						<option name="conditions" value="conditionAttachmentAxisVictory1:conditionAttachmentAxisVictory2"/>
 						<option name="victory" value="The Japan (Axis) achieve a Triggered Victory, by controlling Japan plus 5 victory cities!"/>
+						<option name="players" value="Japanese"/>
 					</attatchment>
 					
 					<attatchment name="triggerAttachment_Allies_Victory" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 						<option name="conditions" value="conditionAttachmentAlliesVictory1:conditionAttachmentAlliesVictory2"/>
 						<option name="victory" value="The Allies achieve a Triggered Victory, by controlling 1 Allied Capital plus Japan!"/>
 						<option name="when" value="after:japaneseEndTurn"/>
+						<option name="players" value="British:ANZAC:Americans:Chinese:French:Dutch"/>
 					</attatchment>
 				
 				

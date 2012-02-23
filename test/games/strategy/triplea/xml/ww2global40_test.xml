@@ -3531,7 +3531,7 @@
                 <attatchment name="objectiveAttachment_Americans_1_At_War" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="30"/>
 					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="1" />
-                	<option name="directOwnershipTerritories" value="Central United States:Eastern United States:Western United States" count="2"/>
+                	<option name="directOwnershipTerritories" value="Central United States:Eastern United States:Western United States" count="3"/>
                 </attatchment>
 				
 			<!-- Chinese Objectives -->

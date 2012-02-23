@@ -236,7 +236,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	}
 	
 	/**
-	 * takes a string like "original", "enemy", "controlled", "controlledNoWater", "all", "map", and turns it into an actual list of territories in the form of strings
+	 * takes a string like "original", "originalNoWater", "enemy", "controlled", "controlledNoWater", "all", "map", and turns it into an actual list of territories in the form of strings
 	 * 
 	 * @author veqryn
 	 */
@@ -251,6 +251,19 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 			for (final PlayerID player : players)
 			{
 				originalTerrs.addAll(origOwnerTracker.getOriginallyOwned(data, player)); // TODO: does this account for occupiedTerrOf???
+			}
+			setTerritoryCount(String.valueOf(originalTerrs.size()));
+			// Colon delimit the collection as it would exist in the XML
+			for (final Territory item : originalTerrs)
+				value = value + ":" + item;
+		}
+		else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassibles
+		{
+			final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+			final Set<Territory> originalTerrs = new HashSet<Territory>();
+			for (final PlayerID player : players)
+			{
+				originalTerrs.addAll(Match.getMatches(origOwnerTracker.getOriginallyOwned(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data))); // TODO: does this account for occupiedTerrOf???
 			}
 			setTerritoryCount(String.valueOf(originalTerrs.size()));
 			// Colon delimit the collection as it would exist in the XML
@@ -327,8 +340,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		}
 		else if (terrs.length == 2)
 		{
-			if (!terrs[1].equals("controlled") && !terrs[1].equals("controlledNoWater") && !terrs[1].equals("original") && !terrs[1].equals("all") && !terrs[1].equals("map")
-						&& !terrs[1].equals("enemy"))
+			if (!terrs[1].equals("controlled") && !terrs[1].equals("controlledNoWater") && !terrs[1].equals("original") && !terrs[1].equals("originalNoWater") && !terrs[1].equals("all")
+						&& !terrs[1].equals("map") && !terrs[1].equals("enemy"))
 			{
 				// Get the list of territories
 				final Collection<Territory> listedTerrs = getListedTerritories(terrs);
@@ -358,11 +371,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	
 	protected void validateNames(final String[] terrList) throws GameParseException
 	{
-		/*if (terrList != null && (!terrList.equals("controlled") && !terrList.equals("controlledNoWater") && !terrList.equals("original") && !terrList.equals("all") && !terrList.equals("map") && !terrList.equals("enemy")))
+		/*if (terrList != null && (!terrList.equals("controlled") && !terrList.equals("controlledNoWater") && !terrList.equals("original") && !terrList.equals("originalNoWater") && !terrList.equals("all") && !terrList.equals("map") && !terrList.equals("enemy")))
 		{
 			if (terrList.length != 2)
 				getListedTerritories(terrList);
-			else if (terrList.length == 2 && (!terrList[1].equals("controlled") && !terrList[1].equals("controlledNoWater") && !terrList[1].equals("original") && !terrList[1].equals("all") && !terrList[1].equals("map") && !terrList[1].equals("enemy")))
+			else if (terrList.length == 2 && (!terrList[1].equals("controlled") && !terrList[1].equals("controlledNoWater") && !terrList[1].equals("original") && !terrList.equals("originalNoWater") && !terrList[1].equals("all") && !terrList[1].equals("map") && !terrList[1].equals("enemy")))
 				getListedTerritories(terrList);
 		}*/
 		if (terrList != null && terrList.length > 0)
@@ -403,7 +416,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 				continue;
 			}
 			// Skip looking for the territory if the original list contains one of the 'group' commands
-			if (name.equals("controlled") || name.equals("controlledNoWater") || name.equals("original") || name.equals("all") || name.equals("map") || name.equals("enemy"))
+			if (name.equals("controlled") || name.equals("controlledNoWater") || name.equals("original") || name.equals("originalNoWater") || name.equals("all")
+						|| name.equals("map") || name.equals("enemy"))
 				break;
 			// Validate all territories exist
 			final Territory territory = getData().getMap().getTerritory(name);
