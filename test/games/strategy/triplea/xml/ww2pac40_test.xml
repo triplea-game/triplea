@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Pacific Test" version="2.3"/>
+        <info name="World War II Pacific Test" version="2.4"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5"/>
         <map>
@@ -2899,44 +2899,183 @@
                 <property name="mapName" value="World War II Pacific Test" editable="false"/>
 				
                 <property name="notes">
-                        <value>
-                        <![CDATA[
-						
-						    WW2 Pacific 1940
-						<br>TripleA map adaptation created by:
-						<br>Veqryn - map code, xml file, txt files, flags, art, scrambling, kamikazes, carrier rules, air/naval bases, lots of other engine code
-						<br>Edwin - politics framework and ui
-						<br>Squid Daddy - original trigger and support attachment framework
-						<br>CrystalCT - original map png, some unit art
-						<br>GudKarma - relief tiles
-						<br>Bung - making a second set of relief tiles based on ww2v3
-						<br>And many thanks to Larry Harris for making A&A.
-						<br>If you wish to contribute or make any comments, visit the forum http://n2.nabble.com/Project-WW2-Pacific-1940-tp4225367p4225367.html
-						<br>
-						<br>
-						<br>As far as I know, this map is 100% working according to official rules, so please report any bugs at http://sourceforge.net/tracker/?group_id=328171
-						<br>
-						<br>
-						<br>need volunteer for:
-						<br>Need full description of rules as part of this game description.
-						<br>Need new artwork for the misc folder, as well as complete txt files for vc.txt, decorations.txt, capitols.txt, pu_place.txt.
-						<br>May need to edit place.txt to reflect more placements on certain islands.
-						<br>Redone base tiles using ww2v3's basetiles.
-						<br>
-						<br>thank you for playing!
-						<br>
-						<br>
-						<br>recent Change Log:
-						<br>
-						<br>Version 2.3 changes:
-						<br>* Fixed Air and Naval bases to stop working when having more than 2 damage (ie: 3).  Previously the only stopped at more than 3 damage (ie: 4).
-						<br>
-						<br>Version 2.2 changes:
-						<br>* Fixed Chinese national objective to work properly.
-						<br>
-						<br>Version 2.1 changes:
-						<br>* Got everything working according to OOB rules. Only works on TripleA engine 1.5 and greater.
-						<br>
+						<value>
+					<![CDATA[  
+<div style="padding:10px;font-size:14px;background-color:white;text-align:justify;">
+<b>Pacific 1940</b><br>
+<br>
+<b>Credits:</b><br>
+Map XML, Files, and Zip: Veqryn<br>
+Relief Tiles: GudKarma<br>
+Basetiles and New Unit Art: CrystalCT<br>
+Engine Code: Veqryn, Edwin, Squid Daddy<br>
+
+<br>
+<b>Note</b><br>
+This game uses vanilla rules, also knowns as OOB (out of the box). <br><br>
+
+<b>Disclaimer</b><br>
+The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org.<br><br>
+
+<b>Stuff Left TODO</b><br>
+* Kamikaze attacks will prevent bombardment.  So will Scrambling attacks.<br>
+* Captured naval and air bases can not be used until next turn.  In other words, you can't somehow use the naval base for bonus movement during noncombat.<br>
+<br><br>
+<br><hr><br>
+
+<b>Victory Conditions</b><br>
+To win with the following victory conditions, a side must <b>maintain it for a complete round of play</b> and must also control at least one of its own capital cities.<br><br>
+
+<b>Axis Victory:</b> 6 Victories Cities where at least one is Japan.<br>
+<b>Allied Victory:</b> Japan is under allied control and allies maintain control of one of their own capitals.
+<br><br>
+
+<b>There are no Canals or Straits</b><br>
+
+<br><br><hr><br>
+
+<b>Political Situation</b><br>
+At the start of the game Japan is at war with China and France only. Any countries not at war with each other ignore each other's naval units and obviously cannot go into each others ground territories. There are a number of specific politically related rules/conditions for each country:<br><br>
+
+<b>Japan</b>
+<ul>
+<li>Japan can declare war on the Allies at any time. Declaring war on one of them means declaring war on all of them.</li>
+<li>Japan can not enter Dutch territories without first being at war with the Allies.</li>
+</ul>
+<br><b>British/ANZAC</b>
+<ul>
+<li>British/ANZAC can declare war on Japan at any time, however doing so will not cause the Americans to join the war at the same time.</li>
+<li>British/ANZAC may conquer Dutch territories by moving land units into them.</li>
+</ul>
+<br><b>USA</b>
+<ul>
+<li>USA cannot go to war against Japan until the <b>beginning of PU collect phase</b> of USA 3, unless of course Japan attacks it first.</li>
+</ul>
+<br><b>China</b>
+<ul>
+<li>China may not move units outside of its historical range, which includes: Burma, Kwangtung, and its original territories 
+(the ones it starts with, plus Kwangsi, Kiangsi, Kiangsu, Shantung, Jehol, and Manchuria).</li>
+<li>China has no capital and will keep its money even if all its territories are lost.</li>
+</ul>
+<br><b>Neutrals</b>
+<ul>
+<li>If the neutrals are attacked, it has no affect on the other neutral territories or their units.</li>
+</ul>
+
+<br><br><hr><br>
+
+<b>National Objectives</b><br>
+
+<b>Japan</b>
+<ul>
+<li>5 PUs if Japan controls all of Sumatra, Java, Borneo, and Celebes.</li>
+<li>5 PUs for each Japanese controlled territory: Hawaii, India, New South Wales.</li>
+<li>5 PUs if Japan controls all of Solomon Islands, Dutch New Guinea, New Britain, and New Guinea.</li>
+</ul>
+
+<b>UK</b>
+<ul>
+<li>5 PUs if the Allies control all of Sumatra, Java, Borneo, and Celebes.</li>
+<li>5 PUs if UK controls all of Kwangtung and Malaya.</li>
+</ul>
+
+<b>ANZAC</b>
+<ul>
+<li>5 PUs if the Allies controls all of Solomon Islands, Dutch New Guinea, New Britain, and New Guinea.</li>
+<li>5 PUs only once, the first time ANZAC occupies an originally Japanese territory or island [has a unit on it at end of turn].</li>
+</ul>
+
+<b>USA</b>
+<ul>
+<li>40 PUs if USA is at war with Japan.</li>
+<li>5 PUs if USA controls the Philippines.</li>
+<li>5 PUs if USA controls all of Okinawa and Iwo Jima.</li>
+</ul>
+
+<b>China</b>
+<ul>
+<li>6 PUs and may build artillery if the Allies control India, Burma, Yunnan, and Szechwan.</li>
+</ul>
+
+
+<br><br><hr><br>
+<b>Kamikaze Attacks</b><br>
+Japan starts the game with 6 attack tokens, and if one of the strategic islands [Philippines, Marianas, Okinawa, or Iwo Jima] is captured or recaptured by the Allies, Japan may begin doing Kamikaze Attacks.<br>
+These attacks can only be done in sea zones that contain the Kamikaze symbol [the sea zones surrounding: Japan, Okinawa, Iwo Jima, Formosa, and the Marianas].<br>
+At the end of Japan's enemy's combat-move phase, Japan may target any surface warship in a Kamikaze zone for one or more Kamikaze attacks.<br>
+For each attack, a die is rolled, and a 2 or less is considered a hit. Casualties are removed immediately, and do not participate in any battles. Kamikaze attacks prevent bombardment as well.<br>
+<br><br><hr><br>
+
+<b>Submarine Attacks on Unescorted Transports</b><br>
+Any Transport ships that are moving without a surface warship escort, and moving past or into a sea zone containing enemy submarines, is subject to an attack.<br>
+Each enemy submarine will fire at 2.  Each submarine only fires once, no matter how many transports there are.<br>
+<br><br><hr><br>
+
+
+<b>Scrambling</b><br>
+Fighters and/or Tactical bombers can be scrambled from any island with an operating airfield (less than 3 damage) to help defend the surrounding sea zone using their standard defense values. They cannot retreat from scrambling (defenders can never retreat) and if the territory they were scrambled from is captured, they're given one extra movement point to land on a friendly territory or open carrier. Scrambled air cannot participate in any other battles that round.
+<br><br><hr><br>
+<b>Strategic Bombing Runs (SBR)</b><br>
+Bombing can now happen against both types of ICs, harbours, and airfields (attackers choice). Fighters can participate in the bombing run as escorts. Fighters in the territory being bombed can be launched as interceptors (no airfield necessary).<br><br>
+<b>If interceptors are launched:</b> a one-round air battle takes place right away where bombers dont roll, escorts roll at one and interceptors roll at two. Either attacking bombers or fighters can be taken as casualties.<br><br>
+After the air battle, or if there were no interceptors, the escorts are retreated and any bombers/tacs remaining can now be divied up to attack specific targets. Each target rolls its built-in AA gun against the bombers/tacs targetting it. If there is an AA gun in the territory being bombed it does <b>not</b> roll because its there to defend combat units and not complexes/bases.
+<br><br>
+
+<br><br><hr><br>
+
+<b>Blockade Zones</b><br>
+If any enemy ships are in a power's blockade zones at the end of that power's turn, and the power controls the adjacent ground territory, then the power loses 1 PU for each surface warship and 2 PUs for each submarine present. The power in question cannot lose more PUs from a blockade zones then the worth of the adjacent ground territory to those zones.
+
+<br><br><hr><br>
+
+<b>Placement Restrictions</b>
+<ul>
+<li>Major Industrial Complexes can only go in territories worth 3 or more.</li>
+<li>Minor Industrial Complexes can only go in territories worth 2 or more.</li>
+<li>Industrial Complexes can't be built on islands.</li>
+<li>Over-purchase is returned and money is reimbursed.</li>
+<li>Aircraft can be placed on the ground or on a [new] carrier in the adjacent sea zone that has a spot(s) open.</li>
+</ul>
+<br><hr><br>
+
+<b>Units</b><br>
+These changes to units are things other than price/movement which you can see in the buy menu.
+<ul>
+<li>Carriers are two hit.</li>
+<li>Minor Industrial Complexes have 3 production capacity. A Minor IC can be upgraded to a Major IC for 20 PUs.</li>
+<li>Major Industrial Complexes have 10 production capacity. When a Major IC is captured it automatically becomes a minor IC.</li>
+</ul>
+
+<b>New Units</b><br>
+<b>Tactical Bombers:</b> can land on carriers, can bomb, and if paired with <b>a tank or fighter</b> the Tac attacks at 4.<br>
+<b>Mechanized Infantry:</b> can blitz when paired with a tank, and are supportable by artillery.<br>
+<b>Carriers:</b> now have 2 hitpoints, and when damaged they do not allow fighters to land, or to leave if cargo.<br>
+<br>
+<b>New Buildings</b><br>
+<b>Harbour:</b> Any ships that start their turn in a sea zone adjacent to a harbour get +1 movement points. Any damaged ships are repaired by a harbour at the start of the player's purchase and repair turn phase. Lastly, harbours can be bombed, and if they have 3 or more damage then they do not provide the above bonuses.<br>
+<b>Airfield:</b> Any air that start their turn on the ground territory with an airfield get +1 movement points. Airfields <b>on islands (not incl. UK)</b> allow planes on that island to scramble (see Scramble section above). Airfields can be bombed, and if they have 3 or more damage then they do not provide the movement bonus.
+<br><br><hr><br>
+<b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
+<br><br><hr><br>
+<br>Change Log:
+<br>
+<br>2.4
+<br>Redid game notes to match other 1940 games.
+<br>
+<br>2.3
+<br>Fixed Air and Naval bases to stop working when having more than 2 damage (ie: 3).  Previously the only stopped at more than 3 damage (ie: 4).
+<br>
+<br>2.2
+<br>Fixed Chinese national objective to work properly.
+<br>
+<br>2.1
+<br>Got everything working according to OOB rules. Only works on TripleA engine 1.5 and greater.
+<br>
+<br>2.0
+<br>Everything done, now playtesting.
+<br>
+<br><br><hr><br>
+</div>
 						
 						]]>
                         </value>
