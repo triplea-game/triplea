@@ -116,7 +116,7 @@ public class MainPanel extends JPanel implements Observer
 			m_chatPanelHolder = new JPanel();
 			m_chatPanelHolder.setLayout(new BorderLayout());
 			m_chatPanelHolder.add(chat, BorderLayout.CENTER);
-			add(m_chatPanelHolder, new GridBagConstraints(0, 1, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
+			add(m_chatPanelHolder, new GridBagConstraints(0, 1, 2, 1, 1, 0.2, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
 		}
 		m_isChatShowing = chat != null;
 	}

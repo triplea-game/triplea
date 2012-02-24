@@ -15,6 +15,8 @@ import games.strategy.net.INode;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -26,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +46,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 public class ChatPlayerPanel extends JPanel implements IChatListener
 {
@@ -117,6 +121,24 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 		repaint();
 	}
 	
+	/**
+	 * set minimum size based on players (number and max name length) and distribution to playerIDs
+	 */
+	private void setDynamicPreferredSize()
+	{
+		final List<INode> onlinePlayers = m_chat.GetOnlinePlayers();
+		int maxNameLength = 0;
+		final FontMetrics fontMetrics = this.getFontMetrics(UIManager.getFont("TextField.font"));
+		for (final Iterator<INode> iterator = onlinePlayers.iterator(); iterator.hasNext();)
+		{
+			maxNameLength = Math.max(maxNameLength, fontMetrics.stringWidth(iterator.next().getName()));
+		}
+		int iconCounter = 0;
+		if (m_setCellRenderer instanceof PlayerChatRenderer)
+			iconCounter = ((PlayerChatRenderer) m_setCellRenderer).getMaxIconCounter();
+		setPreferredSize(new Dimension(maxNameLength + 40 + iconCounter * 14, 80));
+	}
+	
 	private void createComponents()
 	{
 		m_listModel = new DefaultListModel();
@@ -131,7 +153,11 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 					return new JLabel();
 				}
 				final INode node = (INode) value;
-				final DefaultListCellRenderer renderer = (DefaultListCellRenderer) m_setCellRenderer.getListCellRendererComponent(list, getDisplayString(node), index, isSelected, cellHasFocus);
+				final DefaultListCellRenderer renderer;
+				if (m_setCellRenderer instanceof PlayerChatRenderer)
+					renderer = (DefaultListCellRenderer) m_setCellRenderer.getListCellRendererComponent(list, node, index, isSelected, cellHasFocus);
+				else
+					renderer = (DefaultListCellRenderer) m_setCellRenderer.getListCellRendererComponent(list, getDisplayString(node), index, isSelected, cellHasFocus);
 				if (m_chat.isIgnored(node))
 				{
 					renderer.setIcon(s_ignoreIcon);
@@ -208,6 +234,7 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 	public void setPlayerRenderer(final ListCellRenderer renderer)
 	{
 		m_setCellRenderer = renderer;
+		setDynamicPreferredSize();
 	}
 	
 	private void mouseOnPlayersList(final MouseEvent e)

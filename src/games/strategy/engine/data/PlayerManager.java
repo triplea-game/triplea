@@ -64,12 +64,12 @@ public class PlayerManager
 		return new HashSet<String>(m_playerMapping.keySet());
 	}
 	
-	public Set<String> getPlayedBy(final String playerName)
+	public Set<String> getPlayedBy(final INode playerNode)
 	{
 		final Set<String> rVal = new HashSet<String>();
 		for (final String player : m_playerMapping.keySet())
 		{
-			if (m_playerMapping.get(player).getName().equals(playerName))
+			if (m_playerMapping.get(player).equals(playerNode))
 			{
 				rVal.add(player);
 			}

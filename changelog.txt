@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Fixing Chat Panel player name area to be correct size to hold all player names and national flags. (frigoref)
+
 * Adding Alpha+3 National Objectives to xml. (veqryn)
 
 * Added "originalNoWater" as an option for conditions that test territories. (veqryn)

@@ -21,6 +21,7 @@ package games.strategy.triplea.ui;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
+import games.strategy.engine.chat.PlayerChatRenderer;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -79,7 +80,6 @@ import games.strategy.util.Tuple;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -119,8 +119,6 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -824,8 +822,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return selected;
 	}
 	
-	public HashMap<Territory, IntegerMap<Unit>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack,
-				final Resource attackResourceToken, final int maxNumberOfAttacksAllowed)
+	public HashMap<Territory, IntegerMap<Unit>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack, final Resource attackResourceToken,
+				final int maxNumberOfAttacksAllowed)
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
@@ -848,12 +846,12 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				}
 				m_mapPanel.centerOn(m_data.getMap().getTerritory(possibleUnitsToAttackStringForm.keySet().iterator().next()));
 				
-				final IndividualUnitPanelGrouped unitPanel = new IndividualUnitPanelGrouped(possibleUnitsToAttackStringForm, m_data, m_uiContext,
-							"Select Units to Suicide Attack using " + attackResourceToken.getName(), maxNumberOfAttacksAllowed, true, false);
+				final IndividualUnitPanelGrouped unitPanel = new IndividualUnitPanelGrouped(possibleUnitsToAttackStringForm, m_data, m_uiContext, "Select Units to Suicide Attack using "
+							+ attackResourceToken.getName(), maxNumberOfAttacksAllowed, true, false);
 				unitPanels.add(unitPanel);
 				final Object[] options = { "Attack", "None", "Wait" };
-				final int option = JOptionPane.showOptionDialog(getParent(), unitPanel, "Select units to Suicide Attack using " + attackResourceToken.getName(),
-							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
+				final int option = JOptionPane.showOptionDialog(getParent(), unitPanel, "Select units to Suicide Attack using " + attackResourceToken.getName(), JOptionPane.YES_NO_CANCEL_OPTION,
+							JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
 				if (option == JOptionPane.NO_OPTION)
 				{
 					unitPanels.clear();
@@ -936,8 +934,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 					panel.add(chooserScrollPane);
 				}
 				final Object[] options = { "Scramble", "None", "Wait" };
-				final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units to scramble to " + scrambleTo.getName(),
-							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
+				final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units to scramble to " + scrambleTo.getName(), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+							null, options, options[2]);
 				if (option == JOptionPane.NO_OPTION)
 				{
 					choosers.clear();
@@ -1009,8 +1007,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				chooserScrollPane = new JScrollPane(panelChooser);
 				panel.add(chooserScrollPane);
 				final Object[] options = { "Select", "None", "Wait" };
-				final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units" + message,
-							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
+				final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units" + message, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
 				if (option == JOptionPane.NO_OPTION)
 				{
 					selection.clear();
@@ -2098,89 +2095,5 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	void setShowChatTime(final boolean showTime)
 	{
 		m_chatPanel.setShowChatTime(showTime);
-	}
-}
-
-
-class PlayerChatRenderer extends DefaultListCellRenderer
-{
-	private final IGame m_game;
-	private final UIContext m_uiContext;
-	
-	PlayerChatRenderer(final IGame game, final UIContext uiContext)
-	{
-		m_game = game;
-		m_uiContext = uiContext;
-	}
-	
-	@Override
-	public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
-	{
-		super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-		final Set<String> players = m_game.getPlayerManager().getPlayedBy(value.toString());
-		if (players.size() > 0)
-		{
-			setHorizontalTextPosition(SwingConstants.LEFT);
-			final List<Icon> icons = new ArrayList<Icon>(players.size());
-			for (final String player : players)
-			{
-				PlayerID playerID;
-				m_game.getData().acquireReadLock();
-				try
-				{
-					playerID = m_game.getData().getPlayerList().getPlayerID(player);
-				} finally
-				{
-					m_game.getData().releaseReadLock();
-				}
-				icons.add(new ImageIcon(m_uiContext.getFlagImageFactory().getSmallFlag(playerID)));
-			}
-			setIcon(new CompositeIcon(icons));
-		}
-		return this;
-	}
-}
-
-
-class CompositeIcon implements Icon
-{
-	private static final int GAP = 2;
-	private final List<Icon> m_incons;
-	
-	CompositeIcon(final List<Icon> icons)
-	{
-		m_incons = icons;
-	}
-	
-	public void paintIcon(final Component c, final Graphics g, final int x, final int y)
-	{
-		int dx = 0;
-		for (final Icon icon : m_incons)
-		{
-			icon.paintIcon(c, g, x + dx, y);
-			dx += GAP;
-			dx += icon.getIconWidth();
-		}
-	}
-	
-	public int getIconWidth()
-	{
-		int sum = 0;
-		for (final Icon icon : m_incons)
-		{
-			sum += icon.getIconWidth();
-			sum += GAP;
-		}
-		return sum;
-	}
-	
-	public int getIconHeight()
-	{
-		int max = 0;
-		for (final Icon icon : m_incons)
-		{
-			max = Math.max(icon.getIconHeight(), max);
-		}
-		return max;
 	}
 }
