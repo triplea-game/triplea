@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Created new RelationshipTypeAttachment option, canMoveIntoDuringCombatMove, which stops combat-phase movement, but allows non-combat-phase movement. (veqryn)
+
 * Fixing Chat Panel player name area to be correct size to hold all player names and national flags. (frigoref)
 
 * Adding Alpha+3 National Objectives to xml. (veqryn)

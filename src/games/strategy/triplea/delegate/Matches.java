@@ -3274,6 +3274,14 @@ public class Matches
 			return relationship.getRelationshipTypeAttachment().getGivesBackOriginalTerritories();
 		}
 	};
+	public static final Match<RelationshipType> RelationshipTypeCanMoveIntoDuringCombatMove = new Match<RelationshipType>()
+	{
+		@Override
+		public boolean match(final RelationshipType relationship)
+		{
+			return relationship.getRelationshipTypeAttachment().getCanMoveIntoDuringCombatMove();
+		}
+	};
 	
 	public static final Match<String> isValidRelationshipName(final GameData data)
 	{
@@ -3740,6 +3748,22 @@ public class Matches
 				if (!Matches.TerritoryIsPassableAndNotRestricted(attacker, t.getData()).match(t))
 					return false;
 				return RelationshipTypeCanTakeOverOwnedTerritory.match(t.getData().getRelationshipTracker().getRelationshipType(attacker, t.getOwner()));
+			}
+		};
+	}
+	
+	public static final Match<Territory> territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(final PlayerID movingPlayer)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (t.getOwner().equals(movingPlayer))
+					return true;
+				if (t.getOwner().equals(PlayerID.NULL_PLAYERID) && t.isWater())
+					return true;
+				return t.getData().getRelationshipTracker().canMoveIntoDuringCombatMove(movingPlayer, t.getOwner());
 			}
 		};
 	}

@@ -211,6 +211,11 @@ public class MoveValidator
 	{
 		if (getEditMode(data))
 			return result;
+		for (final Territory t : route.getSteps())
+		{
+			if (!Matches.territoryOwnerRelationshipTypeCanMoveIntoDuringCombatMove(player).match(t))
+				return result.setErrorReturnResult("Can not move into territories owned by " + t.getOwner().getName() + " during Combat Movement Phase");
+		}
 		if (!route.getStart().isWater() && Matches.isAtWar(route.getStart().getOwner(), data).match(player) && Matches.isAtWar(route.getEnd().getOwner(), data).match(player))
 		{
 			if (!Matches.TerritoryIsBlitzable(player, data).match(route.getStart()) && !Match.allMatch(units, Matches.UnitIsAir))

@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel 2" version="3.5"/>
+        <info name="Pact of Steel 2" version="3.5.1"/>
 		
 			<!-- A MOD of original POS by VEQRYN
 					The purpose is to provide a fun game that shows off all the new features of TripleA since 1.2.5.5
@@ -17,7 +17,7 @@
 		
 		<!-- triplea minimumVersion is the minimum version number of TripleA that can play this game.  Many new xmls require features not present in older versions of TripleA. Should be "xx.xx.xx.xx", "xx.xx.xx", "xx.xx", or "xx".
 				An example would be a map using 'isInfrastructure' unit property would need at least TripleA version "1.2.6", while a map using 'whenCapturedChangesInto' would need at least TripleA version "1.4" -->
-		<triplea minimumVersion="1.5"/>
+		<triplea minimumVersion="1.5.1"/>
 
 		<!-- diceSides defaults to 6 if not in the xml.  Can be set to any number between 1 and 200.
 				WARNING: Setting diceSides to a number other than 6 can result in unexpected behavior. -->
@@ -1530,6 +1530,7 @@
 			isDefaultWarPosition					values: "true", "false", or "default". can only be applied to a relationship that is archetype "war", and only 1 relationship can have it. if true, any nations that reach an alliance chaining relationship, will have their enemies who are not yet at war with, set to this relationship.
 			canTakeOverOwnedTerritory				values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war lets you take over territories.  By setting true, you can take over territories of an ally
 			givesBackOriginalTerritories			values: "true", "false", or "default". default setting is "default", and "default" means false. If true, at the end of each politics phase, any territories originally belonging to the other player will revert to that players control.
+			canMoveIntoDuringCombatMove				values: "true", "false", or "default". default setting is "default", and "default" means true. If false, you may not move into any territories owned by the other player during combat move, and must wait for non-combat move.
 	-->
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">

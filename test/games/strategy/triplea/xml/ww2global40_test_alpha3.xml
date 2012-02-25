@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="2.1"/>
+        <info name="World War II Global Test Alpha 3" version="2.2"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
-		<triplea minimumVersion="1.5"/>
+		<triplea minimumVersion="1.5.1"/>
 		<diceSides value="6"/>
 		
         <map>
@@ -1859,11 +1859,13 @@
 						<option name="canMoveLandUnitsOverOwnedLand" value="true"/>
 						<option name="canMoveAirUnitsOverOwnedLand" value="false"/>
 						<option name="canLandAirUnitsOnOwnedLand" value="false"/>
+						<option name="canMoveIntoDuringCombatMove" value="false"/>
 						<!-- How Friendly Neutrals work:
-								They may not be attacked. (IE: can not move into during combat move phase) (TODO)
+								They may not be attacked. (IE: can not move into during combat move phase) (DONE)
 								They can not be flown over. (Done)
 								They can not be moved through, or blitzed. (TODO)
 								During non-combat move, you may move land units into them to capture them and all their units. (Done)
+								May only capture with units that have attack power (no aa guns). (TODO)
 						-->
 					</attatchment>
 					
@@ -5918,7 +5920,6 @@ To Move Submarines passed the straight of Gibraltar, you may need to use Edit Mo
 
 <b>Stuff Left TODO</b><br>
 * Create special rules for Canals.<br>
-* Do not allow movement during combat movement phase into Friendly Neutrals.<br>
 * Do not allow blitzing or movement through Friendly Neutrals.<br>
 * Caspian Sea is a sea zone (but what number?).<br>
 * Friendly Neutrals can not be 'captured' with an AA Gun, only by land units with an attack power.<br>
@@ -6066,6 +6067,20 @@ When a country moves into a regular or non-friendly neutral during the combat mo
 </ul>
 <br><hr><br>
 
+
+<br><br><hr><br>
+<b>Kamikaze Attacks</b><br>
+Japan starts the game with 6 attack tokens, and may begin doing Kamikaze Attacks at the start of the game.<br>
+These attacks can only be done in sea zones that contain the Kamikaze symbol [the sea zones surrounding: Japan, Okinawa, Iwo Jima, Formosa, and the Marianas].<br>
+At the end of Japan's enemy's combat-move phase, Japan may target any surface warship in a Kamikaze zone for one or more Kamikaze attacks.<br>
+For each attack, a die is rolled, and a 2 or less is considered a hit. Casualties are removed immediately, and do not participate in any battles. Kamikaze attacks prevent bombardment as well.<br>
+<br><br><hr><br>
+
+<b>Submarine Prevent Unescorted Transports From Making Amphibious Assaults</b><br>
+In any Sea Zone containing an enemy submarine, but not containing an Owned surface warship, the submarine will prevent the offloading of troops for an amphibious assault. 
+<br><br><hr><br>
+
+
 <b>Scrambling</b><br>
 Fighters and/or Tactical bombers can be scrambled from any territory bordering a sea zone, with an operating airfield (less than 3 damage) to help defend the surrounding sea zone using their standard defense values. They cannot retreat from scrambling (defenders can never retreat) and if the territory they were scrambled from is captured, they're given one extra movement point to land on a friendly territory or open carrier. Scrambled air cannot participate in any other battles that round.
 <br><br><hr><br>
@@ -6113,6 +6128,9 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>2.2
+<br>Preventing Combat-Movement takeover of Friendly Neutrals. You must now wait for Non-Combat Movement phase to take over them.
 <br>
 <br>2.1
 <br>Fixed bug preventing UK_Pacific units from turning into British units.

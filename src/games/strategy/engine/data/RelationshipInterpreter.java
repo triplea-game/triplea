@@ -136,6 +136,11 @@ public class RelationshipInterpreter extends GameDataComponent
 		return Matches.RelationshipTypeGivesBackOriginalTerritories.match(getRelationshipType(p1, p2));
 	}
 	
+	public boolean canMoveIntoDuringCombatMove(final PlayerID p1, final PlayerID p2)
+	{
+		return Matches.RelationshipTypeCanMoveIntoDuringCombatMove.match(getRelationshipType(p1, p2));
+	}
+	
 	/**
 	 * Convenience method to get RelationshipType so you can do relationshipChecks on the relationship between these 2 players
 	 * 
