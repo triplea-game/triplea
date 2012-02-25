@@ -67,6 +67,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private LinkedHashMap<UnitSupportAttachment, Boolean> m_support = null;
 	private ArrayList<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this trigger hits.
 	private String m_victory = null;
+	private ArrayList<Tuple<TriggerAttachment, String>> m_activateTrigger = new ArrayList<Tuple<TriggerAttachment, String>>();
 	
 	// raw property changes below:
 	private ArrayList<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will break all existing maps
@@ -209,6 +210,60 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		
 		// Victory messages and recording of winners
 		triggerVictory(triggersToBeFired, aBridge, beforeOrAfter, stepName);
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setActivateTrigger(final String value) throws GameParseException
+	{
+		// triggerName:numberOfTimes:useUses:testConditions:testChance
+		final String[] s = value.split(":");
+		if (s.length != 5)
+			throw new GameParseException("activateTrigger must have 5 parts: triggerName:numberOfTimes:useUses:testConditions:testChance" + thisErrorMsg());
+		TriggerAttachment trigger = null;
+		for (final PlayerID player : getData().getPlayerList().getPlayers())
+		{
+			for (final TriggerAttachment ta : getTriggers(player, getData(), null))
+			{
+				if (ta.getName().equals(s[0]))
+				{
+					trigger = ta;
+					break;
+				}
+			}
+			if (trigger != null)
+				break;
+		}
+		if (trigger == null)
+			throw new GameParseException("No TriggerAttachment named: " + s[0] + thisErrorMsg());
+		String options = value;
+		options = options.replaceFirst((s[0] + ":"), "");
+		getBool(s[1]);
+		getBool(s[2]);
+		getBool(s[3]);
+		getBool(s[4]);
+		m_activateTrigger.add(new Tuple<TriggerAttachment, String>(trigger, options));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setActivateTrigger(final ArrayList<Tuple<TriggerAttachment, String>> value)
+	{
+		m_activateTrigger = value;
+	}
+	
+	public ArrayList<Tuple<TriggerAttachment, String>> getActivateTrigger()
+	{
+		return m_activateTrigger;
+	}
+	
+	public void clearActivateTrigger()
+	{
+		m_activateTrigger.clear();
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)

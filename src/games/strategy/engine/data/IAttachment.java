@@ -244,7 +244,7 @@ public interface IAttachment extends Serializable
 	static final String PROPERTY_RelationshipTypeAttachment_HELPS_DEFEND_AT_SEA = "helpsDefendAtSea";
 	static final String PROPERTY_RelationshipTypeAttachment_IS_DEFAULT_WAR_POSITION = "isDefaultWarPosition";
 	static final String PROPERTY_RelationshipTypeAttachment_UP_KEEP_COST = "upkeepCost";
-	static final String PROPERTY_RelationshipTypeAttachment_CAN_MOVE_INTO_DURING_COMBAT_MOVE = "canMoveIntoDuringCombatMove";
+	static final String PROPERTY_RelationshipTypeAttachment_CAN_MOVE_INTO_DURING_COMBAT_MOVE = "canMoveIntoDuringCombatMove"; // just added this 2
 	
 	// AbstractPlayerRulesAttachment
 	static final String PROPERTY_AbstractPlayerRulesAttachment_DOMINATING_FIRST_ROUND_ATTACK = "dominatingFirstRoundAttack";
@@ -325,5 +325,6 @@ public interface IAttachment extends Serializable
 	static final String PROPERTY_TriggerAttachment_UNIT_PROPERTY = "unitProperty";
 	static final String PROPERTY_TriggerAttachment_UNIT_TYPE = "unitType"; // just added this
 	static final String PROPERTY_TriggerAttachment_VICTORY = "victory";
+	static final String PROPERTY_TriggerAttachment_ACTIVATE_TRIGGER = "activateTrigger"; // just added this 2
 	*/
 }
