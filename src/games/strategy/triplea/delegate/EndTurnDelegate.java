@@ -212,8 +212,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 		if (useTriggers)
 		{
 			// add conditions required for triggers
-			final Match<TriggerAttachment> endTurnDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
-						TriggerAttachment.resourceMatch(null, null));
+			final Match<TriggerAttachment> endTurnDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+						TriggerAttachment.availableUses,
+						TriggerAttachment.whenOrDefaultMatch(null, null),
+						new CompositeMatchOr<TriggerAttachment>(
+									TriggerAttachment.resourceMatch()));
 			toFirePossible.addAll(TriggerAttachment.collectForAllTriggersMatching(new HashSet<PlayerID>(Collections.singleton(player)), endTurnDelegateTriggerMatch, bridge));
 			allConditionsNeeded.addAll(RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(toFirePossible), null));
 		}
@@ -233,7 +236,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				// get all triggers that are satisfied based on the tested conditions.
 				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 				// now list out individual types to fire, once for each of the matches above.
-				TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null);
+				TriggerAttachment.triggerResourceChange(toFireTestedAndSatisfied, bridge, null, null, true, true, true, true);
 			}
 		}
 		

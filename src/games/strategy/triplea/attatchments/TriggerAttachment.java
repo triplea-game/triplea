@@ -150,7 +150,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final List<TriggerAttachment> toFireTestedAndSatisfied = Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions));
 		if (toFireTestedAndSatisfied.isEmpty())
 			return;
-		TriggerAttachment.fireTriggers(new HashSet<TriggerAttachment>(toFireTestedAndSatisfied), aBridge, beforeOrAfter, stepName);
+		TriggerAttachment.fireTriggers(new HashSet<TriggerAttachment>(toFireTestedAndSatisfied), testedConditions, aBridge, beforeOrAfter, stepName, true, true, true, true);
 	}
 	
 	public static HashSet<TriggerAttachment> collectForAllTriggersMatching(final HashSet<PlayerID> players, final Match<TriggerAttachment> triggerMatch, final IDelegateBridge aBridge)
@@ -166,8 +166,14 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	
 	public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible, final IDelegateBridge aBridge)
 	{
-		final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(toFirePossible), null);
-		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, null, aBridge);
+		return collectTestsForAllTriggers(toFirePossible, aBridge, null, null);
+	}
+	
+	public static HashMap<ICondition, Boolean> collectTestsForAllTriggers(final HashSet<TriggerAttachment> toFirePossible, final IDelegateBridge aBridge,
+				final HashSet<ICondition> allConditionsNeededSoFar, final HashMap<ICondition, Boolean> allConditionsTestedSoFar)
+	{
+		final HashSet<ICondition> allConditionsNeeded = RulesAttachment.getAllConditionsRecursive(new HashSet<ICondition>(toFirePossible), allConditionsNeededSoFar);
+		return RulesAttachment.testAllConditionsRecursive(allConditionsNeeded, allConditionsTestedSoFar, aBridge);
 	}
 	
 	/**
@@ -180,36 +186,38 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 * @param beforeOrAfter
 	 * @param stepName
 	 */
-	public static void fireTriggers(final HashSet<TriggerAttachment> triggersToBeFired, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void fireTriggers(final HashSet<TriggerAttachment> triggersToBeFired, final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge aBridge,
+				final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
 		// Order: Notifications, Attachment Property Changes (Player, Relationship, Territory, TerritoryEffect, Unit), Relationship, AvailableTech, Tech, ProductionFrontier, ProductionEdit, Support, Purchase, UnitPlacement, Resource, Victory
 		
 		// Notifications to current player
-		triggerNotifications(triggersToBeFired, aBridge, beforeOrAfter, stepName);
+		triggerNotifications(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
 		
 		// Attachment property changes
-		triggerPlayerPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerRelationshipTypePropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerTerritoryPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerTerritoryEffectPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerUnitPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
+		triggerPlayerPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerRelationshipTypePropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerTerritoryPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerTerritoryEffectPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerUnitPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
 		
 		// Misc changes that only need to happen once (twice or more is meaningless)
-		triggerRelationshipChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerAvailableTechChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerTechChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerProductionChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerProductionFrontierEditChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerSupportChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
+		triggerRelationshipChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerAvailableTechChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerTechChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerProductionChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerProductionFrontierEditChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerSupportChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
 		
 		// Misc changes that can happen multiple times, because they add or subtract, something from the game (and therefore can use "each")
-		triggerUnitRemoval(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerPurchase(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerUnitPlacement(triggersToBeFired, aBridge, beforeOrAfter, stepName);
-		triggerResourceChange(triggersToBeFired, aBridge, beforeOrAfter, stepName);
+		triggerUnitRemoval(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerPurchase(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerUnitPlacement(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerResourceChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerActivateTriggerOther(testedConditionsSoFar, triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen); // Triggers firing other triggers
 		
 		// Victory messages and recording of winners
-		triggerVictory(triggersToBeFired, aBridge, beforeOrAfter, stepName);
+		triggerVictory(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
 	}
 	
 	/**
@@ -221,10 +229,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setActivateTrigger(final String value) throws GameParseException
 	{
-		// triggerName:numberOfTimes:useUses:testConditions:testChance
+		// triggerName:numberOfTimes:useUses:testUses:testConditions:testChance
 		final String[] s = value.split(":");
-		if (s.length != 5)
-			throw new GameParseException("activateTrigger must have 5 parts: triggerName:numberOfTimes:useUses:testConditions:testChance" + thisErrorMsg());
+		if (s.length != 6)
+			throw new GameParseException("activateTrigger must have 6 parts: triggerName:numberOfTimes:useUses:testUses:testConditions:testChance" + thisErrorMsg());
 		TriggerAttachment trigger = null;
 		for (final PlayerID player : getData().getPlayerList().getPlayers())
 		{
@@ -241,12 +249,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 		if (trigger == null)
 			throw new GameParseException("No TriggerAttachment named: " + s[0] + thisErrorMsg());
+		if (trigger == this)
+			throw new GameParseException("Can not have a trigger activate itself!" + thisErrorMsg());
 		String options = value;
 		options = options.replaceFirst((s[0] + ":"), "");
-		getBool(s[1]);
+		final int numberOfTimes = getInt(s[1]);
+		if (numberOfTimes < 0)
+			throw new GameParseException("activateTrigger must be positive for the number of times to fire: " + s[1] + thisErrorMsg());
 		getBool(s[2]);
 		getBool(s[3]);
 		getBool(s[4]);
+		getBool(s[5]);
 		m_activateTrigger.add(new Tuple<TriggerAttachment, String>(trigger, options));
 	}
 	
@@ -1411,15 +1424,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	// Should be void.
 	//
 	
-	public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerNotifications(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, notificationMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, notificationMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		final Set<String> notifications = new HashSet<String>();
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			notifications.add(t.getNotification());
 		}
 		final Iterator<String> notificationMessages = notifications.iterator();
@@ -1432,15 +1451,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	public static void triggerPlayerPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerPlayerPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
+				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, playerPropertyMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, playerPropertyMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			for (final Tuple<String, String> property : t.getPlayerProperty())
 			{
 				for (final PlayerID aPlayer : t.getPlayers())
@@ -1527,15 +1552,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	public static void triggerRelationshipTypePropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerRelationshipTypePropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
+				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, relationshipTypePropertyMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, relationshipTypePropertyMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			for (final Tuple<String, String> property : t.getRelationshipTypeProperty())
 			{
 				for (final RelationshipType aRelationshipType : t.getRelationshipTypes())
@@ -1570,16 +1601,22 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	public static void triggerTerritoryPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerTerritoryPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
+				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, territoryPropertyMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, territoryPropertyMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		final CompositeChange change = new CompositeChange();
 		final HashSet<Territory> territoriesNeedingReDraw = new HashSet<Territory>();
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			for (final Tuple<String, String> property : t.getTerritoryProperty())
 			{
 				for (final Territory aTerritory : t.getTerritories())
@@ -1636,15 +1673,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	public static void triggerTerritoryEffectPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerTerritoryEffectPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
+				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, territoryEffectPropertyMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, territoryEffectPropertyMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			for (final Tuple<String, String> property : t.getTerritoryEffectProperty())
 			{
 				for (final TerritoryEffect aTerritoryEffect : t.getTerritoryEffects())
@@ -1679,15 +1722,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	public static void triggerUnitPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerUnitPropertyChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
+				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, unitPropertyMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, unitPropertyMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			for (final Tuple<String, String> property : t.getUnitProperty())
 			{
 				for (final UnitType aUnitType : t.getUnitType())
@@ -1735,16 +1784,22 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	public static void triggerRelationshipChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerRelationshipChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
+				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
 		final GameData data = aBridge.getData();
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, relationshipChangeMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, relationshipChangeMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			for (final String relationshipChange : t.getRelationshipChange())
 			{
 				final String[] s = relationshipChange.split(":");
@@ -1771,14 +1826,20 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	public static void triggerAvailableTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerAvailableTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
+				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techAvailableMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techAvailableMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
 				for (final String cat : t.getAvailableTech().keySet())
@@ -1806,15 +1867,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	public static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
 		final GameData data = aBridge.getData();
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
 				for (final TechAdvance ta : t.getTech())
@@ -1828,15 +1895,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	public static void triggerProductionChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerProductionChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, prodMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, prodMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
 				change.add(ChangeFactory.changeProductionFrontier(aPlayer, t.getFrontier()));
@@ -1848,16 +1921,22 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	public static void triggerProductionFrontierEditChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerProductionFrontierEditChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName,
+				final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
 		final GameData data = aBridge.getData();
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, prodFrontierEditMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, prodFrontierEditMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			final Iterator<String> iter = t.getProductionRule().iterator();
 			while (iter.hasNext())
 			{
@@ -1893,15 +1972,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change); // TODO: we should sort the frontier list if we make changes to it...
 	}
 	
-	public static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, supportMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, supportMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		final CompositeChange change = new CompositeChange();
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
 				for (final UnitSupportAttachment usa : t.getSupport().keySet())
@@ -1932,14 +2017,20 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
-	public static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, purchaseMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, purchaseMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			final int eachMultiple = getEachMultiple(t);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
@@ -1963,14 +2054,20 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	public static void triggerUnitRemoval(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerUnitRemoval(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, removeUnitsMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, removeUnitsMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			final int eachMultiple = getEachMultiple(t);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
@@ -1985,15 +2082,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	public static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerUnitPlacement(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
 		final GameData data = aBridge.getData();
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, placeMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, placeMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			final int eachMultiple = getEachMultiple(t);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
@@ -2009,15 +2112,21 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	public static void triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerResourceChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
 		final GameData data = aBridge.getData();
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, resourceMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, resourceMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
 			final int eachMultiple = getEachMultiple(t);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
@@ -2041,15 +2150,67 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 	}
 	
-	public static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName)
+	public static void triggerActivateTriggerOther(final HashMap<ICondition, Boolean> testedConditionsSoFar, final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge,
+				final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final GameData data = aBridge.getData();
-		final Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, victoryMatch(beforeOrAfter, stepName));
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, activateTriggerMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
 		for (final TriggerAttachment t : trigs)
 		{
-			if (!t.testChance(aBridge))
+			if (testChance && !t.testChance(aBridge))
 				continue;
-			t.use(aBridge);
+			if (useUses)
+				t.use(aBridge);
+			final int eachMultiple = getEachMultiple(t);
+			for (final Tuple<TriggerAttachment, String> tuple : t.getActivateTrigger())
+			{
+				// numberOfTimes:useUses:testUses:testConditions:testChance
+				final TriggerAttachment toFire = tuple.getFirst();
+				final HashSet<TriggerAttachment> toFireSet = new HashSet<TriggerAttachment>();
+				toFireSet.add(toFire);
+				final String[] options = tuple.getSecond().split(":");
+				final int numberOfTimesToFire = getInt(options[0]);
+				final boolean useUsesToFire = getBool(options[1]);
+				final boolean testUsesToFire = getBool(options[2]);
+				final boolean testConditionsToFire = getBool(options[3]);
+				final boolean testChanceToFire = getBool(options[4]);
+				if (testConditionsToFire)
+				{
+					if (!testedConditionsSoFar.containsKey(toFire))
+					{
+						// this should directly add the new tests to testConditionsToFire...
+						collectTestsForAllTriggers(toFireSet, aBridge, new HashSet<ICondition>(testedConditionsSoFar.keySet()), testedConditionsSoFar);
+					}
+					if (!isSatisfiedMatch(testedConditionsSoFar).match(toFire))
+						continue;
+				}
+				for (int i = 0; i < numberOfTimesToFire * eachMultiple; ++i)
+				{
+					aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + " activates a trigger called: " + MyFormatter.attachmentNameToText(toFire.getName()));
+					fireTriggers(toFireSet, testedConditionsSoFar, aBridge, beforeOrAfter, stepName, useUsesToFire, testUsesToFire, testChanceToFire, false);
+				}
+			}
+		}
+	}
+	
+	public static void triggerVictory(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+				final boolean testUses, final boolean testChance, final boolean testWhen)
+	{
+		final GameData data = aBridge.getData();
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, victoryMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
+		for (final TriggerAttachment t : trigs)
+		{
+			if (testChance && !t.testChance(aBridge))
+				continue;
+			if (useUses)
+				t.use(aBridge);
 			if (t.getVictory() == null || t.getPlayers() == null)
 				continue;
 			final String victoryMessage = NotificationMessages.getInstance().getMessage(t.getVictory());
@@ -2066,205 +2227,213 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	//
-	// All matches need to check for: t.getUses()!=0
-	//
-	// In addition, all triggers can be activated in only 1 of 2 places: default or when
+	// All triggers can be activated in only 1 of 2 places: default or when
 	//
 	// default = t.getWhen == null (this means when was not set, and so the trigger should activate in its default place, like before purchase phase for production frontier trigger changes
 	//
 	// when = t.getWhen != null (this means when was set, and so the trigger should not activate in its default place, and instead should activate before or after a specific stepName
 	//
-	// therefore all matches also need to check for: whenStepOrDefaultTriggerMatch(beforeOrAfter, stepName).match(t)
-	//
 	
-	public static Match<TriggerAttachment> prodMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> prodMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getFrontier() != null;
+				return t.getFrontier() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> prodFrontierEditMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> prodFrontierEditMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getProductionRule() != null && t.getProductionRule().size() > 0;
+				return t.getProductionRule() != null && t.getProductionRule().size() > 0;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> techMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> techMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getTech().isEmpty();
+				return !t.getTech().isEmpty();
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> techAvailableMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> techAvailableMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getAvailableTech() != null;
+				return t.getAvailableTech() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> removeUnitsMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> removeUnitsMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getRemoveUnits() != null;
+				return t.getRemoveUnits() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> placeMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> placeMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getPlacement() != null;
+				return t.getPlacement() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> purchaseMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> purchaseMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getPurchase() != null;
+				return t.getPurchase() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> resourceMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> resourceMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getResource() != null && t.getResourceCount() != 0;
+				return t.getResource() != null && t.getResourceCount() != 0;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> supportMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> supportMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getSupport() != null;
+				return t.getSupport() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> unitPropertyMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> unitPropertyMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getUnitType().isEmpty() && t.getUnitProperty() != null;
+				return !t.getUnitType().isEmpty() && t.getUnitProperty() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> territoryPropertyMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> territoryPropertyMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null;
+				return !t.getTerritories().isEmpty() && t.getTerritoryProperty() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> playerPropertyMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> playerPropertyMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getPlayerProperty() != null;
+				return t.getPlayerProperty() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> relationshipTypePropertyMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> relationshipTypePropertyMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null;
+				return !t.getRelationshipTypes().isEmpty() && t.getRelationshipTypeProperty() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> territoryEffectPropertyMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> territoryEffectPropertyMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null;
+				return !t.getTerritoryEffects().isEmpty() && t.getTerritoryEffectProperty() != null;
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> relationshipChangeMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> relationshipChangeMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && !t.getRelationshipChange().isEmpty();
+				return !t.getRelationshipChange().isEmpty();
 			}
 		};
 	}
 	
-	public static Match<TriggerAttachment> victoryMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> victoryMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getVictory() != null && t.getVictory().length() > 0;
+				return t.getVictory() != null && t.getVictory().length() > 0;
+			}
+		};
+	}
+	
+	public static Match<TriggerAttachment> activateTriggerMatch()
+	{
+		return new Match<TriggerAttachment>()
+		{
+			@Override
+			public boolean match(final TriggerAttachment t)
+			{
+				return !t.getActivateTrigger().isEmpty();
 			}
 		};
 	}

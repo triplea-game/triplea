@@ -25,6 +25,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.TriggerAttachment;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
@@ -83,10 +84,13 @@ public class TechActivationDelegate extends BaseDelegate
 		{
 			// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
 			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-			final Match<TriggerAttachment> techActivationDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
-						TriggerAttachment.unitPropertyMatch(null, null),
-						TriggerAttachment.techMatch(null, null),
-						TriggerAttachment.supportMatch(null, null));
+			final Match<TriggerAttachment> techActivationDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+						TriggerAttachment.availableUses,
+						TriggerAttachment.whenOrDefaultMatch(null, null),
+						new CompositeMatchOr<TriggerAttachment>(
+									TriggerAttachment.unitPropertyMatch(),
+									TriggerAttachment.techMatch(),
+									TriggerAttachment.supportMatch()));
 			// get all possible triggers based on this match.
 			final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
 						new HashSet<PlayerID>(Collections.singleton(m_player)), techActivationDelegateTriggerMatch, m_bridge);
@@ -97,9 +101,9 @@ public class TechActivationDelegate extends BaseDelegate
 				// get all triggers that are satisfied based on the tested conditions.
 				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 				// now list out individual types to fire, once for each of the matches above.
-				TriggerAttachment.triggerUnitPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null);
-				TriggerAttachment.triggerTechChange(toFireTestedAndSatisfied, m_bridge, null, null);
-				TriggerAttachment.triggerSupportChange(toFireTestedAndSatisfied, m_bridge, null, null);
+				TriggerAttachment.triggerUnitPropertyChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
+				TriggerAttachment.triggerTechChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
+				TriggerAttachment.triggerSupportChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
 			}
 		}
 		m_needToInitialize = false;

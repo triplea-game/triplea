@@ -92,10 +92,13 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			{
 				// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
 				// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-				final Match<TriggerAttachment> purchaseDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
-							TriggerAttachment.prodMatch(null, null),
-							TriggerAttachment.prodFrontierEditMatch(null, null),
-							TriggerAttachment.purchaseMatch(null, null));
+				final Match<TriggerAttachment> purchaseDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+							TriggerAttachment.availableUses,
+							TriggerAttachment.whenOrDefaultMatch(null, null),
+							new CompositeMatchOr<TriggerAttachment>(
+										TriggerAttachment.prodMatch(),
+										TriggerAttachment.prodFrontierEditMatch(),
+										TriggerAttachment.purchaseMatch()));
 				// get all possible triggers based on this match.
 				final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
 							new HashSet<PlayerID>(Collections.singleton(m_player)), purchaseDelegateTriggerMatch, m_bridge);
@@ -106,9 +109,9 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 					// get all triggers that are satisfied based on the tested conditions.
 					final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 					// now list out individual types to fire, once for each of the matches above.
-					TriggerAttachment.triggerProductionChange(toFireTestedAndSatisfied, m_bridge, null, null);
-					TriggerAttachment.triggerProductionFrontierEditChange(toFireTestedAndSatisfied, m_bridge, null, null);
-					TriggerAttachment.triggerPurchase(toFireTestedAndSatisfied, m_bridge, null, null);
+					TriggerAttachment.triggerProductionChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
+					TriggerAttachment.triggerProductionFrontierEditChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
+					TriggerAttachment.triggerPurchase(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
 				}
 			}
 			giveBonusIncomeToAI();

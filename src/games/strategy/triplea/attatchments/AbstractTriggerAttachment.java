@@ -260,14 +260,14 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		}
 	};
 	
-	public static Match<TriggerAttachment> notificationMatch(final String beforeOrAfter, final String stepName)
+	public static Match<TriggerAttachment> notificationMatch()
 	{
 		return new Match<TriggerAttachment>()
 		{
 			@Override
 			public boolean match(final TriggerAttachment t)
 			{
-				return availableUses.match(t) && whenOrDefaultMatch(beforeOrAfter, stepName).match(t) && t.getNotification() != null;
+				return t.getNotification() != null;
 			}
 		};
 	}

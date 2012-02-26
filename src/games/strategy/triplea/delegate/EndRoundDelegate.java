@@ -132,8 +132,12 @@ public class EndRoundDelegate extends BaseDelegate
 		{
 			// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
 			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-			final Match<TriggerAttachment> endRoundDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
-						TriggerAttachment.victoryMatch(null, null));
+			final Match<TriggerAttachment> endRoundDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+						TriggerAttachment.availableUses,
+						TriggerAttachment.whenOrDefaultMatch(null, null),
+						new CompositeMatchOr<TriggerAttachment>(
+									TriggerAttachment.activateTriggerMatch(),
+									TriggerAttachment.victoryMatch()));
 			// get all possible triggers based on this match.
 			final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
 						new HashSet<PlayerID>(data.getPlayerList().getPlayers()), endRoundDelegateTriggerMatch, m_bridge);
@@ -144,7 +148,8 @@ public class EndRoundDelegate extends BaseDelegate
 				// get all triggers that are satisfied based on the tested conditions.
 				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 				// now list out individual types to fire, once for each of the matches above.
-				TriggerAttachment.triggerVictory(toFireTestedAndSatisfied, m_bridge, null, null); // will call signalGameOver itself
+				TriggerAttachment.triggerActivateTriggerOther(testedConditions, toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
+				TriggerAttachment.triggerVictory(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true); // will call signalGameOver itself
 			}
 		}
 		

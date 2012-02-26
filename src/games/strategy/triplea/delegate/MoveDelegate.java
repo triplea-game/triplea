@@ -100,16 +100,22 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
 			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
 			HashMap<ICondition, Boolean> testedConditions = null;
-			final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
-						TriggerAttachment.notificationMatch(null, null),
-						TriggerAttachment.playerPropertyMatch(null, null),
-						TriggerAttachment.relationshipTypePropertyMatch(null, null),
-						TriggerAttachment.territoryPropertyMatch(null, null),
-						TriggerAttachment.territoryEffectPropertyMatch(null, null),
-						TriggerAttachment.removeUnitsMatch(null, null));
+			final Match<TriggerAttachment> moveCombatDelegateBeforeBonusTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+						TriggerAttachment.availableUses,
+						TriggerAttachment.whenOrDefaultMatch(null, null),
+						new CompositeMatchOr<TriggerAttachment>(
+									TriggerAttachment.notificationMatch(),
+									TriggerAttachment.playerPropertyMatch(),
+									TriggerAttachment.relationshipTypePropertyMatch(),
+									TriggerAttachment.territoryPropertyMatch(),
+									TriggerAttachment.territoryEffectPropertyMatch(),
+									TriggerAttachment.removeUnitsMatch()));
 			
-			final Match<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
-						TriggerAttachment.placeMatch(null, null));
+			final Match<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+						TriggerAttachment.availableUses,
+						TriggerAttachment.whenOrDefaultMatch(null, null),
+						new CompositeMatchOr<TriggerAttachment>(
+									TriggerAttachment.placeMatch()));
 			
 			final Match<TriggerAttachment> moveCombatDelegateAllTriggerMatch = new CompositeMatchOr<TriggerAttachment>(moveCombatDelegateBeforeBonusTriggerMatch,
 						moveCombatDelegateAfterBonusTriggerMatch);
@@ -130,12 +136,12 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 						final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(
 									Match.getMatches(toFireBeforeBonus, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 						// now list out individual types to fire, once for each of the matches above.
-						TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, aBridge, null, null);
-						TriggerAttachment.triggerPlayerPropertyChange(toFireTestedAndSatisfied, aBridge, null, null);
-						TriggerAttachment.triggerRelationshipTypePropertyChange(toFireTestedAndSatisfied, aBridge, null, null);
-						TriggerAttachment.triggerTerritoryPropertyChange(toFireTestedAndSatisfied, aBridge, null, null);
-						TriggerAttachment.triggerTerritoryEffectPropertyChange(toFireTestedAndSatisfied, aBridge, null, null);
-						TriggerAttachment.triggerUnitRemoval(toFireTestedAndSatisfied, aBridge, null, null);
+						TriggerAttachment.triggerNotifications(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
+						TriggerAttachment.triggerPlayerPropertyChange(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
+						TriggerAttachment.triggerRelationshipTypePropertyChange(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
+						TriggerAttachment.triggerTerritoryPropertyChange(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
+						TriggerAttachment.triggerTerritoryEffectPropertyChange(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
+						TriggerAttachment.triggerUnitRemoval(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
 					}
 				}
 			}
@@ -166,7 +172,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 					// get all triggers that are satisfied based on the tested conditions.
 					final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFireAfterBonus, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 					// now list out individual types to fire, once for each of the matches above.
-					TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, aBridge, null, null);
+					TriggerAttachment.triggerUnitPlacement(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
 				}
 			}
 			

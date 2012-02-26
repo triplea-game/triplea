@@ -1,4 +1,8 @@
 Changes for 1.5.1
+* Refactored Trigger Attachment class again to allow triggers to fire other triggers with certain options and properties. (veqryn)
+
+* Created new Trigger Attachment option, activateTrigger, which will allow a trigger to fire other triggers. (veqryn)
+
 * Preliminary work on ability to fire triggers from other triggers. (veqryn)
 
 * Fixing NoSuchElementException in Kamikaze attack ui. (veqryn)

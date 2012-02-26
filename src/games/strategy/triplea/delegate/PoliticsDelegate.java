@@ -36,6 +36,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.PoliticsText;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
@@ -91,8 +92,11 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		{
 			// First set up a match for what we want to have fire as a default in this delegate. List out as a composite match OR.
 			// use 'null, null' because this is the Default firing location for any trigger that does NOT have 'when' set.
-			final Match<TriggerAttachment> politicsDelegateTriggerMatch = new CompositeMatchOr<TriggerAttachment>(
-						TriggerAttachment.relationshipChangeMatch(null, null));
+			final Match<TriggerAttachment> politicsDelegateTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
+						TriggerAttachment.availableUses,
+						TriggerAttachment.whenOrDefaultMatch(null, null),
+						new CompositeMatchOr<TriggerAttachment>(
+									TriggerAttachment.relationshipChangeMatch()));
 			// get all possible triggers based on this match.
 			final HashSet<TriggerAttachment> toFirePossible = TriggerAttachment.collectForAllTriggersMatching(
 						new HashSet<PlayerID>(Collections.singleton(m_player)), politicsDelegateTriggerMatch, m_bridge);
@@ -103,7 +107,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 				// get all triggers that are satisfied based on the tested conditions.
 				final Set<TriggerAttachment> toFireTestedAndSatisfied = new HashSet<TriggerAttachment>(Match.getMatches(toFirePossible, TriggerAttachment.isSatisfiedMatch(testedConditions)));
 				// now list out individual types to fire, once for each of the matches above.
-				TriggerAttachment.triggerRelationshipChange(toFireTestedAndSatisfied, m_bridge, null, null);
+				TriggerAttachment.triggerRelationshipChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
 			}
 		}
 		chainAlliancesTogether(m_bridge);
