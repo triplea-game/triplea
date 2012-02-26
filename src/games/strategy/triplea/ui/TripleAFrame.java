@@ -831,6 +831,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		}
 		final CountDownLatch continueLatch = new CountDownLatch(1);
 		final HashMap<Territory, IntegerMap<Unit>> selection = new HashMap<Territory, IntegerMap<Unit>>();
+		if (possibleUnitsToAttack == null || possibleUnitsToAttack.isEmpty() || attackResourceToken == null || maxNumberOfAttacksAllowed <= 0)
+			return selection;
 		final Collection<IndividualUnitPanelGrouped> unitPanels = new ArrayList<IndividualUnitPanelGrouped>();
 		SwingUtilities.invokeLater(new Runnable()
 		{
