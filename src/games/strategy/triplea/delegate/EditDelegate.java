@@ -133,7 +133,10 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 			return result;
 		if (null != (result = EditValidator.validateRemoveUnits(getData(), territory, units)))
 			return result;
-		logEvent("Removing units owned by " + m_bridge.getPlayerID().getName() + " from " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
+		if (units == null || units.isEmpty())
+			return null;
+		logEvent(m_bridge.getPlayerID().getName() + " player Removing units owned by " + units.iterator().next().getOwner() + " from " + territory.getName() + ": "
+					+ MyFormatter.unitsToTextNoOwner(units), units);
 		m_bridge.addChange(ChangeFactory.removeUnits(territory, units));
 		return null;
 	}
@@ -145,15 +148,10 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 			return result;
 		if (null != (result = EditValidator.validateAddUnits(getData(), territory, units)))
 			return result;
-		/* No longer needed, as territory unitProduction is now set by default to equal the territory value. Therefore any time it is different from the default, the map maker set it, so we shouldn't screw with it.
-		if(Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits) && !Match.someMatch(territory.getUnits().getUnits(), Matches.UnitIsFactoryOrCanProduceUnits)&& games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data))
-		{
-		    TerritoryAttachment ta = TerritoryAttachment.get(territory);
-
-		    Change change = ChangeFactory.changeUnitProduction(territory, getProduction(territory));
-		    m_bridge.addChange(change);
-		}*/
-		logEvent("Adding units owned by " + m_bridge.getPlayerID().getName() + " to " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
+		if (units == null || units.isEmpty())
+			return null;
+		logEvent(m_bridge.getPlayerID().getName() + " player Adding units owned by " + units.iterator().next().getOwner() + " to " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units),
+					units);
 		m_bridge.addChange(ChangeFactory.addUnits(territory, units));
 		return null;
 	}
@@ -180,7 +178,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		// validate this edit
 		if (null != (result = EditValidator.validateChangeTerritoryOwner(data, territory, player)))
 			return result;
-		logEvent("Changing ownership of " + territory.getName() + " from " + territory.getOwner().getName() + " to " + player.getName(), territory);
+		logEvent(m_bridge.getPlayerID().getName() + " player Changing ownership of " + territory.getName() + " from " + territory.getOwner().getName() + " to " + player.getName(), territory);
 		if (data.getRelationshipTracker().isAllied(territory.getOwner(), player))
 		{
 			// change ownership of friendly factories
@@ -216,7 +214,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 			return "New PUs total is unchanged";
 		if (newTotal < 0)
 			return "New PUs total is invalid";
-		logEvent("Changing PUs for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
+		logEvent(m_bridge.getPlayerID().getName() + " player Changing PUs for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
 		m_bridge.addChange(ChangeFactory.changeResourcesChange(player, PUs, (newTotal - oldTotal)));
 		return null;
 	}
@@ -232,7 +230,7 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 			return "New token total is unchanged";
 		if (newTotal < 0)
 			return "New token total is invalid";
-		logEvent("Changing tech tokens for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
+		logEvent(m_bridge.getPlayerID().getName() + " player Changing tech tokens for " + player.getName() + " from " + oldTotal + " to " + newTotal, null);
 		m_bridge.addChange(ChangeFactory.changeResourcesChange(player, techTokens, (newTotal - oldTotal)));
 		return null;
 	}

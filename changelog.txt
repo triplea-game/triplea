@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Correcting bad history log messages for Edit mode. (veqryn)
+
 * Refactored Trigger Attachment class again to allow triggers to fire other triggers with certain options and properties. (veqryn)
 
 * Created new Trigger Attachment option, activateTrigger, which will allow a trigger to fire other triggers. (veqryn)
