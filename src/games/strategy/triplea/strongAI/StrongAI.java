@@ -3604,7 +3604,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				Route eRoute = SUtils.findNearestMaxContaining(moveTerr, endCond, routeCond, enemySeaUnit, maxUnits, data);
 				if (eRoute == null)
 					continue;
-				if (MoveValidator.validateCanal(eRoute, player, data) == null)
+				if (MoveValidator.validateCanal(eRoute, null, player, data) == null)
 				{
 					if (eRoute.getLength() > moveDist)
 					{
@@ -3615,7 +3615,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						eRoute = changeRoute;
 					}
 				}
-				if (MoveValidator.validateCanal(eRoute, player, data) == null) // check again
+				if (MoveValidator.validateCanal(eRoute, null, player, data) == null) // check again
 					continue;
 				final Route eRoute2 = SUtils.getMaxSeaRoute(data, moveTerr, eRoute.getEnd(), player, false, moveDist);
 				if (eRoute2 == null || eRoute2.getEnd() == null)
@@ -4114,7 +4114,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					if (nRoute == null)
 						continue;
 					final int moveDist = MoveValidator.getLeastMovement(moveableUnits);
-					if (MoveValidator.validateCanal(nRoute, player, data) != null)
+					if (MoveValidator.validateCanal(nRoute, null, player, data) != null)
 					{
 						nRoute = SUtils.getMaxSeaRoute(data, shipTerr, enemyShipTerr, player, false, moveDist);
 						if (nRoute == null)

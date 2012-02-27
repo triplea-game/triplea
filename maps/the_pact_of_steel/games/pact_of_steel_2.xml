@@ -1531,6 +1531,7 @@
 			canTakeOverOwnedTerritory				values: "true", "false", or "default". default setting is "default", and "default" means that archeType of war lets you take over territories.  By setting true, you can take over territories of an ally
 			givesBackOriginalTerritories			values: "true", "false", or "default". default setting is "default", and "default" means false. If true, at the end of each politics phase, any territories originally belonging to the other player will revert to that players control.
 			canMoveIntoDuringCombatMove				values: "true", "false", or "default". default setting is "default", and "default" means true. If false, you may not move into any territories owned by the other player during combat move, and must wait for non-combat move.
+			canMoveThroughCanals					values: "true", "false", or "default". default setting is "default", and "default" means that archeType of allied lets you move through canals. If true, you may move through a canal owned by the other player.
 	-->
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -2782,9 +2783,13 @@
 				
 				
 <!-- Canals -->
-	<!-- the following options are allowed for "canalAttatchmentXXX" (all canal attachments need X identical attachments attached to the X number of sea zones involved)
+	<!-- You may have multiple canalAttatchment's per territory, so long as they have different names that start with "canalAttatchment".
+		 Each "canal" must consist of 2 attachments attached to the connected sea (or land) zones. -->
+	<!-- The following options are allowed for "canalAttatchmentXXX" (all canal attachments need identical attachments attached to the 2 sea zones involved). 
 			canalName							values: any string name for the canal. must match its counterpart attachment.
-			landTerritories						values: a colon (":") delimited list of the territories that make up this canal. must match its counterpart attachment.
+			landTerritories						values: a colon (":") delimited list of the territories that make up this canal. must match its counterpart attachment. Can be any number of territories, but at least 1 territory.
+			excludedUnits						values: an optional list of all the units that will NOT be validated by the canal. If left blank, then all Air units will not be validated. Can also be set to "NONE" or "ALL".
+														example: <option name="excludedUnits" value="submarine:fighter:bomber:air_transport"/>
 	-->
 			    <attatchment name="canalAttatchmentSuez" attatchTo="15 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 			    	<option name="canalName" value="Suez Canal"/>
@@ -3512,6 +3517,9 @@
 					conditions
 					relationshipChange
 					actionAccept
+					
+				Canal Attachments:
+					excludedUnits
 					
 		-->
 	<!-- Victory Triggers -->

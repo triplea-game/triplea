@@ -1392,7 +1392,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			return false;
 		if (Match.someMatch(m_attackingWaitingToDie, Matches.UnitIsDestroyer))
 			return false;
-		return getEmptyOrFriendlySeaNeighbors(m_defender).size() != 0 || canSubsSubmerge();
+		return getEmptyOrFriendlySeaNeighbors(m_defender, Match.getMatches(m_defendingUnits, Matches.UnitIsSub)).size() != 0 || canSubsSubmerge();
 	}
 	
 	private void attackerRetreatSubs(final IDelegateBridge bridge)
@@ -1408,10 +1408,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (!canDefenderRetreatSubs())
 			return;
 		if (!m_isOver && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
-			queryRetreat(true, SUBS_RETREAT_TYPE, bridge, getEmptyOrFriendlySeaNeighbors(m_defender));
+			queryRetreat(true, SUBS_RETREAT_TYPE, bridge, getEmptyOrFriendlySeaNeighbors(m_defender, Match.getMatches(m_defendingUnits, Matches.UnitIsSub)));
 	}
 	
-	private Collection<Territory> getEmptyOrFriendlySeaNeighbors(final PlayerID player)
+	private Collection<Territory> getEmptyOrFriendlySeaNeighbors(final PlayerID player, final Collection<Unit> unitsToRetreat)
 	{
 		Collection<Territory> possible = m_data.getMap().getNeighbors(m_battleSite);
 		final CompositeMatch<Territory> match = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasNoEnemyUnits(player, m_data));
@@ -1424,7 +1424,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				final Route r = new Route();
 				r.setStart(m_battleSite);
 				r.add(t);
-				if (MoveValidator.validateCanal(r, m_defender, m_data) != null)
+				if (MoveValidator.validateCanal(r, unitsToRetreat, m_defender, m_data) != null)
 					return false;
 				return true;
 			}

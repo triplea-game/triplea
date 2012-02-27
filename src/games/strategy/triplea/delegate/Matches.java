@@ -32,7 +32,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.CanalAttachment;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
@@ -2780,33 +2779,14 @@ public class Matches
 		};
 	}
 	
-	public static Match<Territory> territoryHasNonAlliedCanal(final PlayerID player, final GameData data)
+	public static Match<Territory> territoryHasNonAllowedCanal(final PlayerID player, final Collection<Unit> unitsMoving, final GameData data)
 	{
 		return new Match<Territory>()
 		{
 			@Override
 			public boolean match(final Territory t)
 			{
-				final Set<CanalAttachment> canalAttachments = CanalAttachment.get(t);
-				if (canalAttachments.isEmpty())
-					return false;
-				for (final CanalAttachment attachment : canalAttachments)
-				{
-					if (attachment == null)
-						continue;
-					for (final Territory borderTerritory : attachment.getLandTerritories())
-					{
-						if (!data.getRelationshipTracker().isAllied(player, borderTerritory.getOwner()))
-						{
-							return true;
-						}
-						if (MoveDelegate.getBattleTracker(data).wasConquered(borderTerritory))
-						{
-							return true;
-						}
-					}
-				}
-				return false;
+				return MoveValidator.validateCanal(t, null, unitsMoving, player, data) != null;
 			}
 		};
 	}
@@ -3280,6 +3260,14 @@ public class Matches
 		public boolean match(final RelationshipType relationship)
 		{
 			return relationship.getRelationshipTypeAttachment().getCanMoveIntoDuringCombatMove();
+		}
+	};
+	public static final Match<RelationshipType> RelationshipTypeCanMoveThroughCanals = new Match<RelationshipType>()
+	{
+		@Override
+		public boolean match(final RelationshipType relationship)
+		{
+			return relationship.getRelationshipTypeAttachment().getCanMoveThroughCanals();
 		}
 	};
 	

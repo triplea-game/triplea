@@ -57,6 +57,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	private String m_canTakeOverOwnedTerritory = PROPERTY_DEFAULT;
 	private String m_givesBackOriginalTerritories = PROPERTY_DEFAULT;
 	private String m_canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
+	private String m_canMoveThroughCanals = PROPERTY_DEFAULT;
 	
 	/**
 	 * Creates new RelationshipTypeAttachment
@@ -297,6 +298,22 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		if (m_canMoveIntoDuringCombatMove.equals(PROPERTY_DEFAULT))
 			return true;
 		return m_canMoveIntoDuringCombatMove.equals(PROPERTY_TRUE);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setCanMoveThroughCanals(final String value) throws GameParseException
+	{
+		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
+			throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
+		m_canMoveThroughCanals = value;
+	}
+	
+	public boolean getCanMoveThroughCanals()
+	{
+		// only allied can move through canals normally
+		if (m_canMoveThroughCanals.equals(PROPERTY_DEFAULT))
+			return isAllied();
+		return m_canMoveThroughCanals.equals(PROPERTY_TRUE);
 	}
 	
 	/**

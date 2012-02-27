@@ -24,12 +24,10 @@ import games.strategy.triplea.Dynamix_AI.CommandCenter.GlobalCenter;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.Dynamix_AI.Group.UnitGroup;
 import games.strategy.triplea.Dynamix_AI.Others.TerritoryStatus;
-import games.strategy.triplea.attatchments.CanalAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
@@ -399,19 +397,7 @@ public class DMatches
 			{
 				if (!ter.isWater())
 					return false;
-				for (final CanalAttachment attachment : CanalAttachment.get(ter))
-				{
-					if (attachment == null)
-						continue;
-					for (final Territory borderTerritory : attachment.getLandTerritories())
-					{
-						if (!data.getRelationshipTracker().isAllied(player, borderTerritory.getOwner()))
-							return false;
-						if (MoveDelegate.getBattleTracker(data).wasConquered(borderTerritory))
-							return false;
-					}
-				}
-				return true;
+				return !Matches.territoryHasNonAllowedCanal(player, null, data).match(ter);
 			}
 		};
 	}

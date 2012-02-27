@@ -6,22 +6,23 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.Match;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("serial")
 public class CanalAttachment extends DefaultAttachment
 {
-	private String m_canalName;
-	private String[] m_landTerritories;
+	private String m_canalName = null;
+	private HashSet<Territory> m_landTerritories = null;
+	private HashSet<UnitType> m_excludedUnits = null;
 	
 	public CanalAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -45,7 +46,7 @@ public class CanalAttachment extends DefaultAttachment
 			}
 		}
 		if (rVal.size() != 2)
-			throw new IllegalStateException("Wrong number of sea zones for canal:" + rVal);
+			throw new IllegalStateException("Wrong number of sea zones for canal (exactly 2 sea zones may have the same canalName):" + rVal);
 		return rVal;
 	}
 	
@@ -98,33 +99,85 @@ public class CanalAttachment extends DefaultAttachment
 			m_landTerritories = null;
 			return;
 		}
-		m_landTerritories = landTerritories.split(":");
+		final HashSet<Territory> terrs = new HashSet<Territory>();
+		for (final String name : landTerritories.split(":"))
+		{
+			final Territory territory = getData().getMap().getTerritory(name);
+			if (territory == null)
+				throw new IllegalStateException("Canals: No territory called: " + name + thisErrorMsg());
+			terrs.add(territory);
+		}
+		m_landTerritories = terrs;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setLandTerritories(final String[] value)
+	public void setLandTerritories(final HashSet<Territory> value)
 	{
 		m_landTerritories = value;
+	}
+	
+	public HashSet<Territory> getLandTerritories()
+	{
+		return m_landTerritories;
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param landTerritories
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setExcludedUnits(final String value)
+	{
+		if (value == null)
+		{
+			m_excludedUnits = null;
+			return;
+		}
+		if (m_excludedUnits == null)
+			m_excludedUnits = new HashSet<UnitType>();
+		if (value.equalsIgnoreCase("NONE"))
+			return;
+		if (value.equalsIgnoreCase("ALL"))
+		{
+			m_excludedUnits.addAll(getData().getUnitTypeList().getAllUnitTypes());
+			return;
+		}
+		for (final String name : value.split(":"))
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(name);
+			if (ut == null)
+				throw new IllegalStateException("Canals: No UnitType called: " + name + thisErrorMsg());
+			m_excludedUnits.add(ut);
+		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setExcludedUnits(final HashSet<UnitType> value)
+	{
+		m_excludedUnits = value;
+	}
+	
+	public HashSet<UnitType> getExcludedUnits(final GameData data)
+	{
+		if (m_excludedUnits == null)
+		{
+			return new HashSet<UnitType>(Match.getMatches(getData().getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsAir));
+		}
+		return m_excludedUnits;
+	}
+	
+	public void clearExcludedUnits()
+	{
+		m_excludedUnits.clear();
 	}
 	
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{
-		if (m_canalName == null || m_landTerritories == null || m_landTerritories.length == 0)
-			throw new GameParseException("Canal error for: " + m_canalName + " not all variables set, land: " + m_landTerritories + thisErrorMsg());
-		getLandTerritories();
-	}
-	
-	public Collection<Territory> getLandTerritories()
-	{
-		final List<Territory> rVal = new ArrayList<Territory>();
-		for (final String name : m_landTerritories)
-		{
-			final Territory territory = getData().getMap().getTerritory(name);
-			if (territory == null)
-				throw new IllegalStateException("Canals: No territory called: " + name + thisErrorMsg());
-			rVal.add(territory);
-		}
-		return rVal;
+		if (m_canalName == null)
+			throw new GameParseException("Canals must have a canalName set!" + thisErrorMsg());
+		if (m_landTerritories == null || m_landTerritories.size() == 0)
+			throw new GameParseException("Canal named " + m_canalName + " must have landTerritories set!" + thisErrorMsg());
 	}
 }

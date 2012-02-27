@@ -224,6 +224,7 @@ public interface IAttachment extends Serializable
 	// CanalAttachment
 	static final String PROPERTY_CanalAttachment_CANAL_NAME = "canalName";
 	static final String PROPERTY_CanalAttachment_LAND_TERRITORIES = "landTerritories";
+	static final String PROPERTY_CanalAttachment_EXCLUDED_UNITS = "excludedUnits"; // just added this 2
 	
 	// PoliticalActionAttachment
 	// FYI: "attemptsLeftThisTurn" does not belong in IAttachment as the user can not set it as a political action attachment property
@@ -245,6 +246,7 @@ public interface IAttachment extends Serializable
 	static final String PROPERTY_RelationshipTypeAttachment_IS_DEFAULT_WAR_POSITION = "isDefaultWarPosition";
 	static final String PROPERTY_RelationshipTypeAttachment_UP_KEEP_COST = "upkeepCost";
 	static final String PROPERTY_RelationshipTypeAttachment_CAN_MOVE_INTO_DURING_COMBAT_MOVE = "canMoveIntoDuringCombatMove"; // just added this 2
+	static final String PROPERTY_RelationshipTypeAttachment_CAN_MOVE_THROUGH_CANALS = "canMoveThroughCanals"; // just added this 2
 	
 	// AbstractPlayerRulesAttachment
 	static final String PROPERTY_AbstractPlayerRulesAttachment_DOMINATING_FIRST_ROUND_ATTACK = "dominatingFirstRoundAttack";

@@ -200,11 +200,8 @@ public class MoveValidator
 	{
 		if (getEditMode(data))
 			return result;
-		// if no sea units then we can move
-		if (Match.noneMatch(units, Matches.UnitIsSea))
-			return result;
 		// TODO: merge validateCanal here and provide granular unit warnings
-		return result.setErrorReturnResult(validateCanal(route, player, data));
+		return result.setErrorReturnResult(validateCanal(route, units, player, data));
 	}
 	
 	private static MoveValidationResult validateCombat(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
@@ -1701,33 +1698,82 @@ public class MoveValidator
 		return result;
 	}
 	
-	public static String validateCanal(final Route route, final PlayerID player, final GameData data)
+	/**
+	 * Test a route's canals to see if you can move through it.
+	 * 
+	 * @param route
+	 * @param units
+	 *            (Can be null. If null we will assume all units would be stopped by the canal.)
+	 * @param player
+	 * @param data
+	 * @return
+	 */
+	public static String validateCanal(final Route route, final Collection<Unit> units, final PlayerID player, final GameData data)
 	{
 		for (final Territory routeTerritory : route.getAllTerritories())
 		{
-			final Set<CanalAttachment> canalAttachments = CanalAttachment.get(routeTerritory);
-			if (canalAttachments.isEmpty())
+			final String result = validateCanal(routeTerritory, route, units, player, data);
+			if (result != null)
+				return result;
+		}
+		return null;
+	}
+	
+	/**
+	 * Used for testing a single territory, either as part of a route, or just by itself.
+	 * 
+	 * @param territory
+	 * @param route
+	 *            (Can be null. If not null, we will check to see if the route includes both sea zones, and if it doesn't we will not test the canal)
+	 * @param units
+	 *            (Can be null. If null we will assume all units would be stopped by the canal.)
+	 * @param player
+	 * @param data
+	 * @return
+	 */
+	public static String validateCanal(final Territory territory, final Route route, final Collection<Unit> units, final PlayerID player, final GameData data)
+	{
+		final Set<CanalAttachment> canalAttachments = CanalAttachment.get(territory);
+		if (canalAttachments.isEmpty())
+			return null;
+		final Iterator<CanalAttachment> iter = canalAttachments.iterator();
+		while (iter.hasNext())
+		{
+			final CanalAttachment attachment = iter.next();
+			if (attachment == null)
 				continue;
-			final Iterator<CanalAttachment> iter = canalAttachments.iterator();
-			while (iter.hasNext())
+			if (route != null)
 			{
-				final CanalAttachment attachment = iter.next();
-				if (attachment == null)
-					continue;
-				if (!route.getAllTerritories().containsAll(CanalAttachment.getAllCanalSeaZones(attachment.getCanalName(), data)))
+				boolean mustCheck = false;
+				Territory last = null;
+				final Set<Territory> connectionToCheck = CanalAttachment.getAllCanalSeaZones(attachment.getCanalName(), data);
+				for (final Territory current : route.getAllTerritories())
 				{
-					continue;
+					if (last != null)
+					{
+						final Collection<Territory> lastTwo = new ArrayList<Territory>();
+						lastTwo.add(last);
+						lastTwo.add(current);
+						mustCheck = lastTwo.containsAll(connectionToCheck);
+						if (mustCheck)
+							break;
+					}
+					last = current;
 				}
-				for (final Territory borderTerritory : attachment.getLandTerritories())
+				if (!mustCheck)
+					continue;
+			}
+			if (units != null && Match.allMatch(units, Matches.unitIsOfTypes(attachment.getExcludedUnits(data))))
+				continue;
+			for (final Territory borderTerritory : attachment.getLandTerritories())
+			{
+				if (!data.getRelationshipTracker().canMoveThroughCanals(player, borderTerritory.getOwner()))
 				{
-					if (!data.getRelationshipTracker().isAllied(player, borderTerritory.getOwner()))
-					{
-						return "Must own " + borderTerritory.getName() + " to go through " + attachment.getCanalName();
-					}
-					if (MoveDelegate.getBattleTracker(data).wasConquered(borderTerritory))
-					{
-						return "Cannot move through " + attachment.getCanalName() + " without owning " + borderTerritory.getName() + " for an entire turn";
-					}
+					return "Must own " + borderTerritory.getName() + " to go through " + attachment.getCanalName();
+				}
+				if (MoveDelegate.getBattleTracker(data).wasConquered(borderTerritory))
+				{
+					return "Cannot move through " + attachment.getCanalName() + " without owning " + borderTerritory.getName() + " for an entire turn";
 				}
 			}
 		}

@@ -1807,7 +1807,7 @@ public class SUtils
 						final Route r = new Route();
 						r.setStart(neighbor);
 						r.add(current);
-						if (MoveValidator.validateCanal(r, player, data) != null)
+						if (MoveValidator.validateCanal(r, null, player, data) != null)
 							continue;
 					}
 					distance.put(neighbor, distance.getInt(current) + 1);
@@ -4743,8 +4743,8 @@ public class SUtils
 		// cheating because can't do stepwise calculation with canals
 		// shouldn't be a huge problem
 		// if we fail due to canal, then don't go near any enemy canals
-		if (MoveValidator.validateCanal(r, player, data) != null)
-			r = data.getMap().getRoute(start, destination, new CompositeMatchAnd<Territory>(routeCondition, Matches.territoryHasNonAlliedCanal(player, data).invert()));
+		if (MoveValidator.validateCanal(r, null, player, data) != null)
+			r = data.getMap().getRoute(start, destination, new CompositeMatchAnd<Territory>(routeCondition, Matches.territoryHasNonAllowedCanal(player, null, data).invert()));
 		if (r == null || r.getEnd() == null)
 			return null;
 		final int rDist = r.getLength();

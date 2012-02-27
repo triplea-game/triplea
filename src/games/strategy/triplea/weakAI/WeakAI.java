@@ -26,7 +26,6 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.CanalAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.baseAI.AIUtils;
@@ -404,37 +403,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	
 	private Route getMaxSeaRoute(final GameData data, final Territory start, final Territory destination, final PlayerID player)
 	{
-		Match<Territory> routeCond = null;
-		final Set<CanalAttachment> canalAttachments = CanalAttachment.get(destination);
-		if (!canalAttachments.isEmpty())
-		{
-			routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert());
-		}
-		else
-		{
-			routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert(), passableChannel(data, player));
-		}
-		/*
-		        new Match<Territory>()
-		     {
-		         public boolean match(Territory o)
-		         {
-		             Set<CanalAttachment> canalAttachments = CanalAttachment.get(o);
-		             if(canalAttachments.isEmpty())
-		                 return true;
-		             
-		             Iterator<CanalAttachment> iter = canalAttachments.iterator();
-		             while(iter.hasNext() )
-		             {
-		                 CanalAttachment canalAttachment = iter.next();
-		                 if(!Match.allMatch( canalAttachment.getLandTerritories(), Matches.isTerritoryAllied(player, data)))
-		                     return false;
-		             }
-		             return true;
-		         }
-		     }
-		);
-		*/
+		final Match<Territory> routeCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasEnemyUnits(player, data).invert(),
+					Matches.territoryHasNonAllowedCanal(player, null, data).invert());
 		Route r = data.getMap().getRoute(start, destination, routeCond);
 		if (r == null)
 			return null;
@@ -1386,26 +1356,4 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			return (TripleAUnit.get(o).getTransporting().size() > 0);
 		}
 	};
-	
-	public static final Match<Territory> passableChannel(final GameData data, final PlayerID player)
-	{
-		return new Match<Territory>()
-		{
-			@Override
-			public boolean match(final Territory o)
-			{
-				final Set<CanalAttachment> canalAttachments = CanalAttachment.get(o);
-				if (canalAttachments.isEmpty())
-					return true;
-				final Iterator<CanalAttachment> iter = canalAttachments.iterator();
-				while (iter.hasNext())
-				{
-					final CanalAttachment canalAttachment = iter.next();
-					if (!Match.allMatch(canalAttachment.getLandTerritories(), Matches.isTerritoryAllied(player, data)))
-						return false;
-				}
-				return true;
-			}
-		};
-	}
 }
