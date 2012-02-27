@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Getting history panel to stop closing clicked on expanded paths every time a there is a new event or change, when your mouse is over the history panel. (frigoref)
+
 * Correcting bad history log messages for Edit mode. (veqryn)
 
 * Refactored Trigger Attachment class again to allow triggers to fire other triggers with certain options and properties. (veqryn)

@@ -36,6 +36,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.triplea.ui.history.HistoryPanel;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -71,6 +73,18 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 		return m_writer;
 	}
 	
+	HistoryPanel m_panel = null;
+	public void setTreePanel(HistoryPanel panel)
+	{
+		m_panel = panel;
+	}
+	
+	public void goToEnd()
+	{
+		if (m_panel != null)
+			m_panel.goToEnd();
+	}
+
 	public HistoryNode getLastNode()
 	{
 		assertCorrectThread();
@@ -139,17 +153,19 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 	
 	synchronized void changeAdded(final Change aChange)
 	{
-		getGameData().acquireWriteLock();
-		try
+		m_changes.add(aChange);
+		if (m_currentNode == null)
+			return;
+		if (m_currentNode == getLastNode())
 		{
-			m_changes.add(aChange);
-			if (m_currentNode == null)
-				return;
-			if (m_currentNode == getLastNode())
+			getGameData().acquireWriteLock();
+			try
+			{
 				new ChangePerformer(m_data).perform(aChange);
-		} finally
-		{
-			getGameData().releaseWriteLock();
+			} finally
+			{
+				getGameData().releaseWriteLock();
+			}
 		}
 	}
 	

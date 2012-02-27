@@ -62,6 +62,7 @@ public class HistoryWriter implements java.io.Serializable
 			throw new IllegalStateException("Not in a round");
 		}
 		final Step currentStep = new Step(stepName, delegateName, player, m_history.getChanges().size(), stepDisplayName);
+		/* Can delete after a few releases confirm that the new way works
 		final HistoryNode old = m_current;
 		m_history.getGameData().acquireWriteLock();
 		try
@@ -72,7 +73,8 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		m_history.nodeStructureChanged(old);
+		m_history.nodeStructureChanged(old);*/
+		addToAndSetCurrent(currentStep);
 	}
 	
 	public void startNextRound(final int round)
@@ -86,6 +88,7 @@ public class HistoryWriter implements java.io.Serializable
 		if (isCurrentRound())
 			closeCurrent();
 		final Round currentRound = new Round(round, m_history.getChanges().size());
+		/* Can delete after a few releases confirm that the new way works
 		m_history.getGameData().acquireWriteLock();
 		try
 		{
@@ -95,8 +98,9 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		// TODO: is this reload the cause of the history tree always collapsing?
-		m_history.reload();
+		m_history.reload();*/
+		m_current = (HistoryNode) m_history.getRoot();
+		addToAndSetCurrent(currentRound);
 	}
 	
 	private void closeCurrent()
@@ -127,6 +131,25 @@ public class HistoryWriter implements java.io.Serializable
 		}
 	}
 	
+	private void addToAndSetCurrent(HistoryNode newNode)
+	{
+		addToCurrent(newNode);
+		m_current = newNode;
+	}
+	
+	private void addToCurrent(HistoryNode newNode)
+	{
+		m_history.getGameData().acquireWriteLock();
+		try
+		{
+			m_history.insertNodeInto(newNode, m_current, m_current.getChildCount());
+		} finally
+		{
+			m_history.getGameData().releaseWriteLock();
+		}
+		m_history.goToEnd();
+	}
+
 	public void startEvent(final String eventName)
 	{
 		assertCorrectThread();
@@ -138,6 +161,7 @@ public class HistoryWriter implements java.io.Serializable
 			throw new IllegalStateException("Cant add an event, not a step. " +
 						"Must be in a step to add an event to the step. \nTrying to add event: " + eventName);
 		final Event event = new Event(eventName, m_history.getChanges().size());
+		/* Can delete after a few releases confirm that the new way works
 		final HistoryNode oldCurrent = m_current;
 		m_history.getGameData().acquireWriteLock();
 		try
@@ -148,8 +172,8 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		// TODO: is this reload the cause of the history tree always collapsing?
-		m_history.reload(oldCurrent);
+		m_history.reload(oldCurrent);*/
+		addToAndSetCurrent(event);
 	}
 	
 	private boolean isCurrentEvent()
@@ -174,6 +198,7 @@ public class HistoryWriter implements java.io.Serializable
 	{
 		assertCorrectThread();
 		s_logger.log(Level.FINE, "Adding child:" + node);
+		/* Can delete after a few releases confirm that the new way works
 		m_history.getGameData().acquireWriteLock();
 		try
 		{
@@ -187,7 +212,13 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		m_history.nodesWereInserted(m_current, new int[] { m_current.getChildCount() - 1 });
+		m_history.nodesWereInserted(m_current, new int[] { m_current.getChildCount() - 1 });*/
+		if (!isCurrentEvent())
+		{
+			new IllegalStateException("Not in an event, but trying to add child:" + node + " current is:" + m_current).printStackTrace(System.out);
+			startEvent("???");
+		}
+		addToCurrent(node);
 	}
 	
 	/**
@@ -222,7 +253,8 @@ public class HistoryWriter implements java.io.Serializable
 		{
 			m_history.getGameData().releaseWriteLock();
 		}
-		// TODO: is this reload the cause of the history tree always collapsing?
-		m_history.reload(m_current);
+		/* Can delete after a few releases confirm that the new way works
+		m_history.reload(m_current);*/
+		m_history.goToEnd();
 	}
 }
