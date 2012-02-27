@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Creating a better error message for when users do not have a map, but try to join the game anyway. (frigoref)
+
 * Getting history panel to stop closing clicked on expanded paths every time a there is a new event or change, when your mouse is over the history panel. (frigoref)
 
 * Correcting bad history log messages for Edit mode. (veqryn)

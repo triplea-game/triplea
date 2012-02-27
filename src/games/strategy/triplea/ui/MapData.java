@@ -123,7 +123,7 @@ public class MapData
 	
 	public MapData(final String mapNameDir)
 	{
-		this(ResourceLoader.getMapresourceLoader(mapNameDir));
+		this(ResourceLoader.getMapResourceLoader(mapNameDir));
 	}
 	
 	/**

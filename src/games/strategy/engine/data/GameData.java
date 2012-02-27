@@ -463,7 +463,7 @@ public class GameData implements java.io.Serializable
 		{
 			return m_resourceLoader;
 		}
-		m_resourceLoader = ResourceLoader.getMapresourceLoader(m_gameName);
+		m_resourceLoader = ResourceLoader.getMapResourceLoader(m_gameName);
 		return getResourceLoader();
 	}
 	

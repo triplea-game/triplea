@@ -167,6 +167,22 @@ public class ServerLauncher implements ILauncher
 		try
 		{
 			m_gameData.getGameLoader().startGame(m_serverGame, localPlayerSet);
+		} catch (IllegalStateException e)
+		{
+			m_abortLaunch = true;
+			Throwable error = e;
+			while (error.getMessage() == null)
+				error = error.getCause();
+			final String message = error.getMessage();
+			m_gameLoadingWindow.doneWait();
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
+				}
+			});
+
 		} catch (final Exception e)
 		{
 			e.printStackTrace();

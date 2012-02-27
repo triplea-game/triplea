@@ -200,7 +200,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(WINDOW_LISTENER);
 		m_uiContext = new UIContext();
-		m_uiContext.setDefaltMapDir(game.getData());
+		m_uiContext.setDefaultMapDir(game.getData());
 		m_uiContext.getMapData().verify(m_data);
 		m_uiContext.setPlayerList(players);
 		// initialize m_editModeButtonModel before createMenuBar()

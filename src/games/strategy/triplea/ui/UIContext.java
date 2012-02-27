@@ -150,7 +150,7 @@ public class UIContext
 		// check for existence
 		try
 		{
-			ResourceLoader.getMapresourceLoader(mapDir).close();
+			ResourceLoader.getMapResourceLoader(mapDir).close();
 		} catch (final RuntimeException re)
 		{
 			// an error
@@ -162,7 +162,7 @@ public class UIContext
 		return mapDir;
 	}
 	
-	public void setDefaltMapDir(final GameData data)
+	public void setDefaultMapDir(final GameData data)
 	{
 		internalSetMapDir(getDefaultMapDir(data), data);
 	}
@@ -170,8 +170,8 @@ public class UIContext
 	public void setMapDir(final GameData data, final String mapDir)
 	{
 		internalSetMapDir(mapDir, data);
-		// set the default after internal suceeds, if an error is thrown
-		// we dont want to persist it
+		// set the default after internal succeeds, if an error is thrown
+		// we don't want to persist it
 		final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
 		final Preferences prefs = getPreferencesForMap(mapName);
 		prefs.put(MAP_SKIN_PREF, mapDir);
@@ -187,7 +187,7 @@ public class UIContext
 	private void internalSetMapDir(final String dir, final GameData data)
 	{
 		final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
-		final ResourceLoader loader = ResourceLoader.getMapresourceLoader(dir);
+		final ResourceLoader loader = ResourceLoader.getMapResourceLoader(dir);
 		if (m_mapData != null)
 		{
 			m_mapData.close();

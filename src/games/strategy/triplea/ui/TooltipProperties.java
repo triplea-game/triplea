@@ -22,7 +22,7 @@ public class TooltipProperties
 	
 	protected TooltipProperties()
 	{
-		final ResourceLoader loader = ResourceLoader.getMapresourceLoader(UIContext.getMapDir());
+		final ResourceLoader loader = ResourceLoader.getMapResourceLoader(UIContext.getMapDir());
 		final URL url = loader.getResource(PROPERTY_FILE);
 		if (url == null)
 		{
