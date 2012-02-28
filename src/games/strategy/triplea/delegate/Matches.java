@@ -3667,7 +3667,7 @@ public class Matches
 			@Override
 			public boolean match(final Territory t)
 			{
-				if (areNeutralsPassableByAir && TerritoryIsNeutralButNotWater.match(t))
+				if (!areNeutralsPassableByAir && TerritoryIsNeutralButNotWater.match(t))
 					return false;
 				if (!TerritoryIsPassableAndNotRestricted(player, data).match(t))
 					return false;
