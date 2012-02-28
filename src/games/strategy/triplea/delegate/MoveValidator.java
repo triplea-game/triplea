@@ -287,7 +287,7 @@ public class MoveValidator
 		{ // check aircraft
 			if (route.hasSteps() && (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
 			{
-				if (Match.someMatch(route.getMiddleSteps(), Matches.TerritoryIsNeutral))
+				if (Match.someMatch(route.getMiddleSteps(), Matches.TerritoryIsNeutralButNotWater))
 					return result.setErrorReturnResult("Air units cannot fly over neutral territories");
 			}
 		}
@@ -328,7 +328,7 @@ public class MoveValidator
 		if (!route.someMatch(Matches.TerritoryIsPassableAndNotRestricted(player, data)))
 			return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
 		final CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
-		battle.add(Matches.TerritoryIsNeutral);
+		battle.add(Matches.TerritoryIsNeutralButNotWater);
 		battle.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
 		final CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<Unit>();
 		transportsCanNotControl.add(Matches.UnitIsTransportAndNotDestroyer);
@@ -367,13 +367,14 @@ public class MoveValidator
 		}
 		if (Match.allMatch(units, Matches.UnitIsAir))
 		{
-			if (route.someMatch(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutral, Matches.TerritoryIsWater.invert()))
+			if (route.someMatch(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutralButNotWater, Matches.TerritoryIsWater.invert()))
 						&& (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
 				return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
 		}
 		else
 		{
-			final CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutral, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player,
+			final CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutralButNotWater, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(
+						player,
 						data));
 			if (route.someMatch(neutralOrEnemy))
 			{
@@ -621,7 +622,7 @@ public class MoveValidator
 			return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSIBLE);
 		if (canCrossNeutralTerritory(data, route, player, result).getError() != null)
 			return result;
-		if (isNeutralsImpassable(data) && !isNeutralsBlitzable(data) && !route.getMatches(Matches.TerritoryIsNeutral).isEmpty())
+		if (isNeutralsImpassable(data) && !isNeutralsBlitzable(data) && !route.getMatches(Matches.TerritoryIsNeutralButNotWater).isEmpty())
 			return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
 		return result;
 	}
@@ -632,7 +633,8 @@ public class MoveValidator
 		if (getEditMode(data) || // Edit Mode, no need to check
 					!Match.someMatch(units, Matches.UnitIsAir) || // No Airunits, nothing to check
 					route.hasNoSteps() || // if there are no steps, we didn't move, so it is always OK!
-					Matches.airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(player, data).match(route.getEnd()) // we can land at the end, nothing left to check
+					Matches.airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(player, data).match(route.getEnd()) || // we can land at the end, nothing left to check
+					isKamikazeAircraft(data) // we do not do any validation at all, cus they can all die and we don't care
 		)
 			return result;
 		// Find which aircraft cannot find friendly land to land on
@@ -646,7 +648,7 @@ public class MoveValidator
 		final Set<Unit> movedCarriers = new HashSet<Unit>(); // this set of units tracks which carriers are already marked as moved to catch fighters in the air.
 		for (final Unit unit : airThatMustLandOnCarriers)
 		{
-			if (!findCarrierToLand(data, player, unit, route, usedCarrierSpace, movedCarriers) && !isKamikazeAircraft(data) && !Matches.UnitIsKamikaze.match(unit))
+			if (!findCarrierToLand(data, player, unit, route, usedCarrierSpace, movedCarriers))
 			{
 				result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);
 			}
@@ -665,7 +667,7 @@ public class MoveValidator
 	 */
 	private static Collection<Unit> getAirUnitsToValidate(final Collection<Unit> units, final Route route, final PlayerID player)
 	{
-		final Match<Unit> ownedAirMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitOwnedBy(player));
+		final Match<Unit> ownedAirMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitOwnedBy(player), Matches.UnitIsKamikaze.invert());
 		final ArrayList<Unit> ownedAir = new ArrayList<Unit>();
 		ownedAir.addAll(Match.getMatches(units, ownedAirMatch));
 		ownedAir.addAll(Match.getMatches(route.getEnd().getUnits().getUnits(), ownedAirMatch));
@@ -764,16 +766,16 @@ public class MoveValidator
 	
 	private static boolean canAirReachThisSpot(final GameData data, final PlayerID player, final Unit unit, final Territory currentSpot, final int movementLeft, final Territory landingSpot)
 	{
-		// TODO EW: existing bug: Need to check for politics allowing Politics.Neutral Fly-Over? this code is still working on the assumption of alliances. not isNeutral state.
-		if (areNeutralsPassableByAir(data))
+		final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
+		if (areNeutralsPassableByAir)
 		{
-			final Route neutralViolatingRoute = data.getMap().getRoute(currentSpot, landingSpot, Matches.TerritoryIsPassableAndNotRestricted(player, data));
+			final Route neutralViolatingRoute = data.getMap().getRoute(currentSpot, landingSpot, Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
 			return (neutralViolatingRoute != null && neutralViolatingRoute.getMovementCost(unit) <= movementLeft && getNeutralCharge(data, neutralViolatingRoute) <= player.getResources().getQuantity(
 						Constants.PUS));
 		}
 		else
 		{
-			final Route noNeutralRoute = data.getMap().getRoute(currentSpot, landingSpot, Matches.territoryIsNotNeutralAndNotImpassibleOrRestricted(player, data));
+			final Route noNeutralRoute = data.getMap().getRoute(currentSpot, landingSpot, Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
 			return (noNeutralRoute != null && noNeutralRoute.getMovementCost(unit) <= movementLeft);
 		}
 	}
@@ -1976,7 +1978,7 @@ public class MoveValidator
 		// Ignore the end territory in our tests. it must be in the route, so it shouldn't affect the route choice
 		// final Match<Territory> territoryIsEnd = Matches.territoryIs(end);
 		// No neutral countries on route predicate
-		final Match<Territory> noNeutral = Matches.TerritoryIsNeutral.invert();
+		final Match<Territory> noNeutral = Matches.TerritoryIsNeutralButNotWater.invert();
 		// No aa guns on route predicate
 		final Match<Territory> noAA = Matches.territoryHasEnemyAAforAnything(player, data).invert();
 		// no enemy units on the route predicate

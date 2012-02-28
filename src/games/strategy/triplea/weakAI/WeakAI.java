@@ -122,7 +122,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			return false;
 		// find a land route to an enemy territory from our capitol
 		final Route invasionRoute = Utils.findNearest(capitol, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, getPlayerBridge().getGameData()),
-					new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, new InverseMatch<Territory>(Matches.TerritoryIsNeutral)), getPlayerBridge().getGameData());
+					new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, new InverseMatch<Territory>(Matches.TerritoryIsNeutralButNotWater)), getPlayerBridge().getGameData());
 		return invasionRoute == null;
 	}
 	
@@ -490,7 +490,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				continue;
 			final CompositeMatchAnd<Unit> ownedTransports = new CompositeMatchAnd<Unit>(Matches.UnitCanTransport, Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved);
 			final CompositeMatchAnd<Territory> enemyTerritory = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsLand, new InverseMatch<Territory>(
-						Matches.TerritoryIsNeutral), Matches.TerritoryIsEmpty);
+						Matches.TerritoryIsNeutralButNotWater), Matches.TerritoryIsEmpty);
 			final int trans = t.getUnits().countMatches(ownedTransports);
 			if (trans > 0)
 			{
@@ -531,7 +531,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			moveOfType.add(Matches.UnitIsNotFactory);
 			moveOfType.add(Matches.UnitIsLand);
 			final CompositeMatchAnd<Territory> moveThrough = new CompositeMatchAnd<Territory>(new InverseMatch<Territory>(Matches.TerritoryIsImpassable), new InverseMatch<Territory>(
-						Matches.TerritoryIsNeutral), Matches.TerritoryIsLand);
+						Matches.TerritoryIsNeutralButNotWater), Matches.TerritoryIsLand);
 			final List<Unit> units = t.getUnits().getMatches(moveOfType);
 			if (units.size() == 0)
 				continue;

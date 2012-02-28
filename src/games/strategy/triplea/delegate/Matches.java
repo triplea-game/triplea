@@ -1730,7 +1730,7 @@ public class Matches
 		};
 	}
 	
-	public static final Match<Territory> TerritoryIsNeutral = new Match<Territory>()
+	public static final Match<Territory> TerritoryIsNeutralButNotWater = new Match<Territory>()
 	{
 		@Override
 		public boolean match(final Territory t)
@@ -1740,7 +1740,7 @@ public class Matches
 			return t.getOwner().equals(PlayerID.NULL_PLAYERID);
 		}
 	};
-	public final static Match<Territory> TerritoryIsNotNeutral = new InverseMatch<Territory>(TerritoryIsNeutral);
+	public final static Match<Territory> TerritoryIsNotNeutralButCouldBeWater = new InverseMatch<Territory>(TerritoryIsNeutralButNotWater);
 	public static final Match<Territory> TerritoryIsImpassable = new Match<Territory>()
 	{
 		@Override
@@ -3660,11 +3660,22 @@ public class Matches
 		};
 	}
 	
-	public static Match<Territory> territoryIsNotNeutralAndNotImpassibleOrRestricted(final PlayerID player, final GameData data)
+	public static Match<Territory> airCanFlyOver(final PlayerID player, final GameData data, final boolean areNeutralsPassableByAir)
 	{
-		final Match<Territory> notNeutralAndNotImpassibleOrRestricted = new CompositeMatchAnd<Territory>(TerritoryIsPassableAndNotRestricted(player, data), new InverseMatch<Territory>(
-					TerritoryIsNeutral));
-		return notNeutralAndNotImpassibleOrRestricted;
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (areNeutralsPassableByAir && TerritoryIsNeutralButNotWater.match(t))
+					return false;
+				if (!TerritoryIsPassableAndNotRestricted(player, data).match(t))
+					return false;
+				if (TerritoryIsLand.match(t) && !data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner()))
+					return false;
+				return true;
+			}
+		};
 	}
 	
 	public static Match<Territory> airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(final PlayerID player, final GameData data)

@@ -637,7 +637,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	
 	public static Collection<Territory> getEmptyNeutral(final Route route)
 	{
-		final Match<Territory> emptyNeutral = new CompositeMatchAnd<Territory>(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutral);
+		final Match<Territory> emptyNeutral = new CompositeMatchAnd<Territory>(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutralButNotWater);
 		final Collection<Territory> neutral = route.getMatches(emptyNeutral);
 		return neutral;
 	}

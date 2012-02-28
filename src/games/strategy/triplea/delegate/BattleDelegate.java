@@ -991,6 +991,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			if (!data.getRelationshipTracker().isAllied(u.getOwner(), alliedPlayer))
 				throw new IllegalStateException("whereCanAirLand all air units must be allied with alliedPlayer");
 		}*/
+		final boolean areNeutralsPassableByAir = (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !games.strategy.triplea.Properties.getNeutralsImpassable(data));
 		final HashSet<Territory> canNotLand = new HashSet<Territory>();
 		canNotLand.addAll(battleTracker.getPendingBattleSites(false));
 		canNotLand.addAll(Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasEnemyUnits(alliedPlayer, data)));
@@ -1003,7 +1004,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			final Iterator<Territory> possibleIter = possibleTerrs.iterator();
 			while (possibleIter.hasNext())
 			{
-				final Route route = data.getMap().getRoute(currentTerr, possibleIter.next(), Matches.territoryIsNotNeutralAndNotImpassibleOrRestricted(alliedPlayer, data));
+				final Route route = data.getMap().getRoute(currentTerr, possibleIter.next(), Matches.airCanFlyOver(alliedPlayer, data, areNeutralsPassableByAir));
 				if (route == null || route.getMovementCost(strandedAir.iterator().next()) > maxDistance)
 					possibleIter.remove();
 			}

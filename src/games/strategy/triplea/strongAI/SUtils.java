@@ -670,7 +670,7 @@ public class SUtils
 		final IntegerMap<UnitType> myCostMap = costMap.get(player);
 		final PlayerID ePlayer = eTerr.getOwner();
 		final IntegerMap<UnitType> playerCostMap = costMap.get(ePlayer);
-		final int eTUV = (Matches.TerritoryIsNeutral.match(eTerr)) ? 0 : BattleCalculator.getTUV(defenderUnits, ePlayer, playerCostMap, data);
+		final int eTUV = (Matches.TerritoryIsNeutralButNotWater.match(eTerr)) ? 0 : BattleCalculator.getTUV(defenderUnits, ePlayer, playerCostMap, data);
 		final int myTUV = BattleCalculator.getTUV(invasionUnits, myCostMap);
 		final IntegerMap<UnitType> myAttackUnits = convertListToMap(invasionUnits);
 		final IntegerMap<UnitType> defenseUnits = convertListToMap(defenderUnits);
@@ -678,9 +678,9 @@ public class SUtils
 		final boolean weWin = quickBattleEstimator(myAttackUnits, defenseUnits, player, ePlayer, false, subRestricted);
 		final int myNewTUV = determineTUV(myAttackUnits, myCostMap);
 		final IntegerMap<UnitType> eCostMap = costMap.get(ePlayer);
-		final int eNewTUV = (Matches.TerritoryIsNeutral.match(eTerr)) ? 0 : determineTUV(defenseUnits, eCostMap);
+		final int eNewTUV = (Matches.TerritoryIsNeutralButNotWater.match(eTerr)) ? 0 : determineTUV(defenseUnits, eCostMap);
 		int production = TerritoryAttachment.get(eTerr).getProduction();
-		if (Matches.TerritoryIsNeutral.match(eTerr))
+		if (Matches.TerritoryIsNeutralButNotWater.match(eTerr))
 			production *= 3;
 		final int myTUVLost = (myTUV - myNewTUV) - (weWin ? production : 0);
 		final int eTUVLost = eTUV - eNewTUV;
@@ -739,7 +739,7 @@ public class SUtils
 			while (eIter.hasNext())
 			{
 				final Territory checkTerr = eIter.next();
-				if (Matches.TerritoryIsNeutral.match(checkTerr))
+				if (Matches.TerritoryIsNeutralButNotWater.match(checkTerr))
 					eIter.remove();
 			}
 		}
@@ -1005,7 +1005,7 @@ public class SUtils
 			while (nIter.hasNext())
 			{
 				final Territory nTerr = nIter.next();
-				if (Matches.TerritoryIsNeutral.match(nTerr))
+				if (Matches.TerritoryIsNeutralButNotWater.match(nTerr))
 					nIter.remove();
 			}
 		}
@@ -2494,7 +2494,7 @@ public class SUtils
 				while (weOwnAllIter.hasNext())
 				{
 					final Territory tempFact = weOwnAllIter.next();
-					if (Matches.TerritoryIsNeutral.match(tempFact) || Matches.TerritoryIsImpassable.match(tempFact))
+					if (Matches.TerritoryIsNeutralButNotWater.match(tempFact) || Matches.TerritoryIsImpassable.match(tempFact))
 						weOwnAllIter.remove();
 				}
 				territoryValue -= 15 * weOwnAll.size();
@@ -2548,7 +2548,7 @@ public class SUtils
 			while (weOwnAllIter.hasNext())
 			{
 				final Territory tempFact = weOwnAllIter.next();
-				if (Matches.TerritoryIsNeutral.match(tempFact) || Matches.TerritoryIsImpassable.match(tempFact))
+				if (Matches.TerritoryIsNeutralButNotWater.match(tempFact) || Matches.TerritoryIsImpassable.match(tempFact))
 					weOwnAllIter.remove();
 			}
 			if (weOwnAll.size() > 0)
@@ -2630,7 +2630,7 @@ public class SUtils
 		// feel free to change, if you are confortable all calls to this function conform.
 		final CompositeMatch<Territory> endCond = new CompositeMatchAnd<Territory>(Matches.TerritoryIsImpassable.invert());
 		if (!neutral || Properties.getNeutralsImpassable(data))
-			endCond.add(Matches.TerritoryIsNeutral.invert());
+			endCond.add(Matches.TerritoryIsNeutralButNotWater.invert());
 		return findFontier(territory, endCond, Match.ALWAYS_MATCH, distance, data);
 		/*
 		// This will return territories that are not impassable, but have an impassable territory in the way. (or water in the way)
@@ -5013,7 +5013,7 @@ public class SUtils
 				landStrengthMap.put(eTerr, netStrength);
 				landRankMap.put(eTerr, eTerrValue + netStrength * 0.25F);
 			}
-			else if (Matches.isTerritoryAllied(player, data).match(eTerr) && Matches.TerritoryIsNotNeutral.match(eTerr))
+			else if (Matches.isTerritoryAllied(player, data).match(eTerr) && Matches.TerritoryIsNotNeutralButCouldBeWater.match(eTerr))
 			{
 				final boolean hasENeighbors = Matches.territoryHasEnemyLandNeighbor(data, player).match(eTerr);
 				final Route testERoute = findNearest(eTerr, enemyAndNoWater, noEnemyOrWater, data);
@@ -5037,7 +5037,7 @@ public class SUtils
 				if ((netStrength > -15.0F && rankStrength > 2.0F) || hasENeighbors || testERoute != null)
 					ourFriendlyTerr.add(eTerr);
 			}
-			else if (Matches.TerritoryIsNeutral.match(eTerr))
+			else if (Matches.TerritoryIsNeutralButNotWater.match(eTerr))
 			{
 				if (Matches.TerritoryIsNotImpassable.match(eTerr) && (Matches.isTerritoryFreeNeutral(data).match(eTerr) || Properties.getNeutralCharge(data) <= playerPUs))
 				{

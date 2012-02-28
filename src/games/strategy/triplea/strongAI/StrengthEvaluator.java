@@ -115,7 +115,7 @@ public class StrengthEvaluator
 						inRangeAirStrength += airStrength;
 					}
 				}
-				else if (isLand && !sea && !Matches.TerritoryIsNotNeutral.match(t))
+				else if (isLand && !sea && !Matches.TerritoryIsNotNeutralButCouldBeWater.match(t))
 				{
 					rDist = data.getMap().getLandDistance(ourTerr, t);
 					landUnits = t.getUnits().getMatches(landUnit);
@@ -156,7 +156,7 @@ public class StrengthEvaluator
 						inRangeAirStrength += airStrength;
 					}
 				}
-				else if (isLand && !sea && Matches.TerritoryIsNotNeutral.match(t))
+				else if (isLand && !sea && Matches.TerritoryIsNotNeutralButCouldBeWater.match(t))
 				{
 					landUnits = t.getUnits().getMatches(landUnit);
 					airUnits = t.getUnits().getMatches(airUnit);
