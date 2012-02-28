@@ -53,7 +53,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class Route implements java.io.Serializable, Iterable<Territory>
 {
-	final static List<Territory> emptyTerritoryList = new ArrayList<Territory>();
+	final static List<Territory> emptyTerritoryList = Collections.unmodifiableList(new ArrayList<Territory>());
 	final static Integer defaultMovementCost = new Integer(1);
 	private final List<Territory> m_steps = new ArrayList<Territory>();
 	private Territory m_start;

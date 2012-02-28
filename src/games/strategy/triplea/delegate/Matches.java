@@ -23,6 +23,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.RelationshipTracker;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Route;
@@ -3666,30 +3667,29 @@ public class Matches
 		return notNeutralAndNotImpassibleOrRestricted;
 	}
 	
-	public static CompositeMatch<Territory> alliedNonConqueredNonPendingTerritory(final GameData data, final PlayerID player)
+	public static Match<Territory> airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(final PlayerID player, final GameData data)
 	{
-		// these is a place where we can land
-		// must be friendly and non conqueuerd land
-		final CompositeMatch<Territory> friendlyGround = new CompositeMatchAnd<Territory>();
-		friendlyGround.add(isTerritoryAllied(player, data));
-		friendlyGround.add(new Match<Territory>()
+		return new Match<Territory>()
 		{
 			@Override
-			public boolean match(final Territory o)
+			public boolean match(final Territory t)
 			{
-				return !MoveDelegate.getBattleTracker(data).wasConquered(o);
+				if (!Matches.TerritoryIsLand.match(t))
+					return false;
+				final BattleTracker bt = MoveDelegate.getBattleTracker(data);
+				if (bt.wasConquered(t))
+					return false;
+				if (bt.hasPendingBattle(t, false))
+					return false;
+				final PlayerID owner = t.getOwner();
+				if (owner == null || owner.isNull())
+					return false;
+				final RelationshipTracker rt = data.getRelationshipTracker();
+				if (!rt.canMoveAirUnitsOverOwnedLand(player, owner) || !rt.canLandAirUnitsOnOwnedLand(player, owner))
+					return false;
+				return true;
 			}
-		});
-		friendlyGround.add(new Match<Territory>()
-		{
-			@Override
-			public boolean match(final Territory o)
-			{
-				return !MoveDelegate.getBattleTracker(data).hasPendingBattle(o, false);
-			}
-		});
-		friendlyGround.add(TerritoryIsLand);
-		return friendlyGround;
+		};
 	}
 	
 	public static Match<Unit> unitCanScrambleOnRouteDistance(final Route route)

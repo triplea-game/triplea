@@ -632,7 +632,7 @@ public class MoveValidator
 		if (getEditMode(data) || // Edit Mode, no need to check
 					!Match.someMatch(units, Matches.UnitIsAir) || // No Airunits, nothing to check
 					route.hasNoSteps() || // if there are no steps, we didn't move, so it is always OK!
-					Matches.alliedNonConqueredNonPendingTerritory(data, player).match(route.getEnd()) // we can land at the end, nothing left to check
+					Matches.airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(player, data).match(route.getEnd()) // we can land at the end, nothing left to check
 		)
 			return result;
 		// Find which aircraft cannot find friendly land to land on
@@ -674,12 +674,15 @@ public class MoveValidator
 		return ownedAir;
 	}
 	
-	private static boolean findCarrierToLand(final GameData data, final PlayerID player, final Unit unit, Route route, final IntegerMap<Territory> usedCarrierSpace, final Set<Unit> movedCarriers)
+	private static boolean findCarrierToLand(final GameData data, final PlayerID player, final Unit unit, final Route route, final IntegerMap<Territory> usedCarrierSpace, final Set<Unit> movedCarriers)
 	{
 		final Territory currentSpot = route.getEnd();
-		if (unit.getTerritoryUnitIsIn().equals(currentSpot))
-			route = new Route(currentSpot);
-		final int movementLeft = route.getMovementLeft(unit);
+		// unit must be in either start or end.
+		int movementLeft;
+		if (currentSpot.getUnits().getUnits().contains(unit))
+			movementLeft = (new Route(currentSpot)).getMovementLeft(unit);
+		else
+			movementLeft = route.getMovementLeft(unit);
 		final UnitAttachment ua = UnitAttachment.get(unit.getType());
 		if (movementLeft < 0)
 			return false;
@@ -802,9 +805,70 @@ public class MoveValidator
 		return false;
 	}
 	
-	private static boolean areNeutralsPassableByAir(final GameData data)
+	/**
+	 * Can this airunit reach safe land at this point in the route?
+	 * 
+	 * @param data
+	 * @param unit
+	 *            the airunit in question
+	 * @param route
+	 *            the current spot from which he needs to reach safe land.
+	 * @return whether the air-unit can find a stretch of friendly land to land on given her current spot and the remaining range.
+	 */
+	private static boolean canFindLand(final GameData data, final Unit unit, final Route route)
 	{
-		return (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
+		final Territory routeEnd = route.getEnd();
+		// unit must be in either start or end.
+		int movementLeft;
+		if (routeEnd.getUnits().getUnits().contains(unit))
+			movementLeft = (new Route(routeEnd)).getMovementLeft(unit);
+		else
+			movementLeft = route.getMovementLeft(unit);
+		if (movementLeft <= 0)
+			return false;
+		final PlayerID player = unit.getOwner();
+		final List<Territory> possibleSpots = Match.getMatches(data.getMap().getNeighbors(routeEnd, movementLeft), Matches.airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(player, data));
+		for (final Territory landingSpot : possibleSpots)
+		{ // TODO EW: Assuming movement cost of 1, this could get VERY slow when the movementcost is very high and airunits have a lot of movementcapacity.
+			if (canAirReachThisSpot(data, player, unit, routeEnd, movementLeft, landingSpot))
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns true if the given air units can land in the
+	 * given territory.
+	 * Does not take into account whether a battle has been
+	 * fought in the territory already.
+	 * 
+	 * Note units must only be air units
+	 */
+	public static boolean canLand(final Collection<Unit> airUnits, final Territory territory, final PlayerID player, final GameData data)
+	{
+		if (!Match.allMatch(airUnits, Matches.UnitIsAir))
+			throw new IllegalArgumentException("can only test if air will land");
+		if (!territory.isWater() && MoveDelegate.getBattleTracker(data).wasConquered(territory))
+			return false;
+		if (territory.isWater())
+		{
+			// if they cant all land on carriers
+			if (!Match.allMatch(airUnits, Matches.UnitCanLandOnCarrier))
+				return false;
+			// when doing the calculation, make sure to include the units
+			// in the territory
+			final Set<Unit> friendly = new HashSet<Unit>();
+			friendly.addAll(getFriendly(territory, player, data));
+			friendly.addAll(airUnits);
+			// make sure we have the carrier capacity
+			final int capacity = carrierCapacity(friendly, territory);
+			final int cost = carrierCost(friendly);
+			return capacity >= cost;
+		}
+		else
+		{
+			return data.getRelationshipTracker().canLandAirUnitsOnOwnedLand(player, territory.getOwner());
+		}
 	}
 	
 	private static Collection<Unit> getAirThatMustLandOnCarriers(final GameData data, final Collection<Unit> ownedAir, final Route route, final MoveValidationResult result, final PlayerID player)
@@ -830,31 +894,66 @@ public class MoveValidator
 	}
 	
 	/**
-	 * Can this airunit reach safe land at this point in the route?
+	 * Does not, and is not supposed to, account for any units already on this carrier (like allied/cargo fighters).
+	 * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special properties and restrictions.
 	 * 
-	 * @param data
-	 * @param unit
-	 *            the airunit in question
-	 * @param route
-	 *            the current spot from which he needs to reach safe land.
-	 * @return whether the air-unit can find a stretch of friendly land to land on given her current spot and the remaining range.
+	 * @param units
+	 * @param territory
+	 * @return
 	 */
-	private static boolean canFindLand(final GameData data, final Unit unit, Route route)
+	public static int carrierCapacity(final Collection<Unit> units, final Territory territoryUnitsAreCurrentlyIn)
 	{
-		final Territory routeEnd = route.getEnd();
-		if (unit.getTerritoryUnitIsIn().equals(routeEnd))
-			route = new Route(routeEnd);
-		final int movementLeft = route.getMovementLeft(unit);
-		if (movementLeft <= 0)
-			return false;
-		final PlayerID player = unit.getOwner();
-		final List<Territory> possibleSpots = Match.getMatches(data.getMap().getNeighbors(routeEnd, movementLeft), Matches.alliedNonConqueredNonPendingTerritory(data, player));
-		for (final Territory landingSpot : possibleSpots)
-		{ // TODO EW: Assuming movement cost of 1, this could get VERY slow when the movementcost is very high and airunits have a lot of movementcapacity.
-			if (canAirReachThisSpot(data, player, unit, routeEnd, movementLeft, landingSpot))
-				return true;
+		int sum = 0;
+		final Iterator<Unit> iter = units.iterator();
+		while (iter.hasNext())
+		{
+			final Unit unit = iter.next();
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
+			if (ua.getCarrierCapacity() != -1)
+			{
+				// here we check to see if the unit can no longer carry units
+				if (Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLANDONCARRIER).match(unit))
+				{
+					// and we must check to make sure we let any allied air that are cargo stay here
+					if (Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER).match(unit))
+					{
+						int countCargo = 0;
+						final Collection<Unit> airCargo = territoryUnitsAreCurrentlyIn.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier));
+						for (final Unit airUnit : airCargo)
+						{
+							final TripleAUnit taUnit = (TripleAUnit) airUnit;
+							if (taUnit.getTransportedBy() != null && taUnit.getTransportedBy().equals(unit))
+								countCargo++;
+						}
+						sum += countCargo; // capacity = are cargo only
+					}
+					else
+						continue; // capacity = zero 0
+				}
+				else
+					sum += ua.getCarrierCapacity();
+			}
 		}
-		return false;
+		return sum;
+	}
+	
+	public static int carrierCost(final Collection<Unit> units)
+	{
+		int sum = 0;
+		final Iterator<Unit> iter = units.iterator();
+		while (iter.hasNext())
+		{
+			final Unit unit = iter.next();
+			final UnitAttachment ua = UnitAttachment.get(unit.getType());
+			if (ua.getCarrierCost() != -1)
+				sum += ua.getCarrierCost();
+		}
+		return sum;
+	}
+	
+	private static boolean areNeutralsPassableByAir(final GameData data)
+	{
+		return (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
 	}
 	
 	/**
@@ -1154,64 +1253,6 @@ public class MoveValidator
 	}
 	
 	/**
-	 * Does not, and is not supposed to, account for any units already on this carrier (like allied/cargo fighters).
-	 * Instead this method only adds up the total capacity of each unit, and accounts for damaged carriers with special properties and restrictions.
-	 * 
-	 * @param units
-	 * @param territory
-	 * @return
-	 */
-	public static int carrierCapacity(final Collection<Unit> units, final Territory territoryUnitsAreCurrentlyIn)
-	{
-		int sum = 0;
-		final Iterator<Unit> iter = units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
-			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			if (ua.getCarrierCapacity() != -1)
-			{
-				// here we check to see if the unit can no longer carry units
-				if (Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLANDONCARRIER).match(unit))
-				{
-					// and we must check to make sure we let any allied air that are cargo stay here
-					if (Matches.UnitHasWhenCombatDamagedEffect(UnitAttachment.UNITSMAYNOTLEAVEALLIEDCARRIER).match(unit))
-					{
-						int countCargo = 0;
-						final Collection<Unit> airCargo = territoryUnitsAreCurrentlyIn.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier));
-						for (final Unit airUnit : airCargo)
-						{
-							final TripleAUnit taUnit = (TripleAUnit) airUnit;
-							if (taUnit.getTransportedBy() != null && taUnit.getTransportedBy().equals(unit))
-								countCargo++;
-						}
-						sum += countCargo; // capacity = are cargo only
-					}
-					else
-						continue; // capacity = zero 0
-				}
-				else
-					sum += ua.getCarrierCapacity();
-			}
-		}
-		return sum;
-	}
-	
-	public static int carrierCost(final Collection<Unit> units)
-	{
-		int sum = 0;
-		final Iterator<Unit> iter = units.iterator();
-		while (iter.hasNext())
-		{
-			final Unit unit = iter.next();
-			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			if (ua.getCarrierCost() != -1)
-				sum += ua.getCarrierCost();
-		}
-		return sum;
-	}
-	
-	/**
 	 * @deprecated use route.hasWater();
 	 * @param route
 	 * @return
@@ -1231,41 +1272,6 @@ public class MoveValidator
 	public static boolean hasLand(final Route route)
 	{
 		return route.hasLand();
-	}
-	
-	/**
-	 * Returns true if the given air units can land in the
-	 * given territory.
-	 * Does not take into account whether a battle has been
-	 * fought in the territory already.
-	 * 
-	 * Note units must only be air units
-	 */
-	public static boolean canLand(final Collection<Unit> airUnits, final Territory territory, final PlayerID player, final GameData data)
-	{
-		if (!Match.allMatch(airUnits, Matches.UnitIsAir))
-			throw new IllegalArgumentException("can only test if air will land");
-		if (!territory.isWater() && MoveDelegate.getBattleTracker(data).wasConquered(territory))
-			return false;
-		if (territory.isWater())
-		{
-			// if they cant all land on carriers
-			if (!Match.allMatch(airUnits, Matches.UnitCanLandOnCarrier))
-				return false;
-			// when doing the calculation, make sure to include the units
-			// in the territory
-			final Set<Unit> friendly = new HashSet<Unit>();
-			friendly.addAll(getFriendly(territory, player, data));
-			friendly.addAll(airUnits);
-			// make sure we have the carrier capacity
-			final int capacity = carrierCapacity(friendly, territory);
-			final int cost = carrierCost(friendly);
-			return capacity >= cost;
-		}
-		else
-		{
-			return Matches.RelationshipTypeCanLandAirUnitsOnOwnedLand.match(data.getRelationshipTracker().getRelationshipType(player, territory.getOwner()));
-		}
 	}
 	
 	public static Collection<Unit> getNonLand(final Collection<Unit> units)

@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Possibly correcting some hidden bugs in MoveValidator. (veqryn)
+
 * Created new CanalAttachment option, excludedUnits, which allows the specifying of specific units which will not be validated for. (veqryn)
 
 * Created new RelationshipTypeAttachment option, canMoveThroughCanals, which allows a player to move through a canal owned by the other player. (veqryn)
