@@ -13,7 +13,14 @@
  */
 package games.strategy.engine.lobby.server;
 
-import games.strategy.engine.lobby.server.userDB.*;
+import games.strategy.engine.lobby.server.userDB.BannedIpController;
+import games.strategy.engine.lobby.server.userDB.BannedMacController;
+import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
+import games.strategy.engine.lobby.server.userDB.DBUser;
+import games.strategy.engine.lobby.server.userDB.DBUserController;
+import games.strategy.engine.lobby.server.userDB.MutedIpController;
+import games.strategy.engine.lobby.server.userDB.MutedMacController;
+import games.strategy.engine.lobby.server.userDB.MutedUsernameController;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
@@ -162,7 +169,7 @@ public class ModeratorController implements IModeratorController
 		return isPlayerAdmin(node);
 	}
 	
-	private boolean isPlayerAdmin(final INode node)
+	public boolean isPlayerAdmin(final INode node)
 	{
 		final String name = getRealName(node);
 		final DBUserController controller = new DBUserController();

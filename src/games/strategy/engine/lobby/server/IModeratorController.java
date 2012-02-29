@@ -74,4 +74,12 @@ public interface IModeratorController extends IRemote
 	 * Is the current user an admin.
 	 */
 	public boolean isAdmin();
+	
+	/**
+	 * Is this node an admin.
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public boolean isPlayerAdmin(final INode node);
 }

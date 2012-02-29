@@ -24,6 +24,7 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
+import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.message.*;
 import games.strategy.net.*;
 import games.strategy.util.Version;
@@ -199,6 +200,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			m_remoteMessenger.registerRemote(m_serverStartupRemote, SERVER_REMOTE_NAME);
 			m_channelMessenger = new ChannelMessenger(unifiedMessenger);
 			m_chatController = new ChatController(CHAT_NAME, m_serverMessenger, m_remoteMessenger, m_channelMessenger);
+			new ModeratorController(m_serverMessenger).register(m_remoteMessenger);
 			m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME);
 			m_serverMessenger.setAcceptNewConnections(true);
 			gameDataChanged();

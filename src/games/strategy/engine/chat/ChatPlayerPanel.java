@@ -300,27 +300,37 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 	{
 		if (m_chat == null)
 			return "";
+		String extra = "";
+		final String notes = m_chat.getNotesForNode(node);
+		if (notes != null && notes.length() > 0)
+		{
+			extra = extra + notes;
+		}
 		String status = m_chat.getStatusManager().getStatus(node);
-		if (status == null || status.length() == 0)
+		final StringBuilder statusSB = new StringBuilder("");
+		if (status != null && status.length() > 0)
+		{
+			if (status.length() > 25)
+			{
+				status = status.substring(0, 25);
+			}
+			for (int i = 0; i < status.length(); i++)
+			{
+				final char c = status.charAt(i);
+				// skip combining characters
+				if (c >= '\u0300' && c <= '\u036F')
+				{
+					continue;
+				}
+				statusSB.append(c);
+			}
+			extra = extra + " (" + statusSB.toString() + ")";
+		}
+		if (extra == null || extra.length() == 0)
 		{
 			return node.getName();
 		}
-		if (status.length() > 25)
-		{
-			status = status.substring(0, 25);
-		}
-		final StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < status.length(); i++)
-		{
-			final char c = status.charAt(i);
-			// skip combining characters
-			if (c >= '\u0300' && c <= '\u036F')
-			{
-				continue;
-			}
-			sb.append(c);
-		}
-		return node.getName() + " (" + sb + ")";
+		return node.getName() + extra;
 	}
 	
 	public void addStatusMessage(final String message)

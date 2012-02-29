@@ -116,7 +116,7 @@ public class UnifiedMessengerHub implements IMessageListener, IConnectionChangeL
 			{
 				if (invoke.needReturnValues)
 				{
-					final RemoteMethodCallResults results = new RemoteMethodCallResults(new RemoteNotFoundException("Not found"));
+					final RemoteMethodCallResults results = new RemoteMethodCallResults(new RemoteNotFoundException("Not found:" + invoke.call.getRemoteName()));
 					send(new SpokeInvocationResults(results, invoke.methodCallID), from);
 				}
 				else

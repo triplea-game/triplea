@@ -16,6 +16,8 @@
  */
 package games.strategy.engine.chat;
 
+import games.strategy.engine.lobby.server.IModeratorController;
+import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
@@ -27,6 +29,8 @@ import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -54,6 +58,30 @@ public class Chat
 	private final List<ChatMessage> m_chatHistory = new ArrayList<ChatMessage>();
 	private final StatusManager m_statusManager;
 	private final ChatIgnoreList m_ignoreList = new ChatIgnoreList();
+	private final HashMap<INode, LinkedHashSet<String>> m_notesMap = new HashMap<INode, LinkedHashSet<String>>();
+	
+	private void addToNotesMap(final INode node, final String note)
+	{
+		LinkedHashSet<String> current = m_notesMap.get(node);
+		if (current == null)
+			current = new LinkedHashSet<String>();
+		current.add(note);
+		m_notesMap.put(node, current);
+	}
+	
+	public String getNotesForNode(final INode node)
+	{
+		final LinkedHashSet<String> notes = m_notesMap.get(node);
+		if (notes == null)
+			return null;
+		final StringBuilder sb = new StringBuilder("");
+		for (final String note : notes)
+		{
+			sb.append(" ");
+			sb.append(note);
+		}
+		return sb.toString();
+	}
 	
 	/** Creates a new instance of Chat */
 	public Chat(final String chatName, final Messengers messengers)
@@ -122,6 +150,16 @@ public class Chat
 		{
 			m_chatInitVersion = init.getSecond().longValue();
 			m_nodes = init.getFirst();
+			final IModeratorController moderatorController = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+			if (moderatorController != null)
+			{
+				for (final INode node : m_nodes)
+				{
+					final boolean admin = moderatorController.isPlayerAdmin(node);
+					if (admin)
+						addToNotesMap(node, "[Mod]");
+				}
+			}
 			for (final Runnable job : m_queuedInitMessages)
 			{
 				job.run();
@@ -288,6 +326,10 @@ public class Chat
 				if (version > m_chatInitVersion)
 				{
 					m_nodes.add(node);
+					final IModeratorController moderatorController = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+					final boolean admin = moderatorController.isPlayerAdmin(node);
+					if (admin)
+						addToNotesMap(node, "[Mod]");
 					updateConnections();
 					for (final IChatListener listener : m_listeners)
 					{
@@ -316,6 +358,7 @@ public class Chat
 				if (version > m_chatInitVersion)
 				{
 					m_nodes.remove(node);
+					m_notesMap.remove(node);
 					updateConnections();
 					for (final IChatListener listener : m_listeners)
 					{

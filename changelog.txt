@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Adding [Mod] tags onto the names of any Admins in the online lobby. (veqryn)
+
 * Possibly correcting some hidden bugs in MoveValidator. (veqryn)
 
 * Created new CanalAttachment option, excludedUnits, which allows the specifying of specific units which will not be validated for. (veqryn)
