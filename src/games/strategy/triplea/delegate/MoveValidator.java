@@ -774,6 +774,8 @@ public class MoveValidator
 			int carrierCapacity = carrierCapacity(carrier, territoryUnitsAreIn);
 			for (final Unit air : airUnits)
 			{
+				if (airThatCanLandOnThem.contains(air))
+					continue;
 				final int airCost = carrierCost(air);
 				if (carrierCapacity >= airCost)
 				{
