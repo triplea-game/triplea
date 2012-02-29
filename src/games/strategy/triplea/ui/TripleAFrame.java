@@ -90,6 +90,8 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -217,6 +219,9 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_smallView = new MapPanelSmallView(small, model);
 		m_mapPanel = new MapPanel(m_data, m_smallView, m_uiContext, model);
 		m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
+		this.addKeyListener(m_arrowKeyActionListener);
+		m_mapPanel.addKeyListener(m_arrowKeyActionListener);
+		
 		// link the small and large images
 		m_mapPanel.initSmallMap();
 		m_mapAndChatPanel = new JPanel();
@@ -1336,6 +1341,37 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			{
 				e.printStackTrace();
 			}
+		}
+	};
+	
+	final KeyListener m_arrowKeyActionListener = new KeyListener()
+	{
+		final int diffPixel = 50;
+		
+		@Override
+		public void keyPressed(final KeyEvent e)
+		{
+			final int x = m_mapPanel.getXOffset();
+			final int y = m_mapPanel.getYOffset();
+			final int keyCode = e.getKeyCode();
+			if (keyCode == KeyEvent.VK_RIGHT)
+				getMapPanel().setTopLeft(x + diffPixel, y);
+			else if (keyCode == KeyEvent.VK_LEFT)
+				getMapPanel().setTopLeft(x - diffPixel, y);
+			else if (keyCode == KeyEvent.VK_DOWN)
+				getMapPanel().setTopLeft(x, y + diffPixel);
+			else if (keyCode == KeyEvent.VK_UP)
+				getMapPanel().setTopLeft(x, y - diffPixel);
+		}
+		
+		@Override
+		public void keyTyped(final KeyEvent e)
+		{
+		}
+		
+		@Override
+		public void keyReleased(final KeyEvent e)
+		{
 		}
 	};
 	

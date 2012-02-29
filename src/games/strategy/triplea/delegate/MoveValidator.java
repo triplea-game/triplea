@@ -878,20 +878,15 @@ public class MoveValidator
 	private static Collection<Unit> getAirThatMustLandOnCarriers(final GameData data, final Collection<Unit> ownedAir, final Route route, final MoveValidationResult result, final PlayerID player)
 	{
 		final Collection<Unit> airThatMustLandOnCarriers = new ArrayList<Unit>();
-		final Match<Unit> cantLandMatch = new InverseMatch<Unit>(Matches.UnitCanLandOnCarrier);
-		final Iterator<Unit> ownedAirIter = ownedAir.iterator();
-		while (ownedAirIter.hasNext())
+		final Match<Unit> canLandOnCarriers = Matches.UnitCanLandOnCarrier;
+		for (final Unit unit : ownedAir)
 		{
-			final Unit unit = ownedAirIter.next();
 			if (!canFindLand(data, unit, route))
 			{
-				airThatMustLandOnCarriers.add(unit);
-				// not everything can land on a carrier (i.e. bombers)
-				if (Match.allMatch(Collections.singleton(unit), cantLandMatch))
-				{
-					if (!isKamikazeAircraft(data) && !Matches.UnitIsKamikaze.match(unit))
-						result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit);
-				}
+				if (canLandOnCarriers.match(unit))
+					airThatMustLandOnCarriers.add(unit);
+				else
+					result.addDisallowedUnit(NOT_ALL_AIR_UNITS_CAN_LAND, unit); // not everything can land on a carrier (i.e. bombers)
 			}
 		}
 		return airThatMustLandOnCarriers;

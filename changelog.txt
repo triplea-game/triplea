@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Allowed for the use of the Arrow Keys for navigating around the map. (frigoref)
+
 * Adding [Mod] tags onto the names of any Admins in the online lobby. (veqryn)
 
 * Possibly correcting some hidden bugs in MoveValidator. (veqryn)
