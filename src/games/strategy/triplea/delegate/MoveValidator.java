@@ -685,10 +685,11 @@ public class MoveValidator
 			movementLeft = (new Route(currentSpot)).getMovementLeft(unit);
 		else
 			movementLeft = route.getMovementLeft(unit);
-		final UnitAttachment ua = UnitAttachment.get(unit.getType());
 		if (movementLeft < 0)
-			return false;
+			movementLeft = 0;
+		final UnitAttachment ua = UnitAttachment.get(unit.getType());
 		final boolean landAirOnNewCarriers = AirThatCantLandUtil.isLHTRCarrierProduction(data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
+		final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
 		final List<Unit> carriersInProductionQueue = player.getUnits().getMatches(Matches.UnitIsCarrier);
 		// Find Water territories I can reach
 		final List<Territory> landingSpotsToCheck = Match.getMatches((data.getMap().getNeighbors(currentSpot, movementLeft + 1)), Matches.TerritoryIsWater);
@@ -698,7 +699,7 @@ public class MoveValidator
 		for (final Territory landingSpot : landingSpotsToCheck)
 		{
 			// check if I can find a legal route to these spots
-			if (!canAirReachThisSpot(data, player, unit, currentSpot, movementLeft, landingSpot))
+			if (!canAirReachThisSpot(data, player, unit, currentSpot, movementLeft, landingSpot, areNeutralsPassableByAir))
 			{
 				continue;
 			}
@@ -728,7 +729,7 @@ public class MoveValidator
 		 */
 		for (final Territory landingSpot : landingSpotsToCheck)
 		{
-			if (!canAirReachThisSpot(data, player, unit, currentSpot, movementLeft, landingSpot))
+			if (!canAirReachThisSpot(data, player, unit, currentSpot, movementLeft, landingSpot, areNeutralsPassableByAir))
 			{
 				continue;
 			}
@@ -764,9 +765,9 @@ public class MoveValidator
 		return false;
 	}
 	
-	private static boolean canAirReachThisSpot(final GameData data, final PlayerID player, final Unit unit, final Territory currentSpot, final int movementLeft, final Territory landingSpot)
+	private static boolean canAirReachThisSpot(final GameData data, final PlayerID player, final Unit unit, final Territory currentSpot, final int movementLeft, final Territory landingSpot,
+				final boolean areNeutralsPassableByAir)
 	{
-		final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
 		if (areNeutralsPassableByAir)
 		{
 			final Route neutralViolatingRoute = data.getMap().getRoute(currentSpot, landingSpot, Matches.airCanFlyOver(player, data, areNeutralsPassableByAir));
@@ -783,7 +784,7 @@ public class MoveValidator
 	private static boolean placeOnBuiltCarrier(final Unit airUnit, final Territory landingSpot, final IntegerMap<Territory> usedCarrierSpace, final List<Unit> carriersInQueue, final GameData data,
 				final PlayerID player)
 	{
-		if (!Matches.territoryHasOwnedFactoryNeighbor(data, player).match(landingSpot))
+		if (!Matches.territoryHasOwnedIsFactoryOrCanProduceUnitsNeighbor(data, player).match(landingSpot))
 			return false;
 		// TODO EW: existing bug -- can this factory actually produce carriers? ie: shipyards vs. factories
 		for (final Unit carrierCandidate : carriersInQueue)
@@ -828,11 +829,12 @@ public class MoveValidator
 			movementLeft = route.getMovementLeft(unit);
 		if (movementLeft <= 0)
 			return false;
+		final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
 		final PlayerID player = unit.getOwner();
 		final List<Territory> possibleSpots = Match.getMatches(data.getMap().getNeighbors(routeEnd, movementLeft), Matches.airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(player, data));
 		for (final Territory landingSpot : possibleSpots)
 		{ // TODO EW: Assuming movement cost of 1, this could get VERY slow when the movementcost is very high and airunits have a lot of movementcapacity.
-			if (canAirReachThisSpot(data, player, unit, routeEnd, movementLeft, landingSpot))
+			if (canAirReachThisSpot(data, player, unit, routeEnd, movementLeft, landingSpot, areNeutralsPassableByAir))
 				return true;
 		}
 		return false;

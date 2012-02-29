@@ -3660,6 +3660,22 @@ public class Matches
 		};
 	}
 	
+	public static Match<Territory> seaCanMoveOver(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (!TerritoryIsWater.match(t))
+					return false;
+				if (!TerritoryIsPassableAndNotRestricted(player, data).match(t))
+					return false;
+				return true;
+			}
+		};
+	}
+	
 	public static Match<Territory> airCanFlyOver(final PlayerID player, final GameData data, final boolean areNeutralsPassableByAir)
 	{
 		return new Match<Territory>()
