@@ -1869,14 +1869,14 @@ public class Matches
 				int movementcost = route.getMovementCost(unit);
 				final UnitAttachment ua = UnitAttachment.get(unit.getType());
 				final PlayerID player = unit.getOwner();
-				TerritoryAttachment taStart = null;
-				TerritoryAttachment taEnd = null;
-				if (route.getStart() != null)
-					taStart = TerritoryAttachment.get(route.getStart());
-				if (route.getEnd() != null)
-					taEnd = TerritoryAttachment.get(route.getEnd());
 				if (ua.getIsAir())
 				{
+					TerritoryAttachment taStart = null;
+					TerritoryAttachment taEnd = null;
+					if (route.getStart() != null)
+						taStart = TerritoryAttachment.get(route.getStart());
+					if (route.getEnd() != null)
+						taEnd = TerritoryAttachment.get(route.getEnd());
 					movementcost = route.getMovementCost(unit);
 					if (taStart != null && taStart.getAirBase())
 						left++;
@@ -1908,7 +1908,7 @@ public class Matches
 						}
 					}
 				}
-				if (left == -1 || left < movementcost)
+				if (left < 0 || left < movementcost)
 					return false;
 				return true;
 			}
