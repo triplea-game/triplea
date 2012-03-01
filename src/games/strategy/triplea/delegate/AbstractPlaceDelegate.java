@@ -271,9 +271,9 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	 */
 	private String validateNewAirCanLandOnCarriers(final Territory to, final Collection<Unit> units)
 	{
-		final int cost = MoveValidator.carrierCost(units);
-		int capacity = MoveValidator.carrierCapacity(units, to);
-		capacity += MoveValidator.carrierCapacity(to.getUnits().getUnits(), to);
+		final int cost = AirMovementValidator.carrierCost(units);
+		int capacity = AirMovementValidator.carrierCapacity(units, to);
+		capacity += AirMovementValidator.carrierCapacity(to.getUnits().getUnits(), to);
 		if (cost > capacity)
 			return "Not enough new carriers to land all the fighters";
 		return null;
@@ -1074,10 +1074,10 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (Match.noneMatch(units, Matches.UnitIsCarrier))
 			return;
 		// do we have any spare carrier capacity
-		int capacity = MoveValidator.carrierCapacity(units, territory);
+		int capacity = AirMovementValidator.carrierCapacity(units, territory);
 		// subtract fighters that have already been produced with this carrier
 		// this turn.
-		capacity -= MoveValidator.carrierCost(units);
+		capacity -= AirMovementValidator.carrierCost(units);
 		if (capacity <= 0)
 			return;
 		final Collection<Territory> neighbors = getData().getMap().getNeighbors(territory, 1);
@@ -1101,7 +1101,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			if (Match.someMatch(getAlreadyProduced(neighbor), Matches.UnitIsFactoryOrCanProduceUnits))
 				continue;
 			final List<Unit> fighters = neighbor.getUnits().getMatches(ownedFighters);
-			while (fighters.size() > 0 && MoveValidator.carrierCost(fighters) > capacity)
+			while (fighters.size() > 0 && AirMovementValidator.carrierCost(fighters) > capacity)
 			{
 				fighters.remove(0);
 			}

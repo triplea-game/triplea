@@ -152,13 +152,13 @@ public class MoveValidatorTest extends DelegateTest
 	public void testCarrierCapacity()
 	{
 		final Collection<Unit> units = carrier.create(5, british);
-		assertEquals(10, MoveValidator.carrierCapacity(units, new Territory("TestTerritory", true, m_data)));
+		assertEquals(10, AirMovementValidator.carrierCapacity(units, new Territory("TestTerritory", true, m_data)));
 	}
 	
 	public void testCarrierCost()
 	{
 		final Collection<Unit> units = fighter.create(5, british);
-		assertEquals(5, MoveValidator.carrierCost(units));
+		assertEquals(5, AirMovementValidator.carrierCost(units));
 	}
 	
 	public void testGetLeastMovement()
@@ -176,16 +176,16 @@ public class MoveValidatorTest extends DelegateTest
 	{
 		final Collection<Unit> units = fighter.create(4, british);
 		// 2 carriers in red sea
-		assertTrue(MoveValidator.canLand(units, redSea, british, m_data));
+		assertTrue(AirMovementValidator.canLand(units, redSea, british, m_data));
 		// britian owns egypt
-		assertTrue(MoveValidator.canLand(units, egypt, british, m_data));
+		assertTrue(AirMovementValidator.canLand(units, egypt, british, m_data));
 		// only 2 carriers
 		final Collection<Unit> tooMany = fighter.create(6, british);
-		assertTrue(!MoveValidator.canLand(tooMany, redSea, british, m_data));
+		assertTrue(!AirMovementValidator.canLand(tooMany, redSea, british, m_data));
 		// nowhere to land
-		assertTrue(!MoveValidator.canLand(units, japanSeaZone, british, m_data));
+		assertTrue(!AirMovementValidator.canLand(units, japanSeaZone, british, m_data));
 		// nuetral
-		assertTrue(!MoveValidator.canLand(units, westAfrica, british, m_data));
+		assertTrue(!AirMovementValidator.canLand(units, westAfrica, british, m_data));
 	}
 	
 	public void testCanLandInfantry()
@@ -193,7 +193,7 @@ public class MoveValidatorTest extends DelegateTest
 		try
 		{
 			final Collection<Unit> units = infantry.create(1, british);
-			MoveValidator.canLand(units, redSea, british, m_data);
+			AirMovementValidator.canLand(units, redSea, british, m_data);
 		} catch (final IllegalArgumentException e)
 		{
 			return;
@@ -204,7 +204,7 @@ public class MoveValidatorTest extends DelegateTest
 	public void testCanLandBomber()
 	{
 		final Collection<Unit> units = bomber.create(1, british);
-		assertTrue(!MoveValidator.canLand(units, redSea, british, m_data));
+		assertTrue(!AirMovementValidator.canLand(units, redSea, british, m_data));
 	}
 	
 	public void testHasSomeLand()

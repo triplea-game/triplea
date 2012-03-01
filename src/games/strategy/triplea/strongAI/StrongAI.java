@@ -33,6 +33,7 @@ import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.baseAI.AbstractAI;
+import games.strategy.triplea.delegate.AirMovementValidator;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
@@ -995,7 +996,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				SUtils.reorder(myFighters, fighterMoveMap, false);
 				final int fACDist = fACRoute.getLength();
 				final int fightMove = MoveValidator.getMaxMovement(myFighters);
-				if (MoveValidator.canLand(myFighters, ACTerr, player, data))
+				if (AirMovementValidator.canLand(myFighters, ACTerr, player, data))
 				{
 					final Route fACRoute2 = data.getMap().getRoute(f, ACTerr, noNeutralOrAA);
 					if (fACRoute2 != null && (fACRoute2.getLength() <= fightMove))
@@ -3267,7 +3268,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						final Route myRoute = data.getMap().getRoute(AttackFrom, badGuys, noEnemyAA);
 						if (myRoute == null || myRoute.getEnd() == null)
 							continue;
-						if (!myFighters.isEmpty() && MoveValidator.canLand(myFighters, myRoute.getEnd(), player, data))
+						if (!myFighters.isEmpty() && AirMovementValidator.canLand(myFighters, myRoute.getEnd(), player, data))
 						{
 							for (final Unit f : myFighters)
 							{
@@ -3288,7 +3289,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						}
 						if ((actualStrength > needStrength && (actualAttackers > badGuyCount + 1)) || myBombers.size() == 0 || myRoute == null || myRoute.getEnd() == null)
 							continue;
-						if (!myBombers.isEmpty() && MoveValidator.canLand(myBombers, myRoute.getEnd(), player, data))
+						if (!myBombers.isEmpty() && AirMovementValidator.canLand(myBombers, myRoute.getEnd(), player, data))
 						{
 							for (final Unit b : myBombers)
 							{
@@ -4245,7 +4246,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					bombUnits.removeAll(alreadyMoved);
 					final Route BcapRoute = data.getMap().getRoute(newTerr, BtargetTerr, noNeutralOrAA);
 					final Route FcapRoute = data.getMap().getRoute(newTerr, FtargetTerr, noNeutralOrAA);
-					if (BcapRoute != null && bombUnits.size() > 0 && MoveValidator.canLand(bombUnits, BtargetTerr, player, data))
+					if (BcapRoute != null && bombUnits.size() > 0 && AirMovementValidator.canLand(bombUnits, BtargetTerr, player, data))
 					{
 						boolean canLand = true;
 						for (final Unit b1 : bombUnits)
@@ -4261,7 +4262,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							alreadyMoved.addAll(bombUnits);
 						}
 					}
-					if (FcapRoute != null && fAirUnits.size() > 0 && !newTerr.getUnits().someMatch(ownedAC) && MoveValidator.canLand(fAirUnits, FtargetTerr, player, data))
+					if (FcapRoute != null && fAirUnits.size() > 0 && !newTerr.getUnits().someMatch(ownedAC) && AirMovementValidator.canLand(fAirUnits, FtargetTerr, player, data))
 					{
 						boolean canLand = true;
 						for (final Unit f1 : fAirUnits)
@@ -5897,7 +5898,8 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				landMap.put(factTerr, diffStrength);
 			}
 		}
-		final CompositeMatch<Territory> endCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(player, data), Matches.TerritoryIsNotNeutralButCouldBeWater, Matches.TerritoryIsLand);
+		final CompositeMatch<Territory> endCondition = new CompositeMatchAnd<Territory>(Matches.territoryHasEnemyUnits(player, data), Matches.TerritoryIsNotNeutralButCouldBeWater,
+					Matches.TerritoryIsLand);
 		for (final Territory ownedTerr : unMovedLandTerr)
 		{// TODO: find another territory to join if possible
 			// TODO: for some reason, unMovedLandTerr is containing conflicted territories where combat didn't
@@ -6006,7 +6008,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			if (sendBombers.size() > 0 && tBomb != myCapital)
 			{
 				final Route bomberRoute = data.getMap().getRoute(tBomb, myCapital, noNeutralOrAA);
-				if (bomberRoute != null && bomberRoute.getEnd() != null && MoveValidator.canLand(sendBombers, bomberRoute.getEnd(), player, data))
+				if (bomberRoute != null && bomberRoute.getEnd() != null && AirMovementValidator.canLand(sendBombers, bomberRoute.getEnd(), player, data))
 				{
 					moveRoutes.add(bomberRoute);
 					moveUnits.add(sendBombers);
@@ -6141,7 +6143,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					final Territory landingZone = lzIter.next();
 					s_logger.fine("trying" + landingZone + " " + rankMap.get(landingZone));
-					if (Matches.TerritoryIsPassableAndNotRestricted(player, data).match(landingZone) && MoveValidator.canLand(fighterGroup, landingZone, player, data))
+					if (Matches.TerritoryIsPassableAndNotRestricted(player, data).match(landingZone) && AirMovementValidator.canLand(fighterGroup, landingZone, player, data))
 					{
 						final Route landingRoute = data.getMap().getRoute(tFight, landingZone, noNeutralOrAA);
 						if (landingRoute != null && MoveValidator.hasEnoughMovement(fighterGroup, landingRoute))
@@ -7285,7 +7287,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					final Unit bomber = bIter.next();
 					if (bomber == null)
 						continue;
-					if (MoveValidator.canLand(Collections.singleton(bomber), bombTerr, player, data))
+					if (AirMovementValidator.canLand(Collections.singleton(bomber), bombTerr, player, data))
 					{
 						moveUnits.add(Collections.singleton(bomber));
 						moveRoutes.add(bombRoute);

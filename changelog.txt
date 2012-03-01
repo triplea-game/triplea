@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Completely rewrote the validation of air unit movement, and moved it to a new class, AirMovementValidator.java (veqryn)
+
 * More work on rewriting MoveValidation of air units. (veqryn)
 
 * Allowed for the use of the Arrow Keys for navigating around the map. (frigoref)

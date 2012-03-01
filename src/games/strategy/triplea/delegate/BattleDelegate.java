@@ -687,7 +687,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 						landingTerr = possible.iterator().next();
 					if (landingTerr == null || landingTerr.equals(t))
 					{
-						carrierCostOfCurrentTerr += MoveValidator.carrierCost(Collections.singletonList(u));
+						carrierCostOfCurrentTerr += AirMovementValidator.carrierCost(Collections.singletonList(u));
 						historyText = "Scrambled unit stays in territory " + t.getName();
 					}
 					else
@@ -1024,14 +1024,14 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 						Matches.TerritoryIsWater)));
 			availableWater.removeAll(battleTracker.getPendingBattleSites(false));
 			// a rather simple calculation, either we can take all the air, or we can't, nothing in the middle
-			final int carrierCost = MoveValidator.carrierCost(strandedAir);
+			final int carrierCost = AirMovementValidator.carrierCost(strandedAir);
 			final Iterator<Territory> waterIter = availableWater.iterator();
 			while (waterIter.hasNext())
 			{
 				final Territory t = waterIter.next();
-				int carrierCapacity = MoveValidator.carrierCapacity(t.getUnits().getMatches(Matches.UnitIsAlliedCarrier(alliedPlayer, data)), t);
+				int carrierCapacity = AirMovementValidator.carrierCapacity(t.getUnits().getMatches(Matches.UnitIsAlliedCarrier(alliedPlayer, data)), t);
 				if (!t.equals(currentTerr))
-					carrierCapacity -= MoveValidator.carrierCost(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.alliedUnit(alliedPlayer, data))));
+					carrierCapacity -= AirMovementValidator.carrierCost(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.alliedUnit(alliedPlayer, data))));
 				else
 					carrierCapacity -= carrierCostForCurrentTerr;
 				if (carrierCapacity < carrierCost)

@@ -2603,10 +2603,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// no planes, exit
 		if (m_defendingAir.isEmpty())
 			return;
-		int carrierCost = MoveValidator.carrierCost(m_defendingAir);
-		final int carrierCapacity = MoveValidator.carrierCapacity(m_defendingUnits, m_battleSite);
+		int carrierCost = AirMovementValidator.carrierCost(m_defendingAir);
+		final int carrierCapacity = AirMovementValidator.carrierCapacity(m_defendingUnits, m_battleSite);
 		// add dependant air to carrier cost
-		carrierCost += MoveValidator.carrierCost(Match.getMatches(getDependentUnits(m_defendingUnits), alliedDefendingAir));
+		carrierCost += AirMovementValidator.carrierCost(Match.getMatches(getDependentUnits(m_defendingUnits), alliedDefendingAir));
 		// all planes can land, exit
 		if (carrierCapacity >= carrierCost)
 			return;
@@ -2614,7 +2614,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// remove all the air that can land on carriers from defendingAir
 		carrierCost = 0;
 		// add dependant air to carrier cost
-		carrierCost += MoveValidator.carrierCost(Match.getMatches(getDependentUnits(m_defendingUnits), alliedDefendingAir));
+		carrierCost += AirMovementValidator.carrierCost(Match.getMatches(getDependentUnits(m_defendingUnits), alliedDefendingAir));
 		for (final Unit currentUnit : new ArrayList<Unit>(m_defendingAir))
 		{
 			if (!Matches.UnitCanLandOnCarrier.match(currentUnit))
@@ -2653,8 +2653,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// get the capacity of the carriers and cost of fighters
 			final Collection<Unit> alliedCarriers = currentTerritory.getUnits().getMatches(alliedCarrier);
 			final Collection<Unit> alliedPlanes = currentTerritory.getUnits().getMatches(alliedPlane);
-			final int alliedCarrierCapacity = MoveValidator.carrierCapacity(alliedCarriers, currentTerritory);
-			final int alliedPlaneCost = MoveValidator.carrierCost(alliedPlanes);
+			final int alliedCarrierCapacity = AirMovementValidator.carrierCapacity(alliedCarriers, currentTerritory);
+			final int alliedPlaneCost = AirMovementValidator.carrierCost(alliedPlanes);
 			// if there is free capacity, add the territory to landing possibilities
 			if (alliedCarrierCapacity - alliedPlaneCost >= 1)
 			{
@@ -2729,8 +2729,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// Get the capacity of the carriers in the selected zone
 		final Collection<Unit> alliedCarriersSelected = territory.getUnits().getMatches(alliedCarrier);
 		final Collection<Unit> alliedPlanesSelected = territory.getUnits().getMatches(alliedPlane);
-		final int alliedCarrierCapacitySelected = MoveValidator.carrierCapacity(alliedCarriersSelected, territory);
-		final int alliedPlaneCostSelected = MoveValidator.carrierCost(alliedPlanesSelected);
+		final int alliedCarrierCapacitySelected = AirMovementValidator.carrierCapacity(alliedCarriersSelected, territory);
+		final int alliedPlaneCostSelected = AirMovementValidator.carrierCost(alliedPlanesSelected);
 		// Find the available capacity of the carriers in that territory
 		final int territoryCapacity = alliedCarrierCapacitySelected - alliedPlaneCostSelected;
 		if (territoryCapacity > 0)

@@ -62,7 +62,7 @@ public class AirThatCantLandUtil
 			ownedAir.add(Matches.UnitIsAir);
 			ownedAir.add(Matches.unitIsOwnedBy(player));
 			final Collection<Unit> air = current.getUnits().getMatches(ownedAir);
-			if (air.size() != 0 && !MoveValidator.canLand(air, current, player, data))
+			if (air.size() != 0 && !AirMovementValidator.canLand(air, current, player, data))
 			{
 				cantLand.add(current);
 			}
@@ -102,7 +102,7 @@ public class AirThatCantLandUtil
 		{
 			// find the carrier capacity
 			final Collection<Unit> carriers = territory.getUnits().getMatches(Matches.alliedUnit(player, m_bridge.getData()));
-			int capacity = MoveValidator.carrierCapacity(carriers, territory);
+			int capacity = AirMovementValidator.carrierCapacity(carriers, territory);
 			final Iterator<Unit> iter = airUnits.iterator();
 			while (iter.hasNext())
 			{
