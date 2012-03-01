@@ -22,6 +22,8 @@ public class PlayerOrderComparator implements Comparator<PlayerID>
 	 */
 	public int compare(final PlayerID p1, final PlayerID p2)
 	{
+		if (p1.equals(p2))
+			return 0;
 		m_data.acquireReadLock(); // TODO: see is needed
 		final GameSequence sequence = m_data.getSequence();
 		m_data.releaseReadLock();

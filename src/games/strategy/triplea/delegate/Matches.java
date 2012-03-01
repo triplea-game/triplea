@@ -863,6 +863,18 @@ public class Matches
 		}
 	};
 	
+	public static final Match<Territory> TerritoryHasOwnedCarrier(final PlayerID player)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				return t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsCarrier));
+			}
+		};
+	}
+	
 	public static final Match<Unit> UnitIsAlliedCarrier(final PlayerID player, final GameData data)
 	{
 		return new Match<Unit>()

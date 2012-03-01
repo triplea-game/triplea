@@ -21,6 +21,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Route;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -666,7 +668,13 @@ public class MoveValidator
 		// now we should see if the carriers we are moving with, plus the carriers already there, can handle all our air units (we check beginning and ending territories first, separately, because they are special [they include or do not include units in our selection])
 		final Collection<Unit> carriersAtEnd = Match.getMatches(getFriendly(routeEnd, player, data), Matches.UnitIsCarrier);
 		carriersAtEnd.addAll(movingCarriersAtStartLocationBeingMoved);
-		// movedCarriers.addAll(carriersAtEnd);
+		// to keep track of all carriers, and their fighters, that have moved, so that we do not move them again.
+		final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters = new HashMap<Unit, Collection<Unit>>();
+		for (final Unit carrier : carriersAtEnd)
+		{
+			movedCarriersAndTheirFighters.put(carrier, new ArrayList<Unit>(airThatMustLandOnCarriers));
+		}
+		
 		airThatMustLandOnCarriers.removeAll(whatAirCanLandOnTheseCarriers(carriersAtEnd, airThatMustLandOnCarriers, routeEnd));
 		if (airThatMustLandOnCarriers.isEmpty())
 			return result;
@@ -675,10 +683,13 @@ public class MoveValidator
 		final int maxMovementLeftForTheseAirUnitsBeingValidated = maxMovementLeftForTheseAirUnitsBeingValidated(airThatMustLandOnCarriers, route, player); // figure out what is the max distance of our remaining air units
 		final int maxMovementLeftForAllOwnedCarriers = maxMovementLeftForAllOwnedCarriers(player, data); // figure out what is the max distance of our remaining carrier units
 		final List<Territory> landingSpots = new ArrayList<Territory>(data.getMap().getNeighbors(routeEnd, maxMovementLeftForTheseAirUnitsBeingValidated, Matches.seaCanMoveOver(player, data)));
-		// TODO: sort landing spots for closeness
-		final List<Territory> potentialCarrierOrigins = new ArrayList<Territory>(data.getMap().getNeighbors(routeEnd,
+		landingSpots.add(routeEnd);
+		// landingSpots.remove(routeEnd);
+		Collections.sort(landingSpots, getLowestToHighestDistance(routeEnd, Matches.seaCanMoveOver(player, data)));
+		List<Territory> potentialCarrierOrigins = new ArrayList<Territory>(data.getMap().getNeighbors(routeEnd,
 					maxMovementLeftForTheseAirUnitsBeingValidated + maxMovementLeftForAllOwnedCarriers, Matches.seaCanMoveOver(player, data)));
-		
+		potentialCarrierOrigins.remove(routeEnd);
+		potentialCarrierOrigins = Match.getMatches(potentialCarrierOrigins, Matches.TerritoryHasOwnedCarrier(player));
 		/*
 		final Map<Unit, Territory> potentialCarriersForMoving = getAllCarriersThatCanMoveToPickUpAir(potentialCarrierOrigins, player);
 		for (final Unit u : carriersAtEnd)
@@ -730,6 +741,88 @@ public class MoveValidator
 		return carriers;
 	}*/
 
+	private static IntegerMap<Territory> populateStaticAlliedAndBuildingCarrierCapacity(final List<Territory> landingSpots, final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters,
+				final PlayerID player, final GameData data)
+	{
+		final IntegerMap<Territory> startingSpace = new IntegerMap<Territory>();
+		final Match<Unit> carrierAlliedNotOwned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data), Matches.UnitIsCarrier);
+		// final Match<Unit> airAlliedNotOwned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
+		final boolean landAirOnNewCarriers = AirThatCantLandUtil.isLHTRCarrierProduction(data) || AirThatCantLandUtil.isLandExistingFightersOnNewCarriers(data);
+		// final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
+		final List<Unit> carriersInProductionQueue = player.getUnits().getMatches(Matches.UnitIsCarrier);
+		for (final Territory t : landingSpots)
+		{
+			if (landAirOnNewCarriers && !carriersInProductionQueue.isEmpty())
+			{
+				if (Matches.territoryHasOwnedIsFactoryOrCanProduceUnitsNeighbor(data, player).match(t))
+				{
+					// TODO: Here we are assuming that this factory can produce all of the carriers. Actually it might not be able to produce any carriers (because of complex requires units coding) or because of unit damage or maximum production.
+					// TODO: Here we are also assuming that the first territory we find that has an adjacent factory is the closest one in terms of unit movement. We have sorted the list of territories so this IS the closest in terms of steps, but each unit may have specific movement allowances for different terrain or some bullshit like that.
+					final int producedCarrierCapacity = carrierCapacity(carriersInProductionQueue, t);
+					startingSpace.add(t, producedCarrierCapacity);
+					carriersInProductionQueue.clear();
+				}
+			}
+			final Collection<Unit> alliedCarriers = t.getUnits().getMatches(carrierAlliedNotOwned);
+			alliedCarriers.removeAll(movedCarriersAndTheirFighters.keySet());
+			// Collection<Unit> alliedAir = t.getUnits().getMatches(airAlliedNotOwned);
+			final int alliedCarrierCapacity = carrierCapacity(alliedCarriers, t);
+			startingSpace.add(t, alliedCarrierCapacity);
+		}
+		return startingSpace;
+	}
+	
+	private static void populateMovingCarriersAndOwnedAndAlliedAir(final IntegerMap<Territory> landingSpotsWithCarrierCapacity, final List<Territory> landingSpots,
+				final List<Territory> potentialCarrierOrigins, final Map<Unit, Collection<Unit>> movedCarriersAndTheirFighters, final PlayerID player, final GameData data)
+	{
+		final Match<Unit> ownedCarrierMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsCarrier);
+		final Match<Unit> ownedAirMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
+		final Match<Unit> alliedNotOwnedAirMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data), Matches.UnitIsAir,
+					Matches.UnitCanLandOnCarrier);
+		for (final Territory landingSpot : landingSpots)
+		{
+			final Iterator<Territory> iter = potentialCarrierOrigins.iterator();
+			while (iter.hasNext())
+			{
+				final Territory carrierSpot = iter.next();
+				final Collection<Unit> unitsInCarrierSpot = carrierSpot.getUnits().getUnits();
+				unitsInCarrierSpot.removeAll(movedCarriersAndTheirFighters.keySet());
+				for (final Collection<Unit> ftrs : movedCarriersAndTheirFighters.values())
+				{
+					unitsInCarrierSpot.removeAll(ftrs);
+				}
+				final Collection<Unit> ownedCarriers = Match.getMatches(unitsInCarrierSpot, ownedCarrierMatch);
+				final Collection<Unit> ownedAir = Match.getMatches(unitsInCarrierSpot, ownedAirMatch);
+				final Collection<Unit> alliedNotOwnedAir = Match.getMatches(unitsInCarrierSpot, alliedNotOwnedAirMatch);
+				final Map<Unit, Collection<Unit>> mustMoveWithMap = carrierMustMoveWith(ownedCarriers, carrierSpot, data, player);
+			}
+		}
+	}
+	
+	public static Comparator<Territory> getLowestToHighestDistance(final Territory territoryWeMeasureDistanceFrom, final Match<Territory> condition)
+	{
+		return new Comparator<Territory>()
+		{
+			public int compare(final Territory t1, final Territory t2)
+			{
+				if (t1.equals(t2))
+					return 0;
+				final GameMap map = t1.getData().getMap();
+				final int distance1 = map.getDistance(territoryWeMeasureDistanceFrom, t1, condition);
+				final int distance2 = map.getDistance(territoryWeMeasureDistanceFrom, t2, condition);
+				if (distance1 == distance2)
+					return 0;
+				if (distance1 < 0)
+					return 1;
+				if (distance2 < 0)
+					return -1;
+				if (distance1 < distance2)
+					return -1;
+				return 1;
+			}
+		};
+	}
+	
 	private static int maxMovementLeftForAllOwnedCarriers(final PlayerID player, final GameData data)
 	{
 		int max = 0;
@@ -958,14 +1051,25 @@ public class MoveValidator
 			movementLeft = (new Route(routeEnd)).getMovementLeft(unit);
 		else
 			movementLeft = route.getMovementLeft(unit);
+		return canFindLand(data, unit, routeEnd, movementLeft);
+	}
+	
+	private static boolean canFindLand(final GameData data, final Unit unit, final Territory current)
+	{
+		final int movementLeft = ((TripleAUnit) unit).getMovementLeft();
+		return canFindLand(data, unit, current, movementLeft);
+	}
+	
+	private static boolean canFindLand(final GameData data, final Unit unit, final Territory current, final int movementLeft)
+	{
 		if (movementLeft <= 0)
 			return false;
 		final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
 		final PlayerID player = unit.getOwner();
-		final List<Territory> possibleSpots = Match.getMatches(data.getMap().getNeighbors(routeEnd, movementLeft), Matches.airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(player, data));
+		final List<Territory> possibleSpots = Match.getMatches(data.getMap().getNeighbors(current, movementLeft), Matches.airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(player, data));
 		for (final Territory landingSpot : possibleSpots)
 		{ // TODO EW: Assuming movement cost of 1, this could get VERY slow when the movementcost is very high and airunits have a lot of movementcapacity.
-			if (canAirReachThisSpot(data, player, unit, routeEnd, movementLeft, landingSpot, areNeutralsPassableByAir))
+			if (canAirReachThisSpot(data, player, unit, current, movementLeft, landingSpot, areNeutralsPassableByAir))
 				return true;
 		}
 		return false;
