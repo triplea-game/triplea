@@ -150,7 +150,7 @@ public class TechPanel extends ActionPanel
 		public void actionPerformed(final ActionEvent event)
 		{
 			TechAdvance advance = null;
-			if (isWW2V2() || isSelectableTechRoll())
+			if (isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel()))
 			{
 				final List<TechAdvance> available = getAvailableTechs();
 				if (available.isEmpty())

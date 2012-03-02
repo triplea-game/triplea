@@ -786,7 +786,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		{
 			public DiceChooser run()
 			{
-				return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, m_data);
+				return new DiceChooser(getUIContext(), numDice, hitAt, hitOnlyIfEquals, diceSides, m_data);
 			}
 		});
 		do

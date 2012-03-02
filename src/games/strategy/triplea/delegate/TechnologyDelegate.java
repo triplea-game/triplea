@@ -222,8 +222,8 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 			random = m_bridge.getRandom(diceSides, techRolls, annotation);
 			techHits = getTechHits(random);
 		}
-		final boolean selectableTech = isSelectableTechRoll() || isWW2V2();
-		final String directedTechInfo = selectableTech ? " for " + techToRollFor.getTechs().get(0) : "";
+		final boolean isRevisedModel = isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel());
+		final String directedTechInfo = isRevisedModel ? " for " + techToRollFor.getTechs().get(0) : "";
 		m_bridge.getHistoryWriter().startEvent(
 					m_player.getName() + (random.hashCode() > 0 ? " roll " : " rolls : ") + MyFormatter.asDice(random) + directedTechInfo + " and gets " + techHits + " "
 								+ MyFormatter.pluralize("hit", techHits));
@@ -242,7 +242,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		else
 			m_bridge.getHistoryWriter().setRenderingData(new DiceRoll(random, techHits, diceSides - 1, true));
 		Collection<TechAdvance> advances;
-		if (selectableTech)
+		if (isRevisedModel)
 		{
 			if (techHits > 0)
 				advances = Collections.singletonList(techToRollFor.getTechs().get(0));
@@ -348,10 +348,10 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		final Collection<TechAdvance> newAdvances = new ArrayList<TechAdvance>(hits);
 		final String annotation = m_player.getName() + " rolling to see what tech advances are aquired";
 		int[] random;
-		if (EditDelegate.getEditMode(getData()))
+		if (isSelectableTechRoll() || EditDelegate.getEditMode(getData()))
 		{
 			final ITripleaPlayer tripleaPlayer = (ITripleaPlayer) m_bridge.getRemote();
-			random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, getData().getDiceSides());
+			random = tripleaPlayer.selectFixedDice(hits, 0, true, annotation, available.size());
 		}
 		else
 		{

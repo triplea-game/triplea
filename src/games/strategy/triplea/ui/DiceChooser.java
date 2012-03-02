@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -43,15 +44,17 @@ public class DiceChooser extends JPanel
 	private JButton m_undoButton;
 	private JLabel m_diceCountLabel;
 	private final GameData m_data;
+	private int m_diceSides = 6;
 	
-	public DiceChooser(final UIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final GameData data)
+	public DiceChooser(final UIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final int diceSides, final GameData data)
 	{
 		m_uiContext = uiContext;
 		m_numRolls = numRolls;
+		m_diceSides = diceSides;
 		m_hitAt = hitAt;
 		m_hitOnlyIfEquals = hitOnlyIfEquals;
 		m_data = data;
-		m_buttons = new ArrayList<JButton>(data.getDiceSides());
+		m_buttons = new ArrayList<JButton>(diceSides);
 		m_random = new int[numRolls];
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		createComponents();
@@ -114,7 +117,7 @@ public class DiceChooser extends JPanel
 		final JPanel diceButtonPanel = new JPanel();
 		diceButtonPanel.setLayout(new BoxLayout(diceButtonPanel, BoxLayout.X_AXIS));
 		diceButtonPanel.add(Box.createHorizontalStrut(40));
-		for (int roll = 1; roll <= m_data.getDiceSides(); roll++)
+		for (int roll = 1; roll <= m_diceSides; roll++)
 		{
 			final boolean hit = (roll == m_hitAt || (!m_hitOnlyIfEquals && (m_hitAt > 0) && roll > m_hitAt));
 			diceButtonPanel.add(Box.createHorizontalStrut(4));
