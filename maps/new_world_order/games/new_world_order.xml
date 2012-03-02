@@ -4691,14 +4691,30 @@
 	<ul>
 	<li>Read the clarified Bunker Rules right below the unit stats!</li>
 	<li>Manually (two-step) flying over Neutral territory during combat movement is considered illegal, despite being technically possible.<br><em>(helps balance G2-Paris take)</em></li>
-	<li>Carrier-Ftr movement is handled according to "REVISED" Rules, with a single exception for the clearing of seazones.
-		<ul><li>It is NOT allowed to make Fighter movements based on the assumption that a Carrier could pass through a potentially cleared seazone in Non-Combat-Move phase.
-			<br><em>In Revised and LHTR rules, it is legal to make moves under the assumption that all your dice are hits and all enemy's dice are misses, thereby allowing the assumption that the carrier could move through the zone in non-combat-move phase.</em>
-			<br>Example: Sea Zones A, B, C are in a line, you have 1 carrier, 1 ftr [with only 2 movement left], and 1 sub in SZ A. In SZ B there are 80 enemy sea units, and in SZ C there are enemy transports. 
+	<li>Carrier-Ftr movement is handled according to "REVISED" Rules, with the following exceptions and clarifications:
+	<br>Since the engine does not validate Fighter movement completely, this means explicitly: for EVERY Fighter, that has to be a potential landing spot provided, and YOU must make sure to follow the rules, as follows:
+		<ul><li>Using a single Carrier for more than 2 Fighters, or for 2 Fighters going different directions, requiring different Carrier positions, is NOT allowed - even if LowLuck would guarantee for a Fighter to be lost.</li>
+		<li>It must be shown that all Fighters can land during Combat Move phase, and that any Carriers they will be landing on CAN move there DURING Combat Move phase, with legal movements.</li>
+		<li>The Carriers that will be picking up the aircraft must be CAPABLE of moving to their Pickup Destination DURING Combat Movement phase, BUT they do not actually have to make the movement until the Non-Combat Movement phase.</li>
+		<li>You may NOT assume that you can move THROUGH a Cleared sea zone that has enemy units. This would be a violation of the rule above that the move must be Legal DURING the CM phase.</li>
+		<li>IF the pickup destination IS a sea zone that contains enemy units, THEN enough Carriers to pick up all air units must move into that pickup destination During Combat Movement phase (and then engage in combat). 
+			These Carriers must move during CM phase because we are NOT allowed to assume that the sea zone would be Cleared, and we MUST show that they can do the pickup using moves that are Legal during the Combat Movement phase.</li>
+		<li>IF the pickup destination does NOT contain any enemy units, THEN the Carriers may wait until the Non-Combat Movement phase to actually make their movement. If the fighters do not survive the Carrier does not have to move to the pickup destination point, but if any fighters do survive they Must be picked up.</li>
+		<li>Examples:
+			<ul><li>On Moving Through A Cleared Sea Zone:
+			<br>In Revised and LHTR rules, it is legal to make moves under the assumption that all your dice are hits and all enemy's dice are misses, thereby allowing the assumption that the carrier could move through the zone in non-combat-move phase.
+			<br>However, <b>in NWO this move is considered illegal</b>, <em>regardless of using Dice or LowLuck</em>
+			<br>Example: Sea Zones A, B, C are in a line, you have 1 carrier, 1 ftr [with only <b>2</b> movement left], and 1 sub in SZ A. In SZ B there are 80 enemy sea units, and in SZ C there are enemy transports. 
 			<br>With Revised and LHTR rules, if you attack the fleet in SZ B with even a single unit, you may then attack the transports in SZ C with your ftr, because you get to assume that you will win the battle in SZ B and then pick up that ftr with your carrier during NCM.
-			<br>However, <b>in NWO this move is considered illegal</b>, <em>regardless of using Dice or LowLuck</em>.</li>
-		<li>Since the engine does not validate ftr movement completely, this means explicitly: for EVERY Ftr, there has to be a potential landing spot provided, and the Carrier HAS to move into position to provide it, if (and only if) the Ftr survives its battle. 
-			Thus, using the Carrier for more then 2 Ftrs or for 2 Ftrs going different directions, requiring different Carrier positions, is NOT allowed - even if LowLuck would guarantee for a Ftr to be lost.</li>
+			<br>This move is illegal in NWO, because you must show that the carrier can move there during combat movement, and during combat movement the carrier can not move there because there are enemy units in the way.
+			</li>
+			<li>On Moving Into An Enemy Controlled Sea Zone:
+			<br>Example: Sea Zones A, B, C are in a line, you have 1 carrier, and 1 ftr [with only <b>3</b> movement left]. In SZ B there are some enemy units, and in SZ C there are enemy transports.
+			<br>In this example, if the air attack SZ C then they must be picked up in SZ B. Since SZ B has enemy units, this move would be illegal unless we can show that we can pick up the units with legal moves during combat-move phase. Simply attack the enemy units in SZ B with a submarine or warship is not enough, because we are not allowed to assume the sea zone would be cleared for a non-combat move of the carriers.
+			<br>Instead, we are required by the rules to send enough carriers to SZ B during combat movement (and those carriers will engange in combat with the enemy units in SZ B). If we send the carriers, it is now legal because we have shown how we will pick up the units using moves made during comat-movement phase.
+			</li>
+			</ul>
+		</li>
 	</ul></li>
 	</ul>
 <div style="text-align: center;">
@@ -4785,6 +4801,7 @@ All changes by EB unless otherwise specified<br>
 General:
 	<ul>
 	<li>Deleted connection from SZ 58 to Lebanon. (veqryn)</li>
+	<li>Updating air movement rules for disputed situations to actually match how most people interpreted and played the NWO rules. (veqryn, ice, toc4 rules discussion)</li>
 	</ul>
 
 

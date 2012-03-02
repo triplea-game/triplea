@@ -428,7 +428,6 @@ public class MapPanel extends ImageScrollerLargeView
 				notifyMouseEntered(terr);
 			}
 			notifyMouseMoved(terr, md);
-			requestFocusInWindow();
 			final Tuple<Territory, List<Unit>> tuple = m_tileManager.getUnitsAtPoint(x, y, m_data);
 			if (unitsChanged(tuple))
 			{

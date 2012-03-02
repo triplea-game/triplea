@@ -223,7 +223,7 @@
 				<!--<connection t1="GermanyPeaceRussia" t2="GermanyWarRussia"/>
 				<connection t1="GermanyPeaceUS" t2="GermanyWarUS"/>-->
 				
-                <connection t1="Central United States" t2="89 Sea Zone"/>
+                <!--<connection t1="Central United States" t2="89 Sea Zone"/>-->
                 <connection t1="Central United States" t2="101 Sea Zone"/>
                 <connection t1="Central United States" t2="Southeast Mexico"/>
                 <connection t1="Central United States" t2="Ontario"/>
@@ -303,7 +303,7 @@
                 <connection t1="French Central Africa" t2="Nigeria"/>
                 <connection t1="French Central Africa" t2="French West Africa"/>
                 <connection t1="French West Africa" t2="Nigeria"/>
-                <connection t1="French Guiana" t2="86 Sea Zone"/>
+                <!--<connection t1="French Guiana" t2="86 Sea Zone"/>-->
                 <connection t1="French Guiana" t2="Brazil"/>
                 <connection t1="French Guiana" t2="Suriname"/>
                 <connection t1="French Guiana" t2="88 Sea Zone"/>
@@ -507,7 +507,7 @@
                 <connection t1="116 Sea Zone" t2="117 Sea Zone"/>
                 <connection t1="116 Sea Zone" t2="121 Sea Zone"/>
                 <connection t1="116 Sea Zone" t2="Newfoundland Labrador"/>
-                <connection t1="65 Sea Zone" t2="Ecuador"/>
+                <!--<connection t1="65 Sea Zone" t2="Ecuador"/>-->
                 <connection t1="65 Sea Zone" t2="66 Sea Zone"/>
                 <connection t1="65 Sea Zone" t2="64 Sea Zone"/>
                 <connection t1="65 Sea Zone" t2="Peru"/>
@@ -549,7 +549,7 @@
                 <connection t1="76 Sea Zone" t2="Italian Somaliland"/>
                 <connection t1="76 Sea Zone" t2="77 Sea Zone"/>
                 <connection t1="76 Sea Zone" t2="Ethiopia"/>
-                <connection t1="76 Sea Zone" t2="Kenya"/>
+                <!--<connection t1="76 Sea Zone" t2="Kenya"/>-->
                 <!--<connection t1="76 Sea Zone" t2="Anglo Egyptian Sudan"/> TODO: check this-->
                 <connection t1="Mozambique" t2="Union of South Africa"/>
                 <connection t1="Mozambique" t2="72 Sea Zone"/>
@@ -680,7 +680,7 @@
                 <connection t1="Brazil" t2="Peru"/>
                 <connection t1="Brazil" t2="Suriname"/>
                 <connection t1="Venezuela" t2="Colombia"/>
-                <connection t1="Venezuela" t2="88 Sea Zone"/>
+                <!--<connection t1="Venezuela" t2="88 Sea Zone"/>-->
                 <connection t1="127 Sea Zone" t2="126 Sea Zone"/>
                 <connection t1="127 Sea Zone" t2="Novgorod"/>
                 <connection t1="127 Sea Zone" t2="Finland"/>
@@ -2207,13 +2207,13 @@
 				 <attatchment name="canalAttatchmentGibraltar" attatchTo="92 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 					 <option name="canalName" value="Strait of Gibraltar"/>
 					 <option name="landTerritories" value="Gibraltar"/>
-					 <!-- TODO: gibraltar allows subs to pass -->
+					 <option name="excludedUnits" value="submarine:fighter:tactical_bomber:bomber"/>
 				 </attatchment>
 				 
 				 <attatchment name="canalAttatchmentGibraltar" attatchTo="91 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 					 <option name="canalName" value="Strait of Gibraltar"/>
 					 <option name="landTerritories" value="Gibraltar"/>
-					 <!-- TODO: gibraltar allows subs to pass -->
+					 <option name="excludedUnits" value="submarine:fighter:tactical_bomber:bomber"/>
 				 </attatchment>
 			 
 				<attatchment name="canalAttatchmentPanama" attatchTo="89 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
@@ -3960,6 +3960,12 @@ These changes to units are things other than price/movement which you can see in
 <br>
 <br>2.3
 <br>Preventing Combat-Movement takeover of Friendly Neutrals. You must now wait for Non-Combat Movement phase to take over them.
+<br>Allowing Submarines to pass through Straight of Gibraltar no matter who controls it.
+<br>Deleting connection between SZ65 and Ecuador
+<br>Deleting connection between SZ76 and Kenya
+<br>Deleting connection between SZ86 and French Guiana
+<br>Deleting connection between SZ88 and Venezuela
+<br>Deleting connection between SZ89 and Central USA
 <br>
 <br>2.2
 <br>Deleting connection between SZ110 and Scotland.
