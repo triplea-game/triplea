@@ -30,12 +30,14 @@ import java.util.Set;
 /**
  * Provides static methods for evaluating movement of air units.
  * 
- * @author veqryn
+ * @author veqryn [Mark Christopher Duncan]
  * 
  */
 public class AirMovementValidator
 {
 	public static final String NOT_ALL_AIR_UNITS_CAN_LAND = "Not all air units can land";
+	
+	// TODO: this class does a pretty good job already, but could be improved by having the carriers that are potentially moved also look for any owned air units that are in sea zones without carriers. these would be air units that have already been moved this turn, and therefore would need pickup.
 	
 	public static MoveValidationResult validateAirCanLand(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
 	{
@@ -138,7 +140,7 @@ public class AirMovementValidator
 		{
 			if (landAirOnNewCarriers && !carriersInProductionQueue.isEmpty())
 			{
-				if (Matches.territoryHasOwnedIsFactoryOrCanProduceUnitsNeighbor(data, player).match(t))
+				if (Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(data, player).match(t))
 				{
 					// TODO: Here we are assuming that this factory can produce all of the carriers. Actually it might not be able to produce any carriers (because of complex requires units coding) or because of unit damage or maximum production.
 					// TODO: Here we are also assuming that the first territory we find that has an adjacent factory is the closest one in terms of unit movement. We have sorted the list of territories so this IS the closest in terms of steps, but each unit may have specific movement allowances for different terrain or some bullshit like that.
@@ -235,7 +237,7 @@ public class AirMovementValidator
 					iter.remove();
 					continue;
 				}
-				final Collection<Unit> ownedAirInCarrierSpot = Match.getMatches(Match.getMatches(unitsInCarrierSpot, ownedAirMatch), UnitCanFindLand(data, landingSpot).invert()); // exclude any owned air that can fly to land
+				final Collection<Unit> ownedAirInCarrierSpot = Match.getMatches(Match.getMatches(unitsInCarrierSpot, ownedAirMatch), UnitCanFindLand(data, carrierSpot).invert()); // exclude any owned air that can fly to land
 				final Collection<Unit> alliedNotOwnedAirInCarrierSpot = Match.getMatches(unitsInCarrierSpot, alliedNotOwnedAirMatch);
 				final Map<Unit, Collection<Unit>> mustMoveWithMap = MoveValidator.carrierMustMoveWith(ownedCarriersInCarrierSpot, carrierSpot, data, player); // this only returns the allied cargo planes that MUST travel with the carrier
 				int carrierSpotCapacity = landingSpotsWithCarrierCapacity.getInt(carrierSpot); // get the current capacity for the carrier spot

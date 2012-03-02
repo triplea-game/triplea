@@ -1599,14 +1599,14 @@ public class Matches
 		};
 	}
 	
-	public static Match<Territory> territoryHasOwnedIsFactoryOrCanProduceUnitsNeighbor(final GameData data, final PlayerID player)
+	public static Match<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(final GameData data, final PlayerID player)
 	{
 		return new Match<Territory>()
 		{
 			@Override
 			public boolean match(final Territory t)
 			{
-				if (data.getMap().getNeighbors(t, Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, player)).size() > 0)
+				if (data.getMap().getNeighbors(t, Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(data, player)).size() > 0)
 					return true;
 				return false;
 			}
@@ -1669,6 +1669,25 @@ public class Matches
 				if (!t.getOwner().equals(player))
 					return false;
 				if (!t.getUnits().someMatch(Matches.UnitIsFactoryOrCanProduceUnits))
+					return false;
+				return true;
+			}
+		};
+	}
+	
+	public static Match<Territory> territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnits(final GameData data, final PlayerID player)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (!t.getOwner().equals(player))
+					return false;
+				if (!t.getUnits().someMatch(Matches.UnitIsFactoryOrCanProduceUnits))
+					return false;
+				final BattleTracker bt = MoveDelegate.getBattleTracker(data);
+				if (bt == null || bt.wasConquered(t))
 					return false;
 				return true;
 			}
