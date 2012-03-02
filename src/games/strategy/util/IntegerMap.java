@@ -33,7 +33,7 @@ import java.util.Set;
  * Supports adding and comparing of maps.
  * 
  * @author Sean Bridges
- * @version 1.0
+ * @version 2.0
  * 
  */
 public class IntegerMap<T> implements Cloneable, Serializable
@@ -362,6 +362,16 @@ public class IntegerMap<T> implements Cloneable, Serializable
 		{
 			removeKey(key);
 		}
+	}
+	
+	public boolean containsKey(final T key)
+	{
+		return m_values.containsKey(key);
+	}
+	
+	public boolean isEmpty()
+	{
+		return m_values.isEmpty();
 	}
 	
 	public Set<Entry<T, Integer>> entrySet()

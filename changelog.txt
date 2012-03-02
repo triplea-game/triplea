@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Fixing bugs in new air movement validation, and improving speed and efficiency. (veqryn)
+
 * Completely rewrote the validation of air unit movement, and moved it to a new class, AirMovementValidator.java (veqryn)
 
 * More work on rewriting MoveValidation of air units. (veqryn)

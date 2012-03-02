@@ -164,6 +164,7 @@ public class AirMovementValidator
 		final Match<Unit> ownedAirMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir, Matches.UnitCanLandOnCarrier);
 		final Match<Unit> alliedNotOwnedAirMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data), Matches.UnitIsAir,
 					Matches.UnitCanLandOnCarrier);
+		final Match<Unit> alliedNotOwnedCarrierMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player).invert(), Matches.isUnitAllied(player, data), Matches.UnitIsCarrier);
 		final Territory routeEnd = route.getEnd();
 		final boolean areNeutralsPassableByAir = areNeutralsPassableByAir(data);
 		final IntegerMap<Territory> landingSpotsWithCarrierCapacity = populateStaticAlliedAndBuildingCarrierCapacity(landingSpots, movedCarriersAndTheirFighters, player, data); // fill our landing spot capacity with capacity from allied carriers and potential building of new carriers
@@ -238,6 +239,12 @@ public class AirMovementValidator
 				final Collection<Unit> alliedNotOwnedAirInCarrierSpot = Match.getMatches(unitsInCarrierSpot, alliedNotOwnedAirMatch);
 				final Map<Unit, Collection<Unit>> mustMoveWithMap = MoveValidator.carrierMustMoveWith(ownedCarriersInCarrierSpot, carrierSpot, data, player); // this only returns the allied cargo planes that MUST travel with the carrier
 				int carrierSpotCapacity = landingSpotsWithCarrierCapacity.getInt(carrierSpot); // get the current capacity for the carrier spot
+				if (!landingSpotsWithCarrierCapacity.containsKey(carrierSpot)) // we don't have it because this spot is not in the landing zone area.
+				{
+					// we still have a capacity for allied carriers, but only to carry other allied or local owned units, not to carry our selected units.
+					carrierSpotCapacity = carrierCapacity(carrierSpot.getUnits().getMatches(alliedNotOwnedCarrierMatch), carrierSpot);
+					landingSpotsWithCarrierCapacity.put(carrierSpot, carrierSpotCapacity);
+				}
 				// we have allied air here, so we need to account for them before moving any carriers
 				if (!alliedNotOwnedAirInCarrierSpot.isEmpty() || !mustMoveWithMap.isEmpty())
 				{
@@ -305,6 +312,7 @@ public class AirMovementValidator
 						airMovingWith.addAll(alliedMovingWith);
 					// now test if our carrier has any room for owned fighters
 					int carrierCapacity = carrierCapacity(carrier, carrierSpot);
+					carrierCapacity -= carrierCost(airMovingWith);
 					final Iterator<Unit> ownedIter = ownedAirInCarrierSpot.iterator();
 					while (ownedIter.hasNext())
 					{
@@ -336,6 +344,7 @@ public class AirMovementValidator
 				{
 					movedCarriersAndTheirFighters.put(carrier, carriersToMove.get(carrier));
 					landingSpotCapacity += carrierCapacity(carrier, carrierSpot);
+					landingSpotCapacity -= carrierCost(carriersToMove.get(carrier));
 				}
 				// landingSpotsWithCarrierCapacity.put(landingSpot, landingSpotCapacity); // optional for debugging
 				final Iterator<Unit> reachIter = airCanReach.iterator();
@@ -463,12 +472,12 @@ public class AirMovementValidator
 	 *            the player owning the units
 	 * @return the combination of units that fly here and the existing owned units
 	 */
-	private static Collection<Unit> getAirUnitsToValidate(final Collection<Unit> units, final Route route, final PlayerID player)
+	private static List<Unit> getAirUnitsToValidate(final Collection<Unit> units, final Route route, final PlayerID player)
 	{
 		final Match<Unit> ownedAirMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.unitOwnedBy(player), Matches.UnitIsKamikaze.invert());
 		final ArrayList<Unit> ownedAir = new ArrayList<Unit>();
-		ownedAir.addAll(Match.getMatches(units, ownedAirMatch));
 		ownedAir.addAll(Match.getMatches(route.getEnd().getUnits().getUnits(), ownedAirMatch));
+		ownedAir.addAll(Match.getMatches(units, ownedAirMatch));
 		// sort the list by shortest range first so those birds will get first pick of landingspots
 		Collections.sort(ownedAir, UnitComparator.getIncreasingMovementComparator());
 		return ownedAir;
