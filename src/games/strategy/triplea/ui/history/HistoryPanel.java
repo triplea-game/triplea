@@ -433,6 +433,8 @@ public class HistoryPanel extends JPanel
 		if (!m_mouseOverPanel)
 		{
 			gotoNode(last);
+			if (m_lastParent == null)
+				m_lastParent = m_tree.getSelectionPath();
 			m_tree.setSelectionPath(path);
 			collapseExpanded(path);
 			collapseUpFromLastParent(parent);

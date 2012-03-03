@@ -598,7 +598,7 @@
 						<boolean/>
 				</property>
                 
-                <property name="Heavy Bomber Dice Rolls" value="2" editable="true">
+                <property name="Heavy Bomber Dice Rolls" value="2" editable="false">
                         <number min="2" max="10"/>
                 </property>
                                 
@@ -610,7 +610,7 @@
                         <boolean/>
                 </property>
                 
-                <property name="Tech Development" value="true" editable="true">
+                <property name="Tech Development" value="false" editable="false">
                         <boolean/>
                 </property>
                 
