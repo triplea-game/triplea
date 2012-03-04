@@ -1,4 +1,8 @@
 Changes for 1.5.1
+* Created new Trigger Attachment option, changeOwnership, which will allow a map to have the owner of a territory change by trigger. (veqryn)
+
+* For Trigger Attachment option "removeUnits", now allowing the use of "all" in place of the territory name, and also "all" in place of the unit type. Can be used to remove all units from some or all territories. (veqryn)
+
 * Correcting politics for Alpha xml. (veqryn)
 
 * Changing game property, Selectable Tech Roll, to also work with WW2V3 Tech Model, allowing the user to select which tech they want after a successful roll. Also fixed the dice chooser to let you set the sides. (veqryn)

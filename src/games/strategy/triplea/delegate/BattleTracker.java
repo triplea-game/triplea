@@ -347,7 +347,7 @@ public class BattleTracker implements java.io.Serializable
 		}
 	}
 	
-	protected void takeOver(final Territory territory, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker, final Collection<Unit> arrivingUnits)
+	public void takeOver(final Territory territory, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker, final Collection<Unit> arrivingUnits)
 	{
 		final GameData data = bridge.getData();
 		final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
@@ -421,10 +421,10 @@ public class BattleTracker implements java.io.Serializable
 			}
 			else
 			{
-				System.out.println("Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay " + PUChargeReal + ", but did not have enough PUs to pay! This is a bug.");
+				System.out.println("Player, " + id.getName() + " attacks a Neutral territory, and should have had to pay " + PUChargeIdeal + ", but did not have enough PUs to pay! This is a bug.");
 				bridge.getHistoryWriter().addChildToEvent(
 							id.getName() + " loses " + -PUChargeReal + " " + MyFormatter.pluralize("PU", -PUChargeReal) + " for violating " + territory.getName()
-										+ "s neutrality.  Correct amount to charge is: " + -PUChargeIdeal + ".  Player should not have been able to make this attack!");
+										+ "s neutrality.  Correct amount to charge is: " + PUChargeIdeal + ".  Player should not have been able to make this attack!");
 			}
 		}
 		// if its a capital we take the money
@@ -589,7 +589,7 @@ public class BattleTracker implements java.io.Serializable
 		}
 		// say they were in combat
 		// if the territory being taken over is water, then do not say any land units were in combat (they may want to unload from the transport and attack)
-		if (Matches.TerritoryIsWater.match(territory))
+		if (Matches.TerritoryIsWater.match(territory) && arrivingUnits != null)
 			arrivingUnits.removeAll(Match.getMatches(arrivingUnits, Matches.UnitIsLand));
 		markWasInCombat(arrivingUnits, bridge, changeTracker);
 	}

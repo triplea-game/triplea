@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Lord of the Rings: Middle Earth" version="1.3"/>
+        <info name="Lord of the Rings: Middle Earth" version="1.4"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -577,6 +577,7 @@
                 <connection t1="W. Sea Zone 3" t2="N. W. Central Sea Zone"/>
                 <connection t1="W. Sea Zone 3" t2="W. Sea Zone 4"/>
                 <connection t1="W. Sea Zone 4" t2="S. W. Central Sea Zone"/>
+                <connection t1="N. E. Central Sea Zone" t2="S. W. Central Sea Zone"/>
                 <connection t1="W. Sea Zone 4" t2="S. Sea Zone"/>
                 <connection t1="W. Sea Zone 4" t2="W. Sea Zone 5"/>
                 <connection t1="W. Sea Zone 5" t2="W. Sea Zone 6"/>
@@ -1720,7 +1721,7 @@
                          <option name="defense" value="3"/>
                          <option name="isAir" value="true"/>
                          <!--<option name="carrierCost" value="6"/>-->
-			       <option name="isStrategicBomber" value="true"/>
+						 <!--<option name="isStrategicBomber" value="true"/>-->
                     </attatchment>
 
                     <attatchment name="unitAttatchment" attatchTo="catapult" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -2990,7 +2991,7 @@
 	&lt;td&gt;2&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;1&lt;/td&gt;
-	&lt;td&gt;isSupportable&lt;/td&gt;
+	&lt;td&gt;givesSupport&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;td&gt;corsairs&lt;/td&gt;
@@ -3204,7 +3205,7 @@
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
 	&lt;td&gt;22&lt;/td&gt;
-	&lt;td&gt;is 2hit, canDoSBR&lt;/td&gt;
+	&lt;td&gt;is 2hit&lt;/td&gt;
 	&lt;/tr&gt;
 	
 	&lt;td&gt;eagles&lt;/td&gt;
@@ -3408,12 +3409,13 @@
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;There are 12 capitols in the game, sometimes they can fall easily, but on the other hand losing 1 capitol doesnt mean game has to be over yet.
 &lt;br&gt;
 &lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
-&lt;br&gt;&lt;b&gt;Changelist from 1.1 - 1.2:&lt;/b&gt;
+&lt;br&gt;&lt;b&gt;Changelist from 1.1 - 1.4:&lt;/b&gt;
 &lt;br&gt;
 &lt;div style=&quot;text-align: left;&quot;&gt;
 &lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Air units can no longer land on ships.
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Air units are allowed to fly over neutrals now.
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Balrog can no longer do Strategic Bombing Raids.
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Exchanged 1 orc for 1 siegeTower in Dol Goldur.
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Added Castle to Hobbiton.
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Reduced price of Griffin from 8 to 7.

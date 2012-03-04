@@ -22,6 +22,7 @@ import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
+import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
@@ -68,6 +69,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private ArrayList<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this trigger hits.
 	private String m_victory = null;
 	private ArrayList<Tuple<TriggerAttachment, String>> m_activateTrigger = new ArrayList<Tuple<TriggerAttachment, String>>();
+	private ArrayList<String> m_changeOwnership = new ArrayList<String>();
 	
 	// raw property changes below:
 	private ArrayList<UnitType> m_unitType = new ArrayList<UnitType>(); // really m_unitTypes, but we are not going to rename because it will break all existing maps
@@ -208,6 +210,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		triggerProductionChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
 		triggerProductionFrontierEditChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
 		triggerSupportChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerChangeOwnership(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
 		
 		// Misc changes that can happen multiple times, because they add or subtract, something from the game (and therefore can use "each")
 		triggerUnitRemoval(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
@@ -1224,6 +1227,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			m_removeUnits = null;
 			return;
 		}
+		if (m_removeUnits == null)
+			m_removeUnits = new HashMap<Territory, IntegerMap<UnitType>>();
 		final String[] s = value.split(":");
 		int count = -1, i = 0;
 		if (s.length < 1)
@@ -1238,26 +1243,48 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 		if (s.length < 1 || s.length == 1 && count != -1)
 			throw new GameParseException("Empty removeUnits list" + thisErrorMsg());
-		final Territory territory = getData().getMap().getTerritory(s[i]);
-		if (territory == null)
-			throw new GameParseException("Territory does not exist " + s[i] + thisErrorMsg());
+		final Collection<Territory> territories = new ArrayList<Territory>();
+		final Territory terr = getData().getMap().getTerritory(s[i]);
+		if (terr == null)
+		{
+			if (s[i].equalsIgnoreCase("all"))
+				territories.addAll(getData().getMap().getTerritories());
+			else
+				throw new GameParseException("Territory does not exist " + s[i] + thisErrorMsg());
+		}
 		else
 		{
-			i++;
-			final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
-			for (; i < s.length; i++)
+			territories.add(terr);
+		}
+		
+		i++;
+		final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
+		for (; i < s.length; i++)
+		{
+			final Collection<UnitType> types = new ArrayList<UnitType>();
+			final UnitType tp = getData().getUnitTypeList().getUnitType(s[i]);
+			if (tp == null)
 			{
-				final UnitType type = getData().getUnitTypeList().getUnitType(s[i]);
-				if (type == null)
-					throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
+				if (s[i].equalsIgnoreCase("all"))
+					types.addAll(getData().getUnitTypeList().getAllUnitTypes());
 				else
-					map.add(type, count);
+					throw new GameParseException("UnitType does not exist " + s[i] + thisErrorMsg());
 			}
-			if (m_removeUnits == null)
-				m_removeUnits = new HashMap<Territory, IntegerMap<UnitType>>();
-			if (m_removeUnits.containsKey(territory))
-				map.add(m_removeUnits.get(territory));
-			m_removeUnits.put(territory, map);
+			else
+			{
+				types.add(tp);
+			}
+			for (final UnitType type : types)
+			{
+				map.add(type, count);
+			}
+		}
+		
+		for (final Territory t : territories)
+		{
+			if (m_removeUnits.containsKey(t))
+				map.add(m_removeUnits.get(t));
+			m_removeUnits.put(t, map);
 		}
 	}
 	
@@ -1334,6 +1361,55 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearPurchase()
 	{
 		m_purchase.clear();
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param place
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setChangeOwnership(final String value) throws GameParseException
+	{
+		// territory:oldOwner:newOwner:booleanConquered
+		// can have "all" for territory and "any" for oldOwner
+		final String[] s = value.split(":");
+		if (s.length < 4)
+			throw new GameParseException("changeOwnership must have 4 fields: territory:oldOwner:newOwner:booleanConquered" + thisErrorMsg());
+		if (!s[0].equalsIgnoreCase("all"))
+		{
+			final Territory t = getData().getMap().getTerritory(s[0]);
+			if (t == null)
+				throw new GameParseException("No such territory: " + s[0] + thisErrorMsg());
+		}
+		if (!s[1].equalsIgnoreCase("any"))
+		{
+			final PlayerID oldOwner = getData().getPlayerList().getPlayerID(s[1]);
+			if (oldOwner == null)
+				throw new GameParseException("No such player: " + s[1] + thisErrorMsg());
+		}
+		final PlayerID newOwner = getData().getPlayerList().getPlayerID(s[2]);
+		if (newOwner == null)
+			throw new GameParseException("No such player: " + s[2] + thisErrorMsg());
+		getBool(s[3]);
+		m_changeOwnership.add(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setChangeOwnership(final ArrayList<String> value)
+	{
+		m_changeOwnership = value;
+	}
+	
+	public ArrayList<String> getChangeOwnership()
+	{
+		return m_changeOwnership;
+	}
+	
+	public void clearChangeOwnership()
+	{
+		m_changeOwnership.clear();
 	}
 	
 	private static void removeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> uMap, final PlayerID player, final IDelegateBridge aBridge)
@@ -2017,6 +2093,60 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			aBridge.addChange(change);
 	}
 	
+	public static void triggerChangeOwnership(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
+				final boolean testUses, final boolean testChance, final boolean testWhen)
+	{
+		final GameData data = aBridge.getData();
+		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, changeOwnershipMatch());
+		if (testWhen)
+			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
+		if (testUses)
+			trigs = Match.getMatches(trigs, availableUses);
+		final BattleTracker bt = DelegateFinder.battleDelegate(data).getBattleTracker();
+		for (final TriggerAttachment t : trigs)
+		{
+			if (testChance && !t.testChance(aBridge))
+				continue;
+			if (useUses)
+				t.use(aBridge);
+			for (final String value : t.getChangeOwnership())
+			{
+				final String[] s = value.split(":");
+				final Collection<Territory> territories = new ArrayList<Territory>();
+				if (s[0].equalsIgnoreCase("all"))
+				{
+					territories.addAll(data.getMap().getTerritories());
+				}
+				else
+				{
+					final Territory territorySet = data.getMap().getTerritory(s[0]);
+					territories.add(territorySet);
+				}
+				final PlayerID oldOwner = data.getPlayerList().getPlayerID(s[1]); // if null, then is must be "any", so then any player
+				final PlayerID newOwner = data.getPlayerList().getPlayerID(s[2]);
+				final boolean captured = getBool(s[3]);
+				for (final Territory terr : territories)
+				{
+					final PlayerID currentOwner = terr.getOwner();
+					if (currentOwner == null || currentOwner.isNull() || TerritoryAttachment.get(terr) == null)
+						continue; // any territory that has null owner or has no territory attachment should definitely not be changed
+					if (oldOwner != null && !oldOwner.equals(currentOwner))
+						continue;
+					aBridge.getHistoryWriter().startEvent(
+								MyFormatter.attachmentNameToText(t.getName()) + ": " + newOwner.getName() + (captured ? " captures territory " : " takes ownership of territory ") + terr.getName());
+					if (!captured)
+					{
+						aBridge.addChange(ChangeFactory.changeOwner(terr, newOwner));
+					}
+					else
+					{
+						bt.takeOver(terr, newOwner, aBridge, null, null);
+					}
+				}
+			}
+		}
+	}
+	
 	public static void triggerPurchase(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
@@ -2338,6 +2468,18 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			public boolean match(final TriggerAttachment t)
 			{
 				return t.getSupport() != null;
+			}
+		};
+	}
+	
+	public static Match<TriggerAttachment> changeOwnershipMatch()
+	{
+		return new Match<TriggerAttachment>()
+		{
+			@Override
+			public boolean match(final TriggerAttachment t)
+			{
+				return !t.getChangeOwnership().isEmpty();
 			}
 		};
 	}

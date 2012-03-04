@@ -109,7 +109,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 									TriggerAttachment.relationshipTypePropertyMatch(),
 									TriggerAttachment.territoryPropertyMatch(),
 									TriggerAttachment.territoryEffectPropertyMatch(),
-									TriggerAttachment.removeUnitsMatch()));
+									TriggerAttachment.removeUnitsMatch(),
+									TriggerAttachment.changeOwnershipMatch()));
 			
 			final Match<TriggerAttachment> moveCombatDelegateAfterBonusTriggerMatch = new CompositeMatchAnd<TriggerAttachment>(
 						TriggerAttachment.availableUses,
@@ -141,6 +142,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 						TriggerAttachment.triggerRelationshipTypePropertyChange(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
 						TriggerAttachment.triggerTerritoryPropertyChange(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
 						TriggerAttachment.triggerTerritoryEffectPropertyChange(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
+						TriggerAttachment.triggerChangeOwnership(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
 						TriggerAttachment.triggerUnitRemoval(toFireTestedAndSatisfied, aBridge, null, null, true, true, true, true);
 					}
 				}
