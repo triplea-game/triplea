@@ -12,7 +12,7 @@
 				-->
 				
 				<!-- Full sea zone list:
-				64 Sea Zone:65 Sea Zone:66 Sea Zone:67 Sea Zone:68 Sea Zone:69 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:73 Sea Zone:74 Sea Zone:75 Sea Zone:76 Sea Zone:77 Sea Zone:78 Sea Zone:79 Sea Zone:80 Sea Zone:81 Sea Zone:82 Sea Zone:83 Sea Zone:84 Sea Zone:85 Sea Zone:86 Sea Zone:87 Sea Zone:88 Sea Zone:89 Sea Zone:90 Sea Zone:91 Sea Zone:92 Sea Zone:93 Sea Zone:94 Sea Zone:95 Sea Zone:96 Sea Zone:97 Sea Zone:98 Sea Zone:99 Sea Zone:100 Sea Zone:101 Sea Zone:102 Sea Zone:103 Sea Zone:104 Sea Zone:105 Sea Zone:106 Sea Zone:107 Sea Zone:108 Sea Zone:109 Sea Zone:110 Sea Zone:111 Sea Zone:112 Sea Zone:113 Sea Zone:114 Sea Zone:115 Sea Zone:116 Sea Zone:117 Sea Zone:118 Sea Zone:119 Sea Zone:120 Sea Zone:121 Sea Zone:122 Sea Zone:123 Sea Zone:124 Sea Zone:125 Sea Zone:126 Sea Zone:127 Sea Zone
+				64 Sea Zone:65 Sea Zone:66 Sea Zone:67 Sea Zone:68 Sea Zone:69 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:73 Sea Zone:74 Sea Zone:75 Sea Zone:76 Sea Zone:77 Sea Zone:78 Sea Zone:79 Sea Zone:80 Sea Zone:81 Sea Zone:82 Sea Zone:83 Sea Zone:84 Sea Zone:85 Sea Zone:86 Sea Zone:87 Sea Zone:88 Sea Zone:89 Sea Zone:90 Sea Zone:91 Sea Zone:92 Sea Zone:93 Sea Zone:94 Sea Zone:95 Sea Zone:96 Sea Zone:97 Sea Zone:98 Sea Zone:99 Sea Zone:100 Sea Zone:101 Sea Zone:102 Sea Zone:103 Sea Zone:104 Sea Zone:105 Sea Zone:106 Sea Zone:107 Sea Zone:108 Sea Zone:109 Sea Zone:110 Sea Zone:111 Sea Zone:112 Sea Zone:113 Sea Zone:114 Sea Zone:115 Sea Zone:116 Sea Zone:117 Sea Zone:118 Sea Zone:119 Sea Zone:120 Sea Zone:121 Sea Zone:122 Sea Zone:123 Sea Zone:124 Sea Zone:125 Sea Zone:126 Sea Zone:127 Sea Zone:128 Sea Zone
 				-->
 				
                 <!-- Territory Definitions -->
@@ -217,6 +217,7 @@
                 <territory name="68 Sea Zone" water="true"/>
                 <territory name="88 Sea Zone" water="true"/>
                 <territory name="105 Sea Zone" water="true"/>
+				<territory name="128 Sea Zone" water="true"/>
 
                 <!-- Territory Connections -->
 				
@@ -428,6 +429,12 @@
                 <connection t1="Volgograd" t2="Caucasus"/>
                 <connection t1="Volgograd" t2="Kazakhstan"/>
                 <connection t1="Volgograd" t2="Samara"/>
+				<connection t1="128 Sea Zone" t2="Turkmenistan"/>
+				<connection t1="128 Sea Zone" t2="Caucasus"/>
+				<connection t1="128 Sea Zone" t2="Kazakhstan"/>
+				<connection t1="128 Sea Zone" t2="Northwest Persia"/>
+				<connection t1="128 Sea Zone" t2="Persia"/>
+				<connection t1="128 Sea Zone" t2="Eastern Persia"/>
                 <connection t1="Turkmenistan" t2="Kazakhstan"/>
                 <connection t1="Caucasus" t2="Kazakhstan"/>
                 <connection t1="Kazakhstan" t2="Samara"/>
@@ -3190,7 +3197,8 @@
                         <unitPlacement unitType="cruiser" territory="95 Sea Zone" quantity="1" owner="Italians"/>
                         <unitPlacement unitType="transport" territory="97 Sea Zone" quantity="1" owner="Italians"/>
                         <unitPlacement unitType="cruiser" territory="97 Sea Zone" quantity="1" owner="Italians"/>
-                        <unitPlacement unitType="destroyer" territory="97 Sea Zone" quantity="1" owner="Italians"/>                        <unitPlacement unitType="destroyer" territory="95 Sea Zone" quantity="1" owner="Italians"/>
+                        <unitPlacement unitType="destroyer" territory="97 Sea Zone" quantity="1" owner="Italians"/>
+						<unitPlacement unitType="destroyer" territory="95 Sea Zone" quantity="1" owner="Italians"/>
 						
 						<!-- Russians -->
 						
@@ -3759,15 +3767,14 @@
 This game uses vanilla rules, also knowns as OOB (out of the box). <br><br>
 
 <b>Disclaimer</b><br>
-The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org.<br><br>
+The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br><br>
 
 <b>Edit Mode</b><br>
-To Move Submarines passed the straight of Gibraltar, you may need to use Edit Mode.  Same for asking permission to move through a canal when not yet at war.<br><br>
+When not yet at war, you may ask for permission to move through a canal, and if granted, use Edit Mode to move the units.<br><br>
 
 <b>Stuff Left TODO</b><br>
-* Create special rules for Canals.<br>
 * Do not allow blitzing or movement through Friendly Neutrals.<br>
-* Caspian Sea is a sea zone (but what number?).<br>
+* Air units may not land in or move through Friendly Neutrals, including the same turn they are captured.<br>
 * Friendly Neutrals can not be 'captured' with an AA Gun, only by land units with an attack power.<br>
 <br><br>
 <br><hr><br>
@@ -3966,6 +3973,7 @@ These changes to units are things other than price/movement which you can see in
 <br>Deleting connection between SZ86 and French Guiana
 <br>Deleting connection between SZ88 and Venezuela
 <br>Deleting connection between SZ89 and Central USA
+<br>Adding Sea Zone 128 and its connections
 <br>
 <br>2.2
 <br>Deleting connection between SZ110 and Scotland.

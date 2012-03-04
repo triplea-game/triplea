@@ -1236,6 +1236,7 @@
                 <player name="French" optional="false"/>
 				
 				<player name="Dutch" optional="true"/>
+				<player name="Mongolians" optional="true"/>
 				<player name="Neutral_Axis" optional="true"/>
 				<player name="Neutral_Allies" optional="true"/>
 				<player name="Neutral_True" optional="true"/>
@@ -1255,6 +1256,7 @@
                 <alliance player="Italians" alliance="Axis"/>
 				
 				<alliance player="Dutch" alliance="Dutch"/>
+				<alliance player="Mongolians" alliance="Mongolians"/>
 				<alliance player="Neutral_Axis" alliance="Neutral_Axis"/>
 				<alliance player="Neutral_Allies" alliance="Neutral_Allies"/>
 				<alliance player="Neutral_True" alliance="Neutral_True"/>
@@ -2026,6 +2028,21 @@
                     </attatchment>
 					
 					<attatchment name="techAttatchment" attatchTo="Dutch" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                        <option name="superSub" value="false"/>
+                        <option name="jetPower" value="false"/>
+                        <option name="shipyards" value="false"/>
+                        <option name="aARadar" value="false"/>
+                        <option name="longRangeAir" value="false"/>
+                        <option name="heavyBomber" value="false"/>
+                        <option name="improvedArtillerySupport" value="false"/>
+                        <option name="rocket" value="false"/>
+                        <option name="paratroopers" value="false"/>
+                        <option name="increasedFactoryProduction" value="false"/>
+                        <option name="warBonds" value="false"/>
+                        <option name="mechanizedInfantry" value="false"/>
+                    </attatchment>
+					
+					<attatchment name="techAttatchment" attatchTo="Mongolians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="superSub" value="false"/>
                         <option name="jetPower" value="false"/>
                         <option name="shipyards" value="false"/>
@@ -3860,7 +3877,7 @@
 				<!-- Victory Triggers -->
 				 <attatchment name="triggerAttachmentAxisVictory1" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="trigger" value="conditionAttachmentAxisVictory0:conditionAttachmentAxisVictory3"/>
-					<option name="victory" value="The Axis achieve victory by controlling 14 VCs and keeping control of one of their own capitals!"/>
+					<option name="victory" value="The Axis achieve victory by controlling 8 Europe VCs or 6 Pacific VCs and keeping control of one of their own capitals!"/>
 					<option name="players" value="Germans:Italians:Japanese"/>
 				</attatchment>
 				
@@ -4276,6 +4293,9 @@
                 
 				
 		<!-- Player Attatchments -->
+				<attatchment name="playerAttatchment" attatchTo="Mongolians" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="captureUnitOnEnteringBy" value="Americans:French:British:ANZAC:Chinese:Russians:Germans:Italians:Japanese"/>
+				</attatchment>
 				<attatchment name="playerAttatchment" attatchTo="Neutral_Axis" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
 					<option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
 				</attatchment>
@@ -4679,13 +4699,12 @@
                         <territoryOwner territory="22 Sea Zone" owner="Japanese"/>
                         <territoryOwner territory="35 Sea Zone" owner="Japanese"/>
 
-						<!-- TODO: I think these are just straight up, anyone can attack, no restrictions or special rules.... but not totally sure:
-						<territoryOwner territory="Olgiy" owner="Neutral_True"/>
-						<territoryOwner territory="Dzavhan" owner="Neutral_True"/>
-						<territoryOwner territory="Tsagaan Olom" owner="Neutral_True"/>
-						<territoryOwner territory="Central Mongolia" owner="Neutral_True"/>
-						<territoryOwner territory="Buyant-Uhaa" owner="Neutral_True"/>
-						<territoryOwner territory="Ulaanbaatar" owner="Neutral_True"/>-->
+						<territoryOwner territory="Olgiy" owner="Mongolians"/>
+						<territoryOwner territory="Dzavhan" owner="Mongolians"/>
+						<territoryOwner territory="Tsagaan Olom" owner="Mongolians"/>
+						<territoryOwner territory="Central Mongolia" owner="Mongolians"/>
+						<territoryOwner territory="Buyant-Uhaa" owner="Mongolians"/>
+						<territoryOwner territory="Ulaanbaatar" owner="Mongolians"/>
 						
 						<!-- E40 -->
 						<territoryOwner territory="Brazil" owner="Neutral_Allies"/>
@@ -4831,10 +4850,10 @@
                         <unitPlacement unitType="infantry" territory="Sweden" quantity="6" owner="Neutral_True"/>
                         <unitPlacement unitType="infantry" territory="Spain" quantity="6" owner="Neutral_True"/>
 						
-						<unitPlacement unitType="infantry" territory="Ulaanbaatar" quantity="1"/>
-						<unitPlacement unitType="infantry" territory="Buyant-Uhaa" quantity="2"/>
-						<unitPlacement unitType="infantry" territory="Olgiy" quantity="2"/>
-						<unitPlacement unitType="infantry" territory="Dzavhan" quantity="1"/>
+						<unitPlacement unitType="infantry" territory="Ulaanbaatar" quantity="1" owner="Mongolians"/>
+						<unitPlacement unitType="infantry" territory="Buyant-Uhaa" quantity="2" owner="Mongolians"/>
+						<unitPlacement unitType="infantry" territory="Olgiy" quantity="2" owner="Mongolians"/>
+						<unitPlacement unitType="infantry" territory="Dzavhan" quantity="1" owner="Mongolians"/>
 						
                         <unitPlacement unitType="infantry" territory="Brazil" quantity="3" owner="Neutral_Allies"/>
                         <unitPlacement unitType="infantry" territory="Persia" quantity="2" owner="Neutral_Allies"/>
@@ -5342,6 +5361,7 @@
 						<relationship player1="Germans" player2="Neutral_Axis" type="Friendly_Neutral" roundValue="1"/>
 						<relationship player1="Germans" player2="Neutral_Allies" type="Unfriendly_Neutral" roundValue="1"/>
 						<relationship player1="Germans" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="Germans" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 						
 						<relationship player1="Russians" player2="Japanese" type="Neutrality" roundValue="1"/>
 						<relationship player1="Russians" player2="Americans" type="Neutrality" roundValue="1"/>
@@ -5355,6 +5375,7 @@
 						<relationship player1="Russians" player2="Neutral_Axis" type="Neutrality" roundValue="1"/>
 						<relationship player1="Russians" player2="Neutral_Allies" type="Neutrality" roundValue="1"/>
 						<relationship player1="Russians" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="Russians" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 						
 						<relationship player1="Japanese" player2="Americans" type="Neutrality" roundValue="1"/>
 						<relationship player1="Japanese" player2="Chinese" type="War" roundValue="1"/>
@@ -5367,6 +5388,7 @@
 						<relationship player1="Japanese" player2="Neutral_Axis" type="Friendly_Neutral" roundValue="1"/>
 						<relationship player1="Japanese" player2="Neutral_Allies" type="Unfriendly_Neutral" roundValue="1"/>
 						<relationship player1="Japanese" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="Japanese" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 
 						<relationship player1="Americans" player2="Chinese" type="Neutrality" roundValue="1"/>
 						<relationship player1="Americans" player2="British" type="Neutrality" roundValue="1"/>
@@ -5378,6 +5400,7 @@
 						<relationship player1="Americans" player2="Neutral_Axis" type="Neutrality" roundValue="1"/>
 						<relationship player1="Americans" player2="Neutral_Allies" type="Neutrality" roundValue="1"/>
 						<relationship player1="Americans" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="Americans" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 
 						<relationship player1="Chinese" player2="British" type="Neutrality" roundValue="1"/>
 						<relationship player1="Chinese" player2="UK_Pacific" type="Neutrality" roundValue="1"/>
@@ -5388,6 +5411,7 @@
 						<relationship player1="Chinese" player2="Neutral_Axis" type="Unfriendly_Neutral" roundValue="1"/>
 						<relationship player1="Chinese" player2="Neutral_Allies" type="Friendly_Neutral" roundValue="1"/>
 						<relationship player1="Chinese" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="Chinese" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 						
 						<relationship player1="British" player2="UK_Pacific" type="Allied" roundValue="1"/>
 						<relationship player1="British" player2="Italians" type="War" roundValue="1"/>
@@ -5397,6 +5421,7 @@
 						<relationship player1="British" player2="Neutral_Axis" type="Unfriendly_Neutral" roundValue="1"/>
 						<relationship player1="British" player2="Neutral_Allies" type="Friendly_Neutral" roundValue="1"/>
 						<relationship player1="British" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="British" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 						
 						<relationship player1="UK_Pacific" player2="Italians" type="War" roundValue="1"/>
 						<relationship player1="UK_Pacific" player2="ANZAC" type="Allied" roundValue="1"/>
@@ -5405,6 +5430,7 @@
 						<relationship player1="UK_Pacific" player2="Neutral_Axis" type="Unfriendly_Neutral" roundValue="1"/>
 						<relationship player1="UK_Pacific" player2="Neutral_Allies" type="Friendly_Neutral" roundValue="1"/>
 						<relationship player1="UK_Pacific" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="UK_Pacific" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 						
 						<relationship player1="Italians" player2="ANZAC" type="War" roundValue="1"/>
 						<relationship player1="Italians" player2="French" type="War" roundValue="1"/>
@@ -5412,27 +5438,35 @@
 						<relationship player1="Italians" player2="Neutral_Axis" type="Friendly_Neutral" roundValue="1"/>
 						<relationship player1="Italians" player2="Neutral_Allies" type="Unfriendly_Neutral" roundValue="1"/>
 						<relationship player1="Italians" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="Italians" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 						
 						<relationship player1="ANZAC" player2="French" type="Allied" roundValue="1"/>
 						<relationship player1="ANZAC" player2="Dutch" type="Custodianship" roundValue="1"/>
 						<relationship player1="ANZAC" player2="Neutral_Axis" type="Unfriendly_Neutral" roundValue="1"/>
 						<relationship player1="ANZAC" player2="Neutral_Allies" type="Friendly_Neutral" roundValue="1"/>
 						<relationship player1="ANZAC" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="ANZAC" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 
 						<relationship player1="French" player2="Dutch" type="Friendly" roundValue="1"/>
 						<relationship player1="French" player2="Neutral_Axis" type="Unfriendly_Neutral" roundValue="1"/>
 						<relationship player1="French" player2="Neutral_Allies" type="Friendly_Neutral" roundValue="1"/>
 						<relationship player1="French" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="French" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 
 						<relationship player1="Dutch" player2="Neutral_Axis" type="Unfriendly_Neutral" roundValue="1"/>
 						<relationship player1="Dutch" player2="Neutral_Allies" type="Friendly_Neutral" roundValue="1"/>
 						<relationship player1="Dutch" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="Dutch" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 						
 						<relationship player1="Neutral_Axis" player2="Neutral_Allies" type="Neutrality" roundValue="1"/>
 						<relationship player1="Neutral_Axis" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
+						<relationship player1="Neutral_Axis" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 						
 						<relationship player1="Neutral_Allies" player2="Neutral_True" type="Strict_Neutral" roundValue="1"/>
-
+						<relationship player1="Neutral_Allies" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
+						
+						<relationship player1="Neutral_True" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
+						
 				</relationshipInitialize>
 				
         </initialize>
@@ -5915,26 +5949,29 @@
 This game uses the latest Alpha +3 rules, as posted on Larry's website.<br><br>
 
 <b>Disclaimer</b><br>
-The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org.<br><br>
+The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br><br>
 
 <b>Edit Mode</b><br>
-To Move Submarines passed the straight of Gibraltar, you may need to use Edit Mode.  Same for asking permission to move through a canal when not yet at war.<br><br>
+When not yet at war, you may ask for permission to move through a canal, and if granted, use Edit Mode to move the units.<br><br>
 
 <b>Stuff Left TODO</b><br>
-* Create special rules for Canals.<br>
 * Do not allow blitzing or movement through Friendly Neutrals.<br>
-* Caspian Sea is a sea zone (but what number?).<br>
+* Air units may not land in or move through Friendly Neutrals, including the same turn they are captured.<br>
 * Friendly Neutrals can not be 'captured' with an AA Gun, only by land units with an attack power.<br>
 * Kamikaze attacks will prevent bombardment.  So will Scrambling attacks.<br>
 * Captured naval and air bases can not be used until next round.  In other words, you can't somehow use the naval base for bonus movement during noncombat.<br>
+* New Blockade Zone rules.<br>
+* If UK Pacific captures Japan, the money goes to UK Pacific, even if UK Pacific's capital is occupied.<br>
+* UK Pacific may for part or all of any Tech Tokens purchased by the British.<br>
+* Tactical Bombers may only target Airfields and Harbours for strategic bombing, and may not target any factories.<br>
 <br><br>
 <br><hr><br>
 
 <b>Victory Conditions</b><br>
 To win with the following victory conditions, a side must <b>maintain it for a complete round of play</b> and must also control at least one of its own capital cities.<br><br>
 
-<b>Axis Victory:</b> 14 Victories Cities where at least one is Rome/Berlin/Japan.<br>
-<b>Allied Victory:</b> Both Berlin and Rome and Japan are under allied control and allies maintain control of one of their own capitals.
+<b>Axis Victory:</b> 8 European Victory Cities OR 6 Pacific Victory Cities where at least one is Rome/Berlin/Japan.<br>
+<b>Allied Victory:</b> Berlin and Rome and Japan are under allied control and allies maintain control of one of their own capitals.
 <br><br>
 
 <b>Canals/Straits</b><br>
@@ -5984,20 +6021,23 @@ Air units have no restrictions for any strait or canal.
 <b>Political Situation</b><br>
 At the start of the game Germany and Italy are at war with the UK and ANZAC and France only, while Japan is at war with China only. Any countries not at war with each other ignore each other's naval units and obviously cannot go into each others ground territories. There are a number of specific politically related rules/conditions for each country:<br><br>
 
-<b>Germany/Italy</b>
+<b>Germany/Italy/Japan</b>
 <ul>
 <li>Germany/Italy/Japan can declare war on USA or Russia or China at any time.</li>
 <li>If Germany/Italy/Japan is at war with one of USA or Russia or China it doesn't affect relations with the other.</li>
+<li>While not yet at war with the USA, Japan may not move into sea zones within 2 spaces of Western USA or Alaska.</li>
 </ul>
 <br><b>Russia</b>
 <ul>
-<li>Russia cannot go to war against the Germans and Italians until the <b>beginning of purchase units phase</b> of Russia 4, unless of course they attack it first.</li>
+<li>Russia cannot go to war against the Germans and Italians until the <b>beginning of purchase units phase</b> of Russia 4, unless of course they attack it first, or the Axis capture London.</li>
 <li>Russia and Japan may declare war on each other at any time.  When not at war, Russia may not enter China.</li>
 </ul>
 <br><b>USA</b>
 <ul>
-<li>If USA is not at war with Germany and Italy, USA may not move its ships to any Sea Zone touching UK, Europe, or Africa.</li>
+<li>If USA is not at war with Germany or Italy, USA may only move its units to sea zones touching USA territories and also Sea Zone 102.</li>
+<li>If USA is not at war with Japan, USA may not move its units into sea zones touching Japanese controlled territories.</li>
 <li>USA cannot go to war against the Axis until the <b>beginning of PU collect phase</b> of USA 3, unless of course an Axis power attacks it first.</li>
+<li>Once at war, the Minor Factories in continental USA upgrade to Major Factories automatically for free, and may be used immediately.</li>
 </ul>
 <br><b>Neutrals</b><br>
 There are three types of neutrals: 
@@ -6018,44 +6058,55 @@ When a country moves into a regular or non-friendly neutral during the combat mo
 <b>Germany</b>
 <ul>
 <li>5 PUs if not yet at war with Russia.</li>
-<li>5 PUs for each Axis controlled territory: Volgograd or Novgorod or Russia.</li>
-<li>3 PUs if there is at least one German land unit in Egypt, whether or not it is controlled by Italy or Germany or Japan.</li>
-<li>5 PUs if Germany controls both Denmark and Norway and Sweden is not allied-controlled.</li>
+<li>5 PUs for each German controlled territory: Volgograd or Novgorod or Russia.</li>
+<li>5 PUs if Axis controls the Caucasus.</li>
+<li>5 PUs if there is at least one German land unit in Egypt, whether or not it is controlled by Italy or Germany or Japan.</li>
+<li>5 PUs if Germany controls both Denmark and Norway and Sweden is not allied-controlled or pro-allied.</li>
+<li>2 PUs for each German controlled territory: Iraq or Persia or Northwest Persia.</li>
 </ul>
 
 <b>Russia</b>
 <ul>
 <li>5 PUs if Russia is at war, sz125 has no Axis warships (all sea units except transports), Archangel is Russia-controlled, and there are no allied units in any Russian territories.</li> 
-<li>6 PUs for each originally German territory that Russia controls <b>only if</b> Russia controls its original territories.</li>
+<li>3 PUs for each originally German, Italian, or Pro-Axis neutral territory that Russia controls.</li>
+<li>10 PUs one time only, the first time Russia conquers Germany (Berlin).</li>
 </ul>
 
 <b>Japan</b>
 <ul>
-<li>5 PUs for each Japanese controlled territory: Hawaii, India, New South Wales.</li> 
+<li>10 PUs if not yet at war with USA, UK, or ANZAC, and has not yet attacked French Indo-China.</li>
+<li>5 PUs if Japan controls all of Guam, Midway, Wake Island, Gilbert Islands, and Solomon Islands.</li>
+<li>5 PUs for each Japanese controlled territory: Hawaii, India, New South Wales, and Western United States.</li>
 <li>5 PUs if Japan controls all of Sumatra, Java, Borneo, and Celebes.</li>
 </ul>
 
 <b>UK</b>
 <ul>
-<li>5 PUs if UK and ANZAC both control all their original territories.</li>
-<li>5 PUs if there are no German subs.</li>
+<li>5 PUs for UK Europe if UK Europe controls of its original territories.</li>
+<li>5 PUs for UK Pacific if UK Pacific controls both Kwangtung and Malaya, and is at war with Japan.</li>
 </ul>
 
 <b>ANZAC</b>
 <ul>
-<li>5 PUs if the Allies (not including Dutch) control all of Dutch New Guinea, New Guinea, New Britain, and the Solomon Islands.</li>
-<li>3 PUs if the Allies control Malaya, and ANZAC controls all of their original territories.</li>
+<li>5 PUs if the Allies control Malaya, and ANZAC controls all of their original territories, and is at war with Japan.</li>
+<li>5 PUs if the Allies (not including Dutch) control all of Dutch New Guinea, New Guinea, New Britain, and the Solomon Islands, and is at war with Japan.</li>
 </ul>
 
 <b>Italy</b>
 <ul>
-<li>5 PUs if Axis controll all of: Egypt, Southern France and Greece.</li>
 <li>5 PUs if no Allied ships are in the Med: sz92,...,sz99.</li>
+<li>5 PUs if Axis control at least 3 of: Gibraltar, Egypt, Southern France and Greece.</li>
+<li>5 PUs if Axis controll all of: Morocco, Algeria, Tunisia, Libya, Tobruk, and Alexandria.</li>
+<li>2 PUs for each Italian controlled territory: Iraq or Persia or Northwest Persia.</li>
 </ul>
 
 <b>USA</b>
 <ul>
-<li>30 PUs if USA is at war and EUS, WUS, and CUS are American-controlled.</li>
+<li>10 PUs if USA is at war and EUS, WUS, and CUS are American-controlled.</li>
+<li>5 PUs if USA is at war and Alaska, Aleutian Islands, Hawaiian Islands, and Johnston Island, and Line Islands are American-controlled.</li>
+<li>5 PUs if USA is at war and Mexico, South Eastern Mexico, Central America, and West Indies are American-controlled.</li>
+<li>5 PUs if USA is at war and the Philippines is American-controlled.</li>
+<li>5 PUs each turn the USA has one land unit in France.</li>
 </ul>
 
 <b>China</b>
@@ -6065,7 +6116,7 @@ When a country moves into a regular or non-friendly neutral during the combat mo
 
 <b>French</b>
 <ul>
-<li>4 Free Infantry in France the first time France is Liberated.</li>
+<li>12 PUs worth of free units in France the first time France is Liberated (used edit mode if you want something other than 4 infantry).</li>
 </ul>
 <br><hr><br>
 
@@ -6074,7 +6125,7 @@ When a country moves into a regular or non-friendly neutral during the combat mo
 <b>Kamikaze Attacks</b><br>
 Japan starts the game with 6 attack tokens, and may begin doing Kamikaze Attacks at the start of the game.<br>
 These attacks can only be done in sea zones that contain the Kamikaze symbol [the sea zones surrounding: Japan, Okinawa, Iwo Jima, Formosa, and the Marianas].<br>
-At the end of Japan's enemy's combat-move phase, Japan may target any surface warship in a Kamikaze zone for one or more Kamikaze attacks.<br>
+At the end of Japan's enemy's combat-move phase, Japan may target any surface warship in a Kamikaze zone for one or more Kamikaze attacks, ONLY if the enemy is conducting an Amphibious Assault from that sea zone.<br>
 For each attack, a die is rolled, and a 2 or less is considered a hit. Casualties are removed immediately, and do not participate in any battles. Kamikaze attacks prevent bombardment as well.<br>
 <br><br><hr><br>
 
@@ -6086,6 +6137,7 @@ In any Sea Zone containing an enemy submarine, but not containing an Owned surfa
 <b>Scrambling</b><br>
 Fighters and/or Tactical bombers can be scrambled from any territory bordering a sea zone, with an operating airfield (less than 3 damage) to help defend the surrounding sea zone using their standard defense values. They cannot retreat from scrambling (defenders can never retreat) and if the territory they were scrambled from is captured, they're given one extra movement point to land on a friendly territory or open carrier. Scrambled air cannot participate in any other battles that round.
 <br><br><hr><br>
+
 <b>Strategic Bombing Runs (SBR)</b><br>
 Bombing can now happen against both types of ICs, harbours, and airfields (attackers choice)[tactical bombers can not target factories though]. Fighters can participate in the bombing run as escorts. Fighters in the territory being bombed can be launched as interceptors (no airfield necessary).<br><br>
 <b>If interceptors are launched:</b> a one-round air battle takes place right away where bombers dont roll, escorts roll at one and interceptors roll at two. Either attacking bombers or fighters can be taken as casualties.<br><br>
@@ -6095,13 +6147,15 @@ After the air battle, or if there were no interceptors, the escorts are retreate
 <br><br><hr><br>
 
 <b>Blockade Zones</b><br>
-If any enemy ships are in a power's blockade zones at the end of that power's turn, and the power controls the adjacent ground territory, then the power loses 1 PU for each surface warship and 2 PUs for each submarine present. The power in question cannot lose more PUs from a blockade zones then the worth of the adjacent ground territory to those zones.
+If any enemy ships are in a power's blockade zones at the end of that power's turn, and the power controls the adjacent ground territory, then the power may lose some of the PUs it would have otherwise collected.<br>
+Surface warships roll 1 dice, Submarines and Air units roll 2 dice, and carriers and transports roll zero dice.  For any roll less than 3, that amount of PUs will not be collected by the surrounding land territories.
+The power in question cannot lose more PUs from a blockade zones then the worth of the adjacent ground territory to those zones.
 
 <br><br><hr><br>
 
 <b>Placement Restrictions</b>
 <ul>
-<li>Major Industrial Complexes can only go in territories worth 3 or more.</li>
+<li>Major Industrial Complexes can only go in territories worth 3 or more, and must be originally owned territories.</li>
 <li>Minor Industrial Complexes can only go in territories worth 2 or more.</li>
 <li>Industrial Complexes can't be built on islands.</li>
 <li>Over-purchase is returned and money is reimbursed.</li>
@@ -6114,8 +6168,9 @@ These changes to units are things other than price/movement which you can see in
 <ul>
 <li>Bombers now do 2 additional damage in strategic bombing raids, in addition to their dice roll.</li>
 <li>Carriers are two hit.</li>
-<li>Minor Industrial Complexes have 3 production capacity. A Minor IC can be upgraded to a Major IC for 20 PUs.</li>
+<li>Minor Industrial Complexes have 3 production capacity. A Minor IC can be upgraded to a Major IC for 20 PUs, but only on originally owned territories.</li>
 <li>Major Industrial Complexes have 10 production capacity. When a Major IC is captured it automatically becomes a minor IC.</li>
+<li>AA Guns may be taken casualty in combat, and may only fire at up to 3 aircraft each.</li>
 </ul>
 
 <b>New Units</b><br>
@@ -6132,6 +6187,8 @@ These changes to units are things other than price/movement which you can see in
 <br>Change Log:
 <br>
 <br>2.2
+<br>Added Mongolia in order to have complex Mongolian rules.
+<br>Finishing Alpha +3 National Objectives.
 <br>Preventing Combat-Movement takeover of Friendly Neutrals. You must now wait for Non-Combat Movement phase to take over them.
 <br>Allowing Submarines to pass through Straight of Gibraltar no matter who controls it.
 <br>Adding connection between Timguska and Novosibirsk

@@ -5664,15 +5664,14 @@
 This game uses vanilla rules, also knowns as OOB (out of the box). <br><br>
 
 <b>Disclaimer</b><br>
-The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org.<br><br>
+The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br><br>
 
 <b>Edit Mode</b><br>
-To Move Submarines passed the straight of Gibraltar, you may need to use Edit Mode.  Same for asking permission to move through a canal when not yet at war.<br><br>
+When not yet at war, you may ask for permission to move through a canal, and if granted, use Edit Mode to move the units.<br><br>
 
 <b>Stuff Left TODO</b><br>
-* Create special rules for Canals.<br>
 * Do not allow blitzing or movement through Friendly Neutrals.<br>
-* Caspian Sea is a sea zone (but what number?).<br>
+* Air units may not land in or move through Friendly Neutrals, including the same turn they are captured.<br>
 * Friendly Neutrals can not be 'captured' with an AA Gun, only by land units with an attack power.<br>
 * Kamikaze attacks will prevent bombardment.  So will Scrambling attacks.<br>
 * Captured naval and air bases can not be used until next round.  In other words, you can't somehow use the naval base for bonus movement during noncombat.<br>
@@ -5682,7 +5681,7 @@ To Move Submarines passed the straight of Gibraltar, you may need to use Edit Mo
 <b>Victory Conditions</b><br>
 To win with the following victory conditions, a side must <b>maintain it for a complete round of play</b> and must also control at least one of its own capital cities.<br><br>
 
-<b>Axis Victory:</b> 14 Victories Cities where at least one is Rome/Berlin/Japan.<br>
+<b>Axis Victory:</b> 14 Victory Cities where at least one is Rome/Berlin/Japan.<br>
 <b>Allied Victory:</b> Both Berlin and Rome and Japan are under allied control and allies maintain control of one of their own capitals.
 <br><br>
 
@@ -5733,7 +5732,7 @@ Air units have no restrictions for any strait or canal.
 <b>Political Situation</b><br>
 At the start of the game Germany and Italy are at war with the UK and ANZAC and France only, while Japan is at war with China only. Any countries not at war with each other ignore each other's naval units and obviously cannot go into each others ground territories. There are a number of specific politically related rules/conditions for each country:<br><br>
 
-<b>Germany/Italy</b>
+<b>Germany/Italy/Japan</b>
 <ul>
 <li>Germany/Italy/Japan can declare war on USA or Russia or China at any time.</li>
 <li>If Germany/Italy/Japan is at war with one of USA or Russia or China it doesn't affect relations with the other.</li>

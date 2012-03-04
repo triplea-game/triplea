@@ -1,5 +1,7 @@
 Changes for 1.5.1
-* Changing game property, Selectable Tech Roll, to only work with WW2V3 Tech Model, allowing the user to select which tech they want after a successful roll. Also fixed the dice chooser to let you set the sides. (veqryn)
+* Correcting politics for Alpha xml. (veqryn)
+
+* Changing game property, Selectable Tech Roll, to also work with WW2V3 Tech Model, allowing the user to select which tech they want after a successful roll. Also fixed the dice chooser to let you set the sides. (veqryn)
 
 * Fixing bugs in new air movement validation, and improving speed and efficiency. (veqryn)
 
