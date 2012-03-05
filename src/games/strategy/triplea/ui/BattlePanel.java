@@ -85,6 +85,8 @@ public class BattlePanel extends ActionPanel
 	// being garbage collected
 	// reuse one frame
 	private final JFrame m_battleFrame;
+	Collection<Territory> m_battles;
+	Collection<Territory> m_bombing;
 	
 	/** Creates new BattlePanel */
 	public BattlePanel(final GameData data, final MapPanel map)
@@ -133,7 +135,13 @@ public class BattlePanel extends ActionPanel
 		});
 	}
 	
-	public void display(final PlayerID id, final Collection<Territory> battles, final Collection<Territory> bombing)
+	public void setBattlesAndBombing(final Collection<Territory> battles, final Collection<Territory> bombing)
+	{
+		m_battles = battles;
+		m_bombing = bombing;
+	}
+	
+	public void display(final PlayerID id)
 	{
 		super.display(id);
 		SwingUtilities.invokeLater(new Runnable()
@@ -146,12 +154,12 @@ public class BattlePanel extends ActionPanel
 				final JPanel panel = new JPanel();
 				panel.setLayout(new GridLayout(0, 1));
 				panel.add(m_actionLabel);
-				Iterator<Territory> iter = battles.iterator();
+				Iterator<Territory> iter = m_battles.iterator();
 				while (iter.hasNext())
 				{
 					addBattleActions(panel, iter, false, "Normal");
 				}
-				iter = bombing.iterator();
+				iter = m_bombing.iterator();
 				while (iter.hasNext())
 				{
 					addBattleActions(panel, iter, true, "Bombing"); // TODO: need to fix

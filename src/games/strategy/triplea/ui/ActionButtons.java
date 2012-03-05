@@ -117,116 +117,64 @@ public class ActionButtons extends JPanel
 	
 	public void changeToMove(final PlayerID id, final boolean nonCombat)
 	{
-		m_current.setActive(false);
-		m_current = m_movePanel;
-		m_movePanel.display(id, nonCombat);
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				m_layout.show(ActionButtons.this, m_movePanel.toString());
-			}
-		});
+		m_movePanel.setNonCombat(nonCombat);
+		changeTo(id, m_movePanel);
 	}
 	
 	public void changeToRepair(final PlayerID id)
 	{
-		m_current.setActive(false);
-		m_current = m_repairPanel;
-		m_repairPanel.display(id);
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				m_layout.show(ActionButtons.this, m_repairPanel.toString());
-			}
-		});
+		changeTo(id, m_repairPanel);
 	}
 	
 	public void changeToProduce(final PlayerID id)
 	{
-		m_current.setActive(false);
-		m_current = m_purchasePanel;
-		m_purchasePanel.display(id);
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				m_layout.show(ActionButtons.this, m_purchasePanel.toString());
-			}
-		});
+		
+		changeTo(id, m_purchasePanel);
 	}
 	
 	public void changeToPlace(final PlayerID id)
 	{
-		m_current.setActive(false);
-		m_current = m_placePanel;
-		m_placePanel.display(id);
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				m_layout.show(ActionButtons.this, m_placePanel.toString());
-			}
-		});
+		changeTo(id, m_placePanel);
 	}
 	
 	public void changeToBattle(final PlayerID id, final Collection<Territory> battles, final Collection<Territory> bombing)
 	{
-		m_current.setActive(false);
-		m_current = m_battlePanel;
-		m_battlePanel.display(id, battles, bombing);
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				m_layout.show(ActionButtons.this, m_battlePanel.toString());
-			}
-		});
+		m_battlePanel.setBattlesAndBombing(battles, bombing);
+		changeTo(id, m_battlePanel);
 	}
 	
 	public void changeToPolitics(final PlayerID id)
 	{
-		m_current.setActive(false);
-		m_current = m_politicsPanel;
-		m_politicsPanel.display(id);
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				m_layout.show(ActionButtons.this, m_politicsPanel.toString());
-			}
-		});
+		
+		changeTo(id, m_politicsPanel);
 	}
 	
 	public void changeToTech(final PlayerID id)
 	{
-		m_current.setActive(false);
-		m_current = m_techPanel;
-		m_techPanel.display(id);
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				m_layout.show(ActionButtons.this, m_techPanel.toString());
-			}
-		});
+		
+		changeTo(id, m_techPanel);
 	}
 	
 	public void changeToEndTurn(final PlayerID id)
 	{
+		
+		changeTo(id, m_endTurnPanel);
+	}
+	
+	private void changeTo(final PlayerID id, final ActionPanel newCurrent)
+	{
 		m_current.setActive(false);
-		m_current = m_endTurnPanel;
-		m_endTurnPanel.display(id);
+		m_current = newCurrent;
+		m_current.display(id);
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
-				m_layout.show(ActionButtons.this, m_endTurnPanel.toString());
+				m_layout.show(ActionButtons.this, m_current.toString());
 			}
 		});
 	}
-	
+
 	/**
 	 * Blocks until the user selects their purchase.
 	 * 

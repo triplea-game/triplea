@@ -1541,11 +1541,15 @@ public class MovePanel extends AbstractMovePanel
 		getMap().setRoute(null);
 	}
 	
-	public final void display(final PlayerID id, final boolean nonCombat)
+	public final void setNonCombat(final boolean nonCombat)
 	{
 		m_nonCombat = nonCombat;
+	}
+	
+	public final void display(final PlayerID id)
+	{
 		m_transportTracker = new TransportTracker();
-		super.display(id, (nonCombat ? " non combat" : " combat") + " move");
+		super.display(id, (m_nonCombat ? " non combat" : " combat") + " move");
 	}
 	
 	/**
