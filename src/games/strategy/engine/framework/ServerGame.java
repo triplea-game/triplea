@@ -613,17 +613,17 @@ public class ServerGame implements IGame
 	
 	private void notifyGameStepChanged(final boolean loadedFromSavedGame)
 	{
-		final String stepName = getCurrentStep().getName();
-		final String delegateName = getCurrentStep().getDelegate().getName();
-		final String displayName = getCurrentStep().getDisplayName();
-		final PlayerID id = getCurrentStep().getPlayerID();
-		getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), displayName, loadedFromSavedGame);
-		final Iterator<GameStepListener> iter = m_gameStepListeners.iterator();
-		while (iter.hasNext())
+		final GameStep currentStep = getCurrentStep();
+		final String stepName = currentStep.getName();
+		final String delegateName = currentStep.getDelegate().getName();
+		final String displayName = currentStep.getDisplayName();
+		final int round = m_data.getSequence().getRound();
+		final PlayerID id = currentStep.getPlayerID();
+		for (final GameStepListener listener : m_gameStepListeners)
 		{
-			final GameStepListener listener = iter.next();
-			listener.gameStepChanged(stepName, delegateName, id, m_data.getSequence().getRound(), getCurrentStep().getDisplayName());
+			listener.gameStepChanged(stepName, delegateName, id, round, displayName);
 		}
+		getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, round, displayName, loadedFromSavedGame);
 	}
 	
 	private void addPlayerTypesToGameData(final Collection<IGamePlayer> localPlayers, final PlayerManager allPlayers, final IDelegateBridge aBridge)

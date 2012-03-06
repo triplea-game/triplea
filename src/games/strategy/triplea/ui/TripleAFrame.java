@@ -172,9 +172,9 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	private StatPanel m_statsPanel;
 	private StatPanel m_economyPanel;
 	private TerritoryDetailPanel m_details;
-	private JPanel m_historyPanel = new JPanel();
+	private JPanel m_historyComponent = new JPanel();
 	private JPanel m_gameSouthPanel;
-	private HistoryPanel m_historyTree;
+	private HistoryPanel m_historyPanel;
 	private boolean m_inHistory = false;
 	private boolean m_inGame = true;
 	private HistorySynchronizer m_historySyncher;
@@ -444,8 +444,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_gameMainPanel = null;
 		m_stepListener = null;
 		m_gameSouthPanel = null;
-		m_historyTree = null;
 		m_historyPanel = null;
+		m_historyComponent = null;
 		m_mapPanel = null;
 		m_mapAndChatPanel = null;
 		m_message = null;
@@ -1405,7 +1405,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	
 	public HistoryPanel getHistoryPanel()
 	{
-		return m_historyTree;
+		return m_historyPanel;
 	}
 	
 	private void showHistory()
@@ -1422,10 +1422,12 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			clonedGameData = GameDataUtils.cloneGameData(m_data);
 			if (clonedGameData == null)
 				return;
+			m_data.removeDataChangeListener(m_dataChangeListener);
 			clonedGameData.testLocksOnRead();
 			if (m_historySyncher != null)
 				throw new IllegalStateException("Two history synchers?");
 			m_historySyncher = new HistorySynchronizer(clonedGameData, m_game);
+			clonedGameData.addDataChangeListener(m_dataChangeListener);
 		} finally
 		{
 			m_data.releaseReadLock();
@@ -1434,8 +1436,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_economyPanel.setGameData(clonedGameData);
 		m_details.setGameData(clonedGameData);
 		m_mapPanel.setGameData(clonedGameData);
-		m_data.removeDataChangeListener(m_dataChangeListener);
-		clonedGameData.addDataChangeListener(m_dataChangeListener);
 		final HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, m_mapPanel);
 		m_tabsPanel.removeAll();
 		m_tabsPanel.add("History", historyDetailPanel);
@@ -1446,8 +1446,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			m_tabsPanel.add("Edit", m_editPanel);
 		if (m_actionButtons.getCurrent() != null)
 			m_actionButtons.getCurrent().setActive(false);
-		m_historyPanel.removeAll();
-		m_historyPanel.setLayout(new BorderLayout());
+		m_historyComponent.removeAll();
+		m_historyComponent.setLayout(new BorderLayout());
 		// create history tree context menu
 		// actions need to clear the history panel popup state when done
 		final JPopupMenu popup = new JPopupMenu();
@@ -1456,10 +1456,10 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			public void actionPerformed(final ActionEvent ae)
 			{
 				final HistoryLog historyLog = new HistoryLog();
-				historyLog.printRemainingTurn(m_historyTree.getCurrentPopupNode(), false, m_data.getDiceSides());
+				historyLog.printRemainingTurn(m_historyPanel.getCurrentPopupNode(), false, m_data.getDiceSides());
 				historyLog.printTerritorySummary(clonedGameData);
 				historyLog.printProductionSummary(clonedGameData);
-				m_historyTree.clearCurrentPopupNode();
+				m_historyPanel.clearCurrentPopupNode();
 				historyLog.setVisible(true);
 			}
 		});
@@ -1468,10 +1468,10 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			public void actionPerformed(final ActionEvent ae)
 			{
 				final HistoryLog historyLog = new HistoryLog();
-				historyLog.printRemainingTurn(m_historyTree.getCurrentPopupNode(), true, m_data.getDiceSides());
+				historyLog.printRemainingTurn(m_historyPanel.getCurrentPopupNode(), true, m_data.getDiceSides());
 				historyLog.printTerritorySummary(clonedGameData);
 				historyLog.printProductionSummary(clonedGameData);
-				m_historyTree.clearCurrentPopupNode();
+				m_historyPanel.clearCurrentPopupNode();
 				historyLog.setVisible(true);
 			}
 		});
@@ -1479,21 +1479,21 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		{
 			public void actionPerformed(final ActionEvent ae)
 			{
-				saveScreenshot(m_historyTree.getCurrentPopupNode());
-				m_historyTree.clearCurrentPopupNode();
+				saveScreenshot(m_historyPanel.getCurrentPopupNode());
+				m_historyPanel.clearCurrentPopupNode();
 			}
 		});
 		final JSplitPane split = new JSplitPane();
 		split.setOneTouchExpandable(true);
 		split.setDividerSize(8);
-		m_historyTree = new HistoryPanel(clonedGameData, historyDetailPanel, popup, m_uiContext);
-		split.setLeftComponent(m_historyTree);
+		m_historyPanel = new HistoryPanel(clonedGameData, historyDetailPanel, popup, m_uiContext);
+		split.setLeftComponent(m_historyPanel);
 		split.setRightComponent(m_gameCenterPanel);
 		split.setDividerLocation(150);
-		m_historyPanel.add(split, BorderLayout.CENTER);
-		m_historyPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
+		m_historyComponent.add(split, BorderLayout.CENTER);
+		m_historyComponent.add(m_gameSouthPanel, BorderLayout.SOUTH);
 		getContentPane().removeAll();
-		getContentPane().add(m_historyPanel, BorderLayout.CENTER);
+		getContentPane().add(m_historyComponent, BorderLayout.CENTER);
 		validate();
 	}
 	
@@ -1517,8 +1517,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				m_historySyncher.deactivate();
 				m_historySyncher = null;
 			}
-			m_historyTree.goToEnd();
-			m_historyTree = null;
+			m_historyPanel.goToEnd();
+			m_historyPanel = null;
 			m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
 			m_statsPanel.setGameData(m_data);
 			m_economyPanel.setGameData(m_data);
@@ -1557,8 +1557,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				m_historySyncher.deactivate();
 				m_historySyncher = null;
 			}
-			m_historyTree.goToEnd();
-			m_historyTree = null;
+			m_historyPanel.goToEnd();
+			m_historyPanel = null;
 			m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
 			m_mapPanel.setGameData(m_data);
 			m_data.addDataChangeListener(m_dataChangeListener);
@@ -2000,10 +2000,10 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		public void actionPerformed(final ActionEvent e)
 		{
 			HistoryNode curNode = null;
-			if (m_historyTree == null)
+			if (m_historyPanel == null)
 				curNode = m_data.getHistory().getLastNode();
 			else
-				curNode = m_historyTree.getCurrentNode();
+				curNode = m_historyPanel.getCurrentNode();
 			saveScreenshot(curNode);
 		}
 	};

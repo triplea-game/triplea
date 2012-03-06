@@ -143,12 +143,12 @@ public class ClientGame implements IGame
 					m_data.releaseWriteLock();
 				}
 			}
+			if (!loadedFromSavedGame)
+				m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
 			for (final GameStepListener listener : m_gameStepListeners)
 			{
 				listener.gameStepChanged(stepName, delegateName, player, round, displayName);
 			}
-			if (!loadedFromSavedGame)
-				m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
 		}
 		
 		public void shutDown()

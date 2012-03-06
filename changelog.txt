@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Fixed bug where steps appear out of order in a client game's history panel. (frigoref)
+
 * Created new Trigger Attachment option, changeOwnership, which will allow a map to have the owner of a territory change by trigger. (veqryn)
 
 * For Trigger Attachment option "removeUnits", now allowing the use of "all" in place of the territory name, and also "all" in place of the unit type. Can be used to remove all units from some or all territories. (veqryn)

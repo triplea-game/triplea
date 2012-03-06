@@ -171,12 +171,12 @@ public class HistoryPanel extends JPanel
 				}
 				else if (m_mouseWasOverPanel)
 				{
-					TreePath clickedPath = new TreePath(((HistoryNode) m_tree.getClosestPathForLocation(me.getX(), me.getY()).getLastPathComponent()).getPath());
+					final TreePath clickedPath = new TreePath(((HistoryNode) m_tree.getClosestPathForLocation(me.getX(), me.getY()).getLastPathComponent()).getPath());
 					adaptStayExpandedPathsOnClickedPath(clickedPath);
 				}
 			}
 			
-			private void adaptStayExpandedPathsOnClickedPath(TreePath clickedPath)
+			private void adaptStayExpandedPathsOnClickedPath(final TreePath clickedPath)
 			{
 				if (m_stayExpandedPaths.contains(clickedPath))
 				{
@@ -189,7 +189,7 @@ public class HistoryPanel extends JPanel
 					m_tree.expandPath(clickedPath);
 				}
 			}
-
+			
 			public void mouseEntered(final MouseEvent me)
 			{
 				m_mouseOverPanel = true;
@@ -338,10 +338,10 @@ public class HistoryPanel extends JPanel
 	private boolean m_mouseOverPanel = false;
 	boolean m_mouseWasOverPanel = false; // to distinguish the first mouse over panel event from the others
 	TreePath m_lastParent = null; // remember where to start collapsing
-
-	private boolean addToStayExpanded(Enumeration<TreePath> paths)
+	
+	private boolean addToStayExpanded(final Enumeration<TreePath> paths)
 	{
-		Collection<TreePath> expandPaths = new ArrayList<TreePath>();
+		final Collection<TreePath> expandPaths = new ArrayList<TreePath>();
 		while (paths.hasMoreElements())
 			expandPaths.add(paths.nextElement());
 		return m_stayExpandedPaths.addAll(expandPaths);
@@ -353,7 +353,7 @@ public class HistoryPanel extends JPanel
 	 * @param newPath
 	 *            new path
 	 */
-	private void collapseUpFromLastParent(TreePath newPath)
+	private void collapseUpFromLastParent(final TreePath newPath)
 	{
 		TreePath currentParent = m_lastParent;
 		while (currentParent != null && !currentParent.isDescendant(newPath) && !stayExpandedContainsDescendantOf(currentParent))
@@ -362,15 +362,15 @@ public class HistoryPanel extends JPanel
 			currentParent = currentParent.getParentPath();
 		}
 	}
-
+	
 	/**
 	 * @param parentPath
 	 *            tree path for which descendants should be check
 	 * @return whether the expanded path list contains a descendant of parentPath
 	 */
-	private boolean stayExpandedContainsDescendantOf(TreePath parentPath)
+	private boolean stayExpandedContainsDescendantOf(final TreePath parentPath)
 	{
-		for (TreePath currentPath : m_stayExpandedPaths)
+		for (final TreePath currentPath : m_stayExpandedPaths)
 		{
 			if (parentPath.isDescendant(currentPath))
 				return true;
@@ -384,7 +384,7 @@ public class HistoryPanel extends JPanel
 	 * @param newPath
 	 *            new path
 	 */
-	private void collapseExpanded(TreePath newPath)
+	private void collapseExpanded(final TreePath newPath)
 	{
 		if (!m_stayExpandedPaths.isEmpty())
 		{
@@ -394,13 +394,13 @@ public class HistoryPanel extends JPanel
 			{
 				root = root.getParentPath();
 			}
-			Enumeration<TreePath> expandedDescendants = m_tree.getExpandedDescendants(root);
-			TreePath selectedPath = m_tree.getSelectionPath();
+			final Enumeration<TreePath> expandedDescendants = m_tree.getExpandedDescendants(root);
+			final TreePath selectedPath = m_tree.getSelectionPath();
 			// fill stack with nodes that should be collapsed
-			Stack<TreePath> collapsePaths = new Stack<TreePath>();
+			final Stack<TreePath> collapsePaths = new Stack<TreePath>();
 			while (expandedDescendants.hasMoreElements())
 			{
-				TreePath currentDescendant = expandedDescendants.nextElement();
+				final TreePath currentDescendant = expandedDescendants.nextElement();
 				if (!currentDescendant.isDescendant(newPath) && (selectedPath == null || !currentDescendant.isDescendant(selectedPath)))
 				{
 					collapsePaths.add(currentDescendant);
@@ -409,13 +409,13 @@ public class HistoryPanel extends JPanel
 			// collapse found paths
 			if (!collapsePaths.isEmpty())
 			{
-				for (TreePath currentPath : collapsePaths)
+				for (final TreePath currentPath : collapsePaths)
 					m_tree.collapsePath(currentPath);
 				m_stayExpandedPaths.removeAll(collapsePaths);
 			}
 		}
 	}
-
+	
 	public void goToEnd()
 	{
 		final HistoryNode last;
@@ -438,8 +438,7 @@ public class HistoryPanel extends JPanel
 			m_tree.setSelectionPath(path);
 			collapseExpanded(path);
 			collapseUpFromLastParent(parent);
-			m_tree.scrollPathToVisible(path);
-			final Rectangle rect = m_tree.getVisibleRect();
+			final Rectangle rect = m_tree.getPathBounds(path);
 			rect.setRect(0, rect.getY(), rect.getWidth(), rect.getHeight());
 			m_tree.scrollRectToVisible(rect);
 		}
@@ -452,7 +451,7 @@ public class HistoryPanel extends JPanel
 				{
 					root = root.getParentPath();
 				}
-				Enumeration<TreePath> expandedDescendants = m_tree.getExpandedDescendants(root);
+				final Enumeration<TreePath> expandedDescendants = m_tree.getExpandedDescendants(root);
 				addToStayExpanded(expandedDescendants);
 			}
 			else
