@@ -24,19 +24,37 @@ import games.strategy.engine.framework.startup.launcher.ILauncher;
 import games.strategy.engine.framework.startup.launcher.ServerLauncher;
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
-import games.strategy.engine.lobby.server.ModeratorController;
-import games.strategy.engine.message.*;
-import games.strategy.net.*;
+import games.strategy.engine.lobby.server.NullModeratorController;
+import games.strategy.engine.message.ChannelMessenger;
+import games.strategy.engine.message.IChannelMessenger;
+import games.strategy.engine.message.IRemoteMessenger;
+import games.strategy.engine.message.RemoteMessenger;
+import games.strategy.engine.message.RemoteName;
+import games.strategy.engine.message.UnifiedMessenger;
+import games.strategy.net.IConnectionChangeListener;
+import games.strategy.net.IMessenger;
+import games.strategy.net.IMessengerErrorListener;
+import games.strategy.net.INode;
+import games.strategy.net.IServerMessenger;
+import games.strategy.net.ServerMessenger;
 import games.strategy.util.Version;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+
+import javax.swing.JOptionPane;
 
 public class ServerModel extends Observable implements IMessengerErrorListener, IConnectionChangeListener
 {
@@ -200,7 +218,7 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			m_remoteMessenger.registerRemote(m_serverStartupRemote, SERVER_REMOTE_NAME);
 			m_channelMessenger = new ChannelMessenger(unifiedMessenger);
 			m_chatController = new ChatController(CHAT_NAME, m_serverMessenger, m_remoteMessenger, m_channelMessenger);
-			new ModeratorController(m_serverMessenger).register(m_remoteMessenger);
+			new NullModeratorController(m_serverMessenger).register(m_remoteMessenger);
 			m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME);
 			m_serverMessenger.setAcceptNewConnections(true);
 			gameDataChanged();

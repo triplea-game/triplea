@@ -36,8 +36,8 @@ import java.util.logging.Logger;
 
 public class ModeratorController implements IModeratorController
 {
-	private final static Logger s_logger = Logger.getLogger(ModeratorController.class.getName());
-	private final IServerMessenger m_messenger;
+	protected final static Logger s_logger = Logger.getLogger(ModeratorController.class.getName());
+	protected final IServerMessenger m_messenger;
 	
 	public static final RemoteName getModeratorControllerName()
 	{
@@ -135,7 +135,7 @@ public class ModeratorController implements IModeratorController
 					.getHostAddress(), mac, modNode.getName(), modNode.getAddress().getHostAddress(), getNodeMacAddress(modNode), muteUntil));
 	}
 	
-	private String getNodeMacAddress(final INode node)
+	protected String getNodeMacAddress(final INode node)
 	{
 		return m_messenger.GetPlayerMac(node.getName());
 	}
@@ -179,7 +179,7 @@ public class ModeratorController implements IModeratorController
 		return user.isAdmin();
 	}
 	
-	private String getRealName(final INode node)
+	protected String getRealName(final INode node)
 	{
 		// Remove any (n) that is added to distinguish duplicate names
 		final String name = node.getName().split(" ")[0];
@@ -206,7 +206,7 @@ public class ModeratorController implements IModeratorController
 		return builder.toString();
 	}
 	
-	private String getAliasesFor(final INode node)
+	protected String getAliasesFor(final INode node)
 	{
 		final StringBuilder builder = new StringBuilder();
 		final String nodeMac = getNodeMacAddress(node);
