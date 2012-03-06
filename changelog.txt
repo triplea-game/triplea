@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Fixed bug where Rounds would not appear in a Client game. (veqryn)
+
 * Creating a NullModeratorController class for locally hosted games. (veqryn)
 
 * Fixed bug where steps appear out of order in a client game's history panel. (frigoref)

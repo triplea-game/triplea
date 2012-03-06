@@ -134,10 +134,17 @@ public class ClientGame implements IGame
 				try
 				{
 					m_data.getSequence().next();
+					int currentRound = m_data.getSequence().getRound();
+					if (m_data.getSequence().testWeAreOnLastStep())
+						m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
 					while (!m_data.getSequence().getStep().getName().equals(stepName))
 					{
 						m_data.getSequence().next();
+						if (m_data.getSequence().testWeAreOnLastStep())
+							m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
 					}
+					if (currentRound > round)
+						throw new IllegalStateException("Can not create more rounds that host currently has. Host Round:" + round + " and new Client Round:" + currentRound);
 				} finally
 				{
 					m_data.releaseWriteLock();

@@ -97,6 +97,23 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		}
 	}
 	
+	/**
+	 * Only tests to see if we are on the last step.
+	 * Used for finding if we need to make a new round or not.
+	 * Does not change any data or fields.
+	 * 
+	 * @return
+	 */
+	public boolean testWeAreOnLastStep()
+	{
+		synchronized (m_currentStepMutex)
+		{
+			if (m_currentIndex + 1 == m_steps.size())
+				return true;
+			return false;
+		}
+	}
+	
 	public GameStep getStep()
 	{
 		synchronized (m_currentStepMutex)
