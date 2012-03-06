@@ -189,7 +189,7 @@ public class DUtils
 	
 	public static int GetTUVOfUnit(final Unit unit, final Resource resource)
 	{
-		if (unit.getOwner().isNull())
+		if (unit.getOwner().isNull() || unit.getOwner().getProductionFrontier() == null)
 			return GetTUVOfUnit(unit, GlobalCenter.GetMergedAndAveragedProductionFrontier(), resource);
 		else
 			return GetTUVOfUnit(unit, unit.getOwner().getProductionFrontier(), resource);
