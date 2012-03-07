@@ -1,4 +1,6 @@
 Changes for 1.5.1
+* Locking the map when user's mouse is over the history panel, and then unlocking for each click on a history node. (frigoref)
+
 * Fixed bug where Rounds would not appear in a Client game. (veqryn)
 
 * Creating a NullModeratorController class for locally hosted games. (veqryn)
