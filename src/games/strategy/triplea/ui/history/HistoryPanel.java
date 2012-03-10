@@ -60,12 +60,13 @@ public class HistoryPanel extends JPanel
 	private final HistoryDetailsPanel m_details;
 	private HistoryNode m_currentPopupNode;
 	private final JPopupMenu m_popup;
-	private final UIContext m_uiContext;
-	private boolean m_lockBefore;
+	
+	// private final UIContext m_uiContext;
+	// private boolean m_lockBefore;
 	
 	public HistoryPanel(final GameData data, final HistoryDetailsPanel details, final JPopupMenu popup, final UIContext uiContext)
 	{
-		m_uiContext = uiContext;
+		// m_uiContext = uiContext;
 		m_mouseOverPanel = false;
 		m_mouseWasOverPanel = false;
 		final MouseListener mouseFocusListener = new MouseListener()
@@ -307,7 +308,7 @@ public class HistoryPanel extends JPanel
 			throw new IllegalStateException("Wrong thread");
 		// move the game to the state of the selected node
 		final HistoryNode node = (HistoryNode) e.getPath().getLastPathComponent();
-		
+		/*
 		// the following is here in order to have the map screen locked when your mouse is in the history panel, except when you are clicking on a node.
 		// we also do not want to change the user's selection.
 		if (m_uiContext.getLockMap())
@@ -317,7 +318,9 @@ public class HistoryPanel extends JPanel
 			m_uiContext.setLockMap(true);
 		}
 		else
-			gotoNode(node);
+		{*/
+		gotoNode(node);
+		// }
 	}
 	
 	private void gotoNode(final HistoryNode node)
@@ -446,8 +449,8 @@ public class HistoryPanel extends JPanel
 		if (!m_mouseOverPanel)
 		{
 			// make sure we undo our change of the lock property
-			if (m_mouseWasOverPanel)
-				m_uiContext.setLockMap(m_lockBefore);
+			// if (m_mouseWasOverPanel)
+			// m_uiContext.setLockMap(m_lockBefore);
 			gotoNode(last);
 			if (m_lastParent == null)
 				m_lastParent = m_tree.getSelectionPath();
@@ -463,8 +466,8 @@ public class HistoryPanel extends JPanel
 			if (m_mouseWasOverPanel == false)
 			{
 				// save the lock property so that we can undo it
-				m_lockBefore = m_uiContext.getLockMap();
-				m_uiContext.setLockMap(true);
+				// m_lockBefore = m_uiContext.getLockMap();
+				// m_uiContext.setLockMap(true);
 				TreePath root = parent;
 				while (root.getPathCount() > 1)
 				{

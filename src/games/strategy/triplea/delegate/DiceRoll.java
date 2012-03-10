@@ -849,17 +849,17 @@ public class DiceRoll implements Externalizable
 		{
 			bt = DelegateFinder.battleDelegate(data).getBattleTracker();
 			m_pendingBattles = bt.getPendingBattleSites(false);
+			final Iterator<Territory> territories = m_pendingBattles.iterator();
+			while (territories.hasNext())
+			{
+				final Territory terr = territories.next();
+				final IBattle battle = bt.getPendingBattle(terr, false);
+				if (battle != null && battle.isAmphibious() && ua.getIsMarine())
+					return true;
+			}
 		} finally
 		{
 			data.releaseReadLock();
-		}
-		final Iterator<Territory> territories = m_pendingBattles.iterator();
-		while (territories.hasNext())
-		{
-			final Territory terr = territories.next();
-			final IBattle battle = bt.getPendingBattle(terr, false);
-			if (battle != null && battle.isAmphibious() && ua.getIsMarine())
-				return true;
 		}
 		return false;
 	}

@@ -1104,7 +1104,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		return producers;
 	}
 	
-	// Collections.sort(producers, getBestProducerComparator(to, (unitsToPlace == null ? new ArrayList<Unit>() : unitsToPlace), player));
 	private Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
 		return new Comparator<Territory>()

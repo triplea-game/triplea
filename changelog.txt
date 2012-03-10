@@ -1,9 +1,11 @@
 Changes for 1.5.1
+* A second possible fix for ConcurrentModificationException in BattleModel.refresh -> DiceRoll.isAmphibiousMarine -> BattleTracker.getPendingBattleSites. (veqryn)
+
 * Changed Sea Placements to use all production for all surrounding Factories, if multiple factories touch that sea zone. Will now dynamically shift the production of other sea units away to other legal factories in order to allow the maximum production possible. (frigoref & veqryn)
 
 * Fixed null pointer error in trying to place a construction to a sea zone. (veqryn)
 
-* Locking the map when user's mouse is over the history panel, and then unlocking for each click on a history node. (frigoref)
+* Locking the map when user's mouse is over the history panel, and then unlocking for each click on a history node. (frigoref) [edit: this is undone/rolled-back for now, pending finding a better way to lock/unlock a user's interface without writing to the cache/registry each time] 
 
 * Fixed bug where Rounds would not appear in a Client game. (veqryn)
 
