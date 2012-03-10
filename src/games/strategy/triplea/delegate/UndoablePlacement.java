@@ -34,7 +34,7 @@ import java.util.Map;
 class UndoablePlacement extends AbstractUndoableMove
 {
 	final Territory m_place_territory;
-	final Territory m_producer_territory;
+	Territory m_producer_territory;
 	PlayerID m_player;
 	
 	public UndoablePlacement(final PlayerID player, final CompositeChange change, final Territory producer_territory, final Territory place_territory, final Collection<Unit> units)
@@ -45,6 +45,21 @@ class UndoablePlacement extends AbstractUndoableMove
 		m_player = player;
 	}
 	
+	public Territory getProducerTerritory()
+	{
+		return m_producer_territory;
+	}
+	
+	public void setProducerTerritory(Territory producerTerritory)
+	{
+		m_producer_territory = producerTerritory;
+	}
+	
+	public Territory getPlaceTerritory()
+	{
+		return m_place_territory;
+	}
+
 	@Override
 	protected final void undoSpecific(final IDelegateBridge bridge)
 	{
@@ -70,6 +85,8 @@ class UndoablePlacement extends AbstractUndoableMove
 	@Override
 	public final String getMoveLabel()
 	{
+		if (m_producer_territory != m_place_territory)
+			return m_producer_territory.getName() + " -> " + m_place_territory.getName();
 		return m_place_territory.getName();
 	}
 	

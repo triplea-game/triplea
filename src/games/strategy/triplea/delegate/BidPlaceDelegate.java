@@ -48,7 +48,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 		{
 			if (Match.someMatch(units, Matches.UnitIsLand))
 				return "Cant place land units at sea";
-			else if (to.getUnits().allMatch(Matches.alliedUnit(player, getData())))
+			else if (to.getUnits().someMatch(Matches.enemyUnit(player, getData())))
 				return null;
 			else
 				return "Cant place in sea zone containing enemy units";
@@ -66,7 +66,39 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 	}
 	
 	@Override
-	protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerID player)
+	protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player)
+	{
+		// we can place if no enemy units and its water
+		if (to.isWater())
+		{
+			if (Match.someMatch(units, Matches.UnitIsLand))
+				return "Cant place land units at sea";
+			else if (to.getUnits().someMatch(Matches.enemyUnit(player, getData())))
+				return null;
+			else
+				return "Cant place in sea zone containing enemy units";
+		}
+		// we can place on territories we own
+		else
+		{
+			if (Match.someMatch(units, Matches.UnitIsSea))
+				return "Cant place sea units on land";
+			else if (to.getOwner().equals(player))
+				return null;
+			else
+				return "You dont own " + to.getName();
+		}
+	}
+	
+	@Override
+	protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerID player, final boolean countSwitchedProductionToNeighbors)
+	{
+		return units.size();
+	}
+	
+	@Override
+	protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to, final PlayerID player, final boolean countSwitchedProductionToNeighbors,
+				final Collection<Territory> notUsableAsOtherProducers)
 	{
 		return units.size();
 	}

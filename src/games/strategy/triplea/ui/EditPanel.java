@@ -170,13 +170,23 @@ public class EditPanel extends ActionPanel
 				if (option != JOptionPane.OK_OPTION)
 					return;
 				final PlayerID player = playerChooser.getSelected();
-				final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
+				Resource PUs = null;
+				getData().acquireReadLock();
+				try
+				{
+					PUs = getData().getResourceList().getResource(Constants.PUS);
+				} finally
+				{
+					getData().releaseReadLock();
+				}
+				if (PUs == null)
+					return;
 				final int oldTotal = player.getResources().getQuantity(PUs);
 				int newTotal = oldTotal;
 				final JTextField PUsField = new JTextField(String.valueOf(oldTotal), 4);
 				PUsField.setMaximumSize(PUsField.getPreferredSize());
 				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField), "Select new number of PUs", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null,
-							null, null);
+								null, null);
 				if (option != JOptionPane.OK_OPTION)
 					return;
 				try

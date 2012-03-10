@@ -190,7 +190,7 @@ public class ResourceCollection extends GameDataComponent
 		if (cost.size() == 0)
 			return Integer.MAX_VALUE;
 		final ResourceCollection resources = new ResourceCollection(getData(), m_resources);
-		for (int i = 0; i <= 1000; i++)
+		for (int i = 0; i <= 10000; i++)
 		{
 			try
 			{
