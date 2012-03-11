@@ -3604,8 +3604,7 @@
 				<!-- Russians Conditions -->
 				<attatchment name="conditionAttachment_Russians_1_Convoy_Clear" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="enemyExclusionTerritories" value="125 Sea Zone" count="1" />
-					<!-- TODO: Add this in as soon as it becomes legal to do so:
-					<option name="unitPresence" value="battleship:carrier:submarine:destroyer:cruiser" count="0"/>-->
+					<option name="unitPresence" value="battleship:carrier:submarine:destroyer:cruiser" count="0"/>
                 </attatchment>
                 <attatchment name="conditionAttachment_Russians_1_Lend_Lease" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="conditions" value="conditionAttachment_Russians_1_Convoy_Clear"/>
@@ -5880,6 +5879,7 @@ These changes to units are things other than price/movement which you can see in
 <br>Change Log:
 <br>
 <br>2.2
+<br>Fixing Russian nationa objective for sz125 so that it affects all units except transports.
 <br>Preventing Combat-Movement takeover of Friendly Neutrals. You must now wait for Non-Combat Movement phase to take over them.
 <br>Allowing Submarines to pass through Straight of Gibraltar no matter who controls it.
 <br>Adding connection between Timguska and Novosibirsk
