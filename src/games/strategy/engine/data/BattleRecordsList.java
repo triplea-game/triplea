@@ -17,6 +17,8 @@ import java.util.Map.Entry;
  */
 public class BattleRecordsList extends GameDataComponent implements Serializable
 {
+	private static final long serialVersionUID = 7515693859612849475L;
+	
 	private Map<Integer, BattleRecords> m_battleRecords = new HashMap<Integer, BattleRecords>();
 	
 	public BattleRecordsList(final GameData data)
@@ -83,7 +85,10 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		int damageCausedByAttacker = 0;
 		final Collection<BattleRecords> brs = new ArrayList<BattleRecords>();
 		if (currentRoundOnly)
-			brs.add(brl.getCurrentRound());
+		{
+			if (brl != null && brl.getCurrentRound() != null)
+				brs.add(brl.getCurrentRound());
+		}
 		else
 		{
 			final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMap();
