@@ -253,7 +253,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 	
 	public String getDisplayName()
 	{
-		return "TripleWarClub.org";
+		return "TripleaWarClub.org";
 	}
 	
 	public void viewPosted()

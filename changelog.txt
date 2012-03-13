@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Fixing email/forum turn summary poster to use <pre> and </pre> tags, instead of &nbsp. (veqryn)
+
 * Fixed null pointer error in BattleRecordsList getTUVdamageCausedByPlayer. (veqryn)
 
 
