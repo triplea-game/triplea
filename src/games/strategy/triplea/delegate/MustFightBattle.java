@@ -700,20 +700,21 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				if (!isSubRetreatBeforeBattle())
 				{
-					if (canAttackerRetreatSubs())
+					// Removing the logic of seeing if we can submerge subs now, because there is a chance we could kill that destroyer during combat, then submerge
+					// if (canAttackerRetreatSubs())
+					// {
+					if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
 					{
-						if (Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
-						{
-							steps.add(m_attacker.getName() + SUBS_SUBMERGE);
-						}
+						steps.add(m_attacker.getName() + SUBS_SUBMERGE);
 					}
-					if (canDefenderRetreatSubs())
+					// }
+					// if (canDefenderRetreatSubs())
+					// {
+					if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
 					{
-						if (Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
-						{
-							steps.add(m_defender.getName() + SUBS_SUBMERGE);
-						}
+						steps.add(m_defender.getName() + SUBS_SUBMERGE);
 					}
+					// }
 				}
 			}
 			else
@@ -855,10 +856,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// to the stack at the end
 		final List<IExecutable> steps = new ArrayList<IExecutable>();
 		addFightStepsNonEditMode(steps);
+		/* FYI: according to the rules that I know, you can submerge subs the same turn you kill the last destroyer
 		// we must grab these here, when we clear waiting to die, we might remove
 		// all the opposing destroyers, and this would change the canRetreatSubs rVal
 		final boolean canAttackerRetreatSubs = canAttackerRetreatSubs();
-		final boolean canDefenderRetreatSubs = canDefenderRetreatSubs();
+		final boolean canDefenderRetreatSubs = canDefenderRetreatSubs();*/
 		steps.add(new IExecutable()
 		{
 			// compatible with 0.9.0.2 saved games
@@ -946,7 +948,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				if (!m_isOver && canAttackerRetreatSubs && !isSubRetreatBeforeBattle())
+				if (!m_isOver && canAttackerRetreatSubs() && !isSubRetreatBeforeBattle())
 					attackerRetreatSubs(bridge);
 			}
 		});
@@ -957,8 +959,15 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				if (!m_isOver && canDefenderRetreatSubs && !isSubRetreatBeforeBattle())
+				if (!m_isOver && canDefenderRetreatSubs() && !isSubRetreatBeforeBattle())
 					defenderRetreatSubs(bridge);
+				// Here we test if there are any defenders left. If no defenders, then battle is over.
+				// The reason we test a "second" time here, is because otherwise the attackers can retreat even though the battle is over (illegal).
+				if (m_defendingUnits.isEmpty())
+				{
+					endBattle(bridge);
+					attackerWins(bridge);
+				}
 			}
 		});
 		steps.add(new IExecutable()

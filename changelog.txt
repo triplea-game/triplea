@@ -1,4 +1,8 @@
 Changes for 1.5.2
+* Fixed bug where aircraft + destroyer attacking a submarine, if the submarine kills the destroyer, the submarine may not yet submerge but should be allowed to submerge. (veqryn)
+
+* Fixed bug where if the defender only has subs left, and submerges them, the attacker can still retreat, but should not be able to. (veqryn)
+
 * Fixed bug where units unloaded from a sea zone with enemy units, to a friendly territory, would not die when the sea transports died. Fixed by making such moves illegal, forcing user to wait til after combat is resolved to offload. (veqryn)
 
 * Fixed bug in new Sea Placement code that incorrectly validated how many could be placed, and incorrectly switched placements to the wrong territory. (veqryn)
