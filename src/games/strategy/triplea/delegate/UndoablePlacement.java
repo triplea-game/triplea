@@ -20,6 +20,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.PlacementDescription;
+import games.strategy.triplea.formatter.MyFormatter;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ class UndoablePlacement extends AbstractUndoableMove
 		return m_producer_territory;
 	}
 	
-	public void setProducerTerritory(Territory producerTerritory)
+	public void setProducerTerritory(final Territory producerTerritory)
 	{
 		m_producer_territory = producerTerritory;
 	}
@@ -59,7 +60,7 @@ class UndoablePlacement extends AbstractUndoableMove
 	{
 		return m_place_territory;
 	}
-
+	
 	@Override
 	protected final void undoSpecific(final IDelegateBridge bridge)
 	{
@@ -100,5 +101,13 @@ class UndoablePlacement extends AbstractUndoableMove
 	protected final PlacementDescription getDescriptionObject()
 	{
 		return new PlacementDescription(m_units, m_place_territory);
+	}
+	
+	@Override
+	public String toString()
+	{
+		if (m_producer_territory != m_place_territory)
+			return m_producer_territory.getName() + " produces in " + m_place_territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(m_units);
+		return m_place_territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(m_units);
 	}
 }
