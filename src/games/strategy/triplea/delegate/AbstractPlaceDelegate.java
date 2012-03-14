@@ -1206,7 +1206,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(placeableUnits, Matches.UnitIsFactoryOrIsInfrastructure);
 		change.add(DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, player));
 		// can we move planes to land there
-		moveAirOntoNewCarriers(at, placeableUnits, player, change);
+		final String movedAirTranscriptTextForHistory = moveAirOntoNewCarriers(at, placeableUnits, player, change);
 		
 		final Change remove = ChangeFactory.removeUnits(player, placeableUnits);
 		final Change place = ChangeFactory.addUnits(at, placeableUnits);
@@ -1218,6 +1218,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final String transcriptText = MyFormatter.unitsToTextNoOwner(placeableUnits) + " placed in " + at.getName();
 		m_bridge.getHistoryWriter().startEvent(transcriptText);
 		m_bridge.getHistoryWriter().setRenderingData(current_placement.getDescriptionObject());
+		if (movedAirTranscriptTextForHistory != null)
+			m_bridge.getHistoryWriter().addChildToEvent(movedAirTranscriptTextForHistory);
 		m_bridge.addChange(change);
 		updateProducedMap(producer, placeableUnits);
 	}
@@ -1345,24 +1347,24 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	}
 	
 	// TODO Here's the spot for special air placement rules
-	private void moveAirOntoNewCarriers(final Territory territory, final Collection<Unit> units, final PlayerID player, final CompositeChange placeChange)
+	private String moveAirOntoNewCarriers(final Territory territory, final Collection<Unit> units, final PlayerID player, final CompositeChange placeChange)
 	{
 		// not water, dont bother
 		if (!territory.isWater())
-			return;
+			return null;
 		// not enabled
 		// if (!canProduceFightersOnCarriers())
 		if (!canMoveExistingFightersToNewCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
-			return;
+			return null;
 		if (Match.noneMatch(units, Matches.UnitIsCarrier))
-			return;
+			return null;
 		// do we have any spare carrier capacity
 		int capacity = AirMovementValidator.carrierCapacity(units, territory);
 		// subtract fighters that have already been produced with this carrier
 		// this turn.
 		capacity -= AirMovementValidator.carrierCost(units);
 		if (capacity <= 0)
-			return;
+			return null;
 		final Collection<Territory> neighbors = getData().getMap().getNeighbors(territory, 1);
 		final Iterator<Territory> iter = neighbors.iterator();
 		final CompositeMatch<Unit> ownedFighters = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
@@ -1393,13 +1395,14 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			final Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, neighbor);
 			final Change change = ChangeFactory.moveUnits(neighbor, territory, movedFighters);
 			placeChange.add(change);
-			m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(movedFighters) + "  moved from " + neighbor.getName() + " to " + territory);
+			final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + neighbor.getName() + " to " + territory.getName();
 			// only allow 1 movement
 			// technically only the territory that produced the
 			// carrier should be able to move fighters to the new
 			// territory
-			break;
+			return transcriptText;
 		}
+		return null;
 	}
 	
 	/**

@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Fixing "Not in an event, but trying to add child" error for placing a carrier and moving fighters to be on it. (veqryn)
+
 * Fixing email/forum turn summary poster to use <pre> and </pre> tags, instead of &nbsp. (veqryn)
 
 * Fixed null pointer error in BattleRecordsList getTUVdamageCausedByPlayer. (veqryn)

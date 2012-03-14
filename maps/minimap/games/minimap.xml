@@ -590,7 +590,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Low Luck for Technology" value="false" editable="true">
+				<property name="Low Luck for Technology" value="false" editable="false">
 						<boolean/>
 				</property>
 
