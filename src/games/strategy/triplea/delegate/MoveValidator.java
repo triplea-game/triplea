@@ -66,6 +66,7 @@ import java.util.Set;
 public class MoveValidator
 {
 	public static final String TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE = "Transport has already unloaded units in a previous phase";
+	public static final String TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED = "Transport may not unload to friendly territories until after combat is resolved";
 	public static final String TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO = "Transport has already unloaded units to ";
 	public static final String CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND = "Cannot load and unload an allied transport in the same round";
 	public static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
@@ -145,7 +146,7 @@ public class MoveValidator
 			return result;
 		if (AirMovementValidator.validateAirCanLand(data, units, route, player, result).getError() != null)
 			return result;
-		if (validateTransport(data, undoableMoves, units, route, player, transportsToLoad, result).getError() != null)
+		if (validateTransport(isNonCombat, data, undoableMoves, units, route, player, transportsToLoad, result).getError() != null)
 			return result;
 		if (validateParatroops(isNonCombat, data, undoableMoves, units, route, player, result).getError() != null)
 			return result;
@@ -1079,8 +1080,8 @@ public class MoveValidator
 		return null;
 	}
 	
-	private static MoveValidationResult validateTransport(final GameData data, final List<UndoableMove> undoableMoves, final Collection<Unit> units, final Route route, final PlayerID player,
-				final Collection<Unit> transportsToLoad, final MoveValidationResult result)
+	private static MoveValidationResult validateTransport(final boolean isNonCombat, final GameData data, final List<UndoableMove> undoableMoves, final Collection<Unit> units, final Route route,
+				final PlayerID player, final Collection<Unit> transportsToLoad, final MoveValidationResult result)
 	{
 		final boolean isEditMode = getEditMode(data);
 		if (Match.allMatch(units, Matches.UnitIsAir))
@@ -1094,6 +1095,8 @@ public class MoveValidator
 		/*if(!MoveValidator.isLoad(units, route, data, player) && !MoveValidator.isUnload(route))
 			return result;*/
 		final TransportTracker transportTracker = new TransportTracker();
+		final Territory routeEnd = route.getEnd();
+		final Territory routeStart = route.getStart();
 		// if unloading make sure length of route is only 1
 		if (!isEditMode && MoveValidator.isUnload(route))
 		{
@@ -1104,6 +1107,16 @@ public class MoveValidator
 			final Collection<Unit> transports = MoveDelegate.mapTransports(route, units, null).values();
 			for (final Unit transport : transports)
 			{
+				// Unloading a transport from a sea zone with a battle, to a friendly land territory, during combat move phase, is illegal
+				// and in addition to being illegal, it is also causing problems if the sea transports get stuck (the land units are not dying)
+				// TODO: should we use the battle tracker for this instead?
+				if (!isNonCombat && route.numberOfStepsIncludingStart() == 2 && (
+							!(Matches.territoryHasEnemyUnits(player, data).match(routeEnd) || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(routeEnd))
+							&& (Matches.territoryHasEnemyUnits(player, data).match(routeStart))))
+				{
+					for (final Unit unit : transportTracker.transporting(transport))
+						result.addDisallowedUnit(TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED, unit);
+				}
 				// TODO This is very sensitive to the order of the transport collection. The users may
 				// need to modify the order in which they perform their actions.
 				// check whether transport has already unloaded

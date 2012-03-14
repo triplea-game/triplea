@@ -237,11 +237,20 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	
 	/**
 	 * 
-	 * @return the number of steps in this route.
+	 * @return the number of steps in this route. Does not include start.
 	 */
 	public int numberOfSteps()
 	{
 		return m_steps.size();
+	}
+	
+	/**
+	 * 
+	 * @return the number of steps in this route. DOES include start.
+	 */
+	public int numberOfStepsIncludingStart()
+	{
+		return this.getAllTerritories().size();
 	}
 	
 	/**
