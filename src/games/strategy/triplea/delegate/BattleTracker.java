@@ -65,7 +65,7 @@ import java.util.Set;
  */
 public class BattleTracker implements java.io.Serializable
 {
-	// private static final long serialVersionUID = 8806010984321554662L;
+	private static final long serialVersionUID = 8806010984321554662L;
 	
 	public static final String BATTLE_TYPE_NORMAL = "Normal";
 	public static final String BATTLE_TYPE_AIR_BATTLE = "Air Battle";

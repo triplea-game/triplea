@@ -223,6 +223,19 @@ public class GameDataTestUtil
 		}
 	}
 	
+	public static void assertMoveError(final Collection<Unit> units, final Route route)
+	{
+		if (units.isEmpty())
+		{
+			throw new AssertionFailedError("No units");
+		}
+		final String error = moveDelegate(route.getStart().getData()).move(units, route);
+		if (error == null)
+		{
+			throw new AssertionFailedError("Should not be Legal move");
+		}
+	}
+	
 	public static int getIndex(final List<IExecutable> steps, final Class<?> type)
 	{
 		int rVal = -1;

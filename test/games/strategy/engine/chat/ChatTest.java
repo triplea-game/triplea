@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.lobby.server.NullModeratorController;
 import games.strategy.engine.message.ChannelMessenger;
 import games.strategy.engine.message.RemoteMessenger;
 import games.strategy.engine.message.UnifiedMessenger;
@@ -56,6 +57,7 @@ public class ChatTest extends TestCase
 		m_c2um = new UnifiedMessenger(m_client2);
 		m_c2rm = new RemoteMessenger(m_c2um);
 		m_c2cm = new ChannelMessenger(m_c2um);
+		new NullModeratorController(m_server).register(m_srm);
 		m_serverChatListener = new TestChatListener();
 		m_client1ChatListener = new TestChatListener();
 		m_client2ChatListener = new TestChatListener();

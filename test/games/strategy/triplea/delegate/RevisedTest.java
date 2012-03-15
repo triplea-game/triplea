@@ -24,7 +24,9 @@ import static games.strategy.triplea.delegate.BattleStepStrings.SUBS_SUBMERGE;
 import static games.strategy.triplea.delegate.GameDataTestUtil.aaGun;
 import static games.strategy.triplea.delegate.GameDataTestUtil.addTo;
 import static games.strategy.triplea.delegate.GameDataTestUtil.americans;
+import static games.strategy.triplea.delegate.GameDataTestUtil.armour;
 import static games.strategy.triplea.delegate.GameDataTestUtil.assertError;
+import static games.strategy.triplea.delegate.GameDataTestUtil.assertMoveError;
 import static games.strategy.triplea.delegate.GameDataTestUtil.assertValid;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleDelegate;
 import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
@@ -1050,7 +1052,7 @@ public class RevisedTest extends TestCase
 		 */
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, defender + FIRE,
-								attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, defender + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
+								attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
 		final List<IExecutable> execs = battle.getBattleExecutables();
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
 		final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
@@ -1095,7 +1097,8 @@ public class RevisedTest extends TestCase
 		 */
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE,
-								defender + SELECT_CASUALTIES, defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, defender + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(),
+								defender + SELECT_CASUALTIES, defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE,
+								attacker + ATTACKER_WITHDRAW).toString(),
 					steps.toString());
 		final List<IExecutable> execs = battle.getBattleExecutables();
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
@@ -1133,7 +1136,7 @@ public class RevisedTest extends TestCase
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE,
-								defender + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
+								defender + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
 		final List<IExecutable> execs = battle.getBattleExecutables();
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
 		final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
@@ -1177,7 +1180,8 @@ public class RevisedTest extends TestCase
 		 */
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, REMOVE_SNEAK_ATTACK_CASUALTIES, attacker + FIRE,
-								defender + SELECT_CASUALTIES, defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(),
+								defender + SELECT_CASUALTIES, defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE,
+								attacker + ATTACKER_WITHDRAW).toString(),
 					steps.toString());
 		final List<IExecutable> execs = battle.getBattleExecutables();
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
@@ -1216,7 +1220,8 @@ public class RevisedTest extends TestCase
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
 					Arrays.asList(attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES, attacker + FIRE, defender + SELECT_CASUALTIES,
-								defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
+								defender + FIRE, attacker + SELECT_CASUALTIES, REMOVE_CASUALTIES, attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + ATTACKER_WITHDRAW).toString(),
+					steps.toString());
 		final List<IExecutable> execs = battle.getBattleExecutables();
 		final int attackSubs = getIndex(execs, MustFightBattle.AttackSubs.class);
 		final int defendSubs = getIndex(execs, MustFightBattle.DefendSubs.class);
@@ -1321,8 +1326,10 @@ public class RevisedTest extends TestCase
 		final Territory germany = territory("Germany", m_data);
 		final Territory norway = territory("Norway", m_data);
 		final Territory we = territory("Western Europe", m_data);
+		final Territory uk = territory("United Kingdom", m_data);
 		addTo(sz6, destroyer(m_data).create(2, british));
-		addTo(sz5, transports(m_data).create(1, germans));
+		addTo(sz5, transports(m_data).create(3, germans));
+		addTo(germany, armour(m_data).create(3, germans));
 		final ITestDelegateBridge bridge = getDelegateBridge(germans(m_data));
 		bridge.setStepName("CombatMove");
 		bridge.setRemote(getDummyPlayer());
@@ -1330,11 +1337,13 @@ public class RevisedTest extends TestCase
 		// load two transports, 1 tank each
 		load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
 		load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
+		load(germany.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(germany, sz5));
 		// attack sz 6
 		move(sz5.getUnits().getMatches(new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsTransport)), new Route(sz5, sz6));
 		// unload transports, 1 each to a different country
-		move(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, norway));
-		move(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, we));
+		assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, norway));// this move is illegal now
+		assertMoveError(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, we));// this move is illegal now
+		move(sz6.getUnits().getMatches(Matches.UnitCanBlitz).subList(0, 1), new Route(sz6, uk));
 		// fight the battle
 		moveDelegate(m_data).end();
 		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(sz6, false);
@@ -1344,6 +1353,7 @@ public class RevisedTest extends TestCase
 		// the armour should have died
 		assertEquals(0, norway.getUnits().countMatches(Matches.UnitCanBlitz));
 		assertEquals(2, we.getUnits().countMatches(Matches.UnitCanBlitz));
+		assertEquals(0, uk.getUnits().countMatches(Matches.unitIsOwnedBy(germans)));
 	}
 	
 	public void testCanalMovePass()

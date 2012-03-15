@@ -25,6 +25,7 @@ import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 public class BidPlaceDelegate extends AbstractPlaceDelegate
 {
@@ -98,9 +99,15 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 	
 	@Override
 	protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to, final PlayerID player, final boolean countSwitchedProductionToNeighbors,
-				final Collection<Territory> notUsableAsOtherProducers)
+				final Collection<Territory> notUsableAsOtherProducers, final Map<Territory, Integer> currentAvailablePlacementForOtherProducers)
 	{
 		return units.size();
+	}
+	
+	@Override
+	protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to, final PlayerID player)
+	{
+		return getMaxUnitsToBePlacedFrom(producer, units, to, player, false, null, null);
 	}
 	
 	// Allow player to place as many units as they want in bid phase

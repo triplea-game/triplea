@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Fixed failing unit tests. (veqryn)
+
 * Fixed bug where if a defender wins a battle in a seazone, but has aircraft that can not land anymore, the aircraft had to choose right away where they wanted to land, forbidding landing in a territory with a pending battle. 
   Now fixed so that all these air wait til end of battle phase to ask where to move. (veqryn) 
 

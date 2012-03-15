@@ -775,9 +775,10 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		Collections.sort(producers, getBestProducerComparator(to, units, player));
 		final Collection<Territory> notUsableAsOtherProducers = new ArrayList<Territory>();
 		notUsableAsOtherProducers.addAll(producers);
+		final Map<Territory, Integer> currentAvailablePlacementForOtherProducers = new HashMap<Territory, Integer>();
 		for (final Territory producerTerritory : producers)
 		{
-			final int prodT = getMaxUnitsToBePlacedFrom(producerTerritory, units, to, player, countSwitchedProductionToNeighbors, notUsableAsOtherProducers);
+			final int prodT = getMaxUnitsToBePlacedFrom(producerTerritory, units, to, player, countSwitchedProductionToNeighbors, notUsableAsOtherProducers, currentAvailablePlacementForOtherProducers);
 			if (prodT == -1)
 				return -1;
 			production += prodT;
@@ -788,8 +789,16 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	/**
 	 * Returns -1 if can place unlimited units
 	 */
+	protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to, final PlayerID player)
+	{
+		return getMaxUnitsToBePlacedFrom(producer, units, to, player, false, null, null);
+	}
+	
+	/**
+	 * Returns -1 if can place unlimited units
+	 */
 	protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to, final PlayerID player, final boolean countSwitchedProductionToNeighbors,
-				final Collection<Territory> notUsableAsOtherProducers)
+				final Collection<Territory> notUsableAsOtherProducers, final Map<Territory, Integer> currentAvailablePlacementForOtherProducers)
 	{
 		// if its an original factory then unlimited production
 		final TerritoryAttachment ta = TerritoryAttachment.get(producer);
@@ -862,19 +871,40 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 					int productionThatCanBeTakenOverFromThisPlacement = 0;
 					// find other producers for this placement move to the same water territory
 					final List<Territory> newPotentialOtherProducers = getAllProducers(placeTerritory, player, units);
-					Collections.sort(newPotentialOtherProducers, getBestProducerComparator(placeTerritory, units, player));
 					newPotentialOtherProducers.removeAll(notUsableAsOtherProducers);
+					Collections.sort(newPotentialOtherProducers, getBestProducerComparator(placeTerritory, units, player));
 					for (final Territory potentialOtherProducer : newPotentialOtherProducers)
 					{
-						final int potential = getMaxUnitsToBePlacedFrom(potentialOtherProducer, unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player, false, null);
+						Integer potential = currentAvailablePlacementForOtherProducers.get(potentialOtherProducer);
+						if (potential == null)
+							potential = getMaxUnitsToBePlacedFrom(potentialOtherProducer, unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
 						if (potential == -1)
-							productionThatCanBeTakenOverFromThisPlacement += maxProductionThatCanBeTakenOverFromThisPlacement;
+						{
+							currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, potential);
+							productionThatCanBeTakenOverFromThisPlacement = maxProductionThatCanBeTakenOverFromThisPlacement;
+							break;
+						}
 						else
-							productionThatCanBeTakenOverFromThisPlacement += potential;
+						{
+							final int needed = maxProductionThatCanBeTakenOverFromThisPlacement - productionThatCanBeTakenOverFromThisPlacement;
+							final int surplus = potential - needed;
+							if (surplus > 0)
+							{
+								currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, surplus);
+								productionThatCanBeTakenOverFromThisPlacement += potential - surplus;
+								break;
+							}
+							else
+							{
+								currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, 0);
+								productionThatCanBeTakenOverFromThisPlacement += potential;
+								notUsableAsOtherProducers.add(potentialOtherProducer);
+							}
+						}
 					}
-					productionThatCanBeTakenOverFromThisPlacement = Math.min(productionThatCanBeTakenOverFromThisPlacement, maxProductionThatCanBeTakenOverFromThisPlacement);
+					if (productionThatCanBeTakenOverFromThisPlacement > maxProductionThatCanBeTakenOverFromThisPlacement)
+						throw new IllegalStateException("productionThatCanBeTakenOverFromThisPlacement should never be larger than maxProductionThatCanBeTakenOverFromThisPlacement");
 					productionThatCanBeTakenOver += productionThatCanBeTakenOverFromThisPlacement;
-					notUsableAsOtherProducers.addAll(newPotentialOtherProducers);
 					if (productionThatCanBeTakenOver >= unitCountAlreadyProduced)
 						break;
 				}
@@ -1118,8 +1148,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			{
 				if (t1.equals(t2))
 					return 0;
-				final int left1 = getMaxUnitsToBePlacedFrom(t1, units, to, player, false, null);
-				final int left2 = getMaxUnitsToBePlacedFrom(t2, units, to, player, false, null);
+				final int left1 = getMaxUnitsToBePlacedFrom(t1, units, to, player);
+				final int left2 = getMaxUnitsToBePlacedFrom(t2, units, to, player);
 				if (left1 == left2)
 					return 0;
 				if (left1 == -1)
@@ -1182,7 +1212,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			}
 			else
 			{
-				final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsLeftToPlace, at, player, false, null);
+				final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsLeftToPlace, at, player);
 				if (maxForThisProducer != -1 && unitsLeftToPlace.size() > maxForThisProducer)
 				{
 					freePlacementCapacity(producer, unitsLeftToPlace.size(), unitsLeftToPlace, at, player);
@@ -1288,7 +1318,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			int spaceAlreadyFree = 0; // space that got free this on this placeTerritory
 			for (final Territory potentialNewProducerTerritory : potentialNewProducers)
 			{
-				int leftToPlace = getMaxUnitsToBePlacedFrom(potentialNewProducerTerritory, unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player, false, null);
+				int leftToPlace = getMaxUnitsToBePlacedFrom(potentialNewProducerTerritory, unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
 				if (leftToPlace == -1)
 					leftToPlace = maxProductionThatCanBeTakenOverFromThisPlacement;
 				// find placements of the producer the potentialNewProducerTerritory can take over
@@ -1329,7 +1359,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			{
 				final UndoablePlacement placement = tuple.getFirst();
 				final Territory newProducer = tuple.getSecond();
-				int leftToPlace = getMaxUnitsToBePlacedFrom(newProducer, unitsLeftToPlace, at, player, false, null);
+				int leftToPlace = getMaxUnitsToBePlacedFrom(newProducer, unitsLeftToPlace, at, player);
 				foundSpaceTotal += leftToPlace;
 				// divide set of units that get placed
 				final Collection<Unit> unitsForOldProducer = new ArrayList<Unit>(placement.getUnits());
