@@ -2607,7 +2607,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (!m_battleSite.isWater())
 			return;
 		// TODO: why do we keep checking throughout this entire class if the units in m_defendingUnits are allied with defender, and if the units in m_attackingUnits are allied with the attacker? Does it really matter?
-		final CompositeMatch<Unit> alliedDefendingAir = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.isUnitAllied(m_defender, m_data), Matches.UnitWasScrambled.invert());
+		final CompositeMatch<Unit> alliedDefendingAir = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitWasScrambled.invert()); // Matches.isUnitAllied(m_defender, m_data),
 		m_defendingAir = Match.getMatches(m_defendingUnits, alliedDefendingAir);
 		// no planes, exit
 		if (m_defendingAir.isEmpty())
@@ -2637,6 +2637,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				m_defendingAir.remove(currentUnit);
 			}
 		}
+		// Moved this choosing to after all battles, as we legally should be able to land in a territory if we win there.
+		m_battleTracker.addToDefendingAirThatCanNotLand(m_defendingAir, m_battleSite);
+		
+		/* Moved to BattleDelegate.java
 		// Get all land territories where there are no pending battles
 		final Set<Territory> neighbors = m_data.getMap().getNeighbors(m_battleSite);
 		final CompositeMatch<Territory> alliedLandTerritories = new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.isTerritoryAllied(m_defender, m_data),
@@ -2729,8 +2733,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			final Change change = ChangeFactory.removeUnits(m_battleSite, m_defendingAir);
 			bridge.addChange(change);
 		}
+		*/
 	}
 	
+	/* Moved to BattleDelegate.java
 	// Refactored this method
 	private void landPlanesOnCarriers(final IDelegateBridge bridge, final CompositeMatch<Unit> alliedDefendingAir, final Collection<Unit> defendingAir, final Collection<Territory> canLandHere,
 				final CompositeMatch<Unit> alliedCarrier, final CompositeMatch<Unit> alliedPlane, final Territory territory)
@@ -2758,8 +2764,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		bridge.addChange(change);
 		// remove those that landed in case it was a carrier
 		m_defendingAir.removeAll(defendingAir);
-	}
-	
+	}*/
+
 	@Override
 	public GUID getBattleID()
 	{

@@ -31,6 +31,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.TripleA;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -40,6 +41,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -101,6 +103,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		getBattleTracker().clearBattleRecords();
 		scramblingCleanup();
 		airBattleCleanup();
+		checkDefendingPlanesCanLand();
 		super.end();
 		m_needToInitialize = true;
 	}
@@ -587,7 +590,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				if (scramblers.isEmpty())
 					continue;
 				
-				final HashMap<Territory, Collection<Unit>> toScramble = ((ITripleaPlayer) m_bridge.getRemote(defender)).scrambleUnitsQuery(to, scramblers);
+				final HashMap<Territory, Collection<Unit>> toScramble = getRemote(defender, m_bridge).scrambleUnitsQuery(to, scramblers);
 				if (toScramble == null)
 					continue;
 				
@@ -682,7 +685,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					final Collection<Territory> possible = whereCanAirLand(Collections.singletonList(u), t, u.getOwner(), data,
 								m_battleTracker, carrierCostOfCurrentTerr, 1, true, !mustReturnToBase, true);
 					if (possible.size() > 1)
-						landingTerr = ((ITripleaPlayer) m_bridge.getRemote(u.getOwner())).selectTerritoryForAirToLand(possible, t, MyFormatter.unitsToText(Collections.singletonList(u)));
+						landingTerr = getRemote(u.getOwner(), m_bridge).selectTerritoryForAirToLand(possible, t, MyFormatter.unitsToText(Collections.singletonList(u)));
 					else if (possible.size() == 1)
 						landingTerr = possible.iterator().next();
 					if (landingTerr == null || landingTerr.equals(t))
@@ -731,6 +734,141 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			m_bridge.getHistoryWriter().startEvent("Cleaning up after air battles");
 			m_bridge.addChange(change);
 		}
+	}
+	
+	private void checkDefendingPlanesCanLand()
+	{
+		final GameData data = getData();
+		final Map<Territory, Collection<Unit>> defendingAirThatCanNotLand = m_battleTracker.getDefendingAirThatCanNotLand();
+		final boolean isWW2v2orIsSurvivingAirMoveToLand = games.strategy.triplea.Properties.getWW2V2(data) || games.strategy.triplea.Properties.getSurvivingAirMoveToLand(data);
+		final CompositeMatch<Unit> alliedDefendingAir = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitWasScrambled.invert());
+		for (final Entry<Territory, Collection<Unit>> entry : defendingAirThatCanNotLand.entrySet())
+		{
+			final Territory battleSite = entry.getKey();
+			final Collection<Unit> defendingAir = entry.getValue();
+			if (defendingAir == null || defendingAir.isEmpty())
+				continue;
+			final PlayerID defender = MustFightBattle.findDefender(battleSite, m_player, data);
+			// Get all land territories where we can land
+			final Set<Territory> neighbors = data.getMap().getNeighbors(battleSite);
+			final CompositeMatch<Territory> alliedLandTerritories = new CompositeMatchAnd<Territory>(Matches.airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(defender, data));
+			// Get those that are neighbors
+			final Collection<Territory> canLandHere = Match.getMatches(neighbors, alliedLandTerritories);
+			// Get all sea territories where there are allies
+			final CompositeMatch<Territory> neighboringSeaZonesWithAlliedUnits = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater, Matches.territoryHasAlliedUnits(defender, data));
+			// Get those that are neighbors
+			final Collection<Territory> areSeaNeighbors = Match.getMatches(neighbors, neighboringSeaZonesWithAlliedUnits);
+			// Set up match criteria for allied carriers
+			final CompositeMatch<Unit> alliedCarrier = new CompositeMatchAnd<Unit>();
+			alliedCarrier.add(Matches.UnitIsCarrier);
+			alliedCarrier.add(Matches.alliedUnit(defender, data));
+			// Set up match criteria for allied planes
+			final CompositeMatch<Unit> alliedPlane = new CompositeMatchAnd<Unit>();
+			alliedPlane.add(Matches.UnitIsAir);
+			alliedPlane.add(Matches.alliedUnit(defender, data));
+			// See if neighboring carriers have any capacity available
+			for (final Territory currentTerritory : areSeaNeighbors)
+			{
+				// get the capacity of the carriers and cost of fighters
+				final Collection<Unit> alliedCarriers = currentTerritory.getUnits().getMatches(alliedCarrier);
+				final Collection<Unit> alliedPlanes = currentTerritory.getUnits().getMatches(alliedPlane);
+				final int alliedCarrierCapacity = AirMovementValidator.carrierCapacity(alliedCarriers, currentTerritory);
+				final int alliedPlaneCost = AirMovementValidator.carrierCost(alliedPlanes);
+				// if there is free capacity, add the territory to landing possibilities
+				if (alliedCarrierCapacity - alliedPlaneCost >= 1)
+				{
+					canLandHere.add(currentTerritory);
+				}
+			}
+			if (isWW2v2orIsSurvivingAirMoveToLand)
+			{
+				Territory territory = null;
+				while (canLandHere.size() > 1 && defendingAir.size() > 0)
+				{
+					territory = getRemote(defender, m_bridge).selectTerritoryForAirToLand(canLandHere, battleSite, MyFormatter.unitsToText(defendingAir));
+					// added for test script
+					if (territory == null)
+					{
+						territory = canLandHere.iterator().next();
+					}
+					if (territory.isWater())
+					{
+						landPlanesOnCarriers(m_bridge, alliedDefendingAir, defendingAir, canLandHere, alliedCarrier, alliedPlane, territory, battleSite);
+					}
+					else
+					{
+						moveAirAndLand(m_bridge, defendingAir, defendingAir, territory, battleSite);
+						continue;
+					}
+					// remove the territory from those available
+					canLandHere.remove(territory);
+				}
+				// Land in the last remaining territory
+				if (canLandHere.size() > 0 && defendingAir.size() > 0)
+				{
+					territory = canLandHere.iterator().next();
+					if (territory.isWater())
+					{
+						landPlanesOnCarriers(m_bridge, alliedDefendingAir, defendingAir, canLandHere, alliedCarrier, alliedPlane, territory, battleSite);
+					}
+					else
+					{
+						moveAirAndLand(m_bridge, defendingAir, defendingAir, territory, battleSite);
+						continue;
+					}
+				}
+			}
+			else if (canLandHere.size() > 0)
+			{
+				// now defending air has what cant stay, is there a place we can go?
+				// check for an island in this sea zone
+				for (final Territory currentTerritory : canLandHere)
+				{
+					// only one neighbor, its an island.
+					if (data.getMap().getNeighbors(currentTerritory).size() == 1)
+					{
+						moveAirAndLand(m_bridge, defendingAir, defendingAir, currentTerritory, battleSite);
+						continue;
+					}
+				}
+			}
+			if (defendingAir.size() > 0)
+			{
+				// no where to go, they must die
+				m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToText(defendingAir) + " could not land and were killed", defendingAir);
+				final Change change = ChangeFactory.removeUnits(battleSite, defendingAir);
+				m_bridge.addChange(change);
+			}
+		}
+	}
+	
+	private static void landPlanesOnCarriers(final IDelegateBridge bridge, final CompositeMatch<Unit> alliedDefendingAir, final Collection<Unit> defendingAir, final Collection<Territory> canLandHere,
+				final CompositeMatch<Unit> alliedCarrier, final CompositeMatch<Unit> alliedPlane, final Territory newTerritory, final Territory battleSite)
+	{
+		// Get the capacity of the carriers in the selected zone
+		final Collection<Unit> alliedCarriersSelected = newTerritory.getUnits().getMatches(alliedCarrier);
+		final Collection<Unit> alliedPlanesSelected = newTerritory.getUnits().getMatches(alliedPlane);
+		final int alliedCarrierCapacitySelected = AirMovementValidator.carrierCapacity(alliedCarriersSelected, newTerritory);
+		final int alliedPlaneCostSelected = AirMovementValidator.carrierCost(alliedPlanesSelected);
+		// Find the available capacity of the carriers in that territory
+		final int territoryCapacity = alliedCarrierCapacitySelected - alliedPlaneCostSelected;
+		if (territoryCapacity > 0)
+		{
+			// move that number of planes from the battlezone
+			// TODO: this seems to assume that the air units all have 1 carrier cost!! fixme
+			final Collection<Unit> movingAir = Match.getNMatches(defendingAir, territoryCapacity, alliedDefendingAir);
+			moveAirAndLand(bridge, movingAir, defendingAir, newTerritory, battleSite);
+		}
+	}
+	
+	private static void moveAirAndLand(final IDelegateBridge bridge, final Collection<Unit> defendingAirBeingMoved, final Collection<Unit> defendingAirTotal, final Territory newTerritory,
+				final Territory battleSite)
+	{
+		bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToText(defendingAirBeingMoved) + " forced to land in " + newTerritory.getName(), defendingAirBeingMoved);
+		final Change change = ChangeFactory.moveUnits(battleSite, newTerritory, defendingAirBeingMoved);
+		bridge.addChange(change);
+		// remove those that landed in case it was a carrier
+		defendingAirTotal.removeAll(defendingAirBeingMoved);
 	}
 	
 	/**
@@ -825,7 +963,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				if (!validTargets.isEmpty())
 					possibleUnitsToAttack.put(t, validTargets);
 			}
-			final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> attacks = ((ITripleaPlayer) m_bridge.getRemote(currentEnemy)).selectKamikazeSuicideAttacks(possibleUnitsToAttack);
+			final HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> attacks = getRemote(currentEnemy, m_bridge).selectKamikazeSuicideAttacks(possibleUnitsToAttack);
 			if (attacks == null || attacks.isEmpty())
 				continue;
 			// now validate that we have the resources and those units are valid targets
@@ -949,8 +1087,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		}
 		// TODO: display this as actual dice for both players
 		// TODO: display to all players, and only once per physical machine
-		((ITripleaPlayer) m_bridge.getRemote(m_player)).reportMessage(title + dice, title);
-		((ITripleaPlayer) m_bridge.getRemote(firingEnemy)).reportMessage(title + dice, title);
+		getRemote(m_player, m_bridge).reportMessage(title + dice, title);
+		getRemote(firingEnemy, m_bridge).reportMessage(title + dice, title);
 	}
 	
 	public static void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge)
@@ -1068,6 +1206,14 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	public Class<? extends IRemote> getRemoteType()
 	{
 		return IBattleDelegate.class;
+	}
+	
+	static ITripleaPlayer getRemote(final PlayerID player, final IDelegateBridge bridge)
+	{
+		// if its the null player, return a do nothing proxy
+		if (player.isNull())
+			return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
+		return (ITripleaPlayer) bridge.getRemote(player);
 	}
 	
 	public Territory getCurentBattle()

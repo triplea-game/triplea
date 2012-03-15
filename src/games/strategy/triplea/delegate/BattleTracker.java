@@ -63,9 +63,10 @@ import java.util.Set;
  * 
  *          Used to keep track of where battles have occurred
  */
-@SuppressWarnings("serial")
 public class BattleTracker implements java.io.Serializable
 {
+	// private static final long serialVersionUID = 8806010984321554662L;
+	
 	public static final String BATTLE_TYPE_NORMAL = "Normal";
 	public static final String BATTLE_TYPE_AIR_BATTLE = "Air Battle";
 	public static final String BATTLE_TYPE_MOCK_BATTLE = "Mock Battle";
@@ -86,6 +87,7 @@ public class BattleTracker implements java.io.Serializable
 	// these territories have had battleships bombard during a naval invasion
 	// used to make sure that the same battleship doesn't bombard twice
 	private final Set<Territory> m_bombardedFromTerritories = new HashSet<Territory>();
+	private final Map<Territory, Collection<Unit>> m_defendingAirThatCanNotLand = new HashMap<Territory, Collection<Unit>>();
 	
 	private final BattleRecords m_battleRecords = new BattleRecords();
 	
@@ -882,6 +884,21 @@ public class BattleTracker implements java.io.Serializable
 		m_foughBattles.clear();
 		m_conquered.clear();
 		m_dependencies.clear();
+		m_defendingAirThatCanNotLand.clear();
+	}
+	
+	public void addToDefendingAirThatCanNotLand(final Collection<Unit> units, final Territory szTerritoryTheyAreIn)
+	{
+		Collection<Unit> current = m_defendingAirThatCanNotLand.get(szTerritoryTheyAreIn);
+		if (current == null)
+			current = new ArrayList<Unit>();
+		current.addAll(units);
+		m_defendingAirThatCanNotLand.put(szTerritoryTheyAreIn, current);
+	}
+	
+	public Map<Territory, Collection<Unit>> getDefendingAirThatCanNotLand()
+	{
+		return m_defendingAirThatCanNotLand;
 	}
 	
 	public void clearBattleRecords()
