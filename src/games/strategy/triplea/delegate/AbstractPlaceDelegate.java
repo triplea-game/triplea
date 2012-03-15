@@ -858,6 +858,11 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		int unitCountHaveToAndHaveBeenBeProducedHere = unitCountAlreadyProduced;
 		if (countSwitchedProductionToNeighbors && unitCountAlreadyProduced > 0)
 		{
+			if (notUsableAsOtherProducers == null)
+				throw new IllegalStateException("notUsableAsOtherProducers can not be null if countSwitchedProductionToNeighbors is true");
+			if (currentAvailablePlacementForOtherProducers == null)
+				throw new IllegalStateException("currentAvailablePlacementForOtherProducers can not be null if countSwitchedProductionToNeighbors is true");
+			int landProduction = 0;
 			int productionThatCanBeTakenOver = 0;
 			// try to find a placement move (to an adjacent sea zone) that can be taken over by some other territory factory
 			for (final UndoablePlacement placementMove : m_placements)
@@ -866,46 +871,52 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 				{
 					final Territory placeTerritory = placementMove.getPlaceTerritory();
 					if (!placeTerritory.isWater())
-						continue;
-					final int maxProductionThatCanBeTakenOverFromThisPlacement = placementMove.getUnits().size();
-					int productionThatCanBeTakenOverFromThisPlacement = 0;
-					// find other producers for this placement move to the same water territory
-					final List<Territory> newPotentialOtherProducers = getAllProducers(placeTerritory, player, units);
-					newPotentialOtherProducers.removeAll(notUsableAsOtherProducers);
-					Collections.sort(newPotentialOtherProducers, getBestProducerComparator(placeTerritory, units, player));
-					for (final Territory potentialOtherProducer : newPotentialOtherProducers)
 					{
-						Integer potential = currentAvailablePlacementForOtherProducers.get(potentialOtherProducer);
-						if (potential == null)
-							potential = getMaxUnitsToBePlacedFrom(potentialOtherProducer, unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
-						if (potential == -1)
+						landProduction += placementMove.getUnits().size();
+					}
+					else
+					{
+						final int maxProductionThatCanBeTakenOverFromThisPlacement = placementMove.getUnits().size();
+						int productionThatCanBeTakenOverFromThisPlacement = 0;
+						// find other producers for this placement move to the same water territory
+						final List<Territory> newPotentialOtherProducers = getAllProducers(placeTerritory, player, units);
+						newPotentialOtherProducers.removeAll(notUsableAsOtherProducers);
+						Collections.sort(newPotentialOtherProducers, getBestProducerComparator(placeTerritory, units, player));
+						for (final Territory potentialOtherProducer : newPotentialOtherProducers)
 						{
-							currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, potential);
-							productionThatCanBeTakenOverFromThisPlacement = maxProductionThatCanBeTakenOverFromThisPlacement;
-							break;
-						}
-						else
-						{
-							final int needed = maxProductionThatCanBeTakenOverFromThisPlacement - productionThatCanBeTakenOverFromThisPlacement;
-							final int surplus = potential - needed;
-							if (surplus > 0)
+							Integer potential = currentAvailablePlacementForOtherProducers.get(potentialOtherProducer);
+							if (potential == null)
+								potential = getMaxUnitsToBePlacedFrom(potentialOtherProducer, unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
+							if (potential == -1)
 							{
-								currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, surplus);
-								productionThatCanBeTakenOverFromThisPlacement += potential - surplus;
+								currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, potential);
+								productionThatCanBeTakenOverFromThisPlacement = maxProductionThatCanBeTakenOverFromThisPlacement;
 								break;
 							}
 							else
 							{
-								currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, 0);
-								productionThatCanBeTakenOverFromThisPlacement += potential;
-								notUsableAsOtherProducers.add(potentialOtherProducer);
+								final int needed = maxProductionThatCanBeTakenOverFromThisPlacement - productionThatCanBeTakenOverFromThisPlacement;
+								final int surplus = potential - needed;
+								if (surplus > 0)
+								{
+									currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, surplus);
+									productionThatCanBeTakenOverFromThisPlacement += needed;
+								}
+								else
+								{
+									currentAvailablePlacementForOtherProducers.put(potentialOtherProducer, 0);
+									productionThatCanBeTakenOverFromThisPlacement += potential;
+									notUsableAsOtherProducers.add(potentialOtherProducer);
+								}
+								if (surplus >= 0)
+									break;
 							}
 						}
+						if (productionThatCanBeTakenOverFromThisPlacement > maxProductionThatCanBeTakenOverFromThisPlacement)
+							throw new IllegalStateException("productionThatCanBeTakenOverFromThisPlacement should never be larger than maxProductionThatCanBeTakenOverFromThisPlacement");
+						productionThatCanBeTakenOver += productionThatCanBeTakenOverFromThisPlacement;
 					}
-					if (productionThatCanBeTakenOverFromThisPlacement > maxProductionThatCanBeTakenOverFromThisPlacement)
-						throw new IllegalStateException("productionThatCanBeTakenOverFromThisPlacement should never be larger than maxProductionThatCanBeTakenOverFromThisPlacement");
-					productionThatCanBeTakenOver += productionThatCanBeTakenOverFromThisPlacement;
-					if (productionThatCanBeTakenOver >= unitCountAlreadyProduced)
+					if (productionThatCanBeTakenOver >= unitCountAlreadyProduced - landProduction)
 						break;
 				}
 			}

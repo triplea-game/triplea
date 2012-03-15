@@ -5331,15 +5331,15 @@
 				
                 <resourceInitialize>
                         <resourceGiven player="Germans" resource="PUs" quantity="30"/>
-                        <resourceGiven player="Russians" resource="PUs" quantity="28"/>
+                        <resourceGiven player="Russians" resource="PUs" quantity="37"/>
 						<resourceGiven player="Japanese" resource="PUs" quantity="26"/>
-                        <resourceGiven player="British" resource="PUs" quantity="29"/>
-						<resourceGiven player="UK_Pacific" resource="PUs" quantity="16"/>
+                        <resourceGiven player="British" resource="PUs" quantity="28"/>
+						<resourceGiven player="UK_Pacific" resource="PUs" quantity="17"/>
 						<resourceGiven player="ANZAC" resource="PUs" quantity="10"/>
                         <resourceGiven player="Italians" resource="PUs" quantity="10"/>
-                        <resourceGiven player="Americans" resource="PUs" quantity="35"/>
+                        <resourceGiven player="Americans" resource="PUs" quantity="52"/>
 						<resourceGiven player="Chinese" resource="PUs" quantity="12"/>
-                        <resourceGiven player="French" resource="PUs" quantity="17"/>
+                        <resourceGiven player="French" resource="PUs" quantity="19"/>
 						<!--<resourceGiven player="Dutch" resource="PUs" quantity="0"/>-->
 						
                         <resourceGiven player="Japanese" resource="SuicideAttackTokens" quantity="6"/>
