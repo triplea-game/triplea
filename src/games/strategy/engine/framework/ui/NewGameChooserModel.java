@@ -58,8 +58,9 @@ public class NewGameChooserModel extends DefaultListModel
 	private List<File> allMapFiles()
 	{
 		final List<File> rVal = new ArrayList<File>();
-		rVal.addAll(safeListFiles(getDefaultMapsDir()));
+		// prioritize user maps folder over root folder
 		rVal.addAll(safeListFiles(GameRunner.getUserMapsFolder()));
+		rVal.addAll(safeListFiles(getDefaultMapsDir()));
 		return rVal;
 	}
 	
@@ -124,12 +125,13 @@ public class NewGameChooserModel extends DefaultListModel
 					{
 						final URLClassLoader loader = new URLClassLoader(new URL[] { map.toURI().toURL() });
 						final URL url = loader.getResource(entry.getName());
-						// we have to close the loader to allow files to
-						// be deleted on windows
+						// we have to close the loader to allow files to be deleted on windows
 						ClassLoaderUtil.closeLoader(loader);
 						try
 						{
-							entries.add(createEntry(new URI(url.toString().replace(" ", "%20"))));
+							final NewGameChooserEntry ngce = createEntry(new URI(url.toString().replace(" ", "%20")));
+							if (!entries.contains(ngce))
+								entries.add(ngce);
 						} catch (final EngineVersionException e)
 						{
 							System.out.println(e.getMessage());
@@ -187,8 +189,9 @@ public class NewGameChooserModel extends DefaultListModel
 			{
 				try
 				{
-					final NewGameChooserEntry entry = createEntry(game.toURI());
-					entries.add(entry);
+					final NewGameChooserEntry ngce = createEntry(game.toURI());
+					if (!entries.contains(ngce))
+						entries.add(ngce);
 				} catch (final EngineVersionException e)
 				{
 					System.out.println(e.getMessage());

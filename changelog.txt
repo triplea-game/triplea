@@ -1,4 +1,8 @@
 Changes for 1.5.2
+* Reduced calls to find map resource paths to a single time, when the map is first loaded. Should speed things up a little. (veqryn)
+
+* Fixed TripleA to ignore if the user has multiple folders with the same name in both of the "maps" directories that it reads from. TripleA will pick first from the user's maps folder, and pick second from the program's folder. (veqryn)
+
 * Fixed failing unit tests. (veqryn)
 
 * Fixed bug where if a defender wins a battle in a seazone, but has aircraft that can not land anymore, the aircraft had to choose right away where they wanted to land, forbidding landing in a territory with a pending battle. 

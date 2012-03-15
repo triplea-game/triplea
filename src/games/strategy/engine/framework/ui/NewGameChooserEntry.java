@@ -6,6 +6,7 @@ import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.GameParser;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.triplea.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +21,7 @@ public class NewGameChooserEntry
 	private final URI m_url;
 	private GameData m_data;
 	private boolean m_gameDataFullyLoaded = false;
+	private final String m_gameNameAndMapNameProperty;
 	
 	public NewGameChooserEntry(final URI uri) throws IOException, GameParseException, SAXException, EngineVersionException
 	{
@@ -30,6 +32,7 @@ public class NewGameChooserEntry
 		{
 			m_data = new GameParser().parse(input, delayParsing);
 			m_gameDataFullyLoaded = !delayParsing;
+			m_gameNameAndMapNameProperty = getGameName() + ":" + getMapNameProperty();
 		} finally
 		{
 			try
@@ -138,10 +141,31 @@ public class NewGameChooserEntry
 		return m_gameDataFullyLoaded;
 	}
 	
+	public String getGameName()
+	{
+		return m_data.getGameName();
+	}
+	
+	// the user may have selected a map skin instead of this map folder, so don't use this for anything except our equals/hashcode below
+	private String getMapNameProperty()
+	{
+		final String mapName = (String) m_data.getProperties().get(Constants.MAP_NAME);
+		if (mapName == null || mapName.trim().length() == 0)
+		{
+			throw new IllegalStateException("Map name property not set on game");
+		}
+		return mapName;
+	}
+	
+	public String getGameNameAndMapNameProperty()
+	{
+		return m_gameNameAndMapNameProperty;
+	}
+	
 	@Override
 	public String toString()
 	{
-		return m_data.getGameName();
+		return getGameName();
 	}
 	
 	public GameData getGameData()
@@ -167,5 +191,34 @@ public class NewGameChooserEntry
 			return raw.substring("jar:".length() + base.length());
 		}
 		return raw;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return getGameNameAndMapNameProperty().hashCode();
+	}
+	
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final NewGameChooserEntry other = (NewGameChooserEntry) obj;
+		if (m_data == null)
+		{
+			if (other.m_data != null)
+				return false;
+		}
+		else
+		{
+			if (other.m_data == null)
+				return false;
+		}
+		return this.getGameNameAndMapNameProperty().equals(other.getGameNameAndMapNameProperty());
 	}
 }

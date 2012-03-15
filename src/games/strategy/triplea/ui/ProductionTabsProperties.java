@@ -36,10 +36,10 @@ public class ProductionTabsProperties
 	private final List<Rule> m_rules;
 	private List<Tuple<String, List<Rule>>> m_ruleLists;
 	
-	protected ProductionTabsProperties(final PlayerID playerId, final List<Rule> mRules, final String mapDir)
+	protected ProductionTabsProperties(final PlayerID playerId, final List<Rule> mRules)
 	{
 		m_rules = mRules;
-		final ResourceLoader loader = ResourceLoader.getMapResourceLoader(mapDir);
+		final ResourceLoader loader = UIContext.getResourceLoader();
 		String propertyFile = PROPERTY_FILE + "." + playerId.getName() + ".properties";
 		URL url = loader.getResource(propertyFile);
 		if (url == null)
@@ -63,9 +63,9 @@ public class ProductionTabsProperties
 		}
 	}
 	
-	public static ProductionTabsProperties getInstance(final PlayerID playerId, final List<Rule> mRules, final String mapDir)
+	public static ProductionTabsProperties getInstance(final PlayerID playerId, final List<Rule> mRules)
 	{
-		return new ProductionTabsProperties(playerId, mRules, mapDir);
+		return new ProductionTabsProperties(playerId, mRules);
 	}
 	
 	public List<Tuple<String, List<Rule>>> getRuleLists()

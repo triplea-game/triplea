@@ -83,7 +83,7 @@ public class TabbedProductionPanel extends ProductionPanel
 								1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 		final JTabbedPane tabs = new JTabbedPane();
 		add(tabs, new GridBagConstraints(0, 1, 1, 1, 100, 100, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 0), 0, 0));
-		final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(m_id, m_rules, UIContext.getMapDir());
+		final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(m_id, m_rules);
 		final List<Tuple<String, List<Rule>>> ruleLists = getRuleLists(properties);
 		calculateXY(properties, largestList(ruleLists));
 		for (final Tuple<String, List<Rule>> ruleList : ruleLists)

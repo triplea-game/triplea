@@ -40,10 +40,11 @@ public class ResourceLoader
 		final String dirName = File.separator + mapName;
 		final String zipName = dirName + ".zip";
 		final List<File> candidates = new ArrayList<File>();
-		candidates.add(new File(GameRunner.getRootFolder() + File.separator + "maps", dirName));
-		candidates.add(new File(GameRunner.getRootFolder() + File.separator + "maps", zipName));
+		// prioritize user maps folder over root folder
 		candidates.add(new File(GameRunner.getUserMapsFolder(), dirName));
 		candidates.add(new File(GameRunner.getUserMapsFolder(), zipName));
+		candidates.add(new File(GameRunner.getRootFolder() + File.separator + "maps", dirName));
+		candidates.add(new File(GameRunner.getRootFolder() + File.separator + "maps", zipName));
 		final Collection<File> existing = Match.getMatches(candidates, new Match<File>()
 		{
 			@Override
@@ -54,7 +55,9 @@ public class ResourceLoader
 		});
 		if (existing.size() > 1)
 		{
-			throw new IllegalStateException("Found too many files for: " + mapName + " found: " + existing);
+			System.out.println("INFO: Found too many files for: " + mapName + "  found: " + existing);
+			// we no longer throw this error message, instead we simply use the first one we find (prioritizing the user maps folder over the root folder)
+			// throw new IllegalStateException("Found too many files for: " + mapName + "  found: " + existing);
 		}
 		// At least one must exist
 		if (existing.isEmpty())

@@ -77,10 +77,16 @@ public class UIContext
 	private final static String AI_PAUSE_DURATION = "AIPauseDuration";
 	private Set<IGamePlayer> m_playerList;
 	private double m_scale = 1;
+	private static ResourceLoader m_resourceLoader;
 	
 	public UIContext()
 	{
 		m_mapImage = new MapImage();
+	}
+	
+	public static ResourceLoader getResourceLoader()
+	{
+		return m_resourceLoader;
 	}
 	
 	public static int getAIPauseDuration()
@@ -187,21 +193,21 @@ public class UIContext
 	private void internalSetMapDir(final String dir, final GameData data)
 	{
 		final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
-		final ResourceLoader loader = ResourceLoader.getMapResourceLoader(dir);
+		m_resourceLoader = ResourceLoader.getMapResourceLoader(dir);
 		if (m_mapData != null)
 		{
 			m_mapData.close();
 		}
-		m_mapData = new MapData(loader);
-		m_diceImageFactory = new DiceImageFactory(loader, data.getDiceSides()); // DiceImageFactory needs loader and game data
+		m_mapData = new MapData(m_resourceLoader);
+		m_diceImageFactory = new DiceImageFactory(m_resourceLoader, data.getDiceSides()); // DiceImageFactory needs loader and game data
 		final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
 		m_scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
-		m_unitImageFactory.setResourceLoader(loader, unitScale);
-		m_flagIconImageFactory.setResourceLoader(loader);
-		m_PUImageFactory.setResourceLoader(loader);
-		m_tileImageFactory.setMapDir(loader);
+		m_unitImageFactory.setResourceLoader(m_resourceLoader, unitScale);
+		m_flagIconImageFactory.setResourceLoader(m_resourceLoader);
+		m_PUImageFactory.setResourceLoader(m_resourceLoader);
+		m_tileImageFactory.setMapDir(m_resourceLoader);
 		m_tileImageFactory.setScale(m_scale);
-		m_mapImage.loadMaps(loader); // load map data
+		m_mapImage.loadMaps(m_resourceLoader); // load map data
 		m_mapDir = dir;
 		m_drawTerritoryEffects = m_mapData.useTerritoryEffectMarkers();
 		stopWatch.done();
