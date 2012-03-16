@@ -25,6 +25,7 @@ import games.strategy.util.Match;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class BidPlaceDelegate extends AbstractPlaceDelegate
@@ -40,6 +41,13 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 		return null;
 	}
 	
+	@Override
+	@Deprecated
+	protected Territory getProducer(final Territory to, final PlayerID player)
+	{
+		return to;
+	}
+	
 	// Return whether we can place bid in a certain territory
 	@Override
 	protected String canProduce(final Territory to, final Collection<Unit> units, final PlayerID player)
@@ -50,19 +58,21 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 			if (Match.someMatch(units, Matches.UnitIsLand))
 				return "Cant place land units at sea";
 			else if (to.getUnits().someMatch(Matches.enemyUnit(player, getData())))
-				return null;
-			else
 				return "Cant place in sea zone containing enemy units";
+			else if (!to.getUnits().someMatch(Matches.unitIsOwnedBy(player)))
+				return "Cant place in sea zone that does not contain a unit owned by you";
+			else
+				return null;
 		}
 		// we can place on territories we own
 		else
 		{
 			if (Match.someMatch(units, Matches.UnitIsSea))
 				return "Cant place sea units on land";
-			else if (to.getOwner().equals(player))
-				return null;
-			else
+			else if (!to.getOwner().equals(player))
 				return "You dont own " + to.getName();
+			else
+				return null;
 		}
 	}
 	
@@ -75,20 +85,30 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 			if (Match.someMatch(units, Matches.UnitIsLand))
 				return "Cant place land units at sea";
 			else if (to.getUnits().someMatch(Matches.enemyUnit(player, getData())))
-				return null;
-			else
 				return "Cant place in sea zone containing enemy units";
+			else if (!to.getUnits().someMatch(Matches.unitIsOwnedBy(player)))
+				return "Cant place in sea zone that does not contain a unit owned by you";
+			else
+				return null;
 		}
 		// we can place on territories we own
 		else
 		{
 			if (Match.someMatch(units, Matches.UnitIsSea))
 				return "Cant place sea units on land";
-			else if (to.getOwner().equals(player))
-				return null;
-			else
+			else if (!to.getOwner().equals(player))
 				return "You dont own " + to.getName();
+			else
+				return null;
 		}
+	}
+	
+	@Override
+	protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace)
+	{
+		final List<Territory> producers = new ArrayList<Territory>();
+		producers.add(to);
+		return producers;
 	}
 	
 	@Override

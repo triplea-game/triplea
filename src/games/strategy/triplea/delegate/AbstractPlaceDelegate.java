@@ -1106,7 +1106,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	 * be found.
 	 */
 	@Deprecated
-	private Territory getProducer(final Territory to, final PlayerID player)
+	protected Territory getProducer(final Territory to, final PlayerID player)
 	{
 		// TODO: eliminate use of this, in favor of getAllProducers
 		// if not water then must produce in that territory
@@ -1124,7 +1124,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	 * Returns the territories that would do the producing if units are to be placed in
 	 * a given territory. Returns an empty list if no suitable territory could be found.
 	 */
-	private List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace)
+	protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace)
 	{
 		final List<Territory> producers = new ArrayList<Territory>();
 		// if not water then must produce in that territory
