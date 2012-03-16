@@ -372,10 +372,10 @@ public class Purchase
 			// I am considering also telling it not to purchase anything with unitPlacementRestrictions, or requiresUnits, or consumesUnits
 			if (data.getMap().getNeighbors(ter, DUtils.CompMatchAnd(Matches.TerritoryIsWater, Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(data, player)).invert())).size() > 0) // Has a safe port
 				return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player,
-							DUtils.CompMatchAnd(Matches.UnitIsNotAA, Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.UnitTypeHasMaxBuildRestrictions.invert()))), purchaser, data, player);
+							DUtils.CompMatchAnd(Matches.UnitIsNotAA, Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.UnitHasMaxBuildRestrictions.invert()))), purchaser, data, player);
 			else
 				return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player,
-							DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.UnitTypeHasMaxBuildRestrictions.invert()))),
+							DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.UnitHasMaxBuildRestrictions.invert()))),
 							purchaser, data, player);
 		}
 		Integer productionSpaceLeft = DUtils.GetCheckedUnitProduction(ter);

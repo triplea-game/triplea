@@ -1056,6 +1056,8 @@ public class DUtils
 			return false; // Yikes, must be a map with entirely disconnected ters... :(
 		if (noCondRoute.getLength() > ta.getMovementLeft()) // If the unit can't even get from ter to territory on a condition-less route, we know it can't make it
 			return false;
+		if (ter.equals(target))
+			return true;
 		if (ua.getIsAir())
 		{
 			if (DMatches.territoryIsOwnedByXOrAlly(data, player).match(target))
@@ -3353,7 +3355,7 @@ public class DUtils
 			final UnitType ut = testUnit.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(ut);
 			// TODO: we should allow limited purchasing of special units, instead of preventing all purchasing of special units
-			if (Matches.UnitIsSea.match(testUnit) || Matches.UnitIsFactoryOrIsInfrastructure.match(testUnit) || Matches.UnitTypeHasMaxBuildRestrictions.match(ut))
+			if (Matches.UnitIsSea.match(testUnit) || Matches.UnitIsFactoryOrIsInfrastructure.match(testUnit) || Matches.UnitHasMaxBuildRestrictions.match(testUnit))
 				continue;
 			if (!match.match(testUnit))
 				continue;

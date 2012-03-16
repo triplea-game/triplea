@@ -1027,6 +1027,15 @@ public class Matches
 			return ua.getArtillery();
 		}
 	};
+	public static final Match<Unit> UnitHasMaxBuildRestrictions = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			final UnitType type = obj.getType();
+			return UnitTypeHasMaxBuildRestrictions.match(type);
+		}
+	};
 	public static final Match<UnitType> UnitTypeHasMaxBuildRestrictions = new Match<UnitType>()
 	{
 		@Override
