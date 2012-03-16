@@ -970,20 +970,24 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	
 	protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
+		if (!producer.getOwner().equals(player))
+			return producer.getName() + " is not owned by you";
 		// make sure the territory wasnt conquered this turn
 		if (wasConquered(producer) && !isPlacementAllowedInCapturedTerritory(player))
 			return producer.getName() + " was conquered this turn and cannot produce till next turn";
 		if (isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))
 			return null;
+		// units can be null if we are just testing the territory itself...
+		final Collection<Unit> testUnits = (units == null ? new ArrayList<Unit>() : units);
 		// make sure there is a factory
 		if (!producer.getUnits().someMatch(Matches.UnitIsFactoryOrCanProduceUnits))
 		{
 			// check to see if we are producing a factory
-			if (Match.someMatch(units, Matches.UnitIsFactory))
+			if (Match.someMatch(testUnits, Matches.UnitIsFactory))
 				return null;
-			if (Match.someMatch(units, Matches.UnitIsConstruction))
+			if (Match.someMatch(testUnits, Matches.UnitIsConstruction))
 			{
-				if (howManyOfEachConstructionCanPlace(to, units, player).totalValues() > 0) // No error, Construction to place
+				if (howManyOfEachConstructionCanPlace(to, testUnits, player).totalValues() > 0) // No error, Construction to place
 					return null;
 				return "No more Constructions Allowed in " + producer.getName();
 			}
@@ -992,7 +996,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		// check we havent just put a factory there (should we be checking producer?)
 		if (Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactoryOrCanProduceUnits))
 		{
-			if (Match.someMatch(units, Matches.UnitIsConstruction) && howManyOfEachConstructionCanPlace(to, units, player).totalValues() > 0) // you can still place a Construction
+			if (Match.someMatch(testUnits, Matches.UnitIsConstruction) && howManyOfEachConstructionCanPlace(to, testUnits, player).totalValues() > 0) // you can still place a Construction
 				return null;
 			return "Factory in " + producer.getName() + " cant produce until 1 turn after it is created";
 		}
@@ -1135,7 +1139,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		}
 		for (final Territory current : getData().getMap().getNeighbors(to))
 		{
-			if (current.getOwner().equals(m_player))
+			if (canProduce(current, to, unitsToPlace, player) == null)
 			{
 				final Collection<Unit> unitsInTO = current.getUnits().getUnits();
 				final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(current);

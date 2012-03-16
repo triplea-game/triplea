@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Fixed bug where sea placement could be done in territories captured this turn. (veqryn)
+
 * Fixed bug with bid placement of sea units, which was previously not allowing them to be placed anywhere at all. (veqryn)
 
 * Changed Battle Calculator to only count units that can die in combat, in the unit totals. No longer counts AA Guns or other units like Factories, in the unit totals, even if they are present. (veqryn)
