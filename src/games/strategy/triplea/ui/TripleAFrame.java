@@ -1348,7 +1348,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	{
 		final int diffPixel = 50;
 		
-		@Override
 		public void keyPressed(final KeyEvent e)
 		{
 			final int x = m_mapPanel.getXOffset();
@@ -1364,12 +1363,10 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				getMapPanel().setTopLeft(x, y - diffPixel);
 		}
 		
-		@Override
 		public void keyTyped(final KeyEvent e)
 		{
 		}
 		
-		@Override
 		public void keyReleased(final KeyEvent e)
 		{
 		}

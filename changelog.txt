@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Maintaining compatibility with Java 5. (veqryn)
+
 * Abstraction of Launcher code to an abstract class. (frigoref)
 
 * Fixed bug where sea placement could be done in territories captured this turn. (veqryn)
