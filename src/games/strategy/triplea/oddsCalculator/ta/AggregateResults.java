@@ -40,8 +40,8 @@ public class AggregateResults implements Serializable
 		BattleResults closestBattle = null;
 		for (final BattleResults results : m_results)
 		{
-			float dif = DUtils.MNN((float) (results.getAttackingUnitsLeft() - getAverageAttackingUnitsLeft()));
-			dif += DUtils.MNN((float) (results.getDefendingUnitsLeft() - getAverageDefendingUnitsLeft()));
+			float dif = DUtils.MNN((float) (results.getAttackingCombatUnitsLeft() - getAverageAttackingUnitsLeft()));
+			dif += DUtils.MNN((float) (results.getDefendingCombatUnitsLeft() - getAverageDefendingUnitsLeft()));
 			if (dif < closestBattleDif)
 			{
 				closestBattleDif = dif;
@@ -80,7 +80,7 @@ public class AggregateResults implements Serializable
 		double count = 0;
 		for (final BattleResults result : m_results)
 		{
-			count += result.getAttackingUnitsLeft();
+			count += result.getAttackingCombatUnitsLeft();
 		}
 		return count / m_results.size();
 	}
@@ -90,7 +90,7 @@ public class AggregateResults implements Serializable
 		double count = 0;
 		for (final BattleResults result : m_results)
 		{
-			count += result.getDefendingUnitsLeft();
+			count += result.getDefendingCombatUnitsLeft();
 		}
 		return count / m_results.size();
 	}

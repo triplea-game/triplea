@@ -76,6 +76,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 
+	public static enum WhoWon
+	{
+		NOTFINISHED, DRAW, ATTACKER, DEFENDER
+	}
+	
+
 	// these class exist for testing
 	@SuppressWarnings("serial")
 	public static abstract class AttackSubs implements IExecutable
@@ -127,6 +133,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private List<String> m_stepStrings;
 	protected List<Unit> m_defendingAA;
 	protected Set<String> m_AAtypes;
+	
+	private WhoWon m_whoWon = WhoWon.NOTFINISHED;
 	
 	private TransportTracker getTransportTracker()
 	{
@@ -2545,6 +2553,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private void defenderWins(final IDelegateBridge bridge)
 	{
+		m_whoWon = WhoWon.DEFENDER;
 		getDisplay(bridge).battleEnd(m_battleID, m_defender.getName() + " win");
 		bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " win", m_defendingUnits);
 		m_battleResult = BattleRecords.BattleResult.LOST;
@@ -2557,6 +2566,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private void nobodyWins(final IDelegateBridge bridge)
 	{
+		m_whoWon = WhoWon.DRAW;
 		getDisplay(bridge).battleEnd(m_battleID, "Stalemate");
 		bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " and " + m_attacker.getName() + " reach a stalemate");
 		m_battleResult = BattleRecords.BattleResult.STALEMATE;
@@ -2774,6 +2784,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private void attackerWins(final IDelegateBridge bridge)
 	{
+		m_whoWon = WhoWon.ATTACKER;
 		getDisplay(bridge).battleEnd(m_battleID, m_attacker.getName() + " win");
 		if (m_headless)
 			return;
@@ -2909,6 +2920,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		else if (m_amphibiousLandAttackers.contains(u2) && !m_amphibiousLandAttackers.contains(u1))
 			return 1;
 		return 0;
+	}
+	
+	public WhoWon getWhoWon()
+	{
+		return m_whoWon;
 	}
 	
 	@Override

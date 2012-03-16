@@ -307,13 +307,16 @@ public class Purchase
 	{
 		DUtils.Log(Level.FINER, "    Purchasing units for territory. Ter: {0}", ter);
 		int result = 0;
-		if (!ter.isWater() && ter.getOwner().getName().equals(player.getName()) && ter.getUnits().someMatch(Matches.UnitIsFactory) && !ter.getUnits().someMatch(Matches.UnitIsAAforAnything)
+		// TODO: first, we do not even know if this map has units that can bomb a factory
+		// second, we should check and see if the enemy has any of these bombers within range
+		// third, we should check if we have an AA unit nearby already, that we can move to the factory instead of producing a new one
+		if (!ter.isWater() && ter.getOwner().getName().equals(player.getName()) && ter.getUnits().someMatch(Matches.UnitIsFactory) && !ter.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly)
 					&& TerritoryAttachment.get(ter) != null && DUtils.GetCheckedUnitProduction(ter) > 0)
 		{
 			Unit aa = null;
 			for (final ProductionRule rule : player.getProductionFrontier().getRules())
 			{
-				if (Matches.UnitTypeIsAAforAnything.match((UnitType) rule.getResults().keySet().toArray()[0]))
+				if (Matches.UnitTypeIsAAforBombingThisUnitOnly.match((UnitType) rule.getResults().keySet().toArray()[0]))
 				{
 					aa = ((UnitType) rule.getResults().keySet().toArray()[0]).create(player);
 					break;
@@ -346,6 +349,7 @@ public class Purchase
 			maxPurchaseCount = Integer.MAX_VALUE;
 		if (DUtils.CanPlayerPlaceAnywhere(data, player))
 			maxPurchaseCount = Integer.MAX_VALUE;
+		// TODO: check if we have a maxPlacePerTerritory player rule, or placementLimit
 		bestPurchaseGroup.ApplyMaxValues(maxPurchaseCost, maxPurchaseCount);
 		final int cost = bestPurchaseGroup.GetCost();
 		if (PUsToSpend - cost >= 0) // If we have enough money to buy this purchase group
@@ -357,17 +361,21 @@ public class Purchase
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static PurchaseGroup CalculateBestPurchaseGroup(final Territory ter, final GameData data, final PlayerID player, final IPurchaseDelegate purchaser, float PUsLeftToSpend,
 				final boolean purchaseForBid)
 	{
 		final Territory ncmTarget = NCM_TargetCalculator.CalculateNCMTargetForTerritory(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), new ArrayList<NCM_Task>());
 		if (ncmTarget == null) // No ncm target, so buy random units
 		{
+			// TODO: I've told the AI not to purchase any infrastructure, or any units with maxBuiltPerPlayer. However, a better written AI would be smarter and buy units with these, but buy them correctly / legally.
+			// I am considering also telling it not to purchase anything with unitPlacementRestrictions, or requiresUnits, or consumesUnits
 			if (data.getMap().getNeighbors(ter, DUtils.CompMatchAnd(Matches.TerritoryIsWater, Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(data, player)).invert())).size() > 0) // Has a safe port
-				return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player, DUtils.CompMatchAnd(Matches.UnitIsNotAA, Matches.UnitIsNotFactory))), purchaser, data,
-							player);
+				return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player,
+							DUtils.CompMatchAnd(Matches.UnitIsNotAA, Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.UnitTypeHasMaxBuildRestrictions.invert()))), purchaser, data, player);
 			else
-				return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player, DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotFactory))),
+				return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player,
+							DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.UnitTypeHasMaxBuildRestrictions.invert()))),
 							purchaser, data, player);
 		}
 		Integer productionSpaceLeft = DUtils.GetCheckedUnitProduction(ter);
@@ -377,6 +385,7 @@ public class Purchase
 			productionSpaceLeft = Integer.MAX_VALUE;
 		if (DUtils.CanPlayerPlaceAnywhere(data, player))
 			productionSpaceLeft = Integer.MAX_VALUE;
+		// TODO: check if we have a maxPlacePerTerritory player rule, or placementLimit
 		if (productionSpaceLeft <= 0)
 			return null;
 		final HashSet<Unit> unitsOnTheWay = new HashSet<Unit>();
@@ -391,6 +400,7 @@ public class Purchase
 		}
 		final List<Unit> allUnits = new ArrayList<Unit>();
 		final List<ProductionRule> rules = player.getProductionFrontier().getRules();
+		// TODO: why on earth are we "creating" these units here? Doesn't wisconsin know that they stick around in memory forever?
 		for (final ProductionRule rule : rules)
 		{
 			final UnitType ut = ((UnitType) rule.getResults().keySet().toArray()[0]);

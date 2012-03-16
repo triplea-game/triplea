@@ -1,4 +1,10 @@
 Changes for 1.5.2
+* Changed Battle Calculator to only count units that can die in combat, in the unit totals. No longer counts AA Guns or other units like Factories, in the unit totals, even if they are present. (veqryn)
+
+* Fixed infinite loop in Dynamix combat calculation routine, resulting from thinking battles that were lost were really won, then increasing the number of defenders to try to reach a "losing" battle, except that no losing battle ever came. (veqryn)
+
+* Preventing Dyanmix AI from purchasing any infrastructure or maxBuiltPerPlayer units. (veqryn)
+
 * Reduced calls to find map resource paths to a single time, when the map is first loaded. Should speed things up a little. (veqryn)
 
 * Fixed TripleA to ignore if the user has multiple folders with the same name in both of the "maps" directories that it reads from. TripleA will pick first from the user's maps folder, and pick second from the program's folder. (veqryn)

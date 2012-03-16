@@ -694,6 +694,7 @@ public class BattleTracker implements java.io.Serializable
 				}
 			}
 		}
+		// FYI: a dummy delegate will not do anything with this change, meaning that the battle calculator will think this unit lived even though it died or was captured, etc!
 		final Change capture = ChangeFactory.changeOwner(nonCom, newOwner, territory);
 		bridge.addChange(capture);
 		if (changeTracker != null)

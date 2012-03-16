@@ -3352,7 +3352,8 @@ public class DUtils
 		{
 			final UnitType ut = testUnit.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(ut);
-			if (ua.getIsSea() || ua.getIsFactory() || ua.getIsInfrastructure()) // || ua.isAA() // TODO: double check this
+			// TODO: we should allow limited purchasing of special units, instead of preventing all purchasing of special units
+			if (Matches.UnitIsSea.match(testUnit) || Matches.UnitIsFactoryOrIsInfrastructure.match(testUnit) || Matches.UnitTypeHasMaxBuildRestrictions.match(ut))
 				continue;
 			if (!match.match(testUnit))
 				continue;
