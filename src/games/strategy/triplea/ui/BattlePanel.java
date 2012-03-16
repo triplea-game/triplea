@@ -141,6 +141,7 @@ public class BattlePanel extends ActionPanel
 		m_bombing = bombing;
 	}
 	
+	@Override
 	public void display(final PlayerID id)
 	{
 		super.display(id);

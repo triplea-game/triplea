@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -129,20 +130,10 @@ public class NewGameChooserModel extends DefaultListModel
 						ClassLoaderUtil.closeLoader(loader);
 						try
 						{
-							final NewGameChooserEntry ngce = createEntry(new URI(url.toString().replace(" ", "%20")));
-							if (!entries.contains(ngce))
-								entries.add(ngce);
-						} catch (final EngineVersionException e)
+							addNewGameChooserEntry(entries, new URI(url.toString().replace(" ", "%20")));
+						} catch (final URISyntaxException e)
 						{
-							System.out.println(e.getMessage());
-						} catch (final SAXParseException e)
-						{
-							System.err.println("Could not parse:" + url + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
-							e.printStackTrace();
-						} catch (final Exception e)
-						{
-							System.err.println("Could not parse:" + url);
-							e.printStackTrace();
+							// only happens when URI couldn't be build and therefore no entry was added. That's fine
 						}
 					}
 					zis.closeEntry();
@@ -155,6 +146,33 @@ public class NewGameChooserModel extends DefaultListModel
 		} catch (final IOException ioe)
 		{
 			ioe.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @param entries
+	 *            list of entries where to add the new entry
+	 * @param uri
+	 *            URI of the new entry
+	 */
+	private void addNewGameChooserEntry(final List<NewGameChooserEntry> entries, final URI uri)
+	{
+		try
+		{
+			final NewGameChooserEntry newEntry = createEntry(uri);
+			if (!entries.contains(newEntry))
+				entries.add(newEntry);
+		} catch (final EngineVersionException e)
+		{
+			System.out.println(e.getMessage());
+		} catch (final SAXParseException e)
+		{
+			System.err.println("Could not parse:" + uri + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
+			e.printStackTrace();
+		} catch (final Exception e)
+		{
+			System.err.println("Could not parse:" + uri);
+			e.printStackTrace();
 		}
 	}
 	
@@ -186,25 +204,7 @@ public class NewGameChooserModel extends DefaultListModel
 		for (final File game : games.listFiles())
 		{
 			if (game.isFile() && game.getName().toLowerCase().endsWith("xml"))
-			{
-				try
-				{
-					final NewGameChooserEntry ngce = createEntry(game.toURI());
-					if (!entries.contains(ngce))
-						entries.add(ngce);
-				} catch (final EngineVersionException e)
-				{
-					System.out.println(e.getMessage());
-				} catch (final SAXParseException e)
-				{
-					System.err.println("Could not parse:" + game + " error at line:" + e.getLineNumber() + " column:" + e.getColumnNumber());
-					e.printStackTrace();
-				} catch (final Exception e)
-				{
-					System.err.println("Could not parse:" + game);
-					e.printStackTrace();
-				}
-			}
+				addNewGameChooserEntry(entries, game.toURI());
 		}
 	}
 	

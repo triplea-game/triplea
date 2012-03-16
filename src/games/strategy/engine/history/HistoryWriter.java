@@ -131,13 +131,13 @@ public class HistoryWriter implements java.io.Serializable
 		}
 	}
 	
-	private void addToAndSetCurrent(HistoryNode newNode)
+	private void addToAndSetCurrent(final HistoryNode newNode)
 	{
 		addToCurrent(newNode);
 		m_current = newNode;
 	}
 	
-	private void addToCurrent(HistoryNode newNode)
+	private void addToCurrent(final HistoryNode newNode)
 	{
 		m_history.getGameData().acquireWriteLock();
 		try
@@ -149,7 +149,7 @@ public class HistoryWriter implements java.io.Serializable
 		}
 		m_history.goToEnd();
 	}
-
+	
 	public void startEvent(final String eventName)
 	{
 		assertCorrectThread();

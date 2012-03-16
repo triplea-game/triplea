@@ -13,10 +13,8 @@
  */
 package games.strategy.engine.framework.startup.launcher;
 
-import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
-import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.DummyMessenger;
 import games.strategy.engine.random.IRandomSource;
@@ -25,50 +23,30 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-public class LocalLauncher implements ILauncher
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+public class LocalLauncher extends AbstractLauncher
 {
 	private static final Logger s_logger = Logger.getLogger(ILauncher.class.getName());
-	private final GameData m_gameData;
 	private final IRandomSource m_randomSource;
 	private final Map<String, String> m_playerTypes;
-	private final GameSelectorModel m_gameSelectorModel;
-	private final WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
 	
 	public LocalLauncher(final GameSelectorModel gameSelectorModel, final IRandomSource randomSource, final Map<String, String> playerTypes)
 	{
-		m_gameSelectorModel = gameSelectorModel;
-		m_gameData = gameSelectorModel.getGameData();
+		super(gameSelectorModel);
 		m_randomSource = randomSource;
 		m_playerTypes = playerTypes;
 	}
 	
-	public void launch(final Component parent)
-	{
-		if (!SwingUtilities.isEventDispatchThread())
-			throw new IllegalStateException("Wrong thread");
-		final Runnable r = new Runnable()
-		{
-			public void run()
-			{
-				launchInNewThread(parent);
-			}
-		};
-		final Thread t = new Thread(r);
-		t.start();
-		m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
-		m_gameLoadingWindow.setVisible(true);
-		m_gameLoadingWindow.showWait();
-		JOptionPane.getFrameForComponent(parent).setVisible(false);
-	}
-	
-	private void launchInNewThread(final Component parent)
+	@Override
+	protected void launchInNewThread(final Component parent)
 	{
 		final Runnable runner = new Runnable()
 		{
@@ -89,7 +67,7 @@ public class LocalLauncher implements ILauncher
 						game.setRandomSource(new ScriptedRandomSource());
 					}
 					m_gameData.getGameLoader().startGame(game, gamePlayers);
-				} catch (IllegalStateException e)
+				} catch (final IllegalStateException e)
 				{
 					exceptionLoadingGame = e;
 					Throwable error = e;
@@ -104,7 +82,7 @@ public class LocalLauncher implements ILauncher
 							JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
 						}
 					});
-
+					
 				} catch (final Exception ex)
 				{
 					ex.printStackTrace();

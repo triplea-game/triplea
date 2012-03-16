@@ -1546,6 +1546,7 @@ public class MovePanel extends AbstractMovePanel
 		m_nonCombat = nonCombat;
 	}
 	
+	@Override
 	public final void display(final PlayerID id)
 	{
 		m_transportTracker = new TransportTracker();

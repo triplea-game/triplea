@@ -18,7 +18,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class PropertiesUI extends JPanel
 {
-	private final GameProperties m_properties;
+	private final List<IEditableProperty> m_properties;
 	private int m_nextRow;
 	private int m_labelColumn;
 	
@@ -51,12 +51,16 @@ public class PropertiesUI extends JPanel
 		frame.setVisible(true);
 	}
 	
-	public PropertiesUI(final GameProperties properties, final boolean editable)
+	public PropertiesUI(final GameProperties gameProperties, final boolean editable)
+	{
+		this(gameProperties.getEditableProperties(), editable);
+	}
+	
+	public PropertiesUI(final List<IEditableProperty> properties, final boolean editable)
 	{
 		init();
 		m_properties = properties;
-		final Iterator<IEditableProperty> iter = m_properties.getEditableProperties().iterator();
-		while (iter.hasNext())
+		for (final IEditableProperty property : m_properties)
 		{
 			// Limit it to 10 rows then start a new column
 			// Don't know if this is the most elegant solution, but it works.
@@ -65,7 +69,6 @@ public class PropertiesUI extends JPanel
 				m_labelColumn += 2;
 				m_nextRow = 0;
 			}
-			final IEditableProperty property = iter.next();
 			if (editable)
 				addItem(property.getName(), property.getEditorComponent());
 			else

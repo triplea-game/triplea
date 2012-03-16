@@ -174,7 +174,7 @@ public class ActionButtons extends JPanel
 			}
 		});
 	}
-
+	
 	/**
 	 * Blocks until the user selects their purchase.
 	 * 

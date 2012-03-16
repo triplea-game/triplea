@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Abstraction of Launcher code to an abstract class. (frigoref)
+
 * Fixed bug where sea placement could be done in territories captured this turn. (veqryn)
 
 * Fixed bug with bid placement of sea units, which was previously not allowing them to be placed anywhere at all. (veqryn)

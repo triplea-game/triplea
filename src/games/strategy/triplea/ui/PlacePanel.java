@@ -36,7 +36,6 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -61,7 +60,7 @@ public class PlacePanel extends AbstractMovePanel
 		m_unitsToPlace = new SimpleUnitPanel(map.getUIContext());
 		m_leftToPlaceLabel.setText("Units left to place:");
 	}
-
+	
 	@Override
 	public void display(final PlayerID id)
 	{

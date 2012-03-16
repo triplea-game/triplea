@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -74,7 +73,8 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 	}
 	
 	HistoryPanel m_panel = null;
-	public void setTreePanel(HistoryPanel panel)
+	
+	public void setTreePanel(final HistoryPanel panel)
 	{
 		m_panel = panel;
 	}
@@ -84,7 +84,7 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 		if (m_panel != null)
 			m_panel.goToEnd();
 	}
-
+	
 	public HistoryNode getLastNode()
 	{
 		assertCorrectThread();
