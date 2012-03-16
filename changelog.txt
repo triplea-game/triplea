@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Deleting duplicate m_bridge variables that were hiding the real m_bridge variables of the extended classes. (veqryn)
+
 * Maintaining compatibility with Java 5. (veqryn)
 
 * Abstraction of Launcher code to an abstract class. (frigoref)

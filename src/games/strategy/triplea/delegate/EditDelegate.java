@@ -43,16 +43,13 @@ import java.util.Collection;
  */
 public class EditDelegate extends BaseDelegate implements IEditDelegate
 {
-	private TripleADelegateBridge m_bridge;
-	
 	/**
 	 * Called before the delegate will run.
 	 */
 	@Override
 	public void start(final IDelegateBridge bridge)
 	{
-		m_bridge = new TripleADelegateBridge(bridge);
-		super.start(m_bridge);
+		super.start(new TripleADelegateBridge(bridge));
 	}
 	
 	@Override

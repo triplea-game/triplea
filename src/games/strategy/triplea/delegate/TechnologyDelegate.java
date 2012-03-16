@@ -61,7 +61,6 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	private int m_techCost;
 	private HashMap<PlayerID, Collection<TechAdvance>> m_techs;
 	private TechnologyFrontier m_techCategory;
-	private TripleADelegateBridge m_bridge;
 	private boolean m_needToInitialize = true;
 	
 	/** Creates new TechnolgoyDelegate */
@@ -83,8 +82,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	@Override
 	public void start(final IDelegateBridge aBridge)
 	{
-		m_bridge = new TripleADelegateBridge(aBridge);
-		super.start(m_bridge);
+		super.start(new TripleADelegateBridge(aBridge));
 		if (!m_needToInitialize)
 			return;
 		if (games.strategy.triplea.Properties.getTriggers(getData()))
