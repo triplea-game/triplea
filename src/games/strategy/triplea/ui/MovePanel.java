@@ -76,8 +76,9 @@ import javax.swing.JOptionPane;
 public class MovePanel extends AbstractMovePanel
 {
 	private static final int s_defaultMinTransportCost = 5;
-	/*
-	 * @param s_deselectNumber remove 1/s_deselectNumber of total units (useful for splitting large armies)
+	/**
+	 * @param s_deselectNumber
+	 *            adds or removes 10 units (used to remove 1/s_deselectNumber of total units (useful for splitting large armies), but changed it after feedback)
 	 */
 	private static final int s_deselectNumber = 10;
 	// access only through getter and setter!
@@ -907,7 +908,7 @@ public class MovePanel extends AbstractMovePanel
 				// check for alt key - add 1/10 of total units (useful for splitting large armies)
 				final List<Unit> unitsToMove = Match.getMatches(units, unitsToMoveMatch);
 				Collections.sort(unitsToMove, UnitComparator.getIncreasingMovementComparator());
-				final int iterCount = (me.isAltDown()) ? (int) Math.max(1, Math.floor(unitsToMove.size() / s_deselectNumber)) : 1;
+				final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1; // (int) Math.max(1, Math.floor(unitsToMove.size() / s_deselectNumber))
 				int addCount = 0;
 				for (final Unit unit : unitsToMove)
 				{
@@ -1107,7 +1108,7 @@ public class MovePanel extends AbstractMovePanel
 				else if (!unitsWithoutDependents.isEmpty())
 				{
 					// check for alt key - remove 1/10 of total units (useful for splitting large armies)
-					final int iterCount = (me.isAltDown()) ? (int) Math.max(1, Math.floor(unitsWithoutDependents.size() / s_deselectNumber)) : 1;
+					final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1; // (int) Math.max(1, Math.floor(unitsWithoutDependents.size() / s_deselectNumber))
 					// remove the last iterCount elements
 					for (int i = 0; i < iterCount; i++)
 					{
@@ -1154,7 +1155,8 @@ public class MovePanel extends AbstractMovePanel
 						throw new IllegalStateException("Wrong selected territory");
 					// doesn't matter which unit we remove since units are assigned to routes later
 					// check for alt key - remove 1/10 of total units (useful for splitting large armies)
-					final int iterCount = (me.isAltDown()) ? (int) Math.max(1, Math.floor(units.size() / s_deselectNumber)) : 1;
+					// changed to just remove 10 units
+					final int iterCount = (me.isAltDown()) ? s_deselectNumber : 1; // (int) Math.max(1, Math.floor(units.size() / s_deselectNumber))
 					int remCount = 0;
 					for (final Unit unit : units)
 					{

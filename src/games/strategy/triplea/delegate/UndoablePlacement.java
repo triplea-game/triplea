@@ -34,31 +34,31 @@ import java.util.Map;
 @SuppressWarnings("serial")
 class UndoablePlacement extends AbstractUndoableMove
 {
-	final Territory m_place_territory;
-	Territory m_producer_territory;
+	final Territory m_placeTerritory;
+	Territory m_producerTerritory;
 	PlayerID m_player;
 	
 	public UndoablePlacement(final PlayerID player, final CompositeChange change, final Territory producer_territory, final Territory place_territory, final Collection<Unit> units)
 	{
 		super(change, units);
-		m_place_territory = place_territory;
-		m_producer_territory = producer_territory;
+		m_placeTerritory = place_territory;
+		m_producerTerritory = producer_territory;
 		m_player = player;
 	}
 	
 	public Territory getProducerTerritory()
 	{
-		return m_producer_territory;
+		return m_producerTerritory;
 	}
 	
 	public void setProducerTerritory(final Territory producerTerritory)
 	{
-		m_producer_territory = producerTerritory;
+		m_producerTerritory = producerTerritory;
 	}
 	
 	public Territory getPlaceTerritory()
 	{
-		return m_place_territory;
+		return m_placeTerritory;
 	}
 	
 	@Override
@@ -74,11 +74,11 @@ class UndoablePlacement extends AbstractUndoableMove
 		else
 			throw new IllegalStateException("Can not find Placement Delegate for current step: " + currentStepName);
 		final Map<Territory, Collection<Unit>> produced = currentDelegate.getProduced();
-		final Collection<Unit> units = produced.get(m_producer_territory);
+		final Collection<Unit> units = produced.get(m_producerTerritory);
 		units.removeAll(getUnits());
 		if (units.isEmpty())
 		{
-			produced.remove(m_producer_territory);
+			produced.remove(m_producerTerritory);
 		}
 		currentDelegate.setProduced(new HashMap<Territory, Collection<Unit>>(produced));
 	}
@@ -86,28 +86,28 @@ class UndoablePlacement extends AbstractUndoableMove
 	@Override
 	public final String getMoveLabel()
 	{
-		if (m_producer_territory != m_place_territory)
-			return m_producer_territory.getName() + " -> " + m_place_territory.getName();
-		return m_place_territory.getName();
+		if (m_producerTerritory != m_placeTerritory)
+			return m_producerTerritory.getName() + " -> " + m_placeTerritory.getName();
+		return m_placeTerritory.getName();
 	}
 	
 	@Override
 	public final Territory getEnd()
 	{
-		return m_place_territory;
+		return m_placeTerritory;
 	}
 	
 	@Override
 	protected final PlacementDescription getDescriptionObject()
 	{
-		return new PlacementDescription(m_units, m_place_territory);
+		return new PlacementDescription(m_units, m_placeTerritory);
 	}
 	
 	@Override
 	public String toString()
 	{
-		if (m_producer_territory != m_place_territory)
-			return m_producer_territory.getName() + " produces in " + m_place_territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(m_units);
-		return m_place_territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(m_units);
+		if (m_producerTerritory != m_placeTerritory)
+			return m_producerTerritory.getName() + " produces in " + m_placeTerritory.getName() + ": " + MyFormatter.unitsToTextNoOwner(m_units);
+		return m_placeTerritory.getName() + ": " + MyFormatter.unitsToTextNoOwner(m_units);
 	}
 }

@@ -261,7 +261,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 			if (uses > 0)
 			{
 				uses--;
-				final Change use = ChangeFactory.attachmentPropertyChange(rule, new Integer(uses).toString(), "uses");
+				final Change use = ChangeFactory.attachmentPropertyChange(rule, Integer.toString(uses), "uses");
 				bridge.addChange(use);
 			}
 			final String PUMessage = MyFormatter.attachmentNameToText(rule.getName()) + ": " + player.getName() + " met a national objective for an additional " + toAdd

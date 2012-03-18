@@ -143,7 +143,7 @@ public class Properties implements Constants
 	 */
 	public static boolean getWW2V3TechModel(final GameData data)
 	{
-		return data.getProperties().get(WW2V3_Tech_Model, false);
+		return data.getProperties().get(WW2V3_TECH_MODEL, false);
 	}
 	
 	/*
@@ -489,7 +489,7 @@ public class Properties implements Constants
 	/*
 	 * 
 	 */
-	public static boolean getAlways_On_AA(final GameData data)
+	public static boolean getAlwaysOnAA(final GameData data)
 	{
 		return data.getProperties().get(ALWAYS_ON_AA_PROPERTY, false);
 	}
@@ -497,7 +497,7 @@ public class Properties implements Constants
 	/*
 	 * 
 	 */
-	public static boolean getLHTR_Carrier_Production_Rules(final GameData data)
+	public static boolean getLHTRCarrierProductionRules(final GameData data)
 	{
 		return data.getProperties().get(LHTR_CARRIER_PRODUCTION_RULES, false);
 	}
@@ -505,22 +505,22 @@ public class Properties implements Constants
 	/*
 	 * Atomic units of the fighter/carrier production rules
 	 */
-	public static boolean getProduce_Fighters_On_Carriers(final GameData data)
+	public static boolean getProduceFightersOnCarriers(final GameData data)
 	{
 		return data.getProperties().get(CAN_PRODUCE_FIGHTERS_ON_CARRIERS, false);
 	}
 	
-	public static boolean getProduce_New_Fighters_On_Old_Carriers(final GameData data)
+	public static boolean getProduceNewFightersOnOldCarriers(final GameData data)
 	{
 		return data.getProperties().get(PRODUCE_NEW_FIGHTERS_ON_OLD_CARRIERS, false);
 	}
 	
-	public static boolean getMove_Existing_Fighters_To_New_Carriers(final GameData data)
+	public static boolean getMoveExistingFightersToNewCarriers(final GameData data)
 	{
 		return data.getProperties().get(MOVE_EXISTING_FIGHTERS_TO_NEW_CARRIERS, false);
 	}
 	
-	public static boolean getLand_Existing_Fighters_On_New_Carriers(final GameData data)
+	public static boolean getLandExistingFightersOnNewCarriers(final GameData data)
 	{
 		return data.getProperties().get(LAND_EXISTING_FIGHTERS_ON_NEW_CARRIERS, false);
 	}
@@ -528,7 +528,7 @@ public class Properties implements Constants
 	/*
 	 * 
 	 */
-	public static Integer getHeavy_Bomber_Dice_Rolls(final GameData data)
+	public static Integer getHeavyBomberDiceRolls(final GameData data)
 	{
 		return data.getProperties().get(HEAVY_BOMBER_DICE_ROLLS, 2);
 	}
@@ -536,12 +536,12 @@ public class Properties implements Constants
 	/*
 	 * 
 	 */
-	public static boolean getBattleships_Repair_At_End_Of_Round(final GameData data)
+	public static boolean getBattleshipsRepairAtEndOfRound(final GameData data)
 	{
 		return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_END_OF_TURN, false);
 	}
 	
-	public static boolean getBattleships_Repair_At_Beginning_Of_Round(final GameData data)
+	public static boolean getBattleshipsRepairAtBeginningOfRound(final GameData data)
 	{
 		return data.getProperties().get(TWO_HIT_BATTLESHIPS_REPAIR_BEGINNING_OF_TURN, false);
 	}

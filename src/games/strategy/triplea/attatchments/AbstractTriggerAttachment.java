@@ -52,7 +52,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 				final int currentUses = ta.getUses();
 				if (currentUses > 0)
 				{
-					change.add(ChangeFactory.attachmentPropertyChange(ta, new Integer(currentUses - 1).toString(), "uses"));
+					change.add(ChangeFactory.attachmentPropertyChange(ta, Integer.toString(currentUses - 1), "uses"));
 					change.add(ChangeFactory.attachmentPropertyChange(ta, false, "usedThisRound"));
 				}
 			}

@@ -1040,7 +1040,7 @@ public class MoveValidator
 		return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
 	}
 	
-	private static boolean IsParatroopersCanMoveDuringNonCombat(final GameData data)
+	private static boolean isParatroopersCanMoveDuringNonCombat(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getParatroopersCanMoveDuringNonCombat(data);
 	}
@@ -1336,7 +1336,7 @@ public class MoveValidator
 			return result;
 		if (Match.noneMatch(units, Matches.UnitIsAirTransportable) || Match.noneMatch(units, Matches.UnitIsAirTransport))
 			return result;
-		if (nonCombat && !IsParatroopersCanMoveDuringNonCombat(data))
+		if (nonCombat && !isParatroopersCanMoveDuringNonCombat(data))
 			return result.setErrorReturnResult("Paratroops may not move during NonCombat");
 		if (!getEditMode(data))
 		{
@@ -1371,11 +1371,11 @@ public class MoveValidator
 				{
 					result.addDisallowedUnit("Cannot paratroop units that have already moved", paratroop);
 				}
-				if (Matches.isTerritoryFriendly(player, data).match(routeEnd) && !IsParatroopersCanMoveDuringNonCombat(data))
+				if (Matches.isTerritoryFriendly(player, data).match(routeEnd) && !isParatroopersCanMoveDuringNonCombat(data))
 				{
 					result.addDisallowedUnit("Paratroops must advance to battle", paratroop);
 				}
-				if (!nonCombat && Matches.isTerritoryFriendly(player, data).match(routeEnd) && IsParatroopersCanMoveDuringNonCombat(data))
+				if (!nonCombat && Matches.isTerritoryFriendly(player, data).match(routeEnd) && isParatroopersCanMoveDuringNonCombat(data))
 				{
 					result.addDisallowedUnit("Paratroops may only airlift during Non-Combat Movement Phase", paratroop);
 				}

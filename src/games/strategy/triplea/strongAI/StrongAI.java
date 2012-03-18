@@ -9558,7 +9558,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final List<Unit> transUnits = player.getUnits().getMatches(Matches.UnitIsTransport);
 		final List<Unit> airUnits = player.getUnits().getMatches(Matches.UnitCanLandOnCarrier);
 		final List<Unit> carrierUnits = player.getUnits().getMatches(Matches.UnitIsCarrier);
-		if (carrierUnits.size() > 0 && airUnits.size() > 0 && (Properties.getProduce_Fighters_On_Carriers(data) || Properties.getLHTR_Carrier_Production_Rules(data) || bid))
+		if (carrierUnits.size() > 0 && airUnits.size() > 0 && (Properties.getProduceFightersOnCarriers(data) || Properties.getLHTRCarrierProductionRules(data) || bid))
 		{
 			int carrierSpace = 0;
 			for (final Unit carrier1 : carrierUnits)

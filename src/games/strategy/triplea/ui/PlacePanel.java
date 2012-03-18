@@ -89,17 +89,17 @@ public class PlacePanel extends AbstractMovePanel
 	
 	private boolean canProduceFightersOnCarriers()
 	{
-		return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(getData());
+		return games.strategy.triplea.Properties.getProduceFightersOnCarriers(getData());
 	}
 	
 	private boolean canProduceNewFightersOnOldCarriers()
 	{
-		return games.strategy.triplea.Properties.getProduce_New_Fighters_On_Old_Carriers(getData());
+		return games.strategy.triplea.Properties.getProduceNewFightersOnOldCarriers(getData());
 	}
 	
 	private boolean isLHTR_Carrier_Production_Rules()
 	{
-		return games.strategy.triplea.Properties.getLHTR_Carrier_Production_Rules(getData());
+		return games.strategy.triplea.Properties.getLHTRCarrierProductionRules(getData());
 	}
 	
 	private final MapSelectionListener PLACE_MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()

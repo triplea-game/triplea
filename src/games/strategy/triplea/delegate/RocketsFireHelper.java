@@ -324,7 +324,7 @@ public class RocketsFireHelper
 			getRemote(bridge).reportMessage("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.",
 						"Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
 			bridge.getHistoryWriter().startEvent("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
-			final Change change = ChangeFactory.attachmentPropertyChange(ta, (new Integer(unitProduction - cost)).toString(), "unitProduction");
+			final Change change = ChangeFactory.attachmentPropertyChange(ta, Integer.toString(unitProduction - cost), "unitProduction");
 			bridge.addChange(change);
 		}
 		else if (DamageFromBombingDoneToUnits && !targets.isEmpty())

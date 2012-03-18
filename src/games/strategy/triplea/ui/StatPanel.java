@@ -331,7 +331,7 @@ public class StatPanel extends JPanel
 			colMap = new HashMap<String, Integer>();
 			for (int i = 0; i < colList.length; i++)
 			{
-				colMap.put(colList[i], new Integer(i + 1));
+				colMap.put(colList[i], Integer.valueOf(i + 1));
 			}
 			/*
 			 * .size()+1 added to stop index out of bounds errors when using an
@@ -353,14 +353,14 @@ public class StatPanel extends JPanel
 			int row = 0;
 			if (useTech)
 			{
-				rowMap.put("Tokens", new Integer(row));
+				rowMap.put("Tokens", Integer.valueOf(row));
 				data[row][0] = "Tokens";
 				row++;
 			}
 			while (iter.hasNext())
 			{
 				final TechAdvance tech = iter.next();
-				rowMap.put((tech).getName(), new Integer(row));
+				rowMap.put((tech).getName(), Integer.valueOf(row));
 				data[row][0] = tech.getName();
 				row++;
 			}

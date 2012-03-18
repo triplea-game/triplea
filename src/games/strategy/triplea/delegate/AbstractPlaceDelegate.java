@@ -264,17 +264,17 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	
 	private boolean canProduceFightersOnCarriers()
 	{
-		return games.strategy.triplea.Properties.getProduce_Fighters_On_Carriers(getData());
+		return games.strategy.triplea.Properties.getProduceFightersOnCarriers(getData());
 	}
 	
 	private boolean canProduceNewFightersOnOldCarriers()
 	{
-		return games.strategy.triplea.Properties.getProduce_New_Fighters_On_Old_Carriers(getData());
+		return games.strategy.triplea.Properties.getProduceNewFightersOnOldCarriers(getData());
 	}
 	
 	private boolean canMoveExistingFightersToNewCarriers()
 	{
-		return games.strategy.triplea.Properties.getMove_Existing_Fighters_To_New_Carriers(getData());
+		return games.strategy.triplea.Properties.getMoveExistingFightersToNewCarriers(getData());
 	}
 	
 	/**
@@ -384,7 +384,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 					continue;
 				if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > toProduction)
 					continue;
-				if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
+				if (unitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
 					continue;
 			}
 			// remove any units that require other units to be consumed on creation (veqryn)
@@ -471,7 +471,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	 * @return whether the territory contains one of the required combos of units
 	 *         (also when unit is Sea and an adjacent land territory has one of the required combos of units)
 	 */
-	public Match<Unit> UnitWhichRequiresUnitsHasRequiredUnits(final Territory to)
+	public Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to)
 	{
 		return new Match<Unit>()
 		{
@@ -569,7 +569,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			final Collection<Territory> listedTerrs = getListedTerritories(terrs);
 			if (listedTerrs.contains(to))
 				return "Cannot place these units in " + to.getName() + " due to Unit Placement Restrictions";
-			if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
+			if (unitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
 				return "Cannot place these units in " + to.getName() + " as territory does not contain required units at start of turn";
 			if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit) && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to))
 				return "Cannot place these units in " + to.getName() + " as territory is not originally owned";
@@ -626,7 +626,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			final TerritoryAttachment ta = TerritoryAttachment.get(to);
 			if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
 				continue;
-			if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
+			if (unitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
 				continue;
 			if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit) && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to))
 				continue;
@@ -699,7 +699,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			final TerritoryAttachment ta = TerritoryAttachment.get(to);
 			if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > ta.getProduction())
 				continue;
-			if (UnitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
+			if (unitWhichRequiresUnitsHasRequiredUnits(to).invert().match(currentUnit))
 				continue;
 			if (Matches.UnitCanOnlyPlaceInOriginalTerritories.match(currentUnit) && !Matches.TerritoryIsOriginallyOwnedBy(player).match(to))
 				continue;

@@ -77,7 +77,7 @@ public class MultiPartFormOutputStream
 	 */
 	public void writeField(final String name, final boolean value) throws java.io.IOException
 	{
-		writeField(name, new Boolean(value).toString());
+		writeField(name, Boolean.toString(value));
 	}
 	
 	/**

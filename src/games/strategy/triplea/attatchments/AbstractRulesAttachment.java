@@ -207,8 +207,8 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 				else
 					end = getInt(s2[1]);
 			}
-			final Integer t = new Integer(start);
-			final Integer u = new Integer(end);
+			final Integer t = Integer.valueOf(start);
+			final Integer u = Integer.valueOf(end);
 			m_turns.put(t, u);
 		}
 	}
@@ -229,7 +229,7 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		final int turn = data.getSequence().getRound();
 		for (final Integer t : m_turns.keySet())
 		{
-			if (turn >= t.intValue() && turn <= m_turns.get(t).intValue())
+			if (turn >= t && turn <= m_turns.get(t))
 				return true;
 		}
 		return false;

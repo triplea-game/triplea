@@ -149,7 +149,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			}
 			
 			// repair 2-hit units at beginning of turn (some maps have combat move before purchase, so i think it is better to do this at beginning of combat move)
-			if (!m_nonCombat && games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(data))
+			if (!m_nonCombat && games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(data))
 				MoveDelegate.repairBattleShips(aBridge, m_player, true);
 			
 			// reset any bonus of units.

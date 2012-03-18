@@ -20,7 +20,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -715,21 +715,18 @@ public class OCBattle
 		Integer suppArray[] = null;
 		if (landBattle)
 		{
-			List<Object> l;
-			final Vector<Integer> support = new Vector<Integer>();
+			final List<Integer> support = new ArrayList<Integer>();
 			final int aSize = units.size();
-			for (int i = 0; i < aSize; i++)
+			for (int i = 0; i < aSize; ++i)
 			{
 				final UnitGroup curG = units.elementAt(i);
 				final OCUnit cur = curG.getUnit();
 				if (cur.isSupportShot())
 				{
-					support.addElement(new Integer(i));
+					support.add(Integer.valueOf(i));
 				}
 			}
-			final Object els[] = support.toArray();
-			l = Arrays.asList(els);
-			suppArray = l.toArray(new Integer[l.size()]);
+			suppArray = support.toArray(new Integer[support.size()]);
 		}
 		return suppArray;
 	}

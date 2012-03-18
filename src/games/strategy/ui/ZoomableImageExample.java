@@ -73,12 +73,8 @@ public class ZoomableImageExample extends JFrame
 		public void keyPressed(final KeyEvent e)
 		{
 			final char key = e.getKeyChar();
-			switch (key)
-			{
-				case 'z':
-					ZOOM_COMMAND.actionPerformed(null);
-					break;
-			}
+			if (key == 'z')
+				ZOOM_COMMAND.actionPerformed(null);
 		}
 	};
 	private final Action ZOOM_COMMAND = new AbstractAction("save")

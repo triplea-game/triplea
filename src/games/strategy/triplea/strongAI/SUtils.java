@@ -1454,7 +1454,7 @@ public class SUtils
 				// territories we have already assaulted
 				// this can be easily changed
 				final HashSet<Integer> ignore = new HashSet<Integer>();
-				ignore.add(new Integer(1));
+				ignore.add(Integer.valueOf(1));
 				final List<Route> r = new ArrayList<Route>();
 				final List<Unit> ships = findAttackers(location, 3, ignore, ePlayer, data, enemyShip, Matches.territoryIsBlockedSea(ePlayer, data), ignoreTerr, r, true);
 				secondStrength = strength(ships, true, true, tFirst);
@@ -1815,7 +1815,7 @@ public class SUtils
 					if (blocked != null && blocked.contains(neighbor))
 						continue;
 					q.add(neighbor);
-					final Integer dist = new Integer(distance.getInt(neighbor));
+					final Integer dist = Integer.valueOf(distance.getInt(neighbor));
 					if (ignoreDistance.contains(dist))
 						continue;
 					for (final Unit u : neighbor.getUnits())
@@ -3525,7 +3525,7 @@ public class SUtils
 	public static float determineEnemyBlitzStrength(final Territory blitzHere, final List<Route> blitzTerrRoutes, final List<Territory> blockTerr, final GameData data, final PlayerID ePlayer)
 	{
 		final HashSet<Integer> ignore = new HashSet<Integer>();
-		ignore.add(new Integer(1));
+		ignore.add(Integer.valueOf(1));
 		final CompositeMatch<Unit> blitzUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(ePlayer), Matches.UnitCanBlitz, Matches.UnitIsNotStatic(ePlayer));
 		final CompositeMatch<Territory> validBlitzRoute = new CompositeMatchAnd<Territory>(Matches.territoryHasNoEnemyUnits(ePlayer, data), Matches.TerritoryIsNotImpassableToLandUnits(ePlayer, data));
 		final List<Route> routes = new ArrayList<Route>();

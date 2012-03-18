@@ -105,7 +105,7 @@ public class ChatController implements IChatController
 			m_version++;
 			getChatBroadcaster().speakerAdded(node, m_version);
 			final ArrayList<INode> copy = new ArrayList<INode>(m_chatters);
-			return new Tuple<List<INode>, Long>(copy, new Long(m_version));
+			return new Tuple<List<INode>, Long>(copy, Long.valueOf(m_version));
 		}
 	}
 	

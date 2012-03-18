@@ -63,7 +63,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	
 	private boolean doBattleShipsRepairEndOfTurn()
 	{
-		return games.strategy.triplea.Properties.getBattleships_Repair_At_End_Of_Round(getData());
+		return games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(getData());
 	}
 	
 	private boolean isGiveUnitsByTerritory()

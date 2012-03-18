@@ -63,7 +63,7 @@ public class RandomStatsDetails implements Serializable
 			// TODO: does this need to be updated to take data.getDiceSides() ?
 			for (int i = 1; i <= 6; i++)
 			{
-				variance += (m_data.getInt(new Integer(i)) - (total / 6)) * (m_data.getInt(new Integer(i)) - (total / 6));
+				variance += (m_data.getInt(Integer.valueOf(i)) - (total / 6)) * (m_data.getInt(Integer.valueOf(i)) - (total / 6));
 			}
 			m_variance = variance / (total - 1);
 			/**
@@ -118,7 +118,7 @@ public class RandomStatsDetails implements Serializable
 		// TODO: does this need to be updated to take data.getDiceSides() ?
 		for (i = 1; i <= 6; i++)
 		{
-			sum += m_data.getInt(new Integer(i));
+			sum += m_data.getInt(Integer.valueOf(i));
 			if (sum >= centerPoint)
 			{
 				return i;

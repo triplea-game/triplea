@@ -300,7 +300,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 			totRemAtt.remove(name);
 			int newTot = 0;
 			newTot = totAtt.intValue() + curG.getNumUnits();
-			totRemAtt.put(name, new Integer(newTot));
+			totRemAtt.put(name, Integer.valueOf(newTot));
 		}
 		final int size = unitGroupPanels.size();
 		for (int j = 0; j < size; j++)
@@ -325,7 +325,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 			totRemDef.remove(name);
 			int newTot = 0;
 			newTot = totDef.intValue() + curG.getNumUnits();
-			totRemDef.put(name, new Integer(newTot));
+			totRemDef.put(name, Integer.valueOf(newTot));
 		}
 		final int defPSize = unitGroupPanels.size();
 		for (int j = 0; j < defPSize; j++)
@@ -387,62 +387,62 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		if (gameType.equals(RollerApplet.WW2V1))
 		{
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newInf()));
-			totRemAtt.put(StandardUnits.InfName, new Integer(0));
-			totRemDef.put(StandardUnits.InfName, new Integer(0));
+			totRemAtt.put(StandardUnits.InfName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.InfName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newArm()));
-			totRemAtt.put(StandardUnits.ArmName, new Integer(0));
-			totRemDef.put(StandardUnits.ArmName, new Integer(0));
+			totRemAtt.put(StandardUnits.ArmName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.ArmName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newBomber()));
-			totRemAtt.put(StandardUnits.BmbName, new Integer(0));
-			totRemDef.put(StandardUnits.BmbName, new Integer(0));
+			totRemAtt.put(StandardUnits.BmbName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.BmbName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newFighter()));
-			totRemAtt.put(StandardUnits.FtrName, new Integer(0));
-			totRemDef.put(StandardUnits.FtrName, new Integer(0));
+			totRemAtt.put(StandardUnits.FtrName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.FtrName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newAC()));
-			totRemAtt.put(StandardUnits.ACName, new Integer(0));
-			totRemDef.put(StandardUnits.ACName, new Integer(0));
+			totRemAtt.put(StandardUnits.ACName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.ACName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newSub()));
-			totRemAtt.put(StandardUnits.SubName, new Integer(0));
-			totRemDef.put(StandardUnits.SubName, new Integer(0));
+			totRemAtt.put(StandardUnits.SubName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.SubName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newTrn()));
-			totRemAtt.put(StandardUnits.TrnName, new Integer(0));
-			totRemDef.put(StandardUnits.TrnName, new Integer(0));
+			totRemAtt.put(StandardUnits.TrnName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.TrnName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newBB()));
-			totRemAtt.put(StandardUnits.BBName, new Integer(0));
-			totRemDef.put(StandardUnits.BBName, new Integer(0));
+			totRemAtt.put(StandardUnits.BBName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.BBName, Integer.valueOf(0));
 		}
 		else if (gameType.equals(RollerApplet.WW2V2))
 		{
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newInf()));
-			totRemAtt.put(StandardUnits.InfName, new Integer(0));
-			totRemDef.put(StandardUnits.InfName, new Integer(0));
+			totRemAtt.put(StandardUnits.InfName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.InfName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newArm()));
-			totRemAtt.put(StandardUnits.ArmName, new Integer(0));
-			totRemDef.put(StandardUnits.ArmName, new Integer(0));
+			totRemAtt.put(StandardUnits.ArmName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.ArmName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newRtl()));
-			totRemAtt.put(StandardUnits.RtlName, new Integer(0));
-			totRemDef.put(StandardUnits.RtlName, new Integer(0));
+			totRemAtt.put(StandardUnits.RtlName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.RtlName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newBomber()));
-			totRemAtt.put(StandardUnits.BmbName, new Integer(0));
-			totRemDef.put(StandardUnits.BmbName, new Integer(0));
+			totRemAtt.put(StandardUnits.BmbName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.BmbName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newFighter()));
-			totRemAtt.put(StandardUnits.FtrName, new Integer(0));
-			totRemDef.put(StandardUnits.FtrName, new Integer(0));
+			totRemAtt.put(StandardUnits.FtrName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.FtrName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newAC()));
-			totRemAtt.put(StandardUnits.ACName, new Integer(0));
-			totRemDef.put(StandardUnits.ACName, new Integer(0));
+			totRemAtt.put(StandardUnits.ACName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.ACName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newSub()));
-			totRemAtt.put(StandardUnits.SubName, new Integer(0));
-			totRemDef.put(StandardUnits.SubName, new Integer(0));
+			totRemAtt.put(StandardUnits.SubName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.SubName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newTrn()));
-			totRemAtt.put(StandardUnits.TrnName, new Integer(0));
-			totRemDef.put(StandardUnits.TrnName, new Integer(0));
+			totRemAtt.put(StandardUnits.TrnName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.TrnName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newBB()));
-			totRemAtt.put(StandardUnits.BBName, new Integer(0));
-			totRemDef.put(StandardUnits.BBName, new Integer(0));
+			totRemAtt.put(StandardUnits.BBName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.BBName, Integer.valueOf(0));
 			unitGroupPanels.addElement(createUnitGroupPanel(OCUnit.newDestroyer()));
-			totRemAtt.put(StandardUnits.DesName, new Integer(0));
-			totRemDef.put(StandardUnits.DesName, new Integer(0));
+			totRemAtt.put(StandardUnits.DesName, Integer.valueOf(0));
+			totRemDef.put(StandardUnits.DesName, Integer.valueOf(0));
 		}
 		final int size = unitGroupPanels.size();
 		for (int i = 0; i < size; i++)

@@ -162,6 +162,7 @@ public class BattleDisplay extends JPanel
 	
 	public void cleanUp()
 	{
+		m_actionButton.setAction(m_nullAction);
 		m_steps.deactivate();
 		m_mapPanel.getUIContext().removeACtive(m_steps);
 		m_steps = null;
@@ -1066,7 +1067,7 @@ class BattleModel extends DefaultTableModel
 	private final Territory m_location;
 	private final String m_battleType;
 	
-	private static String[] VarDiceArray(final GameData data)
+	private static String[] varDiceArray(final GameData data)
 	{
 		// TODO Soft set the maximum bonus to-hit plus 1 for 0 based count(+2 total currently)
 		final String[] diceColumns = new String[data.getDiceSides() + 1];
@@ -1084,7 +1085,7 @@ class BattleModel extends DefaultTableModel
 	
 	BattleModel(final GameData data, final Collection<Unit> units, final Territory battleLocation, final boolean attack, final UIContext uiContext, final String battleType)
 	{
-		super(new Object[0][0], VarDiceArray(data));
+		super(new Object[0][0], varDiceArray(data));
 		m_uiContext = uiContext;
 		m_data = data;
 		m_attack = attack;

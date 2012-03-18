@@ -455,13 +455,13 @@ public class DiceRoll implements Externalizable
 				Integer v1, v2;
 				if (defending)
 				{
-					v1 = new Integer(UnitAttachment.get(u1.getType()).getDefense(u1.getOwner()));
-					v2 = new Integer(UnitAttachment.get(u2.getType()).getDefense(u2.getOwner()));
+					v1 = Integer.valueOf(UnitAttachment.get(u1.getType()).getDefense(u1.getOwner()));
+					v2 = Integer.valueOf(UnitAttachment.get(u2.getType()).getDefense(u2.getOwner()));
 				}
 				else
 				{
-					v1 = new Integer(UnitAttachment.get(u1.getType()).getAttack(u1.getOwner()));
-					v2 = new Integer(UnitAttachment.get(u2.getType()).getAttack(u2.getOwner()));
+					v1 = Integer.valueOf(UnitAttachment.get(u1.getType()).getAttack(u1.getOwner()));
+					v2 = Integer.valueOf(UnitAttachment.get(u2.getType()).getAttack(u2.getOwner()));
 				}
 				return v1.compareTo(v2);
 			}
@@ -475,8 +475,8 @@ public class DiceRoll implements Externalizable
 		{
 			public int compare(final UnitSupportAttachment u1, final UnitSupportAttachment u2)
 			{
-				final Integer v1 = new Integer(Math.abs(u1.getBonus()));
-				final Integer v2 = new Integer(Math.abs(u2.getBonus()));
+				final Integer v1 = Integer.valueOf(Math.abs(u1.getBonus()));
+				final Integer v2 = Integer.valueOf(Math.abs(u2.getBonus()));
 				return v2.compareTo(v1);
 			}
 		};

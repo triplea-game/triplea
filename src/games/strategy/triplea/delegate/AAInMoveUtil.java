@@ -66,7 +66,7 @@ class AAInMoveUtil implements Serializable
 	
 	private boolean isAlwaysONAAEnabled()
 	{
-		return games.strategy.triplea.Properties.getAlways_On_AA(getData());
+		return games.strategy.triplea.Properties.getAlwaysOnAA(getData());
 	}
 	
 	private boolean isAATerritoryRestricted()

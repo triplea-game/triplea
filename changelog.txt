@@ -1,4 +1,8 @@
 Changes for 1.5.2
+* Holding down ALT key while selecting or deselecting units will now add/remove 10 units at a time. (veqryn)
+
+* Possible fix for battle window disappearing after closing, with battle panel not becoming visible again. (frigoref)
+
 * Abstraction of ClientGame and ServerGame into AbstractGame. (frigoref)
 
 * Deleting duplicate m_bridge variables that were hiding the real m_bridge variables of the extended classes. (veqryn)

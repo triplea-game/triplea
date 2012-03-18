@@ -77,7 +77,7 @@ public class DiceImageFactory
 			}
 			if (img != null)
 			{
-				images.put(new Integer(i), img);
+				images.put(Integer.valueOf(i), img);
 			}
 			else
 			{
@@ -125,7 +125,7 @@ public class DiceImageFactory
 					final int heightOffset = graphics.getFontMetrics().getHeight();
 					graphics.drawString(number, (DIE_WIDTH - widthOffset) / 2, (DIE_HEIGHT + heightOffset) / 2 - 2);
 				}
-				images.put(new Integer(i), canvas);
+				images.put(Integer.valueOf(i), canvas);
 				graphics.dispose();
 			}
 		}

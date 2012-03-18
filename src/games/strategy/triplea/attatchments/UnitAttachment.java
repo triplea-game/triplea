@@ -1353,7 +1353,7 @@ public class UnitAttachment extends DefaultAttachment
 			return 0;
 		if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player))
 		{
-			return games.strategy.triplea.Properties.getHeavy_Bomber_Dice_Rolls(getData());
+			return games.strategy.triplea.Properties.getHeavyBomberDiceRolls(getData());
 		}
 		return 1;
 	}
@@ -1403,7 +1403,7 @@ public class UnitAttachment extends DefaultAttachment
 			return 0;
 		if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player) && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(getData()))
 		{
-			return games.strategy.triplea.Properties.getHeavy_Bomber_Dice_Rolls(getData());
+			return games.strategy.triplea.Properties.getHeavyBomberDiceRolls(getData());
 		}
 		return 1;
 	}
@@ -2774,7 +2774,7 @@ public class UnitAttachment extends DefaultAttachment
 		if (m_maxBuiltPerPlayer > -1)
 			stats.append(m_maxBuiltPerPlayer + " Max Built Allowed, ");
 		if (m_repairsUnits != null && games.strategy.triplea.Properties.getTwoHitPointUnitsRequireRepairFacilities(getData())
-					&& (games.strategy.triplea.Properties.getBattleships_Repair_At_Beginning_Of_Round(getData()) || games.strategy.triplea.Properties.getBattleships_Repair_At_End_Of_Round(getData())))
+					&& (games.strategy.triplea.Properties.getBattleshipsRepairAtBeginningOfRound(getData()) || games.strategy.triplea.Properties.getBattleshipsRepairAtEndOfRound(getData())))
 			stats.append("can Repair Some Units, ");
 		if (m_givesMovement != null && m_givesMovement.totalValues() > 0 && games.strategy.triplea.Properties.getUnitsMayGiveBonusMovement(getData()))
 			stats.append("can Give Bonus Movement, ");

@@ -286,7 +286,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 						}
 						hits.put(u, newDamageTotal);
 						changes.add(ChangeFactory.unitsHit(hits));
-						changes.add(ChangeFactory.attachmentPropertyChange(ta, (new Integer(currentDamage + repairCount)).toString(), "unitProduction"));
+						changes.add(ChangeFactory.attachmentPropertyChange(ta, Integer.toString(currentDamage + repairCount), "unitProduction"));
 					}
 				}
 				else
