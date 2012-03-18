@@ -22,47 +22,35 @@ import games.strategy.debug.Console;
 import games.strategy.engine.GameOverException;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerManager;
-import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.DefaultDelegateBridge;
 import games.strategy.engine.delegate.DelegateExecutionManager;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
-import games.strategy.engine.display.DefaultDisplayBridge;
-import games.strategy.engine.display.IDisplay;
 import games.strategy.engine.framework.startup.mc.IObserverWaitingToJoin;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
-import games.strategy.engine.gamePlayer.DefaultPlayerBridge;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.EventChild;
-import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemote;
-import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.engine.random.RandomStats;
-import games.strategy.engine.vault.Vault;
-import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
-import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.ui.ErrorHandler;
-import games.strategy.util.ListenerList;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -70,7 +58,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -83,34 +70,23 @@ import java.util.concurrent.CountDownLatch;
  *         Represents a running game.
  *         Lookups to get a GamePlayer from PlayerId and the current Delegate.
  */
-public class ServerGame implements IGame
+public class ServerGame extends AbstractGame
 {
-	public static final String DISPLAY_CHANNEL = "games.strategy.engine.framework.ServerGame.DISPLAY_CHANNEL";
 	public static final RemoteName SERVER_REMOTE = new RemoteName("games.strategy.engine.framework.ServerGame.SERVER_REMOTE", IServerRemote.class);
-	private final ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<GameStepListener>();
-	private final GameData m_data;
 	// maps PlayerID->GamePlayer
-	private final Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<PlayerID, IGamePlayer>();
-	private final IServerMessenger m_messenger;
-	private final ChangePerformer m_changePerformer;
-	private final IRemoteMessenger m_remoteMessenger;
-	private final IChannelMessenger m_channelMessenger;
-	private final Vault m_vault;
 	private final RandomStats m_randomStats;
 	private IRandomSource m_randomSource = new PlainRandomSource();
 	private IRandomSource m_delegateRandomSource;
 	private final DelegateExecutionManager m_delegateExecutionManager = new DelegateExecutionManager();
-	private volatile boolean m_isGameOver = false;
 	private InGameLobbyWatcher m_inGameLobbyWatcher;
 	private boolean m_needToInitialize = true;
-	private boolean m_firstRun = true;
 	/**
 	 * When the delegate execution is stopped, we countdown on this latch to prevent the startgame(...) method from returning.
 	 * <p>
 	 */
 	private final CountDownLatch m_delegateExecutionStoppedLatch = new CountDownLatch(1);
 	/**
-	 * Has the delegate signalled that delegate execution should stop.
+	 * Has the delegate signaled that delegate execution should stop.
 	 */
 	private volatile boolean m_delegateExecutionStopped = false;
 	private final IServerRemote m_serverRemote = new IServerRemote()
@@ -130,60 +106,73 @@ public class ServerGame implements IGame
 		}
 	};
 	
-	public static RemoteName getDisplayChannel(final GameData data)
-	{
-		return new RemoteName(DISPLAY_CHANNEL, data.getGameLoader().getDisplayType());
-	}
-	
-	private final PlayerManager m_players;
-	
 	/**
 	 * 
+	 * @param data
+	 *            game data
 	 * @param localPlayers
 	 *            Set - A set of GamePlayers
-	 * @param messenger
-	 *            IServerMessenger
 	 * @param remotePlayerMapping
 	 *            Map
+	 * @param messengers
+	 *            IServerMessenger
 	 */
 	public ServerGame(final GameData data, final Set<IGamePlayer> localPlayers, final Map<String, INode> remotePlayerMapping, final Messengers messengers)
 	{
-		m_data = data;
-		m_messenger = (IServerMessenger) messengers.getMessenger();
-		m_remoteMessenger = messengers.getRemoteMessenger();
-		m_channelMessenger = messengers.getChannelMessenger();
-		m_vault = new Vault(m_channelMessenger);
-		final Map<String, INode> allPlayers = new HashMap<String, INode>(remotePlayerMapping);
-		for (final IGamePlayer player : localPlayers)
+		super(data, localPlayers, remotePlayerMapping, messengers);
+		m_gameModifiedChannel = new IGameModifiedChannel()
 		{
-			allPlayers.put(player.getName(), m_messenger.getLocalNode());
-		}
-		m_players = new PlayerManager(allPlayers);
+			public void gameDataChanged(final Change aChange)
+			{
+				assertCorrectCaller();
+				m_changePerformer.perform(aChange);
+				m_data.getHistory().getHistoryWriter().addChange(aChange);
+			}
+			
+			private void assertCorrectCaller()
+			{
+				if (!MessageContext.getSender().equals(getMessenger().getServerNode()))
+				{
+					throw new IllegalStateException("Only server can change game data");
+				}
+			}
+			
+			public void startHistoryEvent(final String event)
+			{
+				assertCorrectCaller();
+				m_data.getHistory().getHistoryWriter().startEvent(event);
+			}
+			
+			public void addChildToEvent(final String text, final Object renderingData)
+			{
+				assertCorrectCaller();
+				m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
+			}
+			
+			public void setRenderingData(final Object renderingData)
+			{
+				assertCorrectCaller();
+				m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
+			}
+			
+			public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
+			{
+				assertCorrectCaller();
+				if (loadedFromSavedGame)
+					return;
+				m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+			}
+			
+			// nothing to do, we call this
+			public void shutDown()
+			{
+			}
+		};
 		m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
 		CachedInstanceCenter.CachedGameData = data;
-		setupLocalPlayers(localPlayers);
 		setupDelegateMessaging(data);
-		m_changePerformer = new ChangePerformer(data);
 		m_randomStats = new RandomStats(m_remoteMessenger);
 		m_remoteMessenger.registerRemote(m_serverRemote, SERVER_REMOTE);
-	}
-	
-	/**
-	 * @param localPlayers
-	 */
-	private void setupLocalPlayers(final Set<IGamePlayer> localPlayers)
-	{
-		final Iterator<IGamePlayer> localPlayersIter = localPlayers.iterator();
-		while (localPlayersIter.hasNext())
-		{
-			final IGamePlayer gp = localPlayersIter.next();
-			final PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
-			m_gamePlayers.put(player, gp);
-			final IPlayerBridge bridge = new DefaultPlayerBridge(this);
-			gp.initialize(bridge, player);
-			final RemoteName descriptor = getRemoteName(gp.getID(), m_data);
-			m_remoteMessenger.registerRemote(gp, descriptor);
-		}
 	}
 	
 	public void addObserver(final IObserverWaitingToJoin observer)
@@ -204,7 +193,7 @@ public class ServerGame implements IGame
 		{
 			final ByteArrayOutputStream sink = new ByteArrayOutputStream(1000);
 			saveGame(sink);
-			observer.joinGame(sink.toByteArray(), m_players.getPlayerMapping());
+			observer.joinGame(sink.toByteArray(), m_playerManager.getPlayerMapping());
 		} catch (final IOException ioe)
 		{
 			observer.cannotJoinGame(ioe.getMessage());
@@ -247,11 +236,6 @@ public class ServerGame implements IGame
 	public static RemoteName getRemoteRandomName(final PlayerID id)
 	{
 		return new RemoteName("games.strategy.engine.framework.ServerGame.PLAYER_RANDOM_REMOTE" + id.getName(), IRemoteRandom.class);
-	}
-	
-	public GameData getData()
-	{
-		return m_data;
 	}
 	
 	private GameStep getCurrentStep()
@@ -567,7 +551,7 @@ public class ServerGame implements IGame
 		// we can not do this the very first run through, because there are no history nodes yet. We should do after first node is created.
 		if (m_needToInitialize)
 		{
-			addPlayerTypesToGameData(m_gamePlayers.values(), m_players, bridge);
+			addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
 		}
 		notifyGameStepChanged(stepIsRestoredFromSavedGame);
 		m_delegateExecutionManager.enterDelegateExecution();
@@ -595,20 +579,10 @@ public class ServerGame implements IGame
 		else
 		{
 			// a remote player
-			final INode destination = m_players.getNode(playerID.getName());
+			final INode destination = m_playerManager.getNode(playerID.getName());
 			final IGameStepAdvancer advancer = (IGameStepAdvancer) m_remoteMessenger.getRemote(ClientGame.getRemoteStepAdvancerName(destination));
 			advancer.startPlayerStep(getCurrentStep().getName(), playerID);
 		}
-	}
-	
-	public void addGameStepListener(final GameStepListener listener)
-	{
-		m_gameStepListeners.add(listener);
-	}
-	
-	public void removeGameStepListener(final GameStepListener listener)
-	{
-		m_gameStepListeners.remove(listener);
 	}
 	
 	private void notifyGameStepChanged(final boolean loadedFromSavedGame)
@@ -619,10 +593,7 @@ public class ServerGame implements IGame
 		final String displayName = currentStep.getDisplayName();
 		final int round = m_data.getSequence().getRound();
 		final PlayerID id = currentStep.getPlayerID();
-		for (final GameStepListener listener : m_gameStepListeners)
-		{
-			listener.gameStepChanged(stepName, delegateName, id, round, displayName);
-		}
+		notifyGameStepListeners(stepName, delegateName, id, round, displayName);
 		getGameModifiedBroadcaster().stepChanged(stepName, delegateName, id, round, displayName, loadedFromSavedGame);
 	}
 	
@@ -668,21 +639,6 @@ public class ServerGame implements IGame
 			throw new IllegalStateException("Not all Player Types (ai/human/client) could be added to game data.");
 	}
 	
-	public IMessenger getMessenger()
-	{
-		return m_messenger;
-	}
-	
-	public IChannelMessenger getChannelMessenger()
-	{
-		return m_channelMessenger;
-	}
-	
-	public IRemoteMessenger getRemoteMessenger()
-	{
-		return m_remoteMessenger;
-	}
-	
 	private IGameModifiedChannel getGameModifiedBroadcaster()
 	{
 		return (IGameModifiedChannel) m_channelMessenger.getChannelBroadcastor(IGame.GAME_MODIFICATION_CHANNEL);
@@ -709,90 +665,6 @@ public class ServerGame implements IGame
 	{
 		m_randomSource = randomSource;
 		m_delegateRandomSource = null;
-	}
-	
-	/*
-	 * @see games.strategy.engine.framework.IGame#getVault()
-	 */
-	public Vault getVault()
-	{
-		return m_vault;
-	}
-	
-	private final IGameModifiedChannel m_gameModifiedChannel = new IGameModifiedChannel()
-	{
-		public void gameDataChanged(final Change aChange)
-		{
-			assertCorrectCaller();
-			m_changePerformer.perform(aChange);
-			m_data.getHistory().getHistoryWriter().addChange(aChange);
-		}
-		
-		private void assertCorrectCaller()
-		{
-			if (!MessageContext.getSender().equals(m_messenger.getServerNode()))
-			{
-				throw new IllegalStateException("Only server can change game data");
-			}
-		}
-		
-		public void startHistoryEvent(final String event)
-		{
-			assertCorrectCaller();
-			m_data.getHistory().getHistoryWriter().startEvent(event);
-		}
-		
-		public void addChildToEvent(final String text, final Object renderingData)
-		{
-			assertCorrectCaller();
-			m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
-		}
-		
-		public void setRenderingData(final Object renderingData)
-		{
-			assertCorrectCaller();
-			m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
-		}
-		
-		public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
-		{
-			assertCorrectCaller();
-			if (loadedFromSavedGame)
-				return;
-			m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
-		}
-		
-		// nothing to do, we call this
-		public void shutDown()
-		{
-		}
-	};
-	
-	/*
-	 * @see games.strategy.engine.framework.IGame#addDisplay(games.strategy.engine.display.IDisplay)
-	 */
-	public void addDisplay(final IDisplay display)
-	{
-		display.initialize(new DefaultDisplayBridge(m_data));
-		m_channelMessenger.registerChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
-	}
-	
-	/*
-	 * @see games.strategy.engine.framework.IGame#removeDisplay(games.strategy.engine.display.IDisplay)
-	 */
-	public void removeDisplay(final IDisplay display)
-	{
-		m_channelMessenger.unregisterChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
-	}
-	
-	public boolean isGameOver()
-	{
-		return m_isGameOver;
-	}
-	
-	public PlayerManager getPlayerManager()
-	{
-		return m_players;
 	}
 	
 	public InGameLobbyWatcher getInGameLobbyWatcher()

@@ -19,34 +19,21 @@
 package games.strategy.engine.framework;
 
 import games.strategy.engine.data.Change;
-import games.strategy.engine.data.ChangePerformer;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.PlayerManager;
-import games.strategy.engine.data.events.GameStepListener;
-import games.strategy.engine.display.DefaultDisplayBridge;
-import games.strategy.engine.display.IDisplay;
-import games.strategy.engine.gamePlayer.DefaultPlayerBridge;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.EventChild;
-import games.strategy.engine.message.IChannelMessenger;
-import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.engine.random.IRandomSource;
 import games.strategy.engine.random.IRemoteRandom;
 import games.strategy.engine.random.RemoteRandom;
-import games.strategy.engine.vault.Vault;
-import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.ui.ErrorHandler;
-import games.strategy.util.ListenerList;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,115 +41,84 @@ import java.util.Set;
  * 
  * @author Sean Bridges
  */
-public class ClientGame implements IGame
+public class ClientGame extends AbstractGame
 {
-	private final ListenerList<GameStepListener> m_gameStepListeners = new ListenerList<GameStepListener>();
-	private final GameData m_data;
-	private final IMessenger m_messenger;
-	private final IRemoteMessenger m_remoteMessenger;
-	private final IChannelMessenger m_channelMessenger;
-	private final Messengers m_messengers;
-	private final ChangePerformer m_changePerformer;
-	private volatile boolean m_isGameOver = false;
-	// maps PlayerID->GamePlayer
-	private final Map<PlayerID, IGamePlayer> m_gamePlayers = new HashMap<PlayerID, IGamePlayer>();
-	private final Vault m_vault;
-	private final PlayerManager m_playerManager;
-	
 	public static final RemoteName getRemoteStepAdvancerName(final INode node)
 	{
 		return new RemoteName("games.strategy.engine.framework.ClientGame.REMOTE_STEP_ADVANCER:" + node.getName(), IGameStepAdvancer.class);
 	}
 	
-	public ClientGame(final GameData data, final Set<IGamePlayer> gamePlayers, final PlayerManager playerManager, final Messengers messengers)
+	public ClientGame(final GameData data, final Set<IGamePlayer> gamePlayers, final Map<String, INode> remotePlayerMapping, final Messengers messengers)
 	{
-		m_data = data;
-		m_playerManager = playerManager;
-		if (m_playerManager == null)
-			throw new IllegalArgumentException("Player manager cant be null");
-		m_messengers = messengers;
-		m_messenger = m_messengers.getMessenger();
-		m_remoteMessenger = m_messengers.getRemoteMessenger();
-		m_channelMessenger = m_messengers.getChannelMessenger();
-		m_vault = new Vault(m_channelMessenger);
-		m_channelMessenger.registerChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
-		m_remoteMessenger.registerRemote(m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
-		for (final IGamePlayer gp : gamePlayers)
+		super(data, gamePlayers, remotePlayerMapping, messengers);
+		m_gameModifiedChannel = new IGameModifiedChannel()
 		{
-			final PlayerID player = m_data.getPlayerList().getPlayerID(gp.getName());
-			m_gamePlayers.put(player, gp);
-			final IPlayerBridge bridge = new DefaultPlayerBridge(this);
-			gp.initialize(bridge, player);
-			m_remoteMessenger.registerRemote(gp, ServerGame.getRemoteName(gp.getID(), data));
+			public void gameDataChanged(final Change aChange)
+			{
+				m_changePerformer.perform(aChange);
+				m_data.getHistory().getHistoryWriter().addChange(aChange);
+			}
+			
+			public void startHistoryEvent(final String event)
+			{
+				m_data.getHistory().getHistoryWriter().startEvent(event);
+			}
+			
+			public void addChildToEvent(final String text, final Object renderingData)
+			{
+				m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
+			}
+			
+			public void setRenderingData(final Object renderingData)
+			{
+				m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
+			}
+			
+			public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
+			{
+				// we want to skip the first iteration, since that simply advances us to step 0
+				if (m_firstRun)
+					m_firstRun = false;
+				else
+				{
+					m_data.acquireWriteLock();
+					try
+					{
+						m_data.getSequence().next();
+						int currentRound = m_data.getSequence().getRound();
+						if (m_data.getSequence().testWeAreOnLastStep())
+							m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
+						while (!m_data.getSequence().getStep().getName().equals(stepName))
+						{
+							m_data.getSequence().next();
+							if (m_data.getSequence().testWeAreOnLastStep())
+								m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
+						}
+						if (currentRound > round)
+							throw new IllegalStateException("Can not create more rounds that host currently has. Host Round:" + round + " and new Client Round:" + currentRound);
+					} finally
+					{
+						m_data.releaseWriteLock();
+					}
+				}
+				if (!loadedFromSavedGame)
+					m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
+				notifyGameStepListeners(stepName, delegateName, player, round, displayName);
+			}
+			
+			public void shutDown()
+			{
+				ClientGame.this.shutDown();
+			}
+		};
+		m_channelMessenger.registerChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+		m_remoteMessenger.registerRemote(m_gameStepAdvancer, getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
+		for (final PlayerID player : m_gamePlayers.keySet())
+		{
 			final IRemoteRandom remoteRandom = new RemoteRandom(this);
 			m_remoteMessenger.registerRemote(remoteRandom, ServerGame.getRemoteRandomName(player));
 		}
-		m_changePerformer = new ChangePerformer(m_data);
 	}
-	
-	private final IGameModifiedChannel m_gameModificationChannelListener = new IGameModifiedChannel()
-	{
-		public void gameDataChanged(final Change aChange)
-		{
-			m_changePerformer.perform(aChange);
-			m_data.getHistory().getHistoryWriter().addChange(aChange);
-		}
-		
-		public void startHistoryEvent(final String event)
-		{
-			m_data.getHistory().getHistoryWriter().startEvent(event);
-		}
-		
-		public void addChildToEvent(final String text, final Object renderingData)
-		{
-			m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
-		}
-		
-		public void setRenderingData(final Object renderingData)
-		{
-			m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
-		}
-		
-		public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
-		{
-			// we want to skip the first iteration, since that simply advances us to step 0
-			if (m_firstRun)
-				m_firstRun = false;
-			else
-			{
-				m_data.acquireWriteLock();
-				try
-				{
-					m_data.getSequence().next();
-					int currentRound = m_data.getSequence().getRound();
-					if (m_data.getSequence().testWeAreOnLastStep())
-						m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
-					while (!m_data.getSequence().getStep().getName().equals(stepName))
-					{
-						m_data.getSequence().next();
-						if (m_data.getSequence().testWeAreOnLastStep())
-							m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
-					}
-					if (currentRound > round)
-						throw new IllegalStateException("Can not create more rounds that host currently has. Host Round:" + round + " and new Client Round:" + currentRound);
-				} finally
-				{
-					m_data.releaseWriteLock();
-				}
-			}
-			if (!loadedFromSavedGame)
-				m_data.getHistory().getHistoryWriter().startNextStep(stepName, delegateName, player, displayName);
-			for (final GameStepListener listener : m_gameStepListeners)
-			{
-				listener.gameStepChanged(stepName, delegateName, player, round, displayName);
-			}
-		}
-		
-		public void shutDown()
-		{
-			ClientGame.this.shutDown();
-		}
-	};
 	
 	public void shutDown()
 	{
@@ -170,58 +126,32 @@ public class ClientGame implements IGame
 			return;
 		m_isGameOver = true;
 		ErrorHandler.setGameOver(true);
-		m_channelMessenger.unregisterChannelSubscriber(m_gameModificationChannelListener, IGame.GAME_MODIFICATION_CHANNEL);
-		m_remoteMessenger.unregisterRemote(getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
-		m_vault.shutDown();
-		for (final IGamePlayer gp : m_gamePlayers.values())
+		try
 		{
-			PlayerID player;
-			m_data.acquireReadLock();
-			try
+			m_channelMessenger.unregisterChannelSubscriber(m_gameModifiedChannel, IGame.GAME_MODIFICATION_CHANNEL);
+			m_remoteMessenger.unregisterRemote(getRemoteStepAdvancerName(m_channelMessenger.getLocalNode()));
+			m_vault.shutDown();
+			for (final IGamePlayer gp : m_gamePlayers.values())
 			{
-				player = m_data.getPlayerList().getPlayerID(gp.getName());
-			} finally
-			{
-				m_data.releaseReadLock();
+				PlayerID player;
+				m_data.acquireReadLock();
+				try
+				{
+					player = m_data.getPlayerList().getPlayerID(gp.getName());
+				} finally
+				{
+					m_data.releaseReadLock();
+				}
+				m_gamePlayers.put(player, gp);
+				m_remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getID(), m_data));
+				m_remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
 			}
-			m_gamePlayers.put(player, gp);
-			m_remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getID(), m_data));
-			m_remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
+		} catch (final RuntimeException re)
+		{
+			re.printStackTrace();
 		}
 		m_data.getGameLoader().shutDown();
 	}
-	
-	public GameData getData()
-	{
-		return m_data;
-	}
-	
-	public IMessenger getMessenger()
-	{
-		return m_messenger;
-	}
-	
-	public IChannelMessenger getChannelMessenger()
-	{
-		return m_channelMessenger;
-	}
-	
-	public IRemoteMessenger getRemoteMessenger()
-	{
-		return m_remoteMessenger;
-	}
-	
-	public void addGameStepListener(final GameStepListener listener)
-	{
-		m_gameStepListeners.add(listener);
-	}
-	
-	public void removeGameStepListener(final GameStepListener listener)
-	{
-		m_gameStepListeners.remove(listener);
-	}
-	
-	private boolean m_firstRun = true;
 	
 	public void addChange(final Change aChange)
 	{
@@ -274,41 +204,6 @@ public class ClientGame implements IGame
 	public IRandomSource getRandomSource()
 	{
 		return null;
-	}
-	
-	/* 
-	 * @see games.strategy.engine.framework.IGame#getVault()
-	 */
-	public Vault getVault()
-	{
-		return m_vault;
-	}
-	
-	/* 
-	 * @see games.strategy.engine.framework.IGame#addDisplay(games.strategy.engine.display.IDisplay)
-	 */
-	public void addDisplay(final IDisplay display)
-	{
-		display.initialize(new DefaultDisplayBridge(m_data));
-		m_channelMessenger.registerChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
-	}
-	
-	/* 
-	 * @see games.strategy.engine.framework.IGame#removeDisplay(games.strategy.engine.display.IDisplay)
-	 */
-	public void removeDisplay(final IDisplay display)
-	{
-		m_channelMessenger.unregisterChannelSubscriber(display, ServerGame.getDisplayChannel(getData()));
-	}
-	
-	public boolean isGameOver()
-	{
-		return m_isGameOver;
-	}
-	
-	public PlayerManager getPlayerManager()
-	{
-		return m_playerManager;
 	}
 	
 	public void saveGame(final File f)

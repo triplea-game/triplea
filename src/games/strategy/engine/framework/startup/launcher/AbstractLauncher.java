@@ -44,7 +44,7 @@ abstract public class AbstractLauncher implements ILauncher
 				launchInNewThread(parent);
 			}
 		};
-		final Thread t = new Thread(r);
+		final Thread t = new Thread(r, "Triplea start thread");
 		m_gameLoadingWindow.setLocationRelativeTo(JOptionPane.getFrameForComponent(parent));
 		m_gameLoadingWindow.setVisible(true);
 		m_gameLoadingWindow.showWait();

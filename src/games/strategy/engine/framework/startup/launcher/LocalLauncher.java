@@ -48,72 +48,72 @@ public class LocalLauncher extends AbstractLauncher
 	@Override
 	protected void launchInNewThread(final Component parent)
 	{
-		final Runnable runner = new Runnable()
+		// final Runnable runner = new Runnable()
+		// {
+		// public void run()
+		// {
+		Exception exceptionLoadingGame = null;
+		ServerGame game = null;
+		try
 		{
-			public void run()
+			final IServerMessenger messenger = new DummyMessenger();
+			final Messengers messengers = new Messengers(messenger);
+			final Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(m_playerTypes);
+			game = new ServerGame(m_gameData, gamePlayers, new HashMap<String, INode>(), messengers);
+			game.setRandomSource(m_randomSource);
+			// for debugging, we can use a scripted random source
+			if (ScriptedRandomSource.useScriptedRandom())
 			{
-				Exception exceptionLoadingGame = null;
-				ServerGame game = null;
-				try
-				{
-					final IServerMessenger messenger = new DummyMessenger();
-					final Messengers messengers = new Messengers(messenger);
-					final Set<IGamePlayer> gamePlayers = m_gameData.getGameLoader().createPlayers(m_playerTypes);
-					game = new ServerGame(m_gameData, gamePlayers, new HashMap<String, INode>(), messengers);
-					game.setRandomSource(m_randomSource);
-					// for debugging, we can use a scripted random source
-					if (ScriptedRandomSource.useScriptedRandom())
-					{
-						game.setRandomSource(new ScriptedRandomSource());
-					}
-					m_gameData.getGameLoader().startGame(game, gamePlayers);
-				} catch (final IllegalStateException e)
-				{
-					exceptionLoadingGame = e;
-					Throwable error = e;
-					while (error.getMessage() == null)
-						error = error.getCause();
-					final String message = error.getMessage();
-					m_gameLoadingWindow.doneWait();
-					SwingUtilities.invokeLater(new Runnable()
+				game.setRandomSource(new ScriptedRandomSource());
+			}
+			m_gameData.getGameLoader().startGame(game, gamePlayers);
+		} catch (final IllegalStateException e)
+		{
+			exceptionLoadingGame = e;
+			Throwable error = e;
+			while (error.getMessage() == null)
+				error = error.getCause();
+			final String message = error.getMessage();
+			m_gameLoadingWindow.doneWait();
+			SwingUtilities.invokeLater(new Runnable()
 					{
 						public void run()
 						{
 							JOptionPane.showMessageDialog(null, message, "Warning", JOptionPane.WARNING_MESSAGE);
 						}
 					});
-					
-				} catch (final Exception ex)
-				{
-					ex.printStackTrace();
-					exceptionLoadingGame = ex;
-				} finally
-				{
-					m_gameLoadingWindow.doneWait();
-				}
-				try
-				{
-					if (exceptionLoadingGame == null)
-					{
-						s_logger.fine("Game starting");
-						game.startGame();
-						s_logger.fine("Game over");
-					}
-				} finally
-				{
-					// todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
-					m_gameSelectorModel.loadDefaultGame(parent);
-					SwingUtilities.invokeLater(new Runnable()
+			
+		} catch (final Exception ex)
+		{
+			ex.printStackTrace();
+			exceptionLoadingGame = ex;
+		} finally
+		{
+			m_gameLoadingWindow.doneWait();
+		}
+		try
+		{
+			if (exceptionLoadingGame == null)
+			{
+				s_logger.fine("Game starting");
+				game.startGame();
+				s_logger.fine("Game over");
+			}
+		} finally
+		{
+			// todo(kg), this does not occur on the swing thread, and this notifies setupPanel observers
+			m_gameSelectorModel.loadDefaultGame(parent);
+			SwingUtilities.invokeLater(new Runnable()
 					{
 						public void run()
 						{
 							JOptionPane.getFrameForComponent(parent).setVisible(true);
 						}
 					});
-				}
-			}
-		};
-		final Thread thread = new Thread(runner, "Triplea start local thread");
+		}
+		// }
+		// };
+		/*final Thread thread = new Thread(runner, "Triplea start local thread");
 		thread.start();
 		if (SwingUtilities.isEventDispatchThread())
 			throw new IllegalStateException("Wrong thread");
@@ -123,6 +123,6 @@ public class LocalLauncher extends AbstractLauncher
 		} catch (final InterruptedException e)
 		{
 		}
-		s_logger.fine("Thread done!");
+		s_logger.fine("Thread done!");*/
 	}
 }

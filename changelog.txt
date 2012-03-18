@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Abstraction of ClientGame and ServerGame into AbstractGame. (frigoref)
+
 * Deleting duplicate m_bridge variables that were hiding the real m_bridge variables of the extended classes. (veqryn)
 
 * Maintaining compatibility with Java 5. (veqryn)

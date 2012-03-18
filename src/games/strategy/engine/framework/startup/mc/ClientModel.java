@@ -15,7 +15,6 @@ package games.strategy.engine.framework.startup.mc;
 
 import games.strategy.engine.chat.ChatPanel;
 import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerManager;
 import games.strategy.engine.framework.ClientGame;
 import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameObjectStreamFactory;
@@ -315,7 +314,7 @@ public class ClientModel implements IMessengerErrorListener
 		}
 		final Set<IGamePlayer> playerSet = data.getGameLoader().createPlayers(playerMapping);
 		final Messengers messengers = new Messengers(m_messenger, m_remoteMessenger, m_channelMessenger);
-		m_game = new ClientGame(data, playerSet, new PlayerManager(players), messengers);
+		m_game = new ClientGame(data, playerSet, players, messengers);
 		final Thread t = new Thread("Client Game Launcher")
 		{
 			@Override
