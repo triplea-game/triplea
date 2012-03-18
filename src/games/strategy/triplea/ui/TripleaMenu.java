@@ -137,16 +137,34 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	 */
 	private void addMoveHelpMenu(final JMenu parentMenu)
 	{
-		parentMenu.add(new AbstractAction("Movement help...")
+		parentMenu.add(new AbstractAction("Movement/Selection help...")
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string
-				final String hints = "<b> Selecting Units</b><br><br>" + "Left click on a unit stack to select 1 unit.<br>" + "CTRL-Left click on a unit stack to select all units in the stack.<br>"
-							+ "Shift-Left click on a unit to select all units in the territory.<br>" + "Right click on a unit stack to un select one unit in the stack.<br>"
-							+ "CTRL-Right click on a unit stack to un select all units in the stack.<br>" + "Right click somewhere not on a unit stack to un select the last selected unit.<br>"
-							+ "CTRL-Right click somewhere not on a unit stack to un select all units.<br>" + "<br>" + "<b> Selecting Territories</b><br><br>"
-							+ "After selecting units Left click on a territory to move units to that territory.<br>" + "CTRL-Left click on a territory to select the territory as a way point.<br><br>";
+				final String hints = "<b> Selecting Units</b><br>"
+							+ "Left click on a unit stack to select 1 unit.<br>"
+							+ "ALT-Left click on a unit stack to select 10 units of that type in the stack.<br>"
+							+ "CTRL-Left click on a unit stack to select all units of that type in the stack.<br>"
+							+ "Shift-Left click on a unit to select all units in the territory.<br>"
+							+ "Left click on a territory but not on a unit to bring up a selection window for inputing the desired selection.<br>"
+							+ "<br><b> Deselecting Units</b><br>"
+							+ "Right click somewhere not on a unit stack to unselect the last selected unit.<br>"
+							+ "Right click on a unit stack to unselect one unit in the stack.<br>"
+							+ "ALT-Right click on a unit stack to unselect 10 units of that type in the stack.<br>"
+							+ "CTRL-Right click on a unit stack to unselect all units of that type in the stack.<br>"
+							+ "CTRL-Right click somewhere not on a unit stack to unselect all units selected.<br>"
+							+ "<br><b> Moving Units to a new Territories</b><br>"
+							+ "After selecting units Left click on a territory to move units there (do not Left click and Drag, instead select units, then move the mouse, then select the territory).<br>"
+							+ "CTRL-Left click on a territory to select the territory as a way point (this will force the units to move through this territory on their way to the destination).<br>"
+							+ "<br><b> Moving the Map Screen</b><br>" + "Right click and Drag the mouse to move your screen over the map.<br>"
+							+ "Left click on the map (anywhere), then use the Arrow Keys to move your map around.<br>"
+							+ "Left click in the Minimap at the top right of the screen, and Drag the mouse.<br>"
+							+ "Move the mouse to the edge of the map window, and the screen will scroll in that direction.<br>" + "Scrolling the mouse wheel will move the map up and down.<br>"
+							+ "<br><b> Zooming Out</b><br>" + "Holding ALT while Scrolling the Mouse Wheel will zoom the map in and out.<br>"
+							+ "Select 'Zoom' from the 'View' menu, and change to the desired level.<br>"
+							+ "<br><b> Turn off Art</b><br>" + "Deselect 'Map Details' in the 'View' menu, to show a map without the artwork.<br>"
+							+ "Select a new 'Map Skin' from the 'View' menu to show a different kind of artwork (not all maps have skins).<br>";
 				final JEditorPane editorPane = new JEditorPane();
 				editorPane.setEditable(false);
 				editorPane.setContentType("text/html");
