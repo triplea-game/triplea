@@ -3,7 +3,7 @@
 <game>
         <info name="World War II Pacific Test" version="2.4"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
-		<triplea minimumVersion="1.5"/>
+		<triplea minimumVersion="1.5.2"/>
         <map>
                 <!-- Territory Definitions -->
                 <territory name="Caroline Islands"/>

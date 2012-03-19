@@ -17,7 +17,7 @@
 		
 		<!-- triplea minimumVersion is the minimum version number of TripleA that can play this game.  Many new xmls require features not present in older versions of TripleA. Should be "xx.xx.xx.xx", "xx.xx.xx", "xx.xx", or "xx".
 				An example would be a map using 'isInfrastructure' unit property would need at least TripleA version "1.2.6", while a map using 'whenCapturedChangesInto' would need at least TripleA version "1.4" -->
-		<triplea minimumVersion="1.5.1"/>
+		<triplea minimumVersion="1.5.2"/>
 
 		<!-- diceSides defaults to 6 if not in the xml.  Can be set to any number between 1 and 200.
 				WARNING: Setting diceSides to a number other than 6 can result in unexpected behavior. -->
