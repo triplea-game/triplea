@@ -91,6 +91,7 @@ public class LobbyFrame extends JFrame
 		mainSplit.setRightComponent(chatPlayers);
 		add(mainSplit, BorderLayout.CENTER);
 		pack();
+		m_chatMessagePanel.requestFocusInWindow();
 		setLocationRelativeTo(null);
 		m_client.getMessenger().addErrorListener(new IMessengerErrorListener()
 		{
