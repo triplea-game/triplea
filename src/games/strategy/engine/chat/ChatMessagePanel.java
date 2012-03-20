@@ -25,6 +25,8 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -175,7 +177,6 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 		content.setLayout(new BorderLayout());
 		m_scrollPane = new JScrollPane(m_text);
 		content.add(m_scrollPane, BorderLayout.CENTER);
-		content.add(m_scrollPane, BorderLayout.CENTER);
 		final JPanel sendPanel = new JPanel();
 		sendPanel.setLayout(new BorderLayout());
 		sendPanel.add(m_nextMessage, BorderLayout.CENTER);
@@ -188,6 +189,33 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	{
 		m_text = new JTextPane();
 		m_text.setEditable(false);
+		m_text.addMouseListener(new MouseListener()
+		{
+			public void mouseReleased(final MouseEvent e)
+			{
+				final String markedText = m_text.getSelectedText();
+				if (markedText == null || markedText.length() == 0)
+				{
+					m_nextMessage.requestFocusInWindow();
+				}
+			}
+			
+			public void mousePressed(final MouseEvent e)
+			{
+			}
+			
+			public void mouseExited(final MouseEvent e)
+			{
+			}
+			
+			public void mouseEntered(final MouseEvent e)
+			{
+			}
+			
+			public void mouseClicked(final MouseEvent e)
+			{
+			}
+		});
 		m_nextMessage = new JTextField(10);
 		// when enter is pressed, send the message
 		m_setStatus = new JButton(m_setStatusAction);

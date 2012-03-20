@@ -75,7 +75,7 @@ public class NewGameChooserModel extends DefaultListModel
 		final File[] files = f.listFiles();
 		if (files == null)
 		{
-			return new ArrayList<File>();
+			return Collections.emptyList();
 		}
 		return Arrays.asList(files);
 	}

@@ -728,18 +728,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	}
 	
 	@Override
-	public Collection<Unit> getAmphibiousLandAttackers()
-	{
-		return new ArrayList<Unit>();
-	}
-	
-	@Override
-	public Collection<Unit> getBombardingUnits()
-	{
-		return new ArrayList<Unit>();
-	}
-	
-	@Override
 	public GUID getBattleID()
 	{
 		return m_battleID;

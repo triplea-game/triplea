@@ -16,6 +16,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecords.BattleResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -122,12 +123,12 @@ abstract public class AbstractBattle implements IBattle
 	
 	public Collection<Unit> getAmphibiousLandAttackers()
 	{
-		return new ArrayList<Unit>();
+		return Collections.emptyList();
 	}
 	
 	public Collection<Unit> getBombardingUnits()
 	{
-		return new ArrayList<Unit>();
+		return Collections.emptyList();
 	}
 	
 	public int getBattleRound()
@@ -137,12 +138,12 @@ abstract public class AbstractBattle implements IBattle
 	
 	public Collection<Unit> getAttackingUnits()
 	{
-		return new ArrayList<Unit>();
+		return Collections.emptyList();
 	}
 	
 	public Collection<Unit> getDefendingUnits()
 	{
-		return new ArrayList<Unit>();
+		return Collections.emptyList();
 	}
 	
 	public final boolean isOver()

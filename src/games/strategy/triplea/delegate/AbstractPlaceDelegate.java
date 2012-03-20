@@ -158,6 +158,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	{
 		if (m_produced.containsKey(t))
 			return m_produced.get(t);
+		// this list might be modified later
 		return new ArrayList<Unit>();
 	}
 	

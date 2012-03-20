@@ -103,18 +103,6 @@ public class MockBattle extends AbstractBattle
 	}
 	
 	@Override
-	public Collection<Unit> getAttackingUnits()
-	{
-		return new ArrayList<Unit>();
-	}
-	
-	@Override
-	public Collection<Unit> getDefendingUnits()
-	{
-		return new ArrayList<Unit>();
-	}
-	
-	@Override
 	public void addBombardingUnit(final Unit unit)
 	{
 		m_bombardingUnits.add(unit);
