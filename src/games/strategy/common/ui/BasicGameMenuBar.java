@@ -440,21 +440,21 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							dialog.getRootPane().setDefaultButton(button);
 							dialog.add(buttons, BorderLayout.SOUTH);
 							dialog.pack();
-							if (dialog.getWidth() < 300)
+							if (dialog.getWidth() < 400)
 							{
-								dialog.setSize(300, dialog.getHeight());
+								dialog.setSize(400, dialog.getHeight());
 							}
 							if (dialog.getHeight() < 300)
 							{
 								dialog.setSize(dialog.getWidth(), 300);
 							}
-							if (dialog.getWidth() > 500)
+							if (dialog.getWidth() > 800)
 							{
-								dialog.setSize(500, dialog.getHeight());
+								dialog.setSize(800, dialog.getHeight());
 							}
-							if (dialog.getHeight() > 500)
+							if (dialog.getHeight() > 600)
 							{
-								dialog.setSize(dialog.getWidth(), 500);
+								dialog.setSize(dialog.getWidth(), 600);
 							}
 							dialog.setLocationRelativeTo(m_frame);
 							dialog.addWindowListener(new WindowAdapter()

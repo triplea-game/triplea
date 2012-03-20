@@ -7,7 +7,7 @@
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
-		<triplea minimumVersion="1.5"/>
+		<triplea minimumVersion="1.5.2"/>
 
         <map>
                 <!-- Territory Definitions -->
@@ -7800,7 +7800,7 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;To see previous changes from 2.0 - 3.7, see the comments at the end of the xml file.
 &lt;br&gt;
 &lt;br&gt;Original Map and Game, complete to Version 2.0 by LSSAH.
-&lt;br&gt;Changes 2.0-3.x by Veqryn (with additional help from Pulicat, Lalapaloza, Cal2), Last Edited Feb, 2011.
+&lt;br&gt;Changes 2.0-4.x by Veqryn, Last Edited March, 2012.
 
 "/>		
         </propertyList>

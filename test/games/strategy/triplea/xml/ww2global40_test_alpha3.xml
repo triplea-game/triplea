@@ -3788,12 +3788,37 @@
                 </attatchment>
 				
 			<!-- Political related conditions -->
+				<attatchment name="conditionAttachment_Axis_Capture_London" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedOwnershipTerritories" value="United Kingdom" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Axis_Capture_London_Switch" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="turns" value="0"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Axis_Land_In_North_America" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="alliedOwnershipTerritories" value="Yukon Territory:British Columbia:Alberta Saskatchewan Manitoba:Ontario:Quebec:Newfoundland Labrador:New Brunswick Nova Scotia" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Axis_Land_In_North_America_Switch" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="turns" value="0"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Americans_May_Declare_War_On_Axis" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Axis_Capture_London_Switch:conditionAttachment_Axis_Land_In_North_America_Switch"/>
+					<option name="conditionType" value="OR"/>
+					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="0"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Russians_May_Declare_War_On_European_Axis" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Axis_Capture_London_Switch:conditionAttachmentTurn4"/>
+					<option name="conditionType" value="OR"/>
+					<option name="atWarPlayers" value="Germans:Italians" count="0"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Americans_And_Japanese_At_War" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="atWarPlayers" value="Americans" count="1"/>
+				</attatchment>
 				<attatchment name="conditionAttachmentAmericansNotYetAtWarAndTurn3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="turns" value="3"/>
-					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="0" />
+					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="0"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentEuropeanAxisNotYetAtWarWithAmericans" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="atWarPlayers" value="Germans:Italians" count="0" />
+					<option name="atWarPlayers" value="Germans:Italians" count="0"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentTurn3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="turns" value="3"/>
@@ -3802,10 +3827,10 @@
 					<option name="turns" value="4"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentEuropeanAxisNotYetAtWarWithRussians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="atWarPlayers" value="Germans:Italians" count="0" />
+					<option name="atWarPlayers" value="Germans:Italians" count="0"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentPacificAxisNotYetAtWarWithRussians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="atWarPlayers" value="Japanese" count="0" />
+					<option name="atWarPlayers" value="Japanese" count="0"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentAxis_Friendly_With_TrueNeutrals" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Germans:Neutral_True:Friendly_Neutral"/>
@@ -3817,7 +3842,7 @@
 					<option name="relationship" value="Germans:Russians:anyWar"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentAxisAtWarWithAmericans" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="atWarPlayers" value="Japanese:Germans:Italians" count="1" />
+					<option name="atWarPlayers" value="Japanese:Germans:Italians" count="1"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentGermansNotYetAtWarWithChinese" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Germans:Chinese:anyNeutral"/>
@@ -3991,6 +4016,7 @@
 				<!-- New Kamikaze Trigger: -->
 				<attatchment name="triggerAttachment_Japanese_Recruit_Kamikaze_Pilots_alpha" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAxisVictory3"/>
+					<!-- just using a condition that is sure to be true at the start of the game, so that this trigger definitely fires at the beginning of each game -->
 					<option name="territories" value="6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:35 Sea Zone"/>
 					<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
 					<option name="territoryProperty" value="kamikazeZone" count="true"/>
@@ -4180,6 +4206,15 @@
                 	<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
                 	<option name="territoryProperty" value="captureUnitOnEnteringBy" count="Americans:French:British:ANZAC:Chinese:Russians"/>
 				</attatchment>
+                <attatchment name="triggerAttachment_Japanese_Unrestricted_Movement" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="conditions" value="conditionAttachment_Americans_And_Japanese_At_War"/>
+					<option name="uses" value="1"/>
+                	<option name="players" value="Japanese"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="rulesAttatchment"/>
+                	<option name="playerProperty" value="movementRestrictionTerritories" count=""/>
+                	<option name="playerProperty" value="movementRestrictionType" count="disallowed"/>
+					<option name="when" value="before:japaneseCombatMove"/>
+                </attatchment>
 				<attatchment name="triggerAttachment_Americans_War_Japanese" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAmericansNotYetAtWarAndTurn3"/>
 					<option name="relationshipChange" value="Japanese:Americans:anyNeutral:War"/>
@@ -4205,15 +4240,47 @@
 					<option name="when" value="after:americansPlace"/>
 					<option name="uses" value="1"/>
 				</attatchment>
+				<attatchment name="triggerAttachment_Germans_Conquer_London" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Axis_Capture_London"/>
+					<option name="when" value="after:germansBattle"/>
+                	<option name="players" value="Germans"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Capture_London_Switch"/>
+                	<option name="playerProperty" value="turns" count="1-+"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Italians_Conquer_London" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Axis_Capture_London"/>
+					<option name="when" value="after:italiansBattle"/>
+                	<option name="players" value="Germans"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Capture_London_Switch"/>
+                	<option name="playerProperty" value="turns" count="1-+"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Germans_Land_In_North_America" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Axis_Land_In_North_America"/>
+					<option name="when" value="after:germansBattle"/>
+                	<option name="players" value="Germans"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Land_In_North_America_Switch"/>
+                	<option name="playerProperty" value="turns" count="1-+"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Italians_Land_In_North_America" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Axis_Land_In_North_America"/>
+					<option name="when" value="after:italiansBattle"/>
+                	<option name="players" value="Germans"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Land_In_North_America_Switch"/>
+                	<option name="playerProperty" value="turns" count="1-+"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Land_In_North_America" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Axis_Land_In_North_America"/>
+					<option name="when" value="after:japaneseBattle"/>
+                	<option name="players" value="Germans"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Land_In_North_America_Switch"/>
+                	<option name="playerProperty" value="turns" count="1-+"/>
+				</attatchment>
 				<attatchment name="triggerAttachment_Russians_War_European_Axis" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentTurn4:conditionAttachmentEuropeanAxisNotYetAtWarWithRussians"/>
+					<option name="conditions" value="conditionAttachment_Russians_May_Declare_War_On_European_Axis"/>
 					<option name="relationshipChange" value="Germans:Russians:anyNeutral:War"/>
 					<option name="relationshipChange" value="Italians:Russians:anyNeutral:War"/>
 					<option name="relationshipChange" value="Russians:British:anyNeutral:Allied"/>
-					<option name="relationshipChange" value="Russians:UK_Pacific:anyNeutral:Allied"/>
-					<option name="relationshipChange" value="Russians:ANZAC:anyNeutral:Allied"/>
 					<option name="relationshipChange" value="Russians:French:anyNeutral:Allied"/>
-					<option name="relationshipChange" value="Russians:Dutch:anyNeutral:Friendly"/>
 					<option name="relationshipChange" value="Russians:Neutral_Allies:anyNeutral:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Russians:Neutral_Axis:anyNeutral:Unfriendly_Neutral"/>
 					<option name="notification" value="Russians_War_European_Axis"/>
@@ -4221,8 +4288,7 @@
 					<option name="uses" value="1"/>
 				</attatchment>
                 <attatchment name="triggerAttachment_Americans_Unrestricted_Movement" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="conditions" value="conditionAttachmentEuropeanAxisNotYetAtWarWithAmericans"/>
-					<option name="invert" value="true"/>
+                	<option name="conditions" value="conditionAttachmentAxisAtWarWithAmericans"/>
 					<option name="uses" value="1"/>
                 	<option name="players" value="Americans"/>
                 	<option name="playerAttachmentName" value="RulesAttachment" count="rulesAttatchment"/>
@@ -4328,11 +4394,36 @@
 					<option name="unlimitedProduction" value="true"/>
 				</attatchment>
 				
-				<!-- Americans not allowed to move to or through these sea zones:
+				<!-- Russian Territories next to Mongolian Territories:
+						Timguska:Yenisey:Yakut S.S.R.:Buryatia:Amur
+						
+					 Mongolian Territories:
+						Olgiy:Dzavhan:Tsagaan Olom:Central Mongolia:Buyant-Uhaa:Ulaanbaatar
+				-->
+				
+				<!-- Americans in OOB are not allowed to move to or through these sea zones:
 						125 Sea Zone:111 Sea Zone:119 Sea Zone:109 Sea Zone:104 Sea Zone:91 Sea Zone:87 Sea Zone:83 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:76 Sea Zone:80 Sea Zone:79 Sea Zone
+					
+					 Americans in Alpha +3 are not allowed to end their movement in:
+						Europe board: any sea zone not touching an American territory, plus 102 sz
+						TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 106 and 116 could be moved into on the way to 121.
+							65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone
+						Pacific board: any sea zone touching a Japanese controlled territory
+						TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 17, 22, 32, 33, 34, and 37 could all be moved through on the way to another territory.
+						TODO: Currently we have a "set list" of territories. Obviously if Japan conquers more territories, then this list should expand, but it doesn't yet.
+							6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:32 Sea Zone:34 Sea Zone:33 Sea Zone:36 Sea Zone:37 Sea Zone
 				-->
 				<attatchment name="rulesAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="movementRestrictionTerritories" value="125 Sea Zone:111 Sea Zone:119 Sea Zone:109 Sea Zone:104 Sea Zone:91 Sea Zone:87 Sea Zone:83 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:76 Sea Zone:80 Sea Zone:79 Sea Zone"/>
+                	<option name="movementRestrictionTerritories" value="65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone:6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:32 Sea Zone:34 Sea Zone:33 Sea Zone:36 Sea Zone:37 Sea Zone"/>
+                	<option name="movementRestrictionType" value="disallowed"/>
+                </attatchment>
+				
+				<!-- Japanese in Alpha +3 are not allowed to end their movement in:
+						Any Sea zone within 2 spaces of Alaska or Western United States
+							1 Sea Zone:2 Sea Zone:3 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone
+				-->
+				<attatchment name="rulesAttatchment" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="movementRestrictionTerritories" value="1 Sea Zone:2 Sea Zone:3 Sea Zone:8 Sea Zone:9 Sea Zone:10 Sea Zone:11 Sea Zone:12 Sea Zone"/>
                 	<option name="movementRestrictionType" value="disallowed"/>
                 </attatchment>
 				
@@ -5948,7 +6039,9 @@
 This game uses the latest Alpha +3 rules, as posted on Larry's website.<br><br>
 
 <b>Disclaimer</b><br>
-The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br><br>
+The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. 
+It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. 
+Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br><br>
 
 <b>Edit Mode</b><br>
 When not yet at war, you may ask for permission to move through a canal, and if granted, use Edit Mode to move the units.<br><br>
@@ -5958,9 +6051,10 @@ When not yet at war, you may ask for permission to move through a canal, and if 
 * Air units may not land in or move through Friendly Neutrals, including the same turn they are captured.<br>
 * Friendly Neutrals can not be 'captured' with an AA Gun, only by land units with an attack power.<br>
 * Kamikaze attacks will prevent bombardment.  So will Scrambling attacks.<br>
-* Captured naval and air bases can not be used until next round.  In other words, you can't somehow use the naval base for bonus movement during noncombat.<br>
+* Captured naval and air bases can not be used until next turn.  In other words, you can't somehow use the naval base for bonus movement during noncombat.<br>
 * New Blockade Zone rules.<br>
 * If UK Pacific captures Japan, the money goes to UK Pacific, even if UK Pacific's capital is occupied.<br>
+* Technology does not yet work.<br>
 * UK Pacific may for part or all of any Tech Tokens purchased by the British.<br>
 * Tactical Bombers may only target Airfields and Harbours for strategic bombing, and may not target any factories.<br>
 <br><br>
@@ -6115,7 +6209,7 @@ When a country moves into a regular or non-friendly neutral during the combat mo
 
 <b>French</b>
 <ul>
-<li>12 PUs worth of free units in France the first time France is Liberated (used edit mode if you want something other than 4 infantry).</li>
+<li>12 PUs worth of free units in France the first time France is Liberated (The engine will give you 4 infantry automatically. Use edit mode if you want something other than 4 infantry by deleting the infantry and replacing them with what you really want).</li>
 </ul>
 <br><hr><br>
 
@@ -6147,7 +6241,7 @@ After the air battle, or if there were no interceptors, the escorts are retreate
 
 <b>Blockade Zones</b><br>
 If any enemy ships are in a power's blockade zones at the end of that power's turn, and the power controls the adjacent ground territory, then the power may lose some of the PUs it would have otherwise collected.<br>
-Surface warships roll 1 dice, Submarines and Air units roll 2 dice, and carriers and transports roll zero dice.  For any roll less than 3, that amount of PUs will not be collected by the surrounding land territories.
+Surface warships roll 1 dice, Submarines and Air units roll 2 dice, and carriers and transports roll zero dice.  For any roll of 3 or less, that amount of PUs will not be collected by the surrounding land territories.
 The power in question cannot lose more PUs from a blockade zones then the worth of the adjacent ground territory to those zones.
 
 <br><br><hr><br>

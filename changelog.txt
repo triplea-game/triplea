@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Finalizing Alpha rules for test xml. (veqryn)
+
 * Improving in-game Help -> Movement/Selecting Help menu tips. (veqryn)
 
 * Holding down ALT key while selecting or deselecting units will now add/remove 10 units at a time. (veqryn)
