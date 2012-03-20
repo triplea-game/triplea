@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="2.2"/>
+        <info name="World War II Global Test Alpha 3" version="2.3"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
 		<diceSides value="6"/>
@@ -3788,6 +3788,15 @@
                 </attatchment>
 				
 			<!-- Political related conditions -->
+				<attatchment name="conditionAttachmentTurn0" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="turns" value="0"/>
+				</attatchment>
+				<attatchment name="conditionAttachmentTurn3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="turns" value="3"/>
+				</attatchment>
+				<attatchment name="conditionAttachmentTurn4" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="turns" value="4"/>
+				</attatchment>
 				<attatchment name="conditionAttachment_Axis_Capture_London" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="alliedOwnershipTerritories" value="United Kingdom" count="1"/>
 				</attatchment>
@@ -3820,12 +3829,6 @@
 				<attatchment name="conditionAttachmentEuropeanAxisNotYetAtWarWithAmericans" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="atWarPlayers" value="Germans:Italians" count="0"/>
 				</attatchment>
-				<attatchment name="conditionAttachmentTurn3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="turns" value="3"/>
-				</attatchment>
-				<attatchment name="conditionAttachmentTurn4" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="turns" value="4"/>
-				</attatchment>
 				<attatchment name="conditionAttachmentEuropeanAxisNotYetAtWarWithRussians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="atWarPlayers" value="Germans:Italians" count="0"/>
 				</attatchment>
@@ -3837,6 +3840,12 @@
 				</attatchment>
 				<attatchment name="conditionAttachmentAllies_Friendly_With_TrueNeutrals" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="British:Neutral_True:Friendly_Neutral"/>
+				</attatchment>
+				<attatchment name="conditionAttachmentAxis_Friendly_With_Mongolians" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Germans:Mongolians:Friendly_Neutral"/>
+				</attatchment>
+				<attatchment name="conditionAttachmentAllies_Friendly_With_Mongolians" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="British:Mongolians:Friendly_Neutral"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentAxisAtWarWithRussians" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Germans:Russians:anyWar"/>
@@ -3869,6 +3878,11 @@
 					<option name="relationship" value="British:Neutral_True:Friendly_Neutral"/>
 					<option name="relationship" value="Russians:Germans:anyWar"/>
 				</attatchment>
+				<attatchment name="conditionAttachmentRussiansNotYetFriendlyWithMongoliansButAlliesAre" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Russians:Mongolians:anyNeutral"/>
+					<option name="relationship" value="British:Mongolians:Friendly_Neutral"/>
+					<option name="relationship" value="Russians:Japanese:anyWar"/>
+				</attatchment>
 				<attatchment name="conditionAttachmentAmericansNotYetAtWarWithTrueNeutralsButAlliesAre" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Americans:Neutral_True:anyNeutral"/>
 					<option name="relationship" value="British:Neutral_True:anyWar"/>
@@ -3889,12 +3903,52 @@
 					<option name="relationship" value="Americans:Japanese:anyWar"/>
 					<option name="relationship" value="Russians:Japanese:anyWar"/>
 				</attatchment>
+				<attatchment name="conditionAttachment_Russians_Not_Allied_To_Mongolians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Russians:Mongolians:anyAllied"/>
+					<option name="invert" value="true"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Russians_May_Declare_War_On_Mongolians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Russians_Not_Allied_To_Mongolians"/>
+					<option name="relationship" value="Russians:Japanese:anyWar"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Americans_Not_Yet_At_War_With_Mongolians_But_Allies_Are" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Americans:Mongolians:anyNeutral"/>
+					<option name="relationship" value="Russians:Mongolians:anyWar"/>
+					<option name="relationship" value="Americans:Japanese:anyWar"/>
+				</attatchment>
 				<attatchment name="conditionAttachmentJapaneseNotYetAtWar" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Americans:Japanese:anyNeutral"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentBritishNotYetAtWar" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="British:Japanese:anyNeutral"/>
 				</attatchment>
+				<!-- Russian Territories next to Mongolian Territories:
+						Timguska:Yenisey:Yakut S.S.R.:Buryatia:Amur
+						
+					 Mongolian Territories:
+						Olgiy:Dzavhan:Tsagaan Olom:Central Mongolia:Buyant-Uhaa:Ulaanbaatar
+						
+					 Japanese Territories next to Mongolian Territories:
+						Manchuria:Jehol
+						
+					 Chinese Territories next to Mongolian Territories (could possibly be controlled by Japan):
+						Chahar:Suiyuyan:Kansu
+				-->
+				<attatchment name="conditionAttachment_Mongolia_Not_At_War_With_Allies" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="British:Mongolians:anyWar"/>
+					<option name="invert" value="true"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Mongolia_May_Switch_To_Russians_Control_Switch" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Mongolia_Not_At_War_With_Allies"/>
+                	<option name="turns" value="1-+"/>
+				</attatchment>
+                <attatchment name="conditionAttachment_Russians_Conquer_Japanese_Territory_By_Mongolia" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="Manchuria:Jehol" count="1"/>
+					<!-- TODO: include the conquering of Japanese owned Chinese territories by mongolia in the trigger for 'never having mongolia switch control to russia' -->
+                </attatchment>
+                <attatchment name="conditionAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="Timguska:Yenisey:Yakut S.S.R.:Buryatia:Amur" count="1"/>
+                </attatchment>
 				
 			<!-- Trigger Attachments -->
 			
@@ -4150,6 +4204,100 @@
 				
 				
 			<!-- Political Related Triggers -->
+				<attatchment name="triggerAttachment_Russians_Conquer_Japanese_Territory_By_Mongolia" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Russians_Conquer_Japanese_Territory_By_Mongolia"/>
+					<option name="when" value="after:russiansBattle"/>
+					<option name="uses" value="1"/>
+                	<option name="players" value="Russians"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Mongolia_May_Switch_To_Russians_Control_Switch"/>
+                	<option name="playerProperty" value="turns" count="0"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentTurn0"/>
+					<option name="when" value="before:japaneseNonCombatMove"/>
+					<option name="uses" value="1"/>
+                	<option name="changeOwnership" value="Olgiy:Mongolians:Russians:true"/>
+                	<option name="changeOwnership" value="Dzavhan:Mongolians:Russians:true"/>
+                	<option name="changeOwnership" value="Tsagaan Olom:Mongolians:Russians:true"/>
+                	<option name="changeOwnership" value="Central Mongolia:Mongolians:Russians:true"/>
+                	<option name="changeOwnership" value="Buyant-Uhaa:Mongolians:Russians:true"/>
+                	<option name="changeOwnership" value="Ulaanbaatar:Mongolians:Russians:true"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia:conditionAttachment_Mongolia_May_Switch_To_Russians_Control_Switch"/>
+					<option name="when" value="after:japaneseBattle"/>
+					<option name="uses" value="1"/>
+					<option name="relationshipChange" value="Russians:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Americans:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="British:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="UK_Pacific:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="ANZAC:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Chinese:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="French:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Dutch:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Neutral_Allies:Mongolians:anyNeutral:Friendly_Neutral"/>
+                	<option name="activateTrigger" value="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_2:1:true:true:false:false"/>
+				</attatchment>
+				
+				<attatchment name="triggerAttachment_Axis_Friendly_With_Mongolians" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentTurn0"/>
+					<option name="when" value="before:germansPolitics"/>
+					<option name="uses" value="1"/>
+                	<option name="territories" value="Olgiy:Dzavhan:Tsagaan Olom:Central Mongolia:Buyant-Uhaa:Ulaanbaatar"/>
+                	<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
+                	<option name="territoryProperty" value="captureUnitOnEnteringBy" count="Germans:Italians:Japanese"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Italians_Friendly_With_Mongolians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAxis_Friendly_With_Mongolians"/>
+					<option name="when" value="before:italiansPolitics"/>
+					<option name="uses" value="1"/>
+                	<option name="activateTrigger" value="triggerAttachment_Axis_Friendly_With_Mongolians:1:true:true:false:false"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Germans_Friendly_With_Mongolians" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAxis_Friendly_With_Mongolians"/>
+					<option name="when" value="before:germansPolitics"/>
+					<option name="uses" value="1"/>
+                	<option name="activateTrigger" value="triggerAttachment_Axis_Friendly_With_Mongolians:1:true:true:false:false"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Friendly_With_Mongolians" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAxis_Friendly_With_Mongolians"/>
+					<option name="when" value="before:japanesePolitics"/>
+					<option name="uses" value="1"/>
+                	<option name="activateTrigger" value="triggerAttachment_Axis_Friendly_With_Mongolians:1:true:true:false:false"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Allies_Friendly_With_Mongolians" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentTurn0"/>
+					<option name="when" value="before:britishPolitics"/>
+					<option name="uses" value="1"/>
+                	<option name="territories" value="Olgiy:Dzavhan:Tsagaan Olom:Central Mongolia:Buyant-Uhaa:Ulaanbaatar"/>
+                	<option name="territoryAttachmentName" value="TerritoryAttachment" count="territoryAttatchment"/>
+                	<option name="territoryProperty" value="captureUnitOnEnteringBy" count="Americans:French:British:ANZAC:Chinese:Russians"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_British_Friendly_With_Mongolians" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAllies_Friendly_With_Mongolians"/>
+					<option name="when" value="before:britishPolitics"/>
+					<option name="uses" value="1"/>
+                	<option name="activateTrigger" value="triggerAttachment_Allies_Friendly_With_Mongolians:1:true:true:false:false"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_French_Friendly_With_Mongolians" attatchTo="French" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAllies_Friendly_With_Mongolians"/>
+					<option name="when" value="before:frenchPolitics"/>
+					<option name="uses" value="1"/>
+                	<option name="activateTrigger" value="triggerAttachment_Allies_Friendly_With_Mongolians:1:true:true:false:false"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Russians_Friendly_With_Mongolians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAllies_Friendly_With_Mongolians"/>
+					<option name="when" value="before:russiansPolitics"/>
+					<option name="uses" value="1"/>
+                	<option name="activateTrigger" value="triggerAttachment_Allies_Friendly_With_Mongolians:1:true:true:false:false"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Americans_Friendly_With_Mongolians" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentAllies_Friendly_With_Mongolians"/>
+					<option name="when" value="before:americansPolitics"/>
+					<option name="uses" value="1"/>
+                	<option name="activateTrigger" value="triggerAttachment_Allies_Friendly_With_Mongolians:1:true:true:false:false"/>
+				</attatchment>
+				
 				<attatchment name="triggerAttachment_Germans_Friendly_With_TrueNeutrals" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAxis_Friendly_With_TrueNeutrals"/>
 					<option name="when" value="before:germansPolitics"/>
@@ -4343,6 +4491,18 @@
 					<option name="when" value="before:russiansPolitics"/>
 					<option name="uses" value="1"/>
 				</attatchment>
+				<attatchment name="triggerAttachment_Russians_Friendly_Mongolians1" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentRussiansNotYetFriendlyWithMongoliansButAlliesAre"/>
+					<option name="relationshipChange" value="Russians:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="when" value="before:russiansPolitics"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Russians_Friendly_Mongolians2" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentRussiansNotYetFriendlyWithMongoliansButAlliesAre"/>
+					<option name="relationshipChange" value="Russians:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="when" value="after:russiansPolitics"/>
+					<option name="uses" value="1"/>
+				</attatchment>
 				<attatchment name="triggerAttachment_Americans_War_TrueNeutral" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAmericansNotYetAtWarWithTrueNeutralsButAlliesAre"/>
 					<option name="relationshipChange" value="Americans:Neutral_True:anyNeutral:War"/>
@@ -4352,6 +4512,13 @@
 				<attatchment name="triggerAttachment_Americans_Friendly_TrueNeutral" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAmericansNotYetFriendlyWithTrueNeutralsButAlliesAre"/>
 					<option name="relationshipChange" value="Americans:Neutral_True:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Americans:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="when" value="before:americansPolitics"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Americans_War_Mongolians" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Americans_Not_Yet_At_War_With_Mongolians_But_Allies_Are"/>
+					<option name="relationshipChange" value="Americans:Mongolians:anyNeutral:War"/>
 					<option name="when" value="before:americansPolitics"/>
 					<option name="uses" value="1"/>
 				</attatchment>
@@ -4394,18 +4561,12 @@
 					<option name="unlimitedProduction" value="true"/>
 				</attatchment>
 				
-				<!-- Russian Territories next to Mongolian Territories:
-						Timguska:Yenisey:Yakut S.S.R.:Buryatia:Amur
-						
-					 Mongolian Territories:
-						Olgiy:Dzavhan:Tsagaan Olom:Central Mongolia:Buyant-Uhaa:Ulaanbaatar
-				-->
-				
 				<!-- Americans in OOB are not allowed to move to or through these sea zones:
 						125 Sea Zone:111 Sea Zone:119 Sea Zone:109 Sea Zone:104 Sea Zone:91 Sea Zone:87 Sea Zone:83 Sea Zone:70 Sea Zone:71 Sea Zone:72 Sea Zone:76 Sea Zone:80 Sea Zone:79 Sea Zone
 					
 					 Americans in Alpha +3 are not allowed to end their movement in:
 						Europe board: any sea zone not touching an American territory, plus 102 sz
+						TODO: We need to disallow a movement ending in a territory
 						TODO: Currently we disallow any movement into, instead of just disallowing the ending of movement in.  So, for example, SZ 106 and 116 could be moved into on the way to 121.
 							65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone
 						Pacific board: any sea zone touching a Japanese controlled territory
@@ -4414,7 +4575,8 @@
 							6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:32 Sea Zone:34 Sea Zone:33 Sea Zone:36 Sea Zone:37 Sea Zone
 				-->
 				<attatchment name="rulesAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="movementRestrictionTerritories" value="65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone:6 Sea Zone:17 Sea Zone:19 Sea Zone:20 Sea Zone:22 Sea Zone:32 Sea Zone:34 Sea Zone:33 Sea Zone:36 Sea Zone:37 Sea Zone"/>
+                	<option name="movementRestrictionTerritories" value="65 Sea Zone:66 Sea Zone:85 Sea Zone:86 Sea Zone:88 Sea Zone:90 Sea Zone:103 Sea Zone:106 Sea Zone:107 Sea Zone:116 Sea Zone:117 Sea Zone:120 Sea Zone:122 Sea Zone:6 Sea Zone:19 Sea Zone:20 Sea Zone:36 Sea Zone"/>
+					<!-- :17 Sea Zone:22 Sea Zone:32 Sea Zone:33 Sea Zone:34 Sea Zone:37 Sea Zone -->
                 	<option name="movementRestrictionType" value="disallowed"/>
                 </attatchment>
 				
@@ -4441,7 +4603,18 @@
 					<option name="relationshipChange" value="Neutral_True:Chinese:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:French:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Neutral_Allies:Friendly_Neutral"/>
-					<option name="text" value="Axis_War_Neutral_True"/>
+					<!-- Axis declaring war on Strict Neutrals also flips Mongolia -->
+					<option name="relationshipChange" value="Germans:Mongolians:War"/>
+					<option name="relationshipChange" value="Italians:Mongolians:War"/>
+					<option name="relationshipChange" value="Japanese:Mongolians:War"/>
+					<option name="relationshipChange" value="Mongolians:British:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:UK_Pacific:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:ANZAC:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Dutch:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Chinese:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:French:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Neutral_Allies:Friendly_Neutral"/>
+					<option name="text" value="Axis_War_Neutral_True_Mongolians"/>
 				</attatchment>
 				<attatchment name="politicalActionAttachment_Axis_To_War_With_TrueNeutrals" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAxisNotYetAtWarWithTrueNeutrals"/>
@@ -4455,7 +4628,18 @@
 					<option name="relationshipChange" value="Neutral_True:Chinese:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:French:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Neutral_Allies:Friendly_Neutral"/>
-					<option name="text" value="Axis_War_Neutral_True"/>
+					<!-- Axis declaring war on Strict Neutrals also flips Mongolia -->
+					<option name="relationshipChange" value="Germans:Mongolians:War"/>
+					<option name="relationshipChange" value="Italians:Mongolians:War"/>
+					<option name="relationshipChange" value="Japanese:Mongolians:War"/>
+					<option name="relationshipChange" value="Mongolians:British:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:UK_Pacific:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:ANZAC:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Dutch:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Chinese:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:French:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Neutral_Allies:Friendly_Neutral"/>
+					<option name="text" value="Axis_War_Neutral_True_Mongolians"/>
 				</attatchment>
 				<attatchment name="politicalActionAttachment_Axis_To_War_With_TrueNeutrals" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAxisNotYetAtWarWithTrueNeutrals"/>
@@ -4469,7 +4653,35 @@
 					<option name="relationshipChange" value="Neutral_True:Chinese:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:French:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Neutral_Allies:Friendly_Neutral"/>
-					<option name="text" value="Axis_War_Neutral_True"/>
+					<!-- Axis declaring war on Strict Neutrals also flips Mongolia -->
+					<option name="relationshipChange" value="Germans:Mongolians:War"/>
+					<option name="relationshipChange" value="Italians:Mongolians:War"/>
+					<option name="relationshipChange" value="Japanese:Mongolians:War"/>
+					<option name="relationshipChange" value="Mongolians:British:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:UK_Pacific:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:ANZAC:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Dutch:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Chinese:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:French:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Neutral_Allies:Friendly_Neutral"/>
+					<option name="text" value="Axis_War_Neutral_True_Mongolians"/>
+				</attatchment>
+				<!-- TODO: I suppose all the allies could go to war with Mongolians, but seriously.... they never would, so I'm not going to crowd out everyone's politics screen with it. -->
+				<attatchment name="politicalActionAttachment_Allies_To_War_With_Mongolians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Russians_May_Declare_War_On_Mongolians"/>
+					<option name="relationshipChange" value="British:Mongolians:War"/>
+					<option name="relationshipChange" value="UK_Pacific:Mongolians:War"/>
+					<option name="relationshipChange" value="ANZAC:Mongolians:War"/>
+					<option name="relationshipChange" value="Dutch:Mongolians:War"/>
+					<option name="relationshipChange" value="Chinese:Mongolians:War"/>
+					<option name="relationshipChange" value="French:Mongolians:War"/>
+					<option name="relationshipChange" value="Russians:Mongolians:War"/>
+					<option name="relationshipChange" value="Mongolians:Germans:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Italians:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Japanese:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Mongolians:Neutral_Axis:Friendly_Neutral"/>
+					<!-- Allies declaring war on Mongolians does not flip Strict Neutrals -->
+					<option name="text" value="Allies_War_Mongolians"/>
 				</attatchment>
 				<attatchment name="politicalActionAttachment_Allies_To_War_With_TrueNeutrals" attatchTo="British" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAlliesNotYetAtWarWithTrueNeutrals"/>
@@ -4483,6 +4695,7 @@
 					<option name="relationshipChange" value="Neutral_True:Italians:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Japanese:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Neutral_Axis:Friendly_Neutral"/>
+					<!-- Allies declaring war on Strict Neutrals does not flip Mongolians -->
 					<option name="text" value="Allies_War_Neutral_True"/>
 				</attatchment>
 				<attatchment name="politicalActionAttachment_Allies_To_War_With_TrueNeutrals" attatchTo="French" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
@@ -4497,6 +4710,7 @@
 					<option name="relationshipChange" value="Neutral_True:Italians:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Japanese:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Neutral_Axis:Friendly_Neutral"/>
+					<!-- Allies declaring war on Strict Neutrals does not flip Mongolians -->
 					<option name="text" value="Allies_War_Neutral_True"/>
 				</attatchment>
 				<attatchment name="politicalActionAttachment_Allies_To_War_With_TrueNeutrals" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
@@ -4512,6 +4726,7 @@
 					<option name="relationshipChange" value="Neutral_True:Italians:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Japanese:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Neutral_Axis:Friendly_Neutral"/>
+					<!-- Allies declaring war on Strict Neutrals does not flip Mongolians -->
 					<option name="text" value="Allies_War_Neutral_True"/>
 				</attatchment>
 				<attatchment name="politicalActionAttachment_Allies_To_War_With_TrueNeutrals" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
@@ -4527,6 +4742,7 @@
 					<option name="relationshipChange" value="Neutral_True:Italians:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Japanese:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Neutral_True:Neutral_Axis:Friendly_Neutral"/>
+					<!-- Allies declaring war on Strict Neutrals does not flip Mongolians -->
 					<option name="text" value="Allies_War_Neutral_True"/>
 				</attatchment>
 				<attatchment name="politicalActionAttachment_Japanese_To_War_With_Russians" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
@@ -5647,7 +5863,7 @@
 						<number min="0" max="1"/>
 				</property>
 
-				<property name="LHTR Heavy Bombers" value="false" editable="true">
+				<property name="LHTR Heavy Bombers" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -6057,6 +6273,8 @@ When not yet at war, you may ask for permission to move through a canal, and if 
 * Technology does not yet work.<br>
 * UK Pacific may for part or all of any Tech Tokens purchased by the British.<br>
 * Tactical Bombers may only target Airfields and Harbours for strategic bombing, and may not target any factories.<br>
+* Do not allow USA movement to end in Sea Zones 17, 22, 32, 33, 34, and 37.<br>
+* If Russia attacks a Japanese owned territory bordering any Mongolian territory, then Mongolia will never switch to become Russian if Japan takes a Russian territory bordering Mongolia after this.<br>
 <br><br>
 <br><hr><br>
 
@@ -6279,8 +6497,12 @@ These changes to units are things other than price/movement which you can see in
 <br><br><hr><br>
 <br>Change Log:
 <br>
-<br>2.2
+<br>2.3
+<br>Changing politics to match Alpha +3 politics.
+<br>Finishing stupidly complex Mongolian rules and their triggers and politics.
 <br>Fixing Russian nationa objective for sz125 so that it affects all units except transports.
+<br>
+<br>2.2
 <br>Added Mongolia in order to have complex Mongolian rules.
 <br>Finishing Alpha +3 National Objectives.
 <br>Preventing Combat-Movement takeover of Friendly Neutrals. You must now wait for Non-Combat Movement phase to take over them.

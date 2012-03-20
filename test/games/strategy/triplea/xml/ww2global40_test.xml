@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test" version="2.2"/>
+        <info name="World War II Global Test" version="2.3"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
 		<diceSides value="6"/>
@@ -3677,18 +3677,21 @@
                 </attatchment>
 				
 			<!-- Political related conditions -->
-				<attatchment name="conditionAttachmentAmericansNotYetAtWarAndTurn3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="turns" value="3"/>
-					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="0" />
-				</attatchment>
-				<attatchment name="conditionAttachmentEuropeanAxisNotYetAtWarWithAmericans" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="atWarPlayers" value="Germans:Italians" count="0" />
+				<attatchment name="conditionAttachmentTurn0" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="turns" value="0"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentTurn3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="turns" value="3"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentTurn4" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="turns" value="4"/>
+				</attatchment>
+				<attatchment name="conditionAttachmentAmericansNotYetAtWarAndTurn3" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="turns" value="3"/>
+					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="0" />
+				</attatchment>
+				<attatchment name="conditionAttachmentEuropeanAxisNotYetAtWarWithAmericans" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="atWarPlayers" value="Germans:Italians" count="0" />
 				</attatchment>
 				<attatchment name="conditionAttachmentEuropeanAxisNotYetAtWarWithRussians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="atWarPlayers" value="Germans:Italians" count="0" />
@@ -5271,7 +5274,7 @@
 						<number min="0" max="1"/>
 				</property>
 
-				<property name="LHTR Heavy Bombers" value="false" editable="true">
+				<property name="LHTR Heavy Bombers" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -5660,7 +5663,7 @@
 <b>Credits:</b> Bung, Veqryn<br>
 
 <b>Note</b><br>
-This game uses vanilla rules, also knowns as OOB (out of the box). <br><br>
+This game uses original/vanilla rules, also knowns as OOB (out of the box). <br><br>
 
 <b>Disclaimer</b><br>
 The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br><br>
@@ -5878,8 +5881,10 @@ These changes to units are things other than price/movement which you can see in
 <br><br><hr><br>
 <br>Change Log:
 <br>
-<br>2.2
+<br>2.3
 <br>Fixing Russian nationa objective for sz125 so that it affects all units except transports.
+<br>
+<br>2.2
 <br>Preventing Combat-Movement takeover of Friendly Neutrals. You must now wait for Non-Combat Movement phase to take over them.
 <br>Allowing Submarines to pass through Straight of Gibraltar no matter who controls it.
 <br>Adding connection between Timguska and Novosibirsk

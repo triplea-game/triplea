@@ -3400,7 +3400,7 @@
 			activateTrigger						values: This will fire another named trigger. Format: "triggerName:numberOfTimes:useUses:testUses:testConditions:testChance". "activateTrigger" will be affected by "each" in a condition statement.
 														triggerName is the name of the trigger to fire, numberOfTimes is the number of times to fire that trigger, useUses makes sure the firing uses up a "use" at the end of this round, and the tests test the trigger before firing.
 														example: value="triggerAttachmentRussians5_FarEastReserves:1:false:false:false:false"
-			changeOwnership						values: This will change the ownership of the territory, either directly or by conquering the territory (there is a difference). Format is "territoryName:oldOwner:newOwner:booleanCaptured?".  territoryName can be "all", and oldOwner can be "any".
+			changeOwnership						values: This will change the ownership of the territory, either directly or by conquering the territory (there is a difference). Format is "territoryName:oldOwner:newOwner:booleanCaptured?".  territoryName can be "all", and oldOwner can be "any". Can have multiple instances.
 														examples: <option name="changeOwnership" value="South France:Germans:VichyFrench:false"/> or <option name="changeOwnership" value="all:Mongolians:Russians:true"/> or <option name="changeOwnership" value="Danzig:any:Germans:false"/>
 			
 		For the following, you are actually changing raw data in the engine by calling the setters in the same way the engine does when it parses the xml.  The following are not validated at all, so if you don't use them correctly you will probably cause the engine to crash mid-game.

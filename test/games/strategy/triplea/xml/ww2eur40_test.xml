@@ -3372,7 +3372,7 @@
 						<number min="0" max="1"/>
 				</property>
 
-				<property name="LHTR Heavy Bombers" value="false" editable="true">
+				<property name="LHTR Heavy Bombers" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -3964,8 +3964,8 @@ These changes to units are things other than price/movement which you can see in
 <br><br><hr><br>
 <br>Change Log:
 <br>
-<br>2.3
-<br>Fixing Russian nationa objective for sz125 so that it affects all units except transports.
+<br>2.4
+<br>Fixing Russian national objective for sz125 so that it affects all units except transports.
 <br>
 <br>2.3
 <br>Preventing Combat-Movement takeover of Friendly Neutrals. You must now wait for Non-Combat Movement phase to take over them.

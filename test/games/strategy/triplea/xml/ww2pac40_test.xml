@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Pacific Test" version="2.4"/>
+        <info name="World War II Pacific Test" version="2.5"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
         <map>
@@ -2518,7 +2518,7 @@
 						<number min="0" max="1"/>
 				</property>
 
-				<property name="LHTR Heavy Bombers" value="false" editable="true">
+				<property name="LHTR Heavy Bombers" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -3058,6 +3058,9 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>2.5
+<br>Added some missing art.
 <br>
 <br>2.4
 <br>Redid game notes to match other 1940 games.

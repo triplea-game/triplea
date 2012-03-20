@@ -217,6 +217,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		triggerPurchase(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
 		triggerUnitPlacement(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
 		triggerResourceChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		
+		// Activating other triggers, and trigger victory, should ALWAYS be LAST in this list!
 		triggerActivateTriggerOther(testedConditionsSoFar, triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen); // Triggers firing other triggers
 		
 		// Victory messages and recording of winners
