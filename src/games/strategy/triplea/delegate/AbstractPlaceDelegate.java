@@ -152,14 +152,15 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	 * 
 	 * @param t
 	 *            territory of interest
-	 * @return collection of units that are produced at territory t
+	 * @return a COPY of the collection of units that are produced at territory t
 	 */
 	private Collection<Unit> getAlreadyProduced(final Territory t)
 	{
-		if (m_produced.containsKey(t))
-			return m_produced.get(t);
 		// this list might be modified later
-		return new ArrayList<Unit>();
+		final Collection<Unit> rVal = new ArrayList<Unit>();
+		if (m_produced.containsKey(t))
+			rVal.addAll(m_produced.get(t));
+		return rVal;
 	}
 	
 	public int getPlacementsMade()
@@ -172,6 +173,10 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		m_produced = produced;
 	}
 	
+	/**
+	 * 
+	 * @return the actual m_produced variable, allowing direct editing of the variable.
+	 */
 	protected final Map<Territory, Collection<Unit>> getProduced()
 	{
 		return m_produced;
@@ -1283,6 +1288,16 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		m_produced.put(producer, newProducedUnits);
 	}
 	
+	private void removeFromProducedMap(final Territory producer, final Collection<Unit> unitsToRemove)
+	{
+		final Collection<Unit> newProducedUnits = getAlreadyProduced(producer);
+		newProducedUnits.removeAll(unitsToRemove);
+		if (newProducedUnits.isEmpty())
+			m_produced.remove(producer);
+		else
+			m_produced.put(producer, newProducedUnits);
+	}
+	
 	/**
 	 * frees the requested amount of capacity for the given producer by trying to hand over already made placements to other territories.
 	 * This only works if one of the placements is done for another territory, more specific for a sea zone.
@@ -1348,7 +1363,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 					{
 						// potentialNewProducerTerritory can take over complete production
 						placement.setProducerTerritory(potentialNewProducerTerritory);
-						getAlreadyProduced(producer).removeAll(placedUnits);
+						removeFromProducedMap(producer, placedUnits);
 						updateProducedMap(potentialNewProducerTerritory, placedUnits);
 						spaceAlreadyFree += placementSize;
 					}
