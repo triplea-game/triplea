@@ -32,6 +32,7 @@ import games.strategy.engine.history.Step;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.stats.IStat;
+import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -195,6 +196,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		menuGame.add(m_frame.getShowHistoryAction());
 		menuGame.add(m_frame.getShowMapOnlyAction());
 		addShowVerifiedDice(menuGame);
+		addSoundSwitchMenu(menuGame);
 		SoundOptions.addToMenu(menuGame);
 		menuGame.addSeparator();
 		addGameOptionsMenu(menuGame);
@@ -547,6 +549,20 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			}
 		};
 		menuGame.add(politicsAction);
+	}
+	
+	private void addSoundSwitchMenu(final JMenu parentMenu)
+	{
+		final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
+		soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
+		soundCheckBox.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(final ActionEvent e)
+				{
+					ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
+				}
+			});
+		parentMenu.add(soundCheckBox);
 	}
 	
 	private void addShowUnits(final JMenu parentMenu)

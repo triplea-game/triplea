@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.sound.sampled.AudioFormat;
@@ -66,7 +67,7 @@ public class ClipPlayer
 		m_beSilent = prefs.getBoolean(SOUND_PREFERENCE, true); // true until we get better sounds
 	}
 	
-	/*
+	/**
 	 * If set to true, no sounds will play.
 	 * 
 	 * This property is persisted using the java.util.prefs API, and will
@@ -74,12 +75,14 @@ public class ClipPlayer
 	 * 
 	 * @param aBool
 	 *            new value for m_beSilent
-	public void setBeSilent(final boolean aBool)
+	 */
+	public static void setBeSilent(final boolean aBool)
 	{
-		m_beSilent = aBool;
+		final ClipPlayer clipPlayer = getInstance();
+		clipPlayer.m_beSilent = aBool;
 		
-		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-		prefs.putBoolean(SOUND_PREFERENCE, m_beSilent);
+		final Preferences prefs = Preferences.userNodeForPackage(clipPlayer.getClass());
+		prefs.putBoolean(SOUND_PREFERENCE, clipPlayer.m_beSilent);
 		try
 		{
 			prefs.flush();
@@ -88,8 +91,13 @@ public class ClipPlayer
 			ex.printStackTrace();
 		}
 	}
-	 */
-
+	
+	public static boolean getBeSilent()
+	{
+		final ClipPlayer clipPlayer = getInstance();
+		return clipPlayer.m_beSilent;
+	}
+	
 	/*
 	 * @param aBool
 	 *            whether to mute or unmute all clips

@@ -74,10 +74,10 @@ public class SoundPath
 	public static ArrayList<IEditableProperty> getSoundOptions(final SoundType sounds)
 	{
 		final ArrayList<IEditableProperty> rVal = new ArrayList<IEditableProperty>();
-		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_START_GAME, "Game start"));
 		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_MESSAGE, "Messaging"));
 		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_SLAP, "Slapping"));
-		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_START_YOUR_TURN, "Action required"));
+		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_START_GAME, "Game Start"));
+		rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_START_YOUR_TURN, "Start Your Turn"));
 		switch (sounds)
 		{
 			case TRIPLEA:
