@@ -520,13 +520,18 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	
 	public String move(final Collection<Unit> units, final Route route)
 	{
-		return move(units, route, Collections.<Unit> emptyList());
+		return move(units, route, Collections.<Unit> emptyList(), new HashMap<Unit, Collection<Unit>>());
 	}
 	
 	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded)
 	{
+		return move(units, route, Collections.<Unit> emptyList(), new HashMap<Unit, Collection<Unit>>());
+	}
+	
+	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents)
+	{
 		final GameData data = getData();
-		final MoveValidationResult result = MoveValidator.validateMove(units, route, m_player, transportsThatCanBeLoaded, m_nonCombat, m_movesToUndo, data);
+		final MoveValidationResult result = MoveValidator.validateMove(units, route, m_player, transportsThatCanBeLoaded, newDependents, m_nonCombat, m_movesToUndo, data);
 		final StringBuilder errorMsg = new StringBuilder(100);
 		final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
 		final String numErrorsMsg = numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
@@ -567,7 +572,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		            isHariKari = true;
 		        }
 		    }
-		}        */
+		}*/
 		if (result.hasUnresolvedUnits())
 			return errorMsg.append(result.getUnresolvedUnitWarning(0)).append(numErrorsMsg).toString();
 		// allow user to cancel move if aa guns will fire
@@ -596,7 +601,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		m_bridge.getHistoryWriter().setRenderingData(currentMove.getDescriptionObject());
 		m_tempMovePerformer = new MovePerformer();
 		m_tempMovePerformer.initialize(this);
-		m_tempMovePerformer.moveUnits(units, route, m_player, transportsThatCanBeLoaded, currentMove);
+		m_tempMovePerformer.moveUnits(units, route, m_player, transportsThatCanBeLoaded, newDependents, currentMove);
 		m_tempMovePerformer = null;
 		return null;
 	}
@@ -994,11 +999,8 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	{
 		return IMoveDelegate.class;
 	}
+	
 	/*
-	 * never localy used
-
-
-	/**
 	 * Returns a list of the maximum number of each type of unit that can be loaded on the transports
 	 * If it can't succeed returns an empty Map.
 	 *

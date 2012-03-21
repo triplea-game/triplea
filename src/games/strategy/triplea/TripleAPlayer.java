@@ -241,7 +241,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			return;
 		}
 		final IMoveDelegate moveDel = (IMoveDelegate) m_bridge.getRemote();
-		final String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded());
+		final String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded(), moveDescription.getDependentUnits());
 		if (error != null)
 			m_ui.notifyError(error);
 		move(nonCombat);

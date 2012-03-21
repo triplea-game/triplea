@@ -51,6 +51,7 @@ public class MovePerformer implements Serializable
 	private AAInMoveUtil m_aaInMoveUtil;
 	private final ExecutionStack m_executionStack = new ExecutionStack();
 	private UndoableMove m_currentMove;
+	private Map<Unit, Collection<Unit>> m_newDependents;
 	
 	MovePerformer()
 	{
@@ -80,9 +81,11 @@ public class MovePerformer implements Serializable
 		return getRemotePlayer(m_player);
 	}
 	
-	void moveUnits(final Collection<Unit> units, final Route route, final PlayerID id, final Collection<Unit> transportsToLoad, final UndoableMove currentMove)
+	void moveUnits(final Collection<Unit> units, final Route route, final PlayerID id, final Collection<Unit> transportsToLoad, final Map<Unit, Collection<Unit>> newDependents,
+				final UndoableMove currentMove)
 	{
 		m_currentMove = currentMove;
+		m_newDependents = newDependents;
 		populateStack(units, route, id, transportsToLoad);
 		m_executionStack.execute(m_bridge);
 	}
@@ -302,7 +305,7 @@ public class MovePerformer implements Serializable
 		final boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports) && MoveValidator.allLandUnitsAreBeingParatroopered(arrived, route, m_player);
 		Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), m_bridge.getData());
 		if (dependentAirTransportableUnits.isEmpty())
-			dependentAirTransportableUnits = MovePanel.getDependents();
+			dependentAirTransportableUnits = m_newDependents;
 		// If paratroops moved normally (within their normal movement) remove their dependency to the airTransports
 		// So they can all continue to move normally
 		if (!paratroopsLanding && !dependentAirTransportableUnits.isEmpty())

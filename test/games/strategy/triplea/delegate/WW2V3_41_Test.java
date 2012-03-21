@@ -88,6 +88,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1057,7 +1058,7 @@ public class WW2V3_41_Test extends TestCase
 		final Route r = m_data.getMap().getRoute(france, territory("7 Sea Zone", m_data));
 		final Collection<Unit> paratroopers = france.getUnits().getMatches(Matches.UnitIsAirTransportable);
 		assertFalse(paratroopers.isEmpty());
-		final MoveValidationResult results = MoveValidator.validateMove(paratroopers, r, germans, Collections.<Unit> emptyList(), false, null, m_data);
+		final MoveValidationResult results = MoveValidator.validateMove(paratroopers, r, germans, Collections.<Unit> emptyList(), new HashMap<Unit, Collection<Unit>>(), false, null, m_data);
 		assertFalse(results.isMoveValid());
 	}
 	
@@ -1073,7 +1074,7 @@ public class WW2V3_41_Test extends TestCase
 		final Collection<Unit> toMove = germany.getUnits().getMatches(Matches.UnitCanBlitz);
 		toMove.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 		assertEquals(2, toMove.size());
-		final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.<Unit> emptyList(), false, null, m_data);
+		final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.<Unit> emptyList(), new HashMap<Unit, Collection<Unit>>(), false, null, m_data);
 		assertFalse(results.isMoveValid());
 	}
 	
@@ -1089,7 +1090,7 @@ public class WW2V3_41_Test extends TestCase
 		final Collection<Unit> toMove = germany.getUnits().getMatches(Matches.UnitCanBlitz);
 		toMove.addAll(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber));
 		assertEquals(2, toMove.size());
-		final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.<Unit> emptyList(), false, null, m_data);
+		final MoveValidationResult results = MoveValidator.validateMove(toMove, r, germans, Collections.<Unit> emptyList(), new HashMap<Unit, Collection<Unit>>(), false, null, m_data);
 		assertFalse(results.isMoveValid());
 	}
 	

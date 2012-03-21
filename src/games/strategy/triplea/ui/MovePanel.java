@@ -113,11 +113,15 @@ public class MovePanel extends AbstractMovePanel
 		m_currentCursorImage = null;
 	}
 	
-	public static Map<Unit, Collection<Unit>> getDependents()
+	// TODO: oh my fucking god this code is aweful. only the local computer has access to the UI. why the fuck did someone think they could do this?
+	// The host has no access to the client's UI, and therefore does not know what dependent units there are.
+	// TODO: rewrite this fucking garbage! None of this s_dependentUnits shit should be in the move panel!
+	private static Map<Unit, Collection<Unit>> getDependents()
 	{
 		return s_dependentUnits;
 	}
 	
+	// Same as above! Delete this crap after refactoring.
 	public static void clearDependents(final Collection<Unit> units)
 	{
 		for (final Unit unit : units)
@@ -127,6 +131,12 @@ public class MovePanel extends AbstractMovePanel
 				s_dependentUnits.remove(unit);
 			}
 		}
+	}
+	
+	@Override
+	protected void clearDependencies()
+	{
+		s_dependentUnits.clear();
 	}
 	
 	private PlayerID getUnitOwner(final Collection<Unit> units)
@@ -474,7 +484,7 @@ public class MovePanel extends AbstractMovePanel
 		getMap().hideMouseCursor();
 		// TODO kev check for already loaded airTransports
 		Collection<Unit> transportsToLoad = Collections.emptyList();
-		if (MoveValidator.isLoad(units, route, getData(), getCurrentPlayer()))
+		if (MoveValidator.isLoad(units, s_dependentUnits, route, getData(), getCurrentPlayer()))
 		{
 			transportsToLoad = route.getEnd().getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsTransport, Matches.alliedUnit(getCurrentPlayer(), getData())));
 		}
@@ -493,7 +503,7 @@ public class MovePanel extends AbstractMovePanel
 		getData().acquireReadLock();
 		try
 		{
-			allResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, getUndoableMoves(), getData());
+			allResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, s_dependentUnits, m_nonCombat, getUndoableMoves(), getData());
 		} finally
 		{
 			getData().releaseReadLock();
@@ -506,13 +516,13 @@ public class MovePanel extends AbstractMovePanel
 			{
 				best = Match.getMatches(best, Matches.UnitCanInvade);
 				bestWithDependents = addMustMoveWith(best);
-				lastResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, getUndoableMoves(), getData());
+				lastResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, s_dependentUnits, m_nonCombat, getUndoableMoves(), getData());
 			}
 			while (!best.isEmpty() && !lastResults.isMoveValid())
 			{
 				best = best.subList(1, best.size());
 				bestWithDependents = addMustMoveWith(best);
-				lastResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, m_nonCombat, getUndoableMoves(), getData());
+				lastResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, s_dependentUnits, m_nonCombat, getUndoableMoves(), getData());
 			}
 		}
 		if (allResults.isMoveValid())
@@ -610,7 +620,7 @@ public class MovePanel extends AbstractMovePanel
 			return Collections.emptyList();
 		final Collection<Unit> endOwnedUnits = route.getEnd().getUnits().getUnits();
 		final PlayerID unitOwner = getUnitOwner(unitsToLoad);
-		final MustMoveWithDetails endMustMoveWith = MoveValidator.getMustMoveWith(route.getEnd(), endOwnedUnits, getData(), unitOwner);
+		final MustMoveWithDetails endMustMoveWith = MoveValidator.getMustMoveWith(route.getEnd(), endOwnedUnits, s_dependentUnits, getData(), unitOwner);
 		int minTransportCost = s_defaultMinTransportCost;
 		for (final Unit unit : unitsToLoad)
 		{
@@ -959,7 +969,7 @@ public class MovePanel extends AbstractMovePanel
 						{
 							final Collection<Unit> loadedAirTransports = getLoadedAirTransports(route, unitsToLoad, airTransportsToLoad, player);
 							m_selectedUnits.addAll(loadedAirTransports);
-							final MoveDescription message = new MoveDescription(loadedAirTransports, route, airTransportsToLoad);
+							final MoveDescription message = new MoveDescription(loadedAirTransports, route, airTransportsToLoad, s_dependentUnits);
 							setMoveMessage(message);
 						}
 					}
@@ -1061,7 +1071,7 @@ public class MovePanel extends AbstractMovePanel
 						unitsColl.addAll(s_dependentUnits.get(airTransport));
 					}
 					s_dependentUnits.put(airTransport, unitsColl);
-					m_mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(), route.getStart().getUnits().getUnits(), getData(), player);
+					m_mustMoveWithDetails = MoveValidator.getMustMoveWith(route.getStart(), route.getStart().getUnits().getUnits(), s_dependentUnits, getData(), player);
 				}
 			}
 			return loadedUnits;
@@ -1284,7 +1294,7 @@ public class MovePanel extends AbstractMovePanel
 					return;
 				}
 			}
-			final MoveDescription message = new MoveDescription(units, route, transports);
+			final MoveDescription message = new MoveDescription(units, route, transports, s_dependentUnits);
 			setMoveMessage(message);
 			setFirstSelectedTerritory(null);
 			setSelectedEndpointTerritory(null);
@@ -1455,7 +1465,7 @@ public class MovePanel extends AbstractMovePanel
 		}
 		else
 		{
-			m_mustMoveWithDetails = MoveValidator.getMustMoveWith(firstSelectedTerritory, firstSelectedTerritory.getUnits().getUnits(), getData(), getCurrentPlayer());
+			m_mustMoveWithDetails = MoveValidator.getMustMoveWith(firstSelectedTerritory, firstSelectedTerritory.getUnits().getUnits(), s_dependentUnits, getData(), getCurrentPlayer());
 		}
 	}
 	

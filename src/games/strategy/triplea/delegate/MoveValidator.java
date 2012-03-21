@@ -37,7 +37,6 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.ui.MovePanel;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatch;
@@ -78,8 +77,8 @@ public class MoveValidator
 	public static final String LOST_BLITZ_ABILITY = "Unit lost blitz ability";
 	public static final String NOT_ALL_UNITS_CAN_BLITZ = "Not all units can blitz";
 	
-	public static MoveValidationResult validateMove(final Collection<Unit> units, final Route route, final PlayerID player, final Collection<Unit> transportsToLoad, final boolean isNonCombat,
-				final List<UndoableMove> undoableMoves, final GameData data)
+	public static MoveValidationResult validateMove(final Collection<Unit> units, final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,
+				final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat, final List<UndoableMove> undoableMoves, final GameData data)
 	{
 		final MoveValidationResult result = new MoveValidationResult();
 		if (route.hasNoSteps())
@@ -142,11 +141,11 @@ public class MoveValidator
 		}
 		if (validateNonEnemyUnitsOnPath(data, units, route, player, result).getError() != null)
 			return result;
-		if (validateBasic(isNonCombat, data, units, route, player, transportsToLoad, result).getError() != null)
+		if (validateBasic(isNonCombat, data, units, route, player, transportsToLoad, newDependents, result).getError() != null)
 			return result;
 		if (AirMovementValidator.validateAirCanLand(data, units, route, player, result).getError() != null)
 			return result;
-		if (validateTransport(isNonCombat, data, undoableMoves, units, route, player, transportsToLoad, result).getError() != null)
+		if (validateTransport(isNonCombat, data, undoableMoves, units, route, player, transportsToLoad, newDependents, result).getError() != null)
 			return result;
 		if (validateParatroops(isNonCombat, data, undoableMoves, units, route, player, result).getError() != null)
 			return result;
@@ -450,7 +449,7 @@ public class MoveValidator
 	}
 	
 	private static MoveValidationResult validateBasic(final boolean isNonCombat, final GameData data, final Collection<Unit> units, final Route route, final PlayerID player,
-				final Collection<Unit> transportsToLoad, final MoveValidationResult result)
+				final Collection<Unit> transportsToLoad, final Map<Unit, Collection<Unit>> newDependents, final MoveValidationResult result)
 	{
 		final boolean isEditMode = getEditMode(data);
 		if (units.size() == 0)
@@ -494,13 +493,14 @@ public class MoveValidator
 			int mechanizedSupportAvailable = getMechanizedSupportAvail(route, units, player);
 			final Map<Unit, Collection<Unit>> dependencies = getDependents(Match.getMatches(units, Matches.UnitCanTransport), data);
 			// add those just added
-			final Map<Unit, Collection<Unit>> justLoaded = MovePanel.getDependents();
-			if (!justLoaded.isEmpty())
+			// TODO: do not EVER user something from the UI in a validation method. Only the local computer (ie: client) has a copy of this UI data. The server has a different copy!!!!
+			// TODO: re-write the entire fucking Paratroopers code. It is garbage! We need a single all encompassing UI and engine for all the different types of transportation that exist.
+			if (!newDependents.isEmpty())
 			{
 				for (final Unit transport : dependencies.keySet())
 				{
 					if (dependencies.get(transport).isEmpty())
-						dependencies.put(transport, justLoaded.get(transport));
+						dependencies.put(transport, newDependents.get(transport));
 				}
 			}
 			// check units individually
@@ -843,9 +843,9 @@ public class MoveValidator
 	}
 	
 	// TODO KEV revise these to include paratroop load/unload
-	public static boolean isLoad(final Collection<Unit> units, final Route route, final GameData data, final PlayerID player)
+	public static boolean isLoad(final Collection<Unit> units, final Map<Unit, Collection<Unit>> newDependents, final Route route, final GameData data, final PlayerID player)
 	{
-		final Map<Unit, Collection<Unit>> alreadyLoaded = mustMoveWith(units, route.getStart(), data, player);
+		final Map<Unit, Collection<Unit>> alreadyLoaded = mustMoveWith(units, newDependents, route.getStart(), data, player);
 		if (route.hasNoSteps() && alreadyLoaded.isEmpty())
 			return false;
 		// See if we even need to go to the trouble of checking for AirTransported units
@@ -1081,7 +1081,7 @@ public class MoveValidator
 	}
 	
 	private static MoveValidationResult validateTransport(final boolean isNonCombat, final GameData data, final List<UndoableMove> undoableMoves, final Collection<Unit> units, final Route route,
-				final PlayerID player, final Collection<Unit> transportsToLoad, final MoveValidationResult result)
+				final PlayerID player, final Collection<Unit> transportsToLoad, final Map<Unit, Collection<Unit>> newDependents, final MoveValidationResult result)
 	{
 		final boolean isEditMode = getEditMode(data);
 		if (Match.allMatch(units, Matches.UnitIsAir))
@@ -1474,12 +1474,13 @@ public class MoveValidator
 		return null;
 	}
 	
-	public static MustMoveWithDetails getMustMoveWith(final Territory start, final Collection<Unit> units, final GameData data, final PlayerID player)
+	public static MustMoveWithDetails getMustMoveWith(final Territory start, final Collection<Unit> units, final Map<Unit, Collection<Unit>> newDependents, final GameData data, final PlayerID player)
 	{
-		return new MustMoveWithDetails(mustMoveWith(units, start, data, player));
+		return new MustMoveWithDetails(mustMoveWith(units, newDependents, start, data, player));
 	}
 	
-	private static Map<Unit, Collection<Unit>> mustMoveWith(final Collection<Unit> units, final Territory start, final GameData data, final PlayerID player)
+	private static Map<Unit, Collection<Unit>> mustMoveWith(final Collection<Unit> units, final Map<Unit, Collection<Unit>> newDependents, final Territory start, final GameData data,
+				final PlayerID player)
 	{
 		final List<Unit> sortedUnits = new ArrayList<Unit>(units);
 		Collections.sort(sortedUnits, UnitComparator.getIncreasingMovementComparator());
@@ -1499,12 +1500,12 @@ public class MoveValidator
 		}
 		if (mapping.isEmpty())
 		{
-			mapping.putAll(airTransportsMustMoveWith(sortedUnits));
+			mapping.putAll(airTransportsMustMoveWith(sortedUnits, newDependents));
 		}
 		else
 		{
 			final Map<Unit, Collection<Unit>> newMapping = new HashMap<Unit, Collection<Unit>>();
-			newMapping.putAll(airTransportsMustMoveWith(sortedUnits));
+			newMapping.putAll(airTransportsMustMoveWith(sortedUnits, newDependents));
 			if (!newMapping.isEmpty())
 				addToMapping(mapping, newMapping);
 		}
@@ -1544,12 +1545,12 @@ public class MoveValidator
 		return mustMoveWith;
 	}
 	
-	private static Map<Unit, Collection<Unit>> airTransportsMustMoveWith(final Collection<Unit> units)
+	private static Map<Unit, Collection<Unit>> airTransportsMustMoveWith(final Collection<Unit> units, final Map<Unit, Collection<Unit>> newDependents)
 	{
 		final TransportTracker transportTracker = new TransportTracker();
 		final Map<Unit, Collection<Unit>> mustMoveWith = new HashMap<Unit, Collection<Unit>>();
 		final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
-		Map<Unit, Collection<Unit>> selectedDependents = new HashMap<Unit, Collection<Unit>>();
+		/*Map<Unit, Collection<Unit>> selectedDependents = new HashMap<Unit, Collection<Unit>>();
 		// first, check if there are any that haven't been updated yet
 		for (final Unit airTransport : airTransports)
 		{
@@ -1558,7 +1559,7 @@ public class MoveValidator
 				final Collection<Unit> transporting = selectedDependents.get(airTransport);
 				mustMoveWith.put(airTransport, transporting);
 			}
-		}
+		}*/
 		// Then check those that have already had their transportedBy set
 		for (final Unit airTransport : airTransports)
 		{
@@ -1567,9 +1568,8 @@ public class MoveValidator
 				Collection<Unit> transporting = transportTracker.transporting(airTransport);
 				if (transporting == null || transporting.isEmpty())
 				{
-					selectedDependents = MovePanel.getDependents();
-					if (!selectedDependents.isEmpty())
-						transporting = selectedDependents.get(airTransport);
+					if (!newDependents.isEmpty())
+						transporting = newDependents.get(airTransport);
 				}
 				mustMoveWith.put(airTransport, transporting);
 			}

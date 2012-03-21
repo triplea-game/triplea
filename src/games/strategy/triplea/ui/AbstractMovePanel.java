@@ -279,6 +279,11 @@ public abstract class AbstractMovePanel extends ActionPanel
 	 */
 	abstract protected void setUpSpecific();
 	
+	protected void clearDependencies()
+	{
+		// used by some subclasses
+	}
+	
 	public final MoveDescription waitForMove(final IPlayerBridge bridge)
 	{
 		setUp(bridge);
@@ -286,6 +291,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 		cleanUp();
 		final MoveDescription rVal = m_moveMessage;
 		m_moveMessage = null;
+		clearDependencies();
 		return rVal;
 	}
 }

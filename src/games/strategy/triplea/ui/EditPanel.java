@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -96,7 +97,7 @@ public class EditPanel extends ActionPanel
 				setWidgetActivation();
 				final List<Unit> allUnits = new ArrayList<Unit>(m_selectedTerritory.getUnits().getUnits());
 				sortUnitsToRemove(allUnits, m_selectedTerritory);
-				final MustMoveWithDetails mustMoveWithDetails = MoveValidator.getMustMoveWith(m_selectedTerritory, allUnits, getData(), getCurrentPlayer());
+				final MustMoveWithDetails mustMoveWithDetails = MoveValidator.getMustMoveWith(m_selectedTerritory, allUnits, new HashMap<Unit, Collection<Unit>>(), getData(), getCurrentPlayer());
 				boolean mustChoose = false;
 				if (m_selectedUnits.containsAll(allUnits))
 				{

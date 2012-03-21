@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Temporary hack fix for bug where client computer can not use paratroopers at all, but hosts can. (veqryn)
+
 * Finalizing Alpha rules for test xml. (veqryn)
 
 * Improving in-game Help -> Movement/Selecting Help menu tips. (veqryn)
