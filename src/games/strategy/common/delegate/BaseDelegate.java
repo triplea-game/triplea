@@ -57,6 +57,8 @@ public abstract class BaseDelegate implements IDelegate
 	/**
 	 * Called before the delegate will run.
 	 * All classes should call super.start if they override this.
+	 * The only exception is that persistent delegates like Edit Delegate should not call super.start(),
+	 * because we do not want to fire triggers for the edit delegate.
 	 */
 	public void start(final IDelegateBridge bridge)
 	{
@@ -69,19 +71,11 @@ public abstract class BaseDelegate implements IDelegate
 		}
 	}
 	
-	public String getName()
-	{
-		return m_name;
-	}
-	
-	public String getDisplayName()
-	{
-		return m_displayName;
-	}
-	
 	/**
 	 * Called before the delegate will stop running.
 	 * All classes should call super.end if they override this.
+	 * The only exception is that persistent delegates like Edit Delegate should not call super.end(),
+	 * because we do not want to fire triggers for the edit delegate.
 	 */
 	public void end()
 	{
@@ -96,6 +90,16 @@ public abstract class BaseDelegate implements IDelegate
 		// but nothing goes into the end step, and therefore there is no way to save then have the end step repeat itself
 		m_startBaseStepsFinished = false;
 		m_endBaseStepsFinished = false;
+	}
+	
+	public String getName()
+	{
+		return m_name;
+	}
+	
+	public String getDisplayName()
+	{
+		return m_displayName;
 	}
 	
 	/**

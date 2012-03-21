@@ -43,19 +43,32 @@ import java.util.Collection;
  */
 public class EditDelegate extends BaseDelegate implements IEditDelegate
 {
+	
+	public void initialize(final String name)
+	{
+		initialize(name, name);
+	}
+	
 	/**
 	 * Called before the delegate will run.
 	 */
 	@Override
 	public void start(final IDelegateBridge bridge)
 	{
-		super.start(new TripleADelegateBridge(bridge));
+		// we do not want to do super.start() on this delegate because it is a persistent delegate
+		// the reason being that we do not want to do stuff like "triggerWhenTriggerAttachments", etc.
+		// super.start(new TripleADelegateBridge(bridge));
+		m_bridge = new TripleADelegateBridge(bridge);
+		m_player = bridge.getPlayerID();
 	}
 	
 	@Override
 	public void end()
 	{
-		super.end();
+		// we do not want to do super.end() on this delegate because it is a persistent delegate
+		// the reason being that we do not want to do stuff like "triggerWhenTriggerAttachments", etc.
+		// super.end();
+		// so, nothing to do here.
 	}
 	
 	@Override
@@ -101,11 +114,6 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 		if (!getEditMode(getData()))
 			return "Edit mode is not enabled";
 		return null;
-	}
-	
-	public void initialize(final String name)
-	{
-		initialize(name, name);
 	}
 	
 	public String setEditMode(final boolean editMode)
