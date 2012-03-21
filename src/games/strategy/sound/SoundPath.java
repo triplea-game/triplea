@@ -18,6 +18,7 @@ import games.strategy.engine.framework.GameRunner;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Contains the sound file names and the directory of all sound files.
@@ -35,10 +36,11 @@ public class SoundPath
 		GENERAL, TRIPLEA
 	}
 	
+	// MAKE SURE TO ADD NEW SOUNDS TO THE getAllSoundOptions() METHOD! (or else the user's preference will not be saved)
 	// standard sounds (files can be found in corresponding data/... folder to this package)
-	public static final String CLIP_START_GAME = "start_game.wav";
 	public static final String CLIP_MESSAGE = "message.wav";
 	public static final String CLIP_SLAP = "slap.wav";
+	public static final String CLIP_START_GAME = "start_game.wav";
 	public static final String CLIP_START_YOUR_TURN = "start_your_turn.wav";
 	// not used so far but in the folder
 	public static final String CLIP_ACTION_REQUIRED = "action_required.wav";
@@ -69,6 +71,25 @@ public class SoundPath
 				clipPlayer.preLoadClip(CLIP_BOMB);
 				break;
 		}
+	}
+	
+	public static HashSet<String> getAllSoundOptions()
+	{
+		final HashSet<String> rVal = new HashSet<String>();
+		rVal.add(CLIP_START_GAME);
+		rVal.add(CLIP_MESSAGE);
+		rVal.add(CLIP_SLAP);
+		rVal.add(CLIP_START_YOUR_TURN);
+		// rVal.add(CLIP_ACTION_REQUIRED);
+		// rVal.add(CLIP_BUTTON_CLICK);
+		// rVal.add(CLIP_PLOT_CLICK);
+		rVal.add(CLIP_BOMB);
+		// rVal.add(CLIP_ROCKET);
+		// rVal.add(CLIP_TECH);
+		// rVal.add(CLIP_NAVAL_BATTLE);
+		// rVal.add(CLIP_LAND_BATTLE);
+		// rVal.add(CLIP_CAPTURE);
+		return rVal;
 	}
 	
 	public static ArrayList<IEditableProperty> getSoundOptions(final SoundType sounds)

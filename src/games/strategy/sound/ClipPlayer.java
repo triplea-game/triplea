@@ -41,12 +41,13 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class ClipPlayer
 {
 	private static ClipPlayer s_clipPlayer;
-	private boolean m_beSilent = true; // true until we get better sounds
+	private boolean m_beSilent = false;
 	private final HashSet<String> m_mutedClips = new HashSet<String>();
 	private final HashMap<String, Clip> m_sounds = new HashMap<String, Clip>();
 	
 	// standard settings
-	private static final String SOUND_PREFERENCE = "beSilent2";
+	private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
+	private static final String SOUND_PREFERENCE_PREFIX = "sound_";
 	
 	public static synchronized ClipPlayer getInstance()
 	{
@@ -64,7 +65,19 @@ public class ClipPlayer
 	private ClipPlayer()
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-		m_beSilent = prefs.getBoolean(SOUND_PREFERENCE, true); // true until we get better sounds
+		m_beSilent = prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, false);
+		final HashSet<String> choices = SoundPath.getAllSoundOptions();
+		// until we get better sounds, all sounds start as muted, except for Slapping
+		choices.remove(SoundPath.CLIP_SLAP);
+		final boolean slapMuted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + SoundPath.CLIP_SLAP, false);
+		if (slapMuted)
+			m_mutedClips.add(SoundPath.CLIP_SLAP);
+		for (final String sound : choices)
+		{
+			final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, true); // true until we get better sounds
+			if (muted)
+				m_mutedClips.add(sound);
+		}
 	}
 	
 	/**
@@ -82,7 +95,7 @@ public class ClipPlayer
 		clipPlayer.m_beSilent = aBool;
 		
 		final Preferences prefs = Preferences.userNodeForPackage(clipPlayer.getClass());
-		prefs.putBoolean(SOUND_PREFERENCE, clipPlayer.m_beSilent);
+		prefs.putBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, clipPlayer.m_beSilent);
 		try
 		{
 			prefs.flush();
@@ -98,18 +111,21 @@ public class ClipPlayer
 		return clipPlayer.m_beSilent;
 	}
 	
-	/*
-	 * @param aBool
-	 *            whether to mute or unmute all clips
-	private void muteAllClips(boolean aBool)
+	// please avoid unnecessary calls of this
+	private void putSoundInPreferences(final String clip, final boolean isMuted)
 	{
-		if (aBool)
-			m_mutedClips.addAll(m_sounds.keySet());
-		else
-			m_mutedClips.clear();
+		final ClipPlayer clipPlayer = getInstance();
+		final Preferences prefs = Preferences.userNodeForPackage(clipPlayer.getClass());
+		prefs.putBoolean(SOUND_PREFERENCE_PREFIX + clip, isMuted);
+		try
+		{
+			prefs.flush();
+		} catch (final BackingStoreException ex)
+		{
+			ex.printStackTrace();
+		}
 	}
-	 */
-
+	
 	public ArrayList<IEditableProperty> getSoundOptions(final SoundPath.SoundType sounds)
 	{
 		return SoundPath.getSoundOptions(sounds);
@@ -122,10 +138,15 @@ public class ClipPlayer
 	
 	public void setMute(final String clipName, final boolean value)
 	{
+		// we want to avoid unnecessary calls to preferences
+		final boolean isCurrentCorrect = m_mutedClips.contains(clipName) == value;
+		if (isCurrentCorrect)
+			return;
 		if (value == true)
 			m_mutedClips.add(clipName);
 		else
 			m_mutedClips.remove(clipName);
+		putSoundInPreferences(clipName, value);
 	}
 	
 	/**
