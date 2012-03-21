@@ -25,6 +25,7 @@ import games.strategy.engine.message.RemoteName;
 import games.strategy.net.IMessenger;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
+import games.strategy.sound.SoundPath;
 import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
@@ -386,7 +387,7 @@ public class Chat
 					{
 						final String message = "You were slapped by " + from.getName();
 						m_chatHistory.add(new ChatMessage(message, from.getName(), false));
-						listener.addMessage(message, from.getName(), false);
+						listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_SLAP);
 					}
 				}
 				else if (from.equals(m_messengers.getChannelMessenger().getLocalNode()))
@@ -395,7 +396,7 @@ public class Chat
 					{
 						final String message = "You just slapped " + to;
 						m_chatHistory.add(new ChatMessage(message, from.getName(), false));
-						listener.addMessage(message, from.getName(), false);
+						listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_SLAP);
 					}
 				}
 			}

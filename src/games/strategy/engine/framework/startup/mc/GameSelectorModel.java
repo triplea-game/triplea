@@ -34,7 +34,13 @@ import javax.swing.JOptionPane;
 
 public class GameSelectorModel extends Observable
 {
-	public static final File DEFAULT_DIRECTORY = new File(GameRunner.getRootFolder(), "/games");
+	/**
+	 * Returns the name of the directory within a map's directory where the game xml is held.
+	 * Example: returns "games" which would be the games folder of "triplea/maps/someMapFooBar/games"
+	 */
+	public static final String DEFAULT_GAME_XML_DIRECTORY_NAME = "games";
+	/** Returns the folder where maps are held, example: "/maps" */
+	public static final File DEFAULT_MAP_DIRECTORY = new File(GameRunner.getRootFolder(), "/maps");
 	private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
 	private static final String DEFAULT_GAME_NAME = "Big World : 1942";
 	private GameData m_data;

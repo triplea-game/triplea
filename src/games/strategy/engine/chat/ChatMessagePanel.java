@@ -16,10 +16,10 @@ package games.strategy.engine.chat;
  * 
  * Created on January 14, 2002, 11:08 AM
  */
-import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.INode;
 import games.strategy.net.ServerMessenger;
-import games.strategy.triplea.sound.SoundPath;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -193,7 +193,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	{
 		return m_nextMessage.requestFocusInWindow();
 	}
-
+	
 	private void createComponents()
 	{
 		m_text = new JTextPane();
@@ -254,6 +254,12 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	/** thread safe */
 	public void addMessage(final String message, final String from, final boolean thirdperson)
 	{
+		addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_MESSAGE);
+	}
+	
+	/** thread safe */
+	public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound)
+	{
 		final Runnable runner = new Runnable()
 		{
 			public void run()
@@ -288,7 +294,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 						scrollModel.setValue(scrollModel.getMaximum());
 					}
 				});
-				ClipPlayer.getInstance().playClip(SoundPath.MESSAGE, SoundPath.class);
+				ClipPlayer.play(sound);
 			}
 		};
 		// invoke in the swing event thread

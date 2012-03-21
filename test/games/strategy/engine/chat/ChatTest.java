@@ -10,6 +10,7 @@ import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
 import games.strategy.net.ServerMessenger;
+import games.strategy.sound.SoundPath;
 import games.strategy.test.TestUtil;
 
 import java.io.IOException;
@@ -236,7 +237,7 @@ class TestChatListener implements IChatListener
 		}
 	}
 	
-	public void addMessage(final String message, final String from, final boolean thirdperson)
+	public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound)
 	{
 		synchronized (this)
 		{
@@ -244,6 +245,11 @@ class TestChatListener implements IChatListener
 			m_thirdPerson.add(thirdperson);
 			m_from.add(from);
 		}
+	}
+	
+	public void addMessage(final String message, final String from, final boolean thirdperson)
+	{
+		addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_MESSAGE);
 	}
 	
 	public void addStatusMessage(final String message)

@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Rewrote the framework for how sounds are loaded and played, in order to allow more flexible expansion of sound options. Moved sound files to separate user visible folder. (frigoref)
+
 * Temporary hack fix for bug where client computer can not use paratroopers at all, but hosts can. (veqryn)
 
 * Finalizing Alpha rules for test xml. (veqryn)

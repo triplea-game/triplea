@@ -31,8 +31,8 @@ import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
-import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.engine.stats.IStat;
+import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.EndRoundDelegate;
@@ -195,7 +195,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		menuGame.add(m_frame.getShowHistoryAction());
 		menuGame.add(m_frame.getShowMapOnlyAction());
 		addShowVerifiedDice(menuGame);
-		addEnableSound(menuGame);
+		SoundOptions.addToMenu(menuGame);
 		menuGame.addSeparator();
 		addGameOptionsMenu(menuGame);
 		addPoliticsMenu(menuGame);
@@ -513,7 +513,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			{
 				public void actionPerformed(final ActionEvent e)
 				{
-					final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), false);
+					final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties().getEditableProperties(), false);
 					JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
 				}
 			};
@@ -547,24 +547,6 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			}
 		};
 		menuGame.add(politicsAction);
-	}
-	
-	/**
-	 * @param parentMenu
-	 */
-	private void addEnableSound(final JMenu parentMenu)
-	{
-		final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
-		soundCheckBox.setSelected(!ClipPlayer.getInstance().getBeSilent());
-		// temporarily disable sound
-		soundCheckBox.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(final ActionEvent e)
-			{
-				ClipPlayer.getInstance().setBeSilent(!soundCheckBox.isSelected());
-			}
-		});
-		parentMenu.add(soundCheckBox);
 	}
 	
 	private void addShowUnits(final JMenu parentMenu)

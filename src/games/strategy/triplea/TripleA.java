@@ -30,10 +30,11 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.strongAI.StrongAI;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
@@ -147,6 +148,7 @@ public class TripleA implements IGameLoader
 					game.addDisplay(m_display);
 					frame.setSize(700, 400);
 					frame.setVisible(true);
+					ClipPlayer.play(SoundPath.CLIP_START_GAME);
 					connectPlayers(players, frame);
 					SwingUtilities.invokeLater(new Runnable()
 					{
@@ -177,7 +179,7 @@ public class TripleA implements IGameLoader
 		{
 			public void run()
 			{
-				SoundPath.preLoadSounds();
+				SoundPath.preLoadSounds(SoundPath.SoundType.TRIPLEA);
 			}
 		};
 		new Thread(loadSounds, "Triplea sound loader").start();

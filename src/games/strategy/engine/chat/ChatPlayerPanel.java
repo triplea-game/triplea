@@ -292,6 +292,10 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 			SwingUtilities.invokeLater(runner);
 	}
 	
+	public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound)
+	{
+	}
+	
 	public void addMessage(final String message, final String from, final boolean thirdperson)
 	{
 	}

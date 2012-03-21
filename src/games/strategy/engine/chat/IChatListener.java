@@ -15,5 +15,7 @@ public interface IChatListener
 	
 	public void addMessage(final String message, final String from, final boolean thirdperson);
 	
+	public void addMessageWithSound(final String message, final String from, final boolean thirdperson, final String sound);
+	
 	public void addStatusMessage(final String message);
 }

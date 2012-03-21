@@ -145,6 +145,10 @@
 		</exec>
 
 		<exec executable="cp">
+			<arg line="-r sounds ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
 			<arg line="-r license ${app.file}/Contents/Resources/" />
 		</exec>
 
@@ -346,6 +350,10 @@
 				<include name="**/*.*" />
 			</zipfileset>
 
+			<zipfileset dir="sounds/" prefix="triplea_${triplea.version}/sounds/">
+				<include name="**/*.*" />
+			</zipfileset>
+
 			<zipfileset dir="maps/" prefix="triplea_${triplea.version}/maps/">
 				<include name="**/*.*" />
 			</zipfileset>
@@ -521,8 +529,11 @@
 				<include name="*.properties" />
 			</zipfileset>
 
-
 			<zipfileset dir="images/" prefix="triplea_${triplea.version}/images/">
+				<include name="**/*.*" />
+			</zipfileset>
+
+			<zipfileset dir="sounds/" prefix="triplea_${triplea.version}/sounds/">
 				<include name="**/*.*" />
 			</zipfileset>
 

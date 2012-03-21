@@ -17,8 +17,9 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.sound.ClipPlayer;
 import games.strategy.net.GUID;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
@@ -30,7 +31,6 @@ import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.image.UnitImageFactory;
-import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitOwner;
 import games.strategy.triplea.util.UnitSeperator;
@@ -188,9 +188,7 @@ public class BattleDisplay extends JPanel
 	
 	public void bombingResults(final int[] dice, final int cost)
 	{
-		// TODO Kev here's how to call the sound clip player
-		ClipPlayer.getInstance().playClip(SoundPath.BOMB, SoundPath.class); // play
-		// sound
+		ClipPlayer.play(SoundPath.CLIP_BOMB); // play sound
 		m_dicePanel.setDiceRollForBombing(dice, cost);
 		m_actionLayout.show(m_actionPanel, DICE_KEY);
 	}

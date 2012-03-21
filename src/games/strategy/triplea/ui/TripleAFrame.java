@@ -50,7 +50,8 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
-import games.strategy.engine.sound.ClipPlayer;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -67,7 +68,6 @@ import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.TileImageFactory;
-import games.strategy.triplea.sound.SoundPath;
 import games.strategy.triplea.ui.history.HistoryDetailsPanel;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.triplea.ui.history.HistoryPanel;
@@ -1281,7 +1281,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		else if (player != null && !player.isNull() && playing(player) && m_inHistory)
 		{
 			showGame();
-			ClipPlayer.getInstance().playClip(SoundPath.START_TURN, SoundPath.class); // play sound
+			ClipPlayer.play(SoundPath.CLIP_START_YOUR_TURN); // play sound
 		}
 	}
 	
