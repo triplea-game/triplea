@@ -132,10 +132,10 @@ public class NonFightingBattle extends AbstractBattle
 		lost = Match.getMatches(lost, Matches.unitIsInTerritory(m_battleSite));
 		if (lost.size() != 0)
 		{
-			final Change change = ChangeFactory.removeUnits(m_battleSite, lost);
-			bridge.addChange(change);
 			final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
 			bridge.getHistoryWriter().startEvent(transcriptText);
+			final Change change = ChangeFactory.removeUnits(m_battleSite, lost);
+			bridge.addChange(change);
 		}
 	}
 }

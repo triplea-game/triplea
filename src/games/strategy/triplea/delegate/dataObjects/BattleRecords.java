@@ -66,6 +66,19 @@ public class BattleRecords implements Serializable
 		}
 	}
 	
+	public static Collection<BattleRecord> getAllRecords(final BattleRecords brs)
+	{
+		final Collection<BattleRecord> records = new ArrayList<BattleRecord>();
+		for (final HashMap<GUID, BattleRecord> playerMap : brs.m_records.values())
+		{
+			for (final BattleRecord r : playerMap.values())
+			{
+				records.add(r);
+			}
+		}
+		return records;
+	}
+	
 	public static Collection<BattleRecord> getRecordsForPlayerID(final PlayerID player, final BattleRecords brs)
 	{
 		final Collection<BattleRecord> playerRecords = new ArrayList<BattleRecord>();
@@ -106,6 +119,26 @@ public class BattleRecords implements Serializable
 				totalLostTUV += br.getDefenderLostTUV();
 		}
 		return totalLostTUV;
+	}
+	
+	public static boolean getWereThereBattlesInTerritoriesMatching(final Collection<BattleRecord> brs, final PlayerID attacker, final PlayerID defender, final String battleType,
+				final Collection<Territory> anyOfTheseTerritories)
+	{
+		for (final BattleRecord br : brs)
+		{
+			if (anyOfTheseTerritories.contains(br.getBattleSite()))
+			{
+				if (attacker != null && !attacker.equals(br.getAttacker()))
+					continue;
+				if (defender != null && !defender.equals(br.getDefender()))
+					continue;
+				if (!battleType.equalsIgnoreCase("any"))
+					continue;
+				return true;
+				// TODO: do more types.... (maybe make a much better enum class that covers both WhoWon and BattleResultDescription in a single enum with multiple variables for each enum to cover the different tiers of detail (ie: won/lost/draw vs conquer/blitz/etc.)
+			}
+		}
+		return false;
 	}
 	
 	public void removeBattle(final PlayerID currentPlayer, final GUID battleID)

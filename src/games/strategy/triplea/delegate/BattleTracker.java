@@ -38,6 +38,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords.BattleResultDescription;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CompositeMatch;
@@ -141,6 +142,17 @@ public class BattleTracker implements java.io.Serializable
 	public boolean wasBattleFought(final Territory t)
 	{
 		return m_foughBattles.contains(t);
+	}
+	
+	void clearFinishedBattles(final IDelegateBridge bridge)
+	{
+		for (final IBattle battle : new ArrayList<IBattle>(m_pendingBattles))
+		{
+			if (FinishedBattle.class.isAssignableFrom(battle.getClass()))
+			{
+				((FinishedBattle) battle).fight(bridge);
+			}
+		}
 	}
 	
 	public void undoBattle(final Route route, final Collection<Unit> units, final PlayerID player, final IDelegateBridge bridge)
@@ -296,7 +308,7 @@ public class BattleTracker implements java.io.Serializable
 					Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data)));
 		final Collection<Territory> conquered = route.getMatches(conquerable);
 		// in case we begin in enemy territory, and blitz out of it, check the first territory
-		if (route.getStart() != route.getEnd() && Matches.territoryIsEmptyOfCombatUnits(data, id).match(route.getStart()))
+		if (route.getStart() != route.getEnd() && conquerable.match(route.getStart()))
 			conquered.add(route.getStart());
 		// we handle the end of the route later
 		conquered.remove(route.getEnd());
@@ -305,6 +317,15 @@ public class BattleTracker implements java.io.Serializable
 		m_conquered.addAll(Match.getMatches(conquered, Matches.isTerritoryEnemy(id, data)));
 		for (final Territory current : conquered)
 		{
+			IBattle nonFight = getPendingBattle(current, false);
+			if (nonFight == null)
+			{
+				nonFight = new FinishedBattle(current, id, this, false, BattleType.NORMAL, data, BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
+				m_pendingBattles.add(nonFight);
+				m_battleRecords.addBattle(id, nonFight.getBattleID(), current, nonFight.getBattleType());
+				// nonFight.fight(bridge);
+				// m_battleRecords.addResultToBattle(id, nonFight.getBattleID(), AbstractBattle.findDefender(current, id, data), 0, 0, nonFight.getBattleResultDescription(), new BattleResults(nonFight), 0);
+			}
 			takeOver(current, id, bridge, changeTracker, units);
 		}
 		// check the last territory
@@ -324,6 +345,13 @@ public class BattleTracker implements java.io.Serializable
 						m_blitzed.add(route.getEnd());
 					}
 					m_conquered.add(route.getEnd());
+				}
+				IBattle nonFight = getPendingBattle(route.getEnd(), false);
+				if (nonFight == null)
+				{
+					nonFight = new FinishedBattle(route.getEnd(), id, this, false, BattleType.NORMAL, data, BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
+					m_pendingBattles.add(nonFight);
+					m_battleRecords.addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType());
 				}
 				takeOver(route.getEnd(), id, bridge, changeTracker, units);
 			}
@@ -345,6 +373,7 @@ public class BattleTracker implements java.io.Serializable
 				addDependency(nonFight, precede);
 			}
 		}
+		// TODO: else what?
 	}
 	
 	public void takeOver(final Territory territory, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker, final Collection<Unit> arrivingUnits)
@@ -914,7 +943,7 @@ public class BattleTracker implements java.io.Serializable
 	
 	public void sendBattleRecordsToGameData(final IDelegateBridge aBridge)
 	{
-		if (!m_battleRecords.isEmpty())
+		if (m_battleRecords != null && !m_battleRecords.isEmpty())
 		{
 			aBridge.getHistoryWriter().startEvent("Recording Battle Statistics");
 			aBridge.addChange(ChangeFactory.addBattleRecords((new BattleRecords(m_battleRecords)), aBridge.getData()));

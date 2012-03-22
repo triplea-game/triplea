@@ -3943,8 +3943,7 @@
                 	<option name="turns" value="1-+"/>
 				</attatchment>
                 <attatchment name="conditionAttachment_Russians_Conquer_Japanese_Territory_By_Mongolia" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="directOwnershipTerritories" value="Manchuria:Jehol" count="1"/>
-					<!-- TODO: include the conquering of Japanese owned Chinese territories by mongolia in the trigger for 'never having mongolia switch control to russia' -->
+                	<option name="battle" value="Russians:Japanese:any:currentRound:Manchuria:Jehol:Chahar:Suiyuyan:Kansu"/>
                 </attatchment>
                 <attatchment name="conditionAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="directOwnershipTerritories" value="Timguska:Yenisey:Yakut S.S.R.:Buryatia:Amur" count="1"/>
@@ -6274,7 +6273,6 @@ When not yet at war, you may ask for permission to move through a canal, and if 
 * UK Pacific may for part or all of any Tech Tokens purchased by the British.<br>
 * Tactical Bombers may only target Airfields and Harbours for strategic bombing, and may not target any factories.<br>
 * Do not allow USA movement to end in Sea Zones 17, 22, 32, 33, 34, and 37.<br>
-* If Russia attacks a Japanese owned territory bordering any Mongolian territory, then Mongolia will never switch to become Russian if Japan takes a Russian territory bordering Mongolia after this.<br>
 <br><br>
 <br><hr><br>
 

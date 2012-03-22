@@ -105,4 +105,48 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		}
 		return damageCausedByAttacker;
 	}
+	
+	/**
+	 * Determines if there were any battles that match the following criteria:
+	 * 
+	 * @param attacker
+	 *            if null then any player
+	 * @param defender
+	 *            if null then any player
+	 * @param battleType
+	 * @param anyOfTheseTerritories
+	 * @param brl
+	 * @param beginningRound
+	 * @param endRound
+	 * @param currentRoundOnly
+	 * @return
+	 */
+	public static boolean getWereThereBattlesInTerritoriesMatching(final PlayerID attacker, final PlayerID defender, final String battleType, final Collection<Territory> anyOfTheseTerritories,
+				final BattleRecordsList brl, final int beginningRound, final int endRound, final boolean currentRoundOnly)
+	{
+		final Collection<BattleRecords> brs = new ArrayList<BattleRecords>();
+		if (currentRoundOnly)
+		{
+			if (brl != null && brl.getCurrentRound() != null)
+				brs.add(brl.getCurrentRound());
+		}
+		else
+		{
+			final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMap();
+			for (int i = beginningRound; i > endRound; i++)
+			{
+				final BattleRecords currentRecords = currentList.get(i);
+				if (currentRecords != null)
+					brs.add(currentRecords);
+			}
+		}
+		// null for attacker means any attacker
+		for (final BattleRecords br : brs)
+		{
+			if (BattleRecords.getWereThereBattlesInTerritoriesMatching((attacker == null ? BattleRecords.getAllRecords(br) : BattleRecords.getRecordsForPlayerID(attacker, br)), attacker, defender,
+						battleType, anyOfTheseTerritories))
+				return true;
+		}
+		return false;
+	}
 }

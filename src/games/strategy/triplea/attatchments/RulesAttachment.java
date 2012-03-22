@@ -21,6 +21,7 @@ package games.strategy.triplea.attatchments;
 import games.strategy.engine.data.Attachable;
 import games.strategy.engine.data.BattleRecordsList;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.data.PlayerID;
@@ -41,6 +42,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,6 +71,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	@InternalDoNotExport
 	private int m_atWarCount = -1; // Do Not Export (do not include in IAttachment).
 	private String m_destroyedTUV = null; // condition for having destroyed at least X enemy non-neutral TUV (total unit value) [according to the prices the defender pays for the units]
+	private ArrayList<Tuple<String, ArrayList<Territory>>> m_battle = new ArrayList<Tuple<String, ArrayList<Territory>>>(); // condition for having had a battle in some territory, attacker or defender, win or lost, etc.
 	
 	// these next 9 variables use m_territoryCount for determining the number needed.
 	private String[] m_alliedOwnershipTerritories; // ownership related
@@ -155,6 +158,66 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	public String getDestroyedTUV()
 	{
 		return m_destroyedTUV;
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setBattle(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length < 5)
+			throw new GameParseException("battle must have at least 5 fields, attacker:defender:resultType:round:territory1..." + thisErrorMsg());
+		final PlayerID attacker = getData().getPlayerList().getPlayerID(s[0]);
+		if (attacker == null && !s[0].equalsIgnoreCase("any"))
+			throw new GameParseException("no player named: " + s[0] + thisErrorMsg());
+		final PlayerID defender = getData().getPlayerList().getPlayerID(s[1]);
+		if (defender == null && !s[1].equalsIgnoreCase("any"))
+			throw new GameParseException("no player named: " + s[1] + thisErrorMsg());
+		if (!s[2].equalsIgnoreCase("any"))
+			throw new GameParseException("battle allows the following for resultType: any" + thisErrorMsg());
+		if (!s[3].equalsIgnoreCase("currentRound"))
+		{
+			try
+			{
+				getInt(s[3].split("-")[0]);
+				getInt(s[3].split("-")[1]);
+			} catch (final Exception e)
+			{
+				throw new GameParseException("round must either be currentRound or two numbers like: 2-4" + thisErrorMsg());
+			}
+		}
+		final ArrayList<Territory> terrs = new ArrayList<Territory>();
+		final GameMap map = getData().getMap();
+		// this loop starts on 4, so do not replace with an enhanced for loop
+		for (int i = 4; i < s.length; i++)
+		{
+			final Territory t = map.getTerritory(s[i]);
+			if (t == null)
+				throw new GameParseException("no such territory called: " + s[i] + thisErrorMsg());
+			terrs.add(t);
+		}
+		m_battle.add(new Tuple<String, ArrayList<Territory>>((s[0] + ":" + s[1] + ":" + s[2] + ":" + s[3]), terrs));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setBattle(final ArrayList<Tuple<String, ArrayList<Territory>>> value)
+	{
+		m_battle = value;
+	}
+	
+	public ArrayList<Tuple<String, ArrayList<Territory>>> getBattle()
+	{
+		return m_battle;
+	}
+	
+	public void clearBattle()
+	{
+		m_battle.clear();
 	}
 	
 	/**
@@ -801,6 +864,33 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 					objectiveMet = false;
 				if (getCountEach())
 					m_eachMultiple = destroyedTUVforThisRoundSoFar;
+			}
+		}
+		// check for battles
+		if (objectiveMet && !m_battle.isEmpty())
+		{
+			final BattleRecordsList brl = data.getBattleRecordsList();
+			final int round = data.getSequence().getRound();
+			for (final Tuple<String, ArrayList<Territory>> entry : m_battle)
+			{
+				final String[] type = entry.getFirst().split(":");
+				// they could be "any", and if they are "any" then this would be null, which is good!
+				final PlayerID attacker = data.getPlayerList().getPlayerID(type[0]);
+				final PlayerID defender = data.getPlayerList().getPlayerID(type[1]);
+				final String resultType = type[2];
+				final String roundType = type[3];
+				int start = 0;
+				int end = round;
+				final boolean currentRound = roundType.equalsIgnoreCase("currentRound");
+				if (!currentRound)
+				{
+					final String[] rounds = roundType.split("-");
+					start = getInt(rounds[0]);
+					end = getInt(rounds[1]);
+				}
+				objectiveMet = BattleRecordsList.getWereThereBattlesInTerritoriesMatching(attacker, defender, resultType, entry.getSecond(), brl, start, end, currentRound);
+				if (!objectiveMet)
+					break;
 			}
 		}
 		

@@ -25,6 +25,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords.BattleResultDescription;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -202,6 +203,8 @@ public interface IBattle extends java.io.Serializable
 	public List<Unit> getRemainingDefendingUnits();
 	
 	public WhoWon getWhoWon();
+	
+	public BattleResultDescription getBattleResultDescription();
 	
 	public PlayerID getAttacker();
 	

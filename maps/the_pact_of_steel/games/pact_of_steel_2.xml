@@ -2928,6 +2928,9 @@
 			turns								values: which turns this will be checked on (example: value="1:4:6-8:11-+" means turns 1,4,6,7,8,11,and all turns after 11)
 			relationship						values: a relationship that needs to be present in the game: "player1:player2:relationship" (will set #rounds to -1 by default) OR "player1:player2:relationship:numberOfRoundsThisRelationshipMustExistForMinimum"
 														for example: "Japan:China:War" or "Japan:China:War:-1" or "Japan:China:War:3".  It will accept "anyWar", "anyNeutral" and "anyAllied" as well.
+			battle								values: checks if there has been a battle in the territory. Format is "attacker:defender:battleType:rounds:territory1", where attacker, defender, and battleType can all be "any", and rounds can be "currentRound". 
+														Territories can be any number of territories, and if more than one territory is listed then if any of them are true, it will return true.  You can also have multiple instances.
+														example: <option name="battle" value="any:Japanese:any:2-3:Manchuria"/> or <option name="battle" value="Russians:Japanese:any:currentRound:Manchuria:Jehol:Chahar:Suiyuyan:Kansu"/>
 			
 			count								values: the number required to satisfy a rule. if missing, it defaults to ALL (unless specified). it can also be set to "each", which will act as "1" for the purposes of being a condition, but will multiply the bonus (do not use multiple options if you are using each).
 		the below options use count:
@@ -3490,6 +3493,7 @@
 					unitPresence
 					relationship
 					players
+					battle
 				
 				Rules Attachments:
 					productionPerXTerritories

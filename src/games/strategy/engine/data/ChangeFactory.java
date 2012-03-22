@@ -1393,7 +1393,9 @@ class AddBattleRecordsChange extends Change
 	@Override
 	public String toString()
 	{
-		return "New Battle Record: [" + m_newRecords.toString() + "] and Old Battle Record: [" + m_oldRecords.toString() + "]";
+		if (m_newRecords == null || m_oldRecords == null)
+			throw new IllegalStateException(m_newRecords + " and " + m_oldRecords); // TODO: remove after debugging why the hell we are getting this
+		return "New Battle Record: [" + (m_newRecords == null ? "null" : m_newRecords.toString()) + "] and Old Battle Record: [" + (m_oldRecords == null ? "null" : m_oldRecords.toString()) + "]";
 	}
 }
 
