@@ -33,14 +33,17 @@ public class BattleRecords implements Serializable
 	 * AIR_BATTLE_WON = Won an Air Battle with units surviving <br>
 	 * AIR_BATTLE_LOST = Lost an Air Battle with enemy units surviving <br>
 	 * AIR_BATTLE_STALEMATE = Neither side has air units left <br>
+	 * NO_BATTLE = No battle was fought, possibly because the territory you were about to bomb was conquered before the bombing could begin, etc.<br>
 	 * 
 	 * @author veqryn
 	 * 
 	 */
 	public enum BattleResultDescription
 	{
-		BLITZED, CONQUERED, WON_WITHOUT_CONQUERING, WON_WITH_ENEMY_LEFT, STALEMATE, LOST, BOMBED, AIR_BATTLE_WON, AIR_BATTLE_LOST, AIR_BATTLE_STALEMATE
+		BLITZED, CONQUERED, WON_WITHOUT_CONQUERING, WON_WITH_ENEMY_LEFT, STALEMATE, LOST, BOMBED, AIR_BATTLE_WON, AIR_BATTLE_LOST, AIR_BATTLE_STALEMATE, NO_BATTLE
 	}
+	
+	private static final long serialVersionUID = 1473664374777905497L;
 	
 	private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records = new HashMap<PlayerID, HashMap<GUID, BattleRecord>>();
 	
@@ -129,18 +132,18 @@ public class BattleRecords implements Serializable
 		}
 	}
 	
-	public void addBattle(final PlayerID currentPlayer, final GUID battleID, final Territory battleSite, final BattleType battleType)
+	public void addBattle(final PlayerID currentPlayerAndAttacker, final GUID battleID, final Territory battleSite, final BattleType battleType)
 	{
-		HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
+		HashMap<GUID, BattleRecord> current = m_records.get(currentPlayerAndAttacker);
 		if (current == null)
 			current = new HashMap<GUID, BattleRecord>();
-		final BattleRecord initial = new BattleRecord(battleSite, currentPlayer, battleType);
+		final BattleRecord initial = new BattleRecord(battleSite, currentPlayerAndAttacker, battleType);
 		current.put(battleID, initial);
-		m_records.put(currentPlayer, current);
+		m_records.put(currentPlayerAndAttacker, current);
 	}
 	
 	public void addResultToBattle(final PlayerID currentPlayer, final GUID battleID, final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
-				final BattleResultDescription battleResultDescription, final int bombingDamage)
+				final BattleResultDescription battleResultDescription, final BattleResults battleResults, final int bombingDamage)
 	{
 		final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
 		if (current == null)
@@ -148,7 +151,7 @@ public class BattleRecords implements Serializable
 		if (!current.containsKey(battleID))
 			throw new IllegalStateException("Trying to add info to a battle that does not exist");
 		final BattleRecord record = current.get(battleID);
-		record.setResult(defender, attackerLostTUV, defenderLostTUV, battleResultDescription, null, bombingDamage);
+		record.setResult(defender, attackerLostTUV, defenderLostTUV, battleResultDescription, battleResults, bombingDamage);
 	}
 	
 	public void clear()
@@ -190,6 +193,7 @@ public class BattleRecords implements Serializable
 
 class BattleRecord implements Serializable
 {
+	private static final long serialVersionUID = 3642216371483289106L;
 	private Territory m_battleSite;
 	private PlayerID m_attacker;
 	private PlayerID m_defender;

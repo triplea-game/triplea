@@ -36,10 +36,12 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.delegate.remote.IBattleDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.CompositeMatch;
@@ -404,7 +406,9 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			if (battle != null && (ignoreTransports && Match.allMatch(attackingUnits, seaTransports) && Match.allMatch(enemyUnits, seaTransports))
 						|| ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert())))
 			{
-				m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.STALEMATE, 0);
+				final BattleResults results = new BattleResults(battle);
+				results.setWhoWon(WhoWon.DRAW);
+				m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.STALEMATE, results, 0);
 				m_battleTracker.removeBattle(battle);
 				continue;
 			}
@@ -418,8 +422,10 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				{
 					if (!remotePlayer.selectAttackTransports(territory))
 					{
+						final BattleResults results = new BattleResults(battle);
+						results.setWhoWon(WhoWon.ATTACKER);
+						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT, results, 0);
 						m_battleTracker.removeBattle(battle);
-						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT, 0);
 						// TODO perhaps try to reverse the setting of 0 movement left
 						/*CompositeChange change = new CompositeChange();
 						Iterator<Unit> attackIter = attackingUnits.iterator();
@@ -437,8 +443,10 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				{
 					if (!remotePlayer.selectAttackSubs(territory))
 					{
+						final BattleResults results = new BattleResults(battle);
+						results.setWhoWon(WhoWon.ATTACKER);
+						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT, results, 0);
 						m_battleTracker.removeBattle(battle);
-						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT, 0);
 					}
 					continue;
 				}
@@ -447,8 +455,10 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				{
 					if (!remotePlayer.selectAttackUnits(territory))
 					{
+						final BattleResults results = new BattleResults(battle);
+						results.setWhoWon(WhoWon.ATTACKER);
+						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT, results, 0);
 						m_battleTracker.removeBattle(battle);
-						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT, 0);
 					}
 					continue;
 				}

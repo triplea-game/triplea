@@ -36,8 +36,8 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -62,7 +62,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	private final static String FIRE_AA = "Fire AA";
 	
 	protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<Unit, HashSet<Unit>>(); // these would be the factories or other targets. does not include aa.
-	protected final PlayerID m_defender;
 	protected final ExecutionStack m_stack = new ExecutionStack();
 	protected List<String> m_steps;
 	protected List<Unit> m_defendingAA;
@@ -85,10 +84,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	 * @param battleTracker
 	 *            - BattleTracker
 	 **/
-	public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final PlayerID defender, final BattleTracker battleTracker)
+	public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final BattleTracker battleTracker)
 	{
 		super(battleSite, attacker, battleTracker, true, BattleType.BOMBING_RAID, data);
-		m_defender = defender;
 		m_isAmphibious = false;
 		
 		// fill in defenders
@@ -118,15 +116,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		return targets;
 	}*/
 
-	/**
-	 * @param bridge
-	 * @return
-	 */
-	protected ITripleaDisplay getDisplay(final IDelegateBridge bridge)
-	{
-		return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
-	}
-	
 	@Override
 	public boolean isEmpty()
 	{
@@ -189,6 +178,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			m_stack.execute(bridge);
 			return;
 		}
+		final StrategicBombingRaidBattle thisBattle = this;
 		bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite);
 		bridge.getHistoryWriter().setRenderingData(m_battleSite);
 		BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
@@ -280,19 +270,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				if (isSBRAffectsUnitProduction())
-					getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidTotal + " production.");
-				else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
-					getDisplay(bridge).battleEnd(m_battleID, "Raid causes " + m_bombingRaidTotal + " damage total." +
-								(m_bombingRaidDamage.size() > 1 ? (" To units: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage)) : ""));
-				else
-					getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
-				if (m_bombingRaidTotal > 0)
-					m_battleResult = BattleRecords.BattleResultDescription.BOMBED;
-				else
-					m_battleResult = BattleRecords.BattleResultDescription.LOST;
-				m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, m_bombingRaidTotal);
-				m_isOver = true;
+				end(bridge);
 			}
 		});
 		Collections.reverse(steps);
@@ -303,10 +281,28 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		m_stack.execute(bridge);
 	}
 	
+	private void end(final IDelegateBridge bridge)
+	{
+		if (isSBRAffectsUnitProduction())
+			getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidTotal + " production.");
+		else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
+			getDisplay(bridge).battleEnd(m_battleID, "Raid causes " + m_bombingRaidTotal + " damage total." +
+						(m_bombingRaidDamage.size() > 1 ? (" To units: " + MyFormatter.integerUnitMapToString(m_bombingRaidDamage)) : ""));
+		else
+			getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
+		if (m_bombingRaidTotal > 0)
+			m_battleResultDescription = BattleRecords.BattleResultDescription.BOMBED;
+		else
+			m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
+		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this),
+					m_bombingRaidTotal);
+		m_isOver = true;
+	}
+	
 	private void showBattle(final IDelegateBridge bridge)
 	{
 		final String title = "Bombing raid in " + m_battleSite.getName();
-		getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, getDefendingUnits(),
+		getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, m_defendingUnits,
 					null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender, getBattleType());
 		getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
 	}
@@ -395,11 +391,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	private boolean isLimitSBRDamagePerTurn(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getLimitSBRDamagePerTurn(data);
-	}
-	
-	private ITripleaPlayer getRemote(final IDelegateBridge bridge)
-	{
-		return (ITripleaPlayer) bridge.getRemote();
 	}
 	
 	private boolean isPUCap(final GameData data)

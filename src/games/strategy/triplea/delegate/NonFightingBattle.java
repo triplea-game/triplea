@@ -28,6 +28,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
@@ -77,18 +78,17 @@ public class NonFightingBattle extends AbstractBattle
 			throw new IllegalStateException("Must fight battles that this battle depends on first");
 		// if any attacking non air units then win
 		final boolean someAttacking = hasAttackingUnits();
-		final PlayerID defender = m_battleSite.getOwner();
 		if (someAttacking)
 		{
-			m_battleResult = BattleRecords.BattleResultDescription.BLITZED;
+			m_battleResultDescription = BattleRecords.BattleResultDescription.BLITZED;
 			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, null);
 			m_battleTracker.addToConquered(m_battleSite);
 		}
 		else
 		{
-			m_battleResult = BattleRecords.BattleResultDescription.LOST;
+			m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
 		}
-		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, 0);
+		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this), 0);
 		end();
 	}
 	

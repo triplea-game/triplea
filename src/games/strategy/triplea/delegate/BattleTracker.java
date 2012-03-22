@@ -36,8 +36,10 @@ import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
@@ -245,7 +247,7 @@ public class BattleTracker implements java.io.Serializable
 		IBattle battle = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
 		if (battle == null)
 		{
-			battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this);
+			battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, this);
 			m_pendingBattles.add(battle);
 			m_battleRecords.addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType());
 		}
@@ -266,7 +268,7 @@ public class BattleTracker implements java.io.Serializable
 		IBattle battle = getPendingBattle(route.getEnd(), true);
 		if (battle == null)
 		{
-			battle = new StrategicBombingRaidPreBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this);
+			battle = new StrategicBombingRaidPreBattle(route.getEnd(), data, attacker, this);
 			m_pendingBattles.add(battle);
 			m_battleRecords.addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType());
 		}
@@ -551,7 +553,9 @@ public class BattleTracker implements java.io.Serializable
 			final IBattle bombingBattle = getPendingBattle(territory, true);
 			if (bombingBattle != null)
 			{
-				getBattleRecords().addResultToBattle(id, bombingBattle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITHOUT_CONQUERING, 0);
+				final BattleResults results = new BattleResults(bombingBattle);
+				results.setWhoWon(WhoWon.DRAW);
+				getBattleRecords().addResultToBattle(id, bombingBattle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.NO_BATTLE, results, 0);
 				removeBattle(bombingBattle);
 				throw new IllegalStateException("Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
 			}

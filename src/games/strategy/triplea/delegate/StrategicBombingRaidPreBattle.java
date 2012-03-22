@@ -12,14 +12,12 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
-import games.strategy.triplea.TripleA;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.weakAI.WeakAI;
+import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -46,16 +44,15 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	private final static String BOMBERS_TO_TARGETS = "Bombers Fly to Their Targets";
 	
 	// protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<Unit, HashSet<Unit>>(); // these would be the factories or other targets. does not include aa.
-	// protected final PlayerID m_defender;
 	// protected final ExecutionStack m_stack = new ExecutionStack();
 	// protected List<String> m_steps;
 	private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<Unit>();
 	private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<Unit>();
 	protected boolean m_intercept = false;
 	
-	public StrategicBombingRaidPreBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final PlayerID defender, final BattleTracker battleTracker)
+	public StrategicBombingRaidPreBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final BattleTracker battleTracker)
 	{
-		super(battleSite, data, attacker, defender, battleTracker);
+		super(battleSite, data, attacker, battleTracker);
 		m_battleType = BattleType.AIR_BATTLE;
 		m_defendingUnits.addAll(battleSite.getUnits().getMatches(defendingInterceptors(m_attacker, m_data)));
 	}
@@ -112,19 +109,19 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 					if (Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber))
 					{
 						if (m_defendingUnits.isEmpty())
-							m_battleResult = BattleRecords.BattleResultDescription.WON_WITHOUT_CONQUERING;
+							m_battleResultDescription = BattleRecords.BattleResultDescription.WON_WITHOUT_CONQUERING;
 						else
-							m_battleResult = BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT;
+							m_battleResultDescription = BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT;
 						text = "Air Battle is over, the remaining Bombers go on to their targets";
 					}
 					else if (!m_attackingUnits.isEmpty())
 					{
-						m_battleResult = BattleRecords.BattleResultDescription.STALEMATE;
+						m_battleResultDescription = BattleRecords.BattleResultDescription.STALEMATE;
 						text = "Air Battle is over, the bombers have all died";
 					}
 					else
 					{
-						m_battleResult = BattleRecords.BattleResultDescription.LOST;
+						m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
 						text = "Air Battle is over, the bombers have all died";
 					}
 					bridge.getHistoryWriter().addChildToEvent(text);
@@ -170,32 +167,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, 0);
-				m_battleTracker.removeBattle(StrategicBombingRaidPreBattle.this);
-				getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
-				m_isOver = true;
-				// setup new battle here
-				final Collection<Unit> bombers = Match.getMatches(m_attackingUnits, Matches.UnitIsStrategicBomber);
-				if (!bombers.isEmpty())
-				{
-					HashMap<Unit, HashSet<Unit>> targets = null;
-					Unit target = null;
-					final Collection<Unit> enemyTargets = m_battleSite.getUnits().getMatches(
-								new CompositeMatchAnd<Unit>(Matches.enemyUnit(bridge.getPlayerID(), m_data), Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert()));
-					for (final Unit unit : bombers)
-					{
-						if (enemyTargets.size() > 1 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data))
-							target = getRemote(bridge).whatShouldBomberBomb(m_battleSite, enemyTargets);
-						else if (!enemyTargets.isEmpty())
-							target = enemyTargets.iterator().next();
-						if (target != null)
-						{
-							targets = new HashMap<Unit, HashSet<Unit>>();
-							targets.put(target, new HashSet<Unit>(Collections.singleton(unit)));
-						}
-						m_battleTracker.addBattle(new RouteScripted(m_battleSite), Collections.singleton(unit), true, m_attacker, bridge, null, targets, true);
-					}
-				}
+				end(bridge);
 			}
 		});
 		
@@ -207,25 +179,42 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		m_stack.execute(bridge);
 	}
 	
+	private void end(final IDelegateBridge bridge)
+	{
+		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this), 0);
+		m_battleTracker.removeBattle(StrategicBombingRaidPreBattle.this);
+		getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
+		m_isOver = true;
+		// setup new battle here
+		final Collection<Unit> bombers = Match.getMatches(m_attackingUnits, Matches.UnitIsStrategicBomber);
+		if (!bombers.isEmpty())
+		{
+			HashMap<Unit, HashSet<Unit>> targets = null;
+			Unit target = null;
+			final Collection<Unit> enemyTargets = m_battleSite.getUnits().getMatches(
+						new CompositeMatchAnd<Unit>(Matches.enemyUnit(bridge.getPlayerID(), m_data), Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert()));
+			for (final Unit unit : bombers)
+			{
+				if (enemyTargets.size() > 1 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data))
+					target = getRemote(bridge).whatShouldBomberBomb(m_battleSite, enemyTargets);
+				else if (!enemyTargets.isEmpty())
+					target = enemyTargets.iterator().next();
+				if (target != null)
+				{
+					targets = new HashMap<Unit, HashSet<Unit>>();
+					targets.put(target, new HashSet<Unit>(Collections.singleton(unit)));
+				}
+				m_battleTracker.addBattle(new RouteScripted(m_battleSite), Collections.singleton(unit), true, m_attacker, bridge, null, targets, true);
+			}
+		}
+	}
+	
 	private void showBattle(final IDelegateBridge bridge)
 	{
 		final String title = "Air Battle in " + m_battleSite.getName();
-		getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, getDefendingUnits(),
+		getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, m_defendingUnits,
 					null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender, getBattleType());
 		getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
-	}
-	
-	private ITripleaPlayer getRemote(final IDelegateBridge bridge)
-	{
-		return (ITripleaPlayer) bridge.getRemote();
-	}
-	
-	private static ITripleaPlayer getRemote(final PlayerID player, final IDelegateBridge bridge)
-	{
-		// if its the null player, return a do nothing proxy
-		if (player.isNull())
-			return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
-		return (ITripleaPlayer) bridge.getRemote(player);
 	}
 	
 	

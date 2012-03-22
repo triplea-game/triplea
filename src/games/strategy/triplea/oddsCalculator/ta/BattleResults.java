@@ -3,7 +3,6 @@ package games.strategy.triplea.oddsCalculator.ta;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
@@ -11,51 +10,48 @@ import java.io.Serializable;
 public class BattleResults implements Serializable
 {
 	private static final long serialVersionUID = 1381361441940258702L;
-	private final int m_attackingUnitsLeft;
-	private final int m_defendingUnitsLeft;
+	// private final int m_attackingUnitsLeft;
+	// private final int m_defendingUnitsLeft;
 	private final int m_attackingCombatUnitsLeft;
 	private final int m_defendingCombatUnitsLeft;
 	private final int m_battleRoundsFought;
-	private final MustFightBattle m_battle;
-	private final WhoWon m_whoWon;
+	private final IBattle m_battle;
+	private WhoWon m_whoWon;
 	
-	/*public BattleResults()
+	public BattleResults(final IBattle battle)
 	{
-		m_battle = null;
-		m_whoWon = null;
-	}*/
-
-	public BattleResults(final MustFightBattle battle)
-	{
-		m_attackingUnitsLeft = battle.getRemainingAttackingUnits().size();
+		// m_attackingUnitsLeft = battle.getRemainingAttackingUnits().size();
 		m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
-		m_defendingUnitsLeft = battle.getRemainingDefendingUnits().size();
+		// m_defendingUnitsLeft = battle.getRemainingDefendingUnits().size();
 		m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
 		m_battleRoundsFought = battle.getBattleRound();
 		m_battle = battle;
 		m_whoWon = battle.getWhoWon();
-		if (m_attackingCombatUnitsLeft > 0 && m_defendingCombatUnitsLeft > 0)
-			System.out.println("Somehow both sides have combat units still alive, but battle is over!");
 	}
 	
-	public IBattle GetBattle()
+	public void setWhoWon(final WhoWon whoWon)
+	{
+		m_whoWon = whoWon;
+	}
+	
+	public IBattle getBattle()
 	{
 		return m_battle;
 	}
 	
-	public int getAttackingUnitsLeft()
+	/*public int getAttackingUnitsLeft()
 	{
 		return m_attackingUnitsLeft;
-	}
-	
-	public int getAttackingCombatUnitsLeft()
-	{
-		return m_attackingCombatUnitsLeft;
 	}
 	
 	public int getDefendingUnitsLeft()
 	{
 		return m_defendingUnitsLeft;
+	}*/
+
+	public int getAttackingCombatUnitsLeft()
+	{
+		return m_attackingCombatUnitsLeft;
 	}
 	
 	public int getDefendingCombatUnitsLeft()

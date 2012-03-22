@@ -11,7 +11,13 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.triplea.TripleA;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords.BattleResultDescription;
+import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.triplea.ui.display.ITripleaDisplay;
+import games.strategy.triplea.weakAI.WeakAI;
+import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,23 +34,27 @@ abstract public class AbstractBattle implements IBattle
 {
 	private static final long serialVersionUID = 871090498661731337L;
 	protected final GUID m_battleID = new GUID();
-	final protected Territory m_battleSite;
-	final protected PlayerID m_attacker;
-	final protected BattleTracker m_battleTracker;
-	final protected GameData m_data;
+	/** In headless mode we should NOT access any Delegates. In headless mode we are just being used to calculate results for an odds calculator so we can skip some steps for efficiency. */
+	protected boolean m_headless = false;
+	protected final Territory m_battleSite;
+	protected final PlayerID m_attacker;
+	protected PlayerID m_defender;
+	protected final BattleTracker m_battleTracker;
+	protected final GameData m_data;
 	protected int m_round = 0;
-	protected boolean m_isBombingRun;
+	protected final boolean m_isBombingRun;
 	protected boolean m_isAmphibious = false;
 	protected BattleType m_battleType;
 	protected boolean m_isOver = false;
 	/** Dependent units, maps unit -> Collection of units, if unit is lost in a battle we are dependent on then we lose the corresponding collection of units. */
-	final protected Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
+	protected final Map<Unit, Collection<Unit>> m_dependentUnits = new HashMap<Unit, Collection<Unit>>();
 	protected List<Unit> m_attackingUnits = new ArrayList<Unit>();
 	protected List<Unit> m_defendingUnits = new ArrayList<Unit>();
 	protected List<Unit> m_amphibiousLandAttackers = new ArrayList<Unit>();
 	protected List<Unit> m_bombardingUnits = new ArrayList<Unit>();
 	
-	protected BattleResultDescription m_battleResult;
+	protected BattleResultDescription m_battleResultDescription;
+	protected WhoWon m_whoWon = WhoWon.NOTFINISHED;
 	protected int m_attackerLostTUV = 0;
 	protected int m_defenderLostTUV = 0;
 	
@@ -56,6 +66,7 @@ abstract public class AbstractBattle implements IBattle
 		m_isBombingRun = isBombingRun;
 		m_battleType = battleType;
 		m_data = data;
+		m_defender = findDefender(battleSite, attacker, data);
 	}
 	
 	public Collection<Unit> getDependentUnits(final Collection<Unit> units)
@@ -77,8 +88,7 @@ abstract public class AbstractBattle implements IBattle
 	
 	public Collection<Unit> getBombardingUnits()
 	{
-		// TODO: should we return a new list?
-		return m_bombardingUnits;
+		return new ArrayList<Unit>(m_bombardingUnits);
 	}
 	
 	public boolean isAmphibious()
@@ -88,20 +98,27 @@ abstract public class AbstractBattle implements IBattle
 	
 	public Collection<Unit> getAmphibiousLandAttackers()
 	{
-		// TODO: should we return a new list?
-		return m_amphibiousLandAttackers;
+		return new ArrayList<Unit>(m_amphibiousLandAttackers);
 	}
 	
 	public Collection<Unit> getAttackingUnits()
 	{
-		// TODO: should we return a new list?
-		return m_attackingUnits;
+		return new ArrayList<Unit>(m_attackingUnits);
 	}
 	
 	public Collection<Unit> getDefendingUnits()
 	{
-		// TODO: should we return a new list?
-		return m_defendingUnits;
+		return new ArrayList<Unit>(m_defendingUnits);
+	}
+	
+	public List<Unit> getRemainingAttackingUnits()
+	{
+		return new ArrayList<Unit>(m_attackingUnits);
+	}
+	
+	public List<Unit> getRemainingDefendingUnits()
+	{
+		return new ArrayList<Unit>(m_defendingUnits);
 	}
 	
 	/*
@@ -134,6 +151,16 @@ abstract public class AbstractBattle implements IBattle
 		return m_round;
 	}
 	
+	public WhoWon getWhoWon()
+	{
+		return m_whoWon;
+	}
+	
+	public BattleResultDescription getBattleResultDescription()
+	{
+		return m_battleResultDescription;
+	}
+	
 	public GUID getBattleID()
 	{
 		return m_battleID;
@@ -142,6 +169,21 @@ abstract public class AbstractBattle implements IBattle
 	public final Territory getTerritory()
 	{
 		return m_battleSite;
+	}
+	
+	public PlayerID getAttacker()
+	{
+		return m_attacker;
+	}
+	
+	public PlayerID getDefender()
+	{
+		return m_defender;
+	}
+	
+	public void setHeadless(final boolean aBool)
+	{
+		m_headless = aBool;
 	}
 	
 	/*
@@ -189,5 +231,88 @@ abstract public class AbstractBattle implements IBattle
 			return false;
 		final IBattle other = (IBattle) o;
 		return other.getTerritory().equals(this.m_battleSite) && other.isBombingRun() == this.isBombingRun() && other.getBattleType().equals(this.getBattleType());
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Battle in:" + m_battleSite + " battle type:" + m_battleType + " defender:" + m_defender.getName() + " attacked by:" + m_attacker.getName() + " attacking with: " + m_attackingUnits;
+	}
+	
+	public static PlayerID findDefender(final Territory battleSite, final PlayerID attacker, final GameData data)
+	{
+		if (battleSite == null)
+			return PlayerID.NULL_PLAYERID;
+		PlayerID defender = null;
+		if (!battleSite.isWater())
+		{
+			defender = battleSite.getOwner();
+		}
+		if (defender == null || battleSite.isWater() || !data.getRelationshipTracker().isAtWar(attacker, defender))
+		{
+			// if water find the defender based on who has the most units in the territory
+			final IntegerMap<PlayerID> players = battleSite.getUnits().getPlayerUnitCounts();
+			int max = -1;
+			for (final PlayerID current : players.keySet())
+			{
+				if (current.equals(attacker) || !data.getRelationshipTracker().isAtWar(attacker, current))
+					continue;
+				final int count = players.getInt(current);
+				if (count > max)
+				{
+					max = count;
+					defender = current;
+				}
+			}
+			/*if (max == -1)
+			{
+				// this is ok, we are a headless battle
+			}*/
+		}
+		if (defender == null)
+			defender = PlayerID.NULL_PLAYERID;
+		return defender;
+	}
+	
+	/** The maximum number of hits that this collection of units can sustain, taking into account units with two hits, and accounting for existing damage. */
+	public static int getMaxHits(final Collection<Unit> units)
+	{
+		int count = 0;
+		for (final Unit unit : units)
+		{
+			if (UnitAttachment.get(unit.getUnitType()).getIsTwoHit())
+			{
+				count += 2;
+				count -= unit.getHits();
+			}
+			else
+			{
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	protected static TransportTracker getTransportTracker()
+	{
+		return new TransportTracker();
+	}
+	
+	protected static ITripleaDisplay getDisplay(final IDelegateBridge bridge)
+	{
+		return (ITripleaDisplay) bridge.getDisplayChannelBroadcaster();
+	}
+	
+	protected static ITripleaPlayer getRemote(final IDelegateBridge bridge)
+	{
+		return (ITripleaPlayer) bridge.getRemote();
+	}
+	
+	protected static ITripleaPlayer getRemote(final PlayerID player, final IDelegateBridge bridge)
+	{
+		// if its the null player, return a do nothing proxy
+		if (player.isNull())
+			return new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
+		return (ITripleaPlayer) bridge.getRemote(player);
 	}
 }

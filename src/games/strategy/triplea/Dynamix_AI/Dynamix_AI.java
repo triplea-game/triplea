@@ -424,7 +424,7 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 			int timesWeReachLeftoverLUnitsGoal = 0;
 			for (final BattleResults result : simulatedAttack.m_results)
 			{
-				if (Match.getMatches(result.GetBattle().getAttackingUnits(), Matches.UnitIsLand).size() >= leftoverLandUnitsWanted)
+				if (Match.getMatches(result.getBattle().getAttackingUnits(), Matches.UnitIsLand).size() >= leftoverLandUnitsWanted)
 					timesWeReachLeftoverLUnitsGoal++;
 			}
 			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.m_results.size();

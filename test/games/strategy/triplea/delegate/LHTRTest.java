@@ -153,7 +153,7 @@ public class LHTRTest extends TestCase
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final BattleTracker tracker = new BattleTracker();
-		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans, tracker);
+		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
 		tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
@@ -190,7 +190,7 @@ public class LHTRTest extends TestCase
 		final Change change = ChangeFactory.addUnits(uk, Collections.singleton(bomber));
 		new ChangePerformer(m_data).perform(change);
 		final BattleTracker tracker = new BattleTracker();
-		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans, tracker);
+		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
 		tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
 		final ITestDelegateBridge bridge = getDelegateBridge(british);

@@ -850,7 +850,7 @@ public class RevisedTest extends TestCase
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final BattleTracker tracker = new BattleTracker();
-		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans, tracker);
+		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
 		final List<Unit> bombers = uk.getUnits().getMatches(Matches.UnitIsStrategicBomber);
 		addTo(germany, bombers);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
@@ -876,7 +876,7 @@ public class RevisedTest extends TestCase
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final BattleTracker tracker = new BattleTracker();
-		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans, tracker);
+		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
 		final List<Unit> bombers = bomber(m_data).create(2, british);
 		addTo(germany, bombers);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
@@ -903,7 +903,7 @@ public class RevisedTest extends TestCase
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final BattleTracker tracker = new BattleTracker();
-		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans, tracker);
+		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
 		final List<Unit> bombers = bomber(m_data).create(7, british);
 		addTo(germany, bombers);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), bombers, null);
@@ -928,7 +928,7 @@ public class RevisedTest extends TestCase
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final BattleTracker tracker = new BattleTracker();
-		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, germans, tracker);
+		final StrategicBombingRaidBattle battle = new StrategicBombingRaidBattle(germany, m_data, british, tracker);
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
 		tracker.getBattleRecords().addBattle(british, battle.getBattleID(), germany, battle.getBattleType());
 		final ITestDelegateBridge bridge = getDelegateBridge(british);

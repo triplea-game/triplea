@@ -19,6 +19,7 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.Change;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
@@ -28,6 +29,7 @@ import games.strategy.net.GUID;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * 
@@ -194,6 +196,16 @@ public interface IBattle extends java.io.Serializable
 	 * @return units which are defending
 	 */
 	public Collection<Unit> getDefendingUnits();
+	
+	public List<Unit> getRemainingAttackingUnits();
+	
+	public List<Unit> getRemainingDefendingUnits();
+	
+	public WhoWon getWhoWon();
+	
+	public PlayerID getAttacker();
+	
+	public PlayerID getDefender();
 	
 	public GUID getBattleID();
 }
