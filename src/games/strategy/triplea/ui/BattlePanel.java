@@ -27,8 +27,8 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
-import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
@@ -158,18 +158,18 @@ public class BattlePanel extends ActionPanel
 				Iterator<Territory> iter = m_battles.iterator();
 				while (iter.hasNext())
 				{
-					addBattleActions(panel, iter, false, "Normal");
+					addBattleActions(panel, iter, false, BattleType.NORMAL);
 				}
 				iter = m_bombing.iterator();
 				while (iter.hasNext())
 				{
-					addBattleActions(panel, iter, true, "Bombing"); // TODO: need to fix
+					addBattleActions(panel, iter, true, BattleType.BOMBING_RAID); // TODO: need to fix
 				}
 				add(panel, BorderLayout.NORTH);
 				SwingUtilities.invokeLater(REFRESH);
 			}
 			
-			private void addBattleActions(final JPanel panel, final Iterator<Territory> iter, final boolean bomb, final String battleType)
+			private void addBattleActions(final JPanel panel, final Iterator<Territory> iter, final boolean bomb, final BattleType battleType)
 			{
 				final Territory next = iter.next();
 				final JPanel innerPanel = new JPanel();
@@ -296,7 +296,7 @@ public class BattlePanel extends ActionPanel
 	
 	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
 				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> unit_dependents,
-				final PlayerID attacker, final PlayerID defender, final String battleType)
+				final PlayerID attacker, final PlayerID defender, final BattleType battleType)
 	{
 		try
 		{
@@ -647,9 +647,9 @@ public class BattlePanel extends ActionPanel
 		Territory m_territory;
 		boolean m_bomb;
 		
-		FightBattleAction(final Territory battleSite, final boolean bomb, final String battleType)
+		FightBattleAction(final Territory battleSite, final boolean bomb, final BattleType battleType)
 		{
-			super((bomb ? (battleType.equals(BattleTracker.BATTLE_TYPE_AIR_BATTLE) ? "Air Battle in " : "Bombing raid in ") : "Battle in ") + battleSite.getName() + "...");
+			super((bomb ? (battleType.equals(BattleType.AIR_BATTLE) ? "Air Battle in " : "Bombing raid in ") : "Battle in ") + battleSite.getName() + "...");
 			m_territory = battleSite;
 			m_bomb = bomb;
 		}

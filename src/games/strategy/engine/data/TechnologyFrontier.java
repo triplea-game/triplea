@@ -89,8 +89,16 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 	}
 	
 	@Override
+	public int hashCode()
+	{
+		return m_name.hashCode();
+	}
+	
+	@Override
 	public boolean equals(final Object o)
 	{
+		if (this == o)
+			return true;
 		if (o == null || !(o instanceof TechnologyFrontier))
 			return false;
 		final TechnologyFrontier other = (TechnologyFrontier) o;

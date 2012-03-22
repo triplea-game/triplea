@@ -114,6 +114,12 @@ class TestUnit
 	}
 	
 	@Override
+	public int hashCode()
+	{
+		return m_unit.hashCode();
+	}
+	
+	@Override
 	public boolean equals(final Object o)
 	{
 		return m_unit.equals(o);

@@ -56,7 +56,7 @@ public class AggregateResults implements Serializable
 		final BattleResults battleR = GetBattleResultsClosestToAverage();
 		if (battleR == null)
 			return null;
-		return battleR.GetBattle();
+		return (MustFightBattle) battleR.GetBattle();
 	}
 	
 	public List<Unit> GetAverageAttackingUnitsRemaining()

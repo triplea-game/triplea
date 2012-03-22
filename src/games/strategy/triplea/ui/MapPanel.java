@@ -944,12 +944,18 @@ class RouteDescription
 	}
 	
 	@Override
+	public int hashCode()
+	{
+		return m_route.hashCode() + m_cursorImage.hashCode();
+	}
+	
+	@Override
 	public boolean equals(final Object o)
 	{
-		if (o == null)
-			return false;
 		if (o == this)
 			return true;
+		if (o == null)
+			return false;
 		final RouteDescription other = (RouteDescription) o;
 		if (m_start == null && other.m_start != null || other.m_start == null && m_start != null || (m_start != other.m_start && !m_start.equals(other.m_start)))
 			return false;

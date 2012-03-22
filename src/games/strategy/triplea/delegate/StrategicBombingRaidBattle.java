@@ -27,7 +27,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -56,16 +55,14 @@ import java.util.Set;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class StrategicBombingRaidBattle extends AbstractBattle
 {
+	private static final long serialVersionUID = 8490171037606078890L;
 	private final static String RAID = "Strategic bombing raid";
 	private final static String FIRE_AA = "Fire AA";
 	
-	protected final List<Unit> m_attackingUnits = new ArrayList<Unit>();
 	protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<Unit, HashSet<Unit>>(); // these would be the factories or other targets. does not include aa.
 	protected final PlayerID m_defender;
-	protected final GUID m_battleID = new GUID();
 	protected final ExecutionStack m_stack = new ExecutionStack();
 	protected List<String> m_steps;
 	protected List<Unit> m_defendingAA;
@@ -90,10 +87,37 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	 **/
 	public StrategicBombingRaidBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final PlayerID defender, final BattleTracker battleTracker)
 	{
-		super(battleSite, attacker, battleTracker, true, BattleTracker.BATTLE_TYPE_BOMBING_RAID, data);
+		super(battleSite, attacker, battleTracker, true, BattleType.BOMBING_RAID, data);
 		m_defender = defender;
+		m_isAmphibious = false;
+		
+		// fill in defenders
+		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker,
+					Matches.UnitIsAAforBombingThisUnitOnly, m_data));
+		if (m_targets.isEmpty())
+		{
+			m_defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
+		}
+		else
+		{
+			final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
+			targets.addAll(m_targets.keySet());
+			m_defendingUnits = targets;
+		}
 	}
 	
+	/*@Override
+	public List<Unit> getDefendingUnits()
+	{
+		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker,
+					Matches.UnitIsAAforBombingThisUnitOnly, m_data));
+		if (m_targets.isEmpty())
+			return Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
+		final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
+		targets.addAll(m_targets.keySet());
+		return targets;
+	}*/
+
 	/**
 	 * @param bridge
 	 * @return
@@ -141,8 +165,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	@Override
 	public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets)
 	{
-		/*if (!Match.allMatch(units, Matches.UnitIsStrategicBomber))
-			throw new IllegalArgumentException("Non bombers added to strategic bombing raid:" + units);*/
 		m_attackingUnits.addAll(units);
 		if (targets == null)
 			return ChangeFactory.EMPTY_CHANGE;
@@ -157,13 +179,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
-	/*@Override
-	public Change addCombatChange(final Route route, final Collection<Unit> units, final PlayerID player)
-	{
-		m_attackingUnits.addAll(units);
-		return ChangeFactory.EMPTY_CHANGE;
-	}*/
-
 	@Override
 	public void fight(final IDelegateBridge bridge)
 	{
@@ -199,6 +214,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		steps.add(new ConductBombing());
 		steps.add(new IExecutable()
 		{
+			private static final long serialVersionUID = 4299575008166316488L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
@@ -259,6 +276,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		});
 		steps.add(new IExecutable()
 		{
+			private static final long serialVersionUID = -7649516174883172328L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				if (isSBRAffectsUnitProduction())
@@ -269,9 +288,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				else
 					getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
 				if (m_bombingRaidTotal > 0)
-					m_battleResult = BattleRecords.BattleResult.BOMBED;
+					m_battleResult = BattleRecords.BattleResultDescription.BOMBED;
 				else
-					m_battleResult = BattleRecords.BattleResult.LOST;
+					m_battleResult = BattleRecords.BattleResultDescription.LOST;
 				m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, m_bombingRaidTotal);
 				m_isOver = true;
 			}
@@ -292,27 +311,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
 	}
 	
-	@Override
-	public List<Unit> getDefendingUnits()
-	{
-		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker,
-					Matches.UnitIsAAforBombingThisUnitOnly, m_data));
-		if (m_targets.isEmpty())
-			return Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
-		final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
-		targets.addAll(m_targets.keySet());
-		return targets;
-	}
-	
-	@Override
-	public List<Unit> getAttackingUnits()
-	{
-		return m_attackingUnits;
-	}
-	
 	
 	class FireAA implements IExecutable
 	{
+		private static final long serialVersionUID = -4667856856747597406L;
 		DiceRoll m_dice;
 		Collection<Unit> m_casualties;
 		
@@ -326,6 +328,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				
 				final IExecutable roll = new IExecutable()
 				{
+					private static final long serialVersionUID = 379538344036513009L;
+					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						m_dice = DiceRoll.rollAA(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge, m_battleSite);
@@ -333,6 +337,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				};
 				final IExecutable calculateCasualties = new IExecutable()
 				{
+					private static final long serialVersionUID = -4658133491636765763L;
+					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						m_casualties = calculateCasualties(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge, m_dice);
@@ -340,6 +346,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				};
 				final IExecutable notifyCasualties = new IExecutable()
 				{
+					private static final long serialVersionUID = -4989154196975570919L;
+					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						notifyAAHits(bridge, m_dice, m_casualties);
@@ -347,6 +355,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				};
 				final IExecutable removeHits = new IExecutable()
 				{
+					private static final long serialVersionUID = -3673833177336068509L;
+					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						removeAAHits(bridge, m_dice, m_casualties);
@@ -362,9 +372,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		}
 	}
 	
-	/**
-	 * @return
-	 */
 	private boolean isSBRAffectsUnitProduction()
 	{
 		return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
@@ -375,9 +382,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
 	}
 	
-	/**
-	 * @return
-	 */
 	private boolean isWW2V2()
 	{
 		return games.strategy.triplea.Properties.getWW2V2(m_data);
@@ -480,12 +484,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	
 	class ConductBombing implements IExecutable
 	{
+		private static final long serialVersionUID = 5579796391988452213L;
 		private int[] m_dice;
 		
 		public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 		{
 			final IExecutable rollDice = new IExecutable()
 			{
+				private static final long serialVersionUID = -4097858758514452368L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					rollDice(bridge);
@@ -493,6 +500,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			};
 			final IExecutable findCost = new IExecutable()
 			{
+				private static final long serialVersionUID = 8573539936364094095L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					findCost(bridge);
@@ -701,35 +710,5 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	{
 		// should never happen
 		throw new IllegalStateException("StrategicBombingRaidBattle should not have any preceding battle with which to possibly remove dependents from");
-	}
-	
-	@Override
-	public Collection<Unit> getDependentUnits(final Collection<Unit> units)
-	{
-		return Collections.emptyList();
-	}
-	
-	/**
-	 * Add bombarding unit. Doesn't make sense here so just do nothing.
-	 */
-	@Override
-	public void addBombardingUnit(final Unit unit)
-	{
-		// nothing
-	}
-	
-	/**
-	 * Return whether battle is amphibious.
-	 */
-	@Override
-	public boolean isAmphibious()
-	{
-		return false;
-	}
-	
-	@Override
-	public GUID getBattleID()
-	{
-		return m_battleID;
 	}
 }

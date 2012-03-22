@@ -26,7 +26,6 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
@@ -34,7 +33,10 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Battle in which no fighting occurs. <b>
@@ -45,14 +47,27 @@ import java.util.Iterator;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class NonFightingBattle extends AbstractBattle
 {
-	private final GUID m_battleID = new GUID();
+	private static final long serialVersionUID = -1699534010648145123L;
 	
-	public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean neutral, final GameData data)
+	public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final GameData data)
 	{
-		super(battleSite, attacker, battleTracker, false, BattleTracker.BATTLE_TYPE_NORMAL, data);
+		super(battleSite, attacker, battleTracker, false, BattleType.NORMAL, data);
+	}
+	
+	@Override
+	public Change addAttackChange(final Route route, final Collection<Unit> units, final HashMap<Unit, HashSet<Unit>> targets)
+	{
+		final Map<Unit, Collection<Unit>> addedTransporting = new TransportTracker().transporting(units);
+		for (final Unit unit : addedTransporting.keySet())
+		{
+			if (m_dependentUnits.get(unit) != null)
+				m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
+			else
+				m_dependentUnits.put(unit, addedTransporting.get(unit));
+		}
+		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
 	@Override
@@ -65,13 +80,13 @@ public class NonFightingBattle extends AbstractBattle
 		final PlayerID defender = m_battleSite.getOwner();
 		if (someAttacking)
 		{
-			m_battleResult = BattleRecords.BattleResult.BLITZED;
+			m_battleResult = BattleRecords.BattleResultDescription.BLITZED;
 			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, null);
 			m_battleTracker.addToConquered(m_battleSite);
 		}
 		else
 		{
-			m_battleResult = BattleRecords.BattleResult.LOST;
+			m_battleResult = BattleRecords.BattleResultDescription.LOST;
 		}
 		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, 0);
 		end();
@@ -122,11 +137,5 @@ public class NonFightingBattle extends AbstractBattle
 			final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
 			bridge.getHistoryWriter().startEvent(transcriptText);
 		}
-	}
-	
-	@Override
-	public GUID getBattleID()
-	{
-		return m_battleID;
 	}
 }

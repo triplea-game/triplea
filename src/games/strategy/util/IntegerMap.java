@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -38,7 +37,8 @@ import java.util.Set;
  */
 public class IntegerMap<T> implements Cloneable, Serializable
 {
-	private final Map<T, Integer> m_values;
+	private static final long serialVersionUID = 6856531659284300930L;
+	private final HashMap<T, Integer> m_values;
 	
 	/** Creates new IntegerMap */
 	public IntegerMap()
@@ -237,30 +237,6 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	}
 	
 	/**
-	 * The equals method will only return true if both the keys and values
-	 * match exactly. If a has entries that b doesn't have or vice versa,
-	 * then a and b are not equal.
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public boolean equals(final Object o)
-	{
-		if (o == null || !(o instanceof IntegerMap))
-			return false;
-		final IntegerMap<T> map = (IntegerMap<T>) o;
-		final Iterator<T> iter = map.keySet().iterator();
-		if (!map.keySet().equals(keySet()))
-			return false;
-		while (iter.hasNext())
-		{
-			final T key = iter.next();
-			if (!(this.getInt(key) == map.getInt(key)))
-				return false;
-		}
-		return true;
-	}
-	
-	/**
 	 * True if all values are >= 0.
 	 */
 	public boolean isPositive()
@@ -393,5 +369,37 @@ public class IntegerMap<T> implements Cloneable, Serializable
 			buf.append(current).append(" -> ").append(getInt(current)).append("\n");
 		}
 		return buf.toString();
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return m_values.hashCode();
+	}
+	
+	/**
+	 * The equals method will only return true if both the keys and values
+	 * match exactly. If a has entries that b doesn't have or vice versa,
+	 * then a and b are not equal.
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public boolean equals(final Object o)
+	{
+		if (this == o)
+			return true;
+		if (o == null || !(o instanceof IntegerMap))
+			return false;
+		final IntegerMap<T> map = (IntegerMap<T>) o;
+		if (!map.keySet().equals(this.keySet()))
+			return false;
+		if (!map.m_values.equals(this.m_values))
+			return false;
+		for (final T key : map.keySet())
+		{
+			if (!(this.getInt(key) == map.getInt(key)))
+				return false;
+		}
+		return true;
 	}
 }

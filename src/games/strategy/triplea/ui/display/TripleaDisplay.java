@@ -19,6 +19,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.ui.TripleAFrame;
 
 import java.util.Collection;
@@ -58,7 +59,7 @@ public class TripleaDisplay implements ITripleaDisplay
 	 */
 	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
 				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> unit_dependents,
-				final PlayerID attacker, final PlayerID defender, final String battleType)
+				final PlayerID attacker, final PlayerID defender, final BattleType battleType)
 	{
 		m_ui.getBattlePanel().showBattle(battleID, location, battleTitle, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie, defendingWaitingToDie, unit_dependents, attacker,
 					defender, battleType);

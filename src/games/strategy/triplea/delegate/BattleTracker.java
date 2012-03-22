@@ -35,6 +35,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.CompositeMatch;
@@ -66,11 +67,6 @@ import java.util.Set;
 public class BattleTracker implements java.io.Serializable
 {
 	private static final long serialVersionUID = 8806010984321554662L;
-	
-	public static final String BATTLE_TYPE_NORMAL = "Normal";
-	public static final String BATTLE_TYPE_AIR_BATTLE = "Air Battle";
-	public static final String BATTLE_TYPE_MOCK_BATTLE = "Mock Battle";
-	public static final String BATTLE_TYPE_BOMBING_RAID = "Bombing Raid";
 	
 	// List of pending battles
 	private final Set<IBattle> m_pendingBattles = new HashSet<IBattle>();
@@ -246,7 +242,7 @@ public class BattleTracker implements java.io.Serializable
 
 	private void addBombingBattle(final Route route, final Collection<Unit> units, final PlayerID attacker, final GameData data, final HashMap<Unit, HashSet<Unit>> targets)
 	{
-		IBattle battle = getPendingBattle(route.getEnd(), true, BATTLE_TYPE_BOMBING_RAID);
+		IBattle battle = getPendingBattle(route.getEnd(), true, BattleType.BOMBING_RAID);
 		if (battle == null)
 		{
 			battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, route.getEnd().getOwner(), this);
@@ -334,7 +330,7 @@ public class BattleTracker implements java.io.Serializable
 				IBattle nonFight = getPendingBattle(route.getEnd(), false);
 				if (nonFight == null)
 				{
-					nonFight = new NonFightingBattle(route.getEnd(), id, this, true, data);
+					nonFight = new NonFightingBattle(route.getEnd(), id, this, data);
 					m_pendingBattles.add(nonFight);
 					m_battleRecords.addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType());
 				}
@@ -555,7 +551,7 @@ public class BattleTracker implements java.io.Serializable
 			final IBattle bombingBattle = getPendingBattle(territory, true);
 			if (bombingBattle != null)
 			{
-				getBattleRecords().addResultToBattle(id, bombingBattle.getBattleID(), null, 0, 0, BattleRecords.BattleResult.WON_WITHOUT_CONQUERING, 0);
+				getBattleRecords().addResultToBattle(id, bombingBattle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITHOUT_CONQUERING, 0);
 				removeBattle(bombingBattle);
 				throw new IllegalStateException("Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
 			}
@@ -758,7 +754,7 @@ public class BattleTracker implements java.io.Serializable
 		return getPendingBattle(t, bombing, null);
 	}
 	
-	public IBattle getPendingBattle(final Territory t, final boolean bombing, final String type)
+	public IBattle getPendingBattle(final Territory t, final boolean bombing, final BattleType type)
 	{
 		for (final IBattle battle : m_pendingBattles)
 		{

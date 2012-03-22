@@ -1,8 +1,9 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
+import games.strategy.triplea.delegate.IBattle;
+import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
-import games.strategy.triplea.delegate.MustFightBattle.WhoWon;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
@@ -37,7 +38,7 @@ public class BattleResults implements Serializable
 			System.out.println("Somehow both sides have combat units still alive, but battle is over!");
 	}
 	
-	public MustFightBattle GetBattle()
+	public IBattle GetBattle()
 	{
 		return m_battle;
 	}

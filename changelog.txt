@@ -1,4 +1,8 @@
 Changes for 1.5.2
+* Major abstraction and cleanup of all battle related classes. (veqryn)
+
+* Fixing bad comparisons, and fixing missing hashCode methods. (veqryn)
+
 * Forced user preferences for individual sound muting choices to be saved by each local vm. (veqryn)
 
 * Allowed individual sounds to be muted, and separated simple Messenging from Slapping with different sounds for each. (frigoref)

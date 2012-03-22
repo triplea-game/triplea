@@ -36,8 +36,32 @@ import java.util.HashSet;
  * 
  *          Represents a battle.
  */
-interface IBattle extends java.io.Serializable
+public interface IBattle extends java.io.Serializable
 {
+	public static enum WhoWon
+	{
+		NOTFINISHED, DRAW, ATTACKER, DEFENDER
+	}
+	
+
+	public static enum BattleType
+	{
+		NORMAL("Battle"), AIR_BATTLE("Air Battle"), MOCK_BATTLE("Mock Battle"), BOMBING_RAID("Bombing Raid");
+		
+		private final String m_type;
+		
+		private BattleType(final String type)
+		{
+			m_type = type;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return m_type;
+		}
+	}
+	
 	/**
 	 * Add a bunch of attacking units to the battle.
 	 * 
@@ -76,7 +100,7 @@ interface IBattle extends java.io.Serializable
 	 * 
 	 * @return
 	 */
-	public String getBattleType();
+	public BattleType getBattleType();
 	
 	/**
 	 * @return territory this battle is occurring in.

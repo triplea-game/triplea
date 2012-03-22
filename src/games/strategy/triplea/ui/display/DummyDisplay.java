@@ -6,6 +6,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +21,7 @@ public class DummyDisplay implements ITripleaDisplay
 	 */
 	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
 				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> dependentUnits,
-				final PlayerID attacker, final PlayerID defender, final String battleType)
+				final PlayerID attacker, final PlayerID defender, final BattleType battleType)
 	{
 		// TODO Auto-generated method stub
 	}

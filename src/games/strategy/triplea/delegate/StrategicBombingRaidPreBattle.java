@@ -37,6 +37,7 @@ import java.util.List;
  */
 public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 {
+	private static final long serialVersionUID = 4686241714027216395L;
 	private final static String AIR_BATTLE = "Air Battle";
 	private final static String INTERCEPTORS_LAUNCH = "Defender Launches Interceptors";
 	private final static String ATTACKERS_FIRE = "Attacking Escorts and Bombers Fire";
@@ -44,13 +45,10 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	private final static String WITHDRAW = "Escorts and Interceptors Withdraw";
 	private final static String BOMBERS_TO_TARGETS = "Bombers Fly to Their Targets";
 	
-	// protected final List<Unit> m_attackingUnits = new ArrayList<Unit>();
 	// protected final HashMap<Unit, HashSet<Unit>> m_targets = new HashMap<Unit, HashSet<Unit>>(); // these would be the factories or other targets. does not include aa.
 	// protected final PlayerID m_defender;
-	// protected final GUID m_battleID = new GUID();
 	// protected final ExecutionStack m_stack = new ExecutionStack();
 	// protected List<String> m_steps;
-	protected final List<Unit> m_defendingUnits = new ArrayList<Unit>();
 	private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<Unit>();
 	private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<Unit>();
 	protected boolean m_intercept = false;
@@ -58,7 +56,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	public StrategicBombingRaidPreBattle(final Territory battleSite, final GameData data, final PlayerID attacker, final PlayerID defender, final BattleTracker battleTracker)
 	{
 		super(battleSite, data, attacker, defender, battleTracker);
-		m_battleType = BattleTracker.BATTLE_TYPE_AIR_BATTLE;
+		m_battleType = BattleType.AIR_BATTLE;
 		m_defendingUnits.addAll(battleSite.getUnits().getMatches(defendingInterceptors(m_attacker, m_data)));
 	}
 	
@@ -105,6 +103,8 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 			steps.add(new AttackersFire());
 			steps.add(new IExecutable()
 			{
+				private static final long serialVersionUID = -5575569705493214941L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					getDisplay(bridge).gotoBattleStep(m_battleID, BOMBERS_TO_TARGETS);
@@ -112,19 +112,19 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 					if (Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber))
 					{
 						if (m_defendingUnits.isEmpty())
-							m_battleResult = BattleRecords.BattleResult.WON_WITHOUT_CONQUERING;
+							m_battleResult = BattleRecords.BattleResultDescription.WON_WITHOUT_CONQUERING;
 						else
-							m_battleResult = BattleRecords.BattleResult.WON_WITH_ENEMY_LEFT;
+							m_battleResult = BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT;
 						text = "Air Battle is over, the remaining Bombers go on to their targets";
 					}
 					else if (!m_attackingUnits.isEmpty())
 					{
-						m_battleResult = BattleRecords.BattleResult.STALEMATE;
+						m_battleResult = BattleRecords.BattleResultDescription.STALEMATE;
 						text = "Air Battle is over, the bombers have all died";
 					}
 					else
 					{
-						m_battleResult = BattleRecords.BattleResult.LOST;
+						m_battleResult = BattleRecords.BattleResultDescription.LOST;
 						text = "Air Battle is over, the bombers have all died";
 					}
 					bridge.getHistoryWriter().addChildToEvent(text);
@@ -166,6 +166,8 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		
 		steps.add(new IExecutable()
 		{
+			private static final long serialVersionUID = 3148193405425861565L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResult, 0);
@@ -213,12 +215,6 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
 	}
 	
-	@Override
-	public List<Unit> getDefendingUnits()
-	{
-		return m_defendingUnits;
-	}
-	
 	private ITripleaPlayer getRemote(final IDelegateBridge bridge)
 	{
 		return (ITripleaPlayer) bridge.getRemote();
@@ -235,10 +231,14 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	
 	class InterceptorsLaunch implements IExecutable
 	{
+		private static final long serialVersionUID = 4300406315014471768L;
+		
 		public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 		{
 			final IExecutable getInterceptors = new IExecutable()
 			{
+				private static final long serialVersionUID = 8309994140871853357L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					getInterceptors(bridge);
@@ -292,6 +292,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 
 	class AttackersFire implements IExecutable
 	{
+		private static final long serialVersionUID = -5289634214875797408L;
 		DiceRoll m_dice;
 		CasualtyDetails m_details;
 		
@@ -301,6 +302,8 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				return;
 			final IExecutable roll = new IExecutable()
 			{
+				private static final long serialVersionUID = 6579019987019614374L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					m_dice = DiceRoll.airBattle(m_attackingUnits, false, m_attacker, bridge, StrategicBombingRaidPreBattle.this, "Attackers Fire, ");
@@ -308,16 +311,19 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 			};
 			final IExecutable calculateCasualties = new IExecutable()
 			{
+				private static final long serialVersionUID = 4556409970663527142L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					final List<Unit> defendingUnits = getDefendingUnits();
-					m_details = BattleCalculator.selectCasualties(m_defender, defendingUnits, bridge, ATTACKERS_FIRE, m_dice, true, m_battleID);
+					m_details = BattleCalculator.selectCasualties(m_defender, m_defendingUnits, bridge, ATTACKERS_FIRE, m_dice, true, m_battleID);
 					m_defendingWaitingToDie.addAll(m_details.getKilled());
 					markDamaged(m_details.getDamaged(), bridge);
 				}
 			};
 			final IExecutable notifyCasualties = new IExecutable()
 			{
+				private static final long serialVersionUID = 4224354422817922451L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					notifyCasualties(m_battleID, bridge, ATTACKERS_FIRE, m_dice, m_defender, m_attacker, m_details);
@@ -333,6 +339,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 
 	class DefendersFire implements IExecutable
 	{
+		private static final long serialVersionUID = -7277182945495744003L;
 		DiceRoll m_dice;
 		CasualtyDetails m_details;
 		
@@ -342,13 +349,17 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				return;
 			final IExecutable roll = new IExecutable()
 			{
+				private static final long serialVersionUID = 5953506121350176595L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					m_dice = DiceRoll.airBattle(getDefendingUnits(), true, m_defender, bridge, StrategicBombingRaidPreBattle.this, "Defenders Fire, ");
+					m_dice = DiceRoll.airBattle(m_defendingUnits, true, m_defender, bridge, StrategicBombingRaidPreBattle.this, "Defenders Fire, ");
 				}
 			};
 			final IExecutable calculateCasualties = new IExecutable()
 			{
+				private static final long serialVersionUID = 6658309931909306564L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					m_details = BattleCalculator.selectCasualties(m_attacker, m_attackingUnits, bridge, DEFENDERS_FIRE, m_dice, false, m_battleID);
@@ -358,6 +369,8 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 			};
 			final IExecutable notifyCasualties = new IExecutable()
 			{
+				private static final long serialVersionUID = 4461950841000674515L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					notifyCasualties(m_battleID, bridge, DEFENDERS_FIRE, m_dice, m_attacker, m_defender, m_details);

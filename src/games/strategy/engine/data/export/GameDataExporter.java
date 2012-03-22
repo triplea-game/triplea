@@ -798,6 +798,12 @@ public class GameDataExporter
 		}
 		
 		@Override
+		public int hashCode()
+		{
+			return _t1.hashCode() + _t2.hashCode();
+		}
+		
+		@Override
 		public boolean equals(final Object o)
 		{
 			if (o == null)

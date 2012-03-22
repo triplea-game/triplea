@@ -24,8 +24,8 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
-import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -132,7 +132,7 @@ public class BattleDisplay extends JPanel
 	
 	public BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender, final Collection<Unit> attackingUnits,
 				final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-				final GUID battleID, final MapPanel mapPanel, final String battleType)
+				final GUID battleID, final MapPanel mapPanel, final BattleType battleType)
 	{
 		m_battleID = battleID;
 		m_defender = defender;
@@ -1063,7 +1063,7 @@ class BattleModel extends DefaultTableModel
 	private final boolean m_attack;
 	private final Collection<Unit> m_units;
 	private final Territory m_location;
-	private final String m_battleType;
+	private final BattleType m_battleType;
 	
 	private static String[] varDiceArray(final GameData data)
 	{
@@ -1081,7 +1081,7 @@ class BattleModel extends DefaultTableModel
 		return diceColumns;
 	}
 	
-	BattleModel(final GameData data, final Collection<Unit> units, final Territory battleLocation, final boolean attack, final UIContext uiContext, final String battleType)
+	BattleModel(final GameData data, final Collection<Unit> units, final Territory battleLocation, final boolean attack, final UIContext uiContext, final BattleType battleType)
 	{
 		super(new Object[0][0], varDiceArray(data));
 		m_uiContext = uiContext;
@@ -1140,7 +1140,7 @@ class BattleModel extends DefaultTableModel
 			final int[] shift = new int[m_data.getDiceSides() + 1];
 			for (int i = category.getUnits().size(); i > 0; i--)
 			{
-				if (m_battleType.equals(BattleTracker.BATTLE_TYPE_AIR_BATTLE))
+				if (m_battleType.equals(BattleType.AIR_BATTLE))
 				{
 					if (m_attack)
 						strength = attachment.getAirAttack(category.getOwner());

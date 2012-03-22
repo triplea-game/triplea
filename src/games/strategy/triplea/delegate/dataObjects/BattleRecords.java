@@ -3,7 +3,9 @@ package games.strategy.triplea.delegate.dataObjects;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.net.GUID;
-import games.strategy.triplea.delegate.dataObjects.BattleRecords.BattleResult;
+import games.strategy.triplea.delegate.IBattle.BattleType;
+import games.strategy.triplea.delegate.dataObjects.BattleRecords.BattleResultDescription;
+import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,19 +24,22 @@ public class BattleRecords implements Serializable
 {
 	/**
 	 * BLITZED = conquered without a fight <br>
-	 * CONQUERED = fought, won, and took over territory <br>
+	 * CONQUERED = fought, won, and took over territory if land or convoy <br>
 	 * WON_WITHOUT_CONQUERING = fought, won, did not take over territory (could be water, or could be air attackers) <br>
 	 * WON_WITH_ENEMY_LEFT = fought, enemy either submerged or the battle is over with our objectives successful even though enemies are left <br>
 	 * STALEMATE = have units left in the territory beside enemy defenders (like both sides have transports left) <br>
 	 * LOST = either lost the battle, or retreated <br>
 	 * BOMBED = Successfully bombed something <br>
+	 * AIR_BATTLE_WON = Won an Air Battle with units surviving <br>
+	 * AIR_BATTLE_LOST = Lost an Air Battle with enemy units surviving <br>
+	 * AIR_BATTLE_STALEMATE = Neither side has air units left <br>
 	 * 
 	 * @author veqryn
 	 * 
 	 */
-	public enum BattleResult
+	public enum BattleResultDescription
 	{
-		BLITZED, CONQUERED, WON_WITHOUT_CONQUERING, WON_WITH_ENEMY_LEFT, STALEMATE, LOST, BOMBED
+		BLITZED, CONQUERED, WON_WITHOUT_CONQUERING, WON_WITH_ENEMY_LEFT, STALEMATE, LOST, BOMBED, AIR_BATTLE_WON, AIR_BATTLE_LOST, AIR_BATTLE_STALEMATE
 	}
 	
 	private final HashMap<PlayerID, HashMap<GUID, BattleRecord>> m_records = new HashMap<PlayerID, HashMap<GUID, BattleRecord>>();
@@ -124,7 +129,7 @@ public class BattleRecords implements Serializable
 		}
 	}
 	
-	public void addBattle(final PlayerID currentPlayer, final GUID battleID, final Territory battleSite, final String battleType)
+	public void addBattle(final PlayerID currentPlayer, final GUID battleID, final Territory battleSite, final BattleType battleType)
 	{
 		HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
 		if (current == null)
@@ -135,7 +140,7 @@ public class BattleRecords implements Serializable
 	}
 	
 	public void addResultToBattle(final PlayerID currentPlayer, final GUID battleID, final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
-				final BattleResult battleResult, final int bombingDamage)
+				final BattleResultDescription battleResultDescription, final int bombingDamage)
 	{
 		final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
 		if (current == null)
@@ -143,7 +148,7 @@ public class BattleRecords implements Serializable
 		if (!current.containsKey(battleID))
 			throw new IllegalStateException("Trying to add info to a battle that does not exist");
 		final BattleRecord record = current.get(battleID);
-		record.setResult(defender, attackerLostTUV, defenderLostTUV, battleResult, bombingDamage);
+		record.setResult(defender, attackerLostTUV, defenderLostTUV, battleResultDescription, null, bombingDamage);
 	}
 	
 	public void clear()
@@ -191,9 +196,10 @@ class BattleRecord implements Serializable
 	// private IntegerMap<PlayerID> m_lostTUV;
 	private int m_attackerLostTUV = 0;
 	private int m_defenderLostTUV = 0;
-	private BattleResult m_battleResult;
+	private BattleResultDescription m_battleResultDescription;
 	private int m_bombingDamage = 0;
-	private String m_battleType;
+	private BattleType m_battleType;
+	private BattleResults m_battleResults;
 	
 	protected BattleRecord(final BattleRecord record)
 	{
@@ -203,13 +209,14 @@ class BattleRecord implements Serializable
 		// m_lostTUV = new IntegerMap<PlayerID>(record.m_lostTUV);
 		m_attackerLostTUV = record.m_attackerLostTUV;
 		m_defenderLostTUV = record.m_defenderLostTUV;
-		m_battleResult = record.m_battleResult;
+		m_battleResultDescription = record.m_battleResultDescription;
 		m_bombingDamage = record.m_bombingDamage;
 		m_battleType = record.m_battleType;
+		m_battleResults = record.m_battleResults;
 	}
 	
 	protected BattleRecord(final Territory battleSite, final PlayerID attacker, final PlayerID defender, final int attackerLostTUV,
-				final int defenderLostTUV, final BattleResult battleResult, final int bombingDamage, final String battleType)
+				final int defenderLostTUV, final BattleResultDescription battleResultDescription, final BattleResults battleResults, final int bombingDamage, final BattleType battleType)
 	{
 		m_battleSite = battleSite;
 		m_attacker = attacker;
@@ -217,25 +224,28 @@ class BattleRecord implements Serializable
 		// m_lostTUV = lostTUV;
 		m_attackerLostTUV = attackerLostTUV;
 		m_defenderLostTUV = defenderLostTUV;
-		m_battleResult = battleResult;
+		m_battleResultDescription = battleResultDescription;
+		m_battleResults = battleResults;
 		m_bombingDamage = bombingDamage;
 		m_battleType = battleType;
 	}
 	
-	protected BattleRecord(final Territory battleSite, final PlayerID attacker, final String battleType)
+	protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType)
 	{
 		m_battleSite = battleSite;
 		m_attacker = attacker;
 		m_battleType = battleType;
 	}
 	
-	protected void setResult(final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV, final BattleResult battleResult, final int bombingDamage)
+	protected void setResult(final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
+				final BattleResultDescription battleResultDescription, final BattleResults battleResults, final int bombingDamage)
 	{
 		m_defender = defender;
 		// m_lostTUV = lostTUV;
 		m_attackerLostTUV = attackerLostTUV;
 		m_defenderLostTUV = defenderLostTUV;
-		m_battleResult = battleResult;
+		m_battleResultDescription = battleResultDescription;
+		m_battleResults = battleResults;
 		m_bombingDamage = bombingDamage;
 	}
 	
@@ -299,14 +309,14 @@ class BattleRecord implements Serializable
 		this.m_defenderLostTUV = defenderLostTUV;
 	}
 	
-	protected BattleResult getBattleResult()
+	protected BattleResultDescription getBattleResultDescription()
 	{
-		return m_battleResult;
+		return m_battleResultDescription;
 	}
 	
-	protected void setBattleResult(final BattleResult battleResult)
+	protected void setBattleResultDescription(final BattleResultDescription battleResult)
 	{
-		this.m_battleResult = battleResult;
+		this.m_battleResultDescription = battleResult;
 	}
 	
 	protected int getBombingDamage()
@@ -319,12 +329,12 @@ class BattleRecord implements Serializable
 		this.m_bombingDamage = bombingDamage;
 	}
 	
-	protected String getBattleType()
+	protected BattleType getBattleType()
 	{
 		return m_battleType;
 	}
 	
-	protected void setBattleType(final String battleType)
+	protected void setBattleType(final BattleType battleType)
 	{
 		this.m_battleType = battleType;
 	}

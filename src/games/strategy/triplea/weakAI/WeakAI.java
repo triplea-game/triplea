@@ -637,7 +637,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			
 			public int compare(final Territory o1, final Territory o2)
 			{
-				if (o1.equals(02))
+				if (o1.equals(o2))
 					return 0;
 				final TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
 				final TerritoryAttachment ta2 = TerritoryAttachment.get(o2);
