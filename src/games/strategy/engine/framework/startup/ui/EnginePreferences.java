@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.net.BareBonesBrowserLaunch;
+import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.ui.TripleaMenu;
 import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Triple;
@@ -78,6 +79,10 @@ public class EnginePreferences extends JDialog
 		buttonsPanel.add(new JLabel("Change Engine Properties: "));
 		buttonsPanel.add(new JLabel(" "));
 		// add buttons here:
+		SoundOptions.addGlobalSoundSwitchCheckbox(buttonsPanel);
+		buttonsPanel.add(new JLabel(" "));
+		SoundOptions.addToPanel(buttonsPanel);
+		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_lookAndFeel);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_gameParser);

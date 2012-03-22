@@ -10,9 +10,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 /**
  * Sound option window framework.
@@ -26,11 +30,11 @@ public final class SoundOptions
 	
 	/**
 	 * @param parentMenu
-	 *            menu where to add the menu item "Sound Options ..."
+	 *            menu where to add the menu item "Sound Options..."
 	 */
 	public static void addToMenu(final JMenu parentMenu)
 	{
-		final JMenuItem soundOptions = new JMenuItem("Sound Options ...");
+		final JMenuItem soundOptions = new JMenuItem("Sound Options...");
 		soundOptions.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -41,48 +45,81 @@ public final class SoundOptions
 		parentMenu.add(soundOptions);
 	}
 	
+	public static void addToPanel(final JPanel parentPanel)
+	{
+		final JButton soundOptions = new JButton("Sound Options...");
+		soundOptions.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				new SoundOptions(parentPanel);
+			}
+		});
+		parentPanel.add(soundOptions);
+	}
+	
 	public SoundOptions(final JComponent parent)
 	{
-		boolean done = false;
 		m_clipPlayer = ClipPlayer.getInstance();
 		final String ok = "OK";
 		final String cancel = "Cancel";
 		final String selectAll = "All";
 		final String selectNone = "None";
 		final ArrayList<IEditableProperty> properties = m_clipPlayer.getSoundOptions(SoundPath.SoundType.TRIPLEA);
-		while (!done)
+		final Object pressedButton = PropertiesSelector.getButton(parent, properties, new Object[] { ok, selectAll, selectNone, cancel });
+		if (pressedButton.equals(ok))
 		{
-			// TODO: this looks like bad coding.... shouldn't we use SwingUtilities.invokeAndWait(new Runnable())?
-			final Object pressedButton = PropertiesSelector.getButton(parent, properties, new Object[] { ok, selectAll, selectNone, cancel });
-			if (pressedButton.equals(ok))
+			for (final IEditableProperty property : properties)
 			{
-				for (final IEditableProperty property : properties)
-				{
-					m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), !(Boolean) property.getValue());
-				}
-				done = true;
-			}
-			else if (pressedButton.equals(cancel))
-			{
-				done = true;
-			}
-			else if (pressedButton.equals(selectAll))
-			{
-				for (final IEditableProperty property : properties)
-				{
-					property.setValue(true);
-					m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), false);
-				}
-			}
-			else if (pressedButton.equals(selectNone))
-			{
-				for (final IEditableProperty property : properties)
-				{
-					property.setValue(false);
-					m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), true);
-				}
-				
+				m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), !(Boolean) property.getValue());
 			}
 		}
+		else if (pressedButton.equals(cancel))
+		{
+		}
+		else if (pressedButton.equals(selectAll))
+		{
+			for (final IEditableProperty property : properties)
+			{
+				property.setValue(true);
+				m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), false);
+			}
+		}
+		else if (pressedButton.equals(selectNone))
+		{
+			for (final IEditableProperty property : properties)
+			{
+				property.setValue(false);
+				m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), true);
+			}
+		}
+	}
+	
+	public static void addGlobalSoundSwitchMenu(final JMenu parentMenu)
+	{
+		final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
+		soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
+		soundCheckBox.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(final ActionEvent e)
+				{
+					ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
+				}
+			});
+		parentMenu.add(soundCheckBox);
+	}
+	
+	public static void addGlobalSoundSwitchCheckbox(final JPanel parentPanel)
+	{
+		final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
+		soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
+		soundCheckBox.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(final ActionEvent e)
+				{
+					ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
+				}
+			});
+		parentPanel.add(soundCheckBox);
 	}
 }

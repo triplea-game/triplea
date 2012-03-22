@@ -10,7 +10,6 @@ import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.net.BareBonesBrowserLaunch;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
-import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundOptions;
 import games.strategy.util.MD5Crypt;
 
@@ -381,7 +380,7 @@ public class LobbyMenu extends JMenuBar
 	{
 		final JMenu settings = new JMenu("Settings");
 		menuBar.add(settings);
-		addSoundSwitchMenu(settings);
+		SoundOptions.addGlobalSoundSwitchMenu(settings);
 		SoundOptions.addToMenu(settings);
 		addChatTimeMenu(settings);
 	}
@@ -540,20 +539,6 @@ public class LobbyMenu extends JMenuBar
 		});
 		chatTimeBox.setSelected(true);
 		parentMenu.add(chatTimeBox);
-	}
-	
-	private void addSoundSwitchMenu(final JMenu parentMenu)
-	{
-		final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
-		soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
-		soundCheckBox.addActionListener(new ActionListener()
-			{
-				public void actionPerformed(final ActionEvent e)
-				{
-					ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
-				}
-			});
-		parentMenu.add(soundCheckBox);
 	}
 	
 	private void addUpdateAccountMenu(final JMenu account)
