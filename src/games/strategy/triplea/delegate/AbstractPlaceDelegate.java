@@ -360,7 +360,9 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
 		if (Matches.TerritoryIsWater.match(to))
 		{
-			for (final Territory current : getAllProducers(to, m_player, units))
+			// We use the "simpleCheck" because even if we return extra territories that technically can't produce, it doesn't matter because all we are doing is get the units already produced from there.
+			// We do this to avoid the infinite loop (getAllProducers -> canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc).
+			for (final Territory current : getAllProducers(to, m_player, units, true))
 			{
 				unitsPlacedAlready.addAll(getAlreadyProduced(current));
 			}
@@ -976,12 +978,34 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	
 	protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
+		return canProduce(producer, to, units, player, false);
+	}
+	
+	/**
+	 * Tests if this territory can produce units. (Does not check if it has space left to do so)
+	 * 
+	 * @param producer
+	 *            - Territory doing the producing.
+	 * @param to
+	 *            - Territory to be placed in.
+	 * @param units
+	 *            - Units to be placed.
+	 * @param player
+	 *            - Player doing the placing.
+	 * @param simpleCheck
+	 *            - If true you return true even if a factory is not present. Used when you do not want an infinite loop (getAllProducers -> canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
+	 * @return - null if allowed to produce, otherwise an error String.
+	 */
+	protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player, final boolean simpleCheck)
+	{
 		if (!producer.getOwner().equals(player))
 			return producer.getName() + " is not owned by you";
 		// make sure the territory wasnt conquered this turn
 		if (wasConquered(producer) && !isPlacementAllowedInCapturedTerritory(player))
 			return producer.getName() + " was conquered this turn and cannot produce till next turn";
 		if (isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))
+			return null;
+		if (simpleCheck)
 			return null;
 		// units can be null if we are just testing the territory itself...
 		final Collection<Unit> testUnits = (units == null ? new ArrayList<Unit>() : units);
@@ -1130,11 +1154,25 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		return neighborFactory;
 	}
 	
-	/**
-	 * Returns the territories that would do the producing if units are to be placed in
-	 * a given territory. Returns an empty list if no suitable territory could be found.
-	 */
 	protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace)
+	{
+		return getAllProducers(to, player, unitsToPlace, false);
+	}
+	
+	/**
+	 * Returns the territories that would do the producing if units are to be placed in a given territory. Returns an empty list if no suitable territory could be found.
+	 * 
+	 * @param to
+	 *            - Territory to place in.
+	 * @param player
+	 *            - player that is placing.
+	 * @param unitsToPlace
+	 *            - Can be null, otherwise is the units that will be produced.
+	 * @param simpleCheck
+	 *            - If true you return true even if a factory is not present. Used when you do not want an infinite loop (getAllProducers -> canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
+	 * @return - List of territories that can produce here.
+	 */
+	protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace, final boolean simpleCheck)
 	{
 		final List<Territory> producers = new ArrayList<Territory>();
 		// if not water then must produce in that territory
@@ -1145,7 +1183,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		}
 		for (final Territory current : getData().getMap().getNeighbors(to))
 		{
-			if (canProduce(current, to, unitsToPlace, player) == null)
+			if (canProduce(current, to, unitsToPlace, player, simpleCheck) == null)
 			{
 				final Collection<Unit> unitsInTO = current.getUnits().getUnits();
 				final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(current);

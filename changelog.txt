@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Fixed infinite loop in getAllProducers for a sea placement. (veqryn)
+
 * Removing BattleResults from BattleRecord until we figure out the problem (probably non Serializable) with it always causing the BattleRecordsList to be null. (veqryn) 
 
 * Moved all AI related code to new package. (veqryn)
