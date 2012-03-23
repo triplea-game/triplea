@@ -19,6 +19,7 @@ import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.util.IntegerMap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ import java.util.Map;
  * @author abstraction done by Erik von der Osten & Chris Duncan
  * 
  */
-abstract public class AbstractBattle implements IBattle
+abstract public class AbstractBattle implements IBattle, Serializable
 {
 	private static final long serialVersionUID = 871090498661731337L;
 	protected final GUID m_battleID = new GUID();

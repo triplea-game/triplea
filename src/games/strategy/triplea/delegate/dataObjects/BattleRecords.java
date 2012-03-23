@@ -236,7 +236,8 @@ class BattleRecord implements Serializable
 	private BattleResultDescription m_battleResultDescription;
 	private int m_bombingDamage = 0;
 	private BattleType m_battleType;
-	private BattleResults m_battleResults;
+	
+	// private BattleResults m_battleResults; // TODO: something in BattleResults can not be Serialized, which is causing MAJOR problems.
 	
 	protected BattleRecord(final BattleRecord record)
 	{
@@ -249,7 +250,7 @@ class BattleRecord implements Serializable
 		m_battleResultDescription = record.m_battleResultDescription;
 		m_bombingDamage = record.m_bombingDamage;
 		m_battleType = record.m_battleType;
-		m_battleResults = record.m_battleResults;
+		// m_battleResults = record.m_battleResults;
 	}
 	
 	protected BattleRecord(final Territory battleSite, final PlayerID attacker, final PlayerID defender, final int attackerLostTUV,
@@ -262,7 +263,7 @@ class BattleRecord implements Serializable
 		m_attackerLostTUV = attackerLostTUV;
 		m_defenderLostTUV = defenderLostTUV;
 		m_battleResultDescription = battleResultDescription;
-		m_battleResults = battleResults;
+		// m_battleResults = battleResults;
 		m_bombingDamage = bombingDamage;
 		m_battleType = battleType;
 	}
@@ -282,7 +283,7 @@ class BattleRecord implements Serializable
 		m_attackerLostTUV = attackerLostTUV;
 		m_defenderLostTUV = defenderLostTUV;
 		m_battleResultDescription = battleResultDescription;
-		m_battleResults = battleResults;
+		// m_battleResults = battleResults;
 		m_bombingDamage = bombingDamage;
 	}
 	

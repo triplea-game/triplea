@@ -1,4 +1,6 @@
 Changes for 1.5.2
+* Removing BattleResults from BattleRecord until we figure out the problem (probably non Serializable) with it always causing the BattleRecordsList to be null. (veqryn) 
+
 * Moved all AI related code to new package. (veqryn)
 
 * Fixing the bugs introduced into the engine, and the failing unit tests due to changes in how battles were abstracted, and how they are now recorded when finished. (veqryn)

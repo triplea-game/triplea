@@ -1385,16 +1385,16 @@ class AddBattleRecordsChange extends Change
 		m_oldRecords = data.getBattleRecordsList().getBattleRecordsMap();
 		m_newRecords = data.getBattleRecordsList().getBattleRecordsMap();
 		BattleRecordsList.addRecords(m_newRecords, data.getSequence().getRound(), battleRecords);
-		if (m_newRecords == null || m_oldRecords == null)
-			throw new IllegalStateException(m_newRecords + " and " + m_oldRecords); // TODO: remove after debugging why the hell we are getting this
+		/*if (m_newRecords == null || m_oldRecords == null)
+			throw new IllegalStateException("Records can not be null (most likely caused by improper or impossible serialization): " + m_newRecords + " and " + m_oldRecords);*/
 	}
 	
 	AddBattleRecordsChange(final Map<Integer, BattleRecords> newList, final Map<Integer, BattleRecords> oldList)
 	{
 		m_oldRecords = oldList;
 		m_newRecords = newList;
-		if (m_newRecords == null || m_oldRecords == null)
-			throw new IllegalStateException(m_newRecords + " and " + m_oldRecords); // TODO: remove after debugging why the hell we are getting this
+		/*if (m_newRecords == null || m_oldRecords == null)
+			throw new IllegalStateException("Records can not be null (most likely caused by improper or impossible serialization): " + m_newRecords + " and " + m_oldRecords);*/
 	}
 	
 	@Override
@@ -1412,8 +1412,9 @@ class AddBattleRecordsChange extends Change
 	@Override
 	public String toString()
 	{
+		// This only occurs when serialization went badly, or something can not be serialized.
 		if (m_newRecords == null || m_oldRecords == null)
-			throw new IllegalStateException(m_newRecords + " and " + m_oldRecords); // TODO: remove after debugging why the hell we are getting this
+			throw new IllegalStateException("Records can not be null (most likely caused by improper or impossible serialization): " + m_newRecords + " and " + m_oldRecords);
 		return "New Battle Record: [" + m_newRecords + "] and Old Battle Record: [" + m_oldRecords + "]";
 	}
 }
