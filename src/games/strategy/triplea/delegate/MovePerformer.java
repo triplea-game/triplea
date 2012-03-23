@@ -212,6 +212,7 @@ public class MovePerformer implements Serializable
 								&& route.allMatch(Matches.territoryHasNoEnemyUnits(id, data)) && Match.someMatch(arrivingUnits[0], Matches.UnitIsLand)
 								&& Match.noneMatch(arrivingUnits[0], Matches.UnitIsSea))
 					{
+						// We are in non-combat move phase, and we are taking over friendly territories. No need for a battle. (This could get really difficult if we want these recorded in battle records).
 						for (final Territory t : route.getMatches(new CompositeMatchAnd<Territory>(
 									Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
 									Matches.TerritoryIsBlitzable(id, data))))

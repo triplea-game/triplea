@@ -88,7 +88,11 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	{
 		super(battleSite, attacker, battleTracker, true, BattleType.BOMBING_RAID, data);
 		m_isAmphibious = false;
-		
+		updateDefendingUnits();
+	}
+	
+	protected void updateDefendingUnits()
+	{
 		// fill in defenders
 		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker,
 					Matches.UnitIsAAforBombingThisUnitOnly, m_data));
@@ -104,18 +108,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		}
 	}
 	
-	/*@Override
-	public List<Unit> getDefendingUnits()
-	{
-		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker,
-					Matches.UnitIsAAforBombingThisUnitOnly, m_data));
-		if (m_targets.isEmpty())
-			return Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
-		final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
-		targets.addAll(m_targets.keySet());
-		return targets;
-	}*/
-
 	@Override
 	public boolean isEmpty()
 	{
@@ -178,7 +170,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			m_stack.execute(bridge);
 			return;
 		}
-		final StrategicBombingRaidBattle thisBattle = this;
+		// We update Defending Units twice: first time when the battle is created, and second time before the battle begins.
+		// The reason is because when the battle is created, there are no attacking units yet in it, meaning that m_targets is empty. We need to update right as battle begins to know we have the full list of targets.
+		updateDefendingUnits();
 		bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite);
 		bridge.getHistoryWriter().setRenderingData(m_battleSite);
 		BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
@@ -291,9 +285,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		else
 			getDisplay(bridge).battleEnd(m_battleID, "Bombing raid cost " + m_bombingRaidTotal + " " + MyFormatter.pluralize("PU", m_bombingRaidTotal));
 		if (m_bombingRaidTotal > 0)
+		{
+			m_whoWon = WhoWon.ATTACKER;
 			m_battleResultDescription = BattleRecords.BattleResultDescription.BOMBED;
+		}
 		else
+		{
+			m_whoWon = WhoWon.DEFENDER;
 			m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
+		}
 		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this),
 					m_bombingRaidTotal);
 		m_isOver = true;

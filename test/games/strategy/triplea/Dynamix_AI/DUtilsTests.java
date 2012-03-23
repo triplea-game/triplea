@@ -60,6 +60,7 @@ public class DUtilsTests extends TestCase
 		attacking.add(infantry.create(superior));
 		DOddsCalculator.SetGameData(m_data);
 		final AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
+		final double test = results.getAttackerWinPercent();
 		assertEquals(1.0D, results.getAttackerWinPercent());
 		assertEquals(1.0D, results.getAverageAttackingUnitsLeft());
 		assertEquals(0.0D, results.getAverageDefendingUnitsLeft());

@@ -67,6 +67,7 @@ abstract public class AbstractBattle implements IBattle
 		m_battleType = battleType;
 		m_data = data;
 		m_defender = findDefender(battleSite, attacker, data);
+		// Make sure that if any of the incoming data is null, we are still OK (tests and mockbattle use null for a lot of this stuff)
 	}
 	
 	public Collection<Unit> getDependentUnits(final Collection<Unit> units)
@@ -248,6 +249,13 @@ abstract public class AbstractBattle implements IBattle
 		{
 			defender = battleSite.getOwner();
 		}
+		if (data == null || attacker == null)
+		{
+			// This is needed for many TESTs, so do not delete
+			if (defender == null)
+				return PlayerID.NULL_PLAYERID;
+			return defender;
+		}
 		if (defender == null || battleSite.isWater() || !data.getRelationshipTracker().isAtWar(attacker, defender))
 		{
 			// if water find the defender based on who has the most units in the territory
@@ -270,7 +278,7 @@ abstract public class AbstractBattle implements IBattle
 			}*/
 		}
 		if (defender == null)
-			defender = PlayerID.NULL_PLAYERID;
+			return PlayerID.NULL_PLAYERID;
 		return defender;
 	}
 	

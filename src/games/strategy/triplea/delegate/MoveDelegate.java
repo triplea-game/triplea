@@ -525,7 +525,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	
 	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded)
 	{
-		return move(units, route, Collections.<Unit> emptyList(), new HashMap<Unit, Collection<Unit>>());
+		return move(units, route, transportsThatCanBeLoaded, new HashMap<Unit, Collection<Unit>>());
 	}
 	
 	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents)

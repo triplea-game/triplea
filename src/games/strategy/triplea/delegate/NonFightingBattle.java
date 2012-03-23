@@ -80,12 +80,14 @@ public class NonFightingBattle extends AbstractBattle
 		final boolean someAttacking = hasAttackingUnits();
 		if (someAttacking)
 		{
+			m_whoWon = WhoWon.ATTACKER;
 			m_battleResultDescription = BattleRecords.BattleResultDescription.BLITZED;
 			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, null);
 			m_battleTracker.addToConquered(m_battleSite);
 		}
 		else
 		{
+			m_whoWon = WhoWon.DEFENDER;
 			m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
 		}
 		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this), 0);

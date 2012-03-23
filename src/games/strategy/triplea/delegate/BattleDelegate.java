@@ -407,8 +407,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			if (battle != null && (ignoreTransports && Match.allMatch(attackingUnits, seaTransports) && Match.allMatch(enemyUnits, seaTransports))
 						|| ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert())))
 			{
-				final BattleResults results = new BattleResults(battle);
-				results.setWhoWon(WhoWon.DRAW);
+				final BattleResults results = new BattleResults(battle, WhoWon.DRAW);
 				m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.STALEMATE, results, 0);
 				m_battleTracker.removeBattle(battle);
 				continue;
@@ -423,8 +422,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				{
 					if (!remotePlayer.selectAttackTransports(territory))
 					{
-						final BattleResults results = new BattleResults(battle);
-						results.setWhoWon(WhoWon.ATTACKER);
+						final BattleResults results = new BattleResults(battle, WhoWon.ATTACKER);
 						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT, results, 0);
 						m_battleTracker.removeBattle(battle);
 						// TODO perhaps try to reverse the setting of 0 movement left
@@ -444,8 +442,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				{
 					if (!remotePlayer.selectAttackSubs(territory))
 					{
-						final BattleResults results = new BattleResults(battle);
-						results.setWhoWon(WhoWon.ATTACKER);
+						final BattleResults results = new BattleResults(battle, WhoWon.ATTACKER);
 						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT, results, 0);
 						m_battleTracker.removeBattle(battle);
 					}
@@ -456,8 +453,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				{
 					if (!remotePlayer.selectAttackUnits(territory))
 					{
-						final BattleResults results = new BattleResults(battle);
-						results.setWhoWon(WhoWon.ATTACKER);
+						final BattleResults results = new BattleResults(battle, WhoWon.ATTACKER);
 						m_battleTracker.getBattleRecords().addResultToBattle(player, battle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT, results, 0);
 						m_battleTracker.removeBattle(battle);
 					}

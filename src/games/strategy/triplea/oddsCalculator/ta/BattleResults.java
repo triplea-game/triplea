@@ -15,9 +15,14 @@ public class BattleResults implements Serializable
 	private final int m_attackingCombatUnitsLeft;
 	private final int m_defendingCombatUnitsLeft;
 	private final int m_battleRoundsFought;
-	private final IBattle m_battle;
+	private final IBattle m_battle; // TODO: maybe this is too much memory overhead to keep this here?
 	private WhoWon m_whoWon;
 	
+	/**
+	 * This battle must have been fought. If fight() was not run on this battle, then the WhoWon will not have been set yet, which will give an error with this constructor.
+	 * 
+	 * @param battle
+	 */
 	public BattleResults(final IBattle battle)
 	{
 		// m_attackingUnitsLeft = battle.getRemainingAttackingUnits().size();
@@ -27,6 +32,23 @@ public class BattleResults implements Serializable
 		m_battleRoundsFought = battle.getBattleRound();
 		m_battle = battle;
 		m_whoWon = battle.getWhoWon();
+		if (m_whoWon == WhoWon.NOTFINISHED)
+			throw new IllegalStateException("Battle not finished yet: " + m_battle);
+	}
+	
+	/**
+	 * This battle may or may not have been fought already. Use this for pre-setting the WhoWon flag.
+	 * 
+	 * @param battle
+	 * @param scriptedWhoWon
+	 */
+	public BattleResults(final IBattle battle, final WhoWon scriptedWhoWon)
+	{
+		m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
+		m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
+		m_battleRoundsFought = battle.getBattleRound();
+		m_battle = battle;
+		m_whoWon = scriptedWhoWon;
 	}
 	
 	public void setWhoWon(final WhoWon whoWon)

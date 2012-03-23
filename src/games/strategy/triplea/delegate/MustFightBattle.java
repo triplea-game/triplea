@@ -2759,6 +2759,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			final IntegerMap<UnitType> costs = BattleCalculator.getCostsForTUV(m_attacker, m_data);
 			final int tuvLostAttacker = BattleCalculator.getTUV(lost, m_attacker, costs, m_data);
 			m_attackerLostTUV += tuvLostAttacker;
+			m_whoWon = WhoWon.DEFENDER;
 			if (!m_headless)
 				m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, BattleRecords.BattleResultDescription.LOST,
 							new BattleResults(this), 0);

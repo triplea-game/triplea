@@ -46,6 +46,7 @@ import games.strategy.triplea.Dynamix_AI.UI.UI;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -2183,7 +2184,7 @@ public class DUtils
 	{
 		final MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
 		battle.setUnits(new ArrayList<Unit>(), attacking, new ArrayList<Unit>(), PlayerID.NULL_PLAYERID);
-		final BattleResults result = new BattleResults(battle);
+		final BattleResults result = new BattleResults(battle, WhoWon.ATTACKER);
 		final AggregateResults dWins = new AggregateResults(1);
 		dWins.addResult(result);
 		return dWins;
@@ -2193,7 +2194,7 @@ public class DUtils
 	{
 		final MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
 		battle.setUnits(defending, new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID);
-		final BattleResults result = new BattleResults(battle);
+		final BattleResults result = new BattleResults(battle, WhoWon.DEFENDER);
 		final AggregateResults dWins = new AggregateResults(1);
 		dWins.addResult(result);
 		return dWins;
@@ -2203,7 +2204,7 @@ public class DUtils
 	{
 		final MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
 		battle.setUnits(new ArrayList<Unit>(), new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID);
-		final BattleResults result = new BattleResults(battle);
+		final BattleResults result = new BattleResults(battle, WhoWon.DRAW);
 		final AggregateResults dWins = new AggregateResults(1);
 		dWins.addResult(result);
 		return dWins;

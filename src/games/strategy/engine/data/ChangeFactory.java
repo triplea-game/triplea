@@ -54,6 +54,8 @@ public class ChangeFactory
 {
 	public static final Change EMPTY_CHANGE = new Change()
 	{
+		private static final long serialVersionUID = -5514560889478876641L;
+		
 		@Override
 		protected void perform(final GameData data)
 		{
@@ -831,6 +833,7 @@ class ChangeResourceChange extends Change
 
 class SetPropertyChange extends Change
 {
+	private static final long serialVersionUID = -1377597975513821508L;
 	private final String m_property;
 	private final Object m_value;
 	private final Object m_oldValue;
@@ -874,6 +877,7 @@ class SetPropertyChange extends Change
 
 class AddProductionRule extends Change
 {
+	private static final long serialVersionUID = 2583955907289570063L;
 	private final ProductionRule m_rule;
 	private final ProductionFrontier m_frontier;
 	
@@ -912,6 +916,7 @@ class AddProductionRule extends Change
 
 class RemoveProductionRule extends Change
 {
+	private static final long serialVersionUID = 2312599802275503095L;
 	private final ProductionRule m_rule;
 	private final ProductionFrontier m_frontier;
 	
@@ -950,6 +955,7 @@ class RemoveProductionRule extends Change
 
 class AddAvailableTech extends Change
 {
+	private static final long serialVersionUID = 5664428883866434959L;
 	private final TechAdvance m_tech;
 	private final TechnologyFrontier m_frontier;
 	private final PlayerID m_player;
@@ -991,6 +997,7 @@ class AddAvailableTech extends Change
 
 class RemoveAvailableTech extends Change
 {
+	private static final long serialVersionUID = 6131447662760022521L;
 	private final TechAdvance m_tech;
 	private final TechnologyFrontier m_frontier;
 	private final PlayerID m_player;
@@ -1032,6 +1039,7 @@ class RemoveAvailableTech extends Change
 
 class AddAttachmentChange extends Change
 {
+	private static final long serialVersionUID = -21015135248288454L;
 	private final IAttachment m_attachment;
 	private final String m_originalAttachmentName;
 	private final Attachable m_originalAttachable;
@@ -1075,6 +1083,7 @@ class AddAttachmentChange extends Change
 
 class RemoveAttachmentChange extends Change
 {
+	private static final long serialVersionUID = 6365648682759047674L;
 	private final IAttachment m_attachment;
 	private final String m_originalAttachmentName;
 	private final Attachable m_originalAttachable;
@@ -1095,12 +1104,14 @@ class RemoveAttachmentChange extends Change
 	{
 		/*if (m_attachment == null || m_originalAttachmentName == null || m_originalAttachable == null || m_attachable == null || m_name == null)
 			throw new IllegalStateException("RemoveAttachmentChange may not have null arguments");*/
-		final Map<String, IAttachment> attachments = m_attachable.getAttachments();
+		m_attachable.getAttachments().remove(m_name);
+		m_attachment.setAttachedTo(null);
+		/*final Map<String, IAttachment> attachments = m_attachable.getAttachments();
 		attachments.remove(m_attachment);
 		m_attachment.setAttachedTo(m_attachable);
 		m_attachment.setName(m_name);
 		if (m_attachable != null)
-			m_attachable.addAttachment(m_name, m_attachment);
+			m_attachable.addAttachment(m_name, m_attachment);*/
 	}
 	
 	@Override
@@ -1169,6 +1180,7 @@ class ProductionFrontierChange extends Change
 
 class GameSequenceChange extends Change
 {
+	private static final long serialVersionUID = -8925565771506676074L;
 	private final GameStep[] m_oldSteps;
 	private final GameStep[] m_newSteps;
 	
@@ -1220,6 +1232,7 @@ class GameSequenceChange extends Change
 
 class ObjectPropertyChange extends Change
 {
+	private static final long serialVersionUID = 4218093376094170940L;
 	private final Object m_object;
 	private String m_property;
 	private Object m_newValue;
@@ -1293,6 +1306,7 @@ class ObjectPropertyChange extends Change
 
 class GenericTechChange extends Change
 {
+	private static final long serialVersionUID = -2439447526511535571L;
 	private final Attachable m_attachedTo;
 	private final String m_attachmentName;
 	private final Boolean m_newValue;
@@ -1361,6 +1375,7 @@ class GenericTechChange extends Change
  */
 class AddBattleRecordsChange extends Change
 {
+	private static final long serialVersionUID = -6927678548172402611L;
 	private final Map<Integer, BattleRecords> m_newRecords;
 	private final Map<Integer, BattleRecords> m_oldRecords;
 	
@@ -1370,12 +1385,16 @@ class AddBattleRecordsChange extends Change
 		m_oldRecords = data.getBattleRecordsList().getBattleRecordsMap();
 		m_newRecords = data.getBattleRecordsList().getBattleRecordsMap();
 		BattleRecordsList.addRecords(m_newRecords, data.getSequence().getRound(), battleRecords);
+		if (m_newRecords == null || m_oldRecords == null)
+			throw new IllegalStateException(m_newRecords + " and " + m_oldRecords); // TODO: remove after debugging why the hell we are getting this
 	}
 	
 	AddBattleRecordsChange(final Map<Integer, BattleRecords> newList, final Map<Integer, BattleRecords> oldList)
 	{
 		m_oldRecords = oldList;
 		m_newRecords = newList;
+		if (m_newRecords == null || m_oldRecords == null)
+			throw new IllegalStateException(m_newRecords + " and " + m_oldRecords); // TODO: remove after debugging why the hell we are getting this
 	}
 	
 	@Override
@@ -1395,7 +1414,7 @@ class AddBattleRecordsChange extends Change
 	{
 		if (m_newRecords == null || m_oldRecords == null)
 			throw new IllegalStateException(m_newRecords + " and " + m_oldRecords); // TODO: remove after debugging why the hell we are getting this
-		return "New Battle Record: [" + (m_newRecords == null ? "null" : m_newRecords.toString()) + "] and Old Battle Record: [" + (m_oldRecords == null ? "null" : m_oldRecords.toString()) + "]";
+		return "New Battle Record: [" + m_newRecords + "] and Old Battle Record: [" + m_oldRecords + "]";
 	}
 }
 

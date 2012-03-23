@@ -108,6 +108,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 					String text;
 					if (Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber))
 					{
+						m_whoWon = WhoWon.ATTACKER;
 						if (m_defendingUnits.isEmpty())
 							m_battleResultDescription = BattleRecords.BattleResultDescription.WON_WITHOUT_CONQUERING;
 						else
@@ -116,11 +117,13 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 					}
 					else if (!m_attackingUnits.isEmpty())
 					{
+						m_whoWon = WhoWon.DRAW;
 						m_battleResultDescription = BattleRecords.BattleResultDescription.STALEMATE;
 						text = "Air Battle is over, the bombers have all died";
 					}
 					else
 					{
+						m_whoWon = WhoWon.DEFENDER;
 						m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
 						text = "Air Battle is over, the bombers have all died";
 					}
