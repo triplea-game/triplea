@@ -249,9 +249,12 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 					{
 						// PlayerOwnerChange
 						final Collection<Unit> units = currTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(Player), Matches.UnitCanBeGivenByTerritoryTo(terrNewOwner)));
-						final Change changeOwner = ChangeFactory.changeOwner(units, terrNewOwner, currTerritory);
-						aBridge.getHistoryWriter().addChildToEvent(changeOwner.toString());
-						aBridge.addChange(changeOwner);
+						if (!units.isEmpty())
+						{
+							final Change changeOwner = ChangeFactory.changeOwner(units, terrNewOwner, currTerritory);
+							aBridge.getHistoryWriter().addChildToEvent(changeOwner.toString());
+							aBridge.addChange(changeOwner);
+						}
 					}
 				}
 			}

@@ -426,7 +426,7 @@ public class CM_Task
 			int timesWeReachLeftoverLUnitsGoal = 0;
 			for (final BattleResults result : simulatedAttack.m_results)
 			{
-				if (Match.getMatches(result.getBattle().getAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
+				if (Match.getMatches(result.getRemainingAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
 					timesWeReachLeftoverLUnitsGoal++;
 			}
 			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.m_results.size();
@@ -474,7 +474,7 @@ public class CM_Task
 			int timesWeReachLeftoverLUnitsGoal = 0;
 			for (final BattleResults result : simulatedAttack.m_results)
 			{
-				if (Match.getMatches(result.getBattle().getAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
+				if (Match.getMatches(result.getRemainingAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
 					timesWeReachLeftoverLUnitsGoal++;
 			}
 			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.m_results.size();
@@ -708,7 +708,7 @@ public class CM_Task
 			int timesWeReachLeftoverLUnitsGoal = 0;
 			for (final BattleResults result : simulatedAttack.m_results)
 			{
-				if (Match.getMatches(result.getBattle().getAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
+				if (Match.getMatches(result.getRemainingAttackingUnits(), Matches.UnitIsLand).size() >= m_attackTrade_leftoverLandUnits)
 					timesWeReachLeftoverLUnitsGoal++;
 			}
 			final float certaintyOfReachingLUnitsCount = (float) timesWeReachLeftoverLUnitsGoal / (float) simulatedAttack.m_results.size();

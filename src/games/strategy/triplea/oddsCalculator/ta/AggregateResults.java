@@ -51,28 +51,14 @@ public class AggregateResults implements Serializable
 		return closestBattle;
 	}
 	
-	public MustFightBattle GetBattleClosestToAverage()
-	{
-		final BattleResults battleR = GetBattleResultsClosestToAverage();
-		if (battleR == null)
-			return null;
-		return (MustFightBattle) battleR.getBattle();
-	}
-	
 	public List<Unit> GetAverageAttackingUnitsRemaining()
 	{
-		final MustFightBattle battle = GetBattleClosestToAverage();
-		if (battle == null)
-			return null;
-		return battle.getRemainingAttackingUnits();
+		return GetBattleResultsClosestToAverage().getRemainingAttackingUnits();
 	}
 	
 	public List<Unit> GetAverageDefendingUnitsRemaining()
 	{
-		final MustFightBattle battle = GetBattleClosestToAverage();
-		if (battle == null)
-			return null;
-		return battle.getRemainingDefendingUnits();
+		return GetBattleResultsClosestToAverage().getRemainingDefendingUnits();
 	}
 	
 	public double getAverageAttackingUnitsLeft()

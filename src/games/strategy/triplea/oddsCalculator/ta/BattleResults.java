@@ -1,11 +1,13 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
+import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class BattleResults implements Serializable
 {
@@ -15,8 +17,11 @@ public class BattleResults implements Serializable
 	private final int m_attackingCombatUnitsLeft;
 	private final int m_defendingCombatUnitsLeft;
 	private final int m_battleRoundsFought;
-	private final IBattle m_battle; // TODO: maybe this is too much memory overhead to keep this here?
+	final List<Unit> m_remainingAttackingUnits;
+	final List<Unit> m_remainingDefendingUnits;
 	private WhoWon m_whoWon;
+	
+	// FYI: do not save the battle in BattleResults. It is both too much memory overhead, and also causes problems with BattleResults being saved into BattleRecords
 	
 	/**
 	 * This battle must have been fought. If fight() was not run on this battle, then the WhoWon will not have been set yet, which will give an error with this constructor.
@@ -30,10 +35,11 @@ public class BattleResults implements Serializable
 		// m_defendingUnitsLeft = battle.getRemainingDefendingUnits().size();
 		m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
 		m_battleRoundsFought = battle.getBattleRound();
-		m_battle = battle;
+		m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
+		m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
 		m_whoWon = battle.getWhoWon();
 		if (m_whoWon == WhoWon.NOTFINISHED)
-			throw new IllegalStateException("Battle not finished yet: " + m_battle);
+			throw new IllegalStateException("Battle not finished yet: " + battle);
 	}
 	
 	/**
@@ -47,18 +53,14 @@ public class BattleResults implements Serializable
 		m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
 		m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
 		m_battleRoundsFought = battle.getBattleRound();
-		m_battle = battle;
+		m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
+		m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
 		m_whoWon = scriptedWhoWon;
 	}
 	
 	public void setWhoWon(final WhoWon whoWon)
 	{
 		m_whoWon = whoWon;
-	}
-	
-	public IBattle getBattle()
-	{
-		return m_battle;
 	}
 	
 	/*public int getAttackingUnitsLeft()
@@ -71,6 +73,26 @@ public class BattleResults implements Serializable
 		return m_defendingUnitsLeft;
 	}*/
 
+	public List<Unit> getRemainingAttackingUnits()
+	{
+		return m_remainingAttackingUnits;
+	}
+	
+	public List<Unit> getRemainingDefendingUnits()
+	{
+		return m_remainingDefendingUnits;
+	}
+	
+	public List<Unit> getRemainingAttackingCombatUnits()
+	{
+		return Match.getMatches(m_remainingAttackingUnits, Matches.UnitIsDestructibleInCombatShort);
+	}
+	
+	public List<Unit> getRemainingDefendingCombatUnits()
+	{
+		return Match.getMatches(m_remainingDefendingUnits, Matches.UnitIsDestructibleInCombatShort);
+	}
+	
 	public int getAttackingCombatUnitsLeft()
 	{
 		return m_attackingCombatUnitsLeft;
