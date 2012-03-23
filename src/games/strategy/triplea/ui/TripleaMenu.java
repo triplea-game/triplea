@@ -33,7 +33,7 @@ import games.strategy.engine.random.IRandomStats;
 import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.engine.stats.IStat;
 import games.strategy.sound.SoundOptions;
-import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
+import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.image.TileImageFactory;

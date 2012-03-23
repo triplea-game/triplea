@@ -32,14 +32,14 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
-import games.strategy.triplea.Dynamix_AI.Dynamix_AI;
+import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
+import games.strategy.triplea.ai.strongAI.StrongAI;
+import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.strongAI.StrongAI;
 import games.strategy.triplea.ui.TripleAFrame;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 import games.strategy.triplea.ui.display.TripleaDisplay;
-import games.strategy.triplea.weakAI.WeakAI;
 
 import java.awt.Frame;
 import java.io.IOException;

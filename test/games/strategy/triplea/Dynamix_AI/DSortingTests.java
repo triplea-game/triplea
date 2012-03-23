@@ -14,6 +14,7 @@
 package games.strategy.triplea.Dynamix_AI;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.triplea.ai.Dynamix_AI.DSorting;
 import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.util.ArrayList;

@@ -17,7 +17,8 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.TripleA;
-import games.strategy.triplea.baseAI.AIUtils;
+import games.strategy.triplea.ai.AIUtils;
+import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.xml.LoadGameUtil;
 import junit.framework.TestCase;
 

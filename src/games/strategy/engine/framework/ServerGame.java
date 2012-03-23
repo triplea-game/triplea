@@ -49,7 +49,7 @@ import games.strategy.engine.random.RandomStats;
 import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.triplea.TripleAPlayer;
-import games.strategy.triplea.Dynamix_AI.CommandCenter.CachedInstanceCenter;
+import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.ui.ErrorHandler;
 
 import java.io.ByteArrayOutputStream;

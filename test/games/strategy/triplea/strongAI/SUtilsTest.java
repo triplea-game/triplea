@@ -1,5 +1,6 @@
 package games.strategy.triplea.strongAI;
 
+import games.strategy.triplea.ai.strongAI.SUtils;
 import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;

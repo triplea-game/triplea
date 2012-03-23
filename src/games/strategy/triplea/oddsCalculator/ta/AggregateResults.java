@@ -1,7 +1,7 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
 import games.strategy.engine.data.Unit;
-import games.strategy.triplea.Dynamix_AI.DUtils;
+import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.delegate.MustFightBattle;
 
 import java.io.Serializable;

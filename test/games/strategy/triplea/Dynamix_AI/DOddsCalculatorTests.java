@@ -18,6 +18,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
+import games.strategy.triplea.ai.Dynamix_AI.DOddsCalculator;
+import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
 import games.strategy.triplea.xml.LoadGameUtil;
 

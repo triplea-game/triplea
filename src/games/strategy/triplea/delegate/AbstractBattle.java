@@ -12,11 +12,11 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleA;
+import games.strategy.triplea.ai.weakAI.WeakAI;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords.BattleResultDescription;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
-import games.strategy.triplea.weakAI.WeakAI;
 import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;

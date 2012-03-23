@@ -26,7 +26,7 @@ import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
-import games.strategy.triplea.Dynamix_AI.DUtils;
+import games.strategy.triplea.ai.Dynamix_AI.DUtils;
 import games.strategy.util.MD5Crypt;
 
 import java.util.Date;
