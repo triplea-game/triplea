@@ -186,7 +186,8 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	{
 		// instead of using up a "use" with every action, we will instead use up a "use" if the trigger is fired during this round
 		// this is in order to let a trigger that contains multiple actions, fire all of them in a single use
-		if (!m_usedThisRound && m_uses > 0)
+		// we only do this for things that do not have m_when set. triggers with m_when set have their uses modified elsewhere.
+		if (!m_usedThisRound && m_uses > 0 && m_when == null)
 		{
 			aBridge.addChange(ChangeFactory.attachmentPropertyChange(this, true, "usedThisRound"));
 		}

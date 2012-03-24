@@ -54,7 +54,13 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	{
 		super(battleSite, data, attacker, battleTracker);
 		m_battleType = BattleType.AIR_BATTLE;
-		m_defendingUnits.addAll(battleSite.getUnits().getMatches(defendingInterceptors(m_attacker, m_data)));
+	}
+	
+	@Override
+	protected void updateDefendingUnits()
+	{
+		// fill in defenders
+		m_defendingUnits = m_battleSite.getUnits().getMatches(defendingInterceptors(m_attacker, m_data));
 	}
 	
 	@Override
@@ -80,6 +86,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 			m_stack.execute(bridge);
 			return;
 		}
+		updateDefendingUnits();
 		bridge.getHistoryWriter().startEvent("Air Battle in " + m_battleSite);
 		bridge.getHistoryWriter().setRenderingData(m_battleSite);
 		BattleCalculator.sortPreBattle(m_attackingUnits, m_data);

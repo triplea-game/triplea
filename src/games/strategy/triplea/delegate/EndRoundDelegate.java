@@ -206,8 +206,8 @@ public class EndRoundDelegate extends BaseDelegate
 			}
 			if (!change.isEmpty())
 			{
-				m_bridge.addChange(change);
 				m_bridge.getHistoryWriter().startEvent("Setting uses for triggers used this round.");
+				m_bridge.addChange(change);
 			}
 		}
 	}

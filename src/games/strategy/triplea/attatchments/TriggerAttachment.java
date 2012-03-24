@@ -223,6 +223,33 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		
 		// Victory messages and recording of winners
 		triggerVictory(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		
+		// for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we change at end of each round)
+		if (useUses)
+			setUsesForWhenTriggers(triggersToBeFired, aBridge, useUses);
+	}
+	
+	protected static void setUsesForWhenTriggers(final HashSet<TriggerAttachment> triggersToBeFired, final IDelegateBridge aBridge, final boolean useUses)
+	{
+		if (!useUses)
+			return;
+		final CompositeChange change = new CompositeChange();
+		for (final TriggerAttachment trig : triggersToBeFired)
+		{
+			final int currentUses = trig.getUses();
+			// we only care about triggers that have WHEN set. Triggers without When set are changed during EndRoundDelegate.
+			if (currentUses > 0 && trig.getWhen() != null)
+			{
+				change.add(ChangeFactory.attachmentPropertyChange(trig, Integer.toString(currentUses - 1), "uses"));
+				if (trig.getUsedThisRound())
+					change.add(ChangeFactory.attachmentPropertyChange(trig, false, "usedThisRound"));
+			}
+		}
+		if (!change.isEmpty())
+		{
+			aBridge.getHistoryWriter().startEvent("Setting uses for triggers used this phase.");
+			aBridge.addChange(change);
+		}
 	}
 	
 	/**

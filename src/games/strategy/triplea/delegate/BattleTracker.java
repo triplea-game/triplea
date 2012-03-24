@@ -522,7 +522,8 @@ public class BattleTracker implements java.io.Serializable
 		if (terrOrigOwner == null)
 			terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
 		PlayerID newOwner;
-		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && relationshipTracker.isAllied(terrOrigOwner, id))
+		// if the original owner is the current owner, and the current owner is our enemy / canTakeOver, then we do not worry about this.
+		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && relationshipTracker.isAllied(terrOrigOwner, id) && !terrOrigOwner.equals(territory.getOwner()))
 		{
 			if (territory.equals(TerritoryAttachment.getCapital(terrOrigOwner, data)))
 				newOwner = terrOrigOwner;

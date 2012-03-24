@@ -1,3 +1,9 @@
+Changes for 1.5.2.1
+* Fixed 'uses' for 'when' based triggers to be used up right after they are used, while triggers without when set get 'used up' at the end of each round that they are used in. (veqryn)
+
+* Fixed Air Battle to only allow aircraft capable of intercepting into the battle, instead of also allowing infrastructure too. (veqryn)
+
+
 Changes for 1.5.2
 * Fixed infinite loop in getAllProducers for a sea placement. (veqryn)
 

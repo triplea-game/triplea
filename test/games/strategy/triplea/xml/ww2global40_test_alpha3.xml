@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="2.3"/>
+        <info name="World War II Global Test Alpha 3" version="2.4"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
 		<diceSides value="6"/>
@@ -4203,41 +4203,6 @@
 				
 				
 			<!-- Political Related Triggers -->
-				<attatchment name="triggerAttachment_Russians_Conquer_Japanese_Territory_By_Mongolia" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachment_Russians_Conquer_Japanese_Territory_By_Mongolia"/>
-					<option name="when" value="after:russiansBattle"/>
-					<option name="uses" value="1"/>
-                	<option name="players" value="Russians"/>
-                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Mongolia_May_Switch_To_Russians_Control_Switch"/>
-                	<option name="playerProperty" value="turns" count="0"/>
-				</attatchment>
-				<attatchment name="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentTurn0"/>
-					<option name="when" value="before:japaneseNonCombatMove"/>
-					<option name="uses" value="1"/>
-                	<option name="changeOwnership" value="Olgiy:Mongolians:Russians:true"/>
-                	<option name="changeOwnership" value="Dzavhan:Mongolians:Russians:true"/>
-                	<option name="changeOwnership" value="Tsagaan Olom:Mongolians:Russians:true"/>
-                	<option name="changeOwnership" value="Central Mongolia:Mongolians:Russians:true"/>
-                	<option name="changeOwnership" value="Buyant-Uhaa:Mongolians:Russians:true"/>
-                	<option name="changeOwnership" value="Ulaanbaatar:Mongolians:Russians:true"/>
-				</attatchment>
-				<attatchment name="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia:conditionAttachment_Mongolia_May_Switch_To_Russians_Control_Switch"/>
-					<option name="when" value="after:japaneseBattle"/>
-					<option name="uses" value="1"/>
-					<option name="relationshipChange" value="Russians:Mongolians:anyNeutral:Friendly_Neutral"/>
-					<option name="relationshipChange" value="Americans:Mongolians:anyNeutral:Friendly_Neutral"/>
-					<option name="relationshipChange" value="British:Mongolians:anyNeutral:Friendly_Neutral"/>
-					<option name="relationshipChange" value="UK_Pacific:Mongolians:anyNeutral:Friendly_Neutral"/>
-					<option name="relationshipChange" value="ANZAC:Mongolians:anyNeutral:Friendly_Neutral"/>
-					<option name="relationshipChange" value="Chinese:Mongolians:anyNeutral:Friendly_Neutral"/>
-					<option name="relationshipChange" value="French:Mongolians:anyNeutral:Friendly_Neutral"/>
-					<option name="relationshipChange" value="Dutch:Mongolians:anyNeutral:Friendly_Neutral"/>
-					<option name="relationshipChange" value="Neutral_Allies:Mongolians:anyNeutral:Friendly_Neutral"/>
-                	<option name="activateTrigger" value="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_2:1:true:true:false:false"/>
-				</attatchment>
-				
 				<attatchment name="triggerAttachment_Axis_Friendly_With_Mongolians" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentTurn0"/>
 					<option name="when" value="before:germansPolitics"/>
@@ -4295,6 +4260,42 @@
 					<option name="when" value="before:americansPolitics"/>
 					<option name="uses" value="1"/>
                 	<option name="activateTrigger" value="triggerAttachment_Allies_Friendly_With_Mongolians:1:true:true:false:false"/>
+				</attatchment>
+				
+				<attatchment name="triggerAttachment_Russians_Conquer_Japanese_Territory_By_Mongolia" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Russians_Conquer_Japanese_Territory_By_Mongolia"/>
+					<option name="when" value="after:russiansBattle"/>
+					<option name="uses" value="1"/>
+                	<option name="players" value="Russians"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Mongolia_May_Switch_To_Russians_Control_Switch"/>
+                	<option name="playerProperty" value="turns" count="0"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachmentTurn0"/>
+					<option name="when" value="before:japaneseNonCombatMove"/>
+					<option name="uses" value="1"/>
+                	<option name="changeOwnership" value="Olgiy:Mongolians:Russians:true"/>
+                	<option name="changeOwnership" value="Dzavhan:Mongolians:Russians:true"/>
+                	<option name="changeOwnership" value="Tsagaan Olom:Mongolians:Russians:true"/>
+                	<option name="changeOwnership" value="Central Mongolia:Mongolians:Russians:true"/>
+                	<option name="changeOwnership" value="Buyant-Uhaa:Mongolians:Russians:true"/>
+                	<option name="changeOwnership" value="Ulaanbaatar:Mongolians:Russians:true"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia:conditionAttachment_Mongolia_May_Switch_To_Russians_Control_Switch"/>
+					<option name="when" value="after:japaneseBattle"/>
+					<option name="uses" value="1"/>
+					<option name="relationshipChange" value="Russians:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Americans:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="British:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="UK_Pacific:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="ANZAC:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Chinese:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="French:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Dutch:Mongolians:anyNeutral:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Neutral_Allies:Mongolians:anyNeutral:Friendly_Neutral"/>
+                	<option name="activateTrigger" value="triggerAttachment_Allies_Friendly_With_Mongolians:1:true:true:false:false"/>
+                	<option name="activateTrigger" value="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_2:1:true:true:false:false"/>
 				</attatchment>
 				
 				<attatchment name="triggerAttachment_Germans_Friendly_With_TrueNeutrals" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -6449,7 +6450,7 @@ Fighters and/or Tactical bombers can be scrambled from any territory bordering a
 
 <b>Strategic Bombing Runs (SBR)</b><br>
 Bombing can now happen against both types of ICs, harbours, and airfields (attackers choice)[tactical bombers can not target factories though]. Fighters can participate in the bombing run as escorts. Fighters in the territory being bombed can be launched as interceptors (no airfield necessary).<br><br>
-<b>If interceptors are launched:</b> a one-round air battle takes place right away where bombers dont roll, escorts roll at one and interceptors roll at two. Either attacking bombers or fighters can be taken as casualties.<br><br>
+<b>If interceptors are launched:</b> a one-round air battle takes place right away all air involved roll at 1 (jets rolls at 2). Either attacking bombers or fighters can be taken as casualties.<br><br>
 After the air battle, or if there were no interceptors, the escorts are retreated and any bombers/tacs remaining can now be divied up to attack specific targets. Each target rolls its built-in AA gun against the bombers/tacs targetting it. If there is an AA gun in the territory being bombed it does <b>not</b> roll because its there to defend combat units and not complexes/bases.
 <br><br>
 
@@ -6494,6 +6495,9 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>2.4
+<br>Fixed issue with Mongolian units not converting to Russians under most circumstances.
 <br>
 <br>2.3
 <br>Changing politics to match Alpha +3 politics.
