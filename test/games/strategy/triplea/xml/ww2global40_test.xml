@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test" version="2.3"/>
+        <info name="World War II Global Test" version="2.4"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
 		<diceSides value="6"/>
@@ -2258,10 +2258,9 @@
 				
                 <!-- Factory Minor -->
                 <attatchment name="unitAttatchment" attatchTo="factory_minor" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
-                         <option name="isFactory" value="true"/>   
-						 <!-- costs 20 ipcs to upgrade to a major -->
-						 <option name="unitPlacementRestrictions" value="Timguska:Kansu:Tsinghai:Sikang:Himalayas:India:West Indies:Central America:Greenland:Southeast Mexico:Belgian Congo:Iceland:Trans-Jordan:British Somaliland:Alexandria:Gibraltar:New Brunswick Nova Scotia:Cyprus:British Guiana:Gold Coast:Rio de Oro:South West Africa:Nigeria:Kenya:Malta:Anglo Egyptian Sudan:Rhodesia:Tanganyika Territory:Newfoundland Labrador:Morocco:French Equatorial Africa:French Central Africa:French Madagascar:French Guiana:Algeria:Syria:French West Africa:Tunisia:Denmark:Tobruk:Albania:Libya:Sicily:Italian Somaliland:Ethiopia:Sardinia:Belarus:Karelia:Baltic States:Bryansk:Nenetsia:Urals:Vyborg:Archangel:Eastern Poland:Bessarabia:Tambov:Novosibirsk:Vologda:Turkmenistan:Smolensk:Kazakhstan:Samara:Portugal:Portuguese Guinea:Ecuador:Afghanistan:Sierra Leone:Mozambique:Saudi Arabia:Paraguay:Switzerland:Pripet Marshes:Eire:Crete:Bulgaria:Angola:Eastern Persia:Uruguay:Northwest Persia:Colombia:Bolivia:Liberia:Peru:Suriname"/>
-						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="2"/>
+                         <option name="isFactory" value="true"/>
+						 <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa:West Indies:Greenland:Iceland:Sardinia:Sicily:French Madagascar:Crete:Cyprus"/>
+						<option name="canOnlyBePlacedInTerritoryValuedAtX" value="2"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
 						 <option name="canProduceXUnits" value="3"/>
@@ -2271,7 +2270,7 @@
                 <!-- Factory Major -->
                 <attatchment name="unitAttatchment" attatchTo="factory_major" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="isFactory" value="true"/>
-						 <option name="unitPlacementRestrictions" value="Timguska:Kansu:Tsinghai:Sikang:Himalayas:India:West Indies:Central America:Greenland:Southeast Mexico:West India:Belgian Congo:Iceland:Quebec:Alberta Saskatchewan Manitoba:Trans-Jordan:British Somaliland:Alexandria:Gibraltar:New Brunswick Nova Scotia:Egypt:Union of South Africa:Cyprus:British Guiana:Gold Coast:Rio de Oro:Ontario:Scotland:South West Africa:Nigeria:Kenya:Malta:Anglo Egyptian Sudan:Rhodesia:Tanganyika Territory:Newfoundland Labrador:Morocco:French Equatorial Africa:Normandy Bordeaux:French Central Africa:French Madagascar:French Guiana:Algeria:Syria:French West Africa:Tunisia:Poland:Denmark:Tobruk:Albania:Libya:Sicily:Italian Somaliland:Ethiopia:Sardinia:Belarus:Karelia:Baltic States:Bryansk:Rostov:Nenetsia:Urals:Vyborg:Archangel:Eastern Poland:Bessarabia:Tambov:Ukraine:Western Ukraine:Novosibirsk:Vologda:Volgograd:Turkmenistan:Novgorod:Caucasus:Smolensk:Kazakhstan:Samara:Portugal:Portuguese Guinea:Ecuador:Chile:Afghanistan:Sierra Leone:Turkey:Mozambique:Saudi Arabia:Paraguay:Switzerland:Pripet Marshes:Eire:Crete:Argentina:Bulgaria:Angola:Greece:Iraq:Eastern Persia:Uruguay:Brazil:Venezuela:Northwest Persia:Persia:Yugoslavia:Spain:Colombia:Bolivia:Liberia:Peru:Finland:Suriname"/>
+						 <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa:West Indies:Greenland:Iceland:Sardinia:Sicily:French Madagascar:Crete:Cyprus"/>
 						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="3"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
@@ -2284,7 +2283,7 @@
                 <!-- Factory Upgrade -->
                 <attatchment name="unitAttatchment" attatchTo="factory_upgrade" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
                          <option name="isFactory" value="true"/>
-						 <option name="unitPlacementRestrictions" value="Timguska:Kansu:Tsinghai:Sikang:Himalayas:India:West Indies:Central America:Greenland:Southeast Mexico:Belgian Congo:Iceland:Trans-Jordan:British Somaliland:Alexandria:Gibraltar:New Brunswick Nova Scotia:Cyprus:British Guiana:Gold Coast:Rio de Oro:South West Africa:Nigeria:Kenya:Malta:Anglo Egyptian Sudan:Rhodesia:Tanganyika Territory:Newfoundland Labrador:Morocco:French Equatorial Africa:French Central Africa:French Madagascar:French Guiana:Algeria:Syria:French West Africa:Tunisia:Denmark:Tobruk:Albania:Libya:Sicily:Italian Somaliland:Ethiopia:Sardinia:Belarus:Karelia:Baltic States:Bryansk:Nenetsia:Urals:Vyborg:Archangel:Eastern Poland:Bessarabia:Tambov:Novosibirsk:Vologda:Turkmenistan:Smolensk:Kazakhstan:Samara:Portugal:Portuguese Guinea:Ecuador:Afghanistan:Sierra Leone:Mozambique:Saudi Arabia:Paraguay:Switzerland:Pripet Marshes:Eire:Crete:Bulgaria:Angola:Eastern Persia:Uruguay:Northwest Persia:Colombia:Bolivia:Liberia:Peru:Suriname"/>
+						 <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa:West Indies:Greenland:Iceland:Sardinia:Sicily:French Madagascar:Crete:Cyprus"/>
 						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="3"/>
 						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
@@ -2373,7 +2372,7 @@
 						<option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Shantung" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="1"/>
+                        <option name="production" value="2"/>
 						<option name="occupiedTerrOf" value="Chinese"/>
 						<option name="changeUnitOwners" value="British"/>
 						<option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
@@ -2415,7 +2414,7 @@
 						<option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Jehol" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="1"/>
 						<option name="occupiedTerrOf" value="Chinese"/>
 						<option name="changeUnitOwners" value="British"/>
 						<option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
@@ -5880,6 +5879,9 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>2.4
+<br>Switched Jehol and Shantung production.
 <br>
 <br>2.3
 <br>Fixing Russian nationa objective for sz125 so that it affects all units except transports.

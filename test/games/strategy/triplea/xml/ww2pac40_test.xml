@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Pacific Test" version="2.5"/>
+        <info name="World War II Pacific Test" version="2.6"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
         <map>
@@ -1463,7 +1463,7 @@
                         <option name="production" value="0"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Shantung" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="1"/>
+                        <option name="production" value="2"/>
 						<option name="occupiedTerrOf" value="Chinese"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Formosa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -1491,7 +1491,7 @@
                         <option name="victoryCity" value="true"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Jehol" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
+                        <option name="production" value="1"/>
 						<option name="occupiedTerrOf" value="Chinese"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Okinawa" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -3058,6 +3058,9 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>2.6
+<br>Switched Jehol and Shantung production.
 <br>
 <br>2.5
 <br>Added some missing art.

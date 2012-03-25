@@ -161,6 +161,8 @@ public class EditPanel extends ActionPanel
 		};
 		m_changePUsAction = new AbstractAction("Change PUs")
 		{
+			private static final long serialVersionUID = -2751668909341983795L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -171,6 +173,8 @@ public class EditPanel extends ActionPanel
 				if (option != JOptionPane.OK_OPTION)
 					return;
 				final PlayerID player = playerChooser.getSelected();
+				if (player == null)
+					return;
 				Resource PUs = null;
 				getData().acquireReadLock();
 				try
