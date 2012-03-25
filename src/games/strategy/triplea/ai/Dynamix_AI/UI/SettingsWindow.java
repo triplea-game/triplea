@@ -417,7 +417,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel1.add(v_quickBattleCalculator, gridBagConstraints);
 
         jPanel26.setName("jPanel26"); // NOI18N
-        jPanel26.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel26.setLayout(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
@@ -549,7 +549,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_pausingPanel.add(jLabel4, gridBagConstraints);
 
         jPanel21.setName("jPanel21"); // NOI18N
-        jPanel21.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel21.setLayout(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
@@ -591,7 +591,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel23.add(jLabel13, gridBagConstraints);
 
         jPanel24.setName("jPanel24"); // NOI18N
-        jPanel24.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel24.setLayout(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
@@ -608,7 +608,7 @@ public class SettingsWindow extends javax.swing.JDialog
         v_pausingPanel.add(jPanel23, gridBagConstraints);
 
         jPanel25.setName("jPanel25"); // NOI18N
-        jPanel25.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel25.setLayout(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 6;
@@ -766,7 +766,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.insets = new java.awt.Insets(7, 0, 0, 0);
         v_calcRunCountAssignmentsHolderPanel.add(v_capurchase_determinesUnitThatWouldHelpTargetInvasionMost, gridBagConstraints);
 
-        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel16.setText("Purchase - Determines the unit that would help win invasion on enemy target the most:");
         jLabel16.setName("jLabel16"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -777,7 +777,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.insets = new java.awt.Insets(12, 10, 5, 0);
         v_calcRunCountAssignmentsHolderPanel.add(jLabel16, gridBagConstraints);
 
-        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel18.setText("(Frequency: Very High, Suggested Range: 10 - 250)");
         jLabel18.setName("jLabel18"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -802,7 +802,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.gridy = 2;
         v_calcRunCountAssignmentsHolderPanel.add(v_cacm_determinesIfTaskCreationsWorthwhileBasedOnTakeoverChance, gridBagConstraints);
 
-        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel20.setText("CM - Determines if the creation of a task is worthwhile based on takeover chance:");
         jLabel20.setName("jLabel20"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -823,7 +823,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
         v_calcRunCountAssignmentsHolderPanel.add(jLabel21, gridBagConstraints);
 
-        jLabel22.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel22.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel22.setText("CM & NCM - Sorts possible task recruits for optimal attack/defense:");
         jLabel22.setName("jLabel22"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -874,7 +874,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.gridy = 6;
         v_calcRunCountAssignmentsHolderPanel.add(jLabel25, gridBagConstraints);
 
-        jLabel26.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel26.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel26.setText("CM & NCM - Determines if the task's requirements are far enough met for unit recruiting to stop:");
         jLabel26.setName("jLabel26"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -902,7 +902,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.gridy = 10;
         v_calcRunCountAssignmentsHolderPanel.add(jLabel28, gridBagConstraints);
 
-        jLabel29.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel29.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel29.setText("CM - Determines attack results for determining if task is worthwhile:");
         jLabel29.setName("jLabel29"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -949,7 +949,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.insets = new java.awt.Insets(5, 25, 5, 0);
         v_calcRunCountAssignmentsHolderPanel.add(jLabel31, gridBagConstraints);
 
-        jLabel32.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel32.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel32.setText("CM & NCM - Determines counter-attack results for determining if task is worthwhile:");
         jLabel32.setName("jLabel32"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -974,7 +974,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.gridy = 14;
         v_calcRunCountAssignmentsHolderPanel.add(jLabel34, gridBagConstraints);
 
-        jLabel35.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel35.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel35.setText("CM & NCM - Determines if task endangers the capital:");
         jLabel35.setName("jLabel35"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1021,7 +1021,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.gridy = 16;
         v_calcRunCountAssignmentsHolderPanel.add(v_cacmncm_determinesSurvivalChanceAfterTaskToSeeIfToInvalidateAttackers, gridBagConstraints);
 
-        jLabel38.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel38.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel38.setText("CM & NCM - Determines survival chance after performing task to check if AI should invalidate attackers:");
         jLabel38.setName("jLabel38"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1046,7 +1046,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.gridy = 18;
         v_calcRunCountAssignmentsHolderPanel.add(jLabel40, gridBagConstraints);
 
-        jLabel41.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel41.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel41.setText("NCM - Determines vulnerability of from-ter after move to check if AI should cancel move:");
         jLabel41.setName("jLabel41"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1094,7 +1094,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.gridy = 20;
         v_calcRunCountAssignmentsHolderPanel.add(v_caretreat_determinesIfAIShouldRetreat, gridBagConstraints);
 
-        jLabel44.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel44.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel44.setText("Retreat Query - Determines if AI should retreat:");
         jLabel44.setName("jLabel44"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1119,7 +1119,7 @@ public class SettingsWindow extends javax.swing.JDialog
         gridBagConstraints.gridy = 8;
         v_calcRunCountAssignmentsHolderPanel.add(jLabel63, gridBagConstraints);
 
-        jLabel64.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel64.setFont(new java.awt.Font("Tahoma", 0, 10));
         jLabel64.setText("CM - Determines if the trade task's requirements are far enough met for unit recruiting to stop:");
         jLabel64.setName("jLabel64"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1797,7 +1797,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel17.add(v_cr_enableCallForCapitalDefense, gridBagConstraints);
 
         jPanel27.setName("jPanel27"); // NOI18N
-        jPanel27.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel27.setLayout(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -2094,7 +2094,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel10.add(v_aa_maxUnitTypesForPurchaseMix, gridBagConstraints);
 
         jPanel28.setName("jPanel28"); // NOI18N
-        jPanel28.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel28.setLayout(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 2;
@@ -2173,7 +2173,7 @@ public class SettingsWindow extends javax.swing.JDialog
         jPanel12.add(jPanel5, gridBagConstraints);
 
         jPanel22.setName("jPanel22"); // NOI18N
-        jPanel22.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel22.setLayout(null);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
