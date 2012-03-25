@@ -31,15 +31,10 @@ import java.util.prefs.Preferences;
  */
 public class DSettings implements Serializable
 {
-	public boolean UseActionLengthGoals = true;
 	public int PurchaseWait_AL = 750;
 	public int CombatMoveWait_AL = 750;
 	public int NonCombatMoveWait_AL = 750;
 	public int PlacementWait_AL = 750;
-	public int PurchaseWait_AW = 250;
-	public int CombatMoveWait_AW = 250;
-	public int NonCombatMoveWait_AW = 250;
-	public int PlacementWait_AW = 250;
 	public boolean AllowCalcingDecrease = true;
 	public int CalcingDecreaseToPercentage = 75;
 	public boolean AIC_disableAllUnitPurchasesAndPlacements = false;

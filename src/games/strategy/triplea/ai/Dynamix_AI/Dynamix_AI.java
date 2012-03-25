@@ -155,28 +155,11 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	{
 		try
 		{
-			if (DSettings.LoadSettings().UseActionLengthGoals)
-			{
-				final long pauseTime = GetTimeTillNextScheduledActionDisplay();
-				if (pauseTime == -1)
-					return;
-				Thread.sleep(pauseTime);
-				s_lastActionDisplayTime = new Date().getTime();
-			}
-			else
-			{
-				switch (GlobalCenter.CurrentPhaseType)
-				{
-					case Purchase:
-						Thread.sleep(DSettings.LoadSettings().PurchaseWait_AW);
-					case Combat_Move:
-						Thread.sleep(DSettings.LoadSettings().CombatMoveWait_AW);
-					case Non_Combat_Move:
-						Thread.sleep(DSettings.LoadSettings().NonCombatMoveWait_AW);
-					case Place:
-						Thread.sleep(DSettings.LoadSettings().PlacementWait_AW);
-				}
-			}
+            final long pauseTime = GetTimeTillNextScheduledActionDisplay();
+            if (pauseTime == -1)
+                return;
+            Thread.sleep(pauseTime);
+            s_lastActionDisplayTime = new Date().getTime();
 		} catch (final InterruptedException ex)
 		{
 			DUtils.Log(Level.SEVERE, "InterruptedException occured while trying to perform AI pausing. Exception: {0}", ex);
@@ -185,8 +168,6 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	
 	public static long GetTimeTillNextScheduledActionDisplay()
 	{
-		if (!DSettings.LoadSettings().UseActionLengthGoals)
-			return -1;
 		// If we're not in a phase that has pausing enabled
 		if (!DUtils.ToList(DUtils.ToArray(PhaseType.Purchase, PhaseType.Combat_Move, PhaseType.Non_Combat_Move, PhaseType.Place)).contains(GlobalCenter.CurrentPhaseType))
 			return -1;
