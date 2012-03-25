@@ -528,10 +528,21 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		return move(units, route, transportsThatCanBeLoaded, new HashMap<Unit, Collection<Unit>>());
 	}
 	
+	private PlayerID getUnitsOwner(final Collection<Unit> units)
+	{
+		// if we are not in edit mode, return m_player. if we are in edit mode, we use whoever's units these are.
+		if (units.isEmpty() || !EditDelegate.getEditMode(getData()))
+			return m_player;
+		else
+			return units.iterator().next().getOwner();
+	}
+	
 	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents)
 	{
 		final GameData data = getData();
-		final MoveValidationResult result = MoveValidator.validateMove(units, route, m_player, transportsThatCanBeLoaded, newDependents, m_nonCombat, m_movesToUndo, data);
+		// there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
+		final PlayerID player = getUnitsOwner(units);
+		final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, m_nonCombat, m_movesToUndo, data);
 		final StringBuilder errorMsg = new StringBuilder(100);
 		final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
 		final String numErrorsMsg = numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
@@ -601,7 +612,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		m_bridge.getHistoryWriter().setRenderingData(currentMove.getDescriptionObject());
 		m_tempMovePerformer = new MovePerformer();
 		m_tempMovePerformer.initialize(this);
-		m_tempMovePerformer.moveUnits(units, route, m_player, transportsThatCanBeLoaded, newDependents, currentMove);
+		m_tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);
 		m_tempMovePerformer = null;
 		return null;
 	}
