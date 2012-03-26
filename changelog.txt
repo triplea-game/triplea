@@ -1,4 +1,6 @@
 Changes for 1.5.2.1
+* Fixed possible Null Pointer error for maps with a production frontier of null rules. (veqryn)
+
 * Fixed possible IllegalStateException in Air Battles. (veqryn)
 
 * Allowed "Edit Moving" of units not owned by you, to create a battle by the unit's owner. (veqryn)

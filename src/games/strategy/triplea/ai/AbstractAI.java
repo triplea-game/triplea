@@ -528,7 +528,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 			if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
 				return false;
 		}
-		if (m_id.getProductionFrontier() != null)
+		if (m_id.getProductionFrontier() != null && m_id.getProductionFrontier().getRules() != null)
 		{
 			for (final ProductionRule rule : m_id.getProductionFrontier().getRules())
 			{
@@ -536,7 +536,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 					return true;
 			}
 		}
-		if (m_id.getRepairFrontier() != null)
+		if (m_id.getRepairFrontier() != null && m_id.getRepairFrontier().getRules() != null)
 		{
 			for (final RepairRule rule : m_id.getRepairFrontier().getRules())
 			{

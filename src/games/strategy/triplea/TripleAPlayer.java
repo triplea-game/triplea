@@ -348,7 +348,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		// Check if any factories need to be repaired
 		String error = null;
 		IPurchaseDelegate purchaseDel = (IPurchaseDelegate) m_bridge.getRemote();
-		if (m_id.getRepairFrontier() != null && !m_id.getRepairFrontier().getRules().isEmpty())
+		if (m_id.getRepairFrontier() != null && m_id.getRepairFrontier().getRules() != null && !m_id.getRepairFrontier().getRules().isEmpty())
 		{
 			if (isSBRAffectsUnitProduction(m_bridge.getGameData()))
 			{
@@ -426,7 +426,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private boolean canWePurchaseOrRepair()
 	{
-		if (m_id.getProductionFrontier() != null)
+		if (m_id.getProductionFrontier() != null && m_id.getProductionFrontier().getRules() != null)
 		{
 			for (final ProductionRule rule : m_id.getProductionFrontier().getRules())
 			{
@@ -434,7 +434,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 					return true;
 			}
 		}
-		if (m_id.getRepairFrontier() != null)
+		if (m_id.getRepairFrontier() != null && m_id.getRepairFrontier().getRules() != null)
 		{
 			for (final RepairRule rule : m_id.getRepairFrontier().getRules())
 			{
