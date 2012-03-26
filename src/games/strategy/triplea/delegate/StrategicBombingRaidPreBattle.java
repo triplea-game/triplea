@@ -112,29 +112,6 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					getDisplay(bridge).gotoBattleStep(m_battleID, BOMBERS_TO_TARGETS);
-					String text;
-					if (Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber))
-					{
-						m_whoWon = WhoWon.ATTACKER;
-						if (m_defendingUnits.isEmpty())
-							m_battleResultDescription = BattleRecords.BattleResultDescription.WON_WITHOUT_CONQUERING;
-						else
-							m_battleResultDescription = BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT;
-						text = "Air Battle is over, the remaining Bombers go on to their targets";
-					}
-					else if (!m_attackingUnits.isEmpty())
-					{
-						m_whoWon = WhoWon.DRAW;
-						m_battleResultDescription = BattleRecords.BattleResultDescription.STALEMATE;
-						text = "Air Battle is over, the bombers have all died";
-					}
-					else
-					{
-						m_whoWon = WhoWon.DEFENDER;
-						m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
-						text = "Air Battle is over, the bombers have all died";
-					}
-					bridge.getHistoryWriter().addChildToEvent(text);
 					
 					if (!m_intercept)
 						return;
@@ -191,6 +168,30 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	
 	private void end(final IDelegateBridge bridge)
 	{
+		String text;
+		if (Match.someMatch(m_attackingUnits, Matches.UnitIsStrategicBomber))
+		{
+			m_whoWon = WhoWon.ATTACKER;
+			if (m_defendingUnits.isEmpty())
+				m_battleResultDescription = BattleRecords.BattleResultDescription.WON_WITHOUT_CONQUERING;
+			else
+				m_battleResultDescription = BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT;
+			text = "Air Battle is over, the remaining Bombers go on to their targets";
+		}
+		else if (!m_attackingUnits.isEmpty())
+		{
+			m_whoWon = WhoWon.DRAW;
+			m_battleResultDescription = BattleRecords.BattleResultDescription.STALEMATE;
+			text = "Air Battle is over, the bombers have all died";
+		}
+		else
+		{
+			m_whoWon = WhoWon.DEFENDER;
+			m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
+			text = "Air Battle is over, the bombers have all died";
+		}
+		bridge.getHistoryWriter().addChildToEvent(text);
+		
 		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this), 0);
 		m_battleTracker.removeBattle(StrategicBombingRaidPreBattle.this);
 		getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");

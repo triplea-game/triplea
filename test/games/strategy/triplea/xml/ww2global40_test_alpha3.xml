@@ -3713,7 +3713,7 @@
                 	<option name="conditions" value="conditionAttachment_Russians_1_Convoy_Clear"/>
                 	<option name="directOwnershipTerritories" value="Archangel" count="1"/>
                 	<option name="alliedExclusionTerritories" value="original"/>
-					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="1" />
+					<option name="atWarPlayers" value="Germans:Italians" count="1" />
                 </attatchment>
 				
 				<!-- Japanese Conditions -->
@@ -6499,6 +6499,7 @@ These changes to units are things other than price/movement which you can see in
 <br>Fixed issue with Mongolian units not converting to Russians under most circumstances.
 <br>Prevented placement of factory units on islands on the pacific side.
 <br>Switched Jehol and Shantung production.
+<br>Changing Russian Lend Lease objective to only work when at war with Germany or Italy.
 <br>
 <br>2.3
 <br>Changing politics to match Alpha +3 politics.

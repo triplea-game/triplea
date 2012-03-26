@@ -5881,6 +5881,7 @@ These changes to units are things other than price/movement which you can see in
 <br>Change Log:
 <br>
 <br>2.4
+<br>Prevented placement of factory units on islands on the pacific side.
 <br>Switched Jehol and Shantung production.
 <br>
 <br>2.3

@@ -1,4 +1,6 @@
 Changes for 1.5.2.1
+* Fixed possible IllegalStateException in Air Battles. (veqryn)
+
 * Allowed "Edit Moving" of units not owned by you, to create a battle by the unit's owner. (veqryn)
 
 * Fixed 'uses' for 'when' based triggers to be used up right after they are used, while triggers without when set get 'used up' at the end of each round that they are used in. (veqryn)
