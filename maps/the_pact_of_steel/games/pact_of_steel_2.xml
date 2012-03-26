@@ -4551,6 +4551,60 @@
         </initialize>
 
 		<propertyList>
+		<!--	From TripleA 1.5 and onward, ALL properties must be strongly TYPED.  (your map may or may not work if you do not make your properties Type-Safe)
+				Allowed values:
+					boolean
+					number
+					string
+					file
+					list
+					color
+				
+				Examples:
+					INSTEAD OF:
+						<property name="mapName" value="the_pact_of_steel" editable="false"/>
+
+					DO THIS:
+						<property name="mapName" value="the_pact_of_steel" editable="false">
+								<string/>
+						</property>
+
+
+					INSTEAD OF:
+						<property name="maxFactoriesPerTerritory" value="1"/>
+
+					DO THIS:
+						<property name="maxFactoriesPerTerritory" value="1" editable="false">
+								<number min="1" max="100"/>
+						</property>
+
+
+					INSTEAD OF:
+						<property name="Produce fighters on carriers" value="true"/>
+
+					DO THIS:
+						<property name="Produce fighters on carriers" value="true" editable="false">
+								<boolean/>
+						</property>
+
+
+
+					INSTEAD OF:
+						<property name="notes">
+								<value>Your game notes go here.</value>
+						</property>
+
+					DO THIS:
+						<property name="notes">
+								<string/>
+								<value>
+									<![CDATA[
+										<br>Your game notes go here.
+									]]>
+								</value>
+						</property>
+		-->
+		
 				<!-- PLEASE KEEP YOUR PROPERTIES IN THIS ORDER!!! -->
 				<!-- TYPICAL OPTIONAL PROPERTIES -->
 				<!-- Bidding -->
@@ -5143,10 +5197,13 @@
 				</property>
 
 				<!-- Map Name: also used for map utils when asked (MUST exactly match the folder or zip name of your map (do not include the .zip of course). May point to another map folder if you are making a mod of that map) -->
-				<property name="mapName" value="the_pact_of_steel" editable="false"/>
+				<property name="mapName" value="the_pact_of_steel" editable="false">
+						<string/>
+				</property>
 
 				<!-- notes appear in the notes menu in the main screen, format as html -->
 				<property name="notes">
+					<string/>
 					<value>
 					<![CDATA[
 						

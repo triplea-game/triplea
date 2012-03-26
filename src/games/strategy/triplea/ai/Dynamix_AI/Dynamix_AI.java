@@ -155,11 +155,11 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	{
 		try
 		{
-            final long pauseTime = GetTimeTillNextScheduledActionDisplay();
-            if (pauseTime == -1)
-                return;
-            Thread.sleep(pauseTime);
-            s_lastActionDisplayTime = new Date().getTime();
+			final long pauseTime = GetTimeTillNextScheduledActionDisplay();
+			if (pauseTime == -1)
+				return;
+			Thread.sleep(pauseTime);
+			s_lastActionDisplayTime = new Date().getTime();
 		} catch (final InterruptedException ex)
 		{
 			DUtils.Log(Level.SEVERE, "InterruptedException occured while trying to perform AI pausing. Exception: {0}", ex);
