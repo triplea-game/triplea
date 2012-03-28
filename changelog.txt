@@ -1,4 +1,6 @@
 Changes for 1.5.2.1
+* Changing look of main screen, and adding tool tips for all buttons. (veqryn)
+
 * Fixed possible Null Pointer error for maps with a production frontier of null rules. (veqryn)
 
 * Fixed possible IllegalStateException in Air Battles. (veqryn)

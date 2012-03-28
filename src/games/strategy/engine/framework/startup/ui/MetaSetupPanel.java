@@ -11,6 +11,7 @@ import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
 import games.strategy.net.BareBonesBrowserLaunch;
 
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -36,6 +37,7 @@ import javax.swing.JScrollPane;
 
 public class MetaSetupPanel extends SetupPanel
 {
+	private static final long serialVersionUID = 3926503672972937677L;
 	private static final Logger s_logger = Logger.getLogger(MetaSetupPanel.class.getName());
 	private JButton m_startLocal;
 	private JButton m_startPBEM;
@@ -59,15 +61,26 @@ public class MetaSetupPanel extends SetupPanel
 	
 	private void createComponents()
 	{
+		m_connectToLobby = new JButton("Play Online...");
+		final Font bigButtonFont = new Font(m_connectToLobby.getFont().getName(), m_connectToLobby.getFont().getStyle(), m_connectToLobby.getFont().getSize() + 2);
+		m_connectToLobby.setFont(bigButtonFont);
+		m_connectToLobby.setToolTipText("<html>Find Games Online on the Lobby Server. <br>TripleA is MEANT to be played Online against other humans. <br>Any other way is not as fun!</html>");
 		m_startLocal = new JButton("Start Local Game");
-		m_startPBEM = new JButton("Start PBEM Game");
+		m_startLocal.setToolTipText("<html>Start a game on this computer. <br>You can play against a friend sitting besides you (hotseat mode), <br>or against one of the AIs.</html>");
+		m_startPBEM = new JButton("Start PBEM (Play-By-Email/Forum) Game");
+		m_startPBEM.setToolTipText("<html>Starts a game which will be emailed back and forth between all players, <br>or be posted to an online forum or message board.</html>");
 		m_hostGame = new JButton("Host Networked Game");
+		m_hostGame.setToolTipText("<html>Hosts a network game, which people can connect to. <br>Anyone on a LAN will be able to connect. <br>Anyone from the internet can connect as well, but only if the host has configured port forwarding correctly.</html>");
 		m_connectToHostedGame = new JButton("Connect to Networked Game");
-		m_connectToLobby = new JButton("Find Games Online on the Lobby Server");
+		m_connectToHostedGame.setToolTipText("<html>Connects to someone's hosted game, <br>so long as you know their IP address.</html>");
 		m_enginePreferences = new JButton("Engine Preferences...");
+		m_enginePreferences.setToolTipText("<html>Configure certain options related to the engine.");
 		m_downloadMaps = new JButton("Download Maps...");
+		m_downloadMaps.setToolTipText("<html>Download new maps. Everyone should use this, <br>the best maps are online and have to be downloaded!</html>");
 		m_ruleBook = new JButton("Rule Book...");
+		m_ruleBook.setToolTipText("<html>Download a manual of how to play <br>(it is also included in the directory TripleA was installed to).</html>");
 		m_about = new JButton("About...");
+		m_about.setToolTipText("<html>See info about version number, developers, <br>official website, and a quick instruction on how to play.</html>");
 	}
 	
 	private void layoutComponents()
@@ -75,11 +88,11 @@ public class MetaSetupPanel extends SetupPanel
 		setLayout(new GridBagLayout());
 		// top space
 		add(new JPanel(), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(00, 0, 0, 0), 0, 0));
-		add(m_startLocal, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-		add(m_startPBEM, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-		add(m_hostGame, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-		add(m_connectToHostedGame, new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
-		add(m_connectToLobby, new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_connectToLobby, new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_startLocal, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_startPBEM, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_hostGame, new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
+		add(m_connectToHostedGame, new GridBagConstraints(0, 5, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 		add(m_enginePreferences, new GridBagConstraints(0, 6, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 		add(m_downloadMaps, new GridBagConstraints(0, 7, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 		add(m_ruleBook, new GridBagConstraints(0, 8, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
@@ -212,7 +225,7 @@ public class MetaSetupPanel extends SetupPanel
 		final String text = "<h2>TripleA</h2>" + "<p><b>Engine Version:</b> " + games.strategy.engine.EngineVersion.VERSION.toString()
 					+ "<br><b>Authors:</b> Sean Bridges, and many others. Current Developers: Veqryn (Chris Duncan), Edwin, Frigoref, Qwertgold."
 					+ "<br>TripleA is an open-source game engine, allowing people to play many different games and maps." + "<br>For more information please visit:<br>"
-					+ "<b>WIKI:</b> <a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a><br>"
+					+ "<b>Site:</b> <a hlink='http://triplea.sourceforge.net/'>http://triplea.sourceforge.net/</a><br>"
 					+ "<b>Forum:</b> <a hlink='http://triplea.sourceforge.net/mywiki/Forum'>http://triplea.sourceforge.net/mywiki/Forum</a><br>"
 					+ "<b>Ladder:</b> <a hlink='http://www.tripleawarclub.org/'>http://www.tripleawarclub.org/</a></p>" + "<p><b>Very Basic How to Play:</b>"
 					+ "<br>Though some games have special rules enforced, most games follow most of these basic guidelines.<br><ol>"

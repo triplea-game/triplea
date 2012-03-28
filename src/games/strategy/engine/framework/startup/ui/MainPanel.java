@@ -31,6 +31,7 @@ import javax.swing.border.EtchedBorder;
 
 public class MainPanel extends JPanel implements Observer
 {
+	private static final long serialVersionUID = -5548760379892913464L;
 	private JScrollPane m_gameSetupPanelScroll;
 	private GameSelectorPanel m_gameSelectorPanel;
 	private JButton m_playButton;
@@ -78,8 +79,11 @@ public class MainPanel extends JPanel implements Observer
 	private void createComponents()
 	{
 		m_playButton = new JButton("Play");
+		m_playButton.setToolTipText("<html>Start your game! <br>If not enabled, then you must select a way to play your game first: <br>Play Online, or Local Game, or PBEM, or Host Networked.</html>");
 		m_quitButton = new JButton("Quit");
+		m_quitButton.setToolTipText("Close TripleA.");
 		m_cancelButton = new JButton("Cancel");
+		m_cancelButton.setToolTipText("Go back to main screen.");
 		m_gameSelectorPanel = new GameSelectorPanel(m_gameSelectorModel);
 		m_gameSelectorPanel.setBorder(new EtchedBorder());
 		m_gameSetupPanelHolder = new JPanel();
