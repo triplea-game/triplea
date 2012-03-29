@@ -1,4 +1,8 @@
 Changes for 1.5.2.1
+* Prevented units with "requiresUnits" from being placed by territories not containing the required units, and also prevented them from being moved around by the "free-up-space" methods. (veqryn)
+
+* Fixed many small rare bugs in AbstractPlaceDelegate. (veqryn)
+
 * Changing look of main screen, and adding tool tips for all buttons. (veqryn)
 
 * Fixed possible Null Pointer error for maps with a production frontier of null rules. (veqryn)
