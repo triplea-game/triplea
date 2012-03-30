@@ -502,13 +502,44 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		};
 	}
 	
+	public boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to)
+	{
+		if (!isUnitPlacementRestrictions() || !Match.someMatch(units, Matches.UnitRequiresUnitsOnCreation))
+			return true;
+		final IntegerMap<Territory> producersMap = getMaxUnitsToBePlacedMap(units, to, m_player, true);
+		final List<Territory> producers = getAllProducers(to, m_player, units);
+		if (producers.isEmpty())
+			return false;
+		Collections.sort(producers, getBestProducerComparator(to, units, m_player));
+		final Collection<Unit> unitsLeftToPlace = new ArrayList<Unit>(units);
+		for (final Territory t : producers)
+		{
+			if (unitsLeftToPlace.isEmpty())
+				return true;
+			final int productionHere = producersMap.getInt(t);
+			final List<Unit> canBePlacedHere = Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(t, true));
+			if (productionHere == -1 || productionHere >= canBePlacedHere.size())
+			{
+				unitsLeftToPlace.removeAll(canBePlacedHere);
+				continue;
+			}
+			Collections.sort(canBePlacedHere, getHardestToPlaceWithRequiresUnitsRestrictions());
+			@SuppressWarnings("unchecked")
+			final Collection<Unit> placedHere = Match.getNMatches(canBePlacedHere, productionHere, Match.ALWAYS_MATCH);
+			unitsLeftToPlace.removeAll(placedHere);
+		}
+		if (unitsLeftToPlace.isEmpty())
+			return true;
+		return false;
+	}
+	
 	/*public Map<Unit, Collection<Territory>> getTerritoriesWhereUnitsWithRequiresUnitsCanBeProducedFrom(final Collection<Unit> units, final Territory to)
 	{
 		final Map<Unit, Collection<Territory>> rVal = new HashMap<Unit, Collection<Territory>>();
 		for (final Unit u : units)
 		{
 			final Collection<Territory> allowedTerrs = new ArrayList<Territory>();
-			final Collection<Territory> allProducers = getAllProducers(to, m_player, Collections.singletonList(u), true);
+			final Collection<Territory> allProducers = getAllProducers(to, m_player, Collections.singletonList(u));
 			// if our units has the required unit in the territory it is being produced to, then we are all good (ex: the sea unit requires a Wet_Dock in the sea zone)
 			if (!Matches.UnitRequiresUnitsOnCreation.match(u) || unitWhichRequiresUnitsHasRequiredUnits(to, true).match(u))
 			{
@@ -783,24 +814,40 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	 */
 	protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerID player, final boolean countSwitchedProductionToNeighbors)
 	{
+		final IntegerMap<Territory> map = getMaxUnitsToBePlacedMap(units, to, player, countSwitchedProductionToNeighbors);
+		int production = 0;
+		for (final Entry<Territory, Integer> entry : map.entrySet())
+		{
+			final int prodT = entry.getValue();
+			if (prodT == -1)
+				return -1;
+			production += prodT;
+		}
+		return production;
+	}
+	
+	/**
+	 * Returns -1 somewhere in the map if can place unlimited units
+	 */
+	protected IntegerMap<Territory> getMaxUnitsToBePlacedMap(final Collection<Unit> units, final Territory to, final PlayerID player, final boolean countSwitchedProductionToNeighbors)
+	{
+		final IntegerMap<Territory> rVal = new IntegerMap<Territory>();
 		final List<Territory> producers = getAllProducers(to, player, units);
 		if (producers.isEmpty())
-			return 0;
-		int production = 0;
+			return rVal;
 		Collections.sort(producers, getBestProducerComparator(to, units, player));
 		final Collection<Territory> notUsableAsOtherProducers = new ArrayList<Territory>();
 		notUsableAsOtherProducers.addAll(producers);
 		final Map<Territory, Integer> currentAvailablePlacementForOtherProducers = new HashMap<Territory, Integer>();
 		for (final Territory producerTerritory : producers)
 		{
-			final Collection<Unit> unitsCanBePlacedByThisProducer = Match.getMatches(units, unitWhichRequiresUnitsHasRequiredUnits(producerTerritory, true));
+			final Collection<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(units, unitWhichRequiresUnitsHasRequiredUnits(producerTerritory, true))
+						: new ArrayList<Unit>(units));
 			final int prodT = getMaxUnitsToBePlacedFrom(producerTerritory, unitsCanBePlacedByThisProducer, to, player, countSwitchedProductionToNeighbors, notUsableAsOtherProducers,
 						currentAvailablePlacementForOtherProducers);
-			if (prodT == -1)
-				return -1;
-			production += prodT;
+			rVal.put(producerTerritory, prodT);
 		}
-		return production;
+		return rVal;
 	}
 	
 	/**
@@ -817,6 +864,11 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to, final PlayerID player, final boolean countSwitchedProductionToNeighbors,
 				final Collection<Territory> notUsableAsOtherProducers, final Map<Territory, Integer> currentAvailablePlacementForOtherProducers)
 	{
+		// we may have special units with requiresUnits restrictions
+		final Collection<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(units, unitWhichRequiresUnitsHasRequiredUnits(producer, true)) :
+					new ArrayList<Unit>(units));
+		if (unitsCanBePlacedByThisProducer.size() <= 0)
+			return 0;
 		// if its an original factory then unlimited production
 		final TerritoryAttachment ta = TerritoryAttachment.get(producer);
 		final Collection<Unit> factoryUnits = producer.getUnits().getMatches(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
@@ -852,7 +904,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		// a factory can produce the same number of units as the number of PUs the territory generates each turn (or not, if it has canProduceXUnits)
 		int production = 0;
 		// int territoryValue = getProduction(producer);
-		final int maxConstructions = howManyOfEachConstructionCanPlace(to, units, player).totalValues();
+		final int maxConstructions = howManyOfEachConstructionCanPlace(to, unitsCanBePlacedByThisProducer, player).totalValues();
 		final boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(producer, player);
 		// If there's NO factory, allow placement of the factory
 		if (!wasFactoryThereAtStart)
@@ -889,7 +941,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 					final Territory placeTerritory = placementMove.getPlaceTerritory();
 					final Collection<Unit> unitsPlacedByCurrentPlacementMove = placementMove.getUnits();
 					// TODO: Units which have the unit attachment property, requiresUnits, are too difficult to mess with logically, so we ignore them for our special 'move shit around' methods.
-					if (!placeTerritory.isWater() || Match.someMatch(unitsPlacedByCurrentPlacementMove, Matches.UnitRequiresUnitsOnCreation))
+					if (!placeTerritory.isWater() || (isUnitPlacementRestrictions() && Match.someMatch(unitsPlacedByCurrentPlacementMove, Matches.UnitRequiresUnitsOnCreation)))
 					{
 						productionCanNotBeMoved += unitsPlacedByCurrentPlacementMove.size();
 					}
@@ -898,9 +950,9 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 						final int maxProductionThatCanBeTakenOverFromThisPlacement = unitsPlacedByCurrentPlacementMove.size();
 						int productionThatCanBeTakenOverFromThisPlacement = 0;
 						// find other producers for this placement move to the same water territory
-						final List<Territory> newPotentialOtherProducers = getAllProducers(placeTerritory, player, units);
+						final List<Territory> newPotentialOtherProducers = getAllProducers(placeTerritory, player, unitsCanBePlacedByThisProducer);
 						newPotentialOtherProducers.removeAll(notUsableAsOtherProducers);
-						Collections.sort(newPotentialOtherProducers, getBestProducerComparator(placeTerritory, units, player));
+						Collections.sort(newPotentialOtherProducers, getBestProducerComparator(placeTerritory, unitsCanBePlacedByThisProducer, player));
 						for (final Territory potentialOtherProducer : newPotentialOtherProducers)
 						{
 							Integer potential = currentAvailablePlacementForOtherProducers.get(potentialOtherProducer);
@@ -1023,7 +1075,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		// units can be null if we are just testing the territory itself...
 		final Collection<Unit> testUnits = (units == null ? new ArrayList<Unit>() : units);
 		// make sure some unit has fullfilled requiresUnits requirements
-		if (!Match.someMatch(testUnits, unitWhichRequiresUnitsHasRequiredUnits(producer, true)))
+		if (isUnitPlacementRestrictions() && !testUnits.isEmpty() && !Match.someMatch(testUnits, unitWhichRequiresUnitsHasRequiredUnits(producer, true)))
 			return "You do not have the required units to build in " + producer.getName();
 		// make sure there is a factory
 		if (!producer.getUnits().someMatch(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)))
@@ -1068,6 +1120,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		{
 			return "Cannot place factory, that territory cant produce any units";
 		}
+		if (!getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(units, to))
+			return "Cannot place more units which require units, than production capacity of territories with the required units";
 		final int maxUnitsToBePlaced = getMaxUnitsToBePlaced(units, to, player, true);
 		if ((maxUnitsToBePlaced != -1) && (maxUnitsToBePlaced < units.size()))
 			return "Cannot place " + units.size() + " more units in " + producer.getName();
@@ -1194,7 +1248,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		// if not water then must produce in that territory
 		if (!to.isWater())
 		{
-			if (canProduce(to, to, unitsToPlace, player, simpleCheck) == null)
+			if (simpleCheck || canProduce(to, to, unitsToPlace, player, simpleCheck) == null)
 			{
 				producers.add(to);
 			}
@@ -1216,7 +1270,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		{
 			public int compare(final Territory t1, final Territory t2)
 			{
-				if (t1.equals(t2))
+				if (t1 == t2 || t1.equals(t2))
 					return 0;
 				final int left1 = getMaxUnitsToBePlacedFrom(t1, units, to, player);
 				final int left2 = getMaxUnitsToBePlacedFrom(t2, units, to, player);
@@ -1227,6 +1281,36 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 				if (left2 == -1)
 					return 1;
 				if (left1 > left2)
+					return -1;
+				return 1;
+			}
+		};
+	}
+	
+	private Comparator<Unit> getHardestToPlaceWithRequiresUnitsRestrictions()
+	{
+		return new Comparator<Unit>()
+		{
+			public int compare(final Unit u1, final Unit u2)
+			{
+				if (u1 == u2 || u1.equals(u2))
+					return 0;
+				final UnitAttachment ua1 = UnitAttachment.get(u1.getType());
+				final UnitAttachment ua2 = UnitAttachment.get(u2.getType());
+				if (ua1 == null && ua2 == null)
+					return 0;
+				if (ua1 != null && ua2 == null)
+					return -1;
+				if (ua1 == null && ua2 != null)
+					return 1;
+				final ArrayList<String[]> ru1 = ua1.getRequiresUnits();
+				final ArrayList<String[]> ru2 = ua2.getRequiresUnits();
+				final int rus1 = (ru1 == null ? Integer.MAX_VALUE : (ru1.isEmpty() ? Integer.MAX_VALUE : ru1.size()));
+				final int rus2 = (ru2 == null ? Integer.MAX_VALUE : (ru2.isEmpty() ? Integer.MAX_VALUE : ru2.size()));
+				if (rus1 == rus2)
+					return 0;
+				// fewer means more difficult, and more difficult goes to front of list.
+				if (rus1 < rus2)
 					return -1;
 				return 1;
 			}
@@ -1258,14 +1342,17 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	{
 		final List<Territory> producers = getAllProducers(at, player, units);
 		Collections.sort(producers, getBestProducerComparator(at, units, player));
+		final IntegerMap<Territory> maxPlaceableMap = getMaxUnitsToBePlacedMap(units, at, player, true);
 		final Collection<Unit> unitsLeftToPlace = new ArrayList<Unit>(units);
 		for (final Territory producer : producers)
 		{
 			if (unitsLeftToPlace.isEmpty())
 				break;
 			// units may have special restrictions like RequiresUnits
-			final Collection<Unit> unitsCanBePlacedByThisProducer = Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, true));
-			final int maxPlaceable = getMaxUnitsToBePlaced(unitsCanBePlacedByThisProducer, producer, player, true);
+			final List<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, true)) :
+						new ArrayList<Unit>(unitsLeftToPlace));
+			Collections.sort(unitsCanBePlacedByThisProducer, getHardestToPlaceWithRequiresUnitsRestrictions());
+			final int maxPlaceable = maxPlaceableMap.getInt(producer);
 			if (maxPlaceable == 0)
 				continue;
 			final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
@@ -1370,7 +1457,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			{
 				final Territory placeTerritory = placement.getPlaceTerritory();
 				// units with requiresUnits are too difficult to mess with logically, so do not move them around at all
-				if (placeTerritory.isWater() && !placeTerritory.equals(producer) && !Match.someMatch(placement.getUnits(), Matches.UnitRequiresUnitsOnCreation))
+				if (placeTerritory.isWater() && !placeTerritory.equals(producer) && (!isUnitPlacementRestrictions() || !Match.someMatch(placement.getUnits(), Matches.UnitRequiresUnitsOnCreation)))
 				{
 					// found placement move of producer that can be taken over
 					// remember move and amount of placements in that territory

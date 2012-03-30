@@ -1,4 +1,6 @@
 Changes for 1.5.2.1
+* More fixes for sea placement and requiresUnits placement. (veqryn)
+
 * Prevented units with "requiresUnits" from being placed by territories not containing the required units, and also prevented them from being moved around by the "free-up-space" methods. (veqryn)
 
 * Fixed many small rare bugs in AbstractPlaceDelegate. (veqryn)
