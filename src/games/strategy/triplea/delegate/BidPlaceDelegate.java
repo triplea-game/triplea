@@ -41,39 +41,11 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 		return null;
 	}
 	
-	@Override
-	@Deprecated
-	protected Territory getProducer(final Territory to, final PlayerID player)
-	{
-		return to;
-	}
-	
 	// Return whether we can place bid in a certain territory
 	@Override
 	protected String canProduce(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
-		// we can place if no enemy units and its water
-		if (to.isWater())
-		{
-			if (Match.someMatch(units, Matches.UnitIsLand))
-				return "Cant place land units at sea";
-			else if (to.getUnits().someMatch(Matches.enemyUnit(player, getData())))
-				return "Cant place in sea zone containing enemy units";
-			else if (!to.getUnits().someMatch(Matches.unitIsOwnedBy(player)))
-				return "Cant place in sea zone that does not contain a unit owned by you";
-			else
-				return null;
-		}
-		// we can place on territories we own
-		else
-		{
-			if (Match.someMatch(units, Matches.UnitIsSea))
-				return "Cant place sea units on land";
-			else if (!to.getOwner().equals(player))
-				return "You dont own " + to.getName();
-			else
-				return null;
-		}
+		return canProduce(to, to, units, player);
 	}
 	
 	@Override
@@ -114,6 +86,8 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 	@Override
 	protected int getMaxUnitsToBePlaced(final Collection<Unit> units, final Territory to, final PlayerID player, final boolean countSwitchedProductionToNeighbors)
 	{
+		if (units == null)
+			return -1;
 		return units.size();
 	}
 	
@@ -121,12 +95,16 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 	protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to, final PlayerID player, final boolean countSwitchedProductionToNeighbors,
 				final Collection<Territory> notUsableAsOtherProducers, final Map<Territory, Integer> currentAvailablePlacementForOtherProducers)
 	{
+		if (units == null)
+			return -1;
 		return units.size();
 	}
 	
 	@Override
 	protected int getMaxUnitsToBePlacedFrom(final Territory producer, final Collection<Unit> units, final Territory to, final PlayerID player)
 	{
+		if (units == null)
+			return -1;
 		return getMaxUnitsToBePlacedFrom(producer, units, to, player, false, null, null);
 	}
 	

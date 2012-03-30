@@ -75,7 +75,7 @@ import java.util.Map.Entry;
  * 
  *          Doesn't take into account limits on number of factories that can be produced.
  * 
- *          Solved:
+ *          Solved (by frigoref):
  *          The situation where one has two non original factories a,b each with
  *          production 2. If sea zone e neighbors a,b and sea zone f neighbors b. Then
  *          producing 2 in e was making it such that you cannot produce in f. The reason
@@ -208,6 +208,16 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		}
 	}
 	
+	public PlaceableUnits getPlaceableUnits(final Collection<Unit> units, final Territory to)
+	{
+		final String error = canProduce(to, units, m_player);
+		if (error != null)
+			return new PlaceableUnits(error);
+		final Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, m_player);
+		final int maxUnits = getMaxUnitsToBePlaced(units, to, m_player, true);
+		return new PlaceableUnits(placeableUnits, maxUnits);
+	}
+	
 	public String placeUnits(final Collection<Unit> units, final Territory at)
 	{
 		if (units == null || units.isEmpty())
@@ -221,14 +231,276 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		return null;
 	}
 	
-	public PlaceableUnits getPlaceableUnits(final Collection<Unit> units, final Territory to)
+	private void performPlace(final Collection<Unit> units, final Territory at, final PlayerID player)
 	{
-		final String error = canProduce(to, units, m_player);
-		if (error != null)
-			return new PlaceableUnits(error);
-		final Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, m_player);
-		final int maxUnits = getMaxUnitsToBePlaced(units, to, m_player, true);
-		return new PlaceableUnits(placeableUnits, maxUnits);
+		final List<Territory> producers = getAllProducers(at, player, units);
+		Collections.sort(producers, getBestProducerComparator(at, units, player));
+		final IntegerMap<Territory> maxPlaceableMap = getMaxUnitsToBePlacedMap(units, at, player, true);
+		final Collection<Unit> unitsLeftToPlace = new ArrayList<Unit>(units);
+		for (final Territory producer : producers)
+		{
+			if (unitsLeftToPlace.isEmpty())
+				break;
+			// units may have special restrictions like RequiresUnits
+			final List<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, true)) :
+						new ArrayList<Unit>(unitsLeftToPlace));
+			Collections.sort(unitsCanBePlacedByThisProducer, getHardestToPlaceWithRequiresUnitsRestrictions());
+			final int maxPlaceable = maxPlaceableMap.getInt(producer);
+			if (maxPlaceable == 0)
+				continue;
+			final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
+			// don't forget that -1 == infinite
+			if (maxForThisProducer == -1 || maxForThisProducer >= unitsCanBePlacedByThisProducer.size())
+			{
+				performPlaceFrom(producer, unitsCanBePlacedByThisProducer, at, player);
+				unitsLeftToPlace.removeAll(unitsCanBePlacedByThisProducer);
+				continue;
+			}
+			final int neededExtra = unitsCanBePlacedByThisProducer.size() - maxForThisProducer;
+			if (maxPlaceable > maxForThisProducer)
+			{
+				freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, at, player);
+				if (getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player) != maxPlaceable)
+					throw new IllegalStateException("getMaxUnitsToBePlaced not returning same amount as getMaxUnitsToBePlacedFrom after using freePlacementCapacity for territory: "
+								+ at.getName() + " producer: " + producer.getName() + " units: " + unitsCanBePlacedByThisProducer);
+			}
+			@SuppressWarnings("unchecked")
+			final Collection<Unit> placedUnits = Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, Match.ALWAYS_MATCH);
+			performPlaceFrom(producer, placedUnits, at, player);
+			unitsLeftToPlace.removeAll(placedUnits);
+		}
+		if (!unitsLeftToPlace.isEmpty())
+			throw new IllegalStateException("Not all units placed in: " + at.getName() + " units: " + unitsLeftToPlace);
+	}
+	
+	/**
+	 * 
+	 * @param producer
+	 *            territory that produces the new units
+	 * @param placeableUnits
+	 *            the new units
+	 * @param at
+	 *            territory where the new units get placed
+	 */
+	private void performPlaceFrom(final Territory producer, final Collection<Unit> placeableUnits, final Territory at, final PlayerID player)
+	{
+		final CompositeChange change = new CompositeChange();
+		// make sure we can place consuming units
+		final boolean didIt = canWeConsumeUnits(placeableUnits, at, true, change);
+		if (!didIt)
+			throw new IllegalStateException("Something wrong with consuming/upgrading units");
+		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(placeableUnits, Matches.UnitIsFactoryOrIsInfrastructure);
+		change.add(DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, player));
+		// can we move planes to land there
+		final String movedAirTranscriptTextForHistory = moveAirOntoNewCarriers(at, placeableUnits, player, change);
+		
+		final Change remove = ChangeFactory.removeUnits(player, placeableUnits);
+		final Change place = ChangeFactory.addUnits(at, placeableUnits);
+		change.add(remove);
+		change.add(place);
+		final UndoablePlacement current_placement = new UndoablePlacement(m_player, change, producer, at, placeableUnits);
+		m_placements.add(current_placement);
+		updateUndoablePlacementIndexes();
+		final String transcriptText = MyFormatter.unitsToTextNoOwner(placeableUnits) + " placed in " + at.getName();
+		m_bridge.getHistoryWriter().startEvent(transcriptText);
+		m_bridge.getHistoryWriter().setRenderingData(current_placement.getDescriptionObject());
+		if (movedAirTranscriptTextForHistory != null)
+			m_bridge.getHistoryWriter().addChildToEvent(movedAirTranscriptTextForHistory);
+		m_bridge.addChange(change);
+		updateProducedMap(producer, placeableUnits);
+	}
+	
+	private void updateProducedMap(final Territory producer, final Collection<Unit> additionallyProducedUnits)
+	{
+		final Collection<Unit> newProducedUnits = getAlreadyProduced(producer);
+		newProducedUnits.addAll(additionallyProducedUnits);
+		m_produced.put(producer, newProducedUnits);
+	}
+	
+	private void removeFromProducedMap(final Territory producer, final Collection<Unit> unitsToRemove)
+	{
+		final Collection<Unit> newProducedUnits = getAlreadyProduced(producer);
+		newProducedUnits.removeAll(unitsToRemove);
+		if (newProducedUnits.isEmpty())
+			m_produced.remove(producer);
+		else
+			m_produced.put(producer, newProducedUnits);
+	}
+	
+	/**
+	 * frees the requested amount of capacity for the given producer by trying to hand over already made placements to other territories.
+	 * This only works if one of the placements is done for another territory, more specific for a sea zone.
+	 * If such placements exists it will be tried to let them be done by other adjacent territories.
+	 * 
+	 * @param producer
+	 *            territory that needs more placement capacity
+	 * @param freeSize
+	 *            amount of capacity that is requested
+	 */
+	private void freePlacementCapacity(final Territory producer, final int freeSize, final Collection<Unit> unitsLeftToPlace, final Territory at, final PlayerID player)
+	{
+		int foundSpaceTotal = 0;
+		final List<UndoablePlacement> redoPlacements = new ArrayList<UndoablePlacement>(); // placements of the producer that could be redone by other territories
+		final HashMap<Territory, Integer> redoPlacementsCount = new HashMap<Territory, Integer>(); // territories the producer produced for (but not itself) and the amount of units it produced
+		// find map place territory -> possible free space for producer
+		for (final UndoablePlacement placement : m_placements)
+		{
+			// find placement move of producer that can be taken over
+			if (placement.getProducerTerritory().equals(producer))
+			{
+				final Territory placeTerritory = placement.getPlaceTerritory();
+				// units with requiresUnits are too difficult to mess with logically, so do not move them around at all
+				if (placeTerritory.isWater() && !placeTerritory.equals(producer) && (!isUnitPlacementRestrictions() || !Match.someMatch(placement.getUnits(), Matches.UnitRequiresUnitsOnCreation)))
+				{
+					// found placement move of producer that can be taken over
+					// remember move and amount of placements in that territory
+					redoPlacements.add(placement);
+					final Integer integer = redoPlacementsCount.get(placeTerritory);
+					if (integer == null)
+						redoPlacementsCount.put(placeTerritory, placement.getUnits().size());
+					else
+						redoPlacementsCount.put(placeTerritory, integer + placement.getUnits().size());
+				}
+			}
+		}
+		// let other producers take over placements of producer
+		// remember placement move and new territory if a placement has to be split up
+		final Collection<Tuple<UndoablePlacement, Territory>> splitPlacements = new ArrayList<Tuple<UndoablePlacement, Territory>>();
+		for (final Entry<Territory, Integer> entry : redoPlacementsCount.entrySet())
+		{
+			final Territory placeTerritory = entry.getKey();
+			final int maxProductionThatCanBeTakenOverFromThisPlacement = entry.getValue();
+			// find other producers that could produce for the placeTerritory
+			final List<Territory> potentialNewProducers = getAllProducers(placeTerritory, player, unitsLeftToPlace);
+			potentialNewProducers.remove(producer);
+			Collections.sort(potentialNewProducers, getBestProducerComparator(placeTerritory, unitsLeftToPlace, player));
+			// we can just free a certain amount or still need a certain amount of space
+			final int maxSpaceToBeFree = Math.min(maxProductionThatCanBeTakenOverFromThisPlacement, freeSize - foundSpaceTotal);
+			int spaceAlreadyFree = 0; // space that got free this on this placeTerritory
+			for (final Territory potentialNewProducerTerritory : potentialNewProducers)
+			{
+				int leftToPlace = getMaxUnitsToBePlacedFrom(potentialNewProducerTerritory, unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
+				if (leftToPlace == -1)
+					leftToPlace = maxProductionThatCanBeTakenOverFromThisPlacement;
+				// find placements of the producer the potentialNewProducerTerritory can take over
+				for (final UndoablePlacement placement : redoPlacements)
+				{
+					if (!placement.getPlaceTerritory().equals(placeTerritory))
+						continue;
+					final Collection<Unit> placedUnits = placement.getUnits();
+					final int placementSize = placedUnits.size();
+					if (placementSize <= leftToPlace)
+					{
+						// potentialNewProducerTerritory can take over complete production
+						placement.setProducerTerritory(potentialNewProducerTerritory);
+						removeFromProducedMap(producer, placedUnits);
+						updateProducedMap(potentialNewProducerTerritory, placedUnits);
+						spaceAlreadyFree += placementSize;
+					}
+					else
+					{
+						// potentialNewProducerTerritory can take over ONLY parts of the production
+						// remember placement and potentialNewProducerTerritory but try to avoid splitting a placement
+						splitPlacements.add(new Tuple<UndoablePlacement, Territory>(placement, potentialNewProducerTerritory));
+					}
+					if (spaceAlreadyFree >= maxSpaceToBeFree)
+						break;
+				}
+				if (spaceAlreadyFree >= maxSpaceToBeFree)
+					break;
+			}
+			foundSpaceTotal += spaceAlreadyFree;
+			if (foundSpaceTotal >= freeSize)
+				break;
+		}
+		if (foundSpaceTotal < freeSize)
+		{
+			// we need to split some placement moves
+			for (final Tuple<UndoablePlacement, Territory> tuple : splitPlacements)
+			{
+				final UndoablePlacement placement = tuple.getFirst();
+				final Territory newProducer = tuple.getSecond();
+				int leftToPlace = getMaxUnitsToBePlacedFrom(newProducer, unitsLeftToPlace, at, player);
+				foundSpaceTotal += leftToPlace;
+				// divide set of units that get placed
+				final Collection<Unit> unitsForOldProducer = new ArrayList<Unit>(placement.getUnits());
+				final Collection<Unit> unitsForNewProducer = new ArrayList<Unit>();
+				for (final Unit unit : unitsForOldProducer)
+				{
+					if (leftToPlace == 0)
+						break;
+					unitsForNewProducer.add(unit);
+					--leftToPlace;
+				}
+				unitsForOldProducer.removeAll(unitsForNewProducer);
+				// split move, by undo and creating two new ones
+				if (!unitsForNewProducer.isEmpty())
+				{
+					undoMove(placement.getIndex());
+					performPlaceFrom(newProducer, unitsForNewProducer, placement.getPlaceTerritory(), player);
+					performPlaceFrom(producer, unitsForOldProducer, placement.getPlaceTerritory(), player);
+				}
+			}
+		}
+	}
+	
+	// TODO Here's the spot for special air placement rules
+	private String moveAirOntoNewCarriers(final Territory territory, final Collection<Unit> units, final PlayerID player, final CompositeChange placeChange)
+	{
+		// not water, dont bother
+		if (!territory.isWater())
+			return null;
+		// not enabled
+		// if (!canProduceFightersOnCarriers())
+		if (!canMoveExistingFightersToNewCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
+			return null;
+		if (Match.noneMatch(units, Matches.UnitIsCarrier))
+			return null;
+		// do we have any spare carrier capacity
+		int capacity = AirMovementValidator.carrierCapacity(units, territory);
+		// subtract fighters that have already been produced with this carrier
+		// this turn.
+		capacity -= AirMovementValidator.carrierCost(units);
+		if (capacity <= 0)
+			return null;
+		final Collection<Territory> neighbors = getData().getMap().getNeighbors(territory, 1);
+		final Iterator<Territory> iter = neighbors.iterator();
+		final CompositeMatch<Unit> ownedFighters = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
+		while (iter.hasNext())
+		{
+			final Territory neighbor = iter.next();
+			if (neighbor.isWater())
+				continue;
+			// check to see if we have a factory, only fighters from territories
+			// that could
+			// have produced the carrier can move there
+			if (!neighbor.getUnits().someMatch(Matches.UnitIsFactoryOrCanProduceUnits))
+				continue;
+			// are there some fighers there that can be moved?
+			if (!neighbor.getUnits().someMatch(ownedFighters))
+				continue;
+			if (wasConquered(neighbor))
+				continue;
+			if (Match.someMatch(getAlreadyProduced(neighbor), Matches.UnitIsFactoryOrCanProduceUnits))
+				continue;
+			final List<Unit> fighters = neighbor.getUnits().getMatches(ownedFighters);
+			while (fighters.size() > 0 && AirMovementValidator.carrierCost(fighters) > capacity)
+			{
+				fighters.remove(0);
+			}
+			if (fighters.size() == 0)
+				continue;
+			final Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, neighbor);
+			final Change change = ChangeFactory.moveUnits(neighbor, territory, movedFighters);
+			placeChange.add(change);
+			final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + neighbor.getName() + " to " + territory.getName();
+			// only allow 1 movement
+			// technically only the territory that produced the
+			// carrier should be able to move fighters to the new
+			// territory
+			return transcriptText;
+		}
+		return null;
 	}
 	
 	/**
@@ -268,296 +540,159 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		return null;
 	}
 	
-	private boolean canProduceFightersOnCarriers()
+	/**
+	 * Test whether or not the territory has the factory resources to support
+	 * the placement. AlreadyProduced maps territory->units already produced
+	 * this turn by that territory.
+	 */
+	protected String canProduce(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
-		return games.strategy.triplea.Properties.getProduceFightersOnCarriers(getData());
+		final Collection<Territory> producers = getAllProducers(to, player, units, true);
+		// the only reason it could be empty is if its water and no
+		// territories adjacent have factories
+		if (producers.isEmpty())
+			return "No factory adjacent to " + to.getName();
+		if (producers.size() == 1)
+			return canProduce(producers.iterator().next(), to, units, player);
+		final Collection<Territory> failingProducers = new ArrayList<Territory>();
+		String error = "";
+		for (final Territory producer : producers)
+		{
+			final String errorP = canProduce(producer, to, units, player);
+			if (errorP != null)
+			{
+				failingProducers.add(producer);
+				error += ", " + errorP;
+			}
+		}
+		if (producers.size() == failingProducers.size())
+			return "Adjacent territories to " + to.getName() + " cannot produce, due to: \n " + error.replaceFirst(", ", "");
+		return null;
 	}
 	
-	private boolean canProduceNewFightersOnOldCarriers()
+	protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
-		return games.strategy.triplea.Properties.getProduceNewFightersOnOldCarriers(getData());
-	}
-	
-	private boolean canMoveExistingFightersToNewCarriers()
-	{
-		return games.strategy.triplea.Properties.getMoveExistingFightersToNewCarriers(getData());
+		return canProduce(producer, to, units, player, false);
 	}
 	
 	/**
-	 * The rule is that new fighters can be produced on new carriers. This does
-	 * not allow for fighters to be produced on old carriers.
+	 * Tests if this territory can produce units. (Does not check if it has space left to do so)
+	 * 
+	 * @param producer
+	 *            - Territory doing the producing.
+	 * @param to
+	 *            - Territory to be placed in.
+	 * @param units
+	 *            - Units to be placed.
+	 * @param player
+	 *            - Player doing the placing.
+	 * @param simpleCheck
+	 *            - If true you return true even if a factory is not present. Used when you do not want an infinite loop (getAllProducers -> canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
+	 * @return - null if allowed to produce, otherwise an error String.
 	 */
-	private String validateNewAirCanLandOnCarriers(final Territory to, final Collection<Unit> units)
+	protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player, final boolean simpleCheck)
 	{
-		final int cost = AirMovementValidator.carrierCost(units);
-		int capacity = AirMovementValidator.carrierCapacity(units, to);
-		capacity += AirMovementValidator.carrierCapacity(to.getUnits().getUnits(), to);
-		if (cost > capacity)
-			return "Not enough new carriers to land all the fighters";
+		if (!producer.getOwner().equals(player))
+			return producer.getName() + " is not owned by you";
+		// make sure the territory wasnt conquered this turn
+		if (wasConquered(producer) && !isPlacementAllowedInCapturedTerritory(player))
+			return producer.getName() + " was conquered this turn and cannot produce till next turn";
+		if (isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player) && Matches.TerritoryIsLand.match(to) && Matches.isTerritoryOwnedBy(player).match(to))
+			return null;
+		if (isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(player) && Matches.TerritoryIsWater.match(to) && Matches.isTerritoryOwnedBy(player).match(producer))
+			return null;
+		if (simpleCheck)
+			return null;
+		// units can be null if we are just testing the territory itself...
+		final Collection<Unit> testUnits = (units == null ? new ArrayList<Unit>() : units);
+		// make sure some unit has fullfilled requiresUnits requirements
+		if (isUnitPlacementRestrictions() && !testUnits.isEmpty() && !Match.someMatch(testUnits, unitWhichRequiresUnitsHasRequiredUnits(producer, true)))
+			return "You do not have the required units to build in " + producer.getName();
+		// make sure there is a factory
+		if (!producer.getUnits().someMatch(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)))
+		{
+			// check to see if we are producing a factory
+			if (Match.someMatch(testUnits, Matches.UnitIsFactory))
+				return null;
+			if (Match.someMatch(testUnits, Matches.UnitIsConstruction))
+			{
+				if (howManyOfEachConstructionCanPlace(to, testUnits, player).totalValues() > 0) // No error, Construction to place
+					return null;
+				return "No more Constructions Allowed in " + producer.getName();
+			}
+			return "No Factory in " + producer.getName();
+		}
+		// check we havent just put a factory there (should we be checking producer?)
+		if (Match.someMatch(getAlreadyProduced(producer), Matches.UnitIsFactoryOrCanProduceUnits) || Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactoryOrCanProduceUnits))
+		{
+			if (Match.someMatch(testUnits, Matches.UnitIsConstruction) && howManyOfEachConstructionCanPlace(to, testUnits, player).totalValues() > 0) // you can still place a Construction
+				return null;
+			return "Factory in " + producer.getName() + " cant produce until 1 turn after it is created";
+		}
+		if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, getData())))
+			return "Cannot place sea units with enemy naval units";
 		return null;
 	}
 	
 	/**
-	 * @param to
-	 *            referring territory
-	 * @param player
-	 *            PlayerID
-	 * @return whether there was an owned unit capable of producing, in this territory at the start of this phase/step
-	 */
-	public boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(final Territory to, final PlayerID player)
-	{
-		final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
-		return Match.countMatches(unitsAtStartOfTurnInTO, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)) > 0;
-	}
-	
-	/**
-	 * @param to
-	 *            referring territory
-	 * @return collection of units that were there at start of turn
-	 */
-	public Collection<Unit> unitsAtStartOfStepInTerritory(final Territory to)
-	{
-		if (to == null)
-			return new ArrayList<Unit>();
-		final Collection<Unit> unitsInTO = to.getUnits().getUnits();
-		final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-		if (Matches.TerritoryIsWater.match(to))
-		{
-			for (final Territory current : getAllProducers(to, m_player, null, true))
-			{
-				unitsPlacedAlready.addAll(getAlreadyProduced(current));
-			}
-		}
-		final Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
-		unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
-		return unitsAtStartOfTurnInTO;
-	}
-	
-	public Collection<Unit> unitsPlacedInTerritorySoFar(final Territory to)
-	{
-		if (to == null)
-			return new ArrayList<Unit>();
-		final Collection<Unit> unitsInTO = to.getUnits().getUnits();
-		final Collection<Unit> unitsAtStartOfStep = unitsAtStartOfStepInTerritory(to);
-		unitsInTO.removeAll(unitsAtStartOfStep);
-		return unitsInTO;
-	}
-	
-	/**
-	 * @param to
-	 *            referring territory
-	 * @param units
-	 *            units to place
-	 * @param player
-	 *            PlayerID
-	 * @return an empty IntegerMap if you can't produce any constructions (will never return null)
-	 */
-	public IntegerMap<String> howManyOfEachConstructionCanPlace(final Territory to, final Collection<Unit> units, final PlayerID player)
-	{
-		if (units == null || units.isEmpty() || !Match.someMatch(units, Matches.UnitIsFactoryOrConstruction))
-			return new IntegerMap<String>();
-		final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
-		final Collection<Unit> unitsInTO = to.getUnits().getUnits();
-		final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
-		// build an integer map of each unit we have in our list of held units, as well as integer maps for maximum units and units per turn
-		final IntegerMap<String> unitMapHeld = new IntegerMap<String>();
-		final IntegerMap<String> unitMapMaxType = new IntegerMap<String>();
-		final IntegerMap<String> unitMapTypePerTurn = new IntegerMap<String>();
-		final int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(getData());
-		final Iterator<Unit> unitHeldIter = Match.getMatches(units, Matches.UnitIsFactoryOrConstruction).iterator();
-		final TerritoryAttachment terrAttachment = TerritoryAttachment.get(to);
-		int toProduction = 0;
-		if (terrAttachment != null)
-			toProduction = terrAttachment.getProduction();
-		while (unitHeldIter.hasNext())
-		{
-			final Unit currentUnit = unitHeldIter.next();
-			final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
-			// account for any unit placement restrictions by territory
-			if (isUnitPlacementRestrictions())
-			{
-				final String[] terrs = ua.getUnitPlacementRestrictions();
-				final Collection<Territory> listedTerrs = getListedTerritories(terrs);
-				if (listedTerrs.contains(to))
-					continue;
-				if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > toProduction)
-					continue;
-				if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().match(currentUnit))
-					continue;
-			}
-			// remove any units that require other units to be consumed on creation (veqryn)
-			if (Matches.UnitConsumesUnitsOnCreation.match(currentUnit) && Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(currentUnit))
-				continue;
-			if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
-			{
-				unitMapHeld.add("factory", 1);
-				unitMapMaxType.put("factory", maxFactory);
-				unitMapTypePerTurn.put("factory", 1);
-			}
-			else
-			{
-				unitMapHeld.add(ua.getConstructionType(), 1);
-				unitMapMaxType.put(ua.getConstructionType(), ua.getMaxConstructionsPerTypePerTerr());
-				unitMapTypePerTurn.put(ua.getConstructionType(), ua.getConstructionsPerTerrPerTypePerTurn());
-			}
-		}
-		final boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(getData());
-		final boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(getData());
-		final boolean unlimitedConstructions = games.strategy.triplea.Properties.getUnlimitedConstructions(getData());
-		final boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
-		// build an integer map of each construction unit in the territory
-		final IntegerMap<String> unitMapTO = new IntegerMap<String>();
-		if (Match.someMatch(unitsInTO, Matches.UnitIsFactoryOrConstruction))
-		{
-			for (final Unit currentUnit : Match.getMatches(unitsInTO, Matches.UnitIsFactoryOrConstruction))
-			{
-				final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
-				if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
-					unitMapTO.add("factory", 1);
-				else
-					unitMapTO.add(ua.getConstructionType(), 1);
-			}
-			// account for units already in the territory, based on max
-			final Iterator<String> mapString = unitMapHeld.keySet().iterator();
-			while (mapString.hasNext())
-			{
-				final String constructionType = mapString.next();
-				int unitMax = unitMapMaxType.getInt(constructionType);
-				if (wasFactoryThereAtStart && !constructionType.equals("factory") && !constructionType.endsWith("structure"))
-					unitMax = Math.max(Math.max(unitMax, (moreWithFactory ? toProduction : 0)), (unlimitedConstructions ? 10000 : 0));
-				if (!wasFactoryThereAtStart && !constructionType.equals("factory") && !constructionType.endsWith("structure"))
-					unitMax = Math.max(Math.max(unitMax, (moreWithoutFactory ? toProduction : 0)), (unlimitedConstructions ? 10000 : 0));
-				unitMapHeld.put(constructionType, Math.max(0, Math.min(unitMax - unitMapTO.getInt(constructionType), unitMapHeld.getInt(constructionType))));
-			}
-		}
-		// deal with already placed units
-		final Iterator<Unit> unitAlready = Match.getMatches(unitsPlacedAlready, Matches.UnitIsFactoryOrConstruction).iterator();
-		while (unitAlready.hasNext())
-		{
-			final Unit currentUnit = unitAlready.next();
-			final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
-			unitMapTypePerTurn.add(ua.getConstructionType(), -1);
-		}
-		// modify this list based on how many we can place per turn
-		final IntegerMap<String> unitsAllowed = new IntegerMap<String>();
-		final Iterator<String> mapString2 = unitMapHeld.keySet().iterator();
-		while (mapString2.hasNext())
-		{
-			final String constructionType = mapString2.next();
-			final int unitAllowed = Math.max(0, Math.min(unitMapTypePerTurn.getInt(constructionType), unitMapHeld.getInt(constructionType)));
-			if (unitAllowed > 0)
-				unitsAllowed.put(constructionType, unitAllowed);
-		}
-		// return our integer map
-		return unitsAllowed;
-	}
-	
-	public int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap)
-	{
-		final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-		if (!ua.getIsFactory()
-					&& (!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1 || ua.getMaxConstructionsPerTypePerTerr() < 1 || constructionsMap.getInt(ua.getConstructionType()) == 0))
-			return 0;
-		if (ua.getIsFactory() && !ua.getIsConstruction())
-			return constructionsMap.getInt("factory");
-		return constructionsMap.getInt(ua.getConstructionType());
-	}
-	
-	/**
+	 * Returns the territories that would do the producing if units are to be placed in a given territory. Returns an empty list if no suitable territory could be found.
 	 * 
 	 * @param to
-	 *            - Territory we are testing for required units
-	 * @param doNotCountNeighbors
-	 *            - If false, and 'to' is water, then we will test neighboring land territories to see if they have any of the required units as well.
-	 * @return - Whether the territory contains one of the required combos of units
-	 *         (and if 'doNotCountNeighbors' is false, and unit is Sea unit, will return true if an adjacent land territory has one of the required combos as well).
+	 *            - Territory to place in.
+	 * @param player
+	 *            - player that is placing.
+	 * @param unitsToPlace
+	 *            - Can be null, otherwise is the units that will be produced.
+	 * @param simpleCheck
+	 *            - If true you return true even if a factory is not present. Used when you do not want an infinite loop (getAllProducers -> canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
+	 * @return - List of territories that can produce here.
 	 */
-	public Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors)
+	protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace, final boolean simpleCheck)
 	{
-		return new Match<Unit>()
+		final List<Territory> producers = new ArrayList<Territory>();
+		// if not water then must produce in that territory
+		if (!to.isWater())
 		{
-			@Override
-			public boolean match(final Unit unitWhichRequiresUnits)
+			if (simpleCheck || canProduce(to, to, unitsToPlace, player, simpleCheck) == null)
 			{
-				if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits))
-					return true;
-				final Collection<Unit> unitsAtStartOfTurnInProducer = unitsAtStartOfStepInTerritory(to);
-				// do not need to remove unowned here, as this match will remove unowned units from consideration.
-				if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer).match(unitWhichRequiresUnits))
-					return true;
-				if (!doNotCountNeighbors)
-				{
-					if (Matches.UnitIsSea.match(unitWhichRequiresUnits))
-					{
-						for (final Territory current : getAllProducers(to, m_player, Collections.singletonList(unitWhichRequiresUnits), true))
-						{
-							final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
-							if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent).match(unitWhichRequiresUnits))
-								return true;
-						}
-					}
-				}
-				return false;
+				producers.add(to);
 			}
-		};
+			return producers;
+		}
+		for (final Territory current : getData().getMap().getNeighbors(to))
+		{
+			if (canProduce(current, to, unitsToPlace, player, simpleCheck) == null)
+			{
+				producers.add(current);
+			}
+		}
+		return producers;
 	}
 	
-	public boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to)
+	/**
+	 * Test whether or not the territory has the factory resources to support
+	 * the placement. AlreadyProduced maps territory->units already produced
+	 * this turn by that territory.
+	 */
+	protected String checkProduction(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
-		if (!isUnitPlacementRestrictions() || !Match.someMatch(units, Matches.UnitRequiresUnitsOnCreation))
-			return true;
-		final IntegerMap<Territory> producersMap = getMaxUnitsToBePlacedMap(units, to, m_player, true);
-		final List<Territory> producers = getAllProducers(to, m_player, units);
+		final List<Territory> producers = getAllProducers(to, player, units);
 		if (producers.isEmpty())
-			return false;
-		Collections.sort(producers, getBestProducerComparator(to, units, m_player));
-		final Collection<Unit> unitsLeftToPlace = new ArrayList<Unit>(units);
-		for (final Territory t : producers)
-		{
-			if (unitsLeftToPlace.isEmpty())
-				return true;
-			final int productionHere = producersMap.getInt(t);
-			final List<Unit> canBePlacedHere = Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(t, true));
-			if (productionHere == -1 || productionHere >= canBePlacedHere.size())
-			{
-				unitsLeftToPlace.removeAll(canBePlacedHere);
-				continue;
-			}
-			Collections.sort(canBePlacedHere, getHardestToPlaceWithRequiresUnitsRestrictions());
-			@SuppressWarnings("unchecked")
-			final Collection<Unit> placedHere = Match.getNMatches(canBePlacedHere, productionHere, Match.ALWAYS_MATCH);
-			unitsLeftToPlace.removeAll(placedHere);
-		}
-		if (unitsLeftToPlace.isEmpty())
-			return true;
-		return false;
+			return "No factory adjacent to " + to.getName();
+		// if its an original factory then unlimited production
+		Collections.sort(producers, getBestProducerComparator(to, units, player));
+		final TerritoryAttachment ta = TerritoryAttachment.get(producers.iterator().next());
+		// WW2V2, you cant place factories in territories with no production
+		if (isWW2V2() && ta.getProduction() == 0 && !Match.someMatch(units, Matches.UnitIsConstruction))
+			return "Cannot place factory, that territory cant produce any units";
+		if (!getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(units, to))
+			return "Cannot place more units which require units, than production capacity of territories with the required units";
+		final int maxUnitsToBePlaced = getMaxUnitsToBePlaced(units, to, player, true);
+		if ((maxUnitsToBePlaced != -1) && (maxUnitsToBePlaced < units.size()))
+			return "Cannot place " + units.size() + " more units in " + to.getName();
+		return null;
 	}
 	
-	/*public Map<Unit, Collection<Territory>> getTerritoriesWhereUnitsWithRequiresUnitsCanBeProducedFrom(final Collection<Unit> units, final Territory to)
-	{
-		final Map<Unit, Collection<Territory>> rVal = new HashMap<Unit, Collection<Territory>>();
-		for (final Unit u : units)
-		{
-			final Collection<Territory> allowedTerrs = new ArrayList<Territory>();
-			final Collection<Territory> allProducers = getAllProducers(to, m_player, Collections.singletonList(u));
-			// if our units has the required unit in the territory it is being produced to, then we are all good (ex: the sea unit requires a Wet_Dock in the sea zone)
-			if (!Matches.UnitRequiresUnitsOnCreation.match(u) || unitWhichRequiresUnitsHasRequiredUnits(to, true).match(u))
-			{
-				allowedTerrs.addAll(allProducers);
-			}
-			else
-			{
-				for (final Territory t : allProducers)
-				{
-					if (unitWhichRequiresUnitsHasRequiredUnits(t, true).match(u))
-						allowedTerrs.add(t);
-				}
-			}
-			rVal.put(u, allowedTerrs);
-		}
-		return rVal;
-	}*/
-
 	public String canUnitsBePlaced(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
 		final Collection<Unit> allowedUnits = getUnitsToBePlaced(to, units, player);
@@ -645,13 +780,11 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	
 	protected Collection<Unit> getUnitsToBePlacedSea(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
-		final Collection<Unit> placeableUnits = new ArrayList<Unit>();
 		final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
+		final Collection<Unit> allProducedUnits = unitsPlacedInTerritorySoFar(to);
+		final Collection<Unit> placeableUnits = new ArrayList<Unit>();
 		// Land units wont do
 		placeableUnits.addAll(Match.getMatches(units, Matches.UnitIsSea));
-		final Territory producer = getProducer(to, player);
-		final Collection<Unit> allProducedUnits = new ArrayList<Unit>(units);
-		allProducedUnits.addAll(getAlreadyProduced(producer));
 		// if can place new fighters on NEW CVs ---OR--- can place new fighters on OLD CVs
 		if (((canProduceFightersOnCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) && Match.someMatch(allProducedUnits, Matches.UnitIsCarrier))
 					|| ((canProduceNewFightersOnOldCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData())) && Match.someMatch(to.getUnits().getUnits(), Matches.UnitIsCarrier)))
@@ -1010,260 +1143,220 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	}
 	
 	/**
-	 * Test whether or not the territory has the factory resources to support
-	 * the placement. AlreadyProduced maps territory->units already produced
-	 * this turn by that territory.
-	 */
-	protected String canProduce(final Territory to, final Collection<Unit> units, final PlayerID player)
-	{
-		final Collection<Territory> producers = getAllProducers(to, player, units, true);
-		// the only reason it could be empty is if its water and no
-		// territories adjacent have factories
-		if (producers.isEmpty())
-			return "No factory adjacent to " + to.getName();
-		if (producers.size() == 1)
-			return canProduce(producers.iterator().next(), to, units, player);
-		final Collection<Territory> failingProducers = new ArrayList<Territory>();
-		String error = "";
-		for (final Territory producer : producers)
-		{
-			final String errorP = canProduce(producer, to, units, player);
-			if (errorP != null)
-			{
-				failingProducers.add(producer);
-				error += ", " + errorP;
-			}
-		}
-		if (producers.size() == failingProducers.size())
-			return "Adjacent factories to " + to.getName() + " cannot produce, due to: \n " + error.replaceFirst(", ", "");
-		return null;
-	}
-	
-	protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player)
-	{
-		return canProduce(producer, to, units, player, false);
-	}
-	
-	/**
-	 * Tests if this territory can produce units. (Does not check if it has space left to do so)
-	 * 
-	 * @param producer
-	 *            - Territory doing the producing.
 	 * @param to
-	 *            - Territory to be placed in.
+	 *            referring territory
 	 * @param units
-	 *            - Units to be placed.
+	 *            units to place
 	 * @param player
-	 *            - Player doing the placing.
-	 * @param simpleCheck
-	 *            - If true you return true even if a factory is not present. Used when you do not want an infinite loop (getAllProducers -> canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
-	 * @return - null if allowed to produce, otherwise an error String.
+	 *            PlayerID
+	 * @return an empty IntegerMap if you can't produce any constructions (will never return null)
 	 */
-	protected String canProduce(final Territory producer, final Territory to, final Collection<Unit> units, final PlayerID player, final boolean simpleCheck)
+	public IntegerMap<String> howManyOfEachConstructionCanPlace(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
-		if (!producer.getOwner().equals(player))
-			return producer.getName() + " is not owned by you";
-		// make sure the territory wasnt conquered this turn
-		if (wasConquered(producer) && !isPlacementAllowedInCapturedTerritory(player))
-			return producer.getName() + " was conquered this turn and cannot produce till next turn";
-		if (isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player) && Matches.TerritoryIsLand.match(to) && Matches.isTerritoryOwnedBy(player).match(to))
-			return null;
-		if (isPlayerAllowedToPlacementAnySeaZoneByOwnedLand(player) && Matches.TerritoryIsWater.match(to) && Matches.isTerritoryOwnedBy(player).match(producer))
-			return null;
-		if (simpleCheck)
-			return null;
-		// units can be null if we are just testing the territory itself...
-		final Collection<Unit> testUnits = (units == null ? new ArrayList<Unit>() : units);
-		// make sure some unit has fullfilled requiresUnits requirements
-		if (isUnitPlacementRestrictions() && !testUnits.isEmpty() && !Match.someMatch(testUnits, unitWhichRequiresUnitsHasRequiredUnits(producer, true)))
-			return "You do not have the required units to build in " + producer.getName();
-		// make sure there is a factory
-		if (!producer.getUnits().someMatch(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)))
+		if (units == null || units.isEmpty() || !Match.someMatch(units, Matches.UnitIsFactoryOrConstruction))
+			return new IntegerMap<String>();
+		final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
+		final Collection<Unit> unitsInTO = to.getUnits().getUnits();
+		final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+		// build an integer map of each unit we have in our list of held units, as well as integer maps for maximum units and units per turn
+		final IntegerMap<String> unitMapHeld = new IntegerMap<String>();
+		final IntegerMap<String> unitMapMaxType = new IntegerMap<String>();
+		final IntegerMap<String> unitMapTypePerTurn = new IntegerMap<String>();
+		final int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(getData());
+		final Iterator<Unit> unitHeldIter = Match.getMatches(units, Matches.UnitIsFactoryOrConstruction).iterator();
+		final TerritoryAttachment terrAttachment = TerritoryAttachment.get(to);
+		int toProduction = 0;
+		if (terrAttachment != null)
+			toProduction = terrAttachment.getProduction();
+		while (unitHeldIter.hasNext())
 		{
-			// check to see if we are producing a factory
-			if (Match.someMatch(testUnits, Matches.UnitIsFactory))
-				return null;
-			if (Match.someMatch(testUnits, Matches.UnitIsConstruction))
+			final Unit currentUnit = unitHeldIter.next();
+			final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+			// account for any unit placement restrictions by territory
+			if (isUnitPlacementRestrictions())
 			{
-				if (howManyOfEachConstructionCanPlace(to, testUnits, player).totalValues() > 0) // No error, Construction to place
-					return null;
-				return "No more Constructions Allowed in " + producer.getName();
+				final String[] terrs = ua.getUnitPlacementRestrictions();
+				final Collection<Territory> listedTerrs = getListedTerritories(terrs);
+				if (listedTerrs.contains(to))
+					continue;
+				if (ua.getCanOnlyBePlacedInTerritoryValuedAtX() != -1 && ua.getCanOnlyBePlacedInTerritoryValuedAtX() > toProduction)
+					continue;
+				if (unitWhichRequiresUnitsHasRequiredUnits(to, false).invert().match(currentUnit))
+					continue;
 			}
-			return "No Factory in " + producer.getName();
+			// remove any units that require other units to be consumed on creation (veqryn)
+			if (Matches.UnitConsumesUnitsOnCreation.match(currentUnit) && Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(currentUnit))
+				continue;
+			if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
+			{
+				unitMapHeld.add("factory", 1);
+				unitMapMaxType.put("factory", maxFactory);
+				unitMapTypePerTurn.put("factory", 1);
+			}
+			else
+			{
+				unitMapHeld.add(ua.getConstructionType(), 1);
+				unitMapMaxType.put(ua.getConstructionType(), ua.getMaxConstructionsPerTypePerTerr());
+				unitMapTypePerTurn.put(ua.getConstructionType(), ua.getConstructionsPerTerrPerTypePerTurn());
+			}
 		}
-		// check we havent just put a factory there (should we be checking producer?)
-		if (Match.someMatch(getAlreadyProduced(producer), Matches.UnitIsFactoryOrCanProduceUnits) || Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactoryOrCanProduceUnits))
+		final boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(getData());
+		final boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(getData());
+		final boolean unlimitedConstructions = games.strategy.triplea.Properties.getUnlimitedConstructions(getData());
+		final boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
+		// build an integer map of each construction unit in the territory
+		final IntegerMap<String> unitMapTO = new IntegerMap<String>();
+		if (Match.someMatch(unitsInTO, Matches.UnitIsFactoryOrConstruction))
 		{
-			if (Match.someMatch(testUnits, Matches.UnitIsConstruction) && howManyOfEachConstructionCanPlace(to, testUnits, player).totalValues() > 0) // you can still place a Construction
-				return null;
-			return "Factory in " + producer.getName() + " cant produce until 1 turn after it is created";
+			for (final Unit currentUnit : Match.getMatches(unitsInTO, Matches.UnitIsFactoryOrConstruction))
+			{
+				final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+				if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
+					unitMapTO.add("factory", 1);
+				else
+					unitMapTO.add(ua.getConstructionType(), 1);
+			}
+			// account for units already in the territory, based on max
+			final Iterator<String> mapString = unitMapHeld.keySet().iterator();
+			while (mapString.hasNext())
+			{
+				final String constructionType = mapString.next();
+				int unitMax = unitMapMaxType.getInt(constructionType);
+				if (wasFactoryThereAtStart && !constructionType.equals("factory") && !constructionType.endsWith("structure"))
+					unitMax = Math.max(Math.max(unitMax, (moreWithFactory ? toProduction : 0)), (unlimitedConstructions ? 10000 : 0));
+				if (!wasFactoryThereAtStart && !constructionType.equals("factory") && !constructionType.endsWith("structure"))
+					unitMax = Math.max(Math.max(unitMax, (moreWithoutFactory ? toProduction : 0)), (unlimitedConstructions ? 10000 : 0));
+				unitMapHeld.put(constructionType, Math.max(0, Math.min(unitMax - unitMapTO.getInt(constructionType), unitMapHeld.getInt(constructionType))));
+			}
 		}
-		if (to.isWater() && (!isWW2V2() && !isUnitPlacementInEnemySeas()) && to.getUnits().someMatch(Matches.enemyUnit(player, getData())))
-			return "Cannot place sea units with enemy naval units";
-		return null;
+		// deal with already placed units
+		final Iterator<Unit> unitAlready = Match.getMatches(unitsPlacedAlready, Matches.UnitIsFactoryOrConstruction).iterator();
+		while (unitAlready.hasNext())
+		{
+			final Unit currentUnit = unitAlready.next();
+			final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
+			unitMapTypePerTurn.add(ua.getConstructionType(), -1);
+		}
+		// modify this list based on how many we can place per turn
+		final IntegerMap<String> unitsAllowed = new IntegerMap<String>();
+		final Iterator<String> mapString2 = unitMapHeld.keySet().iterator();
+		while (mapString2.hasNext())
+		{
+			final String constructionType = mapString2.next();
+			final int unitAllowed = Math.max(0, Math.min(unitMapTypePerTurn.getInt(constructionType), unitMapHeld.getInt(constructionType)));
+			if (unitAllowed > 0)
+				unitsAllowed.put(constructionType, unitAllowed);
+		}
+		// return our integer map
+		return unitsAllowed;
+	}
+	
+	public int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap)
+	{
+		final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
+		if (!ua.getIsFactory()
+					&& (!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1 || ua.getMaxConstructionsPerTypePerTerr() < 1 || constructionsMap.getInt(ua.getConstructionType()) == 0))
+			return 0;
+		if (ua.getIsFactory() && !ua.getIsConstruction())
+			return constructionsMap.getInt("factory");
+		return constructionsMap.getInt(ua.getConstructionType());
 	}
 	
 	/**
-	 * Test whether or not the territory has the factory resources to support
-	 * the placement. AlreadyProduced maps territory->units already produced
-	 * this turn by that territory.
+	 * 
+	 * @param to
+	 *            - Territory we are testing for required units
+	 * @param doNotCountNeighbors
+	 *            - If false, and 'to' is water, then we will test neighboring land territories to see if they have any of the required units as well.
+	 * @return - Whether the territory contains one of the required combos of units
+	 *         (and if 'doNotCountNeighbors' is false, and unit is Sea unit, will return true if an adjacent land territory has one of the required combos as well).
 	 */
-	protected String checkProduction(final Territory to, final Collection<Unit> units, final PlayerID player)
+	public Match<Unit> unitWhichRequiresUnitsHasRequiredUnits(final Territory to, final boolean doNotCountNeighbors)
 	{
-		final Territory producer = getProducer(to, player);
-		if (producer == null)
-			return "No factory adjacent to " + to.getName();
-		// if its an original factory then unlimited production
-		final TerritoryAttachment ta = TerritoryAttachment.get(producer);
-		// WW2V2, you cant place factories in territories with no production
-		if (isWW2V2() && ta.getProduction() == 0 && !Match.someMatch(units, Matches.UnitIsConstruction))
+		return new Match<Unit>()
 		{
-			return "Cannot place factory, that territory cant produce any units";
+			@Override
+			public boolean match(final Unit unitWhichRequiresUnits)
+			{
+				if (!Matches.UnitRequiresUnitsOnCreation.match(unitWhichRequiresUnits))
+					return true;
+				final Collection<Unit> unitsAtStartOfTurnInProducer = unitsAtStartOfStepInTerritory(to);
+				// do not need to remove unowned here, as this match will remove unowned units from consideration.
+				if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInProducer).match(unitWhichRequiresUnits))
+					return true;
+				if (!doNotCountNeighbors)
+				{
+					if (Matches.UnitIsSea.match(unitWhichRequiresUnits))
+					{
+						for (final Territory current : getAllProducers(to, m_player, Collections.singletonList(unitWhichRequiresUnits), true))
+						{
+							final Collection<Unit> unitsAtStartOfTurnInCurrent = unitsAtStartOfStepInTerritory(current);
+							if (Matches.UnitWhichRequiresUnitsHasRequiredUnitsInList(unitsAtStartOfTurnInCurrent).match(unitWhichRequiresUnits))
+								return true;
+						}
+					}
+				}
+				return false;
+			}
+		};
+	}
+	
+	public boolean getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(final Collection<Unit> units, final Territory to)
+	{
+		if (!isUnitPlacementRestrictions() || !Match.someMatch(units, Matches.UnitRequiresUnitsOnCreation))
+			return true;
+		final IntegerMap<Territory> producersMap = getMaxUnitsToBePlacedMap(units, to, m_player, true);
+		final List<Territory> producers = getAllProducers(to, m_player, units);
+		if (producers.isEmpty())
+			return false;
+		Collections.sort(producers, getBestProducerComparator(to, units, m_player));
+		final Collection<Unit> unitsLeftToPlace = new ArrayList<Unit>(units);
+		for (final Territory t : producers)
+		{
+			if (unitsLeftToPlace.isEmpty())
+				return true;
+			final int productionHere = producersMap.getInt(t);
+			final List<Unit> canBePlacedHere = Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(t, true));
+			if (productionHere == -1 || productionHere >= canBePlacedHere.size())
+			{
+				unitsLeftToPlace.removeAll(canBePlacedHere);
+				continue;
+			}
+			Collections.sort(canBePlacedHere, getHardestToPlaceWithRequiresUnitsRestrictions());
+			@SuppressWarnings("unchecked")
+			final Collection<Unit> placedHere = Match.getNMatches(canBePlacedHere, productionHere, Match.ALWAYS_MATCH);
+			unitsLeftToPlace.removeAll(placedHere);
 		}
-		if (!getCanAllUnitsWithRequiresUnitsBePlacedCorrectly(units, to))
-			return "Cannot place more units which require units, than production capacity of territories with the required units";
-		final int maxUnitsToBePlaced = getMaxUnitsToBePlaced(units, to, player, true);
-		if ((maxUnitsToBePlaced != -1) && (maxUnitsToBePlaced < units.size()))
-			return "Cannot place " + units.size() + " more units in " + producer.getName();
-		return null;
+		if (unitsLeftToPlace.isEmpty())
+			return true;
+		return false;
 	}
 	
-	protected boolean isWW2V2()
+	/*public Map<Unit, Collection<Territory>> getTerritoriesWhereUnitsWithRequiresUnitsCanBeProducedFrom(final Collection<Unit> units, final Territory to)
 	{
-		return games.strategy.triplea.Properties.getWW2V2(getData());
-	}
-	
-	/*private boolean isWW2V3()
-	{
-		return games.strategy.triplea.Properties.getWW2V3(getData());
-	}
-	
-	private boolean isMultipleAAPerTerritory()
-	{
-		return games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData());
+		final Map<Unit, Collection<Territory>> rVal = new HashMap<Unit, Collection<Territory>>();
+		for (final Unit u : units)
+		{
+			final Collection<Territory> allowedTerrs = new ArrayList<Territory>();
+			final Collection<Territory> allProducers = getAllProducers(to, m_player, Collections.singletonList(u));
+			// if our units has the required unit in the territory it is being produced to, then we are all good (ex: the sea unit requires a Wet_Dock in the sea zone)
+			if (!Matches.UnitRequiresUnitsOnCreation.match(u) || unitWhichRequiresUnitsHasRequiredUnits(to, true).match(u))
+			{
+				allowedTerrs.addAll(allProducers);
+			}
+			else
+			{
+				for (final Territory t : allProducers)
+				{
+					if (unitWhichRequiresUnitsHasRequiredUnits(t, true).match(u))
+						allowedTerrs.add(t);
+				}
+			}
+			rVal.put(u, allowedTerrs);
+		}
+		return rVal;
 	}*/
 
-	protected boolean isUnitPlacementInEnemySeas()
-	{
-		return games.strategy.triplea.Properties.getUnitPlacementInEnemySeas(getData());
-	}
-	
-	private boolean wasConquered(final Territory t)
-	{
-		final BattleTracker tracker = DelegateFinder.battleDelegate(getData()).getBattleTracker();
-		return tracker.wasConquered(t);
-	}
-	
-	private boolean isPlaceInAnyTerritory()
-	{
-		return games.strategy.triplea.Properties.getPlaceInAnyTerritory(getData());
-	}
-	
-	private boolean isUnitPlacementPerTerritoryRestricted()
-	{
-		return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(getData());
-	}
-	
-	private boolean isUnitPlacementRestrictions()
-	{
-		return games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData());
-	}
-	
-	/**
-	 * Returns the better producer of the two territories, either of which can
-	 * be null.
-	 */
-	private Territory getBetterProducer(final Territory t1, final Territory t2, final PlayerID player)
-	{
-		// anything is better than nothing
-		if (t1 == null)
-			return t2;
-		if (t2 == null)
-			return t1;
-		// conquered cant produce
-		if (wasConquered(t1))
-			return t2;
-		if (wasConquered(t2))
-			return t1;
-		// original factories are good
-		final TerritoryAttachment t1a = TerritoryAttachment.get(t1);
-		if (t1a.getOriginalFactory() && isOriginalOwner(t1, player))
-			return t1;
-		final TerritoryAttachment t2a = TerritoryAttachment.get(t2);
-		if (t2a.getOriginalFactory() && isOriginalOwner(t2, player))
-			return t2;
-		// which can produce the most
-		if (getProduction(t1) - getAlreadyProduced(t1).size() > getProduction(t2) - getAlreadyProduced(t2).size())
-			return t1;
-		return t2;
-	}
-	
-	private boolean isOriginalOwner(final Territory t, final PlayerID id)
-	{
-		final OriginalOwnerTracker tracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
-		return tracker.getOriginalOwner(t).equals(id);
-	}
-	
-	/**
-	 * Returns the territory that would do the producing if units are to be
-	 * placed in a given territory. Returns null if no suitable territory could
-	 * be found.
-	 */
-	@Deprecated
-	protected Territory getProducer(final Territory to, final PlayerID player)
-	{
-		// TODO: eliminate use of this, in favor of getAllProducers
-		// if not water then must produce in that territory
-		if (!to.isWater())
-			return to;
-		Territory neighborFactory = null;
-		for (final Territory current : getAllProducers(to, player, null))
-		{
-			neighborFactory = getBetterProducer(current, neighborFactory, player);
-		}
-		return neighborFactory;
-	}
-	
-	protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace)
-	{
-		return getAllProducers(to, player, unitsToPlace, false);
-	}
-	
-	/**
-	 * Returns the territories that would do the producing if units are to be placed in a given territory. Returns an empty list if no suitable territory could be found.
-	 * 
-	 * @param to
-	 *            - Territory to place in.
-	 * @param player
-	 *            - player that is placing.
-	 * @param unitsToPlace
-	 *            - Can be null, otherwise is the units that will be produced.
-	 * @param simpleCheck
-	 *            - If true you return true even if a factory is not present. Used when you do not want an infinite loop (getAllProducers -> canProduce -> howManyOfEachConstructionCanPlace -> getAllProducers -> etc)
-	 * @return - List of territories that can produce here.
-	 */
-	protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace, final boolean simpleCheck)
-	{
-		final List<Territory> producers = new ArrayList<Territory>();
-		// if not water then must produce in that territory
-		if (!to.isWater())
-		{
-			if (simpleCheck || canProduce(to, to, unitsToPlace, player, simpleCheck) == null)
-			{
-				producers.add(to);
-			}
-			return producers;
-		}
-		for (final Territory current : getData().getMap().getNeighbors(to))
-		{
-			if (canProduce(current, to, unitsToPlace, player, simpleCheck) == null)
-			{
-				producers.add(current);
-			}
-		}
-		return producers;
-	}
-	
 	private Comparator<Territory> getBestProducerComparator(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
 		return new Comparator<Territory>()
@@ -1276,6 +1369,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 				final int left2 = getMaxUnitsToBePlacedFrom(t2, units, to, player);
 				if (left1 == left2)
 					return 0;
+				// -1 == infinite
 				if (left1 == -1)
 					return -1;
 				if (left2 == -1)
@@ -1303,7 +1397,9 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 					return -1;
 				if (ua1 == null && ua2 != null)
 					return 1;
+				@SuppressWarnings("null")
 				final ArrayList<String[]> ru1 = ua1.getRequiresUnits();
+				@SuppressWarnings("null")
 				final ArrayList<String[]> ru2 = ua2.getRequiresUnits();
 				final int rus1 = (ru1 == null ? Integer.MAX_VALUE : (ru1.isEmpty() ? Integer.MAX_VALUE : ru1.size()));
 				final int rus2 = (ru2 == null ? Integer.MAX_VALUE : (ru2.isEmpty() ? Integer.MAX_VALUE : ru2.size()));
@@ -1315,6 +1411,52 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 				return 1;
 			}
 		};
+	}
+	
+	/**
+	 * @param to
+	 *            referring territory
+	 * @return collection of units that were there at start of turn
+	 */
+	public Collection<Unit> unitsAtStartOfStepInTerritory(final Territory to)
+	{
+		if (to == null)
+			return new ArrayList<Unit>();
+		final Collection<Unit> unitsInTO = to.getUnits().getUnits();
+		final Collection<Unit> unitsPlacedAlready = getAlreadyProduced(to);
+		if (Matches.TerritoryIsWater.match(to))
+		{
+			for (final Territory current : getAllProducers(to, m_player, null, true))
+			{
+				unitsPlacedAlready.addAll(getAlreadyProduced(current));
+			}
+		}
+		final Collection<Unit> unitsAtStartOfTurnInTO = new ArrayList<Unit>(unitsInTO);
+		unitsAtStartOfTurnInTO.removeAll(unitsPlacedAlready);
+		return unitsAtStartOfTurnInTO;
+	}
+	
+	public Collection<Unit> unitsPlacedInTerritorySoFar(final Territory to)
+	{
+		if (to == null)
+			return new ArrayList<Unit>();
+		final Collection<Unit> unitsInTO = to.getUnits().getUnits();
+		final Collection<Unit> unitsAtStartOfStep = unitsAtStartOfStepInTerritory(to);
+		unitsInTO.removeAll(unitsAtStartOfStep);
+		return unitsInTO;
+	}
+	
+	/**
+	 * @param to
+	 *            referring territory
+	 * @param player
+	 *            PlayerID
+	 * @return whether there was an owned unit capable of producing, in this territory at the start of this phase/step
+	 */
+	public boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(final Territory to, final PlayerID player)
+	{
+		final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
+		return Match.countMatches(unitsAtStartOfTurnInTO, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)) > 0;
 	}
 	
 	/**
@@ -1338,280 +1480,17 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		return DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(factory);
 	}
 	
-	private void performPlace(final Collection<Unit> units, final Territory at, final PlayerID player)
-	{
-		final List<Territory> producers = getAllProducers(at, player, units);
-		Collections.sort(producers, getBestProducerComparator(at, units, player));
-		final IntegerMap<Territory> maxPlaceableMap = getMaxUnitsToBePlacedMap(units, at, player, true);
-		final Collection<Unit> unitsLeftToPlace = new ArrayList<Unit>(units);
-		for (final Territory producer : producers)
-		{
-			if (unitsLeftToPlace.isEmpty())
-				break;
-			// units may have special restrictions like RequiresUnits
-			final List<Unit> unitsCanBePlacedByThisProducer = (isUnitPlacementRestrictions() ? Match.getMatches(unitsLeftToPlace, unitWhichRequiresUnitsHasRequiredUnits(producer, true)) :
-						new ArrayList<Unit>(unitsLeftToPlace));
-			Collections.sort(unitsCanBePlacedByThisProducer, getHardestToPlaceWithRequiresUnitsRestrictions());
-			final int maxPlaceable = maxPlaceableMap.getInt(producer);
-			if (maxPlaceable == 0)
-				continue;
-			final int maxForThisProducer = getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player);
-			// don't forget that -1 == infinite
-			if (maxForThisProducer == -1 || maxForThisProducer >= unitsCanBePlacedByThisProducer.size())
-			{
-				performPlaceFrom(producer, unitsCanBePlacedByThisProducer, at, player);
-				unitsLeftToPlace.removeAll(unitsCanBePlacedByThisProducer);
-				continue;
-			}
-			final int neededExtra = unitsCanBePlacedByThisProducer.size() - maxForThisProducer;
-			if (maxPlaceable > maxForThisProducer)
-			{
-				freePlacementCapacity(producer, neededExtra, unitsCanBePlacedByThisProducer, at, player);
-				if (getMaxUnitsToBePlacedFrom(producer, unitsCanBePlacedByThisProducer, at, player) != maxPlaceable)
-					throw new IllegalStateException("getMaxUnitsToBePlaced not returning same amount as getMaxUnitsToBePlacedFrom after using freePlacementCapacity for territory: "
-								+ at.getName() + " producer: " + producer.getName() + " units: " + unitsCanBePlacedByThisProducer);
-			}
-			@SuppressWarnings("unchecked")
-			final Collection<Unit> placedUnits = Match.getNMatches(unitsCanBePlacedByThisProducer, maxPlaceable, Match.ALWAYS_MATCH);
-			performPlaceFrom(producer, placedUnits, at, player);
-			unitsLeftToPlace.removeAll(placedUnits);
-		}
-		if (!unitsLeftToPlace.isEmpty())
-			throw new IllegalStateException("Not all units placed in: " + at.getName() + " units: " + unitsLeftToPlace);
-	}
-	
 	/**
-	 * 
-	 * @param producer
-	 *            territory that produces the new units
-	 * @param placeableUnits
-	 *            the new units
-	 * @param at
-	 *            territory where the new units get placed
+	 * The rule is that new fighters can be produced on new carriers. This does
+	 * not allow for fighters to be produced on old carriers.
 	 */
-	private void performPlaceFrom(final Territory producer, final Collection<Unit> placeableUnits, final Territory at, final PlayerID player)
+	private String validateNewAirCanLandOnCarriers(final Territory to, final Collection<Unit> units)
 	{
-		final CompositeChange change = new CompositeChange();
-		// make sure we can place consuming units
-		final boolean didIt = canWeConsumeUnits(placeableUnits, at, true, change);
-		if (!didIt)
-			throw new IllegalStateException("Something wrong with consuming/upgrading units");
-		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(placeableUnits, Matches.UnitIsFactoryOrIsInfrastructure);
-		change.add(DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, player));
-		// can we move planes to land there
-		final String movedAirTranscriptTextForHistory = moveAirOntoNewCarriers(at, placeableUnits, player, change);
-		
-		final Change remove = ChangeFactory.removeUnits(player, placeableUnits);
-		final Change place = ChangeFactory.addUnits(at, placeableUnits);
-		change.add(remove);
-		change.add(place);
-		final UndoablePlacement current_placement = new UndoablePlacement(m_player, change, producer, at, placeableUnits);
-		m_placements.add(current_placement);
-		updateUndoablePlacementIndexes();
-		final String transcriptText = MyFormatter.unitsToTextNoOwner(placeableUnits) + " placed in " + at.getName();
-		m_bridge.getHistoryWriter().startEvent(transcriptText);
-		m_bridge.getHistoryWriter().setRenderingData(current_placement.getDescriptionObject());
-		if (movedAirTranscriptTextForHistory != null)
-			m_bridge.getHistoryWriter().addChildToEvent(movedAirTranscriptTextForHistory);
-		m_bridge.addChange(change);
-		updateProducedMap(producer, placeableUnits);
-	}
-	
-	private void updateProducedMap(final Territory producer, final Collection<Unit> additionallyProducedUnits)
-	{
-		final Collection<Unit> newProducedUnits = getAlreadyProduced(producer);
-		newProducedUnits.addAll(additionallyProducedUnits);
-		m_produced.put(producer, newProducedUnits);
-	}
-	
-	private void removeFromProducedMap(final Territory producer, final Collection<Unit> unitsToRemove)
-	{
-		final Collection<Unit> newProducedUnits = getAlreadyProduced(producer);
-		newProducedUnits.removeAll(unitsToRemove);
-		if (newProducedUnits.isEmpty())
-			m_produced.remove(producer);
-		else
-			m_produced.put(producer, newProducedUnits);
-	}
-	
-	/**
-	 * frees the requested amount of capacity for the given producer by trying to hand over already made placements to other territories.
-	 * This only works if one of the placements is done for another territory, more specific for a sea zone.
-	 * If such placements exists it will be tried to let them be done by other adjacent territories.
-	 * 
-	 * @param producer
-	 *            territory that needs more placement capacity
-	 * @param freeSize
-	 *            amount of capacity that is requested
-	 */
-	private void freePlacementCapacity(final Territory producer, final int freeSize, final Collection<Unit> unitsLeftToPlace, final Territory at, final PlayerID player)
-	{
-		int foundSpaceTotal = 0;
-		final List<UndoablePlacement> redoPlacements = new ArrayList<UndoablePlacement>(); // placements of the producer that could be redone by other territories
-		final HashMap<Territory, Integer> redoPlacementsCount = new HashMap<Territory, Integer>(); // territories the producer produced for (but not itself) and the amount of units it produced
-		// find map place territory -> possible free space for producer
-		for (final UndoablePlacement placement : m_placements)
-		{
-			// find placement move of producer that can be taken over
-			if (placement.getProducerTerritory().equals(producer))
-			{
-				final Territory placeTerritory = placement.getPlaceTerritory();
-				// units with requiresUnits are too difficult to mess with logically, so do not move them around at all
-				if (placeTerritory.isWater() && !placeTerritory.equals(producer) && (!isUnitPlacementRestrictions() || !Match.someMatch(placement.getUnits(), Matches.UnitRequiresUnitsOnCreation)))
-				{
-					// found placement move of producer that can be taken over
-					// remember move and amount of placements in that territory
-					redoPlacements.add(placement);
-					final Integer integer = redoPlacementsCount.get(placeTerritory);
-					if (integer == null)
-						redoPlacementsCount.put(placeTerritory, placement.getUnits().size());
-					else
-						redoPlacementsCount.put(placeTerritory, integer + placement.getUnits().size());
-				}
-			}
-		}
-		// let other producers take over placements of producer
-		// remember placement move and new territory if a placement has to be split up
-		final Collection<Tuple<UndoablePlacement, Territory>> splitPlacements = new ArrayList<Tuple<UndoablePlacement, Territory>>();
-		for (final Entry<Territory, Integer> entry : redoPlacementsCount.entrySet())
-		{
-			final Territory placeTerritory = entry.getKey();
-			final int maxProductionThatCanBeTakenOverFromThisPlacement = entry.getValue();
-			// find other producers that could produce for the placeTerritory
-			final List<Territory> potentialNewProducers = getAllProducers(placeTerritory, player, unitsLeftToPlace);
-			potentialNewProducers.remove(producer);
-			Collections.sort(potentialNewProducers, getBestProducerComparator(placeTerritory, unitsLeftToPlace, player));
-			// we can just free a certain amount or still need a certain amount of space
-			final int maxSpaceToBeFree = Math.min(maxProductionThatCanBeTakenOverFromThisPlacement, freeSize - foundSpaceTotal);
-			int spaceAlreadyFree = 0; // space that got free this on this placeTerritory
-			for (final Territory potentialNewProducerTerritory : potentialNewProducers)
-			{
-				int leftToPlace = getMaxUnitsToBePlacedFrom(potentialNewProducerTerritory, unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
-				if (leftToPlace == -1)
-					leftToPlace = maxProductionThatCanBeTakenOverFromThisPlacement;
-				// find placements of the producer the potentialNewProducerTerritory can take over
-				for (final UndoablePlacement placement : redoPlacements)
-				{
-					if (!placement.getPlaceTerritory().equals(placeTerritory))
-						continue;
-					final Collection<Unit> placedUnits = placement.getUnits();
-					final int placementSize = placedUnits.size();
-					if (placementSize <= leftToPlace)
-					{
-						// potentialNewProducerTerritory can take over complete production
-						placement.setProducerTerritory(potentialNewProducerTerritory);
-						removeFromProducedMap(producer, placedUnits);
-						updateProducedMap(potentialNewProducerTerritory, placedUnits);
-						spaceAlreadyFree += placementSize;
-					}
-					else
-					{
-						// potentialNewProducerTerritory can take over ONLY parts of the production
-						// remember placement and potentialNewProducerTerritory but try to avoid splitting a placement
-						splitPlacements.add(new Tuple<UndoablePlacement, Territory>(placement, potentialNewProducerTerritory));
-					}
-					if (spaceAlreadyFree >= maxSpaceToBeFree)
-						break;
-				}
-				if (spaceAlreadyFree >= maxSpaceToBeFree)
-					break;
-			}
-			foundSpaceTotal += spaceAlreadyFree;
-			if (foundSpaceTotal >= freeSize)
-				break;
-		}
-		if (foundSpaceTotal < freeSize)
-		{
-			// we need to split some placement moves
-			for (final Tuple<UndoablePlacement, Territory> tuple : splitPlacements)
-			{
-				final UndoablePlacement placement = tuple.getFirst();
-				final Territory newProducer = tuple.getSecond();
-				int leftToPlace = getMaxUnitsToBePlacedFrom(newProducer, unitsLeftToPlace, at, player);
-				foundSpaceTotal += leftToPlace;
-				// divide set of units that get placed
-				final Collection<Unit> unitsForOldProducer = new ArrayList<Unit>(placement.getUnits());
-				final Collection<Unit> unitsForNewProducer = new ArrayList<Unit>();
-				for (final Unit unit : unitsForOldProducer)
-				{
-					if (leftToPlace == 0)
-						break;
-					unitsForNewProducer.add(unit);
-					--leftToPlace;
-				}
-				unitsForOldProducer.removeAll(unitsForNewProducer);
-				// split move, by undo and creating two new ones
-				if (!unitsForNewProducer.isEmpty())
-				{
-					undoMove(placement.getIndex());
-					performPlaceFrom(newProducer, unitsForNewProducer, placement.getPlaceTerritory(), player);
-					performPlaceFrom(producer, unitsForOldProducer, placement.getPlaceTerritory(), player);
-				}
-			}
-		}
-	}
-	
-	private ITripleaPlayer getRemotePlayer()
-	{
-		return (ITripleaPlayer) m_bridge.getRemote();
-	}
-	
-	// TODO Here's the spot for special air placement rules
-	private String moveAirOntoNewCarriers(final Territory territory, final Collection<Unit> units, final PlayerID player, final CompositeChange placeChange)
-	{
-		// not water, dont bother
-		if (!territory.isWater())
-			return null;
-		// not enabled
-		// if (!canProduceFightersOnCarriers())
-		if (!canMoveExistingFightersToNewCarriers() || AirThatCantLandUtil.isLHTRCarrierProduction(getData()))
-			return null;
-		if (Match.noneMatch(units, Matches.UnitIsCarrier))
-			return null;
-		// do we have any spare carrier capacity
-		int capacity = AirMovementValidator.carrierCapacity(units, territory);
-		// subtract fighters that have already been produced with this carrier
-		// this turn.
-		capacity -= AirMovementValidator.carrierCost(units);
-		if (capacity <= 0)
-			return null;
-		final Collection<Territory> neighbors = getData().getMap().getNeighbors(territory, 1);
-		final Iterator<Territory> iter = neighbors.iterator();
-		final CompositeMatch<Unit> ownedFighters = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
-		while (iter.hasNext())
-		{
-			final Territory neighbor = iter.next();
-			if (neighbor.isWater())
-				continue;
-			// check to see if we have a factory, only fighters from territories
-			// that could
-			// have produced the carrier can move there
-			if (!neighbor.getUnits().someMatch(Matches.UnitIsFactoryOrCanProduceUnits))
-				continue;
-			// are there some fighers there that can be moved?
-			if (!neighbor.getUnits().someMatch(ownedFighters))
-				continue;
-			if (wasConquered(neighbor))
-				continue;
-			if (Match.someMatch(getAlreadyProduced(neighbor), Matches.UnitIsFactoryOrCanProduceUnits))
-				continue;
-			final List<Unit> fighters = neighbor.getUnits().getMatches(ownedFighters);
-			while (fighters.size() > 0 && AirMovementValidator.carrierCost(fighters) > capacity)
-			{
-				fighters.remove(0);
-			}
-			if (fighters.size() == 0)
-				continue;
-			final Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, neighbor);
-			final Change change = ChangeFactory.moveUnits(neighbor, territory, movedFighters);
-			placeChange.add(change);
-			final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + neighbor.getName() + " to " + territory.getName();
-			// only allow 1 movement
-			// technically only the territory that produced the
-			// carrier should be able to move fighters to the new
-			// territory
-			return transcriptText;
-		}
+		final int cost = AirMovementValidator.carrierCost(units);
+		int capacity = AirMovementValidator.carrierCapacity(units, to);
+		capacity += AirMovementValidator.carrierCapacity(to.getUnits().getUnits(), to);
+		if (cost > capacity)
+			return "Not enough new carriers to land all the fighters";
 		return null;
 	}
 	
@@ -1623,6 +1502,57 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	public Collection<Territory> getTerritoriesWhereAirCantLand()
 	{
 		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);
+	}
+	
+	private boolean canProduceFightersOnCarriers()
+	{
+		return games.strategy.triplea.Properties.getProduceFightersOnCarriers(getData());
+	}
+	
+	private boolean canProduceNewFightersOnOldCarriers()
+	{
+		return games.strategy.triplea.Properties.getProduceNewFightersOnOldCarriers(getData());
+	}
+	
+	private boolean canMoveExistingFightersToNewCarriers()
+	{
+		return games.strategy.triplea.Properties.getMoveExistingFightersToNewCarriers(getData());
+	}
+	
+	protected boolean isWW2V2()
+	{
+		return games.strategy.triplea.Properties.getWW2V2(getData());
+	}
+	
+	protected boolean isUnitPlacementInEnemySeas()
+	{
+		return games.strategy.triplea.Properties.getUnitPlacementInEnemySeas(getData());
+	}
+	
+	private boolean wasConquered(final Territory t)
+	{
+		final BattleTracker tracker = DelegateFinder.battleDelegate(getData()).getBattleTracker();
+		return tracker.wasConquered(t);
+	}
+	
+	private boolean isPlaceInAnyTerritory()
+	{
+		return games.strategy.triplea.Properties.getPlaceInAnyTerritory(getData());
+	}
+	
+	private boolean isUnitPlacementPerTerritoryRestricted()
+	{
+		return games.strategy.triplea.Properties.getUnitPlacementPerTerritoryRestricted(getData());
+	}
+	
+	private boolean isUnitPlacementRestrictions()
+	{
+		return games.strategy.triplea.Properties.getUnitPlacementRestrictions(getData());
+	}
+	
+	protected List<Territory> getAllProducers(final Territory to, final PlayerID player, final Collection<Unit> unitsToPlace)
+	{
+		return getAllProducers(to, player, unitsToPlace, false);
 	}
 	
 	private boolean isPlayerAllowedToPlacementAnyTerritoryOwnedLand(final PlayerID player)
@@ -1671,15 +1601,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		return false;
 	}
 	
-	/*
-	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-	 */
-	@Override
-	public Class<? extends IRemote> getRemoteType()
-	{
-		return IAbstractPlaceDelegate.class;
-	}
-	
 	private Collection<Territory> getListedTerritories(final String[] list)
 	{
 		final List<Territory> rVal = new ArrayList<Territory>();
@@ -1696,22 +1617,33 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		return rVal;
 	}
 	
-	/* never used methods?
+	/*
+	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
+	 */
+	@Override
+	public Class<? extends IRemote> getRemoteType()
+	{
+		return IAbstractPlaceDelegate.class;
+	}
+	
+	private ITripleaPlayer getRemotePlayer()
+	{
+		return (ITripleaPlayer) m_bridge.getRemote();
+	}
+	
+	/*
 	private boolean isSBRAffectsUnitProduction()
 	{
 	    return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(m_data);
 	}
-
 	private boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories()
 	{
 	    return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data);
 	}
-
 	private boolean isPlacementRestrictedByFactory()
 	{
 	    return games.strategy.triplea.Properties.getPlacementRestrictedByFactory(m_data);
 	}
-
 	private boolean isIncreasedFactoryProduction(PlayerID player)
 	{
 	    TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
@@ -1719,10 +1651,22 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	        return false;
 	    return ta.hasIncreasedFactoryProduction();
 	}
-
 	private boolean hasConstruction(Territory to)
 	{
 	    return to.getUnits().someMatch(Matches.UnitIsConstruction);
+	}
+	private boolean isWW2V3()
+	{
+		return games.strategy.triplea.Properties.getWW2V3(getData());
+	}
+	private boolean isMultipleAAPerTerritory()
+	{
+		return games.strategy.triplea.Properties.getMultipleAAPerTerritory(getData());
+	}
+	private boolean isOriginalOwner(final Territory t, final PlayerID id)
+	{
+		final OriginalOwnerTracker tracker = DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker();
+		return tracker.getOriginalOwner(t).equals(id);
 	}
 	*/
 }
