@@ -16,6 +16,7 @@
  */
 package games.strategy.engine.chat;
 
+import games.strategy.engine.chat.IChatController.Tag;
 import games.strategy.engine.lobby.server.IModeratorController;
 import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.message.IChannelMessenger;
@@ -52,22 +53,36 @@ public class Chat
 	private final String m_chatChannelName;
 	private final String m_chatName;
 	private final SentMessagesHistory m_sentMessages;
-	private long m_chatInitVersion = -1;
-	private final Object m_mutex = new Object();
+	private volatile long m_chatInitVersion = -1;
+	// mutex used for access synchronization to nodes
+	private final Object m_mutexNodes = new Object(); // TODO: check if this mutex is used for something else as well
 	private List<INode> m_nodes;
+	// this queue is filled ONLY in init phase when m_chatInitVersion is default (-1) and nodes should not be changed until end of initialization
+	private final Object m_mutexQueue = new Object(); // synchronizes access to queue
 	private List<Runnable> m_queuedInitMessages = new ArrayList<Runnable>();
 	private final List<ChatMessage> m_chatHistory = new ArrayList<ChatMessage>();
 	private final StatusManager m_statusManager;
 	private final ChatIgnoreList m_ignoreList = new ChatIgnoreList();
 	private final HashMap<INode, LinkedHashSet<String>> m_notesMap = new HashMap<INode, LinkedHashSet<String>>();
+	private static String TAG_MODERATOR = "[Mod]";
 	
-	private void addToNotesMap(final INode node, final String note)
+	private void addToNotesMap(final INode node, final Tag tag)
 	{
-		LinkedHashSet<String> current = m_notesMap.get(node);
-		if (current == null)
-			current = new LinkedHashSet<String>();
-		current.add(note);
+		if (tag == Tag.NONE)
+			return;
+		final LinkedHashSet<String> current = getTagText(tag);
 		m_notesMap.put(node, current);
+	}
+	
+	private static LinkedHashSet<String> getTagText(final Tag tag)
+	{
+		final LinkedHashSet<String> rVal = new LinkedHashSet<String>();
+		if (tag == Tag.NONE)
+			return null;
+		if (tag == Tag.MODERATOR)
+			rVal.add(TAG_MODERATOR);
+		// add more here....
+		return rVal;
 	}
 	
 	public String getNotesForNode(final INode node)
@@ -123,7 +138,7 @@ public class Chat
 	
 	public Object getMutex()
 	{
-		return m_mutex;
+		return m_mutexNodes;
 	}
 	
 	private void init()
@@ -132,12 +147,12 @@ public class Chat
 		//
 		//
 		// 1 register our channel listener
-		// once the channel is registered, we are guarantted that
-		// when we recieve the response from our init(...) message, our channel
-		// subscribor has been added, and will see any messages broadcasted by the server
+		// once the channel is registered, we are guaranteed that
+		// when we receive the response from our init(...) message, our channel
+		// subscriber has been added, and will see any messages broadcasted by the server
 		//
 		// 2 call the init message on the server remote. Any add or join messages sent from the server
-		// will queue until we recieve the init return value (they queue since they see the init version is -1)
+		// will queue until we receive the init return value (they queue since they see the init version is -1)
 		//
 		// 3 when we receive the init message response, acquire the lock, and initialize our state
 		// and run any queued messages. Queued messages may be ignored if the
@@ -147,27 +162,58 @@ public class Chat
 		final IChatController controller = (IChatController) m_messengers.getRemoteMessenger().getRemote(ChatController.getChatControlerRemoteName(m_chatName));
 		m_messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor, new RemoteName(m_chatChannelName, IChatChannel.class));
 		final Tuple<List<INode>, Long> init = controller.joinChat();
-		synchronized (m_mutex)
+		final List<INode> chatters = init.getFirst();
+		synchronized (m_mutexNodes)
 		{
-			m_chatInitVersion = init.getSecond().longValue();
-			m_nodes = init.getFirst();
-			final IModeratorController moderatorController = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-			if (moderatorController != null)
-			{
-				for (final INode node : m_nodes)
-				{
-					final boolean admin = moderatorController.isPlayerAdmin(node);
-					if (admin)
-						addToNotesMap(node, "[Mod]");
-				}
-			}
-			for (final Runnable job : m_queuedInitMessages)
-			{
-				job.run();
-			}
-			m_queuedInitMessages = null;
+			m_nodes = new ArrayList<INode>(chatters);
 		}
-		updateConnections();
+		m_chatInitVersion = init.getSecond().longValue();
+		(new Runnable()
+		{
+			public void run()
+			{
+				synchronized (m_mutexQueue)
+				{
+					m_queuedInitMessages.add(0, new Runnable()
+					{
+						public void run()
+						{
+							assignNodeTags(chatters);
+						}
+					});
+					for (final Runnable job : m_queuedInitMessages)
+					{
+						job.run();
+					}
+					m_queuedInitMessages = null;
+				}
+				updateConnections();
+			}
+		}).run();
+	}
+	
+	/**
+	 * Call only when mutex for node is locked!
+	 * 
+	 * @param chatters
+	 *            map from node to tag
+	 */
+	private void assignNodeTags(final List<INode> chatters)
+	{
+		final IModeratorController moderatorController = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
+		if (moderatorController != null)
+		{
+			for (final INode node : chatters)
+			{
+				final boolean admin = moderatorController.isPlayerAdmin(node);
+				final Tag tag;
+				if (admin)
+					tag = Tag.MODERATOR;
+				else
+					tag = Tag.NONE;
+				addToNotesMap(node, tag);
+			}
+		}
 	}
 	
 	/**
@@ -202,7 +248,7 @@ public class Chat
 	
 	private void updateConnections()
 	{
-		synchronized (m_mutex)
+		synchronized (m_mutexNodes)
 		{
 			if (m_nodes == null)
 				return;
@@ -276,7 +322,7 @@ public class Chat
 			{
 				return;
 			}
-			synchronized (m_mutex)
+			synchronized (m_mutexNodes)
 			{
 				m_chatHistory.add(new ChatMessage(message, from.getName(), false));
 				for (final IChatListener listener : m_listeners)
@@ -298,7 +344,7 @@ public class Chat
 			{
 				return;
 			}
-			synchronized (m_mutex)
+			synchronized (m_mutexNodes)
 			{
 				m_chatHistory.add(new ChatMessage(message, from.getName(), true));
 				for (final IChatListener listener : m_listeners)
@@ -311,31 +357,44 @@ public class Chat
 		public void speakerAdded(final INode node, final long version)
 		{
 			assertMessageFromServer();
-			synchronized (m_mutex)
+			if (m_chatInitVersion == -1)
 			{
-				if (m_chatInitVersion == -1)
+				synchronized (m_mutexQueue)
 				{
-					m_queuedInitMessages.add(new Runnable()
-					{
-						public void run()
+					if (m_queuedInitMessages == null)
+						speakerAdded(node, version);
+					else
+						m_queuedInitMessages.add(new Runnable()
 						{
-							speakerAdded(node, version);
-						}
-					});
-					return;
+							public void run()
+							{
+								speakerAdded(node, version);
+							}
+						});
 				}
-				if (version > m_chatInitVersion)
+				return;
+			}
+			if (version > m_chatInitVersion)
+			{
+				synchronized (m_mutexNodes)
 				{
 					m_nodes.add(node);
 					final IModeratorController moderatorController = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-					final boolean admin = moderatorController.isPlayerAdmin(node);
-					if (admin)
-						addToNotesMap(node, "[Mod]");
-					updateConnections();
-					for (final IChatListener listener : m_listeners)
+					if (moderatorController != null)
 					{
-						listener.addStatusMessage(node.getName() + " has joined");
+						final boolean admin = moderatorController.isPlayerAdmin(node);
+						final Tag tag;
+						if (admin)
+							tag = Tag.MODERATOR;
+						else
+							tag = Tag.NONE;
+						addToNotesMap(node, tag);
 					}
+					updateConnections();
+				}
+				for (final IChatListener listener : m_listeners)
+				{
+					listener.addStatusMessage(node.getName() + " has joined");
 				}
 			}
 		}
@@ -343,35 +402,51 @@ public class Chat
 		public void speakerRemoved(final INode node, final long version)
 		{
 			assertMessageFromServer();
-			synchronized (m_mutex)
+			if (m_chatInitVersion == -1)
 			{
-				if (m_chatInitVersion == -1)
+				synchronized (m_mutexQueue)
 				{
-					m_queuedInitMessages.add(new Runnable()
-					{
-						public void run()
+					if (m_queuedInitMessages == null)
+						speakerRemoved(node, version);
+					else
+						m_queuedInitMessages.add(new Runnable()
 						{
-							speakerRemoved(node, version);
-						}
-					});
-					return;
+							public void run()
+							{
+								speakerRemoved(node, version);
+							}
+						});
 				}
-				if (version > m_chatInitVersion)
+				return;
+			}
+			if (version > m_chatInitVersion)
+			{
+				synchronized (m_mutexNodes)
 				{
 					m_nodes.remove(node);
 					m_notesMap.remove(node);
 					updateConnections();
-					for (final IChatListener listener : m_listeners)
-					{
-						listener.addStatusMessage(node.getName() + " has left");
-					}
-					m_playersThatLeft_Last10.add(node);
-					if (m_playersThatLeft_Last10.size() > 10)
-						m_playersThatLeft_Last10.remove(0);
 				}
+				for (final IChatListener listener : m_listeners)
+				{
+					listener.addStatusMessage(node.getName() + " has left");
+				}
+				m_playersThatLeft_Last10.add(node);
+				if (m_playersThatLeft_Last10.size() > 10)
+					m_playersThatLeft_Last10.remove(0);
 			}
 		}
 		
+		/*public void speakerTagUpdated(final INode node, final Tag tag)
+		{
+			synchronized (m_mutexNodes)
+			{
+				m_notesMap.remove(node);
+				addToNotesMap(node, tag);
+				updateConnections();
+			}
+		}*/
+
 		public void slapOccured(final String to)
 		{
 			final INode from = MessageContext.getSender();
@@ -379,7 +454,7 @@ public class Chat
 			{
 				return;
 			}
-			synchronized (m_mutex)
+			synchronized (m_mutexNodes)
 			{
 				if (to.equals(m_messengers.getChannelMessenger().getLocalNode().getName()))
 				{
