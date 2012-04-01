@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.chat.IChatController.Tag;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.net.INode;
 
@@ -17,9 +18,9 @@ public interface IChatChannel extends IChannelSubscribor
 	
 	public void slapOccured(final String playerName);
 	
-	public void speakerAdded(final INode node, final long version);
+	public void speakerAdded(final INode node, final Tag tag, final long version);
 	
 	public void speakerRemoved(final INode node, final long version);
 	
-	// public void speakerTagUpdated(final INode node, final Tag tag);
+	public void speakerTagUpdated(final INode node, final Tag tag);
 }

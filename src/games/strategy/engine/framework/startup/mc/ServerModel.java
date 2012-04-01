@@ -217,8 +217,9 @@ public class ServerModel extends Observable implements IMessengerErrorListener, 
 			m_remoteMessenger = new RemoteMessenger(unifiedMessenger);
 			m_remoteMessenger.registerRemote(m_serverStartupRemote, SERVER_REMOTE_NAME);
 			m_channelMessenger = new ChannelMessenger(unifiedMessenger);
-			m_chatController = new ChatController(CHAT_NAME, m_serverMessenger, m_remoteMessenger, m_channelMessenger);
-			new NullModeratorController(m_serverMessenger).register(m_remoteMessenger);
+			final NullModeratorController moderatorController = new NullModeratorController(m_serverMessenger);
+			moderatorController.register(m_remoteMessenger);
+			m_chatController = new ChatController(CHAT_NAME, m_serverMessenger, m_remoteMessenger, m_channelMessenger, moderatorController);
 			m_chatPanel = new ChatPanel(m_serverMessenger, m_channelMessenger, m_remoteMessenger, CHAT_NAME);
 			m_serverMessenger.setAcceptNewConnections(true);
 			gameDataChanged();

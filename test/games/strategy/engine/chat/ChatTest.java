@@ -39,6 +39,7 @@ public class ChatTest extends TestCase
 	TestChatListener m_serverChatListener;
 	TestChatListener m_client1ChatListener;
 	TestChatListener m_client2ChatListener;
+	NullModeratorController m_smc;
 	
 	@Override
 	public void setUp() throws IOException
@@ -58,7 +59,8 @@ public class ChatTest extends TestCase
 		m_c2um = new UnifiedMessenger(m_client2);
 		m_c2rm = new RemoteMessenger(m_c2um);
 		m_c2cm = new ChannelMessenger(m_c2um);
-		new NullModeratorController(m_server).register(m_srm);
+		m_smc = new NullModeratorController(m_server);
+		m_smc.register(m_srm);
 		m_serverChatListener = new TestChatListener();
 		m_client1ChatListener = new TestChatListener();
 		m_client2ChatListener = new TestChatListener();
@@ -99,7 +101,7 @@ public class ChatTest extends TestCase
 		// its just that the chat is so hard to set up
 		// and we really need to test it working with sockets
 		// rather than some mocked up implementation
-		final ChatController controller = new ChatController("c", m_server, m_srm, m_scm);
+		final ChatController controller = new ChatController("c", m_server, m_srm, m_scm, m_smc);
 		flush();
 		Thread.sleep(20);
 		final Chat server = new Chat(m_server, "c", m_scm, m_srm);

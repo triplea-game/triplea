@@ -17,8 +17,6 @@
 package games.strategy.engine.chat;
 
 import games.strategy.engine.chat.IChatController.Tag;
-import games.strategy.engine.lobby.server.IModeratorController;
-import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
@@ -34,6 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -64,7 +63,7 @@ public class Chat
 	private final StatusManager m_statusManager;
 	private final ChatIgnoreList m_ignoreList = new ChatIgnoreList();
 	private final HashMap<INode, LinkedHashSet<String>> m_notesMap = new HashMap<INode, LinkedHashSet<String>>();
-	private static String TAG_MODERATOR = "[Mod]";
+	private static final String TAG_MODERATOR = "[Mod]";
 	
 	private void addToNotesMap(final INode node, final Tag tag)
 	{
@@ -143,51 +142,57 @@ public class Chat
 	
 	private void init()
 	{
-		// the order of events is significant.
-		//
-		//
-		// 1 register our channel listener
-		// once the channel is registered, we are guaranteed that
-		// when we receive the response from our init(...) message, our channel
-		// subscriber has been added, and will see any messages broadcasted by the server
-		//
-		// 2 call the init message on the server remote. Any add or join messages sent from the server
-		// will queue until we receive the init return value (they queue since they see the init version is -1)
-		//
-		// 3 when we receive the init message response, acquire the lock, and initialize our state
-		// and run any queued messages. Queued messages may be ignored if the
-		// server version is incorrect.
-		//
-		// this all seems a lot more involved than it needs to be.
-		final IChatController controller = (IChatController) m_messengers.getRemoteMessenger().getRemote(ChatController.getChatControlerRemoteName(m_chatName));
-		m_messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor, new RemoteName(m_chatChannelName, IChatChannel.class));
-		final Tuple<List<INode>, Long> init = controller.joinChat();
-		final List<INode> chatters = init.getFirst();
-		synchronized (m_mutexNodes)
-		{
-			m_nodes = new ArrayList<INode>(chatters);
-		}
-		m_chatInitVersion = init.getSecond().longValue();
 		(new Runnable()
 		{
 			public void run()
 			{
-				synchronized (m_mutexQueue)
+				// the order of events is significant.
+				//
+				//
+				// 1 register our channel listener
+				// once the channel is registered, we are guaranteed that
+				// when we receive the response from our init(...) message, our channel
+				// subscriber has been added, and will see any messages broadcasted by the server
+				//
+				// 2 call the init message on the server remote. Any add or join messages sent from the server
+				// will queue until we receive the init return value (they queue since they see the init version is -1)
+				//
+				// 3 when we receive the init message response, acquire the lock, and initialize our state
+				// and run any queued messages. Queued messages may be ignored if the
+				// server version is incorrect.
+				//
+				// this all seems a lot more involved than it needs to be.
+				final IChatController controller = (IChatController) m_messengers.getRemoteMessenger().getRemote(ChatController.getChatControlerRemoteName(m_chatName));
+				m_messengers.getChannelMessenger().registerChannelSubscriber(m_chatChannelSubscribor, new RemoteName(m_chatChannelName, IChatChannel.class));
+				final Tuple<Map<INode, Tag>, Long> init = controller.joinChat();
+				final Map<INode, Tag> chatters = init.getFirst();
+				synchronized (m_mutexNodes)
 				{
-					m_queuedInitMessages.add(0, new Runnable()
-					{
-						public void run()
-						{
-							assignNodeTags(chatters);
-						}
-					});
-					for (final Runnable job : m_queuedInitMessages)
-					{
-						job.run();
-					}
-					m_queuedInitMessages = null;
+					m_nodes = new ArrayList<INode>(chatters.keySet());
 				}
-				updateConnections();
+				m_chatInitVersion = init.getSecond().longValue();
+				(new Runnable()
+				{
+					public void run()
+					{
+						synchronized (m_mutexQueue)
+						{
+							m_queuedInitMessages.add(0, new Runnable()
+							{
+								public void run()
+								{
+									assignNodeTags(chatters);
+								}
+							});
+							for (final Runnable job : m_queuedInitMessages)
+							{
+								job.run();
+							}
+							m_queuedInitMessages = null;
+						}
+						updateConnections();
+					}
+				}).run();
 			}
 		}).run();
 	}
@@ -198,21 +203,12 @@ public class Chat
 	 * @param chatters
 	 *            map from node to tag
 	 */
-	private void assignNodeTags(final List<INode> chatters)
+	private void assignNodeTags(final Map<INode, Tag> chatters)
 	{
-		final IModeratorController moderatorController = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-		if (moderatorController != null)
+		for (final INode node : chatters.keySet())
 		{
-			for (final INode node : chatters)
-			{
-				final boolean admin = moderatorController.isPlayerAdmin(node);
-				final Tag tag;
-				if (admin)
-					tag = Tag.MODERATOR;
-				else
-					tag = Tag.NONE;
-				addToNotesMap(node, tag);
-			}
+			final Tag tag = chatters.get(node);
+			addToNotesMap(node, tag);
 		}
 	}
 	
@@ -354,7 +350,7 @@ public class Chat
 			}
 		}
 		
-		public void speakerAdded(final INode node, final long version)
+		public void speakerAdded(final INode node, final Tag tag, final long version)
 		{
 			assertMessageFromServer();
 			if (m_chatInitVersion == -1)
@@ -362,13 +358,13 @@ public class Chat
 				synchronized (m_mutexQueue)
 				{
 					if (m_queuedInitMessages == null)
-						speakerAdded(node, version);
+						speakerAdded(node, tag, version);
 					else
 						m_queuedInitMessages.add(new Runnable()
 						{
 							public void run()
 							{
-								speakerAdded(node, version);
+								speakerAdded(node, tag, version);
 							}
 						});
 				}
@@ -379,17 +375,7 @@ public class Chat
 				synchronized (m_mutexNodes)
 				{
 					m_nodes.add(node);
-					final IModeratorController moderatorController = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
-					if (moderatorController != null)
-					{
-						final boolean admin = moderatorController.isPlayerAdmin(node);
-						final Tag tag;
-						if (admin)
-							tag = Tag.MODERATOR;
-						else
-							tag = Tag.NONE;
-						addToNotesMap(node, tag);
-					}
+					addToNotesMap(node, tag);
 					updateConnections();
 				}
 				for (final IChatListener listener : m_listeners)
@@ -437,7 +423,7 @@ public class Chat
 			}
 		}
 		
-		/*public void speakerTagUpdated(final INode node, final Tag tag)
+		public void speakerTagUpdated(final INode node, final Tag tag)
 		{
 			synchronized (m_mutexNodes)
 			{
@@ -445,8 +431,8 @@ public class Chat
 				addToNotesMap(node, tag);
 				updateConnections();
 			}
-		}*/
-
+		}
+		
 		public void slapOccured(final String to)
 		{
 			final INode from = MessageContext.getSender();

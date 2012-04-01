@@ -1,4 +1,8 @@
 Changes for 1.5.2.1
+* Disallowing new usernames for lobby if they match case insensitive an existing user, instead of checking only case sensitive. (veqryn)
+
+* Speeding up lobby login process. (frigoref & veqryn)
+
 * More fixes for sea placement and requiresUnits placement. (veqryn)
 
 * Prevented units with "requiresUnits" from being placed by territories not containing the required units, and also prevented them from being moved around by the "free-up-space" methods. (veqryn)

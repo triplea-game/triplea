@@ -1,5 +1,6 @@
 package games.strategy.engine.chat;
 
+import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.message.IChannelMessenger;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.engine.message.MessageContext;
@@ -11,8 +12,8 @@ import games.strategy.net.IServerMessenger;
 import games.strategy.net.Messengers;
 import games.strategy.util.Tuple;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class ChatController implements IChatController
@@ -22,9 +23,10 @@ public class ChatController implements IChatController
 	private static final String CHAT_CHANNEL = "_ChatCtrl";
 	private final IMessenger m_messenger;
 	private final IRemoteMessenger m_remoteMessenger;
+	private final ModeratorController m_moderatorController;
 	private final IChannelMessenger m_channelMessenger;
 	private final String m_chatName;
-	private final List<INode> m_chatters = new ArrayList<INode>();
+	private final Map<INode, Tag> m_chatters = new HashMap<INode, Tag>();
 	protected final Object m_mutex = new Object();
 	private final String m_chatChannel;
 	private long m_version;
@@ -38,7 +40,7 @@ public class ChatController implements IChatController
 		{
 			synchronized (m_mutex)
 			{
-				if (m_chatters.contains(to))
+				if (m_chatters.keySet().contains(to))
 				{
 					leaveChatInternal(to);
 				}
@@ -56,20 +58,21 @@ public class ChatController implements IChatController
 		return CHAT_CHANNEL + chatName;
 	}
 	
-	public ChatController(final String name, final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger)
+	public ChatController(final String name, final IMessenger messenger, final IRemoteMessenger remoteMessenger, final IChannelMessenger channelMessenger, final ModeratorController moderatorController)
 	{
 		m_chatName = name;
 		m_messenger = messenger;
 		m_remoteMessenger = remoteMessenger;
+		m_moderatorController = moderatorController;
 		m_channelMessenger = channelMessenger;
 		m_chatChannel = getChatChannelName(name);
 		m_remoteMessenger.registerRemote(this, getChatControlerRemoteName(name));
 		((IServerMessenger) m_messenger).addConnectionChangeListener(m_connectionChangeListener);
 	}
 	
-	public ChatController(final String name, final Messengers messenger)
+	public ChatController(final String name, final Messengers messenger, final ModeratorController moderatorController)
 	{
-		this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger());
+		this(name, messenger.getMessenger(), messenger.getRemoteMessenger(), messenger.getChannelMessenger(), moderatorController);
 	}
 	
 	// clean up
@@ -78,7 +81,7 @@ public class ChatController implements IChatController
 		synchronized (m_mutex)
 		{
 			final IChatChannel chatter = getChatBroadcaster();
-			for (final INode node : m_chatters)
+			for (final INode node : m_chatters.keySet())
 			{
 				m_version++;
 				chatter.speakerRemoved(node, m_version);
@@ -95,17 +98,22 @@ public class ChatController implements IChatController
 	}
 	
 	// a player has joined
-	public Tuple<List<INode>, Long> joinChat()
+	public Tuple<Map<INode, Tag>, Long> joinChat()
 	{
 		final INode node = MessageContext.getSender();
 		s_logger.info("Chatter:" + node + " is joining chat:" + m_chatName);
+		final Tag tag;
+		if (m_moderatorController.isPlayerAdmin(node))
+			tag = Tag.MODERATOR;
+		else
+			tag = Tag.NONE;
 		synchronized (m_mutex)
 		{
-			m_chatters.add(node);
+			m_chatters.put(node, tag);
 			m_version++;
-			getChatBroadcaster().speakerAdded(node, m_version);
-			final ArrayList<INode> copy = new ArrayList<INode>(m_chatters);
-			return new Tuple<List<INode>, Long>(copy, Long.valueOf(m_version));
+			getChatBroadcaster().speakerAdded(node, tag, m_version);
+			final Map<INode, Tag> copy = new HashMap<INode, Tag>(m_chatters);
+			return new Tuple<Map<INode, Tag>, Long>(copy, Long.valueOf(m_version));
 		}
 	}
 	

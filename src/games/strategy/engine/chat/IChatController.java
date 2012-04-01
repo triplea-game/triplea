@@ -4,7 +4,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.net.INode;
 import games.strategy.util.Tuple;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * A central controller of who is in the chat.
@@ -23,7 +23,7 @@ public interface IChatController extends IRemote
 	/**
 	 * Join the chat, returns the chatters currently in the chat.
 	 */
-	public Tuple<List<INode>, Long> joinChat();
+	public Tuple<Map<INode, Tag>, Long> joinChat();
 	
 	/**
 	 * Leave the chat, and ask that everyone stops bothering me.

@@ -101,7 +101,7 @@ public class DBUserController
 	
 	public boolean doesUserExist(final String userName)
 	{
-		final String sql = "select username from ta_users where username = ?";
+		final String sql = "select username from ta_users where upper(username) = upper(?)";
 		final Connection con = Database.getConnection();
 		try
 		{
@@ -157,6 +157,10 @@ public class DBUserController
 		final String validationErrors = validate(name, email, hashedPassword);
 		if (validationErrors != null)
 			throw new IllegalStateException(validationErrors);
+		if (doesUserExist(name))
+		{
+			throw new IllegalStateException("That user name has already been taken");
+		}
 		final Connection con = Database.getConnection();
 		try
 		{

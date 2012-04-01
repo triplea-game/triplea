@@ -70,13 +70,14 @@ public class LobbyServer
 		m_messengers = new Messengers(server);
 		server.setLoginValidator(new LobbyLoginValidator());
 		// setup common objects
-		new ChatController(LOBBY_CHAT, m_messengers);
+		new UserManager().register(m_messengers.getRemoteMessenger());
+		final ModeratorController moderatorController = new ModeratorController(server);
+		moderatorController.register(m_messengers.getRemoteMessenger());
+		new ChatController(LOBBY_CHAT, m_messengers, moderatorController);
 		// register the status controller
 		final StatusManager statusManager = new StatusManager(m_messengers);
 		// we dont need this manager now
 		statusManager.shutDown();
-		new UserManager().register(m_messengers.getRemoteMessenger());
-		new ModeratorController(server).register(m_messengers.getRemoteMessenger());
 		final LobbyGameController controller = new LobbyGameController(
 					(ILobbyGameBroadcaster) m_messengers.getChannelMessenger().getChannelBroadcastor(ILobbyGameBroadcaster.GAME_BROADCASTER_CHANNEL), server);
 		controller.register(m_messengers.getRemoteMessenger());
