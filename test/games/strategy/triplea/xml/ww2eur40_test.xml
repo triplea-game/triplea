@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Europe Test" version="2.4"/>
+        <info name="World War II Europe Test" version="2.5"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
 		<diceSides value="6"/>
@@ -2203,12 +2203,12 @@
 				 
 				 <attatchment name="canalAttatchmentDanish" attatchTo="113 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 					 <option name="canalName" value="Danish Straits"/>
-					 <option name="landTerritories" value="Norway:Denmark"/>
+					 <option name="landTerritories" value="Denmark"/>
 				 </attatchment>
 				 
 				 <attatchment name="canalAttatchmentDanish" attatchTo="112 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 					 <option name="canalName" value="Danish Straits"/>
-					 <option name="landTerritories" value="Norway:Denmark"/>
+					 <option name="landTerritories" value="Denmark"/>
 				 </attatchment>
 				 
 				 <attatchment name="canalAttatchmentGibraltar" attatchTo="92 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
@@ -3963,6 +3963,9 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>2.5
+<br>Fixed Danish Straight to only require Denmark.
 <br>
 <br>2.4
 <br>Fixing Russian national objective for sz125 so that it affects all units except transports.
