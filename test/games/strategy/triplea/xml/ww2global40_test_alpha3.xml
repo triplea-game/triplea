@@ -3445,12 +3445,12 @@
 				 
 				 <attatchment name="canalAttatchmentDanish" attatchTo="113 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 					 <option name="canalName" value="Danish Straits"/>
-					 <option name="landTerritories" value="Norway:Denmark"/>
+					 <option name="landTerritories" value="Denmark"/>
 				 </attatchment>
 				 
 				 <attatchment name="canalAttatchmentDanish" attatchTo="112 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
 					 <option name="canalName" value="Danish Straits"/>
-					 <option name="landTerritories" value="Norway:Denmark"/>
+					 <option name="landTerritories" value="Denmark"/>
 				 </attatchment>
 				 
 				 <attatchment name="canalAttatchmentGibraltar" attatchTo="92 Sea Zone" javaClass="games.strategy.triplea.attatchments.CanalAttachment" type="territory">
