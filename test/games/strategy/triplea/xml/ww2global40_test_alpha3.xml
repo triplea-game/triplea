@@ -3290,54 +3290,54 @@
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Crete" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French"/>
+						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Argentina" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Bulgaria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
-						<option name="captureUnitOnEnteringBy" value="Germans:Italians"/>
+						<option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Angola" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="1"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Greece" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French"/>
+						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Iraq" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="captureUnitOnEnteringBy" value="Germans:Italians"/>
+						<option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Eastern Persia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French"/>
+						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Uruguay" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Brazil" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French"/>
+						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Venezuela" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Northwest Persia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
-						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French"/>
+						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Persia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French"/>
+						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Yugoslavia" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French"/>
+						<option name="captureUnitOnEnteringBy" value="British:Russians:Americans:French:ANZAC"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
@@ -3356,7 +3356,7 @@
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Finland" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="2"/>
-						<option name="captureUnitOnEnteringBy" value="Germans:Italians"/>
+						<option name="captureUnitOnEnteringBy" value="Germans:Italians:Japanese"/>
                    </attatchment>
                     <attatchment name="territoryAttatchment" attatchTo="Suriname" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
@@ -3554,7 +3554,11 @@
 					<option name="objectiveValue" value="5"/>
 					<option name="alliedOwnershipTerritories" value="Guam:Midway:Wake Island:Gilbert Islands:Solomon Islands" count="5"/>
 				</attatchment>
-				<attatchment name="objectiveAttachment_Japanese_3_Control_Dutch_East_Indies" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+				<attatchment name="objectiveAttachment_Japanese_3_Control_Honolulu_Or_Sydney_Or_Calcutta_Or_Western_United_States" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="objectiveValue" value="5"/>
+					<option name="directOwnershipTerritories" value="Hawaiian Islands:New South Wales:India:Western United States" count="each"/>
+				</attatchment>
+				<attatchment name="objectiveAttachment_Japanese_4_Control_Dutch_East_Indies" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="objectiveValue" value="5"/>
 					<option name="alliedOwnershipTerritories" value="Java:Sumatra:Borneo:Celebes" count="4"/>
 				</attatchment>
@@ -6497,6 +6501,8 @@ These changes to units are things other than price/movement which you can see in
 <br>
 <br>2.5
 <br>Fixed Danish Straight to only require Denmark.
+<br>Fixed Japanese National Objective for controlling India, Hawaii, New South Wales, and Western United States.
+<br>Allowed Japan and ANZAC to take over friendly neutrals on European board.
 <br>
 <br>2.4
 <br>Fixed issue with Mongolian units not converting to Russians under most circumstances.

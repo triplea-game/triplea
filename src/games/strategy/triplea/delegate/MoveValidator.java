@@ -359,9 +359,9 @@ public class MoveValidator
 			if (onlyIgnoredUnitsOnPath(route, player, data, false))
 				return result;
 			final CompositeMatch<Unit> friendlyOrSubmerged = new CompositeMatchOr<Unit>();
-			friendlyOrSubmerged.add(Matches.alliedUnit(player, data));
+			friendlyOrSubmerged.add(Matches.enemyUnit(player, data).invert());
 			friendlyOrSubmerged.add(Matches.unitIsSubmerged(data));
-			if (!route.getEnd().getUnits().allMatch(friendlyOrSubmerged))
+			if (!route.getEnd().getUnits().allMatch(friendlyOrSubmerged) && !(Match.allMatch(units, Matches.UnitIsAir) && route.getEnd().isWater()))
 				return result.setErrorReturnResult("Cannot advance to battle in non combat");
 		}
 		if (Match.allMatch(units, Matches.UnitIsAir))
