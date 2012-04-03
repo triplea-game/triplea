@@ -87,11 +87,11 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		if (m_needToInitialize)
 		{
 			setupUnitsInSameTerritoryBattles();
+			m_battleTracker.clearFinishedBattles(m_bridge); // these are "blitzed" and "conquered" territories without a fight, without a pending battle
 			// do pre-combat stuff, like scrambling, after we have setup all battles, but before we have bombardment, etc.
 			doScrambling();
 			doKamikazeSuicideAttacks();
 			addBombardmentSources();
-			m_battleTracker.clearFinishedBattles(m_bridge); // these are "blitzed" and "conquered" territories without a fight, without a pending battle
 			m_needToInitialize = false;
 		}
 	}
