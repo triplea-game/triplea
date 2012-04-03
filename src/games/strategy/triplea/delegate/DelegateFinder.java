@@ -51,9 +51,9 @@ public class DelegateFinder
 		return (MoveDelegate) findDelegate(data, "move");
 	}
 	
-	public static final PlaceDelegate placeDelegate(final GameData data)
+	public static final AbstractPlaceDelegate placeDelegate(final GameData data)
 	{
-		return (PlaceDelegate) findDelegate(data, "place");
+		return (AbstractPlaceDelegate) findDelegate(data, "place");
 	}
 	
 	// TODO: this is a really shitty way of figuring out what step / delegate we are in....
