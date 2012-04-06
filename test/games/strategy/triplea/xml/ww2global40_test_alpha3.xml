@@ -3971,7 +3971,7 @@
                 <attatchment name="triggerAttachment_Germans_4_Presence_In_Egypt" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachment_Germans_4_unit_presence"/>
 					<option name="resource" value="PUs"/>
-					<option name="resourceCount" value="3"/>
+					<option name="resourceCount" value="5"/>
                 </attatchment>
                 <attatchment name="triggerAttachment_Germans_5_Swedish_Iron_Ore" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachment_Germans_5_Control_Norway_And_Denmark:conditionAttachment_Germans_5_Sweden_Not_Enemy"/>
@@ -6503,6 +6503,7 @@ These changes to units are things other than price/movement which you can see in
 <br>Fixed Danish Straight to only require Denmark.
 <br>Fixed Japanese National Objective for controlling India, Hawaii, New South Wales, and Western United States.
 <br>Allowed Japan and ANZAC to take over friendly neutrals on European board.
+<br>German objective for unit in Egypt now counts for 5 instead of 3 pus.
 <br>
 <br>2.4
 <br>Fixed issue with Mongolian units not converting to Russians under most circumstances.

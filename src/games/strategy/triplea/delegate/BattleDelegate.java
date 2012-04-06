@@ -758,7 +758,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			final PlayerID defender = MustFightBattle.findDefender(battleSite, m_player, data);
 			// Get all land territories where we can land
 			final Set<Territory> neighbors = data.getMap().getNeighbors(battleSite);
-			final CompositeMatch<Territory> alliedLandTerritories = new CompositeMatchAnd<Territory>(Matches.airCanLandOnThisAlliedNonConqueredNonPendingLandTerritory(defender, data));
+			final CompositeMatch<Territory> alliedLandTerritories = new CompositeMatchAnd<Territory>(Matches.airCanLandOnThisAlliedNonConqueredLandTerritory(defender, data));
 			// Get those that are neighbors
 			final Collection<Territory> canLandHere = Match.getMatches(neighbors, alliedLandTerritories);
 			// Get all sea territories where there are allies
