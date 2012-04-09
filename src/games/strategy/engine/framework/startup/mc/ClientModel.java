@@ -26,6 +26,7 @@ import games.strategy.engine.framework.startup.launcher.IServerReady;
 import games.strategy.engine.framework.startup.login.ClientLogin;
 import games.strategy.engine.framework.startup.ui.ClientOptions;
 import games.strategy.engine.framework.startup.ui.MainFrame;
+import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.message.ChannelMessenger;
@@ -336,6 +337,7 @@ public class ClientModel implements IMessengerErrorListener
 						{
 							data.getGameLoader().startGame(m_game, playerSet);
 							data.testLocksOnRead();
+							NewGameChooser.clearNewGameChooserModel();
 						} catch (final Exception e)
 						{
 							e.printStackTrace();

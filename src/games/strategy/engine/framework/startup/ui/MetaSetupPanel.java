@@ -4,6 +4,7 @@ import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.mapDownload.DownloadMapDialog;
 import games.strategy.engine.framework.startup.mc.SetupPanelModel;
+import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
@@ -277,6 +278,7 @@ public class MetaSetupPanel extends SetupPanel
 		if (client == null)
 			return;
 		final LobbyFrame lobbyFrame = new LobbyFrame(client, props);
+		NewGameChooser.clearNewGameChooserModel();
 		MainFrame.getInstance().setVisible(false);
 		MainFrame.getInstance().dispose();
 		lobbyFrame.setVisible(true);

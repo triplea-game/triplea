@@ -31,6 +31,7 @@ import javax.swing.event.ListSelectionListener;
 
 public class NewGameChooser extends JDialog
 {
+	private static final long serialVersionUID = -3223711652118741132L;
 	private static NewGameChooserModel s_cachedGameModel = null;
 	private JButton m_okButton;
 	private JButton m_cancelButton;
@@ -41,7 +42,7 @@ public class NewGameChooser extends JDialog
 	private NewGameChooserModel m_gameListModel;
 	private NewGameChooserEntry m_choosen;
 	
-	public NewGameChooser(final Frame owner)
+	private NewGameChooser(final Frame owner)
 	{
 		super(owner, "Select a Game", true);
 		createComponents();
@@ -113,6 +114,7 @@ public class NewGameChooser extends JDialog
 			chooser.selectGame(defaultGameName);
 		}
 		chooser.setVisible(true);
+		// chooser is now visible and waits for user action
 		return chooser.m_choosen;
 	}
 	
@@ -246,7 +248,17 @@ public class NewGameChooser extends JDialog
 	
 	public static void refreshNewGameChooserModel()
 	{
+		clearNewGameChooserModel();
 		s_cachedGameModel = new NewGameChooserModel();
+	}
+	
+	public static void clearNewGameChooserModel()
+	{
+		if (s_cachedGameModel != null)
+		{
+			s_cachedGameModel.clear();
+			s_cachedGameModel = null;
+		}
 	}
 	
 	/**

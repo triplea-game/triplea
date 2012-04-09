@@ -1,4 +1,6 @@
 Changes for 1.5.2.1
+* Removing game chooser list from memory when we start a game, or join a game, or join the lobby. (veqryn & frigoref)
+
 * Removed restriction of not being able to land in land territories with pending battles (there is still a restriction of course on who owns the territory, and whether it was conquered this turn or not). (veqryn) 
 
 * Fixing possible error with using overriden placement delegates that were not triplea placement delegates, like using twoIfBySea place delegates. (frigoref)

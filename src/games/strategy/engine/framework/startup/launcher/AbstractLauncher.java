@@ -5,6 +5,7 @@ package games.strategy.engine.framework.startup.launcher;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
+import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 
 import java.awt.Component;
@@ -24,7 +25,7 @@ abstract public class AbstractLauncher implements ILauncher
 	protected final GameSelectorModel m_gameSelectorModel;
 	protected final WaitWindow m_gameLoadingWindow = new WaitWindow("Loading game, please wait.");
 	
-	public AbstractLauncher(final GameSelectorModel gameSelectorModel)
+	protected AbstractLauncher(final GameSelectorModel gameSelectorModel)
 	{
 		m_gameSelectorModel = gameSelectorModel;
 		m_gameData = gameSelectorModel.getGameData();
@@ -41,6 +42,7 @@ abstract public class AbstractLauncher implements ILauncher
 		{
 			public void run()
 			{
+				NewGameChooser.clearNewGameChooserModel(); // we don't want to keep around all the memory for this, since we have the gamedata that we want
 				launchInNewThread(parent);
 			}
 		};

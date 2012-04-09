@@ -67,10 +67,10 @@ public class GameRunner2
 			{
 				final MainFrame frame = new MainFrame();
 				frame.start();
-				if (waitWindow != null)
-					waitWindow.doneWait();
 				frame.requestFocus();
 				frame.toFront();
+				if (waitWindow != null)
+					waitWindow.doneWait();
 			}
 		});
 	}
