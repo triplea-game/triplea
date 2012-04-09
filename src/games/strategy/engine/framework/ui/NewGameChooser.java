@@ -32,7 +32,7 @@ import javax.swing.event.ListSelectionListener;
 public class NewGameChooser extends JDialog
 {
 	private static final long serialVersionUID = -3223711652118741132L;
-	private static NewGameChooserModel s_cachedGameModel = null;
+	private static NewGameChooserModel s_cachedGameModel = null; // any methods touching s_cachedGameModel should be both static and synchronized
 	private JButton m_okButton;
 	private JButton m_cancelButton;
 	private JButton m_refreshGamesButton;
@@ -237,7 +237,8 @@ public class NewGameChooser extends JDialog
 		});
 	}
 	
-	public static NewGameChooserModel getNewGameChooserModel()
+	// any methods touching s_cachedGameModel should be both static and synchronized
+	public synchronized static NewGameChooserModel getNewGameChooserModel()
 	{
 		if (s_cachedGameModel == null)
 		{
@@ -246,13 +247,15 @@ public class NewGameChooser extends JDialog
 		return s_cachedGameModel;
 	}
 	
-	public static void refreshNewGameChooserModel()
+	// any methods touching s_cachedGameModel should be both static and synchronized
+	public synchronized static void refreshNewGameChooserModel()
 	{
 		clearNewGameChooserModel();
 		s_cachedGameModel = new NewGameChooserModel();
 	}
 	
-	public static void clearNewGameChooserModel()
+	// any methods touching s_cachedGameModel should be both static and synchronized
+	public synchronized static void clearNewGameChooserModel()
 	{
 		if (s_cachedGameModel != null)
 		{

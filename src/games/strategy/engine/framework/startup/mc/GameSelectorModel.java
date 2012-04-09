@@ -26,6 +26,7 @@ import games.strategy.engine.framework.ui.NewGameChooserModel;
 import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URI;
 import java.util.Observable;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -43,6 +44,8 @@ public class GameSelectorModel extends Observable
 	public static final File DEFAULT_MAP_DIRECTORY = new File(GameRunner.getRootFolder(), "/maps");
 	private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
 	private static final String DEFAULT_GAME_NAME = "Big World : 1942";
+	private static final String DEFAULT_GAME_URI_PREF = "DefaultGameURI";
+	private static final String DEFAULT_GAME_URI = "";
 	private GameData m_data;
 	private String m_gameName;
 	private String m_gameVersion;
@@ -61,6 +64,7 @@ public class GameSelectorModel extends Observable
 		setGameData(entry.getGameData());
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		prefs.put(DEFAULT_GAME_NAME_PREF, entry.getGameData().getGameName());
+		prefs.put(DEFAULT_GAME_URI_PREF, entry.getURI().toString());
 		try
 		{
 			prefs.flush();
@@ -207,6 +211,7 @@ public class GameSelectorModel extends Observable
 	{
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		prefs.put(DEFAULT_GAME_NAME_PREF, DEFAULT_GAME_NAME);
+		prefs.put(DEFAULT_GAME_URI_PREF, DEFAULT_GAME_URI);
 		try
 		{
 			prefs.flush();
@@ -220,49 +225,94 @@ public class GameSelectorModel extends Observable
 		loadDefaultGame(ui, false);
 	}
 	
-	public void loadDefaultGame(final Component ui, final boolean forceFactoryDefault)
+	/**
+	 * 
+	 * @param ui
+	 * @param forceFactoryDefault
+	 *            - False is default behavior and causes the new game chooser model to be cleared (and refreshed if needed).
+	 *            True causes the default game preference to be reset, but the model does not get cleared/refreshed (because we only call with 'true' if loading the user preferred map failed).
+	 */
+	private void loadDefaultGame(final Component ui, final boolean forceFactoryDefault)
 	{
 		// load the previously saved value
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
-		final String defaultGameName = DEFAULT_GAME_NAME;
 		if (forceFactoryDefault)
 		{
-			resetDefaultGame();
 			// we don't refresh the game chooser model because we have just removed a bad map from it
+			resetDefaultGame();
+		}
+		NewGameChooserEntry selectedGame = null;
+		// just in case flush doesn't work, we still force it again here
+		final String userPreferredDefaultGameURI = (forceFactoryDefault ? DEFAULT_GAME_URI : prefs.get(DEFAULT_GAME_URI_PREF, DEFAULT_GAME_URI));
+		if (!forceFactoryDefault && userPreferredDefaultGameURI != null && userPreferredDefaultGameURI.length() > 0)
+		{
+			// if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole game model list
+			try
+			{
+				final URI defaultURI = new URI(userPreferredDefaultGameURI);
+				selectedGame = new NewGameChooserEntry(defaultURI);
+			} catch (final Exception e)
+			{
+				System.out.println(userPreferredDefaultGameURI + " could not be loaded.");
+				loadDefaultGame(ui, true);
+				return;
+			}
+			if (!selectedGame.isGameDataLoaded())
+			{
+				try
+				{
+					selectedGame.fullyParseGameData();
+				} catch (final GameParseException e)
+				{
+					loadDefaultGame(ui, true);
+					return;
+				}
+			}
+			// since we are not forceFactoryDefault, and since we are loading purely from the URI without loading the new game chooser model, we might as well refresh it in a separate thread
+			new Thread(new Runnable()
+			{
+				public void run()
+				{
+					NewGameChooser.refreshNewGameChooserModel();
+				}
+			}).start();
 		}
 		else
 		{
-			// TODO: decide if user base would rather have their game data refreshed after leaving a game (currnet), or keep their game data
-			NewGameChooser.refreshNewGameChooserModel(); // remove this to have the engine maintain all game data between games, allowing users to continue games without saving, so long as they never close triplea
-		}
-		// just in case flush doesn't work, we still force it again here
-		final String s = (forceFactoryDefault ? defaultGameName : prefs.get(DEFAULT_GAME_NAME_PREF, defaultGameName));
-		final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
-		NewGameChooserEntry selectedGame = model.findByName(s);
-		if (selectedGame == null)
-		{
-			selectedGame = model.findByName(defaultGameName);
-		}
-		if (selectedGame == null && model.size() > 0)
-		{
-			selectedGame = model.get(0);
-		}
-		if (selectedGame == null)
-		{
-			return;
-		}
-		if (!selectedGame.isGameDataLoaded())
-		{
-			try
+			if (!forceFactoryDefault)
 			{
-				selectedGame.fullyParseGameData();
-			} catch (final GameParseException e)
+				// we would rather have their game data refreshed after leaving a game
+				NewGameChooser.refreshNewGameChooserModel();
+			}
+			// just in case flush doesn't work, we still force it again here
+			final String userPreferredDefaultGameName = (forceFactoryDefault ? DEFAULT_GAME_NAME : prefs.get(DEFAULT_GAME_NAME_PREF, DEFAULT_GAME_NAME));
+			final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
+			selectedGame = model.findByName(userPreferredDefaultGameName);
+			if (selectedGame == null)
 			{
-				// Load real default game...
-				selectedGame.delayParseGameData();
-				model.removeEntry(selectedGame);
-				loadDefaultGame(ui, true);
+				selectedGame = model.findByName(DEFAULT_GAME_NAME);
+			}
+			if (selectedGame == null && model.size() > 0)
+			{
+				selectedGame = model.get(0);
+			}
+			if (selectedGame == null)
+			{
 				return;
+			}
+			if (!selectedGame.isGameDataLoaded())
+			{
+				try
+				{
+					selectedGame.fullyParseGameData();
+				} catch (final GameParseException e)
+				{
+					// Load real default game...
+					selectedGame.delayParseGameData();
+					model.removeEntry(selectedGame);
+					loadDefaultGame(ui, true);
+					return;
+				}
 			}
 		}
 		load(selectedGame);

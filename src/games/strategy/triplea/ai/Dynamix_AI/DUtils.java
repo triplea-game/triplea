@@ -2167,6 +2167,8 @@ public class DUtils
 			if (Properties.getLow_Luck(data))
 				runCount = (int) DUtils.Limit(runCount / 5.0F, 10.0F, Integer.MAX_VALUE); // Reduce calcing count, as we're playing with LL
 		}
+		if (runCount <= 0)
+			throw new IllegalStateException("RunCount for calc can never be less than 1");
 		final DOddsCalculator calc = new DOddsCalculator();
 		calc.setKeepOneAttackingLandUnit(toTake);
 		final AggregateResults results = calc.calculate(data, attacker, defender, testingTer, attacking, defending, new ArrayList<Unit>(), runCount);
