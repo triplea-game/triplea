@@ -1,4 +1,6 @@
 Changes for 1.5.2.1
+* Updated 1940 test xml to allow Axis powers to declare war on Americans separately, and for Americans to declare war on each Axis power separately. (veqryn)
+
 * Fixed null pointer error in Dynamix AI's determining of where to put a factory. (veqryn)
 
 * Having the default loaded game be loaded separately from the game chooser list, and putting the loading of the list into a separate thread. (veqryn & frigoref)
