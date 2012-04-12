@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="2.5"/>
+        <info name="World War II Global Test Alpha 3" version="2.6"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
 		<diceSides value="6"/>
@@ -480,7 +480,6 @@
                 <connection t1="Amur" t2="Manchuria"/>
                 <connection t1="Yakut S.S.R." t2="Ulaanbaatar"/>
                 <connection t1="Yakut S.S.R." t2="Buryatia"/>
-                <connection t1="Timguska" t2="Kazakhstan"/>
                 <connection t1="Siberia" t2="5 Sea Zone"/>
                 <connection t1="French Indo China" t2="Kwangsi"/>
                 <connection t1="French Indo China" t2="Siam"/>
@@ -6548,6 +6547,10 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>2.6
+<br>Deleting connection between Timguska and Kazakhstan.
+<br>Adding missing artwork for radar tech.
 <br>
 <br>2.5
 <br>Allowed Axis powers to declare war on Americans separately, and for Americans to declare war on each Axis power separately.
