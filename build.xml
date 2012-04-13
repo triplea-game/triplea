@@ -168,7 +168,7 @@
 
 		<echo message="making dmg"/>
 		<exec executable="hdiutil">
-			<arg line="create -size 200m -fs HFS+ -volname TripleA ${dmg.file}" />
+			<arg line="create -size 500m -fs HFS+ -volname TripleA ${dmg.file}" />
 		</exec>
 
 
@@ -254,7 +254,7 @@
 
 		<echo message="making dmg"/>
 		<exec executable="hdiutil">
-			<arg line="create -size 100m -fs HFS+ -volname TripleA ${dmg.file}" />
+			<arg line="create -size 300m -fs HFS+ -volname TripleA ${dmg.file}" />
 		</exec>
 
 
