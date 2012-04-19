@@ -26,9 +26,11 @@ import games.strategy.triplea.ai.Dynamix_AI.Code.Place;
 import games.strategy.triplea.ai.Dynamix_AI.Code.Purchase;
 import games.strategy.triplea.ai.Dynamix_AI.Code.SelectCasualties;
 import games.strategy.triplea.ai.Dynamix_AI.Code.Tech;
+import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.CachedCalculationCenter;
 import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.CachedInstanceCenter;
 import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.FactoryCenter;
 import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.GlobalCenter;
+import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.KnowledgeCenter;
 import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.ReconsiderSignalCenter;
 import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.StatusCenter;
 import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.StrategyCenter;
@@ -116,19 +118,42 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return s_dAIInstances;
 	}
 	
-	public static void Initialize(final TripleAFrame frame)
+	/**
+	 * Only call after we have left or quit a game.
+	 */
+	public static void clearCachedGameDataAll()
 	{
-		UI.Initialize(frame); // Must be done first
-		DUtils.Log(Level.FINE, "Initializing Dynamix_AI...");
-		GlobalCenter.Initialize(CachedInstanceCenter.CachedGameData);
+		CachedInstanceCenter.clearCachedDelegatesAndData();
+		UI.clearCachedInstances();
+		clearStaticInstances();
+	}
+	
+	/**
+	 * Call before starting a game, and after leaving.
+	 */
+	public static void clearStaticInstances()
+	{
+		GlobalCenter.clearStaticInstances();
 		FactoryCenter.ClearStaticInstances();
+		KnowledgeCenter.ClearStaticInstances();
 		TacticalCenter.ClearStaticInstances();
 		StatusCenter.ClearStaticInstances();
 		ThreatInvalidationCenter.ClearStaticInstances();
 		ReconsiderSignalCenter.ClearStaticInstances();
 		StrategyCenter.ClearStaticInstances();
-		CachedInstanceCenter.CachedBattleTracker = DelegateFinder.battleDelegate(CachedInstanceCenter.CachedGameData).getBattleTracker();
 		UnitGroup.ClearBufferedMoves();
+		DOddsCalculator.clearCachedStaticData();
+		CachedCalculationCenter.clearCachedStaticData();
+		UnitGroup.clearCachedInstances();
+	}
+	
+	public static void Initialize(final TripleAFrame frame)
+	{
+		UI.Initialize(frame); // Must be done first
+		DUtils.Log(Level.FINE, "Initializing Dynamix_AI...");
+		clearStaticInstances();
+		GlobalCenter.Initialize(CachedInstanceCenter.CachedGameData);
+		CachedInstanceCenter.CachedBattleTracker = DelegateFinder.battleDelegate(CachedInstanceCenter.CachedGameData).getBattleTracker();
 	}
 	
 	public static void ShowSettingsWindow()

@@ -81,6 +81,11 @@ public class DOddsCalculator
 	{
 	}
 	
+	public static void clearCachedStaticData()
+	{
+		s_dataForSimulation = null;
+	}
+	
 	public static void SetGameData(final GameData data)
 	{
 		data.acquireReadLock();

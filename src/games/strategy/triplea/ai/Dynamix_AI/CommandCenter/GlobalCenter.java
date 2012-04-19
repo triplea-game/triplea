@@ -43,12 +43,25 @@ public class GlobalCenter
 	public static int GameRound;
 	private static Resource PUResource;
 	
+	public static PlayerID CurrentPlayer;
+	public static int MapTerCount;
+	/** Please use this for all hard-coded values. (Multiply the hard-coded value by this float, and the hard-coded value will scale up or down with the maps */
+	public static float MapTerCountScale;
+	public static PhaseType CurrentPhaseType;
+	public static boolean IsFFAGame;
+	public static int FastestUnitMovement;
+	public static int FastestLandUnitMovement;
+	public static int HighestTerProduction;
+	public static int PUsAtEndOfLastTurn;
+	private static ProductionFrontier MergedAndAveragedProductionFronter;
+	public static List<UnitType> AllMapUnitTypes;
+	
 	public static Resource GetPUResource()
 	{
 		return PUResource;
 	}
 	
-	public static void Initialize(final GameData data)
+	public static void clearStaticInstances()
 	{
 		// This part just resets all the static variables to their default value so that other code will be able to fill in the real info
 		// (For example, the Dynamix_AI class sets the FirstDynamixPhase variable)
@@ -67,6 +80,10 @@ public class GlobalCenter
 		PUsAtEndOfLastTurn = 0;
 		MergedAndAveragedProductionFronter = null;
 		AllMapUnitTypes = null;
+	}
+	
+	public static void Initialize(final GameData data)
+	{
 		// Now we 'initialize' by filling in some of the values (the rest are filled in somewhere else)
 		PUResource = data.getResourceList().getResource(Constants.PUS);
 		MapTerCount = data.getMap().getTerritories().size();
@@ -85,19 +102,6 @@ public class GlobalCenter
 		HighestTerProduction = DUtils.GetHighestTerProduction(data);
 		GenerateMergedAndAveragedProductionFrontier(data);
 	}
-	
-	public static PlayerID CurrentPlayer;
-	public static int MapTerCount;
-	/** Please use this for all hard-coded values. (Multiply the hard-coded value by this float, and the hard-coded value will scale up or down with the maps */
-	public static float MapTerCountScale;
-	public static PhaseType CurrentPhaseType;
-	public static boolean IsFFAGame;
-	public static int FastestUnitMovement;
-	public static int FastestLandUnitMovement;
-	public static int HighestTerProduction;
-	public static int PUsAtEndOfLastTurn;
-	private static ProductionFrontier MergedAndAveragedProductionFronter;
-	public static List<UnitType> AllMapUnitTypes;
 	
 	/**
 	 * Generates a merged and averaged production frontier that can be used to determine TUV of units even when player is neutral or unknown.

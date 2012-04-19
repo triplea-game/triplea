@@ -50,6 +50,13 @@ public class UnitGroup
 	private GameData m_data = null;
 	private int m_moveIndex = -1;
 	
+	public static void clearCachedInstances()
+	{
+		movesCount = 0;
+		s_isBufferring = false;
+		s_bufferedMoves = new HashMap<Route, List<UnitGroup>>();
+	}
+	
 	public UnitGroup(final Unit unit, final Territory startTer, final GameData data)
 	{
 		this(Collections.singleton(unit), startTer, data);

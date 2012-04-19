@@ -1,4 +1,6 @@
 Changes for 1.5.3
+* Clearing all cached data for AIs once a game has been left. (veqryn)
+
 * Clearing cached data for Dynamix AI once a game has been left. (frigoref)
 
 * Fixed issue with battles showing who won twice in the history panel. (veqryn)

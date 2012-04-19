@@ -22,7 +22,7 @@ import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ui.NewGameChooser;
 import games.strategy.engine.framework.ui.NewGameChooserEntry;
 import games.strategy.engine.framework.ui.NewGameChooserModel;
-import games.strategy.triplea.ai.Dynamix_AI.CommandCenter.CachedInstanceCenter;
+import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 
 import java.awt.Component;
 import java.io.File;
@@ -224,9 +224,7 @@ public class GameSelectorModel extends Observable
 	public void loadDefaultGame(final Component ui)
 	{
 		// clear out dynamix's properties (this ended up being the best place to put it, as we have definitely left a game at this point)
-		CachedInstanceCenter.CachedBattleTracker = null;
-		CachedInstanceCenter.CachedGameData = null;
-		CachedInstanceCenter.CachedDelegateBridge = null;
+		Dynamix_AI.clearCachedGameDataAll();
 		loadDefaultGame(ui, false);
 	}
 	

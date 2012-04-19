@@ -33,6 +33,12 @@ public class UI
 		s_settingsWindow = new SettingsWindow(frame);
 	}
 	
+	public static void clearCachedInstances()
+	{
+		s_frame = null;
+		s_settingsWindow = null;
+	}
+	
 	private static TripleAFrame s_frame = null;
 	private static SettingsWindow s_settingsWindow = null;
 	
