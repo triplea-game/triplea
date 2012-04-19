@@ -33,7 +33,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.dataObjects.BattleRecords;
+import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
@@ -287,15 +287,15 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		if (m_bombingRaidTotal > 0)
 		{
 			m_whoWon = WhoWon.ATTACKER;
-			m_battleResultDescription = BattleRecords.BattleResultDescription.BOMBED;
+			m_battleResultDescription = BattleRecord.BattleResultDescription.BOMBED;
 		}
 		else
 		{
 			m_whoWon = WhoWon.DEFENDER;
-			m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
+			m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
 		}
-		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this),
-					m_bombingRaidTotal);
+		m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
+					new BattleResults(this, m_data), m_bombingRaidTotal);
 		m_isOver = true;
 	}
 	

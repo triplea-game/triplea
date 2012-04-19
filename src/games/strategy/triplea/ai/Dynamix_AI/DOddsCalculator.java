@@ -140,7 +140,7 @@ public class DOddsCalculator
 			battle.setHeadless(true);
 			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender);
 			battle.fight(bridge);
-			rVal.addResult(new BattleResults(battle));
+			rVal.addResult(new BattleResults(battle, s_dataForSimulation));
 			// Restore the game to its original state
 			new ChangePerformer(s_dataForSimulation).perform(allChanges.invert());
 			battleTracker.clear();

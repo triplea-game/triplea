@@ -14,7 +14,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.dataObjects.BattleRecords;
+import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
@@ -173,26 +173,27 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		{
 			m_whoWon = WhoWon.ATTACKER;
 			if (m_defendingUnits.isEmpty())
-				m_battleResultDescription = BattleRecords.BattleResultDescription.WON_WITHOUT_CONQUERING;
+				m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
 			else
-				m_battleResultDescription = BattleRecords.BattleResultDescription.WON_WITH_ENEMY_LEFT;
+				m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITH_ENEMY_LEFT;
 			text = "Air Battle is over, the remaining Bombers go on to their targets";
 		}
 		else if (!m_attackingUnits.isEmpty())
 		{
 			m_whoWon = WhoWon.DRAW;
-			m_battleResultDescription = BattleRecords.BattleResultDescription.STALEMATE;
+			m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
 			text = "Air Battle is over, the bombers have all died";
 		}
 		else
 		{
 			m_whoWon = WhoWon.DEFENDER;
-			m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
+			m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
 			text = "Air Battle is over, the bombers have all died";
 		}
 		bridge.getHistoryWriter().addChildToEvent(text);
 		
-		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this), 0);
+		m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
+					new BattleResults(this, m_data), 0);
 		m_battleTracker.removeBattle(StrategicBombingRaidPreBattle.this);
 		getDisplay(bridge).battleEnd(m_battleID, "Air Battle over");
 		m_isOver = true;

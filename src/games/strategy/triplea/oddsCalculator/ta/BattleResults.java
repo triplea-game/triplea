@@ -1,5 +1,7 @@
 package games.strategy.triplea.oddsCalculator.ta;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameDataComponent;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
@@ -9,7 +11,7 @@ import games.strategy.util.Match;
 import java.io.Serializable;
 import java.util.List;
 
-public class BattleResults implements Serializable
+public class BattleResults extends GameDataComponent implements Serializable
 {
 	private static final long serialVersionUID = 1381361441940258702L;
 	// private final int m_attackingUnitsLeft;
@@ -28,8 +30,9 @@ public class BattleResults implements Serializable
 	 * 
 	 * @param battle
 	 */
-	public BattleResults(final IBattle battle)
+	public BattleResults(final IBattle battle, final GameData data)
 	{
+		super(data);
 		// m_attackingUnitsLeft = battle.getRemainingAttackingUnits().size();
 		m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
 		// m_defendingUnitsLeft = battle.getRemainingDefendingUnits().size();
@@ -48,8 +51,9 @@ public class BattleResults implements Serializable
 	 * @param battle
 	 * @param scriptedWhoWon
 	 */
-	public BattleResults(final IBattle battle, final WhoWon scriptedWhoWon)
+	public BattleResults(final IBattle battle, final WhoWon scriptedWhoWon, final GameData data)
 	{
+		super(data);
 		m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
 		m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
 		m_battleRoundsFought = battle.getBattleRound();

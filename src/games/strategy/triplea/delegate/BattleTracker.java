@@ -37,8 +37,8 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.IBattle.WhoWon;
+import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.BattleRecords;
-import games.strategy.triplea.delegate.dataObjects.BattleRecords.BattleResultDescription;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CompositeMatch;
@@ -87,8 +87,7 @@ public class BattleTracker implements java.io.Serializable
 	// used to make sure that the same battleship doesn't bombard twice
 	private final Set<Territory> m_bombardedFromTerritories = new HashSet<Territory>();
 	private final Map<Territory, Collection<Unit>> m_defendingAirThatCanNotLand = new HashMap<Territory, Collection<Unit>>();
-	
-	private final BattleRecords m_battleRecords = new BattleRecords();
+	private BattleRecords m_battleRecords = null;
 	
 	/**
 	 * @param t
@@ -191,7 +190,10 @@ public class BattleTracker implements java.io.Serializable
 	
 	private void removeBattleForUndo(final PlayerID player, final IBattle battle)
 	{
-		m_battleRecords.removeBattle(player, battle.getBattleID());
+		if (m_battleRecords != null)
+		{
+			m_battleRecords.removeBattle(player, battle.getBattleID());
+		}
 		m_pendingBattles.remove(battle);
 		m_dependencies.remove(battle);
 		for (final Collection<IBattle> battles : m_dependencies.values())
@@ -261,7 +263,7 @@ public class BattleTracker implements java.io.Serializable
 		{
 			battle = new StrategicBombingRaidBattle(route.getEnd(), data, attacker, this);
 			m_pendingBattles.add(battle);
-			m_battleRecords.addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType());
+			getBattleRecords(data).addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType(), data);
 		}
 		final Change change = battle.addAttackChange(route, units, targets);
 		// when state is moved to the game data, this will change
@@ -282,7 +284,7 @@ public class BattleTracker implements java.io.Serializable
 		{
 			battle = new StrategicBombingRaidPreBattle(route.getEnd(), data, attacker, this);
 			m_pendingBattles.add(battle);
-			m_battleRecords.addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType());
+			getBattleRecords(data).addBattle(attacker, battle.getBattleID(), route.getEnd(), battle.getBattleType(), data);
 		}
 		final Change change = battle.addAttackChange(route, units, null);
 		// when state is moved to the game data, this will change
@@ -320,11 +322,11 @@ public class BattleTracker implements java.io.Serializable
 			IBattle nonFight = getPendingBattle(current, false);
 			if (nonFight == null)
 			{
-				nonFight = new FinishedBattle(current, id, this, false, BattleType.NORMAL, data, BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
+				nonFight = new FinishedBattle(current, id, this, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
 				m_pendingBattles.add(nonFight);
-				m_battleRecords.addBattle(id, nonFight.getBattleID(), current, nonFight.getBattleType());
+				getBattleRecords(data).addBattle(id, nonFight.getBattleID(), current, nonFight.getBattleType(), data);
 				// nonFight.fight(bridge);
-				// m_battleRecords.addResultToBattle(id, nonFight.getBattleID(), AbstractBattle.findDefender(current, id, data), 0, 0, nonFight.getBattleResultDescription(), new BattleResults(nonFight), 0);
+				// getBattleRecords(data).addResultToBattle(id, nonFight.getBattleID(), AbstractBattle.findDefender(current, id, data), 0, 0, nonFight.getBattleResultDescription(), new BattleResults(nonFight), 0);
 			}
 			takeOver(current, id, bridge, changeTracker, units);
 		}
@@ -349,9 +351,9 @@ public class BattleTracker implements java.io.Serializable
 				IBattle nonFight = getPendingBattle(route.getEnd(), false);
 				if (nonFight == null)
 				{
-					nonFight = new FinishedBattle(route.getEnd(), id, this, false, BattleType.NORMAL, data, BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
+					nonFight = new FinishedBattle(route.getEnd(), id, this, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
 					m_pendingBattles.add(nonFight);
-					m_battleRecords.addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType());
+					getBattleRecords(data).addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType(), data);
 				}
 				takeOver(route.getEnd(), id, bridge, changeTracker, units);
 			}
@@ -362,7 +364,7 @@ public class BattleTracker implements java.io.Serializable
 				{
 					nonFight = new NonFightingBattle(route.getEnd(), id, this, data);
 					m_pendingBattles.add(nonFight);
-					m_battleRecords.addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType());
+					getBattleRecords(data).addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType(), data);
 				}
 				final Change change = nonFight.addAttackChange(route, units, null);
 				bridge.addChange(change);
@@ -583,8 +585,8 @@ public class BattleTracker implements java.io.Serializable
 			final IBattle bombingBattle = getPendingBattle(territory, true);
 			if (bombingBattle != null)
 			{
-				final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW);
-				getBattleRecords().addResultToBattle(id, bombingBattle.getBattleID(), null, 0, 0, BattleRecords.BattleResultDescription.NO_BATTLE, results, 0);
+				final BattleResults results = new BattleResults(bombingBattle, WhoWon.DRAW, data);
+				getBattleRecords(data).addResultToBattle(id, bombingBattle.getBattleID(), null, 0, 0, BattleRecord.BattleResultDescription.NO_BATTLE, results, 0);
 				removeBattle(bombingBattle);
 				throw new IllegalStateException("Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
 			}
@@ -756,7 +758,7 @@ public class BattleTracker implements java.io.Serializable
 		{
 			battle = new MustFightBattle(site, id, data, this);
 			m_pendingBattles.add(battle);
-			m_battleRecords.addBattle(id, battle.getBattleID(), site, battle.getBattleType());
+			getBattleRecords(data).addBattle(id, battle.getBattleID(), site, battle.getBattleType(), data);
 		}
 		// Add the units that moved into the battle
 		final Change change = battle.addAttackChange(route, units, null);
@@ -933,11 +935,19 @@ public class BattleTracker implements java.io.Serializable
 	
 	public void clearBattleRecords()
 	{
-		m_battleRecords.clear();
+		if (m_battleRecords != null)
+		{
+			m_battleRecords.clear();
+			m_battleRecords = null;
+		}
 	}
 	
-	public BattleRecords getBattleRecords()
+	public BattleRecords getBattleRecords(final GameData data)
 	{
+		if (m_battleRecords == null)
+		{
+			m_battleRecords = new BattleRecords(data);
+		}
 		return m_battleRecords;
 	}
 	

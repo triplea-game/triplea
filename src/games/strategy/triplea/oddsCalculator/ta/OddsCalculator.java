@@ -98,7 +98,7 @@ public class OddsCalculator
 			battle.setHeadless(true);
 			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender);
 			battle.fight(bridge);
-			rVal.addResult(new BattleResults(battle));
+			rVal.addResult(new BattleResults(battle, m_data));
 			// restore the game to its original state
 			new ChangePerformer(m_data).perform(allChanges.invert());
 			battleTracker.clear();

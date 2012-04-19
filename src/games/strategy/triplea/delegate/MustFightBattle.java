@@ -34,7 +34,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.dataObjects.BattleRecords;
+import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
@@ -2403,10 +2403,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_whoWon = WhoWon.DEFENDER;
 		getDisplay(bridge).battleEnd(m_battleID, m_defender.getName() + " win");
 		bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " win", m_defendingUnits);
-		m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
+		m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
 		showCasualties(bridge);
 		if (!m_headless)
-			m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this), 0);
+			m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
+						new BattleResults(this, m_data), 0);
 		checkDefendingPlanesCanLand(bridge, m_defender);
 		BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null, m_defendingUnits);
 	}
@@ -2416,10 +2417,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_whoWon = WhoWon.DRAW;
 		getDisplay(bridge).battleEnd(m_battleID, "Stalemate");
 		bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " and " + m_attacker.getName() + " reach a stalemate");
-		m_battleResultDescription = BattleRecords.BattleResultDescription.STALEMATE;
+		m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
 		showCasualties(bridge);
 		if (!m_headless)
-			m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this), 0);
+			m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
+						new BattleResults(this, m_data), 0);
 	}
 	
 	/**
@@ -2626,11 +2628,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			m_battleTracker.addToConquered(m_battleSite);
 			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, m_attackingUnits);
-			m_battleResultDescription = BattleRecords.BattleResultDescription.CONQUERED;
+			m_battleResultDescription = BattleRecord.BattleResultDescription.CONQUERED;
 		}
 		else
 		{
-			m_battleResultDescription = BattleRecords.BattleResultDescription.WON_WITHOUT_CONQUERING;
+			m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITHOUT_CONQUERING;
 		}
 		// Clear the transported_by for successfully offloaded units
 		final Collection<Unit> transports = Match.getMatches(m_attackingUnits, Matches.UnitIsTransport);
@@ -2655,7 +2657,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " win", m_attackingUnits);
 		showCasualties(bridge);
 		if (!m_headless)
-			m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this), 0);
+			m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
+						new BattleResults(this, m_data), 0);
 	}
 	
 	public static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits, final Territory battleSite, final PlayerID attacker, final GameData data)
@@ -2777,8 +2780,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			m_attackerLostTUV += tuvLostAttacker;
 			m_whoWon = WhoWon.DEFENDER;
 			if (!m_headless)
-				m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, BattleRecords.BattleResultDescription.LOST,
-							new BattleResults(this), 0);
+				m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, BattleRecord.BattleResultDescription.LOST,
+							new BattleResults(this, m_data), 0);
 			m_battleTracker.removeBattle(this);
 		}
 	}

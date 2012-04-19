@@ -1,4 +1,6 @@
 Changes for 1.5.3
+* Moving BattleRecord to its own class, and having BattleRecord, BattleRecords, and BattleResults all extend GameDataComponent. (veqryn)
+
 * Possibly fixing the problems with Edit Mode, by fixing a previous refactoring that switched two variables up. (veqryn)
 
 * Possibly fixing the problems with Edit Mode, by abstracting BasePersistentDelegate and separating EditDelegate from BaseDelegate. (veqryn)

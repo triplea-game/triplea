@@ -2186,7 +2186,7 @@ public class DUtils
 	{
 		final MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
 		battle.setUnits(new ArrayList<Unit>(), attacking, new ArrayList<Unit>(), PlayerID.NULL_PLAYERID);
-		final BattleResults result = new BattleResults(battle, WhoWon.ATTACKER);
+		final BattleResults result = new BattleResults(battle, WhoWon.ATTACKER, data);
 		final AggregateResults dWins = new AggregateResults(1);
 		dWins.addResult(result);
 		return dWins;
@@ -2196,7 +2196,7 @@ public class DUtils
 	{
 		final MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
 		battle.setUnits(defending, new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID);
-		final BattleResults result = new BattleResults(battle, WhoWon.DEFENDER);
+		final BattleResults result = new BattleResults(battle, WhoWon.DEFENDER, data);
 		final AggregateResults dWins = new AggregateResults(1);
 		dWins.addResult(result);
 		return dWins;
@@ -2206,7 +2206,7 @@ public class DUtils
 	{
 		final MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
 		battle.setUnits(new ArrayList<Unit>(), new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID);
-		final BattleResults result = new BattleResults(battle, WhoWon.DRAW);
+		final BattleResults result = new BattleResults(battle, WhoWon.DRAW, data);
 		final AggregateResults dWins = new AggregateResults(1);
 		dWins.addResult(result);
 		return dWins;

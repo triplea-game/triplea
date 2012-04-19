@@ -26,7 +26,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
-import games.strategy.triplea.delegate.dataObjects.BattleRecords;
+import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.CompositeMatch;
@@ -81,16 +81,17 @@ public class NonFightingBattle extends AbstractBattle
 		if (someAttacking)
 		{
 			m_whoWon = WhoWon.ATTACKER;
-			m_battleResultDescription = BattleRecords.BattleResultDescription.BLITZED;
+			m_battleResultDescription = BattleRecord.BattleResultDescription.BLITZED;
 			m_battleTracker.takeOver(m_battleSite, m_attacker, bridge, null, null);
 			m_battleTracker.addToConquered(m_battleSite);
 		}
 		else
 		{
 			m_whoWon = WhoWon.DEFENDER;
-			m_battleResultDescription = BattleRecords.BattleResultDescription.LOST;
+			m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
 		}
-		m_battleTracker.getBattleRecords().addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription, new BattleResults(this), 0);
+		m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
+					new BattleResults(this, m_data), 0);
 		end();
 	}
 	
