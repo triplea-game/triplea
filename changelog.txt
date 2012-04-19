@@ -1,4 +1,6 @@
 Changes for 1.5.3
+* Clearing cached data for Dynamix AI once a game has been left. (frigoref)
+
 * Fixed issue with battles showing who won twice in the history panel. (veqryn)
 
 * Moving BattleRecord to its own class, and having BattleRecord, BattleRecords, and BattleResults all extend GameDataComponent. (veqryn)
