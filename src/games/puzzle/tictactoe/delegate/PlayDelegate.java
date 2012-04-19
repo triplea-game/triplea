@@ -136,9 +136,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 }
 
 
-@SuppressWarnings("serial")
 class TicTacToePlayExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = 8544940313546397365L;
 	Serializable superState;
 	// add other variables here:
 }

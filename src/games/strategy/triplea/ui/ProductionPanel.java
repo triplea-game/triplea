@@ -63,6 +63,7 @@ import javax.swing.border.EtchedBorder;
  */
 public class ProductionPanel extends JPanel
 {
+	private static final long serialVersionUID = -1539053979479586609L;
 	private JFrame m_owner;
 	private JDialog m_dialog;
 	// Edwin: made these protected so the class can be extended
@@ -114,6 +115,8 @@ public class ProductionPanel extends JPanel
 		m_dialog.getContentPane().add(this);
 		final Action closeAction = new AbstractAction("")
 		{
+			private static final long serialVersionUID = -3984693668306307869L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_dialog.setVisible(false);
@@ -193,6 +196,8 @@ public class ProductionPanel extends JPanel
 	
 	Action m_done_action = new AbstractAction("Done")
 	{
+		private static final long serialVersionUID = -72826856616395760L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_dialog.setVisible(false);

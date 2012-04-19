@@ -502,9 +502,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 }
 
 
-@SuppressWarnings("serial")
 class KingsTablePlayExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = 8227905090355825327L;
 	Serializable superState;
 	// add other variables here:
 }

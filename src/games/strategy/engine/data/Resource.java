@@ -23,9 +23,10 @@ package games.strategy.engine.data;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class Resource extends NamedAttachable
 {
+	private static final long serialVersionUID = 7471431759007499935L;
+	
 	/**
 	 * Creates new Resource
 	 * 

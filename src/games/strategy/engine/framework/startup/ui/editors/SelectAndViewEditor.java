@@ -34,6 +34,7 @@ import javax.swing.JScrollPane;
  */
 public class SelectAndViewEditor extends EditorPanel
 {
+	private static final long serialVersionUID = 1580648148539524876L;
 	// -----------------------------------------------------------------------
 	// instance fields
 	// -----------------------------------------------------------------------

@@ -21,9 +21,9 @@ import java.util.List;
  * @author unascribed
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class TechResults implements java.io.Serializable
 {
+	private static final long serialVersionUID = 5574673305892105782L;
 	private int[] m_rolls;
 	private int m_hits;
 	private int m_remainder = 0;

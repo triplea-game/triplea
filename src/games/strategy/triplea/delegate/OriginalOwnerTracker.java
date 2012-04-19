@@ -43,6 +43,8 @@ import java.util.Collection;
  */
 public class OriginalOwnerTracker implements java.io.Serializable
 {
+	private static final long serialVersionUID = 8462432412106180906L;
+	
 	/** Creates new OriginalOwnerTracker */
 	public OriginalOwnerTracker()
 	{

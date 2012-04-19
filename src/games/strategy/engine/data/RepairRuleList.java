@@ -27,9 +27,9 @@ import java.util.Map;
  * @author Kevin Comcowich
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class RepairRuleList extends GameDataComponent
 {
+	private static final long serialVersionUID = 8153102637443800391L;
 	private final Map<String, RepairRule> m_repairRules = new HashMap<String, RepairRule>();
 	
 	public RepairRuleList(final GameData data)

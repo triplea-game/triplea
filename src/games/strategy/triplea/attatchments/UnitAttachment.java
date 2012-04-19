@@ -59,9 +59,10 @@ import java.util.Set;
  * @author Sean Bridges and Mark Christopher Duncan
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class UnitAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = -2946748686268541820L;
+	
 	/**
 	 * Convenience method.
 	 */

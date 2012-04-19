@@ -1238,9 +1238,9 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 }
 
 
-@SuppressWarnings("serial")
 class BattleExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = 7899007486408723505L;
 	Serializable superState;
 	// add other variables here:
 	public BattleTracker m_battleTracker = new BattleTracker();

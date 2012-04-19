@@ -37,6 +37,8 @@ import java.util.Collection;
  */
 public class TechTracker implements java.io.Serializable
 {
+	private static final long serialVersionUID = 4705039229340373735L;
+	
 	/** Creates new TechTracker */
 	public TechTracker()
 	{

@@ -36,9 +36,9 @@ import java.util.Iterator;
  * @author Edwin van der Wal
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class TerritoryEffectAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = 6379810228136325991L;
 	private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<UnitType>();
 	private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<UnitType>();
 	private ArrayList<UnitType> m_noBlitz = new ArrayList<UnitType>();

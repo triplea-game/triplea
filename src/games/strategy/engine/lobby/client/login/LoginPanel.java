@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities;
 
 public class LoginPanel extends JPanel
 {
+	private static final long serialVersionUID = -1115199161238394717L;
 	private final static Logger s_logger = Logger.getLogger(LoginPanel.class.getName());
 	
 	
@@ -150,6 +151,8 @@ public class LoginPanel extends JPanel
 		// close when hitting the escape key
 		final Action enterAction = new AbstractAction()
 		{
+			private static final long serialVersionUID = 4248565786079247230L;
+			
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				logonPressed();

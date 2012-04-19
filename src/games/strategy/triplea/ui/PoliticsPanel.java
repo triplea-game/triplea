@@ -53,9 +53,9 @@ import javax.swing.SwingUtilities;
  * @author Edwin van der Wal
  * 
  */
-@SuppressWarnings("serial")
 public class PoliticsPanel extends ActionPanel
 {
+	private static final long serialVersionUID = -4661479948450261578L;
 	private final JLabel m_actionLabel = new JLabel();
 	private JButton m_selectPoliticalActionButton = null;
 	private JButton m_doneButton = null;
@@ -147,6 +147,8 @@ public class PoliticsPanel extends ActionPanel
 	 */
 	private final Action SelectPoliticalActionAction = new AbstractAction("Do Politics...")
 	{
+		private static final long serialVersionUID = 3906101150281154032L;
+		
 		public void actionPerformed(final ActionEvent event)
 		{
 			final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
@@ -187,6 +189,8 @@ public class PoliticsPanel extends ActionPanel
 			
 			final JButton noActionButton = new JButton(new AbstractAction("No Actions")
 			{
+				private static final long serialVersionUID = -5979922310580413800L;
+				
 				public void actionPerformed(final ActionEvent arg0)
 				{
 					politicalChoiceDialog.setVisible(false);
@@ -243,6 +247,8 @@ public class PoliticsPanel extends ActionPanel
 	 */
 	private final Action DontBotherAction = new AbstractAction("Done")
 	{
+		private static final long serialVersionUID = 5975405674090929150L;
+		
 		public void actionPerformed(final ActionEvent event)
 		{
 			if (!m_firstRun || youSureDoNothing())

@@ -111,9 +111,9 @@ public class InitializationDelegate extends BaseDelegate
 }
 
 
-@SuppressWarnings("serial")
 class KingsTableInitializationExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = -3197858177470882249L;
 	Serializable superState;
 	// add other variables here:
 }

@@ -57,6 +57,7 @@ import javax.swing.SwingUtilities;
 
 public class OddsCalculatorPanel extends JPanel
 {
+	private static final long serialVersionUID = -3559687618320469183L;
 	private final Window m_parent;
 	private JLabel m_attackerWin;
 	private JLabel m_defenderWin;
@@ -245,6 +246,8 @@ public class OddsCalculatorPanel extends JPanel
 		final OddsCalculator calculator = new OddsCalculator();
 		final WaitDialog dialog = new WaitDialog(this, "Calculating Odds", new AbstractAction()
 		{
+			private static final long serialVersionUID = -2148507015083214974L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				calculator.cancel();
@@ -469,6 +472,8 @@ public class OddsCalculatorPanel extends JPanel
 	
 	class PlayerRenderer extends DefaultListCellRenderer
 	{
+		private static final long serialVersionUID = -7639128794342607309L;
+		
 		@Override
 		public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
 		{
@@ -502,6 +507,7 @@ public class OddsCalculatorPanel extends JPanel
 
 class PlayerUnitsPanel extends JPanel
 {
+	private static final long serialVersionUID = -1206338960403314681L;
 	private final GameData m_data;
 	private final UIContext m_context;
 	private final boolean m_defender;
@@ -643,6 +649,7 @@ class PlayerUnitsPanel extends JPanel
 
 class UnitPanel extends JPanel
 {
+	private static final long serialVersionUID = 1509643150038705671L;
 	private final UIContext m_context;
 	private final UnitCategory m_category;
 	private final ScrollableTextField m_textField;

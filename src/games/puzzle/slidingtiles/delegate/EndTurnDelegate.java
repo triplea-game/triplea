@@ -146,9 +146,9 @@ public class EndTurnDelegate extends BaseDelegate
 }
 
 
-@SuppressWarnings("serial")
 class SlidingTilesEndTurnExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = 8240451114219646419L;
 	Serializable superState;
 	// add other variables here:
 }

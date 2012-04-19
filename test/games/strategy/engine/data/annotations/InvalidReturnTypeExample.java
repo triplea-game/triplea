@@ -12,6 +12,8 @@ import games.strategy.engine.data.GameParseException;
  */
 public class InvalidReturnTypeExample extends DefaultAttachment
 {
+	private static final long serialVersionUID = -4598237822854346073L;
+	
 	protected InvalidReturnTypeExample(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);

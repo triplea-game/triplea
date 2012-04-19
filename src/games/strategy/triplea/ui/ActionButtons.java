@@ -48,6 +48,7 @@ import javax.swing.SwingUtilities;
  */
 public class ActionButtons extends JPanel
 {
+	private static final long serialVersionUID = 2175685892863042399L;
 	private final CardLayout m_layout = new CardLayout();
 	private BattlePanel m_battlePanel;
 	private MovePanel m_movePanel;

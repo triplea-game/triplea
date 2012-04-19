@@ -10,6 +10,7 @@ import java.util.TreeSet;
 
 public class BanPlayerAction extends AbstractAction
 {
+	private static final long serialVersionUID = -2415917785233191860L;
 	private final Component m_parent;
 	private final IServerMessenger m_messenger;
 	

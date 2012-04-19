@@ -8,6 +8,7 @@ import javax.swing.AbstractAction;
 
 public class RemoveGameFromLobbyAction extends AbstractAction
 {
+	private static final long serialVersionUID = 8802420945692279375L;
 	private final InGameLobbyWatcher m_lobbyWatcher;
 	
 	public RemoveGameFromLobbyAction(final InGameLobbyWatcher watcher)

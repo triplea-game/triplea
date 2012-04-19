@@ -119,9 +119,9 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 }
 
 
-@SuppressWarnings("serial")
 class BidPurchaseExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = 6896164200767186673L;
 	Serializable superState;
 	// add other variables here:
 	int m_bid;

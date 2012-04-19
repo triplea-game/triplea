@@ -21,6 +21,7 @@ public class DiceServerEditor extends EditorPanel
 	// instance fields
 	// -----------------------------------------------------------------------
 	
+	private static final long serialVersionUID = -451810815037661114L;
 	private final JButton m_testDiceyButton = new JButton("Test Server");
 	private final JTextField m_toAddress = new JTextField();
 	private final JTextField m_ccAddress = new JTextField();

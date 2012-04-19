@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 public abstract class SetupPanel extends JPanel
 {
+	private static final long serialVersionUID = 4001323470187210773L;
 	private final List<Observer> m_listeners = new CopyOnWriteArrayList<Observer>();
 	
 	public void addObserver(final Observer observer)

@@ -33,6 +33,7 @@ import javax.swing.ScrollPaneConstants;
 
 public class DiceChooser extends JPanel
 {
+	private static final long serialVersionUID = -3658408802544268998L;
 	private final UIContext m_uiContext;
 	private JPanel m_dicePanel;
 	private final int[] m_random;
@@ -125,6 +126,8 @@ public class DiceChooser extends JPanel
 			final DieType dieType = hit ? DieType.HIT : DieType.MISS;
 			final JButton button = new JButton(new AbstractAction(null, m_uiContext.getDiceImageFactory().getDieIcon(roll, dieType))
 			{
+				private static final long serialVersionUID = 8900816143434068634L;
+				
 				public void actionPerformed(final ActionEvent event)
 				{
 					addDie(dieNum);
@@ -137,6 +140,8 @@ public class DiceChooser extends JPanel
 		diceButtonPanel.add(Box.createHorizontalStrut(4));
 		m_undoButton = new JButton(new AbstractAction("Undo")
 		{
+			private static final long serialVersionUID = 9096980607403511853L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				removeLastDie();

@@ -19,6 +19,7 @@ package games.strategy.engine.history;
  */
 public abstract class IndexedHistoryNode extends HistoryNode
 {
+	private static final long serialVersionUID = 607716179473453685L;
 	// points to the first change we are responsible for
 	private final int m_changeStartIndex;
 	// points after the last change we are responsible for

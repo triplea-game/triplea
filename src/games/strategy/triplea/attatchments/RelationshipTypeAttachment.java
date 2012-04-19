@@ -34,9 +34,9 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
 
-@SuppressWarnings("serial")
 public class RelationshipTypeAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = -4367286684249791984L;
 	public static final String ARCHETYPE_NEUTRAL = Constants.RELATIONSHIP_ARCHETYPE_NEUTRAL;
 	public static final String ARCHETYPE_WAR = Constants.RELATIONSHIP_ARCHETYPE_WAR;
 	public static final String ARCHETYPE_ALLIED = Constants.RELATIONSHIP_ARCHETYPE_ALLIED;

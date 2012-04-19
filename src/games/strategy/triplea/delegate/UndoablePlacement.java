@@ -31,9 +31,9 @@ import java.util.Map;
  * 
  * @author Erik von der Osten
  */
-@SuppressWarnings("serial")
 class UndoablePlacement extends AbstractUndoableMove
 {
+	private static final long serialVersionUID = -1493488646587233451L;
 	final Territory m_placeTerritory;
 	Territory m_producerTerritory;
 	PlayerID m_player;

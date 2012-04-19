@@ -44,6 +44,7 @@ import java.util.Set;
  */
 public class KingsTable implements IGameLoader
 {
+	private static final long serialVersionUID = -4160546942612903442L;
 	// When serializing, do not save transient member variables
 	private transient KingsTableDisplay m_display;
 	private transient IGame m_game;

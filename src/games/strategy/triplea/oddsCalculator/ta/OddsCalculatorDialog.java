@@ -21,6 +21,7 @@ import javax.swing.KeyStroke;
 
 public class OddsCalculatorDialog extends JDialog
 {
+	private static final long serialVersionUID = -7625420355087851930L;
 	private final OddsCalculatorPanel m_panel;
 	
 	public static void show(final TripleAFrame taFrame, final Territory t)
@@ -43,6 +44,8 @@ public class OddsCalculatorDialog extends JDialog
 		final KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		final Action closeAction = new AbstractAction()
 		{
+			private static final long serialVersionUID = 8426179963957717432L;
+			
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				dialog.setVisible(false);

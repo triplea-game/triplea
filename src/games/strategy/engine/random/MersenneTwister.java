@@ -91,6 +91,7 @@ import java.io.Serializable;
  */
 public class MersenneTwister extends java.util.Random implements Serializable
 {
+	private static final long serialVersionUID = -6946159560323874784L;
 	// Period parameters
 	private static final int N = 624;
 	private static final int M = 397;

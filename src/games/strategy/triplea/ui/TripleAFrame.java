@@ -155,6 +155,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public class TripleAFrame extends MainGameFrame // extends JFrame
 {
+	private static final long serialVersionUID = 7640069668264418976L;
 	private GameData m_data;
 	private IGame m_game;
 	private MapPanel m_mapPanel;

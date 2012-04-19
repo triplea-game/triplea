@@ -39,9 +39,9 @@ import javax.swing.JPanel;
  * A Simple panel that displays a list of units.
  * 
  */
-@SuppressWarnings("serial")
 public class SimpleUnitPanel extends JPanel
 {
+	private static final long serialVersionUID = -3768796793775300770L;
 	private final UIContext m_uiContext;
 	
 	public SimpleUnitPanel(final UIContext uiContext)

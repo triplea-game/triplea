@@ -25,9 +25,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-@SuppressWarnings("serial")
 public class PropertiesUI extends JPanel
 {
+	private static final long serialVersionUID = 3870459799384582310L;
 	private final List<IEditableProperty> m_properties;
 	private int m_nextRow;
 	private int m_labelColumn;

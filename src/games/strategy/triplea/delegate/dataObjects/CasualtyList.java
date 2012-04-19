@@ -29,9 +29,9 @@ import java.util.List;
  * @author Mark Christopher Duncan (veqryn)
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class CasualtyList implements Serializable
 {
+	private static final long serialVersionUID = 6501752134047891398L;
 	protected List<Unit> m_killed;
 	protected List<Unit> m_damaged;
 	

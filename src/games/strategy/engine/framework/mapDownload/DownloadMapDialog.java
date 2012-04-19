@@ -28,9 +28,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-@SuppressWarnings("serial")
 public class DownloadMapDialog extends JDialog
 {
+	private static final long serialVersionUID = -4719699814187468325L;
 	private JComboBox m_urlComboBox;
 	private JButton m_listGamesButton;
 	private JButton m_cancelButton;
@@ -83,6 +83,8 @@ public class DownloadMapDialog extends JDialog
 	{
 		m_cancelButton.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = 1410141388231981589L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				setVisible(false);
@@ -90,6 +92,8 @@ public class DownloadMapDialog extends JDialog
 		});
 		m_listGamesButton.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = -9051243018211311068L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				final String selectedUrl = (String) m_urlComboBox.getSelectedItem();
@@ -125,6 +129,8 @@ public class DownloadMapDialog extends JDialog
 		});
 		m_findMapsButton.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = -4644282981460989512L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				try

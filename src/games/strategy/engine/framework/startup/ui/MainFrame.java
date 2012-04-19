@@ -33,6 +33,7 @@ import javax.swing.SwingUtilities;
  */
 public class MainFrame extends JFrame
 {
+	private static final long serialVersionUID = -4816544699469097329L;
 	// a hack, till i think of something better
 	private static MainFrame s_instance;
 	

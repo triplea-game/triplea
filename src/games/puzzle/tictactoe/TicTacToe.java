@@ -44,6 +44,7 @@ import javax.swing.SwingUtilities;
  */
 public class TicTacToe implements IGameLoader
 {
+	private static final long serialVersionUID = 6817825634310618978L;
 	// When serializing, do not save transient member variables
 	private transient TicTacToeDisplay m_display;
 	private transient IGame m_game;

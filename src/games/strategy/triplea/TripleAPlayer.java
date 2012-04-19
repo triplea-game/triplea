@@ -154,6 +154,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private final AbstractAction m_editModeAction = new AbstractAction()
 	{
+		private static final long serialVersionUID = -8076017427171022731L;
+		
 		public void actionPerformed(final ActionEvent ae)
 		{
 			final boolean editMode = ((ButtonModel) ae.getSource()).isSelected();

@@ -60,9 +60,10 @@ public class ColorProperty extends AEditableProperty
 	
 	public JComponent getEditorComponent()
 	{
-		@SuppressWarnings("serial")
 		final JLabel label = new JLabel(" ")
 		{
+			private static final long serialVersionUID = 3833935337866905836L;
+			
 			@Override
 			public void paintComponent(final Graphics g)
 			{

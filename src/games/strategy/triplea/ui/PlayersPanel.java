@@ -35,6 +35,7 @@ import javax.swing.JPanel;
  */
 public class PlayersPanel extends JPanel
 {
+	private static final long serialVersionUID = 9177417134839960231L;
 	private final PlayerManager m_players;
 	private final UIContext m_uiContext;
 	

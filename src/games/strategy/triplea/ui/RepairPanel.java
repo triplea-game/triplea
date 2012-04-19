@@ -46,6 +46,7 @@ import javax.swing.SwingUtilities;
  */
 public class RepairPanel extends ActionPanel
 {
+	private static final long serialVersionUID = 3045997038627313714L;
 	private final JLabel actionLabel = new JLabel();
 	private HashMap<Unit, IntegerMap<RepairRule>> m_repair;
 	private boolean m_bid;
@@ -120,6 +121,8 @@ public class RepairPanel extends ActionPanel
 	
 	private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy")
 	{
+		private static final long serialVersionUID = 5572043262815077402L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			final PlayerID player = getCurrentPlayer();
@@ -156,6 +159,8 @@ public class RepairPanel extends ActionPanel
 	
 	private final Action DoneAction = new AbstractAction("Done")
 	{
+		private static final long serialVersionUID = -2002286381161651398L;
+		
 		public void actionPerformed(final ActionEvent event)
 		{
 			final boolean hasPurchased = getTotalValues(m_repair) != 0;

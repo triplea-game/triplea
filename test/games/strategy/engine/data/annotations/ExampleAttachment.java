@@ -20,6 +20,7 @@ public class ExampleAttachment extends DefaultAttachment
 	// instance fields
 	// -----------------------------------------------------------------------
 	
+	private static final long serialVersionUID = -5820318094331518742L;
 	private int m_techCost;
 	private boolean m_heavyBomber;
 	private String m_attribute;

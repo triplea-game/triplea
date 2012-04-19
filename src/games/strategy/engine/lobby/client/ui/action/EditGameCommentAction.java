@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 public class EditGameCommentAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1723950003185387843L;
 	private final InGameLobbyWatcher m_lobbyWatcher;
 	private final Component m_parent;
 	

@@ -109,9 +109,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author sgb
  * 
  */
-@SuppressWarnings("serial")
 public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 {
+	private static final long serialVersionUID = 987243661147503593L;
 	private JCheckBoxMenuItem showMapDetails;
 	private JCheckBoxMenuItem showMapBlends;
 	

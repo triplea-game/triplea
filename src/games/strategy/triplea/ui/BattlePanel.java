@@ -71,9 +71,9 @@ import javax.swing.WindowConstants;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class BattlePanel extends ActionPanel
 {
+	private static final long serialVersionUID = 5304208569738042592L;
 	private final JLabel m_actionLabel = new JLabel();
 	private FightBattleDetails m_fightBattleMessage;
 	private volatile BattleDisplay m_battleDisplay;
@@ -584,6 +584,7 @@ public class BattlePanel extends ActionPanel
 	
 	class CenterBattleAction extends AbstractAction
 	{
+		private static final long serialVersionUID = -5071133874755970334L;
 		Territory m_territory;
 		
 		CenterBattleAction(final Territory battleSite)
@@ -644,6 +645,7 @@ public class BattlePanel extends ActionPanel
 
 	class FightBattleAction extends AbstractAction
 	{
+		private static final long serialVersionUID = 5510976406003707776L;
 		Territory m_territory;
 		boolean m_bomb;
 		
@@ -672,6 +674,7 @@ public class BattlePanel extends ActionPanel
 	
 	private class BombardComponent extends JPanel
 	{
+		private static final long serialVersionUID = -2388895995673156507L;
 		private final JList m_list;
 		
 		BombardComponent(final Unit unit, final Territory unitTerritory, final Collection<Territory> territories, final boolean noneAvailable)

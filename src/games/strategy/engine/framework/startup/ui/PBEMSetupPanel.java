@@ -39,6 +39,8 @@ import javax.swing.border.TitledBorder;
 public class PBEMSetupPanel extends SetupPanel implements Observer
 {
 	
+	private static final long serialVersionUID = 9006941131918034674L;
+	
 	// -----------------------------------------------------------------------
 	// class fields
 	// -----------------------------------------------------------------------

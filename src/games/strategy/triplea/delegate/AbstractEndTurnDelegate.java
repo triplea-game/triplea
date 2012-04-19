@@ -355,9 +355,9 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 }
 
 
-@SuppressWarnings("serial")
 class EndTurnExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = -3939461840835898284L;
 	Serializable superState;
 	// add other variables here:
 	public boolean m_needToInitialize;

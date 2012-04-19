@@ -165,9 +165,9 @@ public class TechActivationDelegate extends BaseDelegate
 }
 
 
-@SuppressWarnings("serial")
 class TechActivationExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = 1742776261442260882L;
 	Serializable superState;
 	// add other variables here:
 	public boolean m_needToInitialize;

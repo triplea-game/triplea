@@ -59,6 +59,7 @@ import javax.swing.border.EmptyBorder;
 
 public class EditPanel extends ActionPanel
 {
+	private static final long serialVersionUID = 5043639777373556106L;
 	private TripleAFrame m_frame;
 	private Action m_addUnitsAction;
 	private Action m_delUnitsAction;
@@ -81,6 +82,8 @@ public class EditPanel extends ActionPanel
 		m_actionLabel = new JLabel();
 		m_addUnitsAction = new AbstractAction("Add Units")
 		{
+			private static final long serialVersionUID = 2205085537962024476L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -91,6 +94,8 @@ public class EditPanel extends ActionPanel
 		};
 		m_delUnitsAction = new AbstractAction("Remove Selected Units")
 		{
+			private static final long serialVersionUID = 5127470604727907906L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -151,6 +156,8 @@ public class EditPanel extends ActionPanel
 		};
 		m_changeTerritoryOwnerAction = new AbstractAction("Change Territory Owner")
 		{
+			private static final long serialVersionUID = 8547635747553626362L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -561,6 +568,8 @@ public class EditPanel extends ActionPanel
 	};
 	private final AbstractAction CANCEL_EDIT_ACTION = new AbstractAction("Cancel")
 	{
+		private static final long serialVersionUID = 6394987295241603443L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_selectedTerritory = null;

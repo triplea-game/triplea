@@ -69,6 +69,7 @@ import javax.swing.border.EtchedBorder;
  */
 public class ProductionRepairPanel extends JPanel
 {
+	private static final long serialVersionUID = -6344711064699083729L;
 	private JFrame m_owner;
 	private JDialog m_dialog;
 	private final UIContext m_uiContext;
@@ -125,6 +126,8 @@ public class ProductionRepairPanel extends JPanel
 		m_dialog.getContentPane().add(this);
 		final Action closeAction = new AbstractAction("")
 		{
+			private static final long serialVersionUID = 2832491642574528614L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_dialog.setVisible(false);
@@ -245,6 +248,8 @@ public class ProductionRepairPanel extends JPanel
 	
 	Action m_done_action = new AbstractAction("Done")
 	{
+		private static final long serialVersionUID = 8547016018558520143L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_dialog.setVisible(false);
@@ -307,9 +312,9 @@ public class ProductionRepairPanel extends JPanel
 	}
 	
 	
-	@SuppressWarnings("serial")
 	public class Rule extends JPanel
 	{
+		private static final long serialVersionUID = -6781214135310064908L;
 		private final ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
 		private final IntegerMap<Resource> m_cost;
 		private final RepairRule m_rule;

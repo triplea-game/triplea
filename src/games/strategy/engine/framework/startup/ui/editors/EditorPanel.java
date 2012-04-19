@@ -17,6 +17,7 @@ import java.beans.PropertyChangeListener;
  */
 public abstract class EditorPanel extends JPanel
 {
+	private static final long serialVersionUID = 8156959717037201321L;
 	public static final String EDITOR_CHANGE = "EditorChange";
 	// -----------------------------------------------------------------------
 	// instance fields

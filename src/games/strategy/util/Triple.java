@@ -2,6 +2,7 @@ package games.strategy.util;
 
 public class Triple<F, S, T> extends Tuple<F, S>
 {
+	private static final long serialVersionUID = 4326718231392107904L;
 	private final T m_third;
 	
 	public Triple(final F first, final S second, final T third)

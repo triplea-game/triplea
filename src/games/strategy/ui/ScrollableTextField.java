@@ -41,6 +41,8 @@ import javax.swing.JPanel;
  */
 public class ScrollableTextField extends JPanel
 {
+	private static final long serialVersionUID = 6940592988573672224L;
+	
 	public static void main(final String[] args)
 	{
 		final JFrame frame = new JFrame();
@@ -176,6 +178,8 @@ public class ScrollableTextField extends JPanel
 	
 	private final Action m_incrementAction = new AbstractAction("inc")
 	{
+		private static final long serialVersionUID = 2125871167112459475L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_text.setValue(m_text.getValue() + 1);
@@ -184,6 +188,8 @@ public class ScrollableTextField extends JPanel
 	};
 	private final Action m_decrementAction = new AbstractAction("dec")
 	{
+		private static final long serialVersionUID = 787758939168986726L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_text.setValue(m_text.getValue() - 1);
@@ -192,6 +198,8 @@ public class ScrollableTextField extends JPanel
 	};
 	private final Action m_maxAction = new AbstractAction("max")
 	{
+		private static final long serialVersionUID = -3899827439573519512L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_text.setValue(m_text.getMax());
@@ -200,6 +208,8 @@ public class ScrollableTextField extends JPanel
 	};
 	private final Action m_minAction = new AbstractAction("min")
 	{
+		private static final long serialVersionUID = 5785321239855254848L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			m_text.setValue(m_text.getMin());

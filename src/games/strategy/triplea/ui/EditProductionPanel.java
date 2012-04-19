@@ -41,6 +41,8 @@ import javax.swing.JFrame;
  */
 public class EditProductionPanel extends ProductionPanel
 {
+	private static final long serialVersionUID = 5826523459539469173L;
+	
 	public static IntegerMap<ProductionRule> getProduction(final PlayerID id, final JFrame parent, final GameData data, final UIContext context)
 	{
 		return new EditProductionPanel(context).show(id, parent, data, false, new IntegerMap<ProductionRule>());

@@ -30,6 +30,8 @@ import javax.swing.JScrollPane;
  */
 public class TicTacToeMenu extends BasicGameMenuBar<TicTacToeFrame>
 {
+	private static final long serialVersionUID = 1378128476597319634L;
+	
 	public TicTacToeMenu(final TicTacToeFrame frame)
 	{
 		super(frame);
@@ -48,6 +50,8 @@ public class TicTacToeMenu extends BasicGameMenuBar<TicTacToeFrame>
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{
+			private static final long serialVersionUID = 3734484281045120725L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string

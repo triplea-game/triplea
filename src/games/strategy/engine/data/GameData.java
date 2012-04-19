@@ -70,9 +70,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class GameData implements java.io.Serializable
 {
+	private static final long serialVersionUID = -2612710634080125728L;
 	public static final String GAME_UUID = "GAME_UUID";
 	private final ReadWriteLock m_readWriteLock = new ReentrantReadWriteLock();
 	private volatile transient boolean m_forceInSwingEventThread = false;

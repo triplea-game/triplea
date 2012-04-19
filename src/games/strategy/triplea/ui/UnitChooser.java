@@ -55,9 +55,9 @@ import javax.swing.JTextArea;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class UnitChooser extends JPanel
 {
+	private static final long serialVersionUID = -4667032237550267682L;
 	private final List<ChooserEntry> m_entries = new ArrayList<ChooserEntry>();
 	private final Map<Unit, Collection<Unit>> m_dependents;
 	private JTextArea m_title;
@@ -557,9 +557,9 @@ class ChooserEntry
 	}
 	
 	
-	@SuppressWarnings("serial")
 	class UnitChooserEntryIcon extends JComponent
 	{
+		private static final long serialVersionUID = 591598594559651745L;
 		private final boolean m_forceDamaged;
 		private final UIContext m_uiContext;
 		

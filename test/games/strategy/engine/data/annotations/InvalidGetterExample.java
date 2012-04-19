@@ -12,6 +12,8 @@ import games.strategy.engine.data.GameParseException;
  */
 public class InvalidGetterExample extends DefaultAttachment
 {
+	private static final long serialVersionUID = 8284101951970184012L;
+	
 	protected InvalidGetterExample(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);

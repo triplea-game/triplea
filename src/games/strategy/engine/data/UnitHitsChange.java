@@ -19,9 +19,9 @@ import games.strategy.util.Util;
 import java.util.Collection;
 import java.util.Set;
 
-@SuppressWarnings("serial")
 public class UnitHitsChange extends Change
 {
+	private static final long serialVersionUID = 2862726651812142713L;
 	private final IntegerMap<Unit> m_hits;
 	private final IntegerMap<Unit> m_undoHits;
 	

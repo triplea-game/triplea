@@ -47,6 +47,7 @@ import javax.swing.SwingUtilities;
  */
 public class PlacePanel extends AbstractMovePanel
 {
+	private static final long serialVersionUID = -4411301492537704785L;
 	private final JLabel actionLabel = new JLabel();
 	private final JLabel m_leftToPlaceLabel = new JLabel();
 	private PlaceData m_placeData;

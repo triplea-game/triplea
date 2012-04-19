@@ -53,6 +53,7 @@ import javax.swing.SpinnerNumberModel;
 
 public class LobbyFrame extends JFrame
 {
+	private static final long serialVersionUID = -388371674076362572L;
 	private final LobbyClient m_client;
 	private final ChatMessagePanel m_chatMessagePanel;
 	
@@ -133,6 +134,8 @@ public class LobbyFrame extends JFrame
 		final List<Action> rVal = new ArrayList<Action>();
 		rVal.add(new AbstractAction("Boot " + clickedOn.getName())
 		{
+			private static final long serialVersionUID = -114807409972939767L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (!confirm("Boot " + clickedOn.getName()))
@@ -144,6 +147,8 @@ public class LobbyFrame extends JFrame
 		});
 		rVal.add(new AbstractAction("Ban Player")
 		{
+			private static final long serialVersionUID = -762959953993138146L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final List<String> banTypes = new ArrayList<String>();
@@ -220,6 +225,8 @@ public class LobbyFrame extends JFrame
 		});
 		rVal.add(new AbstractAction("Mute Player")
 		{
+			private static final long serialVersionUID = -4909591469708896401L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final List<String> muteTypes = new ArrayList<String>();
@@ -294,6 +301,8 @@ public class LobbyFrame extends JFrame
 		});
 		rVal.add(new AbstractAction("Quick Mute")
 		{
+			private static final long serialVersionUID = -6078034907743976564L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final JLabel label = new JLabel("How many minutes should this player be muted?");
@@ -320,6 +329,8 @@ public class LobbyFrame extends JFrame
 		});
 		rVal.add(new AbstractAction("Show player information")
 		{
+			private static final long serialVersionUID = -4065242030670291163L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String text = controller.getInformationOn(clickedOn);
@@ -331,6 +342,8 @@ public class LobbyFrame extends JFrame
 		});
 		rVal.add(new AbstractAction("Reset password")
 		{
+			private static final long serialVersionUID = -7778103570619930775L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String newPassword = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(LobbyFrame.this), "Enter new password");

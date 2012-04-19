@@ -34,6 +34,7 @@ import javax.swing.event.DocumentListener;
  */
 public class ForumPosterEditor extends EditorPanel
 {
+	private static final long serialVersionUID = -6069315084412575053L;
 	// -----------------------------------------------------------------------
 	// instance fields
 	// -----------------------------------------------------------------------

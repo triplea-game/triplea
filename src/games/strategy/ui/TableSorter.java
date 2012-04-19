@@ -60,6 +60,7 @@ import javax.swing.table.TableModel;
 @SuppressWarnings("unchecked")
 public class TableSorter extends AbstractTableModel
 {
+	private static final long serialVersionUID = 718385567037094138L;
 	protected TableModel tableModel;
 	public static final int DESCENDING = -1;
 	public static final int NOT_SORTED = 0;

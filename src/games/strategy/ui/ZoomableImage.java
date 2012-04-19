@@ -41,6 +41,7 @@ import javax.swing.JComponent;
  */
 class ZoomableImage extends JComponent
 {
+	private static final long serialVersionUID = 3324558973854619020L;
 	private double m_zoom = 1.0;
 	private final Image m_original;
 	private Image m_current;

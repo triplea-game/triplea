@@ -20,6 +20,8 @@ package games.strategy.engine.message;
  */
 public class MessengerException extends RuntimeException
 {
+	private static final long serialVersionUID = 1058615494612307887L;
+	
 	public MessengerException(final String message, final Throwable cause)
 	{
 		super(message, cause);

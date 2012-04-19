@@ -4,9 +4,10 @@ import games.strategy.triplea.delegate.Matches;
 
 import java.util.Collection;
 
-@SuppressWarnings("serial")
 public class RelationshipInterpreter extends GameDataComponent
 {
+	private static final long serialVersionUID = -643454441052535241L;
+	
 	public RelationshipInterpreter(final GameData data)
 	{
 		super(data);

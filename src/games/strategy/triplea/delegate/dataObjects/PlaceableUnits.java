@@ -22,9 +22,9 @@ import games.strategy.engine.data.Unit;
 
 import java.util.Collection;
 
-@SuppressWarnings("serial")
 public class PlaceableUnits implements java.io.Serializable
 {
+	private static final long serialVersionUID = 6572719978603199091L;
 	private String m_errorMessage;
 	private Collection<Unit> m_units;
 	private int m_maxUnits;

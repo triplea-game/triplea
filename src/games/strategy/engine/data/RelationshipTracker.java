@@ -31,6 +31,7 @@ import java.util.HashSet;
 
 public class RelationshipTracker extends RelationshipInterpreter
 {
+	private static final long serialVersionUID = -4740671761925519069L;
 	// map of "playername:playername" to RelationshipType that exists between those 2 players
 	private final HashMap<RelatedPlayers, Relationship> m_relationships = new HashMap<RelatedPlayers, Relationship>();
 	
@@ -166,6 +167,8 @@ public class RelationshipTracker extends RelationshipInterpreter
 	 */
 	public class RelatedPlayers implements Serializable
 	{
+		private static final long serialVersionUID = 2124258606502106751L;
+		
 		/**
 		 * override hashCode to make sure that each new instance of this class can be matched in the Hashtable
 		 * even if it was put in as (p1,p2) and you want to get it out as (p2,p1)
@@ -227,6 +230,8 @@ public class RelationshipTracker extends RelationshipInterpreter
 
 	public class Relationship implements Serializable
 	{
+		private static final long serialVersionUID = -6718866176901627180L;
+		
 		/**
 		 * This should never be called outside of the change factory.
 		 * 

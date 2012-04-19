@@ -23,6 +23,7 @@ import java.util.List;
 public class ExtendedStats extends StatPanel
 {
 	
+	private static final long serialVersionUID = 2502397606419491543L;
 	private IStat[] m_statsExtended = new IStat[] {};
 	
 	public ExtendedStats(final GameData data)

@@ -222,9 +222,9 @@ public class EndTurnDelegate extends BaseDelegate
 }
 
 
-@SuppressWarnings("serial")
 class TicTacToeEndTurnExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = 5491407308288449271L;
 	Serializable superState;
 	// add other variables here:
 }

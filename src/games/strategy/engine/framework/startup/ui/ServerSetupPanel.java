@@ -54,9 +54,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-@SuppressWarnings("serial")
 public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 {
+	private static final long serialVersionUID = -2849872641665561807L;
 	private final ServerModel m_model;
 	private JTextField m_portField;
 	private JTextField m_addressField;

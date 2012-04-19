@@ -45,6 +45,7 @@ import java.util.Set;
  */
 public class NPuzzle implements IGameLoader
 {
+	private static final long serialVersionUID = 6359686118939451301L;
 	// When serializing, do not save transient member variables
 	private transient NPuzzleDisplay m_display;
 	private transient IGame m_game;

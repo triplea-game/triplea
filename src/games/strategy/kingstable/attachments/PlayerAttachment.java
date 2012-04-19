@@ -24,9 +24,9 @@ import games.strategy.engine.data.annotations.GameProperty;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-@SuppressWarnings("serial")
 public class PlayerAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = -4833151445864523853L;
 	private boolean m_needsKing = false;
 	private int m_alphaBetaSearchDepth = 2;
 	

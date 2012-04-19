@@ -45,6 +45,7 @@ import javax.swing.SwingUtilities;
  */
 public class BoardPanel extends JComponent implements MouseListener
 {
+	private static final long serialVersionUID = 981372652838512191L;
 	private final BoardData m_mapData;
 	private Territory m_clickedAt = null;
 	private Territory m_releasedAt = null;

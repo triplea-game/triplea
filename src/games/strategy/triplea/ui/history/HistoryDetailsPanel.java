@@ -38,9 +38,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-@SuppressWarnings("serial")
 public class HistoryDetailsPanel extends JPanel
 {
+	private static final long serialVersionUID = 5092004144144006960L;
 	private final GameData m_data;
 	private final JTextArea m_title = new JTextArea();
 	private final JScrollPane m_scroll = new JScrollPane(m_title);

@@ -23,6 +23,7 @@ import javax.swing.table.TableModel;
 
 public class LobbyGameTable extends JTable
 {
+	private static final long serialVersionUID = 8632519876114231003L;
 	private GUID m_selectedGame;
 	private boolean inTableChange = false;
 	

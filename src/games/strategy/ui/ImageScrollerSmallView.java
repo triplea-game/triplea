@@ -45,6 +45,7 @@ import javax.swing.border.EtchedBorder;
  */
 public class ImageScrollerSmallView extends JComponent
 {
+	private static final long serialVersionUID = 7010099211049677928L;
 	private final ImageScrollModel m_model;
 	private Image m_image;
 	

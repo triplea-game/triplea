@@ -19,6 +19,8 @@ import games.strategy.triplea.delegate.UndoableMove;
 
 public class UndoableMovesPanel extends AbstractUndoableMovesPanel
 {
+	private static final long serialVersionUID = -3864287736715943608L;
+	
 	public UndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel)
 	{
 		super(data, movePanel);

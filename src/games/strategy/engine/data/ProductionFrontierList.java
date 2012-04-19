@@ -27,9 +27,9 @@ import java.util.Set;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class ProductionFrontierList extends GameDataComponent
 {
+	private static final long serialVersionUID = -7565214499087021809L;
 	private final Map<String, ProductionFrontier> m_productionFrontiers = new HashMap<String, ProductionFrontier>();
 	
 	public ProductionFrontierList(final GameData data)

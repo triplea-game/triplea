@@ -45,6 +45,7 @@ import javax.swing.event.ListSelectionListener;
 
 public class InstallMapDialog extends JDialog
 {
+	private static final long serialVersionUID = -1542210716764178580L;
 	private static final String DOWNLOAD_URL_PREFIX = "Location:";
 	private JButton m_installButton;
 	private JButton m_cancelButton;
@@ -127,6 +128,8 @@ public class InstallMapDialog extends JDialog
 	{
 		m_cancelButton.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = -2437255215905705911L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				setVisible(false);
@@ -134,6 +137,8 @@ public class InstallMapDialog extends JDialog
 		});
 		m_installButton.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = -2202445889252381183L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				install(getSelected());

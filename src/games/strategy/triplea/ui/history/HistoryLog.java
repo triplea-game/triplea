@@ -37,6 +37,7 @@ import javax.swing.tree.TreePath;
 
 public class HistoryLog extends JFrame
 {
+	private static final long serialVersionUID = 4880602702815333376L;
 	private final JTextArea m_textArea;
 	private final StringWriter m_stringWriter;
 	private final PrintWriter m_printWriter;

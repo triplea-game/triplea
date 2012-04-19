@@ -24,6 +24,7 @@ import javax.swing.SwingConstants;
 
 public class PlayerChatRenderer extends DefaultListCellRenderer
 {
+	private static final long serialVersionUID = -8195565028281374498L;
 	private final IGame m_game;
 	private final UIContext m_uiContext;
 	

@@ -39,9 +39,10 @@ import javax.swing.SwingUtilities;
  * 
  * @author Stephen
  */
-@SuppressWarnings("serial")
 public class SettingsWindow extends javax.swing.JDialog
 {
+	private static final long serialVersionUID = -5989598624017028122L;
+	
 	/** Creates new form SettingsWindow */
 	public SettingsWindow(final TripleAFrame frame)
 	{

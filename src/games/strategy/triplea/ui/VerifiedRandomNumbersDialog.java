@@ -37,6 +37,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class VerifiedRandomNumbersDialog extends JDialog
 {
+	private static final long serialVersionUID = 439577498545812164L;
+	
 	public VerifiedRandomNumbersDialog(final Component parent)
 	{
 		super(JOptionPane.getFrameForComponent(parent), "Verified Random Numbers", false);
@@ -50,6 +52,8 @@ public class VerifiedRandomNumbersDialog extends JDialog
 		final String[][] tableValues = getTableValues(verified);
 		final DefaultTableModel model = new DefaultTableModel(tableValues, new String[] { "Reason", "Dice Rolls" })
 		{
+			private static final long serialVersionUID = 8876974698508561554L;
+			
 			@Override
 			public boolean isCellEditable(final int row, final int column)
 			{

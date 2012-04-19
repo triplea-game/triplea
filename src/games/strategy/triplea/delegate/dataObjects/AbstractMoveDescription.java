@@ -26,9 +26,9 @@ import java.util.Collection;
  * 
  * @author Erik von der Osten
  */
-@SuppressWarnings("serial")
 abstract public class AbstractMoveDescription implements java.io.Serializable
 {
+	private static final long serialVersionUID = -6615899716448836002L;
 	private final Collection<Unit> m_units;
 	
 	public AbstractMoveDescription(final Collection<Unit> units)

@@ -11,6 +11,7 @@ import javax.swing.border.LineBorder;
 
 public class WaitWindow extends JWindow
 {
+	private static final long serialVersionUID = -8134956690669346954L;
 	private final Object m_mutex = new Object();
 	private Timer m_timer = new Timer();
 	

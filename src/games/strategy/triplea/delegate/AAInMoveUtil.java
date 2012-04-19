@@ -41,6 +41,7 @@ import java.util.Set;
  */
 class AAInMoveUtil implements Serializable
 {
+	private static final long serialVersionUID = 1787497998642717678L;
 	private transient boolean m_nonCombat;
 	private transient IDelegateBridge m_bridge;
 	private transient PlayerID m_player;
@@ -107,6 +108,8 @@ class AAInMoveUtil implements Serializable
 			final Territory location = iter.next();
 			executables.add(new IExecutable()
 			{
+				private static final long serialVersionUID = -1545771595683434276L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					fireAA(location, targets, currentMove);
@@ -188,6 +191,8 @@ class AAInMoveUtil implements Serializable
 			final DiceRoll[] dice = new DiceRoll[1];
 			final IExecutable rollDice = new IExecutable()
 			{
+				private static final long serialVersionUID = 4714364489659654758L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					dice[0] = DiceRoll.rollAA(units, currentPossibleAA, targetUnitTypesForThisTypeAA, m_bridge, territory);
@@ -195,6 +200,8 @@ class AAInMoveUtil implements Serializable
 			};
 			final IExecutable selectCasualties = new IExecutable()
 			{
+				private static final long serialVersionUID = -8633263235214834617L;
+				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					final int hitCount = dice[0].getHits();

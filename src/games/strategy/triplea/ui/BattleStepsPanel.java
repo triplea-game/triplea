@@ -37,6 +37,7 @@ import javax.swing.SwingUtilities;
  */
 class BattleStepsPanel extends JPanel implements Active
 {
+	private static final long serialVersionUID = 911638924664810435L;
 	private static final Logger log = Logger.getLogger(BattleStepsPanel.class.getName());
 	// if this is the target step, we want to walk to the last step
 	private final static String LAST_STEP = "NULL MARKER FOR LAST STEP";
@@ -252,6 +253,8 @@ class BattleStepsPanel extends JPanel implements Active
  */
 class MyListSelectionModel extends DefaultListSelectionModel
 {
+	private static final long serialVersionUID = -4359950441657840015L;
+	
 	@Override
 	public void setSelectionInterval(final int index0, final int index1)
 	{

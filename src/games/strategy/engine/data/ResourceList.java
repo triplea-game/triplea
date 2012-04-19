@@ -28,9 +28,9 @@ import java.util.Map;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class ResourceList extends GameDataComponent
 {
+	private static final long serialVersionUID = -8812702449627698253L;
 	private final Map<String, Resource> m_resourceList = new HashMap<String, Resource>();
 	
 	/* TODO: is this a good way to have a static reference for PUs?

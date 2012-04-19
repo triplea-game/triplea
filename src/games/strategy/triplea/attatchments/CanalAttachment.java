@@ -17,9 +17,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-@SuppressWarnings("serial")
 public class CanalAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = -1991066817386812634L;
 	private String m_canalName = null;
 	private HashSet<Territory> m_landTerritories = null;
 	private HashSet<UnitType> m_excludedUnits = null;

@@ -14,6 +14,8 @@ import games.strategy.util.IntegerMap;
  */
 public class InvalidFieldTypeExample extends DefaultAttachment
 {
+	private static final long serialVersionUID = 6465866180845982327L;
+	
 	protected InvalidFieldTypeExample(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);

@@ -35,9 +35,9 @@ import javax.swing.JSeparator;
  * @author Edwin van der Wal
  * 
  */
-@SuppressWarnings("serial")
 public class PoliticalStateOverview extends JPanel
 {
+	private static final long serialVersionUID = -8445782272897831080L;
 	private final UIContext m_uic;
 	private final GameData m_data;
 	public final static String LABEL_SELF = "----";

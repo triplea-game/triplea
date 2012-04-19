@@ -45,6 +45,7 @@ import javax.swing.SwingUtilities;
  */
 public class MapPanel extends JComponent implements MouseListener
 {
+	private static final long serialVersionUID = -1318170171400997968L;
 	private final MapData m_mapData;
 	private final GameData m_gameData;
 	private Territory m_clickedAt = null;

@@ -168,9 +168,9 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 }
 
 
-@SuppressWarnings("serial")
 class KingsTableEndTurnExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = 1054956757425820238L;
 	Serializable superState;
 	// add other variables here:
 }

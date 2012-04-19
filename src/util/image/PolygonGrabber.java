@@ -72,9 +72,9 @@ import javax.swing.SwingUtilities;
  * - territory name entered
  * Outputs - a list of polygons for each country
  */
-@SuppressWarnings("serial")
 public class PolygonGrabber extends JFrame
 {
+	private static final long serialVersionUID = 6381498094805120687L;
 	private static boolean s_islandMode;
 	private final JCheckBoxMenuItem modeItem;
 	private List<Polygon> m_current; // the current set of polyongs
@@ -203,6 +203,8 @@ public class PolygonGrabber extends JFrame
 		// set up the actions
 		final Action openAction = new AbstractAction("Load Polygons")
 		{
+			private static final long serialVersionUID = -9093814781969488946L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				loadPolygons();
@@ -211,6 +213,8 @@ public class PolygonGrabber extends JFrame
 		openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Polygon Points FIle");
 		final Action saveAction = new AbstractAction("Save Polygons")
 		{
+			private static final long serialVersionUID = -6886417728606754296L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				savePolygons();
@@ -219,6 +223,8 @@ public class PolygonGrabber extends JFrame
 		saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Polygon Points To File");
 		final Action exitAction = new AbstractAction("Exit")
 		{
+			private static final long serialVersionUID = -1294988703454116227L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
@@ -299,6 +305,8 @@ public class PolygonGrabber extends JFrame
 	{
 		final JPanel imagePanel = new JPanel()
 		{
+			private static final long serialVersionUID = 4106539186003148628L;
+			
 			@Override
 			public void paint(final Graphics g)
 			{

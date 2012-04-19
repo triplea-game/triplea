@@ -33,9 +33,9 @@ import javax.swing.border.EmptyBorder;
  * @author Veqryn
  * 
  */
-@SuppressWarnings("serial")
 public class EnginePreferences extends JDialog
 {
+	private static final long serialVersionUID = 5071190543005064757L;
 	private final Frame m_parentFrame;
 	private JButton m_okButton;
 	private JButton m_lookAndFeel;
@@ -102,6 +102,8 @@ public class EnginePreferences extends JDialog
 	{
 		m_okButton.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = 8014389079875584858L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				setVisible(false);
@@ -109,6 +111,8 @@ public class EnginePreferences extends JDialog
 		});
 		m_lookAndFeel.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = -6524988243523615143L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				final Triple<JList, Map<String, String>, String> lookAndFeel = TripleaMenu.getLookAndFeelList();
@@ -133,6 +137,8 @@ public class EnginePreferences extends JDialog
 		});
 		m_gameParser.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = -6223524855968800051L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				// TODO: replace with 2 radio buttons

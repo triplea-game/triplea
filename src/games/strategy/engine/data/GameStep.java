@@ -32,9 +32,9 @@ import java.util.Properties;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class GameStep extends GameDataComponent
 {
+	private static final long serialVersionUID = -7944468945162840931L;
 	private final String m_name;
 	private final String m_displayName;
 	private final PlayerID m_player;

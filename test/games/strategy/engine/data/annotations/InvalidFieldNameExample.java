@@ -12,6 +12,8 @@ import games.strategy.engine.data.GameParseException;
  */
 public class InvalidFieldNameExample extends DefaultAttachment
 {
+	private static final long serialVersionUID = 2902170223595163219L;
+	
 	protected InvalidFieldNameExample(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);

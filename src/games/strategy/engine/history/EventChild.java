@@ -13,6 +13,7 @@ package games.strategy.engine.history;
 
 public class EventChild extends HistoryNode implements Renderable
 {
+	private static final long serialVersionUID = 2436212909638449323L;
 	public final String m_text;
 	public final Object m_renderingData;
 	
@@ -44,6 +45,7 @@ public class EventChild extends HistoryNode implements Renderable
 
 class EventChildWriter implements SerializationWriter
 {
+	private static final long serialVersionUID = -7143658060171295697L;
 	private final String m_text;
 	private final Object m_renderingData;
 	

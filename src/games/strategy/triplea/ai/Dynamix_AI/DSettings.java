@@ -31,6 +31,7 @@ import java.util.prefs.Preferences;
  */
 public class DSettings implements Serializable
 {
+	private static final long serialVersionUID = 2696071717784800413L;
 	public int PurchaseWait_AL = 750;
 	public int CombatMoveWait_AL = 750;
 	public int NonCombatMoveWait_AL = 750;

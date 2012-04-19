@@ -32,9 +32,9 @@ import java.util.Map.Entry;
  * 
  * @author Sean Bridges
  */
-@SuppressWarnings("serial")
 public class MoveDescription extends AbstractMoveDescription
 {
+	private static final long serialVersionUID = 2199608152808948043L;
 	private final Route m_route;
 	private final Collection<Unit> m_transportsThatCanBeLoaded;
 	private final Map<Unit, Collection<Unit>> m_dependentUnits;

@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
  */
 public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serializable
 {
+	private static final long serialVersionUID = -2284878450555315947L;
 	private final boolean m_optional;
 	private final UnitCollection m_unitsHeld;
 	private final ResourceCollection m_resources;

@@ -21,9 +21,10 @@ import games.strategy.engine.data.Route;
  * @author Erik von der Osten
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class UndoablePlacementsPanel extends AbstractUndoableMovesPanel
 {
+	private static final long serialVersionUID = -8905646288832196354L;
+	
 	public UndoablePlacementsPanel(final GameData data, final AbstractMovePanel movePanel)
 	{
 		super(data, movePanel);

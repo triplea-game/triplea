@@ -35,6 +35,7 @@ import java.util.Map;
  */
 public class GameProperties extends GameDataComponent
 {
+	private static final long serialVersionUID = -1448163357090677564L;
 	private final Map<String, Object> m_constantProperties = new HashMap<String, Object>();
 	// a set of IEditableProperties
 	private final Map<String, IEditableProperty> m_editableProperties = new HashMap<String, IEditableProperty>();

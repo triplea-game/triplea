@@ -44,6 +44,7 @@ import javax.swing.JTextField;
  */
 public class ClientOptions extends JDialog
 {
+	private static final long serialVersionUID = 8036055679545539809L;
 	private JTextField m_nameField;
 	private JTextField m_addressField;
 	private IntTextField m_portField;
@@ -140,6 +141,8 @@ public class ClientOptions extends JDialog
 	
 	private final Action m_okAction = new AbstractAction("Connect")
 	{
+		private static final long serialVersionUID = -3148947760273290532L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			setVisible(false);
@@ -148,6 +151,8 @@ public class ClientOptions extends JDialog
 	};
 	private final Action m_cancelAction = new AbstractAction("Cancel")
 	{
+		private static final long serialVersionUID = -3911528133067426275L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			setVisible(false);

@@ -12,9 +12,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings("serial")
 public class MoveValidationResult implements Serializable, Comparable<MoveValidationResult>
 {
+	private static final long serialVersionUID = 6648363112533514955L;
 	private String m_error = null;
 	private final List<String> m_disallowedUnitWarnings;
 	private final List<Collection<Unit>> m_disallowedUnitsList;

@@ -28,9 +28,9 @@ import java.util.List;
  * @author Kevin Comcowich
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class RepairFrontier extends DefaultNamed implements Iterable<RepairRule>
 {
+	private static final long serialVersionUID = -5148536624986056753L;
 	private final List<RepairRule> m_rules = new ArrayList<RepairRule>();
 	private List<RepairRule> m_cachedRules;
 	

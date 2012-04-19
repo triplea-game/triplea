@@ -38,6 +38,7 @@ import javax.swing.border.EmptyBorder;
  */
 public abstract class ActionPanel extends JPanel
 {
+	private static final long serialVersionUID = -5954576036704958641L;
 	private final GameData m_data;
 	private PlayerID m_currentPlayer;
 	private final MapPanel m_map;

@@ -15,6 +15,7 @@ package games.strategy.engine.history;
 
 public class Event extends IndexedHistoryNode implements Renderable
 {
+	private static final long serialVersionUID = -8382102990360177484L;
 	private final String m_description;
 	// additional data used for rendering this event
 	private Object m_renderingData;
@@ -50,6 +51,7 @@ public class Event extends IndexedHistoryNode implements Renderable
 
 class EventHistorySerializer implements SerializationWriter
 {
+	private static final long serialVersionUID = 6404070330823708974L;
 	private final String m_eventName;
 	private final Object m_renderingData;
 	

@@ -42,9 +42,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-@SuppressWarnings("serial")
 public class MovePerformer implements Serializable
 {
+	private static final long serialVersionUID = 3752242292777658310L;
 	private transient MoveDelegate m_moveDelegate;
 	private transient IDelegateBridge m_bridge;
 	private transient PlayerID m_player;
@@ -102,6 +102,8 @@ public class MovePerformer implements Serializable
 	{
 		final IExecutable preAAFire = new IExecutable()
 		{
+			private static final long serialVersionUID = -7945930782650355037L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				// if we are moving out of a battle zone, mark it
@@ -130,6 +132,8 @@ public class MovePerformer implements Serializable
 		final Collection<Unit>[] arrivingUnits = new Collection[1];
 		final IExecutable fireAA = new IExecutable()
 		{
+			private static final long serialVersionUID = -3780228078499895244L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				final Collection<Unit> aaCasualties = fireAA(route, units);
@@ -138,6 +142,8 @@ public class MovePerformer implements Serializable
 		};
 		final IExecutable postAAFire = new IExecutable()
 		{
+			private static final long serialVersionUID = 670783657414493643L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				// if any non enemy territories on route

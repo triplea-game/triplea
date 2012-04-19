@@ -50,6 +50,7 @@ import com.apple.eawt.ApplicationEvent;
 
 public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMenuBar
 {
+	private static final long serialVersionUID = -1447295944297939539L;
 	protected final CustomGameFrame m_frame;
 	
 	public BasicGameMenuBar(final CustomGameFrame frame)
@@ -115,6 +116,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		allowObservers.setSelected(messeneger.isAcceptNewConnections());
 		allowObservers.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = 6876563887595464809L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				messeneger.setAcceptNewConnections(allowObservers.isSelected());
@@ -183,6 +186,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			final AbstractAction optionsAction = new AbstractAction("Show Who is Who...")
 			{
+				private static final long serialVersionUID = 5687214685515140202L;
+				
 				public void actionPerformed(final ActionEvent e)
 				{
 					PlayersPanel.showPlayers(getGame(), m_frame);
@@ -352,6 +357,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	{
 		parentMenu.add(new AbstractAction("Show Console...")
 		{
+			private static final long serialVersionUID = 6303760092518795718L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				Console.getConsole().setVisible(true);
@@ -381,6 +388,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			parentMenu.addSeparator();
 			parentMenu.add(new AbstractAction("About...")
 			{
+				private static final long serialVersionUID = 2861657714227435945L;
+				
 				public void actionPerformed(final ActionEvent e)
 				{
 					JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
@@ -414,6 +423,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{
 			parentMenu.add(new AbstractAction("Game Notes...")
 			{
+				private static final long serialVersionUID = -1817640666359299617L;
+				
 				public void actionPerformed(final ActionEvent e)
 				{
 					SwingUtilities.invokeLater(new Runnable()
@@ -431,6 +442,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							final JPanel buttons = new JPanel();
 							final JButton button = new JButton(new AbstractAction("OK")
 							{
+								private static final long serialVersionUID = -6628015175043647980L;
+								
 								public void actionPerformed(final ActionEvent e)
 								{
 									dialog.setVisible(false);
@@ -495,6 +508,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	{
 		final JMenuItem menuFileSave = new JMenuItem(new AbstractAction("Save...")
 		{
+			private static final long serialVersionUID = -8835148465905355231L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				// For some strange reason,
@@ -599,6 +614,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		final boolean isMac = GameRunner.isMac();
 		final JMenuItem leaveGameMenuExit = new JMenuItem(new AbstractAction("Leave Game")
 		{
+			private static final long serialVersionUID = 5438496165424252930L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_frame.leaveGame();
@@ -624,6 +641,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		{ // On non-Mac operating systems, we need to manually create an Exit menu item
 			final JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
 			{
+				private static final long serialVersionUID = 2801394552918725137L;
+				
 				public void actionPerformed(final ActionEvent e)
 				{
 					m_frame.shutdown();

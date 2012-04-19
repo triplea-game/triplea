@@ -39,9 +39,9 @@ import java.util.Set;
  * 
  * @author Erik von der Osten
  */
-@SuppressWarnings("serial")
 public class UndoableMove extends AbstractUndoableMove
 {
+	private static final long serialVersionUID = 8490182214651531358L;
 	private String m_reasonCantUndo;
 	private String m_description;
 	// this move is dependent on these moves

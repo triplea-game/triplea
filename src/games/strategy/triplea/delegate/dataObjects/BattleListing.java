@@ -30,9 +30,9 @@ import java.util.Collection;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class BattleListing implements Serializable
 {
+	private static final long serialVersionUID = 2700129486225793827L;
 	private final Collection<Territory> m_battles;
 	private final Collection<Territory> m_strategicRaids;
 	

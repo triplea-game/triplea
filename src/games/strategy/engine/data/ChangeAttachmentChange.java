@@ -17,6 +17,7 @@ import games.strategy.util.PropertyUtil;
 
 public class ChangeAttachmentChange extends Change
 {
+	private static final long serialVersionUID = -6447264150952218283L;
 	private final Attachable m_attachedTo;
 	private final String m_attachmentName;
 	private final Object m_newValue;

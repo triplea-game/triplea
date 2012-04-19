@@ -10,6 +10,7 @@ import java.util.TreeSet;
 
 public class MutePlayerAction extends AbstractAction
 {
+	private static final long serialVersionUID = -6578758359870435844L;
 	private final Component m_parent;
 	private final IServerMessenger m_messenger;
 	

@@ -10,9 +10,10 @@ package games.strategy.engine.data;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class GameParseException extends Exception
 {
+	private static final long serialVersionUID = 4015574053053781872L;
+	
 	public GameParseException(final String error)
 	{
 		super(error);

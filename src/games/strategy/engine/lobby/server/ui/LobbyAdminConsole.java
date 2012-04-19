@@ -46,6 +46,7 @@ import javax.swing.JToolBar;
  */
 public class LobbyAdminConsole extends JFrame
 {
+	private static final long serialVersionUID = -3982159130973521505L;
 	private static final Logger s_logger = Logger.getLogger(LobbyAdminConsole.class.getName());
 	private final LobbyServer m_server;
 	private JButton m_backupNow;

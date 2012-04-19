@@ -27,9 +27,9 @@ import games.strategy.engine.data.GameData;
  * @author Sean Bridges
  * @version
  */
-@SuppressWarnings("serial")
 public class TestAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = 4886924951201479496L;
 	private String m_value;
 	
 	/** Creates new TestAttachment */

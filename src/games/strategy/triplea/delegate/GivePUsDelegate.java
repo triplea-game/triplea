@@ -99,9 +99,9 @@ public class GivePUsDelegate extends BaseDelegate
 }
 
 
-@SuppressWarnings("serial")
 class GivePUsExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = -3788146352468330695L;
 	Serializable superState;
 	// add other variables here:
 }

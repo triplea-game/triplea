@@ -14,6 +14,8 @@ import javax.swing.SwingUtilities;
 
 public class MemoryLabel extends JLabel
 {
+	private static final long serialVersionUID = -6011470050936617333L;
+	
 	public MemoryLabel()
 	{
 		update();
@@ -42,6 +44,8 @@ public class MemoryLabel extends JLabel
 		final JPopupMenu menu = new JPopupMenu();
 		menu.add(new AbstractAction("Garbage Collect")
 		{
+			private static final long serialVersionUID = -8067651392155651586L;
+			
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				System.gc();

@@ -44,9 +44,10 @@ import java.util.HashSet;
  * 
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class PlayerAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = 1880755875866426270L;
+	
 	/**
 	 * Convenience method. can be null
 	 */

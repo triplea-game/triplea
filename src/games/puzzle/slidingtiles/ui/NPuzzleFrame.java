@@ -47,6 +47,7 @@ import javax.swing.JPanel;
  */
 public class NPuzzleFrame extends MainGameFrame
 {
+	private static final long serialVersionUID = -211401009485322391L;
 	private GameData m_data;
 	private IGame m_game;
 	private final BoardData m_mapData;

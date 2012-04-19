@@ -27,9 +27,9 @@ import games.strategy.util.PropertyUtil;
  * 
  * @author Sean Bridges
  */
-@SuppressWarnings("serial")
 public abstract class DefaultAttachment implements IAttachment
 {
+	private static final long serialVersionUID = -1985116207387301730L;
 	@InternalDoNotExport
 	private GameData m_data;
 	@InternalDoNotExport

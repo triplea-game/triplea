@@ -55,6 +55,7 @@ import javax.swing.SwingUtilities;
  */
 public class TechPanel extends ActionPanel
 {
+	private static final long serialVersionUID = -6477919141575138007L;
 	private final JLabel m_actionLabel = new JLabel();
 	private TechRoll m_techRoll;
 	private int m_currTokens = 0;
@@ -147,6 +148,8 @@ public class TechPanel extends ActionPanel
 	
 	private final Action GetTechRollsAction = new AbstractAction("Roll Tech...")
 	{
+		private static final long serialVersionUID = -5077755928034508263L;
+		
 		public void actionPerformed(final ActionEvent event)
 		{
 			TechAdvance advance = null;
@@ -187,6 +190,8 @@ public class TechPanel extends ActionPanel
 	};
 	private final Action DontBother = new AbstractAction("Done")
 	{
+		private static final long serialVersionUID = -7065334229434684387L;
+		
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_techRoll = null;
@@ -195,6 +200,8 @@ public class TechPanel extends ActionPanel
 	};
 	private final Action GetTechTokenAction = new AbstractAction("Buy Tech Tokens...")
 	{
+		private static final long serialVersionUID = 6541224254805479410L;
+		
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
@@ -231,6 +238,8 @@ public class TechPanel extends ActionPanel
 	};
 	private final Action JustRollTech = new AbstractAction("Done/Roll Current Tokens")
 	{
+		private static final long serialVersionUID = -4709625797723985960L;
+		
 		public void actionPerformed(final ActionEvent event)
 		{
 			m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
@@ -263,6 +272,7 @@ public class TechPanel extends ActionPanel
 
 class TechRollPanel extends JPanel
 {
+	private static final long serialVersionUID = -3794742986339086059L;
 	int m_PUs;
 	PlayerID m_player;
 	JLabel m_left = new JLabel();
@@ -308,6 +318,7 @@ class TechRollPanel extends JPanel
 
 class TechTokenPanel extends JPanel
 {
+	private static final long serialVersionUID = 332026624893335993L;
 	int m_PUs;
 	PlayerID m_player;
 	JLabel m_left = new JLabel();

@@ -9,4 +9,6 @@ import java.io.IOException;
  */
 public class CouldNotLogInException extends IOException
 {
+	
+	private static final long serialVersionUID = -7266754722803615270L;
 }

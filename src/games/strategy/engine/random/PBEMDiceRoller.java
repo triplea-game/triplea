@@ -141,6 +141,7 @@ public class PBEMDiceRoller implements IRandomSource
  */
 class HttpDiceRollerDialog extends JDialog
 {
+	private static final long serialVersionUID = -4802403913826489223L;
 	private final JButton m_exitButton = new JButton("Exit");
 	private final JButton m_reRollButton = new JButton("Roll Again");
 	private final JButton m_okButton = new JButton("OK");

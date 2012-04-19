@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 
 abstract public class AbstractUndoableMovesPanel extends JPanel
 {
+	private static final long serialVersionUID = 1910945925958952416L;
 	protected List<AbstractUndoableMove> m_moves;
 	protected final GameData m_data;
 	protected final AbstractMovePanel m_movePanel;
@@ -151,6 +152,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 	
 	class UndoMoveAction extends AbstractAction
 	{
+		private static final long serialVersionUID = -397312652244693138L;
 		private final int m_moveIndex;
 		
 		public UndoMoveAction(final int index)
@@ -170,6 +172,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 
 	class ViewAction extends AbstractAction
 	{
+		private static final long serialVersionUID = -6999284663802575467L;
 		private final AbstractUndoableMove m_move;
 		
 		public ViewAction(final AbstractUndoableMove move)

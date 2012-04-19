@@ -23,6 +23,7 @@ import javax.swing.table.TableColumn;
 public class EconomyPanel extends StatPanel
 {
 	
+	private static final long serialVersionUID = -7713792841831042952L;
 	private IStat[] m_statsResource;
 	private ResourceTableModel m_resourceModel;
 	
@@ -49,6 +50,7 @@ public class EconomyPanel extends StatPanel
 	
 	class ResourceTableModel extends AbstractTableModel implements GameDataChangeListener
 	{
+		private static final long serialVersionUID = 5197895788633898324L;
 		private boolean m_isDirty = true;
 		private String[][] m_collectedData;
 		

@@ -50,9 +50,9 @@ import java.util.List;
  * @version 1.0
  * 
  */
-@SuppressWarnings("serial")
 public class Route implements java.io.Serializable, Iterable<Territory>
 {
+	private static final long serialVersionUID = 8743882455488948557L;
 	final static List<Territory> emptyTerritoryList = Collections.unmodifiableList(new ArrayList<Territory>());
 	final static Integer defaultMovementCost = new Integer(1);
 	private final List<Territory> m_steps = new ArrayList<Territory>();

@@ -72,9 +72,9 @@ import javax.swing.JOptionPane;
  * @author Sean Bridges, modified by Erik von der Osten
  * @version 1.1
  */
-@SuppressWarnings("serial")
 public class MovePanel extends AbstractMovePanel
 {
+	private static final long serialVersionUID = 5004515340964828564L;
 	private static final int s_defaultMinTransportCost = 5;
 	/**
 	 * @param s_deselectNumber
@@ -1608,9 +1608,9 @@ public class MovePanel extends AbstractMovePanel
  * Avoid holding a strong reference to the action
  * fixes a memory leak in swing.
  */
-@SuppressWarnings("serial")
 class WeakAction extends AbstractAction
 {
+	private static final long serialVersionUID = 8931357243476123862L;
 	private final WeakReference<Action> m_delegate;
 	
 	WeakAction(final String name, final Action delegate)

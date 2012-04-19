@@ -25,6 +25,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -38,9 +39,9 @@ import javax.swing.JTextField;
  * 
  * @author Sean Bridges
  */
-@SuppressWarnings("serial")
 public class ServerPlayerSelector extends JFrame
 {
+	private static final long serialVersionUID = 8902742935005060145L;
 	private final Collection<PlayerChoice> m_playerChoices;
 	private final Object m_lock = new Object();
 	private Collection<String> m_remote;
@@ -104,6 +105,8 @@ public class ServerPlayerSelector extends JFrame
 	
 	public AbstractAction m_done = new AbstractAction("done")
 	{
+		private static final long serialVersionUID = -6315754845837738689L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (!isVisible())
@@ -135,9 +138,9 @@ public class ServerPlayerSelector extends JFrame
 }
 
 
-@SuppressWarnings("serial")
 class PlayerChoice extends JPanel
 {
+	private static final long serialVersionUID = 8059707233260441012L;
 	private static final String REMOTE = "Remote";
 	private static final String LOCAL = "Local";
 	private static final String[] s_choices = { LOCAL, REMOTE };

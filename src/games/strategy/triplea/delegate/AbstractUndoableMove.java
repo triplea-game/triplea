@@ -16,9 +16,9 @@ import java.util.Collection;
  * 
  * @author Erik von der Osten
  */
-@SuppressWarnings("serial")
 abstract public class AbstractUndoableMove implements Serializable
 {
+	private static final long serialVersionUID = -3164832285286161069L;
 	/**
 	 * Stores the serialized state of the move and battle delegates (just
 	 * as if they were saved), and a CompositeChange that represents all the changes that

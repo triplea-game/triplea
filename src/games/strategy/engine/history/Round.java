@@ -15,6 +15,7 @@ package games.strategy.engine.history;
 
 public class Round extends IndexedHistoryNode
 {
+	private static final long serialVersionUID = 7645058269791039043L;
 	private final int m_RoundNo;
 	
 	Round(final int round, final int changeStartIndex)
@@ -38,6 +39,7 @@ public class Round extends IndexedHistoryNode
 
 class RoundHistorySerializer implements SerializationWriter
 {
+	private static final long serialVersionUID = 9006488114384654514L;
 	private final int m_roundNo;
 	
 	public RoundHistorySerializer(final int roundNo)

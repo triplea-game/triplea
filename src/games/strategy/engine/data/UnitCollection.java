@@ -36,9 +36,9 @@ import java.util.Set;
  * 
  *          A collection of units.
  */
-@SuppressWarnings("serial")
 public class UnitCollection extends GameDataComponent implements Iterable<Unit>
 {
+	private static final long serialVersionUID = -3534037864426122864L;
 	private final List<Unit> m_units = new ArrayList<Unit>();
 	private final NamedUnitHolder m_holder;
 	

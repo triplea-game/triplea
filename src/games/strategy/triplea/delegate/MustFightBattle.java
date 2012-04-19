@@ -80,15 +80,15 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 
 	// these class exist for testing
-	@SuppressWarnings("serial")
 	public static abstract class AttackSubs implements IExecutable
 	{
+		private static final long serialVersionUID = 4872551667582174716L;
 	}
 	
 
-	@SuppressWarnings("serial")
 	public static abstract class DefendSubs implements IExecutable
 	{
+		private static final long serialVersionUID = 3768066729336520095L;
 	}
 	
 	private static final long serialVersionUID = 5879502298361231540L;
@@ -671,11 +671,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return returnFireAgainstAttackingSubs() == ReturnFire.ALL && returnFireAgainstDefendingSubs() == ReturnFire.NONE;
 	}
 	
-	@SuppressWarnings("serial")
 	private void pushFightStartOnStack()
 	{
 		final IExecutable fireAAGuns = new IExecutable()
 		{
+			private static final long serialVersionUID = -1370090785530214199L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				fireAAGuns(bridge);
@@ -683,6 +684,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		};
 		final IExecutable fireNavalBombardment = new IExecutable()
 		{
+			private static final long serialVersionUID = -2255283529092427441L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				fireNavalBombardment(bridge);
@@ -690,6 +693,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		};
 		final IExecutable fireSuicideUnitsAttack = new IExecutable()
 		{
+			private static final long serialVersionUID = 6578247830066963474L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				fireSuicideUnitsAttack(bridge);
@@ -697,6 +702,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		};
 		final IExecutable fireSuicideUnitsDefend = new IExecutable()
 		{
+			private static final long serialVersionUID = 2731651892447063082L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				fireSuicideUnitsDefend(bridge);
@@ -704,6 +711,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		};
 		final IExecutable removeNonCombatants = new IExecutable()
 		{
+			private static final long serialVersionUID = 3389635458184415797L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				removeNonCombatants();
@@ -711,6 +720,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		};
 		final IExecutable landParatroops = new IExecutable()
 		{
+			private static final long serialVersionUID = 7193352768857658286L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				landParatroops(bridge);
@@ -2077,14 +2088,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return games.strategy.triplea.Properties.getDefendingSuicideAndMunitionUnitsDoNotFire(m_data);
 	}
 	
-	/**
-	 * @return
-	 */
+	/*
 	private boolean isSurvivingAirMoveToLand()
 	{
 		return games.strategy.triplea.Properties.getSurvivingAirMoveToLand(m_data);
 	}
-	
+	 */
+
 	/**
 	 * @return
 	 */
@@ -2123,9 +2133,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	
-	@SuppressWarnings("serial")
 	class FireAA implements IExecutable
 	{
+		private static final long serialVersionUID = -6406659798754841382L;
 		private DiceRoll m_dice;
 		private Collection<Unit> m_casualties;
 		
@@ -2141,6 +2151,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				
 				final IExecutable rollDice = new IExecutable()
 				{
+					private static final long serialVersionUID = 6435935558879109347L;
+					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						m_dice = DiceRoll.rollAA(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge, m_battleSite);
@@ -2148,6 +2160,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				};
 				final IExecutable selectCasualties = new IExecutable()
 				{
+					private static final long serialVersionUID = 7943295620796835166L;
+					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						selectCasualties(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge);
@@ -2155,6 +2169,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				};
 				final IExecutable notifyCasualties = new IExecutable()
 				{
+					private static final long serialVersionUID = -6759782085212899725L;
+					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						notifyCasualtiesAA(bridge);

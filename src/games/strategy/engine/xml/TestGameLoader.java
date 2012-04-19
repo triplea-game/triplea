@@ -22,6 +22,8 @@ import java.util.Set;
  */
 public class TestGameLoader implements IGameLoader
 {
+	private static final long serialVersionUID = -8019996788216172034L;
+	
 	/**
 	 * Return an array of player types that can play on the server.
 	 * This array must not contain any entries that could play on the client.

@@ -138,9 +138,9 @@ public class InitializationDelegate extends BaseDelegate
 }
 
 
-@SuppressWarnings("serial")
 class SlidingTilesInitializationExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = -6612138982624223426L;
 	Serializable superState;
 	// add other variables here:
 }

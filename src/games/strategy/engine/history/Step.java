@@ -15,6 +15,7 @@ import games.strategy.engine.data.PlayerID;
 
 public class Step extends IndexedHistoryNode
 {
+	private static final long serialVersionUID = 1015799886178275645L;
 	private final PlayerID m_player;
 	private final String m_stepName;
 	private final String m_delegateName;
@@ -54,6 +55,7 @@ public class Step extends IndexedHistoryNode
 
 class StepHistorySerializer implements SerializationWriter
 {
+	private static final long serialVersionUID = 3546486775516371557L;
 	private final String m_stepName;
 	private final String m_delegateName;
 	private final PlayerID m_playerID;

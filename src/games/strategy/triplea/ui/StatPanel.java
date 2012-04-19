@@ -64,9 +64,9 @@ import javax.swing.table.TableColumn;
  * 
  * @author Sean Bridges
  */
-@SuppressWarnings("serial")
 public class StatPanel extends JPanel
 {
+	private static final long serialVersionUID = 4340684166664492498L;
 	final private StatTableModel m_dataModel;
 	final private TechTableModel m_techModel;
 	protected IStat[] m_stats;
@@ -90,6 +90,8 @@ public class StatPanel extends JPanel
 		
 		m_statsTable = new JTable(m_dataModel)
 		{
+			private static final long serialVersionUID = -5516554955307630864L;
+			
 			@Override
 			public void print(final Graphics g)
 			{
@@ -166,6 +168,7 @@ public class StatPanel extends JPanel
 	 */
 	class StatTableModel extends AbstractTableModel implements GameDataChangeListener
 	{
+		private static final long serialVersionUID = -6156153062049822444L;
 		/* Flag to indicate whether data needs to be recalculated */
 		private boolean m_isDirty = true;
 		/* Column Header Names */
@@ -311,6 +314,7 @@ public class StatPanel extends JPanel
 
 	class TechTableModel extends AbstractTableModel implements GameDataChangeListener
 	{
+		private static final long serialVersionUID = -4612476336419396081L;
 		/* Flag to indicate whether data needs to be recalculated */
 		private boolean isDirty = true;
 		/* Column Header Names */

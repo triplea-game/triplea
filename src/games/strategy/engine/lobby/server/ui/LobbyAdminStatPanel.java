@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 
 public class LobbyAdminStatPanel extends JPanel
 {
+	private static final long serialVersionUID = 3737079270721494810L;
 	private JLabel m_upSince;
 	private JLabel m_maxPlayersLabel;
 	private JLabel m_totalLoginsLabel;

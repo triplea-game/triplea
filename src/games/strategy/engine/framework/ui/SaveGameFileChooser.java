@@ -26,6 +26,7 @@ import javax.swing.filechooser.FileFilter;
  */
 public class SaveGameFileChooser extends JFileChooser
 {
+	private static final long serialVersionUID = 1548668790891292106L;
 	public static final String AUTOSAVE_FILE_NAME = "autosave.tsvg";
 	public static final String AUTOSAVE_ODD_ROUND_FILE_NAME = "autosave_round_odd.tsvg";
 	public static final String AUTOSAVE_EVEN_ROUND_FILE_NAME = "autosave_round_even.tsvg";

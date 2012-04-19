@@ -24,6 +24,7 @@ import javax.swing.JTextField;
  */
 public class StringProperty extends AEditableProperty
 {
+	private static final long serialVersionUID = 4382624884674152208L;
 	private String m_value;
 	
 	public StringProperty(final String name, final String defaultValue)

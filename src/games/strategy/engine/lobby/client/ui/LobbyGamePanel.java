@@ -49,9 +49,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
-@SuppressWarnings("serial")
 public class LobbyGamePanel extends JPanel
 {
+	private static final long serialVersionUID = -7829506356288575574L;
 	private JButton m_hostGame;
 	private JButton m_joinGame;
 	private JButton m_bootGame;
@@ -91,6 +91,7 @@ public class LobbyGamePanel extends JPanel
 		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Comments)).setPreferredWidth(150);
 		m_gameTable.setDefaultRenderer(Date.class, new DefaultTableCellRenderer()
 		{
+			private static final long serialVersionUID = -2807387751127250972L;
 			private final SimpleDateFormat format = new SimpleDateFormat("hh:mm a");
 			
 			@Override

@@ -40,6 +40,8 @@ import javax.swing.JSplitPane;
  */
 public class ChatPanel extends JPanel
 {
+	private static final long serialVersionUID = -6177517517279779486L;
+	
 	static int s_divider_size = 5;
 	
 	private ChatPlayerPanel m_chatPlayerPanel;

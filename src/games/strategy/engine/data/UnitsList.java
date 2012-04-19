@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-@SuppressWarnings("serial")
 public class UnitsList implements java.io.Serializable, Iterable<Unit>
 {
+	private static final long serialVersionUID = -3134052492257867416L;
 	// maps GUID -> Unit
 	// TODO - fix this, all units are never gcd
 	// note, weak hash maps are not serializable

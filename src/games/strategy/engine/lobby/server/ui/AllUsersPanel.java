@@ -31,6 +31,7 @@ import javax.swing.SwingUtilities;
 
 public class AllUsersPanel extends JPanel
 {
+	private static final long serialVersionUID = -9133556462653843231L;
 	private final IMessenger m_messenger;
 	private JList m_nodes;
 	private DefaultListModel m_nodesModel;

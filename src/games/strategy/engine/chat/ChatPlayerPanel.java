@@ -50,6 +50,7 @@ import javax.swing.UIManager;
 
 public class ChatPlayerPanel extends JPanel implements IChatListener
 {
+	private static final long serialVersionUID = -3153022965393962945L;
 	private static final Icon s_ignoreIcon;
 	static
 	{
@@ -205,6 +206,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 				final boolean isIgnored = m_chat.isIgnored(clickedOn);
 				final Action ignore = new AbstractAction(isIgnored ? "Stop Ignoring" : "Ignore")
 				{
+					private static final long serialVersionUID = 6877883646085664875L;
+					
 					public void actionPerformed(final ActionEvent event)
 					{
 						m_chat.setIgnored(clickedOn, !isIgnored);
@@ -213,6 +216,8 @@ public class ChatPlayerPanel extends JPanel implements IChatListener
 				};
 				final Action slap = new AbstractAction("Slap " + clickedOn.getName())
 				{
+					private static final long serialVersionUID = -5514772068903406263L;
+					
 					public void actionPerformed(final ActionEvent event)
 					{
 						m_chat.sendSlap(clickedOn.getName());

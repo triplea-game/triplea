@@ -27,6 +27,7 @@ public class EmailSenderEditor extends EditorPanel
 	// instance fields
 	// -----------------------------------------------------------------------
 	
+	private static final long serialVersionUID = -4647781117491269926L;
 	private final GenericEmailSender m_bean;
 	private final JTextField m_subject = new JTextField();
 	

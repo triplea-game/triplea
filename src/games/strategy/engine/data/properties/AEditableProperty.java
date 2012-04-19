@@ -17,6 +17,7 @@ import javax.swing.JComponent;
 
 public abstract class AEditableProperty implements IEditableProperty, java.io.Serializable, Comparable<Object>
 {
+	private static final long serialVersionUID = -5005729898242568847L;
 	private final String m_name;
 	
 	public AEditableProperty(final String name)

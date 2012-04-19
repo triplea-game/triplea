@@ -94,9 +94,9 @@ import javax.swing.table.TableCellRenderer;
 /**
  * Displays a running battle
  */
-@SuppressWarnings("serial")
 public class BattleDisplay extends JPanel
 {
+	private static final long serialVersionUID = -7939993104972562765L;
 	private static final String DICE_KEY = "D";
 	private static final String CASUALTIES_KEY = "C";
 	private static final String MESSAGE_KEY = "M";
@@ -125,6 +125,8 @@ public class BattleDisplay extends JPanel
 	private final JLabel m_messageLabel = new JLabel();
 	private final Action m_nullAction = new AbstractAction(" ")
 	{
+		private static final long serialVersionUID = 3308067665313935111L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 		}
@@ -493,6 +495,8 @@ public class BattleDisplay extends JPanel
 			{
 				m_actionButton.setAction(new AbstractAction(message)
 				{
+					private static final long serialVersionUID = 4489826259192394858L;
+					
 					public void actionPerformed(final ActionEvent e)
 					{
 						continueLatch.countDown();
@@ -525,6 +529,8 @@ public class BattleDisplay extends JPanel
 		m_steps.walkToLastStep();
 		final Action close = new AbstractAction(message + " : (Press Space to close)")
 		{
+			private static final long serialVersionUID = 4219274012228245826L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				enclosingFrame.setVisible(false);
@@ -567,6 +573,8 @@ public class BattleDisplay extends JPanel
 		final CountDownLatch latch = new CountDownLatch(1);
 		final Action action = new AbstractAction("Submerge Subs?")
 		{
+			private static final long serialVersionUID = -1962843804675586562L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String ok = "Submerge";
@@ -635,6 +643,8 @@ public class BattleDisplay extends JPanel
 		final CountDownLatch latch = new CountDownLatch(1);
 		final Action action = new AbstractAction("Retreat?")
 		{
+			private static final long serialVersionUID = -1276337628464642219L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String yes = "Retreat";
@@ -703,6 +713,7 @@ public class BattleDisplay extends JPanel
 	
 	private class RetreatComponent extends JPanel
 	{
+		private static final long serialVersionUID = 3855054934860687832L;
 		private final JList m_list;
 		private final JLabel m_retreatTerritory = new JLabel("");
 		
@@ -835,6 +846,7 @@ public class BattleDisplay extends JPanel
 				final String btnText = hit.getName() + ", press space to select " + countStr + (plural ? " casualties" : " casualty");
 				m_actionButton.setAction(new AbstractAction(btnText)
 				{
+					private static final long serialVersionUID = -2156028313292233568L;
 					private UnitChooser chooser;
 					private JScrollPane chooserScrollPane;
 					
@@ -959,6 +971,8 @@ public class BattleDisplay extends JPanel
 		setDefaultWidths(attackerTable);
 		final Action continueAction = new AbstractAction()
 		{
+			private static final long serialVersionUID = -7893664767396697489L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final Action a = m_actionButton.getAction();
@@ -1038,9 +1052,10 @@ public class BattleDisplay extends JPanel
 }
 
 
-@SuppressWarnings("serial")
 class BattleTable extends JTable
 {
+	private static final long serialVersionUID = 6737857639382012817L;
+	
 	BattleTable(final BattleModel model)
 	{
 		super(model);
@@ -1054,9 +1069,9 @@ class BattleTable extends JTable
 }
 
 
-@SuppressWarnings("serial")
 class BattleModel extends DefaultTableModel
 {
+	private static final long serialVersionUID = 6913324191512043963L;
 	private final UIContext m_uiContext;
 	private final GameData m_data;
 	// is the player the agressor?
@@ -1307,9 +1322,9 @@ class TableData
 }
 
 
-@SuppressWarnings("serial")
 class CasualtyNotificationPanel extends JPanel
 {
+	private static final long serialVersionUID = -8254027929090027450L;
 	private final DicePanel m_dice;
 	private final JPanel m_killed = new JPanel();
 	private final JPanel m_damaged = new JPanel();

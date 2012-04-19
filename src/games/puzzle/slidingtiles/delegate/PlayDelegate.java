@@ -186,9 +186,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 }
 
 
-@SuppressWarnings("serial")
 class SlidingTilesPlayExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = 2850777141854664044L;
 	Serializable superState;
 	// add other variables here:
 }

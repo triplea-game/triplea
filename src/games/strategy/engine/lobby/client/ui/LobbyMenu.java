@@ -38,6 +38,7 @@ import javax.swing.SwingUtilities;
 
 public class LobbyMenu extends JMenuBar
 {
+	private static final long serialVersionUID = 4980621864542042057L;
 	private final LobbyFrame m_frame;
 	
 	public LobbyMenu(final LobbyFrame frame)
@@ -137,6 +138,8 @@ public class LobbyMenu extends JMenuBar
 								dialog.add(pane, BorderLayout.CENTER);
 								final JButton button = new JButton(new AbstractAction()
 								{
+									private static final long serialVersionUID = 823636925655070882L;
+									
 									public void actionPerformed(final ActionEvent e)
 									{
 										dialog.dispose();
@@ -592,6 +595,8 @@ public class LobbyMenu extends JMenuBar
 		{ // On non-Mac operating systems, we need to manually create an Exit menu item
 			final JMenuItem menuFileExit = new JMenuItem(new AbstractAction("Exit")
 			{
+				private static final long serialVersionUID = 7173511775817785866L;
+				
 				public void actionPerformed(final ActionEvent e)
 				{
 					m_frame.shutdown();

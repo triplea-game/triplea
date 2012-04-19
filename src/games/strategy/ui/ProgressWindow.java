@@ -13,6 +13,8 @@ import javax.swing.border.LineBorder;
 
 public class ProgressWindow extends JWindow
 {
+	private static final long serialVersionUID = 4102671321734509406L;
+	
 	public ProgressWindow(final Frame owner, final String title)
 	{
 		super(owner);

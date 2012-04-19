@@ -27,6 +27,7 @@ import java.io.Serializable;
  */
 public class DefaultNamed extends GameDataComponent implements Named, Serializable
 {
+	private static final long serialVersionUID = -5737716450699952621L;
 	private final String m_name;
 	
 	/** Creates new DefaultNamed */

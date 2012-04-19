@@ -41,9 +41,9 @@ import java.util.Set;
  *          Utility methods for finding routes and distances between different territories.
  * 
  */
-@SuppressWarnings("serial")
 public class GameMap extends GameDataComponent implements Iterable<Territory>
 {
+	private static final long serialVersionUID = -4606700588396439283L;
 	private final Collection<Territory> m_territories = new ArrayList<Territory>();
 	// note that all entries are unmodifiable
 	private final Map<Territory, Set<Territory>> m_connections = new HashMap<Territory, Set<Territory>>();

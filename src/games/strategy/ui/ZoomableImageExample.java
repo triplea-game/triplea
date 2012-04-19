@@ -44,6 +44,7 @@ import javax.swing.JScrollPane;
  */
 public class ZoomableImageExample extends JFrame
 {
+	private static final long serialVersionUID = -2966214293779872824L;
 	ZoomableImage panel;
 	
 	public static void main(final String[] args)
@@ -79,6 +80,8 @@ public class ZoomableImageExample extends JFrame
 	};
 	private final Action ZOOM_COMMAND = new AbstractAction("save")
 	{
+		private static final long serialVersionUID = 4825071800322928852L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			final String input = JOptionPane.showInputDialog("Get Zoom Factor");

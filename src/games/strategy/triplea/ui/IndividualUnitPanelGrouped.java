@@ -39,9 +39,9 @@ import javax.swing.JTextArea;
  * @author Veqryn
  * 
  */
-@SuppressWarnings("serial")
 public class IndividualUnitPanelGrouped extends JPanel
 {
+	private static final long serialVersionUID = 3573683064535306664L;
 	private int m_max = 0;
 	private final boolean m_showMinAndMax;
 	private final JTextArea m_title;

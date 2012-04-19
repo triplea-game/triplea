@@ -27,9 +27,9 @@ import java.util.Collection;
  * 
  * @author Erik von der Osten
  */
-@SuppressWarnings("serial")
 public class PlacementDescription extends AbstractMoveDescription
 {
+	private static final long serialVersionUID = -3141153168992624631L;
 	private final Territory m_territory;
 	
 	public PlacementDescription(final Collection<Unit> units, final Territory territory)

@@ -40,6 +40,7 @@ import java.util.logging.Logger;
  */
 public abstract class TechAdvance implements java.io.Serializable
 {
+	private static final long serialVersionUID = -1076712297024403156L;
 	private static List<TechAdvance> s_WW2V1Advances;
 	private static List<TechAdvance> s_WW2V2Advances;
 	private static List<TechAdvance> s_WW2V3Advances;
@@ -262,6 +263,8 @@ public abstract class TechAdvance implements java.io.Serializable
 
 class SuperSubsAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = -5469354766630425933L;
+	
 	@Override
 	public String getName()
 	{
@@ -289,6 +292,8 @@ class SuperSubsAdvance extends TechAdvance
 
 class HeavyBomberAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = -1743063539572684675L;
+	
 	@Override
 	public String getName()
 	{
@@ -316,6 +321,8 @@ class HeavyBomberAdvance extends TechAdvance
 
 class IndustrialTechnologyAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = -21252592806022090L;
+	
 	@Override
 	public String getName()
 	{
@@ -357,6 +364,8 @@ class IndustrialTechnologyAdvance extends TechAdvance
 
 class JetPowerAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = -9124162661008361132L;
+	
 	@Override
 	public String getName()
 	{
@@ -384,6 +393,8 @@ class JetPowerAdvance extends TechAdvance
 
 class RocketsAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = 1526117896586201770L;
+	
 	@Override
 	public String getName()
 	{
@@ -411,6 +422,8 @@ class RocketsAdvance extends TechAdvance
 
 class DestroyerBombardTechAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = -4977423636387126617L;
+	
 	@Override
 	public String getName()
 	{
@@ -438,6 +451,8 @@ class DestroyerBombardTechAdvance extends TechAdvance
 
 class LongRangeAircraftAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = 1986380888336238652L;
+	
 	@Override
 	public String getName()
 	{
@@ -471,6 +486,8 @@ class LongRangeAircraftAdvance extends TechAdvance
  */
 class ImprovedArtillerySupportAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = 3946378995070209879L;
+	
 	@Override
 	public String getName()
 	{
@@ -501,6 +518,8 @@ class ImprovedArtillerySupportAdvance extends TechAdvance
  */
 class ParatroopersAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = 1457384348499672184L;
+	
 	@Override
 	public String getName()
 	{
@@ -531,6 +550,8 @@ class ParatroopersAdvance extends TechAdvance
  */
 class IncreasedFactoryProductionAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = 987606878563485763L;
+	
 	@Override
 	public String getName()
 	{
@@ -561,6 +582,8 @@ class IncreasedFactoryProductionAdvance extends TechAdvance
  */
 class WarBondsAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = -9048146216351059811L;
+	
 	@Override
 	public String getName()
 	{
@@ -591,6 +614,8 @@ class WarBondsAdvance extends TechAdvance
  */
 class MechanizedInfantryAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = 3040670614877450791L;
+	
 	@Override
 	public String getName()
 	{
@@ -621,6 +646,8 @@ class MechanizedInfantryAdvance extends TechAdvance
  */
 class AARadarAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = 6464021231625252901L;
+	
 	@Override
 	public String getName()
 	{
@@ -648,6 +675,8 @@ class AARadarAdvance extends TechAdvance
 
 class ImprovedShipyardsAdvance extends TechAdvance
 {
+	private static final long serialVersionUID = 7613381831727736711L;
+	
 	@Override
 	public String getName()
 	{

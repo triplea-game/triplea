@@ -25,6 +25,9 @@ import javax.swing.JTextField;
 
 public class CreateUpdateAccountPanel extends JPanel
 {
+	private static final long serialVersionUID = 2285956517232671122L;
+	
+	
 	public static enum ReturnValue
 	{
 		CANCEL, OK

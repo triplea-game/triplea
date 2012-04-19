@@ -27,9 +27,9 @@ import java.util.Set;
  * @author Kevin Comcowich
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class RepairFrontierList extends GameDataComponent
 {
+	private static final long serialVersionUID = -5877933681560908405L;
 	private final Map<String, RepairFrontier> m_repairFrontiers = new HashMap<String, RepairFrontier>();
 	
 	public RepairFrontierList(final GameData data)

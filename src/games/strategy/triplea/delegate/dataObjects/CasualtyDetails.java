@@ -28,9 +28,9 @@ import java.util.List;
  * @author Sean Bridges & Mark Christopher Duncan
  * @version 1.1
  */
-@SuppressWarnings("serial")
 public class CasualtyDetails extends CasualtyList implements Serializable
 {
+	private static final long serialVersionUID = 2261683015991514918L;
 	// since this now extends CasualtyList, it has access to the protected fields of m_killed and m_damaged
 	private final boolean m_autoCalculated;
 	

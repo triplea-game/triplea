@@ -36,6 +36,7 @@ import javax.swing.JScrollPane;
  */
 public class TechResultsDisplay extends JPanel
 {
+	private static final long serialVersionUID = -8303376983862918107L;
 	private final UIContext m_uiContext;
 	
 	public TechResultsDisplay(final TechResults msg, final UIContext context, final GameData data)

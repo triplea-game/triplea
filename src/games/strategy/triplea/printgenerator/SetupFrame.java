@@ -32,6 +32,7 @@ import javax.swing.JTextField;
 
 public class SetupFrame extends JPanel
 {
+	private static final long serialVersionUID = 7308943603423170303L;
 	private final JLabel m_info1;
 	private final JLabel m_info2;
 	private final JLabel m_info3;

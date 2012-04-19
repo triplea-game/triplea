@@ -84,6 +84,7 @@ import javax.swing.SwingUtilities;
  */
 public class MapPanel extends ImageScrollerLargeView
 {
+	private static final long serialVersionUID = -3571551538356292556L;
 	private static Logger s_logger = Logger.getLogger(MapPanel.class.getName());
 	private final ListenerList<MapSelectionListener> m_mapSelectionListeners = new ListenerList<MapSelectionListener>();
 	private final ListenerList<UnitSelectionListener> m_unitSelectionListeners = new ListenerList<UnitSelectionListener>();

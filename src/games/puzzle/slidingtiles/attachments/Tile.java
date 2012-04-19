@@ -25,9 +25,9 @@ import games.strategy.engine.data.annotations.GameProperty;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-@SuppressWarnings("serial")
 public class Tile extends DefaultAttachment
 {
+	private static final long serialVersionUID = 129074481008059616L;
 	private int m_value;
 	
 	// private Rectangle m_location;

@@ -47,6 +47,7 @@ import javax.swing.border.EmptyBorder;
 
 public class TerritoryDetailPanel extends JPanel
 {
+	private static final long serialVersionUID = 1377022163587438988L;
 	private GameData m_data;
 	private final UIContext m_uiContext;
 	private final JButton m_showOdds;
@@ -72,6 +73,8 @@ public class TerritoryDetailPanel extends JPanel
 		final String show_battle_calc = "show_battle_calc";
 		final Action showBattleCalc = new AbstractAction(show_battle_calc)
 		{
+			private static final long serialVersionUID = -1863748437390486994L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				OddsCalculatorDialog.show(m_frame, m_currentTerritory);

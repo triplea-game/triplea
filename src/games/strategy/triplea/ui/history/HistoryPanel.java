@@ -55,6 +55,7 @@ import javax.swing.tree.TreePath;
  */
 public class HistoryPanel extends JPanel
 {
+	private static final long serialVersionUID = -8353246449552215276L;
 	private final GameData m_data;
 	private final JTree m_tree;
 	private final HistoryDetailsPanel m_details;
@@ -490,6 +491,7 @@ public class HistoryPanel extends JPanel
 
 class HistoryTreeCellRenderer extends DefaultTreeCellRenderer
 {
+	private static final long serialVersionUID = -72258573320689596L;
 	private final ImageIcon icon = new ImageIcon();
 	private final UIContext m_uiContext;
 	

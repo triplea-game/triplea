@@ -28,6 +28,7 @@ import javax.swing.JComponent;
  */
 public class ListProperty extends AEditableProperty
 {
+	private static final long serialVersionUID = -3098612299805630587L;
 	private final List<String> m_possibleValues;
 	private String m_value;
 	

@@ -2,14 +2,13 @@ package games.strategy.triplea.oddsCalculator.ta;
 
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.Dynamix_AI.DUtils;
-import games.strategy.triplea.delegate.MustFightBattle;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AggregateResults implements Serializable
 {
+	private static final long serialVersionUID = -556699626060414738L;
 	public List<BattleResults> m_results;
 	private long m_time;
 	

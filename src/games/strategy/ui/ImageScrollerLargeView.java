@@ -54,6 +54,7 @@ import javax.swing.SwingUtilities;
  */
 public class ImageScrollerLargeView extends JComponent
 {
+	private static final long serialVersionUID = -7212817233833868483L;
 	// bit flags for determining which way we are scrolling
 	final static int NONE = 0;
 	final static int LEFT = 1;

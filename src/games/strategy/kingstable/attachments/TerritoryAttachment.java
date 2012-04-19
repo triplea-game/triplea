@@ -25,9 +25,9 @@ import games.strategy.engine.data.annotations.GameProperty;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-@SuppressWarnings("serial")
 public class TerritoryAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = -2114955190688754947L;
 	private boolean m_kingsSquare = false;
 	private boolean m_kingsExit = false;
 	

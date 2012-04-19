@@ -20,6 +20,8 @@ import java.awt.Image;
 
 public class MapPanelSmallView extends ImageScrollerSmallView
 {
+	private static final long serialVersionUID = 8706930659664327612L;
+	
 	public MapPanelSmallView(final Image img, final ImageScrollModel model)
 	{
 		super(img, model);

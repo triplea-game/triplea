@@ -48,6 +48,7 @@ import javax.swing.JPanel;
  */
 public class KingsTableFrame extends MainGameFrame
 {
+	private static final long serialVersionUID = -8888229639450608930L;
 	private GameData m_data;
 	private IGame m_game;
 	private MapPanel m_mapPanel;

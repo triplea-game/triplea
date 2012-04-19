@@ -24,6 +24,8 @@ import javax.swing.JFrame;
  */
 public abstract class MainGameFrame extends JFrame
 {
+	private static final long serialVersionUID = 7433347393639606647L;
+	
 	public MainGameFrame()
 	{
 	}

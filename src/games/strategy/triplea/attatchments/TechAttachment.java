@@ -29,9 +29,10 @@ import java.util.HashMap;
 /**
  * @author Sean Bridges
  */
-@SuppressWarnings("serial")
 public class TechAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = -8780929085456199961L;
+	
 	// attaches to a PlayerID
 	public static TechAttachment get(final PlayerID id)
 	{

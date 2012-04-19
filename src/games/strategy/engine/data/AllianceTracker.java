@@ -38,9 +38,9 @@ import java.util.Set;
  * @author Sean Bridges, modified by Erik von der Osten
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class AllianceTracker extends GameDataComponent
 {
+	private static final long serialVersionUID = 2815023984535209353L;
 	// maps PlayerID to Collection of alliances names
 	Map<PlayerID, Collection<String>> m_alliances = new HashMap<PlayerID, Collection<String>>();
 	

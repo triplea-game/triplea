@@ -32,6 +32,8 @@ import javax.swing.JScrollPane;
  */
 public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
 {
+	private static final long serialVersionUID = 3249205650213769941L;
+	
 	public KingsTableMenu(final KingsTableFrame frame)
 	{
 		super(frame);
@@ -60,6 +62,8 @@ public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
 			menuBar.add(menuGame);
 			final AbstractAction optionsAction = new AbstractAction("View Game Options...")
 			{
+				private static final long serialVersionUID = -6060777134229949388L;
+				
 				public void actionPerformed(final ActionEvent e)
 				{
 					final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties(), false);
@@ -77,6 +81,8 @@ public class KingsTableMenu extends BasicGameMenuBar<KingsTableFrame>
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{
+			private static final long serialVersionUID = -8254472400396140575L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string

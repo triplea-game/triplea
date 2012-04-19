@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 
 public class WaitPanel extends JPanel
 {
+	private static final long serialVersionUID = -8625021554802312498L;
+	
 	public WaitPanel(final String waitMessage)
 	{
 		setLayout(new BorderLayout());

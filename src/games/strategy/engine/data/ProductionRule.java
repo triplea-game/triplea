@@ -30,6 +30,7 @@ import java.util.Map.Entry;
  */
 public class ProductionRule extends DefaultNamed implements Serializable
 {
+	private static final long serialVersionUID = -6598296283127741307L;
 	private IntegerMap<Resource> m_cost = new IntegerMap<Resource>();
 	private IntegerMap<NamedAttachable> m_results = new IntegerMap<NamedAttachable>();
 	

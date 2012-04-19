@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class DBUser implements Serializable
 {
+	private static final long serialVersionUID = -5289923058375302916L;
 	private final String m_name;
 	private final String m_email;
 	private final boolean m_isAdmin;

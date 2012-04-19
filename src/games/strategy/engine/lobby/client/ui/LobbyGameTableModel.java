@@ -32,6 +32,9 @@ import javax.swing.table.AbstractTableModel;
 
 public class LobbyGameTableModel extends AbstractTableModel
 {
+	private static final long serialVersionUID = 6399458368730633993L;
+	
+	
 	enum Column
 	{
 		Host, Name, Round, Players, Started, Status, Comments, GUID

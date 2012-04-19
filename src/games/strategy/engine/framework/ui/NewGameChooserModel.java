@@ -28,6 +28,8 @@ import org.xml.sax.SAXParseException;
 
 public class NewGameChooserModel extends DefaultListModel
 {
+	private static final long serialVersionUID = -2044689419834812524L;
+	
 	public NewGameChooserModel()
 	{
 		populate();

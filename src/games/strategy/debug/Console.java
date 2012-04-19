@@ -50,9 +50,9 @@ import javax.swing.WindowConstants;
  * 
  * @author Sean Bridges
  */
-@SuppressWarnings("serial")
 public class Console extends JFrame
 {
+	private static final long serialVersionUID = -3489030525309243438L;
 	private static Console s_console;
 	private static final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
 	
@@ -135,6 +135,8 @@ public class Console extends JFrame
 	
 	private final Action m_copyAction = new AbstractAction("Copy to clipboard")
 	{
+		private static final long serialVersionUID = 1573097546768015070L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			final String text = m_text.getText();
@@ -144,6 +146,8 @@ public class Console extends JFrame
 	};
 	private final AbstractAction m_threadDiagnoseAction = new AbstractAction("Enumerate Threads")
 	{
+		private static final long serialVersionUID = 4414139104815149199L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			System.out.println(getThreadDumps());
@@ -151,6 +155,8 @@ public class Console extends JFrame
 	};
 	private final AbstractAction m_memoryAction = new AbstractAction("Memory")
 	{
+		private static final long serialVersionUID = 1053036985791697566L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			System.gc();
@@ -223,6 +229,8 @@ public class Console extends JFrame
 	
 	private final AbstractAction m_propertiesAction = new AbstractAction("Properties")
 	{
+		private static final long serialVersionUID = -8186358504886470902L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			final String s = getProperties();

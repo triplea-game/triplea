@@ -200,7 +200,6 @@ public class Fire implements IExecutable
 	/**
 	 * We must execute in atomic steps, push these steps onto the stack, and let them execute
 	 */
-	@SuppressWarnings("serial")
 	public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 	{
 		// add to the stack so we will execute,
@@ -208,6 +207,8 @@ public class Fire implements IExecutable
 		// push onto the stack in reverse order
 		final IExecutable rollDice = new IExecutable()
 		{
+			private static final long serialVersionUID = 7578210876028725797L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				rollDice(bridge);
@@ -215,6 +216,8 @@ public class Fire implements IExecutable
 		};
 		final IExecutable selectCasualties = new IExecutable()
 		{
+			private static final long serialVersionUID = -7687053541570519623L;
+			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				selectCasualties(bridge);

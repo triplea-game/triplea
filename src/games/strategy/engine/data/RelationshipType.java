@@ -26,6 +26,8 @@ import java.io.Serializable;
 
 public class RelationshipType extends NamedAttachable implements Serializable
 {
+	private static final long serialVersionUID = 5348310616624709971L;
+	
 	/**
 	 * create new RelationshipType
 	 * 

@@ -1,3 +1,7 @@
+Changes for 1.5.3
+* Generating Serial IDs for all classes that may need them. (veqryn)
+
+
 Changes for 1.5.2.1
 * Updated 1940 test xml to allow Axis powers to declare war on Americans separately, and for Americans to declare war on each Axis power separately. (veqryn)
 

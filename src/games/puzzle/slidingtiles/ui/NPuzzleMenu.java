@@ -32,6 +32,8 @@ import javax.swing.JScrollPane;
  */
 public class NPuzzleMenu extends BasicGameMenuBar<NPuzzleFrame>
 {
+	private static final long serialVersionUID = -5247149106915478051L;
+	
 	public NPuzzleMenu(final NPuzzleFrame frame)
 	{
 		super(frame);
@@ -50,6 +52,8 @@ public class NPuzzleMenu extends BasicGameMenuBar<NPuzzleFrame>
 	{
 		parentMenu.add(new AbstractAction("How to play...")
 		{
+			private static final long serialVersionUID = -7535795861423393750L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string

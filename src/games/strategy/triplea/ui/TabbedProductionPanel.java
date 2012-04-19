@@ -54,6 +54,7 @@ import javax.swing.JTabbedPane;
  */
 public class TabbedProductionPanel extends ProductionPanel
 {
+	private static final long serialVersionUID = 3481282212500641144L;
 	private int m_rows;
 	private int m_columns;
 	

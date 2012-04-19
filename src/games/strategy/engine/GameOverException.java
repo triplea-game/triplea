@@ -14,6 +14,8 @@ package games.strategy.engine;
  */
 public class GameOverException extends RuntimeException
 {
+	private static final long serialVersionUID = -167666722695780120L;
+	
 	public GameOverException(final String string)
 	{
 		super(string);

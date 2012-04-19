@@ -32,9 +32,9 @@ import java.util.Map;
  * 
  * 
  */
-@SuppressWarnings("serial")
 public class DelegateList extends GameDataComponent implements Iterable<IDelegate>
 {
+	private static final long serialVersionUID = 4156921032854553312L;
 	private Map<String, IDelegate> m_delegates = new HashMap<String, IDelegate>();
 	
 	public DelegateList(final GameData data)

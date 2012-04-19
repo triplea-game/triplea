@@ -27,6 +27,7 @@ import javax.swing.SwingUtilities;
  */
 public class HistoryWriter implements java.io.Serializable
 {
+	private static final long serialVersionUID = 4230519614567508061L;
 	private final History m_history;
 	private HistoryNode m_current;
 	private static final Logger s_logger = Logger.getLogger(HistoryWriter.class.getName());

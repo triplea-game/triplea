@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 public class BootPlayerAction extends AbstractAction
 {
+	private static final long serialVersionUID = 2799566047887167058L;
 	private final Component m_parent;
 	private final IServerMessenger m_messenger;
 	

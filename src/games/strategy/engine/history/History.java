@@ -193,6 +193,7 @@ public class History extends DefaultTreeModel implements java.io.Serializable
  */
 class SerializedHistory implements Serializable
 {
+	private static final long serialVersionUID = -5808427923253751651L;
 	private final List<SerializationWriter> m_Writers = new ArrayList<SerializationWriter>();
 	private final GameData m_data;
 	
@@ -240,6 +241,8 @@ class SerializedHistory implements Serializable
 
 class RootHistoryNode extends HistoryNode
 {
+	private static final long serialVersionUID = 625147613043836829L;
+	
 	public RootHistoryNode(final String title, final boolean allowsChildren)
 	{
 		super(title, allowsChildren);
@@ -261,6 +264,7 @@ interface SerializationWriter extends Serializable
 
 class ChangeSerializationWriter implements SerializationWriter
 {
+	private static final long serialVersionUID = -3802807345707883606L;
 	private final Change aChange;
 	
 	public ChangeSerializationWriter(final Change change)

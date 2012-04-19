@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 
 public class LocalSetupPanel extends SetupPanel implements Observer
 {
+	private static final long serialVersionUID = 2284030734590389060L;
 	private final GameSelectorModel m_gameSelectorModel;
 	private final List<LocalPlayerComboBoxSelector> m_playerTypes = new ArrayList<LocalPlayerComboBoxSelector>();
 	

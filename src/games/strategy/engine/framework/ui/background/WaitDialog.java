@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 
 public class WaitDialog extends JDialog
 {
+	private static final long serialVersionUID = 7433959812027467868L;
+	
 	public WaitDialog(final Component parent, final String waitMessage)
 	{
 		this(parent, waitMessage, null);

@@ -20,4 +20,6 @@ package games.strategy.engine.vault;
  */
 public class NotUnlockedException extends Exception
 {
+	
+	private static final long serialVersionUID = -2580890952206381682L;
 }

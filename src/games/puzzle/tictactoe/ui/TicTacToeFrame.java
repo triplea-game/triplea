@@ -47,6 +47,7 @@ import javax.swing.JPanel;
  */
 public class TicTacToeFrame extends MainGameFrame
 {
+	private static final long serialVersionUID = 4734801932688348473L;
 	private GameData m_data;
 	private IGame m_game;
 	private MapPanel m_mapPanel;

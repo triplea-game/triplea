@@ -60,6 +60,7 @@ import javax.swing.text.StyleConstants;
  */
 public class CommentPanel extends JPanel
 {
+	private static final long serialVersionUID = -9122162393288045888L;
 	private JTextPane m_text;
 	private JScrollPane m_scrollPane;
 	private JTextField m_nextMessage;
@@ -315,6 +316,8 @@ public class CommentPanel extends JPanel
 	
 	private final Action m_saveAction = new AbstractAction("Add Comment")
 	{
+		private static final long serialVersionUID = -5771971912942033713L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_nextMessage.getText().trim().length() == 0)

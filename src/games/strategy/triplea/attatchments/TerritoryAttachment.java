@@ -43,9 +43,10 @@ import java.util.Set;
  * @author Sean Bridges
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public class TerritoryAttachment extends DefaultAttachment
 {
+	private static final long serialVersionUID = 9102862080104655281L;
+	
 	public static Territory getCapital(final PlayerID player, final GameData data)
 	{
 		for (final Territory current : data.getMap().getTerritories())

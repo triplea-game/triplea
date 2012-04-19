@@ -42,6 +42,7 @@ import java.io.IOException;
  */
 public class EndTurnPanel extends ActionPanel
 {
+	private static final long serialVersionUID = 917277199146177235L;
 	private JLabel m_actionLabel;
 	private IPlayerBridge m_bridge;
 	private PBEMMessagePoster m_poster;
@@ -64,6 +65,8 @@ public class EndTurnPanel extends ActionPanel
 		m_actionLabel = new JLabel();
 		m_viewAction = new AbstractAction("View Turn Summary")
 		{
+			private static final long serialVersionUID = -2619980789206699839L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_historyLog.setVisible(true);
@@ -71,6 +74,8 @@ public class EndTurnPanel extends ActionPanel
 		};
 		m_postAction = new AbstractAction("Post Turn Summary")
 		{
+			private static final long serialVersionUID = 8317441736305744524L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				String message = "";
@@ -198,6 +203,8 @@ public class EndTurnPanel extends ActionPanel
 		};
 		m_includeTerritoryAction = new AbstractAction("Include territory summary")
 		{
+			private static final long serialVersionUID = 207279881318712095L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -205,6 +212,8 @@ public class EndTurnPanel extends ActionPanel
 		};
 		m_includeProductionAction = new AbstractAction("Include production summary")
 		{
+			private static final long serialVersionUID = 2298448099326090293L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -212,6 +221,8 @@ public class EndTurnPanel extends ActionPanel
 		};
 		m_showDetailsAction = new AbstractAction("Show dice/battle details")
 		{
+			private static final long serialVersionUID = -4248518090232071926L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				updateHistoryLog();
@@ -219,6 +230,8 @@ public class EndTurnPanel extends ActionPanel
 		};
 		m_doneAction = new AbstractAction("Done")
 		{
+			private static final long serialVersionUID = -3658752576117043053L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				release();

@@ -41,6 +41,7 @@ import javax.swing.ListSelectionModel;
  */
 public class PlayerChooser extends JPanel
 {
+	private static final long serialVersionUID = -7272867474891641839L;
 	private JList m_list;
 	private final PlayerList m_players;
 	private final PlayerID m_defaultPlayer;
@@ -91,6 +92,7 @@ public class PlayerChooser extends JPanel
 
 class PlayerChooserRenderer extends DefaultListCellRenderer
 {
+	private static final long serialVersionUID = -2185921124436293304L;
 	private final UIContext m_uiContext;
 	
 	PlayerChooserRenderer(final PlayerList players, final UIContext uiContext)

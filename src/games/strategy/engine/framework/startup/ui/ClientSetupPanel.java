@@ -27,9 +27,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-@SuppressWarnings("serial")
 public class ClientSetupPanel extends SetupPanel
 {
+	private static final long serialVersionUID = 6942605803526295372L;
 	private final Insets BUTTON_INSETS = new Insets(0, 0, 0, 0);
 	private final ClientModel m_model;
 	private List<PlayerRow> m_playerRows = Collections.emptyList();
@@ -245,6 +245,8 @@ public class ClientSetupPanel extends SetupPanel
 		
 		private final Action m_takeAction = new AbstractAction("Play")
 		{
+			private static final long serialVersionUID = 9086754428763609790L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_model.takePlayer(m_playerNameLabel.getText());
@@ -252,6 +254,8 @@ public class ClientSetupPanel extends SetupPanel
 		};
 		private final Action m_dontTakeAction = new AbstractAction("Dont Play")
 		{
+			private static final long serialVersionUID = 8735891444454338978L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				m_model.releasePlayer(m_playerNameLabel.getText());

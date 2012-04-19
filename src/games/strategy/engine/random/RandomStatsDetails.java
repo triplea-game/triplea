@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 public class RandomStatsDetails implements Serializable
 {
+	private static final long serialVersionUID = 69602197220912520L;
 	private final IntegerMap<Integer> m_data;
 	private double m_average;
 	private int m_total;

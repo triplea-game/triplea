@@ -52,6 +52,7 @@ import javax.swing.SwingUtilities;
  */
 public class PurchasePanel extends ActionPanel
 {
+	private static final long serialVersionUID = -6121756876868623355L;
 	private final JLabel actionLabel = new JLabel();
 	private IntegerMap<ProductionRule> m_purchase;
 	private boolean m_bid;
@@ -146,6 +147,8 @@ public class PurchasePanel extends ActionPanel
 	
 	private final AbstractAction PURCHASE_ACTION = new AbstractAction("Buy")
 	{
+		private static final long serialVersionUID = -2931438906267249990L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			final PlayerID player = getCurrentPlayer();
@@ -181,6 +184,8 @@ public class PurchasePanel extends ActionPanel
 	
 	private final Action DoneAction = new AbstractAction("Done")
 	{
+		private static final long serialVersionUID = -209781523508962628L;
+		
 		public void actionPerformed(final ActionEvent event)
 		{
 			final boolean hasPurchased = m_purchase.totalValues() != 0;

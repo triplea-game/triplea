@@ -30,6 +30,8 @@ import javax.swing.OverlayLayout;
  */
 public class ImageScroller extends JPanel
 {
+	private static final long serialVersionUID = -794229118989828922L;
+	
 	/**
 	 * Creates new ImageScroller
 	 */

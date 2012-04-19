@@ -56,9 +56,9 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-@SuppressWarnings("serial")
 public class CenterPicker extends JFrame
 {
+	private static final long serialVersionUID = -5633998810385136625L;
 	private Image m_image; // The map image will be stored here
 	private Map<String, Point> m_centers = new HashMap<String, Point>(); // hash map for center points
 	private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // hash map for polygon points
@@ -180,6 +180,8 @@ public class CenterPicker extends JFrame
 		// set up the actions
 		final Action openAction = new AbstractAction("Load Centers")
 		{
+			private static final long serialVersionUID = 2712234474452114083L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				loadCenters();
@@ -188,6 +190,8 @@ public class CenterPicker extends JFrame
 		openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Center Points File");
 		final Action saveAction = new AbstractAction("Save Centers")
 		{
+			private static final long serialVersionUID = -4519036149978621171L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				saveCenters();
@@ -196,6 +200,8 @@ public class CenterPicker extends JFrame
 		saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Center Points To File");
 		final Action exitAction = new AbstractAction("Exit")
 		{
+			private static final long serialVersionUID = -5631457890653630218L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
@@ -253,6 +259,8 @@ public class CenterPicker extends JFrame
 	{
 		final JPanel imagePanel = new JPanel()
 		{
+			private static final long serialVersionUID = -7130828419508975924L;
+			
 			@Override
 			public void paint(final Graphics g)
 			{

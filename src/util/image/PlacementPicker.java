@@ -55,9 +55,9 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-@SuppressWarnings("serial")
 public class PlacementPicker extends JFrame
 {
+	private static final long serialVersionUID = 953019978051420881L;
 	private Point m_currentSquare;
 	private Image m_image;
 	private final JLabel m_location = new JLabel();
@@ -183,6 +183,8 @@ public class PlacementPicker extends JFrame
 		// set up the actions
 		final Action openAction = new AbstractAction("Load Placements")
 		{
+			private static final long serialVersionUID = -2894085191455411106L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				loadPlacements();
@@ -191,6 +193,8 @@ public class PlacementPicker extends JFrame
 		openAction.putValue(Action.SHORT_DESCRIPTION, "Load An Existing Placement File");
 		final Action saveAction = new AbstractAction("Save Placements")
 		{
+			private static final long serialVersionUID = -3341738809601318716L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				savePlacements();
@@ -199,6 +203,8 @@ public class PlacementPicker extends JFrame
 		saveAction.putValue(Action.SHORT_DESCRIPTION, "Save The Placements To File");
 		final Action exitAction = new AbstractAction("Exit")
 		{
+			private static final long serialVersionUID = -9093426903644867897L;
+			
 			public void actionPerformed(final ActionEvent event)
 			{
 				System.exit(0);
@@ -256,6 +262,8 @@ public class PlacementPicker extends JFrame
 	{
 		final JPanel imagePanel = new JPanel()
 		{
+			private static final long serialVersionUID = -3941975573431195136L;
+			
 			@Override
 			public void paint(final Graphics g)
 			{

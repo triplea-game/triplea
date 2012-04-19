@@ -32,6 +32,7 @@ import javax.swing.SwingUtilities;
 
 public class DicePanel extends JPanel
 {
+	private static final long serialVersionUID = -7544999867518263506L;
 	private final UIContext m_uiContext;
 	private final GameData m_data;
 	

@@ -62,6 +62,7 @@ import javax.swing.text.StyleConstants;
  */
 public class ChatMessagePanel extends JPanel implements IChatListener
 {
+	private static final long serialVersionUID = 118727200083595226L;
 	private final ChatFloodControl floodControl = new ChatFloodControl();
 	private static final int MAX_LINES = 5000;
 	private JTextPane m_text;
@@ -400,6 +401,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	
 	private final Action m_setStatusAction = new AbstractAction("Status...")
 	{
+		private static final long serialVersionUID = -774288042140967424L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			String status = JOptionPane.showInputDialog(JOptionPane.getFrameForComponent(ChatMessagePanel.this), "Enter Status Text (leave blank for no status)", "");
@@ -413,6 +416,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	};
 	private final Action m_sendAction = new AbstractAction("Send")
 	{
+		private static final long serialVersionUID = -1315412454568254254L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_nextMessage.getText().trim().length() == 0)
@@ -430,6 +435,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	};
 	private final Action m_DownAction = new AbstractAction()
 	{
+		private static final long serialVersionUID = -1945655511272482449L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_chat == null)
@@ -440,6 +447,8 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	};
 	private final Action m_UpAction = new AbstractAction()
 	{
+		private static final long serialVersionUID = 1541868547613849892L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (m_chat == null)

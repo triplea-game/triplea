@@ -32,9 +32,9 @@ import java.util.Set;
  * 
  *          A collection of unit types
  */
-@SuppressWarnings("serial")
 public class UnitTypeList extends GameDataComponent implements Iterable<UnitType>
 {
+	private static final long serialVersionUID = 9002927658524651749L;
 	private final Map<String, UnitType> m_unitTypes = new HashMap<String, UnitType>();
 	
 	/**

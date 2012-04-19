@@ -35,6 +35,7 @@ import javax.swing.table.TableModel;
 
 public class DBExplorerPanel extends JPanel
 {
+	private static final long serialVersionUID = 7259741539317170247L;
 	private JTable m_table;
 	private JTextArea m_sql;
 	private JButton m_execute;

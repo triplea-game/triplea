@@ -673,6 +673,7 @@ class EndPoint
 // an end point has been created, we should follow
 class EndPointCreated implements Serializable
 {
+	private static final long serialVersionUID = -5780669206340723091L;
 	public final String[] classes;
 	public final String name;
 	public final boolean singleThreaded;
@@ -689,6 +690,7 @@ class EndPointCreated implements Serializable
 // and end point has been destroyed, we too should jump off that bridge
 class EndPointDestroyed implements Serializable
 {
+	private static final long serialVersionUID = 8932889316564814214L;
 	public final String name;
 	
 	public EndPointDestroyed(final String name)
@@ -707,6 +709,7 @@ class EndPointDestroyed implements Serializable
 // someone now has an implementor for an endpoint
 class HasEndPointImplementor implements Serializable
 {
+	private static final long serialVersionUID = 7607319129099694815L;
 	public final String endPointName;
 	
 	public HasEndPointImplementor(final String endPointName)
@@ -725,6 +728,7 @@ class HasEndPointImplementor implements Serializable
 // someone no longer has implementors for an endpoint
 class NoLongerHasEndPointImplementor implements Serializable
 {
+	private static final long serialVersionUID = -4855990132007435355L;
 	public final String endPointName;
 	
 	public NoLongerHasEndPointImplementor(final String endPointName)

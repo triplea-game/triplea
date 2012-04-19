@@ -107,6 +107,8 @@ public class Util
 	
 	private static final Component c = new Component()
 	{
+		
+		private static final long serialVersionUID = 1800075529163275600L;
 	};
 	
 	public static void ensureImageLoaded(final Image anImage) throws InterruptedException

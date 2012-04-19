@@ -41,6 +41,7 @@ import javax.swing.text.PlainDocument;
  */
 public class IntTextField extends JTextField
 {
+	private static final long serialVersionUID = -7993942326354823887L;
 	private int m_max = Integer.MAX_VALUE;
 	private int m_min = Integer.MIN_VALUE;
 	private String m_terr = null;
@@ -181,6 +182,8 @@ public class IntTextField extends JTextField
 	 */
 	private class IntegerDocument extends PlainDocument
 	{
+		private static final long serialVersionUID = 135871239193051281L;
+		
 		@Override
 		public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException
 		{

@@ -34,9 +34,9 @@ import javax.swing.JTextArea;
  * @author Veqryn
  * 
  */
-@SuppressWarnings("serial")
 public class IndividualUnitPanel extends JPanel
 {
+	private static final long serialVersionUID = -4222938655315991715L;
 	private final List<SingleUnitPanel> m_entries = new ArrayList<SingleUnitPanel>();
 	private final JTextArea m_title;
 	private int m_max = -1;
@@ -232,9 +232,9 @@ public class IndividualUnitPanel extends JPanel
 }
 
 
-@SuppressWarnings("serial")
 class SingleUnitPanel extends JPanel
 {
+	private static final long serialVersionUID = 5034287842323633030L;
 	private final Unit m_unit;
 	private final UIContext m_context;
 	private final ScrollableTextField m_textField;

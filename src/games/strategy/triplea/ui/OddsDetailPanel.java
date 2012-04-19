@@ -30,6 +30,7 @@ import javax.swing.border.EmptyBorder;
 
 public class OddsDetailPanel extends JPanel
 {
+	private static final long serialVersionUID = 554557270136941139L;
 	// fight the battle this many times to get a good average
 	private static final int FIGHT_COUNT = 1000;
 	private GameData m_data;

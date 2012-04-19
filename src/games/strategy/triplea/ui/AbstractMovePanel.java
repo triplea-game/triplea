@@ -29,9 +29,9 @@ import javax.swing.SwingUtilities;
  * @author Erik von der Osten (based on original move panel by Sean Bridges)
  * @version 1.0
  */
-@SuppressWarnings("serial")
 public abstract class AbstractMovePanel extends ActionPanel
 {
+	private static final long serialVersionUID = -4153574987414031433L;
 	private static final String s_MOVE_PANEL_CANCEL = "movePanel.cancel";
 	private static final Logger s_logger = Logger.getLogger(MovePanel.class.getName());
 	private static final int s_entryPadding = 15;
@@ -42,6 +42,8 @@ public abstract class AbstractMovePanel extends ActionPanel
 	protected List<UndoableMove> m_undoableMoves;
 	protected AbstractAction m_doneMove = new AbstractAction("Done")
 	{
+		private static final long serialVersionUID = -6497408896615920650L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			if (doneMoveAction())
@@ -54,6 +56,8 @@ public abstract class AbstractMovePanel extends ActionPanel
 	private final Action m_DONE_MOVE_ACTION = new WeakAction("Done", m_doneMove);
 	private final Action m_cancelMove = new AbstractAction("Cancel")
 	{
+		private static final long serialVersionUID = -257745862234175428L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			cancelMoveAction();

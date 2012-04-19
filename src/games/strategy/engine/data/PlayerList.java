@@ -29,9 +29,9 @@ import java.util.Map;
  * @version 1.0
  * 
  */
-@SuppressWarnings("serial")
 public class PlayerList extends GameDataComponent implements Iterable<PlayerID>
 {
+	private static final long serialVersionUID = -3895068111754745446L;
 	// maps String playerName -> PlayerID
 	private final Map<String, PlayerID> m_players = new LinkedHashMap<String, PlayerID>();
 	

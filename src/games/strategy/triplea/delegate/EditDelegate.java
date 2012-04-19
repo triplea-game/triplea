@@ -295,9 +295,9 @@ public class EditDelegate extends BaseDelegate implements IEditDelegate
 }
 
 
-@SuppressWarnings("serial")
 class EditExtendedDelegateState implements Serializable
 {
+	private static final long serialVersionUID = -4235024495025606313L;
 	Serializable superState;
 	// add other variables here:
 }

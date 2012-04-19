@@ -30,6 +30,8 @@ package games.strategy.engine.message;
  */
 public class RemoteNotFoundException extends MessengerException
 {
+	private static final long serialVersionUID = 7169515572485196188L;
+	
 	public RemoteNotFoundException(final String string)
 	{
 		super(string, new IllegalStateException("remote not found"));

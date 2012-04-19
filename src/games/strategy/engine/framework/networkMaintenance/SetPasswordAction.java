@@ -14,6 +14,7 @@ import javax.swing.JPasswordField;
 
 public class SetPasswordAction extends AbstractAction
 {
+	private static final long serialVersionUID = -7767288210554177480L;
 	private final ClientLoginValidator m_validator;
 	private final Component m_parent;
 	
