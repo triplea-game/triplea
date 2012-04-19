@@ -57,8 +57,7 @@ public abstract class BaseDelegate implements IDelegate
 	/**
 	 * Called before the delegate will run.
 	 * All classes should call super.start if they override this.
-	 * The only exception is that persistent delegates like Edit Delegate should not call super.start(),
-	 * because we do not want to fire triggers for the edit delegate.
+	 * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
 	 */
 	public void start(final IDelegateBridge bridge)
 	{
@@ -74,8 +73,7 @@ public abstract class BaseDelegate implements IDelegate
 	/**
 	 * Called before the delegate will stop running.
 	 * All classes should call super.end if they override this.
-	 * The only exception is that persistent delegates like Edit Delegate should not call super.end(),
-	 * because we do not want to fire triggers for the edit delegate.
+	 * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
 	 */
 	public void end()
 	{

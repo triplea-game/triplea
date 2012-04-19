@@ -77,7 +77,13 @@ public class EditValidator
 		{
 			if (!Match.allMatch(units, Matches.UnitIsSea))
 			{
-				if (Match.allMatch(units, Matches.UnitIsLand))
+				if (Match.someMatch(units, Matches.UnitIsLand))
+				{
+					// TODO: we can not add them unless we set them as being transported, which is not coded yet.
+					return "Can not add land units to water";
+				}
+				/*
+				if (Match.someMatch(units, Matches.UnitIsLand))
 				{
 					// Set up matches
 					final TransportTracker transportTracker = new TransportTracker();
@@ -90,19 +96,20 @@ public class EditValidator
 					final Collection<Unit> transports = territory.getUnits().getMatches(friendlyTransports);
 					if (transports.size() == 0 || transportCapacityTotal - transportCost < 0)
 						return "Can't add land units to water";
-				}
-				if (Match.allMatch(units, Matches.UnitIsAir))
+				}*/
+				if (Match.someMatch(units, Matches.UnitIsAir))
 				{
 					// Set up matches
 					final Match<Unit> friendlyCarriers = new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
 					final Match<Unit> friendlyAirUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.alliedUnit(player, data));
 					// Determine transport capacity
-					final int carrierCapacityTotal = AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory);
+					final int carrierCapacityTotal = AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)
+								+ AirMovementValidator.carrierCapacity(units, territory);
 					final int carrierCost = AirMovementValidator.carrierCost(territory.getUnits().getMatches(friendlyAirUnits)) + AirMovementValidator.carrierCost(units);
 					// Get any transports in the sea zone
 					final Collection<Unit> carriers = territory.getUnits().getMatches(friendlyCarriers);
 					if (carriers.size() == 0 || carrierCapacityTotal - carrierCost < 0)
-						return "Can't add land units to water";
+						return "Can't add air units to water";
 				}
 			}
 		}

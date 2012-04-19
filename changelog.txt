@@ -1,4 +1,8 @@
 Changes for 1.5.3
+* Possibly fixing the problems with Edit Mode, by fixing a previous refactoring that switched two variables up. (veqryn)
+
+* Possibly fixing the problems with Edit Mode, by abstracting BasePersistentDelegate and separating EditDelegate from BaseDelegate. (veqryn)
+
 * Generating Serial IDs for all classes that may need them. (veqryn)
 
 
