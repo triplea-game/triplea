@@ -877,14 +877,17 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				if (!m_isOver && canDefenderRetreatSubs() && !isSubRetreatBeforeBattle())
-					defenderRetreatSubs(bridge);
-				// Here we test if there are any defenders left. If no defenders, then battle is over.
-				// The reason we test a "second" time here, is because otherwise the attackers can retreat even though the battle is over (illegal).
-				if (m_defendingUnits.isEmpty())
+				if (!m_isOver)
 				{
-					endBattle(bridge);
-					attackerWins(bridge);
+					if (canDefenderRetreatSubs() && !isSubRetreatBeforeBattle())
+						defenderRetreatSubs(bridge);
+					// Here we test if there are any defenders left. If no defenders, then battle is over.
+					// The reason we test a "second" time here, is because otherwise the attackers can retreat even though the battle is over (illegal).
+					if (m_defendingUnits.isEmpty())
+					{
+						endBattle(bridge);
+						attackerWins(bridge);
+					}
 				}
 			}
 		});
@@ -895,7 +898,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				if (canAttackerRetreatPlanes() && !canAttackerRetreatPartialAmphib() && !m_isOver)
+				if (!m_isOver && canAttackerRetreatPlanes() && !canAttackerRetreatPartialAmphib())
 					attackerRetreatPlanes(bridge);
 			}
 		});
@@ -906,7 +909,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				if (canAttackerRetreatPartialAmphib() && !m_isOver)
+				if (!m_isOver && canAttackerRetreatPartialAmphib())
 					attackerRetreatNonAmphibUnits(bridge);
 			}
 		});
@@ -917,7 +920,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
-				attackerRetreat(bridge);
+				if (!m_isOver)
+				{
+					attackerRetreat(bridge);
+				}
 			}
 		});
 		final IExecutable loop = new IExecutable()

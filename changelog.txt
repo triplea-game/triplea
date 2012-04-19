@@ -1,4 +1,6 @@
 Changes for 1.5.3
+* Fixed issue with battles showing who won twice in the history panel. (veqryn)
+
 * Moving BattleRecord to its own class, and having BattleRecord, BattleRecords, and BattleResults all extend GameDataComponent. (veqryn)
 
 * Possibly fixing the problems with Edit Mode, by fixing a previous refactoring that switched two variables up. (veqryn)
