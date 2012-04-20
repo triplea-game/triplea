@@ -1,4 +1,8 @@
 Changes for 1.5.3
+* Fixed bug where a NonFighting battle was attempting to add the result as a child in the history panel, without creating the event first. (veqryn)
+
+* Fixed bug preventing Moore AI from placing Transport type sea units whenever it did not buy non-transport sea units. (veqryn)
+
 * Clearing all cached data for AIs once a game has been left. (veqryn)
 
 * Clearing cached data for Dynamix AI once a game has been left. (frigoref)

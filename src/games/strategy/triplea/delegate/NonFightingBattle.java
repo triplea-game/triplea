@@ -76,6 +76,9 @@ public class NonFightingBattle extends AbstractBattle
 	{
 		if (!m_battleTracker.getDependentOn(this).isEmpty())
 			throw new IllegalStateException("Must fight battles that this battle depends on first");
+		// create event
+		bridge.getHistoryWriter().startEvent("Battle in " + m_battleSite);
+		bridge.getHistoryWriter().setRenderingData(m_battleSite);
 		// if any attacking non air units then win
 		final boolean someAttacking = hasAttackingUnits();
 		if (someAttacking)
@@ -136,7 +139,7 @@ public class NonFightingBattle extends AbstractBattle
 		if (lost.size() != 0)
 		{
 			final String transcriptText = MyFormatter.unitsToText(lost) + " lost in " + m_battleSite.getName();
-			bridge.getHistoryWriter().startEvent(transcriptText);
+			bridge.getHistoryWriter().addChildToEvent(transcriptText, lost);
 			final Change change = ChangeFactory.removeUnits(m_battleSite, lost);
 			bridge.addChange(change);
 		}

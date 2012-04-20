@@ -9366,7 +9366,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					seaAttackUnitFactories.put(unitFact3, 0);
 			}
 		}
-		final Collection<Territory> landFactories = landUnitFactories.keySet();
+		final Collection<Territory> landFactories = new ArrayList<Territory>(landUnitFactories.keySet());
 		final List<Territory> landRouteFactories = new ArrayList<Territory>();
 		for (final Territory landCheck : landFactories)
 		{
@@ -9581,15 +9581,15 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		if (seaUnits.isEmpty() && transUnits.isEmpty())
 			return;
-		final PlaceableUnits pu = placeDelegate.getPlaceableUnits(seaUnits, seaPlaceAttack);
-		int pLeft = 0;
-		if (pu.getErrorMessage() != null)
-			return;
 		if (seaPlaceAttack == seaPlaceTrans)
 		{
 			seaUnits.addAll(transUnits);
 			transUnits.clear();
 		}
+		final PlaceableUnits pu = placeDelegate.getPlaceableUnits(seaUnits, seaPlaceAttack);
+		int pLeft = 0;
+		if (pu.getErrorMessage() != null)
+			return;
 		if (!seaUnits.isEmpty())
 		{
 			pLeft = pu.getMaxUnits();
