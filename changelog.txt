@@ -1,4 +1,6 @@
 Changes for 1.5.3
+* Refactoring TechAdvance and GenericTechAdvance to extend NamedAttachable, that way they can eventually have attachments. (veqryn)
+
 * Fixed bug where a NonFighting battle was attempting to add the result as a child in the history panel, without creating the event first. (veqryn)
 
 * Fixed bug preventing Moore AI from placing Transport type sea units whenever it did not buy non-transport sea units. (veqryn)

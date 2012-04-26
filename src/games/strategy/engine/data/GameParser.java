@@ -143,6 +143,7 @@ public class GameParser
 		final Element production = getSingleChild("production", root, true);
 		if (production != null)
 			parseProduction(production);
+		TechAdvance.setStaticTechs(data);
 		final Element technology = getSingleChild("technology", root, true);
 		if (technology != null)
 			parseTechnology(technology);
@@ -1256,7 +1257,7 @@ public class GameParser
 			TechAdvance ta;
 			if (tech.length() > 0)
 			{
-				ta = new GenericTechAdvance(name, TechAdvance.findDefinedAdvance(tech));
+				ta = new GenericTechAdvance(name, TechAdvance.findDefinedAdvance(tech), data);
 			}
 			else
 			{
@@ -1265,7 +1266,7 @@ public class GameParser
 					ta = TechAdvance.findDefinedAdvance(name);
 				} catch (final IllegalArgumentException e)
 				{
-					ta = new GenericTechAdvance(name, null);
+					ta = new GenericTechAdvance(name, null, data);
 				}
 			}
 			frontier.addAdvance(ta);

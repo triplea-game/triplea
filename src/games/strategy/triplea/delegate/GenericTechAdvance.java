@@ -1,28 +1,19 @@
 package games.strategy.triplea.delegate;
 
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TechAttachment;
 
 public class GenericTechAdvance extends TechAdvance
 {
-	private final String m_name;
-	private final TechAdvance m_advance;
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5985281030083508185L;
+	private final TechAdvance m_advance;
 	
-	public GenericTechAdvance(final String n, final TechAdvance t)
+	public GenericTechAdvance(final String name, final TechAdvance techAdvance, final GameData data)
 	{
-		m_name = n;
-		m_advance = t;
-	}
-	
-	@Override
-	public String getName()
-	{
-		return m_name;
+		super(name, data);
+		m_advance = techAdvance;
 	}
 	
 	@Override
@@ -31,7 +22,7 @@ public class GenericTechAdvance extends TechAdvance
 		if (m_advance != null)
 			return m_advance.getProperty();
 		else
-			return m_name;
+			return getName();
 	}
 	
 	@Override
@@ -51,6 +42,6 @@ public class GenericTechAdvance extends TechAdvance
 	{
 		if (m_advance != null)
 			return m_advance.hasTech(ta);
-		return ta.hasGenericTech(m_name);
+		return ta.hasGenericTech(getName());
 	}
 }
