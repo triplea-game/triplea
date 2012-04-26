@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel 2" version="3.5.1"/>
+        <info name="Pact of Steel 2" version="3.5.3"/>
 		
 			<!-- A MOD of original POS by VEQRYN
 					The purpose is to provide a fun game that shows off all the new features of TripleA since 1.2.5.5
@@ -4205,6 +4205,20 @@
 					<option name="attemptsPerTurn" value="1"/>
 	     			<option name="actionAccept" value="Russians"/>
 	     		</attatchment>
+				
+				
+				
+<!-- Tech Ability Attachment -->
+	<!-- the following options are allowed for "techAbilityAttachment"
+			movementBonus						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit
+			
+	-->
+				<attatchment name="techAbilityAttachment" attatchTo="longRangeAir" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="movementBonus" value="1:fighter"/>
+						<option name="movementBonus" value="1:jp_fighter"/>
+						<option name="movementBonus" value="1:bomber"/>
+						<option name="movementBonus" value="1:air_transport"/>
+				</attatchment>
 
         </attatchmentList>
 
@@ -5234,6 +5248,7 @@
         				<br>13. Politics phase: alliances and states of war are now dynamic and can be changed in game.  Japan and Russia start out in a state of Neutrality towards each other, while Russia, America and the UK also start out as neutral towards each other.  
 									Japan and Russia will go to war on the 5th turn if they are still neutral by then.  Italy and Russia have the option of declaring a 2 round ceasefire.
         				<br>14. Strategic Bombing Raids can now have an Air battle preceeding the raid. Fighters escorting the bombers, and any defending interceptors fire at 2, while the bombers fire at 1.  The battle only lasts 1 round.
+        				<br>15. Long Range Aircraft tech now only increases movement by 1.
         				<br>
         				<br>
         				<br>
@@ -5322,7 +5337,7 @@
         				JET POWER- fighters and air transports get +1 attack<br>
         				IMPROVED SHIPYARDS- naval units are cheaper<br>
         				AA RADAR- AA hit on 2 or less<br>
-        				LONG RANGE AIRCRAFT- aircraft range increased by 2<br>
+        				LONG RANGE AIRCRAFT- aircraft range increased by 1<br>
         				HEAVY BOMBER- roll 2 dice for each bomber attack (if LHTR enabled: rolls 2 dice and selects the best one, StratBombing adds one to result)<br>
         				<br>
          				*** Land/Production Tech ***<br>

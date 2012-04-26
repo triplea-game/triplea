@@ -53,67 +53,6 @@ public class TechTracker implements java.io.Serializable
 			if (ta.hasTech(attachment))
 				rVal.add(ta);
 		}
-		/*
-		TechAttachment attachment = TechAttachment.get(id);
-
-		if(attachment.hasHeavyBomber())
-		{
-		  rVal.add(TechAdvance.HEAVY_BOMBER);
-		}
-		if(attachment.hasIndustrialTechnology())
-		{
-		  rVal.add(TechAdvance.INDUSTRIAL_TECHNOLOGY);
-		}
-		if(attachment.hasJetPower())
-		{
-		  rVal.add(TechAdvance.JET_POWER);
-		}
-		if(attachment.hasLongRangeAir())
-		{
-		  rVal.add(TechAdvance.LONG_RANGE_AIRCRAFT);
-		}
-		if(attachment.hasRocket())
-		{
-		  rVal.add(TechAdvance.ROCKETS);
-		}
-		if(attachment.hasSuperSub())
-		{
-		  rVal.add(TechAdvance.SUPER_SUBS);
-		}
-		if(attachment.hasDestroyerBombard())
-		{
-		  rVal.add(TechAdvance.DESTROYER_BOMBARD);
-		}
-		if(attachment.hasImprovedArtillerySupport())
-		{
-		  rVal.add(TechAdvance.IMPROVED_ARTILLERY_SUPPORT);
-		}
-		if(attachment.hasParatroopers())
-		{
-		  rVal.add(TechAdvance.PARATROOPERS);
-		}
-		if(attachment.hasIncreasedFactoryProduction())
-		{
-		  rVal.add(TechAdvance.INCREASED_FACTORY_PRODUCTION);
-		}
-		if(attachment.hasWarBonds())
-		{
-		  rVal.add(TechAdvance.WAR_BONDS);
-		}
-		if(attachment.hasMechanizedInfantry())
-		{
-		  rVal.add(TechAdvance.MECHANIZED_INFANTRY);
-		}
-		if(attachment.hasAARadar())
-		{
-		  rVal.add(TechAdvance.AA_RADAR);
-		}
-		if(attachment.hasShipyards())
-		{
-		  rVal.add(TechAdvance.IMPROVED_SHIPYARDS);
-		}
-
-		*/
 		return rVal;
 	}
 	
@@ -133,19 +72,6 @@ public class TechTracker implements java.io.Serializable
 			if (has)
 				rVal.add(tf);
 		}
-		/*
-		if(attachment.hasSuperSub() && attachment.hasJetPower() && attachment.hasShipyards() &&
-		                attachment.hasAARadar() && attachment.hasLongRangeAir() && attachment.hasHeavyBomber())
-		{
-		  rVal.add(TechAdvance.AIR_NAVAL_ADVANCES);
-		}
-
-		if(attachment.hasImprovedArtillerySupport() && attachment.hasRocket() && attachment.hasParatroopers() &&
-		                attachment.hasIncreasedFactoryProduction() && attachment.hasWarBonds() && attachment.hasMechanizedInfantry())
-		{
-		  rVal.add(TechAdvance.LAND_PRODUCTION_ADVANCES);
-		}
-		*/
 		return rVal;
 	}
 	
@@ -173,14 +99,6 @@ public class TechTracker implements java.io.Serializable
 		advance.perform(player, bridge);
 	}
 	
-	/*
-	private static String capitalizeFirstLetter(String aString)
-	{
-		char first = aString.charAt(0);
-		first = Character.toUpperCase(first);
-		return first + aString.substring(1);
-	}
-	*/
 	public static boolean hasLongRangeAir(final PlayerID player)
 	{
 		return TechAttachment.get(player).getLongRangeAir();

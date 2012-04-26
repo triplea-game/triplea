@@ -328,5 +328,9 @@ public interface IAttachment extends Serializable
 	static final String PROPERTY_TriggerAttachment_UNIT_TYPE = "unitType"; // just added this
 	static final String PROPERTY_TriggerAttachment_VICTORY = "victory";
 	static final String PROPERTY_TriggerAttachment_ACTIVATE_TRIGGER = "activateTrigger"; // just added this 2
+	
+	// TechAbilityAttachment
+	static final String PROPERTY_TechAbilityAttachment_MOVEMENT_BONUS = "movementBonus";
+	
 	*/
 }

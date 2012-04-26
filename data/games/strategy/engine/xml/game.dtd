@@ -200,7 +200,7 @@
 		name CDATA #REQUIRED
 		attatchTo CDATA #REQUIRED
 		javaClass CDATA #REQUIRED
-		type (unitType | territory | resource | player | relationship | territoryEffect)  "unitType"
+		type (unitType | territory | resource | player | relationship | territoryEffect | technology)  "unitType"
 	>
 		<!ELEMENT option EMPTY > 
 		<!ATTLIST option

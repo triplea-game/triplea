@@ -30,6 +30,7 @@ import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -156,6 +157,8 @@ public class GameParser
 		// set & override default relationships
 		data.getRelationshipTracker().setNullPlayerRelations(); // sets the relationship between all players and the NullPlayer to NullRelation (with archeType War)
 		data.getRelationshipTracker().setSelfRelations(); // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
+		// set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game options/properties)
+		TechAbilityAttachment.setDefaultTechnologyAttachments(data);
 		try
 		{
 			validate();
@@ -335,6 +338,20 @@ public class GameParser
 		final UnitType type = data.getUnitTypeList().getUnitType(name);
 		if (type == null && mustFind)
 			throw new GameParseException("Could not find unitType. name:" + name);
+		return type;
+	}
+	
+	/**
+	 * If mustfind is true and cannot find the technology an exception will be thrown.
+	 */
+	private TechAdvance getTechnology(final Element element, final String attribute, final boolean mustFind) throws GameParseException
+	{
+		final String name = element.getAttribute(attribute);
+		TechAdvance type = data.getTechnologyFrontier().getAdvanceByName(name);
+		if (type == null)
+			type = data.getTechnologyFrontier().getAdvanceByProperty(name);
+		if (type == null && mustFind)
+			throw new GameParseException("Could not find technology. name:" + name);
 		return type;
 	}
 	
@@ -1377,6 +1394,10 @@ public class GameParser
 		else if (type.equals("relationship"))
 		{
 			returnVal = this.getRelationshipType(element, name, true);
+		}
+		else if (type.equals("technology"))
+		{
+			returnVal = getTechnology(element, name, true);
 		}
 		else
 		{

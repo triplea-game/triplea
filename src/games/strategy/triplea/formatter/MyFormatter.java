@@ -172,7 +172,7 @@ public class MyFormatter
 		if (attachmentGetName.startsWith(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME))
 			toText = attachmentGetName.replaceFirst(Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME, "Relationship Type ");
 		else if (attachmentGetName.startsWith(Constants.TECH_ATTACHMENT_NAME))
-			toText = attachmentGetName.replaceFirst(Constants.TECH_ATTACHMENT_NAME, "Player Tech Properties ");
+			toText = attachmentGetName.replaceFirst(Constants.TECH_ATTACHMENT_NAME, "Player Techs ");
 		else if (attachmentGetName.startsWith(Constants.UNIT_ATTACHMENT_NAME))
 			toText = attachmentGetName.replaceFirst(Constants.UNIT_ATTACHMENT_NAME, "Unit Type Properties ");
 		else if (attachmentGetName.startsWith(Constants.TERRITORY_ATTACHMENT_NAME))
@@ -195,6 +195,8 @@ public class MyFormatter
 			toText = attachmentGetName.replaceFirst(Constants.PLAYER_ATTACHMENT_NAME, "Player Properties ");
 		else if (attachmentGetName.startsWith(Constants.POLITICALACTION_ATTACHMENT_PREFIX))
 			toText = attachmentGetName.replaceFirst(Constants.POLITICALACTION_ATTACHMENT_PREFIX, "Political Action ");
+		else if (attachmentGetName.startsWith(Constants.TECH_ABILITY_ATTACHMENT_NAME))
+			toText = attachmentGetName.replaceFirst(Constants.TECH_ABILITY_ATTACHMENT_NAME, "Tech Properties ");
 		toText = toText.replaceAll("_", " ");
 		toText = toText.replaceAll("  ", " ");
 		toText = toText.trim();

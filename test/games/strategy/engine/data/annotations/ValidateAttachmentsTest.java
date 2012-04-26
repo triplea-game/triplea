@@ -115,6 +115,7 @@ public class ValidateAttachmentsTest extends TestCase
 		sb.append(validateAttachment(games.strategy.triplea.attatchments.TriggerAttachment.class));
 		sb.append(validateAttachment(games.strategy.triplea.attatchments.UnitAttachment.class));
 		sb.append(validateAttachment(games.strategy.triplea.attatchments.UnitSupportAttachment.class));
+		sb.append(validateAttachment(games.strategy.triplea.attatchments.TechAbilityAttachment.class));
 		if (sb.toString().length() > 0)
 		{
 			System.out.println(sb.toString());

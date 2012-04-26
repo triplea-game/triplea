@@ -479,6 +479,8 @@ public class GameDataExporter
 				type = "resource";
 			if (attachTo.getClass().equals(RelationshipType.class))
 				type = "relationship";
+			if (TechAdvance.class.isAssignableFrom(attachTo.getClass()))
+				type = "technology";
 			if (type.equals(""))
 				throw new AttachmentExportException("no attachmentType known for " + attachTo.getClass().getCanonicalName());
 			if (attachmentOptions.length() > 0)

@@ -1302,12 +1302,7 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public int getMovement(final PlayerID player)
 	{
-		if (m_isAir)
-		{
-			if (TechTracker.hasLongRangeAir(player))
-				return m_movement + 2;
-		}
-		return m_movement;
+		return m_movement + TechAbilityAttachment.getMovementBonus((UnitType) this.getAttachedTo(), player, getData());
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)

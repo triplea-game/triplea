@@ -1,4 +1,10 @@
 Changes for 1.5.3
+* Created default attachment for Long Range Air, which will now be set to give +2 movement to all air units, that are air units at the start of the game. Also changing Pact of Steel 2 to have Long Range Air give only +1 movement. (veqryn)
+
+* Created framework for interpreting TechAbilityAttachment's, and also setting of default attachments for hardcoded technologies. (veqryn) 
+
+* Created new type of attachment, TechAbilityAttachment, which will control how all technologies work. (veqryn)
+
 * Refactoring TechAdvance and GenericTechAdvance to extend NamedAttachable, that way they can eventually have attachments. (veqryn)
 
 * Fixed bug where a NonFighting battle was attempting to add the result as a child in the history panel, without creating the event first. (veqryn)

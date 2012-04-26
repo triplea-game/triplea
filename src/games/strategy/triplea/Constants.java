@@ -38,6 +38,7 @@ public interface Constants
 	public static final String UNIT_ATTACHMENT_NAME = "unitAttatchment";
 	public static final String INF_ATTACHMENT_NAME = "infAttatchment";
 	public static final String TECH_ATTACHMENT_NAME = "techAttatchment";
+	public static final String TECH_ABILITY_ATTACHMENT_NAME = "techAbilityAttachment";
 	public static final String RESOURCE_ATTACHMENT_NAME = "resourceAttatchment";
 	public static final String TERRITORY_ATTACHMENT_NAME = "territoryAttatchment";
 	public static final String RULES_ATTACHMENT_NAME = "rulesAttatchment";
