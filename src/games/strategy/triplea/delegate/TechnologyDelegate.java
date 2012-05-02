@@ -277,16 +277,9 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	private List<TechAdvance> getAvailableTechs()
 	{
 		final GameData data = getData();
-		data.acquireReadLock();
-		try
-		{
-			final Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player, data);
-			final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, m_player);
-			return Util.difference(allAdvances, currentAdvances);
-		} finally
-		{
-			data.releaseReadLock();
-		}
+		final Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player, data);
+		final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, m_player);
+		return Util.difference(allAdvances, currentAdvances);
 	}
 	
 	boolean checkEnoughMoney(final int rolls)

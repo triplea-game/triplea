@@ -166,9 +166,16 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 	
 	public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerID player)
 	{
-		final boolean isWW2V2 = games.strategy.triplea.Properties.getWW2V2(data);
-		final boolean isWW2V3 = games.strategy.triplea.Properties.getWW2V3(data);
-		if (!data.getTechnologyFrontier().isEmpty())
+		final TechnologyFrontier technologyFrontier;
+		data.acquireReadLock();
+		try
+		{
+			technologyFrontier = data.getTechnologyFrontier();
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		if (technologyFrontier != null && !technologyFrontier.isEmpty())
 		{
 			if (player != null)
 			{
@@ -176,9 +183,11 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 			}
 			else
 			{
-				return data.getTechnologyFrontier().getTechs();
+				return technologyFrontier.getTechs();
 			}
 		}
+		final boolean isWW2V2 = games.strategy.triplea.Properties.getWW2V2(data);
+		final boolean isWW2V3 = games.strategy.triplea.Properties.getWW2V3(data);
 		if (isWW2V2)
 			return s_WW2V2Advances;
 		else if (isWW2V3)
@@ -199,7 +208,16 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 	
 	public static List<TechnologyFrontier> getTechCategories(final GameData data, final PlayerID player)
 	{
-		if (player != null && !data.getTechnologyFrontier().isEmpty())
+		final TechnologyFrontier technologyFrontier;
+		data.acquireReadLock();
+		try
+		{
+			technologyFrontier = data.getTechnologyFrontier();
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		if (player != null && technologyFrontier != null && !technologyFrontier.isEmpty())
 			return player.getTechnologyFrontierList().getFrontiers();
 		if (s_WW2V3Categories == null)
 		{

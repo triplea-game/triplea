@@ -1,4 +1,8 @@
-Changes for 1.5.3
+Changes for 1.6
+* Fixed a ton of lock not held errors that had resulted from new technology code. (veqryn)
+
+* Fixed Economy panel so that it would change when you click back through history. (tao nie)
+
 * Created default attachment for Long Range Air, which will now be set to give +2 movement to all air units, that are air units at the start of the game. Also changing Pact of Steel 2 to have Long Range Air give only +1 movement. (veqryn)
 
 * Created framework for interpreting TechAbilityAttachment's, and also setting of default attachments for hardcoded technologies. (veqryn) 

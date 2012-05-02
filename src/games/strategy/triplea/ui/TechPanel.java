@@ -120,30 +120,16 @@ public class TechPanel extends ActionPanel
 	
 	private List<TechAdvance> getAvailableTechs()
 	{
-		getData().acquireReadLock();
-		try
-		{
-			final Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer(), getData());
-			final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(), getCurrentPlayer());
-			return Util.difference(allAdvances, currentAdvances);
-		} finally
-		{
-			getData().releaseReadLock();
-		}
+		final Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer(), getData());
+		final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(), getCurrentPlayer());
+		return Util.difference(allAdvances, currentAdvances);
 	}
 	
 	private List<TechnologyFrontier> getAvailableCategories()
 	{
-		getData().acquireReadLock();
-		try
-		{
-			final Collection<TechnologyFrontier> currentAdvances = TechTracker.getTechCategories(getData(), getCurrentPlayer());
-			final Collection<TechnologyFrontier> allAdvances = TechAdvance.getTechCategories(getData(), getCurrentPlayer());
-			return Util.difference(allAdvances, currentAdvances);
-		} finally
-		{
-			getData().releaseReadLock();
-		}
+		final Collection<TechnologyFrontier> currentAdvances = TechTracker.getTechCategories(getData(), getCurrentPlayer());
+		final Collection<TechnologyFrontier> allAdvances = TechAdvance.getTechCategories(getData(), getCurrentPlayer());
+		return Util.difference(allAdvances, currentAdvances);
 	}
 	
 	private final Action GetTechRollsAction = new AbstractAction("Roll Tech...")

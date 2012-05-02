@@ -30,8 +30,6 @@ public class EconomyPanel extends StatPanel
 	public EconomyPanel(final GameData data)
 	{
 		super(data);
-		m_resourceModel = new ResourceTableModel();
-		final JTable table = new JTable(m_resourceModel);
 	}
 	
 	@Override
