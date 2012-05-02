@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="2.6"/>
+        <info name="World War II Global Test Alpha 3" version="2.7"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
 		<diceSides value="6"/>
@@ -1288,6 +1288,7 @@
 		<relationshipTypes>
 				<relationshipType name="Allied"/>
 				<relationshipType name="War"/>
+				<relationshipType name="Unprovoked"/>
 				<relationshipType name="Neutrality"/>
 				<relationshipType name="Custodianship"/>
 				<relationshipType name="Friendly"/>
@@ -1598,7 +1599,7 @@
                 </productionRule>
 				
 				<productionRule name="buyCruiserIndustrialTechnology">
-                        <cost resource="PUs" quantity="10" />
+                        <cost resource="PUs" quantity="9" />
                         <result resourceOrUnit="destroyer" quantity="1"/>
                 </productionRule>
                 
@@ -1657,7 +1658,7 @@
                 </productionRule>
 				
 				<productionRule name="buyCruiserShipyards">
-                        <cost resource="PUs" quantity="10" />
+                        <cost resource="PUs" quantity="9" />
                         <result resourceOrUnit="cruiser" quantity="1"/>
                 </productionRule>
                 
@@ -1826,6 +1827,10 @@
 
 			<!--  relationshipType Attachments -->
 					<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="war"/>
+					</attatchment>
+					
+					<attatchment name="relationshipTypeAttachment" attatchTo="Unprovoked" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="war"/>
 					</attatchment>
 
@@ -2174,9 +2179,9 @@
                          <option name="isStrategicBomber" value="true"/>
 						 <option name="isAirTransport" value="true"/>
                          <option name="transportCapacity" value="2"/>
-						 <!-- the following two properties only activate on LL for bombing -->
-						 <option name="bombingMaxDieSides" value="4"/>
-						 <option name="bombingBonus" value="3"/>
+						 <!-- the following two properties only activate on LL for bombing (TODO: make a new game option for this) -->
+						 <option name="bombingMaxDieSides" value="6"/>
+						 <option name="bombingBonus" value="2"/>
 						 <option name="canBeGivenByTerritoryTo" value="British"/>
                          <option name="airAttack" value="1"/>
                 </attatchment>
@@ -2194,6 +2199,9 @@
 						 <option name="canBeGivenByTerritoryTo" value="British"/>
                          <option name="airAttack" value="1"/>
 						 <option name="blockade" value="2"/>
+						 <!-- the following two properties only activate on LL for bombing (TODO: make a new game option for this) -->
+						 <option name="bombingMaxDieSides" value="6"/>
+						 <option name="bombingBonus" value="0"/>
 						 <!-- TODO: can only target for raids: naval and air bases -->
                 </attatchment>
             
@@ -2335,6 +2343,9 @@
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
 						 <option name="canBeGivenByTerritoryTo" value="British"/>
 						 <option name="isRocket" value="true"/>
+						 <!-- the following two properties only activate on LL for bombing (TODO: make a new game option for this) -->
+						 <option name="bombingMaxDieSides" value="6"/>
+						 <option name="bombingBonus" value="0"/>
                 </attatchment>
 				
 				<!-- Harbour -->
@@ -3811,6 +3822,14 @@
 				<attatchment name="conditionAttachment_Axis_Land_In_North_America_Switch" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="turns" value="0"/>
 				</attatchment>
+				<attatchment name="conditionAttachment_British_Not_Provoked" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="British:Japanese:Unprovoked"/>
+					<option name="invert" value="true"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_British_Provoked_War_With_Japan" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_British_Not_Provoked"/>
+					<option name="atWarPlayers" value="Japanese" count="1"/>
+				</attatchment>
 				<attatchment name="conditionAttachment_Americans_At_War_With_At_Least_One_Axis" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="1"/>
 				</attatchment>
@@ -3823,7 +3842,7 @@
 					<option name="turns" value="3"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Americans_May_Declare_War_On_Axis_Early" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentTurn4:conditionAttachment_Americans_At_War_With_At_Least_One_Axis:conditionAttachment_Axis_Capture_London_Switch:conditionAttachment_Axis_Land_In_North_America_Switch"/>
+					<option name="conditions" value="conditionAttachmentTurn4:conditionAttachment_Americans_At_War_With_At_Least_One_Axis:conditionAttachment_British_Provoked_War_With_Japan:conditionAttachment_Axis_Capture_London_Switch:conditionAttachment_Axis_Land_In_North_America_Switch"/>
 					<option name="conditionType" value="OR"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Americans_May_Declare_War_On_Axis" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -4823,9 +4842,9 @@
 				</attatchment>
 				<attatchment name="politicalActionAttachment_British_To_War_With_Japanese" attatchTo="British" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 					<option name="conditions" value="conditionAttachment_British_Not_Yet_At_War_With_Japanese"/>
-					<option name="relationshipChange" value="Japanese:British:War"/>
-					<option name="relationshipChange" value="Japanese:UK_Pacific:War"/>
-					<option name="relationshipChange" value="Japanese:ANZAC:War"/>
+					<option name="relationshipChange" value="Japanese:British:Unprovoked"/>
+					<option name="relationshipChange" value="Japanese:UK_Pacific:Unprovoked"/>
+					<option name="relationshipChange" value="Japanese:ANZAC:Unprovoked"/>
 					<option name="relationshipChange" value="Japanese:Dutch:War"/>
 					<option name="relationshipChange" value="Chinese:British:Allied"/>
 					<option name="relationshipChange" value="Chinese:UK_Pacific:Allied"/>
@@ -4835,9 +4854,9 @@
 				</attatchment>
 				<attatchment name="politicalActionAttachment_ANZAC_To_War_With_Japanese" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 					<option name="conditions" value="conditionAttachment_British_Not_Yet_At_War_With_Japanese"/>
-					<option name="relationshipChange" value="Japanese:British:War"/>
-					<option name="relationshipChange" value="Japanese:UK_Pacific:War"/>
-					<option name="relationshipChange" value="Japanese:ANZAC:War"/>
+					<option name="relationshipChange" value="Japanese:British:Unprovoked"/>
+					<option name="relationshipChange" value="Japanese:UK_Pacific:Unprovoked"/>
+					<option name="relationshipChange" value="Japanese:ANZAC:Unprovoked"/>
 					<option name="relationshipChange" value="Japanese:Dutch:War"/>
 					<option name="relationshipChange" value="Chinese:British:Allied"/>
 					<option name="relationshipChange" value="Chinese:UK_Pacific:Allied"/>
@@ -5436,7 +5455,7 @@
                         <unitPlacement unitType="artillery" territory="Alexandria" quantity="1" owner="British"/>
                         <unitPlacement unitType="armour" territory="Alexandria" quantity="1" owner="British"/>
 
-                        <unitPlacement unitType="infantry" territory="Egypt" quantity="1" owner="British"/>
+                        <unitPlacement unitType="infantry" territory="Egypt" quantity="2" owner="British"/>
                         <unitPlacement unitType="artillery" territory="Egypt" quantity="1" owner="British"/>
 						<unitPlacement unitType="mech_infantry" territory="Egypt" quantity="1" owner="British"/>
                         <unitPlacement unitType="harbour" territory="Egypt" quantity="1" owner="British"/>
@@ -5891,15 +5910,16 @@
 						<boolean/>
 				</property>
 
-				<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
+				<!-- TODO: after we make a new game option for bombing bonus, switch to false, and make visible -->
+				<property name="Low Luck for Bombing and Territory Damage" value="true" editable="false">
 						<boolean/>
 				</property>
 
-				<property name="Use Politics" value="true" editable="true">
+				<property name="Use Politics" value="true" editable="false">
 						<boolean/>
 				</property>
 
-				<property name="National Objectives" value="true" editable="true">
+				<property name="National Objectives" value="true" editable="false">
 						<boolean/>
 				</property>
 
@@ -6547,6 +6567,12 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>2.7
+<br>Fixing Strategic Bombers so that they add +2 damage onto raids.
+<br>Allowed USA to go to war if Japan declares war on ANZAC / UK.
+<br>Added one missing UK infantry to Egypt.
+<br>Dropped price of Cruisers to 9, when you have shipyards tech.
 <br>
 <br>2.6
 <br>Deleting connection between Timguska and Kazakhstan.
