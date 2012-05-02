@@ -1,4 +1,6 @@
 Changes for 1.6
+* Fixed Null pointer errors in Turn Summary Poster, and also fixed up Politics to display better in the turn summary with indents. Also stopped the poster from showing certain things like: game loaded, recording battle statistics, and giving bonus movement. (veqryn)
+
 * Fixed a ton of lock not held errors that had resulted from new technology code. (veqryn)
 
 * Fixed Economy panel so that it would change when you click back through history. (tao nie)

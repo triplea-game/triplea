@@ -317,6 +317,11 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), PUs, -cost);
 			m_bridge.addChange(charge);
 		}
+		else
+		{
+			final String transcriptText = m_bridge.getPlayerID().getName() + " takes Political Action: " + MyFormatter.attachmentNameToText(paa.getName());
+			m_bridge.getHistoryWriter().startEvent(transcriptText); // we must start an event anyway
+		}
 	}
 	
 	/**
@@ -341,7 +346,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	private void notifyFailure(final PoliticalActionAttachment paa)
 	{
 		final String transcriptText = m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
-		m_bridge.getHistoryWriter().startEvent(transcriptText);
+		m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
 		sendNotification(m_player, PoliticsText.getInstance().getNotificationFailure(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationFailureOthers(paa.getText()));
 	}
@@ -407,7 +412,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			if (oldRelation.equals(newRelation))
 				continue;
 			change.add(ChangeFactory.relationshipChange(player1, player2, oldRelation, newRelation));
-			m_bridge.getHistoryWriter().startEvent(
+			m_bridge.getHistoryWriter().addChildToEvent(
 						m_bridge.getPlayerID().getName() + " succeeds on action: " + MyFormatter.attachmentNameToText(paa.getName()) + ": Changing Relationship for " + player1.getName() + " and "
 									+ player2.getName() + " from " + oldRelation.getName() + " to " + newRelation.getName());
 			/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
@@ -432,7 +437,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		final boolean success = rollResult <= paa.toHit();
 		final String notificationMessage = "rolling (" + paa.toHit() + " out of " + paa.diceSides() + ") result: " + rollResult + " = " + (success ? "Success!" : "Failure!");
 		sendNotification(m_player, notificationMessage);
-		m_bridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(paa.getName()) + " : " + notificationMessage);
+		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.attachmentNameToText(paa.getName()) + " : " + notificationMessage);
 		return success;
 	}
 	
@@ -478,7 +483,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 					if (!currentOther.equals(newType))
 					{
 						change.add(ChangeFactory.relationshipChange(p3, player, currentOther, newType));
-						aBridge.getHistoryWriter().startEvent(player.getName() + " and " + p3.getName() + " sign a " + newType.getName() + " treaty");
+						aBridge.getHistoryWriter().addChildToEvent(player.getName() + " and " + p3.getName() + " sign a " + newType.getName() + " treaty");
 					}
 				}
 			}
@@ -522,7 +527,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 						if (!currentOther.equals(newType) && Matches.RelationshipTypeIsAtWar.match(currentOther))
 						{
 							change.add(ChangeFactory.relationshipChange(p3, p4, currentOther, newType));
-							aBridge.getHistoryWriter().startEvent(p3.getName() + " and " + p4.getName() + " sign a " + newType.getName() + " treaty");
+							aBridge.getHistoryWriter().addChildToEvent(p3.getName() + " and " + p4.getName() + " sign a " + newType.getName() + " treaty");
 						}
 					}
 				}
@@ -566,7 +571,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 				if (!data.getRelationshipTracker().getRelationshipType(p1, p3).equals(alliedType))
 				{
 					aBridge.addChange(ChangeFactory.relationshipChange(p1, p3, data.getRelationshipTracker().getRelationshipType(p1, p3), alliedType));
-					aBridge.getHistoryWriter().startEvent(p1.getName() + " and " + p3.getName() + " are joined together in an " + alliedType.getName() + " treaty");
+					aBridge.getHistoryWriter().addChildToEvent(p1.getName() + " and " + p3.getName() + " are joined together in an " + alliedType.getName() + " treaty");
 				}
 			}
 		}
@@ -589,7 +594,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 				if (!data.getRelationshipTracker().getRelationshipType(p1, p3).equals(warType))
 				{
 					aBridge.addChange(ChangeFactory.relationshipChange(p1, p3, data.getRelationshipTracker().getRelationshipType(p1, p3), warType));
-					aBridge.getHistoryWriter().startEvent(p1.getName() + " and " + p3.getName() + " declare " + warType.getName() + " on each other");
+					aBridge.getHistoryWriter().addChildToEvent(p1.getName() + " and " + p3.getName() + " declare " + warType.getName() + " on each other");
 				}
 			}
 		}
@@ -624,7 +629,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		}
 		if (!change.isEmpty())
 		{
-			aBridge.getHistoryWriter().startEvent("Giving back territories to original owners");
+			aBridge.getHistoryWriter().addChildToEvent("Giving back territories to original owners");
 			aBridge.addChange(change);
 		}
 	}

@@ -317,6 +317,21 @@ public class HistoryLog extends JFrame
 						else if (title.equals("Cleaning up after movement phases"))
 						{
 						}
+						else if (title.equals("Game Loaded"))
+						{
+						}
+						else if (title.indexOf("is now being played by:") != -1)
+						{
+						}
+						else if (title.indexOf("Setting uses for triggers used") != -1)
+						{
+						}
+						else if (title.equals("Giving bonus movement to units"))
+						{
+						}
+						else if (title.equals("Recording Battle Statistics"))
+						{
+						}
 						else if (title.matches("\\w+ collect \\d+ PUs?.*"))
 						{
 							logWriter.println(indent + title);
@@ -423,7 +438,7 @@ public class HistoryLog extends JFrame
 			if (t == null || ta == null)
 				hasFlag = false;
 			else
-				hasFlag = t.getOwner().equals(player) && !ta.getOriginalOwner().equals(player);
+				hasFlag = t.getOwner() != null && t.getOwner().equals(player) && (ta.getOriginalOwner() == null || !ta.getOriginalOwner().equals(player));
 			if (hasFlag || !ownedUnits.isEmpty())
 			{
 				logWriter.print("    " + t.getName() + " : ");

@@ -124,7 +124,7 @@ public class PBEMMessagePoster implements Serializable
 				m_turnSummaryRef = m_forumPoster.getTurnSummaryRef();
 				if (m_turnSummaryRef != null && historyWriter != null)
 				{
-					historyWriter.addChildToEvent("Turn Summary: " + m_turnSummaryRef, null);
+					historyWriter.startEvent("Turn Summary: " + m_turnSummaryRef);
 				}
 			} catch (final Exception e)
 			{
