@@ -1,7 +1,6 @@
 package games.strategy.engine.framework.mapDownload;
 
 import games.strategy.engine.framework.GameRunner;
-import games.strategy.engine.framework.ui.NewGameChooserModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
@@ -153,18 +152,19 @@ public class InstallMapDialog extends JDialog
 		});
 	}
 	
-	private boolean isDefaultMap(final DownloadFileDescription selected)
+	/*private boolean isDefaultMap(final DownloadFileDescription selected)
 	{
 		return NewGameChooserModel.getDefaultMapNames().contains(selected.getMapName());
-	}
-	
+	}*/
+
 	private void install(final DownloadFileDescription selected)
 	{
+		/* we no longer stop people from downloading, because we can handle having multiple copies of a map in the different directories triplea uses for maps
 		if (isDefaultMap(selected))
 		{
 			Util.notifyError(this, "The map " + selected.getMapName() + " cannot be downloaded as it comes installed with TripleA");
 			return;
-		}
+		}*/
 		// get the destination file
 		final File destination = new File(GameRunner.getUserMapsFolder(), selected.getMapName() + ".zip");
 		if (destination.exists())
