@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="2.7"/>
+        <info name="World War II Global Test Alpha 3" version="2.8"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
 		<diceSides value="6"/>
@@ -2179,7 +2179,6 @@
                          <option name="isStrategicBomber" value="true"/>
 						 <option name="isAirTransport" value="true"/>
                          <option name="transportCapacity" value="2"/>
-						 <!-- the following two properties only activate on LL for bombing (TODO: make a new game option for this) -->
 						 <option name="bombingMaxDieSides" value="6"/>
 						 <option name="bombingBonus" value="2"/>
 						 <option name="canBeGivenByTerritoryTo" value="British"/>
@@ -2199,7 +2198,6 @@
 						 <option name="canBeGivenByTerritoryTo" value="British"/>
                          <option name="airAttack" value="1"/>
 						 <option name="blockade" value="2"/>
-						 <!-- the following two properties only activate on LL for bombing (TODO: make a new game option for this) -->
 						 <option name="bombingMaxDieSides" value="6"/>
 						 <option name="bombingBonus" value="0"/>
 						 <!-- TODO: can only target for raids: naval and air bases -->
@@ -2343,7 +2341,6 @@
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
 						 <option name="canBeGivenByTerritoryTo" value="British"/>
 						 <option name="isRocket" value="true"/>
-						 <!-- the following two properties only activate on LL for bombing (TODO: make a new game option for this) -->
 						 <option name="bombingMaxDieSides" value="6"/>
 						 <option name="bombingBonus" value="0"/>
                 </attatchment>
@@ -5910,8 +5907,7 @@
 						<boolean/>
 				</property>
 
-				<!-- TODO: after we make a new game option for bombing bonus, switch to false, and make visible -->
-				<property name="Low Luck for Bombing and Territory Damage" value="true" editable="false">
+				<property name="Low Luck for Bombing and Territory Damage" value="false" editable="true">
 						<boolean/>
 				</property>
 
@@ -6290,6 +6286,10 @@
 				<property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
 						<boolean/>
 				</property>
+				
+				<property name="Use Bombing Max Dice Sides And Bonus" value="true" editable="false">
+						<boolean/>
+				</property>
 
 				<property name="Limit SBR Damage To Factory Production" value="false" editable="false">
 						<boolean/>
@@ -6567,6 +6567,10 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>2.8
+<br>Allowed Low Luck for Strategy Bombing and Rockets to be set again.
+<br>
 <br>
 <br>2.7
 <br>Fixing Strategic Bombers so that they add +2 damage onto raids.

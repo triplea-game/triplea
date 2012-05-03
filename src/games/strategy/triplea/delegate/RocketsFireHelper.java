@@ -220,9 +220,47 @@ public class RocketsFireHelper
 				throw new IllegalStateException("No Targets in " + attackedTerritory.getName());
 			targets.add(target);
 		}
+		final boolean doNotUseBombingBonus = !games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(data);
 		int cost = 0;
 		if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(data))
-			cost = bridge.getRandom(data.getDiceSides(), "Rocket fired by " + player.getName() + " at " + attacked.getName());
+		{
+			if (doNotUseBombingBonus)
+			{
+				// no low luck, and no bonus, so just roll based on the map's dice sides
+				cost = bridge.getRandom(data.getDiceSides(), "Rocket fired by " + player.getName() + " at " + attacked.getName());
+			}
+			else
+			{
+				// we must use bombing bonus
+				final CompositeMatch<Unit> ownedRockets = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsRocket);
+				final Collection<Unit> rockets = new ArrayList<Unit>(Match.getMatches(attackFrom.getUnits().getUnits(), ownedRockets));
+				int highestMaxDice = 0;
+				int highestBonus = 0;
+				final int diceSides = data.getDiceSides();
+				for (final Unit u : rockets)
+				{
+					final UnitAttachment ua = UnitAttachment.get(u.getType());
+					int maxDice = ua.getBombingMaxDieSides();
+					int bonus = ua.getBombingBonus();
+					// both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the bonus.
+					if (maxDice < 0)
+						maxDice = diceSides;
+					if (bonus < 0)
+						bonus = 0;
+					// we only roll once for rockets, so if there are other rockets here we just roll for the best rocket
+					if ((bonus + ((maxDice + 1) / 2)) > (highestBonus + ((highestMaxDice + 1) / 2)))
+					{
+						highestMaxDice = maxDice;
+						highestBonus = bonus;
+					}
+				}
+				// now we roll, or don't if there is nothing to roll.
+				if (highestMaxDice > 0)
+					cost = bridge.getRandom(highestMaxDice, "Rocket fired by " + player.getName() + " at " + attacked.getName()) + highestBonus;
+				else
+					cost = highestBonus;
+			}
+		}
 		else
 		{
 			final CompositeMatch<Unit> ownedRockets = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsRocket);
@@ -235,21 +273,25 @@ public class RocketsFireHelper
 				final UnitAttachment ua = UnitAttachment.get(u.getType());
 				int maxDice = ua.getBombingMaxDieSides();
 				int bonus = ua.getBombingBonus();
-				if (maxDice < 0 && bonus < 0 && diceSides >= 5)
-				{
-					maxDice = (diceSides + 1) / 3;
-					bonus = (diceSides + 1) / 3;
-				}
-				if (bonus < 0)
-					bonus = 0;
-				if (maxDice < 0)
+				// both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the bonus.
+				if (maxDice < 0 || doNotUseBombingBonus)
 					maxDice = diceSides;
-				if ((bonus + (maxDice + 1) / 2) > (highestBonus + (highestMaxDice + 1) / 2))
+				if (bonus < 0 || doNotUseBombingBonus)
+					bonus = 0;
+				// now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case that we reduce the luck by 2/3.
+				if (maxDice >= 5)
+				{
+					bonus += (maxDice + 1) / 3;
+					maxDice = (maxDice + 1) / 3;
+				}
+				// we only roll once for rockets, so if there are other rockets here we just roll for the best rocket
+				if ((bonus + ((maxDice + 1) / 2)) > (highestBonus + ((highestMaxDice + 1) / 2)))
 				{
 					highestMaxDice = maxDice;
 					highestBonus = bonus;
 				}
 			}
+			// now we roll, or don't if there is nothing to roll.
 			if (highestMaxDice > 0)
 				cost = bridge.getRandom(highestMaxDice, "Rocket fired by " + player.getName() + " at " + attacked.getName()) + highestBonus;
 			else

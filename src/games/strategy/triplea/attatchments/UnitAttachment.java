@@ -2657,7 +2657,7 @@ public class UnitAttachment extends DefaultAttachment
 		if (m_isRocket && playerHasRockets(player))
 		{
 			stats.append("can Rocket Attack, ");
-			if ((m_bombingMaxDieSides != -1 || m_bombingBonus != -1) && games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(getData()))
+			if ((m_bombingMaxDieSides != -1 || m_bombingBonus != -1) && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData()))
 				stats.append((m_bombingBonus != -1 ? m_bombingBonus + 1 : 1)
 							+ "-"
 							+ (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (m_bombingBonus != -1 ? m_bombingBonus : 0) : getData().getDiceSides() + (m_bombingBonus != -1 ? m_bombingBonus : 0))
@@ -2716,7 +2716,7 @@ public class UnitAttachment extends DefaultAttachment
 		if (m_isStrategicBomber)
 		{
 			stats.append("can Perform Raids, ");
-			if ((m_bombingMaxDieSides != -1 || m_bombingBonus != -1) && games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(getData()))
+			if ((m_bombingMaxDieSides != -1 || m_bombingBonus != -1) && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData()))
 				stats.append((m_bombingBonus != -1 ? m_bombingBonus + 1 : 1)
 							+ "-"
 							+ (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (m_bombingBonus != -1 ? m_bombingBonus : 0) : getData().getDiceSides() + (m_bombingBonus != -1 ? m_bombingBonus : 0))

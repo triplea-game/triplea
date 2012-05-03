@@ -521,9 +521,39 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			}
 			else
 			{
+				final boolean doNotUseBombingBonus = !games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(m_data);
 				final String annotation = m_attacker.getName() + " rolling to allocate cost of strategic bombing raid against " + m_defender.getName() + " in " + m_battleSite.getName();
 				if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(m_data))
-					m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, annotation);
+				{
+					if (doNotUseBombingBonus)
+					{
+						// no low luck, and no bonus, so just roll based on the map's dice sides
+						m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, annotation);
+					}
+					else
+					{
+						// we must use bombing bonus
+						int i = 0;
+						final int diceSides = m_data.getDiceSides();
+						for (final Unit u : m_attackingUnits)
+						{
+							final UnitAttachment ua = UnitAttachment.get(u.getType());
+							int maxDice = ua.getBombingMaxDieSides();
+							int bonus = ua.getBombingBonus();
+							// both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the bonus.
+							if (maxDice < 0)
+								maxDice = diceSides;
+							if (bonus < 0)
+								bonus = 0;
+							// now we roll, or don't if there is nothing to roll.
+							if (maxDice > 0)
+								m_dice[i] = bridge.getRandom(maxDice, annotation) + bonus;
+							else
+								m_dice[i] = bonus;
+							i++;
+						}
+					}
+				}
 				else
 				{
 					int i = 0;
@@ -533,15 +563,18 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 						final UnitAttachment ua = UnitAttachment.get(u.getType());
 						int maxDice = ua.getBombingMaxDieSides();
 						int bonus = ua.getBombingBonus();
-						if (maxDice < 0 && bonus < 0 && diceSides >= 5)
-						{
-							maxDice = (diceSides + 1) / 3;
-							bonus = (diceSides + 1) / 3;
-						}
-						if (bonus < 0)
-							bonus = 0;
-						if (maxDice < 0)
+						// both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the bonus.
+						if (maxDice < 0 || doNotUseBombingBonus)
 							maxDice = diceSides;
+						if (bonus < 0 || doNotUseBombingBonus)
+							bonus = 0;
+						// now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case that we reduce the luck by 2/3.
+						if (maxDice >= 5)
+						{
+							bonus += (maxDice + 1) / 3;
+							maxDice = (maxDice + 1) / 3;
+						}
+						// now we roll, or don't if there is nothing to roll.
 						if (maxDice > 0)
 							m_dice[i] = bridge.getRandom(maxDice, annotation) + bonus;
 						else

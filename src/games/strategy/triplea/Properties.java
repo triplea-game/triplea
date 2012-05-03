@@ -813,6 +813,11 @@ public class Properties implements Constants
 		return data.getProperties().get(PARATROOPERS_CAN_ATTACK_DEEP_INTO_ENEMY_TERRITORY, false);
 	}
 	
+	public static boolean getUseBombingMaxDiceSidesAndBonus(final GameData data)
+	{
+		return data.getProperties().get(USE_BOMBING_MAX_DICE_SIDES_AND_BONUS, false);
+	}
+	
 	private Properties()
 	{
 	}

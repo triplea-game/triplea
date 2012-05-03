@@ -1745,9 +1745,9 @@
 			isSuicide							values: makes a unit die before combat begins, however they do get to roll
 			isKamikaze							values: allows an air unit to use up all of its movement to go to a battle
 			isStrategicBomber					values: allows a unit to bombing factories and canBeDamaged units
-			bombingMaxDieSides					values: is the max dice sides for a strategic bombing or rocket attack.  if you want to lower the luck involved, use bombing bonus and lower the max dice sides.  This property is optional, and only turns on when you have LL for bombing turned on.
-															example: if you want to have either a 3 or 4 rolled, then set maxDieSides to 2, and the Bonus to 2.  this means you will roll a 2 sided die (results are either "1" or "2") and add "2" to the result (so you get "3" or "4")
-			bombingBonus						values: is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only.  This property is optional, and only turns on when you have LL for bombing turned on.
+			bombingMaxDieSides					values: is the max dice sides for a strategic bombing or rocket attack.  the default is to use the diceSides for the map.  this property is optional and is only used when you have "Use Bombing Max Dice Sides And Bonus" turned on.  this property is no longer affected by "Low Luck for Bombing and Territory Damage".
+			bombingBonus						values: is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only.  this property is optional (default is zero) and is only used when you have "Use Bombing Max Dice Sides And Bonus" turned on.  this property is no longer affected by "Low Luck for Bombing and Territory Damage".
+															example: if you want a unit to throw a 12 sided die, then add 4 onto the result, you would do: <option name="bombingMaxDieSides" value="12"/> and <option name="bombingBonus" value="4"/>
 			carrierCost							values: the space this unit takes up when sitting on a carrier
 			carrierCapacity						values: the amount of space or air unit this unit can carry.
 			
@@ -1955,12 +1955,9 @@
 						 <!-- transportCapacity + isAirTransport can be used for transporting units IF you have the paratroopers technology -->
                          <option name="transportCapacity" value="2"/>
                          <option name="isAirTransport" value="true"/>
-						 <!-- bombingMaxDieSides is the max dice sides for a strategic bombing or rocket attack.  if you want to lower the luck involved, use bombing bonus and lower the max dice sides.  This property is optional, and only turns on when you have LL for bombing turned on.
-								example: if you want to have either a 3 or 4 rolled, then set maxDieSides to 2, and the Bonus to 2.  this means you will roll a 2 sided die (results are either "1" or "2") and add "2" to the result (so you get "3" or "4") -->
-                         <option name="bombingMaxDieSides" value="2"/>
-						 <!-- bombingBonus is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only.  This property is optional, and only turns on when you have LL for bombing turned on. -->
-                         <option name="bombingBonus" value="2"/>
                          <option name="airAttack" value="1"/>
+                         <!--<option name="bombingMaxDieSides" value="6"/>
+                         <option name="bombingBonus" value="0"/>-->
                 </attatchment>
 
                 <!-- Air_Transport -->
@@ -2228,8 +2225,8 @@
 								destroyedWhenCapturedFrom just takes the value input then adds "FROM:" to the beginning, then calls destroyedWhenCapturedBy with the new value.
 						 <option name="destroyedWhenCapturedBy" value="BY:Chinese:Japanese"/>
 						 <option name="destroyedWhenCapturedBy" value="FROM:Russians:Chinese"/>-->
-						 <option name="bombingMaxDieSides" value="2"/>
-						 <option name="bombingBonus" value="2"/>
+                         <!--<option name="bombingMaxDieSides" value="6"/>
+                         <option name="bombingBonus" value="0"/>-->
 						 <!-- attackAA sets the value the AA will attack at (radar adds 1 if this is not 0). Defaults to 1.  Can not be more than half the diceSides (even with radar)-->
 						 <option name="attackAA" value="1"/>
 						 <!-- attackAAmaxDieSides sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).  
@@ -5150,6 +5147,7 @@
 				<property name="Unit Placement Restrictions" value="true" editable="false">
 						<boolean/>
 				</property>
+				
 						<!-- Allows Strategic Bombing Raids to have Escort aircraft and also be Intercepted by the defender -->
 				<property name="Raids May Be Preceeded By Air Battles" value="true" editable="true">
 						<boolean/>
@@ -5162,6 +5160,11 @@
 
 						<!-- Damage From Bombing Done To Units Instead Of Territories has Strategic Bombing and Rockets do damage to a specific unit rather than directly to the player's PUs or to a territory.  You must have "SBR Affects Unit Production" false for this to work -->
 				<property name="Damage From Bombing Done To Units Instead Of Territories" value="true" editable="false">
+						<boolean/>
+				</property>
+				
+						<!-- Allows all units that cause strategic bombing raid or rocket damage, to use "bombingMaxDieSides" and "bombingBonus" -->
+				<property name="Use Bombing Max Dice Sides And Bonus" value="true" editable="false">
 						<boolean/>
 				</property>
 

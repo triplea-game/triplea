@@ -1,4 +1,8 @@
 Changes for 1.6
+* Created new game option, "Use Bombing Max Dice Sides And Bonus", which will control the unit attachment options: "bombingMaxDieSides" and "bombingBonus". (veqryn)
+
+* Stopped "Low Luck for Bombing and Territory Damage" from controlling "bombingMaxDieSides" and "bombingBonus", and made it create a Low Luck situation on top of whatever dice sides and bonus the map uses. (veqryn)
+
 * Fixing comparison method in weak ai. (veqryn)
 
 * Allowed users to download maps even if they come with triplea. (veqryn) 
