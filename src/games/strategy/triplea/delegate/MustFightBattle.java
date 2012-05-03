@@ -92,9 +92,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	}
 	
 	private static final long serialVersionUID = 5879502298361231540L;
-	private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>(); // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
+	private Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>(); // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
 	private final Collection<Unit> m_attackingWaitingToDie = new ArrayList<Unit>();
-	private final Set<Territory> m_attackingFrom = new HashSet<Territory>();
+	private Set<Territory> m_attackingFrom = new HashSet<Territory>();
 	private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
 	private final Collection<Unit> m_defendingWaitingToDie = new ArrayList<Unit>();
 	private Collection<Unit> m_defendingAir = new ArrayList<Unit>();
@@ -284,7 +284,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return change;
 	}
 	
-	private void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies)
+	public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies)
 	{
 		for (final Unit holder : dependencies.keySet())
 		{
@@ -1506,7 +1506,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return change;
 	}
 	
-	private void reLoadTransports(final Collection<Unit> units, final CompositeChange change)
+	public void reLoadTransports(final Collection<Unit> units, final CompositeChange change)
 	{
 		final Collection<Unit> transports = Match.getMatches(units, Matches.UnitCanTransport);
 		// Put units back on their transports
@@ -2763,6 +2763,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	public Map<Territory, Collection<Unit>> getAttackingFromMap()
 	{
 		return m_attackingFromMap;
+	}
+	
+	// used for setting stuff when we make a scrambling battle when there was no previous battle there, and we need retreat spaces
+	public void setAttackingFromAndMap(final Map<Territory, Collection<Unit>> attackingFromMap)
+	{
+		m_attackingFromMap = attackingFromMap;
+		m_attackingFrom = new HashSet<Territory>(attackingFromMap.keySet());
 	}
 	
 	@Override

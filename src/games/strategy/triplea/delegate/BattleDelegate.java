@@ -519,7 +519,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 						if (canScrambleFrom == null)
 							canScrambleFrom = new HashSet<Territory>();
 						if (toAnyAmphibious)
-							canScrambleFrom.addAll(Match.getMatches(data.getMap().getNeighbors(battleTerr, maxScrambleDistance), canScramble));
+							canScrambleFrom.addAll(Match.getMatches(data.getMap().getNeighbors(amphibFrom, maxScrambleDistance), canScramble));
 						else if (canScramble.match(battleTerr))
 							canScrambleFrom.add(battleTerr);
 						if (!canScrambleFrom.isEmpty())
@@ -641,9 +641,68 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			{
 				final List<Unit> attackingUnits = to.getUnits().getMatches(Matches.unitIsOwnedBy(m_player));
 				m_bridge.getHistoryWriter().startEvent(defender.getName() + " scrambles to create a battle in territory " + to.getName());
-				// TODO: the attacking sea units do not remember where they came from, so they can not retreat anywhere. Need to fix
+				// TODO: the attacking sea units do not remember where they came from, so they can not retreat anywhere. Need to fix.
 				m_battleTracker.addBattle(new RouteScripted(to), attackingUnits, false, m_player, m_bridge, null);
 				battle = m_battleTracker.getPendingBattle(to, false);
+				if (battle instanceof MustFightBattle)
+				{
+					// this is an ugly mess of hacks, but will have to stay here till all transport related code is gutted and refactored.
+					final MustFightBattle mfb = (MustFightBattle) battle;
+					final Collection<Territory> neighborsLand = data.getMap().getNeighbors(to, Matches.TerritoryIsLand);
+					if (Match.someMatch(attackingUnits, Matches.UnitIsTransport))
+					{
+						// first, we have to reset the "transportedBy" setting for all the land units that were offloaded
+						final CompositeChange change1 = new CompositeChange();
+						mfb.reLoadTransports(attackingUnits, change1);
+						if (!change1.isEmpty())
+							m_bridge.addChange(change1);
+						// after that is applied, we have to make a map of all dependencies
+						final TransportTracker tt = new TransportTracker();
+						final Map<Territory, Map<Unit, Collection<Unit>>> dependencies = new HashMap<Territory, Map<Unit, Collection<Unit>>>();
+						final Map<Unit, Collection<Unit>> dependenciesForMFB = tt.transporting(
+									Match.getMatches(attackingUnits, Matches.UnitIsTransport), Match.getMatches(attackingUnits, Matches.UnitIsTransport.invert()));
+						for (final Unit transport : Match.getMatches(attackingUnits, Matches.UnitIsTransport))
+						{
+							// however, the map we add to the newly created battle, can not hold any units that are NOT in this territory.
+							// BUT it must still hold all transports
+							if (!dependenciesForMFB.containsKey(transport))
+								dependenciesForMFB.put(transport, new ArrayList<Unit>());
+						}
+						dependencies.put(to, dependenciesForMFB);
+						for (final Territory t : neighborsLand)
+						{
+							// All other maps, must hold only the transported units that in their territory
+							final Collection<Unit> allNeighborUnits = new ArrayList<Unit>(Match.getMatches(attackingUnits, Matches.UnitIsTransport));
+							allNeighborUnits.addAll(t.getUnits().getMatches(Matches.unitIsLandAndOwnedBy(m_player)));
+							final Map<Unit, Collection<Unit>> dependenciesForNeighbors = tt.transporting(
+										Match.getMatches(allNeighborUnits, Matches.UnitIsTransport), Match.getMatches(allNeighborUnits, Matches.UnitIsTransport.invert()));
+							dependencies.put(t, dependenciesForNeighbors);
+						}
+						mfb.addDependentUnits(dependencies.get(to));
+						for (final Territory territoryNeighborToNewBattle : neighborsLand)
+						{
+							final IBattle battleInTerritoryNeighborToNewBattle = m_battleTracker.getPendingBattle(territoryNeighborToNewBattle, false);
+							if (battleInTerritoryNeighborToNewBattle != null && battleInTerritoryNeighborToNewBattle instanceof MustFightBattle)
+							{
+								final MustFightBattle mfbattleInTerritoryNeighborToNewBattle = (MustFightBattle) battleInTerritoryNeighborToNewBattle;
+								mfbattleInTerritoryNeighborToNewBattle.addDependentUnits(dependencies.get(territoryNeighborToNewBattle));
+							}
+						}
+					}
+					if (Match.someMatch(attackingUnits, Matches.UnitIsAir.invert()))
+					{
+						// for now, we will hack and say that the attackers came from Everywhere, and hope the user will choose the correct place to retreat to! (TODO: Fix this)
+						final Map<Territory, Collection<Unit>> attackingFromMap = new HashMap<Territory, Collection<Unit>>();
+						final Collection<Territory> neighbors = data.getMap().getNeighbors(to, (Matches.TerritoryIsLand.match(to) ? Matches.TerritoryIsLand : Matches.TerritoryIsWater));
+						neighbors.removeAll(territoriesWithBattles);
+						neighbors.removeAll(Match.getMatches(neighbors, Matches.territoryHasEnemyUnits(m_player, data)));
+						for (final Territory t : neighbors)
+						{
+							attackingFromMap.put(t, attackingUnits);
+						}
+						mfb.setAttackingFromAndMap(attackingFromMap);
+					}
+				}
 			}
 			else if (battle instanceof MustFightBattle)
 			{

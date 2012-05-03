@@ -120,16 +120,30 @@ public class TripleAUnit extends Unit
 			if (t.getUnits().getUnits().contains(this))
 			{
 				return t.getUnits().getMatches(new Match<Unit>()
-				{
-					@Override
-					public boolean match(final Unit o)
 					{
-						return TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this;
-					}
-				});
+						@Override
+						public boolean match(final Unit o)
+						{
+							return TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this;
+						}
+					});
 			}
 		}
 		return Collections.emptyList();
+	}
+	
+	public List<Unit> getTransporting(final Collection<Unit> transportedUnitsPossible)
+	{
+		// we don't store the units we are transporting
+		// rather we look at the transported by property of units
+		return Match.getMatches(transportedUnitsPossible, new Match<Unit>()
+			{
+				@Override
+				public boolean match(final Unit o)
+				{
+					return TripleAUnit.get(o).getTransportedBy() == TripleAUnit.this;
+				}
+			});
 	}
 	
 	public List<Unit> getUnloaded()

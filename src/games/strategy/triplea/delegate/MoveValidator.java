@@ -1105,14 +1105,16 @@ public class MoveValidator
 			for (final Unit unit : transportTracker.getUnitsLoadedOnAlliedTransportsThisTurn(units))
 				result.addDisallowedUnit(CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND, unit);
 			final Collection<Unit> transports = MoveDelegate.mapTransports(route, units, null).values();
+			final boolean isScramblingOrKamikazeAttacksEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data)
+						|| games.strategy.triplea.Properties.getUseKamikazeSuicideAttacks(data);
 			for (final Unit transport : transports)
 			{
 				// Unloading a transport from a sea zone with a battle, to a friendly land territory, during combat move phase, is illegal
-				// and in addition to being illegal, it is also causing problems if the sea transports get stuck (the land units are not dying)
+				// and in addition to being illegal, it is also causing problems if the sea transports get killed (the land units are not dying)
 				// TODO: should we use the battle tracker for this instead?
-				if (!isNonCombat && route.numberOfStepsIncludingStart() == 2 && (
-							!(Matches.territoryHasEnemyUnits(player, data).match(routeEnd) || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(routeEnd))
-							&& (Matches.territoryHasEnemyUnits(player, data).match(routeStart))))
+				if (!isNonCombat && route.numberOfStepsIncludingStart() == 2 &&
+							((isScramblingOrKamikazeAttacksEnabled || Matches.territoryHasEnemyUnits(player, data).match(routeStart)) &&
+							!(Matches.territoryHasEnemyUnits(player, data).match(routeEnd) || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(routeEnd))))
 				{
 					for (final Unit unit : transportTracker.transporting(transport))
 						result.addDisallowedUnit(TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED, unit);

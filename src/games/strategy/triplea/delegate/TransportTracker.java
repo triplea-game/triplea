@@ -77,6 +77,15 @@ public class TransportTracker
 		return new ArrayList<Unit>(((TripleAUnit) transport).getTransporting());
 	}
 	
+	/**
+	 * Returns the collection of units that the given transport is transporting.
+	 * Could be null.
+	 */
+	public Collection<Unit> transporting(final Unit transport, final Collection<Unit> transportedUnitsPossible)
+	{
+		return new ArrayList<Unit>(((TripleAUnit) transport).getTransporting(transportedUnitsPossible));
+	}
+	
 	public boolean isTransporting(final Unit transport)
 	{
 		return !((TripleAUnit) transport).getTransporting().isEmpty();
@@ -112,6 +121,26 @@ public class TransportTracker
 			Collection<Unit> transporting = null;
 			if (transport != null)
 				transporting = transporting(transport);
+			if (transporting != null)
+			{
+				returnVal.put(transport, transporting);
+			}
+		}
+		return returnVal;
+	}
+	
+	/**
+	 * Returns a map of transport -> collection of transported units.
+	 */
+	public Map<Unit, Collection<Unit>> transporting(final Collection<Unit> transports, final Collection<Unit> transportedUnits)
+	{
+		final Map<Unit, Collection<Unit>> returnVal = new HashMap<Unit, Collection<Unit>>();
+		for (final Unit transported : transportedUnits)
+		{
+			final Unit transport = transportedBy(transported);
+			Collection<Unit> transporting = null;
+			if (transport != null)
+				transporting = transporting(transport, transportedUnits);
 			if (transporting != null)
 			{
 				returnVal.put(transport, transporting);

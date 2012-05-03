@@ -1,4 +1,12 @@
 Changes for 1.6
+* Semi-Fixed issue with not being able to retreat from a scrambled air defense. You can now retreat anywhere that does not have enemies. User should know where they came from and make legal move. (veqryn) 
+
+* Fixed issue with unloaded ground units not dying or being removed, even if their transports die from a scrambled air defense. (veqryn)
+
+* Disallowing any unloading of ground units to a friendly territory, during combat move, if we have scrambling or kamikazes turned on. (veqryn)
+
+* Fixed issue with "Scramble To Any Amphibious Assault" not working at all. (veqryn)
+
 * Created new game option, "Use Bombing Max Dice Sides And Bonus", which will control the unit attachment options: "bombingMaxDieSides" and "bombingBonus". (veqryn)
 
 * Stopped "Low Luck for Bombing and Territory Damage" from controlling "bombingMaxDieSides" and "bombingBonus", and made it create a Low Luck situation on top of whatever dice sides and bonus the map uses. (veqryn)
