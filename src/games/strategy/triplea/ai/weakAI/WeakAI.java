@@ -633,11 +633,17 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), walkInto);
 		Collections.sort(enemyOwned, new Comparator<Territory>()
 		{
-			private final Map<Territory, Integer> randomInts = new HashMap<Territory, Integer>();
+			// private final Map<Territory, Integer> randomInts = new HashMap<Territory, Integer>();
 			
 			public int compare(final Territory o1, final Territory o2)
 			{
-				if (o1 == o2 || o1.equals(o2))
+				if (o1 == o2 || (o1 == null && o2 == null))
+					return 0;
+				if (o1 == null)
+					return 1;
+				if (o2 == null)
+					return -1;
+				if (o1.equals(o2))
 					return 0;
 				final TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
 				final TerritoryAttachment ta2 = TerritoryAttachment.get(o2);
@@ -658,11 +664,12 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					return 1; // -1;
 				// randomness is a better guide than any other metric
 				// sort the remaining randomly
-				if (!randomInts.containsKey(o1))
+				/*if (!randomInts.containsKey(o1))
 					randomInts.put(o1, (int) (Math.random() * 1000));
 				if (!randomInts.containsKey(o2))
 					randomInts.put(o2, (int) (Math.random() * 1000));
-				return randomInts.get(o1) - randomInts.get(o2);
+				return randomInts.get(o1) - randomInts.get(o2);*/
+				return 0;
 			}
 		});
 		final List<Territory> isWaterTerr = Utils.onlyWaterTerr(data, enemyOwned);

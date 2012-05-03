@@ -108,7 +108,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 			return result;
 		if (units == null || units.isEmpty())
 			return null;
-		logEvent("Removing units owned by " + units.iterator().next().getOwner() + " from " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
+		logEvent("Removing units owned by " + units.iterator().next().getOwner().getName() + " from " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
 		m_bridge.addChange(ChangeFactory.removeUnits(territory, units));
 		return null;
 	}
@@ -122,7 +122,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 			return result;
 		if (units == null || units.isEmpty())
 			return null;
-		logEvent("Adding units owned by " + units.iterator().next().getOwner() + " to " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
+		logEvent("Adding units owned by " + units.iterator().next().getOwner().getName() + " to " + territory.getName() + ": " + MyFormatter.unitsToTextNoOwner(units), units);
 		m_bridge.addChange(ChangeFactory.addUnits(territory, units));
 		return null;
 	}
