@@ -1,5 +1,7 @@
 Changes for 1.6
-* Fixing error with Low Luck AA guns when the dice side is different than 6. Was trying to roll zero random dice. (veqryn)
+* Fixed error with "Should not be adding battle record for player ...", which was caused by creating a battle usin edit mode for a player who's turn has passed already. (veqryn)
+
+* Fixed error with Low Luck AA guns when the dice side is different than 6. Was trying to roll zero random dice. (veqryn)
 
 * Fixed issue with not being able to move through submarines during noncombat if they were on top of convoy zones. (veqryn)
 

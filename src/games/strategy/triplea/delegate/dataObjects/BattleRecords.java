@@ -136,15 +136,33 @@ public class BattleRecords extends GameDataComponent implements Serializable
 	
 	public void addRecord(final BattleRecords other)
 	{
-		for (final PlayerID p : m_records.keySet())
-		{
-			final HashMap<GUID, BattleRecord> otherRecord = other.m_records.get(p);
-			if (otherRecord != null)
-				throw new IllegalStateException("Should not be adding battle records for player " + p.getName() + " when they are already on the record");
-		}
 		for (final PlayerID p : other.m_records.keySet())
 		{
-			m_records.put(p, other.m_records.get(p));
+			final HashMap<GUID, BattleRecord> currentRecord = m_records.get(p);
+			if (currentRecord != null)
+			{
+				// this only comes up if we use edit mode to create an attack for a player who's already had their turn and therefore already has their record.
+				final HashMap<GUID, BattleRecord> additionalRecords = other.m_records.get(p);
+				for (final Entry<GUID, BattleRecord> entry : additionalRecords.entrySet())
+				{
+					final GUID guid = entry.getKey();
+					final BattleRecord br = entry.getValue();
+					if (currentRecord.containsKey(guid))
+					{
+						throw new IllegalStateException("Should not be adding battle record for player " + p.getName() + " when they are already on the record. " +
+									"Trying to add: " + br.toString());
+					}
+					else
+					{
+						currentRecord.put(guid, br);
+					}
+				}
+				m_records.put(p, currentRecord);
+			}
+			else
+			{
+				m_records.put(p, other.m_records.get(p));
+			}
 		}
 	}
 	
