@@ -6225,6 +6225,10 @@
 				<property name="Two hit battleship" value="true" editable="false">
 						<boolean/>
 				</property>
+				
+				<property name="Convoy Blockades Roll Dice For Cost" value="true" editable="true">
+						<boolean/>
+				</property>
 
 				<!-- production related -->
 				<property name="Produce fighters on carriers" value="true" editable="false">
@@ -6570,7 +6574,7 @@ These changes to units are things other than price/movement which you can see in
 <br>
 <br>2.8
 <br>Allowed Low Luck for Strategy Bombing and Rockets to be set again.
-<br>
+<br>Allowed Convoy Blockades to roll dice (you can turn this off in game options).
 <br>
 <br>2.7
 <br>Fixing Strategic Bombers so that they add +2 damage onto raids.

@@ -804,11 +804,10 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		int maxScrambled = 0;
 		for (final Unit base : airbases)
 		{
-			int tempMax = ((TripleAUnit) base).getMaxScrambleCount(); // UnitAttachment.get(base.getType()).getMaxScrambleCount();
-			if (tempMax == -1)
-				tempMax = Integer.MAX_VALUE;
-			if (tempMax > maxScrambled)
-				maxScrambled = tempMax;
+			final int baseMax = ((TripleAUnit) base).getMaxScrambleCount();
+			if (baseMax == -1)
+				return Integer.MAX_VALUE;
+			maxScrambled += baseMax;
 		}
 		return maxScrambled;
 	}

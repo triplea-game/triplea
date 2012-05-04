@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Pact of Steel 2" version="3.5.3"/>
+        <info name="Pact of Steel 2" version="3.6"/>
 		
 			<!-- A MOD of original POS by VEQRYN
 					The purpose is to provide a fun game that shows off all the new features of TripleA since 1.2.5.5
@@ -5087,6 +5087,11 @@
 
 						<!-- Only affects units exactly called "battleship" -->
 				<property name="Two hit battleship" value="true" editable="false">
+						<boolean/>
+				</property>
+
+						<!-- If false, blockades will deal set amount of damage per unit. If true, a 6 sided die will be rolled for each damage point, with that being the damage, except rolls higher than 3 will be ignored -->
+				<property name="Convoy Blockades Roll Dice For Cost" value="false" editable="true">
 						<boolean/>
 				</property>
 

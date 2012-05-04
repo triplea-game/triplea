@@ -818,6 +818,11 @@ public class Properties implements Constants
 		return data.getProperties().get(USE_BOMBING_MAX_DICE_SIDES_AND_BONUS, false);
 	}
 	
+	public static boolean getConvoyBlockadesRollDiceForCost(final GameData data)
+	{
+		return data.getProperties().get(CONVOY_BLOCKADES_ROLL_DICE_FOR_COST, false);
+	}
+	
 	private Properties()
 	{
 	}

@@ -1,4 +1,8 @@
 Changes for 1.6
+* Created new game option, "Convoy Blockades Roll Dice For Cost", which will now allow dice to be thrown for all blockade damage. (veqryn)
+
+* Allowed multiple airbases in a single territory to stack for their max scrambling number total. (veqryn)
+
 * Allowed defenseless attackers to be able to retreat if they can, instead of being forced to die. (veqryn)
 
 * Possible fix for "Record Battle Statistics" occuring multiple times. (veqryn)

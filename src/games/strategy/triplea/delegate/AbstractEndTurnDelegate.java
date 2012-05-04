@@ -60,6 +60,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 {
 	private boolean m_needToInitialize = true;
 	private boolean m_hasPostedTurnSummary = false;
+	private static int CONVOY_BLOCKADE_DICE_SIDES = 6;
 	
 	private boolean doBattleShipsRepairEndOfTurn()
 	{
@@ -94,7 +95,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		// just collect resources
 		final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
 		int toAdd = getProduction(territories);
-		final int blockadeLoss = getProductionLoss(m_player, data);
+		final int blockadeLoss = getProductionLoss(m_player, data, aBridge);
 		toAdd -= blockadeLoss;
 		toAdd *= Properties.getPU_Multiplier(data);
 		int total = m_player.getResources().getQuantity(PUs) + toAdd;
@@ -286,11 +287,15 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	}
 	
 	// finds losses due to blockades etc, positive value returned.
-	protected int getProductionLoss(final PlayerID player, final GameData data)
+	protected int getProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge aBridge)
 	{
 		final Collection<Territory> blockable = Match.getMatches(data.getMap().getTerritories(), Matches.territoryIsBlockadeZone);
+		if (blockable.isEmpty())
+			return 0;
 		final Match<Unit> enemyUnits = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
 		int totalLoss = 0;
+		final boolean rollDiceForBlockadeDamage = games.strategy.triplea.Properties.getConvoyBlockadesRollDiceForCost(data);
+		final Collection<String> transcripts = new ArrayList<String>();
 		for (final Territory b : blockable)
 		{
 			int maxLoss = 0;
@@ -299,11 +304,45 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 				if (m.getOwner().equals(player))
 					maxLoss += TerritoryAttachment.get(m).getProduction();
 			}
+			if (maxLoss <= 0)
+				continue;
 			int loss = 0;
 			final Collection<Unit> enemies = Match.getMatches(b.getUnits().getUnits(), enemyUnits);
-			for (final Unit u : enemies)
-				loss += UnitAttachment.get(u.getType()).getBlockade();
+			if (rollDiceForBlockadeDamage)
+			{
+				int numberOfDice = 0;
+				for (final Unit u : enemies)
+				{
+					numberOfDice += UnitAttachment.get(u.getType()).getBlockade();
+				}
+				if (numberOfDice > 0)
+				{
+					final String transcript = "Rolling for Convoy Blockade Damage in " + b.getName();
+					final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice, transcript);
+					transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));
+					for (final int d : dice)
+					{
+						final int roll = d + 1; // we are zero based
+						loss += (roll <= 3 ? roll : 0);
+					}
+				}
+			}
+			else
+			{
+				for (final Unit u : enemies)
+				{
+					loss += UnitAttachment.get(u.getType()).getBlockade();
+				}
+			}
 			totalLoss += Math.min(maxLoss, loss);
+		}
+		if (rollDiceForBlockadeDamage && totalLoss > 0 && !transcripts.isEmpty())
+		{
+			aBridge.getHistoryWriter().startEvent("Calculating Cost from Convoy Blockades");
+			for (final String t : transcripts)
+			{
+				aBridge.getHistoryWriter().addChildToEvent(t);
+			}
 		}
 		return totalLoss;
 	}
