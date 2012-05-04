@@ -1,4 +1,8 @@
 Changes for 1.6
+* Fixing error with Low Luck AA guns when the dice side is different than 6. Was trying to roll zero random dice. (veqryn)
+
+* Fixed issue with not being able to move through submarines during noncombat if they were on top of convoy zones. (veqryn)
+
 * Created new game option, "Convoy Blockades Roll Dice For Cost", which will now allow dice to be thrown for all blockade damage. (veqryn)
 
 * Allowed multiple airbases in a single territory to stack for their max scrambling number total. (veqryn)

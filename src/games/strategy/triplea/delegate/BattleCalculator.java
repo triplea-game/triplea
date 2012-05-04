@@ -180,15 +180,17 @@ public class BattleCalculator
 	private static Collection<Unit> getLowLuckAACasualties(final Collection<Unit> planes, final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location,
 				final IDelegateBridge bridge)
 	{
+		final Collection<Unit> hitUnits = new ArrayList<Unit>();
+		int hitsLeft = dice.getHits();
+		if (hitsLeft <= 0)
+			return hitUnits;
 		final Tuple<Integer, Integer> attackThenDiceSides = DiceRoll.getAAattackAndMaxDiceSides(defendingAA, bridge.getData());
 		final int highestAttack = attackThenDiceSides.getFirst();
 		final int chosenDiceSize = attackThenDiceSides.getSecond();
-		final Collection<Unit> hitUnits = new ArrayList<Unit>();
 		if (highestAttack < 1)
 			return hitUnits;
 		final int groupSize = chosenDiceSize / highestAttack;
 		final Tuple<List<Unit>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location, chosenDiceSize, groupSize);
-		int hitsLeft = dice.getHits();
 		// the non rolling air units
 		if (hitsLeft < airSplit.getFirst().size() / groupSize)
 		{
@@ -245,6 +247,8 @@ public class BattleCalculator
 	{
 		final Collection<Unit> casualties = new ArrayList<Unit>();
 		final int hits = dice.getHits();
+		if (hits <= 0)
+			return casualties;
 		final List<Unit> planesList = new ArrayList<Unit>(planes);
 		// We need to choose which planes die randomly
 		if (hits < planesList.size())

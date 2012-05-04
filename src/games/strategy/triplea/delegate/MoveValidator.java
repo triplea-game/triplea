@@ -372,14 +372,12 @@ public class MoveValidator
 		}
 		else
 		{
-			final CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutralButNotWater, Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(
-						player,
-						data));
+			final CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutralButNotWater,
+						Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
 			if (route.someMatch(neutralOrEnemy))
 			{
-				if (!(!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater) && MoveValidator.noEnemyUnitsOnPathMiddleSteps(route, player, data) && !Matches
-							.territoryHasEnemyUnits(
-										player, data).match(route.getEnd())))
+				if ((!(!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater))) && MoveValidator.noEnemyUnitsOnPathMiddleSteps(route, player, data) &&
+							!Matches.territoryHasEnemyUnits(player, data).match(route.getEnd()))
 				{
 					if (!route.allMatch(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data), Matches
 								.isTerritoryAllied(player, data), Matches.TerritoryIsLand))) || nonParatroopersPresent(player, units, route))
