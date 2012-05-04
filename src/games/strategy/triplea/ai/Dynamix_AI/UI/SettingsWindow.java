@@ -2626,6 +2626,8 @@ public class SettingsWindow extends javax.swing.JDialog
 		dialog.add(pane, BorderLayout.CENTER);
 		final JButton button = new JButton(new AbstractAction()
 		{
+			private static final long serialVersionUID = -1367858475413936399L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				dialog.dispose();

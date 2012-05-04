@@ -660,14 +660,14 @@ public class Matches
 	 * @param data
 	 * @return
 	 */
-	public static final Match<Unit> UnitIsSupporterOrHasCombatAbility(final boolean attack, final PlayerID player, final GameData data)
+	public static final Match<Unit> UnitIsSupporterOrHasCombatAbility(final boolean attack, final GameData data)
 	{
 		return new Match<Unit>()
 		{
 			@Override
 			public boolean match(final Unit unit)
 			{
-				return Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player, data).match(unit.getType());
+				return Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, unit.getOwner(), data).match(unit.getType());
 			}
 		};
 	}

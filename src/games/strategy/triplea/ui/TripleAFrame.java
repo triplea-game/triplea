@@ -57,6 +57,7 @@ import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.BattleDelegate;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.UnitBattleComparator;
@@ -333,6 +334,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		// set up the edit mode overlay text
 		this.setGlassPane(new JComponent()
 		{
+			private static final long serialVersionUID = 6724687534214427291L;
+			
 			@Override
 			protected void paintComponent(final Graphics g)
 			{
@@ -360,6 +363,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('=', java.awt.event.InputEvent.CTRL_MASK), zoom_map_in);
 		((JComponent) getContentPane()).getActionMap().put(zoom_map_in, new AbstractAction(zoom_map_in)
 		{
+			private static final long serialVersionUID = -7565304172320049817L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (getScale() < 100)
@@ -371,6 +376,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		((JComponent) getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('-', java.awt.event.InputEvent.CTRL_MASK), zoom_map_out);
 		((JComponent) getContentPane()).getActionMap().put(zoom_map_out, new AbstractAction(zoom_map_out)
 		{
+			private static final long serialVersionUID = 7677111833274819304L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				if (getScale() > 16)
@@ -905,7 +912,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return selection;
 	}
 	
-	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers)
+	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(final Territory scrambleTo, final Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers)
 	{
 		if (SwingUtilities.isEventDispatchThread())
 		{
@@ -933,7 +940,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 					panelChooser.add(whereFrom);
 					panelChooser.add(new JLabel(" "));
 					final Collection<Unit> possible = possibleScramblers.get(from).getSecond();
-					final int maxAllowed = Math.min(possibleScramblers.get(from).getFirst(), possible.size());
+					final int maxAllowed = Math.min(BattleDelegate.getMaxScrambleCount(possibleScramblers.get(from).getFirst()), possible.size());
 					final UnitChooser chooser = new UnitChooser(possible, Collections.<Unit, Collection<Unit>> emptyMap(), m_data, false, m_uiContext);
 					chooser.setMaxAndShowMaxButton(maxAllowed);
 					choosers.add(new Tuple<Territory, UnitChooser>(from, chooser));
@@ -1451,6 +1458,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		final JPopupMenu popup = new JPopupMenu();
 		popup.add(new AbstractAction("Show Summary Log")
 		{
+			private static final long serialVersionUID = -6730966512179268157L;
+			
 			public void actionPerformed(final ActionEvent ae)
 			{
 				final HistoryLog historyLog = new HistoryLog();
@@ -1463,6 +1472,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		});
 		popup.add(new AbstractAction("Show Detailed Log")
 		{
+			private static final long serialVersionUID = -8709762764495294671L;
+			
 			public void actionPerformed(final ActionEvent ae)
 			{
 				final HistoryLog historyLog = new HistoryLog();
@@ -1475,6 +1486,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		});
 		popup.add(new AbstractAction("Save Screenshot")
 		{
+			private static final long serialVersionUID = 1222760138263428443L;
+			
 			public void actionPerformed(final ActionEvent ae)
 			{
 				saveScreenshot(m_historyPanel.getCurrentPopupNode());
@@ -1711,6 +1724,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				// create a custom renderer that paints selected cells transparently
 				final DefaultTableCellRenderer renderer = new DefaultTableCellRenderer()
 				{
+					private static final long serialVersionUID = 1978774284876746635L;
+					
 					{
 						setOpaque(false);
 					}
@@ -1917,6 +1932,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	
 	private AbstractAction m_showCommentLogAction = new AbstractAction()
 	{
+		private static final long serialVersionUID = 3964381772343872268L;
+		
 		public void actionPerformed(final ActionEvent ae)
 		{
 			if (((ButtonModel) ae.getSource()).isSelected())
@@ -1967,6 +1984,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	};
 	private AbstractAction m_showHistoryAction = new AbstractAction("Show history")
 	{
+		private static final long serialVersionUID = -3960551522512897374L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			showHistory();
@@ -1975,6 +1994,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	};
 	private AbstractAction m_showGameAction = new AbstractAction("Show current game")
 	{
+		private static final long serialVersionUID = -7551760679570164254L;
+		
 		{
 			setEnabled(false);
 		}
@@ -1987,6 +2008,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	};
 	private AbstractAction m_showMapOnlyAction = new AbstractAction("Show map only")
 	{
+		private static final long serialVersionUID = -6621157075878333141L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			showMapOnly();
@@ -1995,6 +2018,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	};
 	private final AbstractAction m_saveScreenshotAction = new AbstractAction("Export Screenshot...")
 	{
+		private static final long serialVersionUID = -5908032486008953815L;
+		
 		public void actionPerformed(final ActionEvent e)
 		{
 			HistoryNode curNode = null;

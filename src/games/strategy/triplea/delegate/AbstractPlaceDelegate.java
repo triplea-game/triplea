@@ -1397,9 +1397,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 					return -1;
 				if (ua1 == null && ua2 != null)
 					return 1;
-				@SuppressWarnings("null")
 				final ArrayList<String[]> ru1 = ua1.getRequiresUnits();
-				@SuppressWarnings("null")
 				final ArrayList<String[]> ru2 = ua2.getRequiresUnits();
 				final int rus1 = (ru1 == null ? Integer.MAX_VALUE : (ru1.isEmpty() ? Integer.MAX_VALUE : ru1.size()));
 				final int rus2 = (ru2 == null ? Integer.MAX_VALUE : (ru2.isEmpty() ? Integer.MAX_VALUE : ru2.size()));

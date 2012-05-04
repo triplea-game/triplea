@@ -1,4 +1,12 @@
 Changes for 1.6
+* Allowed defenseless attackers to be able to retreat if they can, instead of being forced to die. (veqryn)
+
+* Possible fix for "Record Battle Statistics" occuring multiple times. (veqryn)
+
+* Allowed all defending or attacking units to die, when there are none left who are capable of throwing dice. (veqryn)
+
+* Fixed issue with maxScrambleCount not keeping track of scrambles for different sea zones by the same land territory. (veqryn)
+
 * Semi-Fixed issue with not being able to retreat from a scrambled air defense. You can now retreat anywhere that does not have enemies. User should know where they came from and make legal move. (veqryn) 
 
 * Fixed issue with unloaded ground units not dying or being removed, even if their transports die from a scrambled air defense. (veqryn)

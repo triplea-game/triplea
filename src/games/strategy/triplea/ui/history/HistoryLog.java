@@ -332,6 +332,9 @@ public class HistoryLog extends JFrame
 						else if (title.equals("Recording Battle Statistics"))
 						{
 						}
+						else if (title.equals("Preparing Airbases for Possible Scrambling"))
+						{
+						}
 						else if (title.matches("\\w+ collect \\d+ PUs?.*"))
 						{
 							logWriter.println(indent + title);

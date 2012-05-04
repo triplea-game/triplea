@@ -73,6 +73,12 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	private BattleTracker m_battleTracker = new BattleTracker();
 	private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
 	private boolean m_needToInitialize = true;
+	private boolean m_needToScramble = true;
+	private boolean m_needToKamikazeSuicideAttacks = true;
+	private boolean m_needToAddBombardmentSources = true;
+	private boolean m_needToRecordBattleStatistics = true;
+	private boolean m_needToCheckDefendingPlanesCanLand = true;
+	private boolean m_needToCleanup = true;
 	private IBattle m_currentBattle = null;
 	
 	/**
@@ -88,11 +94,24 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		{
 			setupUnitsInSameTerritoryBattles();
 			m_battleTracker.clearFinishedBattles(m_bridge); // these are "blitzed" and "conquered" territories without a fight, without a pending battle
-			// do pre-combat stuff, like scrambling, after we have setup all battles, but before we have bombardment, etc.
-			doScrambling();
-			doKamikazeSuicideAttacks();
-			addBombardmentSources();
+			resetMaxScrambleCount();
 			m_needToInitialize = false;
+		}
+		// do pre-combat stuff, like scrambling, after we have setup all battles, but before we have bombardment, etc.
+		if (m_needToScramble)
+		{
+			doScrambling();
+			m_needToScramble = false;
+		}
+		if (m_needToKamikazeSuicideAttacks)
+		{
+			doKamikazeSuicideAttacks();
+			m_needToKamikazeSuicideAttacks = false;
+		}
+		if (m_needToAddBombardmentSources)
+		{
+			addBombardmentSources();
+			m_needToAddBombardmentSources = false;
 		}
 	}
 	
@@ -102,13 +121,31 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	@Override
 	public void end()
 	{
-		getBattleTracker().sendBattleRecordsToGameData(m_bridge);
-		getBattleTracker().clearBattleRecords();
-		scramblingCleanup();
-		airBattleCleanup();
-		checkDefendingPlanesCanLand();
+		if (m_needToRecordBattleStatistics)
+		{
+			getBattleTracker().sendBattleRecordsToGameData(m_bridge);
+			m_needToRecordBattleStatistics = false;
+		}
+		if (m_needToCleanup)
+		{
+			getBattleTracker().clearBattleRecords();
+			scramblingCleanup();
+			airBattleCleanup();
+			m_needToCleanup = false;
+		}
+		if (m_needToCheckDefendingPlanesCanLand)
+		{
+			checkDefendingPlanesCanLand();
+			m_needToCheckDefendingPlanesCanLand = false;
+		}
 		super.end();
 		m_needToInitialize = true;
+		m_needToScramble = true;
+		m_needToKamikazeSuicideAttacks = true;
+		m_needToAddBombardmentSources = true;
+		m_needToRecordBattleStatistics = true;
+		m_needToCleanup = true;
+		m_needToCheckDefendingPlanesCanLand = true;
 	}
 	
 	@Override
@@ -120,6 +157,12 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		state.m_battleTracker = m_battleTracker;
 		state.m_originalOwnerTracker = m_originalOwnerTracker;
 		state.m_needToInitialize = m_needToInitialize;
+		state.m_needToScramble = m_needToScramble;
+		state.m_needToKamikazeSuicideAttacks = m_needToKamikazeSuicideAttacks;
+		state.m_needToAddBombardmentSources = m_needToAddBombardmentSources;
+		state.m_needToRecordBattleStatistics = m_needToRecordBattleStatistics;
+		state.m_needToCheckDefendingPlanesCanLand = m_needToCheckDefendingPlanesCanLand;
+		state.m_needToCleanup = m_needToCleanup;
 		state.m_currentBattle = m_currentBattle;
 		return state;
 	}
@@ -133,6 +176,12 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		m_battleTracker = s.m_battleTracker;
 		m_originalOwnerTracker = s.m_originalOwnerTracker;
 		m_needToInitialize = s.m_needToInitialize;
+		m_needToScramble = s.m_needToScramble;
+		m_needToKamikazeSuicideAttacks = s.m_needToKamikazeSuicideAttacks;
+		m_needToAddBombardmentSources = s.m_needToAddBombardmentSources;
+		m_needToRecordBattleStatistics = s.m_needToRecordBattleStatistics;
+		m_needToCheckDefendingPlanesCanLand = s.m_needToCheckDefendingPlanesCanLand;
+		m_needToCleanup = s.m_needToCleanup;
 		m_currentBattle = s.m_currentBattle;
 	}
 	
@@ -481,9 +530,10 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			if (ua.getCanScramble() && maxScrambleDistance < ua.getMaxScrambleDistance())
 				maxScrambleDistance = ua.getMaxScrambleDistance();
 		}
+		final Match<Unit> airbasesCanScramble = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsAirBase, Matches.UnitIsDisabled().invert());
 		final CompositeMatchAnd<Territory> canScramble = new CompositeMatchAnd<Territory>(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, Matches.isTerritoryEnemy(m_player, data)),
 					Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitCanScramble, Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsDisabled().invert())),
-					Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitIsAirBase, Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsDisabled().invert())));
+					Matches.territoryHasUnitsThatMatch(airbasesCanScramble));
 		if (fromIslandOnly)
 			canScramble.add(Matches.TerritoryIsIsland);
 		final HashMap<Territory, HashSet<Territory>> scrambleTerrs = new HashMap<Territory, HashSet<Territory>>();
@@ -532,45 +582,35 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		// now scrambleTerrs is a list of places we can scramble from
 		if (scrambleTerrs.isEmpty())
 			return;
-		final HashMap<Tuple<Territory, PlayerID>, Collection<HashMap<Territory, Tuple<Integer, Collection<Unit>>>>> scramblersByTerritoryPlayer = new HashMap<Tuple<Territory, PlayerID>, Collection<HashMap<Territory, Tuple<Integer, Collection<Unit>>>>>();
+		final HashMap<Tuple<Territory, PlayerID>, Collection<HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>> scramblersByTerritoryPlayer = new HashMap<Tuple<Territory, PlayerID>, Collection<HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>>();
 		for (final Territory to : scrambleTerrs.keySet())
 		{
-			final HashMap<Territory, Tuple<Integer, Collection<Unit>>> scramblers = new HashMap<Territory, Tuple<Integer, Collection<Unit>>>();
+			final HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers = new HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>>();
 			// find who we should ask
 			PlayerID defender = null;
 			if (m_battleTracker.hasPendingBattle(to, false))
 				defender = MustFightBattle.findDefender(to, m_player, data);
 			for (final Territory from : scrambleTerrs.get(to))
 			{
-				final Collection<Unit> airbases = from.getUnits().getMatches(
-							new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player), Matches.UnitIsAirBase, Matches.UnitIsDisabled().invert()));
 				if (defender == null)
 				{
 					defender = MustFightBattle.findDefender(from, m_player, data);
 				}
-				
 				// find how many is the max this territory can scramble
-				int maxScrambled = 0;
-				for (final Unit base : airbases)
-				{
-					int tempMax = UnitAttachment.get(base.getType()).getMaxScrambleCount();
-					if (tempMax == -1)
-						tempMax = Integer.MAX_VALUE;
-					if (tempMax > maxScrambled)
-						maxScrambled = tempMax;
-				}
+				final Collection<Unit> airbases = from.getUnits().getMatches(airbasesCanScramble);
+				final int maxCanScramble = getMaxScrambleCount(airbases);
 				final Route toBattleRoute = data.getMap().getRoute_IgnoreEnd(from, to, Matches.TerritoryIsNotImpassable);
 				final Collection<Unit> canScrambleAir = from.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, m_player), Matches.UnitCanScramble,
 							Matches.UnitIsDisabled().invert(), Matches.UnitWasScrambled.invert(), Matches.unitCanScrambleOnRouteDistance(toBattleRoute)));
-				if (maxScrambled > 0 && !canScrambleAir.isEmpty())
-					scramblers.put(from, new Tuple<Integer, Collection<Unit>>(maxScrambled, canScrambleAir));
+				if (maxCanScramble > 0 && !canScrambleAir.isEmpty())
+					scramblers.put(from, new Tuple<Collection<Unit>, Collection<Unit>>(airbases, canScrambleAir));
 			}
 			if (defender == null || scramblers.isEmpty())
 				continue;
 			final Tuple<Territory, PlayerID> terrPlayer = new Tuple<Territory, PlayerID>(to, defender);
-			Collection<HashMap<Territory, Tuple<Integer, Collection<Unit>>>> tempScrambleList = scramblersByTerritoryPlayer.get(terrPlayer);
+			Collection<HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>>> tempScrambleList = scramblersByTerritoryPlayer.get(terrPlayer);
 			if (tempScrambleList == null)
-				tempScrambleList = new ArrayList<HashMap<Territory, Tuple<Integer, Collection<Unit>>>>();
+				tempScrambleList = new ArrayList<HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>>>();
 			tempScrambleList.add(scramblers);
 			scramblersByTerritoryPlayer.put(terrPlayer, tempScrambleList);
 		}
@@ -583,7 +623,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			if (defender == null || defender.isNull())
 				continue;
 			boolean scrambledHere = false;
-			for (final HashMap<Territory, Tuple<Integer, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer.get(terrPlayer))
+			for (final HashMap<Territory, Tuple<Collection<Unit>, Collection<Unit>>> scramblers : scramblersByTerritoryPlayer.get(terrPlayer))
 			{
 				// verify that we didn't already scramble any of these units
 				final Iterator<Territory> tIter = scramblers.keySet().iterator();
@@ -608,7 +648,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				{
 					if (toScramble.get(t) == null)
 						continue;
-					if (toScramble.get(t).size() > scramblers.get(t).getFirst())
+					if (toScramble.get(t).size() > getMaxScrambleCount(scramblers.get(t).getFirst()))
 						throw new IllegalStateException("Trying to scramble " + toScramble.get(t).size() + " out of " + t.getName() + ", but max allowed is " + scramblers.get(t).getFirst());
 				}
 				
@@ -618,6 +658,34 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					final Collection<Unit> scrambling = toScramble.get(t);
 					if (scrambling == null || scrambling.isEmpty())
 						continue;
+					int numberScrambled = scrambling.size();
+					final Collection<Unit> airbases = t.getUnits().getMatches(airbasesCanScramble);
+					final int maxCanScramble = getMaxScrambleCount(airbases);
+					if (maxCanScramble != Integer.MAX_VALUE)
+					{
+						// TODO: maybe sort from biggest to smallest first?
+						for (final Unit airbase : airbases)
+						{
+							final int allowedScramble = ((TripleAUnit) airbase).getMaxScrambleCount();
+							int newAllowed = allowedScramble;
+							if (allowedScramble > 0)
+							{
+								if (allowedScramble >= numberScrambled)
+								{
+									newAllowed = allowedScramble - numberScrambled;
+									numberScrambled = 0;
+								}
+								else
+								{
+									newAllowed = 0;
+									numberScrambled -= allowedScramble;
+								}
+								change.add(ChangeFactory.unitPropertyChange(airbase, newAllowed, TripleAUnit.MAX_SCRAMBLE_COUNT));
+							}
+							if (numberScrambled <= 0)
+								break;
+						}
+					}
 					for (final Unit u : scrambling)
 					{
 						change.add(ChangeFactory.unitPropertyChange(u, t, TripleAUnit.ORIGINATED_FROM));
@@ -659,8 +727,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 						// after that is applied, we have to make a map of all dependencies
 						final TransportTracker tt = new TransportTracker();
 						final Map<Territory, Map<Unit, Collection<Unit>>> dependencies = new HashMap<Territory, Map<Unit, Collection<Unit>>>();
-						final Map<Unit, Collection<Unit>> dependenciesForMFB = tt.transporting(
-									Match.getMatches(attackingUnits, Matches.UnitIsTransport), Match.getMatches(attackingUnits, Matches.UnitIsTransport.invert()));
+						final Map<Unit, Collection<Unit>> dependenciesForMFB = tt.transporting(attackingUnits, attackingUnits);
 						for (final Unit transport : Match.getMatches(attackingUnits, Matches.UnitIsTransport))
 						{
 							// however, the map we add to the newly created battle, can not hold any units that are NOT in this territory.
@@ -729,6 +796,23 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		}
 	}
 	
+	public static int getMaxScrambleCount(final Collection<Unit> airbases)
+	{
+		if (!Match.allMatch(airbases, new CompositeMatchAnd<Unit>(Matches.UnitIsAirBase, Matches.UnitIsDisabled().invert())))
+			throw new IllegalStateException("All units must be viable airbases");
+		// find how many is the max this territory can scramble
+		int maxScrambled = 0;
+		for (final Unit base : airbases)
+		{
+			int tempMax = ((TripleAUnit) base).getMaxScrambleCount(); // UnitAttachment.get(base.getType()).getMaxScrambleCount();
+			if (tempMax == -1)
+				tempMax = Integer.MAX_VALUE;
+			if (tempMax > maxScrambled)
+				maxScrambled = tempMax;
+		}
+		return maxScrambled;
+	}
+	
 	private void scramblingCleanup()
 	{
 		// return scrambled units to their original territories, or let them move 1 or x to a new territory.
@@ -779,6 +863,32 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					m_bridge.addChange(change);
 				}
 			}
+		}
+	}
+	
+	private void resetMaxScrambleCount()
+	{
+		// reset the tripleaUnit property for all airbases that were used
+		final GameData data = getData();
+		if (!games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data))
+			return;
+		final CompositeChange change = new CompositeChange();
+		for (final Territory t : data.getMap().getTerritories())
+		{
+			final Collection<Unit> airbases = t.getUnits().getMatches(Matches.UnitIsAirBase);
+			for (final Unit u : airbases)
+			{
+				final UnitAttachment ua = UnitAttachment.get(u.getType());
+				final int currentMax = ((TripleAUnit) u).getMaxScrambleCount();
+				final int allowedMax = ua.getMaxScrambleCount();
+				if (currentMax != allowedMax)
+					change.add(ChangeFactory.unitPropertyChange(u, allowedMax, TripleAUnit.MAX_SCRAMBLE_COUNT));
+			}
+		}
+		if (!change.isEmpty())
+		{
+			m_bridge.getHistoryWriter().startEvent("Preparing Airbases for Possible Scrambling");
+			m_bridge.addChange(change);
 		}
 	}
 	
@@ -1305,5 +1415,11 @@ class BattleExtendedDelegateState implements Serializable
 	public BattleTracker m_battleTracker = new BattleTracker();
 	public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
 	public boolean m_needToInitialize;
+	public boolean m_needToScramble;
+	public boolean m_needToKamikazeSuicideAttacks;
+	public boolean m_needToAddBombardmentSources;
+	public boolean m_needToRecordBattleStatistics;
+	public boolean m_needToCheckDefendingPlanesCanLand;
+	public boolean m_needToCleanup;
 	public IBattle m_currentBattle;
 }

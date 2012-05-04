@@ -139,6 +139,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		parentMenu.add(new AbstractAction("Movement/Selection help...")
 		{
+			private static final long serialVersionUID = 6388976622644695135L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				// html formatted string
@@ -306,6 +308,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		menuView.add(new AbstractAction("Set Look and Feel...")
 		{
+			private static final long serialVersionUID = 379919988820952164L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final Triple<JList, Map<String, String>, String> lookAndFeel = getLookAndFeelList();
@@ -334,6 +338,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		menuView.add(new AbstractAction("Game UUID...")
 		{
+			private static final long serialVersionUID = 119615303846107510L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final String id = (String) getData().getProperties().get(GameData.GAME_UUID);
@@ -378,6 +384,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final Action mapZoom = new AbstractAction("Map Zoom...")
 		{
+			private static final long serialVersionUID = 1114072913279994047L;
+			
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				final SpinnerNumberModel model = new SpinnerNumberModel();
@@ -445,6 +453,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final Action showVerifiedDice = new AbstractAction("Show Verified Dice..")
 		{
+			private static final long serialVersionUID = -2753073276162734526L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				new VerifiedRandomNumbersDialog(m_frame.getRootPane()).setVisible(true);
@@ -481,6 +491,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		showEnemyCasualties.setSelected(BattleDisplay.getShowEnemyCasualtyNotification());
 		showEnemyCasualties.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = -7445092411530581715L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				BattleDisplay.setShowEnemyCasualtyNotification(showEnemyCasualties.isSelected());
@@ -495,6 +507,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
 		tabbedProduction.addActionListener(new AbstractAction()
 		{
+			private static final long serialVersionUID = -352890957050498753L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				PurchasePanel.setTabbedProduction(tabbedProduction.isSelected());
@@ -512,6 +526,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			final AbstractAction optionsAction = new AbstractAction("View Game Options...")
 			{
+				private static final long serialVersionUID = 8937205081994328616L;
+				
 				public void actionPerformed(final ActionEvent e)
 				{
 					final PropertiesUI ui = new PropertiesUI(getGame().getData().getProperties().getEditableProperties(), false);
@@ -532,6 +548,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final AbstractAction politicsAction = new AbstractAction("Show Politics Panel")
 		{
+			private static final long serialVersionUID = 7880136597816371478L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final PoliticalStateOverview ui = new PoliticalStateOverview(getData(), getUIContext());
@@ -633,6 +651,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			parentMenu.addSeparator();
 			parentMenu.add(new AbstractAction("Change Dynamix AI Settings")
 			{
+				private static final long serialVersionUID = 2257295609477283292L;
+				
 				public void actionPerformed(final ActionEvent e)
 				{
 					Dynamix_AI.ShowSettingsWindow();
@@ -675,6 +695,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final Action showDiceStats = new AbstractAction("Show Dice Stats...")
 		{
+			private static final long serialVersionUID = 5530880208301800861L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final IRandomStats randomStats = (IRandomStats) getGame().getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
@@ -752,6 +774,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final Action showBattleMenu = new AbstractAction("Battle Calculator...")
 		{
+			private static final long serialVersionUID = 6211814774301020553L;
+			
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				OddsCalculatorDialog.show(m_frame, null);
@@ -765,14 +789,13 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final Action exportXML = new AbstractAction("Export game.xml file (Beta)...")
 		{
+			private static final long serialVersionUID = 8379478036021948990L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				exportXMLFile();
 			}
 			
-			/**
-             *
-             */
 			private void exportXMLFile()
 			{
 				final JFileChooser chooser = new JFileChooser();
@@ -814,6 +837,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final Action showDiceStats = new AbstractAction("Export Full Game Stats...")
 		{
+			private static final long serialVersionUID = -1732417863580400806L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				createAndSaveStats(true);
@@ -829,6 +854,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final Action showDiceStats = new AbstractAction("Export Short Game Stats...")
 		{
+			private static final long serialVersionUID = 8196345604657706754L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				createAndSaveStats(false);
@@ -1233,6 +1260,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final JMenuItem menuFileExport = new JMenuItem(new AbstractAction("Export Setup Charts...")
 		{
+			private static final long serialVersionUID = 1596267069546601864L;
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				final JFrame frame = new JFrame("Export Setup Files");
@@ -1266,6 +1295,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		// This is the action listener used
 		class UnitSizeAction extends AbstractAction
 		{
+			private static final long serialVersionUID = -6280511505686687867L;
 			private final double m_scaleFactor;
 			
 			public UnitSizeAction(final double scaleFactor)

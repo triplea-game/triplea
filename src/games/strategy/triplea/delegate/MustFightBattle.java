@@ -849,6 +849,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 						// If there are undefended attacking transports, determine if they automatically die
 						checkUndefendedTransports(bridge, m_defender);
 					}
+					checkForUnitsThatCanRollLeft(bridge, false);
 					endBattle(bridge);
 					attackerWins(bridge);
 				}
@@ -1010,6 +1011,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				{
 					checkUndefendedTransports(bridge, m_defender);
 					checkUndefendedTransports(bridge, m_attacker);
+					checkForUnitsThatCanRollLeft(bridge, true);
+					checkForUnitsThatCanRollLeft(bridge, false);
 				}
 			});
 		/** Submerge subs if -vs air only & air restricted from attacking subs */
@@ -1229,7 +1232,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private boolean canAttackerRetreat()
 	{
-		if (onlyDefenselessAttackingTransportsLeft() || onlyDefenselessDefendingTransportsLeft())
+		if (onlyDefenselessDefendingTransportsLeft()) // || onlyDefenselessAttackingTransportsLeft()
 		{
 			return false;
 		}
@@ -1251,15 +1254,15 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		return Match.allMatch(m_defendingUnits, Matches.UnitIsTransportButNotCombatTransport);
 	}
 	
-	private boolean onlyDefenselessAttackingTransportsLeft()
+	/*private boolean onlyDefenselessAttackingTransportsLeft()
 	{
 		if (!isTransportCasualtiesRestricted())
 		{
 			return false;
 		}
 		return Match.allMatch(m_attackingUnits, Matches.UnitIsTransportButNotCombatTransport);
-	}
-	
+	}*/
+
 	private boolean canAttackerRetreatSubs()
 	{
 		if (Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer))
@@ -1691,6 +1694,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	 */
 	private void checkUndefendedTransports(final IDelegateBridge bridge, final PlayerID player)
 	{
+		// if we are the attacker, we can retreat instead of dying
+		if (player.equals(m_attacker) && (!getAttackerRetreatTerritories().isEmpty() || Match.someMatch(m_attackingUnits, Matches.UnitIsAir)))
+			return;
 		// Get all allied transports in the territory
 		final CompositeMatch<Unit> matchAllied = new CompositeMatchAnd<Unit>();
 		matchAllied.add(Matches.UnitIsTransport);
@@ -1729,6 +1735,49 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				else
 					m_attackingUnits.removeAll(alliedTransports);
 			}
+		}
+	}
+	
+	private void checkForUnitsThatCanRollLeft(final IDelegateBridge bridge, final boolean attacker)
+	{
+		// if we are the attacker, we can retreat instead of dying
+		if (attacker && (!getAttackerRetreatTerritories().isEmpty() || Match.someMatch(m_attackingUnits, Matches.UnitIsAir)))
+			return;
+		if (m_attackingUnits.isEmpty() || m_defendingUnits.isEmpty())
+			return;
+		final CompositeMatch<Unit> notSubmergedAndType = new CompositeMatchAnd<Unit>(Matches.unitIsNotSubmerged(m_data));
+		if (Matches.TerritoryIsLand.match(m_battleSite))
+			notSubmergedAndType.add(Matches.UnitIsSea.invert());
+		else
+			notSubmergedAndType.add(Matches.UnitIsLand.invert());
+		final Collection<Unit> unitsToKill;
+		final boolean hasUnitsThatCanRollLeft;
+		if (attacker)
+		{
+			hasUnitsThatCanRollLeft = Match.someMatch(m_attackingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(attacker, m_data)));
+			unitsToKill = Match.getMatches(m_attackingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsDestructibleInCombatShort));
+		}
+		else
+		{
+			hasUnitsThatCanRollLeft = Match.someMatch(m_defendingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(attacker, m_data)));
+			unitsToKill = Match.getMatches(m_defendingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsDestructibleInCombatShort));
+		}
+		final boolean enemy = !attacker;
+		final boolean enemyHasUnitsThatCanRollLeft;
+		if (enemy)
+			enemyHasUnitsThatCanRollLeft = Match.someMatch(m_attackingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(enemy, m_data)));
+		else
+			enemyHasUnitsThatCanRollLeft = Match.someMatch(m_defendingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(enemy, m_data)));
+		if (!hasUnitsThatCanRollLeft && enemyHasUnitsThatCanRollLeft)
+		{
+			// final Change change = ChangeFactory.markNoMovementChange(Match.getMatches(enemyUnits, Matches.UnitIsSea)); // I don't think this is needed, they should not have any movement left anyway
+			// bridge.addChange(change);
+			remove(unitsToKill, bridge, m_battleSite, false);
+			// and remove them from the battle display
+			if (attacker)
+				m_attackingUnits.removeAll(unitsToKill);
+			else
+				m_defendingUnits.removeAll(unitsToKill);
 		}
 	}
 	
@@ -2264,7 +2313,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final List<Unit> unitList = Match.getMatches(units, combat);
 		// still allow infrastructure type units that can provide support have combat abilities
 		final CompositeMatch<Unit> infrastructureNotSupporterAndNotHasCombatAbilities = new CompositeMatchAnd<Unit>(Matches.UnitIsInfrastructure,
-					Matches.UnitIsSupporterOrHasCombatAbility(attacking, player, m_data).invert());
+					Matches.UnitIsSupporterOrHasCombatAbility(attacking, m_data).invert());
 		// new CompositeMatchAnd<Unit>(Matches.UnitIsSupporterOrHasCombatAbility(attacking, player, m_data).invert(), Matches.UnitIsAAforCombatOnly.invert())); // TODO: display aa guns then remove after firing them
 		// remove infrastructure units that can't take part in combat (air/naval bases, etc...)
 		unitList.removeAll(Match.getMatches(unitList, infrastructureNotSupporterAndNotHasCombatAbilities));

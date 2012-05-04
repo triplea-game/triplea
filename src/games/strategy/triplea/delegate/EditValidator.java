@@ -99,6 +99,8 @@ public class EditValidator
 				}*/
 				if (Match.someMatch(units, Matches.UnitIsAir))
 				{
+					if (Match.someMatch(units, new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitCanLandOnCarrier.invert())))
+						return "Can not add air to water unless it can land on carriers";
 					// Set up matches
 					final Match<Unit> friendlyCarriers = new CompositeMatchAnd<Unit>(Matches.UnitIsCarrier, Matches.alliedUnit(player, data));
 					final Match<Unit> friendlyAirUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.alliedUnit(player, data));
@@ -106,10 +108,8 @@ public class EditValidator
 					final int carrierCapacityTotal = AirMovementValidator.carrierCapacity(territory.getUnits().getMatches(friendlyCarriers), territory)
 								+ AirMovementValidator.carrierCapacity(units, territory);
 					final int carrierCost = AirMovementValidator.carrierCost(territory.getUnits().getMatches(friendlyAirUnits)) + AirMovementValidator.carrierCost(units);
-					// Get any transports in the sea zone
-					final Collection<Unit> carriers = territory.getUnits().getMatches(friendlyCarriers);
-					if (carriers.size() == 0 || carrierCapacityTotal - carrierCost < 0)
-						return "Can't add air units to water";
+					if (carrierCapacityTotal < carrierCost)
+						return "Can't add more air units to water without sufficient space";
 				}
 			}
 		}

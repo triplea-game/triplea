@@ -242,7 +242,7 @@ public interface ITripleaPlayer extends IRemote
 	 *            - possible units which we could scramble, with where they are from and how many allowed from that location
 	 * @return a list of units to scramble mapped to where they are coming from
 	 */
-	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo, Map<Territory, Tuple<Integer, Collection<Unit>>> possibleScramblers);
+	public HashMap<Territory, Collection<Unit>> scrambleUnitsQuery(Territory scrambleTo, Map<Territory, Tuple<Collection<Unit>, Collection<Unit>>> possibleScramblers);
 	
 	/**
 	 * Ask the player which if any units they want to select.
