@@ -1532,6 +1532,7 @@
 			givesBackOriginalTerritories			values: "true", "false", or "default". default setting is "default", and "default" means false. If true, at the end of each politics phase, any territories originally belonging to the other player will revert to that players control.
 			canMoveIntoDuringCombatMove				values: "true", "false", or "default". default setting is "default", and "default" means true. If false, you may not move into any territories owned by the other player during combat move, and must wait for non-combat move.
 			canMoveThroughCanals					values: "true", "false", or "default". default setting is "default", and "default" means that archeType of allied lets you move through canals. If true, you may move through a canal owned by the other player.
+			rocketsCanFlyOver						values: "true", "false", or "default". default setting is "default", and "default" means "true" which is that rockets may fly over everyone.
 	-->
 
 				<attatchment name="relationshipTypeAttachment" attatchTo="War" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -3527,6 +3528,16 @@
 				Canal Attachments:
 					excludedUnits
 					
+				Tech Ability Attachments:
+					attackBonus
+					defenseBonus
+					movementBonus
+					radarBonus
+					airAttackBonus
+					airDefenseBonus
+					productionBonus
+					rocketDiceNumber
+					
 		-->
 	<!-- Victory Triggers -->
 						<!-- Victory Triggers can be attached to anyone. Only 1 is needed per victory condition -->
@@ -4207,17 +4218,20 @@
 				
 <!-- Tech Ability Attachment -->
 	<!-- the following options are allowed for "techAbilityAttachment"
-			attackBonus							value:	gives some amount of attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			defenseBonus						value:	gives some amount of defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			movementBonus						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			radarBonus							value:	gives some amount of radar aa attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			airAttackBonus						value:	gives some amount of air escort attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			airDefenseBonus						value:	gives some amount of air interceptor defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			productionBonus						value:	gives some amount of production to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			minimumTerritoryValueForProductionBonus						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  If multiple, the lowest is chosen.
-			repairDiscount						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			warBondDiceSides						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit. If multiple, the highest is chosen.
-			warBondDiceNumber						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			attackBonus									value:	gives some amount of attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			defenseBonus								value:	gives some amount of defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			movementBonus								value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			radarBonus									value:	gives some amount of radar aa attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			airAttackBonus								value:	gives some amount of air escort attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			airDefenseBonus								value:	gives some amount of air interceptor defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			productionBonus								value:	gives some amount of production to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			minimumTerritoryValueForProductionBonus 	value:	sets the minimum value of a territory that a factory units must be in to receive the production bonus.  must be an integer (default -1) between -1 and 10000.  If multiple, the lowest is chosen.
+			repairDiscount								value:	sets the discount to repairing.  must be an integer (default -1) between 0 and 100.  Effects from multiple are added together.
+			warBondDiceSides							value:	sets how large the dice are which are rolled to determine the war bonds bonus.  must be an integer (default -1) between 0 and 200. Effects from multiple are added together.
+			warBondDiceNumber							value:	sets how many dice get rolled for war bonds.  must be an integer (default 0) between 0 and 100.  Effects from multiple are added together.
+			rocketDiceNumber							value:	sets the number of rocket rolls for each rocket.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			rocketDistance								value:	sets the maximum distance rockets travel for the map.  must be an integer (default 0) between 0 and 100.  Effects from multiple are added together.
+			rocketNumberPerTerritory					value:	sets the maximum number of rocket rolls per territory.  must be an integer (default 0) between 0 and 200.  Effects from multiple are added together.
 			
 	-->
 				<attatchment name="techAbilityAttachment" attatchTo="longRangeAir" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">

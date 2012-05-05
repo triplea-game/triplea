@@ -58,6 +58,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	private String m_givesBackOriginalTerritories = PROPERTY_DEFAULT;
 	private String m_canMoveIntoDuringCombatMove = PROPERTY_DEFAULT;
 	private String m_canMoveThroughCanals = PROPERTY_DEFAULT;
+	private String m_rocketsCanFlyOver = PROPERTY_DEFAULT;
 	
 	/**
 	 * Creates new RelationshipTypeAttachment
@@ -314,6 +315,22 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 		if (m_canMoveThroughCanals.equals(PROPERTY_DEFAULT))
 			return isAllied();
 		return m_canMoveThroughCanals.equals(PROPERTY_TRUE);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRocketsCanFlyOver(final String value) throws GameParseException
+	{
+		if (!(value.equals(PROPERTY_DEFAULT) || value.equals(PROPERTY_FALSE) || value.equals(PROPERTY_TRUE)))
+			throw new GameParseException("canMoveIntoDuringCombatMove must be either " + PROPERTY_DEFAULT + " or " + PROPERTY_FALSE + " or " + PROPERTY_TRUE + thisErrorMsg());
+		m_rocketsCanFlyOver = value;
+	}
+	
+	public boolean getRocketsCanFlyOver()
+	{
+		// rockets can normally fly over everyone.
+		if (m_rocketsCanFlyOver.equals(PROPERTY_DEFAULT))
+			return true;
+		return m_rocketsCanFlyOver.equals(PROPERTY_TRUE);
 	}
 	
 	/**

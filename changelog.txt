@@ -1,4 +1,12 @@
 Changes for 1.6
+* Created new techAbilityAttachment, "rocketNumberPerTerritory", which controls the maximum number of dice to be rolled per territory. (veqryn)
+
+* Created new techAbilityAttachment, "rocketDistance", which controls the maximum distance rockets can travel. (veqryn)
+
+* Created new techAbilityAttachment, "rocketDiceNumber", which controls the number of dice each rocket rolls. (veqryn)
+
+* Created new RelationshipTypeAttachment option, "rocketsCanFlyOver", which allows rockets to fly over by default. (veqryn)
+
 * Created new techAbilityAttachment, "warBondDiceNumber", which controls how many dice get rolled for war bonds. (veqryn)
 
 * Created new techAbilityAttachment, "warBondDiceSides", which controls how large the dice are which are rolled to determine the war bonds bonus. (veqryn)

@@ -1063,8 +1063,15 @@ public class Matches
 		@Override
 		public boolean match(final Unit obj)
 		{
-			final UnitType type = obj.getUnitType();
-			final UnitAttachment ua = UnitAttachment.get(type);
+			return UnitTypeIsRocket.match(obj.getType());
+		}
+	};
+	public static final Match<UnitType> UnitTypeIsRocket = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType obj)
+		{
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			return ua.getIsRocket();
 		}
 	};
@@ -3303,6 +3310,14 @@ public class Matches
 			return relationship.getRelationshipTypeAttachment().getCanMoveThroughCanals();
 		}
 	};
+	public static final Match<RelationshipType> RelationshipTypeRocketsCanFlyOver = new Match<RelationshipType>()
+	{
+		@Override
+		public boolean match(final RelationshipType relationship)
+		{
+			return relationship.getRelationshipTypeAttachment().getRocketsCanFlyOver();
+		}
+	};
 	
 	public static final Match<String> isValidRelationshipName(final GameData data)
 	{
@@ -3749,6 +3764,26 @@ public class Matches
 				if (!rt.canMoveAirUnitsOverOwnedLand(player, owner) || !rt.canLandAirUnitsOnOwnedLand(player, owner))
 					return false;
 				return true;
+			}
+		};
+	}
+	
+	public static Match<Territory> territoryAllowsRocketsCanFlyOver(final PlayerID player, final GameData data)
+	{
+		return new Match<Territory>()
+		{
+			@Override
+			public boolean match(final Territory t)
+			{
+				if (!Matches.TerritoryIsLand.match(t))
+					return true;
+				final PlayerID owner = t.getOwner();
+				if (owner == null || owner.isNull())
+					return true;
+				final RelationshipTracker rt = data.getRelationshipTracker();
+				if (rt.rocketsCanFlyOver(player, owner))
+					return true;
+				return false;
 			}
 		};
 	}

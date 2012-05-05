@@ -5,6 +5,7 @@ import games.strategy.engine.data.DefaultAttachment;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameParseException;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.triplea.Constants;
@@ -15,6 +16,7 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -77,6 +79,10 @@ public class TechAbilityAttachment extends DefaultAttachment
 	private int m_repairDiscount = -1; // -1 means not set
 	private int m_warBondDiceSides = -1; // -1 means not set
 	private int m_warBondDiceNumber = 0;
+	// private int m_rocketDiceSides = -1; // -1 means not set // not needed because this is controlled in the unit attachment with bombingBonus and bombingMaxDieSides
+	private IntegerMap<UnitType> m_rocketDiceNumber = new IntegerMap<UnitType>();
+	private int m_rocketDistance = 0;
+	private int m_rocketNumberPerTerritory = 0;
 	
 	//
 	// constructor
@@ -421,6 +427,102 @@ public class TechAbilityAttachment extends DefaultAttachment
 		return m_warBondDiceNumber;
 	}
 	
+	/*@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRocketDiceSides(final String value) throws GameParseException
+	{
+		final int v = getInt(value);
+		if ((v != -1) && (v < 0 || v > 200))
+			throw new GameParseException("rocketDiceSides must be -1 (no effect), or be between 0 and 200" + thisErrorMsg());
+		m_rocketDiceSides = v;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRocketDiceSides(final Integer value)
+	{
+		m_rocketDiceSides = value;
+	}
+	
+	public int getRocketDiceSides()
+	{
+		return m_rocketDiceSides;
+	}*/
+
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setRocketDiceNumber(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length <= 0 || s.length > 2)
+			throw new GameParseException("rocketDiceNumber can not be empty or have more than two fields" + thisErrorMsg());
+		String unitType;
+		unitType = s[1];
+		// validate that this unit exists in the xml
+		final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
+		if (ut == null)
+			throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+		// we should allow positive and negative numbers
+		final int n = getInt(s[0]);
+		m_rocketDiceNumber.put(ut, n);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRocketDiceNumber(final IntegerMap<UnitType> value)
+	{
+		m_rocketDiceNumber = value;
+	}
+	
+	public IntegerMap<UnitType> getRocketDiceNumber()
+	{
+		return m_rocketDiceNumber;
+	}
+	
+	public void clearRocketDiceNumber()
+	{
+		m_rocketDiceNumber.clear();
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRocketDistance(final String value) throws GameParseException
+	{
+		final int v = getInt(value);
+		if (v < 0 || v > 100)
+			throw new GameParseException("rocketDistance must be between 0 and 100" + thisErrorMsg());
+		m_rocketDistance = v;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRocketDistance(final Integer value)
+	{
+		m_rocketDistance = value;
+	}
+	
+	public int getRocketDistance()
+	{
+		return m_rocketDistance;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRocketNumberPerTerritory(final String value) throws GameParseException
+	{
+		final int v = getInt(value);
+		if (v < 0 || v > 200)
+			throw new GameParseException("rocketNumberPerTerritory must be between 0 and 200" + thisErrorMsg());
+		m_rocketNumberPerTerritory = v;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setRocketNumberPerTerritory(final Integer value)
+	{
+		m_rocketNumberPerTerritory = value;
+	}
+	
+	public int getRocketNumberPerTerritory()
+	{
+		return m_rocketNumberPerTerritory;
+	}
+	
 	//
 	// Static Methods for interpreting data in attachments
 	//
@@ -571,8 +673,8 @@ public class TechAbilityAttachment extends DefaultAttachment
 			if (taa != null)
 			{
 				final int sides = taa.getWarBondDiceSides();
-				if (sides > rVal)
-					rVal = sides;
+				if (sides > 0)
+					rVal += sides;
 			}
 		}
 		return Math.max(0, rVal);
@@ -587,7 +689,80 @@ public class TechAbilityAttachment extends DefaultAttachment
 			if (taa != null)
 			{
 				final int number = taa.getWarBondDiceNumber();
-				rVal += number;
+				if (number > 0)
+					rVal += number;
+			}
+		}
+		return Math.max(0, rVal);
+	}
+	
+	/*public static int getRocketDiceSides(final PlayerID player, final GameData data)
+	{
+		int rVal = 0;
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				final int sides = taa.getRocketDiceSides();
+				if (sides > 0)
+					rVal += sides;
+			}
+		}
+		return Math.max(0, rVal);
+	}*/
+
+	public static int getRocketDiceNumber(final UnitType ut, final PlayerID player, final GameData data)
+	{
+		int rVal = 0;
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				rVal += taa.getRocketDiceNumber().getInt(ut);
+			}
+		}
+		return rVal;
+	}
+	
+	public static int getRocketDiceNumber(final Collection<Unit> rockets, final GameData data)
+	{
+		int rVal = 0;
+		for (final Unit u : rockets)
+		{
+			rVal += getRocketDiceNumber(u.getType(), u.getOwner(), data);
+		}
+		return rVal;
+	}
+	
+	public static int getRocketDistance(final PlayerID player, final GameData data)
+	{
+		int rVal = 0;
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				final int distance = taa.getRocketDistance();
+				if (distance > 0)
+					rVal += distance;
+			}
+		}
+		return Math.max(0, rVal);
+	}
+	
+	public static int getRocketNumberPerTerritory(final PlayerID player, final GameData data)
+	{
+		int rVal = 0;
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				final int number = taa.getRocketNumberPerTerritory();
+				if (number > 0)
+					rVal += number;
 			}
 		}
 		return Math.max(0, rVal);
@@ -666,7 +841,7 @@ public class TechAbilityAttachment extends DefaultAttachment
 					{
 						taa.setProductionBonus("2:" + factory.getName());
 						taa.setMinimumTerritoryValueForProductionBonus("3");
-						taa.setRepairDiscount("50");
+						taa.setRepairDiscount("50"); // means a 50% discount, which is half price
 					}
 				}
 				else if (ta.equals(TechAdvance.WAR_BONDS))
@@ -675,6 +850,19 @@ public class TechAbilityAttachment extends DefaultAttachment
 					ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
 					taa.setWarBondDiceSides(Integer.toString(data.getDiceSides()));
 					taa.setWarBondDiceNumber("1");
+				}
+				else if (ta.equals(TechAdvance.ROCKETS))
+				{
+					taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+					ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+					final List<UnitType> allRockets = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsRocket);
+					for (final UnitType rocket : allRockets)
+					{
+						taa.setRocketDiceNumber("1:" + rocket.getName());
+					}
+					// taa.setRocketDiceSides(Integer.toString(data.getDiceSides()));
+					taa.setRocketDistance("3");
+					taa.setRocketNumberPerTerritory("1");
 				}
 				//
 				// The following technologies should NOT have ability attachments for them:

@@ -24,6 +24,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -55,13 +56,11 @@ public class RocketsFireHelper
 		return games.strategy.triplea.Properties.getAllRocketsAttack(data);
 	}
 	
-	/*private boolean isRocketsCanFlyOverImpassables(GameData data)
+	private boolean isRocketsCanFlyOverImpassables(final GameData data)
 	{
-	    return games.strategy.triplea.Properties.getRocketsCanFlyOverImpassables(data);
-	}*/
-	/**
-	 * @return
-	 */
+		return games.strategy.triplea.Properties.getRocketsCanFlyOverImpassables(data);
+	}
+	
 	private boolean isSBRAffectsUnitProduction(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data);
@@ -105,7 +104,7 @@ public class RocketsFireHelper
 			getRemote(bridge).reportMessage("No rockets to fire", "No rockets to fire");
 			return;
 		}
-		if (isWW2V2(data) || isAllRocketsAttack(data) || isOneRocketAttackPerFactory(data))
+		if (isWW2V2(data) || isAllRocketsAttack(data))
 			fireWW2V2(bridge, player, rocketTerritories);
 		else
 			fireWW2V1(bridge, player, rocketTerritories);
@@ -115,16 +114,19 @@ public class RocketsFireHelper
 	{
 		final GameData data = bridge.getData();
 		final Set<Territory> attackedTerritories = new HashSet<Territory>();
+		final boolean oneAttackPerTerritory = isOneRocketAttackPerFactory(data);
 		for (final Territory territory : rocketTerritories)
 		{
 			final Set<Territory> targets = getTargetsWithinRange(territory, data, player);
-			targets.removeAll(attackedTerritories);
+			if (oneAttackPerTerritory)
+				targets.removeAll(attackedTerritories);
 			if (targets.isEmpty())
 				continue;
 			final Territory target = getTarget(targets, player, bridge, territory);
 			if (target != null)
 			{
-				attackedTerritories.add(target);
+				if (oneAttackPerTerritory)
+					attackedTerritories.add(target);
 				fireRocket(player, target, bridge, territory);
 			}
 		}
@@ -151,12 +153,7 @@ public class RocketsFireHelper
 	Set<Territory> getTerritoriesWithRockets(final GameData data, final PlayerID player)
 	{
 		final Set<Territory> territories = new HashSet<Territory>();
-		final CompositeMatch<Unit> ownedRockets = new CompositeMatchAnd<Unit>();
-		ownedRockets.add(Matches.UnitIsRocket);
-		ownedRockets.add(Matches.unitIsOwnedBy(player));
-		ownedRockets.add(Matches.UnitIsDisabled().invert());
-		ownedRockets.add(Matches.unitIsBeingTransported().invert());
-		ownedRockets.add(Matches.unitIsSubmerged(data).invert());
+		final CompositeMatch<Unit> ownedRockets = rocketMatch(player, data);
 		final BattleTracker tracker = MoveDelegate.getBattleTracker(data);
 		for (final Territory current : data.getMap())
 		{
@@ -170,17 +167,24 @@ public class RocketsFireHelper
 		return territories;
 	}
 	
+	CompositeMatch<Unit> rocketMatch(final PlayerID player, final GameData data)
+	{
+		return new CompositeMatchAnd<Unit>(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player), Matches.UnitIsDisabled().invert(),
+					Matches.unitIsBeingTransported().invert(), Matches.unitIsSubmerged(data).invert(), Matches.unitHasNotMoved);
+	}
+	
 	private Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data, final PlayerID player)
 	{
 		final Collection<Territory> possible = data.getMap().getNeighbors(territory, 3);
 		final Set<Territory> hasFactory = new HashSet<Territory>();
-		// boolean rocketsOverImpassables = isRocketsCanFlyOverImpassables(data);
-		final Match<Territory> impassable = Matches.TerritoryIsNotImpassable;
+		final CompositeMatchAnd<Territory> allowed = new CompositeMatchAnd<Territory>(Matches.territoryAllowsRocketsCanFlyOver(player, data));
+		if (isRocketsCanFlyOverImpassables(data))
+			allowed.add(Matches.TerritoryIsNotImpassable);
+		final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
 		for (final Territory current : possible)
 		{
-			final Route route = data.getMap().getRoute(territory, current, impassable);
-			// TODO EW: this assumes range 3 territories for Rockets, doesn't take movementCost into account. //TODO veq: make new unit attachment for rocket range, defaults to 3 movement cost.
-			if (route != null && route.numberOfSteps() <= 3)
+			final Route route = data.getMap().getRoute(territory, current, allowed);
+			if (route != null && route.numberOfSteps() <= maxDistance)
 			{
 				if (current.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(current).invert())))
 					hasFactory.add(current);
@@ -200,13 +204,22 @@ public class RocketsFireHelper
 		final GameData data = bridge.getData();
 		final PlayerID attacked = attackedTerritory.getOwner();
 		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-		// int cost = bridge.getRandom(Constants.MAX_DICE);
 		final boolean SBRAffectsUnitProd = isSBRAffectsUnitProduction(data);
 		final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
 		// unit damage vs territory damage
 		final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(Matches.enemyUnit(player, data));
 		final Collection<Unit> enemyTargets = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
 		final Collection<Unit> targets = new ArrayList<Unit>();
+		final Collection<Unit> rockets;
+		// attackFrom could be null if WW2V1
+		if (attackFrom == null)
+			rockets = null;
+		else
+			rockets = new ArrayList<Unit>(Match.getMatches(attackFrom.getUnits().getUnits(), rocketMatch(player, data)));
+		final int numberOfAttacks = (rockets == null ? 1 : Math.min(TechAbilityAttachment.getRocketNumberPerTerritory(player, data), TechAbilityAttachment.getRocketDiceNumber(rockets, data)));
+		if (numberOfAttacks <= 0)
+			return;
+		final String transcript;
 		if (!SBRAffectsUnitProd && DamageFromBombingDoneToUnits)
 		{
 			Unit target;
@@ -221,20 +234,23 @@ public class RocketsFireHelper
 				throw new IllegalStateException("No Targets in " + attackedTerritory.getName());
 			targets.add(target);
 		}
-		final boolean doNotUseBombingBonus = !games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(data);
+		final boolean doNotUseBombingBonus = !games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(data) || rockets == null;
 		int cost = 0;
 		if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(data))
 		{
 			if (doNotUseBombingBonus)
 			{
 				// no low luck, and no bonus, so just roll based on the map's dice sides
-				cost = bridge.getRandom(data.getDiceSides(), "Rocket fired by " + player.getName() + " at " + attacked.getName());
+				final int[] rolls = bridge.getRandom(data.getDiceSides(), numberOfAttacks, "Rocket fired by " + player.getName() + " at " + attacked.getName());
+				for (final int r : rolls)
+				{
+					cost += r + 1; // we are zero based
+				}
+				transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
 			}
 			else
 			{
 				// we must use bombing bonus
-				final CompositeMatch<Unit> ownedRockets = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsRocket);
-				final Collection<Unit> rockets = new ArrayList<Unit>(Match.getMatches(attackFrom.getUnits().getUnits(), ownedRockets));
 				int highestMaxDice = 0;
 				int highestBonus = 0;
 				final int diceSides = data.getDiceSides();
@@ -257,49 +273,86 @@ public class RocketsFireHelper
 				}
 				// now we roll, or don't if there is nothing to roll.
 				if (highestMaxDice > 0)
-					cost = bridge.getRandom(highestMaxDice, "Rocket fired by " + player.getName() + " at " + attacked.getName()) + highestBonus;
+				{
+					final int[] rolls = bridge.getRandom(highestMaxDice, numberOfAttacks, "Rocket fired by " + player.getName() + " at " + attacked.getName());
+					for (int i = 0; i < rolls.length; i++)
+					{
+						final int r = rolls[i] + highestBonus;
+						rolls[i] = r;
+						cost += r + 1; // we are zero based
+					}
+					transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+				}
 				else
-					cost = highestBonus;
+				{
+					cost = highestBonus * numberOfAttacks;
+					transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus + " damage for each rocket";
+				}
 			}
 		}
 		else
 		{
-			final CompositeMatch<Unit> ownedRockets = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsRocket);
-			final Collection<Unit> rockets = new ArrayList<Unit>(Match.getMatches(attackFrom.getUnits().getUnits(), ownedRockets));
-			int highestMaxDice = 0;
-			int highestBonus = 0;
-			final int diceSides = data.getDiceSides();
-			for (final Unit u : rockets)
+			if (doNotUseBombingBonus)
 			{
-				final UnitAttachment ua = UnitAttachment.get(u.getType());
-				int maxDice = ua.getBombingMaxDieSides();
-				int bonus = ua.getBombingBonus();
-				// both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the bonus.
-				if (maxDice < 0 || doNotUseBombingBonus)
-					maxDice = diceSides;
-				if (bonus < 0 || doNotUseBombingBonus)
-					bonus = 0;
-				// now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case that we reduce the luck by 2/3.
-				if (maxDice >= 5)
+				// no bonus, so just roll based on the map's dice sides, but modify for LL
+				final int maxDice = (data.getDiceSides() + 1) / 3;
+				final int bonus = (data.getDiceSides() + 1) / 3;
+				final int[] rolls = bridge.getRandom(maxDice, numberOfAttacks, "Rocket fired by " + player.getName() + " at " + attacked.getName());
+				for (int i = 0; i < rolls.length; i++)
 				{
-					bonus += (maxDice + 1) / 3;
-					maxDice = (maxDice + 1) / 3;
+					final int r = rolls[i] + bonus;
+					rolls[i] = r;
+					cost += r + 1; // we are zero based
 				}
-				// we only roll once for rockets, so if there are other rockets here we just roll for the best rocket
-				if ((bonus + ((maxDice + 1) / 2)) > (highestBonus + ((highestMaxDice + 1) / 2)))
+				transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+			}
+			else
+			{
+				int highestMaxDice = 0;
+				int highestBonus = 0;
+				final int diceSides = data.getDiceSides();
+				for (final Unit u : rockets)
 				{
-					highestMaxDice = maxDice;
-					highestBonus = bonus;
+					final UnitAttachment ua = UnitAttachment.get(u.getType());
+					int maxDice = ua.getBombingMaxDieSides();
+					int bonus = ua.getBombingBonus();
+					// both could be -1, meaning they were not set. if they were not set, then we use default dice sides for the map, and zero for the bonus.
+					if (maxDice < 0 || doNotUseBombingBonus)
+						maxDice = diceSides;
+					if (bonus < 0 || doNotUseBombingBonus)
+						bonus = 0;
+					// now, regardless of whether they were set or not, we have to apply "low luck" to them, meaning in this case that we reduce the luck by 2/3.
+					if (maxDice >= 5)
+					{
+						bonus += (maxDice + 1) / 3;
+						maxDice = (maxDice + 1) / 3;
+					}
+					// we only roll once for rockets, so if there are other rockets here we just roll for the best rocket
+					if ((bonus + ((maxDice + 1) / 2)) > (highestBonus + ((highestMaxDice + 1) / 2)))
+					{
+						highestMaxDice = maxDice;
+						highestBonus = bonus;
+					}
+				}
+				// now we roll, or don't if there is nothing to roll.
+				if (highestMaxDice > 0)
+				{
+					final int[] rolls = bridge.getRandom(highestMaxDice, numberOfAttacks, "Rocket fired by " + player.getName() + " at " + attacked.getName());
+					for (int i = 0; i < rolls.length; i++)
+					{
+						final int r = rolls[i] + highestBonus;
+						rolls[i] = r;
+						cost += r + 1; // we are zero based
+					}
+					transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+				}
+				else
+				{
+					cost = highestBonus * numberOfAttacks;
+					transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus + " damage for each rocket";
 				}
 			}
-			// now we roll, or don't if there is nothing to roll.
-			if (highestMaxDice > 0)
-				cost = bridge.getRandom(highestMaxDice, "Rocket fired by " + player.getName() + " at " + attacked.getName()) + highestBonus;
-			else
-				cost = highestBonus;
 		}
-		// account for 0 base
-		cost++;
 		final TerritoryAttachment ta = TerritoryAttachment.get(attackedTerritory);
 		int territoryProduction = ta.getProduction();
 		int unitProduction = 0;
@@ -389,14 +442,14 @@ public class RocketsFireHelper
 			final Change rocketCharge = ChangeFactory.changeResourcesChange(attacked, PUs, -cost);
 			bridge.addChange(rocketCharge);
 		}
+		bridge.getHistoryWriter().addChildToEvent(transcript, rockets);
 		// this is null in WW2V1
 		if (attackFrom != null)
 		{
-			final List<Unit> units = attackFrom.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsRocket, Matches.unitIsOwnedBy(player)));
-			if (units.size() > 0)
+			if (!rockets.isEmpty())
 			{
-				// only one fired
-				final Change change = ChangeFactory.markNoMovementChange(Collections.singleton(units.get(0)));
+				// TODO: only a certain number fired...
+				final Change change = ChangeFactory.markNoMovementChange(Collections.singleton(rockets.iterator().next()));
 				bridge.addChange(change);
 			}
 			else
