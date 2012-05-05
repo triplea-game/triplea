@@ -35,7 +35,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.RelationshipTypeAttachment;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
@@ -106,14 +106,17 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + " (" + blockadeLoss + " lost to blockades)" + "; end with " + total
 						+ MyFormatter.pluralize(" PU", total) + " total";
 		aBridge.getHistoryWriter().startEvent(transcriptText);
-		if (isWarBonds(m_player))
+		
+		// do war bonds
+		final int bonds = rollWarBonds(aBridge, m_player, data);
+		if (bonds > 0)
 		{
-			final int bonds = rollWarBonds(aBridge);
 			total += bonds;
 			toAdd += bonds;
 			transcriptText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds) + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
 			aBridge.getHistoryWriter().startEvent(transcriptText);
 		}
+		
 		if (total < 0)
 		{
 			toAdd -= total;
@@ -212,17 +215,21 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
 	}
 	
-	private int rollWarBonds(final IDelegateBridge aBridge)
+	private int rollWarBonds(final IDelegateBridge aBridge, final PlayerID player, final GameData data)
 	{
-		final PlayerID player = aBridge.getPlayerID();
-		final int count = 1;
-		final int sides = aBridge.getData().getDiceSides();
+		final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
+		final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
+		if (sides <= 0 || count <= 0)
+			return 0;
 		final String annotation = player.getName() + " roll to resolve War Bonds: ";
 		DiceRoll dice;
 		dice = DiceRoll.rollNDice(aBridge, count, sides, annotation);
-		final int total = dice.getDie(0).getValue() + 1;
-		// TODO kev add dialog showing dice when built
-		getRemotePlayer(player).reportMessage(annotation + total, annotation + total);
+		int total = 0;
+		for (int i = 0; i < dice.size(); i++)
+		{
+			total += dice.getDie(i).getValue() + 1;
+		}
+		getRemotePlayer(player).reportMessage(annotation + MyFormatter.asDice(dice), annotation + MyFormatter.asDice(dice));
 		return total;
 	}
 	
@@ -345,14 +352,6 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			}
 		}
 		return totalLoss;
-	}
-	
-	private boolean isWarBonds(final PlayerID player)
-	{
-		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-		if (ta != null)
-			return ta.getWarBonds();
-		return false;
 	}
 	
 	public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary)

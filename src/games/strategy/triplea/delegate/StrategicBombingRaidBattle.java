@@ -385,7 +385,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	
 	private boolean isLimitSBRDamageToProduction()
 	{
-		return games.strategy.triplea.Properties.getLimitSBRDamageToProduction(m_data);
+		return games.strategy.triplea.Properties.getLimitRocketAndSBRDamageToProduction(m_data);
 	}
 	
 	private boolean isLimitSBRDamagePerTurn(final GameData data)

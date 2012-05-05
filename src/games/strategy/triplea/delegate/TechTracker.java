@@ -75,12 +75,6 @@ public class TechTracker implements java.io.Serializable
 		return rVal;
 	}
 	
-	public static int getTechCost(final PlayerID id)
-	{
-		final TechAttachment ta = TechAttachment.get(id);
-		return ta.getTechCost();
-	}
-	
 	public static synchronized void addAdvance(final PlayerID player, final IDelegateBridge bridge, final TechAdvance advance)
 	{
 		Change attachmentChange;
@@ -97,6 +91,12 @@ public class TechTracker implements java.io.Serializable
 			attachmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "true", advance.getProperty());
 		bridge.addChange(attachmentChange);
 		advance.perform(player, bridge);
+	}
+	
+	public static int getTechCost(final PlayerID id)
+	{
+		final TechAttachment ta = TechAttachment.get(id);
+		return ta.getTechCost();
 	}
 	
 	public static boolean hasLongRangeAir(final PlayerID player)

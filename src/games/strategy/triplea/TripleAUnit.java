@@ -22,7 +22,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
@@ -539,12 +539,8 @@ public class TripleAUnit extends Unit
 				productionCapacity = 1;
 		}
 		// Increase production if have industrial technology
-		boolean isIncreasedFactoryProduction = false;
-		final TechAttachment techa = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-		if (techa != null && techa.getIncreasedFactoryProduction())
-			isIncreasedFactoryProduction = true;
-		if (isIncreasedFactoryProduction && territoryProduction > 2)
-			productionCapacity += 2;
+		if (territoryProduction >= TechAbilityAttachment.getMinimumTerritoryValueForProductionBonus(player, data))
+			productionCapacity += TechAbilityAttachment.getProductionBonus(u.getType(), player, data);
 		if (mathMaxZero)
 			return Math.max(0, productionCapacity);
 		else

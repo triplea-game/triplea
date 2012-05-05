@@ -208,19 +208,6 @@ public class Matches
 			return (ua.getIsTwoHit());
 		}
 	};
-	public static final Match<Unit> UnitIsRadarAA = new Match<Unit>()
-	{
-		@Override
-		public boolean match(final Unit unit)
-		{
-			if (!UnitIsAAforAnything.match(unit))
-				return false;
-			final TechAttachment ta = (TechAttachment) unit.getOwner().getAttachment(Constants.TECH_ATTACHMENT_NAME);
-			if (ta == null)
-				return false;
-			return ta.getAARadar();
-		}
-	};
 	public static final Match<Unit> UnitIsTransport = new Match<Unit>()
 	{
 		@Override
@@ -240,16 +227,23 @@ public class Matches
 			return (!Matches.UnitIsDestroyer.match(unit) && ua.getTransportCapacity() != -1 && ua.getIsSea());
 		}
 	};
+	public static final Match<UnitType> UnitTypeIsStrategicBomber = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType obj)
+		{
+			final UnitAttachment ua = UnitAttachment.get(obj);
+			if (ua == null)
+				return false;
+			return ua.getIsStrategicBomber();
+		}
+	};
 	public static final Match<Unit> UnitIsStrategicBomber = new Match<Unit>()
 	{
 		@Override
 		public boolean match(final Unit obj)
 		{
-			final Unit unit = obj;
-			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			if (ua == null)
-				return false;
-			return ua.getIsStrategicBomber();
+			return UnitTypeIsStrategicBomber.match(obj.getType());
 		}
 	};
 	public static final Match<Unit> UnitIsNotStrategicBomber = new InverseMatch<Unit>(UnitIsStrategicBomber);
@@ -978,13 +972,20 @@ public class Matches
 			return ua.getIsFactory();
 		}
 	};
+	public static final Match<Unit> UnitCanProduceUnits = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			return UnitTypeCanProduceUnits.match(obj.getType());
+		}
+	};
 	public static final Match<UnitType> UnitTypeCanProduceUnits = new Match<UnitType>()
 	{
 		@Override
 		public boolean match(final UnitType obj)
 		{
-			final UnitType type = obj;
-			final UnitAttachment ua = UnitAttachment.get(type);
+			final UnitAttachment ua = UnitAttachment.get(obj);
 			return ua.getCanProduceUnits();
 		}
 	};
@@ -1057,16 +1058,6 @@ public class Matches
 		}
 	};
 	public static final Match<Unit> UnitIsNotFactory = new InverseMatch<Unit>(UnitIsFactory);
-	public static final Match<Unit> UnitCanProduceUnits = new Match<Unit>()
-	{
-		@Override
-		public boolean match(final Unit obj)
-		{
-			final UnitType type = obj.getUnitType();
-			final UnitAttachment ua = UnitAttachment.get(type);
-			return ua.getCanProduceUnits();
-		}
-	};
 	public static final Match<Unit> UnitIsRocket = new Match<Unit>()
 	{
 		@Override
@@ -3141,6 +3132,7 @@ public class Matches
 	public static final Match<Unit> UnitIsNotFactoryOrConstruction = new InverseMatch<Unit>(UnitIsFactoryOrConstruction);
 	public static final Match<Unit> UnitIsFactoryOrCanBeDamaged = new CompositeMatchOr<Unit>(UnitIsFactory, UnitCanBeDamagedButIsNotFactory);
 	public static final Match<Unit> UnitIsFactoryOrCanProduceUnits = new CompositeMatchOr<Unit>(UnitIsFactory, UnitCanProduceUnits);
+	public static final Match<UnitType> UnitTypeIsFactoryOrCanProduceUnits = new CompositeMatchOr<UnitType>(UnitTypeIsFactory, UnitTypeCanProduceUnits);
 	/**
 	 * See if a unit can invade. Units with canInvadeFrom not set, or set to "all", can invade from any other unit. Otherwise, units must have a specific unit in this list to be able to invade from that unit.
 	 */

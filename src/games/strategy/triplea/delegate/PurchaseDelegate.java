@@ -36,7 +36,7 @@ import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.ICondition;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
@@ -401,13 +401,9 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 				costs.addMultiple(rule.getCosts(), repairRules.get(u).getInt(rule));
 			}
 		}
-		if (isIncreasedFactoryProduction(player))
-		{
-			// UnitCategory unitCategory = categorized.iterator().next();
-			// if(unitCategory.getType().getName().endsWith("_hit"))
-			// cost = (int) (Math.round(quantity/2));
-			costs.multiplyAllValuesBy((float) 0.5, 3);
-		}
+		final float discount = TechAbilityAttachment.getRepairDiscount(player, getData());
+		if (discount != 1.0F)
+			costs.multiplyAllValuesBy(discount, 3);
 		return costs;
 	}
 	
@@ -493,14 +489,6 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			return;
 		m_bridge.getHistoryWriter().startEvent("Giving AI player bonus income modifier of " + toGive + MyFormatter.pluralize(" PU", toGive));
 		m_bridge.addChange(ChangeFactory.changeResourcesChange(m_player, getData().getResourceList().getResource(Constants.PUS), toGive));
-	}
-	
-	private boolean isIncreasedFactoryProduction(final PlayerID player)
-	{
-		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-		if (ta == null)
-			return false;
-		return ta.getIncreasedFactoryProduction();
 	}
 }
 

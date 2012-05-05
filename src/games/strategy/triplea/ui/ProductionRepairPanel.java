@@ -28,7 +28,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
-import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.ui.ScrollableTextField;
@@ -238,14 +238,6 @@ public class ProductionRepairPanel extends JPanel
 		m_left.setText("<html>You have " + left + " left.<br>Out of " + total + "</html>");
 	}
 	
-	private boolean isIncreasedFactoryProduction(final PlayerID player)
-	{
-		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-		if (ta == null)
-			return false;
-		return ta.getIncreasedFactoryProduction();
-	}
-	
 	Action m_done_action = new AbstractAction("Done")
 	{
 		private static final long serialVersionUID = 8547016018558520143L;
@@ -276,7 +268,7 @@ public class ProductionRepairPanel extends JPanel
 	
 	protected void calculateLimits()
 	{
-		final IntegerMap<Resource> cost;
+		// final IntegerMap<Resource> cost;
 		final ResourceCollection resources = getResources();
 		final ResourceCollection spent = new ResourceCollection(m_data);
 		for (final Rule current : m_rules)
@@ -325,8 +317,9 @@ public class ProductionRepairPanel extends JPanel
 			setLayout(new GridBagLayout());
 			m_rule = rule;
 			m_cost = rule.getCosts();
-			if (isIncreasedFactoryProduction(id))
-				m_cost.multiplyAllValuesBy(0.5f, 2);
+			final float discount = TechAbilityAttachment.getRepairDiscount(id, m_data);
+			if (discount != 1.0F)
+				m_cost.multiplyAllValuesBy(discount, 3);
 			final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
 			
 			if (!type.equals(repairUnit.getType()))

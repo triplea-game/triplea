@@ -74,9 +74,7 @@ public class DiceRoll implements Externalizable
 			int uaDiceSides = ua.getAttackAAmaxDieSides();
 			if (uaDiceSides < 1)
 				uaDiceSides = diceSize;
-			int attack = ua.getAttackAA();
-			if (attack > 0 && Matches.UnitIsRadarAA.match(u))
-				attack++; // TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6
+			int attack = ua.getAttackAA(u.getOwner());
 			if (attack > uaDiceSides)
 				attack = uaDiceSides;
 			if ((((float) attack) / ((float) uaDiceSides)) > (((float) highestAttack) / ((float) chosenDiceSize)))

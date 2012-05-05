@@ -1,4 +1,24 @@
 Changes for 1.6
+* Created new techAbilityAttachment, "warBondDiceNumber", which controls how many dice get rolled for war bonds. (veqryn)
+
+* Created new techAbilityAttachment, "warBondDiceSides", which controls how large the dice are which are rolled to determine the war bonds bonus. (veqryn)
+
+* Created new techAbilityAttachment, "repairDiscount", which controls the discount to repairing given by any technology. (veqryn)
+
+* Created new techAbilityAttachment, "minimumTerritoryValueForProductionBonus", which controls the minimum value of a territory that a factory units must be in to receive the production bonus. (veqryn)
+
+* Created new techAbilityAttachment, "productionBonus", which controls the bonus given to production by any technology. (veqryn)
+
+* Created new techAbilityAttachment, "airDefenseBonus", which controls the bonus given to interceptors defense by any technology. (veqryn)
+
+* Created new techAbilityAttachment, "airAttackBonus", which controls the bonus given to escorts attack by any technology. (veqryn)
+
+* Created new techAbilityAttachment, "radarBonus", which controls the bonus to radar AA attack given by any technology. (veqryn)
+
+* Created new techAbilityAttachment, "defenseBonus", which controls the defense bonus given by any technology. (veqryn)
+
+* Created new techAbilityAttachment, "attackBonus", which controls the attack bonus given by any technology. (veqryn)
+
 * Fixed error with "Should not be adding battle record for player ...", which was caused by creating a battle usin edit mode for a player who's turn has passed already. (veqryn)
 
 * Fixed error with Low Luck AA guns when the dice side is different than 6. Was trying to roll zero random dice. (veqryn)
@@ -39,7 +59,7 @@ Changes for 1.6
 
 * Fixed Economy panel so that it would change when you click back through history. (tao nie)
 
-* Created default attachment for Long Range Air, which will now be set to give +2 movement to all air units, that are air units at the start of the game. Also changing Pact of Steel 2 to have Long Range Air give only +1 movement. (veqryn)
+* Created new techAbilityAttachment, "movementBonus", which controls the bonus to movement that is received from any technology. Also created default attachment for Long Range Air, which will now be set to give +2 movement to all air units, that are air units at the start of the game. (veqryn)
 
 * Created framework for interpreting TechAbilityAttachment's, and also setting of default attachments for hardcoded technologies. (veqryn) 
 

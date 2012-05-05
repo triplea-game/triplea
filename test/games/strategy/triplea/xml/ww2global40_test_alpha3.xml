@@ -3552,8 +3552,12 @@
                 	<option name="directOwnershipTerritories" value="French Indo China" count="1"/>
 					<option name="invert" value="true" />
                 </attatchment>
+				<attatchment name="conditionAttachment_Japanese_1_Not_Attacked_UK" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="British:Japanese:War"/>
+					<option name="invert" value="true" />
+                </attatchment>
 				<attatchment name="objectiveAttachment_Japanese_1_Trade_With_America" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="conditions" value="conditionAttachment_Japanese_1_Not_Attacked_French_Indo_China"/>
+					<option name="conditions" value="conditionAttachment_Japanese_1_Not_Attacked_French_Indo_China:conditionAttachment_Japanese_1_Not_Attacked_UK"/>
 					<option name="objectiveValue" value="10"/>
 					<option name="atWarPlayers" value="Americans" count="0" />
 				</attatchment>
@@ -6575,6 +6579,7 @@ These changes to units are things other than price/movement which you can see in
 <br>2.8
 <br>Allowed Low Luck for Strategy Bombing and Rockets to be set again.
 <br>Allowed Convoy Blockades to roll dice (you can turn this off in game options).
+<br>Fixed issue with Japanese objective for Trade with America.
 <br>
 <br>2.7
 <br>Fixing Strategic Bombers so that they add +2 damage onto raids.

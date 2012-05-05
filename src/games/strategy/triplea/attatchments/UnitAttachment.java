@@ -256,14 +256,7 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public int getAirDefense(final PlayerID player)
 	{
-		int defenseValue = m_airDefense;
-		final int maxDiceSides = getData().getDiceSides();
-		if (defenseValue > 0 && m_isAir && !m_isStrategicBomber)
-		{
-			if (TechTracker.hasJetFighter(player))
-				defenseValue++;
-		}
-		return Math.min(defenseValue, maxDiceSides);
+		return (Math.min(getData().getDiceSides(), Math.max(0, m_airDefense + TechAbilityAttachment.getAirDefenseBonus((UnitType) this.getAttachedTo(), player, getData()))));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -280,14 +273,7 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public int getAirAttack(final PlayerID player)
 	{
-		int attackValue = m_airAttack;
-		final int maxDiceSides = getData().getDiceSides();
-		if (attackValue > 0 && m_isAir && !m_isStrategicBomber)
-		{
-			if (TechTracker.hasJetFighter(player))
-				attackValue++;
-		}
-		return Math.min(attackValue, maxDiceSides);
+		return (Math.min(getData().getDiceSides(), Math.max(0, m_airAttack + TechAbilityAttachment.getAirAttackBonus((UnitType) this.getAttachedTo(), player, getData()))));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1302,7 +1288,7 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public int getMovement(final PlayerID player)
 	{
-		return m_movement + TechAbilityAttachment.getMovementBonus((UnitType) this.getAttachedTo(), player, getData());
+		return Math.max(0, m_movement + TechAbilityAttachment.getMovementBonus((UnitType) this.getAttachedTo(), player, getData()));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1319,23 +1305,12 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public int getAttack(final PlayerID player)
 	{
-		int attackValue = m_attack;
-		final int maxDiceSides = getData().getDiceSides();
-		if (attackValue > 0 && m_isSub)
-		{
-			if (TechTracker.hasSuperSubs(player))
-				attackValue++;
-		}
-		if (attackValue > 0 && m_isAir && !m_isStrategicBomber)
-		{
-			if (TechTracker.hasJetFighter(player) && isWW2V3TechModel(getData()))
-				attackValue++;
-		}
+		int attackValue = m_attack + TechAbilityAttachment.getAttackBonus((UnitType) this.getAttachedTo(), player, getData());
 		if (attackValue > 0 && player.isAI())
 		{
 			attackValue += games.strategy.triplea.Properties.getAIBonusAttack(getData());
 		}
-		return Math.min(attackValue, maxDiceSides);
+		return Math.min(getData().getDiceSides(), Math.max(0, attackValue));
 	}
 	
 	int getRawAttack()
@@ -1368,24 +1343,17 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public int getDefense(final PlayerID player)
 	{
-		int defenseValue = m_defense;
-		final int maxDiceSides = getData().getDiceSides();
-		if (defenseValue > 0 && m_isAir && !m_isStrategicBomber)
-		{
-			if (TechTracker.hasJetFighter(player) && !isWW2V3TechModel(getData()))
-				defenseValue++;
-		}
+		int defenseValue = m_defense + TechAbilityAttachment.getDefenseBonus((UnitType) this.getAttachedTo(), player, getData());
 		if (defenseValue > 0 && m_isSub && TechTracker.hasSuperSubs(player))
 		{
 			final int bonus = games.strategy.triplea.Properties.getSuper_Sub_Defense_Bonus(getData());
-			if (bonus > 0)
-				defenseValue += bonus;
+			defenseValue += bonus;
 		}
 		if (defenseValue > 0 && player.isAI())
 		{
 			defenseValue += games.strategy.triplea.Properties.getAIBonusDefense(getData());
 		}
-		return Math.min(defenseValue, maxDiceSides);
+		return Math.min(getData().getDiceSides(), Math.max(0, defenseValue));
 	}
 	
 	int getRawDefense()
@@ -1878,9 +1846,10 @@ public class UnitAttachment extends DefaultAttachment
 		m_attackAA = s;
 	}
 	
-	public int getAttackAA()
+	public int getAttackAA(final PlayerID player)
 	{
-		return m_attackAA;
+		// TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it does not divide perfectly into attackAAmaxDieSides
+		return Math.min(getAttackAAmaxDieSides(), Math.max(0, m_attackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2457,19 +2426,11 @@ public class UnitAttachment extends DefaultAttachment
 		return rVal;
 	}
 	
-	private boolean isWW2V3TechModel(final GameData data)
+	/*private boolean isWW2V3TechModel(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getWW2V3TechModel(data);
-	}
-	
-	private boolean playerHasAARadar(final PlayerID player)
-	{
-		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
-		if (ta == null)
-			return false;
-		return ta.getAARadar();
-	}
-	
+	}*/
+
 	private boolean playerHasRockets(final PlayerID player)
 	{
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);
@@ -2638,7 +2599,7 @@ public class UnitAttachment extends DefaultAttachment
 		
 		if (m_isAAforCombatOnly || m_isAAforBombingThisUnitOnly || m_isAAforFlyOverOnly)
 		{
-			stats.append((playerHasAARadar(player) ? m_attackAA + 1 : m_attackAA) + "/" + (m_attackAAmaxDieSides != -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
+			stats.append(this.getAttackAA(player) + "/" + (m_attackAAmaxDieSides != -1 ? m_attackAAmaxDieSides : getData().getDiceSides()) + " ");
 			if (m_isAAforCombatOnly && m_isAAforBombingThisUnitOnly && m_isAAforFlyOverOnly)
 				stats.append("Anti-Air, ");
 			else if (m_isAAforCombatOnly && m_isAAforFlyOverOnly && !games.strategy.triplea.Properties.getAATerritoryRestricted(getData()))

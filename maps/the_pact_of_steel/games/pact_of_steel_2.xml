@@ -4207,7 +4207,17 @@
 				
 <!-- Tech Ability Attachment -->
 	<!-- the following options are allowed for "techAbilityAttachment"
-			movementBonus						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit
+			attackBonus							value:	gives some amount of attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			defenseBonus						value:	gives some amount of defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			movementBonus						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			radarBonus							value:	gives some amount of radar aa attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			airAttackBonus						value:	gives some amount of air escort attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			airDefenseBonus						value:	gives some amount of air interceptor defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			productionBonus						value:	gives some amount of production to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			minimumTerritoryValueForProductionBonus						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  If multiple, the lowest is chosen.
+			repairDiscount						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
+			warBondDiceSides						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit. If multiple, the highest is chosen.
+			warBondDiceNumber						value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
 			
 	-->
 				<attatchment name="techAbilityAttachment" attatchTo="longRangeAir" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">

@@ -89,7 +89,7 @@ public class RocketsFireHelper
 	
 	private boolean isLimitRocketDamageToProduction(final GameData data)
 	{
-		return games.strategy.triplea.Properties.getLimitRocketDamageToProduction(data);
+		return games.strategy.triplea.Properties.getLimitRocketAndSBRDamageToProduction(data);
 	}
 	
 	public RocketsFireHelper()
@@ -105,8 +105,7 @@ public class RocketsFireHelper
 			getRemote(bridge).reportMessage("No rockets to fire", "No rockets to fire");
 			return;
 		}
-		// TODO this is weird! Check the parens
-		if ((isWW2V2(data) || isAllRocketsAttack(data)) || isOneRocketAttackPerFactory(data))
+		if (isWW2V2(data) || isAllRocketsAttack(data) || isOneRocketAttackPerFactory(data))
 			fireWW2V2(bridge, player, rocketTerritories);
 		else
 			fireWW2V1(bridge, player, rocketTerritories);
@@ -155,11 +154,14 @@ public class RocketsFireHelper
 		final CompositeMatch<Unit> ownedRockets = new CompositeMatchAnd<Unit>();
 		ownedRockets.add(Matches.UnitIsRocket);
 		ownedRockets.add(Matches.unitIsOwnedBy(player));
+		ownedRockets.add(Matches.UnitIsDisabled().invert());
+		ownedRockets.add(Matches.unitIsBeingTransported().invert());
+		ownedRockets.add(Matches.unitIsSubmerged(data).invert());
 		final BattleTracker tracker = MoveDelegate.getBattleTracker(data);
 		for (final Territory current : data.getMap())
 		{
-			if (current.isWater())
-				continue;
+			// if (current.isWater())
+			// continue;
 			if (tracker.wasConquered(current))
 				continue;
 			if (current.getUnits().someMatch(ownedRockets))
@@ -189,8 +191,7 @@ public class RocketsFireHelper
 	
 	private Territory getTarget(final Collection<Territory> targets, final PlayerID player, final IDelegateBridge bridge, final Territory from)
 	{
-		// ask even if there is only once choice
-		// that will allow the user to not attack if he doesnt want to
+		// ask even if there is only once choice, that will allow the user to not attack if he doesn't want to
 		return ((ITripleaPlayer) bridge.getRemote()).whereShouldRocketsAttack(targets, from);
 	}
 	

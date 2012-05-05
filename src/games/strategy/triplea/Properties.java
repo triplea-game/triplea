@@ -180,20 +180,12 @@ public class Properties implements Constants
 	}
 	
 	/*
-	 * Limit the damage caused by each bomber on Strategic Bomb Raids to
+	 * Limit the damage caused by each bomber on rockets and Strategic Bomb Raids to
 	 * production of territory
 	 */
-	public static boolean getLimitSBRDamageToProduction(final GameData data)
+	public static boolean getLimitRocketAndSBRDamageToProduction(final GameData data)
 	{
-		return data.getProperties().get(LIMIT_SBR_DAMAGE_TO_PRODUCTION, false);
-	}
-	
-	/*
-	 * Limit the damage caused on Rocket attacks to production of territory
-	 */
-	public static boolean getLimitRocketDamageToProduction(final GameData data)
-	{
-		return data.getProperties().get(LIMIT_ROCKET_DAMAGE_TO_PRODUCTION, false);
+		return data.getProperties().get(LIMIT_ROCKET_AND_SBR_DAMAGE_TO_PRODUCTION, false);
 	}
 	
 	/*
