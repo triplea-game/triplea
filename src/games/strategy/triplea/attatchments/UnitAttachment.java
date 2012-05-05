@@ -505,9 +505,13 @@ public class UnitAttachment extends DefaultAttachment
 		m_canBlitz = s;
 	}
 	
-	public boolean getCanBlitz()
+	public boolean getCanBlitz(final PlayerID player)
 	{
-		return m_canBlitz;
+		if (m_canBlitz)
+			return true;
+		if (TechAbilityAttachment.getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BLITZ, (UnitType) this.getAttachedTo(), player, getData()))
+			return true;
+		return false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -594,7 +598,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		if (m_canBombard)
 			return true;
-		if (m_isDestroyer && TechAttachment.get(player).getDestroyerBombard())
+		if (TechAbilityAttachment.getUnitAbilitiesGained(TechAbilityAttachment.ABILITY_CAN_BOMBARD, (UnitType) this.getAttachedTo(), player, getData()))
 			return true;
 		return false;
 	}

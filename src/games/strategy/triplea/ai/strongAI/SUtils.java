@@ -4028,7 +4028,7 @@ public class SUtils
 			final UnitType unit1 = orderedUnitList.get(i);
 			final boolean isInf1 = Matches.UnitTypeIsInfantry.match(unit1);
 			final boolean isArt1 = Matches.UnitTypeIsArtillery.match(unit1);
-			final boolean isTank1 = UnitAttachment.get(unit1).getCanBlitz();
+			final boolean isTank1 = UnitAttachment.get(unit1).getCanBlitz(player);
 			if (!sea && Matches.unitTypeCanBombard(player).match(unit1))
 			{
 				orderedUnitList.remove(i);
@@ -4047,7 +4047,7 @@ public class SUtils
 				final UnitType unit2 = orderedUnitList.get(j);
 				final boolean isInf2 = Matches.UnitTypeIsInfantry.match(unit2);
 				final boolean isArt2 = Matches.UnitTypeIsArtillery.match(unit2);
-				final boolean isTank2 = UnitAttachment.get(unit2).getCanBlitz();
+				final boolean isTank2 = UnitAttachment.get(unit2).getCanBlitz(player);
 				final UnitAttachment ua2 = UnitAttachment.get(unit2);
 				int ipip2 = 0;
 				if (attacking)

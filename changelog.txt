@@ -1,4 +1,8 @@
 Changes for 1.6
+* Allowed "unitAbilitiesGained" to give "canBlitz" and "canBombard". (veqryn)
+
+* Created new techAbilityAttachment, "unitAbilitiesGained", which allows units to gain abilities when technology is discovered. (veqryn)
+
 * Created new techAbilityAttachment, "rocketNumberPerTerritory", which controls the maximum number of dice to be rolled per territory. (veqryn)
 
 * Created new techAbilityAttachment, "rocketDistance", which controls the maximum distance rockets can travel. (veqryn)

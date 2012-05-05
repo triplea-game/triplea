@@ -81,7 +81,7 @@ class UnitInformation
 				}
 				unitInformation.write(getCostInformation(currentType) + ",");
 				unitInformation.write(currentAttachment.getMovement(PlayerID.NULL_PLAYERID) + "," + currentAttachment.getAttack(PlayerID.NULL_PLAYERID) + ","
-							+ currentAttachment.getDefense(PlayerID.NULL_PLAYERID) + "," + (currentAttachment.getCanBlitz() == false ? "-" : "true") + ","
+							+ currentAttachment.getDefense(PlayerID.NULL_PLAYERID) + "," + (currentAttachment.getCanBlitz(PlayerID.NULL_PLAYERID) == false ? "-" : "true") + ","
 							+ (currentAttachment.getArtillery() == false ? "-" : "true") + "," + (currentAttachment.getArtillerySupportable() == false ? "-" : "true") + ","
 							+ (currentAttachment.getIsFactory() == false ? "-" : "true") + "," + (currentAttachment.getIsMarine() == false ? "-" : "true") + ","
 							+ (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","

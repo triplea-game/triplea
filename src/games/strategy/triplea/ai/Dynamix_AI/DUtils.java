@@ -1759,7 +1759,7 @@ public class DUtils
 			final int movementAfterBlitz = movementLeft - dist;
 			if (DSettings.LoadSettings().TR_attackLandGrab_onlyGrabLandIfWeCanBlitzIt)
 			{
-				if (!ua.getCanBlitz() || movementAfterBlitz < dist) // If this unit can't blitz, or it can't take ter and get back
+				if (!ua.getCanBlitz(unit.getOwner()) || movementAfterBlitz < dist) // If this unit can't blitz, or it can't take ter and get back
 					return Integer.MIN_VALUE;
 			}
 			result += movementAfterBlitz * 10; // We want ones that can blitz away the most to attack

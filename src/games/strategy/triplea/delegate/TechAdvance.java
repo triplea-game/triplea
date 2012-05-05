@@ -164,6 +164,11 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 		s_allDefined = Collections.unmodifiableList(s_allDefined);
 	}
 	
+	public static List<TechAdvance> getTechAdvances(final GameData data)
+	{
+		return getTechAdvances(data, null);
+	}
+	
 	public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerID player)
 	{
 		final TechnologyFrontier technologyFrontier;

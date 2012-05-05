@@ -3537,6 +3537,7 @@
 					airDefenseBonus
 					productionBonus
 					rocketDiceNumber
+					unitAbilitiesGained
 					
 		-->
 	<!-- Victory Triggers -->
@@ -4218,20 +4219,21 @@
 				
 <!-- Tech Ability Attachment -->
 	<!-- the following options are allowed for "techAbilityAttachment"
-			attackBonus									value:	gives some amount of attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			defenseBonus								value:	gives some amount of defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			movementBonus								value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			radarBonus									value:	gives some amount of radar aa attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			airAttackBonus								value:	gives some amount of air escort attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			airDefenseBonus								value:	gives some amount of air interceptor defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			productionBonus								value:	gives some amount of production to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			minimumTerritoryValueForProductionBonus 	value:	sets the minimum value of a territory that a factory units must be in to receive the production bonus.  must be an integer (default -1) between -1 and 10000.  If multiple, the lowest is chosen.
-			repairDiscount								value:	sets the discount to repairing.  must be an integer (default -1) between 0 and 100.  Effects from multiple are added together.
-			warBondDiceSides							value:	sets how large the dice are which are rolled to determine the war bonds bonus.  must be an integer (default -1) between 0 and 200. Effects from multiple are added together.
-			warBondDiceNumber							value:	sets how many dice get rolled for war bonds.  must be an integer (default 0) between 0 and 100.  Effects from multiple are added together.
-			rocketDiceNumber							value:	sets the number of rocket rolls for each rocket.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple are added together.
-			rocketDistance								value:	sets the maximum distance rockets travel for the map.  must be an integer (default 0) between 0 and 100.  Effects from multiple are added together.
-			rocketNumberPerTerritory					value:	sets the maximum number of rocket rolls per territory.  must be an integer (default 0) between 0 and 200.  Effects from multiple are added together.
+			attackBonus									value:	gives some amount of attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
+			defenseBonus								value:	gives some amount of defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
+			movementBonus								value:	gives some amount of movement to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
+			radarBonus									value:	gives some amount of radar aa attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
+			airAttackBonus								value:	gives some amount of air escort attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
+			airDefenseBonus								value:	gives some amount of air interceptor defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
+			productionBonus								value:	gives some amount of production to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
+			minimumTerritoryValueForProductionBonus 	value:	sets the minimum value of a territory that a factory units must be in to receive the production bonus.  must be an integer (default -1) between -1 and 10000.  If multiple techs, the lowest is chosen.
+			repairDiscount								value:	sets the discount to repairing.  must be an integer (default -1) between 0 and 100.  Effects from multiple techs are added together.
+			warBondDiceSides							value:	sets how large the dice are which are rolled to determine the war bonds bonus.  must be an integer (default -1) between 0 and 200. Effects from multiple techs are added together.
+			warBondDiceNumber							value:	sets how many dice get rolled for war bonds.  must be an integer (default 0) between 0 and 100.  Effects from multiple techs are added together.
+			rocketDiceNumber							value:	sets the number of rocket rolls for each rocket.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
+			rocketDistance								value:	sets the maximum distance rockets travel for the map.  must be an integer (default 0) between 0 and 100.  Effects from multiple techs are added together.
+			rocketNumberPerTerritory					value:	sets the maximum number of rocket rolls per territory.  must be an integer (default 0) between 0 and 200.  Effects from multiple techs are added together.
+			unitAbilitiesGained							value:	allows unit types to gain abilities through this tech.  must be the name of the unit, followed by a colon ":", followed by all the abilities gained (separated by colons).  currently allows only "canBlitz" and "canBombard".  Effects from multiple techs are added together.
 			
 	-->
 				<attatchment name="techAbilityAttachment" attatchTo="longRangeAir" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">

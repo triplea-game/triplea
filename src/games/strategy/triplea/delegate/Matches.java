@@ -758,7 +758,7 @@ public class Matches
 		{
 			final Unit unit = obj;
 			final UnitAttachment ua = UnitAttachment.get(unit.getType());
-			return ua.getCanBlitz();
+			return ua.getCanBlitz(obj.getOwner());
 		}
 	};
 	public static final Match<Unit> UnitIsLandTransport = new Match<Unit>()
