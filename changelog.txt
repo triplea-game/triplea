@@ -1,4 +1,6 @@
 Changes for 1.6
+* Changed priority of AA casualty choosing system to: chooseAACasualties -> isRollAAIndividually -> isRandomAACasualties. This means that "choose aa" overrides all, while "roll aa individually" will only override "random aa". (veqryn)
+
 * Allowed "unitAbilitiesGained" to give "canBlitz" and "canBombard". (veqryn)
 
 * Created new techAbilityAttachment, "unitAbilitiesGained", which allows units to gain abilities when technology is discovered. (veqryn)

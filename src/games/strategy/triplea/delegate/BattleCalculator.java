@@ -133,17 +133,15 @@ public class BattleCalculator
 		}
 		else
 		{
-			// isRollAAIndividually() is the default behavior
-			final Boolean rollAAIndividually = isRollAAIndividually(data);
-			// Random AA Casualties
-			if (!rollAAIndividually && isRandomAACasualties(data))
-				return (RandomAACasualties(planes, dice, bridge));
-			// allow player to select casualties from entire set
-			if (!rollAAIndividually && isChooseAA(data))
-			{
+			// priority goes: choose -> individually -> random
+			// if none are set, we roll individually
+			if (isChooseAA(data))
 				return chooseAACasualties(planes, dice, bridge, attacker, battleID, terr);
-			}
-			return (IndividuallyFiredAACasualties(planes, defendingAA, dice, terr, bridge));
+			if (isRollAAIndividually(data))
+				return IndividuallyFiredAACasualties(planes, defendingAA, dice, terr, bridge);
+			if (isRandomAACasualties(data))
+				return RandomAACasualties(planes, dice, bridge);
+			return IndividuallyFiredAACasualties(planes, defendingAA, dice, terr, bridge);
 		}
 	}
 	

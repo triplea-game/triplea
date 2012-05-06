@@ -1853,7 +1853,7 @@ public class UnitAttachment extends DefaultAttachment
 	public int getAttackAA(final PlayerID player)
 	{
 		// TODO: this may cause major problems with Low Luck, if they have diceSides equal to something other than 6, or it does not divide perfectly into attackAAmaxDieSides
-		return Math.min(getAttackAAmaxDieSides(), Math.max(0, m_attackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
+		return Math.max(0, Math.min(getAttackAAmaxDieSides(), m_attackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1870,6 +1870,8 @@ public class UnitAttachment extends DefaultAttachment
 	
 	public int getAttackAAmaxDieSides()
 	{
+		if (m_attackAAmaxDieSides < 0)
+			return getData().getDiceSides();
 		return m_attackAAmaxDieSides;
 	}
 	
@@ -2668,7 +2670,7 @@ public class UnitAttachment extends DefaultAttachment
 			stats.append("can Receive Attack Bonus, ");
 		if (m_isMarine)
 			stats.append("1" + " Amphibious Attack Bonus, ");
-		if (m_canBlitz)
+		if (getCanBlitz(player))
 			stats.append("can Blitz, ");
 		if (!m_receivesAbilityWhenWith.isEmpty())
 		{

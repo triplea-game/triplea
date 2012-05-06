@@ -6117,7 +6117,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Choose AA Casualties" value="false" editable="false">
+				<property name="Choose AA Casualties" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -6580,6 +6580,7 @@ These changes to units are things other than price/movement which you can see in
 <br>Allowed Low Luck for Strategy Bombing and Rockets to be set again.
 <br>Allowed Convoy Blockades to roll dice (you can turn this off in game options).
 <br>Fixed issue with Japanese objective for Trade with America.
+<br>Allowed user to choose AA casualties.
 <br>
 <br>2.7
 <br>Fixing Strategic Bombers so that they add +2 damage onto raids.
