@@ -1,4 +1,6 @@
 Changes for 1.6
+* Created new PlayerAttachment option, "shareTechnology", which will automatically give all technology to other players during tech activation phase. (veqryn)
+
 * Changed priority of AA casualty choosing system to: chooseAACasualties -> isRollAAIndividually -> isRandomAACasualties. This means that "choose aa" overrides all, while "roll aa individually" will only override "random aa". (veqryn)
 
 * Allowed "unitAbilitiesGained" to give "canBlitz" and "canBombard". (veqryn)

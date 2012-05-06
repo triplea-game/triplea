@@ -24,10 +24,12 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.ICondition;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
+import games.strategy.util.Util;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -106,6 +108,7 @@ public class TechActivationDelegate extends BaseDelegate
 				TriggerAttachment.triggerSupportChange(toFireTestedAndSatisfied, m_bridge, null, null, true, true, true, true);
 			}
 		}
+		shareTechnology();
 		m_needToInitialize = false;
 	}
 	
@@ -114,6 +117,32 @@ public class TechActivationDelegate extends BaseDelegate
 	{
 		super.end();
 		m_needToInitialize = true;
+	}
+	
+	private void shareTechnology()
+	{
+		final PlayerAttachment pa = PlayerAttachment.get(m_player);
+		if (pa == null)
+			return;
+		final Collection<PlayerID> shareWith = pa.getShareTechnology();
+		if (shareWith == null || shareWith.isEmpty())
+			return;
+		final GameData data = getData();
+		final Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player, data);
+		for (final PlayerID p : shareWith)
+		{
+			final Collection<TechAdvance> availableTechs = TechnologyDelegate.getAvailableTechs(p, data);
+			final Collection<TechAdvance> toGive = Util.intersection(currentAdvances, availableTechs);
+			if (!toGive.isEmpty())
+			{
+				// Start event
+				m_bridge.getHistoryWriter().startEvent(m_player.getName() + " giving technology to " + p.getName() + ": " + advancesAsString(toGive));
+				for (final TechAdvance advance : toGive)
+				{
+					TechTracker.addAdvance(p, m_bridge, advance);
+				}
+			}
+		}
 	}
 	
 	@Override

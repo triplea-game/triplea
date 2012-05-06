@@ -176,7 +176,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		if (isWW2V3TechModel())
 			m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
 		final GameData data = getData();
-		if (getAvailableTechs().isEmpty())
+		if (getAvailableTechs(m_player, data).isEmpty())
 		{
 			if (isWW2V3TechModel())
 			{
@@ -274,11 +274,10 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		return new TechResults(random, remainder, techHits, advancesAsString, m_player);
 	}
 	
-	private List<TechAdvance> getAvailableTechs()
+	public static List<TechAdvance> getAvailableTechs(final PlayerID player, final GameData data)
 	{
-		final GameData data = getData();
-		final Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player, data);
-		final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, m_player);
+		final Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(player, data);
+		final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, player);
 		return Util.difference(allAdvances, currentAdvances);
 	}
 	
