@@ -342,14 +342,14 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (data.getTechnologyFrontier().isEmpty())
 				{
 					if (Math.random() > 0.35)
-						techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(1), TokensToBuy);
+						techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(1), TokensToBuy, null);
 					else
-						techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(0), TokensToBuy);
+						techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(0), TokensToBuy, null);
 				}
 				else
 				{
 					final int rand = (int) (Math.random() * cats.size());
-					techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(rand), TokensToBuy);
+					techDelegate.rollTech(TechTokens + TokensToBuy, cats.get(rand), TokensToBuy, null);
 				}
 			}
 		}

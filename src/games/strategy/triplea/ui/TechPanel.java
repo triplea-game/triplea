@@ -22,12 +22,14 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Util;
 
 import java.awt.BorderLayout;
@@ -36,7 +38,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -60,6 +64,7 @@ public class TechPanel extends ActionPanel
 	private TechRoll m_techRoll;
 	private int m_currTokens = 0;
 	private int m_quantity;
+	private IntegerMap<PlayerID> m_whoPaysHowMuch = null;
 	
 	/** Creates new BattlePanel */
 	public TechPanel(final GameData data, final MapPanel map)
@@ -190,7 +195,8 @@ public class TechPanel extends ActionPanel
 		
 		public void actionPerformed(final ActionEvent event)
 		{
-			m_currTokens = getCurrentPlayer().getResources().getQuantity(Constants.TECH_TOKENS);
+			final PlayerID currentPlayer = getCurrentPlayer();
+			m_currTokens = currentPlayer.getResources().getQuantity(Constants.TECH_TOKENS);
 			// Notify user if there are no more techs to acheive
 			final List<TechnologyFrontier> techCategories = getAvailableCategories();
 			// if (available.isEmpty())
@@ -208,16 +214,23 @@ public class TechPanel extends ActionPanel
 			list.setSelectedIndex(0);
 			JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(TechPanel.this), panel, "Select chart", JOptionPane.PLAIN_MESSAGE);
 			category = (TechnologyFrontier) list.getSelectedValue();
-			final int PUs = getCurrentPlayer().getResources().getQuantity(Constants.PUS);
+			final int PUs = currentPlayer.getResources().getQuantity(Constants.PUS);
 			final String message = "Purchase Tech Tokens";
-			final TechTokenPanel techTokenPanel = new TechTokenPanel(PUs, m_currTokens, getCurrentPlayer());
+			// see if anyone will help us to pay
+			final Collection<PlayerID> helpPay;
+			final PlayerAttachment pa = PlayerAttachment.get(currentPlayer);
+			if (pa != null)
+				helpPay = pa.getHelpPayTechCost();
+			else
+				helpPay = null;
+			final TechTokenPanel techTokenPanel = new TechTokenPanel(PUs, m_currTokens, currentPlayer, helpPay);
 			final int choice = JOptionPane.showConfirmDialog(getTopLevelAncestor(), techTokenPanel, message, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
 			if (choice != JOptionPane.OK_OPTION)
 				return;
 			m_quantity = techTokenPanel.getValue();
+			m_whoPaysHowMuch = techTokenPanel.getWhoPaysHowMuch();
 			m_currTokens += m_quantity;
-			// getCurrentPlayer().getResources().addResource(getData().getResourceList().getResource(Constants.TECH_TOKENS), m_quantity);
-			m_techRoll = new TechRoll(category, m_currTokens, m_quantity);
+			m_techRoll = new TechRoll(category, m_currTokens, m_quantity, m_whoPaysHowMuch);
 			m_techRoll.setNewTokens(m_quantity);
 			release();
 		}
@@ -310,18 +323,28 @@ class TechTokenPanel extends JPanel
 	JLabel m_left = new JLabel();
 	JLabel m_right = new JLabel();
 	ScrollableTextField m_textField;
+	HashMap<PlayerID, ScrollableTextField> m_whoPaysTextFields = null;
 	
-	TechTokenPanel(final int PUs, final int currTokens, final PlayerID player)
+	TechTokenPanel(final int PUs, final int currTokens, final PlayerID player, final Collection<PlayerID> helpPay)
 	{
-		setLayout(new GridBagLayout());
 		m_PUs = PUs;
+		if (helpPay != null && !helpPay.isEmpty())
+		{
+			helpPay.remove(player);
+			for (final PlayerID p : helpPay)
+			{
+				m_PUs += p.getResources().getQuantity(Constants.PUS);
+			}
+		}
+		setLayout(new GridBagLayout());
 		m_player = player;
 		final JLabel title = new JLabel("Select the number of tech tokens to purchase:");
 		title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
-		m_textField = new ScrollableTextField(0, PUs / TechTracker.getTechCost(m_player));
+		final int techCost = TechTracker.getTechCost(m_player);
+		m_textField = new ScrollableTextField(0, m_PUs / techCost);
 		m_textField.addChangeListener(m_listener);
-		final JLabel costLabel = new JLabel("x" + TechTracker.getTechCost(m_player));
-		setLabel(PUs);
+		final JLabel costLabel = new JLabel("x" + techCost);
+		setLabel(m_PUs);
 		setTokens(currTokens);
 		final int space = 0;
 		add(title, new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, space, space), 0, 0));
@@ -329,6 +352,31 @@ class TechTokenPanel extends JPanel
 		add(costLabel, new GridBagConstraints(1, 1, 1, 1, 0.5, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 5, space, 2), 0, 0));
 		add(m_left, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 5, space, space), 0, 0));
 		add(m_right, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 120, space, space), 0, 0));
+		if (helpPay != null && !helpPay.isEmpty())
+		{
+			if (m_whoPaysTextFields == null)
+				m_whoPaysTextFields = new HashMap<PlayerID, ScrollableTextField>();
+			helpPay.remove(player);
+			int row = 3;
+			add(new JLabel(" "), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+			row++;
+			add(new JLabel("Other Nations Helping To Pay:"), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+			row++;
+			for (final PlayerID p : helpPay)
+			{
+				final int helperPUs = p.getResources().getQuantity(Constants.PUS);
+				if (helperPUs > 0)
+				{
+					final ScrollableTextField whoPaysTextField = new ScrollableTextField(0, helperPUs);
+					m_whoPaysTextFields.put(p, whoPaysTextField);
+					// TODO: force players to pay if it goes above the cost m_player can afford.
+					add(new JLabel(p.getName()), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+					add(whoPaysTextField, new GridBagConstraints(1, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+					add(new JLabel("PUs"), new GridBagConstraints(2, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+					row++;
+				}
+			}
+		}
 	}
 	
 	private void setLabel(final int PUs)
@@ -352,5 +400,32 @@ class TechTokenPanel extends JPanel
 	public int getValue()
 	{
 		return m_textField.getValue();
+	}
+	
+	public IntegerMap<PlayerID> getWhoPaysHowMuch()
+	{
+		final int techCost = TechTracker.getTechCost(m_player);
+		final int numberOfTechRolls = getValue();
+		final int totalCost = numberOfTechRolls * techCost;
+		final IntegerMap<PlayerID> whoPaysHowMuch = new IntegerMap<PlayerID>();
+		if (m_whoPaysTextFields == null || m_whoPaysTextFields.isEmpty())
+		{
+			whoPaysHowMuch.put(m_player, totalCost);
+		}
+		else
+		{
+			int runningTotal = 0;
+			for (final Entry<PlayerID, ScrollableTextField> entry : m_whoPaysTextFields.entrySet())
+			{
+				final int value = entry.getValue().getValue();
+				whoPaysHowMuch.put(entry.getKey(), value);
+				runningTotal += value;
+			}
+			if (!m_whoPaysTextFields.containsKey(m_player))
+			{
+				whoPaysHowMuch.put(m_player, Math.max(0, totalCost - runningTotal));
+			}
+		}
+		return whoPaysHowMuch;
 	}
 }

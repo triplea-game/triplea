@@ -3482,6 +3482,7 @@
 					giveUnitControl
 					captureUnitOnEnteringBy
 					shareTechnology
+					helpPayTechCost
 					suicideAttackResources
 					suicideAttackTargets
 					movementLimit
@@ -4071,6 +4072,7 @@
 			captureUnitOnEnteringBy				values: allows multiple players to let their units be captured by multiple other players, if those units are in a designated territory and a designated player captures that territory
 															must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"
 			shareTechnology						values: automatically gives all technologies this player has to all players in the list, during tech activation phase. must be a list of the player's names, in a ":" delimited list.  Example: value="Russians:Chinese"
+			helpPayTechCost						values: allows the players in the list to help this player pay for the cost of technology.
 			destroysPUs							values: means that when this player loses their capital, their PUs are destroyed instead of captured (defaults to false = capture the PUs)
 			retainCapitalNumber					values: means that we do not lose our money if we still control at least this many of our capitals (defaults to 1). 
 															If a player has no playerAttachment, then it defaults to X, where X = total number of capitals (ie: you lose your money if a single capital is captured)

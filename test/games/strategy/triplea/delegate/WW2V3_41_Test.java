@@ -169,14 +169,14 @@ public class WW2V3_41_Test extends TestCase
 		assertEquals(1, initTokens);
 		// Fail the roll
 		delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 3 }));
-		final TechResults roll = techDelegate.rollTech(1, mech, 0);
+		final TechResults roll = techDelegate.rollTech(1, mech, 0, null);
 		// Check to make sure it failed
 		assertEquals(0, roll.getHits());
 		final int midTokens = germans.getResources().getQuantity("techTokens");
 		assertEquals(1, midTokens);
 		// Make a Successful roll
 		delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 5 }));
-		final TechResults roll2 = techDelegate.rollTech(1, mech, 0);
+		final TechResults roll2 = techDelegate.rollTech(1, mech, 0, null);
 		// Check to make sure it succeeded and all tokens were removed
 		assertEquals(1, roll2.getHits());
 		final int finalTokens = germans.getResources().getQuantity("techTokens");

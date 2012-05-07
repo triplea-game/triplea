@@ -36,6 +36,7 @@ import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 import games.strategy.util.Util;
 
@@ -48,6 +49,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Logic for dealing with player tech rolls. This class requires the
@@ -163,15 +165,15 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		return games.strategy.triplea.Properties.getLL_TECH_ONLY(getData());
 	}
 	
-	public TechResults rollTech(final int techRolls, final TechnologyFrontier techToRollFor, final int newTokens)
+	public TechResults rollTech(final int techRolls, final TechnologyFrontier techToRollFor, final int newTokens, final IntegerMap<PlayerID> whoPaysHowMuch)
 	{
 		int rollCount = techRolls;
 		if (isWW2V3TechModel())
 			rollCount = newTokens;
-		final boolean canPay = checkEnoughMoney(rollCount);
+		final boolean canPay = checkEnoughMoney(rollCount, whoPaysHowMuch);
 		if (!canPay)
 			return new TechResults("Not enough money to pay for that many tech rolls.");
-		chargeForTechRolls(rollCount);
+		chargeForTechRolls(rollCount, whoPaysHowMuch);
 		int m_currTokens = 0;
 		if (isWW2V3TechModel())
 			m_currTokens = m_player.getResources().getQuantity(Constants.TECH_TOKENS);
@@ -281,23 +283,56 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		return Util.difference(allAdvances, currentAdvances);
 	}
 	
-	boolean checkEnoughMoney(final int rolls)
+	boolean checkEnoughMoney(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch)
 	{
 		final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
 		final int cost = rolls * getTechCost();
-		final int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
-		return has >= cost;
+		if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty())
+		{
+			final int has = m_bridge.getPlayerID().getResources().getQuantity(PUs);
+			return has >= cost;
+		}
+		else
+		{
+			int runningTotal = 0;
+			for (final Entry<PlayerID, Integer> entry : whoPaysHowMuch.entrySet())
+			{
+				final int has = entry.getKey().getResources().getQuantity(PUs);
+				final int paying = entry.getValue();
+				if (paying > has)
+					return false;
+				runningTotal += paying;
+			}
+			return runningTotal >= cost;
+		}
 	}
 	
-	private void chargeForTechRolls(final int rolls)
+	private void chargeForTechRolls(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch)
 	{
 		final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
-		// TODO techCost
-		final int cost = rolls * getTechCost();
-		final String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " on tech rolls";
-		m_bridge.getHistoryWriter().startEvent(transcriptText);
-		final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), PUs, -cost);
-		m_bridge.addChange(charge);
+		int cost = rolls * getTechCost();
+		if (whoPaysHowMuch == null || whoPaysHowMuch.isEmpty())
+		{
+			final String transcriptText = m_bridge.getPlayerID().getName() + " spend " + cost + " on tech rolls";
+			m_bridge.getHistoryWriter().startEvent(transcriptText);
+			final Change charge = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), PUs, -cost);
+			m_bridge.addChange(charge);
+		}
+		else
+		{
+			for (final Entry<PlayerID, Integer> entry : whoPaysHowMuch.entrySet())
+			{
+				final PlayerID p = entry.getKey();
+				final int pays = Math.min(cost, entry.getValue());
+				if (pays <= 0)
+					continue;
+				cost -= pays;
+				final String transcriptText = p.getName() + " spend " + pays + " on tech rolls";
+				m_bridge.getHistoryWriter().startEvent(transcriptText);
+				final Change charge = ChangeFactory.changeResourcesChange(p, PUs, -pays);
+				m_bridge.addChange(charge);
+			}
+		}
 		if (isWW2V3TechModel())
 		{
 			final Resource tokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);

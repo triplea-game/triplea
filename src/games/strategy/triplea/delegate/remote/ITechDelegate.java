@@ -13,9 +13,11 @@
  */
 package games.strategy.triplea.delegate.remote;
 
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
+import games.strategy.util.IntegerMap;
 
 /**
  * @author Sean Bridges
@@ -33,5 +35,5 @@ public interface ITechDelegate extends IRemote
 	 *            if WW2V3TechModel is used it set rollCount
 	 * @return TechResults. If the tech could not be rolled, then a message saying why.
 	 */
-	public TechResults rollTech(int rollCount, TechnologyFrontier techToRollFor, int newTokens);
+	public TechResults rollTech(int rollCount, TechnologyFrontier techToRollFor, int newTokens, IntegerMap<PlayerID> whoPaysHowMuch);
 }

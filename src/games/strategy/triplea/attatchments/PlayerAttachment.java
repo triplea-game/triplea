@@ -73,6 +73,7 @@ public class PlayerAttachment extends DefaultAttachment
 	private ArrayList<PlayerID> m_giveUnitControl = new ArrayList<PlayerID>();
 	private ArrayList<PlayerID> m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	private ArrayList<PlayerID> m_shareTechnology = new ArrayList<PlayerID>(); // gives any technology researched to this player automatically
+	private ArrayList<PlayerID> m_helpPayTechCost = new ArrayList<PlayerID>(); // allows these players to help pay for technology
 	private boolean m_destroysPUs = false; // do we lose our money and have it disappear or is that money captured?
 	private IntegerMap<Resource> m_suicideAttackResources = new IntegerMap<Resource>(); // what resources can be used for suicide attacks, and at what attack power
 	private HashSet<UnitType> m_suicideAttackTargets = null; // what can be hit by suicide attacks
@@ -538,6 +539,42 @@ public class PlayerAttachment extends DefaultAttachment
 	public void clearShareTechnology()
 	{
 		m_shareTechnology.clear();
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setHelpPayTechCost(final String value) throws GameParseException
+	{
+		final String[] temp = value.split(":");
+		for (final String name : temp)
+		{
+			final PlayerID tempPlayer = getData().getPlayerList().getPlayerID(name);
+			if (tempPlayer != null)
+				m_helpPayTechCost.add(tempPlayer);
+			else
+				throw new GameParseException("No player named: " + name + thisErrorMsg());
+		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setHelpPayTechCost(final ArrayList<PlayerID> value)
+	{
+		m_helpPayTechCost = value;
+	}
+	
+	public ArrayList<PlayerID> getHelpPayTechCost()
+	{
+		return m_helpPayTechCost;
+	}
+	
+	public void clearHelpPayTechCost()
+	{
+		m_helpPayTechCost.clear();
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)

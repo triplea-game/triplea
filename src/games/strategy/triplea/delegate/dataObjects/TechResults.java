@@ -4,23 +4,6 @@ import games.strategy.engine.data.PlayerID;
 
 import java.util.List;
 
-/**
- * <p>
- * Title:
- * </p>
- * <p>
- * Description:
- * </p>
- * <p>
- * Copyright: Copyright (c) 2003
- * </p>
- * <p>
- * Company:
- * </p>
- * 
- * @author unascribed
- * @version 1.0
- */
 public class TechResults implements java.io.Serializable
 {
 	private static final long serialVersionUID = 5574673305892105782L;

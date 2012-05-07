@@ -1291,14 +1291,14 @@ public class RevisedTest extends TestCase
 		final int initPUs = germans.getResources().getQuantity("PUs");
 		// Fail the roll
 		delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 3, 4 }));
-		final TechResults roll = techDelegate.rollTech(2, rockets, 0);
+		final TechResults roll = techDelegate.rollTech(2, rockets, 0, null);
 		// Check to make sure it failed
 		assertEquals(0, roll.getHits());
 		final int midPUs = germans.getResources().getQuantity("PUs");
 		assertEquals(initPUs - 10, midPUs);
 		// Make a Successful roll
 		delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 5 }));
-		final TechResults roll2 = techDelegate.rollTech(1, rockets, 0);
+		final TechResults roll2 = techDelegate.rollTech(1, rockets, 0, null);
 		// Check to make sure it succeeded
 		assertEquals(1, roll2.getHits());
 		final int finalPUs = germans.getResources().getQuantity("PUs");
@@ -1306,7 +1306,7 @@ public class RevisedTest extends TestCase
 		// Test the variable tech cost
 		ta.setTechCost("6");// Make a Successful roll
 		delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 5 }));
-		final TechResults roll3 = techDelegate.rollTech(1, jet, 0);
+		final TechResults roll3 = techDelegate.rollTech(1, jet, 0, null);
 		// Check to make sure it succeeded
 		assertEquals(1, roll3.getHits());
 		final int VariablePUs = germans.getResources().getQuantity("PUs");

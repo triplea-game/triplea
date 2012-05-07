@@ -34,6 +34,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
@@ -202,8 +203,25 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		m_bridge.getGameData().acquireReadLock();
 		try
 		{
-			if (m_id.getResources().getQuantity(Constants.PUS) == 0 || !isTechDevelopment(m_bridge.getGameData()))
+			if (!isTechDevelopment(m_bridge.getGameData()))
 				return;
+			final int techCost = TechTracker.getTechCost(m_id);
+			int money = m_id.getResources().getQuantity(Constants.PUS);
+			if (money < techCost)
+			{
+				final PlayerAttachment pa = PlayerAttachment.get(m_id);
+				if (pa == null)
+					return;
+				final Collection<PlayerID> helpPay = pa.getHelpPayTechCost();
+				if (helpPay == null || helpPay.isEmpty())
+					return;
+				for (final PlayerID p : helpPay)
+				{
+					money += p.getResources().getQuantity(Constants.PUS);
+				}
+				if (money < techCost)
+					return;
+			}
 		} finally
 		{
 			m_bridge.getGameData().releaseReadLock();
@@ -212,7 +230,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		if (techRoll != null)
 		{
 			final ITechDelegate techDelegate = (ITechDelegate) m_bridge.getRemote();
-			final TechResults techResults = techDelegate.rollTech(techRoll.getRolls(), techRoll.getTech(), techRoll.getNewTokens());
+			final TechResults techResults = techDelegate.rollTech(techRoll.getRolls(), techRoll.getTech(), techRoll.getNewTokens(), techRoll.getWhoPaysHowMuch());
 			if (techResults.isError())
 			{
 				m_ui.notifyError(techResults.getErrorString());
