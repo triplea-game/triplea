@@ -1,4 +1,6 @@
 Changes for 1.6
+* Fixed failing unit tests. (veqryn)
+
 * Expanded Tech delegate UI element to use helpPayTechCost. (veqryn)
 
 * Created new PlayerAttachment option, "helpPayTechCost", which will allow other players to help pay the cost of technology. (veqryn)

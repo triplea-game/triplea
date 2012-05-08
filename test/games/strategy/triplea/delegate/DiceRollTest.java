@@ -296,29 +296,30 @@ public class DiceRollTest extends TestCase
 	
 	public void testAALowLuckWithRadar()
 	{
+		m_data = LoadGameUtil.loadGame("AA50", "ww2v3_1941.xml");
 		makeGameLowLuck();
-		final Territory westRussia = m_data.getMap().getTerritory("West Russia");
+		final Territory finnland = m_data.getMap().getTerritory("Finland");
 		final PlayerID russians = m_data.getPlayerList().getPlayerID("Russians");
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final UnitType aaGunType = m_data.getUnitTypeList().getUnitType("aaGun");
 		final List<Unit> aaGunList = aaGunType.create(1, germans);
-		GameDataTestUtil.addTo(westRussia, aaGunList);
+		GameDataTestUtil.addTo(finnland, aaGunList);
 		final UnitType fighterType = m_data.getUnitTypeList().getUnitType("fighter");
 		List<Unit> fighterList = fighterType.create(1, russians);
 		TechAttachment.get(germans).setAARadar("true");
 		final ITestDelegateBridge bridge = getDelegateBridge(russians);
 		// aa radar hits at 1 (0 based)
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1 }));
-		final DiceRoll hit = DiceRoll.rollAA(fighterList, aaGunList, UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data), bridge, westRussia);
+		final DiceRoll hit = DiceRoll.rollAA(fighterList, aaGunList, UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data), bridge, finnland);
 		assertEquals(hit.getHits(), 1);
 		// aa missses at 2 (0 based)
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 2 }));
-		final DiceRoll miss = DiceRoll.rollAA(fighterList, aaGunList, UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data), bridge, westRussia);
+		final DiceRoll miss = DiceRoll.rollAA(fighterList, aaGunList, UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data), bridge, finnland);
 		assertEquals(miss.getHits(), 0);
 		// 6 bombers, 2 should hit, and nothing should be rolled
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { ScriptedRandomSource.ERROR }));
 		fighterList = fighterType.create(6, russians);
-		final DiceRoll hitNoRoll = DiceRoll.rollAA(fighterList, aaGunList, UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data), bridge, westRussia);
+		final DiceRoll hitNoRoll = DiceRoll.rollAA(fighterList, aaGunList, UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data), bridge, finnland);
 		assertEquals(hitNoRoll.getHits(), 2);
 	}
 	

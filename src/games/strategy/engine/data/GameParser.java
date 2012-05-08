@@ -32,8 +32,10 @@ import games.strategy.engine.framework.IGameLoader;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.GenericTechAdvance;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
@@ -158,7 +160,11 @@ public class GameParser
 		data.getRelationshipTracker().setNullPlayerRelations(); // sets the relationship between all players and the NullPlayer to NullRelation (with archeType War)
 		data.getRelationshipTracker().setSelfRelations(); // sets the relationship for all players with themselfs to the SelfRelation (with archeType Allied)
 		// set default tech attachments (comes after we parse all technologies, parse all attachments, and parse all game options/properties)
-		TechAbilityAttachment.setDefaultTechnologyAttachments(data);
+		if (data.getGameLoader() instanceof games.strategy.triplea.TripleA)
+		{
+			checkThatAllUnitsHaveAttachments(data);
+			TechAbilityAttachment.setDefaultTechnologyAttachments(data);
+		}
 		try
 		{
 			validate();
@@ -1011,7 +1017,7 @@ public class GameParser
 		}
 		else
 		{
-			throw new IllegalStateException("Unrecognized property type:" + childName);
+			throw new GameParseException("Unrecognized property type:" + childName);
 		}
 		data.getProperties().addEditableProperty(editableProperty);
 	}
@@ -1326,7 +1332,7 @@ public class GameParser
 				{
 					final Class<?> objectClass = getClassByName(className);
 					if (!IAttachment.class.isAssignableFrom(objectClass))
-						throw new IllegalStateException(className + " does not implement IAttachable");
+						throw new GameParseException(className + " does not implement IAttachable");
 					constructors.put(className, objectClass.getConstructor(IAttachment.attachmentConstructorParameter));
 				} catch (final NoSuchMethodException exception)
 				{
@@ -1540,5 +1546,18 @@ public class GameParser
 			final int quantity = Integer.parseInt(current.getAttribute("quantity"));
 			player.getResources().addResource(resource, quantity);
 		}
+	}
+	
+	private void checkThatAllUnitsHaveAttachments(final GameData data) throws GameParseException
+	{
+		final Collection<UnitType> errors = new ArrayList<UnitType>();
+		for (final UnitType ut : data.getUnitTypeList().getAllUnitTypes())
+		{
+			final UnitAttachment ua = UnitAttachment.get(ut);
+			if (ua == null)
+				errors.add(ut);
+		}
+		if (!errors.isEmpty())
+			throw new GameParseException(data.getGameName() + " does not have unit attachments for: " + MyFormatter.asList(errors));
 	}
 }

@@ -5,7 +5,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge;
-import static games.strategy.triplea.delegate.GameDataTestUtil.givePlayerRadar;
 import static games.strategy.triplea.delegate.GameDataTestUtil.makeGameLowLuck;
 import static games.strategy.triplea.delegate.GameDataTestUtil.setSelectAACasualties;
 import static games.strategy.triplea.delegate.GameDataTestUtil.territory;
@@ -242,72 +241,5 @@ public class BattleCalculatorTest extends TestCase
 		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 2);
 	}
 	
-	public void testAACasualtiesLowLuckMixedRadar()
-	{
-		final GameData data = m_bridge.getData();
-		makeGameLowLuck(data);
-		setSelectAACasualties(data, false);
-		givePlayerRadar(germans(data));
-		// 3 bombers and 3 fighters
-		final Collection<Unit> planes = bomber(data).create(3, british(data));
-		planes.addAll(fighter(data).create(3, british(data)));
-		final Collection<Unit> defendingAA = territory("Germany", data).getUnits().getMatches(Matches.UnitIsAAforAnything);
-		// don't allow rolling, 6 of each is deterministic
-		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { ScriptedRandomSource.ERROR }));
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data), m_bridge, territory("Germany", data));
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
-		assertEquals(casualties.size(), 2);
-		// should be 1 fighter and 1 bomber
-		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 1);
-		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
-	}
-	
-	public void testAACasualtiesLowLuckMixedWithRollingRadar()
-	{
-		final GameData data = m_bridge.getData();
-		makeGameLowLuck(data);
-		setSelectAACasualties(data, false);
-		givePlayerRadar(germans(data));
-		// 4 bombers and 4 fighters
-		final Collection<Unit> planes = bomber(data).create(4, british(data));
-		planes.addAll(fighter(data).create(4, british(data)));
-		final Collection<Unit> defendingAA = territory("Germany", data).getUnits().getMatches(Matches.UnitIsAAforAnything);
-		// 1 roll, a hit
-		// then a dice to select the casualty
-		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 0, 1 });
-		m_bridge.setRandomSource(randomSource);
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data), m_bridge, territory("Germany", data));
-		// make sure we rolled once
-		assertEquals(1, randomSource.getTotalRolled());
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
-		assertEquals(casualties.size(), 3);
-		// should be 1 fighter and 2 bombers
-		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 2);
-		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
-	}
-	
-	public void testAACasualtiesLowLuckMixedWithRollingMissRadar()
-	{
-		final GameData data = m_bridge.getData();
-		makeGameLowLuck(data);
-		setSelectAACasualties(data, false);
-		givePlayerRadar(germans(data));
-		// 4 bombers and 4 fighters
-		final Collection<Unit> planes = bomber(data).create(4, british(data));
-		planes.addAll(fighter(data).create(4, british(data)));
-		final Collection<Unit> defendingAA = territory("Germany", data).getUnits().getMatches(Matches.UnitIsAAforAnything);
-		// 1 roll, a miss
-		// then a dice to select the casualty
-		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 5, ScriptedRandomSource.ERROR });
-		m_bridge.setRandomSource(randomSource);
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data), m_bridge, territory("Germany", data));
-		assertEquals(roll.getHits(), 2);
-		// make sure we rolled once
-		assertEquals(1, randomSource.getTotalRolled());
-		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
-		assertEquals(casualties.size(), 2);
-		// should be 1 fighter and 2 bombers
-		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber), 1);
-		assertEquals(Match.countMatches(casualties, Matches.UnitIsStrategicBomber.invert()), 1);
-	}
+	// Radar AA tests removed, because "revised" does not have radar tech.
 }
