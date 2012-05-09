@@ -23,6 +23,7 @@ import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker.Relationship;
 import games.strategy.engine.data.Resource;
@@ -42,11 +43,17 @@ import games.strategy.triplea.delegate.remote.IAbstractEndTurnDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Tuple;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -296,21 +303,20 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	// finds losses due to blockades etc, positive value returned.
 	protected int getProductionLoss(final PlayerID player, final GameData data, final IDelegateBridge aBridge)
 	{
-		final Collection<Territory> blockable = Match.getMatches(data.getMap().getTerritories(), Matches.territoryIsBlockadeZone);
+		final GameMap map = data.getMap();
+		final Collection<Territory> blockable = Match.getMatches(map.getTerritories(), Matches.territoryIsBlockadeZone);
 		if (blockable.isEmpty())
 			return 0;
 		final Match<Unit> enemyUnits = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data));
 		int totalLoss = 0;
 		final boolean rollDiceForBlockadeDamage = games.strategy.triplea.Properties.getConvoyBlockadesRollDiceForCost(data);
 		final Collection<String> transcripts = new ArrayList<String>();
+		final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone = new HashMap<Territory, Tuple<Integer, List<Territory>>>();
 		for (final Territory b : blockable)
 		{
-			int maxLoss = 0;
-			for (final Territory m : data.getMap().getNeighbors(b))
-			{
-				if (m.getOwner().equals(player))
-					maxLoss += TerritoryAttachment.get(m).getProduction();
-			}
+			final List<Territory> viableNeighbors = Match.getMatches(map.getNeighbors(b),
+						new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player), Matches.territoryCanCollectIncomeFrom(player, data)));
+			final int maxLoss = getProduction(viableNeighbors);
 			if (maxLoss <= 0)
 				continue;
 			int loss = 0;
@@ -341,17 +347,45 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 					loss += UnitAttachment.get(u.getType()).getBlockade();
 				}
 			}
-			totalLoss += Math.min(maxLoss, loss);
+			if (loss <= 0)
+				continue;
+			final int lossForBlockade = Math.min(maxLoss, loss);
+			damagePerBlockadeZone.put(b, new Tuple<Integer, List<Territory>>(lossForBlockade, viableNeighbors));
+			totalLoss += lossForBlockade;
 		}
-		if (rollDiceForBlockadeDamage && totalLoss > 0 && !transcripts.isEmpty())
+		if (totalLoss <= 0)
+			return 0;
+		// now we need to make sure that we didn't deal more damage than the territories are worth, in the case of having multiple sea zones touching the same land zone.
+		final List<Territory> blockadeZonesSorted = new ArrayList<Territory>(damagePerBlockadeZone.keySet());
+		Collections.sort(blockadeZonesSorted, getSingleBlockadeThenHighestToLowestBlockadeDamage(damagePerBlockadeZone));
+		// we want to match highest damage to largest producer first, that is why we sort twice
+		final IntegerMap<Territory> totalDamageTracker = new IntegerMap<Territory>();
+		for (final Territory b : blockadeZonesSorted)
 		{
-			aBridge.getHistoryWriter().startEvent("Calculating Cost from Convoy Blockades");
+			final Tuple<Integer, List<Territory>> tuple = damagePerBlockadeZone.get(b);
+			int damageForZone = tuple.getFirst();
+			final List<Territory> terrsLosingIncome = new ArrayList<Territory>(tuple.getSecond());
+			Collections.sort(terrsLosingIncome, getSingleNeighborBlockadesThenHighestToLowestProduction(blockadeZonesSorted, map));
+			final Iterator<Territory> iter = terrsLosingIncome.iterator();
+			while (damageForZone > 0 && iter.hasNext())
+			{
+				final Territory t = iter.next();
+				final int maxProductionLessPreviousDamage = TerritoryAttachment.get(t).getProduction() - totalDamageTracker.getInt(t);
+				final int damageToTerr = Math.min(damageForZone, maxProductionLessPreviousDamage);
+				damageForZone -= damageToTerr;
+				totalDamageTracker.put(t, damageToTerr + totalDamageTracker.getInt(t));
+			}
+		}
+		final int realTotalLoss = Math.max(0, totalDamageTracker.totalValues());
+		if (rollDiceForBlockadeDamage && realTotalLoss > 0 && !transcripts.isEmpty())
+		{
+			aBridge.getHistoryWriter().startEvent("Total Cost from Convoy Blockades: " + realTotalLoss);
 			for (final String t : transcripts)
 			{
 				aBridge.getHistoryWriter().addChildToEvent(t);
 			}
 		}
-		return totalLoss;
+		return realTotalLoss;
 	}
 	
 	public void setHasPostedTurnSummary(final boolean hasPostedTurnSummary)
@@ -389,6 +423,110 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	public Class<? extends IRemote> getRemoteType()
 	{
 		return IAbstractEndTurnDelegate.class;
+	}
+	
+	/*private static Comparator<Territory> getHighestToLowestProduction()
+	{
+		return new Comparator<Territory>()
+		{
+			public int compare(final Territory t1, final Territory t2)
+			{
+				if (t1 == t2 || t1.equals(t2) || (t1 == null && t2 == null))
+					return 0;
+				if (t1 == null)
+					return 1;
+				if (t2 == null)
+					return -1;
+				final TerritoryAttachment ta1 = TerritoryAttachment.get(t1);
+				final TerritoryAttachment ta2 = TerritoryAttachment.get(t2);
+				if (ta1 == null && ta2 == null)
+					return 0;
+				if (ta1 == null)
+					return 1;
+				if (ta2 == null)
+					return -1;
+				final int p1 = ta1.getProduction();
+				final int p2 = ta2.getProduction();
+				if (p1 == p2)
+					return 0;
+				if (p1 > p2)
+					return -1;
+				return 1;
+			}
+		};
+	}*/
+
+	private static Comparator<Territory> getSingleNeighborBlockadesThenHighestToLowestProduction(final Collection<Territory> blockadeZones, final GameMap map)
+	{
+		return new Comparator<Territory>()
+		{
+			public int compare(final Territory t1, final Territory t2)
+			{
+				if (t1 == t2 || t1.equals(t2) || (t1 == null && t2 == null))
+					return 0;
+				if (t1 == null)
+					return 1;
+				if (t2 == null)
+					return -1;
+				// if a territory is only touching 1 blockadeZone, we must take it first
+				final Collection<Territory> neighborBlockades1 = new ArrayList<Territory>(map.getNeighbors(t1));
+				neighborBlockades1.retainAll(blockadeZones);
+				final int n1 = neighborBlockades1.size();
+				final Collection<Territory> neighborBlockades2 = new ArrayList<Territory>(map.getNeighbors(t2));
+				neighborBlockades2.retainAll(blockadeZones);
+				final int n2 = neighborBlockades2.size();
+				if (n1 == 1 && n2 != 1)
+					return -1;
+				if (n2 == 1 && n1 != 1)
+					return 1;
+				final TerritoryAttachment ta1 = TerritoryAttachment.get(t1);
+				final TerritoryAttachment ta2 = TerritoryAttachment.get(t2);
+				if (ta1 == null && ta2 == null)
+					return 0;
+				if (ta1 == null)
+					return 1;
+				if (ta2 == null)
+					return -1;
+				final int p1 = ta1.getProduction();
+				final int p2 = ta2.getProduction();
+				if (p1 == p2)
+					return 0;
+				if (p1 > p2)
+					return -1;
+				return 1;
+			}
+		};
+	}
+	
+	private static Comparator<Territory> getSingleBlockadeThenHighestToLowestBlockadeDamage(final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone)
+	{
+		return new Comparator<Territory>()
+		{
+			public int compare(final Territory t1, final Territory t2)
+			{
+				if (t1 == t2 || t1.equals(t2) || (t1 == null && t2 == null))
+					return 0;
+				if (t1 == null)
+					return 1;
+				if (t2 == null)
+					return -1;
+				final Tuple<Integer, List<Territory>> tuple1 = damagePerBlockadeZone.get(t1);
+				final Tuple<Integer, List<Territory>> tuple2 = damagePerBlockadeZone.get(t2);
+				final int num1 = tuple1.getSecond().size();
+				final int num2 = tuple2.getSecond().size();
+				if (num1 == 1 && num2 != 1)
+					return -1;
+				if (num2 == 1 && num1 != 1)
+					return 1;
+				final int d1 = tuple1.getFirst();
+				final int d2 = tuple2.getFirst();
+				if (d1 == d2)
+					return 0;
+				if (d1 > d2)
+					return -1;
+				return 1;
+			}
+		};
 	}
 }
 

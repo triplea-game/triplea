@@ -169,11 +169,11 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				{
 					final CompositeChange change = new CompositeChange();
 					final UnitAttachment ua = UnitAttachment.get(u.getType());
-					final IntegerMap<Resource> createsUnitsMap = ua.getCreatesResourcesList();
-					final Collection<Resource> willBeCreated = createsUnitsMap.keySet();
+					final IntegerMap<Resource> createsResourcesMap = ua.getCreatesResourcesList();
+					final Collection<Resource> willBeCreated = createsResourcesMap.keySet();
 					for (final Resource r : willBeCreated)
 					{
-						int toAdd = createsUnitsMap.getInt(r);
+						int toAdd = createsResourcesMap.getInt(r);
 						if (r.getName().equals(Constants.PUS))
 							toAdd *= Properties.getPU_Multiplier(data);
 						int total = player.getResources().getQuantity(r) + toAdd;

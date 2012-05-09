@@ -1,7 +1,11 @@
 Changes for 1.6
+* Fixed blockade zones so that they never do more damage than the combined total of their neighboring territories, even if there are multiple sea zones blockading a single or set of territories. (veqryn)
+
+* Allowed createsResourcesList to have negative values as well as positive values. (veqryn)
+
 * Created new Unit Attachment option, "bombingTargets", which allows the unit to only target specific other units for rockets and strategic bombing. (veqryn)
 
-* Disallowing Bombardment from any sea zone that had a kamikaze suicide attack. (veqryn)
+* Disallowed Bombardment from any sea zone that had a kamikaze suicide attack. (veqryn)
 
 * Fixed failing unit tests. (veqryn)
 
@@ -67,7 +71,7 @@ Changes for 1.6
 
 * Fixed issue with unloaded ground units not dying or being removed, even if their transports die from a scrambled air defense. (veqryn)
 
-* Disallowing any unloading of ground units to a friendly territory, during combat move, if we have scrambling or kamikazes turned on. (veqryn)
+* Disallowed any unloading of ground units to a friendly territory, during combat move, if we have scrambling or kamikazes turned on. (veqryn)
 
 * Fixed issue with "Scramble To Any Amphibious Assault" not working at all. (veqryn)
 
@@ -91,7 +95,7 @@ Changes for 1.6
 
 * Created new type of attachment, TechAbilityAttachment, which will control how all technologies work. (veqryn)
 
-* Refactoring TechAdvance and GenericTechAdvance to extend NamedAttachable, that way they can eventually have attachments. (veqryn)
+* Refactored TechAdvance and GenericTechAdvance to extend NamedAttachable, that way they can eventually have attachments. (veqryn)
 
 * Fixed bug where a NonFighting battle was attempting to add the result as a child in the history panel, without creating the event first. (veqryn)
 
@@ -103,11 +107,11 @@ Changes for 1.6
 
 * Fixed issue with battles showing who won twice in the history panel. (veqryn)
 
-* Moving BattleRecord to its own class, and having BattleRecord, BattleRecords, and BattleResults all extend GameDataComponent. (veqryn)
+* Moved BattleRecord to its own class, and having BattleRecord, BattleRecords, and BattleResults all extend GameDataComponent. (veqryn)
 
-* Possibly fixing the problems with Edit Mode, by fixing a previous refactoring that switched two variables up. (veqryn)
+* Possibly fixed the problems with Edit Mode, by fixing a previous refactoring that switched two variables up. (veqryn)
 
-* Possibly fixing the problems with Edit Mode, by abstracting BasePersistentDelegate and separating EditDelegate from BaseDelegate. (veqryn)
+* Possibly fixed the problems with Edit Mode, by abstracting BasePersistentDelegate and separating EditDelegate from BaseDelegate. (veqryn)
 
 * Generating Serial IDs for all classes that may need them. (veqryn)
 

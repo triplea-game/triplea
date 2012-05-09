@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="2.8"/>
+        <info name="World War II Global Test Alpha 3" version="2.9"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
 		<diceSides value="6"/>
@@ -6576,9 +6576,11 @@ These changes to units are things other than price/movement which you can see in
 <br><br><hr><br>
 <br>Change Log:
 <br>
-<br>2.8
-<br>Allowed Low Luck for Strategy Bombing and Rockets to be set again.
+<br>2.9
 <br>Allowed Convoy Blockades to roll dice (you can turn this off in game options).
+<br>Allowed Low Luck for Strategy Bombing and Rockets to be set again.
+<br>
+<br>2.8
 <br>Fixed issue with Japanese objective for Trade with America.
 <br>Allowed user to choose AA casualties.
 <br>

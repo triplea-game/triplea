@@ -1719,8 +1719,6 @@ public class UnitAttachment extends DefaultAttachment
 		if (r == null)
 			throw new GameParseException("createsResourcesList: No resource called:" + resourceToProduce + thisErrorMsg());
 		final int n = getInt(s[0]);
-		if (n < 1)
-			throw new GameParseException("createsResourcesList must have positive values" + thisErrorMsg());
 		m_createsResourcesList.put(r, n);
 	}
 	
