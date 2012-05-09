@@ -1749,6 +1749,7 @@
 			bombingMaxDieSides					values: is the max dice sides for a strategic bombing or rocket attack.  the default is to use the diceSides for the map.  this property is optional and is only used when you have "Use Bombing Max Dice Sides And Bonus" turned on.  this property is no longer affected by "Low Luck for Bombing and Territory Damage".
 			bombingBonus						values: is a number added to the die rolled, to give the total cost [displayed as a new die rolled], for strategic bombing and rockets only.  this property is optional (default is zero) and is only used when you have "Use Bombing Max Dice Sides And Bonus" turned on.  this property is no longer affected by "Low Luck for Bombing and Territory Damage".
 															example: if you want a unit to throw a 12 sided die, then add 4 onto the result, you would do: <option name="bombingMaxDieSides" value="12"/> and <option name="bombingBonus" value="4"/>
+			bombingTargets						values: is a list of units that this unit may strategic bomb or rocket attack.  if not present, then all units that can be damaged are legal targets. example: <option name="bombingTargets" value="factory:bunker:airfield:harbour"/>
 			carrierCost							values: the space this unit takes up when sitting on a carrier
 			carrierCapacity						values: the amount of space or air unit this unit can carry.
 			
@@ -3463,6 +3464,7 @@
 					fuelCost
 					targetsAA
 					willNotFireIfPresent
+					bombingTargets
 					
 				Unit Support Attachments:
 					players

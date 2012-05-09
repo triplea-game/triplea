@@ -1,4 +1,8 @@
 Changes for 1.6
+* Created new Unit Attachment option, "bombingTargets", which allows the unit to only target specific other units for rockets and strategic bombing. (veqryn)
+
+* Disallowing Bombardment from any sea zone that had a kamikaze suicide attack. (veqryn)
+
 * Fixed failing unit tests. (veqryn)
 
 * Expanded Tech delegate UI element to use helpPayTechCost. (veqryn)

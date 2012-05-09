@@ -133,6 +133,7 @@ public interface IAttachment extends Serializable
 	static final String PROPERTY_UnitAttachment_BOMBARD = "bombard";
 	static final String PROPERTY_UnitAttachment_BOMBING_BONUS = "bombingBonus";
 	static final String PROPERTY_UnitAttachment_BOMBING_MAX_DIE_SIDES = "bombingMaxDieSides";
+	static final String PROPERTY_UnitAttachment_BOMBING_TARGETS = "bombingTargets"; // just added this 2
 	static final String PROPERTY_UnitAttachment_CAN_BE_CAPTURED_ON_ENTERING_BY = "canBeCapturedOnEnteringBy";
 	static final String PROPERTY_UnitAttachment_CAN_BE_DAMAGED = "canBeDamaged";
 	static final String PROPERTY_UnitAttachment_CAN_BE_GIVEN_BY_TERRITORY_TO = "canBeGivenByTerritoryTo";

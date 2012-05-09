@@ -495,7 +495,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			}
 			if (!m_battleSite.isWater() && isParatroopers(m_attacker))
 			{
-				final Collection<Unit> bombers = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsStrategicBomber);
+				final Collection<Unit> bombers = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
 				if (!bombers.isEmpty())
 				{
 					final Collection<Unit> dependents = getDependentUnits(bombers);

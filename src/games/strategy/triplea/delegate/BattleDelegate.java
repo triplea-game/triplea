@@ -332,6 +332,9 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			while (bombardingTerritories.hasNext())
 			{
 				final Territory neighbor = bombardingTerritories.next();
+				// we do not allow bombarding from certain sea zones (like if there was a kamikaze suicide attack there, etc)
+				if (m_battleTracker.noBombardAllowedFromHere(neighbor))
+					continue;
 				// If all units from a territory are air- no bombard
 				if (Match.allMatch(attackingFromMap.get(neighbor), Matches.UnitIsAir))
 				{
@@ -1260,6 +1263,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		{
 			m_bridge.addChange(change);
 		}
+		// kamikaze suicide attacks, even if unsuccessful, deny the ability to bombard from this sea zone
+		m_battleTracker.addNoBombardAllowedFromHere(location);
 		// TODO: display this as actual dice for both players
 		// TODO: display to all players, and only once per physical machine
 		getRemote(m_player, m_bridge).reportMessage(title + dice, title);

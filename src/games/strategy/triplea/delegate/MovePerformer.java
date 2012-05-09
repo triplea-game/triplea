@@ -164,7 +164,9 @@ public class MovePerformer implements Serializable
 					boolean ignoreBattle = false;
 					// could it be a bombing raid
 					final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
-					final Collection<Unit> enemyTargets = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert());
+					final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert());
+					final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal,
+								Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(Match.getMatches(arrived, Matches.UnitIsStrategicBomber), data)));
 					final CompositeMatchOr<Unit> allBombingRaid = new CompositeMatchOr<Unit>(Matches.UnitIsStrategicBomber);
 					final boolean canCreateAirBattle = (Match.someMatch(enemyUnits, StrategicBombingRaidPreBattle.defendingInterceptors(id, data)) && !enemyTargets.isEmpty()
 								&& games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data));

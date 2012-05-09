@@ -155,6 +155,7 @@ public class UnitAttachment extends DefaultAttachment
 	private boolean m_canEscort = false;
 	private int m_airDefense = 0;
 	private int m_airAttack = 0;
+	private HashSet<UnitType> m_bombingTargets = null; // null means they can target any unit that can be damaged
 	
 	// production related
 	private boolean m_isFactory = false;
@@ -1813,6 +1814,65 @@ public class UnitAttachment extends DefaultAttachment
 		return m_bombingMaxDieSides;
 	}
 	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setBombingTargets(final String value) throws GameParseException
+	{
+		if (value == null)
+		{
+			m_bombingTargets = null;
+			return;
+		}
+		if (m_bombingTargets == null)
+			m_bombingTargets = new HashSet<UnitType>();
+		final String[] s = value.split(":");
+		for (final String u : s)
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(u);
+			if (ut == null)
+				throw new GameParseException("bombingTargets: no such unit type: " + u + thisErrorMsg());
+			m_bombingTargets.add(ut);
+		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setBombingTargets(final HashSet<UnitType> value)
+	{
+		m_bombingTargets = value;
+	}
+	
+	public HashSet<UnitType> getBombingTargets(final GameData data)
+	{
+		if (m_bombingTargets != null)
+			return m_bombingTargets;
+		return new HashSet<UnitType>(data.getUnitTypeList().getAllUnitTypes());
+	}
+	
+	public void clearBombingTargets()
+	{
+		m_bombingTargets.clear();
+	}
+	
+	public static Set<UnitType> getAllowedBombingTargetsIntersection(final Collection<Unit> bombersOrRockets, final GameData data)
+	{
+		if (bombersOrRockets.isEmpty())
+			return new HashSet<UnitType>();
+		Collection<UnitType> allowedTargets = data.getUnitTypeList().getAllUnitTypes();
+		for (final Unit u : bombersOrRockets)
+		{
+			final UnitAttachment ua = UnitAttachment.get(u.getType());
+			final HashSet<UnitType> bombingTargets = ua.getBombingTargets(data);
+			if (bombingTargets != null)
+				allowedTargets = games.strategy.util.Util.intersection(allowedTargets, bombingTargets);
+		}
+		return new HashSet<UnitType>(allowedTargets);
+	}
+	
 	// Do not delete, we keep this both for backwards compatibility, and for user convenience when making maps
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsAA(final String s) throws GameParseException
@@ -2545,6 +2605,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  blockade:" + m_blockade
 					+ "  bombingMaxDieSides:" + m_bombingMaxDieSides
 					+ "  bombingBonus:" + m_bombingBonus
+					+ "  bombingTargets:" + m_bombingTargets
 					+ "  givesMovement:" + (m_givesMovement != null ? (m_givesMovement.size() == 0 ? "empty" : m_givesMovement.toString()) : "null")
 					+ "  repairsUnits:" + (m_repairsUnits != null ? (m_repairsUnits.length == 0 ? "empty" : Arrays.toString(m_repairsUnits)) : "null")
 					+ "  canScramble:" + m_canScramble

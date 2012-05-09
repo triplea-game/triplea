@@ -20,6 +20,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -208,7 +209,7 @@ public class RocketsFireHelper
 		final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
 		// unit damage vs territory damage
 		final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(Matches.enemyUnit(player, data));
-		final Collection<Unit> enemyTargets = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
+		final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
 		final Collection<Unit> targets = new ArrayList<Unit>();
 		final Collection<Unit> rockets;
 		// attackFrom could be null if WW2V1
@@ -222,6 +223,21 @@ public class RocketsFireHelper
 		final String transcript;
 		if (!SBRAffectsUnitProd && DamageFromBombingDoneToUnits)
 		{
+			// TODO: rockets needs to be completely redone to allow for multiple rockets to fire at different targets, etc etc.
+			final HashSet<UnitType> legalTargetsForTheseRockets = new HashSet<UnitType>();
+			if (rockets == null)
+				legalTargetsForTheseRockets.addAll(data.getUnitTypeList().getAllUnitTypes());
+			else
+			{
+				// a hack for now, we let the rockets fire at anyone who could be targetted by any rocket
+				for (final Unit r : rockets)
+				{
+					legalTargetsForTheseRockets.addAll(UnitAttachment.get(r.getType()).getBombingTargets(data));
+				}
+			}
+			final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
+			if (enemyTargets.isEmpty())
+				return; // TODO: this sucks
 			Unit target;
 			if (enemyTargets.size() == 1)
 				target = enemyTargets.iterator().next();

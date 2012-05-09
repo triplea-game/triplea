@@ -55,6 +55,7 @@ import games.strategy.util.Util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -572,6 +573,22 @@ public class Matches
 				}
 				else
 					return false;
+			}
+		};
+	}
+	
+	public static Match<Unit> UnitIsLegalBombingTargetBy(final Unit bomberOrRocket)
+	{
+		return new Match<Unit>()
+		{
+			@Override
+			public boolean match(final Unit unit)
+			{
+				final UnitAttachment ua = UnitAttachment.get(bomberOrRocket.getType());
+				final HashSet<UnitType> allowedTargets = ua.getBombingTargets(bomberOrRocket.getData());
+				if (allowedTargets == null || allowedTargets.contains(unit.getType()))
+					return true;
+				return false;
 			}
 		};
 	}

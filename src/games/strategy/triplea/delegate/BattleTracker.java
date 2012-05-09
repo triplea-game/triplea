@@ -86,6 +86,8 @@ public class BattleTracker implements java.io.Serializable
 	// these territories have had battleships bombard during a naval invasion
 	// used to make sure that the same battleship doesn't bombard twice
 	private final Set<Territory> m_bombardedFromTerritories = new HashSet<Territory>();
+	// things like kamikaze suicide attacks disallow bombarding from that sea zone for that turn
+	private final Set<Territory> m_noBombardAllowed = new HashSet<Territory>();
 	private final Map<Territory, Collection<Unit>> m_defendingAirThatCanNotLand = new HashMap<Territory, Collection<Unit>>();
 	private BattleRecords m_battleRecords = null;
 	
@@ -141,6 +143,16 @@ public class BattleTracker implements java.io.Serializable
 	public boolean wasBattleFought(final Territory t)
 	{
 		return m_foughBattles.contains(t);
+	}
+	
+	public boolean noBombardAllowedFromHere(final Territory t)
+	{
+		return m_noBombardAllowed.contains(t);
+	}
+	
+	public void addNoBombardAllowedFromHere(final Territory t)
+	{
+		m_noBombardAllowed.add(t);
 	}
 	
 	void clearFinishedBattles(final IDelegateBridge bridge)
@@ -918,6 +930,7 @@ public class BattleTracker implements java.io.Serializable
 		m_conquered.clear();
 		m_dependencies.clear();
 		m_defendingAirThatCanNotLand.clear();
+		m_noBombardAllowed.clear();
 	}
 	
 	public void addToDefendingAirThatCanNotLand(final Collection<Unit> units, final Territory szTerritoryTheyAreIn)
