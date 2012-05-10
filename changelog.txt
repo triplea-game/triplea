@@ -1,4 +1,6 @@
 Changes for 1.6
+* Started coding for new paratrooper tech, to be called Airborne Forces. (veqryn)
+
 * Fixed blockade zones so that they never do more damage than the combined total of their neighboring territories, even if there are multiple sea zones blockading a single or set of territories. (veqryn)
 
 * Allowed createsResourcesList to have negative values as well as positive values. (veqryn)

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Attaches to technologies.
@@ -76,6 +77,11 @@ public class TechAbilityAttachment extends DefaultAttachment
 	private int m_rocketDistance = 0;
 	private int m_rocketNumberPerTerritory = 0;
 	private HashMap<UnitType, HashSet<String>> m_unitAbilitiesGained = new HashMap<UnitType, HashSet<String>>();
+	private boolean m_airborneForces = false;
+	private IntegerMap<UnitType> m_airborneCapacity = new IntegerMap<UnitType>();
+	private HashSet<UnitType> m_airborneTypes = new HashSet<UnitType>();
+	private int m_airborneDistance = 0;
+	private HashSet<UnitType> m_airborneBases = new HashSet<UnitType>();
 	
 	//
 	// constructor
@@ -561,6 +567,143 @@ public class TechAbilityAttachment extends DefaultAttachment
 		m_unitAbilitiesGained.clear();
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAirborneForces(final String value) throws GameParseException
+	{
+		m_airborneForces = getBool(value);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAirborneForces(final Boolean value)
+	{
+		m_airborneForces = value;
+	}
+	
+	public boolean getAirborneForces()
+	{
+		return m_airborneForces;
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setAirborneCapacity(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length <= 0 || s.length > 2)
+			throw new GameParseException("airborneCapacity can not be empty or have more than two fields" + thisErrorMsg());
+		String unitType;
+		unitType = s[1];
+		// validate that this unit exists in the xml
+		final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
+		if (ut == null)
+			throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+		// we should allow positive and negative numbers
+		final int n = getInt(s[0]);
+		m_airborneCapacity.put(ut, n);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAirborneCapacity(final IntegerMap<UnitType> value)
+	{
+		m_airborneCapacity = value;
+	}
+	
+	public IntegerMap<UnitType> getAirborneCapacity()
+	{
+		return m_airborneCapacity;
+	}
+	
+	public void clearAirborneCapacity()
+	{
+		m_airborneCapacity.clear();
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setAirborneTypes(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		for (final String u : s)
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(u);
+			if (ut == null)
+				throw new GameParseException("airborneTypes: no such unit type: " + u + thisErrorMsg());
+			m_airborneTypes.add(ut);
+		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAirborneTypes(final HashSet<UnitType> value)
+	{
+		m_airborneTypes = value;
+	}
+	
+	public HashSet<UnitType> getAirborneTypes()
+	{
+		return m_airborneTypes;
+	}
+	
+	public void clearAirborneTypes()
+	{
+		m_airborneTypes.clear();
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAirborneDistance(final String value) throws GameParseException
+	{
+		final int v = getInt(value);
+		if (v < 0 || v > 100)
+			throw new GameParseException("airborneDistance must be between 0 and 100" + thisErrorMsg());
+		m_airborneDistance = v;
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAirborneDistance(final Integer value)
+	{
+		m_airborneDistance = value;
+	}
+	
+	public int getAirborneDistance()
+	{
+		return m_airborneDistance;
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setAirborneBases(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		for (final String u : s)
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(u);
+			if (ut == null)
+				throw new GameParseException("airborneBases: no such unit type: " + u + thisErrorMsg());
+			m_airborneBases.add(ut);
+		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAirborneBases(final HashSet<UnitType> value)
+	{
+		m_airborneBases = value;
+	}
+	
+	public HashSet<UnitType> getAirborneBases()
+	{
+		return m_airborneBases;
+	}
+	
+	public void clearAirborneBases()
+	{
+		m_airborneBases.clear();
+	}
+	
 	//
 	// Static Methods for interpreting data in attachments
 	//
@@ -828,6 +971,79 @@ public class TechAbilityAttachment extends DefaultAttachment
 		if (abilities.contains(filterForAbility))
 			return true;
 		return false;
+	}
+	
+	public static boolean getAllowAirborneForces(final PlayerID player, final GameData data)
+	{
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				if (taa.getAirborneForces())
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	public static int getAirborneCapacity(final Collection<Unit> units, final PlayerID player, final GameData data)
+	{
+		int rVal = 0;
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				for (final Unit u : units)
+				{
+					rVal += taa.getAirborneCapacity().getInt(u.getType());
+				}
+			}
+		}
+		return rVal;
+	}
+	
+	public static Set<UnitType> getAirborneTypes(final PlayerID player, final GameData data)
+	{
+		final Set<UnitType> airborneUnits = new HashSet<UnitType>();
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				airborneUnits.addAll(taa.getAirborneTypes());
+			}
+		}
+		return airborneUnits;
+	}
+	
+	public static int getAirborneDistance(final PlayerID player, final GameData data)
+	{
+		int rVal = 0;
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				rVal += taa.getAirborneDistance();
+			}
+		}
+		return Math.max(0, rVal);
+	}
+	
+	public static Set<UnitType> getAirborneBases(final PlayerID player, final GameData data)
+	{
+		final Set<UnitType> airborneBases = new HashSet<UnitType>();
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				airborneBases.addAll(taa.getAirborneBases());
+			}
+		}
+		return airborneBases;
 	}
 	
 	/**

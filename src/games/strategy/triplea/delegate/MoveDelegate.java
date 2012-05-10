@@ -69,6 +69,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 {
 	private boolean m_firstRun = true; // firstRun means when the game is loaded the first time, not when the game is loaded from a save.
 	private boolean m_needToInitialize = true; // needToInitialize means we only do certain things once, so that if a game is saved then loaded, they aren't done again
+	private boolean m_needToDoRockets = true;
 	private boolean m_nonCombat;
 	private final TransportTracker m_transportTracker = new TransportTracker();
 	private IntegerMap<Territory> m_PUsLost = new IntegerMap<Territory>();
@@ -202,21 +203,15 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		// WW2V1, fires at end of non combat move
 		if ((!m_nonCombat && isWW2V3()) || (m_nonCombat && (!isWW2V2() && !isWW2V3())) || (!m_nonCombat && isWW2V2()))
 		{
-			if (TechTracker.hasRocket(m_bridge.getPlayerID()))
+			if (m_needToDoRockets && TechTracker.hasRocket(m_bridge.getPlayerID()))
 			{
 				final RocketsFireHelper helper = new RocketsFireHelper();
 				helper.fireRockets(m_bridge, m_bridge.getPlayerID());
+				m_needToDoRockets = false;
 			}
 		}
 		final CompositeChange change = new CompositeChange();
-		/* This code is already done in BattleDelegate, so why is it duplicated here?
-		if(!m_nonCombat && (isWW2V3() || isWW2V2() || isPreviousUnitsFight()))
-		{
-		    change.add(addLingeringUnitsToBattles());
-		}*/
-		// do at the end of the round
-		// if we do it at the start of non combat, then
-		// we may do it in the middle of the round, while loading.
+		// do at the end of the round, if we do it at the start of non combat, then we may do it in the middle of the round, while loading.
 		if (m_nonCombat)
 		{
 			final GameData data = getData();
@@ -246,6 +241,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			m_bridge.addChange(change);
 		}
 		m_needToInitialize = true;
+		m_needToDoRockets = true;
 	}
 	
 	@Override
@@ -267,6 +263,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		// add other variables to state here:
 		state.m_firstRun = m_firstRun;
 		state.m_needToInitialize = m_needToInitialize;
+		state.m_needToDoRockets = m_needToDoRockets;
 		state.m_nonCombat = m_nonCombat;
 		if (saveUndo)
 			state.m_movesToUndo = m_movesToUndo;
@@ -283,6 +280,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		// load other variables from state here:
 		m_firstRun = s.m_firstRun;
 		m_needToInitialize = s.m_needToInitialize;
+		m_needToDoRockets = s.m_needToDoRockets;
 		m_nonCombat = s.m_nonCombat;
 		// if the undo state wasnt saved, then dont load it
 		// prevents overwriting undo state when we restore from an undo move
@@ -1121,6 +1119,7 @@ class MoveExtendedDelegateState implements Serializable
 	// add other variables here:
 	public boolean m_firstRun = true;
 	public boolean m_needToInitialize;
+	public boolean m_needToDoRockets;
 	public boolean m_nonCombat;
 	public IntegerMap<Territory> m_PUsLost;
 	public List<UndoableMove> m_movesToUndo;
