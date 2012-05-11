@@ -11,6 +11,7 @@ import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,7 +46,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		// there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
 		final PlayerID player = getUnitsOwner(units);
 		// here we have our own new validation method....
-		final MoveValidationResult result = MoveValidator.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, m_nonCombat, m_movesToUndo, data);
+		final MoveValidationResult result = SpecialMoveDelegate.validateMove(units, route, player, transportsThatCanBeLoaded, newDependents, m_nonCombat, m_movesToUndo, data);
 		final StringBuilder errorMsg = new StringBuilder(100);
 		final int numProblems = result.getTotalWarningCount() - (result.hasError() ? 0 : 1);
 		final String numErrorsMsg = numProblems > 0 ? ("; " + numProblems + " " + MyFormatter.pluralize("error", numProblems) + " not shown") : "";
@@ -76,9 +77,22 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		return null;
 	}
 	
-	public MoveValidationResult validateMove()
+	public static MoveValidationResult validateMove(final Collection<Unit> units, final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,
+				final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat, final List<UndoableMove> undoableMoves, final GameData data)
 	{
-		return null;
+		final MoveValidationResult result = new MoveValidationResult();
+		if (route.hasNoSteps())
+			return result;
+		if (MoveValidator.validateFirst(data, units, route, player, result).getError() != null)
+		{
+			return result;
+		}
+		return result;
+	}
+	
+	private static boolean getEditMode(final GameData data)
+	{
+		return EditDelegate.getEditMode(data);
 	}
 	
 	@Override

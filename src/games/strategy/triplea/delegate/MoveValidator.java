@@ -83,51 +83,9 @@ public class MoveValidator
 		final MoveValidationResult result = new MoveValidationResult();
 		if (route.hasNoSteps())
 			return result;
-		if (!units.isEmpty() && !getEditMode(data)
-					&& !Match.allMatch(Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data).invert()), Matches.unitIsOwnedBy(player)))
-		{
-			result.setError("Player, " + player.getName() + ", is not owner of all the units: " + MyFormatter.unitsToTextNoOwner(units));
-			return result;
-		}
-		// this should never happen
-		if (new HashSet<Unit>(units).size() != units.size())
-		{
-			result.setError("Not all units unique, units:" + units + " unique:" + new HashSet<Unit>(units));
-			return result;
-		}
-		if (!data.getMap().isValidRoute(route))
-		{
-			result.setError("Invalid route:" + route);
-			return result;
-		}
-		if (validateMovementRestrictedByTerritory(data, units, route, player, result).getError() != null)
+		if (validateFirst(data, units, route, player, result).getError() != null)
 		{
 			return result;
-		}
-		// can not enter territories owned by a player to which we are neutral towards
-		final Collection<Territory> landOnRoute = route.getMatches(Matches.TerritoryIsLand);
-		if (!landOnRoute.isEmpty())
-		{
-			// TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is also checking to make sure we avoid land territories owned by nations with these 2 relationship type attachment options
-			for (final Territory t : landOnRoute)
-			{
-				if (Match.someMatch(units, Matches.UnitIsLand))
-				{
-					if (!data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(player, t.getOwner()))
-					{
-						result.setError(player.getName() + " may not move land units over land owned by " + t.getOwner().getName());
-						return result;
-					}
-				}
-				if (Match.someMatch(units, Matches.UnitIsAir))
-				{
-					if (!data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner()))
-					{
-						result.setError(player.getName() + " may not move air units over land owned by " + t.getOwner().getName());
-						return result;
-					}
-				}
-			}
 		}
 		if (isNonCombat)
 		{
@@ -180,6 +138,67 @@ public class MoveValidator
 					return result.setErrorReturnResult("Cannot move units out of battle zone");
 			}
 		}
+		return result;
+	}
+	
+	static MoveValidationResult validateFirst(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
+	{
+		if (!units.isEmpty() && !getEditMode(data)
+					&& !Match.allMatch(Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data).invert()), Matches.unitIsOwnedBy(player)))
+		{
+			result.setError("Player, " + player.getName() + ", is not owner of all the units: " + MyFormatter.unitsToTextNoOwner(units));
+			return result;
+		}
+		// this should never happen
+		if (new HashSet<Unit>(units).size() != units.size())
+		{
+			result.setError("Not all units unique, units:" + units + " unique:" + new HashSet<Unit>(units));
+			return result;
+		}
+		if (!data.getMap().isValidRoute(route))
+		{
+			result.setError("Invalid route:" + route);
+			return result;
+		}
+		if (validateMovementRestrictedByTerritory(data, units, route, player, result).getError() != null)
+		{
+			return result;
+		}
+		// can not enter territories owned by a player to which we are neutral towards
+		final Collection<Territory> landOnRoute = route.getMatches(Matches.TerritoryIsLand);
+		if (!landOnRoute.isEmpty())
+		{
+			// TODO: if this ever changes, we need to also update getBestRoute(), because getBestRoute is also checking to make sure we avoid land territories owned by nations with these 2 relationship type attachment options
+			for (final Territory t : landOnRoute)
+			{
+				if (Match.someMatch(units, Matches.UnitIsLand))
+				{
+					if (!data.getRelationshipTracker().canMoveLandUnitsOverOwnedLand(player, t.getOwner()))
+					{
+						result.setError(player.getName() + " may not move land units over land owned by " + t.getOwner().getName());
+						return result;
+					}
+				}
+				if (Match.someMatch(units, Matches.UnitIsAir))
+				{
+					if (!data.getRelationshipTracker().canMoveAirUnitsOverOwnedLand(player, t.getOwner()))
+					{
+						result.setError(player.getName() + " may not move air units over land owned by " + t.getOwner().getName());
+						return result;
+					}
+				}
+			}
+		}
+		if (units.size() == 0)
+			return result.setErrorReturnResult("No units");
+		for (final Unit unit : units)
+		{
+			if (TripleAUnit.get(unit).getSubmerged())
+				result.addDisallowedUnit("Cannot move submerged units", unit);
+		}
+		// make sure all units are actually in the start territory
+		if (!route.getStart().getUnits().containsAll(units))
+			return result.setErrorReturnResult("Not enough units in starting territory");
 		return result;
 	}
 	
@@ -389,7 +408,7 @@ public class MoveValidator
 	}
 	
 	// Added to handle restriction of movement to listed territories
-	private static MoveValidationResult validateMovementRestrictedByTerritory(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player,
+	static MoveValidationResult validateMovementRestrictedByTerritory(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player,
 				final MoveValidationResult result)
 	{
 		if (getEditMode(data))
@@ -450,16 +469,6 @@ public class MoveValidator
 				final Collection<Unit> transportsToLoad, final Map<Unit, Collection<Unit>> newDependents, final MoveValidationResult result)
 	{
 		final boolean isEditMode = getEditMode(data);
-		if (units.size() == 0)
-			return result.setErrorReturnResult("No units");
-		for (final Unit unit : units)
-		{
-			if (TripleAUnit.get(unit).getSubmerged())
-				result.addDisallowedUnit("Cannot move submerged units", unit);
-		}
-		// make sure all units are actually in the start territory
-		if (!route.getStart().getUnits().containsAll(units))
-			return result.setErrorReturnResult("Not enough units in starting territory");
 		// make sure transports in the destination
 		if (route.getEnd() != null && !route.getEnd().getUnits().containsAll(transportsToLoad) && !units.containsAll(transportsToLoad))
 			return result.setErrorReturnResult("Transports not found in route end");
@@ -623,11 +632,6 @@ public class MoveValidator
 		if (isNeutralsImpassable(data) && !isNeutralsBlitzable(data) && !route.getMatches(Matches.TerritoryIsNeutralButNotWater).isEmpty())
 			return result.setErrorReturnResult(CANNOT_VIOLATE_NEUTRALITY);
 		return result;
-	}
-	
-	private static boolean areNeutralsPassableByAir(final GameData data)
-	{
-		return (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
 	}
 	
 	/**
@@ -1003,54 +1007,6 @@ public class MoveValidator
 			sum += tracker.getAvailableCapacity(transport);
 		}
 		return sum;
-	}
-	
-	private static boolean isWW2V2(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getWW2V2(data);
-	}
-	
-	private static boolean isNeutralsImpassable(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getNeutralsImpassable(data);
-	}
-	
-	private static boolean isNeutralsBlitzable(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getNeutralsBlitzable(data) && !isNeutralsImpassable(data);
-	}
-	
-	private static boolean isWW2V3(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getWW2V3(data);
-	}
-	
-	private static boolean isMultipleAAPerTerritory(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getMultipleAAPerTerritory(data);
-	}
-	
-	/**
-	 * @return
-	 */
-	private static boolean isMovementByTerritoryRestricted(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
-	}
-	
-	private static boolean isParatroopersCanMoveDuringNonCombat(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getParatroopersCanMoveDuringNonCombat(data);
-	}
-	
-	private static int getNeutralCharge(final GameData data, final Route route)
-	{
-		return getNeutralCharge(data, MoveDelegate.getEmptyNeutral(route).size());
-	}
-	
-	private static int getNeutralCharge(final GameData data, final int numberOfTerritories)
-	{
-		return numberOfTerritories * games.strategy.triplea.Properties.getNeutralCharge(data);
 	}
 	
 	// Determines whether we can pay the neutral territory charge for a
@@ -1762,57 +1718,86 @@ public class MoveValidator
 		return defaultRoute;
 	}
 	
-	/**
-	 * @return
-	 */
+	private static boolean areNeutralsPassableByAir(final GameData data)
+	{
+		return (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
+	}
+	
+	private static boolean isWW2V2(final GameData data)
+	{
+		return games.strategy.triplea.Properties.getWW2V2(data);
+	}
+	
+	private static boolean isNeutralsImpassable(final GameData data)
+	{
+		return games.strategy.triplea.Properties.getNeutralsImpassable(data);
+	}
+	
+	private static boolean isNeutralsBlitzable(final GameData data)
+	{
+		return games.strategy.triplea.Properties.getNeutralsBlitzable(data) && !isNeutralsImpassable(data);
+	}
+	
+	private static boolean isWW2V3(final GameData data)
+	{
+		return games.strategy.triplea.Properties.getWW2V3(data);
+	}
+	
+	private static boolean isMultipleAAPerTerritory(final GameData data)
+	{
+		return games.strategy.triplea.Properties.getMultipleAAPerTerritory(data);
+	}
+	
+	private static int getNeutralCharge(final GameData data, final Route route)
+	{
+		return getNeutralCharge(data, MoveDelegate.getEmptyNeutral(route).size());
+	}
+	
+	private static boolean isMovementByTerritoryRestricted(final GameData data)
+	{
+		return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
+	}
+	
+	private static boolean isParatroopersCanMoveDuringNonCombat(final GameData data)
+	{
+		return games.strategy.triplea.Properties.getParatroopersCanMoveDuringNonCombat(data);
+	}
+	
+	private static int getNeutralCharge(final GameData data, final int numberOfTerritories)
+	{
+		return numberOfTerritories * games.strategy.triplea.Properties.getNeutralCharge(data);
+	}
+	
 	private static boolean isSubmersibleSubsAllowed(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getSubmersible_Subs(data);
 	}
 	
-	/**
-	 * @return
-	 */
 	private static boolean isKamikazeAircraft(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
 	}
 	
-	/**
-	 * @return
-	 */
 	private static boolean isAlliedAirDependents(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getAlliedAirDependents(data);
 	}
 	
-	/**
-	 * @return
-	 */
 	private static boolean isIgnoreTransportInMovement(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getIgnoreTransportInMovement(data);
 	}
 	
-	/**
-	 * @return
-	 */
 	private static boolean isIgnoreSubInMovement(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
 	}
 	
-	/**
-	 * @return
-	 */
 	private static boolean isSubControlSeaZoneRestricted(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getSubControlSeaZoneRestricted(data);
 	}
 	
-	/**
-	 * @return
-	 */
 	private static boolean isTransportControlSeaZone(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getTransportControlSeaZone(data);
