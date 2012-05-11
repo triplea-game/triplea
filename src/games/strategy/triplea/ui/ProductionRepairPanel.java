@@ -180,7 +180,6 @@ public class ProductionRepairPanel extends JPanel
 								// initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
 								rule.setQuantity(initialQuantity);
 								rule.setMax(PUProduction - unitProduction);
-								rule.setUnit(u);
 								rule.setName(u.toString());
 								m_rules.add(rule);
 							}
@@ -202,7 +201,6 @@ public class ProductionRepairPanel extends JPanel
 							// initialQuantity = initialPurchase.get(repairRule).getInt(repairRule);
 							rule.setQuantity(initialQuantity);
 							rule.setMax(taUnit.getHowMuchCanThisUnitBeRepaired(u, terr));
-							rule.setUnit(u);
 							rule.setName(u.toString());
 							m_rules.add(rule);
 						}
@@ -275,12 +273,18 @@ public class ProductionRepairPanel extends JPanel
 		{
 			spent.add(current.getCost(), current.getQuantity());
 		}
+		final float discount = TechAbilityAttachment.getRepairDiscount(m_id, m_data);
+		if (discount != 1.0F)
+			spent.discount(discount);
 		final ResourceCollection leftToSpend = resources.difference(spent);
 		setLeft(leftToSpend);
-		
 		for (final Rule current : m_rules)
 		{
 			int max = leftToSpend.fitsHowOften(current.getCost());
+			if (discount != 1.0F)
+			{
+				max = (int) (max / discount);
+			}
 			max += current.getQuantity();
 			current.setMax(max);
 		}
@@ -310,18 +314,17 @@ public class ProductionRepairPanel extends JPanel
 		private final ScrollableTextField m_text = new ScrollableTextField(0, Integer.MAX_VALUE);
 		private final IntegerMap<Resource> m_cost;
 		private final RepairRule m_rule;
-		private Unit m_unit;
+		private final Unit m_unit;
+		private final int m_maxRepairAmount;
 		
 		Rule(final RepairRule rule, final PlayerID id, final UIContext uiContext, final Unit repairUnit)
 		{
 			setLayout(new GridBagLayout());
+			m_unit = repairUnit;
 			m_rule = rule;
 			m_cost = rule.getCosts();
-			final float discount = TechAbilityAttachment.getRepairDiscount(id, m_data);
-			if (discount != 1.0F)
-				m_cost.multiplyAllValuesBy(discount, 3);
+			final Territory territoryUnitIsIn = repairUnit.getTerritoryUnitIsIn();
 			final UnitType type = (UnitType) rule.getResults().keySet().iterator().next();
-			
 			if (!type.equals(repairUnit.getType()))
 				throw new IllegalStateException("Rule unit type " + type.getName() + " does not match " + repairUnit.toString() + ".  Please make sure your maps are up to date!");
 			final TripleAUnit taUnit = (TripleAUnit) repairUnit;
@@ -332,9 +335,9 @@ public class ProductionRepairPanel extends JPanel
 				icon = m_uiContext.getUnitImageFactory().getIcon(type, id, m_data, Matches.UnitHasSomeUnitDamage().match(repairUnit), Matches.UnitIsDisabled().match(repairUnit));
 			final String text = "<html> x " + ResourceCollection.toStringForHTML(m_cost) + "</html>";
 			final JLabel label = new JLabel(text, icon, SwingConstants.LEFT);
-			final JLabel info = new JLabel(repairUnit.getTerritoryUnitIsIn().getName());
-			final int toRepair = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, repairUnit.getTerritoryUnitIsIn());
-			final JLabel remaining = new JLabel("Production left to repair: " + toRepair);
+			final JLabel info = new JLabel(territoryUnitIsIn.getName());
+			m_maxRepairAmount = taUnit.getHowMuchCanThisUnitBeRepaired(repairUnit, territoryUnitIsIn);
+			final JLabel remaining = new JLabel("Production left to repair: " + m_maxRepairAmount);
 			final int space = 8;
 			this.add(new JLabel(type.getName()), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 0, 0), 0, 0));
 			this.add(label, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5, space, space, space), 0, 0));
@@ -367,17 +370,12 @@ public class ProductionRepairPanel extends JPanel
 		
 		void setMax(final int max)
 		{
-			m_text.setMax(max);
+			m_text.setMax(Math.min(max, m_maxRepairAmount));
 		}
 		
 		public Unit getUnit()
 		{
 			return m_unit;
-		}
-		
-		void setUnit(final Unit unit)
-		{
-			m_unit = unit;
 		}
 	}
 	

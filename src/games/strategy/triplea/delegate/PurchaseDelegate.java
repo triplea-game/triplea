@@ -474,14 +474,16 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		if (!m_player.isAI())
 			return;
 		final int currentPUs = m_player.getResources().getQuantity(Constants.PUS);
-		if (currentPUs == 0)
+		if (currentPUs <= 0)
 			return;
+		int toGive = 0;
 		final int bonusPercent = games.strategy.triplea.Properties.getAIBonusIncomePercentage(getData());
-		if (bonusPercent == 0)
-			return;
-		int toGive = (int) Math.round(((double) currentPUs * (double) bonusPercent / 100));
-		if (toGive == 0 && bonusPercent > 0 && currentPUs > 0)
-			toGive = 1;
+		if (bonusPercent != 0)
+		{
+			toGive += (int) Math.round(((double) currentPUs * (double) bonusPercent / 100));
+			if (toGive == 0 && bonusPercent > 0 && currentPUs > 0)
+				toGive += 1;
+		}
 		toGive += games.strategy.triplea.Properties.getAIBonusIncomeFlatRate(getData());
 		if (toGive + currentPUs < 0)
 			toGive = currentPUs * -1;

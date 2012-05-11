@@ -1,4 +1,12 @@
 Changes for 1.6
+* Fixed error preventing AI Flat Income Bonus from happening unless the Percentage Bonus was also set. (veqryn)
+
+* Fixed repair panel to correctly set the max for each unit. (veqryn)
+
+* Fixed error with displaying discounts for repairing. Also fixed that you may not be able to repair with all your money if you had a discount. (veqryn)
+
+* Fixed null pointer error from having Edit Mode on while AA guns fire. (veqryn)
+
 * Started coding for new paratrooper tech, to be called Airborne Forces. (veqryn)
 
 * Fixed blockade zones so that they never do more damage than the combined total of their neighboring territories, even if there are multiple sea zones blockading a single or set of territories. (veqryn)

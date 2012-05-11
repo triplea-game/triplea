@@ -319,20 +319,32 @@ public class BattleCalculator
 	{
 		final GameData data = bridge.getData();
 		final boolean isEditMode = EditDelegate.getEditMode(data);
-		// if (isEditMode || dice.getHits() == 0)
-		if (dice.getHits() == 0)
-			return new CasualtyDetails(Collections.<Unit> emptyList(), Collections.<Unit> emptyList(), true);
-		int hitsRemaining = dice.getHits();
+		ITripleaPlayer tripleaPlayer;
+		if (player.isNull())
+			tripleaPlayer = new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
+		else
+			tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
 		Map<Unit, Collection<Unit>> dependents;
 		if (headLess)
 			dependents = Collections.emptyMap();
 		else
 			dependents = getDependents(targets, data);
+		if (isEditMode)
+		{
+			final CasualtyDetails editSelection = tripleaPlayer.selectCasualties(targets, dependents, 0, text, dice, player, new CasualtyList(), battleID);
+			List<Unit> killed = editSelection.getKilled();
+			// if partial retreat is possible, kill amphibious units first
+			if (isPartialAmphibiousRetreat(data))
+				killed = killAmphibiousFirst(killed, targets);
+			return editSelection;
+		}
+		if (dice.getHits() == 0)
+			return new CasualtyDetails(Collections.<Unit> emptyList(), Collections.<Unit> emptyList(), true);
+		int hitsRemaining = dice.getHits();
 		if (isTransportCasualtiesRestricted(data))
 		{
 			hitsRemaining = extraHits;
 		}
-		// TODO check if isEditMode is necessary
 		if (!isEditMode && allTargetsOneTypeNotTwoHit(targets, dependents))
 		{
 			final List<Unit> killed = new ArrayList<Unit>();
@@ -349,11 +361,6 @@ public class BattleCalculator
 		// case prices change, we do it here.
 		final IntegerMap<UnitType> costs = getCostsForTUV(player, data);
 		final CasualtyList defaultCasualties = getDefaultCasualties(targets, hitsRemaining, defending, player, costs, data);
-		ITripleaPlayer tripleaPlayer;
-		if (player.isNull())
-			tripleaPlayer = new WeakAI(player.getName(), TripleA.WEAK_COMPUTER_PLAYER_TYPE);
-		else
-			tripleaPlayer = (ITripleaPlayer) bridge.getRemote(player);
 		final CasualtyDetails casualtySelection;
 		final int totalHitpoints = getTotalHitpoints(targets);
 		if (hitsRemaining >= totalHitpoints)
