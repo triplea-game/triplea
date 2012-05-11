@@ -129,7 +129,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		else if (name.endsWith("Purchase"))
 			purchase(false);
 		else if (name.endsWith("Move"))
-			move(name.endsWith("NonCombatMove"));
+			move(name.endsWith("NonCombatMove"), name);
 		else if (name.endsWith("Battle"))
 			battle();
 		else if (name.endsWith("Place"))
@@ -241,22 +241,22 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 	}
 	
-	private void move(final boolean nonCombat)
+	private void move(final boolean nonCombat, final String stepName)
 	{
 		if (!hasUnitsThatCanMove(nonCombat))
 			return;
-		final MoveDescription moveDescription = m_ui.getMove(m_id, m_bridge, nonCombat);
+		final MoveDescription moveDescription = m_ui.getMove(m_id, m_bridge, nonCombat, stepName);
 		if (moveDescription == null)
 		{
 			if (nonCombat)
 			{
 				if (!canAirLand(true, m_id))
-					move(nonCombat);
+					move(nonCombat, stepName);
 			}
 			else
 			{
 				if (canUnitsFight())
-					move(nonCombat);
+					move(nonCombat, stepName);
 			}
 			return;
 		}
@@ -264,7 +264,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		final String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded(), moveDescription.getDependentUnits());
 		if (error != null)
 			m_ui.notifyError(error);
-		move(nonCombat);
+		move(nonCombat, stepName);
 	}
 	
 	private boolean canAirLand(final boolean movePhase, final PlayerID player)

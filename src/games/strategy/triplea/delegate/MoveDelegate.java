@@ -16,7 +16,6 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -33,7 +32,6 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
-import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatchAnd;
@@ -51,7 +49,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,19 +62,12 @@ import java.util.Set;
  * @version 1.0
  * 
  */
-public class MoveDelegate extends BaseDelegate implements IMoveDelegate
+public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 {
 	private boolean m_firstRun = true; // firstRun means when the game is loaded the first time, not when the game is loaded from a save.
 	private boolean m_needToInitialize = true; // needToInitialize means we only do certain things once, so that if a game is saved then loaded, they aren't done again
 	private boolean m_needToDoRockets = true;
-	private boolean m_nonCombat;
-	private final TransportTracker m_transportTracker = new TransportTracker();
 	private IntegerMap<Territory> m_PUsLost = new IntegerMap<Territory>();
-	// if we are in the process of doing a move
-	// this instance will allow us to resume the move
-	private MovePerformer m_tempMovePerformer;
-	// A collection of UndoableMoves
-	private List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();
 	
 	/** Creates new MoveDelegate */
 	public MoveDelegate()
@@ -91,7 +81,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	public void start(final IDelegateBridge aBridge)
 	{
 		super.start(new TripleADelegateBridge(aBridge));
-		m_nonCombat = isNonCombat(aBridge);
 		final GameData data = getData();
 		if (m_firstRun)
 			firstRun();
@@ -181,12 +170,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			
 			m_needToInitialize = false;
 		}
-		if (m_tempMovePerformer != null)
-		{
-			m_tempMovePerformer.initialize(this);
-			m_tempMovePerformer.resume();
-			m_tempMovePerformer = null;
-		}
 	}
 	
 	/**
@@ -198,7 +181,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		super.end();
 		if (m_nonCombat)
 			removeAirThatCantLand();
-		m_movesToUndo.clear();
 		// WW2V2, fires at end of combat move
 		// WW2V1, fires at end of non combat move
 		if ((!m_nonCombat && isWW2V3()) || (m_nonCombat && (!isWW2V2() && !isWW2V3())) || (!m_nonCombat && isWW2V2()))
@@ -264,11 +246,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		state.m_firstRun = m_firstRun;
 		state.m_needToInitialize = m_needToInitialize;
 		state.m_needToDoRockets = m_needToDoRockets;
-		state.m_nonCombat = m_nonCombat;
-		if (saveUndo)
-			state.m_movesToUndo = m_movesToUndo;
 		state.m_PUsLost = m_PUsLost;
-		state.m_tempMovePerformer = m_tempMovePerformer;
 		return state;
 	}
 	
@@ -281,13 +259,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		m_firstRun = s.m_firstRun;
 		m_needToInitialize = s.m_needToInitialize;
 		m_needToDoRockets = s.m_needToDoRockets;
-		m_nonCombat = s.m_nonCombat;
-		// if the undo state wasnt saved, then dont load it
-		// prevents overwriting undo state when we restore from an undo move
-		if (s.m_movesToUndo != null)
-			m_movesToUndo = s.m_movesToUndo;
 		m_PUsLost = s.m_PUsLost;
-		m_tempMovePerformer = s.m_tempMovePerformer;
 	}
 	
 	/**
@@ -340,16 +312,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 								+ "You may need to re-order the xml's placement of transports and land units, " + "as the engine will try to fill them in the order they are given.");
 			}
 		}
-	}
-	
-	public static boolean isNonCombat(final IDelegateBridge aBridge)
-	{
-		if (aBridge.getStepName().endsWith("NonCombatMove"))
-			return true;
-		else if (aBridge.getStepName().endsWith("CombatMove"))
-			return false;
-		else
-			throw new IllegalStateException("Cannot determine combat or not");
 	}
 	
 	private void resetBonusMovement()
@@ -488,53 +450,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 			aBridge.addChange(clearAlliedAir);
 	}
 	
-	public List<UndoableMove> getMovesMade()
-	{
-		return new ArrayList<UndoableMove>(m_movesToUndo);
-	}
-	
-	public String undoMove(final int moveIndex)
-	{
-		if (m_movesToUndo.isEmpty())
-			return "No moves to undo";
-		if (moveIndex >= m_movesToUndo.size())
-			return "Undo move index out of range";
-		final UndoableMove moveToUndo = m_movesToUndo.get(moveIndex);
-		if (!moveToUndo.getcanUndo())
-			return moveToUndo.getReasonCantUndo();
-		moveToUndo.undo(getData(), m_bridge);
-		m_movesToUndo.remove(moveIndex);
-		updateUndoableMoveIndexes();
-		return null;
-	}
-	
-	private void updateUndoableMoveIndexes()
-	{
-		for (int i = 0; i < m_movesToUndo.size(); i++)
-		{
-			m_movesToUndo.get(i).setIndex(i);
-		}
-	}
-	
-	public String move(final Collection<Unit> units, final Route route)
-	{
-		return move(units, route, Collections.<Unit> emptyList(), new HashMap<Unit, Collection<Unit>>());
-	}
-	
-	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded)
-	{
-		return move(units, route, transportsThatCanBeLoaded, new HashMap<Unit, Collection<Unit>>());
-	}
-	
-	private PlayerID getUnitsOwner(final Collection<Unit> units)
-	{
-		// if we are not in edit mode, return m_player. if we are in edit mode, we use whoever's units these are.
-		if (units.isEmpty() || !EditDelegate.getEditMode(getData()))
-			return m_player;
-		else
-			return units.iterator().next().getOwner();
-	}
-	
+	@Override
 	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents)
 	{
 		final GameData data = getData();
@@ -615,42 +531,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		return null;
 	}
 	
-	void updateUndoableMoves(final UndoableMove currentMove)
-	{
-		currentMove.initializeDependencies(m_movesToUndo);
-		m_movesToUndo.add(currentMove);
-		updateUndoableMoveIndexes();
-	}
-	
-	public static BattleTracker getBattleTracker(final GameData data)
-	{
-		return DelegateFinder.battleDelegate(data).getBattleTracker();
-	}
-	
-	private boolean isWW2V2()
-	{
-		return games.strategy.triplea.Properties.getWW2V2(getData());
-	}
-	
-	/*private boolean isPreviousUnitsFight()
-	{
-		return games.strategy.triplea.Properties.getPreviousUnitsFight(m_data);
-	}*/
-	private boolean isWW2V3()
-	{
-		return games.strategy.triplea.Properties.getWW2V3(getData());
-	}
-	
-	private ITripleaPlayer getRemotePlayer()
-	{
-		return getRemotePlayer(m_player);
-	}
-	
-	private ITripleaPlayer getRemotePlayer(final PlayerID id)
-	{
-		return (ITripleaPlayer) m_bridge.getRemote(id);
-	}
-	
 	public static Collection<Territory> getEmptyNeutral(final Route route)
 	{
 		final Match<Territory> emptyNeutral = new CompositeMatchAnd<Territory>(Matches.TerritoryIsEmpty, Matches.TerritoryIsNeutralButNotWater);
@@ -658,7 +538,7 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		return neutral;
 	}
 	
-	public Change ensureCanMoveOneSpaceChange(final Unit unit)
+	public static Change ensureCanMoveOneSpaceChange(final Unit unit)
 	{
 		final int alreadyMoved = TripleAUnit.get(unit).getAlreadyMoved();
 		final int maxMovement = UnitAttachment.get(unit.getType()).getMovement(unit.getOwner());
@@ -666,40 +546,6 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		return ChangeFactory.unitPropertyChange(unit, Math.min(alreadyMoved, (maxMovement + bonusMovement) - 1), TripleAUnit.ALREADY_MOVED);
 	}
 	
-	/* This code is already done in BattleDelegate, so why is it duplicated here?
-	private Change addLingeringUnitsToBattles()
-	{
-		// if an enemy placed units in a hostile sea zone
-		// and then during combat move, we attacked the newly placed units
-		// our units in the sea zone need to join the battle
-		// also, if our relation state with the nation changed to an at-war type of relation, we will need to add all units in those territories
-		CompositeChange change = new CompositeChange();
-		BattleTracker tracker = getBattleTracker(m_data);
-		for (Territory t : tracker.getPendingBattleSites(false))
-		{
-			if (!(tracker.getPendingBattle(t, false) instanceof MustFightBattle))
-			{
-				continue;
-			}
-			MustFightBattle mfb = (MustFightBattle) tracker.getPendingBattle(t, false);
-			Set<Unit> ownedUnits;
-			if (t.isWater())
-			{
-				ownedUnits = new HashSet<Unit>(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsLand.invert(), Matches.unitIsOwnedBy(m_player))));
-			}
-			else
-			{
-				ownedUnits = new HashSet<Unit>(t.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.UnitIsSea.invert(), Matches.unitIsOwnedBy(m_player))));
-			}
-			ownedUnits.removeAll(mfb.getAttackingUnits());
-			if (!ownedUnits.isEmpty())
-			{
-				change.add(mfb.addAttackChange(new Route(t), ownedUnits));
-			}
-			
-		}
-		return change;
-	}*/
 	private void removeAirThatCantLand()
 	{
 		final GameData data = getData();
@@ -920,63 +766,12 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 		return totalLoad;
 	}
 	
-	public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player)
-	{
-		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(player);
-	}
-	
-	public Collection<Territory> getTerritoriesWhereAirCantLand()
-	{
-		return new AirThatCantLandUtil(m_bridge).getTerritoriesWhereAirCantLand(m_player);
-	}
-	
-	public Collection<Territory> getTerritoriesWhereUnitsCantFight()
-	{
-		return new UnitsThatCantFightUtil(getData()).getTerritoriesWhereUnitsCantFight(m_player);
-	}
-	
-	/**
-	 * @param unit
-	 *            referring unit
-	 * @param end
-	 *            target territory
-	 * @return the route that a unit used to move into the given territory
-	 */
-	public Route getRouteUsedToMoveInto(final Unit unit, final Territory end)
-	{
-		return MoveDelegate.getRouteUsedToMoveInto(m_movesToUndo, unit, end);
-	}
-	
-	/**
-	 * This method is static so it can be called from the client side.
-	 * 
-	 * @param undoableMoves
-	 *            list of moves that have been done
-	 * @param unit
-	 *            referring unit
-	 * @param end
-	 *            target territory
-	 * @return the route that a unit used to move into the given territory.
-	 */
-	public static Route getRouteUsedToMoveInto(final List<UndoableMove> undoableMoves, final Unit unit, final Territory end)
-	{
-		final ListIterator<UndoableMove> iter = undoableMoves.listIterator(undoableMoves.size());
-		while (iter.hasPrevious())
-		{
-			final UndoableMove move = iter.previous();
-			if (!move.getUnits().contains(unit))
-				continue;
-			if (move.getRoute().getEnd().equals(end))
-				return move.getRoute();
-		}
-		return null;
-	}
-	
 	/**
 	 * @param t
 	 *            referring territory
 	 * @return the number of PUs that have been lost by bombing, rockets, etc.
 	 */
+	@Override
 	public int PUsAlreadyLost(final Territory t)
 	{
 		return m_PUsLost.getInt(t);
@@ -990,23 +785,10 @@ public class MoveDelegate extends BaseDelegate implements IMoveDelegate
 	 * @param amt
 	 *            amount of PUs that should be added
 	 */
+	@Override
 	public void PUsLost(final Territory t, final int amt)
 	{
 		m_PUsLost.add(t, amt);
-	}
-	
-	public TransportTracker getTransportTracker()
-	{
-		return m_transportTracker;
-	}
-	
-	/*
-	 * @see games.strategy.engine.delegate.IDelegate#getRemoteType()
-	 */
-	@Override
-	public Class<IMoveDelegate> getRemoteType()
-	{
-		return IMoveDelegate.class;
 	}
 	
 	/*
@@ -1120,8 +902,5 @@ class MoveExtendedDelegateState implements Serializable
 	public boolean m_firstRun = true;
 	public boolean m_needToInitialize;
 	public boolean m_needToDoRockets;
-	public boolean m_nonCombat;
 	public IntegerMap<Territory> m_PUsLost;
-	public List<UndoableMove> m_movesToUndo;
-	public MovePerformer m_tempMovePerformer;
 }

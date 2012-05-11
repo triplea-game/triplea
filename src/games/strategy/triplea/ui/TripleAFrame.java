@@ -620,9 +620,9 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return m_actionButtons.waitForRepair(bid);
 	}
 	
-	public MoveDescription getMove(final PlayerID player, final IPlayerBridge bridge, final boolean nonCombat)
+	public MoveDescription getMove(final PlayerID player, final IPlayerBridge bridge, final boolean nonCombat, final String stepName)
 	{
-		m_actionButtons.changeToMove(player, nonCombat);
+		m_actionButtons.changeToMove(player, nonCombat, stepName);
 		// workaround for panel not receiving focus at beginning of n/c move phase
 		if (!getBattlePanel().getBattleFrame().isVisible())
 		{

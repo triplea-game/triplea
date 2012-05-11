@@ -45,7 +45,7 @@ import java.util.Map;
 public class MovePerformer implements Serializable
 {
 	private static final long serialVersionUID = 3752242292777658310L;
-	private transient MoveDelegate m_moveDelegate;
+	private transient AbstractMoveDelegate m_moveDelegate;
 	private transient IDelegateBridge m_bridge;
 	private transient PlayerID m_player;
 	private AAInMoveUtil m_aaInMoveUtil;
@@ -62,7 +62,7 @@ public class MovePerformer implements Serializable
 		return DelegateFinder.battleDelegate(m_bridge.getData()).getBattleTracker();
 	}
 	
-	void initialize(final MoveDelegate delegate)
+	void initialize(final AbstractMoveDelegate delegate)
 	{
 		m_moveDelegate = delegate;
 		m_bridge = delegate.getBridge();

@@ -116,9 +116,12 @@ public class ActionButtons extends JPanel
 		});
 	}
 	
-	public void changeToMove(final PlayerID id, final boolean nonCombat)
+	public void changeToMove(final PlayerID id, final boolean nonCombat, final String stepName)
 	{
 		m_movePanel.setNonCombat(nonCombat);
+		final String displayText = (stepName.endsWith("SpecialCombatMove") ? " Special" : (stepName.endsWith("AirborneCombatMove") ? " Airborne" :
+					((stepName.endsWith("ParatrooperCombatMove") || stepName.endsWith("ParatroopersCombatMove")) ? " Paratrooper" : (nonCombat ? " Non" : ""))));
+		m_movePanel.setDisplayText(displayText + " Combat Move");
 		changeTo(id, m_movePanel);
 	}
 	

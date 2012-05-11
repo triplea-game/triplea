@@ -2488,7 +2488,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	 */
 	private void ensureAttackingAirCanRetreat(final IDelegateBridge bridge)
 	{
-		final MoveDelegate moveDelegate = DelegateFinder.moveDelegate(m_data);
 		final CompositeMatch<Unit> canLandOnCarrier = new CompositeMatchAnd<Unit>();
 		canLandOnCarrier.add(Matches.UnitIsAir);
 		// this only applies to air units that can land on a carrier
@@ -2497,7 +2496,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// TODO interesting quirk- kamikaze aircraft may move their full movement, then one more on retreat due to this
 		for (final Unit unit : air)
 		{
-			bridge.addChange(moveDelegate.ensureCanMoveOneSpaceChange(unit));
+			bridge.addChange(MoveDelegate.ensureCanMoveOneSpaceChange(unit));
 		}
 	}
 	

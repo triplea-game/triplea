@@ -46,9 +46,9 @@ public class DelegateFinder
 		return (BattleDelegate) findDelegate(data, "battle");
 	}
 	
-	public static final MoveDelegate moveDelegate(final GameData data)
+	public static final AbstractMoveDelegate moveDelegate(final GameData data)
 	{
-		return (MoveDelegate) findDelegate(data, "move");
+		return (AbstractMoveDelegate) findDelegate(data, "move");
 	}
 	
 	public static final AbstractPlaceDelegate placeDelegate(final GameData data)

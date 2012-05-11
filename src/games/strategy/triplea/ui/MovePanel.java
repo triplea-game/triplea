@@ -102,6 +102,7 @@ public class MovePanel extends AbstractMovePanel
 	private Image m_currentCursorImage;
 	private TransportTracker m_transportTracker = null;
 	private Route m_routeCached = null;
+	private String m_displayText = "Combat Move";
 	
 	/** Creates new MovePanel */
 	public MovePanel(final GameData data, final MapPanel map, final TripleAFrame frame)
@@ -113,9 +114,9 @@ public class MovePanel extends AbstractMovePanel
 		m_currentCursorImage = null;
 	}
 	
-	// TODO: oh my fucking god this code is aweful. only the local computer has access to the UI. why the fuck did someone think they could do this?
+	// TODO: oh my fucking god this code is awefull. only the local computer has access to the UI. why the fuck did someone think they could do this?
 	// The host has no access to the client's UI, and therefore does not know what dependent units there are.
-	// TODO: rewrite this fucking garbage! None of this s_dependentUnits shit should be in the move panel!
+	// TODO: rewrite this fucking garbage! None of this s_dependentUnits shit should be in the move panel! (fixed by sending a copy of this with the move details)
 	private static Map<Unit, Collection<Unit>> getDependents()
 	{
 		return s_dependentUnits;
@@ -1558,11 +1559,16 @@ public class MovePanel extends AbstractMovePanel
 		m_nonCombat = nonCombat;
 	}
 	
+	public final void setDisplayText(final String displayText)
+	{
+		m_displayText = displayText;
+	}
+	
 	@Override
 	public final void display(final PlayerID id)
 	{
 		m_transportTracker = new TransportTracker();
-		super.display(id, (m_nonCombat ? " non combat" : " combat") + " move");
+		super.display(id, m_displayText);
 	}
 	
 	/**

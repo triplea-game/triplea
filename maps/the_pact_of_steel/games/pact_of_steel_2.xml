@@ -660,6 +660,7 @@
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
                 <delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
                 
+                <delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Special Move"/>
 				<!-- <delegate name="givePUs" javaClass="games.strategy.triplea.delegate.GivePUsDelegate" display="Give PUs"/> -->
 
                 <sequence>
@@ -690,6 +691,7 @@
                         <step name="italianPurchase" delegate="purchase" player="Italians"/>
                         <step name="italianPolitics" delegate="politics" player="Italians"/>
                         <step name="italianCombatMove" delegate="move" player="Italians"/>
+                        <step name="italianSpecialCombatMove" delegate="specialCombatMove" player="Italians"/>
                         <step name="italianBattle" delegate="battle" player="Italians"/>
                         <step name="italianNonCombatMove" delegate="move" player="Italians" display="Non Combat Move"/>
                         <step name="italianPlace" delegate="place" player="Italians"/>
