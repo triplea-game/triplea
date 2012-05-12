@@ -357,7 +357,17 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 			purchase(false, leftToSpend, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
 		}
 		else if (name.endsWith("Move"))
-			move(name.endsWith("NonCombatMove"), (IMoveDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+		{
+			if (name.endsWith("AirborneCombatMove"))
+			{
+				return;
+				// if (!SpecialMoveDelegate.allowAirborne(m_id, getGameData()))
+				// return;
+				// airborneMove(); // TODO: implement me
+			}
+			else
+				move(name.endsWith("NonCombatMove"), (IMoveDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+		}
 		else if (name.endsWith("Battle"))
 			battle((IBattleDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
 		else if (name.endsWith("Politics"))

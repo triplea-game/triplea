@@ -3918,6 +3918,15 @@ public class Matches
 		};
 	}
 	
+	public static final Match<Unit> UnitIsAirborne = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			return ((TripleAUnit) obj).getAirborne();
+		}
+	};
+	
 	/** Creates new Matches */
 	private Matches()
 	{

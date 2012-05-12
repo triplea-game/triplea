@@ -67,6 +67,8 @@ public class TripleAUnit extends Unit
 	public static final String WAS_IN_AIR_BATTLE = "wasInAirBattle";
 	public static final String UNIT_DAMAGE = "unitDamage";
 	public static final String DISABLED = "disabled";
+	public static final String LAUNCHED = "launched";
+	public static final String AIRBORNE = "airborne";
 	
 	private TripleAUnit m_transportedBy = null; // the transport that is currently transporting us
 	private List<Unit> m_unloaded = Collections.emptyList(); // the units we have unloaded this turn
@@ -90,6 +92,9 @@ public class TripleAUnit extends Unit
 	private int m_maxScrambleCount = -1;
 	private boolean m_wasInAirBattle = false;
 	private boolean m_disabled = false;
+	
+	private int m_launched = 0; // the number of airborne units launched by this unit this turn
+	private boolean m_airborne = false; // was this unit airborne and launched this turn
 	
 	public static TripleAUnit get(final Unit u)
 	{
@@ -309,6 +314,28 @@ public class TripleAUnit extends Unit
 	public void setMaxScrambleCount(final Integer value)
 	{
 		m_maxScrambleCount = value;
+	}
+	
+	public int getLaunched()
+	{
+		return m_launched;
+	}
+	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
+	public void setLaunched(final Integer value)
+	{
+		m_launched = value;
+	}
+	
+	public boolean getAirborne()
+	{
+		return m_airborne;
+	}
+	
+	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
+	public void setAirborne(final Boolean value)
+	{
+		m_airborne = value;
 	}
 	
 	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)

@@ -1311,6 +1311,8 @@
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
 				<delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
 				
+				<delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Special Move"/>
+				
                 <sequence>
 				
                         <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
@@ -1338,45 +1340,49 @@
 						<!-- Germans Game Sequence -->
                         <step name="germansPolitics" delegate="politics" player="Germans"/>
                         <step name="germansTech" delegate="tech" player="Germans"/>
+                        <step name="germansTechActivation" delegate="tech_activation" player="Germans"/>
                         <step name="germansPurchase" delegate="purchase" player="Germans"/>
                         <step name="germansCombatMove" delegate="move" player="Germans"/>
+						<step name="germansAirborneCombatMove" delegate="specialCombatMove" player="Germans" display="Airborne Attack Move"/>
                         <step name="germansBattle" delegate="battle" player="Germans"/>
                         <step name="germansNonCombatMove" delegate="move" player="Germans" display="Non Combat Move"/>
                         <step name="germansPlace" delegate="place" player="Germans"/>
-                        <step name="germansTechActivation" delegate="tech_activation" player="Germans"/>
                         <step name="germansEndTurn" delegate="endTurn" player="Germans"/>
 						
 						<!-- Russians Game Sequence -->
                         <step name="russiansPolitics" delegate="politics" player="Russians"/>
                         <step name="russiansTech" delegate="tech" player="Russians"/>
+                        <step name="russiansTechActivation" delegate="tech_activation" player="Russians"/>
                         <step name="russiansPurchase" delegate="purchase" player="Russians"/>
                         <step name="russiansCombatMove" delegate="move" player="Russians"/>
+						<step name="russiansAirborneCombatMove" delegate="specialCombatMove" player="Russians" display="Airborne Attack Move"/>
                         <step name="russiansBattle" delegate="battle" player="Russians"/>
                         <step name="russiansNonCombatMove" delegate="move" player="Russians" display="Non Combat Move"/>
                         <step name="russiansPlace" delegate="place" player="Russians"/>
-                        <step name="russiansTechActivation" delegate="tech_activation" player="Russians"/>
                         <step name="russiansEndTurn" delegate="endTurn" player="Russians"/>
 						
 						<!-- Japanese Game Sequence -->
 						<step name="japanesePolitics" delegate="politics" player="Japanese"/>
 						<step name="japaneseTech" delegate="tech" player="Japanese"/>
+                        <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
                         <step name="japanesePurchase" delegate="purchase" player="Japanese"/>
                         <step name="japaneseCombatMove" delegate="move" player="Japanese"/>
+						<step name="japaneseAirborneCombatMove" delegate="specialCombatMove" player="Japanese" display="Airborne Attack Move"/>
                         <step name="japaneseBattle" delegate="battle" player="Japanese"/>
                         <step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
                         <step name="japanesePlace" delegate="place" player="Japanese"/>
-                        <step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
                         <step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
 						
 						<!-- Americans Game Sequence -->
 						<step name="americansPolitics" delegate="politics" player="Americans"/>
 						<step name="americansTech" delegate="tech" player="Americans"/>
+						<step name="americansTechActivation" delegate="tech_activation" player="Americans"/>
                         <step name="americansPurchase" delegate="purchase" player="Americans"/>
 						<step name="americansCombatMove" delegate="move" player="Americans"/>
+						<step name="americansAirborneCombatMove" delegate="specialCombatMove" player="Americans" display="Airborne Attack Move"/>
                         <step name="americansBattle" delegate="battle" player="Americans"/>
                         <step name="americansNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
 						<step name="americansPlace" delegate="place" player="Americans"/>
-						<step name="americansTechActivation" delegate="tech_activation" player="Americans"/>
                         <step name="americansEndTurn" delegate="endTurn" player="Americans"/>
 						
 						<!-- Chinese Game Sequence -->
@@ -1392,54 +1398,58 @@
 						<step name="britishPolitics" delegate="politics" player="British"/>
 						
 						<step name="britishTech" delegate="tech" player="British"/>
+                        <step name="britishTechActivation" delegate="tech_activation" player="British"/>
                         <step name="britishPurchase" delegate="purchase" player="British"/>
 						
-						<step name="UK_PacificTech" delegate="tech" player="UK_Pacific"/>
+						<!--<step name="UK_PacificTech" delegate="tech" player="UK_Pacific"/>-->
+                        <step name="UK_PacificTechActivation" delegate="tech_activation" player="UK_Pacific"/>
                         <step name="UK_PacificPurchase" delegate="purchase" player="UK_Pacific"/>
 						
                         <step name="britishCombatMove" delegate="move" player="British"/>
+						<step name="britishAirborneCombatMove" delegate="specialCombatMove" player="British" display="Airborne Attack Move"/>
                         <step name="britishBattle" delegate="battle" player="British"/>
                         <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
 						
                         <step name="britishPlace" delegate="place" player="British"/>
-                        <step name="britishTechActivation" delegate="tech_activation" player="British"/>
                         <step name="britishEndTurn" delegate="endTurn" player="British"/>
 						
                         <step name="UK_PacificPlace" delegate="place" player="UK_Pacific"/>
-                        <step name="UK_PacificTechActivation" delegate="tech_activation" player="UK_Pacific"/>
                         <step name="UK_PacificEndTurn" delegate="endTurn" player="UK_Pacific"/>
 						
 						<!-- Italians Game Sequence -->
 						<step name="italiansPolitics" delegate="politics" player="Italians"/>
                         <step name="italiansTech" delegate="tech" player="Italians"/>
+                        <step name="italiansTechActivation" delegate="tech_activation" player="Italians"/>
                         <step name="italiansPurchase" delegate="purchase" player="Italians"/>
                         <step name="italiansCombatMove" delegate="move" player="Italians"/>
+						<step name="italiansAirborneCombatMove" delegate="specialCombatMove" player="Italians" display="Airborne Attack Move"/>
                         <step name="italiansBattle" delegate="battle" player="Italians"/>
                         <step name="italiansNonCombatMove" delegate="move" player="Italians" display="Non Combat Move"/>
                         <step name="italiansPlace" delegate="place" player="Italians"/>
-                        <step name="italiansTechActivation" delegate="tech_activation" player="Italians"/>
                         <step name="italiansEndTurn" delegate="endTurn" player="Italians"/>
 						
 						<!-- ANZAC Game Sequence -->
 						<step name="anzacPolitics" delegate="politics" player="ANZAC"/>
 						<step name="anzacTech" delegate="tech" player="ANZAC"/>
+                        <step name="anzacTechActivation" delegate="tech_activation" player="ANZAC"/>
                         <step name="anzacPurchase" delegate="purchase" player="ANZAC"/>
                         <step name="anzacCombatMove" delegate="move" player="ANZAC"/>
+						<step name="anzacAirborneCombatMove" delegate="specialCombatMove" player="ANZAC" display="Airborne Attack Move"/>
                         <step name="anzacBattle" delegate="battle" player="ANZAC"/>
                         <step name="anzacNonCombatMove" delegate="move" player="ANZAC" display="Non Combat Move"/>
                         <step name="anzacPlace" delegate="place" player="ANZAC"/>
-                        <step name="anzacTechActivation" delegate="tech_activation" player="ANZAC"/>
                         <step name="anzacEndTurn" delegate="endTurn" player="ANZAC"/>
 						
 						<!-- French Game Sequence -->
 						<step name="frenchPolitics" delegate="politics" player="French"/>
                         <step name="frenchTech" delegate="tech" player="French"/>
+                        <step name="frenchTechActivation" delegate="tech_activation" player="French"/>
                         <step name="frenchPurchase" delegate="purchase" player="French"/>
                         <step name="frenchCombatMove" delegate="move" player="French"/>
+						<step name="frenchAirborneCombatMove" delegate="specialCombatMove" player="French" display="Airborne Attack Move"/>
                         <step name="frenchBattle" delegate="battle" player="French"/>
                         <step name="frenchNonCombatMove" delegate="move" player="French" display="Non Combat Move"/>
                         <step name="frenchPlace" delegate="place" player="French"/>
-                        <step name="frenchTechActivation" delegate="tech_activation" player="French"/>
                         <step name="frenchEndTurn" delegate="endTurn" player="French"/>
 						
                         <step name="endRoundStep" delegate="endRound"/>
@@ -1822,6 +1832,205 @@
 				<playerRepair player="Japanese" frontier="repair"/>
 				
         </production>
+
+		<technology>
+				<technologies>
+						<techname name="superSub"/>
+						<techname name="jetPower"/>
+						<techname name="shipyards"/>
+						<techname name="aARadar"/>
+						<techname name="longRangeAir"/>
+						<techname name="heavyBomber"/>
+						
+						<techname name="improvedArtillerySupport"/>
+						<techname name="rocket"/>
+						<techname name="Airborne_Forces"/>
+						<techname name="increasedFactoryProduction"/>
+						<techname name="warBonds"/>
+						<techname name="Improved_Mech_Inf"/>
+						<!-- Airborne_Forces and Improved_Mech_Inf are custom techs... but all will end up being customized -->
+				</technologies>
+				<playerTech player="Germans">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="Russians">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="Japanese">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="Americans">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="Chinese">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="British">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="UK_Pacific">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="Italians">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="ANZAC">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+				<playerTech player="French">
+						<category name="Air and Naval Advances">
+								<tech name="superSub"/>
+								<tech name="jetPower"/>
+								<tech name="shipyards"/>
+								<tech name="aARadar"/>
+								<tech name="longRangeAir"/>
+								<tech name="heavyBomber"/>
+						</category>
+						<category name="Land and Production Advances">
+								<tech name="improvedArtillerySupport"/>
+								<tech name="rocket"/>
+								<tech name="Airborne_Forces"/>
+								<tech name="increasedFactoryProduction"/>
+								<tech name="warBonds"/>
+								<tech name="Improved_Mech_Inf"/>
+						</category>
+				</playerTech>
+		</technology>
 		
         <attatchmentList>
 
@@ -1840,6 +2049,7 @@
 
 					<attatchment name="relationshipTypeAttachment" attatchTo="Neutrality" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="neutral"/>
+						<option name="rocketsCanFlyOver" value="false"/>
 					</attatchment>
 
 					<attatchment name="relationshipTypeAttachment" attatchTo="Friendly" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -1855,10 +2065,12 @@
 						<option name="canLandAirUnitsOnOwnedLand" value="true"/>-->
 						<option name="archeType" value="allied"/>
 						<option name="canTakeOverOwnedTerritory" value="true"/>
+						<option name="rocketsCanFlyOver" value="false"/>
 					</attatchment>
 
 					<attatchment name="relationshipTypeAttachment" attatchTo="Strict_Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="neutral"/>
+						<option name="rocketsCanFlyOver" value="false"/>
 					</attatchment>
 					
 					<attatchment name="relationshipTypeAttachment" attatchTo="Friendly_Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -1868,6 +2080,7 @@
 						<option name="canMoveAirUnitsOverOwnedLand" value="false"/>
 						<option name="canLandAirUnitsOnOwnedLand" value="false"/>
 						<option name="canMoveIntoDuringCombatMove" value="false"/>
+						<option name="rocketsCanFlyOver" value="false"/>
 						<!-- How Friendly Neutrals work:
 								They may not be attacked. (IE: can not move into during combat move phase) (DONE)
 								They can not be flown over. (Done)
@@ -1879,6 +2092,7 @@
 					
 					<attatchment name="relationshipTypeAttachment" attatchTo="Unfriendly_Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="war"/>
+						<option name="rocketsCanFlyOver" value="true"/>
 					</attatchment>
 		
 		
@@ -1892,10 +2106,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
                     <attatchment name="techAttatchment" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="superSub" value="false"/>
@@ -1906,10 +2118,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
                     <attatchment name="techAttatchment" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="superSub" value="false"/>
@@ -1920,10 +2130,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
                     <attatchment name="techAttatchment" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -1935,10 +2143,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
                     <attatchment name="techAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -1950,10 +2156,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
                     <attatchment name="techAttatchment" attatchTo="UK_Pacific" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -1965,10 +2169,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
                     <attatchment name="techAttatchment" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -1980,10 +2182,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
                     <attatchment name="techAttatchment" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -1995,10 +2195,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
                     <attatchment name="techAttatchment" attatchTo="French" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -2010,13 +2208,11 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
-                    <!--<attatchment name="techAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
+                    <attatchment name="techAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
                         <option name="superSub" value="false"/>
                         <option name="jetPower" value="false"/>
                         <option name="shipyards" value="false"/>
@@ -2025,10 +2221,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
 					<attatchment name="techAttatchment" attatchTo="Dutch" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -2040,10 +2234,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
 					<attatchment name="techAttatchment" attatchTo="Mongolians" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -2055,10 +2247,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
 					<attatchment name="techAttatchment" attatchTo="Neutral_Axis" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -2070,10 +2260,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
                     <attatchment name="techAttatchment" attatchTo="Neutral_Allies" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -2085,10 +2273,8 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
                     </attatchment>
 					
                     <attatchment name="techAttatchment" attatchTo="Neutral_True" javaClass="games.strategy.triplea.attatchments.TechAttachment" type="player">
@@ -2100,11 +2286,9 @@
                         <option name="heavyBomber" value="false"/>
                         <option name="improvedArtillerySupport" value="false"/>
                         <option name="rocket" value="false"/>
-                        <option name="paratroopers" value="false"/>
                         <option name="increasedFactoryProduction" value="false"/>
                         <option name="warBonds" value="false"/>
-                        <option name="mechanizedInfantry" value="false"/>
-                    </attatchment>-->
+                    </attatchment>
 					
 			<!-- Unit Attachments -->
 			
@@ -4581,6 +4765,11 @@
 					<option name="giveUnitControl" value="British"/>
 				</attatchment>
 				
+				<attatchment name="playerAttatchment" attatchTo="British" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="shareTechnology" value="UK_Pacific"/>
+					<option name="helpPayTechCost" value="UK_Pacific"/>
+				</attatchment>
+				
 				
 		<!--  Rules Restrictions -->
 				<attatchment name="rulesAttatchment" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -4979,6 +5168,41 @@
 					<option name="relationshipChange" value="Americans:Neutral_Allies:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Americans:Neutral_Axis:Unfriendly_Neutral"/>
 					<option name="text" value="Americans_War_Italians"/>
+				</attatchment>
+				
+				
+<!-- Tech Ability Attachment -->
+				<attatchment name="techAbilityAttachment" attatchTo="jetPower" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="attackBonus" value="1:fighter"/>
+						<option name="airAttackBonus" value="1:fighter"/>
+						<option name="airDefenseBonus" value="1:fighter"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="longRangeAir" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="movementBonus" value="1:fighter"/>
+						<option name="movementBonus" value="1:bomber"/>
+						<option name="movementBonus" value="1:tactical_bomber"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="rocket" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="rocketDiceNumber" value="1:airfield"/>
+						<option name="rocketDistance" value="4"/>
+						<option name="rocketNumberPerTerritory" value="1"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="Airborne_Forces" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="airborneForces" value="true"/>
+						<option name="airborneCapacity" value="2:airfield"/>
+						<option name="airborneBases" value="airfield"/>
+						<option name="airborneTypes" value="infantry"/>
+						<option name="airborneDistance" value="3"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="increasedFactoryProduction" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="productionBonus" value="2:factory_major"/>
+						<option name="productionBonus" value="2:factory_upgrade"/>
+						<option name="productionBonus" value="1:factory_minor"/>
+						<option name="minimumTerritoryValueForProductionBonus" value="0"/>
+						<option name="repairDiscount" value="50"/>
+				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="Improved_Mech_Inf" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="unitAbilitiesGained" value="mech_infantry:canBlitz"/>
 				</attatchment>
 				
         </attatchmentList>
@@ -5927,7 +6151,7 @@
 						<boolean/>
 				</property>
 
-				<property name="Tech Development" value="false" editable="true">
+				<property name="Tech Development" value="true" editable="true">
 						<boolean/>
 				</property>
 
@@ -6031,6 +6255,14 @@
 				</property>
 
 				<property name="Scramble To Any Amphibious Assault" value="true" editable="true">
+						<boolean/>
+				</property>
+				
+				<property name="Airborne Attacks Only In Existing Battles" value="true" editable="false">
+						<boolean/>
+				</property>
+				
+				<property name="Airborne Attacks Only In Enemy Territories" value="false" editable="false">
 						<boolean/>
 				</property>
 

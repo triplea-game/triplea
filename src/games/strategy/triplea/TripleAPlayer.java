@@ -34,6 +34,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.SpecialMoveDelegate;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
@@ -243,7 +244,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void move(final boolean nonCombat, final String stepName)
 	{
-		if (!hasUnitsThatCanMove(nonCombat))
+		if (stepName.endsWith("AirborneCombatMove"))
+		{
+			if (!SpecialMoveDelegate.allowAirborne(m_id, getGameData()))
+				return;
+		}
+		else if (!hasUnitsThatCanMove(nonCombat))
 			return;
 		final MoveDescription moveDescription = m_ui.getMove(m_id, m_bridge, nonCombat, stepName);
 		if (moveDescription == null)

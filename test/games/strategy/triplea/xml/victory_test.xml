@@ -628,7 +628,6 @@
 				<!-- this currently is all the delegates triplea has.  not all are needed for a regular game though -->
 					<!-- purchaseNoPU buys 1 infantry for X number of territories controlled, rounding down. set X in player rules attachments -->
 					<!-- endTurnNoPU ends player's turn without giving them any PUs -->
-					<!-- givePUs will allow a player to give some PUs to some other players, currently not coded yet -->
                 <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
                 <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
                 <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
@@ -644,7 +643,6 @@
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
                 <delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
                 
-				<!-- <delegate name="givePUs" javaClass="games.strategy.triplea.delegate.GivePUsDelegate" display="Give PUs"/> -->
 
                 <sequence>
 					<!-- it is very important that the "name" ends with the correct phrase, or else the game will not work properly.
@@ -692,7 +690,6 @@
                         <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 
                         <!-- Germans Game Sequence -->
-						<!-- <step name="germanGivePUs" delegate="givePUs" player="Germans"/> -->
                         <step name="germanTech" delegate="tech" player="Germans"/>
                         <step name="germanPurchase" delegate="purchase" player="Germans"/>
                         <step name="germanPolitics" delegate="politics" player="Germans"/>

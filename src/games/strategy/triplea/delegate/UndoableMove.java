@@ -217,6 +217,22 @@ public class UndoableMove extends AbstractUndoableMove
 		}
 	}
 	
+	// for use with airborne moving
+	public void addDependency(final List<UndoableMove> undoableMoves)
+	{
+		for (final UndoableMove other : undoableMoves)
+		{
+			addDependency(other);
+		}
+	}
+	
+	// for use with airborne moving
+	public void addDependency(final UndoableMove undoableMove)
+	{
+		m_iDependOn.add(undoableMove);
+		undoableMove.m_dependOnMe.add(this);
+	}
+	
 	public boolean wasTransportUnloaded(final Unit transport)
 	{
 		return m_unloaded.contains(transport);
@@ -243,6 +259,11 @@ public class UndoableMove extends AbstractUndoableMove
 	public final Territory getEnd()
 	{
 		return m_route.getEnd();
+	}
+	
+	public final Territory getStart()
+	{
+		return m_route.getStart();
 	}
 	
 	@Override

@@ -211,6 +211,14 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 				{
 					change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.SUBMERGED));
 				}
+				if (TripleAUnit.get(u).getAirborne())
+				{
+					change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.AIRBORNE));
+				}
+				if (TripleAUnit.get(u).getLaunched() != 0)
+				{
+					change.add(ChangeFactory.unitPropertyChange(u, 0, TripleAUnit.LAUNCHED));
+				}
 			}
 			change.add(m_transportTracker.endOfRoundClearStateChange(data));
 			m_PUsLost.clear();

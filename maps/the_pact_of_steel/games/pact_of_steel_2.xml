@@ -644,7 +644,6 @@
 				<!-- this currently is all the delegates triplea has.  not all are needed for a regular game though -->
 					<!-- purchaseNoPU buys 1 infantry for X number of territories controlled, rounding down. set X in player rules attachments -->
 					<!-- endTurnNoPU ends player's turn without giving them any PUs -->
-					<!-- givePUs will allow a player to give some PUs to some other players, currently not coded yet -->
                 <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
                 <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
                 <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
@@ -660,8 +659,9 @@
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
                 <delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
                 
-                <delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Special Move"/>
-				<!-- <delegate name="givePUs" javaClass="games.strategy.triplea.delegate.GivePUsDelegate" display="Give PUs"/> -->
+                <!-- SpecialMoveDelegate delegate is for the new Airborne forces tech (similar to paratroopers). The delegate name has to end with "AirborneCombatMove" for it to work properly.
+				<delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Special Move"/>
+						<step name="italianAirborneCombatMove" delegate="specialCombatMove" player="Italians" display="Airborne Attack Move"/>-->
 
                 <sequence>
 					<!-- it is very important that the "name" ends with the correct phrase, or else the game will not work properly.
@@ -691,7 +691,6 @@
                         <step name="italianPurchase" delegate="purchase" player="Italians"/>
                         <step name="italianPolitics" delegate="politics" player="Italians"/>
                         <step name="italianCombatMove" delegate="move" player="Italians"/>
-                        <step name="italianAirborneCombatMove" delegate="specialCombatMove" player="Italians"/>
                         <step name="italianBattle" delegate="battle" player="Italians"/>
                         <step name="italianNonCombatMove" delegate="move" player="Italians" display="Non Combat Move"/>
                         <step name="italianPlace" delegate="place" player="Italians"/>
@@ -710,7 +709,6 @@
                         <step name="russianEndTurn" delegate="endTurn" player="Russians"/>
 
                         <!-- Germans Game Sequence -->
-						<!-- <step name="germanGivePUs" delegate="givePUs" player="Germans"/> -->
                         <step name="germanTech" delegate="tech" player="Germans"/>
                         <step name="germanPurchase" delegate="purchase" player="Germans"/>
                         <step name="germanPolitics" delegate="politics" player="Germans"/>
@@ -3544,6 +3542,9 @@
 					productionBonus
 					rocketDiceNumber
 					unitAbilitiesGained
+					airborneCapacity
+					airborneTypes
+					airborneBases
 					
 		-->
 	<!-- Victory Triggers -->
@@ -4242,6 +4243,11 @@
 			rocketDistance								value:	sets the maximum distance rockets travel for the map.  must be an integer (default 0) between 0 and 100.  Effects from multiple techs are added together.
 			rocketNumberPerTerritory					value:	sets the maximum number of rocket rolls per territory.  must be an integer (default 0) between 0 and 200.  Effects from multiple techs are added together.
 			unitAbilitiesGained							value:	allows unit types to gain abilities through this tech.  must be the name of the unit, followed by a colon ":", followed by all the abilities gained (separated by colons).  currently allows only "canBlitz" and "canBombard".  Effects from multiple techs are added together.
+			airborneForces								value:	"true" or "false", does this tech allow the owner to start making airborne movements?
+			airborneCapacity							value:	gives some amount of capacity to an airborne base, for the number of units that can be launched from there.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
+			airborneTypes								value:	sets which units are airborne type units, therefore which units get to move.  must be a list of unit types, separated by a colon ":".
+			airborneDistance							value:	sets the maximum distance for moving any airborne type unit. must be an integer (default 0) between 0 and 100.  Effects from multiple techs are added together.
+			airborneBases								value:	sets which units are airborne base units, therefore which units are required at the start territory.  must be a list of unit types, separated by a colon ":".
 			
 	-->
 				<attatchment name="techAbilityAttachment" attatchTo="longRangeAir" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
@@ -4890,6 +4896,14 @@
 				</property>
 
 				<property name="Scramble To Any Amphibious Assault" value="true" editable="true">
+						<boolean/>
+				</property>
+				
+				<property name="Airborne Attacks Only In Existing Battles" value="true" editable="false">
+						<boolean/>
+				</property>
+				
+				<property name="Airborne Attacks Only In Enemy Territories" value="false" editable="false">
 						<boolean/>
 				</property>
 

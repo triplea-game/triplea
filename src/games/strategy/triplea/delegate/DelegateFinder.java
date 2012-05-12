@@ -66,9 +66,4 @@ public class DelegateFinder
 	{
 		return (TechnologyDelegate) findDelegate(data, "tech");
 	}
-	
-	public static final GivePUsDelegate givePUsDelegate(final GameData data)
-	{
-		return (GivePUsDelegate) findDelegate(data, "givePUs");
-	}
 }

@@ -1,4 +1,22 @@
 Changes for 1.6
+* Deleted "GivesPUsDelegate". (veqryn)
+
+* Finished airborne movement delegate, and technology. (veqryn)
+
+* Created new techAbilityAttachment, "airborneBases", which turns on the new airborne tech. (veqryn)
+
+* Created new techAbilityAttachment, "airborneDistance", which turns on the new airborne tech. (veqryn)
+
+* Created new techAbilityAttachment, "airborneTypes", which turns on the new airborne tech. (veqryn)
+
+* Created new techAbilityAttachment, "airborneCapacity", which turns on the new airborne tech. (veqryn)
+
+* Created new techAbilityAttachment, "airborneForces", which turns on the new airborne tech. (veqryn)
+
+* Created new game option, "Airborne Attacks Only In Enemy Territories", to help control different behavior for airborne tech. (veqryn)
+
+* Created new game option, "Airborne Attacks Only In Existing Battles", to help control different behavior for airborne tech. (veqryn)
+
 * Created Validation for Airborne movement. (veqryn)
 
 * Created AbstractMoveDelegate and abstracted MoveDelegate into it.  Created SpecialMoveDelegate to extend it, for use with new Paratroopers/Airborne tech. (veqryn)

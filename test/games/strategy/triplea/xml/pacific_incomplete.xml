@@ -498,11 +498,7 @@ Coded by Iron__Cross
             display="Bid Placement"/>
         <delegate name="bid"
             javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate"
-            display="Bid Purchase"/>
-
-        <delegate name="givePUs"
-            javaClass="games.strategy.triplea.delegate.GivePUsDelegate"
-            display="Give PUs"/>            
+            display="Bid Purchase"/>         
         
         <sequence>
             <step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
@@ -566,7 +562,6 @@ Coded by Iron__Cross
             <step name="australianEndTurn" delegate="endTurn" player="Australians"/>
 
             <!--Added Commonwealth PU transfer and end turn 
-            <step name="commonwealthGivePUs" delegate="givePUs" player="Commonwealth"/>
             <step name="commonwealthEndTurn" delegate="endTurn" player="Commonwealth"/>
 	    -->
             
