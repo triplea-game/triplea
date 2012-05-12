@@ -7,6 +7,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
 
@@ -31,6 +32,12 @@ public abstract class AbstractMoveDelegate extends BaseDelegate implements IMove
 	protected List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();// A collection of UndoableMoves
 	protected final TransportTracker m_transportTracker = new TransportTracker();
 	protected MovePerformer m_tempMovePerformer;// if we are in the process of doing a move. this instance will allow us to resume the move
+	
+	
+	public static enum MoveType
+	{
+		DEFAULT, SPECIAL
+	}
 	
 	public AbstractMoveDelegate()
 	{
@@ -147,6 +154,14 @@ public abstract class AbstractMoveDelegate extends BaseDelegate implements IMove
 	}
 	
 	public abstract String move(final Collection<Unit> units, final Route route, final Collection<Unit> m_transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents);
+	
+	public static MoveValidationResult validateMove(final MoveType moveType, final Collection<Unit> units, final Route route, final PlayerID player, final Collection<Unit> transportsToLoad,
+				final Map<Unit, Collection<Unit>> newDependents, final boolean isNonCombat, final List<UndoableMove> undoableMoves, final GameData data)
+	{
+		if (moveType == MoveType.SPECIAL)
+			return SpecialMoveDelegate.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves, data);
+		return MoveValidator.validateMove(units, route, player, transportsToLoad, newDependents, isNonCombat, undoableMoves, data);
+	}
 	
 	public Collection<Territory> getTerritoriesWhereAirCantLand(final PlayerID player)
 	{

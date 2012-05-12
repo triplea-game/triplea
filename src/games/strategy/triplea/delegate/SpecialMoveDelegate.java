@@ -1,27 +1,40 @@
 package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.Match;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * SpecialMoveDelegate is a move delegate made for special movements like the new paratrooper/airborne movement.
+ * 
+ * Airborne Attacks is actually Paratroopers tech for Global 1940, except that I really do not want to confuse myself by naming yet another thing Paratroopers, so this is now getting a new name.
+ * This is very different than "paratroopers" for AA50. We are actually launching the units from a static unit (an airbase) to another territory, instead of carrying them.
  * 
  * @author veqryn [Mark Christopher Duncan]
  * 
  */
 public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 {
+	private boolean m_needToInitialize = true;
+	private boolean m_allowAirborne = true;
 	
 	public SpecialMoveDelegate()
 	{
@@ -31,17 +44,56 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 	public void start(final IDelegateBridge aBridge)
 	{
 		super.start(new TripleADelegateBridge(aBridge));
+		final GameData data = getData();
+		if (!allowAirborne(m_player, data))
+		{
+			m_allowAirborne = false;
+			return;
+		}
+		final boolean onlyWhereUnderAttackAlready = games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+		// final boolean onlyEnemyTerritories = games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
+		final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
+		if (m_needToInitialize && onlyWhereUnderAttackAlready)
+		{
+			BattleDelegate.doInitialize(battleTracker, aBridge); // we do this to clear any 'finishedBattles' and also to create battles for units that didn't move
+			m_needToInitialize = false;
+		}
 	}
 	
 	@Override
 	public void end()
 	{
 		super.end();
+		m_needToInitialize = true;
+		m_allowAirborne = true;
+	}
+	
+	@Override
+	public Serializable saveState()
+	{
+		final SpecialMoveExtendedDelegateState state = new SpecialMoveExtendedDelegateState();
+		state.superState = super.saveState();
+		// add other variables to state here:
+		state.m_needToInitialize = m_needToInitialize;
+		state.m_allowAirborne = m_allowAirborne;
+		return state;
+	}
+	
+	@Override
+	public void loadState(final Serializable state)
+	{
+		final SpecialMoveExtendedDelegateState s = (SpecialMoveExtendedDelegateState) state;
+		super.loadState(s.superState);
+		// load other variables from state here:
+		m_needToInitialize = s.m_needToInitialize;
+		m_allowAirborne = s.m_allowAirborne;
 	}
 	
 	@Override
 	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents)
 	{
+		if (!m_allowAirborne)
+			return "No Airborne Movement Allowed Yet";
 		final GameData data = getData();
 		// there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
 		final PlayerID player = getUnitsOwner(units);
@@ -84,10 +136,190 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		if (route.hasNoSteps())
 			return result;
 		if (MoveValidator.validateFirst(data, units, route, player, result).getError() != null)
-		{
 			return result;
+		if (MoveValidator.validateFuel(data, units, route, player, result).getError() != null)
+			return result;
+		final boolean isEditMode = getEditMode(data);
+		if (!isEditMode)
+		{
+			// make sure all units are at least friendly
+			for (final Unit unit : Match.getMatches(units, Matches.unitIsOwnedBy(player).invert()))
+				result.addDisallowedUnit("Can only move owned units", unit);
+		}
+		if (validateAirborneMovements(data, units, route, player, result).getError() != null)
+			return result;
+		return result;
+	}
+	
+	private static MoveValidationResult validateAirborneMovements(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
+	{
+		if (!TechAbilityAttachment.getAllowAirborneForces(player, data))
+			return result.setErrorReturnResult("Do Not Have Airborne Tech");
+		final int airborneDistance = TechAbilityAttachment.getAirborneDistance(player, data);
+		final Set<UnitType> airborneBases = TechAbilityAttachment.getAirborneBases(player, data);
+		final Set<UnitType> airborneTypes = TechAbilityAttachment.getAirborneTypes(player, data);
+		if (airborneDistance <= 0 || airborneBases.isEmpty() || airborneTypes.isEmpty())
+			return result.setErrorReturnResult("Require Airborne Forces And Launch Capacity Tech");
+		if (route.numberOfSteps() > airborneDistance)
+			return result.setErrorReturnResult("Destination Is Out Of Range");
+		final Match<Unit> airborneBaseMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfTypes(airborneBases), Matches.UnitIsDisabled().invert(),
+					Matches.unitHasNotMoved);
+		// final Match<Unit> airborneTypesMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfTypes(airborneTypes), Matches.UnitIsDisabled().invert(), Matches.unitHasNotMoved);
+		final Territory start = route.getStart();
+		final Territory end = route.getEnd();
+		final Collection<Unit> basesAtStart = start.getUnits().getMatches(airborneBaseMatch);
+		if (basesAtStart.isEmpty())
+			return result.setErrorReturnResult("Require Airborne Base At Originating Territory");
+		final int airborneCapacity = TechAbilityAttachment.getAirborneCapacity(basesAtStart, player, data);
+		if (airborneCapacity <= 0)
+			return result.setErrorReturnResult("Airborne Bases Must Have Launch Capacity");
+		final Collection<Unit> airborne = new ArrayList<Unit>();
+		for (final Unit u : units)
+		{
+			if (!Matches.unitIsOwnedBy(player).match(u))
+				result.addDisallowedUnit("Must Own All Airborne Forces", u);
+			else if (!Matches.unitIsOfTypes(airborneBases).match(u))
+				result.addDisallowedUnit("Can Only Launch Airborne Forces", u);
+			else if (Matches.UnitIsDisabled().match(u))
+				result.addDisallowedUnit("Must Not Be Disabled", u);
+			else if (!Matches.unitHasNotMoved.match(u))
+				result.addDisallowedUnit("Must Not Have Previously Moved Airborne Forces", u);
+			else
+				airborne.add(u);
+		}
+		if (airborne.isEmpty())
+			return result;
+		final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
+		final boolean onlyWhereUnderAttackAlready = games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+		final boolean onlyEnemyTerritories = games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
+		// final Match<Territory> allowedPathForAirDrop = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data), Matches.TerritoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
+		if (!Match.allMatch(route.getSteps(), Matches.TerritoryIsPassableAndNotRestricted(player, data)))
+			return result.setErrorReturnResult("May Not Fly Over Impassable or Restricted Territories");
+		if (!Match.allMatch(route.getSteps(), Matches.TerritoryAllowsCanMoveAirUnitsOverOwnedLand(player, data)))
+			return result.setErrorReturnResult("May Only Fly Over Territories Where Air May Move");
+		final boolean someLand = Match.someMatch(airborne, Matches.UnitIsLand);
+		final boolean someSea = Match.someMatch(airborne, Matches.UnitIsSea);
+		// final boolean allAir = Match.allMatch(airborne, Matches.UnitIsAir);
+		final boolean land = Matches.TerritoryIsLand.match(end);
+		final boolean sea = Matches.TerritoryIsWater.match(end);
+		if (someLand && someSea)
+			return result.setErrorReturnResult("Can Not Mix Land and Sea Units");
+		else if (someLand)
+		{
+			if (!land)
+				return result.setErrorReturnResult("Can Not Move Land Units To Sea");
+		}
+		else if (someSea)
+		{
+			if (!sea)
+				return result.setErrorReturnResult("Can Not Move Sea Units To Land");
+		}
+		if (onlyWhereUnderAttackAlready)
+		{
+			final IBattle battle = battleTracker.getPendingBattle(end, false);
+			if (battle == null)
+				return result.setErrorReturnResult("Airborne May Only Attack Territories Already Under Assault");
+			else if (land && someLand && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsLand))
+				return result.setErrorReturnResult("Battle Must Have Some Land Units Participating Already");
+			else if (sea && someSea && !Match.someMatch(battle.getAttackingUnits(), Matches.UnitIsSea))
+				return result.setErrorReturnResult("Battle Must Have Some Sea Units Participating Already");
+		}
+		else if (onlyEnemyTerritories)
+		{
+			if (!(Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(end) || Matches.territoryHasEnemyUnits(player, data).match(end)))
+				return result.setErrorReturnResult("Destination Must Be Enemy Or Contain Enemy Units");
 		}
 		return result;
+	}
+	
+	/* old code from battle delegate....
+	
+		if (!TechAbilityAttachment.getAllowAirborneForces(player, data))
+			return result.setErrorReturnResult("Do Not Have Airborne Tech");
+		final int airborneDistance = TechAbilityAttachment.getAirborneDistance(player, data);
+		final Set<UnitType> airborneBases = TechAbilityAttachment.getAirborneBases(player, data);
+		final Set<UnitType> airborneTypes = TechAbilityAttachment.getAirborneTypes(player, data);
+		if (airborneDistance <= 0 || airborneBases.isEmpty() || airborneTypes.isEmpty())
+			return result.setErrorReturnResult("Require Airborne Forces And Launch Capacity Tech");
+		final Match<Unit> airborneBaseMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfTypes(airborneBases), Matches.UnitIsDisabled().invert(),
+					Matches.unitHasNotMoved);
+		final Match<Unit> airborneTypesMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfTypes(airborneTypes), Matches.UnitIsDisabled().invert(),
+					Matches.unitHasNotMoved);
+		final GameMap map = data.getMap();
+		final Collection<Territory> territoriesWeCanLaunchFrom = Match.getMatches(map.getTerritories(), Matches.territoryHasUnitsThatMatch(airborneBaseMatch));
+		territoriesWeCanLaunchFrom.retainAll(Match.getMatches(territoriesWeCanLaunchFrom, Matches.territoryHasUnitsThatMatch(airborneTypesMatch)));
+		if (territoriesWeCanLaunchFrom.isEmpty())
+			return result.setErrorReturnResult("Require Airborne Forces And Launch Capacity");
+		
+		final boolean onlyWhereUnderAttackAlready = games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
+		final boolean onlyEnemyTerritories = games.strategy.triplea.Properties.getAirborneAttacksOnlyInEnemyTerritories(data);
+		final Match<Territory> allowedPathForAirDrop = new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data),
+					Matches.TerritoryAllowsCanMoveAirUnitsOverOwnedLand(player, data));
+		final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
+		for (final Territory t : territoriesWeCanLaunchFrom)
+		{
+			final Collection<Unit> bases = t.getUnits().getMatches(airborneBaseMatch);
+			final Collection<Unit> airborne = t.getUnits().getMatches(airborneTypesMatch);
+			final int airborneCapacity = TechAbilityAttachment.getAirborneCapacity(bases, player, data);
+			if (airborneCapacity <= 0 || bases.isEmpty() || airborne.isEmpty())
+				continue;
+			final Collection<Territory> airDropPotential = map.getNeighbors(t, airborneDistance, allowedPathForAirDrop);
+			final Collection<Territory> airDropSpots = new ArrayList<Territory>();
+			if (onlyWhereUnderAttackAlready)
+			{
+				for (final Territory p : airDropPotential)
+				{
+					if (battleTracker.hasPendingBattle(p, false))
+						airDropSpots.add(p);
+				}
+			}
+			else if (onlyEnemyTerritories)
+			{
+				// enemy owned or where enemy units are
+				for (final Territory p : airDropPotential)
+				{
+					if (Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(p) || Matches.territoryHasEnemyUnits(player, data).match(p))
+						airDropSpots.add(p);
+				}
+			}
+			else
+				airDropSpots.addAll(airDropPotential);
+			if (airDropSpots.isEmpty())
+				continue;
+			// select which units, up to max, and their destination...
+			// to test, we will just pick one, and send all the units there...
+			final Tuple<Territory, Collection<Unit>> selection = new Tuple<Territory, Collection<Unit>>(airDropSpots.iterator().next(),
+						Match.getNMatches(airborne, airborneCapacity, Matches.unitOwnedBy(player)));
+			
+		}
+		// don't forget AA gets to fire if there is any...
+	 */
+
+	public static boolean allowAirborne(final PlayerID player, final GameData data)
+	{
+		if (!TechAbilityAttachment.getAllowAirborneForces(player, data))
+		{
+			return false;
+		}
+		final int airborneDistance = TechAbilityAttachment.getAirborneDistance(player, data);
+		final Set<UnitType> airborneBases = TechAbilityAttachment.getAirborneBases(player, data);
+		final Set<UnitType> airborneTypes = TechAbilityAttachment.getAirborneTypes(player, data);
+		if (airborneDistance <= 0 || airborneBases.isEmpty() || airborneTypes.isEmpty())
+		{
+			return false;
+		}
+		final Match<Unit> airborneBaseMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfTypes(airborneBases), Matches.UnitIsDisabled().invert(),
+					Matches.unitHasNotMoved);
+		final Match<Unit> airborneTypesMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitIsOfTypes(airborneTypes), Matches.UnitIsDisabled().invert(),
+					Matches.unitHasNotMoved);
+		final GameMap map = data.getMap();
+		final Collection<Territory> territoriesWeCanLaunchFrom = Match.getMatches(map.getTerritories(), Matches.territoryHasUnitsThatMatch(airborneBaseMatch));
+		territoriesWeCanLaunchFrom.retainAll(Match.getMatches(territoriesWeCanLaunchFrom, Matches.territoryHasUnitsThatMatch(airborneTypesMatch)));
+		if (territoriesWeCanLaunchFrom.isEmpty())
+		{
+			return false;
+		}
+		return true;
 	}
 	
 	private static boolean getEditMode(final GameData data)
@@ -107,4 +339,14 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 	{
 		// Auto-generated method stub
 	}
+}
+
+
+class SpecialMoveExtendedDelegateState implements Serializable
+{
+	private static final long serialVersionUID = 7781410008392307104L;
+	Serializable superState;
+	// add other variables here:
+	public boolean m_needToInitialize;
+	public boolean m_allowAirborne;
 }

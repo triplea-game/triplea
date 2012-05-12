@@ -26,6 +26,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
+import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.dataObjects.FightBattleDetails;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
@@ -119,9 +120,10 @@ public class ActionButtons extends JPanel
 	public void changeToMove(final PlayerID id, final boolean nonCombat, final String stepName)
 	{
 		m_movePanel.setNonCombat(nonCombat);
-		final String displayText = (stepName.endsWith("SpecialCombatMove") ? " Special" : (stepName.endsWith("AirborneCombatMove") ? " Airborne" :
-					((stepName.endsWith("ParatrooperCombatMove") || stepName.endsWith("ParatroopersCombatMove")) ? " Paratrooper" : (nonCombat ? " Non" : ""))));
+		final boolean airBorne = stepName.endsWith("AirborneCombatMove");
+		final String displayText = (airBorne ? " Airborne" : (nonCombat ? " Non" : ""));
 		m_movePanel.setDisplayText(displayText + " Combat Move");
+		m_movePanel.setMoveType(airBorne ? MoveType.SPECIAL : MoveType.DEFAULT);
 		changeTo(id, m_movePanel);
 	}
 	

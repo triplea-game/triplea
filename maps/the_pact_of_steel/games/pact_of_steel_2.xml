@@ -691,7 +691,7 @@
                         <step name="italianPurchase" delegate="purchase" player="Italians"/>
                         <step name="italianPolitics" delegate="politics" player="Italians"/>
                         <step name="italianCombatMove" delegate="move" player="Italians"/>
-                        <step name="italianSpecialCombatMove" delegate="specialCombatMove" player="Italians"/>
+                        <step name="italianAirborneCombatMove" delegate="specialCombatMove" player="Italians"/>
                         <step name="italianBattle" delegate="battle" player="Italians"/>
                         <step name="italianNonCombatMove" delegate="move" player="Italians" display="Non Combat Move"/>
                         <step name="italianPlace" delegate="place" player="Italians"/>

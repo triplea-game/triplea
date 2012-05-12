@@ -28,6 +28,8 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.AbstractMoveDelegate;
+import games.strategy.triplea.delegate.AbstractMoveDelegate.MoveType;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
@@ -103,6 +105,7 @@ public class MovePanel extends AbstractMovePanel
 	private TransportTracker m_transportTracker = null;
 	private Route m_routeCached = null;
 	private String m_displayText = "Combat Move";
+	private MoveType m_moveType = MoveType.DEFAULT;
 	
 	/** Creates new MovePanel */
 	public MovePanel(final GameData data, final MapPanel map, final TripleAFrame frame)
@@ -138,6 +141,11 @@ public class MovePanel extends AbstractMovePanel
 	protected void clearDependencies()
 	{
 		s_dependentUnits.clear();
+	}
+	
+	public void setMoveType(final MoveType moveType)
+	{
+		m_moveType = moveType;
 	}
 	
 	private PlayerID getUnitOwner(final Collection<Unit> units)
@@ -504,7 +512,7 @@ public class MovePanel extends AbstractMovePanel
 		getData().acquireReadLock();
 		try
 		{
-			allResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, s_dependentUnits, m_nonCombat, getUndoableMoves(), getData());
+			allResults = AbstractMoveDelegate.validateMove(m_moveType, bestWithDependents, route, getCurrentPlayer(), transportsToLoad, s_dependentUnits, m_nonCombat, getUndoableMoves(), getData());
 		} finally
 		{
 			getData().releaseReadLock();
@@ -517,13 +525,15 @@ public class MovePanel extends AbstractMovePanel
 			{
 				best = Match.getMatches(best, Matches.UnitCanInvade);
 				bestWithDependents = addMustMoveWith(best);
-				lastResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, s_dependentUnits, m_nonCombat, getUndoableMoves(), getData());
+				lastResults = AbstractMoveDelegate.validateMove(m_moveType, bestWithDependents, route, getCurrentPlayer(), transportsToLoad, s_dependentUnits, m_nonCombat, getUndoableMoves(),
+							getData());
 			}
 			while (!best.isEmpty() && !lastResults.isMoveValid())
 			{
 				best = best.subList(1, best.size());
 				bestWithDependents = addMustMoveWith(best);
-				lastResults = MoveValidator.validateMove(bestWithDependents, route, getCurrentPlayer(), transportsToLoad, s_dependentUnits, m_nonCombat, getUndoableMoves(), getData());
+				lastResults = AbstractMoveDelegate.validateMove(m_moveType, bestWithDependents, route, getCurrentPlayer(), transportsToLoad, s_dependentUnits, m_nonCombat, getUndoableMoves(),
+							getData());
 			}
 		}
 		if (allResults.isMoveValid())

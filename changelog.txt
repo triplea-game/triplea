@@ -1,4 +1,6 @@
 Changes for 1.6
+* Created Validation for Airborne movement. (veqryn)
+
 * Created AbstractMoveDelegate and abstracted MoveDelegate into it.  Created SpecialMoveDelegate to extend it, for use with new Paratroopers/Airborne tech. (veqryn)
 
 * Fixed error preventing AI Flat Income Bonus from happening unless the Percentage Bonus was also set. (veqryn)

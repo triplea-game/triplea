@@ -202,7 +202,7 @@ public class MoveValidator
 		return result;
 	}
 	
-	private static MoveValidationResult validateFuel(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
+	static MoveValidationResult validateFuel(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
 	{
 		if (getEditMode(data))
 			return result;

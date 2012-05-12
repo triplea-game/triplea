@@ -216,6 +216,8 @@ public interface Constants
 	public static final String PARATROOPERS_CAN_ATTACK_DEEP_INTO_ENEMY_TERRITORY = "Paratroopers Can Attack Deep Into Enemy Territory";
 	public static final String USE_BOMBING_MAX_DICE_SIDES_AND_BONUS = "Use Bombing Max Dice Sides And Bonus";
 	public static final String CONVOY_BLOCKADES_ROLL_DICE_FOR_COST = "Convoy Blockades Roll Dice For Cost";
+	public static final String AIRBORNE_ATTACKS_ONLY_IN_EXISTING_BATTLES = "Airborne Attacks Only In Existing Battles";
+	public static final String AIRBORNE_ATTACKS_ONLY_IN_ENEMY_TERRITORIES = "Airborne Attacks Only In Enemy Territories";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

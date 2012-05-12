@@ -815,6 +815,16 @@ public class Properties implements Constants
 		return data.getProperties().get(CONVOY_BLOCKADES_ROLL_DICE_FOR_COST, false);
 	}
 	
+	public static boolean getAirborneAttacksOnlyInExistingBattles(final GameData data)
+	{
+		return data.getProperties().get(AIRBORNE_ATTACKS_ONLY_IN_EXISTING_BATTLES, false);
+	}
+	
+	public static boolean getAirborneAttacksOnlyInEnemyTerritories(final GameData data)
+	{
+		return data.getProperties().get(AIRBORNE_ATTACKS_ONLY_IN_ENEMY_TERRITORIES, false);
+	}
+	
 	private Properties()
 	{
 	}
