@@ -19,9 +19,12 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.Match;
 
 import java.io.Serializable;
@@ -29,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -131,15 +136,12 @@ class AAInMoveUtil implements Serializable
 			return Collections.emptyList();
 		// can't rely on m_player being the unit owner in Edit Mode
 		// look at the units being moved to determine allies and enemies
-		PlayerID movingPlayer;
-		if (Match.someMatch(units, Matches.unitIsOwnedBy(m_player)))
-			movingPlayer = m_player;
-		else
-			movingPlayer = units.iterator().next().getOwner();
+		final PlayerID movingPlayer = movingPlayer(units);
+		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
 		// don't iterate over the end
 		// that will be a battle
 		// and handled else where in this tangled mess
-		final Match<Unit> hasAA = Matches.UnitIsAAthatCanFire(units, movingPlayer, Matches.UnitIsAAforFlyOverOnly, getData());
+		final Match<Unit> hasAA = Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, getData());
 		// AA guns in transports shouldn't be able to fire
 		final List<Territory> territoriesWhereAAWillFire = new ArrayList<Territory>();
 		for (final Territory current : route.getMiddleSteps())
@@ -165,6 +167,14 @@ class AAInMoveUtil implements Serializable
 		return DelegateFinder.battleDelegate(getData()).getBattleTracker();
 	}
 	
+	private PlayerID movingPlayer(final Collection<Unit> units)
+	{
+		if (Match.someMatch(units, Matches.unitIsOwnedBy(m_player)))
+			return m_player;
+		else
+			return units.iterator().next().getOwner();
+	}
+	
 	/**
 	 * Fire the aa units in the given territory, hits are removed from units
 	 */
@@ -172,17 +182,17 @@ class AAInMoveUtil implements Serializable
 	{
 		if (units.isEmpty())
 			return;
-		PlayerID movingPlayer;
-		if (Match.someMatch(units, Matches.unitIsOwnedBy(m_player)))
-			movingPlayer = m_player;
-		else
-			movingPlayer = units.iterator().next().getOwner();
-		final List<Unit> defendingAA = territory.getUnits().getMatches(Matches.UnitIsAAthatCanFire(units, movingPlayer, Matches.UnitIsAAforFlyOverOnly, getData()));
+		final PlayerID movingPlayer = movingPlayer(units);
+		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(movingPlayer, getData());
+		final List<Unit> defendingAA = territory.getUnits().getMatches(Matches.UnitIsAAthatCanFire(units, airborneTechTargetsAllowed, movingPlayer, Matches.UnitIsAAforFlyOverOnly, getData()));
 		final Set<String> AAtypes = UnitAttachment.getAllOfTypeAAs(defendingAA); // TODO: order this list in some way
 		for (final String currentTypeAA : AAtypes)
 		{
 			final Collection<Unit> currentPossibleAA = Match.getMatches(defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
 			final Set<UnitType> targetUnitTypesForThisTypeAA = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(getData());
+			final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAA);
+			final Match<Unit> aaTargetsMatch = new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+						new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo)));
 			
 			// once we fire the AA guns, we can't undo
 			// otherwise you could keep undoing and redoing
@@ -195,7 +205,7 @@ class AAInMoveUtil implements Serializable
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					dice[0] = DiceRoll.rollAA(units, currentPossibleAA, targetUnitTypesForThisTypeAA, m_bridge, territory);
+					dice[0] = DiceRoll.rollAA(units, currentPossibleAA, aaTargetsMatch, m_bridge, territory);
 				}
 			};
 			final IExecutable selectCasualties = new IExecutable()
@@ -210,7 +220,7 @@ class AAInMoveUtil implements Serializable
 						getRemotePlayer().reportMessage("No aa hits in " + territory.getName(), "No aa hits in " + territory.getName());
 					}
 					else
-						selectCasualties(dice[0], units, currentPossibleAA, targetUnitTypesForThisTypeAA, territory, null);
+						selectCasualties(dice[0], units, currentPossibleAA, aaTargetsMatch, territory, null);
 				}
 			};
 			// push in reverse order of execution
@@ -223,11 +233,12 @@ class AAInMoveUtil implements Serializable
 	 * hits are removed from units. Note that units are removed in the order
 	 * that the iterator will move through them.
 	 */
-	private void selectCasualties(final DiceRoll dice, final Collection<Unit> units, final Collection<Unit> defendingAA, final Set<UnitType> targetUnitTypesForThisTypeAA, final Territory territory,
+	private void selectCasualties(final DiceRoll dice, final Collection<Unit> units, final Collection<Unit> defendingAA, final Match<Unit> targetUnitTypesForThisTypeAAMatch,
+				final Territory territory,
 				final GUID battleID)
 	{
 		Collection<Unit> casualties = null;
-		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(units, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA));
+		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(units, targetUnitTypesForThisTypeAAMatch);
 		casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, m_bridge, territory.getOwner(), m_player, battleID, territory);
 		getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName(), casualties.size() + " AA hits in " + territory.getName());
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);

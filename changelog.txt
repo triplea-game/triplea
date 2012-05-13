@@ -1,4 +1,6 @@
 Changes for 1.6
+* Created new techAbilityAttachment, "airborneTargettedByAA", which is set by the attacker, controlling which airborne units are subject to AA gun fire and by what AA gun types. (veqryn)
+
 * Fixing error message for when a game xml is not correctly formed. Also preventing errors from being thrown until we check the version number. (veqryn)
 
 * Deleted "GivesPUsDelegate". (veqryn)

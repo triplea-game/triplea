@@ -31,6 +31,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
@@ -38,6 +39,7 @@ import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.triplea.player.ITripleaPlayer;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -94,15 +96,17 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	protected void updateDefendingUnits()
 	{
 		// fill in defenders
-		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker,
-					Matches.UnitIsAAforBombingThisUnitOnly, m_data));
+		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
+		final Match<Unit> defenders = new CompositeMatchOr<Unit>(Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(), Matches.UnitIsAAthatCanFire(m_attackingUnits,
+					airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
 		if (m_targets.isEmpty())
 		{
 			m_defendingUnits = Match.getMatches(m_battleSite.getUnits().getUnits(), defenders);
 		}
 		else
 		{
-			final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
+			final List<Unit> targets = Match.getMatches(m_battleSite.getUnits().getUnits(),
+						Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
 			targets.addAll(m_targets.keySet());
 			m_defendingUnits = targets;
 		}
@@ -177,7 +181,8 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		bridge.getHistoryWriter().setRenderingData(m_battleSite);
 		BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
 		// TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
-		m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
+		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
+		m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforBombingThisUnitOnly, m_data));
 		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA); // TODO: order this list in some way
 		final boolean hasAA = m_defendingAA.size() > 0;
 		m_steps = new ArrayList<String>();
@@ -321,6 +326,9 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			{
 				final Collection<Unit> currentPossibleAA = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
 				final Set<UnitType> targetUnitTypesForThisTypeAA = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
+				final Set<UnitType> airborneTypesTargettedToo = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
+				final Match<Unit> aaTargetsMatch = new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+							new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo)));
 				
 				final IExecutable roll = new IExecutable()
 				{
@@ -328,7 +336,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						m_dice = DiceRoll.rollAA(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge, m_battleSite);
+						m_dice = DiceRoll.rollAA(m_attackingUnits, currentPossibleAA, aaTargetsMatch, bridge, m_battleSite);
 					}
 				};
 				final IExecutable calculateCasualties = new IExecutable()
@@ -337,7 +345,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						m_casualties = calculateCasualties(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge, m_dice);
+						m_casualties = calculateCasualties(m_attackingUnits, currentPossibleAA, aaTargetsMatch, bridge, m_dice);
 					}
 				};
 				final IExecutable notifyCasualties = new IExecutable()
@@ -408,10 +416,10 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		return games.strategy.triplea.Properties.getPacificTheater(m_data);
 	}
 	
-	private Collection<Unit> calculateCasualties(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Set<UnitType> targetUnitTypesForThisTypeAA,
+	private Collection<Unit> calculateCasualties(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Match<Unit> targetUnitTypesForThisTypeAAMatch,
 				final IDelegateBridge bridge, final DiceRoll dice)
 	{
-		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA));
+		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, targetUnitTypesForThisTypeAAMatch);
 		final boolean isEditMode = EditDelegate.getEditMode(m_data);
 		if (isEditMode)
 		{

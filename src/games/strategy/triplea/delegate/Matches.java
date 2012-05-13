@@ -1140,7 +1140,7 @@ public class Matches
 		}
 	};
 	
-	public static final Match<Unit> UnitIsAAthatCanHitTheseUnits(final Collection<Unit> targets, final Match<Unit> typeOfAA)
+	public static final Match<Unit> UnitIsAAthatCanHitTheseUnits(final Collection<Unit> targets, final Match<Unit> typeOfAA, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed)
 	{
 		return new Match<Unit>()
 		{
@@ -1156,6 +1156,8 @@ public class Matches
 					if (targetsAA.contains(u.getType()))
 						return true;
 				}
+				if (Match.someMatch(targets, new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTechTargetsAllowed.get(ua.getTypeAA())))))
+					return true;
 				return false;
 			}
 		};
@@ -1190,12 +1192,13 @@ public class Matches
 		};
 	}
 	
-	public static final Match<Unit> UnitIsAAthatCanFire(final Collection<Unit> unitsMovingOrAttacking, final PlayerID playerMovingOrAttacking, final Match<Unit> typeOfAA, final GameData data)
+	public static final Match<Unit> UnitIsAAthatCanFire(final Collection<Unit> unitsMovingOrAttacking, final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed,
+				final PlayerID playerMovingOrAttacking, final Match<Unit> typeOfAA, final GameData data)
 	{
 		return new CompositeMatchAnd<Unit>(
 					Matches.enemyUnit(playerMovingOrAttacking, data),
 					Matches.unitIsBeingTransported().invert(),
-					Matches.UnitIsAAthatCanHitTheseUnits(unitsMovingOrAttacking, typeOfAA),
+					Matches.UnitIsAAthatCanHitTheseUnits(unitsMovingOrAttacking, typeOfAA, airborneTechTargetsAllowed),
 					Matches.UnitIsAAthatWillNotFireIfPresentEnemyUnits(unitsMovingOrAttacking).invert());
 	}
 	

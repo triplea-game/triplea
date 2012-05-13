@@ -3,7 +3,7 @@
 <game>
         <info name="World War II Global Test Alpha 3" version="2.9"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
-		<triplea minimumVersion="1.5.2"/>
+		<triplea minimumVersion="1.6"/>
 		<diceSides value="6"/>
 		
         <map>
@@ -2065,7 +2065,6 @@
 						<option name="canLandAirUnitsOnOwnedLand" value="true"/>-->
 						<option name="archeType" value="allied"/>
 						<option name="canTakeOverOwnedTerritory" value="true"/>
-						<option name="rocketsCanFlyOver" value="false"/>
 					</attatchment>
 
 					<attatchment name="relationshipTypeAttachment" attatchTo="Strict_Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
@@ -2092,7 +2091,7 @@
 					
 					<attatchment name="relationshipTypeAttachment" attatchTo="Unfriendly_Neutral" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="war"/>
-						<option name="rocketsCanFlyOver" value="true"/>
+						<option name="rocketsCanFlyOver" value="false"/>
 					</attatchment>
 		
 		
@@ -2299,7 +2298,7 @@
                          <option name="isInfantry" value="true"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
-                         <option name="artillerySupportable" value="true"/>
+                         <!--<option name="artillerySupportable" value="true"/>-->
 						 <option name="isAirTransportable" value="true"/>
 						 <option name="canBeCapturedOnEnteringBy" value="French:Americans:British:Russians:Germans:Italians:Japanese:ANZAC:Chinese"/>
 						 <option name="canBeGivenByTerritoryTo" value="British"/>
@@ -2311,7 +2310,7 @@
                          <option name="transportCost" value="3"/>
                          <option name="attack" value="1"/>
                          <option name="defense" value="2"/>
-                         <option name="artillerySupportable" value="true"/>
+                         <!--<option name="artillerySupportable" value="true"/>-->
 						 <option name="receivesAbilityWhenWith" value="canBlitz:armour"/>
 						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
@@ -2322,7 +2321,7 @@
                          <option name="transportCost" value="3"/>
                          <option name="attack" value="2"/>
                          <option name="defense" value="2"/>
-                         <option name="artillery" value="true"/>
+                         <!--<option name="artillery" value="true"/>-->
 						 <option name="canBeGivenByTerritoryTo" value="British"/>
                 </attatchment>
 
@@ -2384,7 +2383,7 @@
 						 <option name="blockade" value="2"/>
 						 <option name="bombingMaxDieSides" value="6"/>
 						 <option name="bombingBonus" value="0"/>
-						 <!-- TODO: can only target for raids: naval and air bases -->
+						 <option name="bombingTargets" value="airfield:harbour"/>
                 </attatchment>
             
                 <!-- Transport -->
@@ -3677,7 +3676,18 @@
 			    </attatchment>
 			
 			   <!-- Support Attachments -->
-				<attatchment name="supportAttachmentFighter" attatchTo="fighter" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+				<attatchment name="supportAttachmentInfantryAndMechInf" attatchTo="artillery" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+					<option name="unitType" value="infantry:mech_infantry"/>
+					<option name="faction" value="allied"/>
+					<option name="side" value="offence"/>
+					<option name="dice" value="strength"/>
+					<option name="bonus" value="1"/>
+					<option name="number" value="1"/>
+					<option name="bonusType" value="infantry_bonus"/>
+					<option name="impArtTech" value="true"/>
+					<option name="players" value="Germans:Russians:Americans:British:UK_Pacific:French:Italians:Japanese:Chinese:ANZAC:French:Dutch"/>
+				</attatchment>
+				<attatchment name="supportAttachmentTacticalBomber1" attatchTo="fighter" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
 					<option name="unitType" value="tactical_bomber"/>
 					<option name="faction" value="allied"/>
 					<option name="side" value="offence"/>
@@ -3688,7 +3698,7 @@
 					<option name="impArtTech" value="false"/>
 					<option name="players" value="Germans:Russians:Americans:British:UK_Pacific:French:Italians:Japanese:Chinese:ANZAC:French:Dutch"/>
 				</attatchment>
-				<attatchment name="supportAttachmentFighter" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+				<attatchment name="supportAttachmentTacticalBomber2" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
 					<option name="unitType" value="tactical_bomber"/>
 					<option name="faction" value="allied"/>
 					<option name="side" value="offence"/>
@@ -3699,7 +3709,101 @@
 					<option name="impArtTech" value="false"/>
 					<option name="players" value="Germans:Russians:Americans:British:UK_Pacific:French:Italians:Japanese:Chinese:ANZAC:French:Dutch"/>
 				</attatchment>
-			 
+				<attatchment name="supportAttachmentMechanizedTechnology" attatchTo="armour" javaClass="games.strategy.triplea.attatchments.UnitSupportAttachment" type="unitType">
+					<option name="unitType" value="mech_infantry"/>
+					<option name="faction" value="allied"/>
+					<option name="side" value="offence"/>
+					<option name="dice" value="strength"/>
+					<option name="bonus" value="1"/>
+					<option name="number" value="1"/>
+					<option name="bonusType" value="infantry_bonus"/>
+					<option name="impArtTech" value="false"/>
+					<!-- left blank on purpose: <option name="players" value=""/>-->
+				</attatchment>
+				
+				<attatchment name="conditionAttachment_Germans_Improved_Mech_Inf" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Russians_Improved_Mech_Inf" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Japanese_Improved_Mech_Inf" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Americans_Improved_Mech_Inf" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Chinese_Improved_Mech_Inf" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_British_Improved_Mech_Inf" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_UK_Pacific_Improved_Mech_Inf" attatchTo="UK_Pacific" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Italians_Improved_Mech_Inf" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_ANZAC_Improved_Mech_Inf" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_French_Improved_Mech_Inf" attatchTo="French" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="techs" value="Improved_Mech_Inf" count="1"/>
+				</attatchment>
+				
+				<attatchment name="triggerAttachment_Germans_Improved_Mech_Inf" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Germans_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Russians_Improved_Mech_Inf" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Russians_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Japanese_Improved_Mech_Inf" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Japanese_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Americans_Improved_Mech_Inf" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Americans_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Chinese_Improved_Mech_Inf" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Chinese_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_British_Improved_Mech_Inf" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_British_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_UK_Pacific_Improved_Mech_Inf" attatchTo="UK_Pacific" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_UK_Pacific_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_Italians_Improved_Mech_Inf" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Italians_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_ANZAC_Improved_Mech_Inf" attatchTo="ANZAC" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_ANZAC_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				<attatchment name="triggerAttachment_French_Improved_Mech_Inf" attatchTo="French" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_French_Improved_Mech_Inf"/>
+					<option name="support" value="supportAttachmentMechanizedTechnology"/>
+					<option name="uses" value="1"/>
+				</attatchment>
+				
+				
 		<!--  National Objectives (A number of NOs are done with Conditions further down) -->
 	
 			<!-- German Objectives -->
@@ -5193,6 +5297,8 @@
 						<option name="airborneBases" value="airfield"/>
 						<option name="airborneTypes" value="infantry"/>
 						<option name="airborneDistance" value="3"/>
+						<option name="airborneTargettedByAA" value="AA:infantry"/>
+						
 				</attatchment>
 				<attatchment name="techAbilityAttachment" attatchTo="increasedFactoryProduction" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
 						<option name="productionBonus" value="2:factory_major"/>

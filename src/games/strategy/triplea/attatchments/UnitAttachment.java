@@ -41,6 +41,7 @@ import games.strategy.util.Tuple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -2049,10 +2050,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_typeAA;
 	}
 	
-	public static Set<String> getAllOfTypeAAs(final Collection<Unit> aaUnits, final Collection<Unit> targets, final Match<Unit> typeOfAA)
+	public static Set<String> getAllOfTypeAAs(final Collection<Unit> aaUnits, final Collection<Unit> targets, final Match<Unit> typeOfAA,
+				final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed)
 	{
 		final Set<String> rVal = new HashSet<String>();
-		for (final Unit u : Match.getMatches(aaUnits, Matches.UnitIsAAthatCanHitTheseUnits(targets, typeOfAA)))
+		for (final Unit u : Match.getMatches(aaUnits, Matches.UnitIsAAthatCanHitTheseUnits(targets, typeOfAA, airborneTechTargetsAllowed)))
 		{
 			rVal.add(UnitAttachment.get(u.getType()).getTypeAA());
 		}

@@ -3545,6 +3545,7 @@
 					airborneCapacity
 					airborneTypes
 					airborneBases
+					airborneTargettedByAA
 					
 		-->
 	<!-- Victory Triggers -->
@@ -4243,11 +4244,12 @@
 			rocketDistance								value:	sets the maximum distance rockets travel for the map.  must be an integer (default 0) between 0 and 100.  Effects from multiple techs are added together.
 			rocketNumberPerTerritory					value:	sets the maximum number of rocket rolls per territory.  must be an integer (default 0) between 0 and 200.  Effects from multiple techs are added together.
 			unitAbilitiesGained							value:	allows unit types to gain abilities through this tech.  must be the name of the unit, followed by a colon ":", followed by all the abilities gained (separated by colons).  currently allows only "canBlitz" and "canBombard".  Effects from multiple techs are added together.
-			airborneForces								value:	"true" or "false", does this tech allow the owner to start making airborne movements?
+			airborneForces								value:	"true" or "false", does this tech allow the owner to start making airborne movements?  At least 1 tech must have this as true, for it to be turned on.
 			airborneCapacity							value:	gives some amount of capacity to an airborne base, for the number of units that can be launched from there.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
-			airborneTypes								value:	sets which units are airborne type units, therefore which units get to move.  must be a list of unit types, separated by a colon ":".
+			airborneTypes								value:	sets which units are airborne type units, therefore which units get to move.  must be a list of unit types, separated by a colon ":". Effects from multiple techs are added together.
 			airborneDistance							value:	sets the maximum distance for moving any airborne type unit. must be an integer (default 0) between 0 and 100.  Effects from multiple techs are added together.
-			airborneBases								value:	sets which units are airborne base units, therefore which units are required at the start territory.  must be a list of unit types, separated by a colon ":".
+			airborneBases								value:	sets which units are airborne base units, therefore which units are required at the start territory.  must be a list of unit types, separated by a colon ":". Effects from multiple techs are added together.
+			airborneTargettedByAA						value:	sets which airborne units are subject to AA gun fire, and by what aa types. First is the "targetsAA" that can hit these units, and next is a list of units hit by it. Effects from multiple techs are added together.
 			
 	-->
 				<attatchment name="techAbilityAttachment" attatchTo="longRangeAir" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">

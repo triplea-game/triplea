@@ -32,6 +32,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
@@ -357,7 +358,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		addDependentUnits(transporting(m_defendingUnits));
 		addDependentUnits(transporting(m_attackingUnits));
 		// determine any AA
-		m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforCombatOnly, m_data));
+		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
+		m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_data));
 		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA); // TODO: order this list in some way
 		// list the steps
 		m_stepStrings = determineStepStrings(true, bridge);
@@ -2203,6 +2205,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			{
 				final Collection<Unit> currentPossibleAA = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
 				final Set<UnitType> targetUnitTypesForThisTypeAA = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
+				final Set<UnitType> airborneTypesTargettedToo = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
+				final Match<Unit> aaTargetsMatch = new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+							new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo)));
 				
 				final IExecutable rollDice = new IExecutable()
 				{
@@ -2210,7 +2215,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						m_dice = DiceRoll.rollAA(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge, m_battleSite);
+						m_dice = DiceRoll.rollAA(m_attackingUnits, currentPossibleAA, aaTargetsMatch, bridge, m_battleSite);
 					}
 				};
 				final IExecutable selectCasualties = new IExecutable()
@@ -2219,7 +2224,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						selectCasualties(m_attackingUnits, currentPossibleAA, targetUnitTypesForThisTypeAA, bridge);
+						selectCasualties(m_attackingUnits, currentPossibleAA, aaTargetsMatch, bridge);
 					}
 				};
 				final IExecutable notifyCasualties = new IExecutable()
@@ -2239,12 +2244,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			}
 		}
 		
-		private void selectCasualties(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Set<UnitType> targetUnitTypesForThisTypeAA, final IDelegateBridge bridge)
+		private void selectCasualties(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Match<Unit> targetUnitTypesForThisTypeAAMatch, final IDelegateBridge bridge)
 		{
 			// send defender the dice roll so he can see what the dice are while he
 			// waits for attacker to select casualties
 			getDisplay(bridge).notifyDice(m_battleID, m_dice, SELECT_AA_CASUALTIES);
-			final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA));
+			final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, targetUnitTypesForThisTypeAAMatch);
 			m_casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, m_dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
 		}
 		
@@ -2291,7 +2296,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		if (m_defendingAA == null)
 		{
-			return m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, m_attacker, Matches.UnitIsAAforCombatOnly, m_data)).size() > 0;
+			final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
+			return m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_data)).size() > 0;
 		}
 		else
 			return m_defendingAA.size() > 0;

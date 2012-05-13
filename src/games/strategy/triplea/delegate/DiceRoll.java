@@ -109,10 +109,10 @@ public class DiceRoll implements Externalizable
 		return totalAAattacksNormal + totalAAattacksSurplus;
 	}
 	
-	public static DiceRoll rollAA(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Set<UnitType> targetUnitTypesForThisTypeAA, final IDelegateBridge bridge,
+	public static DiceRoll rollAA(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Match<Unit> targetUnitTypesForThisTypeAAMatch, final IDelegateBridge bridge,
 				final Territory location)
 	{
-		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA));
+		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, targetUnitTypesForThisTypeAAMatch);
 		final GameData data = bridge.getData();
 		int hits = 0;
 		final List<Die> sortedDice = new ArrayList<Die>();

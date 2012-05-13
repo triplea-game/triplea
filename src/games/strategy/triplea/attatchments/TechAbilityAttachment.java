@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -83,6 +84,7 @@ public class TechAbilityAttachment extends DefaultAttachment
 	private HashSet<UnitType> m_airborneTypes = new HashSet<UnitType>();
 	private int m_airborneDistance = 0;
 	private HashSet<UnitType> m_airborneBases = new HashSet<UnitType>();
+	private HashMap<String, HashSet<UnitType>> m_airborneTargettedByAA = new HashMap<String, HashSet<UnitType>>();
 	
 	//
 	// constructor
@@ -705,6 +707,43 @@ public class TechAbilityAttachment extends DefaultAttachment
 		m_airborneBases.clear();
 	}
 	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setAirborneTargettedByAA(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length < 2)
+			throw new GameParseException("airborneTargettedByAA must have at least two fields" + thisErrorMsg());
+		final String aaType = s[0];
+		final HashSet<UnitType> unitTypes = new HashSet<UnitType>();
+		for (int i = 1; i < s.length; i++)
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(s[i]);
+			if (ut == null)
+				throw new GameParseException("airborneTargettedByAA: no such unit type: " + s[i] + thisErrorMsg());
+			unitTypes.add(ut);
+		}
+		m_airborneTargettedByAA.put(aaType, unitTypes);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAirborneTargettedByAA(final HashMap<String, HashSet<UnitType>> value)
+	{
+		m_airborneTargettedByAA = value;
+	}
+	
+	public HashMap<String, HashSet<UnitType>> getAirborneTargettedByAA()
+	{
+		return m_airborneTargettedByAA;
+	}
+	
+	public void clearAirborneTargettedByAA()
+	{
+		m_airborneTargettedByAA.clear();
+	}
+	
 	//
 	// Static Methods for interpreting data in attachments
 	//
@@ -1053,6 +1092,31 @@ public class TechAbilityAttachment extends DefaultAttachment
 			}
 		}
 		return airborneBases;
+	}
+	
+	public static HashMap<String, HashSet<UnitType>> getAirborneTargettedByAA(final PlayerID player, final GameData data)
+	{
+		final HashMap<String, HashSet<UnitType>> rVal = new HashMap<String, HashSet<UnitType>>();
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				final HashMap<String, HashSet<UnitType>> mapAA = taa.getAirborneTargettedByAA();
+				if (mapAA != null && !mapAA.isEmpty())
+				{
+					for (final Entry<String, HashSet<UnitType>> entry : mapAA.entrySet())
+					{
+						HashSet<UnitType> current = rVal.get(entry.getKey());
+						if (current == null)
+							current = new HashSet<UnitType>();
+						current.addAll(entry.getValue());
+						rVal.put(entry.getKey(), current);
+					}
+				}
+			}
+		}
+		return rVal;
 	}
 	
 	/**
