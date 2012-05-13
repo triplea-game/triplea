@@ -1,4 +1,6 @@
 Changes for 1.6
+* Fixing error message for when a game xml is not correctly formed. Also preventing errors from being thrown until we check the version number. (veqryn)
+
 * Deleted "GivesPUsDelegate". (veqryn)
 
 * Finished airborne movement delegate, and technology. (veqryn)

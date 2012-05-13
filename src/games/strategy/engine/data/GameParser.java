@@ -64,7 +64,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * 
@@ -78,6 +80,7 @@ public class GameParser
 {
 	private static final Class<?>[] SETTER_ARGS = { String.class };
 	private GameData data;
+	private final Collection<SAXParseException> errorsSAX = new ArrayList<SAXParseException>();
 	
 	// public static final String OPTION_SEPARATOR = "<>";
 	private static HashMap<String, String> newClassesForOldNames;
@@ -118,6 +121,15 @@ public class GameParser
 		parseInfo(getSingleChild("info", root));
 		parseGameLoader(getSingleChild("loader", root));
 		parseMinimumEngineVersionNumber(getSingleChild("triplea", root, true));
+		// if we manage to get this far, past the minimum engine version number test, AND we are still good, then check and see if we have any SAX errors we need to show
+		if (!errorsSAX.isEmpty())
+		{
+			for (final SAXParseException error : errorsSAX)
+			{
+				System.err.println("SAXParseException: game: " + (data == null ? "?" : (data.getGameName() == null ? "?" : data.getGameName())) + ", line: " + error.getLineNumber() + ", column: "
+							+ error.getColumnNumber() + ", error: " + error.getMessage());
+			}
+		}
 		parseDiceSides(getSingleChild("diceSides", root, true));
 		final Element playerListNode = getSingleChild("playerList", root);
 		parsePlayerList(playerListNode);
@@ -259,6 +271,24 @@ public class GameParser
 		final URL url = GameParser.class.getResource("/games/strategy/engine/xml/");
 		final String system = url.toExternalForm();
 		final DocumentBuilder builder = factory.newDocumentBuilder();
+		final ErrorHandler myErrorHandler = new ErrorHandler()
+		{
+			public void fatalError(final SAXParseException exception) throws SAXException
+			{
+				errorsSAX.add(exception);
+			}
+			
+			public void error(final SAXParseException exception) throws SAXException
+			{
+				errorsSAX.add(exception);
+			}
+			
+			public void warning(final SAXParseException exception) throws SAXException
+			{
+				errorsSAX.add(exception);
+			}
+		};
+		builder.setErrorHandler(myErrorHandler);
 		return builder.parse(input, system);
 	}
 	
