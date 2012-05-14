@@ -924,10 +924,9 @@ public class BattleCalculator
 				final IntegerMap<UnitSupportAttachment> supportLeftCopy)
 	{
 		int count = 0;
-		int unitRoll = 0;
 		for (final Unit unit : units)
 		{
-			unitRoll = getRolls(unit, location, id, defend, supportRulesCopy, supportLeftCopy);
+			final int unitRoll = getRolls(unit, location, id, defend, supportRulesCopy, supportLeftCopy);
 			count += unitRoll;
 		}
 		return count;

@@ -56,8 +56,6 @@ public class TechAbilityAttachment extends DefaultAttachment
 		return rVal;
 	}
 	
-	// TODO: heavyBomber, must wait so that we can refactor the engine to handle multiple rolls for any kind of unit, etc.
-	
 	public static final String ABILITY_CAN_BLITZ = "canBlitz";
 	public static final String ABILITY_CAN_BOMBARD = "canBombard";
 	//
@@ -85,6 +83,9 @@ public class TechAbilityAttachment extends DefaultAttachment
 	private int m_airborneDistance = 0;
 	private HashSet<UnitType> m_airborneBases = new HashSet<UnitType>();
 	private HashMap<String, HashSet<UnitType>> m_airborneTargettedByAA = new HashMap<String, HashSet<UnitType>>();
+	private final IntegerMap<UnitType> m_attackRollsBonus = new IntegerMap<UnitType>();
+	private final IntegerMap<UnitType> m_defenseRollsBonus = new IntegerMap<UnitType>();
+	private final IntegerMap<UnitType> m_bombingBonus = new IntegerMap<UnitType>();
 	
 	//
 	// constructor
@@ -1146,7 +1147,7 @@ public class TechAbilityAttachment extends DefaultAttachment
 			TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
 			if (taa == null)
 			{
-				// TODO: debating if we should have flags for things like "air", "land", "sea", "aaGun", "factory", "strategic bomber", etc.
+				// debating if we should have flags for things like "air", "land", "sea", "aaGun", "factory", "strategic bomber", etc.
 				// perhaps just the easy ones, of air, land, and sea?
 				if (ta.equals(TechAdvance.LONG_RANGE_AIRCRAFT))
 				{

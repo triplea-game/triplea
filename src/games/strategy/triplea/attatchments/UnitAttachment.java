@@ -122,6 +122,8 @@ public class UnitAttachment extends DefaultAttachment
 	private boolean m_isMarine = false;
 	private boolean m_isSuicide = false;
 	private Tuple<Integer, String> m_attackingLimit = null;
+	private int m_attackRolls = 1;
+	private int m_defenseRolls = 1;
 	
 	// transportation related
 	private boolean m_isCombatTransport = false;
@@ -1324,15 +1326,28 @@ public class UnitAttachment extends DefaultAttachment
 		return m_attack;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAttackRolls(final String s)
+	{
+		m_attackRolls = getInt(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAttackRolls(final Integer s)
+	{
+		m_attackRolls = s;
+	}
+	
 	public int getAttackRolls(final PlayerID player)
 	{
-		if (getAttack(player) == 0)
+		if (getAttack(player) <= 0)
 			return 0;
-		if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player))
-		{
+		return m_attackRolls;
+		/*if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player))
+		{TODO
 			return games.strategy.triplea.Properties.getHeavyBomberDiceRolls(getData());
 		}
-		return 1;
+		return 1;*/
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1367,15 +1382,28 @@ public class UnitAttachment extends DefaultAttachment
 		return m_defense;
 	}
 	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setDefenseRolls(final String s)
+	{
+		m_defenseRolls = getInt(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setDefenseRolls(final Integer s)
+	{
+		m_defenseRolls = s;
+	}
+	
 	public int getDefenseRolls(final PlayerID player)
 	{
-		if (getDefense(player) == 0)
+		if (getDefense(player) <= 0)
 			return 0;
-		if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player) && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(getData()))
-		{
+		return m_defenseRolls;
+		/*if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player) && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(getData()))
+		{TODO
 			return games.strategy.triplea.Properties.getHeavyBomberDiceRolls(getData());
 		}
-		return 1;
+		return 1;*/
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
