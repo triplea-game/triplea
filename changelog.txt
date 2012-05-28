@@ -6,6 +6,8 @@ m_defenseRollsBonus
 m_bombingBonus
 
 
+* Changed History Writer setRenderData to be part of a new event, instead of being a separate method. Also fixed some display issues with event and child messages. (veqryn)
+
 * Created new techAbilityAttachment, "airborneTargettedByAA", which is set by the attacker, controlling which airborne units are subject to AA gun fire and by what AA gun types. (veqryn)
 
 * Fixing error message for when a game xml is not correctly formed. Also preventing errors from being thrown until we check the version number. (veqryn)

@@ -71,6 +71,13 @@ public class HistorySynchronizer
 			});
 		}
 		
+		public void startHistoryEvent(final String event, final Object renderingData)
+		{
+			startHistoryEvent(event);
+			if (renderingData != null)
+				setRenderingData(renderingData);
+		}
+		
 		public void startHistoryEvent(final String event)
 		{
 			SwingUtilities.invokeLater(new Runnable()
@@ -94,7 +101,7 @@ public class HistorySynchronizer
 			});
 		}
 		
-		public void setRenderingData(final Object renderingData)
+		protected void setRenderingData(final Object renderingData)
 		{
 			SwingUtilities.invokeLater(new Runnable()
 			{

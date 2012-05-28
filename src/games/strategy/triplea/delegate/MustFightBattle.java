@@ -335,8 +335,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			m_stack.execute(bridge);
 			return;
 		}
-		bridge.getHistoryWriter().startEvent("Battle in " + m_battleSite);
-		bridge.getHistoryWriter().setRenderingData(m_battleSite);
+		bridge.getHistoryWriter().startEvent("Battle in " + m_battleSite, m_battleSite);
 		removeAirNoLongerInTerritory();
 		writeUnitsToHistory(bridge);
 		// it is possible that no attacking units are present, if so end now

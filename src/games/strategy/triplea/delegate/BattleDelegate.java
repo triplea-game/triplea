@@ -702,8 +702,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 					}
 					change.add(ChangeFactory.moveUnits(t, to, scrambling)); // should we mark combat, or call setupUnitsInSameTerritoryBattles again?
 					m_bridge.getHistoryWriter()
-								.startEvent(defender.getName() + " scrambles " + scrambling.size() + " units out of " + t.getName() + " to defend against the attack in " + to.getName());
-					m_bridge.getHistoryWriter().setRenderingData(scrambling);
+								.startEvent(defender.getName() + " scrambles " + scrambling.size() + " units out of " + t.getName() + " to defend against the attack in " + to.getName(), scrambling);
 					scrambledHere = true;
 				}
 				if (!change.isEmpty())
@@ -866,8 +865,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				change.add(ChangeFactory.unitPropertyChange(u, false, TripleAUnit.WAS_SCRAMBLED));
 				if (!change.isEmpty())
 				{
-					m_bridge.getHistoryWriter().startEvent(historyText);
-					m_bridge.getHistoryWriter().setRenderingData(u);
+					m_bridge.getHistoryWriter().startEvent(historyText, u);
 					m_bridge.addChange(change);
 				}
 			}
@@ -1246,8 +1244,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		}
 		final String title = "Kamikaze Suicide Attack attacks " + MyFormatter.unitsToText(Collections.singleton(unitUnderFire));
 		final String dice = " scoring " + hits + " hits.  Rolls: " + MyFormatter.asDice(rolls);
-		m_bridge.getHistoryWriter().startEvent(title + dice);
-		m_bridge.getHistoryWriter().setRenderingData(unitUnderFire);
+		m_bridge.getHistoryWriter().startEvent(title + dice, unitUnderFire);
 		if (hits > 0)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unitUnderFire.getType());

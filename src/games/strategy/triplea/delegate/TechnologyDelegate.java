@@ -224,9 +224,10 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		}
 		final boolean isRevisedModel = isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel());
 		final String directedTechInfo = isRevisedModel ? " for " + techToRollFor.getTechs().get(0) : "";
+		final DiceRoll renderDice = (isLL_TECH_ONLY() ? new DiceRoll(random, techHits, remainder, false) : new DiceRoll(random, techHits, diceSides - 1, true));
 		m_bridge.getHistoryWriter().startEvent(
 					m_player.getName() + (random.hashCode() > 0 ? " roll " : " rolls : ") + MyFormatter.asDice(random) + directedTechInfo + " and gets " + techHits + " "
-								+ MyFormatter.pluralize("hit", techHits));
+								+ MyFormatter.pluralize("hit", techHits), renderDice);
 		if (techHits > 0 && isWW2V3TechModel())
 		{
 			m_techCategory = techToRollFor;
@@ -237,10 +238,6 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 			final Change removeTokens = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
 			m_bridge.addChange(removeTokens);
 		}
-		if (isLL_TECH_ONLY())
-			m_bridge.getHistoryWriter().setRenderingData(new DiceRoll(random, techHits, remainder, false));
-		else
-			m_bridge.getHistoryWriter().setRenderingData(new DiceRoll(random, techHits, diceSides - 1, true));
 		Collection<TechAdvance> advances;
 		if (isRevisedModel)
 		{

@@ -177,8 +177,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		// We update Defending Units twice: first time when the battle is created, and second time before the battle begins.
 		// The reason is because when the battle is created, there are no attacking units yet in it, meaning that m_targets is empty. We need to update right as battle begins to know we have the full list of targets.
 		updateDefendingUnits();
-		bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite);
-		bridge.getHistoryWriter().setRenderingData(m_battleSite);
+		bridge.getHistoryWriter().startEvent("Strategic bombing raid in " + m_battleSite, m_battleSite);
 		BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
 		// TODO: determine if the target has the property, not just any unit with the property isAAforBombingThisUnitOnly
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);

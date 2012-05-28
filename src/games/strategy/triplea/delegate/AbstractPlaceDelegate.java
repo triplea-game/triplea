@@ -115,8 +115,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final GameData data = getData();
 		if (!Properties.getUnplacedUnitsLive(data) && !units.isEmpty())
 		{
-			m_bridge.getHistoryWriter().startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed");
-			m_bridge.getHistoryWriter().setRenderingData(units);
+			m_bridge.getHistoryWriter().startEvent(MyFormatter.unitsToTextNoOwner(units) + " were produced but were not placed", units);
 			final Change change = ChangeFactory.removeUnits(player, units);
 			m_bridge.addChange(change);
 		}
@@ -302,8 +301,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		m_placements.add(current_placement);
 		updateUndoablePlacementIndexes();
 		final String transcriptText = MyFormatter.unitsToTextNoOwner(placeableUnits) + " placed in " + at.getName();
-		m_bridge.getHistoryWriter().startEvent(transcriptText);
-		m_bridge.getHistoryWriter().setRenderingData(current_placement.getDescriptionObject());
+		m_bridge.getHistoryWriter().startEvent(transcriptText, current_placement.getDescriptionObject());
 		if (movedAirTranscriptTextForHistory != null)
 			m_bridge.getHistoryWriter().addChildToEvent(movedAirTranscriptTextForHistory);
 		m_bridge.addChange(change);
@@ -936,8 +934,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (weCanConsume && actuallyDoIt && change != null && !change.isEmpty())
 		{
 			// m_bridge.addChange(change);
-			m_bridge.getHistoryWriter().startEvent("Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits));
-			m_bridge.getHistoryWriter().setRenderingData(removedUnits);
+			m_bridge.getHistoryWriter().startEvent("Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits), removedUnits);
 		}
 		return weCanConsume;
 	}

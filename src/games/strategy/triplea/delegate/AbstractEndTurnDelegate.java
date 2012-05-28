@@ -251,6 +251,8 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		final PlayerAttachment pa = PlayerAttachment.get(Player);
 		final Collection<PlayerID> PossibleNewOwners = pa.getGiveUnitControl();
 		final Collection<Territory> territories = aBridge.getData().getMap().getTerritories();
+		final CompositeChange change = new CompositeChange();
+		final Collection<Tuple<Territory, Collection<Unit>>> changeList = new ArrayList<Tuple<Territory, Collection<Unit>>>();
 		for (final Territory currTerritory : territories)
 		{
 			final TerritoryAttachment ta = (TerritoryAttachment) currTerritory.getAttachment(Constants.TERRITORY_ATTACHMENT_NAME);
@@ -266,13 +268,30 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 						final Collection<Unit> units = currTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.unitOwnedBy(Player), Matches.UnitCanBeGivenByTerritoryTo(terrNewOwner)));
 						if (!units.isEmpty())
 						{
-							final Change changeOwner = ChangeFactory.changeOwner(units, terrNewOwner, currTerritory);
-							aBridge.getHistoryWriter().addChildToEvent(changeOwner.toString());
-							aBridge.addChange(changeOwner);
+							change.add(ChangeFactory.changeOwner(units, terrNewOwner, currTerritory));
+							changeList.add(new Tuple<Territory, Collection<Unit>>(currTerritory, units));
 						}
 					}
 				}
 			}
+		}
+		if (!change.isEmpty() && !changeList.isEmpty())
+		{
+			if (changeList.size() == 1)
+			{
+				final Tuple<Territory, Collection<Unit>> tuple = changeList.iterator().next();
+				aBridge.getHistoryWriter().startEvent("Some Units in " + tuple.getFirst().getName() + " change ownership: " + MyFormatter.unitsToTextNoOwner(tuple.getSecond()), tuple.getSecond());
+			}
+			else
+			{
+				aBridge.getHistoryWriter().startEvent("Units Change Ownership");
+				for (final Tuple<Territory, Collection<Unit>> tuple : changeList)
+				{
+					aBridge.getHistoryWriter().addChildToEvent("Some Units in " + tuple.getFirst().getName() + " change ownership: " + MyFormatter.unitsToTextNoOwner(tuple.getSecond()),
+								tuple.getSecond());
+				}
+			}
+			aBridge.addChange(change);
 		}
 	}
 	

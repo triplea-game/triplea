@@ -111,8 +111,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				if (toAdd != null && !toAdd.isEmpty())
 				{
 					final String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAdd) + " in " + t.getName();
-					bridge.getHistoryWriter().startEvent(transcriptText);
-					bridge.getHistoryWriter().setRenderingData(toAdd);
+					bridge.getHistoryWriter().startEvent(transcriptText, toAdd);
 					final Change place = ChangeFactory.addUnits(t, toAdd);
 					change.add(place);
 				}
@@ -124,8 +123,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 					{
 						final Territory tw = waterNeighbors.iterator().next();
 						final String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddSea) + " in " + tw.getName();
-						bridge.getHistoryWriter().startEvent(transcriptText);
-						bridge.getHistoryWriter().setRenderingData(toAddSea);
+						bridge.getHistoryWriter().startEvent(transcriptText, toAddSea);
 						final Change place = ChangeFactory.addUnits(tw, toAddSea);
 						change.add(place);
 					}
@@ -138,8 +136,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 					{
 						final Territory tl = landNeighbors.iterator().next();
 						final String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAddLand) + " in " + tl.getName();
-						bridge.getHistoryWriter().startEvent(transcriptText);
-						bridge.getHistoryWriter().setRenderingData(toAddLand);
+						bridge.getHistoryWriter().startEvent(transcriptText, toAddLand);
 						final Change place = ChangeFactory.addUnits(tl, toAddLand);
 						change.add(place);
 					}

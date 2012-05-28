@@ -137,6 +137,13 @@ public class ServerGame extends AbstractGame
 				}
 			}
 			
+			public void startHistoryEvent(final String event, final Object renderingData)
+			{
+				startHistoryEvent(event);
+				if (renderingData != null)
+					setRenderingData(renderingData);
+			}
+			
 			public void startHistoryEvent(final String event)
 			{
 				assertCorrectCaller();
@@ -149,7 +156,7 @@ public class ServerGame extends AbstractGame
 				m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
 			}
 			
-			public void setRenderingData(final Object renderingData)
+			protected void setRenderingData(final Object renderingData)
 			{
 				assertCorrectCaller();
 				m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);

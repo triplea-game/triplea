@@ -520,7 +520,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		// do the move
 		final UndoableMove currentMove = new UndoableMove(data, units, route);
 		final String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
-		m_bridge.getHistoryWriter().startEvent(transcriptText);
+		m_bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
 		if (isKamikaze)
 		{
 			m_bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move, for at least some of the units", kamikazeUnits);
@@ -531,7 +531,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		}*/
 		// MoveDescription description = new MoveDescription(units, route);
 		// m_bridge.getHistoryWriter().setRenderingData(description);
-		m_bridge.getHistoryWriter().setRenderingData(currentMove.getDescriptionObject());
 		m_tempMovePerformer = new MovePerformer();
 		m_tempMovePerformer.initialize(this);
 		m_tempMovePerformer.moveUnits(units, route, player, transportsThatCanBeLoaded, newDependents, currentMove);

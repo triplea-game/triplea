@@ -121,8 +121,7 @@ public class Place
 				{
 					public void run()
 					{
-						CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message);
-						CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().setRenderingData(fHackedUnits); // Let the user see the hacked units in the sidebar
+						CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(message, fHackedUnits); // Let the user see the hacked units in the sidebar
 					}
 				};
 				try
@@ -215,8 +214,7 @@ public class Place
 						public void run()
 						{
 							CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().startEvent(
-										fAI.getName() + " use a UPM cheat, and place " + fHackedUnits.size() + " units on " + fPlaceLoc.getName());
-							CachedInstanceCenter.CachedDelegateBridge.getHistoryWriter().setRenderingData(fHackedUnits); // Let the user see the hacked units in the sidebar
+										fAI.getName() + " use a UPM cheat, and place " + fHackedUnits.size() + " units on " + fPlaceLoc.getName(), fHackedUnits); // Let the user see the hacked units in the sidebar
 						}
 					};
 					try

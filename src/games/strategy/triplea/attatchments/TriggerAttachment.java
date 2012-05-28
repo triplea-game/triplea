@@ -1459,8 +1459,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		{
 			final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": has removed " + MyFormatter.unitsToTextNoOwner(totalRemoved) + " owned by "
 						+ player.getName() + " in " + terr.getName();
-			aBridge.getHistoryWriter().startEvent(transcriptText);
-			aBridge.getHistoryWriter().setRenderingData(totalRemoved);
+			aBridge.getHistoryWriter().startEvent(transcriptText, totalRemoved);
 			aBridge.addChange(change);
 		}
 	}
@@ -1484,8 +1483,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(units, Matches.UnitIsFactoryOrIsInfrastructure);
 		change.add(DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, player));
 		final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName() + " has " + MyFormatter.unitsToTextNoOwner(units) + " placed in " + terr.getName();
-		aBridge.getHistoryWriter().startEvent(transcriptText);
-		aBridge.getHistoryWriter().setRenderingData(units);
+		aBridge.getHistoryWriter().startEvent(transcriptText, units);
 		final Change place = ChangeFactory.addUnits(terr, units);
 		change.add(place);
 		/* No longer needed, as territory unitProduction is now set by default to equal the territory value. Therefore any time it is different from the default, the map maker set it, so we shouldn't screw with it.
@@ -2019,7 +2017,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			{
 				change.add(ChangeFactory.changeProductionFrontier(aPlayer, t.getFrontier()));
 				aBridge.getHistoryWriter().startEvent(
-							MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " has their production frontier changed to: " + t.getFrontier().toString());
+							MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " has their production frontier changed to: " + t.getFrontier().getName());
 			}
 		}
 		if (!change.isEmpty())
@@ -2203,8 +2201,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					if (!units.isEmpty())
 					{
 						final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": " + MyFormatter.unitsToTextNoOwner(units) + " gained by " + aPlayer;
-						aBridge.getHistoryWriter().startEvent(transcriptText);
-						aBridge.getHistoryWriter().setRenderingData(units);
+						aBridge.getHistoryWriter().startEvent(transcriptText, units);
 						final Change place = ChangeFactory.addUnits(aPlayer, units);
 						aBridge.addChange(place);
 					}

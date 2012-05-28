@@ -247,8 +247,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 			m_bridge.getHistoryWriter().addChildToEvent(message, renderingObject);
 		else
 		{
-			m_bridge.getHistoryWriter().startEvent(message);
-			m_bridge.getHistoryWriter().setRenderingData(renderingObject);
+			m_bridge.getHistoryWriter().startEvent(message, renderingObject);
 		}
 	}
 	

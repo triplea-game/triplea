@@ -271,10 +271,10 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 	{
 	}
 	
-	public void setRenderingData(final Object renderingData)
+	/*public void setRenderingData(final Object renderingData)
 	{
-	}
-	
+	}*/
+
 	public void shutDown()
 	{
 	}
@@ -284,6 +284,10 @@ class DummyGameModifiedChannel implements IGameModifiedChannel
 	}
 	
 	public void stepChanged(final String stepName, final String delegateName, final PlayerID player, final int round, final String displayName, final boolean loadedFromSavedGame)
+	{
+	}
+	
+	public void startHistoryEvent(final String event, final Object renderingData)
 	{
 	}
 }

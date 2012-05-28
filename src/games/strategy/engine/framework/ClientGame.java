@@ -59,6 +59,13 @@ public class ClientGame extends AbstractGame
 				m_data.getHistory().getHistoryWriter().addChange(aChange);
 			}
 			
+			public void startHistoryEvent(final String event, final Object renderingData)
+			{
+				startHistoryEvent(event);
+				if (renderingData != null)
+					setRenderingData(renderingData);
+			}
+			
 			public void startHistoryEvent(final String event)
 			{
 				m_data.getHistory().getHistoryWriter().startEvent(event);
@@ -69,7 +76,7 @@ public class ClientGame extends AbstractGame
 				m_data.getHistory().getHistoryWriter().addChildToEvent(new EventChild(text, renderingData));
 			}
 			
-			public void setRenderingData(final Object renderingData)
+			protected void setRenderingData(final Object renderingData)
 			{
 				m_data.getHistory().getHistoryWriter().setRenderingData(renderingData);
 			}

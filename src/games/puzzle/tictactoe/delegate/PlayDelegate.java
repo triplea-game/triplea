@@ -111,8 +111,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		final Collection<Unit> units = new ArrayList<Unit>(1);
 		units.add(getData().getUnitTypeList().getUnitType("ticmark").create(player));
 		final String transcriptText = player.getName() + " played in " + at.getName();
-		m_bridge.getHistoryWriter().startEvent(transcriptText);
-		m_bridge.getHistoryWriter().setRenderingData(units);
+		m_bridge.getHistoryWriter().startEvent(transcriptText, units);
 		final Change place = ChangeFactory.addUnits(at, units);
 		final Change owner = ChangeFactory.changeOwner(at, player);
 		final CompositeChange change = new CompositeChange();

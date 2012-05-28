@@ -370,8 +370,7 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 			else
 				transcriptText = m_player.getName() + " buy nothing; " + remainingText;
 		}
-		m_bridge.getHistoryWriter().startEvent(transcriptText);
-		m_bridge.getHistoryWriter().setRenderingData(totalUnits);
+		m_bridge.getHistoryWriter().startEvent(transcriptText, totalUnits);
 	}
 	
 	private IntegerMap<Resource> getCosts(final IntegerMap<ProductionRule> productionRules, final PlayerID player)

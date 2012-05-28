@@ -42,6 +42,14 @@ public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 		return "";
 	}
 	
+	public void startEvent(final String eventName, final Object renderingData)
+	{
+		if (eventName.startsWith("COMMENT: "))
+			m_delegateHistoryWriter.startEvent(eventName, renderingData);
+		else
+			m_delegateHistoryWriter.startEvent(getEventPrefix() + eventName, renderingData);
+	}
+	
 	public void startEvent(final String eventName)
 	{
 		if (eventName.startsWith("COMMENT: "))
@@ -66,11 +74,9 @@ public class TripleADelegateHistoryWriter implements IDelegateHistoryWriter
 			m_delegateHistoryWriter.addChildToEvent(getEventPrefix() + child, renderingData);
 	}
 	
-	/**
-	 * Set the rendering data for the current event.
-	 */
+	/* Set the rendering data for the current event.
 	public void setRenderingData(final Object renderingData)
 	{
 		m_delegateHistoryWriter.setRenderingData(renderingData);
-	}
+	}*/
 }

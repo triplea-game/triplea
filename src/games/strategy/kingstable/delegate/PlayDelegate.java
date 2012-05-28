@@ -309,8 +309,7 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	{
 		final Collection<Unit> units = start.getUnits().getUnits();
 		final String transcriptText = player.getName() + " moved from " + start.getName() + " to " + end.getName();
-		m_bridge.getHistoryWriter().startEvent(transcriptText);
-		m_bridge.getHistoryWriter().setRenderingData(units);
+		m_bridge.getHistoryWriter().startEvent(transcriptText, units);
 		final Change removeUnit = ChangeFactory.removeUnits(start, units);
 		final Change removeStartOwner = ChangeFactory.changeOwner(start, PlayerID.NULL_PLAYERID);
 		final Change addUnit = ChangeFactory.addUnits(end, units);

@@ -23,12 +23,11 @@ public interface IDelegateHistoryWriter
 {
 	public void startEvent(String eventName);
 	
+	public void startEvent(String eventName, Object renderingData);
+	
 	public void addChildToEvent(String child);
 	
 	public void addChildToEvent(String child, Object renderingData);
 	
-	/**
-	 * Set the redering data for the current event.
-	 */
-	public void setRenderingData(Object renderingData);
+	// public void setRenderingData(Object renderingData);
 }

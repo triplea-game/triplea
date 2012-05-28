@@ -144,8 +144,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		
 		// start event
 		final String transcriptText = MyFormatter.unitsToTextNoOwner(units) + " moved from " + route.getStart().getName() + " to " + route.getEnd().getName();
-		m_bridge.getHistoryWriter().startEvent(transcriptText);
-		m_bridge.getHistoryWriter().setRenderingData(currentMove.getDescriptionObject());
+		m_bridge.getHistoryWriter().startEvent(transcriptText, currentMove.getDescriptionObject());
 		// actually do our special changes
 		m_bridge.addChange(airborneChange);
 		m_bridge.addChange(fillLaunchCapacity);
