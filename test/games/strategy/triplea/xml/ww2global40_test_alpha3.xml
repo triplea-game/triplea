@@ -5310,6 +5310,9 @@
 				<attatchment name="techAbilityAttachment" attatchTo="Improved_Mech_Inf" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
 						<option name="unitAbilitiesGained" value="mech_infantry:canBlitz"/>
 				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="heavyBomber" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="attackRollsBonus" value="1:bomber"/>
+				</attatchment>
 				
         </attatchmentList>
 		

@@ -1721,6 +1721,9 @@
 															artillery gives support (+1 attack) to "artillerySupportable" units (land, sea, or air are allowed)
 			unitSupportCount					values: with the 'artillerySupportable' and 'artillery' ability, these three create a set of support attachments at the start of the game,
 															unitSupportCount is the number of units that will be supported by the artillery, defaults to 1 if missing
+			attackRolls							values: number of rolls this unit gets on attack (default = 1)
+			defenseRolls						values: number of rolls this unit gets on defense (default = 1)
+			chooseBestRoll						values: true/false, whether we pick the best dice or use all dice rolls, when there is more than one roll (default false). When in Low Luck, we instead add +1 onto the power for each extra roll.
 			isMarine							values: gives the unit +1 attack if it is attacking amphibiously
 			canBlitz							values: allows the unit to move through multiple empty enemy territories in one turn
 			receivesAbilityWhenWith				values: gives a unit an ability when they are with, or on the same route as, another unit. currently only works with 'canBlitz'. example: value="canBlitz:armour"
@@ -4250,6 +4253,10 @@
 			airborneDistance							value:	sets the maximum distance for moving any airborne type unit. must be an integer (default 0) between 0 and 100.  Effects from multiple techs are added together.
 			airborneBases								value:	sets which units are airborne base units, therefore which units are required at the start territory.  must be a list of unit types, separated by a colon ":". Effects from multiple techs are added together.
 			airborneTargettedByAA						value:	sets which airborne units are subject to AA gun fire, and by what aa types. First is the "targetsAA" that can hit these units, and next is a list of units hit by it. Effects from multiple techs are added together.
+			attackRollsBonus							value:	sets how many extra rolls this unit gets on attack. Effects from multiple techs are added together.
+			defenseRollsBonus							value:	sets how many extra rolls this unit gets on defense. Effects from multiple techs are added together.
+			bombingBonus								value:	gives an extra amount of damage to strategic bombing raids, after all dice have been rolled, per unit (not per die). Effects from multiple techs are added together.
+			
 			
 	-->
 				<attatchment name="techAbilityAttachment" attatchTo="longRangeAir" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
@@ -4790,7 +4797,7 @@
 						<number min="0" max="1"/>
 				</property>
 
-						<!-- Heavy Bombers will choose best of 2 dice, and if Strat Bombing will add 1 to result -->
+						<!-- All units with multiple dice rolls, will be forced to select the best die rolled instead of using all dice. -->
 				<property name="LHTR Heavy Bombers" value="false" editable="true">
 						<boolean/>
 				</property>

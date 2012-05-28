@@ -601,8 +601,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			}
 			final TerritoryAttachment ta = TerritoryAttachment.get(m_battleSite);
 			int cost = 0;
-			final boolean lhtrHeavyBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(m_data);
-			// boolean lhtrHeavyBombers = m_data.getProperties().get(Constants.LHTR_HEAVY_BOMBERS, false);
+			final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(m_data);
 			int damageLimit = ta.getProduction();
 			final Iterator<Unit> iter = m_attackingUnits.iterator();
 			int index = 0;
@@ -611,16 +610,18 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			while (iter.hasNext())
 			{
 				final Unit attacker = iter.next();
+				final UnitAttachment ua = UnitAttachment.get(attacker.getType());
 				int rolls;
 				rolls = BattleCalculator.getRolls(attacker, m_battleSite, m_attacker, false);
 				int costThisUnit = 0;
-				if (lhtrHeavyBombers && rolls > 1)
+				if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 				{
+					// LHTR means we select the best Dice roll for the unit
 					int max = 0;
 					for (int i = 0; i < rolls; i++)
 					{
-						// +2 since 0 based (LHTR adds +1 to base roll)
-						max = Math.max(max, m_dice[index] + 2);
+						// +1 since 0 based
+						max = Math.max(max, m_dice[index] + 1);
 						index++;
 					}
 					costThisUnit = max;
@@ -633,6 +634,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 						index++;
 					}
 				}
+				costThisUnit = Math.max(0, (costThisUnit + TechAbilityAttachment.getBombingBonus(attacker.getType(), attacker.getOwner(), m_data)));
 				if (limitDamage)
 					costThisUnit = Math.min(costThisUnit, damageLimit);
 				cost += costThisUnit;

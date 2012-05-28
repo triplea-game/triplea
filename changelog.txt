@@ -1,10 +1,17 @@
 Changes for 1.6
-m_attackRolls
-m_defenseRolls
-m_attackRollsBonus
-m_defenseRollsBonus
-m_bombingBonus
+* Created new techAbilityAttachment option, "bombingBonus", which will add additional damage after all dice are rolled, per unit. (veqryn)
 
+* Created new techAbilityAttachment option, "defenseRollsBonus", which adds additional defense rolls. (veqryn)
+
+* Created new techAbilityAttachment option, "attackRollsBonus", which adds additional attack rolls. (veqryn)
+
+* Created new UnitAttachment option, "chooseBestRoll", which controls whether we select the best dice or use all the dice rolled, when there is more than one die rolled. (veqryn)
+
+* Created new UnitAttachment option, "defenseRolls", which controls the number of defense rolls a unit has, so long as their defense is greater than zero. (veqryn)
+
+* Created new UnitAttachment option, "attackRolls", which controls the number of attack rolls a unit has, so long as their attack is greater than zero. (veqryn)
+
+* Abstracted Heavy Bombers technology. (veqryn)
 
 * Changed History Writer setRenderData to be part of a new event, instead of being a separate method. Also fixed some display issues with event and child messages. (veqryn)
 

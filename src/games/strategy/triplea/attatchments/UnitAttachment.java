@@ -124,6 +124,7 @@ public class UnitAttachment extends DefaultAttachment
 	private Tuple<Integer, String> m_attackingLimit = null;
 	private int m_attackRolls = 1;
 	private int m_defenseRolls = 1;
+	private boolean m_chooseBestRoll = false;
 	
 	// transportation related
 	private boolean m_isCombatTransport = false;
@@ -1342,12 +1343,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		if (getAttack(player) <= 0)
 			return 0;
-		return m_attackRolls;
-		/*if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player))
-		{TODO
-			return games.strategy.triplea.Properties.getHeavyBomberDiceRolls(getData());
-		}
-		return 1;*/
+		return Math.max(0, m_attackRolls + TechAbilityAttachment.getAttackRollsBonus((UnitType) this.getAttachedTo(), player, getData()));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1398,12 +1394,24 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		if (getDefense(player) <= 0)
 			return 0;
-		return m_defenseRolls;
-		/*if (m_isStrategicBomber && TechTracker.hasHeavyBomber(player) && games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(getData()))
-		{TODO
-			return games.strategy.triplea.Properties.getHeavyBomberDiceRolls(getData());
-		}
-		return 1;*/
+		return Math.max(0, m_defenseRolls + TechAbilityAttachment.getDefenseRollsBonus((UnitType) this.getAttachedTo(), player, getData()));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setChooseBestRoll(final String s)
+	{
+		m_chooseBestRoll = getBool(s);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setChooseBestRoll(final Boolean s)
+	{
+		m_chooseBestRoll = s;
+	}
+	
+	public boolean getChooseBestRoll()
+	{
+		return m_chooseBestRoll;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2573,6 +2581,9 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  artillerySupportable:" + m_artillerySupportable
 					+ "  artillery:" + m_artillery
 					+ "  unitSupportCount:" + m_unitSupportCount
+					+ "  attackRolls:" + m_attackRolls
+					+ "  defenseRolls:" + m_defenseRolls
+					+ "  chooseBestRoll:" + m_chooseBestRoll
 					+ "  isMarine:" + m_isMarine
 					+ "  isInfantry:" + m_isInfantry
 					+ "  isLandTransport:" + m_isLandTransport
@@ -2667,9 +2678,9 @@ public class UnitAttachment extends DefaultAttachment
 		else
 			stats.append("Land unit, ");
 		if (getAttack(player) > 0)
-			stats.append(getAttack(player) + " Attack, ");
+			stats.append((getAttackRolls(player) > 1 ? (getAttackRolls(player) + "x ") : "") + getAttack(player) + " Attack, ");
 		if (getDefense(player) > 0)
-			stats.append(getDefense(player) + " Defense, ");
+			stats.append((getDefenseRolls(player) > 1 ? (getDefenseRolls(player) + "x ") : "") + getDefense(player) + " Defense, ");
 		if (getMovement(player) > 0)
 			stats.append(getMovement(player) + " Movement, ");
 		if (m_isTwoHit)
@@ -2713,10 +2724,11 @@ public class UnitAttachment extends DefaultAttachment
 		if (m_isRocket && playerHasRockets(player))
 		{
 			stats.append("can Rocket Attack, ");
-			if ((m_bombingMaxDieSides != -1 || m_bombingBonus != -1) && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData()))
-				stats.append((m_bombingBonus != -1 ? m_bombingBonus + 1 : 1)
+			final int bombingBonus = getBombingBonus();
+			if ((m_bombingMaxDieSides != -1 || bombingBonus != -1) && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData()))
+				stats.append((bombingBonus != -1 ? bombingBonus + 1 : 1)
 							+ "-"
-							+ (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (m_bombingBonus != -1 ? m_bombingBonus : 0) : getData().getDiceSides() + (m_bombingBonus != -1 ? m_bombingBonus : 0))
+							+ (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (bombingBonus != -1 ? bombingBonus : 0) : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
 							+ " Rocket Damage, ");
 			else
 				stats.append("1-" + getData().getDiceSides() + " Rocket Damage, ");
@@ -2772,10 +2784,11 @@ public class UnitAttachment extends DefaultAttachment
 		if (m_isStrategicBomber)
 		{
 			stats.append("can Perform Raids, ");
-			if ((m_bombingMaxDieSides != -1 || m_bombingBonus != -1) && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData()))
-				stats.append((m_bombingBonus != -1 ? m_bombingBonus + 1 : 1)
+			final int bombingBonus = getBombingBonus();
+			if ((m_bombingMaxDieSides != -1 || bombingBonus != -1) && games.strategy.triplea.Properties.getUseBombingMaxDiceSidesAndBonus(getData()))
+				stats.append((bombingBonus != -1 ? bombingBonus + 1 : 1)
 							+ "-"
-							+ (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (m_bombingBonus != -1 ? m_bombingBonus : 0) : getData().getDiceSides() + (m_bombingBonus != -1 ? m_bombingBonus : 0))
+							+ (m_bombingMaxDieSides != -1 ? m_bombingMaxDieSides + (bombingBonus != -1 ? bombingBonus : 0) : getData().getDiceSides() + (bombingBonus != -1 ? bombingBonus : 0))
 							+ " Raid Damage, ");
 			else
 				stats.append("1-" + getData().getDiceSides() + " Raid Damage, ");

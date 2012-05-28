@@ -1035,7 +1035,7 @@ public class BattleCalculator
 		int strengthWithoutSupport = 0;
 		// Find the strength the unit has without support
 		// lhtr heavy bombers take best of n dice for both attack and defense
-		if (rolls > 1 && lhtrBombers && ua.getIsStrategicBomber())
+		if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 		{
 			if (defending)
 				strengthWithoutSupport = ua.getDefense(current.getOwner());

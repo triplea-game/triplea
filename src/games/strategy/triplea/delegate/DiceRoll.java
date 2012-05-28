@@ -258,8 +258,9 @@ public class DiceRoll implements Externalizable
 			int totalStr = 0;
 			for (int i = 0; i < rolls; i++)
 			{
-				if (i > 1 && lhtrBombers && ua.getIsStrategicBomber())
+				if (i > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 				{
+					// LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1 onto the power to simulate the gains of having the best die picked.
 					if (totalStr < data.getDiceSides())
 					{
 						power += 1;
@@ -295,7 +296,6 @@ public class DiceRoll implements Externalizable
 				strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), location, defending);
 				totalStr += strength;
 				power += Math.min(Math.max(strength, 0), data.getDiceSides());
-				;
 			}
 		}
 		// Get number of hits
@@ -596,7 +596,7 @@ public class DiceRoll implements Externalizable
 			final int rolls = BattleCalculator.getRolls(current, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules),
 						new IntegerMap<UnitSupportAttachment>(supportLeft));
 			// lhtr heavy bombers take best of n dice for both attack and defense
-			if (rolls > 1 && lhtrBombers && ua.getIsStrategicBomber())
+			if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 			{
 				int strength;
 				if (defending)

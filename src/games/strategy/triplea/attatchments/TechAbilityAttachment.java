@@ -56,6 +56,7 @@ public class TechAbilityAttachment extends DefaultAttachment
 		return rVal;
 	}
 	
+	// unitAbilitiesGained Static Strings
 	public static final String ABILITY_CAN_BLITZ = "canBlitz";
 	public static final String ABILITY_CAN_BOMBARD = "canBombard";
 	//
@@ -83,9 +84,9 @@ public class TechAbilityAttachment extends DefaultAttachment
 	private int m_airborneDistance = 0;
 	private HashSet<UnitType> m_airborneBases = new HashSet<UnitType>();
 	private HashMap<String, HashSet<UnitType>> m_airborneTargettedByAA = new HashMap<String, HashSet<UnitType>>();
-	private final IntegerMap<UnitType> m_attackRollsBonus = new IntegerMap<UnitType>();
-	private final IntegerMap<UnitType> m_defenseRollsBonus = new IntegerMap<UnitType>();
-	private final IntegerMap<UnitType> m_bombingBonus = new IntegerMap<UnitType>();
+	private IntegerMap<UnitType> m_attackRollsBonus = new IntegerMap<UnitType>();
+	private IntegerMap<UnitType> m_defenseRollsBonus = new IntegerMap<UnitType>();
+	private IntegerMap<UnitType> m_bombingBonus = new IntegerMap<UnitType>();
 	
 	//
 	// constructor
@@ -745,6 +746,114 @@ public class TechAbilityAttachment extends DefaultAttachment
 		m_airborneTargettedByAA.clear();
 	}
 	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setAttackRollsBonus(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length <= 0 || s.length > 2)
+			throw new GameParseException("attackRollsBonus can not be empty or have more than two fields" + thisErrorMsg());
+		String unitType;
+		unitType = s[1];
+		// validate that this unit exists in the xml
+		final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
+		if (ut == null)
+			throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+		// we should allow positive and negative numbers
+		final int n = getInt(s[0]);
+		m_attackRollsBonus.put(ut, n);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setAttackRollsBonus(final IntegerMap<UnitType> value)
+	{
+		m_attackRollsBonus = value;
+	}
+	
+	public IntegerMap<UnitType> getAttackRollsBonus()
+	{
+		return m_attackRollsBonus;
+	}
+	
+	public void clearAttackRollsBonus()
+	{
+		m_attackRollsBonus.clear();
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setDefenseRollsBonus(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length <= 0 || s.length > 2)
+			throw new GameParseException("defenseRollsBonus can not be empty or have more than two fields" + thisErrorMsg());
+		String unitType;
+		unitType = s[1];
+		// validate that this unit exists in the xml
+		final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
+		if (ut == null)
+			throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+		// we should allow positive and negative numbers
+		final int n = getInt(s[0]);
+		m_defenseRollsBonus.put(ut, n);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setDefenseRollsBonus(final IntegerMap<UnitType> value)
+	{
+		m_defenseRollsBonus = value;
+	}
+	
+	public IntegerMap<UnitType> getDefenseRollsBonus()
+	{
+		return m_defenseRollsBonus;
+	}
+	
+	public void clearDefenseRollsBonus()
+	{
+		m_defenseRollsBonus.clear();
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setBombingBonus(final String value) throws GameParseException
+	{
+		final String[] s = value.split(":");
+		if (s.length <= 0 || s.length > 2)
+			throw new GameParseException("bombingBonus can not be empty or have more than two fields" + thisErrorMsg());
+		String unitType;
+		unitType = s[1];
+		// validate that this unit exists in the xml
+		final UnitType ut = getData().getUnitTypeList().getUnitType(unitType);
+		if (ut == null)
+			throw new GameParseException("No unit called:" + unitType + thisErrorMsg());
+		// we should allow positive and negative numbers
+		final int n = getInt(s[0]);
+		m_bombingBonus.put(ut, n);
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setBombingBonus(final IntegerMap<UnitType> value)
+	{
+		m_bombingBonus = value;
+	}
+	
+	public IntegerMap<UnitType> getBombingBonus()
+	{
+		return m_bombingBonus;
+	}
+	
+	public void clearBombingBonus()
+	{
+		m_bombingBonus.clear();
+	}
+	
 	//
 	// Static Methods for interpreting data in attachments
 	//
@@ -1120,6 +1229,48 @@ public class TechAbilityAttachment extends DefaultAttachment
 		return rVal;
 	}
 	
+	public static int getAttackRollsBonus(final UnitType ut, final PlayerID player, final GameData data)
+	{
+		int rVal = 0;
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				rVal += taa.getAttackRollsBonus().getInt(ut);
+			}
+		}
+		return rVal;
+	}
+	
+	public static int getDefenseRollsBonus(final UnitType ut, final PlayerID player, final GameData data)
+	{
+		int rVal = 0;
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				rVal += taa.getDefenseRollsBonus().getInt(ut);
+			}
+		}
+		return rVal;
+	}
+	
+	public static int getBombingBonus(final UnitType ut, final PlayerID player, final GameData data)
+	{
+		int rVal = 0;
+		for (final TechAdvance ta : TechTracker.getTechAdvances(player, data))
+		{
+			final TechAbilityAttachment taa = TechAbilityAttachment.get(ta);
+			if (taa != null)
+			{
+				rVal += taa.getBombingBonus().getInt(ut);
+			}
+		}
+		return rVal;
+	}
+	
 	/**
 	 * Must be done only in GameParser, and only after we have already parsed ALL technologies, attachments, and game options/properties.
 	 * 
@@ -1239,18 +1390,33 @@ public class TechAbilityAttachment extends DefaultAttachment
 						taa.setUnitAbilitiesGained(destroyer.getName() + ":" + ABILITY_CAN_BOMBARD);
 					}
 				}
-				/*else if (ta.equals(TechAdvance.HEAVY_BOMBER))
+				else if (ta.equals(TechAdvance.HEAVY_BOMBER))
 				{
-					// TODO: heavyBomber, must wait so that we can refactor the engine to handle multiple rolls for any kind of unit, etc.
-				}*/
+					taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
+					ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
+					final List<UnitType> allBombers = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsStrategicBomber);
+					final int heavyBomberDiceRollsTotal = games.strategy.triplea.Properties.getHeavyBomberDiceRolls(data);
+					final boolean heavyBombersLHTR = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+					for (final UnitType bomber : allBombers)
+					{
+						final int heavyBomberDiceRollsBonus = heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerID.NULL_PLAYERID); // we subtract the base rolls to get the bonus
+						taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
+						if (heavyBombersLHTR)
+						{
+							taa.setDefenseRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
+							taa.setBombingBonus("1:" + bomber.getName()); // LHTR adds 1 to base roll
+						}
+					}
+				}
 				//
 				// The following technologies should NOT have ability attachments for them:
 				// shipyards and industrialTechnology = because it is better to use a Trigger to change player's production
 				// improvedArtillerySupport = because it is already completely atomized and controlled through support attachments
 				// paratroopers = because it is already completely atomized and controlled through unit attachments + game options
 				// mechanizedInfantry = because it is already completely atomized and controlled through unit attachments
+				//
 				// IF one of the above named techs changes what it does in a future version of a&a, and the change is large enough or different enough that it can not be done easily with a new game option,
-				// then it is better to create a new tech rather than change the old one, and give the new one a new name, like paratroopers2 or paratroopersAttack, or some crap.
+				// then it is better to create a new tech rather than change the old one, and give the new one a new name, like paratroopers2 or paratroopersAttack or Airborne_Forces, or some crap.
 				//
 			}
 		}
@@ -1262,6 +1428,5 @@ public class TechAbilityAttachment extends DefaultAttachment
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{
-		// TODO Auto-generated method stub
 	}
 }
