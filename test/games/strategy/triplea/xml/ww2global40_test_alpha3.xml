@@ -4223,12 +4223,11 @@
 					<option name="relationship" value="Americans:Japanese:anyWar"/>
 					<option name="relationship" value="Russians:Japanese:anyWar"/>
 				</attatchment>
-				<attatchment name="conditionAttachment_Russians_Not_Allied_To_Mongolians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="relationship" value="Russians:Mongolians:anyAllied"/>
-					<option name="invert" value="true"/>
+				<attatchment name="conditionAttachment_Russians_Neutral_With_Mongolians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Russians:Mongolians:anyNeutral"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Russians_May_Declare_War_On_Mongolians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="conditions" value="conditionAttachment_Russians_Not_Allied_To_Mongolians"/>
+					<option name="conditions" value="conditionAttachment_Russians_Neutral_With_Mongolians"/>
 					<option name="relationship" value="Russians:Japanese:anyWar"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Americans_Not_Yet_At_War_With_Mongolians_But_Allies_Are" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
