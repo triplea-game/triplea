@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="2.9"/>
+        <info name="World War II Global Test Alpha 3" version="3.0"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.6"/>
 		<diceSides value="6"/>
@@ -5276,16 +5276,32 @@
 				
 				
 <!-- Tech Ability Attachment -->
+				<attatchment name="techAbilityAttachment" attatchTo="superSub" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="attackBonus" value="1:submarine"/>
+				</attatchment>
 				<attatchment name="techAbilityAttachment" attatchTo="jetPower" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
 						<option name="attackBonus" value="1:fighter"/>
 						<option name="airAttackBonus" value="1:fighter"/>
 						<option name="airDefenseBonus" value="1:fighter"/>
+				</attatchment>
+				<!-- shipyards can either be done with triggers, or the old way (old way only works if all nations have the same production frontier, and it requires a special shipyard frontier) -->
+				<attatchment name="techAbilityAttachment" attatchTo="aARadar" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="radarBonus" value="1:aaGun"/>
+						<option name="radarBonus" value="1:airfield"/>
+						<option name="radarBonus" value="1:harbour"/>
+						<option name="radarBonus" value="1:factory_minor"/>
+						<option name="radarBonus" value="1:factory_upgrade"/>
+						<option name="radarBonus" value="1:factory_major"/>
 				</attatchment>
 				<attatchment name="techAbilityAttachment" attatchTo="longRangeAir" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
 						<option name="movementBonus" value="1:fighter"/>
 						<option name="movementBonus" value="1:bomber"/>
 						<option name="movementBonus" value="1:tactical_bomber"/>
 				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="heavyBomber" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="attackRollsBonus" value="1:bomber"/>
+				</attatchment>
+				<!-- Advanced Artillery (improvedArtillerySupport) is handled via Support Attachments -->
 				<attatchment name="techAbilityAttachment" attatchTo="rocket" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
 						<option name="rocketDiceNumber" value="1:airfield"/>
 						<option name="rocketDistance" value="4"/>
@@ -5298,7 +5314,6 @@
 						<option name="airborneTypes" value="infantry"/>
 						<option name="airborneDistance" value="3"/>
 						<option name="airborneTargettedByAA" value="AA:infantry"/>
-						
 				</attatchment>
 				<attatchment name="techAbilityAttachment" attatchTo="increasedFactoryProduction" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
 						<option name="productionBonus" value="2:factory_major"/>
@@ -5307,11 +5322,12 @@
 						<option name="minimumTerritoryValueForProductionBonus" value="0"/>
 						<option name="repairDiscount" value="50"/>
 				</attatchment>
+				<attatchment name="techAbilityAttachment" attatchTo="warBonds" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
+						<option name="warBondDiceSides" value="6"/>
+						<option name="warBondDiceNumber" value="1"/>
+				</attatchment>
 				<attatchment name="techAbilityAttachment" attatchTo="Improved_Mech_Inf" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
 						<option name="unitAbilitiesGained" value="mech_infantry:canBlitz"/>
-				</attatchment>
-				<attatchment name="techAbilityAttachment" attatchTo="heavyBomber" javaClass="games.strategy.triplea.attatchments.TechAbilityAttachment" type="technology">
-						<option name="attackRollsBonus" value="1:bomber"/>
 				</attatchment>
 				
         </attatchmentList>
@@ -6670,10 +6686,11 @@
 <div style="padding:10px;font-size:14px;background-color:white;text-align:justify;">
 <b>Global 1940 Alpha +3</b><br>
 <br>
-<b>Credits:</b> Bung, Veqryn<br>
+<b>Credits:</b> Bung, Veqryn<br><br>
 
 <b>Note</b><br>
-This game uses the latest Alpha +3 rules, as posted on Larry's website.<br><br>
+This game uses the latest Alpha +3 rules, as posted on Larry's website.<br>
+To blitz move mech_infantry with armour, you must click on them both at the same time (use CTRL to create waypoints).<br><br>
 
 <b>Disclaimer</b><br>
 The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. 
@@ -6687,13 +6704,7 @@ When not yet at war, you may ask for permission to move through a canal, and if 
 * Do not allow blitzing or movement through Friendly Neutrals.<br>
 * Air units may not land in or move through Friendly Neutrals, including the same turn they are captured.<br>
 * Friendly Neutrals can not be 'captured' with an AA Gun, only by land units with an attack power.<br>
-* Kamikaze attacks will prevent bombardment.  So will Scrambling attacks.<br>
-* Captured naval and air bases can not be used until next turn.  In other words, you can't somehow use the naval base for bonus movement during noncombat.<br>
-* New Blockade Zone rules.<br>
 * If UK Pacific captures Japan, the money goes to UK Pacific, even if UK Pacific's capital is occupied.<br>
-* Technology does not yet work.<br>
-* UK Pacific may for part or all of any Tech Tokens purchased by the British.<br>
-* Tactical Bombers may only target Airfields and Harbours for strategic bombing, and may not target any factories.<br>
 * Do not allow USA movement to end in Sea Zones 17, 22, 32, 33, 34, and 37.<br>
 <br><br>
 <br><hr><br>

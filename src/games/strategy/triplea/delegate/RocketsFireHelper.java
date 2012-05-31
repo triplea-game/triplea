@@ -176,12 +176,12 @@ public class RocketsFireHelper
 	
 	private Set<Territory> getTargetsWithinRange(final Territory territory, final GameData data, final PlayerID player)
 	{
-		final Collection<Territory> possible = data.getMap().getNeighbors(territory, 3);
+		final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
+		final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
 		final Set<Territory> hasFactory = new HashSet<Territory>();
 		final CompositeMatchAnd<Territory> allowed = new CompositeMatchAnd<Territory>(Matches.territoryAllowsRocketsCanFlyOver(player, data));
 		if (isRocketsCanFlyOverImpassables(data))
 			allowed.add(Matches.TerritoryIsNotImpassable);
-		final int maxDistance = TechAbilityAttachment.getRocketDistance(player, data);
 		for (final Territory current : possible)
 		{
 			final Route route = data.getMap().getRoute(territory, current, allowed);
