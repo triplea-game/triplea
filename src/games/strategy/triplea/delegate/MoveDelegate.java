@@ -708,6 +708,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		final List<Unit> canTransport = Match.getMatches(transports, Matches.UnitCanTransport);
 		final Map<Unit, Unit> mapping = new HashMap<Unit, Unit>();
 		final IntegerMap<Unit> addedLoad = new IntegerMap<Unit>();
+		final Comparator<Unit> previouslyLoadedToLast = transportsThatPreviouslyUnloadedComeLast();
 		for (final Unit land : canBeTransported)
 		{
 			final UnitAttachment landUA = UnitAttachment.get(land.getType());
@@ -718,8 +719,10 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			// we should put 1 infantry in each transport.
 			// the algorithm below does not guarantee even distribution in all cases
 			// but it solves most of the cases
-			// TODO review the following loop in light of bug ticket 2827064- previously unloaded trns perhaps shouldn't be included.
-			final Iterator<Unit> transportIter = Util.shiftElementsToEnd(canTransport, transportIndex).iterator();
+			final List<Unit> shiftedToEnd = Util.shiftElementsToEnd(canTransport, transportIndex);
+			// review the following loop in light of bug ticket 2827064- previously unloaded trns perhaps shouldn't be included.
+			Collections.sort(shiftedToEnd, previouslyLoadedToLast);
+			final Iterator<Unit> transportIter = shiftedToEnd.iterator();
 			while (transportIter.hasNext() && !loaded)
 			{
 				transportIndex++;
@@ -737,6 +740,27 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			}
 		}
 		return mapping;
+	}
+	
+	private static Comparator<Unit> transportsThatPreviouslyUnloadedComeLast()
+	{
+		return new Comparator<Unit>()
+		{
+			private final TransportTracker m_tracker = new TransportTracker();
+			
+			public int compare(final Unit t1, final Unit t2)
+			{
+				if (t1 == t2 || t1.equals(t2))
+					return 0;
+				final boolean t1previous = m_tracker.hasTransportUnloadedInPreviousPhase(t1);
+				final boolean t2previous = m_tracker.hasTransportUnloadedInPreviousPhase(t2);
+				if (t1previous == t2previous)
+					return 0;
+				if (t1previous == false)
+					return -1;
+				return 1;
+			}
+		};
 	}
 	
 	private static List<Unit> mapAirTransportsToLoad2(final Collection<Unit> units, final Collection<Unit> transports)
