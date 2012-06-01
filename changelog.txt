@@ -1,4 +1,6 @@
 Changes for 1.6
+* Fixed issue with having multiple support attachment affecting the same group of units. The order of preference is now: highest bonus support first, then lowest number of supported types to highest number of types. (veqryn)
+
 * Created new techAbilityAttachment option, "bombingBonus", which will add additional damage after all dice are rolled, per unit. (veqryn)
 
 * Created new techAbilityAttachment option, "defenseRollsBonus", which adds additional defense rolls. (veqryn)

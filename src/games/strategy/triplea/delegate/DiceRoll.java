@@ -394,6 +394,8 @@ public class DiceRoll implements Externalizable
 				int numSupport = supporters.size();
 				if (rule.getImpArtTech())
 					numSupport += Match.getMatches(supporters, Matches.unitOwnerHasImprovedArtillerySupportTech()).size();
+				if (numSupport <= 0)
+					continue;
 				final String bonusType = rule.getBonusType();
 				supportLeft.put(rule, numSupport * rule.getNumber());
 				final Iterator<List<UnitSupportAttachment>> iter2 = support.iterator();
@@ -469,19 +471,32 @@ public class DiceRoll implements Externalizable
 	
 	private static void sortSupportRules(final Set<List<UnitSupportAttachment>> support)
 	{
-		final Comparator<UnitSupportAttachment> comp = new Comparator<UnitSupportAttachment>()
+		// first, sort the lists inside each set
+		final Comparator<UnitSupportAttachment> compList = new Comparator<UnitSupportAttachment>()
 		{
 			public int compare(final UnitSupportAttachment u1, final UnitSupportAttachment u2)
 			{
+				// we want to apply the biggest bonus first
 				final Integer v1 = Integer.valueOf(Math.abs(u1.getBonus()));
 				final Integer v2 = Integer.valueOf(Math.abs(u2.getBonus()));
-				return v2.compareTo(v1);
+				final int compareTo = v2.compareTo(v1);
+				if (compareTo != 0)
+					return compareTo;
+				// if the bonuses are the same, we want to make sure any support which only supports 1 single unittype goes first
+				// the reason being that we could have Support1 which supports both infantry and mech infantry, and Support2 which only supports mech infantry
+				// if the Support1 goes first, and the mech infantry is first in the unit list (highly probable), then Support1 will end up using all of itself up on the mech infantry
+				// then when the Support2 comes up, all the mech infantry are used up, and it does nothing.
+				// instead, we want Support2 to come first, support all mech infantry that it can, then have Support1 come in and support whatever is left, that way no support is wasted
+				// TODO: this breaks down completely if we have Support1 having a higher bonus than Support2, because it will come first. It should come first, unless we would have support wasted otherwise. This ends up being a pretty tricky math puzzle.
+				final Integer s1 = u1.getUnitType().size();
+				final Integer s2 = u2.getUnitType().size();
+				return s1.compareTo(s2);
 			}
 		};
 		final Iterator<List<UnitSupportAttachment>> iter = support.iterator();
 		while (iter.hasNext())
 		{
-			Collections.sort(iter.next(), comp);
+			Collections.sort(iter.next(), compList);
 		}
 	}
 	
