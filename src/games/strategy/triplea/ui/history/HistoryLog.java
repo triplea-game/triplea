@@ -445,7 +445,9 @@ public class HistoryLog extends JFrame
 			if (hasFlag || !ownedUnits.isEmpty())
 			{
 				logWriter.print("    " + t.getName() + " : ");
-				if (hasFlag)
+				if (hasFlag && ownedUnits.isEmpty())
+					logWriter.println("1 flag");
+				else
 					logWriter.print("1 flag, ");
 				if (!ownedUnits.isEmpty())
 					logWriter.println(MyFormatter.unitsToTextNoOwner(ownedUnits));
