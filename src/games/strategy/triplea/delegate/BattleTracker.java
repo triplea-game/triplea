@@ -24,6 +24,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.RelationshipTracker;
+import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
@@ -90,6 +91,8 @@ public class BattleTracker implements java.io.Serializable
 	private final Set<Territory> m_noBombardAllowed = new HashSet<Territory>();
 	private final Map<Territory, Collection<Unit>> m_defendingAirThatCanNotLand = new HashMap<Territory, Collection<Unit>>();
 	private BattleRecords m_battleRecords = null;
+	// to keep track of all relationships that have changed this turn (so we can validate things like transports loading in newly created hostile zones)
+	private final Collection<Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>>> m_relationshipChangesThisTurn = new ArrayList<Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>>>();
 	
 	/**
 	 * @param t
@@ -153,6 +156,56 @@ public class BattleTracker implements java.io.Serializable
 	public void addNoBombardAllowedFromHere(final Territory t)
 	{
 		m_noBombardAllowed.add(t);
+	}
+	
+	public void addRelationshipChangesThisTurn(final PlayerID p1, final PlayerID p2, final RelationshipType oldRelation, final RelationshipType newRelation)
+	{
+		
+		m_relationshipChangesThisTurn.add(new Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>>(
+					new Tuple<PlayerID, PlayerID>(p1, p2), new Tuple<RelationshipType, RelationshipType>(oldRelation, newRelation)));
+	}
+	
+	public boolean didAllThesePlayersJustGoToWarThisTurn(final PlayerID p1, final Collection<Unit> enemyUnits, final GameData data)
+	{
+		final Set<PlayerID> enemies = new HashSet<PlayerID>();
+		for (final Unit u : Match.getMatches(enemyUnits, Matches.unitIsEnemyOf(data, p1)))
+		{
+			enemies.add(u.getOwner());
+		}
+		for (final PlayerID e : enemies)
+		{
+			if (!didThesePlayersJustGoToWarThisTurn(p1, e))
+				return false;
+		}
+		return true;
+	}
+	
+	public boolean didThesePlayersJustGoToWarThisTurn(final PlayerID p1, final PlayerID p2)
+	{
+		// check all relationship changes that are p1 and p2, to make sure that oldRelation is not war, and newRelation is war
+		for (final Tuple<Tuple<PlayerID, PlayerID>, Tuple<RelationshipType, RelationshipType>> t : m_relationshipChangesThisTurn)
+		{
+			final Tuple<PlayerID, PlayerID> players = t.getFirst();
+			if (players.getFirst().equals(p1))
+			{
+				if (!players.getSecond().equals(p2))
+					continue;
+			}
+			else if (players.getSecond().equals(p1))
+			{
+				if (!players.getFirst().equals(p2))
+					continue;
+			}
+			else
+				continue;
+			final Tuple<RelationshipType, RelationshipType> relations = t.getSecond();
+			if (!Matches.RelationshipTypeIsAtWar.match(relations.getFirst()))
+			{
+				if (Matches.RelationshipTypeIsAtWar.match(relations.getSecond()))
+					return true;
+			}
+		}
+		return false;
 	}
 	
 	void clearFinishedBattles(final IDelegateBridge bridge)
@@ -931,6 +984,7 @@ public class BattleTracker implements java.io.Serializable
 		m_dependencies.clear();
 		m_defendingAirThatCanNotLand.clear();
 		m_noBombardAllowed.clear();
+		m_relationshipChangesThisTurn.clear();
 	}
 	
 	public void addToDefendingAirThatCanNotLand(final Collection<Unit> units, final Territory szTerritoryTheyAreIn)

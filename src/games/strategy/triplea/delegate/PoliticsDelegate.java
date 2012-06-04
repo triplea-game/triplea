@@ -415,6 +415,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			m_bridge.getHistoryWriter().addChildToEvent(
 						m_bridge.getPlayerID().getName() + " succeeds on action: " + MyFormatter.attachmentNameToText(paa.getName()) + ": Changing Relationship for " + player1.getName() + " and "
 									+ player2.getName() + " from " + oldRelation.getName() + " to " + newRelation.getName());
+			MoveDelegate.getBattleTracker(getData()).addRelationshipChangesThisTurn(player1, player2, oldRelation, newRelation);
 			/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
 			if (Matches.RelationshipTypeIsAtWar.match(newRelation))
 				TriggerAttachment.triggerMustFightBattle(player1, player2, m_bridge);*/
@@ -484,6 +485,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 					{
 						change.add(ChangeFactory.relationshipChange(p3, player, currentOther, newType));
 						aBridge.getHistoryWriter().addChildToEvent(player.getName() + " and " + p3.getName() + " sign a " + newType.getName() + " treaty");
+						MoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(p3, player, currentOther, newType);
 					}
 				}
 			}
@@ -528,6 +530,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 						{
 							change.add(ChangeFactory.relationshipChange(p3, p4, currentOther, newType));
 							aBridge.getHistoryWriter().addChildToEvent(p3.getName() + " and " + p4.getName() + " sign a " + newType.getName() + " treaty");
+							MoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(p3, p4, currentOther, newType);
 						}
 					}
 				}
@@ -570,8 +573,10 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			{
 				if (!data.getRelationshipTracker().getRelationshipType(p1, p3).equals(alliedType))
 				{
-					aBridge.addChange(ChangeFactory.relationshipChange(p1, p3, data.getRelationshipTracker().getRelationshipType(p1, p3), alliedType));
+					final RelationshipType current = data.getRelationshipTracker().getRelationshipType(p1, p3);
+					aBridge.addChange(ChangeFactory.relationshipChange(p1, p3, current, alliedType));
 					aBridge.getHistoryWriter().addChildToEvent(p1.getName() + " and " + p3.getName() + " are joined together in an " + alliedType.getName() + " treaty");
+					MoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(p1, p3, current, alliedType);
 				}
 			}
 		}
@@ -593,8 +598,10 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 			{
 				if (!data.getRelationshipTracker().getRelationshipType(p1, p3).equals(warType))
 				{
-					aBridge.addChange(ChangeFactory.relationshipChange(p1, p3, data.getRelationshipTracker().getRelationshipType(p1, p3), warType));
+					final RelationshipType current = data.getRelationshipTracker().getRelationshipType(p1, p3);
+					aBridge.addChange(ChangeFactory.relationshipChange(p1, p3, current, warType));
 					aBridge.getHistoryWriter().addChildToEvent(p1.getName() + " and " + p3.getName() + " declare " + warType.getName() + " on each other");
+					MoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(p1, p3, current, warType);
 				}
 			}
 		}

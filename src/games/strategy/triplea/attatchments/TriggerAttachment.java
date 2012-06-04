@@ -26,6 +26,7 @@ import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -1919,6 +1920,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					aBridge.getHistoryWriter().startEvent(
 								MyFormatter.attachmentNameToText(t.getName()) + ": Changing Relationship for " + player1.getName() + " and " + player2.getName() + " from "
 											+ currentRelation.getName() + " to " + triggerNewRelation.getName());
+					MoveDelegate.getBattleTracker(data).addRelationshipChangesThisTurn(player1, player2, currentRelation, triggerNewRelation);
 					/* creation of new battles is handled at the beginning of the battle delegate, in "setupUnitsInSameTerritoryBattles", not here.
 					if (Matches.RelationshipTypeIsAtWar.match(triggerNewRelation))
 						triggerMustFightBattle(player1, player2, aBridge);*/

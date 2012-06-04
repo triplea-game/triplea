@@ -1150,8 +1150,13 @@ public class MoveValidator
 				return result.setErrorReturnResult("Units cannot move before loading onto transports");
 			final CompositeMatch<Unit> enemyNonSubmerged = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), new InverseMatch<Unit>(Matches.unitIsSubmerged(data)));
 			if (route.getEnd().getUnits().someMatch(enemyNonSubmerged) && nonParatroopersPresent(player, landAndAir, route))
+			{
 				if (!onlyIgnoredUnitsOnPath(route, player, data, false))
-					return result.setErrorReturnResult("Cannot load when enemy sea units are present");
+				{
+					if (!MoveDelegate.getBattleTracker(data).didAllThesePlayersJustGoToWarThisTurn(player, route.getEnd().getUnits().getUnits(), data))
+						return result.setErrorReturnResult("Cannot load when enemy sea units are present");
+				}
+			}
 			final Map<Unit, Unit> unitsToTransports = MoveDelegate.mapTransports(route, land, transportsToLoad);
 			final Iterator<Unit> iter = land.iterator();
 			// CompositeMatch<Unit> landUnitsAtSea = new CompositeMatchOr<Unit>(Matches.unitIsLandAndOwnedBy(player), Matches.UnitCanBeTransported);
