@@ -2284,7 +2284,7 @@ public class Matches
 					return false;
 				
 				final CompositeMatch<Unit> blitzableUnits = new CompositeMatchOr<Unit>();
-				blitzableUnits.add(Matches.alliedUnit(player, data));
+				blitzableUnits.add(Matches.enemyUnit(player, data).invert()); // we ignore neutral units
 				// WW2V2, cant blitz through factories and aa guns
 				// WW2V1, you can
 				if (!games.strategy.triplea.Properties.getWW2V2(data) && !games.strategy.triplea.Properties.getBlitzThroughFactoriesAndAARestricted(data))

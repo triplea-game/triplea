@@ -262,7 +262,7 @@ public class MoveValidator
 			{
 				if (current.isWater())
 					continue;
-				if (!data.getRelationshipTracker().isAllied(current.getOwner(), player) || MoveDelegate.getBattleTracker(data).wasConquered(current))
+				if (data.getRelationshipTracker().isAtWar(current.getOwner(), player) || MoveDelegate.getBattleTracker(data).wasConquered(current))
 				{
 					enemyCount++;
 					allEnemyBlitzable &= Matches.TerritoryIsBlitzable(player, data).match(current);
@@ -273,7 +273,7 @@ public class MoveValidator
 				if (nonParatroopersPresent(player, units, route))
 					return result.setErrorReturnResult("Cannot blitz on that route");
 			}
-			else if (enemyCount >= 0 && allEnemyBlitzable && !(route.getStart().isWater() || route.getEnd().isWater()))
+			else if (allEnemyBlitzable && !(route.getStart().isWater() || route.getEnd().isWater()))
 			{
 				final Match<Unit> blitzingUnit = new CompositeMatchOr<Unit>(Matches.UnitCanBlitz, Matches.UnitIsAir);
 				final Match<Unit> nonBlitzing = new InverseMatch<Unit>(blitzingUnit);

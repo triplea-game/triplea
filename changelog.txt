@@ -1,4 +1,6 @@
 Changes for 1.6
+* Fixed issue with not being able to blitz through units owned by a power to which you were neutral with. (veqryn)
+
 * Allowed loading of transports in Sea Zones where all enemies just became hostile this turn due to politics. (veqryn)
 
 * Fixed issue with loading transports in the same sea zone where a transport was previously unload in a previous phase. (veqryn)
