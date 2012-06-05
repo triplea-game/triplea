@@ -1,4 +1,6 @@
 Changes for 1.6
+* Created new delegate, NoAirCheckPlaceDelegate, which does everything the normal "PlaceDelegate" does, but does not kill any aircraft at the end of the phase. (veqryn)
+
 * Fixed issue with not being able to blitz through units owned by a power to which you were neutral with. (veqryn)
 
 * Allowed loading of transports in Sea Zones where all enemies just became hostile this turn due to politics. (veqryn)
@@ -109,7 +111,7 @@ Changes for 1.6
 
 * Created new techAbilityAttachment, "attackBonus", which controls the attack bonus given by any technology. (veqryn)
 
-* Fixed error with "Should not be adding battle record for player ...", which was caused by creating a battle usin edit mode for a player who's turn has passed already. (veqryn)
+* Fixed error with "Should not be adding battle record for player ...", which was caused by creating a battle using edit mode for a player who's turn has passed already. (veqryn)
 
 * Fixed error with Low Luck AA guns when the dice side is different than 6. Was trying to roll zero random dice. (veqryn)
 

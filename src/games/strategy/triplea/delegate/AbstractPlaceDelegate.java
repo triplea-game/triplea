@@ -122,8 +122,21 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		// reset ourselves for next turn
 		m_produced = new HashMap<Territory, Collection<Unit>>();
 		m_placements.clear();
-		// only for lhtr rules
-		new AirThatCantLandUtil(m_bridge).removeAirThatCantLand(m_player, false);
+		removeAirThatCantLand();
+	}
+	
+	protected void removeAirThatCantLand()
+	{
+		// for LHTR type games
+		final GameData data = getData();
+		final AirThatCantLandUtil util = new AirThatCantLandUtil(m_bridge);
+		util.removeAirThatCantLand(m_player, false);
+		// if edit mode has been on, we need to clean up after all players
+		for (final PlayerID player : data.getPlayerList())
+		{
+			if (!player.equals(m_player))
+				util.removeAirThatCantLand(player, false);
+		}
 	}
 	
 	@Override

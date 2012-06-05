@@ -17,10 +17,9 @@
 		
 		<!-- triplea minimumVersion is the minimum version number of TripleA that can play this game.  Many new xmls require features not present in older versions of TripleA. Should be "xx.xx.xx.xx", "xx.xx.xx", "xx.xx", or "xx".
 				An example would be a map using 'isInfrastructure' unit property would need at least TripleA version "1.2.6", while a map using 'whenCapturedChangesInto' would need at least TripleA version "1.4" -->
-		<triplea minimumVersion="1.5.2"/>
+		<triplea minimumVersion="1.6"/>
 
-		<!-- diceSides defaults to 6 if not in the xml.  Can be set to any number between 1 and 200.
-				WARNING: Setting diceSides to a number other than 6 can result in unexpected behavior. -->
+		<!-- diceSides defaults to 6 if not in the xml.  Can be set to any number between 1 and 200.  Setting diceSides to a number other than 6 can result in unexpected behavior. -->
 		<diceSides value="6"/>
 		
         <map>
@@ -546,6 +545,7 @@
                 <connection t1="Belgian Congo" t2="Kenya"/>
                 <connection t1="Italian East Africa" t2="Kenya"/>
                 <connection t1="Kenya" t2="Union of South Africa"/>
+				<!-- The order of t1 and t2 does not matter at all -->
         </map>
         
 
@@ -576,15 +576,14 @@
 
 				
 				
-				<!-- alliances can have any name, not just axis and allies.  there can be more than 2 alliances -->
+				<!-- Alliances can have any name, not just axis and allies.  There can be more than 2 alliances -->
+                <!-- Since triplea version 1.3.3.0 it is preferred to use relationships instead of or in addition to alliances. If relationships are set, then alliances will only matter for the stats panel and any game option type victory conditions -->
                 <!-- Axis alliance -->
-                <!--  since triplea version 1.3.3.0 it is preferred to use relationships instead of alliances If relationships are set, then alliances will only matter for the stats panel and any game option type victory conditions -->
                 <alliance player="Germans" alliance="Axis"/>
                 <alliance player="Japanese" alliance="Axis"/>
                 <alliance player="Italians" alliance="Axis"/>
 				
                 <!-- Allies alliance -->
-                <!--  since triplea version 1.3.3.0 it is preferred to use relationships instead of alliances. If relationships are set, then alliances will only matter for the stats panel and any game option type victory conditions -->
                 <alliance player="British" alliance="Allies"/>
                 <alliance player="Russians" alliance="Allies"/>
                 <alliance player="Americans" alliance="Allies"/>
@@ -618,9 +617,10 @@
                 <unit name="harbour"/>
         </unitList>
 		
-        <!--  this is the list of relationshipTypes you can create between players -->
-        <!--  each relationshipType you define here MUST have a RelationshipTypeAttachment to define this relationship 
-              also each RelationshipTypeAttachment MUST have an archetype set to either: "allied", "neutral" or "war"
+        <!--  This is the list of relationshipTypes you can create between players -->
+        <!--  Each relationshipType you define here MUST have a RelationshipTypeAttachment to define this relationship 
+              Also each RelationshipTypeAttachment MUST have an archetype set to either: "allied", "neutral" or "war"
+			  The following are examples, you can name them whatever you want.
         -->
 		<relationshipTypes>
 				<relationshipType name="Allied"/>
@@ -644,12 +644,14 @@
 				<!-- this currently is all the delegates triplea has.  not all are needed for a regular game though -->
 					<!-- purchaseNoPU buys 1 infantry for X number of territories controlled, rounding down. set X in player rules attachments -->
 					<!-- endTurnNoPU ends player's turn without giving them any PUs -->
+					<!-- placeNoAirCheck does everything normal 'place' does, except it does not kill any aircraft at the end of the turn -->
                 <delegate name="initDelegate" javaClass="games.strategy.triplea.delegate.InitializationDelegate" display="Initializing Delegates"/>
                 <delegate name="tech" javaClass="games.strategy.triplea.delegate.TechnologyDelegate" display="Research Technology"/>
                 <delegate name="tech_activation" javaClass="games.strategy.triplea.delegate.TechActivationDelegate" display="Activate Technology"/>
                 <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
                 <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
                 <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+                <!--<delegate name="placeNoAirCheck" javaClass="games.strategy.triplea.delegate.NoAirCheckPlaceDelegate" display="Place Units"/>-->
                 <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
 				<delegate name="purchaseNoPU" javaClass="games.strategy.triplea.delegate.NoPUPurchaseDelegate" display="Purchase Units"/>
                 <delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
@@ -660,8 +662,10 @@
                 <delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
                 
                 <!-- SpecialMoveDelegate delegate is for the new Airborne forces tech (similar to paratroopers). The delegate name has to end with "AirborneCombatMove" for it to work properly.
+				GamePlay Delegate:
 				<delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Special Move"/>
-						<step name="italianAirborneCombatMove" delegate="specialCombatMove" player="Italians" display="Airborne Attack Move"/>-->
+				Sequence Step Example:
+				<step name="italianAirborneCombatMove" delegate="specialCombatMove" player="Italians" display="Airborne Attack Move"/>-->
 
                 <sequence>
 					<!-- it is very important that the "name" ends with the correct phrase, or else the game will not work properly.
@@ -3549,6 +3553,9 @@
 					airborneTypes
 					airborneBases
 					airborneTargettedByAA
+					attackRollsBonus
+					defenseRollsBonus
+					bombingBonus
 					
 		-->
 	<!-- Victory Triggers -->

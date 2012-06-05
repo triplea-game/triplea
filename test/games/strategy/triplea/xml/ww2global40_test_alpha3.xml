@@ -1304,6 +1304,7 @@
                 <delegate name="battle" javaClass="games.strategy.triplea.delegate.BattleDelegate" display="Combat"/>
                 <delegate name="move" javaClass="games.strategy.triplea.delegate.MoveDelegate" display="Combat Move"/>
                 <delegate name="place" javaClass="games.strategy.triplea.delegate.PlaceDelegate" display="Place Units"/>
+                <delegate name="placeNoAirCheck" javaClass="games.strategy.triplea.delegate.NoAirCheckPlaceDelegate" display="Place Units"/>
                 <delegate name="purchase" javaClass="games.strategy.triplea.delegate.PurchaseDelegate" display="Purchase Units"/>
 				<delegate name="endTurn" javaClass="games.strategy.triplea.delegate.EndTurnDelegate" display="Turn Complete"/>
                 <delegate name="endRound" javaClass="games.strategy.triplea.delegate.EndRoundDelegate" display="Round Complete"/>
@@ -1311,7 +1312,7 @@
                 <delegate name="bid" javaClass="games.strategy.triplea.delegate.BidPurchaseDelegate" display="Bid Purchase"/>
 				<delegate name="politics" javaClass="games.strategy.triplea.delegate.PoliticsDelegate" display="Politics"/>
 				
-				<delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Special Move"/>
+				<delegate name="specialCombatMove" javaClass="games.strategy.triplea.delegate.SpecialMoveDelegate" display="Airborne Attack Move"/>
 				
                 <sequence>
 				
@@ -1410,7 +1411,7 @@
                         <step name="britishBattle" delegate="battle" player="British"/>
                         <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
 						
-                        <step name="britishPlace" delegate="place" player="British"/>
+                        <step name="britishPlace" delegate="placeNoAirCheck" player="British"/>
                         <step name="britishEndTurn" delegate="endTurn" player="British"/>
 						
                         <step name="UK_PacificPlace" delegate="place" player="UK_Pacific"/>
@@ -6689,7 +6690,8 @@
 
 <b>Note</b><br>
 This game uses the latest Alpha +3 rules, as posted on Larry's website.<br>
-To blitz move mech_infantry with armour, you must click on them both at the same time (use CTRL to create waypoints).<br><br>
+To blitz move mech_infantry with armour, you must click on them both at the same time (use CTRL to create waypoints).<br>
+<br>
 
 <b>Disclaimer</b><br>
 The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. 
@@ -6697,7 +6699,9 @@ It is your responsibility to know the rules and abide by them. Most of the game 
 Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br><br>
 
 <b>Edit Mode</b><br>
-When not yet at war, you may ask for permission to move through a canal, and if granted, use Edit Mode to move the units.<br><br>
+When not yet at war, you may ask for permission to move through a canal, and if granted, use Edit Mode to move the units.<br>
+If you ever need to create new UK units, always create "British" units, do not create "UK_Pacific" units (except for Factories, all UK_Pacific units turn into British units when placed normally).<br>
+<br>
 
 <b>Stuff Left TODO</b><br>
 * Do not allow blitzing or movement through Friendly Neutrals.<br>
