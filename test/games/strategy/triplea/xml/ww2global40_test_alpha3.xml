@@ -6575,6 +6575,10 @@
 						<boolean/>
 				</property>
 				
+				<property name="Subs Can End NonCombat Move With Enemies" value="true" editable="false">
+						<boolean/>
+				</property>
+				
 				<property name="Naval Units May Not NonCombat Move Into Controlled Sea Zones" value="false" editable="false">
 						<boolean/>
 				</property>

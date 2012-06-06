@@ -1,4 +1,6 @@
 Changes for 1.6
+* Created new game option, "Subs Can End NonCombat Move With Enemies", which allows submarines to end their noncombat movement in a sea zone containing any enemy units. (veqryn)
+
 * Added information on which units are doing the bomber to the question about what should each bomber bomb. (veqryn)
 
 * Fixed error from trying to undo a battle move created using another player's units, using edit mode. (veqryn)

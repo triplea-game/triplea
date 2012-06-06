@@ -175,7 +175,7 @@ public class MovePerformer implements Serializable
 					final boolean allCanBomb = Match.allMatch(arrived, allBombingRaid);
 					boolean targetedAttack = false;
 					// if it's all bombers and there's something to bomb
-					if (allCanBomb && !enemyTargets.isEmpty())
+					if (allCanBomb && !enemyTargets.isEmpty() && !MoveDelegate.isNonCombat(m_bridge))
 					{
 						bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
 						// if bombing and there's something to target- ask what to bomb
@@ -230,7 +230,7 @@ public class MovePerformer implements Serializable
 					}
 				}
 				// mark movement
-				final Change moveChange = markMovementChange(arrived, route);
+				final Change moveChange = markMovementChange(arrived, route, id);
 				final CompositeChange change = new CompositeChange(moveChange);
 				// actually move the units
 				Change remove = null;
@@ -261,8 +261,9 @@ public class MovePerformer implements Serializable
 		return ChangeFactory.removeResourceCollection(id, Route.getMovementCharge(units, route));
 	}
 	
-	private Change markMovementChange(final Collection<Unit> units, final Route route)
+	private Change markMovementChange(final Collection<Unit> units, final Route route, final PlayerID id)
 	{
+		final GameData data = m_bridge.getData();
 		final CompositeChange change = new CompositeChange();
 		final Territory routeStart = route.getStart();
 		final TerritoryAttachment taRouteStart = TerritoryAttachment.get(routeStart);
@@ -270,8 +271,8 @@ public class MovePerformer implements Serializable
 		TerritoryAttachment taRouteEnd = null;
 		if (routeEnd != null)
 			taRouteEnd = TerritoryAttachment.get(routeEnd);
-		Iterator<Unit> iter = units.iterator();
-		final RelationshipTracker relationshipTracker = m_bridge.getData().getRelationshipTracker();
+		final Iterator<Unit> iter = units.iterator();
+		final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
 		while (iter.hasNext())
 		{
 			final TripleAUnit unit = (TripleAUnit) iter.next();
@@ -290,11 +291,17 @@ public class MovePerformer implements Serializable
 		// if entered a non blitzed conquered territory, mark with 0 movement
 		if (!MoveDelegate.isNonCombat(m_bridge) && (MoveDelegate.getEmptyNeutral(route).size() != 0 || hasConqueredNonBlitzed(route)))
 		{
-			final Collection<Unit> land = Match.getMatches(units, Matches.UnitIsLand);
-			iter = land.iterator();
-			while (iter.hasNext())
+			for (final Unit unit : Match.getMatches(units, Matches.UnitIsLand))
 			{
-				final Unit unit = iter.next();
+				change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
+			}
+		}
+		if (routeEnd != null && games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data) && MoveDelegate.isNonCombat(m_bridge)
+					&& routeEnd.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, id), Matches.UnitIsDestroyer)))
+		{
+			// if we are allowed to have our subs enter any sea zone with enemies during noncombat, we want to make sure we can't keep moving them if there is an enemy destroyer there
+			for (final Unit unit : Match.getMatches(units, new CompositeMatchAnd<Unit>(Matches.UnitIsSub, Matches.UnitIsAir.invert())))
+			{
 				change.add(ChangeFactory.markNoMovementChange(Collections.singleton(unit)));
 			}
 		}

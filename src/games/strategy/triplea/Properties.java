@@ -825,6 +825,11 @@ public class Properties implements Constants
 		return data.getProperties().get(AIRBORNE_ATTACKS_ONLY_IN_ENEMY_TERRITORIES, false);
 	}
 	
+	public static boolean getSubsCanEndNonCombatMoveWithEnemies(final GameData data)
+	{
+		return data.getProperties().get(SUBS_CAN_END_NONCOMBAT_MOVE_WITH_ENEMIES, false);
+	}
+	
 	private Properties()
 	{
 	}

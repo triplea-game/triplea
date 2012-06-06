@@ -5138,6 +5138,11 @@
 				<property name="Sub Control Sea Zone Restricted" value="false" editable="false">
 						<boolean/>
 				</property>
+
+						<!-- Subs Can End NonCombat Move With Enemies allows submarines to end their noncombat movement in a sea zone containing any enemy units, including enemy subs -->
+				<property name="Subs Can End NonCombat Move With Enemies" value="false" editable="false">
+						<boolean/>
+				</property>
 				
 						<!-- if true, naval units may not move into convoy zones or controlled sea zones during non-combat moves -->
 				<property name="Naval Units May Not NonCombat Move Into Controlled Sea Zones" value="false" editable="false">
