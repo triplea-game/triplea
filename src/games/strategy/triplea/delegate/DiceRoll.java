@@ -514,6 +514,7 @@ public class DiceRoll implements Externalizable
 	public static DiceRoll airBattle(final List<Unit> unitsList, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation)
 	{
 		final GameData data = bridge.getData();
+		final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
 		final List<Unit> units = new ArrayList<Unit>(unitsList);
 		final int rollCount = StrategicBombingRaidPreBattle.getAirBattleRolls(unitsList, defending);
 		if (rollCount == 0)
@@ -532,8 +533,20 @@ public class DiceRoll implements Externalizable
 			{
 				final Unit current = iter.next();
 				final UnitAttachment ua = UnitAttachment.get(current.getType());
-				final int strength = (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()));
-				power += Math.min(Math.max(strength, 0), data.getDiceSides());
+				final int rolls = StrategicBombingRaidPreBattle.getAirBattleRolls(current, defending);
+				int totalStrength = 0;
+				final int strength = Math.min(data.getDiceSides(), Math.max(0, (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()))));
+				for (int i = 0; i < rolls; i++)
+				{
+					// LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1 onto the power to simulate the gains of having the best die picked.
+					if (i > 1 && (lhtrBombers || ua.getChooseBestRoll()))
+					{
+						totalStrength += 1;
+						continue;
+					}
+					totalStrength += strength;
+				}
+				power += Math.min(Math.max(totalStrength, 0), data.getDiceSides());
 			}
 			// Get number of hits
 			hitCount = power / data.getDiceSides();
@@ -560,15 +573,42 @@ public class DiceRoll implements Externalizable
 			{
 				final Unit current = iter.next();
 				final UnitAttachment ua = UnitAttachment.get(current.getType());
-				int strength = (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()));
-				strength = Math.min(Math.max(strength, 0), data.getDiceSides());
-				if (strength > 0)
+				final int strength = Math.min(data.getDiceSides(), Math.max(0, (defending ? ua.getAirDefense(current.getOwner()) : ua.getAirAttack(current.getOwner()))));
+				final int rolls = StrategicBombingRaidPreBattle.getAirBattleRolls(current, defending);
+				// lhtr heavy bombers take best of n dice for both attack and defense
+				if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 				{
-					final boolean hit = strength > random[diceIndex];
-					dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
+					int minIndex = 0;
+					int min = data.getDiceSides();
+					for (int i = 0; i < rolls; i++)
+					{
+						if (random[diceIndex + i] < min)
+						{
+							min = random[diceIndex + i];
+							minIndex = i;
+						}
+					}
+					final boolean hit = strength > random[diceIndex + minIndex];
+					dice.add(new Die(random[diceIndex + minIndex], strength, hit ? DieType.HIT : DieType.MISS));
+					for (int i = 0; i < rolls; i++)
+					{
+						if (i != minIndex)
+							dice.add(new Die(random[diceIndex + i], strength, DieType.IGNORED));
+					}
 					if (hit)
 						hitCount++;
-					diceIndex++;
+					diceIndex += rolls;
+				}
+				else
+				{
+					for (int i = 0; i < rolls; i++)
+					{
+						final boolean hit = strength > random[diceIndex];
+						dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));
+						if (hit)
+							hitCount++;
+						diceIndex++;
+					}
 				}
 			}
 		}

@@ -1,4 +1,6 @@
 Changes for 1.6
+* Allowed interceptors and escorts to benefit from attackRolls and defenseRolls and their bonuses. (veqryn)
+
 * Created new delegate, NoAirCheckPlaceDelegate, which does everything the normal "PlaceDelegate" does, but does not kill any aircraft at the end of the phase. (veqryn)
 
 * Fixed issue with not being able to blitz through units owned by a power to which you were neutral with. (veqryn)

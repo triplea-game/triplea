@@ -4266,7 +4266,7 @@
                 	<option name="battle" value="Russians:Japanese:any:currentRound:Manchuria:Jehol:Chahar:Suiyuyan:Kansu"/>
                 </attatchment>
                 <attatchment name="conditionAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="directOwnershipTerritories" value="Timguska:Yenisey:Yakut S.S.R.:Buryatia:Amur" count="1"/>
+                	<option name="battle" value="Japanese:Russians:any:currentRound:Timguska:Yenisey:Yakut S.S.R.:Buryatia:Amur"/>
                 </attatchment>
 				
 			<!-- Trigger Attachments -->

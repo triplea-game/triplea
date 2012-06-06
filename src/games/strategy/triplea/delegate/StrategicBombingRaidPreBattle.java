@@ -425,8 +425,28 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 	
 	public static int getAirBattleRolls(final Collection<Unit> units, final boolean defending)
 	{
-		final Collection<Unit> firingUnits = Match.getMatches(units, (defending ? unitHasAirDefenseGreaterThanZero() : unitHasAirAttackGreaterThanZero()));
-		return firingUnits.size();
+		int rolls = 0;
+		for (final Unit u : units)
+		{
+			rolls += getAirBattleRolls(u, defending);
+		}
+		return rolls;
+	}
+	
+	public static int getAirBattleRolls(final Unit unit, final boolean defending)
+	{
+		if (defending)
+		{
+			if (!unitHasAirDefenseGreaterThanZero().match(unit))
+				return 0;
+		}
+		else
+		{
+			if (!unitHasAirAttackGreaterThanZero().match(unit))
+				return 0;
+		}
+		// math max 1, because we already know these units have air attack > 0
+		return Math.max(1, (defending ? UnitAttachment.get(unit.getType()).getDefenseRolls(unit.getOwner()) : UnitAttachment.get(unit.getType()).getAttackRolls(unit.getOwner())));
 	}
 	
 	private void markDamaged(final Collection<Unit> damaged, final IDelegateBridge bridge)
