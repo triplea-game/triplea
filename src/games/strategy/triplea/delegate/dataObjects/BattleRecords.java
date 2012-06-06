@@ -127,10 +127,19 @@ public class BattleRecords extends GameDataComponent implements Serializable
 	public void removeBattle(final PlayerID currentPlayer, final GUID battleID)
 	{
 		final HashMap<GUID, BattleRecord> current = m_records.get(currentPlayer);
-		if (current == null)
+		// we can't count on this being the current player. If we created a battle using edit mode, then the battle might be under a different player.
+		if (current == null || !current.containsKey(battleID))
+		{
+			for (final Entry<PlayerID, HashMap<GUID, BattleRecord>> entry : m_records.entrySet())
+			{
+				if (entry.getValue() != null && entry.getValue().containsKey(battleID))
+				{
+					entry.getValue().remove(battleID);
+					return;
+				}
+			}
 			throw new IllegalStateException("Trying to remove info from battle records that do not exist");
-		if (!current.containsKey(battleID))
-			throw new IllegalStateException("Trying to remove a battle that does not exist");
+		}
 		current.remove(battleID);
 	}
 	

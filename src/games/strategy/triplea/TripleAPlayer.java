@@ -587,9 +587,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
-	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> units)
+	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
-		return m_ui.getStrategicBombingRaidTarget(territory, units);
+		return m_ui.getStrategicBombingRaidTarget(territory, potentialTargets, bombers);
 	}
 	
 	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)

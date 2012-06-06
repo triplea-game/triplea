@@ -148,9 +148,9 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 		return false;
 	}
 	
-	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> units)
+	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
-		return (Unit) Match.getNMatches(units, 1, Matches.UnitIsFactory);
+		return (Unit) Match.getNMatches(potentialTargets, 1, Matches.UnitIsFactory);
 	}
 	
 	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)

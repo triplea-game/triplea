@@ -201,7 +201,6 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		if (!bombers.isEmpty())
 		{
 			HashMap<Unit, HashSet<Unit>> targets = null;
-			Unit target = null;
 			final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits().getMatches(
 						new CompositeMatchAnd<Unit>(Matches.enemyUnit(bridge.getPlayerID(), m_data), Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert()));
 			for (final Unit unit : bombers)
@@ -209,8 +208,14 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal, Matches.UnitIsLegalBombingTargetBy(unit));
 				if (!enemyTargets.isEmpty())
 				{
+					Unit target = null;
 					if (enemyTargets.size() > 1 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data))
-						target = getRemote(bridge).whatShouldBomberBomb(m_battleSite, enemyTargets);
+					{
+						while (target == null)
+						{
+							target = getRemote(bridge).whatShouldBomberBomb(m_battleSite, enemyTargets, Collections.singletonList(unit));
+						}
+					}
 					else if (!enemyTargets.isEmpty())
 						target = enemyTargets.iterator().next();
 					if (target != null)

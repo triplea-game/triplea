@@ -756,23 +756,25 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return choice == 0;
 	}
 	
-	public Unit getStrategicBombingRaidTarget(final Territory territory, final Collection<Unit> units)
+	public Unit getStrategicBombingRaidTarget(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
-		if (units == null || units.size() == 0)
+		if (potentialTargets == null || potentialTargets.size() == 0)
 			return null;
-		if (units.size() == 1)
-			return units.iterator().next();
+		if (potentialTargets.size() == 1)
+			return potentialTargets.iterator().next();
 		final AtomicReference<Unit> selected = new AtomicReference<Unit>();
 		final String message = "Select bombing target in " + territory.getName();
 		final Tuple<JPanel, JList> comps = Util.runInSwingEventThread(new Util.Task<Tuple<JPanel, JList>>()
 		{
 			public Tuple<JPanel, JList> run()
 			{
-				final JList list = new JList(new Vector<Unit>(units));
+				final JList list = new JList(new Vector<Unit>(potentialTargets));
 				list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				list.setSelectedIndex(0);
 				final JPanel panel = new JPanel();
 				panel.setLayout(new BorderLayout());
+				if (bombers != null)
+					panel.add(new JLabel("For Units: " + MyFormatter.unitsToTextNoOwner(bombers)), BorderLayout.NORTH);
 				final JScrollPane scroll = new JScrollPane(list);
 				panel.add(scroll, BorderLayout.CENTER);
 				return new Tuple<JPanel, JList>(panel, list);

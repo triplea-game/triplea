@@ -1,4 +1,10 @@
 Changes for 1.6
+* Added information on which units are doing the bomber to the question about what should each bomber bomb. (veqryn)
+
+* Fixed error from trying to undo a battle move created using another player's units, using edit mode. (veqryn)
+
+* Fixed null pointer exception when not selecting the target for a bomber after an air battle is finished. (veqryn)
+
 * Allowed interceptors and escorts to benefit from attackRolls and defenseRolls and their bonuses. (veqryn)
 
 * Created new delegate, NoAirCheckPlaceDelegate, which does everything the normal "PlaceDelegate" does, but does not kill any aircraft at the end of the phase. (veqryn)

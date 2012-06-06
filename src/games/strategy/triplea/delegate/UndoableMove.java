@@ -166,7 +166,12 @@ public class UndoableMove extends AbstractUndoableMove
 									Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(Match.getMatches(Collections.singleton(unit), Matches.UnitIsStrategicBomber), data)));
 						if (enemyTargets.size() > 1 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
 									&& !games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data))
-							target = ((ITripleaPlayer) bridge.getRemote(bridge.getPlayerID())).whatShouldBomberBomb(end, enemyTargets);
+						{
+							while (target == null)
+							{
+								target = ((ITripleaPlayer) bridge.getRemote(bridge.getPlayerID())).whatShouldBomberBomb(end, enemyTargets, Collections.singletonList(unit));
+							}
+						}
 						else if (!enemyTargets.isEmpty())
 							target = enemyTargets.iterator().next();
 						if (target != null)

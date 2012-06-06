@@ -357,7 +357,7 @@ class DummyPlayer extends AbstractAI
 		throw new UnsupportedOperationException();
 	}
 	
-	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> units)
+	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
 		throw new UnsupportedOperationException();
 	}

@@ -238,13 +238,16 @@ public class RocketsFireHelper
 			final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal, Matches.unitIsOfTypes(legalTargetsForTheseRockets));
 			if (enemyTargets.isEmpty())
 				return; // TODO: this sucks
-			Unit target;
+			Unit target = null;
 			if (enemyTargets.size() == 1)
 				target = enemyTargets.iterator().next();
 			else
 			{
-				final ITripleaPlayer iplayer = (ITripleaPlayer) bridge.getRemote(player);
-				target = iplayer.whatShouldBomberBomb(attackedTerritory, enemyTargets);
+				while (target == null)
+				{
+					final ITripleaPlayer iplayer = (ITripleaPlayer) bridge.getRemote(player);
+					target = iplayer.whatShouldBomberBomb(attackedTerritory, enemyTargets, rockets);
+				}
 			}
 			if (target == null)
 				throw new IllegalStateException("No Targets in " + attackedTerritory.getName());

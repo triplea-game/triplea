@@ -158,7 +158,7 @@ public class MovePerformer implements Serializable
 				final Collection<Unit> arrived = Util.intersection(units, arrivingUnits[0]);
 				final Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
 				markTransportsMovement(arrived, transporting, route);
-				if (route.someMatch(mustFightThrough) && arrivingUnits[0].size() != 0)
+				if (route.someMatch(mustFightThrough) && arrived.size() != 0)
 				{
 					boolean bombing = false;
 					boolean ignoreBattle = false;
@@ -186,7 +186,7 @@ public class MovePerformer implements Serializable
 							Unit target;
 							if (enemyTargets.size() > 1 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
 										&& !canCreateAirBattle)
-								target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), enemyTargets);
+								target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), enemyTargets, arrived);
 							else
 								target = enemyTargets.iterator().next();
 							if (target == null)
@@ -198,8 +198,8 @@ public class MovePerformer implements Serializable
 							{
 								targetedAttack = true;
 								final HashMap<Unit, HashSet<Unit>> targets = new HashMap<Unit, HashSet<Unit>>();
-								targets.put(target, new HashSet<Unit>(arrivingUnits[0]));
-								getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove, targets, false);
+								targets.put(target, new HashSet<Unit>(arrived));
+								getBattleTracker().addBattle(route, arrived, bombing, id, m_bridge, m_currentMove, targets, false);
 							}
 						}
 					}
@@ -214,18 +214,18 @@ public class MovePerformer implements Serializable
 					}
 					if (!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
 					{
-						getBattleTracker().addBattle(route, arrivingUnits[0], bombing, id, m_bridge, m_currentMove);
+						getBattleTracker().addBattle(route, arrived, bombing, id, m_bridge, m_currentMove);
 					}
 					if (!ignoreBattle && MoveDelegate.isNonCombat(m_bridge) && !targetedAttack && route.allMatch(Matches.isTerritoryEnemy(id, data).invert())
-								&& route.allMatch(Matches.territoryHasNoEnemyUnits(id, data)) && Match.someMatch(arrivingUnits[0], Matches.UnitIsLand)
-								&& Match.noneMatch(arrivingUnits[0], Matches.UnitIsSea))
+								&& route.allMatch(Matches.territoryHasNoEnemyUnits(id, data)) && Match.someMatch(arrived, Matches.UnitIsLand)
+								&& Match.noneMatch(arrived, Matches.UnitIsSea))
 					{
 						// We are in non-combat move phase, and we are taking over friendly territories. No need for a battle. (This could get really difficult if we want these recorded in battle records).
 						for (final Territory t : route.getMatches(new CompositeMatchAnd<Territory>(
 									Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
 									Matches.TerritoryIsBlitzable(id, data))))
 						{
-							getBattleTracker().takeOver(t, id, bridge, m_currentMove, arrivingUnits[0]);
+							getBattleTracker().takeOver(t, id, bridge, m_currentMove, arrived);
 						}
 					}
 				}
@@ -237,7 +237,7 @@ public class MovePerformer implements Serializable
 				Change add = null;
 				if (route.getStart() != null && route.getEnd() != null)
 				{
-					ChangeFactory.addUnits(route.getEnd(), arrivingUnits[0]);
+					ChangeFactory.addUnits(route.getEnd(), arrived);
 					remove = ChangeFactory.removeUnits(route.getStart(), units);
 					add = ChangeFactory.addUnits(route.getEnd(), arrived);
 					change.add(add, remove);

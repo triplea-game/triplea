@@ -1283,16 +1283,16 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	/*
 	 * @see games.strategy.triplea.player.ITripleaPlayer#shouldBomberBomb(games.strategy.engine.data.Territory)
 	 */
-	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> units)
+	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
-		if (units == null || units.isEmpty())
+		if (potentialTargets == null || potentialTargets.isEmpty())
 			return null;
-		if (!Match.someMatch(units, Matches.UnitIsFactoryOrCanProduceUnits))
-			return units.iterator().next();
-		if (Match.someMatch(units, Matches.UnitIsFactory))
-			return Match.getMatches(units, Matches.UnitIsFactory).iterator().next();
+		if (!Match.someMatch(potentialTargets, Matches.UnitIsFactoryOrCanProduceUnits))
+			return potentialTargets.iterator().next();
+		if (Match.someMatch(potentialTargets, Matches.UnitIsFactory))
+			return Match.getMatches(potentialTargets, Matches.UnitIsFactory).iterator().next();
 		else
-			return Match.getMatches(units, Matches.UnitCanProduceUnits).iterator().next();
+			return Match.getMatches(potentialTargets, Matches.UnitCanProduceUnits).iterator().next();
 	}
 	
 	/*
