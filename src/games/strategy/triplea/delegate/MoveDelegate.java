@@ -64,6 +64,7 @@ import java.util.Set;
  */
 public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 {
+	public static String CLEANING_UP_AFTER_MOVEMENT_PHASES = "Cleaning up after movement phases";
 	private boolean m_firstRun = true; // firstRun means when the game is loaded the first time, not when the game is loaded from a save.
 	private boolean m_needToInitialize = true; // needToInitialize means we only do certain things once, so that if a game is saved then loaded, they aren't done again
 	private boolean m_needToDoRockets = true;
@@ -227,7 +228,7 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		{
 			// if no non-combat occurred, we may have cleanup left from combat
 			// that we need to spawn an event for
-			m_bridge.getHistoryWriter().startEvent("Cleaning up after movement phases");
+			m_bridge.getHistoryWriter().startEvent(CLEANING_UP_AFTER_MOVEMENT_PHASES);
 			m_bridge.addChange(change);
 		}
 		m_needToInitialize = true;

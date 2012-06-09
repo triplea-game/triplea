@@ -42,6 +42,9 @@ import java.util.Collection;
  */
 public class EditDelegate extends BasePersistentDelegate implements IEditDelegate
 {
+	public static String EDITMODE_ON = "Turning on Edit Mode";
+	public static String EDITMODE_OFF = "Turning off Edit Mode";
+	
 	/**
 	 * Called before the delegate will run.
 	 */
@@ -89,7 +92,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 		final ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
 		if (!m_bridge.getPlayerID().equals(remotePlayer.getID()))
 			return "Edit Mode can only be toggled during players turn";
-		logEvent("Turning " + (editMode ? "on" : "off") + " Edit Mode", null);
+		logEvent((editMode ? EDITMODE_ON : EDITMODE_OFF), null);
 		m_bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, new Boolean(editMode), getData()));
 		return null;
 	}

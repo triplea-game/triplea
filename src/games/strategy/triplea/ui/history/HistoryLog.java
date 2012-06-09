@@ -12,6 +12,7 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.MoveDelegate;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.dataObjects.MoveDescription;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -166,9 +167,10 @@ public class HistoryLog extends JFrame
 				if (node instanceof Renderable)
 				{
 					final Object details = ((Renderable) node).getRenderingData();
-					// flush move list
-					// support conquering territory on combat move
-					if (moving && !(details instanceof MoveDescription || title.matches("\\w+ takes? .*? from \\w+")))
+					
+					// TODO: why is this here when the one above seems to take care of it just fine? I am commenting out because it is causing MAJOR issues with PBEM posts (fatal error, because if the person does some moves, then for example turns on edit mode and does something then turns it off, then later undo's a move, and the move list is now empty, then we are have a fatal crash at end of the turn when we try to make the history post)
+					// flush move list (but support conquering territory on combat move)
+					/*if (moving && (title.equals(MoveDelegate.CLEANING_UP_AFTER_MOVEMENT_PHASES)) && !(details instanceof MoveDescription)) // && !title.matches("\\w+ takes? .*? from \\w+") && !title.indexOf(EditDelegate.EDITMODE_ON) != -1 && title.indexOf(EditDelegate.EDITMODE_OFF) != -1))
 					{
 						final Iterator<String> moveIter = moveList.iterator();
 						while (moveIter.hasNext())
@@ -177,7 +179,7 @@ public class HistoryLog extends JFrame
 							moveIter.remove();
 						}
 						moving = false;
-					}
+					}*/
 					if (details instanceof DiceRoll)
 					{
 						if (!verbose)
@@ -314,7 +316,7 @@ public class HistoryLog extends JFrame
 						if (title.equals("Adding original owners"))
 						{
 						}
-						else if (title.equals("Cleaning up after movement phases"))
+						else if (title.equals(MoveDelegate.CLEANING_UP_AFTER_MOVEMENT_PHASES))
 						{
 						}
 						else if (title.equals("Game Loaded"))
