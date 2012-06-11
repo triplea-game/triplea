@@ -1,4 +1,6 @@
 Changes for 1.6
+* Fixed parsing error in player attachment options: placementLimit, movementLimit, attackingLimit. (veqryn)
+
 * Fixed fatal error in HistoryLog, caused by clearing an array that potentially gets accessed later at a specific index number, from doing an edit during a movement phase then doing an undo later. (veqryn)
 
 * Created new game option, "Subs Can End NonCombat Move With Enemies", which allows submarines to end their noncombat movement in a sea zone containing any enemy units. (veqryn)

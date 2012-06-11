@@ -105,7 +105,7 @@ public class PlayerAttachment extends DefaultAttachment
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
 			throw new GameParseException("placementLimit type must be: owned, allied, or total" + thisErrorMsg());
 		final HashSet<UnitType> types = new HashSet<UnitType>();
-		if (s[3].equalsIgnoreCase("all"))
+		if (s[2].equalsIgnoreCase("all"))
 			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
 		else
 		{
@@ -155,7 +155,7 @@ public class PlayerAttachment extends DefaultAttachment
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
 			throw new GameParseException("movementLimit type must be: owned, allied, or total" + thisErrorMsg());
 		final HashSet<UnitType> types = new HashSet<UnitType>();
-		if (s[3].equalsIgnoreCase("all"))
+		if (s[2].equalsIgnoreCase("all"))
 			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
 		else
 		{
@@ -205,7 +205,7 @@ public class PlayerAttachment extends DefaultAttachment
 		if (!(s[1].equals("owned") || s[1].equals("allied") || s[1].equals("total")))
 			throw new GameParseException("attackingLimit type must be: owned, allied, or total" + thisErrorMsg());
 		final HashSet<UnitType> types = new HashSet<UnitType>();
-		if (s[3].equalsIgnoreCase("all"))
+		if (s[2].equalsIgnoreCase("all"))
 			types.addAll(getData().getUnitTypeList().getAllUnitTypes());
 		else
 		{
