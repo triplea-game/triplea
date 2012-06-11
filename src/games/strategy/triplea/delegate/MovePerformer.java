@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class MovePerformer implements Serializable
 {
@@ -137,7 +139,24 @@ public class MovePerformer implements Serializable
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				final Collection<Unit> aaCasualties = fireAA(route, units);
-				arrivingUnits[0] = Util.difference(units, aaCasualties);
+				final Set<Unit> aaCasualtiesWithDependents = new HashSet<Unit>();
+				// need to remove any dependents here
+				if (aaCasualties != null)
+				{
+					aaCasualtiesWithDependents.addAll(aaCasualties);
+					final Map<Unit, Collection<Unit>> dependencies = new TransportTracker().transporting(units, units);
+					for (final Unit u : aaCasualties)
+					{
+						final Collection<Unit> dependents = dependencies.get(u);
+						if (dependents != null)
+							aaCasualtiesWithDependents.addAll(dependents);
+						// we might have new dependents too (ie: paratroopers)
+						final Collection<Unit> newDependents = m_newDependents.get(u);
+						if (newDependents != null)
+							aaCasualtiesWithDependents.addAll(newDependents);
+					}
+				}
+				arrivingUnits[0] = Util.difference(units, aaCasualtiesWithDependents);
 			}
 		};
 		final IExecutable postAAFire = new IExecutable()
@@ -319,9 +338,20 @@ public class MovePerformer implements Serializable
 		paratroopNAirTransports.add(Matches.UnitIsAirTransport);
 		paratroopNAirTransports.add(Matches.UnitIsAirTransportable);
 		final boolean paratroopsLanding = Match.someMatch(arrived, paratroopNAirTransports) && MoveValidator.allLandUnitsAreBeingParatroopered(arrived, route, m_player);
-		Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), m_bridge.getData());
-		if (dependentAirTransportableUnits.isEmpty())
-			dependentAirTransportableUnits = m_newDependents;
+		final Map<Unit, Collection<Unit>> dependentAirTransportableUnits = MoveValidator.getDependents(Match.getMatches(arrived, Matches.UnitCanTransport), m_bridge.getData());
+		// add newly created dependents
+		if (m_newDependents != null)
+		{
+			for (final Entry<Unit, Collection<Unit>> entry : m_newDependents.entrySet())
+			{
+				Collection<Unit> dependents = dependentAirTransportableUnits.get(entry.getKey());
+				if (dependents != null)
+					dependents.addAll(entry.getValue());
+				else
+					dependents = entry.getValue();
+				dependentAirTransportableUnits.put(entry.getKey(), dependents);
+			}
+		}
 		// If paratroops moved normally (within their normal movement) remove their dependency to the airTransports
 		// So they can all continue to move normally
 		if (!paratroopsLanding && !dependentAirTransportableUnits.isEmpty())

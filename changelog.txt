@@ -1,4 +1,6 @@
 Changes for 1.6
+* Fixed bug where dependents of an air transport were not dying when the air transport was hit by AA fire, in the case where the air transports could fly deep into enemy territory and flew over an AA gun. (veqryn)
+
 * Fixed parsing error in player attachment options: placementLimit, movementLimit, attackingLimit. (veqryn)
 
 * Fixed fatal error in HistoryLog, caused by clearing an array that potentially gets accessed later at a specific index number, from doing an edit during a movement phase then doing an undo later. (veqryn)
