@@ -18,6 +18,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
@@ -36,7 +39,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -45,13 +47,15 @@ import javax.swing.event.ListSelectionListener;
 public class InstallMapDialog extends JDialog
 {
 	private static final long serialVersionUID = -1542210716764178580L;
-	private static final String DOWNLOAD_URL_PREFIX = "Location:";
+	private static final String DOWNLOAD_URL_PREFIX = "Location: ";
+	private static final String MAP_VERSION_PREFIX = "New Version: ";
 	private JButton m_installButton;
 	private JButton m_cancelButton;
 	private final List<DownloadFileDescription> m_games;
 	private JList m_gamesList;
 	private JEditorPane m_descriptionPane;
 	private JLabel m_urlLabel;
+	private JLabel m_mapVersion;
 	
 	private InstallMapDialog(final Frame owner, final List<DownloadFileDescription> games)
 	{
@@ -65,27 +69,45 @@ public class InstallMapDialog extends JDialog
 	
 	private void createComponents()
 	{
-		m_installButton = new JButton("Install Game");
+		m_installButton = new JButton("Install Games");
 		m_cancelButton = new JButton("Cancel");
 		final Vector<String> gameNames = new Vector<String>();
+		final LinkedHashMap<String, DownloadFileDescription> gameMap = new LinkedHashMap<String, DownloadFileDescription>();
 		for (final DownloadFileDescription d : m_games)
 		{
+			gameMap.put(d.getMapName(), d);
 			gameNames.add(d.getMapName());
 		}
 		m_gamesList = new JList(gameNames);
 		m_gamesList.setSelectedIndex(0);
-		m_gamesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		// m_gamesList.setSelectionMode(ListSelectionModel.);
 		// correctly handle empty names
 		final ListCellRenderer oldRenderer = m_gamesList.getCellRenderer();
 		m_gamesList.setCellRenderer(new ListCellRenderer()
 		{
-			public Component getListCellRendererComponent(final JList list, Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
+			public Component getListCellRendererComponent(final JList list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
 			{
-				if (value.toString().trim().length() == 0)
+				String mapName = (String) value;
+				if (mapName.trim().length() == 0)
 				{
-					value = " ";
+					mapName = " ";
 				}
-				return oldRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+				else
+				{
+					final DownloadFileDescription description = gameMap.get(mapName);
+					if (!description.isDummyUrl())
+					{
+						final File installed = new File(GameRunner.getUserMapsFolder(), mapName + ".zip");
+						if (installed.exists())
+						{
+							if (description.getVersion().isGreaterThan(getVersion(installed)))
+								mapName = "<html><b>" + mapName + "</b></html>";
+							else
+								mapName = "<html><i>" + mapName + "</i></html>";
+						}
+					}
+				}
+				return oldRenderer.getListCellRendererComponent(list, mapName, index, isSelected, cellHasFocus);
 			}
 		});
 		m_descriptionPane = new JEditorPane();
@@ -93,6 +115,7 @@ public class InstallMapDialog extends JDialog
 		m_descriptionPane.setContentType("text/html");
 		m_descriptionPane.setBackground(new JLabel().getBackground());
 		m_urlLabel = new JLabel(DOWNLOAD_URL_PREFIX);
+		m_mapVersion = new JLabel(MAP_VERSION_PREFIX);
 	}
 	
 	private void layoutCoponents()
@@ -119,7 +142,12 @@ public class InstallMapDialog extends JDialog
 		main.setLayout(new BorderLayout());
 		main.add(gamesScroll, BorderLayout.WEST);
 		main.add(descriptionScroll, BorderLayout.CENTER);
-		main.add(m_urlLabel, BorderLayout.SOUTH);
+		final JPanel extraPanel = new JPanel();
+		extraPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+		extraPanel.setLayout(new BorderLayout());
+		extraPanel.add(m_urlLabel, BorderLayout.NORTH);
+		extraPanel.add(m_mapVersion, BorderLayout.SOUTH);
+		main.add(extraPanel, BorderLayout.SOUTH);
 		add(main, BorderLayout.CENTER);
 	}
 	
@@ -140,7 +168,40 @@ public class InstallMapDialog extends JDialog
 			
 			public void actionPerformed(final ActionEvent event)
 			{
-				install(getSelected());
+				boolean installed = false;
+				final List<DownloadFileDescription> selected = getSelected();
+				final List<DownloadFileDescription> toDownload = new ArrayList<DownloadFileDescription>();
+				for (final DownloadFileDescription map : selected)
+				{
+					if (map.isDummyUrl())
+						continue;
+					final File destination = new File(GameRunner.getUserMapsFolder(), map.getMapName() + ".zip");
+					if (destination.exists())
+					{
+						final String msg = "<html>Replace map: " + map.getMapName() + " ?" +
+									"<br>You have version " + getVersionString(getVersion(destination)) + " installed, replace with version " + getVersionString(map.getVersion()) + "?</html>";
+						if (replaceOldQuestion(msg))
+							toDownload.add(map);
+					}
+					else
+						toDownload.add(map);
+				}
+				int i = 1;
+				for (final DownloadFileDescription map : toDownload)
+				{
+					if (map.isDummyUrl())
+						continue;
+					install(map, i++, toDownload.size());
+					installed = true;
+				}
+				
+				if (installed)
+				{
+					// TODO - asking the user to restart isn't good, we should find the cause of the error, maybe a windows thing?
+					// https://sourceforge.net/tracker/?func=detail&aid=2981890&group_id=44492&atid=439737
+					EventThreadJOptionPane.showMessageDialog(getRootPane(), ((toDownload.size() > 1) ? "Maps" : "Map") + " successfully installed, please restart TripleA before playing");
+					setVisible(false);
+				}
 			}
 		});
 		m_gamesList.addListSelectionListener(new ListSelectionListener()
@@ -152,12 +213,20 @@ public class InstallMapDialog extends JDialog
 		});
 	}
 	
+	private boolean replaceOldQuestion(final String message)
+	{
+		final int rVal = EventThreadJOptionPane.showConfirmDialog(this, message, "Overwrite?", JOptionPane.YES_NO_OPTION);
+		if (rVal != JOptionPane.OK_OPTION)
+			return false;
+		return true;
+	}
+	
 	/*private boolean isDefaultMap(final DownloadFileDescription selected)
 	{
 		return NewGameChooserModel.getDefaultMapNames().contains(selected.getMapName());
 	}*/
 
-	private void install(final DownloadFileDescription selected)
+	private void install(final DownloadFileDescription selected, final int count, final int total)
 	{
 		/* we no longer stop people from downloading, because we can handle having multiple copies of a map in the different directories triplea uses for maps
 		if (isDefaultMap(selected))
@@ -169,10 +238,6 @@ public class InstallMapDialog extends JDialog
 		final File destination = new File(GameRunner.getUserMapsFolder(), selected.getMapName() + ".zip");
 		if (destination.exists())
 		{
-			final String msg = "You have version " + getVersionString(getVersion(destination)) + " installed, replace with version " + getVersionString(selected.getVersion()) + "?";
-			final int rVal = EventThreadJOptionPane.showConfirmDialog(this, msg, "Exit", JOptionPane.YES_NO_OPTION);
-			if (rVal != JOptionPane.OK_OPTION)
-				return;
 			if (!destination.delete())
 			{
 				// TODO
@@ -186,7 +251,8 @@ public class InstallMapDialog extends JDialog
 		final File tempFile = new File(System.getProperty("java.io.tmpdir"), "tadownload:" + UUID.randomUUID().toString());
 		tempFile.deleteOnExit();
 		final DownloadRunnable download = new DownloadRunnable(selected.getUrl());
-		BackgroundTaskRunner.runInBackground(getRootPane(), "Downloading", download);
+		final String message = "Downloading" + ((total > 1) ? (" (" + count + " of " + total + "): ") : ": ") + selected.getMapName();
+		BackgroundTaskRunner.runInBackground(getRootPane(), message, download);
 		if (download.getError() != null)
 		{
 			Util.notifyError(this, download.getError());
@@ -267,10 +333,6 @@ public class InstallMapDialog extends JDialog
 				return;
 			}
 		}
-		// TODO - asking the user to restart isn't good, we should find the cause of the error, maybe a windows thing?
-		// https://sourceforge.net/tracker/?func=detail&aid=2981890&group_id=44492&atid=439737
-		EventThreadJOptionPane.showMessageDialog(getRootPane(), "Map successfully installed, please restart TripleA before playing");
-		setVisible(false);
 	}
 	
 	private void validateZip(final DownloadRunnable download) throws IOException
@@ -309,35 +371,48 @@ public class InstallMapDialog extends JDialog
 			m_installButton.setEnabled(false);
 			m_descriptionPane.setText("");
 			m_urlLabel.setText(DOWNLOAD_URL_PREFIX);
+			m_mapVersion.setText(MAP_VERSION_PREFIX);
 		}
 		else
 		{
-			final DownloadFileDescription selected = getSelected();
-			m_installButton.setEnabled(!selected.isDummyUrl());
-			m_descriptionPane.setText(selected.getDescription());
-			if (!selected.isDummyUrl())
+			for (final DownloadFileDescription map : getSelected())
 			{
-				m_urlLabel.setText(DOWNLOAD_URL_PREFIX + selected.getUrl());
-			}
-			// scroll to the top of the notes screen
-			SwingUtilities.invokeLater(new Runnable()
-			{
-				public void run()
+				m_installButton.setEnabled(!map.isDummyUrl());
+				m_descriptionPane.setText(map.getDescription());
+				if (!map.isDummyUrl())
 				{
-					m_descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+					m_urlLabel.setText(DOWNLOAD_URL_PREFIX + map.getUrl());
+					String currentVersion = "";
+					final File destination = new File(GameRunner.getUserMapsFolder(), map.getMapName() + ".zip");
+					if (destination.exists())
+					{
+						currentVersion = "   (installed version: " + getVersionString(getVersion(destination)) + ")";
+					}
+					m_mapVersion.setText(MAP_VERSION_PREFIX + getVersionString(map.getVersion()) + currentVersion);
+					// scroll to the top of the notes screen
+					SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							m_descriptionPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+						}
+					});
+					// only show one map description
+					break;
 				}
-			});
+			}
 		}
 	}
 	
-	private DownloadFileDescription getSelected()
+	private List<DownloadFileDescription> getSelected()
 	{
-		DownloadFileDescription selected = null;
+		final List<DownloadFileDescription> selected = new ArrayList<DownloadFileDescription>();
 		for (final DownloadFileDescription d : m_games)
 		{
-			if (d.getMapName().equals(m_gamesList.getSelectedValue()))
+			final List<Object> values = Arrays.asList(m_gamesList.getSelectedValues());
+			if (values.contains(d.getMapName()))
 			{
-				selected = d;
+				selected.add(d);
 			}
 		}
 		return selected;
@@ -347,7 +422,7 @@ public class InstallMapDialog extends JDialog
 	{
 		final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
 		final InstallMapDialog dia = new InstallMapDialog(parentFrame, games);
-		dia.setSize(800, 600);
+		dia.setSize(800, 614);
 		dia.setLocationRelativeTo(parentFrame);
 		dia.setVisible(true);
 	}
