@@ -559,6 +559,7 @@
                 <connection t1="31 Sea Zone" t2="23 Sea Zone"/>
                 <connection t1="31 Sea Zone" t2="26 Sea Zone"/>
                 <connection t1="31 Sea Zone" t2="25 Sea Zone"/>
+                <connection t1="31 Sea Zone" t2="30 Sea Zone"/>
                 <connection t1="30 Sea Zone" t2="26 Sea Zone"/>
                 <connection t1="30 Sea Zone" t2="27 Sea Zone"/>
                 <connection t1="30 Sea Zone" t2="29 Sea Zone"/>
@@ -777,13 +778,12 @@
                 <connection t1="Kenya" t2="Tanganyika Territory"/>
                 <connection t1="United Kingdom" t2="110 Sea Zone"/>
                 <connection t1="Rhodesia" t2="Tanganyika Territory"/>
-                <connection t1="Newfoundland Labrador" t2="121 Sea Zone"/>
                 <connection t1="Morocco" t2="Algeria"/>
                 <connection t1="Morocco" t2="92 Sea Zone"/>
                 <connection t1="Morocco" t2="91 Sea Zone"/>
 				<connection t1="Morocco" t2="Rio de Oro"/>
 				<connection t1="Rio de Oro" t2="91 Sea Zone"/>
-				<connection t1="Rio de Oro" t2="French West Africa"/>
+				<connection t1="Rio de Oro" t2="Algeria"/>
                 <connection t1="French Equatorial Africa" t2="Belgian Congo"/>
                 <connection t1="French Equatorial Africa" t2="Anglo Egyptian Sudan"/>
                 <connection t1="French Equatorial Africa" t2="82 Sea Zone"/>
@@ -1171,7 +1171,6 @@
                 <connection t1="114 Sea Zone" t2="Sweden"/>
                 <connection t1="81 Sea Zone" t2="98 Sea Zone"/>
                 <connection t1="81 Sea Zone" t2="Anglo Egyptian Sudan"/>
-                <connection t1="79 Sea Zone" t2="Eastern Persia"/>
                 <connection t1="79 Sea Zone" t2="77 Sea Zone"/>
                 <connection t1="79 Sea Zone" t2="78 Sea Zone"/>
                 <connection t1="Uruguay" t2="Brazil"/>
@@ -1290,6 +1289,7 @@
 				<relationshipType name="War"/>
 				<relationshipType name="Unprovoked"/>
 				<relationshipType name="Neutrality"/>
+				<relationshipType name="Concordant"/>
 				<relationshipType name="Custodianship"/>
 				<relationshipType name="Friendly"/>
 				<relationshipType name="Strict_Neutral"/>
@@ -2053,6 +2053,14 @@
 						<option name="rocketsCanFlyOver" value="false"/>
 					</attatchment>
 
+					<attatchment name="relationshipTypeAttachment" attatchTo="Concordant" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
+						<option name="archeType" value="neutral"/>
+						<option name="rocketsCanFlyOver" value="true"/>
+						<option name="canMoveLandUnitsOverOwnedLand" value="true"/>
+						<option name="canMoveAirUnitsOverOwnedLand" value="true"/>
+						<option name="canLandAirUnitsOnOwnedLand" value="true"/>
+					</attatchment>
+
 					<attatchment name="relationshipTypeAttachment" attatchTo="Friendly" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<!--<option name="archeType" value="neutral"/>
 						<option name="canMoveLandUnitsOverOwnedLand" value="true"/>
@@ -2473,7 +2481,7 @@
                          <option name="isFactory" value="true"/>
 						 <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa:West Indies:Greenland:Iceland:Sardinia:Sicily:French Madagascar:Crete:Cyprus"/>
 						<option name="canOnlyBePlacedInTerritoryValuedAtX" value="2"/>
-						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
+						 <!--<option name="destroyedWhenCapturedBy" value="Chinese"/>-->
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
 						 <option name="canProduceXUnits" value="3"/>
 						 <option name="maxDamage" value="6"/>
@@ -2484,7 +2492,7 @@
                          <option name="isFactory" value="true"/>
 						 <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa:West Indies:Greenland:Iceland:Sardinia:Sicily:French Madagascar:Crete:Cyprus"/>
 						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="3"/>
-						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
+						 <!--<option name="destroyedWhenCapturedBy" value="Chinese"/>-->
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
 						 <option name="canProduceXUnits" value="10"/>
 						 <option name="maxDamage" value="20"/>
@@ -2497,7 +2505,7 @@
                          <option name="isFactory" value="true"/>
 						 <option name="unitPlacementRestrictions" value="Ceylon:Sumatra:Java:Borneo:Hainan:Philippines:Celebes:Dutch New Guinea:Paulau Island:New Guinea:New Britain:Solomon Islands:New Hebrides:New Zealand:Fiji:Samoa:Line Islands:Johnston Island:Hawaiian Islands:Midway:Iwo Jima:Aleutian Islands:Gilbert Islands:Marshall Islands:Caroline Islands:Wake Island:Marianas:Guam:Formosa:Okinawa:West Indies:Greenland:Iceland:Sardinia:Sicily:French Madagascar:Crete:Cyprus"/>
 						 <option name="canOnlyBePlacedInTerritoryValuedAtX" value="3"/>
-						 <option name="destroyedWhenCapturedBy" value="Chinese"/>
+						 <!--<option name="destroyedWhenCapturedBy" value="Chinese"/>-->
 						 <option name="isAAforBombingThisUnitOnly" value="true"/>
 						 <option name="canProduceXUnits" value="10"/>
 						 <option name="maxDamage" value="20"/>
@@ -4057,6 +4065,15 @@
                 </attatchment>
 						
 				<!-- Chinese Conditions -->
+				<attatchment name="conditionAttachment_Chinese_Own_Kiangsu" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="Kiangsu" count="1"/>
+                </attatchment>
+				<attatchment name="conditionAttachment_Chinese_Own_Shantung" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="Shantung" count="1"/>
+                </attatchment>
+				<attatchment name="conditionAttachment_Chinese_Own_Manchuria" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="directOwnershipTerritories" value="Manchuria" count="1"/>
+                </attatchment>
 				
 				<!-- Americans Conditions -->
                 <attatchment name="conditionAttachment_Americans_5_unit_presence" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
@@ -4097,8 +4114,8 @@
 				<attatchment name="conditionAttachmentTurn3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="turns" value="3"/>
 				</attatchment>
-				<attatchment name="conditionAttachmentTurn4" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="turns" value="4"/>
+				<attatchment name="conditionAttachmentTurn4OrHigher" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="turns" value="4-+"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Axis_Capture_London" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="alliedOwnershipTerritories" value="United Kingdom" count="1"/>
@@ -4132,17 +4149,19 @@
 					<option name="turns" value="3"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Americans_May_Declare_War_On_Axis_Early" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentTurn4:conditionAttachment_Americans_At_War_With_At_Least_One_Axis:conditionAttachment_British_Provoked_War_With_Japan:conditionAttachment_Axis_Capture_London_Switch:conditionAttachment_Axis_Land_In_North_America_Switch"/>
+					<option name="conditions" value="conditionAttachmentTurn4OrHigher:conditionAttachment_Americans_At_War_With_At_Least_One_Axis:conditionAttachment_British_Provoked_War_With_Japan:conditionAttachment_Axis_Capture_London_Switch:conditionAttachment_Axis_Land_In_North_America_Switch"/>
 					<option name="conditionType" value="OR"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Americans_May_Declare_War_On_Axis" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="conditions" value="conditionAttachmentAmericansNotYetAtWarWithAll:conditionAttachment_Americans_May_Declare_War_On_Axis_Early"/>
 					<option name="conditionType" value="AND"/>
 				</attatchment>
+				<attatchment name="conditionAttachment_Russians_At_War_In_Europe" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="atWarPlayers" value="Germans:Italians" count="1"/>
+				</attatchment>
 				<attatchment name="conditionAttachment_Russians_May_Declare_War_On_European_Axis" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="conditions" value="conditionAttachment_Axis_Capture_London_Switch:conditionAttachmentTurn4"/>
+					<option name="conditions" value="conditionAttachment_Axis_Capture_London_Switch:conditionAttachmentTurn4OrHigher:conditionAttachment_Russians_At_War_In_Europe"/>
 					<option name="conditionType" value="OR"/>
-					<option name="atWarPlayers" value="Germans:Italians" count="0"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Americans_And_Japanese_At_War" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="atWarPlayers" value="Americans" count="1"/>
@@ -4174,6 +4193,17 @@
 				<attatchment name="conditionAttachment_Germans_At_War_With_Russians" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Germans:Russians:anyWar"/>
 				</attatchment>
+				<attatchment name="conditionAttachment_Italians_At_War_With_Russians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Italians:Russians:anyWar"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Germans_Not_At_War_With_Russians" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Germans:Russians:anyWar"/>
+					<option name="invert" value="true"/>
+				</attatchment>
+				<attatchment name="conditionAttachment_Italians_Not_At_War_With_Russians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="relationship" value="Italians:Russians:anyWar"/>
+					<option name="invert" value="true"/>
+				</attatchment>
 				<attatchment name="conditionAttachmentGermansNotYetAtWarWithChinese" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Germans:Chinese:anyNeutral"/>
 				</attatchment>
@@ -4192,12 +4222,12 @@
 				<attatchment name="conditionAttachmentRussiansNotYetAtWarWithTrueNeutralsButAlliesAre" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Russians:Neutral_True:anyNeutral"/>
 					<option name="relationship" value="British:Neutral_True:anyWar"/>
-					<option name="relationship" value="Russians:Germans:anyWar"/>
+					<option name="atWarPlayers" value="Germans:Italians" count="1"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentRussiansNotYetFriendlyWithTrueNeutralsButAlliesAre" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Russians:Neutral_True:anyNeutral"/>
 					<option name="relationship" value="British:Neutral_True:Friendly_Neutral"/>
-					<option name="relationship" value="Russians:Germans:anyWar"/>
+					<option name="atWarPlayers" value="Germans:Italians" count="1"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentRussiansNotYetFriendlyWithMongoliansButAlliesAre" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Russians:Mongolians:anyNeutral"/>
@@ -4217,7 +4247,7 @@
 				<attatchment name="conditionAttachmentRussians_Neutrality_Americans_but_War_With_European_Axis" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Russians:Americans:anyNeutral"/>
 					<option name="relationship" value="Americans:Germans:anyWar"/>
-					<option name="relationship" value="Russians:Germans:anyWar"/>
+					<option name="atWarPlayers" value="Germans:Italians" count="1"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentRussians_Neutrality_Americans_but_War_With_Japanese" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Russians:Americans:anyNeutral"/>
@@ -4416,6 +4446,81 @@
 					<option name="frontier" value="productionChinese_Burma_Road_Closed"/>
 					<option name="invert" value="true"/>
 				</attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Kiangsu_Russians" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Kiangsu"/>
+                	<option name="removeUnits" value="Kiangsu:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:russiansBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Kiangsu_Americans" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Kiangsu"/>
+                	<option name="removeUnits" value="Kiangsu:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:americansBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Kiangsu_Chinese" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Kiangsu"/>
+                	<option name="removeUnits" value="Kiangsu:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:chineseBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Kiangsu_British" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Kiangsu"/>
+                	<option name="removeUnits" value="Kiangsu:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:britishBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Kiangsu_ANZAC" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Kiangsu"/>
+                	<option name="removeUnits" value="Kiangsu:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:anzacBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Shantung_Russians" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Shantung"/>
+                	<option name="removeUnits" value="Shantung:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:russiansBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Shantung_Americans" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Shantung"/>
+                	<option name="removeUnits" value="Shantung:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:americansBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Shantung_Chinese" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Shantung"/>
+                	<option name="removeUnits" value="Shantung:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:chineseBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Shantung_British" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Shantung"/>
+                	<option name="removeUnits" value="Shantung:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:britishBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Shantung_ANZAC" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Shantung"/>
+                	<option name="removeUnits" value="Shantung:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:anzacBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Manchuria_Russians" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Manchuria"/>
+                	<option name="removeUnits" value="Manchuria:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:russiansBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Manchuria_Americans" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Manchuria"/>
+                	<option name="removeUnits" value="Manchuria:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:americansBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Manchuria_Chinese" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Manchuria"/>
+                	<option name="removeUnits" value="Manchuria:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:chineseBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Manchuria_British" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Manchuria"/>
+                	<option name="removeUnits" value="Manchuria:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:britishBattle"/>
+                </attatchment>
+                <attatchment name="triggerAttachment_Chinese_Destroy_Factories_Manchuria_ANZAC" attatchTo="Chinese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
+                	<option name="trigger" value="conditionAttachment_Chinese_Own_Manchuria"/>
+                	<option name="removeUnits" value="Manchuria:factory_minor:factory_major:factory_upgrade" count="1000"/>
+					<option name="when" value="after:anzacBattle"/>
+                </attatchment>
 				
 				<!-- Americans Triggers -->
                 <attatchment name="triggerAttachment_Americans_5_Presence_In_France" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
@@ -4742,18 +4847,6 @@
                 	<option name="players" value="Germans"/>
                 	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Land_In_North_America_Switch"/>
                 	<option name="playerProperty" value="turns" count="1-+"/>
-				</attatchment>
-				<attatchment name="triggerAttachment_Russians_War_European_Axis" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachment_Russians_May_Declare_War_On_European_Axis"/>
-					<option name="relationshipChange" value="Germans:Russians:anyNeutral:War"/>
-					<option name="relationshipChange" value="Italians:Russians:anyNeutral:War"/>
-					<option name="relationshipChange" value="Russians:British:anyNeutral:Allied"/>
-					<option name="relationshipChange" value="Russians:French:anyNeutral:Allied"/>
-					<option name="relationshipChange" value="Russians:Neutral_Allies:anyNeutral:Friendly_Neutral"/>
-					<option name="relationshipChange" value="Russians:Neutral_Axis:anyNeutral:Unfriendly_Neutral"/>
-					<option name="notification" value="Russians_War_European_Axis"/>
-					<option name="when" value="before:russiansPolitics"/>
-					<option name="uses" value="1"/>
 				</attatchment>
                 <attatchment name="triggerAttachment_Americans_Unrestricted_Movement" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="conditions" value="conditionAttachment_Americans_At_War_With_At_Least_One_Axis"/>
@@ -5111,9 +5204,8 @@
 					<option name="text" value="French_War_Japanese"/>
 				</attatchment>
 				<attatchment name="politicalActionAttachment_Axis_To_War_With_Russians" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentEuropeanAxisNotYetAtWarWithRussians"/>
+					<option name="conditions" value="conditionAttachment_Germans_Not_At_War_With_Russians"/>
 					<option name="relationshipChange" value="Germans:Russians:War"/>
-					<option name="relationshipChange" value="Italians:Russians:War"/>
 					<option name="relationshipChange" value="Russians:British:Allied"/>
 					<option name="relationshipChange" value="Russians:UK_Pacific:Allied"/>
 					<option name="relationshipChange" value="Russians:ANZAC:Allied"/>
@@ -5123,8 +5215,7 @@
 					<option name="text" value="Axis_War_Russians"/>
 				</attatchment>
 				<attatchment name="politicalActionAttachment_Axis_To_War_With_Russians" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentEuropeanAxisNotYetAtWarWithRussians"/>
-					<option name="relationshipChange" value="Germans:Russians:War"/>
+					<option name="conditions" value="conditionAttachment_Italians_Not_At_War_With_Russians"/>
 					<option name="relationshipChange" value="Italians:Russians:War"/>
 					<option name="relationshipChange" value="Russians:British:Allied"/>
 					<option name="relationshipChange" value="Russians:UK_Pacific:Allied"/>
@@ -5133,6 +5224,28 @@
 					<option name="relationshipChange" value="Russians:Neutral_Allies:Friendly_Neutral"/>
 					<option name="relationshipChange" value="Russians:Neutral_Axis:Unfriendly_Neutral"/>
 					<option name="text" value="Axis_War_Russians"/>
+				</attatchment>
+				<attatchment name="politicalActionAttachment_Russians_To_War_With_Germans" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Germans_Not_At_War_With_Russians:conditionAttachment_Russians_May_Declare_War_On_European_Axis"/>
+					<option name="relationshipChange" value="Germans:Russians:War"/>
+					<option name="relationshipChange" value="Russians:British:Allied"/>
+					<option name="relationshipChange" value="Russians:UK_Pacific:Allied"/>
+					<option name="relationshipChange" value="Russians:ANZAC:Allied"/>
+					<option name="relationshipChange" value="Russians:French:Allied"/>
+					<option name="relationshipChange" value="Russians:Neutral_Allies:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Russians:Neutral_Axis:Unfriendly_Neutral"/>
+					<option name="text" value="Russians_War_Germans"/>
+				</attatchment>
+				<attatchment name="politicalActionAttachment_Russians_To_War_With_Italians" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_Italians_Not_At_War_With_Russians:conditionAttachment_Russians_May_Declare_War_On_European_Axis"/>
+					<option name="relationshipChange" value="Italians:Russians:War"/>
+					<option name="relationshipChange" value="Russians:British:Allied"/>
+					<option name="relationshipChange" value="Russians:UK_Pacific:Allied"/>
+					<option name="relationshipChange" value="Russians:ANZAC:Allied"/>
+					<option name="relationshipChange" value="Russians:French:Allied"/>
+					<option name="relationshipChange" value="Russians:Neutral_Allies:Friendly_Neutral"/>
+					<option name="relationshipChange" value="Russians:Neutral_Axis:Unfriendly_Neutral"/>
+					<option name="text" value="Russians_War_Italians"/>
 				</attatchment>
 				<attatchment name="politicalActionAttachment_British_To_War_With_Japanese" attatchTo="British" javaClass="games.strategy.triplea.attatchments.PoliticalActionAttachment" type="player">
 					<option name="conditions" value="conditionAttachment_British_Not_Yet_At_War_With_Japanese"/>
@@ -6130,7 +6243,7 @@
 						<relationship player1="Americans" player2="Mongolians" type="Strict_Neutral" roundValue="1"/>
 
 						<relationship player1="Chinese" player2="British" type="Neutrality" roundValue="1"/>
-						<relationship player1="Chinese" player2="UK_Pacific" type="Neutrality" roundValue="1"/>
+						<relationship player1="Chinese" player2="UK_Pacific" type="Concordant" roundValue="1"/>
 						<relationship player1="Chinese" player2="Italians" type="Neutrality" roundValue="1"/>
 						<relationship player1="Chinese" player2="ANZAC" type="Neutrality" roundValue="1"/>
 						<relationship player1="Chinese" player2="French" type="Neutrality" roundValue="1"/>
@@ -6695,6 +6808,7 @@
 <b>Note</b><br>
 This game uses the latest Alpha +3 rules, as posted on Larry's website.<br>
 To blitz move mech_infantry with armour, you must click on them both at the same time (use CTRL to create waypoints).<br>
+Paratroopers tech enables a second combat movement phase which happens right after the first combat movement phase, and the second one only allowes movement of paratrooping infantry.<br>
 <br>
 
 <b>Disclaimer</b><br>
@@ -6935,9 +7049,29 @@ These changes to units are things other than price/movement which you can see in
 <br><br><hr><br>
 <br>Change Log:
 <br>
-<br>2.9
+<br>3.0
+<br>Added all technology to Global 1940.
+<br>Allowed paratroopers to be moved in a second combat movement phase.
+<br>Made bonus for Mech Infantry work correctly.
+<br>Made Rockets go 4 spaces and not fly over neutrals.
+<br>Allowed UK_Pacific to share the cost of researching technology.
+<br>Made British share all technology with UK_Pacific.
 <br>Allowed Convoy Blockades to roll dice (you can turn this off in game options).
 <br>Allowed Low Luck for Strategy Bombing and Rockets to be set again.
+<br>Stopped British air units from dying if UK_Pacific was building a factory under them.
+<br>Forced Tactical Bombers to only be able to target airfields and harbours.
+<br>Allowed Submarines to enter any sea zone during non-combat, but end movement if there is an enemy Destroyer present.
+<br>
+<br>2.9
+<br>Allowed Italy and Germany to declare war on Russia seperately, and for Russia to declare war seperately as well.
+<br>Made Mongolian territories flip to Russian even if Japan attacks but loses against a Russian border territory.
+<br>Allowed Chinese units to enter Burma and Kwangtung.
+<br>Made all factories on originally Chinese territories be deleted if China controls them.
+<br>Added connection between 30 and 31 Sea Zones, and changed map tiles to show a connection.
+<br>Deleted connection between Newfoundland Labrador and 121 Sea Zone.
+<br>Deleted connection between Rio de Oro and French West Africa.
+<br>Added connection between Rio de Oro and Algeria.
+<br>Deleted connection between Eastern Persia and 79 Sea Zone.
 <br>
 <br>2.8
 <br>Fixed issue with Japanese objective for Trade with America.
@@ -6977,13 +7111,13 @@ These changes to units are things other than price/movement which you can see in
 <br>Finishing Alpha +3 National Objectives.
 <br>Preventing Combat-Movement takeover of Friendly Neutrals. You must now wait for Non-Combat Movement phase to take over them.
 <br>Allowing Submarines to pass through Straight of Gibraltar no matter who controls it.
-<br>Adding connection between Timguska and Novosibirsk
-<br>Adding connection between Sikang and Tsinghai
-<br>Deleting connection between SZ65 and Ecuador
-<br>Deleting connection between SZ76 and Kenya
-<br>Deleting connection between SZ86 and French Guiana
-<br>Deleting connection between SZ88 and Venezuela
-<br>Deleting connection between SZ89 and Central USA
+<br>Adding connection between Timguska and Novosibirsk.
+<br>Adding connection between Sikang and Tsinghai.
+<br>Deleting connection between SZ65 and Ecuador.
+<br>Deleting connection between SZ76 and Kenya.
+<br>Deleting connection between SZ86 and French Guiana.
+<br>Deleting connection between SZ88 and Venezuela.
+<br>Deleting connection between SZ89 and Central USA.
 <br>
 <br>2.1
 <br>Fixed bug preventing UK_Pacific units from turning into British units.

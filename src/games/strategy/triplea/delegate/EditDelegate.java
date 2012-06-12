@@ -151,7 +151,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 		if (null != (result = EditValidator.validateChangeTerritoryOwner(data, territory, player)))
 			return result;
 		logEvent("Changing ownership of " + territory.getName() + " from " + territory.getOwner().getName() + " to " + player.getName(), territory);
-		if (data.getRelationshipTracker().isAllied(territory.getOwner(), player))
+		if (!data.getRelationshipTracker().isAtWar(territory.getOwner(), player))
 		{
 			// change ownership of friendly factories
 			final Collection<Unit> units = territory.getUnits().getMatches(Matches.UnitIsFactoryOrIsInfrastructure);

@@ -1,4 +1,6 @@
 Changes for 1.6
+* Fixing Global 1940 bugs, and getting it to use Technology completely. (veqryn)
+
 * Allowed downloading of multiple maps/games in one go, by holding down CTRL while selecting maps in the "Download Games" dialog screen, and out of date maps will show up in bold, and maps up-to-date will show in italics. (ddurham)
 
 * Fixed bug where dependents of an air transport were not dying when the air transport was hit by AA fire, in the case where the air transports could fly deep into enemy territory and flew over an AA gun. (veqryn)
