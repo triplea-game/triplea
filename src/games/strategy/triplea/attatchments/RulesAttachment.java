@@ -644,6 +644,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			objectiveMet = areConditionsMet(new ArrayList<ICondition>(m_conditions), testedConditions, m_conditionType);
 		}
 		//
+		// check switch (on/off)
+		//
+		if (objectiveMet)
+			objectiveMet = m_switch;
+		//
 		// check turn limits
 		//
 		if (objectiveMet && m_turns != null)
