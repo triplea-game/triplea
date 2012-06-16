@@ -322,7 +322,7 @@ public class HistoryLog extends JFrame
 						else if (title.equals("Game Loaded"))
 						{
 						}
-						else if (title.indexOf("is now being played by:") != -1)
+						else if (title.indexOf("now being played by") != -1)
 						{
 						}
 						else if (title.indexOf("Setting uses for triggers used") != -1)
