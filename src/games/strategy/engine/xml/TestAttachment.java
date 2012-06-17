@@ -70,11 +70,11 @@ public class TestAttachment extends DefaultAttachment
 		return m_value;
 	}
 	
-	@Override
+	/*@Override
 	public void setData(final GameData m_data)
 	{
-	}
-	
+	}*/
+
 	@Override
 	public void validate(final GameData data)
 	{

@@ -27,11 +27,9 @@ import games.strategy.util.PropertyUtil;
  * 
  * @author Sean Bridges
  */
-public abstract class DefaultAttachment implements IAttachment
+public abstract class DefaultAttachment extends GameDataComponent implements IAttachment
 {
 	private static final long serialVersionUID = -1985116207387301730L;
-	@InternalDoNotExport
-	private GameData m_data;
 	@InternalDoNotExport
 	private Attachable m_attachedTo;
 	@InternalDoNotExport
@@ -39,8 +37,8 @@ public abstract class DefaultAttachment implements IAttachment
 	
 	protected DefaultAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
+		super(gameData);
 		setName(name);
-		setData(gameData);
 		setAttachedTo(attachable);
 	}
 	
@@ -109,22 +107,6 @@ public abstract class DefaultAttachment implements IAttachment
 		return PropertyUtil.getPropertyFieldObject(property, this).toString();
 	}
 	
-	public Object getRawPropertyObject(final String property)
-	{
-		return PropertyUtil.getPropertyFieldObject(property, this);
-	}
-	
-	@InternalDoNotExport
-	public void setData(final GameData data)
-	{
-		m_data = data;
-	}
-	
-	protected GameData getData()
-	{
-		return m_data;
-	}
-	
 	public Attachable getAttachedTo()
 	{
 		return m_attachedTo;
@@ -160,6 +142,7 @@ public abstract class DefaultAttachment implements IAttachment
 	@Override
 	public int hashCode()
 	{
+		System.out.println("Hashcode should be 1444968155. \n" + toString() + "\n Right now it is: " + toString().hashCode() + "\n\n");
 		return toString().hashCode();
 	}
 	

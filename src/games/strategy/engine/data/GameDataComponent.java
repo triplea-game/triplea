@@ -18,6 +18,7 @@
  */
 package games.strategy.engine.data;
 
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.util.PropertyUtil;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ import java.io.ObjectOutputStream;
 public class GameDataComponent implements java.io.Serializable
 {
 	static final long serialVersionUID = -2066504666509851740L;
+	@InternalDoNotExport
 	private GameData m_data;
 	
 	/**

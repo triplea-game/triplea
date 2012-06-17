@@ -31,7 +31,7 @@ public interface IAttachment extends Serializable
 	@SuppressWarnings("rawtypes")
 	Class[] attachmentConstructorParameter = new Class[] { String.class, Attachable.class, GameData.class };
 	
-	public void setData(GameData m_data);
+	// public void setData(GameData m_data);
 	
 	/**
 	 * Called after ALL attachments are created. IF an error occurs should throw an exception to halt the parsing.

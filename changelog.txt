@@ -1,3 +1,7 @@
+Changes for 1.6.1
+* Made DefaultAttachment extend GameDataComponent. (veqryn)
+
+
 Changes for 1.6
 * Fixing Global 1940 bugs, and getting it to use Technology completely. (veqryn)
 
