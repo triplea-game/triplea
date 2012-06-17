@@ -416,12 +416,14 @@ public class DiceRollTest extends TestCase
 		// hb, for revised 2 on attack, 1 on defence
 		final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
 		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
-		m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.FALSE);
-		assertEquals(2, BattleCalculator.getRolls(bombers, location, british, false));
-		assertEquals(1, BattleCalculator.getRolls(bombers, location, british, true));
 		// lhtr hb, 2 for both
 		m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
 		assertEquals(2, BattleCalculator.getRolls(bombers, location, british, false));
 		assertEquals(2, BattleCalculator.getRolls(bombers, location, british, true));
+		// non-lhtr, only 1 for defense.
+		// m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.FALSE);
+		// assertEquals(2, BattleCalculator.getRolls(bombers, location, british, false));
+		// assertEquals(1, BattleCalculator.getRolls(bombers, location, british, true));
+		// this last bit can not be tested because with the new way tech works, changing the game option once the game starts does not remove or add the extra die roll
 	}
 }

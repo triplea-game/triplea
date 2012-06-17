@@ -142,7 +142,7 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 	@Override
 	public int hashCode()
 	{
-		System.out.println("Hashcode should be 1444968155. \n" + toString() + "\n Right now it is: " + toString().hashCode() + "\n\n");
+		// System.out.println(toString() + "\n Right now its hash is: " + toString().hashCode() + "\n\n");
 		return toString().hashCode();
 	}
 	
