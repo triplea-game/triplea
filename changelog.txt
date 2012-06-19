@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Fixed issue where fighters moving alone were not asked if they want to escort. (veqryn)
+
 * Made DefaultAttachment extend GameDataComponent. (veqryn)
 
 

@@ -184,17 +184,18 @@ public class MovePerformer implements Serializable
 					// could it be a bombing raid
 					final Collection<Unit> enemyUnits = route.getEnd().getUnits().getMatches(Matches.enemyUnit(id, data));
 					final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(route.getEnd()).invert());
-					final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal,
-								Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(Match.getMatches(arrived, Matches.UnitIsStrategicBomber), data)));
 					final CompositeMatchOr<Unit> allBombingRaid = new CompositeMatchOr<Unit>(Matches.UnitIsStrategicBomber);
-					final boolean canCreateAirBattle = (Match.someMatch(enemyUnits, StrategicBombingRaidPreBattle.defendingInterceptors(id, data)) && !enemyTargets.isEmpty()
+					final boolean canCreateAirBattle = (Match.someMatch(enemyUnits, StrategicBombingRaidPreBattle.defendingInterceptors(id, data)) && !enemyTargetsTotal.isEmpty()
 								&& games.strategy.triplea.Properties.getRaidsMayBePreceededByAirBattles(data));
 					if (canCreateAirBattle)
 						allBombingRaid.add(Matches.unitCanEscort);
 					final boolean allCanBomb = Match.allMatch(arrived, allBombingRaid);
+					final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal,
+								Matches.unitIsOfTypes(UnitAttachment.getAllowedBombingTargetsIntersection(Match.getMatches(arrived, Matches.UnitIsStrategicBomber), data)));
+					final boolean targetsOrEscort = !enemyTargets.isEmpty() || (!enemyTargetsTotal.isEmpty() && canCreateAirBattle && Match.allMatch(arrived, Matches.unitCanEscort));
 					boolean targetedAttack = false;
 					// if it's all bombers and there's something to bomb
-					if (allCanBomb && !enemyTargets.isEmpty() && !MoveDelegate.isNonCombat(m_bridge))
+					if (allCanBomb && targetsOrEscort && !MoveDelegate.isNonCombat(m_bridge))
 					{
 						bombing = getRemotePlayer().shouldBomberBomb(route.getEnd());
 						// if bombing and there's something to target- ask what to bomb
@@ -206,8 +207,10 @@ public class MovePerformer implements Serializable
 							if (enemyTargets.size() > 1 && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data)
 										&& !canCreateAirBattle)
 								target = getRemotePlayer().whatShouldBomberBomb(route.getEnd(), enemyTargets, arrived);
-							else
+							else if (!enemyTargets.isEmpty())
 								target = enemyTargets.iterator().next();
+							else
+								target = enemyTargetsTotal.iterator().next(); // in case we are escorts only
 							if (target == null)
 							{
 								bombing = false;
