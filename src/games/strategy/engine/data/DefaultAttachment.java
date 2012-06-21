@@ -143,6 +143,8 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 	public int hashCode()
 	{
 		// System.out.println(toString() + "\n Right now its hash is: " + toString().hashCode() + "\n\n");
+		if (m_attachedTo == null && m_name == null)
+			return 0;
 		return toString().hashCode();
 	}
 	
