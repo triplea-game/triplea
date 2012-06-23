@@ -12,6 +12,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord;
@@ -252,7 +254,11 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 				{
 					getInterceptors(bridge);
 					if (!m_defendingUnits.isEmpty())
+					{
 						m_intercept = true;
+						// play a sound
+						ClipPlayer.play(SoundPath.CLIP_AIR_BATTLE);
+					}
 				}
 			};
 			// push in reverse order of execution

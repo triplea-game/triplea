@@ -27,6 +27,8 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.TriggerAttachment;
@@ -269,7 +271,11 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		}
 		final String transcriptText = m_player.getName() + " discover " + text.toString();
 		if (advances.size() > 0)
+		{
 			m_bridge.getHistoryWriter().startEvent(transcriptText);
+			// play a sound
+			ClipPlayer.play(SoundPath.CLIP_TECH);
+		}
 		return new TechResults(random, remainder, techHits, advancesAsString, m_player);
 	}
 	

@@ -256,9 +256,17 @@ public class GameSelectorModel extends Observable
 				selectedGame = new NewGameChooserEntry(defaultURI);
 			} catch (final Exception e)
 			{
+				/*try
+				{
+					userPreferredDefaultGameURI = userPreferredDefaultGameURI.replaceAll(".zip!", ".zip");
+					final URI defaultURI2 = new URI(userPreferredDefaultGameURI);
+					selectedGame = new NewGameChooserEntry(defaultURI2);
+				} catch (final Exception e2)
+				{*/
 				System.out.println(userPreferredDefaultGameURI + " could not be loaded.");
 				loadDefaultGame(ui, true);
 				return;
+				// }
 			}
 			if (!selectedGame.isGameDataLoaded())
 			{

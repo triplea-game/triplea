@@ -30,6 +30,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
@@ -374,6 +376,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			else
 				BattleCalculator.sortPreBattle(m_attackingUnits, m_data);
 			BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
+			// play a sound
+			if (Match.someMatch(m_attackingUnits, Matches.UnitIsSea) || Match.someMatch(m_defendingUnits, Matches.UnitIsSea))
+				ClipPlayer.play(SoundPath.CLIP_NAVAL_BATTLE);
+			else if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir) && Match.allMatch(m_defendingUnits, Matches.UnitIsAir))
+				ClipPlayer.play(SoundPath.CLIP_AIR_BATTLE);
+			else
+				ClipPlayer.play(SoundPath.CLIP_LAND_BATTLE); // must be land battle
 		}
 		// push on stack in opposite order of execution
 		pushFightLoopOnStack(bridge);

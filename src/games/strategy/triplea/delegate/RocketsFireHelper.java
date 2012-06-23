@@ -22,6 +22,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -490,6 +492,9 @@ public class RocketsFireHelper
 				bridge.addChange(removeDead);
 			}
 		}
+		// play a sound
+		if (cost > 0)
+			ClipPlayer.play(SoundPath.CLIP_ROCKET);
 	}
 	
 	private ITripleaPlayer getRemote(final IDelegateBridge bridge)

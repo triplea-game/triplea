@@ -26,6 +26,8 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
@@ -359,6 +361,8 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 */
 	private void notifySuccess(final PoliticalActionAttachment paa)
 	{
+		// play a sound
+		ClipPlayer.play(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL);
 		sendNotification(m_player, PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
 	}

@@ -31,6 +31,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.PlayerAttachment;
@@ -637,6 +639,8 @@ public class BattleTracker implements java.io.Serializable
 			final Change takeOver = ChangeFactory.changeOwner(territory, newOwner);
 			bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
 			bridge.addChange(takeOver);
+			// play a sound
+			ClipPlayer.play(SoundPath.CLIP_CAPTURE);
 			if (changeTracker != null)
 			{
 				changeTracker.addChange(takeOver);

@@ -49,12 +49,13 @@ public class SoundPath
 	
 	// TripleA sounds
 	public static final String CLIP_BOMB = "strat_bomb.wav";
-	// not used so far but in the folder
 	public static final String CLIP_ROCKET = "rocket.wav";
 	public static final String CLIP_TECH = "tech.wav";
 	public static final String CLIP_NAVAL_BATTLE = "naval_battle.wav";
 	public static final String CLIP_LAND_BATTLE = "terrain_battle.wav";
+	public static final String CLIP_AIR_BATTLE = "air_battle.wav";
 	public static final String CLIP_CAPTURE = "capture.wav";
+	public static final String CLIP_POLITICAL_ACTION_SUCCESSFUL = "political_action_successful.wav";
 	
 	public static void preLoadSounds(final SoundType sounds)
 	{
@@ -69,6 +70,13 @@ public class SoundPath
 				break;
 			case TRIPLEA:
 				clipPlayer.preLoadClip(CLIP_BOMB);
+				clipPlayer.preLoadClip(CLIP_ROCKET);
+				clipPlayer.preLoadClip(CLIP_TECH);
+				clipPlayer.preLoadClip(CLIP_NAVAL_BATTLE);
+				clipPlayer.preLoadClip(CLIP_LAND_BATTLE);
+				clipPlayer.preLoadClip(CLIP_AIR_BATTLE);
+				clipPlayer.preLoadClip(CLIP_CAPTURE);
+				clipPlayer.preLoadClip(CLIP_POLITICAL_ACTION_SUCCESSFUL);
 				break;
 		}
 	}
@@ -83,12 +91,15 @@ public class SoundPath
 		// rVal.add(CLIP_ACTION_REQUIRED);
 		// rVal.add(CLIP_BUTTON_CLICK);
 		// rVal.add(CLIP_PLOT_CLICK);
+		
 		rVal.add(CLIP_BOMB);
-		// rVal.add(CLIP_ROCKET);
-		// rVal.add(CLIP_TECH);
-		// rVal.add(CLIP_NAVAL_BATTLE);
-		// rVal.add(CLIP_LAND_BATTLE);
-		// rVal.add(CLIP_CAPTURE);
+		rVal.add(CLIP_ROCKET);
+		rVal.add(CLIP_TECH);
+		rVal.add(CLIP_NAVAL_BATTLE);
+		rVal.add(CLIP_LAND_BATTLE);
+		rVal.add(CLIP_AIR_BATTLE);
+		rVal.add(CLIP_CAPTURE);
+		rVal.add(CLIP_POLITICAL_ACTION_SUCCESSFUL);
 		return rVal;
 	}
 	
@@ -103,6 +114,13 @@ public class SoundPath
 		{
 			case TRIPLEA:
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_BOMB, "Strategic Bombing"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_ROCKET, "Rocket Attack"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TECH, "Technology Researched"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_NAVAL_BATTLE, "Naval Battle"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_LAND_BATTLE, "Land Battle"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_AIR_BATTLE, "Air Battle"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_CAPTURE, "Capture Territory"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, "Political Action Successful"));
 				break;
 		}
 		return rVal;
