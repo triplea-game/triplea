@@ -250,23 +250,18 @@ public class GameSelectorModel extends Observable
 		if (!forceFactoryDefault && userPreferredDefaultGameURI != null && userPreferredDefaultGameURI.length() > 0)
 		{
 			// if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole game model list
+			boolean refreshedAlready = false;
 			try
 			{
 				final URI defaultURI = new URI(userPreferredDefaultGameURI);
 				selectedGame = new NewGameChooserEntry(defaultURI);
 			} catch (final Exception e)
 			{
-				/*try
-				{
-					userPreferredDefaultGameURI = userPreferredDefaultGameURI.replaceAll(".zip!", ".zip");
-					final URI defaultURI2 = new URI(userPreferredDefaultGameURI);
-					selectedGame = new NewGameChooserEntry(defaultURI2);
-				} catch (final Exception e2)
-				{*/
-				System.out.println(userPreferredDefaultGameURI + " could not be loaded.");
-				loadDefaultGame(ui, true);
-				return;
-				// }
+				NewGameChooser.refreshNewGameChooserModel();
+				refreshedAlready = true;
+				selectedGame = selectByName(ui, forceFactoryDefault);
+				if (selectedGame == null)
+					return;
 			}
 			if (!selectedGame.isGameDataLoaded())
 			{
@@ -275,18 +270,26 @@ public class GameSelectorModel extends Observable
 					selectedGame.fullyParseGameData();
 				} catch (final GameParseException e)
 				{
+					if (!refreshedAlready)
+					{
+						NewGameChooser.refreshNewGameChooserModel();
+						refreshedAlready = true;
+					}
 					loadDefaultGame(ui, true);
 					return;
 				}
 			}
 			// since we are not forceFactoryDefault, and since we are loading purely from the URI without loading the new game chooser model, we might as well refresh it in a separate thread
-			new Thread(new Runnable()
+			if (!refreshedAlready)
 			{
-				public void run()
+				new Thread(new Runnable()
 				{
-					NewGameChooser.refreshNewGameChooserModel();
-				}
-			}).start();
+					public void run()
+					{
+						NewGameChooser.refreshNewGameChooserModel();
+					}
+				}).start();
+			}
 		}
 		else
 		{
@@ -295,37 +298,47 @@ public class GameSelectorModel extends Observable
 				// we would rather have their game data refreshed after leaving a game
 				NewGameChooser.refreshNewGameChooserModel();
 			}
-			// just in case flush doesn't work, we still force it again here
-			final String userPreferredDefaultGameName = (forceFactoryDefault ? DEFAULT_GAME_NAME : prefs.get(DEFAULT_GAME_NAME_PREF, DEFAULT_GAME_NAME));
-			final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
-			selectedGame = model.findByName(userPreferredDefaultGameName);
+			selectedGame = selectByName(ui, forceFactoryDefault);
 			if (selectedGame == null)
-			{
-				selectedGame = model.findByName(DEFAULT_GAME_NAME);
-			}
-			if (selectedGame == null && model.size() > 0)
-			{
-				selectedGame = model.get(0);
-			}
-			if (selectedGame == null)
-			{
 				return;
-			}
-			if (!selectedGame.isGameDataLoaded())
-			{
-				try
-				{
-					selectedGame.fullyParseGameData();
-				} catch (final GameParseException e)
-				{
-					// Load real default game...
-					selectedGame.delayParseGameData();
-					model.removeEntry(selectedGame);
-					loadDefaultGame(ui, true);
-					return;
-				}
-			}
 		}
 		load(selectedGame);
+	}
+	
+	private NewGameChooserEntry selectByName(final Component ui, final boolean forceFactoryDefault)
+	{
+		NewGameChooserEntry selectedGame = null;
+		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
+		// just in case flush doesn't work, we still force it again here
+		final String userPreferredDefaultGameName = (forceFactoryDefault ? DEFAULT_GAME_NAME : prefs.get(DEFAULT_GAME_NAME_PREF, DEFAULT_GAME_NAME));
+		final NewGameChooserModel model = NewGameChooser.getNewGameChooserModel();
+		selectedGame = model.findByName(userPreferredDefaultGameName);
+		if (selectedGame == null)
+		{
+			selectedGame = model.findByName(DEFAULT_GAME_NAME);
+		}
+		if (selectedGame == null && model.size() > 0)
+		{
+			selectedGame = model.get(0);
+		}
+		if (selectedGame == null)
+		{
+			return null;
+		}
+		if (!selectedGame.isGameDataLoaded())
+		{
+			try
+			{
+				selectedGame.fullyParseGameData();
+			} catch (final GameParseException e)
+			{
+				// Load real default game...
+				selectedGame.delayParseGameData();
+				model.removeEntry(selectedGame);
+				loadDefaultGame(ui, true);
+				return null;
+			}
+		}
+		return selectedGame;
 	}
 }
