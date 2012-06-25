@@ -296,7 +296,7 @@ public class MoveValidator
 						continue;
 					final TripleAUnit tAUnit = (TripleAUnit) unit;
 					if (wasStartFoughtOver || tAUnit.getWasInCombat() || route.someMatch(notEndOrFriendlyTerrs) || route.someMatch(notEndWasFought))
-						result.addDisallowedUnit("Not all units can blitz", unit);
+						result.addDisallowedUnit(NOT_ALL_UNITS_CAN_BLITZ, unit);
 				}
 				
 			}

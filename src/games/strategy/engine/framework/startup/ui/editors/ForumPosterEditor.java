@@ -176,7 +176,8 @@ public class ForumPosterEditor extends EditorPanel
 					}
 					
 				}
-				poster.postTurnSummary("Test summary from TripleA " + new SimpleDateFormat("HH:mm:ss").format(new Date()), "Testing Forum poster");
+				poster.postTurnSummary("Test summary from TripleA, engine version: " + games.strategy.engine.EngineVersion.VERSION.toString()
+							+ ", time: " + new SimpleDateFormat("HH:mm:ss").format(new Date()), "Testing Forum poster");
 				progressWindow.setVisible(false);
 				
 				// now that we have a result, marshall it back unto the swing thread

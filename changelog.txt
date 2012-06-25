@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Fixing game selector model to no longer return to default game if we have trouble loading the uri of previous xml, and will instead try to pick by name first. (veqryn)
+
 * Added new sounds for air, sea, and land battles, rockets, politics, and tech. (veqryn)
 
 * Fixed issue where fighters moving alone were not asked if they want to escort. (veqryn)
