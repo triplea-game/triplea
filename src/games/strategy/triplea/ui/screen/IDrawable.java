@@ -335,8 +335,12 @@ abstract class MapTileDrawable implements IDrawable
 		final Image img = getImage();
 		if (img == null)
 			return;
-		final Object oldValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
+		final Object oldRenderingValue = graphics.getRenderingHint(RenderingHints.KEY_RENDERING);
+		final Object oldAlphaValue = graphics.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION);
+		final Object oldInterpolationValue = graphics.getRenderingHint(RenderingHints.KEY_INTERPOLATION);
+		graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
 		graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+		graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 		// the tile images are already scaled
 		if (unscaled != null)
 			graphics.setTransform(unscaled);
@@ -345,10 +349,18 @@ abstract class MapTileDrawable implements IDrawable
 		drawStopWatch.done();
 		if (unscaled != null)
 			graphics.setTransform(scaled);
-		if (oldValue == null)
+		if (oldAlphaValue == null)
 			graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
 		else
-			graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldValue);
+			graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, oldAlphaValue);
+		if (oldRenderingValue == null)
+			graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
+		else
+			graphics.setRenderingHint(RenderingHints.KEY_RENDERING, oldRenderingValue);
+		if (oldInterpolationValue == null)
+			graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+		else
+			graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, oldInterpolationValue);
 	}
 }
 
@@ -605,10 +617,6 @@ abstract class TerritoryDrawable
 				final Paint territoryPaint)
 	{
 		final List<Polygon> polys = mapData.getPolygons(territory);
-		final Object oldAAValue = graphics.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-		// at 100% scale, this makes the lines look worse
-		if (!(scaled == unscaled))
-			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		for (Polygon polygon : polys)
 		{
 			// if we dont have to draw, dont
@@ -622,7 +630,6 @@ abstract class TerritoryDrawable
 			graphics.setColor(Color.BLACK);
 			graphics.drawPolygon(polygon);
 		}
-		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, oldAAValue);
 	}
 }
 

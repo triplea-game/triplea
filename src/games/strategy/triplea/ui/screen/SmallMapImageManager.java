@@ -26,6 +26,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -86,9 +87,12 @@ public class SmallMapImageManager
 		}
 		// draw the territory
 		{
-			final Graphics g = largeImage.getGraphics();
+			final Graphics2D g = (Graphics2D) largeImage.getGraphics();
+			g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+			g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 			final LandTerritoryDrawable drawable = new LandTerritoryDrawable(t.getName());
-			drawable.draw(bounds, data, (Graphics2D) g, mapData, null, null);
+			drawable.draw(bounds, data, g, mapData, null, null);
 			g.dispose();
 		}
 		// scale it down

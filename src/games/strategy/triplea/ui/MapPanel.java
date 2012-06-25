@@ -52,6 +52,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -837,6 +838,9 @@ public class MapPanel extends ImageScrollerLargeView
 		final BufferedImage img = Util.createImage(categories.size() * (xSpace + icon_width), UnitImageFactory.UNIT_ICON_HEIGHT, true);
 		final Graphics2D g = (Graphics2D) img.getGraphics();
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		final Rectangle bounds = new Rectangle(0, 0, 0, 0);
 		getData().acquireReadLock();
 		try

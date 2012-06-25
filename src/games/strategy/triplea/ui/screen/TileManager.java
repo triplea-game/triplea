@@ -36,6 +36,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -455,6 +456,9 @@ public class TileManager
 				throw new IllegalStateException("NOt equal");
 			final Image rVal = Util.createImage(bounds.width, bounds.height, false);
 			final Graphics2D graphics = (Graphics2D) rVal.getGraphics();
+			graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+			graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 			if (bounds.x < 0)
 			{
 				bounds.x += mapData.getMapDimensions().width;
