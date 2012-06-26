@@ -411,9 +411,9 @@
 		<mkdir dir="release/installer" />
 
 		<unzip src="release/triplea_${triplea.version}_all_platforms.zip" dest="release/installer" />
-		<unzip src="installer/jre1.6.0_25.zip" dest="release/installer" />
+		<unzip src="installer/jre1.6.0_33.zip" dest="release/installer" />
 		<move toDir="release/installer/triplea_${triplea.version}/jre">
-			<fileset dir="release/installer/jre1.6.0_25" />
+			<fileset dir="release/installer/jre1.6.0_33" />
 		</move>
 
 		<copy file="installer/installer.nsi" toFile="release/installer/installer.nsi" />
