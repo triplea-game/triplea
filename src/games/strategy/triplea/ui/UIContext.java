@@ -24,6 +24,7 @@ import games.strategy.triplea.image.MapImage;
 import games.strategy.triplea.image.PUImageFactory;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
 
 import java.awt.BorderLayout;
@@ -69,6 +70,7 @@ public class UIContext
 	private boolean m_drawUnits = true;
 	private boolean m_drawTerritoryEffects = false;
 	private boolean m_drawMapOnly = false;
+	private OptionalExtraBorderLevel m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.DEFAULT;
 	private final List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
 	private final List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
 	private final List<Active> m_activeToDeactivate = new ArrayList<Active>();
@@ -466,6 +468,16 @@ public class UIContext
 	public void setShowUnits(final boolean aBool)
 	{
 		m_drawUnits = aBool;
+	}
+	
+	public OptionalExtraBorderLevel getDrawTerritoryBordersAgain()
+	{
+		return m_extraTerritoryBorderLevel;
+	}
+	
+	public void setDrawTerritoryBordersAgain(final OptionalExtraBorderLevel level)
+	{
+		m_extraTerritoryBorderLevel = level;
 	}
 	
 	public void setShowTerritoryEffects(final boolean aBool)

@@ -55,15 +55,26 @@ public interface IDrawable
 	public static final int BASE_MAP_LEVEL = 1;
 	public static final int POLYGONS_LEVEL = 2;
 	public static final int RELIEF_LEVEL = 3;
+	public static final int OPTIONAL_EXTRA_TERRITORY_BORDERS_MEDIUM_LEVEL = 4;
+	public static final int OPTIONAL_EXTRA_TERRITORY_BORDERS_HIGH_LEVEL = 18;
+	public static final int CONVOY_LEVEL = 5;
 	public static final int TERRITORY_EFFECT_LEVEL = 6;
-	public static final int CONVOY_LEVEL = 4;
-	public static final int CAPITOL_MARKER_LEVEL = 7;
-	public static final int VC_MARKER_LEVEL = 8;
-	public static final int DECORATOR_LEVEL = 9;
-	public static final int TERRITORY_TEXT_LEVEL = 10;
-	public static final int BATTLE_HIGHLIGHT_LEVEL = 11;
-	public static final int UNITS_LEVEL = 12;
-	public static final int TERRITORY_OVERLAY_LEVEL = 13;
+	public static final int CAPITOL_MARKER_LEVEL = 8;
+	public static final int VC_MARKER_LEVEL = 9;
+	public static final int DECORATOR_LEVEL = 11;
+	public static final int TERRITORY_TEXT_LEVEL = 13;
+	public static final int BATTLE_HIGHLIGHT_LEVEL = 14;
+	public static final int UNITS_LEVEL = 15;
+	public static final int TERRITORY_OVERLAY_LEVEL = 16;
+	
+	
+	/**
+	 * This is for the optional extra territory borders. Default means off
+	 */
+	public static enum OptionalExtraBorderLevel
+	{
+		DEFAULT, MEDIUM, HIGH
+	}
 	
 	/**
 	 * Draw the tile
@@ -572,6 +583,45 @@ class TerritoryEffectDrawable implements IDrawable
 	public int getLevel()
 	{
 		return TERRITORY_EFFECT_LEVEL;
+	}
+}
+
+
+class OptionalExtraTerritoryBordersDrawable implements IDrawable
+{
+	private final String m_territoryName;
+	private final OptionalExtraBorderLevel m_level;
+	
+	public OptionalExtraTerritoryBordersDrawable(final String territoryName, final OptionalExtraBorderLevel level)
+	{
+		m_territoryName = territoryName;
+		m_level = level;
+	}
+	
+	public void draw(final Rectangle bounds, final GameData data, final Graphics2D graphics, final MapData mapData, final AffineTransform unscaled, final AffineTransform scaled)
+	{
+		final Territory territory = data.getMap().getTerritory(m_territoryName);
+		final List<Polygon> polys = mapData.getPolygons(territory);
+		final Iterator<Polygon> iter2 = polys.iterator();
+		while (iter2.hasNext())
+		{
+			Polygon polygon = iter2.next();
+			// if we dont have to draw, dont
+			if (!polygon.intersects(bounds) && !polygon.contains(bounds))
+				continue;
+			// use a copy since we will move the polygon
+			polygon = new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+			polygon.translate(-bounds.x, -bounds.y);
+			graphics.setColor(Color.BLACK);
+			graphics.drawPolygon(polygon);
+		}
+	}
+	
+	public int getLevel()
+	{
+		if (m_level == OptionalExtraBorderLevel.HIGH)
+			return OPTIONAL_EXTRA_TERRITORY_BORDERS_HIGH_LEVEL;
+		return OPTIONAL_EXTRA_TERRITORY_BORDERS_MEDIUM_LEVEL;
 	}
 }
 

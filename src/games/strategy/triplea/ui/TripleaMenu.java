@@ -39,6 +39,7 @@ import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.image.TileImageFactory;
 import games.strategy.triplea.oddsCalculator.ta.OddsCalculatorDialog;
 import games.strategy.triplea.printgenerator.SetupFrame;
+import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.ui.IntTextField;
 import games.strategy.util.EventThreadJOptionPane;
@@ -92,6 +93,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -240,6 +242,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		addMapSkinsMenu(menuView);
 		addShowMapDetails(menuView);
 		addShowMapBlends(menuView);
+		addDrawTerritoryBordersAgain(menuView);
 		addChatTimeMenu(menuView);
 		addShowCommentLog(menuView);
 		// The menuItem to turn TabbedProduction on or off
@@ -583,6 +586,57 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			}
 		});
 		parentMenu.add(showUnitsBox);
+	}
+	
+	private void addDrawTerritoryBordersAgain(final JMenu parentMenu)
+	{
+		final JMenu drawBordersMenu = new JMenu();
+		drawBordersMenu.setText("Draw Borders On Top");
+		final JRadioButton defaultButton = new JRadioButton("Default");
+		defaultButton.setSelected(true);
+		final JRadioButton lowButton = new JRadioButton("Medium");
+		final JRadioButton highButton = new JRadioButton("High");
+		final ButtonGroup group = new ButtonGroup();
+		group.add(defaultButton);
+		group.add(lowButton);
+		group.add(highButton);
+		defaultButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (defaultButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.DEFAULT)
+				{
+					getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.DEFAULT);
+					m_frame.getMapPanel().resetMap();
+				}
+			}
+		});
+		lowButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (lowButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.MEDIUM)
+				{
+					getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.MEDIUM);
+					m_frame.getMapPanel().resetMap();
+				}
+			}
+		});
+		highButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (highButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.HIGH)
+				{
+					getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.HIGH);
+					m_frame.getMapPanel().resetMap();
+				}
+			}
+		});
+		drawBordersMenu.add(defaultButton);
+		drawBordersMenu.add(lowButton);
+		drawBordersMenu.add(highButton);
+		parentMenu.add(drawBordersMenu);
 	}
 	
 	private void addShowTerritoryEffects(final JMenu parentMenu)

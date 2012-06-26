@@ -23,6 +23,7 @@ import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.triplea.ui.UIContext;
+import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.TerritoryOverLayDrawable.OP;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -286,6 +287,11 @@ public class TileManager
 				}
 			}
 			drawing.add(new SeaZoneOutlineDrawable(territory.getName()));
+		}
+		final OptionalExtraBorderLevel optionalBorderLevel = m_uiContext.getDrawTerritoryBordersAgain();
+		if (optionalBorderLevel != OptionalExtraBorderLevel.DEFAULT)
+		{
+			drawing.add(new OptionalExtraTerritoryBordersDrawable(territory.getName(), optionalBorderLevel));
 		}
 		drawing.add(new TerritoryNameDrawable(territory.getName(), m_uiContext));
 		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
