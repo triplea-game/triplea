@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Updating java Substance to 7.1, and adding 14 more skins. (veqryn)
+
 * Updated embedded Java JRE for windows executable version to Java 6 update 33. (veqryn)
 
 * Added a drawing method and menu option to have territory borders drawn a second time on top of the map. (veqryn)

@@ -23,7 +23,10 @@
 		<pathelement path="lib\commons-httpclient-3.0.1.jar" />
 		<pathelement path="lib\commons-logging-1.1.jar" />
 		<pathelement path="lib\commons-codec-1.3.jar" />
-		<pathelement path="lib\substance_5.3.jar" />
+		<pathelement path="lib\substance-7.1.jar" />
+		<pathelement path="lib\laf-plugin-7.1.jar" />
+		<pathelement path="lib\laf-widget-7.1.jar" />
+		<pathelement path="lib\trident-7.1.jar" />
 		<pathelement path="classes/" />
 	</path>
 

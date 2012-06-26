@@ -257,6 +257,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		return version.indexOf("1.5") == -1;
 	}
 	
+	private static boolean isJavaGreatThan6()
+	{
+		final String version = System.getProperties().getProperty("java.version");
+		return version.indexOf("1.5") == -1 && version.indexOf("1.6") == -1;
+	}
+	
 	/**
 	 * First is our JList, second is our LookAndFeels string -> class map, third is our 'current' look and feel.
 	 * 
@@ -272,14 +278,38 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		{
 			try
 			{
-				final List<String> substanceLooks = Arrays.asList(new String[] { "org.jvnet.substance.skin.SubstanceAutumnLookAndFeel",
-							"org.jvnet.substance.skin.SubstanceChallengerDeepLookAndFeel", "org.jvnet.substance.skin.SubstanceCremeCoffeeLookAndFeel",
-							"org.jvnet.substance.skin.SubstanceCremeLookAndFeel", "org.jvnet.substance.skin.SubstanceDustCoffeeLookAndFeel",
-							"org.jvnet.substance.skin.SubstanceDustLookAndFeel", "org.jvnet.substance.skin.SubstanceEmeraldDuskLookAndFeel",
-							"org.jvnet.substance.skin.SubstanceMagmaLookAndFeel", "org.jvnet.substance.skin.SubstanceMistAquaLookAndFeel",
-							"org.jvnet.substance.skin.SubstanceModerateLookAndFeel", "org.jvnet.substance.skin.SubstanceNebulaLookAndFeel",
-							"org.jvnet.substance.skin.SubstanceRavenGraphiteGlassLookAndFeel", "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel",
-							"org.jvnet.substance.skin.SubstanceRavenLookAndFeel", "org.jvnet.substance.skin.SubstanceTwilightLookAndFeel", });
+				final List<String> substanceLooks = new ArrayList<String>(Arrays.asList(new String[] {
+							"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
+							"org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"
+				}));
+				if (isJavaGreatThan6())
+					substanceLooks.add("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 				for (final String s : substanceLooks)
 				{
 					@SuppressWarnings("rawtypes")
@@ -287,6 +317,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 					final LookAndFeel lf = (LookAndFeel) c.newInstance();
 					lookAndFeels.put(lf.getName(), s);
 				}
+				
 			} catch (final Exception t)
 			{
 				t.printStackTrace();
