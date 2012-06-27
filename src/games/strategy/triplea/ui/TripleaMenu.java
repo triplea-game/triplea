@@ -263,6 +263,54 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		return version.indexOf("1.5") == -1 && version.indexOf("1.6") == -1;
 	}
 	
+	public static List<String> getLookAndFeelAvailableList()
+	{
+		final List<String> substanceLooks = new ArrayList<String>(Arrays.asList(new String[] {
+					UIManager.getSystemLookAndFeelClassName(),
+					MetalLookAndFeel.class.getName(),
+					UIManager.getCrossPlatformLookAndFeelClassName()
+		}));
+		if (isJavaGreatThan5())
+		{
+			substanceLooks.addAll(new ArrayList<String>(Arrays.asList(new String[] {
+						UIManager.getSystemLookAndFeelClassName(),
+						MetalLookAndFeel.class.getName(),
+						UIManager.getCrossPlatformLookAndFeelClassName(),
+						"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
+						"org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"
+			})));
+		}
+		if (isJavaGreatThan6())
+			substanceLooks.add("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		return substanceLooks;
+	}
+	
 	/**
 	 * First is our JList, second is our LookAndFeels string -> class map, third is our 'current' look and feel.
 	 * 
@@ -271,57 +319,25 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	public static Triple<JList, Map<String, String>, String> getLookAndFeelList()
 	{
 		final Map<String, String> lookAndFeels = new LinkedHashMap<String, String>();
-		lookAndFeels.put("Original", UIManager.getSystemLookAndFeelClassName());
-		lookAndFeels.put("Metal", MetalLookAndFeel.class.getName());
-		lookAndFeels.put("Platform Independent", UIManager.getCrossPlatformLookAndFeelClassName());
-		if (isJavaGreatThan5())
+		try
 		{
-			try
+			final List<String> substanceLooks = getLookAndFeelAvailableList();
+			for (final String s : substanceLooks)
 			{
-				final List<String> substanceLooks = new ArrayList<String>(Arrays.asList(new String[] {
-							"org.pushingpixels.substance.api.skin.SubstanceAutumnLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceBusinessBlueSteelLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceBusinessLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceCeruleanLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceChallengerDeepLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceCremeCoffeeLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceCremeLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceDustCoffeeLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceDustLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceEmeraldDuskLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceGeminiLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceGraphiteAquaLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceMagellanLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceMarinerLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceMistAquaLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceMistSilverLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceModerateLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceNebulaBrickWallLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceOfficeSilver2007LookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceSaharaLookAndFeel",
-							"org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel"
-				}));
-				if (isJavaGreatThan6())
-					substanceLooks.add("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-				for (final String s : substanceLooks)
-				{
-					@SuppressWarnings("rawtypes")
-					final Class c = Class.forName(s);
-					final LookAndFeel lf = (LookAndFeel) c.newInstance();
-					lookAndFeels.put(lf.getName(), s);
-				}
-				
-			} catch (final Exception t)
-			{
-				t.printStackTrace();
+				@SuppressWarnings("rawtypes")
+				final Class c = Class.forName(s);
+				final LookAndFeel lf = (LookAndFeel) c.newInstance();
+				lookAndFeels.put(lf.getName(), s);
 			}
+			
+		} catch (final Exception t)
+		{
+			t.printStackTrace();
+			// we know all machines have these 3, so use them
+			lookAndFeels.clear();
+			lookAndFeels.put("Original", UIManager.getSystemLookAndFeelClassName());
+			lookAndFeels.put("Metal", MetalLookAndFeel.class.getName());
+			lookAndFeels.put("Platform Independent", UIManager.getCrossPlatformLookAndFeelClassName());
 		}
 		final JList list = new JList(new Vector<String>(lookAndFeels.keySet()));
 		String currentKey = null;

@@ -5,7 +5,9 @@ import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
+import games.strategy.triplea.ui.TripleaMenu;
 
+import java.util.List;
 import java.util.logging.LogManager;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -190,13 +192,22 @@ public class GameRunner2
 	public static String getDefaultLookAndFeel()
 	{
 		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-		String defaultLokAndFeel = "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel";
+		String defaultLookAndFeel = "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel";
 		// macs are already beautiful
 		if (GameRunner.isMac())
 		{
-			defaultLokAndFeel = UIManager.getSystemLookAndFeelClassName();
+			defaultLookAndFeel = UIManager.getSystemLookAndFeelClassName();
 		}
-		return pref.get(LOOK_AND_FEEL_PREF, defaultLokAndFeel);
+		final String userDefault = pref.get(LOOK_AND_FEEL_PREF, defaultLookAndFeel);
+		final List<String> availableSkins = TripleaMenu.getLookAndFeelAvailableList();
+		if (!availableSkins.contains(userDefault))
+		{
+			if (!availableSkins.contains(defaultLookAndFeel))
+				throw new IllegalStateException("Default Look And Feel not among available look and feels: " + defaultLookAndFeel);
+			setDefaultLookAndFeel(defaultLookAndFeel);
+			return defaultLookAndFeel;
+		}
+		return userDefault;
 	}
 	
 	public static void setDefaultLookAndFeel(final String lookAndFeelClassName)
