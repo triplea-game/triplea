@@ -66,7 +66,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	private IntegerMap<UnitType> m_purchase = null;
 	private String m_resource = null;
 	private int m_resourceCount = 0;
-	private LinkedHashMap<UnitSupportAttachment, Boolean> m_support = null;
+	private LinkedHashMap<String, Boolean> m_support = null; // never use a map of other attachments, inside of an attachment. java will not be able to deserialize it.
 	private ArrayList<String> m_relationshipChange = new ArrayList<String>(); // List of relationshipChanges that should be executed when this trigger hits.
 	private String m_victory = null;
 	private ArrayList<Tuple<TriggerAttachment, String>> m_activateTrigger = new ArrayList<Tuple<TriggerAttachment, String>>();
@@ -538,8 +538,8 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				{
 					found = true;
 					if (m_support == null)
-						m_support = new LinkedHashMap<UnitSupportAttachment, Boolean>();
-					m_support.put(support, add);
+						m_support = new LinkedHashMap<String, Boolean>();
+					m_support.put(s[i], add);
 					break;
 				}
 			}
@@ -549,12 +549,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setSupport(final LinkedHashMap<UnitSupportAttachment, Boolean> value)
+	public void setSupport(final LinkedHashMap<String, Boolean> value)
 	{
 		m_support = value;
 	}
 	
-	public LinkedHashMap<UnitSupportAttachment, Boolean> getSupport()
+	public LinkedHashMap<String, Boolean> getSupport()
 	{
 		return m_support;
 	}
@@ -2080,6 +2080,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public static void triggerSupportChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
+		final GameData data = aBridge.getData();
 		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, supportMatch());
 		if (testWhen)
 			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));
@@ -2094,12 +2095,23 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				t.use(aBridge);
 			for (final PlayerID aPlayer : t.getPlayers())
 			{
-				for (final UnitSupportAttachment usa : t.getSupport().keySet())
+				for (final String usaString : t.getSupport().keySet())
 				{
+					UnitSupportAttachment usa = null;
+					for (final UnitSupportAttachment support : UnitSupportAttachment.get(data))
+					{
+						if (support.getName().equals(usaString))
+						{
+							usa = support;
+							break;
+						}
+					}
+					if (usa == null)
+						throw new IllegalStateException("Could not find unitSupportAttachment. name:" + usaString);
 					final List<PlayerID> p = new ArrayList<PlayerID>(usa.getPlayers());
 					if (p.contains(aPlayer))
 					{
-						if (!t.getSupport().get(usa))
+						if (!t.getSupport().get(usa.getName()))
 						{
 							p.remove(aPlayer);
 							change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));
@@ -2108,7 +2120,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					}
 					else
 					{
-						if (t.getSupport().get(usa))
+						if (t.getSupport().get(usa.getName()))
 						{
 							p.add(aPlayer);
 							change.add(ChangeFactory.attachmentPropertyChange(usa, p, "players"));

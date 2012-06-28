@@ -881,7 +881,7 @@ public class BattleTracker implements java.io.Serializable
 	public Collection<Territory> getPendingBattleSites(final boolean bombing)
 	{
 		final Collection<IBattle> pending = new HashSet<IBattle>(m_pendingBattles);
-		final Collection<Territory> battles = new ArrayList<Territory>(m_pendingBattles.size());
+		final Collection<Territory> battles = new ArrayList<Territory>();
 		for (final IBattle battle : pending)
 		{
 			if (battle != null && !battle.isEmpty() && battle.isBombingRun() == bombing)

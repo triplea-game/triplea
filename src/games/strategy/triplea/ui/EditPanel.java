@@ -370,7 +370,7 @@ public class EditPanel extends ActionPanel
 			// no unit selected, deselect the most recent
 			if (units.isEmpty())
 			{
-				if (md.isControlDown() || t != m_selectedTerritory)
+				if (md.isControlDown() || t != m_selectedTerritory || m_selectedUnits.isEmpty())
 					m_selectedUnits.clear();
 				else
 					// remove the last element
