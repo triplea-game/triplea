@@ -307,7 +307,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	{
 		final String title = "Bombing raid in " + m_battleSite.getName();
 		getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, m_defendingUnits,
-					null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender, getBattleType());
+					null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender, getBattleType(), m_territoryEffects);
 		getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
 	}
 	
@@ -512,7 +512,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		
 		private void rollDice(final IDelegateBridge bridge)
 		{
-			final int rollCount = BattleCalculator.getRolls(m_attackingUnits, m_battleSite, m_attacker, false);
+			final int rollCount = BattleCalculator.getRolls(m_attackingUnits, m_battleSite, m_attacker, false, m_territoryEffects);
 			if (rollCount == 0)
 			{
 				m_dice = null;
@@ -612,7 +612,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				final Unit attacker = iter.next();
 				final UnitAttachment ua = UnitAttachment.get(attacker.getType());
 				int rolls;
-				rolls = BattleCalculator.getRolls(attacker, m_battleSite, m_attacker, false);
+				rolls = BattleCalculator.getRolls(attacker, m_battleSite, m_attacker, false, m_territoryEffects);
 				int costThisUnit = 0;
 				if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 				{

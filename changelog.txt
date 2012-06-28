@@ -1,4 +1,8 @@
 Changes for 1.6.1
+* Added List to Battle Calc so that you can manually select one or more territory effects, hold down shift to select more than one. List will automatically fill with starting territory's effects. (veqryn)
+
+* Fixed battle calc to make it try to use the territory that we select. (veqryn)
+
 * Fixing bug in Battle Calculator where damaged units got turned into healthy units before each battle was calculated. (veqryn)
 
 * Fixed null pointer error in triggerSupportChange caused by having a hashmap of an attachment class, inside of another attachment class, then deserializing this (loading a savegame), resulting in the hashmap being resolved before all its keys are, giving the wrong hashcodes to those keys. (veqryn)

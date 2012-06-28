@@ -9,6 +9,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.xml.LoadGameUtil;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class OddsCalculatorTest extends TestCase
 		final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("infantry").create(100, russians);
 		final List<Unit> bombardingUnits = Collections.emptyList();
 		final OddsCalculator calculator = new OddsCalculator();
-		final AggregateResults results = calculator.calculate(m_data, russians, germans, germany, attackingUnits, defendingUnits, bombardingUnits, 5000);
+		final AggregateResults results = calculator.calculate(m_data, russians, germans, germany, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(germany), 5000);
 		assertTrue(results.getAttackerWinPercent() > 0.99);
 		assertTrue(results.getDefenderWinPercent() < 0.1);
 		assertTrue(results.getDrawPercent() < 0.1);
@@ -59,7 +60,8 @@ public class OddsCalculatorTest extends TestCase
 		final List<Unit> attackingUnits = m_data.getUnitTypeList().getUnitType("armour").create(1, germans, false);
 		final List<Unit> bombardingUnits = Collections.emptyList();
 		final OddsCalculator calculator = new OddsCalculator();
-		final AggregateResults results = calculator.calculate(m_data, germans, british, eastCanada, attackingUnits, defendingUnits, bombardingUnits, 10000);
+		final AggregateResults results = calculator.calculate(m_data, germans, british, eastCanada, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(eastCanada),
+					10000);
 		assertEquals(0.33, results.getAttackerWinPercent(), 0.05);
 		assertEquals(0.33, results.getDefenderWinPercent(), 0.05);
 		assertEquals(0.33, results.getDrawPercent(), 0.05);
@@ -80,7 +82,8 @@ public class OddsCalculatorTest extends TestCase
 		final List<Unit> bombardingUnits = Collections.emptyList();
 		final OddsCalculator calculator = new OddsCalculator();
 		calculator.setKeepOneAttackingLandUnit(true);
-		final AggregateResults results = calculator.calculate(m_data, germans, british, eastCanada, attackingUnits, defendingUnits, bombardingUnits, 10000);
+		final AggregateResults results = calculator.calculate(m_data, germans, british, eastCanada, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(eastCanada),
+					10000);
 		assertEquals(0.8, results.getAttackerWinPercent(), 0.03);
 		assertEquals(0.16, results.getDefenderWinPercent(), 0.03);
 	}
@@ -97,7 +100,7 @@ public class OddsCalculatorTest extends TestCase
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("armour").create(1, british);
 		final OddsCalculator calculator = new OddsCalculator();
-		final AggregateResults results = calculator.calculate(m_data, germans, british, uk, attackingUnits, defendingUnits, bombardingUnits, 5000);
+		final AggregateResults results = calculator.calculate(m_data, germans, british, uk, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(uk), 5000);
 		assertEquals(0.33, results.getAttackerWinPercent(), 0.05);
 		assertEquals(0.33, results.getDefenderWinPercent(), 0.05);
 		assertEquals(0.33, results.getDrawPercent(), 0.05);
@@ -114,7 +117,7 @@ public class OddsCalculatorTest extends TestCase
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final List<Unit> defendingUnits = m_data.getUnitTypeList().getUnitType("battleship").create(1, british);
 		final OddsCalculator calc = new OddsCalculator();
-		final AggregateResults results = calc.calculate(m_data, germans, british, sz2, attackingUnits, defendingUnits, bombardingUnits, 1000);
+		final AggregateResults results = calc.calculate(m_data, germans, british, sz2, attackingUnits, defendingUnits, bombardingUnits, TerritoryEffectHelper.getEffects(sz2), 1000);
 		assertTrue(results.getAttackerWinPercent() > 0.65);
 	}
 	
@@ -126,7 +129,7 @@ public class OddsCalculatorTest extends TestCase
 		final List<Unit> defending = submarine(m_data).create(2, germans(m_data));
 		final OddsCalculator calc = new OddsCalculator();
 		calc.setKeepOneAttackingLandUnit(false);
-		calc.calculate(m_data, americans(m_data), germans(m_data), sz1, attacking, defending, Collections.<Unit> emptyList(), 5000);
+		calc.calculate(m_data, americans(m_data), germans(m_data), sz1, attacking, defending, Collections.<Unit> emptyList(), TerritoryEffectHelper.getEffects(sz1), 5000);
 	}
 	
 	public void testAttackingTransports()
@@ -137,7 +140,8 @@ public class OddsCalculatorTest extends TestCase
 		final List<Unit> defending = submarine(m_data).create(2, germans(m_data));
 		final OddsCalculator calc = new OddsCalculator();
 		calc.setKeepOneAttackingLandUnit(false);
-		final AggregateResults results = calc.calculate(m_data, americans(m_data), germans(m_data), sz1, attacking, defending, Collections.<Unit> emptyList(), 1);
+		final AggregateResults results = calc
+					.calculate(m_data, americans(m_data), germans(m_data), sz1, attacking, defending, Collections.<Unit> emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
 		assertEquals(results.getAttackerWinPercent(), 0.0);
 		assertEquals(results.getDefenderWinPercent(), 1.0);
 	}
@@ -150,7 +154,8 @@ public class OddsCalculatorTest extends TestCase
 		final List<Unit> defending = transports(m_data).create(2, germans(m_data));
 		final OddsCalculator calc = new OddsCalculator();
 		calc.setKeepOneAttackingLandUnit(false);
-		final AggregateResults results = calc.calculate(m_data, americans(m_data), germans(m_data), sz1, attacking, defending, Collections.<Unit> emptyList(), 1);
+		final AggregateResults results = calc
+					.calculate(m_data, americans(m_data), germans(m_data), sz1, attacking, defending, Collections.<Unit> emptyList(), TerritoryEffectHelper.getEffects(sz1), 1);
 		assertEquals(results.getAttackerWinPercent(), 1.0);
 		assertEquals(results.getDefenderWinPercent(), 0.0);
 	}

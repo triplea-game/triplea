@@ -24,6 +24,7 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -921,24 +922,24 @@ public class BattleCalculator
 	}
 	
 	public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id, final boolean defend, final Set<List<UnitSupportAttachment>> supportRulesCopy,
-				final IntegerMap<UnitSupportAttachment> supportLeftCopy)
+				final IntegerMap<UnitSupportAttachment> supportLeftCopy, final Collection<TerritoryEffect> territoryEffects)
 	{
 		int count = 0;
 		for (final Unit unit : units)
 		{
-			final int unitRoll = getRolls(unit, location, id, defend, supportRulesCopy, supportLeftCopy);
+			final int unitRoll = getRolls(unit, location, id, defend, supportRulesCopy, supportLeftCopy, territoryEffects);
 			count += unitRoll;
 		}
 		return count;
 	}
 	
-	public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id, final boolean defend)
+	public static int getRolls(final Collection<Unit> units, final Territory location, final PlayerID id, final boolean defend, final Collection<TerritoryEffect> territoryEffects)
 	{
-		return getRolls(units, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>());
+		return getRolls(units, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>(), territoryEffects);
 	}
 	
 	public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend, final Set<List<UnitSupportAttachment>> supportRulesCopy,
-				final IntegerMap<UnitSupportAttachment> supportLeftCopy)
+				final IntegerMap<UnitSupportAttachment> supportLeftCopy, final Collection<TerritoryEffect> territoryEffects)
 	{
 		final UnitAttachment unitAttachment = UnitAttachment.get(unit.getType());
 		int rolls = 0;
@@ -954,15 +955,15 @@ public class BattleCalculator
 		}
 		if (rolls == 0 && unitAttachment.getAttack(id) == 0)
 		{
-			if (TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), location, defend) > 0)
+			if (TerritoryEffectHelper.getTerritoryCombatBonus(unit.getType(), territoryEffects, defend) > 0)
 				rolls += 1;
 		}
 		return rolls;
 	}
 	
-	public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend)
+	public static int getRolls(final Unit unit, final Territory location, final PlayerID id, final boolean defend, final Collection<TerritoryEffect> territoryEffects)
 	{
-		return getRolls(unit, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>());
+		return getRolls(unit, location, id, defend, new HashSet<List<UnitSupportAttachment>>(), new IntegerMap<UnitSupportAttachment>(), territoryEffects);
 	}
 	
 	/**

@@ -6,12 +6,14 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.ui.background.WaitDialog;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.ui.UIContext;
 import games.strategy.triplea.util.UnitCategory;
 import games.strategy.triplea.util.UnitSeperator;
@@ -37,6 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
@@ -54,6 +57,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
 public class OddsCalculatorPanel extends JPanel
@@ -83,15 +87,19 @@ public class OddsCalculatorPanel extends JPanel
 	private JCheckBox m_landBattle;
 	private JButton m_clearButton;
 	private JLabel m_time;
+	private Territory m_location = null;
+	private JList<String> m_territoryEffectsJList;
 	
 	public OddsCalculatorPanel(final GameData data, final UIContext context, final Territory location, final Window parent)
 	{
 		m_data = data;
 		m_context = context;
+		m_location = location;
 		createComponents();
 		layoutComponents();
 		setupListeners();
 		m_parent = parent;
+		// use the one passed, not the one we found:
 		if (location != null)
 		{
 			m_data.acquireReadLock();
@@ -264,15 +272,19 @@ public class OddsCalculatorPanel extends JPanel
 				{
 					// find a territory to fight in
 					Territory location = null;
-					for (final Territory t : m_data.getMap())
+					if (m_location == null || m_location.isWater() == isLand())
 					{
-						// TODO: use the actual territory our mouse is over
-						if (t.isWater() == !isLand())
+						for (final Territory t : m_data.getMap())
 						{
-							location = t;
-							break;
+							if (t.isWater() == !isLand())
+							{
+								location = t;
+								break;
+							}
 						}
 					}
+					else
+						location = m_location;
 					if (location == null)
 						throw new IllegalStateException("No territory found that is land:" + isLand());
 					final List<Unit> defending = m_defendingUnitsPanel.getUnits();
@@ -287,7 +299,24 @@ public class OddsCalculatorPanel extends JPanel
 						calculator.setKeepOneAttackingLandUnit(true);
 					else
 						calculator.setKeepOneAttackingLandUnit(false);
-					results.set(calculator.calculate(m_data, getAttacker(), getDefender(), location, attacking, defending, bombarding, m_numRuns.getValue()));
+					final Collection<TerritoryEffect> territoryEffects = new ArrayList<TerritoryEffect>();
+					if (m_territoryEffectsJList != null)
+					{
+						final List<String> selected = m_territoryEffectsJList.getSelectedValuesList();
+						m_data.acquireReadLock();
+						try
+						{
+							final Hashtable<String, TerritoryEffect> allTerritoryEffects = m_data.getTerritoryEffectList();
+							for (final String selection : selected)
+							{
+								territoryEffects.add(allTerritoryEffects.get(selection));
+							}
+						} finally
+						{
+							m_data.releaseReadLock();
+						}
+					}
+					results.set(calculator.calculate(m_data, getAttacker(), getDefender(), location, attacking, defending, bombarding, territoryEffects, m_numRuns.getValue()));
 				} finally
 				{
 					SwingUtilities.invokeLater(new Runnable()
@@ -408,10 +437,13 @@ public class OddsCalculatorPanel extends JPanel
 		resultsText.add(m_numRunsLabel, new GridBagConstraints(0, 7, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(35, 0, 0, 0), 0, 0));
 		resultsText.add(m_numRuns, new GridBagConstraints(1, 7, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(35, 5, 0, 0), 0, 0));
 		resultsText.add(m_keepOneAttackingLandUnitCombo, new GridBagConstraints(0, 8, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-		resultsText.add(m_landBattle, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 0, 0), 0, 0));
-		resultsText.add(m_clearButton, new GridBagConstraints(0, 10, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 5, 5, 5), 0, 0));
-		resultsText.add(m_calculateButton, new GridBagConstraints(0, 11, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(25, 5, 5, 5), 0, 0));
-		resultsText.add(m_SwapSidesButton, new GridBagConstraints(0, 12, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(25, 5, 5, 5), 0, 0));
+		resultsText.add(m_landBattle, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
+		int row = 10;
+		if (m_territoryEffectsJList != null)
+			resultsText.add(new JScrollPane(m_territoryEffectsJList), new GridBagConstraints(0, row++, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 5, 5, 5), 0, 0));
+		resultsText.add(m_clearButton, new GridBagConstraints(0, row++, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(25, 5, 5, 5), 0, 0));
+		resultsText.add(m_calculateButton, new GridBagConstraints(0, row++, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(25, 5, 5, 5), 0, 0));
+		resultsText.add(m_SwapSidesButton, new GridBagConstraints(0, row++, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(25, 5, 5, 5), 0, 0));
 		m_resultsPanel.add(resultsText);
 		main.add(m_resultsPanel, BorderLayout.EAST);
 		final JPanel south = new JPanel();
@@ -434,6 +466,32 @@ public class OddsCalculatorPanel extends JPanel
 			m_attackerCombo = new JComboBox(new Vector<PlayerID>(playerList));
 			m_defenderCombo = new JComboBox(new Vector<PlayerID>(playerList));
 			m_SwapSidesCombo = new JComboBox(new Vector<PlayerID>(playerList));
+			final Hashtable<String, TerritoryEffect> allTerritoryEffects = m_data.getTerritoryEffectList();
+			if (allTerritoryEffects == null || allTerritoryEffects.isEmpty())
+				m_territoryEffectsJList = null;
+			else
+			{
+				final Vector<String> effectNames = new Vector<String>(allTerritoryEffects.keySet());
+				m_territoryEffectsJList = new JList<String>(effectNames);
+				m_territoryEffectsJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+				m_territoryEffectsJList.setLayoutOrientation(JList.VERTICAL);
+				m_territoryEffectsJList.setVisibleRowCount(3);
+				if (m_location != null)
+				{
+					final Collection<TerritoryEffect> currentEffects = TerritoryEffectHelper.getEffects(m_location);
+					if (!currentEffects.isEmpty())
+					{
+						final int[] selectedIndexes = new int[currentEffects.size()];
+						int currentIndex = 0;
+						for (final TerritoryEffect te : currentEffects)
+						{
+							selectedIndexes[currentIndex] = effectNames.indexOf(te.getName());
+							currentIndex++;
+						}
+						m_territoryEffectsJList.setSelectedIndices(selectedIndexes);
+					}
+				}
+			}
 		} finally
 		{
 			m_data.releaseReadLock();

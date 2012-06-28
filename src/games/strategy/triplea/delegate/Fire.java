@@ -2,6 +2,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.ConnectionLostException;
@@ -39,10 +40,11 @@ public class Fire implements IExecutable
 	private Collection<Unit> m_damaged;
 	private boolean m_confirmOwnCasualties = true;
 	private final boolean m_isHeadless;
+	Collection<TerritoryEffect> m_territoryEffects;
 	
 	public Fire(final Collection<Unit> attackableUnits, final MustFightBattle.ReturnFire canReturnFire, final PlayerID firingPlayer, final PlayerID hitPlayer, final Collection<Unit> firingUnits,
 				final String stepName, final String text, final MustFightBattle battle, final boolean defending, final Map<Unit, Collection<Unit>> dependentUnits, final ExecutionStack stack,
-				final boolean headless)
+				final boolean headless, final Collection<TerritoryEffect> territoryEffects)
 	{
 		/* This is to remove any Factories, AAguns, and Infrastructure from possible targets for the firing.
 		 * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back to:
@@ -60,6 +62,7 @@ public class Fire implements IExecutable
 		m_dependentUnits = dependentUnits;
 		m_isHeadless = headless;
 		m_battleID = battle.getBattleID();
+		m_territoryEffects = territoryEffects;
 	}
 	
 	private void rollDice(final IDelegateBridge bridge)
@@ -72,7 +75,7 @@ public class Fire implements IExecutable
 			annotation = "";
 		else
 			annotation = DiceRoll.getAnnotation(units, m_firingPlayer, m_battle);
-		m_dice = DiceRoll.rollDice(units, m_defending, m_firingPlayer, bridge, m_battle, annotation);
+		m_dice = DiceRoll.rollDice(units, m_defending, m_firingPlayer, bridge, m_battle, annotation, m_territoryEffects);
 	}
 	
 	private void selectCasualties(final IDelegateBridge bridge)

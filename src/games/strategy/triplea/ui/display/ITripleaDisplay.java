@@ -15,6 +15,7 @@ package games.strategy.triplea.ui.display;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.net.GUID;
@@ -58,7 +59,7 @@ public interface ITripleaDisplay extends IDisplay
 	 */
 	public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Collection<Unit> killedUnits,
 				Collection<Unit> attackingWaitingToDie, Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker,
-				final PlayerID defender, final BattleType battleType);
+				final PlayerID defender, final BattleType battleType, final Collection<TerritoryEffect> territoryEffects);
 	
 	/**
 	 * 

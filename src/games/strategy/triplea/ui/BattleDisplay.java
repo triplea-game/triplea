@@ -14,6 +14,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.GameRunner;
@@ -134,7 +135,7 @@ public class BattleDisplay extends JPanel
 	
 	public BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender, final Collection<Unit> attackingUnits,
 				final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-				final GUID battleID, final MapPanel mapPanel, final BattleType battleType)
+				final GUID battleID, final MapPanel mapPanel, final BattleType battleType, final Collection<TerritoryEffect> territoryEffects)
 	{
 		m_battleID = battleID;
 		m_defender = defender;
@@ -142,9 +143,9 @@ public class BattleDisplay extends JPanel
 		m_location = territory;
 		m_mapPanel = mapPanel;
 		m_data = data;
-		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext(), battleType);
+		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext(), battleType, territoryEffects);
 		m_defenderModel.refresh();
-		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext(), battleType);
+		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext(), battleType, territoryEffects);
 		m_attackerModel.refresh();
 		m_uiContext = mapPanel.getUIContext();
 		m_casualties = new CasualtyNotificationPanel(data, m_mapPanel.getUIContext());
@@ -1079,6 +1080,7 @@ class BattleModel extends DefaultTableModel
 	private final Collection<Unit> m_units;
 	private final Territory m_location;
 	private final BattleType m_battleType;
+	private final Collection<TerritoryEffect> m_territoryEffects;
 	
 	private static String[] varDiceArray(final GameData data)
 	{
@@ -1096,7 +1098,8 @@ class BattleModel extends DefaultTableModel
 		return diceColumns;
 	}
 	
-	BattleModel(final GameData data, final Collection<Unit> units, final Territory battleLocation, final boolean attack, final UIContext uiContext, final BattleType battleType)
+	BattleModel(final GameData data, final Collection<Unit> units, final Territory battleLocation, final boolean attack, final UIContext uiContext, final BattleType battleType,
+				final Collection<TerritoryEffect> territoryEffects)
 	{
 		super(new Object[0][0], varDiceArray(data));
 		m_uiContext = uiContext;
@@ -1106,6 +1109,7 @@ class BattleModel extends DefaultTableModel
 		m_units = new ArrayList<Unit>(units);
 		m_location = battleLocation;
 		m_battleType = battleType;
+		m_territoryEffects = territoryEffects;
 	}
 	
 	public void notifyRetreat(final Collection<Unit> retreating)
@@ -1189,7 +1193,7 @@ class BattleModel extends DefaultTableModel
 							m_data.releaseReadLock();
 						}
 					}
-					strength += TerritoryEffectHelper.getTerritoryCombatBonus(category.getType(), m_location, !m_attack);
+					strength += TerritoryEffectHelper.getTerritoryCombatBonus(category.getType(), m_territoryEffects, !m_attack);
 				}
 				strength = Math.min(Math.max(strength, 0), m_data.getDiceSides());
 				shift[strength]++;

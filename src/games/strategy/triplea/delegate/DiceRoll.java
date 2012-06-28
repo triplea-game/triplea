@@ -16,6 +16,7 @@ package games.strategy.triplea.delegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -187,16 +188,17 @@ public class DiceRoll implements Externalizable
 	 * @param annotation
 	 * 
 	 */
-	public static DiceRoll rollDice(final List<Unit> units, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation)
+	public static DiceRoll rollDice(final List<Unit> units, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation,
+				final Collection<TerritoryEffect> territoryEffects)
 	{
 		// Decide whether to use low luck rules or normal rules.
 		if (games.strategy.triplea.Properties.getLow_Luck(bridge.getData()))
 		{
-			return rollDiceLowLuck(units, defending, player, bridge, battle, annotation);
+			return rollDiceLowLuck(units, defending, player, bridge, battle, annotation, territoryEffects);
 		}
 		else
 		{
-			return rollDiceNormal(units, defending, player, bridge, battle, annotation);
+			return rollDiceNormal(units, defending, player, bridge, battle, annotation, territoryEffects);
 		}
 	}
 	
@@ -229,7 +231,8 @@ public class DiceRoll implements Externalizable
 	 * Roll dice for units using low luck rules. Low luck rules based on rules
 	 * in DAAK.
 	 */
-	private static DiceRoll rollDiceLowLuck(final List<Unit> units, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation)
+	private static DiceRoll rollDiceLowLuck(final List<Unit> units, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation,
+				final Collection<TerritoryEffect> territoryEffects)
 	{
 		final GameData data = bridge.getData();
 		final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
@@ -239,7 +242,8 @@ public class DiceRoll implements Externalizable
 		getSupport(units, supportRules, supportLeft, data, defending);
 		final Territory location = battle.getTerritory();
 		// make a copy to send to getRolls (due to need to know number of rolls based on support, as zero attack units will or will not get a roll depending)
-		final int rollCount = BattleCalculator.getRolls(units, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
+		final int rollCount = BattleCalculator.getRolls(units, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft),
+					territoryEffects);
 		if (rollCount == 0)
 		{
 			return new DiceRoll(new ArrayList<Die>(0), 0);
@@ -254,7 +258,7 @@ public class DiceRoll implements Externalizable
 			final UnitAttachment ua = UnitAttachment.get(current.getType());
 			// make a copy for getRolls
 			final int rolls = BattleCalculator.getRolls(current, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules),
-						new IntegerMap<UnitSupportAttachment>(supportLeft));
+						new IntegerMap<UnitSupportAttachment>(supportLeft), territoryEffects);
 			int totalStr = 0;
 			for (int i = 0; i < rolls; i++)
 			{
@@ -293,7 +297,7 @@ public class DiceRoll implements Externalizable
 						strength = ua.getBombard(current.getOwner());
 					strength += getSupport(current.getType(), supportRules, supportLeft);
 				}
-				strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), location, defending);
+				strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
 				totalStr += strength;
 				power += Math.min(Math.max(strength, 0), data.getDiceSides());
 			}
@@ -620,7 +624,8 @@ public class DiceRoll implements Externalizable
 	/**
 	 * Roll dice for units per normal rules.
 	 */
-	private static DiceRoll rollDiceNormal(final List<Unit> unitsList, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation)
+	private static DiceRoll rollDiceNormal(final List<Unit> unitsList, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation,
+				final Collection<TerritoryEffect> territoryEffects)
 	{
 		final GameData data = bridge.getData();
 		final List<Unit> units = new ArrayList<Unit>(unitsList);
@@ -632,7 +637,8 @@ public class DiceRoll implements Externalizable
 		final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
 		getSupport(units, supportRules, supportLeft, data, defending);
 		// make a copy to send to getRolls (due to need to know number of rolls based on support, as zero attack units will or will not get a roll depending)
-		final int rollCount = BattleCalculator.getRolls(units, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft));
+		final int rollCount = BattleCalculator.getRolls(units, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules), new IntegerMap<UnitSupportAttachment>(supportLeft),
+					territoryEffects);
 		if (rollCount == 0)
 		{
 			return new DiceRoll(new ArrayList<Die>(), 0);
@@ -649,7 +655,7 @@ public class DiceRoll implements Externalizable
 			final UnitAttachment ua = UnitAttachment.get(current.getType());
 			// make a copy for getRolls
 			final int rolls = BattleCalculator.getRolls(current, location, player, defending, new HashSet<List<UnitSupportAttachment>>(supportRules),
-						new IntegerMap<UnitSupportAttachment>(supportLeft));
+						new IntegerMap<UnitSupportAttachment>(supportLeft), territoryEffects);
 			// lhtr heavy bombers take best of n dice for both attack and defense
 			if (rolls > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 			{
@@ -659,7 +665,7 @@ public class DiceRoll implements Externalizable
 				else
 					strength = ua.getAttack(current.getOwner());
 				strength += getSupport(current.getType(), supportRules, supportLeft);
-				strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), location, defending);
+				strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
 				strength = Math.min(Math.max(strength, 0), data.getDiceSides());
 				int minIndex = 0;
 				int min = data.getDiceSides();
@@ -711,7 +717,7 @@ public class DiceRoll implements Externalizable
 							strength = ua.getBombard(current.getOwner());
 						strength += getSupport(current.getType(), supportRules, supportLeft);
 					}
-					strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), location, defending);
+					strength += TerritoryEffectHelper.getTerritoryCombatBonus(current.getType(), territoryEffects, defending);
 					strength = Math.min(Math.max(strength, 0), data.getDiceSides());
 					final boolean hit = strength > random[diceIndex];
 					dice.add(new Die(random[diceIndex], strength, hit ? DieType.HIT : DieType.MISS));

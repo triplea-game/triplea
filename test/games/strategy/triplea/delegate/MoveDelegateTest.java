@@ -539,7 +539,7 @@ public class MoveDelegateTest extends DelegateTest
 		final List<Unit> attackList = bomber.create(2, russians);
 		attackList.addAll(attackTrns);
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1 }));
-		final DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, m_bridge, new MockBattle(balticSeaZone), "");
+		final DiceRoll roll = DiceRoll.rollDice(attackList, false, russians, m_bridge, new MockBattle(balticSeaZone), "", TerritoryEffectHelper.getEffects(balticSeaZone));
 		assertEquals(2, roll.getHits());
 		m_bridge.setStepName("RussianNonCombatMove");
 		// Test the move
@@ -1008,7 +1008,7 @@ public class MoveDelegateTest extends DelegateTest
 		// fire the defending transport then the submarine (both miss)
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1, 2 }));
 		// Execute the battle and verify no hits
-		final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "");
+		final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "", TerritoryEffectHelper.getEffects(balticSeaZone));
 		assertEquals(0, roll.getHits());
 		// Get total number of units in Finland before the retreat
 		final Integer preCountInt = finlandNorway.getUnits().size();
@@ -1065,7 +1065,7 @@ public class MoveDelegateTest extends DelegateTest
 		// fire the defending transport then the submarine (One hit)
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, 2 }));
 		// Execute the battle and verify no hits
-		final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "");
+		final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "", TerritoryEffectHelper.getEffects(balticSeaZone));
 		assertEquals(1, roll.getHits());
 		// Get total number of units in Finland before the retreat
 		final Integer preCountInt = finlandNorway.getUnits().size();
@@ -1119,7 +1119,7 @@ public class MoveDelegateTest extends DelegateTest
 		// fire the defending transport then the submarine (both miss)
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1, 2 }));
 		// Execute the battle and verify no hits
-		final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "");
+		final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "", TerritoryEffectHelper.getEffects(balticSeaZone));
 		assertEquals(0, roll.getHits());
 		// Get total number of units in Finland before the retreat
 		final Integer preCountInt = karelia.getUnits().size();
@@ -1173,7 +1173,7 @@ public class MoveDelegateTest extends DelegateTest
 		// fire the defending transport then the submarine (One hit)
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, 2 }));
 		// Execute the battle and verify no hits
-		final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "");
+		final DiceRoll roll = DiceRoll.rollDice(defendList, true, germans, m_bridge, new MockBattle(balticSeaZone), "", TerritoryEffectHelper.getEffects(balticSeaZone));
 		assertEquals(1, roll.getHits());
 		// Get total number of units in Finland before the retreat
 		final Integer preCountInt = karelia.getUnits().size();

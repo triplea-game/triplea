@@ -8,6 +8,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
@@ -53,6 +54,7 @@ abstract public class AbstractBattle implements IBattle, Serializable
 	protected List<Unit> m_defendingUnits = new ArrayList<Unit>();
 	protected List<Unit> m_amphibiousLandAttackers = new ArrayList<Unit>();
 	protected List<Unit> m_bombardingUnits = new ArrayList<Unit>();
+	protected Collection<TerritoryEffect> m_territoryEffects;
 	
 	protected BattleResultDescription m_battleResultDescription;
 	protected WhoWon m_whoWon = WhoWon.NOTFINISHED;
@@ -64,6 +66,7 @@ abstract public class AbstractBattle implements IBattle, Serializable
 		m_battleTracker = battleTracker;
 		m_attacker = attacker;
 		m_battleSite = battleSite;
+		m_territoryEffects = TerritoryEffectHelper.getEffects(battleSite);
 		m_isBombingRun = isBombingRun;
 		m_battleType = battleType;
 		m_data = data;

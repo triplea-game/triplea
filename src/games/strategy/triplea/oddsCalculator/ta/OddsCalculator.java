@@ -7,6 +7,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitHitsChange;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -53,6 +54,7 @@ public class OddsCalculator
 	private Collection<Unit> m_attackingUnits = new ArrayList<Unit>();
 	private Collection<Unit> m_defendingUnits = new ArrayList<Unit>();
 	private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
+	private Collection<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
 	private boolean m_keepOneAttackingLandUnit = false;
 	private volatile boolean m_cancelled = false;
 	
@@ -62,12 +64,13 @@ public class OddsCalculator
 	
 	@SuppressWarnings("unchecked")
 	public AggregateResults calculate(final GameData data, final PlayerID attacker, final PlayerID defender, final Territory location, final Collection<Unit> attacking,
-				final Collection<Unit> defending, final Collection<Unit> bombarding, final int runCount)
+				final Collection<Unit> defending, final Collection<Unit> bombarding, final Collection<TerritoryEffect> territoryEffects, final int runCount)
 	{
 		m_data = GameDataUtils.cloneGameData(data, false);
 		m_attacker = m_data.getPlayerList().getPlayerID(attacker.getName());
 		m_defender = m_data.getPlayerList().getPlayerID(defender.getName());
 		m_location = m_data.getMap().getTerritory(location.getName());
+		m_territoryEffects = territoryEffects;
 		m_attackingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(attacking, m_data);
 		m_defendingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(defending, m_data);
 		m_bombardingUnits = (Collection<Unit>) GameDataUtils.translateIntoOtherGameData(bombarding, m_data);
@@ -96,7 +99,7 @@ public class OddsCalculator
 			final TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1);
 			final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
 			battle.setHeadless(true);
-			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender);
+			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender, m_territoryEffects);
 			battle.fight(bridge);
 			rVal.addResult(new BattleResults(battle, m_data));
 			// restore the game to its original state

@@ -22,6 +22,7 @@ import games.strategy.debug.Console;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.gamePlayer.IGamePlayer;
@@ -296,7 +297,7 @@ public class BattlePanel extends ActionPanel
 	
 	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
 				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> unit_dependents,
-				final PlayerID attacker, final PlayerID defender, final BattleType battleType)
+				final PlayerID attacker, final PlayerID defender, final BattleType battleType, final Collection<TerritoryEffect> territoryEffects)
 	{
 		try
 		{
@@ -312,7 +313,7 @@ public class BattlePanel extends ActionPanel
 					if (!getMap().getUIContext().getShowMapOnly())
 					{
 						m_battleDisplay = new BattleDisplay(getData(), location, attacker, defender, attackingUnits, defendingUnits, killedUnits, attackingWaitingToDie, defendingWaitingToDie,
-									battleID, BattlePanel.this.getMap(), battleType);
+									battleID, BattlePanel.this.getMap(), battleType, territoryEffects);
 						m_battleFrame.setTitle(attacker.getName() + " attacks " + defender.getName() + " in " + location.getName());
 						m_battleFrame.getContentPane().removeAll();
 						m_battleFrame.getContentPane().add(m_battleDisplay);

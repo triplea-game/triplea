@@ -26,6 +26,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -132,12 +133,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	 * @param defender
 	 *            - defender PlayerID
 	 */
-	public void setUnits(final Collection<Unit> defending, final Collection<Unit> attacking, final Collection<Unit> bombarding, final PlayerID defender)
+	public void setUnits(final Collection<Unit> defending, final Collection<Unit> attacking, final Collection<Unit> bombarding, final PlayerID defender,
+				final Collection<TerritoryEffect> territoryEffects)
 	{
 		m_defendingUnits = new ArrayList<Unit>(defending);
 		m_attackingUnits = new ArrayList<Unit>(attacking);
 		m_bombardingUnits = new ArrayList<Unit>(bombarding);
 		m_defender = defender;
+		m_territoryEffects = territoryEffects;
 	}
 	
 	private boolean canSubsSubmerge()
@@ -317,6 +320,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private void removeUnitsThatNoLongerExist()
 	{
+		if (m_headless)
+			return;
 		// we were having a problem with units that had been killed previously were still part of MFB's variables, so we double check that the stuff still exists here.
 		m_defendingUnits.retainAll(m_battleSite.getUnits().getUnits());
 		m_attackingUnits.retainAll(m_battleSite.getUnits().getUnits());
@@ -331,8 +336,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (m_stack.isExecuting())
 		{
 			final ITripleaDisplay display = getDisplay(bridge);
-			display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender), m_killed,
-						m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, getBattleType());
+			display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender),
+						m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, getBattleType(), m_territoryEffects);
 			display.listBattleSteps(m_battleID, m_stepStrings);
 			m_stack.execute(bridge);
 			return;
@@ -360,13 +365,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		addDependentUnits(transporting(m_attackingUnits));
 		// determine any AA
 		final HashMap<String, HashSet<UnitType>> airborneTechTargetsAllowed = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data);
-		m_defendingAA = m_battleSite.getUnits().getMatches(Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_data));
+		m_defendingAA = Match.getMatches(m_defendingUnits, Matches.UnitIsAAthatCanFire(m_attackingUnits, airborneTechTargetsAllowed, m_attacker, Matches.UnitIsAAforCombatOnly, m_data));
 		m_AAtypes = UnitAttachment.getAllOfTypeAAs(m_defendingAA); // TODO: order this list in some way
 		// list the steps
 		m_stepStrings = determineStepStrings(true, bridge);
 		final ITripleaDisplay display = getDisplay(bridge);
 		display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker), removeNonCombatants(m_defendingUnits, false, m_defender), m_killed,
-					m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, getBattleType());
+					m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, getBattleType(), m_territoryEffects);
 		display.listBattleSteps(m_battleID, m_stepStrings);
 		if (!m_headless)
 		{
@@ -392,6 +397,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	private void writeUnitsToHistory(final IDelegateBridge bridge)
 	{
+		if (m_headless)
+			return;
 		final Set<PlayerID> playerSet = m_battleSite.getUnits().getPlayersWithUnits();
 		String transcriptText;
 		// find all attacking players (unsorted)
@@ -819,7 +826,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				// changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
 				if (Match.getMatches(m_attackingUnits, Matches.UnitIsDestructibleInCombatShort).size() == 0)
 				{
-					if (isTransportCasualtiesRestricted())
+					if (!isTransportCasualtiesRestricted())
+					{
+						endBattle(bridge);
+						defenderWins(bridge);
+					}
+					else
 					{
 						// Get all allied transports in the territory
 						final CompositeMatch<Unit> matchAllied = new CompositeMatchAnd<Unit>();
@@ -844,11 +856,6 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 							endBattle(bridge);
 							defenderWins(bridge);
 						}
-					}
-					else
-					{
-						endBattle(bridge);
-						defenderWins(bridge);
 					}
 				}
 				// changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
@@ -1665,7 +1672,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			return;
 		}
-		m_stack.push(new Fire(attackableUnits, returnFire, firing, defending, firingUnits, stepName, text, this, defender, m_dependentUnits, m_stack, m_headless));
+		m_stack.push(new Fire(attackableUnits, returnFire, firing, defending, firingUnits, stepName, text, this, defender, m_dependentUnits, m_stack, m_headless, m_territoryEffects));
 	}
 	
 	/**

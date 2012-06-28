@@ -20,6 +20,7 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitHitsChange;
 import games.strategy.engine.delegate.IDelegateBridge;
@@ -38,6 +39,7 @@ import games.strategy.triplea.delegate.BattleTracker;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MustFightBattle;
+import games.strategy.triplea.delegate.TerritoryEffectHelper;
 import games.strategy.triplea.delegate.TripleADelegateBridge;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
@@ -136,6 +138,7 @@ public class DOddsCalculator
 		final AggregateResults rVal = new AggregateResults(count);
 		final BattleTracker battleTracker = new BattleTracker();
 		BattleCalculator.EnableCasualtySortingCaching();
+		final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(m_location);
 		for (int i = 0; i < count && !m_cancelled; i++)
 		{
 			final CompositeChange allChanges = new CompositeChange();
@@ -143,7 +146,7 @@ public class DOddsCalculator
 			final TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1);
 			final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, s_dataForSimulation, battleTracker);
 			battle.setHeadless(true);
-			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender);
+			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender, territoryEffects);
 			battle.fight(bridge);
 			rVal.addResult(new BattleResults(battle, s_dataForSimulation));
 			// Restore the game to its original state

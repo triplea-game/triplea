@@ -62,6 +62,7 @@ import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Route;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.random.ScriptedRandomSource;
@@ -512,14 +513,15 @@ public class WW2V3_41_Test extends TestCase
 		{
 			m_data.getSequence().next();
 		}
+		final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(eastPoland);
 		// With JET_POWER attacking fighter hits on 4 (0 base)
 		final List<Unit> germanFighter = (List<Unit>) poland.getUnits().getUnits(fighterType, 1);
 		delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 3 }));
-		final DiceRoll roll1 = DiceRoll.rollDice(germanFighter, false, germans, delegateBridge, new MockBattle(eastPoland), "");
+		final DiceRoll roll1 = DiceRoll.rollDice(germanFighter, false, germans, delegateBridge, new MockBattle(eastPoland), "", territoryEffects);
 		assertEquals(1, roll1.getHits());
 		// With JET_POWER defending fighter misses on 5 (0 base)
 		delegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 4 }));
-		final DiceRoll roll2 = DiceRoll.rollDice(germanFighter, true, germans, delegateBridge, new MockBattle(eastPoland), "");
+		final DiceRoll roll2 = DiceRoll.rollDice(germanFighter, true, germans, delegateBridge, new MockBattle(eastPoland), "", territoryEffects);
 		assertEquals(0, roll2.getHits());
 	}
 	

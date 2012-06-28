@@ -38,6 +38,8 @@ public class TerritoryEffectHelper
 {
 	public static Collection<TerritoryEffect> getEffects(final Territory location)
 	{
+		// if (location == null)
+		// return new ArrayList<TerritoryEffect>();
 		final TerritoryAttachment ta = TerritoryAttachment.get(location);
 		if (ta != null)
 			return TerritoryAttachment.get(location).getTerritoryEffect();
@@ -45,12 +47,12 @@ public class TerritoryEffectHelper
 			return new ArrayList<TerritoryEffect>();
 	}
 	
-	public static int getTerritoryCombatBonus(final UnitType type, final Territory location, final boolean defending)
+	public static int getTerritoryCombatBonus(final UnitType type, final Collection<TerritoryEffect> effects, final boolean defending)
 	{
-		if (location == null || type == null)
+		if (type == null || effects == null || effects.isEmpty())
 			return 0;
 		int combatBonus = 0;
-		for (final TerritoryEffect effect : getEffects(location))
+		for (final TerritoryEffect effect : effects)
 		{
 			combatBonus += TerritoryEffectAttachment.get(effect).getCombatEffect(type, defending);
 		}
