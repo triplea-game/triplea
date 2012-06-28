@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Fixing bug in Battle Calculator where damaged units got turned into healthy units before each battle was calculated. (veqryn)
+
 * Fixed null pointer error in triggerSupportChange caused by having a hashmap of an attachment class, inside of another attachment class, then deserializing this (loading a savegame), resulting in the hashmap being resolved before all its keys are, giving the wrong hashcodes to those keys. (veqryn)
 
 * Updating java Substance to 7.1, and adding 14 more skins. (veqryn)

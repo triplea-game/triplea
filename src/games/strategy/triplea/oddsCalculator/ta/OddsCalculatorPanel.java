@@ -9,6 +9,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.ui.background.WaitDialog;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.ui.UIContext;
@@ -265,6 +266,7 @@ public class OddsCalculatorPanel extends JPanel
 					Territory location = null;
 					for (final Territory t : m_data.getMap())
 					{
+						// TODO: use the actual territory our mouse is over
 						if (t.isWater() == !isLand())
 						{
 							location = t;
@@ -674,7 +676,28 @@ class UnitPanel extends JPanel
 	
 	public List<Unit> getUnits()
 	{
-		return m_category.getType().create(m_textField.getValue(), m_category.getOwner(), true);
+		final List<Unit> units = m_category.getType().create(m_textField.getValue(), m_category.getOwner(), true);
+		if (!units.isEmpty())
+		{
+			// creating the unit just makes it, we want to make sure it is damaged if the category says it is damaged
+			if (m_category.isTwoHit() && m_category.getDamaged())
+			{
+				// we do not need to use bridge and change factory here because this is not sent over the network. these are just some temporary units for the battle calc.
+				for (final Unit u : units)
+				{
+					u.setHits(1);
+				}
+			}
+			if (m_category.getDisabled() && Matches.UnitTypeIsFactoryOrCanBeDamaged.match(m_category.getType()))
+			{
+				final int uDamage = Math.max(0, 1 + UnitAttachment.get(m_category.getType()).getMaxOperationalDamage()); // add 1 because it is the max operational damage and we want to disable it
+				for (final Unit u : units)
+				{
+					((TripleAUnit) u).setUnitDamage(uDamage);
+				}
+			}
+		}
+		return units;
 	}
 	
 	public int getCount()

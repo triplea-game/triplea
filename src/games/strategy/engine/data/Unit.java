@@ -104,8 +104,13 @@ public class Unit extends GameDataComponent implements Serializable
 		return m_hits;
 	}
 	
+	/**
+	 * Remember to always use a ChangeFactory change over an IDelegate Bridge for any changes to game data, or any change that should go over the network.
+	 * 
+	 * @param hits
+	 */
 	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
-	void setHits(final int hits)
+	public void setHits(final int hits)
 	{
 		m_hits = hits;
 	}

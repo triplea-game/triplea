@@ -550,6 +550,16 @@ public class Matches
 		}
 	};
 	
+	public static final Match<UnitType> UnitTypeIsFactoryOrCanBeDamaged = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType ut)
+		{
+			final UnitAttachment ua = UnitAttachment.get(ut);
+			return ua.getCanBeDamaged() || ua.getIsFactory();
+		}
+	};
+	
 	public static Match<Unit> UnitIsAtMaxDamageOrNotCanBeDamaged(final Territory t)
 	{
 		return new Match<Unit>()
