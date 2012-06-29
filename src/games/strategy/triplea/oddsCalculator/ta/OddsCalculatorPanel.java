@@ -35,6 +35,7 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -88,7 +89,7 @@ public class OddsCalculatorPanel extends JPanel
 	private JButton m_clearButton;
 	private JLabel m_time;
 	private Territory m_location = null;
-	private JList<String> m_territoryEffectsJList;
+	private JList m_territoryEffectsJList;
 	
 	public OddsCalculatorPanel(final GameData data, final UIContext context, final Territory location, final Window parent)
 	{
@@ -302,7 +303,12 @@ public class OddsCalculatorPanel extends JPanel
 					final Collection<TerritoryEffect> territoryEffects = new ArrayList<TerritoryEffect>();
 					if (m_territoryEffectsJList != null)
 					{
-						final List<String> selected = m_territoryEffectsJList.getSelectedValuesList();
+						final List<Object> selectedObjects = Arrays.asList(m_territoryEffectsJList.getSelectedValues());
+						final List<String> selected = new ArrayList<String>();
+						for (final Object obj : selectedObjects)
+						{
+							selected.add((String) obj);
+						}
 						m_data.acquireReadLock();
 						try
 						{
@@ -472,7 +478,7 @@ public class OddsCalculatorPanel extends JPanel
 			else
 			{
 				final Vector<String> effectNames = new Vector<String>(allTerritoryEffects.keySet());
-				m_territoryEffectsJList = new JList<String>(effectNames);
+				m_territoryEffectsJList = new JList(effectNames);
 				m_territoryEffectsJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 				m_territoryEffectsJList.setLayoutOrientation(JList.VERTICAL);
 				m_territoryEffectsJList.setVisibleRowCount(3);

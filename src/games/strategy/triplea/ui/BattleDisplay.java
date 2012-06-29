@@ -135,7 +135,7 @@ public class BattleDisplay extends JPanel
 	
 	public BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender, final Collection<Unit> attackingUnits,
 				final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-				final GUID battleID, final MapPanel mapPanel, final BattleType battleType, final Collection<TerritoryEffect> territoryEffects)
+				final GUID battleID, final MapPanel mapPanel, final BattleType battleType)
 	{
 		m_battleID = battleID;
 		m_defender = defender;
@@ -143,6 +143,7 @@ public class BattleDisplay extends JPanel
 		m_location = territory;
 		m_mapPanel = mapPanel;
 		m_data = data;
+		final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
 		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext(), battleType, territoryEffects);
 		m_defenderModel.refresh();
 		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext(), battleType, territoryEffects);

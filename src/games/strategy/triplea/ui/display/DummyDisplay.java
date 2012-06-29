@@ -2,7 +2,6 @@ package games.strategy.triplea.ui.display;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.net.GUID;
@@ -22,7 +21,7 @@ public class DummyDisplay implements ITripleaDisplay
 	 */
 	public void showBattle(final GUID battleID, final Territory location, final String battleTitle, final Collection<Unit> attackingUnits, final Collection<Unit> defendingUnits,
 				final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie, final Map<Unit, Collection<Unit>> dependentUnits,
-				final PlayerID attacker, final PlayerID defender, final BattleType battleType, final Collection<TerritoryEffect> territoryEffects)
+				final PlayerID attacker, final PlayerID defender, final BattleType battleType)
 	{
 		// TODO Auto-generated method stub
 	}
