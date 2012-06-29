@@ -90,6 +90,7 @@ public class OddsCalculatorPanel extends JPanel
 	private JLabel m_time;
 	private Territory m_location = null;
 	private JList m_territoryEffectsJList;
+	private static final String NO_EFFECTS = "*None*";
 	
 	public OddsCalculatorPanel(final GameData data, final UIContext context, final Territory location, final Window parent)
 	{
@@ -315,6 +316,11 @@ public class OddsCalculatorPanel extends JPanel
 							final Hashtable<String, TerritoryEffect> allTerritoryEffects = m_data.getTerritoryEffectList();
 							for (final String selection : selected)
 							{
+								if (selection.equals(NO_EFFECTS))
+								{
+									territoryEffects.clear();
+									break;
+								}
 								territoryEffects.add(allTerritoryEffects.get(selection));
 							}
 						} finally
@@ -477,7 +483,9 @@ public class OddsCalculatorPanel extends JPanel
 				m_territoryEffectsJList = null;
 			else
 			{
-				final Vector<String> effectNames = new Vector<String>(allTerritoryEffects.keySet());
+				final Vector<String> effectNames = new Vector<String>();
+				effectNames.add(NO_EFFECTS);
+				effectNames.addAll(allTerritoryEffects.keySet());
 				m_territoryEffectsJList = new JList(effectNames);
 				m_territoryEffectsJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 				m_territoryEffectsJList.setLayoutOrientation(JList.VERTICAL);

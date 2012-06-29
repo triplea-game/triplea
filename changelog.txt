@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Adding an option for "None" to the list of territory effects. (veqryn)
+
 * Added List to Battle Calc so that you can manually select one or more territory effects, hold down shift to select more than one. List will automatically fill with starting territory's effects. (veqryn)
 
 * Fixed battle calc to make it try to use the territory that we select. (veqryn)
