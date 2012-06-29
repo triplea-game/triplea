@@ -52,12 +52,17 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		return m_battleRecords.get(getData().getSequence().getRound());
 	}
 	
+	public BattleRecords getCurrentRoundCopy()
+	{
+		return new BattleRecords(m_battleRecords.get(getData().getSequence().getRound()));
+	}
+	
 	public Map<Integer, BattleRecords> getBattleRecordsMap()
 	{
 		return m_battleRecords;
 	}
 	
-	/*public Map<Integer, BattleRecords> getBattleRecordsMapCopy()
+	public Map<Integer, BattleRecords> getBattleRecordsMapCopy()
 	{
 		return copyList(m_battleRecords);
 	}
@@ -70,8 +75,8 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 			copy.put(Integer.valueOf(entry.getKey()), new BattleRecords(entry.getValue()));
 		}
 		return copy;
-	}*/
-
+	}
+	
 	@Override
 	public String toString()
 	{
@@ -95,12 +100,12 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		final Collection<BattleRecords> brs = new ArrayList<BattleRecords>();
 		if (currentRoundOnly)
 		{
-			if (brl != null && brl.getCurrentRound() != null)
-				brs.add(brl.getCurrentRound());
+			if (brl != null && brl.getCurrentRoundCopy() != null)
+				brs.add(brl.getCurrentRoundCopy());
 		}
 		else
 		{
-			final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMap();
+			final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMapCopy();
 			for (int i = beginningRound; i > endRound; i++)
 			{
 				final BattleRecords currentRecords = currentList.get(i);
@@ -136,12 +141,12 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		final Collection<BattleRecords> brs = new ArrayList<BattleRecords>();
 		if (currentRoundOnly)
 		{
-			if (brl != null && brl.getCurrentRound() != null)
-				brs.add(brl.getCurrentRound());
+			if (brl != null && brl.getCurrentRoundCopy() != null)
+				brs.add(brl.getCurrentRoundCopy());
 		}
 		else
 		{
-			final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMap();
+			final Map<Integer, BattleRecords> currentList = brl.getBattleRecordsMapCopy();
 			for (int i = beginningRound; i > endRound; i++)
 			{
 				final BattleRecords currentRecords = currentList.get(i);
