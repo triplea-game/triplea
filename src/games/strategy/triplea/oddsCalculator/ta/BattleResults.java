@@ -16,8 +16,8 @@ public class BattleResults extends GameDataComponent implements Serializable
 	private static final long serialVersionUID = 1381361441940258702L;
 	// private final int m_attackingUnitsLeft;
 	// private final int m_defendingUnitsLeft;
-	private final int m_attackingCombatUnitsLeft;
-	private final int m_defendingCombatUnitsLeft;
+	// private final int m_attackingCombatUnitsLeft;
+	// private final int m_defendingCombatUnitsLeft;
 	private final int m_battleRoundsFought;
 	final List<Unit> m_remainingAttackingUnits;
 	final List<Unit> m_remainingDefendingUnits;
@@ -34,9 +34,9 @@ public class BattleResults extends GameDataComponent implements Serializable
 	{
 		super(data);
 		// m_attackingUnitsLeft = battle.getRemainingAttackingUnits().size();
-		m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
+		// m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
 		// m_defendingUnitsLeft = battle.getRemainingDefendingUnits().size();
-		m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
+		// m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
 		m_battleRoundsFought = battle.getBattleRound();
 		m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
 		m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
@@ -54,8 +54,8 @@ public class BattleResults extends GameDataComponent implements Serializable
 	public BattleResults(final IBattle battle, final WhoWon scriptedWhoWon, final GameData data)
 	{
 		super(data);
-		m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
-		m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
+		// m_attackingCombatUnitsLeft = Match.countMatches(battle.getRemainingAttackingUnits(), Matches.UnitIsDestructibleInCombatShort);
+		// m_defendingCombatUnitsLeft = Match.countMatches(battle.getRemainingDefendingUnits(), Matches.UnitIsDestructibleInCombatShort);
 		m_battleRoundsFought = battle.getBattleRound();
 		m_remainingAttackingUnits = battle.getRemainingAttackingUnits();
 		m_remainingDefendingUnits = battle.getRemainingDefendingUnits();
@@ -99,12 +99,12 @@ public class BattleResults extends GameDataComponent implements Serializable
 	
 	public int getAttackingCombatUnitsLeft()
 	{
-		return m_attackingCombatUnitsLeft;
+		return getRemainingAttackingCombatUnits().size();
 	}
 	
 	public int getDefendingCombatUnitsLeft()
 	{
-		return m_defendingCombatUnitsLeft;
+		return getRemainingDefendingCombatUnits().size();
 	}
 	
 	public int getBattleRoundsFought()
@@ -130,6 +130,6 @@ public class BattleResults extends GameDataComponent implements Serializable
 	{
 		// technically the defender wins if there is noone left. However, most people using the battle calc consider that to be a "draw", so we should check and see if there is noone left.
 		// return (m_attackingCombatUnitsLeft == 0 && m_defendingCombatUnitsLeft == 0) || (m_attackingCombatUnitsLeft > 0 && m_defendingCombatUnitsLeft > 0);
-		return (m_attackingCombatUnitsLeft == 0 && m_defendingCombatUnitsLeft == 0) || (m_whoWon != WhoWon.ATTACKER && m_whoWon != WhoWon.DEFENDER);
+		return (m_whoWon != WhoWon.ATTACKER && m_whoWon != WhoWon.DEFENDER) || (getAttackingCombatUnitsLeft() == 0 && getDefendingCombatUnitsLeft() == 0);
 	}
 }

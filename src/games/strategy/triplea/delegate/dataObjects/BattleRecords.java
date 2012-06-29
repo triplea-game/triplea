@@ -33,6 +33,7 @@ public class BattleRecords extends GameDataComponent implements Serializable
 		super(data);
 	}
 	
+	// Create copy
 	public BattleRecords(final BattleRecords records)
 	{
 		super(records.getData());

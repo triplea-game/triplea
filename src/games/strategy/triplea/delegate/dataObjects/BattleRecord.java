@@ -41,21 +41,22 @@ public class BattleRecord extends GameDataComponent
 	private Territory m_battleSite;
 	private PlayerID m_attacker;
 	private PlayerID m_defender;
-	// private IntegerMap<PlayerID> m_lostTUV;
 	private int m_attackerLostTUV = 0;
 	private int m_defenderLostTUV = 0;
 	private BattleResultDescription m_battleResultDescription;
 	private int m_bombingDamage = 0;
 	private BattleType m_battleType;
-	private BattleResults m_battleResults; // TODO: something in IBattle (formerly part of BattleResults) can not be Serialized, which can causing MAJOR problems.
+	private BattleResults m_battleResults;
 	
+	// Something in IBattle (formerly part of BattleResults) can not be Serialized, which can causing MAJOR problems. So the IBattle should never be part of BattleResults or BattleRecord.
+	
+	// Create copy
 	protected BattleRecord(final BattleRecord record)
 	{
 		super(record.getData());
 		m_battleSite = record.m_battleSite;
 		m_attacker = record.m_attacker;
 		m_defender = record.m_defender;
-		// m_lostTUV = new IntegerMap<PlayerID>(record.m_lostTUV);
 		m_attackerLostTUV = record.m_attackerLostTUV;
 		m_defenderLostTUV = record.m_defenderLostTUV;
 		m_battleResultDescription = record.m_battleResultDescription;
@@ -64,6 +65,7 @@ public class BattleRecord extends GameDataComponent
 		m_battleResults = record.m_battleResults;
 	}
 	
+	/*// Create full Record
 	protected BattleRecord(final Territory battleSite, final PlayerID attacker, final PlayerID defender, final int attackerLostTUV, final int defenderLostTUV,
 				final BattleResultDescription battleResultDescription, final BattleResults battleResults, final int bombingDamage, final BattleType battleType, final GameData data)
 	{
@@ -71,15 +73,14 @@ public class BattleRecord extends GameDataComponent
 		m_battleSite = battleSite;
 		m_attacker = attacker;
 		m_defender = defender;
-		// m_lostTUV = lostTUV;
 		m_attackerLostTUV = attackerLostTUV;
 		m_defenderLostTUV = defenderLostTUV;
 		m_battleResultDescription = battleResultDescription;
 		m_battleResults = battleResults;
 		m_bombingDamage = bombingDamage;
 		m_battleType = battleType;
-	}
-	
+	}*/
+
 	protected BattleRecord(final Territory battleSite, final PlayerID attacker, final BattleType battleType, final GameData data)
 	{
 		super(data);
@@ -92,7 +93,6 @@ public class BattleRecord extends GameDataComponent
 				final BattleResultDescription battleResultDescription, final BattleResults battleResults, final int bombingDamage)
 	{
 		m_defender = defender;
-		// m_lostTUV = lostTUV;
 		m_attackerLostTUV = attackerLostTUV;
 		m_defenderLostTUV = defenderLostTUV;
 		m_battleResultDescription = battleResultDescription;
@@ -130,16 +130,6 @@ public class BattleRecord extends GameDataComponent
 		this.m_defender = defender;
 	}
 	
-	/*protected IntegerMap<PlayerID> getLostTUV()
-	{
-		return m_lostTUV;
-	}
-	
-	protected void setLostTUV(final IntegerMap<PlayerID> lostTUV)
-	{
-		this.m_lostTUV = lostTUV;
-	}*/
-
 	protected int getAttackerLostTUV()
 	{
 		return m_attackerLostTUV;
