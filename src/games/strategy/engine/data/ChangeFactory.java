@@ -1376,46 +1376,82 @@ class GenericTechChange extends Change
 class AddBattleRecordsChange extends Change
 {
 	private static final long serialVersionUID = -6927678548172402611L;
-	private final Map<Integer, BattleRecords> m_newRecords;
-	private final Map<Integer, BattleRecords> m_oldRecords;
+	private final BattleRecords m_recordsToAdd;
+	private final int m_round;
 	
 	AddBattleRecordsChange(final BattleRecords battleRecords, final GameData data)
 	{
-		// TODO: is this less network traffic, or more network traffic, to have the full records in the change object?
-		m_oldRecords = data.getBattleRecordsList().getBattleRecordsMap();
-		m_newRecords = data.getBattleRecordsList().getBattleRecordsMap();
-		BattleRecordsList.addRecords(m_newRecords, data.getSequence().getRound(), battleRecords);
-		/*if (m_newRecords == null || m_oldRecords == null)
-			throw new IllegalStateException("Records can not be null (most likely caused by improper or impossible serialization): " + m_newRecords + " and " + m_oldRecords);*/
+		m_round = data.getSequence().getRound();
+		m_recordsToAdd = new BattleRecords(battleRecords); // make a copy because this is only done once, and only externally from battle tracker, and the source will be cleared (battle tracker clears out the records each turn)
 	}
 	
-	AddBattleRecordsChange(final Map<Integer, BattleRecords> newList, final Map<Integer, BattleRecords> oldList)
+	AddBattleRecordsChange(final BattleRecords battleRecords, final int round)
 	{
-		m_oldRecords = oldList;
-		m_newRecords = newList;
-		/*if (m_newRecords == null || m_oldRecords == null)
-			throw new IllegalStateException("Records can not be null (most likely caused by improper or impossible serialization): " + m_newRecords + " and " + m_oldRecords);*/
+		m_round = round;
+		m_recordsToAdd = battleRecords; // do not make a copy, this is only called from RemoveBattleRecordsChange, and we make a copy when we perform, so no need for another copy.
 	}
 	
 	@Override
 	protected void perform(final GameData data)
 	{
-		data.getBattleRecordsList().setRecords(m_newRecords);
+		final Map<Integer, BattleRecords> currentRecords = data.getBattleRecordsList().getBattleRecordsMap();
+		BattleRecordsList.addRecords(currentRecords, m_round, new BattleRecords(m_recordsToAdd)); // make a copy because otherwise ours will be cleared when we RemoveBattleRecordsChange
 	}
 	
 	@Override
 	public Change invert()
 	{
-		return new AddBattleRecordsChange(m_oldRecords, m_newRecords);
+		return new RemoveBattleRecordsChange(m_recordsToAdd, m_round);
 	}
 	
 	@Override
 	public String toString()
 	{
 		// This only occurs when serialization went badly, or something can not be serialized.
-		if (m_newRecords == null || m_oldRecords == null)
-			throw new IllegalStateException("Records can not be null (most likely caused by improper or impossible serialization): " + m_newRecords + " and " + m_oldRecords);
-		return "New Battle Record: [" + m_newRecords + "] and Old Battle Record: [" + m_oldRecords + "]";
+		if (m_recordsToAdd == null)
+			throw new IllegalStateException("Records can not be null (most likely caused by improper or impossible serialization): " + m_recordsToAdd);
+		return "Adding Battle Records: " + m_recordsToAdd;
+	}
+}
+
+
+/**
+ * 
+ * @author veqryn
+ * 
+ */
+class RemoveBattleRecordsChange extends Change
+{
+	private static final long serialVersionUID = 3286634991233029854L;
+	private final BattleRecords m_recordsToRemove;
+	private final int m_round;
+	
+	RemoveBattleRecordsChange(final BattleRecords battleRecords, final int round)
+	{
+		m_round = round;
+		m_recordsToRemove = battleRecords; // do not make a copy, this is only called from AddBattleRecordsChange, and we make a copy when we perform, so no need for another copy.
+	}
+	
+	@Override
+	protected void perform(final GameData data)
+	{
+		final Map<Integer, BattleRecords> currentRecords = data.getBattleRecordsList().getBattleRecordsMap();
+		BattleRecordsList.removeRecords(currentRecords, m_round, new BattleRecords(m_recordsToRemove)); // make a copy else we will get a concurrent modification error
+	}
+	
+	@Override
+	public Change invert()
+	{
+		return new AddBattleRecordsChange(m_recordsToRemove, m_round);
+	}
+	
+	@Override
+	public String toString()
+	{
+		// This only occurs when serialization went badly, or something can not be serialized.
+		if (m_recordsToRemove == null)
+			throw new IllegalStateException("Records can not be null (most likely caused by improper or impossible serialization): " + m_recordsToRemove);
+		return "Adding Battle Records: " + m_recordsToRemove;
 	}
 }
 

@@ -1028,7 +1028,7 @@ public class BattleTracker implements java.io.Serializable
 		if (m_battleRecords != null && !m_battleRecords.isEmpty())
 		{
 			aBridge.getHistoryWriter().startEvent("Recording Battle Statistics");
-			aBridge.addChange(ChangeFactory.addBattleRecords((new BattleRecords(m_battleRecords)), aBridge.getData()));
+			aBridge.addChange(ChangeFactory.addBattleRecords(m_battleRecords, aBridge.getData()));
 		}
 	}
 	

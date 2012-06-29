@@ -176,6 +176,25 @@ public class BattleRecords extends GameDataComponent implements Serializable
 		}
 	}
 	
+	public void removeRecord(final BattleRecords other)
+	{
+		for (final PlayerID p : other.m_records.keySet())
+		{
+			final HashMap<GUID, BattleRecord> currentRecord = m_records.get(p);
+			if (currentRecord == null)
+				throw new IllegalStateException("Trying to remove a player records but records do not exist");
+			final HashMap<GUID, BattleRecord> toRemoveRecords = other.m_records.get(p);
+			for (final Entry<GUID, BattleRecord> entry : toRemoveRecords.entrySet())
+			{
+				final GUID guid = entry.getKey();
+				if (!currentRecord.containsKey(guid))
+					throw new IllegalStateException("Trying to remove a battle record but record does not exist");
+				else
+					currentRecord.remove(guid);
+			}
+		}
+	}
+	
 	public void addBattle(final PlayerID currentPlayerAndAttacker, final GUID battleID, final Territory battleSite, final BattleType battleType, final GameData data)
 	{
 		HashMap<GUID, BattleRecord> current = m_records.get(currentPlayerAndAttacker);

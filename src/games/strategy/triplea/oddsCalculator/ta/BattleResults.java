@@ -99,12 +99,12 @@ public class BattleResults extends GameDataComponent implements Serializable
 	
 	public int getAttackingCombatUnitsLeft()
 	{
-		return getRemainingAttackingCombatUnits().size();
+		return Match.countMatches(m_remainingAttackingUnits, Matches.UnitIsDestructibleInCombatShort);
 	}
 	
 	public int getDefendingCombatUnitsLeft()
 	{
-		return getRemainingDefendingCombatUnits().size();
+		return Match.countMatches(m_remainingDefendingUnits, Matches.UnitIsDestructibleInCombatShort);
 	}
 	
 	public int getBattleRoundsFought()

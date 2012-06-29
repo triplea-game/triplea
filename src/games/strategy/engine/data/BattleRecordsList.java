@@ -19,7 +19,7 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 {
 	private static final long serialVersionUID = 7515693859612849475L;
 	
-	private Map<Integer, BattleRecords> m_battleRecords = new HashMap<Integer, BattleRecords>();
+	private final Map<Integer, BattleRecords> m_battleRecords = new HashMap<Integer, BattleRecords>();
 	
 	public BattleRecordsList(final GameData data)
 	{
@@ -38,17 +38,26 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 		recordList.put(currentRound, current);
 	}
 	
-	public void setRecords(final Map<Integer, BattleRecords> recordList)
+	public static void removeRecords(final Map<Integer, BattleRecords> recordList, final Integer round, final BattleRecords other)
 	{
-		m_battleRecords = recordList;
+		final BattleRecords current = recordList.get(round);
+		if (current == null)
+			throw new IllegalStateException("Trying to remove records for round that does not exist");
+		else
+			current.removeRecord(other);
 	}
 	
 	public BattleRecords getCurrentRound()
 	{
-		return copyList(m_battleRecords).get(getData().getSequence().getRound());
+		return m_battleRecords.get(getData().getSequence().getRound());
 	}
 	
 	public Map<Integer, BattleRecords> getBattleRecordsMap()
+	{
+		return m_battleRecords;
+	}
+	
+	/*public Map<Integer, BattleRecords> getBattleRecordsMapCopy()
 	{
 		return copyList(m_battleRecords);
 	}
@@ -61,8 +70,8 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 			copy.put(Integer.valueOf(entry.getKey()), new BattleRecords(entry.getValue()));
 		}
 		return copy;
-	}
-	
+	}*/
+
 	@Override
 	public String toString()
 	{
