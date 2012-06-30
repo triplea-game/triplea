@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Adding methods to ensure that any power sharing technology (like British to UK Pacific) will still roll for war bonds even if its capital is taken, so long as the shared power is not able to have the warbonds technologies. (veqryn)
+
 * Allowing additional nations to share the cost of technology, and creating a good user interface that dynamically adjusts to show how much is being paid by each nation. (veqryn)
 
 * Created an option in Play-By-Forum and Play-By-Email to send the move summary after the combat move phase, in addition to the summary at the end of the turn. This is to help with OOL and scrambling orders. (veqryn)

@@ -79,6 +79,16 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		return games.strategy.triplea.Properties.getGiveUnitsByTerritory(getData());
 	}
 	
+	public boolean canPlayerCollectIncome(final PlayerID player, final GameData data)
+	{
+		final PlayerAttachment pa = PlayerAttachment.get(player);
+		final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, data));
+		final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
+		if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
+			return false;
+		return true;
+	}
+	
 	/**
 	 * Called before the delegate will run.
 	 */
@@ -94,11 +104,11 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			return;
 		m_hasPostedTurnSummary = false;
 		// can't collect unless you own your own capital
-		final PlayerAttachment pa = PlayerAttachment.get(m_player);
-		final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(m_player, data));
-		final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(m_player, data));
-		if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
-			return;
+		if (!canPlayerCollectIncome(m_player, data))
+		{
+			rollWarBondsForFriends(aBridge, m_player, data);
+			return; // we do not collect any income this turn
+		}
 		// just collect resources
 		final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
 		int toAdd = getProduction(territories);
@@ -131,6 +141,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		}
 		final Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
 		aBridge.addChange(change);
+		final PlayerAttachment pa = PlayerAttachment.get(m_player);
 		if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null)
 		{
 			final Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
@@ -228,7 +239,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
 		if (sides <= 0 || count <= 0)
 			return 0;
-		final String annotation = player.getName() + " roll to resolve War Bonds: ";
+		final String annotation = player.getName() + " rolling to resolve War Bonds: ";
 		DiceRoll dice;
 		dice = DiceRoll.rollNDice(aBridge, count, sides, annotation);
 		int total = 0;
@@ -238,6 +249,54 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		}
 		getRemotePlayer(player).reportMessage(annotation + MyFormatter.asDice(dice), annotation + MyFormatter.asDice(dice));
 		return total;
+	}
+	
+	private void rollWarBondsForFriends(final IDelegateBridge aBridge, final PlayerID player, final GameData data)
+	{
+		final int count = TechAbilityAttachment.getWarBondDiceNumber(player, data);
+		final int sides = TechAbilityAttachment.getWarBondDiceSides(player, data);
+		if (sides <= 0 || count <= 0)
+			return;
+		// basically, if we are sharing our technology with someone, and we have warbonds but they do not, then we roll our warbonds and give them the proceeds (Global 1940)
+		final PlayerAttachment playerattachment = PlayerAttachment.get(player);
+		if (playerattachment == null)
+			return;
+		final Collection<PlayerID> shareWith = playerattachment.getShareTechnology();
+		if (shareWith == null || shareWith.isEmpty())
+			return;
+		PlayerID giveWarBondsTo = null; // take first one
+		for (final PlayerID p : shareWith)
+		{
+			final int pCount = TechAbilityAttachment.getWarBondDiceNumber(p, data);
+			final int pSides = TechAbilityAttachment.getWarBondDiceSides(p, data);
+			if (pSides <= 0 && pCount <= 0)
+			{
+				// if both are zero, then it must mean we did not share our war bonds tech with them, even though we are sharing all tech (because they can not have this tech)
+				if (canPlayerCollectIncome(p, data))
+				{
+					giveWarBondsTo = p;
+					break;
+				}
+			}
+		}
+		if (giveWarBondsTo == null)
+			return;
+		final String annotation = player.getName() + " rolling to resolve War Bonds, and giving results to " + giveWarBondsTo.getName() + ": ";
+		final DiceRoll dice = DiceRoll.rollNDice(aBridge, count, sides, annotation);
+		int totalWarBonds = 0;
+		for (int i = 0; i < dice.size(); i++)
+		{
+			totalWarBonds += dice.getDie(i).getValue() + 1;
+		}
+		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
+		final int currentPUs = giveWarBondsTo.getResources().getQuantity(PUs);
+		final String transcriptText = player.getName() + " rolls " + totalWarBonds + MyFormatter.pluralize(" PU", totalWarBonds) + " from War Bonds, giving the total to " + giveWarBondsTo.getName()
+					+ ", who ends with " + (currentPUs + totalWarBonds) + MyFormatter.pluralize(" PU", (currentPUs + totalWarBonds)) + " total";
+		aBridge.getHistoryWriter().startEvent(transcriptText);
+		final Change change = ChangeFactory.changeResourcesChange(giveWarBondsTo, PUs, totalWarBonds);
+		aBridge.addChange(change);
+		getRemotePlayer(player).reportMessage(annotation + MyFormatter.asDice(dice), annotation + MyFormatter.asDice(dice));
+		return;
 	}
 	
 	private ITripleaPlayer getRemotePlayer(final PlayerID player)

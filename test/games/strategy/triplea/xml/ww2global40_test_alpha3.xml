@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="3.0"/>
+        <info name="World War II Global Test Alpha 3" version="3.1"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.6"/>
 		<diceSides value="6"/>
@@ -1973,7 +1973,7 @@
 								<tech name="rocket"/>
 								<tech name="Airborne_Forces"/>
 								<tech name="increasedFactoryProduction"/>
-								<tech name="warBonds"/>
+								<!--<tech name="warBonds"/>-->
 								<tech name="Improved_Mech_Inf"/>
 						</category>
 				</playerTech>
@@ -4102,14 +4102,18 @@
 				<attatchment name="conditionAttachment_French_1_Lose_France" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="alliedOwnershipTerritories" value="France" count="1" />
 				</attatchment>
-                <attatchment name="conditionAttachment_French_1_Liberation" attatchTo="French" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <attatchment name="conditionAttachment_French_1_Can_Be_Liberated_Switch" attatchTo="French" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                	<option name="switch" value="true"/>
+                </attatchment>
+                <attatchment name="conditionAttachment_French_1_Liberation_Switch" attatchTo="French" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="conditions" value="conditionAttachment_French_1_Can_Be_Liberated_Switch"/>
                 	<option name="directOwnershipTerritories" value="France" count="1"/>
-                	<option name="turns" value="0"/>
+                	<option name="switch" value="false"/>
                 </attatchment>
 				
 			<!-- Political related conditions -->
-				<attatchment name="conditionAttachmentTurn0" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="turns" value="0"/>
+				<attatchment name="conditionAttachment_False" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+					<option name="switch" value="false"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentTurn3" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="turns" value="3"/>
@@ -4121,13 +4125,13 @@
 					<option name="alliedOwnershipTerritories" value="United Kingdom" count="1"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Axis_Capture_London_Switch" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="turns" value="0"/>
+                	<option name="switch" value="false"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Axis_Land_In_North_America" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="alliedOwnershipTerritories" value="Yukon Territory:British Columbia:Alberta Saskatchewan Manitoba:Ontario:Quebec:Newfoundland Labrador:New Brunswick Nova Scotia" count="1"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Axis_Land_In_North_America_Switch" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="turns" value="0"/>
+                	<option name="switch" value="false"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_British_Not_Provoked" attatchTo="British" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="British:Japanese:Unprovoked"/>
@@ -4288,9 +4292,9 @@
 					<option name="relationship" value="British:Mongolians:anyWar"/>
 					<option name="invert" value="true"/>
 				</attatchment>
-				<attatchment name="conditionAttachment_Mongolia_May_Switch_To_Russians_Control_Switch" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+				<attatchment name="conditionAttachment_Mongolia_May_Change_To_Russians_Control_Switch" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="conditions" value="conditionAttachment_Mongolia_Not_At_War_With_Allies"/>
-                	<option name="turns" value="1-+"/>
+                	<option name="switch" value="true"/>
 				</attatchment>
                 <attatchment name="conditionAttachment_Russians_Conquer_Japanese_Territory_By_Mongolia" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="battle" value="Russians:Japanese:any:currentRound:Manchuria:Jehol:Chahar:Suiyuyan:Kansu"/>
@@ -4556,80 +4560,80 @@
 					<option name="uses" value="1"/>
 					<option name="when" value="after:germansBattle"/>
                 	<option name="players" value="French"/>
-                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation"/>
-                	<option name="playerProperty" value="turns" count="1-+"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation_Switch"/>
+                	<option name="playerProperty" value="switch" count="true"/>
                 </attatchment>
 				<attatchment name="triggerAttachment_Italians_Conquer_France" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachment_French_1_Lose_France"/>
 					<option name="uses" value="1"/>
 					<option name="when" value="after:italiansBattle"/>
                 	<option name="players" value="French"/>
-                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation"/>
-                	<option name="playerProperty" value="turns" count="1-+"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation_Switch"/>
+                	<option name="playerProperty" value="switch" count="true"/>
                 </attatchment>
 				<attatchment name="triggerAttachment_Japanese_Conquer_France" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="trigger" value="conditionAttachment_French_1_Lose_France"/>
 					<option name="uses" value="1"/>
 					<option name="when" value="after:italiansBattle"/>
                 	<option name="players" value="French"/>
-                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation"/>
-                	<option name="playerProperty" value="turns" count="1-+"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation_Switch"/>
+                	<option name="playerProperty" value="switch" count="true"/>
                 </attatchment>
 				<attatchment name="triggerAttachment_French_1_Liberation_By_British" attatchTo="French" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_French_1_Liberation"/>
+                	<option name="trigger" value="conditionAttachment_French_1_Liberation_Switch"/>
 					<option name="uses" value="1"/>
 					<option name="when" value="after:britishBattle"/>
                 	<option name="placement" value="France:infantry:infantry:infantry:infantry"/>
 					<!-- the below just prevents the other triggers from ever firing, by setting the condition to be something impossible -->
                 	<option name="players" value="French"/>
-                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation"/>
-                	<option name="playerProperty" value="relationship" count="British:Americans:anyWar"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Can_Be_Liberated_Switch"/>
+                	<option name="playerProperty" value="switch" count="false"/>
                 </attatchment>
 				<attatchment name="triggerAttachment_French_1_Liberation_By_Russians" attatchTo="French" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_French_1_Liberation"/>
+                	<option name="trigger" value="conditionAttachment_French_1_Liberation_Switch"/>
 					<option name="uses" value="1"/>
 					<option name="when" value="after:russiansBattle"/>
                 	<option name="placement" value="France:infantry:infantry:infantry:infantry"/>
                 	<!-- the below just prevents the other triggers from ever firing, by setting the condition to be something impossible -->
                 	<option name="players" value="French"/>
-                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation"/>
-                	<option name="playerProperty" value="relationship" count="British:Americans:anyWar"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Can_Be_Liberated_Switch"/>
+                	<option name="playerProperty" value="switch" count="false"/>
                 </attatchment>
 				<attatchment name="triggerAttachment_French_1_Liberation_By_Americans" attatchTo="French" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_French_1_Liberation"/>
+                	<option name="trigger" value="conditionAttachment_French_1_Liberation_Switch"/>
 					<option name="uses" value="1"/>
 					<option name="when" value="after:americansBattle"/>
                 	<option name="placement" value="France:infantry:infantry:infantry:infantry"/>
                 	<!-- the below just prevents the other triggers from ever firing, by setting the condition to be something impossible -->
                 	<option name="players" value="French"/>
-                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation"/>
-                	<option name="playerProperty" value="relationship" count="British:Americans:anyWar"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Can_Be_Liberated_Switch"/>
+                	<option name="playerProperty" value="switch" count="false"/>
                 </attatchment>
 				<attatchment name="triggerAttachment_French_1_Liberation_By_French" attatchTo="French" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_French_1_Liberation"/>
+                	<option name="trigger" value="conditionAttachment_French_1_Liberation_Switch"/>
 					<option name="uses" value="1"/>
 					<option name="when" value="after:frenchBattle"/>
                 	<option name="placement" value="France:infantry:infantry:infantry:infantry"/>
                 	<!-- the below just prevents the other triggers from ever firing, by setting the condition to be something impossible -->
                 	<option name="players" value="French"/>
-                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation"/>
-                	<option name="playerProperty" value="relationship" count="British:Americans:anyWar"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Can_Be_Liberated_Switch"/>
+                	<option name="playerProperty" value="switch" count="false"/>
                 </attatchment>
 				<attatchment name="triggerAttachment_French_1_Liberation_By_ANZAC" attatchTo="French" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-                	<option name="trigger" value="conditionAttachment_French_1_Liberation"/>
+                	<option name="trigger" value="conditionAttachment_French_1_Liberation_Switch"/>
 					<option name="uses" value="1"/>
 					<option name="when" value="after:anzacBattle"/>
                 	<option name="placement" value="France:infantry:infantry:infantry:infantry"/>
                 	<!-- the below just prevents the other triggers from ever firing, by setting the condition to be something impossible -->
                 	<option name="players" value="French"/>
-                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Liberation"/>
-                	<option name="playerProperty" value="relationship" count="British:Americans:anyWar"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_French_1_Can_Be_Liberated_Switch"/>
+                	<option name="playerProperty" value="switch" count="false"/>
                 </attatchment>
 				
 				
 			<!-- Political Related Triggers -->
 				<attatchment name="triggerAttachment_Axis_Friendly_With_Mongolians" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentTurn0"/>
+					<option name="conditions" value="conditionAttachment_False"/>
 					<option name="when" value="before:germansPolitics"/>
 					<option name="uses" value="1"/>
                 	<option name="territories" value="Olgiy:Dzavhan:Tsagaan Olom:Central Mongolia:Buyant-Uhaa:Ulaanbaatar"/>
@@ -4655,7 +4659,7 @@
                 	<option name="activateTrigger" value="triggerAttachment_Axis_Friendly_With_Mongolians:1:true:true:false:false"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Allies_Friendly_With_Mongolians" attatchTo="British" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentTurn0"/>
+					<option name="conditions" value="conditionAttachment_False"/>
 					<option name="when" value="before:britishPolitics"/>
 					<option name="uses" value="1"/>
                 	<option name="territories" value="Olgiy:Dzavhan:Tsagaan Olom:Central Mongolia:Buyant-Uhaa:Ulaanbaatar"/>
@@ -4692,11 +4696,11 @@
 					<option name="when" value="after:russiansBattle"/>
 					<option name="uses" value="1"/>
                 	<option name="players" value="Russians"/>
-                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Mongolia_May_Switch_To_Russians_Control_Switch"/>
-                	<option name="playerProperty" value="turns" count="0"/>
+                	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Mongolia_May_Change_To_Russians_Control_Switch"/>
+                	<option name="playerProperty" value="switch" count="false"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_2" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachmentTurn0"/>
+					<option name="conditions" value="conditionAttachment_False"/>
 					<option name="when" value="before:japaneseNonCombatMove"/>
 					<option name="uses" value="1"/>
                 	<option name="changeOwnership" value="Olgiy:Mongolians:Russians:true"/>
@@ -4707,7 +4711,7 @@
                 	<option name="changeOwnership" value="Ulaanbaatar:Mongolians:Russians:true"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia_1" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
-					<option name="conditions" value="conditionAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia:conditionAttachment_Mongolia_May_Switch_To_Russians_Control_Switch"/>
+					<option name="conditions" value="conditionAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia:conditionAttachment_Mongolia_May_Change_To_Russians_Control_Switch"/>
 					<option name="when" value="after:japaneseBattle"/>
 					<option name="uses" value="1"/>
 					<option name="relationshipChange" value="Russians:Mongolians:anyNeutral:Friendly_Neutral"/>
@@ -4818,35 +4822,35 @@
 					<option name="when" value="after:germansBattle"/>
                 	<option name="players" value="Germans"/>
                 	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Capture_London_Switch"/>
-                	<option name="playerProperty" value="turns" count="1-+"/>
+                	<option name="playerProperty" value="switch" count="true"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Italians_Conquer_London" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachment_Axis_Capture_London"/>
 					<option name="when" value="after:italiansBattle"/>
                 	<option name="players" value="Germans"/>
                 	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Capture_London_Switch"/>
-                	<option name="playerProperty" value="turns" count="1-+"/>
+                	<option name="playerProperty" value="switch" count="true"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Germans_Land_In_North_America" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachment_Axis_Land_In_North_America"/>
 					<option name="when" value="after:germansBattle"/>
                 	<option name="players" value="Germans"/>
                 	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Land_In_North_America_Switch"/>
-                	<option name="playerProperty" value="turns" count="1-+"/>
+                	<option name="playerProperty" value="switch" count="true"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Italians_Land_In_North_America" attatchTo="Italians" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachment_Axis_Land_In_North_America"/>
 					<option name="when" value="after:italiansBattle"/>
                 	<option name="players" value="Germans"/>
                 	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Land_In_North_America_Switch"/>
-                	<option name="playerProperty" value="turns" count="1-+"/>
+                	<option name="playerProperty" value="switch" count="true"/>
 				</attatchment>
 				<attatchment name="triggerAttachment_Japanese_Land_In_North_America" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
 					<option name="conditions" value="conditionAttachment_Axis_Land_In_North_America"/>
 					<option name="when" value="after:japaneseBattle"/>
                 	<option name="players" value="Germans"/>
                 	<option name="playerAttachmentName" value="RulesAttachment" count="conditionAttachment_Axis_Land_In_North_America_Switch"/>
-                	<option name="playerProperty" value="turns" count="1-+"/>
+                	<option name="playerProperty" value="switch" count="true"/>
 				</attatchment>
                 <attatchment name="triggerAttachment_Americans_Unrestricted_Movement" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.TriggerAttachment" type="player">
                 	<option name="conditions" value="conditionAttachment_Americans_At_War_With_At_Least_One_Axis"/>
@@ -6409,11 +6413,11 @@
 						<number min="2" max="3"/>
 				</property>
 
-				<property name="Paratroopers Can Move During Non Combat" value="false" editable="true">
+				<property name="Paratroopers Can Move During Non Combat" value="false" editable="false">
 						<boolean/>
 				</property>
 
-				<property name="Paratroopers Can Attack Deep Into Enemy Territory" value="false" editable="true">
+				<property name="Paratroopers Can Attack Deep Into Enemy Territory" value="false" editable="false">
 						<boolean/>
 				</property>
 
@@ -6823,6 +6827,7 @@ Beginners to these games are suggested to ask for help in the lobby or on the fo
 <b>Edit Mode</b><br>
 When not yet at war, you may ask for permission to move through a canal, and if granted, use Edit Mode to move the units.<br>
 If you ever need to create new UK units, always create "British" units, do not create "UK_Pacific" units (except for Factories, all UK_Pacific units turn into British units when placed normally).<br>
+The Warbonds technology will give the PUs to the British, please use edit mode if you want some of it to go to UK Pacific.<br>
 <br>
 
 <b>Stuff Left TODO</b><br>
@@ -7052,6 +7057,10 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>3.1
+<br>Created game option to force tech tokens to be removed after rolling them, regardless of success.
+<br>Preventing British and UK_Pacific from both rolling for Warbonds. Instead only British will roll, unless their capital is taken, then UK Pacific will.
 <br>
 <br>3.0
 <br>Added all technology to Global 1940.

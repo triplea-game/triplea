@@ -392,6 +392,8 @@ class TechTokenPanel extends JPanel
 	
 	private void setWidgetActivation()
 	{
+		if (m_whoPaysTextFields == null || m_whoPaysTextFields.isEmpty())
+			return;
 		final int cost = TechTracker.getTechCost(m_player) * m_textField.getValue();
 		int totalPaidByOthers = 0;
 		for (final Entry<PlayerID, ScrollableTextField> entry : m_whoPaysTextFields.entrySet())
