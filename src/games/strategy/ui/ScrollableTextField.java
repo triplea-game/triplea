@@ -24,6 +24,7 @@ import games.strategy.util.ListenerList;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
@@ -165,15 +166,25 @@ public class ScrollableTextField extends JPanel
 	
 	private void setWidgetActivation()
 	{
-		final int value = m_text.getValue();
-		final int max = m_text.getMax();
-		final boolean enableUp = (value != max);
-		m_up.setEnabled(enableUp);
-		m_max.setEnabled(enableUp);
-		final int min = m_text.getMin();
-		final boolean enableDown = (value != min);
-		m_down.setEnabled(enableDown);
-		m_min.setEnabled(enableDown);
+		if (m_text.isEnabled())
+		{
+			final int value = m_text.getValue();
+			final int max = m_text.getMax();
+			final boolean enableUp = (value != max);
+			m_up.setEnabled(enableUp);
+			m_max.setEnabled(enableUp);
+			final int min = m_text.getMin();
+			final boolean enableDown = (value != min);
+			m_down.setEnabled(enableDown);
+			m_min.setEnabled(enableDown);
+		}
+		else
+		{
+			m_up.setEnabled(false);
+			m_down.setEnabled(false);
+			m_max.setEnabled(false);
+			m_min.setEnabled(false);
+		}
 	}
 	
 	private final Action m_incrementAction = new AbstractAction("inc")
@@ -182,8 +193,11 @@ public class ScrollableTextField extends JPanel
 		
 		public void actionPerformed(final ActionEvent e)
 		{
-			m_text.setValue(m_text.getValue() + 1);
-			setWidgetActivation();
+			if (m_text.isEnabled())
+			{
+				m_text.setValue(m_text.getValue() + 1);
+				setWidgetActivation();
+			}
 		}
 	};
 	private final Action m_decrementAction = new AbstractAction("dec")
@@ -192,8 +206,11 @@ public class ScrollableTextField extends JPanel
 		
 		public void actionPerformed(final ActionEvent e)
 		{
-			m_text.setValue(m_text.getValue() - 1);
-			setWidgetActivation();
+			if (m_text.isEnabled())
+			{
+				m_text.setValue(m_text.getValue() - 1);
+				setWidgetActivation();
+			}
 		}
 	};
 	private final Action m_maxAction = new AbstractAction("max")
@@ -202,8 +219,11 @@ public class ScrollableTextField extends JPanel
 		
 		public void actionPerformed(final ActionEvent e)
 		{
-			m_text.setValue(m_text.getMax());
-			setWidgetActivation();
+			if (m_text.isEnabled())
+			{
+				m_text.setValue(m_text.getMax());
+				setWidgetActivation();
+			}
 		}
 	};
 	private final Action m_minAction = new AbstractAction("min")
@@ -212,8 +232,11 @@ public class ScrollableTextField extends JPanel
 		
 		public void actionPerformed(final ActionEvent e)
 		{
-			m_text.setValue(m_text.getMin());
-			setWidgetActivation();
+			if (m_text.isEnabled())
+			{
+				m_text.setValue(m_text.getMin());
+				setWidgetActivation();
+			}
 		}
 	};
 	
@@ -253,4 +276,11 @@ public class ScrollableTextField extends JPanel
 			notifyListeners();
 		}
 	};
+	
+	@Override
+	public void setEnabled(final boolean enabled)
+	{
+		m_text.setEnabled(enabled);
+		setWidgetActivation();
+	}
 }

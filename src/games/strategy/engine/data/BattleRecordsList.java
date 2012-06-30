@@ -54,7 +54,11 @@ public class BattleRecordsList extends GameDataComponent implements Serializable
 	
 	public BattleRecords getCurrentRoundCopy()
 	{
-		return new BattleRecords(m_battleRecords.get(getData().getSequence().getRound()));
+		final BattleRecords current = m_battleRecords.get(getData().getSequence().getRound());
+		if (current == null)
+			return new BattleRecords(getData());
+		else
+			return new BattleRecords(current);
 	}
 	
 	public Map<Integer, BattleRecords> getBattleRecordsMap()

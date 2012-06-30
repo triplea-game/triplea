@@ -39,6 +39,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Vector;
@@ -318,49 +319,58 @@ class TechRollPanel extends JPanel
 class TechTokenPanel extends JPanel
 {
 	private static final long serialVersionUID = 332026624893335993L;
-	int m_PUs;
+	int m_totalPUs;
+	int m_playerPUs;
+	final ScrollableTextField m_playerPUField;
 	PlayerID m_player;
 	JLabel m_left = new JLabel();
 	JLabel m_right = new JLabel();
+	JLabel m_totalCost = new JLabel();
 	ScrollableTextField m_textField;
 	HashMap<PlayerID, ScrollableTextField> m_whoPaysTextFields = null;
 	
 	TechTokenPanel(final int PUs, final int currTokens, final PlayerID player, final Collection<PlayerID> helpPay)
 	{
-		m_PUs = PUs;
+		m_playerPUs = PUs;
+		m_totalPUs = PUs;
 		if (helpPay != null && !helpPay.isEmpty())
 		{
 			helpPay.remove(player);
 			for (final PlayerID p : helpPay)
 			{
-				m_PUs += p.getResources().getQuantity(Constants.PUS);
+				m_totalPUs += p.getResources().getQuantity(Constants.PUS);
 			}
 		}
+		m_playerPUField = new ScrollableTextField(0, m_totalPUs);
+		m_playerPUField.setEnabled(false);
 		setLayout(new GridBagLayout());
 		m_player = player;
 		final JLabel title = new JLabel("Select the number of tech tokens to purchase:");
 		title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
 		final int techCost = TechTracker.getTechCost(m_player);
-		m_textField = new ScrollableTextField(0, m_PUs / techCost);
+		m_textField = new ScrollableTextField(0, m_totalPUs / techCost);
 		m_textField.addChangeListener(m_listener);
-		final JLabel costLabel = new JLabel("x" + techCost);
-		setLabel(m_PUs);
+		final JLabel costLabel = new JLabel("x" + techCost + " cost per token");
+		setLabel(0);
 		setTokens(currTokens);
 		final int space = 0;
 		add(title, new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, space, space), 0, 0));
 		add(m_textField, new GridBagConstraints(0, 1, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(8, 10, space, space), 0, 0));
 		add(costLabel, new GridBagConstraints(1, 1, 1, 1, 0.5, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 5, space, 2), 0, 0));
 		add(m_left, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 5, space, space), 0, 0));
-		add(m_right, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 120, space, space), 0, 0));
+		add(m_right, new GridBagConstraints(0, 2, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 130, space, space), 0, 0));
+		add(m_totalCost, new GridBagConstraints(0, 3, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 5, space, space), 0, 0));
 		if (helpPay != null && !helpPay.isEmpty())
 		{
 			if (m_whoPaysTextFields == null)
 				m_whoPaysTextFields = new HashMap<PlayerID, ScrollableTextField>();
 			helpPay.remove(player);
-			int row = 3;
-			add(new JLabel(" "), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+			int row = 4;
+			add(new JLabel("Nations Paying How Much:"), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(30, 6, 6, 6), 0, 0));
 			row++;
-			add(new JLabel("Other Nations Helping To Pay:"), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+			add(new JLabel(player.getName()), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+			add(m_playerPUField, new GridBagConstraints(1, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
+			add(new JLabel("PUs"), new GridBagConstraints(2, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
 			row++;
 			for (final PlayerID p : helpPay)
 			{
@@ -368,6 +378,7 @@ class TechTokenPanel extends JPanel
 				if (helperPUs > 0)
 				{
 					final ScrollableTextField whoPaysTextField = new ScrollableTextField(0, helperPUs);
+					whoPaysTextField.addChangeListener(setWidgetAction());
 					m_whoPaysTextFields.put(p, whoPaysTextField);
 					// TODO: force players to pay if it goes above the cost m_player can afford.
 					add(new JLabel(p.getName()), new GridBagConstraints(0, row, 1, 1, 0.5, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(6, 6, 6, 6), 0, 0));
@@ -379,23 +390,83 @@ class TechTokenPanel extends JPanel
 		}
 	}
 	
-	private void setLabel(final int PUs)
+	private void setWidgetActivation()
 	{
-		m_left.setText("Left to spend:" + PUs);
+		final int cost = TechTracker.getTechCost(m_player) * m_textField.getValue();
+		int totalPaidByOthers = 0;
+		for (final Entry<PlayerID, ScrollableTextField> entry : m_whoPaysTextFields.entrySet())
+		{
+			totalPaidByOthers += Math.max(0, entry.getValue().getValue());
+		}
+		final int totalPaidByPlayer = Math.max(0, cost - totalPaidByOthers);
+		int amountOver = -1 * (m_playerPUs - totalPaidByPlayer);
+		final Iterator<Entry<PlayerID, ScrollableTextField>> otherPayers = m_whoPaysTextFields.entrySet().iterator();
+		while (amountOver > 0 && otherPayers.hasNext())
+		{
+			final Entry<PlayerID, ScrollableTextField> entry = otherPayers.next();
+			int current = entry.getValue().getValue();
+			final int max = entry.getValue().getMax();
+			if (current < max)
+			{
+				final int canAdd = Math.min(max - current, amountOver);
+				amountOver -= canAdd;
+				current += canAdd;
+				entry.getValue().setValue(current);
+			}
+		}
+		// now check if we are negative
+		totalPaidByOthers = 0;
+		for (final Entry<PlayerID, ScrollableTextField> entry : m_whoPaysTextFields.entrySet())
+		{
+			totalPaidByOthers += Math.max(0, entry.getValue().getValue());
+		}
+		int amountUnder = -1 * (cost - totalPaidByOthers);
+		final Iterator<Entry<PlayerID, ScrollableTextField>> otherPayers2 = m_whoPaysTextFields.entrySet().iterator();
+		while (amountUnder > 0 && otherPayers2.hasNext())
+		{
+			final Entry<PlayerID, ScrollableTextField> entry = otherPayers2.next();
+			int current = entry.getValue().getValue();
+			if (current > 0)
+			{
+				final int canSubtract = Math.min(current, amountUnder);
+				amountUnder -= canSubtract;
+				current -= canSubtract;
+				entry.getValue().setValue(current);
+			}
+		}
+		m_playerPUField.setValue(Math.max(0, Math.min(m_playerPUs, totalPaidByPlayer)));
+	}
+	
+	private void setLabel(final int cost)
+	{
+		m_left.setText("Left to Spend:  " + (m_totalPUs - cost));
+		m_totalCost.setText("Total Cost:  " + cost);
 	}
 	
 	private void setTokens(final int tokens)
 	{
-		m_right.setText("Current token count:" + tokens);
+		m_right.setText("Current token count:  " + tokens);
 	}
 	
 	private final ScrollableTextFieldListener m_listener = new ScrollableTextFieldListener()
 	{
 		public void changedValue(final ScrollableTextField stf)
 		{
-			setLabel(m_PUs - (TechTracker.getTechCost(m_player) * m_textField.getValue()));
+			setLabel(TechTracker.getTechCost(m_player) * m_textField.getValue());
+			setWidgetActivation();
 		}
 	};
+	
+	private final ScrollableTextFieldListener setWidgetAction()
+	{
+		return new ScrollableTextFieldListener()
+		{
+			public void changedValue(final ScrollableTextField stf)
+			{
+				setWidgetActivation();
+			}
+		};
+	}
 	
 	public int getValue()
 	{
