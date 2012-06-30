@@ -1,4 +1,8 @@
 Changes for 1.6.1
+* Created an option in Play-By-Forum and Play-By-Email to send the move summary after the combat move phase, in addition to the summary at the end of the turn. This is to help with OOL and scrambling orders. (veqryn)
+
+* Abstracted EndTurnPanel into AbstractForumPosterPanel, then created MoveForumPosterPanel. (veqryn)
+
 * Created new game option, "Remove All Tech Tokens At End Of Turn", which will remove tech tokens after each tech roll. (veqryn)
 
 * Changing how Battle Records get added and removed from game data through the Change Factory to be more memory efficient. (veqryn)

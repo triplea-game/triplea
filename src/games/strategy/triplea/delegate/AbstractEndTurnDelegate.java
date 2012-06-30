@@ -417,9 +417,9 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		return m_hasPostedTurnSummary;
 	}
 	
-	public boolean postTurnSummary(final PBEMMessagePoster poster)
+	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title)
 	{
-		m_hasPostedTurnSummary = poster.post(m_bridge.getHistoryWriter());
+		m_hasPostedTurnSummary = poster.post(m_bridge.getHistoryWriter(), title);
 		return m_hasPostedTurnSummary;
 	}
 	

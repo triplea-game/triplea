@@ -45,7 +45,7 @@ public class HistoryLog extends JFrame
 	
 	public HistoryLog()
 	{
-		m_textArea = new JTextArea(50, 50);
+		m_textArea = new JTextArea(40, 80);
 		m_textArea.setEditable(false);
 		final JScrollPane scrollingArea = new JScrollPane(m_textArea);
 		// ... Get the content pane, set layout, add to center
@@ -414,6 +414,17 @@ public class HistoryLog extends JFrame
 			} // while (nodeEnum.hasMoreElements())
 			curNode = curNode.getNextSibling();
 		} while ((curNode instanceof Step) && ((Step) curNode).getPlayerID().equals(curPlayer));
+		// if we are mid-phase, this might not get flushed
+		if (moving && !moveList.isEmpty())
+		{
+			final Iterator<String> moveIter = moveList.iterator();
+			while (moveIter.hasNext())
+			{
+				logWriter.println(moveIter.next());
+				moveIter.remove();
+			}
+			moving = false;
+		}
 		logWriter.println();
 		m_textArea.setText(m_stringWriter.toString());
 	}

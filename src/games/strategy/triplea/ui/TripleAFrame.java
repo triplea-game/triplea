@@ -658,6 +658,12 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return m_actionButtons.waitForPlace(bid, bridge);
 	}
 	
+	public void waitForMoveForumPoster(final PlayerID player, final IPlayerBridge bridge)
+	{
+		m_actionButtons.changeToMoveForumPosterPanel(player);
+		m_actionButtons.waitForMoveForumPosterPanel(this, bridge);
+	}
+	
 	public void waitForEndTurn(final PlayerID player, final IPlayerBridge bridge)
 	{
 		m_actionButtons.changeToEndTurn(player);

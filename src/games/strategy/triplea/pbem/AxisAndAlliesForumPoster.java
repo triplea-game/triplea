@@ -361,6 +361,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 		final AxisAndAlliesForumPoster clone = new AxisAndAlliesForumPoster();
 		clone.setTopicId(getTopicId());
 		clone.setIncludeSaveGame(getIncludeSaveGame());
+		clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
 		clone.setPassword(getPassword());
 		clone.setUsername(getUsername());
 		return clone;

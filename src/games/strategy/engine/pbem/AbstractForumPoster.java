@@ -31,6 +31,7 @@ public abstract class AbstractForumPoster implements IForumPoster
 	protected transient String m_transPassword;
 	protected String m_topicId = null;
 	protected boolean m_includeSaveGame = true;
+	protected boolean m_alsoPostAfterCombatMove = false;
 	
 	// -----------------------------------------------------------------------
 	// transitive fields
@@ -56,6 +57,16 @@ public abstract class AbstractForumPoster implements IForumPoster
 	public void setIncludeSaveGame(final boolean include)
 	{
 		m_includeSaveGame = include;
+	}
+	
+	public boolean getAlsoPostAfterCombatMove()
+	{
+		return m_alsoPostAfterCombatMove;
+	}
+	
+	public void setAlsoPostAfterCombatMove(final boolean post)
+	{
+		m_alsoPostAfterCombatMove = post;
 	}
 	
 	public void addSaveGame(final File saveGame, final String fileName)

@@ -73,6 +73,7 @@ public class GenericEmailSender implements IEmailSender
 	private String m_host = "smptserver.example.com";
 	private int m_port = 25;
 	private Encryption m_encryption;
+	private boolean m_alsoPostAfterCombatMove = false;
 	
 	// -----------------------------------------------------------------------
 	// instance methods
@@ -350,7 +351,18 @@ public class GenericEmailSender implements IEmailSender
 		sender.setTimeout(getTimeout());
 		sender.setToAddress(getToAddress());
 		sender.setUserName(getUserName());
+		sender.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
 		return sender;
+	}
+	
+	public boolean getAlsoPostAfterCombatMove()
+	{
+		return m_alsoPostAfterCombatMove;
+	}
+	
+	public void setAlsoPostAfterCombatMove(final boolean postAlso)
+	{
+		m_alsoPostAfterCombatMove = postAlso;
 	}
 	
 	public String getSubjectPrefix()

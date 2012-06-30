@@ -114,6 +114,15 @@ public class NullForumPoster implements IForumPoster
 	{
 	}
 	
+	public boolean getAlsoPostAfterCombatMove()
+	{
+		return false;
+	}
+	
+	public void setAlsoPostAfterCombatMove(final boolean include)
+	{
+	}
+	
 	public void addSaveGame(final File saveGame, final String fileName)
 	{
 	}

@@ -60,6 +60,21 @@ public interface IForumPoster extends IBean
 	public void setIncludeSaveGame(boolean include);
 	
 	/**
+	 * Should we also post at the end of combat move
+	 * 
+	 * @return true if the save game should be included in the summary
+	 */
+	public boolean getAlsoPostAfterCombatMove();
+	
+	/**
+	 * Configure if we should also post at the end of combat move
+	 * 
+	 * @param include
+	 *            true if the save game should be included
+	 */
+	public void setAlsoPostAfterCombatMove(boolean postAlso);
+	
+	/**
 	 * Called to add the save game to the summary, this should only be called if getIncludeSaveGame returns true
 	 * 
 	 * @param saveGame

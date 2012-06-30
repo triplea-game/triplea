@@ -55,6 +55,7 @@ public class HotmailEmailSender extends GenericEmailSender
 		sender.setPassword(getPassword());
 		sender.setToAddress(getToAddress());
 		sender.setUserName(getUserName());
+		sender.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
 		return sender;
 	}
 	

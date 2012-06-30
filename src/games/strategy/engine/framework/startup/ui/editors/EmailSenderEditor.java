@@ -8,13 +8,22 @@ import games.strategy.engine.pbem.GenericEmailSender;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.ui.ProgressWindow;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.HeadlessException;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 /**
  * An editor for modifying email senders
@@ -43,6 +52,7 @@ public class EmailSenderEditor extends EditorPanel
 	private final JLabel m_hostLabel = new JLabel("Host:");
 	private final JLabel m_portLabel = new JLabel("Port:");
 	private final JButton m_testEmail = new JButton("Test Email");
+	private final JCheckBox m_alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
 	
 	// -----------------------------------------------------------------------
 	// constructors
@@ -109,12 +119,16 @@ public class EmailSenderEditor extends EditorPanel
 			// add Test button on the same line as encryption
 			add(m_testEmail, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
 			
+			row++;
+			add(m_alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
 		}
 		else
 		{
 			row++;
+			add(m_alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
+			add(m_testEmail, new GridBagConstraints(2, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
 			// or on a separate line if no encryption
-			add(m_testEmail, new GridBagConstraints(1, row, 3, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
+			// add(m_testEmail, new GridBagConstraints(1, row, 3, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, bottomSpace, 0), 0, 0));
 		}
 		
 		setupListeners();
@@ -244,6 +258,7 @@ public class EmailSenderEditor extends EditorPanel
 		}
 		m_bean.setPort(port);
 		m_bean.setToAddress(m_toAddress.getText());
+		m_bean.setAlsoPostAfterCombatMove(m_alsoPostAfterCombatMove.isSelected());
 		return m_bean;
 	}
 	

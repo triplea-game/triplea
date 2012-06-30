@@ -80,4 +80,13 @@ public class NullEmailSender implements IEmailSender
 	{
 		return "will never be called";
 	}
+	
+	public boolean getAlsoPostAfterCombatMove()
+	{
+		return false;
+	}
+	
+	public void setAlsoPostAfterCombatMove(final boolean postAlso)
+	{
+	}
 }

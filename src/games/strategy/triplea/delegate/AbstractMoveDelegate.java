@@ -7,6 +7,7 @@ import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.pbem.PBEMMessagePoster;
 import games.strategy.triplea.delegate.dataObjects.MoveValidationResult;
 import games.strategy.triplea.delegate.remote.IMoveDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
@@ -238,6 +239,11 @@ public abstract class AbstractMoveDelegate extends BaseDelegate implements IMove
 	protected boolean isWW2V3()
 	{
 		return games.strategy.triplea.Properties.getWW2V3(getData());
+	}
+	
+	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title)
+	{
+		return poster.post(m_bridge.getHistoryWriter(), title);
 	}
 	
 	protected ITripleaPlayer getRemotePlayer()

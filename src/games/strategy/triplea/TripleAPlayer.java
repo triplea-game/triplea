@@ -130,7 +130,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		else if (name.endsWith("Purchase"))
 			purchase(false);
 		else if (name.endsWith("Move"))
+		{
 			move(name.endsWith("NonCombatMove"), name);
+			if (!name.endsWith("NonCombatMove"))
+				m_ui.waitForMoveForumPoster(m_id, m_bridge);
+		}
 		else if (name.endsWith("Battle"))
 			battle();
 		else if (name.endsWith("Place"))

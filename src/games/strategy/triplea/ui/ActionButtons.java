@@ -58,6 +58,7 @@ public class ActionButtons extends JPanel
 	private PlacePanel m_placePanel;
 	private TechPanel m_techPanel;
 	private EndTurnPanel m_endTurnPanel;
+	private MoveForumPosterPanel m_moveForumPosterPanel;
 	private ActionPanel m_current;
 	private PoliticsPanel m_politicsPanel;
 	
@@ -71,6 +72,7 @@ public class ActionButtons extends JPanel
 		m_placePanel = new PlacePanel(data, map, parent);
 		m_techPanel = new TechPanel(data, map);
 		m_endTurnPanel = new EndTurnPanel(data, map);
+		m_moveForumPosterPanel = new MoveForumPosterPanel(data, map);
 		m_politicsPanel = new PoliticsPanel(data, map, parent);
 		m_current = m_techPanel;
 		setLayout(m_layout);
@@ -82,6 +84,7 @@ public class ActionButtons extends JPanel
 		add(m_placePanel, m_placePanel.toString());
 		add(m_techPanel, m_techPanel.toString());
 		add(m_endTurnPanel, m_endTurnPanel.toString());
+		add(m_moveForumPosterPanel, m_moveForumPosterPanel.toString());
 		add(m_politicsPanel, m_politicsPanel.toString());
 		// this should not be necceessary
 		// but it makes tracking down garbage leaks easier
@@ -104,6 +107,7 @@ public class ActionButtons extends JPanel
 				m_placePanel.removeAll();
 				m_techPanel.removeAll();
 				m_endTurnPanel.removeAll();
+				m_moveForumPosterPanel.removeAll();
 				m_politicsPanel.removeAll();
 				m_battlePanel = null;
 				m_movePanel = null;
@@ -112,6 +116,7 @@ public class ActionButtons extends JPanel
 				m_placePanel = null;
 				m_techPanel = null;
 				m_endTurnPanel = null;
+				m_moveForumPosterPanel = null;
 				m_politicsPanel = null;
 			}
 		});
@@ -165,6 +170,11 @@ public class ActionButtons extends JPanel
 	{
 		
 		changeTo(id, m_endTurnPanel);
+	}
+	
+	public void changeToMoveForumPosterPanel(final PlayerID id)
+	{
+		changeTo(id, m_moveForumPosterPanel);
 	}
 	
 	private void changeTo(final PlayerID id, final ActionPanel newCurrent)
@@ -253,6 +263,11 @@ public class ActionButtons extends JPanel
 		m_endTurnPanel.waitForEndTurn(frame, bridge);
 	}
 	
+	public void waitForMoveForumPosterPanel(final TripleAFrame frame, final IPlayerBridge bridge)
+	{
+		m_moveForumPosterPanel.waitForDone(frame, bridge);
+	}
+	
 	/**
 	 * Blocks until the user selects a battle to fight.
 	 */
@@ -294,5 +309,10 @@ public class ActionButtons extends JPanel
 	public EndTurnPanel getEndTurnPanel()
 	{
 		return m_endTurnPanel;
+	}
+	
+	public MoveForumPosterPanel getMoveForumPosterPanel()
+	{
+		return m_moveForumPosterPanel;
 	}
 }

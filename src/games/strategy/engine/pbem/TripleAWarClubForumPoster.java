@@ -241,6 +241,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 		final TripleAWarClubForumPoster clone = new TripleAWarClubForumPoster();
 		clone.setTopicId(getTopicId());
 		clone.setIncludeSaveGame(getIncludeSaveGame());
+		clone.setAlsoPostAfterCombatMove(getAlsoPostAfterCombatMove());
 		clone.setPassword(getPassword());
 		clone.setUsername(getUsername());
 		return clone;

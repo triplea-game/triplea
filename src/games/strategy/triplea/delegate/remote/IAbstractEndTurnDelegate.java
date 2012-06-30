@@ -21,7 +21,7 @@ import games.strategy.engine.pbem.PBEMMessagePoster;
  */
 public interface IAbstractEndTurnDelegate extends IRemote
 {
-	public boolean postTurnSummary(PBEMMessagePoster poster);
+	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title);
 	
 	public void setHasPostedTurnSummary(boolean hasPostedTurnSummary);
 	

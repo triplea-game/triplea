@@ -46,13 +46,13 @@ public class PBEMMessagePoster implements Serializable
 	// Constructors
 	// -----------------------------------------------------------------------
 	
-	public PBEMMessagePoster(final GameData gameData, final PlayerID currentPlayer, final int roundNumber)
+	public PBEMMessagePoster(final GameData gameData, final PlayerID currentPlayer, final int roundNumber, final String title)
 	{
 		m_currentPlayer = currentPlayer;
 		m_roundNumber = roundNumber;
 		m_forumPoster = (IForumPoster) gameData.getProperties().get(FORUM_POSTER_PROP_NAME);
 		m_emailSender = (IEmailSender) gameData.getProperties().get(EMAIL_SENDER_PROP_NAME);
-		m_gameNameAndInfo = "TripleA Turn Summary for game: " + gameData.getGameName() + ", version: " + gameData.getGameVersion();
+		m_gameNameAndInfo = "TripleA " + title + " for game: " + gameData.getGameName() + ", version: " + gameData.getGameVersion();
 	}
 	
 	// -----------------------------------------------------------------------
@@ -100,7 +100,7 @@ public class PBEMMessagePoster implements Serializable
 	 *            the history writer (which has no effect since save game has already be generated...) // todo (kg)
 	 * @return true if all posts were successful
 	 */
-	public boolean post(final IDelegateHistoryWriter historyWriter)
+	public boolean post(final IDelegateHistoryWriter historyWriter, final String title)
 	{
 		boolean forumSuccess = true;
 		
@@ -120,7 +120,7 @@ public class PBEMMessagePoster implements Serializable
 			}
 			try
 			{
-				forumSuccess = m_forumPoster.postTurnSummary((m_gameNameAndInfo + "\n\n" + m_turnSummary), "TripleA Turn Summary: " + m_currentPlayer.getName() + " round " + m_roundNumber);
+				forumSuccess = m_forumPoster.postTurnSummary((m_gameNameAndInfo + "\n\n" + m_turnSummary), "TripleA " + title + ": " + m_currentPlayer.getName() + " round " + m_roundNumber);
 				m_turnSummaryRef = m_forumPoster.getTurnSummaryRef();
 				if (m_turnSummaryRef != null && historyWriter != null)
 				{
@@ -205,5 +205,14 @@ public class PBEMMessagePoster implements Serializable
 	public String getEmailSendStatus()
 	{
 		return m_emailSendStatus;
+	}
+	
+	public boolean alsoPostMoveSummary()
+	{
+		if (m_forumPoster != null)
+			return m_forumPoster.getAlsoPostAfterCombatMove();
+		if (m_emailSender != null)
+			return m_emailSender.getAlsoPostAfterCombatMove();
+		return false;
 	}
 }

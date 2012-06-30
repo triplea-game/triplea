@@ -50,6 +50,7 @@ public class ForumPosterEditor extends EditorPanel
 	private final JLabel m_topicIdLabel = new JLabel("Topic Id:");
 	
 	private final JCheckBox m_includeSaveGame = new JCheckBox("Attach save game to summary");
+	private final JCheckBox m_alsoPostAfterCombatMove = new JCheckBox("Also Post After Combat Move");
 	private final IForumPoster m_bean;
 	
 	// -----------------------------------------------------------------------
@@ -92,6 +93,10 @@ public class ForumPosterEditor extends EditorPanel
 		{
 			add(m_testForum, new GridBagConstraints(3, row, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 		}
+		row++;
+		
+		add(m_alsoPostAfterCombatMove, new GridBagConstraints(0, row, 2, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		m_alsoPostAfterCombatMove.setSelected(m_bean.getAlsoPostAfterCombatMove());
 		
 		setupListeners();
 	}
@@ -235,6 +240,7 @@ public class ForumPosterEditor extends EditorPanel
 		m_bean.setUsername(m_login.getText());
 		m_bean.setPassword(m_password.getText());
 		m_bean.setIncludeSaveGame(m_includeSaveGame.isSelected());
+		m_bean.setAlsoPostAfterCombatMove(m_alsoPostAfterCombatMove.isSelected());
 		return m_bean;
 	}
 }

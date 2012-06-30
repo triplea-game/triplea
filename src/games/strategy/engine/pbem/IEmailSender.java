@@ -61,4 +61,19 @@ public interface IEmailSender extends IBean
 	void setUserName(String userName);
 	
 	void setPassword(String password);
+	
+	/**
+	 * Should we also post at the end of combat move
+	 * 
+	 * @return true if the save game should be included in the summary
+	 */
+	public boolean getAlsoPostAfterCombatMove();
+	
+	/**
+	 * Configure if we should also post at the end of combat move
+	 * 
+	 * @param include
+	 *            true if the save game should be included
+	 */
+	public void setAlsoPostAfterCombatMove(boolean postAlso);
 }

@@ -66,4 +66,9 @@ public class DelegateFinder
 	{
 		return (TechnologyDelegate) findDelegate(data, "tech");
 	}
+	
+	/*public static final AbstractEndTurnDelegate endTurnDelegate(final GameData data)
+	{
+		return (AbstractEndTurnDelegate) findDelegate(data, "endTurn");
+	}*/
 }
