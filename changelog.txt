@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Created new game option, "Remove All Tech Tokens At End Of Turn", which will remove tech tokens after each tech roll. (veqryn)
+
 * Changing how Battle Records get added and removed from game data through the Change Factory to be more memory efficient. (veqryn)
 
 * Adding an option for "None" to the list of territory effects. (veqryn)

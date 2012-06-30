@@ -6393,6 +6393,10 @@
 						<boolean/>
 				</property>
 
+				<property name="Remove All Tech Tokens At End Of Turn" value="true" editable="true">
+						<boolean/>
+				</property>
+
 				<property name="Super Sub Defence Bonus" value="0" editable="true">
 						<number min="0" max="1"/>
 				</property>

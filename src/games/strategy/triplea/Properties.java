@@ -830,6 +830,11 @@ public class Properties implements Constants
 		return data.getProperties().get(SUBS_CAN_END_NONCOMBAT_MOVE_WITH_ENEMIES, false);
 	}
 	
+	public static boolean getRemoveAllTechTokensAtEndOfTurn(final GameData data)
+	{
+		return data.getProperties().get(REMOVE_ALL_TECH_TOKENS_AT_END_OF_TURN, false);
+	}
+	
 	private Properties()
 	{
 	}

@@ -227,15 +227,14 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		final boolean isRevisedModel = isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel());
 		final String directedTechInfo = isRevisedModel ? " for " + techToRollFor.getTechs().get(0) : "";
 		final DiceRoll renderDice = (isLL_TECH_ONLY() ? new DiceRoll(random, techHits, remainder, false) : new DiceRoll(random, techHits, diceSides - 1, true));
-		m_bridge.getHistoryWriter().startEvent(
-					m_player.getName() + (random.hashCode() > 0 ? " roll " : " rolls : ") + MyFormatter.asDice(random) + directedTechInfo + " and gets " + techHits + " "
-								+ MyFormatter.pluralize("hit", techHits), renderDice);
-		if (techHits > 0 && isWW2V3TechModel())
+		m_bridge.getHistoryWriter().startEvent(m_player.getName() + (random.hashCode() > 0 ? " roll " : " rolls : ") + MyFormatter.asDice(random) + directedTechInfo
+					+ " and gets " + techHits + " " + MyFormatter.pluralize("hit", techHits), renderDice);
+		if (isWW2V3TechModel() && (techHits > 0 || games.strategy.triplea.Properties.getRemoveAllTechTokensAtEndOfTurn(data)))
 		{
 			m_techCategory = techToRollFor;
 			// remove all the tokens
 			final Resource techTokens = data.getResourceList().getResource(Constants.TECH_TOKENS);
-			final String transcriptText = m_player.getName() + " removing all Technology Tokens after successful research.";
+			final String transcriptText = m_player.getName() + " removing all Technology Tokens after " + (techHits > 0 ? "successful" : "unsuccessful") + " research.";
 			m_bridge.getHistoryWriter().startEvent(transcriptText);
 			final Change removeTokens = ChangeFactory.changeResourcesChange(m_bridge.getPlayerID(), techTokens, -m_currTokens);
 			m_bridge.addChange(removeTokens);

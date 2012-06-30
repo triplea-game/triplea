@@ -4801,6 +4801,10 @@
 						<boolean/>
 				</property>
 
+				<property name="Remove All Tech Tokens At End Of Turn" value="false" editable="false">
+						<boolean/>
+				</property>
+
 				<property name="Super Sub Defence Bonus" value="0" editable="true">
 						<number min="0" max="1"/>
 				</property>
@@ -5161,7 +5165,7 @@
 				</property>
 
 						<!-- If false, blockades will deal set amount of damage per unit. If true, a 6 sided die will be rolled for each damage point, with that being the damage, except rolls higher than 3 will be ignored -->
-				<property name="Convoy Blockades Roll Dice For Cost" value="false" editable="true">
+				<property name="Convoy Blockades Roll Dice For Cost" value="false" editable="false">
 						<boolean/>
 				</property>
 

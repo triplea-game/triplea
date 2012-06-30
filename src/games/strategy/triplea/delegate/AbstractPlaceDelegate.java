@@ -226,7 +226,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (error != null)
 			return new PlaceableUnits(error);
 		final Collection<Unit> placeableUnits = getUnitsToBePlaced(to, units, m_player);
-		final int maxUnits = getMaxUnitsToBePlaced(units, to, m_player, true);
+		final int maxUnits = getMaxUnitsToBePlaced(placeableUnits, to, m_player, true);
 		return new PlaceableUnits(placeableUnits, maxUnits);
 	}
 	
