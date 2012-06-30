@@ -267,7 +267,7 @@ public class RocketsFireHelper
 				{
 					cost += r + 1; // we are zero based
 				}
-				transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+				transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
 			}
 			else
 			{
@@ -302,12 +302,12 @@ public class RocketsFireHelper
 						rolls[i] = r;
 						cost += r + 1; // we are zero based
 					}
-					transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+					transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
 				}
 				else
 				{
 					cost = highestBonus * numberOfAttacks;
-					transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus + " damage for each rocket";
+					transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus + " damage for each rocket";
 				}
 			}
 		}
@@ -325,7 +325,7 @@ public class RocketsFireHelper
 					rolls[i] = r;
 					cost += r + 1; // we are zero based
 				}
-				transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+				transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
 			}
 			else
 			{
@@ -365,12 +365,12 @@ public class RocketsFireHelper
 						rolls[i] = r;
 						cost += r + 1; // we are zero based
 					}
-					transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
+					transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " roll: " + MyFormatter.asDice(rolls);
 				}
 				else
 				{
 					cost = highestBonus * numberOfAttacks;
-					transcript = "Rockets" + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus + " damage for each rocket";
+					transcript = "Rockets " + (attackFrom == null ? "" : "in " + attackFrom.getName()) + " do " + highestBonus + " damage for each rocket";
 				}
 			}
 		}
