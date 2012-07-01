@@ -18,6 +18,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.delegate.TechAdvance;
 
 import java.util.Collection;
 
@@ -41,6 +42,10 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate
 	public String changePUs(PlayerID player, int PUs);
 	
 	public String changeTechTokens(PlayerID player, int tokens);
+	
+	public String addTechAdvance(PlayerID player, TechAdvance advance);
+	
+	public String removeTechAdvance(PlayerID player, TechAdvance advance);
 	
 	public String addComment(String message);
 }

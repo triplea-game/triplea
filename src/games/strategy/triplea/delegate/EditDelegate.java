@@ -211,6 +211,30 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 		return null;
 	}
 	
+	public String addTechAdvance(final PlayerID player, final TechAdvance advance)
+	{
+		String result = null;
+		if (null != (result = checkEditMode()))
+			return result;
+		if (null != (result = EditValidator.validateAddTech(getData(), advance, player)))
+			return result;
+		logEvent("Adding Technology " + advance.getName() + " for " + player.getName(), null);
+		TechTracker.addAdvance(player, m_bridge, advance);
+		return null;
+	}
+	
+	public String removeTechAdvance(final PlayerID player, final TechAdvance advance)
+	{
+		String result = null;
+		if (null != (result = checkEditMode()))
+			return result;
+		if (null != (result = EditValidator.validateRemoveTech(getData(), advance, player)))
+			return result;
+		logEvent("Removing Technology " + advance.getName() + " for " + player.getName(), null);
+		TechTracker.removeAdvance(player, m_bridge, advance);
+		return null;
+	}
+	
 	public String addComment(final String message)
 	{
 		String result = null;

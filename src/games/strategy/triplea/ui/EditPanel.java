@@ -26,6 +26,9 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.MoveValidator;
+import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.triplea.delegate.TechTracker;
+import games.strategy.triplea.delegate.TechnologyDelegate;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitSeperator;
@@ -44,6 +47,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -51,9 +55,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
@@ -64,6 +70,8 @@ public class EditPanel extends ActionPanel
 	private Action m_addUnitsAction;
 	private Action m_delUnitsAction;
 	private Action m_changePUsAction;
+	private Action m_addTechAction;
+	private Action m_removeTechAction;
 	private Action m_changeTerritoryOwnerAction;
 	private Action m_currentAction = null;
 	private JLabel m_actionLabel;
@@ -178,10 +186,16 @@ public class EditPanel extends ActionPanel
 				int option;
 				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), playerChooser, "Select owner of PUs to change", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 				if (option != JOptionPane.OK_OPTION)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
 					return;
+				}
 				final PlayerID player = playerChooser.getSelected();
 				if (player == null)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
 					return;
+				}
 				Resource PUs = null;
 				getData().acquireReadLock();
 				try
@@ -192,7 +206,10 @@ public class EditPanel extends ActionPanel
 					getData().releaseReadLock();
 				}
 				if (PUs == null)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
 					return;
+				}
 				final int oldTotal = player.getResources().getQuantity(PUs);
 				int newTotal = oldTotal;
 				final JTextField PUsField = new JTextField(String.valueOf(oldTotal), 4);
@@ -200,7 +217,10 @@ public class EditPanel extends ActionPanel
 				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField), "Select new number of PUs", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null,
 								null, null);
 				if (option != JOptionPane.OK_OPTION)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
 					return;
+				}
 				try
 				{
 					newTotal = Integer.parseInt(PUsField.getText());
@@ -208,6 +228,133 @@ public class EditPanel extends ActionPanel
 				{
 				}
 				final String result = m_frame.getEditDelegate().changePUs(player, newTotal);
+				if (result != null)
+					JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+				CANCEL_EDIT_ACTION.actionPerformed(null);
+			}
+		};
+		m_addTechAction = new AbstractAction("Add Technology")
+		{
+			private static final long serialVersionUID = -5536151512828077755L;
+			
+			public void actionPerformed(final ActionEvent event)
+			{
+				m_currentAction = this;
+				setWidgetActivation();
+				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+				int option;
+				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), playerChooser, "Select player to get technology", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
+							null);
+				if (option != JOptionPane.OK_OPTION)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				final PlayerID player = playerChooser.getSelected();
+				if (player == null)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				Vector<TechAdvance> techs = null;
+				getData().acquireReadLock();
+				try
+				{
+					techs = new Vector<TechAdvance>(TechnologyDelegate.getAvailableTechs(player, data));
+				} finally
+				{
+					getData().releaseReadLock();
+				}
+				if (techs == null || techs.isEmpty())
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				@SuppressWarnings({ "unchecked", "rawtypes" })
+				final JList techList = new JList(techs);
+				techList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				techList.setLayoutOrientation(JList.VERTICAL);
+				techList.setVisibleRowCount(10);
+				final JScrollPane scroll = new JScrollPane(techList);
+				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Select tech to add", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				if (option != JOptionPane.OK_OPTION)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				TechAdvance advance = null;
+				try
+				{
+					advance = (TechAdvance) techList.getSelectedValue();
+				} catch (final Exception e)
+				{
+				}
+				final String result = m_frame.getEditDelegate().addTechAdvance(player, advance);
+				if (result != null)
+					JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+				CANCEL_EDIT_ACTION.actionPerformed(null);
+			}
+		};
+		m_removeTechAction = new AbstractAction("Remove Technology")
+		{
+			private static final long serialVersionUID = -2456111915025687825L;
+			
+			public void actionPerformed(final ActionEvent event)
+			{
+				m_currentAction = this;
+				setWidgetActivation();
+				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
+				int option;
+				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), playerChooser, "Select player to remove technology", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
+							null);
+				if (option != JOptionPane.OK_OPTION)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				final PlayerID player = playerChooser.getSelected();
+				if (player == null)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				Vector<TechAdvance> techs = null;
+				getData().acquireReadLock();
+				try
+				{
+					techs = new Vector<TechAdvance>(TechTracker.getTechAdvances(player, data));
+					// there is no way to "undo" these two techs, so do not allow them to be removed
+					techs.remove(TechAdvance.IMPROVED_SHIPYARDS);
+					techs.remove(TechAdvance.INDUSTRIAL_TECHNOLOGY);
+				} finally
+				{
+					getData().releaseReadLock();
+				}
+				if (techs == null || techs.isEmpty())
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				@SuppressWarnings({ "unchecked", "rawtypes" })
+				final JList techList = new JList(techs);
+				techList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				techList.setLayoutOrientation(JList.VERTICAL);
+				techList.setVisibleRowCount(10);
+				final JScrollPane scroll = new JScrollPane(techList);
+				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Select tech to remove", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				if (option != JOptionPane.OK_OPTION)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				TechAdvance advance = null;
+				try
+				{
+					advance = (TechAdvance) techList.getSelectedValue();
+				} catch (final Exception e)
+				{
+				}
+				final String result = m_frame.getEditDelegate().removeTechAdvance(player, advance);
 				if (result != null)
 					JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
 				CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -221,6 +368,8 @@ public class EditPanel extends ActionPanel
 		add(new JButton(m_delUnitsAction));
 		add(new JButton(m_changeTerritoryOwnerAction));
 		add(new JButton(m_changePUsAction));
+		add(new JButton(m_addTechAction));
+		add(new JButton(m_removeTechAction));
 		add(Box.createVerticalStrut(15));
 		setWidgetActivation();
 	}
@@ -280,6 +429,8 @@ public class EditPanel extends ActionPanel
 			m_delUnitsAction.setEnabled(false);
 			m_changeTerritoryOwnerAction.setEnabled(false);
 			m_changePUsAction.setEnabled(false);
+			m_addTechAction.setEnabled(false);
+			m_removeTechAction.setEnabled(false);
 		}
 		else
 		{
@@ -287,6 +438,8 @@ public class EditPanel extends ActionPanel
 			m_delUnitsAction.setEnabled(!m_selectedUnits.isEmpty());
 			m_changeTerritoryOwnerAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
 			m_changePUsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
+			m_addTechAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
+			m_removeTechAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
 		}
 	}
 	

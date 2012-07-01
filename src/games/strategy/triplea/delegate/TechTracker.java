@@ -93,6 +93,24 @@ public class TechTracker implements java.io.Serializable
 		advance.perform(player, bridge);
 	}
 	
+	public static synchronized void removeAdvance(final PlayerID player, final IDelegateBridge bridge, final TechAdvance advance)
+	{
+		Change attachmentChange;
+		if (advance instanceof GenericTechAdvance)
+		{
+			if (((GenericTechAdvance) advance).getAdvance() == null)
+			{
+				attachmentChange = ChangeFactory.genericTechChange(TechAttachment.get(player), false, advance.getProperty());
+			}
+			else
+				attachmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "false", advance.getProperty());
+		}
+		else
+			attachmentChange = ChangeFactory.attachmentPropertyChange(TechAttachment.get(player), "false", advance.getProperty());
+		bridge.addChange(attachmentChange);
+		// advance.perform(player, bridge);
+	}
+	
 	public static int getTechCost(final PlayerID id)
 	{
 		final TechAttachment ta = TechAttachment.get(id);

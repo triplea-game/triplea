@@ -155,4 +155,32 @@ public class EditValidator
 		// TODO: if carried planes selected, carrier must be deleted too
 		return result;
 	}
+	
+	public static String validateAddTech(final GameData data, final TechAdvance tech, final PlayerID player)
+	{
+		final String result = null;
+		if (tech == null)
+			return "No tech selected";
+		if (player == null)
+			return "No player selected";
+		if (!TechnologyDelegate.getAvailableTechs(player, data).contains(tech))
+			return "Technology not available for this player";
+		return result;
+	}
+	
+	public static String validateRemoveTech(final GameData data, final TechAdvance tech, final PlayerID player)
+	{
+		final String result = null;
+		if (tech == null)
+			return "No tech selected";
+		if (player == null)
+			return "No player selected";
+		if (!TechTracker.getTechAdvances(player, data).contains(tech))
+			return "Player does not have this tech";
+		if (tech == TechAdvance.INDUSTRIAL_TECHNOLOGY)
+			return "Can not remove " + TechAdvance.INDUSTRIAL_TECHNOLOGY.getName();
+		if (tech == TechAdvance.IMPROVED_SHIPYARDS)
+			return "Can not remove " + TechAdvance.IMPROVED_SHIPYARDS.getName();
+		return result;
+	}
 }
