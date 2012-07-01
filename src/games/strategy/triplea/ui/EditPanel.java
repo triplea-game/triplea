@@ -25,15 +25,19 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
+import games.strategy.triplea.delegate.BattleCalculator;
+import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveValidator;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.TechnologyDelegate;
+import games.strategy.triplea.delegate.UnitBattleComparator;
 import games.strategy.triplea.delegate.dataObjects.MustMoveWithDetails;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Triple;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -72,6 +76,8 @@ public class EditPanel extends ActionPanel
 	private Action m_changePUsAction;
 	private Action m_addTechAction;
 	private Action m_removeTechAction;
+	private Action m_changeUnitHitDamageAction;
+	private Action m_changeUnitBombingDamageAction;
 	private Action m_changeTerritoryOwnerAction;
 	private Action m_currentAction = null;
 	private JLabel m_actionLabel;
@@ -360,6 +366,97 @@ public class EditPanel extends ActionPanel
 				CANCEL_EDIT_ACTION.actionPerformed(null);
 			}
 		};
+		m_changeUnitHitDamageAction = new AbstractAction("Change Unit Hit Damage")
+		{
+			private static final long serialVersionUID = 1835547345902760810L;
+			
+			public void actionPerformed(final ActionEvent event)
+			{
+				m_currentAction = this;
+				setWidgetActivation();
+				final List<Unit> units = Match.getMatches(m_selectedUnits, Matches.UnitIsTwoHit);
+				if (units == null || units.isEmpty() || !m_selectedTerritory.getUnits().getUnits().containsAll(units))
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				// all owned by one player
+				units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(units.iterator().next().getOwner())));
+				if (units.isEmpty())
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				sortUnitsToRemove(units, m_selectedTerritory);
+				Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), getData(), false));
+				Collections.reverse(units);
+				// unit mapped to <max, min, current>
+				final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<Unit, Triple<Integer, Integer, Integer>>();
+				for (final Unit u : units)
+				{
+					currentDamageMap.put(u, new Triple<Integer, Integer, Integer>(1, 0, u.getHits()));
+				}
+				final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Hit Damage", getData(), getMap().getUIContext(), -1, true, true, null);
+				final JScrollPane scroll = new JScrollPane(unitPanel);
+				final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Hit Damage", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				if (option != JOptionPane.OK_OPTION)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				final IntegerMap<Unit> newDamageMap = unitPanel.getSelected();
+				final String result = m_frame.getEditDelegate().changeUnitHitDamage(newDamageMap, m_selectedTerritory);
+				if (result != null)
+					JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+				CANCEL_EDIT_ACTION.actionPerformed(null);
+			}
+		};
+		m_changeUnitBombingDamageAction = new AbstractAction("Change Unit Bombing Damage")
+		{
+			private static final long serialVersionUID = 6975869192911780860L;
+			
+			public void actionPerformed(final ActionEvent event)
+			{
+				m_currentAction = this;
+				setWidgetActivation();
+				final List<Unit> units = Match.getMatches(m_selectedUnits, Matches.UnitIsFactoryOrCanBeDamaged);
+				if (units == null || units.isEmpty() || !m_selectedTerritory.getUnits().getUnits().containsAll(units))
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				// all owned by one player
+				units.retainAll(Match.getMatches(units, Matches.unitIsOwnedBy(units.iterator().next().getOwner())));
+				if (units.isEmpty())
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				sortUnitsToRemove(units, m_selectedTerritory);
+				Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), getData(), false));
+				Collections.reverse(units);
+				// unit mapped to <max, min, current>
+				final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<Unit, Triple<Integer, Integer, Integer>>();
+				for (final Unit u : units)
+				{
+					currentDamageMap
+								.put(u, new Triple<Integer, Integer, Integer>(((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, m_selectedTerritory), 0, ((TripleAUnit) u).getUnitDamage()));
+				}
+				final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Bombing Damage", getData(), getMap().getUIContext(), -1, true, true, null);
+				final JScrollPane scroll = new JScrollPane(unitPanel);
+				final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Change Unit Bombing Damage", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				if (option != JOptionPane.OK_OPTION)
+				{
+					CANCEL_EDIT_ACTION.actionPerformed(null);
+					return;
+				}
+				final IntegerMap<Unit> newDamageMap = unitPanel.getSelected();
+				final String result = m_frame.getEditDelegate().changeUnitBombingDamage(newDamageMap, m_selectedTerritory);
+				if (result != null)
+					JOptionPane.showMessageDialog(getTopLevelAncestor(), result, "Could not perform edit", JOptionPane.ERROR_MESSAGE);
+				CANCEL_EDIT_ACTION.actionPerformed(null);
+			}
+		};
 		m_actionLabel.setText("Edit Mode Actions");
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(new EmptyBorder(5, 5, 0, 0));
@@ -368,8 +465,24 @@ public class EditPanel extends ActionPanel
 		add(new JButton(m_delUnitsAction));
 		add(new JButton(m_changeTerritoryOwnerAction));
 		add(new JButton(m_changePUsAction));
-		add(new JButton(m_addTechAction));
-		add(new JButton(m_removeTechAction));
+		if (games.strategy.triplea.Properties.getTechDevelopment(getData()))
+		{
+			add(new JButton(m_addTechAction));
+			add(new JButton(m_removeTechAction));
+		}
+		data.acquireReadLock();
+		try
+		{
+			final Set<UnitType> allUnitTypes = data.getUnitTypeList().getAllUnitTypes();
+			if (Match.someMatch(allUnitTypes, Matches.UnitTypeIsTwoHit))
+				add(new JButton(m_changeUnitHitDamageAction));
+			if ((games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data) || games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
+						&& Match.someMatch(allUnitTypes, Matches.UnitTypeIsFactoryOrCanBeDamaged))
+				add(new JButton(m_changeUnitBombingDamageAction));
+		} finally
+		{
+			data.releaseReadLock();
+		}
 		add(Box.createVerticalStrut(15));
 		setWidgetActivation();
 	}
@@ -431,6 +544,8 @@ public class EditPanel extends ActionPanel
 			m_changePUsAction.setEnabled(false);
 			m_addTechAction.setEnabled(false);
 			m_removeTechAction.setEnabled(false);
+			m_changeUnitHitDamageAction.setEnabled(false);
+			m_changeUnitBombingDamageAction.setEnabled(false);
 		}
 		else
 		{
@@ -440,6 +555,8 @@ public class EditPanel extends ActionPanel
 			m_changePUsAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
 			m_addTechAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
 			m_removeTechAction.setEnabled(m_currentAction == null && m_selectedUnits.isEmpty());
+			m_changeUnitHitDamageAction.setEnabled(!m_selectedUnits.isEmpty());
+			m_changeUnitBombingDamageAction.setEnabled(!m_selectedUnits.isEmpty());
 		}
 	}
 	

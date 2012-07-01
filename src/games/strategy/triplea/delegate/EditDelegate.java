@@ -13,6 +13,7 @@ package games.strategy.triplea.delegate;
 
 import games.strategy.common.delegate.BasePersistentDelegate;
 import games.strategy.engine.data.ChangeFactory;
+import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
@@ -25,14 +26,18 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Step;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.remote.IEditDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -232,6 +237,69 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 			return result;
 		logEvent("Removing Technology " + advance.getName() + " for " + player.getName(), null);
 		TechTracker.removeAdvance(player, m_bridge, advance);
+		return null;
+	}
+	
+	public String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory)
+	{
+		String result = null;
+		if (null != (result = checkEditMode()))
+			return result;
+		if (null != (result = EditValidator.validateChangeHitDamage(getData(), unitDamageMap, territory)))
+			return result;
+		// remove anyone who is the same
+		final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
+		for (final Unit u : units)
+		{
+			final int dmg = unitDamageMap.getInt(u);
+			if (u.getHits() == dmg)
+				unitDamageMap.removeKey(u);
+		}
+		if (unitDamageMap.isEmpty())
+			return null;
+		final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
+		logEvent("Changing unit hit damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap), unitsFinal);
+		m_bridge.addChange(ChangeFactory.unitsHit(unitDamageMap));
+		return null;
+	}
+	
+	public String changeUnitBombingDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory)
+	{
+		String result = null;
+		if (null != (result = checkEditMode()))
+			return result;
+		if (null != (result = EditValidator.validateChangeBombingDamage(getData(), unitDamageMap, territory)))
+			return result;
+		final CompositeChange changes = new CompositeChange();
+		final IntegerMap<Unit> unitHitDamageMap = new IntegerMap<Unit>();
+		// remove anyone who is the same
+		final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
+		for (final Unit u : units)
+		{
+			final int dmg = unitDamageMap.getInt(u);
+			final int currentDamage = ((TripleAUnit) u).getUnitDamage();
+			if (currentDamage == dmg)
+				unitDamageMap.removeKey(u);
+			else
+			{
+				if (dmg == 0 && currentDamage > 0)
+					unitHitDamageMap.put(u, 0);
+				else if (currentDamage == 0 && dmg > 0)
+					unitHitDamageMap.put(u, 1); // mark as damaged so we get the _hit picture
+				// else both must be greater than zero, so we are already marked
+			}
+		}
+		if (unitDamageMap.isEmpty())
+			return null;
+		changes.add(ChangeFactory.unitsHit(unitHitDamageMap));
+		for (final Entry<Unit, Integer> entry : unitDamageMap.entrySet())
+		{
+			changes.add(ChangeFactory.unitPropertyChange(entry.getKey(), entry.getValue(), TripleAUnit.UNIT_DAMAGE));
+		}
+		final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
+		logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap), unitsFinal);
+		m_bridge.addChange(changes);
+		territory.notifyChanged();
 		return null;
 	}
 	

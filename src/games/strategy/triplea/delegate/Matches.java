@@ -107,7 +107,15 @@ public class Matches
 		@Override
 		public boolean match(final Unit unit)
 		{
-			final UnitAttachment ua = UnitAttachment.get(unit.getType());
+			return UnitTypeIsTwoHit.match(unit.getType());
+		}
+	};
+	public static final Match<UnitType> UnitTypeIsTwoHit = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType ut)
+		{
+			final UnitAttachment ua = UnitAttachment.get(ut);
 			return ua.getIsTwoHit();
 		}
 	};

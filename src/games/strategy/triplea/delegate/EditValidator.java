@@ -20,9 +20,12 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
+import games.strategy.triplea.TripleAUnit;
 import games.strategy.util.CompositeMatchAnd;
+import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,6 +37,11 @@ import java.util.List;
  */
 public class EditValidator
 {
+	private static String validateTerritoryBasic(final GameData data, final Territory territory)
+	{
+		return validateTerritoryBasic(data, territory, null);
+	}
+	
 	private static String validateTerritoryBasic(final GameData data, final Territory territory, final PlayerID player)
 	{
 		final String result = null;
@@ -163,6 +171,8 @@ public class EditValidator
 			return "No tech selected";
 		if (player == null)
 			return "No player selected";
+		if (!games.strategy.triplea.Properties.getTechDevelopment(data))
+			return "Technology not enabled";
 		if (!TechnologyDelegate.getAvailableTechs(player, data).contains(tech))
 			return "Technology not available for this player";
 		return result;
@@ -175,12 +185,67 @@ public class EditValidator
 			return "No tech selected";
 		if (player == null)
 			return "No player selected";
+		if (!games.strategy.triplea.Properties.getTechDevelopment(data))
+			return "Technology not enabled";
 		if (!TechTracker.getTechAdvances(player, data).contains(tech))
 			return "Player does not have this tech";
 		if (tech == TechAdvance.INDUSTRIAL_TECHNOLOGY)
 			return "Can not remove " + TechAdvance.INDUSTRIAL_TECHNOLOGY.getName();
 		if (tech == TechAdvance.IMPROVED_SHIPYARDS)
 			return "Can not remove " + TechAdvance.IMPROVED_SHIPYARDS.getName();
+		return result;
+	}
+	
+	public static String validateChangeHitDamage(final GameData data, final IntegerMap<Unit> unitDamageMap, final Territory territory)
+	{
+		String result = null;
+		if (unitDamageMap == null || unitDamageMap.isEmpty())
+			return "Damage map is empty";
+		if ((result = validateTerritoryBasic(data, territory)) != null)
+			return result;
+		final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
+		if (!territory.getUnits().getUnits().containsAll(units))
+			return "Selected Territory does not contain all of the selected units";
+		final PlayerID player = units.iterator().next().getOwner();
+		// all units should be same owner
+		if (!Match.allMatch(units, Matches.unitIsOwnedBy(player)))
+			return "Not all units have the same owner";
+		if (!Match.allMatch(units, Matches.UnitIsTwoHit))
+			return "Not all units have more than one total hitpoints";
+		for (final Unit u : units)
+		{
+			final int dmg = unitDamageMap.getInt(u);
+			// TODO: if we ever implement hitpoints, this will have to change
+			if (dmg < 0 || dmg > 1)
+				return "Damage can not be less than zero or greater than one (if you want to kill the unit, use remove unit)";
+		}
+		return result;
+	}
+	
+	public static String validateChangeBombingDamage(final GameData data, final IntegerMap<Unit> unitDamageMap, final Territory territory)
+	{
+		String result = null;
+		if (unitDamageMap == null || unitDamageMap.isEmpty())
+			return "Damage map is empty";
+		if ((result = validateTerritoryBasic(data, territory)) != null)
+			return result;
+		if (!(games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data) || games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data)))
+			return "Game does not allow bombing damage";
+		final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
+		if (!territory.getUnits().getUnits().containsAll(units))
+			return "Selected Territory does not contain all of the selected units";
+		final PlayerID player = units.iterator().next().getOwner();
+		// all units should be same owner
+		if (!Match.allMatch(units, Matches.unitIsOwnedBy(player)))
+			return "Not all units have the same owner";
+		if (!Match.allMatch(units, Matches.UnitIsFactoryOrCanBeDamaged))
+			return "Not all units can take bombing damage";
+		for (final Unit u : units)
+		{
+			final int dmg = unitDamageMap.getInt(u);
+			if (dmg < 0 || dmg > ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, territory))
+				return "Damage can not be less than zero or greater than the max damage of the unit";
+		}
 		return result;
 	}
 }

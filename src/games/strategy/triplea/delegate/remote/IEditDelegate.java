@@ -19,6 +19,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IPersistentDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.TechAdvance;
+import games.strategy.util.IntegerMap;
 
 import java.util.Collection;
 
@@ -46,6 +47,10 @@ public interface IEditDelegate extends IRemote, IPersistentDelegate
 	public String addTechAdvance(PlayerID player, TechAdvance advance);
 	
 	public String removeTechAdvance(PlayerID player, TechAdvance advance);
+	
+	public String changeUnitHitDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
+	
+	public String changeUnitBombingDamage(final IntegerMap<Unit> unitDamageMap, final Territory territory);
 	
 	public String addComment(String message);
 }

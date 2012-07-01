@@ -6,6 +6,7 @@ import games.strategy.triplea.TripleAUnit;
 import games.strategy.ui.ScrollableTextField;
 import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Triple;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -16,7 +17,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -87,6 +90,53 @@ public class IndividualUnitPanel extends JPanel
 		for (final Unit u : units)
 		{
 			m_entries.add(new SingleUnitPanel(u, m_data, m_uiContext, m_textFieldListener, m_max, 0, showMinAndMax));
+		}
+		layoutEntries();
+	}
+	
+	/**
+	 * For when you do not want things condensed into categories.
+	 * This creates a panel which shows a group of units individually, and lets you put points/hits towards each unit individually.
+	 * It lets you set a max number of points total AND per unit. It can return an IntegerMap with the points per unit.
+	 * 
+	 * @param units
+	 *            mapped to their individual max, then min, then current values
+	 * @param title
+	 * @param data
+	 * @param context
+	 * @param max
+	 * @param showMinAndMax
+	 * @param showSelectAll
+	 * @param optionalListener
+	 */
+	public IndividualUnitPanel(final HashMap<Unit, Triple<Integer, Integer, Integer>> unitsAndTheirMaxMinAndCurrent, final String title, final GameData data, final UIContext context, final int max,
+				final boolean showMinAndMax, final boolean showSelectAll, final ScrollableTextFieldListener optionalListener)
+	{
+		m_data = data;
+		m_uiContext = context;
+		m_title = new JTextArea(title);
+		m_title.setBackground(this.getBackground());
+		m_title.setEditable(false);
+		// m_title.setColumns(15);
+		m_title.setWrapStyleWord(true);
+		m_countOptionalTextFieldListener = optionalListener;
+		setMaxAndShowMaxButton(max);
+		m_showSelectAll = showSelectAll;
+		for (final Entry<Unit, Triple<Integer, Integer, Integer>> entry : unitsAndTheirMaxMinAndCurrent.entrySet())
+		{
+			final int unitMax = entry.getValue().getFirst();
+			int thisMax;
+			if (m_max < 0 && unitMax < 0)
+				thisMax = -1;
+			else if (unitMax < 0)
+				thisMax = m_max;
+			else if (m_max < 0)
+				thisMax = unitMax;
+			else
+				thisMax = Math.min(m_max, unitMax);
+			final int thisMin = Math.max(0, entry.getValue().getSecond());
+			final int thisCurrent = Math.max(thisMin, Math.min(thisMax, entry.getValue().getThird()));
+			m_entries.add(new SingleUnitPanel(entry.getKey(), m_data, m_uiContext, m_textFieldListener, thisMax, thisMin, thisCurrent, showMinAndMax));
 		}
 		layoutEntries();
 	}
@@ -244,6 +294,12 @@ class SingleUnitPanel extends JPanel
 	
 	public SingleUnitPanel(final Unit unit, final GameData data, final UIContext context, final ScrollableTextFieldListener textFieldListener, final int max, final int min, final boolean showMaxAndMin)
 	{
+		this(unit, data, context, textFieldListener, max, min, 0, showMaxAndMin);
+	}
+	
+	public SingleUnitPanel(final Unit unit, final GameData data, final UIContext context, final ScrollableTextFieldListener textFieldListener, final int max, final int min, final int currentValue,
+				final boolean showMaxAndMin)
+	{
 		m_unit = unit;
 		m_data = data;
 		m_context = context;
@@ -255,7 +311,7 @@ class SingleUnitPanel extends JPanel
 		m_textField.setShowMaxAndMin(showMaxAndMin);
 		final TripleAUnit taUnit = TripleAUnit.get(unit);
 		final Image img = m_context.getUnitImageFactory().getImage(m_unit.getType(), m_unit.getOwner(), m_data, taUnit.getUnitDamage() > 0, taUnit.getDisabled());
-		setCount(0);
+		setCount(currentValue);
 		setLayout(new GridBagLayout());
 		final JLabel label = new JLabel(new ImageIcon(img));
 		add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 0, 0));

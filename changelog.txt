@@ -1,4 +1,8 @@
 Changes for 1.6.1
+* Created edit option to change the amount of unit bombing damage on any and all units which can be damaged by bombing. (veqryn)
+
+* Created edit option to change the amount of unit hitpoint damage on any and all units which can take more than 1 point of hit damage. (veqryn)
+
 * Created edit option to remove technology from a player, except that shipyards and industrial technology can never be removed, and any technology that uses triggers is pointless to remove and removing will not undo their effect. (veqryn)
 
 * Created edit option to add technology to a player. (veqryn)
