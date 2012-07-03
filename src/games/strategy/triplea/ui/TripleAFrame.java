@@ -84,6 +84,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -98,6 +99,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -124,6 +127,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -956,37 +960,67 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 					chooserScrollPane = new JScrollPane(panelChooser);
 					panel.add(chooserScrollPane);
 				}
-				final Object[] options = { "Scramble", "None", "Wait" };
-				final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units to scramble to " + scrambleTo.getName(), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-							null, options, options[2]);
-				if (option == JOptionPane.NO_OPTION)
+				final String optionScramble = "Scramble";
+				final String optionNone = "None";
+				final String optionWait = "Wait";
+				final Object[] options = { optionScramble, optionNone, optionWait };
+				final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
+				final JDialog dialog = new JDialog((Frame) getParent(), "Select units to scramble to " + scrambleTo.getName());
+				dialog.setContentPane(optionPane);
+				dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				dialog.setLocationRelativeTo(getParent());
+				dialog.setAlwaysOnTop(true);
+				dialog.pack();
+				dialog.setVisible(true);
+				dialog.requestFocusInWindow();
+				// final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units to scramble to " + scrambleTo.getName(), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
+				optionPane.addPropertyChangeListener(new PropertyChangeListener()
 				{
-					choosers.clear();
-					selection.clear();
-					continueLatch.countDown();
-					return;
-				}
-				else if (option == JOptionPane.CANCEL_OPTION)
-				{
-					try
+					public void propertyChange(final PropertyChangeEvent e)
 					{
-						Thread.sleep(6000);
-					} catch (final InterruptedException e)
-					{
-						e.printStackTrace();
+						if (!dialog.isVisible())
+							return;
+						final String option = ((String) optionPane.getValue());
+						if (option.equals(optionNone))
+						{
+							choosers.clear();
+							selection.clear();
+							dialog.setVisible(false);
+							dialog.removeAll();
+							dialog.dispose();
+							continueLatch.countDown();
+							return;
+						}
+						else if (option.equals(optionScramble))
+						{
+							for (final Tuple<Territory, UnitChooser> terrChooser : choosers)
+							{
+								selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
+							}
+							dialog.setVisible(false);
+							dialog.removeAll();
+							dialog.dispose();
+							continueLatch.countDown();
+						}
+						else
+						// if (option.equals(optionWait))
+						{
+							choosers.clear();
+							selection.clear();
+							dialog.setVisible(false);
+							dialog.removeAll();
+							dialog.dispose();
+							try
+							{
+								Thread.sleep(500);
+							} catch (final InterruptedException e2)
+							{
+								e2.printStackTrace();
+							}
+							run();
+						}
 					}
-					choosers.clear();
-					selection.clear();
-					run();
-				}
-				else
-				{
-					for (final Tuple<Territory, UnitChooser> terrChooser : choosers)
-					{
-						selection.put(terrChooser.getFirst(), terrChooser.getSecond().getSelected());
-					}
-					continueLatch.countDown();
-				}
+				});
 			}
 		});
 		try

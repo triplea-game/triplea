@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Making scramble dialog non-modal so that the user can move the map around before choosing what to scramble. Note that saving the game while in the middle of scrambling can result in weird effects, so it is not recommended. (veqryn)
+
 * Undoing update to java Substance 7.1, in order to maintain compatibility with Java 5. (veqryn)
 
 * Created edit option to change the amount of unit bombing damage on any and all units which can be damaged by bombing. (veqryn)
