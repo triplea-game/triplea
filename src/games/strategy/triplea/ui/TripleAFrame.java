@@ -876,42 +876,72 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				final IndividualUnitPanelGrouped unitPanel = new IndividualUnitPanelGrouped(possibleUnitsToAttackStringForm, m_data, m_uiContext, "Select Units to Suicide Attack using "
 							+ attackResourceToken.getName(), maxNumberOfAttacksAllowed, true, false);
 				unitPanels.add(unitPanel);
-				final Object[] options = { "Attack", "None", "Wait" };
-				final int option = JOptionPane.showOptionDialog(getParent(), unitPanel, "Select units to Suicide Attack using " + attackResourceToken.getName(), JOptionPane.YES_NO_CANCEL_OPTION,
-							JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
-				if (option == JOptionPane.NO_OPTION)
+				final String optionAttack = "Attack";
+				final String optionNone = "None";
+				final String optionWait = "Wait";
+				final Object[] options = { optionAttack, optionNone, optionWait };
+				final JOptionPane optionPane = new JOptionPane(unitPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
+				final JDialog dialog = new JDialog((Frame) getParent(), "Select units to Suicide Attack using " + attackResourceToken.getName());
+				dialog.setContentPane(optionPane);
+				dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				dialog.setLocationRelativeTo(getParent());
+				dialog.setAlwaysOnTop(true);
+				dialog.pack();
+				dialog.setVisible(true);
+				dialog.requestFocusInWindow();
+				// final int option = JOptionPane.showOptionDialog(getParent(), unitPanel, "Select units to Suicide Attack using " + attackResourceToken.getName(), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
+				optionPane.addPropertyChangeListener(new PropertyChangeListener()
 				{
-					unitPanels.clear();
-					selection.clear();
-					continueLatch.countDown();
-					return;
-				}
-				else if (option == JOptionPane.CANCEL_OPTION)
-				{
-					try
+					public void propertyChange(final PropertyChangeEvent e)
 					{
-						Thread.sleep(6000);
-					} catch (final InterruptedException e)
-					{
-						e.printStackTrace();
-					}
-					unitPanels.clear();
-					selection.clear();
-					run();
-				}
-				else
-				{
-					if (unitPanels.size() != 1)
-						throw new IllegalStateException("unitPanels should only contain 1 entry");
-					for (final IndividualUnitPanelGrouped terrChooser : unitPanels)
-					{
-						for (final Entry<String, IntegerMap<Unit>> entry : terrChooser.getSelected().entrySet())
+						if (!dialog.isVisible())
+							return;
+						final String option = ((String) optionPane.getValue());
+						if (option.equals(optionNone))
 						{
-							selection.put(m_data.getMap().getTerritory(entry.getKey()), entry.getValue());
+							unitPanels.clear();
+							selection.clear();
+							dialog.setVisible(false);
+							dialog.removeAll();
+							dialog.dispose();
+							continueLatch.countDown();
+							return;
+						}
+						else if (option.equals(optionAttack))
+						{
+							if (unitPanels.size() != 1)
+								throw new IllegalStateException("unitPanels should only contain 1 entry");
+							for (final IndividualUnitPanelGrouped terrChooser : unitPanels)
+							{
+								for (final Entry<String, IntegerMap<Unit>> entry : terrChooser.getSelected().entrySet())
+								{
+									selection.put(m_data.getMap().getTerritory(entry.getKey()), entry.getValue());
+								}
+							}
+							dialog.setVisible(false);
+							dialog.removeAll();
+							dialog.dispose();
+							continueLatch.countDown();
+						}
+						else
+						// if (option.equals(optionWait))
+						{
+							unitPanels.clear();
+							selection.clear();
+							dialog.setVisible(false);
+							dialog.removeAll();
+							dialog.dispose();
+							try
+							{
+								Thread.sleep(500);
+							} catch (final InterruptedException e2)
+							{
+								e2.printStackTrace();
+							}
+							run();
 						}
 					}
-					continueLatch.countDown();
-				}
+				});
 			}
 		});
 		try
@@ -1054,7 +1084,10 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			{
 				m_mapPanel.centerOn(current);
 				final JPanel panel = new JPanel();
-				panel.setLayout(new FlowLayout());
+				panel.setLayout(new BorderLayout());
+				final JLabel messageLabel = new JLabel(message);
+				messageLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+				panel.add(messageLabel, BorderLayout.NORTH);
 				JScrollPane chooserScrollPane;
 				final JPanel panelChooser = new JPanel();
 				panelChooser.setLayout(new BoxLayout(panelChooser, BoxLayout.Y_AXIS));
@@ -1069,32 +1102,63 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				chooser.setMaxAndShowMaxButton(maxAllowed);
 				panelChooser.add(chooser);
 				chooserScrollPane = new JScrollPane(panelChooser);
-				panel.add(chooserScrollPane);
-				final Object[] options = { "Select", "None", "Wait" };
-				final int option = JOptionPane.showOptionDialog(getParent(), panel, "Select units" + message, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
-				if (option == JOptionPane.NO_OPTION)
+				panel.add(chooserScrollPane, BorderLayout.CENTER);
+				final String optionSelect = "Select";
+				final String optionNone = "None";
+				final String optionWait = "Wait";
+				final Object[] options = { optionSelect, optionNone, optionWait };
+				final JOptionPane optionPane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION, null, options, options[2]);
+				final JDialog dialog = new JDialog((Frame) getParent(), message);
+				dialog.setContentPane(optionPane);
+				dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				dialog.setLocationRelativeTo(getParent());
+				dialog.setAlwaysOnTop(true);
+				dialog.pack();
+				dialog.setVisible(true);
+				dialog.requestFocusInWindow();
+				// final int option = JOptionPane.showOptionDialog(getParent(), panel, message, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[2]);
+				optionPane.addPropertyChangeListener(new PropertyChangeListener()
 				{
-					selection.clear();
-					continueLatch.countDown();
-					return;
-				}
-				else if (option == JOptionPane.CANCEL_OPTION)
-				{
-					try
+					public void propertyChange(final PropertyChangeEvent e)
 					{
-						Thread.sleep(6000);
-					} catch (final InterruptedException e)
-					{
-						e.printStackTrace();
+						if (!dialog.isVisible())
+							return;
+						final String option = ((String) optionPane.getValue());
+						if (option.equals(optionNone))
+						{
+							selection.clear();
+							dialog.setVisible(false);
+							dialog.removeAll();
+							dialog.dispose();
+							continueLatch.countDown();
+							return;
+						}
+						else if (option.equals(optionSelect))
+						{
+							selection.addAll(chooser.getSelected());
+							dialog.setVisible(false);
+							dialog.removeAll();
+							dialog.dispose();
+							continueLatch.countDown();
+						}
+						else
+						// if (option.equals(optionWait))
+						{
+							selection.clear();
+							dialog.setVisible(false);
+							dialog.removeAll();
+							dialog.dispose();
+							try
+							{
+								Thread.sleep(500);
+							} catch (final InterruptedException e2)
+							{
+								e2.printStackTrace();
+							}
+							run();
+						}
 					}
-					selection.clear();
-					run();
-				}
-				else
-				{
-					selection.addAll(chooser.getSelected());
-					continueLatch.countDown();
-				}
+				});
 			}
 		});
 		try

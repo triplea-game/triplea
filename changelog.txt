@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Making kamikaze and interceptor dialogs non-modal so user can move around map while choosing. Again, saving during the dialog then reloading might have odd effects. (veqryn)
+
 * Making scramble dialog non-modal so that the user can move the map around before choosing what to scramble. Note that saving the game while in the middle of scrambling can result in weird effects, so it is not recommended. (veqryn)
 
 * Undoing update to java Substance 7.1, in order to maintain compatibility with Java 5. (veqryn)
