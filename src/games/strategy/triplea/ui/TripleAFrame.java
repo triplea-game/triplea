@@ -939,7 +939,13 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			{
 				m_mapPanel.centerOn(scrambleTo);
 				final JPanel panel = new JPanel();
-				panel.setLayout(new FlowLayout());
+				panel.setLayout(new BorderLayout());
+				final JLabel whereTo = new JLabel("Scramble To: " + scrambleTo.getName());
+				whereTo.setFont(new Font("Arial", Font.ITALIC, 12));
+				panel.add(whereTo, BorderLayout.NORTH);
+				final JPanel panel2 = new JPanel();
+				panel2.setBorder(BorderFactory.createEmptyBorder());
+				panel2.setLayout(new FlowLayout());
 				for (final Territory from : possibleScramblers.keySet())
 				{
 					JScrollPane chooserScrollPane;
@@ -958,8 +964,9 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 					choosers.add(new Tuple<Territory, UnitChooser>(from, chooser));
 					panelChooser.add(chooser);
 					chooserScrollPane = new JScrollPane(panelChooser);
-					panel.add(chooserScrollPane);
+					panel2.add(chooserScrollPane);
 				}
+				panel.add(panel2, BorderLayout.CENTER);
 				final String optionScramble = "Scramble";
 				final String optionNone = "None";
 				final String optionWait = "Wait";
