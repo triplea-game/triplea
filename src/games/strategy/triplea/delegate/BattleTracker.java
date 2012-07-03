@@ -89,6 +89,8 @@ public class BattleTracker implements java.io.Serializable
 	// these territories have had battleships bombard during a naval invasion
 	// used to make sure that the same battleship doesn't bombard twice
 	private final Set<Territory> m_bombardedFromTerritories = new HashSet<Territory>();
+	// list of territory we have conquered in a FinishedBattle and where from and if amphibious
+	private final HashMap<Territory, Map<Territory, Collection<Unit>>> m_finishedBattlesUnitAttackFromMap = new HashMap<Territory, Map<Territory, Collection<Unit>>>();
 	// things like kamikaze suicide attacks disallow bombarding from that sea zone for that turn
 	private final Set<Territory> m_noBombardAllowed = new HashSet<Territory>();
 	private final Map<Territory, Collection<Unit>> m_defendingAirThatCanNotLand = new HashMap<Territory, Collection<Unit>>();
@@ -160,6 +162,11 @@ public class BattleTracker implements java.io.Serializable
 		m_noBombardAllowed.add(t);
 	}
 	
+	public HashMap<Territory, Map<Territory, Collection<Unit>>> getFinishedBattlesUnitAttackFromMap()
+	{
+		return m_finishedBattlesUnitAttackFromMap;
+	}
+	
 	public void addRelationshipChangesThisTurn(final PlayerID p1, final PlayerID p2, final RelationshipType oldRelation, final RelationshipType newRelation)
 	{
 		
@@ -216,7 +223,9 @@ public class BattleTracker implements java.io.Serializable
 		{
 			if (FinishedBattle.class.isAssignableFrom(battle.getClass()))
 			{
-				((FinishedBattle) battle).fight(bridge);
+				final FinishedBattle finished = (FinishedBattle) battle;
+				m_finishedBattlesUnitAttackFromMap.put(finished.getTerritory(), finished.getAttackingFromMap());
+				finished.fight(bridge);
 			}
 		}
 	}
@@ -390,6 +399,7 @@ public class BattleTracker implements java.io.Serializable
 			if (nonFight == null)
 			{
 				nonFight = new FinishedBattle(current, id, this, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
+				nonFight.addAttackChange(route, units, null);
 				m_pendingBattles.add(nonFight);
 				getBattleRecords(data).addBattle(id, nonFight.getBattleID(), current, nonFight.getBattleType(), data);
 				// nonFight.fight(bridge);
@@ -419,6 +429,7 @@ public class BattleTracker implements java.io.Serializable
 				if (nonFight == null)
 				{
 					nonFight = new FinishedBattle(route.getEnd(), id, this, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
+					nonFight.addAttackChange(route, units, null);
 					m_pendingBattles.add(nonFight);
 					getBattleRecords(data).addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType(), data);
 				}
@@ -448,11 +459,12 @@ public class BattleTracker implements java.io.Serializable
 	public void takeOver(final Territory territory, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker, final Collection<Unit> arrivingUnits)
 	{
 		final GameData data = bridge.getData();
+		final Collection<Unit> arrivedUnits = (arrivingUnits == null ? null : new ArrayList<Unit>(arrivingUnits));
 		final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 		final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
 		final boolean isTerritoryOwnerAnEnemy = relationshipTracker.canTakeOverOwnedTerritory(id, territory.getOwner()); // .isAtWar(id, territory.getOwner());
 		// If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers have more than just transports. If they don't, exit here.
-		if (territory.isWater() && arrivingUnits != null)
+		if (territory.isWater() && arrivedUnits != null)
 		{
 			int totalMatches = 0;
 			// 0 production waters aren't to be taken over
@@ -461,18 +473,18 @@ public class BattleTracker implements java.io.Serializable
 				return;
 			// Total Attacking Sea units = all units - land units - air units - submerged subs
 			// Also subtract transports & subs (if they can't control sea zones)
-			totalMatches = arrivingUnits.size() - Match.countMatches(arrivingUnits, Matches.UnitIsLand) - Match.countMatches(arrivingUnits, Matches.UnitIsAir)
-						- Match.countMatches(arrivingUnits, Matches.unitIsSubmerged(data));
+			totalMatches = arrivedUnits.size() - Match.countMatches(arrivedUnits, Matches.UnitIsLand) - Match.countMatches(arrivedUnits, Matches.UnitIsAir)
+						- Match.countMatches(arrivedUnits, Matches.unitIsSubmerged(data));
 			// If transports are restricted from controlling sea zones, subtract them
 			final CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<Unit>();
 			transportsCanNotControl.add(Matches.UnitIsTransportAndNotDestroyer);
 			transportsCanNotControl.add(Matches.UnitIsTransportButNotCombatTransport);
 			if (!games.strategy.triplea.Properties.getTransportControlSeaZone(data))
-				totalMatches -= Match.countMatches(arrivingUnits, transportsCanNotControl);
+				totalMatches -= Match.countMatches(arrivedUnits, transportsCanNotControl);
 			// TODO check if istrn and NOT isDD
 			// If subs are restricted from controlling sea zones, subtract them
 			if (games.strategy.triplea.Properties.getSubControlSeaZoneRestricted(data))
-				totalMatches -= Match.countMatches(arrivingUnits, Matches.UnitIsSub);
+				totalMatches -= Match.countMatches(arrivedUnits, Matches.UnitIsSub);
 			if (totalMatches == 0)
 				return;
 		}
@@ -550,6 +562,8 @@ public class BattleTracker implements java.io.Serializable
 					{
 						final Change changeVP = ChangeFactory.attachmentPropertyChange(pa, (capturedPUCount + pa.getCaptureVps()), "captureVps");
 						bridge.addChange(changeVP);
+						if (changeTracker != null)
+							changeTracker.addChange(changeVP);
 					}
 				}
 				final Change remove = ChangeFactory.changeResourcesChange(whoseCapital, PUs, -capturedPUCount);
@@ -660,7 +674,7 @@ public class BattleTracker implements java.io.Serializable
 				throw new IllegalStateException("Bombing Raids should be dealt with first! Be sure the battle has dependencies set correctly!");
 			}
 		}
-		captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker, arrivingUnits);
+		captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker, arrivedUnits);
 		// is this territory our capitol or a capitol of our ally
 		// Also check to make sure playerAttachment even HAS a capital to fix abend
 		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
@@ -691,9 +705,9 @@ public class BattleTracker implements java.io.Serializable
 		}
 		// say they were in combat
 		// if the territory being taken over is water, then do not say any land units were in combat (they may want to unload from the transport and attack)
-		if (Matches.TerritoryIsWater.match(territory) && arrivingUnits != null)
-			arrivingUnits.removeAll(Match.getMatches(arrivingUnits, Matches.UnitIsLand));
-		markWasInCombat(arrivingUnits, bridge, changeTracker);
+		if (Matches.TerritoryIsWater.match(territory) && arrivedUnits != null)
+			arrivedUnits.removeAll(Match.getMatches(arrivedUnits, Matches.UnitIsLand));
+		markWasInCombat(arrivedUnits, bridge, changeTracker);
 	}
 	
 	public static void captureOrDestroyUnits(final Territory territory, final PlayerID id, final PlayerID newOwner, final IDelegateBridge bridge, final UndoableMove changeTracker,
@@ -980,6 +994,7 @@ public class BattleTracker implements java.io.Serializable
 	
 	public void clear()
 	{
+		m_finishedBattlesUnitAttackFromMap.clear();
 		m_bombardedFromTerritories.clear();
 		m_pendingBattles.clear();
 		m_blitzed.clear();

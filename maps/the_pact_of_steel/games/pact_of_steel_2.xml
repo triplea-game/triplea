@@ -4844,6 +4844,11 @@
 				<property name="Kamikaze Suicide Attacks Done By Current Territory Owner" value="false" editable="false">
 						<boolean/>
 				</property>
+				
+						<!-- Kamikaze Suicide Attacks Only Where Battles Are has the attacks only occur only when there are amphibious battles from that territory, or a battle in that territory -->
+				<property name="Kamikaze Suicide Attacks Only Where Battles Are" value="false" editable="false">
+						<boolean/>
+				</property>
 
 				<property name="Battleships repair at end of round" value="true" editable="true">
 						<boolean/>

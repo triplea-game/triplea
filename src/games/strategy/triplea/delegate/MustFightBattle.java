@@ -212,10 +212,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			m_attackingFromMap.put(attackingFrom, new ArrayList<Unit>());
 		}
-		{
-			final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
-			attackingFromMapUnits.addAll(attackingUnits);
-		}
+		final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
+		attackingFromMapUnits.addAll(attackingUnits);
+		
 		// are we amphibious
 		if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(attackingUnits, Matches.UnitIsLand))
 		{

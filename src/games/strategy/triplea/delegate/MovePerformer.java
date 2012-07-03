@@ -174,7 +174,8 @@ public class MovePerformer implements Serializable
 				mustFightThrough.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data));
 				mustFightThrough.add(Matches.territoryHasNonSubmergedEnemyUnits(id, data));
 				mustFightThrough.add(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id));
-				final Collection<Unit> arrived = Util.intersection(units, arrivingUnits[0]);
+				final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits[0]));
+				final Collection<Unit> arrivedCopyForBattles = new ArrayList<Unit>(arrived);
 				final Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
 				markTransportsMovement(arrived, transporting, route);
 				if (route.someMatch(mustFightThrough) && arrived.size() != 0)
@@ -221,7 +222,7 @@ public class MovePerformer implements Serializable
 								targetedAttack = true;
 								final HashMap<Unit, HashSet<Unit>> targets = new HashMap<Unit, HashSet<Unit>>();
 								targets.put(target, new HashSet<Unit>(arrived));
-								getBattleTracker().addBattle(route, arrived, bombing, id, m_bridge, m_currentMove, targets, false);
+								getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove, targets, false);
 							}
 						}
 					}
@@ -236,7 +237,7 @@ public class MovePerformer implements Serializable
 					}
 					if (!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
 					{
-						getBattleTracker().addBattle(route, arrived, bombing, id, m_bridge, m_currentMove);
+						getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove);
 					}
 					if (!ignoreBattle && MoveDelegate.isNonCombat(m_bridge) && !targetedAttack && route.allMatch(Matches.isTerritoryEnemy(id, data).invert())
 								&& route.allMatch(Matches.territoryHasNoEnemyUnits(id, data)) && Match.someMatch(arrived, Matches.UnitIsLand)
@@ -247,7 +248,7 @@ public class MovePerformer implements Serializable
 									Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
 									Matches.TerritoryIsBlitzable(id, data))))
 						{
-							getBattleTracker().takeOver(t, id, bridge, m_currentMove, arrived);
+							getBattleTracker().takeOver(t, id, bridge, m_currentMove, arrivedCopyForBattles);
 						}
 					}
 				}

@@ -33,11 +33,13 @@ import games.strategy.util.CompositeMatch;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.Match;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Battle in which no fighting occurs. <b>
@@ -51,6 +53,9 @@ import java.util.Map;
 public class NonFightingBattle extends AbstractBattle
 {
 	private static final long serialVersionUID = -1699534010648145123L;
+	private final Set<Territory> m_attackingFrom = new HashSet<Territory>();
+	private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
+	private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>(); // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
 	
 	public NonFightingBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final GameData data)
 	{
@@ -67,6 +72,22 @@ public class NonFightingBattle extends AbstractBattle
 				m_dependentUnits.get(unit).addAll(addedTransporting.get(unit));
 			else
 				m_dependentUnits.put(unit, addedTransporting.get(unit));
+		}
+		final Territory attackingFrom = route.getTerritoryBeforeEnd();
+		m_attackingFrom.add(attackingFrom);
+		m_attackingUnits.addAll(units);
+		if (m_attackingFromMap.get(attackingFrom) == null)
+		{
+			m_attackingFromMap.put(attackingFrom, new ArrayList<Unit>());
+		}
+		final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
+		attackingFromMapUnits.addAll(units);
+		// are we amphibious
+		if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(units, Matches.UnitIsLand))
+		{
+			m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
+			m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.UnitIsLand));
+			m_isAmphibious = true;
 		}
 		return ChangeFactory.EMPTY_CHANGE;
 	}
@@ -103,6 +124,24 @@ public class NonFightingBattle extends AbstractBattle
 		m_isOver = true;
 	}
 	
+	/**
+	 * @return territories where there are amphibious attacks
+	 */
+	public Collection<Territory> getAmphibiousAttackTerritories()
+	{
+		return m_amphibiousAttackFrom;
+	}
+	
+	public Collection<Territory> getAttackingFrom()
+	{
+		return m_attackingFrom;
+	}
+	
+	public Map<Territory, Collection<Unit>> getAttackingFromMap()
+	{
+		return m_attackingFromMap;
+	}
+	
 	boolean hasAttackingUnits()
 	{
 		final CompositeMatch<Unit> attackingLand = new CompositeMatchAnd<Unit>();
@@ -115,6 +154,38 @@ public class NonFightingBattle extends AbstractBattle
 	@Override
 	public void removeAttack(final Route route, final Collection<Unit> units)
 	{
+		m_attackingUnits.removeAll(units);
+		// the route could be null, in the case of a unit in a territory where a sub is submerged.
+		if (route == null)
+			return;
+		final Territory attackingFrom = route.getTerritoryBeforeEnd();
+		Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
+		// handle possible null pointer
+		if (attackingFromMapUnits == null)
+		{
+			attackingFromMapUnits = new ArrayList<Unit>();
+		}
+		attackingFromMapUnits.removeAll(units);
+		if (attackingFromMapUnits.isEmpty())
+		{
+			m_attackingFrom.remove(attackingFrom);
+		}
+		// deal with amphibious assaults
+		if (attackingFrom.isWater())
+		{
+			if (route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(units, Matches.UnitIsLand))
+			{
+				m_amphibiousLandAttackers.removeAll(Match.getMatches(units, Matches.UnitIsLand));
+			}
+			// if none of the units is a land unit, the attack from
+			// that territory is no longer an amphibious assault
+			if (Match.noneMatch(attackingFromMapUnits, Matches.UnitIsLand))
+			{
+				m_amphibiousAttackFrom.remove(attackingFrom);
+				// do we have any amphibious attacks left?
+				m_isAmphibious = !m_amphibiousAttackFrom.isEmpty();
+			}
+		}
 		final Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
 		while (dependents.hasNext())
 		{

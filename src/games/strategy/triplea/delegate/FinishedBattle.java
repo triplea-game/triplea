@@ -13,13 +13,16 @@ import games.strategy.triplea.delegate.dataObjects.BattleRecord;
 import games.strategy.triplea.delegate.dataObjects.BattleRecord.BattleResultDescription;
 import games.strategy.triplea.oddsCalculator.ta.BattleResults;
 import games.strategy.util.IntegerMap;
+import games.strategy.util.Match;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A sort of scripted battle made for blitzed/conquered territories without a fight.
@@ -31,6 +34,9 @@ import java.util.Map;
 public class FinishedBattle extends AbstractBattle
 {
 	private static final long serialVersionUID = -5852495231826940879L;
+	private final Set<Territory> m_attackingFrom = new HashSet<Territory>();
+	private final Collection<Territory> m_amphibiousAttackFrom = new ArrayList<Territory>();
+	private final Map<Territory, Collection<Unit>> m_attackingFromMap = new HashMap<Territory, Collection<Unit>>(); // maps Territory-> units (stores a collection of who is attacking from where, needed for undoing moves)
 	
 	public FinishedBattle(final Territory battleSite, final PlayerID attacker, final BattleTracker battleTracker, final boolean isBombingRun, final BattleType battleType, final GameData data,
 				final BattleResultDescription battleResultDescription, final WhoWon whoWon, final Collection<Unit> attackingUnits)
@@ -38,7 +44,6 @@ public class FinishedBattle extends AbstractBattle
 		super(battleSite, attacker, battleTracker, isBombingRun, battleType, data);
 		m_battleResultDescription = battleResultDescription;
 		m_whoWon = whoWon;
-		m_attackingUnits.addAll(attackingUnits);
 	}
 	
 	public void setDefendingUnits(final List<Unit> defendingUnits)
@@ -73,13 +78,60 @@ public class FinishedBattle extends AbstractBattle
 			else
 				m_dependentUnits.put(unit, addedTransporting.get(unit));
 		}
+		final Territory attackingFrom = route.getTerritoryBeforeEnd();
+		m_attackingFrom.add(attackingFrom);
 		m_attackingUnits.addAll(units);
+		if (m_attackingFromMap.get(attackingFrom) == null)
+		{
+			m_attackingFromMap.put(attackingFrom, new ArrayList<Unit>());
+		}
+		final Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
+		attackingFromMapUnits.addAll(units);
+		// are we amphibious
+		if (route.getStart().isWater() && route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(units, Matches.UnitIsLand))
+		{
+			m_amphibiousAttackFrom.add(route.getTerritoryBeforeEnd());
+			m_amphibiousLandAttackers.addAll(Match.getMatches(units, Matches.UnitIsLand));
+			m_isAmphibious = true;
+		}
 		return ChangeFactory.EMPTY_CHANGE;
 	}
 	
 	@Override
 	public void removeAttack(final Route route, final Collection<Unit> units)
 	{
+		m_attackingUnits.removeAll(units);
+		// the route could be null, in the case of a unit in a territory where a sub is submerged.
+		if (route == null)
+			return;
+		final Territory attackingFrom = route.getTerritoryBeforeEnd();
+		Collection<Unit> attackingFromMapUnits = m_attackingFromMap.get(attackingFrom);
+		// handle possible null pointer
+		if (attackingFromMapUnits == null)
+		{
+			attackingFromMapUnits = new ArrayList<Unit>();
+		}
+		attackingFromMapUnits.removeAll(units);
+		if (attackingFromMapUnits.isEmpty())
+		{
+			m_attackingFrom.remove(attackingFrom);
+		}
+		// deal with amphibious assaults
+		if (attackingFrom.isWater())
+		{
+			if (route.getEnd() != null && !route.getEnd().isWater() && Match.someMatch(units, Matches.UnitIsLand))
+			{
+				m_amphibiousLandAttackers.removeAll(Match.getMatches(units, Matches.UnitIsLand));
+			}
+			// if none of the units is a land unit, the attack from
+			// that territory is no longer an amphibious assault
+			if (Match.noneMatch(attackingFromMapUnits, Matches.UnitIsLand))
+			{
+				m_amphibiousAttackFrom.remove(attackingFrom);
+				// do we have any amphibious attacks left?
+				m_isAmphibious = !m_amphibiousAttackFrom.isEmpty();
+			}
+		}
 		final Iterator<Unit> dependents = m_dependentUnits.keySet().iterator();
 		while (dependents.hasNext())
 		{
@@ -87,7 +139,6 @@ public class FinishedBattle extends AbstractBattle
 			final Collection<Unit> dependent = m_dependentUnits.get(dependence);
 			dependent.removeAll(units);
 		}
-		m_attackingUnits.removeAll(units);
 	}
 	
 	@Override
@@ -114,6 +165,24 @@ public class FinishedBattle extends AbstractBattle
 				m_battleTracker.removeBattle(this);
 			}
 		}
+	}
+	
+	/**
+	 * @return territories where there are amphibious attacks
+	 */
+	public Collection<Territory> getAmphibiousAttackTerritories()
+	{
+		return m_amphibiousAttackFrom;
+	}
+	
+	public Collection<Territory> getAttackingFrom()
+	{
+		return m_attackingFrom;
+	}
+	
+	public Map<Territory, Collection<Unit>> getAttackingFromMap()
+	{
+		return m_attackingFromMap;
 	}
 	
 }

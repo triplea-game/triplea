@@ -6436,6 +6436,10 @@
 				<property name="Kamikaze Suicide Attacks Done By Current Territory Owner" value="false" editable="false">
 						<boolean/>
 				</property>
+				
+				<property name="Kamikaze Suicide Attacks Only Where Battles Are" value="true" editable="false">
+						<boolean/>
+				</property>
 
 				<property name="Battleships repair at end of round" value="false" editable="false">
 						<boolean/>
@@ -7061,6 +7065,7 @@ These changes to units are things other than price/movement which you can see in
 <br>3.1
 <br>Created game option to force tech tokens to be removed after rolling them, regardless of success.
 <br>Preventing British and UK_Pacific from both rolling for Warbonds. Instead only British will roll, unless their capital is taken, then UK Pacific will.
+<br>Preventing Kamikaze Suicide Attacks from occuring all the time, now should only occur when there is a battle or an amphibious attack from that sea zone.
 <br>
 <br>3.0
 <br>Added all technology to Global 1940.

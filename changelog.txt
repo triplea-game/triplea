@@ -1,4 +1,8 @@
 Changes for 1.6.1
+* Created new game option, "Kamikaze Suicide Attacks Only Where Battles Are", and implemented it. (veqryn)
+
+* Fixed bug where land units would disappear when conquering a sea zone. (veqryn)
+
 * Making kamikaze and interceptor dialogs non-modal so user can move around map while choosing. Again, saving during the dialog then reloading might have odd effects. (veqryn)
 
 * Making scramble dialog non-modal so that the user can move the map around before choosing what to scramble. Note that saving the game while in the middle of scrambling can result in weird effects, so it is not recommended. (veqryn)

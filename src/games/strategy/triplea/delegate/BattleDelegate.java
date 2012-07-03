@@ -1073,6 +1073,8 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		final Match<Unit> canBeAttackedDefault = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_player), Matches.UnitIsSea,
 					Matches.UnitIsNotTransportButCouldBeCombatTransport, Matches.UnitIsNotSub);
 		
+		final boolean onlyWhereThereAreBattlesOrAmphibious = games.strategy.triplea.Properties.getKamikazeSuicideAttacksOnlyWhereBattlesAre(data);
+		final Collection<Territory> pendingBattles = m_battleTracker.getPendingBattleSites(false);
 		// create a list of all kamikaze zones, listed by enemy
 		final HashMap<PlayerID, Collection<Territory>> kamikazeZonesByEnemy = new HashMap<PlayerID, Collection<Territory>>();
 		for (final Territory t : data.getMap().getTerritories())
@@ -1101,6 +1103,40 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			{
 				if (Match.noneMatch(t.getUnits().getUnits(), Matches.unitIsOwnedBy(m_player)))
 					continue;
+				if (onlyWhereThereAreBattlesOrAmphibious)
+				{
+					// if no battle or amphibious from here, ignore it
+					if (!pendingBattles.contains(t))
+					{
+						if (!Matches.TerritoryIsWater.match(t))
+							continue;
+						boolean amphib = false;
+						final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, Matches.TerritoryIsLand);
+						for (final Territory neighbor : landNeighbors)
+						{
+							final IBattle battle = m_battleTracker.getPendingBattle(neighbor, false);
+							if (battle == null)
+							{
+								final Map<Territory, Collection<Unit>> whereFrom = m_battleTracker.getFinishedBattlesUnitAttackFromMap().get(neighbor);
+								if (whereFrom != null && whereFrom.containsKey(t))
+								{
+									amphib = true;
+									break;
+								}
+								continue;
+							}
+							if (battle.isAmphibious() &&
+										((battle instanceof MustFightBattle && ((MustFightBattle) battle).getAmphibiousAttackTerritories().contains(t))
+													|| (battle instanceof NonFightingBattle && ((NonFightingBattle) battle).getAmphibiousAttackTerritories().contains(t))))
+							{
+								amphib = true;
+								break;
+							}
+						}
+						if (amphib == false)
+							continue;
+					}
+				}
 				Collection<Territory> currentTerrs = kamikazeZonesByEnemy.get(owner);
 				if (currentTerrs == null)
 					currentTerrs = new ArrayList<Territory>();

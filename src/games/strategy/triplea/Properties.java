@@ -835,6 +835,11 @@ public class Properties implements Constants
 		return data.getProperties().get(REMOVE_ALL_TECH_TOKENS_AT_END_OF_TURN, false);
 	}
 	
+	public static boolean getKamikazeSuicideAttacksOnlyWhereBattlesAre(final GameData data)
+	{
+		return data.getProperties().get(KAMIKAZE_SUICIDE_ATTACKS_ONLY_WHERE_BATTLES_ARE, false);
+	}
+	
 	private Properties()
 	{
 	}
