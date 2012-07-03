@@ -260,7 +260,7 @@ public class MovePerformer implements Serializable
 				Change add = null;
 				if (route.getStart() != null && route.getEnd() != null)
 				{
-					ChangeFactory.addUnits(route.getEnd(), arrived);
+					// ChangeFactory.addUnits(route.getEnd(), arrived);
 					remove = ChangeFactory.removeUnits(route.getStart(), units);
 					add = ChangeFactory.addUnits(route.getEnd(), arrived);
 					change.add(add, remove);
