@@ -325,6 +325,9 @@ public class HistoryLog extends JFrame
 						else if (title.indexOf("now being played by") != -1)
 						{
 						}
+						else if (title.indexOf("Turn Summary") != -1)
+						{
+						}
 						else if (title.indexOf("Setting uses for triggers used") != -1)
 						{
 						}

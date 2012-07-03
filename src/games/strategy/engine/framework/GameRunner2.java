@@ -192,7 +192,8 @@ public class GameRunner2
 	public static String getDefaultLookAndFeel()
 	{
 		final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-		String defaultLookAndFeel = "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel";
+		// String defaultLookAndFeel = "org.pushingpixels.substance.api.skin.SubstanceGraphiteLookAndFeel";
+		String defaultLookAndFeel = "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel";
 		// macs are already beautiful
 		if (GameRunner.isMac())
 		{
