@@ -1613,7 +1613,7 @@
 <result resourceOrUnit="Battleship" quantity="1"/>
 </productionRule>
 <productionRule name="buyGeneral">
-<cost resource="PUs" quantity="15"/>
+<cost resource="PUs" quantity="14"/>
 <result resourceOrUnit="General" quantity="1"/>
 </productionRule>
 <productionRule name="buyMortella_Tower">
@@ -1625,7 +1625,7 @@
 <result resourceOrUnit="Fortress" quantity="1"/>
 </productionRule>
 <productionRule name="buyEncampment">
-<cost resource="PUs" quantity="11"/>
+<cost resource="PUs" quantity="10"/>
 <result resourceOrUnit="Encampment" quantity="1"/>
 </productionRule>
 <productionRule name="buyCapital">
@@ -1633,11 +1633,11 @@
 <result resourceOrUnit="Capital" quantity="1"/>
 </productionRule>
 <productionRule name="buyEncampmentEngland">
-<cost resource="PUs" quantity="9"/>
+<cost resource="PUs" quantity="8"/>
 <result resourceOrUnit="Encampment" quantity="1"/>
 </productionRule>
 <productionRule name="buyGeneralEngland">
-<cost resource="PUs" quantity="13"/>
+<cost resource="PUs" quantity="11"/>
 <result resourceOrUnit="General" quantity="1"/>
 </productionRule>
 <!--<productionRule name="buybattleship">
@@ -7661,8 +7661,8 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;2/1/2/9 Corvette . First Strike, Can Retreat (Is Sub), TCapacity: 1
 &lt;br&gt;3/2/2/12 Frigate . Supportable, Bombard, TC: 1
 &lt;br&gt;4/4/2/21 Battleship . 2 Hit Points (doesn't repair), Supportable, Bombard, TC: 1
-&lt;br&gt;0/0/0/11 Encampment . Can Produce Units, Can be Captured
-&lt;br&gt;0/0/1/15 General . Can Produce Units on Territory you owned at beginning of turn, Can be Captured, Can be Transported, TCost=3
+&lt;br&gt;0/0/0/10 Encampment . Can Produce Units, Can be Captured
+&lt;br&gt;0/0/1/14 General . Can Produce Units on Territory you owned at beginning of turn, Can be Captured, Can be Transported, TCost=3
 &lt;br&gt;
 &lt;br&gt;Special/Extra Units:
 &lt;br&gt;0/2/0/3 Mortella Tower
@@ -7786,7 +7786,8 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;Tweaking of Political rules.
 &lt;br&gt;Increasing Mortar defense by 1, and increasing cost by 1.
 &lt;br&gt;Decreased Fortress cost by 1.
-&lt;br&gt;Increasing Marshal movement by 1 (to 3).
+&lt;br&gt;Increasing Marshal movement by 1 (to 3) so that they match the other special cavalry.
+&lt;br&gt;Decreasing cost of Generals and Encampments by 1.
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 3.9.x - 4.0 changes:
