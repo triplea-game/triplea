@@ -221,6 +221,7 @@ public interface Constants
 	public static final String SUBS_CAN_END_NONCOMBAT_MOVE_WITH_ENEMIES = "Subs Can End NonCombat Move With Enemies";
 	public static final String REMOVE_ALL_TECH_TOKENS_AT_END_OF_TURN = "Remove All Tech Tokens At End Of Turn";
 	public static final String KAMIKAZE_SUICIDE_ATTACKS_ONLY_WHERE_BATTLES_ARE = "Kamikaze Suicide Attacks Only Where Battles Are";
+	public static final String SUBMARINES_PREVENT_UNESCORTED_AMPHIBIOUS_ASSAULTS = "Submarines Prevent Unescorted Amphibious Assaults";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

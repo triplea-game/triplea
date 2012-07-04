@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Created new game option, "Submarines Prevent Unescorted Amphibious Assaults", that prevent unescorted transports from conducting amphibious assaults. (veqryn)
+
 * Created new game option, "Kamikaze Suicide Attacks Only Where Battles Are", and implemented it. (veqryn)
 
 * Fixed bug where land units would disappear when conquering a sea zone. (veqryn)

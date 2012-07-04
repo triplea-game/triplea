@@ -5127,6 +5127,11 @@
 				<property name="Transport Control Sea Zone" value="false" editable="false">
 						<boolean/>
 				</property>
+				
+						<!-- Submarines stop transports from doing amphibious assault unless there is at least 1 owned warship in the sea zone -->
+				<property name="Submarines Prevent Unescorted Amphibious Assaults" value="false" editable="false">
+						<boolean/>
+				</property>
 
 				<property name="Ignore Sub In Movement" value="true" editable="false">
 						<boolean/>

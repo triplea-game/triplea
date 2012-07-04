@@ -6680,6 +6680,10 @@
 						<boolean/>
 				</property>
 
+				<property name="Submarines Prevent Unescorted Amphibious Assaults" value="true" editable="false">
+						<boolean/>
+				</property>
+
 				<property name="Ignore Sub In Movement" value="true" editable="false">
 						<boolean/>
 				</property>
@@ -6826,7 +6830,8 @@ Paratroopers tech enables a second combat movement phase which happens right aft
 <b>Disclaimer</b><br>
 The game is not meant to take over your responsibility in knowing the rules. For example, the game engine is not always going to restrict or allow certain attacks. 
 It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. 
-Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br><br>
+Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br>
+You must always validate your own movement, especially air movement at sea.  The engine is not perfect.<br>
 
 <b>Edit Mode</b><br>
 When not yet at war, you may ask for permission to move through a canal, and if granted, use Edit Mode to move the units.<br>
@@ -6834,7 +6839,7 @@ If you ever need to create new UK units, always create "British" units, do not c
 The Warbonds technology will give the PUs to the British, please use edit mode if you want some of it to go to UK Pacific.<br>
 <br>
 
-<b>Stuff Left TODO</b><br>
+<b>Rules the engine does not do, but you must follow:</b><br>
 * Do not allow blitzing or movement through Friendly Neutrals.<br>
 * Air units may not land in or move through Friendly Neutrals, including the same turn they are captured.<br>
 * Friendly Neutrals can not be 'captured' with an AA Gun, only by land units with an attack power.<br>
@@ -7001,12 +7006,12 @@ When a country moves into a regular or non-friendly neutral during the combat mo
 <b>Kamikaze Attacks</b><br>
 Japan starts the game with 6 attack tokens, and may begin doing Kamikaze Attacks at the start of the game.<br>
 These attacks can only be done in sea zones that contain the Kamikaze symbol [the sea zones surrounding: Japan, Okinawa, Iwo Jima, Formosa, and the Marianas].<br>
-At the end of Japan's enemy's combat-move phase, Japan may target any surface warship in a Kamikaze zone for one or more Kamikaze attacks, ONLY if the enemy is conducting an Amphibious Assault from that sea zone.<br>
+At the end of Japan's enemy's combat-move phase, Japan may target any surface warship in a Kamikaze zone for one or more Kamikaze attacks, ONLY if the enemy attacking Japanese units or is conducting an Amphibious Assault from that sea zone.<br>
 For each attack, a die is rolled, and a 2 or less is considered a hit. Casualties are removed immediately, and do not participate in any battles. Kamikaze attacks prevent bombardment as well.<br>
 <br><br><hr><br>
 
 <b>Submarines Prevent Unescorted Transports From Making Amphibious Assaults</b><br>
-In any Sea Zone containing an enemy submarine, but not containing an Owned surface warship, the submarine will prevent the offloading of troops for an amphibious assault. 
+In any Sea Zone containing an enemy submarine, but not containing an owned warship, the submarine will prevent the offloading of troops for an amphibious assault. 
 <br><br><hr><br>
 
 
@@ -7066,6 +7071,7 @@ These changes to units are things other than price/movement which you can see in
 <br>Created game option to force tech tokens to be removed after rolling them, regardless of success.
 <br>Preventing British and UK_Pacific from both rolling for Warbonds. Instead only British will roll, unless their capital is taken, then UK Pacific will.
 <br>Preventing Kamikaze Suicide Attacks from occuring all the time, now should only occur when there is a battle or an amphibious attack from that sea zone.
+<br>Created game option that prevent unescorted transports from conducting amphibious assaults.
 <br>
 <br>3.0
 <br>Added all technology to Global 1940.

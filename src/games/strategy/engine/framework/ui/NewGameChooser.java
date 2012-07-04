@@ -85,7 +85,7 @@ public class NewGameChooser extends JDialog
 		mainSplit.setLeftComponent(leftPanel);
 		mainSplit.setRightComponent(m_infoPanel);
 		mainSplit.setBorder(null);
-		listScroll.setMinimumSize(new Dimension(150, 0));
+		listScroll.setMinimumSize(new Dimension(200, 0));
 		final JPanel buttonsPanel = new JPanel();
 		add(buttonsPanel, BorderLayout.SOUTH);
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
@@ -107,7 +107,7 @@ public class NewGameChooser extends JDialog
 	public static NewGameChooserEntry chooseGame(final Frame parent, final String defaultGameName)
 	{
 		final NewGameChooser chooser = new NewGameChooser(parent);
-		chooser.setSize(700, 500);
+		chooser.setSize(780, 570);
 		chooser.setLocationRelativeTo(parent);
 		if (defaultGameName != null)
 		{

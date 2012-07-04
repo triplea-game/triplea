@@ -840,6 +840,11 @@ public class Properties implements Constants
 		return data.getProperties().get(KAMIKAZE_SUICIDE_ATTACKS_ONLY_WHERE_BATTLES_ARE, false);
 	}
 	
+	public static boolean getSubmarinesPreventUnescortedAmphibiousAssaults(final GameData data)
+	{
+		return data.getProperties().get(SUBMARINES_PREVENT_UNESCORTED_AMPHIBIOUS_ASSAULTS, false);
+	}
+	
 	private Properties()
 	{
 	}

@@ -66,6 +66,7 @@ public class MoveValidator
 {
 	public static final String TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_IN_A_PREVIOUS_PHASE = "Transport has already unloaded units in a previous phase";
 	public static final String TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED = "Transport may not unload to friendly territories until after combat is resolved";
+	public static final String ENEMY_SUBMARINE_PREVENTING_UNESCORTED_AMPHIBIOUS_ASSAULT_LANDING = "Enemy Submarine Preventing Unescorted Amphibious Assault Landing";
 	public static final String TRANSPORT_HAS_ALREADY_UNLOADED_UNITS_TO = "Transport has already unloaded units to ";
 	public static final String CANNOT_LOAD_AND_UNLOAD_AN_ALLIED_TRANSPORT_IN_THE_SAME_ROUND = "Cannot load and unload an allied transport in the same round";
 	public static final String CANT_MOVE_THROUGH_IMPASSIBLE = "Can't move through impassible territories";
@@ -1064,17 +1065,40 @@ public class MoveValidator
 			final Collection<Unit> transports = MoveDelegate.mapTransports(route, units, null).values();
 			final boolean isScramblingOrKamikazeAttacksEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data)
 						|| games.strategy.triplea.Properties.getUseKamikazeSuicideAttacks(data);
+			final boolean submarinesPreventUnescortedAmphibAssaults = games.strategy.triplea.Properties.getSubmarinesPreventUnescortedAmphibiousAssaults(data);
+			final Match<Unit> enemySubmarineMatch = new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, player), Matches.UnitIsSub);
+			final Match<Unit> ownedSeaNonTransportMatch = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsSea, Matches.UnitIsNotTransportButCouldBeCombatTransport);
 			for (final Unit transport : transports)
 			{
-				// Unloading a transport from a sea zone with a battle, to a friendly land territory, during combat move phase, is illegal
-				// and in addition to being illegal, it is also causing problems if the sea transports get killed (the land units are not dying)
-				// TODO: should we use the battle tracker for this instead?
-				if (!isNonCombat && route.numberOfStepsIncludingStart() == 2 &&
-							((isScramblingOrKamikazeAttacksEnabled || Matches.territoryHasEnemyUnits(player, data).match(routeStart)) &&
-							!(Matches.territoryHasEnemyUnits(player, data).match(routeEnd) || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(routeEnd))))
+				if (!isNonCombat && route.numberOfStepsIncludingStart() == 2)
 				{
-					for (final Unit unit : transportTracker.transporting(transport))
-						result.addDisallowedUnit(TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED, unit);
+					if (Matches.territoryHasEnemyUnits(player, data).match(routeEnd) || Matches.isTerritoryEnemyAndNotUnownedWater(player, data).match(routeEnd))
+					{
+						// this is an amphibious assault
+						if (submarinesPreventUnescortedAmphibAssaults && !Matches.territoryHasUnitsThatMatch(ownedSeaNonTransportMatch).match(routeStart) &&
+									Matches.territoryHasUnitsThatMatch(enemySubmarineMatch).match(routeStart))
+						{
+							// we must have at least one warship (non-transport) unit, otherwise the enemy sub stops our unloading for amphibious assault
+							for (final Unit unit : transportTracker.transporting(transport))
+							{
+								result.addDisallowedUnit(ENEMY_SUBMARINE_PREVENTING_UNESCORTED_AMPHIBIOUS_ASSAULT_LANDING, unit);
+							}
+						}
+					}
+					else
+					{
+						// this is an unload to a friendly territory
+						if (isScramblingOrKamikazeAttacksEnabled || Matches.territoryHasEnemyUnits(player, data).match(routeStart))
+						{
+							// Unloading a transport from a sea zone with a battle, to a friendly land territory, during combat move phase, is illegal
+							// and in addition to being illegal, it is also causing problems if the sea transports get killed (the land units are not dying)
+							// TODO: should we use the battle tracker for this instead?
+							for (final Unit unit : transportTracker.transporting(transport))
+							{
+								result.addDisallowedUnit(TRANSPORT_MAY_NOT_UNLOAD_TO_FRIENDLY_TERRITORIES_UNTIL_AFTER_COMBAT_IS_RESOLVED, unit);
+							}
+						}
+					}
 				}
 				// TODO This is very sensitive to the order of the transport collection. The users may
 				// need to modify the order in which they perform their actions.
