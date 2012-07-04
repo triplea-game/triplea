@@ -1359,6 +1359,7 @@
 <unit name="Blucher"/>
 <unit name="Charles"/>
 <unit name="Kutusov"/>
+<unit name="Mahmud"/>
 <unit name="Barque"/>
 <unit name="Cutter"/>
 <unit name="Brigantine"/>
@@ -1546,6 +1547,10 @@
 <cost resource="PUs" quantity="9"/>
 <result resourceOrUnit="Kutusov" quantity="1"/>
 </productionRule>
+<productionRule name="buyMahmud">
+<cost resource="PUs" quantity="9"/>
+<result resourceOrUnit="Mahmud" quantity="1"/>
+</productionRule>
 <productionRule name="buyBarque">
 <cost resource="PUs" quantity="8"/>
 <result resourceOrUnit="Barque" quantity="1"/>
@@ -1579,7 +1584,7 @@
 <result resourceOrUnit="Mortella_Tower" quantity="1"/>
 </productionRule>
 <productionRule name="buyFortress">
-<cost resource="PUs" quantity="6"/>
+<cost resource="PUs" quantity="5"/>
 <result resourceOrUnit="Fortress" quantity="1"/>
 </productionRule>
 <productionRule name="buyEncampment">
@@ -1762,7 +1767,7 @@
 <frontierRules name="buyHussars"/>
 <frontierRules name="buyDragoons"/>
 <frontierRules name="buyCuirassiers"/>
-<frontierRules name="buyMarshal"/>
+<frontierRules name="buyMahmud"/>
 <frontierRules name="buyBarque"/>
 <frontierRules name="buyCutter"/>
 <frontierRules name="buyBrigantine"/>
@@ -1928,7 +1933,7 @@
 <option name="artillerySupportable" value="true"/>
 </attatchment>
 <attatchment name="unitAttatchment" attatchTo="Marshal" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
-<option name="movement" value="2"/>
+<option name="movement" value="3"/>
 <option name="attack" value="4"/>
 <option name="defense" value="3"/>
 <option name="transportCost" value="2"/>
@@ -1960,6 +1965,14 @@
 <option name="artillerySupportable" value="true"/>
 </attatchment>
 <attatchment name="unitAttatchment" attatchTo="Kutusov" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
+<option name="movement" value="3"/>
+<option name="attack" value="4"/>
+<option name="defense" value="3"/>
+<option name="transportCost" value="2"/>
+<option name="canBlitz" value="true"/>
+<option name="artillerySupportable" value="true"/>
+</attatchment>
+<attatchment name="unitAttatchment" attatchTo="Mahmud" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="3"/>
 <option name="attack" value="4"/>
 <option name="defense" value="3"/>
@@ -2322,7 +2335,7 @@
 <option name="production" value="2"/>
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="Kazan" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-<option name="production" value="2"/>
+<option name="production" value="3"/>
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="Flanders" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 <option name="production" value="2"/>
@@ -2351,7 +2364,7 @@
 </attatchment>
 
 <attatchment name="territoryAttatchment" attatchTo="Austria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-<option name="production" value="8"/>
+<option name="production" value="7"/>
 <option name="capital" value="AustrianEmpire"/>
 <option name="victoryCity" value="true"/>
 </attatchment>
@@ -2744,7 +2757,7 @@
 <!--<option name="occupiedTerrOf" value="UnitedKingdom"/>-->
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="SZ88" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-<option name="production" value="8"/>                      
+<option name="production" value="6"/>                      
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="SZ98" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 <option name="production" value="8"/>                      
@@ -2756,7 +2769,10 @@
 <option name="production" value="8"/>                      
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="SZ80" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-<option name="production" value="8"/>                      
+<option name="production" value="6"/>                      
+</attatchment>
+<attatchment name="territoryAttatchment" attatchTo="SZ67" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+<option name="production" value="6"/>                      
 </attatchment>
         
 <attatchment name="territoryAttatchment" attatchTo="Alps" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -4398,6 +4414,7 @@
 <territoryOwner territory="SZ98" owner="Russia"/>
 <territoryOwner territory="SZ78" owner="AustrianEmpire"/>
 <territoryOwner territory="SZ80" owner="OttomanEmpire"/>
+<territoryOwner territory="SZ67" owner="OttomanEmpire"/>
 
 
 
@@ -4413,13 +4430,13 @@
 <unitPlacement unitType="General" territory="Essex" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Capital" territory="Essex" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Mortella_Tower" territory="Essex" quantity="1" owner="UnitedKingdom"/>
-<unitPlacement unitType="Fusiliers" territory="Essex" quantity="1" owner="UnitedKingdom"/>
+<unitPlacement unitType="Fusiliers" territory="Essex" quantity="2" owner="UnitedKingdom"/>
 <unitPlacement unitType="Grenadiers" territory="Essex" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Marines" territory="Essex" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Dragoons" territory="Lancashire" quantity="1" owner="UnitedKingdom"/>
-<unitPlacement unitType="Howitzer" territory="South Wales" quantity="1" owner="UnitedKingdom"/>
+<unitPlacement unitType="Howitzer" territory="South Wales" quantity="2" owner="UnitedKingdom"/>
 <unitPlacement unitType="Mortella_Tower" territory="South Wales" quantity="1" owner="UnitedKingdom"/>
-<unitPlacement unitType="Fusiliers" territory="South Wales" quantity="1" owner="UnitedKingdom"/>
+<unitPlacement unitType="Fusiliers" territory="South Wales" quantity="2" owner="UnitedKingdom"/>
 <unitPlacement unitType="Artillery" territory="Oxfordshire" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Fortress" territory="Sussex" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Fusiliers" territory="Sussex" quantity="2" owner="UnitedKingdom"/>
@@ -4432,13 +4449,13 @@
 
 <unitPlacement unitType="Fortress" territory="Majorca" quantity="4" owner="UnitedKingdom"/>
 <unitPlacement unitType="Marines" territory="Majorca" quantity="3" owner="UnitedKingdom"/>
-<unitPlacement unitType="Chasseurs" territory="Majorca" quantity="2" owner="UnitedKingdom"/>
+<unitPlacement unitType="Chasseurs" territory="Majorca" quantity="3" owner="UnitedKingdom"/>
 <unitPlacement unitType="Fusiliers" territory="Hanovre" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Dragoons" territory="Hanovre" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Artillery" territory="Hanovre" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Chasseurs" territory="Hanovre" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Fortress" territory="Hanovre" quantity="2" owner="UnitedKingdom"/>
-<unitPlacement unitType="Fortress" territory="Andalusia" quantity="6" owner="UnitedKingdom"/>
+<unitPlacement unitType="Fortress" territory="Andalusia" quantity="3" owner="UnitedKingdom"/>
 <unitPlacement unitType="Mortella_Tower" territory="Andalusia" quantity="3" owner="UnitedKingdom"/>
 <unitPlacement unitType="Marines" territory="Ulster" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Chasseurs" territory="Ulster" quantity="1" owner="UnitedKingdom"/>
@@ -4446,7 +4463,7 @@
 
 <unitPlacement unitType="Fortress" territory="Candia" quantity="3" owner="UnitedKingdom"/>
 <unitPlacement unitType="Chasseurs" territory="Candia" quantity="3" owner="UnitedKingdom"/>
-<unitPlacement unitType="Marines" territory="Candia" quantity="2" owner="UnitedKingdom"/>
+<unitPlacement unitType="Marines" territory="Candia" quantity="3" owner="UnitedKingdom"/>
 <unitPlacement unitType="Brigantine" territory="SZ73" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Battleship" territory="SZ73" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Marines" territory="SZ73" quantity="2" owner="UnitedKingdom"/>
@@ -4464,6 +4481,7 @@
 <unitPlacement unitType="Corvette" territory="SZ24" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Corvette" territory="SZ22" quantity="1" owner="UnitedKingdom"/>
 <unitPlacement unitType="Cutter" territory="SZ83" quantity="1" owner="UnitedKingdom"/>
+<unitPlacement unitType="Cutter" territory="SZ82" quantity="1" owner="UnitedKingdom"/>
 
 
  			<!-- France Unit Placements -->
@@ -4497,8 +4515,8 @@
 <unitPlacement unitType="Horse_Artillery" territory="Gascony" quantity="1" owner="France"/>
 <unitPlacement unitType="Chasseurs" territory="Corsica" quantity="2" owner="France"/>
 <unitPlacement unitType="Marines" territory="Corsica" quantity="1" owner="France"/>
-<unitPlacement unitType="Fusiliers" territory="Auvergne" quantity="2" owner="France"/>
-<unitPlacement unitType="Artillery" territory="Auvergne" quantity="1" owner="France"/>
+<unitPlacement unitType="Fusiliers" territory="Auvergne" quantity="3" owner="France"/>
+<unitPlacement unitType="Artillery" territory="Auvergne" quantity="2" owner="France"/>
 <unitPlacement unitType="Dragoons" territory="Anjou" quantity="2" owner="France"/>
 <unitPlacement unitType="Fusiliers" territory="Anjou" quantity="2" owner="France"/>
 <unitPlacement unitType="Dragoons" territory="Provence" quantity="1" owner="France"/>
@@ -4542,9 +4560,9 @@
 <unitPlacement unitType="Fusiliers" territory="Leon" quantity="1"/>
 <unitPlacement unitType="Fusiliers" territory="Murcia" quantity="3"/>
 <unitPlacement unitType="Fusiliers" territory="Estremadura" quantity="3"/>
-<unitPlacement unitType="Fusiliers" territory="Old Castille" quantity="3"/>
+<unitPlacement unitType="Chasseurs" territory="Old Castille" quantity="4"/>
 <unitPlacement unitType="Fusiliers" territory="Navarre" quantity="3"/>
-<unitPlacement unitType="Fusiliers" territory="Aragon" quantity="3"/>
+<unitPlacement unitType="Chasseurs" territory="Aragon" quantity="4"/>
 <unitPlacement unitType="Fusiliers" territory="La Mancha" quantity="3"/>
 
 
@@ -4593,7 +4611,7 @@
 
 <unitPlacement unitType="Frigate" territory="SZ7" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Brigantine" territory="SZ7" quantity="1" owner="AustrianEmpire"/>
-<unitPlacement unitType="Brigantine" territory="SZ9" quantity="1" owner="AustrianEmpire"/>
+<unitPlacement unitType="Cutter" territory="SZ9" quantity="1" owner="AustrianEmpire"/>
 <!--<unitPlacement unitType="Barque" territory="SZ7" quantity="1" owner="AustrianEmpire"/>-->
 
 <unitPlacement unitType="Brigantine" territory="SZ20" quantity="1" owner="AustrianEmpire"/>
@@ -4774,9 +4792,7 @@
 <unitPlacement unitType="Grenadiers" territory="Jutland" quantity="2"/>
 <unitPlacement unitType="Fusiliers" territory="Jutland" quantity="2"/>
 <unitPlacement unitType="Fusiliers" territory="Jutland" quantity="1"/>
-<unitPlacement unitType="Chasseurs" territory="Jutland" quantity="2"/>
 <unitPlacement unitType="Fortress" territory="Jutland" quantity="2"/>
-<unitPlacement unitType="Chasseurs" territory="Holstein" quantity="2"/>
 <unitPlacement unitType="Dragoons" territory="Holstein" quantity="1"/>
  <unitPlacement unitType="Fortress" territory="Holstein" quantity="3"/>
 <unitPlacement unitType="Fusiliers" territory="Holstein" quantity="2"/>
@@ -4838,8 +4854,7 @@
 <unitPlacement unitType="Hussars" territory="Astrakahn" quantity="1"/>
 <unitPlacement unitType="Fusiliers" territory="Georgia" quantity="2"/>
 <unitPlacement unitType="Dragoons" territory="Georgia" quantity="1"/>
-<unitPlacement unitType="Fusiliers" territory="West Sahara" quantity="2"/>
-<unitPlacement unitType="Dragoons" territory="West Sahara" quantity="1"/>
+<unitPlacement unitType="Chasseurs" territory="West Sahara" quantity="2"/>
 <unitPlacement unitType="Chasseurs" territory="Tangiers" quantity="2"/>
 
 <unitPlacement unitType="Fusiliers" territory="Atlas" quantity="3"/>
@@ -4867,7 +4882,7 @@
 <unitPlacement unitType="Fusiliers" territory="Midian" quantity="3"/>
 <unitPlacement unitType="Hussars" territory="Arabia" quantity="5"/>
 <unitPlacement unitType="Fusiliers" territory="Basrah" quantity="4"/>
-<unitPlacement unitType="Fusiliers" territory="Baghdad" quantity="2"/>
+<unitPlacement unitType="Fusiliers" territory="Baghdad" quantity="4"/>
 <unitPlacement unitType="Dragoons" territory="Baghdad" quantity="1"/>
 <unitPlacement unitType="Fortress" territory="Baghdad" quantity="2"/>
 <unitPlacement unitType="Chasseurs" territory="Mesopotamia" quantity="4"/>
@@ -5321,9 +5336,6 @@
 &lt;br&gt;Ottoman ... 7 / 8 / 10
 &lt;br&gt;Russia ...... 7 / 8 / 10
 &lt;br&gt;
-&lt;br&gt;(While it may be tempting for everyone to ally against France, or one of the other larger powers, you should note that they have to claim 2 more victory cities than most players 
-			do in order to get victory. Make sure to maintain a balance of power BASED on the victory conditions, and not on direct power comparisons.)
-&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Main Differences between FFA version and Normal Version:
 &lt;br&gt;Politics is added, you can change your alliances.
@@ -5439,9 +5451,9 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Special/Extra Units:
 &lt;br&gt;0/2/0/3 Mortella Tower
-&lt;br&gt;0/4/0/6 Fortress
+&lt;br&gt;0/4/0/5 Fortress
 &lt;br&gt;5/1/1/8 Mortars . Gives Support (+1 attack)
-&lt;br&gt;4/3/2/9 Marshal . Blitz, Supportable
+&lt;br&gt;4/3/3/9 Marshal . Blitz, Supportable
 &lt;br&gt;4/3/3/9 Ney/Wellington/Blucher/Charles/Kutusov . Blitz, Supportable
 &lt;br&gt;
 &lt;br&gt;Infantry-type units have TransportCost=2, while Cavalry-type units have TCost=3
@@ -5518,9 +5530,6 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 2.0 - 4.x changes made by Veqryn.
 &lt;br&gt;
-&lt;br&gt;You may or may not notice that Spain collect 10 less income per turn than their total production, and that France collects 6 less, and the UK 4 less.
-&lt;br&gt;This is because of their convoy zones.  In order to balance the game, but at the same time keep the convoy zone value high, I was forced to give these nations -negative national objectives that lower their income each turn for balancing purposes, in order to equal out the increased value of their convoy zones.
-&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Changes for FFA version only:
 &lt;br&gt;Lots more neutral units in southern Italy, Africa, and the Middle East.
@@ -5528,11 +5537,19 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;Small changes to unit placement.
 &lt;br&gt;Nations now destroy their PUs instead of letting them be captured (FFA only).
 &lt;br&gt;
+&lt;br&gt;Changes for 5 player version:
+&lt;br&gt;Removed Spain, Prussia, and Sweden, converting their units to neutrals and adding a lot more neutrals.
+&lt;br&gt;Changing values of territories around slightly so all nations begin almost equal.
+&lt;br&gt;Changing some territory ownership, adding new units for existing players, including a fleet by Tangiers for Ottomans.
+&lt;br&gt;Increasing values of most convoy zones to 8.
+&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 4.0 - 4.0.x changes:
 &lt;br&gt;Tweaking of Political rules.
 &lt;br&gt;Increasing Mortar defense by 1, and increasing cost by 1.
+&lt;br&gt;Decreased Fortress cost by 1.
+&lt;br&gt;Increasing Marshal movement by 1 (to 3).
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 3.9.x - 4.0 changes:

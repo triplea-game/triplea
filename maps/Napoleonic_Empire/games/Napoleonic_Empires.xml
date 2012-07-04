@@ -1618,7 +1618,7 @@
 <result resourceOrUnit="Mortella_Tower" quantity="1"/>
 </productionRule>
 <productionRule name="buyFortress">
-<cost resource="PUs" quantity="6"/>
+<cost resource="PUs" quantity="5"/>
 <result resourceOrUnit="Fortress" quantity="1"/>
 </productionRule>
 <productionRule name="buyEncampment">
@@ -2036,7 +2036,7 @@
 <option name="artillerySupportable" value="true"/>
 </attatchment>
 <attatchment name="unitAttatchment" attatchTo="Marshal" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
-<option name="movement" value="2"/>
+<option name="movement" value="3"/>
 <option name="attack" value="4"/>
 <option name="defense" value="3"/>
 <option name="transportCost" value="2"/>
@@ -7385,7 +7385,7 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Special/Extra Units:
 &lt;br&gt;0/2/0/3 Mortella Tower
-&lt;br&gt;0/4/0/6 Fortress
+&lt;br&gt;0/4/0/5 Fortress
 &lt;br&gt;5/1/1/8 Mortars . Gives Support (+1 attack)
 &lt;br&gt;4/3/2/9 Marshal . Blitz, Supportable
 &lt;br&gt;4/3/3/9 Ney/Wellington/Blucher/Charles/Kutusov . Blitz, Supportable
@@ -7497,6 +7497,8 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;Tweaking of Political rules.
 &lt;br&gt;Removing a few neutral units from middle east and north africa.
 &lt;br&gt;Increasing Mortar defense by 1, and increasing cost by 1.
+&lt;br&gt;Decreased Fortress cost by 1.
+&lt;br&gt;Increasing Marshal movement by 1 (to 3).
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 3.9.3 - 4.0 changes:
