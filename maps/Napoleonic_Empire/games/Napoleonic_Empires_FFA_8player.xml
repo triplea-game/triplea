@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Napoleonic Empires: FFA" version="4.0.6"/>
+        <info name="Napoleonic Empires: FFA 8 Player" version="4.0.6"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -1545,7 +1545,7 @@
 <result resourceOrUnit="Artillery" quantity="1"/>
 </productionRule>
 <productionRule name="buyMortars">
-<cost resource="PUs" quantity="7"/>
+<cost resource="PUs" quantity="8"/>
 <result resourceOrUnit="Mortars" quantity="1"/>
 </productionRule>
 <productionRule name="buyHorse_Artillery">
@@ -2009,7 +2009,7 @@
 <attatchment name="unitAttatchment" attatchTo="Mortars" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="1"/>
 <option name="attack" value="5"/>
-<option name="defense" value="0"/>
+<option name="defense" value="1"/>
 <option name="transportCost" value="2"/>
 <option name="artillery" value="true"/>
 </attatchment>
@@ -3050,6 +3050,34 @@
                 	<option name="conditions" value="conditionAttachmentTurn2"/>
 					<option name="frontier" value="productionRussiaSpecial"/>
                 </attatchment>
+				
+				
+				
+			<!-- player attachments -->
+				<attatchment name="playerAttatchment" attatchTo="France" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="destroysPUs" value="true"/>
+				</attatchment>
+				<attatchment name="playerAttatchment" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="destroysPUs" value="true"/>
+				</attatchment>
+				<attatchment name="playerAttatchment" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="destroysPUs" value="true"/>
+				</attatchment>
+				<attatchment name="playerAttatchment" attatchTo="KingdomOfPrussia" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="destroysPUs" value="true"/>
+				</attatchment>
+				<attatchment name="playerAttatchment" attatchTo="Sweden" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="destroysPUs" value="true"/>
+				</attatchment>
+				<attatchment name="playerAttatchment" attatchTo="AustrianEmpire" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="destroysPUs" value="true"/>
+				</attatchment>
+				<attatchment name="playerAttatchment" attatchTo="OttomanEmpire" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="destroysPUs" value="true"/>
+				</attatchment>
+				<attatchment name="playerAttatchment" attatchTo="Russia" javaClass="games.strategy.triplea.attatchments.PlayerAttachment" type="player">
+					<option name="destroysPUs" value="true"/>
+				</attatchment>
 				
 				
 				
@@ -7505,7 +7533,8 @@
                 <property name="mapName" value="Napoleonic_Empire" editable="false"/>
 
 
-<property name="notes" value="&lt;H1&gt;Napoleonic Empires Free-For-All by Veqryn&lt;br&gt;&lt;/H1&gt;
+<property name="notes" value="&lt;H1&gt;Napoleonic Empires Free-For-All 8 Players
+&lt;br&gt;by Veqryn&lt;br&gt;&lt;/H1&gt;
 
 
 &lt;br&gt;Free-For-All win conditions (by Victory Cities):
@@ -7521,6 +7550,12 @@
 &lt;br&gt;
 &lt;br&gt;(While it may be tempting for everyone to ally against France, or one of the other larger powers, you should note that they have to claim 2 more victory cities than most players 
 			do in order to get victory. Make sure to maintain a balance of power BASED on the victory conditions, and not on direct power comparisons.)
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;Main Differences between FFA version and Normal Version:
+&lt;br&gt;Politics is added, you can change your alliances.
+&lt;br&gt;When capturing a capital, you destroy the PUs rather than capture the PUs.
+&lt;br&gt;Every nation has a national objective to encourage attacking.
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;General FFA rules:
@@ -7632,7 +7667,7 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;Special/Extra Units:
 &lt;br&gt;0/2/0/3 Mortella Tower
 &lt;br&gt;0/4/0/6 Fortress
-&lt;br&gt;5/0/1/7 Mortars . Gives Support (+1 attack)
+&lt;br&gt;5/1/1/8 Mortars . Gives Support (+1 attack)
 &lt;br&gt;4/3/2/9 Marshal . Blitz, Supportable
 &lt;br&gt;4/3/3/9 Ney/Wellington/Blucher/Charles/Kutusov . Blitz, Supportable
 &lt;br&gt;
@@ -7743,11 +7778,13 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;Lots more neutral units in southern Italy, Africa, and the Middle East.
 &lt;br&gt;Different Victory Conditions for each player, check above or in game options screen
 &lt;br&gt;Small changes to unit placement.
+&lt;br&gt;Nations now destroy their PUs instead of letting them be captured (FFA only).
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 4.0 - 4.0.x changes:
 &lt;br&gt;Tweaking of Political rules.
+&lt;br&gt;Increasing Mortar defense by 1, and increasing cost by 1.
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 3.9.x - 4.0 changes:
