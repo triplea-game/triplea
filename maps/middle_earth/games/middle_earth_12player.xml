@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Lord of the Rings: Middle Earth" version="1.4"/>
+        <info name="Lord of the Rings: Middle Earth" version="1.5"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -1000,7 +1000,7 @@
                 </productionRule>
 
                 <productionRule name="buyNazgul">
-                        <cost resource="PUs" quantity="24" />
+                        <cost resource="PUs" quantity="27" />
                         <result resourceOrUnit="nazgul" quantity="1"/>
                 </productionRule>
 
@@ -1861,16 +1861,16 @@
 
                     <!-- Rohan Lands-->
                     <attatchment name="territoryAttatchment" attatchTo="Eastfold" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
+                        <option name="production" value="4"/>
+                    </attatchment>
+
+                    <attatchment name="territoryAttatchment" attatchTo="Helms Deep" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="6"/>
                         <option name="capital" value="Rohan"/>
                     </attatchment>
 
-                    <attatchment name="territoryAttatchment" attatchTo="Helms Deep" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="2"/>
-                    </attatchment>
-
                     <attatchment name="territoryAttatchment" attatchTo="Westfold" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-                        <option name="production" value="6"/>
+                        <option name="production" value="4"/>
                     </attatchment>
 
                     <attatchment name="territoryAttatchment" attatchTo="E. Emnet" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2570,6 +2570,7 @@
                         <unitPlacement unitType="castle" territory="Iron Hills"  quantity="1" owner="Dwarves"/>
                         <unitPlacement unitType="fortifications" territory="Iron Hills"  quantity="4" owner="Dwarves"/>
                         <unitPlacement unitType="phalanx" territory="Lonely Mtn." quantity="2" owner="Dwarves"/>
+
                         <unitPlacement unitType="spearInfantry" territory="Lake Town" quantity="3" owner="Dale"/>
                         <unitPlacement unitType="archers" territory="Lake Town" quantity="3" owner="Dale"/>
                         <unitPlacement unitType="castle" territory="Lake Town" quantity="1" owner="Dale"/>
@@ -2577,12 +2578,22 @@
                         <unitPlacement unitType="spearInfantry" territory="N. Dale" quantity="2" owner="Dale"/>
                         <unitPlacement unitType="heavyCavalry" territory="N. Dale" quantity="1" owner="Dale"/>
                         <unitPlacement unitType="archers" territory="S. Dale" quantity="1" owner="Dale"/>
-                        <unitPlacement unitType="spearInfantry" territory="Bree" quantity="2" owner="Freefolk"/>
+
+                        <unitPlacement unitType="spearInfantry" territory="Bree" quantity="3" owner="Freefolk"/>
                         <unitPlacement unitType="castle" territory="Bree" quantity="1" owner="Freefolk"/>
                         <unitPlacement unitType="fortifications" territory="Bree" quantity="2" owner="Freefolk"/>
-                        <unitPlacement unitType="archers" territory="Bree" quantity="1" owner="Freefolk"/>
+                        <unitPlacement unitType="archers" territory="Bree" quantity="2" owner="Freefolk"/>
                         <unitPlacement unitType="archers" territory="Breelands" quantity="1" owner="Freefolk"/>
                         <unitPlacement unitType="lightCavalry" territory="Breelands" quantity="1" owner="Freefolk"/>
+                        <unitPlacement unitType="hobbits" territory="Hobbiton" quantity="2" owner="Freefolk"/>
+                        <unitPlacement unitType="castle" territory="Hobbiton" quantity="1" owner="Freefolk"/>
+                        <unitPlacement unitType="hobbits" territory="Shire" quantity="2" owner="Freefolk"/>
+                        <unitPlacement unitType="spearInfantry" territory="Fornost" quantity="2" owner="Freefolk"/>
+                        <unitPlacement unitType="castle" territory="Fornost" quantity="1" owner="Freefolk"/>
+                        <unitPlacement unitType="archers" territory="Fornost" quantity="1" owner="Freefolk"/>
+                        <unitPlacement unitType="spearInfantry" territory="S. Arthedain" quantity="1" owner="Freefolk"/>
+                        <unitPlacement unitType="archers" territory="S. Arthedain" quantity="1" owner="Freefolk"/>
+
                         <unitPlacement unitType="spearInfantry" territory="Lond Daer" quantity="2"/>
                         <unitPlacement unitType="castle" territory="Lond Daer" quantity="1"/>
                         <unitPlacement unitType="fortifications" territory="Lond Daer" quantity="2"/>
@@ -2597,13 +2608,8 @@
                         <unitPlacement unitType="spearInfantry" territory="N. Dunland" quantity="1"/>
                         <unitPlacement unitType="spearInfantry" territory="Cardolan" quantity="1"/>
                         <unitPlacement unitType="spearInfantry" territory="E. Arnor" quantity="1"/>
-                        <unitPlacement unitType="spearInfantry" territory="Fornost" quantity="2" owner="Freefolk"/>
-                        <unitPlacement unitType="castle" territory="Fornost" quantity="1" owner="Freefolk"/>
-                        <unitPlacement unitType="spearInfantry" territory="S. Arthedain" quantity="1" owner="Freefolk"/>
                         <unitPlacement unitType="spearInfantry" territory="Celduin" quantity="1"/>
-                        <unitPlacement unitType="hobbits" territory="Hobbiton" quantity="2" owner="Freefolk"/>
-                        <unitPlacement unitType="castle" territory="Hobbiton" quantity="1" owner="Freefolk"/>
-                        <unitPlacement unitType="hobbits" territory="Shire" quantity="1" owner="Freefolk"/>
+
 
                 </unitInitialize>
 
@@ -2741,7 +2747,7 @@
 &lt;br&gt;
 &lt;table border=&quot;1&quot;bgcolor=&quot;757780&quot;&gt;
 &lt;tr&gt;
-&lt;th style=&quot;font-size:120%;000000&quot;colspan=&quot;2&quot;&gt;1.2&lt;/th&gt;
+&lt;th style=&quot;font-size:120%;000000&quot;colspan=&quot;2&quot;&gt;1.5&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
 &lt;br&gt;
@@ -3187,7 +3193,7 @@
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;3&lt;/td&gt;
 	&lt;td&gt;4&lt;/td&gt;
-	&lt;td&gt;24&lt;/td&gt;
+	&lt;td&gt;27&lt;/td&gt;
 	&lt;td&gt;givesSupport, is 2hit&lt;/td&gt;
 	&lt;/tr&gt;
 	
@@ -3407,6 +3413,16 @@
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Another thing to keep in mind is the possibility of removing blockers with allied armies so that you are free to blitz.
 &lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;There are 12 capitols in the game, sometimes they can fall easily, but on the other hand losing 1 capitol doesnt mean game has to be over yet.
+&lt;br&gt;
+&lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
+&lt;br&gt;&lt;b&gt;Changelist from 1.4 - 1.5:&lt;/b&gt;
+&lt;br&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Added 5 extra units to Freefolk
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Increased price of Nazgul from 24 to 27
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Moved Rohan capitol from Eastfold to Helms Deep and adjusted territory values
+&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
 &lt;br&gt;&lt;b&gt;Changelist from 1.1 - 1.4:&lt;/b&gt;

@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Napoleonic Empires" version="4.0.6"/>
+        <info name="Napoleonic Empires" version="4.0.7"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -6961,10 +6961,10 @@
 <unitPlacement unitType="Fusiliers" territory="Tripoli" quantity="1"/>
 <unitPlacement unitType="Fortress" territory="Tripoli" quantity="1"/>
 <unitPlacement unitType="Chasseurs" territory="Tripoli" quantity="3"/>
-<unitPlacement unitType="Fusiliers" territory="Libya" quantity="2"/>
-<unitPlacement unitType="Chasseurs" territory="Cyrenacia" quantity="2"/>
+<unitPlacement unitType="Fusiliers" territory="Libya" quantity="1"/>
+<unitPlacement unitType="Chasseurs" territory="Cyrenacia" quantity="1"/>
 <unitPlacement unitType="Fusiliers" territory="Barca" quantity="2"/>
-<unitPlacement unitType="Fusiliers" territory="Sinai" quantity="2"/>
+<unitPlacement unitType="Fusiliers" territory="Sinai" quantity="1"/>
 <unitPlacement unitType="Chasseurs" territory="Egypt" quantity="2"/>
 
 
@@ -6979,7 +6979,7 @@
 <unitPlacement unitType="Fusiliers" territory="Palestine" quantity="2"/>
 <unitPlacement unitType="Fusiliers" territory="Lebanon" quantity="2"/>
 <unitPlacement unitType="Fusiliers" territory="Edessa" quantity="2"/>
-<unitPlacement unitType="Fusiliers" territory="Syria" quantity="3"/>
+<unitPlacement unitType="Chasseurs" territory="Syria" quantity="2"/>
 <unitPlacement unitType="Fusiliers" territory="Jordan" quantity="1"/>
 <unitPlacement unitType="Fusiliers" territory="Midian" quantity="1"/>
 <unitPlacement unitType="Hussars" territory="Arabia" quantity="3"/>
@@ -7495,6 +7495,7 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 4.0 - 4.0.x changes:
 &lt;br&gt;Tweaking of Political rules.
+&lt;br&gt;Removing a few neutral units from middle east and north africa.
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 3.9.3 - 4.0 changes:
