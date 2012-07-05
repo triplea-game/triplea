@@ -50,7 +50,7 @@ public class Fire implements IExecutable
 		 * If, in the future, Infrastructure or other things could be taken casualty, then this will need to be changed back to:
 		 * m_attackableUnits = attackableUnits;
 		 */
-		m_attackableUnits = Match.getMatches(attackableUnits, Matches.UnitIsDestructibleInCombatShort);
+		m_attackableUnits = Match.getMatches(attackableUnits, Matches.UnitIsNotInfrastructure);
 		m_canReturnFire = canReturnFire;
 		m_firingUnits = firingUnits;
 		m_stepName = stepName;

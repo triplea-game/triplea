@@ -33,9 +33,9 @@ public class UnitTypeComparator implements Comparator<UnitType>
 			throw new IllegalStateException("No unit type attachment for unit type : " + u1.getName());
 		if (ua2 == null)
 			throw new IllegalStateException("No unit type attachment for unit type : " + u2.getName());
-		if (ua1.getIsFactory() && !ua2.getIsFactory())
+		if (ua1.getIsInfrastructure() && !ua2.getIsInfrastructure())
 			return 1;
-		if (ua2.getIsFactory() && !ua1.getIsFactory())
+		if (ua2.getIsInfrastructure() && !ua1.getIsInfrastructure())
 			return -1;
 		if (Matches.UnitTypeIsAAforAnything.match(u1) && !Matches.UnitTypeIsAAforAnything.match(u2))
 			return 1;

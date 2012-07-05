@@ -394,7 +394,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 					}
 				}
 				final Collection<Unit> damagedUnits = new ArrayList<Unit>();
-				final Match<Unit> myFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitIsFactoryOrCanBeDamaged);
+				final Match<Unit> myFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(m_id), Matches.UnitCanBeDamaged);
 				for (final Territory t : bombedTerrs)
 				{
 					damagedUnits.addAll(Match.getMatches(t.getUnits().getUnits(), myFactories));

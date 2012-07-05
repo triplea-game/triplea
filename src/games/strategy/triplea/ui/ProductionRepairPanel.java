@@ -154,7 +154,7 @@ public class ProductionRepairPanel extends JPanel
 		try
 		{
 			m_id = player;
-			final CompositeMatchAnd<Unit> myPotentiallyDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactoryOrCanBeDamaged);
+			final CompositeMatchAnd<Unit> myPotentiallyDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanBeDamaged);
 			final CompositeMatchAnd<Unit> myDamagedUnits = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitHasSomeUnitDamage());
 			final Collection<Territory> terrsWithPotentiallyDamagedUnits = Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasUnitsThatMatch(myPotentiallyDamagedUnits));
 			for (final RepairRule repairRule : player.getRepairFrontier())

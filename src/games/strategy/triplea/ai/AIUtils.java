@@ -88,6 +88,8 @@ public class AIUtils
 		if (player == null)
 			throw new IllegalArgumentException("null player id");
 		final ProductionFrontier frontier = player.getProductionFrontier();
+		if (frontier == null)
+			return null;
 		for (final ProductionRule rule : frontier)
 		{
 			if (rule.getResults().getInt(unitType) == 1)
@@ -116,7 +118,7 @@ public class AIUtils
 		for (final Unit u : units)
 		{
 			final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
-			if (unitAttachment.getIsFactory() || unitAttachment.getIsInfrastructure())
+			if (unitAttachment.getIsInfrastructure())
 			{
 				// nothing
 			}

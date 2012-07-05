@@ -44,7 +44,7 @@ public class PlaceDelegate extends AbstractPlaceDelegate
 	protected int getProduction(final Territory territory)
 	{
 		final Collection<Unit> allUnits = territory.getUnits().getUnits();
-		final int factoryCount = Match.countMatches(allUnits, Matches.UnitIsFactory);
+		final int factoryCount = Match.countMatches(allUnits, Matches.UnitCanProduceUnits);
 		return 5 * factoryCount;
 	}
 }

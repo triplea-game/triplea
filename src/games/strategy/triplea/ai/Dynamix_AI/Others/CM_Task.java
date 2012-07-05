@@ -105,7 +105,9 @@ public class CM_Task
 					final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
 					if (!Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer).match(unit))
 						return false;
-					if (Matches.UnitIsFactory.match(unit) && ua.getAttack(unit.getOwner()) <= 0)
+					if (Matches.UnitIsInfrastructure.match(unit) && ua.getAttack(unit.getOwner()) <= 0)
+						return false;
+					if (Matches.UnitCanProduceUnits.match(unit) && ua.getAttack(unit.getOwner()) <= 0)
 						return false;
 					if (Matches.UnitCanNotMoveDuringCombatMove.match(unit))
 						return false;

@@ -388,7 +388,7 @@ public class RocketsFireHelper
 			cost = Math.min(cost, limit);
 			// Record production lost
 			// DelegateFinder.moveDelegate(data).PUsLost(attackedTerritory, cost);
-			final Collection<Unit> damagedFactory = Match.getMatches(attackedTerritory.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged);
+			final Collection<Unit> damagedFactory = Match.getMatches(attackedTerritory.getUnits().getUnits(), Matches.UnitCanBeDamaged);
 			final IntegerMap<Unit> hits = new IntegerMap<Unit>();
 			for (final Unit factory : damagedFactory)
 			{
@@ -418,6 +418,8 @@ public class RocketsFireHelper
 			// taUnit.setUnitDamage(totalDamage);
 			bridge.addChange(ChangeFactory.unitsHit(hits));
 			bridge.addChange(change);
+			attackedTerritory.notifyChanged();
+			
 		}
 		// in WW2V2, limit rocket attack cost to production value of factory.
 		else if (isWW2V2(data) || isLimitRocketDamageToProduction(data))

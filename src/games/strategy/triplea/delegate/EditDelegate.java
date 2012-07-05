@@ -159,7 +159,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 		if (!data.getRelationshipTracker().isAtWar(territory.getOwner(), player))
 		{
 			// change ownership of friendly factories
-			final Collection<Unit> units = territory.getUnits().getMatches(Matches.UnitIsFactoryOrIsInfrastructure);
+			final Collection<Unit> units = territory.getUnits().getMatches(Matches.UnitIsInfrastructure);
 			for (final Unit unit : units)
 			{
 				m_bridge.addChange(ChangeFactory.changeOwner(unit, player, territory));
@@ -168,7 +168,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 		else
 		{
 			final CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>();
-			enemyNonCom.add(Matches.UnitIsFactoryOrIsInfrastructure);
+			enemyNonCom.add(Matches.UnitIsInfrastructure);
 			enemyNonCom.add(Matches.enemyUnit(player, data));
 			final Collection<Unit> units = territory.getUnits().getMatches(enemyNonCom);
 			// mark no movement for enemy units
@@ -260,6 +260,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 		final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
 		logEvent("Changing unit hit damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap), unitsFinal);
 		m_bridge.addChange(ChangeFactory.unitsHit(unitDamageMap));
+		territory.notifyChanged();
 		return null;
 	}
 	

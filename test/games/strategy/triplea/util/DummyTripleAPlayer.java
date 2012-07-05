@@ -150,7 +150,12 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 	
 	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
-		return (Unit) Match.getNMatches(potentialTargets, 1, Matches.UnitIsFactory);
+		if (potentialTargets == null || potentialTargets.isEmpty())
+			return null; // is null even allowed?
+		final Collection<Unit> typicalFactories = Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);
+		if (typicalFactories.isEmpty())
+			return potentialTargets.iterator().next();
+		return typicalFactories.iterator().next();
 	}
 	
 	public Territory whereShouldRocketsAttack(final Collection<Territory> candidates, final Territory from)

@@ -162,7 +162,7 @@ public class UnitAttachment extends DefaultAttachment
 	private HashSet<UnitType> m_bombingTargets = null; // null means they can target any unit that can be damaged
 	
 	// production related
-	private boolean m_isFactory = false;
+	// private boolean m_isFactory = false; // this has been split into canProduceUnits, isConstruction, canBeDamaged, and isInfrastructure
 	private boolean m_canProduceUnits = false;
 	private int m_canProduceXUnits = -1; // -1 means either it can't produce any, or it produces at the value of the territory it is located in
 	private IntegerMap<UnitType> m_createsUnitsList = new IntegerMap<UnitType>();
@@ -171,7 +171,7 @@ public class UnitAttachment extends DefaultAttachment
 	// damage related
 	private boolean m_isTwoHit = false;
 	private boolean m_canBeDamaged = false;
-	private int m_maxDamage = -1; // -1 if can't be damaged
+	private int m_maxDamage = 2; // this is bombing damage, not hitpoints. default of 2 means that factories will take 2x the territory value they are in, of damage.
 	private int m_maxOperationalDamage = -1; // -1 if can't be disabled
 	private boolean m_canDieFromReachingMaxDamage = false;
 	
@@ -642,21 +642,28 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isSea;
 	}
 	
+	// DO NOT REMOVE, this is an important convenience method for xmls
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsFactory(final String s)
 	{
-		m_isFactory = getBool(s);
-	}
-	
-	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setIsFactory(final Boolean s)
-	{
-		m_isFactory = s;
-	}
-	
-	public boolean getIsFactory()
-	{
-		return m_isFactory;
+		final boolean factory = getBool(s);
+		setCanBeDamaged(s);
+		setIsInfrastructure(s);
+		setCanProduceUnits(s);
+		setIsConstruction(s);
+		if (factory)
+		{
+			setConstructionType("factory");
+			setMaxConstructionsPerTypePerTerr("1");
+			setConstructionsPerTerrPerTypePerTurn("1");
+		}
+		else
+		{
+			// return to defaults
+			setConstructionType("none");
+			setMaxConstructionsPerTypePerTerr("-1");
+			setConstructionsPerTerrPerTypePerTurn("-1");
+		}
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2385,13 +2392,13 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		if (m_isAir)
 		{
-			if (m_isSea || m_isFactory || m_isSub || m_transportCost != -1 ||
+			if (m_isSea /*|| m_isFactory*/|| m_isSub || m_transportCost != -1 ||
 						m_carrierCapacity != -1 || m_canBlitz || m_canBombard || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isCombatTransport)
 				throw new GameParseException("air units can not have certain properties, " + thisErrorMsg());
 		}
 		else if (m_isSea)
 		{
-			if (m_canIntercept || m_canEscort || m_canBlitz || m_isAir || m_isFactory || m_isStrategicBomber || m_carrierCost != -1
+			if (m_canIntercept || m_canEscort || m_canBlitz || m_isAir /*|| m_isFactory*/|| m_isStrategicBomber || m_carrierCost != -1
 						|| m_transportCost != -1 || m_isMarine || m_isInfantry || m_isLandTransport || m_isAirTransportable || m_isAirTransport || m_isKamikaze)
 				throw new GameParseException("sea units can not have certain properties, " + thisErrorMsg());
 		}
@@ -2454,8 +2461,7 @@ public class UnitAttachment extends DefaultAttachment
 			for (final String[] combo : m_requiresUnits)
 				getListedUnits(combo);
 		}
-		if ((m_canBeDamaged && (m_maxDamage < 1)) || (!m_canBeDamaged && !m_isFactory && (m_maxDamage >= 0)) || (m_canDieFromReachingMaxDamage && !(m_maxDamage >= 0 || m_isFactory))
-					|| (m_canBeDamaged && m_isFactory))
+		if ((m_canBeDamaged && m_maxDamage < 1) || (m_canDieFromReachingMaxDamage && m_maxDamage < 1) || (!m_canBeDamaged && m_canDieFromReachingMaxDamage))
 		{
 			throw new GameParseException("something wrong with canBeDamaged or maxDamage or canDieFromReachingMaxDamage or isFactory, " + thisErrorMsg());
 		}
@@ -2576,7 +2582,7 @@ public class UnitAttachment extends DefaultAttachment
 					+ "  attack:" + m_attack
 					+ "  defense:" + m_defense
 					+ "  isTwoHit:" + m_isTwoHit
-					+ "  isFactory:" + m_isFactory
+					// + "  isFactory:" + m_isFactory
 					+ "  canBlitz:" + m_canBlitz
 					+ "  artillerySupportable:" + m_artillerySupportable
 					+ "  artillery:" + m_artillery
@@ -2685,9 +2691,9 @@ public class UnitAttachment extends DefaultAttachment
 			stats.append(getMovement(player) + " Movement, ");
 		if (m_isTwoHit)
 			stats.append("Two Hitpoints, ");
-		if ((m_isFactory || m_canProduceUnits) && m_canProduceXUnits < 0)
+		if ((m_canProduceUnits /*|| m_isFactory*/) && m_canProduceXUnits < 0)
 			stats.append("can Produce Units Up To Territory Value, ");
-		else if ((m_isFactory || m_canProduceUnits) && m_canProduceXUnits > 0)
+		else if ((m_canProduceUnits /*|| m_isFactory*/) && m_canProduceXUnits > 0)
 			stats.append("can Produce " + m_canProduceXUnits + " Units, ");
 		if (m_createsUnitsList != null && m_createsUnitsList.size() == 1)
 			stats.append("Produces " + m_createsUnitsList.totalValues() + " " + m_createsUnitsList.keySet().iterator().next().getName() + " Each Turn, ");
@@ -2736,29 +2742,29 @@ public class UnitAttachment extends DefaultAttachment
 		// line break
 		if (useHTML)
 			stats.append("<br /> &nbsp;&nbsp;&nbsp;&nbsp; ");
-		if (m_isInfrastructure || m_isFactory)
+		if (m_isInfrastructure /*|| m_isFactory*/)
 			stats.append("can be Captured, ");
-		if (m_isConstruction || m_isFactory)
+		if (m_isConstruction /*|| m_isFactory*/)
 			stats.append("can be Placed Without Factory, ");
-		if ((m_canBeDamaged || m_isFactory) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
+		if ((m_canBeDamaged /*|| m_isFactory*/) && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
 		{
 			stats.append("can be Damaged By Raids, ");
 			if (m_canDieFromReachingMaxDamage)
 				stats.append("will Die If Max Damage Reached, ");
 		}
-		else if ((m_canBeDamaged || m_isFactory) && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+		else if ((m_canBeDamaged /*|| m_isFactory*/) && games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
 		{
 			stats.append("can be Damaged By Raids, ");
 			if (m_maxOperationalDamage > -1)
 				stats.append(m_maxOperationalDamage + " Max Operational Damage, ");
-			if ((m_canProduceUnits || m_isFactory) && m_canProduceXUnits < 0)
+			if ((m_canProduceUnits /*|| m_isFactory*/) && m_canProduceXUnits < 0)
 				stats.append("Total Damage up to " + (m_maxDamage > -1 ? m_maxDamage : 2) + "x Territory Value, ");
 			else if (m_maxDamage > -1)
 				stats.append(m_maxDamage + " Max Total Damage, ");
 			if (m_canDieFromReachingMaxDamage)
 				stats.append("will Die If Max Damage Reached, ");
 		}
-		else if (m_canBeDamaged || m_isFactory)
+		else if (m_canBeDamaged /*|| m_isFactory*/)
 			stats.append("can be Attacked By Raids, ");
 		if (m_isAirBase && games.strategy.triplea.Properties.getScramble_Rules_In_Effect(getData()))
 			stats.append("can Allow Scrambling, ");

@@ -105,7 +105,9 @@ public class NCM_Task
 					final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
 					if (!Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer).match(unit))
 						return false;
-					if (Matches.UnitIsFactory.match(unit) && ua.getDefense(unit.getOwner()) <= 0)
+					if (Matches.UnitIsInfrastructure.match(unit) && ua.getDefense(unit.getOwner()) <= 0)
+						return false;
+					if (Matches.UnitCanProduceUnits.match(unit) && ua.getDefense(unit.getOwner()) <= 0)
 						return false;
 					if (recruitsAsHashSet.contains(unit)) // If we've already recruited this unit
 						return false;
@@ -699,7 +701,7 @@ public class NCM_Task
 		final List<Territory> ourCaps = DUtils.GetAllOurCaps(m_data, player);
 		if (ourCaps.contains(m_target))
 			return; // If this is one of our caps, don't invalidate it's threats (we can't really threaten enemy attacks with it, cause we need it safe)
-		if (m_target.getUnits().getMatches(Matches.UnitIsFactory).size() > 0) // If this is a factory ter, don't invalidate it's threats (we don't want to attack neighbors that get taken over from fact ters
+		if (m_target.getUnits().getMatches(Matches.UnitCanProduceUnits).size() > 0) // If this is a factory ter, don't invalidate it's threats (we don't want to attack neighbors that get taken over from fact ters
 			return;
 		if (m_taskType == NCM_TaskType.Land_Reinforce_FrontLine)
 		{

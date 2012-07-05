@@ -8,7 +8,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.image.MapImage;
@@ -82,7 +81,7 @@ public class UnitsDrawer implements IDrawable
 		final PlayerID owner = data.getPlayerList().getPlayerID(m_playerName);
 		Image img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
 		// figure the unitDamage here, for disabled or not
-		if ((UnitAttachment.get(type).getIsFactory() || UnitAttachment.get(type).getCanBeDamaged()) && (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
+		if (Matches.UnitTypeCanBeDamaged.match(type) && (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
 		{
 			// checks to see if this is being carried with a mouse over, or is in a territory.
 			if (m_territoryName.length() != 0)
@@ -103,7 +102,7 @@ public class UnitsDrawer implements IDrawable
 				img = m_uiContext.getUnitImageFactory().getImage(type, owner, data, m_damaged, m_disabled);
 			}
 		}
-		if (!m_damaged && (UnitAttachment.get(type).getIsFactory() || UnitAttachment.get(type).getCanBeDamaged())
+		if (!m_damaged && Matches.UnitTypeCanBeDamaged.match(type)
 					&& (isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)))
 		{
 			// checks to see if this is being carried with a mouse over, or is in a territory.
@@ -171,7 +170,7 @@ public class UnitsDrawer implements IDrawable
 			}
 		}
 		// Display Factory Damage
-		if ((isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) && (UnitAttachment.get(type).getIsFactory() || UnitAttachment.get(type).getCanBeDamaged()))
+		if ((isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) && Matches.UnitTypeCanBeDamaged.match(type))
 		{
 			displayFactoryDamage(bounds, data, graphics, type);
 		}

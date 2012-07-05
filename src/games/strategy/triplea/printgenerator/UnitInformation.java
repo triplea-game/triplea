@@ -64,7 +64,8 @@ class UnitInformation
 				unitInformation.write(",");
 			}
 			unitInformation.write("\r\n");
-			unitInformation.write("Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?" + ",Factory?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,Carrier Cost,"
+			unitInformation.write("Unit,Cost,Movement,Attack,Defense,CanBlitz,Artillery?,ArtillerySupportable?"
+						+ ",Can Produce Units?,Marine?,Transport Cost,AA Gun?,Air Unit?,Strategic Bomber?,Carrier Cost,"
 						+ "Sea Unit?,Two Hit?,Transport Capacity,Carrier Capacity,Submarine?,Destroyer?");
 			unitInformation.write("\r\n");
 			while (m_unitTypeIterator.hasNext())
@@ -83,7 +84,7 @@ class UnitInformation
 				unitInformation.write(currentAttachment.getMovement(PlayerID.NULL_PLAYERID) + "," + currentAttachment.getAttack(PlayerID.NULL_PLAYERID) + ","
 							+ currentAttachment.getDefense(PlayerID.NULL_PLAYERID) + "," + (currentAttachment.getCanBlitz(PlayerID.NULL_PLAYERID) == false ? "-" : "true") + ","
 							+ (currentAttachment.getArtillery() == false ? "-" : "true") + "," + (currentAttachment.getArtillerySupportable() == false ? "-" : "true") + ","
-							+ (currentAttachment.getIsFactory() == false ? "-" : "true") + "," + (currentAttachment.getIsMarine() == false ? "-" : "true") + ","
+							+ (currentAttachment.getCanProduceUnits() == false ? "-" : "true") + "," + (currentAttachment.getIsMarine() == false ? "-" : "true") + ","
 							+ (currentAttachment.getTransportCost() == -1 ? "-" : currentAttachment.getTransportCost()) + ","
 							+ (Matches.UnitTypeIsAAforAnything.match(currentType) == false ? "-" : "true") + ","
 							+ (currentAttachment.getIsAir() == false ? "-" : "true") + "," + (currentAttachment.getIsStrategicBomber() == false ? "-" : "true") + ","

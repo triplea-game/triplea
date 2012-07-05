@@ -705,7 +705,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				getDisplay(bridge).bombingResults(m_battleID, m_dice, cost);
 				// Record production lost
 				DelegateFinder.moveDelegate(m_data).PUsLost(m_battleSite, cost);
-				final Collection<Unit> damagedFactory = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged);
+				final Collection<Unit> damagedFactory = Match.getMatches(m_battleSite.getUnits().getUnits(), Matches.UnitCanBeDamaged);
 				final IntegerMap<Unit> hits = new IntegerMap<Unit>();
 				for (final Unit factory : damagedFactory)
 				{

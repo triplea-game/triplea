@@ -214,7 +214,7 @@ public class DoNonCombatMove
 				continue;
 			final List<Unit> terUnits = ter.getUnits().getMatches(DUtils.CompMatchAnd(Matches.unitIsOwnedBy(player), Matches.unitHasMovementLeft, Matches.UnitIsNotAir));
 			// If this ter has a factory
-			if (ter.getUnits().getMatches(Matches.UnitIsFactory).size() > 0)
+			if (ter.getUnits().getMatches(Matches.UnitCanProduceUnitsAndCanBeDamaged).size() > 0)
 			{
 				final Unit firstAA = DUtils.GetFirstUnitMatching(terUnits, Matches.UnitIsAAforAnything, 0);
 				if (firstAA != null)

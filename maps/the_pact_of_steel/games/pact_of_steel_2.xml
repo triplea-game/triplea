@@ -1767,7 +1767,7 @@
 			isSub								values: allows the unit to roll dice before other units, and submerge or retreat from battle even on defense, and if using ww2v3 rules not be hit by air unless the enemy has an isDestroyer
 			
 			canBeDamaged						values: sets if a unit can be attacked by strategic bombing raids or by rockets.  isFactory also allows these things
-			maxDamage							values: is the total damage the unit can take.  If a factory, and canProduceXUnits = -1 or is missing then maxDamage will be a multiple of the territory value (maxDamage defaults to 2 if canProduceXUnits = -1), otherwise it will be a set number 
+			maxDamage							values: is the total bombing damage the unit can take (defaults to 2 if not set).  If a factory, and canProduceXUnits = -1 or is missing then maxDamage will be a multiple of the territory value (maxDamage defaults to 2 if canProduceXUnits = -1), otherwise it will be a set number 
 															So for example, if the unit isFactory Or canProduceUnits, And canProduceXUnits = -1, And maxDamage = 3, THEN you will be able to do 3x the territory value in damage to this unit. 
 															If However, canProduceXUnits = 2, and maxDamage = 3, then you can do up to 3 damage to this unit.
 			maxOperationalDamage				values: is used with certain features like isAirBase, repairsUnits, and givesMovement to determine if those features work or not based on the current damage of this unit. A disabled unit will not participate in combat too.  Does Not work with isFactory or canProduceUnits.
@@ -1795,7 +1795,9 @@
 			fuelCost							values: fuelCost is a list of at least one resource that get used up for each point of movementCost a unit does.  (can have multiple). example: <option name="fuelCost" value="Fuel" count="5"/> and <option name="fuelCost" value="PUs" count="1"/>
 	
 	production related:
-			isFactory							values: allows a unit to produce other units, not participate in combat, be placed anywhere you owned at the beginning of the turn, be capturable, and be damaged by rockets and raids
+			isFactory							values: just sets: canBeDamaged, isInfrastructure, canProduceUnits, isConstruction, constructionType = "factory", maxConstructionsPerTypePerTerr = 1, constructionsPerTerrPerTypePerTurn = 1
+															isFactory is no longer its own variable. Instead isFactory just sets the above variables. setting is factory will possibly overwrite those variables, so do not use it if you are planning to set those variables to something else.
+															allows a unit to produce other units, not participate in combat, be placed anywhere you owned at the beginning of the turn, be capturable, and be damaged by rockets and raids
 			canProduceXUnits					values: allows a factory-type unit to produce a set amount of units no matter where it is located.  if -1 then it will produce at the value of the territory where it is.  
 															if greater than -1, you must have "maxDamage" set to some number if the unit is also "canBeDamaged" or "isFactory".  defaults to -1 if missing
 			canProduceUnits						values: allows a unit to be a factory, without all the other things that come with being a factory (like capturable, land, non-combat, etc).  So if you want flying factories, go ahead. Just don't complain if you get errors.

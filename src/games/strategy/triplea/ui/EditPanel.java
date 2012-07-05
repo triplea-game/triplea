@@ -419,7 +419,7 @@ public class EditPanel extends ActionPanel
 			{
 				m_currentAction = this;
 				setWidgetActivation();
-				final List<Unit> units = Match.getMatches(m_selectedUnits, Matches.UnitIsFactoryOrCanBeDamaged);
+				final List<Unit> units = Match.getMatches(m_selectedUnits, Matches.UnitCanBeDamaged);
 				if (units == null || units.isEmpty() || !m_selectedTerritory.getUnits().getUnits().containsAll(units))
 				{
 					CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -477,7 +477,7 @@ public class EditPanel extends ActionPanel
 			if (Match.someMatch(allUnitTypes, Matches.UnitTypeIsTwoHit))
 				add(new JButton(m_changeUnitHitDamageAction));
 			if ((games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data) || games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
-						&& Match.someMatch(allUnitTypes, Matches.UnitTypeIsFactoryOrCanBeDamaged))
+						&& Match.someMatch(allUnitTypes, Matches.UnitTypeCanBeDamaged))
 				add(new JButton(m_changeUnitBombingDamageAction));
 		} finally
 		{

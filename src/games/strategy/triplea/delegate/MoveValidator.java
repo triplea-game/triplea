@@ -728,7 +728,7 @@ public class MoveValidator
 	 */
 	public static boolean noEnemyUnitsOnPathMiddleSteps(final Route route, final PlayerID player, final GameData data)
 	{
-		final CompositeMatch<Unit> alliedOrNonCombat = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.enemyUnit(player, data).invert(), Matches.unitIsSubmerged(data));
+		final CompositeMatch<Unit> alliedOrNonCombat = new CompositeMatchOr<Unit>(Matches.UnitIsInfrastructure, Matches.enemyUnit(player, data).invert(), Matches.unitIsSubmerged(data));
 		// Submerged units do not interfere with movement
 		for (final Territory current : route.getMiddleSteps())
 		{
@@ -744,10 +744,10 @@ public class MoveValidator
 	 */
 	public static boolean onlyIgnoredUnitsOnPath(final Route route, final PlayerID player, final GameData data, final boolean ignoreRouteEnd)
 	{
-		final CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
-		final CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand,
+		final CompositeMatch<Unit> subOnly = new CompositeMatchOr<Unit>(Matches.UnitIsInfrastructure, Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
+		final CompositeMatch<Unit> transportOnly = new CompositeMatchOr<Unit>(Matches.UnitIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand,
 					Matches.enemyUnit(player, data).invert());
-		final CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsFactoryOrIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand,
+		final CompositeMatch<Unit> transportOrSubOnly = new CompositeMatchOr<Unit>(Matches.UnitIsInfrastructure, Matches.UnitIsTransportButNotCombatTransport, Matches.UnitIsLand,
 					Matches.UnitIsSub, Matches.enemyUnit(player, data).invert());
 		final boolean getIgnoreTransportInMovement = isIgnoreTransportInMovement(data);
 		final boolean getIgnoreSubInMovement = isIgnoreSubInMovement(data);

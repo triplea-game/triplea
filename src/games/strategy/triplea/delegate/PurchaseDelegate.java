@@ -48,6 +48,7 @@ import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.CompositeMatchOr;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -264,62 +265,70 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		}
 		// Get the map of the factories that were repaired and how much for each
 		final Map<Unit, Integer> repairMap = getTerritoryRepairs(repairRules);
-		if (!repairMap.isEmpty())
+		if (repairMap.isEmpty())
+			return null;
+		
+		final boolean SBRaffectsUnitProduction = games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData());
+		final boolean damageFromBombingDoneToUnitsInsteadOfTerritories = games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData());
+		final Collection<Unit> repairUnits = new ArrayList<Unit>(repairMap.keySet());
+		for (final Unit u : repairUnits)
 		{
-			final Collection<Unit> repairUnits = repairMap.keySet();
-			for (final Unit u : repairUnits)
+			if (SBRaffectsUnitProduction)
 			{
-				if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
+				final int repairCount = repairMap.get(u);
+				// Display appropriate damaged/repaired factory and factory damage totals
+				if (repairCount > 0)
 				{
-					final int repairCount = repairMap.get(u);
-					// Display appropriate damaged/repaired factory and factory damage totals
-					if (repairCount > 0)
+					final Territory terr = u.getTerritoryUnitIsIn();
+					final TerritoryAttachment ta = TerritoryAttachment.get(terr);
+					final int currentDamage = ta.getUnitProduction();
+					final IntegerMap<Unit> hits = new IntegerMap<Unit>();
+					final int newDamageTotal = ta.getProduction() - (currentDamage + repairCount);
+					if (newDamageTotal < 0)
 					{
-						final Territory terr = u.getTerritoryUnitIsIn();
-						final TerritoryAttachment ta = TerritoryAttachment.get(terr);
-						final int currentDamage = ta.getUnitProduction();
-						final IntegerMap<Unit> hits = new IntegerMap<Unit>();
-						final int newDamageTotal = ta.getProduction() - (currentDamage + repairCount);
-						if (newDamageTotal < 0)
-						{
-							return "You cannot repair more than a territory has been hit";
-						}
-						hits.put(u, newDamageTotal);
-						changes.add(ChangeFactory.unitsHit(hits));
-						changes.add(ChangeFactory.attachmentPropertyChange(ta, Integer.toString(currentDamage + repairCount), "unitProduction"));
+						return "You cannot repair more than a territory has been hit";
 					}
+					hits.put(u, newDamageTotal);
+					changes.add(ChangeFactory.unitsHit(hits));
+					changes.add(ChangeFactory.attachmentPropertyChange(ta, Integer.toString(currentDamage + repairCount), "unitProduction"));
 				}
-				else
-				// if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(m_data))
+			}
+			else
+			// if (damageFromBombingDoneToUnitsInsteadOfTerritories)
+			{
+				final int repairCount = repairMap.get(u);
+				// Display appropriate damaged/repaired factory and factory damage totals
+				if (repairCount > 0)
 				{
-					final int repairCount = repairMap.get(u);
-					// Display appropriate damaged/repaired factory and factory damage totals
-					if (repairCount > 0)
+					final IntegerMap<Unit> hits = new IntegerMap<Unit>();
+					final TripleAUnit taUnit = (TripleAUnit) u;
+					final int newDamageTotal = taUnit.getUnitDamage() - repairCount;
+					if (newDamageTotal < 0)
 					{
-						final IntegerMap<Unit> hits = new IntegerMap<Unit>();
-						final TripleAUnit taUnit = (TripleAUnit) u;
-						final int newDamageTotal = taUnit.getUnitDamage() - repairCount;
-						if (newDamageTotal < 0)
-						{
-							return "You cannot repair more than a unit has been hit";
-						}
-						hits.put(u, newDamageTotal);
-						changes.add(ChangeFactory.unitsHit(hits));
-						changes.add(ChangeFactory.unitPropertyChange(u, newDamageTotal, TripleAUnit.UNIT_DAMAGE));
+						return "You cannot repair more than a unit has been hit";
 					}
+					hits.put(u, newDamageTotal);
+					changes.add(ChangeFactory.unitsHit(hits));
+					changes.add(ChangeFactory.unitPropertyChange(u, newDamageTotal, TripleAUnit.UNIT_DAMAGE));
 				}
 			}
 		}
-		else
-		{
-			return null;
-			// return "m_repairCount is empty";
-		}
+		
 		// add changes for spent resources
 		final String remaining = removeFromPlayer(m_player, costs, changes, totalUnits);
 		addHistoryEvent(totalUnits, remaining, true);
 		// commit changes
 		m_bridge.addChange(changes);
+		if (damageFromBombingDoneToUnitsInsteadOfTerritories)
+		{
+			for (final Territory element : getData().getMap().getTerritories())
+			{
+				if (Util.someIntersect(element.getUnits().getUnits(), repairUnits))
+				{
+					element.notifyChanged();
+				}
+			}
+		}
 		return null;
 	}
 	

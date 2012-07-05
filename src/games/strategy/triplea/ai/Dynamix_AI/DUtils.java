@@ -1181,8 +1181,10 @@ public class DUtils
 			result += 250; // Give enemy caps a large score boost
 		if (ourCap.getName().equals(target.getName()))
 			result += 500; // Give our cap a huge score boost
-		if (target.getUnits().getMatches(Matches.UnitIsFactory).size() > 0)
+		if (target.getUnits().someMatch(Matches.UnitCanProduceUnits))
 			result += 100; // Give enemy factory ters a boost
+		if (target.getUnits().someMatch(Matches.UnitIsInfrastructure))
+			result += 20; // Give enemy infrastructure a boost
 		result += TerritoryAttachment.get(target).getProduction() * 10;
 		result += data.getMap().getNeighbors(target, Matches.TerritoryIsLand).size() * 2;
 		result += data.getMap().getNeighbors(target, DMatches.territoryIsOwnedByNNEnemy(data, player)).size();
@@ -1347,7 +1349,7 @@ public class DUtils
 				}
 			}
 			final Territory closestFactToOurTer = DUtils.GetClosestTerMatchingXAndHavingRouteMatchingY(data, neighborWeAreInThatsClosestToOurCap,
-						Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitIsFactory, Matches.unitIsEnemyOf(data, player))), Matches.TerritoryIsLand);
+						Matches.territoryHasUnitsThatMatch(new CompositeMatchAnd<Unit>(Matches.UnitCanProduceUnits, Matches.unitIsEnemyOf(data, player))), Matches.TerritoryIsLand);
 			// 3) Are we moving towards the closest enemy factory?
 			if (DUtils.GetJumpsFromXToY_PassableLand(data, ter, closestFactToOurTer) < DUtils.GetJumpsFromXToY_PassableLand(data, neighborWeAreInThatsClosestToOurCap, closestFactToOurTer))
 			{
@@ -1804,7 +1806,7 @@ public class DUtils
 			final int turnsToGetThere = (int) Math.ceil((double) dist / (double) movementSpeed);
 			result -= turnsToGetThere; // We want to reinforce as quickly as possible
 			// If this is an AA, and we're reinforcing a ter with a factory and no AA yet, we boost the score for this AA
-			if (Matches.UnitIsAAforAnything.match(unit) && task.GetTarget().getUnits().getMatches(Matches.UnitIsFactory).size() > 0
+			if (Matches.UnitIsAAforAnything.match(unit) && task.GetTarget().getUnits().getMatches(Matches.UnitCanProduceUnitsAndCanBeDamaged).size() > 0
 						&& task.GetTarget().getUnits().getMatches(Matches.UnitIsAAforAnything).isEmpty())
 				result += 10;
 		}
@@ -1817,7 +1819,7 @@ public class DUtils
 			final int turnsToGetThere = (int) Math.ceil((double) dist / (double) movementSpeed);
 			result -= turnsToGetThere; // We want to reinforce as quickly as possible
 			// If this is an AA, and we're reinforcing a ter with a factory and no AA yet, we boost the score for this AA
-			if (Matches.UnitIsAAforAnything.match(unit) && task.GetTarget().getUnits().getMatches(Matches.UnitIsFactory).size() > 0
+			if (Matches.UnitIsAAforAnything.match(unit) && task.GetTarget().getUnits().getMatches(Matches.UnitCanProduceUnitsAndCanBeDamaged).size() > 0
 						&& task.GetTarget().getUnits().getMatches(Matches.UnitIsAAforAnything).isEmpty())
 				result += 10;
 		}
@@ -3359,7 +3361,7 @@ public class DUtils
 			final UnitType ut = testUnit.getUnitType();
 			final UnitAttachment ua = UnitAttachment.get(ut);
 			// TODO: we should allow limited purchasing of special units, instead of preventing all purchasing of special units
-			if (Matches.UnitIsSea.match(testUnit) || Matches.UnitIsFactoryOrIsInfrastructure.match(testUnit) || Matches.UnitHasMaxBuildRestrictions.match(testUnit))
+			if (Matches.UnitIsSea.match(testUnit) || Matches.UnitIsInfrastructure.match(testUnit) || Matches.UnitHasMaxBuildRestrictions.match(testUnit))
 				continue;
 			if (!match.match(testUnit))
 				continue;

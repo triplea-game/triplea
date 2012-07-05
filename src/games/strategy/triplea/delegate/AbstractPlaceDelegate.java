@@ -301,7 +301,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final boolean didIt = canWeConsumeUnits(placeableUnits, at, true, change);
 		if (!didIt)
 			throw new IllegalStateException("Something wrong with consuming/upgrading units");
-		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(placeableUnits, Matches.UnitIsFactoryOrIsInfrastructure);
+		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(placeableUnits, Matches.UnitIsInfrastructure);
 		change.add(DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, player));
 		// can we move planes to land there
 		final String movedAirTranscriptTextForHistory = moveAirOntoNewCarriers(at, placeableUnits, player, change);
@@ -485,14 +485,14 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			// check to see if we have a factory, only fighters from territories
 			// that could
 			// have produced the carrier can move there
-			if (!neighbor.getUnits().someMatch(Matches.UnitIsFactoryOrCanProduceUnits))
+			if (!neighbor.getUnits().someMatch(Matches.UnitCanProduceUnits))
 				continue;
 			// are there some fighers there that can be moved?
 			if (!neighbor.getUnits().someMatch(ownedFighters))
 				continue;
 			if (wasConquered(neighbor))
 				continue;
-			if (Match.someMatch(getAlreadyProduced(neighbor), Matches.UnitIsFactoryOrCanProduceUnits))
+			if (Match.someMatch(getAlreadyProduced(neighbor), Matches.UnitCanProduceUnits))
 				continue;
 			final List<Unit> fighters = neighbor.getUnits().getMatches(ownedFighters);
 			while (fighters.size() > 0 && AirMovementValidator.carrierCost(fighters) > capacity)
@@ -623,8 +623,8 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (!producer.getUnits().someMatch(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)))
 		{
 			// check to see if we are producing a factory
-			if (Match.someMatch(testUnits, Matches.UnitIsFactory))
-				return null;
+			/*if (Match.someMatch(testUnits, Matches.UnitIsFactory))
+				return null;*/
 			if (Match.someMatch(testUnits, Matches.UnitIsConstruction))
 			{
 				if (howManyOfEachConstructionCanPlace(to, testUnits, player).totalValues() > 0) // No error, Construction to place
@@ -634,7 +634,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			return "No Factory in " + producer.getName();
 		}
 		// check we havent just put a factory there (should we be checking producer?)
-		if (Match.someMatch(getAlreadyProduced(producer), Matches.UnitIsFactoryOrCanProduceUnits) || Match.someMatch(getAlreadyProduced(to), Matches.UnitIsFactoryOrCanProduceUnits))
+		if (Match.someMatch(getAlreadyProduced(producer), Matches.UnitCanProduceUnits) || Match.someMatch(getAlreadyProduced(to), Matches.UnitCanProduceUnits))
 		{
 			if (Match.someMatch(testUnits, Matches.UnitIsConstruction) && howManyOfEachConstructionCanPlace(to, testUnits, player).totalValues() > 0) // you can still place a Construction
 				return null;
@@ -712,13 +712,13 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			return "Cannot place these units in " + to.getName();
 		}
 		final IntegerMap<String> constructionMap = howManyOfEachConstructionCanPlace(to, units, player);
-		for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsFactoryOrConstruction))
+		for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction))
 		{
 			final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
-			if (ua.getIsFactory() && !ua.getIsConstruction())
+			/*if (ua.getIsFactory() && !ua.getIsConstruction())
 				constructionMap.add("factory", -1);
-			else
-				constructionMap.add(ua.getConstructionType(), -1);
+			else*/
+			constructionMap.add(ua.getConstructionType(), -1);
 		}
 		if (!constructionMap.isPositive())
 			return "Too many constructions in " + to.getName();
@@ -846,16 +846,16 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
 		if (wasFactoryThereAtStart || isPlayerAllowedToPlacementAnyTerritoryOwnedLand(player))
 		{
-			final CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotFactoryOrConstruction); // we add factories and constructions later
-			final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotFactoryOrConstruction);
+			final CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotConstruction); // we add factories and constructions later
+			final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
 			placeableUnits.addAll(Match.getMatches(units, groundUnits));
 			placeableUnits.addAll(Match.getMatches(units, airUnits));
 		}
-		if (Match.someMatch(units, Matches.UnitIsFactoryOrConstruction))
+		if (Match.someMatch(units, Matches.UnitIsConstruction))
 		{
 			final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, units, player);
 			final Collection<Unit> skipUnit = new ArrayList<Unit>();
-			for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsFactoryOrConstruction))
+			for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction))
 			{
 				final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
 				if (maxUnits > 0)
@@ -1064,7 +1064,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		// return 0 if less than 0
 		if (production < 0)
 			return 0;
-		production += Match.countMatches(alreadProducedUnits, Matches.UnitIsFactoryOrConstruction);
+		production += Match.countMatches(alreadProducedUnits, Matches.UnitIsConstruction);
 		
 		// Now we check if units we have already produced here could be produced by a different producer
 		int unitCountHaveToAndHaveBeenBeProducedHere = unitCountAlreadyProduced;
@@ -1163,7 +1163,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	 */
 	public IntegerMap<String> howManyOfEachConstructionCanPlace(final Territory to, final Collection<Unit> units, final PlayerID player)
 	{
-		if (units == null || units.isEmpty() || !Match.someMatch(units, Matches.UnitIsFactoryOrConstruction))
+		if (units == null || units.isEmpty() || !Match.someMatch(units, Matches.UnitIsConstruction))
 			return new IntegerMap<String>();
 		final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
 		final Collection<Unit> unitsInTO = to.getUnits().getUnits();
@@ -1173,7 +1173,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final IntegerMap<String> unitMapMaxType = new IntegerMap<String>();
 		final IntegerMap<String> unitMapTypePerTurn = new IntegerMap<String>();
 		final int maxFactory = games.strategy.triplea.Properties.getFactoriesPerCountry(getData());
-		final Iterator<Unit> unitHeldIter = Match.getMatches(units, Matches.UnitIsFactoryOrConstruction).iterator();
+		final Iterator<Unit> unitHeldIter = Match.getMatches(units, Matches.UnitIsConstruction).iterator();
 		final TerritoryAttachment terrAttachment = TerritoryAttachment.get(to);
 		int toProduction = 0;
 		if (terrAttachment != null)
@@ -1197,18 +1197,12 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			// remove any units that require other units to be consumed on creation (veqryn)
 			if (Matches.UnitConsumesUnitsOnCreation.match(currentUnit) && Matches.UnitWhichConsumesUnitsHasRequiredUnits(unitsAtStartOfTurnInTO, to).invert().match(currentUnit))
 				continue;
-			if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
-			{
-				unitMapHeld.add("factory", 1);
-				unitMapMaxType.put("factory", maxFactory);
-				unitMapTypePerTurn.put("factory", 1);
-			}
+			unitMapHeld.add(ua.getConstructionType(), 1);
+			unitMapTypePerTurn.put(ua.getConstructionType(), ua.getConstructionsPerTerrPerTypePerTurn());
+			if (ua.getConstructionType().equals("factory"))
+				unitMapMaxType.put(ua.getConstructionType(), maxFactory);
 			else
-			{
-				unitMapHeld.add(ua.getConstructionType(), 1);
 				unitMapMaxType.put(ua.getConstructionType(), ua.getMaxConstructionsPerTypePerTerr());
-				unitMapTypePerTurn.put(ua.getConstructionType(), ua.getConstructionsPerTerrPerTypePerTurn());
-			}
 		}
 		final boolean moreWithoutFactory = games.strategy.triplea.Properties.getMoreConstructionsWithoutFactory(getData());
 		final boolean moreWithFactory = games.strategy.triplea.Properties.getMoreConstructionsWithFactory(getData());
@@ -1216,15 +1210,15 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final boolean wasFactoryThereAtStart = wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(to, player);
 		// build an integer map of each construction unit in the territory
 		final IntegerMap<String> unitMapTO = new IntegerMap<String>();
-		if (Match.someMatch(unitsInTO, Matches.UnitIsFactoryOrConstruction))
+		if (Match.someMatch(unitsInTO, Matches.UnitIsConstruction))
 		{
-			for (final Unit currentUnit : Match.getMatches(unitsInTO, Matches.UnitIsFactoryOrConstruction))
+			for (final Unit currentUnit : Match.getMatches(unitsInTO, Matches.UnitIsConstruction))
 			{
 				final UnitAttachment ua = UnitAttachment.get(currentUnit.getUnitType());
-				if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
+				/*if (Matches.UnitIsFactory.match(currentUnit) && !ua.getIsConstruction())
 					unitMapTO.add("factory", 1);
-				else
-					unitMapTO.add(ua.getConstructionType(), 1);
+				else*/
+				unitMapTO.add(ua.getConstructionType(), 1);
 			}
 			// account for units already in the territory, based on max
 			final Iterator<String> mapString = unitMapHeld.keySet().iterator();
@@ -1240,7 +1234,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			}
 		}
 		// deal with already placed units
-		final Iterator<Unit> unitAlready = Match.getMatches(unitsPlacedAlready, Matches.UnitIsFactoryOrConstruction).iterator();
+		final Iterator<Unit> unitAlready = Match.getMatches(unitsPlacedAlready, Matches.UnitIsConstruction).iterator();
 		while (unitAlready.hasNext())
 		{
 			final Unit currentUnit = unitAlready.next();
@@ -1264,12 +1258,11 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	public int howManyOfConstructionUnit(final Unit unit, final IntegerMap<String> constructionsMap)
 	{
 		final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-		if (!ua.getIsFactory()
-					&& (!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1 || ua.getMaxConstructionsPerTypePerTerr() < 1 || constructionsMap.getInt(ua.getConstructionType()) == 0))
+		if (/*!ua.getIsFactory() &&*/(!ua.getIsConstruction() || ua.getConstructionsPerTerrPerTypePerTurn() < 1 || ua.getMaxConstructionsPerTypePerTerr() < 1))
 			return 0;
-		if (ua.getIsFactory() && !ua.getIsConstruction())
-			return constructionsMap.getInt("factory");
-		return constructionsMap.getInt(ua.getConstructionType());
+		/*if (ua.getIsFactory() && !ua.getIsConstruction())
+			return constructionsMap.getInt("factory");*/
+		return Math.max(0, constructionsMap.getInt(ua.getConstructionType()));
 	}
 	
 	/**
@@ -1473,7 +1466,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	 */
 	private PlayerID getOriginalFactoryOwner(final Territory territory)
 	{
-		final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.UnitIsFactoryOrCanProduceUnits);
+		final Collection<Unit> factoryUnits = territory.getUnits().getMatches(Matches.UnitCanProduceUnits);
 		if (factoryUnits.size() == 0)
 			throw new IllegalStateException("No factory in territory:" + territory);
 		final Iterator<Unit> iter = factoryUnits.iterator();

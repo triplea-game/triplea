@@ -238,7 +238,7 @@ public class EditValidator
 		// all units should be same owner
 		if (!Match.allMatch(units, Matches.unitIsOwnedBy(player)))
 			return "Not all units have the same owner";
-		if (!Match.allMatch(units, Matches.UnitIsFactoryOrCanBeDamaged))
+		if (!Match.allMatch(units, Matches.UnitCanBeDamaged))
 			return "Not all units can take bombing damage";
 		for (final Unit u : units)
 		{

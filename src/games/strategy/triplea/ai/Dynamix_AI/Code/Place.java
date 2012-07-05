@@ -154,11 +154,11 @@ public class Place
 			final List<Unit> units = GetPlayerUnitsMatchingUnitsInList(factory.GetSampleUnits(), player);
 			doPlace(ai, bestFactoryPlaceTer, units, placeDelegate);
 		}
-		if (player.getUnits().someMatch(Matches.UnitIsFactory)) // If we have leftover factories to place
+		if (player.getUnits().someMatch(Matches.UnitCanProduceUnitsAndIsConstruction)) // If we have leftover factories to place
 		{
 			DUtils.Log(Level.FINE, "  There are factories leftover from the purchase phase, so looping and placing extra factories.");
 			final List<Unit> leftoverUnits = DUtils.ToList(player.getUnits().getUnits());
-			while (Match.someMatch(leftoverUnits, Matches.UnitIsFactory))
+			while (Match.someMatch(leftoverUnits, Matches.UnitCanProduceUnitsAndIsConstruction))
 			{
 				final Territory bestFactoryPlaceTer = CalculateBestFactoryBuildTerritory(data, player);
 				if (bestFactoryPlaceTer == null) // This should not be happening!
@@ -169,7 +169,7 @@ public class Place
 				Unit nextFactoryToPlace = null;
 				for (final Unit unit : leftoverUnits)
 				{
-					if (Matches.UnitIsFactory.match(unit))
+					if (Matches.UnitCanProduceUnitsAndIsConstruction.match(unit))
 					{
 						nextFactoryToPlace = unit;
 						break;
@@ -321,7 +321,7 @@ public class Place
 		int highestTerScore = Integer.MIN_VALUE;
 		for (final Territory ter : possibles)
 		{
-			if (ter.getUnits().someMatch(Matches.UnitIsFactory))
+			if (ter.getUnits().someMatch(Matches.UnitCanProduceUnitsAndIsConstruction))
 				continue;
 			if (StatusCenter.get(data, player).GetStatusOfTerritory(ter).WasAttacked())
 				continue;

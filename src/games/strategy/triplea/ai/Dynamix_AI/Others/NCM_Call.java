@@ -98,7 +98,9 @@ public class NCM_Call
 					final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
 					if (!Matches.unitIsOwnedBy(GlobalCenter.CurrentPlayer).match(unit))
 						return false;
-					if (Matches.UnitIsFactory.match(unit) && ua.getDefense(unit.getOwner()) <= 0)
+					if (Matches.UnitIsInfrastructure.match(unit) && ua.getDefense(unit.getOwner()) <= 0)
+						return false;
+					if (Matches.UnitCanProduceUnits.match(unit) && ua.getDefense(unit.getOwner()) <= 0)
 						return false;
 					if (recruitsAsHashSet.contains(unit)) // If we've already recruited this unit
 						return false;
@@ -115,7 +117,7 @@ public class NCM_Call
 				if (Matches.UnitIsAAforAnything.match(unit))
 				{
 					// If this is an AA and we've already added an AA as a recruit or (the from ter has a factory and this is the only AA), skip AA
-					if (addedAA || (ter.getUnits().getMatches(Matches.UnitIsFactory).size() > 0 && ter.getUnits().getMatches(Matches.UnitIsAAforAnything).size() <= 1))
+					if (addedAA || (ter.getUnits().getMatches(Matches.UnitCanProduceUnitsAndCanBeDamaged).size() > 0 && ter.getUnits().getMatches(Matches.UnitIsAAforAnything).size() <= 1))
 						continue;
 					else
 						addedAA = true;

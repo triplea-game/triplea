@@ -401,7 +401,7 @@ public class TripleAUnit extends Unit
 	 */
 	public int getHowMuchMoreDamageCanThisUnitTake(final Unit u, final Territory t)
 	{
-		if (!Matches.UnitIsFactoryOrCanBeDamaged.match(u))
+		if (!Matches.UnitCanBeDamaged.match(u))
 			return 0;
 		final TripleAUnit taUnit = (TripleAUnit) u;
 		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(u.getData()))
@@ -426,7 +426,7 @@ public class TripleAUnit extends Unit
 	 */
 	public int getHowMuchDamageCanThisUnitTakeTotal(final Unit u, final Territory t)
 	{
-		if (!Matches.UnitIsFactoryOrCanBeDamaged.match(u))
+		if (!Matches.UnitCanBeDamaged.match(u))
 			return -1;
 		final UnitAttachment ua = UnitAttachment.get(u.getType());
 		final TerritoryAttachment ta = TerritoryAttachment.get(t);
@@ -449,7 +449,7 @@ public class TripleAUnit extends Unit
 			}
 			else
 			{
-				if (Matches.UnitIsFactoryOrCanProduceUnits.match(u))
+				if (Matches.UnitCanProduceUnits.match(u))
 				{
 					if (ua.getCanProduceXUnits() < 0)
 					{
@@ -517,7 +517,7 @@ public class TripleAUnit extends Unit
 	{
 		if (u == null)
 			return 0;
-		if (!Matches.UnitIsFactoryOrCanProduceUnits.match(u))
+		if (!Matches.UnitCanProduceUnits.match(u))
 			return 0;
 		int productionCapacity = 0;
 		final UnitAttachment ua = UnitAttachment.get(u.getType());

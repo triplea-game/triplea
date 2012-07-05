@@ -165,7 +165,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 				return true;
 			if (t.getOwner().equals(this))
 				ownsLand = true;
-			if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.UnitIsFactoryOrCanProduceUnits)))
+			if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.UnitCanProduceUnits)))
 				hasFactory = true;
 			if (ownsLand && hasFactory)
 				return true;

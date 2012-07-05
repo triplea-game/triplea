@@ -45,7 +45,7 @@ public class UnitsThatCantFightUtil
 		{
 			// get all owned non-combat units
 			final CompositeMatch<Unit> ownedUnitsMatch = new CompositeMatchAnd<Unit>();
-			ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsFactoryOrIsInfrastructure));
+			ownedUnitsMatch.add(new InverseMatch<Unit>(Matches.UnitIsInfrastructure));
 			if (current.isWater())
 			{
 				ownedUnitsMatch.add(Matches.UnitIsLand.invert());

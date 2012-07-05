@@ -93,7 +93,7 @@ public class WW2V3_42_Test extends TestCase
 			}
 		});
 		// remove the russian units
-		removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.UnitIsNotFactory));
+		removeFrom(karrelia, karrelia.getUnits().getMatches(Matches.UnitCanBeDamaged.invert()));
 		// move the bomber to attack
 		move(germany.getUnits().getMatches(Matches.UnitIsStrategicBomber), new Route(germany, sz5, karrelia));
 		// move an infantry to invade

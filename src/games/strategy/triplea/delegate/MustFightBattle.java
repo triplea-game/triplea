@@ -346,7 +346,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		writeUnitsToHistory(bridge);
 		// it is possible that no attacking units are present, if so end now
 		// changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
-		if (Match.getMatches(m_attackingUnits, Matches.UnitIsDestructibleInCombatShort).size() == 0)
+		if (Match.getMatches(m_attackingUnits, Matches.UnitIsNotInfrastructure).size() == 0)
 		{
 			endBattle(bridge);
 			defenderWins(bridge);
@@ -354,7 +354,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		// it is possible that no defending units exist
 		// changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
-		if (Match.getMatches(m_defendingUnits, Matches.UnitIsDestructibleInCombatShort).size() == 0)
+		if (Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructure).size() == 0)
 		{
 			endBattle(bridge);
 			attackerWins(bridge);
@@ -823,7 +823,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				// changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
-				if (Match.getMatches(m_attackingUnits, Matches.UnitIsDestructibleInCombatShort).size() == 0)
+				if (Match.getMatches(m_attackingUnits, Matches.UnitIsNotInfrastructure).size() == 0)
 				{
 					if (!isTransportCasualtiesRestricted())
 					{
@@ -858,7 +858,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					}
 				}
 				// changed to only look at units that can be destroyed in combat, and therefore not include factories, aaguns, and infrastructure.
-				else if (Match.getMatches(m_defendingUnits, Matches.UnitIsDestructibleInCombatShort).size() == 0)
+				else if (Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructure).size() == 0)
 				{
 					if (isTransportCasualtiesRestricted())
 					{
@@ -1771,12 +1771,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (attacker)
 		{
 			hasUnitsThatCanRollLeft = Match.someMatch(m_attackingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(attacker, m_data)));
-			unitsToKill = Match.getMatches(m_attackingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsDestructibleInCombatShort));
+			unitsToKill = Match.getMatches(m_attackingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsNotInfrastructure));
 		}
 		else
 		{
 			hasUnitsThatCanRollLeft = Match.someMatch(m_defendingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsSupporterOrHasCombatAbility(attacker, m_data)));
-			unitsToKill = Match.getMatches(m_defendingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsDestructibleInCombatShort));
+			unitsToKill = Match.getMatches(m_defendingUnits, new CompositeMatchAnd<Unit>(notSubmergedAndType, Matches.UnitIsNotInfrastructure));
 		}
 		final boolean enemy = !attacker;
 		final boolean enemyHasUnitsThatCanRollLeft;
@@ -2026,7 +2026,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	{
 		// TODO - check within the method for the bombarding limitations
 		final Collection<Unit> bombard = getBombardingUnits();
-		final Collection<Unit> attacked = Match.getMatches(m_defendingUnits, Matches.UnitIsDestructibleInCombat(m_attacker, m_battleSite, m_data));
+		final Collection<Unit> attacked = Match.getMatches(m_defendingUnits, Matches.UnitIsNotInfrastructureAndNotCapturedOnEntering(m_attacker, m_battleSite, m_data));
 		// bombarding units cant move after bombarding
 		if (!m_headless)
 		{
@@ -2050,7 +2050,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	private void fireSuicideUnitsAttack(final IDelegateBridge bridge)
 	{
 		// TODO: add a global toggle for returning fire (Veqryn)
-		final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructibleInCombat(m_attacker, m_battleSite, m_data),
+		final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsNotInfrastructureAndNotCapturedOnEntering(m_attacker, m_battleSite, m_data),
 					Matches.UnitIsSuicide.invert(), Matches.unitIsBeingTransported().invert());
 		final Collection<Unit> suicideAttackers = Match.getMatches(m_attackingUnits, Matches.UnitIsSuicide);
 		final Collection<Unit> attackedDefenders = Match.getMatches(m_defendingUnits, attackableUnits);
@@ -2070,7 +2070,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (isDefendingSuicideAndMunitionUnitsDoNotFire())
 			return;
 		// TODO: add a global toggle for returning fire (Veqryn)
-		final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsDestructibleInCombatShort,
+		final CompositeMatch<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsNotInfrastructure,
 					Matches.UnitIsSuicide.invert(), Matches.unitIsBeingTransported().invert());
 		final Collection<Unit> suicideDefenders = Match.getMatches(m_defendingUnits, Matches.UnitIsSuicide);
 		final Collection<Unit> attackedAttackers = Match.getMatches(m_attackingUnits, attackableUnits);
@@ -2324,13 +2324,9 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	 */
 	private List<Unit> removeNonCombatants(final Collection<Unit> units, final boolean attacking, final PlayerID player)
 	{
-		final CompositeMatch<Unit> combat = new CompositeMatchAnd<Unit>();
-		combat.add(Matches.UnitIsFactory.invert());
+		final List<Unit> unitList = new ArrayList<Unit>(units);
 		if (m_battleSite.isWater())
-		{
-			combat.add(Matches.UnitIsNotLand);
-		}
-		final List<Unit> unitList = Match.getMatches(units, combat);
+			unitList.removeAll(Match.getMatches(unitList, Matches.UnitIsLand));
 		// still allow infrastructure type units that can provide support have combat abilities
 		final CompositeMatch<Unit> infrastructureNotSupporterAndNotHasCombatAbilities = new CompositeMatchAnd<Unit>(Matches.UnitIsInfrastructure,
 					Matches.UnitIsSupporterOrHasCombatAbility(attacking, m_data).invert());

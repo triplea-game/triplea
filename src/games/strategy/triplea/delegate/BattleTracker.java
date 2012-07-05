@@ -663,7 +663,7 @@ public class BattleTracker implements java.io.Serializable
 		}
 		// Remove any bombing raids against captured territory
 		// TODO: see if necessary
-		if (Match.someMatch(territory.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, id), Matches.UnitIsFactoryOrCanBeDamaged)))
+		if (Match.someMatch(territory.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.unitIsEnemyOf(data, id), Matches.UnitCanBeDamaged)))
 		{
 			final IBattle bombingBattle = getPendingBattle(territory, true);
 			if (bombingBattle != null)
@@ -693,7 +693,7 @@ public class BattleTracker implements java.io.Serializable
 				bridge.getHistoryWriter().addChildToEvent(takeOverFriendlyTerritories.toString());
 				if (changeTracker != null)
 					changeTracker.addChange(takeOverFriendlyTerritories);
-				final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsFactoryOrIsInfrastructure);
+				final Collection<Unit> units = Match.getMatches(item.getUnits().getUnits(), Matches.UnitIsInfrastructure);
 				if (!units.isEmpty())
 				{
 					final Change takeOverNonComUnits = ChangeFactory.changeOwner(units, terrOrigOwner, territory);
@@ -744,8 +744,7 @@ public class BattleTracker implements java.io.Serializable
 		// destroy any disabled units owned by the enemy that are NOT infrastructure or factories
 		if (true)
 		{
-			final CompositeMatch<Unit> enemyToBeDestroyed = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitIsDisabled(), Matches.UnitIsInfrastructure.invert(),
-						Matches.UnitIsFactory.invert());
+			final CompositeMatch<Unit> enemyToBeDestroyed = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitIsDisabled(), Matches.UnitIsInfrastructure.invert());
 			final Collection<Unit> destroyed = territory.getUnits().getMatches(enemyToBeDestroyed);
 			if (!destroyed.isEmpty())
 			{
@@ -757,7 +756,7 @@ public class BattleTracker implements java.io.Serializable
 			}
 		}
 		// take over non combatants
-		final CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitIsFactoryOrIsInfrastructure);
+		final CompositeMatch<Unit> enemyNonCom = new CompositeMatchAnd<Unit>(Matches.enemyUnit(id, data), Matches.UnitIsInfrastructure);
 		final CompositeMatch<Unit> willBeCaptured = new CompositeMatchOr<Unit>(enemyNonCom, Matches.UnitCanBeCapturedOnEnteringToInThisTerritory(id, territory, data));
 		final Collection<Unit> nonCom = territory.getUnits().getMatches(willBeCaptured);
 		// change any units that change unit types on capture
@@ -833,7 +832,7 @@ public class BattleTracker implements java.io.Serializable
 			return ChangeFactory.EMPTY_CHANGE;
 		// if just an enemy factory &/or AA then no battle
 		final Collection<Unit> enemyUnits = Match.getMatches(site.getUnits().getUnits(), Matches.enemyUnit(id, data));
-		if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsFactoryOrIsInfrastructure))
+		if (route.getEnd() != null && Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure))
 			return ChangeFactory.EMPTY_CHANGE;
 		IBattle battle = getPendingBattle(site, false);
 		// If there are no pending battles- add one for units already in the combat zone

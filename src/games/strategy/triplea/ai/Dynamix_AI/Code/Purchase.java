@@ -39,7 +39,6 @@ import games.strategy.triplea.ai.Dynamix_AI.Others.NCM_TargetCalculator;
 import games.strategy.triplea.ai.Dynamix_AI.Others.NCM_Task;
 import games.strategy.triplea.ai.Dynamix_AI.Others.Purchase_UnitPlacementLocationSorter;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.oddsCalculator.ta.AggregateResults;
@@ -187,7 +186,7 @@ public class Purchase
 				int factoryCost = 0;
 				for (final ProductionRule rule : player.getProductionFrontier().getRules())
 				{
-					if (UnitAttachment.get((UnitType) rule.getResults().keySet().toArray()[0]).getIsFactory())
+					if (Matches.UnitTypeCanProduceUnitsAndIsConstruction.match((UnitType) rule.getResults().keySet().iterator().next()))
 					{
 						factory = ((UnitType) rule.getResults().keySet().toArray()[0]).create(player);
 						factoryCost = rule.getCosts().getInt(data.getResourceList().getResource(Constants.PUS));
@@ -201,7 +200,7 @@ public class Purchase
 					{
 						if (ter.isWater())
 							continue;
-						if (ter.getUnits().someMatch(Matches.UnitIsFactory)) // It already has a factory
+						if (ter.getUnits().someMatch(Matches.UnitCanProduceUnitsAndIsConstruction)) // It already has a factory
 							continue;
 						final List<Unit> attackers = DUtils.GetSPNNEnemyWithLUnitsThatCanReach(data, ter, player, Matches.TerritoryIsLandOrWater);
 						final List<Unit> defenders = new ArrayList<Unit>(ter.getUnits().getUnits());
@@ -241,7 +240,7 @@ public class Purchase
 			{
 				for (final Territory fixTerr : ourTers)
 				{
-					if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
+					if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(fixTerr))
 						continue;
 					final TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
 					if (bombingDoneOnTerritories)
@@ -255,7 +254,7 @@ public class Purchase
 							DUtils.Log(Level.FINER, "    Purchasing repairs for a territory. Territory: {0} Repair Amount: {1}", fixTerr.getName(), repairAmount);
 							final IntegerMap<RepairRule> repairMap = new IntegerMap<RepairRule>();
 							repairMap.add(rrule, repairAmount);
-							factoryRepairs.put(Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged).iterator().next(), repairMap);
+							factoryRepairs.put(Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairMap);
 							madeRepairs = true;
 							PUsToSpend -= repairAmount;
 							totalRepairCosts += repairAmount;
@@ -263,7 +262,7 @@ public class Purchase
 					}
 					else if (bombingDoneOnUnitsDirectly) // If bombing in this map is done to units instead of territories, we figure repair amount based on [max - current] unit production capacity
 					{
-						for (final Unit unitToFix : Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged))
+						for (final Unit unitToFix : Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitCanBeDamaged))
 						{
 							if (unitToFix == null || !unitToFix.getType().equals(rrule.getResults().keySet().iterator().next()))
 								continue;
@@ -310,7 +309,8 @@ public class Purchase
 		// TODO: first, we do not even know if this map has units that can bomb a factory
 		// second, we should check and see if the enemy has any of these bombers within range
 		// third, we should check if we have an AA unit nearby already, that we can move to the factory instead of producing a new one
-		if (!ter.isWater() && ter.getOwner().getName().equals(player.getName()) && ter.getUnits().someMatch(Matches.UnitIsFactory) && !ter.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly)
+		if (!ter.isWater() && ter.getOwner().equals(player) && ter.getUnits().someMatch(Matches.UnitCanProduceUnitsAndCanBeDamaged)
+					&& !ter.getUnits().someMatch(Matches.UnitIsAAforBombingThisUnitOnly)
 					&& TerritoryAttachment.get(ter) != null && DUtils.GetCheckedUnitProduction(ter) > 0)
 		{
 			Unit aa = null;
@@ -372,10 +372,10 @@ public class Purchase
 			// I am considering also telling it not to purchase anything with unitPlacementRestrictions, or requiresUnits, or consumesUnits
 			if (data.getMap().getNeighbors(ter, DUtils.CompMatchAnd(Matches.TerritoryIsWater, Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(data, player)).invert())).size() > 0) // Has a safe port
 				return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player,
-							DUtils.CompMatchAnd(Matches.UnitIsNotAA, Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.UnitHasMaxBuildRestrictions.invert()))), purchaser, data, player);
+							DUtils.CompMatchAnd(Matches.UnitIsNotAA, Matches.UnitIsInfrastructure.invert(), Matches.UnitHasMaxBuildRestrictions.invert()))), purchaser, data, player);
 			else
 				return new PurchaseGroup(Collections.singleton(DUtils.GetRandomUnitForPlayerMatching(player,
-							DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.UnitHasMaxBuildRestrictions.invert()))),
+							DUtils.CompMatchAnd(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsInfrastructure.invert(), Matches.UnitHasMaxBuildRestrictions.invert()))),
 							purchaser, data, player);
 		}
 		Integer productionSpaceLeft = DUtils.GetCheckedUnitProduction(ter);

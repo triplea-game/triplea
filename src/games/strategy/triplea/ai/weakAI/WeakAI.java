@@ -211,7 +211,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final Territory capitol = TerritoryAttachment.getCapital(player, data);
 		if (capitol == null || !capitol.getOwner().equals(player))
 			return;
-		List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.UnitIsFactoryOrIsInfrastructure.invert());
+		List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.UnitIsInfrastructure.invert());
 		unitsToLoad = Match.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getWhoAmI()));
 		for (final Territory neighbor : data.getMap().getNeighbors(capitol))
 		{
@@ -528,7 +528,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			moveOfType.add(Matches.UnitIsNotAA);
 			// we can never move factories
 			moveOfType.add(Matches.UnitIsNotStatic(player));
-			moveOfType.add(Matches.UnitIsNotFactory);
+			moveOfType.add(Matches.UnitIsInfrastructure);
 			moveOfType.add(Matches.UnitIsLand);
 			final CompositeMatchAnd<Territory> moveThrough = new CompositeMatchAnd<Territory>(new InverseMatch<Territory>(Matches.TerritoryIsImpassable), new InverseMatch<Territory>(
 						Matches.TerritoryIsNeutralButNotWater), Matches.TerritoryIsLand);
@@ -655,12 +655,19 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					if (!ta1.isCapital() && ta2.isCapital())
 						return 1; // -1;
 				}
-				final boolean factoryInT1 = o1.getUnits().someMatch(Matches.UnitIsFactory);
-				final boolean factoryInT2 = o2.getUnits().someMatch(Matches.UnitIsFactory);
-				// next take territories with factories
+				final boolean factoryInT1 = o1.getUnits().someMatch(Matches.UnitCanProduceUnits);
+				final boolean factoryInT2 = o2.getUnits().someMatch(Matches.UnitCanProduceUnits);
+				// next take territories which can produce
 				if (factoryInT1 && !factoryInT2)
 					return -1; // 1;
 				if (!factoryInT1 && factoryInT2)
+					return 1; // -1;
+				final boolean infrastructureInT1 = o1.getUnits().someMatch(Matches.UnitIsInfrastructure);
+				final boolean infrastructureInT2 = o2.getUnits().someMatch(Matches.UnitIsInfrastructure);
+				// next take territories with infrastructure
+				if (infrastructureInT1 && !infrastructureInT2)
+					return -1; // 1;
+				if (!infrastructureInT1 && infrastructureInT2)
 					return 1; // -1;
 				// randomness is a better guide than any other metric
 				// sort the remaining randomly
@@ -690,8 +697,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					Collections.sort(unitsSortedByCost, AIUtils.getCostComparator());
 					for (final Unit unit : unitsSortedByCost)
 					{
-						final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotFactory, Matches.UnitIsNotStatic(player),
-									Matches.UnitIsNotAA);
+						final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotInfrastructure, Matches.UnitIsNotStatic(player),
+									Matches.UnitIsNotAA, Matches.UnitCanNotMoveDuringCombatMove.invert());
 						if (!unitsAlreadyMoved.contains(unit) && match.match(unit))
 						{
 							moveRoutes.add(data.getMap().getRoute(attackFrom, enemy));
@@ -733,7 +740,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				});
 				attackable.add(Matches.UnitIsNotAA);
 				attackable.add(Matches.UnitIsNotStatic(player));
-				attackable.add(Matches.UnitIsNotFactory);
+				attackable.add(Matches.UnitIsNotInfrastructure);
+				attackable.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
 				attackable.add(Matches.UnitIsNotSea);
 				final Set<Territory> dontMoveFrom = new HashSet<Territory>();
 				// find our strength that we can attack with
@@ -780,7 +788,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	
 	private void populateBomberCombat(final GameData data, final List<Collection<Unit>> moveUnits, final List<Route> moveRoutes, final PlayerID player)
 	{
-		final Match<Territory> enemyFactory = Matches.territoryHasEnemyFactory(getPlayerBridge().getGameData(), player);
+		final Match<Territory> enemyFactory = Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(getPlayerBridge().getGameData(), player, Matches.UnitCanProduceUnitsAndCanBeDamaged);
 		final Match<Unit> ownBomber = new CompositeMatchAnd<Unit>(Matches.UnitIsStrategicBomber, Matches.unitIsOwnedBy(player));
 		for (final Territory t : data.getMap().getTerritories())
 		{
@@ -836,7 +844,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				for (final ProductionRule rule : rules)
 				{
 					final UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
-					if (Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsFactoryOrIsInfrastructure.match(results)
+					if (Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsInfrastructure.match(results)
 								|| Matches.UnitTypeIsAAforAnything.match(results)
 								|| Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.unitTypeIsStatic(player).match(results))
 					{
@@ -884,8 +892,8 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final List<ProductionRule> rules = player.getProductionFrontier().getRules();
 		final IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
 		List<RepairRule> rrules = Collections.emptyList();
-		final CompositeMatch<Unit> ourFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsFactory);
-		final List<Territory> rfactories = Utils.findUnitTerr(data, player, ourFactories);
+		final CompositeMatch<Unit> ourFactories = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitCanProduceUnits);
+		final List<Territory> rfactories = Match.getMatches(Utils.findUnitTerr(data, player, ourFactories), Matches.isTerritoryOwnedBy(player));
 		if (player.getRepairFrontier() != null && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data)) // figure out if anything needs to be repaired
 		{
 			rrules = player.getRepairFrontier().getRules();
@@ -900,7 +908,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			int maxProduction = 0;
 			for (final Territory fixTerr : rfactories)
 			{
-				if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
+				if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(fixTerr))
 					continue;
 				final TerritoryAttachment ta = TerritoryAttachment.get(fixTerr);
 				maxProduction += ta.getProduction();
@@ -919,7 +927,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				for (final RepairRule rrule : rrules)
 				{
-					if (!Matches.territoryHasOwnedFactory(data, player).match(capitol))
+					if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(capitol))
 						continue;
 					final TerritoryAttachment ta = TerritoryAttachment.get(capitol);
 					diff = ta.getProduction() - ta.getUnitProduction();
@@ -935,7 +943,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 						else
 							currentProduction += diff + ta.getUnitProduction();
 						repairMap.add(rrule, diff);
-						repair.put(Match.getMatches(capitol.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged).iterator().next(), repairMap);
+						repair.put(Match.getMatches(capitol.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairMap);
 						leftToSpend -= diff;
 						purchaseDelegate.purchaseRepair(repair);
 						repair.clear();
@@ -951,7 +959,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					for (final Territory fixTerr : rfactories)
 					{
-						if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
+						if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(fixTerr))
 							continue;
 						// we will repair the first territories in the list as much as we can, until we fulfill the condition, then skip all other territories
 						if (currentProduction >= maxUnits)
@@ -973,7 +981,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 							else
 								currentProduction += diff + ta.getUnitProduction();
 							repairMap.add(rrule, diff);
-							repair.put(Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitIsFactoryOrCanBeDamaged).iterator().next(), repairMap);
+							repair.put(Match.getMatches(fixTerr.getUnits().getUnits(), Matches.UnitCanBeDamaged).iterator().next(), repairMap);
 							leftToSpend -= diff;
 							purchaseDelegate.purchaseRepair(repair);
 							repair.clear();
@@ -1006,7 +1014,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			Collections.shuffle(rfactories); // we should sort this
 			for (final Territory fixTerr : rfactories)
 			{
-				if (!Matches.territoryHasOwnedFactory(data, player).match(fixTerr))
+				if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(fixTerr))
 					continue;
 				final Unit possibleFactoryNeedingRepair = TripleAUnit.getBiggestProducer(Match.getMatches(fixTerr.getUnits().getUnits(), ourFactories), fixTerr, player, data, false);
 				if (Matches.UnitHasSomeUnitDamage().match(possibleFactoryNeedingRepair))
@@ -1034,7 +1042,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				{
 					if (capUnit == null || !capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next()))
 						continue;
-					if (!Matches.territoryHasOwnedFactory(data, player).match(capitol))
+					if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(capitol))
 						continue;
 					final TripleAUnit taUnit = (TripleAUnit) capUnit;
 					diff = taUnit.getUnitDamage();
@@ -1069,7 +1077,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					{
 						if (fixUnit == null || !fixUnit.getType().equals(rrule.getResults().keySet().iterator().next()))
 							continue;
-						if (!Matches.territoryHasOwnedFactory(data, player).match(fixUnit.getTerritoryUnitIsIn()))
+						if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(fixUnit.getTerritoryUnitIsIn()))
 							continue;
 						// we will repair the first territories in the list as much as we can, until we fulfill the condition, then skip all other territories
 						if (currentProduction >= maxUnits)
@@ -1115,7 +1123,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			for (final ProductionRule rule : rules)
 			{
 				final UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
-				if (Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsFactoryOrIsInfrastructure.match(results) || Matches.UnitTypeIsAAforAnything.match(results)
+				if (Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsInfrastructure.match(results) || Matches.UnitTypeIsAAforAnything.match(results)
 							|| Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.unitTypeIsStatic(player).match(results))
 				{
 					continue;
@@ -1183,7 +1191,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		Collections.shuffle(randomTerritories);
 		for (final Territory t : randomTerritories)
 		{
-			if (t != capitol && t.getOwner().equals(player) && t.getUnits().someMatch(Matches.UnitIsFactory))
+			if (t != capitol && t.getOwner().equals(player) && t.getUnits().someMatch(Matches.UnitCanProduceUnits))
 			{
 				placeAllWeCanOn(data, t, placeDelegate, player);
 			}
@@ -1287,12 +1295,10 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		if (potentialTargets == null || potentialTargets.isEmpty())
 			return null;
-		if (!Match.someMatch(potentialTargets, Matches.UnitIsFactoryOrCanProduceUnits))
+		final Collection<Unit> factories = Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);
+		if (factories.isEmpty())
 			return potentialTargets.iterator().next();
-		if (Match.someMatch(potentialTargets, Matches.UnitIsFactory))
-			return Match.getMatches(potentialTargets, Matches.UnitIsFactory).iterator().next();
-		else
-			return Match.getMatches(potentialTargets, Matches.UnitCanProduceUnits).iterator().next();
+		return factories.iterator().next();
 	}
 	
 	/*

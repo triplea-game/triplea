@@ -1,4 +1,15 @@
 Changes for 1.6.1
+* Fixing null pointer error in Easy AI purchasing algorithm for getting costs of units. (veqryn)
+
+* Changing maxDamage to default to 2 instead of -1. This is for bombing type damage, and it acts as either a multiplier of territory value or as a hard set number depending on canProduceXUnits. (veqryn)
+
+* Fixing AIs to no longer use isFactory, and instead use things like canProduceUnits, etc. (veqryn)
+
+* Abstracting isFactory setting and matches to use the component parts. (veqryn)
+
+* Deleting unit attachment, "isFactory", but keeping the setter so that old xml's will not break. 
+    setting isFactory now just sets: canBeDamaged, isInfrastructure, canProduceUnits, isConstruction, constructionType = "factory", maxConstructionsPerTypePerTerr = 1, constructionsPerTerrPerTypePerTurn = 1. (veqryn)
+
 * Created new game option, "Submarines Prevent Unescorted Amphibious Assaults", that prevent unescorted transports from conducting amphibious assaults. (veqryn)
 
 * Created new game option, "Kamikaze Suicide Attacks Only Where Battles Are", and implemented it. (veqryn)

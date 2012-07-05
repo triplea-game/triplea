@@ -316,7 +316,7 @@ public class SUtils
 	 */
 	public static IntegerMap<Territory> targetTerritories(final GameData data, final PlayerID player, final int tDistance)
 	{
-		final CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsFactory);
+		final CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitCanProduceUnits);
 		final List<Territory> playerFactories = SUtils.findUnitTerr(data, player, enemyFactory);
 		final IntegerMap<Territory> targetMap = new IntegerMap<Territory>();
 		final int checkDist = tDistance - 1;
@@ -467,7 +467,7 @@ public class SUtils
 		 */
 		if (evalDistance > 10) // limit to 10..really is 9 because 10 will be a factor of 0
 			return -1;
-		final CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>(Matches.UnitIsFactory, Matches.enemyUnit(player, data));
+		final CompositeMatch<Unit> enemyFactory = new CompositeMatchAnd<Unit>(Matches.UnitCanProduceUnits, Matches.enemyUnit(player, data));
 		// CompositeMatch<Unit> alliedFactory = new CompositeMatchAnd<Unit>(Matches.UnitIsFactory, Matches.alliedUnit(player, data));
 		int bestFit = -1;
 		float maxScore = 0.0F;
@@ -1269,7 +1269,7 @@ public class SUtils
 		int aUnit = 0, lUnit = 0;
 		// find all territories for this player which only contain planes
 		final CompositeMatch<Unit> airUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsAir);
-		final CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.isUnitAllied(player, data), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
+		final CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.isUnitAllied(player, data), Matches.UnitIsLand, Matches.UnitIsNotInfrastructure);
 		final List<Territory> owned = allOurTerritories(data, player);
 		for (final Territory t : owned)
 		{
@@ -1290,7 +1290,7 @@ public class SUtils
 	 */
 	public static Territory findNearestMaxUnits(final PlayerID player, final GameData data, final Territory t, final boolean friendly)
 	{
-		final CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotFactory);
+		final CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotInfrastructure);
 		final CompositeMatch<Unit> enemyLandUnit = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), landUnit);
 		final CompositeMatch<Unit> ourLandUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), landUnit);
 		int totUnit = 0;
@@ -2331,7 +2331,7 @@ public class SUtils
 		float strength = 0.0F;
 		final Unit u = units;
 		final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
-		if (unitAttachment.getIsFactory() || unitAttachment.getIsInfrastructure())
+		if (unitAttachment.getIsInfrastructure())
 		{
 			// nothing
 		}
@@ -2386,7 +2386,7 @@ public class SUtils
 		for (final Unit u : units)
 		{
 			final UnitAttachment unitAttachment = UnitAttachment.get(u.getType());
-			if (unitAttachment.getIsFactory() || unitAttachment.getIsInfrastructure())
+			if (unitAttachment.getIsInfrastructure())
 				continue;
 			else if (unitAttachment.getIsSea() == sea)
 			{
@@ -2447,7 +2447,7 @@ public class SUtils
 		final CompositeMatch<Territory> endConditionEnemyLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
 		final CompositeMatch<Territory> routeConditionLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
 		final List<Territory> owned = allOurTerritories(data, player);
-		final List<Territory> existingFactories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
+		final List<Territory> existingFactories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitCanProduceUnits); // TODO: maybe use Matches.UnitCanProduceUnitsAndIsConstruction
 		owned.removeAll(existingFactories);
 		final List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
 		owned.removeAll(isWaterConvoy);
@@ -2471,7 +2471,8 @@ public class SUtils
 				int territoryValue = 0;
 				if (hasLandRouteToEnemyOwnedCapitol(prodTerr, player, data))
 					territoryValue += 2;
-				if (findNearest(prodTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data), data) != null)
+				if (findNearest(prodTerr, Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits),
+							Matches.TerritoryIsNotImpassableToLandUnits(player, data), data) != null)
 					territoryValue += 2;
 				Route r = findNearest(prodTerr, endConditionEnemyLand, routeConditionLand, data);
 				if (r != null)
@@ -2516,7 +2517,8 @@ public class SUtils
 			int territoryValue = 0;
 			if (hasLandRouteToEnemyOwnedCapitol(prodTerr, player, data))
 				territoryValue += 3;
-			if (findNearest(prodTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data), data) != null)
+			if (findNearest(prodTerr, Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits), Matches.TerritoryIsNotImpassableToLandUnits(player, data),
+						data) != null)
 				territoryValue += 1;
 			int dist = distanceToEnemy(prodTerr, data, player, false);
 			if (dist != 0)
@@ -2539,7 +2541,7 @@ public class SUtils
 		for (final Territory t : owned)
 		{
 			final int puValue = TerritoryAttachment.get(t).getProduction();
-			if (puValue < 2 || Matches.territoryHasOwnedFactory(data, player).match(t))
+			if (puValue < 2 || Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(t))
 				continue;
 			final List<Territory> weOwnAll = getNeighboringEnemyLandTerritories(data, player, t);
 			final List<Territory> isWater = SUtils.onlyWaterTerr(data, weOwnAll);
@@ -2601,7 +2603,8 @@ public class SUtils
 			if (badIdea)
 				continue;
 			final Route nearEnemyRoute = findNearest(t, enemyNoWater, alliedNoWater, data);
-			final Route factoryRoute = findNearest(t, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
+			final Route factoryRoute = findNearest(t, Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits),
+						Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
 			if (nearEnemyRoute == null || factoryRoute == null)
 				continue;
 			// int routeLength = nearEnemyRoute.getLength();
@@ -2988,7 +2991,7 @@ public class SUtils
 		final List<Territory> testCapNeighbors = new ArrayList<Territory>(tCopy);
 		final List<Territory> waterNeighbors = new ArrayList<Territory>();
 		final List<Territory> alreadyMovedFrom = new ArrayList<Territory>();
-		final List<Territory> myFactories = findTersWithUnitsMatching(data, player, Matches.UnitIsFactory);
+		final List<Territory> myFactories = findTersWithUnitsMatching(data, player, Matches.UnitCanProduceUnits);
 		final List<Territory> waterFactoryNeighbors = new ArrayList<Territory>();
 		for (final Territory myFactory : myFactories)
 		{
@@ -3276,7 +3279,7 @@ public class SUtils
 				final List<Territory> alreadyAttacked)
 	{
 		final CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotStatic(player),
-					Matches.UnitIsNotFactory, Matches.unitHasMovementLeft);
+					Matches.UnitIsInfrastructure, Matches.unitHasMovementLeft, Matches.UnitCanNotMoveDuringCombatMove.invert());
 		final List<Territory> ourLandNeighbors = getNeighboringLandTerritories(data, player, enemy);
 		float totStrength = 0.0F;
 		final int totList = ourLandNeighbors.size();
@@ -3929,7 +3932,7 @@ public class SUtils
 		{
 			final float eStrength = SUtils.getStrengthOfPotentialAttackers(alliedTerr, data, player, false, false, alreadyAttacked);
 			float ourStrength = SUtils.strengthOfTerritory(data, alliedTerr, player, false, false, false, true);
-			if (Matches.territoryHasAlliedFactory(data, player).match(alliedTerr))
+			if (Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(alliedTerr))
 				ourStrength += ourStrength * 0.25F;
 			if (ourStrength > 3.0F)
 				strengthDiffMap.put(alliedTerr, eStrength * 0.85F - ourStrength);
@@ -4721,7 +4724,7 @@ public class SUtils
 		{
 			return null;
 		}
-		final CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsFactoryOrIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
+		final CompositeMatch<Unit> ignore = new CompositeMatchAnd<Unit>(Matches.UnitIsInfrastructure.invert(), Matches.alliedUnit(player, data).invert());
 		final CompositeMatch<Unit> sub = new CompositeMatchAnd<Unit>(Matches.UnitIsSub.invert());
 		final CompositeMatch<Unit> transport = new CompositeMatchAnd<Unit>(Matches.UnitIsTransport.invert(), Matches.UnitIsLand.invert());
 		final CompositeMatch<Unit> unitCond = ignore;
@@ -4864,13 +4867,13 @@ public class SUtils
 	 */
 	public static boolean territoryHasThreatenedAlliedFactoryNeighbor(final GameData data, final Territory eTerr, final PlayerID player)
 	{
-		if (Matches.territoryHasAlliedFactoryNeighbor(data, player).invert().match(eTerr))
+		if (Matches.territoryHasAlliedNeighborWithAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).invert().match(eTerr))
 			return false;
 		final Set<Territory> aNeighbors = data.getMap().getNeighbors(eTerr);
 		final List<Territory> factTerr = new ArrayList<Territory>();
 		for (final Territory checkTerr : aNeighbors)
 		{
-			if (Matches.territoryHasAlliedFactory(data, player).match(checkTerr))
+			if (Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(checkTerr))
 				factTerr.add(checkTerr);
 		}
 		boolean isThreatened = false;
@@ -4976,13 +4979,15 @@ public class SUtils
 			eTerrValue += Matches.TerritoryIsVictoryCity.match(eTerr) ? 2.0F : 0.0F;
 			final boolean lRCap = hasLandRouteToEnemyOwnedCapitol(eTerr, player, data);
 			eTerrValue += lRCap ? 16.0F : 0.0F; // 16 might be too much, consider changing to 8
-			if (lRCap && (!Matches.territoryHasEnemyFactory(data, player).match(eTerr) && !Matches.territoryHasAlliedFactory(data, player).match(eTerr)))
+			if (lRCap && (!Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits).match(eTerr)
+						&& !Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(eTerr)))
 			{
-				final Route eCapRoute = findNearest(eTerr, Matches.territoryHasEnemyFactory(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
+				final Route eCapRoute = findNearest(eTerr, Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits),
+							Matches.TerritoryIsNotImpassableToLandUnits(player, data), data);
 				if (eCapRoute != null)
 					eTerrValue = Math.max(eTerrValue - 8, eTerrValue - (eCapRoute.getLength() - 1)); // 8 might be too much, consider changing to 4
 			}
-			eTerrValue += Matches.territoryHasEnemyFactoryNeighbor(data, player).match(eTerr) ? 3.0F : 0.0F;
+			eTerrValue += Matches.territoryHasEnemyNonNeutralNeighborWithEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits).match(eTerr) ? 3.0F : 0.0F;
 			int eMinDist = 1000;
 			for (final Territory eTerrCap : enemyCapitals)
 			{
@@ -5000,8 +5005,8 @@ public class SUtils
 				if (island)
 					eTerrValue += 5.0F;
 				eTerrValue += eTerr.getUnits().countMatches(Matches.UnitIsAir) * 2; // bonus for killing air units
-				eTerrValue += Matches.territoryHasEnemyFactory(data, player).match(eTerr) ? 4.0F : 0.0F;
-				eTerrValue += Matches.territoryHasAlliedFactoryNeighbor(data, player).match(eTerr) ? 8.0F : 0.0F;
+				eTerrValue += Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits).match(eTerr) ? 4.0F : 0.0F;
+				eTerrValue += Matches.territoryHasAlliedNeighborWithAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(eTerr) ? 8.0F : 0.0F;
 				// eTerrValue += (data.getMap().getNeighbors(eTerr, Matches.territoryHasAlliedFactory(data, player)).size() > 0 ? 3.0F : 0.0F);
 				eTerrValue += Matches.territoryHasEnemyLandNeighbor(data, player).invert().match(eTerr) ? productionValue + 1 : 0.0F;
 				/*				if (data.getSequence().getRound() == 1)
@@ -5025,7 +5030,7 @@ public class SUtils
 				eTerrValue += (testERoute != null ? productionValue : 0.0F);
 				final float aTerrStrength = strength(eTerr.getUnits().getMatches(Matches.alliedUnit(player, data)), false, false, tFirst);
 				// bonus for allied factory and allied factory with enemy neighbor
-				final boolean hasAlliedFactory = Matches.territoryHasAlliedFactory(data, player).match(eTerr);
+				final boolean hasAlliedFactory = Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(eTerr);
 				if (hasAlliedFactory)
 				{
 					eTerrValue += 4.0F + (hasENeighbors && rankStrength > 5.0F ? 3.0F : 0.0F);
@@ -5174,7 +5179,7 @@ public class SUtils
 			final float productionValue = TerritoryAttachment.get(aTerr).getProduction();
 			float aTerrValue = 0.0F;
 			aTerrValue += Matches.TerritoryIsVictoryCity.match(aTerr) ? 2.0F : 0.0F;
-			aTerrValue += Matches.territoryHasEnemyFactoryNeighbor(data, player).match(aTerr) ? 2.0F : 0.0F;
+			aTerrValue += Matches.territoryHasEnemyNonNeutralNeighborWithEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits).match(aTerr) ? 2.0F : 0.0F;
 			aTerrValue -= data.getMap().getDistance(aTerr, targetCap, Matches.TerritoryIsNotImpassable) - 1;
 			final Territory capTerr = aTerr;
 			/*if (Matches.territoryHasAlliedFactoryNeighbor(data, player).match(aTerr))
@@ -5183,7 +5188,7 @@ public class SUtils
 				if (!neighbors.isEmpty())
 					capTerr = neighbors.iterator().next();
 			}*/
-			if (Matches.territoryHasAlliedFactory(data, player).match(capTerr)) // does this need reinforcing?
+			if (Matches.territoryHasAlliedNeighborWithAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(capTerr)) // does this need reinforcing?
 			{
 				final float addCapValue = aTerr.equals(capTerr) ? 5.0F : 0.0F;
 				if (rankStrength > alliedPotential + localStrength)
@@ -5198,12 +5203,12 @@ public class SUtils
 			final boolean hasENeighbors = Matches.territoryHasEnemyLandNeighbor(data, player).match(aTerr);
 			final Route testERoute = findNearest(aTerr, enemyAndNoWater, noEnemyOrWater, data);
 			aTerrValue += (hasENeighbors ? 1.0F : -1.0F);
-			aTerrValue += (hasENeighbors && Matches.territoryHasAlliedFactoryNeighbor(data, player).match(aTerr)) ? 5.0F : 0.0F;
+			aTerrValue += (hasENeighbors && Matches.territoryHasAlliedNeighborWithAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(aTerr)) ? 5.0F : 0.0F;
 			aTerrValue += (testERoute == null ? -1.0F : -(testERoute.getLength() - 1));
 			aTerrValue += (testERoute != null ? productionValue : 0.0F);
 			final float aTerrStrength = strength(aTerr.getUnits().getMatches(Matches.alliedUnit(player, data)), false, false, tFirst);
 			// bonus for allied factory and allied factory with enemy neighbor
-			final boolean hasAlliedFactory = Matches.territoryHasAlliedFactory(data, player).match(aTerr);
+			final boolean hasAlliedFactory = Matches.territoryIsAlliedAndHasAlliedUnitMatching(data, player, Matches.UnitCanProduceUnits).match(aTerr);
 			if (hasAlliedFactory)
 			{
 				aTerrValue += 4.0F + (hasENeighbors && rankStrength > 5.0F ? 3.0F : 0.0F);

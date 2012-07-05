@@ -259,7 +259,7 @@ public class InitializationDelegate extends BaseDelegate
 			if (!current.getOwner().isNull())
 			{
 				changes.add(origOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
-				final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.UnitIsFactoryOrIsInfrastructure);
+				final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.UnitIsInfrastructure);
 				changes.add(origOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, current.getOwner()));
 				final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
 				if (territoryAttachment == null)

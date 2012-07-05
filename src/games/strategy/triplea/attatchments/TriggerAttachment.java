@@ -1481,7 +1481,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			change.add(ChangeFactory.markNoMovementChange(unit));
 		}
 		// place units
-		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(units, Matches.UnitIsFactoryOrIsInfrastructure);
+		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(units, Matches.UnitIsInfrastructure);
 		change.add(DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, player));
 		final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName() + " has " + MyFormatter.unitsToTextNoOwner(units) + " placed in " + terr.getName();
 		aBridge.getHistoryWriter().startEvent(transcriptText, units);

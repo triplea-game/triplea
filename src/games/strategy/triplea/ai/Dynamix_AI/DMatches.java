@@ -208,10 +208,11 @@ public class DMatches
 		public boolean match(final Unit unit)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-			// TODO: check for infrastructure here? for aa guns?
-			// if (ua.isAA())
-			// return false;
-			if (ua.getIsFactory())
+			if (ua.getIsInfrastructure())
+				return false;
+			if (ua.getCanProduceUnits())
+				return false; // TODO: maybe we can attack, if we have attacking factories?
+			if (ua.getCanNotMoveDuringCombatMove())
 				return false;
 			return true;
 		}
@@ -222,10 +223,7 @@ public class DMatches
 		public boolean match(final Unit unit)
 		{
 			final UnitAttachment ua = UnitAttachment.get(unit.getUnitType());
-			// TODO: check for infrastructure here? for aa guns?
-			// if (ua.isAA())
-			// return false;
-			if (ua.getIsFactory())
+			if (ua.getIsInfrastructure())
 				return false;
 			return true;
 		}
@@ -505,7 +503,7 @@ public class DMatches
 					return false;
 				if (TerritoryAttachment.get(ter) == null || TerritoryAttachment.get(ter).getIsImpassible())
 					return false;
-				if (ter.getUnits().someMatch(Matches.UnitIsFactory))
+				if (ter.getUnits().someMatch(Matches.UnitCanProduceUnits))
 					return true;
 				// Special placement rules for China on ww2v3, etc.
 				if (DUtils.CanPlayerPlaceAnywhere(data, player))

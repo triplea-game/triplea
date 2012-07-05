@@ -1352,7 +1352,7 @@ public class TechAbilityAttachment extends DefaultAttachment
 				{
 					taa = new TechAbilityAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, ta, data);
 					ta.addAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME, taa);
-					final List<UnitType> allFactories = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeIsFactoryOrCanProduceUnits);
+					final List<UnitType> allFactories = Match.getMatches(data.getUnitTypeList().getAllUnitTypes(), Matches.UnitTypeCanProduceUnits);
 					for (final UnitType factory : allFactories)
 					{
 						taa.setProductionBonus("2:" + factory.getName());

@@ -760,7 +760,7 @@ class UnitPanel extends JPanel
 					u.setHits(1);
 				}
 			}
-			if (m_category.getDisabled() && Matches.UnitTypeIsFactoryOrCanBeDamaged.match(m_category.getType()))
+			if (m_category.getDisabled() && Matches.UnitTypeCanBeDamaged.match(m_category.getType()))
 			{
 				final int uDamage = Math.max(0, 1 + UnitAttachment.get(m_category.getType()).getMaxOperationalDamage()); // add 1 because it is the max operational damage and we want to disable it
 				for (final Unit u : units)

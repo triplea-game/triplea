@@ -120,15 +120,15 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 	{
 		final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
 		final Collection<Unit> placeableUnits = new ArrayList<Unit>();
-		final CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotFactoryOrConstruction); // we add factories and constructions later
-		final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotFactoryOrConstruction);
+		final CompositeMatch<Unit> groundUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsLand, Matches.UnitIsNotConstruction); // we add factories and constructions later
+		final CompositeMatch<Unit> airUnits = new CompositeMatchAnd<Unit>(Matches.UnitIsAir, Matches.UnitIsNotConstruction);
 		placeableUnits.addAll(Match.getMatches(units, groundUnits));
 		placeableUnits.addAll(Match.getMatches(units, airUnits));
-		if (Match.someMatch(units, Matches.UnitIsFactoryOrConstruction))
+		if (Match.someMatch(units, Matches.UnitIsConstruction))
 		{
 			final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, units, player);
 			final Collection<Unit> skipUnit = new ArrayList<Unit>();
-			for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsFactoryOrConstruction))
+			for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction))
 			{
 				final int maxUnits = howManyOfConstructionUnit(currentUnit, constructionsMap);
 				if (maxUnits > 0)

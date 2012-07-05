@@ -476,15 +476,12 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	
 	public Unit whatShouldBomberBomb(final Territory territory, final Collection<Unit> potentialTargets, final Collection<Unit> bombers)
 	{
-		// wisc, the ai is only asked this question after it is asked if it should bomb at all or not. so this only is asked if the ai says yes to bombing. therefore, we should never return null, as there is a chance we are both attacking and bombing.
 		if (potentialTargets == null || potentialTargets.isEmpty())
 			return null;
-		if (!Match.someMatch(potentialTargets, Matches.UnitIsFactoryOrCanProduceUnits))
+		final Collection<Unit> factories = Match.getMatches(potentialTargets, Matches.UnitCanProduceUnitsAndCanBeDamaged);
+		if (factories.isEmpty())
 			return potentialTargets.iterator().next();
-		if (Match.someMatch(potentialTargets, Matches.UnitIsFactory))
-			return Match.getMatches(potentialTargets, Matches.UnitIsFactory).iterator().next();
-		else
-			return Match.getMatches(potentialTargets, Matches.UnitCanProduceUnits).iterator().next();
+		return factories.iterator().next();
 	}
 	
 	public int[] selectFixedDice(final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final String message, final int diceSides)

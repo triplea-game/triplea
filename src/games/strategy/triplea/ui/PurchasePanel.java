@@ -27,7 +27,6 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.RulesAttachment;
-import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.util.UnitSeperator;
@@ -36,6 +35,7 @@ import games.strategy.util.Match;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -218,14 +218,13 @@ public class PurchasePanel extends ActionPanel
 				int totalProduced = 0;
 				for (final ProductionRule rule : m_purchase.keySet())
 				{
-					final UnitAttachment ua = UnitAttachment.get((UnitType) rule.getResults().keySet().iterator().next());
-					if (!ua.getIsFactory() && !ua.getIsConstruction())
+					if (!Matches.UnitTypeIsConstruction.match((UnitType) rule.getResults().keySet().iterator().next()))
 					{
 						totalProduced += m_purchase.getInt(rule) * rule.getResults().totalValues();
 					}
 				}
 				final PlayerID player = getCurrentPlayer();
-				final Collection<Unit> unitsNeedingFactory = Match.getMatches(player.getUnits().getUnits(), Matches.UnitIsNotFactoryOrConstruction);
+				final Collection<Unit> unitsNeedingFactory = Match.getMatches(player.getUnits().getUnits(), Matches.UnitIsNotConstruction);
 				if (!m_bid && totalProduced + unitsNeedingFactory.size() > totalProd && !isUnlimitedProduction(player))
 				{
 					final String text = "You have purchased " + (totalProduced + unitsNeedingFactory.size()) + " units, and can only place " + totalProd + " of them. Continue with purchase?";
