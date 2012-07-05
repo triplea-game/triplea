@@ -107,6 +107,11 @@ public class TechAttachment extends DefaultAttachment
 		m_techCost = s;
 	}
 	
+	public void resetTechCost()
+	{
+		m_techCost = 5;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setHeavyBomber(final String s)
 	{
@@ -117,6 +122,11 @@ public class TechAttachment extends DefaultAttachment
 	public void setHeavyBomber(final Boolean s)
 	{
 		m_heavyBomber = s;
+	}
+	
+	public void resetHeavyBomber()
+	{
+		m_heavyBomber = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -131,6 +141,11 @@ public class TechAttachment extends DefaultAttachment
 		m_destroyerBombard = s;
 	}
 	
+	public void resetDestroyerBombard()
+	{
+		m_destroyerBombard = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setLongRangeAir(final String s)
 	{
@@ -141,6 +156,11 @@ public class TechAttachment extends DefaultAttachment
 	public void setLongRangeAir(final Boolean s)
 	{
 		m_longRangeAir = s;
+	}
+	
+	public void resetLongRangeAir()
+	{
+		m_longRangeAir = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -155,6 +175,11 @@ public class TechAttachment extends DefaultAttachment
 		m_jetPower = s;
 	}
 	
+	public void resetJetPower()
+	{
+		m_jetPower = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRocket(final String s)
 	{
@@ -165,6 +190,11 @@ public class TechAttachment extends DefaultAttachment
 	public void setRocket(final Boolean s)
 	{
 		m_rocket = s;
+	}
+	
+	public void resetRocket()
+	{
+		m_rocket = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -179,6 +209,11 @@ public class TechAttachment extends DefaultAttachment
 		m_industrialTechnology = s;
 	}
 	
+	public void resetIndustrialTechnology()
+	{
+		m_industrialTechnology = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setSuperSub(final String s)
 	{
@@ -189,6 +224,11 @@ public class TechAttachment extends DefaultAttachment
 	public void setSuperSub(final Boolean s)
 	{
 		m_superSub = s;
+	}
+	
+	public void resetSuperSub()
+	{
+		m_superSub = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -203,6 +243,11 @@ public class TechAttachment extends DefaultAttachment
 		m_improvedArtillerySupport = s;
 	}
 	
+	public void resetImprovedArtillerySupport()
+	{
+		m_improvedArtillerySupport = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setParatroopers(final String s)
 	{
@@ -213,6 +258,11 @@ public class TechAttachment extends DefaultAttachment
 	public void setParatroopers(final Boolean s)
 	{
 		m_paratroopers = s;
+	}
+	
+	public void resetParatroopers()
+	{
+		m_paratroopers = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -227,6 +277,11 @@ public class TechAttachment extends DefaultAttachment
 		m_increasedFactoryProduction = s;
 	}
 	
+	public void resetIncreasedFactoryProduction()
+	{
+		m_increasedFactoryProduction = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setWarBonds(final String s)
 	{
@@ -237,6 +292,11 @@ public class TechAttachment extends DefaultAttachment
 	public void setWarBonds(final Boolean s)
 	{
 		m_warBonds = s;
+	}
+	
+	public void resetWarBonds()
+	{
+		m_warBonds = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -251,6 +311,11 @@ public class TechAttachment extends DefaultAttachment
 		m_mechanizedInfantry = s;
 	}
 	
+	public void resetMechanizedInfantry()
+	{
+		m_mechanizedInfantry = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAARadar(final String s)
 	{
@@ -263,6 +328,11 @@ public class TechAttachment extends DefaultAttachment
 		m_aARadar = s;
 	}
 	
+	public void resetAARadar()
+	{
+		m_aARadar = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setShipyards(final String s)
 	{
@@ -273,6 +343,11 @@ public class TechAttachment extends DefaultAttachment
 	public void setShipyards(final Boolean s)
 	{
 		m_shipyards = s;
+	}
+	
+	public void resetShipyards()
+	{
+		m_shipyards = false;
 	}
 	
 	// getters

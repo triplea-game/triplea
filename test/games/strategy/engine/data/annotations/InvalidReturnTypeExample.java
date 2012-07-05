@@ -38,6 +38,10 @@ public class InvalidReturnTypeExample extends DefaultAttachment
 		m_attribute = attribute;
 	}
 	
+	public void resetAttribute()
+	{
+	}
+	
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

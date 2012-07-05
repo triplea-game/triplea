@@ -8,15 +8,15 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.util.IntegerMap;
 
 /**
- * Class with an invalid return for an adder (the return type must be an integerMap)
+ * Class with an invalidly named clear method
  * 
- * @author Klaus Groenbaek
+ * @author Veqryn [Mark Christopher Duncan]
  */
-public class InvalidFieldTypeExample extends DefaultAttachment
+public class InvalidResetExample extends DefaultAttachment
 {
-	private static final long serialVersionUID = 6465866180845982327L;
+	private static final long serialVersionUID = 113427104352979892L;
 	
-	protected InvalidFieldTypeExample(final String name, final Attachable attachable, final GameData gameData)
+	protected InvalidResetExample(final String name, final Attachable attachable, final GameData gameData)
 	{
 		super(name, attachable, gameData);
 	}
@@ -24,7 +24,7 @@ public class InvalidFieldTypeExample extends DefaultAttachment
 	// -----------------------------------------------------------------------
 	// instance fields
 	// -----------------------------------------------------------------------
-	private String m_givesMovement; // this should be an integermap, since that is what we are returning. should cause test to fail.
+	private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 	
 	// -----------------------------------------------------------------------
 	// instance methods
@@ -32,27 +32,25 @@ public class InvalidFieldTypeExample extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
 	public void setGivesMovement(final String value)
 	{
-		
 	}
 	
-	public void resetGivesMovement()
+	public void resetGiveMovement() // badly named, should cause test to fail
 	{
-		
+		m_givesMovement = new IntegerMap<UnitType>();
 	}
 	
-	public void clearMovement()
+	public void clearGivesMovement()
 	{
-		
+		m_givesMovement.clear();
 	}
 	
 	public IntegerMap<UnitType> getGivesMovement()
 	{
-		return new IntegerMap<UnitType>();
+		return m_givesMovement;
 	}
 	
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{
-		// TODO Auto-generated method stub
 	}
 }

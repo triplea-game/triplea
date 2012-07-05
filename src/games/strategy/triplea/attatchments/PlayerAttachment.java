@@ -137,6 +137,11 @@ public class PlayerAttachment extends DefaultAttachment
 		m_placementLimit.clear();
 	}
 	
+	public void resetPlacementLimit()
+	{
+		m_placementLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -187,6 +192,11 @@ public class PlayerAttachment extends DefaultAttachment
 		m_movementLimit.clear();
 	}
 	
+	public void resetMovementLimit()
+	{
+		m_movementLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -235,6 +245,11 @@ public class PlayerAttachment extends DefaultAttachment
 	public void clearAttackingLimit()
 	{
 		m_attackingLimit.clear();
+	}
+	
+	public void resetAttackingLimit()
+	{
+		m_attackingLimit = new HashSet<Triple<Integer, String, HashSet<UnitType>>>();
 	}
 	
 	public static boolean getCanTheseUnitsMoveWithoutViolatingStackingLimit(final String limitType, final Collection<Unit> unitsMoving, final Territory toMoveInto, final PlayerID owner,
@@ -326,6 +341,11 @@ public class PlayerAttachment extends DefaultAttachment
 		m_suicideAttackTargets.clear();
 	}
 	
+	public void resetSuicideAttackTargets()
+	{
+		m_suicideAttackTargets = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -363,6 +383,11 @@ public class PlayerAttachment extends DefaultAttachment
 		m_suicideAttackResources.clear();
 	}
 	
+	public void resetSuicideAttackResources()
+	{
+		m_suicideAttackResources = new IntegerMap<Resource>();
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setVps(final String value)
 	{
@@ -378,6 +403,11 @@ public class PlayerAttachment extends DefaultAttachment
 	public int getVps()
 	{
 		return m_vps;
+	}
+	
+	public void resetVps()
+	{
+		m_vps = 0;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -397,6 +427,11 @@ public class PlayerAttachment extends DefaultAttachment
 		return m_captureVps;
 	}
 	
+	public void resetCaptureVps()
+	{
+		m_captureVps = 0;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRetainCapitalNumber(final String value)
 	{
@@ -414,6 +449,11 @@ public class PlayerAttachment extends DefaultAttachment
 		return m_retainCapitalNumber;
 	}
 	
+	public void resetRetainCapitalNumber()
+	{
+		m_retainCapitalNumber = 1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRetainCapitalProduceNumber(final String value)
 	{
@@ -429,6 +469,11 @@ public class PlayerAttachment extends DefaultAttachment
 	public int getRetainCapitalProduceNumber()
 	{
 		return m_retainCapitalProduceNumber;
+	}
+	
+	public void resetRetainCapitalProduceNumber()
+	{
+		m_retainCapitalProduceNumber = 1;
 	}
 	
 	/**
@@ -469,6 +514,11 @@ public class PlayerAttachment extends DefaultAttachment
 		m_giveUnitControl.clear();
 	}
 	
+	public void resetGiveUnitControl()
+	{
+		m_giveUnitControl = new ArrayList<PlayerID>();
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -503,6 +553,11 @@ public class PlayerAttachment extends DefaultAttachment
 	public void clearCaptureUnitOnEnteringBy()
 	{
 		m_captureUnitOnEnteringBy.clear();
+	}
+	
+	public void resetCaptureUnitOnEnteringBy()
+	{
+		m_captureUnitOnEnteringBy = new ArrayList<PlayerID>();
 	}
 	
 	/**
@@ -541,6 +596,11 @@ public class PlayerAttachment extends DefaultAttachment
 		m_shareTechnology.clear();
 	}
 	
+	public void resetShareTechnology()
+	{
+		m_shareTechnology = new ArrayList<PlayerID>();
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -577,6 +637,11 @@ public class PlayerAttachment extends DefaultAttachment
 		m_helpPayTechCost.clear();
 	}
 	
+	public void resetHelpPayTechCost()
+	{
+		m_helpPayTechCost = new ArrayList<PlayerID>();
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDestroysPUs(final String value)
 	{
@@ -592,6 +657,11 @@ public class PlayerAttachment extends DefaultAttachment
 	public boolean getDestroysPUs()
 	{
 		return m_destroysPUs;
+	}
+	
+	public void resetDestroysPUs()
+	{
+		m_destroysPUs = false;
 	}
 	
 	@Override

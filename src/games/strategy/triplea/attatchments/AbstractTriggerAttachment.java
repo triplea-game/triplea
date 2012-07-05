@@ -62,6 +62,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * DO NOT REMOVE THIS (or else you will break a lot of older xmls)
 	 * 
 	 * @deprecated please use setConditions, getConditions, clearConditions, instead.
 	 * @param triggers
@@ -91,6 +92,15 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	public void clearTrigger()
 	{
 		clearConditions();
+	}
+	
+	/**
+	 * @deprecated please use setConditions, getConditions, clearConditions, instead.
+	 */
+	@Deprecated
+	public void resetTrigger()
+	{
+		resetConditions();
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -139,6 +149,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		return m_uses;
 	}
 	
+	public void resetUses()
+	{
+		m_uses = -1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setWhen(final String when) throws GameParseException
 	{
@@ -166,6 +181,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		return m_when;
 	}
 	
+	public void resetWhen()
+	{
+		m_when = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setNotification(final String sNotification)
 	{
@@ -180,6 +200,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	public String getNotification()
 	{
 		return m_notification;
+	}
+	
+	public void resetNotification()
+	{
+		m_notification = null;
 	}
 	
 	protected void use(final IDelegateBridge aBridge)

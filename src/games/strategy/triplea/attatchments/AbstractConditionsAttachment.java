@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * This class is designed to hold common code for holding "conditions". Any attachment that can hold conditions (ie: RulesAttachments), should extend this instead of DefaultAttachment.
@@ -26,11 +25,15 @@ import java.util.Locale;
 public abstract class AbstractConditionsAttachment extends DefaultAttachment implements ICondition
 {
 	private static final long serialVersionUID = -9008441256118867078L;
+	private static final String AND = "AND";
+	private static final String OR = "OR";
+	private static final String XOR = "XOR";
+	private static final String DEFAULT_CHANCE = "1:1";
 	
 	protected ArrayList<RulesAttachment> m_conditions = new ArrayList<RulesAttachment>(); // list of conditions that this condition can contain
-	protected String m_conditionType = "AND"; // m_conditionType modifies the relationship of m_conditions
+	protected String m_conditionType = AND; // m_conditionType modifies the relationship of m_conditions
 	protected boolean m_invert = false; // will logically negate the entire condition, including contained conditions
-	protected String m_chance = "1:1"; // chance (x out of y) that this action is successful when attempted, default = 1:1 = always successful
+	protected String m_chance = DEFAULT_CHANCE; // chance (x out of y) that this action is successful when attempted, default = 1:1 = always successful
 	
 	public AbstractConditionsAttachment(final String name, final Attachable attachable, final GameData gameData)
 	{
@@ -86,6 +89,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		m_conditions.clear();
 	}
 	
+	public void resetConditions()
+	{
+		m_conditions = new ArrayList<RulesAttachment>();
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setInvert(final String s)
 	{
@@ -103,14 +111,21 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 		return m_invert;
 	}
 	
+	public void resetInvert()
+	{
+		m_invert = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setConditionType(final String value) throws GameParseException
 	{
 		String s = value;
-		if (s.equalsIgnoreCase("AND") || s.equalsIgnoreCase("OR") || s.equalsIgnoreCase("XOR"))
-		{
-			s = s.toUpperCase(Locale.ENGLISH);
-		}
+		if (s.equalsIgnoreCase("AND"))
+			s = AND;
+		else if (s.equalsIgnoreCase("OR"))
+			s = OR;
+		else if (s.equalsIgnoreCase("XOR"))
+			s = XOR;
 		else
 		{
 			final String[] nums = s.split("-");
@@ -136,6 +151,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	public String getConditionType()
 	{
 		return m_conditionType;
+	}
+	
+	public void resetConditionType()
+	{
+		m_conditionType = AND;
 	}
 	
 	/**
@@ -323,6 +343,11 @@ public abstract class AbstractConditionsAttachment extends DefaultAttachment imp
 	public String getChance()
 	{
 		return m_chance;
+	}
+	
+	public void resetChance()
+	{
+		m_chance = DEFAULT_CHANCE;
 	}
 	
 	@Override

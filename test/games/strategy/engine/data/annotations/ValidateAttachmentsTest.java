@@ -81,6 +81,16 @@ public class ValidateAttachmentsTest extends TestCase
 	}
 	
 	/**
+	 * Tests that the algorithm will find invalid clear method
+	 */
+	public void testInvalidResetMethod()
+	{
+		final String errors = validateAttachment(InvalidResetExample.class);
+		assertTrue(errors.length() > 0);
+		assertTrue(errors.contains("doesn't have a resetter method"));
+	}
+	
+	/**
 	 * Tests that the algorithm will find adders that doesn't have type IntegerMap
 	 */
 	public void testInvalidFieldType()
@@ -309,6 +319,21 @@ public class ValidateAttachmentsTest extends TestCase
 			} catch (final IllegalStateException e)
 			{
 				sb.append("Class " + clazz.getCanonicalName() + " is missing field for setter " + setter.getName() + " with @GameProperty\n");
+				continue;
+			}
+			
+			final String resetterName = "reset" + capitalizeFirstLetter(propertyName);
+			Method resetterMethod = null;
+			try
+			{
+				resetterMethod = clazz.getMethod(resetterName);
+				if (!resetterMethod.getReturnType().equals(void.class))
+				{
+					sb.append("Class " + clazz.getCanonicalName() + " has a reset method " + resetterMethod.getName() + " that doesn't return void\n");
+				}
+			} catch (final NoSuchMethodException e)
+			{
+				sb.append("Class " + clazz.getCanonicalName() + " doesn't have a resetter method for property: " + propertyName + "\n");
 				continue;
 			}
 			

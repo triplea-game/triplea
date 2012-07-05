@@ -33,7 +33,11 @@ public interface ICondition
 	
 	public void clearConditions();
 	
+	public void resetConditions();
+	
 	public void setConditionType(final String s) throws GameParseException;
+	
+	public void resetConditionType();
 	
 	/**
 	 * Modifies the attached conditions, with things like AND, OR, XOR, or requiring a specific number of attached conditions to be true (like exactly 3, or 4-6 only).
@@ -43,6 +47,8 @@ public interface ICondition
 	public String getConditionType();
 	
 	public void setInvert(final String s);
+	
+	public void resetInvert();
 	
 	/**
 	 * Logical negation of the entire condition.

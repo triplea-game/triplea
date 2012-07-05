@@ -39,6 +39,10 @@ public class InvalidFieldNameExample extends DefaultAttachment
 		this.attribute = attribute;
 	}
 	
+	public void resetAttribute()
+	{
+	}
+	
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{

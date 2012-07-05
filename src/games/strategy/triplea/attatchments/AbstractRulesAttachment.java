@@ -88,6 +88,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		m_players.clear();
 	}
 	
+	public void resetPlayers()
+	{
+		m_players = new ArrayList<PlayerID>();
+	}
+	
 	@Override
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChance(final String chance) throws GameParseException
@@ -110,6 +115,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	public int getObjectiveValue()
 	{
 		return m_objectiveValue;
+	}
+	
+	public void resetObjectiveValue()
+	{
+		m_objectiveValue = 0;
 	}
 	
 	/**
@@ -154,16 +164,6 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		return m_countEach;
 	}
 	
-	/**
-	 * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and therefore should not be tested for in isSatisfied.
-	 * 
-	 * @return
-	 */
-	public int getUses()
-	{
-		return m_uses;
-	}
-	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setUses(final String s)
 	{
@@ -176,9 +176,19 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		m_uses = u;
 	}
 	
-	public boolean getSwitch()
+	/**
+	 * "uses" on RulesAttachments apply ONLY to giving money (PUs) to the player, they do NOT apply to the condition, and therefore should not be tested for in isSatisfied.
+	 * 
+	 * @return
+	 */
+	public int getUses()
 	{
-		return m_switch;
+		return m_uses;
+	}
+	
+	public void resetUses()
+	{
+		m_uses = -1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -191,6 +201,16 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	public void setSwitch(final Boolean value)
 	{
 		m_switch = value;
+	}
+	
+	public boolean getSwitch()
+	{
+		return m_switch;
+	}
+	
+	public void resetSwitch()
+	{
+		m_switch = true;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -240,6 +260,11 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 	public HashMap<Integer, Integer> getTurns()
 	{
 		return m_turns;
+	}
+	
+	public void resetTurns()
+	{
+		m_turns = null;
 	}
 	
 	protected boolean checkTurns(final GameData data)

@@ -154,6 +154,11 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 		m_relationshipChange.clear();
 	}
 	
+	public void resetRelationshipChange()
+	{
+		m_relationshipChange = new ArrayList<String>();
+	}
+	
 	/**
 	 * @param text
 	 *            the Key that is used in politicstext.properties for all the texts
@@ -170,6 +175,11 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	public String getText()
 	{
 		return m_text;
+	}
+	
+	public void resetText()
+	{
+		m_text = "";
 	}
 	
 	public int toHit()
@@ -206,6 +216,11 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 		return m_costPU;
 	}
 	
+	public void resetCostPU()
+	{
+		m_costPU = 0;
+	}
+	
 	/**
 	 * @param s
 	 *            the amount of times you can try this Action per Round
@@ -230,6 +245,11 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	public int getAttemptsPerTurn()
 	{
 		return m_attemptsPerTurn;
+	}
+	
+	public void resetAttemptsPerTurn()
+	{
+		m_attemptsPerTurn = 1;
 	}
 	
 	/**
@@ -295,6 +315,11 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 		m_actionAccept.clear();
 	}
 	
+	public void resetActionAccept()
+	{
+		m_actionAccept = new ArrayList<PlayerID>();
+	}
+	
 	/**
 	 * 
 	 * @return a set of all other players involved in this PoliticalAction
@@ -348,7 +373,7 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 		super.validate(data);
 		if (m_relationshipChange.isEmpty())
 			throw new GameParseException("value: relationshipChange can't be empty" + thisErrorMsg());
-		if (m_text.equals(""))
+		if (m_text.equals("") || m_text.length() <= 0)
 			throw new GameParseException("value: text can't be empty" + thisErrorMsg());
 	}
 }

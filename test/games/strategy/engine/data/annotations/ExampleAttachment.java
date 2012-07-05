@@ -42,11 +42,6 @@ public class ExampleAttachment extends DefaultAttachment
 	// instance methods
 	// -----------------------------------------------------------------------
 	
-	public int getTechCost()
-	{
-		return m_techCost;
-	}
-	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTechCost(final String techCost)
 	{
@@ -59,9 +54,14 @@ public class ExampleAttachment extends DefaultAttachment
 		m_techCost = techCost;
 	}
 	
-	public boolean getHeavyBomber()
+	public int getTechCost()
 	{
-		return m_heavyBomber;
+		return m_techCost;
+	}
+	
+	public void resetTechCost()
+	{
+		m_techCost = 5;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -76,9 +76,14 @@ public class ExampleAttachment extends DefaultAttachment
 		m_heavyBomber = heavyBomber;
 	}
 	
-	public String getAttribute()
+	public boolean getHeavyBomber()
 	{
-		return m_attribute;
+		return m_heavyBomber;
+	}
+	
+	public void resetHeavyBomber()
+	{
+		m_heavyBomber = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -87,15 +92,25 @@ public class ExampleAttachment extends DefaultAttachment
 		m_attribute = attribute;
 	}
 	
-	public String getNotAProperty()
+	public String getAttribute()
 	{
-		return m_notAProperty;
+		return m_attribute;
+	}
+	
+	public void resetAttribute()
+	{
+		m_attribute = null;
 	}
 	
 	@InternalDoNotExport
 	public void setNotAProperty(final String notAProperty)
 	{
 		m_notAProperty = notAProperty;
+	}
+	
+	public String getNotAProperty()
+	{
+		return m_notAProperty;
 	}
 	
 	/**
@@ -126,14 +141,19 @@ public class ExampleAttachment extends DefaultAttachment
 		m_givesMovement = value;
 	}
 	
+	public IntegerMap<UnitType> getGivesMovement()
+	{
+		return m_givesMovement;
+	}
+	
 	public void clearGivesMovement()
 	{
 		m_givesMovement.clear();
 	}
 	
-	public IntegerMap<UnitType> getGivesMovement()
+	public void resetGivesMovement()
 	{
-		return m_givesMovement;
+		m_givesMovement = new IntegerMap<UnitType>();
 	}
 	
 	@Override

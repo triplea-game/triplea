@@ -1550,7 +1550,12 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		{
 			final String notificationMessageKey = notificationMessages.next();
 			final String message = NotificationMessages.getInstance().getMessage(notificationMessageKey);
-			aBridge.getHistoryWriter().startEvent("Notification to player " + aBridge.getPlayerID().getName() + ": " + message);
+			String messageForRecord = message;
+			if (messageForRecord.length() > 150)
+			{
+				messageForRecord = messageForRecord.replaceAll("\\<.*?>", "").substring(0, 150) + "....";
+			}
+			aBridge.getHistoryWriter().startEvent("Note to player " + aBridge.getPlayerID().getName() + ": " + messageForRecord);
 			((ITripleaPlayer) aBridge.getRemote(aBridge.getPlayerID())).reportMessage(("<html>" + message + "</html>"), "Notification");
 		}
 	}

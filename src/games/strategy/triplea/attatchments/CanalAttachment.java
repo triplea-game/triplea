@@ -91,6 +91,11 @@ public class CanalAttachment extends DefaultAttachment
 		return m_canalName;
 	}
 	
+	public void resetCanalName()
+	{
+		m_canalName = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setLandTerritories(final String landTerritories)
 	{
@@ -119,6 +124,11 @@ public class CanalAttachment extends DefaultAttachment
 	public HashSet<Territory> getLandTerritories()
 	{
 		return m_landTerritories;
+	}
+	
+	public void resetLandTerritories()
+	{
+		m_landTerritories = null;
 	}
 	
 	/**
@@ -170,6 +180,11 @@ public class CanalAttachment extends DefaultAttachment
 	public void clearExcludedUnits()
 	{
 		m_excludedUnits.clear();
+	}
+	
+	public void resetExcludedUnits()
+	{
+		m_excludedUnits = null;
 	}
 	
 	@Override

@@ -74,15 +74,15 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	private ArrayList<Tuple<String, ArrayList<Territory>>> m_battle = new ArrayList<Tuple<String, ArrayList<Territory>>>(); // condition for having had a battle in some territory, attacker or defender, win or lost, etc.
 	
 	// these next 9 variables use m_territoryCount for determining the number needed.
-	private String[] m_alliedOwnershipTerritories; // ownership related
-	private String[] m_directOwnershipTerritories;
-	private String[] m_alliedExclusionTerritories; // exclusion of units
-	private String[] m_directExclusionTerritories;
-	private String[] m_enemyExclusionTerritories;
-	private String[] m_enemySurfaceExclusionTerritories;
-	private String[] m_directPresenceTerritories; // presence of units
-	private String[] m_alliedPresenceTerritories;
-	private String[] m_enemyPresenceTerritories;
+	private String[] m_alliedOwnershipTerritories = null; // ownership related
+	private String[] m_directOwnershipTerritories = null;
+	private String[] m_alliedExclusionTerritories = null; // exclusion of units
+	private String[] m_directExclusionTerritories = null;
+	private String[] m_enemyExclusionTerritories = null;
+	private String[] m_enemySurfaceExclusionTerritories = null;
+	private String[] m_directPresenceTerritories = null; // presence of units
+	private String[] m_alliedPresenceTerritories = null;
+	private String[] m_enemyPresenceTerritories = null;
 	private IntegerMap<String> m_unitPresence = new IntegerMap<String>(); // used with above 3 to determine the type of unit that must be present
 	
 	/** Creates new RulesAttachment */
@@ -160,6 +160,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_destroyedTUV;
 	}
 	
+	public void resetDestroyedTUV()
+	{
+		m_destroyedTUV = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -220,6 +225,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		m_battle.clear();
 	}
 	
+	public void resetBattle()
+	{
+		m_battle = new ArrayList<Tuple<String, ArrayList<Territory>>>();
+	}
+	
 	/**
 	 * Condition to check if a certain relationship exists between 2 players.
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
@@ -262,6 +272,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		m_relationship.clear();
 	}
 	
+	public void resetRelationship()
+	{
+		m_relationship = new ArrayList<String>();
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAlliedOwnershipTerritories(final String value) throws GameParseException
 	{
@@ -283,6 +298,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	public String[] getAlliedOwnershipTerritories()
 	{
 		return m_alliedOwnershipTerritories;
+	}
+	
+	public void resetAlliedOwnershipTerritories()
+	{
+		m_alliedOwnershipTerritories = null;
 	}
 	
 	// exclusion types = controlled, controlledNoWater, original, all, or list
@@ -309,6 +329,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_alliedExclusionTerritories;
 	}
 	
+	public void resetAlliedExclusionTerritories()
+	{
+		m_alliedExclusionTerritories = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDirectExclusionTerritories(final String value) throws GameParseException
 	{
@@ -330,6 +355,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	public String[] getDirectExclusionTerritories()
 	{
 		return m_directExclusionTerritories;
+	}
+	
+	public void resetDirectExclusionTerritories()
+	{
+		m_directExclusionTerritories = null;
 	}
 	
 	// exclusion types = original or list
@@ -356,6 +386,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_enemyExclusionTerritories;
 	}
 	
+	public void resetEnemyExclusionTerritories()
+	{
+		m_enemyExclusionTerritories = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDirectPresenceTerritories(final String value) throws GameParseException
 	{
@@ -377,6 +412,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	public String[] getDirectPresenceTerritories()
 	{
 		return m_directPresenceTerritories;
+	}
+	
+	public void resetDirectPresenceTerritories()
+	{
+		m_directPresenceTerritories = null;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -402,6 +442,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_alliedPresenceTerritories;
 	}
 	
+	public void resetAlliedPresenceTerritories()
+	{
+		m_alliedPresenceTerritories = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setEnemyPresenceTerritories(final String value) throws GameParseException
 	{
@@ -423,6 +468,12 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	public String[] getEnemyPresenceTerritories()
 	{
 		return m_enemyPresenceTerritories;
+	}
+	
+	public void resetEnemyPresenceTerritories()
+	{
+		m_enemyPresenceTerritories = null;
+		
 	}
 	
 	// exclusion types = original or list
@@ -449,6 +500,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_enemySurfaceExclusionTerritories;
 	}
 	
+	public void resetEnemySurfaceExclusionTerritories()
+	{
+		m_enemySurfaceExclusionTerritories = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDirectOwnershipTerritories(final String value) throws GameParseException
 	{
@@ -470,6 +526,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	public String[] getDirectOwnershipTerritories()
 	{
 		return m_directOwnershipTerritories;
+	}
+	
+	public void resetDirectOwnershipTerritories()
+	{
+		m_directOwnershipTerritories = null;
 	}
 	
 	/**
@@ -513,6 +574,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	public void clearUnitPresence()
 	{
 		m_unitPresence.clear();
+	}
+	
+	public void resetUnitPresence()
+	{
+		m_unitPresence = new IntegerMap<String>();
 	}
 	
 	public int getAtWarCount()
@@ -568,6 +634,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		return m_atWarPlayers;
 	}
 	
+	public void resetAtWarPlayers()
+	{
+		m_atWarPlayers = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTechs(final String techs) throws GameParseException
 	{
@@ -611,6 +682,11 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	public ArrayList<TechAdvance> getTechs()
 	{
 		return m_techs;
+	}
+	
+	public void resetTechs()
+	{
+		m_techs = null;
 	}
 	
 	@Override
