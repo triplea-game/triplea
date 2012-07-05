@@ -2328,7 +2328,7 @@
 <option name="production" value="1"/>
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="La Mancha" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-<option name="production" value="1"/>
+<option name="production" value="0"/>
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="Bohus" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 <option name="production" value="2"/>
@@ -2485,7 +2485,7 @@
 <option name="production" value="1"/>
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="Aragon" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-<option name="production" value="2"/>
+<option name="production" value="1"/>
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="Majorca" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 <option name="production" value="2"/>
@@ -2745,7 +2745,7 @@
 <option name="production" value="3"/>
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="Navarre" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-<option name="production" value="1"/>
+<option name="production" value="0"/>
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="West Sahara" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 <option name="production" value="1"/>
@@ -2795,7 +2795,7 @@
 </attatchment>
 
 <attatchment name="territoryAttatchment" attatchTo="New Castille" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-<option name="production" value="6"/>
+<option name="production" value="5"/>
 <option name="capital" value="Spain"/>
 <option name="victoryCity" value="true"/>
 </attatchment>
@@ -2851,7 +2851,7 @@
 <option name="production" value="6"/>
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="SZ46" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
-<option name="production" value="14"/>
+<option name="production" value="8"/>
 </attatchment>
 <attatchment name="territoryAttatchment" attatchTo="SZ50" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 <option name="production" value="6"/> 
@@ -2964,10 +2964,10 @@
                 	<option name="alliedOwnershipTerritories" value="Essex" count="1"/>
                 </attatchment>
 				
-                <attatchment name="objectiveAttachment_Balancing_Convoy_Income_for_balanced_game" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <!--<attatchment name="objectiveAttachment_Balancing_Convoy_Income_for_balanced_game" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="-10"/>
                 	<option name="alliedOwnershipTerritories" value="New Castille" count="1"/>
-                </attatchment>
+                </attatchment>-->
 				
                 <attatchment name="objectiveAttachment_France_destroys_TUV" attatchTo="France" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="destroyedTUV" value="currentRound" count="1"/>
@@ -7345,11 +7345,11 @@
 				
 				<!-- AI related -->
 				<property name="AI Bonus Income Flat Rate" value="8" editable="true">
-						<number min="-10" max="30"/>
+						<number min="-30" max="30"/>
 				</property>
 				
 				<property name="AI Bonus Income Percentage" value="0" editable="true">
-						<number min="-30" max="120"/>
+						<number min="-60" max="120"/>
 				</property>
 				
 				<property name="AI Bonus Attack" value="0" editable="true">
@@ -7770,7 +7770,7 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 2.0 - 4.x changes made by Veqryn.
 &lt;br&gt;
-&lt;br&gt;You may or may not notice that Spain collect 10 less income per turn than their total production, and that France collects 6 less, and the UK 4 less.
+&lt;br&gt;You may or may not notice that France collects 6 less income, and the UK 4 less.
 &lt;br&gt;This is because of their convoy zones.  In order to balance the game, but at the same time keep the convoy zone value high, I was forced to give these nations -negative national objectives that lower their income each turn for balancing purposes, in order to equal out the increased value of their convoy zones.
 &lt;br&gt;
 &lt;br&gt;
@@ -7779,6 +7779,7 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;Different Victory Conditions for each player, check above or in game options screen
 &lt;br&gt;Small changes to unit placement.
 &lt;br&gt;Nations now destroy their PUs instead of letting them be captured (FFA only).
+&lt;br&gt;Decreased value of Spainish convoy zone and some territories, but also removed the negative objective for Spain.
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;

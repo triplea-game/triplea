@@ -3279,7 +3279,7 @@ public class SUtils
 				final List<Territory> alreadyAttacked)
 	{
 		final CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotStatic(player),
-					Matches.UnitIsInfrastructure, Matches.unitHasMovementLeft, Matches.UnitCanNotMoveDuringCombatMove.invert());
+					Matches.UnitIsNotInfrastructure, Matches.unitHasMovementLeft, Matches.UnitCanNotMoveDuringCombatMove.invert());
 		final List<Territory> ourLandNeighbors = getNeighboringLandTerritories(data, player, enemy);
 		float totStrength = 0.0F;
 		final int totList = ourLandNeighbors.size();

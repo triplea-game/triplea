@@ -5136,11 +5136,11 @@
 				
 				<!-- AI related -->
 				<property name="AI Bonus Income Flat Rate" value="8" editable="true">
-						<number min="-10" max="30"/>
+						<number min="-30" max="30"/>
 				</property>
 				
 				<property name="AI Bonus Income Percentage" value="0" editable="true">
-						<number min="-30" max="120"/>
+						<number min="-60" max="120"/>
 				</property>
 				
 				<property name="AI Bonus Attack" value="0" editable="true">

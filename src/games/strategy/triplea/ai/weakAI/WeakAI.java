@@ -528,7 +528,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			moveOfType.add(Matches.UnitIsNotAA);
 			// we can never move factories
 			moveOfType.add(Matches.UnitIsNotStatic(player));
-			moveOfType.add(Matches.UnitIsInfrastructure);
+			moveOfType.add(Matches.UnitIsNotInfrastructure);
 			moveOfType.add(Matches.UnitIsLand);
 			final CompositeMatchAnd<Territory> moveThrough = new CompositeMatchAnd<Territory>(new InverseMatch<Territory>(Matches.TerritoryIsImpassable), new InverseMatch<Territory>(
 						Matches.TerritoryIsNeutralButNotWater), Matches.TerritoryIsLand);

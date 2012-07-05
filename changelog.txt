@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Fixing some bugs introduced into AI with the factory switch. (veqryn)
+
 * Fixing null pointer error in Easy AI purchasing algorithm for getting costs of units. (veqryn)
 
 * Changing maxDamage to default to 2 instead of -1. This is for bombing type damage, and it acts as either a multiplier of territory value or as a hard set number depending on canProduceXUnits. (veqryn)
