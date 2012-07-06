@@ -100,6 +100,11 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 		m_combatDefenseEffect.clear();
 	}
 	
+	public void resetCombatDefenseEffect()
+	{
+		m_combatDefenseEffect = new IntegerMap<UnitType>();
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -126,6 +131,11 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	public void clearCombatOffenseEffect()
 	{
 		m_combatOffenseEffect.clear();
+	}
+	
+	public void resetCombatOffenseEffect()
+	{
+		m_combatOffenseEffect = new IntegerMap<UnitType>();
 	}
 	
 	@InternalDoNotExport
@@ -196,6 +206,11 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	public void clearNoBlitz()
 	{
 		m_noBlitz.clear();
+	}
+	
+	public void resetNoBlitz()
+	{
+		m_noBlitz = new ArrayList<UnitType>();
 	}
 	
 	@Override

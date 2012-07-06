@@ -56,6 +56,8 @@ import java.util.Set;
 public class TriggerAttachment extends AbstractTriggerAttachment implements ICondition
 {
 	private static final long serialVersionUID = -3327739180569606093L;
+	private static final String PREFIX_CLEAR = "-clear-";
+	private static final String PREFIX_RESET = "-reset-";
 	
 	private ProductionFrontier m_frontier = null;
 	private ArrayList<String> m_productionRule = null;
@@ -312,6 +314,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_activateTrigger.clear();
 	}
 	
+	public void resetActivateTrigger()
+	{
+		m_activateTrigger = new ArrayList<Tuple<TriggerAttachment, String>>();
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setFrontier(final String s) throws GameParseException
 	{
@@ -335,6 +342,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public ProductionFrontier getFrontier()
 	{
 		return m_frontier;
+	}
+	
+	public void resetFrontier()
+	{
+		m_frontier = null;
 	}
 	
 	/**
@@ -382,6 +394,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_productionRule.clear();
 	}
 	
+	public void resetProductionRule()
+	{
+		m_productionRule = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setResourceCount(final String s)
 	{
@@ -399,6 +416,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		return m_resourceCount;
 	}
 	
+	public void resetResourceCount()
+	{
+		m_resourceCount = 0;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setVictory(final String s)
 	{
@@ -413,6 +435,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public String getVictory()
 	{
 		return m_victory;
+	}
+	
+	public void resetVictory()
+	{
+		m_victory = null;
 	}
 	
 	/**
@@ -449,6 +476,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearTech()
 	{
 		m_tech.clear();
+	}
+	
+	public void resetTech()
+	{
+		m_tech = new ArrayList<TechAdvance>();
 	}
 	
 	/**
@@ -508,6 +540,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_availableTech.clear();
 	}
 	
+	public void resetAvailableTech()
+	{
+		m_availableTech = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -564,6 +601,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_support.clear();
 	}
 	
+	public void resetSupport()
+	{
+		m_support = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setResource(final String s) throws GameParseException
 	{
@@ -582,6 +624,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public String getResource()
 	{
 		return m_resource;
+	}
+	
+	public void resetResource()
+	{
+		m_resource = null;
 	}
 	
 	/**
@@ -624,6 +671,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_relationshipChange.clear();
 	}
 	
+	public void resetRelationshipChange()
+	{
+		m_relationshipChange = new ArrayList<String>();
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -657,6 +709,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearUnitType()
 	{
 		m_unitType.clear();
+	}
+	
+	public void resetUnitType()
+	{
+		m_unitType = new ArrayList<UnitType>();
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -696,6 +753,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		return m_unitAttachmentName;
 	}
 	
+	public void resetUnitAttachmentName()
+	{
+		m_unitAttachmentName = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -733,6 +795,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_unitProperty.clear();
 	}
 	
+	public void resetUnitProperty()
+	{
+		m_unitProperty = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -766,6 +833,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearTerritories()
 	{
 		m_territories.clear();
+	}
+	
+	public void resetTerritories()
+	{
+		m_territories = new ArrayList<Territory>();
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -805,6 +877,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		return m_territoryAttachmentName;
 	}
 	
+	public void resetTerritoryAttachmentName()
+	{
+		m_territoryAttachmentName = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -840,6 +917,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearTerritoryProperty()
 	{
 		m_territoryProperty.clear();
+	}
+	
+	public void resetTerritoryProperty()
+	{
+		m_territoryProperty = null;
 	}
 	
 	/**
@@ -878,6 +960,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearPlayers()
 	{
 		m_players.clear();
+	}
+	
+	public void resetPlayers()
+	{
+		m_players = new ArrayList<PlayerID>();
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -924,6 +1011,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		return m_playerAttachmentName;
 	}
 	
+	public void resetPlayerAttachmentName()
+	{
+		m_playerAttachmentName = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -961,6 +1053,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_playerProperty.clear();
 	}
 	
+	public void resetPlayerProperty()
+	{
+		m_playerProperty = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -996,6 +1093,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_relationshipTypes.clear();
 	}
 	
+	public void resetRelationshipTypes()
+	{
+		m_relationshipTypes = new ArrayList<RelationshipType>();
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setRelationshipTypeAttachmentName(final String name) throws GameParseException
 	{
@@ -1029,6 +1131,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		if (m_relationshipTypeAttachmentName == null)
 			return new Tuple<String, String>("RelationshipTypeAttachment", Constants.RELATIONSHIPTYPE_ATTACHMENT_NAME);
 		return m_relationshipTypeAttachmentName;
+	}
+	
+	public void resetRelationshipTypeAttachmentName()
+	{
+		m_relationshipTypeAttachmentName = null;
 	}
 	
 	/**
@@ -1068,6 +1175,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_relationshipTypeProperty.clear();
 	}
 	
+	public void resetRelationshipTypeProperty()
+	{
+		m_relationshipTypeProperty = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -1101,6 +1213,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearTerritoryEffects()
 	{
 		m_territoryEffects.clear();
+	}
+	
+	public void resetTerritoryEffects()
+	{
+		m_territoryEffects = new ArrayList<TerritoryEffect>();
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1138,6 +1255,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		return m_territoryEffectAttachmentName;
 	}
 	
+	public void resetTerritoryEffectAttachmentName()
+	{
+		m_territoryEffectAttachmentName = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -1173,6 +1295,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearTerritoryEffectProperty()
 	{
 		m_territoryEffectProperty.clear();
+	}
+	
+	public void resetTerritoryEffectProperty()
+	{
+		m_territoryEffectProperty = null;
 	}
 	
 	/**
@@ -1241,6 +1368,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearPlacement()
 	{
 		m_placement.clear();
+	}
+	
+	public void resetPlacement()
+	{
+		m_placement = null;
 	}
 	
 	/**
@@ -1334,6 +1466,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_removeUnits.clear();
 	}
 	
+	public void resetRemoveUnits()
+	{
+		m_removeUnits = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -1393,6 +1530,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		m_purchase.clear();
 	}
 	
+	public void resetPurchase()
+	{
+		m_purchase = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -1440,6 +1582,11 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public void clearChangeOwnership()
 	{
 		m_changeOwnership.clear();
+	}
+	
+	public void resetChangeOwnership()
+	{
+		m_changeOwnership = new ArrayList<String>();
 	}
 	
 	private static void removeUnits(final TriggerAttachment t, final Territory terr, final IntegerMap<UnitType> uMap, final PlayerID player, final IDelegateBridge aBridge)
@@ -1581,10 +1728,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				{
 					String newValue = property.getSecond();
 					boolean clearFirst = false;
-					// test if we are clearing the variable first, and if so, remove the leading "-clear-"
-					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					// test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
+					if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET)))
 					{
-						newValue = newValue.replaceFirst("-clear-", "");
+						newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
 						clearFirst = true;
 					}
 					// covers PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment
@@ -1594,7 +1741,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(
@@ -1607,7 +1754,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(
@@ -1620,7 +1767,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(
@@ -1633,7 +1780,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(
@@ -1646,7 +1793,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(
@@ -1682,10 +1829,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				{
 					String newValue = property.getSecond();
 					boolean clearFirst = false;
-					// test if we are clearing the variable first, and if so, remove the leading "-clear-"
-					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					// test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
+					if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET)))
 					{
-						newValue = newValue.replaceFirst("-clear-", "");
+						newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
 						clearFirst = true;
 					}
 					// covers RelationshipTypeAttachment
@@ -1695,7 +1842,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(
@@ -1733,10 +1880,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					territoriesNeedingReDraw.add(aTerritory);
 					String newValue = property.getSecond();
 					boolean clearFirst = false;
-					// test if we are clearing the variable first, and if so, remove the leading "-clear-"
-					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					// test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
+					if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET)))
 					{
-						newValue = newValue.replaceFirst("-clear-", "");
+						newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
 						clearFirst = true;
 					}
 					// covers TerritoryAttachment, CanalAttachment
@@ -1748,7 +1895,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(
@@ -1761,7 +1908,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(
@@ -1803,10 +1950,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				{
 					String newValue = property.getSecond();
 					boolean clearFirst = false;
-					// test if we are clearing the variable first, and if so, remove the leading "-clear-"
-					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					// test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
+					if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET)))
 					{
-						newValue = newValue.replaceFirst("-clear-", "");
+						newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
 						clearFirst = true;
 					}
 					// covers TerritoryEffectAttachment
@@ -1816,7 +1963,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(
@@ -1852,10 +1999,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 				{
 					String newValue = property.getSecond();
 					boolean clearFirst = false;
-					// test if we are clearing the variable first, and if so, remove the leading "-clear-"
-					if (newValue.length() > 0 && newValue.startsWith("-clear-"))
+					// test if we are resetting the variable first, and if so, remove the leading "-reset-" or "-clear-"
+					if (newValue.length() > 0 && (newValue.startsWith(PREFIX_CLEAR) || newValue.startsWith(PREFIX_RESET)))
 					{
-						newValue = newValue.replaceFirst("-clear-", "");
+						newValue = newValue.replaceFirst(PREFIX_CLEAR, "").replaceFirst(PREFIX_RESET, "");
 						clearFirst = true;
 					}
 					// covers UnitAttachment, UnitSupportAttachment
@@ -1865,7 +2012,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(
@@ -1878,7 +2025,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
 							continue;
 						if (clearFirst && newValue.length() < 1)
-							change.add(ChangeFactory.attachmentPropertyClear(attachment, property.getFirst(), true));
+							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
 						else
 							change.add(ChangeFactory.attachmentPropertyChange(attachment, newValue, property.getFirst(), true, clearFirst));
 						aBridge.getHistoryWriter().startEvent(

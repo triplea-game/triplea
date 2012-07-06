@@ -209,9 +209,9 @@ public class ChangeFactory
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue, final String property, final boolean getRaw, final boolean clearFirst)
+	public static Change attachmentPropertyChange(final IAttachment attachment, final Object newValue, final String property, final boolean getRaw, final boolean resetFirst)
 	{
-		return new ChangeAttachmentChange(attachment, newValue, property, getRaw, clearFirst);
+		return new ChangeAttachmentChange(attachment, newValue, property, getRaw, resetFirst);
 	}
 	
 	/**
@@ -226,9 +226,9 @@ public class ChangeFactory
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	public static Change attachmentPropertyClear(final IAttachment attachment, final String property, final boolean getRaw)
+	public static Change attachmentPropertyReset(final IAttachment attachment, final String property, final boolean getRaw)
 	{
-		return new AttachmentPropertyClear(attachment, property, getRaw);
+		return new AttachmentPropertyReset(attachment, property, getRaw);
 	}
 	
 	public static Change genericTechChange(final TechAttachment attachment, final Boolean value, final String property)
@@ -300,10 +300,9 @@ public class ChangeFactory
 
 
 /**
- * Clears the value from an attachment.
- * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
+ * Resets the value to the default value.
  */
-class AttachmentPropertyClear extends Change
+class AttachmentPropertyReset extends Change
 {
 	private static final long serialVersionUID = 9208154387325299072L;
 	private final Attachable m_attachedTo;
@@ -311,10 +310,7 @@ class AttachmentPropertyClear extends Change
 	private final Object m_oldValue;
 	private final String m_property;
 	
-	/**
-	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
-	 */
-	AttachmentPropertyClear(final IAttachment attachment, final String property, final boolean getRaw)
+	AttachmentPropertyReset(final IAttachment attachment, final String property, final boolean getRaw)
 	{
 		if (attachment == null)
 			throw new IllegalArgumentException("No attachment, property:" + property);
@@ -334,10 +330,7 @@ class AttachmentPropertyClear extends Change
 		}*/
 	}
 	
-	/**
-	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
-	 */
-	AttachmentPropertyClear(final Attachable attachTo, final String attachmentName, final Object oldValue, final String property)
+	AttachmentPropertyReset(final Attachable attachTo, final String attachmentName, final Object oldValue, final String property)
 	{
 		m_attachmentName = attachmentName;
 		m_attachedTo = attachTo;
@@ -359,24 +352,24 @@ class AttachmentPropertyClear extends Change
 	public void perform(final GameData data)
 	{
 		final IAttachment attachment = m_attachedTo.getAttachment(m_attachmentName);
-		PropertyUtil.clear(m_property, attachment);
+		PropertyUtil.reset(m_property, attachment);
 	}
 	
 	@Override
 	public Change invert()
 	{
-		return new AttachmentPropertyClearUndo(m_attachedTo, m_attachmentName, m_oldValue, m_property);
+		return new AttachmentPropertyResetUndo(m_attachedTo, m_attachmentName, m_oldValue, m_property);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "AttachmentPropertyClear attached to:" + m_attachedTo + " name:" + m_attachmentName + ", cleared old value:" + m_oldValue;
+		return "AttachmentPropertyClear attached to:" + m_attachedTo + " name:" + m_attachmentName + ", reset old value:" + m_oldValue;
 	}
 }
 
 
-class AttachmentPropertyClearUndo extends Change
+class AttachmentPropertyResetUndo extends Change
 {
 	private static final long serialVersionUID = 5943939650116851332L;
 	private final Attachable m_attachedTo;
@@ -384,10 +377,7 @@ class AttachmentPropertyClearUndo extends Change
 	private final Object m_newValue;
 	private final String m_property;
 	
-	/**
-	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
-	 */
-	AttachmentPropertyClearUndo(final Attachable attachTo, final String attachmentName, final Object newValue, final String property)
+	AttachmentPropertyResetUndo(final Attachable attachTo, final String attachmentName, final Object newValue, final String property)
 	{
 		m_attachmentName = attachmentName;
 		m_attachedTo = attachTo;
@@ -415,7 +405,7 @@ class AttachmentPropertyClearUndo extends Change
 	@Override
 	public Change invert()
 	{
-		return new AttachmentPropertyClear(m_attachedTo, m_attachmentName, m_newValue, m_property);
+		return new AttachmentPropertyReset(m_attachedTo, m_attachmentName, m_newValue, m_property);
 	}
 	
 	@Override

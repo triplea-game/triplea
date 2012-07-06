@@ -144,6 +144,11 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		return m_usedThisRound;
 	}
 	
+	public void resetUsedThisRound()
+	{
+		m_usedThisRound = false;
+	}
+	
 	public int getUses()
 	{
 		return m_uses;

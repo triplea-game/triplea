@@ -53,6 +53,11 @@ public class PlayerAttachment extends DefaultAttachment
 		return m_needsKing;
 	}
 	
+	public void resetNeedsKing()
+	{
+		m_needsKing = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAlphaBetaSearchDepth(final String value)
 	{
@@ -68,6 +73,11 @@ public class PlayerAttachment extends DefaultAttachment
 	public int getAlphaBetaSearchDepth()
 	{
 		return m_alphaBetaSearchDepth;
+	}
+	
+	public void resetAlphaBetaSearchDepth()
+	{
+		m_alphaBetaSearchDepth = 2;
 	}
 	
 	@Override

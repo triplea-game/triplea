@@ -143,6 +143,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 		m_unitType = value;
 	}
 	
+	public void resetUnitType()
+	{
+		m_unitType = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setFaction(final String faction) throws GameParseException
 	{
@@ -151,6 +156,8 @@ public class UnitSupportAttachment extends DefaultAttachment
 			m_faction = null;
 			return;
 		}
+		m_allied = false;
+		m_enemy = false;
 		final String[] s = faction.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
@@ -169,6 +176,13 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return m_faction;
 	}
 	
+	public void resetFaction()
+	{
+		m_faction = null;
+		m_allied = false;
+		m_enemy = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setSide(final String side) throws GameParseException
 	{
@@ -177,6 +191,8 @@ public class UnitSupportAttachment extends DefaultAttachment
 			m_side = null;
 			return;
 		}
+		m_defence = false;
+		m_offence = false;
 		final String[] s = side.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
@@ -195,6 +211,13 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return m_side;
 	}
 	
+	public void resetSide()
+	{
+		m_side = null;
+		m_offence = false;
+		m_defence = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDice(final String dice) throws GameParseException
 	{
@@ -203,6 +226,8 @@ public class UnitSupportAttachment extends DefaultAttachment
 			m_dice = null;
 			return;
 		}
+		m_roll = false;
+		m_strength = false;
 		final String[] s = dice.split(":");
 		for (int i = 0; i < s.length; i++)
 		{
@@ -221,6 +246,13 @@ public class UnitSupportAttachment extends DefaultAttachment
 		return m_dice;
 	}
 	
+	public void resetDice()
+	{
+		m_dice = null;
+		m_roll = false;
+		m_strength = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBonus(final String bonus)
 	{
@@ -231,6 +263,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 	public void setBonus(final Integer bonus)
 	{
 		m_bonus = bonus;
+	}
+	
+	public void resetBonus()
+	{
+		m_bonus = 0;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -245,6 +282,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 		m_number = number;
 	}
 	
+	public void resetNumber()
+	{
+		m_number = 0;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBonusType(final String type)
 	{
@@ -254,6 +296,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 			return;
 		}
 		m_bonusType = type;
+	}
+	
+	public void resetBonusType()
+	{
+		m_bonusType = null;
 	}
 	
 	/**
@@ -292,6 +339,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 		m_players.clear();
 	}
 	
+	public void resetPlayers()
+	{
+		m_players = new ArrayList<PlayerID>();
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setImpArtTech(final String tech)
 	{
@@ -302,6 +354,11 @@ public class UnitSupportAttachment extends DefaultAttachment
 	public void setImpArtTech(final Boolean tech)
 	{
 		m_impArtTech = tech;
+	}
+	
+	public void resetImpArtTech()
+	{
+		m_impArtTech = false;
 	}
 	
 	public HashSet<UnitType> getUnitType()

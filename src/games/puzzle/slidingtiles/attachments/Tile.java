@@ -28,7 +28,7 @@ import games.strategy.engine.data.annotations.GameProperty;
 public class Tile extends DefaultAttachment
 {
 	private static final long serialVersionUID = 129074481008059616L;
-	private int m_value;
+	private int m_value = 0;
 	
 	// private Rectangle m_location;
 	/**
@@ -75,6 +75,11 @@ public class Tile extends DefaultAttachment
 	public void setValue(final Integer value)
 	{
 		this.m_value = value;
+	}
+	
+	public void resetValue()
+	{
+		m_value = 0;
 	}
 	
 	/*

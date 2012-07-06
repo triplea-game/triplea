@@ -276,6 +276,11 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 		return m_attemptsLeftThisTurn;
 	}
 	
+	public void resetAttemptsLeftThisTurn()
+	{
+		m_attemptsLeftThisTurn = 1;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 

@@ -44,26 +44,28 @@ public class PropertyUtil
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	public static void set(final String propertyName, final Object value, final Object subject, final boolean clearFirst)
+	public static void set(final String propertyName, final Object value, final Object subject, final boolean resetFirst)
 	{
-		if (clearFirst)
-		{
-			final Method c = getClearer(propertyName, subject);
-			try
-			{
-				c.setAccessible(true);
-				c.invoke(subject);
-			} catch (final Exception e)
-			{
-				throw new IllegalStateException("Could not clear property:" + propertyName + " subject:" + subject + " new value:" + value, e);
-			}
-		}
+		if (resetFirst)
+			reset(propertyName, subject);
 		set(propertyName, value, subject);
 	}
 	
-	/**
+	public static void reset(final String propertyName, final Object subject)
+	{
+		try
+		{
+			final Method c = getResetter(propertyName, subject);
+			c.setAccessible(true);
+			c.invoke(subject);
+		} catch (final Exception e)
+		{
+			throw new IllegalStateException("Could not reset property:" + propertyName + " subject:" + subject, e);
+		}
+	}
+	
+	/*
 	 * You don't want to clear the variable unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
-	 */
 	public static void clear(final String propertyName, final Object subject)
 	{
 		try
@@ -75,8 +77,8 @@ public class PropertyUtil
 		{
 			throw new IllegalStateException("Could not clear property:" + propertyName + " subject:" + subject, e);
 		}
-	}
-	
+	}*/
+
 	public static Field getFieldIncludingFromSuperClasses(@SuppressWarnings("rawtypes") final Class c, final String name, final boolean justFromSuper)
 	{
 		Field rVal = null;
@@ -187,7 +189,32 @@ public class PropertyUtil
 		throw new IllegalStateException("No method called:" + setterName + " on:" + subject);
 	}
 	
-	private static Method getClearer(final String propertyName, final Object subject)
+	private static Method getResetter(final String propertyName, final Object subject)
+	{
+		final String resetterName = "reset" + capitalizeFirstLetter(propertyName);
+		// for (final Method c : subject.getClass().getDeclaredMethods())
+		for (final Method c : subject.getClass().getMethods())
+		{
+			if (c.getName().equals(resetterName))
+			{
+				try
+				{
+					return subject.getClass().getMethod(resetterName);
+				} catch (final NoSuchMethodException nsmf)
+				{
+					// Go ahead and try the first one
+					return c;
+				} catch (final NullPointerException n)
+				{
+					// Go ahead and try the first one
+					return c;
+				}
+			}
+		}
+		throw new IllegalStateException("No method called:" + resetterName + " on:" + subject);
+	}
+	
+	/*private static Method getClearer(final String propertyName, final Object subject)
 	{
 		final String clearerName = "clear" + capitalizeFirstLetter(propertyName);
 		// for (final Method c : subject.getClass().getDeclaredMethods())
@@ -210,5 +237,5 @@ public class PropertyUtil
 			}
 		}
 		throw new IllegalStateException("No method called:" + clearerName + " on:" + subject);
-	}
+	}*/
 }

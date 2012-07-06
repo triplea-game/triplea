@@ -54,6 +54,11 @@ public class TerritoryAttachment extends DefaultAttachment
 		return m_kingsSquare;
 	}
 	
+	public void resetKingsSquare()
+	{
+		m_kingsSquare = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setKingsExit(final String value)
 	{
@@ -69,6 +74,11 @@ public class TerritoryAttachment extends DefaultAttachment
 	public boolean getKingsExit()
 	{
 		return m_kingsExit;
+	}
+	
+	public void resetKingsExit()
+	{
+		m_kingsExit = false;
 	}
 	
 	@Override

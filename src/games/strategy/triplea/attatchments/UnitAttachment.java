@@ -103,7 +103,7 @@ public class UnitAttachment extends DefaultAttachment
 	private int m_movement = 0;
 	private boolean m_canBlitz = false;
 	private boolean m_isKamikaze = false;
-	private String[] m_canInvadeOnlyFrom; // a colon delimited list of transports where this unit may invade from, it supports "none" and if empty it allows you to invade from all
+	private String[] m_canInvadeOnlyFrom = null; // a colon delimited list of transports where this unit may invade from, it supports "none" and if empty it allows you to invade from all
 	private IntegerMap<Resource> m_fuelCost = new IntegerMap<Resource>();
 	private boolean m_canNotMoveDuringCombatMove = false;
 	private Tuple<Integer, String> m_movementLimit = null;
@@ -183,7 +183,7 @@ public class UnitAttachment extends DefaultAttachment
 	private int m_canOnlyBePlacedInTerritoryValuedAtX = -1; // -1 means anywhere
 	private ArrayList<String[]> m_requiresUnits = new ArrayList<String[]>(); // multiple colon delimited lists of the unit combos required for this unit to be built somewhere. (units must be in same territory, owned by player, not be disabled)
 	private IntegerMap<UnitType> m_consumesUnits = new IntegerMap<UnitType>();
-	private String[] m_unitPlacementRestrictions; // a colon delimited list of territories where this unit may not be placed
+	private String[] m_unitPlacementRestrictions = null; // a colon delimited list of territories where this unit may not be placed
 	// also an allowed setter is "setUnitPlacementOnlyAllowedIn", which just creates m_unitPlacementRestrictions with an inverted list of territories
 	private int m_maxBuiltPerPlayer = -1; // -1 if infinite (infinite is default)
 	private Tuple<Integer, String> m_placementLimit = null;
@@ -196,7 +196,7 @@ public class UnitAttachment extends DefaultAttachment
 	
 	// special abilities
 	private int m_blockade = 0;
-	private String[] m_repairsUnits; // a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
+	private String[] m_repairsUnits = null; // a colon delimited list of the units this unit can repair. (units must be in same territory, unless this unit is land and the repaired unit is sea)
 	private IntegerMap<UnitType> m_givesMovement = new IntegerMap<UnitType>();
 	private ArrayList<Tuple<String, PlayerID>> m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
 	// also an allowed setter is "setDestroyedWhenCapturedFrom" which will just create m_destroyedWhenCapturedBy with a specific list
@@ -230,6 +230,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_canIntercept;
 	}
 	
+	public void resetCanIntercept()
+	{
+		m_canIntercept = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanEscort(final String value)
 	{
@@ -245,6 +250,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getCanEscort()
 	{
 		return m_canEscort;
+	}
+	
+	public void resetCanEscort()
+	{
+		m_canEscort = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -264,6 +274,11 @@ public class UnitAttachment extends DefaultAttachment
 		return (Math.min(getData().getDiceSides(), Math.max(0, m_airDefense + TechAbilityAttachment.getAirDefenseBonus((UnitType) this.getAttachedTo(), player, getData()))));
 	}
 	
+	public void resetAirDefense()
+	{
+		m_airDefense = 0;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAirAttack(final String value)
 	{
@@ -279,6 +294,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getAirAttack(final PlayerID player)
 	{
 		return (Math.min(getData().getDiceSides(), Math.max(0, m_airAttack + TechAbilityAttachment.getAirAttackBonus((UnitType) this.getAttachedTo(), player, getData()))));
+	}
+	
+	public void resetAirAttack()
+	{
+		m_airAttack = 0;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -298,6 +318,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isAirTransport;
 	}
 	
+	public void resetIsAirTransport()
+	{
+		m_isAirTransport = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsAirTransportable(final String s)
 	{
@@ -313,6 +338,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsAirTransportable()
 	{
 		return m_isAirTransportable;
+	}
+	
+	public void resetIsAirTransportable()
+	{
+		m_isAirTransportable = false;
 	}
 	
 	/**
@@ -353,6 +383,11 @@ public class UnitAttachment extends DefaultAttachment
 		m_canBeGivenByTerritoryTo.clear();
 	}
 	
+	public void resetCanBeGivenByTerritoryTo()
+	{
+		m_canBeGivenByTerritoryTo = new ArrayList<PlayerID>();
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -387,6 +422,11 @@ public class UnitAttachment extends DefaultAttachment
 	public void clearCanBeCapturedOnEnteringBy()
 	{
 		m_canBeCapturedOnEnteringBy.clear();
+	}
+	
+	public void resetCanBeCapturedOnEnteringBy()
+	{
+		m_canBeCapturedOnEnteringBy = new ArrayList<PlayerID>();
 	}
 	
 	/**
@@ -438,6 +478,11 @@ public class UnitAttachment extends DefaultAttachment
 	public void clearWhenCapturedChangesInto()
 	{
 		m_whenCapturedChangesInto.clear();
+	}
+	
+	public void resetWhenCapturedChangesInto()
+	{
+		m_whenCapturedChangesInto = new LinkedHashMap<String, Tuple<String, IntegerMap<UnitType>>>();
 	}
 	
 	/**
@@ -498,6 +543,11 @@ public class UnitAttachment extends DefaultAttachment
 		m_destroyedWhenCapturedBy.clear();
 	}
 	
+	public void resetDestroyedWhenCapturedBy()
+	{
+		m_destroyedWhenCapturedBy = new ArrayList<Tuple<String, PlayerID>>();
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanBlitz(final String s)
 	{
@@ -519,6 +569,11 @@ public class UnitAttachment extends DefaultAttachment
 		return false;
 	}
 	
+	public void resetCanBlitz()
+	{
+		m_canBlitz = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsSub(final String s)
 	{
@@ -534,6 +589,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsSub()
 	{
 		return m_isSub;
+	}
+	
+	public void resetIsSub()
+	{
+		m_isSub = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -553,6 +613,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isCombatTransport;
 	}
 	
+	public void resetIsCombatTransport()
+	{
+		m_isCombatTransport = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsStrategicBomber(final String s)
 	{
@@ -570,6 +635,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isStrategicBomber;
 	}
 	
+	public void resetIsStrategicBomber()
+	{
+		m_isStrategicBomber = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsDestroyer(final String s)
 	{
@@ -585,6 +655,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsDestroyer()
 	{
 		return m_isDestroyer;
+	}
+	
+	public void resetIsDestroyer()
+	{
+		m_isDestroyer = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -608,6 +683,11 @@ public class UnitAttachment extends DefaultAttachment
 		return false;
 	}
 	
+	public void resetCanBombard()
+	{
+		m_canBombard = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsAir(final String s)
 	{
@@ -623,6 +703,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsAir()
 	{
 		return m_isAir;
+	}
+	
+	public void resetIsAir()
+	{
+		m_isAir = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -642,16 +727,26 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isSea;
 	}
 	
+	public void resetIsSea()
+	{
+		m_isSea = false;
+	}
+	
 	// DO NOT REMOVE, this is an important convenience method for xmls
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsFactory(final String s)
 	{
-		final boolean factory = getBool(s);
+		setIsFactory(getBool(s));
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setIsFactory(final Boolean s)
+	{
 		setCanBeDamaged(s);
 		setIsInfrastructure(s);
 		setCanProduceUnits(s);
 		setIsConstruction(s);
-		if (factory)
+		if (s)
 		{
 			setConstructionType("factory");
 			setMaxConstructionsPerTypePerTerr("1");
@@ -683,6 +778,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_canProduceUnits;
 	}
 	
+	public void resetCanProduceUnits()
+	{
+		m_canProduceUnits = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanProduceXUnits(final String s)
 	{
@@ -700,6 +800,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_canProduceXUnits;
 	}
 	
+	public void resetCanProduceXUnits()
+	{
+		m_canProduceXUnits = -1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanOnlyBePlacedInTerritoryValuedAtX(final String s)
 	{
@@ -715,6 +820,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getCanOnlyBePlacedInTerritoryValuedAtX()
 	{
 		return m_canOnlyBePlacedInTerritoryValuedAtX;
+	}
+	
+	public void resetCanOnlyBePlacedInTerritoryValuedAtX()
+	{
+		m_canOnlyBePlacedInTerritoryValuedAtX = -1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -737,6 +847,11 @@ public class UnitAttachment extends DefaultAttachment
 	public String[] getUnitPlacementRestrictions()
 	{
 		return m_unitPlacementRestrictions;
+	}
+	
+	public void resetUnitPlacementRestrictions()
+	{
+		m_unitPlacementRestrictions = null;
 	}
 	
 	// no m_ variable for this, since it is the inverse of m_unitPlacementRestrictions we might as well just use m_unitPlacementRestrictions
@@ -787,6 +902,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_repairsUnits;
 	}
 	
+	public void resetRepairsUnits()
+	{
+		m_repairsUnits = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -819,6 +939,11 @@ public class UnitAttachment extends DefaultAttachment
 	public void clearSpecial()
 	{
 		m_special.clear();
+	}
+	
+	public void resetSpecial()
+	{
+		m_special = new HashSet<String>();
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -863,6 +988,11 @@ public class UnitAttachment extends DefaultAttachment
 		return Arrays.asList(m_canInvadeOnlyFrom).contains(transport);
 	}
 	
+	public void resetCanInvadeOnlyFrom()
+	{
+		m_canInvadeOnlyFrom = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -888,6 +1018,11 @@ public class UnitAttachment extends DefaultAttachment
 	public void clearRequiresUnits()
 	{
 		m_requiresUnits.clear();
+	}
+	
+	public void resetRequiresUnits()
+	{
+		m_requiresUnits = new ArrayList<String[]>();
 	}
 	
 	/**
@@ -931,6 +1066,11 @@ public class UnitAttachment extends DefaultAttachment
 		m_whenCombatDamaged.clear();
 	}
 	
+	public void resetWhenCombatDamaged()
+	{
+		m_whenCombatDamaged = new ArrayList<Tuple<Tuple<Integer, Integer>, Tuple<String, String>>>();
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -956,6 +1096,11 @@ public class UnitAttachment extends DefaultAttachment
 	public void clearReceivesAbilityWhenWith()
 	{
 		m_receivesAbilityWhenWith.clear();
+	}
+	
+	public void resetReceivesAbilityWhenWith()
+	{
+		m_receivesAbilityWhenWith = new ArrayList<String>();
 	}
 	
 	public static IntegerMap<Tuple<String, String>> getReceivesAbilityWhenWithMap(final Collection<Unit> units, final String filterForAbility, final GameData data)
@@ -1009,6 +1154,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isConstruction;
 	}
 	
+	public void resetIsConstruction()
+	{
+		m_isConstruction = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setConstructionType(final String s)
 	{
@@ -1018,6 +1168,11 @@ public class UnitAttachment extends DefaultAttachment
 	public String getConstructionType()
 	{
 		return m_constructionType;
+	}
+	
+	public void resetConstructionType()
+	{
+		m_constructionType = "none";
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1037,6 +1192,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_constructionsPerTerrPerTypePerTurn;
 	}
 	
+	public void resetConstructionsPerTerrPerTypePerTurn()
+	{
+		m_constructionsPerTerrPerTypePerTurn = -1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMaxConstructionsPerTypePerTerr(final String s)
 	{
@@ -1052,6 +1212,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getMaxConstructionsPerTypePerTerr()
 	{
 		return m_maxConstructionsPerTypePerTerr;
+	}
+	
+	public void resetMaxConstructionsPerTypePerTerr()
+	{
+		m_maxConstructionsPerTypePerTerr = -1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1071,6 +1236,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isMarine;
 	}
 	
+	public void resetIsMarine()
+	{
+		m_isMarine = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsInfantry(final String s)
 	{
@@ -1086,6 +1256,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsInfantry()
 	{
 		return m_isInfantry;
+	}
+	
+	public void resetIsInfantry()
+	{
+		m_isInfantry = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1110,6 +1285,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isLandTransport;
 	}
 	
+	public void resetIsLandTransport()
+	{
+		m_isLandTransport = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTransportCapacity(final String s)
 	{
@@ -1125,6 +1305,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getTransportCapacity()
 	{
 		return m_transportCapacity;
+	}
+	
+	public void resetTransportCapacity()
+	{
+		m_transportCapacity = -1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1144,6 +1329,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isTwoHit;
 	}
 	
+	public void resetIsTwoHit()
+	{
+		m_isTwoHit = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTransportCost(final String s)
 	{
@@ -1159,6 +1349,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getTransportCost()
 	{
 		return m_transportCost;
+	}
+	
+	public void resetTransportCost()
+	{
+		m_transportCost = -1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1178,6 +1373,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_maxBuiltPerPlayer;
 	}
 	
+	public void resetMaxBuiltPerPlayer()
+	{
+		m_maxBuiltPerPlayer = -1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCarrierCapacity(final String s)
 	{
@@ -1195,6 +1395,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_carrierCapacity;
 	}
 	
+	public void resetCarrierCapacity()
+	{
+		m_carrierCapacity = -1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCarrierCost(final String s)
 	{
@@ -1210,6 +1415,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getCarrierCost()
 	{
 		return m_carrierCost;
+	}
+	
+	public void resetCarrierCost()
+	{
+		m_carrierCost = -1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = false, adds = false)
@@ -1233,6 +1443,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_artillery;
 	}
 	
+	public void resetArtillery()
+	{
+		throw new IllegalStateException("Resetting Artillery (UnitAttachment) is not allowed, please use Support Attachments instead.");
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = false, adds = false)
 	public void setArtillerySupportable(final String s) throws GameParseException
 	{
@@ -1254,6 +1469,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_artillerySupportable;
 	}
 	
+	public void resetArtillerySupportable()
+	{
+		throw new IllegalStateException("Resetting Artillery Supportable (UnitAttachment) is not allowed, please use Support Attachments instead.");
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = false, adds = false)
 	public void setUnitSupportCount(final String s)
 	{
@@ -1273,6 +1493,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_unitSupportCount > 0 ? m_unitSupportCount : 1;
 	}
 	
+	public void resetUnitSupportCount()
+	{
+		throw new IllegalStateException("Resetting Artillery Support Count (UnitAttachment) is not allowed, please use Support Attachments instead.");
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBombard(final String s)
 	{
@@ -1290,6 +1515,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_bombard > 0 ? m_bombard : m_attack;
 	}
 	
+	public void resetBombard()
+	{
+		m_bombard = -1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMovement(final String s)
 	{
@@ -1305,6 +1535,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getMovement(final PlayerID player)
 	{
 		return Math.max(0, m_movement + TechAbilityAttachment.getMovementBonus((UnitType) this.getAttachedTo(), player, getData()));
+	}
+	
+	public void resetMovement()
+	{
+		m_movement = 0;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1334,6 +1569,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_attack;
 	}
 	
+	public void resetAttack()
+	{
+		m_attack = 0;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAttackRolls(final String s)
 	{
@@ -1351,6 +1591,11 @@ public class UnitAttachment extends DefaultAttachment
 		if (getAttack(player) <= 0)
 			return 0;
 		return Math.max(0, m_attackRolls + TechAbilityAttachment.getAttackRollsBonus((UnitType) this.getAttachedTo(), player, getData()));
+	}
+	
+	public void resetAttackRolls()
+	{
+		m_attackRolls = 1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1385,6 +1630,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_defense;
 	}
 	
+	public void resetDefense()
+	{
+		m_defense = 0;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setDefenseRolls(final String s)
 	{
@@ -1404,6 +1654,11 @@ public class UnitAttachment extends DefaultAttachment
 		return Math.max(0, m_defenseRolls + TechAbilityAttachment.getDefenseRollsBonus((UnitType) this.getAttachedTo(), player, getData()));
 	}
 	
+	public void resetDefenseRolls()
+	{
+		m_defenseRolls = 1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setChooseBestRoll(final String s)
 	{
@@ -1419,6 +1674,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getChooseBestRoll()
 	{
 		return m_chooseBestRoll;
+	}
+	
+	public void resetChooseBestRoll()
+	{
+		m_chooseBestRoll = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1438,6 +1698,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_canScramble;
 	}
 	
+	public void resetCanScramble()
+	{
+		m_canScramble = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMaxScrambleCount(final String s)
 	{
@@ -1453,6 +1718,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getMaxScrambleCount()
 	{
 		return m_maxScrambleCount;
+	}
+	
+	public void resetMaxScrambleCount()
+	{
+		m_maxScrambleCount = -1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1472,6 +1742,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_maxScrambleDistance;
 	}
 	
+	public void resetMaxScrambleDistance()
+	{
+		m_maxScrambleDistance = -1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMaxOperationalDamage(final String s)
 	{
@@ -1487,6 +1762,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getMaxOperationalDamage()
 	{
 		return m_maxOperationalDamage;
+	}
+	
+	public void resetMaxOperationalDamage()
+	{
+		m_maxOperationalDamage = -1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1506,6 +1786,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_maxDamage;
 	}
 	
+	public void resetMaxDamage()
+	{
+		m_maxDamage = 2;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsAirBase(final String s)
 	{
@@ -1521,6 +1806,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsAirBase()
 	{
 		return m_isAirBase;
+	}
+	
+	public void resetIsAirBase()
+	{
+		m_isAirBase = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1540,6 +1830,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isInfrastructure;
 	}
 	
+	public void resetIsInfrastructure()
+	{
+		m_isInfrastructure = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setCanBeDamaged(final String s)
 	{
@@ -1555,6 +1850,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getCanBeDamaged()
 	{
 		return m_canBeDamaged;
+	}
+	
+	public void resetCanBeDamaged()
+	{
+		m_canBeDamaged = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1574,6 +1874,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_canDieFromReachingMaxDamage;
 	}
 	
+	public void resetCanDieFromReachingMaxDamage()
+	{
+		m_canDieFromReachingMaxDamage = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsSuicide(final String s)
 	{
@@ -1589,6 +1894,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsSuicide()
 	{
 		return m_isSuicide;
+	}
+	
+	public void resetIsSuicide()
+	{
+		m_isSuicide = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1608,6 +1918,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isKamikaze;
 	}
 	
+	public void resetIsKamikaze()
+	{
+		m_isKamikaze = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBlockade(final String s)
 	{
@@ -1623,6 +1938,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getBlockade()
 	{
 		return m_blockade;
+	}
+	
+	public void resetBlockade()
+	{
+		m_blockade = 0;
 	}
 	
 	/**
@@ -1662,6 +1982,11 @@ public class UnitAttachment extends DefaultAttachment
 	public void clearGivesMovement()
 	{
 		m_givesMovement.clear();
+	}
+	
+	public void resetGivesMovement()
+	{
+		m_givesMovement = new IntegerMap<UnitType>();
 	}
 	
 	/**
@@ -1704,6 +2029,11 @@ public class UnitAttachment extends DefaultAttachment
 		m_consumesUnits.clear();
 	}
 	
+	public void resetConsumesUnits()
+	{
+		m_consumesUnits = new IntegerMap<UnitType>();
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -1744,6 +2074,11 @@ public class UnitAttachment extends DefaultAttachment
 		m_createsUnitsList.clear();
 	}
 	
+	public void resetCreatesUnitsList()
+	{
+		m_createsUnitsList = new IntegerMap<UnitType>();
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -1780,6 +2115,11 @@ public class UnitAttachment extends DefaultAttachment
 	public void clearCreatesResourcesList()
 	{
 		m_createsResourcesList.clear();
+	}
+	
+	public void resetCreatesResourcesList()
+	{
+		m_createsResourcesList = new IntegerMap<Resource>();
 	}
 	
 	/**
@@ -1822,6 +2162,11 @@ public class UnitAttachment extends DefaultAttachment
 		m_fuelCost.clear();
 	}
 	
+	public void resetFuelCost()
+	{
+		m_fuelCost = new IntegerMap<Resource>();
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBombingBonus(final String s)
 	{
@@ -1839,6 +2184,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_bombingBonus;
 	}
 	
+	public void resetBombingBonus()
+	{
+		m_bombingBonus = -1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setBombingMaxDieSides(final String s)
 	{
@@ -1854,6 +2204,11 @@ public class UnitAttachment extends DefaultAttachment
 	public int getBombingMaxDieSides()
 	{
 		return m_bombingMaxDieSides;
+	}
+	
+	public void resetBombingMaxDieSides()
+	{
+		m_bombingMaxDieSides = -1;
 	}
 	
 	/**
@@ -1900,6 +2255,11 @@ public class UnitAttachment extends DefaultAttachment
 		m_bombingTargets.clear();
 	}
 	
+	public void resetBombingTargets()
+	{
+		m_bombingTargets = null;
+	}
+	
 	public static Set<UnitType> getAllowedBombingTargetsIntersection(final Collection<Unit> bombersOrRockets, final GameData data)
 	{
 		if (bombersOrRockets.isEmpty())
@@ -1919,13 +2279,7 @@ public class UnitAttachment extends DefaultAttachment
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsAA(final String s) throws GameParseException
 	{
-		getBool(s);
-		setIsAAforCombatOnly(s);
-		setIsAAforBombingThisUnitOnly(s);
-		setIsAAforFlyOverOnly(s);
-		setIsAAmovement(s);
-		setIsRocket(s);
-		setIsInfrastructure(s);
+		setIsAA(getBool(s));
 	}
 	
 	// Do not delete, we keep this both for backwards compatibility, and for user convenience when making maps
@@ -1958,6 +2312,11 @@ public class UnitAttachment extends DefaultAttachment
 		return Math.max(0, Math.min(getAttackAAmaxDieSides(), m_attackAA + TechAbilityAttachment.getRadarBonus((UnitType) this.getAttachedTo(), player, getData())));
 	}
 	
+	public void resetAttackAA()
+	{
+		m_attackAA = 1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setAttackAAmaxDieSides(final String s)
 	{
@@ -1975,6 +2334,11 @@ public class UnitAttachment extends DefaultAttachment
 		if (m_attackAAmaxDieSides < 0)
 			return getData().getDiceSides();
 		return m_attackAAmaxDieSides;
+	}
+	
+	public void resetAttackAAmaxDieSides()
+	{
+		m_attackAAmaxDieSides = -1;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -1997,6 +2361,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_maxAAattacks;
 	}
 	
+	public void resetMaxAAattacks()
+	{
+		m_maxAAattacks = -1;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMayOverStackAA(final String s)
 	{
@@ -2012,6 +2381,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getMayOverStackAA()
 	{
 		return m_mayOverStackAA;
+	}
+	
+	public void resetMayOverStackAA()
+	{
+		m_mayOverStackAA = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2031,6 +2405,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isAAforCombatOnly;
 	}
 	
+	public void resetIsAAforCombatOnly()
+	{
+		m_isAAforCombatOnly = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsAAforBombingThisUnitOnly(final String s)
 	{
@@ -2046,6 +2425,11 @@ public class UnitAttachment extends DefaultAttachment
 	public boolean getIsAAforBombingThisUnitOnly()
 	{
 		return m_isAAforBombingThisUnitOnly;
+	}
+	
+	public void resetIsAAforBombingThisUnitOnly()
+	{
+		m_isAAforBombingThisUnitOnly = false;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2065,6 +2449,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isAAforFlyOverOnly;
 	}
 	
+	public void resetIsAAforFlyOverOnly()
+	{
+		m_isAAforFlyOverOnly = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsRocket(final String s)
 	{
@@ -2082,6 +2471,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_isRocket;
 	}
 	
+	public void resetIsRocket()
+	{
+		m_isRocket = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setTypeAA(final String s)
 	{
@@ -2091,6 +2485,11 @@ public class UnitAttachment extends DefaultAttachment
 	public String getTypeAA()
 	{
 		return m_typeAA;
+	}
+	
+	public void resetTypeAA()
+	{
+		m_typeAA = "AA";
 	}
 	
 	public static Set<String> getAllOfTypeAAs(final Collection<Unit> aaUnits, final Collection<Unit> targets, final Match<Unit> typeOfAA,
@@ -2166,6 +2565,11 @@ public class UnitAttachment extends DefaultAttachment
 		m_targetsAA.clear();
 	}
 	
+	public void resetTargetsAA()
+	{
+		m_targetsAA = null;
+	}
+	
 	/**
 	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
 	 * 
@@ -2201,22 +2605,15 @@ public class UnitAttachment extends DefaultAttachment
 		m_willNotFireIfPresent.clear();
 	}
 	
+	public void resetWillNotFireIfPresent()
+	{
+		m_willNotFireIfPresent = new HashSet<UnitType>();
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setIsAAmovement(final String s) throws GameParseException
 	{
-		setCanNotMoveDuringCombatMove(s);
-		if (getBool(s))
-		{
-			setMovementLimit(Integer.MAX_VALUE + ":allied");
-			setAttackingLimit(Integer.MAX_VALUE + ":allied");
-			setPlacementLimit(Integer.MAX_VALUE + ":allied");
-		}
-		else
-		{
-			m_movementLimit = null;
-			m_attackingLimit = null;
-			m_placementLimit = null;
-		}
+		setIsAAmovement(getBool(s));
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2254,6 +2651,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_canNotMoveDuringCombatMove;
 	}
 	
+	public void resetCanNotMoveDuringCombatMove()
+	{
+		m_canNotMoveDuringCombatMove = false;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setMovementLimit(final String value) throws GameParseException
 	{
@@ -2285,6 +2687,11 @@ public class UnitAttachment extends DefaultAttachment
 	public Tuple<Integer, String> getMovementLimit()
 	{
 		return m_movementLimit;
+	}
+	
+	public void resetMovementLimit()
+	{
+		m_movementLimit = null;
 	}
 	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
@@ -2320,6 +2727,11 @@ public class UnitAttachment extends DefaultAttachment
 		return m_attackingLimit;
 	}
 	
+	public void resetAttackingLimit()
+	{
+		m_attackingLimit = null;
+	}
+	
 	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setPlacementLimit(final String value) throws GameParseException
 	{
@@ -2351,6 +2763,11 @@ public class UnitAttachment extends DefaultAttachment
 	public Tuple<Integer, String> getPlacementLimit()
 	{
 		return m_placementLimit;
+	}
+	
+	public void resetPlacementLimit()
+	{
+		m_placementLimit = null;
 	}
 	
 	public static int getMaximumNumberOfThisUnitTypeToReachStackingLimit(final String limitType, final UnitType ut, final Territory t, final PlayerID owner, final GameData data)

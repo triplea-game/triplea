@@ -47,7 +47,7 @@ public class RelationshipTypeAttachment extends DefaultAttachment
 	public static final String PROPERTY_FALSE = Constants.RELATIONSHIP_PROPERTY_FALSE;
 	
 	private String m_archeType = ARCHETYPE_WAR;
-	private final String m_helpsDefendAtSea = PROPERTY_DEFAULT;
+	// private final String m_helpsDefendAtSea = PROPERTY_DEFAULT;
 	private String m_canMoveLandUnitsOverOwnedLand = PROPERTY_DEFAULT;
 	private String m_canMoveAirUnitsOverOwnedLand = PROPERTY_DEFAULT;
 	private String m_alliancesCanChainTogether = PROPERTY_DEFAULT;

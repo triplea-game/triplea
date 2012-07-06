@@ -2267,8 +2267,8 @@
 			This is because a recent update to TripleA had the setting of 'production' automatically set 'unitProduction' to be equal to it. 
 			If you want to set "production" without also setting "unitProduction", then please use "productionOnly" -->
 	<!-- the following options are allowed for "territoryAttatchment"
-			production								values: the PU production of the territory. also sets unitProduction to be equal.
-			productionOnly							values: please do not use this. it is only here for use with triggers. it sets "production" without setting "unitProduction"
+			production								values: the PU production of the territory. also sets unitProduction to the same value.
+			productionOnly							values: this sets "production" without setting "unitProduction"
 			unitProduction							values: unitProduction is complex and has 2 uses, depending on how you plan on dealing with damage. Defaults to whatever "production" is, so please set it after you set "production"
 																1. 	First use is used only with ww2v3 factory damage rules ("SBR Affects Unit Production"), which have damage done to a Territory, not to a Unit.
 																		This decides the damage the territory starts at.  If unitProduction is less than production, then the territory starts damaged.  If they are equal, then the territory is not damaged. 
@@ -3417,7 +3417,9 @@
 														examples: <option name="changeOwnership" value="South France:Germans:VichyFrench:false"/> or <option name="changeOwnership" value="all:Mongolians:Russians:true"/> or <option name="changeOwnership" value="Danzig:any:Germans:false"/>
 			
 		For the following, you are actually changing raw data in the engine by calling the setters in the same way the engine does when it parses the xml.  The following are not validated at all, so if you don't use them correctly you will probably cause the engine to crash mid-game.
-		You may prefix the property count portion with "-clear-" if you wish to clear out the data in an array first (example: <option name="unitProperty" value="requiresUnits" count="-clear-factory:hangar"/> )
+		You may prefix the property count portion with "-reset-" if you wish to clear out the data in an array first (example: <option name="unitProperty" value="requiresUnits" count="-reset-factory:hangar"/> )
+		To further explain, certain options replace/overwrite when you set them.  For example, "attack", or "invert", will overwrite when you set it with something new. Other properties, like "requiresUnits", or "productionRule", will add more items to a list every time you set it.
+		Unless otherwise specified, all options overwrite when set.
 			players								values: the names of the players to give these things to. if missing, defaults to attached player. (example: value="Germans:Italians"). Also used as list of players affected by a playerProperty change.
 			playerAttachmentName				values: the type of attachment (PlayerAttachment, TriggerAttachment, RulesAttachment, TechAttachment, PoliticalActionAttachment) and the exact full name of the attachment to be changed. 
 															(example: value="RulesAttachment" count="rulesAttatchment"). Defaults to PlayerAttachment if missing.
@@ -3457,8 +3459,8 @@
 				Since it would be meaningless to, for example, change a relation to the same thing 10 times in a row, Each only works with the following kinds of triggers:
 				resource, placement, removeUnits, purchase
 		-->
-		<!-- Clarification on changing properties and clearing of properties. (Any property not in this list overwrites itself if you set it multiple times)
-				The following attachments may have MULTIPLE instances, meaning that they are adding to some variable, meaning that they may be cleared by triggers if you want to (by prefixing with "-clear-"):
+		<!-- Clarification on changing properties and resetting/clearing of properties. (Any property not in this list overwrites itself if you set it multiple times)
+				The following attachments may have MULTIPLE instances, meaning that they are adding to some variable, meaning that they may be cleared/reset by triggers if you want to (by prefixing with "-reset-"):
 				Unit Attachments:
 					canBeGivenByTerritoryTo
 					canBeCapturedOnEnteringBy
@@ -4011,9 +4013,9 @@
 					<option name="uses" value="1"/>
                 	<option name="players" value="Chinese"/>
                 	<option name="playerAttachmentName" value="RulesAttachment" count="rulesAttatchment"/>
-                	<option name="playerProperty" value="movementRestrictionTerritories" count=""/>
+                	<option name="playerProperty" value="movementRestrictionTerritories" count="-reset-"/>
                 	<option name="playerProperty" value="movementRestrictionType" count="disallowed"/>
-                	<option name="playerProperty" value="productionPerXTerritories" count="-clear-3:infantry"/>
+                	<option name="playerProperty" value="productionPerXTerritories" count="-reset-3:infantry"/>
                 	<option name="playerProperty" value="productionPerXTerritories" count="10:transport"/>
                 	<option name="playerProperty" value="placementAnySeaZone" count="true"/>
                 </attatchment>

@@ -63,12 +63,12 @@ public class ChangeAttachmentChange extends Change
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property, final boolean getRaw, final boolean clearFirst)
+	ChangeAttachmentChange(final IAttachment attachment, final Object newValue, final String property, final boolean getRaw, final boolean resetFirst)
 	{
 		if (attachment == null)
 			throw new IllegalArgumentException("No attachment, newValue:" + newValue + " property:" + property);
 		m_attachedTo = attachment.getAttachedTo();
-		m_clearFirst = clearFirst;
+		m_clearFirst = resetFirst;
 		m_attachmentName = attachment.getName();
 		m_oldValue = PropertyUtil.getPropertyFieldObject(property, attachment);
 		m_newValue = newValue;
@@ -90,14 +90,14 @@ public class ChangeAttachmentChange extends Change
 	/**
 	 * You don't want to clear the variable first unless you are setting some variable where the setting method is actually adding things to a list rather than overwriting.
 	 */
-	public ChangeAttachmentChange(final Attachable attachTo, final String attachmentName, final Object newValue, final Object oldValue, final String property, final boolean clearFirst)
+	public ChangeAttachmentChange(final Attachable attachTo, final String attachmentName, final Object newValue, final Object oldValue, final String property, final boolean resetFirst)
 	{
 		m_attachmentName = attachmentName;
 		m_attachedTo = attachTo;
 		m_newValue = newValue;
 		m_oldValue = oldValue;
 		m_property = property;
-		m_clearFirst = clearFirst;
+		m_clearFirst = resetFirst;
 	}
 	
 	@Override

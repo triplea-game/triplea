@@ -1,4 +1,8 @@
 Changes for 1.6.1
+* Changing trigger property changes to use "-reset-" instead of clear. Can now be used with any attachment option. (veqryn)
+
+* Creating a reset method for every single attachment property. These can now be used to return a property to its default value. (veqryn)
+
 * Fixing some bugs introduced into AI with the factory switch. (veqryn)
 
 * Fixing null pointer error in Easy AI purchasing algorithm for getting costs of units. (veqryn)

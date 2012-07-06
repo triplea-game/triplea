@@ -3202,6 +3202,7 @@ public class Matches
 			return relationship.getRelationshipType().getRelationshipTypeAttachment().isWar();
 		}
 	};
+	/* EXAMPLE
 	public static final Match<RelationshipType> RelationshipTypeHelpsDefendAtSea = new Match<RelationshipType>()
 	{
 		@Override
@@ -3209,7 +3210,7 @@ public class Matches
 		{
 			return relationship.getRelationshipTypeAttachment().getHelpsDefendAtSea();
 		}
-	};
+	};*/
 	public static final Match<RelationshipType> RelationshipTypeCanMoveLandUnitsOverOwnedLand = new Match<RelationshipType>()
 	{
 		@Override

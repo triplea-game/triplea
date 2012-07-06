@@ -8,6 +8,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
+import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.delegate.GenericTechAdvance;
@@ -1397,6 +1398,7 @@ public class TechAbilityAttachment extends DefaultAttachment
 	 * @param data
 	 * @throws GameParseException
 	 */
+	@InternalDoNotExport
 	public static void setDefaultTechnologyAttachments(final GameData data) throws GameParseException
 	{
 		// loop through all technologies. any "default/hard-coded" tech that doesn't have an attachment, will get its "default" attachment. any non-default tech are ignored.
