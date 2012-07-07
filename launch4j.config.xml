@@ -2,7 +2,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>bin\triplea.jar</jar>
-  <outfile>C:\dev\triplea\triplea.exe</outfile>
+  <outfile>C:\Users\duncamar\workspace\triplea\triplea.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>
@@ -12,12 +12,12 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>C:\dev\triplea\icons\triplea_icon.ico</icon>
+  <icon>C:\Users\duncamar\workspace\triplea\icons\triplea_icon.ico</icon>
   <jre>
     <path></path>
     <minVersion>1.5.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
-    <maxHeapSize>512</maxHeapSize>
+    <maxHeapSize>640</maxHeapSize>
   </jre>
 </launch4jConfig>

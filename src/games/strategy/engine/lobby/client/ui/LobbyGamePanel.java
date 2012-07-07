@@ -286,9 +286,9 @@ public class LobbyGamePanel extends JPanel
 		commands.add("-classpath");
 		commands.add(System.getProperty("java.class.path"));
 		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to add 64m to that to compensate
-		final long maxMemory = (Runtime.getRuntime().maxMemory() + 67108864);
+		final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.1) + 67108864);
 		commands.add("-Xmx" + maxMemory);
-		// commands.add("-Xmx512m"); //TODO: this may need updating
+		// commands.add("-Xmx512m"); //TODO: this may need updating 640m
 		// preserve noddraw to fix 1742775
 		final String[] preservedSystemProperties = { "sun.java2d.noddraw" };
 		for (final String key : preservedSystemProperties)
