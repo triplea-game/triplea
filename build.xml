@@ -466,7 +466,9 @@
 				<include name="**/*.zip" />
 			</zipfileset>
 
-			<zipfileset refid="build.data" prefix="${zip.prefix}/data/" />
+			<zipfileset dir="data/" prefix="${zip.prefix}/data/">
+				<include name="**/*.*" />
+			</zipfileset>
 
 			<zipfileset dir="bin" prefix="${zip.prefix}/bin/">
 				<include name="**/*.bat" />

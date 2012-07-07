@@ -204,7 +204,7 @@ public class GameRunner2
 		if (!availableSkins.contains(userDefault))
 		{
 			if (!availableSkins.contains(defaultLookAndFeel))
-				throw new IllegalStateException("Default Look And Feel not among available look and feels: " + defaultLookAndFeel);
+				return UIManager.getSystemLookAndFeelClassName();
 			setDefaultLookAndFeel(defaultLookAndFeel);
 			return defaultLookAndFeel;
 		}
