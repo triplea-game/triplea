@@ -640,7 +640,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		}
 		if (!change.isEmpty())
 		{
-			aBridge.getHistoryWriter().addChildToEvent("Giving back territories to original owners");
+			aBridge.getHistoryWriter().startEvent("Giving back territories to original owners");
 			aBridge.addChange(change);
 		}
 	}

@@ -1,4 +1,6 @@
 Changes for 1.6.1
+* Rewriting build file and including META-INF, hopefully fixing issue with Gmail play-by-email emailer on linux machines. (rain)
+
 * Changing trigger property changes to use "-reset-" instead of clear. Can now be used with any attachment option. (veqryn)
 
 * Creating a reset method for every single attachment property. These can now be used to return a property to its default value. (veqryn)

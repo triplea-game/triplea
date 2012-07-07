@@ -1,59 +1,139 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
+<!DOCTYPE project [
+	<!ENTITY digests SYSTEM "digests-include.xml">
+]>
 
-<project name="TripleA" basedir="." default="compile" xmlns:fb="antlib:edu.umd.cs.findbugs">
+<!--
+ * @FILE: build.xml
+ * @AUTHOR David "Rain" Beverly <dnbeverly@gmail.com>
+ (original authors: Sean Bridges, and many others)
+-->
 
-	<taskdef uri="antlib:edu.umd.cs.findbugs" resource="edu/umd/cs/findbugs/anttask/tasks.properties" classpath="ant/findbugs-1.3.9/lib/findbugs-ant.jar"/>
+<project name="TripleA" basedir="." default="makejar"
+	xmlns:fb="antlib:edu.umd.cs.findbugs">
+
+	<taskdef uri="antlib:edu.umd.cs.findbugs" resource="edu/umd/cs/findbugs/anttask/tasks.properties"
+		classpath="ant/findbugs-1.3.9/lib/findbugs-ant.jar" />
 
 	<property file=".ant.properties" />
-    <property name="junit-result-dir" location="test-results"/>
-    <property name="src" location="src"/>
-    <property name="classes" location="classes"/>
+	<property name="bin" location="bin" />
+	<property name="build" location="temp-build" />
+	<property name="classes" location="classes" />
+	<property name="junit-result-dir" location="test-results" />
+	<property name="release" location="release" />
+	<property name="src" location="src" />
+	<property name="test-classes" location="testclasses" />
+	<property name="test-src" location="test" />
+	<property name="zip.prefix" value="triplea_${triplea.version}" />
 
-    <property name="test-src" location="test"/>
-    <property name="test-classes" location="testclasses"/>
+	<path id="build.lib">
+		<fileset dir="lib">
+			<include name="*.jar" />
+			<exclude name="junit.jar" />
+			<exclude name="derby*" />
+		</fileset>
+	</path>
 
-	<!-- this path does not have junit on it -->
 	<path id="src.classpath">
-        <pathelement path="lib\mailapi.jar"/>
-        <pathelement path="lib\smtp.jar"/>
-        <pathelement path="lib\activation.jar"/>
-		<pathelement path="lib\standalone-compiler.jar" />
-		<pathelement path="lib\AppleJavaExtensions.jar" />
-		<pathelement path="lib\commons-httpclient-3.0.1.jar" />
-		<pathelement path="lib\commons-logging-1.1.jar" />
-		<pathelement path="lib\commons-codec-1.3.jar" />
-		<pathelement path="lib\substance-5.3.jar" />
-		<pathelement path="classes/" />
+		<path refid="build.lib" />
+		<pathelement location="${classes}" />
 	</path>
 
 	<path id="test.classpath">
-		<path refid="src.classpath"/>
-        <pathelement path="${test-classes}"/>
-		<pathelement path="lib\junit.jar" />
-        <pathelement path="lib\derby_10_1_2.jar"/>
+		<path refid="src.classpath" />
+		<fileset dir="lib" includes="junit.jar,derby*.jar" />
 	</path>
 
+	<path id="build.data">
+		<fileset dir="data">
+			<include name="**/*.*" />
+		</fileset>
+	</path>
 
-	<!-- All -->
-	<target name="all" depends="clean,compile,test,zip, zipSource" description="cleans, compiles, tests, zips, and zips source">
+	<!-- conditional checking targets -->
+	<target name="checkForMac">
+		<!-- Mac OS X os family is BOTH 'mac' and 'unix' in the ant world -->
+		<condition property="isMacOSX">
+			<and>
+				<os family="mac" />
+				<os family="unix" />
+			</and>
+		</condition>
 	</target>
 
-
-	<!-- Clean -->
-	<target name="clean" description="Remove all release, class and saved game files">
-		<delete dir="release" />
-		<delete dir="${classes}" />
-		<delete dir="bin" />
-		<delete dir="${test-classes}" />
-		<delete dir="savedGames" />
+	<target name="checkForWinNT">
+		<!-- check for windows (XP or 7 hopefully) -->
+		<condition property="isWindowsNT">
+			<os family="winnt" />
+		</condition>
 	</target>
 
-	<!-- Compile -->
-	<target name="compile" description="Compile the source files and copy over the resource files">
+	<target name="checkForZip">
+		<available file="${release}/${zip.prefix}_all_platforms.zip"
+			property="zipFileAvailable" />
+	</target>
 
+	<target name="zipfileOnWindows" depends="checkForWinNT,checkForZip">
+		<condition property="windowsZipAvailable">
+			<and>
+				<isset property="isWindowsNT" />
+				<isset property="zipFileAvailable" />
+			</and>
+		</condition>
+	</target>
+	
+	<target name="checkForJar">
+		<available file="${bin}/triplea.jar" property="tripleaJarAvailable" />
+	</target>
+	<!-- end conditionals -->
+
+	<!-- inspectManifest -->
+	<target name="inspectManifest" description="pull META-INF/MANIFEST.MF for inspection"
+		depends="checkForJar" if="tripleaJarAvailable">
+		<exec executable="unzip">
+			<arg line="-c ${bin}/triplea.jar META-INF/MANIFEST.MF" />
+		</exec>
+	</target>
+
+	<!-- showpaths -->
+	<target name="showpaths" description="show classpaths">
+		<pathconvert pathsep="${line.separator}|   |-- " property="echo.path.src-classpath"
+			refid="src.classpath" />
+		<pathconvert pathsep="${line.separator}|   |-- " property="echo.path.test-classpath"
+			refid="test.classpath" />
+		<echo message="|-- src classpath" />
+		<echo message="|   |" />
+		<echo message="|   |-- ${echo.path.src-classpath}" />
+		<echo message="|-- test classpath" />
+		<echo message="|   |" />
+		<echo message="|   |-- ${echo.path.test-classpath}" />
+	</target>
+
+	<!--checkBuildEnv -->
+	<target name="checkBuildEnv">
+		<!-- Check ant version first (pre-1.6.5 reports java version it was built 
+			with, not what it's running under, so an ant built with 1.5 would report 
+			that even if it's currently running under < 1.5). 1.6.5 was released in June 
+			2005, so it's fairly unlikely that anyone would be using an older version, 
+			but checking it is still a good idea, and it only takes a tiny fraction of 
+			a second. -->
+		<fail message="Ant version 1.6.5 or greater is required">
+			<condition>
+				<not>
+					<or>
+						<contains string="${ant.version}" substring="1.6.5" />
+						<contains string="${ant.version}" substring="1.7" />
+						<contains string="${ant.version}" substring="1.8" />
+						<contains string="${ant.version}" substring="1.9" />
+					</or>
+				</not>
+			</condition>
+		</fail>
+		<echo message="${ant.version}" />
 		<!-- we require jdk 1.5 or greater -->
-		<fail message="jdk 1.5 or greater required, you are currently using: ${ant.java.version}">
+		<fail
+			message="jdk 1.5 or greater required, you are currently using: ${ant.java.version}">
 			<condition>
 				<or>
 					<equals arg1="1.1" arg2="${ant.java.version}" />
@@ -63,302 +143,263 @@
 				</or>
 			</condition>
 		</fail>
+		<echo message="JDK version: ${ant.java.version}" />
+	</target>
 
-		<!-- we only need this for deployment -->
-		<delete file="bin/triplea.jar" failonerror="" />
+	<!-- clean -->
+	<target name="clean" description="clean up temp dirs and files">
+		<!-- we don't want anything to depend on this but compileClean, macRelease, and release, 
+			as it forces a complete rebuild every time, defeating the purpose of a 
+			well-managed build process that only updates changed items -->
+		<delete dir="${bin}" />
+		<delete dir="${build}" />
+		<delete dir="${classes}" />
+		<delete dir="${release}" />
+		<delete dir="savedGames" />
+		<delete dir="${test-classes}" />
+	</target>
 
-		<mkdir dir="${classes}" />
-		<mkdir dir="${test-classes}" />
-		<copy todir="classes">
-			<fileset dir="data">
-				<include name="**/*.dtd" />
-				<include name="**/*.gif" />
-				<include name="**/*.png" />
-				<include name="**/*.txt" />
-				<include name="**/*.jpeg" />
-				<include name="**/*.xml" />
-				<include name="**/*.xslt" />
-				<include name="**/*.wav" />
-				<include name="**/*.properties" />
-				<include name="**/*.html" />
-			</fileset>
+	<!-- sweep -->
+	<target name="sweep" description="clean up some artifacts">
+		<delete dir="${bin}" excludes="triplea.jar" includes="**/**"
+			includeemptydirs="true" />
+		<delete dir="${build}" />
+	</target>
+
+	<!-- copyResources -->
+	<target name="copyResources" description="copy resource files to build directory">
+		<copy todir="${classes}">
+			<path refid="build.data" />
 		</copy>
+	</target>
 
-		<javac srcdir="src/" destdir="${classes}" debug="true" deprecation="true" classpathref="src.classpath" target="1.5" encoding="utf8" />
+	<!-- compile -->
+	<target name="compile" description="Compile the source files"
+		depends="checkBuildEnv,copyResources">
+		<javac srcdir="${src}" destdir="${classes}" debug="true"
+			deprecation="true" classpathref="src.classpath" target="1.5"
+			encoding="utf8" includeantruntime="false" />
 
-		<!-- to check the correct java version, we need to compile the startup class so that it will run on older vms -->
+		<!-- to check the correct java version, we need to compile the startup 
+			class so that it will run on older vms -->
 		<!-- delete the startup class, and recompile it -->
 		<delete>
-			<fileset dir="classes" includes="**/GameRunner.class">
-			</fileset>
+			<fileset dir="${classes}" includes="**/GameRunner.class" />
 		</delete>
-
-		<javac srcdir="${src}" destdir="${classes}" debug="true" deprecation="true" classpathref="src.classpath" target="1.2" source="1.2" />
+		<javac srcdir="${src}" destdir="${classes}" debug="true"
+			deprecation="true" classpathref="src.classpath" target="1.2" source="1.2"
+			includeantruntime="false" />
 	</target>
-
-	<target name="run" depends="compile" description="Run Triplea">
-		<java classpathref="src.classpath" spawn="true" classname="games.strategy.engine.framework.GameRunner" fork="true"/>
-	</target>
-
 
 	<!-- compileClean -->
-	<target name="compileClean" depends="clean,compile,zip" description="Clean then compile" />
+	<target name="compileClean" depends="clean,compile" description="clean and then compile" />
 
-	<target name="macRelease" depends="clean,compile,zip" description="create a mac os x end user application">
-
-		<property name="dmg.file" value="release/triplea_${triplea.version}_mac.dmg"/>
-		<property name="app.file" value="release/Triplea.app"/>
-
-
-		<exec executable="hdiutil">
-			<arg line="detach /Volumes/TripleA" />
-		</exec>
-
-		<mkdir dir="${app.file}" />
-		<mkdir dir="${app.file}/Contents" />
-		<mkdir dir="${app.file}/Contents/MacOS" />
-		<mkdir dir="${app.file}/Contents/Resources/" />
-		<mkdir dir="${app.file}/Contents/Resources/Java" />
-
-		<copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" todir="${app.file}/Contents/MacOS/" />
-
-		<exec executable="chmod">
-			<arg line="755 ${app.file}/Contents/MacOS/JavaApplicationStub" />
-		</exec>
-
-		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"/>
-
-		<copy file="Info.plist" todir="${app.file}/Contents/" />
-
-		<echo message="APPL????" file="${app.file}/Contents/PkgInfo" />
-
-
-
-		<copy file="icons/icon.icns" todir="${app.file}/Contents/Resources/" />
-
-		<exec executable="cp">
-			<arg line="-r icons ${app.file}/Contents/Resources/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="-r images ${app.file}/Contents/Resources/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="-r sounds ${app.file}/Contents/Resources/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="-r license ${app.file}/Contents/Resources/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="-r dice_servers ${app.file}/Contents/Resources/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="-r maps ${app.file}/Contents/Resources/" />
-		</exec>
-
-		<exec executable="/Developer/Tools/SetFile">
-			<arg line="-a B ${app.file}" />
-		</exec>
-
-		<unzip src="icons/Icon.zip" dest="${app.file}/" encoding="MacRoman" />
-
-		<echo message="making dmg"/>
-		<exec executable="hdiutil">
-			<arg line="create -size 500m -fs HFS+ -volname TripleA ${dmg.file}" />
-		</exec>
-
-
-		<exec executable="hdiutil">
-			<arg line="attach ${dmg.file}" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="-r ${app.file} /Volumes/TripleA/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="-r doc /Volumes/TripleA/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="readme.html /Volumes/TripleA/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="TripleA_RuleBook.pdf /Volumes/TripleA/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="license/gpl.txt /Volumes/TripleA/COPYING" />
-		</exec>
-
-		<exec executable="hdiutil">
-			<arg line="detach /Volumes/TripleA" />
-		</exec>
-
-		<!-- compress the dmg file -->
-		<move file="${dmg.file}" tofile="temp.dmg"> </move>
-		<exec executable="hdiutil">
-			<arg line="convert temp.dmg -o ${dmg.file} -format UDBZ "/>
- 		</exec>
-		<delete file="temp.dmg"/>
-
-	</target>
-
-	<target name="macServerApp" depends="clean,compile,zip" description="create a mac os x server application">
-
-		<property name="dmg.file" value="release/triplea_${triplea.version}_server.dmg"/>
-		<property name="app.file" value="release/TripleaServer.app"/>
-
-
-		<exec executable="hdiutil">
-			<arg line="detach /Volumes/TripleA" />
-		</exec>
-
-		<mkdir dir="${app.file}" />
-		<mkdir dir="${app.file}/Contents" />
-		<mkdir dir="${app.file}/Contents/MacOS" />
-		<mkdir dir="${app.file}/Contents/Resources/" />
-		<mkdir dir="${app.file}/Contents/Resources/Java" />
-
-		<copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" todir="${app.file}/Contents/MacOS/" />
-
-		<exec executable="chmod">
-			<arg line="755 ${app.file}/Contents/MacOS/JavaApplicationStub" />
-		</exec>
-
-		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"/>
-		<copy file="lib/derby_10_1_2.jar" todir="${app.file}/Contents/Resources/Java/"/>
-
-
-		<copy file="ServerInfo.plist" tofile="${app.file}/Contents/Info.plist" />
-
-		<echo message="APPL????" file="${app.file}/Contents/PkgInfo" />
-
-		<copy file="icons/icon.icns" todir="${app.file}/Contents/Resources/" />
-
-
-		<exec executable="cp">
-			<arg line="-r icons ${app.file}/Contents/Resources/" />
-		</exec>
-
-		<exec executable="/Developer/Tools/SetFile">
-			<arg line="-a B ${app.file}" />
-		</exec>
-
-		<unzip src="icons/Icon.zip" dest="${app.file}/" encoding="MacRoman" />
-
-		<echo message="making dmg"/>
-		<exec executable="hdiutil">
-			<arg line="create -size 300m -fs HFS+ -volname TripleA ${dmg.file}" />
-		</exec>
-
-
-		<exec executable="hdiutil">
-			<arg line="attach ${dmg.file}" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="-r ${app.file} /Volumes/TripleA/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="-r doc /Volumes/TripleA/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="readme.html /Volumes/TripleA/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="license/gpl.txt /Volumes/TripleA/COPYING" />
-		</exec>
-
-		<exec executable="hdiutil">
-			<arg line="detach /Volumes/TripleA" />
-		</exec>
-
-		<!-- compress the dmg file -->
-		<move file="${dmg.file}" tofile="temp.dmg"> </move>
-		<exec executable="hdiutil">
-			<arg line="convert temp.dmg -o ${dmg.file} -format UDBZ "/>
- 		</exec>
-		<delete file="temp.dmg"/>
-
-	</target>
-
-
-	<!-- zip -->
-	<target name="zip" depends="compile" description="create a zip file for all end users">
-		<mkdir dir="release" />
-
-		<mkdir dir="bin"/>
-		<delete file="bin/triplea.jar" />
-
-		<!-- we want to merge all the jar files we use
-		     into the triplea.jar file, so unzip everything into
-		     one directory -->
-		<delete dir="deleteme"/>
-		<mkdir dir="deleteme"/>
-		<unjar dest="deleteme" overwrite="yes">
-			<fileset dir="lib" includes="*.jar" excludes="junit.jar,derby*"> </fileset>
+	<!-- makejar -->
+	<target name="makejar" depends="compile" description="create bin/triplea.jar">
+		<unjar dest="${build}" overwrite="false">
+			<path refid="build.lib" />
 		</unjar>
-		<delete dir="deleteme/META-INF"/>
-		<copy todir="deleteme">
-			<fileset dir="classes" includes="**"/>
+		<copy todir="${build}">
+			<fileset dir="${classes}" includes="**" />
 		</copy>
-
-		<jar destfile="bin/triplea.jar" basedir="deleteme">
+		<jar destfile="${bin}/triplea.jar" basedir="${build}">
 			<manifest>
-				<attribute name="Main-Class" value="games.strategy.engine.framework.GameRunner" />
+				<attribute name="Main-Class"
+					value="games.strategy.engine.framework.GameRunner" />
+				<attribute name="TripleA-Version" value="${triplea.version}" />
+				<!-- entity import -->
+				&digests;
 			</manifest>
 		</jar>
-		<delete dir="deleteme"/>
+	</target>
 
-		<zip zipfile="release/triplea_${triplea.version}_all_platforms.zip" compress="true">
+	<!-- run -->
+	<target name="run" depends="compile" description="Run TripleA">
+		<java classpathref="src.classpath" spawn="true" fork="true"
+			classname="games.strategy.engine.framework.GameRunner" />
+	</target>
 
-			<!--zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
-				<include name="**/*.jar" />
-				<include name="**/*.zip" />
+	<!-- setupMac -->
+	<macrodef name="setupMac">
+		<attribute name="volume.mac" default="/Volumes/TripleA" />
+		<attribute name="app.file" default="${release}/Triplea.app" />
+		<attribute name="dmg.file" default="${release}/${zip.prefix}_mac.dmg" />
+		<attribute name="dmg.size" default="500m" />
+		<element name="derby-copy" optional="yes"
+			description="this should be a copy task for macServerApp to include the derby jar" />
+		<element name="resources-copy" optional="no"
+			description="what resources should go in (release should be all, server just icons)" />
+		<element name="info-plist-copy" optional="no"
+			description="what Info.plist should we use" />
+		<element name="basedir-copy" optional="no"
+			description="what to include in the base directory" />
+		<sequential>
+			<exec executable="hdiutil">
+				<arg line="detach @{volume.mac}" />
+			</exec>
+			<copy
+				file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub"
+				todir="@{app.file}/Contents/MacOS" />
 
-				<exclude name="**/junit.jar" />
-			</zipfileset -->
+			<chmod file="@{app.file}/Contents/MacOS/JavaApplicationStub"
+				perm="755" />
+			<!-- <exec executable="chmod"> <arg line="755 @{app.file}/Contents/MacOS/JavaApplicationStub" 
+				/> </exec> -->
 
-			<zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
+			<copy file="bin/triplea.jar" todir="@{app.file}/Contents/Resources/Java" />
+
+			<!-- The macServerApp target sets derby-copy in its call to setupMac, 
+				and it's a noop for macRelease -->
+			<derby-copy />
+
+			<info-plist-copy />
+			
+			<copy file="Info.plist" todir="@{app.file}/Contents" />
+			<echo message="APPL????" file="@{app.file}/Contents/PkgInfo" />
+			<copy file="icons/icon.icns" todir="@{app.file}/Contents/Resources" />
+
+			<!-- each exec task forks a new process; changed exec cp calls to use 
+				ant's copy task -->
+
+			<resources-copy />
+
+			<exec executable="/Developer/Tools/SetFile">
+				<arg line="-a B @{app.file}" />
+			</exec>
+
+			<!-- TODO is it necessary to unzip this into @{app.file}? We already have 
+				the icons directory in @{app.file}/Contents/Resources -->
+			<unzip src="icons/Icon.zip" dest="@{app.file}" encoding="MacRoman" />
+
+			<echo message="creating dmg" />
+			<exec executable="hdiutil">
+				<arg
+					line="create -size @{dmg.size} -fs HFS+ -volname TripleA @{dmg.file}" />
+			</exec>
+
+			<exec executable="hdiutil">
+				<arg line="attach @{dmg.file}" />
+			</exec>
+
+			<copy file="license/gpl.txt" todir="@{volume.mac}/COPYING" />
+			
+			<basedir-copy />
+			
+			<exec executable="hdiutil">
+				<arg line="detach @{volume.mac}" />
+			</exec>
+			<!-- compress the dmg file -->
+			<move file="@{dmg.file}" tofile="temp.dmg" />
+			<exec executable="hdiutil">
+				<arg line="convert temp.dmg -o @{dmg.file} -format UDBZ " />
+			</exec>
+			<delete file="temp.dmg" />
+		</sequential>
+	</macrodef>
+
+	<!-- macRelease -->
+	<target name="macRelease" depends="checkForMac,clean,makejar"
+		description="create a mac os x end user application" if="isMacOSX">
+		
+		<setupMac>
+			<info-plist-copy>
+				<copy file="Info.plist" todir="@{app.file}/Contents" />
+			</info-plist-copy>
+			<resources-copy>
+				<copy todir="@{app.file}/Contents/Resources">
+					<fileset dir="${basedir}">
+						<include name="dice_servers/**" />
+						<include name="icons/**" />
+						<include name="images/**" />
+						<include name="license/**" />
+						<include name="maps/**" />
+						<include name="sounds/**" />
+					</fileset>
+				</copy>
+			</resources-copy>
+			<basedir-copy>
+				<copy todir="@{volume.mac}">
+					<fileset dir="${basedir}">
+						<include name="@{app.file}/**" />
+						<include name="doc/**" />
+						<include name="readme.html" />
+						<include name="TripleA_RuleBook.pdf" />
+					</fileset>
+				</copy>
+			</basedir-copy>
+		</setupMac>
+	</target>
+
+	<!-- macServerApp -->
+	<target name="macServerApp" depends="checkForMac,clean,makejar"
+		description="create a mac os x server application" if="isMacOSX">
+		<property name="dmg.file" value="${release}/${zip.prefix}_server.dmg" />
+		<property name="app.file" value="${release}/TripleaServer.app" />
+		<property name="derby.jar" location="lib/derby_10_1_2.jar" />
+
+		<setupMac app.file="${app.file}" dmg.file="${dmg.file}"
+			dmg.size="500m">
+			<derby-copy>
+				<copy file="${derby.jar}" todir="@{app.file}/Contents/Resources/Java" />
+			</derby-copy>
+			<info-plist-copy>
+				<copy file="ServerInfo.plist" tofile="${app.file}/Contents/Info.plist" />
+			</info-plist-copy>
+			<resources-copy>
+				<copy todir="@{app.file}/Contents/Resources">
+					<fileset dir="${basedir}">
+						<include name="icons/**" />
+						<include name="license/**" />
+					</fileset>
+				</copy>
+			</resources-copy>
+			<basedir-copy>
+				<copy todir="@{volume.mac}">
+					<fileset dir="${basedir}">
+						<include name="@{app.file}/**" />
+						<include name="doc/**" />
+						<include name="readme.html" />
+					</fileset>
+				</copy>
+			</basedir-copy>
+		</setupMac>
+	</target>
+
+	<!-- zip -->
+	<target name="zip" depends="makejar" description="create a zip file for all end users">
+		<zip destfile="${release}/${zip.prefix}_all_platforms.zip"
+			compress="true">
+			<zipfileset dir="doc" prefix="${zip.prefix}/doc/">
 				<include name="**/*.*" />
 			</zipfileset>
 
-			<zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
+			<zipfileset dir="license" prefix="${zip.prefix}/license/">
 				<include name="gpl.txt" />
 			</zipfileset>
 
-			<zipfileset dir="dice_servers/" prefix="triplea_${triplea.version}/dice_servers/">
+			<zipfileset dir="dice_servers" prefix="${zip.prefix}/dice_servers/">
 				<include name="*.properties" />
 			</zipfileset>
 
-			<zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
+			<zipfileset dir="icons" prefix="${zip.prefix}/icons/">
 				<include name="**/*.png" />
 				<include name="**/*.bmp" />
 				<include name="**/*.ico" />
 			</zipfileset>
 
-			<zipfileset dir="images/" prefix="triplea_${triplea.version}/images/">
+			<zipfileset dir="images" prefix="${zip.prefix}/images/">
 				<include name="**/*.*" />
 			</zipfileset>
 
-			<zipfileset dir="sounds/" prefix="triplea_${triplea.version}/sounds/">
+			<zipfileset dir="sounds" prefix="${zip.prefix}/sounds/">
 				<include name="**/*.*" />
 			</zipfileset>
 
-			<zipfileset dir="maps/" prefix="triplea_${triplea.version}/maps/">
+			<zipfileset dir="maps" prefix="${zip.prefix}/maps/">
 				<include name="**/*.*" />
 			</zipfileset>
 
-			<zipfileset dir="." prefix="triplea_${triplea.version}/">
+			<zipfileset dir="${basedir}" prefix="${zip.prefix}/">
 				<include name="readme.html" />
 				<include name="*.bat" />
 				<include name="triplea.exe" />
@@ -366,150 +407,89 @@
 				<include name="TripleA_RuleBook.pdf" />
 			</zipfileset>
 
-			<zipfileset dir="." prefix="triplea_${triplea.version}/" filemode="755">
-				<include name="*.sh"/>
-				<exclude name="fix_mac_icon.sh"/>
-				<exclude name="run-server.sh"/>
+			<zipfileset dir="${basedir}" prefix="${zip.prefix}/"
+				filemode="755">
+				<include name="*.sh" />
+				<exclude name="fix_mac_icon.sh" />
+				<exclude name="run-server.sh" />
 			</zipfileset>
 
-			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/" filemode="755">
-				<include name="**/triplea.jar" />
+			<zipfileset dir="bin" prefix="${zip.prefix}/bin/"
+				filemode="755">
+				<include name="triplea.jar" />
 			</zipfileset>
-
-
 		</zip>
 	</target>
 
-	<!-- zip -->
+	<!-- zipServer -->
 	<target name="zipServer" depends="zip" description="create zip for lobby server">
-		<zip zipfile="release/triplea_${triplea.version}_server.zip" compress="true">
+		<zip destfile="${release}/${zip.prefix}_server.zip" compress="true">
 
-			<zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
+			<zipfileset dir="license" prefix="${zip.prefix}/license/">
 				<include name="gpl.txt" />
 			</zipfileset>
 
-			<zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
+			<zipfileset dir="lib" prefix="${zip.prefix}/lib/">
 				<include name="**/derby*.jar" />
 			</zipfileset>
 
-			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
+			<zipfileset dir="bin" prefix="${zip.prefix}/bin/">
 				<include name="**/*.jar" />
 			</zipfileset>
 
-			<zipfileset dir="." prefix="triplea_${triplea.version}" filemode="755">
-				<include name="run-server.sh"/>
+			<zipfileset dir="${basedir}" prefix="${zip.prefix}"
+				filemode="755">
+				<include name="run-server.sh" />
 			</zipfileset>
 		</zip>
-
-	</target>
-
-	<!-- must be done after a ant zip has been executed (we dont depend since ant zip
-         takes a while.  NSIS must be installed, and makensis must be on the path
-	 -->
-	<target name="zipInstallerWithJava" description="creates windows installer with java">
-		<delete dir="release/installer" />
-		<mkdir dir="release/installer" />
-
-		<unzip src="release/triplea_${triplea.version}_all_platforms.zip" dest="release/installer" />
-		<unzip src="installer/jre1.6.0_33.zip" dest="release/installer" />
-		<move toDir="release/installer/triplea_${triplea.version}/jre">
-			<fileset dir="release/installer/jre1.6.0_33" />
-		</move>
-
-		<copy file="installer/installer.nsi" toFile="release/installer/installer.nsi" />
-		<copy file="triplea_embeded_jre.exe" toFile="release/installer/triplea_${triplea.version}/triplea.exe" overwrite="true" />
-		<!-- the bat file doesnt work, since it does not point to the jre -->
-		<delete file="release/installer/triplea_${triplea.version}/triplea_windows.bat" />
-
-
-		<exec executable="makensis" dir="release/installer">
-			<arg line="/Dversion=${triplea.version} installer.nsi " />
-		</exec>
-
-		<move file="release/installer/triplea_installer.exe" toFile="release/triplea_${triplea.version}_windows_installer_with_java.exe" />
-	</target>
-
-
-	<target name="release" depends="clean,compile,zip,zipInstaller,zipInstallerWithJava,zipSource" description="do a full windows/generic release, this must be done on a windows machine" />
-
-
-	<!-- must be done after a ant zip has been executed (we dont depend since ant zip
-         takes a while.  NSIS must be installed, and makensis must be on the path
-	 -->
-	<target name="zipInstaller" description="creates windows installer">
-		<delete dir="release/installer" />
-		<mkdir dir="release/installer" />
-
-		<unzip src="release/triplea_${triplea.version}_all_platforms.zip" dest="release/installer" />
-
-		<copy file="installer/installer.nsi" toFile="release/installer/installer.nsi" />
-
-		<exec executable="makensis" dir="release/installer">
-			<arg line="/Dversion=${triplea.version} installer.nsi " />
-		</exec>
-
-		<move file="release/installer/triplea_installer.exe" toFile="release/triplea_${triplea.version}_windows_installer.exe" />
-
-
 	</target>
 
 	<!-- zipSource -->
 	<target name="zipSource" description="create a zip file for developers">
-		<mkdir dir="release" />
+		<zip destfile="${release}/${zip.prefix}_source_code_only.zip"
+			compress="true">
 
-		<zip zipfile="release/triplea_${triplea.version}_source_code_only.zip" compress="true">
-
-			<zipfileset dir="src/" prefix="triplea_${triplea.version}/src/">
+			<zipfileset dir="src" prefix="${zip.prefix}/src/">
 				<include name="**/*.java" />
 			</zipfileset>
 
-			<zipfileset dir="test/" prefix="triplea_${triplea.version}/test/">
+			<zipfileset dir="test" prefix="${zip.prefix}/test/">
 				<include name="**/*.java" />
 			</zipfileset>
 
-			<zipfileset dir="junit/" prefix="triplea_${triplea.version}/junit/">
+			<zipfileset dir="junit" prefix="${zip.prefix}/junit/">
 				<include name="excluded.properties" />
 			</zipfileset>
 
-			<zipfileset dir="lib/" prefix="triplea_${triplea.version}/lib/">
+			<zipfileset dir="lib" prefix="${zip.prefix}/lib/">
 				<include name="**/*.jar" />
 				<include name="**/*.zip" />
 			</zipfileset>
 
-			<zipfileset dir="data/" prefix="triplea_${triplea.version}/data/">
-				<include name="**/*.dtd" />
-				<include name="**/*.gif" />
-				<include name="**/*.png" />
-				<include name="**/*.jpg" />
-				<include name="**/*.jpeg" />
-				<include name="**/*.txt" />
-				<include name="**/*.xml" />
-				<include name="**/*.wav" />
-				<include name="**/*.properties" />
-				<include name="**/*.html" />
-			</zipfileset>
+			<zipfileset refid="build.data" prefix="${zip.prefix}/data/" />
 
-			<zipfileset dir="bin/" prefix="triplea_${triplea.version}/bin/">
+			<zipfileset dir="bin" prefix="${zip.prefix}/bin/">
 				<include name="**/*.bat" />
 				<include name="**/*.sh" />
 			</zipfileset>
 
-			<zipfileset dir="." prefix="triplea_${triplea.version}/">
-				<include name="build.xml" />
-				<include name=".ant.properties" />
-				<include name="readme.html" />
-				<include name="TripleA_RuleBook.pdf" />
-				<include name="TripleA_RuleBook.docx" />
+			<zipfileset dir="${basedir}" prefix="${zip.prefix}/">
 				<include name="*.bat" />
 				<include name="*.sh" />
-				<include name="changelog.txt" />
+				<include name=".ant.properties" />
+				<include name="build.xml" />
+				<include name="digests-include.xml" />
 				<include name="launch4j.config.xml" />
 				<include name="launch4j_embedded_jre.config.xml" />
 				<include name="Info.plist" />
 				<include name="ServerInfo.plist" />
+				<include name="changelog.txt" />
+				<include name="readme.html" />
+				<include name="TripleA_RuleBook.pdf" />
+				<include name="TripleA_RuleBook.docx" />
 			</zipfileset>
 
-			<zipfileset dir="icons/" prefix="triplea_${triplea.version}/icons/">
+			<zipfileset dir="icons" prefix="${zip.prefix}/icons/">
 				<include name="**/*.png" />
 				<include name="**/*.bmp" />
 				<include name="**/*.ico" />
@@ -517,44 +497,41 @@
 				<include name="**/*.zip" />
 			</zipfileset>
 
-			<zipfileset dir="doc/" prefix="triplea_${triplea.version}/doc/">
+			<zipfileset dir="doc" prefix="${zip.prefix}/doc/">
 				<include name="**/*.*" />
 			</zipfileset>
 
-			<zipfileset dir="license/" prefix="triplea_${triplea.version}/license/">
+			<zipfileset dir="license" prefix="${zip.prefix}/license/">
 				<include name="gpl.txt" />
 			</zipfileset>
 
-			<zipfileset dir="dice_servers/" prefix="triplea_${triplea.version}/dice_servers/">
+			<zipfileset dir="dice_servers" prefix="${zip.prefix}/dice_servers/">
 				<include name="*.properties" />
 			</zipfileset>
 
-			<zipfileset dir="images/" prefix="triplea_${triplea.version}/images/">
+			<zipfileset dir="images" prefix="${zip.prefix}/images/">
 				<include name="**/*.*" />
 			</zipfileset>
 
-			<zipfileset dir="sounds/" prefix="triplea_${triplea.version}/sounds/">
+			<zipfileset dir="sounds" prefix="${zip.prefix}/sounds/">
 				<include name="**/*.*" />
 			</zipfileset>
 
-			<zipfileset dir="maps/" prefix="triplea_${triplea.version}/maps/">
+			<zipfileset dir="maps" prefix="${zip.prefix}/maps/">
 				<include name="**/*.*" />
 			</zipfileset>
-
 		</zip>
 	</target>
-
 
 	<!-- javadoc -->
 	<target name="javadoc" description="Generate JavaDoc documentation">
 		<delete dir="apidoc" />
-
-		<mkdir dir="apidoc" />
+		<!-- <mkdir dir="apidoc" /> -->
 
 		<javadoc destdir="apidoc" Verbose="off">
 			<package name="games.strategy.*" />
 			<sourcepath>
-				<pathelement location="src/" />
+				<pathelement path="${src}" />
 			</sourcepath>
 		</javadoc>
 	</target>
@@ -563,42 +540,102 @@
 	<target name="test" description="run junit tests">
 
         <delete dir="${junit-result-dir}" failonerror="false"/>
-        <mkdir dir="${junit-result-dir}"/>
+		<mkdir dir="${junit-result-dir}" />
+		<mkdir dir="${test-classes}" />
 
-        <javac srcdir="${test-src}" destdir="${test-classes}/" debug="true" deprecation="true" target="1.5">
-            <classpath refid="test.classpath"/>
-        </javac>
+		<javac srcdir="${test-src}" destdir="${test-classes}" debug="true"
+			deprecation="true" target="1.5" includeantruntime="false">
+			<classpath refid="test.classpath" />
+		</javac>
 
-        <!-- copy the game.xml file form the test into the test output directory -->
-	    <copy todir="${test-classes}">
-		<fileset dir="${test-src}" includes="**/*.xml"/>
-	    </copy>
+		<!-- copy the game.xml file from the test into the test output directory -->
+		<copy todir="${test-classes}">
+			<fileset dir="${test-src}" includes="**/*.xml" />
+		</copy>
 
 		<junit fork="yes" haltonerror="off">
-			<classpath refid="test.classpath"/>
+			<classpath refid="test.classpath" />
 			<formatter type="plain" />
-            <formatter type="xml" />
-			 <batchtest todir="${junit-result-dir}">
-             <fileset dir="${test-classes}">
-                <filename name="**/*Test.class"/>
-            </fileset>
-            </batchtest>
+			<formatter type="xml" />
+			<batchtest todir="${junit-result-dir}">
+				<fileset dir="${test-classes}">
+					<filename name="**/*Test.class" />
+				</fileset>
+			</batchtest>
 		</junit>
 	</target>
 
 	<!-- analyze code for bugs. run compile first -->
-    <target name="findbugs" description="run findbugs">
+	<target name="findbugs" description="run findbugs" depends="compile">
 
-        <jar destfile="classes.jar" basedir="classes">
-		</jar>
+		<jar destfile="classes.jar" basedir="${classes}" />
 
-        <pathconvert refid="src.classpath" property="findbugs-path"/>
-        <fb:findbugs home="ant/findbugs-1.3.9" excludeFilter="ant/FindbugsExcludeFilter.txt" output="xml" outputFile="fb.xml" timeout="3600000" jvmargs="-Xmx256m">
-            <sourcePath path="src"/>
-            <auxclasspath path="${findbugs-path}"/>
-            <class location="classes.jar"/>
-        </fb:findbugs>
-    </target>
+		<pathconvert refid="src.classpath" property="findbugs-path" />
+		<fb:findbugs home="ant/findbugs-1.3.9" excludeFilter="ant/FindbugsExcludeFilter.txt"
+			output="xml" outputFile="fb.xml" timeout="3600000" jvmargs="-Xmx256m">
+			<sourcePath path="${src}" />
+			<auxclasspath path="${findbugs-path}" />
+			<class location="classes.jar" />
+		</fb:findbugs>
+	</target>
 
+	<macrodef name="winInstaller">
+		<attribute name="exe.file" />
+		<attribute name="install.loc" default="${release}/installer" />
+		<element name="add-java-elements" optional="yes" />
+		<sequential>
+			<unzip src="${release}/${zip.prefix}_all_platforms.zip" dest="@{install.loc}" />
 
+			<!-- this is a noop for zipInstaller -->
+			<add-java-elements />
+
+			<copy file="installer/installer.nsi" tofile="@{install.loc}/installer.nsi" />
+			
+			<!-- the bat file doesnt work, since it does not point to the jre -->
+			<delete file="@{install.loc}/${zip.prefix}/triplea_windows.bat" />
+
+			<exec executable="makensis" dir="@{install.loc}">
+				<arg line="/Dversion=${triplea.version} installer.nsi " />
+			</exec>
+
+			<move file="@{install.loc}/triplea_installer.exe" tofile="${release}/${zip.prefix}_@{exe.file}" />
+		</sequential>
+	</macrodef>
+
+	<!-- zipInstallerWithJava -->
+	<!-- must be done after a ant zip has been executed (we dont depend since 
+		ant zip takes a while. NSIS must be installed, and makensis must be on the 
+		path -->
+	<target name="zipInstallerWithJava" description="creates windows installer with java"
+		depends="zipfileOnWindows" if="windowsZipAvailable">
+
+		<winInstaller exe.file="windows_installer_with_java.exe">
+			<add-java-elements>
+				<unzip src="installer/jre1.6.0_33.zip" dest="@{install.loc}" />
+				<move todir="@{install.loc}/${zip.prefix}/jre">
+					<fileset dir="@{install.loc}/jre1.6.0_33" />
+				</move>
+				<copy file="triplea_embeded_jre.exe" tofile="@{install.loc}/${zip.prefix}/triplea.exe" />
+			</add-java-elements>
+		</winInstaller>
+
+	</target>
+
+	<!-- zipInstaller -->
+	<!-- must be done after a ant zip has been executed (we dont depend since 
+		ant zip takes a while. NSIS must be installed, and makensis must be on the 
+		path -->
+	<target name="zipInstaller" description="creates windows installer"
+		depends="zipfileOnWindows" if="windowsZipAvailable">
+
+		<winInstaller exe.file="windows_installer.exe" />
+
+	</target>
+
+	<target name="release" depends="checkForWinNT,clean,zip,zipInstaller,zipInstallerWithJava,zipServer,zipSource"
+		description="do a full windows/generic release, this must be done on a windows machine"
+		if="isWindowsNT" />
+	
+	<target name="all" depends="clean,compile,test,zip,zipSource" description="cleans, compiles, tests, zips, and zips source">
+	</target>
 </project>

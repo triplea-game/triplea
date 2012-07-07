@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	@FILE:		digests-include.xml
+	@AUTHOR:	David "Rain" Beverly <dnbeverly@gmail.com>
+	@DATE:		22 JUN 2012
+	@VERSION:	1.6-20120622
+-->
+
+<!--
+	This file contains the necessary manifest sections for proper functioning of activation.jar
+	It is included into build.xml as an entity import, and is not a stand-alone component
+	These values were extracted from META-INF/MANIFEST.MF in activation.jar
+-->
+
+<!-- TODO: task to regenerate these if activation.jar is updated -->
+
+<section name="javax/activation/MimeTypeParseException.class">
+	<attribute name="SHA1-Digest" value="rrx9G+caxHhuNDE/DhAq9vIxTk4=" />
+</section>
+
+<section name="javax/activation/CommandInfo.class">
+	<attribute name="SHA1-Digest" value="rP8XdxcEzkkTlPcYzFryEJN0ZdA=" />
+</section>
+
+<section name="com/sun/activation/viewers/ImageViewer.class">
+	<attribute name="SHA1-Digest" value="WI+5bUStgpxsSmBlaHSVbg35bGI=" />
+</section>
+
+<section name="javax/activation/MimeTypeParameterList.class">
+	<attribute name="SHA1-Digest" value="nXVRYbUJSaeXcg7MEQyFdqNCmz4=" />
+</section>
+
+<section name="javax/activation/DataContentHandlerFactory.class">
+	<attribute name="SHA1-Digest" value="3aRLzh4IMVBlbc52F5lBdRQy2Vw=" />
+</section>
+
+<section name="javax/activation/DataSourceDataContentHandler.class">
+	<attribute name="SHA1-Digest" value="gApzFv9Qgl63MG3QvZAZOFhi9ao=" />
+</section>
+
+<section name="javax/activation/DataSource.class">
+	<attribute name="SHA1-Digest" value="g86kGPXVFjqZi+DpfbiLAtS8fo8=" />
+</section>
+
+<section name="com/sun/activation/registries/MimeTypeFile.class">
+	<attribute name="SHA1-Digest" value="47HA8e8E7lYhD43zJcnmfxBuJSg=" />
+</section>
+
+<section name="com/sun/activation/viewers/TextViewer.class">
+	<attribute name="SHA1-Digest" value="6HAjEVYJcUAxKM5UvzFnCdwdkYU=" />
+</section>
+
+<section name="com/sun/activation/viewers/TextEditor.class">
+	<attribute name="SHA1-Digest" value="kOBkINI0QnXaKrbfDZqedYZvraM=" />
+</section>
+
+<section name="com/sun/activation/registries/LineTokenizer.class">
+	<attribute name="SHA1-Digest" value="LjhHWu6S9PA3vdcfXg70XMhDtbI=" />
+</section>
+
+<section name="javax/activation/DataContentHandler.class">
+	<attribute name="SHA1-Digest" value="0qTvM4m+cRfMN+3GiqLfn+RLQuU=" />
+</section>
+
+<section name="javax/activation/MimeType.class">
+	<attribute name="SHA1-Digest" value="xE1qpj9gx6g+QWmlIHdomUgaJbo=" />
+</section>
+
+<section name="javax/activation/FileDataSource.class">
+	<attribute name="SHA1-Digest" value="SygTgiURNDKEk0uzbikVVXNdQkk=" />
+</section>
+
+<section name="javax/activation/SecuritySupport.class">
+	<attribute name="SHA1-Digest" value="iglAYAPuk6LXO9iBa1z1sQzJtsY=" />
+</section>
+
+<section name="javax/activation/MailcapCommandMap.class">
+	<attribute name="SHA1-Digest" value="zgdG9pt3yGnWBRLo+tRq3UiCOKk=" />
+</section>
+
+<section name="javax/activation/DataHandler$1.class">
+	<attribute name="SHA1-Digest" value="7JFKGUEdTxkMKRk8JbyPoodRDFQ=" />
+</section>
+
+<section name="javax/activation/DataHandler.class">
+	<attribute name="SHA1-Digest" value="Xq8LdqgQReSve2caOHiSjp9Ka7I=" />
+</section>
+
+<section name="javax/activation/SecuritySupport$1.class">
+	<attribute name="SHA1-Digest" value="HPt2q97FbrUVqubK8OJN+iyU/Q4=" />
+</section>
+
+<section name="com/sun/activation/registries/MimeTypeEntry.class">
+	<attribute name="SHA1-Digest" value="AxO8Etx8Uc9u/Rc8t07LLZBTi5o=" />
+</section>
+
+<section name="javax/activation/SecuritySupport$3.class">
+	<attribute name="SHA1-Digest" value="Rkov9kO2mVTPWTxGTG9SvDt0f2Y=" />
+</section>
+
+<section name="javax/activation/SecuritySupport$5.class">
+	<attribute name="SHA1-Digest" value="tYnifknkmNEzYiZXoqDjNmPL8a8=" />
+</section>
+
+<section name="javax/activation/SecuritySupport$2.class">
+	<attribute name="SHA1-Digest" value="Oo1iOjfj1DdvDuGqwjGTZbiw520=" />
+</section>
+
+<section name="javax/activation/SecuritySupport$4.class">
+	<attribute name="SHA1-Digest" value="XrAs0OAamCQ0Ka7QMi0kQo8NJ28=" />
+</section>
+
+<section name="javax/activation/MimetypesFileTypeMap.class">
+	<attribute name="SHA1-Digest" value="YTSdaKA1ejsmZm2846WHZ8c7ie0=" />
+</section>
+
+<section name="javax/activation/FileTypeMap.class">
+	<attribute name="SHA1-Digest" value="BHs56o3EotLu2r6OJMCI3YPmBzQ=" />
+</section>
+
+<section name="javax/activation/CommandObject.class">
+	<attribute name="SHA1-Digest" value="ubyjFuSm1evoIOlmhsBcKVCLv/Q=" />
+</section>
+
+<section name="javax/activation/DataHandlerDataSource.class">
+	<attribute name="SHA1-Digest" value="eF/guv74BpCuM4lqHhq4y15IwrI=" />
+</section>
+
+<section name="com/sun/activation/registries/MailcapTokenizer.class">
+	<attribute name="SHA1-Digest" value="eOmcaivv7eS4Xki51zET5+PjBE0=" />
+</section>
+
+<section name="javax/activation/ActivationDataFlavor.class">
+	<attribute name="SHA1-Digest" value="kKddO8o4ERkqjv7C1j9NvISn8cw=" />
+</section>
+
+<section name="com/sun/activation/registries/MailcapFile.class">
+	<attribute name="SHA1-Digest" value="kwRm9uRWqJj8sbu6WYbUg2qo618=" />
+</section>
+
+<section name="com/sun/activation/registries/MailcapParseException.class">
+	<attribute name="SHA1-Digest" value="mrH+8hz+bb7fsPtrGgmY468JsgM=" />
+</section>
+
+<section name="javax/activation/ObjectDataContentHandler.class">
+	<attribute name="SHA1-Digest" value="GnW71fTNthWtqpo+4ZethY+BlzU=" />
+</section>
+
+<section name="javax/activation/URLDataSource.class">
+	<attribute name="SHA1-Digest" value="GIcbbF5XGoBGhfTduZGifYII20g=" />
+</section>
+
+<section name="javax/activation/UnsupportedDataTypeException.class">
+	<attribute name="SHA1-Digest" value="bF0SZZMZpNc5NBadUmCanxHA5ek=" />
+</section>
+
+<section name="javax/activation/CommandMap.class">
+	<attribute name="SHA1-Digest" value="6EIbcZuoJN0RLkO8P545oMcqzqw=" />
+</section>
+
+<section name="com/sun/activation/viewers/ImageViewerCanvas.class">
+	<attribute name="SHA1-Digest" value="j1dxxnwpCOjzwyNAzYnpIRTuSOQ=" />
+</section>
+
+<section name="com/sun/activation/registries/LogSupport.class">
+	<attribute name="SHA1-Digest" value="S9VjE1QqsOUqmZLygtgSs0B4ZTc=" />
+</section>
