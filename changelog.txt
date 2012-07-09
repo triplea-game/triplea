@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Fixed bug in freePlacementCapacity when placing land units in a territory that previously placed sea units in a sea zone bordering more than one land producer. (veqryn)
+
 * Increasing max memory from 512mb to 640mb, and up to 768mb for online games. (veqryn)
 
 

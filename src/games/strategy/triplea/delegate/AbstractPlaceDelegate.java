@@ -393,6 +393,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 				int leftToPlace = getMaxUnitsToBePlacedFrom(potentialNewProducerTerritory, unitsPlacedInTerritorySoFar(placeTerritory), placeTerritory, player);
 				if (leftToPlace == -1)
 					leftToPlace = maxProductionThatCanBeTakenOverFromThisPlacement;
+				// TODO: should we continue if leftToPlace is zero or less, now?
 				// find placements of the producer the potentialNewProducerTerritory can take over
 				for (final UndoablePlacement placement : redoPlacements)
 				{
@@ -424,12 +425,19 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			if (foundSpaceTotal >= freeSize)
 				break;
 		}
+		boolean unusedSplitPlacments = false; // we had a bug where we tried to split the same undoable placement twice (it can only be undone once!)
+		final Collection<UndoablePlacement> usedUnoablePlacements = new ArrayList<UndoablePlacement>();
 		if (foundSpaceTotal < freeSize)
 		{
 			// we need to split some placement moves
 			for (final Tuple<UndoablePlacement, Territory> tuple : splitPlacements)
 			{
 				final UndoablePlacement placement = tuple.getFirst();
+				if (usedUnoablePlacements.contains(placement))
+				{
+					unusedSplitPlacments = true;
+					continue;
+				}
 				final Territory newProducer = tuple.getSecond();
 				int leftToPlace = getMaxUnitsToBePlacedFrom(newProducer, unitsLeftToPlace, at, player);
 				foundSpaceTotal += leftToPlace;
@@ -447,12 +455,17 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 				// split move, by undo and creating two new ones
 				if (!unitsForNewProducer.isEmpty())
 				{
+					// there is a chance we have 2 or more splitPlacements that are using the same placement (trying to split the same placement).
+					// So we must make sure that after we undo it the first time, it can never be undone again.
+					usedUnoablePlacements.add(placement);
 					undoMove(placement.getIndex());
 					performPlaceFrom(newProducer, unitsForNewProducer, placement.getPlaceTerritory(), player);
 					performPlaceFrom(producer, unitsForOldProducer, placement.getPlaceTerritory(), player);
 				}
 			}
 		}
+		if (foundSpaceTotal < freeSize && unusedSplitPlacments)
+			freePlacementCapacity(producer, (freeSize - foundSpaceTotal), unitsLeftToPlace, at, player);
 	}
 	
 	// TODO Here's the spot for special air placement rules
