@@ -3,7 +3,7 @@
 <game>
         <info name="World War II Global Test Alpha 3" version="3.1"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
-		<triplea minimumVersion="1.6"/>
+		<triplea minimumVersion="1.6.1"/>
 		<diceSides value="6"/>
 		
         <map>

@@ -219,9 +219,196 @@
 			classname="games.strategy.engine.framework.GameRunner" />
 	</target>
 
-	<!-- setupMac -->
+	<target name="macRelease" depends="checkForMac,clean,makejar" description="create a mac os x end user application">
+
+		<property name="dmg.file" value="release/triplea_${triplea.version}_mac.dmg"/>
+		<property name="app.file" value="release/Triplea.app"/>
+
+
+		<exec executable="hdiutil">
+			<arg line="detach /Volumes/TripleA" />
+		</exec>
+
+		<mkdir dir="${app.file}" />
+		<mkdir dir="${app.file}/Contents" />
+		<mkdir dir="${app.file}/Contents/MacOS" />
+		<mkdir dir="${app.file}/Contents/Resources/" />
+		<mkdir dir="${app.file}/Contents/Resources/Java" />
+
+		<copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" todir="${app.file}/Contents/MacOS/" />
+
+		<exec executable="chmod">
+			<arg line="755 ${app.file}/Contents/MacOS/JavaApplicationStub" />
+		</exec>
+
+		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"/>
+
+		<copy file="Info.plist" todir="${app.file}/Contents/" />
+
+		<echo message="APPL????" file="${app.file}/Contents/PkgInfo" />
+
+
+
+		<copy file="icons/icon.icns" todir="${app.file}/Contents/Resources/" />
+
+		<exec executable="cp">
+			<arg line="-r icons ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r images ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r sounds ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r license ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r dice_servers ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r maps ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="/Developer/Tools/SetFile">
+			<arg line="-a B ${app.file}" />
+		</exec>
+
+		<unzip src="icons/Icon.zip" dest="${app.file}/" encoding="MacRoman" />
+
+		<echo message="making dmg"/>
+		<exec executable="hdiutil">
+			<arg line="create -size 500m -fs HFS+ -volname TripleA ${dmg.file}" />
+		</exec>
+
+
+		<exec executable="hdiutil">
+			<arg line="attach ${dmg.file}" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r ${app.file} /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r doc /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="readme.html /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="TripleA_RuleBook.pdf /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="license/gpl.txt /Volumes/TripleA/COPYING" />
+		</exec>
+
+		<exec executable="hdiutil">
+			<arg line="detach /Volumes/TripleA" />
+		</exec>
+
+		<!-- compress the dmg file -->
+		<move file="${dmg.file}" tofile="temp.dmg"> </move>
+		<exec executable="hdiutil">
+			<arg line="convert temp.dmg -o ${dmg.file} -format UDBZ "/>
+ 		</exec>
+		<delete file="temp.dmg"/>
+
+	</target>
+
+	<target name="macServerApp" depends="checkForMac,clean,makejar" description="create a mac os x server application">
+
+		<property name="dmg.file" value="release/triplea_${triplea.version}_server.dmg"/>
+		<property name="app.file" value="release/TripleaServer.app"/>
+
+
+		<exec executable="hdiutil">
+			<arg line="detach /Volumes/TripleA" />
+		</exec>
+
+		<mkdir dir="${app.file}" />
+		<mkdir dir="${app.file}/Contents" />
+		<mkdir dir="${app.file}/Contents/MacOS" />
+		<mkdir dir="${app.file}/Contents/Resources/" />
+		<mkdir dir="${app.file}/Contents/Resources/Java" />
+
+		<copy file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" todir="${app.file}/Contents/MacOS/" />
+
+		<exec executable="chmod">
+			<arg line="755 ${app.file}/Contents/MacOS/JavaApplicationStub" />
+		</exec>
+
+		<copy file="bin/triplea.jar" todir="${app.file}/Contents/Resources/Java/"/>
+		<copy file="lib/derby_10_1_2.jar" todir="${app.file}/Contents/Resources/Java/"/>
+
+
+		<copy file="ServerInfo.plist" tofile="${app.file}/Contents/Info.plist" />
+
+		<echo message="APPL????" file="${app.file}/Contents/PkgInfo" />
+
+		<copy file="icons/icon.icns" todir="${app.file}/Contents/Resources/" />
+
+
+		<exec executable="cp">
+			<arg line="-r icons ${app.file}/Contents/Resources/" />
+		</exec>
+
+		<exec executable="/Developer/Tools/SetFile">
+			<arg line="-a B ${app.file}" />
+		</exec>
+
+		<unzip src="icons/Icon.zip" dest="${app.file}/" encoding="MacRoman" />
+
+		<echo message="making dmg"/>
+		<exec executable="hdiutil">
+			<arg line="create -size 300m -fs HFS+ -volname TripleA ${dmg.file}" />
+		</exec>
+
+
+		<exec executable="hdiutil">
+			<arg line="attach ${dmg.file}" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r ${app.file} /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="-r doc /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="readme.html /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="license/gpl.txt /Volumes/TripleA/COPYING" />
+		</exec>
+
+		<exec executable="hdiutil">
+			<arg line="detach /Volumes/TripleA" />
+		</exec>
+
+		<!-- compress the dmg file -->
+		<move file="${dmg.file}" tofile="temp.dmg"> </move>
+		<exec executable="hdiutil">
+			<arg line="convert temp.dmg -o ${dmg.file} -format UDBZ "/>
+ 		</exec>
+		<delete file="temp.dmg"/>
+
+	</target>
+
+	<!-- setupMac 
 	<macrodef name="setupMac">
-		<attribute name="volume.mac" default="/Volumes/TripleA" />
+		<attribute name="volume.mac" default="/Volumes/TripleA/" />
 		<attribute name="app.file" default="${release}/Triplea.app" />
 		<attribute name="dmg.file" default="${release}/${zip.prefix}_mac.dmg" />
 		<attribute name="dmg.size" default="500m" />
@@ -243,32 +430,22 @@
 
 			<chmod file="@{app.file}/Contents/MacOS/JavaApplicationStub"
 				perm="755" />
-			<!-- <exec executable="chmod"> <arg line="755 @{app.file}/Contents/MacOS/JavaApplicationStub" 
-				/> </exec> -->
 
 			<copy file="bin/triplea.jar" todir="@{app.file}/Contents/Resources/Java" />
 
-			<!-- The macServerApp target sets derby-copy in its call to setupMac, 
-				and it's a noop for macRelease -->
 			<derby-copy />
 
 			<info-plist-copy />
 			
-			<copy file="Info.plist" todir="@{app.file}/Contents" />
 			<echo message="APPL????" file="@{app.file}/Contents/PkgInfo" />
+			
 			<copy file="icons/icon.icns" todir="@{app.file}/Contents/Resources" />
-
-			<!-- each exec task forks a new process; changed exec cp calls to use 
-				ant's copy task -->
 
 			<resources-copy />
 
 			<exec executable="/Developer/Tools/SetFile">
 				<arg line="-a B @{app.file}" />
 			</exec>
-
-			<!-- TODO is it necessary to unzip this into @{app.file}? We already have 
-				the icons directory in @{app.file}/Contents/Resources -->
 			<unzip src="icons/Icon.zip" dest="@{app.file}" encoding="MacRoman" />
 
 			<echo message="creating dmg" />
@@ -288,24 +465,25 @@
 			<exec executable="hdiutil">
 				<arg line="detach @{volume.mac}" />
 			</exec>
-			<!-- compress the dmg file -->
 			<move file="@{dmg.file}" tofile="temp.dmg" />
 			<exec executable="hdiutil">
 				<arg line="convert temp.dmg -o @{dmg.file} -format UDBZ " />
 			</exec>
 			<delete file="temp.dmg" />
 		</sequential>
-	</macrodef>
+	</macrodef>-->
 
-	<!-- macRelease -->
+	<!-- macRelease 
 	<target name="macRelease" depends="checkForMac,clean,makejar"
 		description="create a mac os x end user application" if="isMacOSX">
 		
 		<setupMac>
 			<info-plist-copy>
+				<echo message="copying plist" />
 				<copy file="Info.plist" todir="@{app.file}/Contents" />
 			</info-plist-copy>
 			<resources-copy>
+				<echo message="copying resources" />
 				<copy todir="@{app.file}/Contents/Resources">
 					<fileset dir="${basedir}">
 						<include name="dice_servers/**" />
@@ -318,6 +496,7 @@
 				</copy>
 			</resources-copy>
 			<basedir-copy>
+				<echo message="copying base directory" />
 				<copy todir="@{volume.mac}">
 					<fileset dir="${basedir}">
 						<include name="@{app.file}/**" />
@@ -328,9 +507,9 @@
 				</copy>
 			</basedir-copy>
 		</setupMac>
-	</target>
+	</target>-->
 
-	<!-- macServerApp -->
+	<!-- macServerApp 
 	<target name="macServerApp" depends="checkForMac,clean,makejar"
 		description="create a mac os x server application" if="isMacOSX">
 		<property name="dmg.file" value="${release}/${zip.prefix}_server.dmg" />
@@ -363,7 +542,7 @@
 				</copy>
 			</basedir-copy>
 		</setupMac>
-	</target>
+	</target>-->
 
 	<!-- zip -->
 	<target name="zip" depends="makejar" description="create a zip file for all end users">
@@ -592,9 +771,6 @@
 			<add-java-elements />
 
 			<copy file="installer/installer.nsi" tofile="@{install.loc}/installer.nsi" />
-			
-			<!-- the bat file doesnt work, since it does not point to the jre -->
-			<delete file="@{install.loc}/${zip.prefix}/triplea_windows.bat" />
 
 			<exec executable="makensis" dir="@{install.loc}">
 				<arg line="/Dversion=${triplea.version} installer.nsi " />
@@ -613,11 +789,14 @@
 
 		<winInstaller exe.file="windows_installer_with_java.exe">
 			<add-java-elements>
-				<unzip src="installer/jre1.6.0_33.zip" dest="@{install.loc}" />
+				<echo message="adding JRE" />
+				<unzip src="installer/jre1.6.0_33_x86.zip" dest="@{install.loc}" />
 				<move todir="@{install.loc}/${zip.prefix}/jre">
-					<fileset dir="@{install.loc}/jre1.6.0_33" />
+					<fileset dir="@{install.loc}/jre1.6.0_33_x86" />
 				</move>
-				<copy file="triplea_embeded_jre.exe" tofile="@{install.loc}/${zip.prefix}/triplea.exe" />
+				<copy file="triplea_embeded_jre.exe" tofile="@{install.loc}/${zip.prefix}/triplea.exe" overwrite="true" />
+				<!-- the bat file doesnt work, since it does not point to the jre -->
+				<delete file="@{install.loc}/${zip.prefix}/triplea_windows.bat" />
 			</add-java-elements>
 		</winInstaller>
 
@@ -634,7 +813,7 @@
 
 	</target>
 
-	<target name="release" depends="checkForWinNT,clean,zip,zipInstaller,zipInstallerWithJava,zipServer,zipSource"
+	<target name="release" depends="checkForWinNT,clean,zip,zipInstaller,zipInstallerWithJava,zipSource"
 		description="do a full windows/generic release, this must be done on a windows machine"
 		if="isWindowsNT" />
 	

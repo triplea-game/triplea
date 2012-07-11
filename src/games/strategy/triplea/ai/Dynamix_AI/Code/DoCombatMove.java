@@ -15,6 +15,7 @@ package games.strategy.triplea.ai.Dynamix_AI.Code;
 
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
+import games.strategy.engine.data.Route;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.ai.Dynamix_AI.DMatches;
@@ -225,7 +226,10 @@ public class DoCombatMove
 						if (openPort == null)
 							continue;
 						int score = 0;
-						score -= CachedCalculationCenter.GetSeaRoute(data, ter, openPort).getLength();
+						final Route seaRoute = CachedCalculationCenter.GetSeaRoute(data, ter, openPort);
+						if (seaRoute == null)
+							continue;
+						score -= seaRoute.getLength();
 						if (score > highestLoadingTerScore)
 						{
 							highestLoadingTerScore = score;
