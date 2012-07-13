@@ -192,11 +192,8 @@ public class IntegerMap<T> implements Cloneable, Serializable
 	public int totalValues()
 	{
 		int sum = 0;
-		final Iterator<Integer> values = m_values.values().iterator();
-		while (values.hasNext())
+		for (final Integer value : m_values.values())
 		{
-			final Integer obj = values.next();
-			final Integer value = obj;
 			sum += value.intValue();
 		}
 		return sum;

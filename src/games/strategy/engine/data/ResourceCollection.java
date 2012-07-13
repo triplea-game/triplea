@@ -209,7 +209,7 @@ public class ResourceCollection extends GameDataComponent
 	
 	public int fitsHowOften(final IntegerMap<Resource> cost)
 	{
-		if (cost.size() == 0)
+		if (cost.size() == 0 || (cost.totalValues() <= 0 && cost.isPositive()))
 			return Integer.MAX_VALUE;
 		final ResourceCollection resources = new ResourceCollection(getData(), m_resources);
 		for (int i = 0; i <= 10000; i++)
@@ -222,7 +222,9 @@ public class ResourceCollection extends GameDataComponent
 				return i; // when the subtraction isn't possible it will throw an exception, which means we can return i;
 			}
 		}
-		throw new IllegalArgumentException("Unlimited purchases shouldn't be possible");
+		// throw new IllegalArgumentException("Unlimited purchases shouldn't be possible");
+		System.out.println("Can purchase more than 10,000 of unit - Unlimited purchases shouldn't be possible");
+		return 10000;
 	}
 	
 	@Override

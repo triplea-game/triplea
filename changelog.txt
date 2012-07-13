@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Removed game stopping message about unlimited purchases, whenever a unit or item cost so little that you can buy more than 10000 of it. (veqryn)
+
 * Fixed errors in build.xml for java included version and mac version. (veqryn)
 
 * Fixed null pointer error in Dynamix AI. (veqryn)
