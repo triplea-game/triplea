@@ -207,6 +207,10 @@ public class ResourceCollection extends GameDataComponent
 		m_resources.multiplyAllValuesBy(multiplyBy, roundType);
 	}
 	
+	/**
+	 * @param cost
+	 * @return will return 10000 if it can fit more times than 10000. will return Integer MaxValue if cost is zero.
+	 */
 	public int fitsHowOften(final IntegerMap<Resource> cost)
 	{
 		if (cost.size() == 0 || (cost.totalValues() <= 0 && cost.isPositive()))
@@ -223,7 +227,7 @@ public class ResourceCollection extends GameDataComponent
 			}
 		}
 		// throw new IllegalArgumentException("Unlimited purchases shouldn't be possible");
-		System.out.println("Can purchase more than 10,000 of unit - Unlimited purchases shouldn't be possible");
+		// System.out.println("Can purchase more than 10,000 of unit - Unlimited purchases shouldn't be possible");
 		return 10000;
 	}
 	
