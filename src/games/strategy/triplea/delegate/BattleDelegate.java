@@ -585,6 +585,24 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 							scrambleTerrs.put(amphibFrom, canScrambleFrom);
 					}
 				}
+				if (battle instanceof NonFightingBattle)
+				{
+					final NonFightingBattle nfb = (NonFightingBattle) battle;
+					final Collection<Territory> amphibFromTerrs = nfb.getAmphibiousAttackTerritories();
+					amphibFromTerrs.removeAll(territoriesWithBattlesWater);
+					for (final Territory amphibFrom : amphibFromTerrs)
+					{
+						HashSet<Territory> canScrambleFrom = scrambleTerrs.get(amphibFrom);
+						if (canScrambleFrom == null)
+							canScrambleFrom = new HashSet<Territory>();
+						if (toAnyAmphibious)
+							canScrambleFrom.addAll(Match.getMatches(data.getMap().getNeighbors(amphibFrom, maxScrambleDistance), canScramble));
+						else if (canScramble.match(battleTerr))
+							canScrambleFrom.add(battleTerr);
+						if (!canScrambleFrom.isEmpty())
+							scrambleTerrs.put(amphibFrom, canScrambleFrom);
+					}
+				}
 			}
 		}
 		
@@ -761,6 +779,11 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 							{
 								final MustFightBattle mfbattleInTerritoryNeighborToNewBattle = (MustFightBattle) battleInTerritoryNeighborToNewBattle;
 								mfbattleInTerritoryNeighborToNewBattle.addDependentUnits(dependencies.get(territoryNeighborToNewBattle));
+							}
+							else if (battleInTerritoryNeighborToNewBattle != null && battleInTerritoryNeighborToNewBattle instanceof NonFightingBattle)
+							{
+								final NonFightingBattle nfbattleInTerritoryNeighborToNewBattle = (NonFightingBattle) battleInTerritoryNeighborToNewBattle;
+								nfbattleInTerritoryNeighborToNewBattle.addDependentUnits(dependencies.get(territoryNeighborToNewBattle));
 							}
 						}
 					}

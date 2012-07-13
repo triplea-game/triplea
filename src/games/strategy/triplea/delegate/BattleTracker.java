@@ -380,6 +380,7 @@ public class BattleTracker implements java.io.Serializable
 	private void addEmptyBattle(final Route route, final Collection<Unit> units, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker)
 	{
 		final GameData data = bridge.getData();
+		final boolean scramblingEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data);
 		final CompositeMatch<Territory> conquerable = new CompositeMatchAnd<Territory>();
 		conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));
 		conquerable.add(new CompositeMatchOr<Territory>(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
@@ -396,16 +397,38 @@ public class BattleTracker implements java.io.Serializable
 		for (final Territory current : conquered)
 		{
 			IBattle nonFight = getPendingBattle(current, false);
+			// TODO: if we ever want to scramble to a blitzed territory, then we need to fix this stuff (currently doesn't work because then the territory is never conquered because the units have left the territory by the time we fight)
+			/*if (scramblingEnabled)
+			{
+				if (nonFight == null)
+				{
+					nonFight = new NonFightingBattle(current, id, this, data);
+					m_pendingBattles.add(nonFight);
+					getBattleRecords(data).addBattle(id, nonFight.getBattleID(), current, nonFight.getBattleType(), data);
+				}
+				final Change change = nonFight.addAttackChange(Route.subRoute(route, current), units, null);
+				bridge.addChange(change);
+				if (changeTracker != null)
+				{
+					changeTracker.addChange(change);
+				}
+			}
+			else
+			{*/
 			if (nonFight == null)
 			{
 				nonFight = new FinishedBattle(current, id, this, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
-				nonFight.addAttackChange(route, units, null);
 				m_pendingBattles.add(nonFight);
 				getBattleRecords(data).addBattle(id, nonFight.getBattleID(), current, nonFight.getBattleType(), data);
-				// nonFight.fight(bridge);
-				// getBattleRecords(data).addResultToBattle(id, nonFight.getBattleID(), AbstractBattle.findDefender(current, id, data), 0, 0, nonFight.getBattleResultDescription(), new BattleResults(nonFight), 0);
+			}
+			final Change change = nonFight.addAttackChange(route, units, null);
+			bridge.addChange(change);
+			if (changeTracker != null)
+			{
+				changeTracker.addChange(change);
 			}
 			takeOver(current, id, bridge, changeTracker, units);
+			// }
 		}
 		// check the last territory
 		if (conquerable.match(route.getEnd()))
@@ -415,27 +438,9 @@ public class BattleTracker implements java.io.Serializable
 			{
 				precede = getPendingBattle(route.getEnd(), true);
 			}
-			if (precede == null)
-			{
-				if (Matches.isTerritoryEnemy(id, data).match(route.getEnd()))
-				{
-					if (Matches.TerritoryIsBlitzable(id, data).match(route.getEnd()))
-					{
-						m_blitzed.add(route.getEnd());
-					}
-					m_conquered.add(route.getEnd());
-				}
-				IBattle nonFight = getPendingBattle(route.getEnd(), false);
-				if (nonFight == null)
-				{
-					nonFight = new FinishedBattle(route.getEnd(), id, this, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
-					nonFight.addAttackChange(route, units, null);
-					m_pendingBattles.add(nonFight);
-					getBattleRecords(data).addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType(), data);
-				}
-				takeOver(route.getEnd(), id, bridge, changeTracker, units);
-			}
-			else
+			// if we have a preceding battle, then we must use a non-fighting-battle
+			// if we have scrambling on, and this is an amphibious attack, we may wish to scramble to kill the transports, so must use non-fighting-battle also
+			if (precede != null || (scramblingEnabled && route.isUnload() && route.hasExactlyOneStep()))
 			{
 				IBattle nonFight = getPendingBattle(route.getEnd(), false);
 				if (nonFight == null)
@@ -450,7 +455,33 @@ public class BattleTracker implements java.io.Serializable
 				{
 					changeTracker.addChange(change);
 				}
-				addDependency(nonFight, precede);
+				if (precede != null)
+					addDependency(nonFight, precede);
+			}
+			else
+			{
+				if (Matches.isTerritoryEnemy(id, data).match(route.getEnd()))
+				{
+					if (Matches.TerritoryIsBlitzable(id, data).match(route.getEnd()))
+					{
+						m_blitzed.add(route.getEnd());
+					}
+					m_conquered.add(route.getEnd());
+				}
+				IBattle nonFight = getPendingBattle(route.getEnd(), false);
+				if (nonFight == null)
+				{
+					nonFight = new FinishedBattle(route.getEnd(), id, this, false, BattleType.NORMAL, data, BattleRecord.BattleResultDescription.CONQUERED, WhoWon.ATTACKER, units);
+					m_pendingBattles.add(nonFight);
+					getBattleRecords(data).addBattle(id, nonFight.getBattleID(), route.getEnd(), nonFight.getBattleType(), data);
+				}
+				final Change change = nonFight.addAttackChange(route, units, null);
+				bridge.addChange(change);
+				if (changeTracker != null)
+				{
+					changeTracker.addChange(change);
+				}
+				takeOver(route.getEnd(), id, bridge, changeTracker, units);
 			}
 		}
 		// TODO: else what?

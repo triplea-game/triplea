@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -212,6 +213,18 @@ public class NonFightingBattle extends AbstractBattle
 			bridge.getHistoryWriter().addChildToEvent(transcriptText, lost);
 			final Change change = ChangeFactory.removeUnits(m_battleSite, lost);
 			bridge.addChange(change);
+		}
+	}
+	
+	public void addDependentUnits(final Map<Unit, Collection<Unit>> dependencies)
+	{
+		for (final Unit holder : dependencies.keySet())
+		{
+			final Collection<Unit> transporting = dependencies.get(holder);
+			if (m_dependentUnits.get(holder) != null)
+				m_dependentUnits.get(holder).addAll(transporting);
+			else
+				m_dependentUnits.put(holder, new LinkedHashSet<Unit>(transporting));
 		}
 	}
 }

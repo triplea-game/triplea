@@ -132,6 +132,23 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 		return joined;
 	}
 	
+	public static Route subRoute(final Route route, final Territory end)
+	{
+		if (!route.getAllTerritories().contains(end))
+			throw new IllegalArgumentException("Cannot take subroute if route does not contain end");
+		if (route.getStart().equals(end))
+			return new RouteScripted(end);
+		final Route subRoute = new Route();
+		subRoute.setStart(route.getStart());
+		for (final Territory t : route.getSteps())
+		{
+			subRoute.add(t);
+			if (t.equals(end))
+				return subRoute;
+		}
+		return subRoute;
+	}
+	
 	@Override
 	public boolean equals(final Object o)
 	{
@@ -408,6 +425,8 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	}
 	
 	/**
+	 * This means that there are 2 territories in the route: the start and the end (this is only 1 step).
+	 * 
 	 * @return whether the route has 1 step
 	 */
 	public boolean hasExactlyOneStep()
@@ -430,19 +449,23 @@ public class Route implements java.io.Serializable, Iterable<Territory>
 	}
 	
 	/**
-	 * @return whether this route is an unloading route (unloading from transport
-	 *         to land)
+	 * This only checks if start is water and end is not water.
+	 * 
+	 * @return whether this route is an unloading route (unloading from transport to land)
 	 */
 	public boolean isUnload()
 	{
+		if (hasNoSteps())
+			return false;
 		// we should not check if there is only 1 step, because otherwise movement validation will let users move their tanks over water, so long as they end on land
 		return getStart().isWater() && !getEnd().isWater();
 	}
 	
 	/**
+	 * This only checks if start is not water, and end is water.
+	 * 
 	 * @return whether this route is a loading route (loading from land into a transport @ sea)
 	 */
-	// TODO KEV revise these to include paratroop load/unload
 	public boolean isLoad()
 	{
 		if (hasNoSteps())
