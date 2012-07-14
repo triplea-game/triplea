@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Changed choose how "best dice roll" / "LHTR heavy bombers" works with Low Luck on, so that it will add a bonus equal to the number of dice sides divided by 6. (veqryn)
+
 * Fixing scrambling again, so that even an amphibious assault on an undefended (blitzable) land territory, from an undefended sea zone, will still trigger scrambling. (veqryn)
 
 * Removed game stopping message about unlimited purchases, whenever a unit or item cost so little that you can buy more than 10000 of it. (veqryn)

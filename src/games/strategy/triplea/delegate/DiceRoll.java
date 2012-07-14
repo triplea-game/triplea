@@ -236,6 +236,7 @@ public class DiceRoll implements Externalizable
 	{
 		final GameData data = bridge.getData();
 		final boolean lhtrBombers = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
+		final int extraRollBonus = Math.max(1, data.getDiceSides() / 6); // bonus is normally 1 for most games
 		// int artillerySupportAvailable = getArtillerySupportAvailable(units, defending, player);
 		final Set<List<UnitSupportAttachment>> supportRules = new HashSet<List<UnitSupportAttachment>>();
 		final IntegerMap<UnitSupportAttachment> supportLeft = new IntegerMap<UnitSupportAttachment>();
@@ -267,8 +268,9 @@ public class DiceRoll implements Externalizable
 					// LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1 onto the power to simulate the gains of having the best die picked.
 					if (totalStr < data.getDiceSides())
 					{
-						power += 1;
-						totalStr += 1;
+						final int maxToAdd = Math.min(extraRollBonus, (data.getDiceSides() - totalStr));
+						power += maxToAdd;
+						totalStr += maxToAdd;
 					}
 					continue;
 				}
@@ -530,6 +532,7 @@ public class DiceRoll implements Externalizable
 		int hitCount = 0;
 		if (games.strategy.triplea.Properties.getLow_Luck(data))
 		{
+			final int extraRollBonus = Math.max(1, data.getDiceSides() / 6); // bonus is normally 1 for most games
 			final Iterator<Unit> iter = units.iterator();
 			int power = 0;
 			// We iterate through the units to find the total strength of the units
@@ -545,7 +548,7 @@ public class DiceRoll implements Externalizable
 					// LHTR means pick the best dice roll, which doesn't really make sense in LL. So instead, we will just add +1 onto the power to simulate the gains of having the best die picked.
 					if (i > 1 && (lhtrBombers || ua.getChooseBestRoll()))
 					{
-						totalStrength += 1;
+						totalStrength += extraRollBonus;
 						continue;
 					}
 					totalStrength += strength;
