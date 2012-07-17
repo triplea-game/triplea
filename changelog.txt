@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Make sure the game chooser menu is cleared from memory after closed. (veqryn)
+
 * Created method to maintain savegame compatibility between 1.6.1 and 1.6.1.1 with regards to techs. (veqryn)
 
 * Removing static instances of all hardcoded Technologies. Everything now done with locally created instances per game data. (veqryn)
