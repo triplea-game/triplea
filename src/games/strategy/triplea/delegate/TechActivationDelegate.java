@@ -128,7 +128,7 @@ public class TechActivationDelegate extends BaseDelegate
 		if (shareWith == null || shareWith.isEmpty())
 			return;
 		final GameData data = getData();
-		final Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(m_player, data);
+		final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(m_player, data);
 		for (final PlayerID p : shareWith)
 		{
 			final Collection<TechAdvance> availableTechs = TechnologyDelegate.getAvailableTechs(p, data);

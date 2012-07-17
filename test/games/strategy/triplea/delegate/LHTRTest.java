@@ -136,7 +136,7 @@ public class LHTRTest extends TestCase
 		assertEquals(2, attachment.getDefense(japanese));
 		assertEquals(2, attachment.getAttack(japanese));
 		final ITestDelegateBridge bridge = getDelegateBridge(japanese);
-		TechTracker.addAdvance(japanese, bridge, TechAdvance.SUPER_SUBS);
+		TechTracker.addAdvance(japanese, bridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, m_data, japanese));
 		// after tech advance, this is now 3
 		assertEquals(3, attachment.getDefense(japanese));
 		assertEquals(3, attachment.getAttack(japanese));
@@ -157,7 +157,7 @@ public class LHTRTest extends TestCase
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
 		tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
-		TechTracker.addAdvance(british, bridge, TechAdvance.HEAVY_BOMBER);
+		TechTracker.addAdvance(british, bridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
 		// aa guns rolls 3, misses, bomber rolls 2 dice at 3 and 4
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 2, 2, 3 }));
 		// if we try to move aa, then the game will ask us if we want to move
@@ -194,7 +194,7 @@ public class LHTRTest extends TestCase
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
 		tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
-		TechTracker.addAdvance(british, bridge, TechAdvance.HEAVY_BOMBER);
+		TechTracker.addAdvance(british, bridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
 		// aa guns rolls 3,3 both miss, bomber 1 rolls 2 dice at 3,4 and bomber 2 rolls dice at 1,2
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 3, 3, 2, 3, 0, 1 }));
 		// if we try to move aa, then the game will ask us if we want to move

@@ -129,10 +129,9 @@ public class GameDataExporter
 						final TechAdvance tech = techs.next();
 						String name = tech.getName();
 						final String cat = tech.getProperty();
-						final Iterator<TechAdvance> definedAdvances = TechAdvance.getDefinedAdvances().iterator();
-						while (definedAdvances.hasNext())
+						for (final String definedName : TechAdvance.s_allPreDefinedTechnologyNames)
 						{
-							if (definedAdvances.next().getName().equals(name))
+							if (definedName.equals(name))
 								name = cat;
 						}
 						returnValue.append("                <tech name=\"" + name + "\"/>\n");
@@ -159,10 +158,9 @@ public class GameDataExporter
 				final String cat = tech.getProperty();
 				// definedAdvances are handled differently by gameparser, they are set in xml with the category as the name but
 				// stored in java with the normal category and name, this causes an xml bug when exporting.
-				final Iterator<TechAdvance> definedAdvances = TechAdvance.getDefinedAdvances().iterator();
-				while (definedAdvances.hasNext())
+				for (final String definedName : TechAdvance.s_allPreDefinedTechnologyNames)
 				{
-					if (definedAdvances.next().getName().equals(name))
+					if (definedName.equals(name))
 						name = cat;
 				}
 				returnValue.append("            <techname name=\"" + name + "\"");

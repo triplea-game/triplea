@@ -107,6 +107,11 @@ public class Version implements Serializable, Comparable
 		return compareTo(o) == 0;
 	}
 	
+	public boolean equals(final Object o, final boolean ignoreMicro)
+	{
+		return compareTo(o, ignoreMicro) == 0;
+	}
+	
 	@Override
 	public int hashCode()
 	{
@@ -115,14 +120,25 @@ public class Version implements Serializable, Comparable
 	
 	public int compareTo(final Object o)
 	{
+		return compareTo(o, true);
+	}
+	
+	public int compareTo(final Version other)
+	{
+		return compareTo(other, true);
+	}
+	
+	public int compareTo(final Object o, final boolean ignoreMicro)
+	{
 		if (o == null)
 			return -1;
 		if (!(o instanceof Version))
 			return -1;
-		return compareTo((Version) o);
+		final Version other = (Version) o;
+		return compareTo(other, ignoreMicro);
 	}
 	
-	public int compareTo(final Version other)
+	public int compareTo(final Version other, final boolean ignoreMicro)
 	{
 		if (other == null)
 			return -1;
@@ -138,15 +154,26 @@ public class Version implements Serializable, Comparable
 			return 1;
 		else if (other.m_point < m_point)
 			return -1;
-		// dont compare micro
-		// if the only difference is micro, then ignore
-		else
-			return 0;
+		else if (!ignoreMicro)
+		{
+			// dont compare micro
+			// if the only difference is micro, then ignore
+			if (other.m_micro > m_micro)
+				return 1;
+			else if (other.m_micro < m_micro)
+				return -1;
+		}
+		return 0;
 	}
 	
-	public boolean isGreaterThan(final Version other)
+	public boolean isGreaterThan(final Version other, final boolean ignoreMicro)
 	{
-		return compareTo(other) < 0;
+		return compareTo(other, ignoreMicro) < 0;
+	}
+	
+	public boolean isLessThan(final Version other, final boolean ignoreMicro)
+	{
+		return compareTo(other, ignoreMicro) > 0;
 	}
 	
 	@Override

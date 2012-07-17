@@ -21,6 +21,13 @@ public class TechnologyFrontier extends GameDataComponent implements Iterable<Te
 		m_name = name;
 	}
 	
+	public TechnologyFrontier(final TechnologyFrontier other)
+	{
+		super(other.getData());
+		m_name = other.m_name;
+		m_techs.addAll(other.m_techs);
+	}
+	
 	public void addAdvance(final TechAdvance t)
 	{
 		m_cachedTechs = null;

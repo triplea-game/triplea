@@ -187,12 +187,12 @@ public class EditValidator
 			return "No player selected";
 		if (!games.strategy.triplea.Properties.getTechDevelopment(data))
 			return "Technology not enabled";
-		if (!TechTracker.getTechAdvances(player, data).contains(tech))
+		if (!TechTracker.getCurrentTechAdvances(player, data).contains(tech))
 			return "Player does not have this tech";
-		if (tech == TechAdvance.INDUSTRIAL_TECHNOLOGY)
-			return "Can not remove " + TechAdvance.INDUSTRIAL_TECHNOLOGY.getName();
-		if (tech == TechAdvance.IMPROVED_SHIPYARDS)
-			return "Can not remove " + TechAdvance.IMPROVED_SHIPYARDS.getName();
+		if (tech.getProperty().equals(TechAdvance.TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY))
+			return "Can not remove " + TechAdvance.TECH_NAME_INDUSTRIAL_TECHNOLOGY;
+		if (tech.getProperty().equals(TechAdvance.TECH_PROPERTY_IMPROVED_SHIPYARDS))
+			return "Can not remove " + TechAdvance.TECH_NAME_IMPROVED_SHIPYARDS;
 		return result;
 	}
 	

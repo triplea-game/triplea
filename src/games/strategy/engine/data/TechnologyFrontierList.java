@@ -16,9 +16,15 @@ public class TechnologyFrontierList extends GameDataComponent
 		super(data);
 	}
 	
-	protected void addTechnologyFrontier(final TechnologyFrontier tf)
+	public void addTechnologyFrontier(final TechnologyFrontier tf)
 	{
 		m_technologyFrontiers.add(tf);
+	}
+	
+	public void addTechnologyFrontier(final List<TechnologyFrontier> tfs)
+	{
+		for (final TechnologyFrontier tf : tfs)
+			m_technologyFrontiers.add(tf);
 	}
 	
 	public int size()

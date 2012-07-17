@@ -3,6 +3,8 @@ package games.strategy.engine.framework;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.triplea.attatchments.TechAbilityAttachment;
+import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.Version;
 
 import java.io.BufferedInputStream;
@@ -69,17 +71,39 @@ public class GameDataManager
 	{
 		try
 		{
-			// TODO we should check the game version as well
 			final Version readVersion = (Version) input.readObject();
 			if (!readVersion.equals(EngineVersion.VERSION))
 				throw new IOException("Incompatible engine versions. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion);
 			final GameData data = (GameData) input.readObject();
+			updateDataToBeCompatibleWithNewEngine(readVersion, data); // TODO: expand this functionality (and keep it updated)
 			loadDelegates(input, data);
 			data.postDeSerialize();
 			return data;
 		} catch (final ClassNotFoundException cnfe)
 		{
 			throw new IOException(cnfe.getMessage());
+		}
+	}
+	
+	private void updateDataToBeCompatibleWithNewEngine(final Version originalEngineVersion, final GameData data)
+	{
+		final Version v1610 = new Version(1, 6, 1, 0);
+		final Version v1620 = new Version(1, 6, 2, 0);
+		if (originalEngineVersion.equals(v1610, false) && EngineVersion.VERSION.isGreaterThan(v1610, false) && EngineVersion.VERSION.isLessThan(v1620, true))
+		{
+			// if original save was done under 1.6.1.0, and new engine is greater than 1.6.1.0 and less than 1.6.2.0
+			try
+			{
+				if (TechAdvance.getTechAdvances(data).isEmpty())
+				{
+					System.out.println("Adding tech to be compatible with 1.6.1.x");
+					TechAdvance.createDefaultTechAdvances(data);
+					TechAbilityAttachment.setDefaultTechnologyAttachments(data);
+				}
+			} catch (final Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 	

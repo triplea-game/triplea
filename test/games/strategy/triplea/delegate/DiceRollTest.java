@@ -333,7 +333,7 @@ public class DiceRollTest extends TestCase
 		m_data = LoadGameUtil.loadGame("classic", "iron_blitz.xml");
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
 		final List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
 		testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 2, 3 }));
 		final Territory germany = m_data.getMap().getTerritory("Germany");
@@ -347,7 +347,7 @@ public class DiceRollTest extends TestCase
 		m_data = LoadGameUtil.loadGame("classic", "iron_blitz.xml");
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
 		final List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
 		testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, 1 }));
 		final Territory germany = m_data.getMap().getTerritory("Germany");
@@ -374,7 +374,7 @@ public class DiceRollTest extends TestCase
 		m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
 		final List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
 		testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 2, 3 }));
 		final Territory germany = m_data.getMap().getTerritory("Germany");
@@ -389,7 +389,7 @@ public class DiceRollTest extends TestCase
 		m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
 		final List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
 		testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 3, 2 }));
 		final Territory germany = m_data.getMap().getTerritory("Germany");
@@ -404,7 +404,7 @@ public class DiceRollTest extends TestCase
 		m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
 		final PlayerID british = m_data.getPlayerList().getPlayerID("British");
 		final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
 		final List<Unit> bombers = m_data.getMap().getTerritory("United Kingdom").getUnits().getMatches(Matches.UnitIsStrategicBomber);
 		testDelegateBridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, 1 }));
 		final Territory germany = m_data.getMap().getTerritory("Germany");
@@ -426,7 +426,7 @@ public class DiceRollTest extends TestCase
 		assertEquals(1, BattleCalculator.getRolls(bombers, location, british, true, territoryEffects));
 		// hb, for revised 2 on attack, 1 on defence
 		final ITestDelegateBridge testDelegateBridge = getDelegateBridge(british);
-		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.HEAVY_BOMBER);
+		TechTracker.addAdvance(british, testDelegateBridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
 		// lhtr hb, 2 for both
 		m_data.getProperties().set(Constants.LHTR_HEAVY_BOMBERS, Boolean.TRUE);
 		assertEquals(2, BattleCalculator.getRolls(bombers, location, british, false, territoryEffects));

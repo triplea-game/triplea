@@ -1,4 +1,8 @@
 Changes for 1.6.1.1
+* Created method to maintain savegame compatibility between 1.6.1 and 1.6.1.1 with regards to techs. (veqryn)
+
+* Removing static instances of all hardcoded Technologies. Everything now done with locally created instances per game data. (veqryn)
+
 * Changed choose how "best dice roll" / "LHTR heavy bombers" works with Low Luck on, so that it will add a bonus equal to the number of dice sides divided by 6. (veqryn)
 
 * Fixing scrambling again, so that even an amphibious assault on an undefended (blitzable) land territory, from an undefended sea zone, will still trigger scrambling. (veqryn)

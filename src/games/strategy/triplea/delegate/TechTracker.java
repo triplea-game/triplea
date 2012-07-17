@@ -44,7 +44,14 @@ public class TechTracker implements java.io.Serializable
 	{
 	}
 	
-	public static Collection<TechAdvance> getTechAdvances(final PlayerID id, final GameData data)
+	/**
+	 * Returns what tech advances this player already has successfully researched.
+	 * 
+	 * @param id
+	 * @param data
+	 * @return
+	 */
+	public static Collection<TechAdvance> getCurrentTechAdvances(final PlayerID id, final GameData data)
 	{
 		final Collection<TechAdvance> rVal = new ArrayList<TechAdvance>();
 		final TechAttachment attachment = TechAttachment.get(id);
@@ -56,11 +63,18 @@ public class TechTracker implements java.io.Serializable
 		return rVal;
 	}
 	
-	public static Collection<TechnologyFrontier> getTechCategories(final GameData data, final PlayerID id)
+	/**
+	 * Returns what tech categories are no longer available for this player, because all techs in them have been successfully researched already.
+	 * 
+	 * @param data
+	 * @param id
+	 * @return
+	 */
+	public static Collection<TechnologyFrontier> getFullyResearchedPlayerTechCategories(final GameData data, final PlayerID id)
 	{
 		final Collection<TechnologyFrontier> rVal = new ArrayList<TechnologyFrontier>();
 		final TechAttachment attachment = TechAttachment.get(id);
-		for (final TechnologyFrontier tf : TechAdvance.getTechCategories(data, id))
+		for (final TechnologyFrontier tf : TechAdvance.getPlayerTechCategories(data, id))
 		{
 			boolean has = true;
 			for (final TechAdvance t : tf.getTechs())

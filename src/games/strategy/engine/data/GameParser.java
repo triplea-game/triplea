@@ -158,10 +158,11 @@ public class GameParser
 		final Element production = getSingleChild("production", root, true);
 		if (production != null)
 			parseProduction(production);
-		TechAdvance.setStaticTechs(data);
 		final Element technology = getSingleChild("technology", root, true);
 		if (technology != null)
 			parseTechnology(technology);
+		else
+			TechAdvance.createDefaultTechAdvances(data);
 		final Element attachmentList = getSingleChild("attatchmentList", root, true);
 		if (attachmentList != null)
 			parseAttachments(attachmentList);
@@ -201,7 +202,7 @@ public class GameParser
 		if (minimumVersion == null)
 			return;
 		final Version mapCompatibleWithTripleaVersion = new Version(((Element) minimumVersion).getAttribute("minimumVersion"));
-		if (mapCompatibleWithTripleaVersion.isGreaterThan(EngineVersion.VERSION))
+		if (mapCompatibleWithTripleaVersion.isGreaterThan(EngineVersion.VERSION, true))
 		{
 			throw new EngineVersionException("Trying to play a map made for a newer version of TripleA. Map named '" + data.getGameName() + "' requires at least TripleA version "
 						+ mapCompatibleWithTripleaVersion.toString());
@@ -1235,8 +1236,8 @@ public class GameParser
 	
 	private void parseTechnologies(final Node element)
 	{
-		final TechnologyFrontier techs = data.getTechnologyFrontier();
-		parseTechs(getChildren("techname", element), techs);
+		final TechnologyFrontier allTechs = data.getTechnologyFrontier();
+		parseTechs(getChildren("techname", element), allTechs);
 	}
 	
 	private void parsePlayerTech(final List<Element> elements) throws GameParseException
@@ -1301,7 +1302,7 @@ public class GameParser
 		}
 	}
 	
-	private void parseTechs(final List<Element> elements, final TechnologyFrontier frontier)
+	private void parseTechs(final List<Element> elements, final TechnologyFrontier allTechsFrontier)
 	{
 		for (final Element current : elements)
 		{
@@ -1310,19 +1311,19 @@ public class GameParser
 			TechAdvance ta;
 			if (tech.length() > 0)
 			{
-				ta = new GenericTechAdvance(name, TechAdvance.findDefinedAdvance(tech), data);
+				ta = new GenericTechAdvance(name, TechAdvance.findDefinedAdvanceAndCreateAdvance(tech, data), data);
 			}
 			else
 			{
 				try
 				{
-					ta = TechAdvance.findDefinedAdvance(name);
+					ta = TechAdvance.findDefinedAdvanceAndCreateAdvance(name, data);
 				} catch (final IllegalArgumentException e)
 				{
 					ta = new GenericTechAdvance(name, null, data);
 				}
 			}
-			frontier.addAdvance(ta);
+			allTechsFrontier.addAdvance(ta);
 		}
 	}
 	

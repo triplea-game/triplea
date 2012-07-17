@@ -115,7 +115,10 @@ public class NewGameChooser extends JDialog
 		}
 		chooser.setVisible(true);
 		// chooser is now visible and waits for user action
-		return chooser.m_choosen;
+		final NewGameChooserEntry choosen = chooser.m_choosen;
+		chooser.setVisible(false);
+		chooser.dispose();
+		return choosen;
 	}
 	
 	private void selectGame(final String gameName)

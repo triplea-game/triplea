@@ -100,7 +100,7 @@ public class InstallMapDialog extends JDialog
 						final File installed = new File(GameRunner.getUserMapsFolder(), mapName + ".zip");
 						if (installed.exists())
 						{
-							if (description.getVersion() != null && description.getVersion().isGreaterThan(getVersion(installed)))
+							if (description.getVersion() != null && description.getVersion().isGreaterThan(getVersion(installed), true))
 								mapName = "<html><b>" + mapName + "</b></html>";
 							else
 								mapName = "<html><i>" + mapName + "</i></html>";

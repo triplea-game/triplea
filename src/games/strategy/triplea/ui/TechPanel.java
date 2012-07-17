@@ -126,15 +126,15 @@ public class TechPanel extends ActionPanel
 	
 	private List<TechAdvance> getAvailableTechs()
 	{
-		final Collection<TechAdvance> currentAdvances = TechTracker.getTechAdvances(getCurrentPlayer(), getData());
+		final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(getCurrentPlayer(), getData());
 		final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(), getCurrentPlayer());
 		return Util.difference(allAdvances, currentAdvances);
 	}
 	
 	private List<TechnologyFrontier> getAvailableCategories()
 	{
-		final Collection<TechnologyFrontier> currentAdvances = TechTracker.getTechCategories(getData(), getCurrentPlayer());
-		final Collection<TechnologyFrontier> allAdvances = TechAdvance.getTechCategories(getData(), getCurrentPlayer());
+		final Collection<TechnologyFrontier> currentAdvances = TechTracker.getFullyResearchedPlayerTechCategories(getData(), getCurrentPlayer());
+		final Collection<TechnologyFrontier> allAdvances = TechAdvance.getPlayerTechCategories(getData(), getCurrentPlayer());
 		return Util.difference(allAdvances, currentAdvances);
 	}
 	

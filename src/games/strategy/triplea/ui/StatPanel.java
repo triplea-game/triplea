@@ -415,7 +415,7 @@ public class StatPanel extends JPanel
 						final Integer tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
 						data[row][col] = tokens.toString();
 					}
-					Iterator<TechAdvance> advances = TechTracker.getTechAdvances(pid, m_data).iterator();
+					Iterator<TechAdvance> advances = TechTracker.getCurrentTechAdvances(pid, m_data).iterator();
 					while (advances.hasNext())
 					{
 						final TechAdvance advance = advances.next();

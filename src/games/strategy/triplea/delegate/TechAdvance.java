@@ -27,11 +27,16 @@ import games.strategy.engine.data.ProductionFrontier;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.attatchments.TechAttachment;
+import games.strategy.util.Tuple;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,27 +48,76 @@ import java.util.logging.Logger;
 public abstract class TechAdvance extends NamedAttachable implements Serializable
 {
 	private static final long serialVersionUID = -1076712297024403156L;
-	private static List<TechAdvance> s_WW2V1Advances = null;
-	private static List<TechAdvance> s_WW2V2Advances = null;
-	private static List<TechAdvance> s_WW2V3Advances = null;
-	private static List<TechAdvance> s_AirNavalAdvances = null;
-	private static List<TechAdvance> s_LandProductionAdvances = null;
-	private static List<TechAdvance> s_allDefined = null;
-	private static List<TechnologyFrontier> s_WW2V3Categories = null;
-	public static TechAdvance JET_POWER = null;
-	public static TechAdvance SUPER_SUBS = null;
-	public static TechAdvance LONG_RANGE_AIRCRAFT = null;
-	public static TechAdvance ROCKETS = null;
-	public static TechAdvance INDUSTRIAL_TECHNOLOGY = null;
-	public static TechAdvance HEAVY_BOMBER = null;
-	public static TechAdvance DESTROYER_BOMBARD = null;
-	public static TechAdvance IMPROVED_ARTILLERY_SUPPORT = null;
-	public static TechAdvance PARATROOPERS = null;
-	public static TechAdvance INCREASED_FACTORY_PRODUCTION = null;
-	public static TechAdvance WAR_BONDS = null;
-	public static TechAdvance MECHANIZED_INFANTRY = null;
-	public static TechAdvance AA_RADAR = null;
-	public static TechAdvance IMPROVED_SHIPYARDS = null;
+	
+	@SuppressWarnings("rawtypes")
+	private static final Class[] preDefinedTechConstructorParameter = new Class[] { GameData.class };
+	
+	public static final String TECH_NAME_SUPER_SUBS = "Super subs";
+	public static final String TECH_PROPERTY_SUPER_SUBS = "superSub";
+	public static final String TECH_NAME_JET_POWER = "Jet Power";
+	public static final String TECH_PROPERTY_JET_POWER = "jetPower";
+	public static final String TECH_NAME_IMPROVED_SHIPYARDS = "Shipyards";
+	public static final String TECH_PROPERTY_IMPROVED_SHIPYARDS = "shipyards";
+	public static final String TECH_NAME_AA_RADAR = "AA Radar";
+	public static final String TECH_PROPERTY_AA_RADAR = "aARadar";
+	public static final String TECH_NAME_LONG_RANGE_AIRCRAFT = "Long Range Aircraft";
+	public static final String TECH_PROPERTY_LONG_RANGE_AIRCRAFT = "longRangeAir";
+	public static final String TECH_NAME_HEAVY_BOMBER = "Heavy Bomber";
+	public static final String TECH_PROPERTY_HEAVY_BOMBER = "heavyBomber";
+	public static final String TECH_NAME_IMPROVED_ARTILLERY_SUPPORT = "Improved Artillery Support";
+	public static final String TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT = "improvedArtillerySupport";
+	public static final String TECH_NAME_ROCKETS = "Rockets Advance";
+	public static final String TECH_PROPERTY_ROCKETS = "rocket";
+	public static final String TECH_NAME_PARATROOPERS = "Paratroopers";
+	public static final String TECH_PROPERTY_PARATROOPERS = "paratroopers";
+	public static final String TECH_NAME_INCREASED_FACTORY_PRODUCTION = "Increased Factory Production";
+	public static final String TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION = "increasedFactoryProduction";
+	public static final String TECH_NAME_WAR_BONDS = "War Bonds";
+	public static final String TECH_PROPERTY_WAR_BONDS = "warBonds";
+	public static final String TECH_NAME_MECHANIZED_INFANTRY = "Mechanized Infantry";
+	public static final String TECH_PROPERTY_MECHANIZED_INFANTRY = "mechanizedInfantry";
+	public static final String TECH_NAME_INDUSTRIAL_TECHNOLOGY = "Industrial Technology";
+	public static final String TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY = "industrialTechnology";
+	public static final String TECH_NAME_DESTROYER_BOMBARD = "Destroyer Bombard";
+	public static final String TECH_PROPERTY_DESTROYER_BOMBARD = "destroyerBombard";
+	
+	public static final List<String> s_allPreDefinedTechnologyNames = Collections.unmodifiableList(Arrays.asList(
+				TECH_NAME_SUPER_SUBS,
+				TECH_NAME_JET_POWER,
+				TECH_NAME_IMPROVED_SHIPYARDS,
+				TECH_NAME_AA_RADAR,
+				TECH_NAME_LONG_RANGE_AIRCRAFT,
+				TECH_NAME_HEAVY_BOMBER,
+				TECH_NAME_IMPROVED_ARTILLERY_SUPPORT,
+				TECH_NAME_ROCKETS,
+				TECH_NAME_PARATROOPERS,
+				TECH_NAME_INCREASED_FACTORY_PRODUCTION,
+				TECH_NAME_WAR_BONDS,
+				TECH_NAME_MECHANIZED_INFANTRY,
+				TECH_NAME_INDUSTRIAL_TECHNOLOGY,
+				TECH_NAME_DESTROYER_BOMBARD));
+	
+	private static final Map<String, Class<? extends TechAdvance>> s_allPreDefinedTechnologies = createPreDefinedTechnologyMap();
+	
+	private static final Map<String, Class<? extends TechAdvance>> createPreDefinedTechnologyMap()
+	{
+		final HashMap<String, Class<? extends TechAdvance>> preDefinedTechMap = new HashMap<String, Class<? extends TechAdvance>>();
+		preDefinedTechMap.put(TECH_PROPERTY_SUPER_SUBS, SuperSubsAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_JET_POWER, JetPowerAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_IMPROVED_SHIPYARDS, ImprovedShipyardsAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_AA_RADAR, AARadarAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_LONG_RANGE_AIRCRAFT, LongRangeAircraftAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_HEAVY_BOMBER, HeavyBomberAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT, ImprovedArtillerySupportAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_ROCKETS, RocketsAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_PARATROOPERS, ParatroopersAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION, IncreasedFactoryProductionAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_WAR_BONDS, WarBondsAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_MECHANIZED_INFANTRY, MechanizedInfantryAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY, IndustrialTechnologyAdvance.class);
+		preDefinedTechMap.put(TECH_PROPERTY_DESTROYER_BOMBARD, DestroyerBombardTechAdvance.class);
+		return Collections.unmodifiableMap(preDefinedTechMap);
+	}
 	
 	public TechAdvance(final String name, final GameData data)
 	{
@@ -76,99 +130,188 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 	
 	public abstract boolean hasTech(TechAttachment ta);
 	
-	/**
-	 * This should be called before parsing Techs, when we are parsing the xml.
-	 */
-	public static void setStaticTechs(final GameData data)
+	private static void createWW2V1Advances(final TechnologyFrontier tf)
 	{
-		// we first create all the hard-coded techs
-		JET_POWER = new JetPowerAdvance(data);
-		SUPER_SUBS = new SuperSubsAdvance(data);
-		LONG_RANGE_AIRCRAFT = new LongRangeAircraftAdvance(data);
-		ROCKETS = new RocketsAdvance(data);
-		INDUSTRIAL_TECHNOLOGY = new IndustrialTechnologyAdvance(data);
-		HEAVY_BOMBER = new HeavyBomberAdvance(data);
-		DESTROYER_BOMBARD = new DestroyerBombardTechAdvance(data);
-		IMPROVED_ARTILLERY_SUPPORT = new ImprovedArtillerySupportAdvance(data);
-		PARATROOPERS = new ParatroopersAdvance(data);
-		INCREASED_FACTORY_PRODUCTION = new IncreasedFactoryProductionAdvance(data);
-		WAR_BONDS = new WarBondsAdvance(data);
-		MECHANIZED_INFANTRY = new MechanizedInfantryAdvance(data);
-		AA_RADAR = new AARadarAdvance(data);
-		IMPROVED_SHIPYARDS = new ImprovedShipyardsAdvance(data);
-		
-		// then initialize the advances, note s_advances is made unmodifiable
-		
-		// World War 2 Version 1 Tech
-		s_WW2V1Advances = new ArrayList<TechAdvance>();
-		s_WW2V1Advances.add(JET_POWER);
-		s_WW2V1Advances.add(SUPER_SUBS);
-		s_WW2V1Advances.add(LONG_RANGE_AIRCRAFT);
-		s_WW2V1Advances.add(ROCKETS);
-		s_WW2V1Advances.add(INDUSTRIAL_TECHNOLOGY);
-		s_WW2V1Advances.add(HEAVY_BOMBER);
-		s_WW2V1Advances = Collections.unmodifiableList(s_WW2V1Advances);
-		
-		// World War 2 Version 2 Tech
-		s_WW2V2Advances = new ArrayList<TechAdvance>();
-		s_WW2V2Advances.add(JET_POWER);
-		s_WW2V2Advances.add(SUPER_SUBS);
-		s_WW2V2Advances.add(LONG_RANGE_AIRCRAFT);
-		s_WW2V2Advances.add(ROCKETS);
-		s_WW2V2Advances.add(DESTROYER_BOMBARD);
-		s_WW2V2Advances.add(HEAVY_BOMBER);
-		s_WW2V2Advances.add(INDUSTRIAL_TECHNOLOGY);
-		s_WW2V2Advances = Collections.unmodifiableList(s_WW2V2Advances);
-		
-		// World War 2 Version 3 Tech
-		s_WW2V3Advances = new ArrayList<TechAdvance>();
-		s_WW2V3Advances.add(SUPER_SUBS);
-		s_WW2V3Advances.add(JET_POWER);
-		s_WW2V3Advances.add(IMPROVED_SHIPYARDS);
-		s_WW2V3Advances.add(AA_RADAR);
-		s_WW2V3Advances.add(LONG_RANGE_AIRCRAFT);
-		s_WW2V3Advances.add(HEAVY_BOMBER);
-		s_WW2V3Advances.add(IMPROVED_ARTILLERY_SUPPORT);
-		s_WW2V3Advances.add(ROCKETS);
-		s_WW2V3Advances.add(PARATROOPERS);
-		s_WW2V3Advances.add(INCREASED_FACTORY_PRODUCTION);
-		s_WW2V3Advances.add(WAR_BONDS);
-		s_WW2V3Advances.add(MECHANIZED_INFANTRY);
-		s_WW2V3Advances = Collections.unmodifiableList(s_WW2V3Advances);
-		
-		// WW2V3 Air/Naval Tech
-		s_AirNavalAdvances = new ArrayList<TechAdvance>();
-		s_AirNavalAdvances.add(SUPER_SUBS);
-		s_AirNavalAdvances.add(JET_POWER);
-		s_AirNavalAdvances.add(IMPROVED_SHIPYARDS);
-		s_AirNavalAdvances.add(AA_RADAR);
-		s_AirNavalAdvances.add(LONG_RANGE_AIRCRAFT);
-		s_AirNavalAdvances.add(HEAVY_BOMBER);
-		s_AirNavalAdvances = Collections.unmodifiableList(s_AirNavalAdvances);
-		
-		// WW2V3 Land/Production Tech
-		s_LandProductionAdvances = new ArrayList<TechAdvance>();
-		s_LandProductionAdvances.add(IMPROVED_ARTILLERY_SUPPORT);
-		s_LandProductionAdvances.add(ROCKETS);
-		s_LandProductionAdvances.add(PARATROOPERS);
-		s_LandProductionAdvances.add(INCREASED_FACTORY_PRODUCTION);
-		s_LandProductionAdvances.add(WAR_BONDS);
-		s_LandProductionAdvances.add(MECHANIZED_INFANTRY);
-		s_LandProductionAdvances = Collections.unmodifiableList(s_LandProductionAdvances);
-		
-		// List of all hardcoded Techs.
-		s_allDefined = new ArrayList<TechAdvance>();
-		s_allDefined.addAll(s_WW2V3Advances);
-		s_allDefined.add(INDUSTRIAL_TECHNOLOGY);
-		s_allDefined.add(DESTROYER_BOMBARD);
-		s_allDefined = Collections.unmodifiableList(s_allDefined);
+		tf.addAdvance(new JetPowerAdvance(tf.getData()));
+		tf.addAdvance(new SuperSubsAdvance(tf.getData()));
+		tf.addAdvance(new LongRangeAircraftAdvance(tf.getData()));
+		tf.addAdvance(new RocketsAdvance(tf.getData()));
+		tf.addAdvance(new IndustrialTechnologyAdvance(tf.getData()));
+		tf.addAdvance(new HeavyBomberAdvance(tf.getData()));
 	}
 	
+	private static void createWW2V2Advances(final TechnologyFrontier tf)
+	{
+		tf.addAdvance(new JetPowerAdvance(tf.getData()));
+		tf.addAdvance(new SuperSubsAdvance(tf.getData()));
+		tf.addAdvance(new LongRangeAircraftAdvance(tf.getData()));
+		tf.addAdvance(new RocketsAdvance(tf.getData()));
+		tf.addAdvance(new DestroyerBombardTechAdvance(tf.getData()));
+		tf.addAdvance(new HeavyBomberAdvance(tf.getData()));
+		// tf.addAdvance(new IndustrialTechnologyAdvance(tf.getData()));
+	}
+	
+	private static void createWW2V3Advances(final TechnologyFrontier tf)
+	{
+		tf.addAdvance(new SuperSubsAdvance(tf.getData()));
+		tf.addAdvance(new JetPowerAdvance(tf.getData()));
+		tf.addAdvance(new ImprovedShipyardsAdvance(tf.getData()));
+		tf.addAdvance(new AARadarAdvance(tf.getData()));
+		tf.addAdvance(new LongRangeAircraftAdvance(tf.getData()));
+		tf.addAdvance(new HeavyBomberAdvance(tf.getData()));
+		tf.addAdvance(new ImprovedArtillerySupportAdvance(tf.getData()));
+		tf.addAdvance(new RocketsAdvance(tf.getData()));
+		tf.addAdvance(new ParatroopersAdvance(tf.getData()));
+		tf.addAdvance(new IncreasedFactoryProductionAdvance(tf.getData()));
+		tf.addAdvance(new WarBondsAdvance(tf.getData()));
+		tf.addAdvance(new MechanizedInfantryAdvance(tf.getData()));
+	}
+	
+	/**
+	 * For the game parser only.
+	 * 
+	 * @param data
+	 */
+	public static void createDefaultTechAdvances(final GameData data)
+	{
+		final TechnologyFrontier tf = data.getTechnologyFrontier();
+		final boolean ww2v2 = games.strategy.triplea.Properties.getWW2V2(data);
+		final boolean ww2v3 = games.strategy.triplea.Properties.getWW2V3(data);
+		if (ww2v2)
+			createWW2V2Advances(tf);
+		else if (ww2v3)
+			createWW2V3Advances(tf);
+		else
+			createWW2V1Advances(tf);
+		
+		// now create player tech frontiers
+		final List<TechnologyFrontier> frontiers = new ArrayList<TechnologyFrontier>();
+		if (ww2v3)
+		{
+			final TechnologyFrontier an = new TechnologyFrontier("Air and Naval Advances", data);
+			final TechnologyFrontier lp = new TechnologyFrontier("Land and Production Advances", data);
+			final Tuple<List<TechAdvance>, List<TechAdvance>> ww2v3advances = getWW2v3CategoriesWithTheirAdvances(data);
+			an.addAdvance(ww2v3advances.getFirst());
+			lp.addAdvance(ww2v3advances.getSecond());
+			frontiers.add(an);
+			frontiers.add(lp);
+		}
+		else
+		{
+			final TechnologyFrontier tas = new TechnologyFrontier("Technology Advances", data);
+			tas.addAdvance(new ArrayList<TechAdvance>(tf.getTechs()));
+			frontiers.add(tas);
+		}
+		// add the frontiers
+		for (final PlayerID player : data.getPlayerList().getPlayers())
+		{
+			for (final TechnologyFrontier frontier : frontiers)
+			{
+				player.getTechnologyFrontierList().addTechnologyFrontier(new TechnologyFrontier(frontier));
+			}
+		}
+	}
+	
+	public static TechAdvance findDefinedAdvanceAndCreateAdvance(final String s, final GameData data)
+	{
+		final Class<? extends TechAdvance> clazz = s_allPreDefinedTechnologies.get(s);
+		if (clazz == null)
+			throw new IllegalArgumentException(s + " is not a valid technology");
+		final TechAdvance ta;
+		Constructor<? extends TechAdvance> constructor;
+		try
+		{
+			constructor = clazz.getConstructor(preDefinedTechConstructorParameter);
+			ta = constructor.newInstance(data);
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+			throw new IllegalStateException(s + " is not a valid technology or could not be instantiated");
+		}
+		if (ta == null)
+			throw new IllegalStateException(s + " is not a valid technology or could not be instantiated");
+		return ta;
+	}
+	
+	public static TechAdvance findAdvance(final String propertyString, final GameData data, final PlayerID player)
+	{
+		for (final TechAdvance t : getTechAdvances(data, player))
+		{
+			if (t.getProperty().equals(propertyString))
+				return t;
+		}
+		throw new IllegalArgumentException(propertyString + " is not a valid technology");
+	}
+	
+	public static TechAdvance findTechnologyFromAllTechs(final String name, final GameData data, final boolean mustFind)
+	{
+		TechAdvance type;
+		data.acquireReadLock();
+		try
+		{
+			type = data.getTechnologyFrontier().getAdvanceByName(name);
+			if (type == null)
+				type = data.getTechnologyFrontier().getAdvanceByProperty(name);
+			if (type == null && mustFind)
+				throw new IllegalStateException("Could not find technology. name:" + name);
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		return type;
+	}
+	
+	/**
+	 * @param data
+	 * @return first is air&naval, second is land&production
+	 */
+	public static Tuple<List<TechAdvance>, List<TechAdvance>> getWW2v3CategoriesWithTheirAdvances(final GameData data)
+	{
+		List<TechAdvance> allAdvances;
+		data.acquireReadLock();
+		try
+		{
+			allAdvances = new ArrayList<TechAdvance>(data.getTechnologyFrontier().getTechs());
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		final List<TechAdvance> airAndNaval = new ArrayList<TechAdvance>();
+		final List<TechAdvance> landAndProduction = new ArrayList<TechAdvance>();
+		for (final TechAdvance ta : allAdvances)
+		{
+			final String propertyString = ta.getProperty();
+			if (propertyString.equals(TECH_PROPERTY_SUPER_SUBS) || propertyString.equals(TECH_PROPERTY_JET_POWER) || propertyString.equals(TECH_PROPERTY_IMPROVED_SHIPYARDS)
+						|| propertyString.equals(TECH_PROPERTY_AA_RADAR) || propertyString.equals(TECH_PROPERTY_LONG_RANGE_AIRCRAFT) || propertyString.equals(TECH_PROPERTY_HEAVY_BOMBER))
+				airAndNaval.add(ta);
+			else if (propertyString.equals(TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT) || propertyString.equals(TECH_PROPERTY_ROCKETS) || propertyString.equals(TECH_PROPERTY_PARATROOPERS)
+						|| propertyString.equals(TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION) || propertyString.equals(TECH_PROPERTY_WAR_BONDS)
+						|| propertyString.equals(TECH_PROPERTY_MECHANIZED_INFANTRY))
+				landAndProduction.add(ta);
+			else
+				throw new IllegalStateException("We should not be using ww2v3 categories if we have custom techs: " + propertyString);
+		}
+		return new Tuple<List<TechAdvance>, List<TechAdvance>>(airAndNaval, landAndProduction);
+	}
+	
+	/**
+	 * Returns all tech advances possible in this game.
+	 * 
+	 * @param data
+	 * @return
+	 */
 	public static List<TechAdvance> getTechAdvances(final GameData data)
 	{
 		return getTechAdvances(data, null);
 	}
 	
+	/**
+	 * Returns all tech advances that this player can possibly research. (Or if Player is null, returns all techs available in the game).
+	 * 
+	 * @param data
+	 * @param player
+	 * @return
+	 */
 	public static List<TechAdvance> getTechAdvances(final GameData data, final PlayerID player)
 	{
 		final TechnologyFrontier technologyFrontier;
@@ -191,29 +334,21 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 				return technologyFrontier.getTechs();
 			}
 		}
-		final boolean isWW2V2 = games.strategy.triplea.Properties.getWW2V2(data);
-		final boolean isWW2V3 = games.strategy.triplea.Properties.getWW2V3(data);
-		if (isWW2V2)
-			return s_WW2V2Advances;
-		else if (isWW2V3)
-			return s_WW2V3Advances;
-		else
-			return s_WW2V1Advances;
+		// the game has no techs, just return empty list
+		// System.out.println("No Techs");
+		return new ArrayList<TechAdvance>();
 	}
 	
-	public static TechAdvance findDefinedAdvance(final String s)
+	/**
+	 * Returns all possible tech categories for this player.
+	 * 
+	 * @param data
+	 * @param player
+	 * @return
+	 */
+	public static List<TechnologyFrontier> getPlayerTechCategories(final GameData data, final PlayerID player)
 	{
-		for (final TechAdvance t : s_allDefined)
-		{
-			if (t.getProperty().equals(s))
-				return t;
-		}
-		throw new IllegalArgumentException(s + " is not a valid technology");
-	}
-	
-	public static List<TechnologyFrontier> getTechCategories(final GameData data, final PlayerID player)
-	{
-		final TechnologyFrontier technologyFrontier;
+		/*final TechnologyFrontier technologyFrontier;
 		data.acquireReadLock();
 		try
 		{
@@ -221,54 +356,37 @@ public abstract class TechAdvance extends NamedAttachable implements Serializabl
 		} finally
 		{
 			data.releaseReadLock();
-		}
-		if (player != null && technologyFrontier != null && !technologyFrontier.isEmpty())
+		}*/
+		if (player != null) // && technologyFrontier != null && !technologyFrontier.isEmpty())
 			return player.getTechnologyFrontierList().getFrontiers();
-		if (s_WW2V3Categories == null)
-		{
-			final List<TechnologyFrontier> tf = new ArrayList<TechnologyFrontier>();
-			final TechnologyFrontier an = new TechnologyFrontier("Air and Naval Advances", data);
-			an.addAdvance(s_AirNavalAdvances);
-			final TechnologyFrontier lp = new TechnologyFrontier("Land and Production Advances", data);
-			lp.addAdvance(s_LandProductionAdvances);
-			tf.add(an);
-			tf.add(lp);
-			s_WW2V3Categories = tf;
-		}
-		return s_WW2V3Categories;
-	}
-	
-	public static TechAdvance findAdvance(final String s, final GameData data, final PlayerID player)
-	{
-		for (final TechAdvance t : getTechAdvances(data, player))
-		{
-			if (t.getProperty().equals(s))
-				return t;
-		}
-		throw new IllegalArgumentException(s + " is not a valid technology");
-	}
-	
-	public static List<TechAdvance> getDefinedAdvances()
-	{
-		return s_allDefined;
+		throw new IllegalStateException("Player can not be null");
+		/*
+		System.out.println("Creating default tech categories");
+		final List<TechnologyFrontier> tf = new ArrayList<TechnologyFrontier>();
+		final TechnologyFrontier an = new TechnologyFrontier("Air and Naval Advances", data);
+		final TechnologyFrontier lp = new TechnologyFrontier("Land and Production Advances", data);
+		final Tuple<List<TechAdvance>, List<TechAdvance>> ww2v3advances = getWW2v3CategoriesWithTheirAdvances(data);
+		an.addAdvance(ww2v3advances.getFirst());
+		lp.addAdvance(ww2v3advances.getSecond());
+		tf.add(an);
+		tf.add(lp);
+		return tf;*/
 	}
 	
 	@Override
 	public boolean equals(final Object o)
 	{
-		if (!(o instanceof TechAdvance))
+		if (o == null || !(o instanceof TechAdvance))
 			return false;
-		final TechAdvance ta = (TechAdvance) o;
-		if (ta.getName() == null || getName() == null)
+		final TechAdvance other = (TechAdvance) o;
+		if (other.getName() == null || getName() == null)
 			return false;
-		return getName().equals(ta.getName());
+		return getName().equals(other.getName());
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		if (getName() == null)
-			return super.hashCode();
 		return getName().hashCode();
 	}
 	
@@ -286,13 +404,13 @@ class SuperSubsAdvance extends TechAdvance
 	
 	public SuperSubsAdvance(final GameData data)
 	{
-		super("Super subs", data);
+		super(TECH_NAME_SUPER_SUBS, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "superSub";
+		return TECH_PROPERTY_SUPER_SUBS;
 	}
 	
 	@Override
@@ -314,13 +432,13 @@ class HeavyBomberAdvance extends TechAdvance
 	
 	public HeavyBomberAdvance(final GameData data)
 	{
-		super("Heavy Bomber", data);
+		super(TECH_NAME_HEAVY_BOMBER, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "heavyBomber";
+		return TECH_PROPERTY_HEAVY_BOMBER;
 	}
 	
 	@Override
@@ -342,13 +460,13 @@ class IndustrialTechnologyAdvance extends TechAdvance
 	
 	public IndustrialTechnologyAdvance(final GameData data)
 	{
-		super("Industrial Technology", data);
+		super(TECH_NAME_INDUSTRIAL_TECHNOLOGY, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "industrialTechnology";
+		return TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY;
 	}
 	
 	@Override
@@ -384,13 +502,13 @@ class JetPowerAdvance extends TechAdvance
 	
 	public JetPowerAdvance(final GameData data)
 	{
-		super("Jet Power", data);
+		super(TECH_NAME_JET_POWER, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "jetPower";
+		return TECH_PROPERTY_JET_POWER;
 	}
 	
 	@Override
@@ -412,13 +530,13 @@ class RocketsAdvance extends TechAdvance
 	
 	public RocketsAdvance(final GameData data)
 	{
-		super("Rockets Advance", data);
+		super(TECH_NAME_ROCKETS, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "rocket";
+		return TECH_PROPERTY_ROCKETS;
 	}
 	
 	@Override
@@ -440,13 +558,13 @@ class DestroyerBombardTechAdvance extends TechAdvance
 	
 	public DestroyerBombardTechAdvance(final GameData data)
 	{
-		super("Destroyer Bombard", data);
+		super(TECH_NAME_DESTROYER_BOMBARD, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "destroyerBombard";
+		return TECH_PROPERTY_DESTROYER_BOMBARD;
 	}
 	
 	@Override
@@ -468,13 +586,13 @@ class LongRangeAircraftAdvance extends TechAdvance
 	
 	public LongRangeAircraftAdvance(final GameData data)
 	{
-		super("Long Range Aircraft", data);
+		super(TECH_NAME_LONG_RANGE_AIRCRAFT, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "longRangeAir";
+		return TECH_PROPERTY_LONG_RANGE_AIRCRAFT;
 	}
 	
 	@Override
@@ -490,9 +608,8 @@ class LongRangeAircraftAdvance extends TechAdvance
 }
 
 
-/**
- * Beginning of AA 50 rules
- */
+// Beginning of AA 50 rules
+
 /*
  * Artillery can support multiple infantry
  */
@@ -502,13 +619,13 @@ class ImprovedArtillerySupportAdvance extends TechAdvance
 	
 	public ImprovedArtillerySupportAdvance(final GameData data)
 	{
-		super("Improved Artillery Support", data);
+		super(TECH_NAME_IMPROVED_ARTILLERY_SUPPORT, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "improvedArtillerySupport";
+		return TECH_PROPERTY_IMPROVED_ARTILLERY_SUPPORT;
 	}
 	
 	@Override
@@ -533,13 +650,13 @@ class ParatroopersAdvance extends TechAdvance
 	
 	public ParatroopersAdvance(final GameData data)
 	{
-		super("Paratroopers", data);
+		super(TECH_NAME_PARATROOPERS, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "paratroopers";
+		return TECH_PROPERTY_PARATROOPERS;
 	}
 	
 	@Override
@@ -564,13 +681,13 @@ class IncreasedFactoryProductionAdvance extends TechAdvance
 	
 	public IncreasedFactoryProductionAdvance(final GameData data)
 	{
-		super("Increased Factory Production", data);
+		super(TECH_NAME_INCREASED_FACTORY_PRODUCTION, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "increasedFactoryProduction";
+		return TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION;
 	}
 	
 	@Override
@@ -595,13 +712,13 @@ class WarBondsAdvance extends TechAdvance
 	
 	public WarBondsAdvance(final GameData data)
 	{
-		super("War Bonds", data);
+		super(TECH_NAME_WAR_BONDS, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "warBonds";
+		return TECH_PROPERTY_WAR_BONDS;
 	}
 	
 	@Override
@@ -626,13 +743,13 @@ class MechanizedInfantryAdvance extends TechAdvance
 	
 	public MechanizedInfantryAdvance(final GameData data)
 	{
-		super("Mechanized Infantry", data);
+		super(TECH_NAME_MECHANIZED_INFANTRY, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "mechanizedInfantry";
+		return TECH_PROPERTY_MECHANIZED_INFANTRY;
 	}
 	
 	@Override
@@ -657,13 +774,13 @@ class AARadarAdvance extends TechAdvance
 	
 	public AARadarAdvance(final GameData data)
 	{
-		super("AA Radar", data);
+		super(TECH_NAME_AA_RADAR, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "aARadar";
+		return TECH_PROPERTY_AA_RADAR;
 	}
 	
 	@Override
@@ -685,13 +802,13 @@ class ImprovedShipyardsAdvance extends TechAdvance
 	
 	public ImprovedShipyardsAdvance(final GameData data)
 	{
-		super("Shipyards", data);
+		super(TECH_NAME_IMPROVED_SHIPYARDS, data);
 	}
 	
 	@Override
 	public String getProperty()
 	{
-		return "shipyards";
+		return TECH_PROPERTY_IMPROVED_SHIPYARDS;
 	}
 	
 	@Override
@@ -722,6 +839,4 @@ class ImprovedShipyardsAdvance extends TechAdvance
 		return ta.getShipyards();
 	}
 }
-/**
- * End of AA 50 rules
- */
+// End of AA 50 rules

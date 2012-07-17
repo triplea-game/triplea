@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -328,10 +329,15 @@ public class EditPanel extends ActionPanel
 				getData().acquireReadLock();
 				try
 				{
-					techs = new Vector<TechAdvance>(TechTracker.getTechAdvances(player, data));
+					techs = new Vector<TechAdvance>(TechTracker.getCurrentTechAdvances(player, data));
 					// there is no way to "undo" these two techs, so do not allow them to be removed
-					techs.remove(TechAdvance.IMPROVED_SHIPYARDS);
-					techs.remove(TechAdvance.INDUSTRIAL_TECHNOLOGY);
+					final Iterator<TechAdvance> iter = techs.iterator();
+					while (iter.hasNext())
+					{
+						final TechAdvance ta = iter.next();
+						if (ta.getProperty().equals(TechAdvance.TECH_PROPERTY_IMPROVED_SHIPYARDS) || ta.getProperty().equals(TechAdvance.TECH_PROPERTY_INDUSTRIAL_TECHNOLOGY))
+							iter.remove();
+					}
 				} finally
 				{
 					getData().releaseReadLock();

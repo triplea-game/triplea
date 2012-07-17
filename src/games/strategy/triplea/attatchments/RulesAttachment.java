@@ -1271,7 +1271,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	private boolean checkTechs(final PlayerID player, final GameData data)
 	{
 		int found = 0;
-		for (final TechAdvance a : TechTracker.getTechAdvances(player, data))
+		for (final TechAdvance a : TechTracker.getCurrentTechAdvances(player, data))
 			if (m_techs.contains(a))
 				found++;
 		if (m_techCount == 0)

@@ -135,7 +135,7 @@ public class RevisedTest extends TestCase
 		assertEquals(2, attachment.getDefense(japanese));
 		assertEquals(2, attachment.getAttack(japanese));
 		final ITestDelegateBridge bridge = getDelegateBridge(japanese);
-		TechTracker.addAdvance(japanese, bridge, TechAdvance.SUPER_SUBS);
+		TechTracker.addAdvance(japanese, bridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_SUPER_SUBS, m_data, japanese));
 		// after tech advance, this is now 3
 		assertEquals(2, attachment.getDefense(japanese));
 		assertEquals(3, attachment.getAttack(japanese));
@@ -932,7 +932,7 @@ public class RevisedTest extends TestCase
 		battle.addAttackChange(m_data.getMap().getRoute(uk, germany), uk.getUnits().getMatches(Matches.UnitIsStrategicBomber), null);
 		tracker.getBattleRecords(m_data).addBattle(british, battle.getBattleID(), germany, battle.getBattleType(), m_data);
 		final ITestDelegateBridge bridge = getDelegateBridge(british);
-		TechTracker.addAdvance(british, bridge, TechAdvance.HEAVY_BOMBER);
+		TechTracker.addAdvance(british, bridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_HEAVY_BOMBER, m_data, british));
 		// aa guns rolls 3, misses, bomber rolls 2 dice at 3
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 3, 2, 2 }));
 		// if we try to move aa, then the game will ask us if we want to move
@@ -1284,9 +1284,9 @@ public class RevisedTest extends TestCase
 		final TechAttachment ta = TechAttachment.get(germans);
 		// PlayerAttachment pa = PlayerAttachment.get(germans);
 		final TechnologyFrontier rockets = new TechnologyFrontier("", m_data);
-		rockets.addAdvance(TechAdvance.ROCKETS);
+		rockets.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_ROCKETS, m_data, null));
 		final TechnologyFrontier jet = new TechnologyFrontier("", m_data);
-		jet.addAdvance(TechAdvance.JET_POWER);
+		jet.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_JET_POWER, m_data, null));
 		// Check to make sure it was successful
 		final int initPUs = germans.getResources().getQuantity("PUs");
 		// Fail the roll

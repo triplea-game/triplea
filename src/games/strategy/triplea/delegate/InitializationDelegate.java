@@ -129,7 +129,7 @@ public class InitializationDelegate extends BaseDelegate
 		while (players.hasNext())
 		{
 			final PlayerID player = players.next();
-			final Iterator<TechAdvance> advances = TechTracker.getTechAdvances(player, data).iterator();
+			final Iterator<TechAdvance> advances = TechTracker.getCurrentTechAdvances(player, data).iterator();
 			if (advances.hasNext())
 			{
 				bridge.getHistoryWriter().startEvent("Initializing " + player.getName() + " with tech advances");

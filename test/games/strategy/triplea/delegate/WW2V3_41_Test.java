@@ -242,7 +242,7 @@ public class WW2V3_41_Test extends TestCase
 		final TechnologyDelegate techDelegate = techDelegate(m_data);
 		techDelegate.start(delegateBridge);
 		final TechnologyFrontier mech = new TechnologyFrontier("", m_data);
-		mech.addAdvance(TechAdvance.MECHANIZED_INFANTRY);
+		mech.addAdvance(TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_MECHANIZED_INFANTRY, m_data, null));
 		// Add tech token
 		new ChangePerformer(m_data).perform(ChangeFactory.changeResourcesChange(germans, m_data.getResourceList().getResource(Constants.TECH_TOKENS), 1));
 		// Check to make sure it was successful
@@ -460,7 +460,7 @@ public class WW2V3_41_Test extends TestCase
 		// Set up tech
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
-		TechTracker.addAdvance(germans, delegateBridge, TechAdvance.MECHANIZED_INFANTRY);
+		TechTracker.addAdvance(germans, delegateBridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_MECHANIZED_INFANTRY, m_data, germans));
 		// Set up the move delegate
 		final MoveDelegate moveDelegate = moveDelegate(m_data);
 		delegateBridge.setStepName("CombatMove");
@@ -502,7 +502,7 @@ public class WW2V3_41_Test extends TestCase
 		// Set up tech
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
-		TechTracker.addAdvance(germans, delegateBridge, TechAdvance.JET_POWER);
+		TechTracker.addAdvance(germans, delegateBridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_JET_POWER, m_data, germans));
 		// Set up the territories
 		final Territory poland = territory("Poland", m_data);
 		final Territory eastPoland = territory("East Poland", m_data);
@@ -1495,7 +1495,7 @@ public class WW2V3_41_Test extends TestCase
 		 */
 		// Set up INCREASED_FACTORY_PRODUCTION
 		final ITestDelegateBridge delegateBridge = getDelegateBridge(germans(m_data));
-		TechTracker.addAdvance(germans, delegateBridge, TechAdvance.INCREASED_FACTORY_PRODUCTION);
+		TechTracker.addAdvance(germans, delegateBridge, TechAdvance.findAdvance(TechAdvance.TECH_PROPERTY_INCREASED_FACTORY_PRODUCTION, m_data, germans));
 		// damage a factory
 		startHits = new IntegerMap<Unit>();
 		startHits.put(factory, 2);
