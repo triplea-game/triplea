@@ -192,6 +192,38 @@ public class TransportTracker
 		return change;
 	}
 	
+	public Change unloadAirTransportChange(final TripleAUnit unit, final Territory territory, final PlayerID id, final boolean dependentBattle)
+	{
+		final CompositeChange change = new CompositeChange();
+		final TripleAUnit transport = (TripleAUnit) transportedBy(unit);
+		if (transport == null)
+			return change;
+		assertTransport(transport);
+		if (!transport.getTransporting().contains(unit))
+		{
+			throw new IllegalStateException("Not being carried, unit:" + unit + " transport:" + transport);
+		}
+		final ArrayList<Unit> newUnloaded = new ArrayList<Unit>(transport.getUnloaded());
+		newUnloaded.add(unit);
+		change.add(ChangeFactory.unitPropertyChange(unit, territory, TripleAUnit.UNLOADED_TO));
+		if (!isNonCombat(unit.getData()))
+		{
+			change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+			// change.add(ChangeFactory.unitPropertyChange(unit, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
+			change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_IN_COMBAT_PHASE));
+			// change.add(ChangeFactory.unitPropertyChange(transport, true, TripleAUnit.UNLOADED_AMPHIBIOUS));
+		}
+		if (!dependentBattle)
+		{
+			// TODO: this is causing issues with Scrambling. if the units were unloaded, then scrambling creates a battle, there is no longer any way to have the units removed if those transports die.
+			change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
+		}
+		// dependencies for battle calc and casualty selection include unloaded. therefore even if we have unloaded this unit, it will die if air transport dies IF we have the unloaded flat set. so don't set it.
+		// TODO: fix this bullshit by re-writing entire transportation engine
+		// change.add(ChangeFactory.unitPropertyChange(transport, newUnloaded, TripleAUnit.UNLOADED));
+		return change;
+	}
+	
 	public Change loadTransportChange(final TripleAUnit transport, final Unit unit, final PlayerID id)
 	{
 		assertTransport(transport);

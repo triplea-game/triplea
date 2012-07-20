@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Fixing display error in old paratroopers tech that caused the land unit to appear to die with the air unit even after it has landed and survived any aa fire. (veqryn)
+
 * Making sure technology still has an effect even if it is not in a player's tech frontier. (veqryn)
 
 * Make sure the game chooser menu is cleared from memory after closed. (veqryn)

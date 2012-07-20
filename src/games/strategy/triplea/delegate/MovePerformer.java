@@ -409,14 +409,19 @@ public class MovePerformer implements Serializable
 					units.addAll(dependentAirTransportableUnits.get(airTransport));
 				}
 			}
-			final Iterator<Unit> iter = units.iterator();
 			// any pending battles in the unloading zone?
 			final BattleTracker tracker = getBattleTracker();
 			final boolean pendingBattles = tracker.getPendingBattle(route.getStart(), false) != null;
+			final Iterator<Unit> iter = units.iterator();
 			while (iter.hasNext())
 			{
 				final Unit unit = iter.next();
 				if (paratroopsLanding && Matches.UnitIsAirTransport.match(unit))
+					continue;
+				final Unit transportedBy = ((TripleAUnit) unit).getTransportedBy();
+				// we will unload our paratroopers after they land in battle (after aa guns fire)
+				if (paratroopsLanding && transportedBy != null && Matches.UnitIsAirTransport.match(transportedBy) && !AbstractMoveDelegate.isNonCombat(m_bridge)
+							&& Matches.territoryHasNonSubmergedEnemyUnits(m_player, m_bridge.getData()).match(route.getEnd()))
 					continue;
 				// unload the transports
 				Change change = m_moveDelegate.getTransportTracker().unloadTransportChange((TripleAUnit) unit, m_currentMove.getRoute().getEnd(), m_player, pendingBattles);

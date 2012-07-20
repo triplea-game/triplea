@@ -245,6 +245,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			}
 		}
 		// Set the dependent paratroopers so they die if the bomber dies.
+		// TODO: this might be legacy code that can be deleted since we now keep paratrooper dependencies til they land (but need to double check)
 		if (isParatroopers(m_attacker))
 		{
 			final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
@@ -2363,11 +2364,18 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					final Iterator<Unit> dependentsIter = dependents.iterator();
 					final CompositeChange change = new CompositeChange();
 					// remove dependency from paratroops
+					// unload the transports
 					while (dependentsIter.hasNext())
 					{
 						final Unit unit = dependentsIter.next();
-						change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
+						change.add(DelegateFinder.moveDelegate(m_data).getTransportTracker().unloadAirTransportChange((TripleAUnit) unit, m_battleSite, m_attacker, false));
 					}
+					/*while (dependentsIter.hasNext())
+					{
+						final Unit unit = dependentsIter.next();
+						change.add(ChangeFactory.unitPropertyChange(unit, null, TripleAUnit.TRANSPORTED_BY));
+					}*/
+
 					bridge.addChange(change);
 					// remove bombers from m_dependentUnits
 					for (final Unit unit : airTransports)
