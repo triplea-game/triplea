@@ -278,13 +278,6 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		return new TechResults(random, remainder, techHits, advancesAsString, m_player);
 	}
 	
-	public static List<TechAdvance> getAvailableTechs(final PlayerID player, final GameData data)
-	{
-		final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(player, data);
-		final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, player);
-		return Util.difference(allAdvances, currentAdvances);
-	}
-	
 	boolean checkEnoughMoney(final int rolls, final IntegerMap<PlayerID> whoPaysHowMuch)
 	{
 		final Resource PUs = getData().getResourceList().getResource(Constants.PUS);
@@ -415,11 +408,14 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	
 	private List<TechAdvance> getAvailableAdvances()
 	{
-		// too many
-		final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(getData(), m_bridge.getPlayerID());
-		final Collection<TechAdvance> playersAdvances = TechTracker.getCurrentTechAdvances(m_bridge.getPlayerID(), getData());
-		final List<TechAdvance> available = Util.difference(allAdvances, playersAdvances);
-		return available;
+		return getAvailableTechs(m_bridge.getPlayerID(), getData());
+	}
+	
+	public static List<TechAdvance> getAvailableTechs(final PlayerID player, final GameData data)
+	{
+		final Collection<TechAdvance> currentAdvances = TechTracker.getCurrentTechAdvances(player, data);
+		final Collection<TechAdvance> allAdvances = TechAdvance.getTechAdvances(data, player);
+		return Util.difference(allAdvances, currentAdvances);
 	}
 	
 	private List<TechAdvance> getAvailableAdvancesForCategory(final TechnologyFrontier techCategory)

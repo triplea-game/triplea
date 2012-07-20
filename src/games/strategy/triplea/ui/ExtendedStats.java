@@ -85,7 +85,7 @@ public class ExtendedStats extends StatPanel
 				m_statsExtended = statsExtended.toArray(new IStat[statsExtended.size()]);
 			}
 			// add individual techs
-			for (final TechAdvance ta : TechAdvance.getTechAdvances(m_data, null))
+			for (final TechAdvance ta : TechAdvance.getTechAdvances(m_data))
 			{
 				final GenericTechNameStat techNameStat = new GenericTechNameStat();
 				techNameStat.init(ta);

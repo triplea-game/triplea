@@ -2143,7 +2143,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			{
 				for (final TechAdvance ta : t.getTech())
 				{
-					if (ta.hasTech(TechAttachment.get(aPlayer)) || !TechAdvance.getTechAdvances(data, aPlayer).contains(ta))
+					if (ta.hasTech(TechAttachment.get(aPlayer)))// || !TechAdvance.getTechAdvances(data, aPlayer).contains(ta))
 						continue;
 					aBridge.getHistoryWriter().startEvent(MyFormatter.attachmentNameToText(t.getName()) + ": " + aPlayer.getName() + " activates " + ta);
 					TechTracker.addAdvance(aPlayer, aBridge, ta);

@@ -345,11 +345,11 @@ public class StatPanel extends JPanel
 			if (m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
 			{
 				useTech = true;
-				data = new String[TechAdvance.getTechAdvances(m_data, null).size() + 1][colList.length + 2];
+				data = new String[TechAdvance.getTechAdvances(m_data).size() + 1][colList.length + 2];
 			}
 			else
 			{
-				data = new String[TechAdvance.getTechAdvances(m_data, null).size()][colList.length + 1];
+				data = new String[TechAdvance.getTechAdvances(m_data).size()][colList.length + 1];
 			}
 			/* Load the technology -> row mapping */
 			rowMap = new HashMap<String, Integer>();
@@ -415,7 +415,19 @@ public class StatPanel extends JPanel
 						final Integer tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
 						data[row][col] = tokens.toString();
 					}
-					Iterator<TechAdvance> advances = TechTracker.getCurrentTechAdvances(pid, m_data).iterator();
+					final Iterator<TechAdvance> advancesAll = TechAdvance.getTechAdvances(m_data).iterator();
+					final List<TechAdvance> has = TechAdvance.getTechAdvances(m_data, pid);
+					while (advancesAll.hasNext())
+					{
+						final TechAdvance advance = advancesAll.next();
+						// if(!pid.getTechnologyFrontierList().getAdvances().contains(advance)){
+						if (!has.contains(advance))
+						{
+							row = rowMap.get(advance.getName()).intValue();
+							data[row][col] = "-";
+						}
+					}
+					final Iterator<TechAdvance> advances = TechTracker.getCurrentTechAdvances(pid, m_data).iterator();
 					while (advances.hasNext())
 					{
 						final TechAdvance advance = advances.next();
@@ -423,18 +435,6 @@ public class StatPanel extends JPanel
 						// System.err.println("(" + row + ", " + col + ")");
 						data[row][col] = "X";
 						// data[row][col] = colList[col].substring(0, 1);
-					}
-					advances = TechAdvance.getTechAdvances(m_data, null).iterator();
-					final List<TechAdvance> has = TechAdvance.getTechAdvances(m_data, pid);
-					while (advances.hasNext())
-					{
-						final TechAdvance advance = advances.next();
-						// if(!pid.getTechnologyFrontierList().getAdvances().contains(advance)){
-						if (!has.contains(advance))
-						{
-							row = rowMap.get(advance.getName()).intValue();
-							data[row][col] = "-";
-						}
 					}
 				}
 			} finally

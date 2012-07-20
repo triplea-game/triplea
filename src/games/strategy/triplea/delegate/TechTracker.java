@@ -45,7 +45,7 @@ public class TechTracker implements java.io.Serializable
 	}
 	
 	/**
-	 * Returns what tech advances this player already has successfully researched.
+	 * Returns what tech advances this player already has successfully researched (including ones that may not be in their tech frontier).
 	 * 
 	 * @param id
 	 * @param data
@@ -55,7 +55,8 @@ public class TechTracker implements java.io.Serializable
 	{
 		final Collection<TechAdvance> rVal = new ArrayList<TechAdvance>();
 		final TechAttachment attachment = TechAttachment.get(id);
-		for (final TechAdvance ta : TechAdvance.getTechAdvances(data, id))
+		// search all techs
+		for (final TechAdvance ta : TechAdvance.getTechAdvances(data))
 		{
 			if (ta.hasTech(attachment))
 				rVal.add(ta);
