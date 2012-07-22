@@ -18,10 +18,13 @@
  */
 package games.strategy.engine.framework;
 
+import games.strategy.engine.EngineVersion;
+
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Window;
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -139,6 +142,49 @@ public class GameRunner
 	}
 	
 	/**
+	 * Our jar is named with engine number and we are in "old" folder.
+	 * 
+	 * @return
+	 */
+	public static boolean areWeOldExtraJar()
+	{
+		final URL url = GameRunner.class.getResource("GameRunner.class");
+		String fileName = url.getFile();
+		try
+		{
+			fileName = URLDecoder.decode(fileName, "UTF-8");
+		} catch (final UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+		final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
+		if (fileName.indexOf(tripleaJarNameWithEngineVersion) != -1)
+		{
+			final String subString = fileName.substring("file:/".length() - (isWindows() ? 0 : 1), fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
+			final File f = new File(subString);
+			if (!f.exists())
+			{
+				throw new IllegalStateException("File not found:" + f);
+			}
+			String path;
+			try
+			{
+				path = f.getCanonicalPath();
+			} catch (final IOException e)
+			{
+				path = f.getPath();
+			}
+			return path.indexOf("old") != -1;
+		}
+		return false;
+	}
+	
+	private static String getTripleaJarWithEngineVersionStringPath()
+	{
+		return "triplea_" + EngineVersion.VERSION.toStringFull("_") + ".jar!";
+	}
+	
+	/**
 	 * Get the root folder for the application
 	 */
 	public static File getRootFolder()
@@ -159,10 +205,22 @@ public class GameRunner
 		{
 			e.printStackTrace();
 		}
+		final String tripleaJarName = "triplea.jar!";
+		final String tripleaJarNameWithEngineVersion = getTripleaJarWithEngineVersionStringPath();
 		// we are in a jar file
-		if (fileName.indexOf("triplea.jar!") != -1)
+		if (fileName.indexOf(tripleaJarName) != -1)
 		{
-			final String subString = fileName.substring("file:/".length() - (isWindows() ? 0 : 1), fileName.indexOf("triplea.jar!") - 1);
+			final String subString = fileName.substring("file:/".length() - (isWindows() ? 0 : 1), fileName.indexOf(tripleaJarName) - 1);
+			final File f = new File(subString).getParentFile();
+			if (!f.exists())
+			{
+				throw new IllegalStateException("File not found:" + f);
+			}
+			return f;
+		}
+		else if (fileName.indexOf(tripleaJarNameWithEngineVersion) != -1)
+		{
+			final String subString = fileName.substring("file:/".length() - (isWindows() ? 0 : 1), fileName.indexOf(tripleaJarNameWithEngineVersion) - 1);
 			final File f = new File(subString).getParentFile();
 			if (!f.exists())
 			{

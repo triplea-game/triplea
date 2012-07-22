@@ -227,6 +227,17 @@ public class LobbyGamePanel extends JPanel
 		exec(commands);
 	}
 	
+	public static void startGame(final String savegamePath, final String classpath)
+	{
+		final List<String> commands = new ArrayList<String>();
+		populateBasicJavaArgs(commands, classpath);
+		commands.add("-D" + GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
+		final String javaClass = "games.strategy.engine.framework.GameRunner";
+		commands.add(javaClass);
+		// System.out.println("Commands: " + commands);
+		exec(commands);
+	}
+	
 	private void bootGame()
 	{
 		final int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to disconnect the selected game?", "Remove Game From Lobby", JOptionPane.OK_CANCEL_OPTION);
@@ -244,7 +255,7 @@ public class LobbyGamePanel extends JPanel
 		JOptionPane.showMessageDialog(null, "The game you selected has been disconnected from the lobby.");
 	}
 	
-	private void exec(final List<String> commands)
+	private static void exec(final List<String> commands)
 	{
 		final ProcessBuilder builder = new ProcessBuilder(commands);
 		// merge the streams, so we only have to start one reader thread
@@ -281,12 +292,17 @@ public class LobbyGamePanel extends JPanel
 	
 	private static void populateBasicJavaArgs(final List<String> commands)
 	{
+		populateBasicJavaArgs(commands, System.getProperty("java.class.path"));
+	}
+	
+	private static void populateBasicJavaArgs(final List<String> commands, final String classpath)
+	{
 		final String javaCommand = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 		commands.add(javaCommand);
 		commands.add("-classpath");
-		commands.add(System.getProperty("java.class.path"));
+		commands.add(classpath);
 		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to add 64m to that to compensate
-		final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.1) + 67108864);
+		final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
 		commands.add("-Xmx" + maxMemory);
 		// commands.add("-Xmx512m"); //TODO: this may need updating 640m
 		// preserve noddraw to fix 1742775

@@ -30,7 +30,7 @@ public class GameDataUtils
 			sink.close();
 			final ByteArrayInputStream source = new ByteArrayInputStream(sink.toByteArray());
 			sink = null;
-			return manager.loadGame(source);
+			return manager.loadGame(source, null);
 		} catch (final IOException ex)
 		{
 			ex.printStackTrace();

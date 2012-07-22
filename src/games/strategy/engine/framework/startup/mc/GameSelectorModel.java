@@ -61,6 +61,10 @@ public class GameSelectorModel extends Observable
 	
 	public void load(final NewGameChooserEntry entry)
 	{
+		// we don't want to load anything if we are an older jar, because otherwise the user may get confused on which version of triplea they are using right now,
+		// and then start a game with an older jar when they should be using the newest jar (we want user to be using the normal default [newest] triplea.jar for new games)
+		if (GameRunner.areWeOldExtraJar())
+			return;
 		m_fileName = entry.getLocation();
 		setGameData(entry.getGameData());
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
@@ -102,8 +106,11 @@ public class GameSelectorModel extends Observable
 			{
 				newData = manager.loadGame(file);
 			}
-			m_fileName = file.getName();
-			setGameData(newData);
+			if (newData != null)
+			{
+				m_fileName = file.getName();
+				setGameData(newData);
+			}
 		} catch (final EngineVersionException e)
 		{
 			System.out.println(e.getMessage());

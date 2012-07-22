@@ -92,7 +92,7 @@ public class GameRunner2
 			String value;
 			if (args[0].startsWith(TRIPLEA_GAME_PROPERTY))
 			{
-				value = getValue(TRIPLEA_GAME_PROPERTY);
+				value = getValue(args[0]);
 			}
 			else
 			{

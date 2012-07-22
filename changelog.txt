@@ -1,4 +1,10 @@
 Changes for 1.6.1.1
+* Including old 1.5.2.1 jar file with slight modifications, so that 1.6.1.1 can play 1.5.2.1 savegames by simply running them with 1.5.2.1, but as a separate application. (veqryn)
+
+* Creating framework for loading older savegames using older included jar files. (veqryn)
+
+* Fixing some errors with command line options, and abstracting some game running utilities. (veqryn)
+
 * Fixing display error in old paratroopers tech that caused the land unit to appear to die with the air unit even after it has landed and survived any aa fire. (veqryn)
 
 * Making sure technology still has an effect even if it is not in a player's tech frontier. (veqryn)

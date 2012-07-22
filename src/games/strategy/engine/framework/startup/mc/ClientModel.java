@@ -297,7 +297,7 @@ public class ClientModel implements IMessengerErrorListener
 		final GameData data;
 		try
 		{
-			data = new GameDataManager().loadGame(new ByteArrayInputStream(gameData));
+			data = new GameDataManager().loadGame(new ByteArrayInputStream(gameData), null);
 		} catch (final IOException ex)
 		{
 			ex.printStackTrace();

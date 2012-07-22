@@ -3,6 +3,7 @@ package games.strategy.engine.framework;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
+import games.strategy.engine.lobby.client.ui.LobbyGamePanel;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.Version;
@@ -49,7 +50,15 @@ public class GameDataManager
 		try
 		{
 			input = new BufferedInputStream(new FileInputStream(savedGameFile));
-			return loadGame(input);
+			String path;
+			try
+			{
+				path = savedGameFile.getCanonicalPath();
+			} catch (final IOException e)
+			{
+				path = savedGameFile.getPath();
+			}
+			return loadGame(input, path);
 		} finally
 		{
 			try
@@ -62,18 +71,34 @@ public class GameDataManager
 		}
 	}
 	
-	public GameData loadGame(final InputStream input) throws IOException
+	public GameData loadGame(final InputStream input, final String path) throws IOException
 	{
-		return loadGame(new ObjectInputStream(new GZIPInputStream(input)));
+		return loadGame(new ObjectInputStream(new GZIPInputStream(input)), path);
 	}
 	
-	public GameData loadGame(final ObjectInputStream input) throws IOException
+	public GameData loadGame(final ObjectInputStream input, final String savegamePath) throws IOException
 	{
 		try
 		{
 			final Version readVersion = (Version) input.readObject();
 			if (!readVersion.equals(EngineVersion.VERSION))
-				throw new IOException("Incompatible engine versions. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion);
+			{
+				if (savegamePath == null || !readVersion.equals(new Version(1, 5, 2, 1)))
+					throw new IOException("Incompatible engine versions. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion);
+				
+				// so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was used for this savegame, and if so try to run it
+				try
+				{
+					// System.out.println("System classpath: " + System.getProperty("java.class.path"));
+					// TODO: expand with a dialog, and for all old jars
+					final String newClassPath = new File(GameRunner.getRootFolder(), "old/triplea_1_5_2_1.jar").getCanonicalPath();
+					LobbyGamePanel.startGame(savegamePath, newClassPath);
+				} catch (final IOException e)
+				{
+					throw new IOException("Incompatible engine versions. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion);
+				}
+				return null;
+			}
 			final GameData data = (GameData) input.readObject();
 			updateDataToBeCompatibleWithNewEngine(readVersion, data); // TODO: expand this functionality (and keep it updated)
 			loadDelegates(input, data);
@@ -85,6 +110,17 @@ public class GameDataManager
 		}
 	}
 	
+	/**
+	 * Use this to keep compatibility between savegames when it is easy to do so.
+	 * When it is not easy to do so, just make sure to include the last release's .jar file in the "old" folder for triplea.
+	 * 
+	 * FYI: Engine version numbers work like this with regards to savegames:
+	 * Any changes to the first 3 digits means that the savegame is not compatible between different engines.
+	 * While any change only to the 4th (last) digit means that the savegame must be compatible between different engines.
+	 * 
+	 * @param originalEngineVersion
+	 * @param data
+	 */
 	private void updateDataToBeCompatibleWithNewEngine(final Version originalEngineVersion, final GameData data)
 	{
 		final Version v1610 = new Version(1, 6, 1, 0);

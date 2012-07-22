@@ -65,7 +65,7 @@ public class GameDataManagerTest extends TestCase
 		final GameDataManager m = new GameDataManager();
 		final ByteArrayOutputStream sink = new ByteArrayOutputStream();
 		m.saveGame(sink, data);
-		final GameData loaded = m.loadGame(new ByteArrayInputStream(sink.toByteArray()));
+		final GameData loaded = m.loadGame(new ByteArrayInputStream(sink.toByteArray()), null);
 		assertEquals(loaded.getProperties().get(GameData.GAME_UUID), data.getProperties().get(GameData.GAME_UUID));
 	}
 }

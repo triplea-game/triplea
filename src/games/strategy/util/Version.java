@@ -176,6 +176,11 @@ public class Version implements Serializable, Comparable
 		return compareTo(other, ignoreMicro) > 0;
 	}
 	
+	public String toStringFull(final String seperator)
+	{
+		return m_major + seperator + m_minor + seperator + m_point + seperator + m_micro;
+	}
+	
 	@Override
 	public String toString()
 	{
