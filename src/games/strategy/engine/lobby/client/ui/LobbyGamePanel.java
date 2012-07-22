@@ -222,6 +222,9 @@ public class LobbyGamePanel extends JPanel
 		commands.add("-D" + GameRunner2.LOBBY_GAME_HOSTED_BY + "=" + m_messengers.getMessenger().getLocalNode().getName());
 		if (options.getPassword() != null && options.getPassword().length() > 0)
 			commands.add("-D" + GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY + "=" + options.getPassword());
+		final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+		if (fileName.length() > 0)
+			commands.add("-D" + GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + fileName);
 		final String javaClass = "games.strategy.engine.framework.GameRunner";
 		commands.add(javaClass);
 		exec(commands);

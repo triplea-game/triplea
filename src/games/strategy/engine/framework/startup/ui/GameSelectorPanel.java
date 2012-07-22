@@ -270,6 +270,14 @@ public class GameSelectorPanel extends JPanel implements Observer
 			m_gameOptions.setEnabled(true);
 		else
 			m_gameOptions.setEnabled(false);
+		// we don't want them starting new games if we are an old jar
+		if (GameRunner.areWeOldExtraJar())
+		{
+			m_loadNewGame.setEnabled(false);
+			m_loadSavedGame.setEnabled(false);
+			m_loadNewGame.setToolTipText("This is disabled on older engine jars, please start new games with the latest version of TripleA.");
+			m_loadSavedGame.setToolTipText("This is disabled on older engine jars, please open savegames from the latest version of TripleA.");
+		}
 	}
 	
 	public void update(final Observable o, final Object arg)

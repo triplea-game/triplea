@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Created dialog to ask user if they want to load an old savegame.  Fixed framework so that it can load any old savegame if it can find an old engine to match. And added 1.6.0.0 jar engine. (veqryn)
+
 * Including old 1.5.2.1 jar file with slight modifications, so that 1.6.1.1 can play 1.5.2.1 savegames by simply running them with 1.5.2.1, but as a separate application. (veqryn)
 
 * Creating framework for loading older savegames using older included jar files. (veqryn)

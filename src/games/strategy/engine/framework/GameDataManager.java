@@ -20,9 +20,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import javax.swing.JOptionPane;
 
 /**
  * <p>
@@ -83,19 +86,48 @@ public class GameDataManager
 			final Version readVersion = (Version) input.readObject();
 			if (!readVersion.equals(EngineVersion.VERSION))
 			{
-				if (savegamePath == null || !readVersion.equals(new Version(1, 5, 2, 1)))
-					throw new IOException("Incompatible engine versions. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion);
+				final String error = "Incompatible engine versions. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion;
+				if (savegamePath == null)
+					throw new IOException(error);
 				
 				// so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was used for this savegame, and if so try to run it
 				try
 				{
 					// System.out.println("System classpath: " + System.getProperty("java.class.path"));
-					// TODO: expand with a dialog, and for all old jars
-					final String newClassPath = new File(GameRunner.getRootFolder(), "old/triplea_1_5_2_1.jar").getCanonicalPath();
+					final String jarName = "triplea_" + readVersion.toStringFull("_") + ".jar";
+					final File oldJarsFolder = new File(GameRunner.getRootFolder(), "old/");
+					final File[] files = oldJarsFolder.listFiles();
+					if (files == null)
+						throw new IOException(error);
+					File ourOldJar = null;
+					for (final File f : Arrays.asList(files))
+					{
+						if (f.getCanonicalPath().indexOf(jarName) != -1)
+						{
+							ourOldJar = f;
+							break;
+						}
+					}
+					if (ourOldJar == null)
+						throw new IOException(error);
+					final String newClassPath = ourOldJar.getCanonicalPath();
+					// ask user if we really want to do this?
+					final String messageString = "<html>This TripleA engine is version "
+								+ EngineVersion.VERSION.toString()
+								+ " and you are trying to open a savegame made with version "
+								+ readVersion.toString()
+								+ "<br>However, this TripleA can not open any savegame made by any engine other than engines with the same first three version numbers as it (x_x_x_x)."
+								+ "<br><br>TripleA now comes with older engines included with it, and has found the engine to run this savegame. This is a new feature and is in 'beta' stage."
+								+ "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will only be able to play this savegame."
+								+ "<br>Your current instance will not be closed. Please report any bugs or issues."
+								+ "<br><br>Do you wish to continue?</html>";
+					final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to open old Save Game?", JOptionPane.YES_NO_OPTION);
+					if (answer != JOptionPane.YES_OPTION)
+						return null;
 					LobbyGamePanel.startGame(savegamePath, newClassPath);
 				} catch (final IOException e)
 				{
-					throw new IOException("Incompatible engine versions. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion);
+					throw new IOException(error);
 				}
 				return null;
 			}
