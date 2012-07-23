@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Fixed issue with moving of old fighters to a new carrier by making sure it only used the producer territory. (veqryn)
+
 * Updating build to include old jars. Updating framework to ignore micro version numbers, so that 1.5.2.1 will also load 1.5.2.0 savegames, etc. (veqryn)
 
 * Created dialog to ask user if they want to load an old savegame.  Fixed framework so that it can load any old savegame if it can find an old engine to match. And added 1.6.0.0 jar engine. (veqryn)

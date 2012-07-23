@@ -304,7 +304,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(placeableUnits, Matches.UnitIsInfrastructure);
 		change.add(DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, player));
 		// can we move planes to land there
-		final String movedAirTranscriptTextForHistory = moveAirOntoNewCarriers(at, placeableUnits, player, change);
+		final String movedAirTranscriptTextForHistory = moveAirOntoNewCarriers(at, producer, placeableUnits, player, change);
 		
 		final Change remove = ChangeFactory.removeUnits(player, placeableUnits);
 		final Change place = ChangeFactory.addUnits(at, placeableUnits);
@@ -469,10 +469,10 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	}
 	
 	// TODO Here's the spot for special air placement rules
-	private String moveAirOntoNewCarriers(final Territory territory, final Collection<Unit> units, final PlayerID player, final CompositeChange placeChange)
+	private String moveAirOntoNewCarriers(final Territory at, final Territory producer, final Collection<Unit> units, final PlayerID player, final CompositeChange placeChange)
 	{
 		// not water, dont bother
-		if (!territory.isWater())
+		if (!at.isWater())
 			return null;
 		// not enabled
 		// if (!canProduceFightersOnCarriers())
@@ -481,15 +481,38 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (Match.noneMatch(units, Matches.UnitIsCarrier))
 			return null;
 		// do we have any spare carrier capacity
-		int capacity = AirMovementValidator.carrierCapacity(units, territory);
+		int capacity = AirMovementValidator.carrierCapacity(units, at);
 		// subtract fighters that have already been produced with this carrier
 		// this turn.
 		capacity -= AirMovementValidator.carrierCost(units);
 		if (capacity <= 0)
 			return null;
-		final Collection<Territory> neighbors = getData().getMap().getNeighbors(territory, 1);
-		final Iterator<Territory> iter = neighbors.iterator();
+		if (!Matches.TerritoryIsLand.match(producer))
+			return null;
+		if (!producer.getUnits().someMatch(Matches.UnitCanProduceUnits))
+			return null;
 		final CompositeMatch<Unit> ownedFighters = new CompositeMatchAnd<Unit>(Matches.UnitCanLandOnCarrier, Matches.unitIsOwnedBy(player));
+		if (!producer.getUnits().someMatch(ownedFighters))
+			return null;
+		if (wasConquered(producer))
+			return null;
+		if (Match.someMatch(getAlreadyProduced(producer), Matches.UnitCanProduceUnits))
+			return null;
+		final List<Unit> fighters = producer.getUnits().getMatches(ownedFighters);
+		while (fighters.size() > 0 && AirMovementValidator.carrierCost(fighters) > capacity)
+		{
+			fighters.remove(0);
+		}
+		if (fighters.size() == 0)
+			return null;
+		final Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, producer);
+		final Change change = ChangeFactory.moveUnits(producer, at, movedFighters);
+		placeChange.add(change);
+		final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + producer.getName() + " to " + at.getName();
+		return transcriptText;
+		/*
+		final Collection<Territory> neighbors = getData().getMap().getNeighbors(at, 1);
+		final Iterator<Territory> iter = neighbors.iterator();
 		while (iter.hasNext())
 		{
 			final Territory neighbor = iter.next();
@@ -515,16 +538,16 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			if (fighters.size() == 0)
 				continue;
 			final Collection<Unit> movedFighters = getRemotePlayer().getNumberOfFightersToMoveToNewCarrier(fighters, neighbor);
-			final Change change = ChangeFactory.moveUnits(neighbor, territory, movedFighters);
+			final Change change = ChangeFactory.moveUnits(neighbor, at, movedFighters);
 			placeChange.add(change);
-			final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + neighbor.getName() + " to " + territory.getName();
+			final String transcriptText = MyFormatter.unitsToTextNoOwner(movedFighters) + " moved from " + neighbor.getName() + " to " + at.getName();
 			// only allow 1 movement
 			// technically only the territory that produced the
 			// carrier should be able to move fighters to the new
 			// territory
 			return transcriptText;
 		}
-		return null;
+		return null;*/
 	}
 	
 	/**
