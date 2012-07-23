@@ -86,7 +86,7 @@ public class GameDataManager
 			final Version readVersion = (Version) input.readObject();
 			if (!readVersion.equals(EngineVersion.VERSION))
 			{
-				final String error = "Incompatible engine versions. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion;
+				final String error = "Incompatible engine versions, and no old engine found. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion;
 				if (savegamePath == null)
 					throw new IOException(error);
 				
@@ -94,7 +94,8 @@ public class GameDataManager
 				try
 				{
 					// System.out.println("System classpath: " + System.getProperty("java.class.path"));
-					final String jarName = "triplea_" + readVersion.toStringFull("_") + ".jar";
+					// we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0 savegames.
+					final String jarName = "triplea_" + readVersion.toStringFull("_", true);
 					final File oldJarsFolder = new File(GameRunner.getRootFolder(), "old/");
 					final File[] files = oldJarsFolder.listFiles();
 					if (files == null)
@@ -102,7 +103,8 @@ public class GameDataManager
 					File ourOldJar = null;
 					for (final File f : Arrays.asList(files))
 					{
-						if (f.getCanonicalPath().indexOf(jarName) != -1)
+						final String jarPath = f.getCanonicalPath();
+						if (jarPath.indexOf(jarName) != -1 && jarPath.indexOf(".jar") != -1)
 						{
 							ourOldJar = f;
 							break;

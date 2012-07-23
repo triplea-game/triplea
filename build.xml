@@ -275,6 +275,10 @@
 			<arg line="-r maps ${app.file}/Contents/Resources/" />
 		</exec>
 
+		<exec executable="cp">
+			<arg line="-r old ${app.file}/Contents/Resources/" />
+		</exec>
+
 		<exec executable="/Developer/Tools/SetFile">
 			<arg line="-a B ${app.file}" />
 		</exec>
@@ -492,6 +496,7 @@
 						<include name="license/**" />
 						<include name="maps/**" />
 						<include name="sounds/**" />
+						<include name="old/**" />
 					</fileset>
 				</copy>
 			</resources-copy>
@@ -576,6 +581,10 @@
 
 			<zipfileset dir="maps" prefix="${zip.prefix}/maps/">
 				<include name="**/*.*" />
+			</zipfileset>
+
+			<zipfileset dir="old" prefix="${zip.prefix}/old/">
+				<include name="**/*.jar" />
 			</zipfileset>
 
 			<zipfileset dir="${basedir}" prefix="${zip.prefix}/">
@@ -699,6 +708,10 @@
 			</zipfileset>
 
 			<zipfileset dir="maps" prefix="${zip.prefix}/maps/">
+				<include name="**/*.*" />
+			</zipfileset>
+
+			<zipfileset dir="old" prefix="${zip.prefix}/old/">
 				<include name="**/*.*" />
 			</zipfileset>
 		</zip>
