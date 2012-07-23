@@ -688,7 +688,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 					// taUnit.setUnitDamage(totalDamage);
 					bridge.addChange(ChangeFactory.unitsHit(hits));
 					bridge.addChange(change);
-					bridge.getHistoryWriter().startEvent("Bombing raid in " + m_battleSite.getName() + " causes: " + currentUnitCost + " damage to unit: " + current.getType().getName());
+					bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " causes: " + currentUnitCost + " damage to unit: " + current.getType().getName());
 					getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " causes: " + currentUnitCost + " damage to unit: " + current.getType().getName(),
 								"Bombing raid causes " + currentUnitCost + " damage to " + current.getType().getName());
 				}
@@ -717,7 +717,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 				// decrease the unitProduction capacity of the territory
 				final Change change = ChangeFactory.attachmentPropertyChange(ta, newProduction.toString(), "unitProduction");
 				bridge.addChange(change);
-				bridge.getHistoryWriter().startEvent("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
+				bridge.getHistoryWriter().addChildToEvent("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
 				getRemote(bridge).reportMessage("Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.",
 							"Bombing raid in " + m_battleSite.getName() + " costs: " + cost + " production.");
 			}

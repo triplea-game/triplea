@@ -286,7 +286,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 			}
 			if (!changeAttacker.isEmpty())
 			{
-				bridge.getHistoryWriter().startEvent(m_attacker.getName() + " attacks with " + m_attackingUnits.size() + " units heading to " + m_battleSite.getName(), m_attackingUnits);
+				bridge.getHistoryWriter().addChildToEvent(m_attacker.getName() + " attacks with " + m_attackingUnits.size() + " units heading to " + m_battleSite.getName(), m_attackingUnits);
 				bridge.addChange(changeAttacker);
 			}
 			final CompositeChange changeDefender = new CompositeChange();
@@ -296,7 +296,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 			}
 			if (!changeDefender.isEmpty())
 			{
-				bridge.getHistoryWriter().startEvent(m_defender.getName() + " launches " + m_defendingUnits.size() + " interceptors out of " + m_battleSite.getName(), m_defendingUnits);
+				bridge.getHistoryWriter().addChildToEvent(m_defender.getName() + " launches " + m_defendingUnits.size() + " interceptors out of " + m_battleSite.getName(), m_defendingUnits);
 				bridge.addChange(changeDefender);
 			}
 		}
