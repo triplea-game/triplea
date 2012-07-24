@@ -234,7 +234,8 @@ public class LobbyGamePanel extends JPanel
 	{
 		final List<String> commands = new ArrayList<String>();
 		populateBasicJavaArgs(commands, classpath);
-		commands.add("-D" + GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
+		if (savegamePath != null && savegamePath.length() > 0)
+			commands.add("-D" + GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
 		final String javaClass = "games.strategy.engine.framework.GameRunner";
 		commands.add(javaClass);
 		// System.out.println("Commands: " + commands);
@@ -303,7 +304,10 @@ public class LobbyGamePanel extends JPanel
 		final String javaCommand = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 		commands.add(javaCommand);
 		commands.add("-classpath");
-		commands.add(classpath);
+		if (classpath != null && classpath.length() > 0)
+			commands.add(classpath);
+		else
+			commands.add(System.getProperty("java.class.path"));
 		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to add 64m to that to compensate
 		final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
 		commands.add("-Xmx" + maxMemory);
