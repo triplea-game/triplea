@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Fixed string index out of bounds error with notifications, and also forced them to shorten for the history event record, to 150 characters if needed by removing all html code then truncating the string. (veqryn)
+
 * Fixed issue with moving of old fighters to a new carrier by making sure it only used the producer territory. (veqryn)
 
 * Updating build to include old jars. Updating framework to ignore micro version numbers, so that 1.5.2.1 will also load 1.5.2.0 savegames, etc. (veqryn)

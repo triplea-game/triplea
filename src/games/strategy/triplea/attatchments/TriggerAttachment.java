@@ -1700,7 +1700,10 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			String messageForRecord = message;
 			if (messageForRecord.length() > 150)
 			{
-				messageForRecord = messageForRecord.replaceAll("\\<.*?>", "").substring(0, 150) + "....";
+				messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
+				messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
+				if (messageForRecord.length() > 155)
+					messageForRecord = messageForRecord.substring(0, 150) + "....";
 			}
 			aBridge.getHistoryWriter().startEvent("Note to player " + aBridge.getPlayerID().getName() + ": " + messageForRecord);
 			((ITripleaPlayer) aBridge.getRemote(aBridge.getPlayerID())).reportMessage(("<html>" + message + "</html>"), "Notification");
@@ -2536,9 +2539,17 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 			if (t.getVictory() == null || t.getPlayers() == null)
 				continue;
 			final String victoryMessage = NotificationMessages.getInstance().getMessage(t.getVictory());
+			String messageForRecord = victoryMessage;
+			if (messageForRecord.length() > 150)
+			{
+				messageForRecord = messageForRecord.replaceAll("\\<br.*?>", " ");
+				messageForRecord = messageForRecord.replaceAll("\\<.*?>", "");
+				if (messageForRecord.length() > 155)
+					messageForRecord = messageForRecord.substring(0, 150) + "....";
+			}
 			try
 			{
-				aBridge.getHistoryWriter().startEvent("Players: " + MyFormatter.defaultNamedToString(t.getPlayers()) + " have just won the game, with this victory: " + victoryMessage);
+				aBridge.getHistoryWriter().startEvent("Players: " + MyFormatter.defaultNamedToString(t.getPlayers()) + " have just won the game, with this victory: " + messageForRecord);
 				final IDelegate delegateEndRound = data.getDelegateList().getDelegate("endRound");
 				((EndRoundDelegate) delegateEndRound).signalGameOver(("<html>" + victoryMessage + "</html>"), t.getPlayers(), aBridge);
 			} catch (final Exception e)
