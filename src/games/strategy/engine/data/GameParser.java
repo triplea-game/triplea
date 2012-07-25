@@ -236,6 +236,10 @@ public class GameParser
 		{
 			validateAttachments(r);
 		}
+		for (final TechAdvance r : data.getTechnologyFrontier().getTechs())
+		{
+			validateAttachments(r);
+		}
 		// if relationships are used, every player should have a relationship with every other player
 		validateRelationships();
 	}

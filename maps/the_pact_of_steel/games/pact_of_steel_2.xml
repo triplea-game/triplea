@@ -4243,6 +4243,7 @@
 				
 				
 <!-- Tech Ability Attachment -->
+	<!-- Custom (Generic) Techs that name a hard coded tech (ie: we are changing the name of a hardcoded tech) may NOT have a tech ability attachment.  If you want a tech ability attachment for your tech, either use a custom (generic) tech, or do not rename a hard coded tech. -->
 	<!-- the following options are allowed for "techAbilityAttachment"
 			attackBonus									value:	gives some amount of attack to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.
 			defenseBonus								value:	gives some amount of defense to these units.  must be an integer, followed by a colon ":", followed by the name of the unit.  Effects from multiple techs are added together.

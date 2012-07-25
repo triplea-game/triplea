@@ -42,6 +42,17 @@ public class TechAbilityAttachment extends DefaultAttachment
 	 */
 	public static TechAbilityAttachment get(final TechAdvance type)
 	{
+		if (type instanceof GenericTechAdvance)
+		{
+			// generic techs can name a hardcoded tech, therefore if it exists we should use the hard coded tech's attachment.
+			// (if the map maker doesn't want to use the hardcoded tech's attachment, they should not name a hardcoded tech)
+			final TechAdvance hardCodedAdvance = ((GenericTechAdvance) type).getAdvance();
+			if (hardCodedAdvance != null)
+			{
+				final TechAbilityAttachment hardCodedTechAttachment = (TechAbilityAttachment) hardCodedAdvance.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
+				return hardCodedTechAttachment;
+			}
+		}
 		final TechAbilityAttachment rVal = (TechAbilityAttachment) type.getAttachment(Constants.TECH_ABILITY_ATTACHMENT_NAME);
 		return rVal;
 	}
@@ -1551,5 +1562,14 @@ public class TechAbilityAttachment extends DefaultAttachment
 	@Override
 	public void validate(final GameData data) throws GameParseException
 	{
+		final TechAdvance ta = (TechAdvance) this.getAttachedTo();
+		if (ta instanceof GenericTechAdvance)
+		{
+			final TechAdvance hardCodedAdvance = ((GenericTechAdvance) ta).getAdvance();
+			if (hardCodedAdvance != null)
+			{
+				throw new GameParseException("A custom Generic Tech Advance naming a hardcoded tech, may not have a Tech Ability Attachment!" + this.thisErrorMsg());
+			}
+		}
 	}
 }

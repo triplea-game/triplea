@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Fixing bug preventing renamed hardcoded techs from working properly. (veqryn)
+
 * Fixing some errors with Sliding Tiles game, Tic Tac Toe, and Kings Table. (veqryn)
 
 * Cleanup and abstraction of some AI classes and constructors and superclasses. (veqryn)
