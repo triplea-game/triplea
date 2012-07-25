@@ -87,6 +87,7 @@ public class EndTurnDelegate extends BaseDelegate
 		final ITicTacToeDisplay display = (ITicTacToeDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 		display.setGameOver();
+		m_bridge.stopGameSequence();
 	}
 	
 	/**

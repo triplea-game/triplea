@@ -44,13 +44,13 @@ public class EndTurnDelegate extends BaseDelegate
 		if (gameOver(getData().getMap()))
 		{
 			signalGameOver("Board solved!");
-			try
+			/*try
 			{
 				m_waiting = new CountDownLatch(1);
 				m_waiting.await();
 			} catch (final InterruptedException e)
 			{
-			}
+			}*/
 		}
 	}
 	
@@ -131,6 +131,7 @@ public class EndTurnDelegate extends BaseDelegate
 		final INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 		display.setGameOver();
+		m_bridge.stopGameSequence();
 	}
 	
 	/**

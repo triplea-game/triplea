@@ -47,7 +47,6 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 		{
 			// CountDownLatch waitToLeaveGame = new CountDownLatch(1);
 			signalGameOver(winner.getName() + " wins!");// , waitToLeaveGame);
-			bridge.stopGameSequence();
 			// gameOver = true;
 			/*
 			try {
@@ -102,6 +101,7 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 		final IKingsTableDisplay display = (IKingsTableDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(status);
 		display.setGameOver();
+		m_bridge.stopGameSequence();
 	}
 	
 	/**

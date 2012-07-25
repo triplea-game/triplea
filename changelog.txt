@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Fixing some errors with Sliding Tiles game, Tic Tac Toe, and Kings Table. (veqryn)
+
 * Cleanup and abstraction of some AI classes and constructors and superclasses. (veqryn)
 
 * Fixed string index out of bounds error with notifications, and also forced them to shorten for the history event record, to 150 characters if needed by removing all html code then truncating the string. (veqryn)

@@ -9,7 +9,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.message.IRemote;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -282,12 +281,11 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	public final void start(final String name)
 	{
 		final PlayerID id = getPlayerID();
-		final IRemote iRemote = getPlayerBridge().getRemote();
 		if (name.endsWith("Bid"))
 		{
 			final String propertyName = id.getName() + " bid";
 			final int bidAmount = getGameData().getProperties().get(propertyName, 0);
-			purchase(true, bidAmount, (IPurchaseDelegate) iRemote, getGameData(), id);
+			purchase(true, bidAmount, (IPurchaseDelegate) getPlayerBridge().getRemote(), getGameData(), id);
 		}
 		else if (name.endsWith("Tech"))
 		{
@@ -295,13 +293,13 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 			{
 				return;
 			}
-			tech((ITechDelegate) iRemote, getGameData(), id);
+			tech((ITechDelegate) getPlayerBridge().getRemote(), getGameData(), id);
 		}
 		else if (name.endsWith("Purchase"))
 		{
 			final Resource PUs = getGameData().getResourceList().getResource(Constants.PUS);
 			final int leftToSpend = id.getResources().getQuantity(PUs);
-			purchase(false, leftToSpend, (IPurchaseDelegate) iRemote, getGameData(), id);
+			purchase(false, leftToSpend, (IPurchaseDelegate) getPlayerBridge().getRemote(), getGameData(), id);
 		}
 		else if (name.endsWith("Move"))
 		{
@@ -313,14 +311,14 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 				// airborneMove(); // TODO: implement me
 			}
 			else
-				move(name.endsWith("NonCombatMove"), (IMoveDelegate) iRemote, getGameData(), id);
+				move(name.endsWith("NonCombatMove"), (IMoveDelegate) getPlayerBridge().getRemote(), getGameData(), id);
 		}
 		else if (name.endsWith("Battle"))
-			battle((IBattleDelegate) iRemote, getGameData(), id);
+			battle((IBattleDelegate) getPlayerBridge().getRemote(), getGameData(), id);
 		else if (name.endsWith("Politics"))
 			getPoliticalActions();
 		else if (name.endsWith("Place"))
-			place(name.indexOf("Bid") != -1, (IAbstractPlaceDelegate) iRemote, getGameData(), id);
+			place(name.indexOf("Bid") != -1, (IAbstractPlaceDelegate) getPlayerBridge().getRemote(), getGameData(), id);
 		else if (name.endsWith("EndTurn"))
 		{
 		}
