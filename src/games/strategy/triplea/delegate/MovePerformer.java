@@ -177,6 +177,15 @@ public class MovePerformer implements Serializable
 				final Collection<Unit> arrived = Collections.unmodifiableList(Util.intersection(units, arrivingUnits[0]));
 				final Collection<Unit> arrivedCopyForBattles = new ArrayList<Unit>(arrived);
 				final Map<Unit, Unit> transporting = MoveDelegate.mapTransports(route, arrived, transportsToLoad);
+				// If we have paratrooper land units being carried by air units, they should be dropped off in the last territory. This means they are still dependent during the middle steps of the route.
+				final Collection<Unit> dependentOnSomethingTilTheEndOfRoute = new ArrayList<Unit>();
+				final Collection<Unit> airTransports = Match.getMatches(arrived, Matches.UnitIsAirTransport);
+				final Collection<Unit> paratroops = Match.getMatches(arrived, Matches.UnitIsAirTransportable);
+				if (!airTransports.isEmpty() && !paratroops.isEmpty())
+				{
+					final Map<Unit, Unit> transportingAir = MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, id);
+					dependentOnSomethingTilTheEndOfRoute.addAll(transportingAir.keySet());
+				}
 				markTransportsMovement(arrived, transporting, route);
 				if (route.someMatch(mustFightThrough) && arrived.size() != 0)
 				{

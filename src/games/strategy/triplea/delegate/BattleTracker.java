@@ -380,6 +380,9 @@ public class BattleTracker implements java.io.Serializable
 	private void addEmptyBattle(final Route route, final Collection<Unit> units, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker)
 	{
 		final GameData data = bridge.getData();
+		final Collection<Unit> canConquer = Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data).invert());
+		if (Match.noneMatch(canConquer, Matches.UnitIsNotAir))
+			return;
 		final boolean scramblingEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data);
 		final CompositeMatch<Territory> conquerable = new CompositeMatchAnd<Territory>();
 		conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));
