@@ -81,7 +81,7 @@ abstract public class AbstractGame implements IGame
 			m_gamePlayers.put(player, gp);
 			final IPlayerBridge bridge = new DefaultPlayerBridge(this);
 			gp.initialize(bridge, player);
-			final RemoteName descriptor = ServerGame.getRemoteName(gp.getID(), m_data);
+			final RemoteName descriptor = ServerGame.getRemoteName(gp.getPlayerID(), m_data);
 			m_remoteMessenger.registerRemote(gp, descriptor);
 		}
 	}

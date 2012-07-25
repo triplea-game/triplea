@@ -60,7 +60,7 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 	{
 	}
 	
-	public PlayerID getID()
+	public PlayerID getPlayerID()
 	{
 		return null;
 	}

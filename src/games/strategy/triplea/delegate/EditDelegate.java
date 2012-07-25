@@ -77,7 +77,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 	private String checkPlayerID()
 	{
 		final ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
-		if (!m_bridge.getPlayerID().equals(remotePlayer.getID()))
+		if (!m_bridge.getPlayerID().equals(remotePlayer.getPlayerID()))
 			return "Edit actions can only be performed during players turn";
 		return null;
 	}
@@ -95,7 +95,7 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 	public String setEditMode(final boolean editMode)
 	{
 		final ITripleaPlayer remotePlayer = (ITripleaPlayer) m_bridge.getRemote();
-		if (!m_bridge.getPlayerID().equals(remotePlayer.getID()))
+		if (!m_bridge.getPlayerID().equals(remotePlayer.getPlayerID()))
 			return "Edit Mode can only be toggled during players turn";
 		logEvent((editMode ? EDITMODE_ON : EDITMODE_OFF), null);
 		m_bridge.addChange(ChangeFactory.setProperty(Constants.EDIT_MODE, new Boolean(editMode), getData()));

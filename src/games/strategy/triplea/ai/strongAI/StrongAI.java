@@ -9960,7 +9960,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		// boolean subsCanSubmerge = games.strategy.triplea.Properties.getSubmersible_Subs(data);
 		if (battleTerr == null)
 			return null;
-		final PlayerID player = getWhoAmI();
+		final PlayerID player = getPlayerID();
 		// List<PlayerID> ePlayers = SUtils.getEnemyPlayers(data, player);
 		final List<Unit> myUnits = battleTerr.getUnits().getMatches(Matches.unitIsOwnedBy(player));
 		final List<Unit> defendingUnits = battleTerr.getUnits().getMatches(Matches.enemyUnit(player, data));

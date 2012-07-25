@@ -46,11 +46,11 @@ public class NPuzzlePlayer extends AbstractHumanPlayer<NPuzzleFrame> implements 
 	private void play()
 	{
 		// Get the relevant delegate
-		final IPlayDelegate playDel = (IPlayDelegate) m_bridge.getRemote();
+		final IPlayDelegate playDel = (IPlayDelegate) getPlayerBridge().getRemote();
 		PlayData play = null;
 		while (play == null)
 		{
-			play = m_ui.waitForPlay(m_id, m_bridge);
+			play = m_ui.waitForPlay(getPlayerID(), getPlayerBridge());
 			if (play == null)
 			{
 				// If play==null, the play was interrupted,

@@ -395,15 +395,15 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		// PossibleTerritories will be empty if subs move in our sub ter, and our sub is 'attacking'
 		if (battleTer == null || possibleTerritories.isEmpty())
 			return null; // Don't submerge
-		final List<Unit> attackers = battleTer.getUnits().getMatches(Matches.unitIsOwnedBy(getID()));
-		final List<Unit> defenders = battleTer.getUnits().getMatches(Matches.unitIsEnemyOf(data, getID()));
+		final List<Unit> attackers = battleTer.getUnits().getMatches(Matches.unitIsOwnedBy(getPlayerID()));
+		final List<Unit> defenders = battleTer.getUnits().getMatches(Matches.unitIsEnemyOf(data, getPlayerID()));
 		final AggregateResults simulatedAttack = DUtils.GetBattleResults(attackers, defenders, battleTer, data, DSettings.LoadSettings().CA_Retreat_determinesIfAIShouldRetreat, true);
 		float chanceNeededToContinue = .6F;
-		if (TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.containsKey(battleTer))
+		if (TacticalCenter.get(data, getPlayerID()).BattleRetreatChanceAssignments.containsKey(battleTer))
 		{
 			DUtils.Log(Level.FINER, "Found specific battle retreat chance assignment for territory '{0}'. Retreat Chance: {1}", battleTer,
 						TacticalCenter.get(data, player).BattleRetreatChanceAssignments.get(battleTer));
-			chanceNeededToContinue = TacticalCenter.get(data, getID()).BattleRetreatChanceAssignments.get(battleTer);
+			chanceNeededToContinue = TacticalCenter.get(data, getPlayerID()).BattleRetreatChanceAssignments.get(battleTer);
 			if (simulatedAttack.getAttackerWinPercent() < chanceNeededToContinue)
 			{
 				// Calculate best retreat ter and retreat to it
@@ -467,7 +467,8 @@ public class Dynamix_AI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 	
 	public boolean shouldBomberBomb(final Territory territory)
 	{
-		final List<Unit> nonBomberAttackingUnits = Match.getMatches(territory.getUnits().getUnits(), new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getWhoAmI()), Matches.UnitIsNotStrategicBomber));
+		final List<Unit> nonBomberAttackingUnits = Match.getMatches(territory.getUnits().getUnits(),
+					new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getPlayerID()), Matches.UnitIsNotStrategicBomber));
 		if (nonBomberAttackingUnits.isEmpty())
 			return true;
 		else

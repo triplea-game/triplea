@@ -71,16 +71,17 @@ public class BetterAI extends AbstractAI
 	public void initialize(final IPlayerBridge bridge, final PlayerID id)
 	{
 		super.initialize(bridge, id);
-		m_xDimension = m_bridge.getGameData().getMap().getXDimension();
-		m_yDimension = m_bridge.getGameData().getMap().getYDimension();
+		m_xDimension = getGameData().getMap().getXDimension();
+		m_yDimension = getGameData().getMap().getYDimension();
 	}
 	
 	@Override
 	protected void play()
 	{
+		final IPlayDelegate iPlayDelegate = (IPlayDelegate) getPlayerBridge().getRemote();
 		if (m_moves == null)
 		{
-			((IPlayDelegate) m_bridge.getRemote()).signalStatus("Thinking...");
+			iPlayDelegate.signalStatus("Thinking...");
 			try
 			{
 				if (m_algorithm.equals(Algorithm.DFS))
@@ -91,9 +92,9 @@ public class BetterAI extends AbstractAI
 					{
 						m_moves = AIAlgorithm.depthFirstSearch(getInitialState(), numberOfShuffles++);
 					}
-					((IPlayDelegate) m_bridge.getRemote()).signalStatus("Solvable in " + (numberOfShuffles - 1) + " moves");
+					iPlayDelegate.signalStatus("Solvable in " + (numberOfShuffles - 1) + " moves");
 					System.out.println("Solvable in " + (numberOfShuffles - 1) + " moves");
-					((IPlayDelegate) m_bridge.getRemote()).signalStatus("Done Thinking...");
+					iPlayDelegate.signalStatus("Done Thinking...");
 				}
 				else
 					throw new RuntimeException("Invalid algorithm");
@@ -111,16 +112,15 @@ public class BetterAI extends AbstractAI
 		}
 		if (m_moves == null || m_moves.isEmpty())
 		{
-			((IPlayDelegate) m_bridge.getRemote()).signalStatus("Too hard to solve!");
+			iPlayDelegate.signalStatus("Too hard to solve!");
 		}
 		else
 		{
-			((IPlayDelegate) m_bridge.getRemote()).signalStatus(" ");
+			iPlayDelegate.signalStatus(" ");
 			final Move move = m_moves.pop();
-			final IPlayDelegate playDel = (IPlayDelegate) m_bridge.getRemote();
-			final Territory start = m_bridge.getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
-			final Territory end = m_bridge.getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
-			playDel.play(start, end);
+			final Territory start = getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
+			final Territory end = getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
+			iPlayDelegate.play(start, end);
 			// if (playDel.play(start,end)==null)
 			// System.out.println("Moving from " + start + " to " + end);
 			// else
@@ -130,7 +130,7 @@ public class BetterAI extends AbstractAI
 	
 	private State getInitialState()
 	{
-		return new State(m_bridge.getGameData().getMap());
+		return new State(getGameData().getMap());
 	}
 	
 	public static int counter = 0;

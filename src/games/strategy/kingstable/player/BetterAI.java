@@ -34,7 +34,6 @@ public class BetterAI extends AbstractAI
 	private int m_yDimension;
 	private boolean m_kingPlayer;
 	private PlayerID m_opponent;
-	private PlayerID m_player;
 	
 	
 	// private PlayerID m_attacker;
@@ -60,10 +59,10 @@ public class BetterAI extends AbstractAI
 	public void initialize(final IPlayerBridge bridge, final PlayerID id)
 	{
 		super.initialize(bridge, id);
-		m_xDimension = m_bridge.getGameData().getMap().getXDimension();
-		m_yDimension = m_bridge.getGameData().getMap().getYDimension();
+		m_xDimension = getGameData().getMap().getXDimension();
+		m_yDimension = getGameData().getMap().getYDimension();
 		{
-			final PlayerAttachment pa = (PlayerAttachment) m_id.getAttachment("playerAttachment");
+			final PlayerAttachment pa = (PlayerAttachment) id.getAttachment("playerAttachment");
 			if (pa != null)
 			{
 				if (pa.getNeedsKing())
@@ -73,11 +72,10 @@ public class BetterAI extends AbstractAI
 			else
 				m_kingPlayer = false;
 		}
-		m_player = m_id;
 		m_opponent = null;
-		for (final PlayerID p : m_bridge.getGameData().getPlayerList().getPlayers())
+		for (final PlayerID p : getGameData().getPlayerList().getPlayers())
 		{
-			if (!p.equals(m_player) && !p.equals(PlayerID.NULL_PLAYERID))
+			if (!p.equals(id) && !p.equals(PlayerID.NULL_PLAYERID))
 			{
 				m_opponent = p;
 				break;
@@ -111,9 +109,9 @@ public class BetterAI extends AbstractAI
 			else
 				move = AIAlgorithm.minimaxSearch(initial_state);
 			// System.out.println(m_id.getName() + " should move from (" + move.getStart().getFirst() + "," +move.getStart().getSecond() + ") to (" + move.getEnd().getFirst()+ "," +move.getEnd().getSecond() + ")");
-			final IPlayDelegate playDel = (IPlayDelegate) m_bridge.getRemote();
-			final Territory start = m_bridge.getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
-			final Territory end = m_bridge.getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
+			final IPlayDelegate playDel = (IPlayDelegate) getPlayerBridge().getRemote();
+			final Territory start = getGameData().getMap().getTerritoryFromCoordinates(move.getStart().getFirst(), move.getStart().getSecond());
+			final Territory end = getGameData().getMap().getTerritoryFromCoordinates(move.getEnd().getFirst(), move.getEnd().getSecond());
 			playDel.play(start, end);
 		} catch (final OutOfMemoryError e)
 		{
@@ -135,7 +133,7 @@ public class BetterAI extends AbstractAI
 			}
 		}
 		   */
-		return new State(m_bridge.getGameData().getMap().getTerritories());
+		return new State(getGameData().getMap().getTerritories());
 		// return new State(currentPlayer, otherPlayer, m_xDimension, m_yDimension, m_bridge.getGameData().getMap().getTerritories());
 	}
 	
@@ -155,7 +153,7 @@ public class BetterAI extends AbstractAI
 			m_depth = 0;
 			m_move = null;
 			m_playerPerformingMove = m_opponent;
-			m_otherPlayer = m_player;
+			m_otherPlayer = getPlayerID();
 			squareOwner = new HashMap<Integer, PlayerID>(m_xDimension * m_yDimension);
 			for (final Territory t : territories)
 			{
@@ -208,13 +206,13 @@ public class BetterAI extends AbstractAI
 			// The start state is at depth 0
 			if (parentState.m_depth % 2 == 0)
 			{
-				m_playerPerformingMove = m_player;
+				m_playerPerformingMove = getPlayerID();
 				m_otherPlayer = m_opponent;
 			}
 			else
 			{
 				m_playerPerformingMove = m_opponent;
-				m_otherPlayer = m_player;
+				m_otherPlayer = getPlayerID();
 			}
 			// Clone the map from the parent state
 			squareOwner = new HashMap<Integer, PlayerID>(parentState.squareOwner.size());
@@ -477,7 +475,7 @@ public class BetterAI extends AbstractAI
 				{
 					if (!p.equals(PlayerID.NULL_PLAYERID))
 					{
-						if (p.equals(m_id))
+						if (p.equals(getPlayerID()))
 							numPieces += 1.0;
 						else
 							numOpponentPieces += 1.0;

@@ -322,7 +322,8 @@ public class BattlePanel extends ActionPanel
 						boolean foundHumanInBattle = false;
 						for (final IGamePlayer gamePlayer : getMap().getUIContext().getPlayerList())
 						{
-							if ((gamePlayer.getID().equals(attacker) && gamePlayer instanceof TripleAPlayer) || (gamePlayer.getID().equals(defender) && gamePlayer instanceof TripleAPlayer))
+							if ((gamePlayer.getPlayerID().equals(attacker) && gamePlayer instanceof TripleAPlayer)
+										|| (gamePlayer.getPlayerID().equals(defender) && gamePlayer instanceof TripleAPlayer))
 							{
 								foundHumanInBattle = true;
 								break;

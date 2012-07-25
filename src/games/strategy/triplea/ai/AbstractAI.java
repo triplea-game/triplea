@@ -1,5 +1,6 @@
 package games.strategy.triplea.ai;
 
+import games.strategy.common.player.AbstractBaseAI;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.ProductionRule;
@@ -8,7 +9,7 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
-import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.engine.message.IRemote;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -29,7 +30,6 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.delegate.remote.IPurchaseDelegate;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
-import games.strategy.triplea.ui.UIContext;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -59,31 +59,9 @@ import java.util.logging.Logger;
  * 
  * @author sgb
  */
-public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
+public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlayer, IGamePlayer
 {
 	private final static Logger s_logger = Logger.getLogger(AbstractAI.class.getName());
-	
-	/**
-	 * Pause the game to allow the human player to see what is going on.
-	 * 
-	 */
-	protected void pause()
-	{
-		try
-		{
-			Thread.sleep(UIContext.getAIPauseDuration());
-		} catch (final InterruptedException e)
-		{
-			e.printStackTrace();
-		} catch (final Exception ex)
-		{
-		}
-	}
-	
-	private final String m_name;
-	private final String m_type;
-	private IPlayerBridge m_bridge;
-	private PlayerID m_id;
 	
 	/**
 	 * 
@@ -94,41 +72,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	 */
 	public AbstractAI(final String name, final String type)
 	{
-		m_name = name;
-		m_type = type;
-	}
-	
-	public final void initialize(final IPlayerBridge bridge, final PlayerID id)
-	{
-		m_bridge = bridge;
-		m_id = id;
-	}
-	
-	/************************
-	 * Allow the AI to get game data, playerID
-	 *************************/
-	/**
-	 * Get the GameData for the game.
-	 */
-	protected final GameData getGameData()
-	{
-		return m_bridge.getGameData();
-	}
-	
-	/**
-	 * Get the IPlayerBridge for this game player.
-	 */
-	protected final IPlayerBridge getPlayerBridge()
-	{
-		return m_bridge;
-	}
-	
-	/**
-	 * What player are we playing.
-	 */
-	protected final PlayerID getWhoAmI()
-	{
-		return m_id;
+		super(name, type);
 	}
 	
 	/************************
@@ -285,7 +229,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	public boolean acceptPoliticalAction(final String acceptanceQuestion)
 	{
 		// we are dead, just accept
-		if (!m_id.amNotDeadYet(m_bridge.getGameData()))
+		if (!getPlayerID().amNotDeadYet(getGameData()))
 			return true;
 		// should we use bridge's random source here?
 		if (Math.random() < .5)
@@ -334,13 +278,16 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	/**
 	 * The given phase has started. We parse the phase name and call the apropiate method.
 	 */
+	@Override
 	public final void start(final String name)
 	{
+		final PlayerID id = getPlayerID();
+		final IRemote iRemote = getPlayerBridge().getRemote();
 		if (name.endsWith("Bid"))
 		{
-			final String propertyName = m_id.getName() + " bid";
-			final int bidAmount = m_bridge.getGameData().getProperties().get(propertyName, 0);
-			purchase(true, bidAmount, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+			final String propertyName = id.getName() + " bid";
+			final int bidAmount = getGameData().getProperties().get(propertyName, 0);
+			purchase(true, bidAmount, (IPurchaseDelegate) iRemote, getGameData(), id);
 		}
 		else if (name.endsWith("Tech"))
 		{
@@ -348,32 +295,32 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 			{
 				return;
 			}
-			tech((ITechDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+			tech((ITechDelegate) iRemote, getGameData(), id);
 		}
 		else if (name.endsWith("Purchase"))
 		{
-			final Resource PUs = m_bridge.getGameData().getResourceList().getResource(Constants.PUS);
-			final int leftToSpend = m_id.getResources().getQuantity(PUs);
-			purchase(false, leftToSpend, (IPurchaseDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+			final Resource PUs = getGameData().getResourceList().getResource(Constants.PUS);
+			final int leftToSpend = id.getResources().getQuantity(PUs);
+			purchase(false, leftToSpend, (IPurchaseDelegate) iRemote, getGameData(), id);
 		}
 		else if (name.endsWith("Move"))
 		{
 			if (name.endsWith("AirborneCombatMove"))
 			{
 				return;
-				// if (!SpecialMoveDelegate.allowAirborne(m_id, getGameData()))
+				// if (!SpecialMoveDelegate.allowAirborne(id, getGameData()))
 				// return;
 				// airborneMove(); // TODO: implement me
 			}
 			else
-				move(name.endsWith("NonCombatMove"), (IMoveDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+				move(name.endsWith("NonCombatMove"), (IMoveDelegate) iRemote, getGameData(), id);
 		}
 		else if (name.endsWith("Battle"))
-			battle((IBattleDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+			battle((IBattleDelegate) iRemote, getGameData(), id);
 		else if (name.endsWith("Politics"))
 			getPoliticalActions();
 		else if (name.endsWith("Place"))
-			place(name.indexOf("Bid") != -1, (IAbstractPlaceDelegate) m_bridge.getRemote(), m_bridge.getGameData(), m_id);
+			place(name.indexOf("Bid") != -1, (IAbstractPlaceDelegate) iRemote, getGameData(), id);
 		else if (name.endsWith("EndTurn"))
 		{
 		}
@@ -381,25 +328,26 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	
 	public void getPoliticalActions()
 	{
-		final GameData data = m_bridge.getGameData();
-		if (!m_id.amNotDeadYet(data))
+		final GameData data = getGameData();
+		final PlayerID id = getPlayerID();
+		if (!id.amNotDeadYet(data))
 			return;
 		if (!games.strategy.triplea.Properties.getUsePolitics(data))
 			return;
 		final float numPlayers = data.getPlayerList().getPlayers().size();
-		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) m_bridge.getRemote();
+		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemote();
 		final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
 		// final HashMap<ICondition, Boolean> testedConditions = DelegateFinder.politicsDelegate(data).getTestedConditions();//this is commented out because we want to test the conditions each time to make sure they are still valid
 		if (Math.random() < .5)
 		{
-			final List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(m_id, politicsDelegate.getTestedConditions(), data);
+			final List<PoliticalActionAttachment> actionChoicesTowardsWar = BasicPoliticalAI.getPoliticalActionsTowardsWar(id, politicsDelegate.getTestedConditions(), data);
 			if (actionChoicesTowardsWar != null && !actionChoicesTowardsWar.isEmpty())
 			{
 				Collections.shuffle(actionChoicesTowardsWar);
 				int i = 0;
 				final double random = Math.random(); // should we use bridge's random source here?
 				int MAX_WAR_ACTIONS_PER_TURN = (random < .5 ? 0 : (random < .9 ? 1 : (random < .99 ? 2 : (int) numPlayers / 2)));
-				if ((MAX_WAR_ACTIONS_PER_TURN > 0) && (Match.countMatches(data.getRelationshipTracker().getRelationships(m_id), Matches.RelationshipIsAtWar)) / numPlayers < 0.4)
+				if ((MAX_WAR_ACTIONS_PER_TURN > 0) && (Match.countMatches(data.getRelationshipTracker().getRelationships(id), Matches.RelationshipIsAtWar)) / numPlayers < 0.4)
 				{
 					if (Math.random() < .9)
 						MAX_WAR_ACTIONS_PER_TURN = 0;
@@ -421,7 +369,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		}
 		else
 		{
-			final List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(m_id, politicsDelegate.getTestedConditions(), data);
+			final List<PoliticalActionAttachment> actionChoicesOther = BasicPoliticalAI.getPoliticalActionsOther(id, politicsDelegate.getTestedConditions(), data);
 			if (actionChoicesOther != null && !actionChoicesOther.isEmpty())
 			{
 				Collections.shuffle(actionChoicesOther);
@@ -434,7 +382,7 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 					final PoliticalActionAttachment action = actionOtherIter.next();
 					if (!Matches.PoliticalActionCanBeAttempted(politicsDelegate.getTestedConditions()).match(action))
 						continue;
-					if (action.getCostPU() > 0 && action.getCostPU() > m_id.getResources().getQuantity(Constants.PUS))
+					if (action.getCostPU() > 0 && action.getCostPU() > id.getResources().getQuantity(Constants.PUS))
 						continue;
 					i++;
 					if (i > MAX_OTHER_ACTIONS_PER_TURN)
@@ -450,31 +398,17 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 		return ITripleaPlayer.class;
 	}
 	
-	public final String getName()
-	{
-		return m_name;
-	}
-	
-	public final String getType()
-	{
-		return m_type;
-	}
-	
-	public final PlayerID getID()
-	{
-		return m_id;
-	}
-	
 	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)
 	{
+		final PlayerID id = getPlayerID();
 		// we are going to just assign random attacks to each unit randomly, til we run out of tokens to attack with.
-		final PlayerAttachment pa = PlayerAttachment.get(m_id);
+		final PlayerAttachment pa = PlayerAttachment.get(id);
 		if (pa == null)
 			return null;
 		final IntegerMap<Resource> resourcesAndAttackValues = pa.getSuicideAttackResources();
 		if (resourcesAndAttackValues.size() <= 0)
 			return null;
-		final IntegerMap<Resource> playerResourceCollection = m_id.getResources().getResourcesCopy();
+		final IntegerMap<Resource> playerResourceCollection = id.getResources().getResourcesCopy();
 		final IntegerMap<Resource> attackTokens = new IntegerMap<Resource>();
 		for (final Resource possible : resourcesAndAttackValues.keySet())
 		{
@@ -516,41 +450,42 @@ public abstract class AbstractAI implements ITripleaPlayer, IGamePlayer
 	
 	public boolean canWePurchaseOrRepair(final boolean bid)
 	{
+		final PlayerID id = getPlayerID();
 		if (bid)
 		{
-			if (!BidPurchaseDelegate.doesPlayerHaveBid(m_bridge.getGameData(), m_id))
+			if (!BidPurchaseDelegate.doesPlayerHaveBid(getGameData(), id))
 				return false;
 		}
 		// NoPUPurchaseDelegate will run first, before this section. After running, the engine will wait for the player by coming here. Exit if we are a No PU delegate purchase
-		if (this.m_bridge.getStepName().endsWith("NoPUPurchase"))
+		if (getPlayerBridge().getStepName().endsWith("NoPUPurchase"))
 			return false;
 		// we have no production frontier
-		else if (m_id.getProductionFrontier() == null || m_id.getProductionFrontier().getRules().isEmpty())
+		else if (id.getProductionFrontier() == null || id.getProductionFrontier().getRules().isEmpty())
 		{
 			return false;
 		}
 		else
 		{
 			// if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
-			final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(m_id, m_bridge.getGameData()));
-			final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(m_id, m_bridge.getGameData()));
-			final PlayerAttachment pa = PlayerAttachment.get(m_id);
+			final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(id, getGameData()));
+			final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(id, getGameData()));
+			final PlayerAttachment pa = PlayerAttachment.get(id);
 			if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
 				return false;
 		}
-		if (m_id.getProductionFrontier() != null && m_id.getProductionFrontier().getRules() != null)
+		if (id.getProductionFrontier() != null && id.getProductionFrontier().getRules() != null)
 		{
-			for (final ProductionRule rule : m_id.getProductionFrontier().getRules())
+			for (final ProductionRule rule : id.getProductionFrontier().getRules())
 			{
-				if (m_id.getResources().has(rule.getCosts()))
+				if (id.getResources().has(rule.getCosts()))
 					return true;
 			}
 		}
-		if (m_id.getRepairFrontier() != null && m_id.getRepairFrontier().getRules() != null)
+		if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null)
 		{
-			for (final RepairRule rule : m_id.getRepairFrontier().getRules())
+			for (final RepairRule rule : id.getRepairFrontier().getRules())
 			{
-				if (m_id.getResources().has(rule.getCosts()))
+				if (id.getResources().has(rule.getCosts()))
 					return true;
 			}
 		}

@@ -333,7 +333,7 @@ public class ServerGame extends AbstractGame
 			while (localPlayersIter.hasNext())
 			{
 				final IGamePlayer gp = localPlayersIter.next();
-				m_remoteMessenger.unregisterRemote(getRemoteName(gp.getID(), m_data));
+				m_remoteMessenger.unregisterRemote(getRemoteName(gp.getPlayerID(), m_data));
 			}
 			final Iterator<IDelegate> delegateIter = m_data.getDelegateList().iterator();
 			while (delegateIter.hasNext())

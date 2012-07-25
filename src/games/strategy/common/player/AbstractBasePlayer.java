@@ -25,10 +25,10 @@ import games.strategy.engine.gamePlayer.IPlayerBridge;
  */
 public abstract class AbstractBasePlayer implements IGamePlayer
 {
-	protected final String m_name; // what nation are we playing? ex: "Americans"
-	protected final String m_type; // what are we? ex: "Human", or "Moore N. Able (AI)"
-	protected PlayerID m_id;
-	protected IPlayerBridge m_bridge;
+	private final String m_name; // what nation are we playing? ex: "Americans"
+	private final String m_type; // what are we? ex: "Human", or "Moore N. Able (AI)"
+	private PlayerID m_playerID;
+	private IPlayerBridge m_iPlayerBridge;
 	
 	/**
 	 * @param name
@@ -40,10 +40,13 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 		m_type = type;
 	}
 	
-	public void initialize(final IPlayerBridge bridge, final PlayerID id)
+	/**
+	 * Anything that overrides this MUST call super.initialize(iPlayerBridge, playerID);
+	 */
+	public void initialize(final IPlayerBridge iPlayerBridge, final PlayerID playerID)
 	{
-		m_bridge = bridge;
-		m_id = id;
+		m_iPlayerBridge = iPlayerBridge;
+		m_playerID = playerID;
 	}
 	
 	/**
@@ -51,15 +54,16 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 	 */
 	protected final GameData getGameData()
 	{
-		return m_bridge.getGameData();
+		return m_iPlayerBridge.getGameData();
 	}
 	
 	/**
 	 * Get the IPlayerBridge for this game player.
+	 * (This is not a delegate bridge, and we can not send changes on this. Changes should only be done within a delegate, never through a player.)
 	 */
 	protected final IPlayerBridge getPlayerBridge()
 	{
-		return m_bridge;
+		return m_iPlayerBridge;
 	}
 	
 	public final String getName()
@@ -72,9 +76,9 @@ public abstract class AbstractBasePlayer implements IGamePlayer
 		return m_type;
 	}
 	
-	public final PlayerID getID()
+	public final PlayerID getPlayerID()
 	{
-		return m_id;
+		return m_playerID;
 	}
 	
 	/**

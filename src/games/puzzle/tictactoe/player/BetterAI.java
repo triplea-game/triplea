@@ -38,7 +38,6 @@ public class BetterAI extends AbstractAI
 	private int m_xDimension;
 	private int m_yDimension;
 	private PlayerID m_opponent;
-	private PlayerID m_player;
 	
 	
 	/** Algorithms available for use in BetterAI */
@@ -60,13 +59,12 @@ public class BetterAI extends AbstractAI
 	public void initialize(final IPlayerBridge bridge, final PlayerID id)
 	{
 		super.initialize(bridge, id);
-		m_xDimension = m_bridge.getGameData().getMap().getXDimension();
-		m_yDimension = m_bridge.getGameData().getMap().getYDimension();
-		m_player = m_id;
+		m_xDimension = getGameData().getMap().getXDimension();
+		m_yDimension = getGameData().getMap().getYDimension();
 		m_opponent = null;
-		for (final PlayerID p : m_bridge.getGameData().getPlayerList().getPlayers())
+		for (final PlayerID p : getGameData().getPlayerList().getPlayers())
 		{
-			if (!p.equals(m_player) && !p.equals(PlayerID.NULL_PLAYERID))
+			if (!p.equals(id) && !p.equals(PlayerID.NULL_PLAYERID))
 			{
 				m_opponent = p;
 				break;
@@ -83,14 +81,14 @@ public class BetterAI extends AbstractAI
 			move = AIAlgorithm.minimaxSearch(initial_state);
 		else
 			move = AIAlgorithm.alphaBetaSearch(initial_state);
-		final IPlayDelegate playDel = (IPlayDelegate) m_bridge.getRemote();
-		final Territory start = m_bridge.getGameData().getMap().getTerritoryFromCoordinates(move.getX(), move.getY());
+		final IPlayDelegate playDel = (IPlayDelegate) getPlayerBridge().getRemote();
+		final Territory start = getGameData().getMap().getTerritoryFromCoordinates(move.getX(), move.getY());
 		playDel.play(start);
 	}
 	
 	private State getInitialState()
 	{
-		return new State(m_bridge.getGameData().getMap().getTerritories());
+		return new State(getGameData().getMap().getTerritories());
 	}
 	
 	
@@ -117,7 +115,7 @@ public class BetterAI extends AbstractAI
 			// The start state is at depth 0
 			PlayerID playerPerformingMove;
 			if (parentState.depth % 2 == 0)
-				playerPerformingMove = m_player;
+				playerPerformingMove = getPlayerID();
 			else
 				playerPerformingMove = m_opponent;
 			// Clone the map from the parent state
@@ -166,6 +164,7 @@ public class BetterAI extends AbstractAI
 		@Override
 		public float getUtility()
 		{
+			final PlayerID id = getPlayerID();
 			for (int y = 0; y < m_yDimension; y++)
 			{
 				PlayerID player = get(0, y);
@@ -182,7 +181,7 @@ public class BetterAI extends AbstractAI
 					// If player!=null, then player is the winner
 					if (player != null)
 					{
-						if (player.equals(m_player))
+						if (player.equals(id))
 							return 1;
 						else if (player.equals(m_opponent))
 							return -1;
@@ -205,7 +204,7 @@ public class BetterAI extends AbstractAI
 					}
 					if (player != null)
 					{
-						if (player.equals(m_player))
+						if (player.equals(id))
 							return 1;
 						else if (player.equals(m_opponent))
 							return -1;
@@ -227,7 +226,7 @@ public class BetterAI extends AbstractAI
 					}
 					if (player != null)
 					{
-						if (player.equals(m_player))
+						if (player.equals(id))
 							return 1;
 						else if (player.equals(m_opponent))
 							return -1;
@@ -252,7 +251,7 @@ public class BetterAI extends AbstractAI
 					}
 					if (player != null)
 					{
-						if (player.equals(m_player))
+						if (player.equals(id))
 							return 1;
 						else if (player.equals(m_opponent))
 							return -1;

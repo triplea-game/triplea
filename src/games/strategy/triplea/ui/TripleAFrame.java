@@ -1281,7 +1281,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			return false;
 		for (final IGamePlayer gamePlayer : m_localPlayers)
 		{
-			if (gamePlayer.getID().equals(id) && gamePlayer instanceof TripleAPlayer)
+			if (gamePlayer.getPlayerID().equals(id) && gamePlayer instanceof TripleAPlayer)
 			{
 				return true;
 			}

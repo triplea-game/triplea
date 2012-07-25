@@ -31,6 +31,10 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer
 		super(name, type);
 	}
 	
+	/**
+	 * Pause the game to allow the human player to see what is going on.
+	 * 
+	 */
 	protected void pause()
 	{
 		try
@@ -39,6 +43,8 @@ public abstract class AbstractBaseAI extends AbstractBasePlayer
 		} catch (final InterruptedException e)
 		{
 			e.printStackTrace();
+		} catch (final Exception ex)
+		{
 		}
 	}
 }

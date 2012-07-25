@@ -264,7 +264,7 @@ public interface ITripleaPlayer extends IRemote
 	
 	public void confirmOwnCasualties(GUID battleId, String message);
 	
-	public PlayerID getID();
+	public PlayerID getPlayerID();
 	
 	/**
 	 * Does the player accept the proposed political action?

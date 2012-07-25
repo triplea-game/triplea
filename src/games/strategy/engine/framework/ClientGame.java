@@ -150,7 +150,7 @@ public class ClientGame extends AbstractGame
 					m_data.releaseReadLock();
 				}
 				m_gamePlayers.put(player, gp);
-				m_remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getID(), m_data));
+				m_remoteMessenger.unregisterRemote(ServerGame.getRemoteName(gp.getPlayerID(), m_data));
 				m_remoteMessenger.unregisterRemote(ServerGame.getRemoteRandomName(player));
 			}
 		} catch (final RuntimeException re)

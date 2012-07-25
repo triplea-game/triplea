@@ -212,7 +212,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (capitol == null || !capitol.getOwner().equals(player))
 			return;
 		List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.UnitIsInfrastructure.invert());
-		unitsToLoad = Match.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getWhoAmI()));
+		unitsToLoad = Match.getMatches(unitsToLoad, Matches.unitIsOwnedBy(getPlayerID()));
 		for (final Territory neighbor : data.getMap().getNeighbors(capitol))
 		{
 			if (!neighbor.isWater())

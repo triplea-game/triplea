@@ -53,7 +53,7 @@ public interface IGamePlayer
 	 * 
 	 * @return the id of this player. This id is initialized by the initialize method.
 	 */
-	public PlayerID getID();
+	public PlayerID getPlayerID();
 	
 	/**
 	 * Start the given step. stepName appears as it does in the game xml file.
