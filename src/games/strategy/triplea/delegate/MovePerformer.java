@@ -186,6 +186,8 @@ public class MovePerformer implements Serializable
 					final Map<Unit, Unit> transportingAir = MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, id);
 					dependentOnSomethingTilTheEndOfRoute.addAll(transportingAir.keySet());
 				}
+				final Collection<Unit> presentFromStartTilEnd = new ArrayList<Unit>(arrived);
+				presentFromStartTilEnd.removeAll(dependentOnSomethingTilTheEndOfRoute);
 				markTransportsMovement(arrived, transporting, route);
 				if (route.someMatch(mustFightThrough) && arrived.size() != 0)
 				{
@@ -231,7 +233,7 @@ public class MovePerformer implements Serializable
 								targetedAttack = true;
 								final HashMap<Unit, HashSet<Unit>> targets = new HashMap<Unit, HashSet<Unit>>();
 								targets.put(target, new HashSet<Unit>(arrived));
-								getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove, targets, false);
+								getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove, dependentOnSomethingTilTheEndOfRoute, targets, false);
 							}
 						}
 					}
@@ -246,17 +248,20 @@ public class MovePerformer implements Serializable
 					}
 					if (!ignoreBattle && !MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
 					{
-						getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove);
+						getBattleTracker().addBattle(route, arrivedCopyForBattles, bombing, id, m_bridge, m_currentMove, dependentOnSomethingTilTheEndOfRoute);
 					}
-					if (!ignoreBattle && MoveDelegate.isNonCombat(m_bridge) && !targetedAttack && route.allMatch(Matches.isTerritoryEnemy(id, data).invert())
-								&& route.allMatch(Matches.territoryHasNoEnemyUnits(id, data)) && Match.someMatch(arrived, Matches.UnitIsLand)
-								&& Match.noneMatch(arrived, Matches.UnitIsSea))
+					if (!ignoreBattle && MoveDelegate.isNonCombat(m_bridge) && !targetedAttack)
 					{
 						// We are in non-combat move phase, and we are taking over friendly territories. No need for a battle. (This could get really difficult if we want these recorded in battle records).
 						for (final Territory t : route.getMatches(new CompositeMatchAnd<Territory>(
 									Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
 									Matches.TerritoryIsBlitzable(id, data))))
 						{
+							if (Matches.isTerritoryEnemy(id, data).match(t) || Matches.territoryHasEnemyUnits(id, data).match(t))
+								continue;
+							if ((t.equals(route.getEnd()) && Match.allMatch(arrivedCopyForBattles, Matches.UnitIsAir))
+										|| (!t.equals(route.getEnd()) && Match.allMatch(presentFromStartTilEnd, Matches.UnitIsAir)))
+								continue;
 							getBattleTracker().takeOver(t, id, bridge, m_currentMove, arrivedCopyForBattles);
 						}
 					}

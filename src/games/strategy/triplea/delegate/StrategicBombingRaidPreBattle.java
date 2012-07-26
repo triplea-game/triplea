@@ -225,7 +225,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 						targets = new HashMap<Unit, HashSet<Unit>>();
 						targets.put(target, new HashSet<Unit>(Collections.singleton(unit)));
 					}
-					m_battleTracker.addBattle(new RouteScripted(m_battleSite), Collections.singleton(unit), true, m_attacker, bridge, null, targets, true);
+					m_battleTracker.addBattle(new RouteScripted(m_battleSite), Collections.singleton(unit), true, m_attacker, bridge, null, null, targets, true);
 				}
 			}
 		}

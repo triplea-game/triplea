@@ -278,13 +278,14 @@ public class BattleTracker implements java.io.Serializable
 		}
 	}
 	
-	public void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker)
+	public void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker,
+				final Collection<Unit> unitsNotUnloadedTilEndOfRoute)
 	{
-		this.addBattle(route, units, bombing, id, bridge, changeTracker, null, false);
+		this.addBattle(route, units, bombing, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute, null, false);
 	}
 	
 	public void addBattle(final Route route, final Collection<Unit> units, final boolean bombing, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker,
-				final HashMap<Unit, HashSet<Unit>> targets, final boolean airBattleCompleted)
+				final Collection<Unit> unitsNotUnloadedTilEndOfRoute, final HashMap<Unit, HashSet<Unit>> targets, final boolean airBattleCompleted)
 	{
 		final GameData data = bridge.getData();
 		if (bombing)
@@ -306,7 +307,7 @@ public class BattleTracker implements java.io.Serializable
 				changeTracker.addChange(change);
 			}
 			if (games.strategy.util.Match.someMatch(units, Matches.UnitIsLand) || games.strategy.util.Match.someMatch(units, Matches.UnitIsSea))
-				addEmptyBattle(route, units, id, bridge, changeTracker);
+				addEmptyBattle(route, units, id, bridge, changeTracker, unitsNotUnloadedTilEndOfRoute);
 		}
 	}
 	
@@ -377,21 +378,30 @@ public class BattleTracker implements java.io.Serializable
 	/**
 	 * No enemies.
 	 */
-	private void addEmptyBattle(final Route route, final Collection<Unit> units, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker)
+	private void addEmptyBattle(final Route route, final Collection<Unit> units, final PlayerID id, final IDelegateBridge bridge, final UndoableMove changeTracker,
+				final Collection<Unit> unitsNotUnloadedTilEndOfRoute)
 	{
 		final GameData data = bridge.getData();
 		final Collection<Unit> canConquer = Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data).invert());
 		if (Match.noneMatch(canConquer, Matches.UnitIsNotAir))
 			return;
+		final Collection<Unit> presentFromStartTilEnd = new ArrayList<Unit>(canConquer);
+		if (unitsNotUnloadedTilEndOfRoute != null)
+			presentFromStartTilEnd.removeAll(unitsNotUnloadedTilEndOfRoute);
+		final boolean canConquerMiddleSteps = Match.someMatch(presentFromStartTilEnd, Matches.UnitIsNotAir);
 		final boolean scramblingEnabled = games.strategy.triplea.Properties.getScramble_Rules_In_Effect(data);
 		final CompositeMatch<Territory> conquerable = new CompositeMatchAnd<Territory>();
 		conquerable.add(Matches.territoryIsEmptyOfCombatUnits(data, id));
 		conquerable.add(new CompositeMatchOr<Territory>(Matches.territoryIsOwnedByPlayerWhosRelationshipTypeCanTakeOverOwnedTerritoryAndPassableAndNotWater(id),
 					Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(id, data)));
-		final Collection<Territory> conquered = route.getMatches(conquerable);
-		// in case we begin in enemy territory, and blitz out of it, check the first territory
-		if (route.getStart() != route.getEnd() && conquerable.match(route.getStart()))
-			conquered.add(route.getStart());
+		final Collection<Territory> conquered = new ArrayList<Territory>();
+		if (canConquerMiddleSteps)
+		{
+			conquered.addAll(route.getMatches(conquerable));
+			// in case we begin in enemy territory, and blitz out of it, check the first territory
+			if (route.getStart() != route.getEnd() && conquerable.match(route.getStart()))
+				conquered.add(route.getStart());
+		}
 		// we handle the end of the route later
 		conquered.remove(route.getEnd());
 		final Collection<Territory> blitzed = Match.getMatches(conquered, Matches.TerritoryIsBlitzable(id, data));

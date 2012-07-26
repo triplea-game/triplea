@@ -437,7 +437,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			if (battle == null)
 			{
 				aBridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());
-				battleTracker.addBattle(new RouteScripted(territory), attackingUnits, false, player, aBridge, null);
+				battleTracker.addBattle(new RouteScripted(territory), attackingUnits, false, player, aBridge, null, null);
 				battle = battleTracker.getPendingBattle(territory, false);
 			}
 			if (battle == null)
@@ -736,7 +736,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				final List<Unit> attackingUnits = to.getUnits().getMatches(Matches.unitIsOwnedBy(m_player));
 				m_bridge.getHistoryWriter().startEvent(defender.getName() + " scrambles to create a battle in territory " + to.getName());
 				// TODO: the attacking sea units do not remember where they came from, so they can not retreat anywhere. Need to fix.
-				m_battleTracker.addBattle(new RouteScripted(to), attackingUnits, false, m_player, m_bridge, null);
+				m_battleTracker.addBattle(new RouteScripted(to), attackingUnits, false, m_player, m_bridge, null, null);
 				battle = m_battleTracker.getPendingBattle(to, false);
 				if (battle instanceof MustFightBattle)
 				{
