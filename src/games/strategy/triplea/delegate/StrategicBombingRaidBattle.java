@@ -207,7 +207,6 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 			public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 			{
 				getDisplay(bridge).gotoBattleStep(m_battleID, RAID);
-				m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
 				if (isSBRAffectsUnitProduction())
 					bridge.getHistoryWriter().addChildToEvent("AA raid costs " + m_bombingRaidTotal + " " + " production in " + m_battleSite.getName());
 				else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories())
@@ -301,6 +300,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
 					new BattleResults(this, m_data), m_bombingRaidTotal);
 		m_isOver = true;
+		m_battleTracker.removeBattle(StrategicBombingRaidBattle.this);
 	}
 	
 	private void showBattle(final IDelegateBridge bridge)

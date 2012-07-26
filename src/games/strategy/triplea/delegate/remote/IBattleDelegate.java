@@ -15,6 +15,7 @@ package games.strategy.triplea.delegate.remote;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
+import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 
 /**
@@ -35,13 +36,26 @@ public interface IBattleDelegate extends IRemote
 	 *            - where to fight
 	 * @param bombing
 	 *            - fight a bombing raid
-	 * @return an error string if the battle could not be fought or an error occured, null otherwse
+	 * @return an error string if the battle could not be fought or an error occurred, null otherwise
 	 */
 	public String fightBattle(Territory where, boolean bombing);
+	
+	/**
+	 * Finish the current battle
+	 * 
+	 * @return an error string if the battle could not be fought or an error occurred, null otherwise
+	 */
+	public String fightCurrentBattle();
 	
 	/**
 	 * 
 	 * @return The location of the currently being fought battle, or null if no battle is in progress.
 	 */
-	public Territory getCurentBattle();
+	public Territory getCurrentBattleTerritory();
+	
+	/**
+	 * 
+	 * @return The current battle if there is one, or null if there is no current battle in progress.
+	 */
+	public IBattle getCurrentBattle();
 }

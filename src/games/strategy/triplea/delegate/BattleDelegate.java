@@ -191,6 +191,17 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		resetMaxScrambleCount(aBridge);
 	}
 	
+	public String fightCurrentBattle()
+	{
+		if (m_currentBattle == null)
+			return null;
+		// fight the battle
+		m_currentBattle.fight(m_bridge);
+		m_currentBattle = null;
+		// and were done
+		return null;
+	}
+	
 	public String fightBattle(final Territory territory, final boolean bombing)
 	{
 		final IBattle battle = m_battleTracker.getPendingBattle(territory, bombing);
@@ -1458,7 +1469,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		return (ITripleaPlayer) bridge.getRemote(player);
 	}
 	
-	public Territory getCurentBattle()
+	public Territory getCurrentBattleTerritory()
 	{
 		final IBattle b = m_currentBattle;
 		if (b != null)
@@ -1469,6 +1480,11 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		{
 			return null;
 		}
+	}
+	
+	public IBattle getCurrentBattle()
+	{
+		return m_currentBattle;
 	}
 }
 
