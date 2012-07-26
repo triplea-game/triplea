@@ -434,15 +434,26 @@ public class GameDataExporter
 		xmlfile.append("    </attatchmentList>\n");
 	}
 	
-	private String printAttachmentOptionsBasedOnOriginalXML(final ArrayList<Tuple<String, String>> attachmentPlusValues)
+	private String printAttachmentOptionsBasedOnOriginalXML(final ArrayList<Tuple<String, String>> attachmentPlusValues, final IAttachment attachment)
 	{
 		if (attachmentPlusValues.isEmpty())
 			return "";
 		final StringBuffer sb = new StringBuffer("");
+		boolean alreadyHasOccupiedTerrOf = false;
 		for (final Tuple<String, String> current : attachmentPlusValues)
 		{
 			sb.append("            <option name=\"" + current.getFirst() + "\" value=\"" + current.getSecond() + "\"/>\n");
+			if (current.getFirst().equals("occupiedTerrOf"))
+				alreadyHasOccupiedTerrOf = true;
 		}
+		// add occupiedTerrOf until we fix engine to only use originalOwner
+		if (!alreadyHasOccupiedTerrOf && attachment instanceof games.strategy.triplea.attatchments.TerritoryAttachment)
+		{
+			final games.strategy.triplea.attatchments.TerritoryAttachment ta = (games.strategy.triplea.attatchments.TerritoryAttachment) attachment;
+			if (ta.getOriginalOwner() != null)
+				sb.append("            <option name=\"occupiedTerrOf\" value=\"" + ta.getOriginalOwner().getName() + "\"/>\n");
+		}
+		
 		return sb.toString();
 	}
 	
@@ -460,7 +471,7 @@ public class GameDataExporter
 			}
 			else
 			{
-				attachmentOptions = printAttachmentOptionsBasedOnOriginalXML(attachmentPlusValues.getSecond());
+				attachmentOptions = printAttachmentOptionsBasedOnOriginalXML(attachmentPlusValues.getSecond(), attachment);
 			}
 			final NamedAttachable attachTo = (NamedAttachable) attachment.getAttachedTo();
 			// TODO: keep this list updated

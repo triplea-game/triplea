@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Made xml exporter also add original territory owner as occupiedTerrOf until such a time as we can just use originalOwner. (veqryn)
+
 * Fixed bug causing land units carried by air units (paratroopers tech) to blitz unoccupied enemy territories on route if going behind enemy lines. (veqryn)
 
 * Fixing bug preventing renamed hardcoded techs from working properly. (veqryn)
