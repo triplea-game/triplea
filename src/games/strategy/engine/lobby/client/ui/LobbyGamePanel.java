@@ -83,9 +83,12 @@ public class LobbyGamePanel extends JPanel
 		m_gameTable.setRowSelectionAllowed(true);
 		m_gameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		// by default, sort newest first
-		final int dateColumn = m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started);
-		m_tableSorter.setSortingStatus(dateColumn, TableSorter.DESCENDING);
-		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players)).setPreferredWidth(60);
+		final int nameColumn = m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name);
+		m_tableSorter.setSortingStatus(nameColumn, TableSorter.ASCENDING);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players)).setPreferredWidth(45);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Round)).setPreferredWidth(40);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.PW)).setPreferredWidth(20);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started)).setPreferredWidth(50);
 		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status)).setPreferredWidth(150);
 		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name)).setPreferredWidth(150);
 		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Comments)).setPreferredWidth(150);

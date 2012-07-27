@@ -83,7 +83,7 @@ public class GameRunner2
 	private static void handleCommandLineArgs(final String[] args)
 	{
 		final String[] properties = new String[] { TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_HOST_PROPERTY, TRIPLEA_GAME_PROPERTY, TRIPLEA_NAME_PROPERTY,
-					TRIPLEA_SERVER_PASSWORD_PROPERTY };
+					TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY };
 		// if only 1 arg, it must be the game name
 		// find it
 		// optionally, it may not start with the property name
@@ -105,14 +105,21 @@ public class GameRunner2
 		for (int argIndex = 0; argIndex < args.length; argIndex++)
 		{
 			boolean found = false;
-			for (int propIndex = 0; propIndex < properties.length; propIndex++)
+			String arg = args[argIndex];
+			final int indexOf = arg.indexOf('=');
+			if (indexOf > 0)
 			{
-				if (args[argIndex].startsWith(properties[propIndex]))
+				arg = arg.substring(0, indexOf);
+				for (int propIndex = 0; propIndex < properties.length; propIndex++)
 				{
-					final String value = getValue(args[argIndex]);
-					System.getProperties().setProperty(properties[propIndex], value);
-					System.out.println(properties[propIndex] + ":" + value);
-					found = true;
+					if (arg.equals(properties[propIndex]))
+					{
+						final String value = getValue(args[argIndex]);
+						System.getProperties().setProperty(properties[propIndex], value);
+						System.out.println(properties[propIndex] + ":" + value);
+						found = true;
+						break;
+					}
 				}
 			}
 			if (!found)

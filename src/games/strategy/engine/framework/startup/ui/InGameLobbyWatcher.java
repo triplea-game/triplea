@@ -183,7 +183,7 @@ public class InGameLobbyWatcher
 		synchronized (m_mutex)
 		{
 			m_gameDescription.setGameName(m_gameSelectorModel.getGameName());
-			m_gameDescription.setGameVersion(m_gameSelectorModel.getGameVersion());
+			// m_gameDescription.setGameVersion(m_gameSelectorModel.getGameVersion());
 			postUpdate();
 		}
 	}
@@ -193,8 +193,10 @@ public class InGameLobbyWatcher
 		m_messenger = messenger;
 		m_remoteMessenger = remoteMessenger;
 		m_gameMessenger = serverMessenger;
+		final String password = System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY);
+		final boolean passworded = password != null && password.length() > 0;
 		m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), new Date(), "???", 1, GameStatus.WAITING_FOR_PLAYERS, "-", m_gameMessenger
-					.getLocalNode().getName(), System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS), false, null, null);
+					.getLocalNode().getName(), System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS), passworded, null, null);
 		final ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
 		synchronized (m_mutex)
 		{

@@ -4548,9 +4548,8 @@
 <unitPlacement unitType="Cuirassiers" territory="New Castille" quantity="1"/>
 <unitPlacement unitType="Chasseurs" territory="New Castille" quantity="6"/>
 <unitPlacement unitType="Fortress" territory="New Castille" quantity="1"/>
-<unitPlacement unitType="Chasseurs" territory="Catalonia" quantity="4"/>
-<unitPlacement unitType="Fusiliers" territory="Catalonia" quantity="2"/>
-<unitPlacement unitType="Fusiliers" territory="Catalonia" quantity="1"/>
+<unitPlacement unitType="Chasseurs" territory="Catalonia" quantity="8"/>
+<unitPlacement unitType="Fusiliers" territory="Catalonia" quantity="3"/>
 <unitPlacement unitType="Fusiliers" territory="Galacia" quantity="1"/>
 <unitPlacement unitType="Dragoons" territory="Galacia" quantity="1"/>
 <unitPlacement unitType="Fusiliers" territory="Galacia" quantity="1"/>
@@ -4560,7 +4559,8 @@
 <unitPlacement unitType="Fusiliers" territory="Murcia" quantity="3"/>
 <unitPlacement unitType="Fusiliers" territory="Estremadura" quantity="3"/>
 <unitPlacement unitType="Chasseurs" territory="Old Castille" quantity="4"/>
-<unitPlacement unitType="Fusiliers" territory="Navarre" quantity="6"/>
+<unitPlacement unitType="Fusiliers" territory="Navarre" quantity="3"/>
+<unitPlacement unitType="Chasseurs" territory="Navarre" quantity="6"/>
 <unitPlacement unitType="Chasseurs" territory="Aragon" quantity="4"/>
 <unitPlacement unitType="Fusiliers" territory="La Mancha" quantity="3"/>
 

@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Fixing many bugs in the handling of command line arguments. (veqryn)
+
 * Adding Passworded (PW) column to lobby. (veqryn)
 
 * Making game notes non-modal (doesn't stop all action til closed) and making it always on top so that you can read it while you play. (veqryn)

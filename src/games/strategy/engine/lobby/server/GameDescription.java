@@ -72,8 +72,9 @@ public class GameDescription implements Externalizable, Cloneable
 	private String m_comment;
 	
 	private boolean m_passworded;
-	private Version m_engineVersion;
-	private String m_gameVersion;
+	
+	// private Version m_engineVersion;
+	// private String m_gameVersion;
 	
 	// if you add a field, add it to write/read object as well for Externalizable
 	public GameDescription()
@@ -93,8 +94,8 @@ public class GameDescription implements Externalizable, Cloneable
 		m_round = round;
 		m_comment = comment;
 		m_passworded = passworded;
-		m_engineVersion = engineVersion;
-		m_gameVersion = gameVersion;
+		// m_engineVersion = engineVersion;
+		// m_gameVersion = gameVersion;
 	}
 	
 	@Override
@@ -167,6 +168,12 @@ public class GameDescription implements Externalizable, Cloneable
 		m_passworded = passworded;
 	}
 	
+	public boolean getPassworded()
+	{
+		return m_passworded;
+	}
+	
+	/*
 	public void setEngineVersion(final Version engineVersion)
 	{
 		m_version++;
@@ -179,11 +186,6 @@ public class GameDescription implements Externalizable, Cloneable
 		m_gameVersion = gameVersion;
 	}
 	
-	public boolean getPassworded()
-	{
-		return m_passworded;
-	}
-	
 	public Version getEngineVersion()
 	{
 		return m_engineVersion;
@@ -192,8 +194,8 @@ public class GameDescription implements Externalizable, Cloneable
 	public String getGameVersion()
 	{
 		return m_gameVersion;
-	}
-	
+	}*/
+
 	public String getRound()
 	{
 		return m_round;
@@ -266,8 +268,8 @@ public class GameDescription implements Externalizable, Cloneable
 		m_comment = in.readUTF();
 		m_gameName = in.readUTF();
 		m_passworded = in.readBoolean();
-		m_engineVersion = new Version(in.readUTF());
-		m_gameVersion = in.readUTF();
+		// m_engineVersion = new Version(in.readUTF());
+		// m_gameVersion = in.readUTF();
 	}
 	
 	public void writeExternal(final ObjectOutput out) throws IOException
@@ -283,8 +285,8 @@ public class GameDescription implements Externalizable, Cloneable
 		out.writeUTF(m_comment);
 		out.writeUTF(m_gameName);
 		out.writeBoolean(m_passworded);
-		out.writeUTF(m_engineVersion.toString());
-		out.writeUTF(m_gameVersion);
+		// out.writeUTF(m_engineVersion.toString());
+		// out.writeUTF(m_gameVersion);
 	}
 	
 	@Override
