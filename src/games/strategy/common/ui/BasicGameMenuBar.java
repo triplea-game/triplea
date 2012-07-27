@@ -19,6 +19,7 @@ import games.strategy.net.BareBonesBrowserLaunch;
 import games.strategy.net.IServerMessenger;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog.ModalityType;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,8 +59,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		m_frame = frame;
 		createFileMenu(this);
 		createGameSpecificMenus(this);
-		createNetworkMenu(this);
-		createLobbyMenu(this);
+		final InGameLobbyWatcher watcher = createLobbyMenu(this);
+		createNetworkMenu(this, watcher);
 		createWebHelpMenu(this);
 		createHelpMenu(this);
 	}
@@ -68,26 +69,27 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	{
 	}
 	
-	protected void createLobbyMenu(final JMenuBar menuBar)
+	protected InGameLobbyWatcher createLobbyMenu(final JMenuBar menuBar)
 	{
 		if (!(m_frame.getGame() instanceof ServerGame))
-			return;
+			return null;
 		final ServerGame serverGame = (ServerGame) m_frame.getGame();
 		final InGameLobbyWatcher watcher = serverGame.getInGameLobbyWatcher();
 		if (watcher == null || !watcher.isActive())
 		{
-			return;
+			return watcher;
 		}
 		final JMenu lobby = new JMenu("Lobby");
 		menuBar.add(lobby);
 		lobby.add(new EditGameCommentAction(watcher, m_frame));
 		lobby.add(new RemoveGameFromLobbyAction(watcher));
+		return watcher;
 	}
 	
 	/**
 	 * @param menuBar
 	 */
-	protected void createNetworkMenu(final JMenuBar menuBar)
+	protected void createNetworkMenu(final JMenuBar menuBar, final InGameLobbyWatcher watcher)
 	{
 		// revisit
 		// if we are not a client or server game
@@ -99,7 +101,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		addBootPlayer(menuNetwork);
 		addBanPlayer(menuNetwork);
 		addMutePlayer(menuNetwork);
-		addSetGamePassword(menuNetwork);
+		addSetGamePassword(menuNetwork, watcher);
 		addShowPlayers(menuNetwork);
 		menuBar.add(menuNetwork);
 	}
@@ -169,12 +171,12 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	/**
 	 * @param menuGame
 	 */
-	protected void addSetGamePassword(final JMenu parentMenu)
+	protected void addSetGamePassword(final JMenu parentMenu, final InGameLobbyWatcher watcher)
 	{
 		if (!getGame().getMessenger().isServer())
 			return;
 		final IServerMessenger messenger = (IServerMessenger) getGame().getMessenger();
-		parentMenu.add(new SetPasswordAction(this, (ClientLoginValidator) messenger.getLoginValidator()));
+		parentMenu.add(new SetPasswordAction(this, watcher, (ClientLoginValidator) messenger.getLoginValidator()));
 	}
 	
 	/**
@@ -437,7 +439,9 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							editorPane.setText(notes);
 							final JScrollPane scroll = new JScrollPane(editorPane);
 							final JDialog dialog = new JDialog(m_frame);
-							dialog.setModal(true);
+							// dialog.setModal(true);
+							dialog.setModalityType(ModalityType.MODELESS);
+							dialog.setAlwaysOnTop(true);
 							dialog.add(scroll, BorderLayout.CENTER);
 							final JPanel buttons = new JPanel();
 							final JButton button = new JButton(new AbstractAction("OK")
@@ -447,6 +451,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 								public void actionPerformed(final ActionEvent e)
 								{
 									dialog.setVisible(false);
+									dialog.dispose();
 								}
 							});
 							buttons.add(button);
@@ -481,7 +486,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 								}
 							});
 							dialog.setVisible(true);
-							dialog.dispose();
+							// dialog.dispose();
 						}
 					});
 					// JOptionPane.showMessageDialog(m_frame, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);

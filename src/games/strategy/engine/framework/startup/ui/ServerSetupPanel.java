@@ -405,7 +405,7 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 		rVal.add(new BootPlayerAction(this, m_model.getMessenger()));
 		rVal.add(new BanPlayerAction(this, m_model.getMessenger()));
 		rVal.add(new MutePlayerAction(this, m_model.getMessenger()));
-		rVal.add(new SetPasswordAction(this, (ClientLoginValidator) m_model.getMessenger().getLoginValidator()));
+		rVal.add(new SetPasswordAction(this, m_lobbyWatcher, (ClientLoginValidator) m_model.getMessenger().getLoginValidator()));
 		if (m_lobbyWatcher != null && m_lobbyWatcher.isActive())
 		{
 			rVal.add(new EditGameCommentAction(m_lobbyWatcher, ServerSetupPanel.this));

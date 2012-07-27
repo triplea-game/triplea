@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.networkMaintenance;
 
 import games.strategy.engine.framework.startup.login.ClientLoginValidator;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -17,13 +18,15 @@ public class SetPasswordAction extends AbstractAction
 	private static final long serialVersionUID = -7767288210554177480L;
 	private final ClientLoginValidator m_validator;
 	private final Component m_parent;
+	private final InGameLobbyWatcher m_lobbyWatcher;
 	
-	public SetPasswordAction(final Component parent, final ClientLoginValidator validator)
+	public SetPasswordAction(final Component parent, final InGameLobbyWatcher watcher, final ClientLoginValidator validator)
 	{
 		super("Set Game Password...");
 		// TODO Auto-generated constructor stub
 		m_validator = validator;
 		m_parent = parent;
+		m_lobbyWatcher = watcher;
 	}
 	
 	public void actionPerformed(final ActionEvent e)
@@ -38,13 +41,20 @@ public class SetPasswordAction extends AbstractAction
 		if (rVal != JOptionPane.OK_OPTION)
 			return;
 		final String password = new String(passwordField.getPassword());
+		final boolean passworded;
 		if (password.trim().length() > 0)
 		{
 			m_validator.setGamePassword(password);
+			passworded = true;
 		}
 		else
 		{
 			m_validator.setGamePassword(null);
+			passworded = false;
+		}
+		if (m_lobbyWatcher != null && m_lobbyWatcher.isActive())
+		{
+			m_lobbyWatcher.setPassworded(passworded);
 		}
 	}
 }

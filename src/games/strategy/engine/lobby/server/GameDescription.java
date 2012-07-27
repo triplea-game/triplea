@@ -15,6 +15,7 @@ package games.strategy.engine.lobby.server;
 
 import games.strategy.net.INode;
 import games.strategy.net.Node;
+import games.strategy.util.Version;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -70,14 +71,17 @@ public class GameDescription implements Externalizable, Cloneable
 	private String m_hostName;
 	private String m_comment;
 	
-	// if you add a field, add it to write/read object as well
-	// for externalizable
+	private boolean m_passworded;
+	private Version m_engineVersion;
+	private String m_gameVersion;
+	
+	// if you add a field, add it to write/read object as well for Externalizable
 	public GameDescription()
 	{
 	}
 	
 	public GameDescription(final INode hostedBy, final int port, final Date startDateTime, final String gameName, final int playerCount, final GameStatus status, final String round,
-				final String hostName, final String comment)
+				final String hostName, final String comment, final boolean passworded, final Version engineVersion, final String gameVersion)
 	{
 		m_hostName = hostName;
 		m_hostedBy = hostedBy;
@@ -88,6 +92,9 @@ public class GameDescription implements Externalizable, Cloneable
 		m_status = status;
 		m_round = round;
 		m_comment = comment;
+		m_passworded = passworded;
+		m_engineVersion = engineVersion;
+		m_gameVersion = gameVersion;
 	}
 	
 	@Override
@@ -152,6 +159,39 @@ public class GameDescription implements Externalizable, Cloneable
 	{
 		m_version++;
 		m_status = status;
+	}
+	
+	public void setPassworded(final boolean passworded)
+	{
+		m_version++;
+		m_passworded = passworded;
+	}
+	
+	public void setEngineVersion(final Version engineVersion)
+	{
+		m_version++;
+		m_engineVersion = engineVersion;
+	}
+	
+	public void setGameVersion(final String gameVersion)
+	{
+		m_version++;
+		m_gameVersion = gameVersion;
+	}
+	
+	public boolean getPassworded()
+	{
+		return m_passworded;
+	}
+	
+	public Version getEngineVersion()
+	{
+		return m_engineVersion;
+	}
+	
+	public String getGameVersion()
+	{
+		return m_gameVersion;
 	}
 	
 	public String getRound()
@@ -225,6 +265,9 @@ public class GameDescription implements Externalizable, Cloneable
 		m_hostName = in.readUTF();
 		m_comment = in.readUTF();
 		m_gameName = in.readUTF();
+		m_passworded = in.readBoolean();
+		m_engineVersion = new Version(in.readUTF());
+		m_gameVersion = in.readUTF();
 	}
 	
 	public void writeExternal(final ObjectOutput out) throws IOException
@@ -239,6 +282,9 @@ public class GameDescription implements Externalizable, Cloneable
 		out.writeUTF(m_hostName);
 		out.writeUTF(m_comment);
 		out.writeUTF(m_gameName);
+		out.writeBoolean(m_passworded);
+		out.writeUTF(m_engineVersion.toString());
+		out.writeUTF(m_gameVersion);
 	}
 	
 	@Override

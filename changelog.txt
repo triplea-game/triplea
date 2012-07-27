@@ -1,4 +1,8 @@
 Changes for 1.6.1.1
+* Adding Passworded (PW) column to lobby. (veqryn)
+
+* Making game notes non-modal (doesn't stop all action til closed) and making it always on top so that you can read it while you play. (veqryn)
+
 * Fixing movement validation to allow submarines that are transports to carry land units through other ships. (veqryn)
 
 * Forcing default map selection when TripleA starts to avoid the last file path uri used if it is not within the user's triplea folder or the program's folder. (veqryn)

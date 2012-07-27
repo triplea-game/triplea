@@ -287,7 +287,7 @@ class TechRollPanel extends JPanel
 		title.setBorder(new javax.swing.border.EmptyBorder(5, 5, 5, 5));
 		m_textField = new ScrollableTextField(0, PUs / TechTracker.getTechCost(player));
 		m_textField.addChangeListener(m_listener);
-		final JLabel costLabel = new JLabel("x5");
+		final JLabel costLabel = new JLabel("x" + TechTracker.getTechCost(m_player));
 		setLabel(PUs);
 		final int space = 0;
 		add(title, new GridBagConstraints(0, 0, 3, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5, 5, space, space), 0, 0));

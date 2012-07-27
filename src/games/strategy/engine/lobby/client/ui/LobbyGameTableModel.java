@@ -37,7 +37,7 @@ public class LobbyGameTableModel extends AbstractTableModel
 	
 	enum Column
 	{
-		Host, Name, Round, Players, Started, Status, Comments, GUID
+		Host, Name, Round, Players, PW, Started, Status, Comments, GUID
 	}
 	
 	private final IMessenger m_messenger;
@@ -174,6 +174,8 @@ public class LobbyGameTableModel extends AbstractTableModel
 				return description.getGameName();
 			case Players:
 				return description.getPlayerCount();
+			case PW:
+				return (description.getPassworded() ? "Y" : "");
 			case Status:
 				return description.getStatus();
 			case Comments:
