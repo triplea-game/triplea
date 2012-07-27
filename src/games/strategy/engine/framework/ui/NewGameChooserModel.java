@@ -67,7 +67,7 @@ public class NewGameChooserModel extends DefaultListModel
 		return rVal;
 	}
 	
-	private static File getDefaultMapsDir()
+	public static File getDefaultMapsDir()
 	{
 		return new File(GameRunner.getRootFolder(), "maps");
 	}

@@ -254,7 +254,11 @@ public class GameSelectorModel extends Observable
 		NewGameChooserEntry selectedGame = null;
 		// just in case flush doesn't work, we still force it again here
 		final String userPreferredDefaultGameURI = (forceFactoryDefault ? DEFAULT_GAME_URI : prefs.get(DEFAULT_GAME_URI_PREF, DEFAULT_GAME_URI));
-		if (!forceFactoryDefault && userPreferredDefaultGameURI != null && userPreferredDefaultGameURI.length() > 0)
+		// we don't want to load a game file by default that is not within the map folders we can load. (ie: if a previous version of triplea was using running a game within its root folder, we shouldn't open it)
+		final String user = GameRunner.getUserRootFolder().toURI().toString();
+		final String root = GameRunner.getRootFolder().toURI().toString();
+		if (!forceFactoryDefault && userPreferredDefaultGameURI != null && userPreferredDefaultGameURI.length() > 0
+					&& (userPreferredDefaultGameURI.indexOf(root) != -1 || userPreferredDefaultGameURI.indexOf(user) != -1))
 		{
 			// if the user has a preferred URI, then we load it, and don't bother parsing or doing anything with the whole game model list
 			boolean refreshedAlready = false;

@@ -453,7 +453,8 @@ public class MoveValidator
 		// if we are all air, then its ok
 		if (Match.allMatch(units, Matches.UnitIsAir))
 			return result;
-		if (isSubmersibleSubsAllowed(data) && Match.allMatch(units, Matches.UnitIsSub))
+		// subs may possibly carry units...
+		if (isSubmersibleSubsAllowed(data) && Match.allMatch(Match.getMatches(units, Matches.unitIsBeingTransported().invert()), Matches.UnitIsSub))
 		{
 			// this is ok unless there are destroyer on the path
 			if (MoveValidator.enemyDestroyerOnPath(route, player, data))
