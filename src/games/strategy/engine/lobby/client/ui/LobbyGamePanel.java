@@ -13,8 +13,10 @@
  */
 package games.strategy.engine.lobby.client.ui;
 
+import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.server.GameDescription;
 import games.strategy.engine.lobby.server.IModeratorController;
@@ -23,6 +25,7 @@ import games.strategy.net.INode;
 import games.strategy.net.Messengers;
 import games.strategy.net.Node;
 import games.strategy.ui.TableSorter;
+import games.strategy.util.Version;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -35,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -85,13 +89,17 @@ public class LobbyGamePanel extends JPanel
 		// by default, sort newest first
 		final int nameColumn = m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name);
 		m_tableSorter.setSortingStatus(nameColumn, TableSorter.ASCENDING);
-		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players)).setPreferredWidth(45);
+		// these should add up to 700 at most
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Players)).setPreferredWidth(42);
 		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Round)).setPreferredWidth(40);
-		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.PW)).setPreferredWidth(20);
-		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started)).setPreferredWidth(50);
-		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status)).setPreferredWidth(150);
-		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name)).setPreferredWidth(150);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.PW)).setPreferredWidth(22);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.GV)).setPreferredWidth(32);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.EV)).setPreferredWidth(42);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Started)).setPreferredWidth(54);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Status)).setPreferredWidth(110);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Name)).setPreferredWidth(148);
 		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Comments)).setPreferredWidth(150);
+		m_gameTable.getColumnModel().getColumn(m_gameTableModel.getColumnIndex(LobbyGameTableModel.Column.Host)).setPreferredWidth(60);
 		m_gameTable.setDefaultRenderer(Date.class, new DefaultTableCellRenderer()
 		{
 			private static final long serialVersionUID = -2807387751127250972L;
@@ -193,8 +201,39 @@ public class LobbyGamePanel extends JPanel
 		// we sort the table, so get the correct index
 		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
 		final GameDescription description = m_gameTableModel.get(modelIndex);
+		final Version engineVersionOfGameToJoin = new Version(description.getEngineVersion());
 		final List<String> commands = new ArrayList<String>();
-		populateBasicJavaArgs(commands);
+		if (EngineVersion.VERSION.equals(engineVersionOfGameToJoin))
+		{
+			populateBasicJavaArgs(commands);
+		}
+		else
+		{
+			final String newClassPath;
+			try
+			{
+				newClassPath = findOldJar(engineVersionOfGameToJoin, false);
+			} catch (final Exception e)
+			{
+				JOptionPane.showMessageDialog(getParent(), "Host is using a different engine than you, and can not find correct engine: " + engineVersionOfGameToJoin.toStringFull("_"),
+							"Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			// ask user if we really want to do this?
+			final String messageString = "<html>This TripleA engine is version "
+						+ EngineVersion.VERSION.toString()
+						+ " and you are trying to join a game made with version "
+						+ engineVersionOfGameToJoin.toString()
+						+ "<br>However, this TripleA can only play with engines that are the exact same version as itself (x_x_x_x)."
+						+ "<br><br>TripleA now comes with older engines included with it, and has found the engine used by the host. This is a new feature and is in 'beta' stage."
+						+ "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will join the host's game."
+						+ "<br>Your current instance will not be closed. Please report any bugs or issues."
+						+ "<br><br>Do you wish to continue?</html>";
+			final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to join hosted game?", JOptionPane.YES_NO_OPTION);
+			if (answer != JOptionPane.YES_OPTION)
+				return;
+			populateBasicJavaArgs(commands, newClassPath);
+		}
 		commands.add("-D" + GameRunner2.TRIPLEA_CLIENT_PROPERTY + "=true");
 		commands.add("-D" + GameRunner2.TRIPLEA_PORT_PROPERTY + "=" + description.getPort());
 		commands.add("-D" + GameRunner2.TRIPLEA_HOST_PROPERTY + "=" + description.getHostedBy().getAddress().getHostAddress());
@@ -202,6 +241,36 @@ public class LobbyGamePanel extends JPanel
 		final String javaClass = "games.strategy.engine.framework.GameRunner";
 		commands.add(javaClass);
 		exec(commands);
+	}
+	
+	public static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException
+	{
+		if (EngineVersion.VERSION.equals(oldVersionNeeded, ignoreMicro))
+			return System.getProperty("java.class.path");
+		// so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was used for this savegame, and if so try to run it
+		// System.out.println("System classpath: " + System.getProperty("java.class.path"));
+		// we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0 savegames.
+		final String jarName = "triplea_" + oldVersionNeeded.toStringFull("_", ignoreMicro);
+		final File oldJarsFolder = new File(GameRunner.getRootFolder(), "old/");
+		final File[] files = oldJarsFolder.listFiles();
+		if (files == null)
+			throw new IOException("Can not find 'old' engine jars folder");
+		File ourOldJar = null;
+		for (final File f : Arrays.asList(files))
+		{
+			final String jarPath = f.getCanonicalPath();
+			if (jarPath.indexOf(jarName) != -1 && jarPath.indexOf(".jar") != -1)
+			{
+				ourOldJar = f;
+				break;
+			}
+		}
+		if (ourOldJar == null)
+			throw new IOException("Can not find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+		final String newClassPath = ourOldJar.getCanonicalPath();
+		if (newClassPath == null || newClassPath.length() <= 0)
+			throw new IOException("Can not find 'old' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+		return newClassPath;
 	}
 	
 	protected void hostGame()
@@ -239,6 +308,28 @@ public class LobbyGamePanel extends JPanel
 		populateBasicJavaArgs(commands, classpath);
 		if (savegamePath != null && savegamePath.length() > 0)
 			commands.add("-D" + GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
+		// add in any existing command line items
+		for (final String property : GameRunner2.getProperties())
+		{
+			// we add game property above, and we add version bin in the populateBasicJavaArgs
+			if (GameRunner2.TRIPLEA_GAME_PROPERTY.equals(property) || GameRunner2.TRIPLEA_ENGINE_VERSION_BIN.equals(property))
+				continue;
+			final String value = System.getProperty(property);
+			if (value != null)
+			{
+				commands.add("-D" + property + "=" + value);
+			}
+			else if (GameRunner2.LOBBY_HOST.equals(property) || GameRunner2.LOBBY_PORT.equals(property) || GameRunner2.LOBBY_GAME_HOSTED_BY.equals(property))
+			{
+				// for these 3 properties, we clear them after hosting, but back them up.
+				final String oldValue = System.getProperty(property + GameRunner2.OLD_EXTENSION);
+				if (oldValue != null)
+				{
+					commands.add("-D" + property + "=" + oldValue);
+				}
+			}
+		}
+		// classpath for main
 		final String javaClass = "games.strategy.engine.framework.GameRunner";
 		commands.add(javaClass);
 		// System.out.println("Commands: " + commands);
@@ -256,7 +347,8 @@ public class LobbyGamePanel extends JPanel
 		// we sort the table, so get the correct index
 		final int modelIndex = m_tableSorter.modelIndex(selectedIndex);
 		final GameDescription description = m_gameTableModel.get(modelIndex);
-		final INode lobbyWatcherNode = new Node(description.getHostedBy().getName() + "_lobby_watcher", description.getHostedBy().getAddress(), description.getHostedBy().getPort());
+		final INode lobbyWatcherNode = new Node(description.getHostedBy().getName() + "_" + InGameLobbyWatcher.LOBBY_WATCHER_NAME, description.getHostedBy().getAddress(),
+					description.getHostedBy().getPort());
 		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
 		controller.boot(lobbyWatcherNode);
 		JOptionPane.showMessageDialog(null, "The game you selected has been disconnected from the lobby.");
@@ -336,6 +428,19 @@ public class LobbyGamePanel extends JPanel
 			if (!icons.exists())
 				throw new IllegalStateException("Icon file not found");
 			commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
+		}
+		final String version = System.getProperty(GameRunner2.TRIPLEA_ENGINE_VERSION_BIN);
+		if (version != null && version.length() > 0)
+		{
+			final Version testVersion;
+			try
+			{
+				testVersion = new Version(version);
+				commands.add("-D" + GameRunner2.TRIPLEA_ENGINE_VERSION_BIN + "=" + testVersion.toString());
+			} catch (final Exception e)
+			{
+				// nothing
+			}
 		}
 	}
 	

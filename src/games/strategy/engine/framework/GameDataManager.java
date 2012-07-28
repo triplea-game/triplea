@@ -20,7 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -93,26 +92,7 @@ public class GameDataManager
 				// so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was used for this savegame, and if so try to run it
 				try
 				{
-					// System.out.println("System classpath: " + System.getProperty("java.class.path"));
-					// we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0 savegames.
-					final String jarName = "triplea_" + readVersion.toStringFull("_", true);
-					final File oldJarsFolder = new File(GameRunner.getRootFolder(), "old/");
-					final File[] files = oldJarsFolder.listFiles();
-					if (files == null)
-						throw new IOException(error);
-					File ourOldJar = null;
-					for (final File f : Arrays.asList(files))
-					{
-						final String jarPath = f.getCanonicalPath();
-						if (jarPath.indexOf(jarName) != -1 && jarPath.indexOf(".jar") != -1)
-						{
-							ourOldJar = f;
-							break;
-						}
-					}
-					if (ourOldJar == null)
-						throw new IOException(error);
-					final String newClassPath = ourOldJar.getCanonicalPath();
+					final String newClassPath = LobbyGamePanel.findOldJar(readVersion, true);
 					// ask user if we really want to do this?
 					final String messageString = "<html>This TripleA engine is version "
 								+ EngineVersion.VERSION.toString()

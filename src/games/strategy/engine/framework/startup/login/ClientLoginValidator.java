@@ -75,7 +75,7 @@ public class ClientLoginValidator implements ILoginValidator
 			return "Invalid version " + versionString;
 		// check for version
 		final Version clientVersion = new Version(versionString);
-		if (!clientVersion.equals(EngineVersion.VERSION))
+		if (!EngineVersion.VERSION.equals(clientVersion, false))
 		{
 			final String error = "Client is using " + clientVersion + " but server requires version " + EngineVersion.VERSION;
 			return error;

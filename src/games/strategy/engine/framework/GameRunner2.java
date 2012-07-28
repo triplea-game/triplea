@@ -6,6 +6,7 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.triplea.ui.TripleaMenu;
+import games.strategy.util.Version;
 
 import java.util.List;
 import java.util.logging.LogManager;
@@ -32,7 +33,19 @@ public class GameRunner2
 	public static final String LOBBY_HOST = "triplea.lobby.host";
 	public static final String LOBBY_GAME_COMMENTS = "triplea.lobby.game.comments";
 	public static final String LOBBY_GAME_HOSTED_BY = "triplea.lobby.game.hostedBy";
+	// what is the default version of triplea (the one in the "bin" folder)
+	public static final String TRIPLEA_ENGINE_VERSION_BIN = "triplea.engine.version.bin";
+	
+	// do not include this in the getProperties list. they are only for loading an old savegame.
+	public static final String OLD_EXTENSION = ".old";
+	
 	private static WaitWindow waitWindow;
+	
+	public static String[] getProperties()
+	{
+		return new String[] { TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_HOST_PROPERTY, TRIPLEA_GAME_PROPERTY, TRIPLEA_NAME_PROPERTY,
+					TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY, TRIPLEA_ENGINE_VERSION_BIN };
+	}
 	
 	public static void main(final String[] args)
 	{
@@ -82,8 +95,7 @@ public class GameRunner2
 	 */
 	private static void handleCommandLineArgs(final String[] args)
 	{
-		final String[] properties = new String[] { TRIPLEA_SERVER_PROPERTY, TRIPLEA_CLIENT_PROPERTY, TRIPLEA_PORT_PROPERTY, TRIPLEA_HOST_PROPERTY, TRIPLEA_GAME_PROPERTY, TRIPLEA_NAME_PROPERTY,
-					TRIPLEA_SERVER_PASSWORD_PROPERTY, TRIPLEA_STARTED, LOBBY_PORT, LOBBY_HOST, LOBBY_GAME_COMMENTS, LOBBY_GAME_HOSTED_BY };
+		final String[] properties = getProperties();
 		// if only 1 arg, it must be the game name
 		// find it
 		// optionally, it may not start with the property name
@@ -99,38 +111,62 @@ public class GameRunner2
 				value = args[0];
 			}
 			System.setProperty(TRIPLEA_GAME_PROPERTY, value);
-			return;
 		}
-		boolean usagePrinted = false;
-		for (int argIndex = 0; argIndex < args.length; argIndex++)
+		else
 		{
-			boolean found = false;
-			String arg = args[argIndex];
-			final int indexOf = arg.indexOf('=');
-			if (indexOf > 0)
+			boolean usagePrinted = false;
+			for (int argIndex = 0; argIndex < args.length; argIndex++)
 			{
-				arg = arg.substring(0, indexOf);
-				for (int propIndex = 0; propIndex < properties.length; propIndex++)
+				boolean found = false;
+				String arg = args[argIndex];
+				final int indexOf = arg.indexOf('=');
+				if (indexOf > 0)
 				{
-					if (arg.equals(properties[propIndex]))
+					arg = arg.substring(0, indexOf);
+					for (int propIndex = 0; propIndex < properties.length; propIndex++)
 					{
-						final String value = getValue(args[argIndex]);
-						System.getProperties().setProperty(properties[propIndex], value);
-						System.out.println(properties[propIndex] + ":" + value);
-						found = true;
-						break;
+						if (arg.equals(properties[propIndex]))
+						{
+							final String value = getValue(args[argIndex]);
+							System.getProperties().setProperty(properties[propIndex], value);
+							System.out.println(properties[propIndex] + ":" + value);
+							found = true;
+							break;
+						}
+					}
+				}
+				if (!found)
+				{
+					System.out.println("Unrecogized:" + args[argIndex]);
+					if (!usagePrinted)
+					{
+						usagePrinted = true;
+						usage();
 					}
 				}
 			}
-			if (!found)
+		}
+		final String version = System.getProperty(TRIPLEA_ENGINE_VERSION_BIN);
+		if (version != null && version.length() > 0)
+		{
+			final Version testVersion;
+			try
 			{
-				System.out.println("Unrecogized:" + args[argIndex]);
-				if (!usagePrinted)
-				{
-					usagePrinted = true;
-					usage();
-				}
+				testVersion = new Version(version);
+				// if successful we don't do anything
+				if (!EngineVersion.VERSION.equals(testVersion, false))
+					System.out.println("Current Engine version in use: " + EngineVersion.VERSION.toString());
+			} catch (final Exception e)
+			{
+				System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, EngineVersion.VERSION.toString());
+				System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + EngineVersion.VERSION.toString());
+				return;
 			}
+		}
+		else
+		{
+			System.getProperties().setProperty(TRIPLEA_ENGINE_VERSION_BIN, EngineVersion.VERSION.toString());
+			System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + EngineVersion.VERSION.toString());
 		}
 	}
 	

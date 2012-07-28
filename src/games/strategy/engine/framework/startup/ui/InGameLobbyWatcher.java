@@ -14,6 +14,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.debug.HeartBeat;
+import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.GameRunner2;
@@ -113,6 +114,12 @@ public class InGameLobbyWatcher
 		System.getProperties().remove(GameRunner2.LOBBY_HOST);
 		System.getProperties().remove(GameRunner2.LOBBY_PORT);
 		System.getProperties().remove(GameRunner2.LOBBY_GAME_HOSTED_BY);
+		
+		// add them as temporary properties (in case we load an old savegame and need them again)
+		System.getProperties().setProperty(GameRunner2.LOBBY_HOST + GameRunner2.OLD_EXTENSION, host);
+		System.getProperties().setProperty(GameRunner2.LOBBY_PORT + GameRunner2.OLD_EXTENSION, port);
+		System.getProperties().setProperty(GameRunner2.LOBBY_GAME_HOSTED_BY + GameRunner2.OLD_EXTENSION, hostedBy);
+		
 		final IConnectionLogin login = new IConnectionLogin()
 		{
 			public void notifyFailedLogin(final String message)
@@ -183,7 +190,7 @@ public class InGameLobbyWatcher
 		synchronized (m_mutex)
 		{
 			m_gameDescription.setGameName(m_gameSelectorModel.getGameName());
-			// m_gameDescription.setGameVersion(m_gameSelectorModel.getGameVersion());
+			m_gameDescription.setGameVersion(m_gameSelectorModel.getGameVersion());
 			postUpdate();
 		}
 	}
@@ -196,7 +203,7 @@ public class InGameLobbyWatcher
 		final String password = System.getProperty(GameRunner2.TRIPLEA_SERVER_PASSWORD_PROPERTY);
 		final boolean passworded = password != null && password.length() > 0;
 		m_gameDescription = new GameDescription(m_messenger.getLocalNode(), m_gameMessenger.getLocalNode().getPort(), new Date(), "???", 1, GameStatus.WAITING_FOR_PLAYERS, "-", m_gameMessenger
-					.getLocalNode().getName(), System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS), passworded, null, null);
+					.getLocalNode().getName(), System.getProperty(GameRunner2.LOBBY_GAME_COMMENTS), passworded, EngineVersion.VERSION.toString(), "0");
 		final ILobbyGameController controller = (ILobbyGameController) m_remoteMessenger.getRemote(ILobbyGameController.GAME_CONTROLLER_REMOTE);
 		synchronized (m_mutex)
 		{

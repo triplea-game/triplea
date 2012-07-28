@@ -1,4 +1,10 @@
 Changes for 1.6.1.1
+* Allowing hosts to load an old savegame, causing old engine to join lobby and host directly, if they have the jar to run it. (veqryn)
+
+* Allowing members in online lobby to join games hosted by older versions of triplea, if they have the jar to run it. (veqryn)
+
+* Adding game version (GV), and engine version (EV), columns to lobby. (veqryn)
+
 * Fixing many bugs in the handling of command line arguments. (veqryn)
 
 * Adding Passworded (PW) column to lobby. (veqryn)
