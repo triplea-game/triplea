@@ -51,6 +51,8 @@ public abstract class SetupPanel extends JPanel
 	 */
 	public abstract boolean canGameStart();
 	
+	public abstract void setWidgetActivation();
+	
 	public void preStartGame()
 	{
 	}

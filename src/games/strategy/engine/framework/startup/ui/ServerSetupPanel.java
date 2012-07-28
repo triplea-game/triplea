@@ -203,7 +203,8 @@ public class ServerSetupPanel extends SetupPanel implements IRemoteModelListener
 	{
 	}
 	
-	private void setWidgetActivation()
+	@Override
+	public void setWidgetActivation()
 	{
 	}
 	

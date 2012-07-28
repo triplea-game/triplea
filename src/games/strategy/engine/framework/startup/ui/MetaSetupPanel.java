@@ -382,8 +382,21 @@ public class MetaSetupPanel extends SetupPanel
 		return serverPropsURL;
 	}
 	
-	private void setWidgetActivation()
+	@Override
+	public void setWidgetActivation()
 	{
+		if (m_model == null || m_model.getGameSelectorModel() == null || m_model.getGameSelectorModel().getGameData() == null)
+		{
+			m_startLocal.setEnabled(false);
+			m_startPBEM.setEnabled(false);
+			m_hostGame.setEnabled(false);
+		}
+		else
+		{
+			m_startLocal.setEnabled(true);
+			m_startPBEM.setEnabled(true);
+			m_hostGame.setEnabled(true);
+		}
 	}
 	
 	@Override

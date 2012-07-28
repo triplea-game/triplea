@@ -145,7 +145,8 @@ public class ClientSetupPanel extends SetupPanel
 		m_model.setRemoteModelListener(m_listener);
 	}
 	
-	private void setWidgetActivation()
+	@Override
+	public void setWidgetActivation()
 	{
 	}
 	

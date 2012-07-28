@@ -18,6 +18,8 @@
  */
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.ui.IntTextField;
 
 import java.awt.BorderLayout;
@@ -191,6 +193,10 @@ public class ServerOptions extends JDialog
 		m_passwordField.setEnabled(m_requirePasswordCheckBox.isSelected());
 		final Color backGround = m_passwordField.isEnabled() ? m_portField.getBackground() : getBackground();
 		m_passwordField.setBackground(backGround);
+		if (GameRunner.areWeOldExtraJar() && System.getProperty(GameRunner2.TRIPLEA_HOST_PROPERTY, "false").equalsIgnoreCase("true"))
+		{
+			setNameEditable(false);
+		}
 	}
 	
 	private final Action m_okAction = new AbstractAction("OK")

@@ -77,7 +77,8 @@ public class LocalSetupPanel extends SetupPanel implements Observer
 		m_gameSelectorModel.addObserver(this);
 	}
 	
-	private void setWidgetActivation()
+	@Override
+	public void setWidgetActivation()
 	{
 	}
 	

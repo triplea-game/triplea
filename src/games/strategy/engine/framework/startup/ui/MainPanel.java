@@ -239,6 +239,7 @@ public class MainPanel extends JPanel implements Observer
 			});
 			return;
 		}
+		m_gameTypePanelModel.setWidgetActivation();
 		if (m_gameSetupPanel != null)
 		{
 			m_playButton.setEnabled(m_gameSetupPanel.canGameStart());

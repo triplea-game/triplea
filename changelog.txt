@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Disallowing starting of games if game data is null. (veqryn)
+
 * Allowing hosts to load an old savegame, causing old engine to join lobby and host directly, if they have the jar to run it. (veqryn)
 
 * Allowing members in online lobby to join games hosted by older versions of triplea, if they have the jar to run it. (veqryn)

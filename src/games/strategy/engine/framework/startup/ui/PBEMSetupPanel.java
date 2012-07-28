@@ -7,7 +7,15 @@ import games.strategy.engine.framework.startup.launcher.LocalLauncher;
 import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
 import games.strategy.engine.framework.startup.ui.editors.SelectAndViewEditor;
-import games.strategy.engine.pbem.*;
+import games.strategy.engine.pbem.GenericEmailSender;
+import games.strategy.engine.pbem.GmailEmailSender;
+import games.strategy.engine.pbem.HotmailEmailSender;
+import games.strategy.engine.pbem.IEmailSender;
+import games.strategy.engine.pbem.IForumPoster;
+import games.strategy.engine.pbem.NullEmailSender;
+import games.strategy.engine.pbem.NullForumPoster;
+import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.pbem.TripleAWarClubForumPoster;
 import games.strategy.engine.random.IRemoteDiceServer;
 import games.strategy.engine.random.InternalDiceServer;
 import games.strategy.engine.random.PBEMDiceRoller;
@@ -100,6 +108,12 @@ public class PBEMSetupPanel extends SetupPanel implements Observer
 		{
 			loadAll();
 		}
+		setWidgetActivation();
+	}
+	
+	@Override
+	public void setWidgetActivation()
+	{
 	}
 	
 	// -----------------------------------------------------------------------
