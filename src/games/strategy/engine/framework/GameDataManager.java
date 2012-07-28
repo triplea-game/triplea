@@ -85,6 +85,12 @@ public class GameDataManager
 			final Version readVersion = (Version) input.readObject();
 			if (!readVersion.equals(EngineVersion.VERSION))
 			{
+				/*if (GameRunner.areWeOldExtraJar())
+				{
+					throw new IOException("<html>Please run the default TripleA and try to open this game again. " +
+								"<br>This TripleA engine is old and kept only for backwards compatibility and can only open savegames created by engines with these first 3 version digits: " +
+								EngineVersion.VERSION.toStringFull("_", true) + "</html>");
+				}*/
 				final String error = "Incompatible engine versions, and no old engine found. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion;
 				if (savegamePath == null)
 					throw new IOException(error);

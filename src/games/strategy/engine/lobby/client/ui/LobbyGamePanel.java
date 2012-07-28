@@ -247,6 +247,49 @@ public class LobbyGamePanel extends JPanel
 	{
 		if (EngineVersion.VERSION.equals(oldVersionNeeded, ignoreMicro))
 			return System.getProperty("java.class.path");
+		// first, see if the default/main triplea can run it
+		if (GameRunner.areWeOldExtraJar())
+		{
+			final String version = System.getProperty(GameRunner2.TRIPLEA_ENGINE_VERSION_BIN);
+			if (version != null && version.length() > 0)
+			{
+				Version defaultVersion = null;
+				try
+				{
+					defaultVersion = new Version(version);
+				} catch (final Exception e)
+				{
+					// nothing, just continue
+				}
+				if (defaultVersion != null)
+				{
+					if (defaultVersion.equals(oldVersionNeeded, ignoreMicro))
+					{
+						final String jarName = "triplea.jar";
+						final File binFolder = new File(GameRunner.getRootFolder(), "bin/");
+						final File[] files = binFolder.listFiles();
+						if (files == null)
+							throw new IOException("Can not find 'bin' engine jars folder");
+						File ourBinJar = null;
+						for (final File f : Arrays.asList(files))
+						{
+							final String jarPath = f.getCanonicalPath();
+							if (jarPath.indexOf(jarName) != -1)
+							{
+								ourBinJar = f;
+								break;
+							}
+						}
+						if (ourBinJar == null)
+							throw new IOException("Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+						final String newClassPath = ourBinJar.getCanonicalPath();
+						if (newClassPath == null || newClassPath.length() <= 0)
+							throw new IOException("Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+						return newClassPath;
+					}
+				}
+			}
+		}
 		// so, what we do here is try to see if our installed copy of triplea includes older jars with it that are the same engine as was used for this savegame, and if so try to run it
 		// System.out.println("System classpath: " + System.getProperty("java.class.path"));
 		// we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0 savegames.

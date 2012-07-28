@@ -193,7 +193,7 @@ public class ServerOptions extends JDialog
 		m_passwordField.setEnabled(m_requirePasswordCheckBox.isSelected());
 		final Color backGround = m_passwordField.isEnabled() ? m_portField.getBackground() : getBackground();
 		m_passwordField.setBackground(backGround);
-		if (GameRunner.areWeOldExtraJar() && System.getProperty(GameRunner2.TRIPLEA_HOST_PROPERTY, "false").equalsIgnoreCase("true"))
+		if (GameRunner.areWeOldExtraJar() && System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true"))
 		{
 			setNameEditable(false);
 		}

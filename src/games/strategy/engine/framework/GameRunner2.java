@@ -154,6 +154,7 @@ public class GameRunner2
 			{
 				testVersion = new Version(version);
 				// if successful we don't do anything
+				System.out.println(TRIPLEA_ENGINE_VERSION_BIN + ":" + version);
 				if (!EngineVersion.VERSION.equals(testVersion, false))
 					System.out.println("Current Engine version in use: " + EngineVersion.VERSION.toString());
 			} catch (final Exception e)
