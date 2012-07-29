@@ -180,14 +180,6 @@ public class Matches
 				return false;
 		}
 	};
-	public static final Match<Unit> UnitCanMove = new Match<Unit>()
-	{
-		@Override
-		public boolean match(final Unit u)
-		{
-			return UnitAttachment.get(u.getType()).getMovement(u.getOwner()) > 0;
-		}
-	};
 	public static final Match<Unit> UnitIsDestroyer = new Match<Unit>()
 	{
 		@Override
@@ -290,19 +282,6 @@ public class Matches
 				if (ua.getMovement(id) <= 0)
 					return false;
 				return ua.getAttack(id) > 0;
-			}
-		};
-	}
-	
-	public static Match<UnitType> unitTypeIsStatic(final PlayerID id)
-	{
-		return new Match<UnitType>()
-		{
-			@Override
-			public boolean match(final UnitType uT)
-			{
-				final UnitAttachment ua = UnitAttachment.get(uT);
-				return ua.getMovement(id) <= 0;
 			}
 		};
 	}
@@ -1242,6 +1221,49 @@ public class Matches
 		}
 	};
 	public static final Match<Unit> UnitIsNotAA = new InverseMatch<Unit>(UnitIsAAforAnything);
+	public static final Match<Unit> UnitMaxAAattacksIsInfinite = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			return UnitTypeMaxAAattacksIsInfinite.match(obj.getType());
+		}
+	};
+	public static final Match<UnitType> UnitTypeMaxAAattacksIsInfinite = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType obj)
+		{
+			final UnitAttachment ua = UnitAttachment.get(obj);
+			return ua.getMaxAAattacks() == -1;
+		}
+	};
+	public static final Match<Unit> UnitMayOverStackAA = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			return UnitTypeMayOverStackAA.match(obj.getType());
+		}
+	};
+	public static final Match<UnitType> UnitTypeMayOverStackAA = new Match<UnitType>()
+	{
+		@Override
+		public boolean match(final UnitType obj)
+		{
+			final UnitAttachment ua = UnitAttachment.get(obj);
+			return ua.getMayOverStackAA();
+		}
+	};
+	public static final Match<Unit> UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero = new Match<Unit>()
+	{
+		@Override
+		public boolean match(final Unit obj)
+		{
+			final UnitAttachment ua = UnitAttachment.get(obj.getType());
+			return ua.getAttackAA(obj.getOwner()) > 0 && ua.getMaxAAattacks() != 0;
+		}
+	};
 	
 	public static final Match<Unit> UnitIsInfantry = new Match<Unit>()
 	{
@@ -1954,23 +1976,37 @@ public class Matches
 			return TripleAUnit.get(o).getMovementLeft() >= 1;
 		}
 	};
-	
-	public final static Match<Unit> UnitIsNotStatic(final PlayerID player)
+	public static final Match<Unit> UnitCanMove = new Match<Unit>()
 	{
-		return new InverseMatch<Unit>(UnitIsStatic(player));
-	}
+		@Override
+		public boolean match(final Unit u)
+		{
+			return UnitTypeCanMove(u.getOwner()).match(u.getType());
+		}
+	};
 	
-	// match units that have no movement as their attachment, like walls and fortresses (static = zero movement)
-	public static final Match<Unit> UnitIsStatic(final PlayerID player)
+	public static final Match<UnitType> UnitTypeCanMove(final PlayerID player)
 	{
-		return new Match<Unit>()
+		return new Match<UnitType>()
 		{
 			@Override
-			public boolean match(final Unit obj)
+			public boolean match(final UnitType obj)
 			{
-				final UnitType type = obj.getUnitType();
-				final UnitAttachment ua = UnitAttachment.get(type);
-				return ua.getMovement(player) < 1;
+				return UnitAttachment.get(obj).getMovement(player) > 0;
+			}
+		};
+	}
+	
+	public static final Match<Unit> UnitIsStatic = new InverseMatch<Unit>(UnitCanMove);
+	
+	public static Match<UnitType> UnitTypeIsStatic(final PlayerID id)
+	{
+		return new Match<UnitType>()
+		{
+			@Override
+			public boolean match(final UnitType uT)
+			{
+				return !UnitTypeCanMove(id).match(uT);
 			}
 		};
 	}
@@ -3851,7 +3887,7 @@ public class Matches
 		};
 	}
 	
-	public static final Match<Unit> UnitCanBeInBattle(final boolean attack, final GameData data)
+	public static final Match<Unit> UnitCanBeInBattle(final boolean attack, final GameData data, final boolean includeAttackersThatCanNotMove, final boolean doNotIncludeAA)
 	{
 		return new Match<Unit>()
 		{
@@ -3859,12 +3895,13 @@ public class Matches
 			public boolean match(final Unit u)
 			{
 				final PlayerID owner = u.getOwner();
-				return Matches.UnitTypeCanBeInBattle(attack, owner, data).match(u.getType());
+				return Matches.UnitTypeCanBeInBattle(attack, owner, data, includeAttackersThatCanNotMove, doNotIncludeAA).match(u.getType());
 			}
 		};
 	}
 	
-	public static final Match<UnitType> UnitTypeCanBeInBattle(final boolean attack, final PlayerID player, final GameData data)
+	public static final Match<UnitType> UnitTypeCanBeInBattle(final boolean attack, final PlayerID player, final GameData data, final boolean includeAttackersThatCanNotMove,
+				final boolean doNotIncludeAA)
 	{
 		return new Match<UnitType>()
 		{
@@ -3873,27 +3910,29 @@ public class Matches
 			{
 				// we want to filter out anything like factories, or units that have no combat ability AND can not be taken casualty.
 				// in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too, unless they have other combat abilities.
-				Match<UnitType> combat;
+				final Match<UnitType> supporterOrNotInfrastructure = new CompositeMatchOr<UnitType>(Matches.UnitTypeIsInfrastructure.invert(),
+							Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player, data));
+				final Match<UnitType> combat;
 				if (attack)
 				{
-					combat = new CompositeMatchOr<UnitType>(
-								Matches.UnitTypeCanNotMoveDuringCombatMove,
-								/*Matches.UnitTypeIsFactory,*/
-								new CompositeMatchAnd<UnitType>(
-											Matches.UnitTypeIsInfrastructure,
-											Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player, data).invert())
-											).invert();
+					// AND match
+					final CompositeMatch<UnitType> attackMatch = new CompositeMatchAnd<UnitType>();
+					attackMatch.add(supporterOrNotInfrastructure);
+					if (!includeAttackersThatCanNotMove)
+					{
+						attackMatch.add(Matches.UnitTypeCanNotMoveDuringCombatMove.invert());
+						attackMatch.add(Matches.UnitTypeCanMove(player));
+					}
+					combat = attackMatch;
 				}
 				else
 				{
-					combat = new CompositeMatchOr<UnitType>(
-								Matches.UnitTypeIsAAforCombatOnly,
-								new CompositeMatchOr<UnitType>(
-											/*Matches.UnitTypeIsFactory,*/
-											new CompositeMatchAnd<UnitType>(
-														Matches.UnitTypeIsInfrastructure,
-														Matches.UnitTypeIsSupporterOrHasCombatAbility(attack, player, data).invert())
-														).invert());
+					// OR match
+					final CompositeMatch<UnitType> defenseMatch = new CompositeMatchOr<UnitType>();
+					if (!doNotIncludeAA)
+						defenseMatch.add(Matches.UnitTypeIsAAforCombatOnly);
+					defenseMatch.add(supporterOrNotInfrastructure);
+					combat = defenseMatch;
 				}
 				return combat.match(ut);
 			}

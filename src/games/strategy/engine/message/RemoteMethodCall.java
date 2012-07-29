@@ -28,6 +28,7 @@ import java.util.logging.Logger;
  */
 public class RemoteMethodCall implements Externalizable
 {
+	private static final long serialVersionUID = 4630825927685836207L;
 	private static final Logger s_logger = Logger.getLogger(RemoteMethodCall.class.getName());
 	private String m_remoteName;
 	private String m_methodName;

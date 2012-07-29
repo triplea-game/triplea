@@ -33,6 +33,7 @@ import java.io.ObjectOutput;
  */
 class RemoteMethodCallResults implements Externalizable
 {
+	private static final long serialVersionUID = 4562274411264858613L;
 	private Object m_rVal;
 	// throwable implements Serializable
 	private Throwable m_exception;

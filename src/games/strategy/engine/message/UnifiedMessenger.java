@@ -741,6 +741,7 @@ class NoLongerHasEndPointImplementor implements Serializable
 // someone wants us to invoke something locally
 abstract class Invoke implements Externalizable
 {
+	private static final long serialVersionUID = -5453883962199970896L;
 	public GUID methodCallID;
 	public boolean needReturnValues;
 	public RemoteMethodCall call;
@@ -788,6 +789,7 @@ abstract class Invoke implements Externalizable
 // the results of a remote invocation
 abstract class InvocationResults implements Externalizable
 {
+	private static final long serialVersionUID = -382704036681832123L;
 	public RemoteMethodCallResults results;
 	public GUID methodCallID;
 	

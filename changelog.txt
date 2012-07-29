@@ -1,4 +1,10 @@
 Changes for 1.6.1.1
+* Made AA Guns appear in battle, then disappear after firing if they could not participate any further. (veqryn)
+
+* Fixed bug causing stacked aa guns to all fire with the attack power of the most powerful aa gun in the group. (veqryn)
+
+* Fixed some math bugs in low luck picking of aa casualties for maps with non-standard aa guns. (veqryn)
+
 * Made massive updates to 1.5.2.1 and 1.6 so that they can work as 'old' jars and be run from 1.6.1.1 or future versions. (veqryn)
 
 * Disallowing starting of games if game data is null. (veqryn)

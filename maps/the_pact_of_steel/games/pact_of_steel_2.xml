@@ -1833,7 +1833,7 @@
 			isAA								values: just sets isAAmovement, isAAforCombatOnly, isAAforBombingThisUnitOnly, isAAforFlyOverOnly, isInfrastructure, and isRocket to true. (allows a unit to shoot at air units before combat starts and not participate in the rest of combat, have certain movement restrictions, and be capturable)
 			isAAmovement						values: just sets canNotMoveDuringCombatMove to "true", and only for aa guns it will set the stacking limits (movementLimit, attackingLimit, placementLimit) to "1:allied" when playing by classic rules
 			attackAA							values: the value that an isAA unit will attack at, for shooting at air units before battle
-			attackAAmaxDieSides					values: sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).  
+			attackAAmaxDieSides					values: sets the dice sides for aa guns.  defaults to whatever you chose above in diceSides (or 6 if you didn't choose).  All units with the same typeAA must have the same dice sides.
 															Be Warned that all aa attack values (including with Radar and without Radar), MUST divide into attackAAmaxDieSides without remainders, or else there WILL be errors in LowLuck!
 			maxAAattacks						values: sets how many times this unit may fire its AA guns. Defaults to -1, which means infinite. If not infinite, then aa guns can stack.
 															(If you have multiple aa of the same type-group in a territory, and they have different attack values or dicesides, and different maxAAattacks, then what happens is that the engine will roll for the best attack/diceSides and for the best maxAAattacks, even if that is two different units
@@ -1844,6 +1844,7 @@
 			isAAforFlyOverOnly					values: allows this unit to be an AA gun only when being flown over. if the air unit moves into this territory and stays, then this will not fire.
 															isAAforFlyOverOnly will only work if "AA Territory Restricted" is turned off, and will normally only fire during combat move and not during noncombat move, unless you also turn on "Always on AA".
 			typeAA								values: any string which identifies this type-group of aa guns. Only 1 aa gun per group may fire (unless you've set maxAAattacks). (defaults to "AA")
+														Warning: all units with the same typeAA must have the same dice sides, or else you will experience weird results.
 			targetsAA							values: a list of unit types which this aa gun can hit. (defaults to all air units) (any aa guns in the same group should have the same targetsAA)
 			willNotFireIfPresent				values: a list of unit types for which if they are present in the battle, this aa gun will not fire.
 			isRocket							values: allows this unit to become a rocket if the player has the rocket technology.  If the unit is named exactly "aaGun" then it will require an image called "rockets".  If the unit is named anything else, then it will require an image with "_rockets" appended to its original name

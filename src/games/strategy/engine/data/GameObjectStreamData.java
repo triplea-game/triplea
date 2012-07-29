@@ -29,6 +29,9 @@ import java.io.ObjectOutput;
  */
 public class GameObjectStreamData implements Externalizable
 {
+	private static final long serialVersionUID = 740501183336843321L;
+	
+	
 	enum GameType
 	{
 		PLAYERID, UNITTYPE, TERRITORY, PRODUCTIONRULE, PRODUCTIONFRONTIER

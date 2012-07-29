@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class GUID implements Externalizable
 {
+	private static final long serialVersionUID = 8426441559602874190L;
 	// this prefix is unique across vms
 	private static VMID vm_prefix = new java.rmi.dgc.VMID();
 	// the local identifier

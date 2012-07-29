@@ -161,7 +161,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 		boolean ownsLand = false;
 		for (final Territory t : data.getMap().getTerritories())
 		{
-			if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.unitHasAttackValueOfAtLeast(1), Matches.UnitIsNotStatic(this), Matches.UnitIsLand)))
+			if (t.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(this), Matches.unitHasAttackValueOfAtLeast(1), Matches.UnitCanMove, Matches.UnitIsLand)))
 				return true;
 			if (t.getOwner().equals(this))
 				ownsLand = true;

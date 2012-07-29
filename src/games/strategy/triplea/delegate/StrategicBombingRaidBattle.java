@@ -424,8 +424,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 		{
 			final String text = "AA guns fire";
 			final CasualtyDetails casualtySelection = BattleCalculator.selectCasualties(RAID, m_attacker, validAttackingUnitsForThisRoll, bridge, text, /* dice */null,/* defending */false,
-						m_battleID, /* head-less */
-						false, 0);
+						m_battleID, /* head-less */false, 0);
 			return casualtySelection.getKilled();
 		}
 		final Collection<Unit> casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);

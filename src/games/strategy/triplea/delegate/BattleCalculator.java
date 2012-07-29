@@ -44,6 +44,7 @@ import games.strategy.triplea.util.UnitSeperator;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
+import games.strategy.util.Triple;
 import games.strategy.util.Tuple;
 
 import java.util.ArrayList;
@@ -161,19 +162,28 @@ public class BattleCalculator
 	 * the second list is all the air units that do not fit in the first list
 	 * 
 	 */
-	public static Tuple<List<Unit>, List<Unit>> categorizeLowLuckAirUnits(final Collection<Unit> units, final Territory location, final int diceSides, final int groupSize)
+	public static Tuple<List<List<Unit>>, List<Unit>> categorizeLowLuckAirUnits(final Collection<Unit> units, final Territory location, final int diceSides, final int groupSize)
 	{
 		final Collection<UnitCategory> categorizedAir = UnitSeperator.categorize(units, null, false, true);
-		final List<Unit> groupsOfSize = new ArrayList<Unit>();
+		final List<List<Unit>> groupsOfSize = new ArrayList<List<Unit>>();
 		final List<Unit> toRoll = new ArrayList<Unit>();
 		for (final UnitCategory uc : categorizedAir)
 		{
 			final int remainder = uc.getUnits().size() % groupSize;
 			final int splitPosition = uc.getUnits().size() - remainder;
-			groupsOfSize.addAll(uc.getUnits().subList(0, splitPosition));
+			final List<Unit> group = new ArrayList<Unit>(uc.getUnits().subList(0, splitPosition));
+			if (!group.isEmpty())
+			{
+				for (int i = 0; i < splitPosition; i += groupSize)
+				{
+					final List<Unit> miniGroup = new ArrayList<Unit>(uc.getUnits().subList(i, i + groupSize));
+					if (!miniGroup.isEmpty())
+						groupsOfSize.add(miniGroup);
+				}
+			}
 			toRoll.addAll(uc.getUnits().subList(splitPosition, uc.getUnits().size()));
 		}
-		return new Tuple<List<Unit>, List<Unit>>(groupsOfSize, toRoll);
+		return new Tuple<List<List<Unit>>, List<Unit>>(groupsOfSize, toRoll);
 	}
 	
 	private static Collection<Unit> getLowLuckAACasualties(final Collection<Unit> planes, final Collection<Unit> defendingAA, final DiceRoll dice, final Territory location,
@@ -183,55 +193,105 @@ public class BattleCalculator
 		int hitsLeft = dice.getHits();
 		if (hitsLeft <= 0)
 			return hitUnits;
-		final Tuple<Integer, Integer> attackThenDiceSides = DiceRoll.getAAattackAndMaxDiceSides(defendingAA, bridge.getData());
+		final GameData data = bridge.getData();
+		final Tuple<Integer, Integer> attackThenDiceSides = DiceRoll.getAAattackAndMaxDiceSides(defendingAA, data);
 		final int highestAttack = attackThenDiceSides.getFirst();
-		final int chosenDiceSize = attackThenDiceSides.getSecond();
 		if (highestAttack < 1)
 			return hitUnits;
-		final int groupSize = chosenDiceSize / highestAttack;
-		final Tuple<List<Unit>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location, chosenDiceSize, groupSize);
-		// the non rolling air units
-		if (hitsLeft < airSplit.getFirst().size() / groupSize)
+		final int chosenDiceSize = attackThenDiceSides.getSecond();
+		final Triple<Integer, Integer, Boolean> triple = DiceRoll.getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, defendingAA, planes, data, false);
+		// final int totalPower = triple.getFirst();
+		final boolean allSameAttackPower = triple.getThird();
+		// killing the air by groups does not work if the the attack power is different for some of the rolls
+		// also, killing by groups does not work if some of the aa guns have 'MayOverStackAA' and we have more hits than the total number of groups (including the remainder group)
+		// (when i mean, 'does not work', i mean that it is no longer a mathematically fair way to find casualties)
+		// find group size (if no groups, do dice sides)
+		final int groupSize;
+		if (allSameAttackPower)
+			groupSize = chosenDiceSize / highestAttack;
+		else
+			groupSize = chosenDiceSize;
+		int numberOfGroupsByDiceSides = planes.size() / groupSize;
+		if (planes.size() % groupSize > 0)
+			numberOfGroupsByDiceSides++;
+		final boolean tooManyHitsToDoGroups = hitsLeft > numberOfGroupsByDiceSides;
+		if (allSameAttackPower && !tooManyHitsToDoGroups)
 		{
-			final List<Unit> tempPossibleHitUnits = new ArrayList<Unit>();
-			for (int i = 0; i < airSplit.getFirst().size(); i += groupSize)
+			// if we have a group of 6 fighters and 2 bombers, and dicesides is 6, and attack was 1, then we would want 1 fighter to die for sure. this is what groupsize is for.
+			// if the attack is greater than 1 though, and all use the same attack power, then the group size can be smaller (ie: attack is 2, and we have 3 fighters and 2 bombers, we would want 1 fighter to die for sure).
+			// categorize with groupSize
+			final Tuple<List<List<Unit>>, List<Unit>> airSplit = categorizeLowLuckAirUnits(planes, location, chosenDiceSize, groupSize);
+			// the non rolling air units
+			// if we are less hits than the number of groups, OR we have equal hits to number of groups but we also have a remainder that is equal to or greater than group size,
+			// THEN we need to make sure to pick randomly, and include the remainder group. (reason we do not do this with any remainder size, is because we might have missed the dice roll to hit the remainder)
+			if (hitsLeft < airSplit.getFirst().size() || (hitsLeft == airSplit.getFirst().size() && airSplit.getSecond().size() >= groupSize))
 			{
-				tempPossibleHitUnits.add(airSplit.getFirst().get(i));
+				// fewer hits than groups.
+				final List<Unit> tempPossibleHitUnits = new ArrayList<Unit>();
+				for (final List<Unit> group : airSplit.getFirst())
+				{
+					tempPossibleHitUnits.add(group.get(0));
+				}
+				if (airSplit.getSecond().size() > 0)
+				{
+					// if we have a remainder group, we need to add some of them into the mix
+					// but we have to do so randomly.
+					final List<Unit> remainders = new ArrayList<Unit>(airSplit.getSecond());
+					int numberOfRemainderGroups = remainders.size() / groupSize;
+					if (remainders.size() % groupSize > 0)
+						numberOfRemainderGroups++;
+					final int[] randomRemainder = bridge.getRandom(remainders.size(), numberOfRemainderGroups, "Deciding which planes should die due to AA fire");
+					int pos2 = 0;
+					for (int i = 0; i < randomRemainder.length; i++)
+					{
+						pos2 += randomRemainder[i];
+						tempPossibleHitUnits.add(remainders.remove(pos2 % remainders.size()));
+					}
+				}
+				final int[] hitRandom = bridge.getRandom(tempPossibleHitUnits.size(), hitsLeft, "Deciding which planes should die due to AA fire");
+				// now we find the
+				int pos = 0;
+				for (int i = 0; i < hitRandom.length; i++)
+				{
+					pos += hitRandom[i];
+					hitUnits.add(tempPossibleHitUnits.remove(pos % tempPossibleHitUnits.size()));
+				}
+				hitsLeft = 0;
 			}
-			final int[] hitRandom = bridge.getRandom(tempPossibleHitUnits.size(), hitsLeft, "Deciding which planes should die due to AA fire");
-			int pos = 0;
-			for (int i = 0; i < hitRandom.length; i++)
+			else
 			{
-				pos += hitRandom[i];
-				hitUnits.add(tempPossibleHitUnits.remove(pos % tempPossibleHitUnits.size()));
+				// kill one in every group
+				for (final List<Unit> group : airSplit.getFirst())
+				{
+					hitUnits.add(group.get(0));
+					hitsLeft--;
+				}
 			}
-			hitsLeft = 0;
+			if (hitsLeft == airSplit.getSecond().size())
+			{
+				hitUnits.addAll(airSplit.getSecond());
+				hitsLeft = 0;
+			}
+			else if (hitsLeft != 0)
+			{
+				// the remainder
+				// roll all at once to prevent frequent random calls, important for pbem games
+				final int[] hitRandom = bridge.getRandom(airSplit.getSecond().size(), hitsLeft, "Deciding which planes should die due to AA fire");
+				int pos = 0;
+				for (int i = 0; i < hitRandom.length; i++)
+				{
+					pos += hitRandom[i];
+					hitUnits.add(airSplit.getSecond().remove(pos % airSplit.getSecond().size()));
+				}
+				hitsLeft = 0;
+			}
 		}
 		else
 		{
-			for (int i = 0; i < airSplit.getFirst().size(); i += groupSize)
-			{
-				hitUnits.add(airSplit.getFirst().get(i));
-				hitsLeft--;
-			}
+			// we have too many hits to use groups, so just pick them randomly
+			hitUnits.addAll(RandomAACasualties(planes, dice, bridge));
 		}
-		if (hitsLeft == airSplit.getSecond().size())
-		{
-			hitUnits.addAll(airSplit.getSecond());
-		}
-		else if (hitsLeft != 0)
-		{
-			// the remainder
-			// roll all at once to prevent frequent random calls, important for pbem games
-			final int[] hitRandom = bridge.getRandom(airSplit.getSecond().size(), hitsLeft, "Deciding which planes should die due to AA fire");
-			int pos = 0;
-			for (int i = 0; i < hitRandom.length; i++)
-			{
-				pos += hitRandom[i];
-				hitUnits.add(airSplit.getSecond().remove(pos % airSplit.getSecond().size()));
-			}
-			hitsLeft = 0;
-		}
+		// double check
 		if (hitUnits.size() != dice.getHits())
 		{
 			throw new IllegalStateException("wrong number of casulaties, expected:" + dice + " but hit:" + hitUnits);
@@ -245,19 +305,20 @@ public class BattleCalculator
 	public static Collection<Unit> RandomAACasualties(final Collection<Unit> planes, final DiceRoll dice, final IDelegateBridge bridge)
 	{
 		final Collection<Unit> casualties = new ArrayList<Unit>();
-		final int hits = dice.getHits();
-		if (hits <= 0)
+		final int hitsLeft = dice.getHits();
+		if (hitsLeft <= 0)
 			return casualties;
 		final List<Unit> planesList = new ArrayList<Unit>(planes);
 		// We need to choose which planes die randomly
-		if (hits < planesList.size())
+		if (hitsLeft < planesList.size())
 		{
-			for (int i = 0; i < hits; i++)
+			// roll all at once to prevent frequent random calls, important for pbem games
+			final int[] hitRandom = bridge.getRandom(planesList.size(), hitsLeft, "Deciding which planes should die due to AA fire");
+			int pos = 0;
+			for (int i = 0; i < hitRandom.length; i++)
 			{
-				final int pos = bridge.getRandom(planesList.size(), "Deciding which planes should die due to AA fire");
-				final Unit unit = planesList.get(pos);
-				planesList.remove(pos);
-				casualties.add(unit);
+				pos += hitRandom[i];
+				casualties.add(planesList.remove(pos % planesList.size()));
 			}
 		}
 		else
@@ -275,6 +336,10 @@ public class BattleCalculator
 	{
 		// if we have aa guns that are not infinite, then we need to randomly decide the aa casualties since there are not enough rolls to have a single roll for each aircraft, or too many rolls
 		if (DiceRoll.getTotalAAattacks(defendingAA, planes, bridge.getData()) != planes.size())
+			return RandomAACasualties(planes, dice, bridge);
+		final Triple<Integer, Integer, Boolean> triple = DiceRoll.getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, defendingAA, planes, bridge.getData(), false);
+		final boolean allSameAttackPower = triple.getThird();
+		if (!allSameAttackPower)
 			return RandomAACasualties(planes, dice, bridge);
 		final Tuple<Integer, Integer> attackThenDiceSides = DiceRoll.getAAattackAndMaxDiceSides(defendingAA, bridge.getData());
 		final int highestAttack = attackThenDiceSides.getFirst();

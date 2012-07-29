@@ -330,7 +330,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		final PlayerID id = getPlayerID();
 		final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
 		moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(id));
-		moveableUnitOwnedByMe.add(Matches.UnitIsNotStatic(id));
+		moveableUnitOwnedByMe.add(Matches.UnitCanMove);
 		// if not non combat, can not move aa units
 		if (!nonCom)
 			moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());

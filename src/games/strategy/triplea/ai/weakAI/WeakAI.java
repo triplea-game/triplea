@@ -527,7 +527,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			moveOfType.add(Matches.unitIsOwnedBy(player));
 			moveOfType.add(Matches.UnitIsNotAA);
 			// we can never move factories
-			moveOfType.add(Matches.UnitIsNotStatic(player));
+			moveOfType.add(Matches.UnitCanMove);
 			moveOfType.add(Matches.UnitIsNotInfrastructure);
 			moveOfType.add(Matches.UnitIsLand);
 			final CompositeMatchAnd<Territory> moveThrough = new CompositeMatchAnd<Territory>(new InverseMatch<Territory>(Matches.TerritoryIsImpassable), new InverseMatch<Territory>(
@@ -697,7 +697,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					Collections.sort(unitsSortedByCost, AIUtils.getCostComparator());
 					for (final Unit unit : unitsSortedByCost)
 					{
-						final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotInfrastructure, Matches.UnitIsNotStatic(player),
+						final Match<Unit> match = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotInfrastructure, Matches.UnitCanMove,
 									Matches.UnitIsNotAA, Matches.UnitCanNotMoveDuringCombatMove.invert());
 						if (!unitsAlreadyMoved.contains(unit) && match.match(unit))
 						{
@@ -739,7 +739,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					}
 				});
 				attackable.add(Matches.UnitIsNotAA);
-				attackable.add(Matches.UnitIsNotStatic(player));
+				attackable.add(Matches.UnitCanMove);
 				attackable.add(Matches.UnitIsNotInfrastructure);
 				attackable.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
 				attackable.add(Matches.UnitIsNotSea);
@@ -846,7 +846,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					final UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
 					if (Matches.UnitTypeIsSea.match(results) || Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsInfrastructure.match(results)
 								|| Matches.UnitTypeIsAAforAnything.match(results)
-								|| Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.unitTypeIsStatic(player).match(results))
+								|| Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.UnitTypeIsStatic(player).match(results))
 					{
 						continue;
 					}
@@ -1124,7 +1124,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				final UnitType results = (UnitType) rule.getResults().keySet().iterator().next();
 				if (Matches.UnitTypeIsAir.match(results) || Matches.UnitTypeIsInfrastructure.match(results) || Matches.UnitTypeIsAAforAnything.match(results)
-							|| Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.unitTypeIsStatic(player).match(results))
+							|| Matches.UnitTypeHasMaxBuildRestrictions.match(results) || Matches.UnitTypeConsumesUnitsOnCreation.match(results) || Matches.UnitTypeIsStatic(player).match(results))
 				{
 					continue;
 				}

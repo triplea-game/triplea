@@ -374,7 +374,7 @@ public class OddsCalculatorPanel extends JPanel
 	{
 		if (units == null)
 			units = Collections.emptyList();
-		units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, m_data));
+		units = Match.getMatches(units, Matches.UnitCanBeInBattle(false, m_data, false, false));
 		m_defendingUnitsPanel.init(getDefender(), units, isLand());
 	}
 	
@@ -382,7 +382,7 @@ public class OddsCalculatorPanel extends JPanel
 	{
 		if (units == null)
 			units = Collections.emptyList();
-		units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, m_data));
+		units = Match.getMatches(units, Matches.UnitCanBeInBattle(true, m_data, false, false));
 		m_attackingUnitsPanel.init(getAttacker(), units, isLand());
 	}
 	
@@ -715,7 +715,7 @@ class PlayerUnitsPanel extends JPanel
 		}
 		// we want to filter out anything like factories, or units that have no combat ability AND can not be taken casualty.
 		// in addition, as of right now AA guns can not fire on the offensive side, so we want to take them out too, unless they have other combat abilities.
-		rVal = Match.getMatches(rVal, Matches.UnitTypeCanBeInBattle(!m_defender, player, m_data));
+		rVal = Match.getMatches(rVal, Matches.UnitTypeCanBeInBattle(!m_defender, player, m_data, false, false));
 		return rVal;
 	}
 }

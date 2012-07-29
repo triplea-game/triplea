@@ -2346,7 +2346,7 @@ public class UnitAttachment extends DefaultAttachment
 	{
 		final int attacks = getInt(s);
 		if (attacks < -1)
-			throw new GameParseException("maxAAattacks must be positive" + thisErrorMsg());
+			throw new GameParseException("maxAAattacks must be positive (or -1 for attacking all) " + thisErrorMsg());
 		m_maxAAattacks = getInt(s);
 	}
 	

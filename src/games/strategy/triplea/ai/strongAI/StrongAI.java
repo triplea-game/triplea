@@ -1204,7 +1204,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		final CompositeMatch<Unit> owned = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
-		final CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(owned, Matches.UnitCanBeTransported, Matches.UnitIsNotStatic(player), Matches.UnitIsNotInfrastructure);
+		final CompositeMatch<Unit> landUnit = new CompositeMatchAnd<Unit>(owned, Matches.UnitCanBeTransported, Matches.UnitCanMove, Matches.UnitIsNotInfrastructure);
 		final CompositeMatch<Unit> transUnit = new CompositeMatchAnd<Unit>(owned, Matches.UnitIsTransport);
 		// CompositeMatch<Unit> factoryUnit = new CompositeMatchAnd<Unit>(owned, Matches.UnitIsFactory);
 		// CompositeMatch<Unit> enemyFactoryUnit = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsFactory);
@@ -6332,7 +6332,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final List<Territory> emptyBadTerr = new ArrayList<Territory>();
 		float remainingStrengthNeeded = 0.0F;
 		final List<Territory> liveEnemyCaps = SUtils.getLiveEnemyCapitals(data, player);
-		final CompositeMatch<Unit> attackable = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitIsNotStatic(player),
+		final CompositeMatch<Unit> attackable = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.UnitIsLand, Matches.UnitIsNotAA, Matches.UnitCanMove,
 					Matches.UnitCanNotProduceUnits, Matches.UnitIsNotInfrastructure, Matches.UnitCanNotMoveDuringCombatMove.invert(), new Match<Unit>()
 					{
 						@Override
@@ -6547,7 +6547,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		// find factories with movement, and move them to places we own if they are sitting on top of each other
 		final CompositeMatch<Unit> ownedUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
 		final CompositeMatch<Unit> ourFactory = new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitCanProduceUnits);
-		final CompositeMatch<Unit> moveableFactory = new CompositeMatchAnd<Unit>(ourFactory, Matches.UnitIsNotStatic(player));
+		final CompositeMatch<Unit> moveableFactory = new CompositeMatchAnd<Unit>(ourFactory, Matches.UnitCanMove);
 		final List<Territory> moveableFactoryTerritories = SUtils.findUnitTerr(data, player, moveableFactory);
 		if (!moveableFactoryTerritories.isEmpty())
 		{
