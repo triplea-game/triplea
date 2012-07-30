@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Europe Test" version="2.5"/>
+        <info name="World War II Europe Test" version="2.6"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.5.2"/>
 		<diceSides value="6"/>
@@ -283,13 +283,12 @@
                 <connection t1="Kenya" t2="Tanganyika Territory"/>
                 <connection t1="United Kingdom" t2="110 Sea Zone"/>
                 <connection t1="Rhodesia" t2="Tanganyika Territory"/>
-                <connection t1="Newfoundland Labrador" t2="121 Sea Zone"/>
                 <connection t1="Morocco" t2="Algeria"/>
                 <connection t1="Morocco" t2="92 Sea Zone"/>
                 <connection t1="Morocco" t2="91 Sea Zone"/>
 				<connection t1="Morocco" t2="Rio de Oro"/>
 				<connection t1="Rio de Oro" t2="91 Sea Zone"/>
-				<connection t1="Rio de Oro" t2="French West Africa"/>
+				<connection t1="Rio de Oro" t2="Algeria"/>
                 <connection t1="French Equatorial Africa" t2="Belgian Congo"/>
                 <connection t1="French Equatorial Africa" t2="Anglo Egyptian Sudan"/>
                 <connection t1="French Equatorial Africa" t2="82 Sea Zone"/>
@@ -670,7 +669,6 @@
                 <connection t1="114 Sea Zone" t2="Sweden"/>
                 <connection t1="81 Sea Zone" t2="98 Sea Zone"/>
                 <connection t1="81 Sea Zone" t2="Anglo Egyptian Sudan"/>
-                <connection t1="79 Sea Zone" t2="Eastern Persia"/>
                 <connection t1="79 Sea Zone" t2="77 Sea Zone"/>
                 <connection t1="79 Sea Zone" t2="78 Sea Zone"/>
                 <connection t1="Uruguay" t2="Brazil"/>
@@ -3963,6 +3961,12 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>2.6
+<br>Deleted connection between Newfoundland Labrador and 121 Sea Zone.
+<br>Deleted connection between Rio de Oro and French West Africa.
+<br>Added connection between Rio de Oro and Algeria.
+<br>Deleted connection between Eastern Persia and 79 Sea Zone.
 <br>
 <br>2.5
 <br>Fixed Danish Straight to only require Denmark.

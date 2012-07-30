@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="3.1"/>
+        <info name="World War II Global Test Alpha 3" version="3.2"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.6.1"/>
 		<diceSides value="6"/>
@@ -6955,10 +6955,10 @@ When a country moves into a regular or non-friendly neutral during the combat mo
 
 <b>Japan</b>
 <ul>
-<li>10 PUs if not yet at war with USA, UK, or ANZAC, and has not yet attacked French Indo-China.</li>
-<li>5 PUs if Japan controls all of Guam, Midway, Wake Island, Gilbert Islands, and Solomon Islands.</li>
-<li>5 PUs for each Japanese controlled territory: Hawaii, India, New South Wales, and Western United States.</li>
-<li>5 PUs if Japan controls all of Sumatra, Java, Borneo, and Celebes.</li>
+<li>10 PUs if not yet at war with USA, has not yet attacked French Indo-China, and has not declared war on UK or ANZAC.</li>
+<li>5 PUs if Axis controls all of Guam, Midway, Wake Island, Gilbert Islands, and Solomon Islands.</li>
+<li>5 PUs for each Axis controlled territory: Hawaii, India, New South Wales, and Western United States.</li>
+<li>5 PUs if Axis controls all of Sumatra, Java, Borneo, and Celebes.</li>
 </ul>
 
 <b>UK</b>
@@ -7066,6 +7066,10 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>3.2
+<br>Fixing some errors in game notes.
+<br>Creating small variation mod.
 <br>
 <br>3.1
 <br>Created game option to force tech tokens to be removed after rolling them, regardless of success.
