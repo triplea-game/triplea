@@ -19,7 +19,6 @@ import games.strategy.net.BareBonesBrowserLaunch;
 import games.strategy.net.IServerMessenger;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog.ModalityType;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -439,8 +438,8 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							editorPane.setText(notes);
 							final JScrollPane scroll = new JScrollPane(editorPane);
 							final JDialog dialog = new JDialog(m_frame);
-							// dialog.setModal(true);
-							dialog.setModalityType(ModalityType.MODELESS);
+							dialog.setModal(false);
+							// dialog.setModalityType(ModalityType.MODELESS); // needs java 1.6 at least...
 							dialog.setAlwaysOnTop(true);
 							dialog.add(scroll, BorderLayout.CENTER);
 							final JPanel buttons = new JPanel();
