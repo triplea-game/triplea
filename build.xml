@@ -826,7 +826,7 @@
 
 	</target>
 
-	<target name="release" depends="checkForWinNT,clean,zip,zipInstaller,zipInstallerWithJava,zipSource"
+	<target name="release" depends="checkForWinNT,clean,zipServer,zipInstaller,zipInstallerWithJava,zipSource"
 		description="do a full windows/generic release, this must be done on a windows machine"
 		if="isWindowsNT" />
 	
