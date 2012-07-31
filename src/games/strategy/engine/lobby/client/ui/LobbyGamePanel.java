@@ -215,8 +215,18 @@ public class LobbyGamePanel extends JPanel
 				newClassPath = findOldJar(engineVersionOfGameToJoin, false);
 			} catch (final Exception e)
 			{
-				JOptionPane.showMessageDialog(getParent(), "Host is using a different engine than you, and can not find correct engine: " + engineVersionOfGameToJoin.toStringFull("_"),
-							"Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
+				if (GameRunner.areWeOldExtraJar())
+				{
+					JOptionPane.showMessageDialog(getParent(), "<html>Please run the default TripleA and try joining the online lobby for it instead. " +
+								"<br>This TripleA engine is old and kept only for backwards compatibility and can only play with people using the exact same version as this one. " +
+								"<br><br>Host is using a different engine than you, and can not find correct engine: " + engineVersionOfGameToJoin.toStringFull("_") + "</html>",
+								"Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(getParent(), "Host is using a different engine than you, and can not find correct engine: " + engineVersionOfGameToJoin.toStringFull("_"),
+								"Correct TripleA Engine Not Found", JOptionPane.WARNING_MESSAGE);
+				}
 				return;
 			}
 			// ask user if we really want to do this?
@@ -266,26 +276,36 @@ public class LobbyGamePanel extends JPanel
 					if (defaultVersion.equals(oldVersionNeeded, ignoreMicro))
 					{
 						final String jarName = "triplea.jar";
-						final File binFolder = new File(GameRunner.getRootFolder(), "bin/");
-						final File[] files = binFolder.listFiles();
-						if (files == null)
-							throw new IOException("Can not find 'bin' engine jars folder");
-						File ourBinJar = null;
-						for (final File f : Arrays.asList(files))
+						// windows is in 'bin' folder, mac is in 'Java' folder.
+						File binFolder = new File(GameRunner.getRootFolder(), "bin/");
+						if (!binFolder.exists())
+							binFolder = new File(GameRunner.getRootFolder(), "Java/");
+						if (binFolder.exists())
 						{
-							final String jarPath = f.getCanonicalPath();
-							if (jarPath.indexOf(jarName) != -1)
+							final File[] files = binFolder.listFiles();
+							if (files == null)
+								throw new IOException("Can not find 'bin' engine jars folder");
+							File ourBinJar = null;
+							for (final File f : Arrays.asList(files))
 							{
-								ourBinJar = f;
-								break;
+								if (!f.exists())
+									continue;
+								final String jarPath = f.getCanonicalPath();
+								if (jarPath.indexOf(jarName) != -1)
+								{
+									ourBinJar = f;
+									break;
+								}
 							}
+							if (ourBinJar == null)
+								throw new IOException("Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+							final String newClassPath = ourBinJar.getCanonicalPath();
+							if (newClassPath == null || newClassPath.length() <= 0)
+								throw new IOException("Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
+							return newClassPath;
 						}
-						if (ourBinJar == null)
-							throw new IOException("Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
-						final String newClassPath = ourBinJar.getCanonicalPath();
-						if (newClassPath == null || newClassPath.length() <= 0)
-							throw new IOException("Can not find 'bin' engine jar for version: " + oldVersionNeeded.toStringFull("_"));
-						return newClassPath;
+						else
+							System.err.println("Can not find 'bin' or 'Java' folder, where main triplea.jar should be.");
 					}
 				}
 			}
@@ -295,14 +315,19 @@ public class LobbyGamePanel extends JPanel
 		// we don't care what the last (micro) number is of the version number. example: triplea 1.5.2.1 can open 1.5.2.0 savegames.
 		final String jarName = "triplea_" + oldVersionNeeded.toStringFull("_", ignoreMicro);
 		final File oldJarsFolder = new File(GameRunner.getRootFolder(), "old/");
+		if (!oldJarsFolder.exists())
+			throw new IOException("Can not find 'old' engine jars folder");
 		final File[] files = oldJarsFolder.listFiles();
 		if (files == null)
 			throw new IOException("Can not find 'old' engine jars folder");
 		File ourOldJar = null;
 		for (final File f : Arrays.asList(files))
 		{
-			final String jarPath = f.getCanonicalPath();
-			if (jarPath.indexOf(jarName) != -1 && jarPath.indexOf(".jar") != -1)
+			if (!f.exists())
+				continue;
+			// final String jarPath = f.getCanonicalPath();
+			final String name = f.getName();
+			if (name.indexOf(jarName) != -1 && name.indexOf(".jar") != -1)
 			{
 				ourOldJar = f;
 				break;

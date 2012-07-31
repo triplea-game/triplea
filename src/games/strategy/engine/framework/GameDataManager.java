@@ -85,13 +85,8 @@ public class GameDataManager
 			final Version readVersion = (Version) input.readObject();
 			if (!readVersion.equals(EngineVersion.VERSION))
 			{
-				/*if (GameRunner.areWeOldExtraJar())
-				{
-					throw new IOException("<html>Please run the default TripleA and try to open this game again. " +
-								"<br>This TripleA engine is old and kept only for backwards compatibility and can only open savegames created by engines with these first 3 version digits: " +
-								EngineVersion.VERSION.toStringFull("_", true) + "</html>");
-				}*/
-				final String error = "Incompatible engine versions, and no old engine found. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion;
+				final String error = "<html>Incompatible engine versions, and no old engine found. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion
+							+ "<br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/</html>";
 				if (savegamePath == null)
 					throw new IOException(error);
 				
@@ -115,9 +110,32 @@ public class GameDataManager
 					LobbyGamePanel.startGame(savegamePath, newClassPath);
 				} catch (final IOException e)
 				{
-					throw new IOException(error);
+					if (GameRunner.areWeOldExtraJar())
+					{
+						throw new IOException("<html>Please run the default TripleA and try to open this game again. " +
+									"<br>This TripleA engine is old and kept only for backwards compatibility and can only open savegames created by engines with these first 3 version digits: " +
+									EngineVersion.VERSION.toStringFull("_", true) + "</html>");
+					}
+					else
+						throw new IOException(error);
 				}
 				return null;
+			}
+			else if (readVersion.isGreaterThan(EngineVersion.VERSION, false))
+			{
+				// we can still load it because first 3 numbers of the version are the same, however this save was made by a newer engine, so prompt the user to upgrade
+				final String messageString = "<html>Your TripleA engine is OUT OF DATE.  This save was made by a newer version of TripleA."
+							+ "<br>However, because the first 3 version numbers are the same as your current version, we can still open the savegame."
+							+ "<br><br>This TripleA engine is version "
+							+ EngineVersion.VERSION.toStringFull("_")
+							+ " and you are trying to open a savegame made with version "
+							+ readVersion.toStringFull("_")
+							+ "<br><br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/"
+							+ "<br><br>It is recommended that you upgrade to the latest version of TripleA before playing this savegame."
+							+ "<br><br>Do you wish to continue and open this save with your current 'old' version?</html>";
+				final int answer = JOptionPane.showConfirmDialog(null, messageString, "Open Newer Save Game?", JOptionPane.YES_NO_OPTION);
+				if (answer != JOptionPane.YES_OPTION)
+					return null;
 			}
 			final GameData data = (GameData) input.readObject();
 			updateDataToBeCompatibleWithNewEngine(readVersion, data); // TODO: expand this functionality (and keep it updated)

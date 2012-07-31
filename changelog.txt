@@ -1,4 +1,6 @@
 Changes for 1.6.1.1
+* Fixing in loading old engine jars caused by odd pathnames. (veqryn)
+
 * Made AA Guns appear in battle, then disappear after firing if they could not participate any further. (veqryn)
 
 * Fixed bug causing stacked aa guns to all fire with the attack power of the most powerful aa gun in the group. (veqryn)
