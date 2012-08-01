@@ -1,3 +1,7 @@
+Changes for 1.6.1.2
+* Fixed null pointer error in MovePanel.selectEndPoint when clicking to move a unit to a territory with no connections. (veqryn)
+
+
 Changes for 1.6.1.1
 * Fixing in loading old engine jars caused by odd pathnames. (veqryn)
 
