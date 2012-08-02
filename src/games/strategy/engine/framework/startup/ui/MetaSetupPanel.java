@@ -23,6 +23,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +43,7 @@ public class MetaSetupPanel extends SetupPanel
 {
 	private static final long serialVersionUID = 3926503672972937677L;
 	private static final Logger s_logger = Logger.getLogger(MetaSetupPanel.class.getName());
+	private static String s_serverPropertiesName = "server_" + EngineVersion.VERSION.toString() + ".properties";
 	private JButton m_startLocal;
 	private JButton m_startPBEM;
 	private JButton m_hostGame;
@@ -301,18 +305,23 @@ public class MetaSetupPanel extends SetupPanel
 				throw new IllegalStateException(e);
 			}
 		}
-		final URL serverPropsURL;
-		try
+		final List<URL> serverPropsList = getServerLookupURL();
+		if (serverPropsList == null || serverPropsList.isEmpty())
+			throw new IllegalStateException("No Server Properties Found!");
+		final Iterator<URL> iter = serverPropsList.iterator();
+		LobbyServerProperties props = null;
+		while (iter.hasNext() && (props == null || props.getPort() == -1))
 		{
-			serverPropsURL = getServerLookupURL();
-			if (s_logger.isLoggable(Level.FINE))
-			{
-				s_logger.log(Level.FINE, "lobby url:" + serverPropsURL);
-			}
-		} catch (final MalformedURLException e)
+			props = contactServerForLobbyServerProperties(iter.next());
+		}
+		return props;
+	}
+	
+	private LobbyServerProperties contactServerForLobbyServerProperties(final URL serverPropsURL)
+	{
+		if (s_logger.isLoggable(Level.FINE))
 		{
-			e.printStackTrace();
-			throw new IllegalStateException(e);
+			s_logger.log(Level.FINE, "lobby url:" + serverPropsURL);
 		}
 		// sourceforge sometimes takes a long while
 		// to return results
@@ -372,14 +381,34 @@ public class MetaSetupPanel extends SetupPanel
 	 * we look for a system property triplea.lobby.server.lookup.url, if that is not defined
 	 * we default to looking on sourceforge, with a version dependent url
 	 */
-	private URL getServerLookupURL() throws MalformedURLException
+	private List<URL> getServerLookupURL()
 	{
-		// step 2 check for a system property
-		// step 3 default
-		final URL serverPropsURL;
-		final String defaultURL = "http://triplea.sourceforge.net/lobby/server_" + EngineVersion.VERSION.toString() + ".properties";
-		serverPropsURL = new URL(System.getProperties().getProperty("triplea.lobby.server.lookup.url", defaultURL));
-		return serverPropsURL;
+		final List<URL> rVal = new ArrayList<URL>();
+		final String propertyString = System.getProperties().getProperty("triplea.lobby.server.lookup.url");
+		if (propertyString != null)
+		{
+			try
+			{
+				final URL propertyURL = new URL(propertyString);
+				rVal.add(propertyURL);
+			} catch (final MalformedURLException e)
+			{
+				e.printStackTrace();
+			}
+			// if we set it as a system property, then we don't want to try other ones, only this one.
+			return rVal;
+		}
+		try
+		{
+			// first is the default, rest are backups. Do NOT add too many backups, as we want to maintain control over all of them.
+			rVal.add(new URL("http://triplea.sourceforge.net/lobby/" + s_serverPropertiesName));
+			// rVal.add(new URL("http://tripleamaps.sourceforge.net/lobby/" + s_serverPropertiesName));
+			rVal.add(new URL("http://www.tripleawarclub.org/lobby/" + s_serverPropertiesName));
+		} catch (final MalformedURLException e)
+		{
+			e.printStackTrace();
+		}
+		return rVal;
 	}
 	
 	@Override

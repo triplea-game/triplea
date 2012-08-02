@@ -43,7 +43,8 @@ public class LobbyLogin
 		}
 		if (m_serverProperties.getPort() == -1)
 		{
-			JOptionPane.showMessageDialog(m_parent, "Could not find lobby server for this version of TripleA", "Could not connect to server", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(m_parent, "Could not find lobby server for this version of TripleA, please make sure you are using the latest version: http://triplea.sourceforge.net/",
+						"Could not connect to server", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		return loginToServer();
