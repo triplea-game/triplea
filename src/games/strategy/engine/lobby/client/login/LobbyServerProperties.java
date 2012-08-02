@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 
@@ -70,7 +71,9 @@ public class LobbyServerProperties
 	{
 		final Properties props = new Properties();
 		final HttpClient client = new HttpClient();
-		client.getHostConfiguration().setHost(url.getHost());
+		final HostConfiguration config = client.getHostConfiguration();
+		config.setHost(url.getHost());
+		// TODO: add proxy settings here
 		final GetMethod method = new GetMethod(url.getPath());
 		// pretend to be ie
 		method.setRequestHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");

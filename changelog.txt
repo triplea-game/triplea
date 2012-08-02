@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Changing lobby moderator ban/mute options to make more sense, by only giving 3 options: name only, everything, or cancel. (veqryn) 
+
 * Adding a backup lobby properties location on the tripleawarclub, in addition to the one on sourceforge. (veqryn)
 
 * Fixed null pointer error in MovePanel.selectEndPoint when clicking to move a unit to a territory with no connections. (veqryn)

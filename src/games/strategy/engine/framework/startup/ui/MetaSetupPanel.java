@@ -269,7 +269,9 @@ public class MetaSetupPanel extends SetupPanel
 		LobbyServerProperties props = getLobbyServerProperties();
 		if (props == null)
 		{
-			props = new LobbyServerProperties(null, -1, "Server Lookup failed, try again later", null);
+			props = new LobbyServerProperties(null, -1, "<html>Server Lookup failed, try again later. "
+						+ "<br>Either TripleA could not reach the internet, or the server host is down. "
+						+ "<br>Please make sure you are using the latest version of TripleA: http://triplea.sourceforge.net/</html>", null);
 		}
 		// for development, ignore what we read,
 		// connect instead to localhost
@@ -312,7 +314,10 @@ public class MetaSetupPanel extends SetupPanel
 		LobbyServerProperties props = null;
 		while (iter.hasNext() && (props == null || props.getPort() == -1))
 		{
-			props = contactServerForLobbyServerProperties(iter.next());
+			final URL serverPropertiesURL = iter.next();
+			System.out.println("Trying to connect to: " + serverPropertiesURL);
+			props = contactServerForLobbyServerProperties(serverPropertiesURL);
+			System.out.println("Finished connecting to: " + serverPropertiesURL);
 		}
 		return props;
 	}
