@@ -289,7 +289,7 @@ public class TileManager
 			drawing.add(new SeaZoneOutlineDrawable(territory.getName()));
 		}
 		final OptionalExtraBorderLevel optionalBorderLevel = m_uiContext.getDrawTerritoryBordersAgain();
-		if (optionalBorderLevel != OptionalExtraBorderLevel.DEFAULT)
+		if (optionalBorderLevel != OptionalExtraBorderLevel.LOW)
 		{
 			drawing.add(new OptionalExtraTerritoryBordersDrawable(territory.getName(), optionalBorderLevel));
 		}

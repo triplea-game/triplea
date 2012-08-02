@@ -101,6 +101,8 @@ import javax.swing.JTextField;
 import javax.swing.LookAndFeel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -657,30 +659,50 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final JMenu drawBordersMenu = new JMenu();
 		drawBordersMenu.setText("Draw Borders On Top");
-		final JRadioButton defaultButton = new JRadioButton("Default");
-		defaultButton.setSelected(true);
-		final JRadioButton lowButton = new JRadioButton("Medium");
+		final JRadioButton noneButton = new JRadioButton("Low");
+		final JRadioButton mediumButton = new JRadioButton("Medium");
 		final JRadioButton highButton = new JRadioButton("High");
 		final ButtonGroup group = new ButtonGroup();
-		group.add(defaultButton);
-		group.add(lowButton);
+		group.add(noneButton);
+		group.add(mediumButton);
 		group.add(highButton);
-		defaultButton.addActionListener(new ActionListener()
+		drawBordersMenu.addMenuListener(new MenuListener()
+		{
+			public void menuSelected(final MenuEvent e)
+			{
+				final OptionalExtraBorderLevel current = getUIContext().getDrawTerritoryBordersAgain();
+				if (current == OptionalExtraBorderLevel.LOW)
+					noneButton.setSelected(true);
+				else if (current == OptionalExtraBorderLevel.MEDIUM)
+					mediumButton.setSelected(true);
+				else if (current == OptionalExtraBorderLevel.HIGH)
+					highButton.setSelected(true);
+			}
+			
+			public void menuDeselected(final MenuEvent e)
+			{
+			}
+			
+			public void menuCanceled(final MenuEvent e)
+			{
+			}
+		});
+		noneButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (defaultButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.DEFAULT)
+				if (noneButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.LOW)
 				{
-					getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.DEFAULT);
+					getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.LOW);
 					m_frame.getMapPanel().resetMap();
 				}
 			}
 		});
-		lowButton.addActionListener(new ActionListener()
+		mediumButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
-				if (lowButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.MEDIUM)
+				if (mediumButton.isSelected() && getUIContext().getDrawTerritoryBordersAgain() != OptionalExtraBorderLevel.MEDIUM)
 				{
 					getUIContext().setDrawTerritoryBordersAgain(OptionalExtraBorderLevel.MEDIUM);
 					m_frame.getMapPanel().resetMap();
@@ -698,8 +720,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				}
 			}
 		});
-		drawBordersMenu.add(defaultButton);
-		drawBordersMenu.add(lowButton);
+		drawBordersMenu.add(noneButton);
+		drawBordersMenu.add(mediumButton);
 		drawBordersMenu.add(highButton);
 		parentMenu.add(drawBordersMenu);
 	}

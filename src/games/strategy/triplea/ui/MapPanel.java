@@ -29,6 +29,7 @@ import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
 import games.strategy.triplea.ui.screen.TileManager;
@@ -799,6 +800,19 @@ public class MapPanel extends ImageScrollerLargeView
 		super.setScale(newScale);
 		// setScale will check bounds, and normalize the scale correctly
 		final double normalizedScale = m_scale;
+		final OptionalExtraBorderLevel drawBorderOption = m_uiContext.getDrawTerritoryBordersAgain();
+		// so what is happening here is that when we zoom out, the territory borders get blurred or even removed
+		// so we have a special setter to have them be drawn a second time, on top of the relief tiles
+		if (normalizedScale >= 1)
+		{
+			if (drawBorderOption != OptionalExtraBorderLevel.LOW)
+				m_uiContext.resetDrawTerritoryBordersAgain();
+		}
+		else
+		{
+			if (drawBorderOption == OptionalExtraBorderLevel.LOW)
+				m_uiContext.setDrawTerritoryBordersAgainToMedium();
+		}
 		m_uiContext.setScale(normalizedScale);
 		recreateTiles(getData(), m_uiContext);
 		repaint();

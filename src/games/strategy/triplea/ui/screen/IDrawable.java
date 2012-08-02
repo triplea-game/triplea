@@ -69,11 +69,11 @@ public interface IDrawable
 	
 	
 	/**
-	 * This is for the optional extra territory borders. Default means off
+	 * This is for the optional extra territory borders. LOW means off
 	 */
 	public static enum OptionalExtraBorderLevel
 	{
-		DEFAULT, MEDIUM, HIGH
+		LOW, MEDIUM, HIGH
 	}
 	
 	/**

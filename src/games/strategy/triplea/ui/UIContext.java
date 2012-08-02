@@ -70,7 +70,7 @@ public class UIContext
 	private boolean m_drawUnits = true;
 	private boolean m_drawTerritoryEffects = false;
 	private boolean m_drawMapOnly = false;
-	private OptionalExtraBorderLevel m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.DEFAULT;
+	private OptionalExtraBorderLevel m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
 	private final List<CountDownLatch> m_latchesToCloseOnShutdown = new ArrayList<CountDownLatch>();
 	private final List<Window> m_windowsToCloseOnShutdown = new ArrayList<Window>();
 	private final List<Active> m_activeToDeactivate = new ArrayList<Active>();
@@ -204,6 +204,8 @@ public class UIContext
 		m_diceImageFactory = new DiceImageFactory(m_resourceLoader, data.getDiceSides()); // DiceImageFactory needs loader and game data
 		final double unitScale = getPreferencesMapOrSkin(dir).getDouble(UNIT_SCALE_PREF, m_mapData.getDefaultUnitScale());
 		m_scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
+		if (m_scale < 1)
+			setDrawTerritoryBordersAgainToMedium();
 		m_unitImageFactory.setResourceLoader(m_resourceLoader, unitScale);
 		m_flagIconImageFactory.setResourceLoader(m_resourceLoader);
 		m_PUImageFactory.setResourceLoader(m_resourceLoader);
@@ -478,6 +480,16 @@ public class UIContext
 	public void setDrawTerritoryBordersAgain(final OptionalExtraBorderLevel level)
 	{
 		m_extraTerritoryBorderLevel = level;
+	}
+	
+	public void resetDrawTerritoryBordersAgain()
+	{
+		m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.LOW;
+	}
+	
+	public void setDrawTerritoryBordersAgainToMedium()
+	{
+		m_extraTerritoryBorderLevel = OptionalExtraBorderLevel.MEDIUM;
 	}
 	
 	public void setShowTerritoryEffects(final boolean aBool)

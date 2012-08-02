@@ -315,9 +315,9 @@ public class MetaSetupPanel extends SetupPanel
 		while (iter.hasNext() && (props == null || props.getPort() == -1))
 		{
 			final URL serverPropertiesURL = iter.next();
-			System.out.println("Trying to connect to: " + serverPropertiesURL);
+			// System.out.println("Trying to connect to: " + serverPropertiesURL);
 			props = contactServerForLobbyServerProperties(serverPropertiesURL);
-			System.out.println("Finished connecting to: " + serverPropertiesURL);
+			// System.out.println("Finished connecting to: " + serverPropertiesURL);
 		}
 		return props;
 	}
