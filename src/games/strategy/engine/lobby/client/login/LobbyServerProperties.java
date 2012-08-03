@@ -1,5 +1,7 @@
 package games.strategy.engine.lobby.client.login;
 
+import games.strategy.engine.framework.GameRunner2;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -73,7 +75,9 @@ public class LobbyServerProperties
 		final HttpClient client = new HttpClient();
 		final HostConfiguration config = client.getHostConfiguration();
 		config.setHost(url.getHost());
-		// TODO: add proxy settings here
+		// add the proxy
+		GameRunner2.addProxy(config);
+		
 		final GetMethod method = new GetMethod(url.getPath());
 		// pretend to be ie
 		method.setRequestHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");

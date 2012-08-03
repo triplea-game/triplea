@@ -42,6 +42,8 @@ public class DownloadRunnable implements Runnable
 		URL url;
 		try
 		{
+			// System.out.println(System.getProperty("http.proxyHost"));
+			// System.out.println(System.getProperty("http.proxyPort"));
 			url = new URL(urlString.trim());
 		} catch (final MalformedURLException e1)
 		{

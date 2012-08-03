@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Creating framework for TripleA to use proxies to connect to the internet. Allowing map downloading, PBEM/PBF, and dice servers to use a proxy. (veqryn)
+
 * Improving "Draw Territory Borders On Top" so that it will automatically switch to "medium" if you are on "low/default" and are zooming, and switch back once you stop zooming out. (veqryn)
 
 * Changing lobby moderator ban/mute options to make more sense, by only giving 3 options: name only, everything, or cancel. (veqryn) 

@@ -15,6 +15,7 @@ package games.strategy.engine.random;
 
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.startup.ui.editors.DiceServerEditor;
 import games.strategy.engine.framework.startup.ui.editors.EditorPanel;
 import games.strategy.engine.framework.startup.ui.editors.IBean;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -178,7 +180,10 @@ public class PropertiesDiceRoller implements IRemoteDiceServer
 			{
 				port = Integer.parseInt(m_props.getProperty("port"));
 			}
-			client.getHostConfiguration().setHost(host, port);
+			final HostConfiguration config = client.getHostConfiguration();
+			config.setHost(host, port);
+			// add the proxy
+			GameRunner2.addProxy(config);
 			client.executeMethod(post);
 			final String result = post.getResponseBodyAsString();
 			return result;

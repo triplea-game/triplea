@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.GameRunner2.ProxyChoice;
 import games.strategy.net.BareBonesBrowserLaunch;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.ui.TripleaMenu;
@@ -14,10 +15,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -25,6 +28,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -40,6 +45,7 @@ public class EnginePreferences extends JDialog
 	private JButton m_okButton;
 	private JButton m_lookAndFeel;
 	private JButton m_gameParser;
+	private JButton m_setupProxies;
 	private JButton m_donate;
 	
 	private EnginePreferences(final Frame parentFrame)
@@ -66,6 +72,7 @@ public class EnginePreferences extends JDialog
 		m_okButton = new JButton("OK");
 		m_lookAndFeel = new JButton("Set Look And Feel...");
 		m_gameParser = new JButton("Enable/Disable Delayed Parsing of Game XML's");
+		m_setupProxies = new JButton("Setup Network and Proxy Settings");
 		m_donate = new JButton("Donate...");
 	}
 	
@@ -86,6 +93,8 @@ public class EnginePreferences extends JDialog
 		buttonsPanel.add(m_lookAndFeel);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_gameParser);
+		buttonsPanel.add(new JLabel(" "));
+		buttonsPanel.add(m_setupProxies);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_donate);
 		buttonsPanel.add(new JLabel(" "));
@@ -155,6 +164,49 @@ public class EnginePreferences extends JDialog
 					return;
 				GameRunner2.setDelayedParsing(delay);
 				EventThreadJOptionPane.showMessageDialog(m_parentFrame, "Please restart TripleA to avoid any potential errors");
+			}
+		});
+		m_setupProxies.addActionListener(new AbstractAction()
+		{
+			private static final long serialVersionUID = 1673056396342959597L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+				final ProxyChoice proxyChoice = ProxyChoice.valueOf(pref.get(GameRunner2.PROXY_CHOICE, ProxyChoice.NONE.toString()));
+				final String proxyHost = pref.get(GameRunner2.PROXY_HOST, "");
+				final JTextField hostText = new JTextField(proxyHost);
+				final String proxyPort = pref.get(GameRunner2.PROXY_PORT, "");
+				final JTextField portText = new JTextField(proxyPort);
+				final JRadioButton noneButton = new JRadioButton("None", proxyChoice == ProxyChoice.NONE);
+				final JRadioButton systemButton = new JRadioButton("Use System Settings", proxyChoice == ProxyChoice.USE_SYSTEM_SETTINGS);
+				final JRadioButton userButton = new JRadioButton("Use These User Settings:", proxyChoice == ProxyChoice.USE_USER_PREFERENCES);
+				final ButtonGroup bgroup = new ButtonGroup();
+				bgroup.add(noneButton);
+				bgroup.add(systemButton);
+				bgroup.add(userButton);
+				final JPanel radioPanel = new JPanel();
+				radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
+				radioPanel.add(new JLabel("Configure TripleA's Network and Proxy Settings: "));
+				radioPanel.add(noneButton);
+				radioPanel.add(systemButton);
+				radioPanel.add(userButton);
+				radioPanel.add(new JLabel("Proxy Host: "));
+				radioPanel.add(hostText);
+				radioPanel.add(new JLabel("Proxy Port: "));
+				radioPanel.add(portText);
+				final Object[] options = { "Accept", "Cancel" };
+				final int answer = JOptionPane.showOptionDialog(m_parentFrame, radioPanel, "Network Settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+				if (answer != JOptionPane.YES_OPTION)
+					return;
+				final ProxyChoice newChoice;
+				if (systemButton.isSelected())
+					newChoice = ProxyChoice.USE_SYSTEM_SETTINGS;
+				else if (userButton.isSelected())
+					newChoice = ProxyChoice.USE_USER_PREFERENCES;
+				else
+					newChoice = ProxyChoice.NONE;
+				GameRunner2.setProxy(hostText.getText(), portText.getText(), newChoice);
 			}
 		});
 		m_donate.addActionListener(new ActionListener()

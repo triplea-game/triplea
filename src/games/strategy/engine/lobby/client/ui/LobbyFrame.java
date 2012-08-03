@@ -162,7 +162,7 @@ public class LobbyFrame extends JFrame
 				banTypes.add("Name, IP, Mac");
 				banTypes.add("Cancel");
 				final int resultBT = JOptionPane.showOptionDialog(LobbyFrame.this,
-							"Select the type of ban: <br>Please consult other admins before banning longer than 1 day. <br>And please remember to report this ban.</html>",
+							"<html>Select the type of ban: <br>Please consult other admins before banning longer than 1 day. <br>And please remember to report this ban.</html>",
 							"Select Ban Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, banTypes.toArray(), banTypes.toArray()[banTypes.size() - 1]);
 				if (resultBT < 0)
 					return;
@@ -242,7 +242,7 @@ public class LobbyFrame extends JFrame
 				muteTypes.add("Name, IP, Mac");
 				muteTypes.add("Cancel");
 				final int resultMT = JOptionPane.showOptionDialog(LobbyFrame.this,
-							"Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
+							"<html>Select the type of mute: <br>Please consult other admins before muting longer than 1 day.</html>",
 							"Select Mute Type", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, muteTypes.toArray(), muteTypes.toArray()[muteTypes.size() - 1]);
 				if (resultMT < 0)
 					return;
