@@ -69,6 +69,8 @@ class UndoablePlacement extends AbstractUndoableMove
 		AbstractPlaceDelegate currentDelegate;
 		if (currentStepName.endsWith("BidPlace"))
 			currentDelegate = DelegateFinder.bidPlaceDelegate(data);
+		else if (currentStepName.endsWith("NoAirCheckPlace"))
+			currentDelegate = DelegateFinder.placeNoAirCheckDelegate(data);
 		else if (currentStepName.endsWith("Place"))
 			currentDelegate = DelegateFinder.placeDelegate(data);
 		else

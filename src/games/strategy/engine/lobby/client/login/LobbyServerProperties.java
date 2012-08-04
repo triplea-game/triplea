@@ -3,7 +3,6 @@ package games.strategy.engine.lobby.client.login;
 import games.strategy.engine.framework.GameRunner2;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -86,7 +85,7 @@ public class LobbyServerProperties
 			client.executeMethod(method);
 			final String propsString = method.getResponseBodyAsString();
 			props.load(new ByteArrayInputStream(propsString.getBytes()));
-		} catch (final IOException ioe)
+		} catch (final Exception ioe)
 		{
 			s_logger.log(Level.WARNING, ioe.getMessage(), ioe);
 			props.put("ERROR_MESSAGE", ioe.getMessage());

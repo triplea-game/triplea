@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="3.2"/>
+        <info name="World War II Global Test Alpha 3" version="3.3"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.6.1"/>
 		<diceSides value="6"/>
@@ -1411,7 +1411,7 @@
                         <step name="britishBattle" delegate="battle" player="British"/>
                         <step name="britishNonCombatMove" delegate="move" player="British" display="Non Combat Move"/>
 						
-                        <step name="britishPlace" delegate="placeNoAirCheck" player="British"/>
+                        <step name="britishNoAirCheckPlace" delegate="placeNoAirCheck" player="British"/>
                         <step name="britishEndTurn" delegate="endTurn" player="British"/>
 						
                         <step name="UK_PacificPlace" delegate="place" player="UK_Pacific"/>
@@ -4241,12 +4241,12 @@
 				<attatchment name="conditionAttachmentAmericansNotYetAtWarWithTrueNeutralsButAlliesAre" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Americans:Neutral_True:anyNeutral"/>
 					<option name="relationship" value="British:Neutral_True:anyWar"/>
-					<option name="relationship" value="Americans:Germans:anyWar"/>
+					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="1"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentAmericansNotYetFriendlyWithTrueNeutralsButAlliesAre" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Americans:Neutral_True:anyNeutral"/>
 					<option name="relationship" value="British:Neutral_True:Friendly_Neutral"/>
-					<option name="relationship" value="Americans:Germans:anyWar"/>
+					<option name="atWarPlayers" value="Germans:Italians:Japanese" count="1"/>
 				</attatchment>
 				<attatchment name="conditionAttachmentRussians_Neutrality_Americans_but_War_With_European_Axis" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 					<option name="relationship" value="Russians:Americans:anyNeutral"/>
@@ -6832,6 +6832,7 @@ The game is not meant to take over your responsibility in knowing the rules. For
 It is your responsibility to know the rules and abide by them. Most of the game notes that follow can be thought of as differences compared to WWIIv3 or WWIIv4 rules but obviously are not a complete manual for the game. 
 Beginners to these games are suggested to ask for help in the lobby or on the forums at http://www.tripleawarclub.org<br>
 You must always validate your own movement, especially air movement at sea.  The engine is not perfect.<br>
+<br>
 
 <b>Edit Mode</b><br>
 When not yet at war, you may ask for permission to move through a canal, and if granted, use Edit Mode to move the units.<br>
@@ -6843,6 +6844,7 @@ The Warbonds technology will give the PUs to the British, please use edit mode i
 * Do not allow blitzing or movement through Friendly Neutrals.<br>
 * Air units may not land in or move through Friendly Neutrals, including the same turn they are captured.<br>
 * Friendly Neutrals can not be 'captured' with an AA Gun, only by land units with an attack power.<br>
+* Air units may not move through Unfriendly Neutrals unless they are attacking them.<br>
 * If UK Pacific captures Japan, the money goes to UK Pacific, even if UK Pacific's capital is occupied.<br>
 * Do not allow USA movement to end in Sea Zones 17, 22, 32, 33, 34, and 37.<br>
 <br><br>
@@ -7066,6 +7068,10 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>3.3
+<br>Fixing small issue with American not correctly becoming friendly/war with True Neutrals if Japan declares war on all true neutrals before America is at war with Germany.
+<br>Fixing issue with trying to Undo a UK europe placement, that previously generated a null pointer error.
 <br>
 <br>3.2
 <br>Fixing some errors in game notes.

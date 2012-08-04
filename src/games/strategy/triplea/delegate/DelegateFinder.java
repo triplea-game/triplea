@@ -56,6 +56,11 @@ public class DelegateFinder
 		return (AbstractPlaceDelegate) findDelegate(data, "place");
 	}
 	
+	public static final AbstractPlaceDelegate placeNoAirCheckDelegate(final GameData data)
+	{
+		return (AbstractPlaceDelegate) findDelegate(data, "placeNoAirCheck");
+	}
+	
 	// TODO: this is a really shitty way of figuring out what step / delegate we are in....
 	public static final BidPlaceDelegate bidPlaceDelegate(final GameData data)
 	{
