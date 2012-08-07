@@ -307,8 +307,12 @@ public class GameRunner2
 	
 	private static void setupProxies()
 	{
-		final String proxyHostArgument = System.getProperty(PROXY_HOST); // System properties, not user pref
-		final String proxyPortArgument = System.getProperty(PROXY_PORT);
+		String proxyHostArgument = System.getProperty(PROXY_HOST); // System properties, not user pref
+		String proxyPortArgument = System.getProperty(PROXY_PORT);
+		if (proxyHostArgument == null)
+			proxyHostArgument = System.getProperty(HTTP_PROXYHOST); // in case it was set by -D we also check this
+		if (proxyPortArgument == null)
+			proxyPortArgument = System.getProperty(HTTP_PROXYPORT);
 		// arguments should override and set user preferences
 		// host
 		String proxyHost = null;
