@@ -18,6 +18,7 @@ import games.strategy.triplea.attatchments.TechAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Die.DieType;
 import games.strategy.triplea.xml.LoadGameUtil;
+import games.strategy.util.Match;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -244,12 +245,11 @@ public class DiceRollTest extends TestCase
 		final List<Unit> bombers = bomber(m_data).create(1, british(m_data));
 		// aa hits at 0 (0 based)
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0 }));
-		final DiceRoll hit = DiceRoll.rollAA(bomber(m_data).create(1, british(m_data)), aaGunList,
-					Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data)), bridge, westRussia);
+		final DiceRoll hit = DiceRoll.rollAA(bomber(m_data).create(1, british(m_data)), aaGunList, bridge, westRussia);
 		assertEquals(hit.getHits(), 1);
 		// aa missses at 1 (0 based)
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1 }));
-		final DiceRoll miss = DiceRoll.rollAA(bombers, aaGunList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data)), bridge, westRussia);
+		final DiceRoll miss = DiceRoll.rollAA(bombers, aaGunList, bridge, westRussia);
 		assertEquals(miss.getHits(), 0);
 	}
 	
@@ -267,16 +267,19 @@ public class DiceRollTest extends TestCase
 		final ITestDelegateBridge bridge = getDelegateBridge(russians);
 		// aa hits at 0 (0 based)
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0 }));
-		final DiceRoll hit = DiceRoll.rollAA(fighterList, aaGunList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data)), bridge, westRussia);
+		final DiceRoll hit = DiceRoll.rollAA(Match.getMatches(fighterList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))), aaGunList, bridge,
+					westRussia);
 		assertEquals(hit.getHits(), 1);
 		// aa missses at 1 (0 based)
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1 }));
-		final DiceRoll miss = DiceRoll.rollAA(fighterList, aaGunList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data)), bridge, westRussia);
+		final DiceRoll miss = DiceRoll.rollAA(Match.getMatches(fighterList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))), aaGunList, bridge,
+					westRussia);
 		assertEquals(miss.getHits(), 0);
 		// 6 bombers, 1 should hit, and nothing should be rolled
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { ScriptedRandomSource.ERROR }));
 		fighterList = fighterType.create(6, russians);
-		final DiceRoll hitNoRoll = DiceRoll.rollAA(fighterList, aaGunList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data)), bridge, westRussia);
+		final DiceRoll hitNoRoll = DiceRoll.rollAA(Match.getMatches(fighterList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))), aaGunList,
+					bridge, westRussia);
 		assertEquals(hitNoRoll.getHits(), 1);
 	}
 	
@@ -295,7 +298,8 @@ public class DiceRollTest extends TestCase
 		final ITestDelegateBridge bridge = getDelegateBridge(russians);
 		// aa hits at 0 (0 based)
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { ScriptedRandomSource.ERROR }));
-		final DiceRoll hit = DiceRoll.rollAA(fighterList, aaGunList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data)), bridge, westRussia);
+		final DiceRoll hit = DiceRoll.rollAA(Match.getMatches(fighterList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))), aaGunList, bridge,
+					westRussia);
 		assertEquals(hit.getHits(), 1);
 	}
 	
@@ -315,16 +319,19 @@ public class DiceRollTest extends TestCase
 		final ITestDelegateBridge bridge = getDelegateBridge(russians);
 		// aa radar hits at 1 (0 based)
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 1 }));
-		final DiceRoll hit = DiceRoll.rollAA(fighterList, aaGunList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data)), bridge, finnland);
+		final DiceRoll hit = DiceRoll.rollAA(Match.getMatches(fighterList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))), aaGunList, bridge,
+					finnland);
 		assertEquals(hit.getHits(), 1);
 		// aa missses at 2 (0 based)
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 2 }));
-		final DiceRoll miss = DiceRoll.rollAA(fighterList, aaGunList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data)), bridge, finnland);
+		final DiceRoll miss = DiceRoll.rollAA(Match.getMatches(fighterList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))), aaGunList, bridge,
+					finnland);
 		assertEquals(miss.getHits(), 0);
 		// 6 bombers, 2 should hit, and nothing should be rolled
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { ScriptedRandomSource.ERROR }));
 		fighterList = fighterType.create(6, russians);
-		final DiceRoll hitNoRoll = DiceRoll.rollAA(fighterList, aaGunList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data)), bridge, finnland);
+		final DiceRoll hitNoRoll = DiceRoll.rollAA(Match.getMatches(fighterList, Matches.unitIsOfTypes(UnitAttachment.get(aaGunList.iterator().next().getType()).getTargetsAA(m_data))), aaGunList,
+					bridge, finnland);
 		assertEquals(hitNoRoll.getHits(), 2);
 	}
 	

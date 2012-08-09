@@ -18,7 +18,6 @@ import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Die;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
@@ -48,14 +47,9 @@ public class DicePanel extends JPanel
 		removeAll();
 	}
 	
-	public void setDiceRollForBombing(final int[] random, final int cost)
+	public void setDiceRollForBombing(final List<Die> dice, final int cost)
 	{
 		removeAll();
-		final List<Die> dice = new ArrayList<Die>(random.length);
-		for (int i = 0; i < random.length; i++)
-		{
-			dice.add(new Die(random[i]));
-		}
 		add(create(dice, -1));
 		add(Box.createVerticalGlue());
 		add(new JLabel("Cost:" + cost));

@@ -139,14 +139,12 @@ public class DiceRoll implements Externalizable
 		return totalAAattacksNormal + totalAAattacksSurplus;
 	}
 	
-	public static DiceRoll rollAA(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAAForThisRoll, final Match<Unit> targetUnitTypesForThisTypeAAMatch,
-				final IDelegateBridge bridge, final Territory location)
+	public static DiceRoll rollAA(final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAAForThisRoll, final IDelegateBridge bridge, final Territory location)
 	{
 		final List<Unit> defendingAA = Match.getMatches(defendingAAForThisRoll, Matches.UnitAttackAAisGreaterThanZeroAndMaxAAattacksIsNotZero);
 		if (defendingAA.size() <= 0)
 			return new DiceRoll(new ArrayList<Die>(0), 0);
 		final GameData data = bridge.getData();
-		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, targetUnitTypesForThisTypeAAMatch);
 		final int totalAAattacksTotal = getTotalAAattacks(defendingAA, validAttackingUnitsForThisRoll, data);
 		// determine dicesides for everyone (we are not going to consider the possibility of different dicesides within the same typeAA)
 		final Tuple<Integer, Integer> attackThenDiceSidesForAll = getAAattackAndMaxDiceSides(defendingAA, data);

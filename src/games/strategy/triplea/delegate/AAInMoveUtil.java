@@ -191,8 +191,8 @@ class AAInMoveUtil implements Serializable
 			final Collection<Unit> currentPossibleAA = Match.getMatches(defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
 			final Set<UnitType> targetUnitTypesForThisTypeAA = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(getData());
 			final Set<UnitType> airborneTypesTargettedToo = airborneTechTargetsAllowed.get(currentTypeAA);
-			final Match<Unit> aaTargetsMatch = new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
-						new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo)));
+			final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(units, new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+						new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
 			
 			// once we fire the AA guns, we can't undo
 			// otherwise you could keep undoing and redoing
@@ -205,7 +205,7 @@ class AAInMoveUtil implements Serializable
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
-					dice[0] = DiceRoll.rollAA(units, currentPossibleAA, aaTargetsMatch, m_bridge, territory);
+					dice[0] = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, m_bridge, territory);
 				}
 			};
 			final IExecutable selectCasualties = new IExecutable()
@@ -220,7 +220,7 @@ class AAInMoveUtil implements Serializable
 						getRemotePlayer().reportMessage("No aa hits in " + territory.getName(), "No aa hits in " + territory.getName());
 					}
 					else
-						selectCasualties(dice[0], units, currentPossibleAA, aaTargetsMatch, territory, null);
+						selectCasualties(dice[0], units, validAttackingUnitsForThisRoll, currentPossibleAA, territory, null);
 				}
 			};
 			// push in reverse order of execution
@@ -233,16 +233,14 @@ class AAInMoveUtil implements Serializable
 	 * hits are removed from units. Note that units are removed in the order
 	 * that the iterator will move through them.
 	 */
-	private void selectCasualties(final DiceRoll dice, final Collection<Unit> units, final Collection<Unit> defendingAA, final Match<Unit> targetUnitTypesForThisTypeAAMatch,
-				final Territory territory,
-				final GUID battleID)
+	private void selectCasualties(final DiceRoll dice, final Collection<Unit> allAttackingUnits, final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA,
+				final Territory territory, final GUID battleID)
 	{
 		Collection<Unit> casualties = null;
-		final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(units, targetUnitTypesForThisTypeAAMatch);
 		casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, dice, m_bridge, territory.getOwner(), m_player, battleID, territory);
 		getRemotePlayer().reportMessage(casualties.size() + " AA hits in " + territory.getName(), casualties.size() + " AA hits in " + territory.getName());
 		m_bridge.getHistoryWriter().addChildToEvent(MyFormatter.unitsToTextNoOwner(casualties) + " lost in " + territory.getName(), casualties);
-		units.removeAll(casualties);
+		allAttackingUnits.removeAll(casualties);
 		if (m_casualties == null)
 			m_casualties = casualties;
 		else

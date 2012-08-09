@@ -2224,8 +2224,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				final Collection<Unit> currentPossibleAA = Match.getMatches(m_defendingAA, Matches.UnitIsAAofTypeAA(currentTypeAA));
 				final Set<UnitType> targetUnitTypesForThisTypeAA = UnitAttachment.get(currentPossibleAA.iterator().next().getType()).getTargetsAA(m_data);
 				final Set<UnitType> airborneTypesTargettedToo = TechAbilityAttachment.getAirborneTargettedByAA(m_attacker, m_data).get(currentTypeAA);
-				final Match<Unit> aaTargetsMatch = new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
-							new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo)));
+				final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(m_attackingUnits, new CompositeMatchOr<Unit>(Matches.unitIsOfTypes(targetUnitTypesForThisTypeAA),
+							new CompositeMatchAnd<Unit>(Matches.UnitIsAirborne, Matches.unitIsOfTypes(airborneTypesTargettedToo))));
 				
 				final IExecutable rollDice = new IExecutable()
 				{
@@ -2233,7 +2233,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						m_dice = DiceRoll.rollAA(m_attackingUnits, currentPossibleAA, aaTargetsMatch, bridge, m_battleSite);
+						m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite);
 					}
 				};
 				final IExecutable selectCasualties = new IExecutable()
@@ -2242,7 +2242,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
-						selectCasualties(m_attackingUnits, currentPossibleAA, aaTargetsMatch, bridge);
+						selectCasualties(validAttackingUnitsForThisRoll, currentPossibleAA, bridge);
 					}
 				};
 				final IExecutable notifyCasualties = new IExecutable()
@@ -2262,12 +2262,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			}
 		}
 		
-		private void selectCasualties(final Collection<Unit> attackingUnitsAll, final Collection<Unit> defendingAA, final Match<Unit> targetUnitTypesForThisTypeAAMatch, final IDelegateBridge bridge)
+		private void selectCasualties(final Collection<Unit> validAttackingUnitsForThisRoll, final Collection<Unit> defendingAA, final IDelegateBridge bridge)
 		{
 			// send defender the dice roll so he can see what the dice are while he
 			// waits for attacker to select casualties
 			getDisplay(bridge).notifyDice(m_battleID, m_dice, SELECT_AA_CASUALTIES);
-			final Collection<Unit> validAttackingUnitsForThisRoll = Match.getMatches(attackingUnitsAll, targetUnitTypesForThisTypeAAMatch);
 			m_casualties = BattleCalculator.getAACasualties(validAttackingUnitsForThisRoll, defendingAA, m_dice, bridge, m_defender, m_attacker, m_battleID, m_battleSite);
 		}
 		

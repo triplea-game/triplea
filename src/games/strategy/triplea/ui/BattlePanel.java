@@ -28,6 +28,7 @@ import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
@@ -567,7 +568,7 @@ public class BattlePanel extends ActionPanel
 		return m_battleDisplay.getScramble(bridge, message, possible, player);
 	}*/
 
-	public void bombingResults(final GUID battleID, final int[] dice, final int cost)
+	public void bombingResults(final GUID battleID, final List<Die> dice, final int cost)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{

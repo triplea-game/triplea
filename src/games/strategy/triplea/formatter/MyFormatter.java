@@ -25,6 +25,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.util.IntegerMap;
 
 import java.util.ArrayList;
@@ -263,6 +264,20 @@ public class MyFormatter
 		{
 			buf.append(rolls[i] + 1);
 			if (i + 1 < rolls.length)
+				buf.append(",");
+		}
+		return buf.toString();
+	}
+	
+	public static String asDice(final List<Die> rolls)
+	{
+		if (rolls == null || rolls.size() == 0)
+			return "none";
+		final StringBuilder buf = new StringBuilder(rolls.size() * 2);
+		for (int i = 0; i < rolls.size(); i++)
+		{
+			buf.append(rolls.get(i).getValue() + 1);
+			if (i + 1 < rolls.size())
 				buf.append(",");
 		}
 		return buf.toString();

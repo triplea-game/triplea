@@ -6,6 +6,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
 import java.util.Collection;
@@ -53,7 +54,7 @@ public class DummyDisplay implements ITripleaDisplay
 		// TODO Auto-generated method stub
 	}
 	
-	public void bombingResults(final GUID battleID, final int[] dice, final int cost)
+	public void bombingResults(final GUID battleID, final List<Die> dice, final int cost)
 	{
 		// TODO Auto-generated method stub
 	}

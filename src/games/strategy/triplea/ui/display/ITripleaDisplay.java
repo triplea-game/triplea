@@ -19,6 +19,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplay;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 
 import java.util.Collection;
@@ -99,7 +100,7 @@ public interface ITripleaDisplay extends IDisplay
 	/**
 	 * Notification of the results of a bombing raid
 	 */
-	public void bombingResults(GUID battleID, int[] dice, int cost);
+	public void bombingResults(GUID battleID, List<Die> dice, int cost);
 	
 	/**
 	 * Notify that the given player has retreated some or all of his units.

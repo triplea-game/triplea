@@ -128,7 +128,7 @@ public class WW2V3_41_Test extends TestCase
 		final Collection<Unit> defendingAA = territory("Germany", m_data).getUnits().getMatches(Matches.UnitIsAAforAnything);
 		// don't allow rolling, 6 of each is deterministic
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { ScriptedRandomSource.ERROR }));
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(m_data)), m_bridge,
+		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(m_data))), defendingAA, m_bridge,
 					territory("Germany", m_data));
 		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", m_data));
 		assertEquals(casualties.size(), 2);
@@ -153,7 +153,7 @@ public class WW2V3_41_Test extends TestCase
 		// then a dice to select the casualty
 		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 0, 1 });
 		m_bridge.setRandomSource(randomSource);
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(m_data)), m_bridge,
+		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(m_data))), defendingAA, m_bridge,
 					territory("Germany", m_data));
 		// make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
@@ -180,7 +180,7 @@ public class WW2V3_41_Test extends TestCase
 		// then a dice to select the casualty
 		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 5, ScriptedRandomSource.ERROR });
 		m_bridge.setRandomSource(randomSource);
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(m_data)), m_bridge,
+		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(m_data))), defendingAA, m_bridge,
 					territory("Germany", m_data));
 		assertEquals(roll.getHits(), 2);
 		// make sure we rolled once

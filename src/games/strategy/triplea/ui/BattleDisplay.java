@@ -26,6 +26,7 @@ import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.attatchments.UnitSupportAttachment;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TerritoryEffectHelper;
@@ -190,7 +191,7 @@ public class BattleDisplay extends JPanel
 		return m_battleID;
 	}
 	
-	public void bombingResults(final int[] dice, final int cost)
+	public void bombingResults(final List<Die> dice, final int cost)
 	{
 		ClipPlayer.play(SoundPath.CLIP_BOMB); // play sound
 		m_dicePanel.setDiceRollForBombing(dice, cost);

@@ -1,4 +1,10 @@
 Changes for 1.6.1.2
+* Fixing non-serialization error when attempting to save the game after a successful aa gun roll, but before selecting casualties. (veqryn)
+
+* Improved bombing result display to show ignored dice if there are any, and improving history panel to show the rolls for each target unit. (veqryn)
+
+* Fixed integer array error in Strategy Bombing with Heavy Bombers, causing the second half of all rolls to not be rolled, thereby defaulting to one each. (veqryn)
+
 * Fixed null pointer for undoing a placement made by UK in global 1940 maps, caused by the new no-air-checking delegate [players will need to update their 1940 maps though]. (veqryn)
 
 * Creating framework for TripleA to use proxies to connect to the internet. Allowing map downloading, PBEM/PBF, and dice servers to use a proxy. (veqryn)

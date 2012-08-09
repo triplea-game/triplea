@@ -81,7 +81,7 @@ public class BattleCalculatorTest extends TestCase
 		final Collection<Unit> defendingAA = territory("Germany", data).getUnits().getMatches(Matches.UnitIsAAforAnything);
 		// don't allow rolling, 6 of each is deterministic
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { ScriptedRandomSource.ERROR }));
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data)), m_bridge,
+		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
 		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
 		assertEquals(casualties.size(), 2);
@@ -102,7 +102,7 @@ public class BattleCalculatorTest extends TestCase
 		// should roll once, a hit
 		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 0, 1, 1, ScriptedRandomSource.ERROR });
 		m_bridge.setRandomSource(randomSource);
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data)), m_bridge,
+		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
 		assertEquals(1, randomSource.getTotalRolled());
 		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, null, null, null, territory("Germany", data));
@@ -135,7 +135,7 @@ public class BattleCalculatorTest extends TestCase
 		});
 		// don't allow rolling, 6 of each is deterministic
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { ScriptedRandomSource.ERROR }));
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data)), m_bridge,
+		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
 		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, germans(data), british(data), null, territory("Germany", data));
 		assertEquals(casualties.size(), 2);
@@ -165,7 +165,7 @@ public class BattleCalculatorTest extends TestCase
 		});
 		// only 1 roll, a hit
 		m_bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, ScriptedRandomSource.ERROR }));
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data)), m_bridge,
+		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
 		final Collection<Unit> casualties = BattleCalculator.getAACasualties(planes, defendingAA, roll, m_bridge, germans(data), british(data), null, territory("Germany", data));
 		assertEquals(casualties.size(), 3);
@@ -187,7 +187,7 @@ public class BattleCalculatorTest extends TestCase
 		// one roll, a hit
 		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 0 });
 		m_bridge.setRandomSource(randomSource);
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data)), m_bridge,
+		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
 		// make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
@@ -213,7 +213,7 @@ public class BattleCalculatorTest extends TestCase
 		// one roll, a miss
 		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 2 });
 		m_bridge.setRandomSource(randomSource);
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data)), m_bridge,
+		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
 		// make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());
@@ -237,7 +237,7 @@ public class BattleCalculatorTest extends TestCase
 		// 1 roll for the extra fighter
 		final ScriptedRandomSource randomSource = new ScriptedRandomSource(new int[] { 0, ScriptedRandomSource.ERROR });
 		m_bridge.setRandomSource(randomSource);
-		final DiceRoll roll = DiceRoll.rollAA(planes, defendingAA, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data)), m_bridge,
+		final DiceRoll roll = DiceRoll.rollAA(Match.getMatches(planes, Matches.unitIsOfTypes(UnitAttachment.get(defendingAA.iterator().next().getType()).getTargetsAA(data))), defendingAA, m_bridge,
 					territory("Germany", data));
 		// make sure we rolled once
 		assertEquals(1, randomSource.getTotalRolled());

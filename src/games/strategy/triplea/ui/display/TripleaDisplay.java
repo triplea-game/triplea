@@ -19,6 +19,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplayBridge;
 import games.strategy.net.GUID;
 import games.strategy.triplea.delegate.DiceRoll;
+import games.strategy.triplea.delegate.Die;
 import games.strategy.triplea.delegate.IBattle.BattleType;
 import games.strategy.triplea.ui.TripleAFrame;
 
@@ -123,7 +124,7 @@ public class TripleaDisplay implements ITripleaDisplay
 	/* )
 	 * @see games.strategy.triplea.ui.display.ITripleaDisplay#bombingResults(games.strategy.net.GUID, int[], int)
 	 */
-	public void bombingResults(final GUID battleID, final int[] dice, final int cost)
+	public void bombingResults(final GUID battleID, final List<Die> dice, final int cost)
 	{
 		m_ui.getBattlePanel().bombingResults(battleID, dice, cost);
 	}

@@ -81,6 +81,8 @@ public class Die
 	@Override
 	public String toString()
 	{
+		if (m_rolledAt < 0)
+			return "Die roll:" + m_value + (m_type == DieType.IGNORED ? " type:" + m_type : "");
 		return "Die roll:" + m_value + " rolled at:" + m_rolledAt + " type:" + m_type;
 	}
 }
