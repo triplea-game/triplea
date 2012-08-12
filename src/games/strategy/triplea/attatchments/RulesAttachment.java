@@ -33,6 +33,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
@@ -980,7 +981,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		final int diceSides = getInt(m_chance.split(":")[1]);
 		if (objectiveMet && hitTarget != diceSides)
 		{
-			final int rollResult = aBridge.getRandom(diceSides, "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
+			final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE, "Attempting the Condition: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
 			objectiveMet = rollResult <= hitTarget;
 			final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (objectiveMet ? "Success!" : "Failure!") + " (for "
 						+ MyFormatter.attachmentNameToText(this.getName()) + ")";

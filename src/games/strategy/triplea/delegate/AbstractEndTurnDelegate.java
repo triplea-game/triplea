@@ -32,6 +32,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PlayerAttachment;
@@ -241,7 +242,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			return 0;
 		final String annotation = player.getName() + " rolling to resolve War Bonds: ";
 		DiceRoll dice;
-		dice = DiceRoll.rollNDice(aBridge, count, sides, annotation);
+		dice = DiceRoll.rollNDice(aBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
 		int total = 0;
 		for (int i = 0; i < dice.size(); i++)
 		{
@@ -282,7 +283,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		if (giveWarBondsTo == null)
 			return;
 		final String annotation = player.getName() + " rolling to resolve War Bonds, and giving results to " + giveWarBondsTo.getName() + ": ";
-		final DiceRoll dice = DiceRoll.rollNDice(aBridge, count, sides, annotation);
+		final DiceRoll dice = DiceRoll.rollNDice(aBridge, count, sides, player, DiceType.NONCOMBAT, annotation);
 		int totalWarBonds = 0;
 		for (int i = 0; i < dice.size(); i++)
 		{
@@ -399,6 +400,8 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 				continue;
 			int loss = 0;
 			final Collection<Unit> enemies = Match.getMatches(b.getUnits().getUnits(), enemyUnits);
+			if (enemies.isEmpty())
+				continue;
 			if (rollDiceForBlockadeDamage)
 			{
 				int numberOfDice = 0;
@@ -409,7 +412,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 				if (numberOfDice > 0)
 				{
 					final String transcript = "Rolling for Convoy Blockade Damage in " + b.getName();
-					final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice, transcript);
+					final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice, enemies.iterator().next().getOwner(), DiceType.BOMBING, transcript);
 					transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));
 					for (final int d : dice)
 					{

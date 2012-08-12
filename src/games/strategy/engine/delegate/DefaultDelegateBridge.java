@@ -25,6 +25,7 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.MessengerException;
 import games.strategy.engine.random.IRandomSource;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.RandomStats;
 
 import java.util.Properties;
@@ -74,20 +75,20 @@ public class DefaultDelegateBridge implements IDelegateBridge
 	 * All delegates should use random data that comes from both players so that
 	 * neither player cheats.
 	 */
-	public int getRandom(final int max, final String annotation)
+	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		final int random = m_randomSource.getRandom(max, annotation);
-		m_randomStats.addRandom(random);
+		m_randomStats.addRandom(random, player, diceType);
 		return random;
 	}
 	
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
-	public int[] getRandom(final int max, final int count, final String annotation)
+	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		final int[] rVal = m_randomSource.getRandom(max, count, annotation);
-		m_randomStats.addRandom(rVal);
+		m_randomStats.addRandom(rVal, player, diceType);
 		return rVal;
 	}
 	

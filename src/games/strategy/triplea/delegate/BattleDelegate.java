@@ -31,6 +31,7 @@ import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.AutoSave;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.TripleA;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.ai.weakAI.WeakAI;
@@ -1280,7 +1281,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				final int remainder = power % diceSides;
 				if (remainder > 0)
 				{
-					rolls = m_bridge.getRandom(diceSides, 1, "Rolling for remainder in Kamikaze Suicide Attack on unit: " + unitUnderFire.getType().getName());
+					rolls = m_bridge.getRandom(diceSides, 1, firingEnemy, DiceType.COMBAT, "Rolling for remainder in Kamikaze Suicide Attack on unit: " + unitUnderFire.getType().getName());
 					if (remainder > rolls[0])
 						hits++;
 				}
@@ -1290,7 +1291,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		{
 			// avoid multiple calls of getRandom, so just do it once at the beginning
 			final int numTokens = numberOfAttacks.totalValues();
-			rolls = m_bridge.getRandom(diceSides, numTokens, "Rolling for Kamikaze Suicide Attack on unit: " + unitUnderFire.getType().getName());
+			rolls = m_bridge.getRandom(diceSides, numTokens, firingEnemy, DiceType.COMBAT, "Rolling for Kamikaze Suicide Attack on unit: " + unitUnderFire.getType().getName());
 			final int[] powerOfTokens = new int[numTokens];
 			int j = 0;
 			for (final Entry<Resource, Integer> entry : numberOfAttacks.entrySet())

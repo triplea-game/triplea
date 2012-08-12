@@ -72,7 +72,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -841,24 +840,8 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			public void actionPerformed(final ActionEvent e)
 			{
 				final IRandomStats randomStats = (IRandomStats) getGame().getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME);
-				final RandomStatsDetails stats = randomStats.getRandomStats();
-				final JPanel panel = new JPanel();
-				final BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
-				panel.setLayout(layout);
-				for (final Integer key : new TreeSet<Integer>(stats.getData().keySet()))
-				{
-					final int value = stats.getData().getInt(key);
-					final JLabel label = new JLabel(key + " was rolled " + value + " times");
-					panel.add(label);
-				}
-				panel.add(new JLabel("  "));
-				final DecimalFormat format = new DecimalFormat("#0.000");
-				panel.add(new JLabel("Average roll : " + format.format(stats.getAverage())));
-				panel.add(new JLabel("Median : " + format.format(stats.getMedian())));
-				panel.add(new JLabel("Variance : " + format.format(stats.getVariance())));
-				panel.add(new JLabel("Standard Deviation : " + format.format(stats.getStdDeviation())));
-				panel.add(new JLabel("Total rolls : " + stats.getTotal()));
-				JOptionPane.showMessageDialog(m_frame, panel, "Random Stats", JOptionPane.INFORMATION_MESSAGE);
+				final RandomStatsDetails stats = randomStats.getRandomStats(getData().getDiceSides());
+				JOptionPane.showMessageDialog(m_frame, new JScrollPane(stats.getAllStats()), "Random Stats", JOptionPane.INFORMATION_MESSAGE);
 			}
 		};
 		parentMenu.add(showDiceStats);

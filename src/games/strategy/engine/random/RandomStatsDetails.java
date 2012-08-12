@@ -13,48 +13,77 @@
  */
 package games.strategy.engine.random;
 
+import games.strategy.engine.data.PlayerID;
 import games.strategy.util.IntegerMap;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeSet;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class RandomStatsDetails implements Serializable
 {
 	private static final long serialVersionUID = 69602197220912520L;
-	private final IntegerMap<Integer> m_data;
-	private double m_average;
-	private int m_total;
-	private double m_median;
-	private double m_stdDeviation;
-	private double m_variance;
+	private final Map<PlayerID, IntegerMap<Integer>> m_data;
+	private final IntegerMap<Integer> m_totalMap;
+	private final DiceStatistic m_totalStats;
+	private final Map<PlayerID, DiceStatistic> m_playerStats = new HashMap<PlayerID, DiceStatistic>();
 	
-	public RandomStatsDetails(final IntegerMap<Integer> data)
+	public RandomStatsDetails(final Map<PlayerID, IntegerMap<Integer>> randomStats, final int diceSides)
 	{
-		m_data = data;
-		if (data.totalValues() != 0)
+		m_data = randomStats;
+		m_totalMap = new IntegerMap<Integer>();
+		for (final Entry<PlayerID, IntegerMap<Integer>> entry : m_data.entrySet())
 		{
+			m_totalMap.add(entry.getValue());
+		}
+		m_totalStats = getDiceStatistic(m_totalMap, diceSides);
+		for (final Entry<PlayerID, IntegerMap<Integer>> entry : m_data.entrySet())
+		{
+			m_playerStats.put(entry.getKey(), getDiceStatistic(entry.getValue(), diceSides));
+		}
+	}
+	
+	private static DiceStatistic getDiceStatistic(final IntegerMap<Integer> stats, final int diceSides)
+	{
+		final double m_average;
+		final int m_total;
+		final double m_median;
+		final double m_stdDeviation;
+		final double m_variance;
+		if (stats.totalValues() != 0)
+		{
+			
 			int sumTotal = 0;
 			int total = 0;
 			// TODO: does this need to be updated to take data.getDiceSides() ?
-			for (int i = 1; i <= 6; i++)
+			for (int i = 1; i <= diceSides; i++)
 			{
-				sumTotal += i * m_data.getInt(Integer.valueOf(i));
-				total += m_data.getInt(Integer.valueOf(i));
+				sumTotal += i * stats.getInt(Integer.valueOf(i));
+				total += stats.getInt(Integer.valueOf(i));
 			}
 			m_total = total;
-			m_average = ((double) sumTotal) / ((double) data.totalValues());
+			m_average = (sumTotal) / ((double) stats.totalValues());
 			/**
 			 * calculate median
 			 */
 			if (total % 2 != 0)
 			{
-				m_median = calcMedian((total / 2) + 1);
+				m_median = calcMedian((total / 2) + 1, diceSides, stats);
 			}
 			else
 			{
 				double tmp1 = 0;
 				double tmp2 = 0;
-				tmp1 = calcMedian((total / 2));
-				tmp2 = calcMedian((total / 2) + 1);
+				tmp1 = calcMedian((total / 2), diceSides, stats);
+				tmp2 = calcMedian((total / 2) + 1, diceSides, stats);
 				m_median = (tmp1 + tmp2) / 2;
 			}
 			/**
@@ -62,9 +91,9 @@ public class RandomStatsDetails implements Serializable
 			 */
 			double variance = 0;
 			// TODO: does this need to be updated to take data.getDiceSides() ?
-			for (int i = 1; i <= 6; i++)
+			for (int i = 1; i <= diceSides; i++)
 			{
-				variance += (m_data.getInt(Integer.valueOf(i)) - (total / 6)) * (m_data.getInt(Integer.valueOf(i)) - (total / 6));
+				variance += (stats.getInt(Integer.valueOf(i)) - (total / diceSides)) * (stats.getInt(Integer.valueOf(i)) - (total / diceSides));
 			}
 			m_variance = variance / (total - 1);
 			/**
@@ -74,52 +103,42 @@ public class RandomStatsDetails implements Serializable
 		}
 		else
 		{
+			m_average = 0;
 			m_total = 0;
 			m_median = 0;
-			m_average = 0;
 			m_stdDeviation = 0;
 			m_variance = 0;
 		}
+		return new DiceStatistic(m_average, m_total, m_median, m_stdDeviation, m_variance);
 	}
 	
-	public double getAverage()
-	{
-		return m_average;
-	}
-	
-	public IntegerMap<Integer> getData()
+	public Map<PlayerID, IntegerMap<Integer>> getData()
 	{
 		return m_data;
 	}
 	
-	public int getTotal()
+	public IntegerMap<Integer> getTotalData()
 	{
-		return m_total;
+		return m_totalMap;
 	}
 	
-	public double getMedian()
+	public Map<PlayerID, DiceStatistic> getPlayerStats()
 	{
-		return m_median;
+		return m_playerStats;
 	}
 	
-	public double getVariance()
+	public DiceStatistic getTotalStats()
 	{
-		return m_variance;
+		return m_totalStats;
 	}
 	
-	public double getStdDeviation()
-	{
-		return m_stdDeviation;
-	}
-	
-	private int calcMedian(final int centerPoint)
+	private static int calcMedian(final int centerPoint, final int diceSides, final IntegerMap<Integer> stats)
 	{
 		int sum = 0;
 		int i = 1;
-		// TODO: does this need to be updated to take data.getDiceSides() ?
-		for (i = 1; i <= 6; i++)
+		for (i = 1; i <= diceSides; i++)
 		{
-			sum += m_data.getInt(Integer.valueOf(i));
+			sum += stats.getInt(Integer.valueOf(i));
 			if (sum >= centerPoint)
 			{
 				return i;
@@ -127,5 +146,45 @@ public class RandomStatsDetails implements Serializable
 		}
 		return i; // This is to stop java from complaining
 		// it should never reach this part.
+	}
+	
+	public static JPanel getStatsDisplay(final IntegerMap<Integer> diceRolls, final DiceStatistic diceStats, final String title)
+	{
+		final JPanel panel = new JPanel();
+		panel.setBorder(BorderFactory.createEtchedBorder());
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.add(new JLabel("<html><b>" + title + "</b></html>"));
+		for (final Integer key : new TreeSet<Integer>(diceRolls.keySet()))
+		{
+			final int value = diceRolls.getInt(key);
+			final JLabel label = new JLabel(key + " was rolled " + value + " times");
+			panel.add(label);
+		}
+		panel.add(new JLabel("  "));
+		final DecimalFormat format = new DecimalFormat("#0.000");
+		panel.add(new JLabel("Average roll : " + format.format(diceStats.getAverage())));
+		panel.add(new JLabel("Median : " + format.format(diceStats.getMedian())));
+		panel.add(new JLabel("Variance : " + format.format(diceStats.getVariance())));
+		panel.add(new JLabel("Standard Deviation : " + format.format(diceStats.getStdDeviation())));
+		panel.add(new JLabel("Total rolls : " + diceStats.getTotal()));
+		return panel;
+	}
+	
+	public static JPanel getAllStats(final RandomStatsDetails details)
+	{
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.add(getStatsDisplay(details.getTotalData(), details.getTotalStats(), "Total"));
+		for (final Entry<PlayerID, IntegerMap<Integer>> entry : details.getData().entrySet())
+		{
+			panel.add(new JLabel("  "));
+			panel.add(getStatsDisplay(entry.getValue(), details.getPlayerStats().get(entry.getKey()), (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat")));
+		}
+		return panel;
+	}
+	
+	public JPanel getAllStats()
+	{
+		return getAllStats(this);
 	}
 } // end class RandomStatsDetails

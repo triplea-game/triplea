@@ -27,6 +27,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -209,19 +210,19 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 			remainder = techRolls % diceSides;
 			if (remainder > 0)
 			{
-				random = m_bridge.getRandom(diceSides, 1, annotation);
+				random = m_bridge.getRandom(diceSides, 1, m_player, DiceType.TECH, annotation);
 				if (random[0] + 1 <= remainder)
 					techHits++;
 			}
 			else
 			{
-				random = m_bridge.getRandom(diceSides, 1, annotation);
+				random = m_bridge.getRandom(diceSides, 1, m_player, DiceType.TECH, annotation);
 				remainder = diceSides;
 			}
 		}
 		else
 		{
-			random = m_bridge.getRandom(diceSides, techRolls, annotation);
+			random = m_bridge.getRandom(diceSides, techRolls, m_player, DiceType.TECH, annotation);
 			techHits = getTechHits(random);
 		}
 		final boolean isRevisedModel = isWW2V2() || (isSelectableTechRoll() && !isWW2V3TechModel());
@@ -381,7 +382,7 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 			// hits guaranteed to be less than available at this point.
 			for (int i = 0; i < hits; i++)
 			{
-				int roll = m_bridge.getRandom(available.size() - i, annotation);
+				int roll = m_bridge.getRandom(available.size() - i, null, DiceType.ENGINE, annotation);
 				for (final int r : rolled)
 				{
 					if (roll >= r)

@@ -29,6 +29,7 @@ import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.UnifiedMessenger;
 import games.strategy.engine.random.IRandomSource;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.ui.display.ITripleaDisplay;
 
 import java.util.Properties;
@@ -72,12 +73,12 @@ public class TestDelegateBridge implements ITestDelegateBridge
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
-	public int getRandom(final int max, final String annotation)
+	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return m_randomSource.getRandom(max, annotation);
 	}
 	
-	public int[] getRandom(final int max, final int count, final String annotation)
+	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return m_randomSource.getRandom(max, count, annotation);
 	}

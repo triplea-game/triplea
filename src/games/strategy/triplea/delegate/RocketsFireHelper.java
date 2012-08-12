@@ -22,6 +22,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -262,7 +263,7 @@ public class RocketsFireHelper
 			if (doNotUseBombingBonus)
 			{
 				// no low luck, and no bonus, so just roll based on the map's dice sides
-				final int[] rolls = bridge.getRandom(data.getDiceSides(), numberOfAttacks, "Rocket fired by " + player.getName() + " at " + attacked.getName());
+				final int[] rolls = bridge.getRandom(data.getDiceSides(), numberOfAttacks, player, DiceType.BOMBING, "Rocket fired by " + player.getName() + " at " + attacked.getName());
 				for (final int r : rolls)
 				{
 					cost += r + 1; // we are zero based
@@ -295,7 +296,7 @@ public class RocketsFireHelper
 				// now we roll, or don't if there is nothing to roll.
 				if (highestMaxDice > 0)
 				{
-					final int[] rolls = bridge.getRandom(highestMaxDice, numberOfAttacks, "Rocket fired by " + player.getName() + " at " + attacked.getName());
+					final int[] rolls = bridge.getRandom(highestMaxDice, numberOfAttacks, player, DiceType.BOMBING, "Rocket fired by " + player.getName() + " at " + attacked.getName());
 					for (int i = 0; i < rolls.length; i++)
 					{
 						final int r = rolls[i] + highestBonus;
@@ -318,7 +319,7 @@ public class RocketsFireHelper
 				// no bonus, so just roll based on the map's dice sides, but modify for LL
 				final int maxDice = (data.getDiceSides() + 1) / 3;
 				final int bonus = (data.getDiceSides() + 1) / 3;
-				final int[] rolls = bridge.getRandom(maxDice, numberOfAttacks, "Rocket fired by " + player.getName() + " at " + attacked.getName());
+				final int[] rolls = bridge.getRandom(maxDice, numberOfAttacks, player, DiceType.BOMBING, "Rocket fired by " + player.getName() + " at " + attacked.getName());
 				for (int i = 0; i < rolls.length; i++)
 				{
 					final int r = rolls[i] + bonus;
@@ -358,7 +359,7 @@ public class RocketsFireHelper
 				// now we roll, or don't if there is nothing to roll.
 				if (highestMaxDice > 0)
 				{
-					final int[] rolls = bridge.getRandom(highestMaxDice, numberOfAttacks, "Rocket fired by " + player.getName() + " at " + attacked.getName());
+					final int[] rolls = bridge.getRandom(highestMaxDice, numberOfAttacks, player, DiceType.BOMBING, "Rocket fired by " + player.getName() + " at " + attacked.getName());
 					for (int i = 0; i < rolls.length; i++)
 					{
 						final int r = rolls[i] + highestBonus;

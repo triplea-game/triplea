@@ -1,4 +1,8 @@
 Changes for 1.6.1.2
+* Getting engine to record if the dice thrown is in Combat or not, for the dice statistics. (veqryn)
+
+* Getting engine to record which player is rolling dice for the dice statistics. (veqryn)
+
 * Adding scroll bars to edit place unit panel and non-tabbed purchase unit panel. (veqryn)
 
 * Fixing non-serialization error when attempting to save the game after a successful aa gun roll, but before selecting casualties. (veqryn)

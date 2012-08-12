@@ -9,6 +9,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.formatter.MyFormatter;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.util.Match;
@@ -235,7 +236,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		if (hitTarget == diceSides)
 			return true;
 		
-		final int rollResult = aBridge.getRandom(diceSides, "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
+		final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE, "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;
 		final boolean testChance = rollResult <= hitTarget;
 		final String notificationMessage = "Rolling (" + hitTarget + " out of " + diceSides + ") result: " + rollResult + " = " + (testChance ? "Success!" : "Failure!") + " (for "
 					+ MyFormatter.attachmentNameToText(this.getName()) + ")";

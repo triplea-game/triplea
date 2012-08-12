@@ -13,13 +13,17 @@
  */
 package games.strategy.engine.random;
 
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemoteMessenger;
 import games.strategy.util.IntegerMap;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RandomStats implements IRandomStats
 {
 	private final IRemoteMessenger m_remoteMessenger;
-	private final IntegerMap<Integer> m_randomStats = new IntegerMap<Integer>();
+	private final Map<PlayerID, IntegerMap<Integer>> m_randomStats = new HashMap<PlayerID, IntegerMap<Integer>>();
 	
 	public RandomStats(final IRemoteMessenger remoteMessenger)
 	{
@@ -32,21 +36,30 @@ public class RandomStats implements IRandomStats
 		m_remoteMessenger.unregisterRemote(RANDOM_STATS_REMOTE_NAME);
 	}
 	
-	public synchronized void addRandom(final int[] random)
+	public synchronized void addRandom(final int[] random, final PlayerID player, final DiceType diceType)
 	{
+		IntegerMap<Integer> map = m_randomStats.get(player);
+		if (map == null)
+			map = new IntegerMap<Integer>();
 		for (int i = 0; i < random.length; i++)
 		{
-			m_randomStats.add(Integer.valueOf(random[i] + 1), 1);
+			map.add(Integer.valueOf(random[i] + 1), 1);
 		}
+		// for now, only record if it is combat, otherwise if not combat, throw it in the null pile
+		m_randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
 	}
 	
-	public synchronized void addRandom(final int random)
+	public synchronized void addRandom(final int random, final PlayerID player, final DiceType diceType)
 	{
-		m_randomStats.add(Integer.valueOf(random + 1), 1);
+		IntegerMap<Integer> map = m_randomStats.get(player);
+		if (map == null)
+			map = new IntegerMap<Integer>();
+		map.add(Integer.valueOf(random + 1), 1);
+		m_randomStats.put((diceType == DiceType.COMBAT ? player : null), map);
 	}
 	
-	public synchronized RandomStatsDetails getRandomStats()
+	public synchronized RandomStatsDetails getRandomStats(final int diceSides)
 	{
-		return new RandomStatsDetails(m_randomStats);
+		return new RandomStatsDetails(m_randomStats, diceSides);
 	}
 }

@@ -26,6 +26,7 @@ import games.strategy.engine.data.RelationshipType;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
@@ -438,7 +439,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	{
 		if (paa.diceSides() == paa.toHit())
 			return true;
-		final int rollResult = m_bridge.getRandom(paa.diceSides(), "Attempting the PoliticalAction: " + MyFormatter.attachmentNameToText(paa.getName())) + 1;
+		final int rollResult = m_bridge.getRandom(paa.diceSides(), m_player, DiceType.NONCOMBAT, "Attempting the PoliticalAction: " + MyFormatter.attachmentNameToText(paa.getName())) + 1;
 		final boolean success = rollResult <= paa.toHit();
 		final String notificationMessage = "rolling (" + paa.toHit() + " out of " + paa.diceSides() + ") result: " + rollResult + " = " + (success ? "Success!" : "Failure!");
 		sendNotification(m_player, notificationMessage);

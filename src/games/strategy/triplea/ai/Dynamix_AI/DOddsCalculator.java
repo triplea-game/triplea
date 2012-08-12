@@ -30,6 +30,7 @@ import games.strategy.engine.history.DelegateHistoryWriter;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.engine.random.PlainRandomSource;
 import games.strategy.net.GUID;
 import games.strategy.triplea.ai.AIUtils;
@@ -221,12 +222,12 @@ class DummyDelegateBridge implements IDelegateBridge
 		return m_attackingPlayer;
 	}
 	
-	public int[] getRandom(final int max, final int count, final String annotation)
+	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return m_randomSource.getRandom(max, count, annotation);
 	}
 	
-	public int getRandom(final int max, final String annotation)
+	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
 	{
 		return m_randomSource.getRandom(max, annotation);
 	}

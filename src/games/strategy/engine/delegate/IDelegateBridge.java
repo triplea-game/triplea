@@ -24,6 +24,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.random.IRandomStats.DiceType;
 
 import java.util.Properties;
 
@@ -77,7 +78,7 @@ public interface IDelegateBridge
 	/**
 	 * equivalent to getRandom(max,1,annotation)[0]
 	 */
-	public int getRandom(int max, String annotation);
+	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation);
 	
 	/**
 	 * 
@@ -92,7 +93,7 @@ public interface IDelegateBridge
 	 *            a string used to describe the random event.
 	 *            <p>
 	 */
-	public int[] getRandom(int max, int count, String annotation);
+	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation);
 	
 	/**
 	 * return the delegate history writer for this game.

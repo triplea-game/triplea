@@ -20,6 +20,7 @@ import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.history.IDelegateHistoryWriter;
 import games.strategy.engine.message.IChannelSubscribor;
 import games.strategy.engine.message.IRemote;
+import games.strategy.engine.random.IRandomStats.DiceType;
 
 import java.util.Properties;
 
@@ -71,17 +72,17 @@ public class TripleADelegateBridge implements IDelegateBridge
 	 * All delegates should use random data that comes from both players so that
 	 * neither player cheats.
 	 */
-	public int getRandom(final int max, final String annotation)
+	public int getRandom(final int max, final PlayerID player, final DiceType diceType, final String annotation)
 	{
-		return m_bridge.getRandom(max, annotation);
+		return m_bridge.getRandom(max, player, diceType, annotation);
 	}
 	
 	/**
 	 * Delegates should not use random data that comes from any other source.
 	 */
-	public int[] getRandom(final int max, final int count, final String annotation)
+	public int[] getRandom(final int max, final int count, final PlayerID player, final DiceType diceType, final String annotation)
 	{
-		return m_bridge.getRandom(max, count, annotation);
+		return m_bridge.getRandom(max, count, player, diceType, annotation);
 	}
 	
 	public void addChange(final Change aChange)

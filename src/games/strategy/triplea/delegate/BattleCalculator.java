@@ -28,6 +28,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
@@ -240,7 +241,7 @@ public class BattleCalculator
 					int numberOfRemainderGroups = remainders.size() / groupSize;
 					if (remainders.size() % groupSize > 0)
 						numberOfRemainderGroups++;
-					final int[] randomRemainder = bridge.getRandom(remainders.size(), numberOfRemainderGroups, "Deciding which planes should die due to AA fire");
+					final int[] randomRemainder = bridge.getRandom(remainders.size(), numberOfRemainderGroups, null, DiceType.ENGINE, "Deciding which planes should die due to AA fire");
 					int pos2 = 0;
 					for (int i = 0; i < randomRemainder.length; i++)
 					{
@@ -248,7 +249,7 @@ public class BattleCalculator
 						tempPossibleHitUnits.add(remainders.remove(pos2 % remainders.size()));
 					}
 				}
-				final int[] hitRandom = bridge.getRandom(tempPossibleHitUnits.size(), hitsLeft, "Deciding which planes should die due to AA fire");
+				final int[] hitRandom = bridge.getRandom(tempPossibleHitUnits.size(), hitsLeft, null, DiceType.ENGINE, "Deciding which planes should die due to AA fire");
 				// now we find the
 				int pos = 0;
 				for (int i = 0; i < hitRandom.length; i++)
@@ -276,7 +277,7 @@ public class BattleCalculator
 			{
 				// the remainder
 				// roll all at once to prevent frequent random calls, important for pbem games
-				final int[] hitRandom = bridge.getRandom(airSplit.getSecond().size(), hitsLeft, "Deciding which planes should die due to AA fire");
+				final int[] hitRandom = bridge.getRandom(airSplit.getSecond().size(), hitsLeft, null, DiceType.ENGINE, "Deciding which planes should die due to AA fire");
 				int pos = 0;
 				for (int i = 0; i < hitRandom.length; i++)
 				{
@@ -313,7 +314,7 @@ public class BattleCalculator
 		if (hitsLeft < planesList.size())
 		{
 			// roll all at once to prevent frequent random calls, important for pbem games
-			final int[] hitRandom = bridge.getRandom(planesList.size(), hitsLeft, "Deciding which planes should die due to AA fire");
+			final int[] hitRandom = bridge.getRandom(planesList.size(), hitsLeft, null, DiceType.ENGINE, "Deciding which planes should die due to AA fire");
 			int pos = 0;
 			for (int i = 0; i < hitRandom.length; i++)
 			{

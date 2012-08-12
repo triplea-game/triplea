@@ -20,6 +20,7 @@ import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
 import games.strategy.triplea.attatchments.RulesAttachment;
@@ -160,7 +161,7 @@ public class DiceRoll implements Externalizable
 			final Triple<Integer, Integer, Boolean> triple = getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(null, null, defendingAA,
 						validAttackingUnitsForThisRoll, data, false);
 			final int totalPower = triple.getFirst();
-			hits += getLowLuckHits(bridge, sortedDice, totalPower, chosenDiceSizeForAll, annotation);
+			hits += getLowLuckHits(bridge, sortedDice, totalPower, chosenDiceSizeForAll, defendingAA.get(0).getOwner(), annotation);
 			/* Turns out all this junk below is not actually needed, because in this method we are only determining the number of hits, and any die rolls we need to do. 
 			final boolean allSameAttackPower = triple.getThird();
 			// if we have a group of 6 fighters and 2 bombers, and dicesides is 6, and attack was 1, then we would want 1 fighter to die for sure. this is what groupsize is for.
@@ -195,7 +196,7 @@ public class DiceRoll implements Externalizable
 		else
 		{
 			final String annotation = "Roll AA guns in " + location.getName();
-			final int[] dice = bridge.getRandom(chosenDiceSizeForAll, totalAAattacksTotal, annotation);
+			final int[] dice = bridge.getRandom(chosenDiceSizeForAll, totalAAattacksTotal, defendingAA.get(0).getOwner(), DiceType.COMBAT, annotation);
 			hits += getTotalAAPowerThenHitsAndFillSortedDiceThenIfAllUseSameAttack(dice, sortedDice, defendingAA, validAttackingUnitsForThisRoll, data, true).getSecond();
 		}
 		final DiceRoll roll = new DiceRoll(sortedDice, hits);
@@ -332,13 +333,13 @@ public class DiceRoll implements Externalizable
 		return new Triple<Integer, Integer, Boolean>(totalPower, hits, (rolledAt.size() == 1));
 	}
 	
-	private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int totalPower, final int chosenDiceSize, final String annotation)
+	private static int getLowLuckHits(final IDelegateBridge bridge, final List<Die> sortedDice, final int totalPower, final int chosenDiceSize, final PlayerID playerRolling, final String annotation)
 	{
 		int hits = totalPower / chosenDiceSize;
 		final int hitsFractional = totalPower % chosenDiceSize;
 		if (hitsFractional > 0)
 		{
-			final int[] dice = bridge.getRandom(chosenDiceSize, 1, annotation);
+			final int[] dice = bridge.getRandom(chosenDiceSize, 1, playerRolling, DiceType.COMBAT, annotation);
 			final boolean hit = hitsFractional > dice[0];
 			if (hit)
 			{
@@ -376,14 +377,14 @@ public class DiceRoll implements Externalizable
 	 * @param annotation
 	 *            0 based, add 1 to get actual die roll
 	 */
-	public static DiceRoll rollNDice(final IDelegateBridge bridge, final int rollCount, final int sides, final String annotation)
+	public static DiceRoll rollNDice(final IDelegateBridge bridge, final int rollCount, final int sides, final PlayerID playerRolling, final DiceType diceType, final String annotation)
 	{
 		if (rollCount == 0)
 		{
 			return new DiceRoll(new ArrayList<Die>(), 0);
 		}
 		int[] random;
-		random = bridge.getRandom(sides, rollCount, annotation);
+		random = bridge.getRandom(sides, rollCount, playerRolling, diceType, annotation);
 		final List<Die> dice = new ArrayList<Die>();
 		int diceIndex = 0;
 		for (int i = 0; i < rollCount; i++)
@@ -396,8 +397,7 @@ public class DiceRoll implements Externalizable
 	}
 	
 	/**
-	 * Roll dice for units using low luck rules. Low luck rules based on rules
-	 * in DAAK.
+	 * Roll dice for units using low luck rules. Low luck rules based on rules in DAAK.
 	 */
 	private static DiceRoll rollDiceLowLuck(final List<Unit> units, final boolean defending, final PlayerID player, final IDelegateBridge bridge, final IBattle battle, final String annotation,
 				final Collection<TerritoryEffect> territoryEffects)
@@ -480,7 +480,7 @@ public class DiceRoll implements Externalizable
 		power = power % data.getDiceSides();
 		if (power != 0)
 		{
-			random = bridge.getRandom(data.getDiceSides(), 1, annotation);
+			random = bridge.getRandom(data.getDiceSides(), 1, player, DiceType.COMBAT, annotation);
 			final boolean hit = power > random[0];
 			if (hit)
 			{
@@ -730,7 +730,7 @@ public class DiceRoll implements Externalizable
 			power = power % data.getDiceSides();
 			if (power != 0)
 			{
-				random = bridge.getRandom(data.getDiceSides(), 1, annotation);
+				random = bridge.getRandom(data.getDiceSides(), 1, player, DiceType.COMBAT, annotation);
 				final boolean hit = power > random[0];
 				if (hit)
 				{
@@ -741,7 +741,7 @@ public class DiceRoll implements Externalizable
 		}
 		else
 		{
-			random = bridge.getRandom(data.getDiceSides(), rollCount, annotation);
+			random = bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
 			final Iterator<Unit> iter = units.iterator();
 			int diceIndex = 0;
 			while (iter.hasNext())
@@ -815,7 +815,7 @@ public class DiceRoll implements Externalizable
 			return new DiceRoll(new ArrayList<Die>(), 0);
 		}
 		int[] random;
-		random = bridge.getRandom(data.getDiceSides(), rollCount, annotation);
+		random = bridge.getRandom(data.getDiceSides(), rollCount, player, DiceType.COMBAT, annotation);
 		final List<Die> dice = new ArrayList<Die>();
 		final Iterator<Unit> iter = units.iterator();
 		int hitCount = 0;

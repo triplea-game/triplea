@@ -27,6 +27,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
+import games.strategy.engine.random.IRandomStats.DiceType;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -534,7 +535,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 					if (doNotUseBombingBonus)
 					{
 						// no low luck, and no bonus, so just roll based on the map's dice sides
-						m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, annotation);
+						m_dice = bridge.getRandom(m_data.getDiceSides(), rollCount, m_attacker, DiceType.BOMBING, annotation);
 					}
 					else
 					{
@@ -557,7 +558,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 							// now we roll, or don't if there is nothing to roll.
 							if (maxDice > 0)
 							{
-								final int[] dicerolls = bridge.getRandom(maxDice, rolls, annotation);
+								final int[] dicerolls = bridge.getRandom(maxDice, rolls, m_attacker, DiceType.BOMBING, annotation);
 								for (final int die : dicerolls)
 								{
 									m_dice[i] = die + bonus;
@@ -601,7 +602,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 						// now we roll, or don't if there is nothing to roll.
 						if (maxDice > 0)
 						{
-							final int[] dicerolls = bridge.getRandom(maxDice, rolls, annotation);
+							final int[] dicerolls = bridge.getRandom(maxDice, rolls, m_attacker, DiceType.BOMBING, annotation);
 							for (final int die : dicerolls)
 							{
 								m_dice[i] = die + bonus;
