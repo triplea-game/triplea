@@ -80,8 +80,7 @@ public class TabbedProductionPanel extends ProductionPanel
 		totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.TECH_TOKENS));
 		m_data.releaseReadLock();
 		add(new JLabel("<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: " + totalWithoutTechTokensOrVPs.toString() + ")</html>"),
-					new GridBagConstraints(0, 0, 1,
-								1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
+					new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 		final JTabbedPane tabs = new JTabbedPane();
 		add(tabs, new GridBagConstraints(0, 1, 1, 1, 100, 100, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 0), 0, 0));
 		final ProductionTabsProperties properties = ProductionTabsProperties.getInstance(m_id, m_rules);

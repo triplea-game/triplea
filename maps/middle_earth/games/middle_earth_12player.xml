@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Lord of the Rings: Middle Earth" version="1.5"/>
+        <info name="Lord of the Rings: Middle Earth" version="1.6"/>
 
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -2692,6 +2692,10 @@
 				<property name="Battleships repair at beginning of round" value="false" editable="true">
 						<boolean/>
 				</property>
+				
+				<property name="WW2V2" value="true" editable="false">
+                        <boolean/>
+                </property>
 
 				<!-- do not make this true -->
 				<property name="Two hit battleship" value="false" editable="false">
@@ -2747,7 +2751,7 @@
 &lt;br&gt;
 &lt;table border=&quot;1&quot;bgcolor=&quot;757780&quot;&gt;
 &lt;tr&gt;
-&lt;th style=&quot;font-size:120%;000000&quot;colspan=&quot;2&quot;&gt;1.5&lt;/th&gt;
+&lt;th style=&quot;font-size:120%;000000&quot;colspan=&quot;2&quot;&gt;1.6&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
 &lt;br&gt;
@@ -3413,6 +3417,15 @@
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Another thing to keep in mind is the possibility of removing blockers with allied armies so that you are free to blitz.
 &lt;br&gt;
 &lt;br&gt;&lt;b&gt; -> &lt;/b&gt;There are 12 capitols in the game, sometimes they can fall easily, but on the other hand losing 1 capitol doesnt mean game has to be over yet.
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
+&lt;br&gt;&lt;b&gt;Changelist from 1.5 - 1.6:&lt;/b&gt;
+&lt;br&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;
+&lt;br&gt;
+&lt;br&gt;&lt;b&gt; -> &lt;/b&gt;Changed from Classic to Revised rules.
+&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;&lt;div style=&quot;text-align: center;&quot;&gt;
 &lt;br&gt;&lt;b&gt;Changelist from 1.4 - 1.5:&lt;/b&gt;

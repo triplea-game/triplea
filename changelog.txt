@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Adding scroll bars to edit place unit panel and non-tabbed purchase unit panel. (veqryn)
+
 * Fixing non-serialization error when attempting to save the game after a successful aa gun roll, but before selecting casualties. (veqryn)
 
 * Improved bombing result display to show ignored dice if there are any, and improving history panel to show the rolls for each target unit. (veqryn)

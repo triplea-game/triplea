@@ -31,9 +31,11 @@ import games.strategy.ui.ScrollableTextFieldListener;
 import games.strategy.util.IntegerMap;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -50,6 +53,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
@@ -163,6 +167,8 @@ public class ProductionPanel extends JPanel
 		final Insets nullInsets = new Insets(0, 0, 0, 0);
 		this.removeAll();
 		this.setLayout(new GridBagLayout());
+		final JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
 		final ResourceCollection totalWithoutTechTokensOrVPs = new ResourceCollection(getResources());
 		m_data.acquireReadLock();
 		totalWithoutTechTokensOrVPs.removeAllOfResource(m_data.getResourceList().getResource(Constants.VPS));
@@ -170,17 +176,29 @@ public class ProductionPanel extends JPanel
 		m_data.releaseReadLock();
 		final JLabel legendLabel = new JLabel("<html>Attack/Defense/Movement. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Total Resources: " + totalWithoutTechTokensOrVPs.toString()
 					+ ")</html>");
-		add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
+		this.add(legendLabel, new GridBagConstraints(0, 0, 30, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(8, 8, 8, 0), 0, 0));
 		int rows = m_rules.size() / 7;
 		rows = Math.max(2, rows);
 		for (int x = 0; x < m_rules.size(); x++)
 		{
-			add(m_rules.get(x).getPanelComponent(), new GridBagConstraints(x / rows, (x % rows) + 1, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.BOTH, nullInsets, 0, 0));
+			panel.add(m_rules.get(x).getPanelComponent(), new GridBagConstraints(x / rows, (x % rows), 1, 1, 10, 10, GridBagConstraints.EAST, GridBagConstraints.BOTH, nullInsets, 0, 0));
 		}
-		final int startY = m_rules.size() / rows;
-		add(m_left, new GridBagConstraints(0, startY + 1, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
+		final Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+		final int availHeight = screenResolution.height - 80;
+		final int availWidth = screenResolution.width - 30;
+		final int availHeightRules = availHeight - 116;
+		final int availWidthRules = availWidth - 16;
+		final JScrollPane scroll = new JScrollPane(panel);
+		scroll.setBorder(BorderFactory.createEmptyBorder());
+		scroll.setPreferredSize(new Dimension(
+					(scroll.getPreferredSize().width > availWidthRules ? availWidthRules : scroll.getPreferredSize().width + (scroll.getPreferredSize().height > availHeightRules ? 20 : 0)),
+					(scroll.getPreferredSize().height > availHeightRules ? availHeightRules : scroll.getPreferredSize().height + (scroll.getPreferredSize().width > availWidthRules ? 20 : 0))));
+		this.add(scroll, new GridBagConstraints(0, 1, 30, 1, 100, 100, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(8, 8, 8, 4), 0, 0));
+		// final int startY = m_rules.size() / rows;
+		this.add(m_left, new GridBagConstraints(0, 2, 30, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 8, 0, 12), 0, 0));
 		m_done = new JButton(m_done_action);
-		add(m_done, new GridBagConstraints(0, startY + 2, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 8, 0), 0, 0));
+		this.add(m_done, new GridBagConstraints(0, 3, 30, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 8, 0), 0, 0));
+		this.setMaximumSize(new Dimension(availWidth, availHeight));
 	}
 	
 	// This method can be overridden by subclasses
@@ -221,7 +239,7 @@ public class ProductionPanel extends JPanel
 	// This method can be overridden by subclasses
 	protected void calculateLimits()
 	{
-		final IntegerMap<Resource> cost;
+		// final IntegerMap<Resource> cost;
 		final ResourceCollection resources = getResources();
 		final ResourceCollection spent = new ResourceCollection(m_data);
 		int totalUnits = 0;
