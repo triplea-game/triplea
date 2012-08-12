@@ -188,7 +188,7 @@ public class EnginePreferences extends JDialog
 				final JPanel radioPanel = new JPanel();
 				radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
 				radioPanel.add(new JLabel("Configure TripleA's Network and Proxy Settings: "));
-				radioPanel.add(new JLabel("(This only effects PBEM/PBF games, dice servers, and map downloads.)"));
+				radioPanel.add(new JLabel("(This only effects Play-By-Forum games, dice servers, and map downloads.)"));
 				radioPanel.add(noneButton);
 				radioPanel.add(systemButton);
 				radioPanel.add(userButton);

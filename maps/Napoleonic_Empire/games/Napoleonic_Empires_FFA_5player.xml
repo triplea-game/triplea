@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Napoleonic Empires: FFA 5 Player" version="4.0.7"/>
+        <info name="Napoleonic Empires: FFA 5 Player" version="4.0.8"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -1828,6 +1828,8 @@
 				<attatchment name="relationshipTypeAttachment" attatchTo="Allied" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="allied"/>
 						<option name="alliancesCanChainTogether" value="true"/>
+						<option name="givesBackOriginalTerritories" value="true"/>
+						<option name="canMoveThroughCanals" value="true"/>
 						<!-- In case I want a flat PU rate back: <option name="upkeepCost" value="3"/>-->
 						<!--<option name="upkeepCost" value="percentage" count="8"/>-->
 				</attatchment>
@@ -1847,6 +1849,7 @@
 						<option name="archeType" value="neutral"/>
 						<option name="canMoveLandUnitsOverOwnedLand" value="true"/>
 						<option name="canMoveAirUnitsOverOwnedLand" value="true"/>
+						<option name="canMoveThroughCanals" value="true"/>
 						<!--<option name="upkeepCost" value="2"/>-->
 						<!--<option name="upkeepCost" value="percentage" count="6"/>-->
 				</attatchment>
@@ -4575,7 +4578,7 @@
 
  			<!-- Prussian Unit Placements -->
 <unitPlacement unitType="General" territory="Prussia" quantity="1" owner="AustrianEmpire"/>
-<unitPlacement unitType="Mortella_Tower" territory="Prussia" quantity="1" owner="AustrianEmpire"/>
+<unitPlacement unitType="Mortella_Tower" territory="Prussia" quantity="3" owner="AustrianEmpire"/>
 <unitPlacement unitType="Artillery" territory="Prussia" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Chasseurs" territory="Prussia" quantity="2" owner="AustrianEmpire"/>
 <unitPlacement unitType="Grenadiers" territory="Prussia" quantity="1" owner="AustrianEmpire"/>
@@ -4593,6 +4596,7 @@
 <unitPlacement unitType="Fusiliers" territory="Saxony" quantity="2" owner="AustrianEmpire"/>
 <unitPlacement unitType="Dragoons" territory="Saxony" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Howitzer" territory="Saxony" quantity="1" owner="AustrianEmpire"/>
+<unitPlacement unitType="Mortella_Tower" territory="Silesia" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Fusiliers" territory="Silesia" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Chasseurs" territory="Silesia" quantity="2" owner="AustrianEmpire"/>
 <unitPlacement unitType="Fusiliers" territory="Posen" quantity="1" owner="AustrianEmpire"/>
@@ -4640,6 +4644,7 @@
 <unitPlacement unitType="Fusiliers" territory="Moravia" quantity="2" owner="AustrianEmpire"/>
 <unitPlacement unitType="Chasseurs" territory="Moravia" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Fusiliers" territory="Zala" quantity="1" owner="AustrianEmpire"/>
+<unitPlacement unitType="Mortella_Tower" territory="Hungary" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Fusiliers" territory="Hungary" quantity="2" owner="AustrianEmpire"/>
 <unitPlacement unitType="Howitzer" territory="Hungary" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Dragoons" territory="Transylvania" quantity="1" owner="AustrianEmpire"/>
@@ -4651,6 +4656,8 @@
 <unitPlacement unitType="Horse_Artillery" territory="Croatia" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Fusiliers" territory="Croatia" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Artillery" territory="Croatia" quantity="1" owner="AustrianEmpire"/>
+<unitPlacement unitType="Grenadiers" territory="Hollande" quantity="1" owner="AustrianEmpire"/>
+<unitPlacement unitType="Artillery" territory="Hollande" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Chasseurs" territory="Hollande" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Cuirassiers" territory="Hollande" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Mortella_Tower" territory="Hollande" quantity="2" owner="AustrianEmpire"/>

@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Napoleonic Empires: FFA 8 Player" version="4.0.7"/>
+        <info name="Napoleonic Empires: FFA 8 Player" version="4.0.8"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -1940,6 +1940,8 @@
 				<attatchment name="relationshipTypeAttachment" attatchTo="Allied" javaClass="games.strategy.triplea.attatchments.RelationshipTypeAttachment" type="relationship">
 						<option name="archeType" value="allied"/>
 						<option name="alliancesCanChainTogether" value="true"/>
+						<option name="givesBackOriginalTerritories" value="true"/>
+						<option name="canMoveThroughCanals" value="true"/>
 						<!-- In case I want a flat PU rate back: <option name="upkeepCost" value="3"/>-->
 						<!--<option name="upkeepCost" value="percentage" count="8"/>-->
 				</attatchment>
@@ -1959,6 +1961,7 @@
 						<option name="archeType" value="neutral"/>
 						<option name="canMoveLandUnitsOverOwnedLand" value="true"/>
 						<option name="canMoveAirUnitsOverOwnedLand" value="true"/>
+						<option name="canMoveThroughCanals" value="true"/>
 						<!--<option name="upkeepCost" value="2"/>-->
 						<!--<option name="upkeepCost" value="percentage" count="6"/>-->
 				</attatchment>
