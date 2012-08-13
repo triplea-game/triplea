@@ -16,6 +16,8 @@ package games.strategy.engine.random;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.util.IntegerMap;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -173,11 +175,14 @@ public class RandomStatsDetails implements Serializable
 	public static JPanel getAllStats(final RandomStatsDetails details)
 	{
 		final JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setLayout(new FlowLayout(FlowLayout.LEADING));
+		panel.setBorder(BorderFactory.createEmptyBorder());
+		panel.setMaximumSize(new Dimension(900, 700));
+		panel.setPreferredSize(new Dimension(900, 700));
 		panel.add(getStatsDisplay(details.getTotalData(), details.getTotalStats(), "Total"));
 		for (final Entry<PlayerID, IntegerMap<Integer>> entry : details.getData().entrySet())
 		{
-			panel.add(new JLabel("  "));
+			// panel.add(new JLabel("  "));
 			panel.add(getStatsDisplay(entry.getValue(), details.getPlayerStats().get(entry.getKey()), (entry.getKey() == null ? "Null / Other" : entry.getKey().getName() + " Combat")));
 		}
 		return panel;
