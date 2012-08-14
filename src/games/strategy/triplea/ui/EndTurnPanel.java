@@ -68,6 +68,12 @@ public class EndTurnPanel extends AbstractForumPosterPanel
 	}
 	
 	@Override
+	protected boolean allowDiceStatistics()
+	{
+		return true;
+	}
+	
+	@Override
 	protected boolean getHasPostedTurnSummary()
 	{
 		final IAbstractEndTurnDelegate delegate = (IAbstractEndTurnDelegate) m_bridge.getRemote();

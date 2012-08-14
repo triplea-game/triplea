@@ -44,6 +44,12 @@ public class MoveForumPosterPanel extends AbstractForumPosterPanel
 	}
 	
 	@Override
+	protected boolean allowDiceStatistics()
+	{
+		return false;
+	}
+	
+	@Override
 	public String toString()
 	{
 		return "MoveForumPosterPanel";

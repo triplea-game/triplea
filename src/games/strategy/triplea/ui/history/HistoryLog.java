@@ -8,6 +8,8 @@ import games.strategy.engine.history.HistoryNode;
 import games.strategy.engine.history.Renderable;
 import games.strategy.engine.history.Round;
 import games.strategy.engine.history.Step;
+import games.strategy.engine.random.IRandomStats;
+import games.strategy.engine.random.RandomStatsDetails;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.DiceRoll;
@@ -429,6 +431,7 @@ public class HistoryLog extends JFrame
 			moving = false;
 		}
 		logWriter.println();
+		logWriter.println();
 		m_textArea.setText(m_stringWriter.toString());
 	}
 	
@@ -470,6 +473,21 @@ public class HistoryLog extends JFrame
 			}
 		}
 		logWriter.println();
+		logWriter.println();
+		m_textArea.setText(m_stringWriter.toString());
+	}
+	
+	public void printDiceStatistics(final GameData data, final IRandomStats randomStats)
+	{
+		final PrintWriter logWriter = m_printWriter;
+		final RandomStatsDetails stats = randomStats.getRandomStats(data.getDiceSides());
+		final String diceStats = stats.getAllStatsString("    ");
+		if (diceStats.length() > 0)
+		{
+			logWriter.println(diceStats);
+			logWriter.println();
+			logWriter.println();
+		}
 		m_textArea.setText(m_stringWriter.toString());
 	}
 	
@@ -492,6 +510,7 @@ public class HistoryLog extends JFrame
 			final int production = getProduction(player, data);
 			logWriter.println("    " + player.getName() + " : " + production + " / " + PUs);
 		}
+		logWriter.println();
 		logWriter.println();
 		m_textArea.setText(m_stringWriter.toString());
 	}

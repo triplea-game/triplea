@@ -26,6 +26,7 @@ import games.strategy.engine.history.Round;
 import games.strategy.engine.pbem.IEmailSender;
 import games.strategy.engine.pbem.IForumPoster;
 import games.strategy.engine.pbem.PBEMMessagePoster;
+import games.strategy.engine.random.IRandomStats;
 import games.strategy.triplea.ui.history.HistoryLog;
 import games.strategy.ui.ProgressWindow;
 
@@ -58,11 +59,13 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 	protected JCheckBox m_includeTerritoryCheckbox;
 	protected JCheckBox m_includeProductionCheckbox;
 	protected JCheckBox m_showDetailsCheckbox;
+	protected JCheckBox m_showDiceStatisticsCheckbox;
 	protected Action m_viewAction;
 	protected Action m_postAction;
 	protected Action m_includeTerritoryAction;
 	protected Action m_includeProductionAction;
 	protected Action m_showDetailsAction;
+	protected Action m_showDiceStatisticsAction;
 	protected Action m_doneAction;
 	
 	abstract protected String getTitle();
@@ -233,6 +236,15 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 				updateHistoryLog();
 			}
 		};
+		m_showDiceStatisticsAction = new AbstractAction("Include overall dice statistics")
+		{
+			private static final long serialVersionUID = 1431745626173286692L;
+			
+			public void actionPerformed(final ActionEvent event)
+			{
+				updateHistoryLog();
+			}
+		};
 		m_doneAction = new AbstractAction("Done")
 		{
 			private static final long serialVersionUID = -3658752576117043053L;
@@ -245,6 +257,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 		m_includeTerritoryCheckbox = new JCheckBox(m_includeTerritoryAction);
 		m_includeProductionCheckbox = new JCheckBox(m_includeProductionAction);
 		m_showDetailsCheckbox = new JCheckBox(m_showDetailsAction);
+		m_showDiceStatisticsCheckbox = new JCheckBox(m_showDiceStatisticsAction);
 	}
 	
 	private int getRound()
@@ -290,6 +303,8 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 	
 	abstract protected boolean allowDiceBattleDetails();
 	
+	abstract protected boolean allowDiceStatistics();
+	
 	abstract protected boolean postTurnSummary(final PBEMMessagePoster poster);
 	
 	@Override
@@ -303,6 +318,8 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 			m_historyLog.printTerritorySummary(getData());
 		if (m_includeProductionCheckbox.isSelected())
 			m_historyLog.printProductionSummary(getData());
+		if (m_showDiceStatisticsCheckbox.isSelected())
+			m_historyLog.printDiceStatistics(getData(), (IRandomStats) m_frame.getGame().getRemoteMessenger().getRemote(IRandomStats.RANDOM_STATS_REMOTE_NAME));
 		m_historyLog.requestFocus();
 	}
 	
@@ -339,6 +356,8 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 					add(m_includeProductionCheckbox);
 				if (allowDiceBattleDetails())
 					add(m_showDetailsCheckbox);
+				if (allowDiceStatistics())
+					add(m_showDiceStatisticsCheckbox);
 				add(new JButton(m_viewAction));
 				m_postButton = new JButton(m_postAction);
 				m_postButton.setEnabled(!hasPosted);
