@@ -231,7 +231,7 @@ public class RandomStatsDetails implements Serializable
 			panel.add(getStatsDisplay(details.getData().get(null), details.getPlayerStats().get(null), "Null / Other"),
 						new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.FIRST_LINE_START, GridBagConstraints.NONE, insets, 0, 0));
 		}
-		final int rows = details.getData().size() / 6;
+		final int rows = Math.max(2, details.getData().size() / 6);
 		int x = 0;
 		for (final Entry<PlayerID, IntegerMap<Integer>> entry : details.getData().entrySet())
 		{
