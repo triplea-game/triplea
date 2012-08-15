@@ -1353,7 +1353,7 @@ public class WW2V3_41_Test extends TestCase
 		bridge.setRemote(new DummyTripleAPlayer()
 		{
 			@Override
-			public Territory retreatQuery(final GUID battleID, final boolean submerge, final Collection<Territory> possibleTerritories, final String message)
+			public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite, final Collection<Territory> possibleTerritories, final String message)
 			{
 				assertFalse(message.contains(MustFightBattle.RETREAT_PLANES));
 				return null;
@@ -1399,7 +1399,7 @@ public class WW2V3_41_Test extends TestCase
 		bridge.setRemote(new DummyTripleAPlayer()
 		{
 			@Override
-			public Territory retreatQuery(final GUID battleID, final boolean submerge, final Collection<Territory> possibleTerritories, final String message)
+			public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite, final Collection<Territory> possibleTerritories, final String message)
 			{
 				// we should not be asked to retreat
 				throw new IllegalStateException("Should not be asked to retreat:" + message);

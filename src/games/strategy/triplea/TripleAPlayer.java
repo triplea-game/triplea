@@ -656,7 +656,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	/* (non-Javadoc)
 	 * @see games.strategy.triplea.player.ITripleaPlayer#retreatQuery(games.strategy.net.GUID, boolean, java.util.Collection, java.lang.String, java.lang.String)
 	 */
-	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Collection<Territory> possibleTerritories, final String message)
+	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
 		return m_ui.getBattlePanel().getRetreat(battleID, message, possibleTerritories, submerge);
 	}

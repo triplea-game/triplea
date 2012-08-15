@@ -87,7 +87,7 @@ public class DummyTripleAPlayer implements ITripleaPlayer
 		return true;
 	}
 	
-	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Collection<Territory> possibleTerritories, final String message)
+	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleSite, final Collection<Territory> possibleTerritories, final String message)
 	{
 		return null;
 	}

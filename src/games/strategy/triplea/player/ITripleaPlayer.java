@@ -218,7 +218,7 @@ public interface ITripleaPlayer extends IRemote
 	 *            - user displayable message
 	 * @return the territory to retreat to, or null if the player doesnt wish to retreat
 	 */
-	public Territory retreatQuery(GUID battleID, boolean submerge, Collection<Territory> possibleTerritories, String message);
+	public Territory retreatQuery(GUID battleID, boolean submerge, Territory battleTerritory, Collection<Territory> possibleTerritories, String message);
 	
 	/*
 	 * 

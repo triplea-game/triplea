@@ -202,6 +202,7 @@
 		<copy todir="${build}">
 			<fileset dir="${classes}" includes="**" />
 		</copy>
+		<mkdir dir="${bin}"/>
 		<jar destfile="${bin}/triplea.jar" basedir="${build}">
 			<manifest>
 				<attribute name="Main-Class"
@@ -748,7 +749,11 @@
 		</copy>
 
 		<junit fork="yes" haltonerror="off">
-			<classpath refid="test.classpath" />
+			<classpath>
+			  <pathelement location="${test-classes}" />
+			  <path refid="test.classpath" />
+			</classpath>
+
 			<formatter type="plain" />
 			<formatter type="xml" />
 			<batchtest todir="${junit-result-dir}">

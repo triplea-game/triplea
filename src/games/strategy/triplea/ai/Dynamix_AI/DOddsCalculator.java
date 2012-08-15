@@ -337,7 +337,7 @@ class DummyPlayer extends AbstractAI
 		throw new UnsupportedOperationException();
 	}
 	
-	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Collection<Territory> possibleTerritories, final String message)
+	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
 		// no retreat, no surrender
 		return null;

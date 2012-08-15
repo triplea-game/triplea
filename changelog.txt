@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Getting MooreAI to submerge subs if only enemy air is left. (hakon)
+
 * Fixing "Edit Unit Bombing Damage" for maps that use territory based damage, such as ww2v3. (veqryn)
 
 * Allowing new option for the Play By Email / Play By Forum poster, to "Include Overall Dice Statistics" in the post/email. (veqryn)

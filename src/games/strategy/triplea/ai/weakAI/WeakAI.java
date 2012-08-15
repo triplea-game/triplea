@@ -1328,7 +1328,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		return true;
 	}
 	
-	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Collection<Territory> possibleTerritories, final String message)
+	public Territory retreatQuery(final GUID battleID, final boolean submerge, final Territory battleTerritory, final Collection<Territory> possibleTerritories, final String message)
 	{
 		return null;
 	}

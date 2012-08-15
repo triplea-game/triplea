@@ -1438,7 +1438,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		}
 		final boolean submerge = subs && canSubsSubmerge();
 		getDisplay(bridge).gotoBattleStep(m_battleID, step);
-		final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, submerge, availableTerritories, text);
+		final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, submerge, m_battleSite, availableTerritories, text);
 		if (retreatTo != null && !availableTerritories.contains(retreatTo) && !subs)
 		{
 			System.err.println("Invalid retreat selection :" + retreatTo + " not in " + MyFormatter.territoriesToText(availableTerritories));
