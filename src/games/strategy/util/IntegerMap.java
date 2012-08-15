@@ -186,6 +186,65 @@ public class IntegerMap<T> implements Cloneable, Serializable
 		return m_values.keySet();
 	}
 	
+	public Collection<Integer> values()
+	{
+		return m_values.values();
+	}
+	
+	/**
+	 * If empty, will return false.
+	 * 
+	 * @return true if at least one value and all values are the same.
+	 */
+	public boolean allValuesAreSame()
+	{
+		if (m_values.isEmpty())
+			return false;
+		final int first = m_values.values().iterator().next();
+		for (final int value : m_values.values())
+		{
+			if (first != value)
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Will return zero if empty.
+	 * 
+	 * @return
+	 */
+	public int highestValue()
+	{
+		if (m_values.isEmpty())
+			return 0;
+		int max = Integer.MIN_VALUE;
+		for (final int value : m_values.values())
+		{
+			if (value > max)
+				max = value;
+		}
+		return max;
+	}
+	
+	/**
+	 * Will return zero if empty.
+	 * 
+	 * @return
+	 */
+	public int lowestValue()
+	{
+		if (m_values.isEmpty())
+			return 0;
+		int min = Integer.MAX_VALUE;
+		for (final int value : m_values.values())
+		{
+			if (value < min)
+				min = value;
+		}
+		return min;
+	}
+	
 	/**
 	 * @return the sum of all keys.
 	 */

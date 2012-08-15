@@ -273,29 +273,65 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 			return result;
 		final CompositeChange changes = new CompositeChange();
 		final IntegerMap<Unit> unitHitDamageMap = new IntegerMap<Unit>();
+		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
 		// remove anyone who is the same
 		final Collection<Unit> units = new ArrayList<Unit>(unitDamageMap.keySet());
-		for (final Unit u : units)
+		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
 		{
-			final int dmg = unitDamageMap.getInt(u);
-			final int currentDamage = ((TripleAUnit) u).getUnitDamage();
-			if (currentDamage == dmg)
-				unitDamageMap.removeKey(u);
-			else
+			// we are damaging the territory, not the unit
+			if (ta == null)
+				return null;
+			final int production = ta.getProduction();
+			final int unitProduction = ta.getUnitProduction();
+			final int currentDamage = production - unitProduction;
+			final int damageToPut = unitDamageMap.highestValue();
+			if (currentDamage == damageToPut)
+				return null;
+			for (final Unit u : units)
 			{
-				if (dmg == 0 && currentDamage > 0)
+				if (damageToPut == 0 && currentDamage > 0)
 					unitHitDamageMap.put(u, 0);
-				else if (currentDamage == 0 && dmg > 0)
+				else if (currentDamage == 0 && damageToPut > 0)
 					unitHitDamageMap.put(u, 1); // mark as damaged so we get the _hit picture
 				// else both must be greater than zero, so we are already marked
+			}
+		}
+		else
+		// if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+		{
+			for (final Unit u : units)
+			{
+				final int dmg = unitDamageMap.getInt(u);
+				final int currentDamage = ((TripleAUnit) u).getUnitDamage();
+				if (currentDamage == dmg)
+					unitDamageMap.removeKey(u);
+				else
+				{
+					if (dmg == 0 && currentDamage > 0)
+						unitHitDamageMap.put(u, 0);
+					else if (currentDamage == 0 && dmg > 0)
+						unitHitDamageMap.put(u, 1); // mark as damaged so we get the _hit picture
+					// else both must be greater than zero, so we are already marked
+				}
 			}
 		}
 		if (unitDamageMap.isEmpty())
 			return null;
 		changes.add(ChangeFactory.unitsHit(unitHitDamageMap));
-		for (final Entry<Unit, Integer> entry : unitDamageMap.entrySet())
+		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
 		{
-			changes.add(ChangeFactory.unitPropertyChange(entry.getKey(), entry.getValue(), TripleAUnit.UNIT_DAMAGE));
+			// we do damage to the territory (use the largest value)
+			// remember to subtract it from the current production value (not the current unit production value) because we are setting the total damage, not adding more damage.
+			changes.add(ChangeFactory.attachmentPropertyChange(ta, Integer.toString(ta.getProduction() - unitDamageMap.highestValue()), "unitProduction"));
+		}
+		else
+		// if (games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(getData()))
+		{
+			// we do damage to the unit
+			for (final Entry<Unit, Integer> entry : unitDamageMap.entrySet())
+			{
+				changes.add(ChangeFactory.unitPropertyChange(entry.getKey(), entry.getValue(), TripleAUnit.UNIT_DAMAGE));
+			}
 		}
 		final Collection<Unit> unitsFinal = new ArrayList<Unit>(unitDamageMap.keySet());
 		logEvent("Changing unit bombing damage for these " + unitsFinal.iterator().next().getOwner().getName() + " owned units to: " + MyFormatter.integerUnitMapToString(unitDamageMap), unitsFinal);

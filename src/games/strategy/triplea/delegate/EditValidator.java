@@ -21,6 +21,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.triplea.TripleAUnit;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
@@ -245,6 +246,13 @@ public class EditValidator
 			final int dmg = unitDamageMap.getInt(u);
 			if (dmg < 0 || dmg > ((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, territory))
 				return "Damage can not be less than zero or greater than the max damage of the unit";
+		}
+		if (games.strategy.triplea.Properties.getSBRAffectsUnitProduction(data))
+		{
+			if (TerritoryAttachment.get(territory) == null)
+				return "Territory does not have attachment, can not damage this territory.";
+			if (!unitDamageMap.allValuesAreSame())
+				return "For this map damage is done to the territory not the unit, therefore all units in this territory must have same damage.";
 		}
 		return result;
 	}

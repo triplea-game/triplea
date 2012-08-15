@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Fixing "Edit Unit Bombing Damage" for maps that use territory based damage, such as ww2v3. (veqryn)
+
 * Allowing new option for the Play By Email / Play By Forum poster, to "Include Overall Dice Statistics" in the post/email. (veqryn)
 
 * Improving the menu "GAME -> SHOW DICE STATS" to give information per player, as well as totals. (veqryn)
