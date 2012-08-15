@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Changed EndTurnDelegate so that Units Changing Ownership, and Hitpoint Repair, will still happen even if you have lost your capital. (veqryn)
+
 * Getting MooreAI to submerge subs if only enemy air is left. (hakon)
 
 * Fixing "Edit Unit Bombing Damage" for maps that use territory based damage, such as ww2v3. (veqryn)

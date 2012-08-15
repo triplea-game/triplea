@@ -104,56 +104,96 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		if (!m_needToInitialize)
 			return;
 		m_hasPostedTurnSummary = false;
+		final PlayerAttachment pa = PlayerAttachment.get(m_player);
 		// can't collect unless you own your own capital
 		if (!canPlayerCollectIncome(m_player, data))
 		{
 			rollWarBondsForFriends(aBridge, m_player, data);
-			return; // we do not collect any income this turn
+			// we do not collect any income this turn
 		}
-		// just collect resources
-		final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
-		int toAdd = getProduction(territories);
-		final int blockadeLoss = getProductionLoss(m_player, data, aBridge);
-		toAdd -= blockadeLoss;
-		toAdd *= Properties.getPU_Multiplier(data);
-		int total = m_player.getResources().getQuantity(PUs) + toAdd;
-		String transcriptText;
-		if (blockadeLoss == 0)
-			transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + "; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
 		else
-			transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + " (" + blockadeLoss + " lost to blockades)" + "; end with " + total
-						+ MyFormatter.pluralize(" PU", total) + " total";
-		aBridge.getHistoryWriter().startEvent(transcriptText);
-		
-		// do war bonds
-		final int bonds = rollWarBonds(aBridge, m_player, data);
-		if (bonds > 0)
 		{
-			total += bonds;
-			toAdd += bonds;
-			transcriptText = m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds) + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
+			// just collect resources
+			final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
+			int toAdd = getProduction(territories);
+			final int blockadeLoss = getProductionLoss(m_player, data, aBridge);
+			toAdd -= blockadeLoss;
+			toAdd *= Properties.getPU_Multiplier(data);
+			int total = m_player.getResources().getQuantity(PUs) + toAdd;
+			String transcriptText;
+			if (blockadeLoss == 0)
+				transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + "; end with " + total + MyFormatter.pluralize(" PU", total) + " total";
+			else
+				transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + " (" + blockadeLoss + " lost to blockades)" + "; end with " + total
+							+ MyFormatter.pluralize(" PU", total) + " total";
 			aBridge.getHistoryWriter().startEvent(transcriptText);
+			
+			// do war bonds
+			final int bonds = rollWarBonds(aBridge, m_player, data);
+			if (bonds > 0)
+			{
+				total += bonds;
+				toAdd += bonds;
+				aBridge.getHistoryWriter().startEvent(
+							m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds) + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total");
+			}
+			
+			if (total < 0)
+			{
+				toAdd -= total;
+				total = 0;
+			}
+			final Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
+			aBridge.addChange(change);
+			if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null)
+			{
+				final Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
+				final Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
+				final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
+				aBridge.addChange(ccVP);
+			}
+			
+			addOtherResources(aBridge);
+			
+			doNationalObjectivesAndOtherEndTurnEffects(aBridge);
+			
+			// now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including NOs)
+			final int currentPUs = m_player.getResources().getQuantity(PUs);
+			final float gainedPUS = Math.max(0, currentPUs - leftOverPUs);
+			int relationshipUpkeepCostFlat = 0;
+			int relationshipUpkeepCostPercentage = 0;
+			int relationshipUpkeepTotalCost = 0;
+			for (final Relationship r : data.getRelationshipTracker().getRelationships(m_player))
+			{
+				final String[] upkeep = r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost().split(":");
+				if (upkeep.length == 1 || upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_FLAT))
+					relationshipUpkeepCostFlat += Integer.parseInt(upkeep[0]);
+				else if (upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_PERCENTAGE))
+					relationshipUpkeepCostPercentage += Integer.parseInt(upkeep[0]);
+			}
+			relationshipUpkeepCostPercentage = Math.min(100, relationshipUpkeepCostPercentage);
+			if (relationshipUpkeepCostPercentage != 0)
+			{
+				relationshipUpkeepTotalCost += Math.round(gainedPUS * (relationshipUpkeepCostPercentage) / 100f);
+			}
+			if (relationshipUpkeepCostFlat != 0)
+			{
+				relationshipUpkeepTotalCost += relationshipUpkeepCostFlat;
+			}
+			// we can't remove more than we have, and we also must flip the sign
+			relationshipUpkeepTotalCost = Math.min(currentPUs, relationshipUpkeepTotalCost);
+			relationshipUpkeepTotalCost = -1 * relationshipUpkeepTotalCost;
+			if (relationshipUpkeepTotalCost != 0)
+			{
+				final int newTotal = currentPUs + relationshipUpkeepTotalCost;
+				final String transcriptText2 = m_player.getName() + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ") + (-1 * relationshipUpkeepTotalCost)
+							+ MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost) + " in order to maintain current relationships with other players, and ends the turn with " + newTotal
+							+ MyFormatter.pluralize(" PU", newTotal);
+				aBridge.getHistoryWriter().startEvent(transcriptText2);
+				final Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
+				aBridge.addChange(upkeep);
+			}
 		}
-		
-		if (total < 0)
-		{
-			toAdd -= total;
-			total = 0;
-		}
-		final Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
-		aBridge.addChange(change);
-		final PlayerAttachment pa = PlayerAttachment.get(m_player);
-		if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null)
-		{
-			final Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
-			final Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
-			final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
-			aBridge.addChange(ccVP);
-		}
-		
-		addOtherResources(aBridge);
-		
-		doNationalObjectivesAndOtherEndTurnEffects(aBridge);
 		
 		if (doBattleShipsRepairEndOfTurn())
 		{
@@ -162,42 +202,6 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		if (isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null && !pa.getGiveUnitControl().isEmpty())
 		{
 			changeUnitOwnership(aBridge);
-		}
-		// now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including NOs)
-		final int currentPUs = m_player.getResources().getQuantity(PUs);
-		final float gainedPUS = Math.max(0, currentPUs - leftOverPUs);
-		int relationshipUpkeepCostFlat = 0;
-		int relationshipUpkeepCostPercentage = 0;
-		int relationshipUpkeepTotalCost = 0;
-		for (final Relationship r : data.getRelationshipTracker().getRelationships(m_player))
-		{
-			final String[] upkeep = r.getRelationshipType().getRelationshipTypeAttachment().getUpkeepCost().split(":");
-			if (upkeep.length == 1 || upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_FLAT))
-				relationshipUpkeepCostFlat += Integer.parseInt(upkeep[0]);
-			else if (upkeep[1].equals(RelationshipTypeAttachment.UPKEEP_PERCENTAGE))
-				relationshipUpkeepCostPercentage += Integer.parseInt(upkeep[0]);
-		}
-		relationshipUpkeepCostPercentage = Math.min(100, relationshipUpkeepCostPercentage);
-		if (relationshipUpkeepCostPercentage != 0)
-		{
-			relationshipUpkeepTotalCost += Math.round(gainedPUS * (relationshipUpkeepCostPercentage) / 100f);
-		}
-		if (relationshipUpkeepCostFlat != 0)
-		{
-			relationshipUpkeepTotalCost += relationshipUpkeepCostFlat;
-		}
-		// we can't remove more than we have, and we also must flip the sign
-		relationshipUpkeepTotalCost = Math.min(currentPUs, relationshipUpkeepTotalCost);
-		relationshipUpkeepTotalCost = -1 * relationshipUpkeepTotalCost;
-		if (relationshipUpkeepTotalCost != 0)
-		{
-			final int newTotal = currentPUs + relationshipUpkeepTotalCost;
-			transcriptText = m_player.getName() + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ") + (-1 * relationshipUpkeepTotalCost)
-						+ MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost) + " in order to maintain current relationships with other players, and ends the turn with " + newTotal
-						+ MyFormatter.pluralize(" PU", newTotal);
-			aBridge.getHistoryWriter().startEvent(transcriptText);
-			final Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
-			aBridge.addChange(upkeep);
 		}
 		m_needToInitialize = false;
 	}
