@@ -462,6 +462,11 @@ public class Chat
 				}
 			}
 		}
+		
+		public void ping()
+		{
+			// System.out.println("Pinged");
+		}
 	};
 	
 	/**

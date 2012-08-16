@@ -14,6 +14,10 @@ import games.strategy.util.Tuple;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ChatController implements IChatController
@@ -30,6 +34,9 @@ public class ChatController implements IChatController
 	protected final Object m_mutex = new Object();
 	private final String m_chatChannel;
 	private long m_version;
+	
+	private final ScheduledExecutorService m_pingThread = Executors.newScheduledThreadPool(1);
+	
 	private final IConnectionChangeListener m_connectionChangeListener = new IConnectionChangeListener()
 	{
 		public void connectionAdded(final INode to)
@@ -68,6 +75,21 @@ public class ChatController implements IChatController
 		m_chatChannel = getChatChannelName(name);
 		m_remoteMessenger.registerRemote(this, getChatControlerRemoteName(name));
 		((IServerMessenger) m_messenger).addConnectionChangeListener(m_connectionChangeListener);
+		
+		m_pingThread.scheduleAtFixedRate(new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
+					// System.out.println("Pinging");
+					getChatBroadcaster().ping();
+				} catch (final Exception e)
+				{
+					s_logger.log(Level.SEVERE, "Error pinging", e);
+				}
+			}
+		}, 3, 1, TimeUnit.MINUTES);
 	}
 	
 	public ChatController(final String name, final Messengers messenger, final ModeratorController moderatorController)
@@ -78,6 +100,7 @@ public class ChatController implements IChatController
 	// clean up
 	public void deactivate()
 	{
+		m_pingThread.shutdown();
 		synchronized (m_mutex)
 		{
 			final IChatChannel chatter = getChatBroadcaster();

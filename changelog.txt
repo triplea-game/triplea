@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Creating a simple Ping method inside of the Chat Controller, that will ping all computers once every minute, hopefully improving everyone's connections. (Sean Bridges & veqryn)
+
 * Allowing people to hold SHIFT down while their mouse is over a territory in order to keep that territory in the Territory Panel, no matter where they move their mouse afterwards. (frigoref)
 
 * Changed EndTurnDelegate so that Units Changing Ownership, and Hitpoint Repair, will still happen even if you have lost your capital. (veqryn)
