@@ -734,7 +734,7 @@
 	<!-- test -->
 	<target name="test" description="run junit tests">
 
-        <delete dir="${junit-result-dir}" failonerror="false"/>
+		<delete dir="${junit-result-dir}" failonerror="false"/>
 		<mkdir dir="${junit-result-dir}" />
 		<mkdir dir="${test-classes}" />
 
@@ -750,8 +750,8 @@
 
 		<junit fork="yes" haltonerror="off">
 			<classpath>
-			  <pathelement location="${test-classes}" />
-			  <path refid="test.classpath" />
+				<pathelement location="${test-classes}" />
+				<path refid="test.classpath" />
 			</classpath>
 
 			<formatter type="plain" />
@@ -760,6 +760,7 @@
 				<fileset dir="${test-classes}">
 					<filename name="**/*Test.class" />
 				</fileset>
+				<path refid="build.data" />
 			</batchtest>
 		</junit>
 	</target>
