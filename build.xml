@@ -157,6 +157,9 @@
 		<delete dir="${release}" />
 		<delete dir="savedGames" />
 		<delete dir="${test-classes}" />
+		<delete dir="${junit-result-dir}" />
+		<delete dir="${app.file}" />
+		<delete dir="${apidoc}" />
 	</target>
 
 	<!-- sweep -->
@@ -309,6 +312,10 @@
 		</exec>
 
 		<exec executable="cp">
+			<arg line="MacOS_users_read_this_first.txt /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
 			<arg line="TripleA_RuleBook.pdf /Volumes/TripleA/" />
 		</exec>
 
@@ -392,6 +399,10 @@
 
 		<exec executable="cp">
 			<arg line="readme.html /Volumes/TripleA/" />
+		</exec>
+
+		<exec executable="cp">
+			<arg line="MacOS_users_read_this_first.txt /Volumes/TripleA/" />
 		</exec>
 
 		<exec executable="cp">
@@ -594,6 +605,7 @@
 				<include name="triplea.exe" />
 				<include name="changelog.txt" />
 				<include name="TripleA_RuleBook.pdf" />
+				<include name="MacOS_users_read_this_first.txt" />
 			</zipfileset>
 
 			<zipfileset dir="${basedir}" prefix="${zip.prefix}/"
@@ -676,6 +688,7 @@
 				<include name="ServerInfo.plist" />
 				<include name="changelog.txt" />
 				<include name="readme.html" />
+				<include name="MacOS_users_read_this_first.txt" />
 				<include name="TripleA_RuleBook.pdf" />
 				<include name="TripleA_RuleBook.docx" />
 			</zipfileset>
@@ -732,7 +745,7 @@
 	</target>
 
 	<!-- test -->
-	<target name="test" description="run junit tests">
+	<target name="test" depends="compile" description="run junit tests">
 
 		<delete dir="${junit-result-dir}" failonerror="false"/>
 		<mkdir dir="${junit-result-dir}" />
@@ -748,6 +761,11 @@
 			<fileset dir="${test-src}" includes="**/*.xml" />
 		</copy>
 
+        <!-- Copy the data files to the test output directory -->
+		<copy todir="${test-classes}">
+			<path refid="build.data" />
+		</copy>
+
 		<junit fork="yes" haltonerror="off">
 			<classpath>
 				<pathelement location="${test-classes}" />
@@ -760,7 +778,6 @@
 				<fileset dir="${test-classes}">
 					<filename name="**/*Test.class" />
 				</fileset>
-				<path refid="build.data" />
 			</batchtest>
 		</junit>
 	</target>
