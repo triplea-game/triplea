@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Allowing people to hold SHIFT down while their mouse is over a territory in order to keep that territory in the Territory Panel, no matter where they move their mouse afterwards. (frigoref)
+
 * Changed EndTurnDelegate so that Units Changing Ownership, and Hitpoint Repair, will still happen even if you have lost your capital. (veqryn)
 
 * Getting MooreAI to submerge subs if only enemy air is left. (hakon)

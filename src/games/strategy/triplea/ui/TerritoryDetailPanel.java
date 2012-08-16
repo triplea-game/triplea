@@ -25,6 +25,8 @@ import games.strategy.ui.OverlayIcon;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -53,6 +55,7 @@ public class TerritoryDetailPanel extends JPanel
 	private final JButton m_showOdds;
 	private Territory m_currentTerritory;
 	private final TripleAFrame m_frame;
+	private Territory m_new_territory = null; // if not null, shift is pressed
 	
 	public TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final UIContext uiContext, final TripleAFrame frame)
 	{
@@ -67,7 +70,13 @@ public class TerritoryDetailPanel extends JPanel
 			@Override
 			public void mouseEntered(final Territory territory)
 			{
-				territoryChanged(territory);
+				if (m_new_territory != null)
+				{
+					if (territory != null)
+						m_new_territory = territory;
+				}
+				else
+					territoryChanged(territory);
 			}
 		});
 		final String show_battle_calc = "show_battle_calc";
@@ -87,9 +96,44 @@ public class TerritoryDetailPanel extends JPanel
 				showBattleCalc.actionPerformed(e);
 			}
 		});
-		((JComponent) m_frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.META_MASK), show_battle_calc);
-		((JComponent) m_frame.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.CTRL_MASK), show_battle_calc);
-		((JComponent) m_frame.getContentPane()).getActionMap().put(show_battle_calc, showBattleCalc);
+		final JComponent contentPane = (JComponent) m_frame.getContentPane();
+		contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.META_MASK), show_battle_calc);
+		contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('B', java.awt.event.InputEvent.CTRL_MASK), show_battle_calc);
+		contentPane.getActionMap().put(show_battle_calc, showBattleCalc);
+		
+		// freeze/unfreeze this panel when shift is pressed/released
+		final String freeze_panel = "freeze_panel";
+		final Action freezePanel = new AbstractAction(freeze_panel)
+		{
+			private static final long serialVersionUID = -1863748437390486994L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (m_new_territory == null && m_currentTerritory != null)
+				{
+					m_new_territory = m_currentTerritory;
+				}
+			}
+		};
+		final String unfreeze_panel = "unfreeze_panel";
+		final Action unfreezePanel = new AbstractAction(unfreeze_panel)
+		{
+			private static final long serialVersionUID = -1863748437390486994L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (m_new_territory != null)
+				{
+					if (m_new_territory != null)
+						territoryChanged(m_new_territory);
+					m_new_territory = null;
+				}
+			}
+		};
+		contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK, false), freeze_panel);
+		contentPane.getActionMap().put(freeze_panel, freezePanel);
+		contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0, true), unfreeze_panel);
+		contentPane.getActionMap().put(unfreeze_panel, unfreezePanel);
 	}
 	
 	public void setGameData(final GameData data)
