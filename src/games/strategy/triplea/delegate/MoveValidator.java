@@ -1086,7 +1086,7 @@ public class MoveValidator
 							}
 						}
 					}
-					else
+					else if (!MoveDelegate.getBattleTracker(data).wasConquered(routeEnd))
 					{
 						// this is an unload to a friendly territory
 						if (isScramblingOrKamikazeAttacksEnabled || Matches.territoryHasEnemyUnits(player, data).match(routeStart))

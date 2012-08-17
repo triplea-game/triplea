@@ -151,15 +151,18 @@
 		<!-- we don't want anything to depend on this but compileClean, macRelease, and release, 
 			as it forces a complete rebuild every time, defeating the purpose of a 
 			well-managed build process that only updates changed items -->
+		<delete dir="${apidoc}" />
+		<delete dir="${app.file}" />
 		<delete dir="${bin}" />
 		<delete dir="${build}" />
 		<delete dir="${classes}" />
-		<delete dir="${release}" />
-		<delete dir="savedGames" />
-		<delete dir="${test-classes}" />
 		<delete dir="${junit-result-dir}" />
-		<delete dir="${app.file}" />
-		<delete dir="${apidoc}" />
+		<delete dir="${release}" />
+		<delete dir="${test-classes}" />
+		<delete dir="access_logs" />
+		<delete dir="derby_db" />
+		<delete dir="logs" />
+		<delete dir="savedGames" />
 	</target>
 
 	<!-- sweep -->
