@@ -6950,7 +6950,7 @@ When a country moves into a regular or non-friendly neutral during the combat mo
 
 <b>Russia</b>
 <ul>
-<li>5 PUs if Russia is at war, sz125 has no Axis warships (all sea units except transports), Archangel is Russia-controlled, and there are no allied units in any Russian territories.</li> 
+<li>5 PUs if Russia is at war, sz125 has no Axis warships (all sea units except transports), Archangel is Russia-controlled, and there are no allied units in any originally Russian territories.</li> 
 <li>3 PUs for each originally German, Italian, or Pro-Axis neutral territory that Russia controls.</li>
 <li>10 PUs one time only, the first time Russia conquers Germany (Berlin).</li>
 </ul>
@@ -7008,7 +7008,7 @@ When a country moves into a regular or non-friendly neutral during the combat mo
 <b>Kamikaze Attacks</b><br>
 Japan starts the game with 6 attack tokens, and may begin doing Kamikaze Attacks at the start of the game.<br>
 These attacks can only be done in sea zones that contain the Kamikaze symbol [the sea zones surrounding: Japan, Okinawa, Iwo Jima, Formosa, and the Marianas].<br>
-At the end of Japan's enemy's combat-move phase, Japan may target any surface warship in a Kamikaze zone for one or more Kamikaze attacks, ONLY if the enemy attacking Japanese units or is conducting an Amphibious Assault from that sea zone.<br>
+At the end of Japan's enemy's combat-move phase, Japan may target any surface warship in a Kamikaze zone for one or more Kamikaze attacks, ONLY if the enemy is attacking Japanese units there or is conducting an Amphibious Assault from that sea zone.<br>
 For each attack, a die is rolled, and a 2 or less is considered a hit. Casualties are removed immediately, and do not participate in any battles. Kamikaze attacks prevent bombardment as well.<br>
 <br><br><hr><br>
 
@@ -7072,6 +7072,7 @@ These changes to units are things other than price/movement which you can see in
 <br>3.3
 <br>Fixing small issue with American not correctly becoming friendly/war with True Neutrals if Japan declares war on all true neutrals before America is at war with Germany.
 <br>Fixing issue with trying to Undo a UK europe placement, that previously generated a null pointer error.
+<br>Fixing some errors in game notes.
 <br>
 <br>3.2
 <br>Fixing some errors in game notes.
