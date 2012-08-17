@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Fixed bug in Paratroopers code, causing paratrooper attacks in coast territories on maps with scrambling to never actually take the territory. (veqryn)
+
 * Creating a simple Ping method inside of the Chat Controller, that will ping all computers once every minute, hopefully improving everyone's connections. (Sean Bridges & veqryn)
 
 * Allowing people to hold SHIFT down while their mouse is over a territory in order to keep that territory in the Territory Panel, no matter where they move their mouse afterwards. (frigoref)

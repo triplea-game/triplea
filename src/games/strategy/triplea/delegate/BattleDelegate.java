@@ -412,6 +412,32 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		return null; // User elected not to bombard with this unit
 	}
 	
+	private static void landParatroopers(final PlayerID player, final Territory battleSite, final GameData data, final IDelegateBridge bridge)
+	{
+		if (TechTracker.hasParatroopers(player))
+		{
+			final Collection<Unit> airTransports = Match.getMatches(battleSite.getUnits().getUnits(), Matches.UnitIsAirTransport);
+			final Collection<Unit> paratroops = Match.getMatches(battleSite.getUnits().getUnits(), Matches.UnitIsAirTransportable);
+			if (!airTransports.isEmpty() && !paratroops.isEmpty())
+			{
+				final CompositeChange change = new CompositeChange();
+				for (final Unit u : paratroops)
+				{
+					final TripleAUnit taUnit = (TripleAUnit) u;
+					final Unit transport = taUnit.getTransportedBy();
+					if (transport == null || !airTransports.contains(transport))
+						continue;
+					change.add(DelegateFinder.moveDelegate(data).getTransportTracker().unloadAirTransportChange(taUnit, battleSite, player, false));
+				}
+				if (!change.isEmpty())
+				{
+					bridge.getHistoryWriter().startEvent(player.getName() + " lands units in " + battleSite.getName());
+					bridge.addChange(change);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Setup the battles where the battle occurs because units are in the
 	 * same territory. This happens when subs emerge (after being submerged), and
@@ -448,6 +474,9 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			IBattle battle = battleTracker.getPendingBattle(territory, false);
 			if (battle == null)
 			{
+				// we must land any paratroopers here, but only if there is not going to be a battle (cus battles land them separately, after aa fires)
+				if (enemyUnits.isEmpty() || Match.allMatch(enemyUnits, Matches.UnitIsInfrastructure))
+					landParatroopers(player, territory, data, aBridge);
 				aBridge.getHistoryWriter().startEvent(player.getName() + " creates battle in territory " + territory.getName());
 				battleTracker.addBattle(new RouteScripted(territory), attackingUnits, false, player, aBridge, null, null);
 				battle = battleTracker.getPendingBattle(territory, false);

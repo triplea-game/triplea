@@ -382,7 +382,7 @@ public class BattleTracker implements java.io.Serializable
 				final Collection<Unit> unitsNotUnloadedTilEndOfRoute)
 	{
 		final GameData data = bridge.getData();
-		final Collection<Unit> canConquer = Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data).invert());
+		final Collection<Unit> canConquer = Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, id, data, false).invert());
 		if (Match.noneMatch(canConquer, Matches.UnitIsNotAir))
 			return;
 		final Collection<Unit> presentFromStartTilEnd = new ArrayList<Unit>(canConquer);

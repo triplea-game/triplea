@@ -144,8 +144,10 @@ public class MoveValidator
 	
 	static MoveValidationResult validateFirst(final GameData data, final Collection<Unit> units, final Route route, final PlayerID player, final MoveValidationResult result)
 	{
-		if (!units.isEmpty() && !getEditMode(data)
-					&& !Match.allMatch(Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data).invert()), Matches.unitIsOwnedBy(player)))
+		if (!units.isEmpty()
+					&& !getEditMode(data)
+					&& !Match.allMatch(Match.getMatches(units, Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, route, player, data, true).invert()),
+								Matches.unitIsOwnedBy(player)))
 		{
 			result.setError("Player, " + player.getName() + ", is not owner of all the units: " + MyFormatter.unitsToTextNoOwner(units));
 			return result;
@@ -1685,7 +1687,7 @@ public class MoveValidator
 		}
 		// we don't want to look at the dependents
 		final Collection<Unit> unitsWhichAreNotBeingTransportedOrDependent = new ArrayList<Unit>(Match.getMatches(units,
-					Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, defaultRoute, player, data).invert()));
+					Matches.unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(units, defaultRoute, player, data, true).invert()));
 		boolean mustGoLand = false;
 		boolean mustGoSea = false;
 		// If start and end are land, try a land route.

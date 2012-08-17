@@ -5434,6 +5434,10 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;Allied - Ceasefire - 2 rounds
 &lt;br&gt;Allied - Open Borders - 1 rounds
 &lt;br&gt;
+&lt;br&gt;This means someone can go directly from Open Borders to War, so long as they wait 2 rounds after the Open Borders agreement was signed.
+&lt;br&gt;And someone can go directly from Allied to Ceasefire, so long as they wait 2 rounds after the Alliance was signed.
+&lt;br&gt;There is no way to go directly from Allied to War, as you must pass through either Ceasefire *OR* Open Borders to get to War.
+&lt;br&gt;
 
 &lt;br&gt;
 &lt;br&gt;Unit List:

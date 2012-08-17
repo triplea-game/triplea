@@ -2685,10 +2685,13 @@ public class Matches
 	 *            current player
 	 * @param data
 	 *            game data
+	 * @param forceLoadParatroopersIfPossible
+	 *            should we load paratroopers? (if not, we assume they are already loaded)
 	 * @return Match that tests the TripleAUnit getTransportedBy value
 	 *         (also tests for para-troopers, and for dependent allied fighters sitting as cargo on a ship)
 	 */
-	public static Match<Unit> unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(final Collection<Unit> units, final Route route, final PlayerID currentPlayer, final GameData data)
+	public static Match<Unit> unitIsBeingTransportedByOrIsDependentOfSomeUnitInThisList(final Collection<Unit> units, final Route route, final PlayerID currentPlayer, final GameData data,
+				final boolean forceLoadParatroopersIfPossible)
 	{
 		return new Match<Unit>()
 		{
@@ -2710,12 +2713,15 @@ public class Matches
 					}
 				}
 				// paratrooper on an air transport
-				final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
-				final Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
-				if (!airTransports.isEmpty() && !paratroops.isEmpty())
+				if (forceLoadParatroopersIfPossible)
 				{
-					if (MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, currentPlayer).containsKey(dependent))
-						return true;
+					final Collection<Unit> airTransports = Match.getMatches(units, Matches.UnitIsAirTransport);
+					final Collection<Unit> paratroops = Match.getMatches(units, Matches.UnitIsAirTransportable);
+					if (!airTransports.isEmpty() && !paratroops.isEmpty())
+					{
+						if (MoveDelegate.mapAirTransports(route, paratroops, airTransports, true, currentPlayer).containsKey(dependent))
+							return true;
+					}
 				}
 				return false;
 			}
