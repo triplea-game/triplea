@@ -395,6 +395,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		final boolean rollDiceForBlockadeDamage = games.strategy.triplea.Properties.getConvoyBlockadesRollDiceForCost(data);
 		final Collection<String> transcripts = new ArrayList<String>();
 		final HashMap<Territory, Tuple<Integer, List<Territory>>> damagePerBlockadeZone = new HashMap<Territory, Tuple<Integer, List<Territory>>>();
+		boolean rolledDice = false;
 		for (final Territory b : blockable)
 		{
 			final List<Territory> viableNeighbors = Match.getMatches(map.getNeighbors(b),
@@ -418,6 +419,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 					final String transcript = "Rolling for Convoy Blockade Damage in " + b.getName();
 					final int[] dice = aBridge.getRandom(CONVOY_BLOCKADE_DICE_SIDES, numberOfDice, enemies.iterator().next().getOwner(), DiceType.BOMBING, transcript);
 					transcripts.add(transcript + ". Rolls: " + MyFormatter.asDice(dice));
+					rolledDice = true;
 					for (final int d : dice)
 					{
 						final int roll = d + 1; // we are zero based
@@ -438,7 +440,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			damagePerBlockadeZone.put(b, new Tuple<Integer, List<Territory>>(lossForBlockade, viableNeighbors));
 			totalLoss += lossForBlockade;
 		}
-		if (totalLoss <= 0)
+		if (totalLoss <= 0 && !rolledDice)
 			return 0;
 		// now we need to make sure that we didn't deal more damage than the territories are worth, in the case of having multiple sea zones touching the same land zone.
 		final List<Territory> blockadeZonesSorted = new ArrayList<Territory>(damagePerBlockadeZone.keySet());
@@ -462,7 +464,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			}
 		}
 		final int realTotalLoss = Math.max(0, totalDamageTracker.totalValues());
-		if (rollDiceForBlockadeDamage && realTotalLoss > 0 && !transcripts.isEmpty())
+		if (rollDiceForBlockadeDamage && (realTotalLoss > 0 || (rolledDice && !transcripts.isEmpty())))
 		{
 			aBridge.getHistoryWriter().startEvent("Total Cost from Convoy Blockades: " + realTotalLoss);
 			for (final String t : transcripts)

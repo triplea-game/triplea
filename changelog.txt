@@ -1,4 +1,8 @@
 Changes for 1.6.1.2
+* Showed convoy blockade dice rolls in History Panel even if the blockade damage is zero. (veqryn)
+
+
+Changes for 1.6.1.2
 * Fixed bug in Paratroopers code, causing paratrooper attacks in coast territories on maps with scrambling to never actually take the territory. (veqryn)
 
 * Creating a simple Ping method inside of the Chat Controller, that will ping all computers once every minute, hopefully improving everyone's connections. (Sean Bridges & veqryn)
