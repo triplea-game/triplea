@@ -164,6 +164,7 @@ public interface Constants
 	public static final String MAP_NAME = "mapName";
 	public static final String DISPLAY_SEA_NAMES = "Display Sea Names";
 	public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
+	public static final String FOCUS_ON_OWN_CASUALTIES_USER_PREF = "FocusOnOwnCasualties";
 	
 	// new scramble property names
 	public static final String SCRAMBLE_RULES_IN_EFFECT = "Scramble Rules In Effect";

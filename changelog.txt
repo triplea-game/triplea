@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Adding new menu option "Focus On Own Casualties", which when selected will cause the default casualty selection to focused, allowing the user to hit spacebar to accept it. (hakon)
+
 * Changed order of steps so that in games where Submarines may submerge before battle, the attacker is asked first, then the defender is asked. (hakon)
 
 * Showed convoy blockade dice rolls in History Panel even if the blockade damage is zero. (veqryn)

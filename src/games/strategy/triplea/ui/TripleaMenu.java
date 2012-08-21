@@ -205,6 +205,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		menuGame.addSeparator();
 		addGameOptionsMenu(menuGame);
 		addPoliticsMenu(menuGame);
+		addFocusOnCasualties(menuGame);
 		addShowEnemyCasualties(menuGame);
 		addShowAIBattles(menuGame);
 		addChangeDynamixAISettings(menuGame);
@@ -568,6 +569,22 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			}
 		});
 		parentMenu.add(showEnemyCasualties);
+	}
+	
+	private void addFocusOnCasualties(final JMenu parentMenu)
+	{
+		final JCheckBoxMenuItem focusOnCasualties = new JCheckBoxMenuItem("Focus On Own Casualties");
+		focusOnCasualties.setSelected(BattleDisplay.getFocusOnOwnCasualtiesNotification());
+		focusOnCasualties.addActionListener(new AbstractAction()
+		{
+			private static final long serialVersionUID = 6176484225385360649L;
+
+			public void actionPerformed(final ActionEvent e)
+			{
+				BattleDisplay.setFocusOnOwnCasualtiesNotification(focusOnCasualties.isSelected());
+			}
+		});
+		parentMenu.add(focusOnCasualties);
 	}
 	
 	private void addTabbedProduction(final JMenu parentMenu)

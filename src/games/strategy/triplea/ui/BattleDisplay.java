@@ -210,6 +210,18 @@ public class BattleDisplay extends JPanel
 		prefs.putBoolean(Constants.SHOW_ENEMY_CASUALTIES_USER_PREF, aVal);
 	}
 	
+	public static boolean getFocusOnOwnCasualtiesNotification()
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
+		return prefs.getBoolean(Constants.FOCUS_ON_OWN_CASUALTIES_USER_PREF, false);
+	}
+	
+	public static void setFocusOnOwnCasualtiesNotification(final boolean aVal)
+	{
+		final Preferences prefs = Preferences.userNodeForPackage(BattleDisplay.class);
+		prefs.putBoolean(Constants.FOCUS_ON_OWN_CASUALTIES_USER_PREF, aVal);
+	}
+	
 	/**
 	 * updates the panel content according to killed units for the player
 	 * 
@@ -875,8 +887,9 @@ public class BattleDisplay extends JPanel
 							chooserScrollPane.setBorder(new LineBorder(chooserScrollPane.getBackground()));
 						}
 						final String[] options = { "Ok", "Cancel" };
+						final String focus = BattleDisplay.getFocusOnOwnCasualtiesNotification() ? options[0] : null;
 						final int option = JOptionPane.showOptionDialog(BattleDisplay.this, chooserScrollPane, hit.getName() + " select casualties", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE,
-									null, options, null);
+									null, options, focus);
 						if (option != 0)
 							return;
 						final List<Unit> killed = chooser.getSelected(false);
