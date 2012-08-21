@@ -25,6 +25,7 @@
 	<property name="src" location="src" />
 	<property name="test-classes" location="testclasses" />
 	<property name="test-src" location="test" />
+	<property name="tests" value="**/*Test" />
 	<property name="zip.prefix" value="triplea_${triplea.version}" />
 
 	<path id="build.lib">
@@ -769,7 +770,7 @@
 			<path refid="build.data" />
 		</copy>
 
-		<junit fork="yes" haltonerror="off">
+		<junit fork="yes" haltonerror="off" printsummary="yes" failureproperty="junit.failed">
 			<classpath>
 				<pathelement location="${test-classes}" />
 				<path refid="test.classpath" />
@@ -779,10 +780,12 @@
 			<formatter type="xml" />
 			<batchtest todir="${junit-result-dir}">
 				<fileset dir="${test-classes}">
-					<filename name="**/*Test.class" />
+					<filename name="${tests}.class" />
 				</fileset>
 			</batchtest>
 		</junit>
+
+		<fail if="junit.failed" message="Some tests failed, see above for details" />
 	</target>
 
 	<!-- analyze code for bugs. run compile first -->

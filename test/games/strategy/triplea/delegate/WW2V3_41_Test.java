@@ -746,7 +746,7 @@ public class WW2V3_41_Test extends TestCase
 		final MustFightBattle battle = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(attacked, false);
 		final List<String> steps = battle.determineStepStrings(true, bridge);
 		assertEquals(
-					Arrays.asList(defender + SUBS_SUBMERGE, attacker + SUBS_SUBMERGE, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES,
+					Arrays.asList(attacker + SUBS_SUBMERGE, defender + SUBS_SUBMERGE, attacker + SUBS_FIRE, defender + SELECT_SUB_CASUALTIES, defender + SUBS_FIRE, attacker + SELECT_SUB_CASUALTIES,
 								REMOVE_SNEAK_ATTACK_CASUALTIES, REMOVE_CASUALTIES, attacker + ATTACKER_WITHDRAW).toString(), steps.toString());
 		bridge.setRemote(new DummyTripleAPlayer());
 		// fight, each sub should fire

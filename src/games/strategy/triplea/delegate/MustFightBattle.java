@@ -528,14 +528,10 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		// Check if defending subs can submerge before battle
 		if (isSubRetreatBeforeBattle())
 		{
-			if (!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
-				steps.add(m_defender.getName() + SUBS_SUBMERGE);
-		}
-		// Check if attack subs can submerge before battle
-		if (isSubRetreatBeforeBattle())
-		{
 			if (!Match.someMatch(m_defendingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_attackingUnits, Matches.UnitIsSub))
 				steps.add(m_attacker.getName() + SUBS_SUBMERGE);
+			if (!Match.someMatch(m_attackingUnits, Matches.UnitIsDestroyer) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub))
+				steps.add(m_defender.getName() + SUBS_SUBMERGE);
 		}
 		// See if there any unescorted trns
 		if (m_battleSite.isWater() && isTransportCasualtiesRestricted())
@@ -991,23 +987,23 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			steps.add(new IExecutable()
 			{
 				// compatible with 0.9.0.2 saved games
-				private static final long serialVersionUID = 7056448091800764539L;
-				
-				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
-				{
-					if (!m_isOver)
-						defenderRetreatSubs(bridge);
-				}
-			});
-			steps.add(new IExecutable()
-			{
-				// compatible with 0.9.0.2 saved games
 				private static final long serialVersionUID = 6775880082912594489L;
 				
 				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 				{
 					if (!m_isOver)
 						attackerRetreatSubs(bridge);
+				}
+			});
+			steps.add(new IExecutable()
+			{
+				// compatible with 0.9.0.2 saved games
+				private static final long serialVersionUID = 7056448091800764539L;
+				
+				public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
+				{
+					if (!m_isOver)
+						defenderRetreatSubs(bridge);
 				}
 			});
 		}
