@@ -38,7 +38,10 @@ import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.ui.SaveGameFileChooser;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.history.DelegateHistoryWriter;
+import games.strategy.engine.history.Event;
 import games.strategy.engine.history.EventChild;
+import games.strategy.engine.history.HistoryNode;
+import games.strategy.engine.history.Step;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.message.MessageContext;
 import games.strategy.engine.message.RemoteName;
@@ -613,6 +616,10 @@ public class ServerGame extends AbstractGame
 			m_firstRun = false;
 			return;
 		}
+		// we can't add a new event or add new changes if we are not in a step.
+		final HistoryNode curNode = data.getHistory().getLastNode();
+		if (!(curNode instanceof Step) && !(curNode instanceof Event) && !(curNode instanceof EventChild))
+			return;
 		final CompositeChange change = new CompositeChange();
 		final Set<String> allPlayersString = allPlayers.getPlayers();
 		aBridge.getHistoryWriter().startEvent("Game Loaded");
@@ -620,9 +627,8 @@ public class ServerGame extends AbstractGame
 		{
 			allPlayersString.remove(player.getName());
 			final boolean isHuman = player instanceof TripleAPlayer;
-			aBridge.getHistoryWriter().addChildToEvent(
-						player.getName() + ((player.getName().endsWith("s") || player.getName().endsWith("ese") || player.getName().endsWith("ish")) ? " are" : " is") + " now being played by: "
-									+ player.getType());
+			aBridge.getHistoryWriter().addChildToEvent(player.getName() + ((player.getName().endsWith("s") || player.getName().endsWith("ese") || player.getName().endsWith("ish")) ? " are" : " is")
+						+ " now being played by: " + player.getType());
 			final PlayerID p = data.getPlayerList().getPlayerID(player.getName());
 			final String newWhoAmI = ((isHuman ? "Human" : "AI") + ":" + player.getType());
 			if (!p.getWhoAmI().equals(newWhoAmI))
