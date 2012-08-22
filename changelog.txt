@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Fixing Concurrent Modification error with getIsAmphibiousMarine method in battle display. (veqryn)
+
 * Fixing comparison method in Easy AI (weak ai) so that adheres to the comparison contract. Also cleaned up a lot of code, fixed a lot of warnings. (veqryn)
 
 * Fixing bug history panel bug caused by loading a savegame at the end of the last player's turn, causing a "Can not add event, not in step" error to be thrown. (veqryn)

@@ -1070,31 +1070,6 @@ public class DiceRoll implements Externalizable
 		return false;
 	}
 	
-	// Determine if it's an assaulting Marine so the attach value can be increased
-	public static boolean isAmphibiousMarine(final UnitAttachment ua, final GameData data)
-	{
-		BattleTracker bt;
-		final Collection<Territory> m_pendingBattles;
-		data.acquireReadLock();
-		try
-		{
-			bt = DelegateFinder.battleDelegate(data).getBattleTracker();
-			m_pendingBattles = bt.getPendingBattleSites(false);
-			final Iterator<Territory> territories = m_pendingBattles.iterator();
-			while (territories.hasNext())
-			{
-				final Territory terr = territories.next();
-				final IBattle battle = bt.getPendingBattle(terr, false);
-				if (battle != null && battle.isAmphibious() && ua.getIsMarine())
-					return true;
-			}
-		} finally
-		{
-			data.releaseReadLock();
-		}
-		return false;
-	}
-	
 	private static boolean isImprovedArtillerySupport(final PlayerID player)
 	{
 		final TechAttachment ta = (TechAttachment) player.getAttachment(Constants.TECH_ATTACHMENT_NAME);

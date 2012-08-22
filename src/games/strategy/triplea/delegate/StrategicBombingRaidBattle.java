@@ -309,7 +309,7 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 	{
 		final String title = "Bombing raid in " + m_battleSite.getName();
 		getDisplay(bridge).showBattle(m_battleID, m_battleSite, title, m_attackingUnits, m_defendingUnits,
-					null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender, getBattleType());
+					null, null, null, Collections.<Unit, Collection<Unit>> emptyMap(), m_attacker, m_defender, isAmphibious(), getBattleType());
 		getDisplay(bridge).listBattleSteps(m_battleID, m_steps);
 	}
 	

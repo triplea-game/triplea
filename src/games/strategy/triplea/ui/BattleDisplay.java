@@ -136,7 +136,7 @@ public class BattleDisplay extends JPanel
 	
 	public BattleDisplay(final GameData data, final Territory territory, final PlayerID attacker, final PlayerID defender, final Collection<Unit> attackingUnits,
 				final Collection<Unit> defendingUnits, final Collection<Unit> killedUnits, final Collection<Unit> attackingWaitingToDie, final Collection<Unit> defendingWaitingToDie,
-				final GUID battleID, final MapPanel mapPanel, final BattleType battleType)
+				final GUID battleID, final MapPanel mapPanel, final boolean isAmphibious, final BattleType battleType)
 	{
 		m_battleID = battleID;
 		m_defender = defender;
@@ -145,9 +145,9 @@ public class BattleDisplay extends JPanel
 		m_mapPanel = mapPanel;
 		m_data = data;
 		final Collection<TerritoryEffect> territoryEffects = TerritoryEffectHelper.getEffects(territory);
-		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext(), battleType, territoryEffects);
+		m_defenderModel = new BattleModel(m_data, defendingUnits, m_location, false, m_mapPanel.getUIContext(), battleType, territoryEffects, isAmphibious);
 		m_defenderModel.refresh();
-		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext(), battleType, territoryEffects);
+		m_attackerModel = new BattleModel(m_data, attackingUnits, m_location, true, m_mapPanel.getUIContext(), battleType, territoryEffects, isAmphibious);
 		m_attackerModel.refresh();
 		m_uiContext = mapPanel.getUIContext();
 		m_casualties = new CasualtyNotificationPanel(data, m_mapPanel.getUIContext());
@@ -1096,6 +1096,7 @@ class BattleModel extends DefaultTableModel
 	private final Territory m_location;
 	private final BattleType m_battleType;
 	private final Collection<TerritoryEffect> m_territoryEffects;
+	private final boolean m_isAmphibious;
 	
 	private static String[] varDiceArray(final GameData data)
 	{
@@ -1114,7 +1115,7 @@ class BattleModel extends DefaultTableModel
 	}
 	
 	BattleModel(final GameData data, final Collection<Unit> units, final Territory battleLocation, final boolean attack, final UIContext uiContext, final BattleType battleType,
-				final Collection<TerritoryEffect> territoryEffects)
+				final Collection<TerritoryEffect> territoryEffects, final boolean isAmphibious)
 	{
 		super(new Object[0][0], varDiceArray(data));
 		m_uiContext = uiContext;
@@ -1125,6 +1126,7 @@ class BattleModel extends DefaultTableModel
 		m_location = battleLocation;
 		m_battleType = battleType;
 		m_territoryEffects = territoryEffects;
+		m_isAmphibious = isAmphibious;
 	}
 	
 	public void notifyRetreat(final Collection<Unit> retreating)
@@ -1188,7 +1190,8 @@ class BattleModel extends DefaultTableModel
 					{
 						strength = attachment.getAttack(category.getOwner());
 						// Increase attack value if it's an assaulting marine
-						if (DiceRoll.isAmphibiousMarine(attachment, m_data))
+						// TODO actually this only happens when the marine is amphibious, not when the battle is. we could have an amphibious battle but a non-amphibious marine.
+						if (m_isAmphibious && attachment.getIsMarine())
 							++strength;
 						strength += DiceRoll.getSupport(category.getType(), supportRules, supportLeft);
 					}

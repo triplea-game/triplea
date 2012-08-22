@@ -339,7 +339,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			final ITripleaDisplay display = getDisplay(bridge);
 			display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker, false),
 						removeNonCombatants(m_defendingUnits, false, m_defender, false), m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender,
-						getBattleType());
+						isAmphibious(), getBattleType());
 			display.listBattleSteps(m_battleID, m_stepStrings);
 			m_stack.execute(bridge);
 			return;
@@ -373,7 +373,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		m_stepStrings = determineStepStrings(true, bridge);
 		final ITripleaDisplay display = getDisplay(bridge);
 		display.showBattle(m_battleID, m_battleSite, getBattleTitle(), removeNonCombatants(m_attackingUnits, true, m_attacker, false), removeNonCombatants(m_defendingUnits, false, m_defender, false),
-					m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, getBattleType());
+					m_killed, m_attackingWaitingToDie, m_defendingWaitingToDie, m_dependentUnits, m_attacker, m_defender, isAmphibious(), getBattleType());
 		display.listBattleSteps(m_battleID, m_stepStrings);
 		if (!m_headless)
 		{

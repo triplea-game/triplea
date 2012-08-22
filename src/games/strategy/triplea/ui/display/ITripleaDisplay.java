@@ -56,10 +56,11 @@ public interface ITripleaDisplay extends IDisplay
 	 *            - PlayerID of attacker
 	 * @param defender
 	 *            - PlayerID of defender
+	 * @param isAmphibious
 	 */
 	public void showBattle(GUID battleID, Territory location, String battleTitle, Collection<Unit> attackingUnits, Collection<Unit> defendingUnits, Collection<Unit> killedUnits,
 				Collection<Unit> attackingWaitingToDie, Collection<Unit> defendingWaitingToDie, Map<Unit, Collection<Unit>> dependentUnits, final PlayerID attacker,
-				final PlayerID defender, final BattleType battleType);
+				final PlayerID defender, final boolean isAmphibious, final BattleType battleType);
 	
 	/**
 	 * 
