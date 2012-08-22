@@ -152,9 +152,9 @@ public class GameDataTestUtil
 		new ChangePerformer(t.getData()).perform(ChangeFactory.addUnits(t, units));
 	}
 	
-	public static void addTo(final PlayerID t, final Collection<Unit> units)
+	public static void addTo(final PlayerID t, final Collection<Unit> units, final GameData data)
 	{
-		new ChangePerformer(t.getData()).perform(ChangeFactory.addUnits(t, units));
+		new ChangePerformer(data).perform(ChangeFactory.addUnits(t, units));
 	}
 	
 	public static PlaceDelegate placeDelegate(final GameData data)
@@ -190,9 +190,9 @@ public class GameDataTestUtil
 		return (BidPlaceDelegate) data.getDelegateList().getDelegate("placeBid");
 	}
 	
-	public static ITestDelegateBridge getDelegateBridge(final PlayerID player)
+	public static ITestDelegateBridge getDelegateBridge(final PlayerID player, final GameData data)
 	{
-		return new TestDelegateBridge(player.getData(), player, new DummyDisplay());
+		return new TestDelegateBridge(data, player, new DummyDisplay());
 	}
 	
 	public static void load(final Collection<Unit> units, final Route route)

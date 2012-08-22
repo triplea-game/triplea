@@ -80,8 +80,10 @@ public class HistoryLog extends JFrame
 		m_textArea.setText("");
 	}
 	
-	public void printFullTurn(final HistoryNode printNode, final boolean verbose)
+	@SuppressWarnings("null")
+	public void printFullTurn(final GameData data, final boolean verbose)
 	{
+		final HistoryNode printNode = data.getHistory().getLastNode();
 		HistoryNode curNode = printNode;
 		Step stepNode = null;
 		Step turnStartNode = null;
@@ -111,7 +113,7 @@ public class HistoryLog extends JFrame
 				if (!stepNode.getPlayerID().getName().equals(curPlayer.getName()))
 					break;
 			}
-			printRemainingTurn(turnStartNode, verbose, curPlayer.getData().getDiceSides());
+			printRemainingTurn(turnStartNode, verbose, data.getDiceSides());
 		}
 		else
 			System.err.println("No Step node found!");
@@ -222,13 +224,14 @@ public class HistoryLog extends JFrame
 					}
 					else if (details instanceof Collection)
 					{
-						final Collection<Unit> objects = (Collection) details;
-						final Iterator objIter = objects.iterator();
+						final Collection<Object> objects = (Collection<Object>) details;
+						final Iterator<Object> objIter = objects.iterator();
 						if (objIter.hasNext())
 						{
 							final Object obj = objIter.next();
 							if (obj instanceof Unit)
 							{
+								final Collection<Unit> allUnitsInDetails = (Collection<Unit>) details;
 								// purchase/place units - don't need details
 								Unit unit = (Unit) obj;
 								if (title.matches("\\w+ buy .*"))
@@ -270,7 +273,7 @@ public class HistoryLog extends JFrame
 									}
 									for (final PlayerID player : unitCount.keySet())
 									{
-										logWriter.println(indent + "Casualties for " + player.getName() + ": " + MyFormatter.unitsToTextNoOwner(objects, player));
+										logWriter.println(indent + "Casualties for " + player.getName() + ": " + MyFormatter.unitsToTextNoOwner(allUnitsInDetails, player));
 									}
 								}
 								else if (title.matches(".*? placed in .*"))
@@ -283,7 +286,7 @@ public class HistoryLog extends JFrame
 								}
 								else if (title.matches("\\w+ win"))
 								{
-									conquerStr = title + conquerStr + " with " + MyFormatter.unitsToTextNoOwner(objects) + " remaining";
+									conquerStr = title + conquerStr + " with " + MyFormatter.unitsToTextNoOwner(allUnitsInDetails) + " remaining";
 								}
 								else
 									logWriter.println(indent + title);
@@ -457,7 +460,7 @@ public class HistoryLog extends JFrame
 			// see if there's a flag
 			final TerritoryAttachment ta = TerritoryAttachment.get(t);
 			boolean hasFlag = false;
-			if (t == null || ta == null)
+			if (ta == null)
 				hasFlag = false;
 			else
 				hasFlag = t.getOwner() != null && t.getOwner().equals(player) && (ta.getOriginalOwner() == null || !ta.getOriginalOwner().equals(player));

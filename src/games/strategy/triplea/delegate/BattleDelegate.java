@@ -483,13 +483,13 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 			}
 			if (battle == null)
 				continue;
-			if (battle != null && bombingBattle != null)
+			if (bombingBattle != null)
 			{
 				battleTracker.addDependency(battle, bombingBattle);
 			}
-			if (battle != null && battle.isEmpty())
+			if (battle.isEmpty())
 				battle.addAttackChange(new RouteScripted(territory), attackingUnits, null);
-			if (battle != null && !battle.getAttackingUnits().containsAll(attackingUnits))
+			if (!battle.getAttackingUnits().containsAll(attackingUnits))
 			{
 				List<Unit> attackingUnitsNeedToBeAdded = attackingUnits;
 				attackingUnitsNeedToBeAdded.removeAll(battle.getAttackingUnits());
@@ -503,7 +503,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				}
 			}
 			// Reach stalemate if all attacking and defending units are transports
-			if (battle != null && (ignoreTransports && Match.allMatch(attackingUnits, seaTransports) && Match.allMatch(enemyUnits, seaTransports))
+			if ((ignoreTransports && Match.allMatch(attackingUnits, seaTransports) && Match.allMatch(enemyUnits, seaTransports))
 						|| ((Match.allMatch(attackingUnits, Matches.unitHasAttackValueOfAtLeast(1).invert())) && Match.allMatch(enemyUnits, Matches.unitHasDefendValueOfAtLeast(1).invert())))
 			{
 				final BattleResults results = new BattleResults(battle, WhoWon.DRAW, data);
@@ -512,7 +512,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				continue;
 			}
 			// Check for ignored units
-			if (battle != null && !attackingUnits.isEmpty() && (ignoreTransports || ignoreSubs))
+			if (!attackingUnits.isEmpty() && (ignoreTransports || ignoreSubs))
 			{
 				// TODO check if incoming units can attack before asking
 				final ITripleaPlayer remotePlayer = (ITripleaPlayer) aBridge.getRemote();

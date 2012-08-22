@@ -260,7 +260,7 @@ public class RocketsFireHelper
 		int cost = 0;
 		if (!games.strategy.triplea.Properties.getLL_DAMAGE_ONLY(data))
 		{
-			if (doNotUseBombingBonus)
+			if (doNotUseBombingBonus || rockets == null)
 			{
 				// no low luck, and no bonus, so just roll based on the map's dice sides
 				final int[] rolls = bridge.getRandom(data.getDiceSides(), numberOfAttacks, player, DiceType.BOMBING, "Rocket fired by " + player.getName() + " at " + attacked.getName());
@@ -314,7 +314,7 @@ public class RocketsFireHelper
 		}
 		else
 		{
-			if (doNotUseBombingBonus)
+			if (doNotUseBombingBonus || rockets == null)
 			{
 				// no bonus, so just roll based on the map's dice sides, but modify for LL
 				final int maxDice = (data.getDiceSides() + 1) / 3;
@@ -470,7 +470,7 @@ public class RocketsFireHelper
 		// this is null in WW2V1
 		if (attackFrom != null)
 		{
-			if (!rockets.isEmpty())
+			if (rockets != null && !rockets.isEmpty())
 			{
 				// TODO: only a certain number fired...
 				final Change change = ChangeFactory.markNoMovementChange(Collections.singleton(rockets.iterator().next()));

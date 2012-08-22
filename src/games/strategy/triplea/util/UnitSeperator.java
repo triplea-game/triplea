@@ -98,6 +98,7 @@ public class UnitSeperator
 			final boolean damaged = current.getHits() == 1;
 			if (damaged)
 			{
+				// TODO: implement me
 				final String kev = "here";
 			}
 			final boolean disabled = Matches.UnitIsDisabled().match(current);

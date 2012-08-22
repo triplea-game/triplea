@@ -147,7 +147,7 @@ public class PacificTest extends DelegateTest
 	@Override
 	protected ITestDelegateBridge getDelegateBridge(final PlayerID player)
 	{
-		return GameDataTestUtil.getDelegateBridge(player);
+		return GameDataTestUtil.getDelegateBridge(player, m_data);
 	}
 	
 	public void testNonJapanAttack()

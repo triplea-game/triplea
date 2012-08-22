@@ -40,6 +40,7 @@ import java.util.logging.Level;
  * 
  * @author Stephen
  */
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class UnitGroup
 {
 	private Collection<Unit> m_units = new ArrayList<Unit>();
@@ -103,6 +104,7 @@ public class UnitGroup
 		return true;
 	}
 	
+	@SuppressWarnings("unused")
 	private void GenerateRouteMatches()
 	{
 		PlayerID player = null;
@@ -207,9 +209,11 @@ public class UnitGroup
 			route = DUtils.TrimRoute_AtFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
 		else
 			route = DUtils.TrimRoute_AtFirstTerWithEnemyUnits(route, slowest, GetFirstUnit().getOwner(), m_data);
-		if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
+		if (route == null)
 			return null;
-		if (route == null || route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
+		if (route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
+			return null;
+		if (route.getTerritories().size() < 2 || route.getStart().getName().equals(route.getEnd().getName()))
 			return null;
 		return route;
 	}

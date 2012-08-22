@@ -40,6 +40,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Logger;
 
+@SuppressWarnings("deprecation")
 public class SUtils
 {
 	private final static int PURCHASE_LOOP_MAX_TIME_MILLIS = 150 * 1000;
@@ -1386,7 +1387,6 @@ public class SUtils
 		PlayerID ePlayer = null;
 		final List<PlayerID> qID = getEnemyPlayers(data, player);
 		final HashMap<PlayerID, Float> ePAttackMap = new HashMap<PlayerID, Float>();
-		final boolean doIgnoreTerritories = ignoreTerr != null;
 		final Iterator<PlayerID> playerIter = qID.iterator();
 		if (location == null)
 			return -1000.0F;
@@ -1434,7 +1434,7 @@ public class SUtils
 			final List<Unit> enemyWaterUnits = new ArrayList<Unit>();
 			for (final Territory t : data.getMap().getNeighbors(location, onWater ? Matches.TerritoryIsWater : Matches.TerritoryIsLand))
 			{
-				if (doIgnoreTerritories && ignoreTerr.contains(t))
+				if (ignoreTerr != null && ignoreTerr.contains(t))
 					continue;
 				final List<Unit> enemies = t.getUnits().getMatches(Matches.unitIsOwnedBy(ePlayer));
 				enemyWaterUnits.addAll(enemies);
@@ -3533,12 +3533,12 @@ public class SUtils
 		final CompositeMatch<Territory> validBlitzRoute = new CompositeMatchAnd<Territory>(Matches.territoryHasNoEnemyUnits(ePlayer, data), Matches.TerritoryIsNotImpassableToLandUnits(ePlayer, data));
 		final List<Route> routes = new ArrayList<Route>();
 		final List<Unit> blitzUnits = findAttackers(blitzHere, 2, ignore, ePlayer, data, blitzUnit, validBlitzRoute, blockTerr, routes, false);
-		if (routes != null)
-			for (final Route r : routes)
-			{
-				if (r.getLength() == 2)
-					blitzTerrRoutes.add(r);
-			}
+		// if (routes != null)
+		for (final Route r : routes)
+		{
+			if (r.getLength() == 2)
+				blitzTerrRoutes.add(r);
+		}
 		return strength(blitzUnits, true, false, true);
 		/*
 		float eStrength = 0.0F;

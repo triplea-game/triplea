@@ -79,7 +79,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Stephen
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
+@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
 public class DUtils
 {
 	public static float GetAttackScoreOfUnits(final Collection<Unit> units)
@@ -2410,9 +2410,9 @@ public class DUtils
 	
 	public static Route GetAttackRouteFromXToY_ByLand(final GameData data, final PlayerID player, final Territory ter1, final Territory ter2)
 	{
-		if (ter2.isWater())
-			return null;
 		if (ter1 == null || ter2 == null)
+			return null;
+		if (ter2.isWater())
 			return null;
 		return data.getMap().getRoute_IgnoreEnd(
 					ter1,
@@ -2423,9 +2423,9 @@ public class DUtils
 	
 	public static Route GetAttackRouteFromXToY_ByLand_CountZAsPassthroughs(final GameData data, final PlayerID player, final Territory ter1, final Territory ter2, final List<Territory> passthroughTers)
 	{
-		if (ter2.isWater())
-			return null;
 		if (ter1 == null || ter2 == null)
+			return null;
+		if (ter2.isWater())
 			return null;
 		final List<Match> matches = new ArrayList<Match>();
 		matches.add(new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable, new InverseMatch<Territory>(Matches
@@ -2437,9 +2437,9 @@ public class DUtils
 	
 	public static Route GetAttackRouteFromXToY_BySea(final GameData data, final PlayerID player, final Territory ter1, final Territory ter2)
 	{
-		if (!ter2.isWater())
-			return null;
 		if (ter1 == null || ter2 == null)
+			return null;
+		if (!ter2.isWater())
 			return null;
 		return data.getMap().getRoute_IgnoreEnd(
 					ter1,
@@ -2450,9 +2450,9 @@ public class DUtils
 	
 	public static Route GetNCMRouteFromXToY_ByLand(final GameData data, final PlayerID player, final Territory ter1, final Territory ter2)
 	{
-		if (ter2.isWater())
-			return null;
 		if (ter1 == null || ter2 == null)
+			return null;
+		if (ter2.isWater())
 			return null;
 		return data.getMap().getRoute_IgnoreEnd(ter1, ter2,
 					new CompositeMatchAnd<Territory>(Matches.TerritoryIsLand, Matches.TerritoryIsNotImpassable, DMatches.territoryIsOwnedByXOrAlly(data, player)));
@@ -3358,8 +3358,8 @@ public class DUtils
 		final float oldDefendersLeft = (float) oldResults.getAverageDefendingUnitsLeft();
 		for (final Unit testUnit : unitsToChooseFrom)
 		{
-			final UnitType ut = testUnit.getUnitType();
-			final UnitAttachment ua = UnitAttachment.get(ut);
+			// final UnitType ut = testUnit.getUnitType();
+			// final UnitAttachment ua = UnitAttachment.get(ut);
 			// TODO: we should allow limited purchasing of special units, instead of preventing all purchasing of special units
 			if (Matches.UnitIsSea.match(testUnit) || Matches.UnitIsInfrastructure.match(testUnit) || Matches.UnitHasMaxBuildRestrictions.match(testUnit))
 				continue;

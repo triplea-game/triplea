@@ -212,11 +212,11 @@ public class EndRoundDelegate extends BaseDelegate
 		}
 	}
 	
-	private BattleTracker getBattleTracker()
+	/*private BattleTracker getBattleTracker()
 	{
 		return DelegateFinder.battleDelegate(getData()).getBattleTracker();
-	}
-	
+	}*/
+
 	@Override
 	public Serializable saveState()
 	{

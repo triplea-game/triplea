@@ -52,7 +52,7 @@ import java.util.logging.Level;
  * 
  * @author Stephen
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class CM_Task
 {
 	private Territory m_target = null;

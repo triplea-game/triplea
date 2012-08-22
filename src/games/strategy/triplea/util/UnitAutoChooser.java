@@ -171,9 +171,9 @@ class UnitAutoChooser
 		else
 			m_dependentsMap = dependentsMap;
 		// preserve insertion order
-		m_candidateUnits = new LinkedHashSet<Unit>(allUnits.size() + 1, 1);
+		m_candidateUnits = new LinkedHashSet<Unit>(m_allUnits.size() + 1, 1);
 		// some member variables for saving state
-		m_selectedUnitSolutions = new ArrayList<Set<Unit>>(allUnits.size());
+		m_selectedUnitSolutions = new ArrayList<Set<Unit>>(m_allUnits.size());
 		// categorize dependents for allCategories
 		// if m_bCategorizeMovement is true then we use allCategoriesWithMovement as well (see below).
 		// tell UnitSeperator not to sort the results since we want to preserve order

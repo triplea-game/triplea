@@ -61,7 +61,7 @@ public class SettingsWindow extends javax.swing.JDialog
 	{
 		java.awt.GridBagConstraints gridBagConstraints;
 		
-		buttonGroup1 = new javax.swing.ButtonGroup();
+		// buttonGroup1 = new javax.swing.ButtonGroup();
 		buttonGroup2 = new javax.swing.ButtonGroup();
 		v_invalidationTypeButtonGroup = new javax.swing.ButtonGroup();
 		jPanel7 = new javax.swing.JPanel();
@@ -2828,7 +2828,7 @@ public class SettingsWindow extends javax.swing.JDialog
 	}
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.ButtonGroup buttonGroup1;
+	// private javax.swing.ButtonGroup buttonGroup1;
 	private javax.swing.ButtonGroup buttonGroup2;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel100;

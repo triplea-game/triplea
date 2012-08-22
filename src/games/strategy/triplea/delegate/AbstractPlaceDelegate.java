@@ -1424,6 +1424,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	{
 		return new Comparator<Unit>()
 		{
+			@SuppressWarnings("null")
 			public int compare(final Unit u1, final Unit u2)
 			{
 				if (u1 == u2 || u1.equals(u2))

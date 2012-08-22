@@ -201,7 +201,7 @@ public class PlayerID extends NamedAttachable implements NamedUnitHolder, Serial
 	}*/
 
 	/**
-	 * Do not use this ever. The Null PlayerID has no GameData associated with it, so you will get a Null Pointer error.
+	 * Do not use this ever. The Null PlayerID has no GameData associated with it, so you WILL get a Null Pointer error.
 	 */
 	@Deprecated
 	@Override

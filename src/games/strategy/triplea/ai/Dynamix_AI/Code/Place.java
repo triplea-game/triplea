@@ -52,6 +52,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Stephen
  */
+@SuppressWarnings("unchecked")
 public class Place
 {
 	public static void place(final Dynamix_AI ai, final boolean bid, final IAbstractPlaceDelegate placeDelegate, final GameData data, final PlayerID player)
@@ -101,7 +102,7 @@ public class Place
 					continue;
 				}
 				final Unit nextAA = matchingAA.get(0);
-				doPlace(ai, aaBuildTer, Collections.singleton(nextAA), placeDelegate);
+				doPlace(ai, aaBuildTer, Collections.singleton(nextAA), data, placeDelegate);
 			}
 		}
 		for (final Territory factoryTer : FactoryCenter.get(data, player).ChosenFactoryTerritories)
@@ -140,7 +141,7 @@ public class Place
 			}
 			else
 			{
-				doPlace(ai, factoryTer, units, placeDelegate);
+				doPlace(ai, factoryTer, units, data, placeDelegate);
 			}
 		}
 		for (final PurchaseGroup factory : FactoryCenter.get(data, player).FactoryPurchaseGroups)
@@ -152,7 +153,7 @@ public class Place
 				break;
 			}
 			final List<Unit> units = GetPlayerUnitsMatchingUnitsInList(factory.GetSampleUnits(), player);
-			doPlace(ai, bestFactoryPlaceTer, units, placeDelegate);
+			doPlace(ai, bestFactoryPlaceTer, units, data, placeDelegate);
 		}
 		if (player.getUnits().someMatch(Matches.UnitCanProduceUnitsAndIsConstruction)) // If we have leftover factories to place
 		{
@@ -177,7 +178,7 @@ public class Place
 				}
 				if (nextFactoryToPlace == null) // How could this happen... :\
 					break;
-				if (!doPlace(ai, bestFactoryPlaceTer, Collections.singletonList(nextFactoryToPlace), placeDelegate))
+				if (!doPlace(ai, bestFactoryPlaceTer, Collections.singletonList(nextFactoryToPlace), data, placeDelegate))
 					leftoverUnits.remove(nextFactoryToPlace); // If factory placement failed, remove from list
 			}
 		}
@@ -232,7 +233,7 @@ public class Place
 				}
 				else
 				{
-					doPlace(ai, placeLoc, unitsToPlace, placeDelegate); // Place as much of the leftover as we can
+					doPlace(ai, placeLoc, unitsToPlace, data, placeDelegate); // Place as much of the leftover as we can
 				}
 			}
 		}
@@ -267,19 +268,19 @@ public class Place
 		GlobalCenter.PUsAtEndOfLastTurn = player.getResources().getQuantity(GlobalCenter.GetPUResource());
 	}
 	
-	private static boolean doPlace(final Dynamix_AI ai, Territory ter, final Collection<Unit> units, final IAbstractPlaceDelegate placer)
+	private static boolean doPlace(final Dynamix_AI ai, Territory ter, final Collection<Unit> units, final GameData data, final IAbstractPlaceDelegate placer)
 	{
 		DUtils.Log(Level.FINER, "    Placing units. Territory: {0} Units: {1}", ter, DUtils.UnitList_ToString(units));
 		// Temporary hack to get ships placed down. Later, I will code this correctly
 		if (units.size() > 0 && UnitAttachment.get(units.iterator().next().getUnitType()).getIsSea()
-					&& GlobalCenter.CurrentPlayer.getData().getMap().getNeighbors(ter, Matches.TerritoryIsWater).size() > 0)
+					&& data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).size() > 0)
 		{
 			final Set<Territory> openPorts = ter.getData().getMap()
 						.getNeighbors(ter, DUtils.CompMatchAnd(Matches.TerritoryIsWater, Matches.territoryHasUnitsThatMatch(Matches.unitIsEnemyOf(ter.getData(), ter.getOwner())).invert()));
 			if (openPorts.size() > 0)
 				ter = openPorts.iterator().next();
 			else
-				ter = GlobalCenter.CurrentPlayer.getData().getMap().getNeighbors(ter, Matches.TerritoryIsWater).iterator().next();
+				ter = data.getMap().getNeighbors(ter, Matches.TerritoryIsWater).iterator().next();
 		}
 		final String message = placer.placeUnits(new ArrayList<Unit>(units), ter);
 		if (message != null)

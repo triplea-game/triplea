@@ -24,6 +24,7 @@ public class InvalidFieldTypeExample extends DefaultAttachment
 	// -----------------------------------------------------------------------
 	// instance fields
 	// -----------------------------------------------------------------------
+	@SuppressWarnings("unused")
 	private String m_givesMovement; // this should be an integermap, since that is what we are returning. should cause test to fail.
 	
 	// -----------------------------------------------------------------------

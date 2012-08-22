@@ -256,6 +256,7 @@ public class RollerApplet extends Applet implements Runnable, ItemListener, KeyL
 		}
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private void updateBattleStats()
 	{
 		battles++;

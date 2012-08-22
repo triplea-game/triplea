@@ -48,6 +48,7 @@ public class SelectCasualties
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static CasualtyDetails selectCasualties(final Dynamix_AI ai, final GameData data, final Collection<Unit> selectFrom, final Map<Unit, Collection<Unit>> dependents, final int count,
 				final String message, final DiceRoll dice, final PlayerID hit, final CasualtyList defaultCasualties, final GUID battleID)
 	{

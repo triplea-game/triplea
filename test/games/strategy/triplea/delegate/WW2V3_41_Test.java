@@ -35,7 +35,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.factory;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
-import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge;
 import static games.strategy.triplea.delegate.GameDataTestUtil.givePlayerRadar;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.italians;
@@ -112,6 +111,11 @@ public class WW2V3_41_Test extends TestCase
 	protected void tearDown() throws Exception
 	{
 		m_data = null;
+	}
+	
+	private ITestDelegateBridge getDelegateBridge(final PlayerID player)
+	{
+		return GameDataTestUtil.getDelegateBridge(player, m_data);
 	}
 	
 	public void testAACasualtiesLowLuckMixedRadar()
@@ -218,7 +222,7 @@ public class WW2V3_41_Test extends TestCase
 	{
 		final PlaceDelegate del = placeDelegate(m_data);
 		del.start(getDelegateBridge(british(m_data)));
-		addTo(british(m_data), transports(m_data).create(1, british(m_data)));
+		addTo(british(m_data), transports(m_data).create(1, british(m_data)), m_data);
 		del.end();
 		// unplaced units die
 		assertEquals(1, british(m_data).getUnits().size());
@@ -228,8 +232,8 @@ public class WW2V3_41_Test extends TestCase
 	{
 		final PlaceDelegate del = placeDelegate(m_data);
 		del.start(getDelegateBridge(british(m_data)));
-		addTo(british(m_data), transports(m_data).create(1, british(m_data)));
-		final String error = del.placeUnits(Collections.EMPTY_LIST, territory("United Kingdom", m_data));
+		addTo(british(m_data), transports(m_data).create(1, british(m_data)), m_data);
+		final String error = del.placeUnits(Collections.<Unit> emptyList(), territory("United Kingdom", m_data));
 		assertNull(error);
 	}
 	
@@ -449,7 +453,7 @@ public class WW2V3_41_Test extends TestCase
 		delegateBridge.setStepName("Place");
 		delegateBridge.setPlayerID(germans);
 		placeDelegate.start(getDelegateBridge(germans(m_data)));
-		addTo(germans(m_data), aaGun(m_data).create(1, germans(m_data)));
+		addTo(germans(m_data), aaGun(m_data).create(1, germans(m_data)), m_data);
 		errorResults = placeDelegate.placeUnits(getUnits(map, germans), germany);
 		assertValid(errorResults);
 		assertEquals(germany.getUnits().getUnitCount(), preCount + 3);
@@ -531,7 +535,7 @@ public class WW2V3_41_Test extends TestCase
 		bridge.setStepName("placeBid");
 		bidPlaceDelegate(m_data).start(bridge);
 		// create 20 british infantry
-		addTo(british(m_data), infantry(m_data).create(20, british(m_data)));
+		addTo(british(m_data), infantry(m_data).create(20, british(m_data)), m_data);
 		final Territory uk = territory("United Kingdom", m_data);
 		final Collection<Unit> units = british(m_data).getUnits().getUnits();
 		final PlaceableUnits placeable = bidPlaceDelegate(m_data).getPlaceableUnits(units, uk);
@@ -558,7 +562,7 @@ public class WW2V3_41_Test extends TestCase
 		// Add the factory
 		final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 		map.add(factoryType, 1);
-		addTo(british(m_data), factory(m_data).create(1, british(m_data)));
+		addTo(british(m_data), factory(m_data).create(1, british(m_data)), m_data);
 		// Place the factory
 		final String response = placeDelegate.placeUnits(getUnits(map, british), egypt);
 		assertValid(response);
@@ -603,7 +607,7 @@ public class WW2V3_41_Test extends TestCase
 		// Add the infantry
 		IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 		map.add(infantryType, 3);
-		addTo(chinese(m_data), infantry(m_data).create(1, chinese(m_data)));
+		addTo(chinese(m_data), infantry(m_data).create(1, chinese(m_data)), m_data);
 		// Get the number of units before placing
 		int preCount = kiangsu.getUnits().getUnitCount();
 		// Place the infantry
@@ -616,7 +620,7 @@ public class WW2V3_41_Test extends TestCase
 		// Add the infantry
 		map = new IntegerMap<UnitType>();
 		map.add(infantryType, 3);
-		addTo(chinese(m_data), infantry(m_data).create(3, chinese(m_data)));
+		addTo(chinese(m_data), infantry(m_data).create(3, chinese(m_data)), m_data);
 		// Get the number of units before placing
 		preCount = yunnan.getUnits().getUnitCount();
 		// Place the infantry
@@ -630,7 +634,7 @@ public class WW2V3_41_Test extends TestCase
 		 */
 		map = new IntegerMap<UnitType>();
 		map.add(infantryType, 1);
-		addTo(chinese(m_data), infantry(m_data).create(1, chinese(m_data)));
+		addTo(chinese(m_data), infantry(m_data).create(1, chinese(m_data)), m_data);
 		response = placeDelegate.placeUnits(getUnits(map, chinese), yunnan);
 		assertError(response);
 		// Make sure none were placed
@@ -657,7 +661,7 @@ public class WW2V3_41_Test extends TestCase
 		// Add the transport
 		final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 		map.add(transportType, 1);
-		addTo(germans(m_data), transports(m_data).create(1, germans(m_data)));
+		addTo(germans(m_data), transports(m_data).create(1, germans(m_data)), m_data);
 		// Place it
 		final String response = placeDelegate.placeUnits(getUnits(map, germans), sz5);
 		assertValid(response);
@@ -960,6 +964,7 @@ public class WW2V3_41_Test extends TestCase
 		// start the battle phase, this will ask the user to bombard
 		battleDelegate(m_data).start(bridge);
 		final MustFightBattle mfb = (MustFightBattle) MoveDelegate.getBattleTracker(m_data).getPendingBattle(eg, false);
+		assertNotNull(mfb);
 		// Show that bombard casualties can return fire
 		// destroyer bombard hit/miss on rolls of 4 & 3
 		// landing inf miss
@@ -1422,7 +1427,7 @@ public class WW2V3_41_Test extends TestCase
 	{
 		final PlayerID germans = germans(m_data);
 		// germans have 1 carrier to place
-		addTo(germans, carrier(m_data).create(1, germans));
+		addTo(germans, carrier(m_data).create(1, germans), m_data);
 		// start the move phase
 		final ITestDelegateBridge bridge = getDelegateBridge(germans);
 		bridge.setStepName("CombatMove");

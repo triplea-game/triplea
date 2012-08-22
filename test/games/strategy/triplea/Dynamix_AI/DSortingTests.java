@@ -45,6 +45,7 @@ public class DSortingTests extends TestCase
 		m_data = null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testDSorting()
 	{
 		final List<String> origItems = Arrays.asList("b", "a", "c", "g", "h", "d", "f", "e");

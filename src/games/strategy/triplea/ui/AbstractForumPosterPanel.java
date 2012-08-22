@@ -313,7 +313,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 	private void updateHistoryLog()
 	{
 		m_historyLog.clear();
-		m_historyLog.printFullTurn(getData().getHistory().getLastNode(), m_showDetailsCheckbox.isSelected());
+		m_historyLog.printFullTurn(getData(), m_showDetailsCheckbox.isSelected());
 		if (m_includeTerritoryCheckbox.isSelected())
 			m_historyLog.printTerritorySummary(getData());
 		if (m_includeProductionCheckbox.isSelected())

@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("unused")
 public class Pacific_1940_Test extends TestCase
 {
 	private GameData m_data;
@@ -34,7 +35,7 @@ public class Pacific_1940_Test extends TestCase
 	
 	private ITestDelegateBridge getDelegateBridge(final PlayerID player)
 	{
-		return GameDataTestUtil.getDelegateBridge(player);
+		return GameDataTestUtil.getDelegateBridge(player, m_data);
 	}
 	
 	public void test()

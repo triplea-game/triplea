@@ -82,6 +82,7 @@ public class GlobalCenter
 		AllMapUnitTypes = null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void Initialize(final GameData data)
 	{
 		// Now we 'initialize' by filling in some of the values (the rest are filled in somewhere else)

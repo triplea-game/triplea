@@ -580,6 +580,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 							final String filePath = f.getPath().substring(0, slashIndex);
 							if (!fileChooser.getCurrentDirectory().toString().equals(filePath))
 							{
+								@SuppressWarnings("unused")
 								final int choice = JOptionPane.showConfirmDialog(m_frame, "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?",
 											JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
 								return;

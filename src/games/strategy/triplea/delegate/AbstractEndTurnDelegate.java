@@ -549,12 +549,14 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		{
 			public int compare(final Territory t1, final Territory t2)
 			{
-				if (t1 == t2 || t1.equals(t2) || (t1 == null && t2 == null))
+				if (t1 == t2 || (t1 == null && t2 == null))
 					return 0;
 				if (t1 == null)
 					return 1;
 				if (t2 == null)
 					return -1;
+				if (t1.equals(t2))
+					return 0;
 				// if a territory is only touching 1 blockadeZone, we must take it first
 				final Collection<Territory> neighborBlockades1 = new ArrayList<Territory>(map.getNeighbors(t1));
 				neighborBlockades1.retainAll(blockadeZones);
@@ -591,12 +593,14 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		{
 			public int compare(final Territory t1, final Territory t2)
 			{
-				if (t1 == t2 || t1.equals(t2) || (t1 == null && t2 == null))
+				if (t1 == t2 || (t1 == null && t2 == null))
 					return 0;
 				if (t1 == null)
 					return 1;
 				if (t2 == null)
 					return -1;
+				if (t1.equals(t2))
+					return 0;
 				final Tuple<Integer, List<Territory>> tuple1 = damagePerBlockadeZone.get(t1);
 				final Tuple<Integer, List<Territory>> tuple2 = damagePerBlockadeZone.get(t2);
 				final int num1 = tuple1.getSecond().size();

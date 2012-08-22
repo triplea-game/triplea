@@ -37,7 +37,7 @@ public class BattleCalculatorTest extends TestCase
 	protected void setUp() throws Exception
 	{
 		final GameData data = LoadGameUtil.loadGame("revised", "revised.xml");
-		m_bridge = getDelegateBridge(british(data));
+		m_bridge = getDelegateBridge(british(data), data);
 	}
 	
 	public void testAACasualtiesLowLuck()

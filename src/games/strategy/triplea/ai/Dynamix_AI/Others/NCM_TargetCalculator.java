@@ -33,7 +33,7 @@ public class NCM_TargetCalculator
 {
 	public static Territory CalculateNCMTargetForTerritory(final GameData data, final PlayerID player, final Territory ter, final Collection<Unit> terUnits, final List<NCM_Task> tasks)
 	{
-		final int speed = DUtils.GetSlowestMovementUnitInList(terUnits);
+		// final int speed = DUtils.GetSlowestMovementUnitInList(terUnits);
 		float highestScore = Integer.MIN_VALUE;
 		Territory highestScoringTer = null;
 		for (final Territory enemyTer : data.getMap().getTerritories())

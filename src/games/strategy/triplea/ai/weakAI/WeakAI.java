@@ -71,6 +71,7 @@ import java.util.logging.Logger;
  * 
  * @author Sean Bridges
  */
+@SuppressWarnings("deprecation")
 public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 {
 	private final static Logger s_logger = Logger.getLogger(WeakAI.class.getName());
@@ -317,11 +318,12 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		}
 		Territory firstSeaZoneOnAmphib = null;
 		Territory lastSeaZoneOnAmphib = null;
-		if (amphibRoute != null)
-		{
-			firstSeaZoneOnAmphib = amphibRoute.getTerritories().get(0);
-			lastSeaZoneOnAmphib = amphibRoute.getTerritories().get(amphibRoute.getLength() - 1);
-		}
+		if (amphibRoute == null)
+			return;
+		
+		firstSeaZoneOnAmphib = amphibRoute.getTerritories().get(0);
+		lastSeaZoneOnAmphib = amphibRoute.getTerritories().get(amphibRoute.getLength() - 1);
+		
 		final Match<Unit> ownedAndNotMoved = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player), Matches.unitHasNotMoved, Transporting);
 		final List<Unit> unitsToMove = new ArrayList<Unit>();
 		final List<Unit> transports = firstSeaZoneOnAmphib.getUnits().getMatches(ownedAndNotMoved);
@@ -631,12 +633,14 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final CompositeMatchOr<Territory> walkInto = new CompositeMatchOr<Territory>(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data),
 					Matches.isTerritoryFreeNeutral(data));
 		final List<Territory> enemyOwned = Match.getMatches(data.getMap().getTerritories(), walkInto);
+		Collections.shuffle(enemyOwned);
 		Collections.sort(enemyOwned, new Comparator<Territory>()
 		{
 			// private final Map<Territory, Integer> randomInts = new HashMap<Territory, Integer>();
 			
 			public int compare(final Territory o1, final Territory o2)
 			{
+				// -1 means o1 goes first. 1 means o2 goes first. zero means they are equal.
 				if (o1 == o2 || (o1 == null && o2 == null))
 					return 0;
 				if (o1 == null)
@@ -647,28 +651,31 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 					return 0;
 				final TerritoryAttachment ta1 = TerritoryAttachment.get(o1);
 				final TerritoryAttachment ta2 = TerritoryAttachment.get(o2);
+				if (ta1 == null && ta2 == null)
+					return 0;
+				if (ta1 == null)
+					return 1;
+				if (ta2 == null)
+					return -1;
 				// take capitols first if we can
-				if (ta1 != null && ta2 != null)
-				{
-					if (ta1.isCapital() && !ta2.isCapital())
-						return -1; // 1;
-					if (!ta1.isCapital() && ta2.isCapital())
-						return 1; // -1;
-				}
+				if (ta1.isCapital() && !ta2.isCapital())
+					return -1;
+				if (!ta1.isCapital() && ta2.isCapital())
+					return 1;
 				final boolean factoryInT1 = o1.getUnits().someMatch(Matches.UnitCanProduceUnits);
 				final boolean factoryInT2 = o2.getUnits().someMatch(Matches.UnitCanProduceUnits);
 				// next take territories which can produce
 				if (factoryInT1 && !factoryInT2)
-					return -1; // 1;
+					return -1;
 				if (!factoryInT1 && factoryInT2)
-					return 1; // -1;
+					return 1;
 				final boolean infrastructureInT1 = o1.getUnits().someMatch(Matches.UnitIsInfrastructure);
 				final boolean infrastructureInT2 = o2.getUnits().someMatch(Matches.UnitIsInfrastructure);
 				// next take territories with infrastructure
 				if (infrastructureInT1 && !infrastructureInT2)
-					return -1; // 1;
+					return -1;
 				if (!infrastructureInT1 && infrastructureInT2)
-					return 1; // -1;
+					return 1;
 				// randomness is a better guide than any other metric
 				// sort the remaining randomly
 				/*if (!randomInts.containsKey(o1))
@@ -676,7 +683,9 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				if (!randomInts.containsKey(o2))
 					randomInts.put(o2, (int) (Math.random() * 1000));
 				return randomInts.get(o1) - randomInts.get(o2);*/
-				return 0;
+
+				// next take territories with largest PU value
+				return ta2.getProduction() - ta1.getProduction();
 			}
 		});
 		final List<Territory> isWaterTerr = Utils.onlyWaterTerr(data, enemyOwned);
@@ -1040,7 +1049,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			{
 				for (final RepairRule rrule : rrules)
 				{
-					if (capUnit == null || !capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next()))
+					if (!capUnit.getUnitType().equals(rrule.getResults().keySet().iterator().next()))
 						continue;
 					if (!Matches.territoryIsOwnedAndHasOwnedUnitMatching(data, player, Matches.UnitCanProduceUnitsAndCanBeDamaged).match(capitol))
 						continue;

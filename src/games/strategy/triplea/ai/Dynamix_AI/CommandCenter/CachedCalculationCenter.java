@@ -27,6 +27,7 @@ import java.util.List;
  * 
  * @author Stephen
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class CachedCalculationCenter
 {
 	public static HashMap<Territory, List<Territory>> CachedMapTersFromPoints = new HashMap<Territory, List<Territory>>();

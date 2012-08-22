@@ -37,8 +37,10 @@ import java.util.Random;
  * 
  * @author Stephen
  */
+@SuppressWarnings("deprecation")
 public class Purchase_UnitPlacementLocationSorter
 {
+	@SuppressWarnings("unchecked")
 	public static List<Territory> CalculateAndSortUnitPlacementLocations(final Dynamix_AI ai, final boolean purchaseForBid, final GameData data, final PlayerID player)
 	{
 		List<Territory> result = new ArrayList<Territory>();

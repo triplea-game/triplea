@@ -50,7 +50,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Stephen
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class DoCombatMove
 {
 	public static void doCombatMove(final Dynamix_AI ai, final GameData data, final IMoveDelegate mover, final PlayerID player)

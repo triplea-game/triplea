@@ -2130,7 +2130,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public static void triggerTechChange(final Set<TriggerAttachment> satisfiedTriggers, final IDelegateBridge aBridge, final String beforeOrAfter, final String stepName, final boolean useUses,
 				final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
-		final GameData data = aBridge.getData();
+		// final GameData data = aBridge.getData();
 		Collection<TriggerAttachment> trigs = Match.getMatches(satisfiedTriggers, techMatch());
 		if (testWhen)
 			trigs = Match.getMatches(trigs, whenOrDefaultMatch(beforeOrAfter, stepName));

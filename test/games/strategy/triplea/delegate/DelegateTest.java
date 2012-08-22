@@ -108,6 +108,7 @@ public class DelegateTest extends TestCase
 		super(name);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void setUp() throws Exception
 	{
@@ -193,7 +194,7 @@ public class DelegateTest extends TestCase
 	
 	protected ITestDelegateBridge getDelegateBridge(final PlayerID player)
 	{
-		return GameDataTestUtil.getDelegateBridge(player);
+		return GameDataTestUtil.getDelegateBridge(player, m_data);
 	}
 	
 	public void testTest()

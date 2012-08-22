@@ -151,7 +151,8 @@ public class DSettings implements Serializable
 		{
 			try
 			{
-				outputStream.close();
+				if (outputStream != null)
+					outputStream.close();
 			} catch (final Exception ex)
 			{
 				ex.printStackTrace();

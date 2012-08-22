@@ -35,7 +35,7 @@ public class AirThatCantLandUtilTest extends TestCase
 	
 	private ITestDelegateBridge getDelegateBridge(final PlayerID player)
 	{
-		return GameDataTestUtil.getDelegateBridge(player);
+		return GameDataTestUtil.getDelegateBridge(player, m_data);
 	}
 	
 	public void testSimple()

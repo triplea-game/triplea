@@ -50,7 +50,7 @@ import java.util.logging.Level;
  * 
  * @author Stephen
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class NCM_Task
 {
 	private Territory m_target = null;

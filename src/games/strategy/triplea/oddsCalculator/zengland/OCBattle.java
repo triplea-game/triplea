@@ -228,7 +228,7 @@ public class OCBattle
 				boostsInfAtt = ua.getArtillery();
 				boostAmphib = ua.getIsMarine();
 			}
-			if (ua.getIsAAforCombatOnly())
+			if (ua != null && ua.getIsAAforCombatOnly())
 			{
 				terrAAPresent = true;
 			}

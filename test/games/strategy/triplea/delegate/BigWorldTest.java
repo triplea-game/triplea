@@ -36,7 +36,7 @@ public class BigWorldTest extends TestCase
 		final Territory sz28 = territory("SZ 28 Eastern Mediterranean", m_data);
 		final Territory sz27 = territory("SZ 27 Aegean Sea", m_data);
 		final Territory sz29 = territory("SZ 29 Black Sea", m_data);
-		final ITestDelegateBridge bridge = getDelegateBridge(british(m_data));
+		final ITestDelegateBridge bridge = getDelegateBridge(british(m_data), m_data);
 		bridge.setStepName("CombatMove");
 		final MoveDelegate moveDelegate = moveDelegate(m_data);
 		moveDelegate.start(bridge);

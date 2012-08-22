@@ -44,7 +44,7 @@ public class DiceChooser extends JPanel
 	private final Collection<JButton> m_buttons;
 	private JButton m_undoButton;
 	private JLabel m_diceCountLabel;
-	private final GameData m_data;
+	// private final GameData m_data;
 	private int m_diceSides = 6;
 	
 	public DiceChooser(final UIContext uiContext, final int numRolls, final int hitAt, final boolean hitOnlyIfEquals, final int diceSides, final GameData data)
@@ -54,7 +54,7 @@ public class DiceChooser extends JPanel
 		m_diceSides = diceSides;
 		m_hitAt = hitAt;
 		m_hitOnlyIfEquals = hitOnlyIfEquals;
-		m_data = data;
+		// m_data = data;
 		m_buttons = new ArrayList<JButton>(diceSides);
 		m_random = new int[numRolls];
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

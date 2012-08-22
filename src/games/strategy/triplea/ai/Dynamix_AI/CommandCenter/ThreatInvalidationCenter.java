@@ -80,6 +80,7 @@ public class ThreatInvalidationCenter
 	
 	private final HashMap<Territory, List<Unit>> InvalidatedEnemyUnits = new HashMap<Territory, List<Unit>>();
 	
+	@SuppressWarnings("unchecked")
 	public void InvalidateThreats(List<Unit> threats, final Territory hotspot)
 	{
 		if (DSettings.LoadSettings().AA_threatInvalidationType.equals(ThreatInvalidationType.None))

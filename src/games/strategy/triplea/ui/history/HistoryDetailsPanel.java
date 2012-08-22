@@ -94,13 +94,16 @@ public class HistoryDetailsPanel extends JPanel
 			}
 			else if (details instanceof Collection)
 			{
-				final Collection objects = (Collection) details;
-				final Iterator objIter = objects.iterator();
+				final Collection<Object> objects = (Collection<Object>) details;
+				final Iterator<Object> objIter = objects.iterator();
 				if (objIter.hasNext())
 				{
 					final Object obj = objIter.next();
 					if (obj instanceof Unit)
-						renderUnits(mainConstraints, objects);
+					{
+						final Collection<Unit> units = (Collection<Unit>) details;
+						renderUnits(mainConstraints, units);
+					}
 				}
 			}
 			else if (details instanceof Territory)

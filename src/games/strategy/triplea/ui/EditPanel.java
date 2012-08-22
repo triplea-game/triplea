@@ -244,6 +244,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = -5536151512828077755L;
 			
+			@SuppressWarnings("null")
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -277,7 +278,6 @@ public class EditPanel extends ActionPanel
 					CANCEL_EDIT_ACTION.actionPerformed(null);
 					return;
 				}
-				@SuppressWarnings({ "unchecked", "rawtypes" })
 				final JList techList = new JList(techs);
 				techList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				techList.setLayoutOrientation(JList.VERTICAL);
@@ -306,6 +306,7 @@ public class EditPanel extends ActionPanel
 		{
 			private static final long serialVersionUID = -2456111915025687825L;
 			
+			@SuppressWarnings("null")
 			public void actionPerformed(final ActionEvent event)
 			{
 				m_currentAction = this;
@@ -347,7 +348,6 @@ public class EditPanel extends ActionPanel
 					CANCEL_EDIT_ACTION.actionPerformed(null);
 					return;
 				}
-				@SuppressWarnings({ "unchecked", "rawtypes" })
 				final JList techList = new JList(techs);
 				techList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				techList.setLayoutOrientation(JList.VERTICAL);

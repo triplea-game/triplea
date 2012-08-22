@@ -44,6 +44,7 @@ import java.util.List;
  * 
  * @author Stephen
  */
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class DMatches
 {
 	// /////////////////////////////////////////////Unit Group Matches///////////////////////////////////////////////

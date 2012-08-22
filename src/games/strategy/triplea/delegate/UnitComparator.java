@@ -223,7 +223,7 @@ public class UnitComparator
 				// (to filter out armour that has already moved)
 				if (left1 != left2)
 				{
-					if (route.isLoad())
+					if (route != null && route.isLoad())
 						return left2 - left1;
 					else
 						return left1 - left2;

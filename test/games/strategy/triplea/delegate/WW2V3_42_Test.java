@@ -19,7 +19,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.battleship;
 import static games.strategy.triplea.delegate.GameDataTestUtil.carrier;
 import static games.strategy.triplea.delegate.GameDataTestUtil.fighter;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
-import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge;
 import static games.strategy.triplea.delegate.GameDataTestUtil.italians;
 import static games.strategy.triplea.delegate.GameDataTestUtil.move;
 import static games.strategy.triplea.delegate.GameDataTestUtil.moveDelegate;
@@ -53,6 +52,11 @@ public class WW2V3_42_Test extends TestCase
 	protected void tearDown() throws Exception
 	{
 		m_data = null;
+	}
+	
+	private ITestDelegateBridge getDelegateBridge(final PlayerID player)
+	{
+		return GameDataTestUtil.getDelegateBridge(player, m_data);
 	}
 	
 	public void testTransportAttack()

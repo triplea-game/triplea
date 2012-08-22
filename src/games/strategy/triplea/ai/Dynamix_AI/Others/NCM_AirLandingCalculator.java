@@ -35,6 +35,7 @@ import java.util.logging.Level;
  */
 public class NCM_AirLandingCalculator
 {
+	@SuppressWarnings("unchecked")
 	public static Territory CalculateLandingLocationForAirUnits(final GameData data, final PlayerID player, final Territory territory, final List<Unit> airUnits, final List<NCM_Task> tasks)
 	{
 		float highestScore = Integer.MIN_VALUE;

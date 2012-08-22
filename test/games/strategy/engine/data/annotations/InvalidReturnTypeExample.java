@@ -22,6 +22,7 @@ public class InvalidReturnTypeExample extends DefaultAttachment
 	// -----------------------------------------------------------------------
 	// instance fields
 	// -----------------------------------------------------------------------
+	@SuppressWarnings("unused")
 	private String m_attribute;
 	
 	// -----------------------------------------------------------------------

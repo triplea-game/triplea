@@ -1345,7 +1345,7 @@ public class Matches
 		@Override
 		public boolean match(final Territory t)
 		{
-			return t != null && t instanceof Territory;
+			return t != null;// && t instanceof Territory;
 		}
 	};
 	public static final Match<Territory> TerritoryIsWater = new Match<Territory>()
@@ -3617,7 +3617,11 @@ public class Matches
 					return false;
 				final PlayerID occupiedTerrOf = ta.getOccupiedTerrOf();
 				if (occupiedTerrOf == null)
+				{
+					if (originalOwner == null)
+						return player == null;
 					return originalOwner.equals(player);
+				}
 				else
 					return occupiedTerrOf.equals(player);
 			}

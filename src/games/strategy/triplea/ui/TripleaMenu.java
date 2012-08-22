@@ -578,7 +578,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		focusOnCasualties.addActionListener(new AbstractAction()
 		{
 			private static final long serialVersionUID = 6176484225385360649L;
-
+			
 			public void actionPerformed(final ActionEvent e)
 			{
 				BattleDisplay.setFocusOnOwnCasualtiesNotification(focusOnCasualties.isSelected());

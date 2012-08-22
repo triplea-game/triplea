@@ -33,6 +33,7 @@ public class OddsCalculatorDialog extends JDialog
 			dialog.setSize(new Dimension(dialog.getWidth(), maxHeight));
 		dialog.addWindowListener(new WindowAdapter()
 		{
+			@SuppressWarnings("null")
 			@Override
 			public void windowClosed(final WindowEvent e)
 			{

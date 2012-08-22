@@ -60,6 +60,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Stephen
  */
+@SuppressWarnings({ "unchecked", "deprecation" })
 public class Purchase
 {
 	public static void purchase(final Dynamix_AI ai, final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaser, final GameData data, final PlayerID player)
@@ -361,7 +362,6 @@ public class Purchase
 		return result;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static PurchaseGroup CalculateBestPurchaseGroup(final Territory ter, final GameData data, final PlayerID player, final IPurchaseDelegate purchaser, float PUsLeftToSpend,
 				final boolean purchaseForBid)
 	{

@@ -32,7 +32,7 @@ import java.util.List;
  * 
  * @author Stephen
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
 public class DSorting
 {
 	// Think of the compare method like this: the integer returned tells java the position of the first object in relation to the second...

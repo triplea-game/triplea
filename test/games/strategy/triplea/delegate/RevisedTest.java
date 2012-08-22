@@ -35,7 +35,6 @@ import static games.strategy.triplea.delegate.GameDataTestUtil.bomber;
 import static games.strategy.triplea.delegate.GameDataTestUtil.british;
 import static games.strategy.triplea.delegate.GameDataTestUtil.destroyer;
 import static games.strategy.triplea.delegate.GameDataTestUtil.germans;
-import static games.strategy.triplea.delegate.GameDataTestUtil.getDelegateBridge;
 import static games.strategy.triplea.delegate.GameDataTestUtil.getIndex;
 import static games.strategy.triplea.delegate.GameDataTestUtil.infantry;
 import static games.strategy.triplea.delegate.GameDataTestUtil.japanese;
@@ -103,6 +102,11 @@ public class RevisedTest extends TestCase
 	protected void tearDown() throws Exception
 	{
 		m_data = null;
+	}
+	
+	private ITestDelegateBridge getDelegateBridge(final PlayerID player)
+	{
+		return GameDataTestUtil.getDelegateBridge(player, m_data);
 	}
 	
 	public void testMoveBadRoute()
@@ -274,7 +278,7 @@ public class RevisedTest extends TestCase
 		bridge.setStepName("placeBid");
 		bidPlaceDelegate(m_data).start(bridge);
 		// create 20 british infantry
-		addTo(british(m_data), infantry(m_data).create(20, british(m_data)));
+		addTo(british(m_data), infantry(m_data).create(20, british(m_data)), m_data);
 		final Territory uk = territory("United Kingdom", m_data);
 		final Collection<Unit> units = british(m_data).getUnits().getUnits();
 		final PlaceableUnits placeable = bidPlaceDelegate(m_data).getPlaceableUnits(units, uk);
@@ -1247,7 +1251,7 @@ public class RevisedTest extends TestCase
 	{
 		final PlaceDelegate del = placeDelegate(m_data);
 		del.start(getDelegateBridge(british(m_data)));
-		addTo(british(m_data), transports(m_data).create(1, british(m_data)));
+		addTo(british(m_data), transports(m_data).create(1, british(m_data)), m_data);
 		del.end();
 		// unplaced units die
 		assertTrue(british(m_data).getUnits().isEmpty());

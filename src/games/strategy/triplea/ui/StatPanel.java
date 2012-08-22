@@ -408,10 +408,10 @@ public class StatPanel extends JPanel
 						throw new IllegalStateException("Unexpected player in GameData.getPlayerList()" + pid.getName());
 					final int col = colMap.get(pid.getName()).intValue();
 					int row = 0;
-					boolean useTokens = false;
+					// boolean useTokens = false;
 					if (m_data.getResourceList().getResource(Constants.TECH_TOKENS) != null)
 					{
-						useTokens = true;
+						// useTokens = true;
 						final Integer tokens = pid.getResources().getQuantity(Constants.TECH_TOKENS);
 						data[row][col] = tokens.toString();
 					}

@@ -1753,11 +1753,6 @@ public class MoveValidator
 		return defaultRoute;
 	}
 	
-	private static boolean areNeutralsPassableByAir(final GameData data)
-	{
-		return (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
-	}
-	
 	private static boolean isWW2V2(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getWW2V2(data);
@@ -1771,6 +1766,11 @@ public class MoveValidator
 	private static boolean isNeutralsBlitzable(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getNeutralsBlitzable(data) && !isNeutralsImpassable(data);
+	}
+	
+	/*private static boolean areNeutralsPassableByAir(final GameData data)
+	{
+		return (games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) && !isNeutralsImpassable(data));
 	}
 	
 	private static boolean isWW2V3(final GameData data)
@@ -1788,6 +1788,11 @@ public class MoveValidator
 		return getNeutralCharge(data, MoveDelegate.getEmptyNeutral(route).size());
 	}
 	
+	private static boolean isKamikazeAircraft(final GameData data)
+	{
+		return games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
+	}*/
+
 	private static boolean isMovementByTerritoryRestricted(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getMovementByTerritoryRestricted(data);
@@ -1806,11 +1811,6 @@ public class MoveValidator
 	private static boolean isSubmersibleSubsAllowed(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getSubmersible_Subs(data);
-	}
-	
-	private static boolean isKamikazeAircraft(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
 	}
 	
 	private static boolean isAlliedAirDependents(final GameData data)

@@ -108,14 +108,14 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 							toAdd.addAll(ut.create(createsUnitsMap.getInt(ut), player));
 					}
 				}
-				if (toAdd != null && !toAdd.isEmpty())
+				if (!toAdd.isEmpty())
 				{
 					final String transcriptText = player.getName() + " creates " + MyFormatter.unitsToTextNoOwner(toAdd) + " in " + t.getName();
 					bridge.getHistoryWriter().startEvent(transcriptText, toAdd);
 					final Change place = ChangeFactory.addUnits(t, toAdd);
 					change.add(place);
 				}
-				if (toAddSea != null && !toAddSea.isEmpty())
+				if (!toAddSea.isEmpty())
 				{
 					final Match<Territory> myTerrs = new CompositeMatchAnd<Territory>(Matches.TerritoryIsWater);
 					final Collection<Territory> waterNeighbors = data.getMap().getNeighbors(t, myTerrs);
@@ -128,7 +128,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 						change.add(place);
 					}
 				}
-				if (toAddLand != null && !toAddLand.isEmpty())
+				if (!toAddLand.isEmpty())
 				{
 					final Match<Territory> myTerrs = new CompositeMatchAnd<Territory>(Matches.isTerritoryOwnedBy(player), Matches.TerritoryIsLand);
 					final Collection<Territory> landNeighbors = data.getMap().getNeighbors(t, myTerrs);
@@ -143,7 +143,7 @@ public class EndTurnDelegate extends AbstractEndTurnDelegate
 				}
 			}
 		}
-		if (change != null && !change.isEmpty())
+		if (!change.isEmpty())
 			bridge.addChange(change);
 	}
 	
