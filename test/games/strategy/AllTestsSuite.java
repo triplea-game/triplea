@@ -13,23 +13,23 @@
  */
 package games.strategy;
 
-import games.strategy.kingstable.KingsTableTest;
-import games.strategy.triplea.TripleATest;
+import games.strategy.kingstable.KingsTableSuite;
+import games.strategy.triplea.TripleASuite;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class AllTests extends TestCase
+public class AllTestsSuite extends TestCase
 {
 	public static Test suite()
 	{
-		final TestSuite suite = new TestSuite(AllTests.class.getSimpleName());
+		final TestSuite suite = new TestSuite(AllTestsSuite.class.getSimpleName());
 		// tests for the engine code
-		suite.addTest(StrategyGameTest.suite());
+		suite.addTest(StrategyGameSuite.suite());
 		// tests for triplea code
-		suite.addTest(TripleATest.suite());
+		suite.addTest(TripleASuite.suite());
 		// tests for King's Table code
-		suite.addTest(KingsTableTest.suite());
+		suite.addTest(KingsTableSuite.suite());
 		return suite;
 	}
 }

@@ -13,20 +13,22 @@
  */
 package games.strategy.kingstable;
 
+import games.strategy.kingstable.delegate.DelegateTest;
 import games.strategy.kingstable.delegate.PlayDelegateTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * @author Lane Schwartz
- * @version $LastChangedDate$
+ * @version $LastChangedDate: 2011-11-22 18:21:37 +0800 (Tue, 22 Nov 2011) $
  */
-public class KingsTableTest
+public class KingsTableSuite
 {
 	public static Test suite()
 	{
-		final TestSuite suite = new TestSuite(KingsTableTest.class.getSimpleName());
+		final TestSuite suite = new TestSuite(KingsTableSuite.class.getSimpleName());
 		suite.addTestSuite(PlayDelegateTest.class);
+		suite.addTestSuite(DelegateTest.class);
 		return suite;
 	}
 }

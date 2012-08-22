@@ -19,11 +19,11 @@ import junit.framework.TestSuite;
  * @author Sean Bridges
  * @version 1.0
  */
-public class ChangeTestTripleA extends TestCase
+public class ChangeTripleATest extends TestCase
 {
 	private GameData m_data;
 	
-	public ChangeTestTripleA(final String name)
+	public ChangeTripleATest(final String name)
 	{
 		super(name);
 	}
@@ -31,7 +31,7 @@ public class ChangeTestTripleA extends TestCase
 	public static Test suite()
 	{
 		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(ChangeTestTripleA.class);
+		suite.addTestSuite(ChangeTripleATest.class);
 		return suite;
 	}
 	

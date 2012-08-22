@@ -32,7 +32,7 @@ import junit.framework.TestCase;
  * 
  * @author Stephen
  */
-public class DOddsCalculatorTests extends TestCase
+public class DOddsCalculatorTest extends TestCase
 {
 	private GameData m_data;
 	
@@ -69,7 +69,7 @@ public class DOddsCalculatorTests extends TestCase
 			defending.add(infantry.create(huron));
 		}
 		DOddsCalculator.SetGameData(m_data);
-		final AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 2500, true);
+		final AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 500, true);
 		System.out.print("Time Taken To Calculate: " + results.getTime() + "\r\n");
 		assertEquals(1.0D, results.getAttackerWinPercent());
 		assertEquals(0.0D, results.getAverageDefendingUnitsLeft());

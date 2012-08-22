@@ -32,7 +32,7 @@ import junit.framework.TestCase;
  * 
  * @author Stephen
  */
-public class DUtilsTests extends TestCase
+public class DUtilsTest extends TestCase
 {
 	private GameData m_data;
 	

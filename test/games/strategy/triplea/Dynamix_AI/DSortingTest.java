@@ -28,7 +28,7 @@ import junit.framework.TestCase;
  * 
  * @author Stephen
  */
-public class DSortingTests extends TestCase
+public class DSortingTest extends TestCase
 {
 	@SuppressWarnings("unused")
 	private GameData m_data;
