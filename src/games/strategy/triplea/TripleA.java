@@ -35,6 +35,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.ai.Dynamix_AI.Dynamix_AI;
 import games.strategy.triplea.ai.strongAI.StrongAI;
 import games.strategy.triplea.ai.weakAI.WeakAI;
+import games.strategy.triplea.ai.AdvancedAI.AdvancedAI;
 import games.strategy.triplea.delegate.EditDelegate;
 import games.strategy.triplea.player.ITripleaPlayer;
 import games.strategy.triplea.ui.TripleAFrame;
@@ -61,6 +62,7 @@ public class TripleA implements IGameLoader
 	public static final String HUMAN_PLAYER_TYPE = "Human";
 	public static final String WEAK_COMPUTER_PLAYER_TYPE = "E.Z. Fodder (AI)";
 	public static final String STRONG_COMPUTER_PLAYER_TYPE = "Moore N. Able (AI)";
+	public static final String ADVANCED_COMPUTER_PLAYER_TYPE = "Moore N. Able 2 (AI)";
 	public static final String DYNAMIX_COMPUTER_PLAYER_TYPE = "Dynamix Land-Only (AI)";
 	// public static final String NONE = "None (AI)";
 	private transient TripleaDisplay m_display;
@@ -79,6 +81,10 @@ public class TripleA implements IGameLoader
 			else if (type.equals(STRONG_COMPUTER_PLAYER_TYPE))
 			{
 				players.add(new StrongAI(name, type));
+			}
+			else if (type.equals(ADVANCED_COMPUTER_PLAYER_TYPE))
+			{
+				players.add(new AdvancedAI(name, type));
 			}
 			else if (type.equals(DYNAMIX_COMPUTER_PLAYER_TYPE))
 			{
@@ -199,7 +205,7 @@ public class TripleA implements IGameLoader
 	 */
 	public String[] getServerPlayerTypes()
 	{
-		return new String[] { HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE };
+		return new String[] { HUMAN_PLAYER_TYPE, WEAK_COMPUTER_PLAYER_TYPE, STRONG_COMPUTER_PLAYER_TYPE, ADVANCED_COMPUTER_PLAYER_TYPE, DYNAMIX_COMPUTER_PLAYER_TYPE };
 	}
 	
 	/*

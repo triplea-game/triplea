@@ -2220,7 +2220,6 @@ public class SUtils
 		final int rDist = data.getMap().getDistance(source, target, SUtils.TerritoryIsNotImpassableToAirUnits(data));
 		boolean landable = false;
 		if (MoveValidator.hasEnoughMovement(u, rDist))
-			;
 		{
 			final Route r = findNearest(target, condition, SUtils.TerritoryIsNotImpassableToAirUnits(data), data);
 			if (r == null)
