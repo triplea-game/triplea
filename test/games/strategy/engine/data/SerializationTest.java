@@ -27,7 +27,6 @@ import java.net.URL;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * 
@@ -37,13 +36,6 @@ public class SerializationTest extends TestCase
 {
 	private GameData m_dataSource;
 	private GameData m_dataSink;
-	
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(SerializationTest.class);
-		return suite;
-	}
 	
 	@Override
 	public void setUp() throws Exception

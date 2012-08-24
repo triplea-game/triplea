@@ -40,7 +40,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * 
@@ -56,13 +55,6 @@ public class MoveDelegateTest extends DelegateTest
 	public MoveDelegateTest(final String name)
 	{
 		super(name);
-	}
-	
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(MoveDelegateTest.class);
-		return suite;
 	}
 	
 	@Override

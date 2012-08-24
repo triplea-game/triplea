@@ -20,7 +20,6 @@ package games.strategy.util;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * 
@@ -29,13 +28,6 @@ import junit.framework.TestSuite;
  */
 public class VersionTest extends TestCase
 {
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(VersionTest.class);
-		return suite;
-	}
-	
 	/** Creates new IntegerMapTest */
 	public VersionTest(final String name)
 	{

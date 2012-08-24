@@ -24,7 +24,6 @@ import java.util.Set;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * 
@@ -51,13 +50,6 @@ public class MapTest extends TestCase
 	Territory dd;
 	Territory nowhere;
 	GameMap map;
-	
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(MapTest.class);
-		return suite;
-	}
 	
 	public MapTest(final String name)
 	{

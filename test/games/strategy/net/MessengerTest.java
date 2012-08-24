@@ -326,7 +326,7 @@ public class MessengerTest extends TestCase
 	
 	public void testManyClients() throws UnknownHostException, CouldNotLogInException, IOException, InterruptedException
 	{
-		final int count = 100;
+		final int count = 75;
 		final List<ClientMessenger> clients = new ArrayList<ClientMessenger>();
 		final List<MessageListener> listeners = new ArrayList<MessageListener>();
 		for (int i = 0; i < count; i++)

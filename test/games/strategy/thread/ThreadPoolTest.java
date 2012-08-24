@@ -11,7 +11,6 @@ import java.util.Iterator;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * 
@@ -23,13 +22,6 @@ public class ThreadPoolTest extends TestCase
 	public ThreadPoolTest(final String s)
 	{
 		super(s);
-	}
-	
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(ThreadPoolTest.class);
-		return suite;
 	}
 	
 	public void testRunOneTask()
@@ -83,7 +75,7 @@ public class ThreadPoolTest extends TestCase
 	public void testBlocked()
 	{
 		final Collection<Thread> threads = new ArrayList<Thread>();
-		for (int j = 0; j < 20; j++)
+		for (int j = 0; j < 15; j++)
 		{
 			final Runnable r = new Runnable()
 			{
@@ -111,9 +103,9 @@ public class ThreadPoolTest extends TestCase
 	
 	private void threadTestBlock()
 	{
-		final ThreadPool pool = new ThreadPool(10, "test");
+		final ThreadPool pool = new ThreadPool(8, "test");
 		final ArrayList<BlockedTask> blockedTasks = new ArrayList<BlockedTask>();
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 40; i++)
 		{
 			final BlockedTask task = new BlockedTask();
 			blockedTasks.add(task);

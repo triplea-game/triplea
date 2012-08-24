@@ -58,18 +58,18 @@ public class DOddsCalculatorTest extends TestCase
 		final UnitType fighter = m_data.getUnitTypeList().getUnitType("fighter");
 		final List<Unit> attacking = new ArrayList<Unit>();
 		final List<Unit> defending = new ArrayList<Unit>();
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 30; i++)
 		{
 			attacking.add(infantry.create(superior));
 			attacking.add(artillery.create(superior));
 			attacking.add(fighter.create(superior));
 		}
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 60; i++)
 		{
 			defending.add(infantry.create(huron));
 		}
 		DOddsCalculator.SetGameData(m_data);
-		final AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 500, true);
+		final AggregateResults results = DUtils.GetBattleResults(attacking, defending, cIsland, m_data, 150, true);
 		System.out.print("Time Taken To Calculate: " + results.getTime() + "\r\n");
 		assertEquals(1.0D, results.getAttackerWinPercent());
 		assertEquals(0.0D, results.getAverageDefendingUnitsLeft());

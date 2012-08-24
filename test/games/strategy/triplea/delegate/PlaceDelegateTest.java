@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * 
@@ -50,13 +49,6 @@ public class PlaceDelegateTest extends DelegateTest
 	public PlaceDelegateTest(final String name)
 	{
 		super(name);
-	}
-	
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(PlaceDelegateTest.class);
-		return suite;
 	}
 	
 	private Collection<Unit> getInfantry(final int count, final PlayerID player)

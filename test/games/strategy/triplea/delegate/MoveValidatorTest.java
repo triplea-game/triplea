@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * 
@@ -42,13 +41,6 @@ public class MoveValidatorTest extends DelegateTest
 	public MoveValidatorTest(final String name)
 	{
 		super(name);
-	}
-	
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(MoveValidatorTest.class);
-		return suite;
 	}
 	
 	@Override

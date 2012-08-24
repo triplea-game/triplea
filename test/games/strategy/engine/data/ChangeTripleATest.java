@@ -12,7 +12,6 @@ import java.util.Collection;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * 
@@ -26,13 +25,6 @@ public class ChangeTripleATest extends TestCase
 	public ChangeTripleATest(final String name)
 	{
 		super(name);
-	}
-	
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(ChangeTripleATest.class);
-		return suite;
 	}
 	
 	@Override

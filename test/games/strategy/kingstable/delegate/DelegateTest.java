@@ -24,7 +24,6 @@ import java.net.URL;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * @author Lane Schwartz
@@ -46,14 +45,6 @@ public class DelegateTest extends TestCase
 	{
 		super(name);
 		// System.out.println("constructor");
-	}
-	
-	public static Test suite()
-	{
-		// System.out.println("suite");
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(DelegateTest.class);
-		return suite;
 	}
 	
 	@Override

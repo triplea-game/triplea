@@ -30,7 +30,6 @@ import java.util.Collections;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * 
@@ -45,13 +44,6 @@ public class ChangeTest extends TestCase
 	public ChangeTest(final String name)
 	{
 		super(name);
-	}
-	
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(ChangeTest.class);
-		return suite;
 	}
 	
 	@Override

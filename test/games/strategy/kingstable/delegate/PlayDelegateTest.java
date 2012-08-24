@@ -18,7 +18,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.kingstable.ui.display.DummyDisplay;
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Test suite for the King's Table play delegate.
@@ -38,18 +37,6 @@ public class PlayDelegateTest extends DelegateTest
 	public PlayDelegateTest(final String name)
 	{
 		super(name);
-	}
-	
-	/**
-	 * Create a test suite for the King's Table play delegate.
-	 * 
-	 * @return a test suite for the King's Table play delegate
-	 */
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(PlayDelegateTest.class);
-		return suite;
 	}
 	
 	/**

@@ -24,7 +24,6 @@ import java.util.HashMap;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * 
@@ -59,13 +58,6 @@ public class MatchTest extends TestCase
 			return o.intValue() == 0;
 		}
 	};
-	
-	public static Test suite()
-	{
-		final TestSuite suite = new TestSuite();
-		suite.addTestSuite(MatchTest.class);
-		return suite;
-	}
 	
 	@Override
 	public void setUp()
