@@ -279,4 +279,9 @@ public class ResourceCollection extends GameDataComponent
 		final IntegerMap<Resource> base = new IntegerMap<Resource>(m_resources);
 		add(base, times - 1);
 	}
+	
+	public boolean isEmpty()
+	{
+		return m_resources.isEmpty();
+	}
 }

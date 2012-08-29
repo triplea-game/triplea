@@ -5128,7 +5128,7 @@
 						<boolean/>
 				</property>
 
-						<!-- if enabled, transports can capture convoy zones, etc. -->
+						<!-- If enabled, transports can capture convoy zones. -->
 				<property name="Transport Control Sea Zone" value="false" editable="false">
 						<boolean/>
 				</property>
@@ -5154,7 +5154,7 @@
 						<boolean/>
 				</property>
 
-						<!-- Sub Control Sea Zone Restricted should be FALSE if there are any convoy zones! Only true if you want subs to move into owned sea zones during non-combat -->
+						<!-- Sub Control Sea Zone Restricted should be FALSE if there are any convoy zones! If true, subs will not be able to capture convoy zones. -->
 				<property name="Sub Control Sea Zone Restricted" value="false" editable="false">
 						<boolean/>
 				</property>

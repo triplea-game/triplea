@@ -351,22 +351,14 @@ public class MoveValidator
 		final CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
 		battle.add(Matches.TerritoryIsNeutralButNotWater);
 		battle.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
-		final CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<Unit>();
-		transportsCanNotControl.add(Matches.UnitIsTransportAndNotDestroyer);
-		transportsCanNotControl.add(Matches.UnitIsTransportButNotCombatTransport);
+		// final CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportAndNotDestroyer, Matches.UnitIsTransportButNotCombatTransport);
 		final boolean navalMayNotNonComIntoControlled = isWW2V2(data) || games.strategy.triplea.Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
 		// TODO need to account for subs AND transports that are ignored, not just OR
-		if (battle.match(route.getEnd()))
+		final Territory end = route.getEnd();
+		if (battle.match(end))
 		{
-			// If subs and transports can't control sea zones, it's OK to move there
-			if (!navalMayNotNonComIntoControlled && isSubControlSeaZoneRestricted(data) && Match.allMatch(units, Matches.UnitIsSub))
-				return result;
-			else if (!navalMayNotNonComIntoControlled && !isTransportControlSeaZone(data) && Match.allMatch(units, transportsCanNotControl))
-				return result;
-			else if (!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater) && MoveValidator.noEnemyUnitsOnPathMiddleSteps(route, player, data)
-						&& !Matches.territoryHasEnemyUnits(player, data).match(route.getEnd()))
-				return result; // fixes a bug in convoy zone movement
-			else
+			// a convoy zone is controlled, so we must make sure we can still move there if there are actual battle there
+			if (!end.isWater() || navalMayNotNonComIntoControlled)
 				return result.setErrorReturnResult("Cannot advance units to battle in non combat");
 		}
 		// Subs can't travel under DDs
@@ -376,17 +368,18 @@ public class MoveValidator
 			if (MoveValidator.enemyDestroyerOnPath(route, player, data))
 				return result.setErrorReturnResult("Cannot move submarines under destroyers");
 		}
-		if (route.getEnd().getUnits().someMatch(Matches.enemyUnit(player, data)))
+		if (end.getUnits().someMatch(Matches.enemyUnit(player, data)))
 		{
-			if (onlyIgnoredUnitsOnPath(route, player, data, false))
-				return result;
-			final CompositeMatch<Unit> friendlyOrSubmerged = new CompositeMatchOr<Unit>();
-			friendlyOrSubmerged.add(Matches.enemyUnit(player, data).invert());
-			friendlyOrSubmerged.add(Matches.unitIsSubmerged(data));
-			if (!route.getEnd().getUnits().allMatch(friendlyOrSubmerged) && !(Match.allMatch(units, Matches.UnitIsAir) && route.getEnd().isWater()))
+			if (!onlyIgnoredUnitsOnPath(route, player, data, false))
 			{
-				if (!Match.allMatch(units, Matches.UnitIsSub) || !games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data))
-					return result.setErrorReturnResult("Cannot advance to battle in non combat");
+				final CompositeMatch<Unit> friendlyOrSubmerged = new CompositeMatchOr<Unit>();
+				friendlyOrSubmerged.add(Matches.enemyUnit(player, data).invert());
+				friendlyOrSubmerged.add(Matches.unitIsSubmerged(data));
+				if (!end.getUnits().allMatch(friendlyOrSubmerged) && !(Match.allMatch(units, Matches.UnitIsAir) && end.isWater()))
+				{
+					if (!Match.allMatch(units, Matches.UnitIsSub) || !games.strategy.triplea.Properties.getSubsCanEndNonCombatMoveWithEnemies(data))
+						return result.setErrorReturnResult("Cannot advance to battle in non combat");
+				}
 			}
 		}
 		if (Match.allMatch(units, Matches.UnitIsAir))
@@ -402,10 +395,10 @@ public class MoveValidator
 			if (route.someMatch(neutralOrEnemy))
 			{
 				if ((!(!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater))) && MoveValidator.noEnemyUnitsOnPathMiddleSteps(route, player, data) &&
-							!Matches.territoryHasEnemyUnits(player, data).match(route.getEnd()))
+							!Matches.territoryHasEnemyUnits(player, data).match(end))
 				{
-					if (!route.allMatch(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data), Matches
-								.isTerritoryAllied(player, data), Matches.TerritoryIsLand))) || nonParatroopersPresent(player, units, route))
+					if (!route.allMatch(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data),
+								Matches.isTerritoryAllied(player, data), Matches.TerritoryIsLand))) || nonParatroopersPresent(player, units, route))
 						return result.setErrorReturnResult("Cannot move units to neutral or enemy territories in non combat");
 				}
 			}
@@ -1791,6 +1784,16 @@ public class MoveValidator
 	private static boolean isKamikazeAircraft(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getKamikaze_Airplanes(data);
+	}
+	
+	private static boolean isSubControlSeaZoneRestricted(final GameData data)
+	{
+		return games.strategy.triplea.Properties.getSubControlSeaZoneRestricted(data);
+	}
+	
+	private static boolean isTransportControlSeaZone(final GameData data)
+	{
+		return games.strategy.triplea.Properties.getTransportControlSeaZone(data);
 	}*/
 
 	private static boolean isMovementByTerritoryRestricted(final GameData data)
@@ -1826,16 +1829,6 @@ public class MoveValidator
 	private static boolean isIgnoreSubInMovement(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getIgnoreSubInMovement(data);
-	}
-	
-	private static boolean isSubControlSeaZoneRestricted(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getSubControlSeaZoneRestricted(data);
-	}
-	
-	private static boolean isTransportControlSeaZone(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getTransportControlSeaZone(data);
 	}
 	
 	/** Creates new MoveValidator */

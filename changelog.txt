@@ -1,4 +1,6 @@
 Changes for 1.6.1.2
+* Fixing movement validation bug that disallowed movement into a sea zone controlled by the enemy with subs, if the sea zone also had an owner, even if subs are being ignored. (veqryn)
+
 * Adding new AI, "Moore N Able (2)", with ability to read a script file from map folder. (kmoore)
 
 * Fixing Concurrent Modification error with getIsAmphibiousMarine method in battle display. (veqryn)
