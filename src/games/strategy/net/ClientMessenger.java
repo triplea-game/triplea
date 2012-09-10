@@ -77,24 +77,27 @@ public class ClientMessenger implements IMessenger, NIOSocketListener
 		m_socketChannel = SocketChannel.open();
 		m_socketChannel.configureBlocking(false);
 		final InetSocketAddress remote = new InetSocketAddress(host, port);
-		boolean connected = m_socketChannel.connect(remote);
-		// give up after 10 seconds
-		int waitTimeMilliseconds = 0;
-		while (!connected && waitTimeMilliseconds < 10000)
+		if (!m_socketChannel.connect(remote))
 		{
-			connected = m_socketChannel.finishConnect();
-			try
+			// give up after 10 seconds
+			int waitTimeMilliseconds = 0;
+			while (true)
 			{
-				Thread.sleep(50);
-				waitTimeMilliseconds += 50;
-			} catch (final InterruptedException e)
-			{
+				if (waitTimeMilliseconds > 10000)
+				{
+					m_socketChannel.close();
+					throw new IOException("Connection refused");
+				}
+				if (m_socketChannel.finishConnect())
+					break;
+				try
+				{
+					Thread.sleep(50);
+					waitTimeMilliseconds += 50;
+				} catch (final InterruptedException e)
+				{
+				}
 			}
-		}
-		if (!connected)
-		{
-			m_socketChannel.close();
-			throw new IOException("Connection refused");
 		}
 		final Socket socket = m_socketChannel.socket();
 		socket.setKeepAlive(true);
