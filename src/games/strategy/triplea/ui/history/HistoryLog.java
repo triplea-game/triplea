@@ -119,6 +119,48 @@ public class HistoryLog extends JFrame
 			System.err.println("No Step node found!");
 	}
 	
+	private static PlayerID getPlayerID(final HistoryNode printNode)
+	{
+		DefaultMutableTreeNode curNode = printNode;
+		final TreePath parentPath = (new TreePath(printNode.getPath())).getParentPath();
+		PlayerID curPlayer = null;
+		if (parentPath != null)
+		{
+			final Object pathToNode[] = parentPath.getPath();
+			for (final Object pathNode : pathToNode)
+			{
+				final HistoryNode node = (HistoryNode) pathNode;
+				if (node instanceof Step)
+					curPlayer = ((Step) node).getPlayerID();
+			}
+		}
+		do
+		{
+			final Enumeration nodeEnum = curNode.preorderEnumeration();
+			while (nodeEnum.hasMoreElements())
+			{
+				final HistoryNode node = (HistoryNode) nodeEnum.nextElement();
+				if (node instanceof Step)
+				{
+					final String title = node.getTitle();
+					final PlayerID playerId = ((Step) node).getPlayerID();
+					if (title.equals("Initializing Delegates"))
+					{
+					}
+					else
+					{
+						if (playerId != null)
+						{
+							curPlayer = playerId;
+						}
+					}
+				}
+			}
+			curNode = curNode.getNextSibling();
+		} while ((curNode instanceof Step) && ((Step) curNode).getPlayerID().equals(curPlayer));
+		return curPlayer;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void printRemainingTurn(final HistoryNode printNode, final boolean verbose, final int diceSides)
 	{
@@ -438,12 +480,25 @@ public class HistoryLog extends JFrame
 		m_textArea.setText(m_stringWriter.toString());
 	}
 	
+	public void printTerritorySummary(final HistoryNode printNode, final GameData data)
+	{
+		Collection<Territory> territories;
+		final PlayerID player = getPlayerID(printNode);
+		data.acquireReadLock();
+		try
+		{
+			territories = data.getMap().getTerritories();
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		printTerritorySummary(data, player, territories);
+	}
+	
 	public void printTerritorySummary(final GameData data)
 	{
-		final PrintWriter logWriter = m_printWriter;
 		Collection<Territory> territories;
 		PlayerID player;
-		// print all units in all territories, including "flags"
 		data.acquireReadLock();
 		try
 		{
@@ -453,6 +508,15 @@ public class HistoryLog extends JFrame
 		{
 			data.releaseReadLock();
 		}
+		printTerritorySummary(data, player, territories);
+	}
+	
+	private void printTerritorySummary(final GameData data, final PlayerID player, final Collection<Territory> territories)
+	{
+		if (player == null || territories == null || territories.isEmpty())
+			return;
+		final PrintWriter logWriter = m_printWriter;
+		// print all units in all territories, including "flags"
 		logWriter.println("Territory Summary for " + player.getName() + " : \n");
 		for (final Territory t : territories)
 		{
