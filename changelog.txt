@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Fixed null pointer error in getSkins method when user has installed triplea to the user folder. (veqryn)
+
 * Fixed issue with showing Turn Summary from right clicking on the player's node while in the History mode, which showed the current player's territory summary instead of the selected player. (veqryn)
 
 

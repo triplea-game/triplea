@@ -432,7 +432,10 @@ public class UIContext
 	
 	private static void getSkins(final String mapName, final Map<String, String> rVal, final File root)
 	{
-		for (final File f : root.listFiles())
+		final File[] files = root.listFiles();
+		if (files == null)
+			return;
+		for (final File f : files)
 		{
 			if (!f.isDirectory())
 			{
