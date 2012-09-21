@@ -40,7 +40,7 @@ public class AIStrategy
 	
 	private final HashMap<Integer, AITurn> hashTurns; // contains the turn data
 	private PlayerID player;
-	private final String stratName;
+	// private final String stratName;
 	private String gameName, fileName;
 	private final String fileEnding;
 	private final List<File> stratFileName;
@@ -50,7 +50,7 @@ public class AIStrategy
 	
 	public AIStrategy(final String name)
 	{
-		stratName = name; // This should be Russians, Americans, British, etc.
+		// stratName = name; // This should be Russians, Americans, British, etc.
 		mapType = -2; // map has not been checked
 		hashTurns = new HashMap<Integer, AITurn>();
 		stratFileName = new ArrayList<File>();
@@ -234,10 +234,10 @@ public class AIStrategy
 			try
 			{
 				final ZipFile zipFile = new ZipFile(openFile);
-				final Enumeration entries = zipFile.entries();
+				final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 				while (entries.hasMoreElements())
 				{
-					final ZipEntry anEntry = (ZipEntry) entries.nextElement();
+					final ZipEntry anEntry = entries.nextElement();
 					final String checkThisEntry = anEntry.getName().trim();
 					if (checkThisEntry.toLowerCase().startsWith("ai") && checkThisEntry.endsWith(getFileEnding()))
 					{
@@ -323,7 +323,7 @@ public class AIStrategy
 		try
 		{
 			final FileOutputStream outputStream = new FileOutputStream(fileName);
-			final HashMap<Territory, Integer> strat = new HashMap<Territory, Integer>();
+			// final HashMap<Territory, Integer> strat = new HashMap<Territory, Integer>();
 			// strat.put(, arg1)
 			outputStream.close();
 		} catch (final Exception e)

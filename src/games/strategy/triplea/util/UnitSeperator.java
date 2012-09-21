@@ -99,7 +99,7 @@ public class UnitSeperator
 			if (damaged)
 			{
 				// TODO: implement me
-				final String kev = "here";
+				// final String kev = "here";
 			}
 			final boolean disabled = Matches.UnitIsDisabled().match(current);
 			Territory originatingTerr = null;

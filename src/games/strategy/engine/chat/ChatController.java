@@ -89,7 +89,7 @@ public class ChatController implements IChatController
 					s_logger.log(Level.SEVERE, "Error pinging", e);
 				}
 			}
-		}, 3, 1, TimeUnit.MINUTES);
+		}, 180, 60, TimeUnit.SECONDS);
 	}
 	
 	public ChatController(final String name, final Messengers messenger, final ModeratorController moderatorController)

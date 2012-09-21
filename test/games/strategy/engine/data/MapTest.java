@@ -22,7 +22,6 @@ import games.strategy.util.Match;
 
 import java.util.Set;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 
 /**

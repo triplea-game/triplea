@@ -22,7 +22,6 @@ import games.strategy.engine.data.UnitType;
 import java.io.InputStream;
 import java.net.URL;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 
 /**

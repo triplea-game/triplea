@@ -18,7 +18,6 @@
  */
 package games.strategy.util;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 
 /**

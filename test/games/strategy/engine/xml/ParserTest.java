@@ -36,7 +36,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 
 /**

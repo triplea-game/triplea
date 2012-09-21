@@ -7508,6 +7508,7 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		return sum;
 	}
 	
+	@SuppressWarnings("unused")
 	@Override
 	protected void purchase(final boolean purchaseForBid, int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
 	{
@@ -7842,7 +7843,6 @@ public class AdvancedAI extends AbstractAI implements IGamePlayer, ITripleaPlaye
 		final Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		boolean factPurchased = false;
 		final boolean isLand = AdvUtils.doesLandExistAt(myCapital, data, false); // gives different info than isamphib
-		@SuppressWarnings("unused")
 		boolean skipShips = false;
 		boolean buyTransports = true;
 		boolean buyPlanesOnly = false, buyOnePlane = false, buyBattleShip = false, buyOneShip = false, buyCarrier = false;

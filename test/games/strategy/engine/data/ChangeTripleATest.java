@@ -10,7 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 
 /**

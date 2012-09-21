@@ -35,7 +35,7 @@ public class UnitCategory implements Comparable
 	private Collection<UnitOwner> m_dependents;
 	private final int m_movement; // movement of the units
 	private final int m_transportCost; // movement of the units
-	private final Territory m_originatingTerr; // movement of the units
+	// private final Territory m_originatingTerr; // movement of the units
 	private final PlayerID m_owner;
 	// the units in the category, may be duplicates.
 	private final List<Unit> m_units = new ArrayList<Unit>();
@@ -49,7 +49,7 @@ public class UnitCategory implements Comparable
 		m_owner = taUnit.getOwner();
 		m_movement = categorizeMovement ? taUnit.getMovementLeft() : -1;
 		m_transportCost = categorizeTransportcost ? UnitAttachment.get((unit).getUnitType()).getTransportCost() : -1;
-		m_originatingTerr = categorizeTerritory ? taUnit.getOriginatedFrom() : null;
+		// m_originatingTerr = categorizeTerritory ? taUnit.getOriginatedFrom() : null;
 		m_damaged = (taUnit.getHits() > 0);
 		m_disabled = Matches.UnitIsDisabled().match(unit);
 		if (categorizeDependents)
@@ -70,7 +70,7 @@ public class UnitCategory implements Comparable
 		m_movement = -1;
 		m_transportCost = -1;
 		m_owner = owner;
-		m_originatingTerr = null;
+		// m_originatingTerr = null;
 	}
 	
 	public UnitCategory(final Unit unit, final Collection<Unit> dependents, final int movement, final boolean damaged, final boolean disabled, final int transportCost, final Territory t)
@@ -82,7 +82,7 @@ public class UnitCategory implements Comparable
 		m_damaged = damaged;
 		m_disabled = disabled;
 		m_units.add(unit);
-		m_originatingTerr = t;
+		// m_originatingTerr = t;
 		createDependents(dependents);
 	}
 	

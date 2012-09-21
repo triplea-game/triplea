@@ -57,7 +57,6 @@ import javax.swing.table.TableModel;
  * @author Parwinder Sekhon
  * @version 2.0 02/27/04
  */
-@SuppressWarnings("unchecked")
 public class TableSorter extends AbstractTableModel
 {
 	private static final long serialVersionUID = 718385567037094138L;

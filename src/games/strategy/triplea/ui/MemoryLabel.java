@@ -109,10 +109,9 @@ class Updater implements Runnable
 			public void run()
 			{
 				final MemoryLabel label = m_label.get();
-				if (!label.isVisible())
+				if (label == null || !label.isVisible())
 					return;
-				if (label != null)
-					label.update();
+				label.update();
 			}
 		});
 	}

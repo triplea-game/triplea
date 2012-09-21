@@ -17,7 +17,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
 import games.strategy.kingstable.ui.display.DummyDisplay;
-import junit.framework.Test;
 
 /**
  * Test suite for the King's Table play delegate.
