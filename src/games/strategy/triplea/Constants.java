@@ -92,7 +92,7 @@ public interface Constants
 	public static final String ROLL_AA_INDIVIDUALLY = "Roll AA Individually";
 	public static final String LIMIT_ROCKET_AND_SBR_DAMAGE_TO_PRODUCTION = "Limit SBR Damage To Factory Production";
 	public static final String SBR_VICTORY_POINTS = "SBR Victory Points";
-	public static final String ROCKET_ATTACK_PER_FACTORY_RESTRICTED = "Rocket Attack Per Factory Restricted";
+	public static final String ROCKET_ATTACKS_PER_FACTORY_INFINITE = "Rocket Attacks Per Factory Infinite";
 	public static final String LIMIT_SBR_DAMAGE_PER_TURN = "Limit SBR Damage Per Turn";
 	public static final String LIMIT_ROCKET_DAMAGE_PER_TURN = "Limit Rocket Damage Per Turn";
 	public static final String ALLIED_AIR_DEPENDENTS = "Allied Air Dependents";

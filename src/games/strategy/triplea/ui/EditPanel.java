@@ -441,12 +441,27 @@ public class EditPanel extends ActionPanel
 				sortUnitsToRemove(units, m_selectedTerritory);
 				Collections.sort(units, new UnitBattleComparator(false, BattleCalculator.getCostsForTuvForAllPlayersMergedAndAveraged(getData()), getData(), false));
 				Collections.reverse(units);
+				final boolean damageToTerritories = games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData());
+				final TerritoryAttachment ta;
+				final int currentDamage;
+				if (damageToTerritories && m_selectedTerritory != null)
+				{
+					ta = TerritoryAttachment.get(m_selectedTerritory);
+					currentDamage = ta == null ? 0 : ta.getProduction() - ta.getUnitProduction();
+				}
+				else
+				{
+					ta = null;
+					currentDamage = 0;
+				}
 				// unit mapped to <max, min, current>
 				final HashMap<Unit, Triple<Integer, Integer, Integer>> currentDamageMap = new HashMap<Unit, Triple<Integer, Integer, Integer>>();
 				for (final Unit u : units)
 				{
-					currentDamageMap
-								.put(u, new Triple<Integer, Integer, Integer>(((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, m_selectedTerritory), 0, ((TripleAUnit) u).getUnitDamage()));
+					currentDamageMap.put(u,
+								new Triple<Integer, Integer, Integer>(
+											((TripleAUnit) u).getHowMuchDamageCanThisUnitTakeTotal(u, m_selectedTerritory),
+											0, (damageToTerritories ? currentDamage : ((TripleAUnit) u).getUnitDamage())));
 				}
 				final IndividualUnitPanel unitPanel = new IndividualUnitPanel(currentDamageMap, "Change Unit Bombing Damage", getData(), getMap().getUIContext(), -1, true, true, null);
 				final JScrollPane scroll = new JScrollPane(unitPanel);

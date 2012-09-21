@@ -226,9 +226,9 @@ public class Properties implements Constants
 	/*
 	 * Allow x rocket attack(s) per defending factory
 	 */
-	public static boolean getRocketAttackPerFactoryRestricted(final GameData data)
+	public static boolean getRocketAttacksPerFactoryInfinite(final GameData data)
 	{
-		return data.getProperties().get(ROCKET_ATTACK_PER_FACTORY_RESTRICTED, false);
+		return data.getProperties().get(ROCKET_ATTACKS_PER_FACTORY_INFINITE, false);
 	}
 	
 	/*

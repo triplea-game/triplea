@@ -75,9 +75,9 @@ public class RocketsFireHelper
 		return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
 	}
 	
-	private boolean isOneRocketAttackPerFactory(final GameData data)
+	private boolean isRocketAttacksPerFactoryInfinite(final GameData data)
 	{
-		return games.strategy.triplea.Properties.getRocketAttackPerFactoryRestricted(data);
+		return games.strategy.triplea.Properties.getRocketAttacksPerFactoryInfinite(data);
 	}
 	
 	private boolean isPUCap(final GameData data)
@@ -118,7 +118,7 @@ public class RocketsFireHelper
 	{
 		final GameData data = bridge.getData();
 		final Set<Territory> attackedTerritories = new HashSet<Territory>();
-		final boolean oneAttackPerTerritory = isOneRocketAttackPerFactory(data);
+		final boolean oneAttackPerTerritory = !isRocketAttacksPerFactoryInfinite(data);
 		for (final Territory territory : rocketTerritories)
 		{
 			final Set<Territory> targets = getTargetsWithinRange(territory, data, player);
@@ -420,7 +420,6 @@ public class RocketsFireHelper
 			bridge.addChange(ChangeFactory.unitsHit(hits));
 			bridge.addChange(change);
 			attackedTerritory.notifyChanged();
-			
 		}
 		// in WW2V2, limit rocket attack cost to production value of factory.
 		else if (isWW2V2(data) || isLimitRocketDamageToProduction(data))
@@ -446,6 +445,7 @@ public class RocketsFireHelper
 			bridge.getHistoryWriter().startEvent("Rocket attack in " + attackedTerritory.getName() + " costs: " + cost + " production.");
 			final Change change = ChangeFactory.attachmentPropertyChange(ta, Integer.toString(unitProduction - cost), "unitProduction");
 			bridge.addChange(change);
+			attackedTerritory.notifyChanged();
 		}
 		else if (DamageFromBombingDoneToUnits && !targets.isEmpty())
 		{

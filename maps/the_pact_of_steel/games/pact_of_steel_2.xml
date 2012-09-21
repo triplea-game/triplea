@@ -4938,12 +4938,13 @@
 						<boolean/>
 				</property>
 
+						<!-- if true we will not use the "classic" rule of getting a single rocket attack for the whole round, and instead get a rocket attack for each rocket we have -->
 				<property name="All Rockets Attack" value="true" editable="false">
 						<boolean/>
 				</property>
 
-						<!-- will only allow a max of 1 rocket to attack each factory -->
-				<property name="Rocket Attack Per Factory Restricted" value="true" editable="false">
+						<!-- if true allows infinite attacks against a factory by many rockets, if false,will only allow a max of 1 rocket to attack each factory -->
+				<property name="Rocket Attacks Per Factory Infinite" value="false" editable="false">
 						<boolean/>
 				</property>
 

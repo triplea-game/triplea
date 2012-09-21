@@ -1,4 +1,8 @@
 Changes for 1.6.1.3
+* Fixed bug where rockets could attack a factory multiple times. (veqryn)
+
+* Deleting the game option "Rocket Attack Per Factory Restricted", and replacing it with its inverse, "Rocket Attacks Per Factory Infinite". (veqryn)
+
 * Fixed issue with not being Java 1.5 compatible. (veqryn)
 
 * Fixed null pointer error in getSkins method when user has installed triplea to the user folder. (veqryn)
