@@ -165,18 +165,18 @@ public class UnitsDrawer implements IDrawable
 			{ // Display a white number at the bottom of the unit
 				graphics.setColor(Color.white);
 				graphics.setFont(MapImage.MAP_FONT);
-				graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitImageWidth() / 4), m_placementPoint.y - bounds.y
-							+ m_uiContext.getUnitImageFactory().getUnitImageHeight());
+				graphics.drawString(String.valueOf(m_count), m_placementPoint.x - bounds.x + (m_uiContext.getUnitImageFactory().getUnitCounterOffsetWidth()), m_placementPoint.y - bounds.y
+							+ m_uiContext.getUnitImageFactory().getUnitCounterOffsetHeight());
 			}
 		}
 		// Display Factory Damage
 		if ((isSBRAffectsUnitProduction(data) || isDamageFromBombingDoneToUnitsInsteadOfTerritories(data)) && Matches.UnitTypeCanBeDamaged.match(type))
 		{
-			displayFactoryDamage(bounds, data, graphics, type);
+			displayFactoryDamage(bounds, data, graphics, type, img);
 		}
 	}
 	
-	private void displayFactoryDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics, final UnitType type)
+	private void displayFactoryDamage(final Rectangle bounds, final GameData data, final Graphics2D graphics, final UnitType type, final Image img)
 	{
 		graphics.setColor(Color.black);
 		graphics.setFont(MapImage.MAP_FONT);

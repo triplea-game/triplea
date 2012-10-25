@@ -28,7 +28,6 @@ import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.TerritoryListener;
 import games.strategy.thread.LockUtil;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.ui.screen.SmallMapImageManager;
 import games.strategy.triplea.ui.screen.Tile;
@@ -360,7 +359,8 @@ public class MapPanel extends ImageScrollerLargeView
 				repaint();
 			}
 		});
-		m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
+		initSmallMap();
+		// m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
 	}
 	
 	private final MouseListener MOUSE_LISTENER = new MouseAdapter()
@@ -836,6 +836,11 @@ public class MapPanel extends ImageScrollerLargeView
 		m_smallMapImageManager.update(m_data, m_uiContext.getMapData());
 	}
 	
+	public void changeSmallMapOffscreenMap()
+	{
+		m_smallMapImageManager.updateOffscreenImage(m_uiContext.getMapImage().getSmallMapImage());
+	}
+	
 	public void setMouseShadowUnits(final Collection<Unit> units)
 	{
 		if (units == null || units.isEmpty())
@@ -853,7 +858,7 @@ public class MapPanel extends ImageScrollerLargeView
 		final Set<UnitCategory> categories = UnitSeperator.categorize(units);
 		final int icon_width = m_uiContext.getUnitImageFactory().getUnitImageWidth();
 		final int xSpace = 5;
-		final BufferedImage img = Util.createImage(categories.size() * (xSpace + icon_width), UnitImageFactory.UNIT_ICON_HEIGHT, true);
+		final BufferedImage img = Util.createImage(categories.size() * (xSpace + icon_width), m_uiContext.getUnitImageFactory().getUnitImageHeight(), true);
 		final Graphics2D g = (Graphics2D) img.getGraphics();
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
 		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);

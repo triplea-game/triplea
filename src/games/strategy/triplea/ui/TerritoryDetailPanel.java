@@ -196,7 +196,7 @@ public class TerritoryDetailPanel extends JPanel
 			final ImageIcon unitIcon = uiContext.getUnitImageFactory().getIcon(item.getType(), item.getOwner(), data, item.getDamaged(), item.getDisabled());
 			final ImageIcon flagIcon = new ImageIcon(uiContext.getFlagImageFactory().getSmallFlag(item.getOwner()));
 			// overlay flag onto upper-right of icon
-			final Icon flaggedUnitIcon = new OverlayIcon(unitIcon, flagIcon, unitIcon.getIconWidth() - flagIcon.getIconWidth() - 3, 3);
+			final Icon flaggedUnitIcon = new OverlayIcon(unitIcon, flagIcon, unitIcon.getIconWidth() - (flagIcon.getIconWidth() / 2), 0);
 			final JLabel label = new JLabel("x" + item.getUnits().size(), flaggedUnitIcon, SwingConstants.LEFT);
 			final String toolTipText = "<html>" + item.getType().getName() + ": " + item.getType().getTooltip(currentPlayer, true) + "</html>";
 			label.setToolTipText(toolTipText);

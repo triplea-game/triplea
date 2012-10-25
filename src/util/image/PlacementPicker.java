@@ -13,6 +13,7 @@
  */
 package util.image;
 
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -65,7 +66,8 @@ public class PlacementPicker extends JFrame
 	private Map<String, List<Point>> m_placements;
 	private List<Point> m_currentPlacements;
 	private String m_currentCountry;
-	private static final int PLACE_SIZE = 48;
+	private static int PLACEWIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+	private static int PLACEHEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	
 	/**
 	 * main(java.lang.String[])
@@ -80,6 +82,26 @@ public class PlacementPicker extends JFrame
 	 */
 	public static void main(final String[] args)
 	{
+		if (args.length == 1)
+		{
+			PLACEWIDTH = Integer.parseInt(args[0]);
+			PLACEHEIGHT = PLACEWIDTH;
+			System.out.println("Width and Height to use: " + PLACEWIDTH);
+		}
+		else if (args.length == 2)
+		{
+			PLACEWIDTH = Integer.parseInt(args[0]);
+			System.out.println("Width to use: " + PLACEWIDTH);
+			PLACEHEIGHT = Integer.parseInt(args[1]);
+			System.out.println("Height to use: " + PLACEHEIGHT);
+		}
+		else
+		{
+			final String result = getUnitsScale();
+			final double percent = Double.parseDouble(result.toLowerCase());
+			PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
+			PLACEWIDTH = (int) (percent * PLACEWIDTH);
+		}
 		System.out.println("Select the map");
 		final String mapName = new FileOpen("Select The Map").getPathString();
 		if (mapName != null)
@@ -272,7 +294,7 @@ public class PlacementPicker extends JFrame
 				g.setColor(Color.red);
 				if (m_currentSquare != null)
 				{
-					g.drawRect(m_currentSquare.x, m_currentSquare.y, PLACE_SIZE, PLACE_SIZE);
+					g.drawRect(m_currentSquare.x, m_currentSquare.y, PLACEWIDTH, PLACEHEIGHT);
 				}
 				if (m_currentPlacements == null)
 				{
@@ -280,7 +302,7 @@ public class PlacementPicker extends JFrame
 				}
 				for (final Point item : m_currentPlacements)
 				{
-					g.fillRect(item.x, item.y, PLACE_SIZE, PLACE_SIZE);
+					g.fillRect(item.x, item.y, PLACEWIDTH, PLACEHEIGHT);
 				}
 			}// paint
 		};
@@ -437,5 +459,18 @@ public class PlacementPicker extends JFrame
 			}
 		}
 		repaint();
+	}
+	
+	private static String getUnitsScale()
+	{
+		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (e.g. 1.25, 1, 0.875, 0.83333, 0.75, 0.66666, 0.5625, 0.5)");
+		if (unitsScale != null)
+		{
+			return unitsScale;
+		}
+		else
+		{
+			return "1";
+		}
 	}
 }// end class PlacementPicker

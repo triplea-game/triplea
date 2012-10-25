@@ -390,7 +390,7 @@ public class CenterPicker extends JFrame
 		{
 			String name = findTerritoryName(point);
 			name = JOptionPane.showInputDialog(this, "Enter the territory name:", name);
-			if (name.trim().length() == 0)
+			if (name == null || name.trim().length() == 0)
 				return;
 			if (m_centers.containsKey(name) && JOptionPane.showConfirmDialog(this, "Another center exists with the same name. Are you sure you want to replace it with this one?") != 0)
 				return;

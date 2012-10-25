@@ -14,6 +14,7 @@
 package util.image;
 
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.triplea.ui.MapData;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -41,8 +42,8 @@ import javax.swing.JPanel;
 
 public class AutoPlacementFinder
 {
-	private static int PLACEWIDTH = 46;
-	private static int PLACEHEIGHT = 46;
+	private static int PLACEWIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+	private static int PLACEHEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private static MapData s_mapData;
 	private static double percent;
 	
@@ -51,8 +52,17 @@ public class AutoPlacementFinder
 		if (args.length == 1)
 		{
 			percent = Double.parseDouble(args[0]);
-			PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
+			System.out.println("Percent to use: " + percent);
 			PLACEWIDTH = (int) (percent * PLACEWIDTH);
+			PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
+		}
+		else if (args.length == 2)
+		{
+			percent = 1;
+			PLACEWIDTH = Integer.parseInt(args[0]);
+			System.out.println("Width to use: " + PLACEWIDTH);
+			PLACEHEIGHT = Integer.parseInt(args[1]);
+			System.out.println("Height to use: " + PLACEHEIGHT);
 		}
 		calculate();
 	}
@@ -192,14 +202,14 @@ public class AutoPlacementFinder
 	
 	private static String getUnitsScale()
 	{
-		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (e.g. 0.5625)");
+		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (e.g. 1.25, 1, 0.875, 0.83333, 0.75, 0.66666, 0.5625, 0.5)");
 		if (unitsScale != null)
 		{
 			return unitsScale;
 		}
 		else
 		{
-			return null;
+			return "1";
 		}
 	}
 	
@@ -286,9 +296,9 @@ public class AutoPlacementFinder
 		final List<Rectangle2D> placementRects = new ArrayList<Rectangle2D>();
 		final List<Point> placementPoints = new ArrayList<Point>();
 		final Rectangle2D place = new Rectangle2D.Double(center.x, center.y, PLACEHEIGHT, PLACEWIDTH);
-		for (int x = bounding.x; x < bounding.width + bounding.x; x++)
+		for (int x = bounding.x + 1; x < bounding.width + bounding.x; x++)
 		{
-			for (int y = bounding.y; y < bounding.height + bounding.y; y++)
+			for (int y = bounding.y + 1; y < bounding.height + bounding.y; y++)
 			{
 				isPlacement(countryPolygons, containedCountryPolygons, placementRects, placementPoints, place, x, y);
 			}

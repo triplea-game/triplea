@@ -2252,6 +2252,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_mapPanel.changeImage(m_uiContext.getMapData().getMapDimensions());
 		final Image small = m_uiContext.getMapImage().getSmallMapImage();
 		m_smallView.changeImage(small);
+		m_mapPanel.changeSmallMapOffscreenMap();
 		m_mapPanel.resetMap(); // redraw territories
 	}
 	

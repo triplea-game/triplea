@@ -178,6 +178,7 @@ public class UIContext
 	public void setMapDir(final GameData data, final String mapDir)
 	{
 		internalSetMapDir(mapDir, data);
+		this.getMapData().verify(data);
 		// set the default after internal succeeds, if an error is thrown
 		// we don't want to persist it
 		final String mapName = (String) data.getProperties().get(Constants.MAP_NAME);
@@ -206,7 +207,8 @@ public class UIContext
 		m_scale = getPreferencesMapOrSkin(dir).getDouble(MAP_SCALE_PREF, 1);
 		if (m_scale < 1)
 			setDrawTerritoryBordersAgainToMedium();
-		m_unitImageFactory.setResourceLoader(m_resourceLoader, unitScale);
+		m_unitImageFactory.setResourceLoader(m_resourceLoader, unitScale, m_mapData.getDefaultUnitWidth(), m_mapData.getDefaultUnitHeight(), m_mapData.getDefaultUnitCounterOffsetWidth(),
+					m_mapData.getDefaultUnitCounterOffsetHeight());
 		m_flagIconImageFactory.setResourceLoader(m_resourceLoader);
 		m_PUImageFactory.setResourceLoader(m_resourceLoader);
 		m_tileImageFactory.setMapDir(m_resourceLoader);

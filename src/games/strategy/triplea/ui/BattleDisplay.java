@@ -1076,7 +1076,7 @@ class BattleTable extends JTable
 	{
 		super(model);
 		setDefaultRenderer(Object.class, new Renderer());
-		setRowHeight(UnitImageFactory.UNIT_ICON_HEIGHT + 5);
+		setRowHeight(UnitImageFactory.DEFAULT_UNIT_ICON_SIZE + 5);
 		setBackground(new JButton().getBackground());
 		setShowHorizontalLines(false);
 		getTableHeader().setReorderingAllowed(false);

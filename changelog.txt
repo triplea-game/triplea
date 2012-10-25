@@ -1,4 +1,12 @@
 Changes for 1.6.1.3
+* Allowing PlacementPicker and AutoPlacementFinder to accept two arguments (when run by command line), the width and the height, of the placements. (veqryn)
+
+* Fixed issues preventing the smallMap from being updated after switching map skins. Also polishing up support for map skins that are totally different than the original map. (veqryn)
+
+* Creating new "map.properties" variables: "units.width", "units.height", "units.counter.offset.width" and "units.counter.offset.height", allowing maps to use non-standard sized unit images. (veqryn)
+
+* Fixing a bug in center picker, and fixing a bug where selecting a map skin didn't verify the map before changing the user preferences. (veqryn)
+
 * Fixed bug where rockets could attack a factory multiple times. (veqryn)
 
 * Deleting the game option "Rocket Attack Per Factory Restricted", and replacing it with its inverse, "Rocket Attacks Per Factory Infinite". (veqryn)

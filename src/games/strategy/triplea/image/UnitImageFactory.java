@@ -47,16 +47,21 @@ import javax.swing.ImageIcon;
  */
 public class UnitImageFactory
 {
+	public static final int DEFAULT_UNIT_ICON_SIZE = 48;
 	/**
 	 * Width of all icons.
 	 * You probably want getUnitImageWidth(), which takes scale factor into account.
 	 */
-	public static final int UNIT_ICON_WIDTH = 48;
+	private static int UNIT_ICON_WIDTH = DEFAULT_UNIT_ICON_SIZE;
 	/**
 	 * Height of all icons.
 	 * You probably want getUnitImageHeight(), which takes scale factor into account.
 	 **/
-	public static final int UNIT_ICON_HEIGHT = 48;
+	private static int UNIT_ICON_HEIGHT = DEFAULT_UNIT_ICON_SIZE;
+	
+	private static int UNIT_COUNTER_OFFSET_WIDTH = DEFAULT_UNIT_ICON_SIZE / 4;
+	private static int UNIT_COUNTER_OFFSET_HEIGHT = UNIT_ICON_HEIGHT;
+	
 	private static final String FILE_NAME_BASE = "units/";
 	// maps Point -> image
 	private final Map<String, Image> m_images = new HashMap<String, Image>();
@@ -71,8 +76,13 @@ public class UnitImageFactory
 	{
 	}
 	
-	public void setResourceLoader(final ResourceLoader loader, final double scaleFactor)
+	public void setResourceLoader(final ResourceLoader loader, final double scaleFactor, final int initialUnitWidth, final int initialUnitHeight, final int initialUnitCounterOffsetWidth,
+				final int initialUnitCounterOffsetHeight)
 	{
+		UNIT_ICON_WIDTH = initialUnitWidth;
+		UNIT_ICON_HEIGHT = initialUnitHeight;
+		UNIT_COUNTER_OFFSET_WIDTH = initialUnitCounterOffsetWidth;
+		UNIT_COUNTER_OFFSET_HEIGHT = initialUnitCounterOffsetHeight;
 		m_scaleFactor = scaleFactor;
 		m_resourceLoader = loader;
 		clearImageCache();
@@ -98,20 +108,56 @@ public class UnitImageFactory
 		return m_scaleFactor;
 	}
 	
+	/*
+	 * Return the width of scaled units.
+	 * 
+	 * @param img
+	 *            Image to test for width * scalefactor. If null, will use default UNIT_ICON_WIDTH.
+	 * @return
+	public int getUnitImageWidth(final Image img)
+	{
+		final int width = (img == null ? UNIT_ICON_WIDTH : img.getWidth(null));
+		return (int) (m_scaleFactor * (width < 0 ? UNIT_ICON_WIDTH : width));
+	}
+	 */
+
 	/**
-	 * Return the width of scaled units
+	 * Return the width of scaled units.
 	 */
 	public int getUnitImageWidth()
 	{
 		return (int) (m_scaleFactor * UNIT_ICON_WIDTH);
 	}
 	
+	/*
+	 * Return the height of scaled units
+	 * 
+	 * @param img
+	 *            Image to test for height * scalefactor. If null, will use default UNIT_ICON_HEIGHT.
+	 * @return
+	public int getUnitImageHeight(final Image img)
+	{
+		final int height = (img == null ? UNIT_ICON_HEIGHT : img.getHeight(null));
+		return (int) (m_scaleFactor * (height < 0 ? UNIT_ICON_HEIGHT : height));
+	}
+	 */
+
 	/**
 	 * Return the height of scaled units
 	 */
 	public int getUnitImageHeight()
 	{
 		return (int) (m_scaleFactor * UNIT_ICON_HEIGHT);
+	}
+	
+	public int getUnitCounterOffsetWidth()
+	{
+		return (int) (m_scaleFactor * UNIT_COUNTER_OFFSET_WIDTH);
+	}
+	
+	public int getUnitCounterOffsetHeight()
+	{
+		return (int) (m_scaleFactor * UNIT_COUNTER_OFFSET_HEIGHT);
 	}
 	
 	// Clear the image and icon cache

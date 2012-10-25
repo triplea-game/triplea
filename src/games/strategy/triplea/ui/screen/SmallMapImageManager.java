@@ -43,7 +43,7 @@ public class SmallMapImageManager
 	private static final Logger s_logger = Logger.getLogger(SmallMapImageManager.class.getName());
 	private final int UNIT_BOX_SIZE = 4;
 	private final ImageScrollerSmallView m_view;
-	private final Image m_offscreen;
+	private Image m_offscreen;
 	private final TileManager m_tileManager;
 	
 	public SmallMapImageManager(final ImageScrollerSmallView view, final BufferedImage offscreen, final TileManager tileManager)
@@ -51,6 +51,12 @@ public class SmallMapImageManager
 		m_view = view;
 		m_offscreen = Util.copyImage(offscreen, false);
 		m_tileManager = tileManager;
+	}
+	
+	public void updateOffscreenImage(final BufferedImage offscreen)
+	{
+		m_offscreen.flush();
+		m_offscreen = Util.copyImage(offscreen, false);
 	}
 	
 	public void update(final GameData data, final MapData mapData)

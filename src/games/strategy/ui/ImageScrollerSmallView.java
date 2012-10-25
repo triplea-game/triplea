@@ -89,7 +89,16 @@ public class ImageScrollerSmallView extends JComponent
 		{
 			ie.printStackTrace();
 		}
+		m_image.flush();
 		m_image = image;
+		final int prefWidth = getInsetsWidth() + m_image.getWidth(this);
+		final int prefHeight = getInsetsHeight() + m_image.getHeight(this);
+		final Dimension prefSize = new Dimension(prefWidth, prefHeight);
+		setPreferredSize(prefSize);
+		setMinimumSize(prefSize);
+		setMaximumSize(prefSize);
+		this.validate();
+		this.repaint();
 	}
 	
 	private int getInsetsWidth()

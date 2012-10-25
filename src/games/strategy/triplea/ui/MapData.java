@@ -16,6 +16,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.Territory;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.triplea.image.UnitImageFactory;
 import games.strategy.util.PointFileReaderWriter;
 
 import java.awt.Color;
@@ -48,7 +49,11 @@ import javax.imageio.ImageIO;
  */
 public class MapData
 {
-	private static final String DEFAULT_UNIT_SCALE_PROPERTY = "units.scale";
+	private static final String UNIT_SCALE_PROPERTY = "units.scale";
+	private static final String UNIT_WIDTH_PROPERTY = "units.width";
+	private static final String UNIT_HEIGHT_PROPERTY = "units.height";
+	private static final String UNIT_COUNTER_OFFSET_WIDTH_PROPERTY = "units.counter.offset.width";
+	private static final String UNIT_COUNTER_OFFSET_HEIGHT_PROPERTY = "units.counter.offset.height";
 	private static final String HAS_RELIEF_IMAGES = "map.hasRelief";
 	private static final String HAS_MAP_BLENDS = "map.mapBlends";
 	private static final String MAP_BLEND_MODE = "map.mapBlendMode";
@@ -213,15 +218,93 @@ public class MapData
 	
 	public double getDefaultUnitScale()
 	{
-		if (m_mapProperties.getProperty(DEFAULT_UNIT_SCALE_PROPERTY) == null)
+		if (m_mapProperties.getProperty(UNIT_SCALE_PROPERTY) == null)
 			return 1.0;
 		try
 		{
-			return Double.parseDouble(m_mapProperties.getProperty(DEFAULT_UNIT_SCALE_PROPERTY));
+			return Double.parseDouble(m_mapProperties.getProperty(UNIT_SCALE_PROPERTY));
 		} catch (final NumberFormatException e)
 		{
 			e.printStackTrace();
 			return 1.0;
+		}
+	}
+	
+	/**
+	 * Does not take account of any scaling.
+	 * 
+	 * @return
+	 */
+	public int getDefaultUnitWidth()
+	{
+		if (m_mapProperties.getProperty(UNIT_WIDTH_PROPERTY) == null)
+			return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+		try
+		{
+			return Integer.parseInt(m_mapProperties.getProperty(UNIT_WIDTH_PROPERTY));
+		} catch (final NumberFormatException e)
+		{
+			e.printStackTrace();
+			return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+		}
+	}
+	
+	/**
+	 * Does not take account of any scaling.
+	 * 
+	 * @return
+	 */
+	public int getDefaultUnitHeight()
+	{
+		if (m_mapProperties.getProperty(UNIT_HEIGHT_PROPERTY) == null)
+			return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+		try
+		{
+			return Integer.parseInt(m_mapProperties.getProperty(UNIT_HEIGHT_PROPERTY));
+		} catch (final NumberFormatException e)
+		{
+			e.printStackTrace();
+			return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+		}
+	}
+	
+	/**
+	 * Does not take account of any scaling.
+	 * 
+	 * @return
+	 */
+	public int getDefaultUnitCounterOffsetWidth()
+	{
+		// if it is not set, divide by 4 so that it is roughly centered
+		if (m_mapProperties.getProperty(UNIT_COUNTER_OFFSET_WIDTH_PROPERTY) == null)
+			return getDefaultUnitWidth() / 4;
+		try
+		{
+			return Integer.parseInt(m_mapProperties.getProperty(UNIT_COUNTER_OFFSET_WIDTH_PROPERTY));
+		} catch (final NumberFormatException e)
+		{
+			e.printStackTrace();
+			return getDefaultUnitWidth() / 4;
+		}
+	}
+	
+	/**
+	 * Does not take account of any scaling.
+	 * 
+	 * @return
+	 */
+	public int getDefaultUnitCounterOffsetHeight()
+	{
+		// put at bottom of unit, if not set
+		if (m_mapProperties.getProperty(UNIT_COUNTER_OFFSET_HEIGHT_PROPERTY) == null)
+			return getDefaultUnitHeight();
+		try
+		{
+			return Integer.parseInt(m_mapProperties.getProperty(UNIT_COUNTER_OFFSET_HEIGHT_PROPERTY));
+		} catch (final NumberFormatException e)
+		{
+			e.printStackTrace();
+			return getDefaultUnitHeight();
 		}
 	}
 	
