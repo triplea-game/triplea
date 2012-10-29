@@ -1446,7 +1446,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			// if attacker retreating non subs then its all over
 			if (!defender && !subs && !planes && !partialAmphib)
 			{
-				ensureAttackingAirCanRetreat(bridge);
+				// this is illegal in ww2v2 revised and beyond (the fighters should die). still checking if illegal in classic.
+				// ensureAttackingAirCanRetreat(bridge);
 				m_isOver = true;
 			}
 			if (submerge)

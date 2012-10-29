@@ -59,6 +59,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -465,13 +466,18 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	protected String removeFromPlayer(final PlayerID player, final IntegerMap<Resource> costs, final CompositeChange changes, final Collection<Unit> totalUnits)
 	{
 		final StringBuffer returnString = new StringBuffer("Remaining resources: ");
+		final IntegerMap<Resource> left = m_player.getResources().getResourcesCopy();
+		left.subtract(costs);
+		for (final Entry<Resource, Integer> entry : left.entrySet())
+		{
+			returnString.append(entry.getValue() + " " + entry.getKey().getName() + "; ");
+		}
 		for (final Resource resource : costs.keySet())
 		{
 			final float quantity = costs.getInt(resource);
 			final int cost = (int) quantity;
 			final Change change = ChangeFactory.changeResourcesChange(m_player, resource, -cost);
 			changes.add(change);
-			returnString.append(m_player.getResources().getQuantity(resource) - cost + " " + resource.getName() + "; ");
 		}
 		return returnString.toString();
 	}

@@ -982,7 +982,6 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		}
 		if (weCanConsume && actuallyDoIt && change != null && !change.isEmpty())
 		{
-			// m_bridge.addChange(change);
 			m_bridge.getHistoryWriter().startEvent("Units in " + to.getName() + " being upgraded or consumed: " + MyFormatter.unitsToTextNoOwner(removedUnits), removedUnits);
 		}
 		return weCanConsume;

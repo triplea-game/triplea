@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="3.4"/>
+        <info name="World War II Global Test 2nd Edition" version="3.4"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.6.1"/>
 		<diceSides value="6"/>
@@ -66,7 +66,7 @@
                 <territory name="India"/>
                 <territory name="Malaya"/>
                 <territory name="Borneo"/>
-                <territory name="Yukon Territory"/>
+                <!--<territory name="Yukon Territory"/>-->
                 <territory name="Kwangtung"/>
                 <territory name="Queensland"/>
                 <territory name="Victoria"/>
@@ -432,7 +432,7 @@
                 <connection t1="Burma" t2="Himalayas"/>
                 <connection t1="British Columbia" t2="Alaska"/>
                 <connection t1="British Columbia" t2="1 Sea Zone"/>
-                <connection t1="British Columbia" t2="Yukon Territory"/>
+                <!--<connection t1="British Columbia" t2="Yukon Territory"/>-->
                 <connection t1="India" t2="Himalayas"/>
                 <connection t1="India" t2="West India"/>
                 <connection t1="Queensland" t2="Northern Territory"/>
@@ -456,7 +456,7 @@
                 <connection t1="Western United States" t2="British Columbia"/>
                 <connection t1="Alaska" t2="2 Sea Zone"/>
                 <connection t1="Alaska" t2="1 Sea Zone"/>
-                <connection t1="Alaska" t2="Yukon Territory"/>
+                <!--<connection t1="Alaska" t2="Yukon Territory"/>-->
                 <connection t1="Aleutian Islands" t2="8 Sea Zone"/>
                 <connection t1="Sakha" t2="Amur"/>
                 <connection t1="Sakha" t2="Siberia"/>
@@ -743,7 +743,7 @@
                 <connection t1="Alberta Saskatchewan Manitoba" t2="Central United States"/>
                 <connection t1="Alberta Saskatchewan Manitoba" t2="Ontario"/>
                 <connection t1="Alberta Saskatchewan Manitoba" t2="121 Sea Zone"/>
-                <connection t1="Alberta Saskatchewan Manitoba" t2="Yukon Territory"/>
+                <!--<connection t1="Alberta Saskatchewan Manitoba" t2="Yukon Territory"/>-->
                 <connection t1="Alberta Saskatchewan Manitoba" t2="British Columbia"/>
                 <connection t1="Trans-Jordan" t2="Iraq"/>
                 <connection t1="Trans-Jordan" t2="81 Sea Zone"/>
@@ -2782,9 +2782,11 @@
 						<option name="changeUnitOwners" value="British"/>
 						<option name="whenCapturedByGoesTo" value="British:UK_Pacific"/>
                    </attatchment>
+				   <!--
                     <attatchment name="territoryAttatchment" attatchTo="Yukon Territory" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="0"/>
                    </attatchment>
+				   -->
                     <attatchment name="territoryAttatchment" attatchTo="Kwangtung" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
                         <option name="production" value="3"/>
                         <option name="victoryCity" value="true"/>
@@ -4128,8 +4130,9 @@
 				<attatchment name="conditionAttachment_Axis_Capture_London_Switch" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="switch" value="false"/>
 				</attatchment>
+				<!-- Yukon Territory: -->
 				<attatchment name="conditionAttachment_Axis_Land_In_North_America" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-					<option name="alliedOwnershipTerritories" value="Yukon Territory:British Columbia:Alberta Saskatchewan Manitoba:Ontario:Quebec:Newfoundland Labrador:New Brunswick Nova Scotia" count="1"/>
+					<option name="alliedOwnershipTerritories" value="British Columbia:Alberta Saskatchewan Manitoba:Ontario:Quebec:Newfoundland Labrador:New Brunswick Nova Scotia" count="1"/>
 				</attatchment>
 				<attatchment name="conditionAttachment_Axis_Land_In_North_America_Switch" attatchTo="Germans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="switch" value="false"/>
@@ -4285,6 +4288,7 @@
 						
 					 Japanese Territories next to Mongolian Territories:
 						Manchuria:Jehol
+						and Korea
 						
 					 Chinese Territories next to Mongolian Territories (could possibly be controlled by Japan):
 						Chahar:Suiyuyan:Kansu
@@ -4298,7 +4302,7 @@
                 	<option name="switch" value="true"/>
 				</attatchment>
                 <attatchment name="conditionAttachment_Russians_Conquer_Japanese_Territory_By_Mongolia" attatchTo="Russians" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
-                	<option name="battle" value="Russians:Japanese:any:currentRound:Manchuria:Jehol:Chahar:Suiyuyan:Kansu"/>
+                	<option name="battle" value="Russians:Japanese:any:currentRound:Manchuria:Jehol:Chahar:Suiyuyan:Kansu:Korea"/>
                 </attatchment>
                 <attatchment name="conditionAttachment_Japanese_Conquer_Russians_Territory_By_Mongolia" attatchTo="Japanese" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="battle" value="Japanese:Russians:any:currentRound:Timguska:Yenisey:Yakut S.S.R.:Buryatia:Amur"/>
@@ -5495,7 +5499,7 @@
                         <territoryOwner territory="India" owner="UK_Pacific"/>
                         <territoryOwner territory="Malaya" owner="UK_Pacific"/>
                         <territoryOwner territory="Borneo" owner="UK_Pacific"/>
-                        <territoryOwner territory="Yukon Territory" owner="British"/>
+                        <!--<territoryOwner territory="Yukon Territory" owner="British"/>-->
                         <territoryOwner territory="Kwangtung" owner="UK_Pacific"/>
                         <territoryOwner territory="Queensland" owner="ANZAC"/>
                         <territoryOwner territory="Victoria" owner="ANZAC"/>
@@ -5923,7 +5927,7 @@
                         <unitPlacement unitType="artillery" territory="Alexandria" quantity="1" owner="British"/>
                         <unitPlacement unitType="armour" territory="Alexandria" quantity="1" owner="British"/>
 
-                        <unitPlacement unitType="infantry" territory="Egypt" quantity="2" owner="British"/>
+                        <unitPlacement unitType="infantry" territory="Egypt" quantity="1" owner="British"/>
                         <unitPlacement unitType="artillery" territory="Egypt" quantity="1" owner="British"/>
 						<unitPlacement unitType="mech_infantry" territory="Egypt" quantity="1" owner="British"/>
                         <unitPlacement unitType="harbour" territory="Egypt" quantity="1" owner="British"/>
@@ -6818,12 +6822,12 @@
 					<value>
 					<![CDATA[  
 <div style="padding:10px;font-size:14px;background-color:white;text-align:justify;">
-<b>Global 1940 Alpha +3</b><br>
+<b>Global 1940 Second Edition</b><br>
 <br>
 <b>Credits:</b> Bung, Veqryn<br><br>
 
 <b>Note</b><br>
-This game uses the latest Alpha +3 rules, as posted on Larry's website.<br>
+This game uses the latest Global 1940 2nd Edition (successor to Alpha +3) rules, as posted on Larry's website.<br>
 To blitz move mech_infantry with armour, you must click on them both at the same time (use CTRL to create waypoints).<br>
 Paratroopers tech enables a second combat movement phase which happens right after the first combat movement phase, and the second one only allowes movement of paratrooping infantry.<br>
 <br>
@@ -7071,6 +7075,9 @@ These changes to units are things other than price/movement which you can see in
 <br>Change Log:
 <br>
 <br>3.4
+<br>Updating to Global 2nd Edition by removing 1 UK infantry from Egypt.
+<br>Updating to Global 2nd Edition by adding Korea to the list of territories that Russia can not attack without permanently losing the ability for Manchuria to join Russia.
+<br>Updating to Global 2nd Edition by removing Yukon Territory from map.
 <br>Allowed UK_Pacific to repair airfields and harbours under its control.
 <br>Disallowed China to repair anything.
 <br>
