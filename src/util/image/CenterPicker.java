@@ -63,6 +63,8 @@ public class CenterPicker extends JFrame
 	private Map<String, Point> m_centers = new HashMap<String, Point>(); // hash map for center points
 	private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // hash map for polygon points
 	private final JLabel m_location = new JLabel();
+	private static File m_mapFolderLocation = null;
+	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 	
 	/**
 	 * main(java.lang.String[])
@@ -77,14 +79,27 @@ public class CenterPicker extends JFrame
 	 */
 	public static void main(final String[] args)
 	{
+		handleCommandLineArgs(args);
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map").getPathString();
+		final String mapName = new FileOpen("Select The Map", m_mapFolderLocation, ".gif", ".png").getPathString();
 		if (mapName != null)
 		{
 			System.out.println("Map : " + mapName);
 			final CenterPicker picker = new CenterPicker(mapName);
 			picker.setSize(600, 550);
 			picker.setVisible(true);
+			JOptionPane.showMessageDialog(picker, new JLabel("<html>"
+									+ "This is the CenterPicker, it will create a centers.txt file for you. "
+									+ "<br>Please click on the center of every single territory and sea zone on your map, and give each a name. "
+									+ "<br>The point you clicked on will tell TripleA where to put things like any flags, text, unit placements, etc, "
+									+ "<br>so be sure to click in the exact middle, or slight up and left of the middle, of each territory "
+									+ "<br>(but still within the territory borders)."
+									+ "<br>Do not use special or illegal characters in territory names."
+									+ "<br><br>You can also load an existing centers.txt file, then make modifications to it, then save it again."
+									+ "<br><br>LEFT CLICK = create a new center point for a territory/zone."
+									+ "<br><br>RIGHT CLICK on an existing center = delete that center point."
+									+ "<br><br>When finished, save the centers and exit."
+									+ "</html>"));
 		}
 		else
 		{
@@ -107,7 +122,7 @@ public class CenterPicker extends JFrame
 	{
 		super("Center Picker");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		final File file = new File(new File(mapName).getParent() + File.pathSeparator + "polygons.txt");
+		final File file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
 		if (file.exists()
 					&& JOptionPane.showConfirmDialog(new JPanel(), "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories names?",
 								"File Suggestion", 1) == 0)
@@ -118,6 +133,7 @@ public class CenterPicker extends JFrame
 				m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(file.getPath()));
 			} catch (final IOException ex1)
 			{
+				System.out.println("Something wrong with your Polygons file");
 				ex1.printStackTrace();
 			}
 		}
@@ -126,7 +142,7 @@ public class CenterPicker extends JFrame
 			try
 			{
 				System.out.println("Select the Polygons file");
-				final String polyPath = new FileOpen("Select A Polygon File").getPathString();
+				final String polyPath = new FileOpen("Select A Polygon File", m_mapFolderLocation, ".txt").getPathString();
 				if (polyPath != null)
 				{
 					System.out.println("Polygons : " + polyPath);
@@ -138,6 +154,7 @@ public class CenterPicker extends JFrame
 				}
 			} catch (final IOException ex1)
 			{
+				System.out.println("Something wrong with your Polygons file");
 				ex1.printStackTrace();
 			}
 		}
@@ -287,7 +304,7 @@ public class CenterPicker extends JFrame
 	{
 		try
 		{
-			final String fileName = new FileSave("Where To Save centers.txt ?", "centers.txt").getPathString();
+			final String fileName = new FileSave("Where To Save centers.txt ?", "centers.txt", m_mapFolderLocation).getPathString();
 			if (fileName == null)
 			{
 				return;
@@ -319,7 +336,7 @@ public class CenterPicker extends JFrame
 		try
 		{
 			System.out.println("Load a center file");
-			final String centerName = new FileOpen("Load A Center File").getPathString();
+			final String centerName = new FileOpen("Load A Center File", m_mapFolderLocation, ".txt").getPathString();
 			if (centerName == null)
 			{
 				return;
@@ -408,5 +425,52 @@ public class CenterPicker extends JFrame
 				m_centers.remove(centerClicked);
 		}
 		repaint();
+	}
+	
+	private static String getValue(final String arg)
+	{
+		final int index = arg.indexOf('=');
+		if (index == -1)
+			return "";
+		return arg.substring(index + 1);
+	}
+	
+	private static void handleCommandLineArgs(final String[] args)
+	{
+		// arg can only be the map folder location.
+		if (args.length == 1)
+		{
+			String value;
+			if (args[0].startsWith(TRIPLEA_MAP_FOLDER))
+			{
+				value = getValue(args[0]);
+			}
+			else
+			{
+				value = args[0];
+			}
+			final File mapFolder = new File(value);
+			if (mapFolder.exists())
+				m_mapFolderLocation = mapFolder;
+			else
+				System.out.println("Could not find directory: " + value);
+		}
+		else if (args.length > 1)
+		{
+			System.out.println("Only argument allowed is the map directory.");
+		}
+		// might be set by -D
+		if (m_mapFolderLocation == null || m_mapFolderLocation.length() < 1)
+		{
+			final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+			if (value != null && value.length() > 0)
+			{
+				final File mapFolder = new File(value);
+				if (mapFolder.exists())
+					m_mapFolderLocation = mapFolder;
+				else
+					System.out.println("Could not find directory: " + value);
+			}
+		}
 	}
 }// end class CenterPicker

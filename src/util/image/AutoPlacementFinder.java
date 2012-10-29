@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -45,25 +46,38 @@ public class AutoPlacementFinder
 	private static int PLACEWIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private static int PLACEHEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private static MapData s_mapData;
-	private static double percent;
+	private static boolean placeDimensionsSet = false;
+	private static double unit_zoom_percent = 1;
+	private static int unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+	private static int unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+	private static File m_mapFolderLocation = null;
+	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
+	private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
+	private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
+	private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
+	
+	public static String[] getProperties()
+	{
+		return new String[] { TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT };
+	}
 	
 	public static void main(final String[] args)
 	{
-		if (args.length == 1)
-		{
-			percent = Double.parseDouble(args[0]);
-			System.out.println("Percent to use: " + percent);
-			PLACEWIDTH = (int) (percent * PLACEWIDTH);
-			PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
-		}
-		else if (args.length == 2)
-		{
-			percent = 1;
-			PLACEWIDTH = Integer.parseInt(args[0]);
-			System.out.println("Width to use: " + PLACEWIDTH);
-			PLACEHEIGHT = Integer.parseInt(args[1]);
-			System.out.println("Height to use: " + PLACEHEIGHT);
-		}
+		handleCommandLineArgs(args);
+		JOptionPane.showMessageDialog(null, new JLabel("<html>"
+					+ "This is the AutoPlacementFinder, it will create a place.txt file for you. "
+					+ "<br>In order to run this, you must already have created a centers.txt file and a polygons.txt file, "
+					+ "<br>and you must have already created the map directory structure in its final place."
+					+ "<br>Example: the map folder should have a name, with the 2 text files already in that folder, and "
+					+ "<br>the folder should be located in your users\\yourname\\triplea\\maps\\ directory."
+					+ "<br><br>The program will ask for the folder name (just the name, not the full path)."
+					+ "<br>Then it will ask for unit scale (unit zoom) level [normally between 0.5 and 1.0]"
+					+ "<br>Then it will ask for the unit image size when not zoomed [normally 48x48]."
+					+ "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit size."
+					+ "<br><br>When done, the program will attempt to make placements for all territories on your map."
+					+ "<br>However, it doesn't do a good job with thin or small territories, or islands, so it is a very good idea"
+					+ "<br>to use the PlacementPicker to check all placements and redo some of them by hand."
+					+ "</html>"));
 		calculate();
 	}
 	
@@ -75,14 +89,30 @@ public class AutoPlacementFinder
 	static void calculate()
 	{
 		final Map<String, Collection<Point>> m_placements = new HashMap<String, Collection<Point>>(); // create hash map of placements
-		final String mapDir = getMapDirectory(); // ask user where the map is
-		if (percent == 0)
+		final String mapDir = m_mapFolderLocation == null ? getMapDirectory() : m_mapFolderLocation.getName(); // ask user where the map is
+		if (mapDir == null)
+		{
+			System.out.println("You need to specify a map name for this to work");
+			System.out.println("Shutting down");
+			System.exit(0);
+		}
+		if (!placeDimensionsSet)
 		{
 			try
 			{
-				final File file = new File(GameRunner.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator + "map.properties");
+				File file = new File(GameRunner.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
+				if (!file.exists())
+					file = new File(GameRunner.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator + "map.properties");
 				if (file.exists())
 				{
+					double scale = unit_zoom_percent;
+					int width = unit_width;
+					int height = unit_height;
+					boolean found = false;
+					final String scaleProperty = MapData.UNIT_SCALE_PROPERTY + "=";
+					final String widthProperty = MapData.UNIT_WIDTH_PROPERTY + "=";
+					final String heightProperty = MapData.UNIT_HEIGHT_PROPERTY + "=";
+					
 					final FileReader reader = new FileReader(file);
 					final LineNumberReader reader2 = new LineNumberReader(reader);
 					int i = 0;
@@ -92,44 +122,97 @@ public class AutoPlacementFinder
 						final String line = reader2.readLine();
 						if (line == null)
 							break;
-						if (line.contains("units.scale="))
+						if (line.contains(scaleProperty))
 						{
-							final int result = JOptionPane.showConfirmDialog(new JPanel(),
-										"A map.properties file was found in the map's folder, do you want to use the file to supply the unit's scale?", "File Suggestion", 1);
-							if (result == 2)
-								return;
-							if (result == 0)
+							try
 							{
-								percent = Double.parseDouble(line.substring(line.indexOf("units.scale=") + 12).trim());
-								PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
-								PLACEWIDTH = (int) (percent * PLACEWIDTH);
-								break;
+								scale = Double.parseDouble(line.substring(line.indexOf(scaleProperty) + scaleProperty.length()).trim());
+								found = true;
+							} catch (final NumberFormatException ex)
+							{
 							}
 						}
-						i++;
+						if (line.contains(widthProperty))
+						{
+							try
+							{
+								width = Integer.parseInt(line.substring(line.indexOf(widthProperty) + widthProperty.length()).trim());
+								found = true;
+							} catch (final NumberFormatException ex)
+							{
+							}
+						}
+						if (line.contains(heightProperty))
+						{
+							try
+							{
+								height = Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
+								found = true;
+							} catch (final NumberFormatException ex)
+							{
+							}
+						}
+					}
+					i++;
+					if (found)
+					{
+						final int result = JOptionPane.showConfirmDialog(new JPanel(),
+										"A map.properties file was found in the map's folder, " +
+													"\r\n do you want to use the file to supply the info for the placement box size? " +
+													"\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height +
+													",    Result = (" + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")", "File Suggestion", 1);
+						// if (result == 2)
+						// return;
+						if (result == 0)
+						{
+							unit_zoom_percent = scale;
+							PLACEWIDTH = (int) (unit_zoom_percent * width);
+							PLACEHEIGHT = (int) (unit_zoom_percent * height);
+							placeDimensionsSet = true;
+						}
 					}
 				}
 			} catch (final Exception ex)
 			{
 			}
 		}
-		if (percent == 0)
+		if (!placeDimensionsSet
+					|| JOptionPane.showConfirmDialog(new JPanel(), "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), " +
+								"do you wish to continue with this?\r\nSelect Yes to continue, Select No to override and change the size.", "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1)
 		{
 			try
 			{
 				final String result = getUnitsScale();
-				percent = Double.parseDouble(result.toLowerCase());
-				PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
-				PLACEWIDTH = (int) (percent * PLACEWIDTH);
+				try
+				{
+					unit_zoom_percent = Double.parseDouble(result.toLowerCase());
+				} catch (final NumberFormatException ex)
+				{
+				}
+				final String width = JOptionPane.showInputDialog(null, "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
+				if (width != null)
+				{
+					try
+					{
+						PLACEWIDTH = (int) (unit_zoom_percent * Integer.parseInt(width));
+					} catch (final NumberFormatException ex)
+					{
+					}
+				}
+				final String height = JOptionPane.showInputDialog(null, "Enter the unit's image height in pixels (unscaled / without zoom).\r\n(e.g. 48)");
+				if (height != null)
+				{
+					try
+					{
+						PLACEHEIGHT = (int) (unit_zoom_percent * Integer.parseInt(height));
+					} catch (final NumberFormatException ex)
+					{
+					}
+				}
+				placeDimensionsSet = true;
 			} catch (final Exception ex)
 			{
 			}
-		}
-		if (mapDir == null)
-		{
-			System.out.println("You need to specify a map name for this to work");
-			System.out.println("Shutting down");
-			System.exit(0);
 		}
 		try
 		{
@@ -137,10 +220,12 @@ public class AutoPlacementFinder
 		} catch (final NullPointerException npe)
 		{
 			System.out.println("Caught Null Pointer Exception.");
-			System.out.println("Could be due to some missing text files");
+			System.out.println("Could be due to some missing text files.");
+			System.out.println("Or due to the map folder not being in the right location.");
 			npe.printStackTrace();
 			System.exit(0);
 		}
+		System.out.println("Place Dimensions in pixels, being used: " + PLACEWIDTH + "x" + PLACEHEIGHT);
 		final Iterator<String> terrIter = s_mapData.getTerritories().iterator();
 		System.out.println("Calculating, this may take a while...");
 		while (terrIter.hasNext())
@@ -166,7 +251,7 @@ public class AutoPlacementFinder
 		}// while
 		try
 		{
-			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt").getPathString();
+			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt", m_mapFolderLocation).getPathString();
 			if (fileName == null)
 			{
 				System.out.println("You chose not to save, Shutting down");
@@ -202,7 +287,7 @@ public class AutoPlacementFinder
 	
 	private static String getUnitsScale()
 	{
-		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (e.g. 1.25, 1, 0.875, 0.83333, 0.75, 0.66666, 0.5625, 0.5)");
+		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.83333, 0.75, 0.66666, 0.5625, 0.5)");
 		if (unitsScale != null)
 		{
 			return unitsScale;
@@ -395,5 +480,163 @@ public class AutoPlacementFinder
 			}
 		}
 		return false;
+	}
+	
+	private static String getValue(final String arg)
+	{
+		final int index = arg.indexOf('=');
+		if (index == -1)
+			return "";
+		return arg.substring(index + 1);
+	}
+	
+	private static void handleCommandLineArgs(final String[] args)
+	{
+		final String[] properties = getProperties();
+		if (args.length == 1)
+		{
+			String value;
+			if (args[0].startsWith(TRIPLEA_UNIT_ZOOM))
+			{
+				value = getValue(args[0]);
+			}
+			else
+			{
+				value = args[0];
+			}
+			try
+			{
+				Double.parseDouble(value);
+				System.setProperty(TRIPLEA_UNIT_ZOOM, value);
+			} catch (final Exception ex)
+			{
+			}
+		}
+		else if (args.length == 2)
+		{
+			String value0;
+			if (args[0].startsWith(TRIPLEA_UNIT_WIDTH))
+			{
+				value0 = getValue(args[0]);
+			}
+			else
+			{
+				value0 = args[0];
+			}
+			try
+			{
+				Integer.parseInt(value0);
+				System.setProperty(TRIPLEA_UNIT_WIDTH, value0);
+			} catch (final Exception ex)
+			{
+			}
+			
+			String value1;
+			if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT))
+			{
+				value1 = getValue(args[1]);
+			}
+			else
+			{
+				value1 = args[1];
+			}
+			try
+			{
+				Integer.parseInt(value1);
+				System.setProperty(TRIPLEA_UNIT_HEIGHT, value1);
+			} catch (final Exception ex)
+			{
+			}
+		}
+		
+		boolean usagePrinted = false;
+		for (int argIndex = 0; argIndex < args.length; argIndex++)
+		{
+			boolean found = false;
+			String arg = args[argIndex];
+			final int indexOf = arg.indexOf('=');
+			if (indexOf > 0)
+			{
+				arg = arg.substring(0, indexOf);
+				for (int propIndex = 0; propIndex < properties.length; propIndex++)
+				{
+					if (arg.equals(properties[propIndex]))
+					{
+						final String value = getValue(args[argIndex]);
+						System.getProperties().setProperty(properties[propIndex], value);
+						System.out.println(properties[propIndex] + ":" + value);
+						found = true;
+						break;
+					}
+				}
+			}
+			if (!found)
+			{
+				System.out.println("Unrecogized:" + args[argIndex]);
+				if (!usagePrinted)
+				{
+					usagePrinted = true;
+					System.out.println("Arguments\n"
+									+ "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\n"
+									+ "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\n"
+									+ "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\n"
+									+ "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\n");
+				}
+			}
+		}
+		final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
+		if (folderString != null && folderString.length() > 0)
+		{
+			final File mapFolder = new File(folderString);
+			if (mapFolder.exists())
+				m_mapFolderLocation = mapFolder;
+			else
+				System.out.println("Could not find directory: " + folderString);
+		}
+		final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
+		if (zoomString != null && zoomString.length() > 0)
+		{
+			try
+			{
+				unit_zoom_percent = Double.parseDouble(zoomString);
+				System.out.println("Unit Zoom Percent to use: " + unit_zoom_percent);
+				placeDimensionsSet = true;
+			} catch (final Exception ex)
+			{
+				System.err.println("Not a decimal percentage: " + zoomString);
+			}
+		}
+		final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
+		if (widthString != null && widthString.length() > 0)
+		{
+			try
+			{
+				unit_width = Integer.parseInt(widthString);
+				System.out.println("Unit Width to use: " + unit_width);
+				placeDimensionsSet = true;
+			} catch (final Exception ex)
+			{
+				System.err.println("Not an integer: " + widthString);
+			}
+		}
+		final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
+		if (heightString != null && heightString.length() > 0)
+		{
+			try
+			{
+				unit_height = Integer.parseInt(heightString);
+				System.out.println("Unit Height to use: " + unit_height);
+				placeDimensionsSet = true;
+			} catch (final Exception ex)
+			{
+				System.err.println("Not an integer: " + heightString);
+			}
+		}
+		if (placeDimensionsSet)
+		{
+			PLACEWIDTH = (int) (unit_zoom_percent * unit_width);
+			PLACEHEIGHT = (int) (unit_zoom_percent * unit_height);
+			System.out.println("Place Dimensions to use: " + PLACEWIDTH + "x" + PLACEHEIGHT);
+		}
 	}
 }// end class AutoPlacementFinder

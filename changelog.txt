@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Updating CenterPicker and PolygonGrabber and AutoPlacementFinder to include more notes on how to use them, as well as allowing arguments and remembering selections. (veqryn)
+
 * Fixing Global 1940 to match 2nd Edition version. (veqryn)
 
 * Preventing fighters that used up all movement to get to a battle, from getting to retreat. (veqryn)

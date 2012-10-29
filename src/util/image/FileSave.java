@@ -42,10 +42,15 @@ public class FileSave
 	 */
 	public FileSave(final String title, final String name)
 	{
+		this(title, name, new File(System.getProperties().getProperty("user.dir")));
+	}
+	
+	public FileSave(final String title, final String name, final File currentDirectory)
+	{
 		final JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		chooser.setDialogTitle(title);
-		chooser.setCurrentDirectory(new File(System.getProperties().getProperty("user.dir")));
+		chooser.setCurrentDirectory(currentDirectory);
 		chooser.setFileFilter(new javax.swing.filechooser.FileFilter()
 		{
 			@Override

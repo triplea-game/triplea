@@ -1202,6 +1202,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	
 	Collection<Territory> getAttackerRetreatTerritories()
 	{
+		// TODO: when attacking with paratroopers (air + carried land), there are several bugs in retreating.
+		// TODO: air should always be able to retreat. paratrooped land units can only retreat if there are other non-paratrooper non-amphibious land units.
 		// If attacker is all planes, just return collection of current
 		// territory
 		if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))

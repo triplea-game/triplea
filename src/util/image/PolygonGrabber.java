@@ -83,6 +83,8 @@ public class PolygonGrabber extends JFrame
 	private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // maps String -> List of polygons
 	private Map<String, Point> m_centers; // holds the centers for the polygons
 	private final JLabel location = new JLabel();
+	private static File m_mapFolderLocation = null;
+	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 	
 	/**
 	 * main(java.lang.String[])
@@ -97,14 +99,30 @@ public class PolygonGrabber extends JFrame
 	 */
 	public static void main(final String[] args)
 	{
+		handleCommandLineArgs(args);
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map").getPathString();
+		final String mapName = new FileOpen("Select The Map", m_mapFolderLocation, ".gif", ".png").getPathString();
 		if (mapName != null)
 		{
 			System.out.println("Map : " + mapName);
 			final PolygonGrabber grabber = new PolygonGrabber(mapName);
 			grabber.setSize(600, 550);
 			grabber.setVisible(true);
+			JOptionPane.showMessageDialog(grabber, new JLabel("<html>"
+						+ "This is the PolygonGrabber, it will create a polygons.txt file for you. "
+						+ "<br>In order to run this, you must already have created a center.txt file. "
+						+ "<br>Please click near the center of every single territory and sea zone on your map. "
+						+ "<br>The grabber will then fill in the territory based on the borders it finds."
+						+ "<br>If the territory shape or borders do not match what you intend, then your borders "
+						+ "<br>might have a gap or differently colored pixel in the border."
+						+ "<br>These borders will define the shape of the territory in TripleA."
+						+ "<br><br>When a territory is inside of another territory, you can turn on 'island mode' to be able to see it."
+						+ "<br><br>You can also load an existing polygons.txt file, then make modifications to it, then save it again."
+						+ "<br><br>LEFT CLICK = fill in a territory's borders."
+						+ "<br><br>Holding CTRL while LEFT CLICKING = add multiple territories together (eg: islands)."
+						+ "<br><br>RIGHT CLICK = save or replace those borders for that territory."
+						+ "<br><br>When finished, save the polygons and exit."
+						+ "</html>"));
 		}
 		else
 		{
@@ -127,7 +145,7 @@ public class PolygonGrabber extends JFrame
 	{
 		super("Polygon grabber");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		final File file = new File(new File(mapName).getParent() + File.pathSeparator + "centers.txt");
+		final File file = new File(new File(mapName).getParent() + File.separator + "centers.txt");
 		if (file.exists()
 					&& JOptionPane.showConfirmDialog(new JPanel(), "A centers.txt file was found in the map's folder, do you want to use the file to supply the territories names?", "File Suggestion",
 								1) == 0)
@@ -135,9 +153,10 @@ public class PolygonGrabber extends JFrame
 			try
 			{
 				System.out.println("Centers : " + file.getPath());
-				m_polygons = PointFileReaderWriter.readOneToManyPolygons(new FileInputStream(file.getPath()));
+				m_centers = PointFileReaderWriter.readOneToOne(new FileInputStream(file.getPath()));
 			} catch (final IOException ex1)
 			{
+				System.out.println("Something wrong with Centers file");
 				ex1.printStackTrace();
 			}
 		}
@@ -146,7 +165,7 @@ public class PolygonGrabber extends JFrame
 			try
 			{
 				System.out.println("Select the Centers file");
-				final String centerPath = new FileOpen("Select A Center File").getPathString();
+				final String centerPath = new FileOpen("Select A Center File", m_mapFolderLocation, ".txt").getPathString();
 				if (centerPath != null)
 				{
 					System.out.println("Centers : " + centerPath);
@@ -160,6 +179,7 @@ public class PolygonGrabber extends JFrame
 				}
 			} catch (final IOException ex1)
 			{
+				System.out.println("Something wrong with Centers file");
 				ex1.printStackTrace();
 				System.exit(0);
 			}
@@ -360,7 +380,7 @@ public class PolygonGrabber extends JFrame
 	{
 		try
 		{
-			final String polyName = new FileSave("Where To Save Polygons.txt ?", "polygons.txt").getPathString();
+			final String polyName = new FileSave("Where To Save Polygons.txt ?", "polygons.txt", m_mapFolderLocation).getPathString();
 			if (polyName == null)
 			{
 				return;
@@ -392,7 +412,7 @@ public class PolygonGrabber extends JFrame
 		try
 		{
 			System.out.println("Load a polygon file");
-			final String polyName = new FileOpen("Load A Polygon File").getPathString();
+			final String polyName = new FileOpen("Load A Polygon File", m_mapFolderLocation, ".txt").getPathString();
 			if (polyName == null)
 			{
 				return;
@@ -697,7 +717,7 @@ public class PolygonGrabber extends JFrame
 			if (iterCount > 100000)
 			{
 				JOptionPane.showMessageDialog(this, "Failed to grab the polygon. Failed at point: " + currentPoint.getX() + "," + currentPoint.getY() + "\r\n"
-							+ "Note that this is a common error and can usually be fixed by 'smoothing out' the territory border.");
+							+ "Note that this is a common error and can usually be fixed by 'smoothing out' the territory border and removing any anti-aliasing.");
 				return null;
 			}
 			int tempDirection;
@@ -737,5 +757,52 @@ public class PolygonGrabber extends JFrame
 		}
 		System.out.println("Done finding polygon. total points;" + xpoints.length);
 		return new Polygon(xpoints, ypoints, xpoints.length);
+	}
+	
+	private static String getValue(final String arg)
+	{
+		final int index = arg.indexOf('=');
+		if (index == -1)
+			return "";
+		return arg.substring(index + 1);
+	}
+	
+	private static void handleCommandLineArgs(final String[] args)
+	{
+		// arg can only be the map folder location.
+		if (args.length == 1)
+		{
+			String value;
+			if (args[0].startsWith(TRIPLEA_MAP_FOLDER))
+			{
+				value = getValue(args[0]);
+			}
+			else
+			{
+				value = args[0];
+			}
+			final File mapFolder = new File(value);
+			if (mapFolder.exists())
+				m_mapFolderLocation = mapFolder;
+			else
+				System.out.println("Could not find directory: " + value);
+		}
+		else if (args.length > 1)
+		{
+			System.out.println("Only argument allowed is the map directory.");
+		}
+		// might be set by -D
+		if (m_mapFolderLocation == null || m_mapFolderLocation.length() < 1)
+		{
+			final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+			if (value != null && value.length() > 0)
+			{
+				final File mapFolder = new File(value);
+				if (mapFolder.exists())
+					m_mapFolderLocation = mapFolder;
+				else
+					System.out.println("Could not find directory: " + value);
+			}
+		}
 	}
 }// end class PolygonGrabber
