@@ -30,12 +30,16 @@ import javax.xml.transform.stream.StreamSource;
 
 public class XmlUpdater
 {
+	private static File m_mapFolderLocation = null;
+	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
+	
 	/**
 	 * Utility for updating old game.xml files to the newer format.
 	 */
 	public static void main(final String[] args) throws Exception
 	{
-		final File gameXmlFile = new FileOpen("Select xml file", ".xml").getFile();
+		handleCommandLineArgs(args);
+		final File gameXmlFile = new FileOpen("Select xml file", m_mapFolderLocation, ".xml").getFile();
 		if (gameXmlFile == null)
 		{
 			System.out.println("No file selected");
@@ -68,5 +72,52 @@ public class XmlUpdater
 		gameXmlFile.renameTo(new File(gameXmlFile.getAbsolutePath() + ".backup"));
 		new FileOutputStream(gameXmlFile).write(resultBuf.toByteArray());
 		System.out.println("Successfully updated:" + gameXmlFile);
+	}
+	
+	private static String getValue(final String arg)
+	{
+		final int index = arg.indexOf('=');
+		if (index == -1)
+			return "";
+		return arg.substring(index + 1);
+	}
+	
+	private static void handleCommandLineArgs(final String[] args)
+	{
+		// arg can only be the map folder location.
+		if (args.length == 1)
+		{
+			String value;
+			if (args[0].startsWith(TRIPLEA_MAP_FOLDER))
+			{
+				value = getValue(args[0]);
+			}
+			else
+			{
+				value = args[0];
+			}
+			final File mapFolder = new File(value);
+			if (mapFolder.exists())
+				m_mapFolderLocation = mapFolder;
+			else
+				System.out.println("Could not find directory: " + value);
+		}
+		else if (args.length > 1)
+		{
+			System.out.println("Only argument allowed is the map directory.");
+		}
+		// might be set by -D
+		if (m_mapFolderLocation == null || m_mapFolderLocation.length() < 1)
+		{
+			final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+			if (value != null && value.length() > 0)
+			{
+				final File mapFolder = new File(value);
+				if (mapFolder.exists())
+					m_mapFolderLocation = mapFolder;
+				else
+					System.out.println("Could not find directory: " + value);
+			}
+		}
 	}
 }

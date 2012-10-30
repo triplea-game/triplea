@@ -122,7 +122,11 @@ public class CenterPicker extends JFrame
 	{
 		super("Center Picker");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		final File file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
+		File file = null;
+		if (m_mapFolderLocation != null && m_mapFolderLocation.exists())
+			file = new File(m_mapFolderLocation, "polygons.txt");
+		if (file == null || !file.exists())
+			file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
 		if (file.exists()
 					&& JOptionPane.showConfirmDialog(new JPanel(), "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories names?",
 								"File Suggestion", 1) == 0)

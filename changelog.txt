@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Updating TileImageBreaker and PlacementPicker to include more notes on how to use them, as well as fixing some bugs and allowing arguments and remembering selections. (veqryn)
+
 * Updating CenterPicker and PolygonGrabber and AutoPlacementFinder to include more notes on how to use them, as well as allowing arguments and remembering selections. (veqryn)
 
 * Fixing Global 1940 to match 2nd Edition version. (veqryn)

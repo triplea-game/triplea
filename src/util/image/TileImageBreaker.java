@@ -29,6 +29,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  * Utility for breaking an image into seperate smaller images.
@@ -43,9 +45,11 @@ import javax.swing.JFrame;
  */
 public class TileImageBreaker
 {
-	private static final String SMALL_MAPS_LOCATION = new FileSave("Where to save Tile Images?", null).getPathString();
+	private static String location = null;
 	private static JFrame observer = new JFrame();
 	private boolean m_baseMap;
+	private static File m_mapFolderLocation = null;
+	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 	
 	/**
 	 * main(java.lang.String[] args)
@@ -62,6 +66,22 @@ public class TileImageBreaker
 	 */
 	public static void main(final String[] args) throws Exception
 	{
+		handleCommandLineArgs(args);
+		JOptionPane.showMessageDialog(null, new JLabel("<html>"
+					+ "This is the TileImageBreaker, it will create the map image tiles file for you. "
+					+ "<br>It will take any image, and break it up into 256x256 pixel squares, and put them all in a folder. "
+					+ "<br>You can use this to create the base tiles (background) as well as the relief tiles (art relief)."
+					+ "<br>For the base image (the one used to make centers.txt, etc), please save it to a folder called baseTiles"
+					+ "<br>For the relief image, please save it to a folder called reliefTiles"
+					+ "</html>"));
+		location = new FileSave("Where to save Tile Images?", null, m_mapFolderLocation).getPathString();
+		if (location == null)
+		{
+			System.out.println("You need to select a folder to save the tiles in for this to work");
+			System.out.println("Shutting down");
+			System.exit(0);
+			return;
+		}
 		new TileImageBreaker().createMaps();
 	}
 	
@@ -131,7 +151,7 @@ public class TileImageBreaker
 				// break;
 				// }
 				// }
-				final String outFileName = SMALL_MAPS_LOCATION + File.separator + x + "_" + y + ".png";
+				final String outFileName = location + File.separator + x + "_" + y + ".png";
 				// if(!match)
 				// {
 				// System.out.println("Skipping" + outFileName);
@@ -215,7 +235,7 @@ public class TileImageBreaker
 	private static Image loadImage()
 	{
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map").getPathString();
+		final String mapName = new FileOpen("Select The Map", m_mapFolderLocation, ".gif", ".png").getPathString();
 		if (mapName != null)
 		{
 			final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
@@ -234,6 +254,53 @@ public class TileImageBreaker
 		else
 		{
 			return null;
+		}
+	}
+	
+	private static String getValue(final String arg)
+	{
+		final int index = arg.indexOf('=');
+		if (index == -1)
+			return "";
+		return arg.substring(index + 1);
+	}
+	
+	private static void handleCommandLineArgs(final String[] args)
+	{
+		// arg can only be the map folder location.
+		if (args.length == 1)
+		{
+			String value;
+			if (args[0].startsWith(TRIPLEA_MAP_FOLDER))
+			{
+				value = getValue(args[0]);
+			}
+			else
+			{
+				value = args[0];
+			}
+			final File mapFolder = new File(value);
+			if (mapFolder.exists())
+				m_mapFolderLocation = mapFolder;
+			else
+				System.out.println("Could not find directory: " + value);
+		}
+		else if (args.length > 1)
+		{
+			System.out.println("Only argument allowed is the map directory.");
+		}
+		// might be set by -D
+		if (m_mapFolderLocation == null || m_mapFolderLocation.length() < 1)
+		{
+			final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+			if (value != null && value.length() > 0)
+			{
+				final File mapFolder = new File(value);
+				if (mapFolder.exists())
+					m_mapFolderLocation = mapFolder;
+				else
+					System.out.println("Could not find directory: " + value);
+			}
 		}
 	}
 }// end class ReliefImageBreaker

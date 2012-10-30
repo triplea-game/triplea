@@ -50,7 +50,7 @@ public class FileSave
 		final JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		chooser.setDialogTitle(title);
-		chooser.setCurrentDirectory(currentDirectory);
+		chooser.setCurrentDirectory(((currentDirectory == null || !currentDirectory.exists()) ? new File(System.getProperties().getProperty("user.dir")) : currentDirectory));
 		chooser.setFileFilter(new javax.swing.filechooser.FileFilter()
 		{
 			@Override

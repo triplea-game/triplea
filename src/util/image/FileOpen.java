@@ -59,7 +59,7 @@ public class FileOpen
 	{
 		final JFileChooser chooser = new JFileChooser();
 		chooser.setDialogTitle(title);
-		chooser.setCurrentDirectory(currentDirectory);
+		chooser.setCurrentDirectory(((currentDirectory == null || !currentDirectory.exists()) ? new File(System.getProperties().getProperty("user.dir")) : currentDirectory));
 		/*
 		 * Show only text and gif files
 		 */

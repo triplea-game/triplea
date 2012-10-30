@@ -26,6 +26,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.FileImageOutputStream;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /**
@@ -36,9 +37,17 @@ import javax.swing.JOptionPane;
  */
 public class ImageShrinker
 {
+	private static File m_mapFolderLocation = null;
+	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
+	
 	public static void main(final String[] args) throws Exception
 	{
-		final File mapFile = new FileOpen("Select The Large Image").getFile();
+		handleCommandLineArgs(args);
+		JOptionPane.showMessageDialog(null, new JLabel("<html>"
+					+ "This is the ImageShrinker, it will create a smallMap.jpeg file for you. "
+					+ "<br>Put in your base map or relief map, and it will spit out a small scaled copy of it."
+					+ "</html>"));
+		final File mapFile = new FileOpen("Select The Large Image", m_mapFolderLocation, ".gif", ".png").getFile();
 		if (!mapFile.exists())
 			throw new IllegalStateException(mapFile + "File does not exist");
 		final String input = JOptionPane.showInputDialog(null, "Select scale");
@@ -66,5 +75,52 @@ public class ImageShrinker
 		out.close();
 		System.out.println("Image successfully written to " + file.getPath());
 		System.exit(0);
+	}
+	
+	private static String getValue(final String arg)
+	{
+		final int index = arg.indexOf('=');
+		if (index == -1)
+			return "";
+		return arg.substring(index + 1);
+	}
+	
+	private static void handleCommandLineArgs(final String[] args)
+	{
+		// arg can only be the map folder location.
+		if (args.length == 1)
+		{
+			String value;
+			if (args[0].startsWith(TRIPLEA_MAP_FOLDER))
+			{
+				value = getValue(args[0]);
+			}
+			else
+			{
+				value = args[0];
+			}
+			final File mapFolder = new File(value);
+			if (mapFolder.exists())
+				m_mapFolderLocation = mapFolder;
+			else
+				System.out.println("Could not find directory: " + value);
+		}
+		else if (args.length > 1)
+		{
+			System.out.println("Only argument allowed is the map directory.");
+		}
+		// might be set by -D
+		if (m_mapFolderLocation == null || m_mapFolderLocation.length() < 1)
+		{
+			final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+			if (value != null && value.length() > 0)
+			{
+				final File mapFolder = new File(value);
+				if (mapFolder.exists())
+					m_mapFolderLocation = mapFolder;
+				else
+					System.out.println("Could not find directory: " + value);
+			}
+		}
 	}
 }

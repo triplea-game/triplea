@@ -36,6 +36,7 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /**
@@ -51,10 +52,12 @@ import javax.swing.JOptionPane;
  */
 public class ReliefImageBreaker
 {
-	private static final String SMALL_MAPS_LOCATION = new FileSave("Where to save Reliefe Images?", null).getPathString();
+	private static String location = null;
 	private static JFrame observer = new JFrame();
 	private boolean m_seaZoneOnly;
 	private MapData m_mapData;
+	private static File m_mapFolderLocation = null;
+	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 	
 	/**
 	 * main(java.lang.String[] args)
@@ -71,6 +74,21 @@ public class ReliefImageBreaker
 	 */
 	public static void main(final String[] args) throws Exception
 	{
+		handleCommandLineArgs(args);
+		JOptionPane.showMessageDialog(null, new JLabel("<html>"
+					+ "This is the ReliefImageBreaker, it is no longer used. "
+					+ "<br>It will take any image and finalized map folder, and will create cut out images of the relief art "
+					+ "<br>for each territory and sea zone."
+					+ "<br><br>TripleA no longer uses these, and instead uses reliefTiles (use the TileImageBreaker for that)."
+					+ "</html>"));
+		location = new FileSave("Where to save Reliefe Images?", null, m_mapFolderLocation).getPathString();
+		if (location == null)
+		{
+			System.out.println("You need to select a folder to save the tiles in for this to work");
+			System.out.println("Shutting down");
+			System.exit(0);
+			return;
+		}
 		new ReliefImageBreaker().createMaps();
 	}
 	
@@ -199,7 +217,7 @@ public class ReliefImageBreaker
 	private static Image loadImage()
 	{
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map").getPathString();
+		final String mapName = new FileOpen("Select The Map", m_mapFolderLocation, ".gif", ".png").getPathString();
 		if (mapName != null)
 		{
 			final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
@@ -254,7 +272,7 @@ public class ReliefImageBreaker
 		final BufferedImage relief = m_localGraphicSystem.createCompatibleImage(width, height, m_seaZoneOnly ? Transparency.BITMASK : Transparency.TRANSLUCENT);
 		relief.getGraphics().drawImage(map, 0, 0, width, height, bounds.x, bounds.y, bounds.x + width, bounds.y + height, observer);
 		blankOutline(alphaChannelImage, relief);
-		String outFileName = SMALL_MAPS_LOCATION + "/" + territory;
+		String outFileName = location + File.separator + territory;
 		if (!m_seaZoneOnly)
 		{
 			outFileName += "_relief.png";
@@ -263,7 +281,7 @@ public class ReliefImageBreaker
 		{
 			outFileName += ".png";
 		}
-		outFileName = outFileName.replace(' ', '_');
+		// outFileName = outFileName.replace(' ', '_');
 		ImageIO.write(relief, "png", new File(outFileName));
 		System.out.println("wrote " + outFileName);
 	}
@@ -297,5 +315,52 @@ public class ReliefImageBreaker
 		}
 		// cleanup
 		gc.setComposite(prevComposite);
+	}
+	
+	private static String getValue(final String arg)
+	{
+		final int index = arg.indexOf('=');
+		if (index == -1)
+			return "";
+		return arg.substring(index + 1);
+	}
+	
+	private static void handleCommandLineArgs(final String[] args)
+	{
+		// arg can only be the map folder location.
+		if (args.length == 1)
+		{
+			String value;
+			if (args[0].startsWith(TRIPLEA_MAP_FOLDER))
+			{
+				value = getValue(args[0]);
+			}
+			else
+			{
+				value = args[0];
+			}
+			final File mapFolder = new File(value);
+			if (mapFolder.exists())
+				m_mapFolderLocation = mapFolder;
+			else
+				System.out.println("Could not find directory: " + value);
+		}
+		else if (args.length > 1)
+		{
+			System.out.println("Only argument allowed is the map directory.");
+		}
+		// might be set by -D
+		if (m_mapFolderLocation == null || m_mapFolderLocation.length() < 1)
+		{
+			final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+			if (value != null && value.length() > 0)
+			{
+				final File mapFolder = new File(value);
+				if (mapFolder.exists())
+					m_mapFolderLocation = mapFolder;
+				else
+					System.out.println("Could not find directory: " + value);
+			}
+		}
 	}
 }// end class ReliefImageBreaker

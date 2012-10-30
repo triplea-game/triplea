@@ -14,6 +14,7 @@
 package util.image;
 
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.MapData;
 import games.strategy.ui.Util;
 import games.strategy.util.PointFileReaderWriter;
 
@@ -36,7 +37,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -68,6 +71,20 @@ public class PlacementPicker extends JFrame
 	private String m_currentCountry;
 	private static int PLACEWIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private static int PLACEHEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+	private static boolean placeDimensionsSet = false;
+	private static double unit_zoom_percent = 1;
+	private static int unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+	private static int unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+	private static File m_mapFolderLocation = null;
+	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
+	private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
+	private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
+	private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
+	
+	public static String[] getProperties()
+	{
+		return new String[] { TRIPLEA_MAP_FOLDER, TRIPLEA_UNIT_ZOOM, TRIPLEA_UNIT_WIDTH, TRIPLEA_UNIT_HEIGHT };
+	}
 	
 	/**
 	 * main(java.lang.String[])
@@ -82,28 +99,26 @@ public class PlacementPicker extends JFrame
 	 */
 	public static void main(final String[] args)
 	{
-		if (args.length == 1)
-		{
-			PLACEWIDTH = Integer.parseInt(args[0]);
-			PLACEHEIGHT = PLACEWIDTH;
-			System.out.println("Width and Height to use: " + PLACEWIDTH);
-		}
-		else if (args.length == 2)
-		{
-			PLACEWIDTH = Integer.parseInt(args[0]);
-			System.out.println("Width to use: " + PLACEWIDTH);
-			PLACEHEIGHT = Integer.parseInt(args[1]);
-			System.out.println("Height to use: " + PLACEHEIGHT);
-		}
-		else
-		{
-			final String result = getUnitsScale();
-			final double percent = Double.parseDouble(result.toLowerCase());
-			PLACEHEIGHT = (int) (percent * PLACEHEIGHT);
-			PLACEWIDTH = (int) (percent * PLACEWIDTH);
-		}
+		handleCommandLineArgs(args);
+		JOptionPane.showMessageDialog(null, new JLabel("<html>"
+					+ "This is the PlacementPicker, it will create a place.txt file for you. "
+					+ "<br>In order to run this, you must already have created a centers.txt file and a polygons.txt file. "
+					+ "<br><br>The program will ask for unit scale (unit zoom) level [normally between 0.5 and 1.0], "
+					+ "<br>Then it will ask for the unit image size when not zoomed [normally 48x48]. "
+					+ "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit size. "
+					+ "<br><br>After it starts, you may Load an existing place.txt file, that way you can make changes to it then save it. "
+					+ "<br><br>LEFT CLICK = Select a new territory. "
+					+ "<br><br>Holding CTRL + LEFT CLICK = Create a new placement for that territory. "
+					+ "<br><br>RIGHT CLICK = Remove last placement for that territory. "
+					+ "<br><br>Holding CTRL + RIGHT CLICK = Save all placements for that territory. "
+					+ "<br><br>It is a very good idea to check each territory using the PlacementPicker after running the AutoPlacementFinder "
+					+ "<br>to make sure there are enough placements for each territory. If not, you can always add more then save it. "
+					+ "<br><br>IF there are not enough placements, the units will Overflow to the RIGHT of the very LAST placement made, "
+					+ "<br>so be sure that the last placement is on the right side of the territory "
+					+ "<br>or that it does not overflow directly on top of other placements. "
+					+ "</html>"));
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map").getPathString();
+		final String mapName = new FileOpen("Select The Map", m_mapFolderLocation, ".gif", ".png").getPathString();
 		if (mapName != null)
 		{
 			final PlacementPicker picker = new PlacementPicker(mapName);
@@ -131,7 +146,133 @@ public class PlacementPicker extends JFrame
 	{
 		super("Placement Picker");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		final File file = new File(new File(mapName).getParent() + File.pathSeparator + "polygons.txt");
+		
+		if (!placeDimensionsSet)
+		{
+			try
+			{
+				File file = null;
+				if (m_mapFolderLocation != null && m_mapFolderLocation.exists())
+					file = new File(m_mapFolderLocation, "map.properties");
+				if (file == null || !file.exists())
+					file = new File(new File(mapName).getParent() + File.separator + "map.properties");
+				if (file.exists())
+				{
+					double scale = unit_zoom_percent;
+					int width = unit_width;
+					int height = unit_height;
+					boolean found = false;
+					final String scaleProperty = MapData.UNIT_SCALE_PROPERTY + "=";
+					final String widthProperty = MapData.UNIT_WIDTH_PROPERTY + "=";
+					final String heightProperty = MapData.UNIT_HEIGHT_PROPERTY + "=";
+					
+					final FileReader reader = new FileReader(file);
+					final LineNumberReader reader2 = new LineNumberReader(reader);
+					int i = 0;
+					while (true)
+					{
+						reader2.setLineNumber(i);
+						final String line = reader2.readLine();
+						if (line == null)
+							break;
+						if (line.contains(scaleProperty))
+						{
+							try
+							{
+								scale = Double.parseDouble(line.substring(line.indexOf(scaleProperty) + scaleProperty.length()).trim());
+								found = true;
+							} catch (final NumberFormatException ex)
+							{
+							}
+						}
+						if (line.contains(widthProperty))
+						{
+							try
+							{
+								width = Integer.parseInt(line.substring(line.indexOf(widthProperty) + widthProperty.length()).trim());
+								found = true;
+							} catch (final NumberFormatException ex)
+							{
+							}
+						}
+						if (line.contains(heightProperty))
+						{
+							try
+							{
+								height = Integer.parseInt(line.substring(line.indexOf(heightProperty) + heightProperty.length()).trim());
+								found = true;
+							} catch (final NumberFormatException ex)
+							{
+							}
+						}
+					}
+					i++;
+					if (found)
+					{
+						final int result = JOptionPane.showConfirmDialog(new JPanel(),
+										"A map.properties file was found in the map's folder, " +
+													"\r\n do you want to use the file to supply the info for the placement box size? " +
+													"\r\n Zoom = " + scale + ",  Width = " + width + ",  Height = " + height +
+													",    Result = (" + ((int) (scale * width)) + "x" + ((int) (scale * height)) + ")", "File Suggestion", 1);
+						// if (result == 2)
+						// return;
+						if (result == 0)
+						{
+							unit_zoom_percent = scale;
+							PLACEWIDTH = (int) (unit_zoom_percent * width);
+							PLACEHEIGHT = (int) (unit_zoom_percent * height);
+							placeDimensionsSet = true;
+						}
+					}
+				}
+			} catch (final Exception ex)
+			{
+			}
+		}
+		if (!placeDimensionsSet
+					|| JOptionPane.showConfirmDialog(new JPanel(), "Placement Box Size already set (" + PLACEWIDTH + "x" + PLACEHEIGHT + "), " +
+								"do you wish to continue with this?\r\nSelect Yes to continue, Select No to override and change the size.", "Placement Box Size", JOptionPane.YES_NO_OPTION) == 1)
+		{
+			try
+			{
+				final String result = getUnitsScale();
+				try
+				{
+					unit_zoom_percent = Double.parseDouble(result.toLowerCase());
+				} catch (final NumberFormatException ex)
+				{
+				}
+				final String width = JOptionPane.showInputDialog(null, "Enter the unit's image width in pixels (unscaled / without zoom).\r\n(e.g. 48)");
+				if (width != null)
+				{
+					try
+					{
+						PLACEWIDTH = (int) (unit_zoom_percent * Integer.parseInt(width));
+					} catch (final NumberFormatException ex)
+					{
+					}
+				}
+				final String height = JOptionPane.showInputDialog(null, "Enter the unit's image height in pixels (unscaled / without zoom).\r\n(e.g. 48)");
+				if (height != null)
+				{
+					try
+					{
+						PLACEHEIGHT = (int) (unit_zoom_percent * Integer.parseInt(height));
+					} catch (final NumberFormatException ex)
+					{
+					}
+				}
+				placeDimensionsSet = true;
+			} catch (final Exception ex)
+			{
+			}
+		}
+		
+		File file = null;
+		if (m_mapFolderLocation != null && m_mapFolderLocation.exists())
+			file = new File(m_mapFolderLocation, "polygons.txt");
+		if (file == null || !file.exists())
+			file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
 		if (file.exists()
 					&& JOptionPane.showConfirmDialog(new JPanel(), "A polygons.txt file was found in the map's folder, do you want to use the file to supply the territories?", "File Suggestion", 1) == 0)
 		{
@@ -149,7 +290,7 @@ public class PlacementPicker extends JFrame
 			try
 			{
 				System.out.println("Select the Polygons file");
-				final String polyPath = new FileOpen("Select A Polygon File").getPathString();
+				final String polyPath = new FileOpen("Select A Polygon File", m_mapFolderLocation, ".txt").getPathString();
 				if (polyPath != null)
 				{
 					System.out.println("Polygons : " + polyPath);
@@ -318,7 +459,7 @@ public class PlacementPicker extends JFrame
 	{
 		try
 		{
-			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt").getPathString();
+			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt", m_mapFolderLocation).getPathString();
 			if (fileName == null)
 			{
 				return;
@@ -350,7 +491,7 @@ public class PlacementPicker extends JFrame
 		try
 		{
 			System.out.println("Load a placement file");
-			final String placeName = new FileOpen("Load A Placement File").getPathString();
+			final String placeName = new FileOpen("Load A Placement File", m_mapFolderLocation, ".txt").getPathString();
 			if (placeName == null)
 			{
 				return;
@@ -435,25 +576,29 @@ public class PlacementPicker extends JFrame
 		}
 		else if (!rightMouse && ctrlDown)
 		{
-			m_currentPlacements.add(point);
+			if (m_currentPlacements != null)
+				m_currentPlacements.add(point);
 		}
 		else if (rightMouse && ctrlDown)
 		{
-			// If there isn't an existing hashmap, create one
-			if (m_placements == null)
+			if (m_currentPlacements != null)
 			{
-				m_placements = new HashMap<String, List<Point>>();
+				// If there isn't an existing hashmap, create one
+				if (m_placements == null)
+				{
+					m_placements = new HashMap<String, List<Point>>();
+				}
+				else
+				{
+					m_placements.put(m_currentCountry, m_currentPlacements);
+				}
+				m_currentPlacements = new ArrayList<Point>();
+				System.out.println("done:" + m_currentCountry);
 			}
-			else
-			{
-				m_placements.put(m_currentCountry, m_currentPlacements);
-			}
-			m_currentPlacements = new ArrayList<Point>();
-			System.out.println("done:" + m_currentCountry);
 		}
 		else if (rightMouse)
 		{
-			if (!m_currentPlacements.isEmpty())
+			if (m_currentPlacements != null && !m_currentPlacements.isEmpty())
 			{
 				m_currentPlacements.remove(m_currentPlacements.size() - 1);
 			}
@@ -463,7 +608,7 @@ public class PlacementPicker extends JFrame
 	
 	private static String getUnitsScale()
 	{
-		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (e.g. 1.25, 1, 0.875, 0.83333, 0.75, 0.66666, 0.5625, 0.5)");
+		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.83333, 0.75, 0.66666, 0.5625, 0.5)");
 		if (unitsScale != null)
 		{
 			return unitsScale;
@@ -471,6 +616,164 @@ public class PlacementPicker extends JFrame
 		else
 		{
 			return "1";
+		}
+	}
+	
+	private static String getValue(final String arg)
+	{
+		final int index = arg.indexOf('=');
+		if (index == -1)
+			return "";
+		return arg.substring(index + 1);
+	}
+	
+	private static void handleCommandLineArgs(final String[] args)
+	{
+		final String[] properties = getProperties();
+		if (args.length == 1)
+		{
+			String value;
+			if (args[0].startsWith(TRIPLEA_UNIT_ZOOM))
+			{
+				value = getValue(args[0]);
+			}
+			else
+			{
+				value = args[0];
+			}
+			try
+			{
+				Double.parseDouble(value);
+				System.setProperty(TRIPLEA_UNIT_ZOOM, value);
+			} catch (final Exception ex)
+			{
+			}
+		}
+		else if (args.length == 2)
+		{
+			String value0;
+			if (args[0].startsWith(TRIPLEA_UNIT_WIDTH))
+			{
+				value0 = getValue(args[0]);
+			}
+			else
+			{
+				value0 = args[0];
+			}
+			try
+			{
+				Integer.parseInt(value0);
+				System.setProperty(TRIPLEA_UNIT_WIDTH, value0);
+			} catch (final Exception ex)
+			{
+			}
+			
+			String value1;
+			if (args[0].startsWith(TRIPLEA_UNIT_HEIGHT))
+			{
+				value1 = getValue(args[1]);
+			}
+			else
+			{
+				value1 = args[1];
+			}
+			try
+			{
+				Integer.parseInt(value1);
+				System.setProperty(TRIPLEA_UNIT_HEIGHT, value1);
+			} catch (final Exception ex)
+			{
+			}
+		}
+		
+		boolean usagePrinted = false;
+		for (int argIndex = 0; argIndex < args.length; argIndex++)
+		{
+			boolean found = false;
+			String arg = args[argIndex];
+			final int indexOf = arg.indexOf('=');
+			if (indexOf > 0)
+			{
+				arg = arg.substring(0, indexOf);
+				for (int propIndex = 0; propIndex < properties.length; propIndex++)
+				{
+					if (arg.equals(properties[propIndex]))
+					{
+						final String value = getValue(args[argIndex]);
+						System.getProperties().setProperty(properties[propIndex], value);
+						System.out.println(properties[propIndex] + ":" + value);
+						found = true;
+						break;
+					}
+				}
+			}
+			if (!found)
+			{
+				System.out.println("Unrecogized:" + args[argIndex]);
+				if (!usagePrinted)
+				{
+					usagePrinted = true;
+					System.out.println("Arguments\n"
+									+ "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\n"
+									+ "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\n"
+									+ "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\n"
+									+ "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\n");
+				}
+			}
+		}
+		final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
+		if (folderString != null && folderString.length() > 0)
+		{
+			final File mapFolder = new File(folderString);
+			if (mapFolder.exists())
+				m_mapFolderLocation = mapFolder;
+			else
+				System.out.println("Could not find directory: " + folderString);
+		}
+		final String zoomString = System.getProperty(TRIPLEA_UNIT_ZOOM);
+		if (zoomString != null && zoomString.length() > 0)
+		{
+			try
+			{
+				unit_zoom_percent = Double.parseDouble(zoomString);
+				System.out.println("Unit Zoom Percent to use: " + unit_zoom_percent);
+				placeDimensionsSet = true;
+			} catch (final Exception ex)
+			{
+				System.err.println("Not a decimal percentage: " + zoomString);
+			}
+		}
+		final String widthString = System.getProperty(TRIPLEA_UNIT_WIDTH);
+		if (widthString != null && widthString.length() > 0)
+		{
+			try
+			{
+				unit_width = Integer.parseInt(widthString);
+				System.out.println("Unit Width to use: " + unit_width);
+				placeDimensionsSet = true;
+			} catch (final Exception ex)
+			{
+				System.err.println("Not an integer: " + widthString);
+			}
+		}
+		final String heightString = System.getProperty(TRIPLEA_UNIT_HEIGHT);
+		if (heightString != null && heightString.length() > 0)
+		{
+			try
+			{
+				unit_height = Integer.parseInt(heightString);
+				System.out.println("Unit Height to use: " + unit_height);
+				placeDimensionsSet = true;
+			} catch (final Exception ex)
+			{
+				System.err.println("Not an integer: " + heightString);
+			}
+		}
+		if (placeDimensionsSet)
+		{
+			PLACEWIDTH = (int) (unit_zoom_percent * unit_width);
+			PLACEHEIGHT = (int) (unit_zoom_percent * unit_height);
+			System.out.println("Place Dimensions to use: " + PLACEWIDTH + "x" + PLACEHEIGHT);
 		}
 	}
 }// end class PlacementPicker
