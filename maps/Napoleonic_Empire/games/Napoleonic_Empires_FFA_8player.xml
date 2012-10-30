@@ -2160,12 +2160,12 @@
 </attatchment>
 <attatchment name="unitAttatchment" attatchTo="Fortress" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="0"/>
-<option name="attack" value="0"/>
+<option name="attack" value="4"/>
 <option name="defense" value="4"/>
 </attatchment>
 <attatchment name="unitAttatchment" attatchTo="Mortella_Tower" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="0"/>
-<option name="attack" value="0"/>
+<option name="attack" value="2"/>
 <option name="defense" value="2"/>
 </attatchment>
 <attatchment name="unitAttatchment" attatchTo="Encampment" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
@@ -7672,8 +7672,8 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;0/0/1/14 General . Can Produce Units on Territory you owned at beginning of turn, Can be Captured, Can be Transported, TCost=3
 &lt;br&gt;
 &lt;br&gt;Special/Extra Units:
-&lt;br&gt;0/2/0/3 Mortella Tower
-&lt;br&gt;0/4/0/5 Fortress
+&lt;br&gt;2/2/0/3 Mortella Tower
+&lt;br&gt;4/4/0/5 Fortress
 &lt;br&gt;5/1/1/8 Mortars . Gives Support (+1 attack)
 &lt;br&gt;4/3/2/9 Marshal . Blitz, Supportable
 &lt;br&gt;4/3/3/9 Ney/Wellington/Blucher/Charles/Kutusov . Blitz, Supportable
