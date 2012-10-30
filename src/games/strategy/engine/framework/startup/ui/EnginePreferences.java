@@ -2,6 +2,7 @@ package games.strategy.engine.framework.startup.ui;
 
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.GameRunner2.ProxyChoice;
+import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.net.BareBonesBrowserLaunch;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.ui.TripleaMenu;
@@ -14,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
@@ -46,6 +49,7 @@ public class EnginePreferences extends JDialog
 	private JButton m_lookAndFeel;
 	private JButton m_gameParser;
 	private JButton m_setupProxies;
+	private JButton m_mapCreator;
 	private JButton m_donate;
 	
 	private EnginePreferences(final Frame parentFrame)
@@ -73,6 +77,7 @@ public class EnginePreferences extends JDialog
 		m_lookAndFeel = new JButton("Set Look And Feel...");
 		m_gameParser = new JButton("Enable/Disable Delayed Parsing of Game XML's");
 		m_setupProxies = new JButton("Setup Network and Proxy Settings");
+		m_mapCreator = new JButton("Run the Map Creator");
 		m_donate = new JButton("Donate...");
 	}
 	
@@ -95,6 +100,8 @@ public class EnginePreferences extends JDialog
 		buttonsPanel.add(m_gameParser);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_setupProxies);
+		buttonsPanel.add(new JLabel(" "));
+		buttonsPanel.add(m_mapCreator);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_donate);
 		buttonsPanel.add(new JLabel(" "));
@@ -208,6 +215,19 @@ public class EnginePreferences extends JDialog
 				else
 					newChoice = ProxyChoice.NONE;
 				GameRunner2.setProxy(hostText.getText(), portText.getText(), newChoice);
+			}
+		});
+		m_mapCreator.addActionListener(new AbstractAction()
+		{
+			private static final long serialVersionUID = 1262782772917758914L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				final List<String> commands = new ArrayList<String>();
+				ProcessRunnerUtil.populateBasicJavaArgs(commands);
+				final String javaClass = "util.image.MapCreator";
+				commands.add(javaClass);
+				ProcessRunnerUtil.exec(commands);
 			}
 		});
 		m_donate.addActionListener(new ActionListener()

@@ -50,7 +50,7 @@ public class AutoPlacementFinder
 	private static double unit_zoom_percent = 1;
 	private static int unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private static int unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-	private static File m_mapFolderLocation = null;
+	private static File s_mapFolderLocation = null;
 	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 	private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
 	private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
@@ -89,7 +89,7 @@ public class AutoPlacementFinder
 	static void calculate()
 	{
 		final Map<String, Collection<Point>> m_placements = new HashMap<String, Collection<Point>>(); // create hash map of placements
-		final String mapDir = m_mapFolderLocation == null ? getMapDirectory() : m_mapFolderLocation.getName(); // ask user where the map is
+		final String mapDir = s_mapFolderLocation == null ? getMapDirectory() : s_mapFolderLocation.getName(); // ask user where the map is
 		if (mapDir == null)
 		{
 			System.out.println("You need to specify a map name for this to work");
@@ -109,9 +109,9 @@ public class AutoPlacementFinder
 					int width = unit_width;
 					int height = unit_height;
 					boolean found = false;
-					final String scaleProperty = MapData.UNIT_SCALE_PROPERTY + "=";
-					final String widthProperty = MapData.UNIT_WIDTH_PROPERTY + "=";
-					final String heightProperty = MapData.UNIT_HEIGHT_PROPERTY + "=";
+					final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
+					final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
+					final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
 					
 					final FileReader reader = new FileReader(file);
 					final LineNumberReader reader2 = new LineNumberReader(reader);
@@ -251,7 +251,7 @@ public class AutoPlacementFinder
 		}// while
 		try
 		{
-			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt", m_mapFolderLocation).getPathString();
+			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt", s_mapFolderLocation).getPathString();
 			if (fileName == null)
 			{
 				System.out.println("You chose not to save, Shutting down");
@@ -287,7 +287,7 @@ public class AutoPlacementFinder
 	
 	private static String getUnitsScale()
 	{
-		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.83333, 0.75, 0.66666, 0.5625, 0.5)");
+		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
 		if (unitsScale != null)
 		{
 			return unitsScale;
@@ -584,12 +584,13 @@ public class AutoPlacementFinder
 				}
 			}
 		}
-		final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
+		String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
 		if (folderString != null && folderString.length() > 0)
 		{
+			folderString = folderString.replaceAll("\\(", " ");
 			final File mapFolder = new File(folderString);
 			if (mapFolder.exists())
-				m_mapFolderLocation = mapFolder;
+				s_mapFolderLocation = mapFolder;
 			else
 				System.out.println("Could not find directory: " + folderString);
 		}

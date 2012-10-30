@@ -56,7 +56,7 @@ public class ReliefImageBreaker
 	private static JFrame observer = new JFrame();
 	private boolean m_seaZoneOnly;
 	private MapData m_mapData;
-	private static File m_mapFolderLocation = null;
+	private static File s_mapFolderLocation = null;
 	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 	
 	/**
@@ -81,7 +81,7 @@ public class ReliefImageBreaker
 					+ "<br>for each territory and sea zone."
 					+ "<br><br>TripleA no longer uses these, and instead uses reliefTiles (use the TileImageBreaker for that)."
 					+ "</html>"));
-		location = new FileSave("Where to save Reliefe Images?", null, m_mapFolderLocation).getPathString();
+		location = new FileSave("Where to save Reliefe Images?", null, s_mapFolderLocation).getPathString();
 		if (location == null)
 		{
 			System.out.println("You need to select a folder to save the tiles in for this to work");
@@ -217,7 +217,7 @@ public class ReliefImageBreaker
 	private static Image loadImage()
 	{
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map", m_mapFolderLocation, ".gif", ".png").getPathString();
+		final String mapName = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png").getPathString();
 		if (mapName != null)
 		{
 			final Image img = Toolkit.getDefaultToolkit().createImage(mapName);
@@ -341,7 +341,7 @@ public class ReliefImageBreaker
 			}
 			final File mapFolder = new File(value);
 			if (mapFolder.exists())
-				m_mapFolderLocation = mapFolder;
+				s_mapFolderLocation = mapFolder;
 			else
 				System.out.println("Could not find directory: " + value);
 		}
@@ -350,14 +350,15 @@ public class ReliefImageBreaker
 			System.out.println("Only argument allowed is the map directory.");
 		}
 		// might be set by -D
-		if (m_mapFolderLocation == null || m_mapFolderLocation.length() < 1)
+		if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1)
 		{
-			final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+			String value = System.getProperty(TRIPLEA_MAP_FOLDER);
 			if (value != null && value.length() > 0)
 			{
+				value = value.replaceAll("\\(", " ");
 				final File mapFolder = new File(value);
 				if (mapFolder.exists())
-					m_mapFolderLocation = mapFolder;
+					s_mapFolderLocation = mapFolder;
 				else
 					System.out.println("Could not find directory: " + value);
 			}

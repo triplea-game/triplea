@@ -1,4 +1,8 @@
 Changes for 1.6.1.3
+* Set up UI for map creator, fixed it up to be able to run all utility files, including sending arguments to them. (veqryn)
+
+* Creating a new Map Creator / Map Maker that is accessible from the Engine Preferences section of TripleA. (veqryn)
+
 * Updating TileImageBreaker and PlacementPicker to include more notes on how to use them, as well as fixing some bugs and allowing arguments and remembering selections. (veqryn)
 
 * Updating CenterPicker and PolygonGrabber and AutoPlacementFinder to include more notes on how to use them, as well as allowing arguments and remembering selections. (veqryn)

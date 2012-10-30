@@ -49,20 +49,35 @@ import javax.imageio.ImageIO;
  */
 public class MapData
 {
-	public static final String UNIT_SCALE_PROPERTY = "units.scale";
-	public static final String UNIT_WIDTH_PROPERTY = "units.width";
-	public static final String UNIT_HEIGHT_PROPERTY = "units.height";
-	public static final String UNIT_COUNTER_OFFSET_WIDTH_PROPERTY = "units.counter.offset.width";
-	public static final String UNIT_COUNTER_OFFSET_HEIGHT_PROPERTY = "units.counter.offset.height";
-	public static final String HAS_RELIEF_IMAGES = "map.hasRelief";
-	public static final String HAS_MAP_BLENDS = "map.mapBlends";
-	public static final String MAP_BLEND_MODE = "map.mapBlendMode";
-	public static final String MAP_BLEND_ALPHA = "map.mapBlendAlpha";
-	public static final String SHOW_CAPITOL_MARKERS = "map.showCapitolMarkers";
-	public static final String SHOW_TERRITORY_NAMES = "map.showTerritoryNames";
-	public static final String SHOW_CONVOY_NAMES = "map.showConvoyNames";
-	public static final String USE_NATION_CONVOY_FLAGS = "map.useNation_convoyFlags";
-	public static final String USE_TERRITORY_EFFECTS_MARKERS = "map.useTerritoryEffectMarkers";
+	public static final String PROPERTY_COLOR_PREFIX = "color.";
+	public static final String PROPERTY_UNITS_SCALE = "units.scale";
+	public static final String PROPERTY_UNITS_WIDTH = "units.width";
+	public static final String PROPERTY_UNITS_HEIGHT = "units.height";
+	public static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
+	public static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
+	public static final String PROPERTY_MAP_WIDTH = "map.width";
+	public static final String PROPERTY_MAP_HEIGHT = "map.height";
+	public static final String PROPERTY_MAP_SCROLLWRAPX = "map.scrollWrapX";
+	public static final String PROPERTY_MAP_HASRELIEF = "map.hasRelief";
+	public static final String PROPERTY_MAP_SHOWCAPITOLMARKERS = "map.showCapitolMarkers";
+	public static final String PROPERTY_MAP_USETERRITORYEFFECTMARKERS = "map.useTerritoryEffectMarkers";
+	public static final String PROPERTY_MAP_SHOWTERRITORYNAMES = "map.showTerritoryNames";
+	public static final String PROPERTY_MAP_SHOWCONVOYNAMES = "map.showConvoyNames";
+	public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
+	public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
+	public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
+	public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
+	public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
+	public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
+	public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
+	public static final String PROPERTY_SCREENSHOT_TITLE_COLOR = "screenshot.title.color";
+	public static final String PROPERTY_SCREENSHOT_TITLE_FONT_SIZE = "screenshot.title.font.size";
+	public static final String PROPERTY_SCREENSHOT_STATS_ENABLED = "screenshot.stats.enabled";
+	public static final String PROPERTY_SCREENSHOT_STATS_X = "screenshot.stats.x";
+	public static final String PROPERTY_SCREENSHOT_STATS_Y = "screenshot.stats.y";
+	public static final String PROPERTY_SCREENSHOT_STATS_TEXT_COLOR = "screenshot.stats.text.color";
+	public static final String PROPERTY_SCREENSHOT_STATS_BORDER_COLOR = "screenshot.stats.border.color";
+	
 	public static final String CENTERS_FILE = "centers.txt";
 	public static final String POLYGON_FILE = "polygons.txt";
 	public static final String PLACEMENT_FILE = "place.txt";
@@ -76,7 +91,6 @@ public class MapData
 	public static final String PU_PLACE_FILE = "pu_place.txt";
 	public static final String TERRITORY_NAME_PLACE_FILE = "name_place.txt";
 	public static final String KAMIKAZE_FILE = "kamikaze_place.txt";
-	public static final String DONT_DRAW_TERRITORY_NAME = "dont_draw_territory_names";
 	public static final String DECORATIONS_FILE = "decorations.txt";
 	// default colour if none is defined.
 	private final List<Color> m_defaultColours = new ArrayList<Color>(
@@ -123,7 +137,7 @@ public class MapData
 	
 	public boolean scrollWrapX()
 	{
-		return Boolean.valueOf(m_mapProperties.getProperty("map.scrollWrapX", "true")).booleanValue();
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true")).booleanValue();
 	}
 	
 	public MapData(final String mapNameDir)
@@ -218,11 +232,11 @@ public class MapData
 	
 	public double getDefaultUnitScale()
 	{
-		if (m_mapProperties.getProperty(UNIT_SCALE_PROPERTY) == null)
+		if (m_mapProperties.getProperty(PROPERTY_UNITS_SCALE) == null)
 			return 1.0;
 		try
 		{
-			return Double.parseDouble(m_mapProperties.getProperty(UNIT_SCALE_PROPERTY));
+			return Double.parseDouble(m_mapProperties.getProperty(PROPERTY_UNITS_SCALE));
 		} catch (final NumberFormatException e)
 		{
 			e.printStackTrace();
@@ -237,11 +251,11 @@ public class MapData
 	 */
 	public int getDefaultUnitWidth()
 	{
-		if (m_mapProperties.getProperty(UNIT_WIDTH_PROPERTY) == null)
+		if (m_mapProperties.getProperty(PROPERTY_UNITS_WIDTH) == null)
 			return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 		try
 		{
-			return Integer.parseInt(m_mapProperties.getProperty(UNIT_WIDTH_PROPERTY));
+			return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_WIDTH));
 		} catch (final NumberFormatException e)
 		{
 			e.printStackTrace();
@@ -256,11 +270,11 @@ public class MapData
 	 */
 	public int getDefaultUnitHeight()
 	{
-		if (m_mapProperties.getProperty(UNIT_HEIGHT_PROPERTY) == null)
+		if (m_mapProperties.getProperty(PROPERTY_UNITS_HEIGHT) == null)
 			return UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 		try
 		{
-			return Integer.parseInt(m_mapProperties.getProperty(UNIT_HEIGHT_PROPERTY));
+			return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_HEIGHT));
 		} catch (final NumberFormatException e)
 		{
 			e.printStackTrace();
@@ -276,11 +290,11 @@ public class MapData
 	public int getDefaultUnitCounterOffsetWidth()
 	{
 		// if it is not set, divide by 4 so that it is roughly centered
-		if (m_mapProperties.getProperty(UNIT_COUNTER_OFFSET_WIDTH_PROPERTY) == null)
+		if (m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH) == null)
 			return getDefaultUnitWidth() / 4;
 		try
 		{
-			return Integer.parseInt(m_mapProperties.getProperty(UNIT_COUNTER_OFFSET_WIDTH_PROPERTY));
+			return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_WIDTH));
 		} catch (final NumberFormatException e)
 		{
 			e.printStackTrace();
@@ -296,11 +310,11 @@ public class MapData
 	public int getDefaultUnitCounterOffsetHeight()
 	{
 		// put at bottom of unit, if not set
-		if (m_mapProperties.getProperty(UNIT_COUNTER_OFFSET_HEIGHT_PROPERTY) == null)
+		if (m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT) == null)
 			return getDefaultUnitHeight();
 		try
 		{
-			return Integer.parseInt(m_mapProperties.getProperty(UNIT_COUNTER_OFFSET_HEIGHT_PROPERTY));
+			return Integer.parseInt(m_mapProperties.getProperty(PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT));
 		} catch (final NumberFormatException e)
 		{
 			e.printStackTrace();
@@ -312,7 +326,7 @@ public class MapData
 	{
 		if (m_undrawnTerritoriesNames == null)
 		{
-			final String property = m_mapProperties.getProperty(DONT_DRAW_TERRITORY_NAME, "");
+			final String property = m_mapProperties.getProperty(PROPERTY_DONT_DRAW_TERRITORY_NAMES, "");
 			m_undrawnTerritoriesNames = new HashSet<String>(Arrays.asList(property.split(",")));
 		}
 		return !m_undrawnTerritoriesNames.contains(territoryName);
@@ -320,47 +334,47 @@ public class MapData
 	
 	public boolean getHasRelief()
 	{
-		return Boolean.valueOf(m_mapProperties.getProperty(HAS_RELIEF_IMAGES, "true")).booleanValue();
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_HASRELIEF, "true")).booleanValue();
 	}
 	
 	public boolean getHasMapBlends()
 	{
-		return Boolean.valueOf(m_mapProperties.getProperty(HAS_MAP_BLENDS, "false")).booleanValue();
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDS, "false")).booleanValue();
 	}
 	
 	public String getMapBlendMode()
 	{
-		return String.valueOf(m_mapProperties.getProperty(MAP_BLEND_MODE, "normal")).toString();
+		return String.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDMODE, "normal")).toString();
 	}
 	
 	public float getMapBlendAlpha()
 	{
-		return Float.valueOf(m_mapProperties.getProperty(MAP_BLEND_ALPHA, "0.5f"));
+		return Float.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_MAPBLENDALPHA, "0.5f"));
 	}
 	
 	public boolean drawCapitolMarkers()
 	{
-		return Boolean.valueOf(m_mapProperties.getProperty(SHOW_CAPITOL_MARKERS, "true")).booleanValue();
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWCAPITOLMARKERS, "true")).booleanValue();
 	}
 	
 	public boolean drawTerritoryNames()
 	{
-		return Boolean.valueOf(m_mapProperties.getProperty(SHOW_TERRITORY_NAMES, "true")).booleanValue();
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWTERRITORYNAMES, "true")).booleanValue();
 	}
 	
 	public boolean drawConvoyNames()
 	{
-		return Boolean.valueOf(m_mapProperties.getProperty(SHOW_CONVOY_NAMES, "true")).booleanValue();
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWCONVOYNAMES, "true")).booleanValue();
 	}
 	
 	public boolean useNation_convoyFlags()
 	{
-		return Boolean.valueOf(m_mapProperties.getProperty(USE_NATION_CONVOY_FLAGS, "false")).booleanValue();
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_USENATION_CONVOYFLAGS, "false")).booleanValue();
 	}
 	
 	public boolean useTerritoryEffectMarkers()
 	{
-		return Boolean.valueOf(m_mapProperties.getProperty(USE_TERRITORY_EFFECTS_MARKERS, "false")).booleanValue();
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_USETERRITORYEFFECTMARKERS, "false")).booleanValue();
 	}
 	
 	private void initializeContains()
@@ -423,7 +437,7 @@ public class MapData
 		if (m_playerColors.containsKey(playerName))
 			return m_playerColors.get(playerName);
 		// look in map.properties
-		final String propertiesKey = "color." + playerName;
+		final String propertiesKey = PROPERTY_COLOR_PREFIX + playerName;
 		Color color = null;
 		try
 		{
@@ -633,10 +647,10 @@ public class MapData
 	
 	public Dimension getMapDimensions()
 	{
-		final String widthProperty = m_mapProperties.getProperty("map.width");
-		final String heightProperty = m_mapProperties.getProperty("map.height");
+		final String widthProperty = m_mapProperties.getProperty(PROPERTY_MAP_WIDTH);
+		final String heightProperty = m_mapProperties.getProperty(PROPERTY_MAP_HEIGHT);
 		if (widthProperty == null || heightProperty == null)
-			throw new IllegalStateException("Missing map.width or map.height in " + MAP_PROPERTIES);
+			throw new IllegalStateException("Missing " + PROPERTY_MAP_WIDTH + " or " + PROPERTY_MAP_HEIGHT + " in " + MAP_PROPERTIES);
 		final int width = Integer.parseInt(widthProperty.trim());
 		final int height = Integer.parseInt(heightProperty.trim());
 		return new Dimension(width, height);

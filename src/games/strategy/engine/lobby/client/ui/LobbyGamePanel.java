@@ -16,6 +16,7 @@ package games.strategy.engine.lobby.client.ui;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
+import games.strategy.engine.framework.ProcessRunnerUtil;
 import games.strategy.engine.framework.startup.ui.InGameLobbyWatcher;
 import games.strategy.engine.framework.startup.ui.ServerOptions;
 import games.strategy.engine.lobby.server.GameDescription;
@@ -35,7 +36,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -205,7 +205,7 @@ public class LobbyGamePanel extends JPanel
 		final List<String> commands = new ArrayList<String>();
 		if (EngineVersion.VERSION.equals(engineVersionOfGameToJoin))
 		{
-			populateBasicJavaArgs(commands);
+			ProcessRunnerUtil.populateBasicJavaArgs(commands);
 		}
 		else
 		{
@@ -242,7 +242,7 @@ public class LobbyGamePanel extends JPanel
 			final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to join hosted game?", JOptionPane.YES_NO_OPTION);
 			if (answer != JOptionPane.YES_OPTION)
 				return;
-			populateBasicJavaArgs(commands, newClassPath);
+			ProcessRunnerUtil.populateBasicJavaArgs(commands, newClassPath);
 		}
 		commands.add("-D" + GameRunner2.TRIPLEA_CLIENT_PROPERTY + "=true");
 		commands.add("-D" + GameRunner2.TRIPLEA_PORT_PROPERTY + "=" + description.getPort());
@@ -250,7 +250,7 @@ public class LobbyGamePanel extends JPanel
 		commands.add("-D" + GameRunner2.TRIPLEA_NAME_PROPERTY + "=" + m_messengers.getMessenger().getLocalNode().getName());
 		final String javaClass = "games.strategy.engine.framework.GameRunner";
 		commands.add(javaClass);
-		exec(commands);
+		ProcessRunnerUtil.exec(commands);
 	}
 	
 	public static String findOldJar(final Version oldVersionNeeded, final boolean ignoreMicro) throws IOException
@@ -352,7 +352,7 @@ public class LobbyGamePanel extends JPanel
 			return;
 		}
 		final List<String> commands = new ArrayList<String>();
-		populateBasicJavaArgs(commands);
+		ProcessRunnerUtil.populateBasicJavaArgs(commands);
 		commands.add("-D" + GameRunner2.TRIPLEA_SERVER_PROPERTY + "=true");
 		commands.add("-D" + GameRunner2.TRIPLEA_PORT_PROPERTY + "=" + options.getPort());
 		commands.add("-D" + GameRunner2.TRIPLEA_NAME_PROPERTY + "=" + options.getName());
@@ -367,13 +367,13 @@ public class LobbyGamePanel extends JPanel
 			commands.add("-D" + GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + fileName);
 		final String javaClass = "games.strategy.engine.framework.GameRunner";
 		commands.add(javaClass);
-		exec(commands);
+		ProcessRunnerUtil.exec(commands);
 	}
 	
 	public static void startGame(final String savegamePath, final String classpath)
 	{
 		final List<String> commands = new ArrayList<String>();
-		populateBasicJavaArgs(commands, classpath);
+		ProcessRunnerUtil.populateBasicJavaArgs(commands, classpath);
 		if (savegamePath != null && savegamePath.length() > 0)
 			commands.add("-D" + GameRunner2.TRIPLEA_GAME_PROPERTY + "=" + savegamePath);
 		// add in any existing command line items
@@ -401,7 +401,7 @@ public class LobbyGamePanel extends JPanel
 		final String javaClass = "games.strategy.engine.framework.GameRunner";
 		commands.add(javaClass);
 		// System.out.println("Commands: " + commands);
-		exec(commands);
+		ProcessRunnerUtil.exec(commands);
 	}
 	
 	private void bootGame()
@@ -420,96 +420,6 @@ public class LobbyGamePanel extends JPanel
 		final IModeratorController controller = (IModeratorController) m_messengers.getRemoteMessenger().getRemote(ModeratorController.getModeratorControllerName());
 		controller.boot(lobbyWatcherNode);
 		JOptionPane.showMessageDialog(null, "The game you selected has been disconnected from the lobby.");
-	}
-	
-	private static void exec(final List<String> commands)
-	{
-		final ProcessBuilder builder = new ProcessBuilder(commands);
-		// merge the streams, so we only have to start one reader thread
-		builder.redirectErrorStream(true);
-		try
-		{
-			final Process p = builder.start();
-			final InputStream s = p.getInputStream();
-			// we need to read the input stream to prevent possible
-			// deadlocks
-			final Thread t = new Thread(new Runnable()
-			{
-				public void run()
-				{
-					try
-					{
-						while (s.read() >= 0)
-						{
-							// just read
-						}
-					} catch (final IOException e)
-					{
-						e.printStackTrace();
-					}
-				}
-			}, "Process ouput gobbler");
-			t.setDaemon(true);
-			t.start();
-		} catch (final IOException ioe)
-		{
-			ioe.printStackTrace();
-		}
-	}
-	
-	private static void populateBasicJavaArgs(final List<String> commands)
-	{
-		populateBasicJavaArgs(commands, System.getProperty("java.class.path"));
-	}
-	
-	private static void populateBasicJavaArgs(final List<String> commands, final String classpath)
-	{
-		final String javaCommand = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
-		commands.add(javaCommand);
-		commands.add("-classpath");
-		if (classpath != null && classpath.length() > 0)
-			commands.add(classpath);
-		else
-			commands.add(System.getProperty("java.class.path"));
-		// for whatever reason, .maxMemory() returns a value about 12% smaller than the real Xmx value, so we are going to add 64m to that to compensate
-		final long maxMemory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
-		commands.add("-Xmx" + maxMemory);
-		// commands.add("-Xmx512m"); //TODO: this may need updating 640m
-		// preserve noddraw to fix 1742775
-		final String[] preservedSystemProperties = { "sun.java2d.noddraw" };
-		for (final String key : preservedSystemProperties)
-		{
-			if (System.getProperties().getProperty(key) != null)
-			{
-				final String value = System.getProperties().getProperty(key);
-				if (value.matches("[a-zA-Z0-9.]+"))
-				{
-					commands.add("-D" + key + "=" + value);
-				}
-			}
-		}
-		if (GameRunner.isMac())
-		{
-			commands.add("-Dapple.laf.useScreenMenuBar=true");
-			commands.add("-Xdock:name=\"TripleA\"");
-			final File icons = new File(GameRunner.getRootFolder(), "icons/triplea_icon.png");
-			if (!icons.exists())
-				throw new IllegalStateException("Icon file not found");
-			commands.add("-Xdock:icon=" + icons.getAbsolutePath() + "");
-		}
-		final String version = System.getProperty(GameRunner2.TRIPLEA_ENGINE_VERSION_BIN);
-		if (version != null && version.length() > 0)
-		{
-			final Version testVersion;
-			try
-			{
-				testVersion = new Version(version);
-				commands.add("-D" + GameRunner2.TRIPLEA_ENGINE_VERSION_BIN + "=" + testVersion.toString());
-			} catch (final Exception e)
-			{
-				// nothing
-			}
-		}
 	}
 	
 	private void setWidgetActivation()

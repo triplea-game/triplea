@@ -28,6 +28,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -43,11 +44,16 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -62,6 +68,13 @@ import javax.swing.SwingUtilities;
 public class PlacementPicker extends JFrame
 {
 	private static final long serialVersionUID = 953019978051420881L;
+	private final JCheckBoxMenuItem showAllModeItem;
+	private final JCheckBoxMenuItem showOverflowModeItem;
+	private final JCheckBoxMenuItem showIncompleteModeItem;
+	private static boolean s_showAllMode = false;
+	private static boolean s_showOverflowMode = false;
+	private static boolean s_showIncompleteMode = false;
+	private static int s_incompleteNum = 1;
 	private Point m_currentSquare;
 	private Image m_image;
 	private final JLabel m_location = new JLabel();
@@ -75,7 +88,7 @@ public class PlacementPicker extends JFrame
 	private static double unit_zoom_percent = 1;
 	private static int unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private static int unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
-	private static File m_mapFolderLocation = null;
+	private static File s_mapFolderLocation = null;
 	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 	private static final String TRIPLEA_UNIT_ZOOM = "triplea.unit.zoom";
 	private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
@@ -116,9 +129,11 @@ public class PlacementPicker extends JFrame
 					+ "<br><br>IF there are not enough placements, the units will Overflow to the RIGHT of the very LAST placement made, "
 					+ "<br>so be sure that the last placement is on the right side of the territory "
 					+ "<br>or that it does not overflow directly on top of other placements. "
+					+ "<br><br>To show all placements, or see the overflow direction, or see which territories you have not yet completed enough, "
+					+ "<br>placements for, turn on the mode options in the 'edit' menu. "
 					+ "</html>"));
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map", m_mapFolderLocation, ".gif", ".png").getPathString();
+		final String mapName = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png").getPathString();
 		if (mapName != null)
 		{
 			final PlacementPicker picker = new PlacementPicker(mapName);
@@ -152,8 +167,8 @@ public class PlacementPicker extends JFrame
 			try
 			{
 				File file = null;
-				if (m_mapFolderLocation != null && m_mapFolderLocation.exists())
-					file = new File(m_mapFolderLocation, "map.properties");
+				if (s_mapFolderLocation != null && s_mapFolderLocation.exists())
+					file = new File(s_mapFolderLocation, "map.properties");
 				if (file == null || !file.exists())
 					file = new File(new File(mapName).getParent() + File.separator + "map.properties");
 				if (file.exists())
@@ -162,9 +177,9 @@ public class PlacementPicker extends JFrame
 					int width = unit_width;
 					int height = unit_height;
 					boolean found = false;
-					final String scaleProperty = MapData.UNIT_SCALE_PROPERTY + "=";
-					final String widthProperty = MapData.UNIT_WIDTH_PROPERTY + "=";
-					final String heightProperty = MapData.UNIT_HEIGHT_PROPERTY + "=";
+					final String scaleProperty = MapData.PROPERTY_UNITS_SCALE + "=";
+					final String widthProperty = MapData.PROPERTY_UNITS_WIDTH + "=";
+					final String heightProperty = MapData.PROPERTY_UNITS_HEIGHT + "=";
 					
 					final FileReader reader = new FileReader(file);
 					final LineNumberReader reader2 = new LineNumberReader(reader);
@@ -269,8 +284,8 @@ public class PlacementPicker extends JFrame
 		}
 		
 		File file = null;
-		if (m_mapFolderLocation != null && m_mapFolderLocation.exists())
-			file = new File(m_mapFolderLocation, "polygons.txt");
+		if (s_mapFolderLocation != null && s_mapFolderLocation.exists())
+			file = new File(s_mapFolderLocation, "polygons.txt");
 		if (file == null || !file.exists())
 			file = new File(new File(mapName).getParent() + File.separator + "polygons.txt");
 		if (file.exists()
@@ -290,7 +305,7 @@ public class PlacementPicker extends JFrame
 			try
 			{
 				System.out.println("Select the Polygons file");
-				final String polyPath = new FileOpen("Select A Polygon File", m_mapFolderLocation, ".txt").getPathString();
+				final String polyPath = new FileOpen("Select A Polygon File", s_mapFolderLocation, ".txt").getPathString();
 				if (polyPath != null)
 				{
 					System.out.println("Polygons : " + polyPath);
@@ -389,7 +404,55 @@ public class PlacementPicker extends JFrame
 		fileMenu.add(saveItem);
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
+		s_showAllMode = false;
+		s_showOverflowMode = false;
+		s_showIncompleteMode = false;
+		s_incompleteNum = 1;
+		showAllModeItem = new JCheckBoxMenuItem("Show All Placements Mode", false);
+		showAllModeItem.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent event)
+			{
+				s_showAllMode = showAllModeItem.getState();
+				repaint();
+			}
+		});
+		showOverflowModeItem = new JCheckBoxMenuItem("Show Overflow Mode", false);
+		showOverflowModeItem.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent event)
+			{
+				s_showOverflowMode = showOverflowModeItem.getState();
+				repaint();
+			}
+		});
+		showIncompleteModeItem = new JCheckBoxMenuItem("Show Incomplete Placements Mode", false);
+		showIncompleteModeItem.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent event)
+			{
+				if (showIncompleteModeItem.getState())
+				{
+					final String num = JOptionPane.showInputDialog(null, "Enter the minimum number of placements each territory must have.\r\n(examples: 1, 4, etc.)");
+					try
+					{
+						s_incompleteNum = Math.max(1, Math.min(50, Integer.parseInt(num)));
+					} catch (final Exception ex)
+					{
+						s_incompleteNum = 1;
+					}
+				}
+				s_showIncompleteMode = showIncompleteModeItem.getState();
+				repaint();
+			}
+		});
+		final JMenu editMenu = new JMenu("Edit");
+		editMenu.setMnemonic('E');
+		editMenu.add(showAllModeItem);
+		editMenu.add(showOverflowModeItem);
+		editMenu.add(showIncompleteModeItem);
 		menuBar.add(fileMenu);
+		menuBar.add(editMenu);
 	}// end constructor
 	
 	/**
@@ -432,6 +495,51 @@ public class PlacementPicker extends JFrame
 			{
 				// super.paint(g);
 				g.drawImage(m_image, 0, 0, this);
+				if (s_showAllMode)
+				{
+					g.setColor(Color.yellow);
+					for (final Entry<String, List<Point>> entry : m_placements.entrySet())
+					{
+						if (entry.getKey().equals(m_currentCountry) && m_currentPlacements != null && !m_currentPlacements.isEmpty())
+							continue;
+						final Iterator<Point> pointIter = entry.getValue().iterator();
+						while (pointIter.hasNext())
+						{
+							final Point item = pointIter.next();
+							g.fillRect(item.x, item.y, PLACEWIDTH, PLACEHEIGHT);
+							if (s_showOverflowMode && !pointIter.hasNext())
+							{
+								g.setColor(Color.gray);
+								g.fillRect(item.x + PLACEWIDTH, item.y + PLACEHEIGHT / 2, PLACEWIDTH, 4);
+								g.setColor(Color.yellow);
+							}
+						}
+					}
+				}
+				if (s_showIncompleteMode)
+				{
+					g.setColor(Color.green);
+					final Set<String> territories = new HashSet<String>(m_polygons.keySet());
+					final Iterator<String> terrIter = territories.iterator();
+					while (terrIter.hasNext())
+					{
+						final String terr = terrIter.next();
+						final List<Point> points = m_placements.get(terr);
+						if (points != null && points.size() >= s_incompleteNum)
+							terrIter.remove();
+					}
+					for (final String terr : territories)
+					{
+						final List<Polygon> polys = m_polygons.get(terr);
+						if (polys == null || polys.isEmpty())
+							continue;
+						for (final Polygon poly : polys)
+						{
+							g.fillPolygon(poly);
+						}
+					}
+				}
+				
 				g.setColor(Color.red);
 				if (m_currentSquare != null)
 				{
@@ -441,9 +549,17 @@ public class PlacementPicker extends JFrame
 				{
 					return;
 				}
-				for (final Point item : m_currentPlacements)
+				final Iterator<Point> pointIter = m_currentPlacements.iterator();
+				while (pointIter.hasNext())
 				{
+					final Point item = pointIter.next();
 					g.fillRect(item.x, item.y, PLACEWIDTH, PLACEHEIGHT);
+					if (s_showOverflowMode && !pointIter.hasNext())
+					{
+						g.setColor(Color.gray);
+						g.fillRect(item.x + PLACEWIDTH, item.y + PLACEHEIGHT / 2, PLACEWIDTH, 4);
+						g.setColor(Color.red);
+					}
 				}
 			}// paint
 		};
@@ -459,7 +575,7 @@ public class PlacementPicker extends JFrame
 	{
 		try
 		{
-			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt", m_mapFolderLocation).getPathString();
+			final String fileName = new FileSave("Where To Save place.txt ?", "place.txt", s_mapFolderLocation).getPathString();
 			if (fileName == null)
 			{
 				return;
@@ -491,7 +607,7 @@ public class PlacementPicker extends JFrame
 		try
 		{
 			System.out.println("Load a placement file");
-			final String placeName = new FileOpen("Load A Placement File", m_mapFolderLocation, ".txt").getPathString();
+			final String placeName = new FileOpen("Load A Placement File", s_mapFolderLocation, ".txt").getPathString();
 			if (placeName == null)
 			{
 				return;
@@ -588,10 +704,8 @@ public class PlacementPicker extends JFrame
 				{
 					m_placements = new HashMap<String, List<Point>>();
 				}
-				else
-				{
-					m_placements.put(m_currentCountry, m_currentPlacements);
-				}
+				m_placements.put(m_currentCountry, m_currentPlacements);
+				
 				m_currentPlacements = new ArrayList<Point>();
 				System.out.println("done:" + m_currentCountry);
 			}
@@ -608,7 +722,7 @@ public class PlacementPicker extends JFrame
 	
 	private static String getUnitsScale()
 	{
-		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.83333, 0.75, 0.66666, 0.5625, 0.5)");
+		final String unitsScale = JOptionPane.showInputDialog(null, "Enter the unit's scale (zoom).\r\n(e.g. 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5)");
 		if (unitsScale != null)
 		{
 			return unitsScale;
@@ -721,12 +835,13 @@ public class PlacementPicker extends JFrame
 				}
 			}
 		}
-		final String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
+		String folderString = System.getProperty(TRIPLEA_MAP_FOLDER);
 		if (folderString != null && folderString.length() > 0)
 		{
+			folderString = folderString.replaceAll("\\(", " ");
 			final File mapFolder = new File(folderString);
 			if (mapFolder.exists())
-				m_mapFolderLocation = mapFolder;
+				s_mapFolderLocation = mapFolder;
 			else
 				System.out.println("Could not find directory: " + folderString);
 		}

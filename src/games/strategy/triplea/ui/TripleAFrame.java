@@ -1747,12 +1747,12 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 				data.releaseReadLock();
 			}
 			// overlay title
-			Color title_color = m_uiContext.getMapData().getColorProperty("screenshot.title.color");
+			Color title_color = m_uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_TITLE_COLOR);
 			if (title_color == null)
 				title_color = Color.BLACK;
-			final String s_title_x = m_uiContext.getMapData().getProperty("screenshot.title.x");
-			final String s_title_y = m_uiContext.getMapData().getProperty("screenshot.title.y");
-			final String s_title_size = m_uiContext.getMapData().getProperty("screenshot.title.font.size");
+			final String s_title_x = m_uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_X);
+			final String s_title_y = m_uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_Y);
+			final String s_title_size = m_uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_TITLE_FONT_SIZE);
 			int title_x;
 			int title_y;
 			int title_size;
@@ -1776,18 +1776,18 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			mapGraphics.setColor(title_color);
 			mapGraphics.drawString("Round " + round + ": " + (player != null ? player.getName() : "") + " - " + step, title_x, title_y);
 			// overlay stats, if enabled
-			final boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty("screenshot.stats.enabled");
+			final boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_STATS_ENABLED);
 			if (stats_enabled)
 			{
 				// get screenshot properties from map data
-				Color stats_text_color = m_uiContext.getMapData().getColorProperty("screenshot.text.color");
+				Color stats_text_color = m_uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_STATS_TEXT_COLOR);
 				if (stats_text_color == null)
 					stats_text_color = Color.BLACK;
-				Color stats_border_color = m_uiContext.getMapData().getColorProperty("screenshot.border.color");
+				Color stats_border_color = m_uiContext.getMapData().getColorProperty(MapData.PROPERTY_SCREENSHOT_STATS_BORDER_COLOR);
 				if (stats_border_color == null)
 					stats_border_color = Color.WHITE;
-				final String s_stats_x = m_uiContext.getMapData().getProperty("screenshot.stats.x");
-				final String s_stats_y = m_uiContext.getMapData().getProperty("screenshot.stats.y");
+				final String s_stats_x = m_uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_STATS_X);
+				final String s_stats_y = m_uiContext.getMapData().getProperty(MapData.PROPERTY_SCREENSHOT_STATS_Y);
 				int stats_x;
 				int stats_y;
 				try

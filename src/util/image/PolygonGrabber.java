@@ -83,7 +83,7 @@ public class PolygonGrabber extends JFrame
 	private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // maps String -> List of polygons
 	private Map<String, Point> m_centers; // holds the centers for the polygons
 	private final JLabel location = new JLabel();
-	private static File m_mapFolderLocation = null;
+	private static File s_mapFolderLocation = null;
 	private static final String TRIPLEA_MAP_FOLDER = "triplea.map.folder";
 	
 	/**
@@ -101,7 +101,7 @@ public class PolygonGrabber extends JFrame
 	{
 		handleCommandLineArgs(args);
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map", m_mapFolderLocation, ".gif", ".png").getPathString();
+		final String mapName = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png").getPathString();
 		if (mapName != null)
 		{
 			System.out.println("Map : " + mapName);
@@ -146,8 +146,8 @@ public class PolygonGrabber extends JFrame
 		super("Polygon grabber");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		File file = null;
-		if (m_mapFolderLocation != null && m_mapFolderLocation.exists())
-			file = new File(m_mapFolderLocation, "centers.txt");
+		if (s_mapFolderLocation != null && s_mapFolderLocation.exists())
+			file = new File(s_mapFolderLocation, "centers.txt");
 		if (file == null || !file.exists())
 			file = new File(new File(mapName).getParent() + File.separator + "centers.txt");
 		if (file.exists()
@@ -169,7 +169,7 @@ public class PolygonGrabber extends JFrame
 			try
 			{
 				System.out.println("Select the Centers file");
-				final String centerPath = new FileOpen("Select A Center File", m_mapFolderLocation, ".txt").getPathString();
+				final String centerPath = new FileOpen("Select A Center File", s_mapFolderLocation, ".txt").getPathString();
 				if (centerPath != null)
 				{
 					System.out.println("Centers : " + centerPath);
@@ -384,7 +384,7 @@ public class PolygonGrabber extends JFrame
 	{
 		try
 		{
-			final String polyName = new FileSave("Where To Save Polygons.txt ?", "polygons.txt", m_mapFolderLocation).getPathString();
+			final String polyName = new FileSave("Where To Save Polygons.txt ?", "polygons.txt", s_mapFolderLocation).getPathString();
 			if (polyName == null)
 			{
 				return;
@@ -416,7 +416,7 @@ public class PolygonGrabber extends JFrame
 		try
 		{
 			System.out.println("Load a polygon file");
-			final String polyName = new FileOpen("Load A Polygon File", m_mapFolderLocation, ".txt").getPathString();
+			final String polyName = new FileOpen("Load A Polygon File", s_mapFolderLocation, ".txt").getPathString();
 			if (polyName == null)
 			{
 				return;
@@ -787,7 +787,7 @@ public class PolygonGrabber extends JFrame
 			}
 			final File mapFolder = new File(value);
 			if (mapFolder.exists())
-				m_mapFolderLocation = mapFolder;
+				s_mapFolderLocation = mapFolder;
 			else
 				System.out.println("Could not find directory: " + value);
 		}
@@ -796,14 +796,15 @@ public class PolygonGrabber extends JFrame
 			System.out.println("Only argument allowed is the map directory.");
 		}
 		// might be set by -D
-		if (m_mapFolderLocation == null || m_mapFolderLocation.length() < 1)
+		if (s_mapFolderLocation == null || s_mapFolderLocation.length() < 1)
 		{
-			final String value = System.getProperty(TRIPLEA_MAP_FOLDER);
+			String value = System.getProperty(TRIPLEA_MAP_FOLDER);
 			if (value != null && value.length() > 0)
 			{
+				value = value.replaceAll("\\(", " ");
 				final File mapFolder = new File(value);
 				if (mapFolder.exists())
-					m_mapFolderLocation = mapFolder;
+					s_mapFolderLocation = mapFolder;
 				else
 					System.out.println("Could not find directory: " + value);
 			}
