@@ -6,6 +6,7 @@ import games.strategy.triplea.image.UnitImageFactory;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -18,6 +19,7 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -47,6 +49,7 @@ public class MapCreator extends JFrame
 	private static double s_unit_zoom = 0.75;
 	private static int s_unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private static int s_unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+	private static boolean s_runUtilitiesAsSeperateProcesses = true;
 	
 	final JPanel m_mainPanel;
 	final JPanel m_sidePanel;
@@ -207,9 +210,25 @@ public class MapCreator extends JFrame
 		m_panel1.removeAll();
 		m_panel1.setLayout(new BoxLayout(m_panel1, BoxLayout.PAGE_AXIS));
 		m_panel1.add(Box.createVerticalStrut(30));
-		final JTextArea text = new JTextArea();
-		m_panel1.add(text);
-		text.setText("Welcome to my shitty map maker.");
+		final JTextArea text = new JTextArea(12, 10);
+		text.setWrapStyleWord(true);
+		text.setLineWrap(true);
+		text.setText("Welcome to Veqryn's shitty map maker." +
+					"\r\nThis program just runs utilities inside the triplea.jar file for you, and you could easily " +
+					"run them yourself from the command line by reading the docs/developer_documentation.html" +
+					"\r\n\r\nBefore you begin, go create a folder in your directory: Users\\yourname\\triplea\\maps" +
+					"Name the folder with a short name of your map, do not use any special characters in the name." +
+					"\r\nNext, create 5 folders inside your map folder, with these names: " +
+					"flags, units, baseTiles, reliefTiles, games" +
+					"\r\nThen, create a text file and rename it \"map.properties\"." +
+					"\r\n\r\nTo start the Map Utilities, have a png image of your map with just the territory borders " +
+					"and nothing else. The borders must be in black (hex: 000000) and there should not be any " +
+					"anti-aliasing (smoothing) of the lines or edges that stick out." +
+					"\r\nCreate a small image of the map (approx 250 pixels wide) and name it \"smallMap.jpeg\"." +
+					"\r\nPut these in the map's root folder. You can now start the map maker by clicking and filling " +
+					"in the details below, before moving on to 'Step 2' and running the map utilities.");
+		final JScrollPane scrollText = new JScrollPane(text);
+		m_panel1.add(scrollText);
 		m_panel1.add(Box.createVerticalStrut(30));
 		m_panel1.add(new JLabel("Click button to select where your map folder is:"));
 		final JButton mapFolderButton = new JButton("Select Map Folder");
@@ -224,7 +243,10 @@ public class MapCreator extends JFrame
 				{
 					final File mapFolder = new File(path);
 					if (mapFolder.exists())
+					{
 						s_mapFolderLocation = mapFolder;
+						System.setProperty(TRIPLEA_MAP_FOLDER, s_mapFolderLocation.getPath());
+					}
 				}
 			}
 		});
@@ -233,6 +255,7 @@ public class MapCreator extends JFrame
 		m_panel1.add(new JLabel("Set the unit scaling (unit image zoom): "));
 		m_panel1.add(new JLabel("Choose one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5"));
 		final JTextField unitZoomText = new JTextField("" + s_unit_zoom);
+		unitZoomText.setMaximumSize(new Dimension(100, 20));
 		unitZoomText.addFocusListener(new FocusListener()
 		{
 			public void focusGained(final FocusEvent e)
@@ -244,6 +267,7 @@ public class MapCreator extends JFrame
 				try
 				{
 					s_unit_zoom = Math.min(4.0, Math.max(0.1, Double.parseDouble(unitZoomText.getText())));
+					System.setProperty(TRIPLEA_UNIT_ZOOM, "" + s_unit_zoom);
 				} catch (final Exception ex)
 				{
 				}
@@ -270,6 +294,7 @@ public class MapCreator extends JFrame
 		m_panel1.add(Box.createVerticalStrut(30));
 		m_panel1.add(new JLabel("Set the width of the unit images: "));
 		final JTextField unitWidthText = new JTextField("" + s_unit_width);
+		unitWidthText.setMaximumSize(new Dimension(100, 20));
 		unitWidthText.addFocusListener(new FocusListener()
 		{
 			public void focusGained(final FocusEvent e)
@@ -281,6 +306,7 @@ public class MapCreator extends JFrame
 				try
 				{
 					s_unit_width = Math.min(400, Math.max(1, Integer.parseInt(unitWidthText.getText())));
+					System.setProperty(TRIPLEA_UNIT_WIDTH, "" + s_unit_width);
 				} catch (final Exception ex)
 				{
 				}
@@ -307,6 +333,7 @@ public class MapCreator extends JFrame
 		m_panel1.add(Box.createVerticalStrut(30));
 		m_panel1.add(new JLabel("Set the height of the unit images: "));
 		final JTextField unitHeightText = new JTextField("" + s_unit_height);
+		unitHeightText.setMaximumSize(new Dimension(100, 20));
 		unitHeightText.addFocusListener(new FocusListener()
 		{
 			public void focusGained(final FocusEvent e)
@@ -318,6 +345,7 @@ public class MapCreator extends JFrame
 				try
 				{
 					s_unit_height = Math.min(400, Math.max(1, Integer.parseInt(unitHeightText.getText())));
+					System.setProperty(TRIPLEA_UNIT_HEIGHT, "" + s_unit_height);
 				} catch (final Exception ex)
 				{
 				}
@@ -342,8 +370,11 @@ public class MapCreator extends JFrame
 		});*/
 		m_panel1.add(unitHeightText);
 		m_panel1.add(Box.createVerticalStrut(30));
-		m_panel1.add(new JLabel("Set the amount of memory to use when running these utilities (in megabytes [mb]):"));
+		m_panel1.add(new JLabel("<html>Here you can set the 'max memory' that utilities like the Polygon Grabber will use.<br>" +
+					"This is useful is you have a very large map, or ever get any Java Heap Space errors.</html>"));
+		m_panel1.add(new JLabel("Set the amount of memory to use when running new processes (in megabytes [mb]):"));
 		final JTextField memoryText = new JTextField("" + (s_memory / (1024 * 1024)));
+		memoryText.setMaximumSize(new Dimension(100, 20));
 		memoryText.addFocusListener(new FocusListener()
 		{
 			public void focusGained(final FocusEvent e)
@@ -378,6 +409,18 @@ public class MapCreator extends JFrame
 			}
 		});*/
 		m_panel1.add(memoryText);
+		final JCheckBox runTypeBox = new JCheckBox("Run All Utilities as Separate Processes");
+		runTypeBox.setSelected(s_runUtilitiesAsSeperateProcesses);
+		runTypeBox.addActionListener(new AbstractAction("Run All Utilities as Separate Processes")
+		{
+			private static final long serialVersionUID = 363422421871497915L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				s_runUtilitiesAsSeperateProcesses = runTypeBox.isSelected();
+			}
+		});
+		m_panel1.add(runTypeBox);
 		m_panel1.add(Box.createVerticalStrut(30));
 		m_panel1.validate();
 	}
@@ -394,7 +437,19 @@ public class MapCreator extends JFrame
 			
 			public void actionPerformed(final ActionEvent e)
 			{
-				runUtility("util.image.CenterPicker");
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.CenterPicker");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							CenterPicker.main(new String[0]);
+						}
+					}).start();
+				}
 			}
 		});
 		m_panel2.add(centerPickerButton);
@@ -406,7 +461,19 @@ public class MapCreator extends JFrame
 			
 			public void actionPerformed(final ActionEvent e)
 			{
-				runUtility("util.image.PolygonGrabber");
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.PolygonGrabber");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							PolygonGrabber.main(new String[0]);
+						}
+					}).start();
+				}
 			}
 		});
 		m_panel2.add(polygonGrabberButton);
@@ -418,7 +485,19 @@ public class MapCreator extends JFrame
 			
 			public void actionPerformed(final ActionEvent e)
 			{
-				runUtility("util.image.AutoPlacementFinder");
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.AutoPlacementFinder");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							AutoPlacementFinder.main(new String[0]);
+						}
+					}).start();
+				}
 			}
 		});
 		m_panel2.add(autoPlacerButton);
@@ -430,7 +509,19 @@ public class MapCreator extends JFrame
 			
 			public void actionPerformed(final ActionEvent e)
 			{
-				runUtility("util.image.PlacementPicker");
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.PlacementPicker");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							PlacementPicker.main(new String[0]);
+						}
+					}).start();
+				}
 			}
 		});
 		m_panel2.add(placementPickerButton);
@@ -442,7 +533,25 @@ public class MapCreator extends JFrame
 			
 			public void actionPerformed(final ActionEvent e)
 			{
-				runUtility("util.image.TileImageBreaker");
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.TileImageBreaker");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							try
+							{
+								TileImageBreaker.main(new String[0]);
+							} catch (final Exception e)
+							{
+								e.printStackTrace();
+							}
+						}
+					}).start();
+				}
 			}
 		});
 		m_panel2.add(tileBreakerButton);
@@ -491,7 +600,25 @@ public class MapCreator extends JFrame
 			
 			public void actionPerformed(final ActionEvent e)
 			{
-				runUtility("util.image.ReliefImageBreaker");
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.ReliefImageBreaker");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							try
+							{
+								ReliefImageBreaker.main(new String[0]);
+							} catch (final Exception e)
+							{
+								e.printStackTrace();
+							}
+						}
+					}).start();
+				}
 			}
 		});
 		m_panel4.add(reliefBreakerButton);
@@ -503,7 +630,25 @@ public class MapCreator extends JFrame
 			
 			public void actionPerformed(final ActionEvent e)
 			{
-				runUtility("util.image.ImageShrinker");
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.ImageShrinker");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							try
+							{
+								ImageShrinker.main(new String[0]);
+							} catch (final Exception e)
+							{
+								e.printStackTrace();
+							}
+						}
+					}).start();
+				}
 			}
 		});
 		m_panel4.add(imageShrinkerButton);

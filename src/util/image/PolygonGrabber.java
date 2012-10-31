@@ -272,6 +272,9 @@ public class PolygonGrabber extends JFrame
 							+ "<br>redo the entire territory chain using CTRL + Click in order to capture each part of the territory."
 							+ "</html>"));
 				m_current = new ArrayList<Polygon>();
+				final BufferedImage imageCopy = new BufferedImage(m_bufferedImage.getWidth(null), m_bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+				final Graphics g = imageCopy.getGraphics();
+				g.drawImage(m_bufferedImage, 0, 0, null);
 				final Iterator<String> territoryNames = m_centers.keySet().iterator();
 				while (territoryNames.hasNext())
 				{
@@ -297,12 +300,14 @@ public class PolygonGrabber extends JFrame
 					if (hasIslands)
 						continue;
 					// some islands do not have centers on them because they are island chains that are also part of an island or territory touching a sidewall or outside of this polygon. we should still skip them.
-					if (doesPolygonContainAnyBlackInside(p))
+					if (doesPolygonContainAnyBlackInside(p, imageCopy, g))
 						continue;
 					final List<Polygon> polys = new ArrayList<Polygon>();
 					polys.add(p);
 					m_polygons.put(territoryName, polys);
 				}
+				g.dispose();
+				imageCopy.flush();
 				repaint();
 			}
 		};
@@ -766,30 +771,33 @@ public class PolygonGrabber extends JFrame
 		return m_testPoint.x == 0 || m_testPoint.y == 0 || m_testPoint.y == m_bufferedImage.getHeight(this) || m_testPoint.x == m_bufferedImage.getWidth(this) || isBlack(m_testPoint);
 	}
 	
-	private final boolean doesPolygonContainAnyBlackInside(final Polygon poly)
+	private final boolean doesPolygonContainAnyBlackInside(final Polygon poly, final BufferedImage imageCopy, final Graphics imageCopyGraphics)
 	{
-		final BufferedImage testImage = new BufferedImage(m_bufferedImage.getWidth(null), m_bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-		final Graphics g = testImage.getGraphics();
-		g.drawImage(m_bufferedImage, 0, 0, null);
-		g.setColor(Color.GREEN);
-		g.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
-		g.dispose();
+		// we would like to just test if each point is both black and contained within the polygon, but contains counts the borders,
+		// so we have to turn the border edges a different color (then later back to black again) using a copy of the image
+		// final BufferedImage testImage = new BufferedImage(m_bufferedImage.getWidth(null), m_bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+		imageCopyGraphics.setColor(Color.GREEN);
+		imageCopyGraphics.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
 		final Rectangle rect = poly.getBounds();
 		for (int x = rect.x; x < rect.x + rect.width; x++)
 		{
 			for (int y = rect.y; y < rect.y + rect.height; y++)
 			{
-				if (isBlack(x, y, testImage))
+				if (isBlack(x, y, imageCopy))
 				{
 					if (poly.contains(new Point(x, y)))
 					{
-						testImage.flush();
+						imageCopyGraphics.setColor(Color.BLACK);
+						imageCopyGraphics.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
+						// testImage.flush();
 						return true;
 					}
 				}
 			}
 		}
-		testImage.flush();
+		imageCopyGraphics.setColor(Color.BLACK);
+		imageCopyGraphics.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
+		// testImage.flush();
 		return false;
 	}
 	
