@@ -74,7 +74,10 @@ public class TileImageBreaker
 					+ "<br>For the base image (the one used to make centers.txt, etc), please save it to a folder called baseTiles"
 					+ "<br>For the relief image, please save it to a folder called reliefTiles"
 					+ "</html>"));
-		location = new FileSave("Where to save Tile Images?", null, s_mapFolderLocation).getPathString();
+		final FileSave locationSelection = new FileSave("Where to save Tile Images?", null, s_mapFolderLocation);
+		location = locationSelection.getPathString();
+		if (s_mapFolderLocation == null && locationSelection.getFile() != null)
+			s_mapFolderLocation = locationSelection.getFile().getParentFile();
 		if (location == null)
 		{
 			System.out.println("You need to select a folder to save the tiles in for this to work");
@@ -162,6 +165,7 @@ public class TileImageBreaker
 			}
 		}
 		System.out.println("All Finished!");
+		JOptionPane.showMessageDialog(null, new JLabel("All Finished"));
 		System.exit(0);
 	}
 	

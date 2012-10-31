@@ -43,7 +43,7 @@ public class MapCreator extends JFrame
 	private static final String TRIPLEA_UNIT_WIDTH = "triplea.unit.width";
 	private static final String TRIPLEA_UNIT_HEIGHT = "triplea.unit.height";
 	private static long s_memory = ((long) (Runtime.getRuntime().maxMemory() * 1.15) + 67108864);
-	private static File s_mapFolderLocation = new File(System.getProperties().getProperty("user.dir"));
+	private static File s_mapFolderLocation = null;
 	private static double s_unit_zoom = 0.75;
 	private static int s_unit_width = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private static int s_unit_height = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
@@ -515,16 +515,19 @@ public class MapCreator extends JFrame
 	{
 		final List<String> commands = new ArrayList<String>();
 		ProcessRunnerUtil.populateBasicJavaArgs(commands, s_memory);
-		try
+		if (s_mapFolderLocation != null && s_mapFolderLocation.exists())
 		{
-			// TODO: Fucking apparently JAVA can not handle a -D argument with spaces in it, because it
-			// adds quotes to the outside of the -D argument, which results in the whole thing failing.
-			// So from now on, we are replacing spaces with "(", then undoing it later. FUCK.
-			final String pathWithoutSpaces = s_mapFolderLocation.getCanonicalPath().replaceAll(" ", "(");
-			commands.add("-D" + TRIPLEA_MAP_FOLDER + "=\"" + pathWithoutSpaces + "\"");
-		} catch (final Exception ex)
-		{
-			ex.printStackTrace();
+			try
+			{
+				// TODO: Fucking apparently JAVA can not handle a -D argument with spaces in it, because it
+				// adds quotes to the outside of the -D argument, which results in the whole thing failing.
+				// So from now on, we are replacing spaces with "(", then undoing it later. FUCK.
+				final String pathWithoutSpaces = s_mapFolderLocation.getCanonicalPath().replaceAll(" ", "(");
+				commands.add("-D" + TRIPLEA_MAP_FOLDER + "=\"" + pathWithoutSpaces + "\"");
+			} catch (final Exception ex)
+			{
+				ex.printStackTrace();
+			}
 		}
 		commands.add("-D" + TRIPLEA_UNIT_ZOOM + "=" + s_unit_zoom);
 		commands.add("-D" + TRIPLEA_UNIT_WIDTH + "=" + s_unit_width);

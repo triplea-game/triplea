@@ -81,7 +81,10 @@ public class CenterPicker extends JFrame
 	{
 		handleCommandLineArgs(args);
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png").getPathString();
+		final FileOpen mapSelection = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png");
+		final String mapName = mapSelection.getPathString();
+		if (s_mapFolderLocation == null && mapSelection.getFile() != null)
+			s_mapFolderLocation = mapSelection.getFile().getParentFile();
 		if (mapName != null)
 		{
 			System.out.println("Map : " + mapName);

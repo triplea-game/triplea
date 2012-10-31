@@ -96,13 +96,15 @@ public class AutoPlacementFinder
 			System.out.println("Shutting down");
 			System.exit(0);
 		}
+		File file = new File(GameRunner.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
+		if (!file.exists())
+			file = new File(GameRunner.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator + "map.properties");
+		if (file.exists() && s_mapFolderLocation == null)
+			s_mapFolderLocation = file.getParentFile();
 		if (!placeDimensionsSet)
 		{
 			try
 			{
-				File file = new File(GameRunner.getUserMapsFolder() + File.separator + mapDir + File.separator + "map.properties");
-				if (!file.exists())
-					file = new File(GameRunner.getRootFolder() + File.separator + "maps" + File.separator + mapDir + File.separator + "map.properties");
 				if (file.exists())
 				{
 					double scale = unit_zoom_percent;
@@ -217,12 +219,13 @@ public class AutoPlacementFinder
 		try
 		{
 			s_mapData = new MapData(mapDir); // makes TripleA read all the text data files for the map.
-		} catch (final NullPointerException npe)
+		} catch (final Exception ex)
 		{
-			System.out.println("Caught Null Pointer Exception.");
+			JOptionPane.showMessageDialog(null, new JLabel("Could not find map. Make sure it is in finalized location and contains centers.txt and polygons.txt"));
+			System.out.println("Caught Exception.");
 			System.out.println("Could be due to some missing text files.");
 			System.out.println("Or due to the map folder not being in the right location.");
-			npe.printStackTrace();
+			ex.printStackTrace();
 			System.exit(0);
 		}
 		System.out.println("Place Dimensions in pixels, being used: " + PLACEWIDTH + "x" + PLACEHEIGHT);

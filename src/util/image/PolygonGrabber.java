@@ -24,6 +24,7 @@ import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -78,7 +80,7 @@ public class PolygonGrabber extends JFrame
 	private static boolean s_islandMode;
 	private final JCheckBoxMenuItem modeItem;
 	private List<Polygon> m_current; // the current set of polyongs
-	private Image m_image; // holds the map image
+	// private Image m_image; // holds the map image
 	private BufferedImage m_bufferedImage;
 	private Map<String, List<Polygon>> m_polygons = new HashMap<String, List<Polygon>>(); // maps String -> List of polygons
 	private Map<String, Point> m_centers; // holds the centers for the polygons
@@ -101,7 +103,10 @@ public class PolygonGrabber extends JFrame
 	{
 		handleCommandLineArgs(args);
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png").getPathString();
+		final FileOpen mapSelection = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png");
+		final String mapName = mapSelection.getPathString();
+		if (s_mapFolderLocation == null && mapSelection.getFile() != null)
+			s_mapFolderLocation = mapSelection.getFile().getParentFile();
 		if (mapName != null)
 		{
 			System.out.println("Map : " + mapName);
@@ -217,9 +222,9 @@ public class PolygonGrabber extends JFrame
 			}
 		});
 		// set up the image panel size dimensions ...etc
-		imagePanel.setMinimumSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
-		imagePanel.setPreferredSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
-		imagePanel.setMaximumSize(new Dimension(m_image.getWidth(this), m_image.getHeight(this)));
+		imagePanel.setMinimumSize(new Dimension(m_bufferedImage.getWidth(this), m_bufferedImage.getHeight(this)));
+		imagePanel.setPreferredSize(new Dimension(m_bufferedImage.getWidth(this), m_bufferedImage.getHeight(this)));
+		imagePanel.setMaximumSize(new Dimension(m_bufferedImage.getWidth(this), m_bufferedImage.getHeight(this)));
 		// set up the layout manager
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(new JScrollPane(imagePanel), BorderLayout.CENTER);
@@ -255,6 +260,53 @@ public class PolygonGrabber extends JFrame
 			}
 		};
 		exitAction.putValue(Action.SHORT_DESCRIPTION, "Exit The Program");
+		final Action autoAction = new AbstractAction("Auto Find Polygons")
+		{
+			private static final long serialVersionUID = 9135123964960352915L;
+			
+			public void actionPerformed(final ActionEvent event)
+			{
+				JOptionPane.showMessageDialog(null, new JLabel("<html>"
+							+ "You will need to check and go back and do some polygons manually, as Auto does not catch them all. "
+							+ "<br>Also, if a territory has more than 1 part (like an island chain), you will need to go back and "
+							+ "<br>redo the entire territory chain using CTRL + Click in order to capture each part of the territory."
+							+ "</html>"));
+				m_current = new ArrayList<Polygon>();
+				final Iterator<String> territoryNames = m_centers.keySet().iterator();
+				while (territoryNames.hasNext())
+				{
+					final String territoryName = territoryNames.next();
+					final Point center = m_centers.get(territoryName);
+					System.out.println("Detecting Polygon for:" + territoryName);
+					final Polygon p = findPolygon(center.x, center.y);
+					// test if the poly contains the center point (this often fails when there is an island right above (because findPolygon will grab the island instead)
+					if (!p.contains(center))
+						continue;
+					// test if this poly contains any other centers, and if so do not do this one. let the user manually do it to make sure it gets done properly
+					boolean hasIslands = false;
+					for (final Point otherCenterPoint : m_centers.values())
+					{
+						if (center.equals(otherCenterPoint))
+							continue;
+						if (p.contains(otherCenterPoint))
+						{
+							hasIslands = true;
+							break;
+						}
+					}
+					if (hasIslands)
+						continue;
+					// some islands do not have centers on them because they are island chains that are also part of an island or territory touching a sidewall or outside of this polygon. we should still skip them.
+					if (doesPolygonContainAnyBlackInside(p))
+						continue;
+					final List<Polygon> polys = new ArrayList<Polygon>();
+					polys.add(p);
+					m_polygons.put(territoryName, polys);
+				}
+				repaint();
+			}
+		};
+		autoAction.putValue(Action.SHORT_DESCRIPTION, "Autodetect Polygons around Centers");
 		// set up the menu items
 		final JMenuItem openItem = new JMenuItem(openAction);
 		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
@@ -281,8 +333,10 @@ public class PolygonGrabber extends JFrame
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
 		final JMenu editMenu = new JMenu("Edit");
+		final JMenuItem autoItem = new JMenuItem(autoAction);
 		editMenu.setMnemonic('E');
 		editMenu.add(modeItem);
+		editMenu.add(autoItem);
 		menuBar.add(fileMenu);
 		menuBar.add(editMenu);
 	}// end constructor
@@ -298,17 +352,17 @@ public class PolygonGrabber extends JFrame
 	 */
 	private void createImage(final String mapName)
 	{
-		m_image = Toolkit.getDefaultToolkit().createImage(mapName);
+		final Image image = Toolkit.getDefaultToolkit().createImage(mapName);
 		try
 		{
-			Util.ensureImageLoaded(m_image);
+			Util.ensureImageLoaded(image);
 		} catch (final InterruptedException ex)
 		{
 			ex.printStackTrace();
 		}
-		m_bufferedImage = new BufferedImage(m_image.getWidth(null), m_image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+		m_bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 		final Graphics g = m_bufferedImage.getGraphics();
-		g.drawImage(m_image, 0, 0, this);
+		g.drawImage(image, 0, 0, this);
 		g.dispose();
 	}
 	
@@ -335,7 +389,7 @@ public class PolygonGrabber extends JFrame
 			public void paint(final Graphics g)
 			{
 				// super.paint(g);
-				g.drawImage(m_image, 0, 0, this);
+				g.drawImage(m_bufferedImage, 0, 0, this);
 				final Iterator<Entry<String, List<Polygon>>> iter = m_polygons.entrySet().iterator();
 				g.setColor(Color.red);
 				while (iter.hasNext())
@@ -531,7 +585,7 @@ public class PolygonGrabber extends JFrame
 				m_current = null;
 				return;
 			}
-			m_polygons.put(text.getText(), m_current);
+			m_polygons.put(text.getText(), new ArrayList<Polygon>(m_current));
 			m_current = null;
 		}
 		else if (option > 0)
@@ -556,6 +610,7 @@ public class PolygonGrabber extends JFrame
 	 */
 	private void guessCountryName(final JTextField text, final Iterator<Entry<String, Point>> centersiter)
 	{
+		final List<String> options = new ArrayList<String>();
 		while (centersiter.hasNext())
 		{
 			final Entry<String, Point> item = centersiter.next();
@@ -564,11 +619,15 @@ public class PolygonGrabber extends JFrame
 			{
 				if (polygon.contains(p))
 				{
-					text.setText(item.getKey().toString());
-					break;
+					options.add(item.getKey().toString());
 				}// if
 			}// while
 		}// while
+		if (!options.isEmpty())
+		{
+			Collections.shuffle(options);
+			text.setText(options.get(0));
+		}
 	}
 	
 	/**
@@ -609,6 +668,18 @@ public class PolygonGrabber extends JFrame
 		return (m_bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0; // maybe here ?
 	}
 	
+	private static final boolean isBlack(final int x, final int y, final BufferedImage bufferedImage)
+	{
+		if (!inBounds(x, y, bufferedImage))
+		{
+			return false; // not inbounds, can't be black
+		}
+		// gets ARGB integer value and we LOGICAL AND mask it
+		// with ARGB value of 00,FF,FF,FF to determine if it
+		// it black or not.
+		return (bufferedImage.getRGB(x, y) & 0x00FFFFFF) == 0; // maybe here ?
+	}
+	
 	/**
 	 * java.lang.boolean inBounds(java.lang.int, java.lang.int)
 	 * 
@@ -622,7 +693,12 @@ public class PolygonGrabber extends JFrame
 	 */
 	private final boolean inBounds(final int x, final int y)
 	{
-		return x >= 0 && x < m_image.getWidth(null) && y >= 0 && y < m_image.getHeight(null);
+		return x >= 0 && x < m_bufferedImage.getWidth(null) && y >= 0 && y < m_bufferedImage.getHeight(null);
+	}
+	
+	private static final boolean inBounds(final int x, final int y, final Image image)
+	{
+		return x >= 0 && x < image.getWidth(null) && y >= 0 && y < image.getHeight(null);
 	}
 	
 	/**
@@ -687,7 +763,34 @@ public class PolygonGrabber extends JFrame
 	{
 		m_testPoint.setLocation(currentPoint);
 		move(m_testPoint, direction);
-		return m_testPoint.x == 0 || m_testPoint.y == 0 || m_testPoint.y == m_image.getHeight(this) || m_testPoint.x == m_image.getWidth(this) || isBlack(m_testPoint);
+		return m_testPoint.x == 0 || m_testPoint.y == 0 || m_testPoint.y == m_bufferedImage.getHeight(this) || m_testPoint.x == m_bufferedImage.getWidth(this) || isBlack(m_testPoint);
+	}
+	
+	private final boolean doesPolygonContainAnyBlackInside(final Polygon poly)
+	{
+		final BufferedImage testImage = new BufferedImage(m_bufferedImage.getWidth(null), m_bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+		final Graphics g = testImage.getGraphics();
+		g.drawImage(m_bufferedImage, 0, 0, null);
+		g.setColor(Color.GREEN);
+		g.drawPolygon(poly.xpoints, poly.ypoints, poly.npoints);
+		g.dispose();
+		final Rectangle rect = poly.getBounds();
+		for (int x = rect.x; x < rect.x + rect.width; x++)
+		{
+			for (int y = rect.y; y < rect.y + rect.height; y++)
+			{
+				if (isBlack(x, y, testImage))
+				{
+					if (poly.contains(new Point(x, y)))
+					{
+						testImage.flush();
+						return true;
+					}
+				}
+			}
+		}
+		testImage.flush();
+		return false;
 	}
 	
 	/**

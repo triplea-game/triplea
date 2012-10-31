@@ -50,8 +50,10 @@ public class ImageShrinker
 					+ "<br>So we suggest you instead shrink the image with paint.net or photoshop or gimp, etc, then clean it up before saving."
 					+ "</html>"));
 		final File mapFile = new FileOpen("Select The Large Image", s_mapFolderLocation, ".gif", ".png").getFile();
-		if (!mapFile.exists())
+		if (mapFile == null || !mapFile.exists())
 			throw new IllegalStateException(mapFile + "File does not exist");
+		if (s_mapFolderLocation == null)
+			s_mapFolderLocation = mapFile.getParentFile();
 		final String input = JOptionPane.showInputDialog(null, "Select scale");
 		final float scale = Float.parseFloat(input);
 		final Image baseImg = ImageIO.read(mapFile);

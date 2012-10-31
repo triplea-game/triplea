@@ -81,7 +81,10 @@ public class ReliefImageBreaker
 					+ "<br>for each territory and sea zone."
 					+ "<br><br>TripleA no longer uses these, and instead uses reliefTiles (use the TileImageBreaker for that)."
 					+ "</html>"));
-		location = new FileSave("Where to save Reliefe Images?", null, s_mapFolderLocation).getPathString();
+		final FileSave locationSelection = new FileSave("Where to save Relief Images?", null, s_mapFolderLocation);
+		location = locationSelection.getPathString();
+		if (s_mapFolderLocation == null && locationSelection.getFile() != null)
+			s_mapFolderLocation = locationSelection.getFile().getParentFile();
 		if (location == null)
 		{
 			System.out.println("You need to select a folder to save the tiles in for this to work");

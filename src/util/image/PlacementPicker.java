@@ -133,7 +133,10 @@ public class PlacementPicker extends JFrame
 					+ "<br>placements for, turn on the mode options in the 'edit' menu. "
 					+ "</html>"));
 		System.out.println("Select the map");
-		final String mapName = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png").getPathString();
+		final FileOpen mapSelection = new FileOpen("Select The Map", s_mapFolderLocation, ".gif", ".png");
+		final String mapName = mapSelection.getPathString();
+		if (s_mapFolderLocation == null && mapSelection.getFile() != null)
+			s_mapFolderLocation = mapSelection.getFile().getParentFile();
 		if (mapName != null)
 		{
 			final PlacementPicker picker = new PlacementPicker(mapName);
