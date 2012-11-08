@@ -79,6 +79,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			return watcher;
 		}
 		final JMenu lobby = new JMenu("Lobby");
+		lobby.setMnemonic(KeyEvent.VK_L);
 		menuBar.add(lobby);
 		lobby.add(new EditGameCommentAction(watcher, m_frame));
 		lobby.add(new RemoveGameFromLobbyAction(watcher));
@@ -96,6 +97,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		if (getGame().getMessenger() instanceof DummyMessenger)
 			return;
 		final JMenu menuNetwork = new JMenu("Network");
+		menuNetwork.setMnemonic(KeyEvent.VK_N);
 		addAllowObserversToJoin(menuNetwork);
 		addBootPlayer(menuNetwork);
 		addBanPlayer(menuNetwork);
@@ -204,6 +206,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	protected void createHelpMenu(final JMenuBar menuBar)
 	{
 		final JMenu helpMenu = new JMenu("Help");
+		helpMenu.setMnemonic(KeyEvent.VK_H);
 		menuBar.add(helpMenu);
 		addGameSpecificHelpMenus(helpMenu);
 		addGameNotesMenu(helpMenu);
@@ -214,6 +217,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	private void createWebHelpMenu(final JMenuBar menuBar)
 	{
 		final JMenu web = new JMenu("Web");
+		web.setMnemonic(KeyEvent.VK_W);
 		menuBar.add(web);
 		addWebMenu(web);
 	}
@@ -221,13 +225,21 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	private void addWebMenu(final JMenu parentMenu)
 	{
 		final JMenuItem hostingLink = new JMenuItem("How to Host...");
+		hostingLink.setMnemonic(KeyEvent.VK_H);
 		final JMenuItem mapLink = new JMenuItem("Install Maps...");
+		mapLink.setMnemonic(KeyEvent.VK_I);
 		final JMenuItem bugReport = new JMenuItem("Bug Report...");
+		bugReport.setMnemonic(KeyEvent.VK_B);
 		final JMenuItem lobbyRules = new JMenuItem("Lobby Rules...");
+		lobbyRules.setMnemonic(KeyEvent.VK_L);
 		final JMenuItem warClub = new JMenuItem("War Club & Ladder...");
+		warClub.setMnemonic(KeyEvent.VK_W);
 		final JMenuItem devForum = new JMenuItem("Developer Forum...");
+		devForum.setMnemonic(KeyEvent.VK_E);
 		final JMenuItem donateLink = new JMenuItem("Donate...");
+		donateLink.setMnemonic(KeyEvent.VK_O);
 		final JMenuItem guidesLink = new JMenuItem("Guides...");
+		guidesLink.setMnemonic(KeyEvent.VK_G);
 		hostingLink.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -364,7 +376,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			{
 				Console.getConsole().setVisible(true);
 			}
-		});
+		}).setMnemonic(KeyEvent.VK_C);
 	}
 	
 	/**
@@ -395,7 +407,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 				{
 					JOptionPane.showMessageDialog(m_frame, editorPane, "About " + m_frame.getGame().getData().getGameName(), JOptionPane.PLAIN_MESSAGE);
 				}
-			});
+			}).setMnemonic(KeyEvent.VK_A);
 		}
 		else
 		// On Mac OS X, put the About menu where Mac users expect it to be
@@ -490,7 +502,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 					});
 					// JOptionPane.showMessageDialog(m_frame, scroll, "Notes", JOptionPane.PLAIN_MESSAGE);
 				}
-			});
+			}).setMnemonic(KeyEvent.VK_N);
 		}
 	}
 	
@@ -500,6 +512,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 	protected void createFileMenu(final JMenuBar menuBar)
 	{
 		final JMenu fileMenu = new JMenu("File");
+		fileMenu.setMnemonic(KeyEvent.VK_F);
 		menuBar.add(fileMenu);
 		addSaveMenu(fileMenu);
 		addExitMenu(fileMenu);
@@ -607,6 +620,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 				}
 			}
 		});
+		menuFileSave.setMnemonic(KeyEvent.VK_S);
 		menuFileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		parent.add(menuFileSave);
 	}
@@ -626,6 +640,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 				m_frame.leaveGame();
 			}
 		});
+		leaveGameMenuExit.setMnemonic(KeyEvent.VK_L);
 		if (isMac)
 		{ // On Mac OS X, the command-Q is reserved for the Quit action,
 			// so set the command-L key combo for the Leave Game action
@@ -653,6 +668,7 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 					m_frame.shutdown();
 				}
 			});
+			menuFileExit.setMnemonic(KeyEvent.VK_E);
 			parentMenu.add(menuFileExit);
 		}
 	}

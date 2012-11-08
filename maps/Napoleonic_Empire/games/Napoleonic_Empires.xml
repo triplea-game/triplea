@@ -2944,17 +2944,17 @@
 				    </attatchment>
 					
 					
-                <attatchment name="objectiveAttachment_Balancing_Convoy_Income_for_balanced_game" attatchTo="France" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <attatchment name="objectiveAttachment_Balancing_Income_for_balanced_game" attatchTo="France" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="-6"/>
                 	<option name="alliedOwnershipTerritories" value="Orleanais" count="1"/>
                 </attatchment>
 				
-                <attatchment name="objectiveAttachment_Balancing_Convoy_Income_for_balanced_game" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <attatchment name="objectiveAttachment_Balancing_Income_for_balanced_game" attatchTo="UnitedKingdom" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="-4"/>
                 	<option name="alliedOwnershipTerritories" value="Essex" count="1"/>
                 </attatchment>
 				
-                <attatchment name="objectiveAttachment_Balancing_Convoy_Income_for_balanced_game" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+                <attatchment name="objectiveAttachment_Balancing_Income_for_balanced_game" attatchTo="Spain" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
                 	<option name="objectiveValue" value="-10"/>
                 	<option name="alliedOwnershipTerritories" value="New Castille" count="1"/>
                 </attatchment>
@@ -7490,7 +7490,7 @@ Nation................................ Allies&lt;br&gt;
 &lt;br&gt;Version 2.0 - 4.x changes made by Veqryn.
 &lt;br&gt;
 &lt;br&gt;You may or may not notice that Spain collect 10 less income per turn than their total production, and that France collects 6 less, and the UK 4 less.
-&lt;br&gt;This is because of their convoy zones.  In order to balance the game, but at the same time keep the convoy zone value high, I was forced to give these nations -negative national objectives that lower their income each turn for balancing purposes, in order to equal out the increased value of their convoy zones.
+&lt;br&gt;This is because in order keep the game balanced, I was forced to create negative modifiers for their income.  These 3 nations will receive these negative modifiers every single turn, no matter what happens.
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;Version 4.0 - 4.0.x changes:

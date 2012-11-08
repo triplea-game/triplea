@@ -54,6 +54,7 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -97,6 +98,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
@@ -177,7 +179,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				final JScrollPane scroll = new JScrollPane(editorPane);
 				JOptionPane.showMessageDialog(m_frame, scroll, "Movement Help", JOptionPane.PLAIN_MESSAGE);
 			}
-		});
+		}).setMnemonic(KeyEvent.VK_M);
 	}
 	
 	@Override
@@ -194,11 +196,12 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void createGameMenu(final JMenuBar menuBar)
 	{
 		final JMenu menuGame = new JMenu("Game");
+		menuGame.setMnemonic(KeyEvent.VK_G);
 		menuBar.add(menuGame);
 		addEditMode(menuGame);
-		menuGame.add(m_frame.getShowGameAction());
-		menuGame.add(m_frame.getShowHistoryAction());
-		menuGame.add(m_frame.getShowMapOnlyAction());
+		menuGame.add(m_frame.getShowGameAction()).setMnemonic(KeyEvent.VK_G);
+		menuGame.add(m_frame.getShowHistoryAction()).setMnemonic(KeyEvent.VK_H);
+		menuGame.add(m_frame.getShowMapOnlyAction()).setMnemonic(KeyEvent.VK_M);
 		addShowVerifiedDice(menuGame);
 		SoundOptions.addGlobalSoundSwitchMenu(menuGame);
 		SoundOptions.addToMenu(menuGame);
@@ -218,6 +221,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void createExportMenu(final JMenuBar menuBar)
 	{
 		final JMenu menuGame = new JMenu("Export");
+		menuGame.setMnemonic(KeyEvent.VK_E);
 		menuBar.add(menuGame);
 		addExportXML(menuGame);
 		addExportStats(menuGame);
@@ -232,6 +236,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void createViewMenu(final JMenuBar menuBar)
 	{
 		final JMenu menuView = new JMenu("View");
+		menuView.setMnemonic(KeyEvent.VK_V);
 		menuBar.add(menuView);
 		addZoomMenu(menuView);
 		addUnitSizeMenu(menuView);
@@ -401,7 +406,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 					EventThreadJOptionPane.showMessageDialog(m_frame, "The look and feel will update when you restart TripleA");
 				}
 			}
-		});
+		}).setMnemonic(KeyEvent.VK_F);
 	}
 	
 	private void addShowGameUuid(final JMenu menuView)
@@ -422,12 +427,13 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				JOptionPane.showOptionDialog(JOptionPane.getFrameForComponent(TripleaMenu.this), panel, "Game UUID", JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
 							new String[] { "OK" }, "OK");
 			}
-		});
+		}).setMnemonic(KeyEvent.VK_U);
 	}
 	
 	private void addChatTimeMenu(final JMenu parentMenu)
 	{
 		final JCheckBoxMenuItem chatTimeBox = new JCheckBoxMenuItem("Show Chat Times");
+		chatTimeBox.setMnemonic(KeyEvent.VK_T);
 		chatTimeBox.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -447,7 +453,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final JCheckBoxMenuItem editMode = new JCheckBoxMenuItem("Enable Edit Mode");
 		editMode.setModel(m_frame.getEditModeButtonModel());
-		parentMenu.add(editMode);
+		parentMenu.add(editMode).setMnemonic(KeyEvent.VK_E);
 	}
 	
 	private void addZoomMenu(final JMenu menuGame)
@@ -513,7 +519,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				m_frame.setScale(value.doubleValue());
 			}
 		};
-		menuGame.add(mapZoom);
+		menuGame.add(mapZoom).setMnemonic(KeyEvent.VK_Z);
 	}
 	
 	/**
@@ -531,7 +537,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			}
 		};
 		if (getGame() instanceof ClientGame)
-			parentMenu.add(showVerifiedDice);
+			parentMenu.add(showVerifiedDice).setMnemonic(KeyEvent.VK_V);
 	}
 	
 	/**
@@ -539,7 +545,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	 */
 	private void addSaveScreenshot(final JMenu parentMenu)
 	{
-		parentMenu.add(m_frame.getSaveScreenshotAction());
+		parentMenu.add(m_frame.getSaveScreenshotAction()).setMnemonic(KeyEvent.VK_E);
 	}
 	
 	/**
@@ -549,7 +555,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	{
 		final JCheckBoxMenuItem showCommentLog = new JCheckBoxMenuItem("Show Comment Log");
 		showCommentLog.setModel(m_frame.getShowCommentLogButtonModel());
-		parentMenu.add(showCommentLog);
+		parentMenu.add(showCommentLog).setMnemonic(KeyEvent.VK_L);
 	}
 	
 	/**
@@ -558,6 +564,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addShowEnemyCasualties(final JMenu parentMenu)
 	{
 		final JCheckBoxMenuItem showEnemyCasualties = new JCheckBoxMenuItem("Confirm Enemy Casualties");
+		showEnemyCasualties.setMnemonic(KeyEvent.VK_E);
 		showEnemyCasualties.setSelected(BattleDisplay.getShowEnemyCasualtyNotification());
 		showEnemyCasualties.addActionListener(new AbstractAction()
 		{
@@ -590,6 +597,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addTabbedProduction(final JMenu parentMenu)
 	{
 		final JCheckBoxMenuItem tabbedProduction = new JCheckBoxMenuItem("Show Production Tabs");
+		tabbedProduction.setMnemonic(KeyEvent.VK_P);
 		tabbedProduction.setSelected(PurchasePanel.isTabbedProduction());
 		tabbedProduction.addActionListener(new AbstractAction()
 		{
@@ -620,7 +628,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 					JOptionPane.showMessageDialog(m_frame, ui, "Game options", JOptionPane.PLAIN_MESSAGE);
 				}
 			};
-			menuGame.add(optionsAction);
+			menuGame.add(optionsAction).setMnemonic(KeyEvent.VK_O);
 		}
 	}
 	
@@ -651,12 +659,13 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				JOptionPane.showMessageDialog(m_frame, scroll, "Politics Panel", JOptionPane.PLAIN_MESSAGE);
 			}
 		};
-		menuGame.add(politicsAction);
+		menuGame.add(politicsAction).setMnemonic(KeyEvent.VK_P);
 	}
 	
 	private void addShowUnits(final JMenu parentMenu)
 	{
 		final JCheckBoxMenuItem showUnitsBox = new JCheckBoxMenuItem("Show Units");
+		showUnitsBox.setMnemonic(KeyEvent.VK_U);
 		showUnitsBox.setSelected(true);
 		showUnitsBox.addActionListener(new ActionListener()
 		{
@@ -674,10 +683,14 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addDrawTerritoryBordersAgain(final JMenu parentMenu)
 	{
 		final JMenu drawBordersMenu = new JMenu();
+		drawBordersMenu.setMnemonic(KeyEvent.VK_O);
 		drawBordersMenu.setText("Draw Borders On Top");
 		final JRadioButton noneButton = new JRadioButton("Low");
+		noneButton.setMnemonic(KeyEvent.VK_L);
 		final JRadioButton mediumButton = new JRadioButton("Medium");
+		mediumButton.setMnemonic(KeyEvent.VK_M);
 		final JRadioButton highButton = new JRadioButton("High");
+		highButton.setMnemonic(KeyEvent.VK_H);
 		final ButtonGroup group = new ButtonGroup();
 		group.add(noneButton);
 		group.add(mediumButton);
@@ -745,7 +758,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addShowTerritoryEffects(final JMenu parentMenu)
 	{
 		final JCheckBoxMenuItem territoryEffectsBox = new JCheckBoxMenuItem("Show TerritoryEffects");
-		
+		territoryEffectsBox.setMnemonic(KeyEvent.VK_T);
 		territoryEffectsBox.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -762,6 +775,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addLockMap(final JMenu parentMenu)
 	{
 		final JCheckBoxMenuItem lockMapBox = new JCheckBoxMenuItem("Lock Map");
+		lockMapBox.setMnemonic(KeyEvent.VK_M);
 		lockMapBox.setSelected(getUIContext().getLockMap());
 		lockMapBox.addActionListener(new ActionListener()
 		{
@@ -776,6 +790,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addShowAIBattles(final JMenu parentMenu)
 	{
 		final JCheckBoxMenuItem showAIBattlesBox = new JCheckBoxMenuItem("Show Battles Between AIs");
+		showAIBattlesBox.setMnemonic(KeyEvent.VK_A);
 		showAIBattlesBox.setSelected(getUIContext().getShowBattlesBetweenAIs());
 		showAIBattlesBox.addActionListener(new ActionListener()
 		{
@@ -814,7 +829,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				{
 					Dynamix_AI.ShowSettingsWindow();
 				}
-			});
+			}).setMnemonic(KeyEvent.VK_C);
 			parentMenu.addSeparator();
 		}
 	}
@@ -822,6 +837,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addAISleepDuration(final JMenu parentMenu)
 	{
 		final JMenuItem AISleepDurationBox = new JMenuItem("AI Pause Duration...");
+		AISleepDurationBox.setMnemonic(KeyEvent.VK_A);
 		AISleepDurationBox.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -861,12 +877,13 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				JOptionPane.showMessageDialog(m_frame, new JScrollPane(stats.getAllStats()), "Random Stats", JOptionPane.INFORMATION_MESSAGE);
 			}
 		};
-		parentMenu.add(showDiceStats);
+		parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_D);
 	}
 	
 	private void addRollDice(final JMenu parentMenu)
 	{
 		final JMenuItem RollDiceBox = new JMenuItem("Roll Dice...");
+		RollDiceBox.setMnemonic(KeyEvent.VK_R);
 		RollDiceBox.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -922,7 +939,9 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				OddsCalculatorDialog.show(m_frame, null);
 			}
 		};
-		menuGame.add(showBattleMenu);
+		final JMenuItem showBattleMenuItem = menuGame.add(showBattleMenu);
+		showBattleMenuItem.setMnemonic(KeyEvent.VK_B);
+		showBattleMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	}
 	
 	// TODO: create a second menu option for parsing current attachments
@@ -968,7 +987,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				}
 			}
 		};
-		parentMenu.add(exportXML);
+		parentMenu.add(exportXML).setMnemonic(KeyEvent.VK_X);
 	}
 	
 	/**
@@ -985,7 +1004,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				createAndSaveStats(true);
 			}
 		};
-		parentMenu.add(showDiceStats);
+		parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_F);
 	}
 	
 	/**
@@ -1002,7 +1021,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				createAndSaveStats(false);
 			}
 		};
-		parentMenu.add(showDiceStats);
+		parentMenu.add(showDiceStats).setMnemonic(KeyEvent.VK_S);
 	}
 	
 	/**
@@ -1285,6 +1304,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addShowMapDetails(final JMenu menuGame)
 	{
 		showMapDetails = new JCheckBoxMenuItem("Show Map Details");
+		showMapDetails.setMnemonic(KeyEvent.VK_D);
 		showMapDetails.setSelected(TileImageFactory.getShowReliefImages());
 		showMapDetails.addActionListener(new ActionListener()
 		{
@@ -1314,6 +1334,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 	private void addShowMapBlends(final JMenu menuGame)
 	{
 		showMapBlends = new JCheckBoxMenuItem("Show Map Blends");
+		showMapBlends.setMnemonic(KeyEvent.VK_B);
 		if (getUIContext().getMapData().getHasRelief() && showMapDetails.isEnabled() && showMapDetails.isSelected())
 		{
 			showMapBlends.setEnabled(true);
@@ -1360,12 +1381,15 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 		// creates a sub menu of radiobuttons for each available mapdir
 		JMenuItem mapMenuItem;
 		final JMenu mapSubMenu = new JMenu("Map Skins");
+		mapSubMenu.setMnemonic(KeyEvent.VK_K);
 		final ButtonGroup mapButtonGroup = new ButtonGroup();
 		menuGame.add(mapSubMenu);
 		final Map<String, String> skins = UIContext.getSkins(m_frame.getGame().getData());
 		for (final String key : skins.keySet())
 		{
 			mapMenuItem = new JRadioButtonMenuItem(key);
+			// menu key navigation with ALT+first character (multiple hits for same character possible)
+			// mapMenuItem.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(key.charAt(0)));
 			mapButtonGroup.add(mapMenuItem);
 			mapSubMenu.add(mapMenuItem);
 			mapSubMenu.setEnabled(skins.size() > 1);
@@ -1427,6 +1451,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 				m_frame.getUIContext().addShutdownWindow(frame);
 			}
 		});
+		menuFileExport.setMnemonic(KeyEvent.VK_C);
 		parentMenu.add(menuFileExport);
 	}
 	
@@ -1452,16 +1477,22 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 			}
 		}
 		final JMenu unitSizeMenu = new JMenu();
+		unitSizeMenu.setMnemonic(KeyEvent.VK_S);
 		unitSizeMenu.setText("Unit Size");
 		final ButtonGroup unitSizeGroup = new ButtonGroup();
 		final JRadioButtonMenuItem radioItem125 = new JRadioButtonMenuItem(new UnitSizeAction(1.25));
 		final JRadioButtonMenuItem radioItem100 = new JRadioButtonMenuItem(new UnitSizeAction(1.0));
+		radioItem100.setMnemonic(KeyEvent.VK_1);
 		final JRadioButtonMenuItem radioItem87 = new JRadioButtonMenuItem(new UnitSizeAction(0.875));
 		final JRadioButtonMenuItem radioItem83 = new JRadioButtonMenuItem(new UnitSizeAction(0.8333));
+		radioItem83.setMnemonic(KeyEvent.VK_8);
 		final JRadioButtonMenuItem radioItem75 = new JRadioButtonMenuItem(new UnitSizeAction(0.75));
+		radioItem75.setMnemonic(KeyEvent.VK_7);
 		final JRadioButtonMenuItem radioItem66 = new JRadioButtonMenuItem(new UnitSizeAction(0.6666));
+		radioItem66.setMnemonic(KeyEvent.VK_6);
 		final JRadioButtonMenuItem radioItem56 = new JRadioButtonMenuItem(new UnitSizeAction(0.5625));
 		final JRadioButtonMenuItem radioItem50 = new JRadioButtonMenuItem(new UnitSizeAction(0.5));
+		radioItem50.setMnemonic(KeyEvent.VK_5);
 		unitSizeGroup.add(radioItem125);
 		unitSizeGroup.add(radioItem100);
 		unitSizeGroup.add(radioItem87);

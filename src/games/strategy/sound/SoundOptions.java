@@ -8,6 +8,7 @@ import games.strategy.engine.framework.ui.PropertiesSelector;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -35,6 +36,7 @@ public final class SoundOptions
 	public static void addToMenu(final JMenu parentMenu)
 	{
 		final JMenuItem soundOptions = new JMenuItem("Sound Options...");
+		soundOptions.setMnemonic(KeyEvent.VK_S);
 		soundOptions.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
@@ -67,15 +69,15 @@ public final class SoundOptions
 		final String selectNone = "None";
 		final ArrayList<IEditableProperty> properties = m_clipPlayer.getSoundOptions(SoundPath.SoundType.TRIPLEA);
 		final Object pressedButton = PropertiesSelector.getButton(parent, properties, new Object[] { ok, selectAll, selectNone, cancel });
-		if (pressedButton.equals(ok))
+		if (pressedButton == null || pressedButton.equals(cancel))
+		{
+		}
+		else if (pressedButton.equals(ok))
 		{
 			for (final IEditableProperty property : properties)
 			{
 				m_clipPlayer.setMute(((SoundOptionCheckBox) property).getClipName(), !(Boolean) property.getValue());
 			}
-		}
-		else if (pressedButton.equals(cancel))
-		{
 		}
 		else if (pressedButton.equals(selectAll))
 		{
@@ -98,14 +100,15 @@ public final class SoundOptions
 	public static void addGlobalSoundSwitchMenu(final JMenu parentMenu)
 	{
 		final JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Enable Sound");
+		soundCheckBox.setMnemonic(KeyEvent.VK_N);
 		soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
 		soundCheckBox.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
 			{
-				public void actionPerformed(final ActionEvent e)
-				{
-					ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
-				}
-			});
+				ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
+			}
+		});
 		parentMenu.add(soundCheckBox);
 	}
 	
@@ -114,12 +117,12 @@ public final class SoundOptions
 		final JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
 		soundCheckBox.setSelected(!ClipPlayer.getBeSilent());
 		soundCheckBox.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
 			{
-				public void actionPerformed(final ActionEvent e)
-				{
-					ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
-				}
-			});
+				ClipPlayer.setBeSilent(!soundCheckBox.isSelected());
+			}
+		});
 		parentPanel.add(soundCheckBox);
 	}
 }

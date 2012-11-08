@@ -121,9 +121,9 @@ public class PlacementPicker extends JFrame
 					+ "<br><br>If you want to have less, or more, room around the edges of your units, you can change the unit size. "
 					+ "<br><br>After it starts, you may Load an existing place.txt file, that way you can make changes to it then save it. "
 					+ "<br><br>LEFT CLICK = Select a new territory. "
-					+ "<br><br>Holding CTRL + LEFT CLICK = Create a new placement for that territory. "
+					+ "<br><br>Holding CTRL/SHIFT + LEFT CLICK = Create a new placement for that territory. "
 					+ "<br><br>RIGHT CLICK = Remove last placement for that territory. "
-					+ "<br><br>Holding CTRL + RIGHT CLICK = Save all placements for that territory. "
+					+ "<br><br>Holding CTRL/SHIFT + RIGHT CLICK = Save all placements for that territory. "
 					+ "<br><br>It is a very good idea to check each territory using the PlacementPicker after running the AutoPlacementFinder "
 					+ "<br>to make sure there are enough placements for each territory. If not, you can always add more then save it. "
 					+ "<br><br>IF there are not enough placements, the units will Overflow to the RIGHT of the very LAST placement made, "
@@ -350,7 +350,7 @@ public class PlacementPicker extends JFrame
 			@Override
 			public void mouseClicked(final MouseEvent e)
 			{
-				mouseEvent(e.getPoint(), e.isControlDown(), SwingUtilities.isRightMouseButton(e));
+				mouseEvent(e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
 			}
 		});
 		// set up the image panel size dimensions ...etc

@@ -190,7 +190,7 @@ public class CenterPicker extends JFrame
 			@Override
 			public void mouseClicked(final MouseEvent e)
 			{
-				mouseEvent(e.getPoint(), e.isControlDown(), SwingUtilities.isRightMouseButton(e));
+				mouseEvent(e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
 			}
 		});
 		// set up the image panel size dimensions ...etc

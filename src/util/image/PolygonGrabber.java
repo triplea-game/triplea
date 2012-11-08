@@ -124,7 +124,7 @@ public class PolygonGrabber extends JFrame
 						+ "<br><br>When a territory is inside of another territory, you can turn on 'island mode' to be able to see it."
 						+ "<br><br>You can also load an existing polygons.txt file, then make modifications to it, then save it again."
 						+ "<br><br>LEFT CLICK = fill in a territory's borders."
-						+ "<br><br>Holding CTRL while LEFT CLICKING = add multiple territories together (eg: islands)."
+						+ "<br><br>Holding CTRL/SHIFT while LEFT CLICKING = add multiple territories together (eg: islands)."
 						+ "<br><br>RIGHT CLICK = save or replace those borders for that territory."
 						+ "<br><br>When finished, save the polygons and exit."
 						+ "</html>"));
@@ -218,7 +218,8 @@ public class PolygonGrabber extends JFrame
 			@Override
 			public void mouseClicked(final MouseEvent e)
 			{
-				mouseEvent(e.getPoint(), e.isControlDown(), SwingUtilities.isRightMouseButton(e));
+				
+				mouseEvent(e.getPoint(), e.isControlDown() || e.isShiftDown(), SwingUtilities.isRightMouseButton(e));
 			}
 		});
 		// set up the image panel size dimensions ...etc
