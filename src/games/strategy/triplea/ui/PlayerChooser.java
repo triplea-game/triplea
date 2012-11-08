@@ -22,16 +22,16 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.PlayerList;
 import games.strategy.ui.Util;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -39,7 +39,7 @@ import javax.swing.ListSelectionModel;
  * @author Tony Clayton
  * @version 1.0
  */
-public class PlayerChooser extends JPanel
+public class PlayerChooser extends JOptionPane
 {
 	private static final long serialVersionUID = -7272867474891641839L;
 	private JList m_list;
@@ -47,6 +47,8 @@ public class PlayerChooser extends JPanel
 	private final PlayerID m_defaultPlayer;
 	private final UIContext m_uiContext;
 	private final boolean m_allowNeutral;
+	
+	// private JOptionPane m_pane;
 	
 	/** Creates new PlayerChooser */
 	public PlayerChooser(final PlayerList players, final UIContext uiContext, final boolean allowNeutral)
@@ -57,12 +59,14 @@ public class PlayerChooser extends JPanel
 	/** Creates new PlayerChooser */
 	public PlayerChooser(final PlayerList players, final PlayerID defaultPlayer, final UIContext uiContext, final boolean allowNeutral)
 	{
+		setMessageType(JOptionPane.PLAIN_MESSAGE);
+		setOptionType(JOptionPane.OK_CANCEL_OPTION);
+		setIcon(null);
 		m_players = players;
 		m_defaultPlayer = defaultPlayer;
 		m_uiContext = uiContext;
 		m_allowNeutral = allowNeutral;
 		createComponents();
-		layoutComponents();
 	}
 	
 	private void createComponents()
@@ -75,18 +79,37 @@ public class PlayerChooser extends JPanel
 		m_list.setSelectedValue(m_defaultPlayer, true);
 		m_list.setFocusable(false);
 		m_list.setCellRenderer(new PlayerChooserRenderer(m_players, m_uiContext));
+		
+		m_list.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(final MouseEvent evt)
+			{
+				if (evt.getClickCount() == 2)
+				{
+					// set OK_OPTION on DoubleClick, this fires a property change which causes the dialog to close()
+					setValue(OK_OPTION);
+				}
+			}
+		});
+		
+		setMessage(m_list);
 	}
 	
-	private void layoutComponents()
-	{
-		setLayout(new BorderLayout());
-		add(new JScrollPane(m_list), BorderLayout.CENTER);
-	}
-	
+	/**
+	 * Returns the selected player or null, or null if the dialog was closed
+	 * 
+	 * @return the player or null
+	 */
 	public PlayerID getSelected()
 	{
-		return (PlayerID) m_list.getSelectedValue();
+		if (getValue() != null && getValue().equals(JOptionPane.OK_OPTION))
+		{
+			return (PlayerID) m_list.getSelectedValue();
+		}
+		return null;
 	}
+	
 }
 
 

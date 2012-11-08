@@ -59,6 +59,7 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -190,13 +191,9 @@ public class EditPanel extends ActionPanel
 				m_currentAction = this;
 				setWidgetActivation();
 				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
-				int option;
-				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), playerChooser, "Select owner of PUs to change", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-				if (option != JOptionPane.OK_OPTION)
-				{
-					CANCEL_EDIT_ACTION.actionPerformed(null);
-					return;
-				}
+				final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner PUs to change");
+				dialog.setVisible(true);
+				
 				final PlayerID player = playerChooser.getSelected();
 				if (player == null)
 				{
@@ -221,7 +218,8 @@ public class EditPanel extends ActionPanel
 				int newTotal = oldTotal;
 				final JTextField PUsField = new JTextField(String.valueOf(oldTotal), 4);
 				PUsField.setMaximumSize(PUsField.getPreferredSize());
-				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField), "Select new number of PUs", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+				final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), new JScrollPane(PUsField), "Select new number of PUs", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+							null,
 								null, null);
 				if (option != JOptionPane.OK_OPTION)
 				{
@@ -250,14 +248,9 @@ public class EditPanel extends ActionPanel
 				m_currentAction = this;
 				setWidgetActivation();
 				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
-				int option;
-				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), playerChooser, "Select player to get technology", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
-							null);
-				if (option != JOptionPane.OK_OPTION)
-				{
-					CANCEL_EDIT_ACTION.actionPerformed(null);
-					return;
-				}
+				final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select player to get technology");
+				dialog.setVisible(true);
+				
 				final PlayerID player = playerChooser.getSelected();
 				if (player == null)
 				{
@@ -283,7 +276,7 @@ public class EditPanel extends ActionPanel
 				techList.setLayoutOrientation(JList.VERTICAL);
 				techList.setVisibleRowCount(10);
 				final JScrollPane scroll = new JScrollPane(techList);
-				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Select tech to add", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Select tech to add", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 				if (option != JOptionPane.OK_OPTION)
 				{
 					CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -312,14 +305,9 @@ public class EditPanel extends ActionPanel
 				m_currentAction = this;
 				setWidgetActivation();
 				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), false);
-				int option;
-				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), playerChooser, "Select player to remove technology", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
-							null);
-				if (option != JOptionPane.OK_OPTION)
-				{
-					CANCEL_EDIT_ACTION.actionPerformed(null);
-					return;
-				}
+				final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select player to remove technology");
+				dialog.setVisible(true);
+				
 				final PlayerID player = playerChooser.getSelected();
 				if (player == null)
 				{
@@ -353,7 +341,7 @@ public class EditPanel extends ActionPanel
 				techList.setLayoutOrientation(JList.VERTICAL);
 				techList.setVisibleRowCount(10);
 				final JScrollPane scroll = new JScrollPane(techList);
-				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Select tech to remove", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				final int option = JOptionPane.showOptionDialog(getTopLevelAncestor(), scroll, "Select tech to remove", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 				if (option != JOptionPane.OK_OPTION)
 				{
 					CANCEL_EDIT_ACTION.actionPerformed(null);
@@ -780,11 +768,11 @@ public class EditPanel extends ActionPanel
 				// PlayerID defaultPlayer = TerritoryAttachment.get(territory).getOriginalOwner();
 				final PlayerID defaultPlayer = ta.getOriginalOwner();
 				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), defaultPlayer, getMap().getUIContext(), true);
-				int option;
-				option = JOptionPane
-							.showOptionDialog(getTopLevelAncestor(), playerChooser, "Select new owner for territory", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select new owner for territory");
+				dialog.setVisible(true);
+				
 				final PlayerID player = playerChooser.getSelected();
-				if (option == JOptionPane.OK_OPTION && player != null)
+				if (player != null)
 				{
 					final String result = m_frame.getEditDelegate().changeTerritoryOwner(territory, player);
 					if (result != null)
@@ -801,11 +789,12 @@ public class EditPanel extends ActionPanel
 			else if (m_currentAction == m_addUnitsAction)
 			{
 				final boolean allowNeutral = doesPlayerHaveUnitsOnMap(PlayerID.NULL_PLAYERID, getData());
-				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), getMap().getUIContext(), allowNeutral);
-				int option;
-				option = JOptionPane.showOptionDialog(getTopLevelAncestor(), playerChooser, "Select owner for new units", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+				final PlayerChooser playerChooser = new PlayerChooser(getData().getPlayerList(), territory.getOwner(), getMap().getUIContext(), allowNeutral);
+				final JDialog dialog = playerChooser.createDialog(getTopLevelAncestor(), "Select owner for new units");
+				dialog.setVisible(true);
+				
 				final PlayerID player = playerChooser.getSelected();
-				if (option == JOptionPane.OK_OPTION && player != null)
+				if (player != null)
 				{
 					// open production panel for adding new units
 					final IntegerMap<ProductionRule> production = EditProductionPanel.getProduction(player, m_frame, getData(), getMap().getUIContext());
