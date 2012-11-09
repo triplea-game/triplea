@@ -2145,6 +2145,7 @@
 <option name="transportCost" value="3"/>
 <option name="isFactory" value="true"/>
 <option name="destroyedWhenCapturedBy" value="UnitedKingdom:Spain:KingdomOfPrussia:Russia:AustrianEmpire:France:OttomanEmpire:Sweden"/>
+<option name="canNotMoveDuringCombatMove" value="true"/>
 </attatchment>
 <attatchment name="unitAttatchment" attatchTo="Fortress" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">
 <option name="movement" value="0"/>

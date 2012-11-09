@@ -217,7 +217,7 @@ public class MapCreator extends JFrame
 					"\r\nThis program just runs utilities inside the triplea.jar file for you, and you could easily " +
 					"run them yourself from the command line by reading the docs/developer_documentation.html" +
 					"\r\n\r\nBefore you begin, go create a folder in your directory: Users\\yourname\\triplea\\maps" +
-					"Name the folder with a short name of your map, do not use any special characters in the name." +
+					"\r\nName the folder with a short name of your map, do not use any special characters in the name." +
 					"\r\nNext, create 5 folders inside your map folder, with these names: " +
 					"flags, units, baseTiles, reliefTiles, games" +
 					"\r\nThen, create a text file and rename it \"map.properties\"." +
@@ -584,6 +584,36 @@ public class MapCreator extends JFrame
 			}
 		});
 		m_panel3.add(goToWebButton);
+		m_panel3.add(Box.createVerticalStrut(30));
+		final JButton connectionFinderButton = new JButton("Run the Connection Finder");
+		connectionFinderButton.addActionListener(new AbstractAction("Run the Connection Finder")
+		{
+			private static final long serialVersionUID = 8778155499250138516L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.ConnectionFinder");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							try
+							{
+								ConnectionFinder.main(new String[0]);
+							} catch (final Exception e)
+							{
+								e.printStackTrace();
+							}
+						}
+					}).start();
+				}
+			}
+		});
+		m_panel3.add(connectionFinderButton);
 		m_panel3.add(Box.createVerticalStrut(30));
 		m_panel3.validate();
 	}

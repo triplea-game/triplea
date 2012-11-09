@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Creating a ConnectionFinder for the 'map' part of the xml. (edwin van der wal)
+
 * Adding Mnemonics to menu options in game. (frigoref)
 
 * Improved performance of Polygon Grabber and added a auto-grab to it to will attempt to grab any polygon that does not contain other polygons, based on the centers file. (edwin & veqryn)
