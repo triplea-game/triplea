@@ -55,6 +55,7 @@ public class MapData
 	public static final String PROPERTY_UNITS_HEIGHT = "units.height";
 	public static final String PROPERTY_UNITS_COUNTER_OFFSET_WIDTH = "units.counter.offset.width";
 	public static final String PROPERTY_UNITS_COUNTER_OFFSET_HEIGHT = "units.counter.offset.height";
+	public static final String PROPERTY_UNITS_STACK_SIZE = "units.stack.size";
 	public static final String PROPERTY_MAP_WIDTH = "map.width";
 	public static final String PROPERTY_MAP_HEIGHT = "map.height";
 	public static final String PROPERTY_MAP_SCROLLWRAPX = "map.scrollWrapX";
@@ -64,7 +65,10 @@ public class MapData
 	public static final String PROPERTY_MAP_USETERRITORYEFFECTMARKERS = "map.useTerritoryEffectMarkers";
 	public static final String PROPERTY_MAP_SHOWTERRITORYNAMES = "map.showTerritoryNames";
 	public static final String PROPERTY_MAP_SHOWRESOURCES = "map.showResources";
+	public static final String PROPERTY_MAP_SHOWCOMMENTS = "map.showComments";
 	public static final String PROPERTY_MAP_SHOWCONVOYNAMES = "map.showConvoyNames";
+	public static final String PROPERTY_MAP_SHOWSEAZONENAMES = "map.showSeaZoneNames";
+	public static final String PROPERTY_MAP_DRAWNAMESFROMTOPLEFT = "map.drawNamesFromTopLeft";
 	public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
 	public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
 	public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
@@ -88,6 +92,7 @@ public class MapData
 	public static final String MAP_PROPERTIES = "map.properties";
 	public static final String CAPITAL_MARKERS = "capitols.txt";
 	public static final String CONVOY_MARKERS = "convoy.txt";
+	public static final String COMMENT_MARKERS = "comments.txt";
 	public static final String VC_MARKERS = "vc.txt";
 	public static final String BLOCKADE_MARKERS = "blockade.txt";
 	public static final String IMPASSIBLE = "Impassible";
@@ -113,6 +118,8 @@ public class MapData
 	// maps String -> Point
 	private Map<String, Point> m_convoyPlace;
 	// maps String -> Point
+	private Map<String, Point> m_commentPlace;
+	// maps String -> Point
 	private Map<String, Point> m_PUPlace;
 	// maps String -> Point
 	private Map<String, Point> m_namePlace;
@@ -129,6 +136,7 @@ public class MapData
 	// we shouldnt draw the names to these territories
 	private Set<String> m_undrawnTerritoriesNames;
 	private Map<Image, List<Point>> m_decorations;
+	private Map<String, Image> m_territoryNameImages;
 	private final Map<String, Image> m_effectImages = new HashMap<String, Image>();
 	private final ResourceLoader m_resourceLoader;
 	private BufferedImage m_vcImage;
@@ -175,6 +183,7 @@ public class MapData
 			m_centers = PointFileReaderWriter.readOneToOneCenters(loader.getResourceAsStream(prefix + CENTERS_FILE));
 			m_vcPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + VC_MARKERS));
 			m_convoyPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CONVOY_MARKERS));
+			m_commentPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + COMMENT_MARKERS));
 			m_blockadePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + BLOCKADE_MARKERS));
 			m_capitolPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + CAPITAL_MARKERS));
 			m_PUPlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + PU_PLACE_FILE));
@@ -182,6 +191,7 @@ public class MapData
 			m_kamikazePlace = PointFileReaderWriter.readOneToOne(loader.getResourceAsStream(prefix + KAMIKAZE_FILE));
 			m_mapProperties = new Properties();
 			loadDecorations();
+			loadTerritoryNames();
 			try
 			{
 				final URL url = loader.getResource(prefix + MAP_PROPERTIES);
@@ -202,6 +212,25 @@ public class MapData
 	public void close()
 	{
 		m_resourceLoader.close();
+	}
+	
+	private void loadTerritoryNames()
+	{
+		m_territoryNameImages = new HashMap<String, Image>();
+		if (!m_resourceLoader.hasPath("territoryNames/"))
+			return;
+		for (final String name : m_centers.keySet())
+		{
+			try
+			{
+				final Image img = loadImage("territoryNames/" + name + ".png");
+				if (img != null)
+					m_territoryNameImages.put(name, img);
+			} catch (final Exception e)
+			{
+				// skip that territory then
+			}
+		}
 	}
 	
 	private void loadDecorations() throws IOException
@@ -330,6 +359,13 @@ public class MapData
 		}
 	}
 	
+	public int getDefaultUnitsStackSize()
+	{
+		// zero = normal behavior
+		final String stack = m_mapProperties.getProperty(PROPERTY_UNITS_STACK_SIZE, "0");
+		return Math.max(0, Integer.parseInt(stack));
+	}
+	
 	public boolean shouldDrawTerritoryName(final String territoryName)
 	{
 		if (m_undrawnTerritoriesNames == null)
@@ -375,9 +411,19 @@ public class MapData
 		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWRESOURCES, "true")).booleanValue();
 	}
 	
-	public boolean drawConvoyNames()
+	public boolean drawComments()
 	{
-		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWCONVOYNAMES, "true")).booleanValue();
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWCOMMENTS, "true")).booleanValue();
+	}
+	
+	public boolean drawSeaZoneNames()
+	{
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWSEAZONENAMES, "false")).booleanValue();
+	}
+	
+	public boolean drawNamesFromTopLeft()
+	{
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_DRAWNAMESFROMTOPLEFT, "false")).booleanValue();
 	}
 	
 	public boolean useNation_convoyFlags()
@@ -592,6 +638,13 @@ public class MapData
 		return getCenter(terr);
 	}
 	
+	public Point getCommentMarkerLocation(final Territory terr)
+	{
+		if (m_commentPlace.containsKey(terr.getName()))
+			return m_commentPlace.get(terr.getName());
+		return null;
+	}
+	
 	public Point getKamikazeMarkerLocation(final Territory terr)
 	{
 		if (m_kamikazePlace.containsKey(terr.getName()))
@@ -785,6 +838,11 @@ public class MapData
 			e.printStackTrace();
 			throw new IllegalStateException(e.getMessage());
 		}
+	}
+	
+	public Map<String, Image> getTerritoryNameImages()
+	{
+		return Collections.unmodifiableMap(m_territoryNameImages);
 	}
 	
 	public Map<Image, List<Point>> getDecorations()

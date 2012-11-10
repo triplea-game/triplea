@@ -405,16 +405,6 @@ public class Properties implements Constants
 	}
 	
 	/*
-	* Display units as counters: stacked instead of a number drawn under the unit
-	* the number means the maximum stack size, 0 means default behavior,
-	* if a stack is above max stack size the number is drawn in the top right corner of the counter
-	*/
-	public static int getCountersDisplay(final GameData data)
-	{
-		return data.getProperties().get(COUNTERS_DISPLAY, 0);
-	}
-	
-	/*
 	 * Sub retreat before battle
 	 */
 	public static boolean getSubRetreatBeforeBattle(final GameData data)
@@ -468,14 +458,6 @@ public class Properties implements Constants
 	public static boolean getTriggers(final GameData data)
 	{
 		return data.getProperties().get(TRIGGERS, false);
-	}
-	
-	/*
-	 * Display Sea Names
-	 */
-	public static boolean getDisplaySeaNames(final GameData data)
-	{
-		return data.getProperties().get(DISPLAY_SEA_NAMES, false);
 	}
 	
 	/*

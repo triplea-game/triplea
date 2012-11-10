@@ -22,6 +22,7 @@ public class MapProperties
 	private int UNITS_HEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
 	private int UNITS_COUNTER_OFFSET_WIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE / 4;
 	private int UNITS_COUNTER_OFFSET_HEIGHT = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
+	private int UNITS_STACK_SIZE = 0;
 	private int MAP_WIDTH = 256;
 	private int MAP_HEIGHT = 256;
 	private boolean MAP_SCROLLWRAPX = true;
@@ -31,7 +32,9 @@ public class MapProperties
 	private boolean MAP_USETERRITORYEFFECTMARKERS = false;
 	private boolean MAP_SHOWTERRITORYNAMES = true;
 	private boolean MAP_SHOWRESOURCES = true;
-	private boolean MAP_SHOWCONVOYNAMES = true;
+	private boolean MAP_SHOWCOMMENTS = true;
+	private boolean MAP_SHOWSEAZONENAMES = false;
+	private boolean MAP_DRAWNAMESFROMTOPLEFT = false;
 	private boolean MAP_USENATION_CONVOYFLAGS = false;
 	private List<String> DONT_DRAW_TERRITORY_NAMES = new ArrayList<String>();
 	private boolean MAP_MAPBLENDS = false;
@@ -111,6 +114,16 @@ public class MapProperties
 	public void setUNITS_COUNTER_OFFSET_HEIGHT(final int value)
 	{
 		UNITS_COUNTER_OFFSET_HEIGHT = value;
+	}
+	
+	public int getUNITS_STACK_SIZE()
+	{
+		return UNITS_STACK_SIZE;
+	}
+	
+	public void setUNITS_STACK_SIZE(final int value)
+	{
+		UNITS_STACK_SIZE = value;
 	}
 	
 	public int getMAP_WIDTH()
@@ -203,14 +216,34 @@ public class MapProperties
 		MAP_SHOWRESOURCES = value;
 	}
 	
-	public boolean isMAP_SHOWCONVOYNAMES()
+	public boolean isMAP_SHOWCOMMENTS()
 	{
-		return MAP_SHOWCONVOYNAMES;
+		return MAP_SHOWCOMMENTS;
 	}
 	
-	public void setMAP_SHOWCONVOYNAMES(final boolean value)
+	public void setMAP_SHOWCOMMENTS(final boolean value)
 	{
-		MAP_SHOWCONVOYNAMES = value;
+		MAP_SHOWCOMMENTS = value;
+	}
+	
+	public boolean isMAP_SHOWSEAZONENAMES()
+	{
+		return MAP_SHOWSEAZONENAMES;
+	}
+	
+	public void setMAP_SHOWSEAZONENAMES(final boolean value)
+	{
+		MAP_SHOWSEAZONENAMES = value;
+	}
+	
+	public boolean isMAP_DRAWNAMESFROMTOPLEFT()
+	{
+		return MAP_DRAWNAMESFROMTOPLEFT;
+	}
+	
+	public void setMAP_DRAWNAMESFROMTOPLEFT(final boolean value)
+	{
+		MAP_DRAWNAMESFROMTOPLEFT = value;
 	}
 	
 	public boolean isMAP_USENATION_CONVOYFLAGS()

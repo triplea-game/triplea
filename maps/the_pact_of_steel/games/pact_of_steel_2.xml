@@ -4874,14 +4874,6 @@
 						<number min="1" max="10"/>
 				</property>
 
-				<property name="Display Units as Counters" value="0" editable="true">
-						<number min="0" max="10"/>
-				</property>
-
-				<property name="Display Sea Names" value="false" editable="true">
-						<boolean/>
-				</property>
-
 				<property name="Selectable Zero Movement Units" value="false" editable="false">
 						<boolean/>
 				</property>

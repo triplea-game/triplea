@@ -116,18 +116,15 @@ class TerritoryNameDrawable implements IDrawable
 	{
 		final Territory territory = data.getMap().getTerritory(m_territoryName);
 		final TerritoryAttachment ta = TerritoryAttachment.get(territory);
+		final boolean drawFromTopLeft = mapData.drawNamesFromTopLeft();
+		final boolean showSeaNames = mapData.drawSeaZoneNames();
+		final boolean showComments = mapData.drawComments();
 		boolean drawComments = false;
 		String commentText = null;
 		if (territory.isWater())
 		{
-			// Start by determining if we should display the sea zone name
-			if (isDisplaySeaNames(data))
-			{
-				drawComments = true;
-				commentText = territory.getName();
-			}
-			// Then overlay with any other specials
-			if (ta != null && mapData.drawConvoyNames())
+			// this is for special comments, like convoy zones, etc.
+			if (ta != null && showComments)
 			{
 				if (ta.getConvoyRoute() && ta.getProduction() > 0 && ta.getOriginalOwner() != null)
 				{
@@ -154,10 +151,8 @@ class TerritoryNameDrawable implements IDrawable
 						commentText = ta.getOccupiedTerrOf().getName() + " Convoy Center";
 				}
 			}
-			if (drawComments == false)
-			{
+			if (!drawComments && !showSeaNames)
 				return;
-			}
 		}
 		final Rectangle territoryBounds = mapData.getBoundingRect(territory);
 		graphics.setFont(MapImage.MAP_FONT);
@@ -182,16 +177,24 @@ class TerritoryNameDrawable implements IDrawable
 			x = namePlace.x;
 			y = namePlace.y;
 		}
+		// draw comments above names
+		if (showComments && drawComments && commentText != null)
+		{
+			final Point place = mapData.getCommentMarkerLocation(territory);
+			if (place != null)
+				draw(bounds, graphics, place.x, place.y, null, commentText, drawFromTopLeft);
+			else
+				draw(bounds, graphics, x, y - fm.getHeight(), null, commentText, drawFromTopLeft);
+		}
 		// draw territory names
 		if (mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(m_territoryName))
-			if (drawComments)
+		{
+			if (!territory.isWater() || showSeaNames)
 			{
-				graphics.drawString(commentText, x - bounds.x, y - bounds.y);
+				final Image nameImage = mapData.getTerritoryNameImages().get(territory.getName());
+				draw(bounds, graphics, x, y, nameImage, territory.getName(), drawFromTopLeft);
 			}
-			else
-			{
-				graphics.drawString(territory.getName(), x - bounds.x, y - bounds.y);
-			}
+		}
 		// draw the PUs.
 		if (ta != null && ta.getProduction() > 0 && mapData.drawResources())
 		{
@@ -201,24 +204,25 @@ class TerritoryNameDrawable implements IDrawable
 			// if pu_place.txt is specified draw there
 			if (place != null)
 			{
-				x = place.x;
-				y = place.y;
-				draw(bounds, graphics, x, y, img, prod);
+				draw(bounds, graphics, place.x, place.y, img, prod, drawFromTopLeft);
 			}
-			// otherwise, draw under the territory name
 			else
 			{
-				x = x + ((fm.stringWidth(m_territoryName)) >> 1) - ((fm.stringWidth(prod)) >> 1);
-				y += fm.getLeading() + fm.getAscent();
-				draw(bounds, graphics, x, y, img, prod);
+				// otherwise, draw under the territory name
+				draw(bounds, graphics, x + ((fm.stringWidth(m_territoryName)) >> 1) - ((fm.stringWidth(prod)) >> 1), y + fm.getLeading() + fm.getAscent(), img, prod, drawFromTopLeft);
 			}
 		}
 	}
 	
-	private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, int y, final Image img, final String prod)
+	private void draw(final Rectangle bounds, final Graphics2D graphics, final int x, int y, final Image img, final String prod, final boolean drawFromTopLeft)
 	{
 		if (img == null)
 		{
+			if (drawFromTopLeft)
+			{
+				final FontMetrics fm = graphics.getFontMetrics();
+				y += fm.getHeight();
+			}
 			graphics.drawString(prod, x - bounds.x, y - bounds.y);
 		}
 		else
@@ -226,7 +230,8 @@ class TerritoryNameDrawable implements IDrawable
 			// we want to be consistent
 			// drawString takes y as the base line position
 			// drawImage takes x as the top right corner
-			y -= img.getHeight(null);
+			if (!drawFromTopLeft)
+				y -= img.getHeight(null);
 			graphics.drawImage(img, x - bounds.x, y - bounds.y, null);
 		}
 	}
@@ -234,11 +239,6 @@ class TerritoryNameDrawable implements IDrawable
 	public int getLevel()
 	{
 		return TERRITORY_TEXT_LEVEL;
-	}
-	
-	private static boolean isDisplaySeaNames(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getDisplaySeaNames(data);
 	}
 }
 

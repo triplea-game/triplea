@@ -162,7 +162,6 @@ public interface Constants
 	public static final String LARGE_MAP_FILENAME = "largeMap.gif";
 	public static final String SMALL_MAP_FILENAME = "smallMap.jpeg";
 	public static final String MAP_NAME = "mapName";
-	public static final String DISPLAY_SEA_NAMES = "Display Sea Names";
 	public static final String SHOW_ENEMY_CASUALTIES_USER_PREF = "ShowEnemyCasualties";
 	public static final String FOCUS_ON_OWN_CASUALTIES_USER_PREF = "FocusOnOwnCasualties";
 	
@@ -181,7 +180,6 @@ public interface Constants
 	
 	// veqryn (Mark Christopher Duncan)
 	public static final String LL_AA_ONLY = "Low Luck for AntiAircraft";
-	public static final String COUNTERS_DISPLAY = "Display Units as Counters";
 	public static final String SELECTABLE_ZERO_MOVEMENT_UNITS = "Selectable Zero Movement Units";
 	public static final String PARATROOPERS_CAN_MOVE_DURING_NON_COMBAT = "Paratroopers Can Move During Non Combat";
 	public static final String UNLIMITED_CONSTRUCTIONS = "Unlimited Constructions";

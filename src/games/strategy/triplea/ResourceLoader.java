@@ -142,6 +142,14 @@ public class ResourceLoader
 		m_loader = new URLClassLoader(urls);
 	}
 	
+	public boolean hasPath(final String path)
+	{
+		final URL rVal = m_loader.getResource(path);
+		if (rVal == null)
+			return false;
+		return true;
+	}
+	
 	public URL getResource(final String path)
 	{
 		final URL rVal = m_loader.getResource(path);
