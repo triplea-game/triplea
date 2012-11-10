@@ -15,6 +15,7 @@ package games.strategy.common.ui;
 
 import games.strategy.engine.framework.IGame;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 /**
@@ -43,4 +44,6 @@ public abstract class MainGameFrame extends JFrame
 	
 	// public abstract IPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge);
 	public abstract void notifyError(String error);
+	
+	public abstract JComponent getMainPanel();
 }

@@ -2729,10 +2729,6 @@
 				</property>
 				
                 <property name="maxFactoriesPerTerritory" value="1"/>
-
-				<property name="Display Units as Counters" value="0" editable="true">
-						<number min="0" max="30"/>
-				</property>
 				
                 <property name="mapName" value="middle_earth" editable="false"/>
 				

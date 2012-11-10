@@ -35,6 +35,7 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -293,5 +294,11 @@ public class TicTacToeFrame extends MainGameFrame
 	{
 		m_error.setText(" ");
 		m_status.setText(status);
+	}
+	
+	@Override
+	public JComponent getMainPanel()
+	{
+		return m_mapPanel;
 	}
 }

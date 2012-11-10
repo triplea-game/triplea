@@ -30,8 +30,13 @@ import games.strategy.triplea.ui.screen.IDrawable.OptionalExtraBorderLevel;
 import games.strategy.triplea.util.Stopwatch;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -43,6 +48,7 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -82,10 +88,13 @@ public class UIContext
 	private Set<IGamePlayer> m_playerList;
 	private double m_scale = 1;
 	private static ResourceLoader m_resourceLoader;
+	// private final MainGameFrame m_frame;
+	private Cursor m_cursor = Cursor.getDefaultCursor();
 	
 	public UIContext()
 	{
 		m_mapImage = new MapImage();
+		// m_frame = frame;
 	}
 	
 	public static ResourceLoader getResourceLoader()
@@ -110,6 +119,11 @@ public class UIContext
 		{
 			ex.printStackTrace();
 		}
+	}
+	
+	public Cursor getCursor()
+	{
+		return m_cursor;
 	}
 	
 	public double getScale()
@@ -230,6 +244,25 @@ public class UIContext
 			}
 		};
 		new Thread(loadSounds, "Triplea sound loader").start();
+		// load a new cursor
+		m_cursor = Cursor.getDefaultCursor();
+		final Toolkit toolkit = Toolkit.getDefaultToolkit();
+		final URL cursorURL = m_resourceLoader.getResource("misc" + File.separator + "cursor.gif");
+		if (cursorURL != null)
+		{
+			try
+			{
+				final Image image = ImageIO.read(cursorURL);
+				if (image != null)
+				{
+					final Point hotSpot = new Point(m_mapData.getMapCursorHotspotX(), m_mapData.getMapCursorHotspotY());
+					m_cursor = toolkit.createCustomCursor(image, hotSpot, data.getGameName() + " Cursor");
+				}
+			} catch (final Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
 		stopWatch.done();
 	}
 	

@@ -240,13 +240,12 @@ public class ConnectionFinder
 		}
 	}// end main
 	
-
-	
 	/**
 	 * Creates the xml territory definitions.
 	 * 
 	 * @param allTerritoryNames
-	 * @param waterString a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a territory is water
+	 * @param waterString
+	 *            a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a territory is water
 	 * @return StringBuffer containing XML representing these connections
 	 */
 	private static StringBuffer doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString)
@@ -255,10 +254,10 @@ public class ConnectionFinder
 		Collections.sort(allTerritoryNames);
 		final StringBuffer output = new StringBuffer();
 		output.append("<!-- Territory Definitions -->\n");
-		Pattern waterPattern = Pattern.compile(waterString);
+		final Pattern waterPattern = Pattern.compile(waterString);
 		for (final String t : allTerritoryNames)
 		{
-			Matcher matcher = waterPattern.matcher(t);
+			final Matcher matcher = waterPattern.matcher(t);
 			if (matcher.find())
 			{
 				// <territory name="sea zone 1" water="true"/>

@@ -2241,6 +2241,12 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		return m_mapPanel;
 	}
 	
+	@Override
+	public JComponent getMainPanel()
+	{
+		return m_mapPanel;
+	}
+	
 	// Beagle Code Called to Change Mapskin
 	void updateMap(final String mapdir) throws IOException
 	{

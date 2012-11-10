@@ -28,6 +28,8 @@ public class MapProperties
 	private boolean MAP_SCROLLWRAPX = true;
 	private boolean MAP_SCROLLWRAPY = false;
 	private boolean MAP_HASRELIEF = true;
+	private int MAP_CURSOR_HOTSPOT_X = 0;
+	private int MAP_CURSOR_HOTSPOT_Y = 0;
 	private boolean MAP_SHOWCAPITOLMARKERS = true;
 	private boolean MAP_USETERRITORYEFFECTMARKERS = false;
 	private boolean MAP_SHOWTERRITORYNAMES = true;
@@ -174,6 +176,26 @@ public class MapProperties
 	public void setMAP_HASRELIEF(final boolean value)
 	{
 		MAP_HASRELIEF = value;
+	}
+	
+	public int getMAP_CURSOR_HOTSPOT_X()
+	{
+		return MAP_CURSOR_HOTSPOT_X;
+	}
+	
+	public void setMAP_CURSOR_HOTSPOT_X(final int value)
+	{
+		MAP_CURSOR_HOTSPOT_X = value;
+	}
+	
+	public int getMAP_CURSOR_HOTSPOT_Y()
+	{
+		return MAP_CURSOR_HOTSPOT_Y;
+	}
+	
+	public void setMAP_CURSOR_HOTSPOT_Y(final int value)
+	{
+		MAP_CURSOR_HOTSPOT_Y = value;
 	}
 	
 	public boolean isMAP_SHOWCAPITOLMARKERS()

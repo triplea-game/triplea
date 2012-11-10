@@ -1,4 +1,8 @@
 Changes for 1.6.1.3
+* Created new "map.properties" variables: "map.cursor.hotspot.x", and "map.cursor.hotspot.y". (veqryn)
+
+* Allowing TripleA to use custom cursors located at "misc/cursor.gif". (veqryn)
+
 * Getting TripleA to use any sounds located in a folder named "sounds" in any map file, thereby allowing custom sounds for every map. (veqryn)
 
 * Renaming the "images" folder into "assets", and then moving the "sounds" folder to be inside of the "assets" folder, inside the triplea program directory. (veqryn)

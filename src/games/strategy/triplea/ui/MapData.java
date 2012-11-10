@@ -61,6 +61,8 @@ public class MapData
 	public static final String PROPERTY_MAP_SCROLLWRAPX = "map.scrollWrapX";
 	public static final String PROPERTY_MAP_SCROLLWRAPY = "map.scrollWrapY";
 	public static final String PROPERTY_MAP_HASRELIEF = "map.hasRelief";
+	public static final String PROPERTY_MAP_CURSOR_HOTSPOT_X = "map.cursor.hotspot.x";
+	public static final String PROPERTY_MAP_CURSOR_HOTSPOT_Y = "map.cursor.hotspot.y";
 	public static final String PROPERTY_MAP_SHOWCAPITOLMARKERS = "map.showCapitolMarkers";
 	public static final String PROPERTY_MAP_USETERRITORYEFFECTMARKERS = "map.useTerritoryEffectMarkers";
 	public static final String PROPERTY_MAP_SHOWTERRITORYNAMES = "map.showTerritoryNames";
@@ -379,6 +381,16 @@ public class MapData
 	public boolean getHasRelief()
 	{
 		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_HASRELIEF, "true")).booleanValue();
+	}
+	
+	public int getMapCursorHotspotX()
+	{
+		return Math.max(0, Math.min(256, Integer.parseInt(m_mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_X, "0"))));
+	}
+	
+	public int getMapCursorHotspotY()
+	{
+		return Math.max(0, Math.min(256, Integer.parseInt(m_mapProperties.getProperty(PROPERTY_MAP_CURSOR_HOTSPOT_Y, "0"))));
 	}
 	
 	public boolean getHasMapBlends()

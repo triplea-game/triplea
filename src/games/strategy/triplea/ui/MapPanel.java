@@ -114,6 +114,7 @@ public class MapPanel extends ImageScrollerLargeView
 	public MapPanel(final GameData data, final MapPanelSmallView smallView, final UIContext uiContext, final ImageScrollModel model) throws IOException
 	{
 		super(uiContext.getMapData().getMapDimensions(), model);
+		this.setCursor(uiContext.getCursor());
 		m_uiContext = uiContext;
 		m_scale = uiContext.getScale();
 		m_backgroundDrawer = new BackgroundDrawer(this);
@@ -954,7 +955,7 @@ public class MapPanel extends ImageScrollerLargeView
 	
 	public void showMouseCursor()
 	{
-		setCursor(Cursor.getDefaultCursor());
+		setCursor(m_uiContext.getCursor());
 	}
 	
 	public Image getErrorImage()
