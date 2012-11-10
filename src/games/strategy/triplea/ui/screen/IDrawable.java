@@ -182,6 +182,7 @@ class TerritoryNameDrawable implements IDrawable
 			x = namePlace.x;
 			y = namePlace.y;
 		}
+		// draw territory names
 		if (mapData.drawTerritoryNames() && mapData.shouldDrawTerritoryName(m_territoryName))
 			if (drawComments)
 			{
@@ -192,7 +193,7 @@ class TerritoryNameDrawable implements IDrawable
 				graphics.drawString(territory.getName(), x - bounds.x, y - bounds.y);
 			}
 		// draw the PUs.
-		if (ta != null && ta.getProduction() > 0)
+		if (ta != null && ta.getProduction() > 0 && mapData.drawResources())
 		{
 			final Image img = m_uiContext.getPUImageFactory().getPUImage(ta.getProduction());
 			final String prod = Integer.valueOf(ta.getProduction()).toString();

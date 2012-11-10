@@ -37,6 +37,7 @@ public class ImageScrollModel extends Observable
 	private int m_maxWidth;
 	private int m_maxHeight;
 	private boolean m_scrollX;
+	private boolean m_scrollY;
 	
 	public void setMaxBounds(final int maxWidth, final int maxHeight)
 	{
@@ -67,13 +68,36 @@ public class ImageScrollModel extends Observable
 		updateListeners();
 	}
 	
+	public void setScrollY(final boolean aBool)
+	{
+		m_scrollY = aBool;
+		enforceBounds();
+		updateListeners();
+	}
+	
 	private void enforceBounds()
 	{
-		if (m_y < 0)
-			m_y = 0;
-		if (m_y + m_boxHeight > m_maxHeight)
+		if (!m_scrollY)
 		{
-			m_y = m_maxHeight - m_boxHeight;
+			if (m_y < 0)
+				m_y = 0;
+			if (m_y + m_boxHeight > m_maxHeight)
+			{
+				m_y = m_maxHeight - m_boxHeight;
+			}
+		}
+		else
+		{
+			// don't let the map scroll infinitely,
+			// when it gets to be twice the height to the up or down, move it back one length
+			while (m_y > m_maxHeight)
+			{
+				m_y -= m_maxHeight;
+			}
+			while (m_y < -m_maxHeight)
+			{
+				m_y += m_maxHeight;
+			}
 		}
 		// if the box is bigger than the map
 		// put us at 0,0
@@ -81,6 +105,7 @@ public class ImageScrollModel extends Observable
 		{
 			m_y = 0;
 		}
+		
 		if (!m_scrollX)
 		{
 			if (m_x < 0)
@@ -92,9 +117,8 @@ public class ImageScrollModel extends Observable
 		}
 		else
 		{
-			// don't let the map scroll infinitly,
-			// when it gets to be twice the length to the left or right, move
-			// it back one length
+			// don't let the map scroll infinitely,
+			// when it gets to be twice the length to the left or right, move it back one length
 			while (m_x > m_maxWidth)
 			{
 				m_x -= m_maxWidth;

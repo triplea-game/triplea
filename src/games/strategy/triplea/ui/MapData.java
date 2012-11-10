@@ -58,16 +58,19 @@ public class MapData
 	public static final String PROPERTY_MAP_WIDTH = "map.width";
 	public static final String PROPERTY_MAP_HEIGHT = "map.height";
 	public static final String PROPERTY_MAP_SCROLLWRAPX = "map.scrollWrapX";
+	public static final String PROPERTY_MAP_SCROLLWRAPY = "map.scrollWrapY";
 	public static final String PROPERTY_MAP_HASRELIEF = "map.hasRelief";
 	public static final String PROPERTY_MAP_SHOWCAPITOLMARKERS = "map.showCapitolMarkers";
 	public static final String PROPERTY_MAP_USETERRITORYEFFECTMARKERS = "map.useTerritoryEffectMarkers";
 	public static final String PROPERTY_MAP_SHOWTERRITORYNAMES = "map.showTerritoryNames";
+	public static final String PROPERTY_MAP_SHOWRESOURCES = "map.showResources";
 	public static final String PROPERTY_MAP_SHOWCONVOYNAMES = "map.showConvoyNames";
 	public static final String PROPERTY_MAP_USENATION_CONVOYFLAGS = "map.useNation_convoyFlags";
 	public static final String PROPERTY_DONT_DRAW_TERRITORY_NAMES = "dont_draw_territory_names";
 	public static final String PROPERTY_MAP_MAPBLENDS = "map.mapBlends";
 	public static final String PROPERTY_MAP_MAPBLENDMODE = "map.mapBlendMode";
 	public static final String PROPERTY_MAP_MAPBLENDALPHA = "map.mapBlendAlpha";
+	public static final String PROPERTY_SCREENSHOT_TITLE_ENABLED = "screenshot.title.enabled";
 	public static final String PROPERTY_SCREENSHOT_TITLE_X = "screenshot.title.x";
 	public static final String PROPERTY_SCREENSHOT_TITLE_Y = "screenshot.title.y";
 	public static final String PROPERTY_SCREENSHOT_TITLE_COLOR = "screenshot.title.color";
@@ -138,6 +141,11 @@ public class MapData
 	public boolean scrollWrapX()
 	{
 		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPX, "true")).booleanValue();
+	}
+	
+	public boolean scrollWrapY()
+	{
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SCROLLWRAPY, "false")).booleanValue();
 	}
 	
 	public MapData(final String mapNameDir)
@@ -360,6 +368,11 @@ public class MapData
 	public boolean drawTerritoryNames()
 	{
 		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWTERRITORYNAMES, "true")).booleanValue();
+	}
+	
+	public boolean drawResources()
+	{
+		return Boolean.valueOf(m_mapProperties.getProperty(PROPERTY_MAP_SHOWRESOURCES, "true")).booleanValue();
 	}
 	
 	public boolean drawConvoyNames()

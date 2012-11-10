@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Creating new "map.properties" variables: "map.scrollWrapY", "map.showResources", and "screenshot.title.enabled". (veqryn)
+
 * Creating a ConnectionFinder for the 'map' part of the xml. (edwin van der wal)
 
 * Adding Mnemonics to menu options in game. (frigoref)

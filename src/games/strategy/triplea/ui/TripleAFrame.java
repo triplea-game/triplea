@@ -220,6 +220,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		createMenuBar();
 		final ImageScrollModel model = new ImageScrollModel();
 		model.setScrollX(m_uiContext.getMapData().scrollWrapX());
+		model.setScrollY(m_uiContext.getMapData().scrollWrapY());
 		model.setMaxBounds(m_uiContext.getMapData().getMapDimensions().width, m_uiContext.getMapData().getMapDimensions().height);
 		final Image small = m_uiContext.getMapImage().getSmallMapImage();
 		m_smallView = new MapPanelSmallView(small, model);
@@ -1704,6 +1705,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		validate();
 	}
 	
+	@SuppressWarnings("unused")
 	public boolean saveScreenshot(final HistoryNode node, final File file)
 	{
 		// get current history node. if we are in history view, get the selected node.
@@ -1774,7 +1776,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			mapGraphics.setTransform(transform);
 			mapGraphics.setFont(new Font("Ariel", Font.BOLD, title_size));
 			mapGraphics.setColor(title_color);
-			mapGraphics.drawString("Round " + round + ": " + (player != null ? player.getName() : "") + " - " + step, title_x, title_y);
+			if (m_uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_TITLE_ENABLED))
+				mapGraphics.drawString(data.getGameName() + " Round " + round, title_x, title_y); // + ": " + (player != null ? player.getName() : "") + " - " + step
 			// overlay stats, if enabled
 			final boolean stats_enabled = m_uiContext.getMapData().getBooleanProperty(MapData.PROPERTY_SCREENSHOT_STATS_ENABLED);
 			if (stats_enabled)

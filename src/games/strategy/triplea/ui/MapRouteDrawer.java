@@ -111,15 +111,21 @@ public class MapRouteDrawer
 					drawLineSegment(graphics, points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset, points[i + 1].y - yOffset, shapes);
 				}
 			}
-			final double translate = -view.getImageWidth();
+			final double translateX = -view.getImageWidth();
+			final double translateY = -view.getImageHeight();
 			for (int i = 0; i < shapes.size(); i++)
 			{
 				final Shape shape = shapes.get(i);
 				drawWithTranslate(graphics, shape, 0);
 				if (mapData.scrollWrapX())
 				{
-					drawWithTranslate(graphics, shape, translate);
-					drawWithTranslate(graphics, shape, -translate);
+					drawWithTranslate(graphics, shape, translateX);
+					drawWithTranslate(graphics, shape, -translateX);
+				}
+				if (mapData.scrollWrapY())
+				{
+					drawWithTranslate(graphics, shape, translateY);
+					drawWithTranslate(graphics, shape, -translateY);
 				}
 			}
 			// draw the length of the move
@@ -147,8 +153,13 @@ public class MapRouteDrawer
 				graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
 				if (mapData.scrollWrapX())
 				{
-					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translate), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
-					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translate), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
+					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
+					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
+				}
+				if (mapData.scrollWrapY())
+				{
+					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset + translateY));
+					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset - translateY));
 				}
 				final Image cursorImage = routeDescription.getCursorImage();
 				if (cursorImage != null)
@@ -156,8 +167,13 @@ public class MapRouteDrawer
 					graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
 					if (mapData.scrollWrapX())
 					{
-						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translate), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
-						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translate), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
+					}
+					if (mapData.scrollWrapX())
+					{
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset + translateY), null);
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset - translateY), null);
 					}
 				}
 			}

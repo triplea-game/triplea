@@ -25,16 +25,19 @@ public class MapProperties
 	private int MAP_WIDTH = 256;
 	private int MAP_HEIGHT = 256;
 	private boolean MAP_SCROLLWRAPX = true;
+	private boolean MAP_SCROLLWRAPY = false;
 	private boolean MAP_HASRELIEF = true;
 	private boolean MAP_SHOWCAPITOLMARKERS = true;
 	private boolean MAP_USETERRITORYEFFECTMARKERS = false;
 	private boolean MAP_SHOWTERRITORYNAMES = true;
+	private boolean MAP_SHOWRESOURCES = true;
 	private boolean MAP_SHOWCONVOYNAMES = true;
 	private boolean MAP_USENATION_CONVOYFLAGS = false;
 	private List<String> DONT_DRAW_TERRITORY_NAMES = new ArrayList<String>();
 	private boolean MAP_MAPBLENDS = false;
 	private String MAP_MAPBLENDMODE = "OVERLAY"; // options are: NORMAL, OVERLAY, LINEAR_LIGHT, DIFFERENCE, MULTIPLY
 	private double MAP_MAPBLENDALPHA = 0.3f;
+	private boolean SCREENSHOT_TITLE_ENABLED = true;
 	private int SCREENSHOT_TITLE_X = 100;
 	private int SCREENSHOT_TITLE_Y = 50;
 	private Color SCREENSHOT_TITLE_COLOR = new Color(0x000000);
@@ -140,6 +143,16 @@ public class MapProperties
 		MAP_SCROLLWRAPX = value;
 	}
 	
+	public boolean isMAP_SCROLLWRAPY()
+	{
+		return MAP_SCROLLWRAPY;
+	}
+	
+	public void setMAP_SCROLLWRAPY(final boolean value)
+	{
+		MAP_SCROLLWRAPY = value;
+	}
+	
 	public boolean isMAP_HASRELIEF()
 	{
 		return MAP_HASRELIEF;
@@ -178,6 +191,16 @@ public class MapProperties
 	public void setMAP_SHOWTERRITORYNAMES(final boolean value)
 	{
 		MAP_SHOWTERRITORYNAMES = value;
+	}
+	
+	public boolean isMAP_SHOWRESOURCES()
+	{
+		return MAP_SHOWRESOURCES;
+	}
+	
+	public void setMAP_SHOWRESOURCES(final boolean value)
+	{
+		MAP_SHOWRESOURCES = value;
 	}
 	
 	public boolean isMAP_SHOWCONVOYNAMES()
@@ -238,6 +261,16 @@ public class MapProperties
 	public void setMAP_MAPBLENDALPHA(final double value)
 	{
 		MAP_MAPBLENDALPHA = value;
+	}
+	
+	public boolean isSCREENSHOT_TITLE_ENABLED()
+	{
+		return SCREENSHOT_TITLE_ENABLED;
+	}
+	
+	public void setSCREENSHOT_TITLE_ENABLED(final boolean value)
+	{
+		SCREENSHOT_TITLE_ENABLED = value;
 	}
 	
 	public int getSCREENSHOT_TITLE_X()

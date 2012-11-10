@@ -45,6 +45,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -204,7 +206,7 @@ public class ConnectionFinder
 		}
 		if (JOptionPane.showConfirmDialog(null, "Do you also want to create the Territory Definitions?", "Territory Definitions", 1) == 0)
 		{
-			final String waterString = JOptionPane.showInputDialog(null, "Enter a string that determines if the territory is Water? \r\n(eg: Sea Zone)", "Sea Zone");
+			final String waterString = JOptionPane.showInputDialog(null, "Enter a string or regex that determines if the territory is Water? \r\n(eg: Sea Zone)", "Sea Zone");
 			territoryDefinitions = doTerritoryDefinitions(allTerritories, waterString);
 		}
 		try
@@ -238,11 +240,13 @@ public class ConnectionFinder
 		}
 	}// end main
 	
+
+	
 	/**
 	 * Creates the xml territory definitions.
 	 * 
 	 * @param allTerritoryNames
-	 * @param waterString
+	 * @param waterString a substring contained in a TerritoryName to define a Sea Zone or a regex expression that indicates that a territory is water
 	 * @return StringBuffer containing XML representing these connections
 	 */
 	private static StringBuffer doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString)
@@ -251,9 +255,11 @@ public class ConnectionFinder
 		Collections.sort(allTerritoryNames);
 		final StringBuffer output = new StringBuffer();
 		output.append("<!-- Territory Definitions -->\n");
+		Pattern waterPattern = Pattern.compile(waterString);
 		for (final String t : allTerritoryNames)
 		{
-			if (waterString != null && t.indexOf(waterString) != -1)
+			Matcher matcher = waterPattern.matcher(t);
+			if (matcher.find())
 			{
 				// <territory name="sea zone 1" water="true"/>
 				output.append("<territory name=\"" + t + "\" water=\"true\"/>\n");

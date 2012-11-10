@@ -444,7 +444,7 @@ public class TileManager
 			{
 				bounds.x = 0;
 			}
-			if (bounds.y < 0)
+			if (bounds.y < 0 && !mapData.scrollWrapY())
 			{
 				bounds.y = 0;
 			}
@@ -453,13 +453,13 @@ public class TileManager
 				final int move = bounds.width + bounds.x - mapData.getMapDimensions().width;
 				bounds.x -= move;
 			}
-			if (bounds.height + bounds.y > mapData.getMapDimensions().height)
+			if (bounds.height + bounds.y > mapData.getMapDimensions().height && !mapData.scrollWrapY())
 			{
 				final int move = bounds.height + bounds.y - mapData.getMapDimensions().height;
 				bounds.y -= move;
 			}
 			if (bounds.width != bounds.height)
-				throw new IllegalStateException("NOt equal");
+				throw new IllegalStateException("NOT equal");
 			final Image rVal = Util.createImage(bounds.width, bounds.height, false);
 			final Graphics2D graphics = (Graphics2D) rVal.getGraphics();
 			graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -471,6 +471,12 @@ public class TileManager
 				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
 				bounds.x -= mapData.getMapDimensions().width;
 			}
+			if (bounds.y < 0 && mapData.scrollWrapY())
+			{
+				bounds.y += mapData.getMapDimensions().height;
+				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+				bounds.y -= mapData.getMapDimensions().height;
+			}
 			// start as a set to prevent duplicates
 			drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
 			if (bounds.x + bounds.height > mapData.getMapDimensions().width)
@@ -478,6 +484,12 @@ public class TileManager
 				bounds.x -= mapData.getMapDimensions().width;
 				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
 				bounds.x += mapData.getMapDimensions().width;
+			}
+			if (bounds.y + bounds.width > mapData.getMapDimensions().height && mapData.scrollWrapY())
+			{
+				bounds.y -= mapData.getMapDimensions().height;
+				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+				bounds.y += mapData.getMapDimensions().height;
 			}
 			graphics.dispose();
 			return rVal;

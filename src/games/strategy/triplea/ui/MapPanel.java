@@ -331,7 +331,7 @@ public class MapPanel extends ImageScrollerLargeView
 	
 	private Territory getTerritory(final double x, final double y)
 	{
-		final String name = m_uiContext.getMapData().getTerritoryAt(normalizeX(x), y);
+		final String name = m_uiContext.getMapData().getTerritoryAt(normalizeX(x), normalizeY(y));
 		if (name == null)
 			return null;
 		return m_data.getMap().getTerritory(name);
@@ -347,6 +347,18 @@ public class MapPanel extends ImageScrollerLargeView
 		else if (x > imageWidth)
 			x -= imageWidth;
 		return x;
+	}
+	
+	private double normalizeY(double y)
+	{
+		if (!m_uiContext.getMapData().scrollWrapY())
+			return y;
+		final int imageHeight = (int) getImageDimensions().getHeight();
+		if (y < 0)
+			y += imageHeight;
+		else if (y > imageHeight)
+			y -= imageHeight;
+		return y;
 	}
 	
 	public void resetMap()
@@ -399,7 +411,7 @@ public class MapPanel extends ImageScrollerLargeView
 			final double scaledMouseX = e.getX() / m_scale;
 			final double scaledMouseY = e.getY() / m_scale;
 			final double x = normalizeX(scaledMouseX + getXOffset());
-			final double y = scaledMouseY + getYOffset();
+			final double y = normalizeY(scaledMouseY + getYOffset());
 			final Territory terr = getTerritory(x, y);
 			if (terr != null)
 				notifyTerritorySelected(terr, md);
@@ -418,7 +430,7 @@ public class MapPanel extends ImageScrollerLargeView
 		final double scaledMouseX = me.getX() / m_scale;
 		final double scaledMouseY = me.getY() / m_scale;
 		final double x = normalizeX(scaledMouseX + getXOffset());
-		final double y = scaledMouseY + getYOffset();
+		final double y = normalizeY(scaledMouseY + getYOffset());
 		return new MouseDetails(me, x, y);
 	}
 	
@@ -431,7 +443,7 @@ public class MapPanel extends ImageScrollerLargeView
 			final double scaledMouseX = e.getX() / m_scale;
 			final double scaledMouseY = e.getY() / m_scale;
 			final double x = normalizeX(scaledMouseX + getXOffset());
-			final double y = scaledMouseY + getYOffset();
+			final double y = normalizeY(scaledMouseY + getYOffset());
 			final Territory terr = getTerritory(x, y);
 			// we can use == here since they will be the same object.
 			// dont use .equals since we have nulls
@@ -602,7 +614,7 @@ public class MapPanel extends ImageScrollerLargeView
 				if (img != null)
 				{
 					final AffineTransform t = new AffineTransform();
-					t.translate((tile.getBounds().x - bounds.getX()) * m_scale, (tile.getBounds().y - m_model.getY()) * m_scale);
+					t.translate((tile.getBounds().x - bounds.getX()) * m_scale, (tile.getBounds().y - bounds.getY()) * m_scale);
 					g2d.drawImage(img, t, this);
 				}
 			} finally
@@ -626,27 +638,39 @@ public class MapPanel extends ImageScrollerLargeView
 		// make sure we use the same data for the entire paint
 		final GameData data = m_data;
 		// if the map fits on screen, dont draw any overlap
-		final boolean mapFitsOnScreen = mapFitsOnScreen();
+		final boolean mapWidthFitsOnScreen = mapWidthFitsOnScreen();
+		final boolean mapHeightFitsOnScreen = mapHeightFitsOnScreen();
 		// handle wrapping off the screen to the left
-		if (!mapFitsOnScreen && x < 0 && m_uiContext.getMapData().scrollWrapX())
+		if (!mapWidthFitsOnScreen && x < 0 && m_uiContext.getMapData().scrollWrapX())
 		{
 			final Rectangle2D.Double leftBounds = new Rectangle2D.Double(m_model.getMaxWidth() + x, y, -x, getScaledHeight());
-			drawTiles(g2d, images, data, leftBounds, 0, undrawnTiles);
+			drawTiles(g2d, images, data, leftBounds, 0, 0, undrawnTiles);
+		}
+		if (!mapHeightFitsOnScreen && y < 0 && m_uiContext.getMapData().scrollWrapY())
+		{
+			final Rectangle2D.Double upperBounds = new Rectangle2D.Double(x, m_model.getMaxHeight() + y, getScaledWidth(), -y);
+			drawTiles(g2d, images, data, upperBounds, 0, 0, undrawnTiles);
 		}
 		// handle the non overlap
 		final Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
-		drawTiles(g2d, images, data, mainBounds, 0, undrawnTiles);
+		drawTiles(g2d, images, data, mainBounds, 0, 0, undrawnTiles);
 		final double leftOverlap = x + getScaledWidth() - m_model.getMaxWidth();
+		final double upperOverlap = y + getScaledHeight() - m_model.getMaxHeight();
 		// handle wrapping off the screen to the right
-		if (!mapFitsOnScreen && leftOverlap > 0 && m_uiContext.getMapData().scrollWrapX())
+		if (!mapWidthFitsOnScreen && leftOverlap > 0 && m_uiContext.getMapData().scrollWrapX())
 		{
 			final Rectangle2D.Double rightBounds = new Rectangle2D.Double(0, y, leftOverlap, getScaledHeight());
-			drawTiles(g2d, images, data, rightBounds, leftOverlap, undrawnTiles);
+			drawTiles(g2d, images, data, rightBounds, leftOverlap, 0, undrawnTiles);
+		}
+		if (!mapHeightFitsOnScreen && upperOverlap > 0 && m_uiContext.getMapData().scrollWrapY())
+		{
+			final Rectangle2D.Double lowerBounds = new Rectangle2D.Double(x, 0, getScaledWidth(), upperOverlap);
+			drawTiles(g2d, images, data, lowerBounds, 0, upperOverlap, undrawnTiles);
 		}
 		if (m_routeDescription != null && m_mouseShadowImage != null && m_routeDescription.getEnd() != null)
 		{
 			final AffineTransform t = new AffineTransform();
-			t.translate(m_scale * normalizeX(m_routeDescription.getEnd().getX() - getXOffset()), m_scale * (m_routeDescription.getEnd().getY() - getYOffset()));
+			t.translate(m_scale * normalizeX(m_routeDescription.getEnd().getX() - getXOffset()), m_scale * normalizeY(m_routeDescription.getEnd().getY() - getYOffset()));
 			t.scale(m_scale, m_scale);
 			g2d.drawImage(m_mouseShadowImage, t, this);
 		}
@@ -662,7 +686,7 @@ public class MapPanel extends ImageScrollerLargeView
 			// TODO Kev determine if we need to identify if the unit is hit/disabled
 			final BufferedImage highlight = (BufferedImage) m_uiContext.getUnitImageFactory().getHighlightImage(first.getType(), first.getOwner(), m_data, first.getHits() != 0, false);
 			final AffineTransform t = new AffineTransform();
-			t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, (r.getY() - getYOffset()) * m_scale);
+			t.translate(normalizeX(r.getX() - getXOffset()) * m_scale, normalizeY(r.getY() - getYOffset()) * m_scale);
 			t.scale(m_scale, m_scale);
 			g2d.drawImage(highlight, t, this);
 		}
@@ -697,9 +721,14 @@ public class MapPanel extends ImageScrollerLargeView
 		}
 	}
 	
-	boolean mapFitsOnScreen()
+	boolean mapWidthFitsOnScreen()
 	{
 		return m_model.getMaxWidth() < getScaledWidth();
+	}
+	
+	boolean mapHeightFitsOnScreen()
+	{
+		return m_model.getMaxHeight() < getScaledHeight();
 	}
 	
 	/**
@@ -730,13 +759,17 @@ public class MapPanel extends ImageScrollerLargeView
 		}
 	}
 	
-	private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data, Rectangle2D.Double bounds, final double overlap, final List<Tile> undrawn)
+	private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data, Rectangle2D.Double bounds, final double overlapX, final double overlapY, final List<Tile> undrawn)
 	{
 		final List<Tile> tileList = m_tileManager.getTiles(bounds);
 		final Iterator<Tile> tiles = tileList.iterator();
-		if (overlap != 0)
+		if (overlapX != 0)
 		{
-			bounds = new Rectangle2D.Double(bounds.getX() + (overlap - getScaledWidth()), bounds.getY(), bounds.getHeight(), bounds.getWidth());
+			bounds = new Rectangle2D.Double(bounds.getX() + (overlapX - getScaledWidth()), bounds.getY(), bounds.getHeight(), bounds.getWidth());
+		}
+		if (overlapY != 0)
+		{
+			bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY() + (overlapY - getScaledHeight()), bounds.getHeight(), bounds.getWidth());
 		}
 		while (tiles.hasNext())
 		{
