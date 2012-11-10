@@ -1,4 +1,8 @@
 Changes for 1.6.1.3
+* Getting TripleA to use any sounds located in a folder named "sounds" in any map file, thereby allowing custom sounds for every map. (veqryn)
+
+* Renaming the "images" folder into "assets", and then moving the "sounds" folder to be inside of the "assets" folder, inside the triplea program directory. (veqryn)
+
 * Created new text file, "comments.txt", which will control where things like convoy route names and comments will go. (veqryn)
 
 * Deleted "map.properties" variable "map.showConvoyNames" and replaced with "map.showComments". (veqryn)

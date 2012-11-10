@@ -14,9 +14,7 @@
 package games.strategy.sound;
 
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.framework.GameRunner;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -28,8 +26,7 @@ import java.util.HashSet;
  */
 public class SoundPath
 {
-	public static final File SOUNDS_DIRECTORY = new File(GameRunner.getRootFolder(), "/sounds");
-	
+	// the sounds directory is based on the resource loader, because it could change based on the map or skin
 	
 	public static enum SoundType
 	{

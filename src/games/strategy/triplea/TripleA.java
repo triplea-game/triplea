@@ -180,16 +180,6 @@ public class TripleA implements IGameLoader
 				throw new IllegalStateException(e.getCause().getMessage());
 			}
 		}
-		// load the sounds in a background thread,
-		// avoids the pause where sounds dont load right away
-		final Runnable loadSounds = new Runnable()
-		{
-			public void run()
-			{
-				SoundPath.preLoadSounds(SoundPath.SoundType.TRIPLEA);
-			}
-		};
-		new Thread(loadSounds, "Triplea sound loader").start();
 	}
 	
 	private void connectPlayers(final Set<IGamePlayer> players, final TripleAFrame frame)

@@ -16,6 +16,8 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.gamePlayer.IGamePlayer;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.triplea.image.DiceImageFactory;
@@ -216,6 +218,18 @@ public class UIContext
 		m_mapImage.loadMaps(m_resourceLoader); // load map data
 		m_mapDir = dir;
 		m_drawTerritoryEffects = m_mapData.useTerritoryEffectMarkers();
+		// load the sounds in a background thread,
+		// avoids the pause where sounds dont load right away
+		final Runnable loadSounds = new Runnable()
+		{
+			public void run()
+			{
+				// change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
+				ClipPlayer.getInstance(m_resourceLoader);
+				SoundPath.preLoadSounds(SoundPath.SoundType.TRIPLEA);
+			}
+		};
+		new Thread(loadSounds, "Triplea sound loader").start();
 		stopWatch.done();
 	}
 	

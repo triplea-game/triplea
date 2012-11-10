@@ -38,7 +38,7 @@ import javax.imageio.ImageIO;
  */
 public class UnitImageFactory
 {
-	private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), "images/units/");
+	private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), "assets/units/");
 	// Image cache
 	private final Map<String, Image> m_images = new HashMap<String, Image>();
 	

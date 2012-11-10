@@ -30,7 +30,7 @@ public class ResourceLoader
 	public static ResourceLoader getMapResourceLoader(final String mapName)
 	{
 		final List<String> dirs = getPaths(mapName);
-		dirs.add(new File(GameRunner.getRootFolder(), "/images").getAbsolutePath());
+		dirs.add(new File(GameRunner.getRootFolder(), "/assets").getAbsolutePath());
 		return new ResourceLoader(dirs.toArray(new String[0]));
 	}
 	

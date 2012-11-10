@@ -14,9 +14,11 @@
 package games.strategy.sound;
 
 import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.triplea.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +46,7 @@ public class ClipPlayer
 	private boolean m_beSilent = false;
 	private final HashSet<String> m_mutedClips = new HashSet<String>();
 	private final HashMap<String, Clip> m_sounds = new HashMap<String, Clip>();
+	private final ResourceLoader m_resourceLoader;
 	
 	// standard settings
 	private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
@@ -53,7 +56,18 @@ public class ClipPlayer
 	{
 		if (s_clipPlayer == null)
 		{
-			s_clipPlayer = new ClipPlayer();
+			s_clipPlayer = new ClipPlayer(null);
+			SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
+		}
+		return s_clipPlayer;
+	}
+	
+	public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader)
+	{
+		// make a new clip player if we switch resource loaders (ie: if we switch maps)
+		if (s_clipPlayer == null || s_clipPlayer.m_resourceLoader != resourceLoader)
+		{
+			s_clipPlayer = new ClipPlayer(resourceLoader);
 			SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
 		}
 		return s_clipPlayer;
@@ -62,8 +76,9 @@ public class ClipPlayer
 	/**
 	 * Singleton.
 	 */
-	private ClipPlayer()
+	private ClipPlayer(final ResourceLoader resourceLoader)
 	{
+		m_resourceLoader = resourceLoader;
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		m_beSilent = prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, false);
 		final HashSet<String> choices = SoundPath.getAllSoundOptions();
@@ -196,17 +211,17 @@ public class ClipPlayer
 		}
 		else
 		{
-			clip = loadClip(new File(SoundPath.SOUNDS_DIRECTORY.getAbsolutePath().concat(File.separator + clipName)));
+			clip = loadClip(m_resourceLoader.getResourceAsStream("sounds" + File.separator + clipName));
 			m_sounds.put(clipName, clip);
 		}
 		return clip;
 	}
 	
-	private synchronized Clip loadClip(final File clipFile)
+	private synchronized Clip loadClip(final InputStream inputStream)
 	{
 		try
 		{
-			final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
+			final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(inputStream);
 			final AudioFormat format = audioInputStream.getFormat();
 			final DataLine.Info info = new DataLine.Info(Clip.class, format);
 			final Clip clip = (Clip) AudioSystem.getLine(info);
