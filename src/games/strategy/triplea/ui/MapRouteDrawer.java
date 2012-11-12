@@ -119,17 +119,17 @@ public class MapRouteDrawer
 			{
 				final Shape shape = shapes.get(i);
 				drawWithTranslate(graphics, shape, 0, 0);
-				if (scrollWrapX && !scrollWrapY)
+				if (scrollWrapX /*&& !scrollWrapY*/)
 				{
 					drawWithTranslate(graphics, shape, translateX, 0);
 					drawWithTranslate(graphics, shape, -translateX, 0);
 				}
-				else if (!scrollWrapX && scrollWrapY)
+				if (/*!scrollWrapX &&*/scrollWrapY)
 				{
 					drawWithTranslate(graphics, shape, 0, translateY);
 					drawWithTranslate(graphics, shape, 0, -translateY);
 				}
-				else if (scrollWrapX && scrollWrapY)
+				if (scrollWrapX && scrollWrapY)
 				{
 					drawWithTranslate(graphics, shape, translateX, translateY);
 					drawWithTranslate(graphics, shape, -translateX, -translateY);
@@ -158,17 +158,17 @@ public class MapRouteDrawer
 				graphics.setFont(new Font("Dialog", Font.BOLD, 18));
 				final String text = String.valueOf(numTerritories - 1);
 				graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
-				if (scrollWrapX && !scrollWrapY)
+				if (scrollWrapX /*&& !scrollWrapY*/)
 				{
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
 				}
-				else if (!scrollWrapX && scrollWrapY)
+				if (/*!scrollWrapX &&*/scrollWrapY)
 				{
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset + translateY));
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset - translateY));
 				}
-				else if (scrollWrapX && scrollWrapY)
+				if (scrollWrapX && scrollWrapY)
 				{
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset + translateY));
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset - translateY));
@@ -177,17 +177,17 @@ public class MapRouteDrawer
 				if (cursorImage != null)
 				{
 					graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
-					if (scrollWrapX && !scrollWrapY)
+					if (scrollWrapX /*&& !scrollWrapY*/)
 					{
 						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
 						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
 					}
-					else if (!scrollWrapX && scrollWrapY)
+					if (/*!scrollWrapX &&*/scrollWrapY)
 					{
 						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset + translateY), null);
 						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset - translateY), null);
 					}
-					else if (scrollWrapX && scrollWrapY)
+					if (scrollWrapX && scrollWrapY)
 					{
 						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translateX),
 									(int) (points[numTerritories - 1].y + textyOffset - yOffset + translateY), null);

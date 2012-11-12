@@ -644,17 +644,17 @@ public class MapPanel extends ImageScrollerLargeView
 		final boolean scrollWrapX = m_uiContext.getMapData().scrollWrapX();
 		final boolean scrollWrapY = m_uiContext.getMapData().scrollWrapY();
 		// handle wrapping off the screen to the left
-		if ((!mapWidthFitsOnScreen && x < 0 && scrollWrapX) && !(!mapHeightFitsOnScreen && y < 0 && scrollWrapY))
+		if ((!mapWidthFitsOnScreen && x < 0 && scrollWrapX) /*&& !(!mapHeightFitsOnScreen && y < 0 && scrollWrapY)*/)
 		{
 			final Rectangle2D.Double leftBounds = new Rectangle2D.Double(m_model.getMaxWidth() + x, y, -x, getScaledHeight());
 			drawTiles(g2d, images, data, leftBounds, 0, 0, undrawnTiles);
 		}
-		else if (!(!mapWidthFitsOnScreen && x < 0 && scrollWrapX) && (!mapHeightFitsOnScreen && y < 0 && scrollWrapY))
+		if (/*!(!mapWidthFitsOnScreen && x < 0 && scrollWrapX) &&*/(!mapHeightFitsOnScreen && y < 0 && scrollWrapY))
 		{
 			final Rectangle2D.Double upperBounds = new Rectangle2D.Double(x, m_model.getMaxHeight() + y, getScaledWidth(), -y);
 			drawTiles(g2d, images, data, upperBounds, 0, 0, undrawnTiles);
 		}
-		else if ((!mapWidthFitsOnScreen && x < 0 && scrollWrapX) && (!mapHeightFitsOnScreen && y < 0 && scrollWrapY))
+		if ((!mapWidthFitsOnScreen && x < 0 && scrollWrapX) && (!mapHeightFitsOnScreen && y < 0 && scrollWrapY))
 		{
 			final Rectangle2D.Double allBounds = new Rectangle2D.Double(m_model.getMaxWidth() + x, m_model.getMaxHeight() + y, -x, -y);
 			drawTiles(g2d, images, data, allBounds, 0, 0, undrawnTiles);
@@ -665,17 +665,17 @@ public class MapPanel extends ImageScrollerLargeView
 		final double leftOverlap = x + getScaledWidth() - m_model.getMaxWidth();
 		final double upperOverlap = y + getScaledHeight() - m_model.getMaxHeight();
 		// handle wrapping off the screen to the right
-		if ((!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) && !(!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY))
+		if ((!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) /*&& !(!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY)*/)
 		{
 			final Rectangle2D.Double rightBounds = new Rectangle2D.Double(0, y, leftOverlap, getScaledHeight());
 			drawTiles(g2d, images, data, rightBounds, leftOverlap, 0, undrawnTiles);
 		}
-		else if (!(!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) && (!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY))
+		if (/*!(!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) &&*/(!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY))
 		{
 			final Rectangle2D.Double lowerBounds = new Rectangle2D.Double(x, 0, getScaledWidth(), upperOverlap);
 			drawTiles(g2d, images, data, lowerBounds, 0, upperOverlap, undrawnTiles);
 		}
-		else if ((!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) && (!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY))
+		if ((!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) && (!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY))
 		{
 			final Rectangle2D.Double allBounds = new Rectangle2D.Double(0, 0, leftOverlap, upperOverlap);
 			drawTiles(g2d, images, data, allBounds, leftOverlap, upperOverlap, undrawnTiles);
@@ -776,15 +776,15 @@ public class MapPanel extends ImageScrollerLargeView
 	{
 		final List<Tile> tileList = m_tileManager.getTiles(bounds);
 		final Iterator<Tile> tiles = tileList.iterator();
-		if (overlapX != 0 && overlapY == 0)
+		if (overlapX != 0 /*&& overlapY == 0*/)
 		{
 			bounds = new Rectangle2D.Double(bounds.getX() + (overlapX - getScaledWidth()), bounds.getY(), bounds.getHeight(), bounds.getWidth());
 		}
-		else if (overlapX == 0 && overlapY != 0)
+		if (/*overlapX == 0 &&*/overlapY != 0)
 		{
 			bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY() + (overlapY - getScaledHeight()), bounds.getHeight(), bounds.getWidth());
 		}
-		else if (overlapX != 0 && overlapY != 0)
+		if (overlapX != 0 && overlapY != 0)
 		{
 			bounds = new Rectangle2D.Double(bounds.getX() + (overlapX - getScaledWidth()), bounds.getY() + (overlapY - getScaledHeight()), bounds.getHeight(), bounds.getWidth());
 		}
