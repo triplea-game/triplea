@@ -1,6 +1,7 @@
 package games.strategy.triplea.attatchments;
 
 import games.strategy.engine.data.GameParseException;
+import games.strategy.engine.data.IAttachment;
 import games.strategy.engine.delegate.IDelegateBridge;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author veqryn [Mark Christopher Duncan]
  * 
  */
-public interface ICondition
+public interface ICondition extends IAttachment
 {
 	/**
 	 * Only accepts RulesAttachments, and this is on purpose.

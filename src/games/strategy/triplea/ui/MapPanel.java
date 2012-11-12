@@ -793,7 +793,7 @@ public class MapPanel extends ImageScrollerLargeView
 				if (img != null)
 				{
 					final AffineTransform t = new AffineTransform();
-					t.translate(m_scale * (tile.getBounds().x - bounds.getX()), m_scale * (tile.getBounds().y - m_model.getY()));
+					t.translate(m_scale * (tile.getBounds().x - bounds.getX()), m_scale * (tile.getBounds().y - bounds.getY()));
 					g.drawImage(img, t, this);
 				}
 			} finally

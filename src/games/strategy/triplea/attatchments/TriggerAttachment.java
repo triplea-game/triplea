@@ -105,9 +105,31 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	 */
 	public static TriggerAttachment get(final PlayerID player, final String nameOfAttachment)
 	{
-		final TriggerAttachment rVal = (TriggerAttachment) player.getAttachment(nameOfAttachment);
+		return get(player, nameOfAttachment, null);
+	}
+	
+	public static TriggerAttachment get(final PlayerID player, final String nameOfAttachment, final Collection<PlayerID> playersToSearch)
+	{
+		TriggerAttachment rVal = (TriggerAttachment) player.getAttachment(nameOfAttachment);
 		if (rVal == null)
-			throw new IllegalStateException("Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+		{
+			if (playersToSearch == null)
+			{
+				throw new IllegalStateException("Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+			}
+			else
+			{
+				for (final PlayerID otherPlayer : playersToSearch)
+				{
+					if (otherPlayer == player)
+						continue;
+					rVal = (TriggerAttachment) otherPlayer.getAttachment(nameOfAttachment);
+					if (rVal != null)
+						return rVal;
+				}
+				throw new IllegalStateException("Triggers: No trigger attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+			}
+		}
 		return rVal;
 	}
 	

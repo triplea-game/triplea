@@ -177,6 +177,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	private JTabbedPane m_tabsPanel = new JTabbedPane();
 	private StatPanel m_statsPanel;
 	private StatPanel m_economyPanel;
+	private ObjectivePanel m_objectivePanel;
 	private TerritoryDetailPanel m_details;
 	private JPanel m_historyComponent = new JPanel();
 	private JPanel m_gameSouthPanel;
@@ -294,6 +295,16 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_tabsPanel.addTab("Stats", m_statsPanel);
 		m_economyPanel = new EconomyPanel(m_data);
 		m_tabsPanel.addTab("Economy", m_economyPanel);
+		m_objectivePanel = new ObjectivePanel(m_data);
+		if (m_objectivePanel.isEmpty())
+		{
+			m_objectivePanel.removeDataChangeListener();
+			m_objectivePanel = null;
+		}
+		else
+		{
+			m_tabsPanel.addTab("Objectives", m_objectivePanel);
+		}
 		m_details = new TerritoryDetailPanel(m_mapPanel, m_data, m_uiContext, this);
 		m_tabsPanel.addTab("Territory", m_details);
 		m_editPanel = new EditPanel(m_data, m_mapPanel, this);
@@ -467,6 +478,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_smallView = null;
 		m_statsPanel = null;
 		m_economyPanel = null;
+		m_objectivePanel = null;
 		m_step = null;
 		m_round = null;
 		m_player = null;
@@ -1553,6 +1565,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		}
 		m_statsPanel.setGameData(clonedGameData);
 		m_economyPanel.setGameData(clonedGameData);
+		if (m_objectivePanel != null && !m_objectivePanel.isEmpty())
+			m_objectivePanel.setGameData(clonedGameData);
 		m_details.setGameData(clonedGameData);
 		m_mapPanel.setGameData(clonedGameData);
 		final HistoryDetailsPanel historyDetailPanel = new HistoryDetailsPanel(clonedGameData, m_mapPanel);
@@ -1560,6 +1574,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_tabsPanel.add("History", historyDetailPanel);
 		m_tabsPanel.add("Stats", m_statsPanel);
 		m_tabsPanel.add("Economy", m_economyPanel);
+		if (m_objectivePanel != null && !m_objectivePanel.isEmpty())
+			m_tabsPanel.add("Objectives", m_objectivePanel);
 		m_tabsPanel.add("Territory", m_details);
 		if (getEditMode())
 			m_tabsPanel.add("Edit", m_editPanel);
@@ -1647,6 +1663,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			m_mapPanel.getData().removeDataChangeListener(m_dataChangeListener);
 			m_statsPanel.setGameData(m_data);
 			m_economyPanel.setGameData(m_data);
+			if (m_objectivePanel != null && !m_objectivePanel.isEmpty())
+				m_objectivePanel.setGameData(m_data);
 			m_details.setGameData(m_data);
 			m_mapPanel.setGameData(m_data);
 			m_data.addDataChangeListener(m_dataChangeListener);
@@ -1656,6 +1674,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_tabsPanel.add("Action", m_actionButtons);
 		m_tabsPanel.add("Stats", m_statsPanel);
 		m_tabsPanel.add("Economy", m_economyPanel);
+		if (m_objectivePanel != null && !m_objectivePanel.isEmpty())
+			m_tabsPanel.add("Objectives", m_objectivePanel);
 		m_tabsPanel.add("Territory", m_details);
 		if (getEditMode())
 			m_tabsPanel.add("Edit", m_editPanel);

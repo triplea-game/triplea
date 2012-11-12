@@ -103,9 +103,31 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 	 */
 	public static RulesAttachment get(final PlayerID player, final String nameOfAttachment)
 	{
-		final RulesAttachment rVal = (RulesAttachment) player.getAttachment(nameOfAttachment);
+		return get(player, nameOfAttachment, null);
+	}
+	
+	public static RulesAttachment get(final PlayerID player, final String nameOfAttachment, final Collection<PlayerID> playersToSearch)
+	{
+		RulesAttachment rVal = (RulesAttachment) player.getAttachment(nameOfAttachment);
 		if (rVal == null)
-			throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+		{
+			if (playersToSearch == null)
+			{
+				throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+			}
+			else
+			{
+				for (final PlayerID otherPlayer : playersToSearch)
+				{
+					if (otherPlayer == player)
+						continue;
+					rVal = (RulesAttachment) otherPlayer.getAttachment(nameOfAttachment);
+					if (rVal != null)
+						return rVal;
+				}
+				throw new IllegalStateException("Rules & Conditions: No rule attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+			}
+		}
 		return rVal;
 	}
 	

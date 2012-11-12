@@ -182,5 +182,4 @@ public class EconomyPanel extends StatPanel
 		m_resourceModel.setGameData(data);
 		m_resourceModel.gameDataChanged(null);
 	}
-	
 }

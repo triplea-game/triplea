@@ -76,9 +76,31 @@ public class PoliticalActionAttachment extends AbstractConditionsAttachment impl
 	
 	public static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment)
 	{
-		final PoliticalActionAttachment rVal = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
+		return get(player, nameOfAttachment, null);
+	}
+	
+	public static PoliticalActionAttachment get(final PlayerID player, final String nameOfAttachment, final Collection<PlayerID> playersToSearch)
+	{
+		PoliticalActionAttachment rVal = (PoliticalActionAttachment) player.getAttachment(nameOfAttachment);
 		if (rVal == null)
-			throw new IllegalStateException("PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+		{
+			if (playersToSearch == null)
+			{
+				throw new IllegalStateException("PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+			}
+			else
+			{
+				for (final PlayerID otherPlayer : playersToSearch)
+				{
+					if (otherPlayer == player)
+						continue;
+					rVal = (PoliticalActionAttachment) otherPlayer.getAttachment(nameOfAttachment);
+					if (rVal != null)
+						return rVal;
+				}
+				throw new IllegalStateException("PoliticalActionAttachment: No attachment for:" + player.getName() + " with name: " + nameOfAttachment);
+			}
+		}
 		return rVal;
 	}
 	

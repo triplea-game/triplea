@@ -3258,6 +3258,10 @@
 				
 				
 		<!-- Americans Conditions -->
+				<attatchment name="conditionAttachmentAmericans1_WarPhase" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
+						<option name="turns" value="2-+"/>
+				</attatchment>
+				
 				<attatchment name="conditionAttachmentAmericans1" attatchTo="Americans" javaClass="games.strategy.triplea.attatchments.RulesAttachment" type="player">
 						<option name="turns" value="3-5"/>
 						<option name="alliedOwnershipTerritories" value="Western Europe" count="1"/>

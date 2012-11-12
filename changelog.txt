@@ -1,4 +1,10 @@
 Changes for 1.6.1.3
+* Including on Objective tab whether condition is currently true or not, and getting it to update with the game. (veqryn)
+
+* Creating new text file, "objectives.properties", which will hold all the details about what objectives to show on the objective tab. (veqryn)
+
+* Creating new stats panel, "Objective" Tab, which will contain a list of all national objectives and any other conditions the map maker wants. (veqryn)
+
 * Created new "map.properties" variables: "map.cursor.hotspot.x", and "map.cursor.hotspot.y". (veqryn)
 
 * Allowing TripleA to use custom cursors located at "misc/cursor.gif". (veqryn)
