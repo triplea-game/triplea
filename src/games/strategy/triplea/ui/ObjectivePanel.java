@@ -220,19 +220,31 @@ public class ObjectivePanel extends StatPanel
 					continue;
 				final PlayerID player = m_data.getPlayerList().getPlayerID(key[0]);
 				if (player == null)
-					throw new IllegalStateException("objective.properties player does not exist: " + key[0]);
-				final IAttachment attachment;
-				if (key[1].indexOf(Constants.RULES_OBJECTIVE_PREFIX) != -1 || key[1].indexOf(Constants.RULES_CONDITION_PREFIX) != -1)
-					attachment = RulesAttachment.get(player, key[1], allPlayers);
-				else if (key[1].indexOf(Constants.TRIGGER_ATTACHMENT_PREFIX) != -1)
-					attachment = TriggerAttachment.get(player, key[1], allPlayers);
-				else if (key[1].indexOf(Constants.POLITICALACTION_ATTACHMENT_PREFIX) != -1)
-					attachment = PoliticalActionAttachment.get(player, key[1], allPlayers);
-				else
-					throw new IllegalStateException("objective.properties objective must begin with: " + Constants.RULES_OBJECTIVE_PREFIX + " or " + Constants.RULES_CONDITION_PREFIX + " or "
-								+ Constants.TRIGGER_ATTACHMENT_PREFIX + " or " + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
-				if (attachment == null)
-					throw new IllegalStateException("objective.properties attachment does not exist: " + key[1]);
+				{
+					// could be an old map, or an old save, so we don't want to stop the game from running.
+					System.err.println("objective.properties player does not exist: " + key[0]);
+					continue;
+				}
+				IAttachment attachment = null;
+				try
+				{
+					if (key[1].indexOf(Constants.RULES_OBJECTIVE_PREFIX) != -1 || key[1].indexOf(Constants.RULES_CONDITION_PREFIX) != -1)
+						attachment = RulesAttachment.get(player, key[1], allPlayers);
+					else if (key[1].indexOf(Constants.TRIGGER_ATTACHMENT_PREFIX) != -1)
+						attachment = TriggerAttachment.get(player, key[1], allPlayers);
+					else if (key[1].indexOf(Constants.POLITICALACTION_ATTACHMENT_PREFIX) != -1)
+						attachment = PoliticalActionAttachment.get(player, key[1], allPlayers);
+					else
+						throw new IllegalStateException("objective.properties objective must begin with: " + Constants.RULES_OBJECTIVE_PREFIX + " or " + Constants.RULES_CONDITION_PREFIX + " or "
+									+ Constants.TRIGGER_ATTACHMENT_PREFIX + " or " + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
+					if (attachment == null)
+						throw new IllegalStateException("objective.properties attachment does not exist: " + key[1]);
+				} catch (final Exception e)
+				{
+					// could be an old map, or an old save, so we don't want to stop the game from running.
+					System.err.println(e.getMessage());
+					continue;
+				}
 				if (!ICondition.class.isAssignableFrom(attachment.getClass()))
 					throw new IllegalStateException("(wtf??) attachment is not an ICondition: " + attachment.getName());
 				// find which section
