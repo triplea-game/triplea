@@ -591,13 +591,12 @@ public class HistoryLog extends JFrame
 		{
 			boolean isConvoyOrLand = false;
 			final Territory place = iter.next();
-			final OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
 			final TerritoryAttachment ta = TerritoryAttachment.get(place);
 			if (!place.isWater())
 			{
 				isConvoyOrLand = true;
 			}
-			else if (place.isWater() && ta != null && origOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID && origOwnerTracker.getOriginalOwner(place) == player
+			else if (place.isWater() && ta != null && OriginalOwnerTracker.getOriginalOwner(place) != PlayerID.NULL_PLAYERID && OriginalOwnerTracker.getOriginalOwner(place) == player
 						&& place.getOwner().equals(player))
 			{
 				isConvoyOrLand = true;

@@ -36,7 +36,7 @@ import games.strategy.util.Tuple;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -55,9 +55,12 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -105,19 +108,42 @@ public class ObjectivePanel extends StatPanel
 	@Override
 	protected void initLayout()
 	{
-		setLayout(new GridLayout(1, 1));
+		// setLayout(new GridLayout(1, 1));
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		m_objectiveModel = new ObjectiveTableModel();
 		final JTable table = new JTable(m_objectiveModel);
 		table.getTableHeader().setReorderingAllowed(false);
 		// table.setDefaultRenderer(String.class, new TextAreaTableCellRenderer());
 		final TableColumn column0 = table.getColumnModel().getColumn(0);
-		column0.setPreferredWidth(32);
-		column0.setMaxWidth(32);
+		column0.setPreferredWidth(34);
+		column0.setWidth(34);
+		column0.setMaxWidth(34);
 		column0.setCellRenderer(new ColorTableCellRenderer());
 		final TableColumn column1 = table.getColumnModel().getColumn(1);
 		column1.setCellEditor(new EditorPaneCellEditor());
 		column1.setCellRenderer(new EditorPaneTableCellRenderer());
 		final JScrollPane scroll = new JScrollPane(table);
+		final JButton refresh = new JButton("Refresh Objectives");
+		refresh.setAlignmentY(Component.CENTER_ALIGNMENT);
+		refresh.addActionListener(new AbstractAction("Refresh Objectives")
+		{
+			private static final long serialVersionUID = -5217040341132623172L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				m_objectiveModel.loadData();
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					public void run()
+					{
+						table.repaint();
+					}
+				});
+			}
+		});
+		add(Box.createVerticalStrut(6));
+		add(refresh);
+		add(Box.createVerticalStrut(6));
 		add(scroll);
 	}
 	
@@ -129,6 +155,7 @@ public class ObjectivePanel extends StatPanel
 		private boolean m_isDirty = true;
 		private String[][] m_collectedData;
 		final Map<String, List<String>> m_sections = new LinkedHashMap<String, List<String>>();
+		private long m_timestamp = 0;
 		
 		public ObjectiveTableModel()
 		{
@@ -244,13 +271,14 @@ public class ObjectivePanel extends StatPanel
 		
 		public synchronized Object getValueAt(final int row, final int col)
 		{
-			if (m_isDirty)
+			// do not refresh too often, or else it will slow the game down seriously
+			if (m_isDirty && Calendar.getInstance().getTimeInMillis() > m_timestamp + 10000)
 			{
 				loadData();
 				m_isDirty = false;
+				m_timestamp = Calendar.getInstance().getTimeInMillis();
 			}
 			return m_collectedData[row][col];
-			
 		}
 		
 		private synchronized void loadData()
@@ -258,7 +286,7 @@ public class ObjectivePanel extends StatPanel
 			m_data.acquireReadLock();
 			try
 			{
-				final HashMap<ICondition, Boolean> testedConditions = getTestedConditions();
+				final HashMap<ICondition, String> conditions = getConditionComment(getTestedConditions());
 				m_collectedData = new String[getRowTotal()][COLUMNS_TOTAL];
 				int row = 0;
 				for (final Entry<String, Map<ICondition, String>> mapEntry : m_statsObjective.entrySet())
@@ -267,7 +295,7 @@ public class ObjectivePanel extends StatPanel
 					for (final Entry<ICondition, String> attachmentEntry : mapEntry.getValue().entrySet())
 					{
 						row++;
-						m_collectedData[row][0] = (testedConditions.get(attachmentEntry.getKey()) ? "true" : null);
+						m_collectedData[row][0] = conditions.get(attachmentEntry.getKey());
 						m_collectedData[row][1] = "<html>" + attachmentEntry.getValue() + "</html>";
 					}
 					row++;
@@ -278,6 +306,64 @@ public class ObjectivePanel extends StatPanel
 			{
 				m_data.releaseReadLock();
 			}
+		}
+		
+		public HashMap<ICondition, String> getConditionComment(final HashMap<ICondition, Boolean> testedConditions)
+		{
+			final HashMap<ICondition, String> conditionsComments = new HashMap<ICondition, String>(testedConditions.size());
+			for (final Entry<ICondition, Boolean> entry : testedConditions.entrySet())
+			{
+				final boolean satisfied = entry.getValue();
+				if (entry.getKey() instanceof TriggerAttachment)
+				{
+					final TriggerAttachment ta = (TriggerAttachment) entry.getKey();
+					final int each = TriggerAttachment.getEachMultiple(ta);
+					final int uses = ta.getUses();
+					if (uses < 0)
+					{
+						final String comment = satisfied ? (each > 1 ? "T" + each : "T") : "F";
+						conditionsComments.put(entry.getKey(), comment);
+					}
+					else if (uses == 0)
+					{
+						final String comment = satisfied ? "Used" : "used";
+						conditionsComments.put(entry.getKey(), comment);
+					}
+					else
+					{
+						// if (uses > 0)
+						final String comment = uses + "" + (satisfied ? (each > 1 ? "T" + each : "T") : "F");
+						conditionsComments.put(entry.getKey(), comment);
+					}
+				}
+				else if (entry.getKey() instanceof RulesAttachment)
+				{
+					final RulesAttachment ra = (RulesAttachment) entry.getKey();
+					final int each = ra.getEachMultiple();
+					final int uses = ra.getUses();
+					if (uses < 0)
+					{
+						final String comment = satisfied ? (each > 1 ? "T" + each : "T") : "F";
+						conditionsComments.put(entry.getKey(), comment);
+					}
+					else if (uses == 0)
+					{
+						final String comment = satisfied ? "Used" : "used";
+						conditionsComments.put(entry.getKey(), comment);
+					}
+					else
+					{
+						// if (uses > 0)
+						final String comment = uses + "" + (satisfied ? (each > 1 ? "T" + each : "T") : "F");
+						conditionsComments.put(entry.getKey(), comment);
+					}
+				}
+				else
+				{
+					conditionsComments.put(entry.getKey(), entry.getValue().toString());
+				}
+			}
+			return conditionsComments;
 		}
 		
 		public HashMap<ICondition, Boolean> getTestedConditions()
@@ -353,6 +439,7 @@ public class ObjectivePanel extends StatPanel
 			{
 				m_data.removeDataChangeListener(this);
 				m_data = data;
+				setObjectiveStats();
 				m_data.addDataChangeListener(this);
 				m_isDirty = true;
 			}
@@ -673,8 +760,14 @@ class ColorTableCellRenderer extends DefaultTableCellRenderer
 		adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		final JLabel renderer = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		renderer.setHorizontalAlignment(SwingConstants.CENTER);
-		if (value != null && value.toString().length() > 0)
+		if (value == null)
+			renderer.setBorder(BorderFactory.createEmptyBorder());
+		else if (value.toString().indexOf("T") != -1)
 			renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.red));
+		else if (value.toString().indexOf("U") != -1)
+			renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.blue));
+		else if (value.toString().indexOf("u") != -1)
+			renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.cyan));
 		else
 			renderer.setBorder(BorderFactory.createEmptyBorder());
 		return renderer;

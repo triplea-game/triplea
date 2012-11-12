@@ -1,4 +1,8 @@
 Changes for 1.6.1.3
+* Getting the objective panel to not refresh more than every 10 seconds, and adding a "Refresh" button so that it can be manually refreshed. (veqryn)
+
+* Getting the objectives on the objective tab to show up in colors (red = true, blue = used up), and show more information: <#of uses left><T=true/F=false><#of objectives filled>. (veqryn)
+
 * Including on Objective tab whether condition is currently true or not, and getting it to update with the game. (veqryn)
 
 * Creating new text file, "objectives.properties", which will hold all the details about what objectives to show on the objective tab. (veqryn)

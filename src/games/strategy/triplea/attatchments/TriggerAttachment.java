@@ -27,6 +27,7 @@ import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.EndRoundDelegate;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.MoveDelegate;
+import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -1651,7 +1652,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 		}
 		// place units
 		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(units, Matches.UnitIsInfrastructure);
-		change.add(DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, player));
+		change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
 		final String transcriptText = MyFormatter.attachmentNameToText(t.getName()) + ": " + player.getName() + " has " + MyFormatter.unitsToTextNoOwner(units) + " placed in " + terr.getName();
 		aBridge.getHistoryWriter().startEvent(transcriptText, units);
 		final Change place = ChangeFactory.addUnits(terr, units);

@@ -302,7 +302,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (!didIt)
 			throw new IllegalStateException("Something wrong with consuming/upgrading units");
 		final Collection<Unit> factoryAndInfrastructure = Match.getMatches(placeableUnits, Matches.UnitIsInfrastructure);
-		change.add(DelegateFinder.battleDelegate(getData()).getOriginalOwnerTracker().addOriginalOwnerChange(factoryAndInfrastructure, player));
+		change.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, player));
 		// can we move planes to land there
 		final String movedAirTranscriptTextForHistory = moveAirOntoNewCarriers(at, producer, placeableUnits, player, change);
 		
@@ -1506,15 +1506,16 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		if (factoryUnits.size() == 0)
 			throw new IllegalStateException("No factory in territory:" + territory);
 		final Iterator<Unit> iter = factoryUnits.iterator();
-		final GameData data = getData();
+		// final GameData data = getData();
 		while (iter.hasNext())
 		{
 			final Unit factory2 = iter.next();
-			if (m_player.equals(DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(factory2)))
-				return DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(factory2);
+			if (m_player.equals(OriginalOwnerTracker.getOriginalOwner(factory2)))
+				return OriginalOwnerTracker.getOriginalOwner(factory2);
 		}
 		final Unit factory = factoryUnits.iterator().next();
-		return DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(factory);
+		// return DelegateFinder.battleDelegate(data).getOriginalOwnerTracker().getOriginalOwner(factory);
+		return OriginalOwnerTracker.getOriginalOwner(factory);
 	}
 	
 	/**

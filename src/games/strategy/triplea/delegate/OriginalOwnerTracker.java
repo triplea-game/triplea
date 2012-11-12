@@ -50,17 +50,17 @@ public class OriginalOwnerTracker implements java.io.Serializable
 	{
 	}
 	
-	public Change addOriginalOwnerChange(final Territory t, final PlayerID player)
+	public static Change addOriginalOwnerChange(final Territory t, final PlayerID player)
 	{
 		return ChangeFactory.attachmentPropertyChange(TerritoryAttachment.get(t), player, Constants.ORIGINAL_OWNER);
 	}
 	
-	public Change addOriginalOwnerChange(final Unit unit, final PlayerID player)
+	public static Change addOriginalOwnerChange(final Unit unit, final PlayerID player)
 	{
 		return ChangeFactory.unitPropertyChange(unit, player, Constants.ORIGINAL_OWNER);
 	}
 	
-	public Change addOriginalOwnerChange(final Collection<Unit> units, final PlayerID player)
+	public static Change addOriginalOwnerChange(final Collection<Unit> units, final PlayerID player)
 	{
 		final CompositeChange change = new CompositeChange();
 		for (final Unit unit : units)
@@ -70,12 +70,12 @@ public class OriginalOwnerTracker implements java.io.Serializable
 		return change;
 	}
 	
-	public PlayerID getOriginalOwner(final Unit unit)
+	public static PlayerID getOriginalOwner(final Unit unit)
 	{
 		return TripleAUnit.get(unit).getOriginalOwner();
 	}
 	
-	public PlayerID getOriginalOwner(final Territory t)
+	public static PlayerID getOriginalOwner(final Territory t)
 	{
 		final TerritoryAttachment ta = TerritoryAttachment.get(t);
 		if (ta == null)
@@ -83,7 +83,7 @@ public class OriginalOwnerTracker implements java.io.Serializable
 		return ta.getOriginalOwner();
 	}
 	
-	public Collection<Territory> getOriginallyOwned(final GameData data, final PlayerID player)
+	public static Collection<Territory> getOriginallyOwned(final GameData data, final PlayerID player)
 	{
 		final Collection<Territory> rVal = new ArrayList<Territory>();
 		for (final Territory t : data.getMap())

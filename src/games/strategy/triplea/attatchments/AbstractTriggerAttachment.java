@@ -332,7 +332,7 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 		return sb.toString();
 	}
 	
-	protected static int getEachMultiple(final AbstractTriggerAttachment t)
+	public static int getEachMultiple(final AbstractTriggerAttachment t)
 	{
 		int eachMultiple = 1;
 		for (final RulesAttachment condition : t.getConditions())

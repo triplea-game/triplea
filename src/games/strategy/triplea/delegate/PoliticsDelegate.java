@@ -615,7 +615,6 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	public static void givesBackOriginalTerritories(final IDelegateBridge aBridge)
 	{
 		final GameData data = aBridge.getData();
-		final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 		final CompositeChange change = new CompositeChange();
 		final Collection<PlayerID> players = data.getPlayerList().getPlayers();
 		for (final PlayerID p1 : players)
@@ -629,7 +628,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 					final TerritoryAttachment ta = TerritoryAttachment.get(t);
 					PlayerID original = ta.getOccupiedTerrOf();
 					if (original == null)
-						original = origOwnerTracker.getOriginalOwner(t);
+						original = OriginalOwnerTracker.getOriginalOwner(t);
 					if (original == null)
 						continue;
 					if (original.equals(p2))

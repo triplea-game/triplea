@@ -9,7 +9,6 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.annotations.GameProperty;
 import games.strategy.engine.data.annotations.InternalDoNotExport;
-import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.OriginalOwnerTracker;
 import games.strategy.util.Match;
@@ -289,11 +288,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		String value = new String();
 		if (name.equals("original") || name.equals("enemy")) // get all originally owned territories
 		{
-			final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 			final Set<Territory> originalTerrs = new HashSet<Territory>();
 			for (final PlayerID player : players)
 			{
-				originalTerrs.addAll(origOwnerTracker.getOriginallyOwned(data, player)); // TODO: does this account for occupiedTerrOf???
+				originalTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player)); // TODO: does this account for occupiedTerrOf???
 			}
 			setTerritoryCount(String.valueOf(originalTerrs.size()));
 			// Colon delimit the collection as it would exist in the XML
@@ -302,11 +300,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		}
 		else if (name.equals("originalNoWater")) // get all originally owned territories, but no water or impassibles
 		{
-			final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 			final Set<Territory> originalTerrs = new HashSet<Territory>();
 			for (final PlayerID player : players)
 			{
-				originalTerrs.addAll(Match.getMatches(origOwnerTracker.getOriginallyOwned(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data))); // TODO: does this account for occupiedTerrOf???
+				originalTerrs.addAll(Match.getMatches(OriginalOwnerTracker.getOriginallyOwned(data, player), Matches.TerritoryIsNotImpassableToLandUnits(player, data))); // TODO: does this account for occupiedTerrOf???
 			}
 			setTerritoryCount(String.valueOf(originalTerrs.size()));
 			// Colon delimit the collection as it would exist in the XML
@@ -340,11 +337,10 @@ public abstract class AbstractRulesAttachment extends AbstractConditionsAttachme
 		else if (name.equals("all"))
 		{
 			final Set<Territory> allTerrs = new HashSet<Territory>();
-			final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 			for (final PlayerID player : players)
 			{
 				allTerrs.addAll(gameMap.getTerritoriesOwnedBy(player));
-				allTerrs.addAll(origOwnerTracker.getOriginallyOwned(data, player));
+				allTerrs.addAll(OriginalOwnerTracker.getOriginallyOwned(data, player));
 			}
 			setTerritoryCount(String.valueOf(allTerrs.size()));
 			// Colon delimit the collection as it would exist in the XML

@@ -252,15 +252,14 @@ public class InitializationDelegate extends BaseDelegate
 	private void initOriginalOwner(final IDelegateBridge aBridge)
 	{
 		final GameData data = aBridge.getData();
-		final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 		final CompositeChange changes = new CompositeChange();
 		for (final Territory current : data.getMap())
 		{
 			if (!current.getOwner().isNull())
 			{
-				changes.add(origOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
+				changes.add(OriginalOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
 				final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.UnitIsInfrastructure);
-				changes.add(origOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, current.getOwner()));
+				changes.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, current.getOwner()));
 				final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
 				if (territoryAttachment == null)
 					throw new IllegalStateException("No territory attachment for " + current);

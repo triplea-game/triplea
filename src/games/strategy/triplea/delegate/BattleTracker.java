@@ -504,7 +504,7 @@ public class BattleTracker implements java.io.Serializable
 	{
 		final GameData data = bridge.getData();
 		final Collection<Unit> arrivedUnits = (arrivingUnits == null ? null : new ArrayList<Unit>(arrivingUnits));
-		final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
+		// final OriginalOwnerTracker origOwnerTracker = DelegateFinder.battleDelegate(data).getOriginalOwnerTracker();
 		final RelationshipTracker relationshipTracker = data.getRelationshipTracker();
 		final boolean isTerritoryOwnerAnEnemy = relationshipTracker.canTakeOverOwnedTerritory(id, territory.getOwner()); // .isAtWar(id, territory.getOwner());
 		// If this is a convoy (we wouldn't be in this method otherwise) check to make sure attackers have more than just transports. If they don't, exit here.
@@ -647,7 +647,7 @@ public class BattleTracker implements java.io.Serializable
 		PlayerID terrOrigOwner;
 		terrOrigOwner = ta.getOccupiedTerrOf();
 		if (terrOrigOwner == null)
-			terrOrigOwner = origOwnerTracker.getOriginalOwner(territory);
+			terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory); // origOwnerTracker.getOriginalOwner(territory);
 		PlayerID newOwner;
 		// if the original owner is the current owner, and the current owner is our enemy / canTakeOver, then we do not worry about this.
 		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && relationshipTracker.isAllied(terrOrigOwner, id) && !terrOrigOwner.equals(territory.getOwner()))
@@ -725,7 +725,7 @@ public class BattleTracker implements java.io.Serializable
 					&& relationshipTracker.isAllied(terrOrigOwner, id))
 		{
 			// if it is give it back to the original owner
-			final Collection<Territory> originallyOwned = origOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
+			final Collection<Territory> originallyOwned = OriginalOwnerTracker.getOriginallyOwned(data, terrOrigOwner); // origOwnerTracker.getOriginallyOwned(data, terrOrigOwner);
 			final List<Territory> friendlyTerritories = Match.getMatches(originallyOwned, Matches.isTerritoryAllied(terrOrigOwner, data));
 			// give back the factories as well.
 			for (final Territory item : friendlyTerritories)

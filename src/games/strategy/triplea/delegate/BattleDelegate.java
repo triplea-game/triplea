@@ -72,7 +72,7 @@ import java.util.Set;
 public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 {
 	private BattleTracker m_battleTracker = new BattleTracker();
-	private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
+	// private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
 	private boolean m_needToInitialize = true;
 	private boolean m_needToScramble = true;
 	private boolean m_needToKamikazeSuicideAttacks = true;
@@ -155,7 +155,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		state.superState = super.saveState();
 		// add other variables to state here:
 		state.m_battleTracker = m_battleTracker;
-		state.m_originalOwnerTracker = m_originalOwnerTracker;
+		// state.m_originalOwnerTracker = m_originalOwnerTracker;
 		state.m_needToInitialize = m_needToInitialize;
 		state.m_needToScramble = m_needToScramble;
 		state.m_needToKamikazeSuicideAttacks = m_needToKamikazeSuicideAttacks;
@@ -174,7 +174,7 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		super.loadState(s.superState);
 		// load other variables from state here:
 		m_battleTracker = s.m_battleTracker;
-		m_originalOwnerTracker = s.m_originalOwnerTracker;
+		// m_originalOwnerTracker = s.m_originalOwnerTracker;
 		m_needToInitialize = s.m_needToInitialize;
 		m_needToScramble = s.m_needToScramble;
 		m_needToKamikazeSuicideAttacks = s.m_needToKamikazeSuicideAttacks;
@@ -259,11 +259,12 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		return getBridge();
 	}
 	
+	/*
 	public OriginalOwnerTracker getOriginalOwnerTracker()
 	{
 		return m_originalOwnerTracker;
-	}
-	
+	}*/
+
 	/**
 	 * Add bombardment units to battles.
 	 */
@@ -1525,7 +1526,7 @@ class BattleExtendedDelegateState implements Serializable
 	Serializable superState;
 	// add other variables here:
 	public BattleTracker m_battleTracker = new BattleTracker();
-	public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
+	// public OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();
 	public boolean m_needToInitialize;
 	public boolean m_needToScramble;
 	public boolean m_needToKamikazeSuicideAttacks;

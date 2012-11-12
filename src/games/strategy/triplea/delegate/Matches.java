@@ -1419,10 +1419,9 @@ public class Matches
 				final TerritoryAttachment ta = TerritoryAttachment.get(t);
 				if (ta == null)
 					return false;
-				final OriginalOwnerTracker origOwnerTracker = new OriginalOwnerTracker();
 				PlayerID origOwner = ta.getOccupiedTerrOf();
 				if (origOwner == null)
-					origOwner = origOwnerTracker.getOriginalOwner(t);
+					origOwner = OriginalOwnerTracker.getOriginalOwner(t);
 				if (t.isWater())
 				{
 					// if it's water, it is a Convoy Center
