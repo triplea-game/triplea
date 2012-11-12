@@ -10062,8 +10062,10 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			final float enemyStrength = enemyAirStrength + enemySeaStrength;
 			if (attacking && enemyStrength > (totalStrength + 1.0F))
 			{
+				Territory retreatTo = null;
+				if (possibleTerritories.size() > 0)
+					retreatTo = possibleTerritories.iterator().next();
 				// TODO: Create a selection for best seaTerritory
-				final Territory retreatTo = possibleTerritories.iterator().next();
 				return retreatTo;
 			}
 		}
