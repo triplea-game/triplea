@@ -471,7 +471,7 @@ public class TileManager
 				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
 				bounds.x -= mapData.getMapDimensions().width;
 			}
-			if (bounds.y < 0 && mapData.scrollWrapY())
+			if (bounds.y < 0)
 			{
 				bounds.y += mapData.getMapDimensions().height;
 				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
@@ -485,7 +485,7 @@ public class TileManager
 				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
 				bounds.x += mapData.getMapDimensions().width;
 			}
-			if (bounds.y + bounds.width > mapData.getMapDimensions().height && mapData.scrollWrapY())
+			if (bounds.y + bounds.width > mapData.getMapDimensions().height)
 			{
 				bounds.y -= mapData.getMapDimensions().height;
 				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);

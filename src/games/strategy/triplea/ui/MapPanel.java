@@ -641,16 +641,23 @@ public class MapPanel extends ImageScrollerLargeView
 		// if the map fits on screen, dont draw any overlap
 		final boolean mapWidthFitsOnScreen = mapWidthFitsOnScreen();
 		final boolean mapHeightFitsOnScreen = mapHeightFitsOnScreen();
+		final boolean scrollWrapX = m_uiContext.getMapData().scrollWrapX();
+		final boolean scrollWrapY = m_uiContext.getMapData().scrollWrapY();
 		// handle wrapping off the screen to the left
-		if (!mapWidthFitsOnScreen && x < 0 && m_uiContext.getMapData().scrollWrapX())
+		if ((!mapWidthFitsOnScreen && x < 0 && scrollWrapX) && !(!mapHeightFitsOnScreen && y < 0 && scrollWrapY))
 		{
 			final Rectangle2D.Double leftBounds = new Rectangle2D.Double(m_model.getMaxWidth() + x, y, -x, getScaledHeight());
 			drawTiles(g2d, images, data, leftBounds, 0, 0, undrawnTiles);
 		}
-		if (!mapHeightFitsOnScreen && y < 0 && m_uiContext.getMapData().scrollWrapY())
+		else if (!(!mapWidthFitsOnScreen && x < 0 && scrollWrapX) && (!mapHeightFitsOnScreen && y < 0 && scrollWrapY))
 		{
 			final Rectangle2D.Double upperBounds = new Rectangle2D.Double(x, m_model.getMaxHeight() + y, getScaledWidth(), -y);
 			drawTiles(g2d, images, data, upperBounds, 0, 0, undrawnTiles);
+		}
+		else if ((!mapWidthFitsOnScreen && x < 0 && scrollWrapX) && (!mapHeightFitsOnScreen && y < 0 && scrollWrapY))
+		{
+			final Rectangle2D.Double allBounds = new Rectangle2D.Double(m_model.getMaxWidth() + x, m_model.getMaxHeight() + y, -x, -y);
+			drawTiles(g2d, images, data, allBounds, 0, 0, undrawnTiles);
 		}
 		// handle the non overlap
 		final Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
@@ -658,15 +665,20 @@ public class MapPanel extends ImageScrollerLargeView
 		final double leftOverlap = x + getScaledWidth() - m_model.getMaxWidth();
 		final double upperOverlap = y + getScaledHeight() - m_model.getMaxHeight();
 		// handle wrapping off the screen to the right
-		if (!mapWidthFitsOnScreen && leftOverlap > 0 && m_uiContext.getMapData().scrollWrapX())
+		if ((!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) && !(!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY))
 		{
 			final Rectangle2D.Double rightBounds = new Rectangle2D.Double(0, y, leftOverlap, getScaledHeight());
 			drawTiles(g2d, images, data, rightBounds, leftOverlap, 0, undrawnTiles);
 		}
-		if (!mapHeightFitsOnScreen && upperOverlap > 0 && m_uiContext.getMapData().scrollWrapY())
+		else if (!(!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) && (!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY))
 		{
 			final Rectangle2D.Double lowerBounds = new Rectangle2D.Double(x, 0, getScaledWidth(), upperOverlap);
 			drawTiles(g2d, images, data, lowerBounds, 0, upperOverlap, undrawnTiles);
+		}
+		else if ((!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) && (!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY))
+		{
+			final Rectangle2D.Double allBounds = new Rectangle2D.Double(0, 0, leftOverlap, upperOverlap);
+			drawTiles(g2d, images, data, allBounds, leftOverlap, upperOverlap, undrawnTiles);
 		}
 		if (m_routeDescription != null && m_mouseShadowImage != null && m_routeDescription.getEnd() != null)
 		{
@@ -764,13 +776,17 @@ public class MapPanel extends ImageScrollerLargeView
 	{
 		final List<Tile> tileList = m_tileManager.getTiles(bounds);
 		final Iterator<Tile> tiles = tileList.iterator();
-		if (overlapX != 0)
+		if (overlapX != 0 && overlapY == 0)
 		{
 			bounds = new Rectangle2D.Double(bounds.getX() + (overlapX - getScaledWidth()), bounds.getY(), bounds.getHeight(), bounds.getWidth());
 		}
-		if (overlapY != 0)
+		else if (overlapX == 0 && overlapY != 0)
 		{
 			bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY() + (overlapY - getScaledHeight()), bounds.getHeight(), bounds.getWidth());
+		}
+		else if (overlapX != 0 && overlapY != 0)
+		{
+			bounds = new Rectangle2D.Double(bounds.getX() + (overlapX - getScaledWidth()), bounds.getY() + (overlapY - getScaledHeight()), bounds.getHeight(), bounds.getWidth());
 		}
 		while (tiles.hasNext())
 		{

@@ -111,21 +111,28 @@ public class MapRouteDrawer
 					drawLineSegment(graphics, points[i].x - xOffset, points[i].y - yOffset, points[i + 1].x - xOffset, points[i + 1].y - yOffset, shapes);
 				}
 			}
+			final boolean scrollWrapX = mapData.scrollWrapX();
+			final boolean scrollWrapY = mapData.scrollWrapY();
 			final double translateX = -view.getImageWidth();
 			final double translateY = -view.getImageHeight();
 			for (int i = 0; i < shapes.size(); i++)
 			{
 				final Shape shape = shapes.get(i);
-				drawWithTranslate(graphics, shape, 0);
-				if (mapData.scrollWrapX())
+				drawWithTranslate(graphics, shape, 0, 0);
+				if (scrollWrapX && !scrollWrapY)
 				{
-					drawWithTranslate(graphics, shape, translateX);
-					drawWithTranslate(graphics, shape, -translateX);
+					drawWithTranslate(graphics, shape, translateX, 0);
+					drawWithTranslate(graphics, shape, -translateX, 0);
 				}
-				if (mapData.scrollWrapY())
+				else if (!scrollWrapX && scrollWrapY)
 				{
-					drawWithTranslate(graphics, shape, translateY);
-					drawWithTranslate(graphics, shape, -translateY);
+					drawWithTranslate(graphics, shape, 0, translateY);
+					drawWithTranslate(graphics, shape, 0, -translateY);
+				}
+				else if (scrollWrapX && scrollWrapY)
+				{
+					drawWithTranslate(graphics, shape, translateX, translateY);
+					drawWithTranslate(graphics, shape, -translateX, -translateY);
 				}
 			}
 			// draw the length of the move
@@ -151,29 +158,41 @@ public class MapRouteDrawer
 				graphics.setFont(new Font("Dialog", Font.BOLD, 18));
 				final String text = String.valueOf(numTerritories - 1);
 				graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
-				if (mapData.scrollWrapX())
+				if (scrollWrapX && !scrollWrapY)
 				{
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset));
 				}
-				if (mapData.scrollWrapY())
+				else if (!scrollWrapX && scrollWrapY)
 				{
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset + translateY));
 					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset), (float) (points[numTerritories - 1].y + textyOffset - yOffset - translateY));
+				}
+				else if (scrollWrapX && scrollWrapY)
+				{
+					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset + translateY));
+					graphics.drawString(text, (float) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (float) (points[numTerritories - 1].y + textyOffset - yOffset - translateY));
 				}
 				final Image cursorImage = routeDescription.getCursorImage();
 				if (cursorImage != null)
 				{
 					graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
-					if (mapData.scrollWrapX())
+					if (scrollWrapX && !scrollWrapY)
 					{
 						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translateX), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
 						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translateX), (int) (points[numTerritories - 1].y + textyOffset - yOffset), null);
 					}
-					if (mapData.scrollWrapX())
+					else if (!scrollWrapX && scrollWrapY)
 					{
 						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset + translateY), null);
 						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset), (int) (points[numTerritories - 1].y + textyOffset - yOffset - translateY), null);
+					}
+					else if (scrollWrapX && scrollWrapY)
+					{
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset + translateX),
+									(int) (points[numTerritories - 1].y + textyOffset - yOffset + translateY), null);
+						graphics.drawImage(cursorImage, (int) (points[numTerritories - 1].x + textXOffset - xOffset - translateX),
+									(int) (points[numTerritories - 1].y + textyOffset - yOffset - translateY), null);
 					}
 				}
 			}
@@ -183,31 +202,31 @@ public class MapRouteDrawer
 		}
 	}
 	
-	private static void drawWithTranslate(final Graphics2D graphics, final Shape shape, final double translate)
+	private static void drawWithTranslate(final Graphics2D graphics, final Shape shape, final double translateX, final double translateY)
 	{
 		if (shape instanceof Ellipse2D.Double)
 		{
 			Ellipse2D.Double elipse = (Ellipse2D.Double) shape;
-			elipse = new Ellipse2D.Double(elipse.x + translate, elipse.y, elipse.width, elipse.height);
+			elipse = new Ellipse2D.Double(elipse.x + translateX, elipse.y + translateY, elipse.width, elipse.height);
 			graphics.draw(elipse);
 		}
 		if (shape instanceof Polygon)
 		{
-			((Polygon) shape).translate((int) translate, 0);
+			((Polygon) shape).translate((int) translateX, (int) translateY);
 			graphics.fill(shape);
-			((Polygon) shape).translate((int) -translate, 0);
+			((Polygon) shape).translate((int) -translateX, (int) -translateY);
 		}
 		if (shape instanceof Line2D)
 		{
 			final Line2D line = (Line2D) shape;
-			final Point2D p1 = new Point2D.Double(line.getP1().getX() + translate, line.getP1().getY());
-			final Point2D p2 = new Point2D.Double(line.getP2().getX() + translate, line.getP2().getY());
+			final Point2D p1 = new Point2D.Double(line.getP1().getX() + translateX, line.getP1().getY() + translateY);
+			final Point2D p2 = new Point2D.Double(line.getP2().getX() + translateX, line.getP2().getY() + translateY);
 			graphics.draw(new Line2D.Double(p1, p2));
 		}
 		if (shape instanceof QuadCurve2D)
 		{
 			QuadCurve2D.Double curve = (QuadCurve2D.Double) shape;
-			curve = new QuadCurve2D.Double(curve.x1 + translate, curve.y1, curve.ctrlx + translate, curve.ctrly, curve.x2 + translate, curve.y2);
+			curve = new QuadCurve2D.Double(curve.x1 + translateX, curve.y1 + translateY, curve.ctrlx + translateX, curve.ctrly + translateY, curve.x2 + translateX, curve.y2 + translateY);
 			graphics.draw(curve);
 		}
 	}

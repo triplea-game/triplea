@@ -187,13 +187,18 @@ public class ObjectivePanel extends StatPanel
 				final String[] key = fileKey.substring(gameName.length(), fileKey.length()).split(";");
 				final String value = (String) entry.getValue();
 				if (key.length != 2)
-					throw new IllegalStateException("objective.properties keys must be 2 parts: <game_name>." + ObjectiveProperties.GROUP_PROPERTY
-								+ ".<#>;player  OR  <game_name>.player;attachmentName");
+				{
+					System.err.println("objective.properties keys must be 2 parts: <game_name>." + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
+					continue;
+				}
 				if (!key[0].startsWith(ObjectiveProperties.GROUP_PROPERTY))
 					continue;
 				final String[] sorter = key[0].split("\\.");
 				if (sorter.length != 2)
-					throw new IllegalStateException("objective.properties " + ObjectiveProperties.GROUP_PROPERTY + "must have .<sorter> after it: " + key[0]);
+				{
+					System.err.println("objective.properties " + ObjectiveProperties.GROUP_PROPERTY + "must have .<sorter> after it: " + key[0]);
+					continue;
+				}
 				sectionsSorters.add(sorter[1] + ";" + key[1]);
 				sectionsUnsorted.put(key[1], Arrays.asList(value.split(";")));
 			}
@@ -214,8 +219,10 @@ public class ObjectivePanel extends StatPanel
 				final String[] key = fileKey.substring(gameName.length(), fileKey.length()).split(";");
 				final String value = (String) entry.getValue();
 				if (key.length != 2)
-					throw new IllegalStateException("objective.properties keys must be 2 parts: <game_name>." + ObjectiveProperties.GROUP_PROPERTY
-								+ ".<#>;player  OR  <game_name>.player;attachmentName");
+				{
+					System.err.println("objective.properties keys must be 2 parts: <game_name>." + ObjectiveProperties.GROUP_PROPERTY + ".<#>;player  OR  <game_name>.player;attachmentName");
+					continue;
+				}
 				if (key[0].startsWith(ObjectiveProperties.GROUP_PROPERTY))
 					continue;
 				final PlayerID player = m_data.getPlayerList().getPlayerID(key[0]);
@@ -235,14 +242,20 @@ public class ObjectivePanel extends StatPanel
 					else if (key[1].indexOf(Constants.POLITICALACTION_ATTACHMENT_PREFIX) != -1)
 						attachment = PoliticalActionAttachment.get(player, key[1], allPlayers);
 					else
-						throw new IllegalStateException("objective.properties objective must begin with: " + Constants.RULES_OBJECTIVE_PREFIX + " or " + Constants.RULES_CONDITION_PREFIX + " or "
+					{
+						System.err.println("objective.properties objective must begin with: " + Constants.RULES_OBJECTIVE_PREFIX + " or " + Constants.RULES_CONDITION_PREFIX + " or "
 									+ Constants.TRIGGER_ATTACHMENT_PREFIX + " or " + Constants.POLITICALACTION_ATTACHMENT_PREFIX);
-					if (attachment == null)
-						throw new IllegalStateException("objective.properties attachment does not exist: " + key[1]);
+						continue;
+					}
 				} catch (final Exception e)
 				{
 					// could be an old map, or an old save, so we don't want to stop the game from running.
 					System.err.println(e.getMessage());
+					continue;
+				}
+				if (attachment == null)
+				{
+					System.err.println("objective.properties attachment does not exist: " + key[1]);
 					continue;
 				}
 				if (!ICondition.class.isAssignableFrom(attachment.getClass()))
