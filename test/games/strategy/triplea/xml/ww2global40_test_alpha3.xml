@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE game SYSTEM "game.dtd">
 <game>
-        <info name="World War II Global Test Alpha 3" version="3.4"/>
+        <info name="World War II Global Test Alpha 3" version="3.5"/>
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		<triplea minimumVersion="1.6.1"/>
 		<diceSides value="6"/>
@@ -844,7 +844,6 @@
                 <connection t1="Romania" t2="Yugoslavia"/>
                 <connection t1="Poland" t2="Germany"/>
                 <connection t1="Poland" t2="114 Sea Zone"/>
-                <connection t1="Poland" t2="115 Sea Zone"/>
                 <connection t1="Germany" t2="114 Sea Zone"/>
                 <connection t1="Norway" t2="Sweden"/>
                 <connection t1="Norway" t2="126 Sea Zone"/>
@@ -7069,6 +7068,10 @@ These changes to units are things other than price/movement which you can see in
 <b>Credits to Veqryn for almost all related Engine code that allows this map to work.</b>
 <br><br><hr><br>
 <br>Change Log:
+<br>
+<br>3.5
+<br>Deleted connection between 115 Sea Zones and Poland, and changed map tiles to show a connection.
+<br>Added in Objective tab text and conditions.
 <br>
 <br>3.4
 <br>Allowed UK_Pacific to repair airfields and harbours under its control.
