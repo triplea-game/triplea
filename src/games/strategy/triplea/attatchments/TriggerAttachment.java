@@ -217,42 +217,51 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 	public static void fireTriggers(final HashSet<TriggerAttachment> triggersToBeFired, final HashMap<ICondition, Boolean> testedConditionsSoFar, final IDelegateBridge aBridge,
 				final String beforeOrAfter, final String stepName, final boolean useUses, final boolean testUses, final boolean testChance, final boolean testWhen)
 	{
+		// all triggers at this point have their conditions satisfied
+		// so we now test chance (because we test chance last), and remove any conditions that do not succeed in their dice rolls
+		final HashSet<TriggerAttachment> triggersToFire = new HashSet<TriggerAttachment>();
+		for (final TriggerAttachment t : triggersToBeFired)
+		{
+			if (testChance && !t.testChance(aBridge))
+				continue;
+			triggersToFire.add(t);
+		}
 		// Order: Notifications, Attachment Property Changes (Player, Relationship, Territory, TerritoryEffect, Unit), Relationship, AvailableTech, Tech, ProductionFrontier, ProductionEdit, Support, Purchase, UnitPlacement, Resource, Victory
 		
 		// Notifications to current player
-		triggerNotifications(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerNotifications(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		
 		// Attachment property changes
-		triggerPlayerPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerRelationshipTypePropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerTerritoryPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerTerritoryEffectPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerUnitPropertyChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerPlayerPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerRelationshipTypePropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerTerritoryPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerTerritoryEffectPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerUnitPropertyChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		
 		// Misc changes that only need to happen once (twice or more is meaningless)
-		triggerRelationshipChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerAvailableTechChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerTechChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerProductionChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerProductionFrontierEditChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerSupportChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerChangeOwnership(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerRelationshipChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerAvailableTechChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerTechChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerProductionChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerProductionFrontierEditChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerSupportChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerChangeOwnership(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		
 		// Misc changes that can happen multiple times, because they add or subtract, something from the game (and therefore can use "each")
-		triggerUnitRemoval(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerPurchase(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerUnitPlacement(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
-		triggerResourceChange(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerUnitRemoval(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerPurchase(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerUnitPlacement(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
+		triggerResourceChange(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		
 		// Activating other triggers, and trigger victory, should ALWAYS be LAST in this list!
-		triggerActivateTriggerOther(testedConditionsSoFar, triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen); // Triggers firing other triggers
+		triggerActivateTriggerOther(testedConditionsSoFar, triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen); // Triggers firing other triggers
 		
 		// Victory messages and recording of winners
-		triggerVictory(triggersToBeFired, aBridge, beforeOrAfter, stepName, useUses, testUses, testChance, testWhen);
+		triggerVictory(triggersToFire, aBridge, beforeOrAfter, stepName, useUses, testUses, false, testWhen);
 		
 		// for both 'when' and 'activated triggers', we can change the uses now. (for other triggers, we change at end of each round)
 		if (useUses)
-			setUsesForWhenTriggers(triggersToBeFired, aBridge, useUses);
+			setUsesForWhenTriggers(triggersToFire, aBridge, useUses);
 	}
 	
 	protected static void setUsesForWhenTriggers(final HashSet<TriggerAttachment> triggersToBeFired, final IDelegateBridge aBridge, final boolean useUses)

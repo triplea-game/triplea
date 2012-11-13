@@ -230,10 +230,10 @@ public abstract class AbstractTriggerAttachment extends AbstractConditionsAttach
 	
 	protected boolean testChance(final IDelegateBridge aBridge)
 	{
-		// "chance" should ALWAYS be checked last!
+		// "chance" should ALWAYS be checked last! (always check all other conditions first)
 		final int hitTarget = getInt(m_chance.split(":")[0]);
 		final int diceSides = getInt(m_chance.split(":")[1]);
-		if (hitTarget == diceSides)
+		if (hitTarget >= diceSides)
 			return true;
 		
 		final int rollResult = aBridge.getRandom(diceSides, null, DiceType.ENGINE, "Attempting the Trigger: " + MyFormatter.attachmentNameToText(this.getName())) + 1;

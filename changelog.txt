@@ -1,4 +1,8 @@
 Changes for 1.6.1.3
+* Fixed bug in Triggers that use "chance" and also have more than 1 action or event inside them, so that they will no longer test once for each action, and instead only one time total. (veqryn)
+
+* Created new tab, "Notes", which will just show the game notes, on the right side of the screen. (veqryn)
+
 * Getting the objective panel to not refresh more than every 10 seconds, and adding a "Refresh" button so that it can be manually refreshed. (veqryn)
 
 * Getting the objectives on the objective tab to show up in colors (red = true, blue = used up), and show more information: <#of uses left><T=true/F=false><#of objectives filled>. (veqryn)
