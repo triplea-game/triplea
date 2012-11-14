@@ -26,11 +26,12 @@ import java.util.StringTokenizer;
 public class ResourceLoader
 {
 	private final URLClassLoader m_loader;
+	public static String RESOURCE_FOLDER = "assets";
 	
 	public static ResourceLoader getMapResourceLoader(final String mapName)
 	{
 		final List<String> dirs = getPaths(mapName);
-		dirs.add(new File(GameRunner.getRootFolder(), "/assets").getAbsolutePath());
+		dirs.add(new File(GameRunner.getRootFolder(), RESOURCE_FOLDER).getAbsolutePath());
 		return new ResourceLoader(dirs.toArray(new String[0]));
 	}
 	

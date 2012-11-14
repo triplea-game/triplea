@@ -737,14 +737,19 @@ public class MapData
 	public Rectangle getBoundingRect(final Territory terr)
 	{
 		final String name = terr.getName();
-		return getBoundingRect(name);
+		return getBoundingRect(name, m_polys);
 	}
 	
 	public Rectangle getBoundingRect(final String name)
 	{
-		final List<Polygon> polys = getPolygons(name);
+		return getBoundingRect(name, m_polys);
+	}
+	
+	public static Rectangle getBoundingRect(final String name, final Map<String, List<Polygon>> polygons)
+	{
+		final List<Polygon> polys = polygons.get(name);
 		if (polys == null)
-			throw new IllegalStateException("No polygons found for:" + name + " All territories:" + m_polys.keySet());
+			throw new IllegalStateException("No polygons found for:" + name + " All territories:" + polygons.keySet());
 		Rectangle bounds = null;
 		for (int i = 0; i < polys.size(); i++)
 		{

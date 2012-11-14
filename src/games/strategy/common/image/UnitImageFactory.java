@@ -17,6 +17,7 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 
 import java.awt.Image;
@@ -38,7 +39,7 @@ import javax.imageio.ImageIO;
  */
 public class UnitImageFactory
 {
-	private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), "assets/units/");
+	private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), ResourceLoader.RESOURCE_FOLDER + "/units/");
 	// Image cache
 	private final Map<String, Image> m_images = new HashMap<String, Image>();
 	

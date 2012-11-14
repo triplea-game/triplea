@@ -21,6 +21,7 @@ package util.image;
 import java.io.File;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 public class FileSave
 {
@@ -47,11 +48,7 @@ public class FileSave
 	
 	public FileSave(final String title, final String name, final File currentDirectory)
 	{
-		final JFileChooser chooser = new JFileChooser();
-		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		chooser.setDialogTitle(title);
-		chooser.setCurrentDirectory(((currentDirectory == null || !currentDirectory.exists()) ? new File(System.getProperties().getProperty("user.dir")) : currentDirectory));
-		chooser.setFileFilter(new javax.swing.filechooser.FileFilter()
+		this(title, name, currentDirectory, JFileChooser.DIRECTORIES_ONLY, null, new javax.swing.filechooser.FileFilter()
 		{
 			@Override
 			public boolean accept(final File f)
@@ -65,6 +62,23 @@ public class FileSave
 				return "Folder To Save In";
 			}
 		});
+	}
+	
+	public FileSave(final String title, final int JFileChooserFileSelectionMode, final File selectedFile, final File currentDirectory)
+	{
+		this(title, null, currentDirectory, JFileChooserFileSelectionMode, selectedFile, null);
+	}
+	
+	public FileSave(final String title, final String name, final File currentDirectory, final int JFileChooserFileSelectionMode, final File selectedFile, final FileFilter fileFilter)
+	{
+		final JFileChooser chooser = new JFileChooser();
+		chooser.setFileSelectionMode(JFileChooserFileSelectionMode);
+		chooser.setDialogTitle(title);
+		if (selectedFile != null)
+			chooser.setSelectedFile(selectedFile);
+		chooser.setCurrentDirectory(((currentDirectory == null || !currentDirectory.exists()) ? new File(System.getProperties().getProperty("user.dir")) : currentDirectory));
+		if (fileFilter != null)
+			chooser.setFileFilter(fileFilter);
 		// show the file chooser dialog
 		final int r = chooser.showSaveDialog(null);
 		if (r == JFileChooser.APPROVE_OPTION)

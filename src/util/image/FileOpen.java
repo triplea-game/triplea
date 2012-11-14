@@ -57,8 +57,15 @@ public class FileOpen
 	
 	public FileOpen(final String title, final File currentDirectory, final String... extensions)
 	{
+		this(title, currentDirectory, null, extensions);
+	}
+	
+	public FileOpen(final String title, final File currentDirectory, final File selectedFile, final String... extensions)
+	{
 		final JFileChooser chooser = new JFileChooser();
 		chooser.setDialogTitle(title);
+		if (selectedFile != null)
+			chooser.setSelectedFile(selectedFile);
 		chooser.setCurrentDirectory(((currentDirectory == null || !currentDirectory.exists()) ? new File(System.getProperties().getProperty("user.dir")) : currentDirectory));
 		/*
 		 * Show only text and gif files

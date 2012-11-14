@@ -556,6 +556,36 @@ public class MapCreator extends JFrame
 		});
 		m_panel2.add(tileBreakerButton);
 		m_panel2.add(Box.createVerticalStrut(30));
+		final JButton decorationPlacerButton = new JButton("Run the Decoration Placer");
+		decorationPlacerButton.addActionListener(new AbstractAction("Run the Decoration Placer")
+		{
+			private static final long serialVersionUID = 8981678371888002420L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.DecorationPlacer");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							try
+							{
+								DecorationPlacer.main(new String[0]);
+							} catch (final Exception e)
+							{
+								e.printStackTrace();
+							}
+						}
+					}).start();
+				}
+			}
+		});
+		m_panel2.add(decorationPlacerButton);
+		m_panel2.add(Box.createVerticalStrut(30));
 		m_panel2.validate();
 	}
 	
