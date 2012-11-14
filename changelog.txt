@@ -33,7 +33,9 @@ Changes for 1.6.1.3
 
 * Deleting xml property, "Display Units as Counters", and will replace it with a map.properties property "units.stack.size", because display options should not be in the xml, only game logic should be. (veqryn)
 
-* Created new "map.properties" variables: "map.scrollWrapY", "map.showResources", and "screenshot.title.enabled". (veqryn)
+* Created new "map.properties" variable "map.scrollWrapY", and got TripleA to successfully scroll in the Y direction, as well as both X and Y at the same time seamlessly. (veqryn & frigoref)
+
+* Created new "map.properties" variables: "map.showResources", and "screenshot.title.enabled". (veqryn)
 
 * Creating a ConnectionFinder for the 'map' part of the xml. (edwin van der wal)
 

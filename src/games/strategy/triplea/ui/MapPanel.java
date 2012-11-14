@@ -631,55 +631,39 @@ public class MapPanel extends ImageScrollerLargeView
 		final Graphics2D g2d = (Graphics2D) g;
 		super.paint(g2d);
 		g2d.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * m_scale), (getImageHeight() * m_scale)));
-		final int x = m_model.getX();
-		final int y = m_model.getY();
+		int x = m_model.getX();
+		int y = m_model.getY();
+		if (x+getScaledWidth() > m_model.getMaxWidth())
+			x -= (int)m_model.getMaxWidth();
+		if (y+getScaledHeight() > m_model.getMaxHeight())
+			y -= (int)m_model.getMaxHeight();
 		final List<Tile> images = new ArrayList<Tile>();
 		final List<Tile> undrawnTiles = new ArrayList<Tile>();
 		final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINER, "Paint");
 		// make sure we use the same data for the entire paint
 		final GameData data = m_data;
 		// if the map fits on screen, dont draw any overlap
-		final boolean mapWidthFitsOnScreen = mapWidthFitsOnScreen();
-		final boolean mapHeightFitsOnScreen = mapHeightFitsOnScreen();
-		final boolean scrollWrapX = m_uiContext.getMapData().scrollWrapX();
-		final boolean scrollWrapY = m_uiContext.getMapData().scrollWrapY();
-		// handle wrapping off the screen to the left
-		if ((!mapWidthFitsOnScreen && x < 0 && scrollWrapX) /*&& !(!mapHeightFitsOnScreen && y < 0 && scrollWrapY)*/)
-		{
-			final Rectangle2D.Double leftBounds = new Rectangle2D.Double(m_model.getMaxWidth() + x, y, -x, getScaledHeight());
-			drawTiles(g2d, images, data, leftBounds, 0, 0, undrawnTiles);
+		final boolean fitAxisX = !mapWidthFitsOnScreen() && m_uiContext.getMapData().scrollWrapX();
+		final boolean fitAxisY = !mapHeightFitsOnScreen() && m_uiContext.getMapData().scrollWrapY();
+		if (fitAxisX || fitAxisY) {
+			// handle wrapping off the screen
+			if (fitAxisX && x < 0) {
+				if (fitAxisY && y < 0) {
+					final Rectangle2D.Double leftUpperBounds = new Rectangle2D.Double(m_model.getMaxWidth() + x, m_model.getMaxHeight() + y, -x, -y);
+					drawTiles(g2d, images, data, leftUpperBounds, 0, 0, undrawnTiles);
+				}
+				final Rectangle2D.Double leftBounds = new Rectangle2D.Double(m_model.getMaxWidth() + x, y, -x, getScaledHeight());
+				drawTiles(g2d, images, data, leftBounds, 0, 0, undrawnTiles);
+			}
+			if (fitAxisY && y < 0) {
+				final Rectangle2D.Double upperBounds = new Rectangle2D.Double(x, m_model.getMaxHeight() + y, getScaledWidth(), -y);
+				drawTiles(g2d, images, data, upperBounds, 0, 0, undrawnTiles);
+			}
 		}
-		if (/*!(!mapWidthFitsOnScreen && x < 0 && scrollWrapX) &&*/(!mapHeightFitsOnScreen && y < 0 && scrollWrapY))
-		{
-			final Rectangle2D.Double upperBounds = new Rectangle2D.Double(x, m_model.getMaxHeight() + y, getScaledWidth(), -y);
-			drawTiles(g2d, images, data, upperBounds, 0, 0, undrawnTiles);
-		}
-		if ((!mapWidthFitsOnScreen && x < 0 && scrollWrapX) && (!mapHeightFitsOnScreen && y < 0 && scrollWrapY))
-		{
-			final Rectangle2D.Double allBounds = new Rectangle2D.Double(m_model.getMaxWidth() + x, m_model.getMaxHeight() + y, -x, -y);
-			drawTiles(g2d, images, data, allBounds, 0, 0, undrawnTiles);
-		}
-		// handle the non overlap
+		// handle non overlap
 		final Rectangle2D.Double mainBounds = new Rectangle2D.Double(x, y, getScaledWidth(), getScaledHeight());
 		drawTiles(g2d, images, data, mainBounds, 0, 0, undrawnTiles);
-		final double leftOverlap = x + getScaledWidth() - m_model.getMaxWidth();
-		final double upperOverlap = y + getScaledHeight() - m_model.getMaxHeight();
-		// handle wrapping off the screen to the right
-		if ((!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) /*&& !(!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY)*/)
-		{
-			final Rectangle2D.Double rightBounds = new Rectangle2D.Double(0, y, leftOverlap, getScaledHeight());
-			drawTiles(g2d, images, data, rightBounds, leftOverlap, 0, undrawnTiles);
-		}
-		if (/*!(!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) &&*/(!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY))
-		{
-			final Rectangle2D.Double lowerBounds = new Rectangle2D.Double(x, 0, getScaledWidth(), upperOverlap);
-			drawTiles(g2d, images, data, lowerBounds, 0, upperOverlap, undrawnTiles);
-		}
-		if ((!mapWidthFitsOnScreen && leftOverlap > 0 && scrollWrapX) && (!mapHeightFitsOnScreen && upperOverlap > 0 && scrollWrapY))
-		{
-			final Rectangle2D.Double allBounds = new Rectangle2D.Double(0, 0, leftOverlap, upperOverlap);
-			drawTiles(g2d, images, data, allBounds, leftOverlap, upperOverlap, undrawnTiles);
-		}
+		
 		if (m_routeDescription != null && m_mouseShadowImage != null && m_routeDescription.getEnd() != null)
 		{
 			final AffineTransform t = new AffineTransform();
@@ -776,17 +760,14 @@ public class MapPanel extends ImageScrollerLargeView
 	{
 		final List<Tile> tileList = m_tileManager.getTiles(bounds);
 		final Iterator<Tile> tiles = tileList.iterator();
-		if (overlapX != 0 /*&& overlapY == 0*/)
+		bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getHeight(), bounds.getWidth());
+		if (overlapX != 0)
 		{
-			bounds = new Rectangle2D.Double(bounds.getX() + (overlapX - getScaledWidth()), bounds.getY(), bounds.getHeight(), bounds.getWidth());
+			bounds.x += overlapX - getScaledWidth();
 		}
-		if (/*overlapX == 0 &&*/overlapY != 0)
+		if (overlapY != 0)
 		{
-			bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY() + (overlapY - getScaledHeight()), bounds.getHeight(), bounds.getWidth());
-		}
-		if (overlapX != 0 && overlapY != 0)
-		{
-			bounds = new Rectangle2D.Double(bounds.getX() + (overlapX - getScaledWidth()), bounds.getY() + (overlapY - getScaledHeight()), bounds.getHeight(), bounds.getWidth());
+			bounds.y += overlapY - getScaledHeight();
 		}
 		while (tiles.hasNext())
 		{
