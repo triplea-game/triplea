@@ -633,10 +633,6 @@ public class MapPanel extends ImageScrollerLargeView
 		g2d.clip(new Rectangle2D.Double(0, 0, (getImageWidth() * m_scale), (getImageHeight() * m_scale)));
 		int x = m_model.getX();
 		int y = m_model.getY();
-		if (x+getScaledWidth() > m_model.getMaxWidth())
-			x -= (int)m_model.getMaxWidth();
-		if (y+getScaledHeight() > m_model.getMaxHeight())
-			y -= (int)m_model.getMaxHeight();
 		final List<Tile> images = new ArrayList<Tile>();
 		final List<Tile> undrawnTiles = new ArrayList<Tile>();
 		final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINER, "Paint");
@@ -646,6 +642,10 @@ public class MapPanel extends ImageScrollerLargeView
 		final boolean fitAxisX = !mapWidthFitsOnScreen() && m_uiContext.getMapData().scrollWrapX();
 		final boolean fitAxisY = !mapHeightFitsOnScreen() && m_uiContext.getMapData().scrollWrapY();
 		if (fitAxisX || fitAxisY) {
+			if (x+getScaledWidth() > m_model.getMaxWidth())
+				x -= (int)m_model.getMaxWidth();
+			if (y+getScaledHeight() > m_model.getMaxHeight())
+				y -= (int)m_model.getMaxHeight();
 			// handle wrapping off the screen
 			if (fitAxisX && x < 0) {
 				if (fitAxisY && y < 0) {

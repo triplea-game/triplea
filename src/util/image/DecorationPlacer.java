@@ -110,6 +110,7 @@ public class DecorationPlacer extends JFrame
 	private static boolean s_showFromTopLeft = true;
 	private static ImagePointType s_imagePointType = ImagePointType.decorations;
 	private static boolean s_cheapMutex = false;
+	private static boolean s_showPointNames = false;
 	
 	public static void main(final String[] args)
 	{
@@ -360,6 +361,15 @@ public class DecorationPlacer extends JFrame
 				DecorationPlacer.this.repaint();
 			}
 		});
+		final JCheckBoxMenuItem showNamesModeItem = new JCheckBoxMenuItem("Show Point Names", false);
+		showNamesModeItem.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent event)
+			{
+				s_showPointNames = showNamesModeItem.getState();
+				DecorationPlacer.this.repaint();
+			}
+		});
 		final Action clearAction = new AbstractAction("Clear all current points.")
 		{
 			private static final long serialVersionUID = -7217861953409073730L;
@@ -373,6 +383,7 @@ public class DecorationPlacer extends JFrame
 		final JMenu editMenu = new JMenu("Edit");
 		editMenu.setMnemonic('E');
 		editMenu.add(highlightAllModeItem);
+		editMenu.add(showNamesModeItem);
 		editMenu.addSeparator();
 		editMenu.add(clearAction);
 		menuBar.add(fileMenu);
@@ -448,6 +459,10 @@ public class DecorationPlacer extends JFrame
 					g.drawRect(p.x, p.y - (s_showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)), entry.getValue().getFirst().getWidth(null),
 								entry.getValue().getFirst().getHeight(null));
 				}
+				if (s_showPointNames)
+				{
+					g.drawString(entry.getKey(), p.x, p.y - (s_showFromTopLeft ? 0 : entry.getValue().getFirst().getHeight(null)));
+				}
 			}
 		}
 		if (m_currentSelectedImage != null)
@@ -457,6 +472,8 @@ public class DecorationPlacer extends JFrame
 			if (s_highlightAll)
 				g.drawRect(m_currentMousePoint.x, m_currentMousePoint.y - (s_showFromTopLeft ? 0 : m_currentSelectedImage.getSecond().getHeight(null)),
 							m_currentSelectedImage.getSecond().getWidth(null), m_currentSelectedImage.getSecond().getHeight(null));
+			if (s_showPointNames)
+				g.drawString(m_currentSelectedImage.getFirst(), m_currentMousePoint.x, m_currentMousePoint.y - (s_showFromTopLeft ? 0 : m_currentSelectedImage.getSecond().getHeight(null)));
 		}
 	}
 	
@@ -465,10 +482,13 @@ public class DecorationPlacer extends JFrame
 		final BufferedImage bufferedImage = new BufferedImage(m_image.getWidth(null), m_image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 		final Graphics g = bufferedImage.getGraphics();
 		final boolean saveHighlight = s_highlightAll;
+		final boolean saveNames = s_showPointNames;
 		s_highlightAll = false;
+		s_showPointNames = false;
 		paintToG(g);
 		g.dispose();
 		s_highlightAll = saveHighlight;
+		s_showPointNames = saveNames;
 		m_image = bufferedImage;
 	}
 	

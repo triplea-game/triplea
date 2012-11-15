@@ -1,6 +1,7 @@
 package util.image;
 
 import games.strategy.triplea.image.UnitImageFactory;
+import games.strategy.triplea.ui.MapData;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Map;
  */
 public class MapProperties
 {
+	private final String MAP_PROPERTIES_FILENAME = MapData.MAP_PROPERTIES;
 	private Map<String, Color> COLOR_MAP = new HashMap<String, Color>();
 	private double UNITS_SCALE = 0.75f;
 	private int UNITS_WIDTH = UnitImageFactory.DEFAULT_UNIT_ICON_SIZE;
