@@ -2188,7 +2188,7 @@ public class DUtils
 	public static AggregateResults CreateAttackerWinsAggregateResults(final GameData data, final Territory ter, final Collection<Unit> attacking)
 	{
 		final MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
-		battle.setUnits(new ArrayList<Unit>(), attacking, new ArrayList<Unit>(), PlayerID.NULL_PLAYERID, new ArrayList<TerritoryEffect>());
+		battle.setUnits(new ArrayList<Unit>(), attacking, new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID, new ArrayList<TerritoryEffect>());
 		final BattleResults result = new BattleResults(battle, WhoWon.ATTACKER, data);
 		final AggregateResults dWins = new AggregateResults(1);
 		dWins.addResult(result);
@@ -2198,7 +2198,7 @@ public class DUtils
 	public static AggregateResults CreateDefenderWinsAggregateResults(final GameData data, final Territory ter, final Collection<Unit> defending)
 	{
 		final MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
-		battle.setUnits(defending, new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID, new ArrayList<TerritoryEffect>());
+		battle.setUnits(defending, new ArrayList<Unit>(), new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID, new ArrayList<TerritoryEffect>());
 		final BattleResults result = new BattleResults(battle, WhoWon.DEFENDER, data);
 		final AggregateResults dWins = new AggregateResults(1);
 		dWins.addResult(result);
@@ -2208,7 +2208,7 @@ public class DUtils
 	public static AggregateResults CreateDrawAggregateResults(final GameData data, final Territory ter)
 	{
 		final MustFightBattle battle = new MustFightBattle(ter, PlayerID.NULL_PLAYERID, data, null);
-		battle.setUnits(new ArrayList<Unit>(), new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID, new ArrayList<TerritoryEffect>());
+		battle.setUnits(new ArrayList<Unit>(), new ArrayList<Unit>(), new ArrayList<Unit>(), new ArrayList<Unit>(), PlayerID.NULL_PLAYERID, new ArrayList<TerritoryEffect>());
 		final BattleResults result = new BattleResults(battle, WhoWon.DRAW, data);
 		final AggregateResults dWins = new AggregateResults(1);
 		dWins.addResult(result);

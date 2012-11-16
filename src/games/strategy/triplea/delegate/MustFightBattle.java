@@ -134,12 +134,14 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 	 * @param defender
 	 *            - defender PlayerID
 	 */
-	public void setUnits(final Collection<Unit> defending, final Collection<Unit> attacking, final Collection<Unit> bombarding, final PlayerID defender,
-				final Collection<TerritoryEffect> territoryEffects)
+	public void setUnits(final Collection<Unit> defending, final Collection<Unit> attacking, final Collection<Unit> bombarding, final Collection<Unit> amphibious,
+				final PlayerID defender, final Collection<TerritoryEffect> territoryEffects)
 	{
 		m_defendingUnits = new ArrayList<Unit>(defending);
 		m_attackingUnits = new ArrayList<Unit>(attacking);
 		m_bombardingUnits = new ArrayList<Unit>(bombarding);
+		m_amphibiousLandAttackers = new ArrayList<Unit>(amphibious);
+		m_isAmphibious = m_amphibiousLandAttackers.size() > 0;
 		m_defender = defender;
 		m_territoryEffects = territoryEffects;
 	}

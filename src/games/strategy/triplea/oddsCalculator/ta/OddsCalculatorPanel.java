@@ -85,6 +85,7 @@ public class OddsCalculatorPanel extends JPanel
 	private JComboBox m_defenderCombo;
 	private JComboBox m_SwapSidesCombo;
 	private JCheckBox m_keepOneAttackingLandUnitCombo;
+	private JCheckBox m_amphibiousCombo;
 	private JCheckBox m_landBattle;
 	private JButton m_clearButton;
 	private JLabel m_time;
@@ -301,6 +302,10 @@ public class OddsCalculatorPanel extends JPanel
 						calculator.setKeepOneAttackingLandUnit(true);
 					else
 						calculator.setKeepOneAttackingLandUnit(false);
+					if (m_landBattle.isSelected() && m_amphibiousCombo.isSelected())
+						calculator.setAmphibious(true);
+					else
+						calculator.setAmphibious(false);
 					final Collection<TerritoryEffect> territoryEffects = new ArrayList<TerritoryEffect>();
 					if (m_territoryEffectsJList != null)
 					{
@@ -448,9 +453,11 @@ public class OddsCalculatorPanel extends JPanel
 		resultsText.add(m_time, new GridBagConstraints(1, 6, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 0, 0), 0, 0));
 		resultsText.add(m_numRunsLabel, new GridBagConstraints(0, 7, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(35, 0, 0, 0), 0, 0));
 		resultsText.add(m_numRuns, new GridBagConstraints(1, 7, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(35, 5, 0, 0), 0, 0));
-		resultsText.add(m_keepOneAttackingLandUnitCombo, new GridBagConstraints(0, 8, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
-		resultsText.add(m_landBattle, new GridBagConstraints(0, 9, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
-		int row = 10;
+		int row = 8;
+		resultsText.add(m_keepOneAttackingLandUnitCombo, new GridBagConstraints(0, row++, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+		if (true)
+			resultsText.add(m_amphibiousCombo, new GridBagConstraints(0, row++, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5), 0, 0));
+		resultsText.add(m_landBattle, new GridBagConstraints(0, row++, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
 		if (m_territoryEffectsJList != null)
 			resultsText.add(new JScrollPane(m_territoryEffectsJList), new GridBagConstraints(0, row++, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 5, 5, 5), 0, 0));
 		resultsText.add(m_clearButton, new GridBagConstraints(0, row++, 2, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(25, 5, 5, 5), 0, 0));
@@ -536,11 +543,13 @@ public class OddsCalculatorPanel extends JPanel
 		m_clearButton = new JButton("Clear");
 		m_SwapSidesButton = new JButton("Swap Sides");
 		m_keepOneAttackingLandUnitCombo = new JCheckBox("One attacking land must live");
+		m_amphibiousCombo = new JCheckBox("Battle is Amphibious");
 	}
 	
 	public void setWidgetActivation()
 	{
 		m_keepOneAttackingLandUnitCombo.setEnabled(m_landBattle.isSelected());
+		m_amphibiousCombo.setEnabled(m_landBattle.isSelected());
 	}
 	
 	

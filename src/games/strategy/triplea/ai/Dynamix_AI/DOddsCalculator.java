@@ -78,6 +78,7 @@ public class DOddsCalculator
 	private Collection<Unit> m_defendingUnits = new ArrayList<Unit>();
 	private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
 	private boolean m_keepOneAttackingLandUnit = false;
+	private boolean m_amphibious = false;
 	private volatile boolean m_cancelled = false;
 	
 	public DOddsCalculator()
@@ -133,6 +134,11 @@ public class DOddsCalculator
 		m_keepOneAttackingLandUnit = aBool;
 	}
 	
+	public void setAmphibious(final boolean aBool)
+	{
+		m_amphibious = aBool;
+	}
+	
 	private AggregateResults calculate(final int count)
 	{
 		final long start = System.currentTimeMillis();
@@ -147,7 +153,7 @@ public class DOddsCalculator
 			final TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1);
 			final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, s_dataForSimulation, battleTracker);
 			battle.setHeadless(true);
-			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender, territoryEffects);
+			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, (m_amphibious ? m_attackingUnits : new ArrayList<Unit>()), m_defender, territoryEffects);
 			battle.fight(bridge);
 			rVal.addResult(new BattleResults(battle, s_dataForSimulation));
 			// Restore the game to its original state

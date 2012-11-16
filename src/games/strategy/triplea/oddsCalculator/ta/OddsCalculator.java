@@ -57,6 +57,7 @@ public class OddsCalculator
 	private Collection<Unit> m_bombardingUnits = new ArrayList<Unit>();
 	private Collection<TerritoryEffect> m_territoryEffects = new ArrayList<TerritoryEffect>();
 	private boolean m_keepOneAttackingLandUnit = false;
+	private boolean m_amphibious = false;
 	private volatile boolean m_cancelled = false;
 	
 	public OddsCalculator()
@@ -87,6 +88,11 @@ public class OddsCalculator
 		m_keepOneAttackingLandUnit = aBool;
 	}
 	
+	public void setAmphibious(final boolean aBool)
+	{
+		m_amphibious = aBool;
+	}
+	
 	private AggregateResults calculate(final int count)
 	{
 		final long start = System.currentTimeMillis();
@@ -100,7 +106,8 @@ public class OddsCalculator
 			final TripleADelegateBridge bridge = new TripleADelegateBridge(bridge1);
 			final MustFightBattle battle = new MustFightBattle(m_location, m_attacker, m_data, battleTracker);
 			battle.setHeadless(true);
-			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, m_defender, m_territoryEffects);
+			battle.isAmphibious();
+			battle.setUnits(m_defendingUnits, m_attackingUnits, m_bombardingUnits, (m_amphibious ? m_attackingUnits : new ArrayList<Unit>()), m_defender, m_territoryEffects);
 			battle.fight(bridge);
 			rVal.addResult(new BattleResults(battle, m_data));
 			// restore the game to its original state

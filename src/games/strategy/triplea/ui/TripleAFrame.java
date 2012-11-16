@@ -213,6 +213,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_uiContext.setDefaultMapDir(game.getData());
 		m_uiContext.getMapData().verify(m_data);
 		m_uiContext.setPlayerList(players);
+		this.setCursor(m_uiContext.getCursor());
 		// initialize m_editModeButtonModel before createMenuBar()
 		m_editModeButtonModel = new JToggleButton.ToggleButtonModel();
 		m_editModeButtonModel.setEnabled(false);
