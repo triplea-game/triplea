@@ -130,7 +130,7 @@ public class PointFileReaderWriter
 			out.append(" (").append(point.x).append(",").append(point.y).append(")");
 			if (keyIter.hasNext())
 			{
-				out.append("\n");
+				out.append("\r\n");
 			}
 		}
 		write(out, sink);
@@ -158,7 +158,7 @@ public class PointFileReaderWriter
 			}
 			if (keyIter.hasNext())
 			{
-				out.append("\n");
+				out.append("\r\n");
 			}
 		}
 		write(out, sink);
@@ -194,7 +194,7 @@ public class PointFileReaderWriter
 			}
 			if (keyIter.hasNext())
 			{
-				out.append("\n");
+				out.append("\r\n");
 			}
 		}
 		write(out, sink);

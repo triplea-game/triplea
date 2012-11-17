@@ -28,22 +28,22 @@ import javax.swing.JPanel;
 public class PropertiesUI extends JPanel
 {
 	private static final long serialVersionUID = 3870459799384582310L;
-	private final List<IEditableProperty> m_properties;
+	private final List<? extends IEditableProperty> m_properties;
 	private int m_nextRow;
 	private int m_labelColumn;
 	
 	public static void main(final String[] args)
 	{
 		final GameProperties properties = new GameProperties(null);
-		properties.addEditableProperty(new BooleanProperty("bool1 default false", false));
-		properties.addEditableProperty(new BooleanProperty("bool2 default true", true));
-		properties.addEditableProperty(new StringProperty("String", "default"));
-		properties.addEditableProperty(new NumberProperty("Number [10,20]", 20, 12, 15));
+		properties.addEditableProperty(new BooleanProperty("bool1 default false", null, false));
+		properties.addEditableProperty(new BooleanProperty("bool2 default true", null, true));
+		properties.addEditableProperty(new StringProperty("String", null, "default"));
+		properties.addEditableProperty(new NumberProperty("Number [10,20]", null, 20, 12, 15));
 		final Collection<String> listValues = new ArrayList<String>();
 		listValues.add("apples");
 		listValues.add("oranges");
 		listValues.add("bananas");
-		properties.addEditableProperty(new ListProperty("List", "apples", listValues));
+		properties.addEditableProperty(new ComboProperty<String>("List", null, "apples", listValues));
 		final PropertiesUI ui = new PropertiesUI(properties, true);
 		final JFrame frame = new JFrame();
 		frame.getContentPane().add(ui);
@@ -56,7 +56,7 @@ public class PropertiesUI extends JPanel
 		this(gameProperties.getEditableProperties(), editable);
 	}
 	
-	public PropertiesUI(final List<IEditableProperty> properties, final boolean editable)
+	public PropertiesUI(final List<? extends IEditableProperty> properties, final boolean editable)
 	{
 		init();
 		m_properties = properties;
@@ -70,9 +70,9 @@ public class PropertiesUI extends JPanel
 				m_nextRow = 0;
 			}
 			if (editable)
-				addItem(property.getName(), property.getEditorComponent());
+				addItem(property.getName(), property.getEditorComponent(), property.getDescription(), property.getRowsNeeded());
 			else
-				addItem(property.getName(), property.getViewComponent());
+				addItem(property.getName(), property.getViewComponent(), property.getDescription(), property.getRowsNeeded());
 		}
 	}
 	
@@ -93,7 +93,7 @@ public class PropertiesUI extends JPanel
 		add(verticalFillLabel, constraints);
 	}
 	
-	private void addItem(final String labelText, final JComponent item)
+	private void addItem(final String labelText, final JComponent item, final String tooltip, final int rowsNeeded)
 	{
 		// Create the label and its constraints
 		final JLabel label = new JLabel(labelText);
@@ -101,6 +101,7 @@ public class PropertiesUI extends JPanel
 		// labelConstraints.gridx = 0;
 		labelConstraints.gridx = m_labelColumn;
 		labelConstraints.gridy = m_nextRow;
+		labelConstraints.gridheight = rowsNeeded;
 		labelConstraints.insets = new Insets(10, 10, 0, 0);
 		labelConstraints.anchor = GridBagConstraints.NORTHEAST;
 		labelConstraints.fill = GridBagConstraints.NONE;
@@ -110,12 +111,18 @@ public class PropertiesUI extends JPanel
 		// itemConstraints.gridx = 1;
 		itemConstraints.gridx = m_labelColumn + 1;
 		itemConstraints.gridy = m_nextRow;
+		itemConstraints.gridheight = rowsNeeded;
 		itemConstraints.insets = new Insets(10, 10, 0, 10);
 		itemConstraints.weightx = 1.0;
 		itemConstraints.anchor = GridBagConstraints.WEST;
 		// itemConstraints.fill = GridBagConstraints.HORIZONTAL;
 		itemConstraints.fill = GridBagConstraints.NONE;
 		add(item, itemConstraints);
-		m_nextRow++;
+		if (tooltip != null && tooltip.length() > 0)
+		{
+			label.setToolTipText(tooltip);
+			item.setToolTipText(tooltip);
+		}
+		m_nextRow += rowsNeeded;
 	}
 }

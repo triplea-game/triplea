@@ -29,9 +29,9 @@ public class NumberProperty extends AEditableProperty
 	private final int m_min;
 	private int m_value;
 	
-	public NumberProperty(final String name, final int max, final int min, final int def)
+	public NumberProperty(final String name, final String description, final int max, final int min, final int def)
 	{
-		super(name);
+		super(name, description);
 		if (max < min)
 			throw new IllegalThreadStateException("Max must be greater than min");
 		if (def > max || def < min)

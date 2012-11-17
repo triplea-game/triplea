@@ -57,4 +57,13 @@ public interface IEditableProperty
 	 * @return
 	 */
 	public JComponent getViewComponent();
+	
+	/**
+	 * Description of what this property is, can be used for tooltip.
+	 * 
+	 * @return
+	 */
+	public String getDescription();
+	
+	public int getRowsNeeded();
 }

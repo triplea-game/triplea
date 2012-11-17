@@ -13,8 +13,11 @@
  */
 package games.strategy.engine.data.properties;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
@@ -27,9 +30,9 @@ public class StringProperty extends AEditableProperty
 	private static final long serialVersionUID = 4382624884674152208L;
 	private String m_value;
 	
-	public StringProperty(final String name, final String defaultValue)
+	public StringProperty(final String name, final String description, final String defaultValue)
 	{
-		super(name);
+		super(name, description);
 		m_value = defaultValue;
 	}
 	
@@ -43,6 +46,20 @@ public class StringProperty extends AEditableProperty
 				m_value = text.getText();
 			}
 		});
+		text.addFocusListener(new FocusListener()
+		{
+			public void focusGained(final FocusEvent e)
+			{
+			}
+			
+			public void focusLost(final FocusEvent e)
+			{
+				m_value = text.getText();
+			}
+		});
+		final Dimension ourMinimum = new Dimension(80, 20);
+		text.setMinimumSize(ourMinimum);
+		text.setPreferredSize(ourMinimum);
 		return text;
 	}
 	

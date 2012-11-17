@@ -429,6 +429,30 @@ public class MapCreator extends JFrame
 	{
 		m_panel2.removeAll();
 		m_panel2.setLayout(new BoxLayout(m_panel2, BoxLayout.PAGE_AXIS));
+		m_panel2.add(Box.createVerticalStrut(50));
+		final JButton mapPropertiesMakerButton = new JButton("Run the Map Properties Maker");
+		mapPropertiesMakerButton.addActionListener(new AbstractAction("Run the Map Properties Maker")
+		{
+			private static final long serialVersionUID = -5708777348010034859L;
+			
+			public void actionPerformed(final ActionEvent e)
+			{
+				if (s_runUtilitiesAsSeperateProcesses)
+					runUtility("util.image.MapPropertiesMaker");
+				else
+				{
+					(new Thread()
+					{
+						@Override
+						public void run()
+						{
+							MapPropertiesMaker.main(new String[0]);
+						}
+					}).start();
+				}
+			}
+		});
+		m_panel2.add(mapPropertiesMakerButton);
 		m_panel2.add(Box.createVerticalStrut(30));
 		final JButton centerPickerButton = new JButton("Run the Center Picker");
 		centerPickerButton.addActionListener(new AbstractAction("Run the Center Picker")
@@ -798,11 +822,11 @@ public class MapCreator extends JFrame
 				if (!usagePrinted)
 				{
 					usagePrinted = true;
-					System.out.println("Arguments\n"
-									+ "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\n"
-									+ "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\n"
-									+ "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\n"
-									+ "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\n");
+					System.out.println("Arguments\r\n"
+									+ "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n"
+									+ "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n"
+									+ "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n"
+									+ "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
 				}
 			}
 		}

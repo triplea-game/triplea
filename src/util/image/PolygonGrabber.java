@@ -111,7 +111,8 @@ public class PolygonGrabber extends JFrame
 		{
 			System.out.println("Map : " + mapName);
 			final PolygonGrabber grabber = new PolygonGrabber(mapName);
-			grabber.setSize(600, 550);
+			grabber.setSize(800, 600);
+			grabber.setLocationRelativeTo(null);
 			grabber.setVisible(true);
 			JOptionPane.showMessageDialog(grabber, new JLabel("<html>"
 						+ "This is the PolygonGrabber, it will create a polygons.txt file for you. "

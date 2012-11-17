@@ -253,7 +253,7 @@ public class ConnectionFinder
 		// sort for pretty xml's
 		Collections.sort(allTerritoryNames);
 		final StringBuffer output = new StringBuffer();
-		output.append("<!-- Territory Definitions -->\n");
+		output.append("<!-- Territory Definitions -->\r\n");
 		final Pattern waterPattern = Pattern.compile(waterString);
 		for (final String t : allTerritoryNames)
 		{
@@ -261,15 +261,15 @@ public class ConnectionFinder
 			if (matcher.find())
 			{
 				// <territory name="sea zone 1" water="true"/>
-				output.append("<territory name=\"" + t + "\" water=\"true\"/>\n");
+				output.append("<territory name=\"" + t + "\" water=\"true\"/>\r\n");
 			}
 			else
 			{
 				// <territory name="neutral territory 2"/>
-				output.append("<territory name=\"" + t + "\"/>\n");
+				output.append("<territory name=\"" + t + "\"/>\r\n");
 			}
 		}
-		output.append("\n");
+		output.append("\r\n");
 		return output;
 	}
 	
@@ -283,7 +283,7 @@ public class ConnectionFinder
 	private static StringBuffer convertToXML(final Map<String, Collection<String>> connections)
 	{
 		final StringBuffer output = new StringBuffer();
-		output.append("<!-- Territory Connections -->\n");
+		output.append("<!-- Territory Connections -->\r\n");
 		// sort for pretty xml's
 		final List<String> allTerritories = new ArrayList<String>(connections.keySet());
 		Collections.sort(allTerritories);
@@ -291,7 +291,7 @@ public class ConnectionFinder
 		{
 			for (final String t2 : connections.get(t1))
 			{
-				output.append("<connection t1=\"" + t1 + "\" t2=\"" + t2 + "\"/>\n");
+				output.append("<connection t1=\"" + t1 + "\" t2=\"" + t2 + "\"/>\r\n");
 			}
 		}
 		return output;

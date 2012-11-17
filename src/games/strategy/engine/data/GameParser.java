@@ -21,10 +21,10 @@ package games.strategy.engine.data;
 import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
+import games.strategy.engine.data.properties.ComboProperty;
 import games.strategy.engine.data.properties.FileProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.ListProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
@@ -991,19 +991,19 @@ public class GameParser
 			// add properties for all triplea related maps here:
 			if (!runningList.contains(Constants.AI_BONUS_INCOME_FLAT_RATE))
 			{
-				data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_FLAT_RATE, 40, -20, 0));
+				data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_FLAT_RATE, null, 40, -20, 0));
 			}
 			if (!runningList.contains(Constants.AI_BONUS_INCOME_PERCENTAGE))
 			{
-				data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_PERCENTAGE, 200, -100, 0));
+				data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_INCOME_PERCENTAGE, null, 200, -100, 0));
 			}
 			if (!runningList.contains(Constants.AI_BONUS_ATTACK))
 			{
-				data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_ATTACK, data.getDiceSides(), 0, 0));
+				data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_ATTACK, null, data.getDiceSides(), 0, 0));
 			}
 			if (!runningList.contains(Constants.AI_BONUS_DEFENSE))
 			{
-				data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_DEFENSE, data.getDiceSides(), 0, 0));
+				data.getProperties().addEditableProperty(new NumberProperty(Constants.AI_BONUS_DEFENSE, null, data.getDiceSides(), 0, 0));
 			}
 		}
 	}
@@ -1019,36 +1019,36 @@ public class GameParser
 		IEditableProperty editableProperty;
 		if (childName.equals("boolean"))
 		{
-			editableProperty = new BooleanProperty(name, Boolean.valueOf(defaultValue).booleanValue());
+			editableProperty = new BooleanProperty(name, null, Boolean.valueOf(defaultValue).booleanValue());
 		}
 		else if (childName.equals("file"))
 		{
-			editableProperty = new FileProperty(name, defaultValue);
+			editableProperty = new FileProperty(name, null, defaultValue);
 		}
-		else if (childName.equals("list"))
+		else if (childName.equals("list") || childName.equals("combo"))
 		{
 			final StringTokenizer tokenizer = new StringTokenizer(child.getAttribute("values"), ",");
 			final Collection<String> values = new ArrayList<String>();
 			while (tokenizer.hasMoreElements())
 				values.add(tokenizer.nextToken());
-			editableProperty = new ListProperty(name, defaultValue, values);
+			editableProperty = new ComboProperty<String>(name, null, defaultValue, values);
 		}
 		else if (childName.equals("number"))
 		{
 			final int max = Integer.valueOf(child.getAttribute("max")).intValue();
 			final int min = Integer.valueOf(child.getAttribute("min")).intValue();
 			final int def = Integer.valueOf(defaultValue).intValue();
-			editableProperty = new NumberProperty(name, max, min, def);
+			editableProperty = new NumberProperty(name, null, max, min, def);
 		}
 		else if (childName.equals("color"))
 		{
 			// Parse the value as a hexidecimal number
 			final int def = Integer.valueOf(defaultValue, 16).intValue();
-			editableProperty = new ColorProperty(name, def);
+			editableProperty = new ColorProperty(name, null, def);
 		}
 		else if (childName.equals("string"))
 		{
-			editableProperty = new StringProperty(name, defaultValue);
+			editableProperty = new StringProperty(name, null, defaultValue);
 		}
 		else
 		{

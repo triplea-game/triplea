@@ -43,6 +43,7 @@ public class FileProperty extends AEditableProperty
 	private static final long serialVersionUID = 6826763550643504789L;
 	/** The file associated with this property. */
 	private File m_file;
+	private final String[] m_acceptableSuffixes;
 	
 	/**
 	 * Construct a new file property.
@@ -52,12 +53,28 @@ public class FileProperty extends AEditableProperty
 	 * @param fileName
 	 *            The name of the file to be associated with this property
 	 */
-	public FileProperty(final String name, final String fileName)
+	public FileProperty(final String name, final String description, final String fileName)
 	{
-		super(name);
+		super(name, description);
 		m_file = new File(fileName);
 		if (!m_file.exists())
 			m_file = null;
+		m_acceptableSuffixes = new String[] { "png", "jpg", "jpeg", "gif" };
+	}
+	
+	public FileProperty(final String name, final String description, final File file)
+	{
+		this(name, description, file, new String[] { "png", "jpg", "jpeg", "gif" });
+	}
+	
+	public FileProperty(final String name, final String description, final File file, final String[] acceptableSuffixes)
+	{
+		super(name, description);
+		if (file.exists())
+			m_file = file;
+		else
+			m_file = null;
+		m_acceptableSuffixes = acceptableSuffixes;
 	}
 	
 	/**
@@ -92,7 +109,7 @@ public class FileProperty extends AEditableProperty
 		{
 			public void mouseClicked(final MouseEvent e)
 			{
-				final File selection = getFileUsingDialog("png", "jpg", "jpeg", "gif");
+				final File selection = getFileUsingDialog(m_acceptableSuffixes);
 				if (selection != null)
 				{
 					m_file = selection;

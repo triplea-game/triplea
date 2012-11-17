@@ -89,7 +89,8 @@ public class CenterPicker extends JFrame
 		{
 			System.out.println("Map : " + mapName);
 			final CenterPicker picker = new CenterPicker(mapName);
-			picker.setSize(600, 550);
+			picker.setSize(800, 600);
+			picker.setLocationRelativeTo(null);
 			picker.setVisible(true);
 			JOptionPane.showMessageDialog(picker, new JLabel("<html>"
 									+ "This is the CenterPicker, it will create a centers.txt file for you. "

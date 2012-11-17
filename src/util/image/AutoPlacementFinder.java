@@ -579,11 +579,11 @@ public class AutoPlacementFinder
 				if (!usagePrinted)
 				{
 					usagePrinted = true;
-					System.out.println("Arguments\n"
-									+ "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\n"
-									+ "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\n"
-									+ "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\n"
-									+ "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\n");
+					System.out.println("Arguments\r\n"
+									+ "   " + TRIPLEA_MAP_FOLDER + "=<FILE_PATH>\r\n"
+									+ "   " + TRIPLEA_UNIT_ZOOM + "=<UNIT_ZOOM_LEVEL>\r\n"
+									+ "   " + TRIPLEA_UNIT_WIDTH + "=<UNIT_WIDTH>\r\n"
+									+ "   " + TRIPLEA_UNIT_HEIGHT + "=<UNIT_HEIGHT>\r\n");
 				}
 			}
 		}

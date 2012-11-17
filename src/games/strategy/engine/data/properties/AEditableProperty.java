@@ -19,15 +19,27 @@ public abstract class AEditableProperty implements IEditableProperty, java.io.Se
 {
 	private static final long serialVersionUID = -5005729898242568847L;
 	private final String m_name;
+	private final String m_description;
 	
-	public AEditableProperty(final String name)
+	public AEditableProperty(final String name, final String description)
 	{
 		m_name = name;
+		m_description = description;
+	}
+	
+	public int getRowsNeeded()
+	{
+		return 1;
 	}
 	
 	public String getName()
 	{
 		return m_name;
+	}
+	
+	public String getDescription()
+	{
+		return m_description;
 	}
 	
 	public JComponent getViewComponent()

@@ -42,7 +42,7 @@ import games.strategy.engine.data.properties.ColorProperty;
 import games.strategy.engine.data.properties.FileProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.ListProperty;
+import games.strategy.engine.data.properties.ComboProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
@@ -226,12 +226,12 @@ public class GameDataExporter
 			typeString = "            <color/>\n";
 			value = "0x" + Integer.toHexString((((Integer) prop.getValue()).intValue())).toUpperCase();
 		}
-		if (prop.getClass().equals(ListProperty.class))
+		if (prop.getClass().equals(ComboProperty.class))
 		{
 			Field listField;
 			try
 			{
-				listField = ListProperty.class.getDeclaredField("m_possibleValues");
+				listField = ComboProperty.class.getDeclaredField("m_possibleValues");
 				listField.setAccessible(true);
 				final Iterator<String> values = ((ArrayList<String>) listField.get(prop)).iterator();
 				String possibleValues = values.next();

@@ -34,7 +34,7 @@ public class PropertiesSelector
 	 *            button options. They will be displayed in a row on the bottom
 	 * @return pressed button
 	 */
-	static public Object getButton(final JComponent parent, final ArrayList<IEditableProperty> properties, final Object... buttonOptions)
+	static public Object getButton(final JComponent parent, final String title, final ArrayList<IEditableProperty> properties, final Object... buttonOptions)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 		{
@@ -46,7 +46,7 @@ public class PropertiesSelector
 				{
 					public void run()
 					{
-						rVal.set(showDialog(parent, properties, buttonOptions));
+						rVal.set(showDialog(parent, title, properties, buttonOptions));
 					}
 				});
 			} catch (final Exception e)
@@ -57,11 +57,11 @@ public class PropertiesSelector
 		}
 		else
 		{
-			return showDialog(parent, properties, buttonOptions);
+			return showDialog(parent, title, properties, buttonOptions);
 		}
 	}
 	
-	private static Object showDialog(final JComponent parent, final ArrayList<IEditableProperty> properties, final Object... buttonOptions)
+	private static Object showDialog(final JComponent parent, final String title, final ArrayList<IEditableProperty> properties, final Object... buttonOptions)
 	{
 		final PropertiesUI panel = new PropertiesUI(properties, true);
 		final JScrollPane scroll = new JScrollPane(panel);
@@ -70,7 +70,7 @@ public class PropertiesSelector
 		
 		final JOptionPane pane = new JOptionPane(scroll, JOptionPane.PLAIN_MESSAGE);
 		pane.setOptions(buttonOptions);
-		final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(parent), "Sound Options");
+		final JDialog window = pane.createDialog(JOptionPane.getFrameForComponent(parent), title);
 		window.setVisible(true);
 		
 		return pane.getValue();

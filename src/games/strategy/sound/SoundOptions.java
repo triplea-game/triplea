@@ -68,7 +68,7 @@ public final class SoundOptions
 		final String selectAll = "All";
 		final String selectNone = "None";
 		final ArrayList<IEditableProperty> properties = m_clipPlayer.getSoundOptions(SoundPath.SoundType.TRIPLEA);
-		final Object pressedButton = PropertiesSelector.getButton(parent, properties, new Object[] { ok, selectAll, selectNone, cancel });
+		final Object pressedButton = PropertiesSelector.getButton(parent, "Sound Options", properties, new Object[] { ok, selectAll, selectNone, cancel });
 		if (pressedButton == null || pressedButton.equals(cancel))
 		{
 		}

@@ -25,9 +25,9 @@ public class BooleanProperty extends AEditableProperty
 	private static final long serialVersionUID = -7265501762343216435L;
 	private boolean mValue;
 	
-	public BooleanProperty(final String name, final boolean defaultValue)
+	public BooleanProperty(final String name, final String description, final boolean defaultValue)
 	{
-		super(name);
+		super(name, description);
 		mValue = defaultValue;
 	}
 	
