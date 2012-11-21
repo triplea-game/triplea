@@ -531,6 +531,7 @@ public class MapPropertiesMaker extends JFrame
 			{
 				final int unit_width = Integer.parseInt(widthString);
 				s_mapProperties.setUNITS_WIDTH(unit_width);
+				s_mapProperties.setUNITS_COUNTER_OFFSET_WIDTH(unit_width / 4);
 				System.out.println("Unit Width to use: " + unit_width);
 			} catch (final Exception ex)
 			{
@@ -544,6 +545,7 @@ public class MapPropertiesMaker extends JFrame
 			{
 				final int unit_height = Integer.parseInt(heightString);
 				s_mapProperties.setUNITS_HEIGHT(unit_height);
+				s_mapProperties.setUNITS_COUNTER_OFFSET_HEIGHT(unit_height);
 				System.out.println("Unit Height to use: " + unit_height);
 			} catch (final Exception ex)
 			{

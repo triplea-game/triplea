@@ -109,6 +109,6 @@ public class LobbyLoginValidatorTest extends TestCase
 		final Map<String, String> properties = new HashMap<String, String>();
 		properties.put(LobbyLoginValidator.ANONYMOUS_LOGIN, Boolean.TRUE.toString());
 		properties.put(LobbyLoginValidator.LOBBY_VERSION, LobbyServer.LOBBY_VERSION.toString());
-		assertEquals(LobbyLoginValidator.YOU_HAVE_BEEN_BANNED, new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address), properties, name, mac, address));
+		assertTrue((new LobbyLoginValidator().verifyConnection(validator.getChallengeProperties(name, address), properties, name, mac, address)).indexOf(LobbyLoginValidator.YOU_HAVE_BEEN_BANNED) != -1);
 	}
 }

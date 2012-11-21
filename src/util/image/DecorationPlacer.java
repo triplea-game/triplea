@@ -731,6 +731,7 @@ public class DecorationPlacer extends JFrame
 	{
 		final int addY = (s_imagePointType == ImagePointType.comments ? ((-ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS))
 					: (s_imagePointType == ImagePointType.pu_place ? (ImagePointType.SPACE_BETWEEN_NAMES_AND_PUS) : 0));
+		final List<String> allTerritories = new ArrayList<String>(m_centers.keySet());
 		for (final File file : s_currentImageFolderLocation.listFiles())
 		{
 			if (!file.getPath().endsWith(".png") && !file.getPath().endsWith(".gif"))
@@ -757,10 +758,21 @@ public class DecorationPlacer extends JFrame
 					}*/
 					p = new Point(p.x - (image.getWidth(null) / 2), p.y + addY + ((s_showFromTopLeft ? -1 : 1) * (image.getHeight(null) / 2)));
 					points.add(p);
+					allTerritories.remove(possibleTerritoryName);
 					System.out.println("Found point for: " + possibleTerritoryName);
 				}
 			}
+			else
+			{
+				allTerritories.remove(possibleTerritoryName);
+				
+			}
 			m_currentImagePoints.put((pointsAreExactlyTerritoryNames ? possibleTerritoryName : imageName), new Tuple<Image, List<Point>>(image, points));
+		}
+		if (!allTerritories.isEmpty() && s_imagePointType == ImagePointType.name_place)
+		{
+			JOptionPane.showMessageDialog(this, new JLabel("Territory images not found in folder: " + allTerritories));
+			System.out.println(allTerritories);
 		}
 	}
 	

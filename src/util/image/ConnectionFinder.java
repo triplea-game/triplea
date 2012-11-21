@@ -23,6 +23,7 @@
 
 package util.image;
 
+import games.strategy.util.AlphanumComparator;
 import games.strategy.util.PointFileReaderWriter;
 
 import java.awt.Dimension;
@@ -167,9 +168,9 @@ public class ConnectionFinder
 		System.out.println("Now Scanning for Connections");
 		// sort so that they are in alphabetic order (makes xml's prettier and easier to update in future)
 		final List<String> allTerritories = new ArrayList<String>(mapOfPolygons.keySet());
-		Collections.sort(allTerritories);
+		Collections.sort(allTerritories, new AlphanumComparator());
 		final List<String> allAreas = new ArrayList<String>(territoryAreas.keySet());
-		Collections.sort(allAreas);
+		Collections.sort(allAreas, new AlphanumComparator());
 		for (final String territory : allTerritories)
 		{
 			final Set<String> thisTerritoryConnections = new LinkedHashSet<String>();
@@ -251,7 +252,7 @@ public class ConnectionFinder
 	private static StringBuffer doTerritoryDefinitions(final List<String> allTerritoryNames, final String waterString)
 	{
 		// sort for pretty xml's
-		Collections.sort(allTerritoryNames);
+		Collections.sort(allTerritoryNames, new AlphanumComparator());
 		final StringBuffer output = new StringBuffer();
 		output.append("<!-- Territory Definitions -->\r\n");
 		final Pattern waterPattern = Pattern.compile(waterString);
@@ -286,7 +287,7 @@ public class ConnectionFinder
 		output.append("<!-- Territory Connections -->\r\n");
 		// sort for pretty xml's
 		final List<String> allTerritories = new ArrayList<String>(connections.keySet());
-		Collections.sort(allTerritories);
+		Collections.sort(allTerritories, new AlphanumComparator());
 		for (final String t1 : allTerritories)
 		{
 			for (final String t2 : connections.get(t1))

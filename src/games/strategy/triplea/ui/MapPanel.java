@@ -643,9 +643,9 @@ public class MapPanel extends ImageScrollerLargeView
 		final boolean fitAxisY = !mapHeightFitsOnScreen() && m_uiContext.getMapData().scrollWrapY();
 		if (fitAxisX || fitAxisY)
 		{
-			if (x + getScaledWidth() > m_model.getMaxWidth())
+			if (fitAxisX && x + (int)getScaledWidth() > m_model.getMaxWidth())
 				x -= m_model.getMaxWidth();
-			if (y + getScaledHeight() > m_model.getMaxHeight())
+			if (fitAxisY && y + (int)getScaledHeight() > m_model.getMaxHeight())
 				y -= m_model.getMaxHeight();
 			// handle wrapping off the screen
 			if (fitAxisX && x < 0)

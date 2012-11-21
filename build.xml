@@ -264,11 +264,7 @@
 		</exec>
 
 		<exec executable="cp">
-			<arg line="-r images ${app.file}/Contents/Resources/" />
-		</exec>
-
-		<exec executable="cp">
-			<arg line="-r sounds ${app.file}/Contents/Resources/" />
+			<arg line="-r assets ${app.file}/Contents/Resources/" />
 		</exec>
 
 		<exec executable="cp">
@@ -508,10 +504,9 @@
 					<fileset dir="${basedir}">
 						<include name="dice_servers/**" />
 						<include name="icons/**" />
-						<include name="images/**" />
+						<include name="assets/**" />
 						<include name="license/**" />
 						<include name="maps/**" />
-						<include name="sounds/**" />
 						<include name="old/**" />
 					</fileset>
 				</copy>
@@ -587,11 +582,7 @@
 				<include name="**/*.ico" />
 			</zipfileset>
 
-			<zipfileset dir="images" prefix="${zip.prefix}/images/">
-				<include name="**/*.*" />
-			</zipfileset>
-
-			<zipfileset dir="sounds" prefix="${zip.prefix}/sounds/">
+			<zipfileset dir="assets" prefix="${zip.prefix}/assets/">
 				<include name="**/*.*" />
 			</zipfileset>
 
@@ -717,11 +708,7 @@
 				<include name="*.properties" />
 			</zipfileset>
 
-			<zipfileset dir="images" prefix="${zip.prefix}/images/">
-				<include name="**/*.*" />
-			</zipfileset>
-
-			<zipfileset dir="sounds" prefix="${zip.prefix}/sounds/">
+			<zipfileset dir="assets" prefix="${zip.prefix}/assets/">
 				<include name="**/*.*" />
 			</zipfileset>
 
