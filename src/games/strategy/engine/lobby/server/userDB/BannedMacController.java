@@ -13,6 +13,8 @@
  */
 package games.strategy.engine.lobby.server.userDB;
 
+import games.strategy.util.Tuple;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,7 +49,7 @@ public class BannedMacController
 	 */
 	public void addBannedMac(final String mac, final Date banTill)
 	{
-		if (isMacBanned(mac))
+		if (isMacBanned(mac).getFirst())
 		{
 			removeBannedMac(mac);
 		}
@@ -108,10 +110,11 @@ public class BannedMacController
 	 * Is the given mac banned? This may have the side effect of removing from the
 	 * database any mac's whose ban has expired
 	 */
-	public boolean isMacBanned(final String mac)
+	public Tuple<Boolean, Timestamp> isMacBanned(final String mac)
 	{
 		boolean found = false;
 		boolean expired = false;
+		Timestamp banTill = null;
 		final String sql = "select mac, ban_till from banned_macs where mac = ?";
 		final Connection con = Database.getConnection();
 		try
@@ -123,7 +126,7 @@ public class BannedMacController
 			// If the ban has expired, allow the mac
 			if (found)
 			{
-				final Timestamp banTill = rs.getTimestamp(2);
+				banTill = rs.getTimestamp(2);
 				if (banTill != null && banTill.getTime() < System.currentTimeMillis())
 				{
 					s_logger.fine("Ban expired for:" + mac);
@@ -143,8 +146,8 @@ public class BannedMacController
 		if (expired)
 		{
 			removeBannedMac(mac);
-			return false;
+			return new Tuple<Boolean, Timestamp>(false, banTill);
 		}
-		return found;
+		return new Tuple<Boolean, Timestamp>(found, banTill);
 	}
 }

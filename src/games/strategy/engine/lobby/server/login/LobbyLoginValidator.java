@@ -9,21 +9,25 @@ import games.strategy.engine.lobby.server.userDB.BannedUsernameController;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
 import games.strategy.net.ILoginValidator;
 import games.strategy.util.MD5Crypt;
+import games.strategy.util.Tuple;
 import games.strategy.util.Version;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class LobbyLoginValidator implements ILoginValidator
 {
-	static final String THATS_NOT_A_NICE_NAME = "That's not a nice name";
-	static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby";
-	static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address";
-	static final String INVALID_MAC = "Invalid mac address";
+	static final String THATS_NOT_A_NICE_NAME = "That's not a nice name.";
+	static final String YOU_HAVE_BEEN_BANNED = "You have been banned from the TripleA lobby.";
+	static final String USERNAME_HAS_BEEN_BANNED = "This username is banned, please create a new one.";
+	static final String UNABLE_TO_OBTAIN_MAC = "Unable to obtain mac address.";
+	static final String INVALID_MAC = "Invalid mac address.";
 	private final static Logger s_logger = Logger.getLogger(LobbyLoginValidator.class.getName());
 	public static final String LOBBY_VERSION = "LOBBY_VERSION";
 	public static final String REGISTER_NEW_USER_KEY = "REGISTER_USER";
@@ -83,14 +87,11 @@ public class LobbyLoginValidator implements ILoginValidator
 				return THATS_NOT_A_NICE_NAME;
 			}
 		}
-		if (new BannedUsernameController().isUsernameBanned(clientName))
-		{
-			return YOU_HAVE_BEEN_BANNED;
-		}
 		final String remoteIp = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
-		if (new BannedIpController().isIpBanned(remoteIp))
+		final Tuple<Boolean, Timestamp> ipBanned = new BannedIpController().isIpBanned(remoteIp);
+		if (ipBanned.getFirst())
 		{
-			return YOU_HAVE_BEEN_BANNED;
+			return YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(ipBanned.getSecond());
 		}
 		if (hashedMac == null)
 		{
@@ -100,9 +101,16 @@ public class LobbyLoginValidator implements ILoginValidator
 		{
 			return INVALID_MAC; // Must have been tampered with
 		}
-		if (new BannedMacController().isMacBanned(hashedMac))
+		final Tuple<Boolean, Timestamp> macBanned = new BannedMacController().isMacBanned(hashedMac);
+		if (macBanned.getFirst())
 		{
-			return YOU_HAVE_BEEN_BANNED;
+			return YOU_HAVE_BEEN_BANNED + " " + getBanDurationBreakdown(macBanned.getSecond());
+		}
+		// test for username ban after testing normal bans, because if it is only a username ban then the user should know they can change their name
+		final Tuple<Boolean, Timestamp> usernameBanned = new BannedUsernameController().isUsernameBanned(clientName);
+		if (usernameBanned.getFirst())
+		{
+			return USERNAME_HAS_BEEN_BANNED + " " + getBanDurationBreakdown(usernameBanned.getSecond());
 		}
 		if (propertiesReadFromClient.containsKey(REGISTER_NEW_USER_KEY))
 		{
@@ -116,6 +124,38 @@ public class LobbyLoginValidator implements ILoginValidator
 		{
 			return validatePassword(propertiesSentToClient, propertiesReadFromClient, clientName);
 		}
+	}
+	
+	static String getBanDurationBreakdown(final Timestamp stamp)
+	{
+		if (stamp == null)
+			return "Banned Forever";
+		long millis = stamp.getTime() - System.currentTimeMillis();
+		if (millis < 0)
+			return "Ban time left: 1 Minute";
+		final long days = TimeUnit.MILLISECONDS.toDays(millis);
+		millis -= TimeUnit.DAYS.toMillis(days);
+		final long hours = TimeUnit.MILLISECONDS.toHours(millis);
+		millis -= TimeUnit.HOURS.toMillis(hours);
+		final long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) + 1; // just rounding the seconds up, who cares
+		final StringBuilder sb = new StringBuilder(64);
+		sb.append("Ban time left: ");
+		if (days > 0)
+		{
+			sb.append(days);
+			sb.append(" Days ");
+		}
+		if (hours > 0)
+		{
+			sb.append(hours);
+			sb.append(" Hours ");
+		}
+		if (minutes > 0)
+		{
+			sb.append(minutes);
+			sb.append(" Minutes ");
+		}
+		return (sb.toString());
 	}
 	
 	private List<String> getBadWords()

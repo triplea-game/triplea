@@ -13,6 +13,8 @@
  */
 package games.strategy.engine.lobby.server.userDB;
 
+import games.strategy.util.Tuple;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,7 +49,7 @@ public class BannedUsernameController
 	 */
 	public void addBannedUsername(final String username, final Date banTill)
 	{
-		if (isUsernameBanned(username))
+		if (isUsernameBanned(username).getFirst())
 		{
 			removeBannedUsername(username);
 		}
@@ -108,10 +110,11 @@ public class BannedUsernameController
 	 * Is the given username banned? This may have the side effect of removing from the
 	 * database any username's whose ban has expired
 	 */
-	public boolean isUsernameBanned(final String username)
+	public Tuple<Boolean, Timestamp> isUsernameBanned(final String username)
 	{
 		boolean found = false;
 		boolean expired = false;
+		Timestamp banTill = null;
 		final String sql = "select username, ban_till from banned_usernames where username = ?";
 		final Connection con = Database.getConnection();
 		try
@@ -123,7 +126,7 @@ public class BannedUsernameController
 			// If the ban has expired, allow the username
 			if (found)
 			{
-				final Timestamp banTill = rs.getTimestamp(2);
+				banTill = rs.getTimestamp(2);
 				if (banTill != null && banTill.getTime() < System.currentTimeMillis())
 				{
 					s_logger.fine("Ban expired for:" + username);
@@ -143,8 +146,8 @@ public class BannedUsernameController
 		if (expired)
 		{
 			removeBannedUsername(username);
-			return false;
+			return new Tuple<Boolean, Timestamp>(false, banTill);
 		}
-		return found;
+		return new Tuple<Boolean, Timestamp>(found, banTill);
 	}
 }

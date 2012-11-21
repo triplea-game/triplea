@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Added message on how long a ban lasts for, when a user tries to reconnect to the lobby. (veqryn)
+
 * Created ui wrapper for properties, and allowed most to be editable. (veqryn)
 
 * Created new map utility, "MapPropertiesMaker", which will make the "map.properties" file. (veqryn)

@@ -26,15 +26,15 @@ public class BannedIpControllerTest extends TestCase
 		final BannedIpController controller = new BannedIpController();
 		final String ip = Util.createUniqueTimeStamp();
 		controller.addBannedIp(ip);
-		assertTrue(controller.isIpBanned(ip));
+		assertTrue(controller.isIpBanned(ip).getFirst());
 		controller.removeBannedIp(ip);
-		assertFalse(controller.isIpBanned(ip));
+		assertFalse(controller.isIpBanned(ip).getFirst());
 	}
 	
 	public void testNonBannedIp()
 	{
 		final BannedIpController controller = new BannedIpController();
-		assertFalse(controller.isIpBanned(Util.createUniqueTimeStamp()));
+		assertFalse(controller.isIpBanned(Util.createUniqueTimeStamp()).getFirst());
 	}
 	
 	public void testBanExpires()
@@ -43,7 +43,7 @@ public class BannedIpControllerTest extends TestCase
 		final String ip = Util.createUniqueTimeStamp();
 		final Date expire = new Date(System.currentTimeMillis() - 5000);
 		controller.addBannedIp(ip, expire);
-		assertFalse(controller.isIpBanned(ip));
+		assertFalse(controller.isIpBanned(ip).getFirst());
 	}
 	
 	public void testUpdate()
@@ -53,6 +53,6 @@ public class BannedIpControllerTest extends TestCase
 		final Date expire = new Date(System.currentTimeMillis() - 5000);
 		controller.addBannedIp(ip, expire);
 		controller.addBannedIp(ip);
-		assertTrue(controller.isIpBanned(ip));
+		assertTrue(controller.isIpBanned(ip).getFirst());
 	}
 }

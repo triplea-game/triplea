@@ -13,6 +13,8 @@
  */
 package games.strategy.engine.lobby.server.userDB;
 
+import games.strategy.util.Tuple;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,7 +49,7 @@ public class BannedIpController
 	 */
 	public void addBannedIp(final String ip, final Date banTill)
 	{
-		if (isIpBanned(ip))
+		if (isIpBanned(ip).getFirst())
 		{
 			removeBannedIp(ip);
 		}
@@ -108,10 +110,11 @@ public class BannedIpController
 	 * Is the given ip banned? This may have the side effect of removing from the
 	 * database any ip's whose ban has expired
 	 */
-	public boolean isIpBanned(final String ip)
+	public Tuple<Boolean, Timestamp> isIpBanned(final String ip)
 	{
 		boolean found = false;
 		boolean expired = false;
+		Timestamp banTill = null;
 		final String sql = "select ip, ban_till from banned_ips where ip = ?";
 		final Connection con = Database.getConnection();
 		try
@@ -123,7 +126,7 @@ public class BannedIpController
 			// if the ban has expird, allow the ip
 			if (found)
 			{
-				final Timestamp banTill = rs.getTimestamp(2);
+				banTill = rs.getTimestamp(2);
 				if (banTill != null && banTill.getTime() < System.currentTimeMillis())
 				{
 					s_logger.fine("Ban expired for:" + ip);
@@ -143,8 +146,8 @@ public class BannedIpController
 		if (expired)
 		{
 			removeBannedIp(ip);
-			return false;
+			return new Tuple<Boolean, Timestamp>(false, banTill);
 		}
-		return found;
+		return new Tuple<Boolean, Timestamp>(found, banTill);
 	}
 }
