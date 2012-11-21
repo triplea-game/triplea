@@ -140,7 +140,7 @@ public class AirMovementValidator
 		{
 			if (landAirOnNewCarriers && !carriersInProductionQueue.isEmpty())
 			{
-				if (Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(data, player).match(t))
+				if (Matches.TerritoryIsWater.match(t) && Matches.territoryHasOwnedAtBeginningOfTurnIsFactoryOrCanProduceUnitsNeighbor(data, player).match(t))
 				{
 					// TODO: Here we are assuming that this factory can produce all of the carriers. Actually it might not be able to produce any carriers (because of complex requires units coding) or because of unit damage or maximum production.
 					// TODO: Here we are also assuming that the first territory we find that has an adjacent factory is the closest one in terms of unit movement. We have sorted the list of territories so this IS the closest in terms of steps, but each unit may have specific movement allowances for different terrain or some bullshit like that.

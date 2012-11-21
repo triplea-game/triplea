@@ -3142,7 +3142,7 @@ public class UnitAttachment extends DefaultAttachment
 			else if (m_isAAforFlyOverOnly)
 				stats.append("Anti-Air for FlyOver, ");
 			if (m_maxAAattacks > -1)
-				stats.append(m_maxAAattacks + " AA Attacks");
+				stats.append(m_maxAAattacks + " AA Attacks, ");
 		}
 		if (m_isRocket && playerHasRockets(player))
 		{
