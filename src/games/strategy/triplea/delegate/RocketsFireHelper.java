@@ -183,7 +183,7 @@ public class RocketsFireHelper
 		final Collection<Territory> possible = data.getMap().getNeighbors(territory, maxDistance);
 		final Set<Territory> hasFactory = new HashSet<Territory>();
 		final CompositeMatchAnd<Territory> allowed = new CompositeMatchAnd<Territory>(Matches.territoryAllowsRocketsCanFlyOver(player, data));
-		if (isRocketsCanFlyOverImpassables(data))
+		if (!isRocketsCanFlyOverImpassables(data))
 			allowed.add(Matches.TerritoryIsNotImpassable);
 		for (final Territory current : possible)
 		{
