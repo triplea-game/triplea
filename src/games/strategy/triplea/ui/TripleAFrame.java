@@ -305,7 +305,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		}
 		else
 		{
-			m_tabsPanel.addTab("Objectives", m_objectivePanel);
+			m_tabsPanel.addTab(m_objectivePanel.getName(), m_objectivePanel);
 		}
 		m_notesPanel = new NotesPanel(m_data);
 		m_tabsPanel.addTab("Notes", m_notesPanel);
@@ -1580,7 +1580,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_tabsPanel.add("Stats", m_statsPanel);
 		m_tabsPanel.add("Economy", m_economyPanel);
 		if (m_objectivePanel != null && !m_objectivePanel.isEmpty())
-			m_tabsPanel.add("Objectives", m_objectivePanel);
+			m_tabsPanel.add(m_objectivePanel.getName(), m_objectivePanel);
 		m_tabsPanel.add("Notes", m_notesPanel);
 		m_tabsPanel.add("Territory", m_details);
 		if (getEditMode())
@@ -1681,7 +1681,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_tabsPanel.add("Stats", m_statsPanel);
 		m_tabsPanel.add("Economy", m_economyPanel);
 		if (m_objectivePanel != null && !m_objectivePanel.isEmpty())
-			m_tabsPanel.add("Objectives", m_objectivePanel);
+			m_tabsPanel.add(m_objectivePanel.getName(), m_objectivePanel);
 		m_tabsPanel.add(m_notesPanel);
 		m_tabsPanel.add("Territory", m_details);
 		if (getEditMode())

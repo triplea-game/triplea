@@ -89,6 +89,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 			
 			public void actionPerformed(final ActionEvent event)
 			{
+				updateHistoryLog();
 				String message = "";
 				final IForumPoster turnSummaryMsgr = m_poster.getForumPoster();
 				

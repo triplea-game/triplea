@@ -95,6 +95,12 @@ public class ObjectivePanel extends StatPanel
 		m_dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
 	}
 	
+	@Override
+	public String getName()
+	{
+		return ObjectiveProperties.getInstance().getProperty(ObjectiveProperties.OBJECTIVES_PANEL_NAME, "Objectives");
+	}
+	
 	public boolean isEmpty()
 	{
 		return m_statsObjective.isEmpty();
@@ -539,6 +545,7 @@ class ObjectiveProperties
 	// Filename
 	private static final String PROPERTY_FILE = "objectives.properties";
 	static final String GROUP_PROPERTY = "TABLEGROUP";
+	static final String OBJECTIVES_PANEL_NAME = "Objectives.Panel.Name";
 	private static ObjectiveProperties s_op = null;
 	private static long s_timestamp = 0;
 	private final Properties m_properties = new Properties();
@@ -575,7 +582,12 @@ class ObjectiveProperties
 	
 	public String getProperty(final String objectiveKey)
 	{
-		return m_properties.getProperty(objectiveKey, "Not Found In objectives.properties");
+		return getProperty(objectiveKey, "Not Found In objectives.properties");
+	}
+	
+	public String getProperty(final String objectiveKey, final String defaultValue)
+	{
+		return m_properties.getProperty(objectiveKey, defaultValue);
 	}
 	
 	public Set<Entry<Object, Object>> entrySet()
