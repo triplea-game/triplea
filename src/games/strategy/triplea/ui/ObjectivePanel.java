@@ -261,15 +261,32 @@ public class ObjectivePanel extends StatPanel
 				if (!ICondition.class.isAssignableFrom(attachment.getClass()))
 					throw new IllegalStateException("(wtf??) attachment is not an ICondition: " + attachment.getName());
 				// find which section
-				for (final Entry<String, List<String>> sectionEntry : m_sections.entrySet())
+				boolean found = false;
+				if (m_sections.containsKey(player.getName()))
 				{
-					if (sectionEntry.getValue().contains(key[1]))
+					if (m_sections.get(player.getName()).contains(key[1]))
 					{
-						final Map<ICondition, String> map = statsObjectiveUnsorted.get(sectionEntry.getKey());
+						final Map<ICondition, String> map = statsObjectiveUnsorted.get(player.getName());
 						if (map == null)
-							throw new IllegalStateException("objective.properties group has nothing: " + sectionEntry.getKey());
+							throw new IllegalStateException("objective.properties group has nothing: " + player.getName());
 						map.put((ICondition) attachment, value);
-						statsObjectiveUnsorted.put(sectionEntry.getKey(), map);
+						statsObjectiveUnsorted.put(player.getName(), map);
+						found = true;
+					}
+				}
+				if (!found)
+				{
+					for (final Entry<String, List<String>> sectionEntry : m_sections.entrySet())
+					{
+						if (sectionEntry.getValue().contains(key[1]))
+						{
+							final Map<ICondition, String> map = statsObjectiveUnsorted.get(sectionEntry.getKey());
+							if (map == null)
+								throw new IllegalStateException("objective.properties group has nothing: " + sectionEntry.getKey());
+							map.put((ICondition) attachment, value);
+							statsObjectiveUnsorted.put(sectionEntry.getKey(), map);
+							break;
+						}
 					}
 				}
 			}
