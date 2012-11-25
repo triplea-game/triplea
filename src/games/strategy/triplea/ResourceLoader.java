@@ -37,6 +37,8 @@ public class ResourceLoader
 	
 	private static List<String> getPaths(final String mapName)
 	{
+		if (mapName == null)
+			return new ArrayList<String>();
 		// find the primary directory/file
 		final String dirName = File.separator + mapName;
 		final String zipName = dirName + ".zip";
