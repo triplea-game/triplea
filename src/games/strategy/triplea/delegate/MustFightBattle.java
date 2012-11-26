@@ -1214,9 +1214,15 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			oneTerritory.add(m_battleSite);
 			return oneTerritory;
 		}
-		// its possible that a sub retreated to a territory we came from,
-		// if so we can no longer retreat there
-		Collection<Territory> possible = Match.getMatches(m_attackingFrom, Matches.territoryHasNoEnemyUnits(m_attacker, m_data));
+		// its possible that a sub retreated to a territory we came from, if so we can no longer retreat there
+		// or if we are moving out of a territory containing enemy units, we can not retreat back there
+		final CompositeMatchAnd<Unit> enemyUnitsThatPreventRetreat = new CompositeMatchAnd<Unit>(Matches.enemyUnit(m_attacker, m_data), Matches.UnitIsNotInfrastructure, Matches
+					.unitIsBeingTransported().invert(), Matches.unitIsNotSubmerged(m_data));
+		if (games.strategy.triplea.Properties.getIgnoreSubInMovement(m_data))
+			enemyUnitsThatPreventRetreat.add(Matches.UnitIsNotSub);
+		if (games.strategy.triplea.Properties.getIgnoreTransportInMovement(m_data))
+			enemyUnitsThatPreventRetreat.add(Matches.UnitIsNotTransportButCouldBeCombatTransport);
+		Collection<Territory> possible = Match.getMatches(m_attackingFrom, Matches.territoryHasUnitsThatMatch(enemyUnitsThatPreventRetreat).invert());
 		// In WW2V2 and WW2V3 we need to filter out territories where only planes
 		// came from since planes cannot define retreat paths
 		if (isWW2V2() || isWW2V3())
@@ -2515,13 +2521,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 						new BattleResults(this, m_data), 0);
 	}
 	
-	/**
+	/*
 	 * If the attacker retreats, and this is a sea zone, then any attacking fighters with
 	 * 0 movement get a 1 movement bonus to allow them to retreat.
 	 * 
 	 * This handles the case where fighters will die if they have 0 movement when they arrive
 	 * in the attacking zone, but they arrived with a carrier which retreated
-	 */
 	private void ensureAttackingAirCanRetreat(final IDelegateBridge bridge)
 	{
 		final CompositeMatch<Unit> canLandOnCarrier = new CompositeMatchAnd<Unit>();
@@ -2535,7 +2540,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			bridge.addChange(MoveDelegate.ensureCanMoveOneSpaceChange(unit));
 		}
 	}
-	
+	 */
+
 	/**
 	 * The defender has won, but there may be defending fighters that cant stay
 	 * in the sea zone due to insufficient carriers.
