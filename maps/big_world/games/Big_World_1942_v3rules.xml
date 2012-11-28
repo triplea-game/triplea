@@ -3786,7 +3786,7 @@
 
 === National Objectives === &lt;br&gt;
 ==Russians== &lt;br&gt;
-+5 if no non-Soviet Allied units on Russian territories&lt;br&gt;
++5 if no non-Soviet Allied units on Russian territories and Russia controls Archangel'sk&lt;br&gt;
 +5 if Allied control 5 in 7 of: Novgorod, Western Russia, Southern Russia, Baltic States, Belorussia, Ukraine, Eastern Poland&lt;br&gt;
 +5 if Allies control 4 of: Norway, Finland, Western Poland, Hungary-Romania, Austria-Czechoslovakia, Balkans&lt;br&gt;
 &lt;br&gt;
@@ -3796,13 +3796,13 @@
 +5 if Axis control Leningrad or Stalingrad&lt;br&gt;
 &lt;br&gt;
 ==British==&lt;br&gt;
++5 if Allies control 2 of: New Guinea, French Indo-China, Thai-Malay, Sumatra, Java, Iwo Jima, Northern Japan, Southern Japan, Okinawa&lt;br&gt;
 +5 if Allies control all of: Eastern Canada, Gibraltar, Egypt, Bombay, New South Wales, Southern Africa&lt;br&gt;
 +5 if Allies control 1 of: France, Vichy France, Balkans, Macedonia&lt;br&gt;
-+5 if Allies control 2 of: New Guinea, French Indo-China, Thai-Malay, Sumatra, Java, Iwo Jima, Northern Japan, Southern Japan, Okinawa&lt;br&gt;
 &lt;br&gt;
 ==Italians==&lt;br&gt;
-+5 if no Allied surface ships in Mediteranean and axis control all of: Italy, Sicily, Macedonia, Balkans, Morocco, Algeria, Libya&lt;br&gt;
 +5 if Axis control 4 of: Egypt, Syria, France, Vichy France, Gibraltar&lt;br&gt;
++5 if no Allied surface ships in Mediteranean and axis control all of: Italy, Sicily, Macedonia, Balkans, Morocco, Algeria, Libya&lt;br&gt;
 &lt;br&gt;
 ==Chinese==&lt;br&gt;
 +5 if Allies control all of: Western Sinkiang, Eastern Sinkiang, Kansu, Szechwan&lt;br&gt;
@@ -3814,11 +3814,11 @@
 +5 if Axis control 2 of: Hawaiian Islands, Midway Island, New South Wales, Queensland, Bombay, Calcutta&lt;br&gt;
 &lt;br&gt;
 ==Americans==&lt;br&gt;
-+5 if Allies control 5 territories of US main land (excluding Alaska). &lt;br&gt;
 +5 if Allies control France and Vichy France&lt;br&gt;
-+5 if Allies control all of: Morocco, Algeria, Libya, Egypt, Sicily&lt;br&gt;
 +5 if Allies control North and South Philippines&lt;br&gt;
++5 if Allies control 5 territories of US main land (excluding Alaska). &lt;br&gt;
 +5 if Allies control 5 of 7 Islands: Hawaiian Islands, Midway Island, Wake, Solomon Islands, Marshall Islands, Guam, New Guinea&lt;br&gt;
++5 if Allies control all of: Morocco, Algeria, Libya, Egypt, Sicily&lt;br&gt;
 &lt;br&gt;
 === Unit definitions === &lt;br&gt;AA50 Cost structure with slight modifications.  &lt;br&gt; 
 Unit Attack-Defence-Movement--trasport/carrier space--PU cost-notes&lt;br&gt;
