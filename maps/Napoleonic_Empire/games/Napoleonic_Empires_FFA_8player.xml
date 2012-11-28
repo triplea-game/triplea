@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Napoleonic Empires: FFA 8 Player" version="4.0.8"/>
+        <info name="Napoleonic Empires: FFA 8 Player" version="4.0.9"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -6822,7 +6822,7 @@
  			<!-- Austrian Unit Placements -->
 <unitPlacement unitType="General" territory="Austria" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Capital" territory="Austria" quantity="1" owner="AustrianEmpire"/>
-<unitPlacement unitType="Mortella_Tower" territory="Austria" quantity="1" owner="AustrianEmpire"/>
+<unitPlacement unitType="Mortella_Tower" territory="Austria" quantity="2" owner="AustrianEmpire"/>
 <unitPlacement unitType="Artillery" territory="Austria" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Dragoons" territory="Austria" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Chasseurs" territory="Austria" quantity="1" owner="AustrianEmpire"/>
@@ -7077,7 +7077,8 @@
 
 <unitPlacement unitType="Cutter" territory="SZ52" quantity="1"/>
 <unitPlacement unitType="Corvette" territory="SZ52" quantity="1"/>
-<unitPlacement unitType="Cutter" territory="SZ72" quantity="1"/>
+<unitPlacement unitType="Cutter" territory="SZ72" quantity="2"/>
+<unitPlacement unitType="Brigantine" territory="SZ72" quantity="2"/>
 
 <unitPlacement unitType="Cutter" territory="SZ105" quantity="1"/>
 <unitPlacement unitType="Cutter" territory="SZ107" quantity="1"/>

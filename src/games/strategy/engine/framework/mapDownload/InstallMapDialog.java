@@ -422,7 +422,7 @@ public class InstallMapDialog extends JDialog
 	{
 		final Frame parentFrame = JOptionPane.getFrameForComponent(parent);
 		final InstallMapDialog dia = new InstallMapDialog(parentFrame, games);
-		dia.setSize(800, 614);
+		dia.setSize(800, 620);
 		dia.setLocationRelativeTo(parentFrame);
 		dia.setVisible(true);
 	}

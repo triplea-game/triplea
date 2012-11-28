@@ -107,7 +107,7 @@ public class NewGameChooser extends JDialog
 	public static NewGameChooserEntry chooseGame(final Frame parent, final String defaultGameName)
 	{
 		final NewGameChooser chooser = new NewGameChooser(parent);
-		chooser.setSize(780, 570);
+		chooser.setSize(800, 600);
 		chooser.setLocationRelativeTo(parent);
 		if (defaultGameName != null)
 		{

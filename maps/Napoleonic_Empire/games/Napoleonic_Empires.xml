@@ -3,7 +3,7 @@
 <!DOCTYPE game SYSTEM "game.dtd">
 
 <game>
-        <info name="Napoleonic Empires" version="4.0.7"/>
+        <info name="Napoleonic Empires" version="4.0.9"/>
         
         <loader javaClass="games.strategy.triplea.TripleA"/>
 		
@@ -6744,7 +6744,7 @@
  			<!-- Austrian Unit Placements -->
 <unitPlacement unitType="General" territory="Austria" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Capital" territory="Austria" quantity="1" owner="AustrianEmpire"/>
-<unitPlacement unitType="Mortella_Tower" territory="Austria" quantity="1" owner="AustrianEmpire"/>
+<unitPlacement unitType="Mortella_Tower" territory="Austria" quantity="2" owner="AustrianEmpire"/>
 <unitPlacement unitType="Artillery" territory="Austria" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Dragoons" territory="Austria" quantity="1" owner="AustrianEmpire"/>
 <unitPlacement unitType="Chasseurs" territory="Austria" quantity="1" owner="AustrianEmpire"/>

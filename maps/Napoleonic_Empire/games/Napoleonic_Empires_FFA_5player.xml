@@ -4711,6 +4711,7 @@
 <unitPlacement unitType="Artillery" territory="Ingria" quantity="2" owner="Russia"/>
 <unitPlacement unitType="Dragoons" territory="Ingria" quantity="1" owner="Russia"/>
 <unitPlacement unitType="Chasseurs" territory="Ingria" quantity="2" owner="Russia"/>
+<unitPlacement unitType="Mortella_Tower" territory="Ingria" quantity="1" owner="Russia"/>
 <unitPlacement unitType="Howitzer" territory="Novgorod" quantity="1" owner="Russia"/>
 <unitPlacement unitType="Fusiliers" territory="Novgorod" quantity="1" owner="Russia"/>
 <unitPlacement unitType="Chasseurs" territory="Novgorod" quantity="1" owner="Russia"/>
@@ -4739,7 +4740,7 @@
  			<!-- OttomanEmpire Unit Placements -->
 <unitPlacement unitType="General" territory="Constantinople" quantity="1" owner="OttomanEmpire"/>
 <unitPlacement unitType="Capital" territory="Constantinople" quantity="1" owner="OttomanEmpire"/>
-<unitPlacement unitType="Fortress" territory="Constantinople" quantity="1" owner="OttomanEmpire"/>
+<unitPlacement unitType="Fortress" territory="Constantinople" quantity="2" owner="OttomanEmpire"/>
 <unitPlacement unitType="Fusiliers" territory="Constantinople" quantity="2" owner="OttomanEmpire"/>
 <unitPlacement unitType="Chasseurs" territory="Constantinople" quantity="2" owner="OttomanEmpire"/>
 <unitPlacement unitType="Howitzer" territory="Constantinople" quantity="2" owner="OttomanEmpire"/>
@@ -4916,8 +4917,8 @@
 
 <unitPlacement unitType="Cutter" territory="SZ52" quantity="1"/>
 <unitPlacement unitType="Corvette" territory="SZ52" quantity="1"/>
-<unitPlacement unitType="Cutter" territory="SZ72" quantity="1"/>
-<unitPlacement unitType="Brigantine" territory="SZ72" quantity="1"/>
+<unitPlacement unitType="Cutter" territory="SZ72" quantity="2"/>
+<unitPlacement unitType="Brigantine" territory="SZ72" quantity="2"/>
 
 <unitPlacement unitType="Cutter" territory="SZ105" quantity="1"/>
 <unitPlacement unitType="Cutter" territory="SZ107" quantity="1"/>
