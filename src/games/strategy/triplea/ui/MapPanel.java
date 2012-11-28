@@ -396,15 +396,7 @@ public class MapPanel extends ImageScrollerLargeView
 			}
 		}
 		
-		@Override
-		public void mouseClicked(final MouseEvent e)
-		{
-			requestFocusInWindow();
-		}
-		
-		// this can't be mouseClicked, since
-		// a lot of people complain that clicking doesn't work
-		// well
+		// this can't be mouseClicked, since a lot of people complain that clicking doesn't work well
 		@Override
 		public void mouseReleased(final MouseEvent e)
 		{
@@ -423,7 +415,24 @@ public class MapPanel extends ImageScrollerLargeView
 					tuple = new Tuple<Territory, List<Unit>>(getTerritory(x, y), new ArrayList<Unit>(0));
 				notifyUnitSelected(tuple.getSecond(), tuple.getFirst(), md);
 			}
+			// requestFocusInWindow();
 		}
+		
+		/*
+		@Override
+		public void mousePressed(MouseEvent e)
+		{
+		}
+
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent e)
+		{
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e)
+		{
+		}*/
 	};
 	
 	private MouseDetails convert(final MouseEvent me)
@@ -643,9 +652,9 @@ public class MapPanel extends ImageScrollerLargeView
 		final boolean fitAxisY = !mapHeightFitsOnScreen() && m_uiContext.getMapData().scrollWrapY();
 		if (fitAxisX || fitAxisY)
 		{
-			if (fitAxisX && x + (int)getScaledWidth() > m_model.getMaxWidth())
+			if (fitAxisX && x + (int) getScaledWidth() > m_model.getMaxWidth())
 				x -= m_model.getMaxWidth();
-			if (fitAxisY && y + (int)getScaledHeight() > m_model.getMaxHeight())
+			if (fitAxisY && y + (int) getScaledHeight() > m_model.getMaxHeight())
 				y -= m_model.getMaxHeight();
 			// handle wrapping off the screen
 			if (fitAxisX && x < 0)

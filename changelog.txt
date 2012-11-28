@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Made sure any clicking or dragging gives focus to the main map panel area. (veqryn)
+
 * Created new game option property, "Submarines Defending May Submerge Or Retreat", which will allow defending submarines to submerge or retreat to a friendly neighboring sea zone. (veqryn)
 
 * Deleting game option property, "Hari-Kari Units", since it doesn't do anything at this point. (veqryn)

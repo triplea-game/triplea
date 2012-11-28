@@ -61,7 +61,7 @@ public class ImageScrollerLargeView extends JComponent
 	final static int RIGHT = 2;
 	final static int TOP = 4;
 	final static int BOTTOM = 8;
-	final static int WHEEL_SCROLL_AMOUNT = 50;
+	final static int WHEEL_SCROLL_AMOUNT = 60;
 	// how close to an edge we have to be before we scroll
 	private final static int TOLERANCE = 25;
 	// how much we scroll
@@ -208,6 +208,18 @@ public class ImageScrollerLargeView extends JComponent
 			m_inside = false;
 			m_timer.stop();
 		}
+		
+		@Override
+		public void mouseClicked(final MouseEvent e)
+		{
+			requestFocusInWindow();
+		}
+		
+		@Override
+		public void mouseDragged(final MouseEvent e)
+		{
+			requestFocusInWindow();
+		}
 	};
 	
 	private int getNewEdge(final int x, final int y, final int width, final int height)
@@ -330,6 +342,7 @@ public class ImageScrollerLargeView extends JComponent
 		@Override
 		public void mouseDragged(final MouseEvent e)
 		{
+			requestFocusInWindow();
 			// the right button must be the one down
 			if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
 			{

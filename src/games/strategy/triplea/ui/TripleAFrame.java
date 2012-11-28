@@ -92,6 +92,8 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -287,6 +289,16 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_gameSouthPanel.add(stepPanel, BorderLayout.EAST);
 		m_gameMainPanel.add(m_gameSouthPanel, BorderLayout.SOUTH);
 		m_rightHandSidePanel.setLayout(new BorderLayout());
+		final FocusAdapter focusToMapPanelFocusListener = new FocusAdapter()
+		{
+			@Override
+			public void focusGained(final FocusEvent e)
+			{
+				// give the focus back to the map panel
+				m_mapPanel.requestFocusInWindow();
+			}
+		};
+		m_smallView.addFocusListener(focusToMapPanelFocusListener);
 		m_rightHandSidePanel.add(m_smallView, BorderLayout.NORTH);
 		m_tabsPanel.setBorder(null);
 		m_rightHandSidePanel.add(m_tabsPanel, BorderLayout.CENTER);
