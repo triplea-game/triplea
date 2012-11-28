@@ -5090,11 +5090,6 @@
 						<boolean/>
 				</property>
 
-						<!-- allows transport units to die under ww2v3 type rules -->
-				<property name="Hari-Kari Units" value="true" editable="false">
-						<boolean/>
-				</property>
-
 						<!-- required for all maps, ensures allied aircraft on carriers that are attacking don't attack also -->
 				<property name="Allied Air Dependents" value="true" editable="false">
 						<boolean/>
@@ -5146,6 +5141,11 @@
 				<property name="Sub Retreat Before Battle" value="true" editable="false">
 						<boolean/>
 				</property>
+				
+						<!-- Submarines Defending May Submerge Or Retreat will allow defending submarines to retreat to friendly sea zones or submerge -->
+				<property name="Submarines Defending May Submerge Or Retreat" value="false" editable="false">
+						<boolean/>
+				</property>
 
 				<property name="Submersible Subs" value="true" editable="false">
 						<boolean/>
@@ -5163,11 +5163,6 @@
 				
 						<!-- if true, naval units may not move into convoy zones or controlled sea zones during non-combat moves -->
 				<property name="Naval Units May Not NonCombat Move Into Controlled Sea Zones" value="false" editable="false">
-						<boolean/>
-				</property>
-
-						<!-- allows sea zones containing mixed allied+enemy units to attack each other without having to move out then back in again -->
-				<property name="Previous Units Fight" value="true" editable="false">
 						<boolean/>
 				</property>
 

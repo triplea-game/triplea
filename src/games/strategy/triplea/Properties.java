@@ -45,11 +45,11 @@ public class Properties implements Constants
 		return data.getProperties().get(WW2V2, false);
 	}
 	
-	public static boolean getPreviousUnitsFight(final GameData data)
+	/*public static boolean getPreviousUnitsFight(final GameData data)
 	{
 		return data.getProperties().get(PREVIOUS_UNITS_FIGHT, false);
-	}
-	
+	}*/
+
 	public static boolean getPartialAmphibiousRetreat(final GameData data)
 	{
 		return data.getProperties().get(PARTIAL_AMPHIBIOUS_RETREAT, false);
@@ -369,12 +369,12 @@ public class Properties implements Constants
 	
 	/*
 	 * May units with 0 attack power enter combat
-	 */
 	public static boolean getHariKariUnits(final GameData data)
 	{
 		return data.getProperties().get(HARI_KARI_UNITS, false);
 	}
-	
+	 */
+
 	public static boolean getUnplacedUnitsLive(final GameData data)
 	{
 		return data.getProperties().get(UNPLACED_UNITS_LIVE, false);
@@ -825,6 +825,11 @@ public class Properties implements Constants
 	public static boolean getSubmarinesPreventUnescortedAmphibiousAssaults(final GameData data)
 	{
 		return data.getProperties().get(SUBMARINES_PREVENT_UNESCORTED_AMPHIBIOUS_ASSAULTS, false);
+	}
+	
+	public static boolean getSubmarinesDefendingMaySubmergeOrRetreat(final GameData data)
+	{
+		return data.getProperties().get(SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT, false);
 	}
 	
 	private Properties()

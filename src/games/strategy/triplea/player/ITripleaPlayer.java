@@ -211,7 +211,7 @@ public interface ITripleaPlayer extends IRemote
 	 * @param battleID
 	 *            - the battle
 	 * @param submerge
-	 *            - is submerging possible
+	 *            - is submerging possible (means the retreat territory CAN be the current battle territory)
 	 * @param possibleTerritories
 	 *            - where the player can retreat to
 	 * @param message

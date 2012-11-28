@@ -568,7 +568,7 @@ public class BattleDisplay extends JPanel
 	
 	public Territory getRetreat(final String message, final Collection<Territory> possible, final boolean submerge)
 	{
-		if (!submerge)
+		if (!submerge || possible.size() > 1)
 		{
 			return getRetreatInternal(message, possible);
 		}

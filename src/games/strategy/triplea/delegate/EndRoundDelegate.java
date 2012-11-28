@@ -182,13 +182,13 @@ public class EndRoundDelegate extends BaseDelegate
 		{
 			aBridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
 			final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance("Axis");
-			signalGameOver(victoryMessage, winners, aBridge);
+			signalGameOver("Axis" + victoryMessage, winners, aBridge);
 		}
 		if (russia && !germany && britain && !japan && america)
 		{
 			aBridge.getHistoryWriter().startEvent("Allies" + victoryMessage);
 			final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance("Allies");
-			signalGameOver(victoryMessage, winners, aBridge);
+			signalGameOver("Allies" + victoryMessage, winners, aBridge);
 		}
 	}
 	

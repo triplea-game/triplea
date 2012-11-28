@@ -1,4 +1,10 @@
 Changes for 1.6.1.3
+* Created new game option property, "Submarines Defending May Submerge Or Retreat", which will allow defending submarines to submerge or retreat to a friendly neighboring sea zone. (veqryn)
+
+* Deleting game option property, "Hari-Kari Units", since it doesn't do anything at this point. (veqryn)
+
+* Deleting game option property, "Previous Units Fight", since it doesn't do anything at this point. (veqryn)
+
 * Allowing sea units to retreat back if the retreating to territory contains only ignored enemy units. (veqryn) 
 
 * Disallowing rockets from firing over impassible territories by default. (veqryn)

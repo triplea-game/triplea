@@ -478,7 +478,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		Collection<Unit> kamikazeUnits = new ArrayList<Unit>();
 		// boolean isHariKari = false;
 		// confirm kamikaze moves, and remove them from unresolved units
-		// if(m_data.getProperties().get(Constants.KAMIKAZE, false))
 		if (getKamikazeAir || Match.someMatch(units, Matches.UnitIsKamikaze))
 		{
 			kamikazeUnits = result.getUnresolvedUnits(MoveValidator.NOT_ALL_AIR_UNITS_CAN_LAND);
@@ -495,16 +494,14 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 			}
 		}
 		// confirm HariKari moves, and remove them from unresolved units
-		/*if(m_data.getProperties().get(Constants.HARI_KARI, false))
+		/*
+		Collection<Unit> hariKariUnits = result.getUnresolvedUnits(MoveValidator.UNESCORTED_UNITS_WILL_DIE_IN_COMBAT);
+		if (hariKariUnits.size() > 0 && getRemotePlayer().confirmMoveHariKari())
 		{
-		    Collection<Unit> hariKariUnits = result.getUnresolvedUnits(MoveValidator.UNESCORTED_UNITS_WILL_DIE_IN_COMBAT);
-		    if (hariKariUnits.size() > 0 && getRemotePlayer().confirmMoveHariKari())
+		    for (Unit unit : hariKariUnits)
 		    {
-		        for (Unit unit : hariKariUnits)
-		        {
-		            result.removeUnresolvedUnit(MoveValidator.UNESCORTED_UNITS_WILL_DIE_IN_COMBAT, unit);
-		            isHariKari = true;
-		        }
+		        result.removeUnresolvedUnit(MoveValidator.UNESCORTED_UNITS_WILL_DIE_IN_COMBAT, unit);
+		        isHariKari = true;
 		    }
 		}*/
 		if (result.hasUnresolvedUnits())
@@ -526,10 +523,6 @@ public class MoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 		{
 			m_bridge.getHistoryWriter().addChildToEvent("This was a kamikaze move, for at least some of the units", kamikazeUnits);
 		}
-		/*if(isHariKari)
-		{
-		    m_bridge.getHistoryWriter().addChildToEvent("This was a Hari-Kari move");
-		}*/
 		// MoveDescription description = new MoveDescription(units, route);
 		// m_bridge.getHistoryWriter().setRenderingData(description);
 		m_tempMovePerformer = new MovePerformer();

@@ -79,7 +79,7 @@ public interface Constants
 	public static final String NEUTRALS_ARE_IMPASSABLE = "Neutrals Are Impassable";
 	public static final String NEUTRALS_ARE_BLITZABLE = "Neutrals Are Blitzable";
 	public static final String PARTIAL_AMPHIBIOUS_RETREAT = "Partial Amphibious Retreat";
-	public static final String PREVIOUS_UNITS_FIGHT = "Previous Units Fight";
+	// public static final String PREVIOUS_UNITS_FIGHT = "Previous Units Fight";
 	/**
 	 * These are the individual rules from a game (All default to FALSE)
 	 */
@@ -124,8 +124,7 @@ public interface Constants
 	public static final String MULTIPLE_AA_PER_TERRITORY = "Multiple AA Per Territory";
 	public static final String IGNORE_TRANSPORT_IN_MOVEMENT = "Ignore Transport In Movement";
 	public static final String IGNORE_SUB_IN_MOVEMENT = "Ignore Sub In Movement";
-	public static final String HARI_KARI_UNITS = "Hari-Kari Units";
-	public static final String HARI_KARI = "Hari-Kari Units";
+	// public static final String HARI_KARI_UNITS = "Hari-Kari Units";
 	public static final String UNPLACED_UNITS_LIVE = "Unplaced units live when not placed";
 	/**
 	 * End individual rules for TripleA WW2V3 (All default to FALSE)
@@ -221,6 +220,7 @@ public interface Constants
 	public static final String REMOVE_ALL_TECH_TOKENS_AT_END_OF_TURN = "Remove All Tech Tokens At End Of Turn";
 	public static final String KAMIKAZE_SUICIDE_ATTACKS_ONLY_WHERE_BATTLES_ARE = "Kamikaze Suicide Attacks Only Where Battles Are";
 	public static final String SUBMARINES_PREVENT_UNESCORTED_AMPHIBIOUS_ASSAULTS = "Submarines Prevent Unescorted Amphibious Assaults";
+	public static final String SUBMARINES_DEFENDING_MAY_SUBMERGE_OR_RETREAT = "Submarines Defending May Submerge Or Retreat";
 	
 	// relationships stuff (Edwin, with help from Veqryn and Frig)
 	public static final String RELATIONSHIP_TYPE_SELF = "self_relation";

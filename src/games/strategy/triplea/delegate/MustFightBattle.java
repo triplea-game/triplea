@@ -1394,8 +1394,11 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		boolean partialAmphib;
 		planes = retreatType == RetreatType.PLANES;
 		subs = retreatType == RetreatType.SUBS;
+		final boolean canSubsSubmerge = canSubsSubmerge();
+		final boolean submerge = subs && canSubsSubmerge;
+		final boolean canDefendingSubsSubmergeOrRetreat = subs && defender && games.strategy.triplea.Properties.getSubmarinesDefendingMaySubmergeOrRetreat(m_data);
 		partialAmphib = retreatType == RetreatType.PARTIAL_AMPHIB;
-		if (availableTerritories.isEmpty() && !(subs && canSubsSubmerge()))
+		if (availableTerritories.isEmpty() && !(submerge || canDefendingSubsSubmergeOrRetreat))
 			return;
 		Collection<Unit> units = defender ? m_defendingUnits : m_attackingUnits;
 		if (subs)
@@ -1414,6 +1417,20 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		{
 			availableTerritories = Match.getMatches(availableTerritories, Matches.TerritoryIsWater);
 		}
+		if (canDefendingSubsSubmergeOrRetreat)
+		{
+			availableTerritories.add(m_battleSite);
+		}
+		else if (submerge)
+		{
+			availableTerritories.clear();
+			availableTerritories.add(m_battleSite);
+		}
+		if (planes)
+		{
+			availableTerritories.clear();
+			availableTerritories.add(m_battleSite);
+		}
 		if (units.size() == 0)
 			return;
 		final PlayerID retreatingPlayer = defender ? m_defender : m_attacker;
@@ -1429,12 +1446,12 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		String step;
 		if (defender)
 		{
-			step = m_defender.getName() + (canSubsSubmerge() ? SUBS_SUBMERGE : SUBS_WITHDRAW);
+			step = m_defender.getName() + (canSubsSubmerge ? SUBS_SUBMERGE : SUBS_WITHDRAW);
 		}
 		else
 		{
 			if (subs)
-				step = m_attacker.getName() + (canSubsSubmerge() ? SUBS_SUBMERGE : SUBS_WITHDRAW);
+				step = m_attacker.getName() + (canSubsSubmerge ? SUBS_SUBMERGE : SUBS_WITHDRAW);
 			else if (planes)
 				step = m_attacker.getName() + PLANES_WITHDRAW;
 			else if (partialAmphib)
@@ -1442,9 +1459,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			else
 				step = m_attacker.getName() + ATTACKER_WITHDRAW;
 		}
-		final boolean submerge = subs && canSubsSubmerge();
 		getDisplay(bridge).gotoBattleStep(m_battleID, step);
-		final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, submerge, m_battleSite, availableTerritories, text);
+		final Territory retreatTo = getRemote(retreatingPlayer, bridge).retreatQuery(m_battleID, (submerge || canDefendingSubsSubmergeOrRetreat), m_battleSite, availableTerritories, text);
 		if (retreatTo != null && !availableTerritories.contains(retreatTo) && !subs)
 		{
 			System.err.println("Invalid retreat selection :" + retreatTo + " not in " + MyFormatter.territoriesToText(availableTerritories));
@@ -1460,7 +1476,7 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 				// ensureAttackingAirCanRetreat(bridge);
 				m_isOver = true;
 			}
-			if (submerge)
+			if (subs && m_battleSite.equals(retreatTo) && (submerge || canDefendingSubsSubmergeOrRetreat))
 			{
 				submergeUnits(units, defender, bridge);
 				final String messageShort = retreatingPlayer.getName() + " submerges subs";
