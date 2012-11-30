@@ -825,6 +825,7 @@ public class MovePanel extends AbstractMovePanel
 			{
 				data.releaseReadLock();
 			}
+			getMap().requestFocusInWindow();
 		}
 		
 		private void selectUnitsToMove(final List<Unit> units, final Territory t, final MouseDetails me)

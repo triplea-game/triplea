@@ -308,6 +308,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			}
 		};
 		m_smallView.addFocusListener(focusToMapPanelFocusListener);
+		m_tabsPanel.addFocusListener(focusToMapPanelFocusListener);
 		m_rightHandSidePanel.add(m_smallView, BorderLayout.NORTH);
 		m_tabsPanel.setBorder(null);
 		m_rightHandSidePanel.add(m_tabsPanel, BorderLayout.CENTER);

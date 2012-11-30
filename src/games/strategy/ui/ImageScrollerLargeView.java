@@ -220,6 +220,12 @@ public class ImageScrollerLargeView extends JComponent
 		{
 			requestFocusInWindow();
 		}
+		
+		@Override
+		public void mouseReleased(final MouseEvent e)
+		{
+			requestFocusInWindow();
+		}
 	};
 	
 	private int getNewEdge(final int x, final int y, final int width, final int height)

@@ -15,7 +15,7 @@ Changes for 1.6.1.3
 
 * Changed Sounds so that instead of specific sound files, the engine will search for specific sound folder. The engine will then randomly select a sound in that folder and play it. This allows for randomized sounds. (veqryn)
 
-* Made sure any clicking or dragging gives focus to the main map panel area. (veqryn)
+* Made sure any clicking or dragging gives focus to the main map panel area. Also ensuring that if focus goes to the tabs panel tabs, that the focus goes back to the map. (veqryn)
 
 * Created new game option property, "Submarines Defending May Submerge Or Retreat", which will allow defending submarines to submerge or retreat to a friendly neighboring sea zone. (veqryn)
 
