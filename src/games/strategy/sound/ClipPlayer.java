@@ -269,6 +269,8 @@ public class ClipPlayer
 			final List<Clip> availableSounds = new ArrayList<Clip>();
 			for (final File sound : thisSoundFolder.listFiles())
 			{
+				if (!(sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff") || sound.getName().endsWith(".midi")))
+					continue;
 				final Clip newClip = loadClip(sound);// m_resourceLoader.getResourceAsStream("sounds" + File.separator + clipName));
 				if (newClip != null)
 					availableSounds.add(newClip);
