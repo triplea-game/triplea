@@ -34,6 +34,7 @@ import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.util.IntegerMap;
 
 import java.awt.CardLayout;
+import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -120,6 +121,11 @@ public class ActionButtons extends JPanel
 				m_politicsPanel = null;
 			}
 		});
+	}
+	
+	public void keyPressed(final KeyEvent e)
+	{
+		m_current.keyPressed(e);
 	}
 	
 	public void changeToMove(final PlayerID id, final boolean nonCombat, final String stepName)

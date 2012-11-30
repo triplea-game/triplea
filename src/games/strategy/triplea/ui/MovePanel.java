@@ -52,6 +52,7 @@ import games.strategy.util.Util;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,6 +88,7 @@ public class MovePanel extends AbstractMovePanel
 	private Territory m_firstSelectedTerritory;
 	private Territory m_selectedEndpointTerritory;
 	private Territory m_mouseCurrentTerritory;
+	private Territory m_lastFocusedTerritory;
 	private List<Territory> m_forced;
 	private boolean m_nonCombat;
 	private Point m_mouseSelectedPoint;
@@ -1619,6 +1621,46 @@ public class MovePanel extends AbstractMovePanel
 	{
 		// TODO Auto-generated method stub
 		return true;
+	}
+	
+	@Override
+	public void keyPressed(final KeyEvent e)
+	{
+		super.keyPressed(e);
+		final int keyCode = e.getKeyCode();
+		// N for center on next unit with movement left
+		if (keyCode == KeyEvent.VK_N)
+		{
+			getData().acquireReadLock();
+			final List<Territory> allTerritories = new ArrayList<Territory>(getData().getMap().getTerritories());
+			getData().releaseReadLock();
+			final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(getCurrentPlayer()), Matches.unitHasMovementLeft);
+			if (!m_nonCombat)
+				moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());// if not non combat, can not move aa units
+			final int size = allTerritories.size();
+			final int lastFocusedIndex = (m_lastFocusedTerritory == null ? 0 : allTerritories.indexOf(m_lastFocusedTerritory));
+			int newFocusedIndex = lastFocusedIndex + 1;
+			if (newFocusedIndex >= size)
+				newFocusedIndex = 0;
+			Territory newFocusedTerritory = null;
+			for (int i = newFocusedIndex; i != lastFocusedIndex; i++)
+			{
+				final Territory t = allTerritories.get(i);
+				if (t.getUnits().someMatch(moveableUnitOwnedByMe))
+				{
+					newFocusedTerritory = t;
+					break;
+				}
+				// now cycle through the front
+				if ((i + 1) >= size)
+					i = 0;
+			}
+			if (newFocusedTerritory != null && !newFocusedTerritory.equals(m_lastFocusedTerritory))
+			{
+				m_lastFocusedTerritory = newFocusedTerritory;
+				getMap().centerOn(newFocusedTerritory);
+			}
+		}
 	}
 }
 

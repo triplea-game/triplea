@@ -804,7 +804,15 @@ public class TerritoryAttachment extends DefaultAttachment
 			final PlayerID owner = t.getOwner();
 			if (owner != null && !owner.isNull())
 			{
-				sb.append("Owned by " + t.getOwner().getName());
+				sb.append("Current Owner: " + t.getOwner().getName());
+				sb.append(br);
+			}
+			PlayerID originalOwner = getOccupiedTerrOf();
+			if (originalOwner == null)
+				originalOwner = getOriginalOwner();
+			if (originalOwner != null)
+			{
+				sb.append("Original Owner: " + originalOwner.getName());
 				sb.append(br);
 			}
 		}
@@ -847,6 +855,28 @@ public class TerritoryAttachment extends DefaultAttachment
 			if (!requiredBy.isEmpty())
 				sb.append("Required By: " + MyFormatter.asList(requiredBy) + br);
 		}
+		if (m_changeUnitOwners != null && !m_changeUnitOwners.isEmpty())
+		{
+			sb.append("Units May Change Ownership Here");
+			sb.append(br);
+		}
+		if (m_captureUnitOnEnteringBy != null && !m_captureUnitOnEnteringBy.isEmpty())
+		{
+			sb.append("May Allow The Capture of Some Units");
+			sb.append(br);
+		}
+		if (m_whenCapturedByGoesTo != null && !m_whenCapturedByGoesTo.isEmpty())
+		{
+			sb.append("Captured By -> Ownership Goes To");
+			sb.append(br);
+			for (final String value : m_whenCapturedByGoesTo)
+			{
+				final String[] s = value.split(":");
+				sb.append(s[0] + " -> " + s[1]);
+				sb.append(br);
+			}
+		}
+		sb.append(br);
 		
 		if (!t.isWater() && m_production > 0 && games.strategy.triplea.Properties.getSBRAffectsUnitProduction(getData()))
 		{

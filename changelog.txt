@@ -1,4 +1,12 @@
 Changes for 1.6.1.3
+* Created new HotKey, "N", which when pressed during a movement phase, will cycle through all units with available movement left, focusing the map on the unit. (veqryn)
+
+* Created new HotKey, "I", which when pressed will create a popup for 5 seconds showing all the info about the unit and/or territory your mouse is currently over. (veqryn)
+
+* Allowing the map to be scrolled by using the arrow keys and/or WASD. (veqryn)
+
+* Added original owner, whenCapturedByGoesTo, captureUnitOnEnteringBy, and changeUnitOwners to the Territory tooltip and territory tab info. (veqryn)
+
 * Fixing Move Panel and Place Panel so that Undoing a move or place will not result in scrolling back to the top, and will instead scroll to make sure that the move under the undoed move is still visible. (veqryn)
 
 * Allowing all sounds to have a player associated with them.  Just name the sound "<soundName>_<playerName>".  If the player sound does not exist, it will use the default non-player sound. (veqryn)

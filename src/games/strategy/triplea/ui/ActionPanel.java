@@ -21,6 +21,7 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 
+import java.awt.event.KeyEvent;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.BoxLayout;
@@ -174,6 +175,15 @@ public abstract class ActionPanel extends JPanel
 	public boolean getActive()
 	{
 		return m_active;
+	}
+	
+	/**
+	 * Can override to have specific commands done by key presses (like hitting "N" for next unit, on the move action panel)
+	 * 
+	 * @param e
+	 */
+	public void keyPressed(final KeyEvent e)
+	{
 	}
 	
 	/**

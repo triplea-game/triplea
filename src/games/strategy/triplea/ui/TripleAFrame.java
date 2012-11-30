@@ -55,6 +55,7 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.TripleAPlayer;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
+import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.AirThatCantLandUtil;
 import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.BattleDelegate;
@@ -91,6 +92,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -142,8 +145,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
+import javax.swing.JToolTip;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -199,6 +205,8 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	private final ButtonModel m_showCommentLogButtonModel;
 	private IEditDelegate m_editDelegate;
 	private JSplitPane m_gameCenterPanel;
+	private Territory m_territoryLastEntered;
+	private List<Unit> m_unitsBeingMousedOver;
 	
 	/** Creates new TripleAFrame */
 	public TripleAFrame(final IGame game, final Set<IGamePlayer> players) throws IOException
@@ -231,6 +239,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_smallView = new MapPanelSmallView(small, model);
 		m_mapPanel = new MapPanel(m_data, m_smallView, m_uiContext, model);
 		m_mapPanel.addMapSelectionListener(MAP_SELECTION_LISTENER);
+		m_mapPanel.addMouseOverUnitListener(MOUSE_OVER_UNIT_LISTENER);
 		this.addKeyListener(m_arrowKeyActionListener);
 		m_mapPanel.addKeyListener(m_arrowKeyActionListener);
 		
@@ -553,24 +562,31 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			leaveGame();
 		}
 	};
+	
+	private final MouseOverUnitListener MOUSE_OVER_UNIT_LISTENER = new MouseOverUnitListener()
+	{
+		public void mouseEnter(final List<Unit> units, final Territory territory, final MouseDetails me)
+		{
+			m_unitsBeingMousedOver = units;
+		}
+	};
+	
 	public MapSelectionListener MAP_SELECTION_LISTENER = new DefaultMapSelectionListener()
 	{
-		Territory in;
-		
 		@Override
 		public void mouseEntered(final Territory territory)
 		{
-			in = territory;
+			m_territoryLastEntered = territory;
 			refresh();
 		}
 		
 		void refresh()
 		{
 			final StringBuilder buf = new StringBuilder(" ");
-			buf.append(in == null ? "none" : in.getName());
-			if (in != null)
+			buf.append(m_territoryLastEntered == null ? "none" : m_territoryLastEntered.getName());
+			if (m_territoryLastEntered != null)
 			{
-				final TerritoryAttachment ta = TerritoryAttachment.get(in);
+				final TerritoryAttachment ta = TerritoryAttachment.get(m_territoryLastEntered);
 				if (ta != null)
 				{
 					final Iterator<TerritoryEffect> iter = ta.getTerritoryEffect().iterator();
@@ -1501,17 +1517,70 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		
 		public void keyPressed(final KeyEvent e)
 		{
+			// scroll map according to wasd/arrowkeys
 			final int x = m_mapPanel.getXOffset();
 			final int y = m_mapPanel.getYOffset();
 			final int keyCode = e.getKeyCode();
-			if (keyCode == KeyEvent.VK_RIGHT)
+			if (keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_D)
 				getMapPanel().setTopLeft(x + diffPixel, y);
-			else if (keyCode == KeyEvent.VK_LEFT)
+			else if (keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_A)
 				getMapPanel().setTopLeft(x - diffPixel, y);
-			else if (keyCode == KeyEvent.VK_DOWN)
+			else if (keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_S)
 				getMapPanel().setTopLeft(x, y + diffPixel);
-			else if (keyCode == KeyEvent.VK_UP)
+			else if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_W)
 				getMapPanel().setTopLeft(x, y - diffPixel);
+			
+			// I for info
+			if (keyCode == KeyEvent.VK_I)
+			{
+				String unitInfo = "";
+				if (m_unitsBeingMousedOver != null && !m_unitsBeingMousedOver.isEmpty())
+				{
+					final Unit unit = m_unitsBeingMousedOver.get(0);
+					final UnitAttachment ua = UnitAttachment.get(unit.getType());
+					if (ua != null)
+						unitInfo = "<b>Unit:</b><br>" + unit.getType().getName() + ": " + ua.toStringShortAndOnlyImportantDifferences(unit.getOwner(), true, false);
+				}
+				String terrInfo = "";
+				if (m_territoryLastEntered != null)
+				{
+					final TerritoryAttachment ta = TerritoryAttachment.get(m_territoryLastEntered);
+					if (ta != null)
+						terrInfo = "<b>Territory:</b><br>" + ta.toStringForInfo(true, true) + "<br>";
+					else
+						terrInfo = "<b>Territory:</b><br>" + m_territoryLastEntered.getName() + "<br>Water Territory";
+				}
+				String tipText = unitInfo;
+				if (unitInfo.length() > 0 && terrInfo.length() > 0)
+					tipText = tipText + "<br><br><br><br><br>";
+				tipText = tipText + terrInfo;
+				if (tipText.length() > 0)
+				{
+					final Point currentPoint = MouseInfo.getPointerInfo().getLocation();
+					final PopupFactory popupFactory = PopupFactory.getSharedInstance();
+					final JToolTip info = new JToolTip();
+					info.setTipText("<html>" + tipText + "</html>");
+					final Popup popup = popupFactory.getPopup(m_mapPanel, info, currentPoint.x, currentPoint.y);
+					popup.show();
+					final Runnable disposePopup = new Runnable()
+					{
+						public void run()
+						{
+							try
+							{
+								Thread.sleep(5000);
+							} catch (final InterruptedException e)
+							{
+							}
+							popup.hide();
+						}
+					};
+					new Thread(disposePopup, "popup waiter").start();
+				}
+			}
+			
+			// and then we do stuff for any custom current action tab
+			m_actionButtons.keyPressed(e);
 		}
 		
 		public void keyTyped(final KeyEvent e)
