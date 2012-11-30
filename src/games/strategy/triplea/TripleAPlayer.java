@@ -275,9 +275,15 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			return;
 		// play a sound for this phase
 		if (nonCombat && !m_soundPlayedAlreadyNonCombatMove)
+		{
 			ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id.getName());
+			m_soundPlayedAlreadyNonCombatMove = true;
+		}
 		else if (!nonCombat && !m_soundPlayedAlreadyCombatMove)
+		{
 			ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_COMBAT, id.getName());
+			m_soundPlayedAlreadyCombatMove = true;
+		}
 		
 		final MoveDescription moveDescription = m_ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
 		if (moveDescription == null)
@@ -403,7 +409,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		
 		// play a sound for this phase
 		if (!bid && !m_soundPlayedAlreadyPurchase)
+		{
 			ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, id.getName());
+			m_soundPlayedAlreadyPurchase = true;
+		}
 		
 		// Check if any factories need to be repaired
 		String error = null;
