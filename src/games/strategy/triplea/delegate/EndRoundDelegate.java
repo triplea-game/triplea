@@ -26,6 +26,8 @@ import games.strategy.engine.data.PlayerList;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PlayerAttachment;
@@ -296,6 +298,7 @@ public class EndRoundDelegate extends BaseDelegate
 		{
 			m_gameOver = true;
 			m_winners = winners;
+			ClipPlayer.play(SoundPath.CLIP_GAME_WON, ((m_winners != null && !m_winners.isEmpty()) ? m_winners.iterator().next().getName() : PlayerID.NULL_PLAYERID.getName()));
 			// Make sure the user really wants to leave the game.
 			final int rVal = EventThreadJOptionPane.showConfirmDialog(null, status + "\nDo you want to continue?", "Continue", JOptionPane.YES_NO_OPTION);
 			if (rVal != JOptionPane.OK_OPTION)

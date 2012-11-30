@@ -251,7 +251,7 @@ class TestChatListener implements IChatListener
 	
 	public void addMessage(final String message, final String from, final boolean thirdperson)
 	{
-		addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_MESSAGE);
+		addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
 	}
 	
 	public void addStatusMessage(final String message)

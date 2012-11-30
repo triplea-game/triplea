@@ -193,7 +193,7 @@ public class BattleDisplay extends JPanel
 	
 	public void bombingResults(final List<Die> dice, final int cost)
 	{
-		ClipPlayer.play(SoundPath.CLIP_BOMB); // play sound
+		ClipPlayer.play(SoundPath.CLIP_BOMBING_STRATEGIC, m_attacker.getName()); // play sound
 		m_dicePanel.setDiceRollForBombing(dice, cost);
 		m_actionLayout.show(m_actionPanel, DICE_KEY);
 	}

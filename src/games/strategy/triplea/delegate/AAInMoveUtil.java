@@ -19,6 +19,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.net.GUID;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -217,16 +219,30 @@ class AAInMoveUtil implements Serializable
 					final int hitCount = dice[0].getHits();
 					if (hitCount == 0)
 					{
+						if (currentTypeAA.equals("AA"))
+							ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, findDefender(currentPossibleAA).getName());
 						getRemotePlayer().reportMessage("No aa hits in " + territory.getName(), "No aa hits in " + territory.getName());
 					}
 					else
+					{
+						if (currentTypeAA.equals("AA"))
+							ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, findDefender(currentPossibleAA).getName());
 						selectCasualties(dice[0], units, validAttackingUnitsForThisRoll, currentPossibleAA, territory, null);
+					}
 				}
 			};
 			// push in reverse order of execution
 			m_executionStack.push(selectCasualties);
 			m_executionStack.push(rollDice);
 		}
+	}
+	
+	private PlayerID findDefender(final Collection<Unit> defendingUnits)
+	{
+		if (defendingUnits == null || defendingUnits.isEmpty())
+			return PlayerID.NULL_PLAYERID;
+		else
+			return defendingUnits.iterator().next().getOwner();
 	}
 	
 	/**

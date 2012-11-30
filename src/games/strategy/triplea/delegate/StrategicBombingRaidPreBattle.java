@@ -224,18 +224,21 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 			else
 				m_battleResultDescription = BattleRecord.BattleResultDescription.WON_WITH_ENEMY_LEFT;
 			text = "Air Battle is over, the remaining Bombers go on to their targets";
+			ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
 		}
 		else if (!m_attackingUnits.isEmpty())
 		{
 			m_whoWon = WhoWon.DRAW;
 			m_battleResultDescription = BattleRecord.BattleResultDescription.STALEMATE;
 			text = "Air Battle is over, the bombers have all died";
+			ClipPlayer.play(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
 		}
 		else
 		{
 			m_whoWon = WhoWon.DEFENDER;
 			m_battleResultDescription = BattleRecord.BattleResultDescription.LOST;
 			text = "Air Battle is over, the bombers have all died";
+			ClipPlayer.play(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
 		}
 		bridge.getHistoryWriter().addChildToEvent(text);
 		
@@ -272,7 +275,7 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 					{
 						m_intercept = true;
 						// play a sound
-						ClipPlayer.play(SoundPath.CLIP_AIR_BATTLE);
+						ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR, m_attacker.getName());
 					}
 				}
 			};

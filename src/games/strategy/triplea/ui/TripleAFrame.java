@@ -1432,7 +1432,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		else if (player != null && !player.isNull() && playing(player) && m_inHistory)
 		{
 			showGame();
-			ClipPlayer.play(SoundPath.CLIP_START_YOUR_TURN); // play sound
+			ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
 		}
 	}
 	

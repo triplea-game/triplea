@@ -155,7 +155,7 @@ public class TripleA implements IGameLoader
 					game.addDisplay(m_display);
 					frame.setSize(700, 400);
 					frame.setVisible(true);
-					ClipPlayer.play(SoundPath.CLIP_START_GAME);
+					ClipPlayer.play(SoundPath.CLIP_GAME_START, null);
 					connectPlayers(players, frame);
 					SwingUtilities.invokeLater(new Runnable()
 					{

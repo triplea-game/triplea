@@ -274,7 +274,11 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		{
 			m_bridge.getHistoryWriter().startEvent(transcriptText);
 			// play a sound
-			ClipPlayer.play(SoundPath.CLIP_TECH);
+			ClipPlayer.play(SoundPath.CLIP_TECHNOLOGY_SUCCESSFUL, m_player.getName());
+		}
+		else
+		{
+			ClipPlayer.play(SoundPath.CLIP_TECHNOLOGY_FAILURE, m_player.getName());
 		}
 		return new TechResults(random, remainder, techHits, advancesAsString, m_player);
 	}

@@ -35,6 +35,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -283,6 +285,15 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		}
 		if (!unitsLeftToPlace.isEmpty())
 			throw new IllegalStateException("Not all units placed in: " + at.getName() + " units: " + unitsLeftToPlace);
+		// play a sound
+		if (Match.someMatch(units, Matches.UnitIsInfrastructure))
+			ClipPlayer.play(SoundPath.CLIP_PLACED_INFRASTRUCTURE, m_player.getName());
+		else if (Match.someMatch(units, Matches.UnitIsSea))
+			ClipPlayer.play(SoundPath.CLIP_PLACED_SEA, m_player.getName());
+		else if (Match.someMatch(units, Matches.UnitIsAir))
+			ClipPlayer.play(SoundPath.CLIP_PLACED_AIR, m_player.getName());
+		else
+			ClipPlayer.play(SoundPath.CLIP_PLACED_LAND, m_player.getName());
 	}
 	
 	/**

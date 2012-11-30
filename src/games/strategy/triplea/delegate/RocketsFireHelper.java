@@ -497,7 +497,7 @@ public class RocketsFireHelper
 		}
 		// play a sound
 		if (cost > 0)
-			ClipPlayer.play(SoundPath.CLIP_ROCKET);
+			ClipPlayer.play(SoundPath.CLIP_BOMBING_ROCKET, player.getName());
 	}
 	
 	private ITripleaPlayer getRemote(final IDelegateBridge bridge)

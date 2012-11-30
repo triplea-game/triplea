@@ -387,11 +387,20 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			BattleCalculator.sortPreBattle(m_defendingUnits, m_data);
 			// play a sound
 			if (Match.someMatch(m_attackingUnits, Matches.UnitIsSea) || Match.someMatch(m_defendingUnits, Matches.UnitIsSea))
-				ClipPlayer.play(SoundPath.CLIP_NAVAL_BATTLE);
+			{
+				if (Match.allMatch(m_attackingUnits, Matches.UnitIsSub) || (Match.someMatch(m_attackingUnits, Matches.UnitIsSub) && Match.someMatch(m_defendingUnits, Matches.UnitIsSub)))
+					ClipPlayer.play(SoundPath.CLIP_BATTLE_SEA_SUBS, m_attacker.getName());
+				else
+					ClipPlayer.play(SoundPath.CLIP_BATTLE_SEA_NORMAL, m_attacker.getName());
+			}
 			else if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir) && Match.allMatch(m_defendingUnits, Matches.UnitIsAir))
-				ClipPlayer.play(SoundPath.CLIP_AIR_BATTLE);
+			{
+				ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR, m_attacker.getName());
+			}
 			else
-				ClipPlayer.play(SoundPath.CLIP_LAND_BATTLE); // must be land battle
+			{
+				ClipPlayer.play(SoundPath.CLIP_BATTLE_LAND, m_attacker.getName()); // must be land battle
+			}
 		}
 		// push on stack in opposite order of execution
 		pushFightLoopOnStack(bridge);
@@ -1478,18 +1487,31 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			}
 			if (subs && m_battleSite.equals(retreatTo) && (submerge || canDefendingSubsSubmergeOrRetreat))
 			{
+				if (!m_headless)
+					ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_SUBMERGE, m_attacker.getName());
 				submergeUnits(units, defender, bridge);
 				final String messageShort = retreatingPlayer.getName() + " submerges subs";
 				getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
 			}
 			else if (planes)
 			{
+				if (!m_headless)
+					ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
 				retreatPlanes(units, defender, bridge);
 				final String messageShort = retreatingPlayer.getName() + " retreats planes";
 				getDisplay(bridge).notifyRetreat(messageShort, messageShort, step, retreatingPlayer);
 			}
 			else if (partialAmphib)
 			{
+				if (!m_headless)
+				{
+					if (Match.someMatch(units, Matches.UnitIsSea))
+						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_SEA, m_attacker.getName());
+					else if (Match.someMatch(units, Matches.UnitIsLand))
+						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_LAND, m_attacker.getName());
+					else
+						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
+				}
 				// remove amphib units from those retreating
 				units = Match.getMatches(units, Matches.UnitWasNotAmphibious);
 				retreatUnitsAndPlanes(units, retreatTo, defender, bridge);
@@ -1498,6 +1520,15 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 			}
 			else
 			{
+				if (!m_headless)
+				{
+					if (Match.someMatch(units, Matches.UnitIsSea))
+						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_SEA, m_attacker.getName());
+					else if (Match.someMatch(units, Matches.UnitIsLand))
+						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_LAND, m_attacker.getName());
+					else
+						ClipPlayer.play(SoundPath.CLIP_BATTLE_RETREAT_AIR, m_attacker.getName());
+				}
 				retreatUnits(units, retreatTo, defender, bridge);
 				final String messageShort = retreatingPlayer.getName() + " retreats";
 				String messageLong;
@@ -2070,6 +2101,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		final boolean canReturnFire = (isNavalBombardCasualtiesReturnFire());
 		if (bombard.size() > 0 && attacked.size() > 0)
 		{
+			if (!m_headless)
+				ClipPlayer.play(SoundPath.CLIP_BATTLE_BOMBARD, m_attacker.getName());
 			fire(SELECT_NAVAL_BOMBARDMENT_CASUALTIES, bombard, attacked, false, canReturnFire ? ReturnFire.ALL : ReturnFire.NONE, bridge, "Bombard");
 		}
 	}
@@ -2257,6 +2290,13 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite);
+						if (!m_headless && currentTypeAA.equals("AA"))
+						{
+							if (m_dice.getHits() > 0)
+								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, m_defender.getName());
+							else
+								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, m_defender.getName());
+						}
 					}
 				};
 				final IExecutable selectCasualties = new IExecutable()
@@ -2523,6 +2563,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 						new BattleResults(this, m_data), 0);
 		checkDefendingPlanesCanLand(bridge, m_defender);
 		BattleTracker.captureOrDestroyUnits(m_battleSite, m_defender, m_defender, bridge, null, m_defendingUnits);
+		if (!m_headless)
+			ClipPlayer.play(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
 	}
 	
 	private void nobodyWins(final IDelegateBridge bridge)
@@ -2535,6 +2577,8 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (!m_headless)
 			m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
 						new BattleResults(this, m_data), 0);
+		if (!m_headless)
+			ClipPlayer.play(SoundPath.CLIP_BATTLE_FAILURE, m_attacker.getName());
 	}
 	
 	/*
@@ -2771,6 +2815,22 @@ public class MustFightBattle extends AbstractBattle implements BattleStepStrings
 		if (!m_headless)
 			m_battleTracker.getBattleRecords(m_data).addResultToBattle(m_attacker, m_battleID, m_defender, m_attackerLostTUV, m_defenderLostTUV, m_battleResultDescription,
 						new BattleResults(this, m_data), 0);
+		if (!m_headless)
+		{
+			if (Matches.TerritoryIsWater.match(m_battleSite))
+			{
+				if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
+					ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
+				else
+					ClipPlayer.play(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL, m_attacker.getName()); // assume some naval
+			}
+			else
+			{
+				// no sounds for a successful land battle, because land battle means we are going to capture a territory, and we have capture sounds for that
+				if (Match.allMatch(m_attackingUnits, Matches.UnitIsAir))
+					ClipPlayer.play(SoundPath.CLIP_BATTLE_AIR_SUCCESSFUL, m_attacker.getName());
+			}
+		}
 	}
 	
 	public static CompositeChange clearTransportedByForAlliedAirOnCarrier(final Collection<Unit> attackingUnits, final Territory battleSite, final PlayerID attacker, final GameData data)

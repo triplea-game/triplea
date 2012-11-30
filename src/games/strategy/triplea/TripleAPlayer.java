@@ -28,6 +28,8 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -82,6 +84,10 @@ import javax.swing.SwingUtilities;
  */
 public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements IGamePlayer, ITripleaPlayer
 {
+	private boolean m_soundPlayedAlreadyCombatMove = false;
+	private boolean m_soundPlayedAlreadyNonCombatMove = false;
+	private boolean m_soundPlayedAlreadyPurchase = false;
+	
 	/** Creates new TripleAPlayer */
 	public TripleAPlayer(final String name, final String type)
 	{
@@ -129,11 +135,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		{
 		} // the delegate handles everything
 		else if (name.endsWith("Purchase"))
+		{
 			purchase(false);
+		}
 		else if (name.endsWith("Move"))
 		{
-			move(name.endsWith("NonCombatMove"), name);
-			if (!name.endsWith("NonCombatMove"))
+			final boolean nonCombat = name.endsWith("NonCombatMove");
+			move(nonCombat, name);
+			if (!nonCombat)
 				m_ui.waitForMoveForumPoster(getPlayerID(), getPlayerBridge());
 		}
 		else if (name.endsWith("Battle"))
@@ -143,7 +152,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		else if (name.endsWith("Politics"))
 			politics(true);
 		else if (name.endsWith("EndTurn"))
+		{
 			endTurn();
+			// reset our sounds
+			m_soundPlayedAlreadyCombatMove = false;
+			m_soundPlayedAlreadyNonCombatMove = false;
+			m_soundPlayedAlreadyPurchase = false;
+		}
 		else
 			badStep = true;
 		SwingUtilities.invokeLater(new Runnable()
@@ -258,6 +273,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 		else if (!hasUnitsThatCanMove(nonCombat))
 			return;
+		// play a sound for this phase
+		if (nonCombat && !m_soundPlayedAlreadyNonCombatMove)
+			ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, id.getName());
+		else if (!nonCombat && !m_soundPlayedAlreadyCombatMove)
+			ClipPlayer.play(SoundPath.CLIP_PHASE_MOVE_COMBAT, id.getName());
+		
 		final MoveDescription moveDescription = m_ui.getMove(id, getPlayerBridge(), nonCombat, stepName);
 		if (moveDescription == null)
 		{
@@ -379,6 +400,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		
 		if (!canWePurchaseOrRepair())
 			return;
+		
+		// play a sound for this phase
+		if (!bid && !m_soundPlayedAlreadyPurchase)
+			ClipPlayer.play(SoundPath.CLIP_PHASE_PURCHASE, id.getName());
 		
 		// Check if any factories need to be repaired
 		String error = null;

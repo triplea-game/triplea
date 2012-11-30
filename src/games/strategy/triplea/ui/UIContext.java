@@ -239,7 +239,7 @@ public class UIContext
 			public void run()
 			{
 				// change the resource loader (this allows us to play sounds the map folder, rather than just default sounds)
-				ClipPlayer.getInstance(m_resourceLoader);
+				ClipPlayer.getInstance(m_resourceLoader, data);
 				SoundPath.preLoadSounds(SoundPath.SoundType.TRIPLEA);
 			}
 		};

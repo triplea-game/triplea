@@ -255,7 +255,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 	/** thread safe */
 	public void addMessage(final String message, final String from, final boolean thirdperson)
 	{
-		addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_MESSAGE);
+		addMessageWithSound(message, from, thirdperson, SoundPath.CLIP_CHAT_MESSAGE);
 	}
 	
 	/** thread safe */
@@ -295,7 +295,7 @@ public class ChatMessagePanel extends JPanel implements IChatListener
 						scrollModel.setValue(scrollModel.getMaximum());
 					}
 				});
-				ClipPlayer.play(sound);
+				ClipPlayer.play(sound, null);
 			}
 		};
 		// invoke in the swing event thread

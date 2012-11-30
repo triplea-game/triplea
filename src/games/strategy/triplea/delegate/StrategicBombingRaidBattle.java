@@ -28,6 +28,8 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.random.IRandomStats.DiceType;
+import games.strategy.sound.ClipPlayer;
+import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.Properties;
 import games.strategy.triplea.TripleAUnit;
@@ -339,6 +341,13 @@ public class StrategicBombingRaidBattle extends AbstractBattle
 					public void execute(final ExecutionStack stack, final IDelegateBridge bridge)
 					{
 						m_dice = DiceRoll.rollAA(validAttackingUnitsForThisRoll, currentPossibleAA, bridge, m_battleSite);
+						if (currentTypeAA.equals("AA"))
+						{
+							if (m_dice.getHits() > 0)
+								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_HIT, m_defender.getName());
+							else
+								ClipPlayer.play(SoundPath.CLIP_BATTLE_AA_MISS, m_defender.getName());
+						}
 					}
 				};
 				final IExecutable calculateCasualties = new IExecutable()

@@ -1533,10 +1533,12 @@ public class TechAbilityAttachment extends DefaultAttachment
 					final boolean heavyBombersLHTR = games.strategy.triplea.Properties.getLHTR_Heavy_Bombers(data);
 					for (final UnitType bomber : allBombers)
 					{
+						// TODO: The bomber dice rolls get set when the xml is parsed.
 						final int heavyBomberDiceRollsBonus = heavyBomberDiceRollsTotal - UnitAttachment.get(bomber).getAttackRolls(PlayerID.NULL_PLAYERID); // we subtract the base rolls to get the bonus
 						taa.setAttackRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
 						if (heavyBombersLHTR)
 						{
+							// TODO: this all happens WHEN the xml is parsed. Which means if the user changes the game options, this does not get changed. (meaning, turning on LHTR bombers will not result in this bonus damage, etc. It would have to start on, in the xml.)
 							taa.setDefenseRollsBonus(heavyBomberDiceRollsBonus + ":" + bomber.getName());
 							taa.setBombingBonus("1:" + bomber.getName()); // LHTR adds 1 to base roll
 						}

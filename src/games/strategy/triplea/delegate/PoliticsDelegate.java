@@ -348,6 +348,8 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 */
 	private void notifyFailure(final PoliticalActionAttachment paa)
 	{
+		// play a sound
+		ClipPlayer.play(SoundPath.CLIP_POLITICAL_ACTION_FAILURE, m_player.getName());
 		final String transcriptText = m_bridge.getPlayerID().getName() + " fails on action: " + MyFormatter.attachmentNameToText(paa.getName());
 		m_bridge.getHistoryWriter().addChildToEvent(transcriptText);
 		sendNotification(m_player, PoliticsText.getInstance().getNotificationFailure(paa.getText()));
@@ -363,7 +365,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	private void notifySuccess(final PoliticalActionAttachment paa)
 	{
 		// play a sound
-		ClipPlayer.play(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL);
+		ClipPlayer.play(SoundPath.CLIP_POLITICAL_ACTION_SUCCESSFUL, m_player.getName());
 		sendNotification(m_player, PoliticsText.getInstance().getNotificationSucccess(paa.getText()));
 		notifyOtherPlayers(paa, PoliticsText.getInstance().getNotificationSuccessOthers(paa.getText()));
 	}

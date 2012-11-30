@@ -13,15 +13,22 @@
  */
 package games.strategy.sound;
 
+import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.IEditableProperty;
 import games.strategy.triplea.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -45,8 +52,9 @@ public class ClipPlayer
 	private static ClipPlayer s_clipPlayer;
 	private boolean m_beSilent = false;
 	private final HashSet<String> m_mutedClips = new HashSet<String>();
-	private final HashMap<String, Clip> m_sounds = new HashMap<String, Clip>();
+	private final HashMap<String, List<Clip>> m_sounds = new HashMap<String, List<Clip>>();
 	private final ResourceLoader m_resourceLoader;
+	private final Set<String> m_subFolders = new HashSet<String>();
 	
 	// standard settings
 	private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
@@ -62,20 +70,17 @@ public class ClipPlayer
 		return s_clipPlayer;
 	}
 	
-	public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader)
+	public static synchronized ClipPlayer getInstance(final ResourceLoader resourceLoader, final GameData data)
 	{
 		// make a new clip player if we switch resource loaders (ie: if we switch maps)
 		if (s_clipPlayer == null || s_clipPlayer.m_resourceLoader != resourceLoader)
 		{
-			s_clipPlayer = new ClipPlayer(resourceLoader);
+			s_clipPlayer = new ClipPlayer(resourceLoader, data);
 			SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
 		}
 		return s_clipPlayer;
 	}
 	
-	/**
-	 * Singleton.
-	 */
 	private ClipPlayer(final ResourceLoader resourceLoader)
 	{
 		m_resourceLoader = resourceLoader;
@@ -83,15 +88,24 @@ public class ClipPlayer
 		m_beSilent = prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, false);
 		final HashSet<String> choices = SoundPath.getAllSoundOptions();
 		// until we get better sounds, all sounds start as muted, except for Slapping
-		choices.remove(SoundPath.CLIP_SLAP);
-		final boolean slapMuted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + SoundPath.CLIP_SLAP, false);
+		choices.remove(SoundPath.CLIP_CHAT_SLAP);
+		final boolean slapMuted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + SoundPath.CLIP_CHAT_SLAP, false);
 		if (slapMuted)
-			m_mutedClips.add(SoundPath.CLIP_SLAP);
+			m_mutedClips.add(SoundPath.CLIP_CHAT_SLAP);
 		for (final String sound : choices)
 		{
-			final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, true); // true until we get better sounds
+			final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false); // true until we get better sounds
 			if (muted)
 				m_mutedClips.add(sound);
+		}
+	}
+	
+	private ClipPlayer(final ResourceLoader resourceLoader, final GameData data)
+	{
+		this(resourceLoader);
+		for (final PlayerID p : data.getPlayerList().getPlayers())
+		{
+			m_subFolders.add(p.getName());
 		}
 	}
 	
@@ -168,10 +182,12 @@ public class ClipPlayer
 	 * 
 	 * @param clipName
 	 *            String - the file name of the clip
+	 * @param subFolder
+	 *            String - the name of the player, or null
 	 */
-	static public void play(final String clipName)
+	static public void play(final String clipName, final String subFolder)
 	{
-		getInstance().playClip(clipName);
+		getInstance().playClip(clipName, subFolder);
 	}
 	
 	/**
@@ -179,9 +195,9 @@ public class ClipPlayer
 	 * @param clipName
 	 *            String - the file name of the clip
 	 */
-	private void playClip(final String clipName)
+	private void playClip(final String clipName, final String subFolder)
 	{
-		final Clip clip = loadClip(clipName);
+		final Clip clip = loadClip(clipName, subFolder);
 		if (clip != null)
 		{
 			clip.setFramePosition(0);
@@ -197,26 +213,105 @@ public class ClipPlayer
 	 */
 	public void preLoadClip(final String clipName)
 	{
-		loadClip(clipName);
+		loadClip(clipName, null);
+		for (final String sub : m_subFolders)
+		{
+			loadClip(clipName, sub);
+		}
 	}
 	
-	private Clip loadClip(final String clipName)
+	private Clip loadClip(final String clipName, final String subFolder)
 	{
 		if (m_beSilent || isMuted(clipName))
 			return null;
+		final Clip clip = loadClipPath(clipName + (subFolder == null ? "" : ("_" + subFolder)), (subFolder != null));
+		if (clip == null)
+			return loadClipPath(clipName, false);
+		return clip;
+	}
+	
+	private Clip loadClipPath(final String pathName, final boolean subFolder)
+	{
 		Clip clip;
-		if (m_sounds.containsKey(clipName))
+		if (m_sounds.containsKey(pathName))
 		{
-			clip = m_sounds.get(clipName);
+			final List<Clip> availableSounds = m_sounds.get(pathName);
+			if (availableSounds == null || availableSounds.isEmpty())
+				return null;
+			Collections.shuffle(availableSounds); // we want to pick a random sound from this folder, as users don't like hearing the same ones over and over again
+			clip = availableSounds.get(0);
 		}
 		else
 		{
-			clip = loadClip(m_resourceLoader.getResourceAsStream("sounds" + File.separator + clipName));
-			m_sounds.put(clipName, clip);
+			final URL thisSoundFolderURL = m_resourceLoader.getResource("sounds" + File.separator + pathName);
+			if (thisSoundFolderURL == null)
+			{
+				if (!subFolder)
+					System.out.println("No Sounds Found For: " + pathName);
+				m_sounds.put(pathName, new ArrayList<Clip>());
+				return null;
+			}
+			URI thisSoundFolderURI;
+			File thisSoundFolder;
+			try
+			{
+				thisSoundFolderURI = thisSoundFolderURL.toURI();
+				thisSoundFolder = new File(thisSoundFolderURI);
+			} catch (final URISyntaxException e)
+			{
+				thisSoundFolder = new File(thisSoundFolderURL.getPath());
+			}
+			if (thisSoundFolder == null || !thisSoundFolder.exists() || !thisSoundFolder.isDirectory())
+			{
+				m_sounds.put(pathName, new ArrayList<Clip>());
+				return null;
+			}
+			final List<Clip> availableSounds = new ArrayList<Clip>();
+			for (final File sound : thisSoundFolder.listFiles())
+			{
+				final Clip newClip = loadClip(sound);// m_resourceLoader.getResourceAsStream("sounds" + File.separator + clipName));
+				if (newClip != null)
+					availableSounds.add(newClip);
+			}
+			if (availableSounds.isEmpty())
+			{
+				m_sounds.put(pathName, new ArrayList<Clip>());
+				return null;
+			}
+			clip = availableSounds.get(0);
+			m_sounds.put(pathName, availableSounds);
 		}
 		return clip;
 	}
 	
+	private synchronized Clip loadClip(final File clipFile)
+	{
+		try
+		{
+			final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
+			final AudioFormat format = audioInputStream.getFormat();
+			final DataLine.Info info = new DataLine.Info(Clip.class, format);
+			final Clip clip = (Clip) AudioSystem.getLine(info);
+			clip.open(audioInputStream);
+			return clip;
+		}
+		// these can happen if the sound isnt configured, its not that bad.
+		catch (final LineUnavailableException e)
+		{
+			e.printStackTrace(System.out);
+		} catch (final IOException e)
+		{
+			e.printStackTrace(System.out);
+		} catch (final UnsupportedAudioFileException e)
+		{
+			e.printStackTrace(System.out);
+		} catch (final RuntimeException re)
+		{
+			re.printStackTrace(System.out);
+		}
+		return null;
+	}
+	/*
 	private synchronized Clip loadClip(final InputStream inputStream)
 	{
 		try
@@ -244,4 +339,5 @@ public class ClipPlayer
 		}
 		return null;
 	}
+	*/
 }

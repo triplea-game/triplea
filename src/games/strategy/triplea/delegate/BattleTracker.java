@@ -698,7 +698,12 @@ public class BattleTracker implements java.io.Serializable
 			bridge.getHistoryWriter().addChildToEvent(takeOver.toString());
 			bridge.addChange(takeOver);
 			// play a sound
-			ClipPlayer.play(SoundPath.CLIP_CAPTURE);
+			if (ta.getCapital() != null)
+				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id.getName());
+			else if (m_blitzed.contains(territory))
+				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, id.getName());
+			else
+				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, id.getName());
 			if (changeTracker != null)
 			{
 				changeTracker.addChange(takeOver);

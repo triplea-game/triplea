@@ -448,7 +448,7 @@ public class Chat
 					{
 						final String message = "You were slapped by " + from.getName();
 						m_chatHistory.add(new ChatMessage(message, from.getName(), false));
-						listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_SLAP);
+						listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_CHAT_SLAP);
 					}
 				}
 				else if (from.equals(m_messengers.getChannelMessenger().getLocalNode()))
@@ -457,7 +457,7 @@ public class Chat
 					{
 						final String message = "You just slapped " + to;
 						m_chatHistory.add(new ChatMessage(message, from.getName(), false));
-						listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_SLAP);
+						listener.addMessageWithSound(message, from.getName(), false, SoundPath.CLIP_CHAT_SLAP);
 					}
 				}
 			}
