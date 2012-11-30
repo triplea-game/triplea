@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Fixing Move Panel and Place Panel so that Undoing a move or place will not result in scrolling back to the top, and will instead scroll to make sure that the move under the undoed move is still visible. (veqryn)
+
 * Allowing all sounds to have a player associated with them.  Just name the sound "<soundName>_<playerName>".  If the player sound does not exist, it will use the default non-player sound. (veqryn)
 
 * Added a ton more new sounds to the engine. (veqryn)

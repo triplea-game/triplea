@@ -154,7 +154,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 		m_CANCEL_MOVE_ACTION.actionPerformed(null);
 	}
 	
-	public final void undoMove(final int moveIndex)
+	public final String undoMove(final int moveIndex)
 	{
 		// clean up any state we may have
 		m_CANCEL_MOVE_ACTION.actionPerformed(null);
@@ -169,6 +169,7 @@ public abstract class AbstractMovePanel extends ActionPanel
 			updateMoves();
 		}
 		undoMoveSpecific();
+		return error;
 	}
 	
 	/*

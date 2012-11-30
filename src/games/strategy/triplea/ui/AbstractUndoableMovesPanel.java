@@ -7,6 +7,8 @@ import games.strategy.triplea.util.UnitSeperator;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +37,7 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 	protected final AbstractMovePanel m_movePanel;
 	protected JScrollPane scroll;
 	protected Integer scrollBarPreviousValue = null;
+	protected Integer previousVisibleIndex = null;
 	
 	public AbstractUndoableMovesPanel(final GameData data, final AbstractMovePanel movePanel)
 	{
@@ -83,10 +86,31 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 				items.add(seperator);
 			}
 		}
+		final int scrollIncrementFinal = scrollIncrement + seperatorSize.height;
 		// JScrollPane scroll = new JScrollPane(items);
-		scroll = new JScrollPane(items);
+		scroll = new JScrollPane(items)
+		{
+			private static final long serialVersionUID = -1064967105431785533L;
+			
+			@Override
+			public void paint(final Graphics g)
+			{
+				/* this doesn't seem to be working...
+				if (scrollBarPreviousValue != null)
+				{
+					scroll.getVerticalScrollBar().setValue(scrollBarPreviousValue);
+					scrollBarPreviousValue = null;
+				}*/
+				if (previousVisibleIndex != null)
+				{
+					items.scrollRectToVisible(new Rectangle(0, scrollIncrementFinal * ((m_moves.size()) - previousVisibleIndex), 1, scrollIncrementFinal));
+					previousVisibleIndex = null;
+				}
+				super.paint(g);
+			}
+		};
 		scroll.setBorder(null);
-		scroll.getVerticalScrollBar().setUnitIncrement(scrollIncrement);
+		scroll.getVerticalScrollBar().setUnitIncrement(scrollIncrementFinal);
 		if (scrollBarPreviousValue != null)
 		{
 			scroll.getVerticalScrollBar().setValue(scrollBarPreviousValue);
@@ -165,7 +189,11 @@ abstract public class AbstractUndoableMovesPanel extends JPanel
 		{
 			// Record position of scroll bar as percentage.
 			scrollBarPreviousValue = scroll.getVerticalScrollBar().getValue();
-			m_movePanel.undoMove(m_moveIndex);
+			final String error = m_movePanel.undoMove(m_moveIndex);
+			if (error == null)
+				previousVisibleIndex = Math.max(0, m_moveIndex - 1);
+			else
+				previousVisibleIndex = null;
 		}
 	}
 	
