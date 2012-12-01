@@ -172,7 +172,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 							+ "Select 'Zoom' from the 'View' menu, and change to the desired level.<br>"
 							+ "<br><b> Turn off Art</b><br>" + "Deselect 'Map Details' in the 'View' menu, to show a map without the artwork.<br>"
 							+ "Select a new 'Map Skin' from the 'View' menu to show a different kind of artwork (not all maps have skins).<br>"
-							+ "<br><b> Other Things</b><br>" + "Press 'N' to cycle through units with movement left.<br>"
+							+ "<br><b> Other Things</b><br>" + "Press 'N' to cycle through units with movement left (move phases only).<br>"
 							+ "Press 'I' to popup info on whatever territory and unit your mouse is currently over.<br>";
 				final JEditorPane editorPane = new JEditorPane();
 				editorPane.setEditable(false);

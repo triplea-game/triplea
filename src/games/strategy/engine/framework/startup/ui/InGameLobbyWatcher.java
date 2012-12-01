@@ -37,7 +37,9 @@ import games.strategy.net.IMessengerErrorListener;
 import games.strategy.net.INode;
 import games.strategy.net.IServerMessenger;
 import games.strategy.net.MacFinder;
+import games.strategy.net.UniversalPlugAndPlanHelper;
 
+import java.awt.Frame;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -247,9 +249,31 @@ public class InGameLobbyWatcher
 						{
 							public void run()
 							{
-								final String message = "Your computer is not reachable from the internet.\n" + "Please check your firewall or router configuration.\n"
-											+ "See 'How To Host...' in the help menu, at the top of the lobby screen.\n" + "The server tried to connect to " + addressUsed;
-								JOptionPane.showMessageDialog(JOptionPane.getFrameForComponent(parent), message, "Could Not Host", JOptionPane.ERROR_MESSAGE);
+								String portString = System.getProperty(GameRunner2.TRIPLEA_PORT_PROPERTY);
+								if (portString == null || portString.trim().length() <= 0)
+									portString = "3300";
+								final int port = Integer.parseInt(portString);
+								final Frame parentComponent = JOptionPane.getFrameForComponent(parent);
+								final String message = "Your computer is not reachable from the internet.\r\n"
+											+ "Please make sure your Firewall allows incoming connections (hosting) for TripleA.\r\n"
+											+ "(The firewall exception must be updated every time a new version of TripleA comes out.)\r\n"
+											+ "And that your Router is configured to send TCP traffic on port " + portString + " to your local ip address.\r\n"
+											+ "See 'How To Host...' in the help menu, at the top of the lobby screen.\r\n"
+											+ "The server tried to connect to your external ip: " + addressUsed + "\r\n";
+								JOptionPane.showMessageDialog(parentComponent, message, "Could Not Host", JOptionPane.ERROR_MESSAGE);
+								final String question = "TripleA has a new feature (in BETA) that will attempt to set your Port Forwarding for you.\r\n"
+											+ "You must have Universal Plug and Play (UPnP) enabled on your router.\r\n"
+											+ "Only around half of all routers come with UPnP enabled by default.\r\n\r\n"
+											+ "If this does not work, try turning on UPnP in your router, then try this all again.\r\n"
+											+ "(To change your router's settings, click 'How To Host...' in the help menu, or use google search.)\r\n\r\n"
+											+ "If TripleA previously successfully set your port forwarding, but you still can not host, \r\n"
+											+ "then the problem is most likely your firewall. Try creating an exception for TripleA in the firewall.\r\n"
+											+ "Or disable the firewall briefly just to test.\r\n"
+											+ "The firewall exception must be updated every time a new version of TripleA comes out.\r\n";
+								final int answer = JOptionPane.showConfirmDialog(parentComponent, question, "Try Setting Port Forwarding with UPnP?", JOptionPane.YES_NO_OPTION);
+								if (answer != JOptionPane.YES_OPTION)
+									System.exit(-1);
+								UniversalPlugAndPlanHelper.attemptAddingPortForwarding(parentComponent, port);
 								System.exit(-1);
 							}
 						});

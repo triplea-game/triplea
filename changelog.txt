@@ -1,4 +1,10 @@
 Changes for 1.6.1.3
+* Added UPnP support to TripleA, so that TripleA will now attempt to Forward Ports for the user.  This means users should no longer have to do port forwarding themselves to be able to host a game online. (veqryn)
+
+* Created framework for using UPnP library, and UI component for user. (veqryn)
+
+* Added java library for Universal Plug and Play (UPnP) to TripleA. (veqryn)
+
 * Created new HotKey, "N", which when pressed during a movement phase, will cycle through all units with available movement left, focusing the map on the unit. (veqryn)
 
 * Created new HotKey, "I", which when pressed will create a popup for 5 seconds showing all the info about the unit and/or territory your mouse is currently over. (veqryn)
