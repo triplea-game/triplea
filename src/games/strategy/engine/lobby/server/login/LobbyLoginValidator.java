@@ -130,14 +130,21 @@ public class LobbyLoginValidator implements ILoginValidator
 	{
 		if (stamp == null)
 			return "Banned Forever";
-		long millis = stamp.getTime() - System.currentTimeMillis();
+		final long millis = stamp.getTime() - System.currentTimeMillis();
 		if (millis < 0)
 			return "Ban time left: 1 Minute";
+		long seconds = Math.max(1, TimeUnit.MILLISECONDS.toSeconds(millis));
+		final long days = seconds / (60 * 60 * 24);
+		seconds -= Math.max(1, seconds % (60 * 60 * 24));
+		final long hours = seconds / (60 * 60);
+		seconds -= Math.max(1, seconds % (60 * 60));
+		final long minutes = seconds / (60);
+		/*
 		final long days = TimeUnit.MILLISECONDS.toDays(millis);
 		millis -= TimeUnit.DAYS.toMillis(days);
 		final long hours = TimeUnit.MILLISECONDS.toHours(millis);
 		millis -= TimeUnit.HOURS.toMillis(hours);
-		final long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) + 1; // just rounding the seconds up, who cares
+		final long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) + 1;*/
 		final StringBuilder sb = new StringBuilder(64);
 		sb.append("Ban time left: ");
 		if (days > 0)

@@ -215,12 +215,12 @@ public class ImageScrollerLargeView extends JComponent
 			requestFocusInWindow();
 		}
 		
-		@Override
+		/*
 		public void mouseDragged(final MouseEvent e)
 		{
 			requestFocusInWindow();
-		}
-		
+		}*/
+
 		@Override
 		public void mouseReleased(final MouseEvent e)
 		{
