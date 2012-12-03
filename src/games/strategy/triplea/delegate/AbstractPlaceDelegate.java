@@ -609,7 +609,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		// the only reason it could be empty is if its water and no
 		// territories adjacent have factories
 		if (producers.isEmpty())
-			return "No factory adjacent to " + to.getName();
+			return "No factory in or adjacent to " + to.getName();
 		if (producers.size() == 1)
 			return canProduce(producers.iterator().next(), to, units, player);
 		final Collection<Territory> failingProducers = new ArrayList<Territory>();
@@ -620,7 +620,9 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			if (errorP != null)
 			{
 				failingProducers.add(producer);
-				error += ", " + errorP;
+				// do not include the error for same territory, if water, because users do not want to see this error report for 99.9% of games
+				if (!(producer.equals(to) && producer.isWater()))
+					error += ", " + errorP;
 			}
 		}
 		if (producers.size() == failingProducers.size())
@@ -666,12 +668,17 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		// make sure some unit has fullfilled requiresUnits requirements
 		if (isUnitPlacementRestrictions() && !testUnits.isEmpty() && !Match.someMatch(testUnits, unitWhichRequiresUnitsHasRequiredUnits(producer, true)))
 			return "You do not have the required units to build in " + producer.getName();
+		// land factories in water can't produce, and sea factories in land can't produce. air can produce like land if in land, and like sea if in water.
+		final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+		if (producer.isWater())
+			factoryMatch.add(Matches.UnitIsLand.invert());
+		else
+			factoryMatch.add(Matches.UnitIsSea.invert());
+		final List<Unit> factories = producer.getUnits().getMatches(factoryMatch);
 		// make sure there is a factory
-		if (!producer.getUnits().someMatch(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)))
+		if (factories.isEmpty())
 		{
 			// check to see if we are producing a factory
-			/*if (Match.someMatch(testUnits, Matches.UnitIsFactory))
-				return null;*/
 			if (Match.someMatch(testUnits, Matches.UnitIsConstruction))
 			{
 				if (howManyOfEachConstructionCanPlace(to, testUnits, player).totalValues() > 0) // No error, Construction to place
@@ -717,7 +724,11 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			}
 			return producers;
 		}
-		for (final Territory current : getData().getMap().getNeighbors(to))
+		if (canProduce(to, to, unitsToPlace, player, simpleCheck) == null)
+		{
+			producers.add(to);
+		}
+		for (final Territory current : getData().getMap().getNeighbors(to, Matches.TerritoryIsLand))
 		{
 			if (canProduce(current, to, unitsToPlace, player, simpleCheck) == null)
 			{
@@ -736,7 +747,7 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	{
 		final List<Territory> producers = getAllProducers(to, player, units);
 		if (producers.isEmpty())
-			return "No factory adjacent to " + to.getName();
+			return "No factory in or adjacent to " + to.getName();
 		// if its an original factory then unlimited production
 		Collections.sort(producers, getBestProducerComparator(to, units, player));
 		final TerritoryAttachment ta = TerritoryAttachment.get(producers.iterator().next());
@@ -1060,7 +1071,12 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 			return 0;
 		// if its an original factory then unlimited production
 		final TerritoryAttachment ta = TerritoryAttachment.get(producer);
-		final Collection<Unit> factoryUnits = producer.getUnits().getMatches(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
+		final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+		if (producer.isWater())
+			factoryMatch.add(Matches.UnitIsLand.invert());
+		else
+			factoryMatch.add(Matches.UnitIsSea.invert());
+		final Collection<Unit> factoryUnits = producer.getUnits().getMatches(factoryMatch);
 		// boolean placementRestrictedByFactory = isPlacementRestrictedByFactory();
 		final boolean unitPlacementPerTerritoryRestricted = isUnitPlacementPerTerritoryRestricted();
 		final boolean originalFactory = ta.getOriginalFactory();
@@ -1504,7 +1520,12 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	public boolean wasOwnedUnitThatCanProduceUnitsOrIsFactoryInTerritoryAtStartOfStep(final Territory to, final PlayerID player)
 	{
 		final Collection<Unit> unitsAtStartOfTurnInTO = unitsAtStartOfStepInTerritory(to);
-		return Match.countMatches(unitsAtStartOfTurnInTO, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player)) > 0;
+		final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+		if (to.isWater())
+			factoryMatch.add(Matches.UnitIsLand.invert());
+		else
+			factoryMatch.add(Matches.UnitIsSea.invert());
+		return Match.countMatches(unitsAtStartOfTurnInTO, factoryMatch) > 0;
 	}
 	
 	/**

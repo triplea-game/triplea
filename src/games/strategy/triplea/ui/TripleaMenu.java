@@ -165,7 +165,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
 							+ "After selecting units Left click on a territory to move units there (do not Left click and Drag, instead select units, then move the mouse, then select the territory).<br>"
 							+ "CTRL-Left click on a territory to select the territory as a way point (this will force the units to move through this territory on their way to the destination).<br>"
 							+ "<br><b> Moving the Map Screen</b><br>" + "Right click and Drag the mouse to move your screen over the map.<br>"
-							+ "Left click on the map (anywhere), then use the Arrow Keys to move your map around.<br>"
+							+ "Left click on the map (anywhere), then use the Arrow Keys (or WASD) to move your map around.<br>"
 							+ "Left click in the Minimap at the top right of the screen, and Drag the mouse.<br>"
 							+ "Move the mouse to the edge of the map window, and the screen will scroll in that direction.<br>" + "Scrolling the mouse wheel will move the map up and down.<br>"
 							+ "<br><b> Zooming Out</b><br>" + "Holding ALT while Scrolling the Mouse Wheel will zoom the map in and out.<br>"

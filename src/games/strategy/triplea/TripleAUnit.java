@@ -26,6 +26,7 @@ import games.strategy.triplea.attatchments.TechAbilityAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
 import games.strategy.triplea.delegate.Matches;
+import games.strategy.util.CompositeMatchAnd;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -494,7 +495,12 @@ public class TripleAUnit extends Unit
 	
 	public static Unit getBiggestProducer(final Collection<Unit> units, final Territory producer, final PlayerID player, final GameData data, final boolean accountForDamage)
 	{
-		final Collection<Unit> factories = Match.getMatches(units, Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player));
+		final CompositeMatchAnd<Unit> factoryMatch = new CompositeMatchAnd<Unit>(Matches.UnitIsOwnedAndIsFactoryOrCanProduceUnits(player), Matches.unitIsBeingTransported().invert());
+		if (producer.isWater())
+			factoryMatch.add(Matches.UnitIsLand.invert());
+		else
+			factoryMatch.add(Matches.UnitIsSea.invert());
+		final Collection<Unit> factories = Match.getMatches(units, factoryMatch);
 		if (factories.isEmpty())
 			return null;
 		final IntegerMap<Unit> productionPotential = new IntegerMap<Unit>();

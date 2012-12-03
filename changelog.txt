@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Allowing for Sea Factories, and Air Factories, to produce from owned sea zones. (veqryn)
+
 * Added UPnP support to TripleA, so that TripleA will now attempt to Forward Ports for the user.  This means users should no longer have to do port forwarding themselves to be able to host a game online. (veqryn)
 
 * Created framework for using UPnP library, and UI component for user. (veqryn)
