@@ -10,7 +10,7 @@ import games.strategy.engine.lobby.client.LobbyClient;
 import games.strategy.engine.lobby.client.login.LobbyLogin;
 import games.strategy.engine.lobby.client.login.LobbyServerProperties;
 import games.strategy.engine.lobby.client.ui.LobbyFrame;
-import games.strategy.net.BareBonesBrowserLaunch;
+import games.strategy.net.DesktopUtilityBrowserLauncher;
 
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -184,39 +184,15 @@ public class MetaSetupPanel extends SetupPanel
 		{
 			// We open both the actual rule book, and the web page for all guides.
 			// This way we can add other guides and rulebooks and tutorials later, as well as being able to update them after the stable is out.
-			BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/TripleA_RuleBook.pdf");
-			BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Guides");
+			DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/TripleA_RuleBook.pdf");
+			DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Guides");
 			// BareBonesBrowserLaunch.openURL("https://sourceforge.net/projects/triplea/files/help/");
 		} catch (final Exception ex)
 		{
 			System.out.println("Error: " + ex); // print the error
 		}
-		/* we could also try opening the file on the computer, if triplea comes with it:
-		class pdfopen           //class pdfopen
-		{
-		    public static void main(String args[])       //main function
-		    {
-		        try                                      //try statement
-		        {
-		            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + "c:\\chart.pdf");   //open the file chart.pdf
-		
-		        } catch (Exception e)                    //catch any exceptions here
-		          {
-		              System.out.println("Error" + e );  //print the error
-		          }
-		    }
-		}
-		
-		// or...
-		if (Desktop.isSupported()) {
-		    try {
-		        File myFile = new File("/path/to/file.pdf");
-		        Desktop.getDesktop().open(myFile);
-		    } catch (IOException ex) {
-		        // no application registered for PDFs
-		    }
-		}
-
+		/* Or we could try opening the file on the computer, since triplea comes with it:
+			DesktopUtilityBrowserLauncher.openFile(new File(GameRunner.getRootFolder(), "TripleA_RuleBook.pdf"));
 		 */
 	}
 	

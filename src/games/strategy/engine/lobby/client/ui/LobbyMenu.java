@@ -7,7 +7,7 @@ import games.strategy.engine.lobby.server.IUserManager;
 import games.strategy.engine.lobby.server.ModeratorController;
 import games.strategy.engine.lobby.server.userDB.DBUser;
 import games.strategy.engine.lobby.server.userDB.DBUserController;
-import games.strategy.net.BareBonesBrowserLaunch;
+import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.net.INode;
 import games.strategy.net.Node;
 import games.strategy.sound.SoundOptions;
@@ -414,7 +414,7 @@ public class LobbyMenu extends JMenuBar
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
+					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4085700.html");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
@@ -428,7 +428,7 @@ public class LobbyMenu extends JMenuBar
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
+					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
@@ -442,7 +442,7 @@ public class LobbyMenu extends JMenuBar
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("https://sourceforge.net/tracker/?group_id=44492");
+					DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/tracker/?group_id=44492");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
@@ -456,7 +456,7 @@ public class LobbyMenu extends JMenuBar
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
+					DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/modules/newbb/viewtopic.php?topic_id=100&forum=1");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
@@ -470,7 +470,7 @@ public class LobbyMenu extends JMenuBar
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("http://www.tripleawarclub.org/");
+					DesktopUtilityBrowserLauncher.openURL("http://www.tripleawarclub.org/");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
@@ -484,7 +484,7 @@ public class LobbyMenu extends JMenuBar
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Forum");
+					DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Forum");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
@@ -498,7 +498,7 @@ public class LobbyMenu extends JMenuBar
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
+					DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block
@@ -512,7 +512,7 @@ public class LobbyMenu extends JMenuBar
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Guides");
+					DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Guides");
 				} catch (final Exception e1)
 				{
 					// TODO Auto-generated catch block

@@ -1,7 +1,7 @@
 package games.strategy.engine.framework.mapDownload;
 
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
-import games.strategy.net.BareBonesBrowserLaunch;
+import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.ui.Util;
 
 import java.awt.BorderLayout;
@@ -135,7 +135,7 @@ public class DownloadMapDialog extends JDialog
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
+					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312p4074312.html");
 				} catch (final Exception ex)
 				{
 					Util.notifyError(m_cancelButton, ex.getMessage());

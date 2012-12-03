@@ -1,13 +1,15 @@
 package util.image;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.ProcessRunnerUtil;
-import games.strategy.net.BareBonesBrowserLaunch;
+import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.image.UnitImageFactory;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
@@ -230,6 +232,24 @@ public class MapCreator extends JFrame
 		final JScrollPane scrollText = new JScrollPane(text);
 		m_panel1.add(scrollText);
 		m_panel1.add(Box.createVerticalStrut(30));
+		m_panel1.add(new JLabel("Click button open up the readme file on how to make maps:"));
+		final JButton helpButton = new JButton("Start Tutorial  /  Show Help Document");
+		helpButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				try
+				{
+					DesktopUtilityBrowserLauncher.openFile(new File(GameRunner.getRootFolder(), "doc" + File.separator + "map_and_map_skin_making_overview.html"));
+					// DesktopUtilityBrowserLauncher.openURL(GameRunner.getRootFolder().getAbsoluteFile() + File.separator + "doc" + File.separator + "map_and_map_skin_making_overview.html");
+				} catch (final Exception e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
+		m_panel1.add(helpButton);
+		m_panel1.add(Box.createVerticalStrut(30));
 		m_panel1.add(new JLabel("Click button to select where your map folder is:"));
 		final JButton mapFolderButton = new JButton("Select Map Folder");
 		mapFolderButton.addActionListener(new AbstractAction("Select Map Folder")
@@ -429,7 +449,9 @@ public class MapCreator extends JFrame
 	{
 		m_panel2.removeAll();
 		m_panel2.setLayout(new BoxLayout(m_panel2, BoxLayout.PAGE_AXIS));
-		m_panel2.add(Box.createVerticalStrut(50));
+		m_panel2.add(Box.createVerticalStrut(30));
+		m_panel2.add(new JLabel("Map Skin Utilities:"));
+		m_panel2.add(Box.createVerticalStrut(30));
 		final JButton mapPropertiesMakerButton = new JButton("Run the Map Properties Maker");
 		mapPropertiesMakerButton.addActionListener(new AbstractAction("Run the Map Properties Maker")
 		{
@@ -618,6 +640,7 @@ public class MapCreator extends JFrame
 		m_panel3.removeAll();
 		m_panel3.setLayout(new BoxLayout(m_panel3, BoxLayout.PAGE_AXIS));
 		m_panel3.add(Box.createVerticalStrut(30));
+		m_panel3.add(new JLabel("Game XML Utilities:"));
 		m_panel3.add(new JLabel("Sorry but for now the only XML creator is Wisconsin's 'Part 2' of his map maker."));
 		m_panel3.add(new JLabel("You can try downloading it from our dev forum: http://triplea.sourceforge.net/mywiki/Forum"));
 		m_panel3.add(Box.createVerticalStrut(30));
@@ -630,7 +653,7 @@ public class MapCreator extends JFrame
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("http://triplea.sourceforge.net/mywiki/Forum");
+					DesktopUtilityBrowserLauncher.openURL("http://triplea.sourceforge.net/mywiki/Forum");
 				} catch (final Exception e1)
 				{
 					e1.printStackTrace();
@@ -676,6 +699,8 @@ public class MapCreator extends JFrame
 	{
 		m_panel4.removeAll();
 		m_panel4.setLayout(new BoxLayout(m_panel4, BoxLayout.PAGE_AXIS));
+		m_panel4.add(Box.createVerticalStrut(30));
+		m_panel4.add(new JLabel("Other or Optional Utilities:"));
 		m_panel4.add(Box.createVerticalStrut(30));
 		final JButton reliefBreakerButton = new JButton("Run the Relief Image Breaker");
 		reliefBreakerButton.addActionListener(new AbstractAction("Run the Relief Image Breaker")

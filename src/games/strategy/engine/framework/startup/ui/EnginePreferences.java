@@ -1,9 +1,10 @@
 package games.strategy.engine.framework.startup.ui;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.framework.GameRunner2.ProxyChoice;
 import games.strategy.engine.framework.ProcessRunnerUtil;
-import games.strategy.net.BareBonesBrowserLaunch;
+import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.sound.SoundOptions;
 import games.strategy.triplea.ui.TripleaMenu;
 import games.strategy.util.EventThreadJOptionPane;
@@ -50,6 +51,8 @@ public class EnginePreferences extends JDialog
 	private JButton m_gameParser;
 	private JButton m_setupProxies;
 	private JButton m_mapCreator;
+	private JButton m_userFolder;
+	private JButton m_programFolder;
 	private JButton m_donate;
 	
 	private EnginePreferences(final Frame parentFrame)
@@ -78,6 +81,8 @@ public class EnginePreferences extends JDialog
 		m_gameParser = new JButton("Enable/Disable Delayed Parsing of Game XML's");
 		m_setupProxies = new JButton("Setup Network and Proxy Settings");
 		m_mapCreator = new JButton("Run the Map Creator");
+		m_userFolder = new JButton("Open User Maps and Savegames Folder");
+		m_programFolder = new JButton("Open Installed Program Folder");
 		m_donate = new JButton("Donate...");
 	}
 	
@@ -102,6 +107,10 @@ public class EnginePreferences extends JDialog
 		buttonsPanel.add(m_setupProxies);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_mapCreator);
+		buttonsPanel.add(new JLabel(" "));
+		buttonsPanel.add(m_userFolder);
+		buttonsPanel.add(new JLabel(" "));
+		buttonsPanel.add(m_programFolder);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_donate);
 		buttonsPanel.add(new JLabel(" "));
@@ -230,13 +239,39 @@ public class EnginePreferences extends JDialog
 				ProcessRunnerUtil.exec(commands);
 			}
 		});
+		m_userFolder.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				try
+				{
+					DesktopUtilityBrowserLauncher.openFile(GameRunner.getUserRootFolder());
+				} catch (final Exception e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
+		m_programFolder.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				try
+				{
+					DesktopUtilityBrowserLauncher.openFile(GameRunner.getRootFolder());
+				} catch (final Exception e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
 		m_donate.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
-					BareBonesBrowserLaunch.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
+					DesktopUtilityBrowserLauncher.openURL("https://sourceforge.net/donate/index.php?group_id=44492");
 				} catch (final Exception e1)
 				{
 					e1.printStackTrace();

@@ -1,0 +1,1580 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta name="generator" content="Bluefish">
+		<meta name="author" content="Mark Christopher Duncan">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="description" content="">
+		<link rel="stylesheet" type="text/css" href="tripleaStyle.css">
+		<title>TripleA :: Map and Map Skin Making Overview</title>
+	</head>
+
+	<body background="images/water_mark.gif">
+		<p align="center">
+			<a name="top">
+				<img src="images/big_banner.png" width="800" height="64" border="0" alt="TripleA Banner"/>
+			</a>
+		</p>
+		
+		<p align="center">
+			<span style="font-style: italic;">
+				This Document Is Accurate For TripleA v1.6.1.3
+			</span>
+			<br/>
+			<span style="font-size: smaller; font-style: italic;">
+				Written by Mark Christopher Duncan (Veqryn)<br/>
+				Revision 1.0
+			</span>
+		</p>
+		
+		<hr/>
+		<h2>Back to Main Readme</h2>
+		<ul>
+			<li><a href="../readme.html"><b>Main Readme</b></a></li>
+		</ul>
+		<hr/>
+		<br/>
+		
+		
+		<h2>Developer Documentation :: Quick Nav</h2>
+		<ul>
+			<li><b>1.0</b> <a href="#sec_1">Introduction to TripleA Maps, and Map Skins</a></li>
+				<ul>
+					<li><b>1.1.1</b> <a href="#sec_1.1.1">Making Your First Map Skin</a></li>
+				</ul>
+
+			<li><b>2.0</b> <a href="#sec_2">The Map Creator</a></li>
+			
+			<li><b>3.0</b> <a href="#sec_3">Map Skin Utilities</a></li>
+				<ul>
+					<li><b>3.1.1</b> <a href="#sec_3.1.1">Map Properties Maker</a></li>
+					<li><b>3.1.2</b> <a href="#sec_3.1.2">Center Picker</a></li>
+					<li><b>3.1.3</b> <a href="#sec_3.1.3">Polygon Grabber</a></li>
+					<li><b>3.1.4</b> <a href="#sec_3.1.4">Auto-Placement Finder</a></li>
+					<li><b>3.1.5</b> <a href="#sec_3.1.5">Placement Picker</a></li>
+					<li><b>3.1.6</b> <a href="#sec_3.1.6">Tile Image Breaker</a></li>
+					<li><b>3.1.7</b> <a href="#sec_3.1.7">Decoration Placer</a></li>
+					<li><b>3.1.8</b> <a href="#sec_3.1.8">Relief Image Breaker</a></li>
+					<li><b>3.1.9</b> <a href="#sec_3.1.9">Image Shrinker</a></li>
+				</ul>
+		</ul>
+		<hr/>
+		<br/>
+		
+		
+		<h2><a name="sec_1">1.0</a> Introduction to TripleA Maps, and Map Skins</h2>
+			<blockquote>
+				<p>
+					Welcome to the Map and Map Skin making tutorial.  This will cover all points except for the actual game xml.
+					Before we begin, a brief explanation is needed about skins, because actually there is no difference between 'map' and 'map skin'.
+				</p>
+				<br>
+				<p>
+						Games made for TripleA actually consist of 2 distinct parts:
+					<br>1. The Map Skin
+					<br>The Map skin is all of the art files and display information needed for the map to show up on your screen.
+						Nothing here ever gets sent over the network or saved to a savegame, and users are free to change these files at will.
+						This can be thought of as "all files except for the games folder".
+					<br>
+					<br>2. The Game XML
+					<br>The Game XML is a single xml file, containing the all of the information about the board setup, the game rules, how the game is played, etc.
+						All of the information in this is parsed and saved as a GameData object, and all of it gets saved to savegames and sent over the network.
+						Anything changed in here will affect any new games that are started with that game name (existing savegames are not affected, because all the information was parsed and saved long ago).
+				</p>
+				<br>
+				<p>
+					The distinction is important because TripleA allows you to have multiple Map Skins for each game (as many as you want).  It also means that the game xml's, and the map skins, can be packaged and distruted separately.
+					<br>(Example: many game variations or 'mod' files contain only the game xml, and the game xml points to a specific Map Skin folder, which the user must already have to be able to start the game).
+				</p>
+				<br>
+				<p>
+					An example of this is Napoleonic Empires, which comes with an alternative skin.
+					<br>Start up TripleA now to see it. Choose any of the Napoleonic Empires games, then start the game.
+					Select "View" from the menu, then hold your mouse over "Map Skins" to show all available skins (if any).
+					From there, click which Skin you want.  TripleA will automatically refresh the screen with your new skin active.
+					<br><br><img src="images/map_skin_1.png" alt="skin image"/>
+					<br><br><img src="images/map_skin_2.png" alt="skin image"/>
+				</p>
+				<br>
+				<p>
+					There is NO SPECIAL DIFFERENCE between an alternative map skin, and the original map skin. Both treated the same by the engine, in that they are "everything but the game xml".
+					<br>So how does TripleA know which Skin is the default (original) skin, and which are the alternative skins?
+					<br>The answer is the folder's name.
+					<br>The Alternative Skins are just the Original Skin's folder name, then "-" (dash), then their skin name.
+					<br>(The default/original folder's name must be the same name as referenced in the game xml's "mapName" property.)
+					<br>So, if you had a map called "minimap", and you made a second skin for it, you would name the folder "minimap-mySkin" or "minimap-Awesome_Skin", etc.
+					<br><br><img src="images/map_skin_3.png" alt="folder image"/>
+				</p>
+				<br>
+			
+					<h4><a name="sec_1.1.1">1.1.1</a> Making Your First Map Skin</h4>
+					<blockquote>
+						<p>
+							The easiest way to make a map skin, is simply to copy another map's folder.
+						</p>
+						<br>
+						<p>
+							So, to begin, navigate to either your triplea program folder, or your triplea user folder, then go into the "maps" folder.
+							<br>Now select the game you want to copy. For the example, we will use "great_war".  Copy and then Paste the entire map folder.
+							<br>Rename your folder so that it starts with the original map name, then "-", then your skin name.  We will name our folder "great_war-Cat_Infantry".
+						</p>
+							Now, we should probably change something about our map to make it different.  So, lets replace all the infantry with pictures of the Cheezburger Cat.
+							<br>Right Click and save this image as "infantry.png"
+							<br><br><img src="images/infantry.png" alt="cat image"/>
+						<br>
+						<p>
+							Now, open up your new map's folder, then open up the "units" folder, then open up the "Americans" folder.
+							<br>Paste the image of your cat here.  It should overwrite the existing "infantry.png" image.
+							<br>Now do the same for all the other nations.
+							<br><br><img src="images/great_war_cheezburger_map.png" alt="folder image"/>
+						</p>
+						<br>
+						<p>
+							Start TripleA and load up Great War in order to test your new map skin.
+							<br>After starting the game, click "View" and change your "Map Skin" to the new "Cat_Infantry" skin.
+							<br>OMG, the USA better enter the war soon, or else the Western Front will run out of Cheezburgers!
+							<br><br><img src="images/great_war_cheezburgers.png" alt="skin image"/>
+						</p>
+						<br>
+						<p>
+							Obviously this probably not how you imagined your first map, or skin, but I think it is important to point out just how easy it can be to start changing stuff.
+							<br>Any time you don't like ANYTHING about a map's visuals or display stuff, you can go in and either change the original art or display files, or make a skin.
+							<br>If you do a decent job of it, you could even distribute it to other players who are interested in viewing a map in a different way.
+						</p>
+					</blockquote>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			<br>
+			</blockquote>
+		
+		
+		<h2><a name="sec_2">2.0</a> The Map Creator</h2>
+		<blockquote>
+				<p>
+					Lets say you want to change more than just replacing the default unit images? Lets say you want to build a map from scratch?
+					<br>In this case, you will need to run all of the map maker utilities, as well as doing a little bit of preparation work. The easiest way to run all the map maker utilities, is with the Map Creator utility.
+					<br>The Map Creator is nothing special.  All it does is run the utilities for you, which you could do yourself using terminal or command line.  Still, it does make things a little easier.
+				</p>
+				<br>
+				<p>
+					Before we start the Map Creator, lets go over what you actually need to have ready before you begin.
+					<br>1. A Territory Border Outline Map (PNG).  The territories should be outlined in pure black (hex: 000000), with no anti-aliasing (smoothing), which means if look close enough it should be pixelated. 
+					There should not be any art, or anything, on the map. You will use this map to run all the utilities, and will also make it into your baseTiles.
+					<br>2. (Optional) A second map, same size, with art and and some texture. You normally make this map semi-transparent, and use it as the reliefTiles.
+					<br>3. The names of all your nations (TripleA comes with art for specific nation names, so it is advisable to use existing names if they exist. ie: Germans, not Germany).
+					<br>4. The name of your map.
+					<br>5. A small image of your map, normally 250 pixels wide.  Just use "Paint.net", or "MS Paint", or "Photoshop", or "GIMP", or any other picture/image editor to take your map image and shrink it to be 250 pixels wide.
+					<br>
+					<br>You can use any map image you want. Normally it is a political map of the earth, but it could be mars, or middle earth, or westeros, or whatever.
+					<br>If you do not have a Map Image, here is a good one to use.  Feel free to save it, and then change the territory borders as you see fit.
+					<br><br><img src="images/ww2v3_basetiles.png" alt="map image"/>
+				</p>
+				<br>
+				<p>
+					Now that you have a map and stuff, you need to make the map folder.
+					<br>Go to your USER Maps Directory (not the program files directory) and create a new folder. Change the name of the folder to a simplified version of your maps name.  The folder's name will be the "mapName" property in any xml you make.
+					<br>Do not make the map name too long, and do not use special characters.  (ie: "red_dawn" is a good map folder name.  "**RED DAWN** : The Inva$ion of the USA" is a bad map name, and maybe even illegal or not recognizeable by triplea.)
+					<br>If you are making an alternative skin for a map that already exists, then your map name must be original/default map folder's name, then "-", then your skin's name.
+				</p>
+				<br>
+				<p>
+					Inside of your map folder, you need at a bare minimum, the following files and folders.
+					<br>You can go ahead and make the folders now.  For the files, you can move your map's territory border image there, any relief image, and the smallMap.jpeg. For the other files, they will be created later.
+					<br>Folders:
+							<ul>
+								<li>baseTiles</li>
+								<li>flags</li>
+								<li>units</li>
+								<li>games  (*Optional* If you are making an alternative map skin, then do not make this folder!)</li>
+							</ul>
+					Files:
+							<ul>
+								<li>centers.txt</li>
+								<li>polygons.txt</li>
+								<li>place.txt</li>
+								<li>map.properties</li>
+								<li>smallMap.jpeg</li>
+								<li>your_territory_border_image.png  (*Not actually required, but you should put it here anyway*)</li>
+							</ul>
+					<br>Example of a game folder with the bare minimum:
+					<br><img src="images/newMap_minimum.png" alt="map image"/>
+					<br>
+					<br>
+					<br>
+					<br>In addition, there are some other optional Folders and Files. TripleA will run fine without them, and we are going to ignore them for now:
+					<br>Folders:
+							<ul>
+								<li>dice</li>
+								<li>misc</li>
+								<li>PUs</li>
+								<li>reliefTiles</li>
+								<li>resources</li>
+								<li>sounds</li>
+								<li>territoryEffects</li>
+								<li>territoryNames</li>
+							</ul>
+					Files:
+							<ul>
+								<li>notifications.properties</li>
+								<li>objectives.properties</li>
+								<li>politicstext.properties</li>
+								<li>production_tabs.properties</li>
+								<li>production_tabs.nationName.properties</li>
+								<li>tooltips.properties</li>
+								<li>blockade.txt</li>
+								<li>capitols.txt</li>
+								<li>comments.txt</li>
+								<li>convoy.txt</li>
+								<li>decorations.txt</li>
+								<li>kamikaze_place.txt</li>
+								<li>name_place.txt</li>
+								<li>pu_place.txt</li>
+								<li>territory_effects.txt</li>
+								<li>vc.txt</li>
+							</ul>
+					<br>Example of game folder with everything possible:
+					<br><br><img src="images/newMap_everything.png" alt="map image"/>
+				</p>
+				<br>
+				<p>
+					Now for the map creator.
+					<br>To run the map creator, you can start TripleA, then click "Engine Preferences", then click "Map Creator".
+					<br>Alternatively, you can run it by command line:
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>How to run the Map Creator</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#ffffcc">
+								<code>
+								cd bin<br/>
+								java -Xmx512m -classpath triplea.jar util/image/MapCreator
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br>Example:
+					<br><img src="images/command_line.png" alt="map image"/>
+				</p>
+				<br>
+				<p>
+					Now that it is running, you will see a simple screen with some options on the left, and some options in the middle.
+					<br>The first button will load this html tutorial you are reading now.
+					<br>Click the second button to point the map creator to your new folder.
+					<br>The third box is where you can put your unit zoom amount (normally 0.75 or 0.5).
+					<br>The forth and fifth boxes are for the size of your unit images (normally 48 pixels square).
+					<br>Lastly, you can specify the amount of memory in megabytes that the utilities will run at. This is only related to the utilities, and is the same thing as changing the -Xmx512m to -Xmx900m, etc.
+					<br><br><img src="images/map_creator_main.png" alt="map image"/>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			<br>
+			</blockquote>
+		
+		
+		<h2><a name="sec_5">5.0</a> Creating Custom Games</h2>
+		<blockquote>
+Americans
+Australians
+British
+Canadians
+Chinese
+French
+Germans
+Italians
+Japanese
+Neutral
+Puppet_States
+Russians
+
+			<p>
+				There are three different ways of creating custom games in TripleA.
+				<ol>
+					<li>Customizing in game values only</li>
+					<li>Customizing values, map, but use an existing rules base</li>
+					<li>Customize the values, map, and the rules base</li>
+				</ol>
+			</p>
+			
+			<p>
+				<b>1: Customizing in game values only</b><br/>
+				<br/>
+				This refers to making changes to the game only through the XML game file.
+				It is a quick and easy way to modify an existing game without the hassle
+				of modifying code or re-compiling. However, the game logic, images, and
+				maps cannot be modified through XML changes alone. The user will be bound
+				to using the same game logic, images, and maps of the XML game file they
+				are editing.
+			</p>
+			
+			<p>
+				<b>2: Customizing values, map, but use an existing rules base</b><br/>
+				<br/>
+				In addition to making changes through the XML file, this also requires
+				one to make changes to the images and maps that the game will use. This
+				is where a user can add their own customized map, and perhaps some customized
+				units. However, even though this allows one more customization it still
+				leaves the user bound to some existing game logic. (ie, Pact of Steel and
+				BigWorld 1942 uses customized images, maps, and XML files but are still bound
+				to the game logic of TripleA's standard rules.)
+			</p>
+			
+			<p>
+				<b>3: Customize the values, map, and the rules base</b><br/>
+				<br/>
+				This method encompasses changing XML values, images, maps, and game logic.
+				It requires the user to modify images and create new (or modify existing)
+				Java classes to handle different, more, or new types of game logic for
+				the engine to interpret.
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+		</blockquote>
+		
+		<h2><a name="sec_5.1">5.1</a> Map Utilities</h2>
+		<blockquote>
+			<p>
+				TripleA comes with several utilities for editing maps. In brief, these
+				utilities will allow the user to create center points and names for each
+				territory, and break the map up into 256x256 sized tiles.
+			</p>
+			
+			<p>
+				There are seven utilities that can be used:
+				<ol>
+					<li><b>Center Picker</b> : Picks center points for each territory</li>
+					<li><b>Polygon Grabber</b> : Grabs the (x,y) polygonal values of each territory</li>
+					<li><b>Placement Picker</b> : Picks placement for units (manually)</li>
+					<li><b>Auto-Placement Finder</b> : Picks placement for units (automatic)</li>
+					<li><b>Tile Image Breaker</b> : Breaks the map into 256x256 tiles</li>
+					<li><b>Relief Image Breaker</b> : Creates relief 256x256 tiles</li>
+					<li><b>Image Shrinker</b> : Creates a mini-sized map image</li>
+				</ol>
+			</p>
+			
+			<p>
+				All images are in PNG format except for the mini-map image produced by the
+				Image Shrinker utility, it is in JPEG format.
+			</p>
+			
+			<p>
+				<b>Pre-requisite !</b><br/>
+				<br/>
+				A pre-made map needs to be created for the utilities to work. The map needs
+				to have black borders separating each territory. This needs to be completely
+				black as in #000000 or R=0 G=0 B=0. The insides of the territories should be
+				white and the oceans or water values need to be colored.<br/>
+				<br/>
+				<u><strong>You should run the map utilities using a binary (not source) distribution of TripleA.</strong></u>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+			
+			<h4><a name="sec_5.1.1">5.1.1</a> Center Picker</h4>
+			<blockquote>
+				<p>
+					Run the center picker from the <b>bin</b> directory.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>How to run Center Picker</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#ffffcc">
+								<code>
+								cd bin<br/>
+								java -Xmx256m -classpath triplea.jar util/image/CenterPicker
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/center_picker.png" width="696" height="491" alt="center picker" />
+							</td>
+						</tr>
+
+						<tr>
+							<td align="left">Fig 5.1.1.0</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Execution flow of the Center Picker is listed below.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="0" cellpadding="2" width="850">
+						<tr>
+							<td align="center" bgcolor="#ccffff" colspan="2">
+								<b>Program Action</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff" colspan="2">
+								<b>User Action</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a map image file
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Polygons File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a polygons.txt file or cancel and run without.
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show map image
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>6</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Left or Right click on any territory to create a center point
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>7</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a dialog box with a default territory name
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>8</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Put a new territory name and press &quot;OK&quot;
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>9</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show confirmation dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>10</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Confirm with &quot;Yes&quot;, or cancel with &quot;No&quot; or &quot;Cancel&quot;
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>11</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show red dot on territory
+							</td>
+							
+							<td>
+								&nbsp;
+							</td>
+							
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					After creating center points for all the territories, proceed to save
+					them. The center picker will ask for a directory to save the center points.
+					These center points will be needed for other map utilities later on, and for
+					TripleA it self to run the game.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.2">5.1.2</a> Polygon Grabber</h4>
+			<blockquote>
+				<p>
+					Run the polygon grabber from the <b>bin</b> directory.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>How to run Polygon Grabber</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#ffffcc">
+								<code>
+								cd bin<br/>
+								java -Xmx256m -classpath triplea.jar util/image/PolygonGrabber
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/polygon_grabber_1.png" width="598" height="524" alt="polygon grabber" />
+							</td>
+						</tr>
+
+						<tr>
+							<td align="left">Fig 5.1.2.0</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Execution flow of the Polygon Grabber is listed below.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="0" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ccffff" colspan="2">
+								<b>Program Action</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff" colspan="2">
+								<b>User Action</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a map image file
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Centers File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a centers.txt file
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show map image
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>6</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Left click on any territory to select it
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>7</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Selected territory is highlighted in red
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>8</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Right click on highlighted territory (hold shift for more)
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>9</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show name option dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>10</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Confirm if territory name is correct
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>11</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Highlight selected territory in yellow
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>12</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Go to next territory
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					The polygon grabber utility comes with a special &quot;Island Mode&quot; feature.
+					It has been known that when dealing with many islands in one sea zone causes a visual
+					problem. Doing the sea zone first will cover up any islands inside. This will leave
+					the user unaware if the islands have been selected or not. The &quot;Island Mode&quot;
+					feature helps over come this by out-lining selected territories in red and not filling
+					them in with yellow, as is the default. Look at figures 5.1.2.1 and 5.1.2.2 for examples
+					of &quot;Island Mode&quot; at work.
+					
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/polygon_grabber_2.png" width="598" height="524" alt="island mode 1" />
+							</td>
+						</tr>
+
+						<tr>
+							<td align="left">Fig 5.1.2.1</td>
+						</tr>
+					</table>
+					<br/>
+					
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/polygon_grabber_3.png" width="598" height="524" alt="island mode 2" />
+							</td>
+						</tr>
+
+						<tr>
+							<td align="left">Fig 5.1.2.2</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Notice how in figure 5.1.2.1 one of Sardinia's islands was covered up when
+					the sea zone was done first. Island mode helped show the covered up island
+					and allowed us to select it.
+				</p>
+				
+				<p>
+					When done, save the polygon points to disk.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.3">5.1.3</a> Placement Picker</h4>
+			<blockquote>
+				<p>
+					Run the placement picker from the <b>bin</b> directory.
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>How to run Placement Picker</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#ffffcc">
+								<code>
+								cd bin<br/>
+								java -Xmx256m -classpath triplea.jar util/image/PlacementPicker
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Placement Picker commands are as follows:
+					
+					<table border="1" cellspacing="0" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>Command</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>Result</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								Left Mouse Button
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Start in this territory
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								CTRL +  Left Mouse Button
+							</td bgcolor="#8fee8f">
+							
+							<td bgcolor="#ffffcc">
+								Add a placement point to the list
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								Right Mouse Button
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Remove last placement point
+							</td>
+						</tr>
+						
+						<tr>
+							<td bgcolor="#ffffcc">
+								CTRL + Right Mouse Button
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Save placement points for that territory
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Figure 5.1.3.0 shows an example of U.K. with its placements done.
+				</p>
+				
+				<p>
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/placement_picker.png" width="594" height="520" alt="placement picker" />
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								Fig 5.1.3.0
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					When done save the placement points to disk.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.4">5.1.4</a> Auto-Placement Finder</h4>
+			<blockquote>
+				<p>
+					The auto-placement finder can be used instead of the placement picker.
+					It automates the placement picking procedure and picks what it chooses
+					to be the optimal placement points.
+				</p>
+				
+				<p>
+					There are some pre-requisites that need to be fulfilled before running
+					the auto-placement finder:
+					<ol>
+						<li>The centers.txt and polygons.txt files exist</li>
+						<li>The place.txt file exists, even if it is empty. It will crash without one</li>
+						<li>The above text files need to be in their finalized map directory</li>
+					</ol>
+					
+					Step No.3 is a bit confusing to explain explicitly in this section. This will
+					be covered in <a href="#sec_5.1.8">Section 5.1.8 (Making a Map)</a>.
+				</p>
+				
+				<p>
+					Run the placement picker from the <b>bin</b> directory. When run
+					it will ask for the map name, this relates to the name of the folder
+					it is in. For example, <i>revised</i> would be entered if we wanted it
+					to find placements for the A&A Revised map, which in turn would have all
+					the text files inside <i>triplea_0_6_0_1/maps/revised</i>
+					<br/>
+					<br/>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>How to run Auto-Placement Finder</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#ffffcc">
+								<code>
+								cd bin<br/>
+								java -Xmx256m -classpath triplea.jar util/image/AutoPlacementFinder
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/autoplacement_finder.png" width="560" height="333" alt="auto-placement finder" />
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								Fig 5.1.4.0
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					When the auto-placement finder is done creating the placement points, it will
+					prompt a dialog in order to save the placement points to disk.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.5">5.1.5</a> Tile Image Breaker</h4>
+			<blockquote>
+				<p>
+					This utility will break up the original large map into tiles of size 256x256 so that
+					it can be used by TripleA. There are not any special prerequisites to use this
+					utility other than running it and choosing the correct map for it to break up.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>How to run Tile Image Breaker</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#ffffcc">
+								<code>
+								cd bin<br/>
+								java -Xmx256m -classpath triplea.jar util/image/TileImageBreaker
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="0">
+						<tr>
+							<td>
+								<img src="images/tile_image_breaker.png" width="553" height="263" alt="tile image breaker" />
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								Fig 5.1.5.0
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="0" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ccffff" colspan="2">
+								<b>Program Action</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff" colspan="2">
+								<b>User Action</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a &quot;Folder Save Location&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a directory to save the tiles
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a map image
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Process map and break into tiles
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>6</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Wait until finished
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Once the Tile Image Breaker is done, all the tiles will be saved
+					in the directory that has been selected at the start.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.6">5.1.6</a> Relief Image Breaker</h4>
+			<blockquote>
+				<p>
+					The relief image breaker is an optional utility that can be used when
+					creating custom maps. Normally, the tile image breaker is enough to make
+					a working map. It will be a very plain map with solid colors. To make a map
+					with relief images allows for more eye-candy features. Relief images can be
+					toggled ON and OFF from inside TripleA, this means that if there needs to
+					be two identical maps: one plain, the other with some eye-candy feature
+					(ie. textured terrain.)
+				</p>
+				
+				<p>
+					Some prerequisites before using the relief image breaker:
+					<ol>
+						<li>A plain map</li>
+						<li>Another map with eye-candy features</li>
+						<li>The centers.txt, polygons.txt, and place.txt in their finalized map directory</li>
+					</ol>
+					
+					More about the &quot;finalized map directory&quot; will be covered in
+					<a href="#sec_1.5.8">Section 5.1.8 (Making a Map)</a>.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>How to run Relief Image Breaker</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#ffffcc">
+								<code>
+								cd bin<br/>
+								java -Xmx256m -classpath triplea.jar util/image/ReliefImageBreaker
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="0" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ccffff" colspan="2">
+								<b>Program Action</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff" colspan="2">
+								<b>User Action</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a &quot;Folder Save Location&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a directory to save the relief tiles
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a relief map image
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Ask if it should process Sea Zones only
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>6</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Choose Y for Sea Zones only, or N for all
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>7</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Process map and break into tiles
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>8</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Wait until finished
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					Once the Tile Image Breaker is done, all the tiles will be saved
+					in the directory that has been selected at the start.
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.7">5.1.7</a> Image Shrinker</h4>
+			<blockquote>
+				<p>
+					This utility will create a copy of the original map, but shrunk down
+					to a custom scale. TripleA uses this small scale map as a &quot;mini-map&quot;.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="2" cellpadding="2" width="400">
+						<tr>
+							<td align="left" valign="top" colspan="2" bgcolor="#ccccff">
+								<b>How to run Image Shrinker</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="left" valign="top" height="48" width="48">
+								<img src="images/shellscript.png" width="48" height="48" alt="shell image"/>
+							</td>
+								
+							<td bgcolor="#ffffcc">
+								<code>
+								cd bin<br/>
+								java -Xmx256m -classpath triplea.jar util/image/ImageShrinker
+								</code>
+							</td>
+						</tr>
+					</table>
+					<br/>
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="0" cellpadding="2">
+						<tr>
+							<td align="center" bgcolor="#ccffff" colspan="2">
+								<b>Program Action</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff" colspan="2">
+								<b>User Action</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a &quot;Select Map File&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Select a map
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Show a &quot;Scale Input&quot; dialog
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Enter a floating point scale value (ie. 0.1)
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Image saved as <b>smallMap.jpeg</b> in current directory
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								&nbsp;
+							</td>
+							
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+			
+			
+			<h4><a name="sec_5.1.8">5.1.8</a> Making a Map</h4>
+			<blockquote>
+				<p>
+					This section will go through all the steps needed to be taken in order
+					to create a custom map. Before we go any further, lets take the time to explain
+					how the &quot;finalized map directory&quot; works and what this document
+					means by it.
+				</p>
+				
+				<p>
+					TripleA has a special directory where it stores its maps and their respective
+					configuration files. It is that directory that we refer to as the &quot;finalized
+					map directory&quot;. The directory itself has some special conditions that needs
+					to be met:
+					<ol>
+						<li>Located in triplea_0_6_0_1/maps</li>
+						<br/>
+						<li>Name of the map directory must be same as the &quot;mapName&quot; field in the
+						XML game file for that game. For example; revised.xml has the mapName
+						field showing a value of <b>revised</b> thus the folder where TripleA will find
+						the map is also <b>revised</b></li>
+						<br/>
+						<li>All map configuration files must be located inside:
+							<ul>
+								<li>centers.txt</li>
+								<li>polygons.txt</li>
+								<li>place.txt</li>
+								<li>map.properties</li>
+								<li>capitols.txt (optional for victory capitols)</li>
+								<li>vc.txt (optional for victory markers)</li>
+								<li>pu_place.txt(optional, if it exists this is where PU markers will be placed)</li>
+							</ul>
+						</li>
+						<br/>
+						<li>A folder named <b>baseTiles</b> with the broken up 256x256 tile images</li>
+						<br/>
+						<li>A folder name <b>reliefTiles</b> (optional if there is a relief map)</li>
+						<br/>
+						<li>The <b>smallMap.jpeg</b> image of the larger original map used</li>
+					</ol>
+				</p>
+				
+				<p>
+					Let us assume that a custom map we want to make will be called <b>viper</b>. Let us
+					also assume that we have a nice large image of our map with black borders separating
+					the territories. Our image can either be a GIF or PNG image.<br/>
+					<br/>
+					These are the steps we would take to integrate it into TripleA.
+				</p>
+				
+				<p>
+					<table border="1" cellspacing="0" cellpadding="4">
+						<tr>
+							<td align="center" bgcolor="#ccffff" width="40">
+								<b>Step</b>
+							</td>
+							
+							<td align="center" bgcolor="#ccccff">
+								<b>User Action</b>
+							</td>
+						</tr>
+					
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>1</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Go into directory: triplea_0_6_0_1/maps
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>2</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Create new directory called <b>viper</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>3</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Go back to the base of <b>classes</b>
+								Save the center points in our <b>viper</b> directory we made in Step No. 1
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center"  bgcolor="#ccffff">
+								<b>4</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Run the PolygonGrabber and save the polygons file in our <b>viper</b>
+								directory we made in Step No. 1
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>5</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Run the PlacementPicker and save the place.txt file in our <b>viper</b> directory.<br/>
+								<br/>
+								OR<br/>
+								<br/>
+								Create an empty place.txt file in the <b>viper</b> directory and then run AutoPlacementFinder
+								Enter &quot;viper&quot; when asked for a map name.
+								
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>6</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Run the TileImageBreaker and save all the tiles in <b>baseTiles</b> inside <b>viper</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>7</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								If we have a relief map, then run the ReliefImageBreaker and save all the tiles in
+								<b>reliefTiles</b> inside <b>viper</b>; say &quot;N&quot; to do Only Sea Zones
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>8</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Run the ImageShrinker and copy the <b>smallMap.jpeg</b> to the <b>viper</b> directory
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>9</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Create a <b>map.properties</b> file with map properties
+								See <a href="#sec_5.2">Section 5.2</a> for more information
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>10</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								Make sure our XML game file shows <b>viper</b> as the value
+								for the &quot;mapName&quot; property option
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="center" bgcolor="#ccffff">
+								<b>11</b>
+							</td>
+							
+							<td bgcolor="#ffffcc">
+								All Done !
+							</td>
+						</tr>
+					</table>
+				</p>
+				
+				<p>
+					<a href="#top">- Top -</a>
+				</p>
+			</blockquote>
+		</blockquote>
+		
+		<h2><a name="sec_11">10.0</a> Credits & Acknowledgements</h2>
+		<blockquote>
+			<p>
+				<ul>
+					<li><b>Mark Christopher Duncan (Veqryn)</b> : The Map Creator, and this Tutorial</li>
+				</ul>
+			</p>
+			
+			<p>
+				<a href="#top">- Top -</a>
+			</p>
+			<br>
+		</blockquote>
+		
+		<hr/>
+		<a href="http://sourceforge.net"><img src="images/sflogo.png" width="125" height="37" border="0" alt="sf logo"/></a>
+		<br/>
+		<a href="http://sourceforge.net/donate/index.php?group_id=44492"><img src="images/project-support.jpg" width="88" height="32" border="0" alt="support"/></a>
+	</body>
+</html>

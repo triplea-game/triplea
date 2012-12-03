@@ -16,7 +16,7 @@ package games.strategy.triplea.pbem;
 import games.strategy.engine.framework.GameRunner2;
 import games.strategy.engine.pbem.AbstractForumPoster;
 import games.strategy.engine.pbem.IForumPoster;
-import games.strategy.net.BrowserControl;
+import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.help.HelpSupport;
 
 import java.util.ArrayList;
@@ -377,7 +377,7 @@ public class AxisAndAlliesForumPoster extends AbstractForumPoster
 	public void viewPosted()
 	{
 		final String url = "http://www.axisandallies.org/forums/index.php?topic=" + m_topicId + ".10000";
-		BrowserControl.displayURL(url);
+		DesktopUtilityBrowserLauncher.openURL(url);
 	}
 	
 	public String getTestMessage()

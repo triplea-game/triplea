@@ -1,7 +1,7 @@
 package games.strategy.engine.pbem;
 
 import games.strategy.engine.framework.GameRunner2;
-import games.strategy.net.BrowserControl;
+import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.triplea.help.HelpSupport;
 
 import java.util.ArrayList;
@@ -262,7 +262,7 @@ public class TripleAWarClubForumPoster extends AbstractForumPoster
 	public void viewPosted()
 	{
 		final String url = "http://" + m_host + "/modules/newbb/viewtopic.php?topic_id=" + m_topicId;
-		BrowserControl.displayURL(url);
+		DesktopUtilityBrowserLauncher.openURL(url);
 	}
 	
 }
