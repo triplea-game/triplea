@@ -439,6 +439,17 @@ public class TileManager
 			bounds.y -= grow;
 			bounds.width += grow * 2;
 			bounds.height += grow * 2;
+			// make sure it is not bigger than the whole map
+			if (bounds.width > mapData.getMapDimensions().width)
+				bounds.width = mapData.getMapDimensions().width;
+			if (bounds.height > mapData.getMapDimensions().height)
+				bounds.height = mapData.getMapDimensions().height;
+			// make sure it is still square
+			if (bounds.width > bounds.height)
+				bounds.width = bounds.height;
+			else
+				bounds.height = bounds.width;
+			
 			// keep it in bounds
 			if (bounds.x < 0 && !mapData.scrollWrapX())
 			{
