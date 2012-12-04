@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,7 @@ public class EnginePreferences extends JDialog
 	private JButton m_mapCreator;
 	private JButton m_userFolder;
 	private JButton m_programFolder;
+	private JButton m_readme;
 	private JButton m_donate;
 	
 	private EnginePreferences(final Frame parentFrame)
@@ -83,6 +85,7 @@ public class EnginePreferences extends JDialog
 		m_mapCreator = new JButton("Run the Map Creator");
 		m_userFolder = new JButton("Open User Maps and Savegames Folder");
 		m_programFolder = new JButton("Open Installed Program Folder");
+		m_readme = new JButton("Open Readme / User Manual");
 		m_donate = new JButton("Donate...");
 	}
 	
@@ -111,6 +114,8 @@ public class EnginePreferences extends JDialog
 		buttonsPanel.add(m_userFolder);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_programFolder);
+		buttonsPanel.add(new JLabel(" "));
+		buttonsPanel.add(m_readme);
 		buttonsPanel.add(new JLabel(" "));
 		buttonsPanel.add(m_donate);
 		buttonsPanel.add(new JLabel(" "));
@@ -259,6 +264,19 @@ public class EnginePreferences extends JDialog
 				try
 				{
 					DesktopUtilityBrowserLauncher.openFile(GameRunner.getRootFolder());
+				} catch (final Exception e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
+		m_readme.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(final ActionEvent e)
+			{
+				try
+				{
+					DesktopUtilityBrowserLauncher.openFile(new File(GameRunner.getRootFolder(), "readme.html"));
 				} catch (final Exception e1)
 				{
 					e1.printStackTrace();

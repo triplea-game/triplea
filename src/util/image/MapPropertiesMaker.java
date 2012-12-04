@@ -224,7 +224,8 @@ public class MapPropertiesMaker extends JFrame
 		});
 		panel.add(heightField, new GridBagConstraints(1, row++, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
 		
-		panel.add(new JLabel("The initial Scale (zoom) of your unit images: "),
+		panel.add(new JLabel("<html>The initial Scale (zoom) of your unit images: "
+					+ "<br>Must be one of: 1.25, 1, 0.875, 0.8333, 0.75, 0.6666, 0.5625, 0.5</html>"),
 					new GridBagConstraints(0, row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(10, 10, 10, 10), 0, 0));
 		final DoubleTextField scaleField = new DoubleTextField(0.1d, 2.0d);
 		scaleField.setText("" + s_mapProperties.getUNITS_SCALE());

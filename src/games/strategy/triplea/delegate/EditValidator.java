@@ -68,8 +68,8 @@ public class EditValidator
 	public static String validateChangeTerritoryOwner(final GameData data, final Territory territory, final PlayerID player)
 	{
 		String result = null;
-		if (Matches.TerritoryIsWater.match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID))
-			return "Territory is water";
+		if (Matches.TerritoryIsWater.match(territory) && territory.getOwner().equals(PlayerID.NULL_PLAYERID) && TerritoryAttachment.get(territory) == null)
+			return "Territory is water and has no attachment";
 		if ((result = validateTerritoryBasic(data, territory, player)) != null)
 			return result;
 		return result;
