@@ -126,7 +126,7 @@ public class BidPlaceDelegate extends AbstractPlaceDelegate
 		placeableUnits.addAll(Match.getMatches(units, airUnits));
 		if (Match.someMatch(units, Matches.UnitIsConstruction))
 		{
-			final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, units, player);
+			final IntegerMap<String> constructionsMap = howManyOfEachConstructionCanPlace(to, to, units, player);
 			final Collection<Unit> skipUnit = new ArrayList<Unit>();
 			for (final Unit currentUnit : Match.getMatches(units, Matches.UnitIsConstruction))
 			{

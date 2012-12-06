@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Fixing bugs with placing constructions in sea zones. Now constructions can only be "produced" by the territory they are going into. (veqryn)
+
 * Added tutorial on how to make a map and/or map skin. (veqryn)
 
 * Allowing for Sea Factories, and Air Factories, to produce from owned sea zones. (veqryn)
