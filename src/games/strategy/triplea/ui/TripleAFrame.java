@@ -207,6 +207,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	private JSplitPane m_gameCenterPanel;
 	private Territory m_territoryLastEntered;
 	private List<Unit> m_unitsBeingMousedOver;
+	private PlayerID m_lastStepPlayer;
 	
 	/** Creates new TripleAFrame */
 	public TripleAFrame(final IGame game, final Set<IGamePlayer> players) throws IOException
@@ -1432,13 +1433,14 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		}
 		m_round.setText("Round:" + round + " ");
 		m_step.setText(stepDisplayName);
+		final boolean isPlaying = playing(player);
 		if (player != null)
-			m_player.setText((playing(player) ? "" : "REMOTE: ") + player.getName());
+			m_player.setText((isPlaying ? "" : "REMOTE: ") + player.getName());
 		if (player != null && !player.isNull())
 			m_round.setIcon(new ImageIcon(m_uiContext.getFlagImageFactory().getFlag(player)));
 		// if the game control has passed to someone else and we are not just showing the map
 		// show the history
-		if (player != null && !player.isNull() && !playing(player) && !m_inHistory && !m_uiContext.getShowMapOnly())
+		if (player != null && !player.isNull() && !isPlaying && !m_inHistory && !m_uiContext.getShowMapOnly())
 		{
 			if (!SwingUtilities.isEventDispatchThread())
 				throw new IllegalStateException("We should be in dispatch thread");
@@ -1446,10 +1448,23 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		}
 		// if the game control is with us
 		// show the current game
-		else if (player != null && !player.isNull() && playing(player) && m_inHistory)
+		else if (player != null && !player.isNull() && isPlaying && m_inHistory)
 		{
 			showGame();
 			ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
+		}
+		// center on capital of player, if it is a new player
+		if (player != null && isPlaying && !player.equals(m_lastStepPlayer))
+		{
+			m_lastStepPlayer = player;
+			m_data.acquireReadLock();
+			try
+			{
+				m_mapPanel.centerOn(TerritoryAttachment.getCapital(player, m_data));
+			} finally
+			{
+				m_data.releaseReadLock();
+			}
 		}
 	}
 	

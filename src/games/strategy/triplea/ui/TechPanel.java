@@ -23,7 +23,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.TechnologyFrontier;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.PlayerAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.dataObjects.TechRoll;
@@ -94,6 +93,7 @@ public class TechPanel extends ActionPanel
 					add(new JButton(GetTechRollsAction));
 					add(new JButton(DontBother));
 				}
+				/* TripleAFrame will now center on capital whenever there is a new step player who is different from the last step player
 				getData().acquireReadLock();
 				try
 				{
@@ -102,6 +102,7 @@ public class TechPanel extends ActionPanel
 				{
 					getData().releaseReadLock();
 				}
+				*/
 			}
 		});
 	}

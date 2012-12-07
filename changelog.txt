@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Getting TripleA Map Panel to center on the capital of a player, whenever we switch to a new player's phase. (veqryn)
+
 * Abstracting the Stats panels into AbstractStatPanel so that extending Stats panel (and all of its overhead) is no longer necessary for the EconomyPanel, ObjectivePanel, TerritoryDetailPanel, and other panels. (veqryn)
 
 * Changing Tech Stats Panel to use small flag images for column headers instead of the first letter of nation names. (veqryn)
