@@ -27,9 +27,9 @@ public class EconomyPanel extends StatPanel
 	private IStat[] m_statsResource;
 	private ResourceTableModel m_resourceModel;
 	
-	public EconomyPanel(final GameData data)
+	public EconomyPanel(final GameData data, final UIContext uiContext)
 	{
-		super(data);
+		super(data, uiContext);
 	}
 	
 	@Override

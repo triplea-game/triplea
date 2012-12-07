@@ -1,4 +1,6 @@
 Changes for 1.6.1.3
+* Changing Tech Stats Panel to use small flag images for column headers instead of the first letter of nation names. (veqryn)
+
 * Fixing bugs with placing constructions in sea zones. Now constructions can only be "produced" by the territory they are going into. (veqryn)
 
 * Adding a lot more sounds to the engine (zim xero) and some sounds specific to napoleonic empires. (hepster & veqryn)

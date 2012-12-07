@@ -89,9 +89,9 @@ public class ObjectivePanel extends StatPanel
 	private ObjectiveTableModel m_objectiveModel;
 	private IDelegateBridge m_dummyDelegate;
 	
-	public ObjectivePanel(final GameData data)
+	public ObjectivePanel(final GameData data, final UIContext uiContext)
 	{
-		super(data);
+		super(data, uiContext);
 		m_dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
 	}
 	
@@ -516,7 +516,7 @@ public class ObjectivePanel extends StatPanel
 		uiContext.setDefaultMapDir(data);
 		uiContext.getMapData().verify(data);
 		// uiContext.setPlayerList(players);
-		final ObjectivePanel panelObj = new ObjectivePanel(data);
+		final ObjectivePanel panelObj = new ObjectivePanel(data, null);
 		/*final String blah = "<html><b>blah</b> blah blah blah blah blah blah blah blah blah blah blah blah " +
 					"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
 					"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah</html>";

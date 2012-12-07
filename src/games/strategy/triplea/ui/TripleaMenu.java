@@ -1031,7 +1031,7 @@ public class TripleaMenu extends BasicGameMenuBar<TripleAFrame>
      */
 	private void createAndSaveStats(final boolean showPhaseStats)
 	{
-		final ExtendedStats statPanel = new ExtendedStats(getData());
+		final ExtendedStats statPanel = new ExtendedStats(getData(), getUIContext());
 		final JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		final File rootDir = new File(System.getProperties().getProperty("user.dir"));

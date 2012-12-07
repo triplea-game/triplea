@@ -40,6 +40,7 @@ import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -53,11 +54,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 /**
@@ -72,15 +77,20 @@ public class StatPanel extends JPanel
 	protected IStat[] m_stats;
 	protected GameData m_data;
 	private JTable m_statsTable;
+	private JTable m_techTable;
 	private Image m_statsImage = null;
+	protected final Map<PlayerID, ImageIcon> m_mapPlayerImage = new HashMap<PlayerID, ImageIcon>();
+	protected UIContext m_uiContext;
 	
 	/** Creates a new instance of InfoPanel */
 	
-	public StatPanel(final GameData data)
+	public StatPanel(final GameData data, final UIContext uiContext)
 	{
 		m_data = data;
+		m_uiContext = uiContext;
 		m_dataModel = new StatTableModel();
 		m_techModel = new TechTableModel();
+		fillPlayerIcons();
 		initLayout();
 	}
 	
@@ -101,18 +111,28 @@ public class StatPanel extends JPanel
 			}
 		};
 		
-		JTable table = m_statsTable;
-		table.getTableHeader().setReorderingAllowed(false);
-		TableColumn column = table.getColumnModel().getColumn(0);
-		column.setPreferredWidth(175);
-		JScrollPane scroll = new JScrollPane(table);
+		m_statsTable.getTableHeader().setReorderingAllowed(false);
+		m_statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
+		JScrollPane scroll = new JScrollPane(m_statsTable);
 		add(scroll);
 		
-		table = new JTable(m_techModel);
-		table.getTableHeader().setReorderingAllowed(false);
-		column = table.getColumnModel().getColumn(0);
-		column.setPreferredWidth(500);
-		scroll = new JScrollPane(table);
+		m_techTable = new JTable(m_techModel);
+		m_techTable.getTableHeader().setReorderingAllowed(false);
+		m_techTable.getColumnModel().getColumn(0).setPreferredWidth(500);
+		// setupIconHeaders(m_techTable);
+		// show icons for players:
+		final TableCellRenderer componentRenderer = new JComponentTableCellRenderer();
+		for (int i = 1; i < m_techTable.getColumnCount(); i++)
+		{
+			final TableColumn column = m_techTable.getColumnModel().getColumn(i);
+			column.setHeaderRenderer(componentRenderer);
+			final String player = m_techTable.getColumnName(i);
+			final JLabel value = new JLabel("", getIcon(player), JLabel.CENTER);
+			value.setToolTipText(player);
+			column.setHeaderValue(value);
+		}
+		
+		scroll = new JScrollPane(m_techTable);
 		add(scroll);
 	}
 	
@@ -133,6 +153,96 @@ public class StatPanel extends JPanel
 	public JTable getStatsTable()
 	{
 		return m_statsTable;
+	}
+	
+	/**
+	 * Gets the small flag for a given PlayerID
+	 * 
+	 * @param player
+	 *            the player to get the flag for
+	 * @return ImageIcon small flag
+	 */
+	protected ImageIcon getIcon(final PlayerID player)
+	{
+		ImageIcon icon = m_mapPlayerImage.get(player);
+		if (icon == null && m_uiContext != null)
+		{
+			final Image img = m_uiContext.getFlagImageFactory().getSmallFlag(player);
+			icon = new ImageIcon(img);
+			icon.setDescription(player.getName());
+			m_mapPlayerImage.put(player, icon);
+		}
+		return icon;
+	}
+	
+	protected ImageIcon getIcon(final String playerName)
+	{
+		final PlayerID player = this.m_data.getPlayerList().getPlayerID(playerName);
+		if (player == null)
+		{
+			return null;
+		}
+		return getIcon(player);
+	}
+	
+	protected void fillPlayerIcons()
+	{
+		for (final PlayerID p : m_data.getPlayerList().getPlayers())
+		{
+			getIcon(p);
+		}
+	}
+	
+	
+	/*
+	 * helper that populates the icons for the column headers
+	 * assuming that the column names are matched with icons
+	 * 
+	 * @param table
+	 *            the table to set icons in the headers
+	 *
+	protected final void setupIconHeaders(final JTable table)
+	{
+		final TableModel model = table.getModel();
+		final JTableHeader header = table.getTableHeader();
+		final TableCellRenderer headerRenderer = header.getDefaultRenderer();
+		
+		final TableColumnModel cmodel = table.getColumnModel();
+		TableColumn column = cmodel.getColumn(0);
+		column.setHeaderRenderer(headerRenderer);
+		
+		final ImageIconRenderer imageRenderer = new ImageIconRenderer();// headerRenderer, true
+		header.setDefaultRenderer(imageRenderer);
+		
+		final int ccnt = model.getColumnCount();
+		
+		for (int c = 1; c < ccnt; c++)
+		{
+			final String name = model.getColumnName(c);
+			final ImageIcon icon = getIcon(name);
+			// System.out.println("icon for name " + name + " = " + icon);
+			column = cmodel.getColumn(c);
+			column.setHeaderValue(icon);
+		}
+	}
+
+	class ImageIconRenderer extends DefaultTableCellRenderer
+	{
+		private static final long serialVersionUID = -8596751565205016905L;
+		
+		@Override
+		protected void setValue(final Object value)
+		{
+			setIcon((ImageIcon) value);
+		}
+	}*/
+
+	class JComponentTableCellRenderer implements TableCellRenderer
+	{
+		public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
+		{
+			return (JComponent) value;
+		}
 	}
 	
 	/**
@@ -448,7 +558,8 @@ public class StatPanel extends JPanel
 		{
 			if (col == 0)
 				return "Technology";
-			return colList[col - 1].substring(0, 1);
+			// return colList[col - 1].substring(0, 1);
+			return colList[col - 1];
 		}
 		
 		/*
