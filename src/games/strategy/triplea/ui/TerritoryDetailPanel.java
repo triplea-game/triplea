@@ -47,24 +47,20 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class TerritoryDetailPanel extends JPanel
+public class TerritoryDetailPanel extends AbstractStatPanel
 {
 	private static final long serialVersionUID = 1377022163587438988L;
-	private GameData m_data;
 	private final UIContext m_uiContext;
-	private final JButton m_showOdds;
+	private final JButton m_showOdds = new JButton("Battle Calculator (Ctrl-B)");
 	private Territory m_currentTerritory;
 	private final TripleAFrame m_frame;
 	private Territory m_new_territory = null; // if not null, shift is pressed
 	
 	public TerritoryDetailPanel(final MapPanel mapPanel, final GameData data, final UIContext uiContext, final TripleAFrame frame)
 	{
-		m_data = data;
+		super(data);
 		m_frame = frame;
-		m_showOdds = new JButton("Battle Calculator (Ctrl-B)");
 		m_uiContext = uiContext;
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setBorder(new EmptyBorder(5, 5, 0, 0));
 		mapPanel.addMapSelectionListener(new DefaultMapSelectionListener()
 		{
 			@Override
@@ -79,6 +75,14 @@ public class TerritoryDetailPanel extends JPanel
 					territoryChanged(territory);
 			}
 		});
+		initLayout();
+	}
+	
+	@Override
+	protected void initLayout()
+	{
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBorder(new EmptyBorder(5, 5, 0, 0));
 		final String show_battle_calc = "show_battle_calc";
 		final Action showBattleCalc = new AbstractAction(show_battle_calc)
 		{
@@ -136,6 +140,7 @@ public class TerritoryDetailPanel extends JPanel
 		contentPane.getActionMap().put(unfreeze_panel, unfreezePanel);
 	}
 	
+	@Override
 	public void setGameData(final GameData data)
 	{
 		m_data = data;

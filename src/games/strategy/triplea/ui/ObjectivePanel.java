@@ -82,17 +82,18 @@ import javax.swing.table.TableColumnModel;
  * @author veqryn
  * 
  */
-public class ObjectivePanel extends StatPanel
+public class ObjectivePanel extends AbstractStatPanel
 {
 	private static final long serialVersionUID = 3759819236905645520L;
 	private Map<String, Map<ICondition, String>> m_statsObjective;
 	private ObjectiveTableModel m_objectiveModel;
 	private IDelegateBridge m_dummyDelegate;
 	
-	public ObjectivePanel(final GameData data, final UIContext uiContext)
+	public ObjectivePanel(final GameData data)
 	{
-		super(data, uiContext);
+		super(data);
 		m_dummyDelegate = new ObjectivePanelDummyDelegateBridge(data);
+		initLayout();
 	}
 	
 	@Override
@@ -516,7 +517,7 @@ public class ObjectivePanel extends StatPanel
 		uiContext.setDefaultMapDir(data);
 		uiContext.getMapData().verify(data);
 		// uiContext.setPlayerList(players);
-		final ObjectivePanel panelObj = new ObjectivePanel(data, null);
+		final ObjectivePanel panelObj = new ObjectivePanel(data);
 		/*final String blah = "<html><b>blah</b> blah blah blah blah blah blah blah blah blah blah blah blah " +
 					"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah " +
 					"blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah</html>";

@@ -184,7 +184,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	private JPanel m_rightHandSidePanel = new JPanel();
 	private JTabbedPane m_tabsPanel = new JTabbedPane();
 	private StatPanel m_statsPanel;
-	private StatPanel m_economyPanel;
+	private EconomyPanel m_economyPanel;
 	private ObjectivePanel m_objectivePanel;
 	private NotesPanel m_notesPanel;
 	private TerritoryDetailPanel m_details;
@@ -317,9 +317,9 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_actionButtons.setBorder(null);
 		m_statsPanel = new StatPanel(m_data, m_uiContext);
 		m_tabsPanel.addTab("Stats", m_statsPanel);
-		m_economyPanel = new EconomyPanel(m_data, m_uiContext);
+		m_economyPanel = new EconomyPanel(m_data);
 		m_tabsPanel.addTab("Economy", m_economyPanel);
-		m_objectivePanel = new ObjectivePanel(m_data, m_uiContext);
+		m_objectivePanel = new ObjectivePanel(m_data);
 		if (m_objectivePanel.isEmpty())
 		{
 			m_objectivePanel.removeDataChangeListener();

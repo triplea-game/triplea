@@ -21,7 +21,6 @@ package games.strategy.triplea.ui;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
@@ -36,7 +35,6 @@ import games.strategy.triplea.delegate.BattleCalculator;
 import games.strategy.triplea.delegate.Matches;
 import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.triplea.delegate.TechTracker;
-import games.strategy.triplea.util.PlayerOrderComparator;
 import games.strategy.util.IntegerMap;
 import games.strategy.util.Match;
 
@@ -47,17 +45,14 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -69,13 +64,12 @@ import javax.swing.table.TableColumn;
  * 
  * @author Sean Bridges
  */
-public class StatPanel extends JPanel
+public class StatPanel extends AbstractStatPanel
 {
 	private static final long serialVersionUID = 4340684166664492498L;
 	final private StatTableModel m_dataModel;
 	final private TechTableModel m_techModel;
 	protected IStat[] m_stats;
-	protected GameData m_data;
 	private JTable m_statsTable;
 	private JTable m_techTable;
 	private Image m_statsImage = null;
@@ -83,10 +77,9 @@ public class StatPanel extends JPanel
 	protected UIContext m_uiContext;
 	
 	/** Creates a new instance of InfoPanel */
-	
 	public StatPanel(final GameData data, final UIContext uiContext)
 	{
-		m_data = data;
+		super(data);
 		m_uiContext = uiContext;
 		m_dataModel = new StatTableModel();
 		m_techModel = new TechTableModel();
@@ -94,6 +87,7 @@ public class StatPanel extends JPanel
 		initLayout();
 	}
 	
+	@Override
 	protected void initLayout()
 	{
 		setLayout(new GridLayout(2, 1));
@@ -136,6 +130,7 @@ public class StatPanel extends JPanel
 		add(scroll);
 	}
 	
+	@Override
 	public void setGameData(final GameData data)
 	{
 		m_data = data;
@@ -245,32 +240,7 @@ public class StatPanel extends JPanel
 		}
 	}
 	
-	/**
-	 * 
-	 * @return all the alliances with more than one player.
-	 */
-	public Collection<String> getAlliances()
-	{
-		
-		final Collection<String> rVal = new TreeSet<String>();
-		for (final String alliance : m_data.getAllianceTracker().getAlliances())
-		{
-			if (m_data.getAllianceTracker().getPlayersInAlliance(alliance).size() > 1)
-			{
-				rVal.add(alliance);
-			}
-		}
-		return rVal;
-	}
-	
-	public List<PlayerID> getPlayers()
-	{
-		final List<PlayerID> players = new ArrayList<PlayerID>(m_data.getPlayerList().getPlayers());
-		Collections.sort(players, new PlayerOrderComparator(m_data));
-		return players;
-	}
-	
-	
+
 	/*
 	 * Custom table model.
 	 * 
@@ -639,28 +609,6 @@ public class StatPanel extends JPanel
 		public PUStat()
 		{
 			super(m_data.getResourceList().getResource(Constants.PUS));
-		}
-	}
-	
-
-	class ResourceStat extends AbstractStat
-	{
-		final Resource m_resource;
-		
-		public ResourceStat(final Resource resource)
-		{
-			super();
-			m_resource = resource;
-		}
-		
-		public String getName()
-		{
-			return m_resource.getName();
-		}
-		
-		public double getValue(final PlayerID player, final GameData data)
-		{
-			return player.getResources().getQuantity(m_resource);
 		}
 	}
 	

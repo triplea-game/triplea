@@ -20,16 +20,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
-public class EconomyPanel extends StatPanel
+public class EconomyPanel extends AbstractStatPanel
 {
 	
 	private static final long serialVersionUID = -7713792841831042952L;
 	private IStat[] m_statsResource;
 	private ResourceTableModel m_resourceModel;
 	
-	public EconomyPanel(final GameData data, final UIContext uiContext)
+	public EconomyPanel(final GameData data)
 	{
-		super(data, uiContext);
+		super(data);
+		initLayout();
 	}
 	
 	@Override
