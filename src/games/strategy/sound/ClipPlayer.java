@@ -46,6 +46,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * Stores a preference in the user preferences for being silent.
  * The property will persist and be reloaded after the virtual machine
  * has been stopped and restarted.
+ * 
+ * @author veqryn & frigoref
  */
 public class ClipPlayer
 {
@@ -57,6 +59,7 @@ public class ClipPlayer
 	private final Set<String> m_subFolders = new HashSet<String>();
 	
 	// standard settings
+	private static final String ASSETS_SOUNDS_FOLDER = "sounds";
 	private static final String SOUND_PREFERENCE_GLOBAL_SWITCH = "beSilent2";
 	private static final String SOUND_PREFERENCE_PREFIX = "sound_";
 	
@@ -87,11 +90,11 @@ public class ClipPlayer
 		final Preferences prefs = Preferences.userNodeForPackage(this.getClass());
 		m_beSilent = prefs.getBoolean(SOUND_PREFERENCE_GLOBAL_SWITCH, false);
 		final HashSet<String> choices = SoundPath.getAllSoundOptions();
-		// until we get better sounds, all sounds start as muted, except for Slapping
+		/* until we get better sounds, all sounds start as muted, except for Slapping
 		choices.remove(SoundPath.CLIP_CHAT_SLAP);
 		final boolean slapMuted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + SoundPath.CLIP_CHAT_SLAP, false);
 		if (slapMuted)
-			m_mutedClips.add(SoundPath.CLIP_CHAT_SLAP);
+			m_mutedClips.add(SoundPath.CLIP_CHAT_SLAP);*/
 		for (final String sound : choices)
 		{
 			final boolean muted = prefs.getBoolean(SOUND_PREFERENCE_PREFIX + sound, false); // true until we get better sounds
@@ -243,50 +246,98 @@ public class ClipPlayer
 		}
 		else
 		{
-			final URL thisSoundFolderURL = m_resourceLoader.getResource("sounds" + File.separator + pathName);
-			if (thisSoundFolderURL == null)
-			{
-				// if (!subFolder)
-				// System.out.println("No Sounds Found For: " + pathName);
-				m_sounds.put(pathName, new ArrayList<Clip>());
-				return null;
-			}
-			URI thisSoundFolderURI;
-			File thisSoundFolder;
-			try
-			{
-				thisSoundFolderURI = thisSoundFolderURL.toURI();
-				thisSoundFolder = new File(thisSoundFolderURI);
-			} catch (final URISyntaxException e)
-			{
-				thisSoundFolder = new File(thisSoundFolderURL.getPath());
-			}
-			if (thisSoundFolder == null || !thisSoundFolder.exists() || !thisSoundFolder.isDirectory())
-			{
-				m_sounds.put(pathName, new ArrayList<Clip>());
-				return null;
-			}
-			final List<Clip> availableSounds = new ArrayList<Clip>();
-			for (final File sound : thisSoundFolder.listFiles())
-			{
-				if (!(sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff") || sound.getName().endsWith(".midi")))
-					continue;
-				final Clip newClip = loadClip(sound);// m_resourceLoader.getResourceAsStream("sounds" + File.separator + clipName));
-				if (newClip != null)
-					availableSounds.add(newClip);
-			}
-			if (availableSounds.isEmpty())
-			{
-				m_sounds.put(pathName, new ArrayList<Clip>());
-				return null;
-			}
-			clip = availableSounds.get(0);
-			m_sounds.put(pathName, availableSounds);
+			// parse sounds for the first time
+			clip = parseClipPaths(pathName, subFolder);
 		}
 		return clip;
 	}
 	
-	private synchronized Clip loadClip(final File clipFile)
+	/**
+	 * The user may or may not have a sounds.properties file. If they do not, we should have a default folder (ww2) that we use for sounds.
+	 * Because we do not want a lot of duplicate sound files, we also have a "generic" sound folder.
+	 * If a sound can not be found for a soundpath using the sounds.properties or default folder, then we try to find one in the generic folder.
+	 * The sounds.properties file can specify all the sounds to use for a specific sound path (multiple per path).
+	 * If there is no key for that path, we try by the default way. <br>
+	 * <br>
+	 * Example sounds.properties keys:<br>
+	 * Sound.Default.Folder=ww2<br>
+	 * battle_aa_miss=ww2/battle_aa_miss/battle_aa_miss_01_aa_artillery_and_flyby.wav;ww2/battle_aa_miss/battle_aa_miss_02_just_aa_artillery.wav<br>
+	 * phase_purchase_Germans=phase_purchase_Germans/game_start_Germans_01_anthem.wav
+	 * 
+	 * @param pathName
+	 * @param subFolder
+	 * @return
+	 */
+	private Clip parseClipPaths(final String pathName, final boolean subFolder)
+	{
+		String resourcePath = SoundProperties.getInstance().getProperty(pathName);
+		if (resourcePath == null)
+			resourcePath = SoundProperties.getInstance().getDefaultEraFolder() + File.separator + pathName;
+		resourcePath = resourcePath.replace('/', File.separatorChar);
+		resourcePath = resourcePath.replace('\\', File.separatorChar);
+		final List<Clip> availableSounds = new ArrayList<Clip>();
+		for (final String path : resourcePath.split(";"))
+		{
+			availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + File.separator + path));
+		}
+		if (availableSounds.isEmpty())
+		{
+			final String genericPath = SoundProperties.GENERIC_FOLDER + File.separator + pathName;
+			availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + File.separator + genericPath));
+		}
+		m_sounds.put(pathName, availableSounds);
+		if (availableSounds.isEmpty())
+			return null;
+		return availableSounds.get(0);
+	}
+	
+	private List<Clip> createAndAddClips(final String resourceAndPath)
+	{
+		final List<Clip> availableSounds = new ArrayList<Clip>();
+		final URL thisSoundURL = m_resourceLoader.getResource(resourceAndPath);
+		if (thisSoundURL == null)
+		{
+			// if (!subFolder)
+			// System.out.println("No Sounds Found For: " + path);
+			return availableSounds;
+		}
+		URI thisSoundURI;
+		File thisSound;
+		try
+		{
+			thisSoundURI = thisSoundURL.toURI();
+			thisSound = new File(thisSoundURI);
+		} catch (final URISyntaxException e)
+		{
+			thisSound = new File(thisSoundURL.getPath());
+		}
+		if (thisSound == null || !thisSound.exists())
+		{
+			return availableSounds;
+		}
+		if (!thisSound.isDirectory())
+		{
+			if (!(thisSound.getName().endsWith(".wav") || thisSound.getName().endsWith(".au") || thisSound.getName().endsWith(".aiff") || thisSound.getName().endsWith(".midi")))
+				return availableSounds;
+			final Clip newClip = createClip(thisSound);
+			if (newClip != null)
+				availableSounds.add(newClip);
+		}
+		else
+		{
+			for (final File sound : thisSound.listFiles())
+			{
+				if (!(sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff") || sound.getName().endsWith(".midi")))
+					continue;
+				final Clip newClip = createClip(sound); // m_resourceLoader.getResourceAsStream(ASSETS_SOUNDS_FOLDER + File.separator + clipName));
+				if (newClip != null)
+					availableSounds.add(newClip);
+			}
+		}
+		return availableSounds;
+	}
+	
+	private synchronized Clip createClip(final File clipFile)
 	{
 		try
 		{
@@ -314,7 +365,7 @@ public class ClipPlayer
 		return null;
 	}
 	/*
-	private synchronized Clip loadClip(final InputStream inputStream)
+	private synchronized Clip createClip(final InputStream inputStream)
 	{
 		try
 		{
