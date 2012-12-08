@@ -1,4 +1,8 @@
-Changes for 1.6.1.3
+Changes for 1.6.1.4
+* Moved all sounds to a specific "era" folder (ww2, preindustrial, classical, future) and changing how sounds are found again, so that there should no longer be any need for duplicate sound files. Now all sounds should come with TripleA, and you can use the "sounds.properties" file to cherry pick which sounds you want. (veqryn)
+
+* Created a "sounds.properties" file which allows you to specify which era of sounds (ww2, preindustrial, classical, future) you are using, and also set up custom sound choices for each sound location path. (veqryn)
+
 * Getting TripleA Map Panel to center on the capital of a player, whenever we switch to a new player's phase. (veqryn)
 
 * Abstracting the Stats panels into AbstractStatPanel so that extending Stats panel (and all of its overhead) is no longer necessary for the EconomyPanel, ObjectivePanel, TerritoryDetailPanel, and other panels. (veqryn)
