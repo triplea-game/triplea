@@ -385,6 +385,7 @@ public class LobbyFrame extends JFrame
 	
 	private void connectionToServerLost()
 	{
-		EventThreadJOptionPane.showMessageDialog(LobbyFrame.this, "Connection to Server Lost", "Connection Lost", JOptionPane.ERROR_MESSAGE, null);
+		EventThreadJOptionPane.showMessageDialog(LobbyFrame.this, "Connection to Server Lost.  Please close this instance and reconnect to the lobby.", "Connection Lost", JOptionPane.ERROR_MESSAGE,
+					null);
 	}
 }

@@ -134,11 +134,14 @@ public class LobbyLoginValidator implements ILoginValidator
 		if (millis < 0)
 			return "Ban time left: 1 Minute";
 		long seconds = Math.max(1, TimeUnit.MILLISECONDS.toSeconds(millis));
-		final long days = seconds / (60 * 60 * 24);
-		seconds -= Math.max(1, seconds % (60 * 60 * 24));
-		final long hours = seconds / (60 * 60);
-		seconds -= Math.max(1, seconds % (60 * 60));
-		final long minutes = seconds / (60);
+		final int minutesInSeconds = 60;
+		final int hoursInSeconds = 60 * 60;
+		final int daysInSeconds = 60 * 60 * 24;
+		final long days = seconds / daysInSeconds;
+		seconds -= days * daysInSeconds;
+		final long hours = seconds / hoursInSeconds;
+		seconds -= hours * hoursInSeconds;
+		final long minutes = Math.max(1, seconds / minutesInSeconds);
 		/*
 		final long days = TimeUnit.MILLISECONDS.toDays(millis);
 		millis -= TimeUnit.DAYS.toMillis(days);
@@ -231,4 +234,10 @@ public class LobbyLoginValidator implements ILoginValidator
 			return ise.getMessage();
 		}
 	}
+	/*
+	public static void main(final String[] args)
+	{
+		final Timestamp t = new Timestamp(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 2);
+		System.out.println(getBanDurationBreakdown(t));
+	}*/
 }

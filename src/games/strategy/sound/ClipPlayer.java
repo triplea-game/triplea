@@ -246,8 +246,8 @@ public class ClipPlayer
 			final URL thisSoundFolderURL = m_resourceLoader.getResource("sounds" + File.separator + pathName);
 			if (thisSoundFolderURL == null)
 			{
-				if (!subFolder)
-					System.out.println("No Sounds Found For: " + pathName);
+				// if (!subFolder)
+				// System.out.println("No Sounds Found For: " + pathName);
 				m_sounds.put(pathName, new ArrayList<Clip>());
 				return null;
 			}
