@@ -1,7 +1,6 @@
 package games.strategy.sound;
 
 import games.strategy.triplea.ResourceLoader;
-import games.strategy.triplea.ui.UIContext;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,9 +27,8 @@ public class SoundProperties
 	private static long s_timestamp = 0;
 	private final Properties m_properties = new Properties();
 	
-	protected SoundProperties()
+	protected SoundProperties(final ResourceLoader loader)
 	{
-		final ResourceLoader loader = UIContext.getResourceLoader();
 		final URL url = loader.getResource(PROPERTY_FILE);
 		if (url == null)
 		{
@@ -48,11 +46,11 @@ public class SoundProperties
 		}
 	}
 	
-	public static SoundProperties getInstance()
+	public static SoundProperties getInstance(final ResourceLoader loader)
 	{
 		if (s_op == null || Calendar.getInstance().getTimeInMillis() > s_timestamp + 1000)
 		{ // cache properties for 1 second
-			s_op = new SoundProperties();
+			s_op = new SoundProperties(loader);
 			s_timestamp = Calendar.getInstance().getTimeInMillis();
 		}
 		return s_op;

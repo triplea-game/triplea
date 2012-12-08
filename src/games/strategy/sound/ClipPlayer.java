@@ -270,9 +270,9 @@ public class ClipPlayer
 	 */
 	private Clip parseClipPaths(final String pathName, final boolean subFolder)
 	{
-		String resourcePath = SoundProperties.getInstance().getProperty(pathName);
+		String resourcePath = SoundProperties.getInstance(m_resourceLoader).getProperty(pathName);
 		if (resourcePath == null)
-			resourcePath = SoundProperties.getInstance().getDefaultEraFolder() + File.separator + pathName;
+			resourcePath = SoundProperties.getInstance(m_resourceLoader).getDefaultEraFolder() + File.separator + pathName;
 		resourcePath = resourcePath.replace('/', File.separatorChar);
 		resourcePath = resourcePath.replace('\\', File.separatorChar);
 		final List<Clip> availableSounds = new ArrayList<Clip>();
