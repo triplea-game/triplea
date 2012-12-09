@@ -76,6 +76,7 @@ public class SoundPath
 	public static final String CLIP_TERRITORY_CAPTURE_BLITZ = "territory_capture_blitz";
 	public static final String CLIP_TERRITORY_CAPTURE_CAPITAL = "territory_capture_capital";
 	public static final String CLIP_TERRITORY_CAPTURE_LAND = "territory_capture_land";
+	public static final String CLIP_TERRITORY_CAPTURE_SEA = "territory_capture_sea";
 	
 	public static void preLoadSounds(final SoundType sounds)
 	{
@@ -123,6 +124,7 @@ public class SoundPath
 				clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_BLITZ);
 				clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_CAPITAL);
 				clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_LAND);
+				clipPlayer.preLoadClip(CLIP_TERRITORY_CAPTURE_SEA);
 				break;
 		}
 	}
@@ -169,6 +171,7 @@ public class SoundPath
 		rVal.add(CLIP_TERRITORY_CAPTURE_BLITZ);
 		rVal.add(CLIP_TERRITORY_CAPTURE_CAPITAL);
 		rVal.add(CLIP_TERRITORY_CAPTURE_LAND);
+		rVal.add(CLIP_TERRITORY_CAPTURE_SEA);
 		return rVal;
 	}
 	
@@ -215,7 +218,8 @@ public class SoundPath
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TECHNOLOGY_SUCCESSFUL, "Technology Researched"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, "Captured By Blitzing"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, "Captured Capital"));
-				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, "Captured Territory"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, "Captured Land Territory"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, "Captured Sea Zone"));
 				break;
 		}
 		return rVal;
