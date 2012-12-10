@@ -818,7 +818,7 @@ class ColorTableCellRenderer extends DefaultTableCellRenderer
 		if (value == null)
 			renderer.setBorder(BorderFactory.createEmptyBorder());
 		else if (value.toString().indexOf("T") != -1)
-			renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.red));
+			renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.green));
 		else if (value.toString().indexOf("U") != -1)
 			renderer.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.blue));
 		else if (value.toString().indexOf("u") != -1)
