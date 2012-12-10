@@ -108,9 +108,17 @@ public abstract class DefaultAttachment extends GameDataComponent implements IAt
 		return "   for: " + this.toString();
 	}
 	
+	/**
+	 * 
+	 * @param property
+	 * @return null or the toString() of the field value
+	 */
 	public String getRawPropertyString(final String property)
 	{
-		return PropertyUtil.getPropertyFieldObject(property, this).toString();
+		final Object obj = PropertyUtil.getPropertyFieldObject(property, this);
+		if (obj == null)
+			return null;
+		return obj.toString();
 	}
 	
 	public Attachable getAttachedTo()

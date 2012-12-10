@@ -1773,7 +1773,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					if (t.getPlayerAttachmentName().getFirst().equals("PlayerAttachment"))
 					{
 						final PlayerAttachment attachment = PlayerAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
@@ -1786,7 +1786,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					else if (t.getPlayerAttachmentName().getFirst().equals("RulesAttachment"))
 					{
 						final RulesAttachment attachment = RulesAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
@@ -1799,7 +1799,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					else if (t.getPlayerAttachmentName().getFirst().equals("TriggerAttachment"))
 					{
 						final TriggerAttachment attachment = TriggerAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
@@ -1812,7 +1812,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					else if (t.getPlayerAttachmentName().getFirst().equals("TechAttachment"))
 					{
 						final TechAttachment attachment = TechAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
@@ -1825,7 +1825,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					else if (t.getPlayerAttachmentName().getFirst().equals("PoliticalActionAttachment"))
 					{
 						final PoliticalActionAttachment attachment = PoliticalActionAttachment.get(aPlayer, t.getPlayerAttachmentName().getSecond());
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
@@ -1874,7 +1874,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					if (t.getTerritoryAttachmentName().getFirst().equals("RelationshipTypeAttachment"))
 					{
 						final RelationshipTypeAttachment attachment = RelationshipTypeAttachment.get(aRelationshipType, t.getRelationshipTypeAttachmentName().getSecond());
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
@@ -1927,7 +1927,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 						final TerritoryAttachment attachment = TerritoryAttachment.get(aTerritory, t.getTerritoryAttachmentName().getSecond());
 						if (attachment == null)
 							throw new IllegalStateException("Triggers: No territory attachment for:" + aTerritory.getName()); // water territories may not have an attachment, so this could be null
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
@@ -1940,7 +1940,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					else if (t.getTerritoryAttachmentName().getFirst().equals("CanalAttachment"))
 					{
 						final CanalAttachment attachment = CanalAttachment.get(aTerritory, t.getTerritoryAttachmentName().getSecond());
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
@@ -1995,7 +1995,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					if (t.getTerritoryEffectAttachmentName().getFirst().equals("TerritoryEffectAttachment"))
 					{
 						final TerritoryEffectAttachment attachment = TerritoryEffectAttachment.get(aTerritoryEffect, t.getTerritoryEffectAttachmentName().getSecond());
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
@@ -2044,7 +2044,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					if (t.getUnitAttachmentName().getFirst().equals("UnitAttachment"))
 					{
 						final UnitAttachment attachment = UnitAttachment.get(aUnitType, t.getUnitAttachmentName().getSecond());
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));
@@ -2057,7 +2057,7 @@ public class TriggerAttachment extends AbstractTriggerAttachment implements ICon
 					else if (t.getUnitAttachmentName().getFirst().equals("UnitSupportAttachment"))
 					{
 						final UnitSupportAttachment attachment = UnitSupportAttachment.get(aUnitType, t.getUnitAttachmentName().getSecond());
-						if (attachment.getRawPropertyString(property.getFirst()).equals(newValue))
+						if (newValue.equals(attachment.getRawPropertyString(property.getFirst())))
 							continue;
 						if (clearFirst && newValue.length() < 1)
 							change.add(ChangeFactory.attachmentPropertyReset(attachment, property.getFirst(), true));

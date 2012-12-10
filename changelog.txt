@@ -1,4 +1,6 @@
 Changes for 1.6.1.4
+* Fixed null pointer error for a trigger based game property change of a field that starts out as null. (veqryn)
+
 * Fixed bug in strategic bombing that allowed strategic bombing of units that can be damaged, which were also being transported. (veqryn)
 
 * Adding scroll bars to notification messages window. (veqryn)
