@@ -185,12 +185,13 @@ public class RocketsFireHelper
 		final CompositeMatchAnd<Territory> allowed = new CompositeMatchAnd<Territory>(Matches.territoryAllowsRocketsCanFlyOver(player, data));
 		if (!isRocketsCanFlyOverImpassables(data))
 			allowed.add(Matches.TerritoryIsNotImpassable);
+		final CompositeMatchAnd<Unit> attackableUnits = new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert());
 		for (final Territory current : possible)
 		{
 			final Route route = data.getMap().getRoute(territory, current, allowed);
 			if (route != null && route.numberOfSteps() <= maxDistance)
 			{
-				if (current.getUnits().someMatch(new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(current).invert())))
+				if (current.getUnits().someMatch(new CompositeMatchAnd<Unit>(attackableUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(current).invert())))
 					hasFactory.add(current);
 			}
 		}
@@ -211,7 +212,7 @@ public class RocketsFireHelper
 		final boolean SBRAffectsUnitProd = isSBRAffectsUnitProduction(data);
 		final boolean DamageFromBombingDoneToUnits = isDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
 		// unit damage vs territory damage
-		final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(Matches.enemyUnit(player, data));
+		final Collection<Unit> enemyUnits = attackedTerritory.getUnits().getMatches(new CompositeMatchAnd<Unit>(Matches.enemyUnit(player, data), Matches.unitIsBeingTransported().invert()));
 		final Collection<Unit> enemyTargetsTotal = Match.getMatches(enemyUnits, Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(attackedTerritory).invert());
 		final Collection<Unit> targets = new ArrayList<Unit>();
 		final Collection<Unit> rockets;

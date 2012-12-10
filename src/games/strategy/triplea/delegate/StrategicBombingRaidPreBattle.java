@@ -184,8 +184,10 @@ public class StrategicBombingRaidPreBattle extends StrategicBombingRaidBattle
 		if (!bombers.isEmpty())
 		{
 			HashMap<Unit, HashSet<Unit>> targets = null;
-			final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits().getMatches(
-						new CompositeMatchAnd<Unit>(Matches.enemyUnit(bridge.getPlayerID(), m_data), Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert()));
+			final Collection<Unit> enemyTargetsTotal = m_battleSite.getUnits().getMatches(new CompositeMatchAnd<Unit>(
+									Matches.enemyUnit(bridge.getPlayerID(), m_data),
+									Matches.UnitIsAtMaxDamageOrNotCanBeDamaged(m_battleSite).invert(),
+									Matches.unitIsBeingTransported().invert()));
 			for (final Unit unit : bombers)
 			{
 				final Collection<Unit> enemyTargets = Match.getMatches(enemyTargetsTotal, Matches.UnitIsLegalBombingTargetBy(unit));

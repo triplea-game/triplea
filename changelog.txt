@@ -1,4 +1,6 @@
 Changes for 1.6.1.4
+* Fixed bug in strategic bombing that allowed strategic bombing of units that can be damaged, which were also being transported. (veqryn)
+
 * Adding scroll bars to notification messages window. (veqryn)
 
 * Increasing max memory from 640mb to 768mb, and up to 896mb for online games. (veqryn)
