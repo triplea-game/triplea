@@ -5,6 +5,8 @@ Changes for 1.6.1.4
 
 * Getting TripleA Map Panel to center on the capital of a player, whenever we switch to a new player's phase. (veqryn)
 
+* Changing getBoundingRect and createTerritoryImage and getTiles so that any polygons on the right or bottom will be translated to be on the negative left or top, hopefully solving issue where the mini territory image was not being displayed properly for territories on both sides of a map divide. (frigoref) 
+
 * Abstracting the Stats panels into AbstractStatPanel so that extending Stats panel (and all of its overhead) is no longer necessary for the EconomyPanel, ObjectivePanel, TerritoryDetailPanel, and other panels. (veqryn)
 
 * Changing Tech Stats Panel to use small flag images for column headers instead of the first letter of nation names. (veqryn)

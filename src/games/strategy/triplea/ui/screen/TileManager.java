@@ -32,6 +32,7 @@ import games.strategy.util.Tuple;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
@@ -78,7 +79,75 @@ public class TileManager
 		m_uiContext = context;
 	}
 	
+	/**
+	 * Selects tiles which fall into rectangle bounds.
+	 * 
+	 * @param bounds
+	 *            rectangle for selection
+	 * @return tiles which fall into the rectangle
+	 */
 	public List<Tile> getTiles(final Rectangle2D bounds)
+	{
+		// if the rectangle exceeds the map dimensions we to do shift the rectangle and check for each shifted rectangle as well as the original rectangle
+		final MapData mapData = m_uiContext.getMapData();
+		final Dimension mapDimensions = mapData.getMapDimensions();
+		final boolean testXshift = (mapData.scrollWrapX() && (bounds.getMaxX() > mapDimensions.width || bounds.getMinX() < 0));
+		final boolean testYshift = (mapData.scrollWrapY() && (bounds.getMaxY() > mapDimensions.height || bounds.getMinY() < 0));
+		
+		Rectangle2D boundsXshift = null;
+		if (testXshift)
+		{
+			if (bounds.getMinX() < 0)
+				boundsXshift = new Rectangle((int) bounds.getMinX() + mapDimensions.width, (int) bounds.getMinY(), (int) bounds.getWidth(), (int) bounds.getHeight());
+			else
+				boundsXshift = new Rectangle((int) bounds.getMinX() - mapDimensions.width, (int) bounds.getMinY(), (int) bounds.getWidth(), (int) bounds.getHeight());
+		}
+		Rectangle2D boundsYshift = null;
+		if (testYshift)
+		{
+			if (bounds.getMinY() < 0)
+				boundsYshift = new Rectangle((int) bounds.getMinX(), (int) bounds.getMinY() + mapDimensions.height, (int) bounds.getWidth(), (int) bounds.getHeight());
+			else
+				boundsYshift = new Rectangle((int) bounds.getMinX(), (int) bounds.getMinY() - mapDimensions.height, (int) bounds.getWidth(), (int) bounds.getHeight());
+		}
+		
+		LockUtil.acquireLock(m_lock);
+		try
+		{
+			final List<Tile> rVal = new ArrayList<Tile>();
+			for (final Tile tile : m_tiles)
+			{
+				final Rectangle tileBounds = tile.getBounds();
+				if (bounds.contains(tileBounds) || tileBounds.intersects(bounds))
+					rVal.add(tile);
+			}
+			if (boundsXshift != null)
+			{
+				for (final Tile tile : m_tiles)
+				{
+					final Rectangle tileBounds = tile.getBounds();
+					if (boundsXshift.contains(tileBounds) || tileBounds.intersects(boundsXshift))
+						rVal.add(tile);
+				}
+			}
+			if (boundsYshift != null)
+			{
+				for (final Tile tile : m_tiles)
+				{
+					final Rectangle tileBounds = tile.getBounds();
+					if (boundsYshift.contains(tileBounds) || tileBounds.intersects(boundsYshift))
+						rVal.add(tile);
+				}
+			}
+			return rVal;
+		} finally
+		{
+			LockUtil.releaseLock(m_lock);
+		}
+	}
+	
+	/*
+	public List<Tile> getTilesOldWay(final Rectangle2D bounds)
 	{
 		LockUtil.acquireLock(m_lock);
 		try
@@ -96,8 +165,8 @@ public class TileManager
 		{
 			LockUtil.releaseLock(m_lock);
 		}
-	}
-	
+	}*/
+
 	public Collection<UnitsDrawer> getUnitDrawables()
 	{
 		LockUtil.acquireLock(m_lock);
@@ -428,6 +497,96 @@ public class TileManager
 		LockUtil.acquireLock(m_lock);
 		try
 		{
+			// make a square
+			final Rectangle bounds = mapData.getBoundingRect(focusOn);
+			int square_length = Math.max(bounds.width, bounds.height);
+			final int grow = square_length / 4;
+			bounds.x -= grow;
+			bounds.y -= grow;
+			square_length += grow * 2;
+			
+			// make sure it is not bigger than the whole map
+			final int mapDataWidth = mapData.getMapDimensions().width;
+			final int mapDataHeight = mapData.getMapDimensions().height;
+			if (square_length > mapDataWidth)
+				square_length = mapDataWidth;
+			if (square_length > mapDataHeight)
+				square_length = mapDataHeight;
+			bounds.width = square_length;
+			bounds.height = square_length;
+			
+			// keep it in bounds
+			if (!mapData.scrollWrapX())
+			{
+				if (bounds.x < 0)
+					bounds.x = 0;
+				if (bounds.width + bounds.x > mapDataWidth)
+					bounds.x = mapDataWidth - bounds.width;
+			}
+			if (!mapData.scrollWrapY())
+			{
+				if (bounds.y < 0)
+					bounds.y = 0;
+				if (bounds.height + bounds.y > mapDataHeight)
+					bounds.y = mapDataHeight - bounds.height;
+			}
+			final Image rVal = Util.createImage(square_length, square_length, false);
+			final Graphics2D graphics = (Graphics2D) rVal.getGraphics();
+			graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			graphics.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+			graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+			if (bounds.x < 0)
+			{
+				bounds.x += mapDataWidth;
+				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+				if (bounds.y < 0)
+				{
+					bounds.y += mapDataHeight;
+					drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+					bounds.y -= mapDataHeight;
+				}
+				bounds.x -= mapDataWidth;
+			}
+			if (bounds.y < 0)
+			{
+				bounds.y += mapDataHeight;
+				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+				bounds.y -= mapDataHeight;
+			}
+			// start as a set to prevent duplicates
+			drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+			if (bounds.x + bounds.height > mapDataWidth)
+			{
+				bounds.x -= mapDataWidth;
+				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+				if (bounds.y + bounds.width > mapDataHeight)
+				{
+					bounds.y -= mapDataHeight;
+					drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+					bounds.y += mapDataHeight;
+				}
+				bounds.x += mapDataWidth;
+			}
+			if (bounds.y + bounds.width > mapDataHeight)
+			{
+				bounds.y -= mapDataHeight;
+				drawForCreate(selected, data, mapData, bounds, graphics, drawOutline);
+				bounds.y += mapDataHeight;
+			}
+			graphics.dispose();
+			return rVal;
+		} finally
+		{
+			LockUtil.releaseLock(m_lock);
+		}
+	}
+	
+	/*
+	private Image createTerritoryImageOldWay(final Territory selected, final Territory focusOn, final GameData data, final MapData mapData, final boolean drawOutline)
+	{
+		LockUtil.acquireLock(m_lock);
+		try
+		{
 			final Rectangle bounds = mapData.getBoundingRect(focusOn);
 			// make it square
 			if (bounds.width > bounds.height)
@@ -508,8 +667,8 @@ public class TileManager
 		{
 			LockUtil.releaseLock(m_lock);
 		}
-	}
-	
+	}*/
+
 	private void drawForCreate(final Territory selected, final GameData data, final MapData mapData, final Rectangle bounds, final Graphics2D graphics, final boolean drawOutline)
 	{
 		final Set<IDrawable> drawablesSet = new HashSet<IDrawable>();
@@ -538,10 +697,8 @@ public class TileManager
 		}
 		final List<IDrawable> orderedDrawables = new ArrayList<IDrawable>(drawablesSet);
 		Collections.sort(orderedDrawables, new DrawableComparator());
-		final Iterator<IDrawable> drawers = orderedDrawables.iterator();
-		while (drawers.hasNext())
+		for (final IDrawable drawer : orderedDrawables)
 		{
-			final IDrawable drawer = drawers.next();
 			if (drawer.getLevel() >= IDrawable.UNITS_LEVEL)
 				break;
 			if (drawer.getLevel() == IDrawable.TERRITORY_TEXT_LEVEL)
@@ -563,12 +720,10 @@ public class TileManager
 			final TerritoryOverLayDrawable told = new TerritoryOverLayDrawable(c, selected.getName(), 100, OP.FILL);
 			told.draw(bounds, data, graphics, mapData, null, null);
 		}
-		final Iterator<Polygon> iter = mapData.getPolygons(selected).iterator();
 		graphics.setStroke(new BasicStroke(10));
 		graphics.setColor(Color.RED);
-		while (iter.hasNext())
+		for (Polygon poly : mapData.getPolygons(selected))
 		{
-			Polygon poly = iter.next();
 			poly = new Polygon(poly.xpoints, poly.ypoints, poly.npoints);
 			poly.translate(-bounds.x, -bounds.y);
 			graphics.drawPolygon(poly);

@@ -737,19 +737,14 @@ public class MapData
 	public Rectangle getBoundingRect(final Territory terr)
 	{
 		final String name = terr.getName();
-		return getBoundingRect(name, m_polys);
+		return getBoundingRect(name);
 	}
 	
 	public Rectangle getBoundingRect(final String name)
 	{
-		return getBoundingRect(name, m_polys);
-	}
-	
-	public static Rectangle getBoundingRect(final String name, final Map<String, List<Polygon>> polygons)
-	{
-		final List<Polygon> polys = polygons.get(name);
+		final List<Polygon> polys = m_polys.get(name);
 		if (polys == null)
-			throw new IllegalStateException("No polygons found for:" + name + " All territories:" + polygons.keySet());
+			throw new IllegalStateException("No polygons found for:" + name + " All territories:" + m_polys.keySet());
 		Rectangle bounds = null;
 		for (int i = 0; i < polys.size(); i++)
 		{
@@ -759,7 +754,52 @@ public class MapData
 			else
 				bounds.add(item.getBounds());
 		}
+		// if we have a territory that straddles the map divide, ie: which has polygons on both the left and right sides of the map,
+		// then the polygon's width or height could be almost equal to the map width or height
+		// this can cause lots of problems, like when we want to get the tiles for the territory we would end up getting all the tiles for the map (and a java heap space error)
+		if ((bounds.width > 1900 && bounds.width > getMapDimensions().width * 0.9 && this.scrollWrapX())
+					|| (bounds.height > 1200 && bounds.height > getMapDimensions().height * 0.9 && this.scrollWrapY()))
+		{
+			return getBoundingRectWithTranslate(name);
+		}
 		return bounds;
+	}
+	
+	private Rectangle getBoundingRectWithTranslate(final String name)
+	{
+		final List<Polygon> polys = m_polys.get(name);
+		if (polys == null)
+			throw new IllegalStateException("No polygons found for:" + name + " All territories:" + m_polys.keySet());
+		Rectangle boundingRect = null;
+		final int mapWidth = getMapDimensions().width;
+		final int mapHeight = getMapDimensions().height;
+		final int closeToMapWidth = (int) (getMapDimensions().width * 0.9);
+		final int closeToMapHeight = (int) (getMapDimensions().height * 0.9);
+		final boolean scrollWrapX = this.scrollWrapX();
+		final boolean scrollWrapY = this.scrollWrapY();
+		for (final Polygon item : polys)
+		{
+			// if our rectangle is on the right side (mapscrollx) then we push it to be on the negative left side, so that the bounds.x will be negative
+			// this solves the issue of maps that have a territory where polygons were on both sides of the map divide
+			// (so our bounds.x was 0, and our bounds.y would be the entire map width)
+			// (when in fact it should actually be bounds.x = -10 or something, and bounds.width = 20 or something)
+			// we use map dimensions.width * 0.9 because the polygon may not actually touch the side of the map (like if the territory borders are thick)
+			final Rectangle itemRect = item.getBounds();
+			if (scrollWrapX && itemRect.getMaxX() >= closeToMapWidth)
+				itemRect.translate(-mapWidth, 0);
+			if (scrollWrapY && itemRect.getMaxY() >= closeToMapHeight)
+				itemRect.translate(0, -mapHeight);
+			if (boundingRect == null)
+				boundingRect = itemRect;
+			else
+				boundingRect.add(itemRect);
+		}
+		// if the polygon is completely negative, we can make translate it back to normal
+		if (boundingRect.x < 0 && boundingRect.getMaxX() <= 0)
+			boundingRect.translate(mapWidth, 0);
+		if (boundingRect.y < 0 && boundingRect.getMaxY() <= 0)
+			boundingRect.translate(0, mapHeight);
+		return boundingRect;
 	}
 	
 	/**

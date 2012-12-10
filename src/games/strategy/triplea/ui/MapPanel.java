@@ -753,10 +753,9 @@ public class MapPanel extends ImageScrollerLargeView
 		{
 			final Rectangle2D extendedBounds = new Rectangle2D.Double(Math.max(m_model.getX() - preDrawMargin, 0), Math.max(m_model.getY() - preDrawMargin, 0), getScaledWidth() + (2 * preDrawMargin),
 						getScaledHeight() + (2 * preDrawMargin));
-			final Iterator<Tile> tiles = m_tileManager.getTiles(extendedBounds).iterator();
-			while (tiles.hasNext())
+			final List<Tile> tileList = m_tileManager.getTiles(extendedBounds);
+			for (final Tile tile : tileList)
 			{
-				final Tile tile = tiles.next();
 				if (tile.isDirty())
 				{
 					undrawnTiles.add(tile);
@@ -772,7 +771,6 @@ public class MapPanel extends ImageScrollerLargeView
 	private void drawTiles(final Graphics2D g, final List<Tile> images, final GameData data, Rectangle2D.Double bounds, final double overlapX, final double overlapY, final List<Tile> undrawn)
 	{
 		final List<Tile> tileList = m_tileManager.getTiles(bounds);
-		final Iterator<Tile> tiles = tileList.iterator();
 		bounds = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getHeight(), bounds.getWidth());
 		if (overlapX != 0)
 		{
@@ -782,10 +780,9 @@ public class MapPanel extends ImageScrollerLargeView
 		{
 			bounds.y += overlapY - getScaledHeight();
 		}
-		while (tiles.hasNext())
+		for (final Tile tile : tileList)
 		{
 			Image img = null;
-			final Tile tile = tiles.next();
 			LockUtil.acquireLock(tile.getLock());
 			try
 			{
