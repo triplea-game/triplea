@@ -731,12 +731,12 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	@Override
 	public void notifyError(final String message)
 	{
-		EventThreadJOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+		EventThreadJOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE, true);
 	}
 	
 	public void notifyMessage(final String message, final String title)
 	{
-		EventThreadJOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
+		EventThreadJOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE, true);
 	}
 	
 	public void notification(final String message)

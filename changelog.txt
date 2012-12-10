@@ -1,4 +1,6 @@
 Changes for 1.6.1.4
+* Adding scroll bars to notification messages window. (veqryn)
+
 * Increasing max memory from 640mb to 768mb, and up to 896mb for online games. (veqryn)
 
 * Moved all sounds to a specific "era" folder (ww2, preindustrial, classical, future) and changing how sounds are found again, so that there should no longer be any need for duplicate sound files. Now all sounds should come with TripleA, and you can use the "sounds.properties" file to cherry pick which sounds you want. (veqryn)
