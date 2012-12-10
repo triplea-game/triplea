@@ -88,6 +88,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	private boolean m_soundPlayedAlreadyNonCombatMove = false;
 	private boolean m_soundPlayedAlreadyPurchase = false;
 	
+	private boolean m_soundPlayedAlreadyTechnology = false;
+	private boolean m_soundPlayedAlreadyBattle = false;
+	private boolean m_soundPlayedAlreadyEndTurn = false;
+	private boolean m_soundPlayedAlreadyPlacement = false;
+	
 	/** Creates new TripleAPlayer */
 	public TripleAPlayer(final String name, final String type)
 	{
@@ -158,6 +163,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			m_soundPlayedAlreadyCombatMove = false;
 			m_soundPlayedAlreadyNonCombatMove = false;
 			m_soundPlayedAlreadyPurchase = false;
+			m_soundPlayedAlreadyTechnology = false;
+			m_soundPlayedAlreadyBattle = false;
+			m_soundPlayedAlreadyEndTurn = false;
+			m_soundPlayedAlreadyPlacement = false;
 		}
 		else
 			badStep = true;
@@ -247,6 +256,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		} finally
 		{
 			getGameData().releaseReadLock();
+		}
+		// play a sound for this phase
+		if (!m_soundPlayedAlreadyTechnology)
+		{
+			ClipPlayer.play(SoundPath.CLIP_PHASE_TECHNOLOGY, id.getName());
+			m_soundPlayedAlreadyTechnology = true;
 		}
 		final TechRoll techRoll = m_ui.getTechRolls(id);
 		if (techRoll != null)
@@ -533,6 +548,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				}
 				return;
 			}
+			// play a sound for this phase
+			if (!m_soundPlayedAlreadyBattle)
+			{
+				ClipPlayer.play(SoundPath.CLIP_PHASE_BATTLE, id.getName());
+				m_soundPlayedAlreadyBattle = true;
+			}
 			final FightBattleDetails details = m_ui.getBattle(id, battles.getBattles(), battles.getStrategicRaids());
 			if (getPlayerBridge().isGameOver())
 				return;
@@ -552,6 +573,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			return;
 		while (true)
 		{
+			// play a sound for this phase
+			if (!m_soundPlayedAlreadyPlacement)
+			{
+				ClipPlayer.play(SoundPath.CLIP_PHASE_PLACEMENT, id.getName());
+				m_soundPlayedAlreadyPlacement = true;
+			}
 			final PlaceData data = m_ui.waitForPlace(id, bid, getPlayerBridge());
 			if (data == null)
 			{
@@ -569,6 +596,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void endTurn()
 	{
+		// play a sound for this phase
+		if (!m_soundPlayedAlreadyEndTurn)
+		{
+			ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerID().getName());
+			m_soundPlayedAlreadyEndTurn = true;
+		}
 		m_ui.waitForEndTurn(getPlayerID(), getPlayerBridge());
 	}
 	

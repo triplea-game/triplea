@@ -62,9 +62,14 @@ public class SoundPath
 	public static final String CLIP_BATTLE_SEA_SUCCESSFUL = "battle_sea_successful";
 	public static final String CLIP_BOMBING_ROCKET = "bombing_rocket";
 	public static final String CLIP_BOMBING_STRATEGIC = "bombing_strategic";
+	public static final String CLIP_PHASE_BATTLE = "phase_battle";
+	public static final String CLIP_PHASE_END_TURN = "phase_end_turn";
 	public static final String CLIP_PHASE_MOVE_COMBAT = "phase_move_combat";
 	public static final String CLIP_PHASE_MOVE_NONCOMBAT = "phase_move_noncombat";
+	public static final String CLIP_PHASE_PLACEMENT = "phase_placement";
+	public static final String CLIP_PHASE_POLITICS = "phase_politics";
 	public static final String CLIP_PHASE_PURCHASE = "phase_purchase";
+	public static final String CLIP_PHASE_TECHNOLOGY = "phase_technology";
 	public static final String CLIP_PLACED_AIR = "placed_air";
 	public static final String CLIP_PLACED_INFRASTRUCTURE = "placed_infrastructure";
 	public static final String CLIP_PLACED_LAND = "placed_land";
@@ -110,9 +115,14 @@ public class SoundPath
 				clipPlayer.preLoadClip(CLIP_BATTLE_SEA_SUCCESSFUL);
 				clipPlayer.preLoadClip(CLIP_BOMBING_ROCKET);
 				clipPlayer.preLoadClip(CLIP_BOMBING_STRATEGIC);
+				clipPlayer.preLoadClip(CLIP_PHASE_BATTLE);
+				clipPlayer.preLoadClip(CLIP_PHASE_END_TURN);
 				clipPlayer.preLoadClip(CLIP_PHASE_MOVE_COMBAT);
 				clipPlayer.preLoadClip(CLIP_PHASE_MOVE_NONCOMBAT);
+				clipPlayer.preLoadClip(CLIP_PHASE_PLACEMENT);
+				clipPlayer.preLoadClip(CLIP_PHASE_POLITICS);
 				clipPlayer.preLoadClip(CLIP_PHASE_PURCHASE);
+				clipPlayer.preLoadClip(CLIP_PHASE_TECHNOLOGY);
 				clipPlayer.preLoadClip(CLIP_PLACED_AIR);
 				clipPlayer.preLoadClip(CLIP_PLACED_INFRASTRUCTURE);
 				clipPlayer.preLoadClip(CLIP_PLACED_LAND);
@@ -157,9 +167,14 @@ public class SoundPath
 		rVal.add(CLIP_BATTLE_SEA_SUCCESSFUL);
 		rVal.add(CLIP_BOMBING_ROCKET);
 		rVal.add(CLIP_BOMBING_STRATEGIC);
+		rVal.add(CLIP_PHASE_BATTLE);
+		rVal.add(CLIP_PHASE_END_TURN);
 		rVal.add(CLIP_PHASE_MOVE_COMBAT);
 		rVal.add(CLIP_PHASE_MOVE_NONCOMBAT);
+		rVal.add(CLIP_PHASE_PLACEMENT);
+		rVal.add(CLIP_PHASE_POLITICS);
 		rVal.add(CLIP_PHASE_PURCHASE);
+		rVal.add(CLIP_PHASE_TECHNOLOGY);
 		rVal.add(CLIP_PLACED_AIR);
 		rVal.add(CLIP_PLACED_INFRASTRUCTURE);
 		rVal.add(CLIP_PLACED_LAND);
@@ -205,9 +220,14 @@ public class SoundPath
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_BATTLE_SEA_SUCCESSFUL, "Sea Battle Won"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_BOMBING_ROCKET, "Rocket Attack"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_BOMBING_STRATEGIC, "Strategic Bombing"));
-				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_MOVE_COMBAT, "Combat Movement"));
-				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, "NonCombat Movement"));
-				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_PURCHASE, "Purchase Phase"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_BATTLE, "Phase: Battle"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_END_TURN, "Phase: End Turn"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_MOVE_COMBAT, "Phase: Combat Movement"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_MOVE_NONCOMBAT, "Phase: NonCombat Movement"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_PLACEMENT, "Phase: Placement"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_POLITICS, "Phase: Politics"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_PURCHASE, "Phase: Purchase Phase"));
+				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PHASE_TECHNOLOGY, "Phase: Technology"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PLACED_AIR, "Place Air Units"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PLACED_INFRASTRUCTURE, "Place Infrastructure"));
 				rVal.add(new SoundOptionCheckBox(SoundPath.CLIP_PLACED_LAND, "Place Land Units"));
@@ -224,5 +244,4 @@ public class SoundPath
 		}
 		return rVal;
 	}
-	
 }
