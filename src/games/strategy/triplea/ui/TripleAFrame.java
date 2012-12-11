@@ -1779,7 +1779,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		m_tabsPanel.add("Economy", m_economyPanel);
 		if (m_objectivePanel != null && !m_objectivePanel.isEmpty())
 			m_tabsPanel.add(m_objectivePanel.getName(), m_objectivePanel);
-		m_tabsPanel.add(m_notesPanel);
+		m_tabsPanel.add("Notes", m_notesPanel);
 		m_tabsPanel.add("Territory", m_details);
 		if (getEditMode())
 			m_tabsPanel.add("Edit", m_editPanel);
