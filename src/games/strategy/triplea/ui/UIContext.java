@@ -243,7 +243,7 @@ public class UIContext
 				SoundPath.preLoadSounds(SoundPath.SoundType.TRIPLEA);
 			}
 		};
-		new Thread(loadSounds, "Triplea sound loader").start();
+		(new Thread(loadSounds, "Triplea sound loader")).start();
 		// load a new cursor
 		m_cursor = Cursor.getDefaultCursor();
 		final Toolkit toolkit = Toolkit.getDefaultToolkit();

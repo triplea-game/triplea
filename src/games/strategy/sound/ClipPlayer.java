@@ -16,6 +16,7 @@ package games.strategy.sound;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.properties.IEditableProperty;
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ResourceLoader;
 
 import java.io.File;
@@ -54,9 +55,10 @@ public class ClipPlayer
 	private static ClipPlayer s_clipPlayer;
 	private boolean m_beSilent = false;
 	private final HashSet<String> m_mutedClips = new HashSet<String>();
-	private final HashMap<String, List<Clip>> m_sounds = new HashMap<String, List<Clip>>();
+	private final HashMap<String, List<File>> m_sounds = new HashMap<String, List<File>>();
 	private final ResourceLoader m_resourceLoader;
 	private final Set<String> m_subFolders = new HashSet<String>();
+	private final ClipCache m_clipCache = new ClipCache(24); // MacOS and Linux can only handle 30 or 32 sound files being open at same time, so we'll be safe and pick 24
 	
 	// standard settings
 	private static final String ASSETS_SOUNDS_FOLDER = "sounds";
@@ -200,12 +202,20 @@ public class ClipPlayer
 	 */
 	private void playClip(final String clipName, final String subFolder)
 	{
-		final Clip clip = loadClip(clipName, subFolder);
-		if (clip != null)
+		// run in a new thread, so that we do not delay the game
+		final Runnable loadSounds = new Runnable()
 		{
-			clip.setFramePosition(0);
-			clip.loop(0);
-		}
+			public void run()
+			{
+				final Clip clip = loadClip(clipName, subFolder, false);
+				if (clip != null)
+				{
+					clip.setFramePosition(0);
+					clip.loop(0);
+				}
+			}
+		};
+		(new Thread(loadSounds, "Triplea sound loader for " + clipName)).start();
 	}
 	
 	/**
@@ -216,40 +226,36 @@ public class ClipPlayer
 	 */
 	public void preLoadClip(final String clipName)
 	{
-		loadClip(clipName, null);
+		loadClip(clipName, null, true);
 		for (final String sub : m_subFolders)
 		{
-			loadClip(clipName, sub);
+			loadClip(clipName, sub, true);
 		}
 	}
 	
-	private Clip loadClip(final String clipName, final String subFolder)
+	private Clip loadClip(final String clipName, final String subFolder, final boolean parseThenTestOnly)
 	{
 		if (m_beSilent || isMuted(clipName))
 			return null;
-		final Clip clip = loadClipPath(clipName + (subFolder == null ? "" : ("_" + subFolder)), (subFolder != null));
+		final Clip clip = loadClipPath(clipName + (subFolder == null ? "" : ("_" + subFolder)), (subFolder != null), parseThenTestOnly);
 		if (clip == null)
-			return loadClipPath(clipName, false);
+			return loadClipPath(clipName, false, parseThenTestOnly);
 		return clip;
 	}
 	
-	private Clip loadClipPath(final String pathName, final boolean subFolder)
+	private Clip loadClipPath(final String pathName, final boolean subFolder, final boolean parseThenTestOnly)
 	{
-		Clip clip;
-		if (m_sounds.containsKey(pathName))
-		{
-			final List<Clip> availableSounds = m_sounds.get(pathName);
-			if (availableSounds == null || availableSounds.isEmpty())
-				return null;
-			Collections.shuffle(availableSounds); // we want to pick a random sound from this folder, as users don't like hearing the same ones over and over again
-			clip = availableSounds.get(0);
-		}
-		else
+		if (!m_sounds.containsKey(pathName))
 		{
 			// parse sounds for the first time
-			clip = parseClipPaths(pathName, subFolder);
+			parseClipPaths(pathName, subFolder);
 		}
-		return clip;
+		final List<File> availableSounds = m_sounds.get(pathName);
+		if (parseThenTestOnly || availableSounds == null || availableSounds.isEmpty())
+			return null;
+		Collections.shuffle(availableSounds); // we want to pick a random sound from this folder, as users don't like hearing the same ones over and over again
+		final File clipFile = availableSounds.get(0);
+		return m_clipCache.get(clipFile);
 	}
 	
 	/**
@@ -268,14 +274,14 @@ public class ClipPlayer
 	 * @param subFolder
 	 * @return
 	 */
-	private Clip parseClipPaths(final String pathName, final boolean subFolder)
+	private void parseClipPaths(final String pathName, final boolean subFolder)
 	{
 		String resourcePath = SoundProperties.getInstance(m_resourceLoader).getProperty(pathName);
 		if (resourcePath == null)
 			resourcePath = SoundProperties.getInstance(m_resourceLoader).getDefaultEraFolder() + File.separator + pathName;
 		resourcePath = resourcePath.replace('/', File.separatorChar);
 		resourcePath = resourcePath.replace('\\', File.separatorChar);
-		final List<Clip> availableSounds = new ArrayList<Clip>();
+		final List<File> availableSounds = new ArrayList<File>();
 		for (final String path : resourcePath.split(";"))
 		{
 			availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + File.separator + path));
@@ -286,14 +292,11 @@ public class ClipPlayer
 			availableSounds.addAll(createAndAddClips(ASSETS_SOUNDS_FOLDER + File.separator + genericPath));
 		}
 		m_sounds.put(pathName, availableSounds);
-		if (availableSounds.isEmpty())
-			return null;
-		return availableSounds.get(0);
 	}
 	
-	private List<Clip> createAndAddClips(final String resourceAndPath)
+	private List<File> createAndAddClips(final String resourceAndPath)
 	{
-		final List<Clip> availableSounds = new ArrayList<Clip>();
+		final List<File> availableSounds = new ArrayList<File>();
 		final URL thisSoundURL = m_resourceLoader.getResource(resourceAndPath);
 		if (thisSoundURL == null)
 		{
@@ -319,9 +322,8 @@ public class ClipPlayer
 		{
 			if (!(thisSound.getName().endsWith(".wav") || thisSound.getName().endsWith(".au") || thisSound.getName().endsWith(".aiff") || thisSound.getName().endsWith(".midi")))
 				return availableSounds;
-			final Clip newClip = createClip(thisSound);
-			if (newClip != null)
-				availableSounds.add(newClip);
+			if (testClipSuccessful(thisSound))
+				availableSounds.add(thisSound);
 		}
 		else
 		{
@@ -329,15 +331,14 @@ public class ClipPlayer
 			{
 				if (!(sound.getName().endsWith(".wav") || sound.getName().endsWith(".au") || sound.getName().endsWith(".aiff") || sound.getName().endsWith(".midi")))
 					continue;
-				final Clip newClip = createClip(sound); // m_resourceLoader.getResourceAsStream(ASSETS_SOUNDS_FOLDER + File.separator + clipName));
-				if (newClip != null)
-					availableSounds.add(newClip);
+				if (testClipSuccessful(sound))
+					availableSounds.add(sound);
 			}
 		}
 		return availableSounds;
 	}
 	
-	private synchronized Clip createClip(final File clipFile)
+	static synchronized Clip createClip(final File clipFile, final boolean testOnly)
 	{
 		try
 		{
@@ -346,7 +347,10 @@ public class ClipPlayer
 			final DataLine.Info info = new DataLine.Info(Clip.class, format);
 			final Clip clip = (Clip) AudioSystem.getLine(info);
 			clip.open(audioInputStream);
-			return clip;
+			if (!testOnly)
+				return clip;
+			clip.close();
+			return null;
 		}
 		// these can happen if the sound isnt configured, its not that bad.
 		catch (final LineUnavailableException e)
@@ -364,17 +368,19 @@ public class ClipPlayer
 		}
 		return null;
 	}
-	/*
-	private synchronized Clip createClip(final InputStream inputStream)
+	
+	static synchronized boolean testClipSuccessful(final File clipFile)
 	{
+		Clip clip = null;
+		boolean successful = false;
 		try
 		{
-			final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(inputStream);
+			final AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
 			final AudioFormat format = audioInputStream.getFormat();
 			final DataLine.Info info = new DataLine.Info(Clip.class, format);
-			final Clip clip = (Clip) AudioSystem.getLine(info);
+			clip = (Clip) AudioSystem.getLine(info);
 			clip.open(audioInputStream);
-			return clip;
+			successful = true;
 		}
 		// these can happen if the sound isnt configured, its not that bad.
 		catch (final LineUnavailableException e)
@@ -389,8 +395,101 @@ public class ClipPlayer
 		} catch (final RuntimeException re)
 		{
 			re.printStackTrace(System.out);
+		} finally
+		{
+			if (clip != null)
+			{
+				clip.close();
+				if (successful)
+					return true;
+			}
 		}
-		return null;
+		return false;
 	}
-	*/
+	
+	/**
+	 * Simple stupid test to see if it works (and to see if our cache stays at or below its max), and to make sure there are no memory leaks.
+	 * 
+	 * @param args
+	 */
+	public static void main(final String[] args)
+	{
+		getInstance();
+		final File root = new File(GameRunner.getRootFolder(), "assets" + File.separator + "sounds");
+		for (final File folder : root.listFiles())
+		{
+			if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial") || folder.getName().equals("classical")))
+				continue;
+			for (final File file : folder.listFiles())
+			{
+				if (file.getName().indexOf("svn") != -1)
+					continue;
+				final String name = folder.getName() + File.separator + file.getName();
+				final List<File> availableSounds = new ArrayList<File>();
+				availableSounds.addAll(getInstance().createAndAddClips(ASSETS_SOUNDS_FOLDER + File.separator + name));
+				getInstance().m_sounds.put(name, availableSounds);
+			}
+		}
+		while (true)
+		{
+			for (final File folder : root.listFiles())
+			{
+				if (!(folder.getName().equals("ww2") || folder.getName().equals("preindustrial") || folder.getName().equals("classical")))
+					continue;
+				for (final File file : folder.listFiles())
+				{
+					if (file.getName().indexOf("svn") != -1)
+						continue;
+					play(folder.getName() + File.separator + file.getName(), null);
+					try
+					{
+						Thread.sleep(4000);
+					} catch (final InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+}
+
+
+class ClipCache
+{
+	private final HashMap<File, Clip> m_clipMap = new HashMap<File, Clip>();
+	private final List<File> m_cacheOrder = new ArrayList<File>();
+	private final int MAXSIZE;
+	
+	ClipCache(final int max)
+	{
+		if (max < 1)
+			throw new IllegalArgumentException("ClipCache max must be at least 1");
+		MAXSIZE = max;
+	}
+	
+	public synchronized Clip get(final File file)
+	{
+		Clip clip = m_clipMap.get(file);
+		if (clip != null)
+		{
+			m_cacheOrder.remove(file);
+			m_cacheOrder.add(file);
+			return clip;
+		}
+		if (m_clipMap.size() >= MAXSIZE)
+		{
+			final File leastPlayed = m_cacheOrder.get(0);
+			// System.out.println("Removing " + leastPlayed + " and adding " + file);
+			final Clip leastClip = m_clipMap.remove(leastPlayed);
+			leastClip.stop();
+			leastClip.flush();
+			leastClip.close();
+			m_cacheOrder.remove(leastPlayed);
+		}
+		clip = ClipPlayer.createClip(file, false);
+		m_clipMap.put(file, clip);
+		m_cacheOrder.add(file);
+		return clip;
+	}
 }
