@@ -745,36 +745,31 @@ public class MapData
 		final List<Polygon> polys = m_polys.get(name);
 		if (polys == null)
 			throw new IllegalStateException("No polygons found for:" + name + " All territories:" + m_polys.keySet());
-		Rectangle bounds = null;
-		for (int i = 0; i < polys.size(); i++)
+		final Iterator<Polygon> polyIter = polys.iterator();
+		final Rectangle bounds = polyIter.next().getBounds();
+		while (polyIter.hasNext())
 		{
-			final Polygon item = polys.get(i);
-			if (bounds == null)
-				bounds = item.getBounds();
-			else
-				bounds.add(item.getBounds());
+			bounds.add(polyIter.next().getBounds());
 		}
 		// if we have a territory that straddles the map divide, ie: which has polygons on both the left and right sides of the map,
 		// then the polygon's width or height could be almost equal to the map width or height
 		// this can cause lots of problems, like when we want to get the tiles for the territory we would end up getting all the tiles for the map (and a java heap space error)
-		if ((bounds.width > 1900 && bounds.width > getMapDimensions().width * 0.9 && this.scrollWrapX())
-					|| (bounds.height > 1200 && bounds.height > getMapDimensions().height * 0.9 && this.scrollWrapY()))
+		final Dimension mapDimensions = getMapDimensions();
+		if ((scrollWrapX() && bounds.width > 1800 && bounds.width > mapDimensions.width * 0.9)
+					|| (scrollWrapY() && bounds.height > 1200 && bounds.height > mapDimensions.height * 0.9))
 		{
-			return getBoundingRectWithTranslate(name);
+			return getBoundingRectWithTranslate(polys, mapDimensions);
 		}
 		return bounds;
 	}
 	
-	private Rectangle getBoundingRectWithTranslate(final String name)
+	private Rectangle getBoundingRectWithTranslate(final List<Polygon> polys, final Dimension mapDimensions)
 	{
-		final List<Polygon> polys = m_polys.get(name);
-		if (polys == null)
-			throw new IllegalStateException("No polygons found for:" + name + " All territories:" + m_polys.keySet());
 		Rectangle boundingRect = null;
-		final int mapWidth = getMapDimensions().width;
-		final int mapHeight = getMapDimensions().height;
-		final int closeToMapWidth = (int) (getMapDimensions().width * 0.9);
-		final int closeToMapHeight = (int) (getMapDimensions().height * 0.9);
+		final int mapWidth = mapDimensions.width;
+		final int mapHeight = mapDimensions.height;
+		final int closeToMapWidth = (int) (mapWidth * 0.9);
+		final int closeToMapHeight = (int) (mapHeight * 0.9);
 		final boolean scrollWrapX = this.scrollWrapX();
 		final boolean scrollWrapY = this.scrollWrapY();
 		for (final Polygon item : polys)

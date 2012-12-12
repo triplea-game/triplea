@@ -80,6 +80,10 @@ public class ClipPlayer
 		// make a new clip player if we switch resource loaders (ie: if we switch maps)
 		if (s_clipPlayer == null || s_clipPlayer.m_resourceLoader != resourceLoader)
 		{
+			// stop and close any playing clips
+			if (s_clipPlayer != null)
+				s_clipPlayer.m_clipCache.removeAll();
+			// make a new clip player with our new resource loader
 			s_clipPlayer = new ClipPlayer(resourceLoader, data);
 			SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
 		}
@@ -491,5 +495,17 @@ class ClipCache
 		m_clipMap.put(file, clip);
 		m_cacheOrder.add(file);
 		return clip;
+	}
+	
+	public synchronized void removeAll()
+	{
+		for (final Clip clip : m_clipMap.values())
+		{
+			clip.stop();
+			clip.flush();
+			clip.close();
+		}
+		m_clipMap.clear();
+		m_cacheOrder.clear();
 	}
 }
