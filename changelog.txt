@@ -1,4 +1,6 @@
 Changes for 1.6.1.4
+* Adding some more sounds for ancient/classical era. (veqryn)
+
 * Allowing air movement over neutrals and enemy territories so long as movement over neutrals is allowed, and no nonparatrooping units are present. (veqryn)
 
 * Creating caching mechanism for sound clips, so that there are never more than 24 sound clips being held in memory. This should prevent errors in MacOS and Linux, which can not handle having large number of sound clips open at same time. This may however result in a delay before hearing clips, and still could result in errors if clips are really long. (veqryn)
