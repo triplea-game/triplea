@@ -348,14 +348,13 @@ public class MoveValidator
 			return result.setErrorReturnResult(CANT_MOVE_THROUGH_IMPASSIBLE);
 		if (!route.someMatch(Matches.TerritoryIsPassableAndNotRestricted(player, data)))
 			return result.setErrorReturnResult(CANT_MOVE_THROUGH_RESTRICTED);
-		final CompositeMatch<Territory> battle = new CompositeMatchOr<Territory>();
-		battle.add(Matches.TerritoryIsNeutralButNotWater);
-		battle.add(Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
+		final CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutralButNotWater,
+					Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
 		// final CompositeMatch<Unit> transportsCanNotControl = new CompositeMatchAnd<Unit>(Matches.UnitIsTransportAndNotDestroyer, Matches.UnitIsTransportButNotCombatTransport);
 		final boolean navalMayNotNonComIntoControlled = isWW2V2(data) || games.strategy.triplea.Properties.getNavalUnitsMayNotNonCombatMoveIntoControlledSeaZones(data);
 		// TODO need to account for subs AND transports that are ignored, not just OR
 		final Territory end = route.getEnd();
-		if (battle.match(end))
+		if (neutralOrEnemy.match(end))
 		{
 			// a convoy zone is controlled, so we must make sure we can still move there if there are actual battle there
 			if (!end.isWater() || navalMayNotNonComIntoControlled)
@@ -382,26 +381,25 @@ public class MoveValidator
 				}
 			}
 		}
-		if (Match.allMatch(units, Matches.UnitIsAir))
+		// if there are enemy units on the path blocking us, that is validated elsewhere (validateNonEnemyUnitsOnPath)
+		if (Match.allMatch(units, Matches.UnitIsAir) || (Match.noneMatch(units, Matches.UnitIsSea) && !nonParatroopersPresent(player, units, route)))
 		{
+			// if there are non-paratroopers present, then we can not fly over stuff
+			// if there neutral territories in the middle, we can not fly over (unless allowed to)
 			if (route.someMatch(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutralButNotWater, Matches.TerritoryIsWater.invert()))
 						&& (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
 				return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
 		}
+		else if (Match.someMatch(units, Matches.UnitIsSea))
+		{
+			// if there are neutral or owned territories, we can not move through them
+			if (navalMayNotNonComIntoControlled && route.someMatch(neutralOrEnemy))
+				return result.setErrorReturnResult("Cannot move units through neutral or enemy territories in non combat");
+		}
 		else
 		{
-			final CompositeMatch<Territory> neutralOrEnemy = new CompositeMatchOr<Territory>(Matches.TerritoryIsNeutralButNotWater,
-						Matches.isTerritoryEnemyAndNotUnownedWaterOrImpassibleOrRestricted(player, data));
 			if (route.someMatch(neutralOrEnemy))
-			{
-				if ((!(!navalMayNotNonComIntoControlled && route.allMatch(Matches.TerritoryIsWater))) && MoveValidator.noEnemyUnitsOnPathMiddleSteps(route, player, data) &&
-							!Matches.territoryHasEnemyUnits(player, data).match(end))
-				{
-					if (!route.allMatch(new CompositeMatchOr<Territory>(Matches.TerritoryIsWater, new CompositeMatchAnd<Territory>(Matches.TerritoryIsPassableAndNotRestricted(player, data),
-								Matches.isTerritoryAllied(player, data), Matches.TerritoryIsLand))) || nonParatroopersPresent(player, units, route))
-						return result.setErrorReturnResult("Cannot move units to neutral or enemy territories in non combat");
-				}
-			}
+				return result.setErrorReturnResult("Cannot move units through neutral or enemy territories in non combat");
 		}
 		return result;
 	}
@@ -1364,7 +1362,7 @@ public class MoveValidator
 					result.addDisallowedUnit("Paratroops may only airlift during Non-Combat Movement Phase", paratroop);
 				}
 			}
-			if (!games.strategy.triplea.Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data) || nonCombat)
+			if (!games.strategy.triplea.Properties.getParatroopersCanAttackDeepIntoEnemyTerritory(data))
 			{
 				for (final Territory current : Match.getMatches(route.getMiddleSteps(), Matches.TerritoryIsLand))
 				{
