@@ -578,7 +578,8 @@ public class DecorationPlacer extends JFrame
 		if (JOptionPane.showOptionDialog(this, "Are the images shown from the top left, or from the bottom left point? \r\n"
 					+ "All images are shown from the top left, except for 'name_place.txt', 'pu_place.txt', and 'comments.txt'. \r\n"
 					+ "For these 3 files, whether they are top left or bottom left is determined by the \r\n"
-					+ "'map.properties' property: 'map.drawNamesFromTopLeft', which defaults to false if not specified [meaning bottom left].",
+					+ "'map.properties' property: 'map.drawNamesFromTopLeft', which defaults to false if not specified [meaning bottom left]. \r\n"
+					+ "Do NOT change this from whatever the default has choosen, unless you know exactly what you are doing!",
 					"Show images from top left or bottom left point?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, showFromTopLeft,
 					showFromTopLeft[(s_imagePointType.isCanUseBottomLeftPoint() ? 1 : 0)]) == JOptionPane.NO_OPTION)
 			s_showFromTopLeft = false;

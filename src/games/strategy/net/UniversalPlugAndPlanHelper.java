@@ -54,26 +54,30 @@ public class UniversalPlugAndPlanHelper
 		final String error = upnpHelper.attemptAddingPortForwarding(textArea);
 		textArea.append("\r\n \r\n \r\n \r\n");
 		final boolean worked = (error == null);
+		final String textResult;
 		if (worked)
 		{
-			textArea.append("It looks like it worked.  This program will close now.\r\n"
+			textResult = "It looks like it worked.  This program will close now.\r\n"
 						+ "Please try hosting again, to see if it 'really' worked.\r\n"
-						+ "Remember that your firewall must allow TripleA, or else you still won't be able to host.\r\n");
+						+ "Remember that your firewall must allow TripleA, or else you still won't be able to host.\r\n";
 		}
 		else
 		{
-			textArea.append("It appears TripleA failed to set your Port Forwarding.\r\n"
+			textResult = "It appears TripleA failed to set your Port Forwarding.\r\n"
 						+ "Please make sure UPnP is turned on, in your router's settings.\r\n\r\n"
 						+ "If you still can not get TripleA to set them correctly, then you must set them yourself!\r\n"
 						+ "See 'How To Host...' in the help menu, at the top of the lobby screen in order to manually set them.\r\n\r\n"
-						+ "\r\nThis program will close now.\r\n");
+						+ "\r\nThis program will close now.\r\n";
 		}
+		System.out.println(textResult);
+		textArea.append(textResult);
 		JOptionPane.showMessageDialog(parent, new JScrollPane(textArea), "Setting Port Forwarding with UPnP", JOptionPane.INFORMATION_MESSAGE);
 		return worked;
 	}
 	
 	public String attemptAddingPortForwarding(final JTextArea textArea)
 	{
+		System.out.println("Starting Universal Plug and Play (UPnP) add port forward map script.");
 		textArea.append("Starting Universal Plug and Play (UPnP) add port forward map script.\r\n");
 		final String localError = findLocalInetAddress();
 		if (localError != null)

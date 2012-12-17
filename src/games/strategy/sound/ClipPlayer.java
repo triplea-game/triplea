@@ -48,6 +48,63 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * The property will persist and be reloaded after the virtual machine
  * has been stopped and restarted.
  * 
+ * <br>
+ * <br>
+ * <br>
+ * 
+ * <br>
+ * <br>
+ * How it works: <br>
+ * <b>Sound.Default.Folder</b>=ww2 <br>
+ * This is the "key" that tells the engine which sound folder to use as the DEFAULT sound folder. <br>
+ * The default folders are as follows: <br>
+ * "<b>ww2</b>" (which should cover ww1 - ww2 - ww3 sounds), <br>
+ * "<b>preindustrial</b>" (anything from muskets/cannons (1500) to right before ww1 (1900), <br>
+ * "<b>classical</b>" (the ancient era, anything before cannons became a mainstay (10,000 bce - 1500 ad) <br>
+ * "<b>future</b>" (sci-fi, spaceships, lasers, etc) <br>
+ * <br>
+ * After this, you can specify specific sounds if you want, using the "sound key location" (aka: sound map folder). <br>
+ * The sound key location is the exact folder name for a sound you want, located under the "generic" folder.
+ * What I mean by this is that all sound key locations that triplea supports, are the names of all the folders in the "assets/sounds/generic/" folder. <br>
+ * example: <br>
+ * <b>battle_aa_miss</b>=ww2/battle_aa_miss;future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.wav <br>
+ * "battle_aa_miss" is one of the folders under "generic", therefore it is a "sound location key" <br>
+ * We can set this equal to any list of sounds paths, each separated by a semicolon (;). The engine will pick one at random each time we need to play this sound. <br>
+ * The "sound path" can be a "folder" or a "file". If it is a folder, we will use all the sounds in that folder.
+ * If it is a file, we will only use that file. We can use a file and folder and another file and another folder, all together. <br>
+ * Example: "<b>ww2/battle_aa_miss</b>" is the sound path for a folder, so we will use all the sounds in that folder.
+ * "<b>future/battle_aa_miss/battle_aa_miss_01_ufo_flyby.wav</b>" is a specific file, so we will use just this file.
+ * Because we use both of these together, the engine will make a list of all the files in that folder, plus that single file we specified,
+ * then it will randomly pick one of this whole list every time it needs to play the "battle_aa_miss" sound. <br>
+ * <br>
+ * So, lets say that you want to play 2 sounds, for the "battle_land" sound key.
+ * One of them is located at "tripleainstallfolder/assets/sounds/generic/battle_land_01_angry_drumming_noise.wav".
+ * The other is located at "tripleainstallfolder/assets/sounds/classical/battle_land_02_war_trumpets.wav". Then the entry would look like this: <br>
+ * battle_land=generic/battle_land_01_angry_drumming_noise.wav;classical/battle_land_02_war_trumpets.wav <br>
+ * If you wanted it to also play every single sound in the "tripleainstallfolder/assets/sounds/ww2/battle_land/" folder, then you would add that folder to path: <br>
+ * battle_land=generic/battle_land_01_angry_drumming_noise.wav;classical/battle_land_02_war_trumpets.wav;ww2/battle_land <br>
+ * <br>
+ * Furthermore, we can customize the sound key by adding "_nationName" onto the end of it. So if you want a specific sound for a german land attack, then use: <br>
+ * battle_land<b>_Germans</b>=misc/battle_land/battle_land_Germans_panzers_and_yelling_in_german.wav <br>
+ * You can use nation specific sound keys for almost all sounds, though things like game_start, or chat_message, will never use them. <br>
+ * <br>
+ * <br>
+ * <br>
+ * <br>
+ * <b>You do not need to specify every single "sound key". This is why/because we have the "Sound.Default.Folder".</b> <br>
+ * <br>
+ * The logic is as follows: <br>
+ * Engine needs to play the "game_start" sound. <br>
+ * 1. Check for a sound.properties file. <br>
+ * 2. If none exists, pretend that one exists and that it only contains this line: "Sound.Default.Folder=ww2" <br>
+ * 3. Look in the sound.properties file for the specific sound key "game_start" <br>
+ * 4. Create a list of all sounds that the key includes.
+ * If no key, then just use all the sounds in "Sound.Default.Folder/sound_key/" (which for us would be "ww2/game_start/" folder). <br>
+ * 5. If no sounds are found, then use all the sounds located at "generic/sound_key/" (which for us would be "generic/game_start").
+ * (if any sounds are found in step 4 above, then we ignore the generic folder completely) <br>
+ * 6. Randomize the list's order, then pick one, and play the sound.
+ * 
+ * 
  * @author veqryn & frigoref
  */
 public class ClipPlayer
