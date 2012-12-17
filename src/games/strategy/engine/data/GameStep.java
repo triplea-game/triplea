@@ -44,6 +44,9 @@ public class GameStep extends GameDataComponent
 	private int m_maxRunCount = -1;
 	private final Properties m_properties;
 	
+	public static final String PROPERTY_skipPosting = "skipPosting";
+	public static final String PROPERTY_turnSummaryPlayers = "turnSummaryPlayers";
+	
 	/**
 	 * Creates new GameStep
 	 * 
@@ -139,6 +142,11 @@ public class GameStep extends GameDataComponent
 		return m_displayName;
 	}
 	
+	/**
+	 * Allowed Properties so far:<br>
+	 * EndTurn delegates -> skipPosting = true/false<br>
+	 * EndTurn delegates -> turnSummaryPlayers = colon separated list of players for this turn summary<br>
+	 */
 	public Properties getProperties()
 	{
 		return m_properties;

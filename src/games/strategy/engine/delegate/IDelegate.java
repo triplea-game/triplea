@@ -47,7 +47,7 @@ public interface IDelegate
 	/*
 	 * Uses name as the internal unique name and displayName for display to users
 	 */
-	public void initialize(String name, String displayName);
+	public void initialize(final String name, final String displayName);
 	
 	/**
 	 * Called before the delegate will run.
@@ -57,7 +57,7 @@ public interface IDelegate
 	 * @param gameData
 	 *            GameData
 	 */
-	public void start(IDelegateBridge aBridge);
+	public void start(final IDelegateBridge aBridge);
 	
 	/**
 	 * Called before the delegate will stop running.
@@ -79,7 +79,7 @@ public interface IDelegate
 	 * @param state
 	 *            the delegates state
 	 */
-	public void loadState(Serializable state);
+	public void loadState(final Serializable state);
 	
 	/**
 	 * @return the remote type of this delegate for use

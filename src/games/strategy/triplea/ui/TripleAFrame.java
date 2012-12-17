@@ -1696,7 +1696,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			public void actionPerformed(final ActionEvent ae)
 			{
 				final HistoryLog historyLog = new HistoryLog();
-				historyLog.printRemainingTurn(m_historyPanel.getCurrentPopupNode(), false, m_data.getDiceSides());
+				historyLog.printRemainingTurn(m_historyPanel.getCurrentPopupNode(), false, m_data.getDiceSides(), null);
 				historyLog.printTerritorySummary(m_historyPanel.getCurrentPopupNode(), clonedGameData);
 				historyLog.printProductionSummary(clonedGameData);
 				m_historyPanel.clearCurrentPopupNode();
@@ -1710,7 +1710,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			public void actionPerformed(final ActionEvent ae)
 			{
 				final HistoryLog historyLog = new HistoryLog();
-				historyLog.printRemainingTurn(m_historyPanel.getCurrentPopupNode(), true, m_data.getDiceSides());
+				historyLog.printRemainingTurn(m_historyPanel.getCurrentPopupNode(), true, m_data.getDiceSides(), null);
 				historyLog.printTerritorySummary(m_historyPanel.getCurrentPopupNode(), clonedGameData);
 				historyLog.printProductionSummary(clonedGameData);
 				m_historyPanel.clearCurrentPopupNode();

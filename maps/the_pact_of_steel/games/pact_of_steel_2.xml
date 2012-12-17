@@ -670,6 +670,15 @@
 						<!-- It is very important that the "name" ends with the correct phrase, or else the game will not work properly.
 						Please end with ("xx" = faction name): xxBid, xxBidPlace, xxTech, xxPurchase, xxCombatMove, xxBattle, xxNonCombatMove, xxPlace, xxTechActivation, xxEndTurn  -->
 						
+						<!-- a "step" may also include an option called "stepProperty", which has "name" and "value" attributes.
+								These stepProperty options are not validated at all, so if you have a typo it will not be caught.
+								Currently allowed stepProperty options:
+									For any "EndTurn" delegate (such as EndTurnDelegate or NoPUEndTurnDelegate or etc):
+										skipPosting 		= true/false (default is false). Do we skip the Play-by-Email/Play-by-Forum turn summary and savegame Posting?
+										turnSummaryPlayers 	= a list of players, separated by colons ":"  default is the step player.  
+																Determines which players this forum posting turn summary will include (will only use all steps that touch this step, or touch the step that touches this step AND is owned by one of these listed players)
+						-->
+						
 						<step name="gameInitDelegate" delegate="initDelegate" maxRunCount="1"/>
 
 						<!-- Bidding Phase -->
@@ -742,7 +751,9 @@
 						<step name="japaneseNonCombatMove" delegate="move" player="Japanese" display="Non Combat Move"/>
 						<step name="japanesePlace" delegate="place" player="Japanese"/>
 						<step name="japaneseTechActivation" delegate="tech_activation" player="Japanese"/>
-						<step name="japaneseEndTurn" delegate="endTurn" player="Japanese"/>
+						<step name="japaneseEndTurn" delegate="endTurn" player="Japanese">
+								<stepProperty name="skipPosting" value="false"/>
+						</step>
 
 						<!-- Americans Game Sequence -->
 						<step name="americanTech" delegate="tech" player="Americans"/>
@@ -753,7 +764,11 @@
 						<step name="americanNonCombatMove" delegate="move" player="Americans" display="Non Combat Move"/>
 						<step name="americanPlace" delegate="place" player="Americans"/>
 						<step name="americanTechActivation" delegate="tech_activation" player="Americans"/>
-						<step name="americanEndTurn" delegate="endTurn" player="Americans"/>
+						<!--<step name="americanEndTurn" delegate="endTurn" player="Americans"/>-->
+						<step name="americanEndTurn" delegate="endTurn" player="Americans">
+								<!--<stepProperty name="skipPosting" value="true"/>-->
+								<stepProperty name="turnSummaryPlayers" value="Americans"/>
+						</step>
 						
 						<!-- Chinese Game Sequence -->
 						<step name="chineseBurmaRoadPurchase" delegate="purchase" player="Chinese"/>
@@ -763,7 +778,11 @@
 						<step name="chineseNonCombatMove" delegate="move" player="Chinese" display="Non Combat Move"/>
 						<step name="chineseNoPUPurchase" delegate="purchaseNoPU" player="Chinese"/>
 						<step name="chinesePlace" delegate="place" player="Chinese"/>
-						<step name="chineseEndTurn" delegate="endTurnNoPU" player="Chinese"/>
+						<!--<step name="chineseEndTurn" delegate="endTurnNoPU" player="Chinese"/>-->
+						<step name="chineseEndTurn" delegate="endTurnNoPU" player="Chinese">
+								<stepProperty name="turnSummaryPlayers" value="Chinese"/>
+								<!--<stepProperty name="turnSummaryPlayers" value="Americans:Chinese"/>-->
+						</step>
 
 						<step name="endRoundStep" delegate="endRound"/>
 				</sequence>

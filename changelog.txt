@@ -1,4 +1,10 @@
 Changes for 1.6.1.4
+* Created new stepProperty, "turnSummaryPlayers", which holds a list of players for whom we will include their turn summary information in the forum/email post. (veqryn)
+
+* Created new stepProperty, "skipPosting", which when true will skip the forum posting for that EndTurn type step. (veqryn)
+
+* Created new xml option type "stepProperty" for a step (gamePlay - sequence), which can hold small options for modifying a delegate step. (veqryn)
+
 * Adding some more sounds for ancient/classical era. (veqryn)
 
 * Adding some more ww2 sounds and national anthems for main players. (hepster)

@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -81,13 +82,16 @@ public class HistoryLog extends JFrame
 	}
 	
 	@SuppressWarnings("null")
-	public void printFullTurn(final GameData data, final boolean verbose)
+	public void printFullTurn(final GameData data, final boolean verbose, final Collection<PlayerID> playersAllowed)
 	{
 		final HistoryNode printNode = data.getHistory().getLastNode();
 		HistoryNode curNode = printNode;
 		Step stepNode = null;
 		Step turnStartNode = null;
 		PlayerID curPlayer = null;
+		final Collection<PlayerID> players = new HashSet<PlayerID>();
+		if (playersAllowed != null)
+			players.addAll(playersAllowed);
 		// find Step node, if exists in this path
 		while (curNode != null)
 		{
@@ -101,6 +105,8 @@ public class HistoryLog extends JFrame
 		if (stepNode != null)
 		{
 			curPlayer = stepNode.getPlayerID();
+			if (players.isEmpty())
+				players.add(curPlayer);
 			// get first step for this turn
 			while (stepNode != null)
 			{
@@ -110,10 +116,10 @@ public class HistoryLog extends JFrame
 					break;
 				if (stepNode.getPlayerID() == null)
 					break;
-				if (!stepNode.getPlayerID().getName().equals(curPlayer.getName()))
+				if (!players.contains(stepNode.getPlayerID()))
 					break;
 			}
-			printRemainingTurn(turnStartNode, verbose, data.getDiceSides());
+			printRemainingTurn(turnStartNode, verbose, data.getDiceSides(), players);
 		}
 		else
 			System.err.println("No Step node found!");
@@ -162,14 +168,14 @@ public class HistoryLog extends JFrame
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void printRemainingTurn(final HistoryNode printNode, final boolean verbose, final int diceSides)
+	public void printRemainingTurn(final HistoryNode printNode, final boolean verbose, final int diceSides, final Collection<PlayerID> playersAllowed)
 	{
 		final PrintWriter logWriter = m_printWriter;
 		final String moreIndent = "    ";
 		// print out the parent nodes
 		DefaultMutableTreeNode curNode = printNode;
 		final TreePath parentPath = (new TreePath(printNode.getPath())).getParentPath();
-		PlayerID curPlayer = null;
+		PlayerID currentPlayer = null;
 		if (parentPath != null)
 		{
 			final Object pathToNode[] = parentPath.getPath();
@@ -182,9 +188,14 @@ public class HistoryLog extends JFrame
 				if (node.getLevel() == 0)
 					logWriter.println();
 				if (node instanceof Step)
-					curPlayer = ((Step) node).getPlayerID();
+					currentPlayer = ((Step) node).getPlayerID();
 			}
 		}
+		final Collection<PlayerID> players = new HashSet<PlayerID>();
+		if (playersAllowed != null)
+			players.addAll(playersAllowed);
+		if (currentPlayer != null)
+			players.add(currentPlayer);
 		final List<String> moveList = new ArrayList<String>();
 		boolean moving = false;
 		do
@@ -441,7 +452,8 @@ public class HistoryLog extends JFrame
 						logWriter.print(indent + title);
 						if (playerId != null)
 						{
-							curPlayer = playerId;
+							currentPlayer = playerId;
+							players.add(currentPlayer);
 							logWriter.print(" - " + playerId.getName());
 						}
 						logWriter.println();
@@ -463,7 +475,7 @@ public class HistoryLog extends JFrame
 				}
 			} // while (nodeEnum.hasMoreElements())
 			curNode = curNode.getNextSibling();
-		} while ((curNode instanceof Step) && ((Step) curNode).getPlayerID().equals(curPlayer));
+		} while (curNode != null && (curNode instanceof Step) && players.contains(((Step) curNode).getPlayerID()));
 		// if we are mid-phase, this might not get flushed
 		if (moving && !moveList.isEmpty())
 		{
@@ -492,7 +504,9 @@ public class HistoryLog extends JFrame
 		{
 			data.releaseReadLock();
 		}
-		printTerritorySummary(data, player, territories);
+		final Collection<PlayerID> players = new HashSet<PlayerID>();
+		players.add(player);
+		printTerritorySummary(data, players, territories);
 	}
 	
 	public void printTerritorySummary(final GameData data)
@@ -508,33 +522,56 @@ public class HistoryLog extends JFrame
 		{
 			data.releaseReadLock();
 		}
-		printTerritorySummary(data, player, territories);
+		final Collection<PlayerID> players = new HashSet<PlayerID>();
+		players.add(player);
+		printTerritorySummary(data, players, territories);
 	}
 	
-	private void printTerritorySummary(final GameData data, final PlayerID player, final Collection<Territory> territories)
+	public void printTerritorySummary(final GameData data, final Collection<PlayerID> allowedPlayers)
 	{
-		if (player == null || territories == null || territories.isEmpty())
+		if (allowedPlayers == null || allowedPlayers.isEmpty())
+		{
+			printTerritorySummary(data);
+			return;
+		}
+		Collection<Territory> territories;
+		data.acquireReadLock();
+		try
+		{
+			territories = data.getMap().getTerritories();
+		} finally
+		{
+			data.releaseReadLock();
+		}
+		printTerritorySummary(data, allowedPlayers, territories);
+	}
+	
+	private void printTerritorySummary(final GameData data, final Collection<PlayerID> players, final Collection<Territory> territories)
+	{
+		if (players == null || players.isEmpty() || territories == null || territories.isEmpty())
 			return;
 		final PrintWriter logWriter = m_printWriter;
 		// print all units in all territories, including "flags"
-		logWriter.println("Territory Summary for " + player.getName() + " : \n");
+		logWriter.println("Territory Summary for " + MyFormatter.asList(players) + " : \n");
 		for (final Territory t : territories)
 		{
-			final List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedBy(player));
+			final List<Unit> ownedUnits = t.getUnits().getMatches(Matches.unitIsOwnedByOfAnyOfThesePlayers(players));
 			// see if there's a flag
 			final TerritoryAttachment ta = TerritoryAttachment.get(t);
 			boolean hasFlag = false;
 			if (ta == null)
 				hasFlag = false;
 			else
-				hasFlag = t.getOwner() != null && t.getOwner().equals(player) && (ta.getOriginalOwner() == null || !ta.getOriginalOwner().equals(player));
+				hasFlag = t.getOwner() != null && players.contains(t.getOwner()) && (ta.getOriginalOwner() == null || !players.contains(ta.getOriginalOwner()));
 			if (hasFlag || !ownedUnits.isEmpty())
 			{
 				logWriter.print("    " + t.getName() + " : ");
 				if (hasFlag && ownedUnits.isEmpty())
 					logWriter.println("1 flag");
-				else
+				else if (hasFlag)
 					logWriter.print("1 flag, ");
+				// else if (ownedUnits.isEmpty())
+				// logWriter.print("nothing");
 				if (!ownedUnits.isEmpty())
 					logWriter.println(MyFormatter.unitsToTextNoOwner(ownedUnits));
 			}

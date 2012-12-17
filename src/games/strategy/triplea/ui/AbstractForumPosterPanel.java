@@ -19,6 +19,7 @@
 package games.strategy.triplea.ui;
 
 import games.strategy.engine.data.GameData;
+import games.strategy.engine.data.GameStep;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.engine.history.HistoryNode;
@@ -33,6 +34,8 @@ import games.strategy.ui.ProgressWindow;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -313,10 +316,28 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 	
 	private void updateHistoryLog()
 	{
+		// parse allowed players
+		final String allowedPlayers = m_bridge.getStepProperties().getProperty(GameStep.PROPERTY_turnSummaryPlayers);
+		final Collection<PlayerID> allowedIDs;
+		if (allowedPlayers != null)
+		{
+			allowedIDs = new HashSet<PlayerID>();
+			for (final String p : allowedPlayers.split(":"))
+			{
+				final PlayerID id = getData().getPlayerList().getPlayerID(p);
+				if (id == null)
+					System.err.println("gamePlay sequence step: " + m_bridge.getStepName() + " stepProperty: " + GameStep.PROPERTY_turnSummaryPlayers + " player: " + p + " DOES NOT EXIST");
+				else
+					allowedIDs.add(id);
+			}
+		}
+		else
+			allowedIDs = null;
+		// clear first, then update
 		m_historyLog.clear();
-		m_historyLog.printFullTurn(getData(), m_showDetailsCheckbox.isSelected());
+		m_historyLog.printFullTurn(getData(), m_showDetailsCheckbox.isSelected(), allowedIDs);
 		if (m_includeTerritoryCheckbox.isSelected())
-			m_historyLog.printTerritorySummary(getData());
+			m_historyLog.printTerritorySummary(getData(), allowedIDs);
 		if (m_includeProductionCheckbox.isSelected())
 			m_historyLog.printProductionSummary(getData());
 		if (m_showDiceStatisticsCheckbox.isSelected())
@@ -338,7 +359,7 @@ public abstract class AbstractForumPosterPanel extends ActionPanel
 		m_poster = new PBEMMessagePoster(getData(), getCurrentPlayer(), getRound(), getTitle());
 		if (!m_poster.hasMessengers())
 			return;
-		if (skipPosting())
+		if (skipPosting() || Boolean.parseBoolean(m_bridge.getStepProperties().getProperty(GameStep.PROPERTY_skipPosting, "false")))
 			return;
 		
 		final boolean hasPosted = getHasPostedTurnSummary();
