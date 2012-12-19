@@ -79,7 +79,7 @@ public class ResourceCollection extends GameDataComponent
 			throw new IllegalArgumentException("quantity must be positive");
 		final int current = getQuantity(resource);
 		if ((current - quantity) < 0)
-			throw new IllegalArgumentException("Cant remove more than player has. current:" + current + " toRemove: " + quantity);
+			throw new IllegalArgumentException("Cant remove more than player has of resource: " + resource.getName() + ". current:" + current + " toRemove: " + quantity);
 		change(resource, -quantity);
 	}
 	

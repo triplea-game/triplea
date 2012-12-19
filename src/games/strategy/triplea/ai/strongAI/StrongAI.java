@@ -5953,6 +5953,95 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 				}
 			}
 		}
+		
+		// find factories with movement, and move them to places we own if they are sitting on top of each other
+		final CompositeMatch<Unit> ownedUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
+		final CompositeMatch<Unit> ourFactory = new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitCanProduceUnits);
+		final CompositeMatch<Unit> moveableFactory = new CompositeMatchAnd<Unit>(ourFactory, Matches.UnitCanMove, Matches.unitHasMovementLeft);
+		final List<Territory> moveableFactoryTerritories = SUtils.findUnitTerr(data, player, moveableFactory);
+		if (!moveableFactoryTerritories.isEmpty())
+		{
+			final CompositeMatch<Territory> endConditionEnemyLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryEnemy(player, data), Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
+			final CompositeMatch<Territory> routeConditionLand = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.TerritoryIsNotImpassable, Matches.TerritoryIsLand);
+			final List<Territory> owned = SUtils.allOurTerritories(data, player);
+			final List<Territory> existingFactories = SUtils.findTersWithUnitsMatching(data, player, Matches.UnitCanProduceUnits);
+			owned.removeAll(existingFactories);
+			final List<Territory> isWaterConvoy = SUtils.onlyWaterTerr(data, owned);
+			owned.removeAll(isWaterConvoy);
+			final CompositeMatch<Territory> goodFactTerr = new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player, data), Matches.isTerritoryOwnedBy(player));
+			for (final Territory moveableFactoryTerr : moveableFactoryTerritories)
+			{
+				final List<Unit> moveableFactories = moveableFactoryTerr.getUnits().getMatches(moveableFactory);
+				if (moveableFactories.size() > 0 && moveableFactoryTerr.getUnits().getMatches(ourFactory).size() > 1)
+				{
+					final List<Territory> goodNeighbors = new ArrayList<Territory>(data.getMap().getNeighbors(moveableFactoryTerr, goodFactTerr));
+					goodNeighbors.retainAll(owned);
+					Collections.shuffle(goodNeighbors);
+					final IntegerMap<Territory> terrValue = new IntegerMap<Territory>();
+					for (final Territory moveFactToTerr : goodNeighbors)
+					{
+						// sorting territories to have ones with greatest production and closeness to enemy first (by land, then by sea) (veqryn)
+						int territoryValue = 0;
+						territoryValue += Math.random() < .4 ? 1 : 0;
+						territoryValue += Math.random() < .4 ? 1 : 0;
+						if (SUtils.hasLandRouteToEnemyOwnedCapitol(moveFactToTerr, player, data))
+							territoryValue += 3;
+						if (SUtils.findNearest(moveFactToTerr, Matches.territoryIsEnemyNonNeutralAndHasEnemyUnitMatching(data, player, Matches.UnitCanProduceUnits),
+									Matches.TerritoryIsNotImpassableToLandUnits(player, data), data) != null)
+							territoryValue += 1;
+						if (Matches.territoryHasWaterNeighbor(data).match(moveFactToTerr))
+							territoryValue += 3;
+						Route r = SUtils.findNearest(moveFactToTerr, endConditionEnemyLand, routeConditionLand, data);
+						if (r != null)
+						{
+							territoryValue += 10 - r.getLength();
+						}
+						else
+						{
+							r = SUtils.findNearest(moveFactToTerr, endConditionEnemyLand, Matches.TerritoryIsWater, data);
+							if (r != null)
+								territoryValue += 8 - r.getLength();
+							else
+								territoryValue -= 115;
+						}
+						territoryValue += 4 * TerritoryAttachment.get(moveFactToTerr).getProduction();
+						final List<Territory> weOwnAll = SUtils.getNeighboringEnemyLandTerritories(data, player, moveFactToTerr);
+						final List<Territory> isWater = SUtils.onlyWaterTerr(data, weOwnAll);
+						weOwnAll.removeAll(isWater);
+						final Iterator<Territory> weOwnAllIter = weOwnAll.iterator();
+						while (weOwnAllIter.hasNext())
+						{
+							final Territory tempFact = weOwnAllIter.next();
+							if (Matches.TerritoryIsNeutralButNotWater.match(tempFact) || Matches.TerritoryIsImpassable.match(tempFact))
+								weOwnAllIter.remove();
+						}
+						territoryValue -= 15 * weOwnAll.size();
+						if (TerritoryAttachment.get(moveFactToTerr).getProduction() < 2)
+							territoryValue -= 100;
+						if (TerritoryAttachment.get(moveFactToTerr).getProduction() < 1)
+							territoryValue -= 100;
+						terrValue.put(moveFactToTerr, territoryValue);
+					}
+					SUtils.reorder(goodNeighbors, terrValue, true);
+					if (goodNeighbors.size() == 0)// goodNeighbors == null ||
+						continue;
+					int i = 0;
+					int j = 0;
+					final int diff = moveableFactoryTerr.getUnits().getMatches(ourFactory).size() - moveableFactories.size();
+					for (final Unit factoryUnit : moveableFactories)
+					{
+						if (diff < 1 && j >= moveableFactories.size() - 1)
+							continue;
+						if (i >= goodNeighbors.size())
+							i = 0;
+						moveRoutes.add(data.getMap().getRoute(moveableFactoryTerr, goodNeighbors.get(i)));
+						moveUnits.add(Collections.singleton(factoryUnit));
+						i++;
+						j++;
+					}
+				}
+			}
+		}
 	}
 	
 	/**
@@ -6540,7 +6629,7 @@ public class StrongAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		// find factories with movement, and move them to places we own if they are sitting on top of each other
 		final CompositeMatch<Unit> ownedUnit = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(player));
 		final CompositeMatch<Unit> ourFactory = new CompositeMatchAnd<Unit>(ownedUnit, Matches.UnitCanProduceUnits);
-		final CompositeMatch<Unit> moveableFactory = new CompositeMatchAnd<Unit>(ourFactory, Matches.UnitCanMove);
+		final CompositeMatch<Unit> moveableFactory = new CompositeMatchAnd<Unit>(ourFactory, Matches.UnitCanMove, Matches.UnitCanNotMoveDuringCombatMove.invert());
 		final List<Territory> moveableFactoryTerritories = SUtils.findUnitTerr(data, player, moveableFactory);
 		if (!moveableFactoryTerritories.isEmpty())
 		{
