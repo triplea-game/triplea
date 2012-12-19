@@ -172,7 +172,7 @@
 	    frontier IDREF #REQUIRED
 	>
 	
-<!ELEMENT technology (technologies,playerTech+)>
+<!ELEMENT technology (technologies?,playerTech*)>
 	
 	<!ELEMENT technologies (techname+)>
 		<!ELEMENT techname EMPTY>

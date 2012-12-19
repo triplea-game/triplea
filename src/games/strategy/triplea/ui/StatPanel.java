@@ -90,7 +90,9 @@ public class StatPanel extends AbstractStatPanel
 	@Override
 	protected void initLayout()
 	{
-		setLayout(new GridLayout(2, 1));
+		final boolean hasTech = !TechAdvance.getTechAdvances(m_data, null).isEmpty();
+		// do no include a grid box for tech if there is no tech
+		setLayout(new GridLayout((hasTech ? 2 : 1), 1));
 		
 		m_statsTable = new JTable(m_dataModel)
 		{
@@ -109,6 +111,10 @@ public class StatPanel extends AbstractStatPanel
 		m_statsTable.getColumnModel().getColumn(0).setPreferredWidth(175);
 		JScrollPane scroll = new JScrollPane(m_statsTable);
 		add(scroll);
+		
+		// if no technologies, do not show the tech table
+		if (!hasTech)
+			return;
 		
 		m_techTable = new JTable(m_techModel);
 		m_techTable.getTableHeader().setReorderingAllowed(false);

@@ -1320,6 +1320,9 @@
                 <playerProduction player="Dwarves" frontier="dwarvesProduction"/>
         </production>
 
+		<technology>
+		</technology>
+
 
         <attatchmentList>
                     <attatchment name="unitAttatchment" attatchTo="fortifications" javaClass="games.strategy.triplea.attatchments.UnitAttachment" type="unitType">

@@ -1138,7 +1138,7 @@ public class GameParser
 	
 	private void parseTechnology(final Node root) throws GameParseException
 	{
-		parseTechnologies(getSingleChild("technologies", root, false));
+		parseTechnologies(getSingleChild("technologies", root, true));
 		parsePlayerTech(getChildren("playerTech", root));
 	}
 	
@@ -1240,6 +1240,8 @@ public class GameParser
 	
 	private void parseTechnologies(final Node element)
 	{
+		if (element == null)
+			return;
 		final TechnologyFrontier allTechs = data.getTechnologyFrontier();
 		parseTechs(getChildren("techname", element), allTechs);
 	}
