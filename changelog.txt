@@ -1,5 +1,7 @@
 Changes for 1.6.1.4
-* Not showing tech in stats panel is game xml does not have any technologies. (veqryn)
+* Adding dotted lines to the LOTR Middle Earth map, to show connections over rivers. (veqryn)
+
+* Not showing tech in stats panel if game xml does not have any technologies. (veqryn)
 
 * Created new stepProperty, "turnSummaryPlayers", which holds a list of players for whom we will include their turn summary information in the forum/email post. (veqryn)
 
