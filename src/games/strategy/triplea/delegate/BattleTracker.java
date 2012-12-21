@@ -702,7 +702,7 @@ public class BattleTracker implements java.io.Serializable
 				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_SEA, id.getName());
 			else if (ta.getCapital() != null)
 				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_CAPITAL, id.getName());
-			else if (m_blitzed.contains(territory))
+			else if (m_blitzed.contains(territory) && Match.someMatch(arrivedUnits, Matches.UnitCanBlitz))
 				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_BLITZ, id.getName());
 			else
 				ClipPlayer.play(SoundPath.CLIP_TERRITORY_CAPTURE_LAND, id.getName());
