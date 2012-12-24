@@ -123,7 +123,8 @@ public class PacificTest extends DelegateTest
 		bridge.setStepName("americansCombatMove");
 		m_delegate = new MoveDelegate();
 		m_delegate.initialize("MoveDelegate", "MoveDelegate");
-		m_delegate.start(bridge);
+		m_delegate.setDelegateBridgeAndPlayer(bridge);
+		m_delegate.start();
 	}
 	
 	private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final Territory from)
@@ -283,7 +284,8 @@ public class PacificTest extends DelegateTest
 		bridge.setStepName("japaneseNonCombatMove");
 		m_delegate = new MoveDelegate();
 		m_delegate.initialize("MoveDelegate", "MoveDelegate");
-		m_delegate.start(bridge);
+		m_delegate.setDelegateBridgeAndPlayer(bridge);
+		m_delegate.start();
 		final IntegerMap<UnitType> map = new IntegerMap<UnitType>();
 		map.put(infantry, 1);
 		final Route route = new Route();

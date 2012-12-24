@@ -21,7 +21,6 @@ package games.strategy.triplea.delegate;
 import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PlayerAttachment;
@@ -61,9 +60,9 @@ public class TechActivationDelegate extends BaseDelegate
 	 * work.
 	 */
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void start()
 	{
-		super.start(aBridge);
+		super.start();
 		final GameData data = getData();
 		if (!m_needToInitialize)
 			return;
@@ -117,6 +116,11 @@ public class TechActivationDelegate extends BaseDelegate
 	{
 		super.end();
 		m_needToInitialize = true;
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return false;
 	}
 	
 	private void shareTechnology()

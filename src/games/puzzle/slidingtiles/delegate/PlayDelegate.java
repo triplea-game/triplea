@@ -42,9 +42,9 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		super.start(bridge);
+		super.start();
 		map = getData().getMap();
 	}
 	
@@ -69,6 +69,11 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		final SlidingTilesPlayExtendedDelegateState s = (SlidingTilesPlayExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return true;
 	}
 	
 	/**

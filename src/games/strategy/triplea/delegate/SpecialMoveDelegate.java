@@ -39,20 +39,30 @@ import java.util.Set;
 public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDelegate
 {
 	private boolean m_needToInitialize = true;
-	private boolean m_allowAirborne = true;
+	
+	// private boolean m_allowAirborne = true;
 	
 	public SpecialMoveDelegate()
 	{
 	}
 	
+	/**
+	 * Called before the delegate will run, AND before "start" is called.
+	 */
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge)
 	{
-		super.start(new TripleADelegateBridge(aBridge));
+		super.setDelegateBridgeAndPlayer(new TripleADelegateBridge(iDelegateBridge));
+	}
+	
+	@Override
+	public void start()
+	{
+		super.start();
 		final GameData data = getData();
 		if (!allowAirborne(m_player, data))
 		{
-			m_allowAirborne = false;
+			// m_allowAirborne = false;
 			return;
 		}
 		final boolean onlyWhereUnderAttackAlready = games.strategy.triplea.Properties.getAirborneAttacksOnlyInExistingBattles(data);
@@ -60,7 +70,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		final BattleTracker battleTracker = AbstractMoveDelegate.getBattleTracker(data);
 		if (m_needToInitialize && onlyWhereUnderAttackAlready)
 		{
-			BattleDelegate.doInitialize(battleTracker, aBridge); // we do this to clear any 'finishedBattles' and also to create battles for units that didn't move
+			BattleDelegate.doInitialize(battleTracker, m_bridge); // we do this to clear any 'finishedBattles' and also to create battles for units that didn't move
 			m_needToInitialize = false;
 		}
 	}
@@ -70,7 +80,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 	{
 		super.end();
 		m_needToInitialize = true;
-		m_allowAirborne = true;
+		// m_allowAirborne = true;
 	}
 	
 	@Override
@@ -80,7 +90,7 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		state.superState = super.saveState();
 		// add other variables to state here:
 		state.m_needToInitialize = m_needToInitialize;
-		state.m_allowAirborne = m_allowAirborne;
+		// state.m_allowAirborne = m_allowAirborne;
 		return state;
 	}
 	
@@ -91,13 +101,20 @@ public class SpecialMoveDelegate extends AbstractMoveDelegate implements IMoveDe
 		super.loadState(s.superState);
 		// load other variables from state here:
 		m_needToInitialize = s.m_needToInitialize;
-		m_allowAirborne = s.m_allowAirborne;
+		// m_allowAirborne = s.m_allowAirborne;
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		if (!allowAirborne(m_player, getData()))
+			return false;
+		return true;
 	}
 	
 	@Override
 	public String move(final Collection<Unit> units, final Route route, final Collection<Unit> transportsThatCanBeLoaded, final Map<Unit, Collection<Unit>> newDependents)
 	{
-		if (!m_allowAirborne)
+		if (!allowAirborne(m_player, getData()))
 			return "No Airborne Movement Allowed Yet";
 		final GameData data = getData();
 		// there reason we use this, is because if we are in edit mode, we may have a different unit owner than the current player.
@@ -366,5 +383,5 @@ class SpecialMoveExtendedDelegateState implements Serializable
 	Serializable superState;
 	// add other variables here:
 	public boolean m_needToInitialize;
-	public boolean m_allowAirborne;
+	// public boolean m_allowAirborne;
 }

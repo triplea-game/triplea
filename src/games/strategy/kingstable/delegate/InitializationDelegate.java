@@ -17,7 +17,6 @@ import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.kingstable.attachments.PlayerAttachment;
 
@@ -35,9 +34,9 @@ public class InitializationDelegate extends BaseDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		super.start(bridge);
+		super.start();
 		PlayerID attacker = null;
 		PlayerID defender = null;
 		final GameData data = getData();
@@ -96,6 +95,11 @@ public class InitializationDelegate extends BaseDelegate
 		final KingsTableInitializationExtendedDelegateState s = (KingsTableInitializationExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return false;
 	}
 	
 	/**

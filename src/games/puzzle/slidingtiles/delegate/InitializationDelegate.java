@@ -21,7 +21,6 @@ import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 
 import java.io.Serializable;
@@ -41,9 +40,9 @@ public class InitializationDelegate extends BaseDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		super.start(bridge);
+		super.start();
 		final GameMap map = getData().getMap();
 		final int width = map.getXDimension();
 		final int height = map.getYDimension();
@@ -123,6 +122,11 @@ public class InitializationDelegate extends BaseDelegate
 		final SlidingTilesInitializationExtendedDelegateState s = (SlidingTilesInitializationExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return false;
 	}
 	
 	/**

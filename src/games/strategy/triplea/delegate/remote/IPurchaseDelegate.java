@@ -16,6 +16,7 @@ package games.strategy.triplea.delegate.remote;
 import games.strategy.engine.data.ProductionRule;
 import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Unit;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.util.IntegerMap;
 
@@ -24,7 +25,7 @@ import java.util.Map;
 /**
  * @author Sean Bridges
  */
-public interface IPurchaseDelegate extends IRemote
+public interface IPurchaseDelegate extends IRemote, IDelegate
 {
 	/**
 	 * 

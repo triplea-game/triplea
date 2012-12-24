@@ -22,7 +22,6 @@ import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 
 import java.io.Serializable;
@@ -41,10 +40,10 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		super.start(bridge);
-		final ITicTacToeDisplay display = (ITicTacToeDisplay) bridge.getDisplayChannelBroadcaster();
+		super.start();
+		final ITicTacToeDisplay display = (ITicTacToeDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(m_player.getName() + "'s turn");
 	}
 	
@@ -69,6 +68,11 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		final TicTacToePlayExtendedDelegateState s = (TicTacToePlayExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return true;
 	}
 	
 	/**

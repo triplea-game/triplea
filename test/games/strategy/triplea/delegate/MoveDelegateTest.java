@@ -63,7 +63,8 @@ public class MoveDelegateTest extends DelegateTest
 		m_bridge.setStepName("BritishCombatMove");
 		m_delegate = new MoveDelegate();
 		m_delegate.initialize("MoveDelegate", "MoveDelegate");
-		m_delegate.start(m_bridge);
+		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
+		m_delegate.start();
 	}
 	
 	private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final Territory from)
@@ -548,7 +549,8 @@ public class MoveDelegateTest extends DelegateTest
 		m_bridge = super.getDelegateBridge(japanese);
 		m_bridge.setStepName("JapaneseCombatMove");
 		m_bridge.setPlayerID(japanese);
-		m_delegate.start(m_bridge);
+		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
+		m_delegate.start();
 		// Set up the test
 		removeFrom(manchuria, manchuria.getUnits().getUnits());
 		manchuria.setOwner(russians);
@@ -1190,7 +1192,8 @@ public class MoveDelegateTest extends DelegateTest
 	public void testNonCombatAttack()
 	{
 		m_bridge.setStepName("BritishNonCombatMove");
-		m_delegate.start(m_bridge);
+		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
+		m_delegate.start();
 		final Route route = new Route();
 		route.setStart(equatorialAfrica);
 		route.add(algeria);
@@ -1203,7 +1206,8 @@ public class MoveDelegateTest extends DelegateTest
 	public void testNonCombatAttackNeutral()
 	{
 		m_bridge.setStepName("BritishNonCombatMove");
-		m_delegate.start(m_bridge);
+		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
+		m_delegate.start();
 		final Route route = new Route();
 		route.setStart(equatorialAfrica);
 		route.add(westAfrica);
@@ -1225,7 +1229,8 @@ public class MoveDelegateTest extends DelegateTest
 		assertValid(results);
 		// go to non combat
 		m_bridge.setStepName("BritishNonCombatMove");
-		m_delegate.start(m_bridge);
+		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
+		m_delegate.start();
 		// move more into libya
 		route = new Route();
 		route.setStart(equatorialAfrica);
@@ -1240,7 +1245,8 @@ public class MoveDelegateTest extends DelegateTest
 	{
 		m_bridge.setStepName("JapaneseCombatMove");
 		m_bridge.setPlayerID(japanese);
-		m_delegate.start(m_bridge);
+		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
+		m_delegate.start();
 		final Route route = new Route();
 		route.setStart(congo);
 		route.add(kenya);

@@ -60,9 +60,15 @@ public class PlayDelegateTest extends DelegateTest
 		m_delegate = new PlayDelegate();
 		m_delegate.initialize("PlayDelegate", "PlayDelegate");
 		if (player == black)
-			m_delegate.start(m_bridgeBlack);
+		{
+			m_delegate.setDelegateBridgeAndPlayer(m_bridgeBlack);
+			m_delegate.start();
+		}
 		else if (player == white)
-			m_delegate.start(m_bridgeWhite);
+		{
+			m_delegate.setDelegateBridgeAndPlayer(m_bridgeWhite);
+			m_delegate.start();
+		}
 	}
 	
 	/**

@@ -31,7 +31,6 @@ import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.TripleAUnit;
@@ -84,9 +83,9 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void start()
 	{
-		super.start(aBridge);
+		super.start();
 		final GameData data = getData();
 		if (m_needToInitialize)
 		{
@@ -145,6 +144,39 @@ public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
 		super.loadState(s.superState);
 		// load other variables from state here:
 		m_needToInitialize = s.m_needToInitialize;
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		if (m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty())
+			return false;
+		if (!canWePurchaseOrRepair())
+			return false;
+		// if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
+		if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData()))
+			return false;
+		return true;
+	}
+	
+	protected boolean canWePurchaseOrRepair()
+	{
+		if (m_player.getProductionFrontier() != null && m_player.getProductionFrontier().getRules() != null)
+		{
+			for (final ProductionRule rule : m_player.getProductionFrontier().getRules())
+			{
+				if (m_player.getResources().has(rule.getCosts()))
+					return true;
+			}
+		}
+		if (m_player.getRepairFrontier() != null && m_player.getRepairFrontier().getRules() != null)
+		{
+			for (final RepairRule rule : m_player.getRepairFrontier().getRules())
+			{
+				if (m_player.getResources().has(rule.getCosts()))
+					return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

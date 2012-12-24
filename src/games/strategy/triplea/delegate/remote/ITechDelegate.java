@@ -15,6 +15,7 @@ package games.strategy.triplea.delegate.remote;
 
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.TechnologyFrontier;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.util.IntegerMap;
@@ -22,7 +23,7 @@ import games.strategy.util.IntegerMap;
 /**
  * @author Sean Bridges
  */
-public interface ITechDelegate extends IRemote
+public interface ITechDelegate extends IRemote, IDelegate
 {
 	/**
 	 * 

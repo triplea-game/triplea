@@ -32,6 +32,8 @@ import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.ICondition;
+import games.strategy.triplea.attatchments.PlayerAttachment;
+import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.dataObjects.TechResults;
 import games.strategy.triplea.delegate.remote.ITechDelegate;
@@ -82,12 +84,21 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 	}
 	
 	/**
+	 * Called before the delegate will run, AND before "start" is called.
+	 */
+	@Override
+	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge)
+	{
+		super.setDelegateBridgeAndPlayer(new TripleADelegateBridge(iDelegateBridge));
+	}
+	
+	/**
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void start()
 	{
-		super.start(new TripleADelegateBridge(aBridge));
+		super.start();
 		if (!m_needToInitialize)
 			return;
 		if (games.strategy.triplea.Properties.getTriggers(getData()))
@@ -141,6 +152,42 @@ public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
 		// load other variables from state here:
 		m_needToInitialize = s.m_needToInitialize;
 		m_techs = s.m_techs;
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		if (!games.strategy.triplea.Properties.getTechDevelopment(getData()))
+			return false;
+		if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData()))
+			return false;
+		if (games.strategy.triplea.Properties.getWW2V3TechModel(getData()))
+		{
+			final Resource techtokens = getData().getResourceList().getResource(Constants.TECH_TOKENS);
+			if (techtokens != null)
+			{
+				final int techTokens = m_player.getResources().getQuantity(techtokens);
+				if (techTokens > 0)
+					return true;
+			}
+		}
+		final int techCost = TechTracker.getTechCost(m_player);
+		int money = m_player.getResources().getQuantity(Constants.PUS);
+		if (money < techCost)
+		{
+			final PlayerAttachment pa = PlayerAttachment.get(m_player);
+			if (pa == null)
+				return false;
+			final Collection<PlayerID> helpPay = pa.getHelpPayTechCost();
+			if (helpPay == null || helpPay.isEmpty())
+				return false;
+			for (final PlayerID p : helpPay)
+			{
+				money += p.getResources().getQuantity(Constants.PUS);
+			}
+			if (money < techCost)
+				return false;
+		}
+		return true;
 	}
 	
 	public Map<PlayerID, Collection<TechAdvance>> getAdvances()

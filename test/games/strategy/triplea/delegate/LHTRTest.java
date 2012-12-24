@@ -54,7 +54,8 @@ public class LHTRTest extends TestCase
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final ITestDelegateBridge bridge = getDelegateBridge(germans);
 		bridge.setStepName("GermansNonCombatMove");
-		delegate.start(bridge);
+		delegate.setDelegateBridgeAndPlayer(bridge);
+		delegate.start();
 		final Territory baltic = m_data.getMap().getTerritory("5 Sea Zone");
 		final Territory easternEurope = m_data.getMap().getTerritory("Eastern Europe");
 		final UnitType carrirType = m_data.getUnitTypeList().getUnitType("carrier");
@@ -81,7 +82,8 @@ public class LHTRTest extends TestCase
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final ITestDelegateBridge bridge = getDelegateBridge(germans);
 		bridge.setStepName("GermansNonCombatMove");
-		delegate.start(bridge);
+		delegate.setDelegateBridgeAndPlayer(bridge);
+		delegate.start();
 		final Territory baltic = m_data.getMap().getTerritory("5 Sea Zone");
 		final Territory easternEurope = m_data.getMap().getTerritory("Eastern Europe");
 		// move a fighter to the baltic
@@ -104,7 +106,8 @@ public class LHTRTest extends TestCase
 		final PlayerID germans = m_data.getPlayerList().getPlayerID("Germans");
 		final ITestDelegateBridge bridge = getDelegateBridge(germans);
 		bridge.setStepName("GermansNonCombatMove");
-		delegate.start(bridge);
+		delegate.setDelegateBridgeAndPlayer(bridge);
+		delegate.start();
 		// if we try to move aa, then the game will ask us if we want to move
 		// fail if we are called
 		final InvocationHandler handler = new InvocationHandler()

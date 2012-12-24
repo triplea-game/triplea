@@ -73,9 +73,9 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void start()
 	{
-		super.start(aBridge);
+		super.start();
 		/*if (m_needToInitialize)
 		{
 			m_testedConditions = null;
@@ -135,6 +135,17 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 		super.loadState(s.superState);
 		// m_testedConditions = s.m_testedConditions;
 		// load other variables from state here:
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		if (!m_player.amNotDeadYet(getData()))
+			return false;
+		if (!games.strategy.triplea.Properties.getUsePolitics(getData()))
+			return false;
+		if (getValidActions().isEmpty())
+			return false;
+		return true;
 	}
 	
 	public HashMap<ICondition, Boolean> getTestedConditions()

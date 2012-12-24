@@ -24,7 +24,6 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.delegate.AutoSave;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.kingstable.attachments.TerritoryAttachment;
 import games.strategy.kingstable.delegate.remote.IPlayDelegate;
@@ -49,12 +48,12 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		super.start(bridge);
+		super.start();
 		if (matches == null)
 			matches = new Matches(getData());
-		final IKingsTableDisplay display = (IKingsTableDisplay) bridge.getDisplayChannelBroadcaster();
+		final IKingsTableDisplay display = (IKingsTableDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.setStatus(m_player.getName() + "'s turn");
 	}
 	
@@ -79,6 +78,11 @@ public class PlayDelegate extends BaseDelegate implements IPlayDelegate
 		final KingsTablePlayExtendedDelegateState s = (KingsTablePlayExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return true;
 	}
 	
 	/**

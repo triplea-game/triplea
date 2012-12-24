@@ -14,6 +14,7 @@
 package games.puzzle.slidingtiles.delegate.remote;
 
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 
 /**
@@ -22,7 +23,7 @@ import games.strategy.engine.message.IRemote;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public interface IPlayDelegate extends IRemote
+public interface IPlayDelegate extends IRemote, IDelegate
 {
 	public String play(Territory from, Territory to);
 	

@@ -18,7 +18,6 @@ import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
 import games.strategy.common.delegate.BaseDelegate;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 
 import java.io.Serializable;
@@ -38,9 +37,9 @@ public class EndTurnDelegate extends BaseDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		super.start(bridge);
+		super.start();
 		if (gameOver(getData().getMap()))
 		{
 			signalGameOver("Board solved!");
@@ -83,6 +82,11 @@ public class EndTurnDelegate extends BaseDelegate
 		final SlidingTilesEndTurnExtendedDelegateState s = (SlidingTilesEndTurnExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return false;
 	}
 	
 	public boolean gameOver(final GameMap map)

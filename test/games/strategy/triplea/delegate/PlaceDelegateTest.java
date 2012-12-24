@@ -61,7 +61,8 @@ public class PlaceDelegateTest extends DelegateTest
 		m_bridge = super.getDelegateBridge(british);
 		m_delegate = new PlaceDelegate();
 		m_delegate.initialize("place");
-		m_delegate.start(m_bridge);
+		m_delegate.setDelegateBridgeAndPlayer(m_bridge);
+		m_delegate.start();
 	}
 	
 	private Collection<Unit> getUnits(final IntegerMap<UnitType> units, final PlayerID from)

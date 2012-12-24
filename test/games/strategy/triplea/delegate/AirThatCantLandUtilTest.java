@@ -114,7 +114,8 @@ public class AirThatCantLandUtilTest extends TestCase
 		final ITestDelegateBridge bridge = getDelegateBridge(japanese);
 		// we need to initialize the original owner
 		final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-		initDel.start(bridge);
+		initDel.setDelegateBridgeAndPlayer(bridge);
+		initDel.start();
 		initDel.end();
 		// Get necessary sea zones and unit types for this test
 		final Territory sz_44 = m_data.getMap().getTerritory("44 Sea Zone");
@@ -133,12 +134,14 @@ public class AirThatCantLandUtilTest extends TestCase
 		// now move to attack
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		bridge.setStepName("CombatMove");
-		moveDelegate.start(bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(bridge);
+		moveDelegate.start();
 		moveDelegate.move(sz_45.getUnits().getUnits(), m_data.getMap().getRoute(sz_45, sz_44));
 		moveDelegate.end();
 		// fight the battle
 		final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-		battle.start(bridge);
+		battle.setDelegateBridgeAndPlayer(bridge);
+		battle.start();
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, 0, 0 }));
 		bridge.setRemote(getDummyPlayer());
 		battle.fightBattle(sz_44, false);
@@ -157,7 +160,8 @@ public class AirThatCantLandUtilTest extends TestCase
 		final ITestDelegateBridge bridge = getDelegateBridge(japanese);
 		// we need to initialize the original owner
 		final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-		initDel.start(bridge);
+		initDel.setDelegateBridgeAndPlayer(bridge);
+		initDel.start();
 		initDel.end();
 		// Get necessary sea zones and unit types for this test
 		final Territory sz_43 = m_data.getMap().getTerritory("43 Sea Zone");
@@ -178,12 +182,14 @@ public class AirThatCantLandUtilTest extends TestCase
 		// now move to attack
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		bridge.setStepName("CombatMove");
-		moveDelegate.start(bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(bridge);
+		moveDelegate.start();
 		moveDelegate.move(sz_45.getUnits().getUnits(), m_data.getMap().getRoute(sz_45, sz_44));
 		moveDelegate.end();
 		// fight the battle
 		final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-		battle.start(bridge);
+		battle.setDelegateBridgeAndPlayer(bridge);
+		battle.start();
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, 0, 0 }));
 		bridge.setRemote(getDummyPlayer());
 		battle.fightBattle(sz_44, false);
@@ -205,7 +211,8 @@ public class AirThatCantLandUtilTest extends TestCase
 		final ITestDelegateBridge bridge = getDelegateBridge(japanese);
 		// we need to initialize the original owner
 		final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-		initDel.start(bridge);
+		initDel.setDelegateBridgeAndPlayer(bridge);
+		initDel.start();
 		initDel.end();
 		// Get necessary sea zones and unit types for this test
 		final Territory sz_9 = m_data.getMap().getTerritory("9 Sea Zone");
@@ -224,12 +231,14 @@ public class AirThatCantLandUtilTest extends TestCase
 		// now move to attack
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		bridge.setStepName("CombatMove");
-		moveDelegate.start(bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(bridge);
+		moveDelegate.start();
 		moveDelegate.move(sz_11.getUnits().getUnits(), m_data.getMap().getRoute(sz_11, sz_9));
 		moveDelegate.end();
 		// fight the battle
 		final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-		battle.start(bridge);
+		battle.setDelegateBridgeAndPlayer(bridge);
+		battle.start();
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, }));
 		bridge.setRemote(getDummyPlayer());
 		battle.fightBattle(sz_9, false);
@@ -248,7 +257,8 @@ public class AirThatCantLandUtilTest extends TestCase
 		final ITestDelegateBridge bridge = getDelegateBridge(japanese);
 		// we need to initialize the original owner
 		final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-		initDel.start(bridge);
+		initDel.setDelegateBridgeAndPlayer(bridge);
+		initDel.start();
 		initDel.end();
 		// Get necessary sea zones and unit types for this test
 		final Territory sz_9 = m_data.getMap().getTerritory("9 Sea Zone");
@@ -271,13 +281,15 @@ public class AirThatCantLandUtilTest extends TestCase
 		// now move to attack
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		bridge.setStepName("CombatMove");
-		moveDelegate.start(bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(bridge);
+		moveDelegate.start();
 		moveDelegate.move(sz_11.getUnits().getUnits(), m_data.getMap().getRoute(sz_11, sz_9));
 		moveDelegate.move(sz_9.getUnits().getUnits(infantryType, 1), m_data.getMap().getRoute(sz_9, eastCanada));
 		moveDelegate.end();
 		// fight the battle
 		final BattleDelegate battle = (BattleDelegate) m_data.getDelegateList().getDelegate("battle");
-		battle.start(bridge);
+		battle.setDelegateBridgeAndPlayer(bridge);
+		battle.start();
 		bridge.setRandomSource(new ScriptedRandomSource(new int[] { 0, 0, 0 }));
 		bridge.setRemote(getDummyPlayer());
 		battle.fightBattle(sz_9, false);

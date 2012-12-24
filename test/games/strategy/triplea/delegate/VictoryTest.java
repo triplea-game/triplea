@@ -41,7 +41,8 @@ public class VictoryTest extends TestCase
 		m_bridge = GameDataTestUtil.getDelegateBridge(m_italians, m_data);
 		// we need to initialize the original owner
 		final InitializationDelegate initDel = (InitializationDelegate) m_data.getDelegateList().getDelegate("initDelegate");
-		initDel.start(m_bridge);
+		initDel.setDelegateBridgeAndPlayer(m_bridge);
+		initDel.start();
 		initDel.end();
 	}
 	
@@ -61,7 +62,8 @@ public class VictoryTest extends TestCase
 		
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		m_bridge.setStepName("CombatMove");
-		moveDelegate.start(m_bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		moveDelegate.start();
 		final String error = moveDelegate.move(libya.getUnits().getUnits(), m_data.getMap().getRoute(libya, b_congo));
 		moveDelegate.end();
 		assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
@@ -76,7 +78,8 @@ public class VictoryTest extends TestCase
 		
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		m_bridge.setStepName("CombatMove");
-		moveDelegate.start(m_bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		moveDelegate.start();
 		final String error = moveDelegate.move(fw_africa.getUnits().getUnits(), m_data.getMap().getRoute(fw_africa, b_congo));
 		moveDelegate.end();
 		assertEquals(error, null);
@@ -92,7 +95,8 @@ public class VictoryTest extends TestCase
 		
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		m_bridge.setStepName("CombatMove");
-		moveDelegate.start(m_bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		moveDelegate.start();
 		String error = moveDelegate.move(libya.getUnits().getUnits(), m_data.getMap().getRoute(libya, a_egypt));
 		assertEquals(error, null); // first step is legal
 		
@@ -112,7 +116,8 @@ public class VictoryTest extends TestCase
 		
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		m_bridge.setStepName("CombatMove");
-		moveDelegate.start(m_bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		moveDelegate.start();
 		String error = moveDelegate.move(fw_africa.getUnits().getUnits(), m_data.getMap().getRoute(fw_africa, fe_africa));
 		assertEquals(error, null);
 		error = moveDelegate.move(fe_africa.getUnits().getUnits(), m_data.getMap().getRoute(fe_africa, b_congo));
@@ -130,7 +135,8 @@ public class VictoryTest extends TestCase
 		
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		m_bridge.setStepName("CombatMove");
-		moveDelegate.start(m_bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		moveDelegate.start();
 		final String error = moveDelegate.move(libya.getUnits().getUnits(), m_data.getMap().getRoute(libya, b_congo));
 		moveDelegate.end();
 		assertTrue(error.equals(MoveValidator.NOT_ALL_UNITS_CAN_BLITZ));
@@ -152,7 +158,8 @@ public class VictoryTest extends TestCase
 		
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		m_bridge.setStepName("CombatMove");
-		moveDelegate.start(m_bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		moveDelegate.start();
 		String error = moveDelegate.move(fe_africa.getUnits().getUnits(), m_data.getMap().getRoute(fe_africa, b_congo));
 		assertEquals(null, error);
 		
@@ -176,7 +183,8 @@ public class VictoryTest extends TestCase
 		
 		final MoveDelegate moveDelegate = (MoveDelegate) m_data.getDelegateList().getDelegate("move");
 		m_bridge.setStepName("CombatMove");
-		moveDelegate.start(m_bridge);
+		moveDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		moveDelegate.start();
 		
 		final int fuelAmount = m_italians.getResources().getQuantity("Fuel");
 		final int puAmount = m_italians.getResources().getQuantity("PUs");
@@ -213,7 +221,8 @@ public class VictoryTest extends TestCase
 		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
 		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
 		m_bridge.setStepName("italianPurchase");
-		purchaseDelegate.start(m_bridge);
+		purchaseDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		purchaseDelegate.start();
 		final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
 		final ProductionRule armourtest = m_data.getProductionRuleList().getProductionRule("buyArmourtest");
 		assertNotNull(armourtest);
@@ -231,7 +240,8 @@ public class VictoryTest extends TestCase
 		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
 		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
 		m_bridge.setStepName("italianPurchase");
-		purchaseDelegate.start(m_bridge);
+		purchaseDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		purchaseDelegate.start();
 		final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
 		final ProductionRule armourtest = m_data.getProductionRuleList().getProductionRule("buyArmourtest2");
 		assertNotNull(armourtest);
@@ -248,7 +258,8 @@ public class VictoryTest extends TestCase
 		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
 		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
 		m_bridge.setStepName("italianPurchase");
-		purchaseDelegate.start(m_bridge);
+		purchaseDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		purchaseDelegate.start();
 		final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
 		final ProductionRule buyArmour = m_data.getProductionRuleList().getProductionRule("buyArmour");
 		assertNotNull(buyArmour);
@@ -265,7 +276,8 @@ public class VictoryTest extends TestCase
 		final IntegerMap<Resource> italianResources = m_italians.getResources().getResourcesCopy();
 		final PurchaseDelegate purchaseDelegate = (PurchaseDelegate) m_data.getDelegateList().getDelegate("purchase");
 		m_bridge.setStepName("italianPurchase");
-		purchaseDelegate.start(m_bridge);
+		purchaseDelegate.setDelegateBridgeAndPlayer(m_bridge);
+		purchaseDelegate.start();
 		final IntegerMap<ProductionRule> purchaseList = new IntegerMap<ProductionRule>();
 		final ProductionRule buyArmour = m_data.getProductionRuleList().getProductionRule("buyArmourtest3");
 		assertNotNull(buyArmour);

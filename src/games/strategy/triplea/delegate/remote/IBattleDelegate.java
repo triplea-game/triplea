@@ -14,6 +14,7 @@
 package games.strategy.triplea.delegate.remote;
 
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
@@ -21,7 +22,7 @@ import games.strategy.triplea.delegate.dataObjects.BattleListing;
 /**
  * @author Sean Bridges
  */
-public interface IBattleDelegate extends IRemote
+public interface IBattleDelegate extends IRemote, IDelegate
 {
 	/**
 	 * 

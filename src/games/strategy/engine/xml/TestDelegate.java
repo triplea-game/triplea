@@ -113,4 +113,9 @@ public final class TestDelegate extends BaseDelegate
 	public void loadState(final Serializable state)
 	{
 	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return true;
+	}
 }

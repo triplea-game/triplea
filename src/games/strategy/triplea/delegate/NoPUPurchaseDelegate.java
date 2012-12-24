@@ -24,7 +24,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.RulesAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
@@ -45,19 +44,25 @@ public class NoPUPurchaseDelegate extends PurchaseDelegate
 	private boolean isPacific;
 	
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public boolean stuffToDoInThisDelegate()
 	{
-		super.start(aBridge);
+		return false;
+	}
+	
+	@Override
+	public void start()
+	{
+		super.start();
 		isPacific = isPacificTheater();
-		final PlayerID player = aBridge.getPlayerID();
+		final PlayerID player = m_bridge.getPlayerID();
 		final Collection<Territory> territories = getData().getMap().getTerritoriesOwnedBy(player);
 		final Collection<Unit> units = getProductionUnits(territories, player);
 		final Change productionChange = ChangeFactory.addUnits(player, units);
 		final String transcriptText = player.getName() + " builds " + units.size() + " units.";
-		aBridge.getHistoryWriter().startEvent(transcriptText);
+		m_bridge.getHistoryWriter().startEvent(transcriptText);
 		if (productionChange != null)
 		{
-			aBridge.addChange(productionChange);
+			m_bridge.addChange(productionChange);
 		}
 	}
 	

@@ -13,13 +13,14 @@
  */
 package games.strategy.triplea.delegate.remote;
 
+import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.message.IRemote;
 import games.strategy.engine.pbem.PBEMMessagePoster;
 
 /**
  * @author Tony Clayton
  */
-public interface IAbstractEndTurnDelegate extends IRemote
+public interface IAbstractEndTurnDelegate extends IRemote, IDelegate
 {
 	public boolean postTurnSummary(final PBEMMessagePoster poster, final String title);
 	

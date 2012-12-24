@@ -18,7 +18,6 @@ import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.kingstable.attachments.PlayerAttachment;
 import games.strategy.kingstable.attachments.TerritoryAttachment;
@@ -39,9 +38,9 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		super.start(bridge);
+		super.start();
 		final PlayerID winner = checkForWinner();
 		if (winner != null)
 		{
@@ -80,6 +79,11 @@ public class EndTurnDelegate extends BaseDelegate// implements IEndTurnDelegate
 		final KingsTableEndTurnExtendedDelegateState s = (KingsTableEndTurnExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return false;
 	}
 	
 	/*
