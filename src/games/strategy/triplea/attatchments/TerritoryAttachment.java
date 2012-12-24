@@ -47,6 +47,16 @@ public class TerritoryAttachment extends DefaultAttachment
 {
 	private static final long serialVersionUID = 9102862080104655281L;
 	
+	public static boolean doWeHaveEnoughCapitalsToProduce(final PlayerID player, final GameData data)
+	{
+		final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, data));
+		final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
+		final PlayerAttachment pa = PlayerAttachment.get(player);
+		if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
+			return false;
+		return true;
+	}
+	
 	public static Territory getCapital(final PlayerID player, final GameData data)
 	{
 		for (final Territory current : data.getMap().getTerritories())

@@ -836,8 +836,6 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	@Override
 	protected void purchase(final boolean purchaseForBid, final int PUsToSpend, final IPurchaseDelegate purchaseDelegate, final GameData data, final PlayerID player)
 	{
-		if (!this.canWePurchaseOrRepair(purchaseForBid))
-			return;
 		if (purchaseForBid)
 		{
 			// bid will only buy land units, due to weak ai placement for bid not being able to handle sea units

@@ -65,10 +65,10 @@ public class InitializationDelegate extends BaseDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void start()
 	{
-		super.start(aBridge);
-		init(aBridge);
+		super.start();
+		init(m_bridge);
 	}
 	
 	@Override
@@ -92,6 +92,11 @@ public class InitializationDelegate extends BaseDelegate
 		final InitializationExtendedDelegateState s = (InitializationExtendedDelegateState) state;
 		super.loadState(s.superState);
 		// load other variables from state here:
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return false;
 	}
 	
 	protected void init(final IDelegateBridge aBridge)

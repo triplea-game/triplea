@@ -68,9 +68,9 @@ public class EndRoundDelegate extends BaseDelegate
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void start()
 	{
-		super.start(aBridge);
+		super.start();
 		if (m_gameOver)
 			return;
 		String victoryMessage = null;
@@ -82,26 +82,26 @@ public class EndRoundDelegate extends BaseDelegate
 			if (pa != null && pa.getVps() >= 22)
 			{
 				victoryMessage = "Axis achieve VP victory";
-				aBridge.getHistoryWriter().startEvent(victoryMessage);
+				m_bridge.getHistoryWriter().startEvent(victoryMessage);
 				final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance(data.getAllianceTracker().getAlliancesPlayerIsIn(japanese).iterator().next());
-				signalGameOver(victoryMessage, winners, aBridge);
+				signalGameOver(victoryMessage, winners, m_bridge);
 			}
 		}
 		// Check for Winning conditions
 		if (isTotalVictory()) // Check for Win by Victory Cities
 		{
 			victoryMessage = " achieve TOTAL VICTORY with ";
-			checkVictoryCities(aBridge, victoryMessage, " Total Victory VCs");
+			checkVictoryCities(m_bridge, victoryMessage, " Total Victory VCs");
 		}
 		if (isHonorableSurrender())
 		{
 			victoryMessage = " achieve an HONORABLE VICTORY with ";
-			checkVictoryCities(aBridge, victoryMessage, " Honorable Victory VCs");
+			checkVictoryCities(m_bridge, victoryMessage, " Honorable Victory VCs");
 		}
 		if (isProjectionOfPower())
 		{
 			victoryMessage = " achieve victory through a PROJECTION OF POWER with ";
-			checkVictoryCities(aBridge, victoryMessage, " Projection of Power VCs");
+			checkVictoryCities(m_bridge, victoryMessage, " Projection of Power VCs");
 		}
 		if (isEconomicVictory()) // Check for regular economic victory
 		{
@@ -121,10 +121,10 @@ public class EndRoundDelegate extends BaseDelegate
 					if (teamProd >= victoryAmount)
 					{
 						victoryMessage = allianceName + " achieve economic victory";
-						aBridge.getHistoryWriter().startEvent(victoryMessage);
+						m_bridge.getHistoryWriter().startEvent(victoryMessage);
 						final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance(allianceName);
 						// Added this to end the game on victory conditions
-						signalGameOver(victoryMessage, winners, aBridge);
+						signalGameOver(victoryMessage, winners, m_bridge);
 					}
 				}
 			}
@@ -182,15 +182,15 @@ public class EndRoundDelegate extends BaseDelegate
 		victoryMessage = " achieve a military victory";
 		if (germany && japan && count >= 2)
 		{
-			aBridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
+			m_bridge.getHistoryWriter().startEvent("Axis" + victoryMessage);
 			final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance("Axis");
-			signalGameOver("Axis" + victoryMessage, winners, aBridge);
+			signalGameOver("Axis" + victoryMessage, winners, m_bridge);
 		}
 		if (russia && !germany && britain && !japan && america)
 		{
-			aBridge.getHistoryWriter().startEvent("Allies" + victoryMessage);
+			m_bridge.getHistoryWriter().startEvent("Allies" + victoryMessage);
 			final Collection<PlayerID> winners = data.getAllianceTracker().getPlayersInAlliance("Allies");
-			signalGameOver("Allies" + victoryMessage, winners, aBridge);
+			signalGameOver("Allies" + victoryMessage, winners, m_bridge);
 		}
 	}
 	
@@ -238,6 +238,11 @@ public class EndRoundDelegate extends BaseDelegate
 		// load other variables from state here:
 		m_gameOver = s.m_gameOver;
 		m_winners = s.m_winners;
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return false;
 	}
 	
 	private void checkVictoryCities(final IDelegateBridge aBridge, final String victoryMessage, final String victoryType)

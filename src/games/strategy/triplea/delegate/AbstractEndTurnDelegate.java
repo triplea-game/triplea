@@ -82,10 +82,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	
 	public boolean canPlayerCollectIncome(final PlayerID player, final GameData data)
 	{
-		final PlayerAttachment pa = PlayerAttachment.get(player);
-		final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(player, data));
-		final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data));
-		if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
+		if (!TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(m_player, getData()))
 			return false;
 		return true;
 	}
@@ -94,13 +91,13 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void start()
 	{
 		// figure out our current PUs before we do anything else, including super methods
-		final GameData data = aBridge.getData();
+		final GameData data = m_bridge.getData();
 		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
-		final int leftOverPUs = aBridge.getPlayerID().getResources().getQuantity(PUs);
-		super.start(aBridge);
+		final int leftOverPUs = m_bridge.getPlayerID().getResources().getQuantity(PUs);
+		super.start();
 		if (!m_needToInitialize)
 			return;
 		m_hasPostedTurnSummary = false;
@@ -108,7 +105,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		// can't collect unless you own your own capital
 		if (!canPlayerCollectIncome(m_player, data))
 		{
-			rollWarBondsForFriends(aBridge, m_player, data);
+			rollWarBondsForFriends(m_bridge, m_player, data);
 			// we do not collect any income this turn
 		}
 		else
@@ -116,7 +113,7 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			// just collect resources
 			final Collection<Territory> territories = data.getMap().getTerritoriesOwnedBy(m_player);
 			int toAdd = getProduction(territories);
-			final int blockadeLoss = getProductionLoss(m_player, data, aBridge);
+			final int blockadeLoss = getProductionLoss(m_player, data, m_bridge);
 			toAdd -= blockadeLoss;
 			toAdd *= Properties.getPU_Multiplier(data);
 			int total = m_player.getResources().getQuantity(PUs) + toAdd;
@@ -126,15 +123,15 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 			else
 				transcriptText = m_player.getName() + " collect " + toAdd + MyFormatter.pluralize(" PU", toAdd) + " (" + blockadeLoss + " lost to blockades)" + "; end with " + total
 							+ MyFormatter.pluralize(" PU", total) + " total";
-			aBridge.getHistoryWriter().startEvent(transcriptText);
+			m_bridge.getHistoryWriter().startEvent(transcriptText);
 			
 			// do war bonds
-			final int bonds = rollWarBonds(aBridge, m_player, data);
+			final int bonds = rollWarBonds(m_bridge, m_player, data);
 			if (bonds > 0)
 			{
 				total += bonds;
 				toAdd += bonds;
-				aBridge.getHistoryWriter().startEvent(
+				m_bridge.getHistoryWriter().startEvent(
 							m_player.getName() + " collect " + bonds + MyFormatter.pluralize(" PU", bonds) + " from War Bonds; end with " + total + MyFormatter.pluralize(" PU", total) + " total");
 			}
 			
@@ -144,18 +141,18 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 				total = 0;
 			}
 			final Change change = ChangeFactory.changeResourcesChange(m_player, PUs, toAdd);
-			aBridge.addChange(change);
+			m_bridge.addChange(change);
 			if (data.getProperties().get(Constants.PACIFIC_THEATER, false) && pa != null)
 			{
 				final Change changeVP = (ChangeFactory.attachmentPropertyChange(pa, (pa.getVps() + (toAdd / 10) + (pa.getCaptureVps() / 10)), "vps"));
 				final Change changeCapVP = ChangeFactory.attachmentPropertyChange(pa, "0", "captureVps");
 				final CompositeChange ccVP = new CompositeChange(changeVP, changeCapVP);
-				aBridge.addChange(ccVP);
+				m_bridge.addChange(ccVP);
 			}
 			
-			addOtherResources(aBridge);
+			addOtherResources(m_bridge);
 			
-			doNationalObjectivesAndOtherEndTurnEffects(aBridge);
+			doNationalObjectivesAndOtherEndTurnEffects(m_bridge);
 			
 			// now we do upkeep costs, including upkeep cost as a percentage of our entire income for this turn (including NOs)
 			final int currentPUs = m_player.getResources().getQuantity(PUs);
@@ -189,19 +186,19 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 				final String transcriptText2 = m_player.getName() + (relationshipUpkeepTotalCost < 0 ? " pays " : " taxes ") + (-1 * relationshipUpkeepTotalCost)
 							+ MyFormatter.pluralize(" PU", relationshipUpkeepTotalCost) + " in order to maintain current relationships with other players, and ends the turn with " + newTotal
 							+ MyFormatter.pluralize(" PU", newTotal);
-				aBridge.getHistoryWriter().startEvent(transcriptText2);
+				m_bridge.getHistoryWriter().startEvent(transcriptText2);
 				final Change upkeep = ChangeFactory.changeResourcesChange(m_player, PUs, relationshipUpkeepTotalCost);
-				aBridge.addChange(upkeep);
+				m_bridge.addChange(upkeep);
 			}
 		}
 		
 		if (doBattleShipsRepairEndOfTurn())
 		{
-			MoveDelegate.repairBattleShips(aBridge, aBridge.getPlayerID(), false);
+			MoveDelegate.repairBattleShips(m_bridge, m_bridge.getPlayerID(), false);
 		}
 		if (isGiveUnitsByTerritory() && pa != null && pa.getGiveUnitControl() != null && !pa.getGiveUnitControl().isEmpty())
 		{
-			changeUnitOwnership(aBridge);
+			changeUnitOwnership(m_bridge);
 		}
 		m_needToInitialize = false;
 	}
@@ -236,6 +233,12 @@ public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IA
 		// load other variables from state here:
 		m_needToInitialize = s.m_needToInitialize;
 		m_hasPostedTurnSummary = s.m_hasPostedTurnSummary;
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		// we could have a pbem/forum post to do
+		return true;
 	}
 	
 	private int rollWarBonds(final IDelegateBridge aBridge, final PlayerID player, final GameData data)

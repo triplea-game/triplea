@@ -83,12 +83,21 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 	private IBattle m_currentBattle = null;
 	
 	/**
+	 * Called before the delegate will run, AND before "start" is called.
+	 */
+	@Override
+	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge)
+	{
+		super.setDelegateBridgeAndPlayer(new TripleADelegateBridge(iDelegateBridge));
+	}
+	
+	/**
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void start()
 	{
-		super.start(new TripleADelegateBridge(aBridge));
+		super.start();
 		// we may start multiple times due to loading after saving
 		// only initialize once
 		if (m_needToInitialize)
@@ -183,6 +192,21 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 		m_needToCheckDefendingPlanesCanLand = s.m_needToCheckDefendingPlanesCanLand;
 		m_needToCleanup = s.m_needToCleanup;
 		m_currentBattle = s.m_currentBattle;
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		final BattleListing battles = getBattles();
+		if (battles.isEmpty())
+		{
+			final IBattle battle = getCurrentBattle();
+			if (battle != null)
+			{
+				return true;
+			}
+			return false;
+		}
+		return true;
 	}
 	
 	public static void doInitialize(final BattleTracker battleTracker, final IDelegateBridge aBridge)

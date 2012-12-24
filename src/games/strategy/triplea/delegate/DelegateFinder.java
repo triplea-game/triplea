@@ -51,6 +51,16 @@ public class DelegateFinder
 		return (AbstractMoveDelegate) findDelegate(data, "move");
 	}
 	
+	public static final TechnologyDelegate techDelegate(final GameData data)
+	{
+		return (TechnologyDelegate) findDelegate(data, "tech");
+	}
+	
+	/*public static final AbstractEndTurnDelegate endTurnDelegate(final GameData data)
+	{
+		return (AbstractEndTurnDelegate) findDelegate(data, "endTurn");
+	}
+	
 	public static final AbstractPlaceDelegate placeDelegate(final GameData data)
 	{
 		return (AbstractPlaceDelegate) findDelegate(data, "place");
@@ -61,19 +71,8 @@ public class DelegateFinder
 		return (AbstractPlaceDelegate) findDelegate(data, "placeNoAirCheck");
 	}
 	
-	// TODO: this is a really shitty way of figuring out what step / delegate we are in....
 	public static final BidPlaceDelegate bidPlaceDelegate(final GameData data)
 	{
 		return (BidPlaceDelegate) findDelegate(data, "placeBid");
-	}
-	
-	public static final TechnologyDelegate techDelegate(final GameData data)
-	{
-		return (TechnologyDelegate) findDelegate(data, "tech");
-	}
-	
-	/*public static final AbstractEndTurnDelegate endTurnDelegate(final GameData data)
-	{
-		return (AbstractEndTurnDelegate) findDelegate(data, "endTurn");
 	}*/
 }

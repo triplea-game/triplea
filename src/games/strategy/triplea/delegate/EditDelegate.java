@@ -51,17 +51,31 @@ public class EditDelegate extends BasePersistentDelegate implements IEditDelegat
 	public static String EDITMODE_OFF = "Turning off Edit Mode";
 	
 	/**
+	 * Called before the delegate will run, AND before "start" is called.
+	 */
+	@Override
+	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge)
+	{
+		super.setDelegateBridgeAndPlayer(new TripleADelegateBridge(iDelegateBridge));
+	}
+	
+	/**
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		super.start(new TripleADelegateBridge(bridge));
+		super.start();
 	}
 	
 	@Override
 	public void end()
 	{
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		return true;
 	}
 	
 	public static boolean getEditMode(final GameData data)

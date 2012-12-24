@@ -48,10 +48,10 @@ public abstract class AbstractMoveDelegate extends BaseDelegate implements IMove
 	 * Called before the delegate will run.
 	 */
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void start()
 	{
-		super.start(aBridge);
-		m_nonCombat = isNonCombat(aBridge);
+		super.start();
+		m_nonCombat = isNonCombat(m_bridge);
 		if (m_tempMovePerformer != null)
 		{
 			m_tempMovePerformer.initialize(this);

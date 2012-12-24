@@ -33,7 +33,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
 import games.strategy.sound.ClipPlayer;
 import games.strategy.sound.SoundPath;
@@ -99,9 +98,9 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 	}
 	
 	@Override
-	public void start(final IDelegateBridge aBridge)
+	public void start()
 	{
-		super.start(aBridge);
+		super.start();
 	}
 	
 	/**
@@ -125,6 +124,15 @@ public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbs
 		m_produced = new HashMap<Territory, Collection<Unit>>();
 		m_placements.clear();
 		removeAirThatCantLand();
+	}
+	
+	public boolean stuffToDoInThisDelegate()
+	{
+		// nothing to place
+		// nothing placed
+		if (m_player == null || (m_player.getUnits().size() == 0 && getPlacementsMade() == 0))
+			return false;
+		return true;
 	}
 	
 	protected void removeAirThatCantLand()

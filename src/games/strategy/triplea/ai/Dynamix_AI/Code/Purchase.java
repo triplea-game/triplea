@@ -122,8 +122,6 @@ public class Purchase
 				Dynamix_AI.Pause();
 			}
 		}
-		if (!ai.canWePurchaseOrRepair(purchaseForBid))
-			return;
 		if (purchaseForBid)
 		{
 			if (DUtils.CanPlayerPlaceAnywhere(data, player) && PUsToSpend == 0)

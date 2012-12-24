@@ -8,7 +8,6 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Unit;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.util.IntegerMap;
 
@@ -50,6 +49,18 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 		return getBidAmount(data, player) != 0;
 	}
 	
+	@Override
+	public boolean stuffToDoInThisDelegate()
+	{
+		if (!doesPlayerHaveBid(getData(), m_player))
+			return false;
+		if (m_player.getProductionFrontier() == null || m_player.getProductionFrontier().getRules().isEmpty())
+			return false;
+		if (!canWePurchaseOrRepair())
+			return false;
+		return true;
+	}
+	
 	/**
 	 * subclasses can over ride this method to use different restrictions as to what a player can buy
 	 */
@@ -62,12 +73,12 @@ public class BidPurchaseDelegate extends PurchaseDelegate
 	}
 	
 	@Override
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		super.start(bridge);
+		super.start();
 		if (m_hasBid)
 			return;
-		m_bid = getBidAmount(bridge.getData(), bridge.getPlayerID());
+		m_bid = getBidAmount(m_bridge.getData(), m_bridge.getPlayerID());
 		m_spent = 0;
 	}
 	
