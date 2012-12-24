@@ -3,20 +3,15 @@ package games.strategy.triplea.ai;
 import games.strategy.common.player.AbstractBaseAI;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
-import games.strategy.engine.data.ProductionRule;
-import games.strategy.engine.data.RepairRule;
 import games.strategy.engine.data.Resource;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.net.GUID;
 import games.strategy.triplea.Constants;
-import games.strategy.triplea.Properties;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.UnitAttachment;
-import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DelegateFinder;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.Matches;
@@ -151,11 +146,15 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		// rather than try to analyze battles to figure out which must be fought before others
 		// as in the case of a naval battle preceding an amphibious attack,
 		// keep trying to fight every battle
+		/*
+		if (!battleDelegate.stuffToDoInThisDelegate())
+			return;
+		*/
 		while (true)
 		{
 			final BattleListing listing = battleDelegate.getBattles();
 			// all fought
-			if (listing.getBattles().isEmpty() && listing.getStrategicRaids().isEmpty())
+			if (listing.isEmpty())
 				return;
 			final Iterator<Territory> raidBattles = listing.getStrategicRaids().iterator();
 			// fight strategic bombing raids
@@ -283,26 +282,35 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 		final PlayerID id = getPlayerID();
 		if (name.endsWith("Bid"))
 		{
+			final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemote();
+			/*if (!purchaseDelegate.stuffToDoInThisDelegate())
+				return;*/
 			final String propertyName = id.getName() + " bid";
 			final int bidAmount = getGameData().getProperties().get(propertyName, 0);
-			purchase(true, bidAmount, (IPurchaseDelegate) getPlayerBridge().getRemote(), getGameData(), id);
-		}
-		else if (name.endsWith("Tech"))
-		{
-			if (!Properties.getTechDevelopment(getGameData()))
-			{
-				return;
-			}
-			tech((ITechDelegate) getPlayerBridge().getRemote(), getGameData(), id);
+			purchase(true, bidAmount, purchaseDelegate, getGameData(), id);
 		}
 		else if (name.endsWith("Purchase"))
 		{
+			final IPurchaseDelegate purchaseDelegate = (IPurchaseDelegate) getPlayerBridge().getRemote();
+			/*if (!purchaseDelegate.stuffToDoInThisDelegate())
+				return;*/
 			final Resource PUs = getGameData().getResourceList().getResource(Constants.PUS);
 			final int leftToSpend = id.getResources().getQuantity(PUs);
-			purchase(false, leftToSpend, (IPurchaseDelegate) getPlayerBridge().getRemote(), getGameData(), id);
+			purchase(false, leftToSpend, purchaseDelegate, getGameData(), id);
+		}
+		else if (name.endsWith("Tech"))
+		{
+			final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemote();
+			/*if (!techDelegate.stuffToDoInThisDelegate())
+				return;*/
+			tech(techDelegate, getGameData(), id);
 		}
 		else if (name.endsWith("Move"))
 		{
+			
+			final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemote();
+			/* if (!moveDel.stuffToDoInThisDelegate())
+				return; */
 			if (name.endsWith("AirborneCombatMove"))
 			{
 				return;
@@ -311,14 +319,21 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 				// airborneMove(); // TODO: implement me
 			}
 			else
-				move(name.endsWith("NonCombatMove"), (IMoveDelegate) getPlayerBridge().getRemote(), getGameData(), id);
+			{
+				move(name.endsWith("NonCombatMove"), moveDel, getGameData(), id);
+			}
 		}
 		else if (name.endsWith("Battle"))
 			battle((IBattleDelegate) getPlayerBridge().getRemote(), getGameData(), id);
 		else if (name.endsWith("Politics"))
 			getPoliticalActions();
 		else if (name.endsWith("Place"))
-			place(name.indexOf("Bid") != -1, (IAbstractPlaceDelegate) getPlayerBridge().getRemote(), getGameData(), id);
+		{
+			final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
+			/*if (!placeDel.stuffToDoInThisDelegate())
+				return;*/
+			place(name.indexOf("Bid") != -1, placeDel, getGameData(), id);
+		}
 		else if (name.endsWith("EndTurn"))
 		{
 		}
@@ -326,14 +341,14 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 	
 	public void getPoliticalActions()
 	{
+		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemote();
+		/*
+		if (!iPoliticsDelegate.stuffToDoInThisDelegate())
+			return;
+		*/
 		final GameData data = getGameData();
 		final PlayerID id = getPlayerID();
-		if (!id.amNotDeadYet(data))
-			return;
-		if (!games.strategy.triplea.Properties.getUsePolitics(data))
-			return;
 		final float numPlayers = data.getPlayerList().getPlayers().size();
-		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemote();
 		final PoliticsDelegate politicsDelegate = DelegateFinder.politicsDelegate(data);
 		// final HashMap<ICondition, Boolean> testedConditions = DelegateFinder.politicsDelegate(data).getTestedConditions();//this is commented out because we want to test the conditions each time to make sure they are still valid
 		if (Math.random() < .5)
@@ -444,49 +459,5 @@ public abstract class AbstractAI extends AbstractBaseAI implements ITripleaPlaye
 			}
 		}
 		return rVal;
-	}
-	
-	public boolean canWePurchaseOrRepair(final boolean bid)
-	{
-		final PlayerID id = getPlayerID();
-		if (bid)
-		{
-			if (!BidPurchaseDelegate.doesPlayerHaveBid(getGameData(), id))
-				return false;
-		}
-		// NoPUPurchaseDelegate will run first, before this section. After running, the engine will wait for the player by coming here. Exit if we are a No PU delegate purchase
-		if (getPlayerBridge().getStepName().endsWith("NoPUPurchase"))
-			return false;
-		// we have no production frontier
-		else if (id.getProductionFrontier() == null || id.getProductionFrontier().getRules().isEmpty())
-		{
-			return false;
-		}
-		else
-		{
-			// if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
-			final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(id, getGameData()));
-			final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(id, getGameData()));
-			final PlayerAttachment pa = PlayerAttachment.get(id);
-			if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
-				return false;
-		}
-		if (id.getProductionFrontier() != null && id.getProductionFrontier().getRules() != null)
-		{
-			for (final ProductionRule rule : id.getProductionFrontier().getRules())
-			{
-				if (id.getResources().has(rule.getCosts()))
-					return true;
-			}
-		}
-		if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null)
-		{
-			for (final RepairRule rule : id.getRepairFrontier().getRules())
-			{
-				if (id.getResources().has(rule.getCosts()))
-					return true;
-			}
-		}
-		return false;
 	}
 }

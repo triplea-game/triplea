@@ -44,20 +44,23 @@ import java.io.Serializable;
  */
 public interface IDelegate
 {
-	/*
+	/**
 	 * Uses name as the internal unique name and displayName for display to users
 	 */
 	public void initialize(final String name, final String displayName);
 	
 	/**
-	 * Called before the delegate will run.
+	 * Called before the delegate will run and before "start" is called.
 	 * 
-	 * @param aBridge
-	 *            IDelegateBridge
-	 * @param gameData
-	 *            GameData
+	 * @param iDelegateBridge
+	 *            the IDelegateBridge
 	 */
-	public void start(final IDelegateBridge aBridge);
+	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge);
+	
+	/**
+	 * Called before the delegate will run.
+	 */
+	public void start();
 	
 	/**
 	 * Called before the delegate will stop running.
@@ -88,4 +91,17 @@ public interface IDelegate
 	 *         delegate should not be used as in IRemote.)
 	 */
 	public Class<? extends IRemote> getRemoteType();
+	
+	/**
+	 * Do we have things to do in this delegate or not?
+	 * Example: In the "place delegate" if we have units to place or have already placed some units then this should return true,
+	 * and if we have nothing to place then this should return false;
+	 * Example2: In a "move delegate" if we have either moved units already or have units with movement left, then this should return true,
+	 * and if we have no units to move or undo-move, then this should return false.
+	 * 
+	 * Because communication over the network can take a while, this should only be called from the server game.
+	 * 
+	 * @return should we run the delegate or not?
+	 */
+	public boolean stuffToDoInThisDelegate();
 }

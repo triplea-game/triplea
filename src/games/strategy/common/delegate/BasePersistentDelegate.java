@@ -43,14 +43,22 @@ public abstract class BasePersistentDelegate implements IDelegate, IPersistentDe
 	}
 	
 	/**
+	 * Called before the delegate will run, AND before "start" is called.
+	 */
+	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge)
+	{
+		m_bridge = iDelegateBridge;
+		m_player = iDelegateBridge.getPlayerID();
+		m_data = iDelegateBridge.getData();
+	}
+	
+	/**
 	 * Called before the delegate will run.
 	 * All classes should call super.start if they override this.
 	 */
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		m_bridge = bridge;
-		m_player = bridge.getPlayerID();
-		m_data = bridge.getData();
+		// nothing
 	}
 	
 	/**

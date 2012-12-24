@@ -33,12 +33,9 @@ import games.strategy.sound.SoundPath;
 import games.strategy.triplea.attatchments.PlayerAttachment;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.TerritoryAttachment;
-import games.strategy.triplea.delegate.BidPurchaseDelegate;
 import games.strategy.triplea.delegate.DiceRoll;
 import games.strategy.triplea.delegate.IBattle;
 import games.strategy.triplea.delegate.Matches;
-import games.strategy.triplea.delegate.SpecialMoveDelegate;
-import games.strategy.triplea.delegate.TechTracker;
 import games.strategy.triplea.delegate.dataObjects.BattleListing;
 import games.strategy.triplea.delegate.dataObjects.CasualtyDetails;
 import games.strategy.triplea.delegate.dataObjects.CasualtyList;
@@ -68,7 +65,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -117,6 +113,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	@Override
 	public void start(final String name)
 	{
+		m_ui.requiredTurnSeries(getPlayerID());
 		boolean badStep = false;
 		try
 		{
@@ -149,6 +146,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			move(nonCombat, name);
 			if (!nonCombat)
 				m_ui.waitForMoveForumPoster(getPlayerID(), getPlayerBridge());
+			// TODO only do forum post if there is a combat
 		}
 		else if (name.endsWith("Battle"))
 			battle();
@@ -207,11 +205,11 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void politics(final boolean firstRun)
 	{
-		if (!getPlayerID().amNotDeadYet(getGameData()))
-			return;
-		if (!games.strategy.triplea.Properties.getUsePolitics(getGameData()))
-			return;
 		final IPoliticsDelegate iPoliticsDelegate = (IPoliticsDelegate) getPlayerBridge().getRemote();
+		/*
+		if (!iPoliticsDelegate.stuffToDoInThisDelegate())
+			return;
+		*/
 		final PoliticalActionAttachment actionChoice = m_ui.getPoliticalActionChoice(getPlayerID(), firstRun, iPoliticsDelegate);
 		if (actionChoice != null)
 		{
@@ -229,34 +227,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void tech()
 	{
-		// can we tech?
+		final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemote();
+		/*
+		if (!techDelegate.stuffToDoInThisDelegate())
+			return;
+		*/
 		final PlayerID id = getPlayerID();
-		getGameData().acquireReadLock();
-		try
-		{
-			if (!isTechDevelopment(getGameData()))
-				return;
-			final int techCost = TechTracker.getTechCost(id);
-			int money = id.getResources().getQuantity(Constants.PUS);
-			if (money < techCost)
-			{
-				final PlayerAttachment pa = PlayerAttachment.get(id);
-				if (pa == null)
-					return;
-				final Collection<PlayerID> helpPay = pa.getHelpPayTechCost();
-				if (helpPay == null || helpPay.isEmpty())
-					return;
-				for (final PlayerID p : helpPay)
-				{
-					money += p.getResources().getQuantity(Constants.PUS);
-				}
-				if (money < techCost)
-					return;
-			}
-		} finally
-		{
-			getGameData().releaseReadLock();
-		}
 		// play a sound for this phase
 		if (!m_soundPlayedAlreadyTechnology)
 		{
@@ -266,7 +242,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		final TechRoll techRoll = m_ui.getTechRolls(id);
 		if (techRoll != null)
 		{
-			final ITechDelegate techDelegate = (ITechDelegate) getPlayerBridge().getRemote();
+			
 			final TechResults techResults = techDelegate.rollTech(techRoll.getRolls(), techRoll.getTech(), techRoll.getNewTokens(), techRoll.getWhoPaysHowMuch());
 			if (techResults.isError())
 			{
@@ -280,14 +256,12 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void move(final boolean nonCombat, final String stepName)
 	{
-		final PlayerID id = getPlayerID();
-		if (stepName.endsWith("AirborneCombatMove"))
-		{
-			if (!SpecialMoveDelegate.allowAirborne(id, getGameData()))
-				return;
-		}
-		else if (!hasUnitsThatCanMove(nonCombat))
+		final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemote();
+		/*
+		if (!moveDel.stuffToDoInThisDelegate())
 			return;
+		*/
+		final PlayerID id = getPlayerID();
 		// play a sound for this phase
 		if (nonCombat && !m_soundPlayedAlreadyNonCombatMove)
 		{
@@ -315,7 +289,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 			}
 			return;
 		}
-		final IMoveDelegate moveDel = (IMoveDelegate) getPlayerBridge().getRemote();
 		final String error = moveDel.move(moveDescription.getUnits(), moveDescription.getRoute(), moveDescription.getTransportsThatCanBeLoaded(), moveDescription.getDependentUnits());
 		if (error != null)
 			m_ui.notifyError(error);
@@ -367,61 +340,14 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 	}
 	
-	private boolean hasUnitsThatCanMove(final boolean nonCom)
-	{
-		final PlayerID id = getPlayerID();
-		final CompositeMatchAnd<Unit> moveableUnitOwnedByMe = new CompositeMatchAnd<Unit>();
-		moveableUnitOwnedByMe.add(Matches.unitIsOwnedBy(id));
-		moveableUnitOwnedByMe.add(Matches.UnitCanMove);
-		// if not non combat, can not move aa units
-		if (!nonCom)
-			moveableUnitOwnedByMe.add(Matches.UnitCanNotMoveDuringCombatMove.invert());
-		getGameData().acquireReadLock();
-		try
-		{
-			for (final Territory item : getGameData().getMap().getTerritories())
-			{
-				if (item.getUnits().someMatch(moveableUnitOwnedByMe))
-				{
-					return true;
-				}
-			}
-			return false;
-		} finally
-		{
-			getGameData().releaseReadLock();
-		}
-	}
-	
 	private void purchase(final boolean bid)
 	{
+		IPurchaseDelegate purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
+		/*
+		if (!purchaseDel.stuffToDoInThisDelegate())
+			return;
+		*/
 		final PlayerID id = getPlayerID();
-		if (bid)
-		{
-			if (!BidPurchaseDelegate.doesPlayerHaveBid(getGameData(), id))
-				return;
-		}
-		// NoPUPurchaseDelegate will run first, before this section. After running, the engine will wait for the player by coming here. Exit if we are a No PU delegate purchase
-		if (getPlayerBridge().getStepName().endsWith("NoPUPurchase"))
-			return;
-		// we have no production frontier
-		else if (id.getProductionFrontier() == null || id.getProductionFrontier().getRules().isEmpty())
-		{
-			return;
-		}
-		else
-		{
-			// if my capital is captured, I can't produce, but I may have PUs if I captured someone else's capital
-			final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(id, getGameData()));
-			final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(id, getGameData()));
-			final PlayerAttachment pa = PlayerAttachment.get(id);
-			if ((!capitalsListOriginal.isEmpty() && capitalsListOwned.isEmpty()) || (pa != null && pa.getRetainCapitalProduceNumber() > capitalsListOwned.size()))
-				return;
-		}
-		
-		if (!canWePurchaseOrRepair())
-			return;
-		
 		// play a sound for this phase
 		if (!bid && !m_soundPlayedAlreadyPurchase)
 		{
@@ -431,7 +357,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		
 		// Check if any factories need to be repaired
 		String error = null;
-		IPurchaseDelegate purchaseDel = (IPurchaseDelegate) getPlayerBridge().getRemote();
 		if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null && !id.getRepairFrontier().getRules().isEmpty())
 		{
 			if (isSBRAffectsUnitProduction(getGameData()))
@@ -508,34 +433,16 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		}
 	}
 	
-	private boolean canWePurchaseOrRepair()
-	{
-		final PlayerID id = getPlayerID();
-		if (id.getProductionFrontier() != null && id.getProductionFrontier().getRules() != null)
-		{
-			for (final ProductionRule rule : id.getProductionFrontier().getRules())
-			{
-				if (id.getResources().has(rule.getCosts()))
-					return true;
-			}
-		}
-		if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null)
-		{
-			for (final RepairRule rule : id.getRepairFrontier().getRules())
-			{
-				if (id.getResources().has(rule.getCosts()))
-					return true;
-			}
-		}
-		return false;
-	}
-	
 	private void battle()
 	{
+		final IBattleDelegate battleDel = (IBattleDelegate) getPlayerBridge().getRemote();
+		/* 
+		if (!battleDel.stuffToDoInThisDelegate())
+			return;
+		*/
 		final PlayerID id = getPlayerID();
 		while (true)
 		{
-			final IBattleDelegate battleDel = (IBattleDelegate) getPlayerBridge().getRemote();
 			final BattleListing battles = battleDel.getBattles();
 			if (battles.isEmpty())
 			{
@@ -567,10 +474,10 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	{
 		final PlayerID id = getPlayerID();
 		final IAbstractPlaceDelegate placeDel = (IAbstractPlaceDelegate) getPlayerBridge().getRemote();
-		// nothing to place
-		// nothing placed
-		if (id.getUnits().size() == 0 && placeDel.getPlacementsMade() == 0)
+		/*
+		if (!placeDel.stuffToDoInThisDelegate())
 			return;
+		*/
 		while (true)
 		{
 			// play a sound for this phase
@@ -597,7 +504,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	private void endTurn()
 	{
 		// play a sound for this phase
-		if (!m_soundPlayedAlreadyEndTurn)
+		if (!m_soundPlayedAlreadyEndTurn && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerID(), getGameData()))
 		{
 			ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerID().getName());
 			m_soundPlayedAlreadyEndTurn = true;
@@ -770,11 +677,6 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	public final boolean isDamageFromBombingDoneToUnitsInsteadOfTerritories(final GameData data)
 	{
 		return games.strategy.triplea.Properties.getDamageFromBombingDoneToUnitsInsteadOfTerritories(data);
-	}
-	
-	private static boolean isTechDevelopment(final GameData data)
-	{
-		return games.strategy.triplea.Properties.getTechDevelopment(data);
 	}
 	
 	public HashMap<Territory, HashMap<Unit, IntegerMap<Resource>>> selectKamikazeSuicideAttacks(final HashMap<Territory, Collection<Unit>> possibleUnitsToAttack)

@@ -1,3 +1,9 @@
+Changes for 1.7
+* Abstracted delegates so that the server can now determine if it needs to wait on the user for input for a delegate or not. (veqryn)
+
+* Fixed bug where having a tech token but not having enough money to buy a new one, would cause you to skip rolling for the existing token. (veqryn)
+
+
 Changes for 1.6.1.4
 * Adding dotted lines to the LOTR Middle Earth map, to show connections over rivers. (veqryn)
 

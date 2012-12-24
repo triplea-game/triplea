@@ -530,7 +530,8 @@ public class ServerGame extends AbstractGame
 			m_delegateExecutionManager.enterDelegateExecution();
 			try
 			{
-				delegate.start(bridge);
+				delegate.setDelegateBridgeAndPlayer(bridge);
+				delegate.start();
 			} finally
 			{
 				m_delegateExecutionManager.leaveDelegateExecution();
@@ -563,11 +564,13 @@ public class ServerGame extends AbstractGame
 		{
 			addPlayerTypesToGameData(m_gamePlayers.values(), m_playerManager, bridge);
 		}
-		notifyGameStepChanged(stepIsRestoredFromSavedGame);
 		m_delegateExecutionManager.enterDelegateExecution();
 		try
 		{
-			getCurrentStep().getDelegate().start(bridge);
+			final IDelegate delegate = getCurrentStep().getDelegate();
+			delegate.setDelegateBridgeAndPlayer(bridge);
+			notifyGameStepChanged(stepIsRestoredFromSavedGame); // TODO: i hope it is ok to put this inside of the "enterDelegateExecution" try block???
+			delegate.start();
 		} finally
 		{
 			m_delegateExecutionManager.leaveDelegateExecution();
@@ -579,6 +582,8 @@ public class ServerGame extends AbstractGame
 		final PlayerID playerID = getCurrentStep().getPlayerID();
 		// no player specified for the given step
 		if (playerID == null)
+			return;
+		if (!getCurrentStep().getDelegate().stuffToDoInThisDelegate())
 			return;
 		final IGamePlayer player = m_gamePlayers.get(playerID);
 		if (player != null)

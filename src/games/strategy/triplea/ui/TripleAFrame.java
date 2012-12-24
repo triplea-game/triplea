@@ -208,6 +208,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	private Territory m_territoryLastEntered;
 	private List<Unit> m_unitsBeingMousedOver;
 	private PlayerID m_lastStepPlayer;
+	private final Map<PlayerID, Boolean> m_requiredTurnSeries = new HashMap<PlayerID, Boolean>();
 	
 	/** Creates new TripleAFrame */
 	public TripleAFrame(final IGame game, final Set<IGamePlayer> players) throws IOException
@@ -1451,10 +1452,22 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 		else if (player != null && !player.isNull() && isPlaying && m_inHistory)
 		{
 			showGame();
+			m_requiredTurnSeries.put(player, true);
+		}
+	}
+	
+	public void requiredTurnSeries(final PlayerID player)
+	{
+		if (player == null)
+			return;
+		final Boolean play = m_requiredTurnSeries.get(player);
+		if (play != null && play.booleanValue())
+		{
 			ClipPlayer.play(SoundPath.CLIP_REQUIRED_YOUR_TURN_SERIES, player.getName()); // play sound
+			m_requiredTurnSeries.put(player, false);
 		}
 		// center on capital of player, if it is a new player
-		if (player != null && isPlaying && !player.equals(m_lastStepPlayer))
+		if (!player.equals(m_lastStepPlayer))
 		{
 			m_lastStepPlayer = player;
 			m_data.acquireReadLock();

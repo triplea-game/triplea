@@ -55,14 +55,21 @@ public abstract class BaseDelegate implements IDelegate
 	}
 	
 	/**
+	 * Called before the delegate will run, AND before "start" is called.
+	 */
+	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge)
+	{
+		m_bridge = iDelegateBridge;
+		m_player = iDelegateBridge.getPlayerID();
+	}
+	
+	/**
 	 * Called before the delegate will run.
 	 * All classes should call super.start if they override this.
 	 * Persistent delegates like Edit Delegate should not extend BaseDelegate, because we do not want to fire triggers in the edit delegate.
 	 */
-	public void start(final IDelegateBridge bridge)
+	public void start()
 	{
-		m_bridge = bridge;
-		m_player = bridge.getPlayerID();
 		if (!m_startBaseStepsFinished)
 		{
 			m_startBaseStepsFinished = true;
