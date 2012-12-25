@@ -151,4 +151,10 @@ public class GameStep extends GameDataComponent
 	{
 		return m_properties;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "GameStep:" + m_name + " delegate:" + m_delegate + " player:" + m_player + " displayName:" + m_displayName;
+	}
 }

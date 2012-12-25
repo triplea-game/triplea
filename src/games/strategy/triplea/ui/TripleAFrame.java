@@ -18,6 +18,7 @@
  */
 package games.strategy.triplea.ui;
 
+import games.strategy.common.ui.BasicGameMenuBar;
 import games.strategy.common.ui.MacWrapper;
 import games.strategy.common.ui.MainGameFrame;
 import games.strategy.engine.chat.ChatPanel;
@@ -37,6 +38,7 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.data.events.GameStepListener;
 import games.strategy.engine.framework.ClientGame;
+import games.strategy.engine.framework.GameDataManager;
 import games.strategy.engine.framework.GameDataUtils;
 import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.HistorySynchronizer;
@@ -114,6 +116,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -159,6 +162,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * 
@@ -1737,6 +1741,79 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			public void actionPerformed(final ActionEvent ae)
 			{
 				saveScreenshot(m_historyPanel.getCurrentPopupNode());
+				m_historyPanel.clearCurrentPopupNode();
+			}
+		});
+		popup.add(new AbstractAction("Save Game at this point (BETA)")
+		{
+			private static final long serialVersionUID = 1430512376199927896L;
+			
+			public void actionPerformed(final ActionEvent ae)
+			{
+				m_data.acquireReadLock();
+				// m_data.acquireWriteLock();
+				try
+				{
+					final File f = BasicGameMenuBar.getSaveGameLocationDialog(TripleAFrame.this);
+					if (f != null)
+					{
+						FileOutputStream fout = null;
+						try
+						{
+							fout = new FileOutputStream(f);
+							final GameData datacopy = GameDataUtils.cloneGameData(m_data, true);
+							datacopy.getHistory().gotoNode(m_historyPanel.getCurrentPopupNode());
+							datacopy.getHistory().removeAllHistoryAfterNode(m_historyPanel.getCurrentPopupNode());
+							// TODO: the saved current delegate is still the current delegate, rather than the delegate at that history popup node
+							// TODO: it still shows the current round number, rather than the round at the history popup node
+							// TODO: this could be solved easily if rounds/steps were changes, but that could greatly increase the file size :(
+							// TODO: this also does not undo the runcount of each delegate step
+							@SuppressWarnings("rawtypes")
+							final Enumeration enumeration = ((DefaultMutableTreeNode) datacopy.getHistory().getRoot()).preorderEnumeration();
+							enumeration.nextElement();
+							int round = 0;
+							String stepDisplayName = datacopy.getSequence().getStep(0).getDisplayName();
+							PlayerID currentPlayer = datacopy.getSequence().getStep(0).getPlayerID();
+							while (enumeration.hasMoreElements())
+							{
+								final HistoryNode node = (HistoryNode) enumeration.nextElement();
+								if (node instanceof Round)
+								{
+									round = ((Round) node).getRoundNo();
+									currentPlayer = null;
+									stepDisplayName = node.getTitle();
+								}
+								else if (node instanceof Step)
+								{
+									currentPlayer = ((Step) node).getPlayerID();
+									stepDisplayName = node.getTitle();
+								}
+							}
+							datacopy.getSequence().setRoundAndStep(round, stepDisplayName, currentPlayer);
+							new GameDataManager().saveGame(fout, datacopy);
+							JOptionPane.showMessageDialog(TripleAFrame.this, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
+						} catch (final IOException e)
+						{
+							e.printStackTrace();
+						} finally
+						{
+							if (fout != null)
+							{
+								try
+								{
+									fout.close();
+								} catch (final IOException e)
+								{
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+				} finally
+				{
+					// m_data.releaseWriteLock();
+					m_data.releaseReadLock();
+				}
 				m_historyPanel.clearCurrentPopupNode();
 			}
 		});

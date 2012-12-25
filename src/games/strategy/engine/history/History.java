@@ -107,8 +107,10 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 			rVal = ((Event) node).getChangeEndIndex();
 		else if (node instanceof EventChild)
 			rVal = ((Event) node.getParent()).getChangeEndIndex();
-		else
+		else if (node instanceof IndexedHistoryNode)
 			rVal = ((IndexedHistoryNode) node).getChangeStartIndex();
+		else
+			rVal = 0;
 		if (rVal == -1)
 			return m_changes.size();
 		return rVal;
@@ -145,6 +147,46 @@ public class History extends DefaultTreeModel implements java.io.Serializable
 			m_currentNode = node;
 			if (dataChange != null)
 				new ChangePerformer(m_data).perform(dataChange);
+		} finally
+		{
+			getGameData().releaseWriteLock();
+		}
+	}
+	
+	public synchronized void removeAllHistoryAfterNode(final HistoryNode removeAfterNode)
+	{
+		gotoNode(removeAfterNode);
+		assertCorrectThread();
+		getGameData().acquireWriteLock();
+		try
+		{
+			final int lastChange = getLastChange(removeAfterNode);
+			// final List<Change> changesToRemove = m_changes.subList(Math.min(m_changes.size(), lastChange), Math.max(m_changes.size(), lastChange));
+			// m_changes.removeAll(changesToRemove);
+			while (m_changes.size() > lastChange)
+			{
+				m_changes.remove(lastChange);
+			}
+			final List<HistoryNode> nodesToRemove = new ArrayList<HistoryNode>();
+			final Enumeration enumeration = ((DefaultMutableTreeNode) this.getRoot()).preorderEnumeration();
+			enumeration.nextElement();
+			boolean startRemoving = false;
+			while (enumeration.hasMoreElements())
+			{
+				final HistoryNode node = (HistoryNode) enumeration.nextElement();
+				if (node instanceof IndexedHistoryNode)
+				{
+					final int index = ((IndexedHistoryNode) node).getChangeStartIndex();
+					if (index >= lastChange)
+						startRemoving = true;
+					if (startRemoving)
+						nodesToRemove.add(node);
+				}
+			}
+			while (!nodesToRemove.isEmpty())
+			{
+				this.removeNodeFromParent(nodesToRemove.remove(0));
+			}
 		} finally
 		{
 			getGameData().releaseWriteLock();

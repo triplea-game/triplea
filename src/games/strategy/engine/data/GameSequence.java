@@ -42,6 +42,30 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		super(data);
 	}
 	
+	public void setRoundAndStep(final int currentRound, final String stepDisplayName, final PlayerID player)
+	{
+		System.out.println("Player: " + player + "  at Step: " + stepDisplayName);
+		m_round = currentRound;
+		boolean found = false;
+		for (int i = 0; i < m_steps.size(); i++)
+		{
+			final GameStep step = m_steps.get(i);
+			if (step.getDisplayName().equalsIgnoreCase(stepDisplayName))
+			{
+				if ((player == null && step.getPlayerID() == null) || player.equals(step.getPlayerID()))
+				{
+					m_currentIndex = i;
+					found = true;
+					break;
+				}
+			}
+		}
+		if (!found)
+			m_currentIndex = 0;
+		else
+			System.out.println("Step Found: " + m_steps.get(m_currentIndex));
+	}
+	
 	protected void addStep(final GameStep step)
 	{
 		m_steps.add(step);

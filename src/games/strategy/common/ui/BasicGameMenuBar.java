@@ -20,6 +20,7 @@ import games.strategy.net.IServerMessenger;
 
 import java.awt.BorderLayout;
 import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -518,6 +519,96 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 		addExitMenu(fileMenu);
 	}
 	
+	public static File getSaveGameLocationDialog(final Frame frame)
+	{
+		// For some strange reason,
+		// the only way to get a Mac OS X native-style file dialog
+		// is to use an AWT FileDialog instead of a Swing JDialog
+		if (GameRunner.isMac())
+		{
+			final FileDialog fileDialog = new FileDialog(frame);
+			fileDialog.setMode(FileDialog.SAVE);
+			SaveGameFileChooser.ensureDefaultDirExists();
+			fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
+			fileDialog.setFilenameFilter(new FilenameFilter()
+			{
+				public boolean accept(final File dir, final String name)
+				{ // the extension should be .tsvg, but find svg extensions as well
+					return name.endsWith(".tsvg") || name.endsWith(".svg");
+				}
+			});
+			fileDialog.setVisible(true);
+			/*DateFormat format = new SimpleDateFormat("yyyy_MM_dd");
+			String defaultFileName = "game_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound();
+			defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
+			defaultFileName = defaultFileName + ".tsvg";
+			
+			fileDialog.setFile(defaultFileName);*/
+			String fileName = fileDialog.getFile();
+			final String dirName = fileDialog.getDirectory();
+			if (fileName == null)
+				return null;
+			else
+			{
+				if (!fileName.endsWith(".tsvg"))
+					fileName += ".tsvg";
+				final File f = new File(dirName, fileName);
+				// TODO check this on a MAC
+				// disallow sub directories to be entered (in the form directory/name
+				/* String filePath = f.getPath().substring(0,f.getPath().lastIndexOf("\\"));
+				 if(!fileChooser.getCurrentDirectory().toString().equals(filePath))
+				 {
+				     int choice = JOptionPane.showConfirmDialog(m_frame,
+				         "Special characters are not allowed in the file name.  Please rename it.", "Cancel?", JOptionPane.DEFAULT_OPTION,
+				         JOptionPane.WARNING_MESSAGE);
+				         return;
+				 }*/
+				// If the user selects a filename that already exists,
+				// the AWT Dialog on Mac OS X will ask the user for confirmation
+				// so, we don't need to explicitly ask user if they want to overwrite the old file
+				return f;
+			}
+		}
+		// Non-Mac platforms should use the normal Swing JFileChooser
+		else
+		{
+			final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
+			final int rVal = fileChooser.showSaveDialog(frame);
+			if (rVal != JFileChooser.APPROVE_OPTION)
+				return null;
+			File f = fileChooser.getSelectedFile();
+			// disallow sub directories to be entered (in the form directory/name) for Windows boxes
+			if (GameRunner.isWindows())
+			{
+				final int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
+				final String filePath = f.getPath().substring(0, slashIndex);
+				if (!fileChooser.getCurrentDirectory().toString().equals(filePath))
+				{
+					@SuppressWarnings("unused")
+					final int choice = JOptionPane.showConfirmDialog(frame, "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?",
+									JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+					return null;
+				}
+			}
+			if (!f.getName().toLowerCase().endsWith(".tsvg"))
+			{
+				f = new File(f.getParent(), f.getName() + ".tsvg");
+			}
+			// A small warning so users will not over-write a file,
+			// added by NeKromancer
+			if (f.exists())
+			{
+				final int choice = JOptionPane.showConfirmDialog(frame, "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
+								JOptionPane.WARNING_MESSAGE);
+				if (choice != JOptionPane.OK_OPTION)
+				{
+					return null;
+				}
+			}// end if exists
+			return f;
+		}
+	}
+	
 	/**
 	 * @param parent
 	 */
@@ -529,94 +620,11 @@ public class BasicGameMenuBar<CustomGameFrame extends MainGameFrame> extends JMe
 			
 			public void actionPerformed(final ActionEvent e)
 			{
-				// For some strange reason,
-				// the only way to get a Mac OS X native-style file dialog
-				// is to use an AWT FileDialog instead of a Swing JDialog
-				if (GameRunner.isMac())
+				final File f = getSaveGameLocationDialog(m_frame);
+				if (f != null)
 				{
-					final FileDialog fileDialog = new FileDialog(m_frame);
-					fileDialog.setMode(FileDialog.SAVE);
-					SaveGameFileChooser.ensureDefaultDirExists();
-					fileDialog.setDirectory(SaveGameFileChooser.DEFAULT_DIRECTORY.getPath());
-					fileDialog.setFilenameFilter(new FilenameFilter()
-					{
-						public boolean accept(final File dir, final String name)
-						{ // the extension should be .tsvg, but find svg extensions as well
-							return name.endsWith(".tsvg") || name.endsWith(".svg");
-						}
-					});
-					fileDialog.setVisible(true);
-					/*DateFormat format = new SimpleDateFormat("yyyy_MM_dd");
-					String defaultFileName = "game_" + format.format(new Date()) + "_" + getData().getGameName() + "_round_" + getData().getSequence().getRound();
-					defaultFileName = IllegalCharacterRemover.removeIllegalCharacter(defaultFileName);
-					defaultFileName = defaultFileName + ".tsvg";
-					
-					fileDialog.setFile(defaultFileName);*/
-					String fileName = fileDialog.getFile();
-					final String dirName = fileDialog.getDirectory();
-					if (fileName == null)
-						return;
-					else
-					{
-						if (!fileName.endsWith(".tsvg"))
-							fileName += ".tsvg";
-						final File f = new File(dirName, fileName);
-						// TODO check this on a MAC
-						// disallow sub directories to be entered (in the form directory/name
-						/* String filePath = f.getPath().substring(0,f.getPath().lastIndexOf("\\"));
-						 if(!fileChooser.getCurrentDirectory().toString().equals(filePath))
-						 {
-						     int choice = JOptionPane.showConfirmDialog(m_frame,
-						         "Special characters are not allowed in the file name.  Please rename it.", "Cancel?", JOptionPane.DEFAULT_OPTION,
-						         JOptionPane.WARNING_MESSAGE);
-						         return;
-						 }*/
-						// If the user selects a filename that already exists,
-						// the AWT Dialog on Mac OS X will ask the user for confirmation
-						// so, we don't need to explicitly ask user if they want to overwrite the old file
-						getGame().saveGame(f);
-						JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
-					}
-				}
-				// Non-Mac platforms should use the normal Swing JFileChooser
-				else
-				{
-					final JFileChooser fileChooser = SaveGameFileChooser.getInstance();
-					final int rVal = fileChooser.showSaveDialog(m_frame);
-					if (rVal == JFileChooser.APPROVE_OPTION)
-					{
-						File f = fileChooser.getSelectedFile();
-						// disallow sub directories to be entered (in the form directory/name) for Windows boxes
-						if (GameRunner.isWindows())
-						{
-							final int slashIndex = Math.min(f.getPath().lastIndexOf("\\"), f.getPath().length());
-							final String filePath = f.getPath().substring(0, slashIndex);
-							if (!fileChooser.getCurrentDirectory().toString().equals(filePath))
-							{
-								@SuppressWarnings("unused")
-								final int choice = JOptionPane.showConfirmDialog(m_frame, "Sub directories are not allowed in the file name.  Please rename it.", "Cancel?",
-											JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-								return;
-							}
-						}
-						if (!f.getName().toLowerCase().endsWith(".tsvg"))
-						{
-							f = new File(f.getParent(), f.getName() + ".tsvg");
-						}
-						// A small warning so users will not over-write a file,
-						// added by NeKromancer
-						if (f.exists())
-						{
-							final int choice = JOptionPane.showConfirmDialog(m_frame, "A file by that name already exists. Do you wish to over write it?", "Over-write?", JOptionPane.YES_NO_OPTION,
-										JOptionPane.WARNING_MESSAGE);
-							if (choice != JOptionPane.OK_OPTION)
-							{
-								return;
-							}
-						}// end if exists
-						getGame().saveGame(f);
-						JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
-					}
+					getGame().saveGame(f);
+					JOptionPane.showMessageDialog(m_frame, "Game Saved", "Game Saved", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
