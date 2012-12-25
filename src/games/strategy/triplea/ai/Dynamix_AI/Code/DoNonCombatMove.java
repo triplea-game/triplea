@@ -63,20 +63,22 @@ public class DoNonCombatMove
 	public static void doPreCombatMove(final Dynamix_AI ai, final GameData data, final IMoveDelegate mover, final PlayerID player)
 	{
 		DUtils.Log(Level.FINE, "  Beginning pre-combat move section");
-		final Territory ourCap = TerritoryAttachment.getCapital(player, data);
-		if (DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ourCap) > .1F) // If our cap is in danger
+		for (final Territory ourCap : TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data))
 		{
-			final float priority = DUtils.GetNCMTaskPriority_Stabalize(data, player, ourCap);
-			final NCM_Task task = new NCM_Task(data, ourCap, NCM_TaskType.Land_Reinforce_Stabilize, priority);
-			task.SetTaskRequirements(.1F); // Just get safe enough for task's to realize if they endanger cap
-			task.RecruitUnits();
-			if (task.IsPlannedMoveWorthwhile(Arrays.asList(task)))
+			if (DUtils.GetTerTakeoverChanceAtEndOfTurn(data, player, ourCap) > .1F) // If our cap is in danger
 			{
-				DUtils.Log(Level.FINE, "    Pre-combat-move capital reinforcement task being performed.");
-				task.PerformTask(mover);
+				final float priority = DUtils.GetNCMTaskPriority_Stabalize(data, player, ourCap);
+				final NCM_Task task = new NCM_Task(data, ourCap, NCM_TaskType.Land_Reinforce_Stabilize, priority);
+				task.SetTaskRequirements(.1F); // Just get safe enough for task's to realize if they endanger cap
+				task.RecruitUnits();
+				if (task.IsPlannedMoveWorthwhile(Arrays.asList(task)))
+				{
+					DUtils.Log(Level.FINE, "    Pre-combat-move capital reinforcement task being performed.");
+					task.PerformTask(mover);
+				}
+				TacticalCenter.NotifyStartOfRound(); // Clear frozen units, etc.
+				ThreatInvalidationCenter.NotifyStartOfRound(); // Clear any units the cap-reinforcement invalidated
 			}
-			TacticalCenter.NotifyStartOfRound(); // Clear frozen units, etc.
-			ThreatInvalidationCenter.NotifyStartOfRound(); // Clear any units the cap-reinforcement invalidated
 		}
 	}
 	

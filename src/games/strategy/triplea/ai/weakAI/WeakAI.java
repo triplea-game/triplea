@@ -92,7 +92,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		if (!isAmphibAttack(player))
 			return null;
 		final GameData data = getPlayerBridge().getGameData();
-		final Territory ourCapitol = TerritoryAttachment.getCapital(player, data);
+		final Territory ourCapitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
 		final Match<Territory> endMatch = new Match<Territory>()
 		{
 			@Override
@@ -117,7 +117,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	
 	private boolean isAmphibAttack(final PlayerID player)
 	{
-		final Territory capitol = TerritoryAttachment.getCapital(player, getPlayerBridge().getGameData());
+		final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, getPlayerBridge().getGameData());
 		// we dont own our own capitol
 		if (capitol == null || !capitol.getOwner().equals(player))
 			return false;
@@ -209,7 +209,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final TransportTracker tracker = DelegateFinder.moveDelegate(data).getTransportTracker();
 		if (!isAmphibAttack(player))
 			return;
-		final Territory capitol = TerritoryAttachment.getCapital(player, data);
+		final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
 		if (capitol == null || !capitol.getOwner().equals(player))
 			return;
 		List<Unit> unitsToLoad = capitol.getUnits().getMatches(Matches.UnitIsInfrastructure.invert());
@@ -542,7 +542,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 			// find the nearest enemy owned capital
 			for (final PlayerID otherPlayer : data.getPlayerList().getPlayers())
 			{
-				final Territory capitol = TerritoryAttachment.getCapital(otherPlayer, data);
+				final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(otherPlayer, data);
 				if (capitol != null && !data.getRelationshipTracker().isAllied(player, capitol.getOwner()))
 				{
 					final Route route = data.getMap().getRoute(t, capitol, moveThrough);
@@ -895,7 +895,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 		final Resource PUs = data.getResourceList().getResource(Constants.PUS);
 		final int totPU = player.getResources().getQuantity(PUs);
 		int leftToSpend = totPU;
-		final Territory capitol = TerritoryAttachment.getCapital(player, data);
+		final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
 		final List<ProductionRule> rules = player.getProductionFrontier().getRules();
 		final IntegerMap<ProductionRule> purchase = new IntegerMap<ProductionRule>();
 		List<RepairRule> rrules = Collections.emptyList();
@@ -1191,7 +1191,7 @@ public class WeakAI extends AbstractAI implements IGamePlayer, ITripleaPlayer
 	{
 		if (player.getUnits().size() == 0)
 			return;
-		final Territory capitol = TerritoryAttachment.getCapital(player, data);
+		final Territory capitol = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, data);
 		// place in capitol first
 		placeAllWeCanOn(data, capitol, placeDelegate, player);
 		final List<Territory> randomTerritories = new ArrayList<Territory>(data.getMap().getTerritories());

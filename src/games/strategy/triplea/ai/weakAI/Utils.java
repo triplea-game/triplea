@@ -86,17 +86,14 @@ public class Utils
 	
 	public static boolean hasLandRouteToEnemyOwnedCapitol(final Territory t, final PlayerID us, final GameData data)
 	{
-		for (final PlayerID player : data.getPlayerList())
+		for (final PlayerID player : Match.getMatches(data.getPlayerList().getPlayers(), Matches.isAtWar(us, data)))
 		{
-			final Territory capitol = TerritoryAttachment.getCapital(player, data);
-			// optional players will return null- set them to false
-			if (capitol == null)
-				return false;
-			if (data.getRelationshipTracker().isAllied(us, capitol.getOwner()))
-				continue;
-			if (data.getMap().getDistance(t, capitol, Matches.TerritoryIsLand) != -1)
+			for (final Territory capital : TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data))
 			{
-				return true;
+				if (data.getMap().getDistance(t, capital, Matches.TerritoryIsLand) != -1)
+				{
+					return true;
+				}
 			}
 		}
 		return false;

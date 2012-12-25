@@ -59,9 +59,11 @@ public class SUtils
 		{
 			if (otherPlayer == player)
 				continue;
-			final Territory capitol = TerritoryAttachment.getCapital(otherPlayer, data);
-			if (capitol != null && data.getRelationshipTracker().isAllied(player, capitol.getOwner()))
-				alliedCapitols.add(capitol);
+			for (final Territory capital : TerritoryAttachment.getAllCapitals(otherPlayer, data))
+			{
+				if (capital != null && data.getRelationshipTracker().isAllied(player, capital.getOwner()))
+					alliedCapitols.add(capital);
+			}
 		}
 		for (final Territory cap : alliedCapitols)
 		{
@@ -1112,9 +1114,11 @@ public class SUtils
 		final List<PlayerID> ePlayers = SUtils.getEnemyPlayers(data, player);
 		for (final PlayerID otherPlayer : ePlayers)
 		{
-			final Territory capitol = TerritoryAttachment.getCapital(otherPlayer, data);
-			if (capitol != null && Matches.TerritoryIsNotImpassable.match(capitol)) // Mongolia is listed as capitol of China in AA50 games
-				enemyCapitals.add(capitol);
+			for (final Territory capital : TerritoryAttachment.getAllCapitals(otherPlayer, data))
+			{
+				if (capital != null && Matches.TerritoryIsNotImpassableToLandUnits(player, data).match(capital)) // Mongolia is listed as capitol of China in AA50 games
+					enemyCapitals.add(capital);
+			}
 		}
 		return enemyCapitals;
 	}
@@ -1219,10 +1223,9 @@ public class SUtils
 		{
 			if (!data.getRelationshipTracker().isAllied(player, otherPlayer))
 			{
-				final Territory capitol = TerritoryAttachment.getCapital(otherPlayer, data);
-				if (capitol != null)
+				for (final Territory capital : TerritoryAttachment.getAllCapitals(otherPlayer, data))
 				{
-					route = data.getMap().getRoute(thisTerr, capitol, Matches.TerritoryIsNotImpassableToLandUnits(player, data));
+					route = data.getMap().getRoute(thisTerr, capital, Matches.TerritoryIsNotImpassableToLandUnits(player, data));
 					if (route != null)
 					{
 						return true;
@@ -2191,12 +2194,12 @@ public class SUtils
 	{
 		for (final PlayerID ePlayer : data.getPlayerList().getPlayers())
 		{
-			final Territory capitol = TerritoryAttachment.getCapital(ePlayer, data);
-			if (capitol == null || data.getRelationshipTracker().isAllied(player, capitol.getOwner()))
-				continue;
-			if (data.getMap().getDistance(t, capitol, Matches.TerritoryIsNotImpassableToLandUnits(player, data)) != -1)
+			for (final Territory capital : TerritoryAttachment.getAllCapitals(ePlayer, data))
 			{
-				return true;
+				if (data.getRelationshipTracker().isAtWar(player, capital.getOwner()) && data.getMap().getDistance(t, capital, Matches.TerritoryIsNotImpassableToLandUnits(player, data)) != -1)
+				{
+					return true;
+				}
 			}
 		}
 		return false;
@@ -4926,20 +4929,29 @@ public class SUtils
 		final List<PlayerID> ePlayers = getEnemyPlayers(data, player);
 		final PlayerID ePlayer = ePlayers.get(0);
 		final List<Territory> enemyCapitals = SUtils.getEnemyCapitals(data, player);
-		final Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		int minDist = 1000;
 		final int playerPUs = getLeftToSpend(data, player);
-		final Iterator<Territory> eCapsIter = enemyCapitals.iterator();
-		while (eCapsIter.hasNext())
+		final List<Territory> myCapitals = TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
+		if (myCapitals.isEmpty())
+			myCapitals.addAll(TerritoryAttachment.getAllCapitals(player, data));
+		if (myCapitals.isEmpty())
+			myCapitals.addAll(Match.getMatches(data.getMap().getTerritories(),
+						new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player, data), Matches.territoryHasUnitsThatMatch(Matches.unitIsLandAndOwnedBy(player)))));
+		for (final Territory myCapital : myCapitals)
 		{
-			final Territory eCap = eCapsIter.next();
-			if (Matches.isTerritoryFriendly(player, data).match(eCap) && Matches.territoryHasAlliedUnits(player, data).match(eCap) && !Matches.territoryHasEnemyLandNeighbor(data, player).match(eCap))
+			final Iterator<Territory> eCapsIter = enemyCapitals.iterator();
+			while (eCapsIter.hasNext())
 			{
-				eCapsIter.remove();
-				continue;
+				final Territory eCap = eCapsIter.next();
+				if (Matches.isTerritoryFriendly(player, data).match(eCap) && Matches.territoryHasAlliedUnits(player, data).match(eCap)
+							&& !Matches.territoryHasEnemyLandNeighbor(data, player).match(eCap))
+				{
+					eCapsIter.remove();
+					continue;
+				}
+				final int dist = data.getMap().getDistance(myCapital, eCap);
+				minDist = Math.min(minDist, dist);
 			}
-			final int dist = data.getMap().getDistance(myCapital, eCap);
-			minDist = Math.min(minDist, dist);
 		}
 		/**
 		 * Send units because:
@@ -5143,17 +5155,25 @@ public class SUtils
 		final List<PlayerID> ePlayers = getEnemyPlayers(data, player);
 		final PlayerID ePlayer = ePlayers.get(0);
 		final List<Territory> enemyCapitals = SUtils.getEnemyCapitals(data, player);
-		final Territory myCapital = TerritoryAttachment.getCapital(player, data);
 		int minDist = 1000;
 		// int playerIPCs = getLeftToSpend(data, player);
 		Territory targetCap = null;
+		final List<Territory> myCapitals = TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
+		if (myCapitals.isEmpty())
+			myCapitals.addAll(TerritoryAttachment.getAllCapitals(player, data));
+		if (myCapitals.isEmpty())
+			myCapitals.addAll(Match.getMatches(data.getMap().getTerritories(),
+						new CompositeMatchAnd<Territory>(Matches.TerritoryIsNotImpassableToLandUnits(player, data), Matches.territoryHasUnitsThatMatch(Matches.unitIsLandAndOwnedBy(player)))));
 		for (final Territory eCapTerr : enemyCapitals)
 		{
-			final int dist = data.getMap().getDistance(myCapital, eCapTerr);
-			if (minDist > dist)
+			for (final Territory myCapital : myCapitals)
 			{
-				minDist = dist;
-				targetCap = eCapTerr;
+				final int dist = data.getMap().getDistance(myCapital, eCapTerr);
+				if (minDist > dist)
+				{
+					minDist = dist;
+					targetCap = eCapTerr;
+				}
 			}
 		}
 		final CompositeMatch<Territory> continentTerr = new CompositeMatchAnd<Territory>(Matches.isTerritoryAllied(player, data), Matches.territoryHasValidLandRouteTo(data, targetCap));

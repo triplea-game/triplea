@@ -316,7 +316,7 @@ public class Place
 	
 	private static Territory CalculateBestFactoryBuildTerritory(final GameData data, final PlayerID player)
 	{
-		final Territory ourCapital = TerritoryAttachment.getCapital(player, data);
+		final List<Territory> ourCapitals = TerritoryAttachment.getAllCapitals(player, data);
 		final List<Territory> possibles = new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player));
 		Territory highestScoringTer = null;
 		int highestTerScore = Integer.MIN_VALUE;
@@ -329,7 +329,8 @@ public class Place
 			int score = 0;
 			score -= DUtils.GetVulnerabilityOfArmy(data, player, ter, DUtils.ToList(ter.getUnits().getUnits()), 250) * 1000; // TODO: 250 run count should be in the user menu for this...
 			score += TerritoryAttachment.get(ter).getProduction() * 10;
-			score -= DUtils.GetJumpsFromXToY_NoCond(data, ter, ourCapital);
+			if (!ourCapitals.isEmpty())
+				score -= DUtils.GetJumpsFromXToY_NoCond(data, ter, ourCapitals.iterator().next());
 			if (DMatches.territoryIsOnSmallIsland(data).match(ter))
 				score -= 100000; // Atm, never place on islands unless we have to
 			if (score > highestTerScore)

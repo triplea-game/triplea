@@ -648,33 +648,24 @@ public class BattleTracker implements java.io.Serializable
 		terrOrigOwner = ta.getOccupiedTerrOf();
 		if (terrOrigOwner == null)
 			terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory); // origOwnerTracker.getOriginalOwner(territory);
-		PlayerID newOwner;
+		PlayerID newOwner = id;
 		// if the original owner is the current owner, and the current owner is our enemy / canTakeOver, then we do not worry about this.
 		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && relationshipTracker.isAllied(terrOrigOwner, id) && !terrOrigOwner.equals(territory.getOwner()))
 		{
-			if (territory.equals(TerritoryAttachment.getCapital(terrOrigOwner, data)))
+			final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data));
+			if (!capitalsListOwned.isEmpty())
 				newOwner = terrOrigOwner;
 			else
 			{
-				final List<Territory> capitalsListOwned = new ArrayList<Territory>(TerritoryAttachment.getAllCurrentlyOwnedCapitals(terrOrigOwner, data));
-				if (!capitalsListOwned.isEmpty())
-					newOwner = terrOrigOwner;
-				else
+				newOwner = id;
+				final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(terrOrigOwner, data));
+				for (final Territory current : capitalsListOriginal)
 				{
-					final List<Territory> capitalsListOriginal = new ArrayList<Territory>(TerritoryAttachment.getAllCapitals(terrOrigOwner, data));
-					final Iterator<Territory> iter = capitalsListOriginal.iterator();
-					newOwner = id;
-					while (iter.hasNext())
-					{
-						final Territory current = iter.next();
-						if (current.getOwner().equals(PlayerID.NULL_PLAYERID))
-							newOwner = terrOrigOwner; // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
-					}
+					if (territory.equals(current) || current.getOwner().equals(PlayerID.NULL_PLAYERID))
+						newOwner = terrOrigOwner; // if a neutral controls our capital, our territories get liberated (ie: china in ww2v3)
 				}
 			}
 		}
-		else
-			newOwner = id;
 		// if we have specially set this territory to have whenCapturedByGoesTo, then we set that here (except we don't set it if we are liberating allied owned territory)
 		if (isTerritoryOwnerAnEnemy && newOwner.equals(id) && Matches.TerritoryHasWhenCapturedByGoesTo().match(territory))
 		{
@@ -728,7 +719,7 @@ public class BattleTracker implements java.io.Serializable
 		captureOrDestroyUnits(territory, id, newOwner, bridge, changeTracker, arrivedUnits);
 		// is this territory our capitol or a capitol of our ally
 		// Also check to make sure playerAttachment even HAS a capital to fix abend
-		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getCapital(terrOrigOwner, data).equals(territory)
+		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && ta.getCapital() != null && TerritoryAttachment.getAllCapitals(terrOrigOwner, data).contains(territory)
 					&& relationshipTracker.isAllied(terrOrigOwner, id))
 		{
 			// if it is give it back to the original owner

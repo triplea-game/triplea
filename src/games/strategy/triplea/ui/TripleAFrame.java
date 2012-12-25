@@ -1473,7 +1473,7 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 			m_data.acquireReadLock();
 			try
 			{
-				m_mapPanel.centerOn(TerritoryAttachment.getCapital(player, m_data));
+				m_mapPanel.centerOn(TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(player, m_data));
 			} finally
 			{
 				m_data.releaseReadLock();

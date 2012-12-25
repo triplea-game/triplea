@@ -167,11 +167,11 @@ public class EndRoundDelegate extends BaseDelegate
 		if (germans == null || russians == null || british == null || japanese == null || americans == null || playerList.size() > 5)
 			return;
 		// Quick check to see who still owns their own capital
-		final boolean russia = TerritoryAttachment.getCapital(russians, data).getOwner().equals(russians);
-		final boolean germany = TerritoryAttachment.getCapital(germans, data).getOwner().equals(germans);
-		final boolean britain = TerritoryAttachment.getCapital(british, data).getOwner().equals(british);
-		final boolean japan = TerritoryAttachment.getCapital(japanese, data).getOwner().equals(japanese);
-		final boolean america = TerritoryAttachment.getCapital(americans, data).getOwner().equals(americans);
+		final boolean russia = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(russians, data).getOwner().equals(russians);
+		final boolean germany = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(germans, data).getOwner().equals(germans);
+		final boolean britain = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(british, data).getOwner().equals(british);
+		final boolean japan = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(japanese, data).getOwner().equals(japanese);
+		final boolean america = TerritoryAttachment.getFirstOwnedCapitalOrFirstUnownedCapital(americans, data).getOwner().equals(americans);
 		int count = 0;
 		if (!russia)
 			count++;

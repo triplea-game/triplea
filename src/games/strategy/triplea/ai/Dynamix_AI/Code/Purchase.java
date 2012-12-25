@@ -131,9 +131,10 @@ public class Purchase
 			}
 			DUtils.Log(Level.FINE, "  Purchasing bid factory repairs.");
 			PUsToSpend = PUsToSpend - purchaseFactoryRepairs(ai, purchaseForBid, PUsToSpend, purchaser, data, player);
-			final Territory ourCap = TerritoryAttachment.getCapital(player, data);
-			if (DMatches.territoryIsNotIsolated(data).match(ourCap))
+			final List<Territory> ourCaps = TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
+			if (!ourCaps.isEmpty() && DMatches.territoryIsNotIsolated(data).match(ourCaps.iterator().next()))
 			{
+				final Territory ourCap = ourCaps.iterator().next();
 				FactoryCenter.get(data, player).ChosenFactoryTerritories.add(ourCap);
 				DUtils.Log(Level.FINE, "  Purchasing bid units and going to place them all on: {0}", ourCap);
 				final int cost = purchaseFactoryUnits(ourCap, ai, purchaseForBid, PUsToSpend, purchaser, data, player);
@@ -225,9 +226,10 @@ public class Purchase
 		final int origPUs = PUsToSpend;
 		if (player.getRepairFrontier() != null) // Figure out if anything needs to be repaired
 		{
-			final Territory ourCap = TerritoryAttachment.getCapital(player, data);
+			final List<Territory> ourCaps = TerritoryAttachment.getAllCurrentlyOwnedCapitals(player, data);
 			List<Territory> ourTers = new ArrayList<Territory>(data.getMap().getTerritoriesOwnedBy(player));
-			ourTers = DSorting.SortTerritoriesByLandThenNoCondDistance_A(ourTers, data, ourCap); // We want to repair the factories close to our capital first
+			if (!ourCaps.isEmpty())
+				ourTers = DSorting.SortTerritoriesByLandThenNoCondDistance_A(ourTers, data, ourCaps.iterator().next()); // We want to repair the factories close to our capital first
 			final List<RepairRule> rrules = player.getRepairFrontier().getRules();
 			final HashMap<Unit, IntegerMap<RepairRule>> factoryRepairs = new HashMap<Unit, IntegerMap<RepairRule>>();
 			int totalRepairCosts = 0;

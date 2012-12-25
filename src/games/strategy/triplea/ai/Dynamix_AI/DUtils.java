@@ -3509,9 +3509,13 @@ public class DUtils
 		return result;
 	}
 	
-	public static List<Unit> GetEndingCapitalUnits(final GameData data, final PlayerID player)
+	public static Map<Territory, List<Unit>> GetEndingCapitalUnits(final GameData data, final PlayerID player)
 	{
-		final Territory ourCapital = TerritoryAttachment.getCapital(player, data);
-		return GetTerUnitsAtEndOfTurn(data, player, ourCapital);
+		final Map<Territory, List<Unit>> map = new HashMap<Territory, List<Unit>>();
+		for (final Territory cap : TerritoryAttachment.getAllCapitals(player, data))
+		{
+			map.put(cap, GetTerUnitsAtEndOfTurn(data, player, cap));
+		}
+		return map;
 	}
 }

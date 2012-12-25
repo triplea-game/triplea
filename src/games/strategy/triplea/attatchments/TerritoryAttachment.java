@@ -57,8 +57,18 @@ public class TerritoryAttachment extends DefaultAttachment
 		return true;
 	}
 	
-	public static Territory getCapital(final PlayerID player, final GameData data)
+	/**
+	 * If we own one of our capitals, return the first one found, otherwise return the first capital we find that we don't own.
+	 * If a capital has no neighbor connections, it will be sent last.
+	 * 
+	 * @param player
+	 * @param data
+	 * @return
+	 */
+	public static Territory getFirstOwnedCapitalOrFirstUnownedCapital(final PlayerID player, final GameData data)
 	{
+		final List<Territory> capitals = new ArrayList<Territory>();
+		final List<Territory> noNeighborCapitals = new ArrayList<Territory>();
 		for (final Territory current : data.getMap().getTerritories())
 		{
 			final TerritoryAttachment ta = TerritoryAttachment.get(current);
@@ -68,9 +78,23 @@ public class TerritoryAttachment extends DefaultAttachment
 				if (whoseCapital == null)
 					throw new IllegalStateException("Invalid capital for player name:" + ta.getCapital());
 				if (player.equals(whoseCapital))
-					return current;
+				{
+					if (player.equals(current.getOwner()))
+					{
+						if (data.getMap().getNeighbors(current).size() > 0)
+							return current;
+						else
+							noNeighborCapitals.add(current);
+					}
+					else
+						capitals.add(current);
+				}
 			}
 		}
+		if (!capitals.isEmpty())
+			return capitals.iterator().next();
+		if (!noNeighborCapitals.isEmpty())
+			return noNeighborCapitals.iterator().next();
 		// Added check for optional players- no error thrown for them
 		if (player.getOptional())
 			return null;
