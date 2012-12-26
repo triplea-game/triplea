@@ -145,10 +145,8 @@ class TerritoryNameDrawable implements IDrawable
 				else if (ta.getProduction() > 0 && ta.getOriginalOwner() != null)
 				{
 					drawComments = true;
-					if (ta.getOccupiedTerrOf() == null)
-						commentText = ta.getOriginalOwner().getName() + " Convoy Center";
-					else
-						commentText = ta.getOccupiedTerrOf().getName() + " Convoy Center";
+					final PlayerID originalOwner = ta.getOriginalOwner();
+					commentText = originalOwner.getName() + " Convoy Center";
 				}
 			}
 			if (!drawComments && !showSeaNames)
@@ -519,9 +517,7 @@ class KamikazeZoneDrawable implements IDrawable
 			}
 			else
 			{
-				owner = ta.getOccupiedTerrOf();
-				if (owner == null)
-					owner = ta.getOriginalOwner();
+				owner = ta.getOriginalOwner();
 				if (owner == null)
 					owner = PlayerID.NULL_PLAYERID;
 			}

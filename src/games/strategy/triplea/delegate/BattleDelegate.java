@@ -1173,12 +1173,10 @@ public class BattleDelegate extends BaseDelegate implements IBattleDelegate
 				continue;
 			if (!ta.getKamikazeZone())
 				continue;
-			PlayerID owner = null;
+			final PlayerID owner;
 			if (!games.strategy.triplea.Properties.getKamikazeSuicideAttacksDoneByCurrentTerritoryOwner(data))
 			{
-				owner = ta.getOccupiedTerrOf();
-				if (owner == null)
-					owner = ta.getOriginalOwner();
+				owner = ta.getOriginalOwner();
 				if (owner == null)
 					continue;
 			}

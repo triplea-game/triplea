@@ -1419,9 +1419,7 @@ public class Matches
 				final TerritoryAttachment ta = TerritoryAttachment.get(t);
 				if (ta == null)
 					return false;
-				PlayerID origOwner = ta.getOccupiedTerrOf();
-				if (origOwner == null)
-					origOwner = OriginalOwnerTracker.getOriginalOwner(t);
+				final PlayerID origOwner = OriginalOwnerTracker.getOriginalOwner(t);
 				if (t.isWater())
 				{
 					// if it's water, it is a Convoy Center
@@ -3612,17 +3610,9 @@ public class Matches
 				if (ta == null)
 					return false;
 				final PlayerID originalOwner = ta.getOriginalOwner();
-				if ((originalOwner == null && player != null) || (originalOwner != null && player == null))
-					return false;
-				final PlayerID occupiedTerrOf = ta.getOccupiedTerrOf();
-				if (occupiedTerrOf == null)
-				{
-					if (originalOwner == null)
-						return player == null;
-					return originalOwner.equals(player);
-				}
-				else
-					return occupiedTerrOf.equals(player);
+				if (originalOwner == null)
+					return player == null;
+				return originalOwner.equals(player);
 			}
 		};
 	}

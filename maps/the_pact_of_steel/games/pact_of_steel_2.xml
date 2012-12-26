@@ -2305,7 +2305,7 @@
 			victoryCity								values: a victory city is typically used for victory conditions
 																victoryCity uses an image located in the "misc" folder of a map called "vc.png", and the location is determined in a file called "vc.txt" in the map's root directory
 			originalFactory							values: means that the original controller of the territory may produce infinite units there, however if it is captured the opponent may only produce as normal, not infinite units
-			occupiedTerrOf							values: allows a territory to revert to this player's control if liberated by an ally
+			originalOwner							values: allows a territory to revert to this player's control if liberated by an ally
 			navalBase								values: works according to original pacific rules: it increases the non-combat movement of naval units by +1 IF they go from friendly naval base TO friendly naval base
 			airBase									values: works according to original pacific rules: it allows free movement between the land territory and any connecting water territories, 
 																which potentially gives an air units +2 movement if they move from airbase to airbase and both airbases have water connecting to them on the route (or are islands)
@@ -2400,8 +2400,8 @@
 
 				<attatchment name="territoryAttatchment" attatchTo="Manchuria" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="3"/>
-						<!-- occupiedTerrOf allows a territory to revert to that player's control if liberated by an ally -->
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<!-- originalOwner allows a territory to revert to that player's control if liberated by an ally -->
+						<option name="originalOwner" value="Chinese"/>
 				</attatchment>
 
 				<attatchment name="territoryAttatchment" attatchTo="Alaska" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2504,7 +2504,7 @@
 				<attatchment name="territoryAttatchment" attatchTo="Kwangtung" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="3"/>
 						<option name="victoryCity" value="true"/>
-						<option name="occupiedTerrOf" value="Chinese"/>
+						<option name="originalOwner" value="Chinese"/>
 				</attatchment>
 
 				<attatchment name="territoryAttatchment" attatchTo="Brazil" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
@@ -2780,7 +2780,7 @@
 				<!-- Convoy Centers are simply sea zones with income. if you control your convoy zone, you get the income from it, but if an enemy takes the zone they do not get any income, they just deny you the income. can only be entered during combat movement -->
 				<attatchment name="territoryAttatchment" attatchTo="3 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="2"/>
-						<option name="occupiedTerrOf" value="Russians"/>
+						<option name="originalOwner" value="Russians"/>
 				</attatchment>
 				<attatchment name="territoryAttatchment" attatchTo="4 Sea Zone" javaClass="games.strategy.triplea.attatchments.TerritoryAttachment" type="territory">
 						<option name="production" value="2"/>
@@ -5002,10 +5002,6 @@
 				</property>
 
 				<property name="Unplaced units live when not placed" value ="true" editable="false">
-						<boolean/>
-				</property>
-
-				<property name="Occupied Territories" value="true" editable="false">
 						<boolean/>
 				</property>
 

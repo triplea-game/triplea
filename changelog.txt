@@ -1,4 +1,8 @@
 Changes for 1.7
+* Changing territory attachment "occupiedTerrOf" into "originalOwner". (veqryn)
+
+* Deleting game option property "Occupied Territories" since it does not do anything anymore. (veqryn)
+
 * Created new territory effect attachment option, "unitsNotAllowed", which is a list of units that will be prevented from moving into any territories with this effect. (crystalct) 
 
 * Adding ability to specify which round the game starts on, through a round offset in gameplay section of xml. (veqryn)

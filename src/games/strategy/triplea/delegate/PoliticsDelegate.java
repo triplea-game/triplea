@@ -33,7 +33,6 @@ import games.strategy.triplea.Constants;
 import games.strategy.triplea.attatchments.ICondition;
 import games.strategy.triplea.attatchments.PoliticalActionAttachment;
 import games.strategy.triplea.attatchments.RulesAttachment;
-import games.strategy.triplea.attatchments.TerritoryAttachment;
 import games.strategy.triplea.attatchments.TriggerAttachment;
 import games.strategy.triplea.delegate.remote.IPoliticsDelegate;
 import games.strategy.triplea.formatter.MyFormatter;
@@ -638,10 +637,7 @@ public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
 					continue;
 				for (final Territory t : data.getMap().getTerritoriesOwnedBy(p1))
 				{
-					final TerritoryAttachment ta = TerritoryAttachment.get(t);
-					PlayerID original = ta.getOccupiedTerrOf();
-					if (original == null)
-						original = OriginalOwnerTracker.getOriginalOwner(t);
+					final PlayerID original = OriginalOwnerTracker.getOriginalOwner(t);
 					if (original == null)
 						continue;
 					if (original.equals(p2))

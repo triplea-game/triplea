@@ -644,10 +644,7 @@ public class BattleTracker implements java.io.Serializable
 		}
 		// is this an allied territory
 		// revert to original owner if it is, unless they dont own there captital
-		PlayerID terrOrigOwner;
-		terrOrigOwner = ta.getOccupiedTerrOf();
-		if (terrOrigOwner == null)
-			terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory); // origOwnerTracker.getOriginalOwner(territory);
+		final PlayerID terrOrigOwner = OriginalOwnerTracker.getOriginalOwner(territory);
 		PlayerID newOwner = id;
 		// if the original owner is the current owner, and the current owner is our enemy / canTakeOver, then we do not worry about this.
 		if (isTerritoryOwnerAnEnemy && terrOrigOwner != null && relationshipTracker.isAllied(terrOrigOwner, id) && !terrOrigOwner.equals(territory.getOwner()))

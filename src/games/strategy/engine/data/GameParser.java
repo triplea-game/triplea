@@ -1548,9 +1548,17 @@ public class GameParser
 			// Kevin will look into it.
 			if (!territory.getData().getGameName().equals("gameExample") && !territory.getData().getGameName().equals("test"))
 			{
+				// set the original owner
 				final TerritoryAttachment ta = TerritoryAttachment.get(territory);
 				if (ta != null)
-					ta.setOriginalOwner(owner);
+				{
+					// If we already have an original owner set (ie: we set it previously in the attachment using originalOwner or occupiedTerrOf),
+					// then we DO NOT set the original owner again.
+					// This is how we can have a game start with territories owned by 1 faction but controlled by a 2nd faction.
+					final PlayerID currentOwner = ta.getOriginalOwner();
+					if (currentOwner == null)
+						ta.setOriginalOwner(owner);
+				}
 			}
 		}
 	}

@@ -262,13 +262,19 @@ public class InitializationDelegate extends BaseDelegate
 		{
 			if (!current.getOwner().isNull())
 			{
-				changes.add(OriginalOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
-				final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.UnitIsInfrastructure);
-				changes.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, current.getOwner()));
 				final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
 				if (territoryAttachment == null)
 					throw new IllegalStateException("No territory attachment for " + current);
-				changes.add(ChangeFactory.attachmentPropertyChange(territoryAttachment, current.getOwner(), Constants.ORIGINAL_OWNER));
+				if (territoryAttachment.getOriginalOwner() == null && current.getOwner() != null)
+					changes.add(OriginalOwnerTracker.addOriginalOwnerChange(current, current.getOwner()));
+				final Collection<Unit> factoryAndInfrastructure = current.getUnits().getMatches(Matches.UnitIsInfrastructure);
+				changes.add(OriginalOwnerTracker.addOriginalOwnerChange(factoryAndInfrastructure, current.getOwner()));
+			}
+			else if (!current.isWater())
+			{
+				final TerritoryAttachment territoryAttachment = TerritoryAttachment.get(current);
+				if (territoryAttachment == null)
+					throw new IllegalStateException("No territory attachment for " + current);
 			}
 		}
 		aBridge.getHistoryWriter().startEvent("Adding original owners");

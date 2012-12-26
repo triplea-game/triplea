@@ -28,7 +28,6 @@ import games.strategy.engine.data.ResourceCollection;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TerritoryEffect;
 import games.strategy.engine.data.annotations.GameProperty;
-import games.strategy.engine.data.annotations.InternalDoNotExport;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.formatter.MyFormatter;
 
@@ -172,9 +171,7 @@ public class TerritoryAttachment extends DefaultAttachment
 	private int m_production = 0; // "setProduction" will set both m_production and m_unitProduction. While "setProductionOnly" sets only m_production.
 	private boolean m_victoryCity = false;
 	private boolean m_isImpassible = false;
-	@InternalDoNotExport
-	private PlayerID m_originalOwner = null; // Do Not Export (do not include in IAttachment). This is not set by the xml in territory attachments, but instead set during territory initialization.
-	private PlayerID m_occupiedTerrOf = null;
+	private PlayerID m_originalOwner = null;
 	private boolean m_convoyRoute = false;
 	private HashSet<Territory> m_convoyAttached = new HashSet<Territory>();
 	private ArrayList<PlayerID> m_changeUnitOwners = new ArrayList<PlayerID>();
@@ -426,45 +423,18 @@ public class TerritoryAttachment extends DefaultAttachment
 		m_unitProduction = 0;
 	}
 	
-	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setOccupiedTerrOf(final String value)
-	{
-		if (value == null)
-		{
-			m_occupiedTerrOf = null;
-			return;
-		}
-		m_occupiedTerrOf = getData().getPlayerList().getPlayerID(value);
-	}
-	
-	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
-	public void setOccupiedTerrOf(final PlayerID value)
-	{
-		m_occupiedTerrOf = value;
-	}
-	
-	public PlayerID getOccupiedTerrOf()
-	{
-		return m_occupiedTerrOf;
-	}
-	
-	public void resetOccupiedTerrOf()
-	{
-		m_occupiedTerrOf = null;
-	}
-	
 	/**
 	 * Should not be set by a game xml during attachment parsing, but CAN be set by initialization parsing and/or Property Utils.
 	 * 
 	 * @param player
 	 */
-	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setOriginalOwner(final PlayerID player)
 	{
 		m_originalOwner = player;
 	}
 	
-	@GameProperty(xmlProperty = false, gameProperty = true, adds = false)
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
 	public void setOriginalOwner(final String player) throws GameParseException
 	{
 		if (player == null)
@@ -841,9 +811,7 @@ public class TerritoryAttachment extends DefaultAttachment
 				sb.append("Current Owner: " + t.getOwner().getName());
 				sb.append(br);
 			}
-			PlayerID originalOwner = getOccupiedTerrOf();
-			if (originalOwner == null)
-				originalOwner = getOriginalOwner();
+			final PlayerID originalOwner = getOriginalOwner();
 			if (originalOwner != null)
 			{
 				sb.append("Original Owner: " + originalOwner.getName());
@@ -963,5 +931,31 @@ public class TerritoryAttachment extends DefaultAttachment
 	public void validate(final GameData data) throws GameParseException
 	{
 		// TODO Auto-generated method stub
+	}
+	
+	/**
+	 * Do NOT remove this. Removing it will break a lot of old game xmls.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	@Deprecated
+	@GameProperty(xmlProperty = true, gameProperty = false, adds = false)
+	public void setOccupiedTerrOf(final String value) throws GameParseException
+	{
+		setOriginalOwner(value);
+	}
+	
+	/**
+	 * Do NOT remove this. Removing it will break a lot of old game xmls.
+	 * 
+	 * @param value
+	 * @throws GameParseException
+	 */
+	@Deprecated
+	@GameProperty(xmlProperty = true, gameProperty = false, adds = false)
+	public void setOccupiedTerrOf(final PlayerID value)
+	{
+		setOriginalOwner(value);
 	}
 }
