@@ -33,6 +33,7 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	private final List<GameStep> m_steps = new ArrayList<GameStep>();
 	private int m_currentIndex;
 	private int m_round = 1;
+	private int m_roundOffset = 0;
 	private transient Object m_currentStepMutex = new Object();
 	// compatible with 0.9.0.2 saved games
 	private static final long serialVersionUID = 8205078386807440137L;
@@ -42,9 +43,18 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 		super(data);
 	}
 	
-	public void setRoundAndStep(final int currentRound, final String stepDisplayName, final PlayerID player)
+	/**
+	 * Only used when we are trying to export the data to a savegame,
+	 * and we need to change the round and step to something other than the current round and step
+	 * (because we are creating a savegame at a certain point in history, for example).
+	 * 
+	 * @param currentRound
+	 * @param stepDisplayName
+	 * @param player
+	 */
+	public synchronized void setRoundAndStep(final int currentRound, final String stepDisplayName, final PlayerID player)
 	{
-		System.out.println("Player: " + player + "  at Step: " + stepDisplayName);
+		System.out.println("Finding step for: Player: " + player + "  at Step: " + stepDisplayName);
 		m_round = currentRound;
 		boolean found = false;
 		for (int i = 0; i < m_steps.size(); i++)
@@ -61,7 +71,10 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 			}
 		}
 		if (!found)
+		{
 			m_currentIndex = 0;
+			System.out.println("Step Not Found, will instead use: " + m_steps.get(m_currentIndex));
+		}
 		else
 			System.out.println("Step Found: " + m_steps.get(m_currentIndex));
 	}
@@ -94,7 +107,12 @@ public class GameSequence extends GameDataComponent implements Iterable<GameStep
 	
 	public int getRound()
 	{
-		return m_round;
+		return m_round + m_roundOffset;
+	}
+	
+	public void setRoundOffset(final int roundOffset)
+	{
+		m_roundOffset = roundOffset;
 	}
 	
 	public int getStepIndex()

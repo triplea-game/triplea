@@ -1,4 +1,6 @@
 Changes for 1.7
+* Adding ability to specify which round the game starts on, through a round offset in gameplay section of xml. (veqryn)
+
 * Added ability to Right Click on any node in the History panel, and save a game at that point in history [could still be buggy, do not use for tournament games]. (veqryn)
 
 * Abstracted delegates so that the server can now determine if it needs to wait on the user for input for a delegate or not. (veqryn)

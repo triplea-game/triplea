@@ -39,10 +39,10 @@ import games.strategy.engine.data.UnitCollection;
 import games.strategy.engine.data.UnitType;
 import games.strategy.engine.data.properties.BooleanProperty;
 import games.strategy.engine.data.properties.ColorProperty;
+import games.strategy.engine.data.properties.ComboProperty;
 import games.strategy.engine.data.properties.FileProperty;
 import games.strategy.engine.data.properties.GameProperties;
 import games.strategy.engine.data.properties.IEditableProperty;
-import games.strategy.engine.data.properties.ComboProperty;
 import games.strategy.engine.data.properties.NumberProperty;
 import games.strategy.engine.data.properties.StringProperty;
 import games.strategy.engine.delegate.IDelegate;
@@ -648,6 +648,7 @@ public class GameDataExporter
 				xmlfile.append("        <delegate name=\"" + delegate.getName() + "\" javaClass=\"" + delegate.getClass().getCanonicalName() + "\" display=\"" + delegate.getDisplayName() + "\"/>\n");
 		}
 		sequence(data);
+		xmlfile.append("        <offset round=\"" + (data.getSequence().getRound() - 1) + "\"/>\n");
 		xmlfile.append("    </gamePlay>\n");
 	}
 	

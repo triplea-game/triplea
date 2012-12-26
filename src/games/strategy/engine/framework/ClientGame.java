@@ -95,7 +95,8 @@ public class ClientGame extends AbstractGame
 						int currentRound = m_data.getSequence().getRound();
 						if (m_data.getSequence().testWeAreOnLastStep())
 							m_data.getHistory().getHistoryWriter().startNextRound(++currentRound);
-						while (!m_data.getSequence().getStep().getName().equals(stepName))
+						while (!m_data.getSequence().getStep().getName().equals(stepName) || !m_data.getSequence().getStep().getPlayerID().equals(player)
+									|| !m_data.getSequence().getStep().getDelegate().getName().equals(delegateName))
 						{
 							m_data.getSequence().next();
 							if (m_data.getSequence().testWeAreOnLastStep())

@@ -73,7 +73,8 @@ import javax.swing.ButtonModel;
 import javax.swing.SwingUtilities;
 
 /**
- * As a rule, nothing that changes GameData should be in here (it should be in a delegate, and done through an IDelegate using a change).
+ * As a rule, nothing that changes GameData should be in here.
+ * It should be using a Change done in a delegate, and done through an IDelegate, which we get through getPlayerBridge().getRemote()
  * 
  * @author Sean Bridges
  * @version 1.0
@@ -113,6 +114,13 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	@Override
 	public void start(final String name)
 	{
+		// TODO: parsing which UI thing we should run based on the string name of a possibly extended delegate class seems like a bad way of doing this whole method. however i can't think of anything better right now.
+		// TODO: certain properties, like if we are bid/not-bid, or combatmove/noncombatmove, should not be found out through the "stepName", but instead through the GameStep.getProperties(). (If we do make this change, remember to make it backwards compatible with all existing map xmls)
+		// This is how we find out our game step: getGameData().getSequence().getStep()
+		// The game step contains information, like the exact delegate and the delegate's class, that we can further use if needed.
+		// This is how we get our communication bridge for affecting the gamedata: (ISomeDelegate) getPlayerBridge().getRemote()
+		// We should never touch the game data directly. All changes to game data are done through the remote, which then changes the game using the DelegateBridge -> change factory
+		
 		m_ui.requiredTurnSeries(getPlayerID());
 		boolean badStep = false;
 		try
@@ -220,7 +228,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	public boolean acceptPoliticalAction(final String acceptanceQuestion)
 	{
-		if (!getPlayerID().amNotDeadYet(getGameData()))
+		final GameData data = getGameData();
+		if (!getPlayerID().amNotDeadYet(data))
 			return true;
 		return m_ui.acceptPoliticalAction("To " + getPlayerID().getName() + ": " + acceptanceQuestion);
 	}
@@ -359,9 +368,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 		String error = null;
 		if (id.getRepairFrontier() != null && id.getRepairFrontier().getRules() != null && !id.getRepairFrontier().getRules().isEmpty())
 		{
-			if (isSBRAffectsUnitProduction(getGameData()))
+			final GameData data = getGameData();
+			if (isSBRAffectsUnitProduction(data))
 			{
-				final GameData data = getGameData();
 				final Collection<Territory> bombedTerrs = new ArrayList<Territory>();
 				for (final Territory t : Match.getMatches(data.getMap().getTerritories(), Matches.territoryHasOwnedIsFactoryOrCanProduceUnits(data, id)))
 				{
@@ -394,9 +403,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 					}
 				}
 			}
-			else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(getGameData()))
+			else if (isDamageFromBombingDoneToUnitsInsteadOfTerritories(data))
 			{
-				final GameData data = getGameData();
 				final Match<Unit> myDamaged = new CompositeMatchAnd<Unit>(Matches.unitIsOwnedBy(id), Matches.UnitHasSomeUnitDamage());
 				final Collection<Unit> damagedUnits = new ArrayList<Unit>();
 				for (final Territory t : data.getMap().getTerritories())
@@ -486,8 +494,8 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				ClipPlayer.play(SoundPath.CLIP_PHASE_PLACEMENT, id.getName());
 				m_soundPlayedAlreadyPlacement = true;
 			}
-			final PlaceData data = m_ui.waitForPlace(id, bid, getPlayerBridge());
-			if (data == null)
+			final PlaceData placeData = m_ui.waitForPlace(id, bid, getPlayerBridge());
+			if (placeData == null)
 			{
 				// this only happens in lhtr rules
 				if (canAirLand(false, id))
@@ -495,7 +503,7 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 				else
 					continue;
 			}
-			final String error = placeDel.placeUnits(data.getUnits(), data.getAt());
+			final String error = placeDel.placeUnits(placeData.getUnits(), placeData.getAt());
 			if (error != null)
 				m_ui.notifyError(error);
 		}
@@ -503,8 +511,9 @@ public class TripleAPlayer extends AbstractHumanPlayer<TripleAFrame> implements 
 	
 	private void endTurn()
 	{
+		final GameData data = getGameData();
 		// play a sound for this phase
-		if (!m_soundPlayedAlreadyEndTurn && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerID(), getGameData()))
+		if (!m_soundPlayedAlreadyEndTurn && TerritoryAttachment.doWeHaveEnoughCapitalsToProduce(getPlayerID(), data))
 		{
 			ClipPlayer.play(SoundPath.CLIP_PHASE_END_TURN, getPlayerID().getName());
 			m_soundPlayedAlreadyEndTurn = true;

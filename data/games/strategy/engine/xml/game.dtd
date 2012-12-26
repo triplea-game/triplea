@@ -95,7 +95,7 @@
 	>
 
 		
-<!ELEMENT gamePlay (delegate+, sequence)>
+<!ELEMENT gamePlay (delegate+, sequence, offset?)>
 	<!ELEMENT delegate EMPTY>
 	<!-- javaClass must implement Delegate
 		 1 instance created per delegate declaration, ie 1 instance per name -->
@@ -120,6 +120,10 @@
 				name CDATA #REQUIRED
 				value CDATA #REQUIRED
 			>
+	<!ELEMENT offset EMPTY>
+	<!ATTLIST offset
+		round CDATA #REQUIRED
+	>
 		
 
 <!ELEMENT production (productionRule+, repairRule*, repairFrontier*, productionFrontier+, playerProduction+, playerRepair*)>

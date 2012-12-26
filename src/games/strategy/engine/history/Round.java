@@ -20,7 +20,7 @@ public class Round extends IndexedHistoryNode
 	
 	Round(final int round, final int changeStartIndex)
 	{
-		super("Round :" + round, changeStartIndex, true);
+		super("Round: " + round, changeStartIndex, true);
 		m_RoundNo = round;
 	}
 	

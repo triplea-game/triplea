@@ -52,7 +52,7 @@ public class DownloadMapDialog extends JDialog
 	{
 		m_listGamesButton = new JButton("List Games");
 		m_cancelButton = new JButton("Cancel");
-		m_findMapsButton = new JButton("Find Maps and Games");
+		m_findMapsButton = new JButton("Help...");
 		m_urlComboBox = new JComboBox(getStoredDownloadSites());
 		m_urlComboBox.setEditable(true);
 		m_urlComboBox

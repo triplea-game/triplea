@@ -786,6 +786,10 @@
 
 						<step name="endRoundStep" delegate="endRound"/>
 				</sequence>
+				
+				<!-- offset is used by the xml exporter to have a game begin in a round other than round 1. The default is zero if this attribute does not exist. -->
+				<offset round="0"/>
+				
 		</gamePlay>
 
 		<production>

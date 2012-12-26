@@ -900,6 +900,7 @@ public class GameParser
 	{
 		parseDelegates(getChildren("delegate", root));
 		parseSequence(getSingleChild("sequence", root));
+		parseOffset(getSingleChild("offset", root, true));
 	}
 	
 	private void parseProperties(final Node root) throws GameParseException
@@ -1055,6 +1056,14 @@ public class GameParser
 			throw new GameParseException("Unrecognized property type:" + childName);
 		}
 		data.getProperties().addEditableProperty(editableProperty);
+	}
+	
+	private void parseOffset(final Node offsetAttributes) throws GameParseException
+	{
+		if (offsetAttributes == null)
+			return;
+		final int roundOffset = Integer.parseInt(((Element) offsetAttributes).getAttribute("round"));
+		data.getSequence().setRoundOffset(roundOffset);
 	}
 	
 	private void parseDelegates(final List<Element> delegateList) throws GameParseException
