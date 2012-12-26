@@ -42,6 +42,7 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	private IntegerMap<UnitType> m_combatDefenseEffect = new IntegerMap<UnitType>();
 	private IntegerMap<UnitType> m_combatOffenseEffect = new IntegerMap<UnitType>();
 	private ArrayList<UnitType> m_noBlitz = new ArrayList<UnitType>();
+	private ArrayList<UnitType> m_unitsNotAllowed = new ArrayList<UnitType>();
 	
 	/**
 	 * Creates new TerritoryEffectAttachment
@@ -211,6 +212,48 @@ public class TerritoryEffectAttachment extends DefaultAttachment
 	public void resetNoBlitz()
 	{
 		m_noBlitz = new ArrayList<UnitType>();
+	}
+	
+	/**
+	 * Adds to, not sets. Anything that adds to instead of setting needs a clear function as well.
+	 * 
+	 * @param unitsNotAllowedUnitTypes
+	 * @throws GameParseException
+	 */
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = true)
+	public void setUnitsNotAllowed(final String unitsNotAllowedUnitTypes) throws GameParseException
+	{
+		final String[] s = unitsNotAllowedUnitTypes.split(":");
+		if (s.length < 1)
+			throw new GameParseException("unitsNotAllowed must have at least one unitType" + thisErrorMsg());
+		for (final String unitTypeName : s)
+		{
+			final UnitType ut = getData().getUnitTypeList().getUnitType(unitTypeName);
+			if (ut == null)
+				throw new GameParseException("No unit called:" + unitTypeName + thisErrorMsg());
+			m_unitsNotAllowed.add(ut);
+		}
+	}
+	
+	@GameProperty(xmlProperty = true, gameProperty = true, adds = false)
+	public void setUnitsNotAllowed(final ArrayList<UnitType> value)
+	{
+		m_unitsNotAllowed = value;
+	}
+	
+	public ArrayList<UnitType> getUnitsNotAllowed()
+	{
+		return new ArrayList<UnitType>(m_unitsNotAllowed);
+	}
+	
+	public void clearUnitsNotAllowed()
+	{
+		m_unitsNotAllowed.clear();
+	}
+	
+	public void resetUnitsNotAllowed()
+	{
+		m_unitsNotAllowed = new ArrayList<UnitType>();
 	}
 	
 	@Override

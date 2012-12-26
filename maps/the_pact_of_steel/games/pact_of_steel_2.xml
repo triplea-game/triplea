@@ -2849,13 +2849,15 @@
 		<!-- the following options are allowed for "territoryEffectAttachment"
 				combatOffenseEffect					values: the name of the unit, and the count of how much offense you want to give this unit
 				combatDefenseEffect					values: the name of the unit, and the count of how much defense you want to give this unit
-				noBlitz								values: the name of the unit that can't blitz through this territoryEffect, can be multiple units
+				noBlitz								values: the names of the units that can't blitz through this territoryEffect, can be multiple units (separated by a colon ":")
+				unitsNotAllowed 					values: the names of the units that are not allowed into or through this territoryEffect, can be multiple units (separated by a colon ":")
 				
 		-->
 				<attatchment name="territoryEffectAttachment" attatchTo="mountain" javaClass="games.strategy.triplea.attatchments.TerritoryEffectAttachment" type="territoryEffect">
 						<option name="combatOffenseEffect" value="infantry" count="1"/>
 						<option name="combatDefenseEffect" value="armour" count="-2"/>
 						<option name="noBlitz" value="armour"/>
+						<option name="unitsNotAllowed" value="armour"/>
 				</attatchment>
 				
 				

@@ -568,6 +568,10 @@ public class MoveValidator
 				if (!Match.allMatch(units, Matches.UnitIsAir) && !isNeutralsBlitzable(data))
 					return result.setErrorReturnResult("Must stop land units when passing through neutral territories");
 			}
+			// a territory effect can disallow unit types in
+			if (Match.someMatch(units, Matches.unitIsOfTypes(TerritoryEffectHelper.getUnitTypesForUnitsNotAllowedIntoTerritory(route.getSteps()))))
+				return result.setErrorReturnResult("Territory Effects disallow some units into " + (route.numberOfSteps() > 1 ? "these territories" : "this territory"));
+			
 		} // !isEditMode
 			// make sure that no non sea non transportable no carriable units
 			// end at sea

@@ -98,4 +98,24 @@ public class TerritoryEffectHelper
 		}
 		return rVal;
 	}
+	
+	public static Set<UnitType> getUnitTypesForUnitsNotAllowedIntoTerritory(final Territory location)
+	{
+		final Set<UnitType> rVal = new HashSet<UnitType>();
+		for (final TerritoryEffect effect : getEffects(location))
+		{
+			rVal.addAll(TerritoryEffectAttachment.get(effect).getUnitsNotAllowed());
+		}
+		return rVal;
+	}
+	
+	public static Set<UnitType> getUnitTypesForUnitsNotAllowedIntoTerritory(final Collection<Territory> steps)
+	{
+		final Set<UnitType> rVal = new HashSet<UnitType>();
+		for (final Territory location : steps)
+		{
+			rVal.addAll(getUnitTypesForUnitsNotAllowedIntoTerritory(location));
+		}
+		return rVal;
+	}
 }
