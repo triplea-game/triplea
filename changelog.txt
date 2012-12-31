@@ -1,4 +1,6 @@
 Changes for 1.7
+* Fixed bug where units being transported or otherwise dependent were being counted towards unit presence and unit exclusion objectives. (veqryn)
+
 * Changing territory attachment "occupiedTerrOf" into "originalOwner". (veqryn)
 
 * Deleting game option property "Occupied Territories" since it does not do anything anymore. (veqryn)

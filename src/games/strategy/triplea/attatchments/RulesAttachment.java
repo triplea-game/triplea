@@ -1063,7 +1063,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 			useSpecific = true;
 		for (final Territory terr : Territories)
 		{
-			final Collection<Unit> allUnits = terr.getUnits().getUnits();
+			final Collection<Unit> allUnits = Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsBeingTransported().invert());
 			if (exclType.equals("direct"))
 			{
 				allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players).invert()));
@@ -1151,7 +1151,7 @@ public class RulesAttachment extends AbstractPlayerRulesAttachment implements IC
 		{
 			// get all the units in the territory
 			final Territory terr = ownedTerrIter.next();
-			final Collection<Unit> allUnits = terr.getUnits().getUnits();
+			final Collection<Unit> allUnits = Match.getMatches(terr.getUnits().getUnits(), Matches.unitIsBeingTransported().invert());
 			if (exclType.equals("allied"))
 			{ // any allied units in the territory. (does not include owned units)
 				allUnits.removeAll(Match.getMatches(allUnits, Matches.unitIsOwnedByOfAnyOfThesePlayers(players)));
