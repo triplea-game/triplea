@@ -382,17 +382,20 @@ public class MoveValidator
 			}
 		}
 		// if there are enemy units on the path blocking us, that is validated elsewhere (validateNonEnemyUnitsOnPath)
+		// now check if we can move over neutral or enemies territories in noncombat
 		if (Match.allMatch(units, Matches.UnitIsAir) || (Match.noneMatch(units, Matches.UnitIsSea) && !nonParatroopersPresent(player, units, route)))
 		{
 			// if there are non-paratroopers present, then we can not fly over stuff
-			// if there neutral territories in the middle, we can not fly over (unless allowed to)
+			// if there are neutral territories in the middle, we can not fly over (unless allowed to)
+			// otherwise we can generally fly over anything in noncombat
 			if (route.someMatch(new CompositeMatchAnd<Territory>(Matches.TerritoryIsNeutralButNotWater, Matches.TerritoryIsWater.invert()))
 						&& (!games.strategy.triplea.Properties.getNeutralFlyoverAllowed(data) || isNeutralsImpassable(data)))
 				return result.setErrorReturnResult("Air units cannot fly over neutral territories in non combat");
 		}
-		else if (Match.someMatch(units, Matches.UnitIsSea))
+		// if sea units, or land units moving over/onto sea (ex: loading onto a transport), then only check if old rules stop us
+		else if (Match.someMatch(units, Matches.UnitIsSea) || route.someMatch(Matches.TerritoryIsWater))
 		{
-			// if there are neutral or owned territories, we can not move through them
+			// if there are neutral or owned territories, we can not move through them (only under old rules. under new rules we can move through owned sea zones.)
 			if (navalMayNotNonComIntoControlled && route.someMatch(neutralOrEnemy))
 				return result.setErrorReturnResult("Cannot move units through neutral or enemy territories in non combat");
 		}

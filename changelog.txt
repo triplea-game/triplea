@@ -1,4 +1,6 @@
 Changes for 1.7
+* Fixed movement validation bug that prevent loading of land units onto a transport during noncombat if the transport was in an enemy 'owned' sea zone. (veqryn)
+
 * Fixed bug where units being transported or otherwise dependent were being counted towards unit presence and unit exclusion objectives. (veqryn)
 
 * Changing territory attachment "occupiedTerrOf" into "originalOwner". (veqryn)
