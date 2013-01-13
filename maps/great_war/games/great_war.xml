@@ -4264,33 +4264,161 @@
                 <!-- Map Name: also used for map utils when asked -->
                 <property name="mapName" value="great_war" editable="false"/>
 
-		<!-- notes appear in the notes menu in the main screen, format as html -->
+				<!-- notes appear in the notes menu in the main screen, format as html -->
 				<property name="notes">
 					<value>
-					<![CDATA[  
-		
-		The Western Front has bogged down into trench<br>warfare.  In the East, titanic armies fight across the vast expanses.  While elsewhere, 
-		smaller battles are being waged for control of<br>Africa and the Middle East.  On the high seas, great armadas clash with one another, 
-		seeking dominance over key shipping lanes and the open ocean.<br><br>Uses standard TripleA 'WW2V2' rules. Right now, techs 
-		are deactivated.<br>
-		<h2>Allied Powers</h2>British Empire (Capital: London)<br>France (Capital: Paris)<br>Russian 
-		Empire (Capital: Petrograd)<br>Italy (Capital: Rome)<br>United States (Capital: United States)
-		<h2>Central Powers</h2>
-		German
-		 Empire (Capital: Berlin)<br>Austria-Hungary (Capital: Vienna)<br>Ottoman Empire (Capital: Istanbul)<br>
-		 <h2>Unit definitions (attack, defend, movement, cost) </h2>  infantry:   1, 2, 1, 3 (special: artillery enhances attack to 2)<br>  cavalry: 
-		  1, 1, 2, 4 (special: blitz, artillery enhances attack to 2)<br>  
-		 artillery:  2, 2, 1, 4 (special: enhances infantry + cavalry)<br>  fighter:    3, 3, 3, 8<br>  zeppelin:  1, 1, 6, 10 (special: SBR)<br>  
-		 transport:  0, 1, 2, 12 (special: can carry 1 infantry + 1 other ground unit)<br>  submarine:  2, 2, 2, 7 (special: submerge, sneak attack)<br>  destroyer: 
-		  2, 2, 2, 6<br>  cruiser:    3, 3, 2, 10<br>  battlecruiser:  4, 4, 2, 14<br>  battleship: 4, 4, 18 (special: 2 hits [same turn] to destroy, 
-		  can NOT shore bombard!)<br
-		  <h2>Map Information</h2>This map is based on a unique projection developed specifically for the Great War
-		   variant and is designed to take full advantage of the<br>map scaling feature in TripleA.  Our desire to highlight the Western Front,
-		    while still giving the game a truly world-wide scope,<br>required that we make some abstractions to the map.  These include several game 
-		    boxes which connect to the major areas of conflict around<br>Europe, Africa and the Middle East. <br><br> UPDATE!!! This latest version (3.0) contains a couple changes designed to make the naval game more interesting and to provide a slight boost to the Central Powers. The most notable change is to the location of German uboats. They are now positioned so as not to be occupying enemy convoy zones at the begining of play. Additional trasports have been included to make the starting fleets slightly more effective, and some addition CP convoy zones have also been added, bringing their starting total to 200 production. New naval units were included to balance these adjustments. Note especially the changes around the Mid Atlantic, the Mediterranean, and the Black Sea. Some additional German infantry were added to counter balance the threat from the new Russian transport in the  Gulf of Bothnia, and the Germans now have some cavalry at Antwerp to make the Western Front a bit more interesting. Other than that its pretty much the same as the old game, just with a slight upgrade. I fixed  some centers and included new flags for a cleaner look. Thanks again for playing, and good gaming all! -Elk
-			<br>Changes to 3.2 include: moving some Central Power units away from Russia and towards France, along with minor xml updates.
-
-					
+					<![CDATA[
+						The Western Front has bogged down into trench warfare.  
+					<br>In the East, titanic armies fight across the vast expanses.  
+					<br>While elsewhere, smaller battles are being waged for control of Africa and the Middle East.  
+					<br>On the high seas, great armadas clash with one another, seeking dominance over key shipping lanes and the open ocean.
+					<br>
+					<br>Uses standard TripleA 'WW2V2' rules (A&A Revised rules). 
+					<br>Technology is deactivated.
+					<br>
+					<br><h2>Allied Powers</h2>
+						British Empire   (Capital: London)
+					<br>France   (Capital: Paris)
+					<br>Russian Empire   (Capital: Petrograd)
+					<br>Italy   (Capital: Rome)
+					<br>United States   (Capital: United States)
+					<h2>Central Powers</h2>
+						German Empire   (Capital: Berlin)
+					<br>Austria-Hungary   (Capital: Vienna)
+					<br>Ottoman Empire   (Capital: Istanbul)
+					<br>
+					<br><h2>Unit definitions (attack, defend, movement, cost) </h2>
+						infantry:   1, 2, 1, 3 (special: artillery enhances attack to 2)
+					<br>cavalry:   1, 1, 2, 4 (special: blitz, artillery enhances attack to 2)
+					<br>artillery:   2, 2, 1, 4 (special: enhances infantry + cavalry)
+					<br>fighter:    3, 3, 3, 8
+					<br>zeppelin:   1, 1, 6, 10 (special: SBR)
+					<br>transport:   0, 1, 2, 12 (special: can carry 1 infantry + 1 other ground unit)
+					<br>submarine:   2, 2, 2, 7 (special: submerge, sneak attack)
+					<br>destroyer:   2, 2, 2, 6
+					<br>cruiser:    3, 3, 2, 10
+					<br>battlecruiser:   4, 4, 2, 14
+					<br>battleship:   4, 4, 18 (special: 2 hits [same turn] to destroy, can NOT shore bombard!)
+					<br>
+					<br><h2>Map Information</h2>
+						This map is based on a unique projection developed specifically for the Great War variant 
+						and is designed to take full advantage of the map scaling feature in TripleA.  
+					<br>Our desire to highlight the Western Front, while still giving the game a truly world-wide scope, 
+						required that we make some abstractions to the map.
+					<br>These include several game boxes/inserts which connect to the major areas of conflict 
+						around Europe, Africa and the Middle East. 
+					<br>
+					<br>
+					<br><h2>Great War Newbie Guide by 'ice'</h2>
+					<br>Some notes on the units.  
+						Submarines have no counter, but because the game runs on "Revised" rules 
+						they can still be killed during the first round of combat by any unit (they may retreat at the end of each round of combat).  
+						Zeppelins (and all air) should not be underestimated, because at least at the start of the game 
+						there are very few Anti-Air guns on the map (Territory Turn Limit is turned on by default, 
+						meaning that each territory can be bombed up to its value each turn, and no more).  
+						There is no naval bombardment in this game.  There are no carriers, and naval is more expensive in general.
+					<br>
+					<br><b>Germany: </b>
+					<br>Usually Germany will try to get Russia to its knees before USA can interfere, 
+						meaning they go hard for Russia and slowly give up the Western Front, 
+						trying to win in both these fronts will result in failure. 
+						In the oceans they have multiple fleets with multiple options, 
+						but a good start is that Central Powers should own the Mediterranean early and get allot of production from it.  
+						A good but not obvious attack is attacking the Italian destroyer in sz58 with all 3 zeppelins, 
+						as this will give the Austrians a good attack on the remaining Italian fleet.  
+						Also trying to slow down USA could be hard but on the other hand this could also pay off in the long run.  
+					<br>
+					<br><b>French: </b>
+					<br>Priority 1 should be the west front, and Germany to its knees as fast as you can there, and getting a hold of all that production.  
+						Secondary priority is help out Italy versus the Austrian horde.  
+						French navy is usually too expensive and better to use whatever you start with well.
+					<br>
+					<br><b>Russians: </b>
+					<br>Obviously they are defending vs. Germany and Ottomans, 
+						though Russia can do a lot of damage early if Germany ignores them too much.  
+						Russia must react to their neighbors and is mostly land based.  
+						Do not forget about the Belgrade factory; 
+						Russia can choose to help Belgrade by doing an attack then retreat on Romania to move extra units there.  
+					<br>
+					<br><b>Austrians: </b>
+					<br>The Austrians have 3-4 directions: Italy, Russia, Belgrade/Greece.  
+						One good strategy is to get Belgrade/Greece as fast as you can and then send everything you have towards Rome.  
+						Another good strategy is to send an army to Russia.  
+						Just make sure you get some Mediterranean money, as it is a waste to let the Allies hold on to it.
+					<br>
+					<br><b>Ottomans: </b>
+					<br>Ottomans could rush for Cairo, 
+						meaning they need to move everything they can get their hands on towards Cairo as fast as possible, 
+						as holding Cairo means a doorway to production or even Africa.  
+						Or another option is to attack against Russia.  
+						Either way be sure to  remember to defend your capital vs. Russian transports.
+					<br>
+					<br><b>British: </b>
+					<br>A more difficult nation to play, 
+						as they probably have the most options in the game and no single strategy is the best.  
+						Try to hold Cairo, control the sea around England and try to help out France in the Western Front.  
+						In Africa either build a factory there or accept your losses and retreat slowly to hold important areas.  
+						Keep in mind that you cannot win every single front in the map so make your choices.
+					<br>
+					<br><b>Italian: </b>
+					<br>Defend against Austria.  Do your best to hold your fleet and the Mediterranean together.
+					<br>
+					<br><b>USA: </b>
+					<br>The USA will take a long time to get into the game.  
+						Build just enough to take the "US DECLARES WAR" territory and then spend the rest on whatever your strategy will be.  
+						You can save some money by letting the UK kill some of the neutral units on that territory, if you plan on not needing so many land units.  
+						Besides the obvious (and slow) strategy of dropping of land units for the Western Front, 
+						the USA has some other strategies that could affect the game faster, 
+						such as building a lot of subs and navy and using it to swing the naval war, 
+						or creating a lot of zeppelins and using them to strategic bomb the Central Powers.
+					<br>
+					<br>
+					<br>
+					<br><b>UPDATE!</b> This latest version (3.0) contains a couple changes designed to make the naval game more interesting 
+						and to provide a slight boost to the Central Powers. 
+						The most notable change is to the location of German uboats. 
+						They are now positioned so as not to be occupying enemy convoy zones at the begining of play. 
+						Additional trasports have been included to make the starting fleets slightly more effective, 
+						and some addition CP convoy zones have also been added, bringing their starting total to 200 production. 
+						New naval units were included to balance these adjustments. 
+						Note especially the changes around the Mid Atlantic, the Mediterranean, and the Black Sea. 
+						Some additional German infantry were added to counter balance the threat from the new Russian transport in the Gulf of Bothnia, 
+						and the Germans now have some cavalry at Antwerp to make the Western Front a bit more interesting. 
+						Other than that its pretty much the same as the old game, just with a slight upgrade. 
+						I fixed some centers and included new flags for a cleaner look. 
+						Thanks again for playing, and good gaming all! -Elk
+					<br>Changes to 3.2 include: moving some Central Power units away from Russia and towards France, along with minor xml updates.
+					<br>
+					<br>
+					<br><h2>Rules Help:</h2>
+					<br><b>Convoy Zones</b> operate according to the original A&A Europe rules for Convoy Zones:
+					<br>1. Convoy zones are sea zones that have a PU value (and show up with a flag on the map).
+					<br>2. Only the "original" owner of the sea zone can gain any PU value from it.  
+						If the enemy controls the convoy zone they do not gain any PUs from it (they are just denying the income to the original owner).
+					<br>3. It is not necessary to maintain a unit presence in the sea zone in order to control it.  
+						Once conquered, a sea zone stays controlled by that player until liberated (just like land territories).
+					<br>4. Sea units can only enter or move through enemy controlled convoy zones during the Combat Movement phase. 
+						During noncombat movement phase, movement into an enemy control convoy zone is blocked for all sea units, including subs and transports.
+					<br>
+					<br>
+					<br>
+					<br><b>Major Differences Between ww2v2 (Revised) and ww2v3 (AA50th)</b>
+					<br>1.  In ww2v2 transport units are just like any other unit, and can be used as fodder by being taken casualty first in combat, however in ww2v3 style rules, transports have no defense power and may only be taken casualty after all other non-transport ships are dead.
+					<br>2.  In ww2v2, you can build fighters on carriers if you build both at the same time, and if you build a carrier you can move existing fighters to carriers when you build a carrier in the adjacent sea zone. In ww2v3, you can build new fighters onto existing
+							carriers as well as new carriers, but you may not move existing fighters onto new carriers, as instead you can non-combat move the fighters to where the carrier will be built, then place the carrier under it.
+					<br>3.  In ww2v2, when you strategic bomb or rocket a factory, you immediately reduce the enemy's PUs. In ww2v3, you do damage to the factory, up to twice the value of the territory. 
+							Each point of damage reduces the number of units that can be produced there by 1. The player may repair the damage during their purchase phase.
+					<br>4.  In ww2v2, when you fly over a territory with an AA Gun, the gun gets to fire at each aircraft. In ww2v3, the AA Gun only fires when you attack or bomb the territory it is in.
+					<br>5.  In ww2v2, submarines and transports block the movement of other sea units. In ww2v3, submarines and transports do not block the movement of other sea units, and may be bypassed or attacked.
+					<br>6.  In ww2v2, technology is rolled for, and if you miss nothing happens. In ww2v3, you buy tech tokens, and at the beginning of your turn you roll for each of your tokens. If you roll a 6, you discard all tokens and roll a second time to see which technology you get.
+					<br>7.  In ww2v2, no land units may retreat from an amphibious assault. In ww2v3, the non-amphibious units may retreat.
+					<br>8.  In ww2v2, bombardment immediately kills units, and you are allowed infinite bombardments. In ww2v3, a unit hit by bombard may return fire against the attacking units before dying, and the number of bombards is limited to the number of land units being dropped off from that sea zone.
+					<br>9.  In ww2v2, air units can hit submarines. In ww2v3, an owned destroyer must be present for air units to hit submarines.
+					<br>10. In ww2v2, submarines may choose to submerge at the end of each round of combat. In ww2v3, they may choose to submerge before each round of combat (and consequently, you can't kill them without a destroyer).
+					<br>11. In ww2v2, submarines fire at the beginning of combat, and if there is no enemy destroyer then any casualties are removed immediately. In ww2v3, submarines get their surprise strike both on offense and defense, and both can be nullified by the presence of an enemy destroyer
+							(so in ww2v3, if attacking an enemy sub, the attacker with a sub + destroyer, who's sub hits, would immediately kill the defending sub with no chance for it to return fire).
+					<br>(** Please note that the above differences are general differences between the rules sets.  "Great War" does not have "carriers" or "destroyers" or "technology", so not all of these clarifications apply for "Great War".)
+					<br>
 					]]>	
 					</value>
 				</property>
@@ -4298,8 +4426,3 @@
         </propertyList>
 
 </game>
-
-
-
-
-
