@@ -4,8 +4,6 @@ import games.strategy.engine.EngineVersion;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.delegate.IDelegate;
 import games.strategy.engine.lobby.client.ui.LobbyGamePanel;
-import games.strategy.triplea.attatchments.TechAbilityAttachment;
-import games.strategy.triplea.delegate.TechAdvance;
 import games.strategy.util.Version;
 
 import java.io.BufferedInputStream;
@@ -102,7 +100,7 @@ public class GameDataManager
 								+ "<br>However, this TripleA can not open any savegame made by any engine other than engines with the same first three version numbers as it (x_x_x_x)."
 								+ "<br><br>TripleA now comes with older engines included with it, and has found the engine to run this savegame. This is a new feature and is in 'beta' stage."
 								+ "<br>It will attempt to run a new instance of TripleA using the older engine jar file, and this instance will only be able to play this savegame."
-								+ "<br>Your current instance will not be closed. Please report any bugs or issues."
+								+ "<br>Your current instance will not be closed (you may choose to close it). Please report any bugs or issues."
 								+ "<br><br>Do you wish to continue?</html>";
 					final int answer = JOptionPane.showConfirmDialog(null, messageString, "Run old jar to open old Save Game?", JOptionPane.YES_NO_OPTION);
 					if (answer != JOptionPane.YES_OPTION)
@@ -161,6 +159,8 @@ public class GameDataManager
 	 */
 	private void updateDataToBeCompatibleWithNewEngine(final Version originalEngineVersion, final GameData data)
 	{
+		// whenever this gets out of date, just comment out (but keep as an example, by commenting out)
+		/* example1:
 		final Version v1610 = new Version(1, 6, 1, 0);
 		final Version v1620 = new Version(1, 6, 2, 0);
 		if (originalEngineVersion.equals(v1610, false) && EngineVersion.VERSION.isGreaterThan(v1610, false) && EngineVersion.VERSION.isLessThan(v1620, true))
@@ -178,7 +178,7 @@ public class GameDataManager
 			{
 				e.printStackTrace();
 			}
-		}
+		}*/
 	}
 	
 	private void loadDelegates(final ObjectInputStream input, final GameData data) throws ClassNotFoundException, IOException

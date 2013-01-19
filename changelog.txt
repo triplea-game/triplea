@@ -1,4 +1,8 @@
 Changes for 1.7
+* Created a notification to the user when they click "list games" that will alert them to which maps they already have which may be out of date and need updating. (veqryn)
+
+* Added the default map downloader xml web link to the download maps feature, if the user does not already have any. (veqryn)
+
 * Fixed movement validation bug that prevent loading of land units onto a transport during noncombat if the transport was in an enemy 'owned' sea zone. (veqryn)
 
 * Fixed bug where units being transported or otherwise dependent were being counted towards unit presence and unit exclusion objectives. (veqryn)

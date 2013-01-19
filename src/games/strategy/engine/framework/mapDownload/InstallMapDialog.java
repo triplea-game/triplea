@@ -1,6 +1,7 @@
 package games.strategy.engine.framework.mapDownload;
 
 import games.strategy.engine.framework.GameRunner;
+import games.strategy.engine.framework.startup.mc.GameSelectorModel;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.ui.Util;
 import games.strategy.util.EventThreadJOptionPane;
@@ -56,6 +57,7 @@ public class InstallMapDialog extends JDialog
 	private JEditorPane m_descriptionPane;
 	private JLabel m_urlLabel;
 	private JLabel m_mapVersion;
+	private final List<String> m_outOfDateMaps = new ArrayList<String>();
 	
 	private InstallMapDialog(final Frame owner, final List<DownloadFileDescription> games)
 	{
@@ -65,6 +67,23 @@ public class InstallMapDialog extends JDialog
 		layoutCoponents();
 		setupListeners();
 		setWidgetActivation();
+		informUserOfOutOfDateMaps(owner);
+	}
+	
+	private void informUserOfOutOfDateMaps(final Frame owner)
+	{
+		// tell the user if there are any out of date maps that they should update
+		if (!m_outOfDateMaps.isEmpty())
+		{
+			final StringBuilder text = new StringBuilder("<html>Some of the maps you have are out of date, and newer versions of those maps exist."
+						+ "<br>You should update (re-download) the following maps:<br><ul>");
+			for (final String map : m_outOfDateMaps)
+			{
+				text.append("<li> " + map + "</li>");
+			}
+			text.append("</ul></html>");
+			JOptionPane.showMessageDialog(owner, text, "Update Your Maps", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 	
 	private void createComponents()
@@ -73,10 +92,24 @@ public class InstallMapDialog extends JDialog
 		m_cancelButton = new JButton("Cancel");
 		final Vector<String> gameNames = new Vector<String>();
 		final LinkedHashMap<String, DownloadFileDescription> gameMap = new LinkedHashMap<String, DownloadFileDescription>();
+		m_outOfDateMaps.clear();
 		for (final DownloadFileDescription d : m_games)
 		{
 			gameMap.put(d.getMapName(), d);
 			gameNames.add(d.getMapName());
+			if (d != null && !d.isDummyUrl())
+			{
+				File installed = new File(GameRunner.getUserMapsFolder(), d.getMapName() + ".zip");
+				if (installed == null || !installed.exists())
+					installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, d.getMapName() + ".zip");
+				if (installed != null && installed.exists())
+				{
+					if (d.getVersion() != null && d.getVersion().isGreaterThan(getVersion(installed), true))
+					{
+						m_outOfDateMaps.add(d.getMapName());
+					}
+				}
+			}
 		}
 		m_gamesList = new JList(gameNames);
 		m_gamesList.setSelectedIndex(0);
@@ -97,8 +130,10 @@ public class InstallMapDialog extends JDialog
 					final DownloadFileDescription description = gameMap.get(mapName);
 					if (!description.isDummyUrl())
 					{
-						final File installed = new File(GameRunner.getUserMapsFolder(), mapName + ".zip");
-						if (installed.exists())
+						File installed = new File(GameRunner.getUserMapsFolder(), mapName + ".zip");
+						if (installed == null || !installed.exists())
+							installed = new File(GameSelectorModel.DEFAULT_MAP_DIRECTORY, mapName + ".zip");
+						if (installed != null && installed.exists())
 						{
 							if (description.getVersion() != null && description.getVersion().isGreaterThan(getVersion(installed), true))
 								mapName = "<html><b>" + mapName + "</b></html>";

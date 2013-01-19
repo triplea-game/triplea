@@ -1,5 +1,6 @@
 package games.strategy.engine.framework.mapDownload;
 
+import games.strategy.engine.EngineVersion;
 import games.strategy.engine.framework.ui.background.BackgroundTaskRunner;
 import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.ui.Util;
@@ -14,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Vector;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.AbstractAction;
@@ -35,7 +37,9 @@ public class DownloadMapDialog extends JDialog
 	private JButton m_listGamesButton;
 	private JButton m_cancelButton;
 	private JButton m_findMapsButton;
+	private JLabel m_descriptionLabel;
 	private final String DOWNLOAD_SITES_PREF = "downloadSites";
+	private final String FIRST_TIME_DOWNLOADING_PREF = "firstTimeDownloading." + EngineVersion.VERSION.toString();
 	private final Frame owner;
 	
 	private DownloadMapDialog(final Frame owner)
@@ -57,6 +61,9 @@ public class DownloadMapDialog extends JDialog
 		m_urlComboBox.setEditable(true);
 		m_urlComboBox
 					.setPrototypeDisplayValue("                                                                                                                                                                            ");
+		m_descriptionLabel = new JLabel("<html>TripleA can download maps and games from any correctly configured website."
+					+ "<br>Just type (or copy and paste) the website's map downloader xml link to the below box, then hit 'List Games'."
+					+ "<br>You can download from multiple websites. For further instructions on how to use this feature, click 'Help...'</html>");
 	}
 	
 	private void layoutCoponents()
@@ -77,6 +84,9 @@ public class DownloadMapDialog extends JDialog
 		main.add(new JLabel("Select download site:"));
 		main.add(m_urlComboBox);
 		add(main, BorderLayout.CENTER);
+		final JPanel intro = new JPanel();
+		intro.add(m_descriptionLabel);
+		add(intro, BorderLayout.NORTH);
 	}
 	
 	private void setupListeners()
@@ -108,6 +118,18 @@ public class DownloadMapDialog extends JDialog
 				{
 					Util.notifyError(m_cancelButton, download.getError());
 					return;
+				}
+				if (getPrefNode().getBoolean(FIRST_TIME_DOWNLOADING_PREF, true))
+				{
+					DesktopUtilityBrowserLauncher.openURL("http://tripleadev.1671093.n2.nabble.com/Download-Maps-Links-Hosting-Games-General-Information-tp4074312.html");
+					getPrefNode().putBoolean(FIRST_TIME_DOWNLOADING_PREF, false);
+					try
+					{
+						getPrefNode().flush();
+					} catch (final BackingStoreException ex)
+					{
+						ex.printStackTrace();
+					}
 				}
 				List<DownloadFileDescription> downloads;
 				try
@@ -145,32 +167,28 @@ public class DownloadMapDialog extends JDialog
 		});
 	}
 	
-	private Vector getStoredDownloadSites()
+	@SuppressWarnings("unchecked")
+	private Vector<String> getStoredDownloadSites()
 	{
 		final Preferences pref = getPrefNode();
 		final byte[] stored = pref.getByteArray(DOWNLOAD_SITES_PREF, null);
-		if (stored == null)
+		if (stored != null && stored.length > 0)
 		{
-			/* Code to have a default map listing:  (choose only one)
-			
-			Vector mapVector = new Vector();
-			mapVector.add(0, "http://sourceforge.net/projects/tripleamaps/files/basic_map_list.xml");  // basic map listing with no possibly copywritten maps
-			mapVector.add(0, "http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml");  // full map listing of all known maps
-			return mapVector;
-			 */
-			return new Vector();
+			try
+			{
+				return (Vector<String>) new ObjectInputStream(new ByteArrayInputStream(stored)).readObject();
+			} catch (final IOException e)
+			{
+				e.printStackTrace(System.out);
+			} catch (final ClassNotFoundException e)
+			{
+				e.printStackTrace(System.out);
+			}
 		}
-		try
-		{
-			return (Vector) new ObjectInputStream(new ByteArrayInputStream(stored)).readObject();
-		} catch (final IOException e)
-		{
-			e.printStackTrace(System.out);
-		} catch (final ClassNotFoundException e)
-		{
-			e.printStackTrace(System.out);
-		}
-		return new Vector();
+		// return new Vector();
+		final Vector<String> mapVector = new Vector<String>();
+		mapVector.add("http://downloads.sourceforge.net/project/tripleamaps/triplea_maps.xml"); // full map listing of all known maps
+		return mapVector;
 	}
 	
 	private Preferences getPrefNode()
@@ -180,12 +198,12 @@ public class DownloadMapDialog extends JDialog
 	
 	private void addDownloadSites(final String url)
 	{
-		Vector old = getStoredDownloadSites();
+		Vector<String> old = getStoredDownloadSites();
 		old.remove(url);
 		old.add(0, url);
 		if (old.size() > 10)
 		{
-			old = new Vector(old.subList(0, 10));
+			old = new Vector<String>(old.subList(0, 10));
 		}
 		final ByteArrayOutputStream sink = new ByteArrayOutputStream();
 		try

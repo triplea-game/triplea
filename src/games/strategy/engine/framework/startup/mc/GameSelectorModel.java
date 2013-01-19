@@ -42,7 +42,7 @@ public class GameSelectorModel extends Observable
 	 */
 	public static final String DEFAULT_GAME_XML_DIRECTORY_NAME = "games";
 	/** Returns the folder where maps are held, example: "/maps" */
-	public static final File DEFAULT_MAP_DIRECTORY = new File(GameRunner.getRootFolder(), "/maps");
+	public static final File DEFAULT_MAP_DIRECTORY = new File(GameRunner.getRootFolder(), "maps");
 	private static final String DEFAULT_GAME_NAME_PREF = "DefaultGameName2";
 	private static final String DEFAULT_GAME_NAME = "Big World : 1942";
 	private static final String DEFAULT_GAME_URI_PREF = "DefaultGameURI";
