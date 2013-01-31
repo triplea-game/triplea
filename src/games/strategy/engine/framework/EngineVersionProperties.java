@@ -1,19 +1,32 @@
 package games.strategy.engine.framework;
 
 import games.strategy.engine.EngineVersion;
+import games.strategy.net.DesktopUtilityBrowserLauncher;
 import games.strategy.util.Version;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javax.swing.BorderFactory;
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -24,8 +37,10 @@ public class EngineVersionProperties
 	private final Version m_latestVersionOut;
 	private final Map<Version, String> m_releaseNotes;
 	private final String m_link;
+	private final String m_linkAlt;
+	private final String m_changelogLink;
 	private volatile boolean m_done = false;
-	private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties";
+	private static final String s_linkToTripleA = "http://triplea.sourceforge.net/latest/latest_version.properties"; // "http://www.tripleawarclub.org/lobby/latest_version.properties";
 	
 	private EngineVersionProperties(final URL url)
 	{
@@ -36,6 +51,8 @@ public class EngineVersionProperties
 	{
 		m_latestVersionOut = new Version(props.getProperty("LATEST", EngineVersion.VERSION.toStringFull(".")));
 		m_link = props.getProperty("LINK", "http://triplea.sourceforge.net/");
+		m_linkAlt = props.getProperty("LINK_ALT", "http://sourceforge.net/projects/tripleamaps/files/TripleA/stable/");
+		m_changelogLink = props.getProperty("CHANGELOG", "https://triplea.svn.sourceforge.net/svnroot/triplea/trunk/triplea/changelog.txt");
 		m_releaseNotes = new HashMap<Version, String>();
 		for (final Entry<Object, Object> entry : props.entrySet())
 		{
@@ -43,13 +60,10 @@ public class EngineVersionProperties
 			if (key != null && key.length() > 6 && key.startsWith("NOTES_"))
 			{
 				final Version version = new Version(key.substring(6));
-				if (EngineVersion.VERSION.isLessThan(version, false))
+				final String value = (String) entry.getValue();
+				if (value != null && value.trim().length() > 0)
 				{
-					final String value = (String) entry.getValue();
-					if (value != null && value.trim().length() > 0)
-					{
-						m_releaseNotes.put(version, value);
-					}
+					m_releaseNotes.put(version, value);
 				}
 			}
 		}
@@ -88,7 +102,7 @@ public class EngineVersionProperties
 						latch.await(2, TimeUnit.SECONDS);
 					} catch (final InterruptedException e)
 					{
-						e.printStackTrace();
+						// e.printStackTrace();
 					}
 					if (ref.get() != null)
 						break;
@@ -99,7 +113,7 @@ public class EngineVersionProperties
 					latch.await(15, TimeUnit.SECONDS);
 				} catch (final InterruptedException e)
 				{
-					e.printStackTrace();
+					// e.printStackTrace();
 				}
 			}
 			
@@ -170,21 +184,129 @@ public class EngineVersionProperties
 		return m_link;
 	}
 	
+	public String getLinkAltToDownloadLatestVersion()
+	{
+		return m_linkAlt;
+	}
+	
+	public String getChangeLogLink()
+	{
+		return m_changelogLink;
+	}
+	
 	public Map<Version, String> getReleaseNotes()
 	{
 		return m_releaseNotes;
 	}
 	
-	public String getOutOfDateMessage()
+	private String getOutOfDateMessage()
 	{
 		final StringBuilder text = new StringBuilder("<html>");
-		text.append("<b>A new version of TripleA is out.  Please Update TripleA!</b>");
+		text.append("<h2>A new version of TripleA is out.  Please Update TripleA!</h2>");
 		text.append("<br />Your current version: " + EngineVersion.VERSION);
 		text.append("<br />Latest version available for download: " + getLatestVersionOut());
-		text.append("<br /><br /><a class=\"external\" href=\"" + getLinkToDownloadLatestVersion() + "\">" + getLinkToDownloadLatestVersion() + "</a>");
-		text.append("<br /><br />");
+		text.append("<br /><br />Click to download: <a class=\"external\" href=\"" + getLinkToDownloadLatestVersion() + "\">" + getLinkToDownloadLatestVersion() + "</a>");
+		text.append("<br />Backup Mirror: <a class=\"external\" href=\"" + getLinkAltToDownloadLatestVersion() + "\">" + getLinkAltToDownloadLatestVersion() + "</a>");
+		text.append("<br /><br />Please note that installing a new version of TripleA will not remove any old copies of TripleA."
+					+ "<br />So be sure to either manually remove all older versions of TripleA, or change your shortcuts to the new TripleA.");
+		text.append("<br /><br />What is new:<br />");
 		text.append("</html>");
 		return text.toString();
+	}
+	
+	private String getOutOfDateReleaseUpdates()
+	{
+		final StringBuilder text = new StringBuilder("<html>");
+		final List<Version> versions = new ArrayList<Version>();
+		versions.addAll(getReleaseNotes().keySet());
+		Collections.sort(versions, Version.getHighestToLowestComparator(false));
+		for (final Version v : versions)
+		{
+			if (EngineVersion.VERSION.isLessThan(v, false))
+			{
+				text.append("<br />" + getReleaseNotes().get(v) + "<br /><br />");
+			}
+		}
+		text.append("Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">" + getChangeLogLink() + "</a><br />");
+		text.append("</html>");
+		return text.toString();
+	}
+	
+	public Component getCurrentFeaturesComponent()
+	{
+		final JPanel panel = new JPanel(new BorderLayout());
+		final JEditorPane intro = new JEditorPane("text/html",
+					"<html><h2>What is new in version " + EngineVersion.VERSION + "</h2><br />"
+								+ "Please visit our forum to get involved: "
+								+ "<a class=\"external\" href=\"http://triplea.sourceforge.net/mywiki/Forum\">http://triplea.sourceforge.net/mywiki/Forum</a><br /><br /></html>");
+		intro.setEditable(false);
+		intro.setOpaque(false);
+		intro.setBorder(BorderFactory.createEmptyBorder());
+		final HyperlinkListener hyperlinkListener = new HyperlinkListener()
+		{
+			public void hyperlinkUpdate(final HyperlinkEvent e)
+			{
+				if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType()))
+				{
+					DesktopUtilityBrowserLauncher.openURL(e.getDescription());
+				}
+			}
+		};
+		intro.addHyperlinkListener(hyperlinkListener);
+		panel.add(intro, BorderLayout.NORTH);
+		final JEditorPane updates = new JEditorPane("text/html",
+					"<html><br />" + getReleaseNotes().get(EngineVersion.VERSION) + "<br /><br />"
+								+ "Link to full Change Log:<br /><a class=\"external\" href=\"" + getChangeLogLink() + "\">" + getChangeLogLink() + "</a><br /></html>");
+		updates.setEditable(false);
+		updates.setOpaque(false);
+		updates.setBorder(BorderFactory.createEmptyBorder());
+		updates.addHyperlinkListener(hyperlinkListener);
+		updates.setCaretPosition(0);
+		final JScrollPane scroll = new JScrollPane(updates);
+		// scroll.setBorder(BorderFactory.createEmptyBorder());
+		panel.add(scroll, BorderLayout.CENTER);
+		final Dimension maxDimension = panel.getPreferredSize();
+		maxDimension.width = Math.min(maxDimension.width, 760);
+		maxDimension.height = Math.min(maxDimension.height, 580);
+		panel.setMaximumSize(maxDimension);
+		panel.setPreferredSize(maxDimension);
+		return panel;
+	}
+	
+	public Component getOutOfDateComponent()
+	{
+		final JPanel panel = new JPanel(new BorderLayout());
+		final JEditorPane intro = new JEditorPane("text/html", getOutOfDateMessage());
+		intro.setEditable(false);
+		intro.setOpaque(false);
+		intro.setBorder(BorderFactory.createEmptyBorder());
+		final HyperlinkListener hyperlinkListener = new HyperlinkListener()
+		{
+			public void hyperlinkUpdate(final HyperlinkEvent e)
+			{
+				if (HyperlinkEvent.EventType.ACTIVATED.equals(e.getEventType()))
+				{
+					DesktopUtilityBrowserLauncher.openURL(e.getDescription());
+				}
+			}
+		};
+		intro.addHyperlinkListener(hyperlinkListener);
+		panel.add(intro, BorderLayout.NORTH);
+		final JEditorPane updates = new JEditorPane("text/html", getOutOfDateReleaseUpdates());
+		updates.setEditable(false);
+		updates.setOpaque(false);
+		updates.setBorder(BorderFactory.createEmptyBorder());
+		updates.addHyperlinkListener(hyperlinkListener);
+		updates.setCaretPosition(0);
+		final JScrollPane scroll = new JScrollPane(updates);
+		// scroll.setBorder(BorderFactory.createEmptyBorder());
+		panel.add(scroll, BorderLayout.CENTER);
+		final Dimension maxDimension = panel.getPreferredSize();
+		maxDimension.width = Math.min(maxDimension.width, 760);
+		maxDimension.height = Math.min(maxDimension.height, 580);
+		panel.setMaximumSize(maxDimension);
+		panel.setPreferredSize(maxDimension);
+		return panel;
 	}
 	
 	public static void main(final String[] args) throws Exception

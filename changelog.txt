@@ -1,4 +1,6 @@
 Changes for 1.7
+* Created a notification to the user when they start a version of TripleA for the first time, showing the new features of this version. (veqryn)
+
 * Created a notification to the user when they start TripleA that checks if their TripleA is the latest version, and if not asks them to update it. (veqryn)
 
 * Created a notification to the user when they click "list games" that will alert them to which maps they already have which may be out of date and need updating. (veqryn)

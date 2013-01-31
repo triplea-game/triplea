@@ -54,6 +54,9 @@ public class GameRunner2
 	public static final String PROXY_HOST = "proxy.host";
 	public static final String PROXY_PORT = "proxy.port";
 	
+	// first time we've run this version of triplea?
+	private static final String TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY = "triplea.firstTimeThisVersion" + EngineVersion.VERSION.toString();
+	
 	private static WaitWindow waitWindow;
 	
 	
@@ -506,13 +509,64 @@ public class GameRunner2
 		{
 			public void run()
 			{
-				// do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
-				if (GameRunner.areWeOldExtraJar())
-					return;
-				final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
-				if (EngineVersion.VERSION.isLessThan(latestEngineOut.getLatestVersionOut(), false))
+				try
 				{
-					EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateMessage(), "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, true);
+					// do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
+					if (GameRunner.areWeOldExtraJar())
+						return;
+					// if we are joining a game online, or hosting, or loading straight into a savegame, do not check
+					final String fileName = System.getProperty(GameRunner2.TRIPLEA_GAME_PROPERTY, "");
+					if (fileName.trim().length() > 0)
+						return;
+					if (System.getProperty(GameRunner2.TRIPLEA_SERVER_PROPERTY, "false").equalsIgnoreCase("true"))
+						return;
+					else if (System.getProperty(GameRunner2.TRIPLEA_CLIENT_PROPERTY, "false").equalsIgnoreCase("true"))
+						return;
+					
+					final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
+					if (latestEngineOut == null)
+						return;
+					try
+					{
+						Thread.sleep(2000);
+					} catch (final InterruptedException e)
+					{
+					}
+					if (EngineVersion.VERSION.isLessThan(latestEngineOut.getLatestVersionOut(), false))
+					{
+						SwingUtilities.invokeLater(new Runnable()
+						{
+							public void run()
+							{
+								EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateComponent(), "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, false);
+							}
+						});
+					}
+					else
+					{
+						// if this is the first time we are running THIS version of TripleA, then show what is new.
+						final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
+						if (pref.getBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true) && latestEngineOut.getReleaseNotes().containsKey(EngineVersion.VERSION))
+						{
+							SwingUtilities.invokeLater(new Runnable()
+							{
+								public void run()
+								{
+									EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getCurrentFeaturesComponent(), "What is New?", JOptionPane.INFORMATION_MESSAGE, false);
+								}
+							});
+							pref.putBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, false);
+							try
+							{
+								pref.flush();
+							} catch (final BackingStoreException ex)
+							{
+							}
+						}
+					}
+				} catch (final Exception e)
+				{
+					System.out.println("Error while checking for updates: " + e.getMessage());
 				}
 			}
 		}, "Checking Latest TripleA Engine Version");

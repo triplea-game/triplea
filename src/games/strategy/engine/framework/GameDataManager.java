@@ -81,7 +81,7 @@ public class GameDataManager
 		try
 		{
 			final Version readVersion = (Version) input.readObject();
-			if (!readVersion.equals(EngineVersion.VERSION))
+			if (!readVersion.equals(EngineVersion.VERSION, true))
 			{
 				final String error = "<html>Incompatible engine versions, and no old engine found. We are: " + EngineVersion.VERSION + " . Trying to load game created with: " + readVersion
 							+ "<br>To download the latest version of TripleA, Please visit http://triplea.sourceforge.net/</html>";
