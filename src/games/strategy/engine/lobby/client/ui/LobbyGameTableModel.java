@@ -175,7 +175,7 @@ public class LobbyGameTableModel extends AbstractTableModel
 			case Players:
 				return description.getPlayerCount();
 			case PW:
-				return (description.getPassworded() ? "Y" : "");
+				return (description.getPassworded() ? "*" : "");
 			case GV:
 				return description.getGameVersion();
 			case EV:

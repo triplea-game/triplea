@@ -65,7 +65,12 @@ public class Version implements Serializable, Comparable
 	 */
 	public Version(final String version)
 	{
-		final StringTokenizer tokens = new StringTokenizer(version, ".", false);
+		this(version, ".");
+	}
+	
+	public Version(final String version, final String delimiter)
+	{
+		final StringTokenizer tokens = new StringTokenizer(version, delimiter, false);
 		if (tokens.countTokens() < 1)
 			throw new IllegalArgumentException("invalid version string:" + version);
 		try

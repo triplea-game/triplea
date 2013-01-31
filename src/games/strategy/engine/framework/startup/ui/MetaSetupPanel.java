@@ -382,9 +382,11 @@ public class MetaSetupPanel extends SetupPanel
 		try
 		{
 			// first is the default, rest are backups. Do NOT add too many backups, as we want to maintain control over all of them.
+			// default:
 			rVal.add(new URL("http://triplea.sourceforge.net/lobby/" + s_serverPropertiesName));
-			// rVal.add(new URL("http://tripleamaps.sourceforge.net/lobby/" + s_serverPropertiesName));
+			// backups:
 			rVal.add(new URL("http://www.tripleawarclub.org/lobby/" + s_serverPropertiesName));
+			// rVal.add(new URL("http://tripleamaps.sourceforge.net/lobby/" + s_serverPropertiesName));
 		} catch (final MalformedURLException e)
 		{
 			e.printStackTrace();

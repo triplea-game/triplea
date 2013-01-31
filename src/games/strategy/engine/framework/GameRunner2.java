@@ -6,6 +6,7 @@ import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.framework.ui.background.WaitWindow;
 import games.strategy.triplea.ui.ErrorHandler;
 import games.strategy.triplea.ui.TripleaMenu;
+import games.strategy.util.EventThreadJOptionPane;
 import games.strategy.util.Version;
 
 import java.net.InetSocketAddress;
@@ -17,6 +18,7 @@ import java.util.logging.LogManager;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -120,6 +122,8 @@ public class GameRunner2
 		// do after we handle command line arts
 		setupProxies();
 		showMainFrame();
+		// lastly, check and see if there are new versions of TripleA out
+		checkForLatestEngineVersionOut();
 	}
 	
 	private static void showMainFrame()
@@ -494,5 +498,24 @@ public class GameRunner2
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public static void checkForLatestEngineVersionOut()
+	{
+		final Thread t = new Thread(new Runnable()
+		{
+			public void run()
+			{
+				// do not check if we are the old extra jar. (a jar kept for backwards compatibility only)
+				if (GameRunner.areWeOldExtraJar())
+					return;
+				final EngineVersionProperties latestEngineOut = EngineVersionProperties.contactServerForEngineVersionProperties();
+				if (EngineVersion.VERSION.isLessThan(latestEngineOut.getLatestVersionOut(), false))
+				{
+					EventThreadJOptionPane.showMessageDialog(null, latestEngineOut.getOutOfDateMessage(), "Please Update TripleA", JOptionPane.INFORMATION_MESSAGE, true);
+				}
+			}
+		}, "Checking Latest TripleA Engine Version");
+		t.start();
 	}
 }

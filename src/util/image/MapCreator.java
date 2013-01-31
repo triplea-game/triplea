@@ -215,14 +215,14 @@ public class MapCreator extends JFrame
 		final JTextArea text = new JTextArea(12, 10);
 		text.setWrapStyleWord(true);
 		text.setLineWrap(true);
-		text.setText("Welcome to Veqryn's shitty map maker." +
+		text.setText("Welcome to Veqryn's map creator program for TripleA." +
 					"\r\nThis program just runs utilities inside the triplea.jar file for you, and you could easily " +
 					"run them yourself from the command line by reading the docs/developer_documentation.html" +
 					"\r\n\r\nBefore you begin, go create a folder in your directory: Users\\yourname\\triplea\\maps" +
 					"\r\nName the folder with a short name of your map, do not use any special characters in the name." +
 					"\r\nNext, create 5 folders inside your map folder, with these names: " +
 					"flags, units, baseTiles, reliefTiles, games" +
-					"\r\nThen, create a text file and rename it \"map.properties\"." +
+					"\r\nThen, create a text file and rename it \"map.properties\" or use one created by this utility." +
 					"\r\n\r\nTo start the Map Utilities, have a png image of your map with just the territory borders " +
 					"and nothing else. The borders must be in black (hex: 000000) and there should not be any " +
 					"anti-aliasing (smoothing) of the lines or edges that stick out." +
