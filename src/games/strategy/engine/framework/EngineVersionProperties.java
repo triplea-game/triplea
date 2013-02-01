@@ -208,7 +208,7 @@ public class EngineVersionProperties
 		text.append("<br /><br />Click to download: <a class=\"external\" href=\"" + getLinkToDownloadLatestVersion() + "\">" + getLinkToDownloadLatestVersion() + "</a>");
 		text.append("<br />Backup Mirror: <a class=\"external\" href=\"" + getLinkAltToDownloadLatestVersion() + "\">" + getLinkAltToDownloadLatestVersion() + "</a>");
 		text.append("<br /><br />Please note that installing a new version of TripleA will not remove any old copies of TripleA."
-					+ "<br />So be sure to either manually remove all older versions of TripleA, or change your shortcuts to the new TripleA.");
+					+ "<br />So be sure to either manually uninstall all older versions of TripleA, or change your shortcuts to the new TripleA.");
 		text.append("<br /><br />What is new:<br />");
 		text.append("</html>");
 		return text.toString();
@@ -266,8 +266,8 @@ public class EngineVersionProperties
 		// scroll.setBorder(BorderFactory.createEmptyBorder());
 		panel.add(scroll, BorderLayout.CENTER);
 		final Dimension maxDimension = panel.getPreferredSize();
-		maxDimension.width = Math.min(maxDimension.width, 760);
-		maxDimension.height = Math.min(maxDimension.height, 580);
+		maxDimension.width = Math.min(maxDimension.width, 700);
+		maxDimension.height = Math.min(maxDimension.height, 480);
 		panel.setMaximumSize(maxDimension);
 		panel.setPreferredSize(maxDimension);
 		return panel;
@@ -302,8 +302,8 @@ public class EngineVersionProperties
 		// scroll.setBorder(BorderFactory.createEmptyBorder());
 		panel.add(scroll, BorderLayout.CENTER);
 		final Dimension maxDimension = panel.getPreferredSize();
-		maxDimension.width = Math.min(maxDimension.width, 760);
-		maxDimension.height = Math.min(maxDimension.height, 580);
+		maxDimension.width = Math.min(maxDimension.width, 700);
+		maxDimension.height = Math.min(maxDimension.height, 480);
 		panel.setMaximumSize(maxDimension);
 		panel.setPreferredSize(maxDimension);
 		return panel;

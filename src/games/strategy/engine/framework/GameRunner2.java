@@ -528,7 +528,7 @@ public class GameRunner2
 						return;
 					try
 					{
-						Thread.sleep(2000);
+						Thread.sleep(2500);
 					} catch (final InterruptedException e)
 					{
 					}
@@ -546,7 +546,7 @@ public class GameRunner2
 					{
 						// if this is the first time we are running THIS version of TripleA, then show what is new.
 						final Preferences pref = Preferences.userNodeForPackage(GameRunner2.class);
-						if (pref.getBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true) && latestEngineOut.getReleaseNotes().containsKey(EngineVersion.VERSION))
+						if ((pref.getBoolean(TRIPLEA_FIRST_TIME_THIS_VERSION_PROPERTY, true)) && latestEngineOut.getReleaseNotes().containsKey(EngineVersion.VERSION))
 						{
 							SwingUtilities.invokeLater(new Runnable()
 							{
