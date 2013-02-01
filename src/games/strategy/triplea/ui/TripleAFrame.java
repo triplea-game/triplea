@@ -218,7 +218,6 @@ public class TripleAFrame extends MainGameFrame // extends JFrame
 	public TripleAFrame(final IGame game, final Set<IGamePlayer> players) throws IOException
 	{
 		super("TripleA - " + game.getData().getGameName());
-		setIconImage(GameRunner.getGameIcon(this));
 		m_game = game;
 		m_data = game.getData();
 		m_localPlayers = players;

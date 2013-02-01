@@ -78,13 +78,33 @@ public class GameMap extends GameDataComponent implements Iterable<Territory>
 		return m_gridDimensions[1];
 	}
 	
-	// public Territory getTerritoryFromCoordinates(int xCoordinate, int yCoordinate)
 	public Territory getTerritoryFromCoordinates(final int... coordinate)
 	{
+		return getTerritoryFromCoordinates(true, coordinate);
+	}
+	
+	// public Territory getTerritoryFromCoordinates(int xCoordinate, int yCoordinate)
+	public Territory getTerritoryFromCoordinates(final boolean allowNull, final int... coordinate)
+	{
 		if (m_gridDimensions == null)
-			return null;
+		{
+			if (allowNull)
+				return null;
+			throw new IllegalStateException("No Grid Dimensions");
+		}
 		if (!isCoordinateValid(coordinate))
-			return null;
+		{
+			if (allowNull)
+				return null;
+			final StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < coordinate.length; i++)
+			{
+				sb.append(coordinate[i] + "");
+				if (i + 1 < coordinate.length)
+					sb.append(", ");
+			}
+			throw new IllegalStateException("No Territory at coordinates: " + sb.toString());
+		}
 		int listIndex = coordinate[0];
 		int multiplier = 1;
 		for (int i = 1; i < m_gridDimensions.length; i++)

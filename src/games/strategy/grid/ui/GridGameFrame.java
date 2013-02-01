@@ -132,6 +132,7 @@ public class GridGameFrame extends MainGameFrame
 		});
 		// Resize the window, then make it visible
 		this.pack();
+		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
 	

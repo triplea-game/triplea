@@ -42,27 +42,27 @@
 	</gamePlay>
 
 	<attatchmentList>
-		<attatchment name="territoryAttachment"  attatchTo="gameboard_5_5" javaClass="games.strategy.kingstable.attachments.TerritoryAttachment" type="territory" >
+		<attatchment name="territoryAttachment"  attatchTo="gameboard_5_5" javaClass="games.strategy.grid.kingstable.attachments.TerritoryAttachment" type="territory" >
 			<option name="kingsSquare" value="true" />
 	    </attatchment>
-		<attatchment name="territoryAttachment"  attatchTo="gameboard_0_0" javaClass="games.strategy.kingstable.attachments.TerritoryAttachment" type="territory" >
-			<option name="kingsSquare" value="true" />
-			<option name="kingsExit" value="true" />
-	    </attatchment>
-	    <attatchment name="territoryAttachment"  attatchTo="gameboard_10_0" javaClass="games.strategy.kingstable.attachments.TerritoryAttachment" type="territory" >
+		<attatchment name="territoryAttachment"  attatchTo="gameboard_0_0" javaClass="games.strategy.grid.kingstable.attachments.TerritoryAttachment" type="territory" >
 			<option name="kingsSquare" value="true" />
 			<option name="kingsExit" value="true" />
 	    </attatchment>
-	    <attatchment name="territoryAttachment"  attatchTo="gameboard_10_10" javaClass="games.strategy.kingstable.attachments.TerritoryAttachment" type="territory" >
+	    <attatchment name="territoryAttachment"  attatchTo="gameboard_10_0" javaClass="games.strategy.grid.kingstable.attachments.TerritoryAttachment" type="territory" >
 			<option name="kingsSquare" value="true" />
 			<option name="kingsExit" value="true" />
 	    </attatchment>
-	    <attatchment name="territoryAttachment"  attatchTo="gameboard_0_10" javaClass="games.strategy.kingstable.attachments.TerritoryAttachment" type="territory" >
+	    <attatchment name="territoryAttachment"  attatchTo="gameboard_10_10" javaClass="games.strategy.grid.kingstable.attachments.TerritoryAttachment" type="territory" >
+			<option name="kingsSquare" value="true" />
+			<option name="kingsExit" value="true" />
+	    </attatchment>
+	    <attatchment name="territoryAttachment"  attatchTo="gameboard_0_10" javaClass="games.strategy.grid.kingstable.attachments.TerritoryAttachment" type="territory" >
 			<option name="kingsSquare" value="true" />
 			<option name="kingsExit" value="true" />
 	    </attatchment>	 
 	    
-	    <attatchment name="playerAttachment" attatchTo="White" javaClass="games.strategy.kingstable.attachments.PlayerAttachment" type="player">
+	    <attatchment name="playerAttachment" attatchTo="White" javaClass="games.strategy.grid.kingstable.attachments.PlayerAttachment" type="player">
             <option name="needsKing" value="true"/>
         </attatchment>   
 

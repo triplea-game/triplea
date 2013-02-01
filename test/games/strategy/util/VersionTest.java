@@ -70,8 +70,8 @@ public class VersionTest extends TestCase
 		// micro differences should have no difference
 		final Version v1 = new Version(0, 0, 0, 0);
 		final Version v2 = new Version(0, 0, 0, 1);
-		assertTrue(v1.equals(v2));
-		assertTrue(v2.equals(v1));
+		assertTrue(v1.equals(v2, true));
+		assertTrue(v2.equals(v1, true));
 	}
 	
 	public void testRead1()

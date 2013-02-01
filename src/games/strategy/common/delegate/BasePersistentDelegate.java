@@ -1,13 +1,7 @@
 package games.strategy.common.delegate;
 
-import games.strategy.engine.data.GameData;
-import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.delegate.IDelegate;
-import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.delegate.IPersistentDelegate;
-import games.strategy.engine.message.IRemote;
-
-import java.io.Serializable;
 
 /**
  * Base class designed to make writing custom persistent delegates simpler.
@@ -19,16 +13,11 @@ import java.io.Serializable;
  * 
  * @author Chris Duncan
  */
-public abstract class BasePersistentDelegate implements IDelegate, IPersistentDelegate
+public abstract class BasePersistentDelegate extends AbstractDelegate implements IDelegate, IPersistentDelegate
 {
-	protected String m_name;
-	protected String m_displayName;
-	protected PlayerID m_player;
-	protected IDelegateBridge m_bridge;
-	protected GameData m_data;
-	
 	public BasePersistentDelegate()
 	{
+		super();
 	}
 	
 	public void initialize(final String name)
@@ -36,79 +25,23 @@ public abstract class BasePersistentDelegate implements IDelegate, IPersistentDe
 		initialize(name, name);
 	}
 	
-	public void initialize(final String name, final String displayName)
-	{
-		m_name = name;
-		m_displayName = displayName;
-	}
-	
-	/**
-	 * Called before the delegate will run, AND before "start" is called.
-	 */
-	public void setDelegateBridgeAndPlayer(final IDelegateBridge iDelegateBridge)
-	{
-		m_bridge = iDelegateBridge;
-		m_player = iDelegateBridge.getPlayerID();
-		m_data = iDelegateBridge.getData();
-	}
-	
 	/**
 	 * Called before the delegate will run.
 	 * All classes should call super.start if they override this.
 	 */
+	@Override
 	public void start()
 	{
-		// nothing
+		super.start();
 	}
 	
 	/**
 	 * Called before the delegate will stop running.
 	 * All classes should call super.end if they override this.
 	 */
+	@Override
 	public void end()
 	{
-		// nothing to do here
-	}
-	
-	public String getName()
-	{
-		return m_name;
-	}
-	
-	public String getDisplayName()
-	{
-		return m_displayName;
-	}
-	
-	/**
-	 * Returns the state of the Delegate.
-	 * All classes should super.saveState if they override this.
-	 */
-	public Serializable saveState()
-	{
-		return null;
-	}
-	
-	/**
-	 * Loads the delegates state
-	 */
-	public void loadState(final Serializable state)
-	{
-	}
-	
-	/**
-	 * If this class implements an interface which inherits from IRemote, returns the class of that interface.
-	 * Otherwise, returns null.
-	 */
-	public abstract Class<? extends IRemote> getRemoteType();
-	
-	public IDelegateBridge getBridge()
-	{
-		return m_bridge;
-	}
-	
-	protected GameData getData()
-	{
-		return m_data;
+		super.end();
 	}
 }

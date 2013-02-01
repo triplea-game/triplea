@@ -165,7 +165,7 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		if (m_mouseShadowImage != null)
 		{
 			final AffineTransform t = new AffineTransform();
-			t.translate(m_currentMouseLocation.x, m_currentMouseLocation.y);
+			t.translate(m_currentMouseLocation.x - 20, m_currentMouseLocation.y - 20);
 			g2d.drawImage(m_mouseShadowImage, t, this);
 		}
 	}

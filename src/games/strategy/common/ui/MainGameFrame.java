@@ -13,6 +13,7 @@
  */
 package games.strategy.common.ui;
 
+import games.strategy.engine.framework.GameRunner;
 import games.strategy.engine.framework.IGame;
 
 import javax.swing.JComponent;
@@ -29,11 +30,13 @@ public abstract class MainGameFrame extends JFrame
 	
 	public MainGameFrame()
 	{
+		setIconImage(GameRunner.getGameIcon(this));
 	}
 	
 	public MainGameFrame(final String name)
 	{
 		super(name);
+		setIconImage(GameRunner.getGameIcon(this));
 	}
 	
 	public abstract IGame getGame();
