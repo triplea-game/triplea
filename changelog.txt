@@ -1,4 +1,6 @@
 Changes for 1.7
+* Upgrading the graphics for Grid Games, and including a mouse shadow of selected units, and a highlight of which units on map are currently selected. (veqryn)
+
 * Major abstraction of both King's Table and Chess into a single framework for Grid based games. (veqryn)
 
 * Completing most of UI aspect of Chess game. (veqryn)

@@ -6,7 +6,7 @@ import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -25,7 +25,7 @@ public class KingsTableMapPanel extends GridMapPanel
 	 * Draw the current map and pieces.
 	 */
 	@Override
-	protected void paintComponent(final Graphics g)
+	protected void paintComponentMiddleLayer(final Graphics2D g)
 	{
 		g.setColor(Color.lightGray);
 		g.fillRect(0, 0, getWidth(), getHeight());
@@ -51,7 +51,10 @@ public class KingsTableMapPanel extends GridMapPanel
 			if (image != null)
 			{
 				final Rectangle square = p.getBounds();
-				g.drawImage(image, square.x, square.y, square.width, square.height, backgroundColor, null);
+				if (at.equals(m_clickedAt))
+					g.drawImage(image, square.x - 10, square.y - 10, square.width + 20, square.height + 20, null, null);
+				else
+					g.drawImage(image, square.x, square.y, square.width, square.height, null, null);
 			}
 			g.drawPolygon(p);
 		}

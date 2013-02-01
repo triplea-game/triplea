@@ -21,12 +21,22 @@ import games.strategy.engine.data.Unit;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
 import games.strategy.triplea.Constants;
 import games.strategy.triplea.ResourceLoader;
+import games.strategy.ui.Util;
 
+import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +61,9 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 	protected final Map<Territory, Image> m_images;
 	protected CountDownLatch m_waiting;
 	protected final UnitImageFactory m_imageFactory;
+	protected BufferedImage m_mouseShadowImage = null;
+	protected Point m_currentMouseLocation = new Point(0, 0);
+	protected Territory m_currentMouseLocationTerritory = null;
 	
 	public GridMapPanel(final GridMapData mapData)
 	{
@@ -74,6 +87,7 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 			updateImage(at);
 		}
 		this.addMouseListener(this);
+		this.addMouseMotionListener(MOUSE_MOTION_LISTENER);
 		this.setOpaque(true);
 	}
 	
@@ -137,8 +151,24 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		}
 	}
 	
+	protected abstract void paintComponentMiddleLayer(final Graphics2D g2d);
+	
 	@Override
-	protected abstract void paintComponent(final Graphics g);
+	protected void paintComponent(final Graphics g)
+	{
+		super.paintComponent(g);
+		final Graphics2D g2d = (Graphics2D) g;
+		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		paintComponentMiddleLayer(g2d);
+		if (m_mouseShadowImage != null)
+		{
+			final AffineTransform t = new AffineTransform();
+			t.translate(m_currentMouseLocation.x, m_currentMouseLocation.y);
+			g2d.drawImage(m_mouseShadowImage, t, this);
+		}
+	}
 	
 	public void mouseClicked(final MouseEvent e)
 	{
@@ -161,6 +191,8 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		// the Territory corresponding to the cursor location when the mouse was pressed
 		// will be stored in the private member variable m_clickedAt.
 		m_clickedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
+		// TODO: only shadow units if owned by current player
+		setMouseShadowUnits(m_clickedAt.getUnits().getUnits());
 	}
 	
 	/**
@@ -172,10 +204,77 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		// the Territory corresponding to the cursor location when the mouse was released
 		// will be stored in the private member variable m_releasedAt.
 		m_releasedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
+		setMouseShadowUnits(null);
 		// The waitForPlay method is waiting for mouse input.
 		// Let it know that we have processed mouse input.
 		if (m_waiting != null)
 			m_waiting.countDown();
+	}
+	
+	private final MouseMotionListener MOUSE_MOTION_LISTENER = new MouseMotionAdapter()
+	{
+		@Override
+		public void mouseMoved(final MouseEvent e)
+		{
+			m_currentMouseLocation = new Point(e.getX(), e.getY());
+			m_currentMouseLocationTerritory = m_mapData.getTerritoryAt(e.getX(), e.getY());
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					repaint();
+				}
+			});
+		}
+		
+		@Override
+		public void mouseDragged(final MouseEvent e)
+		{
+			mouseMoved(e);
+		}
+	};
+	
+	public void setMouseShadowUnits(final Collection<Unit> units)
+	{
+		if (units == null || units.isEmpty())
+		{
+			m_mouseShadowImage = null;
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					repaint();
+				}
+			});
+			return;
+		}
+		final int icon_width = 50;
+		final int icon_height = 50;
+		final int xSpace = 10;
+		final BufferedImage img = Util.createImage(units.size() * (xSpace + icon_width), icon_height, true);
+		final Graphics2D g = (Graphics2D) img.getGraphics();
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		final Rectangle bounds = new Rectangle(0, 0, 0, 0);
+		int i = 0;
+		for (final Unit unit : units)
+		{
+			final Point place = new Point(i * (icon_width + xSpace), 0);
+			final Image unitImage = m_imageFactory.getImage(unit.getType(), unit.getOwner(), m_gameData);
+			g.drawImage(unitImage, place.x - bounds.x, place.y - bounds.y, null);
+			i++;
+		}
+		m_mouseShadowImage = img;
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				repaint();
+			}
+		});
+		g.dispose();
 	}
 	
 	/**
