@@ -1,4 +1,6 @@
 Changes for 1.7
+* Completing most of UI aspect of Chess game. (veqryn)
+
 * Creating framework for a Chess game. (veqryn)
 
 * Created a notification to the user when they start a version of TripleA for the first time, showing the new features of this version. (veqryn)

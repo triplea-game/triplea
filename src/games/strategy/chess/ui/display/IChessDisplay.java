@@ -1,9 +1,10 @@
 package games.strategy.chess.ui.display;
 
 import games.strategy.engine.data.Territory;
+import games.strategy.engine.data.Unit;
 import games.strategy.engine.display.IDisplay;
 
-import java.util.Collection;
+import java.util.Map;
 
 public interface IChessDisplay extends IDisplay
 {
@@ -30,5 +31,5 @@ public interface IChessDisplay extends IDisplay
 	 * @param captured
 	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
 	 */
-	public void performPlay(Territory start, Territory end, Collection<Territory> captured);
+	public void performPlay(Territory start, Territory end, Unit unit, Map<Territory, Unit> captured);
 }

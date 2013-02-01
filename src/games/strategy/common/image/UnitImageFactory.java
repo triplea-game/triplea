@@ -16,18 +16,15 @@ package games.strategy.common.image;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.UnitType;
-import games.strategy.engine.framework.GameRunner;
 import games.strategy.triplea.ResourceLoader;
 import games.strategy.ui.Util;
 
 import java.awt.Image;
-import java.awt.image.BufferedImage;
+import java.awt.Toolkit;
 import java.io.File;
-import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
 
 /**
  * Utility class to get image for a Unit.
@@ -39,15 +36,28 @@ import javax.imageio.ImageIO;
  */
 public class UnitImageFactory
 {
-	private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), ResourceLoader.RESOURCE_FOLDER + "/units/");
+	private static final String FILE_NAME_BASE = "units/";
 	// Image cache
 	private final Map<String, Image> m_images = new HashMap<String, Image>();
+	private ResourceLoader m_resourceLoader;
 	
 	/**
 	 * Creates new IconImageFactory
 	 */
 	public UnitImageFactory()
 	{
+		m_resourceLoader = ResourceLoader.getMapResourceLoader(null);
+	}
+	
+	public void setResourceLoader(final ResourceLoader loader)
+	{
+		m_resourceLoader = loader;
+		clearImageCache();
+	}
+	
+	private void clearImageCache()
+	{
+		m_images.clear();
 	}
 	
 	/**
@@ -66,6 +76,25 @@ public class UnitImageFactory
 		return baseImage;
 	}
 	
+	private Image getBaseImage(final String baseImageName, final PlayerID id)
+	{
+		final String fileName = FILE_NAME_BASE + id.getName() + File.separator + baseImageName + ".png";
+		final URL url = m_resourceLoader.getResource(fileName);
+		if (url == null)
+			throw new IllegalStateException("Cant load: " + baseImageName + "  looking in: " + fileName);
+		final Image image = Toolkit.getDefaultToolkit().getImage(url);
+		try
+		{
+			Util.ensureImageLoaded(image);
+		} catch (final InterruptedException ex)
+		{
+			ex.printStackTrace();
+		}
+		return image;
+	}
+	
+	/*
+	private static final File BASE_FOLDER = new File(GameRunner.getRootFolder(), ResourceLoader.RESOURCE_FOLDER + "/units/");
 	private BufferedImage getBaseImage(final String baseImageName, final PlayerID id)
 	{
 		final String fileName = id.getName() + File.separator + baseImageName + ".png";
@@ -82,8 +111,8 @@ public class UnitImageFactory
 			e.printStackTrace();
 		}
 		return image;
-	}
-	
+	}*/
+
 	private String getBaseImageName(final UnitType type, final PlayerID id, final GameData data)
 	{
 		final StringBuilder name = new StringBuilder(32);
