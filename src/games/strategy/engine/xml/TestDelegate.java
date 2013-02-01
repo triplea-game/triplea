@@ -18,7 +18,7 @@
  */
 package games.strategy.engine.xml;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.message.IRemote;
 
 import java.io.Serializable;
@@ -31,7 +31,7 @@ import java.io.Serializable;
  *          A simple dumb delegate, dont acutally call these methods.
  *          Simply to satisfy the interface requirements for testing.
  */
-public final class TestDelegate extends BaseDelegate
+public final class TestDelegate extends AbstractDelegate
 {
 	public TestDelegate()
 	{

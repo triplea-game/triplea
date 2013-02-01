@@ -15,7 +15,7 @@ package games.puzzle.slidingtiles.delegate;
 
 import games.puzzle.slidingtiles.attachments.Tile;
 import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.message.IRemote;
@@ -29,7 +29,7 @@ import java.util.concurrent.CountDownLatch;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class EndTurnDelegate extends BaseDelegate
+public class EndTurnDelegate extends AbstractDelegate
 {
 	private CountDownLatch m_waiting;
 	

@@ -46,7 +46,7 @@ public class UnitImageFactory
 	 */
 	public UnitImageFactory()
 	{
-		m_resourceLoader = ResourceLoader.getMapResourceLoader(null);
+		m_resourceLoader = ResourceLoader.getMapResourceLoader(null, true);
 	}
 	
 	public void setResourceLoader(final ResourceLoader loader)

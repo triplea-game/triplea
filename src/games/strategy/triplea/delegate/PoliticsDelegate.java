@@ -16,7 +16,7 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -58,7 +58,7 @@ import java.util.Set;
  * @version 1.0
  * 
  */
-public class PoliticsDelegate extends BaseDelegate implements IPoliticsDelegate
+public class PoliticsDelegate extends BaseTripleADelegate implements IPoliticsDelegate
 {
 	// protected HashMap<ICondition, Boolean> m_testedConditions = null;
 	// private final boolean m_needToInitialize = true;

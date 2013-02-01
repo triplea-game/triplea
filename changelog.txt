@@ -1,4 +1,6 @@
 Changes for 1.7
+* Major abstraction of both King's Table and Chess into a single framework for Grid based games. (veqryn)
+
 * Completing most of UI aspect of Chess game. (veqryn)
 
 * Creating framework for a Chess game. (veqryn)

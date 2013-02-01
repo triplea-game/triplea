@@ -25,9 +25,9 @@
 
 
 	<gamePlay>
-		<delegate name="init" javaClass="games.strategy.kingstable.delegate.InitializationDelegate" display="Initialize Game"/>
-		<delegate name="play" javaClass="games.strategy.kingstable.delegate.PlayDelegate" display="Play"/>
-		<delegate name="endTurn" javaClass="games.strategy.kingstable.delegate.EndTurnDelegate" display="Check for winner"/>
+		<delegate name="init" javaClass="games.strategy.grid.kingstable.delegate.InitializationDelegate" display="Initialize Game"/>
+		<delegate name="play" javaClass="games.strategy.grid.kingstable.delegate.PlayDelegate" display="Play"/>
+		<delegate name="endTurn" javaClass="games.strategy.grid.kingstable.delegate.EndTurnDelegate" display="Check for winner"/>
 		
 		<sequence>
 			<step name="gameInit" delegate="init" maxRunCount="1"/>

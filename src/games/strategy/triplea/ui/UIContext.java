@@ -174,7 +174,7 @@ public class UIContext
 		// check for existence
 		try
 		{
-			ResourceLoader.getMapResourceLoader(mapDir).close();
+			ResourceLoader.getMapResourceLoader(mapDir, false).close();
 		} catch (final RuntimeException re)
 		{
 			// an error
@@ -212,7 +212,7 @@ public class UIContext
 	private void internalSetMapDir(final String dir, final GameData data)
 	{
 		final Stopwatch stopWatch = new Stopwatch(s_logger, Level.FINE, "Loading UI Context");
-		m_resourceLoader = ResourceLoader.getMapResourceLoader(dir);
+		m_resourceLoader = ResourceLoader.getMapResourceLoader(dir, false);
 		if (m_mapData != null)
 		{
 			m_mapData.close();

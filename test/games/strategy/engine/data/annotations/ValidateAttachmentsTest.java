@@ -108,8 +108,8 @@ public class ValidateAttachmentsTest extends TestCase
 		final StringBuilder sb = new StringBuilder("");
 		sb.append(validateAttachment(games.strategy.engine.data.DefaultAttachment.class));
 		sb.append(validateAttachment(games.puzzle.slidingtiles.attachments.Tile.class));
-		sb.append(validateAttachment(games.strategy.kingstable.attachments.PlayerAttachment.class));
-		sb.append(validateAttachment(games.strategy.kingstable.attachments.TerritoryAttachment.class));
+		sb.append(validateAttachment(games.strategy.grid.kingstable.attachments.PlayerAttachment.class));
+		sb.append(validateAttachment(games.strategy.grid.kingstable.attachments.TerritoryAttachment.class));
 		// sb.append(validateAttachment(games.strategy.triplea.attatchments.AbstractConditionsAttachment.class));
 		// sb.append(validateAttachment(games.strategy.triplea.attatchments.AbstractPlayerRulesAttachment.class));
 		// sb.append(validateAttachment(games.strategy.triplea.attatchments.AbstractRulesAttachment.class));

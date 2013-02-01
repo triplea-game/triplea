@@ -16,7 +16,7 @@ package games.puzzle.slidingtiles.delegate;
 import games.puzzle.slidingtiles.attachments.Tile;
 import games.puzzle.slidingtiles.delegate.remote.IPlayDelegate;
 import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -34,7 +34,7 @@ import java.io.Serializable;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class PlayDelegate extends BaseDelegate implements IPlayDelegate
+public class PlayDelegate extends AbstractDelegate implements IPlayDelegate
 {
 	private GameMap map;
 	

@@ -20,7 +20,7 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
@@ -47,7 +47,7 @@ import java.util.Iterator;
  * 
  * @author Sean Bridges
  */
-public class InitializationDelegate extends BaseDelegate
+public class InitializationDelegate extends BaseTripleADelegate
 {
 	/** Creates a new instance of InitializationDelegate */
 	public InitializationDelegate()

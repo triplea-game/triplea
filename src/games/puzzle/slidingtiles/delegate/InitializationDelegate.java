@@ -15,7 +15,7 @@ package games.puzzle.slidingtiles.delegate;
 
 import games.puzzle.slidingtiles.attachments.Tile;
 import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -34,7 +34,7 @@ import java.util.Random;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class InitializationDelegate extends BaseDelegate
+public class InitializationDelegate extends AbstractDelegate
 {
 	/**
 	 * Called before the delegate will run.

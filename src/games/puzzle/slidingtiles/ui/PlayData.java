@@ -13,8 +13,8 @@
  */
 package games.puzzle.slidingtiles.ui;
 
-import games.strategy.common.ui.IPlayData;
 import games.strategy.engine.data.Territory;
+import games.strategy.grid.ui.IGridPlayData;
 
 /**
  * Represents a play in an n-puzzle game.
@@ -25,7 +25,7 @@ import games.strategy.engine.data.Territory;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class PlayData implements IPlayData
+public class PlayData implements IGridPlayData
 {
 	private final Territory m_start;
 	private final Territory m_end;

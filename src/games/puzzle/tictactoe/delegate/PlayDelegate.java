@@ -15,7 +15,7 @@ package games.puzzle.tictactoe.delegate;
 
 import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
 import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -34,7 +34,7 @@ import java.util.Collection;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class PlayDelegate extends BaseDelegate implements IPlayDelegate
+public class PlayDelegate extends AbstractDelegate implements IPlayDelegate
 {
 	/**
 	 * Called before the delegate will run.

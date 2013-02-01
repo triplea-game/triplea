@@ -18,7 +18,7 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.CompositeChange;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
@@ -54,7 +54,7 @@ import javax.swing.JOptionPane;
  * 
  * @author Sean Bridges
  */
-public class EndRoundDelegate extends BaseDelegate
+public class EndRoundDelegate extends BaseTripleADelegate
 {
 	private boolean m_gameOver = false;
 	private Collection<PlayerID> m_winners = new ArrayList<PlayerID>();

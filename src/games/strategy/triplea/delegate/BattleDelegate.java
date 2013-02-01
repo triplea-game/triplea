@@ -16,7 +16,7 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -69,7 +69,7 @@ import java.util.Set;
  * @version 1.0
  */
 @AutoSave(beforeStepStart = true, afterStepEnd = true)
-public class BattleDelegate extends BaseDelegate implements IBattleDelegate
+public class BattleDelegate extends BaseTripleADelegate implements IBattleDelegate
 {
 	private BattleTracker m_battleTracker = new BattleTracker();
 	// private OriginalOwnerTracker m_originalOwnerTracker = new OriginalOwnerTracker();

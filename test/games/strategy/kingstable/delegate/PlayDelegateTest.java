@@ -16,6 +16,7 @@ package games.strategy.kingstable.delegate;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.TestDelegateBridge;
+import games.strategy.grid.kingstable.delegate.PlayDelegate;
 import games.strategy.kingstable.ui.display.DummyDisplay;
 
 /**

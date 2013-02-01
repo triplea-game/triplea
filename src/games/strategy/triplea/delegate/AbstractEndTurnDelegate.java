@@ -18,7 +18,7 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -64,7 +64,7 @@ import java.util.List;
  * 
  *          At the end of the turn collect income.
  */
-public abstract class AbstractEndTurnDelegate extends BaseDelegate implements IAbstractEndTurnDelegate
+public abstract class AbstractEndTurnDelegate extends BaseTripleADelegate implements IAbstractEndTurnDelegate
 {
 	private boolean m_needToInitialize = true;
 	private boolean m_hasPostedTurnSummary = false;

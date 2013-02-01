@@ -28,17 +28,22 @@ public class ResourceLoader
 	private final URLClassLoader m_loader;
 	public static String RESOURCE_FOLDER = "assets";
 	
-	public static ResourceLoader getMapResourceLoader(final String mapName)
+	public static ResourceLoader getMapResourceLoader(final String mapName, final boolean allowNoneFound)
 	{
-		final List<String> dirs = getPaths(mapName);
+		final List<String> dirs = getPaths(mapName, allowNoneFound);
 		dirs.add(new File(GameRunner.getRootFolder(), RESOURCE_FOLDER).getAbsolutePath());
 		return new ResourceLoader(dirs.toArray(new String[0]));
 	}
 	
-	private static List<String> getPaths(final String mapName)
+	private static List<String> getPaths(final String mapName, final boolean allowNoneFound)
 	{
 		if (mapName == null)
-			return new ArrayList<String>();
+		{
+			if (allowNoneFound)
+				return new ArrayList<String>();
+			else
+				throw new IllegalArgumentException("mapName can not be null, it must exist");
+		}
 		// find the primary directory/file
 		final String dirName = File.separator + mapName;
 		final String zipName = dirName + ".zip";
@@ -65,8 +70,11 @@ public class ResourceLoader
 		// At least one must exist
 		if (existing.isEmpty())
 		{
-			throw new IllegalStateException("Could not find file folder or zip for map: " + mapName + "\r\n" + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
-						+ "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name." + "\r\n" + "\r\n");
+			if (allowNoneFound)
+				return new ArrayList<String>();
+			else
+				throw new IllegalStateException("Could not find file folder or zip for map: " + mapName + "\r\n" + "Please DOWNLOAD THIS MAP if you do not have it." + "\r\n"
+							+ "If you are making a map or mod, make sure the mapName property within the xml game file exactly matches the map zip or folder name." + "\r\n" + "\r\n");
 		}
 		final File match = existing.iterator().next();
 		String fileName = match.getName();
@@ -99,7 +107,7 @@ public class ResourceLoader
 					while (tokens.hasMoreTokens())
 					{
 						// add the dependencies recursivly
-						rVal.addAll(getPaths(tokens.nextToken()));
+						rVal.addAll(getPaths(tokens.nextToken(), allowNoneFound));
 					}
 				} finally
 				{

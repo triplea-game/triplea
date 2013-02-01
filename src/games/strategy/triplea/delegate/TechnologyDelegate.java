@@ -19,7 +19,7 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.GameData;
@@ -63,7 +63,7 @@ import java.util.Map.Entry;
  * @author Sean Bridges
  * @version 1.0
  */
-public class TechnologyDelegate extends BaseDelegate implements ITechDelegate
+public class TechnologyDelegate extends BaseTripleADelegate implements ITechDelegate
 {
 	private int m_techCost;
 	private HashMap<PlayerID, Collection<TechAdvance>> m_techs;

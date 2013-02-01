@@ -14,7 +14,7 @@
 package games.puzzle.tictactoe.delegate;
 
 import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -28,7 +28,7 @@ import java.io.Serializable;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class EndTurnDelegate extends BaseDelegate
+public class EndTurnDelegate extends AbstractDelegate
 {
 	/**
 	 * Called before the delegate will run.

@@ -18,7 +18,7 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -74,7 +74,7 @@ import java.util.TreeSet;
  * @author Sean Bridges
  * @version 1.0
  */
-public class PurchaseDelegate extends BaseDelegate implements IPurchaseDelegate
+public class PurchaseDelegate extends BaseTripleADelegate implements IPurchaseDelegate
 {
 	private boolean m_needToInitialize = true;
 	public final static String NOT_ENOUGH_RESOURCES = "Not enough resources";

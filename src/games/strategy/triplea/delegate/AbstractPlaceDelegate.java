@@ -24,7 +24,7 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
@@ -85,7 +85,7 @@ import java.util.Map.Entry;
  *          A workaround was that if anyone ever accidently run into this situation
  *          then they could undo the production, produce in f first, and then produce in e.
  */
-public abstract class AbstractPlaceDelegate extends BaseDelegate implements IAbstractPlaceDelegate
+public abstract class AbstractPlaceDelegate extends BaseTripleADelegate implements IAbstractPlaceDelegate
 {
 	// maps Territory-> Collection of units
 	protected Map<Territory, Collection<Unit>> m_produced = new HashMap<Territory, Collection<Unit>>();

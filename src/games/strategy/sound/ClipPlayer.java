@@ -126,7 +126,7 @@ public class ClipPlayer
 	{
 		if (s_clipPlayer == null)
 		{
-			s_clipPlayer = new ClipPlayer(ResourceLoader.getMapResourceLoader(null));
+			s_clipPlayer = new ClipPlayer(ResourceLoader.getMapResourceLoader(null, true));
 			SoundPath.preLoadSounds(SoundPath.SoundType.GENERAL);
 		}
 		return s_clipPlayer;

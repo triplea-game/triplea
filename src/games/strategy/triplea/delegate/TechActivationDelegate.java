@@ -18,7 +18,7 @@
  */
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.message.IRemote;
@@ -46,7 +46,7 @@ import java.util.Set;
  * @author Ali Ibrahim
  * @version 1.0
  */
-public class TechActivationDelegate extends BaseDelegate
+public class TechActivationDelegate extends BaseTripleADelegate
 {
 	private boolean m_needToInitialize = true;
 	

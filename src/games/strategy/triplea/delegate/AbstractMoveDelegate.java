@@ -1,6 +1,6 @@
 package games.strategy.triplea.delegate;
 
-import games.strategy.common.delegate.BaseDelegate;
+import games.strategy.common.delegate.BaseTripleADelegate;
 import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Route;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @author veqryn
  * 
  */
-public abstract class AbstractMoveDelegate extends BaseDelegate implements IMoveDelegate
+public abstract class AbstractMoveDelegate extends BaseTripleADelegate implements IMoveDelegate
 {
 	protected boolean m_nonCombat;
 	protected List<UndoableMove> m_movesToUndo = new ArrayList<UndoableMove>();// A collection of UndoableMoves

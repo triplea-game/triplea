@@ -15,6 +15,7 @@ package games.strategy.kingstable.ui.display;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.display.IDisplayBridge;
+import games.strategy.grid.ui.display.IGridGameDisplay;
 
 import java.util.Collection;
 
@@ -24,7 +25,7 @@ import java.util.Collection;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class DummyDisplay implements IKingsTableDisplay
+public class DummyDisplay implements IGridGameDisplay
 {
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#performPlay(Territory,Territory,Collection<Territory>)
@@ -34,28 +35,28 @@ public class DummyDisplay implements IKingsTableDisplay
 	}
 	
 	/**
-	 * @see games.strategy.engine.display.IKingsTableDisplay#setGameOver()
+	 * @see games.strategy.grid.ui.display.IGridGameDisplay#setGameOver()
 	 */
 	public void setGameOver()// CountDownLatch waiting) {
 	{
 	}
 	
 	/**
-	 * @see games.strategy.engine.display.IKingsTableDisplay#setStatus(String)
+	 * @see games.strategy.grid.ui.display.IGridGameDisplay#setStatus(String)
 	 */
 	public void setStatus(final String status)
 	{
 	}
 	
 	/**
-	 * @see games.strategy.engine.display.IKingsTableDisplay#initialize(IDisplayBridge)
+	 * @see games.strategy.grid.ui.display.IGridGameDisplay#initialize(IDisplayBridge)
 	 */
 	public void initialize(final IDisplayBridge bridge)
 	{
 	}
 	
 	/**
-	 * @see games.strategy.engine.display.IKingsTableDisplay#shutDown()
+	 * @see games.strategy.grid.ui.display.IGridGameDisplay#shutDown()
 	 */
 	public void shutDown()
 	{
