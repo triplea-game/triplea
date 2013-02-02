@@ -24,6 +24,7 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.grid.ui.GridPlayData;
 
 import java.awt.Component;
 import java.awt.event.WindowAdapter;
@@ -121,9 +122,9 @@ public class NPuzzleFrame extends MainGameFrame
 	 *            the bridge for player
 	 * @return PlayData representing a play, or <code>null</code> if the play was interrupted
 	 */
-	public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge)
+	public GridPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge)
 	{
-		PlayData play = null;
+		GridPlayData play = null;
 		// player.getName().endsWith("AI");
 		try
 		{

@@ -14,7 +14,6 @@
 package games.puzzle.slidingtiles.delegate;
 
 import games.puzzle.slidingtiles.attachments.Tile;
-import games.puzzle.slidingtiles.delegate.remote.IPlayDelegate;
 import games.puzzle.slidingtiles.ui.display.INPuzzleDisplay;
 import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.Change;
@@ -25,6 +24,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.delegate.IDelegateBridge;
 import games.strategy.engine.message.IRemote;
+import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 
 import java.io.Serializable;
 
@@ -34,7 +34,7 @@ import java.io.Serializable;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class PlayDelegate extends AbstractDelegate implements IPlayDelegate
+public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 {
 	private GameMap map;
 	
@@ -186,7 +186,7 @@ public class PlayDelegate extends AbstractDelegate implements IPlayDelegate
 	public Class<? extends IRemote> getRemoteType()
 	{
 		// This class implements IPlayDelegate, which inherits from IRemote.
-		return IPlayDelegate.class;
+		return IGridPlayDelegate.class;
 	}
 }
 

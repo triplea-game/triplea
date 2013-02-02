@@ -13,8 +13,8 @@
  */
 package games.puzzle.tictactoe.player;
 
-import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
 import games.strategy.engine.data.Territory;
+import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 
 import java.util.Collection;
 import java.util.Random;
@@ -47,14 +47,14 @@ public class RandomAI extends AbstractAI
 		int trymeStart;
 		String error;
 		// Get the play delegate
-		final IPlayDelegate playDel = (IPlayDelegate) this.getPlayerBridge().getRemote();
+		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemote();
 		// Randomly select a territory and try playing there
 		// If that play isn't legal, try again
 		do
 		{
 			trymeStart = generator.nextInt(territoryArray.length);
 			// trymeEnd = generator.nextInt(territoryArray.length);
-			error = playDel.play(territoryArray[trymeStart]);
+			error = playDel.play(territoryArray[trymeStart], null);
 		} while (error != null);
 	}
 }

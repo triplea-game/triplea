@@ -85,6 +85,12 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		return true;
 	}
 	
+	public void signalStatus(final String status)
+	{
+		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
+		display.setStatus(status);
+	}
+	
 	/**
 	 * Attempt to move a piece from the start <code>Territory</code> to the end <code>Territory</code>.
 	 * 

@@ -21,6 +21,7 @@ import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.data.events.GameDataChangeListener;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.grid.ui.GridMapData;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,13 +46,13 @@ import javax.swing.JComponent;
 public class MapPanel extends JComponent implements MouseListener
 {
 	private static final long serialVersionUID = 96734493518077373L;
-	private final MapData m_mapData;
+	private final GridMapData m_mapData;
 	private final GameData m_gameData;
 	private Territory m_clickedAt = null;
 	private final Map<Territory, Image> m_images;
 	private CountDownLatch m_waiting;
 	
-	public MapPanel(final MapData mapData)
+	public MapPanel(final GridMapData mapData)
 	{
 		m_waiting = null;
 		m_mapData = mapData;

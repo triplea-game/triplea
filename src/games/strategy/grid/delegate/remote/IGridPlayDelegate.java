@@ -26,4 +26,6 @@ import games.strategy.engine.message.IRemote;
 public interface IGridPlayDelegate extends IRemote, IDelegate
 {
 	public String play(Territory start, Territory end);
+	
+	public void signalStatus(String status);
 }

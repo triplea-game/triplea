@@ -17,6 +17,7 @@ import games.puzzle.slidingtiles.attachments.Tile;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.grid.ui.GridPlayData;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -205,7 +206,7 @@ public class BoardPanel extends JComponent implements MouseListener
 	 * @throws InterruptedException
 	 *             if the play was interrupted
 	 */
-	public PlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
+	public GridPlayData waitForPlay(final PlayerID player, final IPlayerBridge bridge, final CountDownLatch waiting) throws InterruptedException
 	{
 		// Make sure we have a valid CountDownLatch.
 		if (waiting == null || waiting.getCount() != 1)
@@ -227,7 +228,7 @@ public class BoardPanel extends JComponent implements MouseListener
 		{
 			// We have a valid play!
 			// Reset the member variables, and return the play.
-			final PlayData play = new PlayData(m_clickedAt, m_releasedAt);
+			final GridPlayData play = new GridPlayData(m_clickedAt, m_releasedAt);
 			m_clickedAt = null;
 			m_releasedAt = null;
 			return play;

@@ -14,13 +14,13 @@
 package games.puzzle.slidingtiles.player;
 
 import games.puzzle.slidingtiles.attachments.Tile;
-import games.puzzle.slidingtiles.delegate.remote.IPlayDelegate;
 import games.strategy.common.player.ai.AIAlgorithm;
 import games.strategy.common.player.ai.GameState;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,7 +78,7 @@ public class BetterAI extends AbstractAI
 	@Override
 	protected void play()
 	{
-		final IPlayDelegate iPlayDelegate = (IPlayDelegate) getPlayerBridge().getRemote();
+		final IGridPlayDelegate iPlayDelegate = (IGridPlayDelegate) getPlayerBridge().getRemote();
 		if (m_moves == null)
 		{
 			iPlayDelegate.signalStatus("Thinking...");

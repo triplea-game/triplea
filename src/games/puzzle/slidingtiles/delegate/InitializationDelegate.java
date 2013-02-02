@@ -63,7 +63,6 @@ public class InitializationDelegate extends AbstractDelegate
 			}
 		}
 		m_bridge.addChange(initializingBoard);
-		// INPuzzleDisplay display = (INPuzzleDisplay) m_bridge.getDisplayChannelBroadcaster();
 		display.initializeBoard();
 		display.performPlay();
 		m_bridge.getHistoryWriter().startEvent("Randomizing board");

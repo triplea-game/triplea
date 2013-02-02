@@ -13,12 +13,12 @@
  */
 package games.puzzle.tictactoe.player;
 
-import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
 import games.strategy.common.player.ai.AIAlgorithm;
 import games.strategy.common.player.ai.GameState;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,9 +81,9 @@ public class BetterAI extends AbstractAI
 			move = AIAlgorithm.minimaxSearch(initial_state);
 		else
 			move = AIAlgorithm.alphaBetaSearch(initial_state);
-		final IPlayDelegate playDel = (IPlayDelegate) getPlayerBridge().getRemote();
+		final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
 		final Territory start = getGameData().getMap().getTerritoryFromCoordinates(move.getX(), move.getY());
-		playDel.play(start);
+		playDel.play(start, null);
 	}
 	
 	private State getInitialState()

@@ -55,6 +55,12 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		return true;
 	}
 	
+	public void signalStatus(final String status)
+	{
+		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
+		display.setStatus(status);
+	}
+	
 	public String play(final Territory start, final Territory end)
 	{
 		if (start.getUnits().getUnitCount() > 1 || end.getUnits().getUnitCount() > 1)

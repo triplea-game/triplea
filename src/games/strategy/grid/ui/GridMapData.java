@@ -67,7 +67,7 @@ public class GridMapData
 		}
 	}
 	
-	GameData getGameData()
+	public GameData getGameData()
 	{
 		return m_gameData;
 	}
@@ -97,6 +97,6 @@ public class GridMapData
 	
 	public Dimension getMapDimensions()
 	{
-		return new Dimension(m_gridWidth * m_squareWidth + m_topLeftOffsetWidth * 2 + 1, m_gridHeight * m_squareHeight + m_topLeftOffsetHeight * 2 + 1);
+		return new Dimension(((m_gridWidth * m_squareWidth) + (m_topLeftOffsetWidth * 2) + 1), ((m_gridHeight * m_squareHeight) + (m_topLeftOffsetHeight * 2) + 1));
 	}
 }

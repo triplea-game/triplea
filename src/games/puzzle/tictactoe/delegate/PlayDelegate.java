@@ -13,7 +13,6 @@
  */
 package games.puzzle.tictactoe.delegate;
 
-import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
 import games.puzzle.tictactoe.ui.display.ITicTacToeDisplay;
 import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.Change;
@@ -23,6 +22,7 @@ import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
 import games.strategy.engine.data.Unit;
 import games.strategy.engine.message.IRemote;
+import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import java.util.Collection;
  * @author Lane Schwartz
  * @version $LastChangedDate$
  */
-public class PlayDelegate extends AbstractDelegate implements IPlayDelegate
+public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 {
 	/**
 	 * Called before the delegate will run.
@@ -75,13 +75,19 @@ public class PlayDelegate extends AbstractDelegate implements IPlayDelegate
 		return true;
 	}
 	
+	public void signalStatus(final String status)
+	{
+		final ITicTacToeDisplay display = (ITicTacToeDisplay) m_bridge.getDisplayChannelBroadcaster();
+		display.setStatus(status);
+	}
+	
 	/**
 	 * Attempt to play.
 	 * 
 	 * @param play
 	 *            <code>Territory</code> where the play should occur
 	 */
-	public String play(final Territory play)
+	public String play(final Territory play, final Territory ignore)
 	{
 		final String error = isValidPlay(play);
 		if (error != null)
@@ -134,7 +140,7 @@ public class PlayDelegate extends AbstractDelegate implements IPlayDelegate
 	public Class<? extends IRemote> getRemoteType()
 	{
 		// This class implements IPlayDelegate, which inherits from IRemote.
-		return IPlayDelegate.class;
+		return IGridPlayDelegate.class;
 	}
 }
 

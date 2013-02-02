@@ -14,9 +14,9 @@
 package games.puzzle.slidingtiles.player;
 
 import games.puzzle.slidingtiles.attachments.Tile;
-import games.puzzle.slidingtiles.delegate.remote.IPlayDelegate;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.Territory;
+import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +48,7 @@ public class RandomAI extends AbstractAI
 		final GameMap map = getGameData().getMap();
 		final Collection<Territory> territories = map.getTerritories();
 		// Get the play delegate
-		final IPlayDelegate playDel = (IPlayDelegate) this.getPlayerBridge().getRemote();
+		final IGridPlayDelegate playDel = (IGridPlayDelegate) this.getPlayerBridge().getRemote();
 		// Find the blank tile
 		Territory blank = null;
 		for (final Territory t : territories)

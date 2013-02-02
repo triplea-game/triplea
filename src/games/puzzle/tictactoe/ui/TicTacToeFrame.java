@@ -25,6 +25,7 @@ import games.strategy.engine.framework.ServerGame;
 import games.strategy.engine.framework.startup.ui.MainFrame;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.engine.gamePlayer.IPlayerBridge;
+import games.strategy.grid.ui.GridMapData;
 
 import java.awt.Component;
 import java.awt.event.WindowAdapter;
@@ -75,7 +76,7 @@ public class TicTacToeFrame extends MainGameFrame
 		// The MapData holds info for the map,
 		// including the dimensions (x_dim and y_dim)
 		// and the size of each square (50 by 50)
-		final MapData mapData = new MapData(m_data, x_dim, y_dim, 50, 50);
+		final GridMapData mapData = new GridMapData(m_data, x_dim, y_dim, 50, 50, 0, 0);
 		// MapPanel is the Swing component that actually displays the gameboard.
 		m_mapPanel = new MapPanel(mapData);
 		// This label will display whose turn it is

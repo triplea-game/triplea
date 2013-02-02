@@ -13,10 +13,10 @@
  */
 package games.puzzle.tictactoe.player;
 
-import games.puzzle.tictactoe.delegate.remote.IPlayDelegate;
 import games.puzzle.tictactoe.ui.TicTacToeFrame;
 import games.strategy.common.player.AbstractHumanPlayer;
 import games.strategy.engine.data.Territory;
+import games.strategy.grid.delegate.remote.IGridPlayDelegate;
 
 /**
  * Represents a human player of Tic Tac Toe.
@@ -43,7 +43,7 @@ public class TicTacToePlayer extends AbstractHumanPlayer<TicTacToeFrame> impleme
 	private void play()
 	{
 		// Get the relevant delegate
-		final IPlayDelegate playDel = (IPlayDelegate) getPlayerBridge().getRemote();
+		final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
 		Territory play = null;
 		while (play == null)
 		{
@@ -60,7 +60,7 @@ public class TicTacToePlayer extends AbstractHumanPlayer<TicTacToeFrame> impleme
 				// A play was returned from the user interface.
 				// We need to have the relevant delegate process it
 				// and see if there are any problems with the play.
-				final String error = playDel.play(play);
+				final String error = playDel.play(play, null);
 				if (error != null)
 				{
 					// If there is a problem with the play, notify the user...
