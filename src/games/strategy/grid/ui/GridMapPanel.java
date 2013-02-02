@@ -109,18 +109,12 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 	/**
 	 * Update the user interface based on a game play.
 	 * 
-	 * @param start
-	 *            <code>Territory</code> where the moving piece began
-	 * @param end
-	 *            <code>Territory</code> where the moving piece ended
-	 * @param captured
-	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
+	 * @param territories
+	 *            <code>Collection</code> of <code>Territory</code>s whose pieces have changed
 	 */
-	protected void performPlay(final Territory start, final Territory end, final Collection<Territory> captured)
+	protected void refreshTerritories(final Collection<Territory> territories)
 	{
-		updateImage(start);
-		updateImage(end);
-		for (final Territory at : captured)
+		for (final Territory at : territories)
 			updateImage(at);
 		// Ask Swing to repaint this panel when it's convenient
 		SwingUtilities.invokeLater(new Runnable()

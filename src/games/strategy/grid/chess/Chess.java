@@ -1,6 +1,7 @@
 package games.strategy.grid.chess;
 
 import games.strategy.common.ui.BasicGameMenuBar;
+import games.strategy.engine.data.IUnitFactory;
 import games.strategy.engine.framework.IGameLoader;
 import games.strategy.engine.gamePlayer.IGamePlayer;
 import games.strategy.grid.GridGame;
@@ -61,5 +62,11 @@ public class Chess extends GridGame implements IGameLoader
 	protected Class<? extends BasicGameMenuBar<GridGameFrame>> getGridTableMenuClass()
 	{
 		return ChessMenu.class;
+	}
+	
+	@Override
+	public IUnitFactory getUnitFactory()
+	{
+		return new ChessUnitFactory();
 	}
 }

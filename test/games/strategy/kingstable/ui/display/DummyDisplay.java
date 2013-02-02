@@ -30,7 +30,7 @@ public class DummyDisplay implements IGridGameDisplay
 	/**
 	 * @see games.strategy.engine.display.IKingsTableDisplay#performPlay(Territory,Territory,Collection<Territory>)
 	 */
-	public void performPlay(final Territory start, final Territory end, final Collection<Territory> captured)
+	public void refreshTerritories(final Collection<Territory> territories)
 	{
 	}
 	

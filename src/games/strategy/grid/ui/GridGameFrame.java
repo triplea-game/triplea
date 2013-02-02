@@ -142,16 +142,12 @@ public class GridGameFrame extends MainGameFrame
 	/**
 	 * Update the user interface based on a game play.
 	 * 
-	 * @param start
-	 *            <code>Territory</code> where the play began
-	 * @param end
-	 *            <code>Territory</code> where the play ended
-	 * @param captured
-	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
+	 * @param territories
+	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were have changed.
 	 */
-	public void performPlay(final Territory start, final Territory end, final Collection<Territory> captured)
+	public void refreshTerritories(final Collection<Territory> territories)
 	{
-		m_mapPanel.performPlay(start, end, captured);
+		m_mapPanel.refreshTerritories(territories);
 	}
 	
 	/**

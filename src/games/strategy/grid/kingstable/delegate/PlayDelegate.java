@@ -343,7 +343,11 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		}
 		m_bridge.addChange(change);
 		final IGridGameDisplay display = (IGridGameDisplay) m_bridge.getDisplayChannelBroadcaster();
-		display.performPlay(start, end, captured);
+		final Collection<Territory> refresh = new HashSet<Territory>();
+		refresh.add(start);
+		refresh.add(end);
+		refresh.addAll(captured);
+		display.refreshTerritories(refresh);
 	}
 	
 	/**

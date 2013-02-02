@@ -40,12 +40,8 @@ public interface IGridGameDisplay extends IDisplay
 	/**
 	 * Ask the user interface for this display to process a play and zero or more captures.
 	 * 
-	 * @param start
-	 *            <code>Territory</code> where the play began
-	 * @param end
-	 *            <code>Territory</code> where the play ended
-	 * @param captured
-	 *            <code>Collection</code> of <code>Territory</code>s whose pieces were captured during the play
+	 * @param territories
+	 *            <code>Collection</code> of <code>Territory</code>s whose pieces have changed
 	 */
-	public void performPlay(Territory start, Territory end, Collection<Territory> captured);
+	public void refreshTerritories(Collection<Territory> territories);
 }
