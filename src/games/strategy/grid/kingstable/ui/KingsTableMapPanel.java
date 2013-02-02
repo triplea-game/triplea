@@ -2,8 +2,11 @@ package games.strategy.grid.kingstable.ui;
 
 import games.strategy.engine.data.Territory;
 import games.strategy.grid.kingstable.attachments.TerritoryAttachment;
+import games.strategy.grid.kingstable.delegate.PlayDelegate;
+import games.strategy.grid.ui.GridGameFrame;
 import games.strategy.grid.ui.GridMapData;
 import games.strategy.grid.ui.GridMapPanel;
+import games.strategy.grid.ui.GridPlayData;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -16,9 +19,15 @@ public class KingsTableMapPanel extends GridMapPanel
 {
 	private static final long serialVersionUID = 9111624780451084800L;
 	
-	public KingsTableMapPanel(final GridMapData mapData)
+	public KingsTableMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame)
 	{
-		super(mapData);
+		super(mapData, parentGridGameFrame);
+	}
+	
+	@Override
+	protected String isValidPlay(final GridPlayData play)
+	{
+		return PlayDelegate.isValidPlay(play.getStart(), play.getEnd(), m_parentGridGameFrame.getActivePlayer(), m_gameData);
 	}
 	
 	/**
@@ -30,7 +39,7 @@ public class KingsTableMapPanel extends GridMapPanel
 		g.setColor(Color.lightGray);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		g.setColor(Color.white);
-		g.fillRect(50, 50, getWidth() - 100, getHeight() - 100);
+		g.fillRect(GridGameFrame.OUTSIDE_BEVEL_SIZE, GridGameFrame.OUTSIDE_BEVEL_SIZE, getWidth() - (GridGameFrame.OUTSIDE_BEVEL_SIZE * 2), getHeight() - (GridGameFrame.OUTSIDE_BEVEL_SIZE * 2));
 		for (final Map.Entry<Territory, Polygon> entry : m_mapData.getPolygons().entrySet())
 		{
 			final Polygon p = entry.getValue();
@@ -52,7 +61,8 @@ public class KingsTableMapPanel extends GridMapPanel
 			{
 				final Rectangle square = p.getBounds();
 				if (at.equals(m_clickedAt))
-					g.drawImage(image, square.x - 10, square.y - 10, square.width + 20, square.height + 20, null, null);
+					g.drawImage(image, square.x - (GridGameFrame.SQUARE_SIZE / 5), square.y - (GridGameFrame.SQUARE_SIZE / 5),
+								square.width + (2 * GridGameFrame.SQUARE_SIZE / 5), square.height + (2 * GridGameFrame.SQUARE_SIZE / 5), null, null);
 				else
 					g.drawImage(image, square.x, square.y, square.width, square.height, null, null);
 			}

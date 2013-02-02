@@ -29,6 +29,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
@@ -39,6 +40,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -62,13 +64,16 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 	protected CountDownLatch m_waiting;
 	protected final UnitImageFactory m_imageFactory;
 	protected BufferedImage m_mouseShadowImage = null;
+	protected Collection<Territory> m_validMovesList = null;
 	protected Point m_currentMouseLocation = new Point(0, 0);
 	protected Territory m_currentMouseLocationTerritory = null;
+	protected final GridGameFrame m_parentGridGameFrame;
 	
-	public GridMapPanel(final GridMapData mapData)
+	public GridMapPanel(final GridMapData mapData, final GridGameFrame parentGridGameFrame)
 	{
 		m_waiting = null;
 		m_mapData = mapData;
+		m_parentGridGameFrame = parentGridGameFrame;
 		m_gameData = m_mapData.getGameData();
 		final String mapName = (String) m_gameData.getProperties().get(Constants.MAP_NAME);
 		if (mapName == null || mapName.trim().length() == 0)
@@ -165,8 +170,19 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		if (m_mouseShadowImage != null)
 		{
 			final AffineTransform t = new AffineTransform();
-			t.translate(m_currentMouseLocation.x - 20, m_currentMouseLocation.y - 20);
+			t.translate(m_currentMouseLocation.x - (GridGameFrame.SQUARE_SIZE / 2), m_currentMouseLocation.y - (GridGameFrame.SQUARE_SIZE / 2));
 			g2d.drawImage(m_mouseShadowImage, t, this);
+		}
+		if (m_validMovesList != null)
+		{
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+			for (final Territory t : m_validMovesList)
+			{
+				final Polygon p = m_mapData.getPolygons().get(t);
+				final Rectangle rect = p.getBounds();
+				g2d.drawLine(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
+				g2d.drawLine(rect.x, rect.y + rect.height, rect.x + rect.width, rect.y);
+			}
 		}
 	}
 	
@@ -193,6 +209,7 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		m_clickedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
 		// TODO: only shadow units if owned by current player
 		setMouseShadowUnits(m_clickedAt.getUnits().getUnits());
+		m_validMovesList = getValidMovesList(m_clickedAt);
 	}
 	
 	/**
@@ -205,6 +222,7 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 		// will be stored in the private member variable m_releasedAt.
 		m_releasedAt = m_mapData.getTerritoryAt(e.getX(), e.getY());
 		setMouseShadowUnits(null);
+		m_validMovesList = null;
 		// The waitForPlay method is waiting for mouse input.
 		// Let it know that we have processed mouse input.
 		if (m_waiting != null)
@@ -248,9 +266,9 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 			});
 			return;
 		}
-		final int icon_width = 50;
-		final int icon_height = 50;
-		final int xSpace = 10;
+		final int icon_width = GridGameFrame.SQUARE_SIZE;
+		final int icon_height = GridGameFrame.SQUARE_SIZE;
+		final int xSpace = GridGameFrame.SQUARE_SIZE / 5;
 		final BufferedImage img = Util.createImage(units.size() * (xSpace + icon_width), icon_height, true);
 		final Graphics2D g = (Graphics2D) img.getGraphics();
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
@@ -325,7 +343,28 @@ public abstract class GridMapPanel extends JComponent implements MouseListener
 			final GridPlayData play = new GridPlayData(m_clickedAt, m_releasedAt);
 			m_clickedAt = null;
 			m_releasedAt = null;
-			return play;
+			// check first if a valid move
+			final String error = isValidPlay(play);
+			if (error == null)
+				return play;
+			// if error, notify error, and return null
+			m_parentGridGameFrame.notifyError(error);
+			return null;
 		}
+	}
+	
+	protected abstract String isValidPlay(final GridPlayData play);
+	
+	protected Collection<Territory> getValidMovesList(final Territory clickedOn)
+	{
+		if (clickedOn == null)
+			return null;
+		final Collection<Territory> validMovesList = new HashSet<Territory>();
+		for (final Territory t : m_gameData.getMap().getTerritories())
+		{
+			if (isValidPlay(new GridPlayData(clickedOn, t)) == null)
+				validMovesList.add(t);
+		}
+		return validMovesList;
 	}
 }

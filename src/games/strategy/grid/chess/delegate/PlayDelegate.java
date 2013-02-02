@@ -4,6 +4,7 @@ import games.strategy.common.delegate.AbstractDelegate;
 import games.strategy.engine.data.Change;
 import games.strategy.engine.data.ChangeFactory;
 import games.strategy.engine.data.CompositeChange;
+import games.strategy.engine.data.GameData;
 import games.strategy.engine.data.GameMap;
 import games.strategy.engine.data.PlayerID;
 import games.strategy.engine.data.Territory;
@@ -58,7 +59,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	{
 		if (start.getUnits().getUnitCount() > 1 || end.getUnits().getUnitCount() > 1)
 			throw new IllegalStateException("Can not have more than 1 unit in any territory");
-		final String error = isValidPlay(start, end);
+		final String error = isValidPlay(start, end, m_player, getData());
 		if (error != null)
 			return error;
 		final Collection<Territory> captured = checkForCaptures(start, end);
@@ -76,7 +77,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 * @param end
 	 *            <code>Territory</code> where the move should end
 	 */
-	private String isValidPlay(final Territory start, final Territory end)
+	public static String isValidPlay(final Territory start, final Territory end, final PlayerID player, final GameData data)
 	{
 		// System.out.println("Start: " + start.getX() + "," + start.getY() + "    End: " + end.getX() + "," + end.getY());
 		if (start == null || end == null)
@@ -87,12 +88,12 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		if (start.equals(end))
 			return "Must Move Piece To New Position";
 		final Unit unit = units.iterator().next();
-		if (!UnitIsOwnedBy(m_player).match(unit))
+		if (!UnitIsOwnedBy(player).match(unit))
 			return "You Do Not Own This Piece";
-		if (end.getUnits().someMatch(UnitIsOwnedBy(m_player)))
+		if (end.getUnits().someMatch(UnitIsOwnedBy(player)))
 			return "A Piece You Own Is In That Position";
 		
-		final GameMap map = getData().getMap();
+		final GameMap map = data.getMap();
 		
 		if (UnitIsPawn.match(unit))
 		{

@@ -60,6 +60,8 @@ public class GridGamePlayer extends AbstractHumanPlayer<GridGameFrame> implement
 	*/
 	private void play()
 	{
+		// change to active player
+		m_ui.changeActivePlayer(getPlayerID());
 		// Get the relevant delegate
 		final IGridPlayDelegate playDel = (IGridPlayDelegate) getPlayerBridge().getRemote();
 		GridPlayData play = null;

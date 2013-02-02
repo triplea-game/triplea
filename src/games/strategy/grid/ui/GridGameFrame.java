@@ -52,13 +52,16 @@ import javax.swing.JPanel;
 public class GridGameFrame extends MainGameFrame
 {
 	private static final long serialVersionUID = -8888229639450608930L;
-	private GameData m_data;
-	private IGame m_game;
-	private GridMapPanel m_mapPanel;
-	private JLabel m_status;
-	private final JLabel m_error;
-	private boolean m_gameOver;
-	private CountDownLatch m_waiting;
+	public static final int SQUARE_SIZE = 50;
+	public static final int OUTSIDE_BEVEL_SIZE = 50;
+	protected GameData m_data;
+	protected IGame m_game;
+	protected GridMapPanel m_mapPanel;
+	protected JLabel m_status;
+	protected final JLabel m_error;
+	protected boolean m_gameOver;
+	protected CountDownLatch m_waiting;
+	protected PlayerID m_currentPlayer = PlayerID.NULL_PLAYERID;
 	
 	/**
 	 * Construct a new user interface for a King's Table game.
@@ -78,13 +81,13 @@ public class GridGameFrame extends MainGameFrame
 		// The MapData holds info for the map,
 		// including the dimensions (x_dim and y_dim)
 		// and the size of each square (50 by 50)
-		final GridMapData mapData = new GridMapData(m_data, x_dim, y_dim, 50, 50, 50, 50);
+		final GridMapData mapData = new GridMapData(m_data, x_dim, y_dim, SQUARE_SIZE, SQUARE_SIZE, OUTSIDE_BEVEL_SIZE, OUTSIDE_BEVEL_SIZE);
 		// MapPanel is the Swing component that actually displays the gameboard.
 		// m_mapPanel = new KingsTableMapPanel(mapData);
 		try
 		{
-			final Constructor<? extends GridMapPanel> mapPanelConstructor = gridMapPanelClass.getConstructor(new Class[] { GridMapData.class });
-			final GridMapPanel gridMapPanel = mapPanelConstructor.newInstance(mapData);
+			final Constructor<? extends GridMapPanel> mapPanelConstructor = gridMapPanelClass.getConstructor(new Class[] { GridMapData.class, GridGameFrame.class });
+			final GridMapPanel gridMapPanel = mapPanelConstructor.newInstance(mapData, this);
 			m_mapPanel = gridMapPanel;
 		} catch (final Exception e)
 		{
@@ -175,6 +178,24 @@ public class GridGameFrame extends MainGameFrame
 			return null;
 		}
 		return play;
+	}
+	
+	public void changeActivePlayer(final PlayerID player)
+	{
+		if (player == null)
+			m_currentPlayer = PlayerID.NULL_PLAYERID;
+		else
+			m_currentPlayer = player;
+	}
+	
+	/**
+	 * This only applies to the UI for this local machine. Therefore it returns the "last" active player that was played on this machine.
+	 * 
+	 * @return
+	 */
+	public PlayerID getActivePlayer()
+	{
+		return m_currentPlayer;
 	}
 	
 	/**

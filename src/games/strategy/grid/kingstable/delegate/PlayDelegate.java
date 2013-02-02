@@ -95,7 +95,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 */
 	public String play(final Territory start, final Territory end)
 	{
-		final String error = isValidPlay(start, end);
+		final String error = isValidPlay(start, end, m_player, getData());
 		if (error != null)
 			return error;
 		final Collection<Territory> captured = checkForCaptures(end);
@@ -136,7 +136,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 						final Territory right = map.getTerritoryFromCoordinates(endX + 1, endY - 1);
 						if (matches.eligibleParticipantsInKingCapture(m_player, above, left, right))
 							captured.add(possibleCapture);
-						else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, above))
+						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(m_player, above))
 							captured.add(possibleCapture);
 					}
 					// Can a pawn be captured?
@@ -161,7 +161,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 						final Territory right = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
 						if (matches.eligibleParticipantsInKingCapture(m_player, below, left, right))
 							captured.add(possibleCapture);
-						else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, below))
+						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(m_player, below))
 							captured.add(possibleCapture);
 					}
 					// Can a pawn be captured?
@@ -186,7 +186,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 						final Territory below = map.getTerritoryFromCoordinates(endX - 1, endY + 1);
 						if (matches.eligibleParticipantsInKingCapture(m_player, left, above, below))
 							captured.add(possibleCapture);
-						else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, left))
+						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(m_player, left))
 							captured.add(possibleCapture);
 					}
 					// Can a pawn be captured?
@@ -211,7 +211,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 						final Territory below = map.getTerritoryFromCoordinates(endX + 1, endY + 1);
 						if (matches.eligibleParticipantsInKingCapture(m_player, right, above, below))
 							captured.add(possibleCapture);
-						else if (matches.kingCanBeCapturedLikeAPawn && matches.eligibleParticipantInPawnCapture(m_player, right))
+						else if (matches.kingCanBeCapturedLikeAPawn() && matches.eligibleParticipantInPawnCapture(m_player, right))
 							captured.add(possibleCapture);
 					}
 					// Can a pawn be captured?
@@ -233,12 +233,12 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 	 * @param end
 	 *            <code>Territory</code> where the move should end
 	 */
-	private String isValidPlay(final Territory start, final Territory end)
+	public static String isValidPlay(final Territory start, final Territory end, final PlayerID player, final GameData data)
 	{
-		final int unitCount = start.getUnits().getUnitCount(m_player);
+		final int unitCount = start.getUnits().getUnitCount(player);
 		// The current player must have exactly one unit in the starting territory
 		if (unitCount < 1)
-			return m_player.getName() + " doesn't have a piece in the selected starting square.";
+			return player.getName() + " doesn't have a piece in the selected starting square.";
 		else if (unitCount > 1)
 			return "The selected starting square contains more than one piece - that shouldn't be possible.";
 		// The destination territory must be empty
@@ -248,7 +248,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		final int endX = end.getX();
 		final int startY = start.getY();
 		final int endY = end.getY();
-		final GameMap map = getData().getMap();
+		final GameMap map = data.getMap();
 		// Pieces can only move in a straight line
 		// and the intervening spaces must be empty
 		if (startX == endX)
@@ -294,6 +294,7 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		else
 			return "Pieces can only move in a straight line.";
 		// Only the king can move to king's squares
+		final Matches matches = new Matches(data);
 		if (!matches.kingInSquare(start) && matches.isKingsSquare(end))
 		{
 			return "Only the king can go there";
@@ -349,159 +350,6 @@ public class PlayDelegate extends AbstractDelegate implements IGridPlayDelegate
 		// This class implements IPlayDelegate, which inherits from IRemote.
 		return IGridPlayDelegate.class;
 	}
-	
-	
-	/**
-	 * Utility class providing matching methods for use in King's Table.
-	 * 
-	 * @author Lane Schwartz
-	 */
-	private class Matches
-	{
-		private final boolean kingCanParticipateInCaptures;
-		private final boolean cornerSquaresCanBeUsedToCapturePawns;
-		private final boolean centerSquareCanBeUsedToCapturePawns;
-		private final boolean cornerSquaresCanBeUsedToCaptureTheKing;
-		private final boolean centerSquareCanBeUsedToCaptureTheKing;
-		private final boolean edgeOfBoardCanBeUsedToCaptureTheKing;
-		private final boolean kingCanBeCapturedLikeAPawn;
-		
-		Matches(final GameData gameData)
-		{
-			final GameProperties properties = gameData.getProperties();
-			kingCanParticipateInCaptures = properties.get("King can participate in captures", true);
-			cornerSquaresCanBeUsedToCapturePawns = properties.get("Corner squares can be used to capture pawns", true);
-			centerSquareCanBeUsedToCapturePawns = properties.get("Center square can be used to capture pawns", false);
-			cornerSquaresCanBeUsedToCaptureTheKing = properties.get("Corner squares can be used to capture the king", false);
-			centerSquareCanBeUsedToCaptureTheKing = properties.get("Center square can be used to capture the king", true);
-			edgeOfBoardCanBeUsedToCaptureTheKing = properties.get("Edge of board can be used to capture the king", false);
-			kingCanBeCapturedLikeAPawn = properties.get("King can be captured like a pawn", false);
-		}
-		
-		public boolean kingInSquare(final Territory t)
-		{
-			if (t == null)
-			{
-				return false;
-			}
-			else
-			{
-				final Collection<Unit> units = t.getUnits().getUnits();
-				if (units.isEmpty())
-					return false;
-				else
-				{
-					final Unit unit = (Unit) units.toArray()[0];
-					if (unit.getType().getName().equals("king"))
-						return true;
-					else
-						return false;
-				}
-			}
-		}
-		
-		public boolean isKingsExit(final Territory t)
-		{
-			final TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
-			if (ta == null)
-				return false;
-			else if (ta.getKingsExit())
-				return true;
-			else
-				return false;
-		}
-		
-		public boolean isKingsSquare(final Territory t)
-		{
-			final TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
-			if (ta == null)
-				return false;
-			else if (ta.getKingsSquare())
-				return true;
-			else
-				return false;
-		}
-		
-		public boolean eligibleParticipantInPawnCapture(final PlayerID currentPlayer, final Territory territory)
-		{
-			// System.out.println("eligibleParticipantInPawnCapture" + currentPlayer.getName() + " " + territory.getName());
-			if (territory == null)
-			{
-				return false;
-			}
-			else
-			{
-				if (territory.getOwner().equals(currentPlayer))
-				{
-					if (territory.getUnits().isEmpty())
-						return false;
-					else if (!kingCanParticipateInCaptures && kingInSquare(territory))
-						return false;
-					else
-						return true;
-				}
-				else
-				{
-					if (cornerSquaresCanBeUsedToCapturePawns && isKingsExit(territory))
-						return true;
-					else if (centerSquareCanBeUsedToCapturePawns && isKingsSquare(territory))
-						return true;
-					else
-						return false;
-				}
-			}
-		}
-		
-		public boolean eligibleParticipantInKingCapture(final PlayerID currentPlayer, final Territory territory)
-		{
-			if (territory == null)
-			{
-				if (edgeOfBoardCanBeUsedToCaptureTheKing)
-					return true;
-				else
-					return false;
-			}
-			else
-			{
-				if (territory.getOwner().equals(currentPlayer))
-				{
-					if (territory.getUnits().size() > 0)
-						return true;
-					else
-						return false;
-				}
-				else
-				{
-					if (cornerSquaresCanBeUsedToCaptureTheKing && isKingsExit(territory))
-						return true;
-					else if (centerSquareCanBeUsedToCaptureTheKing && isKingsSquare(territory))
-						return true;
-					else
-						return false;
-				}
-			}
-		}
-		
-		public boolean eligibleParticipantsInKingCapture(final PlayerID currentPlayer, final Territory... territories)
-		{
-			if (territories == null || territories.length == 0)
-				return false;
-			for (final Territory territory : territories)
-			{
-				if (!eligibleParticipantInKingCapture(currentPlayer, territory))
-					return false;
-			}
-			return true;
-		}
-		
-		public boolean eligibleForCapture(final Territory territory, final PlayerID currentPlayer)
-		{
-			if (territory == null || territory.getUnits().isEmpty() || territory.getOwner().equals(currentPlayer))
-				return false;
-			else
-				return true;
-		}
-	}
 }
 
 
@@ -510,4 +358,162 @@ class KingsTablePlayExtendedDelegateState implements Serializable
 	private static final long serialVersionUID = 8227905090355825327L;
 	Serializable superState;
 	// add other variables here:
+}
+
+
+/**
+ * Utility class providing matching methods for use in King's Table.
+ * 
+ * @author Lane Schwartz
+ */
+class Matches
+{
+	private final boolean kingCanParticipateInCaptures;
+	private final boolean cornerSquaresCanBeUsedToCapturePawns;
+	private final boolean centerSquareCanBeUsedToCapturePawns;
+	private final boolean cornerSquaresCanBeUsedToCaptureTheKing;
+	private final boolean centerSquareCanBeUsedToCaptureTheKing;
+	private final boolean edgeOfBoardCanBeUsedToCaptureTheKing;
+	private final boolean kingCanBeCapturedLikeAPawn;
+	
+	Matches(final GameData gameData)
+	{
+		final GameProperties properties = gameData.getProperties();
+		kingCanParticipateInCaptures = properties.get("King can participate in captures", true);
+		cornerSquaresCanBeUsedToCapturePawns = properties.get("Corner squares can be used to capture pawns", true);
+		centerSquareCanBeUsedToCapturePawns = properties.get("Center square can be used to capture pawns", false);
+		cornerSquaresCanBeUsedToCaptureTheKing = properties.get("Corner squares can be used to capture the king", false);
+		centerSquareCanBeUsedToCaptureTheKing = properties.get("Center square can be used to capture the king", true);
+		edgeOfBoardCanBeUsedToCaptureTheKing = properties.get("Edge of board can be used to capture the king", false);
+		kingCanBeCapturedLikeAPawn = properties.get("King can be captured like a pawn", false);
+	}
+	
+	public boolean kingCanBeCapturedLikeAPawn()
+	{
+		return kingCanBeCapturedLikeAPawn;
+	}
+	
+	public boolean kingInSquare(final Territory t)
+	{
+		if (t == null)
+		{
+			return false;
+		}
+		else
+		{
+			final Collection<Unit> units = t.getUnits().getUnits();
+			if (units.isEmpty())
+				return false;
+			else
+			{
+				final Unit unit = (Unit) units.toArray()[0];
+				if (unit.getType().getName().equals("king"))
+					return true;
+				else
+					return false;
+			}
+		}
+	}
+	
+	public boolean isKingsExit(final Territory t)
+	{
+		final TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
+		if (ta == null)
+			return false;
+		else if (ta.getKingsExit())
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean isKingsSquare(final Territory t)
+	{
+		final TerritoryAttachment ta = ((TerritoryAttachment) t.getAttachment("territoryAttachment"));
+		if (ta == null)
+			return false;
+		else if (ta.getKingsSquare())
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean eligibleParticipantInPawnCapture(final PlayerID currentPlayer, final Territory territory)
+	{
+		// System.out.println("eligibleParticipantInPawnCapture" + currentPlayer.getName() + " " + territory.getName());
+		if (territory == null)
+		{
+			return false;
+		}
+		else
+		{
+			if (territory.getOwner().equals(currentPlayer))
+			{
+				if (territory.getUnits().isEmpty())
+					return false;
+				else if (!kingCanParticipateInCaptures && kingInSquare(territory))
+					return false;
+				else
+					return true;
+			}
+			else
+			{
+				if (cornerSquaresCanBeUsedToCapturePawns && isKingsExit(territory))
+					return true;
+				else if (centerSquareCanBeUsedToCapturePawns && isKingsSquare(territory))
+					return true;
+				else
+					return false;
+			}
+		}
+	}
+	
+	public boolean eligibleParticipantInKingCapture(final PlayerID currentPlayer, final Territory territory)
+	{
+		if (territory == null)
+		{
+			if (edgeOfBoardCanBeUsedToCaptureTheKing)
+				return true;
+			else
+				return false;
+		}
+		else
+		{
+			if (territory.getOwner().equals(currentPlayer))
+			{
+				if (territory.getUnits().size() > 0)
+					return true;
+				else
+					return false;
+			}
+			else
+			{
+				if (cornerSquaresCanBeUsedToCaptureTheKing && isKingsExit(territory))
+					return true;
+				else if (centerSquareCanBeUsedToCaptureTheKing && isKingsSquare(territory))
+					return true;
+				else
+					return false;
+			}
+		}
+	}
+	
+	public boolean eligibleParticipantsInKingCapture(final PlayerID currentPlayer, final Territory... territories)
+	{
+		if (territories == null || territories.length == 0)
+			return false;
+		for (final Territory territory : territories)
+		{
+			if (!eligibleParticipantInKingCapture(currentPlayer, territory))
+				return false;
+		}
+		return true;
+	}
+	
+	public boolean eligibleForCapture(final Territory territory, final PlayerID currentPlayer)
+	{
+		if (territory == null || territory.getUnits().isEmpty() || territory.getOwner().equals(currentPlayer))
+			return false;
+		else
+			return true;
+	}
 }

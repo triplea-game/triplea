@@ -1,4 +1,6 @@
 Changes for 1.7
+* Adding a visual cue for which moves are legal for Chess and other Grid games. (veqryn)
+
 * Added movement validation logic for Chess. (veqryn)
 
 * Upgrading the graphics for Grid Games, and including a mouse shadow of selected units, and a highlight of which units on map are currently selected. (veqryn)
